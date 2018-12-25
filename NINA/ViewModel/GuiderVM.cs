@@ -40,7 +40,7 @@ namespace NINA.ViewModel {
 
     internal class GuiderVM : DockableVM, IGuiderVM {
 
-        public GuiderVM(IProfileService profileService, IGuiderMediator guiderMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+        public GuiderVM(IProfileService profileService, IGuiderMediator guiderMediator, IApplicationStatusMediator applicationStatusMediator, IGuiderChooserVM guiderChooserVM) : base(profileService) {
             Title = "LblGuider";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["GuiderSVG"];
 
@@ -53,7 +53,7 @@ namespace NINA.ViewModel {
 
             CancelConnectGuiderCommand = new RelayCommand(CancelConnectGuider);
 
-            GuiderChooserVM = new GuiderChooserVM(profileService);
+            GuiderChooserVM = guiderChooserVM;
 
             DisconnectGuiderCommand = new RelayCommand((object o) => Disconnect(), (object o) => Guider?.Connected == true);
             ClearGraphCommand = new RelayCommand((object o) => ResetGraphValues());
@@ -61,7 +61,7 @@ namespace NINA.ViewModel {
             GuideStepsHistory = new GuideStepsHistory(HistorySize);
         }
 
-        public GuiderChooserVM GuiderChooserVM { get; set; }
+        public IGuiderChooserVM GuiderChooserVM { get; set; }
 
         public enum GuideStepsHistoryType {
             GuideStepsLarge,
@@ -143,8 +143,7 @@ namespace NINA.ViewModel {
         public async Task<bool> Connect() {
             ResetGraphValues();
 
-            Guider = GuiderChooserVM.SelectedGuider;
-            Guider.PropertyChanged += Guider_PropertyChanged;
+            GuiderChooserVM.SelectedGuider.PropertyChanged += Guider_PropertyChanged;
 
             bool connected = false;
 
@@ -165,7 +164,6 @@ namespace NINA.ViewModel {
 
         public void Disconnect() {
             Guider?.Disconnect();
-            Guider = null;
             GuiderInfo = DeviceInfo.CreateDefaultInstance<GuiderInfo>();
             BroadcastGuiderInfo();
         }
@@ -260,17 +258,7 @@ namespace NINA.ViewModel {
 
         private Dictionary<Guid, RMS> recordedRMS = new Dictionary<Guid, RMS>();
 
-        private IGuider _guider;
-
-        public IGuider Guider {
-            get {
-                return _guider;
-            }
-            set {
-                _guider = value;
-                RaisePropertyChanged();
-            }
-        }
+        public IGuider Guider => GuiderChooserVM.SelectedGuider;
 
         private void CancelConnectGuider(object o) {
             _cancelConnectGuiderSource?.Cancel();

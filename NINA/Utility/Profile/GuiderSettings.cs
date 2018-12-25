@@ -22,7 +22,6 @@
 #endregion "copyright"
 
 using NINA.Utility.Enum;
-using NINA.Utility.Mediator;
 using System;
 using System.Runtime.Serialization;
 
@@ -51,15 +50,14 @@ namespace NINA.Utility.Profile {
             pHD2GuiderScale = GuiderScaleEnum.PIXELS;
             settlePixels = 1.5;
             settleTimeout = 40;
+            guiderName = "PHD2";
         }
 
         private double ditherPixels;
 
         [DataMember]
         public double DitherPixels {
-            get {
-                return ditherPixels;
-            }
+            get => ditherPixels;
             set {
                 ditherPixels = value;
                 RaisePropertyChanged();
@@ -70,9 +68,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public bool DitherRAOnly {
-            get {
-                return ditherRAOnly;
-            }
+            get => ditherRAOnly;
             set {
                 ditherRAOnly = value;
                 RaisePropertyChanged();
@@ -83,9 +79,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public int SettleTime {
-            get {
-                return settleTime;
-            }
+            get => settleTime;
             set {
                 settleTime = value;
                 RaisePropertyChanged();
@@ -96,9 +90,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public string PHD2ServerUrl {
-            get {
-                return pHD2ServerUrl;
-            }
+            get => pHD2ServerUrl;
             set {
                 pHD2ServerUrl = value;
                 RaisePropertyChanged();
@@ -109,9 +101,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public int PHD2ServerPort {
-            get {
-                return pHD2ServerPort;
-            }
+            get => pHD2ServerPort;
             set {
                 pHD2ServerPort = value;
                 RaisePropertyChanged();
@@ -122,9 +112,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public int PHD2HistorySize {
-            get {
-                return pHD2LargeHistorySize;
-            }
+            get => pHD2LargeHistorySize;
             set {
                 pHD2LargeHistorySize = value;
                 RaisePropertyChanged();
@@ -135,9 +123,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public GuiderScaleEnum PHD2GuiderScale {
-            get {
-                return pHD2GuiderScale;
-            }
+            get => pHD2GuiderScale;
             set {
                 pHD2GuiderScale = value;
                 RaisePropertyChanged();
@@ -148,9 +134,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public double SettlePixels {
-            get {
-                return settlePixels;
-            }
+            get => settlePixels;
 
             set {
                 settlePixels = value;
@@ -162,12 +146,21 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public int SettleTimeout {
-            get {
-                return settleTimeout;
-            }
+            get => settleTimeout;
 
             set {
                 settleTimeout = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string guiderName;
+
+        [DataMember]
+        public string GuiderName {
+            get => guiderName;
+            set {
+                guiderName = value;
                 RaisePropertyChanged();
             }
         }

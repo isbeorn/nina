@@ -1,11 +1,12 @@
 ﻿using NINA.Model.MyGuider;
 using NINA.Utility;
 using NINA.Utility.Profile;
+using NINA.ViewModel.Interfaces;
 using System.Linq;
 
 namespace NINA.ViewModel {
 
-    public class GuiderChooserVM : BaseVM {
+    public class GuiderChooserVM : BaseVM, IGuiderChooserVM {
 
         public GuiderChooserVM(IProfileService profileService) : base(profileService) {
             this.profileService = profileService;
@@ -28,7 +29,7 @@ namespace NINA.ViewModel {
             Guiders.Add(new PHD2Guider(profileService));
             //Guiders.Add(new DummyGuider());
 
-            DetermineSelectedDevice("PHD2");
+            DetermineSelectedDevice(profileService.ActiveProfile.GuiderSettings.GuiderName);
         }
 
         private IGuider _selectedGuider;

@@ -26,6 +26,7 @@ using NINA.Utility.Enum;
 namespace NINA.Utility.Profile {
 
     public interface IGuiderSettings : ISettings {
+        string GuiderName { get; set; }
         double DitherPixels { get; set; }
         bool DitherRAOnly { get; set; }
         GuiderScaleEnum PHD2GuiderScale { get; set; }
