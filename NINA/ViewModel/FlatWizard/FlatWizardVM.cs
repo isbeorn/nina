@@ -31,10 +31,12 @@ using NINA.Utility.Profile;
 using NINA.ViewModel.Interfaces;
 using Nito.AsyncEx;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 
 namespace NINA.ViewModel.FlatWizard {
@@ -354,14 +356,18 @@ namespace NINA.ViewModel.FlatWizard {
                 flatSequenceCts = new CancellationTokenSource();
             }
 
+            Dictionary<FlatWizardFilterSettingsWrapper, double> filterToExposureTime = new Dictionary<FlatWizardFilterSettingsWrapper, double>();
+
             try {
                 if ((FilterCaptureMode)Mode == FilterCaptureMode.SINGLE) {
                     await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, SingleFlatWizardFilterSettings);
-                    await StartFlatCaptureSequence(progress, flatSequenceCts.Token, pt, SingleFlatWizardFilterSettings.Filter);
+                    await StartCaptureSequence(progress, flatSequenceCts.Token, pt, SingleFlatWizardFilterSettings.Filter, CalculatedExposureTime, CaptureSequence.ImageTypes.FLAT, FlatCount);
+                    filterToExposureTime.Add(SingleFlatWizardFilterSettings, CalculatedExposureTime);
                 } else {
                     foreach (var filterSettings in Filters.Where(f => f.IsChecked)) {
                         await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, filterSettings);
-                        await StartFlatCaptureSequence(progress, flatSequenceCts.Token, pt, filterSettings.Filter);
+                        await StartCaptureSequence(progress, flatSequenceCts.Token, pt, filterSettings.Filter, CalculatedExposureTime, CaptureSequence.ImageTypes.FLAT, FlatCount);
+                        filterToExposureTime.Add(filterSettings, CalculatedExposureTime);
                         filterSettings.IsChecked = false;
                         CalculatedExposureTime = 0;
                         CalculatedHistogramMean = 0;
@@ -372,6 +378,22 @@ namespace NINA.ViewModel.FlatWizard {
                 CalculatedExposureTime = 0;
                 CalculatedHistogramMean = 0;
                 FlatWizardExposureTimeFinderService.ClearDataPoints();
+            }
+
+            try {
+                if (filterToExposureTime.Count > 0 && DarkFlatCount > 0) {
+                    progress.Report(new ApplicationStatus() { Status = Locale["LblPreparingDarkFlatSequence"], Source = Title });
+                    var dialogResult = MyMessageBox.MyMessageBox.Show(
+                        Locale["LblCoverScopeMsgBox"],
+                        Locale["LblCoverScopeMsgBoxTitle"]);
+                    if (dialogResult == MessageBoxResult.OK) {
+                        foreach (var kvp in filterToExposureTime) {
+                            await StartCaptureSequence(progress, flatSequenceCts.Token, pt, kvp.Key.Filter, kvp.Value,
+                                CaptureSequence.ImageTypes.DARKFLAT, DarkFlatCount);
+                        }
+                    }
+                }
+            } catch (OperationCanceledException) {
             }
 
             ImagingVM.DestroyImage();
@@ -385,9 +407,9 @@ namespace NINA.ViewModel.FlatWizard {
             return true;
         }
 
-        private async Task<bool> StartFlatCaptureSequence(IProgress<ApplicationStatus> progress, CancellationToken ct, PauseToken pt, FilterInfo filter) {
+        private async Task<bool> StartCaptureSequence(IProgress<ApplicationStatus> progress, CancellationToken ct, PauseToken pt, FilterInfo filter, double exposureTime, string imageType, int flatCount) {
             var sequence =
-                new CaptureSequence(CalculatedExposureTime, "FLAT", filter, BinningMode, FlatCount) { Gain = Gain };
+                new CaptureSequence(exposureTime, imageType, filter, BinningMode, flatCount) { Gain = Gain };
             while (sequence.ProgressExposureCount < sequence.TotalExposureCount) {
                 if (sequence.ProgressExposureCount != sequence.TotalExposureCount - 1) {
                     await ImagingVM.CaptureImageWithoutProcessingAndSaveAsync(sequence, ct, progress);
