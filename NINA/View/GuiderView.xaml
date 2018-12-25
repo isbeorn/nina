@@ -38,57 +38,77 @@
 
                 <GroupBox>
                     <GroupBox.Header>
-                        <UniformGrid Columns="2">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="3*" />
+                            </Grid.ColumnDefinitions>
                             <TextBlock
                                 VerticalAlignment="Center"
                                 FontSize="20"
-                                Text="{ns:Loc LblGuiderStatus}" />
-                            <Grid
-                                Width="40"
-                                Height="40"
-                                Margin="5"
-                                HorizontalAlignment="Right">
-                                <Button Command="{Binding ConnectGuiderCommand}" Visibility="{Binding Guider.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                                    <Button.ToolTip>
-                                        <ToolTip ToolTipService.ShowOnDisabled="False">
-                                            <TextBlock Text="{ns:Loc LblConnect}" />
-                                        </ToolTip>
-                                    </Button.ToolTip>
-                                    <Grid>
+                                Text="{ns:Loc LblGuider}" />
+                            <Grid Grid.Column="1" Margin="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <ninactrl:LoadingControl
+                                    Grid.Column="0"
+                                    Height="30"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    LoadingImageBrush="{StaticResource PrimaryBrush}"
+                                    Visibility="{Binding ConnectGuiderCommand.Execution.IsNotCompleted, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" />
+                                <ComboBox
+                                    Grid.Column="1"
+                                    MinHeight="40"
+                                    DisplayMemberPath="Name"
+                                    IsEnabled="{Binding GuiderInfo.Connected, Converter={StaticResource InverseBooleanConverter}}"
+                                    ItemsSource="{Binding GuiderChooserVM.Guiders}"
+                                    SelectedItem="{Binding GuiderChooserVM.SelectedGuider}"
+                                    Visibility="{Binding GuiderChooserVM.Guiders, Converter={StaticResource CollectionContainsMoreThanOneItemToVisibilityConverter}}"
+                                    SelectedValuePath="Name" />
+                                <Grid
+                                    Grid.Column="2"
+                                    Width="40"
+                                    Height="40"
+                                    Margin="1,0,0,0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
 
-                                        <Path
-                                            Margin="5"
-                                            Data="{StaticResource PowerSVG}"
-                                            Fill="{StaticResource ButtonForegroundDisabledBrush}"
-                                            Stretch="Uniform"
-                                            Visibility="{Binding ConnectGuiderCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
-                                        <Grid Visibility="{Binding ConnectGuiderCommand.Execution, Converter={StaticResource NullToVisibilityConverter}}">
-                                            <ninactrl:LoadingControl
-                                                Margin="2"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                LoadingImageBrush="{StaticResource ButtonForegroundBrush}"
-                                                Visibility="{Binding ConnectGuiderCommand.Execution.IsNotCompleted, Converter={StaticResource VisibilityConverter}}" />
-                                        </Grid>
-                                    </Grid>
-                                </Button>
-                                <Button Command="{Binding DisconnectGuiderCommand}" Visibility="{Binding Guider.Connected, Converter={StaticResource VisibilityConverter}, FallbackValue=Hidden}">
-                                    <Button.ToolTip>
-                                        <ToolTip ToolTipService.ShowOnDisabled="False">
-                                            <TextBlock Text="{ns:Loc LblDisconnect}" />
-                                        </ToolTip>
-                                    </Button.ToolTip>
-                                    <Grid>
+                                    <ninactrl:CancellableButton
+                                        ButtonForegroundBrush="{StaticResource ButtonForegroundDisabledBrush}"
+                                        ButtonImage="{StaticResource PowerSVG}"
+                                        CancelButtonImage="{StaticResource CancelSVG}"
+                                        CancelCommand="{Binding CancelConnectGuiderCommand}"
+                                        Command="{Binding ConnectGuiderCommand}"
+                                        IsEnabled="{Binding GuiderInfo.Connected, Converter={StaticResource InverseBooleanConverter}, FallbackValue=True, UpdateSourceTrigger=PropertyChanged}"
+                                        ToolTip="{ns:Loc LblConnect}"
+                                        Visibility="{Binding GuiderInfo.Connected, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
 
-                                        <Path
-                                            Margin="5"
-                                            Data="{StaticResource PowerSVG}"
-                                            Fill="{StaticResource ButtonForegroundBrush}"
-                                            Stretch="Uniform" />
+                                    <Grid Visibility="{Binding Guider, Converter={StaticResource NullToVisibilityConverter}}">
+                                        <Button
+                                        Command="{Binding DisconnectGuiderCommand}"
+                                        IsEnabled="{Binding GuiderInfo.Connected, UpdateSourceTrigger=PropertyChanged}"
+                                        Visibility="{Binding GuiderInfo.Connected, Converter={StaticResource VisibilityConverter}, UpdateSourceTrigger=PropertyChanged}">
+                                            <Button.ToolTip>
+                                                <ToolTip ToolTipService.ShowOnDisabled="False">
+                                                    <TextBlock Text="{ns:Loc LblDisconnect}" />
+                                                </ToolTip>
+                                            </Button.ToolTip>
+                                            <Grid>
+                                                <Path
+                                                Margin="5"
+                                                Data="{StaticResource PowerSVG}"
+                                                Fill="{StaticResource ButtonForegroundBrush}"
+                                                Stretch="Uniform" />
+                                            </Grid>
+                                        </Button>
                                     </Grid>
-                                </Button>
+                                </Grid>
                             </Grid>
-                        </UniformGrid>
+                        </Grid>
                     </GroupBox.Header>
                     <Grid>
                         <StackPanel>
@@ -105,7 +125,8 @@
                                             Margin="5"
                                             HorizontalAlignment="Left"
                                             BorderBrush="Transparent"
-                                            IsChecked="{Binding Guider.Connected, FallbackValue=False, Mode=OneWay}"
+                                            IsChecked="{Binding GuiderInfo.Connected, FallbackValue=False, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                            IsManipulationEnabled="False"
                                             Style="{StaticResource CheckmarkCheckbox}" />
                                     </UniformGrid>
                                 </UniformGrid>
@@ -117,7 +138,7 @@
                                         VerticalAlignment="Center"
                                         Columns="2">
                                         <TextBlock Text="{ns:Loc LblState}" />
-                                        <TextBlock Margin="5,0,0,0" Text="{Binding Guider.State}" />
+                                        <TextBlock Margin="5,0,0,0" Text="{Binding Guider.State, UpdateSourceTrigger=PropertyChanged}" />
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>
@@ -128,7 +149,7 @@
                                         VerticalAlignment="Center"
                                         Columns="2">
                                         <TextBlock Text="{ns:Loc LblPixelScale}" />
-                                        <TextBlock Margin="5,0,0,0" Text="{Binding GuideStepsHistory.PixelScale}" />
+                                        <TextBlock Margin="5,0,0,0" Text="{Binding GuideStepsHistory.PixelScale, UpdateSourceTrigger=PropertyChanged}" />
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>
@@ -140,7 +161,7 @@
             <local:GuiderGraph
                 Grid.Row="1"
                 DataContext="{Binding}"
-                IsEnabled="{Binding Guider.Connected}" />
+                IsEnabled="{Binding GuiderInfo.Connected, UpdateSourceTrigger=PropertyChanged}" />
         </Grid>
     </Grid>
 </UserControl>

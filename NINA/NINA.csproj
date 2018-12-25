@@ -292,6 +292,7 @@
     <Compile Include="EquipmentChooser\EquipmentChooser.xaml.cs">
       <DependentUpon>EquipmentChooser.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\GuiderChooserVM.cs" />
     <Compile Include="Locale\ILoc.cs" />
     <Compile Include="Locale\Loc.cs" />
     <Compile Include="Model\ApplicationStatus.cs" />
@@ -316,6 +317,7 @@
     <Compile Include="Model\MyCamera\ToupTekCamera.cs" />
     <Compile Include="Model\MyFilterWheel\FilterWheelInfo.cs" />
     <Compile Include="Model\MyFilterWheel\FlatWizardFilterSettings.cs" />
+    <Compile Include="Model\MyGuider\DummyGuider.cs" />
     <Compile Include="Utility\Converters\CollectionContainsMoreThanOneItemToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\DoubleToHalfValueConverter.cs" />
     <Compile Include="Utility\Converters\OneValueGreaterThanAnotherToVisiblityConverter.cs" />
@@ -1357,6 +1359,7 @@
     <Content Include="Utility\DCRaw\dcraw.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Database\NINA.sqlite" />
     <None Include="Documentation\NINA.md" />
     <None Include="Documentation\table-of-contents.md" />

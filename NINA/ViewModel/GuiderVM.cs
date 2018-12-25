@@ -21,22 +21,20 @@
 
 #endregion "copyright"
 
-using NINA.Model.MyGuider;
 using NINA.Model;
+using NINA.Model.MyGuider;
 using NINA.Utility;
 using NINA.Utility.Enum;
-using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Profile;
+using NINA.ViewModel.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
-using NINA.ViewModel.Interfaces;
-using System.Collections.Generic;
-using NINA.Utility.Mediator.Interfaces;
 
 namespace NINA.ViewModel {
 
@@ -51,17 +49,19 @@ namespace NINA.ViewModel {
 
             this.applicationStatusMediator = applicationStatusMediator;
 
-            ConnectGuiderCommand = new AsyncCommand<bool>(
-                async () =>
-                    await Task.Run<bool>(() => Connect()),
-                (object o) =>
-                    !(Guider?.Connected == true)
-            );
+            ConnectGuiderCommand = new AsyncCommand<bool>(Connect);
+
+            CancelConnectGuiderCommand = new RelayCommand(CancelConnectGuider);
+
+            GuiderChooserVM = new GuiderChooserVM(profileService);
+
             DisconnectGuiderCommand = new RelayCommand((object o) => Disconnect(), (object o) => Guider?.Connected == true);
             ClearGraphCommand = new RelayCommand((object o) => ResetGraphValues());
 
             GuideStepsHistory = new GuideStepsHistory(HistorySize);
         }
+
+        public GuiderChooserVM GuiderChooserVM { get; set; }
 
         public enum GuideStepsHistoryType {
             GuideStepsLarge,
@@ -142,15 +142,23 @@ namespace NINA.ViewModel {
 
         public async Task<bool> Connect() {
             ResetGraphValues();
-            Guider = new PHD2Guider(profileService);
+
+            Guider = GuiderChooserVM.SelectedGuider;
             Guider.PropertyChanged += Guider_PropertyChanged;
 
-            var connected = await Guider.Connect();
+            bool connected = false;
 
-            GuiderInfo = new GuiderInfo {
-                Connected = connected
-            };
-            BroadcastGuiderInfo();
+            try {
+                _cancelConnectGuiderSource = new CancellationTokenSource();
+                connected = await Guider.Connect(_cancelConnectGuiderSource.Token);
+                _cancelConnectGuiderSource.Token.ThrowIfCancellationRequested();
+
+                GuiderInfo = new GuiderInfo {
+                    Connected = connected
+                };
+                BroadcastGuiderInfo();
+            } catch (OperationCanceledException) {
+            }
 
             return connected;
         }
@@ -264,13 +272,20 @@ namespace NINA.ViewModel {
             }
         }
 
+        private void CancelConnectGuider(object o) {
+            _cancelConnectGuiderSource?.Cancel();
+        }
+
         private IGuiderMediator guiderMediator;
         private IApplicationStatusMediator applicationStatusMediator;
+        private CancellationTokenSource _cancelConnectGuiderSource;
 
         public ICommand ConnectGuiderCommand { get; private set; }
 
         public ICommand DisconnectGuiderCommand { get; private set; }
 
         public ICommand ClearGraphCommand { get; private set; }
+
+        public ICommand CancelConnectGuiderCommand { get; }
     }
 }
