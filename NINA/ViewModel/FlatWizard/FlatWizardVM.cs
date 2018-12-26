@@ -59,7 +59,7 @@ namespace NINA.ViewModel.FlatWizard {
         public FlatWizardVM(IProfileService profileService,
                             IImagingVM imagingVM,
                             ICameraMediator cameraMediator,
-                            IResourceDictionary resourceDictionary,
+                            IApplicationResourceDictionary resourceDictionary,
                             IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblFlatWizard";
             ImageGeometry = (System.Windows.Media.GeometryGroup)resourceDictionary["FlatWizardSVG"];

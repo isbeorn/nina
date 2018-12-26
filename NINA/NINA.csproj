@@ -320,8 +320,8 @@
     <Compile Include="Utility\Converters\DoubleToHalfValueConverter.cs" />
     <Compile Include="Utility\Converters\OneValueGreaterThanAnotherToVisiblityConverter.cs" />
     <Compile Include="Utility\Converters\WidthAndValueToWidthConverter.cs" />
-    <Compile Include="Utility\IResourceDictionary.cs" />
-    <Compile Include="Utility\ResourceDictionary.cs" />
+    <Compile Include="Utility\IApplicationResourceDictionary.cs" />
+    <Compile Include="Utility\ApplicationResourceDictionary.cs" />
     <Compile Include="Utility\ValidationRules\DoubleRangeRule.cs" />
     <Compile Include="ViewModel\FlatWizard\FlatWizardExposureTimeFinderService.cs" />
     <Compile Include="ViewModel\FlatWizard\FlatWizardFilterSettingsWrapper.cs" />
