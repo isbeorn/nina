@@ -42,6 +42,7 @@
     - Autostretch replaced by a better midpoint transformation function
     - Autostretch now has black point clipping options
     - Vastly improved Image Statistics calculation.
+	- Estimated Finish Time will automatically update in the sequencing view
 
 ___
 
