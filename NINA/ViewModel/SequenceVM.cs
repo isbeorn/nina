@@ -168,12 +168,14 @@ namespace NINA.ViewModel {
 
         private void ResumeSequence(object obj) {
             if (_pauseTokenSource != null) {
+                autoUpdateTimer.Stop();
                 _pauseTokenSource.IsPaused = false;
             }
         }
 
         private void PauseSequence(object obj) {
             if (_pauseTokenSource != null) {
+                autoUpdateTimer.Start();
                 _pauseTokenSource.IsPaused = true;
             }
         }
