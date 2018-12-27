@@ -369,13 +369,13 @@ namespace NINA.ViewModel.FlatWizard {
                 if ((FilterCaptureMode)Mode == FilterCaptureMode.SINGLE) {
                     await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, SingleFlatWizardFilterSettings);
                     captureSequence = new CaptureSequence(CalculatedExposureTime, CaptureSequence.ImageTypes.FLAT, SingleFlatWizardFilterSettings.Filter, BinningMode, FlatCount) { Gain = Gain };
-                    await StartCaptureSequence(progress, flatSequenceCts.Token, pt, captureSequence);
+                    await StartCaptureSequence(captureSequence, progress, flatSequenceCts.Token, pt);
                     filterToExposureTime.Add(SingleFlatWizardFilterSettings, CalculatedExposureTime);
                 } else {
                     foreach (var filterSettings in Filters.Where(f => f.IsChecked)) {
                         await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, filterSettings);
                         captureSequence = new CaptureSequence(CalculatedExposureTime, CaptureSequence.ImageTypes.FLAT, filterSettings.Filter, BinningMode, FlatCount) { Gain = Gain };
-                        await StartCaptureSequence(progress, flatSequenceCts.Token, pt, captureSequence);
+                        await StartCaptureSequence(captureSequence, progress, flatSequenceCts.Token, pt);
                         filterToExposureTime.Add(filterSettings, CalculatedExposureTime);
                         filterSettings.IsChecked = false;
                         CalculatedExposureTime = 0;
@@ -399,7 +399,7 @@ namespace NINA.ViewModel.FlatWizard {
                         flatSequenceCts = new CancellationTokenSource();
                         foreach (var kvp in filterToExposureTime) {
                             captureSequence = new CaptureSequence(kvp.Value, CaptureSequence.ImageTypes.DARKFLAT, kvp.Key.Filter, BinningMode, DarkFlatCount) { Gain = Gain };
-                            await StartCaptureSequence(progress, flatSequenceCts.Token, pt, captureSequence);
+                            await StartCaptureSequence(captureSequence, progress, flatSequenceCts.Token, pt);
                         }
                     }
                 }
@@ -417,7 +417,8 @@ namespace NINA.ViewModel.FlatWizard {
             return true;
         }
 
-        private async Task<bool> StartCaptureSequence(IProgress<ApplicationStatus> progress, CancellationToken ct, PauseToken pt, CaptureSequence sequence) {
+        private async Task<bool> StartCaptureSequence(CaptureSequence sequence, IProgress<ApplicationStatus> progress,
+            CancellationToken ct, PauseToken pt) {
             while (sequence.ProgressExposureCount < sequence.TotalExposureCount) {
                 if (sequence.ProgressExposureCount != sequence.TotalExposureCount - 1) {
                     await ImagingVM.CaptureImageWithoutProcessingAndSaveAsync(sequence, ct, progress);
