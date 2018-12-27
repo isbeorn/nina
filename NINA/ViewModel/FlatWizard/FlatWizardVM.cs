@@ -31,10 +31,13 @@ using NINA.Utility.Profile;
 using NINA.ViewModel.Interfaces;
 using Nito.AsyncEx;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 
 namespace NINA.ViewModel.FlatWizard {
@@ -90,11 +93,17 @@ namespace NINA.ViewModel.FlatWizard {
             SingleFlatWizardFilterSettings.CameraInfo = cameraInfo;
 
             FlatCount = profileService.ActiveProfile.FlatWizardSettings.FlatCount;
+            DarkFlatCount = profileService.ActiveProfile.FlatWizardSettings.DarkFlatCount;
             BinningMode = profileService.ActiveProfile.FlatWizardSettings.BinningMode;
 
             Filters = new ObservableCollection<FlatWizardFilterSettingsWrapper>();
 
-            profileService.ActiveProfile.FilterWheelSettings.PropertyChanged += UpdateFilterWheelsSettings;
+            profileService.ProfileChanged += (sender, args) => {
+                profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.CollectionChanged += UpdateFilterWheelsSettings;
+                UpdateFilterWheelsSettings(null, null);
+            };
+
+            profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.CollectionChanged += UpdateFilterWheelsSettings;
             SingleFlatWizardFilterSettings.Settings.PropertyChanged += UpdateProfileValues;
 
             // first update filters
@@ -168,6 +177,19 @@ namespace NINA.ViewModel.FlatWizard {
                     profileService.ActiveProfile.FlatWizardSettings.FlatCount = flatCount;
                 }
 
+                RaisePropertyChanged();
+            }
+        }
+
+        private int darkFlatCount;
+
+        public int DarkFlatCount {
+            get => darkFlatCount;
+            set {
+                darkFlatCount = value;
+                if (darkFlatCount != profileService.ActiveProfile.FlatWizardSettings.DarkFlatCount) {
+                    profileService.ActiveProfile.FlatWizardSettings.DarkFlatCount = darkFlatCount;
+                }
                 RaisePropertyChanged();
             }
         }
@@ -340,14 +362,21 @@ namespace NINA.ViewModel.FlatWizard {
                 flatSequenceCts = new CancellationTokenSource();
             }
 
+            Dictionary<FlatWizardFilterSettingsWrapper, double> filterToExposureTime = new Dictionary<FlatWizardFilterSettingsWrapper, double>();
+            CaptureSequence captureSequence;
+
             try {
                 if ((FilterCaptureMode)Mode == FilterCaptureMode.SINGLE) {
                     await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, SingleFlatWizardFilterSettings);
-                    await StartFlatCaptureSequence(progress, flatSequenceCts.Token, pt, SingleFlatWizardFilterSettings.Filter);
+                    captureSequence = new CaptureSequence(CalculatedExposureTime, CaptureSequence.ImageTypes.FLAT, SingleFlatWizardFilterSettings.Filter, BinningMode, FlatCount) { Gain = Gain };
+                    await StartCaptureSequence(captureSequence, progress, flatSequenceCts.Token, pt);
+                    filterToExposureTime.Add(SingleFlatWizardFilterSettings, CalculatedExposureTime);
                 } else {
                     foreach (var filterSettings in Filters.Where(f => f.IsChecked)) {
                         await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, filterSettings);
-                        await StartFlatCaptureSequence(progress, flatSequenceCts.Token, pt, filterSettings.Filter);
+                        captureSequence = new CaptureSequence(CalculatedExposureTime, CaptureSequence.ImageTypes.FLAT, filterSettings.Filter, BinningMode, FlatCount) { Gain = Gain };
+                        await StartCaptureSequence(captureSequence, progress, flatSequenceCts.Token, pt);
+                        filterToExposureTime.Add(filterSettings, CalculatedExposureTime);
                         filterSettings.IsChecked = false;
                         CalculatedExposureTime = 0;
                         CalculatedHistogramMean = 0;
@@ -358,6 +387,23 @@ namespace NINA.ViewModel.FlatWizard {
                 CalculatedExposureTime = 0;
                 CalculatedHistogramMean = 0;
                 FlatWizardExposureTimeFinderService.ClearDataPoints();
+            }
+
+            try {
+                if (filterToExposureTime.Count > 0 && DarkFlatCount > 0) {
+                    progress.Report(new ApplicationStatus() { Status = Locale["LblPreparingDarkFlatSequence"], Source = Title });
+                    var dialogResult = MyMessageBox.MyMessageBox.Show(
+                        Locale["LblCoverScopeMsgBox"],
+                        Locale["LblCoverScopeMsgBoxTitle"], MessageBoxButton.OKCancel, MessageBoxResult.OK);
+                    if (dialogResult == MessageBoxResult.OK) {
+                        flatSequenceCts = new CancellationTokenSource();
+                        foreach (var kvp in filterToExposureTime) {
+                            captureSequence = new CaptureSequence(kvp.Value, CaptureSequence.ImageTypes.DARKFLAT, kvp.Key.Filter, BinningMode, DarkFlatCount) { Gain = Gain };
+                            await StartCaptureSequence(captureSequence, progress, flatSequenceCts.Token, pt);
+                        }
+                    }
+                }
+            } catch (OperationCanceledException) {
             }
 
             ImagingVM.DestroyImage();
@@ -371,9 +417,8 @@ namespace NINA.ViewModel.FlatWizard {
             return true;
         }
 
-        private async Task<bool> StartFlatCaptureSequence(IProgress<ApplicationStatus> progress, CancellationToken ct, PauseToken pt, FilterInfo filter) {
-            var sequence =
-                new CaptureSequence(CalculatedExposureTime, "FLAT", filter, BinningMode, FlatCount) { Gain = Gain };
+        private async Task<bool> StartCaptureSequence(CaptureSequence sequence, IProgress<ApplicationStatus> progress,
+            CancellationToken ct, PauseToken pt) {
             while (sequence.ProgressExposureCount < sequence.TotalExposureCount) {
                 if (sequence.ProgressExposureCount != sequence.TotalExposureCount - 1) {
                     await ImagingVM.CaptureImageWithoutProcessingAndSaveAsync(sequence, ct, progress);
@@ -391,7 +436,7 @@ namespace NINA.ViewModel.FlatWizard {
             return true;
         }
 
-        private void UpdateFilterWheelsSettings(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        private void UpdateFilterWheelsSettings(object sender, NotifyCollectionChangedEventArgs e) {
             var selectedFilter = SelectedFilter;
             var newList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Select(s => new FlatWizardFilterSettingsWrapper(s, s.FlatWizardFilterSettings)).ToList();
             var tempList = new FlatWizardFilterSettingsWrapper[Filters.Count];
