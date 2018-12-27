@@ -42,7 +42,11 @@ namespace NINA.Utility {
             else
                 path = System.AppDomain.CurrentDomain.BaseDirectory + "/External/x64/" + dllSubPath;
 
-            LoadLibrary(path);
+            if (LoadLibrary(path) == IntPtr.Zero) {
+                var error = Marshal.GetLastWin32Error().ToString();
+                var message = $"DllLoader failed to load library {dllSubPath} due to error code {error}";
+                Logger.Error(message, null);
+            }
         }
 
         public static FileVersionInfo DllVersion(string dllSubPath) {

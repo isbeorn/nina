@@ -22,12 +22,10 @@
 #endregion "copyright"
 
 using NINA.Model;
-using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Profile;
 using System;
@@ -107,6 +105,8 @@ namespace NINA.ViewModel {
             RaisePropertyChanged(nameof(SecondaryColor));
             RaisePropertyChanged(nameof(BorderColor));
             RaisePropertyChanged(nameof(BackgroundColor));
+            RaisePropertyChanged(nameof(SecondaryBackgroundColor));
+            RaisePropertyChanged(nameof(TertiaryBackgroundColor));
             RaisePropertyChanged(nameof(ButtonBackgroundColor));
             RaisePropertyChanged(nameof(ButtonBackgroundSelectedColor));
             RaisePropertyChanged(nameof(ButtonForegroundColor));
@@ -120,6 +120,8 @@ namespace NINA.ViewModel {
             RaisePropertyChanged(nameof(AltSecondaryColor));
             RaisePropertyChanged(nameof(AltBorderColor));
             RaisePropertyChanged(nameof(AltBackgroundColor));
+            RaisePropertyChanged(nameof(AltSecondaryBackgroundColor));
+            RaisePropertyChanged(nameof(AltTertiaryBackgroundColor));
             RaisePropertyChanged(nameof(AltButtonBackgroundColor));
             RaisePropertyChanged(nameof(AltButtonBackgroundSelectedColor));
             RaisePropertyChanged(nameof(AltButtonForegroundColor));
@@ -438,6 +440,16 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.ImageSettings.AutoStretchFactor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double BlackClipping {
+            get {
+                return profileService.ActiveProfile.ImageSettings.BlackClipping;
+            }
+            set {
+                profileService.ActiveProfile.ImageSettings.BlackClipping = value;
                 RaisePropertyChanged();
             }
         }

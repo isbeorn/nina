@@ -342,7 +342,7 @@
                 Header="{ns:Loc LblCamSettings}"
                 IsEnabled="{Binding CameraInfo.Connected}">
                 <StackPanel Visibility="{Binding Cam, Converter={StaticResource NullToVisibilityConverter}}">
-                    <DockPanel Visibility="{Binding Cam.CanGetGain, Converter={StaticResource VisibilityConverter}}">
+                    <DockPanel Margin="0,0,0,6" Visibility="{Binding Cam.CanGetGain, Converter={StaticResource VisibilityConverter}}">
                         <TextBlock
                             MinWidth="100"
                             VerticalAlignment="Center"
@@ -352,21 +352,22 @@
                             VerticalAlignment="Center"
                             Text="{Binding Cam.Gain}" />
                         <Grid>
-                            <Slider
+                            <ninactrl:IntStepperControl
+                                Width="200"
+                                HorizontalAlignment="Right"
                                 IsEnabled="{Binding Cam.CanSetGain}"
-                                IsSnapToTickEnabled="True"
-                                Maximum="{Binding Cam.GainMax}"
-                                Minimum="{Binding Cam.GainMin}"
-                                TickPlacement="BottomRight"
+                                MaxValue="{Binding Cam.GainMax}"
+                                MinValue="{Binding Cam.GainMin}"
+                                StepSize="1"
                                 Visibility="{Binding Cam.Gains, Converter={StaticResource InverseCollectionContainsItemsToVisibilityConverter}}"
-                                Value="{Binding Cam.Gain}" />
+                                Value="{Binding Cam.Gain, Mode=TwoWay}" />
                             <ComboBox
                                 ItemsSource="{Binding Cam.Gains}"
                                 SelectedItem="{Binding Cam.Gain}"
                                 Visibility="{Binding Cam.Gains, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}" />
                         </Grid>
                     </DockPanel>
-                    <DockPanel Visibility="{Binding Cam.CanSetOffset, Converter={StaticResource VisibilityConverter}}">
+                    <DockPanel Margin="0,0,0,6" Visibility="{Binding Cam.CanSetOffset, Converter={StaticResource VisibilityConverter}}">
                         <TextBlock
                             MinWidth="100"
                             VerticalAlignment="Center"
@@ -375,15 +376,15 @@
                             MinWidth="100"
                             VerticalAlignment="Center"
                             Text="{Binding Cam.Offset}" />
-                        <Slider
-                            IsSnapToTickEnabled="True"
-                            Maximum="{Binding Cam.OffsetMax}"
-                            Minimum="{Binding Cam.OffsetMin}"
-                            SmallChange="1"
-                            TickPlacement="BottomRight"
-                            Value="{Binding Cam.Offset}" />
+                        <ninactrl:IntStepperControl
+                            Width="200"
+                            HorizontalAlignment="Right"
+                            MaxValue="{Binding Cam.OffsetMax}"
+                            MinValue="{Binding Cam.OffsetMin}"
+                            StepSize="1"
+                            Value="{Binding Cam.Offset, Mode=TwoWay}" />
                     </DockPanel>
-                    <DockPanel Visibility="{Binding Cam.CanSetUSBLimit, Converter={StaticResource VisibilityConverter}}">
+                    <DockPanel Margin="0,0,0,6" Visibility="{Binding Cam.CanSetUSBLimit, Converter={StaticResource VisibilityConverter}}">
                         <TextBlock
                             MinWidth="100"
                             VerticalAlignment="Center"
@@ -392,13 +393,39 @@
                             MinWidth="100"
                             VerticalAlignment="Center"
                             Text="{Binding Cam.USBLimit}" />
-                        <Slider
-                            IsSnapToTickEnabled="True"
-                            Maximum="{Binding Cam.USBLimitMax}"
-                            Minimum="{Binding Cam.USBLimitMin}"
-                            SmallChange="1"
-                            TickPlacement="BottomRight"
-                            Value="{Binding Cam.USBLimit}" />
+                        <ninactrl:IntStepperControl
+                            Width="200"
+                            HorizontalAlignment="Right"
+                            MaxValue="{Binding Cam.USBLimitMax}"
+                            MinValue="{Binding Cam.USBLimitMin}"
+                            StepSize="1"
+                            Value="{Binding Cam.USBLimit, Mode=TwoWay}" />
+                    </DockPanel>
+                    <DockPanel Margin="0,0,0,6" Visibility="{Binding Cam.ReadoutModes, Converter={StaticResource CollectionContainsMoreThanOneItemToVisibilityConverter}}">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblReadoutForSnapImages}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc LblReadoutForSnapImagesToolTip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <ComboBox
+                            Width="200"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            ItemsSource="{Binding Cam.ReadoutModes}"
+                            SelectedIndex="{Binding Cam.ReadoutModeForSnapImages}" />
+                    </DockPanel>
+                    <DockPanel Margin="0,0,0,6" Visibility="{Binding Cam.ReadoutModes, Converter={StaticResource CollectionContainsMoreThanOneItemToVisibilityConverter}}">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblReadoutForNormalImages}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc LblReadoutForNormalImagesToolTip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <ComboBox
+                            Width="200"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            ItemsSource="{Binding Cam.ReadoutModes}"
+                            SelectedIndex="{Binding Cam.ReadoutModeForNormalImages}" />
                     </DockPanel>
                 </StackPanel>
             </GroupBox>
@@ -483,6 +510,27 @@
                                             Margin="5,0,0,0"
                                             Text="{Binding Cam.TemperatureSetPoint, StringFormat=\{0:0.00\}}"
                                             Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                    </UniformGrid>
+                                </UniformGrid>
+                            </Border>
+                            <Border
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0"
+                                Visibility="{Binding Cam.HasDewHeater, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
+                                <UniformGrid Columns="2">
+                                    <UniformGrid
+                                        Margin="0,6,0,6"
+                                        VerticalAlignment="Center"
+                                        Columns="2">
+                                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDewHeater}" />
+                                        <CheckBox
+                                            Width="75"
+                                            Height="25"
+                                            Margin="5,0,0,0"
+                                            HorizontalAlignment="Left"
+                                            Command="{Binding ToggleDewHeaterOnCommand}"
+                                            CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
+                                            IsChecked="{Binding CameraInfo.DewHeaterOn}" />
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>

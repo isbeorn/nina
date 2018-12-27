@@ -21,11 +21,11 @@
 
 #endregion "copyright"
 
-using NINA.Utility;
+using System.Collections.Generic;
 
 namespace NINA.Model.MyCamera {
 
-    internal class CameraInfo : DeviceInfo {
+    public class CameraInfo : DeviceInfo {
         private bool hasShutter;
 
         public bool HasShutter {
@@ -52,6 +52,18 @@ namespace NINA.Model.MyCamera {
         public short BinX {
             get { return binxX; }
             set { binxX = value; RaisePropertyChanged(); }
+        }
+
+        private int bitDepth;
+
+        public int BitDepth {
+            get {
+                return bitDepth;
+            }
+            set {
+                bitDepth = value;
+                RaisePropertyChanged();
+            }
         }
 
         private short binY;
@@ -134,6 +146,18 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private bool dewHeaterOn;
+
+        public bool DewHeaterOn {
+            get {
+                return dewHeaterOn;
+            }
+            set {
+                dewHeaterOn = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private bool canSubSample;
 
         public bool CanSubSample {
@@ -146,6 +170,36 @@ namespace NINA.Model.MyCamera {
         public double TemperatureSetPoint {
             get { return temperatureSetPoint; }
             set { temperatureSetPoint = value; RaisePropertyChanged(); }
+        }
+
+        private IEnumerable<string> readoutModes;
+
+        public IEnumerable<string> ReadoutModes {
+            get => readoutModes;
+            set {
+                readoutModes = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private short snapReadoutMode;
+
+        public short ReadoutModeForSnapImages {
+            get => snapReadoutMode;
+            set {
+                snapReadoutMode = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private short normalReadoutMode;
+
+        public short ReadoutModeForNormalImages {
+            get => normalReadoutMode;
+            set {
+                normalReadoutMode = value;
+                RaisePropertyChanged();
+            }
         }
     }
 }

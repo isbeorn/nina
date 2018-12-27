@@ -29,7 +29,6 @@ using NINA.Model.MyTelescope;
 using NINA.PlateSolving;
 using NINA.Utility;
 using NINA.Utility.Exceptions;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -46,6 +45,7 @@ using System.Security.AccessControl;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace NINA.ViewModel {
 
@@ -93,7 +93,11 @@ namespace NINA.ViewModel {
             CancelSequenceCommand = new RelayCommand(CancelSequence);
             PauseSequenceCommand = new RelayCommand(PauseSequence, (object o) => !_pauseTokenSource?.IsPaused == true);
             ResumeSequenceCommand = new RelayCommand(ResumeSequence);
-            UpdateETACommand = new RelayCommand((object o) => CalculateETA());
+
+            autoUpdateTimer = new DispatcherTimer(DispatcherPriority.Background);
+            autoUpdateTimer.Interval = TimeSpan.FromSeconds(1);
+            autoUpdateTimer.IsEnabled = true;
+            autoUpdateTimer.Tick += (sender, args) => CalculateETA();
 
             profileService.LocationChanged += (object sender, EventArgs e) => {
                 foreach (var seq in this.Targets) {
@@ -102,7 +106,11 @@ namespace NINA.ViewModel {
                     seq.SetSequenceTarget(dso);
                 }
             };
+
+            autoUpdateTimer.Start();
         }
+
+        private DispatcherTimer autoUpdateTimer;
 
         private void RemoveTarget(object obj) {
             if (this.Targets.Count > 1) {
@@ -161,12 +169,14 @@ namespace NINA.ViewModel {
 
         private void ResumeSequence(object obj) {
             if (_pauseTokenSource != null) {
+                autoUpdateTimer.Stop();
                 _pauseTokenSource.IsPaused = false;
             }
         }
 
         private void PauseSequence(object obj) {
             if (_pauseTokenSource != null) {
+                autoUpdateTimer.Start();
                 _pauseTokenSource.IsPaused = true;
             }
         }
@@ -230,8 +240,12 @@ namespace NINA.ViewModel {
             TimeSpan time = new TimeSpan();
             foreach (var seq in Targets) {
                 foreach (CaptureSequence cs in seq) {
-                    var exposureCount = cs.TotalExposureCount - cs.ProgressExposureCount;
-                    time = time.Add(TimeSpan.FromSeconds(exposureCount * (cs.ExposureTime + EstimatedDownloadTime.TotalSeconds)));
+                    if (cs.Enabled) {
+                        var exposureCount = cs.TotalExposureCount - cs.ProgressExposureCount;
+                        time = time.Add(
+                            TimeSpan.FromSeconds(exposureCount *
+                                                 (cs.ExposureTime + EstimatedDownloadTime.TotalSeconds)));
+                    }
                 }
             }
 
@@ -389,6 +403,7 @@ namespace NINA.ViewModel {
             try {
                 IsPaused = false;
                 IsRunning = true;
+                autoUpdateTimer.Stop();
                 foreach (CaptureSequenceList csl in this.Targets) {
                     try {
                         csl.IsFinished = false;
@@ -404,6 +419,7 @@ namespace NINA.ViewModel {
             } finally {
                 IsPaused = false;
                 IsRunning = false;
+                autoUpdateTimer.Start();
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
         }
@@ -599,15 +615,20 @@ namespace NINA.ViewModel {
             }
 
             AuthorizationRuleCollection arc = acl.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier));
-            if (arc == null)
+            if (arc == null) {
                 return false;
+            }
+
             foreach (FileSystemAccessRule rule in arc) {
-                if ((FileSystemRights.Write & rule.FileSystemRights) != FileSystemRights.Write)
+                if ((FileSystemRights.Write & rule.FileSystemRights) != FileSystemRights.Write) {
                     continue;
-                if (rule.AccessControlType == AccessControlType.Allow)
+                }
+
+                if (rule.AccessControlType == AccessControlType.Allow) {
                     Allow = true;
-                else if (rule.AccessControlType == AccessControlType.Deny)
+                } else if (rule.AccessControlType == AccessControlType.Deny) {
                     Deny = true;
+                }
             }
 
             if (Allow && !Deny) {
@@ -871,7 +892,6 @@ namespace NINA.ViewModel {
         public ICommand CancelSequenceCommand { get; private set; }
         public ICommand PauseSequenceCommand { get; private set; }
         public ICommand ResumeSequenceCommand { get; private set; }
-        public ICommand UpdateETACommand { get; private set; }
         public ICommand LoadSequenceCommand { get; private set; }
         public ICommand SaveSequenceCommand { get; private set; }
     }

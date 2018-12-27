@@ -23,7 +23,6 @@
 
 using NINA.Utility;
 using System.Collections;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -48,6 +47,8 @@ namespace NINA.Model.MyCamera {
         bool CanSetTemperature { get; }
         bool CoolerOn { get; set; }
         double CoolerPower { get; }
+        bool HasDewHeater { get; }
+        bool DewHeaterOn { get; set; }
         string CameraState { get; }
         bool CanSubSample { get; }
         bool EnableSubSample { get; set; }
@@ -70,6 +71,9 @@ namespace NINA.Model.MyCamera {
         short GainMax { get; }
         short GainMin { get; }
         short Gain { get; set; }
+        ICollection ReadoutModes { get; }
+        short ReadoutModeForSnapImages { get; set; }
+        short ReadoutModeForNormalImages { get; set; }
 
         ArrayList Gains { get; }
 
@@ -77,7 +81,7 @@ namespace NINA.Model.MyCamera {
 
         void SetBinning(short x, short y);
 
-        void StartExposure(double exposureTime, bool isLightFrame);
+        void StartExposure(CaptureSequence sequence);
 
         void StopExposure();
 
@@ -89,6 +93,6 @@ namespace NINA.Model.MyCamera {
 
         void AbortExposure();
 
-        Task<ImageArray> DownloadExposure(CancellationToken token);
+        Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics);
     }
 }

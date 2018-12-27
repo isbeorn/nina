@@ -9,6 +9,10 @@
     ### Camera Control
         - Altair native driver support
         - ToupTek native driver support
+        - Added support for anti-dew heaters in ZWO cameras
+		- On ASCOM drivers support for setting readout modes
+	### Flat Wizard
+		- Supports you taking flats
 
 ## Bugfixes
 
@@ -18,6 +22,8 @@
     - Canon: Fixed bulb mode for exposure times <30s
     - Canon: All shutter speeds now correctly added when step set custom function is set to 1/3
     - Meridian Flip window does not get stuck anymore when clicking on cancel
+    - Log Level will now be set on application start based on profile settings.
+	- ASI Cameras will not shut down their cooling and progress on opening multiple instances of NINA
 
 ## Improvements
 
@@ -33,6 +39,11 @@
         - Two new background colors to better pronounce some ui elements
         - Reworked Imaging tab to have a common style.
         - Imaging tab tools pane (to hide/show panels) moved to the top and split into two separate categories
+    - Profiles don't get overriden when using multiple instances of N.I.N.A. with each one having a separate profile active
+    - Autostretch replaced by a better midpoint transformation function
+    - Autostretch now has black point clipping options
+    - Vastly improved Image Statistics calculation.
+	- Estimated Finish Time will automatically update in the sequencing view
 
 ___
 

@@ -36,5 +36,7 @@ namespace NINA.Utility.Profile {
         RawConverterEnum RawConverter { get; set; }
         double ReadNoise { get; set; }
         string SerialPort { get; set; }
+        double MinFlatExposureTime { get; set; }
+        double MaxFlatExposureTime { get; set; }
     }
 }

@@ -259,5 +259,19 @@ namespace NINATest {
             Assert.AreEqual(80, result.Statistics.Max);
             Assert.AreEqual(3, result.Statistics.MaxOccurrences);
         }
+
+        [Test]
+        [TestCase(new ushort[] { 1, 2, 3, 4, 5, 6 }, 10, 3.5, 1.5)]
+        [TestCase(new ushort[] { 1, 3, 3, 2, 3, 4, 5, 6 }, 10, 3, 1)]
+        [TestCase(new ushort[] { 3, 3, 3, 3, 3, 3 }, 10, 3, 0)]
+        [TestCase(new ushort[] { 5, 9, 155, 8, 5, 66, 7, 5, 6, 88, 5, 4, 56, 6 }, 10, 6.5, 1.5)]
+        [TestCase(new ushort[] { 10, 10, 10, 10, 10, 10, 10, 10, 15, 20, 20, 20, 20, 20, 50, 50, 50, 50 }, 10, 17.5, 7.5)]
+        [TestCase(new ushort[] { 0, 0, 65535, 65535 }, 16, 32767.5, 32767.5)]
+        public async Task MedianTest(ushort[] arr, int bitDepth, double expectedMedian, double expectedMAD) {
+            var result = await ImageArray.CreateInstance(arr, arr.Length / 2, arr.Length / 2, bitDepth, false, true, 100);
+
+            Assert.AreEqual(expectedMedian, result.Statistics.Median);
+            Assert.AreEqual(expectedMAD, result.Statistics.MedianAbsoluteDeviation);
+        }
     }
 }

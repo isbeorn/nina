@@ -29,8 +29,8 @@ using NINA.Utility.RawConverter;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -228,6 +228,20 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public bool HasDewHeater {
+            get {
+                return false;
+            }
+        }
+
+        public bool DewHeaterOn {
+            get {
+                return false;
+            }
+            set {
+            }
+        }
+
         private string _cameraState;
 
         public string CameraState {
@@ -303,6 +317,28 @@ namespace NINA.Model.MyCamera {
                     _gains = new ArrayList();
                 }
                 return _gains;
+            }
+        }
+
+        public ICollection ReadoutModes => new List<string> { "Default" };
+
+        private short _readoutModeForSnapImages;
+
+        public short ReadoutModeForSnapImages {
+            get => _readoutModeForSnapImages;
+            set {
+                _readoutModeForSnapImages = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private short _readoutModeForNormalImages;
+
+        public short ReadoutModeForNormalImages {
+            get => _readoutModeForNormalImages;
+            set {
+                _readoutModeForNormalImages = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -459,7 +495,7 @@ namespace NINA.Model.MyCamera {
             Connected = false;
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token) {
+        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
             return await Task<ImageArray>.Run(async () => {
                 var memoryStreamHandle = IntPtr.Zero;
                 var imageDataPointer = IntPtr.Zero;
@@ -497,7 +533,7 @@ namespace NINA.Model.MyCamera {
 
                         using (var memoryStream = new System.IO.MemoryStream(rawImageData)) {
                             var converter = RawConverter.CreateInstance(profileService.Profiles.ActiveProfile.CameraSettings.RawConverter);
-                            var iarr = await converter.ConvertToImageArray(memoryStream, BitDepth, profileService.ActiveProfile.ImageSettings.HistogramResolution, token);
+                            var iarr = await converter.ConvertToImageArray(memoryStream, BitDepth, profileService.ActiveProfile.ImageSettings.HistogramResolution, calculateStatistics, token);
                             iarr.RAWType = "cr2";
                             return iarr;
                         }
@@ -592,9 +628,9 @@ namespace NINA.Model.MyCamera {
             };
         }
 
-        public void StartExposure(double exposureTime, bool isLightFrame) {
+        public void StartExposure(CaptureSequence sequence) {
             downloadExposure = new TaskCompletionSource<object>();
-
+            var exposureTime = sequence.ExposureTime;
             ValidateModeForExposure(exposureTime);
 
             /* Start exposure */
@@ -676,31 +712,31 @@ namespace NINA.Model.MyCamera {
             return err;
         }
 
-        private bool CheckError(uint code) {
+        private bool CheckError(uint code, [CallerMemberName] string memberName = "") {
             var err = GetError(code);
-            return CheckError(err);
+            return CheckError(err, memberName);
         }
 
-        private bool CheckError(EDSDK.EDS_ERR err) {
+        private bool CheckError(EDSDK.EDS_ERR err, [CallerMemberName] string memberName = "") {
             if (err == EDSDK.EDS_ERR.OK) {
                 return false;
             } else {
-                Logger.Error(new Exception(string.Format(Locale.Loc.Instance["LblCanonErrorOccurred"], err)));
+                Logger.Error(new Exception(string.Format(Locale.Loc.Instance["LblCanonErrorOccurred"], err)), memberName);
                 return true;
             }
         }
 
-        private void CheckAndThrowError(EDSDK.EDS_ERR err) {
+        private void CheckAndThrowError(EDSDK.EDS_ERR err, [CallerMemberName] string memberName = "") {
             if (err != EDSDK.EDS_ERR.OK) {
                 var ex = new Exception(string.Format(Locale.Loc.Instance["LblCanonErrorOccurred"], err));
-                Logger.Error(ex);
+                Logger.Error(ex, memberName);
                 throw ex;
             }
         }
 
-        private void CheckAndThrowError(uint code) {
+        private void CheckAndThrowError(uint code, [CallerMemberName] string memberName = "") {
             var err = GetError(code);
-            CheckAndThrowError(err);
+            CheckAndThrowError(err, memberName);
         }
 
         private EDSDK.EDS_ERR GetError(uint code) {

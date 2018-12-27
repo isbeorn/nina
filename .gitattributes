@@ -4,6 +4,7 @@
 *.xaml text
 *.sln text
 *.config text
+*.md text
 
 *.png binary
 *.sqlite binary

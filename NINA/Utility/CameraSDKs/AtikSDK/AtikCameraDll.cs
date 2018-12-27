@@ -15,8 +15,11 @@ namespace NINA.Utility.AtikSDK {
         private const string DLLNAME = "ArtemisHSC.dll";
 
         static AtikCameraDll() {
+            if (DllLoader.IsX86()) {
+                DllLoader.LoadDll("Atik/" + "libusb-1.0.dll");
+            }
             DllLoader.LoadDll("Atik/" + "Atik.Core.dll");
-            DllLoader.LoadDll("Atik/" + "ArtemisHscDefvn.dll");
+            DllLoader.LoadDll("Atik/" + "ArtemisHscDefn.dll");
             DllLoader.LoadDll("Atik/" + DLLNAME);
         }
 
@@ -94,7 +97,7 @@ namespace NINA.Utility.AtikSDK {
             return ArtemisCameraState(camera);
         }
 
-        public static async Task<ImageArray> DownloadExposure(IntPtr camera, int bitDepth, bool isBayered, int histogramResolution) {
+        public static async Task<ImageArray> DownloadExposure(IntPtr camera, int bitDepth, bool isBayered, bool calculateStatistics, int histogramResolution) {
             CheckError(ArtemisGetImageData(camera, out var x, out var y, out var w, out var h, out var binX, out var binY), MethodBase.GetCurrentMethod(), camera);
 
             var ptr = ArtemisImageBuffer(camera);
@@ -102,7 +105,7 @@ namespace NINA.Utility.AtikSDK {
             var cameraDataToManaged = new CameraDataToManaged(ptr, w, h, bitDepth);
             var arr = cameraDataToManaged.GetData();
 
-            return await ImageArray.CreateInstance(arr, w, h, bitDepth, isBayered, true, histogramResolution);
+            return await ImageArray.CreateInstance(arr, w, h, bitDepth, isBayered, calculateStatistics, histogramResolution);
         }
 
         private static void CopyToUShort(IntPtr source, ushort[] destination, int startIndex, int length) {

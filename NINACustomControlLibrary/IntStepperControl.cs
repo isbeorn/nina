@@ -139,16 +139,14 @@ namespace NINACustomControlLibrary {
         }
 
         private void Button_PART_Increment_Click(object sender, RoutedEventArgs e) {
-            Value += StepSize;
-            if (Value > MaxValue) {
-                Value = MaxValue;
+            if (Value + StepSize <= MaxValue) {
+                Value += StepSize;
             }
         }
 
         private void Button_PART_Decrement_Click(object sender, RoutedEventArgs e) {
-            Value -= StepSize;
-            if (Value < MinValue) {
-                Value = MinValue;
+            if (Value - StepSize >= MinValue) {
+                Value -= StepSize;
             }
         }
 

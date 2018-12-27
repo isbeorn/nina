@@ -26,7 +26,6 @@ using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.AtikSDK;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -34,7 +33,6 @@ using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Async;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -65,6 +63,7 @@ namespace NINA.ViewModel {
             CoolerPowerHistory = new AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>>(100);
             CCDTemperatureHistory = new AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>>(100);
             ToggleCoolerOnCommand = new RelayCommand(ToggleCoolerOn);
+            ToggleDewHeaterOnCommand = new RelayCommand(ToggleDewHeaterOn);
 
             updateTimer = new DeviceUpdateTimer(
                 GetCameraValues,
@@ -294,6 +293,7 @@ namespace NINA.ViewModel {
                                 Connected = true,
                                 CoolerOn = Cam.CoolerOn,
                                 CoolerPower = Cam.CoolerPower,
+                                DewHeaterOn = Cam.DewHeaterOn,
                                 Gain = Cam.Gain,
                                 HasShutter = Cam.HasShutter,
                                 IsSubSampleEnabled = Cam.EnableSubSample,
@@ -304,7 +304,8 @@ namespace NINA.ViewModel {
                                 TemperatureSetPoint = Cam.TemperatureSetPoint,
                                 XSize = Cam.CameraXSize,
                                 YSize = Cam.CameraYSize,
-                                Battery = Cam.BatteryLevel
+                                Battery = Cam.BatteryLevel,
+                                BitDepth = Cam.BitDepth
                             };
 
                             Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
@@ -369,6 +370,12 @@ namespace NINA.ViewModel {
             }
         }
 
+        private void ToggleDewHeaterOn(object o) {
+            if (CameraInfo.Connected) {
+                Cam.DewHeaterOn = (bool)o;
+            }
+        }
+
         private void BroadcastCameraInfo() {
             cameraMediator.Broadcast(CameraInfo);
         }
@@ -391,6 +398,9 @@ namespace NINA.ViewModel {
             cameraValues.TryGetValue(nameof(CameraInfo.CoolerPower), out o);
             CameraInfo.CoolerPower = (double)(o ?? double.NaN);
 
+            cameraValues.TryGetValue(nameof(CameraInfo.DewHeaterOn), out o);
+            CameraInfo.DewHeaterOn = (bool)(o ?? false);
+
             cameraValues.TryGetValue(nameof(CameraInfo.CameraState), out o);
             CameraInfo.CameraState = (string)(o ?? string.Empty);
 
@@ -410,6 +420,7 @@ namespace NINA.ViewModel {
             cameraValues.Add(nameof(CameraInfo.CoolerOn), _cam?.CoolerOn ?? false);
             cameraValues.Add(nameof(CameraInfo.Temperature), _cam?.Temperature ?? double.NaN);
             cameraValues.Add(nameof(CameraInfo.CoolerPower), _cam?.CoolerPower ?? double.NaN);
+            cameraValues.Add(nameof(CameraInfo.DewHeaterOn), _cam?.DewHeaterOn ?? false);
             cameraValues.Add(nameof(CameraInfo.CameraState), _cam?.CameraState ?? string.Empty);
             if (_cam != null && _cam.HasBattery) {
                 cameraValues.Add(nameof(CameraInfo.Battery), _cam?.BatteryLevel ?? -1);
@@ -475,9 +486,11 @@ namespace NINA.ViewModel {
             });
         }
 
-        public async Task Capture(double exposureTime, bool isLightFrame, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        public async Task Capture(CaptureSequence sequence, CancellationToken token,
+            IProgress<ApplicationStatus> progress) {
+            double exposureTime = sequence.ExposureTime;
             if (CameraInfo.Connected == true) {
-                Cam.StartExposure(exposureTime, isLightFrame);
+                Cam.StartExposure(sequence);
 
                 var start = DateTime.Now;
                 var elapsed = 0.0d;
@@ -489,6 +502,7 @@ namespace NINA.ViewModel {
                     ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
                 });
                 /* Wait for Capture */
+
                 if (exposureTime >= 1) {
                     await Task.Run(async () => {
                         do {
@@ -539,9 +553,10 @@ namespace NINA.ViewModel {
             }
         }
 
-        public Task<ImageArray> Download(CancellationToken token) {
+        public Task<ImageArray> Download(CancellationToken token, bool calculateStatistics) {
             if (CameraInfo.Connected == true) {
-                return Cam.DownloadExposure(token);
+                var output = Cam.DownloadExposure(token, calculateStatistics);
+                return output;
             } else {
                 return null;
             }
@@ -568,6 +583,7 @@ namespace NINA.ViewModel {
         public AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>> CCDTemperatureHistory { get; private set; }
         public ICommand ToggleCoolerOnCommand { get; private set; }
         public ICommand CoolCamCommand { get; private set; }
+        public ICommand ToggleDewHeaterOnCommand { get; private set; }
 
         private IApplicationStatusMediator applicationStatusMediator;
 

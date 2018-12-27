@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 
 namespace NINA.Model.MyCamera {
 
-    public class ImageStatistics : BaseINPC {
+    public class ImageStatistics : BaseINPC, IImageStatistics {
 
         /// <summary>
         /// Create new instance of ImageStatistics
@@ -55,6 +55,8 @@ namespace NINA.Model.MyCamera {
         public int BitDepth { get; private set; }
         public double StDev { get; private set; }
         public double Mean { get; private set; }
+        public double Median { get; private set; }
+        public double MedianAbsoluteDeviation { get; private set; }
         public int Max { get; private set; }
         public long MaxOccurrences { get; private set; }
         public int Min { get; private set; }
@@ -101,28 +103,26 @@ namespace NINA.Model.MyCamera {
 
         private void CalculateInternal(ushort[] array) {
             using (MyStopWatch.Measure()) {
+                ushort maxPossibleValue = (ushort)((1 << BitDepth) - 1);
                 long sum = 0;
                 long squareSum = 0;
                 int count = array.Count();
+                ushort min = maxPossibleValue;
+                ushort oldmin = min;
                 ushort max = 0;
                 ushort oldmax = max;
                 long maxOccurrences = 0;
-                ushort min = ushort.MaxValue;
-                ushort oldmin = min;
                 long minOccurrences = 0;
 
-                Dictionary<double, int> histogram = new Dictionary<double, int>();
-                ushort maxHistogramValue = (ushort)((1 << BitDepth) - 1);
-
+                /* Array mapping: pixel value -> total number of occurrences of that pixel value */
+                int[] histogram = new int[maxPossibleValue + 1];
                 for (var i = 0; i < array.Length; i++) {
                     ushort val = array[i];
-                    double histogramVal = Math.Floor(val * ((double)resolution / maxHistogramValue));
 
                     sum += val;
                     squareSum += (long)val * val;
 
-                    histogram.TryGetValue(histogramVal, out var curCount);
-                    histogram[histogramVal] = curCount + 1;
+                    histogram[val]++;
 
                     min = Math.Min(min, val);
                     if (min != oldmin) {
@@ -148,13 +148,75 @@ namespace NINA.Model.MyCamera {
                 double variance = (squareSum - count * mean * mean) / (count);
                 double stdev = Math.Sqrt(variance);
 
+                var occurrences = 0;
+                double median = 0d;
+                int median1 = 0, median2 = 0;
+                var medianlength = array.Length / 2.0;
+
+                /* Determine median out of histogram array */
+                for (ushort i = 0; i < maxPossibleValue; i++) {
+                    occurrences += histogram[i];
+                    if (occurrences > medianlength) {
+                        median1 = i;
+                        median2 = i;
+                        break;
+                    } else if (occurrences == medianlength) {
+                        median1 = i;
+                        for (int j = i + 1; j <= maxPossibleValue; j++) {
+                            if (histogram[j] > 0) {
+                                median2 = j;
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+                median = (median1 + median2) / 2.0;
+
+                /* Determine median Absolute Deviation out of histogram array and previously determined median
+                 * As the histogram already has the values sorted and we know the median,
+                 * we can determine the mad by beginning from the median and step up and down
+                 * By doing so we will gain a sorted list automatically, because MAD = DetermineMedian(|xn - median|)
+                 * So starting from the median will be 0 (as median - median = 0), going up and down will increment by the steps
+                 */
+
+                var medianAbsoluteDeviation = 0.0d;
+                occurrences = 0;
+                var idxDown = median1;
+                var idxUp = median2;
+                while (true) {
+                    if (idxDown >= 0 && idxDown != idxUp) {
+                        occurrences += histogram[idxDown] + histogram[idxUp];
+                    } else {
+                        occurrences += histogram[idxUp];
+                    }
+
+                    if (occurrences > medianlength) {
+                        medianAbsoluteDeviation = Math.Abs(idxUp - median);
+                        break;
+                    }
+
+                    idxUp++;
+                    idxDown--;
+                    if (idxUp > maxPossibleValue) {
+                        break;
+                    }
+                }
+
                 this.Max = max;
                 this.MaxOccurrences = maxOccurrences;
                 this.Min = min;
                 this.MinOccurrences = minOccurrences;
                 this.StDev = stdev;
                 this.Mean = mean;
-                this.Histogram = histogram.Select(g => new OxyPlot.DataPoint(g.Key, g.Value))
+                this.Median = median;
+                this.MedianAbsoluteDeviation = medianAbsoluteDeviation;
+                this.Histogram = histogram
+                    .Select((value, index) => new { Index = index, Value = value })
+                    .GroupBy(
+                        x => Math.Floor((double)x.Index * ((double)resolution / maxPossibleValue)),
+                        x => x.Value)
+                    .Select(g => new OxyPlot.DataPoint(g.Key, g.Sum()))
                     .OrderBy(item => item.X).ToList();
             }
         }

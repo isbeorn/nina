@@ -132,33 +132,47 @@
       <HintPath>..\packages\AForge.Math.2.2.5\lib\AForge.Math.dll</HintPath>
     </Reference>
     <Reference Include="ASCOM.Astrometry, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Astrometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.Attributes, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Attributes.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ASCOM.Cache, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Cache.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.Controls, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Controls.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.DeviceInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.DeviceInterfaces.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.DriverAccess, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.DriverAccess.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.Exceptions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Exceptions.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.Internal.Extensions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Internal.Extensions.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.SettingsProvider, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.SettingsProvider.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.Utilities, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Utilities.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.Utilities.Video, Version=6.1.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Utilities.Video.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AsyncEnumerable, Version=2.2.1.0, Culture=neutral, PublicKeyToken=0426b068161bd1d1, processorArchitecture=MSIL">
@@ -278,6 +292,7 @@
     <Compile Include="EquipmentChooser\EquipmentChooser.xaml.cs">
       <DependentUpon>EquipmentChooser.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Locale\ILoc.cs" />
     <Compile Include="Locale\Loc.cs" />
     <Compile Include="Model\ApplicationStatus.cs" />
     <Compile Include="Model\Sequence\CaptureSequence.cs" />
@@ -292,12 +307,25 @@
     <Compile Include="Model\MyCamera\CameraDataToManaged.cs" />
     <Compile Include="Model\MyCamera\CameraInfo.cs" />
     <Compile Include="Model\MyCamera\EDCamera.cs" />
+    <Compile Include="Model\MyCamera\IImageArray.cs" />
+    <Compile Include="Model\MyCamera\IImageStatistics.cs" />
     <Compile Include="Model\MyCamera\ImageArray.cs" />
     <Compile Include="Model\MyCamera\ImageStatistics.cs" />
     <Compile Include="Model\MyCamera\NikonCamera.cs" />
+    <Compile Include="Model\MyFilterWheel\FilterInfo.cs" />
     <Compile Include="Model\MyCamera\SensorType.cs" />
     <Compile Include="Model\MyCamera\ToupTekCamera.cs" />
     <Compile Include="Model\MyFilterWheel\FilterWheelInfo.cs" />
+    <Compile Include="Model\MyFilterWheel\FlatWizardFilterSettings.cs" />
+    <Compile Include="Utility\Converters\CollectionContainsMoreThanOneItemToVisibilityConverter.cs" />
+    <Compile Include="Utility\Converters\DoubleToHalfValueConverter.cs" />
+    <Compile Include="Utility\Converters\OneValueGreaterThanAnotherToVisiblityConverter.cs" />
+    <Compile Include="Utility\Converters\WidthAndValueToWidthConverter.cs" />
+    <Compile Include="Utility\IApplicationResourceDictionary.cs" />
+    <Compile Include="Utility\ApplicationResourceDictionary.cs" />
+    <Compile Include="Utility\ValidationRules\DoubleRangeRule.cs" />
+    <Compile Include="ViewModel\FlatWizard\FlatWizardExposureTimeFinderService.cs" />
+    <Compile Include="ViewModel\FlatWizard\FlatWizardFilterSettingsWrapper.cs" />
     <Compile Include="Model\MyFilterWheel\ManualFilterWheel.cs" />
     <Compile Include="Model\MyFocuser\AscomFocuser.cs" />
     <Compile Include="Model\MyFocuser\FocuserInfo.cs" />
@@ -408,12 +436,14 @@
     <Compile Include="Utility\Mediator\Interfaces\ITelescopeMediator.cs" />
     <Compile Include="Utility\Mediator\RotatorMediator.cs" />
     <Compile Include="Utility\Mediator\TelescopeMediator.cs" />
+    <Compile Include="Utility\Profile\FlatWizardSettings.cs" />
     <Compile Include="Utility\NOVAS.cs" />
     <Compile Include="Utility\Profile\IApplicationSettings.cs" />
     <Compile Include="Utility\Profile\IAstrometrySettings.cs" />
     <Compile Include="Utility\Profile\ICameraSettings.cs" />
     <Compile Include="Utility\Profile\IColorSchemaSettings.cs" />
     <Compile Include="Utility\Profile\IFilterWheelSettings.cs" />
+    <Compile Include="Utility\Profile\IFlatWizardSettings.cs" />
     <Compile Include="Utility\Profile\IFocuserSettings.cs" />
     <Compile Include="Utility\Profile\IFramingAssistantSettings.cs" />
     <Compile Include="Utility\Profile\IGuiderSettings.cs" />
@@ -505,6 +535,10 @@
     <Compile Include="ViewModel\DockableVM.cs" />
     <Compile Include="ViewModel\DockManagerVM.cs" />
     <Compile Include="ViewModel\EquipmentChooserVM.cs" />
+    <Compile Include="ViewModel\FlatWizard\FlatWizardUserPromptVM.cs" />
+    <Compile Include="ViewModel\FlatWizard\FlatWizardVM.cs" />
+    <Compile Include="ViewModel\FlatWizard\IFlatWizardExposureTimeFinderService.cs" />
+    <Compile Include="ViewModel\FlatWizard\IFlatWizardVM.cs" />
     <Compile Include="ViewModel\FocuserVM.cs" />
     <Compile Include="ViewModel\FramingAssistantVM.cs" />
     <Compile Include="ViewModel\Interfaces\IApplicationStatusVM.cs" />
@@ -628,6 +662,15 @@
     </Compile>
     <Compile Include="View\FilterWheelView.xaml.cs">
       <DependentUpon>FilterWheelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\FlatWizardFilterSettingsWrapperView.xaml.cs">
+      <DependentUpon>FlatWizardFilterSettingsWrapperView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\FlatWizardUserPrompt.xaml.cs">
+      <DependentUpon>FlatWizardUserPrompt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\FlatWizardView.xaml.cs">
+      <DependentUpon>FlatWizardView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\FocuserView.xaml.cs">
       <DependentUpon>FocuserView.xaml</DependentUpon>
@@ -755,7 +798,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\DataTemplates.xaml">
+    <Page Include="Resources\StaticResources\DataTemplates.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -783,7 +826,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\SVGDictionary.xaml">
+    <Page Include="Resources\StaticResources\SVGDictionary.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Resources\StaticResources\ViewModels.xaml">
@@ -963,6 +1006,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\FilterWheelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\FlatWizardFilterSettingsWrapperView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\FlatWizardUserPrompt.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\FlatWizardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1273,206 +1328,29 @@
     <Content Include="Documentation\table-of-contents.html">
       <DependentUpon>table-of-contents.md</DependentUpon>
     </Content>
-    <Content Include="External\x64\Altair\altaircam.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\ASI\ASICamera2.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Resource Include="Resources\astrometry.net.png" />
-    <Content Include="External\x64\Atik\ArtemisHSC.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Atik\ArtemisHscDefn.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Atik\Atik.Core.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="External\x64\FreeImage\FreeImage.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0001\NkdPTP.dll">
+    <Content Include="External\x64\NOVAS\NOVAS31lib.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0002\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0003\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0004\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0005\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0006\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0007\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0008\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0009\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0010\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0011\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0012\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0013\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0014\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0015\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0016\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0017\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0018\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0019\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0020\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0021\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0022\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\NOVAS\NOVAS31.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\SOFA\SOFA.dll">
+    <Content Include="External\x64\SOFA\SOFAlib.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x64\SQLite\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\ToupTek\toupcam.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Altair\altaircam.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Altair\updatefw.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\ASI\ASICamera2.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Atik\ArtemisHSC.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Atik\ArtemisHscDefn.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Atik\Atik.Core.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Canon\EDSDK.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="External\x86\FreeImage\FreeImage.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x86\Nikon\Type0001\NkdPTP.dll">
+    <Content Include="External\x86\NOVAS\NOVAS31lib.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x86\Nikon\Type0002\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0003\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0004\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0005\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0006\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0007\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0008\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0009\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0010\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0011\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0012\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0013\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0014\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0015\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0016\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0017\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0018\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0019\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0020\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0021\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0022\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\NOVAS\NOVAS31.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\SOFA\SOFA.dll">
+    <Content Include="External\x86\SOFA\SOFAlib.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\SQLite\SQLite.Interop.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\ToupTek\toupcam.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\ToupTek\updatefw.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Utility\ColorSchema\ColorSchemas.xml">
@@ -1481,172 +1359,20 @@
     <Content Include="Utility\DCRaw\dcraw.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Canon\EDSDK.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="Database\NINA.sqlite" />
-    <Content Include="External\x64\ASI\ASICamera2.lib">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0001\Type0001.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0002\Type0002.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0003\Type0003.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0004\Type0004.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0005\Type0005.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0006\Type0006.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0007\Type0007.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0008\Type0008.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0009\Type0009.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0010\Type0010.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0011\Type0011.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0012\Type0012.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0013\Type0013.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0014\Type0014.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0015\Type0015.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0016\Type0016.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0017\Type0017.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0018\Type0018.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0019\Type0019.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0020\Type0020.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0021\Type0021.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0022\Type0022.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="Documentation\NINA.md" />
     <None Include="Documentation\table-of-contents.md" />
-    <Content Include="External\x64\Altair\altaircam.lib">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Altair\altaircam.lib">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="External\x64\NOVAS\cio_ra.bin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\JPLEPH">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="External\x64\ToupTek\toupcam.lib">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="External\x86\ASI\ASICamera2.lib">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <Content Include="External\x86\Nikon\Type0001\Type0001.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0002\Type0002.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0003\Type0003.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0004\Type0004.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0005\Type0005.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0006\Type0006.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0007\Type0007.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0008\Type0008.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0009\Type0009.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0010\Type0010.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0011\Type0011.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0012\Type0012.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0013\Type0013.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0014\Type0014.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0015\Type0015.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0016\Type0016.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0017\Type0017.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0018\Type0018.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0019\Type0019.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0020\Type0020.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0021\Type0021.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0022\Type0022.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="External\x86\NOVAS\cio_ra.bin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="External\x86\ToupTek\toupcam.lib">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
+    <None Include="ReadMe.md" />
     <None Include="Resources\avalondock.config" />
     <SplashScreen Include="Resources\ninasplash.png" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -1703,11 +1429,87 @@
       <Name>NINACustomControlLibrary</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="External\x64\Altair\" />
+    <Folder Include="External\x64\ASI\" />
+    <Folder Include="External\x64\Atik\" />
+    <Folder Include="External\x64\Canon\" />
+    <Folder Include="External\x64\Nikon\Type0001\" />
+    <Folder Include="External\x64\Nikon\Type0002\" />
+    <Folder Include="External\x64\Nikon\Type0003\" />
+    <Folder Include="External\x64\Nikon\Type0004\" />
+    <Folder Include="External\x64\Nikon\Type0005\" />
+    <Folder Include="External\x64\Nikon\Type0006\" />
+    <Folder Include="External\x64\Nikon\Type0007\" />
+    <Folder Include="External\x64\Nikon\Type0008\" />
+    <Folder Include="External\x64\Nikon\Type0009\" />
+    <Folder Include="External\x64\Nikon\Type0010\" />
+    <Folder Include="External\x64\Nikon\Type0011\" />
+    <Folder Include="External\x64\Nikon\Type0012\" />
+    <Folder Include="External\x64\Nikon\Type0013\" />
+    <Folder Include="External\x64\Nikon\Type0014\" />
+    <Folder Include="External\x64\Nikon\Type0015\" />
+    <Folder Include="External\x64\Nikon\Type0016\" />
+    <Folder Include="External\x64\Nikon\Type0017\" />
+    <Folder Include="External\x64\Nikon\Type0018\" />
+    <Folder Include="External\x64\Nikon\Type0019\" />
+    <Folder Include="External\x64\Nikon\Type0020\" />
+    <Folder Include="External\x64\Nikon\Type0021\" />
+    <Folder Include="External\x64\Nikon\Type0022\" />
+    <Folder Include="External\x64\ToupTek\" />
+    <Folder Include="External\x86\Altair\" />
+    <Folder Include="External\x86\ASI\" />
+    <Folder Include="External\x86\Atik\" />
+    <Folder Include="External\x86\Canon\" />
+    <Folder Include="External\x86\Nikon\Type0001\" />
+    <Folder Include="External\x86\Nikon\Type0002\" />
+    <Folder Include="External\x86\Nikon\Type0003\" />
+    <Folder Include="External\x86\Nikon\Type0004\" />
+    <Folder Include="External\x86\Nikon\Type0005\" />
+    <Folder Include="External\x86\Nikon\Type0006\" />
+    <Folder Include="External\x86\Nikon\Type0007\" />
+    <Folder Include="External\x86\Nikon\Type0008\" />
+    <Folder Include="External\x86\Nikon\Type0009\" />
+    <Folder Include="External\x86\Nikon\Type0010\" />
+    <Folder Include="External\x86\Nikon\Type0011\" />
+    <Folder Include="External\x86\Nikon\Type0012\" />
+    <Folder Include="External\x86\Nikon\Type0013\" />
+    <Folder Include="External\x86\Nikon\Type0014\" />
+    <Folder Include="External\x86\Nikon\Type0015\" />
+    <Folder Include="External\x86\Nikon\Type0016\" />
+    <Folder Include="External\x86\Nikon\Type0017\" />
+    <Folder Include="External\x86\Nikon\Type0018\" />
+    <Folder Include="External\x86\Nikon\Type0019\" />
+    <Folder Include="External\x86\Nikon\Type0020\" />
+    <Folder Include="External\x86\Nikon\Type0021\" />
+    <Folder Include="External\x86\Nikon\Type0022\" />
+    <Folder Include="External\x86\ToupTek\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>echo "Copy Altair DLLs"
+xcopy "$(ProjectDir)External\x64\Altair" "$(TargetDir)\External\x64\Altair" /h/i/c/k/e/r/y
+xcopy "$(ProjectDir)External\x86\Altair" "$(TargetDir)\External\x86\Altair" /h/i/c/k/e/r/y
+
+echo "Copy ASI DLLs"
+xcopy "$(ProjectDir)External\x64\ASI" "$(TargetDir)\External\x64\ASI" /h/i/c/k/e/r/y
+xcopy "$(ProjectDir)External\x86\ASI" "$(TargetDir)\External\x86\ASI" /h/i/c/k/e/r/y
+
+echo "Copy Atik DLLs"
+xcopy "$(ProjectDir)External\x64\Atik" "$(TargetDir)\External\x64\Atik" /h/i/c/k/e/r/y
+xcopy "$(ProjectDir)External\x86\Atik" "$(TargetDir)\External\x86\Atik" /h/i/c/k/e/r/y
+
+echo "Copy Canon DLLs"
+xcopy "$(ProjectDir)External\x64\Canon" "$(TargetDir)\External\x64\Canon" /h/i/c/k/e/r/y
+xcopy "$(ProjectDir)External\x86\Canon" "$(TargetDir)\External\x86\Canon" /h/i/c/k/e/r/y
+
+echo "Copy Nikon DLLs"
+xcopy "$(ProjectDir)External\x64\Nikon" "$(TargetDir)\External\x64\Nikon" /h/i/c/k/e/r/y
+xcopy "$(ProjectDir)External\x86\Nikon" "$(TargetDir)\External\x86\Nikon" /h/i/c/k/e/r/y
+
+echo "Copy ToupTek DLLs"
+xcopy "$(ProjectDir)External\x64\ToupTek" "$(TargetDir)\External\x64\ToupTek" /h/i/c/k/e/r/y
+xcopy "$(ProjectDir)External\x86\ToupTek" "$(TargetDir)\External\x86\ToupTek" /h/i/c/k/e/r/y</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

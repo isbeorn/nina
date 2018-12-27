@@ -27,6 +27,7 @@ namespace NINA.Utility.Profile {
         bool AnnotateImage { get; set; }
         bool DebayerImage { get; set; }
         double AutoStretchFactor { get; set; }
+        double BlackClipping { get; set; }
         int HistogramResolution { get; set; }
     }
 }

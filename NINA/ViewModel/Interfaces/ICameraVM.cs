@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 
 namespace NINA.ViewModel.Interfaces {
 
-    internal interface ICameraVM : IDeviceVM<CameraInfo> {
+    public interface ICameraVM : IDeviceVM<CameraInfo> {
 
         void SetBinning(short x, short y);
 
@@ -45,10 +45,11 @@ namespace NINA.ViewModel.Interfaces {
 
         void AbortExposure();
 
-        Task Capture(double exposureTime, bool isLightFrame, CancellationToken token, IProgress<ApplicationStatus> progress);
+        Task Capture(CaptureSequence sequence, CancellationToken token,
+            IProgress<ApplicationStatus> progress);
 
         IAsyncEnumerable<ImageArray> LiveView(CancellationToken token);
 
-        Task<ImageArray> Download(CancellationToken token);
+        Task<ImageArray> Download(CancellationToken token, bool calculateStatistics);
     }
 }

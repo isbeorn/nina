@@ -30,12 +30,13 @@
 
             <ResourceDictionary.MergedDictionaries>
                 <!--  SVG Files  -->
-                <ResourceDictionary Source="/NINA;component/Resources/SVGDictionary.xaml" />
+                <ResourceDictionary Source="/NINA;component/Resources/StaticResources/SVGDictionary.xaml" />
 
                 <!--  Static Resources  -->
                 <ResourceDictionary Source="Resources\StaticResources\ViewModels.xaml" />
                 <ResourceDictionary Source="Resources\StaticResources\Brushes.xaml" />
                 <ResourceDictionary Source="Resources\StaticResources\Converters.xaml" />
+                <ResourceDictionary Source="Resources\StaticResources\DataTemplates.xaml" />
 
                 <!--  UI Styles  -->
                 <ResourceDictionary Source="Resources\Styles\Button.xaml" />
@@ -63,9 +64,6 @@
                 <ResourceDictionary Source="Resources\Styles\DatePicker.xaml" />
                 <ResourceDictionary Source="Resources\Styles\StepperControl.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ToastNotifications.Messages;component/Themes/Default.xaml" />
-
-                <!--  DataTemplates  -->
-                <ResourceDictionary Source="Resources\DataTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

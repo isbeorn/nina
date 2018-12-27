@@ -21,8 +21,11 @@
 
 #endregion "copyright"
 
+using System;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace NINA.Utility {
 
@@ -43,14 +46,16 @@ namespace NINA.Utility {
         protected void Items_CollectionChanged(object sender,
                System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
             if (e.OldItems != null) {
-                foreach (INotifyPropertyChanged item in e.OldItems)
+                foreach (INotifyPropertyChanged item in e.OldItems) {
                     item.PropertyChanged -= new
                                            PropertyChangedEventHandler(Item_PropertyChanged);
+                }
             }
             if (e.NewItems != null) {
-                foreach (INotifyPropertyChanged item in e.NewItems)
+                foreach (INotifyPropertyChanged item in e.NewItems) {
                     item.PropertyChanged +=
                                        new PropertyChangedEventHandler(Item_PropertyChanged);
+                }
             }
         }
 

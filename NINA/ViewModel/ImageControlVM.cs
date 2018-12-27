@@ -84,7 +84,7 @@ namespace NINA.ViewModel {
             SubSampleDragStartCommand = new RelayCommand(SubSampleDragStart);
             SubSampleDragStopCommand = new RelayCommand(SubSampleDragStop);
             SubSampleDragMoveCommand = new RelayCommand(SubSampleDragMove);
-            InspectAberrationCommand = new RelayCommand(InspectAberration, (object o) => Image != null);
+            InspectAberrationCommand = new AsyncCommand<bool>(() => InspectAberration(), (object o) => Image != null);
 
             BahtinovRectangle = new ObservableRectangle(-1, -1, 200, 200);
             SubSampleRectangle = new ObservableRectangle(-1, -1, 600, 600);
@@ -92,14 +92,17 @@ namespace NINA.ViewModel {
             SubSampleRectangle.PropertyChanged += SubSampleRectangle_PropertyChanged;
         }
 
-        private void InspectAberration(object obj) {
+        private async Task<bool> InspectAberration() {
             try {
-                var vm = new AberrationInspectorVM(profileService, Image);
+                var vm = new AberrationInspectorVM(profileService);
+                await vm.Initialize(Image);
                 var service = WindowServiceFactory.Create();
                 service.Show(vm, Locale.Loc.Instance["LblAberrationInspector"], ResizeMode.CanResize, WindowStyle.ToolWindow);
+                return true;
             } catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.ShowError(ex.Message);
+                return false;
             }
         }
 
@@ -306,7 +309,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public ICommand InspectAberrationCommand { get; private set; }
+        public IAsyncCommand InspectAberrationCommand { get; private set; }
         public ICommand DragStartCommand { get; private set; }
         public ICommand DragStopCommand { get; private set; }
         public ICommand DragMoveCommand { get; private set; }
@@ -362,7 +365,7 @@ namespace NINA.ViewModel {
             get {
                 return _imgArr;
             }
-            private set {
+            set {
                 _imgArr = value;
                 RaisePropertyChanged();
             }
@@ -404,7 +407,7 @@ namespace NINA.ViewModel {
             get {
                 return _image;
             }
-            private set {
+            set {
                 _image = value;
                 if (_image != null) {
                     ResizeRectangleToImageSize(_image, BahtinovRectangle);
@@ -539,19 +542,22 @@ namespace NINA.ViewModel {
         public async Task<BitmapSource> PrepareImage(
                 ImageArray iarr,
                 CancellationToken token,
-                bool bSave = false,
-                ImageParameters parameters = null) {
+                bool saveImage = false,
+                ImageParameters parameters = null,
+                bool addToStatistics = true,
+                bool addToHistory = true) {
             BitmapSource source = null;
-            try {
-                await ss.WaitAsync(token);
 
+            await ss.WaitAsync(token);
+
+            try {
                 if (iarr != null) {
                     _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPrepareImage"] });
                     source = ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
 
                     if (AutoStretch) {
                         _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStretchImage"] });
-                        source = await StretchAsync(iarr, source, profileService.ActiveProfile.ImageSettings.AutoStretchFactor);
+                        source = await StretchAsync(iarr, source, profileService.ActiveProfile.ImageSettings.AutoStretchFactor, profileService.ActiveProfile.ImageSettings.BlackClipping);
                     }
 
                     if (DetectStars) {
@@ -584,13 +590,15 @@ namespace NINA.ViewModel {
                         GC.WaitForPendingFinalizers();
                         ImgArr = iarr;
                         Image = source;
-                        ImgStatisticsVM.Add(iarr.Statistics);
-                        ImgHistoryVM.Add(iarr.Statistics);
+                        if (addToStatistics)
+                            ImgStatisticsVM.Add(ImgArr.Statistics);
+                        if (addToHistory)
+                            ImgHistoryVM.Add(iarr.Statistics);
                     }));
 
                     AnalyzeBahtinov();
 
-                    if (bSave) {
+                    if (saveImage) {
                         await SaveToDisk(parameters, token);
                     }
                 }
@@ -601,31 +609,23 @@ namespace NINA.ViewModel {
             return source;
         }
 
-        public static async Task<BitmapSource> StretchAsync(ImageArray iarr, BitmapSource source, double factor) {
-            return await Task<BitmapSource>.Run(() => Stretch(iarr.Statistics.Mean, source, System.Windows.Media.PixelFormats.Gray16, factor));
+        public static async Task<BitmapSource> StretchAsync(ImageArray iarr, BitmapSource source, double factor, double blackClipping) {
+            return await Task<BitmapSource>.Run(() => Stretch(iarr.Statistics, source, System.Windows.Media.PixelFormats.Gray16, factor, blackClipping));
         }
 
-        public static async Task<BitmapSource> StretchAsync(double mean, BitmapSource source, double factor) {
-            return await Task<BitmapSource>.Run(() => Stretch(mean, source, System.Windows.Media.PixelFormats.Gray16, factor));
+        public static async Task<BitmapSource> StretchAsync(IImageStatistics statistics, BitmapSource source, double factor, double blackClipping) {
+            return await Task<BitmapSource>.Run(() => Stretch(statistics, source, System.Windows.Media.PixelFormats.Gray16, factor, blackClipping));
         }
 
-        public static async Task<BitmapSource> StretchAsync(double mean, BitmapSource source, System.Windows.Media.PixelFormat pf, double factor) {
-            return await Task<BitmapSource>.Run(() => Stretch(mean, source, pf, factor));
-        }
-
-        public static BitmapSource Stretch(double mean, BitmapSource source, double factor) {
-            return Stretch(mean, source, System.Windows.Media.PixelFormats.Gray16, factor);
-        }
-
-        public static BitmapSource Stretch(double mean, BitmapSource source, System.Windows.Media.PixelFormat pf, double factor) {
+        public static BitmapSource Stretch(IImageStatistics statistics, BitmapSource source, System.Windows.Media.PixelFormat pf, double factor, double blackClipping) {
             using (var img = ImageAnalysis.BitmapFromSource(source)) {
-                return Stretch(mean, img, pf, factor);
+                return Stretch(statistics, img, pf, factor, blackClipping);
             }
         }
 
-        public static BitmapSource Stretch(double mean, System.Drawing.Bitmap img, System.Windows.Media.PixelFormat pf, double factor) {
+        public static BitmapSource Stretch(IImageStatistics statistics, System.Drawing.Bitmap img, System.Windows.Media.PixelFormat pf, double factor, double blackClipping) {
             using (MyStopWatch.Measure()) {
-                var filter = ImageAnalysis.GetColorRemappingFilter(mean, factor);
+                var filter = ImageAnalysis.GetColorRemappingFilter(statistics, factor, blackClipping);
                 filter.ApplyInPlace(img);
 
                 var source = ImageAnalysis.ConvertBitmap(img, pf);

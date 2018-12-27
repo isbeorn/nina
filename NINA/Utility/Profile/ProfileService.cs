@@ -26,27 +26,65 @@ using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Threading;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace NINA.Utility.Profile {
 
     internal class ProfileService : IProfileService {
 
         public ProfileService() {
+            saveTimer = new System.Timers.Timer();
+            saveTimer.Interval = 200;
+            saveTimer.Elapsed += SaveTimer_Elapsed;
+
             if (NINA.Properties.Settings.Default.UpdateSettings) {
                 NINA.Properties.Settings.Default.Upgrade();
                 NINA.Properties.Settings.Default.UpdateSettings = false;
                 NINA.Properties.Settings.Default.Save();
             }
             Load();
+            CreateWatcher();
+        }
+
+        /// <summary>
+        /// Timer that will trigger a save after 200ms
+        /// When another profile change happens during that time, the duration is reset
+        /// This way something like a slider will not spam the harddisk with save operations
+        /// </summary>
+        private System.Timers.Timer saveTimer;
+
+        /// <summary>
+        /// Stop the timer and save the profile
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SaveTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
+            lock (lockobj) {
+                saveTimer.Stop();
+                Save();
+            }
+        }
+
+        /// <summary>
+        /// Stop the timer and restart it again
+        /// </summary>
+        private void ScheduleSave() {
+            lock (lockobj) {
+                saveTimer.Stop();
+                saveTimer.Start();
+            }
         }
 
         private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName == "Settings") {
-                Save();
+                ScheduleSave();
             }
         }
 
@@ -101,32 +139,153 @@ namespace NINA.Utility.Profile {
         public Profiles Profiles { get; set; }
 
         public void Add() {
-            Profiles.Add(new Profile("Profile" + (Profiles.ProfileList.Count + 1)));
+            Add(new Profile("Profile" + (Profiles.ProfileList.Count + 1)));
+        }
+
+        private void Add(IProfile p) {
+            Profiles.Add(p);
+            Save();
         }
 
         public void Clone(Guid id) {
             var p = Profiles.ProfileList.Where((x) => x.Id == id).FirstOrDefault();
             if (p != null) {
                 var newProfile = Profile.Clone(p);
-                Profiles.Add(newProfile);
+                Add(newProfile);
             }
         }
 
+        private FileSystemWatcher profileFileWatcher;
+
+        private void CreateWatcher() {
+            profileFileWatcher = new FileSystemWatcher() {
+                Path = Path.GetDirectoryName(PROFILEFILEPATH),
+                NotifyFilter = NotifyFilters.LastWrite,
+                Filter = Path.GetFileName(PROFILEFILEPATH)
+            };
+
+            profileFileWatcher.Changed += ProfileFileWatcher_Changed;
+            //profileFileWatcher.Created += ProfileFileWatcher_Changed;
+
+            profileFileWatcher.EnableRaisingEvents = true;
+        }
+
+        private void ProfileFileWatcher_Changed(object sender, FileSystemEventArgs e) {
+            profileFileWatcher.EnableRaisingEvents = false;
+            Debug.Print(DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture));
+
+            ReloadProfiles();
+
+            System.Threading.Thread.Sleep(50);
+            profileFileWatcher.EnableRaisingEvents = true;
+        }
+
+        private void ReloadProfiles() {
+            try {
+                lock (lockobj) {
+                    using (var fs = TryGetExclusiveProfileStream(FileMode.Open, FileAccess.Read)) {
+                        var serializer = new DataContractSerializer(typeof(Profiles));
+                        var obj = serializer.ReadObject(fs);
+
+                        var profiles = (Profiles)obj;
+
+                        //var lastActive = profiles.ProfileList.Where(x => x.Id == profiles.ActiveProfileId).FirstOrDefault();
+                        var id = Profiles.ActiveProfileId;
+
+                        //Fallback if the active profile was deleted somehow
+                        if (profiles.ProfileList.Where(x => x.Id == id).FirstOrDefault() == null) {
+                            profiles.Add(Profiles.ActiveProfile);
+                        }
+
+                        dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
+                            Profiles.ProfileList.Clear();
+                            foreach (var p in profiles.ProfileList) {
+                                Profiles.Add(p);
+                            }
+
+                            SelectProfile(id);
+                        }));
+                    }
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                Notification.Notification.ShowError(ex.Message);
+            }
+        }
+
+        private Dispatcher dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
+
         private static object lockobj = new object();
+
+        private FileStream TryGetExclusiveProfileStream(FileMode fileMode, FileAccess fileAccess) {
+            var tries = 0;
+            const int maxTries = 20;
+            while (true) {
+                try {
+                    var fs = new FileStream(PROFILEFILEPATH, fileMode, fileAccess, FileShare.None);
+                    return fs;
+                } catch (IOException ex) {
+                    if (tries >= maxTries) {
+                        throw (ex);
+                    }
+                }
+
+                System.Threading.Thread.Sleep(100);
+            }
+        }
 
         private void Save() {
             try {
-                lock (lockobj) {
+                if (profileFileWatcher != null) profileFileWatcher.EnableRaisingEvents = false;
+                using (var fs = TryGetExclusiveProfileStream(FileMode.OpenOrCreate, FileAccess.ReadWrite)) {
                     var serializer = new DataContractSerializer(typeof(Profiles));
+                    Profiles profileToWrite = Profiles;
+                    if (fs.Length > 0) {
+                        /* Copy file to temp file */
+                        using (var copyStream = new FileStream(PROFILETEMPFILEPATH, FileMode.Create, FileAccess.Write)) {
+                            fs.CopyTo(copyStream);
+                            //Reset filestream position
+                            fs.Position = 0;
+                        }
 
-                    //Copy profile to temp file, to be able to roll back in case of error
-                    if (File.Exists(PROFILEFILEPATH)) {
-                        File.Copy(PROFILEFILEPATH, PROFILETEMPFILEPATH, true);
+                        /* Read profiles from file, replace current profile in file with actual profile */
+                        var obj = serializer.ReadObject(fs);
+                        profileToWrite = (Profiles)obj;
+
+                        var idx = -1;
+                        for (var i = 0; i < profileToWrite.ProfileList.Count; i++) {
+                            if (Profiles.ActiveProfileId == profileToWrite.ProfileList[i].Id) {
+                                idx = i;
+                                break;
+                            }
+                        }
+                        if (idx >= 0) {
+                            profileToWrite.ProfileList.RemoveAt(idx);
+                            profileToWrite.ProfileList.Insert(idx, Profiles.ActiveProfile);
+                        }
+
+                        profileToWrite.ActiveProfileId = Profiles.ActiveProfileId;
+
+                        /*Newly added profiles */
+                        var excludedIDs = new HashSet<Guid>(profileToWrite.ProfileList.Select(p => p.Id));
+                        var profilesToAdd = this.Profiles.ProfileList.Where(x => !excludedIDs.Contains(x.Id));
+
+                        foreach (var p in profilesToAdd) {
+                            profileToWrite.Add(p);
+                        }
+
+                        excludedIDs = new HashSet<Guid>(Profiles.ProfileList.Select(p => p.Id));
+                        var profilesToDelete = profileToWrite.ProfileList.Where(x => !excludedIDs.Contains(x.Id)).ToArray();
+                        for (var i = profilesToDelete.Length - 1; i >= 0; i--) {
+                            profileToWrite.ProfileList.Remove(profilesToDelete[i]);
+                        }
                     }
 
-                    using (FileStream writer = new FileStream(PROFILEFILEPATH, FileMode.Create)) {
-                        serializer.WriteObject(writer, Profiles);
-                    }
+                    //Reset filestream content and position
+                    fs.Position = 0;
+                    fs.SetLength(0);
+                    serializer = new DataContractSerializer(typeof(Profiles));
+                    serializer.WriteObject(fs, profileToWrite);
 
                     //Delete Temp file
                     File.Delete(PROFILETEMPFILEPATH);
@@ -139,6 +298,8 @@ namespace NINA.Utility.Profile {
                     //Restore temp file
                     File.Copy(PROFILETEMPFILEPATH, PROFILEFILEPATH, true);
                 }
+            } finally {
+                if (profileFileWatcher != null) profileFileWatcher.EnableRaisingEvents = true;
             }
         }
 
@@ -149,50 +310,52 @@ namespace NINA.Utility.Profile {
         }
 
         private void Load() {
-            if (File.Exists(PROFILETEMPFILEPATH)) {
-                File.Copy(PROFILETEMPFILEPATH, PROFILEFILEPATH, true);
-            }
-
-            if (File.Exists(PROFILEFILEPATH)) {
-                try {
-                    UnregisterChangedEventHandlers();
-                    var serializer = new DataContractSerializer(typeof(Profiles));
-
-                    using (FileStream reader = new FileStream(PROFILEFILEPATH, FileMode.Open)) {
-                        var obj = serializer.ReadObject(reader);
-
-                        Profiles = (Profiles)obj;
-                        foreach (Profile p in Profiles.ProfileList) {
-                            p.MatchFilterSettingsWithFilterList();
+            try {
+                lock (lockobj) {
+                    bool profileExists = false;
+                    using (var fs = TryGetExclusiveProfileStream(FileMode.OpenOrCreate, FileAccess.ReadWrite)) {
+                        if (File.Exists(PROFILETEMPFILEPATH)) {
+                            using (var copyStream = new FileStream(PROFILETEMPFILEPATH, FileMode.Open, FileAccess.Read)) {
+                                copyStream.CopyTo(fs);
+                                //Reset filestream position
+                                fs.Position = 0;
+                            }
+                            File.Delete(PROFILETEMPFILEPATH);
                         }
-                        Profiles.SelectActiveProfile();
 
-                        Locale.Loc.Instance.ReloadLocale(ActiveProfile.ApplicationSettings.Culture);
-                        LocaleChanged?.Invoke(this, null);
-                        ProfileChanged?.Invoke(this, null);
-                        LocationChanged?.Invoke(this, null);
+                        if (fs.Length > 0) {
+                            profileExists = true;
 
-                        RegisterChangedEventHandlers();
+                            var serializer = new DataContractSerializer(typeof(Profiles));
+                            var obj = serializer.ReadObject(fs);
+
+                            Profiles = (Profiles)obj;
+                            foreach (Profile p in Profiles.ProfileList) {
+                                p.MatchFilterSettingsWithFilterList();
+                            }
+
+                            var id = Profiles.ActiveProfileId;
+                            if (id == Guid.Empty) id = Profiles.ProfileList[0].Id;
+                            SelectProfile(id);
+                        }
                     }
-                } catch (UnauthorizedAccessException ex) {
-                    Logger.Error(ex);
-                    System.Windows.MessageBox.Show("Unable to open profile file. " + ex.Message);
-                    System.Windows.Application.Current.Shutdown();
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                    System.Windows.MessageBox.Show("Unable to load profile file. Please restart the application \n" + ex.Message);
-                    System.Windows.Application.Current.Shutdown();
+                    if (!profileExists) {
+                        MigrateSettings();
+                    }
                 }
-            } else {
-                MigrateSettings();
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
         }
 
         public void SelectProfile(Guid guid) {
             UnregisterChangedEventHandlers();
             Profiles.SelectProfile(guid);
-            Save();
+
+            System.Threading.Thread.CurrentThread.CurrentUICulture = ActiveProfile.ApplicationSettings.Language;
+            System.Threading.Thread.CurrentThread.CurrentCulture = ActiveProfile.ApplicationSettings.Language;
             Locale.Loc.Instance.ReloadLocale(ActiveProfile.ApplicationSettings.Culture);
+
             LocaleChanged?.Invoke(this, null);
             ProfileChanged?.Invoke(this, null);
             LocationChanged?.Invoke(this, null);
@@ -201,7 +364,7 @@ namespace NINA.Utility.Profile {
 
         private void LoadDefaultProfile() {
             Profiles = new Profiles();
-            Profiles.Add(new Profile("Default"));
+            Add(new Profile("Default"));
             SelectProfile(Profiles.ProfileList[0].Id);
         }
 
@@ -224,7 +387,6 @@ namespace NINA.Utility.Profile {
             Object updateSettings = Properties.Settings.Default.GetPreviousVersion("UpdateSettings");
             if (updateSettings != null) {
                 var p = new Profile("Migrated");
-                Profiles.Add(p);
 
                 p.ColorSchemaSettings.ColorSchemaName = Properties.Settings.Default.ColorSchemaType;
                 p.ColorSchemaSettings.SecondaryColor = Properties.Settings.Default.SecondaryColor;
@@ -327,6 +489,7 @@ namespace NINA.Utility.Profile {
                 p.WeatherDataSettings.OpenWeatherMapAPIKey = Properties.Settings.Default.OpenWeatherMapAPIKey;
                 p.WeatherDataSettings.OpenWeatherMapUrl = Properties.Settings.Default.OpenWeatherMapUrl;
 
+                Add(p);
                 SelectProfile(p.Id);
             } else {
                 LoadDefaultProfile();

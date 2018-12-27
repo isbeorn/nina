@@ -25,7 +25,6 @@ using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.Exceptions;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -248,18 +247,12 @@ namespace NINA.ViewModel {
         }
 
         private async Task Capture(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            double duration = seq.ExposureTime;
-            bool isLight = false;
-            if (CameraInfo.HasShutter) {
-                isLight = true;
-            }
-
-            await cameraMediator.Capture(duration, isLight, token, progress);
+            await cameraMediator.Capture(seq, token, progress);
         }
 
-        private Task<ImageArray> Download(CancellationToken token, IProgress<ApplicationStatus> progress) {
+        private Task<ImageArray> Download(CancellationToken token, IProgress<ApplicationStatus> progress, bool calculateStatistics) {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDownloading"] });
-            return cameraMediator.Download(token);
+            return cameraMediator.Download(token, calculateStatistics);
         }
 
         private async Task<bool> Dither(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
@@ -274,7 +267,7 @@ namespace NINA.ViewModel {
         private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
         public async Task<BitmapSource> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            var iarr = await CaptureImage(sequence, token, progress);
+            var iarr = await CaptureImage(sequence, token, progress, false, "");
             if (iarr != null) {
                 return await _currentPrepareImageTask;
             } else {
@@ -282,21 +275,29 @@ namespace NINA.ViewModel {
             }
         }
 
-        public async Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, string targetname = "") {
-            //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released
-            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitingForCamera"] });
-            await semaphoreSlim.WaitAsync(token);
-
-            if (CameraInfo.Connected != true) {
-                Notification.ShowWarning(Locale.Loc.Instance["LblNoCameraConnected"]);
-                semaphoreSlim.Release();
-                return null;
-            }
-
-            return await Task.Run<ImageArray>(async () => {
+        public Task<ImageArray> CaptureImage(
+                CaptureSequence sequence,
+                CancellationToken token,
+                IProgress<ApplicationStatus> progress,
+                bool bSave = false,
+                string targetname = "",
+                bool calculateStatistics = true,
+                bool addtoStatistics = true,
+                bool addToHistory = true) {
+            return Task.Run<ImageArray>(async () => {
                 ImageArray arr = null;
 
                 try {
+                    //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released
+                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitingForCamera"] });
+                    await semaphoreSlim.WaitAsync(token);
+
+                    if (CameraInfo.Connected != true) {
+                        Notification.ShowWarning(Locale.Loc.Instance["LblNoCameraConnected"]);
+                        semaphoreSlim.Release();
+                        return null;
+                    }
+
                     if (CameraInfo.Connected != true) {
                         throw new CameraConnectionLostException();
                     }
@@ -331,8 +332,6 @@ namespace NINA.ViewModel {
                     /* Stop RMS Recording */
                     var rms = this.guiderMediator.StopRMSRecording(rmsHandle);
 
-                    token.ThrowIfCancellationRequested();
-
                     if (CameraInfo.Connected != true) {
                         throw new CameraConnectionLostException();
                     }
@@ -341,7 +340,7 @@ namespace NINA.ViewModel {
                     var ditherTask = Dither(sequence, token, progress);
 
                     /*Download Image */
-                    arr = await Download(token, progress);
+                    arr = await Download(token, progress, calculateStatistics);
                     if (arr == null) {
                         throw new OperationCanceledException();
                     }
@@ -365,7 +364,7 @@ namespace NINA.ViewModel {
                         TargetName = targetname,
                         RecordedRMS = rms
                     };
-                    _currentPrepareImageTask = ImageControl.PrepareImage(arr, token, bSave, parameters);
+                    _currentPrepareImageTask = ImageControl.PrepareImage(arr, token, bSave, parameters, addtoStatistics, addToHistory);
 
                     //Wait for dither to finish. Runs in parallel to download and save.
                     progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForDither"] });
@@ -483,6 +482,32 @@ namespace NINA.ViewModel {
 
         public Task<BitmapSource> PrepareImage(ImageArray iarr, CancellationToken token, bool bSave = false, ImageParameters parameters = null) {
             return ImageControl.PrepareImage(iarr, token, bSave, parameters);
+        }
+
+        public void DestroyImage() {
+            ImageControl.Image = null;
+            ImageControl.ImgArr = null;
+        }
+
+        public Task<ImageArray> CaptureImageWithoutHistoryAndThumbnail(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool calculateStatistics = true) {
+            return CaptureImage(sequence, token, progress, false, "", calculateStatistics, false, false);
+        }
+
+        public Task<ImageArray> CaptureImageWithoutProcessingAndSaveAsync(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            return CaptureImage(sequence, token, progress, true, "", false, false, false);
+        }
+
+        public async Task<BitmapSource> CaptureImageWithoutProcessingAndSaveSync(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            var iarr = await CaptureImageWithoutProcessingAndSaveAsync(sequence, token, progress);
+            if (iarr != null) {
+                return await _currentPrepareImageTask;
+            } else {
+                return null;
+            }
+        }
+
+        public Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, bool calculateStatistics = true, string targetname = "") {
+            return CaptureImage(sequence, token, progress, bSave, targetname, calculateStatistics, true, true);
         }
     }
 }

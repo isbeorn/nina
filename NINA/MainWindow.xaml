@@ -81,10 +81,7 @@
                                 </Grid>
                                 <TextBlock
                                     Grid.Row="1"
-                                    Margin="0,-4,0,0"
-                                    HorizontalAlignment="Center"
-                                    FontSize="9"
-                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Style="{StaticResource SideBarTextBlock}"
                                     Text="{ns:Loc LblCamera}" />
                             </Grid>
                         </TabItem.Header>
@@ -167,10 +164,7 @@
                                 </UniformGrid>
                                 <TextBlock
                                     Grid.Row="1"
-                                    Margin="0,-4,0,0"
-                                    HorizontalAlignment="Center"
-                                    FontSize="9"
-                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Style="{StaticResource SideBarTextBlock}"
                                     Text="{ns:Loc LblEquipment}" />
                             </Grid>
                         </TabItem.Header>
@@ -218,10 +212,7 @@
                                 </Grid>
                                 <TextBlock
                                     Grid.Row="1"
-                                    Margin="0,-4,0,0"
-                                    HorizontalAlignment="Center"
-                                    FontSize="9"
-                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Style="{StaticResource SideBarTextBlock}"
                                     Text="{ns:Loc LblTelescope}" />
                             </Grid>
                         </TabItem.Header>
@@ -260,10 +251,7 @@
                                 </Grid>
                                 <TextBlock
                                     Grid.Row="1"
-                                    Margin="0,-4,0,0"
-                                    HorizontalAlignment="Center"
-                                    FontSize="9"
-                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Style="{StaticResource SideBarTextBlock}"
                                     Text="{ns:Loc LblGuider}" />
                             </Grid>
                         </TabItem.Header>
@@ -288,10 +276,7 @@
 
                                 <TextBlock
                                     Grid.Row="1"
-                                    Margin="0,-4,0,0"
-                                    HorizontalAlignment="Center"
-                                    FontSize="9"
-                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Style="{StaticResource SideBarTextBlock}"
                                     Text="{ns:Loc LblSkyAtlas}" />
                             </Grid>
                         </TabItem.Header>
@@ -314,10 +299,7 @@
                                     Style="{StaticResource TabItemPath}" />
                                 <TextBlock
                                     Grid.Row="1"
-                                    Margin="0,-4,0,0"
-                                    HorizontalAlignment="Center"
-                                    FontSize="9"
-                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Style="{StaticResource SideBarTextBlock}"
                                     Text="{ns:Loc LblFraming}" />
                             </Grid>
                         </TabItem.Header>
@@ -335,15 +317,35 @@
                                 </Grid.RowDefinitions>
                                 <Path
                                     Margin="5"
+                                    Data="{StaticResource FlatWizardSVG}"
+                                    Stretch="Uniform"
+                                    Style="{StaticResource TabItemPath}" />
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Style="{StaticResource SideBarTextBlock}"
+                                    Text="{ns:Loc LblFlatWizard}" />
+                            </Grid>
+                        </TabItem.Header>
+                        <TabItem.Content>
+                            <view:FlatWizardView x:Name="FlatWizardView" DataContext="{Binding FlatWizardVM}" />
+                        </TabItem.Content>
+                    </TabItem>
+
+                    <TabItem>
+                        <TabItem.Header>
+                            <Grid Width="50" Height="50">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition Height="10" />
+                                </Grid.RowDefinitions>
+                                <Path
+                                    Margin="5"
                                     Data="{StaticResource SequenceSVG}"
                                     Stretch="Uniform"
                                     Style="{StaticResource TabItemPath}" />
                                 <TextBlock
                                     Grid.Row="1"
-                                    Margin="0,-4,0,0"
-                                    HorizontalAlignment="Center"
-                                    FontSize="9"
-                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Style="{StaticResource SideBarTextBlock}"
                                     Text="{ns:Loc LblSequence}" />
                             </Grid>
                         </TabItem.Header>
@@ -366,10 +368,7 @@
                                     Style="{StaticResource TabItemPath}" />
                                 <TextBlock
                                     Grid.Row="1"
-                                    Margin="0,-4,0,0"
-                                    HorizontalAlignment="Center"
-                                    FontSize="9"
-                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Style="{StaticResource SideBarTextBlock}"
                                     Text="{ns:Loc LblImaging}" />
                             </Grid>
                         </TabItem.Header>
@@ -391,10 +390,7 @@
                                     Style="{StaticResource TabItemPath}" />
                                 <TextBlock
                                     Grid.Row="1"
-                                    Margin="0,-4,0,0"
-                                    HorizontalAlignment="Center"
-                                    FontSize="9"
-                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Style="{StaticResource SideBarTextBlock}"
                                     Text="{ns:Loc LblOptions}" />
                             </Grid>
                         </TabItem.Header>

@@ -23,14 +23,10 @@
 
 using NINA.Model;
 using NINA.Model.MyCamera;
-using NINA.Utility.Enum;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.ViewModel;
 using NINA.ViewModel.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -59,26 +55,30 @@ namespace NINA.Utility.Mediator {
             return handler.CaptureAndPrepareImage(sequence, token, progress);
         }
 
-        public Task<bool> CaptureAndSaveImage(CaptureSequence seq, bool bsave, CancellationToken ct, IProgress<ApplicationStatus> progress, string targetname = "") {
-            return handler.CaptureAndSaveImage(seq, bsave, ct, progress, targetname);
+        public Task<bool> CaptureAndSaveImage(CaptureSequence seq, bool save, CancellationToken ct, IProgress<ApplicationStatus> progress, string targetname = "") {
+            return handler.CaptureAndSaveImage(seq, save, ct, progress, targetname);
         }
 
-        public Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, string targetname = "") {
-            return handler.CaptureImage(sequence, token, progress, bSave, targetname);
+        public Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool save = false, bool calculateStatistics = true, string targetname = "") {
+            return handler.CaptureImage(sequence, token, progress, save, calculateStatistics, targetname);
         }
 
         public Task<BitmapSource> PrepareImage(
                 ImageArray iarr,
                 CancellationToken token,
-                bool bSave = false,
+                bool save = false,
                 ImageParameters parameters = null) {
-            return handler.PrepareImage(iarr, token, bSave, parameters);
+            return handler.PrepareImage(iarr, token, save, parameters);
         }
 
         public event EventHandler<ImageSavedEventArgs> ImageSaved;
 
         public void OnImageSaved(ImageSavedEventArgs e) {
             ImageSaved?.Invoke(handler, e);
+        }
+
+        public void DestroyImage() {
+            handler.DestroyImage();
         }
     }
 }

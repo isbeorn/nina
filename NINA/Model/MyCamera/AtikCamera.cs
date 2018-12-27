@@ -21,19 +21,16 @@
 
 #endregion "copyright"
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using NINA.Utility;
 using NINA.Utility.AtikSDK;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NINA.Model.MyCamera {
 
@@ -264,6 +261,20 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public bool HasDewHeater {
+            get {
+                return false;
+            }
+        }
+
+        public bool DewHeaterOn {
+            get {
+                return false;
+            }
+            set {
+            }
+        }
+
         public string CameraState {
             get {
                 return AtikCameraDll.CameraState(_cameraP).ToString();
@@ -337,6 +348,28 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public ICollection ReadoutModes => new List<string> { "Default" };
+
+        private short _readoutModeForSnapImages;
+
+        public short ReadoutModeForSnapImages {
+            get => _readoutModeForSnapImages;
+            set {
+                _readoutModeForSnapImages = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private short _readoutModeForNormalImages;
+
+        public short ReadoutModeForNormalImages {
+            get => _readoutModeForNormalImages;
+            set {
+                _readoutModeForNormalImages = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public int BitDepth {
             get {
                 //currently unknown if the values are stretched to 16 bit or not. Take profile value
@@ -390,6 +423,11 @@ namespace NINA.Model.MyCamera {
                 try {
                     _cameraP = AtikCameraDll.Connect(_cameraId);
                     _info = AtikCameraDll.GetCameraProperties(_cameraP);
+
+                    if (CanSetTemperature) {
+                        TemperatureSetPoint = 20;
+                    }
+
                     RaisePropertyChanged(nameof(BinningModes));
                     RaisePropertyChanged(nameof(Connected));
                     success = true;
@@ -408,7 +446,7 @@ namespace NINA.Model.MyCamera {
             RaisePropertyChanged(nameof(Connected));
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token) {
+        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
             using (MyStopWatch.Measure("ATIK Download")) {
                 return await Task.Run<ImageArray>(async () => {
                     try {
@@ -416,7 +454,7 @@ namespace NINA.Model.MyCamera {
                             await Task.Delay(100, token);
                         } while (!AtikCameraDll.ImageReady(_cameraP));
 
-                        return await AtikCameraDll.DownloadExposure(_cameraP, BitDepth, SensorType != SensorType.Monochrome, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                        return await AtikCameraDll.DownloadExposure(_cameraP, BitDepth, SensorType != SensorType.Monochrome, calculateStatistics, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                     } catch (OperationCanceledException) {
                     } catch (Exception ex) {
                         Logger.Error(ex);
@@ -434,7 +472,7 @@ namespace NINA.Model.MyCamera {
         public void SetupDialog() {
         }
 
-        public void StartExposure(double exposureTime, bool isLightFrame) {
+        public void StartExposure(CaptureSequence sequence) {
             do {
                 System.Threading.Thread.Sleep(100);
             } while (AtikCameraDll.CameraState(_cameraP) != AtikCameraDll.ArtemisCameraStateEnum.CAMERA_IDLE);
@@ -443,7 +481,7 @@ namespace NINA.Model.MyCamera {
             } else {
                 AtikCameraDll.SetSubFrame(_cameraP, 0, 0, CameraXSize, CameraYSize);
             }
-            AtikCameraDll.StartExposure(_cameraP, exposureTime);
+            AtikCameraDll.StartExposure(_cameraP, sequence.ExposureTime);
         }
 
         public void StopExposure() {

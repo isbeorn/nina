@@ -107,6 +107,30 @@ namespace NINATest {
         }
 
         [Test]
+        public void GetNextSequence_ModeStandardOneDisabledAfter_Initial() {
+            //Arrange
+            var seq = new CaptureSequence();
+            var seq2 = new CaptureSequence();
+            var l = new CaptureSequenceList();
+            l.Mode = SequenceMode.STANDARD;
+            l.Add(seq);
+            l.Add(seq2);
+
+            l.Items[0].Enabled = false;
+
+            //Act
+            var nextSeq = l.Next();
+
+            //Assert
+            Assert.AreEqual(string.Empty, l.TargetName, "Targetname");
+            Assert.AreSame(seq2, nextSeq);
+            Assert.AreEqual(1, l.Count);
+            Assert.AreSame(seq2, l.ActiveSequence);
+            Assert.AreEqual(2, l.ActiveSequenceIndex);
+            Assert.AreEqual(0, l.Delay);
+        }
+
+        [Test]
         public void GetNextSequence_ModeStandard_NextSequenceSelected() {
             //Arrange
             var seq = new CaptureSequence() { TotalExposureCount = 2 };

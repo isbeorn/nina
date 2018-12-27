@@ -24,7 +24,6 @@
 using Nikon;
 using NINA.Utility;
 using NINA.Utility.Enum;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -406,7 +405,6 @@ namespace NINA.Model.MyCamera {
             get {
                 return false;
             }
-
             set {
             }
         }
@@ -414,6 +412,20 @@ namespace NINA.Model.MyCamera {
         public double CoolerPower {
             get {
                 return double.NaN;
+            }
+        }
+
+        public bool HasDewHeater {
+            get {
+                return false;
+            }
+        }
+
+        public bool DewHeaterOn {
+            get {
+                return false;
+            }
+            set {
             }
         }
 
@@ -552,6 +564,28 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public ICollection ReadoutModes => new List<string> { "Default" };
+
+        private short _readoutModeForSnapImages;
+
+        public short ReadoutModeForSnapImages {
+            get => _readoutModeForSnapImages;
+            set {
+                _readoutModeForSnapImages = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private short _readoutModeForNormalImages;
+
+        public short ReadoutModeForNormalImages {
+            get => _readoutModeForNormalImages;
+            set {
+                _readoutModeForNormalImages = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private AsyncObservableCollection<BinningMode> _binningModes;
 
         public AsyncObservableCollection<BinningMode> BinningModes {
@@ -605,13 +639,13 @@ namespace NINA.Model.MyCamera {
             serialPortInteraction = null;
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token) {
+        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
             Logger.Debug("Waiting for download of exposure");
             await _downloadExposure.Task;
             Logger.Debug("Downloading of exposure complete. Converting image to internal array");
 
             var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
-            var iarr = await converter.ConvertToImageArray(_memoryStream, BitDepth, profileService.ActiveProfile.ImageSettings.HistogramResolution, token);
+            var iarr = await converter.ConvertToImageArray(_memoryStream, BitDepth, profileService.ActiveProfile.ImageSettings.HistogramResolution, calculateStatistics, token);
             iarr.RAWType = "nef";
             _memoryStream.Dispose();
             _memoryStream = null;
@@ -627,9 +661,10 @@ namespace NINA.Model.MyCamera {
         private Dictionary<int, double> _shutterSpeeds = new Dictionary<int, double>();
         private int _bulbShutterSpeedIndex;
 
-        public void StartExposure(double exposureTime, bool isLightFrame) {
+        public void StartExposure(CaptureSequence sequence) {
             if (Connected) {
-                Logger.Debug("Prepare start of exposure: " + exposureTime);
+                double exposureTime = sequence.ExposureTime;
+                Logger.Debug("Prepare start of exposure: " + sequence);
                 _downloadExposure = new TaskCompletionSource<object>();
 
                 if (exposureTime <= 30.0) {

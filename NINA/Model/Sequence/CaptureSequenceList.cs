@@ -395,6 +395,11 @@ namespace NINA.Model {
         public CaptureSequence ActiveSequence {
             get {
                 lock (lockobj) {
+                    if (_activeSequence != null && !_activeSequence.Enabled) {
+                        _activeSequence = Items.FirstOrDefault(i => i.Enabled);
+                        RaisePropertyChanged(nameof(ActiveSequence));
+                        RaisePropertyChanged(nameof(ActiveSequenceIndex));
+                    }
                     return _activeSequence;
                 }
             }

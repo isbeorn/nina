@@ -138,7 +138,7 @@ namespace NINA.Model.MyFocuser {
 
         public bool TempComp {
             get {
-                if (Connected) {
+                if (Connected && _focuser.TempCompAvailable) {
                     return _focuser.TempComp;
                 } else {
                     return false;

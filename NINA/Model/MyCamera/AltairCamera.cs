@@ -28,11 +28,6 @@ using NINA.Utility.Profile;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -185,12 +180,56 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private double coolerPower = 0.0;
+
         public double CoolerPower {
             get {
-                /* There is no interface for a cooler percentage.
-                 * It's possible to readout voltage, but SDK says this should not be done more often than 2 seconds.
-                 * Until a different solution is there, this will not be displayed*/
-                return 0.0;
+                return coolerPower;
+            }
+            private set {
+                coolerPower = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private CancellationTokenSource coolerPowerReadoutCts;
+
+        /// <summary>
+        /// This task will update cooler power based on TEC Volatage readout every three seconds
+        /// Due to the fact that this value must not be updated more than every two seconds according to the documentation
+        /// a helper method is required in case the device polling interval is faster than that.
+        /// </summary>
+        private void CoolerPowerUpdateTask() {
+            Task.Run(async () => {
+                coolerPowerReadoutCts = new CancellationTokenSource();
+                try {
+                    camera.get_Option(AltairCam.eOPTION.OPTION_TEC_VOLTAGE_MAX, out var maxVoltage);
+                    while (true) {
+                        coolerPowerReadoutCts.Token.ThrowIfCancellationRequested();
+
+                        camera.get_Option(AltairCam.eOPTION.OPTION_TEC_VOLTAGE, out var voltage);
+
+                        CoolerPower = 100 * voltage / (double)maxVoltage;
+
+                        //Recommendation to not readout CoolerPower in less than two seconds.
+                        await Task.Delay(TimeSpan.FromSeconds(3), coolerPowerReadoutCts.Token);
+                    }
+                } catch (OperationCanceledException) {
+                }
+            });
+        }
+
+        public bool HasDewHeater {
+            get {
+                return false;
+            }
+        }
+
+        public bool DewHeaterOn {
+            get {
+                return false;
+            }
+            set {
             }
         }
 
@@ -337,6 +376,28 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public ICollection ReadoutModes => new List<string> { "Default" };
+
+        private short _readoutModeForSnapImages;
+
+        public short ReadoutModeForSnapImages {
+            get => _readoutModeForSnapImages;
+            set {
+                _readoutModeForSnapImages = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private short _readoutModeForNormalImages;
+
+        public short ReadoutModeForNormalImages {
+            get => _readoutModeForNormalImages;
+            set {
+                _readoutModeForNormalImages = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public ArrayList Gains {
             get {
                 return new ArrayList();
@@ -396,6 +457,10 @@ namespace NINA.Model.MyCamera {
             }
             set {
                 _connected = value;
+                if (!_connected) {
+                    coolerPowerReadoutCts?.Cancel();
+                }
+
                 RaisePropertyChanged();
             }
         }
@@ -468,9 +533,11 @@ namespace NINA.Model.MyCamera {
                     this.CameraYSize = height;
 
                     /* Readout flags */
-                    if ((this.flags & AltairCam.eFLAG.FLAG_PUTTEMPERATURE) != 0) {
+                    if ((this.flags & AltairCam.eFLAG.FLAG_TEC_ONOFF) != 0) {
                         /* Can set Target Temp */
                         CanSetTemperature = true;
+                        TemperatureSetPoint = 20;
+                        CoolerPowerUpdateTask();
                     }
 
                     if ((this.flags & AltairCam.eFLAG.FLAG_GETTEMPERATURE) != 0) {
@@ -518,12 +585,14 @@ namespace NINA.Model.MyCamera {
         }
 
         public void Disconnect() {
+            coolerPowerReadoutCts?.Cancel();
             Connected = false;
             camera.Close();
             camera = null;
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token) {
+        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
+            calculateStatisticsOnDownload = calculateStatistics;
             await downloadExposure.Task;
             return await imageTask;
         }
@@ -562,10 +631,10 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public void StartExposure(double exposureTime, bool isLightFrame) {
+        public void StartExposure(CaptureSequence sequence) {
             downloadExposure = new TaskCompletionSource<object>();
 
-            SetExposureTime(exposureTime);
+            SetExposureTime(sequence.ExposureTime);
 
             if (!camera.Trigger(1)) {
                 throw new Exception("AltairCamera - Failed to trigger camera");
@@ -580,7 +649,7 @@ namespace NINA.Model.MyCamera {
                 var cameraDataToManaged = new CameraDataToManaged(pData, width, height, BitDepth);
                 var arr = cameraDataToManaged.GetData();
 
-                imageTask = ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                imageTask = ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, calculateStatisticsOnDownload, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                 if (LiveViewEnabled) {
                     downloadLiveExposure?.TrySetResult(true);
                 } else {
@@ -593,6 +662,7 @@ namespace NINA.Model.MyCamera {
         private TaskCompletionSource<object> downloadLiveExposure;
         private Task<ImageArray> imageTask;
         private int bitDepth;
+        private bool calculateStatisticsOnDownload;
 
         public int BitDepth {
             get {
