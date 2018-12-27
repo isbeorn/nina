@@ -363,16 +363,19 @@ namespace NINA.ViewModel.FlatWizard {
             }
 
             Dictionary<FlatWizardFilterSettingsWrapper, double> filterToExposureTime = new Dictionary<FlatWizardFilterSettingsWrapper, double>();
+            CaptureSequence captureSequence;
 
             try {
                 if ((FilterCaptureMode)Mode == FilterCaptureMode.SINGLE) {
                     await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, SingleFlatWizardFilterSettings);
-                    await StartCaptureSequence(progress, flatSequenceCts.Token, pt, SingleFlatWizardFilterSettings.Filter, CalculatedExposureTime, CaptureSequence.ImageTypes.FLAT, FlatCount);
+                    captureSequence = new CaptureSequence(CalculatedExposureTime, CaptureSequence.ImageTypes.FLAT, SingleFlatWizardFilterSettings.Filter, BinningMode, FlatCount) { Gain = Gain };
+                    await StartCaptureSequence(progress, flatSequenceCts.Token, pt, captureSequence);
                     filterToExposureTime.Add(SingleFlatWizardFilterSettings, CalculatedExposureTime);
                 } else {
                     foreach (var filterSettings in Filters.Where(f => f.IsChecked)) {
                         await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, filterSettings);
-                        await StartCaptureSequence(progress, flatSequenceCts.Token, pt, filterSettings.Filter, CalculatedExposureTime, CaptureSequence.ImageTypes.FLAT, FlatCount);
+                        captureSequence = new CaptureSequence(CalculatedExposureTime, CaptureSequence.ImageTypes.FLAT, filterSettings.Filter, BinningMode, FlatCount) { Gain = Gain };
+                        await StartCaptureSequence(progress, flatSequenceCts.Token, pt, captureSequence);
                         filterToExposureTime.Add(filterSettings, CalculatedExposureTime);
                         filterSettings.IsChecked = false;
                         CalculatedExposureTime = 0;
@@ -393,9 +396,10 @@ namespace NINA.ViewModel.FlatWizard {
                         Locale["LblCoverScopeMsgBox"],
                         Locale["LblCoverScopeMsgBoxTitle"], MessageBoxButton.OKCancel, MessageBoxResult.OK);
                     if (dialogResult == MessageBoxResult.OK) {
+                        flatSequenceCts = new CancellationTokenSource();
                         foreach (var kvp in filterToExposureTime) {
-                            await StartCaptureSequence(progress, flatSequenceCts.Token, pt, kvp.Key.Filter, kvp.Value,
-                                CaptureSequence.ImageTypes.DARKFLAT, DarkFlatCount);
+                            captureSequence = new CaptureSequence(kvp.Value, CaptureSequence.ImageTypes.DARKFLAT, kvp.Key.Filter, BinningMode, DarkFlatCount) { Gain = Gain };
+                            await StartCaptureSequence(progress, flatSequenceCts.Token, pt, captureSequence);
                         }
                     }
                 }
@@ -413,9 +417,7 @@ namespace NINA.ViewModel.FlatWizard {
             return true;
         }
 
-        private async Task<bool> StartCaptureSequence(IProgress<ApplicationStatus> progress, CancellationToken ct, PauseToken pt, FilterInfo filter, double exposureTime, string imageType, int captureCount) {
-            var sequence =
-                new CaptureSequence(exposureTime, imageType, filter, BinningMode, captureCount) { Gain = Gain };
+        private async Task<bool> StartCaptureSequence(IProgress<ApplicationStatus> progress, CancellationToken ct, PauseToken pt, CaptureSequence sequence) {
             while (sequence.ProgressExposureCount < sequence.TotalExposureCount) {
                 if (sequence.ProgressExposureCount != sequence.TotalExposureCount - 1) {
                     await ImagingVM.CaptureImageWithoutProcessingAndSaveAsync(sequence, ct, progress);
