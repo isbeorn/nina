@@ -31,6 +31,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -39,6 +40,10 @@ namespace NINA.Utility.Profile {
     internal class ProfileService : IProfileService {
 
         public ProfileService() {
+            saveTimer = new System.Timers.Timer();
+            saveTimer.Interval = 200;
+            saveTimer.Elapsed += SaveTimer_Elapsed;
+
             if (NINA.Properties.Settings.Default.UpdateSettings) {
                 NINA.Properties.Settings.Default.Upgrade();
                 NINA.Properties.Settings.Default.UpdateSettings = false;
@@ -48,9 +53,38 @@ namespace NINA.Utility.Profile {
             CreateWatcher();
         }
 
+        /// <summary>
+        /// Timer that will trigger a save after 200ms
+        /// When another profile change happens during that time, the duration is reset
+        /// This way something like a slider will not spam the harddisk with save operations
+        /// </summary>
+        private System.Timers.Timer saveTimer;
+
+        /// <summary>
+        /// Stop the timer and save the profile
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SaveTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
+            lock (lockobj) {
+                saveTimer.Stop();
+                Save();
+            }
+        }
+
+        /// <summary>
+        /// Stop the timer and restart it again
+        /// </summary>
+        private void ScheduleSave() {
+            lock (lockobj) {
+                saveTimer.Stop();
+                saveTimer.Start();
+            }
+        }
+
         private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName == "Settings") {
-                Save();
+                ScheduleSave();
             }
         }
 
@@ -203,60 +237,58 @@ namespace NINA.Utility.Profile {
         private void Save() {
             try {
                 if (profileFileWatcher != null) profileFileWatcher.EnableRaisingEvents = false;
-                lock (lockobj) {
-                    using (var fs = TryGetExclusiveProfileStream(FileMode.OpenOrCreate, FileAccess.ReadWrite)) {
-                        var serializer = new DataContractSerializer(typeof(Profiles));
-                        Profiles profileToWrite = Profiles;
-                        if (fs.Length > 0) {
-                            /* Copy file to temp file */
-                            using (var copyStream = new FileStream(PROFILETEMPFILEPATH, FileMode.Create, FileAccess.Write)) {
-                                fs.CopyTo(copyStream);
-                                //Reset filestream position
-                                fs.Position = 0;
-                            }
-
-                            /* Read profiles from file, replace current profile in file with actual profile */
-                            var obj = serializer.ReadObject(fs);
-                            profileToWrite = (Profiles)obj;
-
-                            var idx = -1;
-                            for (var i = 0; i < profileToWrite.ProfileList.Count; i++) {
-                                if (Profiles.ActiveProfileId == profileToWrite.ProfileList[i].Id) {
-                                    idx = i;
-                                    break;
-                                }
-                            }
-                            if (idx >= 0) {
-                                profileToWrite.ProfileList.RemoveAt(idx);
-                                profileToWrite.ProfileList.Insert(idx, Profiles.ActiveProfile);
-                            }
-
-                            profileToWrite.ActiveProfileId = Profiles.ActiveProfileId;
-
-                            /*Newly added profiles */
-                            var excludedIDs = new HashSet<Guid>(profileToWrite.ProfileList.Select(p => p.Id));
-                            var profilesToAdd = this.Profiles.ProfileList.Where(x => !excludedIDs.Contains(x.Id));
-
-                            foreach (var p in profilesToAdd) {
-                                profileToWrite.Add(p);
-                            }
-
-                            excludedIDs = new HashSet<Guid>(Profiles.ProfileList.Select(p => p.Id));
-                            var profilesToDelete = profileToWrite.ProfileList.Where(x => !excludedIDs.Contains(x.Id)).ToArray();
-                            for (var i = profilesToDelete.Length - 1; i >= 0; i--) {
-                                profileToWrite.ProfileList.Remove(profilesToDelete[i]);
-                            }
+                using (var fs = TryGetExclusiveProfileStream(FileMode.OpenOrCreate, FileAccess.ReadWrite)) {
+                    var serializer = new DataContractSerializer(typeof(Profiles));
+                    Profiles profileToWrite = Profiles;
+                    if (fs.Length > 0) {
+                        /* Copy file to temp file */
+                        using (var copyStream = new FileStream(PROFILETEMPFILEPATH, FileMode.Create, FileAccess.Write)) {
+                            fs.CopyTo(copyStream);
+                            //Reset filestream position
+                            fs.Position = 0;
                         }
 
-                        //Reset filestream content and position
-                        fs.Position = 0;
-                        fs.SetLength(0);
-                        serializer = new DataContractSerializer(typeof(Profiles));
-                        serializer.WriteObject(fs, profileToWrite);
+                        /* Read profiles from file, replace current profile in file with actual profile */
+                        var obj = serializer.ReadObject(fs);
+                        profileToWrite = (Profiles)obj;
 
-                        //Delete Temp file
-                        File.Delete(PROFILETEMPFILEPATH);
+                        var idx = -1;
+                        for (var i = 0; i < profileToWrite.ProfileList.Count; i++) {
+                            if (Profiles.ActiveProfileId == profileToWrite.ProfileList[i].Id) {
+                                idx = i;
+                                break;
+                            }
+                        }
+                        if (idx >= 0) {
+                            profileToWrite.ProfileList.RemoveAt(idx);
+                            profileToWrite.ProfileList.Insert(idx, Profiles.ActiveProfile);
+                        }
+
+                        profileToWrite.ActiveProfileId = Profiles.ActiveProfileId;
+
+                        /*Newly added profiles */
+                        var excludedIDs = new HashSet<Guid>(profileToWrite.ProfileList.Select(p => p.Id));
+                        var profilesToAdd = this.Profiles.ProfileList.Where(x => !excludedIDs.Contains(x.Id));
+
+                        foreach (var p in profilesToAdd) {
+                            profileToWrite.Add(p);
+                        }
+
+                        excludedIDs = new HashSet<Guid>(Profiles.ProfileList.Select(p => p.Id));
+                        var profilesToDelete = profileToWrite.ProfileList.Where(x => !excludedIDs.Contains(x.Id)).ToArray();
+                        for (var i = profilesToDelete.Length - 1; i >= 0; i--) {
+                            profileToWrite.ProfileList.Remove(profilesToDelete[i]);
+                        }
                     }
+
+                    //Reset filestream content and position
+                    fs.Position = 0;
+                    fs.SetLength(0);
+                    serializer = new DataContractSerializer(typeof(Profiles));
+                    serializer.WriteObject(fs, profileToWrite);
+
+                    //Delete Temp file
+                    File.Delete(PROFILETEMPFILEPATH);
                 }
             } catch (Exception ex) {
                 Logger.Error(ex);

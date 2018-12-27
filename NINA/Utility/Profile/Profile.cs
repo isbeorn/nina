@@ -52,8 +52,6 @@ namespace NINA.Utility.Profile {
     [KnownType(typeof(FlatWizardSettings))]
     public class Profile : BaseINPC, IProfile {
 
-        private const int PROFILESAVE_DELAY = 1000;
-
         public Profile() {
             Initialize();
         }
@@ -92,7 +90,7 @@ namespace NINA.Utility.Profile {
         }
 
         private void SettingsChanged(object sender, PropertyChangedEventArgs e) {
-            DelayedPropertyChanged("Settings", TimeSpan.FromMilliseconds(PROFILESAVE_DELAY));
+            RaisePropertyChanged("Settings");
         }
 
         public Profile(string name) : this() {
