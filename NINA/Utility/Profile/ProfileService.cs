@@ -319,7 +319,11 @@ namespace NINA.Utility.Profile {
         public void SelectProfile(Guid guid) {
             UnregisterChangedEventHandlers();
             Profiles.SelectProfile(guid);
+
+            System.Threading.Thread.CurrentThread.CurrentUICulture = ActiveProfile.ApplicationSettings.Language;
+            System.Threading.Thread.CurrentThread.CurrentCulture = ActiveProfile.ApplicationSettings.Language;
             Locale.Loc.Instance.ReloadLocale(ActiveProfile.ApplicationSettings.Culture);
+
             LocaleChanged?.Invoke(this, null);
             ProfileChanged?.Invoke(this, null);
             LocationChanged?.Invoke(this, null);
