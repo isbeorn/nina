@@ -609,6 +609,10 @@ namespace NINA.ViewModel {
 
             Devices.Add(new Model.DummyDevice(Locale.Loc.Instance["LblNoCamera"]));
 
+#if DEBUG
+            Devices.Add(new Model.MyCamera.SimulatorCamera());
+#endif
+
             /* ASI */
             try {
                 Logger.Trace("Adding ASI Cameras");
