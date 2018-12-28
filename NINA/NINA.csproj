@@ -311,6 +311,7 @@
     <Compile Include="Model\MyCamera\ImageArray.cs" />
     <Compile Include="Model\MyCamera\ImageStatistics.cs" />
     <Compile Include="Model\MyCamera\NikonCamera.cs" />
+    <Compile Include="Model\MyCamera\SimulatorCamera.cs" />
     <Compile Include="Model\MyFilterWheel\FilterInfo.cs" />
     <Compile Include="Model\MyCamera\SensorType.cs" />
     <Compile Include="Model\MyCamera\ToupTekCamera.cs" />
@@ -736,6 +737,9 @@
     <Compile Include="View\SequenceView.xaml.cs">
       <DependentUpon>SequenceView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\SimulatorCameraSetupView.xaml.cs">
+      <DependentUpon>SimulatorCameraSetupView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\SkyAtlasView.xaml.cs">
       <DependentUpon>SkyAtlasView.xaml</DependentUpon>
     </Compile>
@@ -1104,6 +1108,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\SequenceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\SimulatorCameraSetupView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
