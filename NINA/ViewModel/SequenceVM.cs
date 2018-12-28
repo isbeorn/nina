@@ -640,6 +640,8 @@ namespace NINA.ViewModel {
         }
 
         public async Task<bool> SetSequenceCoordiantes(DeepSkyObject dso) {
+            Sequence.PropertyChanged -= _sequence_PropertyChanged;
+
             var sequenceDso = new DeepSkyObject(dso.AlsoKnownAs.FirstOrDefault() ?? dso.Name ?? string.Empty, dso.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
             sequenceDso.Rotation = dso.Rotation;
             await Task.Run(() => {
@@ -647,6 +649,9 @@ namespace NINA.ViewModel {
             });
 
             Sequence.SetSequenceTarget(sequenceDso);
+
+            Sequence.PropertyChanged += _sequence_PropertyChanged;
+
             return true;
         }
 
