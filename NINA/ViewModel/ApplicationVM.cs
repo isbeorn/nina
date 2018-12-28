@@ -551,6 +551,7 @@ namespace NINA.ViewModel {
         GUIDER,
         SKYATLAS,
         FRAMINGASSISTANT,
+        FLATWIZARD,
         SEQUENCE,
         IMAGING,
         OPTIONS
