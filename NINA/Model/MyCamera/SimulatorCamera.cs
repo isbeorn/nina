@@ -22,6 +22,8 @@
 #endregion "copyright"
 
 using NINA.Utility;
+using NINA.Utility.Profile;
+using NINA.Utility.WindowService;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,11 +32,24 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
 namespace NINA.Model.MyCamera {
 
-    public class SimulatorCamera : ICamera {
+    public class SimulatorCamera : BaseINPC, ICamera {
+
+        public SimulatorCamera(IProfileService profileService) {
+            this.profileService = profileService;
+            RandomImageWidth = 640;
+            RandomImageHeight = 480;
+            RandomImageMean = 5000;
+            RandomImageStdDev = 100;
+            LoadImageCommand = new AsyncCommand<bool>(() => LoadImage());
+            UnloadImageCommand = new RelayCommand((object o) => Image = null);
+        }
+
+        private object lockObj = new object();
 
         public bool HasShutter {
             get {
@@ -425,8 +440,6 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public void AbortExposure() {
             throw new NotImplementedException();
         }
@@ -441,52 +454,136 @@ namespace NINA.Model.MyCamera {
         }
 
         public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
-            if (_image != null) {
-                return _image;
+            int width, height, mean, stdev;
+            lock (lockObj) {
+                if (Image != null) {
+                    return Image;
+                }
+
+                width = RandomImageWidth;
+                height = RandomImageHeight;
+                mean = RandomImageMean;
+                stdev = RandomImageStdDev;
             }
 
-            int width = 3;
-            int height = 3;
             ushort[] input = new ushort[width * height];
-            input = new ushort[9] { 3, 8, 8, 8, 8, 9, 9, 9, 9 };
 
-            /*Random rand = new Random(); //reuse this if you are generating manydouble mean = 5000;
-            double stdDev = 500;
+            Random rand = new Random();
             for (int i = 0; i < width * height; i++) {
                 double u1 = 1.0 - rand.NextDouble(); //uniform(0,1] random doubles
                 double u2 = 1.0 - rand.NextDouble();
                 double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) *
                              Math.Sin(2.0 * Math.PI * u2); //random normal(0,1)
-                double randNormal = mean + stdDev * randStdNormal; //random normal(mean,stdDev^2)
+                double randNormal = mean + stdev * randStdNormal; //random normal(mean,stdDev^2)
                 input[i] = (ushort)randNormal;
-            }*/
+            }
 
-            return await ImageArray.CreateInstance(input, width, height, 16, false, true, 100);
+            return await ImageArray.CreateInstance(input, width, height, 16, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+        }
+
+        private int randomImageWidth;
+        private IProfileService profileService;
+
+        public int RandomImageWidth {
+            get => randomImageWidth;
+            set {
+                lock (lockObj) {
+                    randomImageWidth = value;
+                }
+                RaisePropertyChanged();
+            }
+        }
+
+        private int randomImageHeight;
+
+        public int RandomImageHeight {
+            get => randomImageHeight;
+            set {
+                lock (lockObj) {
+                    randomImageHeight = value;
+                }
+                RaisePropertyChanged();
+            }
+        }
+
+        private int randomImageMean;
+
+        public int RandomImageMean {
+            get => randomImageMean;
+            set {
+                lock (lockObj) {
+                    randomImageMean = value;
+                }
+                RaisePropertyChanged();
+            }
+        }
+
+        private int randomImageStdDev;
+
+        public int RandomImageStdDev {
+            get => randomImageStdDev;
+            set {
+                lock (lockObj) {
+                    randomImageStdDev = value;
+                }
+                RaisePropertyChanged();
+            }
         }
 
         public void SetBinning(short x, short y) {
         }
 
+        private IWindowService windowService;
+
+        public IWindowService WindowService {
+            get {
+                if (windowService == null) {
+                    windowService = new WindowService();
+                }
+                return windowService;
+            }
+            set {
+                windowService = value;
+            }
+        }
+
         public void SetupDialog() {
+            WindowService.Show(this, "Simulator Setup", System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
+        }
+
+        private async Task<bool> LoadImage() {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
-            dialog.Title = Locale.Loc.Instance["LblLoadSequence"];
+            dialog.Title = "Load Image";
             dialog.FileName = "Image";
             dialog.DefaultExt = ".tiff";
 
             if (dialog.ShowDialog() == true) {
                 TiffBitmapDecoder TifDec = new TiffBitmapDecoder(new Uri(dialog.FileName), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
                 BitmapFrame bmp = TifDec.Frames[0];
-                int stride = bmp.PixelWidth * ((bmp.Format.BitsPerPixel + 7) / 8);
+                int stride = (bmp.PixelWidth * bmp.Format.BitsPerPixel + 7) / 8;
                 int arraySize = stride * bmp.PixelHeight;
                 ushort[] pixels = new ushort[(int)(bmp.Width * bmp.Height)];
                 bmp.CopyPixels(pixels, stride, 0);
-                Task.Run(async () => {
-                    _image = await ImageArray.CreateInstance(pixels, (int)bmp.Width, (int)bmp.Height, 16, false, true, 100);
-                });
+                Image = await ImageArray.CreateInstance(pixels, (int)bmp.Width, (int)bmp.Height, 16, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                return true;
             }
+            return false;
         }
 
+        public IAsyncCommand LoadImageCommand { get; private set; }
+        public ICommand UnloadImageCommand { get; private set; }
+
         private ImageArray _image;
+
+        public ImageArray Image {
+            get => _image;
+            set {
+                lock (lockObj) {
+                    _image = value;
+                }
+                RaisePropertyChanged();
+            }
+        }
 
         public void StartExposure(CaptureSequence captureSequence) {
         }
