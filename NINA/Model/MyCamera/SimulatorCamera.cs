@@ -124,13 +124,13 @@ namespace NINA.Model.MyCamera {
 
         public int CameraXSize {
             get {
-                return -1;
+                return Image?.Statistics?.Width ?? RandomImageWidth;
             }
         }
 
         public int CameraYSize {
             get {
-                return -1;
+                return Image?.Statistics?.Height ?? RandomImageHeight;
             }
         }
 
@@ -491,6 +491,7 @@ namespace NINA.Model.MyCamera {
                     randomImageWidth = value;
                 }
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(CameraXSize));
             }
         }
 
@@ -503,6 +504,7 @@ namespace NINA.Model.MyCamera {
                     randomImageHeight = value;
                 }
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(CameraYSize));
             }
         }
 
@@ -582,6 +584,8 @@ namespace NINA.Model.MyCamera {
                     _image = value;
                 }
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(CameraXSize));
+                RaisePropertyChanged(nameof(CameraYSize));
             }
         }
 
