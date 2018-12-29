@@ -60,10 +60,9 @@ namespace NINA.ViewModel {
             this.telescopeMediator.RegisterConsumer(this);
             this.applicationStatusMediator = applicationStatusMediator;
 
-            _updateValues = new DispatcherTimer();
-            _updateValues.Interval = TimeSpan.FromSeconds(10);
-            _updateValues.Tick += UpdateValues_Tick;
-            _updateValues.Start();
+            updateValues = new DispatcherTimer();
+            updateValues.Interval = TimeSpan.FromSeconds(10);
+            updateValues.Tick += UpdateValues_Tick;
 
             MeasureAzimuthErrorCommand = new AsyncCommand<bool>(
                 () => MeasurePolarError(new Progress<ApplicationStatus>(p => AzimuthPolarErrorStatus = p), Direction.AZIMUTH),
@@ -82,13 +81,13 @@ namespace NINA.ViewModel {
                 (p) => (TelescopeInfo?.Connected == true && CameraInfo?.Connected == true));
             CancelDARVSlewCommand = new RelayCommand(
                 Canceldarvslew,
-                (p) => _cancelDARVSlewToken != null);
+                (p) => cancelDARVSlewToken != null);
             CancelMeasureAltitudeErrorCommand = new RelayCommand(
                 CancelMeasurePolarError,
-                (p) => _cancelMeasureErrorToken != null);
+                (p) => cancelMeasureErrorToken != null);
             CancelMeasureAzimuthErrorCommand = new RelayCommand(
                 CancelMeasurePolarError,
-                (p) => _cancelMeasureErrorToken != null);
+                (p) => cancelMeasureErrorToken != null);
 
             DARVSlewDuration = 60;
             DARVSlewRate = 0.01;
@@ -102,53 +101,71 @@ namespace NINA.ViewModel {
             };
         }
 
-        private ApplicationStatus _status;
+        public override void Hide(object o) {
+            this.IsVisible = !IsVisible;
+        }
+
+        public new bool IsVisible {
+            get => _isVisible;
+            set {
+                _isVisible = value;
+                RaisePropertyChanged();
+                if (_isVisible) {
+                    UpdateValues_Tick(null, null);
+                    updateValues.Start();
+                } else {
+                    updateValues.Stop();
+                }
+            }
+        }
+
+        private ApplicationStatus status;
 
         public ApplicationStatus Status {
             get {
-                return _status;
+                return status;
             }
             set {
-                _status = value;
-                _status.Source = Title;
-                _status.Status = _status.Status + " " + _darvStatus;
+                status = value;
+                status.Source = Title;
+                status.Status = status.Status + " " + darvStatus;
                 RaisePropertyChanged();
 
-                this.applicationStatusMediator.StatusUpdate(_status);
+                this.applicationStatusMediator.StatusUpdate(status);
             }
         }
 
-        private PlateSolving.PlateSolveResult _plateSolveResult;
+        private PlateSolving.PlateSolveResult plateSolveResult;
 
         public PlateSolving.PlateSolveResult PlateSolveResult {
             get {
-                return _plateSolveResult;
+                return plateSolveResult;
             }
             set {
-                _plateSolveResult = value;
+                plateSolveResult = value;
                 RaisePropertyChanged();
             }
         }
 
-        private double _rotation;
+        private double rotation;
 
         public double Rotation {
             get {
-                return _rotation;
+                return rotation;
             }
             set {
-                _rotation = value;
+                rotation = value;
                 RaisePropertyChanged();
             }
         }
 
         public string HourAngleTime {
             get {
-                return _hourAngleTime;
+                return hourAngleTime;
             }
 
             set {
-                _hourAngleTime = value;
+                hourAngleTime = value;
                 RaisePropertyChanged();
             }
         }
@@ -157,7 +174,7 @@ namespace NINA.ViewModel {
 
         public ICommand CancelMeasureAzimuthErrorCommand { get; private set; }
 
-        private CancellationTokenSource _cancelMeasureErrorToken;
+        private CancellationTokenSource cancelMeasureErrorToken;
 
         public IAsyncCommand MeasureAltitudeErrorCommand { get; private set; }
 
@@ -165,18 +182,18 @@ namespace NINA.ViewModel {
 
         public IAsyncCommand DARVSlewCommand { get; private set; }
 
-        private CancellationTokenSource _cancelDARVSlewToken;
+        private CancellationTokenSource cancelDARVSlewToken;
 
         public ICommand CancelDARVSlewCommand { get; private set; }
 
-        private double _dARVSlewRate;
+        private double dARVSlewRate;
 
         public double DARVSlewRate {
             get {
-                return _dARVSlewRate;
+                return dARVSlewRate;
             }
             set {
-                _dARVSlewRate = value;
+                dARVSlewRate = value;
                 RaisePropertyChanged();
             }
         }
@@ -228,100 +245,100 @@ namespace NINA.ViewModel {
             }
         }
 
-        private double _dARVSlewDuration;
+        private double dARVSlewDuration;
 
         public double DARVSlewDuration {
             get {
-                return _dARVSlewDuration;
+                return dARVSlewDuration;
             }
             set {
-                _dARVSlewDuration = value;
+                dARVSlewDuration = value;
                 RaisePropertyChanged();
             }
         }
 
-        private string _hourAngleTime;
+        private string hourAngleTime;
         private ICameraMediator cameraMediator;
         private IApplicationStatusMediator applicationStatusMediator;
-        private DispatcherTimer _updateValues;
+        private DispatcherTimer updateValues;
 
-        private BinningMode _snapBin;
-        private Model.MyFilterWheel.FilterInfo _snapFilter;
-        private double _snapExposureDuration;
+        private BinningMode snapBin;
+        private Model.MyFilterWheel.FilterInfo snapFilter;
+        private double snapExposureDuration;
 
         public BinningMode SnapBin {
             get {
-                return _snapBin;
+                return snapBin;
             }
 
             set {
-                _snapBin = value;
+                snapBin = value;
                 RaisePropertyChanged();
             }
         }
 
-        private short _snapGain = -1;
+        private short snapGain = -1;
 
         public short SnapGain {
             get {
-                return _snapGain;
+                return snapGain;
             }
 
             set {
-                _snapGain = value;
+                snapGain = value;
                 RaisePropertyChanged();
             }
         }
 
         public Model.MyFilterWheel.FilterInfo SnapFilter {
             get {
-                return _snapFilter;
+                return snapFilter;
             }
 
             set {
-                _snapFilter = value;
+                snapFilter = value;
                 RaisePropertyChanged();
             }
         }
 
         public double SnapExposureDuration {
             get {
-                return _snapExposureDuration;
+                return snapExposureDuration;
             }
 
             set {
-                _snapExposureDuration = value;
+                snapExposureDuration = value;
                 RaisePropertyChanged();
             }
         }
 
-        private ApplicationStatus _altitudepolarErrorStatus;
+        private ApplicationStatus altitudepolarErrorStatus;
 
         public ApplicationStatus AltitudePolarErrorStatus {
             get {
-                return _altitudepolarErrorStatus;
+                return altitudepolarErrorStatus;
             }
 
             set {
-                _altitudepolarErrorStatus = value;
-                _altitudepolarErrorStatus.Source = Title;
+                altitudepolarErrorStatus = value;
+                altitudepolarErrorStatus.Source = Title;
                 RaisePropertyChanged();
-                this.applicationStatusMediator.StatusUpdate(_altitudepolarErrorStatus);
+                this.applicationStatusMediator.StatusUpdate(altitudepolarErrorStatus);
             }
         }
 
-        private ApplicationStatus _azimuthpolarErrorStatus;
+        private ApplicationStatus azimuthpolarErrorStatus;
 
         public ApplicationStatus AzimuthPolarErrorStatus {
             get {
-                return _azimuthpolarErrorStatus;
+                return azimuthpolarErrorStatus;
             }
 
             set {
-                _azimuthpolarErrorStatus = value;
-                _azimuthpolarErrorStatus.Source = Title;
+                azimuthpolarErrorStatus = value;
+                azimuthpolarErrorStatus.Source = Title;
                 RaisePropertyChanged();
-                this.applicationStatusMediator.StatusUpdate(_azimuthpolarErrorStatus);
+                this.applicationStatusMediator.StatusUpdate(azimuthpolarErrorStatus);
             }
         }
 
@@ -337,14 +354,14 @@ namespace NINA.ViewModel {
             return asec.ToString("N" + precision) + "'' (arcsec)";
         }
 
-        private string _darvStatus;
+        private string darvStatus;
 
         public string DarvStatus {
             get {
-                return _darvStatus;
+                return darvStatus;
             }
             set {
-                _darvStatus = value;
+                darvStatus = value;
                 RaisePropertyChanged();
             }
         }
@@ -393,14 +410,14 @@ namespace NINA.ViewModel {
 
         private async Task<bool> Darvslew(IProgress<ApplicationStatus> cameraprogress, IProgress<string> slewprogress) {
             if (CameraInfo?.Connected == true) {
-                _cancelDARVSlewToken = new CancellationTokenSource();
+                cancelDARVSlewToken = new CancellationTokenSource();
                 try {
                     var oldAutoStretch = imagingMediator.SetAutoStretch(true);
                     var oldDetectStars = imagingMediator.SetDetectStars(false);
 
                     var seq = new CaptureSequence(DARVSlewDuration + 5, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
-                    var capture = imagingMediator.CaptureAndPrepareImage(seq, _cancelDARVSlewToken.Token, cameraprogress);
-                    var slew = DarvTelescopeSlew(slewprogress, _cancelDARVSlewToken.Token);
+                    var capture = imagingMediator.CaptureAndPrepareImage(seq, cancelDARVSlewToken.Token, cameraprogress);
+                    var slew = DarvTelescopeSlew(slewprogress, cancelDARVSlewToken.Token);
 
                     await Task.WhenAll(capture, slew);
 
@@ -416,14 +433,14 @@ namespace NINA.ViewModel {
         }
 
         private void Canceldarvslew(object o) {
-            _cancelDARVSlewToken?.Cancel();
+            cancelDARVSlewToken?.Cancel();
         }
 
         private void CancelMeasurePolarError(object o) {
-            _cancelMeasureErrorToken?.Cancel();
+            cancelMeasureErrorToken?.Cancel();
         }
 
-        private AltitudeSite _altitudeSiteType;
+        private AltitudeSite altitudeSiteType;
 
         private CameraInfo cameraInfo;
 
@@ -439,10 +456,10 @@ namespace NINA.ViewModel {
 
         public AltitudeSite AltitudeSiteType {
             get {
-                return _altitudeSiteType;
+                return altitudeSiteType;
             }
             set {
-                _altitudeSiteType = value;
+                altitudeSiteType = value;
                 RaisePropertyChanged();
             }
         }
@@ -463,11 +480,11 @@ namespace NINA.ViewModel {
 
         private async Task<bool> MeasurePolarError(IProgress<ApplicationStatus> progress, Direction direction) {
             if (CameraInfo?.Connected == true) {
-                _cancelMeasureErrorToken = new CancellationTokenSource();
+                cancelMeasureErrorToken = new CancellationTokenSource();
                 try {
-                    double poleErr = await CalculatePoleError(progress, _cancelMeasureErrorToken.Token);
+                    double poleErr = await CalculatePoleError(progress, cancelMeasureErrorToken.Token);
                     string poleErrString = Deg2str(Math.Abs(poleErr), 4);
-                    _cancelMeasureErrorToken.Token.ThrowIfCancellationRequested();
+                    cancelMeasureErrorToken.Token.ThrowIfCancellationRequested();
                     if (double.IsNaN(poleErr)) {
                         /* something went wrong */
                         progress.Report(new ApplicationStatus() { Status = string.Empty });

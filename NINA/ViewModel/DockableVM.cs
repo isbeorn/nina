@@ -114,7 +114,7 @@ namespace NINA.ViewModel {
 
         public ICommand HideCommand { get; private set; }
 
-        public void Hide(object o) {
+        public virtual void Hide(object o) {
             this.IsVisible = !IsVisible;
         }
     }
