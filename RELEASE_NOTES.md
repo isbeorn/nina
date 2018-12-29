@@ -44,6 +44,10 @@
     - Autostretch now has black point clipping options
     - Vastly improved Image Statistics calculation.
 	- Estimated Finish Time will automatically update in the sequencing view
+	- Framing tab: 
+		- Moved coordinates out of framing boxes to not obscure target
+		- Added a new button to be able to add the framing target to a sequence instead of replacing
+		- Control to adjust opacity of framing box
 
 ___
 
