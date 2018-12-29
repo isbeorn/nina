@@ -318,7 +318,18 @@
                             ItemsSource="{Binding ColorSchemas.Items}"
                             SelectedValue="{Binding ColorSchemaName}"
                             SelectedValuePath="Name" />
-                        <Grid />
+                        <Button
+                            Width="40"
+                            Height="30"
+                            Margin="5,5,0,0"
+                            HorizontalAlignment="Left"
+                            Command="{Binding CopyToCustomSchemaCommand}">
+                            <Path
+                                Margin="5"
+                                Data="{StaticResource CopySVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform" />
+                        </Button>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
                                 Width="170"
@@ -493,7 +504,18 @@
                             ItemsSource="{Binding ColorSchemas.Items}"
                             SelectedValue="{Binding AlternativeColorSchemaName}"
                             SelectedValuePath="Name" />
-                        <Grid />
+                        <Button
+                            Width="40"
+                            Height="30"
+                            Margin="5,5,0,0"
+                            HorizontalAlignment="Left"
+                            Command="{Binding CopyToAlternativeCustomSchemaCommand}">
+                            <Path
+                                Margin="5"
+                                Data="{StaticResource CopySVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform" />
+                        </Button>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
                                 Width="170"
