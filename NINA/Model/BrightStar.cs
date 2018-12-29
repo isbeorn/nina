@@ -55,19 +55,19 @@ namespace NINA.Model {
         public void CalculateAltitude(double latitude, double longitude) {
             var start = DateTime.UtcNow;
             var siderealTime = Astrometry.GetLocalSiderealTime(start, longitude);
-            var hourAngle = Astrometry.GetHourAngle(siderealTime, this.Coordinates.RA);
+            var hourAngle = Astrometry.GetHourAngle(siderealTime, Coordinates.RA);
 
             var degAngle = Astrometry.HoursToDegrees(hourAngle);
-            Altitude = Astrometry.GetAltitude(degAngle, latitude, this.Coordinates.Dec);
-            Azimuth = Astrometry.GetAzimuth(degAngle, Altitude, latitude, this.Coordinates.Dec);
+            Altitude = Astrometry.GetAltitude(degAngle, latitude, Coordinates.Dec);
+            Azimuth = Astrometry.GetAzimuth(degAngle, Altitude, latitude, Coordinates.Dec);
         }
 
-        private double _altitude;
+        private double altitude;
 
         public double Altitude {
-            get => _altitude;
+            get => altitude;
             set {
-                _altitude = value;
+                altitude = value;
                 RaisePropertyChanged();
             }
         }
