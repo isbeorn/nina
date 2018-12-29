@@ -776,4 +776,5 @@ Calculated HFR: {2}
     <s:String x:Key="LblLblBlackClippingTooltip">Black clipping factor in sigma units from the median</s:String>
     <s:String x:Key="LblReplaceSequenceTarget">Replace as Sequence Target</s:String>
     <s:String x:Key="LblAddSequenceTarget">Add as Sequence Target</s:String>
+    <s:String x:Key="LblOpacity">Opacity</s:String>
 </ResourceDictionary>

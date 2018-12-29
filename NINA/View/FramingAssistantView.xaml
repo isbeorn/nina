@@ -404,8 +404,17 @@
 
         <Grid Grid.Column="2">
             <local:ImageView Image="{Binding ImageParameter.Image, IsAsync=True}">
-                <!--<local:ImageView.ButtonHeaderContent>
-            </local:ImageView.ButtonHeaderContent>-->
+                <local:ImageView.ButtonHeaderContent>
+                    <StackPanel Margin="0,0,2,0" Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOpacity}" />
+                        <ninactrl:StepperControl
+                            Margin="2,0,0,0"
+                            MaxValue="1"
+                            MinValue="0"
+                            StepSize=".1"
+                            Value="{Binding Opacity, Mode=TwoWay}" />
+                    </StackPanel>
+                </local:ImageView.ButtonHeaderContent>
                 <local:ImageView.ImageAreaContent>
                     <Grid>
                         <Grid.Resources>
@@ -428,7 +437,7 @@
                                             StrokeThickness="5">
 
                                             <Rectangle.Fill>
-                                                <SolidColorBrush Opacity=".1" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
+                                                <SolidColorBrush Opacity="{Binding Path=FramingAssistantVM.Opacity, Source={StaticResource AppVM}}" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
                                             </Rectangle.Fill>
                                         </Rectangle>
                                         <TextBlock

@@ -56,6 +56,7 @@ namespace NINA.ViewModel {
             this.applicationStatusMediator = applicationStatusMediator;
 
             Cache = new CacheSkySurvey(profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory);
+            Opacity = 0.2;
 
             var defaultCoordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
             DSO = new DeepSkyObject(string.Empty, defaultCoordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
@@ -135,6 +136,16 @@ namespace NINA.ViewModel {
         private void ApplicationSettings_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             Cache = new CacheSkySurvey(profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory);
             RaisePropertyChanged(nameof(ImageCacheInfo));
+        }
+
+        private double opacity;
+
+        public double Opacity {
+            get => opacity;
+            set {
+                opacity = value;
+                RaisePropertyChanged();
+            }
         }
 
         private ISkySurveyFactory skySurveyFactory;
