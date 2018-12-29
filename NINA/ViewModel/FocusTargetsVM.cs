@@ -51,10 +51,8 @@ namespace NINA.ViewModel {
         public ObservableCollection<FocusTarget> FocusTargets {
             get => focusTargets;
             set {
-                var selectedBrightStarName = selectedFocusTarget?.Name;
                 focusTargets = value;
                 RaisePropertyChanged();
-                SelectedFocusTarget = value.SingleOrDefault(b => b.Name == selectedBrightStarName) ?? value.First();
             }
         }
 
@@ -69,6 +67,7 @@ namespace NINA.ViewModel {
         }
 
         private void CalculateVisibleStars() {
+            var selectedBrightStarName = selectedFocusTarget?.Name;
             var longitude = profileService.ActiveProfile.AstrometrySettings.Longitude;
             var latitude = profileService.ActiveProfile.AstrometrySettings.Latitude;
             foreach (var target in allFocusTargets) {
@@ -76,6 +75,7 @@ namespace NINA.ViewModel {
             }
 
             FocusTargets = new ObservableCollection<FocusTarget>(allFocusTargets.Where(b => b.Altitude > 10).OrderByDescending(b => b.Altitude));
+            SelectedFocusTarget = FocusTargets.SingleOrDefault(b => b.Name == selectedBrightStarName) ?? FocusTargets.First();
         }
 
         public void UpdateDeviceInfo(TelescopeInfo deviceInfo) {
