@@ -1,21 +1,26 @@
-﻿<UserControl x:Class="NINA.View.FlatWizardUserPrompt"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                 xmlns:util="clr-namespace:NINA.Utility"
-                     xmlns:ns="clr-namespace:NINA.Locale"
-             xmlns:local="clr-namespace:NINA.View"
-             mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Margin="5 5 5 5">
+﻿<UserControl
+    x:Class="NINA.View.FlatWizardUserPrompt"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:NINA.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ns="clr-namespace:NINA.Locale"
+    xmlns:util="clr-namespace:NINA.Utility"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <Grid Margin="5,5,5,5">
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <TextBlock Margin="10" Text="{Binding Text}" Grid.Row="0" />
+        <TextBlock
+            Grid.Row="0"
+            Margin="10"
+            Text="{Binding Text}" />
 
         <GroupBox Grid.Row="1" Header="{ns:Loc LblFlatUserCurrentExposureCalculation}">
             <Grid Margin="5">
@@ -28,18 +33,30 @@
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0"
-                           Text="{ns:Loc LblCurrentMean}" />
-                <TextBlock Grid.Row="0" Grid.Column="1"
-                           Text="{Binding CurrentMean}" />
-                <TextBlock Grid.Row="1" Grid.Column="0"
-                           Text="{ns:Loc LblBitDepthADU}" />
-                <TextBlock Grid.Row="1" Grid.Column="1"
-                           Text="{Binding CameraBitDepth}" />
-                <TextBlock Grid.Row="2" Grid.Column="0"
-                           Text="{ns:Loc LblEstimatedExposureTime}" />
-                <TextBlock Grid.Row="2" Grid.Column="1"
-                           Text="{Binding ExpectedExposureTime}" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Text="{ns:Loc LblCurrentMean}" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Text="{Binding CurrentMean}" />
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Text="{ns:Loc LblBitDepthADU}" />
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Text="{Binding CameraBitDepth}" />
+                <TextBlock
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Text="{ns:Loc LblEstimatedExposureTime}" />
+                <TextBlock
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Text="{Binding ExpectedExposureTime}" />
             </Grid>
         </GroupBox>
 

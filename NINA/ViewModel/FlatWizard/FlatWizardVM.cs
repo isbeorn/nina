@@ -88,9 +88,7 @@ namespace NINA.ViewModel.FlatWizard {
                 MaxFlatExposureTime = profileService.ActiveProfile.CameraSettings.MaxFlatExposureTime,
                 MinFlatExposureTime = profileService.ActiveProfile.CameraSettings.MinFlatExposureTime,
                 StepSize = profileService.ActiveProfile.FlatWizardSettings.StepSize
-            });
-
-            SingleFlatWizardFilterSettings.CameraInfo = cameraInfo;
+            }, cameraInfo?.BitDepth ?? (int)profileService.ActiveProfile.CameraSettings.BitDepth);
 
             FlatCount = profileService.ActiveProfile.FlatWizardSettings.FlatCount;
             DarkFlatCount = profileService.ActiveProfile.FlatWizardSettings.DarkFlatCount;
@@ -99,21 +97,26 @@ namespace NINA.ViewModel.FlatWizard {
             Filters = new ObservableCollection<FlatWizardFilterSettingsWrapper>();
 
             profileService.ProfileChanged += (sender, args) => {
-                profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.CollectionChanged += UpdateFilterWheelsSettings;
-                UpdateFilterWheelsSettings(null, null);
+                watchedFilterList.CollectionChanged -= FiltersCollectionChanged;
+                watchedFilterList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+                watchedFilterList.CollectionChanged += FiltersCollectionChanged;
+                UpdateFilterWheelsSettings();
             };
 
-            profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.CollectionChanged += UpdateFilterWheelsSettings;
+            watchedFilterList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+            watchedFilterList.CollectionChanged += FiltersCollectionChanged;
             SingleFlatWizardFilterSettings.Settings.PropertyChanged += UpdateProfileValues;
 
             // first update filters
 
-            UpdateFilterWheelsSettings(null, null);
+            UpdateFilterWheelsSettings();
 
             // then register consumer and get the cameraInfo so it's populated to all filters including the singleflatwizardfiltersettings
 
             cameraMediator.RegisterConsumer(this);
         }
+
+        private ObserveAllCollection<FilterInfo> watchedFilterList;
 
         private enum FilterCaptureMode {
             SINGLE = 0,
@@ -436,32 +439,40 @@ namespace NINA.ViewModel.FlatWizard {
             return true;
         }
 
-        private void UpdateFilterWheelsSettings(object sender, NotifyCollectionChangedEventArgs e) {
-            var selectedFilter = SelectedFilter;
-            var newList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Select(s => new FlatWizardFilterSettingsWrapper(s, s.FlatWizardFilterSettings)).ToList();
-            var tempList = new FlatWizardFilterSettingsWrapper[Filters.Count];
-            Filters.CopyTo(tempList, 0);
-            foreach (var item in tempList) {
-                var newListItem = newList.SingleOrDefault(f => f.Filter.Name == item.Filter.Name);
-                Filters[Filters.IndexOf(item)] = newListItem;
-                newList.Remove(newListItem);
+        private void FiltersCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+            if (watchedFilterList.Count != filters.Count) {
+                UpdateFilterWheelsSettings();
             }
+        }
 
-            foreach (var item in newList) {
-                item.CameraInfo = cameraInfo;
-                Filters.Add(item);
+        private void UpdateFilterWheelsSettings() {
+            using (MyStopWatch.Measure()) {
+                var selectedFilter = SelectedFilter;
+                var newList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters
+                    .Select(s => new FlatWizardFilterSettingsWrapper(s, s.FlatWizardFilterSettings, cameraInfo?.BitDepth ?? (int)profileService.ActiveProfile.CameraSettings.BitDepth)).ToList();
+                var tempList = new FlatWizardFilterSettingsWrapper[Filters.Count];
+                Filters.CopyTo(tempList, 0);
+                foreach (var item in tempList) {
+                    var newListItem = newList.SingleOrDefault(f => f.Filter.Name == item.Filter.Name);
+                    Filters[Filters.IndexOf(item)] = newListItem;
+                    newList.Remove(newListItem);
+                }
+
+                foreach (var item in newList) {
+                    Filters.Add(item);
+                }
+
+                while (Filters.Contains(null)) {
+                    Filters.Remove(null);
+                }
+
+                if (selectedFilter != null) {
+                    SelectedFilter = Filters.FirstOrDefault(f => f.Filter.Name == selectedFilter.Name)?.Filter;
+                }
+
+                RaisePropertyChanged(nameof(Filters));
+                RaisePropertyChanged(nameof(FilterInfos));
             }
-
-            while (Filters.Contains(null)) {
-                Filters.Remove(null);
-            }
-
-            if (selectedFilter != null) {
-                SelectedFilter = Filters.FirstOrDefault(f => f.Filter.Name == selectedFilter.Name)?.Filter;
-            }
-
-            RaisePropertyChanged(nameof(Filters));
-            RaisePropertyChanged(nameof(FilterInfos));
         }
 
         private void UpdateProfileValues(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
@@ -499,13 +510,15 @@ namespace NINA.ViewModel.FlatWizard {
         }
 
         public void UpdateDeviceInfo(CameraInfo deviceInfo) {
+            var prevBitDepth = cameraInfo?.BitDepth ?? 0;
             cameraInfo = deviceInfo;
             CameraConnected = cameraInfo.Connected;
-            foreach (var filter in Filters) {
-                filter.CameraInfo = cameraInfo;
-            }
 
-            SingleFlatWizardFilterSettings.CameraInfo = cameraInfo;
+            if (prevBitDepth != cameraInfo.BitDepth) {
+                foreach (var filter in Filters) {
+                    filter.BitDepth = cameraInfo.BitDepth;
+                }
+            }
         }
     }
 }
