@@ -160,13 +160,13 @@ namespace NINA.Model.MyCamera {
 
         public double PixelSizeX {
             get {
-                return 1000;
+                return 3.8;
             }
         }
 
         public double PixelSizeY {
             get {
-                return 1000;
+                return 3.8;
             }
         }
 
@@ -412,7 +412,7 @@ namespace NINA.Model.MyCamera {
 
         public int BitDepth {
             get {
-                return 16;
+                return (int)profileService.ActiveProfile.CameraSettings.BitDepth;
             }
         }
 
@@ -478,7 +478,7 @@ namespace NINA.Model.MyCamera {
                 input[i] = (ushort)randNormal;
             }
 
-            return await ImageArray.CreateInstance(input, width, height, 16, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+            return await ImageArray.CreateInstance(input, width, height, BitDepth, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
         }
 
         private int randomImageWidth;
