@@ -260,6 +260,12 @@
                         </DataTemplate>
                     </util:PaneTemplateSelector.ThumbnailTemplate>
 
+                    <util:PaneTemplateSelector.BrightStarsTemplate>
+                        <DataTemplate>
+                            <view:AnchorableBrightStarsView />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.BrightStarsTemplate>
+
                     <util:PaneTemplateSelector.PlatesolveTemplate>
                         <DataTemplate>
                             <view:AnchorablePlateSolveView />

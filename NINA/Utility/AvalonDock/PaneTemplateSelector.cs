@@ -65,56 +65,78 @@ namespace NINA.Utility.AvalonDock {
 
         public DataTemplate ThumbnailTemplate { get; set; }
 
+        public DataTemplate BrightStarsTemplate { get; set; }
+
         public override System.Windows.DataTemplate SelectTemplate(object item, System.Windows.DependencyObject container) {
             var itemAsLayoutContent = item as LayoutContent;
 
-            if (item is CameraVM)
+            if (item is CameraVM) {
                 return CameraTemplate;
+            }
 
-            if (item is TelescopeVM)
+            if (item is TelescopeVM) {
                 return TelescopeTemplate;
+            }
 
-            if (item is PlatesolveVM)
+            if (item is PlatesolveVM) {
                 return PlatesolveTemplate;
+            }
 
-            if (item is PolarAlignmentVM)
+            if (item is PolarAlignmentVM) {
                 return PolarAlignmentTemplate;
+            }
 
-            if (item is GuiderVM)
+            if (item is GuiderVM) {
                 return GuiderTemplate;
+            }
 
-            if (item is FilterWheelVM)
+            if (item is FilterWheelVM) {
                 return FilterWheelTemplate;
+            }
 
-            if (item is ImagingVM)
+            if (item is ImagingVM) {
                 return ImagingTemplate;
+            }
 
-            if (item is ImageHistoryVM)
+            if (item is ImageHistoryVM) {
                 return ImageHistoryTemplate;
+            }
 
-            if (item is ImageStatisticsVM)
+            if (item is ImageStatisticsVM) {
                 return ImageStatisticsTemplate;
+            }
 
-            if (item is ImageControlVM)
+            if (item is ImageControlVM) {
                 return ImageControlTemplate;
+            }
 
-            if (item is SequenceVM)
+            if (item is SequenceVM) {
                 return SequenceTemplate;
+            }
 
-            if (item is WeatherDataVM)
+            if (item is WeatherDataVM) {
                 return WeatherDataTemplate;
+            }
 
-            if (item is FocuserVM)
+            if (item is FocuserVM) {
                 return FocuserTemplate;
+            }
 
-            if (item is AutoFocusVM)
+            if (item is AutoFocusVM) {
                 return AutoFocusTemplate;
+            }
 
-            if (item is ThumbnailVM)
+            if (item is ThumbnailVM) {
                 return ThumbnailTemplate;
+            }
 
-            if (item is RotatorVM)
+            if (item is RotatorVM) {
                 return RotatorTemplate;
+            }
+
+            if (item is BrightStarsVM) {
+                return BrightStarsTemplate;
+            }
 
             return base.SelectTemplate(item, container);
         }

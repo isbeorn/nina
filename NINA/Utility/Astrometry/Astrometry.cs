@@ -23,7 +23,6 @@
 
 using System;
 using System.ComponentModel;
-using System.Linq;
 
 namespace NINA.Utility.Astrometry {
 
@@ -256,7 +255,8 @@ namespace NINA.Utility.Astrometry {
         /// <param name="deg"></param>
         /// <returns></returns>
         public static string DegreesToFitsDMS(double deg) {
-            return DegreesToDMS(deg).Replace("°", "").Replace("'", "").Replace("\"", ""); ;
+            return DegreesToDMS(deg).Replace("°", "").Replace("'", "").Replace("\"", "");
+            ;
         }
 
         /// <summary>

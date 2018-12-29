@@ -23,15 +23,11 @@
 
 using NINA.Model.MyTelescope;
 using NINA.Utility.Astrometry;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace NINA.ViewModel.Interfaces {
 
-    internal interface ITelescopeVM : IDeviceVM<TelescopeInfo> {
+    public interface ITelescopeVM : IDeviceVM<TelescopeInfo> {
 
         Task<bool> SlewToCoordinatesAsync(Coordinates coords);
 
