@@ -18,7 +18,6 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:NINA.Resources"
     xmlns:s="clr-namespace:System;assembly=mscorlib">
     <s:String x:Key="LblName">Name</s:String>
     <s:String x:Key="LblCameraState">Camera State</s:String>
@@ -741,6 +740,10 @@ Calculated HFR: {2}
     <s:String x:Key="LblFlatWizard">Flat Wizard</s:String>
     <s:String x:Key="LblFlatWizardCapture">Flat Wizard Capture</s:String>
     <s:String x:Key="LblFlatCount">Flats to take</s:String>
+    <s:String x:Key="LblDarkFlatCount">Dark Flats to take</s:String>
+    <s:String x:Key="LblPreparingDarkFlatSequence">Preparing Dark Flat Sequence</s:String>
+    <s:String x:Key="LblCoverScopeMsgBox">Cover your scope now and press OK to start taking the dark flats.</s:String>
+    <s:String x:Key="LblCoverScopeMsgBoxTitle">Cover your scope now</s:String>
     <s:String x:Key="LblFlatMinExposureTime">Flat Min Exposure</s:String>
     <s:String x:Key="LblFlatMaxExposureTime">Flat Max Exposure</s:String>
     <s:String x:Key="LblFlatStepSize">Flat Step Size</s:String>

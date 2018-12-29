@@ -25,6 +25,7 @@
     - Canon: All shutter speeds now correctly added when step set custom function is set to 1/3
     - Meridian Flip window does not get stuck anymore when clicking on cancel
     - Log Level will now be set on application start based on profile settings.
+	- ASI Cameras will not shut down their cooling and progress on opening multiple instances of NINA
 
 ## Improvements
 

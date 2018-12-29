@@ -31,6 +31,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -39,6 +40,11 @@ namespace NINA.Utility.Profile {
     internal class ProfileService : IProfileService {
 
         public ProfileService() {
+            saveTimer = new System.Timers.Timer();
+            saveTimer.Interval = 1000;
+            saveTimer.AutoReset = false;
+            saveTimer.Elapsed += SaveTimer_Elapsed;
+
             if (NINA.Properties.Settings.Default.UpdateSettings) {
                 NINA.Properties.Settings.Default.Upgrade();
                 NINA.Properties.Settings.Default.UpdateSettings = false;
@@ -48,9 +54,39 @@ namespace NINA.Utility.Profile {
             CreateWatcher();
         }
 
+        /// <summary>
+        /// Timer that will trigger a save after 200ms
+        /// When another profile change happens during that time, the duration is reset
+        /// This way something like a slider will not spam the harddisk with save operations
+        /// </summary>
+        private System.Timers.Timer saveTimer;
+
+        /// <summary>
+        /// Stop the timer and save the profile
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SaveTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
+            Save();
+        }
+
+        /// <summary>
+        /// Stop the timer and restart it again
+        /// </summary>
+        private void TryScheduleSave() {
+            if (Monitor.TryEnter(lockobj, 1000)) {
+                try {
+                    saveTimer.Stop();
+                    saveTimer.Start();
+                } finally {
+                    Monitor.Exit(lockobj);
+                }
+            }
+        }
+
         private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName == "Settings") {
-                Save();
+                System.Threading.Tasks.Task.Run(() => TryScheduleSave());
             }
         }
 
@@ -147,35 +183,37 @@ namespace NINA.Utility.Profile {
         }
 
         private void ReloadProfiles() {
-            try {
-                lock (lockobj) {
-                    using (var fs = TryGetExclusiveProfileStream(FileMode.Open, FileAccess.Read)) {
-                        var serializer = new DataContractSerializer(typeof(Profiles));
-                        var obj = serializer.ReadObject(fs);
+            using (MyStopWatch.Measure()) {
+                try {
+                    lock (lockobj) {
+                        using (var fs = TryGetExclusiveProfileStream(FileMode.Open, FileAccess.Read)) {
+                            var serializer = new DataContractSerializer(typeof(Profiles));
+                            var obj = serializer.ReadObject(fs);
 
-                        var profiles = (Profiles)obj;
+                            var profiles = (Profiles)obj;
 
-                        //var lastActive = profiles.ProfileList.Where(x => x.Id == profiles.ActiveProfileId).FirstOrDefault();
-                        var id = Profiles.ActiveProfileId;
+                            //var lastActive = profiles.ProfileList.Where(x => x.Id == profiles.ActiveProfileId).FirstOrDefault();
+                            var id = Profiles.ActiveProfileId;
 
-                        //Fallback if the active profile was deleted somehow
-                        if (profiles.ProfileList.Where(x => x.Id == id).FirstOrDefault() == null) {
-                            profiles.Add(Profiles.ActiveProfile);
-                        }
-
-                        dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
-                            Profiles.ProfileList.Clear();
-                            foreach (var p in profiles.ProfileList) {
-                                Profiles.Add(p);
+                            //Fallback if the active profile was deleted somehow
+                            if (profiles.ProfileList.Where(x => x.Id == id).FirstOrDefault() == null) {
+                                profiles.Add(Profiles.ActiveProfile);
                             }
 
-                            SelectProfile(id);
-                        }));
+                            dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
+                                Profiles.ProfileList.Clear();
+                                foreach (var p in profiles.ProfileList) {
+                                    Profiles.Add(p);
+                                }
+
+                                SelectProfile(id);
+                            }));
+                        }
                     }
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                    Notification.Notification.ShowError(ex.Message);
                 }
-            } catch (Exception ex) {
-                Logger.Error(ex);
-                Notification.Notification.ShowError(ex.Message);
             }
         }
 
@@ -201,73 +239,75 @@ namespace NINA.Utility.Profile {
         }
 
         private void Save() {
-            try {
-                if (profileFileWatcher != null) profileFileWatcher.EnableRaisingEvents = false;
+            using (MyStopWatch.Measure()) {
                 lock (lockobj) {
-                    using (var fs = TryGetExclusiveProfileStream(FileMode.OpenOrCreate, FileAccess.ReadWrite)) {
-                        var serializer = new DataContractSerializer(typeof(Profiles));
-                        Profiles profileToWrite = Profiles;
-                        if (fs.Length > 0) {
-                            /* Copy file to temp file */
-                            using (var copyStream = new FileStream(PROFILETEMPFILEPATH, FileMode.Create, FileAccess.Write)) {
-                                fs.CopyTo(copyStream);
-                                //Reset filestream position
-                                fs.Position = 0;
-                            }
+                    try {
+                        if (profileFileWatcher != null) profileFileWatcher.EnableRaisingEvents = false;
+                        using (var fs = TryGetExclusiveProfileStream(FileMode.OpenOrCreate, FileAccess.ReadWrite)) {
+                            var serializer = new DataContractSerializer(typeof(Profiles));
+                            Profiles profileToWrite = Profiles;
+                            if (fs.Length > 0) {
+                                /* Copy file to temp file */
+                                using (var copyStream = new FileStream(PROFILETEMPFILEPATH, FileMode.Create, FileAccess.Write)) {
+                                    fs.CopyTo(copyStream);
+                                    //Reset filestream position
+                                    fs.Position = 0;
+                                }
 
-                            /* Read profiles from file, replace current profile in file with actual profile */
-                            var obj = serializer.ReadObject(fs);
-                            profileToWrite = (Profiles)obj;
+                                /* Read profiles from file, replace current profile in file with actual profile */
+                                var obj = serializer.ReadObject(fs);
+                                profileToWrite = (Profiles)obj;
 
-                            var idx = -1;
-                            for (var i = 0; i < profileToWrite.ProfileList.Count; i++) {
-                                if (Profiles.ActiveProfileId == profileToWrite.ProfileList[i].Id) {
-                                    idx = i;
-                                    break;
+                                var idx = -1;
+                                for (var i = 0; i < profileToWrite.ProfileList.Count; i++) {
+                                    if (Profiles.ActiveProfileId == profileToWrite.ProfileList[i].Id) {
+                                        idx = i;
+                                        break;
+                                    }
+                                }
+                                if (idx >= 0) {
+                                    profileToWrite.ProfileList.RemoveAt(idx);
+                                    profileToWrite.ProfileList.Insert(idx, Profiles.ActiveProfile);
+                                }
+
+                                profileToWrite.ActiveProfileId = Profiles.ActiveProfileId;
+
+                                /*Newly added profiles */
+                                var excludedIDs = new HashSet<Guid>(profileToWrite.ProfileList.Select(p => p.Id));
+                                var profilesToAdd = this.Profiles.ProfileList.Where(x => !excludedIDs.Contains(x.Id));
+
+                                foreach (var p in profilesToAdd) {
+                                    profileToWrite.Add(p);
+                                }
+
+                                excludedIDs = new HashSet<Guid>(Profiles.ProfileList.Select(p => p.Id));
+                                var profilesToDelete = profileToWrite.ProfileList.Where(x => !excludedIDs.Contains(x.Id)).ToArray();
+                                for (var i = profilesToDelete.Length - 1; i >= 0; i--) {
+                                    profileToWrite.ProfileList.Remove(profilesToDelete[i]);
                                 }
                             }
-                            if (idx >= 0) {
-                                profileToWrite.ProfileList.RemoveAt(idx);
-                                profileToWrite.ProfileList.Insert(idx, Profiles.ActiveProfile);
-                            }
 
-                            profileToWrite.ActiveProfileId = Profiles.ActiveProfileId;
+                            //Reset filestream content and position
+                            fs.Position = 0;
+                            fs.SetLength(0);
+                            serializer = new DataContractSerializer(typeof(Profiles));
+                            serializer.WriteObject(fs, profileToWrite);
 
-                            /*Newly added profiles */
-                            var excludedIDs = new HashSet<Guid>(profileToWrite.ProfileList.Select(p => p.Id));
-                            var profilesToAdd = this.Profiles.ProfileList.Where(x => !excludedIDs.Contains(x.Id));
-
-                            foreach (var p in profilesToAdd) {
-                                profileToWrite.Add(p);
-                            }
-
-                            excludedIDs = new HashSet<Guid>(Profiles.ProfileList.Select(p => p.Id));
-                            var profilesToDelete = profileToWrite.ProfileList.Where(x => !excludedIDs.Contains(x.Id)).ToArray();
-                            for (var i = profilesToDelete.Length - 1; i >= 0; i--) {
-                                profileToWrite.ProfileList.Remove(profilesToDelete[i]);
-                            }
+                            //Delete Temp file
+                            File.Delete(PROFILETEMPFILEPATH);
                         }
+                    } catch (Exception ex) {
+                        Logger.Error(ex);
+                        Notification.Notification.ShowError(ex.Message);
 
-                        //Reset filestream content and position
-                        fs.Position = 0;
-                        fs.SetLength(0);
-                        serializer = new DataContractSerializer(typeof(Profiles));
-                        serializer.WriteObject(fs, profileToWrite);
-
-                        //Delete Temp file
-                        File.Delete(PROFILETEMPFILEPATH);
+                        if (File.Exists(PROFILETEMPFILEPATH)) {
+                            //Restore temp file
+                            File.Copy(PROFILETEMPFILEPATH, PROFILEFILEPATH, true);
+                        }
+                    } finally {
+                        if (profileFileWatcher != null) profileFileWatcher.EnableRaisingEvents = true;
                     }
                 }
-            } catch (Exception ex) {
-                Logger.Error(ex);
-                Notification.Notification.ShowError(ex.Message);
-
-                if (File.Exists(PROFILETEMPFILEPATH)) {
-                    //Restore temp file
-                    File.Copy(PROFILETEMPFILEPATH, PROFILEFILEPATH, true);
-                }
-            } finally {
-                if (profileFileWatcher != null) profileFileWatcher.EnableRaisingEvents = true;
             }
         }
 
@@ -319,7 +359,11 @@ namespace NINA.Utility.Profile {
         public void SelectProfile(Guid guid) {
             UnregisterChangedEventHandlers();
             Profiles.SelectProfile(guid);
+
+            System.Threading.Thread.CurrentThread.CurrentUICulture = ActiveProfile.ApplicationSettings.Language;
+            System.Threading.Thread.CurrentThread.CurrentCulture = ActiveProfile.ApplicationSettings.Language;
             Locale.Loc.Instance.ReloadLocale(ActiveProfile.ApplicationSettings.Culture);
+
             LocaleChanged?.Invoke(this, null);
             ProfileChanged?.Invoke(this, null);
             LocationChanged?.Invoke(this, null);

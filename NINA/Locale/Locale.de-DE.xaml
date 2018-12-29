@@ -18,7 +18,6 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:NINA.Resources"
     xmlns:s="clr-namespace:System;assembly=mscorlib">
 
     <s:String x:Key="LblName">Name</s:String>
@@ -738,6 +737,10 @@ Berechneter HFR: {2}
     <s:String x:Key="LblFlatWizard">Flat Wizard</s:String>
     <s:String x:Key="LblFlatWizardCapture">Flat Wizard Aufnahme</s:String>
     <s:String x:Key="LblFlatCount">Anzahl Flats</s:String>
+    <s:String x:Key="LblDarkFlatCount">Anzahl Dark Flats</s:String>
+    <s:String x:Key="LblPreparingDarkFlatSequence">Bereite Dark Flat Sequenz vor</s:String>
+    <s:String x:Key="LblCoverScopeMsgBox">Decken Sie ihr Teleskop nun ab und drücken Sie OK um mit der Aufnahme der Dark Flats fortzufahren</s:String>
+    <s:String x:Key="LblCoverScopeMsgBoxTitle">Decken Sie ihr Teleskop ab</s:String>
     <s:String x:Key="LblFlatMinExposureTime">Flat Min Belichtungszeit</s:String>
     <s:String x:Key="LblFlatMaxExposureTime">Flat Max Belichtungszeit</s:String>
     <s:String x:Key="LblFlatStepSize">Flat Schrittgröße</s:String>

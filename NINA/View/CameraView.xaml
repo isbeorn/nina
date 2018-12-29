@@ -342,7 +342,7 @@
                 Header="{ns:Loc LblCamSettings}"
                 IsEnabled="{Binding CameraInfo.Connected}">
                 <StackPanel Visibility="{Binding Cam, Converter={StaticResource NullToVisibilityConverter}}">
-                    <DockPanel Visibility="{Binding Cam.CanGetGain, Converter={StaticResource VisibilityConverter}}">
+                    <DockPanel Margin="0,0,0,6" Visibility="{Binding Cam.CanGetGain, Converter={StaticResource VisibilityConverter}}">
                         <TextBlock
                             MinWidth="100"
                             VerticalAlignment="Center"
@@ -352,21 +352,22 @@
                             VerticalAlignment="Center"
                             Text="{Binding Cam.Gain}" />
                         <Grid>
-                            <Slider
+                            <ninactrl:IntStepperControl
+                                Width="200"
+                                HorizontalAlignment="Right"
                                 IsEnabled="{Binding Cam.CanSetGain}"
-                                IsSnapToTickEnabled="True"
-                                Maximum="{Binding Cam.GainMax}"
-                                Minimum="{Binding Cam.GainMin}"
-                                TickPlacement="BottomRight"
+                                MaxValue="{Binding Cam.GainMax}"
+                                MinValue="{Binding Cam.GainMin}"
+                                StepSize="1"
                                 Visibility="{Binding Cam.Gains, Converter={StaticResource InverseCollectionContainsItemsToVisibilityConverter}}"
-                                Value="{Binding Cam.Gain}" />
+                                Value="{Binding Cam.Gain, Mode=TwoWay}" />
                             <ComboBox
                                 ItemsSource="{Binding Cam.Gains}"
                                 SelectedItem="{Binding Cam.Gain}"
                                 Visibility="{Binding Cam.Gains, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}" />
                         </Grid>
                     </DockPanel>
-                    <DockPanel Visibility="{Binding Cam.CanSetOffset, Converter={StaticResource VisibilityConverter}}">
+                    <DockPanel Margin="0,0,0,6" Visibility="{Binding Cam.CanSetOffset, Converter={StaticResource VisibilityConverter}}">
                         <TextBlock
                             MinWidth="100"
                             VerticalAlignment="Center"
@@ -375,15 +376,15 @@
                             MinWidth="100"
                             VerticalAlignment="Center"
                             Text="{Binding Cam.Offset}" />
-                        <Slider
-                            IsSnapToTickEnabled="True"
-                            Maximum="{Binding Cam.OffsetMax}"
-                            Minimum="{Binding Cam.OffsetMin}"
-                            SmallChange="1"
-                            TickPlacement="BottomRight"
-                            Value="{Binding Cam.Offset}" />
+                        <ninactrl:IntStepperControl
+                            Width="200"
+                            HorizontalAlignment="Right"
+                            MaxValue="{Binding Cam.OffsetMax}"
+                            MinValue="{Binding Cam.OffsetMin}"
+                            StepSize="1"
+                            Value="{Binding Cam.Offset, Mode=TwoWay}" />
                     </DockPanel>
-                    <DockPanel Visibility="{Binding Cam.CanSetUSBLimit, Converter={StaticResource VisibilityConverter}}">
+                    <DockPanel Margin="0,0,0,6" Visibility="{Binding Cam.CanSetUSBLimit, Converter={StaticResource VisibilityConverter}}">
                         <TextBlock
                             MinWidth="100"
                             VerticalAlignment="Center"
@@ -392,41 +393,37 @@
                             MinWidth="100"
                             VerticalAlignment="Center"
                             Text="{Binding Cam.USBLimit}" />
-                        <Slider
-                            IsSnapToTickEnabled="True"
-                            Maximum="{Binding Cam.USBLimitMax}"
-                            Minimum="{Binding Cam.USBLimitMin}"
-                            SmallChange="1"
-                            TickPlacement="BottomRight"
-                            Value="{Binding Cam.USBLimit}" />
+                        <ninactrl:IntStepperControl
+                            Width="200"
+                            HorizontalAlignment="Right"
+                            MaxValue="{Binding Cam.USBLimitMax}"
+                            MinValue="{Binding Cam.USBLimitMin}"
+                            StepSize="1"
+                            Value="{Binding Cam.USBLimit, Mode=TwoWay}" />
                     </DockPanel>
-                    <DockPanel Visibility="{Binding Cam.ReadoutModes, Converter={StaticResource CollectionContainsMoreThanOneItemToVisibilityConverter}}">
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblReadoutForSnapImages}">
+                    <DockPanel Margin="0,0,0,6" Visibility="{Binding Cam.ReadoutModes, Converter={StaticResource CollectionContainsMoreThanOneItemToVisibilityConverter}}">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblReadoutForSnapImages}">
                             <TextBlock.ToolTip>
                                 <TextBlock Text="{ns:Loc LblReadoutForSnapImagesToolTip}" />
                             </TextBlock.ToolTip>
                         </TextBlock>
                         <ComboBox
                             Width="200"
-                            VerticalAlignment="Center"
                             HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
                             ItemsSource="{Binding Cam.ReadoutModes}"
                             SelectedIndex="{Binding Cam.ReadoutModeForSnapImages}" />
                     </DockPanel>
-                    <DockPanel Visibility="{Binding Cam.ReadoutModes, Converter={StaticResource CollectionContainsMoreThanOneItemToVisibilityConverter}}">
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblReadoutForNormalImages}">
+                    <DockPanel Margin="0,0,0,6" Visibility="{Binding Cam.ReadoutModes, Converter={StaticResource CollectionContainsMoreThanOneItemToVisibilityConverter}}">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblReadoutForNormalImages}">
                             <TextBlock.ToolTip>
                                 <TextBlock Text="{ns:Loc LblReadoutForNormalImagesToolTip}" />
                             </TextBlock.ToolTip>
                         </TextBlock>
                         <ComboBox
                             Width="200"
-                            VerticalAlignment="Center"
                             HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
                             ItemsSource="{Binding Cam.ReadoutModes}"
                             SelectedIndex="{Binding Cam.ReadoutModeForNormalImages}" />
                     </DockPanel>

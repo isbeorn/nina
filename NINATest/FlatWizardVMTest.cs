@@ -26,7 +26,7 @@ namespace NINATest {
         private Mock<IApplicationStatusMediator> applicationStatusMediatorMock = new Mock<IApplicationStatusMediator>();
         private Mock<IFlatWizardExposureTimeFinderService> exposureServiceMock = new Mock<IFlatWizardExposureTimeFinderService>();
         private Mock<ILoc> localeMock = new Mock<ILoc>();
-        private Mock<IResourceDictionary> resourceDictionaryMock = new Mock<IResourceDictionary>();
+        private Mock<IApplicationResourceDictionary> resourceDictionaryMock = new Mock<IApplicationResourceDictionary>();
         private Mock<IProfile> profileMock = new Mock<IProfile>();
         private Mock<IFlatWizardSettings> flatWizardSettingsMock = new Mock<IFlatWizardSettings>();
         private Mock<ICameraSettings> cameraSettingsMock = new Mock<ICameraSettings>();
@@ -51,7 +51,7 @@ namespace NINATest {
             applicationStatusMediatorMock = new Mock<IApplicationStatusMediator>();
             exposureServiceMock = new Mock<IFlatWizardExposureTimeFinderService>();
             localeMock = new Mock<ILoc>();
-            resourceDictionaryMock = new Mock<IResourceDictionary>();
+            resourceDictionaryMock = new Mock<IApplicationResourceDictionary>();
             profileMock = new Mock<IProfile>();
             flatWizardSettingsMock = new Mock<IFlatWizardSettings>();
             cameraSettingsMock = new Mock<ICameraSettings>();

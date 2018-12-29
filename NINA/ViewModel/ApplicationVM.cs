@@ -32,7 +32,6 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using ResourceDictionary = NINA.Utility.ResourceDictionary;
 
 namespace NINA.ViewModel {
 
@@ -375,7 +374,7 @@ namespace NINA.ViewModel {
                     _flatWizardVM = new FlatWizardVM(profileService,
                         new ImagingVM(profileService, new ImagingMediator(), cameraMediator, telescopeMediator, filterWheelMediator, focuserMediator, guiderMediator, applicationStatusMediator),
                         cameraMediator,
-                        new ResourceDictionary(),
+                        new ApplicationResourceDictionary(),
                         applicationStatusMediator);
                 }
                 return _flatWizardVM;
@@ -564,6 +563,7 @@ namespace NINA.ViewModel {
         GUIDER,
         SKYATLAS,
         FRAMINGASSISTANT,
+        FLATWIZARD,
         SEQUENCE,
         IMAGING,
         OPTIONS

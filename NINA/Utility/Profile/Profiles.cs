@@ -58,19 +58,6 @@ namespace NINA.Utility.Profile {
             ProfileList.Add(p);
         }
 
-        public void SelectActiveProfile() {
-            var id = ActiveProfileId;
-            if (id == Guid.Empty) {
-                var p = this.ProfileList.Where((x) => x.IsActive = true).FirstOrDefault();
-                if (p == null) {
-                    id = this.ProfileList[0].Id;
-                } else {
-                    id = p.Id;
-                }
-            }
-            SelectProfile(id);
-        }
-
         public void SelectProfile(Guid id) {
             if (this.ActiveProfile != null) this.ActiveProfile.IsActive = false;
 
@@ -78,10 +65,6 @@ namespace NINA.Utility.Profile {
             this.ActiveProfile = p;
             this.ActiveProfile.IsActive = true;
             this.ActiveProfileId = p.Id;
-
-            System.Threading.Thread.CurrentThread.CurrentUICulture = ActiveProfile.ApplicationSettings.Language;
-            System.Threading.Thread.CurrentThread.CurrentCulture = ActiveProfile.ApplicationSettings.Language;
-            Locale.Loc.Instance.ReloadLocale(ActiveProfile.ApplicationSettings.Culture);
         }
     }
 }
