@@ -77,7 +77,9 @@ namespace NINA.ViewModel {
         }
 
         public void UpdateDeviceInfo(TelescopeInfo deviceInfo) {
-            TelescopeConnected = deviceInfo.Connected;
+            if (TelescopeConnected != deviceInfo.Connected) {
+                TelescopeConnected = deviceInfo.Connected;
+            }
         }
     }
 }
