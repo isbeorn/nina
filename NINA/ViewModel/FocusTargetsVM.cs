@@ -1,13 +1,14 @@
-﻿using NINA.Locale;
-using NINA.Model;
+﻿using NINA.Model;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Profile;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Threading;
+using System.Threading.Tasks;
+using System.Timers;
 
 namespace NINA.ViewModel {
 
@@ -22,15 +23,14 @@ namespace NINA.ViewModel {
 
             telescopeMediator.RegisterConsumer(this);
 
-            LoadFocusTargets();
+            new Task(LoadFocusTargets).Start();
 
-            var updateTimer = new DispatcherTimer(TimeSpan.FromMinutes(1), DispatcherPriority.Background, (sender, args) => LoadFocusTargets(), Dispatcher.CurrentDispatcher);
+            var updateTimer = new Timer(TimeSpan.FromMinutes(1).TotalMilliseconds) { AutoReset = true };
+            updateTimer.Elapsed += (sender, args) => CalculateVisibleStars();
             updateTimer.Start();
 
             SlewToCoordinatesCommand = new AsyncCommand<bool>(async () => await telescopeMediator.SlewToCoordinatesAsync(SelectedFocusTarget.Coordinates));
         }
-
-        public ILoc Locale { get; set; } = Loc.Instance;
 
         public bool TelescopeConnected {
             get => telescopeConnected;
@@ -58,22 +58,24 @@ namespace NINA.ViewModel {
             }
         }
 
+        private List<FocusTarget> allFocusTargets = new List<FocusTarget>();
+
         public IAsyncCommand SlewToCoordinatesCommand { get; }
 
         private async void LoadFocusTargets() {
             var db = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
-            FocusTargets = new ObservableCollection<FocusTarget>(await db.GetBrightStars());
-            CalculateTargetAltitude();
+            allFocusTargets = new List<FocusTarget>(await db.GetBrightStars());
+            CalculateVisibleStars();
         }
 
-        private void CalculateTargetAltitude() {
+        private void CalculateVisibleStars() {
             var longitude = profileService.ActiveProfile.AstrometrySettings.Longitude;
             var latitude = profileService.ActiveProfile.AstrometrySettings.Latitude;
-            foreach (var target in FocusTargets) {
-                target.CalculateAltitude(latitude, longitude);
+            foreach (var target in allFocusTargets) {
+                target.CalculateAltAz(latitude, longitude);
             }
 
-            FocusTargets = new ObservableCollection<FocusTarget>(FocusTargets.Where(b => b.Altitude > 10).OrderByDescending(b => b.Altitude));
+            FocusTargets = new ObservableCollection<FocusTarget>(allFocusTargets.Where(b => b.Altitude > 10).OrderByDescending(b => b.Altitude));
         }
 
         public void UpdateDeviceInfo(TelescopeInfo deviceInfo) {
