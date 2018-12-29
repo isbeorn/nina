@@ -50,6 +50,8 @@ namespace NINA.Model {
             }
         }
 
+        public string SkyDirection => Azimuth >= 0 && Azimuth < 180 ? Locale.Loc.Instance["LblEast"] : Locale.Loc.Instance["LblWest"];
+
         public void CalculateAltitude(double latitude, double longitude) {
             var start = DateTime.UtcNow;
             var siderealTime = Astrometry.GetLocalSiderealTime(start, longitude);
@@ -57,7 +59,7 @@ namespace NINA.Model {
 
             var degAngle = Astrometry.HoursToDegrees(hourAngle);
             Altitude = Astrometry.GetAltitude(degAngle, latitude, this.Coordinates.Dec);
-            Azimuth = Astrometry.GetAzimuth(hourAngle, Altitude, latitude, this.Coordinates.Dec);
+            Azimuth = Astrometry.GetAzimuth(degAngle, Altitude, latitude, this.Coordinates.Dec);
         }
 
         private double _altitude;
@@ -71,7 +73,7 @@ namespace NINA.Model {
         }
 
         public override string ToString() {
-            return $"{Name} ({Azimuth:0.00}, Alt {Altitude:0.00})";
+            return $"{Name} ({SkyDirection}, Alt: {Altitude:0.00}°, Az: {Azimuth:0.00}°)";
         }
     }
 }
