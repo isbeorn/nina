@@ -13,6 +13,8 @@
 		- On ASCOM drivers support for setting readout modes
 	### Flat Wizard
 		- Supports you taking flats
+	### Imaging
+		- Added a list of manual focus targets (bright stars) that are currently visible in the sky
 
 ## Bugfixes
 
