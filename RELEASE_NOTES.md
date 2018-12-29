@@ -44,6 +44,8 @@
     - Autostretch now has black point clipping options
     - Vastly improved Image Statistics calculation.
 	- Estimated Finish Time will automatically update in the sequencing view
+	- Added copy button for existing color schemas to copy over to custom and alternative custom schemas
+    
 
 ___
 
