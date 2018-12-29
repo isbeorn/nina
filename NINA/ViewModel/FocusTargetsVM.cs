@@ -20,6 +20,8 @@ namespace NINA.ViewModel {
             Title = "LblManualFocusTargets";
             ImageGeometry = (System.Windows.Media.GeometryGroup)resourceDictionary["FocusTargetsSVG"];
 
+            telescopeMediator.RegisterConsumer(this);
+
             LoadFocusTargets();
 
             var updateTimer = new DispatcherTimer(TimeSpan.FromMinutes(1), DispatcherPriority.Background, (sender, args) => LoadFocusTargets(), Dispatcher.CurrentDispatcher);
