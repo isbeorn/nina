@@ -85,9 +85,102 @@ namespace StarDataImport {
         }
 
         private static void Main(string[] args) {
-            GenerateStarDatabase();
+            //GenerateStarDatabase();
+            UpdateBrightStars();
             //GenerateDatabase();
             //UpdateStarData();
+        }
+
+        public static void UpdateBrightStars() {
+            List<DatabaseStar> objects = new List<DatabaseStar>();
+            var connectionString = string.Format(@"Data Source={0};foreign keys=true;", @"D:\Projects\nina\NINA\Database\NINA.sqlite");
+            var query = "select name, ra, dec, magnitude FROM brightstars where syncedfrom is null;";
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString)) {
+                connection.Open();
+                using (SQLiteCommand command = connection.CreateCommand()) {
+                    command.CommandText = query;
+
+                    var reader = command.ExecuteReader();
+                    while (reader.Read()) {
+                        objects.Add(new DatabaseStar() { Name = reader.GetString(0) });
+                    }
+                }
+            }
+
+            var sw = Stopwatch.StartNew();
+
+            Parallel.ForEach(objects, obj => {
+                var _url = "http://cdsws.u-strasbg.fr/axis/services/Sesame";
+                var _action = "";
+
+                XmlDocument soapEnvelopeXml = CreateSoapEnvelope(obj.Name);
+                HttpWebRequest webRequest = CreateWebRequest(_url, _action);
+                webRequest.Timeout = -1;
+                InsertSoapEnvelopeIntoWebRequest(soapEnvelopeXml, webRequest);
+
+                // begin async call to web request.
+                IAsyncResult asyncResult = webRequest.BeginGetResponse(null, null);
+
+                // suspend this thread until call is complete. You might want to do something usefull
+                // here like update your UI.
+                asyncResult.AsyncWaitHandle.WaitOne();
+
+                // get the response from the completed web request.
+
+                using (WebResponse webResponse = webRequest.EndGetResponse(asyncResult)) {
+                    var soap = XElement.Load(webResponse.GetResponseStream());
+
+                    var xmlstring = (from c in soap.Descendants("return") select c).FirstOrDefault()?.Value;
+                    var xml = XElement.Parse(xmlstring);
+                    var resolvername = "Simbad";
+                    var resolver = xml.Descendants("Resolver").Where((x) => x.Attribute("name").Value.Contains(resolvername)).FirstOrDefault();
+
+                    var ra = resolver.Descendants("jradeg").FirstOrDefault()?.Value;
+                    var dec = resolver.Descendants("jdedeg").FirstOrDefault()?.Value;
+
+                    if (ra == null) {
+                        resolvername = "NED";
+                        resolver = xml.Descendants("Resolver").Where((x) => x.Attribute("name").Value.Contains(resolvername)).FirstOrDefault();
+
+                        ra = resolver.Descendants("jradeg").FirstOrDefault()?.Value;
+                        dec = resolver.Descendants("jdedeg").FirstOrDefault()?.Value;
+                    }
+
+                    if (ra == null) {
+                        resolvername = "VizieR";
+                        resolver = xml.Descendants("Resolver").Where((x) => x.Attribute("name").Value.Contains(resolvername)).FirstOrDefault();
+
+                        ra = resolver.Descendants("jradeg").FirstOrDefault()?.Value;
+                        dec = resolver.Descendants("jdedeg").FirstOrDefault()?.Value;
+                    }
+
+                    Console.WriteLine(obj.ToString());
+                    if (ra == null) {
+                        Console.WriteLine("NO ENTRY");
+                    } else {
+                        Console.WriteLine("Found " + " RA:" + ra + " DEC:" + dec);
+                    }
+
+                    if (ra != null && dec != null) {
+                        using (SQLiteConnection connection = new SQLiteConnection(connectionString)) {
+                            connection.Open();
+                            using (SQLiteCommand command = connection.CreateCommand()) {
+                                command.CommandText = "UPDATE brightstars SET ra = $ra, dec = $dec, syncedfrom = '" + resolvername + "' WHERE name = $name;";
+                                command.Parameters.AddWithValue("$name", obj.Name);
+                                command.Parameters.AddWithValue("$ra", ra);
+                                command.Parameters.AddWithValue("$dec", dec);
+
+                                var rows = command.ExecuteNonQuery();
+                                Console.WriteLine(string.Format("Inserted {0} row(s)", rows));
+                            }
+                        }
+                    }
+                }
+            });
+
+            Console.WriteLine(sw.Elapsed);
+
+            Console.ReadLine();
         }
 
         public static void UpdateStarData() {
@@ -438,6 +531,9 @@ namespace StarDataImport {
             public double RA;
             public double DEC;
             public double magnitude;
+
+            public DatabaseStar() {
+            }
 
             public DatabaseStar(string[] fields) {
                 this.Name = fields[0];

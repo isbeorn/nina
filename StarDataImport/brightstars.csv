@@ -1,7 +1,7 @@
 Star Name,Visual Mag.,"RA (hr_min)","Dec (deg)"
 Sirius,-1.44,06 45,-16.7
 Canopus,-0.62,06 24,-52.7
-Rigil Kent.,-0.28,14 40,-60.8
+Alpha Centauri,-0.28,14 40,-60.8
 Arcturus,-0.05,14 16,19.2
 Vega,0.03,18 37,38.8
 Capella,0.08,05 17,46
@@ -32,7 +32,7 @@ Alnair,1.73,22 08,-47
 Alnitak,1.74,05 41,-1.9
 Regor,1.75,08 10,-47.3
 Alioth,1.76,12 54,56
-Kaus Aust.,1.79,18 24,-34.4
+Kaus Australis,1.79,18 24,-34.4
 Mirfak,1.79,03 24,49.9
 Dubhe,1.81,11 04,61.8
 Wezen,1.83,07 08,-26.4
@@ -41,7 +41,7 @@ Sargas,1.86,17 37,-43
 Avior,1.86,08 23,-59.5
 Menkalinan,1.9,06 00,44.9
 Atria,1.91,16 49,-69
-Koo She,1.93,08 45,-54.7
+Delta Velorum,1.93,08 45,-54.7
 Alhena,1.93,06 38,16.4
 Peacock,1.94,20 26,-56.7
 Polaris,1.97,02 32,89.3
