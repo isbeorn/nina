@@ -16,7 +16,7 @@ namespace NINA.ViewModel {
         private FocusTarget selectedFocusTarget;
         private bool telescopeConnected;
 
-        public FocusTargetsVM(IProfileService profileService, ITelescopeMediator telescopeMediator, IResourceDictionary resourceDictionary) : base(profileService) {
+        public FocusTargetsVM(IProfileService profileService, ITelescopeMediator telescopeMediator, IApplicationResourceDictionary resourceDictionary) : base(profileService) {
             Title = "LblManualFocusTargets";
             ImageGeometry = (System.Windows.Media.GeometryGroup)resourceDictionary["FocusTargetsSVG"];
 

@@ -493,7 +493,7 @@ namespace NINA.ViewModel {
         private FocusTargetsVM focusTargetsVM;
 
         public FocusTargetsVM FocusTargetsVM {
-            get => focusTargetsVM ?? (focusTargetsVM = new FocusTargetsVM(profileService, telescopeMediator, new ResourceDictionary()));
+            get => focusTargetsVM ?? (focusTargetsVM = new FocusTargetsVM(profileService, telescopeMediator, new ApplicationResourceDictionary()));
             set {
                 focusTargetsVM = value;
                 RaisePropertyChanged();
