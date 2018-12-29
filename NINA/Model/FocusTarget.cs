@@ -47,6 +47,13 @@ namespace NINA.Model {
             set {
                 azimuth = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(AzimuthString));
+            }
+        }
+
+        public string AzimuthString {
+            get {
+                return Astrometry.DegreesToDMS(Azimuth);
             }
         }
 
@@ -69,6 +76,13 @@ namespace NINA.Model {
             set {
                 altitude = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(AltitudeString));
+            }
+        }
+
+        public string AltitudeString {
+            get {
+                return Astrometry.DegreesToDMS(Altitude);
             }
         }
 
