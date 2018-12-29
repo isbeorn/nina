@@ -22,7 +22,6 @@
 #endregion "copyright"
 
 using NINA.Utility;
-using NINA.Utility.Mediator;
 using NINA.Utility.Profile;
 using System;
 using System.Windows.Input;
@@ -80,7 +79,8 @@ namespace NINA.ViewModel {
 
         public string Title {
             get {
-                return Locale.Loc.Instance[_titleLabel]; ;
+                return Locale.Loc.Instance[_titleLabel];
+                ;
             }
             set {
                 _titleLabel = value;

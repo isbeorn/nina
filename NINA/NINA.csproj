@@ -295,6 +295,7 @@
     <Compile Include="Locale\ILoc.cs" />
     <Compile Include="Locale\Loc.cs" />
     <Compile Include="Model\ApplicationStatus.cs" />
+    <Compile Include="Model\FocusTarget.cs" />
     <Compile Include="Model\DeepSkyObject.cs" />
     <Compile Include="Model\DeviceInfo.cs" />
     <Compile Include="Model\DummyDevice.cs" />
@@ -324,6 +325,7 @@
     <Compile Include="Utility\IApplicationResourceDictionary.cs" />
     <Compile Include="Utility\ApplicationResourceDictionary.cs" />
     <Compile Include="Utility\ValidationRules\DoubleRangeRule.cs" />
+    <Compile Include="ViewModel\FocusTargetsVM.cs" />
     <Compile Include="ViewModel\FlatWizard\FlatWizardExposureTimeFinderService.cs" />
     <Compile Include="ViewModel\FlatWizard\FlatWizardFilterSettingsWrapper.cs" />
     <Compile Include="Model\MyFilterWheel\ManualFilterWheel.cs" />
@@ -604,6 +606,9 @@
     </Compile>
     <Compile Include="View\AnchorableAutoFocusView.xaml.cs">
       <DependentUpon>AnchorableAutoFocusView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AnchorableFocusTargetsView.xaml.cs">
+      <DependentUpon>AnchorableFocusTargetsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\AnchorableCameraControlView.xaml.cs">
       <DependentUpon>AnchorableCameraControlView.xaml</DependentUpon>
@@ -932,6 +937,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\AnchorableAutoFocusView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AnchorableFocusTargetsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

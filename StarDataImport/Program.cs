@@ -22,7 +22,6 @@
 #endregion "copyright"
 
 using Microsoft.VisualBasic.FileIO;
-using NINA.Utility;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -86,6 +85,7 @@ namespace StarDataImport {
         }
 
         private static void Main(string[] args) {
+            GenerateStarDatabase();
             //GenerateDatabase();
             //UpdateStarData();
         }
@@ -264,6 +264,50 @@ namespace StarDataImport {
             }
         }
 
+        private static void GenerateStarDatabase() {
+            var db = new DatabaseInteraction();
+            db.CreateDatabase();
+
+            db.GenericQuery("DROP TABLE IF EXISTS brightstars");
+
+            db.GenericQuery(@"CREATE TABLE IF NOT EXISTS brightstars (
+                name TEXT NOT NULL,
+                ra REAL,
+                dec REAL,
+                magnitude REAL,
+                PRIMARY KEY (name)
+            );");
+
+            List<string> queries = new List<string>();
+
+            using (TextFieldParser parser = new TextFieldParser(@"brightstars.csv")) {
+                parser.TextFieldType = FieldType.Delimited;
+                parser.SetDelimiters(",");
+
+                HashSet<string> types = new HashSet<string>();
+                var isFirst = true;
+                List<DatabaseStar> l = new List<DatabaseStar>();
+                var i = 1;
+                while (!parser.EndOfData) {
+                    string[] fields = parser.ReadFields();
+                    //Processing row
+                    if (isFirst) {
+                        isFirst = false;
+                        continue;
+                    }
+
+                    DatabaseStar dso = new DatabaseStar(fields);
+
+                    queries.Add(dso.getStarQuery());
+                }
+
+                db.BulkInsert(queries);
+
+                Console.WriteLine("Done");
+                Console.ReadLine();
+            }
+        }
+
         public static void GenerateDatabase() {
             var db = new DatabaseInteraction();
             db.CreateDatabase();
@@ -378,6 +422,72 @@ namespace StarDataImport {
             public override string ToString() {
                 return name;
             }
+        }
+
+        private class DatabaseStar {
+
+            private static readonly Lazy<ASCOM.Utilities.Util> lazyAscomUtil =
+            new Lazy<ASCOM.Utilities.Util>(() => new ASCOM.Utilities.Util());
+
+            private static ASCOM.Utilities.Util AscomUtil { get { return lazyAscomUtil.Value; } }
+
+            //public string obj;
+            //public string other;
+            public string Name;
+
+            public double RA;
+            public double DEC;
+            public double magnitude;
+
+            public DatabaseStar(string[] fields) {
+                this.Name = fields[0];
+
+                RA = AscomUtil.HMSToDegrees(fields[2]);
+                DEC = double.Parse(fields[3], CultureInfo.InvariantCulture);
+
+                magnitude = double.Parse(fields[1], CultureInfo.InvariantCulture);
+            }
+
+            public string getStarQuery() {
+                return $@"INSERT INTO brightstars
+                (name, ra, dec, magnitude)  VALUES
+                (""{Name}"",
+                {RA.ToString(CultureInfo.InvariantCulture)},
+                {DEC.ToString(CultureInfo.InvariantCulture)},
+                {magnitude.ToString(CultureInfo.InvariantCulture)}); ";
+            }
+
+            /*internal void insert(DatabaseInteraction db) {
+                var q = $@"INSERT INTO dsodetail
+                (id, ra, dec, magnitude, surfacebrightness,sizemin,sizemax,positionangle,nrofstars,brighteststar,constellation,dsotype,dsoclass,notes)  VALUES
+                ({Name},
+                {RA.ToString(CultureInfo.InvariantCulture)},
+                {DEC.ToString(CultureInfo.InvariantCulture)},
+                {magnitude.ToString(CultureInfo.InvariantCulture)},
+                {subr.ToString(CultureInfo.InvariantCulture)},
+                {size_min?.ToString(CultureInfo.InvariantCulture) ?? "null"},
+                {size_max?.ToString(CultureInfo.InvariantCulture) ?? "null"},
+                ""{positionangle}"",
+                ""{NSTS}"",
+                ""{brighteststar}"",
+                ""{constellation}"",
+                ""{type}"",
+                ""{classification}"",
+                ""{Notes}"" ); ";
+                db.GenericQuery(q);
+
+                q = "";
+                foreach (var cat in cataloguenr) {
+                    q += $@"INSERT INTO cataloguenr (dsodetailid, catalogue, designation) VALUES ({Name}, ""{cat.catalogue}"", ""{cat.designation}""); ";
+                }
+                db.GenericQuery(q);
+
+                q = "";
+                foreach (var desc in visualdescription) {
+                    q += $@"INSERT INTO visualdescription (dsodetailid, description) VALUES ({Name}, ""{desc.description}""); ";
+                }
+                db.GenericQuery(q);
+            }*/
         }
 
         private class DatabaseDSO {
@@ -538,7 +648,7 @@ namespace StarDataImport {
             /*internal void insert(DatabaseInteraction db) {
                 var q = $@"INSERT INTO dsodetail
                 (id, ra, dec, magnitude, surfacebrightness,sizemin,sizemax,positionangle,nrofstars,brighteststar,constellation,dsotype,dsoclass,notes)  VALUES
-                ({Id},
+                ({Name},
                 {RA.ToString(CultureInfo.InvariantCulture)},
                 {DEC.ToString(CultureInfo.InvariantCulture)},
                 {magnitude.ToString(CultureInfo.InvariantCulture)},
@@ -556,13 +666,13 @@ namespace StarDataImport {
 
                 q = "";
                 foreach (var cat in cataloguenr) {
-                    q += $@"INSERT INTO cataloguenr (dsodetailid, catalogue, designation) VALUES ({Id}, ""{cat.catalogue}"", ""{cat.designation}""); ";
+                    q += $@"INSERT INTO cataloguenr (dsodetailid, catalogue, designation) VALUES ({Name}, ""{cat.catalogue}"", ""{cat.designation}""); ";
                 }
                 db.GenericQuery(q);
 
                 q = "";
                 foreach (var desc in visualdescription) {
-                    q += $@"INSERT INTO visualdescription (dsodetailid, description) VALUES ({Id}, ""{desc.description}""); ";
+                    q += $@"INSERT INTO visualdescription (dsodetailid, description) VALUES ({Name}, ""{desc.description}""); ";
                 }
                 db.GenericQuery(q);
             }*/

@@ -21,17 +21,11 @@
 
 #endregion "copyright"
 
-using NINA.Utility;
 using NINA.Utility.Astrometry;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NINA.Model.MyTelescope {
 
-    internal class TelescopeInfo : DeviceInfo {
+    public class TelescopeInfo : DeviceInfo {
         private double siderealTime;
 
         public double SiderealTime {

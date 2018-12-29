@@ -260,6 +260,12 @@
                         </DataTemplate>
                     </util:PaneTemplateSelector.ThumbnailTemplate>
 
+                    <util:PaneTemplateSelector.FocusTargetsTemplate>
+                        <DataTemplate>
+                            <view:AnchorableFocusTargetsView />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.FocusTargetsTemplate>
+
                     <util:PaneTemplateSelector.PlatesolveTemplate>
                         <DataTemplate>
                             <view:AnchorablePlateSolveView />

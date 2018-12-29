@@ -23,7 +23,6 @@
 
 using NINA.Model;
 using NINA.Utility.Astrometry;
-using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -91,6 +90,41 @@ namespace NINA.Utility {
             }
 
             return dsotypes;
+        }
+
+        public async Task<List<FocusTarget>> GetBrightStars() {
+            string query = @"SELECT name, ra, dec, magnitude
+                            FROM brightstars";
+
+            var brightStars = new List<FocusTarget>();
+            try {
+                using (SQLiteConnection connection = new SQLiteConnection(_connectionString)) {
+                    connection.Open();
+                    using (SQLiteCommand command = connection.CreateCommand()) {
+                        command.CommandText = query;
+
+                        var reader = await command.ExecuteReaderAsync();
+
+                        while (reader.Read()) {
+                            var brightStar = new FocusTarget(reader.GetString(0));
+
+                            var coords = new Coordinates(reader.GetDouble(1), reader.GetDouble(2), Epoch.J2000, Coordinates.RAType.Degrees);
+                            brightStar.Coordinates = coords;
+
+                            brightStar.Magnitude = reader.GetDouble(3);
+
+                            brightStars.Add(brightStar);
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                if (!ex.Message.Contains("Execution was aborted by the user")) {
+                    Logger.Error(ex);
+                    Notification.Notification.ShowError(ex.Message);
+                }
+            }
+
+            return brightStars;
         }
 
         public async Task<List<DeepSkyObject>> GetDeepSkyObjects(
