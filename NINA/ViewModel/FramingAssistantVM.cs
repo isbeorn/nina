@@ -76,7 +76,7 @@ namespace NINA.ViewModel {
             DragMoveCommand = new RelayCommand(DragMove);
             ClearCacheCommand = new RelayCommand(ClearCache);
 
-            SetSequenceCoordinatesCommand = new AsyncCommand<bool>(async () => {
+            SetSequenceCoordinatesCommand = new AsyncCommand<bool>(async (object parameter) => {
                 var vm = (ApplicationVM)Application.Current.Resources["AppVM"];
                 vm.ChangeTab(ApplicationTab.SEQUENCE);
 
@@ -86,7 +86,13 @@ namespace NINA.ViewModel {
                     dso.Rotation = Rectangle.DisplayedRotation;
                     deepSkyObjects.Add(dso);
                 }
-                var msgResult = await vm.SeqVM.SetSequenceCoordiantes(deepSkyObjects);
+
+                bool msgResult = false;
+                if (parameter.ToString() == "Replace") {
+                    msgResult = await vm.SeqVM.SetSequenceCoordiantes(deepSkyObjects);
+                } else if (parameter.ToString() == "Add") {
+                    msgResult = await vm.SeqVM.SetSequenceCoordiantes(deepSkyObjects, false);
+                }
 
                 ImageParameter = null;
                 GC.Collect();
