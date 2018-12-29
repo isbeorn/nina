@@ -50,7 +50,7 @@ namespace NINA.Model {
             }
         }
 
-        public string SkyDirection => Azimuth >= 0 && Azimuth < 180 ? Locale.Loc.Instance["LblEast"] : Locale.Loc.Instance["LblWest"];
+        public string SkyDirection => (Azimuth <= 90 || Azimuth >= 270 ? Locale.Loc.Instance["LblNorthern"] : Locale.Loc.Instance["LblSouthern"]) + " " + (Azimuth >= 0 && Azimuth < 180 ? Locale.Loc.Instance["LblEast"] : Locale.Loc.Instance["LblWest"]);
 
         public void CalculateAltitude(double latitude, double longitude) {
             var start = DateTime.UtcNow;

@@ -1,4 +1,5 @@
-﻿using NINA.Model;
+﻿using NINA.Locale;
+using NINA.Model;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Mediator.Interfaces;
@@ -16,9 +17,9 @@ namespace NINA.ViewModel {
         private FocusTarget selectedFocusTarget;
         private bool telescopeConnected;
 
-        public FocusTargetsVM(IProfileService profileService, ITelescopeMediator telescopeMediator) : base(profileService) {
-            Title = "Focus Targets";
-            ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ContrastSVG"];
+        public FocusTargetsVM(IProfileService profileService, ITelescopeMediator telescopeMediator, IResourceDictionary resourceDictionary) : base(profileService) {
+            Title = "LblManualFocusTargets";
+            ImageGeometry = (System.Windows.Media.GeometryGroup)resourceDictionary["FocusTargetsSVG"];
 
             LoadFocusTargets();
             profileService.ActiveProfile.AstrometrySettings.PropertyChanged +=
@@ -31,11 +32,13 @@ namespace NINA.ViewModel {
                     }
                 };
 
-            var updateTimer = new DispatcherTimer(TimeSpan.FromSeconds(15), DispatcherPriority.Background, (sender, args) => LoadFocusTargets(), Dispatcher.CurrentDispatcher);
+            var updateTimer = new DispatcherTimer(TimeSpan.FromMinutes(1), DispatcherPriority.Background, (sender, args) => LoadFocusTargets(), Dispatcher.CurrentDispatcher);
             updateTimer.Start();
 
             SlewToCoordinatesCommand = new AsyncCommand<bool>(async () => await telescopeMediator.SlewToCoordinatesAsync(SelectedFocusTarget.Coordinates));
         }
+
+        public ILoc Locale { get; set; } = Loc.Instance;
 
         public bool TelescopeConnected {
             get => telescopeConnected;

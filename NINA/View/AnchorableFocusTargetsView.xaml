@@ -32,17 +32,17 @@
                         <ColumnDefinition Width="2*" />
                         <ColumnDefinition Width="1*" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0">Name</TextBlock>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{ns:Loc LblName}" />
                     <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedFocusTarget.Name}" />
-                    <TextBlock Grid.Row="1" Grid.Column="0">Magnitude</TextBlock>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="{ns:Loc LblMagnitude}" />
                     <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedFocusTarget.Magnitude}" />
-                    <TextBlock Grid.Row="2" Grid.Column="0">Azimuth</TextBlock>
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="{ns:Loc LblAzimuth}" />
                     <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SelectedFocusTarget.Azimuth, StringFormat={}{0:0.00}}" />
-                    <TextBlock Grid.Row="3" Grid.Column="0">Altitude</TextBlock>
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="{ns:Loc LblAltitude}" />
                     <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SelectedFocusTarget.Altitude, StringFormat={}{0:0.00}}" />
-                    <TextBlock Grid.Row="4" Grid.Column="0">RA</TextBlock>
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="{ns:Loc LblRA}" />
                     <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SelectedFocusTarget.Coordinates.RAString}" />
-                    <TextBlock Grid.Row="5" Grid.Column="0">Dec</TextBlock>
+                    <TextBlock Grid.Row="5" Grid.Column="0" Text="{ns:Loc LblDec}" />
                     <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding SelectedFocusTarget.Coordinates.DecString}" />
                 </Grid>
             </Border>
@@ -50,7 +50,7 @@
                 Margin="0,5,0,0"
                 BorderBrush="{StaticResource BorderBrush}"
                 BorderThickness="0">
-                <Button Command="{Binding SlewToCoordinatesCommand}" IsEnabled="{Binding TelescopeConnected}" Content="Slew to star" Height="40" />
+                <Button Command="{Binding SlewToCoordinatesCommand}" IsEnabled="{Binding TelescopeConnected}" Content="{ns:Loc LblSlewToTarget}" Height="40" />
             </Border>
         </StackPanel>
     </ScrollViewer>

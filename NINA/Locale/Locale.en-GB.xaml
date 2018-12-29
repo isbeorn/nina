@@ -774,4 +774,5 @@ Calculated HFR: {2}
     <s:String x:Key="LblReadoutForNormalImagesToolTip">This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT and DARKFLAT frames in sequences.</s:String>
     <s:String x:Key="LblBlackClipping">Black clipping</s:String>
     <s:String x:Key="LblLblBlackClippingTooltip">Black clipping factor in sigma units from the median</s:String>
+    <s:String x:Key="LblManualFocusTargets">Manual Focus Targets</s:String>
 </ResourceDictionary>
