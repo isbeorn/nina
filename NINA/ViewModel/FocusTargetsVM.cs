@@ -16,6 +16,7 @@ namespace NINA.ViewModel {
         private ObservableCollection<FocusTarget> focusTargets;
         private FocusTarget selectedFocusTarget;
         private bool telescopeConnected;
+        private readonly Timer updateTimer;
 
         public FocusTargetsVM(IProfileService profileService, ITelescopeMediator telescopeMediator, IApplicationResourceDictionary resourceDictionary) : base(profileService) {
             Title = "LblManualFocusTargets";
@@ -25,9 +26,8 @@ namespace NINA.ViewModel {
 
             new Task(LoadFocusTargets).Start();
 
-            var updateTimer = new Timer(TimeSpan.FromMinutes(1).TotalMilliseconds) { AutoReset = true };
+            updateTimer = new Timer(TimeSpan.FromMinutes(1).TotalMilliseconds) { AutoReset = true };
             updateTimer.Elapsed += (sender, args) => CalculateVisibleStars();
-            updateTimer.Start();
 
             SlewToCoordinatesCommand = new AsyncCommand<bool>(async () => await telescopeMediator.SlewToCoordinatesAsync(SelectedFocusTarget.Coordinates));
         }
@@ -81,6 +81,16 @@ namespace NINA.ViewModel {
         public void UpdateDeviceInfo(TelescopeInfo deviceInfo) {
             if (TelescopeConnected != deviceInfo.Connected) {
                 TelescopeConnected = deviceInfo.Connected;
+            }
+        }
+
+        public override void Hide(object o) {
+            IsVisible = !IsVisible;
+            if (IsVisible) {
+                CalculateVisibleStars();
+                updateTimer.Start();
+            } else {
+                updateTimer.Stop();
             }
         }
     }
