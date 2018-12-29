@@ -11,30 +11,30 @@ using System.Windows.Threading;
 
 namespace NINA.ViewModel {
 
-    public class BrightStarsVM : DockableVM, ITelescopeConsumer {
-        private ObservableCollection<BrightStar> brightStars;
-        private BrightStar selectedBrightStar;
+    public class FocusTargetsVM : DockableVM, ITelescopeConsumer {
+        private ObservableCollection<FocusTarget> focusTargets;
+        private FocusTarget selectedFocusTarget;
         private bool telescopeConnected;
 
-        public BrightStarsVM(IProfileService profileService, ITelescopeMediator telescopeMediator) : base(profileService) {
-            Title = "Bright Stars";
+        public FocusTargetsVM(IProfileService profileService, ITelescopeMediator telescopeMediator) : base(profileService) {
+            Title = "Focus Targets";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ContrastSVG"];
 
-            LoadBrightStars();
+            LoadFocusTargets();
             profileService.ActiveProfile.AstrometrySettings.PropertyChanged +=
                 delegate (object sender, PropertyChangedEventArgs args) {
                     if (args.PropertyName == nameof(profileService.ActiveProfile.AstrometrySettings.Longitude) ||
                         args.PropertyName == nameof(profileService.ActiveProfile.AstrometrySettings.Latitude)) {
                         {
-                            CalculateStarAltitude();
+                            CalculateTargetAltitude();
                         }
                     }
                 };
 
-            var updateTimer = new DispatcherTimer(TimeSpan.FromSeconds(15), DispatcherPriority.Background, (sender, args) => LoadBrightStars(), Dispatcher.CurrentDispatcher);
+            var updateTimer = new DispatcherTimer(TimeSpan.FromSeconds(15), DispatcherPriority.Background, (sender, args) => LoadFocusTargets(), Dispatcher.CurrentDispatcher);
             updateTimer.Start();
 
-            SlewToCoordinatesCommand = new AsyncCommand<bool>(async () => await telescopeMediator.SlewToCoordinatesAsync(SelectedBrightStar.Coordinates));
+            SlewToCoordinatesCommand = new AsyncCommand<bool>(async () => await telescopeMediator.SlewToCoordinatesAsync(SelectedFocusTarget.Coordinates));
         }
 
         public bool TelescopeConnected {
@@ -45,40 +45,40 @@ namespace NINA.ViewModel {
             }
         }
 
-        public BrightStar SelectedBrightStar {
-            get => selectedBrightStar;
+        public FocusTarget SelectedFocusTarget {
+            get => selectedFocusTarget;
             set {
-                selectedBrightStar = value;
+                selectedFocusTarget = value;
                 RaisePropertyChanged();
             }
         }
 
-        public ObservableCollection<BrightStar> BrightStars {
-            get => brightStars;
+        public ObservableCollection<FocusTarget> FocusTargets {
+            get => focusTargets;
             set {
-                var selectedBrightStarName = selectedBrightStar?.Name;
-                brightStars = value;
+                var selectedBrightStarName = selectedFocusTarget?.Name;
+                focusTargets = value;
                 RaisePropertyChanged();
-                SelectedBrightStar = BrightStars.SingleOrDefault(b => b.Name == selectedBrightStarName) ?? BrightStars.First();
+                SelectedFocusTarget = FocusTargets.SingleOrDefault(b => b.Name == selectedBrightStarName) ?? FocusTargets.First();
             }
         }
 
         public IAsyncCommand SlewToCoordinatesCommand { get; }
 
-        private async void LoadBrightStars() {
+        private async void LoadFocusTargets() {
             var db = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
-            BrightStars = new ObservableCollection<BrightStar>(await db.GetBrightStars());
-            CalculateStarAltitude();
+            FocusTargets = new ObservableCollection<FocusTarget>(await db.GetBrightStars());
+            CalculateTargetAltitude();
         }
 
-        private void CalculateStarAltitude() {
+        private void CalculateTargetAltitude() {
             var longitude = profileService.ActiveProfile.AstrometrySettings.Longitude;
             var latitude = profileService.ActiveProfile.AstrometrySettings.Latitude;
-            foreach (var star in BrightStars) {
-                star.CalculateAltitude(latitude, longitude);
+            foreach (var target in FocusTargets) {
+                target.CalculateAltitude(latitude, longitude);
             }
 
-            BrightStars = new ObservableCollection<BrightStar>(BrightStars.Where(b => b.Altitude > 10).OrderByDescending(b => b.Altitude));
+            FocusTargets = new ObservableCollection<FocusTarget>(FocusTargets.Where(b => b.Altitude > 10).OrderByDescending(b => b.Altitude));
         }
 
         public void UpdateDeviceInfo(TelescopeInfo deviceInfo) {

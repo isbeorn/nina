@@ -65,7 +65,7 @@ namespace NINA.Utility.AvalonDock {
 
         public DataTemplate ThumbnailTemplate { get; set; }
 
-        public DataTemplate BrightStarsTemplate { get; set; }
+        public DataTemplate FocusTargetsTemplate { get; set; }
 
         public override System.Windows.DataTemplate SelectTemplate(object item, System.Windows.DependencyObject container) {
             var itemAsLayoutContent = item as LayoutContent;
@@ -134,8 +134,8 @@ namespace NINA.Utility.AvalonDock {
                 return RotatorTemplate;
             }
 
-            if (item is BrightStarsVM) {
-                return BrightStarsTemplate;
+            if (item is FocusTargetsVM) {
+                return FocusTargetsTemplate;
             }
 
             return base.SelectTemplate(item, container);

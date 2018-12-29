@@ -133,7 +133,7 @@ namespace NINA.ViewModel {
             DockManagerVM.Anchorables.Add(PlatesolveVM);
             DockManagerVM.Anchorables.Add(PolarAlignVM);
             DockManagerVM.Anchorables.Add(AutoFocusVM);
-            DockManagerVM.Anchorables.Add(BrightStarsVM);
+            DockManagerVM.Anchorables.Add(FocusTargetsVM);
 
             DockManagerVM.AnchorableInfoPanels.Add(ImagingVM.ImageControl);
             DockManagerVM.AnchorableInfoPanels.Add(CameraVM);
@@ -152,7 +152,7 @@ namespace NINA.ViewModel {
             DockManagerVM.AnchorableTools.Add(PlatesolveVM);
             DockManagerVM.AnchorableTools.Add(PolarAlignVM);
             DockManagerVM.AnchorableTools.Add(AutoFocusVM);
-            DockManagerVM.AnchorableTools.Add(BrightStarsVM);
+            DockManagerVM.AnchorableTools.Add(FocusTargetsVM);
         }
 
         public void ChangeTab(ApplicationTab tab) {
@@ -491,12 +491,12 @@ namespace NINA.ViewModel {
             }
         }
 
-        private BrightStarsVM _brightStarsVM;
+        private FocusTargetsVM focusTargetsVM;
 
-        public BrightStarsVM BrightStarsVM {
-            get => _brightStarsVM ?? (_brightStarsVM = new BrightStarsVM(profileService, telescopeMediator));
+        public FocusTargetsVM FocusTargetsVM {
+            get => focusTargetsVM ?? (focusTargetsVM = new FocusTargetsVM(profileService, telescopeMediator));
             set {
-                _brightStarsVM = value;
+                focusTargetsVM = value;
                 RaisePropertyChanged();
             }
         }

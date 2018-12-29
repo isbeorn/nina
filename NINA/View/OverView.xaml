@@ -260,11 +260,11 @@
                         </DataTemplate>
                     </util:PaneTemplateSelector.ThumbnailTemplate>
 
-                    <util:PaneTemplateSelector.BrightStarsTemplate>
+                    <util:PaneTemplateSelector.FocusTargetsTemplate>
                         <DataTemplate>
-                            <view:AnchorableBrightStarsView />
+                            <view:AnchorableFocusTargetsView />
                         </DataTemplate>
-                    </util:PaneTemplateSelector.BrightStarsTemplate>
+                    </util:PaneTemplateSelector.FocusTargetsTemplate>
 
                     <util:PaneTemplateSelector.PlatesolveTemplate>
                         <DataTemplate>

@@ -4,9 +4,9 @@ using System;
 
 namespace NINA.Model {
 
-    public class BrightStar : BaseINPC {
+    public class FocusTarget : BaseINPC {
 
-        public BrightStar(string name) {
+        public FocusTarget(string name) {
             Name = name;
         }
 

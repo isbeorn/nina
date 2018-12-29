@@ -92,11 +92,11 @@ namespace NINA.Utility {
             return dsotypes;
         }
 
-        public async Task<List<BrightStar>> GetBrightStars() {
+        public async Task<List<FocusTarget>> GetBrightStars() {
             string query = @"SELECT name, ra, dec, magnitude
                             FROM brightstars";
 
-            var brightStars = new List<BrightStar>();
+            var brightStars = new List<FocusTarget>();
             try {
                 using (SQLiteConnection connection = new SQLiteConnection(_connectionString)) {
                     connection.Open();
@@ -106,7 +106,7 @@ namespace NINA.Utility {
                         var reader = await command.ExecuteReaderAsync();
 
                         while (reader.Read()) {
-                            var brightStar = new BrightStar(reader.GetString(0));
+                            var brightStar = new FocusTarget(reader.GetString(0));
 
                             var coords = new Coordinates(reader.GetDouble(1), reader.GetDouble(2), Epoch.J2000, Coordinates.RAType.Degrees);
                             brightStar.Coordinates = coords;
