@@ -515,6 +515,7 @@ namespace NINA.ViewModel.FlatWizard {
             CameraConnected = cameraInfo.Connected;
 
             if (prevBitDepth != cameraInfo.BitDepth) {
+                SingleFlatWizardFilterSettings.BitDepth = cameraInfo.BitDepth;
                 foreach (var filter in Filters) {
                     filter.BitDepth = cameraInfo.BitDepth;
                 }
