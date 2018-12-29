@@ -6,7 +6,6 @@ using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Profile;
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows.Threading;
 
@@ -22,15 +21,6 @@ namespace NINA.ViewModel {
             ImageGeometry = (System.Windows.Media.GeometryGroup)resourceDictionary["FocusTargetsSVG"];
 
             LoadFocusTargets();
-            profileService.ActiveProfile.AstrometrySettings.PropertyChanged +=
-                delegate (object sender, PropertyChangedEventArgs args) {
-                    if (args.PropertyName == nameof(profileService.ActiveProfile.AstrometrySettings.Longitude) ||
-                        args.PropertyName == nameof(profileService.ActiveProfile.AstrometrySettings.Latitude)) {
-                        {
-                            CalculateTargetAltitude();
-                        }
-                    }
-                };
 
             var updateTimer = new DispatcherTimer(TimeSpan.FromMinutes(1), DispatcherPriority.Background, (sender, args) => LoadFocusTargets(), Dispatcher.CurrentDispatcher);
             updateTimer.Start();
@@ -62,7 +52,7 @@ namespace NINA.ViewModel {
                 var selectedBrightStarName = selectedFocusTarget?.Name;
                 focusTargets = value;
                 RaisePropertyChanged();
-                SelectedFocusTarget = FocusTargets.SingleOrDefault(b => b.Name == selectedBrightStarName) ?? FocusTargets.First();
+                SelectedFocusTarget = value.SingleOrDefault(b => b.Name == selectedBrightStarName) ?? value.First();
             }
         }
 
