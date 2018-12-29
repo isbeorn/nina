@@ -320,7 +320,9 @@
                             SelectedValuePath="Name" />
                         <Button
                             Width="40"
-                            Margin="1,5,0,5"
+                            Height="30"
+                            Margin="5,5,0,0"
+                            HorizontalAlignment="Left"
                             Command="{Binding CopyToCustomSchemaCommand}">
                             <Path
                                 Margin="5"
@@ -504,7 +506,9 @@
                             SelectedValuePath="Name" />
                         <Button
                             Width="40"
-                            Margin="1,5,0,5"
+                            Height="30"
+                            Margin="5,5,0,0"
+                            HorizontalAlignment="Left"
                             Command="{Binding CopyToAlternativeCustomSchemaCommand}">
                             <Path
                                 Margin="5"
