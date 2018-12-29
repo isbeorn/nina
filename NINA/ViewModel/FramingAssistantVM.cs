@@ -190,7 +190,11 @@ namespace NINA.ViewModel {
 
         public async Task<bool> SetCoordinates(DeepSkyObject dso) {
             this.DSO = new DeepSkyObject(dso.Name, dso.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
-            FramingAssistantSource = SkySurveySource.NASA;
+            FramingAssistantSource = profileService.ActiveProfile.FramingAssistantSettings.LastSelectedImageSource;
+            if (FramingAssistantSource == SkySurveySource.CACHE || FramingAssistantSource == SkySurveySource.FILE) {
+                FramingAssistantSource = SkySurveySource.NASA;
+            }
+
             RaiseCoordinatesChanged();
             await LoadImageCommand.ExecuteAsync(null);
             return true;
