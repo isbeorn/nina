@@ -103,19 +103,11 @@ namespace NINA.ViewModel {
 
         public override void Hide(object o) {
             this.IsVisible = !IsVisible;
-        }
-
-        public new bool IsVisible {
-            get => _isVisible;
-            set {
-                _isVisible = value;
-                RaisePropertyChanged();
-                if (_isVisible) {
-                    UpdateValues_Tick(null, null);
-                    updateValues.Start();
-                } else {
-                    updateValues.Stop();
-                }
+            if (IsVisible) {
+                UpdateValues_Tick(null, null);
+                updateValues.Start();
+            } else {
+                updateValues.Stop();
             }
         }
 
