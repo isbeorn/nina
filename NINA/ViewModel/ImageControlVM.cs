@@ -596,7 +596,9 @@ namespace NINA.ViewModel {
                             ImgHistoryVM.Add(iarr.Statistics);
                     }));
 
-                    AnalyzeBahtinov();
+                    if (ShowBahtinovAnalyzer) {
+                        AnalyzeBahtinov();
+                    }
 
                     if (saveImage) {
                         await SaveToDisk(parameters, token);
