@@ -191,13 +191,14 @@ namespace NINA.Model.MyGuider {
             return client;
         }*/
         private TaskCompletionSource<bool> _tcs;
-        private bool startedPHD2;
 
         public async Task<bool> Connect() {
-            bool connected = false;
             _tcs = new TaskCompletionSource<bool>();
-            StartPHD2AndListener();
-            connected = await _tcs.Task;
+            var startedPHD2 = StartPHD2Process();
+#pragma warning disable 4014
+            Task.Run(RunListener);
+#pragma warning restore 4014
+            bool connected = await _tcs.Task;
 
             if (startedPHD2 && connected) {
                 await ConnectPHD2Equipment();
@@ -447,38 +448,32 @@ namespace NINA.Model.MyGuider {
             return foo != null ? foo.State : TcpState.Unknown;
         }
 
-        private void StartPHD2AndListener() {
-            Task.Run(() => {
-                try {
-                    startedPHD2 = StartPHD2Process();
-
-                    Task.Run(RunListener);
-                } catch (OperationCanceledException) { } catch (FileNotFoundException) {
-                    Notification.ShowError("PHD2 path not found!");
-                } catch (Exception ex) {
-                    Logger.Error(ex);
-                    Notification.ShowError("Something happened");
-                }
-            });
-        }
-
         private async Task ConnectPHD2Equipment() {
             var connectMsg = await SendMessage(
                 PHD2EventId.SET_CONNECTED,
                 string.Format(PHD2Methods.SET_CONNECTED, "true"));
             if (connectMsg.error != null) {
-                Notification.ShowWarning("Failed to connect to equipment");
+                Notification.ShowWarning(Locale.Loc.Instance["LblPhd2FailedEquipmentConnection"]);
             }
         }
 
         private bool StartPHD2Process() {
             // if phd2 is not running start it
-            if (Process.GetProcessesByName("phd2").Length == 0) {
-                if (!File.Exists(profileService.ActiveProfile.GuiderSettings.PHD2Path)) {
-                    throw new FileNotFoundException();
+            try {
+                if (Process.GetProcessesByName("phd2").Length == 0) {
+                    if (!File.Exists(profileService.ActiveProfile.GuiderSettings.PHD2Path)) {
+                        throw new FileNotFoundException();
+                    }
+
+                    var process = Process.Start(profileService.ActiveProfile.GuiderSettings.PHD2Path);
+                    process?.WaitForInputIdle();
+                    return true;
                 }
-                Process.Start(profileService.ActiveProfile.GuiderSettings.PHD2Path);
-                return true;
+            } catch (FileNotFoundException) {
+                Notification.ShowError(Locale.Loc.Instance["LblPhd2PathNotFound"]);
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                Notification.ShowError(Locale.Loc.Instance["LblPhd2StartProcessError"]);
             }
 
             return false;
