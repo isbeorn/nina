@@ -22,7 +22,6 @@
 #endregion "copyright"
 
 using NINA.Utility.Enum;
-using NINA.Utility.Mediator;
 using System;
 using System.Runtime.Serialization;
 
@@ -51,6 +50,7 @@ namespace NINA.Utility.Profile {
             pHD2GuiderScale = GuiderScaleEnum.PIXELS;
             settlePixels = 1.5;
             settleTimeout = 40;
+            phd2Path = @"C:\Program Files(x86)\PHDGuiding2\phd2.exe";
         }
 
         private double ditherPixels;
@@ -127,6 +127,17 @@ namespace NINA.Utility.Profile {
             }
             set {
                 pHD2LargeHistorySize = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string phd2Path;
+
+        [DataMember]
+        public string PHD2Path {
+            get => phd2Path;
+            set {
+                phd2Path = value;
                 RaisePropertyChanged();
             }
         }

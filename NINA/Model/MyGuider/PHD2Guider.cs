@@ -196,11 +196,11 @@ namespace NINA.Model.MyGuider {
         public async Task<bool> Connect() {
             bool connected = false;
             _tcs = new TaskCompletionSource<bool>();
-            StartPhd2AndListener();
+            StartPHD2AndListener();
             connected = await _tcs.Task;
 
             if (startedPHD2 && connected) {
-                await ConnectPhd2Equipment();
+                await ConnectPHD2Equipment();
                 await Task.Delay(5);
                 await SendMessage(PHD2EventId.LOOP, PHD2Methods.LOOP);
             }
@@ -447,30 +447,37 @@ namespace NINA.Model.MyGuider {
             return foo != null ? foo.State : TcpState.Unknown;
         }
 
-        private void StartPhd2AndListener() {
+        private void StartPHD2AndListener() {
             Task.Run(() => {
                 try {
-                    startedPHD2 = StartPhd2();
+                    startedPHD2 = StartPHD2Process();
 
                     Task.Run(RunListener);
-                } catch (OperationCanceledException) { }
+                } catch (OperationCanceledException) { } catch (FileNotFoundException) {
+                    Notification.ShowError("PHD2 path not found!");
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                    Notification.ShowError("Something happened");
+                }
             });
         }
 
-        private async Task ConnectPhd2Equipment() {
+        private async Task ConnectPHD2Equipment() {
             var connectMsg = await SendMessage(
                 PHD2EventId.SET_CONNECTED,
                 string.Format(PHD2Methods.SET_CONNECTED, "true"));
             if (connectMsg.error != null) {
-                // failed to connect equipment
+                Notification.ShowWarning("Failed to connect to equipment");
             }
         }
 
-        private bool StartPhd2() {
-            // if phd2 is not running
-            if (Process.GetProcessesByName("phd2.exe").Length == 0) {
-                // default path C:\Program Files (x86)\PHDGuiding2\phd2.exe
-                Process.Start(System.Environment.ExpandEnvironmentVariables(@"%PROGRAMFILES(x86)%\PHDGuiding2\phd2.exe"));
+        private bool StartPHD2Process() {
+            // if phd2 is not running start it
+            if (Process.GetProcessesByName("phd2").Length == 0) {
+                if (!File.Exists(profileService.ActiveProfile.GuiderSettings.PHD2Path)) {
+                    throw new FileNotFoundException();
+                }
+                Process.Start(profileService.ActiveProfile.GuiderSettings.PHD2Path);
                 return true;
             }
 
