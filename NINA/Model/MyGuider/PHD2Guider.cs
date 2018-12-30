@@ -202,7 +202,6 @@ namespace NINA.Model.MyGuider {
 
             if (startedPHD2 && connected) {
                 await ConnectPHD2Equipment();
-                await Task.Delay(5);
                 await SendMessage(PHD2EventId.LOOP, PHD2Methods.LOOP);
             }
 
