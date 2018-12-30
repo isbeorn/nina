@@ -26,6 +26,7 @@ using NINA.Utility;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -190,12 +191,19 @@ namespace NINA.Model.MyGuider {
             return client;
         }*/
         private TaskCompletionSource<bool> _tcs;
+        private bool startedPHD2;
 
         public async Task<bool> Connect() {
             bool connected = false;
             _tcs = new TaskCompletionSource<bool>();
-            StartListener();
+            StartPhd2AndListener();
             connected = await _tcs.Task;
+
+            if (startedPHD2 && connected) {
+                await ConnectPhd2Equipment();
+                await Task.Delay(5);
+                await SendMessage(PHD2EventId.LOOP, PHD2Methods.LOOP);
+            }
 
             var resp = await SendMessage(PHD2EventId.GET_PIXEL_SCALE, PHD2Methods.GET_PIXEL_SCALE);
             PixelScale = double.Parse(resp.result.ToString().Replace(",", "."), CultureInfo.InvariantCulture);
@@ -439,56 +447,89 @@ namespace NINA.Model.MyGuider {
             return foo != null ? foo.State : TcpState.Unknown;
         }
 
-        private void StartListener() {
-            Task.Run(async () => {
-                JsonLoadSettings jls = new JsonLoadSettings() { LineInfoHandling = LineInfoHandling.Ignore, CommentHandling = CommentHandling.Ignore };
-                _clientCTS = new CancellationTokenSource();
-                using (var client = new TcpClient()) {
-                    try {
-                        await client.ConnectAsync(profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl, profileService.ActiveProfile.GuiderSettings.PHD2ServerPort);
-                        Connected = true;
-                        _tcs.TrySetResult(false);
+        private void StartPhd2AndListener() {
+            Task.Run(() => {
+                try {
+                    startedPHD2 = StartPhd2();
 
-                        using (NetworkStream s = client.GetStream()) {
-                            while (true) {
-                                var state = GetState(client);
-                                if (state == TcpState.CloseWait) {
-                                    throw new Exception(Locale.Loc.Instance["LblPhd2ServerConnectionLost"]);
-                                }
-                                var message = string.Empty;
-                                while (s.DataAvailable) {
-                                    byte[] response = new byte[1024];
-                                    await s.ReadAsync(response, 0, response.Length, _clientCTS.Token);
-                                    message += System.Text.Encoding.ASCII.GetString(response);
-                                }
+                    Task.Run(RunListener);
+                } catch (OperationCanceledException) { }
+            });
+        }
 
-                                foreach (string line in message.Split(new[] { Environment.NewLine }, StringSplitOptions.None)) {
-                                    if (!string.IsNullOrEmpty(line) && !line.StartsWith("\0")) {
-                                        JObject o = JObject.Parse(line, jls);
-                                        JToken t = o.GetValue("Event");
-                                        string phdevent = "";
-                                        if (t != null) {
-                                            phdevent = t.ToString();
-                                            ProcessEvent(phdevent, o);
-                                        }
+        private async Task ConnectPhd2Equipment() {
+            var connectMsg = await SendMessage(
+                PHD2EventId.SET_CONNECTED,
+                string.Format(PHD2Methods.SET_CONNECTED, "true"));
+            if (connectMsg.error != null) {
+                // failed to connect equipment
+            }
+        }
+
+        private bool StartPhd2() {
+            // if phd2 is not running
+            if (Process.GetProcessesByName("phd2.exe").Length == 0) {
+                // default path C:\Program Files (x86)\PHDGuiding2\phd2.exe
+                Process.Start(System.Environment.ExpandEnvironmentVariables(@"%PROGRAMFILES(x86)%\PHDGuiding2\phd2.exe"));
+                return true;
+            }
+
+            return false;
+        }
+
+        private async Task RunListener() {
+            JsonLoadSettings jls = new JsonLoadSettings() { LineInfoHandling = LineInfoHandling.Ignore, CommentHandling = CommentHandling.Ignore };
+            _clientCTS = new CancellationTokenSource();
+            using (var client = new TcpClient()) {
+                try {
+                    await client.ConnectAsync(profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl,
+                        profileService.ActiveProfile.GuiderSettings.PHD2ServerPort);
+                    Connected = true;
+                    _tcs.TrySetResult(true);
+
+                    using (NetworkStream s = client.GetStream()) {
+                        while (true) {
+                            var state = GetState(client);
+                            if (state == TcpState.CloseWait) {
+                                throw new Exception(Locale.Loc.Instance["LblPhd2ServerConnectionLost"]);
+                            }
+
+                            var message = string.Empty;
+                            while (s.DataAvailable) {
+                                byte[] response = new byte[1024];
+                                await s.ReadAsync(response, 0, response.Length, _clientCTS.Token);
+                                message += System.Text.Encoding.ASCII.GetString(response);
+                            }
+
+                            foreach (string line in message.Split(new[] { Environment.NewLine },
+                                StringSplitOptions.None)) {
+                                if (!string.IsNullOrEmpty(line) && !line.StartsWith("\0")) {
+                                    JObject o = JObject.Parse(line, jls);
+                                    JToken t = o.GetValue("Event");
+                                    string phdevent = "";
+                                    if (t != null) {
+                                        phdevent = t.ToString();
+                                        ProcessEvent(phdevent, o);
                                     }
                                 }
-                                await Task.Delay(TimeSpan.FromMilliseconds(500), _clientCTS.Token);
                             }
+
+                            await Task.Delay(TimeSpan.FromMilliseconds(500), _clientCTS.Token);
                         }
-                    } catch (OperationCanceledException) {
-                    } catch (Exception ex) {
-                        Logger.Error(ex);
-                        Notification.ShowError("PHD2 Error: " + ex.Message);
-                    } finally {
-                        _isDithering = false;
-                        AppState = new PhdEventAppState() { State = "" };
-                        PixelScale = 0.0d;
-                        Connected = false;
-                        _tcs.TrySetResult(false);
                     }
+                } catch (OperationCanceledException) {
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                    Notification.ShowError("PHD2 Error: " + ex.Message);
+                    throw;
+                } finally {
+                    _isDithering = false;
+                    AppState = new PhdEventAppState() { State = "" };
+                    PixelScale = 0.0d;
+                    Connected = false;
+                    _tcs.TrySetResult(false);
                 }
-            });
+            }
         }
 
         public class PhdMethodResponse {
