@@ -21,24 +21,30 @@
 
 #endregion "copyright"
 
-using NINA.Model.MyTelescope;
-using NINA.Utility.Astrometry;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
-namespace NINA.ViewModel.Interfaces {
+namespace NINA.View {
 
-    public interface ITelescopeVM : IDeviceVM<TelescopeInfo> {
+    /// <summary>
+    /// Interaction logic for SimulatorCameraSetupView.xaml
+    /// </summary>
+    public partial class SimulatorCameraSetupView : UserControl {
 
-        Task<bool> SlewToCoordinatesAsync(Coordinates coords);
-
-        void MoveAxis(TelescopeAxes axis, double rate);
-
-        bool Sync(double ra, double dec);
-
-        bool MeridianFlip(Coordinates targetCoordinates);
-
-        bool SetTracking(bool tracking);
-
-        bool SendToSnapPort(bool start);
+        public SimulatorCameraSetupView() {
+            InitializeComponent();
+        }
     }
 }

@@ -56,6 +56,7 @@ namespace NINA.ViewModel {
             this.applicationStatusMediator = applicationStatusMediator;
 
             Cache = new CacheSkySurvey(profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory);
+            Opacity = 0.2;
 
             var defaultCoordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
             DSO = new DeepSkyObject(string.Empty, defaultCoordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
@@ -76,7 +77,7 @@ namespace NINA.ViewModel {
             DragMoveCommand = new RelayCommand(DragMove);
             ClearCacheCommand = new RelayCommand(ClearCache);
 
-            SetSequenceCoordinatesCommand = new AsyncCommand<bool>(async () => {
+            SetSequenceCoordinatesCommand = new AsyncCommand<bool>(async (object parameter) => {
                 var vm = (ApplicationVM)Application.Current.Resources["AppVM"];
                 vm.ChangeTab(ApplicationTab.SEQUENCE);
 
@@ -86,7 +87,13 @@ namespace NINA.ViewModel {
                     dso.Rotation = Rectangle.DisplayedRotation;
                     deepSkyObjects.Add(dso);
                 }
-                var msgResult = await vm.SeqVM.SetSequenceCoordiantes(deepSkyObjects);
+
+                bool msgResult = false;
+                if (parameter.ToString() == "Replace") {
+                    msgResult = await vm.SeqVM.SetSequenceCoordiantes(deepSkyObjects);
+                } else if (parameter.ToString() == "Add") {
+                    msgResult = await vm.SeqVM.SetSequenceCoordiantes(deepSkyObjects, false);
+                }
 
                 ImageParameter = null;
                 GC.Collect();
@@ -131,6 +138,16 @@ namespace NINA.ViewModel {
             RaisePropertyChanged(nameof(ImageCacheInfo));
         }
 
+        private double opacity;
+
+        public double Opacity {
+            get => opacity;
+            set {
+                opacity = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private ISkySurveyFactory skySurveyFactory;
 
         public ISkySurveyFactory SkySurveyFactory {
@@ -173,7 +190,11 @@ namespace NINA.ViewModel {
 
         public async Task<bool> SetCoordinates(DeepSkyObject dso) {
             this.DSO = new DeepSkyObject(dso.Name, dso.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
-            FramingAssistantSource = SkySurveySource.NASA;
+            FramingAssistantSource = profileService.ActiveProfile.FramingAssistantSettings.LastSelectedImageSource;
+            if (FramingAssistantSource == SkySurveySource.CACHE || FramingAssistantSource == SkySurveySource.FILE) {
+                FramingAssistantSource = SkySurveySource.NASA;
+            }
+
             RaiseCoordinatesChanged();
             await LoadImageCommand.ExecuteAsync(null);
             return true;

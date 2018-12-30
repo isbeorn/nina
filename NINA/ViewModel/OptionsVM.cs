@@ -68,6 +68,9 @@ namespace NINA.ViewModel {
                 return SelectedProfile != null;
             });
 
+            CopyToCustomSchemaCommand = new RelayCommand(CopyToCustomSchema, (object o) => AlternativeColorSchemaName != "Custom");
+            CopyToAlternativeCustomSchemaCommand = new RelayCommand(CopyToAlternativeCustomSchema, (object o) => ColorSchemaName != "Alternative Custom");
+
             ImagePatterns = ImagePatterns.CreateExample();
 
             ScanForIndexFiles();
@@ -87,6 +90,47 @@ namespace NINA.ViewModel {
             };
 
             FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
+        }
+
+        private void CopyToAlternativeCustomSchema(object obj) {
+            var schema = ColorSchemas.Items.Where((x) => x.Name == "Alternative Custom").First();
+
+            schema.PrimaryColor = AltPrimaryColor;
+            schema.SecondaryColor = AltSecondaryColor;
+            schema.BorderColor = AltBorderColor;
+            schema.BackgroundColor = AltBackgroundColor;
+            schema.SecondaryBackgroundColor = AltSecondaryBackgroundColor;
+            schema.TertiaryBackgroundColor = AltTertiaryBackgroundColor;
+            schema.ButtonBackgroundColor = AltButtonBackgroundColor;
+            schema.ButtonBackgroundSelectedColor = AltButtonBackgroundSelectedColor;
+            schema.ButtonForegroundColor = AltButtonForegroundColor;
+            schema.ButtonForegroundDisabledColor = AltButtonForegroundDisabledColor;
+            schema.NotificationWarningColor = AltNotificationWarningColor;
+            schema.NotificationWarningTextColor = AltNotificationWarningTextColor;
+            schema.NotificationErrorColor = AltNotificationErrorColor;
+            schema.NotificationErrorTextColor = AltNotificationErrorTextColor;
+            AlternativeColorSchemaName = schema.Name;
+        }
+
+        private void CopyToCustomSchema(object obj) {
+            var schema = ColorSchemas.Items.Where((x) => x.Name == "Custom").First();
+
+            schema.PrimaryColor = PrimaryColor;
+            schema.SecondaryColor = SecondaryColor;
+            schema.BorderColor = BorderColor;
+            schema.BackgroundColor = BackgroundColor;
+            schema.SecondaryBackgroundColor = SecondaryBackgroundColor;
+            schema.TertiaryBackgroundColor = TertiaryBackgroundColor;
+            schema.ButtonBackgroundColor = ButtonBackgroundColor;
+            schema.ButtonBackgroundSelectedColor = ButtonBackgroundSelectedColor;
+            schema.ButtonForegroundColor = ButtonForegroundColor;
+            schema.ButtonForegroundDisabledColor = ButtonForegroundDisabledColor;
+            schema.NotificationWarningColor = NotificationWarningColor;
+            schema.NotificationWarningTextColor = NotificationWarningTextColor;
+            schema.NotificationErrorColor = NotificationErrorColor;
+            schema.NotificationErrorTextColor = NotificationErrorTextColor;
+
+            ColorSchemaName = schema.Name;
         }
 
         private void CloneProfile(object obj) {
@@ -167,14 +211,13 @@ namespace NINA.ViewModel {
 
         private void ImportFilters(object obj) {
             var filters = filterWheelMediator.GetAllFilters();
-            if (filters != null) {
+            if (filters?.Count > 0) {
                 FilterWheelFilters.Clear();
                 FilterWheelFilters.CollectionChanged -= FilterWheelFilters_CollectionChanged;
-                var l = new List<FilterInfo>();
-                foreach (FilterInfo filter in filters) {
-                    l.Add(filter);
+                var l = filters.OrderBy(x => x.Position);
+                foreach (var filter in l) {
+                    FilterWheelFilters.Add(filter);
                 }
-                FilterWheelFilters = new ObserveAllCollection<FilterInfo>(l.OrderBy((x) => x.Position));
                 FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
             }
         }
@@ -311,6 +354,9 @@ namespace NINA.ViewModel {
         public ICommand AddProfileCommand { get; private set; }
         public ICommand CloneProfileCommand { get; private set; }
         public ICommand RemoveProfileCommand { get; private set; }
+
+        public ICommand CopyToCustomSchemaCommand { get; private set; }
+        public ICommand CopyToAlternativeCustomSchemaCommand { get; private set; }
 
         public ICommand SelectProfileCommand { get; private set; }
 

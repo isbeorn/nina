@@ -22,7 +22,6 @@
 #endregion "copyright"
 
 using NINA.Utility;
-using NINA.Utility.Mediator;
 using NINA.Utility.Profile;
 using System;
 using System.Windows.Input;
@@ -80,7 +79,8 @@ namespace NINA.ViewModel {
 
         public string Title {
             get {
-                return Locale.Loc.Instance[_titleLabel]; ;
+                return Locale.Loc.Instance[_titleLabel];
+                ;
             }
             set {
                 _titleLabel = value;
@@ -114,7 +114,7 @@ namespace NINA.ViewModel {
 
         public ICommand HideCommand { get; private set; }
 
-        public void Hide(object o) {
+        public virtual void Hide(object o) {
             this.IsVisible = !IsVisible;
         }
     }

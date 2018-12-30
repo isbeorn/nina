@@ -782,4 +782,8 @@ Berechneter HFR: {2}
     <s:String x:Key="LblReadoutForNormalImagesToolTip">Dieser Auslesemodus wird für LIGHT, BIAS, DARK, FLAT und DARKFLAT Bilder in Sequenzen verwendet</s:String>
     <s:String x:Key="LblBlackClipping">Schwarzpunktfaktor</s:String>
     <s:String x:Key="LblLblBlackClippingTooltip">Schwarzpunktfaktor in Sigma Einheiten vom Median</s:String>
+    <s:String x:Key="LblReplaceSequenceTarget">Als Sequenzziel ersetzen</s:String>
+    <s:String x:Key="LblAddSequenceTarget">Als Sequenzziel hinzufügen</s:String>
+    <s:String x:Key="LblOpacity">Opazität</s:String>
+    <s:String x:Key="LblManualFocusTargets">Fokusziele für manuellen Fokus</s:String>
 </ResourceDictionary>

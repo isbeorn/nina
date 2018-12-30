@@ -22,7 +22,6 @@
 #endregion "copyright"
 
 using Microsoft.VisualBasic.FileIO;
-using NINA.Utility;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -86,8 +85,102 @@ namespace StarDataImport {
         }
 
         private static void Main(string[] args) {
+            //GenerateStarDatabase();
+            UpdateBrightStars();
             //GenerateDatabase();
             //UpdateStarData();
+        }
+
+        public static void UpdateBrightStars() {
+            List<DatabaseStar> objects = new List<DatabaseStar>();
+            var connectionString = string.Format(@"Data Source={0};foreign keys=true;", @"D:\Projects\nina\NINA\Database\NINA.sqlite");
+            var query = "select name, ra, dec, magnitude FROM brightstars where syncedfrom is null;";
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString)) {
+                connection.Open();
+                using (SQLiteCommand command = connection.CreateCommand()) {
+                    command.CommandText = query;
+
+                    var reader = command.ExecuteReader();
+                    while (reader.Read()) {
+                        objects.Add(new DatabaseStar() { Name = reader.GetString(0) });
+                    }
+                }
+            }
+
+            var sw = Stopwatch.StartNew();
+
+            Parallel.ForEach(objects, obj => {
+                var _url = "http://cdsws.u-strasbg.fr/axis/services/Sesame";
+                var _action = "";
+
+                XmlDocument soapEnvelopeXml = CreateSoapEnvelope(obj.Name);
+                HttpWebRequest webRequest = CreateWebRequest(_url, _action);
+                webRequest.Timeout = -1;
+                InsertSoapEnvelopeIntoWebRequest(soapEnvelopeXml, webRequest);
+
+                // begin async call to web request.
+                IAsyncResult asyncResult = webRequest.BeginGetResponse(null, null);
+
+                // suspend this thread until call is complete. You might want to do something usefull
+                // here like update your UI.
+                asyncResult.AsyncWaitHandle.WaitOne();
+
+                // get the response from the completed web request.
+
+                using (WebResponse webResponse = webRequest.EndGetResponse(asyncResult)) {
+                    var soap = XElement.Load(webResponse.GetResponseStream());
+
+                    var xmlstring = (from c in soap.Descendants("return") select c).FirstOrDefault()?.Value;
+                    var xml = XElement.Parse(xmlstring);
+                    var resolvername = "Simbad";
+                    var resolver = xml.Descendants("Resolver").Where((x) => x.Attribute("name").Value.Contains(resolvername)).FirstOrDefault();
+
+                    var ra = resolver.Descendants("jradeg").FirstOrDefault()?.Value;
+                    var dec = resolver.Descendants("jdedeg").FirstOrDefault()?.Value;
+
+                    if (ra == null) {
+                        resolvername = "NED";
+                        resolver = xml.Descendants("Resolver").Where((x) => x.Attribute("name").Value.Contains(resolvername)).FirstOrDefault();
+
+                        ra = resolver.Descendants("jradeg").FirstOrDefault()?.Value;
+                        dec = resolver.Descendants("jdedeg").FirstOrDefault()?.Value;
+                    }
+
+                    if (ra == null) {
+                        resolvername = "VizieR";
+                        resolver = xml.Descendants("Resolver").Where((x) => x.Attribute("name").Value.Contains(resolvername)).FirstOrDefault();
+
+                        ra = resolver.Descendants("jradeg").FirstOrDefault()?.Value;
+                        dec = resolver.Descendants("jdedeg").FirstOrDefault()?.Value;
+                    }
+
+                    Console.WriteLine(obj.ToString());
+                    if (ra == null) {
+                        Console.WriteLine("NO ENTRY");
+                    } else {
+                        Console.WriteLine("Found " + " RA:" + ra + " DEC:" + dec);
+                    }
+
+                    if (ra != null && dec != null) {
+                        using (SQLiteConnection connection = new SQLiteConnection(connectionString)) {
+                            connection.Open();
+                            using (SQLiteCommand command = connection.CreateCommand()) {
+                                command.CommandText = "UPDATE brightstars SET ra = $ra, dec = $dec, syncedfrom = '" + resolvername + "' WHERE name = $name;";
+                                command.Parameters.AddWithValue("$name", obj.Name);
+                                command.Parameters.AddWithValue("$ra", ra);
+                                command.Parameters.AddWithValue("$dec", dec);
+
+                                var rows = command.ExecuteNonQuery();
+                                Console.WriteLine(string.Format("Inserted {0} row(s)", rows));
+                            }
+                        }
+                    }
+                }
+            });
+
+            Console.WriteLine(sw.Elapsed);
+
+            Console.ReadLine();
         }
 
         public static void UpdateStarData() {
@@ -264,6 +357,50 @@ namespace StarDataImport {
             }
         }
 
+        private static void GenerateStarDatabase() {
+            var db = new DatabaseInteraction();
+            db.CreateDatabase();
+
+            db.GenericQuery("DROP TABLE IF EXISTS brightstars");
+
+            db.GenericQuery(@"CREATE TABLE IF NOT EXISTS brightstars (
+                name TEXT NOT NULL,
+                ra REAL,
+                dec REAL,
+                magnitude REAL,
+                PRIMARY KEY (name)
+            );");
+
+            List<string> queries = new List<string>();
+
+            using (TextFieldParser parser = new TextFieldParser(@"brightstars.csv")) {
+                parser.TextFieldType = FieldType.Delimited;
+                parser.SetDelimiters(",");
+
+                HashSet<string> types = new HashSet<string>();
+                var isFirst = true;
+                List<DatabaseStar> l = new List<DatabaseStar>();
+                var i = 1;
+                while (!parser.EndOfData) {
+                    string[] fields = parser.ReadFields();
+                    //Processing row
+                    if (isFirst) {
+                        isFirst = false;
+                        continue;
+                    }
+
+                    DatabaseStar dso = new DatabaseStar(fields);
+
+                    queries.Add(dso.getStarQuery());
+                }
+
+                db.BulkInsert(queries);
+
+                Console.WriteLine("Done");
+                Console.ReadLine();
+            }
+        }
+
         public static void GenerateDatabase() {
             var db = new DatabaseInteraction();
             db.CreateDatabase();
@@ -378,6 +515,75 @@ namespace StarDataImport {
             public override string ToString() {
                 return name;
             }
+        }
+
+        private class DatabaseStar {
+
+            private static readonly Lazy<ASCOM.Utilities.Util> lazyAscomUtil =
+            new Lazy<ASCOM.Utilities.Util>(() => new ASCOM.Utilities.Util());
+
+            private static ASCOM.Utilities.Util AscomUtil { get { return lazyAscomUtil.Value; } }
+
+            //public string obj;
+            //public string other;
+            public string Name;
+
+            public double RA;
+            public double DEC;
+            public double magnitude;
+
+            public DatabaseStar() {
+            }
+
+            public DatabaseStar(string[] fields) {
+                this.Name = fields[0];
+
+                RA = AscomUtil.HMSToDegrees(fields[2]);
+                DEC = double.Parse(fields[3], CultureInfo.InvariantCulture);
+
+                magnitude = double.Parse(fields[1], CultureInfo.InvariantCulture);
+            }
+
+            public string getStarQuery() {
+                return $@"INSERT INTO brightstars
+                (name, ra, dec, magnitude)  VALUES
+                (""{Name}"",
+                {RA.ToString(CultureInfo.InvariantCulture)},
+                {DEC.ToString(CultureInfo.InvariantCulture)},
+                {magnitude.ToString(CultureInfo.InvariantCulture)}); ";
+            }
+
+            /*internal void insert(DatabaseInteraction db) {
+                var q = $@"INSERT INTO dsodetail
+                (id, ra, dec, magnitude, surfacebrightness,sizemin,sizemax,positionangle,nrofstars,brighteststar,constellation,dsotype,dsoclass,notes)  VALUES
+                ({Name},
+                {RA.ToString(CultureInfo.InvariantCulture)},
+                {DEC.ToString(CultureInfo.InvariantCulture)},
+                {magnitude.ToString(CultureInfo.InvariantCulture)},
+                {subr.ToString(CultureInfo.InvariantCulture)},
+                {size_min?.ToString(CultureInfo.InvariantCulture) ?? "null"},
+                {size_max?.ToString(CultureInfo.InvariantCulture) ?? "null"},
+                ""{positionangle}"",
+                ""{NSTS}"",
+                ""{brighteststar}"",
+                ""{constellation}"",
+                ""{type}"",
+                ""{classification}"",
+                ""{Notes}"" ); ";
+                db.GenericQuery(q);
+
+                q = "";
+                foreach (var cat in cataloguenr) {
+                    q += $@"INSERT INTO cataloguenr (dsodetailid, catalogue, designation) VALUES ({Name}, ""{cat.catalogue}"", ""{cat.designation}""); ";
+                }
+                db.GenericQuery(q);
+
+                q = "";
+                foreach (var desc in visualdescription) {
+                    q += $@"INSERT INTO visualdescription (dsodetailid, description) VALUES ({Name}, ""{desc.description}""); ";
+                }
+                db.GenericQuery(q);
+            }*/
         }
 
         private class DatabaseDSO {
@@ -538,7 +744,7 @@ namespace StarDataImport {
             /*internal void insert(DatabaseInteraction db) {
                 var q = $@"INSERT INTO dsodetail
                 (id, ra, dec, magnitude, surfacebrightness,sizemin,sizemax,positionangle,nrofstars,brighteststar,constellation,dsotype,dsoclass,notes)  VALUES
-                ({Id},
+                ({Name},
                 {RA.ToString(CultureInfo.InvariantCulture)},
                 {DEC.ToString(CultureInfo.InvariantCulture)},
                 {magnitude.ToString(CultureInfo.InvariantCulture)},
@@ -556,13 +762,13 @@ namespace StarDataImport {
 
                 q = "";
                 foreach (var cat in cataloguenr) {
-                    q += $@"INSERT INTO cataloguenr (dsodetailid, catalogue, designation) VALUES ({Id}, ""{cat.catalogue}"", ""{cat.designation}""); ";
+                    q += $@"INSERT INTO cataloguenr (dsodetailid, catalogue, designation) VALUES ({Name}, ""{cat.catalogue}"", ""{cat.designation}""); ";
                 }
                 db.GenericQuery(q);
 
                 q = "";
                 foreach (var desc in visualdescription) {
-                    q += $@"INSERT INTO visualdescription (dsodetailid, description) VALUES ({Id}, ""{desc.description}""); ";
+                    q += $@"INSERT INTO visualdescription (dsodetailid, description) VALUES ({Name}, ""{desc.description}""); ";
                 }
                 db.GenericQuery(q);
             }*/
