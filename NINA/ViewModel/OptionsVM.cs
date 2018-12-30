@@ -211,14 +211,13 @@ namespace NINA.ViewModel {
 
         private void ImportFilters(object obj) {
             var filters = filterWheelMediator.GetAllFilters();
-            if (filters != null) {
+            if (filters?.Count > 0) {
                 FilterWheelFilters.Clear();
                 FilterWheelFilters.CollectionChanged -= FilterWheelFilters_CollectionChanged;
-                var l = new List<FilterInfo>();
-                foreach (FilterInfo filter in filters) {
-                    l.Add(filter);
+                var l = filters.OrderBy(x => x.Position);
+                foreach (var filter in l) {
+                    FilterWheelFilters.Add(filter);
                 }
-                FilterWheelFilters = new ObserveAllCollection<FilterInfo>(l.OrderBy((x) => x.Position));
                 FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
             }
         }
