@@ -54,7 +54,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public int Limit { get; set; } = 50;
+        public int Limit { get; set; } = 25;
 
         private bool SkipSearch { get; set; } = false;
 
