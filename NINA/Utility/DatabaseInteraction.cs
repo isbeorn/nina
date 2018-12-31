@@ -136,11 +136,11 @@ namespace NINA.Utility {
             public DeepSkyObjectSearchFromThru<string> Size { get; set; } = new DeepSkyObjectSearchFromThru<string>();
             public DeepSkyObjectSearchFromThru<string> Magnitude { get; set; } = new DeepSkyObjectSearchFromThru<string>();
             public string ObjectName { get; set; } = string.Empty;
-            public DeepSkyObjectSearchOrderBy OrderBy { get; set; } = new DeepSkyObjectSearchOrderBy();
+            public DeepSkyObjectSearchOrder SearchOrder { get; set; } = new DeepSkyObjectSearchOrder();
             public int? Limit { get; set; }
         }
 
-        public class DeepSkyObjectSearchOrderBy {
+        public class DeepSkyObjectSearchOrder {
             public string Field { get; set; } = "id";
             public string Direction { get; set; } = "ASC";
         }
@@ -228,7 +228,7 @@ namespace NINA.Utility {
                 query += " HAVING aka LIKE $searchobjectname OR group_concat(cataloguenr.catalogue || cataloguenr.designation) LIKE $searchobjectname";
             }
 
-            query += " ORDER BY " + searchParams.OrderBy.Field + " " + searchParams.OrderBy.Direction;
+            query += " ORDER BY " + searchParams.SearchOrder.Field + " " + searchParams.SearchOrder.Direction;
 
             if (searchParams.Limit != null) {
                 query += " LIMIT " + searchParams.Limit + ";";

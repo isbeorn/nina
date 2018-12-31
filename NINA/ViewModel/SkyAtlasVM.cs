@@ -301,8 +301,8 @@ namespace NINA.ViewModel {
                     searchParams.Magnitude.Thru = SelectedMagnitudeThrough;
                     searchParams.Size.From = SelectedSizeFrom;
                     searchParams.Size.Thru = SelectedSizeThrough;
-                    searchParams.OrderBy.Field = OrderByField.ToString().ToLower();
-                    searchParams.OrderBy.Direction = OrderByDirection.ToString();
+                    searchParams.SearchOrder.Field = OrderByField.ToString().ToLower();
+                    searchParams.SearchOrder.Direction = OrderByDirection.ToString();
 
                     var result = await db.GetDeepSkyObjects(
                         profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository,
