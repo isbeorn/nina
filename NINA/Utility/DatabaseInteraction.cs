@@ -26,6 +26,7 @@ using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -163,7 +164,27 @@ namespace NINA.Utility {
             CancellationToken token) {
             if (searchParams == null) { throw new ArgumentNullException(nameof(searchParams)); }
 
-            string query = @"SELECT id, ra, dec, dsotype, magnitude, sizemax, group_concat(cataloguenr.catalogue || ' ' || cataloguenr.designation) aka, constellation, surfacebrightness
+            string query = @"SELECT
+                                id,
+                                ra,
+                                dec,
+                                dsotype,
+                                magnitude,
+                                sizemax,
+                                group_concat(
+                                    CASE cataloguenr.catalogue
+                                        WHEN 'NAME' THEN cataloguenr.designation
+                                        ELSE null
+                                    END
+                                ) commonnames,
+                                group_concat(
+                                    CASE cataloguenr.catalogue
+                                        WHEN 'NAME' THEN null
+                                        ELSE cataloguenr.catalogue || ' ' || cataloguenr.designation
+                                    END
+                                ) aka,
+                                constellation,
+                                surfacebrightness
                              FROM dsodetail
                                 INNER JOIN cataloguenr on dsodetail.id = cataloguenr.dsodetailid
                              WHERE (1=1) ";
@@ -278,7 +299,18 @@ namespace NINA.Utility {
                             }
 
                             if (!reader.IsDBNull(6)) {
-                                var akas = reader.GetString(6);
+                                var commonNames = reader.GetString(6);
+                                if (commonNames != string.Empty) {
+                                    foreach (var name in commonNames.Split(',')) {
+                                        dso.AlsoKnownAs.Add(name);
+                                    }
+                                    var longestName = dso.AlsoKnownAs.Aggregate("", (max, cur) => max.Length > cur.Length ? max : cur);
+                                    dso.Name = longestName;
+                                }
+                            }
+
+                            if (!reader.IsDBNull(7)) {
+                                var akas = reader.GetString(7);
                                 if (akas != string.Empty) {
                                     foreach (var name in akas.Split(',')) {
                                         dso.AlsoKnownAs.Add(name);
@@ -286,12 +318,12 @@ namespace NINA.Utility {
                                 }
                             }
 
-                            if (!reader.IsDBNull(7)) {
-                                dso.Constellation = reader.GetString(7);
+                            if (!reader.IsDBNull(8)) {
+                                dso.Constellation = reader.GetString(8);
                             }
 
-                            if (!reader.IsDBNull(8)) {
-                                dso.SurfaceBrightness = reader.GetDouble(8);
+                            if (!reader.IsDBNull(9)) {
+                                dso.SurfaceBrightness = reader.GetDouble(9);
                             }
 
                             dsos.Add(dso);
