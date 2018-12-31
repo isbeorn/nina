@@ -44,24 +44,26 @@
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>
-                        <Popup IsOpen="{TemplateBinding ShowPopup}">
-                            <ListView
-                                Name="PART_SearchCommandResultView"
-                                ItemsSource="{Binding SearchResult, RelativeSource={RelativeSource AncestorType={x:Type local:AutoCompleteBox}}, Mode=TwoWay}"
-                                SelectedItem="{Binding SelectedSearchResult, RelativeSource={RelativeSource AncestorType={x:Type local:AutoCompleteBox}}, Mode=TwoWay}">
-                                <ListView.Resources>
-                                    <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </Style>
-                                </ListView.Resources>
-                                <ListView.View>
-                                    <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
-                                        <GridViewColumn Width="Auto" DisplayMemberBinding="{Binding Column1}" />
-                                        <GridViewColumn Width="Auto" DisplayMemberBinding="{Binding Column2}" />
-                                        <GridViewColumn Width="Auto" DisplayMemberBinding="{Binding Column3}" />
-                                    </GridView>
-                                </ListView.View>
-                            </ListView>
+                        <Popup AllowsTransparency="True" IsOpen="{TemplateBinding ShowPopup}">
+                            <Grid Background="{TemplateBinding PopupBackground}">
+                                <ListView
+                                    Name="PART_SearchCommandResultView"
+                                    ItemsSource="{Binding SearchResult, RelativeSource={RelativeSource AncestorType={x:Type local:AutoCompleteBox}}, Mode=TwoWay}"
+                                    SelectedItem="{Binding SelectedSearchResult, RelativeSource={RelativeSource AncestorType={x:Type local:AutoCompleteBox}}, Mode=TwoWay}">
+                                    <ListView.Resources>
+                                        <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </Style>
+                                    </ListView.Resources>
+                                    <ListView.View>
+                                        <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
+                                            <GridViewColumn Width="Auto" DisplayMemberBinding="{Binding Column1}" />
+                                            <GridViewColumn Width="Auto" DisplayMemberBinding="{Binding Column2}" />
+                                            <GridViewColumn Width="Auto" DisplayMemberBinding="{Binding Column3}" />
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
+                            </Grid>
                         </Popup>
                     </Grid>
                 </ControlTemplate>

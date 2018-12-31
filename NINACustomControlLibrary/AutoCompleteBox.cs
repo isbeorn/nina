@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace NINACustomControlLibrary {
 
@@ -19,6 +20,18 @@ namespace NINACustomControlLibrary {
 
         static AutoCompleteBox() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(AutoCompleteBox), new FrameworkPropertyMetadata(typeof(AutoCompleteBox)));
+        }
+
+        public static readonly DependencyProperty PopupBackgroundProperty =
+           DependencyProperty.Register(nameof(PopupBackground), typeof(Brush), typeof(AutoCompleteBox), new UIPropertyMetadata(Brushes.Transparent));
+
+        public Brush PopupBackground {
+            get {
+                return (Brush)GetValue(PopupBackgroundProperty);
+            }
+            set {
+                SetValue(PopupBackgroundProperty, value);
+            }
         }
 
         public static readonly DependencyProperty SearchResultProperty =

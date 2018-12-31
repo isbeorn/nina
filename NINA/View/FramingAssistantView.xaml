@@ -140,6 +140,7 @@
                                     Margin="5,0,0,0"
                                     Foreground="{StaticResource PrimaryBrush}"
                                     HintText="{ns:Loc LblObjectNameHint}"
+                                    PopupBackground="{StaticResource TertiaryBackgroundBrush}"
                                     SearchResult="{Binding DeepSkyObjectSearchVM.TargetSearchResult.Result}"
                                     SelectedSearchResult="{Binding DeepSkyObjectSearchVM.SelectedTargetSearchResult, Mode=TwoWay}"
                                     ShowPopup="{Binding DeepSkyObjectSearchVM.ShowPopup, Mode=TwoWay}"
