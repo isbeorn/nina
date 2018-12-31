@@ -136,11 +136,14 @@
                                 VerticalAlignment="Center"
                                 Columns="2">
                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblName}" />
-                                <TextBox
-                                    MinWidth="40"
+                                <ninactrl:AutoCompleteBox
                                     Margin="5,0,0,0"
-                                    Text="{Binding DSO.Name}"
-                                    TextAlignment="Left" />
+                                    Foreground="{StaticResource PrimaryBrush}"
+                                    HintText="{ns:Loc LblObjectNameHint}"
+                                    SearchResult="{Binding DeepSkyObjectSearchVM.TargetSearchResult.Result}"
+                                    SelectedSearchResult="{Binding DeepSkyObjectSearchVM.SelectedTargetSearchResult, Mode=TwoWay}"
+                                    ShowPopup="{Binding DeepSkyObjectSearchVM.ShowPopup, Mode=TwoWay}"
+                                    Text="{Binding DeepSkyObjectSearchVM.TargetName, UpdateSourceTrigger=PropertyChanged}" />
                             </UniformGrid>
                             <UniformGrid
                                 Margin="0,0,0,6"

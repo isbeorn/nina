@@ -56,19 +56,27 @@ namespace NINA.ViewModel {
 
         public int Limit { get; set; } = 50;
 
+        private bool SkipSearch { get; set; } = false;
+
         private string targetName;
 
         public string TargetName {
             get => targetName;
             set {
                 targetName = value;
-                if (TargetName.Length > 1) {
+                if (!SkipSearch && TargetName.Length > 1) {
                     targetSearchCts?.Cancel();
                     targetSearchCts = new CancellationTokenSource();
                     TargetSearchResult = NotifyTaskCompletion.Create(SearchDSOs(TargetName, targetSearchCts.Token));
                 }
                 RaisePropertyChanged();
             }
+        }
+
+        public void SetTargetNameWithoutSearch(string targetName) {
+            this.SkipSearch = true;
+            this.TargetName = targetName;
+            this.SkipSearch = false;
         }
 
         private Coordinates coordinates;
