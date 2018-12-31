@@ -49,4 +49,7 @@
     <converters:WidthAndValueToWidthConverter x:Key="WidthAndValueToWidthConverter" />
     <converters:OneValueGreaterThanAnotherToVisiblityConverter x:Key="GreaterThanToVisiblityConverter" />
     <converters:CollectionContainsMoreThanOneItemToVisibilityConverter x:Key="CollectionContainsMoreThanOneItemToVisibilityConverter" />
+    <converters:MultiSizeToDiameterConverter x:Key="MultiSizeToDiameterConverter" />
+    <converters:MultiDegreesToImageLeftConverter x:Key="MultiDegreesToImageLeftConverter" />
+    <converters:MultiDegreesToImageTopConverter x:Key="MultiDegreesToImageTopConverter" />
 </ResourceDictionary>

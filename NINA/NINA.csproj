@@ -321,6 +321,9 @@
     <Compile Include="Model\MyFilterWheel\FlatWizardFilterSettings.cs" />
     <Compile Include="Utility\Converters\CollectionContainsMoreThanOneItemToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\DoubleToHalfValueConverter.cs" />
+    <Compile Include="Utility\Converters\MultiDegreesToImageTopConverter.cs" />
+    <Compile Include="Utility\Converters\MultiDegreesToImageLeftConverter.cs" />
+    <Compile Include="Utility\Converters\MultiSizeToDiameterConverter.cs" />
     <Compile Include="Utility\Converters\OneValueGreaterThanAnotherToVisiblityConverter.cs" />
     <Compile Include="Utility\Converters\WidthAndValueToWidthConverter.cs" />
     <Compile Include="Utility\IApplicationResourceDictionary.cs" />

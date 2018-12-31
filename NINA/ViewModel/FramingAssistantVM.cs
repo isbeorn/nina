@@ -134,7 +134,13 @@ namespace NINA.ViewModel {
             profileService.LocationChanged += (object sender, EventArgs e) => {
                 DSO = new DeepSkyObject(DSO.Name, DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
             };
+
+            DSOInImage = new ObservableCollection<DeepSkyObject>();
+
+            dbInstance = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
         }
+
+        private DatabaseInteraction dbInstance;
 
         private void DeepSkyObjectSearchVM_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(DeepSkyObjectSearchVM.Coordinates) && DeepSkyObjectSearchVM.Coordinates != null) {
@@ -523,6 +529,8 @@ namespace NINA.ViewModel {
 
         private IProgress<ApplicationStatus> _statusUpdate;
 
+        public ObservableCollection<DeepSkyObject> DSOInImage { get; set; }
+
         private async Task<bool> LoadImage() {
             using (MyStopWatch.Measure()) {
                 CancelLoadImage();
@@ -552,6 +560,26 @@ namespace NINA.ViewModel {
 
                         SelectedImageCacheInfo = Cache.SaveImageToCache(skySurveyImage);
                         RaisePropertyChanged(nameof(ImageCacheInfo));
+
+                        // hook into loading objects that are in the frame
+                        DatabaseInteraction.DeepSkyObjectSearchParams param = new DatabaseInteraction.DeepSkyObjectSearchParams();
+                        Coordinates bottomRight = skySurveyImage.Coordinates.Shift(-(FieldOfView / 2), -(FieldOfView / 2), 0);
+                        Coordinates topLeft = skySurveyImage.Coordinates.Shift(FieldOfView / 2, FieldOfView / 2, 0);
+                        param.Declination = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
+                            From = topLeft.Dec,
+                            Thru = bottomRight.Dec
+                        };
+                        param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
+                            From = topLeft.RADegrees,
+                            Thru = bottomRight.RADegrees
+                        };
+                        DSOInImage.Clear();
+
+                        foreach (var dso in await dbInstance.GetDeepSkyObjects(
+                            profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository, param,
+                            _loadImageSource.Token)) {
+                            DSOInImage.Add(dso);
+                        }
                     }
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
