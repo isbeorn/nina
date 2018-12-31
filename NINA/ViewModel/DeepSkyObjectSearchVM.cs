@@ -35,9 +35,10 @@ using System.Threading.Tasks;
 
 namespace NINA.ViewModel {
 
-    internal class DeepSkyObjectSearchVM : BaseVM {
+    internal class DeepSkyObjectSearchVM : BaseINPC {
 
-        public DeepSkyObjectSearchVM(IProfileService profileService) : base(profileService) {
+        public DeepSkyObjectSearchVM(string databaseLocation) : base() {
+            this.databaseLocation = databaseLocation;
         }
 
         private CancellationTokenSource targetSearchCts;
@@ -111,6 +112,7 @@ namespace NINA.ViewModel {
         }
 
         private bool showPopup;
+        private string databaseLocation;
 
         public bool ShowPopup {
             get {
@@ -132,7 +134,7 @@ namespace NINA.ViewModel {
 
         private Task<List<IAutoCompleteItem>> SearchDSOs(string searchString, CancellationToken ct) {
             return Task.Run(async () => {
-                var db = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
+                var db = new DatabaseInteraction(databaseLocation);
                 var searchParams = new DatabaseInteraction.DeepSkyObjectSearchParams();
                 searchParams.ObjectName = searchString;
                 searchParams.Limit = Limit;

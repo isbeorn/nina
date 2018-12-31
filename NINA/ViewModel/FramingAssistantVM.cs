@@ -77,7 +77,7 @@ namespace NINA.ViewModel {
             DragMoveCommand = new RelayCommand(DragMove);
             ClearCacheCommand = new RelayCommand(ClearCache);
 
-            DeepSkyObjectSearchVM = new DeepSkyObjectSearchVM(profileService);
+            DeepSkyObjectSearchVM = new DeepSkyObjectSearchVM(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
             DeepSkyObjectSearchVM.PropertyChanged += DeepSkyObjectSearchVM_PropertyChanged;
 
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(async (object parameter) => {
