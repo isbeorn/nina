@@ -137,6 +137,7 @@ namespace NINA.Utility {
             public DeepSkyObjectSearchFromThru<string> Magnitude { get; set; } = new DeepSkyObjectSearchFromThru<string>();
             public string ObjectName { get; set; } = string.Empty;
             public DeepSkyObjectSearchOrderBy OrderBy { get; set; } = new DeepSkyObjectSearchOrderBy();
+            public int? Limit { get; set; }
         }
 
         public class DeepSkyObjectSearchOrderBy {
@@ -227,7 +228,11 @@ namespace NINA.Utility {
                 query += " HAVING aka LIKE $searchobjectname OR group_concat(cataloguenr.catalogue || cataloguenr.designation) LIKE $searchobjectname";
             }
 
-            query += " ORDER BY " + searchParams.OrderBy.Field + " " + searchParams.OrderBy.Direction + ";";
+            query += " ORDER BY " + searchParams.OrderBy.Field + " " + searchParams.OrderBy.Direction;
+
+            if (searchParams.Limit != null) {
+                query += " LIMIT " + searchParams.Limit + ";";
+            }
 
             var dsos = new List<DeepSkyObject>();
             try {
