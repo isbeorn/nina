@@ -870,9 +870,8 @@ namespace NINA.ViewModel {
 
             Name = dso.Name;
 
-            topLeftPoint = dso.Coordinates.ProjectFromCenterToXY(image.Coordinates, new Point(image.Image.PixelWidth / 2, image.Image.PixelHeight / 2),
-
-        arcSecWidth, arcSecHeight, image.Rotation);
+            topLeftPoint = dso.Coordinates.ProjectFromCenterToXY(image.Coordinates, new Point(image.Image.PixelWidth / 2.0, image.Image.PixelHeight / 2.0),
+                arcSecWidth, arcSecHeight, image.Rotation);
         }
 
         public double SizeWidth => sizeWidth / arcSecWidth;
