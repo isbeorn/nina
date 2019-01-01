@@ -65,10 +65,14 @@ namespace NINA.ViewModel {
             get => targetName;
             set {
                 targetName = value;
-                if (!SkipSearch && TargetName.Length > 1) {
-                    targetSearchCts?.Cancel();
-                    targetSearchCts = new CancellationTokenSource();
-                    TargetSearchResult = NotifyTaskCompletion.Create(SearchDSOs(TargetName, targetSearchCts.Token));
+                if (!SkipSearch) {
+                    if (TargetName.Length > 1) {
+                        targetSearchCts?.Cancel();
+                        targetSearchCts = new CancellationTokenSource();
+                        TargetSearchResult = NotifyTaskCompletion.Create(SearchDSOs(TargetName, targetSearchCts.Token));
+                    } else {
+                        ShowPopup = false;
+                    }
                 }
                 RaisePropertyChanged();
             }
@@ -99,13 +103,12 @@ namespace NINA.ViewModel {
             set {
                 selectedTargetSearchResult = value;
                 if (selectedTargetSearchResult != null) {
+                    this.SetTargetNameWithoutSearch(selectedTargetSearchResult.Column1);
                     Coordinates = new Coordinates(
                         Astrometry.HMSToDegrees(value.Column2),
                         Astrometry.DMSToDegrees(value.Column3),
                         Epoch.J2000,
                         Coordinates.RAType.Degrees);
-
-                    ShowPopup = false;
                 }
                 RaisePropertyChanged();
             }
