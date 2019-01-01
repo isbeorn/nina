@@ -97,7 +97,15 @@ namespace NINACustomControlLibrary {
 
         private void List_PreviewKeyDown(object sender, KeyEventArgs e) {
             switch (e.Key) {
-                case (Key.Back):
+                case (Key.Back): {
+                        var tb = GetTemplateChild("PART_TextBox") as TextBox;
+                        if (tb != null) {
+                            tb.Focus();
+                        }
+                        ShowPopup = false;
+                        break;
+                    }
+
                 case (Key.Enter): {
                         ShowPopup = false;
                         break;
