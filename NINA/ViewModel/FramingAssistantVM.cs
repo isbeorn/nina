@@ -894,7 +894,7 @@ namespace NINA.ViewModel {
 
         public double SizeWidth => sizeWidth / arcSecWidth;
 
-        public double SizeHeight => sizeHeight / arcSecWidth;
+        public double SizeHeight => sizeHeight / arcSecHeight;
 
         public Point TopLeftPoint => new Point(topLeftPoint.X - SizeWidth / 2, topLeftPoint.Y - SizeHeight / 2);
 
