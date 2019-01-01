@@ -49,6 +49,4 @@
     <converters:WidthAndValueToWidthConverter x:Key="WidthAndValueToWidthConverter" />
     <converters:OneValueGreaterThanAnotherToVisiblityConverter x:Key="GreaterThanToVisiblityConverter" />
     <converters:CollectionContainsMoreThanOneItemToVisibilityConverter x:Key="CollectionContainsMoreThanOneItemToVisibilityConverter" />
-    <converters:FovImageWidthAndDSOToDiameterConverter x:Key="FovImageWidthAndDSOToDiameterConverter" />
-    <converters:SkySurveyImageAndDSOToTopOrLeftDistanceConverter x:Key="SkySurveyImageAndDSOToTopOrLeftDistanceConverter" />
 </ResourceDictionary>

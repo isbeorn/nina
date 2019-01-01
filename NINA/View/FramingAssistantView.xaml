@@ -459,10 +459,6 @@
                     <Canvas Width="{Binding Path=FramingAssistantVM.ImageParameter.Image.PixelWidth, Source={StaticResource AppVM}}" Height="{Binding Path=FramingAssistantVM.ImageParameter.Image.PixelHeight, Source={StaticResource AppVM}}">
                         <Canvas>
                             <ItemsControl ItemsSource="{Binding DSOInImage}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
-                                <ItemsControl.Resources>
-                                    <s:String x:Key="Left">LEFT</s:String>
-                                    <s:String x:Key="Top">TOP</s:String>
-                                </ItemsControl.Resources>
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <Canvas />
@@ -477,22 +473,7 @@
                                                     <RowDefinition />
                                                     <RowDefinition />
                                                 </Grid.RowDefinitions>
-                                                <Ellipse Fill="Transparent" Stroke="White">
-                                                    <Ellipse.Width>
-                                                        <MultiBinding Converter="{StaticResource FovImageWidthAndDSOToDiameterConverter}">
-                                                            <Binding Source="{StaticResource AppVM}" Path="FramingAssistantVM.ImageParameter.FoVWidth" />
-                                                            <Binding Source="{StaticResource AppVM}" Path="FramingAssistantVM.ImageParameter.Image.Width" />
-                                                            <Binding />
-                                                        </MultiBinding>
-                                                    </Ellipse.Width>
-                                                    <Ellipse.Height>
-                                                        <MultiBinding Converter="{StaticResource FovImageWidthAndDSOToDiameterConverter}">
-                                                            <Binding Source="{StaticResource AppVM}" Path="FramingAssistantVM.ImageParameter.FoVHeight" />
-                                                            <Binding Source="{StaticResource AppVM}" Path="FramingAssistantVM.ImageParameter.Image.Height" />
-                                                            <Binding />
-                                                        </MultiBinding>
-                                                    </Ellipse.Height>
-                                                </Ellipse>
+                                                <Ellipse Fill="Transparent" Stroke="White" Ellipse.Width="{Binding SizeWidth}" Height="{Binding SizeHeight}" />
                                                 <TextBlock Text="{Binding Name}" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                             </Grid>
                                         </Border>
@@ -502,20 +483,12 @@
                                     <Style TargetType="ContentPresenter">
                                         <Setter Property="Canvas.Left">
                                             <Setter.Value>
-                                                <MultiBinding Converter="{StaticResource SkySurveyImageAndDSOToTopOrLeftDistanceConverter}">
-                                                    <Binding Source="{StaticResource AppVM}" Path="FramingAssistantVM.ImageParameter" />
-                                                    <Binding />
-                                                    <Binding Source="{StaticResource Left}" />
-                                                </MultiBinding>
+                                                <Binding Path="TopLeftPoint.X" />
                                             </Setter.Value>
                                         </Setter>
                                         <Setter Property="Canvas.Top">
                                             <Setter.Value>
-                                                <MultiBinding Converter="{StaticResource SkySurveyImageAndDSOToTopOrLeftDistanceConverter}">
-                                                    <Binding Source="{StaticResource AppVM}" Path="FramingAssistantVM.ImageParameter" />
-                                                    <Binding />
-                                                    <Binding Source="{StaticResource Top}" />
-                                                </MultiBinding>
+                                                <Binding Path="TopLeftPoint.Y" />
                                             </Setter.Value>
                                         </Setter>
                                     </Style>
