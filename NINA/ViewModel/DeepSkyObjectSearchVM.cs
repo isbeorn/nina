@@ -104,8 +104,6 @@ namespace NINA.ViewModel {
                         Astrometry.DMSToDegrees(value.Column3),
                         Epoch.J2000,
                         Coordinates.RAType.Degrees);
-
-                    ShowPopup = false;
                 }
                 RaisePropertyChanged();
             }
