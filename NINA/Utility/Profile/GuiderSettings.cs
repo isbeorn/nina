@@ -23,6 +23,7 @@
 
 using NINA.Utility.Enum;
 using System;
+using System.IO;
 using System.Runtime.Serialization;
 
 namespace NINA.Utility.Profile {
@@ -50,7 +51,7 @@ namespace NINA.Utility.Profile {
             pHD2GuiderScale = GuiderScaleEnum.PIXELS;
             settlePixels = 1.5;
             settleTimeout = 40;
-            phd2Path = @"C:\Program Files(x86)\PHDGuiding2\phd2.exe";
+            phd2Path = File.Exists(Environment.ExpandEnvironmentVariables(@"%programfiles(x86)%\PHDGuiding2\phd2.exe")) ? Environment.ExpandEnvironmentVariables(@"%programfiles(x86)%\PHDGuiding2\phd2.exe") : "";
         }
 
         private double ditherPixels;

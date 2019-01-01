@@ -294,9 +294,10 @@ namespace NINA.ViewModel {
 
         private void OpenPHD2FileDiag(object o) {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
-            dialog.InitialDirectory =
-                profileService.ActiveProfile.GuiderSettings.PHD2Path.Substring(0,
-                    profileService.ActiveProfile.GuiderSettings.PHD2Path.LastIndexOf('\\'));
+            FileInfo phd2path = new FileInfo(profileService.ActiveProfile.GuiderSettings.PHD2Path);
+            if (phd2path.Exists) {
+                dialog.InitialDirectory = phd2path.DirectoryName;
+            }
             dialog.FileName = "phd2.exe";
             dialog.Filter = "PHD2|phd2.exe";
 
