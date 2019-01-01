@@ -452,6 +452,7 @@
                                                         </Ellipse.Height>
                                                     </Ellipse>
                                                 <TextBlock Text="{Binding Name}" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                <TextBlock Text="{Binding Coordinates.RAString}" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                             </Grid>
                                             </Border>
                                         </DataTemplate>

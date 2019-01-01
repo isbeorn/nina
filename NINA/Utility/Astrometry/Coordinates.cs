@@ -22,6 +22,7 @@
 #endregion "copyright"
 
 using System;
+using System.Windows;
 using System.Xml.Serialization;
 
 namespace NINA.Utility.Astrometry {
@@ -217,6 +218,53 @@ namespace NINA.Utility.Astrometry {
                 Epoch.J2000,
                 Coordinates.RAType.Degrees
             );
+        }
+
+        public Point ProjectFromCenter(Coordinates center, Point centerPoint, double horizResArcSecPx, double vertResArcSecPix, double rotation) {
+            var xpos = Astrometry.HMSToDegrees(this.RAString);
+            var ypos = this.Dec;
+            var centerPos = Astrometry.HMSToDegrees(center.RAString);
+            var deltaRa = (xpos - centerPos);
+            if (deltaRa > 180) {
+                xpos -= 360;
+            }
+
+            if (deltaRa < -180) {
+                xpos += 360;
+            }
+
+            var centerRa = Astrometry.ToRadians(centerPos);
+            var centerDeg = Astrometry.ToRadians(center.Dec);
+            var targetRa = Astrometry.ToRadians(xpos);
+            var targetDec = Astrometry.ToRadians(ypos);
+            var imageRotation = Astrometry.ToRadians(rotation);
+
+            var l = Math.Sin(targetRa - centerRa) * Math.Cos(targetDec);
+
+            // -tan projection
+            //      if sint <= 0.0:
+            //         raise ValueError("Angle too large for projection!")
+            //      m = sins * math.sin(dec0) + coss * math.cos(dec0) * math.cos(ra-ra0)
+            //      l = l / m
+            //      m = (sins*math.cos(dec0) - coss*math.sin(dec0) * math.cos(ra-ra0)) / m
+            // refer to http://faculty.wcas.northwestern.edu/nchapman/coding/worldpos.py
+            var m = Math.Sin(targetDec) * Math.Sin(centerDeg) + Math.Cos(targetDec) * Math.Cos(centerDeg) * Math.Cos(targetRa - centerRa);
+            l = l / m;
+            m = (Math.Sin(targetDec) * Math.Cos(centerDeg) - Math.Cos(targetDec) * Math.Sin(centerDeg) * Math.Cos(targetRa - centerRa)) / m;
+
+            var dx = Astrometry.ToDegree(l);
+            var dy = Astrometry.ToDegree(m);
+            var dz = dx * Math.Cos(imageRotation) + dy * Math.Sin(imageRotation);
+            dy = dy * Math.Cos(imageRotation) - dx * Math.Sin(imageRotation);
+            dx = dz;
+
+            dx = Astrometry.DegreeToArcsec(dx) / horizResArcSecPx;
+            dy = Astrometry.DegreeToArcsec(dy) / vertResArcSecPix;
+
+            var xpix = centerPoint.X - dx;
+            var ypix = centerPoint.Y - dy;
+
+            return new Point(xpix, ypix);
         }
 
         /// <summary>

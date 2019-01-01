@@ -45,16 +45,16 @@ namespace NINA.Utility.Converters {
                 return new Thickness();
             }
 
-            var degW = image.Coordinates.Dec - Astrometry.Astrometry.ArcminToDegree(image.FoVHeight / 2);
+            var imageArcsecWidth = Astrometry.Astrometry.ArcminToArcsec(image.FoVWidth) / image.Image.Width;
+            var imageArcsecHeight = Astrometry.Astrometry.ArcminToArcsec(image.FoVHeight) / image.Image.Height;
 
-            var imageArcsecWidth = Astrometry.Astrometry.ArcminToArcsec(image.FoVHeight) / image.Image.Height;
+            var result = dso.Coordinates.ProjectFromCenter(image.Coordinates, new Point(image.Image.Width / 2, image.Image.Height / 2), imageArcsecWidth, imageArcsecHeight, image.Rotation);
 
             var dsoSize = dso.Size ?? 30;
+            dsoSize /= 2;
+            dsoSize /= imageArcsecWidth;
 
-            var top = Astrometry.Astrometry.DegreeToArcsec(image.Coordinates.Dec + (image.Coordinates.Dec - dso.Coordinates.Dec)) - Astrometry.Astrometry.DegreeToArcsec(degW) - (dsoSize / 2);
-            top /= imageArcsecWidth;
-
-            return top;
+            return result.Y - dsoSize;
         }
 
         public object[] ConvertBack(object value, System.Type[] targetType, object parameter, System.Globalization.CultureInfo culture) {

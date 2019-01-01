@@ -23,8 +23,8 @@
 
 using NINA.Model;
 using NINA.Utility.SkySurvey;
-using System.Windows;
 using System.Windows.Data;
+using Point = System.Windows.Point;
 
 namespace NINA.Utility.Converters {
 
@@ -39,25 +39,25 @@ namespace NINA.Utility.Converters {
             if (values[0] is SkySurveyImage) {
                 image = (SkySurveyImage)values[0];
             } else {
-                return new Thickness();
+                return 0;
             }
 
             if (values[1] is DeepSkyObject) {
                 dso = (DeepSkyObject)values[1];
             } else {
-                return new Thickness();
+                return 0;
             }
 
-            var degW = image.Coordinates.RADegrees - Astrometry.Astrometry.ArcminToDegree(image.FoVWidth / 2);
-
             var imageArcsecWidth = Astrometry.Astrometry.ArcminToArcsec(image.FoVWidth) / image.Image.Width;
+            var imageArcsecHeight = Astrometry.Astrometry.ArcminToArcsec(image.FoVHeight) / image.Image.Height;
+
+            var result = dso.Coordinates.ProjectFromCenter(image.Coordinates, new Point(image.Image.Width / 2, image.Image.Height / 2), imageArcsecWidth, imageArcsecHeight, 0);
 
             var dsoSize = dso.Size ?? 30;
+            dsoSize /= 2;
+            dsoSize /= imageArcsecWidth;
 
-            var left = Astrometry.Astrometry.DegreeToArcsec(image.Coordinates.RADegrees + (image.Coordinates.RADegrees - dso.Coordinates.RADegrees)) - Astrometry.Astrometry.DegreeToArcsec(degW) - (dsoSize / 2);
-            left /= imageArcsecWidth;
-
-            return left;
+            return result.X - dsoSize;
         }
 
         public object[] ConvertBack(object value, System.Type[] targetType, object parameter, System.Globalization.CultureInfo culture) {
