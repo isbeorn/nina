@@ -48,7 +48,7 @@ namespace NINA.Utility.Converters {
             var imageArcSecWidth = Astrometry.Astrometry.ArcminToArcsec(image.FoVWidth) / image.Image.Width;
             var imageArcSecHeight = Astrometry.Astrometry.ArcminToArcsec(image.FoVHeight) / image.Image.Height;
 
-            var result = dso.Coordinates.ProjectFromCenter(image.Coordinates, new Point(image.Image.Width / 2, image.Image.Height / 2), imageArcSecWidth, imageArcSecHeight, 0);
+            var result = dso.Coordinates.ProjectFromCenter(image.Coordinates, new Point(image.Image.Width / 2, image.Image.Height / 2), imageArcSecWidth, imageArcSecHeight, image.Rotation);
 
             var dsoSize = dso.Size ?? FovImageWidthAndDSOToDiameterConverter.DSO_DEFAULT_SIZE;
             dsoSize /= 2;
