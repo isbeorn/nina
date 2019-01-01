@@ -223,7 +223,6 @@ namespace NINATest {
         [TestCase(-14.999, "-01:00:00")]
         public void DegreesToHMS(double degree, string expected) {
             var value = Astrometry.DegreesToHMS(degree);
-            /* Check that it matches ascom values */
 
             Assert.AreEqual(expected, value);
         }
@@ -240,7 +239,22 @@ namespace NINATest {
         [TestCase(-33.9999999, "-34:00:00")]
         public void HoursToHMS(double hours, string expected) {
             var value = Astrometry.HoursToHMS(hours);
-            /* Check that it matches ascom values */
+
+            Assert.AreEqual(expected, value);
+        }
+
+        [Test]
+        [TestCase("00°00'00\"", 0)]
+        [TestCase("90°00'00\"", 90)]
+        [TestCase("-90°00'00\"", -90)]
+        [TestCase("91°00'00\"", 91)]
+        [TestCase("-91°00'00\"", -91)]
+        [TestCase("72°01'00\"", 72.016666666666666666)]
+        [TestCase("-72°01'00\"", -72.016666666666666666)]
+        [TestCase("34°00'00\"", 34)]
+        [TestCase("-34°00'00\"", -34)]
+        public void DMSToDegrees(string hms, double expected) {
+            var value = Astrometry.DMSToDegrees(hms);
 
             Assert.AreEqual(expected, value);
         }
@@ -575,6 +589,20 @@ namespace NINATest {
             var dp = Astrometry.ApproximateDewPoint(temp, humidity);
 
             Assert.AreEqual(expected, dp, DEWPOINT_TOLERANCE);
+        }
+
+        [Test]
+        [TestCase("00:00:00", 0)]
+        [TestCase("1:00:00", 15)]
+        [TestCase("-1:00:00", -15)]
+        [TestCase("23:59:59", 359.9958333)]
+        [TestCase("-23:59:59", -359.9958333)]
+        [TestCase("5:30:0", 82.5)]
+        [TestCase("-5:30:0", -82.5)]
+        public void HMSToDegrees(string hms, double expected) {
+            var value = Astrometry.HMSToDegrees(hms);
+
+            Assert.AreEqual(expected, value, DOUBLE_TOLERANCE);
         }
     }
 }

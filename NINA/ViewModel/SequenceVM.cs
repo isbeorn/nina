@@ -33,6 +33,7 @@ using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using NINA.Utility.WindowService;
+using NINACustomControlLibrary;
 using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
@@ -78,6 +79,9 @@ namespace NINA.ViewModel {
             this.imagingMediator = imagingMediator;
             this.applicationStatusMediator = applicationStatusMediator;
 
+            this.DeepSkyObjectSearchVM = new DeepSkyObjectSearchVM(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
+            this.DeepSkyObjectSearchVM.PropertyChanged += DeepSkyObjectDetailVM_PropertyChanged;
+
             this.profileService = profileService;
             Title = "LblSequence";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current?.Resources["SequenceSVG"];
@@ -107,6 +111,19 @@ namespace NINA.ViewModel {
             };
 
             autoUpdateTimer.Start();
+        }
+
+        private void DeepSkyObjectDetailVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(DeepSkyObjectSearchVM.SelectedTargetSearchResult)) {
+                if (DeepSkyObjectSearchVM.SelectedTargetSearchResult != null) {
+                    Sequence.PropertyChanged -= _sequence_PropertyChanged;
+
+                    Sequence.TargetName = DeepSkyObjectSearchVM.SelectedTargetSearchResult.Column1;
+                    Sequence.Coordinates = DeepSkyObjectSearchVM.Coordinates;
+
+                    Sequence.PropertyChanged += _sequence_PropertyChanged;
+                }
+            }
         }
 
         private DispatcherTimer autoUpdateTimer;
@@ -639,6 +656,8 @@ namespace NINA.ViewModel {
         }
 
         public async Task<bool> SetSequenceCoordiantes(DeepSkyObject dso) {
+            Sequence.PropertyChanged -= _sequence_PropertyChanged;
+
             var sequenceDso = new DeepSkyObject(dso.AlsoKnownAs.FirstOrDefault() ?? dso.Name ?? string.Empty, dso.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
             sequenceDso.Rotation = dso.Rotation;
             await Task.Run(() => {
@@ -646,6 +665,9 @@ namespace NINA.ViewModel {
             });
 
             Sequence.SetSequenceTarget(sequenceDso);
+
+            Sequence.PropertyChanged += _sequence_PropertyChanged;
+
             return true;
         }
 
@@ -708,14 +730,26 @@ namespace NINA.ViewModel {
         public CaptureSequenceList Sequence {
             get {
                 if (_sequence == null) {
-                    _sequence = GetTemplate();
+                    Sequence = GetTemplate();
                     SelectedSequenceRowIdx = _sequence.Count - 1;
                 }
                 return _sequence;
             }
             set {
+                if (_sequence != null) _sequence.PropertyChanged -= _sequence_PropertyChanged;
                 _sequence = value;
+                if (_sequence != null) _sequence.PropertyChanged += _sequence_PropertyChanged;
                 RaisePropertyChanged();
+            }
+        }
+
+        public DeepSkyObjectSearchVM DeepSkyObjectSearchVM { get; private set; }
+
+        private void _sequence_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(CaptureSequenceList.TargetName)) {
+                if (Sequence.TargetName.Length > 1) {
+                    DeepSkyObjectSearchVM.TargetName = Sequence.TargetName;
+                }
             }
         }
 
