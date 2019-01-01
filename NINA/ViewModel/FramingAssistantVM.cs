@@ -323,6 +323,16 @@ namespace NINA.ViewModel {
             }
         }
 
+        private bool annotateDSO;
+
+        public bool AnnotateDSO {
+            get => annotateDSO;
+            set {
+                annotateDSO = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private void RaiseCoordinatesChanged() {
             RaisePropertyChanged(nameof(RAHours));
             RaisePropertyChanged(nameof(RAMinutes));
@@ -384,6 +394,9 @@ namespace NINA.ViewModel {
             }
             set {
                 _framingAssistantSource = value;
+                if (_framingAssistantSource == SkySurveySource.SKYATLAS) {
+                    AnnotateDSO = true;
+                }
                 if (profileService.ActiveProfile.FramingAssistantSettings.LastSelectedImageSource != value) {
                     profileService.ActiveProfile.FramingAssistantSettings.LastSelectedImageSource = _framingAssistantSource;
                 }
@@ -558,8 +571,10 @@ namespace NINA.ViewModel {
                             ImageParameter = skySurveyImage;
                         }));
 
-                        SelectedImageCacheInfo = Cache.SaveImageToCache(skySurveyImage);
-                        RaisePropertyChanged(nameof(ImageCacheInfo));
+                        if (FramingAssistantSource != SkySurveySource.SKYATLAS) {
+                            SelectedImageCacheInfo = Cache.SaveImageToCache(skySurveyImage);
+                            RaisePropertyChanged(nameof(ImageCacheInfo));
+                        }
 
                         // hook into loading objects that are in the frame
                         DatabaseInteraction.DeepSkyObjectSearchParams param = new DatabaseInteraction.DeepSkyObjectSearchParams();

@@ -26,14 +26,12 @@ using System.Windows.Data;
 
 namespace NINA.Utility.Converters {
 
-    internal class MultiSizeToDiameterConverter : IMultiValueConverter {
+    internal class FovImageWidthAndDSOToDiameterConverter : IMultiValueConverter {
+        public const double DSO_DEFAULT_SIZE = 30.0;
 
         public object Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) {
-            // take imageparameter
-            // take ra target
-            // return ra margin
             double fov;
-            double widthorheight;
+            double widthOrHeight;
             DeepSkyObject dso;
             if (values[0] is double) {
                 fov = (double)values[0];
@@ -42,7 +40,7 @@ namespace NINA.Utility.Converters {
             }
 
             if (values[1] is double) {
-                widthorheight = (double)values[1];
+                widthOrHeight = (double)values[1];
             } else {
                 return 0;
             }
@@ -53,12 +51,12 @@ namespace NINA.Utility.Converters {
                 return 0;
             }
 
-            var arcsec = Astrometry.Astrometry.ArcminToArcsec(fov) / widthorheight;
+            var arcSecScale = Astrometry.Astrometry.ArcminToArcsec(fov) / widthOrHeight;
 
             if (dso.Size != null) {
-                return dso.Size / arcsec;
+                return dso.Size / arcSecScale;
             } else {
-                return 30;
+                return DSO_DEFAULT_SIZE;
             }
         }
 

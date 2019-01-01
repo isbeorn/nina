@@ -28,7 +28,7 @@ using System.Windows.Data;
 
 namespace NINA.Utility.Converters {
 
-    internal class MultiDegreesToImageTopConverter : IMultiValueConverter {
+    internal class SkySurveyImageAndDSOToLeftDistanceConverter : IMultiValueConverter {
 
         public object Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) {
             SkySurveyImage image;
@@ -36,25 +36,25 @@ namespace NINA.Utility.Converters {
             if (values[0] is SkySurveyImage) {
                 image = (SkySurveyImage)values[0];
             } else {
-                return new Thickness();
+                return 0.0;
             }
 
             if (values[1] is DeepSkyObject) {
                 dso = (DeepSkyObject)values[1];
             } else {
-                return new Thickness();
+                return 0.0;
             }
 
-            var imageArcsecWidth = Astrometry.Astrometry.ArcminToArcsec(image.FoVWidth) / image.Image.Width;
-            var imageArcsecHeight = Astrometry.Astrometry.ArcminToArcsec(image.FoVHeight) / image.Image.Height;
+            var imageArcSecWidth = Astrometry.Astrometry.ArcminToArcsec(image.FoVWidth) / image.Image.Width;
+            var imageArcSecHeight = Astrometry.Astrometry.ArcminToArcsec(image.FoVHeight) / image.Image.Height;
 
-            var result = dso.Coordinates.ProjectFromCenter(image.Coordinates, new Point(image.Image.Width / 2, image.Image.Height / 2), imageArcsecWidth, imageArcsecHeight, image.Rotation);
+            var result = dso.Coordinates.ProjectFromCenter(image.Coordinates, new Point(image.Image.Width / 2, image.Image.Height / 2), imageArcSecWidth, imageArcSecHeight, 0);
 
-            var dsoSize = dso.Size ?? 30;
+            var dsoSize = dso.Size ?? FovImageWidthAndDSOToDiameterConverter.DSO_DEFAULT_SIZE;
             dsoSize /= 2;
-            dsoSize /= imageArcsecWidth;
+            dsoSize /= imageArcSecWidth;
 
-            return result.Y - dsoSize;
+            return result.X - dsoSize;
         }
 
         public object[] ConvertBack(object value, System.Type[] targetType, object parameter, System.Globalization.CultureInfo culture) {

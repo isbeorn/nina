@@ -321,13 +321,14 @@
     <Compile Include="Model\MyFilterWheel\FlatWizardFilterSettings.cs" />
     <Compile Include="Utility\Converters\CollectionContainsMoreThanOneItemToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\DoubleToHalfValueConverter.cs" />
-    <Compile Include="Utility\Converters\MultiDegreesToImageTopConverter.cs" />
-    <Compile Include="Utility\Converters\MultiDegreesToImageLeftConverter.cs" />
-    <Compile Include="Utility\Converters\MultiSizeToDiameterConverter.cs" />
+    <Compile Include="Utility\Converters\SkySurveyImageAndDSOToTopDistanceConverter.cs" />
+    <Compile Include="Utility\Converters\SkySurveyImageAndDSOToLeftDistanceConverter.cs" />
+    <Compile Include="Utility\Converters\FovImageWidthAndDSOToDiameterConverter.cs" />
     <Compile Include="Utility\Converters\OneValueGreaterThanAnotherToVisiblityConverter.cs" />
     <Compile Include="Utility\Converters\WidthAndValueToWidthConverter.cs" />
     <Compile Include="Utility\IApplicationResourceDictionary.cs" />
     <Compile Include="Utility\ApplicationResourceDictionary.cs" />
+    <Compile Include="Utility\SkySurvey\SkyAtlasSkySurvey.cs" />
     <Compile Include="Utility\ValidationRules\DoubleRangeRule.cs" />
     <Compile Include="ViewModel\DeepSkyObjectSearchVM.cs" />
     <Compile Include="ViewModel\FocusTargetsVM.cs" />

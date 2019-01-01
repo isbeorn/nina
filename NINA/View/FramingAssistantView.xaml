@@ -415,71 +415,108 @@
                             MinValue="0"
                             StepSize=".1"
                             Value="{Binding Opacity, Mode=TwoWay}" />
+                        <ToggleButton
+                            Margin="5"
+                            IsChecked="{Binding AnnotateDSO}"
+                            Width="35">
+                            <ToggleButton.ToolTip>
+                                <ToolTip ToolTipService.ShowOnDisabled="False">
+                                    <TextBlock Text="{ns:Loc LblAnnotateDSO}" />
+                                </ToolTip>
+                            </ToggleButton.ToolTip>
+                            <ToggleButton.Style>
+                                <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource AnnotateDSOSVG}"
+                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                        Stretch="Uniform" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource AnnotateDSOSVG}"
+                                                        Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                        Stretch="Uniform" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
                     </StackPanel>
                 </local:ImageView.ButtonHeaderContent>
                 <local:ImageView.ImageAreaContent>
                     <Canvas Width="{Binding Path=FramingAssistantVM.ImageParameter.Image.PixelWidth, Source={StaticResource AppVM}}" Height="{Binding Path=FramingAssistantVM.ImageParameter.Image.PixelHeight, Source={StaticResource AppVM}}">
                         <Canvas>
-                                <ItemsControl ItemsSource="{Binding DSOInImage}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <Canvas />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border BorderBrush="White" BorderThickness="0">
-                                                <Grid>
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition />
-                                                        <RowDefinition />
-                                                        <RowDefinition />
-                                                    </Grid.RowDefinitions>
-                                                    <Ellipse Fill="Transparent" Stroke="White">
-                                                        <Ellipse.Width>
-                                                            <MultiBinding Converter="{StaticResource MultiSizeToDiameterConverter}">
-                                                                <Binding Source="{StaticResource AppVM}" Path="FramingAssistantVM.ImageParameter.FoVWidth" />
-                                                                <Binding Source="{StaticResource AppVM}" Path="FramingAssistantVM.ImageParameter.Image.Width" />
-                                                                <Binding />
-                                                            </MultiBinding>
-                                                        </Ellipse.Width>
-                                                        <Ellipse.Height>
-                                                            <MultiBinding Converter="{StaticResource MultiSizeToDiameterConverter}">
-                                                                <Binding Source="{StaticResource AppVM}" Path="FramingAssistantVM.ImageParameter.FoVHeight" />
-                                                                <Binding Source="{StaticResource AppVM}" Path="FramingAssistantVM.ImageParameter.Image.Height" />
-                                                                <Binding />
-                                                            </MultiBinding>
-                                                        </Ellipse.Height>
-                                                    </Ellipse>
+                            <ItemsControl ItemsSource="{Binding DSOInImage}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Canvas />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="White" BorderThickness="0">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+                                                <Ellipse Fill="Transparent" Stroke="White">
+                                                    <Ellipse.Width>
+                                                        <MultiBinding Converter="{StaticResource FovImageWidthAndDSOToDiameterConverter}">
+                                                            <Binding Source="{StaticResource AppVM}" Path="FramingAssistantVM.ImageParameter.FoVWidth" />
+                                                            <Binding Source="{StaticResource AppVM}" Path="FramingAssistantVM.ImageParameter.Image.Width" />
+                                                            <Binding />
+                                                        </MultiBinding>
+                                                    </Ellipse.Width>
+                                                    <Ellipse.Height>
+                                                        <MultiBinding Converter="{StaticResource FovImageWidthAndDSOToDiameterConverter}">
+                                                            <Binding Source="{StaticResource AppVM}" Path="FramingAssistantVM.ImageParameter.FoVHeight" />
+                                                            <Binding Source="{StaticResource AppVM}" Path="FramingAssistantVM.ImageParameter.Image.Height" />
+                                                            <Binding />
+                                                        </MultiBinding>
+                                                    </Ellipse.Height>
+                                                </Ellipse>
                                                 <TextBlock Text="{Binding Name}" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                                <TextBlock Text="{Binding Coordinates.RAString}" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                             </Grid>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                    <ItemsControl.ItemContainerStyle>
-                                        <Style TargetType="ContentPresenter">
-                                            <Setter Property="Canvas.Left">
-                                                <Setter.Value>
-                                                    <MultiBinding Converter="{StaticResource MultiDegreesToImageLeftConverter}">
-                                                        <Binding Source="{StaticResource AppVM}" Path="FramingAssistantVM.ImageParameter" />
-                                                        <Binding />
-                                                    </MultiBinding>
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="Canvas.Top">
-                                                <Setter.Value>
-                                                    <MultiBinding Converter="{StaticResource MultiDegreesToImageTopConverter}">
-                                                        <Binding Source="{StaticResource AppVM}" Path="FramingAssistantVM.ImageParameter" />
-                                                        <Binding />
-                                                    </MultiBinding>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Style>
-                                    </ItemsControl.ItemContainerStyle>
-                                </ItemsControl>
-                            </Canvas>
-                            <Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                <ItemsControl.ItemContainerStyle>
+                                    <Style TargetType="ContentPresenter">
+                                        <Setter Property="Canvas.Left">
+                                            <Setter.Value>
+                                                <MultiBinding Converter="{StaticResource SkySurveyImageAndDSOToLeftDistanceConverter}">
+                                                    <Binding Source="{StaticResource AppVM}" Path="FramingAssistantVM.ImageParameter" />
+                                                    <Binding />
+                                                </MultiBinding>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="Canvas.Top">
+                                            <Setter.Value>
+                                                <MultiBinding Converter="{StaticResource SkySurveyImageAndDSOToTopDistanceConverter}">
+                                                    <Binding Source="{StaticResource AppVM}" Path="FramingAssistantVM.ImageParameter" />
+                                                    <Binding />
+                                                </MultiBinding>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ItemsControl.ItemContainerStyle>
+                            </ItemsControl>
+                        </Canvas>
+                        <Grid>
                             <Grid.Resources>
                                 <s:Int32 x:Key="zero">0</s:Int32>
                             </Grid.Resources>
