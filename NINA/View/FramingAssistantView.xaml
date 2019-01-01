@@ -472,9 +472,12 @@
                                                     <RowDefinition />
                                                     <RowDefinition />
                                                     <RowDefinition />
+                                                    <RowDefinition />
                                                 </Grid.RowDefinitions>
-                                                <Ellipse Fill="Transparent" Stroke="White" Ellipse.Width="{Binding SizeWidth}" Height="{Binding SizeHeight}" />
-                                                <TextBlock Text="{Binding Name}" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                <Ellipse Fill="Transparent" Stroke="White" Width="{Binding SizeWidth}" Height="{Binding SizeHeight}" />
+                                                <TextBlock Text="{Binding Name1}" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                <TextBlock Text="{Binding Name2}" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                <TextBlock Text="{Binding Name3}" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                             </Grid>
                                         </Border>
                                     </DataTemplate>

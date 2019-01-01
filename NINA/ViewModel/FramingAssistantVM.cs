@@ -37,6 +37,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -868,7 +869,24 @@ namespace NINA.ViewModel {
                 sizeHeight = DSO_DEFAULT_SIZE;
             }
 
-            Name = dso.Name;
+            Name1 = dso.Name;
+            Name2 = dso.AlsoKnownAs.FirstOrDefault(m => m.StartsWith("M "));
+            Name3 = dso.AlsoKnownAs.FirstOrDefault(m => m.StartsWith("NGC "));
+
+            if (Name3 != null && Name1 == Name3.Replace(" ", "")) {
+                Name1 = null;
+            }
+
+            if (Name1 == null && Name2 == null) {
+                Name1 = Name3;
+                Name3 = null;
+            }
+
+            if (Name1 == null && Name2 != null) {
+                Name1 = Name2;
+                Name2 = Name3;
+                Name3 = null;
+            }
 
             topLeftPoint = dso.Coordinates.ProjectFromCenterToXY(image.Coordinates, new Point(image.Image.PixelWidth / 2.0, image.Image.PixelHeight / 2.0),
                 arcSecWidth, arcSecHeight, image.Rotation);
@@ -880,6 +898,8 @@ namespace NINA.ViewModel {
 
         public Point TopLeftPoint => new Point(topLeftPoint.X - SizeWidth / 2, topLeftPoint.Y - SizeHeight / 2);
 
-        public string Name { get; }
+        public string Name1 { get; }
+        public string Name2 { get; }
+        public string Name3 { get; }
     }
 }
