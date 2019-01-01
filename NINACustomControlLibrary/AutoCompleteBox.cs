@@ -97,6 +97,7 @@ namespace NINACustomControlLibrary {
 
         private void List_PreviewKeyDown(object sender, KeyEventArgs e) {
             switch (e.Key) {
+                case (Key.Back):
                 case (Key.Enter): {
                         ShowPopup = false;
                         break;

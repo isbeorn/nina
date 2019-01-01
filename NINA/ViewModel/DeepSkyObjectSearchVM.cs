@@ -69,6 +69,8 @@ namespace NINA.ViewModel {
                     targetSearchCts?.Cancel();
                     targetSearchCts = new CancellationTokenSource();
                     TargetSearchResult = NotifyTaskCompletion.Create(SearchDSOs(TargetName, targetSearchCts.Token));
+                } else {
+                    ShowPopup = false;
                 }
                 RaisePropertyChanged();
             }
