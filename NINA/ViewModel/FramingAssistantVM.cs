@@ -857,13 +857,13 @@ namespace NINA.ViewModel {
             arcSecWidth = Astrometry.ArcminToArcsec(image.FoVWidth) / image.Image.PixelWidth;
             arcSecHeight = Astrometry.ArcminToArcsec(image.FoVHeight) / image.Image.PixelHeight;
 
-            if (dso.Size != null || dso.Size <= arcSecWidth) {
+            if (dso.Size != null && dso.Size >= arcSecWidth) {
                 sizeWidth = dso.Size.Value;
             } else {
                 sizeWidth = DSO_DEFAULT_SIZE;
             }
 
-            if (dso.Size != null || dso.Size <= arcSecHeight) {
+            if (dso.Size != null && dso.Size >= arcSecHeight) {
                 sizeHeight = dso.Size.Value;
             } else {
                 sizeHeight = DSO_DEFAULT_SIZE;
