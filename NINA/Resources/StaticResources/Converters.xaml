@@ -50,6 +50,5 @@
     <converters:OneValueGreaterThanAnotherToVisiblityConverter x:Key="GreaterThanToVisiblityConverter" />
     <converters:CollectionContainsMoreThanOneItemToVisibilityConverter x:Key="CollectionContainsMoreThanOneItemToVisibilityConverter" />
     <converters:FovImageWidthAndDSOToDiameterConverter x:Key="FovImageWidthAndDSOToDiameterConverter" />
-    <converters:SkySurveyImageAndDSOToLeftDistanceConverter x:Key="SkySurveyImageAndDSOToLeftDistanceConverter" />
-    <converters:SkySurveyImageAndDSOToTopDistanceConverter x:Key="SkySurveyImageAndDSOToTopDistanceConverter" />
+    <converters:SkySurveyImageAndDSOToTopOrLeftDistanceConverter x:Key="SkySurveyImageAndDSOToTopOrLeftDistanceConverter" />
 </ResourceDictionary>

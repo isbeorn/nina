@@ -28,11 +28,12 @@ using System.Windows.Data;
 
 namespace NINA.Utility.Converters {
 
-    internal class SkySurveyImageAndDSOToLeftDistanceConverter : IMultiValueConverter {
+    internal class SkySurveyImageAndDSOToTopOrLeftDistanceConverter : IMultiValueConverter {
 
         public object Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) {
             SkySurveyImage image;
             DeepSkyObject dso;
+            string leftOrTop;
             if (values[0] is SkySurveyImage) {
                 image = (SkySurveyImage)values[0];
             } else {
@@ -45,6 +46,15 @@ namespace NINA.Utility.Converters {
                 return 0.0;
             }
 
+            if (values[2] is string) {
+                leftOrTop = ((string)values[2]).ToUpper();
+                if (!(leftOrTop == "LEFT" || leftOrTop == "TOP")) {
+                    return 0.0;
+                }
+            } else {
+                return 0.0;
+            }
+
             var imageArcSecWidth = Astrometry.Astrometry.ArcminToArcsec(image.FoVWidth) / image.Image.Width;
             var imageArcSecHeight = Astrometry.Astrometry.ArcminToArcsec(image.FoVHeight) / image.Image.Height;
 
@@ -52,9 +62,13 @@ namespace NINA.Utility.Converters {
 
             var dsoSize = dso.Size ?? FovImageWidthAndDSOToDiameterConverter.DSO_DEFAULT_SIZE;
             dsoSize /= 2;
-            dsoSize /= imageArcSecWidth;
-
-            return result.X - dsoSize;
+            if (leftOrTop == "LEFT") {
+                dsoSize /= imageArcSecWidth;
+                return result.X - dsoSize;
+            } else {
+                dsoSize /= imageArcSecHeight;
+                return result.Y - dsoSize;
+            }
         }
 
         public object[] ConvertBack(object value, System.Type[] targetType, object parameter, System.Globalization.CultureInfo culture) {

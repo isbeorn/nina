@@ -321,8 +321,7 @@
     <Compile Include="Model\MyFilterWheel\FlatWizardFilterSettings.cs" />
     <Compile Include="Utility\Converters\CollectionContainsMoreThanOneItemToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\DoubleToHalfValueConverter.cs" />
-    <Compile Include="Utility\Converters\SkySurveyImageAndDSOToTopDistanceConverter.cs" />
-    <Compile Include="Utility\Converters\SkySurveyImageAndDSOToLeftDistanceConverter.cs" />
+    <Compile Include="Utility\Converters\SkySurveyImageAndDSOToTopOrLeftDistanceConverter.cs" />
     <Compile Include="Utility\Converters\FovImageWidthAndDSOToDiameterConverter.cs" />
     <Compile Include="Utility\Converters\OneValueGreaterThanAnotherToVisiblityConverter.cs" />
     <Compile Include="Utility\Converters\WidthAndValueToWidthConverter.cs" />

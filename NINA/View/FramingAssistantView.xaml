@@ -459,6 +459,10 @@
                     <Canvas Width="{Binding Path=FramingAssistantVM.ImageParameter.Image.PixelWidth, Source={StaticResource AppVM}}" Height="{Binding Path=FramingAssistantVM.ImageParameter.Image.PixelHeight, Source={StaticResource AppVM}}">
                         <Canvas>
                             <ItemsControl ItemsSource="{Binding DSOInImage}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
+                                <ItemsControl.Resources>
+                                    <s:String x:Key="Left">LEFT</s:String>
+                                    <s:String x:Key="Top">TOP</s:String>
+                                </ItemsControl.Resources>
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <Canvas />
@@ -498,17 +502,19 @@
                                     <Style TargetType="ContentPresenter">
                                         <Setter Property="Canvas.Left">
                                             <Setter.Value>
-                                                <MultiBinding Converter="{StaticResource SkySurveyImageAndDSOToLeftDistanceConverter}">
+                                                <MultiBinding Converter="{StaticResource SkySurveyImageAndDSOToTopOrLeftDistanceConverter}">
                                                     <Binding Source="{StaticResource AppVM}" Path="FramingAssistantVM.ImageParameter" />
                                                     <Binding />
+                                                    <Binding Source="{StaticResource Left}" />
                                                 </MultiBinding>
                                             </Setter.Value>
                                         </Setter>
                                         <Setter Property="Canvas.Top">
                                             <Setter.Value>
-                                                <MultiBinding Converter="{StaticResource SkySurveyImageAndDSOToTopDistanceConverter}">
+                                                <MultiBinding Converter="{StaticResource SkySurveyImageAndDSOToTopOrLeftDistanceConverter}">
                                                     <Binding Source="{StaticResource AppVM}" Path="FramingAssistantVM.ImageParameter" />
                                                     <Binding />
+                                                    <Binding Source="{StaticResource Top}" />
                                                 </MultiBinding>
                                             </Setter.Value>
                                         </Setter>
