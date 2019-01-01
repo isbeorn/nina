@@ -26,6 +26,7 @@ using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -127,90 +128,132 @@ namespace NINA.Utility {
             return brightStars;
         }
 
+        public class DeepSkyObjectSearchParams {
+            public string Constellation { get; set; } = "";
+            public IList<string> DsoTypes { get; set; }
+            public DeepSkyObjectSearchFromThru<double?> RightAscension { get; set; } = new DeepSkyObjectSearchFromThru<double?>();
+            public DeepSkyObjectSearchFromThru<double?> Declination { get; set; } = new DeepSkyObjectSearchFromThru<double?>();
+            public DeepSkyObjectSearchFromThru<string> Brightness { get; set; } = new DeepSkyObjectSearchFromThru<string>();
+            public DeepSkyObjectSearchFromThru<string> Size { get; set; } = new DeepSkyObjectSearchFromThru<string>();
+            public DeepSkyObjectSearchFromThru<string> Magnitude { get; set; } = new DeepSkyObjectSearchFromThru<string>();
+            public string ObjectName { get; set; } = string.Empty;
+            public DeepSkyObjectSearchOrder SearchOrder { get; set; } = new DeepSkyObjectSearchOrder();
+            public int? Limit { get; set; }
+        }
+
+        public class DeepSkyObjectSearchOrder {
+            public string Field { get; set; } = "id";
+            public string Direction { get; set; } = "ASC";
+        }
+
+        public class DeepSkyObjectSearchFromThru<T> {
+            public T From { get; set; }
+            public T Thru { get; set; }
+        }
+
+        public class DeepSkyObjectSearchCoordinates {
+            public double? RaFrom { get; set; } = null;
+            public double? RaThru { get; set; } = null;
+            public double? DecFrom { get; set; } = null;
+            public double? DecThru { get; set; } = null;
+        }
+
         public async Task<List<DeepSkyObject>> GetDeepSkyObjects(
             string imageRepository,
-            CancellationToken token,
-            string constellation = "",
-            double? rafrom = null,
-            double? rathru = null,
-            double? decfrom = null,
-            double? decthru = null,
-            string sizefrom = null,
-            string sizethru = null,
-            IList<string> dsotypes = null,
-            string brightnessfrom = null,
-            string brightnessthru = null,
-            string magnitudefrom = null,
-            string magnitudethru = null,
-            string searchobjectname = null,
-            string orderby = "id",
-            string orderbydirection = "ASC") {
-            string query = @"SELECT id, ra, dec, dsotype, magnitude, sizemax, group_concat(cataloguenr.catalogue || ' ' || cataloguenr.designation) aka, constellation, surfacebrightness
+            DeepSkyObjectSearchParams searchParams,
+            CancellationToken token) {
+            if (searchParams == null) { throw new ArgumentNullException(nameof(searchParams)); }
+
+            string query = @"SELECT
+                                id,
+                                ra,
+                                dec,
+                                dsotype,
+                                magnitude,
+                                sizemax,
+                                group_concat(
+                                    CASE cataloguenr.catalogue
+                                        WHEN 'NAME' THEN cataloguenr.designation
+                                        ELSE null
+                                    END
+                                ) commonnames,
+                                group_concat(
+                                    CASE cataloguenr.catalogue
+                                        WHEN 'NAME' THEN null
+                                        ELSE cataloguenr.catalogue || ' ' || cataloguenr.designation
+                                    END
+                                ) aka,
+                                constellation,
+                                surfacebrightness
                              FROM dsodetail
                                 INNER JOIN cataloguenr on dsodetail.id = cataloguenr.dsodetailid
                              WHERE (1=1) ";
 
-            if (constellation != null && constellation != string.Empty) {
+            if (!string.IsNullOrEmpty(searchParams.Constellation)) {
                 query += " AND constellation = $constellation ";
             }
 
-            if (rafrom != null) {
+            if (searchParams.RightAscension.From != null) {
                 query += " AND ra >= $rafrom ";
             }
 
-            if (rathru != null) {
+            if (searchParams.RightAscension.Thru != null) {
                 query += " AND ra <= $rathru ";
             }
 
-            if (decfrom != null) {
+            if (searchParams.Declination.From != null) {
                 query += " AND dec >= $decfrom ";
             }
 
-            if (decthru != null) {
+            if (searchParams.Declination.Thru != null) {
                 query += " AND dec <= $decthru ";
             }
 
-            if (sizefrom != null && sizefrom != string.Empty) {
+            if (!string.IsNullOrEmpty(searchParams.Size?.From)) {
                 query += " AND sizemin >= $sizefrom ";
             }
 
-            if (sizethru != null && sizethru != string.Empty) {
+            if (!string.IsNullOrEmpty(searchParams.Size?.Thru)) {
                 query += " AND sizemax <= $sizethru ";
             }
 
-            if (dsotypes != null && dsotypes.Count > 0) {
+            if (searchParams.DsoTypes?.Count > 0) {
                 query += " AND dsotype IN (";
-                for (int i = 0; i < dsotypes.Count; i++) {
+                for (int i = 0; i < searchParams.DsoTypes.Count; i++) {
                     query += "$dsotype" + i.ToString() + ",";
                 }
                 query = query.Remove(query.Length - 1);
                 query += ") ";
             }
 
-            if (brightnessfrom != null && brightnessfrom != string.Empty) {
+            if (!string.IsNullOrEmpty(searchParams.Brightness?.From)) {
                 query += " AND surfacebrightness >= $brightnessfrom ";
             }
 
-            if (brightnessthru != null && brightnessthru != string.Empty) {
+            if (!string.IsNullOrEmpty(searchParams.Brightness?.Thru)) {
                 query += " AND surfacebrightness <= $brightnessthru ";
             }
 
-            if (magnitudefrom != null && magnitudefrom != string.Empty) {
+            if (!string.IsNullOrEmpty(searchParams.Magnitude?.From)) {
                 query += " AND magnitude >= $magnitudefrom ";
             }
 
-            if (magnitudethru != null && magnitudethru != string.Empty) {
+            if (!string.IsNullOrEmpty(searchParams.Magnitude?.Thru)) {
                 query += " AND magnitude <= $magnitudethru ";
             }
 
             query += " GROUP BY id ";
 
-            if (searchobjectname != null && searchobjectname != string.Empty) {
-                searchobjectname = "%" + searchobjectname + "%";
+            if (!string.IsNullOrEmpty(searchParams.ObjectName)) {
+                searchParams.ObjectName = "%" + searchParams.ObjectName + "%";
                 query += " HAVING aka LIKE $searchobjectname OR group_concat(cataloguenr.catalogue || cataloguenr.designation) LIKE $searchobjectname";
             }
 
-            query += " ORDER BY " + orderby + " " + orderbydirection + ";";
+            query += " ORDER BY " + searchParams.SearchOrder.Field + " " + searchParams.SearchOrder.Direction;
+
+            if (searchParams.Limit != null) {
+                query += " LIMIT " + searchParams.Limit + ";";
+            }
 
             var dsos = new List<DeepSkyObject>();
             try {
@@ -219,22 +262,22 @@ namespace NINA.Utility {
                     using (SQLiteCommand command = connection.CreateCommand()) {
                         command.CommandText = query;
 
-                        command.Parameters.AddWithValue("$constellation", constellation);
-                        command.Parameters.AddWithValue("$rafrom", rafrom);
-                        command.Parameters.AddWithValue("$rathru", rathru);
-                        command.Parameters.AddWithValue("$decfrom", decfrom);
-                        command.Parameters.AddWithValue("$decthru", decthru);
-                        command.Parameters.AddWithValue("$sizefrom", sizefrom);
-                        command.Parameters.AddWithValue("$sizethru", sizethru);
-                        command.Parameters.AddWithValue("$brightnessfrom", brightnessfrom);
-                        command.Parameters.AddWithValue("$brightnessthru", brightnessthru);
-                        command.Parameters.AddWithValue("$magnitudefrom", magnitudefrom);
-                        command.Parameters.AddWithValue("$magnitudethru", magnitudethru);
-                        command.Parameters.AddWithValue("$searchobjectname", searchobjectname);
+                        command.Parameters.AddWithValue("$constellation", searchParams.Constellation);
+                        command.Parameters.AddWithValue("$rafrom", searchParams.RightAscension?.From);
+                        command.Parameters.AddWithValue("$rathru", searchParams.RightAscension?.Thru);
+                        command.Parameters.AddWithValue("$decfrom", searchParams.Declination?.From);
+                        command.Parameters.AddWithValue("$decthru", searchParams.Declination?.Thru);
+                        command.Parameters.AddWithValue("$sizefrom", searchParams.Size?.From);
+                        command.Parameters.AddWithValue("$sizethru", searchParams.Size?.Thru);
+                        command.Parameters.AddWithValue("$brightnessfrom", searchParams.Brightness?.From);
+                        command.Parameters.AddWithValue("$brightnessthru", searchParams.Brightness?.Thru);
+                        command.Parameters.AddWithValue("$magnitudefrom", searchParams.Magnitude?.From);
+                        command.Parameters.AddWithValue("$magnitudethru", searchParams.Magnitude?.Thru);
+                        command.Parameters.AddWithValue("$searchobjectname", searchParams.ObjectName);
 
-                        if (dsotypes != null && dsotypes.Count > 0) {
-                            for (int i = 0; i < dsotypes.Count; i++) {
-                                command.Parameters.AddWithValue("$dsotype" + i.ToString(), dsotypes[i]);
+                        if (searchParams.DsoTypes?.Count > 0) {
+                            for (int i = 0; i < searchParams.DsoTypes.Count; i++) {
+                                command.Parameters.AddWithValue("$dsotype" + i.ToString(), searchParams.DsoTypes[i]);
                             }
                         }
 
@@ -256,7 +299,18 @@ namespace NINA.Utility {
                             }
 
                             if (!reader.IsDBNull(6)) {
-                                var akas = reader.GetString(6);
+                                var commonNames = reader.GetString(6);
+                                if (commonNames != string.Empty) {
+                                    foreach (var name in commonNames.Split(',')) {
+                                        dso.AlsoKnownAs.Add(name);
+                                    }
+                                    var longestName = dso.AlsoKnownAs.Aggregate("", (max, cur) => max.Length > cur.Length ? max : cur);
+                                    dso.Name = longestName;
+                                }
+                            }
+
+                            if (!reader.IsDBNull(7)) {
+                                var akas = reader.GetString(7);
                                 if (akas != string.Empty) {
                                     foreach (var name in akas.Split(',')) {
                                         dso.AlsoKnownAs.Add(name);
@@ -264,12 +318,12 @@ namespace NINA.Utility {
                                 }
                             }
 
-                            if (!reader.IsDBNull(7)) {
-                                dso.Constellation = reader.GetString(7);
+                            if (!reader.IsDBNull(8)) {
+                                dso.Constellation = reader.GetString(8);
                             }
 
-                            if (!reader.IsDBNull(8)) {
-                                dso.SurfaceBrightness = reader.GetDouble(8);
+                            if (!reader.IsDBNull(9)) {
+                                dso.SurfaceBrightness = reader.GetDouble(9);
                             }
 
                             dsos.Add(dso);

@@ -30,6 +30,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
@@ -86,9 +87,88 @@ namespace StarDataImport {
 
         private static void Main(string[] args) {
             //GenerateStarDatabase();
-            UpdateBrightStars();
+            UpdateDSOCatalogueWithSpokenNames();
+            //UpdateBrightStars();
             //GenerateDatabase();
             //UpdateStarData();
+        }
+
+        public static void UpdateDSOCatalogueWithSpokenNames() {
+            List<SimpleDSO> objects = new List<SimpleDSO>();
+            var connectionString = string.Format(@"Data Source={0};foreign keys=true;", @"D:\Projects\nina\NINA\Database\NINA.sqlite");
+            var query = "select dsodetailid, catalogue, designation  from cataloguenr INNER JOIN dsodetail ON dsodetail.id = cataloguenr.dsodetailid where not exists (select * from cataloguenr innercatalogue where innercatalogue.catalogue = 'NAME' and innercatalogue.dsodetailid = dsodetail.id) group by dsodetailid order by catalogue;";
+
+            //var query = "select dsodetailid, catalogue, designation  from cataloguenr INNER JOIN dsodetail ON dsodetail.id = cataloguenr.dsodetailid and dsodetail.id='NGC1976' where not exists (select * from cataloguenr innercatalogue where innercatalogue.catalogue is null and innercatalogue.dsodetailid = dsodetail.id) group by dsodetailid order by catalogue;";
+
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString)) {
+                connection.Open();
+                using (SQLiteCommand command = connection.CreateCommand()) {
+                    command.CommandText = query;
+
+                    var reader = command.ExecuteReader();
+                    while (reader.Read()) {
+                        objects.Add(new SimpleDSO() { id = reader.GetString(0), name = reader.GetString(1) + " " + reader.GetString(2) });
+                    }
+                }
+            }
+
+            var sw = Stopwatch.StartNew();
+            var i = 0;
+
+            Parallel.ForEach(objects, (obj, state, index) => {
+                Interlocked.Increment(ref i);
+                Console.WriteLine($"Processed row: {i}, Object Row: {index}");
+                var _url = "http://cdsws.u-strasbg.fr/axis/services/Sesame";
+                var _action = "";
+
+                XmlDocument soapEnvelopeXml = CreateSoapEnvelope(obj.name);
+                HttpWebRequest webRequest = CreateWebRequest(_url, _action);
+                webRequest.Timeout = -1;
+                InsertSoapEnvelopeIntoWebRequest(soapEnvelopeXml, webRequest);
+
+                // begin async call to web request.
+                IAsyncResult asyncResult = webRequest.BeginGetResponse(null, null);
+
+                // suspend this thread until call is complete. You might want to do something usefull
+                // here like update your UI.
+                asyncResult.AsyncWaitHandle.WaitOne();
+
+                // get the response from the completed web request.
+
+                using (WebResponse webResponse = webRequest.EndGetResponse(asyncResult)) {
+                    var soap = XElement.Load(webResponse.GetResponseStream());
+
+                    var xmlstring = (from c in soap.Descendants("return") select c).FirstOrDefault()?.Value;
+                    var xml = XElement.Parse(xmlstring);
+                    var resolvername = "Simbad";
+                    var resolver = xml.Descendants("Resolver").Where((x) => x.Attribute("name").Value.Contains(resolvername)).FirstOrDefault();
+
+                    using (SQLiteConnection connection = new SQLiteConnection(connectionString)) {
+                        connection.Open();
+
+                        var aliasList = resolver.Descendants("alias");
+                        foreach (var alias in aliasList) {
+                            if (alias.Value.StartsWith("NAME ")) {
+                                var name = alias.Value.Substring(5);
+
+                                using (SQLiteCommand command = connection.CreateCommand()) {
+                                    command.CommandText = "INSERT INTO cataloguenr (dsodetailid, catalogue, designation) VALUES ($id, $catalogue, $designation);";
+                                    command.Parameters.AddWithValue("$id", obj.id);
+                                    command.Parameters.AddWithValue("$catalogue", "NAME");
+                                    command.Parameters.AddWithValue("$designation", name);
+
+                                    var rows = command.ExecuteNonQuery();
+                                    Console.WriteLine(string.Format("Inserted {0} row(s)", rows));
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            Console.WriteLine(sw.Elapsed);
+
+            Console.ReadLine();
         }
 
         public static void UpdateBrightStars() {

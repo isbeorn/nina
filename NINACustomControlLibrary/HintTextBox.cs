@@ -28,7 +28,7 @@ namespace NINACustomControlLibrary {
 
     public class HintTextBox : TextBox {
 
-        public HintTextBox() {
+        static HintTextBox() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(HintTextBox), new FrameworkPropertyMetadata(typeof(HintTextBox)));
         }
 

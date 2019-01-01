@@ -51,6 +51,7 @@
 		- Moved coordinates out of framing boxes to not obscure target
 		- Added a new button to be able to add the framing target to a sequence instead of replacing
 		- Control to adjust opacity of framing box
+	- Improved Framing Assistant and Sequence Target Textboxes by giving up to 50 target hints based on input to select from
 	- Attempt to start PHD2 and connect all equipment when connecting to guider and PHD2 is not running
 
 ___
