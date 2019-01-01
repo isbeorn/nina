@@ -248,9 +248,6 @@ namespace NINA.Utility.Astrometry {
             var deltaXDegrees = Astrometry.ToDegree(raModRad) * Math.Cos(imageRotationRad) + Astrometry.ToDegree(decModRad) * Math.Sin(imageRotationRad);
             var deltaYDegrees = Astrometry.ToDegree(decModRad) * Math.Cos(imageRotationRad) - Astrometry.ToDegree(raModRad) * Math.Sin(imageRotationRad);
 
-            deltaXDegrees = Astrometry.DegreeToArcsec(deltaXDegrees) / horizResArcSecPx;
-            deltaYDegrees = Astrometry.DegreeToArcsec(deltaYDegrees) / vertResArcSecPix;
-
             return new Point(centerPointPixels.X - Astrometry.DegreeToArcsec(deltaXDegrees) / horizResArcSecPx,
                 centerPointPixels.Y - Astrometry.DegreeToArcsec(deltaYDegrees) / vertResArcSecPix);
         }
