@@ -61,7 +61,9 @@
         </GroupBox>
 
         <GroupBox Grid.Row="2" Header="{ns:Loc LblFlatUserFlatSettings}">
-            <ContentControl Content="{Binding Settings, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <ContentControl Content="{Binding Settings, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            </ScrollViewer>
         </GroupBox>
 
         <UniformGrid
