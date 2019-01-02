@@ -246,7 +246,7 @@ namespace NINA.Utility {
 
             if (!string.IsNullOrEmpty(searchParams.ObjectName)) {
                 searchParams.ObjectName = "%" + searchParams.ObjectName + "%";
-                query += " HAVING aka LIKE $searchobjectname OR group_concat(cataloguenr.catalogue || cataloguenr.designation) LIKE $searchobjectname";
+                query += " HAVING aka LIKE $searchobjectname OR group_concat(cataloguenr.catalogue || cataloguenr.designation) LIKE $searchobjectname OR dsodetailid LIKE $searchobjectname";
             }
 
             query += " ORDER BY " + searchParams.SearchOrder.Field + " " + searchParams.SearchOrder.Direction;
