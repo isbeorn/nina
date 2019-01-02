@@ -82,14 +82,6 @@ namespace NINA.ViewModel.FlatWizard {
             PauseFlatExposureSequenceCommand = new RelayCommand(obj => { IsPaused = true; pauseTokenSource.IsPaused = IsPaused; });
             ResumeFlatExposureSequenceCommand = new RelayCommand(obj => { IsPaused = false; pauseTokenSource.IsPaused = IsPaused; });
 
-            SingleFlatWizardFilterSettings = new FlatWizardFilterSettingsWrapper(null, new FlatWizardFilterSettings {
-                HistogramMeanTarget = profileService.ActiveProfile.FlatWizardSettings.HistogramMeanTarget,
-                HistogramTolerance = profileService.ActiveProfile.FlatWizardSettings.HistogramTolerance,
-                MaxFlatExposureTime = profileService.ActiveProfile.CameraSettings.MaxFlatExposureTime,
-                MinFlatExposureTime = profileService.ActiveProfile.CameraSettings.MinFlatExposureTime,
-                StepSize = profileService.ActiveProfile.FlatWizardSettings.StepSize
-            }, cameraInfo?.BitDepth ?? (int)profileService.ActiveProfile.CameraSettings.BitDepth);
-
             FlatCount = profileService.ActiveProfile.FlatWizardSettings.FlatCount;
             DarkFlatCount = profileService.ActiveProfile.FlatWizardSettings.DarkFlatCount;
             BinningMode = profileService.ActiveProfile.FlatWizardSettings.BinningMode;
@@ -97,6 +89,7 @@ namespace NINA.ViewModel.FlatWizard {
             Filters = new ObservableCollection<FlatWizardFilterSettingsWrapper>();
 
             profileService.ProfileChanged += (sender, args) => {
+                UpdateSingleFlatWizardFilterSettings(profileService);
                 watchedFilterList.CollectionChanged -= FiltersCollectionChanged;
                 watchedFilterList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
                 watchedFilterList.CollectionChanged += FiltersCollectionChanged;
@@ -105,15 +98,30 @@ namespace NINA.ViewModel.FlatWizard {
 
             watchedFilterList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
             watchedFilterList.CollectionChanged += FiltersCollectionChanged;
-            SingleFlatWizardFilterSettings.Settings.PropertyChanged += UpdateProfileValues;
 
             // first update filters
 
+            UpdateSingleFlatWizardFilterSettings(profileService);
             UpdateFilterWheelsSettings();
 
             // then register consumer and get the cameraInfo so it's populated to all filters including the singleflatwizardfiltersettings
 
             cameraMediator.RegisterConsumer(this);
+        }
+
+        private void UpdateSingleFlatWizardFilterSettings(IProfileService profileService) {
+            if (SingleFlatWizardFilterSettings != null) {
+                SingleFlatWizardFilterSettings.Settings.PropertyChanged -= UpdateProfileValues;
+            }
+
+            SingleFlatWizardFilterSettings = new FlatWizardFilterSettingsWrapper(null, new FlatWizardFilterSettings {
+                HistogramMeanTarget = profileService.ActiveProfile.FlatWizardSettings.HistogramMeanTarget,
+                HistogramTolerance = profileService.ActiveProfile.FlatWizardSettings.HistogramTolerance,
+                MaxFlatExposureTime = profileService.ActiveProfile.CameraSettings.MaxFlatExposureTime,
+                MinFlatExposureTime = profileService.ActiveProfile.CameraSettings.MinFlatExposureTime,
+                StepSize = profileService.ActiveProfile.FlatWizardSettings.StepSize
+            }, cameraInfo?.BitDepth ?? (int)profileService.ActiveProfile.CameraSettings.BitDepth);
+            SingleFlatWizardFilterSettings.Settings.PropertyChanged += UpdateProfileValues;
         }
 
         private ObserveAllCollection<FilterInfo> watchedFilterList;
