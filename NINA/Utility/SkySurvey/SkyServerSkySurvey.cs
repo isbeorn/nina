@@ -21,20 +21,18 @@
 
 #endregion "copyright"
 
+using NINA.Utility.Astrometry;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Utility.Astrometry;
 
 namespace NINA.Utility.SkySurvey {
 
     internal class SkyServerSkySurvey : ISkySurvey {
         private const string Url = "http://skyserver.sdss.org/dr14/SkyserverWS/ImgCutout/getjpeg?ra={0}&dec={1}&width={2}&height={3}&scale={4}";
 
-        public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress) {
+        public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, int width,
+            int height, CancellationToken ct, IProgress<int> progress) {
             var arcSecPerPixel = 0.4;
             var targetFoVInArcSec = Astrometry.Astrometry.ArcminToArcsec(fieldOfView);
             var pixels = Math.Min(targetFoVInArcSec / arcSecPerPixel, 2048);

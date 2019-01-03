@@ -21,26 +21,19 @@
 
 #endregion "copyright"
 
+using NINA.Utility.Astrometry;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Media.Imaging;
-using NINA.Model;
-using NINA.Utility.Astrometry;
-using NINA.Utility.Mediator.Interfaces;
-using NINA.Utility.Profile;
-using NINA.ViewModel;
 
 namespace NINA.Utility.SkySurvey {
 
     internal class FileSkySurvey : ISkySurvey {
 
-        public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress) {
+        public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, int width,
+            int height, CancellationToken ct, IProgress<int> progress) {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
             dialog.Title = Locale.Loc.Instance["LblLoadImage"];
             dialog.FileName = "";

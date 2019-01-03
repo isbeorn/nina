@@ -31,8 +31,8 @@ using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using NINA.Utility.SkySurvey;
+using NINA.View;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -133,6 +133,26 @@ namespace NINA.ViewModel {
                 ApplicationSettings_PropertyChanged(null, null);
             };
 
+            resizeTimer = new Timer((o) => {
+                // this is necessary, I tried binding the viewportwidth and height in the scrollviewersizedchanged command but the values got all over the place
+                boundWidth = (int)imageView.PART_ScrollViewer.ViewportWidth;
+                boundHeight = (int)imageView.PART_ScrollViewer.ViewportHeight;
+                imageView.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() => LoadImage()));
+                resizeTimer.Change(-1, -1);
+            }, null, -1, -1);
+
+            ImageViewLoadedCommand = new RelayCommand((parameter) => {
+                imageView = (ImageView)parameter;
+                boundWidth = (int)imageView.PART_ScrollViewer.ViewportWidth;
+                boundHeight = (int)imageView.PART_ScrollViewer.ViewportHeight;
+            });
+
+            ScrollViewerSizeChangedCommand = new RelayCommand((parameter) => {
+                if (ImageParameter != null && FramingAssistantSource == SkySurveySource.SKYATLAS) {
+                    resizeTimer.Change(500, -1);
+                }
+            });
+
             profileService.LocationChanged += (object sender, EventArgs e) => {
                 DSO = new DeepSkyObject(DSO.Name, DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
             };
@@ -141,6 +161,10 @@ namespace NINA.ViewModel {
 
             dbInstance = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
         }
+
+        private ImageView imageView;
+
+        private readonly Timer resizeTimer;
 
         private DatabaseInteraction dbInstance;
 
@@ -226,6 +250,10 @@ namespace NINA.ViewModel {
         }
 
         private Dispatcher _dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
+
+        private int boundWidth;
+
+        private int boundHeight;
 
         private DeepSkyObject _dSO;
 
@@ -562,10 +590,13 @@ namespace NINA.ViewModel {
         /// <param name="ct"></param>
         /// <returns></returns>
         private async Task<Dictionary<string, DeepSkyObject>> GetDeepSkyObjectsForFoV(Coordinates referenceCoordinate, double fov, CancellationToken ct) {
+            var verticalFov = FieldOfView;
+            var horizontalFov = ((double)boundWidth / boundHeight) * FieldOfView;
+
             var l = new Dictionary<string, DeepSkyObject>();
             DatabaseInteraction.DeepSkyObjectSearchParams param = new DatabaseInteraction.DeepSkyObjectSearchParams();
-            Coordinates bottomRight = referenceCoordinate.Shift(-(fov), -(fov), 0);
-            Coordinates topLeft = referenceCoordinate.Shift(fov, fov, 0);
+            Coordinates bottomRight = referenceCoordinate.Shift(-(horizontalFov), -(verticalFov), 0);
+            Coordinates topLeft = referenceCoordinate.Shift(horizontalFov, verticalFov, 0);
             param.Declination = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
                 From = topLeft.Dec,
                 Thru = bottomRight.Dec
@@ -648,7 +679,8 @@ namespace NINA.ViewModel {
                     } else {
                         var skySurvey = SkySurveyFactory.Create(FramingAssistantSource);
 
-                        skySurveyImage = await skySurvey.GetImage(DSO?.Name, DSO?.Coordinates, Astrometry.DegreeToArcmin(FieldOfView), _loadImageSource.Token, _progress);
+                        skySurveyImage = await skySurvey.GetImage(DSO?.Name, DSO?.Coordinates,
+                            Astrometry.DegreeToArcmin(FieldOfView), boundWidth, boundHeight, _loadImageSource.Token, _progress);
                     }
 
                     if (skySurveyImage != null) {
@@ -877,6 +909,8 @@ namespace NINA.ViewModel {
         public IAsyncCommand RecenterCommand { get; private set; }
         public ICommand CancelLoadImageFromFileCommand { get; private set; }
         public ICommand ClearCacheCommand { get; private set; }
+        public ICommand ScrollViewerSizeChangedCommand { get; }
+        public ICommand ImageViewLoadedCommand { get; }
     }
 
     internal class FramingRectangle : ObservableRectangle {

@@ -21,14 +21,10 @@
 
 #endregion "copyright"
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using NINA.Utility.Astrometry;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using NINA.Utility.Astrometry;
 
 namespace NINA.Utility.SkySurvey {
 
@@ -40,7 +36,7 @@ namespace NINA.Utility.SkySurvey {
 
         private const string Url = "http://archive.eso.org/dss/dss/image?ra={0}&dec={1}&x={2}&y={3}&mime-type=download-gif&Sky-Survey=DSS2&equinox=J2000&statsmode=VO";
 
-        protected override Task<BitmapSource> GetSingleImage(Coordinates coordinates, double fovW, double fovH, CancellationToken ct) {
+        protected override Task<BitmapSource> GetSingleImage(Coordinates coordinates, double fovW, double fovH, CancellationToken ct, int width, int height) {
             var request = new Http.HttpDownloadImageRequest(
                 Url,
                 coordinates.RADegrees,

@@ -29,6 +29,7 @@
     xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:survey="clr-namespace:NINA.Utility.SkySurvey"
     xmlns:util="clr-namespace:NINA.Utility"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
@@ -406,6 +407,14 @@
 
         <Grid Grid.Column="2">
             <local:ImageView Image="{Binding ImageParameter.Image, IsAsync=True}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Loaded">
+                        <i:InvokeCommandAction Command="{Binding ImageViewLoadedCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=local:ImageView, Mode=FindAncestor}}" />
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="SizeChanged" SourceObject="{Binding RelativeSource={RelativeSource AncestorType=ScrollViewer, Mode=FindAncestor}}">
+                        <i:InvokeCommandAction Command="{Binding ScrollViewerSizeChangedCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <local:ImageView.ButtonHeaderContent>
                     <StackPanel Margin="0,0,2,0" Orientation="Horizontal">
                         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOpacity}" />
