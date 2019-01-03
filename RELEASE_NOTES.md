@@ -4,19 +4,25 @@
 
 ### Sequence
 - Enable/Disable sequence entries
+
 ### Plate Solving
 - Added interface for All Sky Platesolver
+
 ### Camera Control
 - Altair native driver support
 - ToupTek native driver support
 - Added support for anti-dew heaters in ZWO cameras
 - On ASCOM drivers support for setting readout modes
+
 ### Framing Assistant
 - Add SkyAtlas image source which allows for framing based on offline SkyAtlas data
+
 ### Flat Wizard
 - Supports you taking flats
+
 ### Imaging
 - Added a list of manual focus targets (bright stars) that are currently visible in the sky
+
 ### Framing Assistant Offline Sky Chart
 - Based on Sky Atlas data a basic sky chart showing objects added
 - Instead of dragging the rectangular through the initial image like in the other framing sources
@@ -73,18 +79,23 @@ ___
 - Mosaic planning for framing assistant
 - Added multiple new SkySurveys to choose from for framing
 - DSLR RAW files can now be loaded into framing assistant
+
 ### Sequences
 - Sequence multiple target planning. Import/Export also available 
 - Consider Rotation for framing assistant when set for a sequence during platesolves
+
 ### Filter Wheel
-- Added a manual FilterWheel for users without a motorized wheel or with a filter drawer. There will pop up a window and prompt the user when a filter change is requested    
+- Added a manual FilterWheel for users without a motorized wheel or with a filter drawer. There will pop up a window and prompt the user when a filter change is requested
+
 ### Rotators
 - Support for ASCOM Rotators added
 - A manual rotator option is added, for users without an automatic rotator. A pop up will show with the current angle and target angle for a user to manually rotate to
+
 ### Imaging
 - DSLR Users: Images will now always be saved as RAW to prevent any loss of data due to conversions
 - Aberration inspector added to imaging tab. It will show a 3x3 Panel containing the current image
 - Battery display for DSLRs
+
 ### Settings
 - Added ImageParameter $$RMSARCSEC$$ and $$FOCUSPOSITION$$
 - Latitude and Longitude can now be synced from application to telescope and vica versa (when supported).
