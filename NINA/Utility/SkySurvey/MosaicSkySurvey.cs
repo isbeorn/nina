@@ -21,31 +21,28 @@
 
 #endregion "copyright"
 
+using NINA.Utility.Astrometry;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using NINA.Utility.Astrometry;
 
 namespace NINA.Utility.SkySurvey {
 
     internal abstract class MosaicSkySurvey : ISkySurvey {
         protected double MaxFoVPerImage = 60;
 
-        public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress) {
+        public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress, int width, int height) {
             return await Task.Run(async () => {
                 if (fieldOfView > MaxFoVPerImage * 3) {
                     throw new Exception(string.Format("Sky Survey only supports up to {0} degree", Astrometry.Astrometry.ArcminToDegree(MaxFoVPerImage * 3)));
                 } else {
                     BitmapSource image;
                     if (fieldOfView <= MaxFoVPerImage) {
-                        image = await GetSingleImage(coordinates, fieldOfView, fieldOfView, ct);
+                        image = await GetSingleImage(coordinates, fieldOfView, fieldOfView, ct, width, height);
                     } else {
-                        image = await GetMosaicImage(name, coordinates, fieldOfView, ct, progress);
+                        image = await GetMosaicImage(name, coordinates, fieldOfView, ct, progress, width, height);
                     }
 
                     image.Freeze();
@@ -62,8 +59,8 @@ namespace NINA.Utility.SkySurvey {
             });
         }
 
-        private async Task<BitmapSource> GetMosaicImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress) {
-            var centerTask = GetSingleImage(coordinates, MaxFoVPerImage, MaxFoVPerImage, ct);
+        private async Task<BitmapSource> GetMosaicImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress, int width, int height) {
+            var centerTask = GetSingleImage(coordinates, MaxFoVPerImage, MaxFoVPerImage, ct, width, height);
 
             var borderFoV = (fieldOfView - MaxFoVPerImage) / 2.0;
             var shiftedDegree = Astrometry.Astrometry.ArcminToDegree(MaxFoVPerImage) / 2.0 + Astrometry.Astrometry.ArcminToDegree(borderFoV) / 2.0;
@@ -73,7 +70,9 @@ namespace NINA.Utility.SkySurvey {
                 new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 borderFoV,
                 borderFoV,
-                ct
+                ct,
+                width,
+                height
             );
 
             newCoordinates = coordinates.Shift(0, -shiftedDegree, 0);
@@ -81,7 +80,9 @@ namespace NINA.Utility.SkySurvey {
                 new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 MaxFoVPerImage,
                 borderFoV,
-                ct
+                ct,
+                width,
+                height
             );
 
             newCoordinates = coordinates.Shift(shiftedDegree, -shiftedDegree, 0);
@@ -89,7 +90,9 @@ namespace NINA.Utility.SkySurvey {
                 new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 borderFoV,
                 borderFoV,
-                ct
+                ct,
+                width,
+                height
             );
 
             newCoordinates = coordinates.Shift(-shiftedDegree, 0, 0);
@@ -97,7 +100,9 @@ namespace NINA.Utility.SkySurvey {
                 new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 borderFoV,
                 MaxFoVPerImage,
-                ct
+                ct,
+                width,
+                height
             );
 
             newCoordinates = coordinates.Shift(shiftedDegree, 0, 0);
@@ -105,7 +110,9 @@ namespace NINA.Utility.SkySurvey {
                 new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 borderFoV,
                 MaxFoVPerImage,
-                ct
+                ct,
+                width,
+                height
             );
 
             newCoordinates = coordinates.Shift(-shiftedDegree, shiftedDegree, 0);
@@ -113,7 +120,9 @@ namespace NINA.Utility.SkySurvey {
                 new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 borderFoV,
                 borderFoV,
-                ct
+                ct,
+                width,
+                height
             );
 
             newCoordinates = coordinates.Shift(0, shiftedDegree, 0);
@@ -121,7 +130,9 @@ namespace NINA.Utility.SkySurvey {
                 new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 MaxFoVPerImage,
                 borderFoV,
-                ct
+                ct,
+                width,
+                height
             );
 
             newCoordinates = coordinates.Shift(shiftedDegree, shiftedDegree, 0);
@@ -129,7 +140,9 @@ namespace NINA.Utility.SkySurvey {
                 new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 borderFoV,
                 borderFoV,
-                ct
+                ct,
+                width,
+                height
             );
 
             /*
@@ -180,6 +193,6 @@ namespace NINA.Utility.SkySurvey {
             return bmp;
         }
 
-        protected abstract Task<BitmapSource> GetSingleImage(Coordinates coordinates, double fovW, double fovH, CancellationToken ct);
+        protected abstract Task<BitmapSource> GetSingleImage(Coordinates coordinates, double fovW, double fovH, CancellationToken ct, int width, int height);
     }
 }
