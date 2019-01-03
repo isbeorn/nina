@@ -194,7 +194,7 @@ namespace NINA.Model.MyGuider {
 
         public async Task<bool> Connect() {
             _tcs = new TaskCompletionSource<bool>();
-            var startedPHD2 = StartPHD2Process();
+            var startedPHD2 = await StartPHD2Process();
 #pragma warning disable 4014
             Task.Run(RunListener);
 #pragma warning restore 4014
@@ -456,7 +456,7 @@ namespace NINA.Model.MyGuider {
             }
         }
 
-        private bool StartPHD2Process() {
+        private async Task<bool> StartPHD2Process() {
             // if phd2 is not running start it
             try {
                 if (Process.GetProcessesByName("phd2").Length == 0) {
@@ -466,6 +466,9 @@ namespace NINA.Model.MyGuider {
 
                     var process = Process.Start(profileService.ActiveProfile.GuiderSettings.PHD2Path);
                     process?.WaitForInputIdle();
+
+                    await Task.Delay(1500);
+
                     return true;
                 }
             } catch (FileNotFoundException) {
