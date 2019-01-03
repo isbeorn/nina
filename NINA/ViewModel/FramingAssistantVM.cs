@@ -583,7 +583,7 @@ namespace NINA.ViewModel {
                 foreach (var dso in await dbInstance.GetDeepSkyObjects(
                     string.Empty, param,
                     ct)) {
-                    l.Add(dso.Name, dso);
+                    l.Add(dso.Id, dso);
                 }
 
                 param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
@@ -595,7 +595,7 @@ namespace NINA.ViewModel {
             foreach (var dso in await dbInstance.GetDeepSkyObjects(
                 string.Empty, param,
                 ct)) {
-                l.Add(dso.Name, dso);
+                l.Add(dso.Id, dso);
             }
 
             return l;
@@ -631,7 +631,7 @@ namespace NINA.ViewModel {
                 }
             }
 
-            var dsosToAdd = cachedDSOs.Where(x => !existingDSOs.Any(y => y == x.Value.Name));
+            var dsosToAdd = cachedDSOs.Where(x => !existingDSOs.Any(y => y == x.Value.Id));
             foreach (var dso in dsosToAdd) {
                 DSOInImage.Add(new FramingDSO(dso.Value, ImageParameter));
             }
@@ -944,7 +944,7 @@ namespace NINA.ViewModel {
                 sizeHeight = DSO_DEFAULT_SIZE;
             }
 
-            Id = dso.Name;
+            Id = dso.Id;
             Name1 = dso.Name;
             Name2 = dso.AlsoKnownAs.FirstOrDefault(m => m.StartsWith("M "));
             Name3 = dso.AlsoKnownAs.FirstOrDefault(m => m.StartsWith("NGC "));

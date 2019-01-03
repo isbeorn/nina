@@ -41,12 +41,25 @@ namespace NINA.Model {
             this.imageRepository = imageRepository;
         }
 
-        public DeepSkyObject(string name, string imageRepository) : this(imageRepository) {
-            Name = name;
+        public DeepSkyObject(string id, string imageRepository) : this(imageRepository) {
+            Id = id;
+            Name = id;
         }
 
-        public DeepSkyObject(string name, Coordinates coords, string imageRepository) : this(name, imageRepository) {
+        public DeepSkyObject(string id, Coordinates coords, string imageRepository) : this(id, imageRepository) {
             _coordinates = coords;
+        }
+
+        private string id;
+
+        public string Id {
+            get {
+                return id;
+            }
+            set {
+                id = value;
+                RaisePropertyChanged();
+            }
         }
 
         private string _name;
