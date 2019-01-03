@@ -218,11 +218,17 @@
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Center"
                                     Text="{Binding AstrometryAPIKey}" />
+
+                                <TextBlock VerticalAlignment="Center" Text="">
+                                    <Hyperlink Command="{Binding OpenWebRequestCommand}" CommandParameter="http://nova.astrometry.net/api_help">
+                                        <Run Text="?" />
+                                    </Hyperlink>
+                                </TextBlock>
                             </StackPanel>
                             <StackPanel MaxHeight="150" Margin="0,6,0,6">
                                 <TextBlock Text="{ns:Loc LblPlatesolveProvidedBy}" />
                                 <TextBlock MaxHeight="73" HorizontalAlignment="Left">
-                                    <Hyperlink NavigateUri="http://nova.astrometry.net/" RequestNavigate="Hyperlink_RequestNavigate">
+                                    <Hyperlink Command="{Binding OpenWebRequestCommand}" CommandParameter="http://nova.astrometry.net/">
                                         <Image Source="/NINA;component/Resources/astrometry.net.png" Stretch="Uniform" />
                                     </Hyperlink>
                                 </TextBlock>
@@ -323,7 +329,7 @@
                             <StackPanel MaxHeight="150" Margin="0,5,0,5">
                                 <TextBlock Text="{ns:Loc LblPlatesolveProvidedBy}" />
                                 <TextBlock MaxHeight="73" HorizontalAlignment="Left">
-                                    <Hyperlink NavigateUri="http://nova.astrometry.net/" RequestNavigate="Hyperlink_RequestNavigate">
+                                    <Hyperlink Command="{Binding OpenWebRequestCommand}" CommandParameter="http://nova.astrometry.net/">
                                         <Image Source="/NINA;component/Resources/astrometry.net.png" Stretch="Uniform" />
                                     </Hyperlink>
                                 </TextBlock>

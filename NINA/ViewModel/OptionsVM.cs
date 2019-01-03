@@ -31,6 +31,7 @@ using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -48,6 +49,7 @@ namespace NINA.ViewModel {
 
             this.filterWheelMediator = filterWheelMediator;
 
+            OpenWebRequestCommand = new RelayCommand(OpenWebRequest);
             PreviewFileCommand = new RelayCommand(PreviewFile);
             OpenImageFileDiagCommand = new RelayCommand(OpenImageFileDiag);
             OpenSequenceTemplateDiagCommand = new RelayCommand(OpenSequenceTemplateDiag);
@@ -91,6 +93,11 @@ namespace NINA.ViewModel {
             };
 
             FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
+        }
+
+        private void OpenWebRequest(object obj) {
+            var url = new Uri(obj.ToString());
+            Process.Start(new ProcessStartInfo(url.AbsoluteUri));
         }
 
         public RelayCommand OpenPHD2DiagCommand { get; set; }
@@ -354,6 +361,8 @@ namespace NINA.ViewModel {
         public ICommand OpenImageFileDiagCommand { get; private set; }
 
         public ICommand OpenSequenceTemplateDiagCommand { get; private set; }
+
+        public ICommand OpenWebRequestCommand { get; private set; }
 
         public ICommand PreviewFileCommand { get; private set; }
 
