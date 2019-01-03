@@ -136,21 +136,8 @@ namespace NINA.ViewModel {
             resizeTimer.Interval = TimeSpan.FromMilliseconds(500);
             resizeTimer.Tick += ResizeTimer_Tick;
 
-            ImageViewLoadedCommand = new RelayCommand((parameter) => {
-                var parameterList = (object[])parameter;
-                var width = double.Parse(parameterList[0].ToString(), CultureInfo.InvariantCulture);
-                var height = double.Parse(parameterList[1].ToString(), CultureInfo.InvariantCulture);
-                boundWidth = (int)width;
-                boundHeight = (int)height;
-            });
-
             ScrollViewerSizeChangedCommand = new RelayCommand((parameter) => {
                 resizeTimer.Stop();
-                var parameterList = (object[])parameter;
-                var width = double.Parse(parameterList[0].ToString(), CultureInfo.InvariantCulture);
-                var height = double.Parse(parameterList[1].ToString(), CultureInfo.InvariantCulture);
-                boundWidth = (int)width;
-                boundHeight = (int)height;
                 if (ImageParameter != null && FramingAssistantSource == SkySurveySource.SKYATLAS) {
                     resizeTimer.Start();
                 }
@@ -261,7 +248,17 @@ namespace NINA.ViewModel {
 
         private int boundWidth;
 
+        public double BoundWidth {
+            get => boundWidth;
+            set => boundWidth = (int)value;
+        }
+
         private int boundHeight;
+
+        public double BoundHeight {
+            get => boundHeight;
+            set => boundHeight = (int)value;
+        }
 
         private DeepSkyObject _dSO;
 
@@ -918,7 +915,6 @@ namespace NINA.ViewModel {
         public ICommand CancelLoadImageFromFileCommand { get; private set; }
         public ICommand ClearCacheCommand { get; private set; }
         public ICommand ScrollViewerSizeChangedCommand { get; }
-        public ICommand ImageViewLoadedCommand { get; }
     }
 
     internal class FramingRectangle : ObservableRectangle {
