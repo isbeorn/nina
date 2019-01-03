@@ -40,6 +40,10 @@ namespace NINA.View {
 
         private double fittingScale = 1;
 
+        public object PART_ScrollViewerBinding {
+            get => PART_ScrollViewer;
+        }
+
         public ImageView() {
             InitializeComponent();
 
