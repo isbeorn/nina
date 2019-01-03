@@ -9,13 +9,14 @@ namespace NINA.Utility.SkySurvey {
 
     internal class SkyAtlasSkySurvey : ISkySurvey {
 
-        public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress) {
-            byte[] arr = new byte[2048 * 2048];
+        public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, int width,
+            int height, CancellationToken ct, IProgress<int> progress) {
+            byte[] arr = new byte[width * height];
             for (int i = 0; i < arr.Length; i++) {
                 arr[i] = 30;
             }
 
-            BitmapSource bitmap = BitmapSource.Create(2048, 2048, 96, 96, PixelFormats.Gray8, BitmapPalettes.Gray256, arr, 2048);
+            BitmapSource bitmap = BitmapSource.Create(width, height, 96, 96, PixelFormats.Gray8, BitmapPalettes.Gray256, arr, width);
 
             bitmap.Freeze();
 
@@ -24,7 +25,7 @@ namespace NINA.Utility.SkySurvey {
                 Source = nameof(SkyAtlasSkySurvey),
                 Image = bitmap,
                 FoVHeight = fieldOfView,
-                FoVWidth = fieldOfView,
+                FoVWidth = ((double)width / height) * fieldOfView,
                 Rotation = 0,
                 Coordinates = coordinates
             };

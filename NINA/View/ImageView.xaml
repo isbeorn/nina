@@ -24,6 +24,7 @@
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ns="clr-namespace:NINA.Locale"
+    xmlns:utility="clr-namespace:NINA.Utility"
     x:Name="PART_ImageView"
     d:DesignHeight="300"
     d:DesignWidth="300"
@@ -119,6 +120,14 @@
             x:Name="PART_ScrollViewer"
             Grid.Row="1"
             PanningMode="Both">
+            <utility:DataPiping.DataPipes>
+                <utility:DataPipeCollection>
+                    <utility:DataPipe Source="{Binding RelativeSource={RelativeSource AncestorType={x:Type ScrollViewer}}, Path=ViewportWidth}"
+                                Target="{Binding Path=BoundWidth, Mode=OneWayToSource}" />
+                    <utility:DataPipe Source="{Binding RelativeSource={RelativeSource AncestorType={x:Type ScrollViewer}}, Path=ViewportHeight}"
+                                Target="{Binding Path=BoundHeight, Mode=OneWayToSource}" />
+                </utility:DataPipeCollection>
+            </utility:DataPiping.DataPipes>
             <ScrollViewer.Style>
                 <Style TargetType="{x:Type ScrollViewer}">
                     <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
