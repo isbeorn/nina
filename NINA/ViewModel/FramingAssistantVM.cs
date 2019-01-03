@@ -980,8 +980,14 @@ namespace NINA.ViewModel {
         private double rotation;
 
         public void RecalculateTopLeft(Coordinates reference) {
-            TopLeftPoint = coordinates.ProjectFromCenterToXY(reference, new Point(pixelWidth / 2.0, pixelHeight / 2.0),
-                arcSecWidth, arcSecHeight, rotation);
+            var projectedPoint = coordinates.ProjectFromCenterToXY(
+                reference,
+                new Point(pixelWidth / 2.0, pixelHeight / 2.0),
+                arcSecWidth,
+                arcSecHeight,
+                rotation
+            );
+            TopLeftPoint = new Point(projectedPoint.X - SizeWidth / 2, projectedPoint.Y - SizeHeight / 2);
         }
 
         public double SizeWidth => sizeWidth / arcSecWidth;
