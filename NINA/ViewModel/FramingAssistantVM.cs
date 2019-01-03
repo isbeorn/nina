@@ -853,6 +853,13 @@ namespace NINA.ViewModel {
         private readonly double sizeHeight;
         private readonly Point topLeftPoint;
 
+        /// <summary>
+        /// Constructor for a Framing DSO.
+        /// It takes a SkySurveyImage and a DeepSkyObject and calculates XY values in pixels from the top left edge of the image subtracting half of its size.
+        /// Those coordinates can be used to place the DSO including its name and size in any given image.
+        /// </summary>
+        /// <param name="dso">The DSO including its coordinates</param>
+        /// <param name="image">The image where the DSO should be placed in including the RA/Dec coordinates of the center of that image</param>
         public FramingDSO(DeepSkyObject dso, SkySurveyImage image) {
             arcSecWidth = Astrometry.ArcminToArcsec(image.FoVWidth) / image.Image.PixelWidth;
             arcSecHeight = Astrometry.ArcminToArcsec(image.FoVHeight) / image.Image.PixelHeight;

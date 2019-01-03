@@ -55,6 +55,7 @@
 		- Control to adjust opacity of framing box
 	- Improved Framing Assistant and Sequence Target Textboxes by giving up to 50 target hints based on input to select from
 	- Framing Assistant now can annotate DSO
+	- Attempt to start PHD2 and connect all equipment when connecting to guider and PHD2 is not running
 
 ___
 

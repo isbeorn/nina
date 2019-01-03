@@ -474,7 +474,15 @@
                                                     <RowDefinition />
                                                     <RowDefinition />
                                                 </Grid.RowDefinitions>
-                                                <Ellipse Fill="Transparent" Stroke="White" Width="{Binding SizeWidth}" Height="{Binding SizeHeight}" />
+                                                <Ellipse Stroke="White" Width="{Binding SizeWidth}" Height="{Binding SizeHeight}">
+                                                    <Ellipse.Fill>
+                                                        <SolidColorBrush>
+                                                            <SolidColorBrush.Color>
+                                                                <Color R="255" G="255" B="255" A="10" />
+                                                            </SolidColorBrush.Color>
+                                                        </SolidColorBrush>
+                                                    </Ellipse.Fill>
+                                                </Ellipse>
                                                 <TextBlock Text="{Binding Name1}" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                 <TextBlock Text="{Binding Name2}" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                 <TextBlock Text="{Binding Name3}" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" />

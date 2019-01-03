@@ -220,6 +220,15 @@ namespace NINA.Utility.Astrometry {
             );
         }
 
+        /// <summary>
+        /// Generates a Point with relative X/Y values for centering the current coordinates relative to a given point using a tangential gnomonic projection.
+        /// </summary>
+        /// <param name="center">Center coordinates of the image</param>
+        /// <param name="centerPointPixels">Center point in pixels of the image</param>
+        /// <param name="horizResArcSecPx">Horizontal resolution in ArcSec/Px</param>
+        /// <param name="vertResArcSecPix">Vertical resolution in ArcSec/Px</param>
+        /// <param name="rotation">Rotation in degrees</param>
+        /// <returns></returns>
         public Point ProjectFromCenterToXY(Coordinates center, Point centerPointPixels, double horizResArcSecPx, double vertResArcSecPix, double rotation) {
             var raDegreesSanitized = RADegrees;
             var deltaRa = (raDegreesSanitized - center.RADegrees);

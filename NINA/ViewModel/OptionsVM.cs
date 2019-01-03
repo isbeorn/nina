@@ -53,6 +53,7 @@ namespace NINA.ViewModel {
             OpenSequenceTemplateDiagCommand = new RelayCommand(OpenSequenceTemplateDiag);
             OpenCygwinFileDiagCommand = new RelayCommand(OpenCygwinFileDiag);
             OpenPS2FileDiagCommand = new RelayCommand(OpenPS2FileDiag);
+            OpenPHD2DiagCommand = new RelayCommand(OpenPHD2FileDiag);
             OpenASPSFileDiagCommand = new RelayCommand(OpenASPSFileDiag);
             ToggleColorsCommand = new RelayCommand(ToggleColors);
             DownloadIndexesCommand = new RelayCommand(DownloadIndexes);
@@ -91,6 +92,8 @@ namespace NINA.ViewModel {
 
             FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
         }
+
+        public RelayCommand OpenPHD2DiagCommand { get; set; }
 
         private void CopyToAlternativeCustomSchema(object obj) {
             var schema = ColorSchemas.Items.Where((x) => x.Name == "Alternative Custom").First();
@@ -288,6 +291,20 @@ namespace NINA.ViewModel {
             }
         }
 
+        private void OpenPHD2FileDiag(object o) {
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+            FileInfo phd2path = new FileInfo(profileService.ActiveProfile.GuiderSettings.PHD2Path);
+            if (phd2path.Exists) {
+                dialog.InitialDirectory = phd2path.DirectoryName;
+            }
+            dialog.FileName = "phd2.exe";
+            dialog.Filter = "PHD2|phd2.exe";
+
+            if (dialog.ShowDialog() == true) {
+                PHD2Path = dialog.FileName;
+            }
+        }
+
         private void OpenASPSFileDiag(object o) {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
             dialog.FileName = profileService.ActiveProfile.PlateSolveSettings.AspsLocation;
@@ -476,6 +493,14 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string PHD2Path {
+            get => profileService.ActiveProfile.GuiderSettings.PHD2Path;
+            set {
+                profileService.ActiveProfile.GuiderSettings.PHD2Path = value;
                 RaisePropertyChanged();
             }
         }
