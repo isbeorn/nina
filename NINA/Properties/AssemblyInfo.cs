@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -33,7 +33,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("N.I.N.A. - Nighttime Imaging 'N' Astronomy")]
-[assembly: AssemblyCopyright("Copyright ©  2016 - 2018 Stefan Berg and the N.I.N.A. contributors")]
+[assembly: AssemblyCopyright("Copyright ©  2016 - 2019 Stefan Berg and the N.I.N.A. contributors")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 #if DEBUG
