@@ -545,6 +545,78 @@ namespace NINA.ViewModel {
 
         public ObservableCollection<FramingDSO> DSOInImage { get; set; }
 
+        /// <summary>
+        /// Query for skyobjects for a reference coordinate that overlap the current field of view
+        /// </summary>
+        /// <param name="referenceCoordinate"></param>
+        /// <param name="fov"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        private async Task<List<DeepSkyObject>> GetDeepSkyObjectsForFoV(Coordinates referenceCoordinate, double fov, CancellationToken ct) {
+            var l = new List<DeepSkyObject>();
+            DatabaseInteraction.DeepSkyObjectSearchParams param = new DatabaseInteraction.DeepSkyObjectSearchParams();
+            Coordinates bottomRight = referenceCoordinate.Shift(-(fov), -(fov), 0);
+            Coordinates topLeft = referenceCoordinate.Shift(fov, fov, 0);
+            param.Declination = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
+                From = topLeft.Dec,
+                Thru = bottomRight.Dec
+            };
+            param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
+                From = topLeft.RADegrees,
+                Thru = bottomRight.RADegrees
+            };
+
+            if (param.RightAscension.From > param.RightAscension.Thru) {
+                param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
+                    From = topLeft.RADegrees,
+                    Thru = 360
+                };
+                foreach (var dso in await dbInstance.GetDeepSkyObjects(
+                    string.Empty, param,
+                    ct)) {
+                    l.Add(dso);
+                }
+
+                param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
+                    From = 0,
+                    Thru = bottomRight.RADegrees
+                };
+            }
+
+            foreach (var dso in await dbInstance.GetDeepSkyObjects(
+                string.Empty, param,
+                ct)) {
+                l.Add(dso);
+            }
+
+            return l;
+        }
+
+        private Vector deltaSum = new Vector(0, 0);
+        private List<DeepSkyObject> cachedDSOs = new List<DeepSkyObject>();
+
+        private async Task UpdateDSOsInImage(Vector delta) {
+            deltaSum.X += delta.X;
+            deltaSum.Y += delta.Y;
+
+            var imageArcsecWidth = Astrometry.ArcminToArcsec(ImageParameter.FoVWidth) / ImageParameter.Image.Width;
+            var imageArcsecHeight = Astrometry.ArcminToArcsec(ImageParameter.FoVHeight) / ImageParameter.Image.Height;
+            var newCenter = Rectangle.Coordinates.Shift(delta.X, delta.Y, ImageParameter.Rotation, imageArcsecWidth, imageArcsecHeight);
+            DSO.Coordinates = newCenter;
+            ImageParameter.Coordinates = newCenter;
+            CalculateRectangle(ImageParameter);
+
+            if (Math.Abs(deltaSum.X) > ImageParameter.Image.Width / 2.0d || Math.Abs(deltaSum.Y) > ImageParameter.Image.Height / 2.0d) {
+                cachedDSOs = await GetDeepSkyObjectsForFoV(newCenter, FieldOfView, _loadImageSource.Token);
+                deltaSum = new Vector(0, 0);
+            }
+
+            DSOInImage.Clear();
+            foreach (var dso in cachedDSOs) {
+                DSOInImage.Add(new FramingDSO(dso, ImageParameter));
+            }
+        }
+
         private async Task<bool> LoadImage() {
             using (MyStopWatch.Measure()) {
                 CancelLoadImage();
@@ -577,42 +649,12 @@ namespace NINA.ViewModel {
                             RaisePropertyChanged(nameof(ImageCacheInfo));
                         }
 
-                        // hook into loading objects that are in the frame
-                        DatabaseInteraction.DeepSkyObjectSearchParams param = new DatabaseInteraction.DeepSkyObjectSearchParams();
                         DSOInImage.Clear();
-                        Coordinates bottomRight = skySurveyImage.Coordinates.Shift(-(FieldOfView / 2), -(FieldOfView / 2), 0);
-                        Coordinates topLeft = skySurveyImage.Coordinates.Shift(FieldOfView / 2, FieldOfView / 2, 0);
-                        param.Declination = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                            From = topLeft.Dec,
-                            Thru = bottomRight.Dec
-                        };
-                        param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                            From = topLeft.RADegrees,
-                            Thru = bottomRight.RADegrees
-                        };
-
-                        if (param.RightAscension.From > param.RightAscension.Thru) {
-                            param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                                From = topLeft.RADegrees,
-                                Thru = 360
-                            };
-                            foreach (var dso in await dbInstance.GetDeepSkyObjects(
-                                profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository, param,
-                                _loadImageSource.Token)) {
-                                DSOInImage.Add(new FramingDSO(dso, ImageParameter));
-                            }
-
-                            param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                                From = 0,
-                                Thru = bottomRight.RADegrees
-                            };
+                        cachedDSOs = await GetDeepSkyObjectsForFoV(skySurveyImage.Coordinates, FieldOfView, _loadImageSource.Token);
+                        foreach (var dso in cachedDSOs) {
+                            DSOInImage.Add(new FramingDSO(dso, skySurveyImage));
                         }
-
-                        foreach (var dso in await dbInstance.GetDeepSkyObjects(
-                            profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository, param,
-                            _loadImageSource.Token)) {
-                            DSOInImage.Add(new FramingDSO(dso, ImageParameter));
-                        }
+                        deltaSum = new Vector(0, 0);
                     }
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
@@ -768,15 +810,18 @@ namespace NINA.ViewModel {
 
         private void DragMove(object obj) {
             var delta = ((DragResult)obj).Delta;
-            this.Rectangle.X += delta.X;
-            this.Rectangle.Y += delta.Y;
+            if (FramingAssistantSource == SkySurveySource.SKYATLAS) {
+                UpdateDSOsInImage(delta);
+            } else {
+                var imageArcsecWidth = Astrometry.ArcminToArcsec(ImageParameter.FoVWidth) / ImageParameter.Image.Width;
+                var imageArcsecHeight = Astrometry.ArcminToArcsec(ImageParameter.FoVHeight) / ImageParameter.Image.Height;
+                this.Rectangle.X += delta.X;
+                this.Rectangle.Y += delta.Y;
 
-            var imageArcsecWidth = Astrometry.ArcminToArcsec(ImageParameter.FoVWidth) / ImageParameter.Image.Width;
-            var imageArcsecHeight = Astrometry.ArcminToArcsec(ImageParameter.FoVHeight) / ImageParameter.Image.Height;
-            Rectangle.Coordinates = Rectangle.Coordinates.Shift(delta.X, delta.Y, ImageParameter.Rotation, imageArcsecWidth, imageArcsecHeight);
-
-            foreach (var rect in CameraRectangles) {
-                rect.Coordinates = rect.Coordinates.Shift(delta.X, delta.Y, ImageParameter.Rotation, imageArcsecWidth, imageArcsecHeight);
+                Rectangle.Coordinates = Rectangle.Coordinates.Shift(delta.X, delta.Y, ImageParameter.Rotation, imageArcsecWidth, imageArcsecHeight);
+                foreach (var rect in CameraRectangles) {
+                    rect.Coordinates = rect.Coordinates.Shift(delta.X, delta.Y, ImageParameter.Rotation, imageArcsecWidth, imageArcsecHeight);
+                }
             }
         }
 
