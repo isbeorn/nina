@@ -21,6 +21,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:behaviors="clr-namespace:NINA.Utility.Behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
@@ -29,7 +30,6 @@
     xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:survey="clr-namespace:NINA.Utility.SkySurvey"
     xmlns:util="clr-namespace:NINA.Utility"
-    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
@@ -409,10 +409,24 @@
             <local:ImageView Image="{Binding ImageParameter.Image, IsAsync=True}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Loaded">
-                        <i:InvokeCommandAction Command="{Binding ImageViewLoadedCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=local:ImageView, Mode=FindAncestor}}" />
+                        <i:InvokeCommandAction Command="{Binding ImageViewLoadedCommand}">
+                            <i:InvokeCommandAction.CommandParameter>
+                                <MultiBinding Converter="{StaticResource MultiToListConverter}">
+                                    <Binding Path="PART_ScrollViewerBinding.ViewportWidth" RelativeSource="{RelativeSource AncestorType=local:ImageView, Mode=FindAncestor}" />
+                                    <Binding Path="PART_ScrollViewerBinding.ViewportHeight" RelativeSource="{RelativeSource AncestorType=local:ImageView, Mode=FindAncestor}" />
+                                </MultiBinding>
+                            </i:InvokeCommandAction.CommandParameter>
+                        </i:InvokeCommandAction>
                     </i:EventTrigger>
-                    <i:EventTrigger EventName="SizeChanged" SourceObject="{Binding RelativeSource={RelativeSource AncestorType=ScrollViewer, Mode=FindAncestor}}">
-                        <i:InvokeCommandAction Command="{Binding ScrollViewerSizeChangedCommand}" />
+                    <i:EventTrigger EventName="SizeChanged" SourceObject="{Binding RelativeSource={RelativeSource AncestorType=local:ImageView, Mode=FindAncestor}, Path=PART_ScrollViewerBinding}">
+                        <i:InvokeCommandAction Command="{Binding ScrollViewerSizeChangedCommand}">
+                            <i:InvokeCommandAction.CommandParameter>
+                                <MultiBinding Converter="{StaticResource MultiToListConverter}">
+                                    <Binding Path="PART_ScrollViewerBinding.ViewportWidth" RelativeSource="{RelativeSource AncestorType=local:ImageView, Mode=FindAncestor}" />
+                                    <Binding Path="PART_ScrollViewerBinding.ViewportHeight" RelativeSource="{RelativeSource AncestorType=local:ImageView, Mode=FindAncestor}" />
+                                </MultiBinding>
+                            </i:InvokeCommandAction.CommandParameter>
+                        </i:InvokeCommandAction>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <local:ImageView.ButtonHeaderContent>
@@ -425,9 +439,9 @@
                             StepSize=".1"
                             Value="{Binding Opacity, Mode=TwoWay}" />
                         <ToggleButton
+                            Width="35"
                             Margin="5"
-                            IsChecked="{Binding AnnotateDSO}"
-                            Width="35">
+                            IsChecked="{Binding AnnotateDSO}">
                             <ToggleButton.ToolTip>
                                 <ToolTip ToolTipService.ShowOnDisabled="False">
                                     <TextBlock Text="{ns:Loc LblAnnotateDSO}" />
@@ -483,18 +497,37 @@
                                                     <RowDefinition />
                                                     <RowDefinition />
                                                 </Grid.RowDefinitions>
-                                                <Ellipse Stroke="White" Width="{Binding SizeWidth}" Height="{Binding SizeHeight}">
+                                                <Ellipse
+                                                    Width="{Binding SizeWidth}"
+                                                    Height="{Binding SizeHeight}"
+                                                    Stroke="White">
                                                     <Ellipse.Fill>
                                                         <SolidColorBrush>
                                                             <SolidColorBrush.Color>
-                                                                <Color R="255" G="255" B="255" A="10" />
+                                                                <Color
+                                                                    A="10"
+                                                                    B="255"
+                                                                    G="255"
+                                                                    R="255" />
                                                             </SolidColorBrush.Color>
                                                         </SolidColorBrush>
                                                     </Ellipse.Fill>
                                                 </Ellipse>
-                                                <TextBlock Text="{Binding Name1}" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                                <TextBlock Text="{Binding Name2}" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                                <TextBlock Text="{Binding Name3}" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                <TextBlock
+                                                    Grid.Row="1"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding Name1}" />
+                                                <TextBlock
+                                                    Grid.Row="2"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding Name2}" />
+                                                <TextBlock
+                                                    Grid.Row="3"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding Name3}" />
                                             </Grid>
                                         </Border>
                                     </DataTemplate>
@@ -530,19 +563,19 @@
                                         <DataTemplate>
                                             <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
                                                 <Rectangle
-                                            Width="{Binding Width}"
-                                            Height="{Binding Height}"
-                                            RenderTransformOrigin="0.5,0.5"
-                                            Stroke="{StaticResource SecondaryBrush}"
-                                            StrokeThickness="5">
+                                                    Width="{Binding Width}"
+                                                    Height="{Binding Height}"
+                                                    RenderTransformOrigin="0.5,0.5"
+                                                    Stroke="{StaticResource SecondaryBrush}"
+                                                    StrokeThickness="5">
                                                     <Rectangle.Fill>
                                                         <SolidColorBrush Opacity="{Binding Path=FramingAssistantVM.Opacity, Source={StaticResource AppVM}}" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
                                                     </Rectangle.Fill>
                                                 </Rectangle>
                                                 <TextBlock
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            Text="{Binding Id}" />
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding Id}" />
                                                 <Grid.Margin>
                                                     <MultiBinding Converter="{StaticResource MultiMarginConverter}">
 
@@ -569,16 +602,16 @@
                                     </ItemsControl.Margin>
                                 </ItemsControl>
                                 <Rectangle
-                            Width="{Binding Rectangle.Width}"
-                            Height="{Binding Rectangle.Height}"
-                            behaviors:DragCommandBehavior.Drag="True"
-                            behaviors:DragCommandBehavior.DragMoveCommand="{Binding DragMoveCommand}"
-                            behaviors:DragCommandBehavior.DragStartCommand="{Binding DragStartCommand}"
-                            behaviors:DragCommandBehavior.DragStopCommand="{Binding DragStopCommand}"
-                            Fill="Transparent"
-                            RenderTransformOrigin="0.5,0.5"
-                            Stroke="{StaticResource ButtonForegroundBrush}"
-                            StrokeThickness="5">
+                                    Width="{Binding Rectangle.Width}"
+                                    Height="{Binding Rectangle.Height}"
+                                    behaviors:DragCommandBehavior.Drag="True"
+                                    behaviors:DragCommandBehavior.DragMoveCommand="{Binding DragMoveCommand}"
+                                    behaviors:DragCommandBehavior.DragStartCommand="{Binding DragStartCommand}"
+                                    behaviors:DragCommandBehavior.DragStopCommand="{Binding DragStopCommand}"
+                                    Fill="Transparent"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    Stroke="{StaticResource ButtonForegroundBrush}"
+                                    StrokeThickness="5">
                                     <Rectangle.RenderTransform>
                                         <RotateTransform Angle="{Binding Rectangle.Rotation}" />
                                     </Rectangle.RenderTransform>
@@ -593,10 +626,10 @@
                                     </Rectangle.Margin>
                                 </Rectangle>
                                 <Grid
-                            Width="{Binding Rectangle.Width}"
-                            Height="{Binding Rectangle.Height}"
-                            IsHitTestVisible="False"
-                            RenderTransformOrigin="0.5,0.5">
+                                    Width="{Binding Rectangle.Width}"
+                                    Height="{Binding Rectangle.Height}"
+                                    IsHitTestVisible="False"
+                                    RenderTransformOrigin="0.5,0.5">
                                     <Grid.Margin>
                                         <MultiBinding Converter="{StaticResource MultiMarginConverter}">
 

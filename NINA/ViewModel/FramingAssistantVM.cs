@@ -31,7 +31,6 @@ using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using NINA.Utility.SkySurvey;
-using NINA.View;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -133,23 +132,27 @@ namespace NINA.ViewModel {
                 ApplicationSettings_PropertyChanged(null, null);
             };
 
-            resizeTimer = new Timer((o) => {
-                // this is necessary, I tried binding the viewportwidth and height in the scrollviewersizedchanged command but the values got all over the place
-                boundWidth = (int)imageView.PART_ScrollViewer.ViewportWidth;
-                boundHeight = (int)imageView.PART_ScrollViewer.ViewportHeight;
-                imageView.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(() => LoadImage()));
-                resizeTimer.Change(-1, -1);
-            }, null, -1, -1);
+            resizeTimer = new DispatcherTimer(DispatcherPriority.ApplicationIdle, _dispatcher);
+            resizeTimer.Interval = TimeSpan.FromMilliseconds(500);
+            resizeTimer.Tick += ResizeTimer_Tick;
 
             ImageViewLoadedCommand = new RelayCommand((parameter) => {
-                imageView = (ImageView)parameter;
-                boundWidth = (int)imageView.PART_ScrollViewer.ViewportWidth;
-                boundHeight = (int)imageView.PART_ScrollViewer.ViewportHeight;
+                var parameterList = (object[])parameter;
+                var width = double.Parse(parameterList[0].ToString(), CultureInfo.InvariantCulture);
+                var height = double.Parse(parameterList[1].ToString(), CultureInfo.InvariantCulture);
+                boundWidth = (int)width;
+                boundHeight = (int)height;
             });
 
             ScrollViewerSizeChangedCommand = new RelayCommand((parameter) => {
+                resizeTimer.Stop();
+                var parameterList = (object[])parameter;
+                var width = double.Parse(parameterList[0].ToString(), CultureInfo.InvariantCulture);
+                var height = double.Parse(parameterList[1].ToString(), CultureInfo.InvariantCulture);
+                boundWidth = (int)width;
+                boundHeight = (int)height;
                 if (ImageParameter != null && FramingAssistantSource == SkySurveySource.SKYATLAS) {
-                    resizeTimer.Change(500, -1);
+                    resizeTimer.Start();
                 }
             });
 
@@ -162,9 +165,14 @@ namespace NINA.ViewModel {
             dbInstance = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
         }
 
-        private ImageView imageView;
+        private async void ResizeTimer_Tick(object sender, EventArgs e) {
+            using (MyStopWatch.Measure()) {
+                (sender as DispatcherTimer).Stop();
+                await LoadImage();
+            }
+        }
 
-        private readonly Timer resizeTimer;
+        private readonly DispatcherTimer resizeTimer;
 
         private DatabaseInteraction dbInstance;
 
