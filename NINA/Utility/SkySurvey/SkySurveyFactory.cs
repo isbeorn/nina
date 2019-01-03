@@ -21,16 +21,7 @@
 
 #endregion "copyright"
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using NINA.Model;
-using NINA.Utility.Astrometry;
-using NINA.ViewModel;
 
 namespace NINA.Utility.SkySurvey {
 
@@ -52,6 +43,9 @@ namespace NINA.Utility.SkySurvey {
 
                 case SkySurveySource.FILE:
                     return new FileSkySurvey();
+
+                case SkySurveySource.SKYATLAS:
+                    return new SkyAtlasSkySurvey();
 
                 default:
                     return new NASASkySurvey();
@@ -79,10 +73,13 @@ namespace NINA.Utility.SkySurvey {
         [Description("LblEsoSkySurvey")]
         ESO,
 
+        [Description("LblSkyAtlasSkySurvey")]
+        SKYATLAS,
+
         [Description("LblFile")]
         FILE,
 
         [Description("LblCache")]
-        CACHE
+        CACHE,
     }
 }

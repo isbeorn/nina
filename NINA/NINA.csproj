@@ -325,6 +325,7 @@
     <Compile Include="Utility\Converters\WidthAndValueToWidthConverter.cs" />
     <Compile Include="Utility\IApplicationResourceDictionary.cs" />
     <Compile Include="Utility\ApplicationResourceDictionary.cs" />
+    <Compile Include="Utility\SkySurvey\SkyAtlasSkySurvey.cs" />
     <Compile Include="Utility\ValidationRules\DoubleRangeRule.cs" />
     <Compile Include="ViewModel\DeepSkyObjectSearchVM.cs" />
     <Compile Include="ViewModel\FocusTargetsVM.cs" />

@@ -778,4 +778,6 @@ Calculated HFR: {2}
     <s:String x:Key="LblAddSequenceTarget">Add as Sequence Target</s:String>
     <s:String x:Key="LblOpacity">Opacity</s:String>
     <s:String x:Key="LblManualFocusTargets">Manual Focus Targets</s:String>
+    <s:String x:Key="LblAnnotateDSO">Annotate Deep Sky Objects</s:String>
+    <s:String x:Key="LblSkyAtlasSkySurvey">SkyAtlas (Offline Framing)</s:String>
 </ResourceDictionary>
