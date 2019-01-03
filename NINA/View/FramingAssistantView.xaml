@@ -21,7 +21,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:behaviors="clr-namespace:NINA.Utility.Behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
@@ -30,7 +29,6 @@
     xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:survey="clr-namespace:NINA.Utility.SkySurvey"
     xmlns:util="clr-namespace:NINA.Utility"
-    xmlns:vm="clr-namespace:NINA.ViewModel"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
@@ -417,63 +415,143 @@
                             MinValue="0"
                             StepSize=".1"
                             Value="{Binding Opacity, Mode=TwoWay}" />
+                        <ToggleButton
+                            Margin="5"
+                            IsChecked="{Binding AnnotateDSO}"
+                            Width="35">
+                            <ToggleButton.ToolTip>
+                                <ToolTip ToolTipService.ShowOnDisabled="False">
+                                    <TextBlock Text="{ns:Loc LblAnnotateDSO}" />
+                                </ToolTip>
+                            </ToggleButton.ToolTip>
+                            <ToggleButton.Style>
+                                <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource AnnotateDSOSVG}"
+                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                        Stretch="Uniform" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource AnnotateDSOSVG}"
+                                                        Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                        Stretch="Uniform" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
                     </StackPanel>
                 </local:ImageView.ButtonHeaderContent>
                 <local:ImageView.ImageAreaContent>
-                    <Grid>
-                        <Grid.Resources>
-                            <s:Int32 x:Key="zero">0</s:Int32>
-                        </Grid.Resources>
-                        <ItemsControl ItemsSource="{Binding CameraRectangles}" RenderTransformOrigin="0.5,0.5">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <Grid />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
-                                        <Rectangle
+                    <Canvas Width="{Binding Path=FramingAssistantVM.ImageParameter.Image.PixelWidth, Source={StaticResource AppVM}}" Height="{Binding Path=FramingAssistantVM.ImageParameter.Image.PixelHeight, Source={StaticResource AppVM}}">
+                        <Canvas IsHitTestVisible="False">
+                            <ItemsControl ItemsSource="{Binding DSOInImage}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Canvas />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="White" BorderThickness="0">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+                                                <Ellipse Fill="Transparent" Stroke="White" Width="{Binding SizeWidth}" Height="{Binding SizeHeight}" />
+                                                <TextBlock Text="{Binding Name1}" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                <TextBlock Text="{Binding Name2}" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                <TextBlock Text="{Binding Name3}" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                <ItemsControl.ItemContainerStyle>
+                                    <Style TargetType="ContentPresenter">
+                                        <Setter Property="Canvas.Left">
+                                            <Setter.Value>
+                                                <Binding Path="TopLeftPoint.X" />
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="Canvas.Top">
+                                            <Setter.Value>
+                                                <Binding Path="TopLeftPoint.Y" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ItemsControl.ItemContainerStyle>
+                            </ItemsControl>
+                        </Canvas>
+                        <Grid>
+                            <Grid.Resources>
+                                <s:Int32 x:Key="zero">0</s:Int32>
+                            </Grid.Resources>
+                            <Grid>
+                                <ItemsControl ItemsSource="{Binding CameraRectangles}" RenderTransformOrigin="0.5,0.5">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <Grid />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+                                                <Rectangle
                                             Width="{Binding Width}"
                                             Height="{Binding Height}"
                                             RenderTransformOrigin="0.5,0.5"
                                             Stroke="{StaticResource SecondaryBrush}"
                                             StrokeThickness="5">
-
-                                            <Rectangle.Fill>
-                                                <SolidColorBrush Opacity="{Binding Path=FramingAssistantVM.Opacity, Source={StaticResource AppVM}}" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
-                                            </Rectangle.Fill>
-                                        </Rectangle>
-                                        <TextBlock
+                                                    <Rectangle.Fill>
+                                                        <SolidColorBrush Opacity="{Binding Path=FramingAssistantVM.Opacity, Source={StaticResource AppVM}}" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
+                                                    </Rectangle.Fill>
+                                                </Rectangle>
+                                                <TextBlock
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             Text="{Binding Id}" />
-                                        <Grid.Margin>
-                                            <MultiBinding Converter="{StaticResource MultiMarginConverter}">
+                                                <Grid.Margin>
+                                                    <MultiBinding Converter="{StaticResource MultiMarginConverter}">
 
-                                                <Binding Path="X" />
-                                                <Binding Path="Y" />
-                                                <Binding Source="{StaticResource zero}" />
-                                                <Binding Source="{StaticResource zero}" />
-                                            </MultiBinding>
-                                        </Grid.Margin>
-                                    </Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                            <ItemsControl.RenderTransform>
-                                <RotateTransform Angle="{Binding Rectangle.Rotation}" />
-                            </ItemsControl.RenderTransform>
-                            <ItemsControl.Margin>
-                                <MultiBinding Converter="{StaticResource MultiMarginConverter}">
+                                                        <Binding Path="X" />
+                                                        <Binding Path="Y" />
+                                                        <Binding Source="{StaticResource zero}" />
+                                                        <Binding Source="{StaticResource zero}" />
+                                                    </MultiBinding>
+                                                </Grid.Margin>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                    <ItemsControl.RenderTransform>
+                                        <RotateTransform Angle="{Binding Rectangle.Rotation}" />
+                                    </ItemsControl.RenderTransform>
+                                    <ItemsControl.Margin>
+                                        <MultiBinding Converter="{StaticResource MultiMarginConverter}">
 
-                                    <Binding Path="Rectangle.X" />
-                                    <Binding Path="Rectangle.Y" />
-                                    <Binding Source="{StaticResource zero}" />
-                                    <Binding Source="{StaticResource zero}" />
-                                </MultiBinding>
-                            </ItemsControl.Margin>
-                        </ItemsControl>
-                        <Rectangle
+                                            <Binding Path="Rectangle.X" />
+                                            <Binding Path="Rectangle.Y" />
+                                            <Binding Source="{StaticResource zero}" />
+                                            <Binding Source="{StaticResource zero}" />
+                                        </MultiBinding>
+                                    </ItemsControl.Margin>
+                                </ItemsControl>
+                                <Rectangle
                             Width="{Binding Rectangle.Width}"
                             Height="{Binding Rectangle.Height}"
                             behaviors:DragCommandBehavior.Drag="True"
@@ -484,35 +562,37 @@
                             RenderTransformOrigin="0.5,0.5"
                             Stroke="{StaticResource ButtonForegroundBrush}"
                             StrokeThickness="5">
-                            <Rectangle.RenderTransform>
-                                <RotateTransform Angle="{Binding Rectangle.Rotation}" />
-                            </Rectangle.RenderTransform>
-                            <Rectangle.Margin>
-                                <MultiBinding Converter="{StaticResource MultiMarginConverter}">
+                                    <Rectangle.RenderTransform>
+                                        <RotateTransform Angle="{Binding Rectangle.Rotation}" />
+                                    </Rectangle.RenderTransform>
+                                    <Rectangle.Margin>
+                                        <MultiBinding Converter="{StaticResource MultiMarginConverter}">
 
-                                    <Binding Path="Rectangle.X" />
-                                    <Binding Path="Rectangle.Y" />
-                                    <Binding Source="{StaticResource zero}" />
-                                    <Binding Source="{StaticResource zero}" />
-                                </MultiBinding>
-                            </Rectangle.Margin>
-                        </Rectangle>
-                        <Grid
+                                            <Binding Path="Rectangle.X" />
+                                            <Binding Path="Rectangle.Y" />
+                                            <Binding Source="{StaticResource zero}" />
+                                            <Binding Source="{StaticResource zero}" />
+                                        </MultiBinding>
+                                    </Rectangle.Margin>
+                                </Rectangle>
+                                <Grid
                             Width="{Binding Rectangle.Width}"
                             Height="{Binding Rectangle.Height}"
                             IsHitTestVisible="False"
                             RenderTransformOrigin="0.5,0.5">
-                            <Grid.Margin>
-                                <MultiBinding Converter="{StaticResource MultiMarginConverter}">
+                                    <Grid.Margin>
+                                        <MultiBinding Converter="{StaticResource MultiMarginConverter}">
 
-                                    <Binding Path="Rectangle.X" />
-                                    <Binding Path="Rectangle.Y" />
-                                    <Binding Source="{StaticResource zero}" />
-                                    <Binding Source="{StaticResource zero}" />
-                                </MultiBinding>
-                            </Grid.Margin>
+                                            <Binding Path="Rectangle.X" />
+                                            <Binding Path="Rectangle.Y" />
+                                            <Binding Source="{StaticResource zero}" />
+                                            <Binding Source="{StaticResource zero}" />
+                                        </MultiBinding>
+                                    </Grid.Margin>
+                                </Grid>
+                            </Grid>
                         </Grid>
-                    </Grid>
+                    </Canvas>
                 </local:ImageView.ImageAreaContent>
             </local:ImageView>
             <StackPanel
