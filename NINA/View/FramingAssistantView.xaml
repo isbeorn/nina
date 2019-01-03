@@ -408,25 +408,8 @@
         <Grid Grid.Column="2">
             <local:ImageView Image="{Binding ImageParameter.Image, IsAsync=True}">
                 <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="Loaded">
-                        <i:InvokeCommandAction Command="{Binding ImageViewLoadedCommand}">
-                            <i:InvokeCommandAction.CommandParameter>
-                                <MultiBinding Converter="{StaticResource MultiToListConverter}">
-                                    <Binding Path="PART_ScrollViewerBinding.ViewportWidth" RelativeSource="{RelativeSource AncestorType=local:ImageView, Mode=FindAncestor}" />
-                                    <Binding Path="PART_ScrollViewerBinding.ViewportHeight" RelativeSource="{RelativeSource AncestorType=local:ImageView, Mode=FindAncestor}" />
-                                </MultiBinding>
-                            </i:InvokeCommandAction.CommandParameter>
-                        </i:InvokeCommandAction>
-                    </i:EventTrigger>
                     <i:EventTrigger EventName="SizeChanged" SourceObject="{Binding RelativeSource={RelativeSource AncestorType=local:ImageView, Mode=FindAncestor}, Path=PART_ScrollViewerBinding}">
-                        <i:InvokeCommandAction Command="{Binding ScrollViewerSizeChangedCommand}">
-                            <i:InvokeCommandAction.CommandParameter>
-                                <MultiBinding Converter="{StaticResource MultiToListConverter}">
-                                    <Binding Path="PART_ScrollViewerBinding.ViewportWidth" RelativeSource="{RelativeSource AncestorType=local:ImageView, Mode=FindAncestor}" />
-                                    <Binding Path="PART_ScrollViewerBinding.ViewportHeight" RelativeSource="{RelativeSource AncestorType=local:ImageView, Mode=FindAncestor}" />
-                                </MultiBinding>
-                            </i:InvokeCommandAction.CommandParameter>
-                        </i:InvokeCommandAction>
+                        <i:InvokeCommandAction Command="{Binding ScrollViewerSizeChangedCommand}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <local:ImageView.ButtonHeaderContent>
