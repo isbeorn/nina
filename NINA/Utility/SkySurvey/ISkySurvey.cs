@@ -31,7 +31,8 @@ namespace NINA.Utility.SkySurvey {
 
     internal interface ISkySurvey {
 
-        Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress, int width, int height);
+        Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, int width, int height,
+            CancellationToken ct, IProgress<int> progress);
     }
 
     internal class SkySurveyImage {

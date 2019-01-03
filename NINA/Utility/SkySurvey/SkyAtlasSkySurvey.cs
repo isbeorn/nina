@@ -9,7 +9,8 @@ namespace NINA.Utility.SkySurvey {
 
     internal class SkyAtlasSkySurvey : ISkySurvey {
 
-        public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress, int width, int height) {
+        public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, int width,
+            int height, CancellationToken ct, IProgress<int> progress) {
             byte[] arr = new byte[width * height];
             for (int i = 0; i < arr.Length; i++) {
                 arr[i] = 30;

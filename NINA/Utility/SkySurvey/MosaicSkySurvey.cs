@@ -33,7 +33,8 @@ namespace NINA.Utility.SkySurvey {
     internal abstract class MosaicSkySurvey : ISkySurvey {
         protected double MaxFoVPerImage = 60;
 
-        public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress, int width, int height) {
+        public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, int width,
+            int height, CancellationToken ct, IProgress<int> progress) {
             return await Task.Run(async () => {
                 if (fieldOfView > MaxFoVPerImage * 3) {
                     throw new Exception(string.Format("Sky Survey only supports up to {0} degree", Astrometry.Astrometry.ArcminToDegree(MaxFoVPerImage * 3)));
@@ -42,7 +43,7 @@ namespace NINA.Utility.SkySurvey {
                     if (fieldOfView <= MaxFoVPerImage) {
                         image = await GetSingleImage(coordinates, fieldOfView, fieldOfView, ct, width, height);
                     } else {
-                        image = await GetMosaicImage(name, coordinates, fieldOfView, ct, progress, width, height);
+                        image = await GetMosaicImage(name, coordinates, fieldOfView, width, height, ct, progress);
                     }
 
                     image.Freeze();
@@ -59,7 +60,8 @@ namespace NINA.Utility.SkySurvey {
             });
         }
 
-        private async Task<BitmapSource> GetMosaicImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress, int width, int height) {
+        private async Task<BitmapSource> GetMosaicImage(string name, Coordinates coordinates, double fieldOfView,
+            int width, int height, CancellationToken ct, IProgress<int> progress) {
             var centerTask = GetSingleImage(coordinates, MaxFoVPerImage, MaxFoVPerImage, ct, width, height);
 
             var borderFoV = (fieldOfView - MaxFoVPerImage) / 2.0;

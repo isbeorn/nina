@@ -680,7 +680,7 @@ namespace NINA.ViewModel {
                         var skySurvey = SkySurveyFactory.Create(FramingAssistantSource);
 
                         skySurveyImage = await skySurvey.GetImage(DSO?.Name, DSO?.Coordinates,
-                            Astrometry.DegreeToArcmin(FieldOfView), _loadImageSource.Token, _progress, boundWidth, boundHeight);
+                            Astrometry.DegreeToArcmin(FieldOfView), boundWidth, boundHeight, _loadImageSource.Token, _progress);
                     }
 
                     if (skySurveyImage != null) {
