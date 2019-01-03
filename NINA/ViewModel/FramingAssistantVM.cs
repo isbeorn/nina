@@ -37,6 +37,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -134,7 +135,13 @@ namespace NINA.ViewModel {
             profileService.LocationChanged += (object sender, EventArgs e) => {
                 DSO = new DeepSkyObject(DSO.Name, DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
             };
+
+            DSOInImage = new ObservableCollection<FramingDSO>();
+
+            dbInstance = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
         }
+
+        private DatabaseInteraction dbInstance;
 
         private void DeepSkyObjectSearchVM_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(DeepSkyObjectSearchVM.Coordinates) && DeepSkyObjectSearchVM.Coordinates != null) {
@@ -317,6 +324,16 @@ namespace NINA.ViewModel {
             }
         }
 
+        private bool annotateDSO;
+
+        public bool AnnotateDSO {
+            get => annotateDSO;
+            set {
+                annotateDSO = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private void RaiseCoordinatesChanged() {
             RaisePropertyChanged(nameof(RAHours));
             RaisePropertyChanged(nameof(RAMinutes));
@@ -378,6 +395,9 @@ namespace NINA.ViewModel {
             }
             set {
                 _framingAssistantSource = value;
+                if (_framingAssistantSource == SkySurveySource.SKYATLAS) {
+                    AnnotateDSO = true;
+                }
                 if (profileService.ActiveProfile.FramingAssistantSettings.LastSelectedImageSource != value) {
                     profileService.ActiveProfile.FramingAssistantSettings.LastSelectedImageSource = _framingAssistantSource;
                 }
@@ -523,6 +543,8 @@ namespace NINA.ViewModel {
 
         private IProgress<ApplicationStatus> _statusUpdate;
 
+        public ObservableCollection<FramingDSO> DSOInImage { get; set; }
+
         private async Task<bool> LoadImage() {
             using (MyStopWatch.Measure()) {
                 CancelLoadImage();
@@ -550,8 +572,47 @@ namespace NINA.ViewModel {
                             ImageParameter = skySurveyImage;
                         }));
 
-                        SelectedImageCacheInfo = Cache.SaveImageToCache(skySurveyImage);
-                        RaisePropertyChanged(nameof(ImageCacheInfo));
+                        if (FramingAssistantSource != SkySurveySource.SKYATLAS) {
+                            SelectedImageCacheInfo = Cache.SaveImageToCache(skySurveyImage);
+                            RaisePropertyChanged(nameof(ImageCacheInfo));
+                        }
+
+                        // hook into loading objects that are in the frame
+                        DatabaseInteraction.DeepSkyObjectSearchParams param = new DatabaseInteraction.DeepSkyObjectSearchParams();
+                        DSOInImage.Clear();
+                        Coordinates bottomRight = skySurveyImage.Coordinates.Shift(-(FieldOfView / 2), -(FieldOfView / 2), 0);
+                        Coordinates topLeft = skySurveyImage.Coordinates.Shift(FieldOfView / 2, FieldOfView / 2, 0);
+                        param.Declination = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
+                            From = topLeft.Dec,
+                            Thru = bottomRight.Dec
+                        };
+                        param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
+                            From = topLeft.RADegrees,
+                            Thru = bottomRight.RADegrees
+                        };
+
+                        if (param.RightAscension.From > param.RightAscension.Thru) {
+                            param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
+                                From = topLeft.RADegrees,
+                                Thru = 360
+                            };
+                            foreach (var dso in await dbInstance.GetDeepSkyObjects(
+                                profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository, param,
+                                _loadImageSource.Token)) {
+                                DSOInImage.Add(new FramingDSO(dso, ImageParameter));
+                            }
+
+                            param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
+                                From = 0,
+                                Thru = bottomRight.RADegrees
+                            };
+                        }
+
+                        foreach (var dso in await dbInstance.GetDeepSkyObjects(
+                            profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository, param,
+                            _loadImageSource.Token)) {
+                            DSOInImage.Add(new FramingDSO(dso, ImageParameter));
+                        }
                     }
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
@@ -781,5 +842,71 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
+    }
+
+    internal class FramingDSO {
+        private const int DSO_DEFAULT_SIZE = 30;
+
+        private readonly double arcSecWidth;
+        private readonly double arcSecHeight;
+        private readonly double sizeWidth;
+        private readonly double sizeHeight;
+        private readonly Point topLeftPoint;
+
+        /// <summary>
+        /// Constructor for a Framing DSO.
+        /// It takes a SkySurveyImage and a DeepSkyObject and calculates XY values in pixels from the top left edge of the image subtracting half of its size.
+        /// Those coordinates can be used to place the DSO including its name and size in any given image.
+        /// </summary>
+        /// <param name="dso">The DSO including its coordinates</param>
+        /// <param name="image">The image where the DSO should be placed in including the RA/Dec coordinates of the center of that image</param>
+        public FramingDSO(DeepSkyObject dso, SkySurveyImage image) {
+            arcSecWidth = Astrometry.ArcminToArcsec(image.FoVWidth) / image.Image.PixelWidth;
+            arcSecHeight = Astrometry.ArcminToArcsec(image.FoVHeight) / image.Image.PixelHeight;
+
+            if (dso.Size != null && dso.Size >= arcSecWidth) {
+                sizeWidth = dso.Size.Value;
+            } else {
+                sizeWidth = DSO_DEFAULT_SIZE;
+            }
+
+            if (dso.Size != null && dso.Size >= arcSecHeight) {
+                sizeHeight = dso.Size.Value;
+            } else {
+                sizeHeight = DSO_DEFAULT_SIZE;
+            }
+
+            Name1 = dso.Name;
+            Name2 = dso.AlsoKnownAs.FirstOrDefault(m => m.StartsWith("M "));
+            Name3 = dso.AlsoKnownAs.FirstOrDefault(m => m.StartsWith("NGC "));
+
+            if (Name3 != null && Name1 == Name3.Replace(" ", "")) {
+                Name1 = null;
+            }
+
+            if (Name1 == null && Name2 == null) {
+                Name1 = Name3;
+                Name3 = null;
+            }
+
+            if (Name1 == null && Name2 != null) {
+                Name1 = Name2;
+                Name2 = Name3;
+                Name3 = null;
+            }
+
+            topLeftPoint = dso.Coordinates.ProjectFromCenterToXY(image.Coordinates, new Point(image.Image.PixelWidth / 2.0, image.Image.PixelHeight / 2.0),
+                arcSecWidth, arcSecHeight, image.Rotation);
+        }
+
+        public double SizeWidth => sizeWidth / arcSecWidth;
+
+        public double SizeHeight => sizeHeight / arcSecHeight;
+
+        public Point TopLeftPoint => new Point(topLeftPoint.X - SizeWidth / 2, topLeftPoint.Y - SizeHeight / 2);
+
+        public string Name1 { get; }
+        public string Name2 { get; }
+        public string Name3 { get; }
     }
 }

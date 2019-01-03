@@ -11,6 +11,8 @@
         - ToupTek native driver support
         - Added support for anti-dew heaters in ZWO cameras
 		- On ASCOM drivers support for setting readout modes
+	### Framing Assistant
+		- Add SkyAtlas image source which allows for framing based on offline SkyAtlas data
 	### Flat Wizard
 		- Supports you taking flats
 	### Imaging
@@ -52,6 +54,7 @@
 		- Added a new button to be able to add the framing target to a sequence instead of replacing
 		- Control to adjust opacity of framing box
 	- Improved Framing Assistant and Sequence Target Textboxes by giving up to 50 target hints based on input to select from
+	- Framing Assistant now can annotate DSO
 	- Attempt to start PHD2 and connect all equipment when connecting to guider and PHD2 is not running
 
 ___
