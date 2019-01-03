@@ -833,6 +833,7 @@ namespace NINA.ViewModel {
         private void DragMove(object obj) {
             var delta = ((DragResult)obj).Delta;
             if (FramingAssistantSource == SkySurveySource.SKYATLAS) {
+                delta = new Vector(-delta.X, -delta.Y);
                 UpdateDSOsInImage(delta).Wait();
             } else {
                 var imageArcsecWidth = Astrometry.ArcminToArcsec(ImageParameter.FoVWidth) / ImageParameter.Image.Width;
