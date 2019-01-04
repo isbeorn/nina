@@ -149,7 +149,7 @@ namespace StarDataImport {
                     using (SQLiteConnection connection = new SQLiteConnection(connectionString)) {
                         connection.Open();
                         using (SQLiteCommand command = connection.CreateCommand()) {
-                            command.CommandText = "UPDATE dsodetail SET ra = $ra, dec = $dec, syncedfrom = '" + resolvername + "' WHERE id = $id;";
+                            command.CommandText = "UPDATE dsodetail SET ra = $ra, dec = $dec, lastmodified = CURRENT_TIMESTAMP, syncedfrom = '" + resolvername + "' WHERE id = $id;";
                             command.Parameters.AddWithValue("$id", obj.id);
                             command.Parameters.AddWithValue("$ra", ra);
                             command.Parameters.AddWithValue("$dec", dec);
@@ -160,6 +160,7 @@ namespace StarDataImport {
                     }
                 }
             }
+            Console.ReadLine();
         }
 
         public static void UpdateDSONamesFromLocalStore(string filepath) {
