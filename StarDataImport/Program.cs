@@ -86,11 +86,140 @@ namespace StarDataImport {
         }
 
         private static void Main(string[] args) {
+            //UpdateDSONamesFromLocalStore(@"D:\Projects\StarDataXML\");
+            //UpdateDSODetailsFromLocalStore(@"D:\Projects\StarDataXML\");
+
+            DownloadAndStoreSoapStarData();
             //GenerateStarDatabase();
-            UpdateDSOCatalogueWithSpokenNames();
+            //UpdateDSOCatalogueWithSpokenNames();
             //UpdateBrightStars();
             //GenerateDatabase();
             //UpdateStarData();
+        }
+
+        public static void UpdateDSODetailsFromLocalStore(string filepath) {
+            List<SimpleDSO> objects = new List<SimpleDSO>();
+            var connectionString = string.Format(@"Data Source={0};foreign keys=true;", @"D:\Projects\NINA.sqlite");
+            var query = "select dsodetailid from cataloguenr INNER JOIN dsodetail ON dsodetail.id = cataloguenr.dsodetailid WHERE syncedfrom is null group by dsodetailid order by catalogue;";
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString)) {
+                connection.Open();
+                using (SQLiteCommand command = connection.CreateCommand()) {
+                    command.CommandText = query;
+
+                    var reader = command.ExecuteReader();
+                    while (reader.Read()) {
+                        objects.Add(new SimpleDSO() { id = reader.GetString(0), name = reader.GetString(1) + " " + reader.GetString(2) });
+                    }
+                }
+            }
+
+            DirectoryInfo d = new DirectoryInfo(filepath);
+            foreach (var file in d.GetFiles("*.*")) {
+                var id = file.Name;
+                Console.WriteLine($"Processing {id}");
+                var xml = XElement.Load(file.FullName);
+            }
+        }
+
+        public static void UpdateDSONamesFromLocalStore(string filepath) {
+            DirectoryInfo d = new DirectoryInfo(filepath);
+            foreach (var file in d.GetFiles("*.*")) {
+                var id = file.Name;
+                Console.WriteLine($"Processing {id}");
+                var xml = XElement.Load(file.FullName);
+
+                var connectionString = string.Format(@"Data Source={0};foreign keys=true;", @"D:\Projects\nina\NINA\Database\NINA.sqlite");
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString)) {
+                    connection.Open();
+
+                    foreach (var resolver in xml.Descendants("Resolver")) {
+                        var aliasList = resolver.Descendants("alias");
+                        foreach (var alias in aliasList) {
+                            if (alias.Value.StartsWith("NAME ")) {
+                                var name = alias.Value.Substring(5);
+
+                                var query = $"SELECT dsodetailid, catalogue, designation FROM cataloguenr WHERE dsodetailid = \"{id}\" AND catalogue = \"NAME\" AND lower(designation) = \"{name.ToLower()}\"";
+
+                                var insert = false;
+                                using (var command = connection.CreateCommand()) {
+                                    command.CommandText = query;
+
+                                    var reader = command.ExecuteReader();
+                                    if (!reader.HasRows) {
+                                        insert = true;
+                                    }
+                                }
+                                if (insert) {
+                                    using (SQLiteCommand insertcommand = connection.CreateCommand()) {
+                                        Console.WriteLine($"Confirm INSERTING {name} for {id}");
+                                        if (!string.IsNullOrWhiteSpace(Console.ReadLine())) {
+                                            insertcommand.CommandText = "INSERT INTO cataloguenr (dsodetailid, catalogue, designation) VALUES ($id, $catalogue, $designation);";
+                                            insertcommand.Parameters.AddWithValue("$id", id);
+                                            insertcommand.Parameters.AddWithValue("$catalogue", "NAME");
+                                            insertcommand.Parameters.AddWithValue("$designation", name);
+
+                                            var rows = insertcommand.ExecuteNonQuery();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void DownloadAndStoreSoapStarData() {
+            List<SimpleDSO> objects = new List<SimpleDSO>();
+            var connectionString = string.Format(@"Data Source={0};foreign keys=true;", @"D:\Projects\nina\NINA\Database\NINA.sqlite");
+            var query = "select dsodetailid, catalogue, designation  from cataloguenr INNER JOIN dsodetail ON dsodetail.id = cataloguenr.dsodetailid where syncedfrom is null group by dsodetailid order by catalogue;";
+
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString)) {
+                connection.Open();
+                using (SQLiteCommand command = connection.CreateCommand()) {
+                    command.CommandText = query;
+
+                    var reader = command.ExecuteReader();
+                    while (reader.Read()) {
+                        objects.Add(new SimpleDSO() { id = reader.GetString(0), name = reader.GetString(1) + " " + reader.GetString(2) });
+                    }
+                }
+            }
+
+            var i = objects.Count;
+
+            ThreadPool.SetMinThreads(20, 20);
+
+            Parallel.ForEach(objects, new ParallelOptions() { MaxDegreeOfParallelism = 20 }, (obj, state, index) => {
+                Interlocked.Decrement(ref i);
+                Console.WriteLine($"Remaining rows: {i}, Object Name: {obj.name}");
+                var _url = "http://cdsws.u-strasbg.fr/axis/services/Sesame";
+                var _action = "";
+
+                XmlDocument soapEnvelopeXml = CreateSoapEnvelope(obj.name);
+                HttpWebRequest webRequest = CreateWebRequest(_url, _action);
+                webRequest.Timeout = -1;
+                InsertSoapEnvelopeIntoWebRequest(soapEnvelopeXml, webRequest);
+
+                // begin async call to web request.
+                IAsyncResult asyncResult = webRequest.BeginGetResponse(null, null);
+
+                // suspend this thread until call is complete. You might want to do something usefull
+                // here like update your UI.
+                asyncResult.AsyncWaitHandle.WaitOne();
+
+                // get the response from the completed web request.
+
+                using (WebResponse webResponse = webRequest.EndGetResponse(asyncResult)) {
+                    var soap = XElement.Load(webResponse.GetResponseStream());
+
+                    var xmlstring = (from c in soap.Descendants("return") select c).FirstOrDefault()?.Value;
+                    var xml = XElement.Parse(xmlstring);
+                    xml.Save($@"D:\Projects\StarDataXML\1\{obj.id}");
+                }
+            });
+
+            Console.WriteLine("Finished");
         }
 
         public static void UpdateDSOCatalogueWithSpokenNames() {
@@ -117,7 +246,7 @@ namespace StarDataImport {
 
             Parallel.ForEach(objects, (obj, state, index) => {
                 Interlocked.Increment(ref i);
-                Console.WriteLine($"Processed row: {i}, Object Row: {index}");
+                Console.WriteLine($"Processed row: {i}, Object Name: {obj.name}");
                 var _url = "http://cdsws.u-strasbg.fr/axis/services/Sesame";
                 var _action = "";
 
