@@ -157,7 +157,6 @@ namespace NINACustomControlLibrary {
                             }
                             break;
                         }
-                    case (Key.Tab):
                     case (Key.Down): {
                             var list = GetTemplateChild("PART_SearchCommandResultView") as ListView;
                             if (list != null && list.Items.Count > 0) {
@@ -171,7 +170,7 @@ namespace NINACustomControlLibrary {
                             }
                             break;
                         }
-
+                    case (Key.Tab):
                     case (Key.Escape): {
                             ShowPopup = false;
                             break;
