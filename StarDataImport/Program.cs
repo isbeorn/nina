@@ -87,9 +87,9 @@ namespace StarDataImport {
 
         private static void Main(string[] args) {
             //UpdateDSONamesFromLocalStore(@"D:\Projects\StarDataXML\");
-            //UpdateDSODetailsFromLocalStore(@"D:\Projects\StarDataXML\");
+            UpdateDSODetailsFromLocalStore(@"D:\Projects\StarDataXML\");
 
-            DownloadAndStoreSoapStarData();
+            //DownloadAndStoreSoapStarData();
             //GenerateStarDatabase();
             //UpdateDSOCatalogueWithSpokenNames();
             //UpdateBrightStars();
@@ -99,7 +99,7 @@ namespace StarDataImport {
 
         public static void UpdateDSODetailsFromLocalStore(string filepath) {
             List<SimpleDSO> objects = new List<SimpleDSO>();
-            var connectionString = string.Format(@"Data Source={0};foreign keys=true;", @"D:\Projects\NINA.sqlite");
+            var connectionString = string.Format(@"Data Source={0};foreign keys=true;", @"D:\Projects\nina\NINA\Database\NINA.sqlite");
             var query = "select dsodetailid from cataloguenr INNER JOIN dsodetail ON dsodetail.id = cataloguenr.dsodetailid WHERE syncedfrom is null group by dsodetailid order by catalogue;";
             using (SQLiteConnection connection = new SQLiteConnection(connectionString)) {
                 connection.Open();
@@ -108,16 +108,57 @@ namespace StarDataImport {
 
                     var reader = command.ExecuteReader();
                     while (reader.Read()) {
-                        objects.Add(new SimpleDSO() { id = reader.GetString(0), name = reader.GetString(1) + " " + reader.GetString(2) });
+                        objects.Add(new SimpleDSO() { id = reader.GetString(0), name = reader.GetString(0) });
                     }
                 }
             }
 
-            DirectoryInfo d = new DirectoryInfo(filepath);
-            foreach (var file in d.GetFiles("*.*")) {
-                var id = file.Name;
-                Console.WriteLine($"Processing {id}");
-                var xml = XElement.Load(file.FullName);
+            foreach (var obj in objects) {
+                var xml = XElement.Load(filepath + obj.id);
+
+                var resolvername = "Simbad";
+                var resolver = xml.Descendants("Resolver").Where((x) => x.Attribute("name").Value.Contains(resolvername)).FirstOrDefault();
+
+                var ra = resolver.Descendants("jradeg").FirstOrDefault()?.Value;
+                var dec = resolver.Descendants("jdedeg").FirstOrDefault()?.Value;
+
+                if (ra == null) {
+                    resolvername = "NED";
+                    resolver = xml.Descendants("Resolver").Where((x) => x.Attribute("name").Value.Contains(resolvername)).FirstOrDefault();
+
+                    ra = resolver.Descendants("jradeg").FirstOrDefault()?.Value;
+                    dec = resolver.Descendants("jdedeg").FirstOrDefault()?.Value;
+                }
+
+                if (ra == null) {
+                    resolvername = "VizieR";
+                    resolver = xml.Descendants("Resolver").Where((x) => x.Attribute("name").Value.Contains(resolvername)).FirstOrDefault();
+
+                    ra = resolver.Descendants("jradeg").FirstOrDefault()?.Value;
+                    dec = resolver.Descendants("jdedeg").FirstOrDefault()?.Value;
+                }
+
+                Console.WriteLine(obj.ToString());
+                if (ra == null) {
+                    Console.WriteLine($"NO ENTRY for {obj.id}");
+                } else {
+                    Console.WriteLine($"Found Entry for {obj.id} " + " RA:" + ra + " DEC:" + dec);
+                }
+
+                if (ra != null && dec != null) {
+                    using (SQLiteConnection connection = new SQLiteConnection(connectionString)) {
+                        connection.Open();
+                        using (SQLiteCommand command = connection.CreateCommand()) {
+                            command.CommandText = "UPDATE dsodetail SET ra = $ra, dec = $dec, syncedfrom = '" + resolvername + "' WHERE id = $id;";
+                            command.Parameters.AddWithValue("$id", obj.id);
+                            command.Parameters.AddWithValue("$ra", ra);
+                            command.Parameters.AddWithValue("$dec", dec);
+
+                            var rows = command.ExecuteNonQuery();
+                            Console.WriteLine(string.Format("Inserted {0} row(s)", rows));
+                        }
+                    }
+                }
             }
         }
 
