@@ -87,7 +87,22 @@ namespace NINACustomControlLibrary {
         }
 
         private void Tb_LostFocus(object sender, RoutedEventArgs e) {
-            ShowPopup = false;
+            var list = GetTemplateChild("PART_SearchCommandResultView") as ListView;
+            var subItemFocused = false;
+            if (list != null) {
+                for (int i = 0; i < list.Items.Count; i++) {
+                    ListViewItem item = list.ItemContainerGenerator.ContainerFromIndex(i) as ListViewItem;
+                    if (item != null) {
+                        if (item.IsFocused) {
+                            subItemFocused = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!subItemFocused) {
+                ShowPopup = false;
+            }
         }
 
         private void List_PreviewKeyUp(object sender, KeyEventArgs e) {
@@ -151,6 +166,7 @@ namespace NINACustomControlLibrary {
                                 if (item != null) {
                                     item.Focus();
                                     item.IsSelected = true;
+                                    ShowPopup = true;
                                 }
                             }
                             break;
