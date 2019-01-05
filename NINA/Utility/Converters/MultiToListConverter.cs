@@ -21,30 +21,24 @@
 
 #endregion "copyright"
 
-using NINA.Utility.Astrometry;
-using System.Threading;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
+using System.Windows.Data;
 
-namespace NINA.Utility.SkySurvey {
+namespace NINA.Utility.Converters {
 
-    internal class ESOSkySurvey : MosaicSkySurvey, ISkySurvey {
+    public class MultiToListConverter : IMultiValueConverter {
 
-        public ESOSkySurvey() {
-            MaxFoVPerImage = 120;
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
+            return values.Clone();
         }
 
-        private const string Url = "http://archive.eso.org/dss/dss/image?ra={0}&dec={1}&x={2}&y={3}&mime-type=download-gif&Sky-Survey=DSS2&equinox=J2000&statsmode=VO";
-
-        protected override Task<BitmapSource> GetSingleImage(Coordinates coordinates, double fovW, double fovH, CancellationToken ct, int width, int height) {
-            var request = new Http.HttpDownloadImageRequest(
-                Url,
-                coordinates.RADegrees,
-                coordinates.Dec,
-                fovW,
-                fovH
-            );
-            return request.Request(ct);
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
+            throw new NotImplementedException();
         }
     }
 }

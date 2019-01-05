@@ -31,6 +31,7 @@ using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -48,6 +49,7 @@ namespace NINA.ViewModel {
 
             this.filterWheelMediator = filterWheelMediator;
 
+            OpenWebRequestCommand = new RelayCommand(OpenWebRequest);
             PreviewFileCommand = new RelayCommand(PreviewFile);
             OpenImageFileDiagCommand = new RelayCommand(OpenImageFileDiag);
             OpenSequenceTemplateDiagCommand = new RelayCommand(OpenSequenceTemplateDiag);
@@ -91,6 +93,11 @@ namespace NINA.ViewModel {
             };
 
             FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
+        }
+
+        private void OpenWebRequest(object obj) {
+            var url = new Uri(obj.ToString());
+            Process.Start(new ProcessStartInfo(url.AbsoluteUri));
         }
 
         public RelayCommand OpenPHD2DiagCommand { get; set; }
@@ -283,35 +290,35 @@ namespace NINA.ViewModel {
         }
 
         private void OpenPS2FileDiag(object o) {
-            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
-            dialog.FileName = profileService.ActiveProfile.PlateSolveSettings.PS2Location;
-
+            var dialog = GetFilteredFileDialog(profileService.ActiveProfile.PlateSolveSettings.PS2Location, "PlateSolve2.exe", "PlateSolve2|PlateSolve2.exe");
             if (dialog.ShowDialog() == true) {
                 PS2Location = dialog.FileName;
             }
         }
 
         private void OpenPHD2FileDiag(object o) {
-            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
-            FileInfo phd2path = new FileInfo(profileService.ActiveProfile.GuiderSettings.PHD2Path);
-            if (phd2path.Exists) {
-                dialog.InitialDirectory = phd2path.DirectoryName;
-            }
-            dialog.FileName = "phd2.exe";
-            dialog.Filter = "PHD2|phd2.exe";
-
+            var dialog = GetFilteredFileDialog(profileService.ActiveProfile.GuiderSettings.PHD2Path, "phd2.exe", "PHD2|phd2.exe");
             if (dialog.ShowDialog() == true) {
                 PHD2Path = dialog.FileName;
             }
         }
 
         private void OpenASPSFileDiag(object o) {
-            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
-            dialog.FileName = profileService.ActiveProfile.PlateSolveSettings.AspsLocation;
-
+            var dialog = GetFilteredFileDialog(profileService.ActiveProfile.PlateSolveSettings.AspsLocation, "PlateSolver.exe", "ASPS|PlateSolver.exe");
             if (dialog.ShowDialog() == true) {
                 AspsLocation = dialog.FileName;
             }
+        }
+
+        private Microsoft.Win32.OpenFileDialog GetFilteredFileDialog(string path, string filename, string filter) {
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+            FileInfo fileInfo = new FileInfo(path);
+            if (fileInfo.Exists) {
+                dialog.InitialDirectory = fileInfo.DirectoryName;
+            }
+            dialog.FileName = filename;
+            dialog.Filter = filter;
+            return dialog;
         }
 
         private void ScanForIndexFiles() {
@@ -354,6 +361,8 @@ namespace NINA.ViewModel {
         public ICommand OpenImageFileDiagCommand { get; private set; }
 
         public ICommand OpenSequenceTemplateDiagCommand { get; private set; }
+
+        public ICommand OpenWebRequestCommand { get; private set; }
 
         public ICommand PreviewFileCommand { get; private set; }
 

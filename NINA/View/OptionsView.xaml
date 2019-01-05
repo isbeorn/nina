@@ -748,7 +748,26 @@
                         </UniformGrid>
                         <UniformGrid Margin="0,5,0,0" Columns="2">
                             <TextBlock Text="{ns:Loc LblAPIKey}" />
-                            <TextBox HorizontalAlignment="Stretch" Text="{Binding OpenWeatherMapAPIKey}" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox
+                                    HorizontalAlignment="Stretch"
+                                    DockPanel.Dock="Left"
+                                    Text="{Binding OpenWeatherMapAPIKey}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Width="Auto"
+                                    VerticalAlignment="Center"
+                                    DockPanel.Dock="Right"
+                                    Text="">
+                                    <Hyperlink Command="{Binding OpenWebRequestCommand}" CommandParameter="https://home.openweathermap.org/api_keys">
+                                        <Run Text="?" />
+                                    </Hyperlink>
+                                </TextBlock>
+                            </Grid>
                         </UniformGrid>
                     </StackPanel>
                 </GroupBox>
