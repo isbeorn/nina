@@ -988,6 +988,7 @@ namespace NINA.ViewModel {
         private readonly double sizeWidth;
         private readonly double sizeHeight;
         private Point topLeftPoint;
+        private readonly Point imageCenterPoint;
 
         /// <summary>
         /// Constructor for a Framing DSO.
@@ -1035,8 +1036,7 @@ namespace NINA.ViewModel {
             //topLeftPoint = dso.Coordinates.ProjectFromCenterToXY(image.Coordinates, new Point(image.Image.PixelWidth / 2.0, image.Image.PixelHeight / 2.0),
             //  arcSecWidth, arcSecHeight, image.Rotation);
 
-            pixelWidth = image.Image.PixelWidth;
-            pixelHeight = image.Image.PixelHeight;
+            imageCenterPoint = new Point(image.Image.PixelWidth / 2.0, image.Image.PixelHeight / 2.0);
             rotation = image.Rotation;
             coordinates = dso.Coordinates;
 
@@ -1044,14 +1044,12 @@ namespace NINA.ViewModel {
         }
 
         private Coordinates coordinates;
-        private double pixelWidth;
-        private double pixelHeight;
         private double rotation;
 
         public void RecalculateTopLeft(Coordinates reference) {
             var projectedPoint = coordinates.ProjectFromCenterToXY(
                 reference,
-                new Point(pixelWidth / 2.0, pixelHeight / 2.0),
+                imageCenterPoint,
                 arcSecWidth,
                 arcSecHeight,
                 rotation
