@@ -1083,6 +1083,7 @@ namespace NINA.ViewModel {
         private Point topPoint;
         private Point bottomPoint;
         private Point centerPoint;
+        private readonly Point imageCenterPoint;
 
         /// <summary>
         /// Constructor for a Framing DSO.
@@ -1095,8 +1096,7 @@ namespace NINA.ViewModel {
             arcSecWidth = Astrometry.ArcminToArcsec(image.FoVWidth) / image.Image.PixelWidth;
             arcSecHeight = Astrometry.ArcminToArcsec(image.FoVHeight) / image.Image.PixelHeight;
 
-            pixelWidth = image.Image.PixelWidth;
-            pixelHeight = image.Image.PixelHeight;
+            imageCenterPoint = new Point(image.Image.PixelWidth / 2.0, image.Image.PixelHeight / 2.0);
             rotation = image.Rotation;
             coordinatesTop = new Coordinates(angle, 90 - Astrometry.ArcminToDegree(image.FoVHeight), Epoch.J2000, Coordinates.RAType.Degrees);
             coordinatesCenter = new Coordinates(angle, 0, Epoch.J2000, Coordinates.RAType.Degrees);
@@ -1105,17 +1105,15 @@ namespace NINA.ViewModel {
             RecalculatePoints(image.Coordinates);
         }
 
-        private Coordinates coordinatesTop;
-        private double pixelWidth;
-        private double pixelHeight;
-        private double rotation;
-        private Coordinates coordinatesBottom;
-        private Coordinates coordinatesCenter;
+        private readonly Coordinates coordinatesTop;
+        private readonly double rotation;
+        private readonly Coordinates coordinatesBottom;
+        private readonly Coordinates coordinatesCenter;
 
         public void RecalculatePoints(Coordinates reference) {
             TopPoint = coordinatesTop.ProjectFromCenterToXY(
                 reference,
-                new Point(pixelWidth / 2.0, pixelHeight / 2.0),
+                imageCenterPoint,
                 arcSecWidth,
                 arcSecHeight,
                 rotation
@@ -1123,7 +1121,7 @@ namespace NINA.ViewModel {
 
             BottomPoint = coordinatesBottom.ProjectFromCenterToXY(
                 reference,
-                new Point(pixelWidth / 2.0, pixelHeight / 2.0),
+                imageCenterPoint,
                 arcSecWidth,
                 arcSecHeight,
                 rotation
@@ -1131,7 +1129,7 @@ namespace NINA.ViewModel {
 
             CenterPoint = coordinatesCenter.ProjectFromCenterToXY(
                 reference,
-                new Point(pixelWidth / 2.0, pixelHeight / 2.0),
+                imageCenterPoint,
                 arcSecWidth,
                 arcSecHeight,
                 rotation
