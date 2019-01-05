@@ -614,14 +614,35 @@ namespace NINA.ViewModel {
             DatabaseInteraction.DeepSkyObjectSearchParams param = new DatabaseInteraction.DeepSkyObjectSearchParams();
             Coordinates bottomRight = referenceCoordinate.Shift(-(horizontalFov), -(verticalFov), 0);
             Coordinates topLeft = referenceCoordinate.Shift(horizontalFov, verticalFov, 0);
-            param.Declination = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                From = topLeft.Dec,
-                Thru = bottomRight.Dec
-            };
-            param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                From = topLeft.RADegrees,
-                Thru = bottomRight.RADegrees
-            };
+
+            if (Math.Max(topLeft.Dec, bottomRight.Dec) + 2 * verticalFov > 90) {
+                param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
+                    From = 0,
+                    Thru = 360
+                };
+                param.Declination = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
+                    From = Math.Min(topLeft.Dec, bottomRight.Dec),
+                    Thru = 90
+                };
+            } else if (Math.Min(topLeft.Dec, bottomRight.Dec) - 2 * verticalFov < -90) {
+                param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
+                    From = 0,
+                    Thru = 360
+                };
+                param.Declination = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
+                    From = -90,
+                    Thru = Math.Max(topLeft.Dec, bottomRight.Dec)
+                };
+            } else {
+                param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
+                    From = topLeft.RADegrees,
+                    Thru = bottomRight.RADegrees
+                };
+                param.Declination = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
+                    From = topLeft.Dec,
+                    Thru = bottomRight.Dec
+                };
+            }
 
             FramingDec.Clear();
 
