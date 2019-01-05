@@ -648,8 +648,6 @@ namespace NINA.Utility {
                 }
                 using (var bmp = BitmapFromSource(source, System.Drawing.Imaging.PixelFormat.Format8bppIndexed)) {
                     using (var debayeredBmp = Debayer(bmp)) {
-                        var format = debayeredBmp.PixelFormat;
-                        var px = debayeredBmp.GetPixel(0, 0);
                         var newSource = ConvertBitmap(debayeredBmp, PixelFormats.Rgb24);
                         newSource.Freeze();
                         return newSource;
