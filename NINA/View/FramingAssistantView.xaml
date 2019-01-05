@@ -475,10 +475,34 @@
                                         <Canvas>
                                             <Line X1="{Binding TopPoint.X, UpdateSourceTrigger=PropertyChanged}" X2="{Binding CenterPoint.X, UpdateSourceTrigger=PropertyChanged}"
                                               Y1="{Binding TopPoint.Y, UpdateSourceTrigger=PropertyChanged}" Y2="{Binding CenterPoint.Y, UpdateSourceTrigger=PropertyChanged}"
-                                              Stroke="White" StrokeThickness="1" />
+                                              StrokeThickness="0.5">
+                                                <Line.Stroke>
+                                                    <SolidColorBrush>
+                                                        <SolidColorBrush.Color>
+                                                            <Color
+                                                                A="50"
+                                                                B="255"
+                                                                G="255"
+                                                                R="255" />
+                                                        </SolidColorBrush.Color>
+                                                    </SolidColorBrush>
+                                                </Line.Stroke>
+                                            </Line>
                                             <Line X1="{Binding CenterPoint.X, UpdateSourceTrigger=PropertyChanged}" X2="{Binding BottomPoint.X, UpdateSourceTrigger=PropertyChanged}"
                                               Y1="{Binding CenterPoint.Y, UpdateSourceTrigger=PropertyChanged}" Y2="{Binding BottomPoint.Y, UpdateSourceTrigger=PropertyChanged}"
-                                              Stroke="White" StrokeThickness="1" />
+                                              StrokeThickness="0.5">
+                                                <Line.Stroke>
+                                                    <SolidColorBrush>
+                                                        <SolidColorBrush.Color>
+                                                            <Color
+                                                                A="50"
+                                                                B="255"
+                                                                G="255"
+                                                                R="255" />
+                                                        </SolidColorBrush.Color>
+                                                    </SolidColorBrush>
+                                                </Line.Stroke>
+                                            </Line>
                                         </Canvas>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
