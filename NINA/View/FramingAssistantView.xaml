@@ -500,17 +500,20 @@
                                                     Grid.Row="1"
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center"
-                                                    Text="{Binding Name1}" />
+                                                    Text="{Binding Name1}"
+                                                    Foreground="White" />
                                                 <TextBlock
                                                     Grid.Row="2"
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center"
-                                                    Text="{Binding Name2}" />
+                                                    Text="{Binding Name2}"
+                                                    Foreground="White" />
                                                 <TextBlock
                                                     Grid.Row="3"
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center"
-                                                    Text="{Binding Name3}" />
+                                                    Text="{Binding Name3}"
+                                                    Foreground="White" />
                                             </Grid>
                                         </Border>
                                     </DataTemplate>
