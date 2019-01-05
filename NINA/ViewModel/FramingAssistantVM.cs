@@ -81,6 +81,8 @@ namespace NINA.ViewModel {
             DeepSkyObjectSearchVM = new DeepSkyObjectSearchVM(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
             DeepSkyObjectSearchVM.PropertyChanged += DeepSkyObjectSearchVM_PropertyChanged;
 
+            FramingDec = new ObservableCollection<FramingDec>();
+
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(async (object parameter) => {
                 var vm = (ApplicationVM)Application.Current.Resources["AppVM"];
                 vm.ChangeTab(ApplicationTab.SEQUENCE);
@@ -587,6 +589,16 @@ namespace NINA.ViewModel {
             }
         }
 
+        private ObservableCollection<FramingDec> framingDec;
+
+        public ObservableCollection<FramingDec> FramingDec {
+            get => framingDec;
+            set {
+                framingDec = value;
+                RaisePropertyChanged();
+            }
+        }
+
         /// <summary>
         /// Query for skyobjects for a reference coordinate that overlap the current field of view
         /// </summary>
@@ -611,6 +623,8 @@ namespace NINA.ViewModel {
                 Thru = bottomRight.RADegrees
             };
 
+            FramingDec.Clear();
+
             if (param.RightAscension.From > param.RightAscension.Thru) {
                 param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
                     From = topLeft.RADegrees,
@@ -626,6 +640,18 @@ namespace NINA.ViewModel {
                     From = 0,
                     Thru = bottomRight.RADegrees
                 };
+
+                for (int i = (int)(param.RightAscension.From);
+                    i < 360;
+                    i += 10) {
+                    FramingDec.Add(new FramingDec(i, ImageParameter));
+                }
+            }
+
+            for (int i = (int)(param.RightAscension.From);
+                i < param.RightAscension.Thru;
+                i += 10) {
+                FramingDec.Add(new FramingDec(i, ImageParameter));
             }
 
             foreach (var dso in await dbInstance.GetDeepSkyObjects(
@@ -665,6 +691,10 @@ namespace NINA.ViewModel {
                 } else {
                     DSOInImage.RemoveAt(i);
                 }
+            }
+
+            foreach (var framingDecItem in FramingDec) {
+                framingDecItem.RecalculatePoints(newCenter);
             }
 
             var dsosToAdd = cachedDSOs.Where(x => !existingDSOs.Any(y => y == x.Value.Id));
@@ -1045,5 +1075,91 @@ namespace NINA.ViewModel {
         public string Name1 { get; }
         public string Name2 { get; }
         public string Name3 { get; }
+    }
+
+    internal class FramingDec : BaseINPC {
+        private readonly double arcSecWidth;
+        private readonly double arcSecHeight;
+        private Point topPoint;
+        private Point bottomPoint;
+        private Point centerPoint;
+
+        /// <summary>
+        /// Constructor for a Framing DSO.
+        /// It takes a SkySurveyImage and a DeepSkyObject and calculates XY values in pixels from the top left edge of the image subtracting half of its size.
+        /// Those coordinates can be used to place the DSO including its name and size in any given image.
+        /// </summary>
+        /// <param name="dso">The DSO including its coordinates</param>
+        /// <param name="image">The image where the DSO should be placed in including the RA/Dec coordinates of the center of that image</param>
+        public FramingDec(int angle, SkySurveyImage image) {
+            arcSecWidth = Astrometry.ArcminToArcsec(image.FoVWidth) / image.Image.PixelWidth;
+            arcSecHeight = Astrometry.ArcminToArcsec(image.FoVHeight) / image.Image.PixelHeight;
+
+            pixelWidth = image.Image.PixelWidth;
+            pixelHeight = image.Image.PixelHeight;
+            rotation = image.Rotation;
+            coordinatesTop = new Coordinates(angle, 89.5, Epoch.J2000, Coordinates.RAType.Degrees);
+            coordinatesCenter = new Coordinates(angle, 0, Epoch.J2000, Coordinates.RAType.Degrees);
+            coordinatesBottom = new Coordinates(angle, 89.5, Epoch.J2000, Coordinates.RAType.Degrees);
+
+            RecalculatePoints(image.Coordinates);
+        }
+
+        private Coordinates coordinatesTop;
+        private double pixelWidth;
+        private double pixelHeight;
+        private double rotation;
+        private Coordinates coordinatesBottom;
+        private Coordinates coordinatesCenter;
+
+        public void RecalculatePoints(Coordinates reference) {
+            TopPoint = coordinatesTop.ProjectFromCenterToXY(
+                reference,
+                new Point(pixelWidth / 2.0, pixelHeight / 2.0),
+                arcSecWidth,
+                arcSecHeight,
+                rotation
+            );
+
+            BottomPoint = coordinatesBottom.ProjectFromCenterToXY(
+                reference,
+                new Point(pixelWidth / 2.0, pixelHeight / 2.0),
+                arcSecWidth,
+                arcSecHeight,
+                rotation
+            );
+
+            CenterPoint = coordinatesCenter.ProjectFromCenterToXY(
+                reference,
+                new Point(pixelWidth / 2.0, pixelHeight / 2.0),
+                arcSecWidth,
+                arcSecHeight,
+                rotation
+            );
+        }
+
+        public Point TopPoint {
+            get => topPoint;
+            private set {
+                topPoint = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Point CenterPoint {
+            get => centerPoint;
+            private set {
+                centerPoint = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Point BottomPoint {
+            get => bottomPoint;
+            private set {
+                bottomPoint = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 }

@@ -464,6 +464,25 @@
                 <local:ImageView.ImageAreaContent>
                     <Canvas Width="{Binding Path=FramingAssistantVM.ImageParameter.Image.PixelWidth, Source={StaticResource AppVM}}" Height="{Binding Path=FramingAssistantVM.ImageParameter.Image.PixelHeight, Source={StaticResource AppVM}}">
                         <Canvas IsHitTestVisible="False">
+                            <ItemsControl ItemsSource="{Binding FramingDec}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Canvas />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Canvas>
+                                            <Line X1="{Binding TopPoint.X, UpdateSourceTrigger=PropertyChanged}" X2="{Binding CenterPoint.X, UpdateSourceTrigger=PropertyChanged}"
+                                              Y1="{Binding TopPoint.Y, UpdateSourceTrigger=PropertyChanged}" Y2="{Binding CenterPoint.Y, UpdateSourceTrigger=PropertyChanged}"
+                                              Stroke="White" StrokeThickness="1" />
+                                            <Line X1="{Binding CenterPoint.X, UpdateSourceTrigger=PropertyChanged}" X2="{Binding BottomPoint.X, UpdateSourceTrigger=PropertyChanged}"
+                                              Y1="{Binding CenterPoint.Y, UpdateSourceTrigger=PropertyChanged}" Y2="{Binding BottomPoint.Y, UpdateSourceTrigger=PropertyChanged}"
+                                              Stroke="White" StrokeThickness="1" />
+                                        </Canvas>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                             <ItemsControl ItemsSource="{Binding DSOInImage}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
