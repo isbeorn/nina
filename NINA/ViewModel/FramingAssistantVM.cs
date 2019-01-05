@@ -644,14 +644,14 @@ namespace NINA.ViewModel {
                 for (int i = (int)(param.RightAscension.From);
                     i < 360;
                     i += 10) {
-                    FramingDec.Add(new FramingDec(i, ImageParameter));
+                    FramingDec.Add(new FramingDec(i - i % 10, ImageParameter));
                 }
             }
 
             for (int i = (int)(param.RightAscension.From);
                 i < param.RightAscension.Thru;
                 i += 10) {
-                FramingDec.Add(new FramingDec(i, ImageParameter));
+                FramingDec.Add(new FramingDec(i - i % 10, ImageParameter));
             }
 
             foreach (var dso in await dbInstance.GetDeepSkyObjects(
@@ -1098,9 +1098,9 @@ namespace NINA.ViewModel {
             pixelWidth = image.Image.PixelWidth;
             pixelHeight = image.Image.PixelHeight;
             rotation = image.Rotation;
-            coordinatesTop = new Coordinates(angle, 89.5, Epoch.J2000, Coordinates.RAType.Degrees);
+            coordinatesTop = new Coordinates(angle, 90 - Astrometry.ArcminToDegree(image.FoVHeight), Epoch.J2000, Coordinates.RAType.Degrees);
             coordinatesCenter = new Coordinates(angle, 0, Epoch.J2000, Coordinates.RAType.Degrees);
-            coordinatesBottom = new Coordinates(angle, 89.5, Epoch.J2000, Coordinates.RAType.Degrees);
+            coordinatesBottom = new Coordinates(angle, -90 + Astrometry.ArcminToDegree(image.FoVHeight), Epoch.J2000, Coordinates.RAType.Degrees);
 
             RecalculatePoints(image.Coordinates);
         }
