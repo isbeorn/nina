@@ -54,6 +54,8 @@ namespace NINA.Utility.RawConverter {
                     try {
                         System.Diagnostics.Process process;
                         System.Diagnostics.ProcessStartInfo startInfo;
+                        var tcs = new TaskCompletionSource<object>();
+                        var sb = new StringBuilder();
                         using (MyStopWatch.Measure("DCRawStart")) {
                             process = new System.Diagnostics.Process();
                             startInfo = new System.Diagnostics.ProcessStartInfo();
@@ -61,18 +63,37 @@ namespace NINA.Utility.RawConverter {
                             startInfo.FileName = DCRAWLOCATION;
                             startInfo.UseShellExecute = false;
                             startInfo.RedirectStandardOutput = true;
+                            startInfo.RedirectStandardError = true;
+                            startInfo.RedirectStandardInput = true;
                             startInfo.CreateNoWindow = true;
                             startInfo.Arguments = "-4 -d -T -t 0 -v " + rawfile;
                             process.StartInfo = startInfo;
-                            process.Start();
-                        }
 
-                        var sb = new StringBuilder();
-                        using (MyStopWatch.Measure("DCRawWrite")) {
-                            while (!process.StandardOutput.EndOfStream) {
-                                sb.AppendLine(process.StandardOutput.ReadLine());
-                                token.ThrowIfCancellationRequested();
-                            }
+                            process.EnableRaisingEvents = true;
+
+                            process.OutputDataReceived += (object sender, System.Diagnostics.DataReceivedEventArgs e) => {
+                                sb.AppendLine(e.Data);
+                            };
+
+                            process.Exited += (object sender, EventArgs e) => {
+                                tcs.TrySetResult(null);
+                            };
+
+                            process.Disposed += (object sender, EventArgs e) => {
+                            };
+
+                            process.ErrorDataReceived += (object sender, System.Diagnostics.DataReceivedEventArgs e) => {
+                                sb.AppendLine(e.Data);
+                            };
+                            token.Register(tcs.SetCanceled);
+
+                            process.Start();
+                            process.BeginOutputReadLine();
+                            process.BeginErrorReadLine();
+
+                            await tcs.Task;
+
+                            Logger.Trace(sb.ToString());
                         }
 
                         using (MyStopWatch.Measure("DCRawReadIntoImageArray")) {

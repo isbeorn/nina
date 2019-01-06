@@ -23,11 +23,13 @@
 
 using NINA.Utility;
 using NINA.Utility.Profile;
+using NINA.Utility.RawConverter;
 using NINA.Utility.WindowService;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -45,8 +47,10 @@ namespace NINA.Model.MyCamera {
             RandomImageHeight = 480;
             RandomImageMean = 5000;
             RandomImageStdDev = 100;
-            LoadImageCommand = new AsyncCommand<bool>(() => LoadImage());
+            LoadImageCommand = new AsyncCommand<bool>(() => LoadImage(), (object o) => RAWImageStream == null);
             UnloadImageCommand = new RelayCommand((object o) => Image = null);
+            LoadRAWImageCommand = new AsyncCommand<bool>(() => LoadRAWImage(), (object o) => Image == null);
+            UnloadRAWImageCommand = new RelayCommand((object o) => { RAWImageStream.Dispose(); RAWImageStream = null; });
         }
 
         private object lockObj = new object();
@@ -455,11 +459,19 @@ namespace NINA.Model.MyCamera {
 
         public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
             int width, height, mean, stdev;
-            lock (lockObj) {
-                if (Image != null) {
-                    return Image;
-                }
+            if (Image != null) {
+                return Image;
+            }
 
+            if (RAWImageStream != null) {
+                var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
+                var iarr = await converter.ConvertToImageArray(RAWImageStream, BitDepth, profileService.ActiveProfile.ImageSettings.HistogramResolution, true, token);
+                RAWImageStream.Position = 0;
+
+                return iarr;
+            }
+
+            lock (lockObj) {
                 width = RandomImageWidth;
                 height = RandomImageHeight;
                 mean = RandomImageMean;
@@ -553,6 +565,26 @@ namespace NINA.Model.MyCamera {
             WindowService.Show(this, "Simulator Setup", System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
         }
 
+        private async Task<bool> LoadRAWImage() {
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.Title = "Load Image";
+            dialog.FileName = "Image";
+            dialog.DefaultExt = ".cr2";
+
+            if (dialog.ShowDialog() == true) {
+                await Task.Run(() => {
+                    using (var fileStream = File.OpenRead(dialog.FileName)) {
+                        var memStream = new MemoryStream();
+                        memStream.SetLength(fileStream.Length);
+                        fileStream.Read(memStream.GetBuffer(), 0, (int)fileStream.Length);
+                        memStream.Position = 0;
+                        RAWImageStream = memStream;
+                    }
+                });
+            }
+            return true;
+        }
+
         private async Task<bool> LoadImage() {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
             dialog.Title = "Load Image";
@@ -574,6 +606,8 @@ namespace NINA.Model.MyCamera {
 
         public IAsyncCommand LoadImageCommand { get; private set; }
         public ICommand UnloadImageCommand { get; private set; }
+        public IAsyncCommand LoadRAWImageCommand { get; private set; }
+        public ICommand UnloadRAWImageCommand { get; private set; }
 
         private ImageArray _image;
 
@@ -586,6 +620,16 @@ namespace NINA.Model.MyCamera {
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(CameraXSize));
                 RaisePropertyChanged(nameof(CameraYSize));
+            }
+        }
+
+        private MemoryStream rawImageStream = null;
+
+        public MemoryStream RAWImageStream {
+            get => rawImageStream;
+            private set {
+                rawImageStream = value;
+                RaisePropertyChanged();
             }
         }
 

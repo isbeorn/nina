@@ -58,6 +58,10 @@
 
         <GroupBox Grid.Row="1" Header="Load Image">
             <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
                 <Button
                     Height="40"
                     Command="{Binding LoadImageCommand}"
@@ -69,6 +73,21 @@
                     Command="{Binding UnloadImageCommand}"
                     Visibility="{Binding Image, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                     Unload Image
+                </Button>
+
+                <Button
+                    Grid.Row="1"
+                    Height="40"
+                    Command="{Binding LoadRAWImageCommand}"
+                    Visibility="{Binding RAWImageStream, Converter={StaticResource InverseNullToVisibilityConverter}}">
+                    Load RAW
+                </Button>
+                <Button
+                    Grid.Row="1"
+                    Height="40"
+                    Command="{Binding UnloadRAWImageCommand}"
+                    Visibility="{Binding RAWImageStream, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
+                    Unload RAW
                 </Button>
             </Grid>
         </GroupBox>
