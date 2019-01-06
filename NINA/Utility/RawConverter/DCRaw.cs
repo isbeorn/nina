@@ -66,7 +66,7 @@ namespace NINA.Utility.RawConverter {
                             startInfo.RedirectStandardError = true;
                             startInfo.RedirectStandardInput = true;
                             startInfo.CreateNoWindow = true;
-                            startInfo.Arguments = "-4 -d -T -t 0 -v " + rawfile;
+                            startInfo.Arguments = "-4 -d -T -t 0 -v \"" + rawfile + "\"";
                             process.StartInfo = startInfo;
 
                             process.EnableRaisingEvents = true;
