@@ -705,20 +705,24 @@ namespace NINA.ViewModel {
             // TODO: something
 
             var step = 3.75;
+            var raStep = 8;
             if (Math.Abs(referenceCoordinate.Dec) > 50) {
                 step *= 2;
+                raStep = 4;
             }
             if (Math.Abs(referenceCoordinate.Dec) > 70) {
                 step *= 2;
+                raStep = 2;
             }
-            if (Math.Abs(referenceCoordinate.Dec) > 80) {
+            if (hFovDeg == 360) {
                 step *= 2;
+                raStep = 1;
             }
 
             for (double i = topOrBottomLeft.RADegrees;
                 i < topOrBottomLeft.RADegrees + (hFovDeg) + (hFovDeg == 360 ? 0 : step);
                 i += step) {
-                FramingDec.Add(new DecLine(i > 0 ? i - i % step : i - (step + i % step), ImageParameter));
+                FramingDec.Add(new DecLine(i > 0 ? i - i % step : i - (step + i % step), raStep, ImageParameter));
             }
 
             RAPathPoints = new ObservableCollection<PointCollectionAndClosed>();
@@ -1209,7 +1213,7 @@ namespace NINA.ViewModel {
         /// </summary>
         /// <param name="dso">The DSO including its coordinates</param>
         /// <param name="image">The image where the DSO should be placed in including the RA/Dec coordinates of the center of that image</param>
-        public DecLine(double angle, SkySurveyImage image) {
+        public DecLine(double angle, double raDegreeStep, SkySurveyImage image) {
             Dec = image.Coordinates.Dec;
             RA = image.Coordinates.Dec;
 
@@ -1224,7 +1228,7 @@ namespace NINA.ViewModel {
             // calculate the lines based on fov height and current dec to avoid projection issues
             // atan gnomoric projection cannot project properly over 90deg, it will result in the same results as prior
             // and dec lines will overlap each other
-            var addFov = 0.67;
+            var addFov = 0.55;
             var bottomDec = Dec >= 0 ? Dec - fovHeight * addFov : Dec + fovHeight * addFov;
             var topDec = Math.Abs(Dec) + fovHeight > 89 ? (Dec > 0 ? 89 : -89) : ((Dec >= 0) ? Dec + fovHeight * addFov : Dec - fovHeight * addFov);
 
@@ -1233,8 +1237,8 @@ namespace NINA.ViewModel {
 
             for (double i = (bottomDec < topDec ? bottomDec : topDec);
                 i <= (bottomDec < topDec ? topDec : bottomDec);
-                i += 1) {
-                decLineCoordinatePoints.Add(new Coordinates(angle, (int)i, Epoch.J2000, Coordinates.RAType.Degrees));
+                i += raDegreeStep) {
+                decLineCoordinatePoints.Add(new Coordinates(angle, (i > 0 ? i - i % raDegreeStep : i - (raDegreeStep + i % raDegreeStep)), Epoch.J2000, Coordinates.RAType.Degrees));
             }
 
             RecalculatePoints(image.Coordinates);
