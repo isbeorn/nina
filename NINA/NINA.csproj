@@ -319,10 +319,12 @@
     <Compile Include="Model\MyCamera\ToupTekCamera.cs" />
     <Compile Include="Model\MyFilterWheel\FilterWheelInfo.cs" />
     <Compile Include="Model\MyFilterWheel\FlatWizardFilterSettings.cs" />
+    <Compile Include="Utility\CardinalSpline.cs" />
     <Compile Include="Utility\Converters\CollectionContainsMoreThanOneItemToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\DoubleToHalfValueConverter.cs" />
     <Compile Include="Utility\Converters\MultiToListConverter.cs" />
     <Compile Include="Utility\Converters\OneValueGreaterThanAnotherToVisiblityConverter.cs" />
+    <Compile Include="Utility\Converters\PointsToPathConverter.cs" />
     <Compile Include="Utility\Converters\WidthAndValueToWidthConverter.cs" />
     <Compile Include="Utility\DataPipes.cs" />
     <Compile Include="Utility\IApplicationResourceDictionary.cs" />

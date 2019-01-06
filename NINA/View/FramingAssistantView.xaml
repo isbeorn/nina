@@ -464,6 +464,32 @@
                 <local:ImageView.ImageAreaContent>
                     <Canvas Width="{Binding Path=FramingAssistantVM.ImageParameter.Image.PixelWidth, Source={StaticResource AppVM}}" Height="{Binding Path=FramingAssistantVM.ImageParameter.Image.PixelHeight, Source={StaticResource AppVM}}">
                         <Canvas IsHitTestVisible="False">
+                            <ItemsControl ItemsSource="{Binding RAPathPoints}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Canvas />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Canvas>
+                                            <util:CardinalSplineShape Points="{Binding Collection}" Closed="{Binding Closed}">
+                                                <util:CardinalSplineShape.Stroke>
+                                                    <SolidColorBrush>
+                                                        <SolidColorBrush.Color>
+                                                            <Color
+                                                                A="128"
+                                                                B="255"
+                                                                G="255"
+                                                                R="255" />
+                                                        </SolidColorBrush.Color>
+                                                    </SolidColorBrush>
+                                                </util:CardinalSplineShape.Stroke>
+                                            </util:CardinalSplineShape>
+                                        </Canvas>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                             <ItemsControl ItemsSource="{Binding FramingDec}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>

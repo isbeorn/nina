@@ -42,6 +42,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using System.Xml.Linq;
 
@@ -610,7 +611,7 @@ namespace NINA.ViewModel {
             var verticalFov = FieldOfView;
             var horizontalFov = ((double)boundWidth / boundHeight) * FieldOfView;
 
-            var l = new Dictionary<string, DeepSkyObject>();
+            var dsoDict = new Dictionary<string, DeepSkyObject>();
             DatabaseInteraction.DeepSkyObjectSearchParams param = new DatabaseInteraction.DeepSkyObjectSearchParams();
 
             Coordinates centerTop = referenceCoordinate.Shift(0, -verticalFov * 2 / 3, 0);
@@ -677,7 +678,7 @@ namespace NINA.ViewModel {
                 foreach (var dso in await dbInstance.GetDeepSkyObjects(
                     string.Empty, param,
                     ct)) {
-                    l.Add(dso.Id, dso);
+                    dsoDict.Add(dso.Id, dso);
                 }
 
                 param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
@@ -686,29 +687,78 @@ namespace NINA.ViewModel {
                 };
             }
 
-            FramingDec.Clear();
-
-            // TODO: something
-            var decMinLines = 2;
-            var decMaxLines = 12;
-
-            var step = 30;
-
-            for (int i = (int)topOrBottomLeft.RADegrees;
-                i < (int)topOrBottomLeft.RADegrees + (int)(hFovDeg);
-                i += step) {
-                FramingDec.Add(new FramingDec(i > 0 ? i - i % step : i - (10 + i % step), ImageParameter));
-            }
-
             foreach (var dso in await dbInstance.GetDeepSkyObjects(
                 string.Empty, param,
                 ct)) {
-                if (!l.ContainsKey(dso.Id)) {
-                    l.Add(dso.Id, dso);
+                if (!dsoDict.ContainsKey(dso.Id)) {
+                    dsoDict.Add(dso.Id, dso);
                 }
             }
 
-            return l;
+            FramingDec.Clear();
+
+            // TODO: something
+
+            var step = 3.75;
+            if (Math.Abs(referenceCoordinate.Dec) > 50) {
+                step *= 2;
+            }
+            if (Math.Abs(referenceCoordinate.Dec) > 70) {
+                step *= 2;
+            }
+            if (Math.Abs(referenceCoordinate.Dec) > 80) {
+                step *= 2;
+            }
+
+            for (double i = topOrBottomLeft.RADegrees;
+                i < topOrBottomLeft.RADegrees + (hFovDeg) + (hFovDeg == 360 ? 0 : step);
+                i += step) {
+                FramingDec.Add(new FramingDec(i > 0 ? i - i % step : i - (step + i % step), ImageParameter));
+            }
+
+            RAPathPoints = new ObservableCollection<PointCollectionAndClosed>();
+
+            var groups = FramingDec.SelectMany(f => f.RAPoints).GroupBy(p => p.RA);
+
+            foreach (var group in groups) {
+                var pointCollection = new PointCollection(group.Select(f => new Point(f.X, f.Y)).ToArray());
+                var closed = group.Count() == 360 / step;
+
+                RAPathPoints.Add(new PointCollectionAndClosed() {Closed = closed, Collection = pointCollection});
+            }
+
+            return dsoDict;
+        }
+
+        public class PointCollectionAndClosed : BaseINPC {
+            private PointCollection collection;
+            private bool closed;
+
+            public PointCollection Collection {
+                get => collection;
+                set {
+                    collection = value;
+                    RaisePropertyChanged();
+                }
+            }
+
+            public bool Closed {
+                get => closed;
+                set {
+                    closed = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private ObservableCollection<PointCollectionAndClosed> raPathPoints;
+
+        public ObservableCollection<PointCollectionAndClosed> RAPathPoints {
+            get => raPathPoints;
+            set {
+                raPathPoints = value;
+                RaisePropertyChanged();
+            }
         }
 
         private Vector deltaSum = new Vector(0, 0);
@@ -1137,10 +1187,10 @@ namespace NINA.ViewModel {
         /// </summary>
         /// <param name="dso">The DSO including its coordinates</param>
         /// <param name="image">The image where the DSO should be placed in including the RA/Dec coordinates of the center of that image</param>
-        public FramingDec(int angle, SkySurveyImage image) {
+        public FramingDec(double angle, SkySurveyImage image) {
             var dec = image.Coordinates.Dec;
 
-            var fovHeight = Astrometry.ArcminToDegree(image.FoVWidth);
+            var fovHeight = Astrometry.ArcminToDegree(image.FoVHeight);
 
             arcSecWidth = Astrometry.ArcminToArcsec(image.FoVWidth) / image.Image.PixelWidth;
             arcSecHeight = Astrometry.ArcminToArcsec(image.FoVHeight) / image.Image.PixelHeight;
@@ -1151,8 +1201,17 @@ namespace NINA.ViewModel {
             // calculate the lines based on fov height and current dec to avoid projection issues
             // atan gnomoric projection cannot project properly over 90deg, it will result in the same results as prior
             // and dec lines will overlap each other
-            var bottomDec = dec > 0 ? dec - 2 * fovHeight : dec + 2 * fovHeight;
-            var topDec = Math.Abs(dec + fovHeight) > 90 ? (dec > 0 ? 90 : -90) : ((dec > 0) ? dec + fovHeight : dec - fovHeight);
+            var bottomDec = dec >= 0 ? dec - fovHeight /2 : dec + fovHeight /2;
+            var topDec = Math.Abs(dec) + fovHeight > 89 ? (dec > 0 ? 89 : -89) : ((dec >= 0) ? dec + fovHeight/2 : dec - fovHeight/2);
+
+            raCoordinates = new List<Coordinates>();
+            raPoints = new ObservableCollection<RAPoint>();
+
+            for (int i = (int) bottomDec;
+                i <= (int)topDec;
+                i++) {
+                raCoordinates.Add(new Coordinates(angle, i, Epoch.J2000, Coordinates.RAType.Degrees));
+            }
 
             coordinatesTop = new Coordinates(angle, topDec, Epoch.J2000, Coordinates.RAType.Degrees);
             coordinatesBottom = new Coordinates(angle, bottomDec, Epoch.J2000, Coordinates.RAType.Degrees);
@@ -1163,6 +1222,8 @@ namespace NINA.ViewModel {
         private readonly Coordinates coordinatesTop;
         private readonly double rotation;
         private readonly Coordinates coordinatesBottom;
+        private List<Coordinates> raCoordinates;
+        private ObservableCollection<RAPoint> raPoints;
 
         public void RecalculatePoints(Coordinates reference) {
             TopPoint = coordinatesTop.ProjectFromCenterToXY(
@@ -1180,6 +1241,31 @@ namespace NINA.ViewModel {
                 arcSecHeight,
                 rotation
             );
+
+            foreach (var coord in raCoordinates) {
+                var point = coord.ProjectFromCenterToXY(
+                    reference,
+                    imageCenterPoint,
+                    arcSecWidth,
+                    arcSecHeight,
+                    rotation
+                );
+                raPoints.Add(new RAPoint() { X = point.X, Y = point.Y, RA = coord.Dec});
+            }
+        }
+
+        public struct RAPoint {
+            public double X;
+            public double Y;
+            public double RA;
+        }
+
+        public ObservableCollection<RAPoint> RAPoints {
+            get => raPoints;
+            private set {
+                raPoints = value;
+                RaisePropertyChanged();
+            }
         }
 
         public Point TopPoint {
