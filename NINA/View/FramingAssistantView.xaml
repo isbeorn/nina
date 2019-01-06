@@ -244,7 +244,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <ninactrl:StepperControl
                                         Margin="5,0,0,0"
-                                        MaxValue="45"
+                                        MaxValue="90"
                                         MinValue="0.1"
                                         Value="{Binding FieldOfView, Mode=TwoWay}" />
                                     <TextBlock
@@ -490,7 +490,7 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-                            <ItemsControl ItemsSource="{Binding FramingDec}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
+                            <ItemsControl ItemsSource="{Binding DecPathPoints}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <Canvas />
@@ -499,10 +499,8 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Canvas>
-                                            <Line X1="{Binding TopPoint.X, UpdateSourceTrigger=PropertyChanged}" X2="{Binding BottomPoint.X, UpdateSourceTrigger=PropertyChanged}"
-                                              Y1="{Binding TopPoint.Y, UpdateSourceTrigger=PropertyChanged}" Y2="{Binding BottomPoint.Y, UpdateSourceTrigger=PropertyChanged}"
-                                              StrokeThickness="0.5">
-                                                <Line.Stroke>
+                                            <util:CardinalSplineShape Points="{Binding Collection}" Closed="{Binding Closed}">
+                                                <util:CardinalSplineShape.Stroke>
                                                     <SolidColorBrush>
                                                         <SolidColorBrush.Color>
                                                             <Color
@@ -512,8 +510,8 @@
                                                                 R="255" />
                                                         </SolidColorBrush.Color>
                                                     </SolidColorBrush>
-                                                </Line.Stroke>
-                                            </Line>
+                                                </util:CardinalSplineShape.Stroke>
+                                            </util:CardinalSplineShape>
                                         </Canvas>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>

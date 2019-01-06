@@ -82,7 +82,7 @@ namespace NINA.ViewModel {
             DeepSkyObjectSearchVM = new DeepSkyObjectSearchVM(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
             DeepSkyObjectSearchVM.PropertyChanged += DeepSkyObjectSearchVM_PropertyChanged;
 
-            FramingDec = new ObservableCollection<FramingDec>();
+            FramingDec = new ObservableCollection<DecLine>();
 
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(async (object parameter) => {
                 var vm = (ApplicationVM)Application.Current.Resources["AppVM"];
@@ -590,9 +590,9 @@ namespace NINA.ViewModel {
             }
         }
 
-        private ObservableCollection<FramingDec> framingDec;
+        private ObservableCollection<DecLine> framingDec;
 
-        public ObservableCollection<FramingDec> FramingDec {
+        public ObservableCollection<DecLine> FramingDec {
             get => framingDec;
             set {
                 framingDec = value;
@@ -621,20 +621,25 @@ namespace NINA.ViewModel {
             Coordinates topOrBottomRight;
             Coordinates topOrBottomLeft;
 
+            double hFovDeg = 0;
+
             // if we are above 0 declination we want the upper bound of the fov since the ra fov at the top of the frame is wider than on the bottom
             // vice versa for the other way round
             if (referenceCoordinate.Dec >= 0) {
                 topOrBottomRight = referenceCoordinate.Shift(-(horizontalFov) * 2 / 3, -(verticalFov) * 2 / 3, 0);
                 topOrBottomLeft = referenceCoordinate.Shift(horizontalFov * 2 / 3, -(verticalFov) * 2 / 3, 0);
+                hFovDeg = topOrBottomLeft.RA < centerTop.RADegrees
+                    ? centerTop.RADegrees - topOrBottomLeft.RADegrees
+                    : centerTop.RADegrees - topOrBottomLeft.RADegrees + 360;
             } else {
                 topOrBottomRight = referenceCoordinate.Shift(-(horizontalFov) * 2 / 3, (verticalFov) * 2 / 3, 0);
                 topOrBottomLeft = referenceCoordinate.Shift(horizontalFov * 2 / 3, (verticalFov) * 2 / 3, 0);
+                hFovDeg = topOrBottomLeft.RA < centerBottom.RADegrees
+                    ? centerBottom.RADegrees - topOrBottomLeft.RADegrees
+                    : centerBottom.RADegrees - topOrBottomLeft.RADegrees + 360;
             }
 
-            // calculate the actually visible maximum horizontal fov
-            var hFovDeg = topOrBottomLeft.RADegrees < topOrBottomRight.RADegrees
-                ? topOrBottomRight.RADegrees - topOrBottomLeft.RADegrees
-                : topOrBottomRight.RADegrees - topOrBottomLeft.RADegrees + 360;
+            hFovDeg *= 2;
 
             // if we're above 90deg centerTop will be different than centerBottom, otherwise it is equal
             // then we want everything from either centertop when it's below 0 or centerbottom if it's above 0
@@ -713,18 +718,27 @@ namespace NINA.ViewModel {
             for (double i = topOrBottomLeft.RADegrees;
                 i < topOrBottomLeft.RADegrees + (hFovDeg) + (hFovDeg == 360 ? 0 : step);
                 i += step) {
-                FramingDec.Add(new FramingDec(i > 0 ? i - i % step : i - (step + i % step), ImageParameter));
+                FramingDec.Add(new DecLine(i > 0 ? i - i % step : i - (step + i % step), ImageParameter));
             }
 
             RAPathPoints = new ObservableCollection<PointCollectionAndClosed>();
+            DecPathPoints = new ObservableCollection<PointCollectionAndClosed>();
 
-            var groups = FramingDec.SelectMany(f => f.RAPoints).GroupBy(p => p.RA);
+            var groupsRa = FramingDec.SelectMany(d => d.DecLinePoints).GroupBy(d => d.Dec);
+            var groupsDec = FramingDec.SelectMany(d => d.DecLinePoints).GroupBy(d => d.RA);
 
-            foreach (var group in groups) {
-                var pointCollection = new PointCollection(group.Select(f => new Point(f.X, f.Y)).ToArray());
+            foreach (var group in groupsRa) {
+                var pointCollection = new PointCollection(group.Select(g => g.Point));
                 var closed = group.Count() == 360 / step;
 
-                RAPathPoints.Add(new PointCollectionAndClosed() {Closed = closed, Collection = pointCollection});
+                RAPathPoints.Add(new PointCollectionAndClosed() { Closed = closed, Collection = pointCollection });
+            }
+
+            foreach (var group in groupsDec) {
+                var pointCollection = new PointCollection(group.Select(g => g.Point));
+                //var closed = group.Count() == 360 / step;
+
+                DecPathPoints.Add(new PointCollectionAndClosed() { Closed = false, Collection = pointCollection });
             }
 
             return dsoDict;
@@ -748,6 +762,16 @@ namespace NINA.ViewModel {
                     closed = value;
                     RaisePropertyChanged();
                 }
+            }
+        }
+
+        private ObservableCollection<PointCollectionAndClosed> decPathPoints;
+
+        public ObservableCollection<PointCollectionAndClosed> DecPathPoints {
+            get => decPathPoints;
+            set {
+                decPathPoints = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -1173,11 +1197,9 @@ namespace NINA.ViewModel {
         public string Name3 { get; }
     }
 
-    internal class FramingDec : BaseINPC {
+    internal class DecLine : BaseINPC {
         private readonly double arcSecWidth;
         private readonly double arcSecHeight;
-        private Point topPoint;
-        private Point bottomPoint;
         private readonly Point imageCenterPoint;
 
         /// <summary>
@@ -1187,8 +1209,9 @@ namespace NINA.ViewModel {
         /// </summary>
         /// <param name="dso">The DSO including its coordinates</param>
         /// <param name="image">The image where the DSO should be placed in including the RA/Dec coordinates of the center of that image</param>
-        public FramingDec(double angle, SkySurveyImage image) {
-            var dec = image.Coordinates.Dec;
+        public DecLine(double angle, SkySurveyImage image) {
+            Dec = image.Coordinates.Dec;
+            RA = image.Coordinates.Dec;
 
             var fovHeight = Astrometry.ArcminToDegree(image.FoVHeight);
 
@@ -1201,48 +1224,31 @@ namespace NINA.ViewModel {
             // calculate the lines based on fov height and current dec to avoid projection issues
             // atan gnomoric projection cannot project properly over 90deg, it will result in the same results as prior
             // and dec lines will overlap each other
-            var bottomDec = dec >= 0 ? dec - fovHeight /2 : dec + fovHeight /2;
-            var topDec = Math.Abs(dec) + fovHeight > 89 ? (dec > 0 ? 89 : -89) : ((dec >= 0) ? dec + fovHeight/2 : dec - fovHeight/2);
+            var addFov = 0.67;
+            var bottomDec = Dec >= 0 ? Dec - fovHeight * addFov : Dec + fovHeight * addFov;
+            var topDec = Math.Abs(Dec) + fovHeight > 89 ? (Dec > 0 ? 89 : -89) : ((Dec >= 0) ? Dec + fovHeight * addFov : Dec - fovHeight * addFov);
 
-            raCoordinates = new List<Coordinates>();
-            raPoints = new ObservableCollection<RAPoint>();
+            decLineCoordinatePoints = new List<Coordinates>();
+            decLinePoints = new List<DecLinePoint>();
 
-            for (int i = (int) bottomDec;
-                i <= (int)topDec;
-                i++) {
-                raCoordinates.Add(new Coordinates(angle, i, Epoch.J2000, Coordinates.RAType.Degrees));
+            for (double i = (bottomDec < topDec ? bottomDec : topDec);
+                i <= (bottomDec < topDec ? topDec : bottomDec);
+                i += 1) {
+                decLineCoordinatePoints.Add(new Coordinates(angle, (int)i, Epoch.J2000, Coordinates.RAType.Degrees));
             }
-
-            coordinatesTop = new Coordinates(angle, topDec, Epoch.J2000, Coordinates.RAType.Degrees);
-            coordinatesBottom = new Coordinates(angle, bottomDec, Epoch.J2000, Coordinates.RAType.Degrees);
 
             RecalculatePoints(image.Coordinates);
         }
 
-        private readonly Coordinates coordinatesTop;
         private readonly double rotation;
-        private readonly Coordinates coordinatesBottom;
-        private List<Coordinates> raCoordinates;
-        private ObservableCollection<RAPoint> raPoints;
+        private readonly List<Coordinates> decLineCoordinatePoints;
+        private List<DecLinePoint> decLinePoints;
+
+        public double RA { get; }
+        public double Dec { get; }
 
         public void RecalculatePoints(Coordinates reference) {
-            TopPoint = coordinatesTop.ProjectFromCenterToXY(
-                reference,
-                imageCenterPoint,
-                arcSecWidth,
-                arcSecHeight,
-                rotation
-            );
-
-            BottomPoint = coordinatesBottom.ProjectFromCenterToXY(
-                reference,
-                imageCenterPoint,
-                arcSecWidth,
-                arcSecHeight,
-                rotation
-            );
-
-            foreach (var coord in raCoordinates) {
+            foreach (var coord in decLineCoordinatePoints) {
                 var point = coord.ProjectFromCenterToXY(
                     reference,
                     imageCenterPoint,
@@ -1250,36 +1256,20 @@ namespace NINA.ViewModel {
                     arcSecHeight,
                     rotation
                 );
-                raPoints.Add(new RAPoint() { X = point.X, Y = point.Y, RA = coord.Dec});
+                decLinePoints.Add(new DecLinePoint() { Point = point, Dec = coord.Dec, RA = coord.RADegrees });
             }
         }
 
-        public struct RAPoint {
-            public double X;
-            public double Y;
+        public struct DecLinePoint {
+            public Point Point;
+            public double Dec;
             public double RA;
         }
 
-        public ObservableCollection<RAPoint> RAPoints {
-            get => raPoints;
+        public List<DecLinePoint> DecLinePoints {
+            get => decLinePoints;
             private set {
-                raPoints = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Point TopPoint {
-            get => topPoint;
-            private set {
-                topPoint = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Point BottomPoint {
-            get => bottomPoint;
-            private set {
-                bottomPoint = value;
+                decLinePoints = value;
                 RaisePropertyChanged();
             }
         }
