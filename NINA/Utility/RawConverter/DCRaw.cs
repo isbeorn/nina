@@ -85,7 +85,7 @@ namespace NINA.Utility.RawConverter {
                             process.ErrorDataReceived += (object sender, System.Diagnostics.DataReceivedEventArgs e) => {
                                 sb.AppendLine(e.Data);
                             };
-                            token.Register(tcs.SetCanceled);
+                            token.Register(() => tcs.TrySetCanceled());
 
                             process.Start();
                             process.BeginOutputReadLine();
