@@ -244,7 +244,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <ninactrl:StepperControl
                                         Margin="5,0,0,0"
-                                        MaxValue="10"
+                                        MaxValue="45"
                                         MinValue="0.1"
                                         Value="{Binding FieldOfView, Mode=TwoWay}" />
                                     <TextBlock
@@ -473,29 +473,14 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Canvas>
-                                            <Line X1="{Binding TopPoint.X, UpdateSourceTrigger=PropertyChanged}" X2="{Binding CenterPoint.X, UpdateSourceTrigger=PropertyChanged}"
-                                              Y1="{Binding TopPoint.Y, UpdateSourceTrigger=PropertyChanged}" Y2="{Binding CenterPoint.Y, UpdateSourceTrigger=PropertyChanged}"
+                                            <Line X1="{Binding TopPoint.X, UpdateSourceTrigger=PropertyChanged}" X2="{Binding BottomPoint.X, UpdateSourceTrigger=PropertyChanged}"
+                                              Y1="{Binding TopPoint.Y, UpdateSourceTrigger=PropertyChanged}" Y2="{Binding BottomPoint.Y, UpdateSourceTrigger=PropertyChanged}"
                                               StrokeThickness="0.5">
                                                 <Line.Stroke>
                                                     <SolidColorBrush>
                                                         <SolidColorBrush.Color>
                                                             <Color
-                                                                A="50"
-                                                                B="255"
-                                                                G="255"
-                                                                R="255" />
-                                                        </SolidColorBrush.Color>
-                                                    </SolidColorBrush>
-                                                </Line.Stroke>
-                                            </Line>
-                                            <Line X1="{Binding CenterPoint.X, UpdateSourceTrigger=PropertyChanged}" X2="{Binding BottomPoint.X, UpdateSourceTrigger=PropertyChanged}"
-                                              Y1="{Binding CenterPoint.Y, UpdateSourceTrigger=PropertyChanged}" Y2="{Binding BottomPoint.Y, UpdateSourceTrigger=PropertyChanged}"
-                                              StrokeThickness="0.5">
-                                                <Line.Stroke>
-                                                    <SolidColorBrush>
-                                                        <SolidColorBrush.Color>
-                                                            <Color
-                                                                A="50"
+                                                                A="128"
                                                                 B="255"
                                                                 G="255"
                                                                 R="255" />

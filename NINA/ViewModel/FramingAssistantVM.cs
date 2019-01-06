@@ -612,45 +612,68 @@ namespace NINA.ViewModel {
 
             var l = new Dictionary<string, DeepSkyObject>();
             DatabaseInteraction.DeepSkyObjectSearchParams param = new DatabaseInteraction.DeepSkyObjectSearchParams();
-            Coordinates bottomRight = referenceCoordinate.Shift(-(horizontalFov), -(verticalFov), 0);
-            Coordinates topLeft = referenceCoordinate.Shift(horizontalFov, verticalFov, 0);
 
-            if (Math.Max(topLeft.Dec, bottomRight.Dec) + 2 * verticalFov > 90) {
+            Coordinates centerTop = referenceCoordinate.Shift(0, -verticalFov * 2 / 3, 0);
+            Coordinates centerBottom = referenceCoordinate.Shift(0, verticalFov * 2 / 3, 0);
+
+            // don't ask me what's left or right it might be either way, hell for all I know this might be reversed but it works atm
+            Coordinates topOrBottomRight;
+            Coordinates topOrBottomLeft;
+
+            // if we are above 0 declination we want the upper bound of the fov since the ra fov at the top of the frame is wider than on the bottom
+            // vice versa for the other way round
+            if (referenceCoordinate.Dec >= 0) {
+                topOrBottomRight = referenceCoordinate.Shift(-(horizontalFov) * 2 / 3, -(verticalFov) * 2 / 3, 0);
+                topOrBottomLeft = referenceCoordinate.Shift(horizontalFov * 2 / 3, -(verticalFov) * 2 / 3, 0);
+            } else {
+                topOrBottomRight = referenceCoordinate.Shift(-(horizontalFov) * 2 / 3, (verticalFov) * 2 / 3, 0);
+                topOrBottomLeft = referenceCoordinate.Shift(horizontalFov * 2 / 3, (verticalFov) * 2 / 3, 0);
+            }
+
+            // calculate the actually visible maximum horizontal fov
+            var hFovDeg = topOrBottomLeft.RADegrees < topOrBottomRight.RADegrees
+                ? topOrBottomRight.RADegrees - topOrBottomLeft.RADegrees
+                : topOrBottomRight.RADegrees - topOrBottomLeft.RADegrees + 360;
+
+            // if we're above 90deg centerTop will be different than centerBottom, otherwise it is equal
+            // then we want everything from either centertop when it's below 0 or centerbottom if it's above 0
+            // we also want a full circle of RA, hFovDeg also becomes 360 since the fov is a full circle
+            if (Math.Abs(centerTop.RADegrees - centerBottom.RADegrees) > 0.0001) {
+                if (referenceCoordinate.Dec < 0) {
+                    param.Declination = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
+                        From = -90,
+                        Thru = centerTop.Dec
+                    };
+                } else {
+                    param.Declination = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
+                        From = centerBottom.Dec,
+                        Thru = 90
+                    };
+                }
+
+                hFovDeg = 360;
+
                 param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
                     From = 0,
                     Thru = 360
-                };
-                param.Declination = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = Math.Min(topLeft.Dec, bottomRight.Dec),
-                    Thru = 90
-                };
-            } else if (Math.Min(topLeft.Dec, bottomRight.Dec) - 2 * verticalFov < -90) {
-                param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = 0,
-                    Thru = 360
-                };
-                param.Declination = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = -90,
-                    Thru = Math.Max(topLeft.Dec, bottomRight.Dec)
                 };
             } else {
-                param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = topLeft.RADegrees,
-                    Thru = bottomRight.RADegrees
-                };
                 param.Declination = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = topLeft.Dec,
-                    Thru = bottomRight.Dec
+                    From = centerBottom.Dec,
+                    Thru = centerTop.Dec
+                };
+                param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
+                    From = topOrBottomLeft.RADegrees,
+                    Thru = topOrBottomRight.RADegrees
                 };
             }
 
-            FramingDec.Clear();
-
             if (param.RightAscension.From > param.RightAscension.Thru) {
                 param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = topLeft.RADegrees,
+                    From = topOrBottomLeft.RADegrees,
                     Thru = 360
                 };
+
                 foreach (var dso in await dbInstance.GetDeepSkyObjects(
                     string.Empty, param,
                     ct)) {
@@ -659,26 +682,30 @@ namespace NINA.ViewModel {
 
                 param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
                     From = 0,
-                    Thru = bottomRight.RADegrees
+                    Thru = topOrBottomRight.RADegrees
                 };
-
-                for (int i = (int)(param.RightAscension.From);
-                    i < 360;
-                    i += 10) {
-                    FramingDec.Add(new FramingDec(i - i % 10, ImageParameter));
-                }
             }
 
-            for (int i = (int)(param.RightAscension.From);
-                i < param.RightAscension.Thru;
-                i += 10) {
-                FramingDec.Add(new FramingDec(i - i % 10, ImageParameter));
+            FramingDec.Clear();
+
+            // TODO: something
+            var decMinLines = 2;
+            var decMaxLines = 12;
+
+            var step = 30;
+
+            for (int i = (int)topOrBottomLeft.RADegrees;
+                i < (int)topOrBottomLeft.RADegrees + (int)(hFovDeg);
+                i += step) {
+                FramingDec.Add(new FramingDec(i > 0 ? i - i % step : i - (10 + i % step), ImageParameter));
             }
 
             foreach (var dso in await dbInstance.GetDeepSkyObjects(
                 string.Empty, param,
                 ct)) {
-                l.Add(dso.Id, dso);
+                if (!l.ContainsKey(dso.Id)) {
+                    l.Add(dso.Id, dso);
+                }
             }
 
             return l;
@@ -688,8 +715,8 @@ namespace NINA.ViewModel {
         private Dictionary<string, DeepSkyObject> cachedDSOs = new Dictionary<string, DeepSkyObject>();
 
         private async Task UpdateDSOsInImage(Vector delta) {
-            deltaSum.X += delta.X;
-            deltaSum.Y += delta.Y;
+            //deltaSum.X += delta.X;
+            //deltaSum.Y += delta.Y;
 
             var imageArcsecWidth = Astrometry.ArcminToArcsec(ImageParameter.FoVWidth) / ImageParameter.Image.Width;
             var imageArcsecHeight = Astrometry.ArcminToArcsec(ImageParameter.FoVHeight) / ImageParameter.Image.Height;
@@ -698,10 +725,10 @@ namespace NINA.ViewModel {
             ImageParameter.Coordinates = newCenter;
             CalculateRectangle(ImageParameter);
 
-            if (Math.Abs(deltaSum.X) > ImageParameter.Image.Width / 2d || Math.Abs(deltaSum.Y) > ImageParameter.Image.Height / 2d) {
-                cachedDSOs = await GetDeepSkyObjectsForFoV(newCenter, FieldOfView, _loadImageSource.Token);
-                deltaSum = new Vector(0, 0);
-            }
+            //if (Math.Abs(deltaSum.X) > ImageParameter.Image.Width / 4d || Math.Abs(deltaSum.Y) > ImageParameter.Image.Height / 4d) {
+            cachedDSOs = await GetDeepSkyObjectsForFoV(newCenter, FieldOfView, _loadImageSource.Token);
+            //deltaSum = new Vector(0, 0);
+            //}
 
             var existingDSOs = new List<string>();
             for (int i = DSOInImage.Count - 1; i >= 0; i--) {
@@ -1101,7 +1128,6 @@ namespace NINA.ViewModel {
         private readonly double arcSecHeight;
         private Point topPoint;
         private Point bottomPoint;
-        private Point centerPoint;
         private readonly Point imageCenterPoint;
 
         /// <summary>
@@ -1112,14 +1138,24 @@ namespace NINA.ViewModel {
         /// <param name="dso">The DSO including its coordinates</param>
         /// <param name="image">The image where the DSO should be placed in including the RA/Dec coordinates of the center of that image</param>
         public FramingDec(int angle, SkySurveyImage image) {
+            var dec = image.Coordinates.Dec;
+
+            var fovHeight = Astrometry.ArcminToDegree(image.FoVWidth);
+
             arcSecWidth = Astrometry.ArcminToArcsec(image.FoVWidth) / image.Image.PixelWidth;
             arcSecHeight = Astrometry.ArcminToArcsec(image.FoVHeight) / image.Image.PixelHeight;
 
             imageCenterPoint = new Point(image.Image.PixelWidth / 2.0, image.Image.PixelHeight / 2.0);
             rotation = image.Rotation;
-            coordinatesTop = new Coordinates(angle, 90 - Astrometry.ArcminToDegree(image.FoVHeight), Epoch.J2000, Coordinates.RAType.Degrees);
-            coordinatesCenter = new Coordinates(angle, 0, Epoch.J2000, Coordinates.RAType.Degrees);
-            coordinatesBottom = new Coordinates(angle, -90 + Astrometry.ArcminToDegree(image.FoVHeight), Epoch.J2000, Coordinates.RAType.Degrees);
+
+            // calculate the lines based on fov height and current dec to avoid projection issues
+            // atan gnomoric projection cannot project properly over 90deg, it will result in the same results as prior
+            // and dec lines will overlap each other
+            var bottomDec = dec > 0 ? dec - 2 * fovHeight : dec + 2 * fovHeight;
+            var topDec = Math.Abs(dec + fovHeight) > 90 ? (dec > 0 ? 90 : -90) : ((dec > 0) ? dec + fovHeight : dec - fovHeight);
+
+            coordinatesTop = new Coordinates(angle, topDec, Epoch.J2000, Coordinates.RAType.Degrees);
+            coordinatesBottom = new Coordinates(angle, bottomDec, Epoch.J2000, Coordinates.RAType.Degrees);
 
             RecalculatePoints(image.Coordinates);
         }
@@ -1127,7 +1163,6 @@ namespace NINA.ViewModel {
         private readonly Coordinates coordinatesTop;
         private readonly double rotation;
         private readonly Coordinates coordinatesBottom;
-        private readonly Coordinates coordinatesCenter;
 
         public void RecalculatePoints(Coordinates reference) {
             TopPoint = coordinatesTop.ProjectFromCenterToXY(
@@ -1145,28 +1180,12 @@ namespace NINA.ViewModel {
                 arcSecHeight,
                 rotation
             );
-
-            CenterPoint = coordinatesCenter.ProjectFromCenterToXY(
-                reference,
-                imageCenterPoint,
-                arcSecWidth,
-                arcSecHeight,
-                rotation
-            );
         }
 
         public Point TopPoint {
             get => topPoint;
             private set {
                 topPoint = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Point CenterPoint {
-            get => centerPoint;
-            private set {
-                centerPoint = value;
                 RaisePropertyChanged();
             }
         }
