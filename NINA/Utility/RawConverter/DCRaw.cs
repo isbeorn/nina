@@ -62,7 +62,7 @@ namespace NINA.Utility.RawConverter {
                             startInfo.UseShellExecute = false;
                             startInfo.RedirectStandardOutput = true;
                             startInfo.CreateNoWindow = true;
-                            startInfo.Arguments = "-4 -d -T -t 0 " + rawfile;
+                            startInfo.Arguments = "-4 -d -T -t 0 -v " + rawfile;
                             process.StartInfo = startInfo;
                             process.Start();
                         }
