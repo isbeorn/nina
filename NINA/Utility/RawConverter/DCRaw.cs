@@ -88,9 +88,8 @@ namespace NINA.Utility.RawConverter {
                                 iarr = await ImageArray.CreateInstance(pixels, (int)bmp.PixelWidth, (int)bmp.PixelHeight, bitDepth, true, calculateStatistics, histogramResolution);
                                 iarr.RAWData = s.ToArray();
                             } else {
-                                Notification.Notification.ShowError("Error occured during DCRaw conversion." + Environment.NewLine + sb.ToString());
-                                Logger.Error(sb.ToString(), null);
                                 Logger.Error("File not found: " + file, null);
+                                throw new Exception("Error occured during DCRaw conversion." + Environment.NewLine + sb.ToString());
                             }
                         }
                     } catch (Exception ex) {
