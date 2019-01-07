@@ -82,8 +82,6 @@ namespace NINA.ViewModel {
             DeepSkyObjectSearchVM = new DeepSkyObjectSearchVM(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
             DeepSkyObjectSearchVM.PropertyChanged += DeepSkyObjectSearchVM_PropertyChanged;
 
-            FramingDec = new ObservableCollection<DecLine>();
-
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(async (object parameter) => {
                 var vm = (ApplicationVM)Application.Current.Resources["AppVM"];
                 vm.ChangeTab(ApplicationTab.SEQUENCE);
@@ -590,16 +588,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        private ObservableCollection<DecLine> framingDec;
-
-        public ObservableCollection<DecLine> FramingDec {
-            get => framingDec;
-            set {
-                framingDec = value;
-                RaisePropertyChanged();
-            }
-        }
-
         /// <summary>
         /// Query for skyobjects for a reference coordinate that overlap the current field of view
         /// </summary>
@@ -708,93 +696,13 @@ namespace NINA.ViewModel {
                 }
             }
 
-            FramingDec.Clear();
+            // calculate framing line matrix
+            var decMatrix = new FrameLineMatrix(ImageParameter, topLeft.RADegrees, hFovDeg, vFovDegTop, vFovDegBottom);
 
-            // TODO: variable calculation based on hfovdeg and dec
-            var raStep = 3.75;
-            var decStep = 8;
-            if (Math.Abs(referenceCoordinate.Dec) > 50) {
-                raStep *= 2;
-                decStep = 4;
-            }
-            if (Math.Abs(referenceCoordinate.Dec) > 70) {
-                raStep *= 2;
-                decStep = 2;
-            }
-            if (hFovDeg == 360) {
-                raStep *= 2;
-                decStep = 1;
-            }
-
-            // we calculate the dec lines from the starting point of the RA to the end point, we don't have to wrap around
-            // because the algorithms work well with negative degrees or degrees over 360
-            double raStart = RoundToHigherValue(topLeft.RADegrees, raStep);
-            double raStop = RoundToHigherValue(topLeft.RADegrees - hFovDeg, raStep);
-
-            // although if our calculated start and stop endpoints are over 360 we assume it will be from 0 to 360-step (avoid last point)
-            if (Math.Abs(raStart) + Math.Abs(raStop) >= 360) {
-                raStart = 0;
-                raStop = 360 - raStep;
-            }
-
-            // now we calculate all dec points from ra start to ra stop
-            for (double ra = Math.Min(raStart, raStop);
-                ra <= Math.Max(raStop, raStart);
-                ra += raStep) {
-                FramingDec.Add(new DecLine(ra, decStep, ImageParameter, vFovDegTop, vFovDegBottom));
-            }
-
-            RAPathPoints = new ObservableCollection<PointCollectionAndClosed>();
-            DecPathPoints = new ObservableCollection<PointCollectionAndClosed>();
-
-            // group the points by ra and dec to make point collections to draw lines
-            var groupsRa = FramingDec.SelectMany(d => d.DecLinePoints).GroupBy(d => d.Dec);
-            var groupsDec = FramingDec.SelectMany(d => d.DecLinePoints).GroupBy(d => d.RA);
-
-            foreach (var group in groupsRa) {
-                var pointCollection = new PointCollection(group.Select(g => g.Point));
-                var closed = group.Count() == 360 / raStep;
-
-                RAPathPoints.Add(new PointCollectionAndClosed() { Closed = closed, Collection = pointCollection });
-            }
-
-            foreach (var group in groupsDec) {
-                var pointCollection = new PointCollection(group.Select(g => g.Point));
-
-                DecPathPoints.Add(new PointCollectionAndClosed() { Closed = false, Collection = pointCollection });
-            }
+            RAPathPoints = new ObservableCollection<PointCollectionAndClosed>(decMatrix.PointsByRA);
+            DecPathPoints = new ObservableCollection<PointCollectionAndClosed>(decMatrix.PointsByDec);
 
             return dsoDict;
-        }
-
-        public static double RoundToHigherValue(double value, double multiple) {
-            return (Math.Abs(value) + (multiple - Math.Abs(value) % multiple)) *
-                   Math.Sign(value);
-        }
-
-        public static double RoundToLowerValue(double value, double multiple) {
-            return (Math.Abs(value) - (Math.Abs(value) % multiple)) * Math.Sign(value);
-        }
-
-        public class PointCollectionAndClosed : BaseINPC {
-            private PointCollection collection;
-            private bool closed;
-
-            public PointCollection Collection {
-                get => collection;
-                set {
-                    collection = value;
-                    RaisePropertyChanged();
-                }
-            }
-
-            public bool Closed {
-                get => closed;
-                set {
-                    closed = value;
-                    RaisePropertyChanged();
-                }
-            }
         }
 
         private ObservableCollection<PointCollectionAndClosed> decPathPoints;
@@ -845,10 +753,6 @@ namespace NINA.ViewModel {
                 } else {
                     DSOInImage.RemoveAt(i);
                 }
-            }
-
-            foreach (var framingDecItem in FramingDec) {
-                framingDecItem.RecalculatePoints(newCenter);
             }
 
             var dsosToAdd = cachedDSOs.Where(x => !existingDSOs.Any(y => y == x.Value.Id));
@@ -1229,10 +1133,11 @@ namespace NINA.ViewModel {
         public string Name3 { get; }
     }
 
-    internal class DecLine : BaseINPC {
+    internal class FrameLineMatrix : BaseINPC {
         private readonly double arcSecWidth;
         private readonly double arcSecHeight;
         private readonly Point imageCenterPoint;
+        private readonly double raStep;
 
         /// <summary>
         /// Constructor for a Framing DSO.
@@ -1241,8 +1146,8 @@ namespace NINA.ViewModel {
         /// </summary>
         /// <param name="dso">The DSO including its coordinates</param>
         /// <param name="image">The image where the DSO should be placed in including the RA/Dec coordinates of the center of that image</param>
-        public DecLine(double ra, double raDegreeStep, SkySurveyImage image, double vFovDegTop, double vFovDegBottom) {
-            var dec = image.Coordinates.Dec;
+        public FrameLineMatrix(SkySurveyImage image, double leftRADegrees, double hFovDeg, double vFovDegTop, double vFovDegBottom) {
+            var coordDec = image.Coordinates.Dec;
 
             arcSecWidth = Astrometry.ArcminToArcsec(image.FoVWidth) / image.Image.PixelWidth;
             arcSecHeight = Astrometry.ArcminToArcsec(image.FoVHeight) / image.Image.PixelHeight;
@@ -1253,38 +1158,91 @@ namespace NINA.ViewModel {
             // calculate the lines based on fov height and current dec to avoid projection issues
             // atan gnomoric projection cannot project properly over 90deg, it will result in the same results as prior
             // and dec lines will overlap each other
-            var realTopDec = Math.Abs(dec) + vFovDegTop;
-            var realBottomDec = Math.Abs(dec) - vFovDegBottom;
+            var realTopDec = Math.Abs(coordDec) + vFovDegTop;
+            var realBottomDec = Math.Abs(coordDec) - vFovDegBottom;
 
             if (realTopDec >= 89) {
                 realTopDec = 89;
             }
 
-            var decStart = realBottomDec < 0
-                ? FramingAssistantVM.RoundToHigherValue(realBottomDec, raDegreeStep)
-                : FramingAssistantVM.RoundToLowerValue(realBottomDec, raDegreeStep);
+            // TODO: variable calculation based on hfovdeg and dec
+            raStep = 3.75;
+            var decStep = 3.75;
+            if (Math.Abs(coordDec) > 50) {
+                raStep *= 2;
+                decStep = 3.75;
+            }
+            if (Math.Abs(coordDec) > 70) {
+                raStep *= 2;
+                decStep = 3.75 / 2;
+            }
 
-            // if raStop becomse larger than 89 we want to keep it at 89
-            double decStop = FramingAssistantVM.RoundToHigherValue(realTopDec, raDegreeStep);
+            if (realTopDec == 89) {
+                raStep *= 2;
+                decStep = 3.75 / 2 / 2;
+            }
+
+            double raStart;
+            double raStop;
+
+            // we calculate the dec lines from the starting point of the RA to the end point. we don't have to wrap around
+            // because the algorithms work well with negative degrees or degrees over 360
+            // if realTopDec is 89 we want full circles
+            if (realTopDec == 89) {
+                raStart = 0;
+                raStop = 360 - raStep;
+            } else {
+                raStop = leftRADegrees - hFovDeg < 0 ? RoundToHigherValue(leftRADegrees - hFovDeg, raStep) : RoundToLowerValue(leftRADegrees - hFovDeg, raStep);
+                raStart = RoundToHigherValue(leftRADegrees, raStep);
+            }
+
+            var decStart = realBottomDec < 0
+                ? RoundToHigherValue(realBottomDec, decStep)
+                : RoundToLowerValue(realBottomDec, decStep);
+
+            // if decStop becomse larger than 89 we want to keep it at 89
+            double decStop = RoundToHigherValue(realTopDec, decStep);
             if (decStop >= 89) {
                 decStop = 89;
             }
 
             // flip coordinates, also consider 0 because Math.Sign(0) returns 0
-            decStart *= Math.Sign(dec) == 0 ? 1 : Math.Sign(dec);
-            decStop *= Math.Sign(dec) == 0 ? 1 : Math.Sign(dec);
+            decStart *= Math.Sign(coordDec) == 0 ? 1 : Math.Sign(coordDec);
+            decStop *= Math.Sign(coordDec) == 0 ? 1 : Math.Sign(coordDec);
 
             decLineCoordinatePoints = new List<Coordinates>();
             decLinePoints = new List<DecLinePoint>();
 
-            for (double dec = Math.Min(decStart, decStop);
-                dec <= Math.Max(decStart, decStop);
-                dec += raDegreeStep) {
-                decLineCoordinatePoints.Add(new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees));
+            for (double ra = Math.Min(raStart, raStop);
+                ra <= Math.Max(raStop, raStart);
+                ra += raStep) {
+                for (double dec = Math.Min(decStart, decStop);
+                    dec <= Math.Max(decStart, decStop);
+                    dec += decStep) {
+                    decLineCoordinatePoints.Add(new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees));
+                }
             }
 
             RecalculatePoints(image.Coordinates);
         }
+
+        public static double RoundToHigherValue(double value, double multiple) {
+            return (Math.Abs(value) + (multiple - Math.Abs(value) % multiple)) * Math.Sign(value);
+        }
+
+        public static double RoundToLowerValue(double value, double multiple) {
+            return (Math.Abs(value) - (Math.Abs(value) % multiple)) * Math.Sign(value);
+        }
+
+        public List<PointCollectionAndClosed> PointsByRA => decLinePoints.GroupBy(p => p.RA).Select(g => new PointCollectionAndClosed() {
+            Collection = new PointCollection(g.Select(p => p.Point)),
+            Closed = (360.0 / g.Count() == raStep)
+        }).ToList();
+
+        public List<PointCollectionAndClosed> PointsByDec => decLinePoints.GroupBy(p => p.Dec).Select(g => new PointCollectionAndClosed() {
+            Collection = new PointCollection(g.Select(p => p.Point)),
+            Closed = (360.0 / g.Count() == raStep)
+        }).ToList();
 
         private readonly double rotation;
         private readonly List<Coordinates> decLineCoordinatePoints;
@@ -1313,6 +1271,27 @@ namespace NINA.ViewModel {
             get => decLinePoints;
             private set {
                 decLinePoints = value;
+                RaisePropertyChanged();
+            }
+        }
+    }
+
+    public class PointCollectionAndClosed : BaseINPC {
+        private PointCollection collection;
+        private bool closed;
+
+        public PointCollection Collection {
+            get => collection;
+            set {
+                collection = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool Closed {
+            get => closed;
+            set {
+                closed = value;
                 RaisePropertyChanged();
             }
         }
