@@ -1,7 +1,6 @@
 ﻿using NINA.Model;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
-using NINA.Utility.SkySurvey;
 using System.Linq;
 using System.Windows;
 
@@ -14,8 +13,8 @@ namespace NINA.ViewModel.FramingAssistant {
         private readonly double arcSecHeight;
         private readonly double sizeWidth;
         private readonly double sizeHeight;
+        private Coordinates coordinates;
         private Point topLeftPoint;
-        private readonly Point imageCenterPoint;
 
         /// <summary>
         /// Constructor for a Framing DSO.
@@ -23,10 +22,10 @@ namespace NINA.ViewModel.FramingAssistant {
         /// Those coordinates can be used to place the DSO including its name and size in any given image.
         /// </summary>
         /// <param name="dso">The DSO including its coordinates</param>
-        /// <param name="image">The image where the DSO should be placed in including the RA/Dec coordinates of the center of that image</param>
-        public FramingDSO(DeepSkyObject dso, SkySurveyImage image) {
-            arcSecWidth = Astrometry.ArcminToArcsec(image.FoVWidth) / image.Image.PixelWidth;
-            arcSecHeight = Astrometry.ArcminToArcsec(image.FoVHeight) / image.Image.PixelHeight;
+        /// <param name="viewport">The image where the DSO should be placed in including the RA/Dec coordinates of the center of that image</param>
+        public FramingDSO(DeepSkyObject dso, ViewportFoV viewport) {
+            arcSecWidth = viewport.ArcSecWidth;
+            arcSecHeight = viewport.ArcSecHeight;
 
             if (dso.Size != null && dso.Size >= arcSecWidth) {
                 sizeWidth = dso.Size.Value;
@@ -60,27 +59,13 @@ namespace NINA.ViewModel.FramingAssistant {
                 Name3 = null;
             }
 
-            //topLeftPoint = dso.Coordinates.ProjectFromCenterToXY(image.Coordinates, new Point(image.Image.PixelWidth / 2.0, image.Image.PixelHeight / 2.0),
-            //  arcSecWidth, arcSecHeight, image.Rotation);
-
-            imageCenterPoint = new Point(image.Image.PixelWidth / 2.0, image.Image.PixelHeight / 2.0);
-            rotation = image.Rotation;
             coordinates = dso.Coordinates;
 
-            RecalculateTopLeft(image.Coordinates);
+            RecalculateTopLeft(viewport);
         }
 
-        private Coordinates coordinates;
-        private double rotation;
-
-        public void RecalculateTopLeft(Coordinates reference) {
-            var projectedPoint = coordinates.ProjectFromCenterToXY(
-                reference,
-                imageCenterPoint,
-                arcSecWidth,
-                arcSecHeight,
-                rotation
-            );
+        public void RecalculateTopLeft(ViewportFoV reference) {
+            var projectedPoint = coordinates.ProjectFromCenterToXY(reference);
             TopLeftPoint = new Point(projectedPoint.X - SizeWidth / 2, projectedPoint.Y - SizeHeight / 2);
         }
 

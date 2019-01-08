@@ -37,7 +37,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -78,10 +77,10 @@ namespace NINA.ViewModel.FramingAssistant {
             DragMoveCommand = new RelayCommand(DragMove);
             ClearCacheCommand = new RelayCommand(ClearCache);
 
-            FrameLineMatrix = new FrameLineMatrix();
-
             DeepSkyObjectSearchVM = new DeepSkyObjectSearchVM(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
             DeepSkyObjectSearchVM.PropertyChanged += DeepSkyObjectSearchVM_PropertyChanged;
+
+            DSOAnnotator = new DSOAnnotator(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
 
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(async (object parameter) => {
                 var vm = (ApplicationVM)Application.Current.Resources["AppVM"];
@@ -148,18 +147,6 @@ namespace NINA.ViewModel.FramingAssistant {
             profileService.LocationChanged += (object sender, EventArgs e) => {
                 DSO = new DeepSkyObject(DSO.Name, DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
             };
-
-            DSOInImage = new AsyncObservableCollection<FramingDSO>();
-
-            dbInstance = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
-        }
-
-        public FrameLineMatrix FrameLineMatrix {
-            get { return frameLineMatrix; }
-            set {
-                frameLineMatrix = value;
-                RaisePropertyChanged();
-            }
         }
 
         private async void ResizeTimer_Tick(object sender, EventArgs e) {
@@ -170,8 +157,6 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         private readonly DispatcherTimer resizeTimer;
-
-        private DatabaseInteraction dbInstance;
 
         private void DeepSkyObjectSearchVM_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(DeepSkyObjectSearchVM.Coordinates) && DeepSkyObjectSearchVM.Coordinates != null) {
@@ -587,149 +572,6 @@ namespace NINA.ViewModel.FramingAssistant {
 
         private IProgress<ApplicationStatus> _statusUpdate;
 
-        private AsyncObservableCollection<FramingDSO> dSOInImage;
-
-        public AsyncObservableCollection<FramingDSO> DSOInImage {
-            get => dSOInImage;
-            set {
-                dSOInImage = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ViewportFoV calculations;
-
-        /// <summary>
-        /// Query for skyobjects for a reference coordinate that overlap the current field of view
-        /// </summary>
-        /// <param name="referenceCoordinate"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        private async Task<Dictionary<string, DeepSkyObject>> GetDeepSkyObjectsForFoV(Coordinates referenceCoordinate, CancellationToken ct) {
-            var dsoDict = new Dictionary<string, DeepSkyObject>();
-            DatabaseInteraction.DeepSkyObjectSearchParams param = new DatabaseInteraction.DeepSkyObjectSearchParams();
-
-            // calculate size, at 10deg fov we want all items, at 45deg fov only the items that are larger than 100
-            var size = (2.857 * FieldOfView - 28.57);
-            if (size > 0) {
-                param.Size = new DatabaseInteraction.DeepSkyObjectSearchFromThru<string> {
-                    From = size.ToString(CultureInfo.InvariantCulture)
-                };
-            }
-
-            // if we're above 90deg centerTop will be different than centerBottom, otherwise it is equal
-            if (calculations.IsAbove90) {
-                // then we want everything from bottomLeft to 90 or -90 to bottomLeft (which is flipped when dec < 0 so it's actually "top" left)
-                param.Declination = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = referenceCoordinate.Dec < 0 ? -90 : calculations.BottomLeft.Dec,
-                    Thru = referenceCoordinate.Dec < 0 ? calculations.BottomLeft.Dec : 90
-                };
-                param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = 0,
-                    Thru = 360
-                };
-            } else {
-                // depending on orientation we might be flipped so we search from lowest point to highest point
-                param.Declination = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = Math.Min(calculations.TopCenter.Dec, calculations.BottomLeft.Dec),
-                    Thru = Math.Max(calculations.BottomLeft.Dec, calculations.TopCenter.Dec)
-                };
-                // since topLeft.RADegrees is always higher than centerTop.RADegrees (counterclockwise circle) we can subtract hFovDeg to get the full RA
-                param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = calculations.TopLeft.RADegrees - calculations.HFoVDeg,
-                    Thru = calculations.TopLeft.RADegrees
-                };
-            }
-
-            // if the calculated from RA is lower than zero we have to search from that point to 360
-            // add the dso and then later search from 0 to the previous thru ra
-            if (param.RightAscension.From < 0) {
-                param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = 360 + param.RightAscension.From,
-                    Thru = 360
-                };
-
-                foreach (var dso in await dbInstance.GetDeepSkyObjects(
-                    string.Empty, param,
-                    ct)) {
-                    dsoDict.Add(dso.Id, dso);
-                }
-
-                param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = 0,
-                    Thru = calculations.TopLeft.RADegrees
-                };
-            }
-
-            foreach (var dso in await dbInstance.GetDeepSkyObjects(
-                string.Empty, param,
-                ct)) {
-                if (!dsoDict.ContainsKey(dso.Id)) {
-                    dsoDict.Add(dso.Id, dso);
-                }
-            }
-
-            return dsoDict;
-        }
-
-        private ObservableCollection<PointCollectionAndClosed> decPathPoints;
-
-        public ObservableCollection<PointCollectionAndClosed> DecPathPoints {
-            get => decPathPoints;
-            set {
-                decPathPoints = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ObservableCollection<PointCollectionAndClosed> raPathPoints;
-
-        public ObservableCollection<PointCollectionAndClosed> RAPathPoints {
-            get => raPathPoints;
-            set {
-                raPathPoints = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private Vector deltaSum = new Vector(0, 0);
-        private Dictionary<string, DeepSkyObject> cachedDSOs = new Dictionary<string, DeepSkyObject>();
-
-        private async Task UpdateDSOsInImage(Vector delta) {
-            //deltaSum.X += delta.X;
-            //deltaSum.Y += delta.Y;
-
-            var imageArcsecWidth = Astrometry.ArcminToArcsec(ImageParameter.FoVWidth) / ImageParameter.Image.Width;
-            var imageArcsecHeight = Astrometry.ArcminToArcsec(ImageParameter.FoVHeight) / ImageParameter.Image.Height;
-            var newCenter = Rectangle.Coordinates.Shift(delta.X, delta.Y, ImageParameter.Rotation, imageArcsecWidth, imageArcsecHeight);
-            DSO.Coordinates = newCenter;
-            ImageParameter.Coordinates = newCenter;
-            CalculateRectangle(ImageParameter);
-
-            calculations = new ViewportFoV(newCenter, FieldOfView, ImageParameter.Image.Width, ImageParameter.Image.Height, ImageParameter.Rotation);
-
-            //if (Math.Abs(deltaSum.X) > ImageParameter.Image.Width / 4d || Math.Abs(deltaSum.Y) > ImageParameter.Image.Height / 4d) {
-            cachedDSOs = await GetDeepSkyObjectsForFoV(newCenter, _loadImageSource.Token);
-            //deltaSum = new Vector(0, 0);
-            //}
-
-            var existingDSOs = new List<string>();
-            for (int i = DSOInImage.Count - 1; i >= 0; i--) {
-                var dso = DSOInImage[i];
-                if (cachedDSOs.ContainsKey(dso.Id)) {
-                    dso.RecalculateTopLeft(newCenter);
-                    existingDSOs.Add(dso.Id);
-                } else {
-                    DSOInImage.RemoveAt(i);
-                }
-            }
-
-            var dsosToAdd = cachedDSOs.Where(x => !existingDSOs.Any(y => y == x.Value.Id));
-            foreach (var dso in dsosToAdd) {
-                DSOInImage.Add(new FramingDSO(dso.Value, ImageParameter));
-            }
-        }
-
         private async Task<bool> LoadImage() {
             using (MyStopWatch.Measure()) {
                 CancelLoadImage();
@@ -763,23 +605,7 @@ namespace NINA.ViewModel.FramingAssistant {
                             RaisePropertyChanged(nameof(ImageCacheInfo));
                         }
 
-                        var l = new List<FramingDSO>();
-
-                        calculations = new ViewportFoV(skySurveyImage.Coordinates, FieldOfView, skySurveyImage.Image.Width, skySurveyImage.Image.Height, ImageParameter.Rotation);
-
-                        cachedDSOs = await GetDeepSkyObjectsForFoV(skySurveyImage.Coordinates, _loadImageSource.Token);
-
-                        foreach (var dso in cachedDSOs) {
-                            l.Add(new FramingDSO(dso.Value, skySurveyImage));
-                        }
-                        DSOInImage = new AsyncObservableCollection<FramingDSO>(l);
-
-                        await Dispatcher.CurrentDispatcher.BeginInvoke((Action)(() => frameLineMatrix.CalculatePoints(calculations)));
-
-                        //RAPathPoints = new ObservableCollection<PointCollectionAndClosed>(frameLineMatrix.PointsByRADict.Values);
-                        //DecPathPoints = new ObservableCollection<PointCollectionAndClosed>(frameLineMatrix.PointsByDecDict.Values);
-
-                        deltaSum = new Vector(0, 0);
+                        DSOAnnotator.Initialize(skySurveyImage.Coordinates, FieldOfView, skySurveyImage.Image.Width, skySurveyImage.Image.Height, ImageParameter.Rotation, _loadImageSource.Token);
                     }
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
@@ -927,36 +753,45 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
-        private FrameLineMatrix frameLineMatrix;
-
-        private void DragStart(object obj) {
-            FrameLineMatrix.RAPoints = new AsyncObservableCollection<PointCollectionAndClosed>();
-            FrameLineMatrix.DecPoints = new AsyncObservableCollection<PointCollectionAndClosed>();
+        private async void DragStart(object obj) {
+            await Dispatcher.CurrentDispatcher.BeginInvoke((Action)(() => DSOAnnotator.ClearFrameLineMatrix()));
         }
 
         private async void DragStop(object obj) {
-            await Dispatcher.CurrentDispatcher.BeginInvoke((Action)(() => frameLineMatrix.CalculatePoints(calculations)));
+            await Dispatcher.CurrentDispatcher.BeginInvoke((Action)(() => DSOAnnotator.CalculateFrameLineMatrix()));
         }
 
         private void DragMove(object obj) {
-            var delta = ((DragResult)obj).Delta;
-            if (FramingAssistantSource == SkySurveySource.SKYATLAS) {
-                delta = new Vector(-delta.X, -delta.Y);
-                UpdateDSOsInImage(delta).Wait();
-            } else {
-                var imageArcsecWidth = Astrometry.ArcminToArcsec(ImageParameter.FoVWidth) / ImageParameter.Image.Width;
-                var imageArcsecHeight = Astrometry.ArcminToArcsec(ImageParameter.FoVHeight) / ImageParameter.Image.Height;
-                this.Rectangle.X += delta.X;
-                this.Rectangle.Y += delta.Y;
+            using (MyStopWatch.Measure(nameof(DragMove))) {
+                var delta = ((DragResult)obj).Delta;
+                if (FramingAssistantSource == SkySurveySource.SKYATLAS) {
+                    delta = new Vector(-delta.X, -delta.Y);
 
-                Rectangle.Coordinates = Rectangle.Coordinates.Shift(delta.X, delta.Y, ImageParameter.Rotation, imageArcsecWidth, imageArcsecHeight);
-                foreach (var rect in CameraRectangles) {
-                    rect.Coordinates = rect.Coordinates.Shift(delta.X, delta.Y, ImageParameter.Rotation, imageArcsecWidth, imageArcsecHeight);
+                    var newCenter = DSOAnnotator.ShiftViewport(delta);
+                    DSO.Coordinates = newCenter;
+                    ImageParameter.Coordinates = newCenter;
+                    CalculateRectangle(ImageParameter);
+                    DSOAnnotator.UpdateDSOInImage(delta, _loadImageSource.Token).Wait();
+                } else {
+                    var imageArcsecWidth =
+                        Astrometry.ArcminToArcsec(ImageParameter.FoVWidth) / ImageParameter.Image.Width;
+                    var imageArcsecHeight = Astrometry.ArcminToArcsec(ImageParameter.FoVHeight) /
+                                            ImageParameter.Image.Height;
+                    this.Rectangle.X += delta.X;
+                    this.Rectangle.Y += delta.Y;
+
+                    Rectangle.Coordinates = Rectangle.Coordinates.Shift(delta.X, delta.Y, ImageParameter.Rotation,
+                        imageArcsecWidth, imageArcsecHeight);
+                    foreach (var rect in CameraRectangles) {
+                        rect.Coordinates = rect.Coordinates.Shift(delta.X, delta.Y, ImageParameter.Rotation,
+                            imageArcsecWidth, imageArcsecHeight);
+                    }
                 }
             }
         }
 
         private bool prevCameraConnected = false;
+        private DSOAnnotator dsoAnnotator;
 
         public void UpdateDeviceInfo(CameraInfo cameraInfo) {
             if (cameraInfo != null) {
@@ -986,5 +821,13 @@ namespace NINA.ViewModel.FramingAssistant {
         public ICommand CancelLoadImageFromFileCommand { get; private set; }
         public ICommand ClearCacheCommand { get; private set; }
         public ICommand ScrollViewerSizeChangedCommand { get; }
+
+        public DSOAnnotator DSOAnnotator {
+            get => dsoAnnotator;
+            set {
+                dsoAnnotator = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 }

@@ -464,7 +464,7 @@
                 <local:ImageView.ImageAreaContent>
                     <Canvas Width="{Binding Path=FramingAssistantVM.ImageParameter.Image.PixelWidth, Source={StaticResource AppVM}}" Height="{Binding Path=FramingAssistantVM.ImageParameter.Image.PixelHeight, Source={StaticResource AppVM}}">
                         <Canvas IsHitTestVisible="False">
-                            <ItemsControl ItemsSource="{Binding FrameLineMatrix.RAPoints}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
+                            <ItemsControl ItemsSource="{Binding DSOAnnotator.FrameLineMatrix.RAPoints}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <Canvas />
@@ -490,7 +490,7 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-                            <ItemsControl ItemsSource="{Binding FrameLineMatrix.DecPoints}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
+                            <ItemsControl ItemsSource="{Binding DSOAnnotator.FrameLineMatrix.DecPoints}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <Canvas />
@@ -516,7 +516,7 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-                            <ItemsControl ItemsSource="{Binding DSOInImage}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
+                            <ItemsControl ItemsSource="{Binding DSOAnnotator.DSOInImage}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <Canvas />

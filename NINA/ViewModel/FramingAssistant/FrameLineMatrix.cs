@@ -25,9 +25,6 @@ namespace NINA.ViewModel.FramingAssistant {
             // atan gnomoric projection cannot project properly over 90deg, it will result in the same results as prior
             // and dec lines will overlap each other
 
-            RAPoints = new AsyncObservableCollection<PointCollectionAndClosed>();
-            DecPoints = new AsyncObservableCollection<PointCollectionAndClosed>();
-
             var realTopDec = calculations.CalcTopDec;
             var realBottomDec = calculations.CalcBotomDec;
 

@@ -1,31 +1,34 @@
 ﻿using NINA.Utility.Astrometry;
 using System;
 using System.Windows;
+using Point = System.Windows.Point;
 
 namespace NINA.ViewModel.FramingAssistant {
 
     public class ViewportFoV {
-        public Coordinates AbsoluteCenterCoordinates { get; }
-        public Coordinates TopCenter { get; }
-        public Coordinates TopLeft { get; }
-        public Coordinates BottomLeft { get; }
-        public Coordinates CenterCoordinates { get; }
-        public double CalcTopDec { get; }
-        public double CalcBotomDec { get; }
-        public double VFoVDegTop { get; }
-        public double VFoVDegBottom { get; }
+        public Coordinates AbsoluteCenterCoordinates { get; private set; }
+        public Coordinates TopCenter { get; private set; }
+        public Coordinates TopLeft { get; private set; }
+        public Coordinates BottomLeft { get; private set; }
+        public Coordinates CenterCoordinates { get; private set; }
+        public double CalcTopDec { get; private set; }
+        public double CalcBotomDec { get; private set; }
+        public double VFoVDegTop { get; private set; }
+        public double VFoVDegBottom { get; private set; }
         public double VFoVDeg => VFoVDegTop + VFoVDegBottom;
-        public double HFoVDeg { get; }
-        public bool AboveZero { get; } = true;
-        public bool IsAbove90 { get; }
+        public double HFoVDeg { get; private set; }
+        public bool AboveZero { get; private set; } = true;
+        public bool IsAbove90 { get; private set; }
         public double ArcSecWidth { get; }
         public double ArcSecHeight { get; }
         public Point ViewPortCenterPoint { get; }
         public double Rotation { get; }
+        public double OriginalVFoV { get; }
+        public double OriginalHFoV { get; }
 
         public ViewportFoV(Coordinates centerCoordinates, double vFoVDegrees, double width, double height, double rotation) {
-            var verticalFov = vFoVDegrees;
-            var horizontalFov = (width / height) * vFoVDegrees;
+            OriginalVFoV = vFoVDegrees;
+            OriginalHFoV = (width / height) * vFoVDegrees;
 
             CenterCoordinates = centerCoordinates;
 
@@ -33,14 +36,24 @@ namespace NINA.ViewModel.FramingAssistant {
 
             ViewPortCenterPoint = new Point(width / 2, height / 2);
 
-            ArcSecWidth = Astrometry.DegreeToArcsec(horizontalFov) / width;
-            ArcSecHeight = Astrometry.DegreeToArcsec(verticalFov) / height;
+            ArcSecWidth = Astrometry.DegreeToArcsec(OriginalHFoV) / width;
+            ArcSecHeight = Astrometry.DegreeToArcsec(OriginalVFoV) / height;
 
-            AbsoluteCenterCoordinates = new Coordinates(centerCoordinates.RADegrees, Math.Abs(centerCoordinates.Dec), Epoch.J2000, Coordinates.RAType.Degrees);
+            ShiftViewport(new Vector(0, 0));
+        }
 
-            TopCenter = AbsoluteCenterCoordinates.Shift(0, -verticalFov / 2, 0);
-            TopLeft = AbsoluteCenterCoordinates.Shift(-horizontalFov / 2, (-verticalFov / 2), 0);
-            BottomLeft = AbsoluteCenterCoordinates.Shift(-horizontalFov / 2, (verticalFov / 2), 0);
+        public void ShiftViewport(Vector delta) {
+            if (delta.X == 0 && delta.Y == 0 && AbsoluteCenterCoordinates != null) {
+                return;
+            }
+
+            CenterCoordinates = CenterCoordinates.Shift(delta.X, delta.Y, Rotation, ArcSecWidth, ArcSecHeight);
+
+            AbsoluteCenterCoordinates = new Coordinates(CenterCoordinates.RADegrees, Math.Abs(CenterCoordinates.Dec), Epoch.J2000, Coordinates.RAType.Degrees);
+
+            TopCenter = AbsoluteCenterCoordinates.Shift(0, -OriginalVFoV / 2, 0);
+            TopLeft = AbsoluteCenterCoordinates.Shift(-OriginalHFoV / 2, (-OriginalVFoV / 2), 0);
+            BottomLeft = AbsoluteCenterCoordinates.Shift(-OriginalHFoV / 2, (OriginalVFoV / 2), 0);
 
             VFoVDegTop = Math.Abs(TopCenter.Dec - AbsoluteCenterCoordinates.Dec);
             VFoVDegBottom = Math.Abs(AbsoluteCenterCoordinates.Dec - BottomLeft.Dec);
@@ -56,18 +69,22 @@ namespace NINA.ViewModel.FramingAssistant {
             }
 
             // if we're below 0 we need to flip all calculated decs
-            if (centerCoordinates.Dec < 0) {
+            if (CenterCoordinates.Dec < 0) {
                 BottomLeft.Dec *= -1;
                 TopLeft.Dec *= -1;
                 TopCenter.Dec *= -1;
                 AboveZero = false;
+            } else {
+                AboveZero = true;
             }
 
-            if (Math.Abs(TopCenter.RADegrees - centerCoordinates.RADegrees) > 0.0001) {
+            if (Math.Abs(TopCenter.RADegrees - CenterCoordinates.RADegrees) > 0.0001) {
                 // horizontal fov becomes 360 here and vertical fov the difference between center and 90deg
                 HFoVDeg = 360;
                 VFoVDegTop = 90 - AbsoluteCenterCoordinates.Dec;
                 IsAbove90 = true;
+            } else {
+                IsAbove90 = false;
             }
 
             CalcTopDec = AbsoluteCenterCoordinates.Dec + VFoVDegTop;
