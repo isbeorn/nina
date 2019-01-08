@@ -473,15 +473,15 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Canvas>
-                                            <util:CardinalSplineShape Points="{Binding Collection}" Closed="{Binding Closed}">
+                                            <util:CardinalSplineShape Points="{Binding Collection}" Closed="{Binding Closed}" StrokeThickness="{Binding Stroke}">
                                                 <util:CardinalSplineShape.Stroke>
                                                     <SolidColorBrush>
                                                         <SolidColorBrush.Color>
                                                             <Color
                                                                 A="128"
                                                                 B="255"
-                                                                G="255"
-                                                                R="255" />
+                                                                G="128"
+                                                                R="128" />
                                                         </SolidColorBrush.Color>
                                                     </SolidColorBrush>
                                                 </util:CardinalSplineShape.Stroke>
@@ -499,15 +499,15 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Canvas>
-                                            <util:CardinalSplineShape Points="{Binding Collection}" Closed="{Binding Closed}">
+                                            <util:CardinalSplineShape Points="{Binding Collection}" Closed="{Binding Closed}" StrokeThickness="{Binding Stroke}">
                                                 <util:CardinalSplineShape.Stroke>
                                                     <SolidColorBrush>
                                                         <SolidColorBrush.Color>
                                                             <Color
                                                                 A="128"
                                                                 B="255"
-                                                                G="255"
-                                                                R="255" />
+                                                                G="128"
+                                                                R="128" />
                                                         </SolidColorBrush.Color>
                                                     </SolidColorBrush>
                                                 </util:CardinalSplineShape.Stroke>

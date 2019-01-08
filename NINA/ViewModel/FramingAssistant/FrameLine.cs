@@ -3,9 +3,10 @@ using System.Windows.Media;
 
 namespace NINA.ViewModel.FramingAssistant {
 
-    public class PointCollectionAndClosed : BaseINPC {
+    public class FrameLine : BaseINPC {
         private PointCollection collection;
         private bool closed;
+        private double stroke;
 
         public PointCollection Collection {
             get => collection;
@@ -19,6 +20,14 @@ namespace NINA.ViewModel.FramingAssistant {
             get => closed;
             set {
                 closed = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double Stroke {
+            get => stroke;
+            set {
+                stroke = value;
                 RaisePropertyChanged();
             }
         }

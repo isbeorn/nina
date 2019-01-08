@@ -16,8 +16,8 @@ namespace NINA.ViewModel.FramingAssistant {
         private const double MAXDEC = 89;
 
         public FrameLineMatrix() {
-            RAPoints = new AsyncObservableCollection<PointCollectionAndClosed>();
-            DecPoints = new AsyncObservableCollection<PointCollectionAndClosed>();
+            RAPoints = new AsyncObservableCollection<FrameLine>();
+            DecPoints = new AsyncObservableCollection<FrameLine>();
         }
 
         public void CalculatePoints(ViewportFoV viewport) {
@@ -27,10 +27,10 @@ namespace NINA.ViewModel.FramingAssistant {
 
             var (raStep, decStep, raStart, raStop, decStart, decStop) = CalculateStepsAndStartStopValues(viewport);
 
-            var pointsByDecDict = new Dictionary<double, PointCollectionAndClosed>();
+            var pointsByDecDict = new Dictionary<double, FrameLine>();
 
             // if raStep is 30 and decStep is 1 just
-            bool raIsClosed = viewport.CalcTopDec >= MAXDEC;
+            bool raIsClosed = RoundToHigherValue(viewport.CalcTopDec, decStep) >= MAXDEC;
 
             for (double ra = Math.Min(raStart, raStop);
                 ra <= Math.Max(raStop, raStart);
@@ -43,7 +43,7 @@ namespace NINA.ViewModel.FramingAssistant {
                     var point = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees).GnomonicTanProjection(viewport);
 
                     if (!pointsByDecDict.ContainsKey(dec)) {
-                        pointsByDecDict.Add(dec, new PointCollectionAndClosed() { Closed = raIsClosed, Collection = new PointCollection(new List<Point> { point }) });
+                        pointsByDecDict.Add(dec, new FrameLine() { Closed = raIsClosed, Collection = new PointCollection(new List<Point> { point }), Stroke = dec == 0 ? 3 : 1 });
                     } else {
                         pointsByDecDict[dec].Collection.Add(point);
                     }
@@ -52,14 +52,15 @@ namespace NINA.ViewModel.FramingAssistant {
                 }
 
                 // those are the vertical lines
-                RAPoints.Add(new PointCollectionAndClosed {
+                RAPoints.Add(new FrameLine {
+                    Stroke = ra == 0 ? 3 : 1,
                     Closed = false,
                     Collection = raPointCollection
                 });
             }
 
             // those are actually the circles
-            foreach (KeyValuePair<double, PointCollectionAndClosed> item in pointsByDecDict) {
+            foreach (KeyValuePair<double, FrameLine> item in pointsByDecDict) {
                 DecPoints.Add(item.Value);
             }
         }
@@ -137,10 +138,10 @@ namespace NINA.ViewModel.FramingAssistant {
             return (raStep, decStep, raStart, raStop, decStart, decStop);
         }
 
-        private AsyncObservableCollection<PointCollectionAndClosed> raPoints;
-        private AsyncObservableCollection<PointCollectionAndClosed> decPoints;
+        private AsyncObservableCollection<FrameLine> raPoints;
+        private AsyncObservableCollection<FrameLine> decPoints;
 
-        public AsyncObservableCollection<PointCollectionAndClosed> RAPoints {
+        public AsyncObservableCollection<FrameLine> RAPoints {
             get { return raPoints; }
             set {
                 raPoints = value;
@@ -148,7 +149,7 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
-        public AsyncObservableCollection<PointCollectionAndClosed> DecPoints {
+        public AsyncObservableCollection<FrameLine> DecPoints {
             get { return decPoints; }
             set {
                 decPoints = value;

@@ -599,7 +599,7 @@
     <Compile Include="ViewModel\OptionsVM.cs" />
     <Compile Include="ViewModel\GuiderVM.cs" />
     <Compile Include="ViewModel\PlatesolveVM.cs" />
-    <Compile Include="ViewModel\FramingAssistant\PointCollectionAndClosed.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FrameLine.cs" />
     <Compile Include="ViewModel\PolarAlignmentVM.cs" />
     <Compile Include="ViewModel\ProfileSelectVM.cs" />
     <Compile Include="Model\RMS.cs" />
