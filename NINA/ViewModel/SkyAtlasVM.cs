@@ -418,10 +418,11 @@ namespace NINA.ViewModel {
         }
 
         private void InitializeObjectTypeFilters() {
-            var l = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation).GetObjectTypes(new System.Threading.CancellationToken());
+            var task = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation).GetObjectTypes(new System.Threading.CancellationToken());
+            var list = task.Result?.OrderBy(x => x).ToList();
             ObjectTypes = new AsyncObservableCollection<DSOObjectType>();
-            foreach (var t in l.Result) {
-                ObjectTypes.Add(new DSOObjectType(t));
+            foreach (var type in list) {
+                ObjectTypes.Add(new DSOObjectType(type));
             }
         }
 

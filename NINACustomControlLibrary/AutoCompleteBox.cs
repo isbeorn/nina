@@ -76,12 +76,32 @@ namespace NINACustomControlLibrary {
             var tb = GetTemplateChild("PART_TextBox") as TextBox;
             if (tb != null) {
                 tb.PreviewKeyDown += Tb_PreviewKeyDown; ;
+                tb.LostFocus += Tb_LostFocus;
             }
             var list = GetTemplateChild("PART_SearchCommandResultView") as ListView;
             if (list != null) {
                 list.PreviewKeyDown += List_PreviewKeyDown;
                 list.PreviewKeyUp += List_PreviewKeyUp;
                 list.SelectionChanged += List_SelectionChanged;
+            }
+        }
+
+        private void Tb_LostFocus(object sender, RoutedEventArgs e) {
+            var list = GetTemplateChild("PART_SearchCommandResultView") as ListView;
+            var subItemFocused = false;
+            if (list != null) {
+                for (int i = 0; i < list.Items.Count; i++) {
+                    ListViewItem item = list.ItemContainerGenerator.ContainerFromIndex(i) as ListViewItem;
+                    if (item != null) {
+                        if (item.IsFocused) {
+                            subItemFocused = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!subItemFocused) {
+                ShowPopup = false;
             }
         }
 
@@ -130,23 +150,27 @@ namespace NINACustomControlLibrary {
                             var list = GetTemplateChild("PART_SearchCommandResultView") as ListView;
                             if (list != null && list.Items.Count > 0) {
                                 ListViewItem item = list.ItemContainerGenerator.ContainerFromIndex(0) as ListViewItem;
-                                item.IsSelected = true;
+                                if (item != null) {
+                                    item.IsSelected = true;
+                                }
                                 ShowPopup = false;
                             }
                             break;
                         }
-                    case (Key.Tab):
                     case (Key.Down): {
                             var list = GetTemplateChild("PART_SearchCommandResultView") as ListView;
                             if (list != null && list.Items.Count > 0) {
                                 forceShowPopup = true;
                                 ListViewItem item = list.ItemContainerGenerator.ContainerFromIndex(0) as ListViewItem;
-                                item.Focus();
-                                item.IsSelected = true;
+                                if (item != null) {
+                                    item.Focus();
+                                    item.IsSelected = true;
+                                    ShowPopup = true;
+                                }
                             }
                             break;
                         }
-
+                    case (Key.Tab):
                     case (Key.Escape): {
                             ShowPopup = false;
                             break;

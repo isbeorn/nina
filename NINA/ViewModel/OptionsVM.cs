@@ -312,9 +312,9 @@ namespace NINA.ViewModel {
 
         private Microsoft.Win32.OpenFileDialog GetFilteredFileDialog(string path, string filename, string filter) {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
-            FileInfo fileInfo = new FileInfo(path);
-            if (fileInfo.Exists) {
-                dialog.InitialDirectory = fileInfo.DirectoryName;
+
+            if (File.Exists(path)) {
+                dialog.InitialDirectory = Path.GetDirectoryName(path);
             }
             dialog.FileName = filename;
             dialog.Filter = filter;

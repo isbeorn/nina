@@ -326,6 +326,7 @@
     <Compile Include="Utility\Converters\OneValueGreaterThanAnotherToVisiblityConverter.cs" />
     <Compile Include="Utility\Converters\WidthAndValueToWidthConverter.cs" />
     <Compile Include="Utility\DataPipes.cs" />
+    <Compile Include="Utility\Extensions\ProcessExtension.cs" />
     <Compile Include="Utility\IApplicationResourceDictionary.cs" />
     <Compile Include="Utility\ApplicationResourceDictionary.cs" />
     <Compile Include="Utility\SkySurvey\SkyAtlasSkySurvey.cs" />
