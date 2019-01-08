@@ -40,7 +40,7 @@ namespace NINA.ViewModel.FramingAssistant {
                 for (double dec = Math.Min(decStart, decStop);
                     dec <= Math.Max(decStart, decStop);
                     dec += decStep) {
-                    var point = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees).ProjectFromCenterToXY(viewport);
+                    var point = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees).GnomonicTanProjection(viewport);
 
                     if (!pointsByDecDict.ContainsKey(dec)) {
                         pointsByDecDict.Add(dec, new PointCollectionAndClosed() { Closed = raIsClosed, Collection = new PointCollection(new List<Point> { point }) });

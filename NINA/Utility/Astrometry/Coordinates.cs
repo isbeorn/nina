@@ -221,7 +221,7 @@ namespace NINA.Utility.Astrometry {
             );
         }
 
-        public Point ProjectFromCenterToXY(ViewportFoV viewPort) {
+        public Point GnomonicTanProjection(ViewportFoV viewPort) {
             return GnomonicTanProjection(viewPort.CenterCoordinates, viewPort.ViewPortCenterPoint, viewPort.ArcSecWidth,
                 viewPort.ArcSecHeight, viewPort.Rotation);
         }

@@ -65,7 +65,7 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         public void RecalculateTopLeft(ViewportFoV reference) {
-            var projectedPoint = coordinates.ProjectFromCenterToXY(reference);
+            var projectedPoint = coordinates.GnomonicTanProjection(reference);
             TopLeftPoint = new Point(projectedPoint.X - SizeWidth / 2, projectedPoint.Y - SizeHeight / 2);
         }
 
