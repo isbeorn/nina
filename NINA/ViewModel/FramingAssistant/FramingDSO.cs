@@ -18,11 +18,11 @@ namespace NINA.ViewModel.FramingAssistant {
 
         /// <summary>
         /// Constructor for a Framing DSO.
-        /// It takes a SkySurveyImage and a DeepSkyObject and calculates XY values in pixels from the top left edge of the image subtracting half of its size.
+        /// It takes a ViewportFoV and a DeepSkyObject and calculates XY values in pixels from the top left edge of the image subtracting half of its size.
         /// Those coordinates can be used to place the DSO including its name and size in any given image.
         /// </summary>
         /// <param name="dso">The DSO including its coordinates</param>
-        /// <param name="viewport">The image where the DSO should be placed in including the RA/Dec coordinates of the center of that image</param>
+        /// <param name="viewport">The viewport of the offending DSO</param>
         public FramingDSO(DeepSkyObject dso, ViewportFoV viewport) {
             arcSecWidth = viewport.ArcSecWidth;
             arcSecHeight = viewport.ArcSecHeight;

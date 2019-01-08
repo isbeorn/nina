@@ -762,30 +762,28 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         private void DragMove(object obj) {
-            using (MyStopWatch.Measure(nameof(DragMove))) {
-                var delta = ((DragResult)obj).Delta;
-                if (FramingAssistantSource == SkySurveySource.SKYATLAS) {
-                    delta = new Vector(-delta.X, -delta.Y);
+            var delta = ((DragResult)obj).Delta;
+            if (FramingAssistantSource == SkySurveySource.SKYATLAS) {
+                delta = new Vector(-delta.X, -delta.Y);
 
-                    var newCenter = DSOAnnotator.ShiftViewport(delta);
-                    DSO.Coordinates = newCenter;
-                    ImageParameter.Coordinates = newCenter;
-                    CalculateRectangle(ImageParameter);
-                    DSOAnnotator.UpdateDSOInImage(delta, _loadImageSource.Token).Wait();
-                } else {
-                    var imageArcsecWidth =
-                        Astrometry.ArcminToArcsec(ImageParameter.FoVWidth) / ImageParameter.Image.Width;
-                    var imageArcsecHeight = Astrometry.ArcminToArcsec(ImageParameter.FoVHeight) /
-                                            ImageParameter.Image.Height;
-                    this.Rectangle.X += delta.X;
-                    this.Rectangle.Y += delta.Y;
+                var newCenter = DSOAnnotator.ShiftViewport(delta);
+                DSO.Coordinates = newCenter;
+                ImageParameter.Coordinates = newCenter;
+                CalculateRectangle(ImageParameter);
+                DSOAnnotator.UpdateDSO(_loadImageSource.Token).Wait();
+            } else {
+                var imageArcsecWidth =
+                    Astrometry.ArcminToArcsec(ImageParameter.FoVWidth) / ImageParameter.Image.Width;
+                var imageArcsecHeight = Astrometry.ArcminToArcsec(ImageParameter.FoVHeight) /
+                                        ImageParameter.Image.Height;
+                this.Rectangle.X += delta.X;
+                this.Rectangle.Y += delta.Y;
 
-                    Rectangle.Coordinates = Rectangle.Coordinates.Shift(delta.X, delta.Y, ImageParameter.Rotation,
+                Rectangle.Coordinates = Rectangle.Coordinates.Shift(delta.X, delta.Y, ImageParameter.Rotation,
+                    imageArcsecWidth, imageArcsecHeight);
+                foreach (var rect in CameraRectangles) {
+                    rect.Coordinates = rect.Coordinates.Shift(delta.X, delta.Y, ImageParameter.Rotation,
                         imageArcsecWidth, imageArcsecHeight);
-                    foreach (var rect in CameraRectangles) {
-                        rect.Coordinates = rect.Coordinates.Shift(delta.X, delta.Y, ImageParameter.Rotation,
-                            imageArcsecWidth, imageArcsecHeight);
-                    }
                 }
             }
         }

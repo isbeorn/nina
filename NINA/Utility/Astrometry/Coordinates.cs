@@ -222,7 +222,7 @@ namespace NINA.Utility.Astrometry {
         }
 
         public Point ProjectFromCenterToXY(ViewportFoV viewPort) {
-            return ProjectFromCenterToXY(viewPort.CenterCoordinates, viewPort.ViewPortCenterPoint, viewPort.ArcSecWidth,
+            return GnomonicTanProjection(viewPort.CenterCoordinates, viewPort.ViewPortCenterPoint, viewPort.ArcSecWidth,
                 viewPort.ArcSecHeight, viewPort.Rotation);
         }
 
@@ -235,7 +235,7 @@ namespace NINA.Utility.Astrometry {
         /// <param name="vertResArcSecPix">Vertical resolution in ArcSec/Px</param>
         /// <param name="rotation">Rotation in degrees</param>
         /// <returns></returns>
-        public Point ProjectFromCenterToXY(Coordinates center, Point centerPointPixels, double horizResArcSecPx, double vertResArcSecPix, double rotation) {
+        public Point GnomonicTanProjection(Coordinates center, Point centerPointPixels, double horizResArcSecPx, double vertResArcSecPix, double rotation) {
             var raDegreesSanitized = RADegrees;
             var deltaRa = (raDegreesSanitized - center.RADegrees);
             if (deltaRa > 180) {

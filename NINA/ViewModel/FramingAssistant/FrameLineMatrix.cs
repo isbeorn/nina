@@ -20,73 +20,17 @@ namespace NINA.ViewModel.FramingAssistant {
             DecPoints = new AsyncObservableCollection<PointCollectionAndClosed>();
         }
 
-        public void CalculatePoints(ViewportFoV calculations) {
+        public void CalculatePoints(ViewportFoV viewport) {
             // calculate the lines based on fov height and current dec to avoid projection issues
             // atan gnomoric projection cannot project properly over 90deg, it will result in the same results as prior
             // and dec lines will overlap each other
 
-            var realTopDec = calculations.CalcTopDec;
-            var realBottomDec = calculations.CalcBotomDec;
-
-            double raStep;
-            double decStep;
-            double raStart;
-            double raStop;
-            double decStart;
-            double decStop;
-
-            if (realTopDec >= MAXDEC) {
-                realTopDec = MAXDEC;
-                raStep = 30; // 12 lines at top
-                decStep = 1;
-
-                raStart = 0;
-                raStop = 360 - raStep;
-            } else {
-                // we want at least 4 lines
-                // get the steps that are closest to vFovDegTotal and closest to hFovDeg
-                decStep = calculations.VFoVDeg / 4;
-                decStep = DECSTEPS.OrderBy(item => Math.Abs(decStep - item)).First();
-
-                raStep = calculations.HFoVDeg / 4;
-                raStep = RASTEPS.OrderBy(item => Math.Abs(raStep - item)).First();
-
-                while (realTopDec + decStep > MAXDEC) {
-                    if (decStep == 1) {
-                        realTopDec = MAXDEC;
-                        raStep = 30;
-                        break;
-                    }
-
-                    decStep = DECSTEPS[Array.FindIndex(DECSTEPS, w => w == decStep) - 1];
-                }
-
-                raStop = calculations.TopLeft.RADegrees - calculations.HFoVDeg < 0
-                    ? RoundToHigherValue(calculations.TopLeft.RADegrees - calculations.HFoVDeg, raStep)
-                    : RoundToLowerValue(calculations.TopLeft.RADegrees - calculations.HFoVDeg, raStep);
-                raStart = RoundToHigherValue(calculations.TopLeft.RADegrees, raStep);
-            }
-
-            if (realTopDec == MAXDEC) {
-                decStart = RoundToHigherValue(realBottomDec, decStep);
-            } else {
-                decStart = realBottomDec < 0
-                    ? RoundToHigherValue(realBottomDec, decStep)
-                    : RoundToLowerValue(realBottomDec, decStep);
-            }
-
-            decStop = RoundToHigherValue(realTopDec, decStep);
-            if (decStop >= MAXDEC) {
-                decStop = MAXDEC;
-            }
-
-            // flip coordinates if necessary, also consider 0 because Math.Sign(0) returns 0
-            decStart *= calculations.AboveZero ? 1 : -1;
-            decStop *= calculations.AboveZero ? 1 : -1;
+            var (raStep, decStep, raStart, raStop, decStart, decStop) = CalculateStepsAndStartStopValues(viewport);
 
             var pointsByDecDict = new Dictionary<double, PointCollectionAndClosed>();
 
-            bool raClosed = raStop + raStep == 360;
+            // if raStep is 30 and decStep is 1 just
+            bool raIsClosed = viewport.CalcTopDec >= MAXDEC;
 
             for (double ra = Math.Min(raStart, raStop);
                 ra <= Math.Max(raStop, raStart);
@@ -96,10 +40,10 @@ namespace NINA.ViewModel.FramingAssistant {
                 for (double dec = Math.Min(decStart, decStop);
                     dec <= Math.Max(decStart, decStop);
                     dec += decStep) {
-                    var point = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees).ProjectFromCenterToXY(calculations);
+                    var point = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees).ProjectFromCenterToXY(viewport);
 
                     if (!pointsByDecDict.ContainsKey(dec)) {
-                        pointsByDecDict.Add(dec, new PointCollectionAndClosed() { Closed = raClosed, Collection = new PointCollection(new List<Point> { point }) });
+                        pointsByDecDict.Add(dec, new PointCollectionAndClosed() { Closed = raIsClosed, Collection = new PointCollection(new List<Point> { point }) });
                     } else {
                         pointsByDecDict[dec].Collection.Add(point);
                     }
@@ -118,6 +62,79 @@ namespace NINA.ViewModel.FramingAssistant {
             foreach (KeyValuePair<double, PointCollectionAndClosed> item in pointsByDecDict) {
                 DecPoints.Add(item.Value);
             }
+        }
+
+        private (double raStep, double decStep, double raStart, double raStop, double decStart, double decStop) CalculateStepsAndStartStopValues(ViewportFoV viewport) {
+            double raStart;
+            double raStop;
+            double decStart;
+            double decStop;
+            double raStep;
+            double decStep;
+            var realTopDec = viewport.CalcTopDec;
+            var realBottomDec = viewport.CalcBotomDec;
+
+            if (realTopDec >= MAXDEC) {
+                realTopDec = MAXDEC;
+                raStep = 30; // 12 lines at top
+                decStep = 1;
+
+                raStart = 0;
+                raStop = 360 - raStep;
+            } else {
+                // we want at least 4 lines
+                // get the steps that are closest to vFovDegTotal and closest to hFovDeg
+                decStep = viewport.VFoVDeg / 4;
+                decStep = DECSTEPS.OrderBy(item => Math.Abs(decStep - item)).First();
+
+                raStep = viewport.HFoVDeg / 4;
+                raStep = RASTEPS.OrderBy(item => Math.Abs(raStep - item)).First();
+
+                // avoid "crash" using a higher fov and getting close to dec, so it doesn't move from e.g. 16 to 1 instantly but "smoothly"
+                if (realTopDec + decStep > MAXDEC) {
+                    do {
+                        if (decStep == 1) {
+                            realTopDec = MAXDEC;
+                            raStep = 30;
+                            break;
+                        }
+
+                        decStep = DECSTEPS[Array.FindIndex(DECSTEPS, w => w == decStep) - 1];
+                    } while (realTopDec + decStep > MAXDEC);
+                }
+
+                if (raStep != 30) {
+                    // round properly so all ra lines are always visible and not cut off unless raStep is 30
+                    raStop = viewport.TopLeft.RADegrees - viewport.HFoVDeg < 0
+                        ? RoundToHigherValue(viewport.TopLeft.RADegrees - viewport.HFoVDeg, raStep)
+                        : RoundToLowerValue(viewport.TopLeft.RADegrees - viewport.HFoVDeg, raStep);
+                    raStart = RoundToHigherValue(viewport.TopLeft.RADegrees, raStep);
+                } else {
+                    raStart = 0;
+                    raStop = 360 - raStep;
+                }
+            }
+
+            // if the top declination point is at max declination we have to round the lower declination point up so it doesn't get cut off
+            if (realTopDec == MAXDEC) {
+                decStart = RoundToHigherValue(realBottomDec, decStep);
+            } else {
+                // otherwise round according to the location of the dec to avoid cutting off
+                decStart = realBottomDec < 0
+                    ? RoundToHigherValue(realBottomDec, decStep)
+                    : RoundToLowerValue(realBottomDec, decStep);
+            }
+
+            // we want to round decstop always higher
+            decStop = RoundToHigherValue(realTopDec, decStep);
+            if (decStop >= MAXDEC) {
+                decStop = MAXDEC;
+            }
+
+            // flip coordinates if necessary
+            decStart *= viewport.AboveZero ? 1 : -1;
+            decStop *= viewport.AboveZero ? 1 : -1;
+            return (raStep, decStep, raStart, raStop, decStart, decStop);
         }
 
         private AsyncObservableCollection<PointCollectionAndClosed> raPoints;

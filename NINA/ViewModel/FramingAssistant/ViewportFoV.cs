@@ -17,7 +17,7 @@ namespace NINA.ViewModel.FramingAssistant {
         public double VFoVDegBottom { get; private set; }
         public double VFoVDeg => VFoVDegTop + VFoVDegBottom;
         public double HFoVDeg { get; private set; }
-        public bool AboveZero { get; private set; } = true;
+        public bool AboveZero { get; private set; }
         public bool IsAbove90 { get; private set; }
         public double ArcSecWidth { get; }
         public double ArcSecHeight { get; }
@@ -39,10 +39,10 @@ namespace NINA.ViewModel.FramingAssistant {
             ArcSecWidth = Astrometry.DegreeToArcsec(OriginalHFoV) / width;
             ArcSecHeight = Astrometry.DegreeToArcsec(OriginalVFoV) / height;
 
-            ShiftViewport(new Vector(0, 0));
+            Shift(new Vector(0, 0));
         }
 
-        public void ShiftViewport(Vector delta) {
+        public void Shift(Vector delta) {
             if (delta.X == 0 && delta.Y == 0 && AbsoluteCenterCoordinates != null) {
                 return;
             }
@@ -78,6 +78,7 @@ namespace NINA.ViewModel.FramingAssistant {
                 AboveZero = true;
             }
 
+            // if the top center ra is different than the center coordinate ra then the top center point is above 90deg
             if (Math.Abs(TopCenter.RADegrees - CenterCoordinates.RADegrees) > 0.0001) {
                 // horizontal fov becomes 360 here and vertical fov the difference between center and 90deg
                 HFoVDeg = 360;
