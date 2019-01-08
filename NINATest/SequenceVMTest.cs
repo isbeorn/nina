@@ -367,16 +367,7 @@ namespace NINATest {
     }
 
     internal class SequenceProfile : IProfile {
-
-        public IApplicationSettings ApplicationSettings {
-            get {
-                throw new NotImplementedException();
-            }
-
-            set {
-                throw new NotImplementedException();
-            }
-        }
+        public IApplicationSettings ApplicationSettings { get; set; } = new ApplicationSettings();
 
         public IAstrometrySettings AstrometrySettings { get; set; } = new AstrometrySettings();
 

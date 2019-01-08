@@ -129,8 +129,8 @@ namespace NINATest {
             // assert
 
             sut.CameraConnected.Should().BeTrue();
-            sut.SingleFlatWizardFilterSettings.CameraInfo.Should().BeEquivalentTo(cameraInfo);
-            sut.Filters.Select(m => m.CameraInfo).Should().AllBeEquivalentTo(cameraInfo);
+            sut.SingleFlatWizardFilterSettings.BitDepth.Should().Be(cameraInfo.BitDepth);
+            sut.Filters.Select(m => m.BitDepth).Should().AllBeEquivalentTo(cameraInfo.BitDepth);
         }
 
         [Test]
@@ -170,7 +170,7 @@ namespace NINATest {
 
             // assert cameraInfo on all filters and unused filters are removed
             sut.Filters.Select(f => f.Filter).Should().BeEquivalentTo(filters);
-            sut.Filters.Select(f => f.CameraInfo).Should().AllBeEquivalentTo(cameraInfo);
+            sut.Filters.Select(f => f.BitDepth).Should().AllBeEquivalentTo(cameraInfo.BitDepth);
             sut.SelectedFilter.Should().BeEquivalentTo(selectedFilter);
 
             // add another filter
@@ -183,7 +183,7 @@ namespace NINATest {
 
             // assert cameraInfo still on all filters even on the ones that were added
             sut.Filters.Select(f => f.Filter).Should().BeEquivalentTo(filters);
-            sut.Filters.Select(f => f.CameraInfo).Should().AllBeEquivalentTo(cameraInfo);
+            sut.Filters.Select(f => f.BitDepth).Should().AllBeEquivalentTo(cameraInfo.BitDepth);
             sut.SelectedFilter.Should().BeEquivalentTo(selectedFilter);
         }
 
