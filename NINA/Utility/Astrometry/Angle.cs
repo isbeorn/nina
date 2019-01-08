@@ -83,7 +83,7 @@ namespace NINA.Utility.Astrometry {
             return Angle.CreateByRadians(Math.Acos(this.Radians));
         }
 
-        public Angle Atan(Angle angle) {
+        public Angle Atan() {
             return Angle.CreateByRadians(Math.Atan(this.Radians));
         }
 

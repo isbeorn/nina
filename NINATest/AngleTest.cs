@@ -35,7 +35,10 @@ namespace NINATest {
     public class AngleTest {
 
         [Test]
+        [TestCase(0)]
+        [TestCase(3.23452)]
         [TestCase(12)]
+        [TestCase(24)]
         public void CreateByHoursTest(double inputHours) {
             var angle = Angle.CreateByHours(inputHours);
 
@@ -52,7 +55,12 @@ namespace NINATest {
         }
 
         [Test]
-        [TestCase(12)]
+        [TestCase(0)]
+        [TestCase(45.234123)]
+        [TestCase(90)]
+        [TestCase(180)]
+        [TestCase(270)]
+        [TestCase(360)]
         public void CreateByDegreeTest(double inputDegrees) {
             var angle = Angle.CreateByDegree(inputDegrees);
 
@@ -69,17 +77,127 @@ namespace NINATest {
         }
 
         [Test]
-        [TestCase(12)]
+        [TestCase(0)]
+        [TestCase(Math.PI)]
+        [TestCase(2 * Math.PI)]
+        [TestCase(1)]
         public void CreateByRadiansTest(double inputRadians) {
             var angle = Angle.CreateByRadians(inputRadians);
 
-            var expectedDegree = Astrometry.ToRadians(inputRadians);
+            var expectedDegree = Astrometry.ToDegree(inputRadians);
             var expectedArcmin = Astrometry.DegreeToArcmin(expectedDegree);
             var expectedArcsec = Astrometry.DegreeToArcsec(expectedDegree);
             var expectedHours = Astrometry.DegreesToHours(expectedDegree);
 
             Assert.AreEqual(expectedHours, angle.Hours);
             Assert.AreEqual(inputRadians, angle.Radians);
+            Assert.AreEqual(expectedDegree, angle.Degree);
+            Assert.AreEqual(expectedArcmin, angle.ArcMinutes);
+            Assert.AreEqual(expectedArcsec, angle.ArcSeconds);
+        }
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(Math.PI)]
+        [TestCase(2 * Math.PI)]
+        [TestCase(1)]
+        public void SinTest(double inputRadians) {
+            var angle = Angle.CreateByRadians(inputRadians).Sin();
+
+            var rad = Math.Sin(inputRadians);
+            var expectedDegree = Astrometry.ToDegree(rad);
+            var expectedArcmin = Astrometry.DegreeToArcmin(expectedDegree);
+            var expectedArcsec = Astrometry.DegreeToArcsec(expectedDegree);
+            var expectedHours = Astrometry.DegreesToHours(expectedDegree);
+
+            Assert.AreEqual(expectedHours, angle.Hours);
+            Assert.AreEqual(rad, angle.Radians);
+            Assert.AreEqual(expectedDegree, angle.Degree);
+            Assert.AreEqual(expectedArcmin, angle.ArcMinutes);
+            Assert.AreEqual(expectedArcsec, angle.ArcSeconds);
+        }
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(Math.PI)]
+        [TestCase(2 * Math.PI)]
+        [TestCase(1)]
+        public void CosTest(double inputRadians) {
+            var angle = Angle.CreateByRadians(inputRadians).Cos();
+
+            var rad = Math.Cos(inputRadians);
+            var expectedDegree = Astrometry.ToDegree(rad);
+            var expectedArcmin = Astrometry.DegreeToArcmin(expectedDegree);
+            var expectedArcsec = Astrometry.DegreeToArcsec(expectedDegree);
+            var expectedHours = Astrometry.DegreesToHours(expectedDegree);
+
+            Assert.AreEqual(expectedHours, angle.Hours);
+            Assert.AreEqual(rad, angle.Radians);
+            Assert.AreEqual(expectedDegree, angle.Degree);
+            Assert.AreEqual(expectedArcmin, angle.ArcMinutes);
+            Assert.AreEqual(expectedArcsec, angle.ArcSeconds);
+        }
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(Math.PI)]
+        [TestCase(2 * Math.PI)]
+        [TestCase(1)]
+        public void AcosTest(double inputRadians) {
+            var angle = Angle.CreateByRadians(inputRadians).Acos();
+
+            var rad = Math.Acos(inputRadians);
+            var expectedDegree = Astrometry.ToDegree(rad);
+            var expectedArcmin = Astrometry.DegreeToArcmin(expectedDegree);
+            var expectedArcsec = Astrometry.DegreeToArcsec(expectedDegree);
+            var expectedHours = Astrometry.DegreesToHours(expectedDegree);
+
+            Assert.AreEqual(expectedHours, angle.Hours);
+            Assert.AreEqual(rad, angle.Radians);
+            Assert.AreEqual(expectedDegree, angle.Degree);
+            Assert.AreEqual(expectedArcmin, angle.ArcMinutes);
+            Assert.AreEqual(expectedArcsec, angle.ArcSeconds);
+        }
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(Math.PI)]
+        [TestCase(2 * Math.PI)]
+        [TestCase(1)]
+        public void AtanTest(double inputRadians) {
+            var angle = Angle.CreateByRadians(inputRadians).Atan();
+
+            var rad = Math.Atan(inputRadians);
+            var expectedDegree = Astrometry.ToDegree(rad);
+            var expectedArcmin = Astrometry.DegreeToArcmin(expectedDegree);
+            var expectedArcsec = Astrometry.DegreeToArcsec(expectedDegree);
+            var expectedHours = Astrometry.DegreesToHours(expectedDegree);
+
+            Assert.AreEqual(expectedHours, angle.Hours);
+            Assert.AreEqual(rad, angle.Radians);
+            Assert.AreEqual(expectedDegree, angle.Degree);
+            Assert.AreEqual(expectedArcmin, angle.ArcMinutes);
+            Assert.AreEqual(expectedArcsec, angle.ArcSeconds);
+        }
+
+        [Test]
+        [TestCase(0, 0)]
+        [TestCase(Math.PI, Math.PI)]
+        [TestCase(2 * Math.PI, Math.PI)]
+        [TestCase(1, Math.PI)]
+        public void Atan2Test(double xRadians, double yRadians) {
+            var xAngle = Angle.CreateByRadians(xRadians);
+            var yAngle = Angle.CreateByRadians(yRadians);
+            var angle = xAngle.Atan2(yAngle);
+
+            var rad = Math.Atan2(yRadians, xRadians);
+            var expectedDegree = Astrometry.ToDegree(rad);
+            var expectedArcmin = Astrometry.DegreeToArcmin(expectedDegree);
+            var expectedArcsec = Astrometry.DegreeToArcsec(expectedDegree);
+            var expectedHours = Astrometry.DegreesToHours(expectedDegree);
+
+            Assert.AreEqual(expectedHours, angle.Hours);
+            Assert.AreEqual(rad, angle.Radians);
             Assert.AreEqual(expectedDegree, angle.Degree);
             Assert.AreEqual(expectedArcmin, angle.ArcMinutes);
             Assert.AreEqual(expectedArcsec, angle.ArcSeconds);
