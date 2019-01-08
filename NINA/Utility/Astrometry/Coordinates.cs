@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using NINA.ViewModel.FramingAssistant;
 using System;
 using System.Windows;
 using System.Xml.Serialization;
@@ -218,6 +219,11 @@ namespace NINA.Utility.Astrometry {
                 Epoch.J2000,
                 Coordinates.RAType.Degrees
             );
+        }
+
+        public Point ProjectFromCenterToXY(ViewportFoV viewPort) {
+            return ProjectFromCenterToXY(viewPort.CenterCoordinates, viewPort.ViewPortCenterPoint, viewPort.ArcSecWidth,
+                viewPort.ArcSecHeight, viewPort.Rotation);
         }
 
         /// <summary>

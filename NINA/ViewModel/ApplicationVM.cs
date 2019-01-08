@@ -27,6 +27,7 @@ using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using NINA.ViewModel.FlatWizard;
+using NINA.ViewModel.FramingAssistant;
 using System;
 using System.IO;
 using System.Threading.Tasks;

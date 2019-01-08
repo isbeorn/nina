@@ -42,11 +42,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Threading;
 using System.Xml.Linq;
 
-namespace NINA.ViewModel {
+namespace NINA.ViewModel.FramingAssistant {
 
     internal class FramingAssistantVM : BaseVM, ICameraConsumer {
 
@@ -598,7 +597,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private FoVCalculations calculations;
+        private ViewportFoV calculations;
 
         /// <summary>
         /// Query for skyobjects for a reference coordinate that overlap the current field of view
@@ -707,7 +706,7 @@ namespace NINA.ViewModel {
             ImageParameter.Coordinates = newCenter;
             CalculateRectangle(ImageParameter);
 
-            calculations = new FoVCalculations(newCenter, FieldOfView, BoundWidth, BoundHeight);
+            calculations = new ViewportFoV(newCenter, FieldOfView, ImageParameter.Image.Width, ImageParameter.Image.Height, ImageParameter.Rotation);
 
             //if (Math.Abs(deltaSum.X) > ImageParameter.Image.Width / 4d || Math.Abs(deltaSum.Y) > ImageParameter.Image.Height / 4d) {
             cachedDSOs = await GetDeepSkyObjectsForFoV(newCenter, _loadImageSource.Token);
@@ -766,7 +765,7 @@ namespace NINA.ViewModel {
 
                         var l = new List<FramingDSO>();
 
-                        calculations = new FoVCalculations(skySurveyImage.Coordinates, FieldOfView, BoundWidth, BoundHeight);
+                        calculations = new ViewportFoV(skySurveyImage.Coordinates, FieldOfView, skySurveyImage.Image.Width, skySurveyImage.Image.Height, ImageParameter.Rotation);
 
                         cachedDSOs = await GetDeepSkyObjectsForFoV(skySurveyImage.Coordinates, _loadImageSource.Token);
 
@@ -775,7 +774,7 @@ namespace NINA.ViewModel {
                         }
                         DSOInImage = new AsyncObservableCollection<FramingDSO>(l);
 
-                        await Dispatcher.CurrentDispatcher.BeginInvoke((Action)(() => frameLineMatrix.Calculate(ImageParameter, calculations)));
+                        await Dispatcher.CurrentDispatcher.BeginInvoke((Action)(() => frameLineMatrix.CalculatePoints(calculations)));
 
                         //RAPathPoints = new ObservableCollection<PointCollectionAndClosed>(frameLineMatrix.PointsByRADict.Values);
                         //DecPathPoints = new ObservableCollection<PointCollectionAndClosed>(frameLineMatrix.PointsByDecDict.Values);
@@ -936,7 +935,7 @@ namespace NINA.ViewModel {
         }
 
         private async void DragStop(object obj) {
-            await Dispatcher.CurrentDispatcher.BeginInvoke((Action)(() => frameLineMatrix.Calculate(ImageParameter, calculations)));
+            await Dispatcher.CurrentDispatcher.BeginInvoke((Action)(() => frameLineMatrix.CalculatePoints(calculations)));
         }
 
         private void DragMove(object obj) {
@@ -987,360 +986,5 @@ namespace NINA.ViewModel {
         public ICommand CancelLoadImageFromFileCommand { get; private set; }
         public ICommand ClearCacheCommand { get; private set; }
         public ICommand ScrollViewerSizeChangedCommand { get; }
-    }
-
-    internal class FramingRectangle : ObservableRectangle {
-
-        public FramingRectangle(double rotationOffset) : base(rotationOffset) {
-        }
-
-        public FramingRectangle(double x, double y, double width, double height) : base(x, y, width, height) {
-        }
-
-        private int id;
-
-        public int Id {
-            get {
-                return id;
-            }
-            set {
-                id = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private Coordinates coordinates;
-
-        public Coordinates Coordinates {
-            get {
-                return coordinates;
-            }
-            set {
-                coordinates = value;
-                RaisePropertyChanged();
-            }
-        }
-    }
-
-    internal class FramingDSO : BaseINPC {
-        private const int DSO_DEFAULT_SIZE = 30;
-
-        private readonly double arcSecWidth;
-        private readonly double arcSecHeight;
-        private readonly double sizeWidth;
-        private readonly double sizeHeight;
-        private Point topLeftPoint;
-        private readonly Point imageCenterPoint;
-
-        /// <summary>
-        /// Constructor for a Framing DSO.
-        /// It takes a SkySurveyImage and a DeepSkyObject and calculates XY values in pixels from the top left edge of the image subtracting half of its size.
-        /// Those coordinates can be used to place the DSO including its name and size in any given image.
-        /// </summary>
-        /// <param name="dso">The DSO including its coordinates</param>
-        /// <param name="image">The image where the DSO should be placed in including the RA/Dec coordinates of the center of that image</param>
-        public FramingDSO(DeepSkyObject dso, SkySurveyImage image) {
-            arcSecWidth = Astrometry.ArcminToArcsec(image.FoVWidth) / image.Image.PixelWidth;
-            arcSecHeight = Astrometry.ArcminToArcsec(image.FoVHeight) / image.Image.PixelHeight;
-
-            if (dso.Size != null && dso.Size >= arcSecWidth) {
-                sizeWidth = dso.Size.Value;
-            } else {
-                sizeWidth = DSO_DEFAULT_SIZE;
-            }
-
-            if (dso.Size != null && dso.Size >= arcSecHeight) {
-                sizeHeight = dso.Size.Value;
-            } else {
-                sizeHeight = DSO_DEFAULT_SIZE;
-            }
-
-            Id = dso.Id;
-            Name1 = dso.Name;
-            Name2 = dso.AlsoKnownAs.FirstOrDefault(m => m.StartsWith("M "));
-            Name3 = dso.AlsoKnownAs.FirstOrDefault(m => m.StartsWith("NGC "));
-
-            if (Name3 != null && Name1 == Name3.Replace(" ", "")) {
-                Name1 = null;
-            }
-
-            if (Name1 == null && Name2 == null) {
-                Name1 = Name3;
-                Name3 = null;
-            }
-
-            if (Name1 == null && Name2 != null) {
-                Name1 = Name2;
-                Name2 = Name3;
-                Name3 = null;
-            }
-
-            //topLeftPoint = dso.Coordinates.ProjectFromCenterToXY(image.Coordinates, new Point(image.Image.PixelWidth / 2.0, image.Image.PixelHeight / 2.0),
-            //  arcSecWidth, arcSecHeight, image.Rotation);
-
-            imageCenterPoint = new Point(image.Image.PixelWidth / 2.0, image.Image.PixelHeight / 2.0);
-            rotation = image.Rotation;
-            coordinates = dso.Coordinates;
-
-            RecalculateTopLeft(image.Coordinates);
-        }
-
-        private Coordinates coordinates;
-        private double rotation;
-
-        public void RecalculateTopLeft(Coordinates reference) {
-            var projectedPoint = coordinates.ProjectFromCenterToXY(
-                reference,
-                imageCenterPoint,
-                arcSecWidth,
-                arcSecHeight,
-                rotation
-            );
-            TopLeftPoint = new Point(projectedPoint.X - SizeWidth / 2, projectedPoint.Y - SizeHeight / 2);
-        }
-
-        public double SizeWidth => sizeWidth / arcSecWidth;
-
-        public double SizeHeight => sizeHeight / arcSecHeight;
-
-        public Point TopLeftPoint {
-            get => topLeftPoint;
-            private set {
-                topLeftPoint = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string Id { get; }
-        public string Name1 { get; }
-        public string Name2 { get; }
-        public string Name3 { get; }
-    }
-
-    internal class FoVCalculations {
-        public Coordinates AbsoluteCoordinates;
-        public Coordinates TopCenter;
-        public Coordinates TopLeft;
-        public Coordinates BottomLeft;
-        public double VFoVDegTop;
-        public double VFoVDegBottom;
-        public double HFoVDeg;
-        public bool AboveZero;
-        public bool IsAbove90;
-
-        public FoVCalculations(Coordinates referenceCoordinate, double fov, double width, double height) {
-            var verticalFov = fov;
-            var horizontalFov = (width / height) * fov;
-
-            AbsoluteCoordinates = new Coordinates(referenceCoordinate.RADegrees, Math.Abs(referenceCoordinate.Dec), Epoch.J2000, Coordinates.RAType.Degrees);
-
-            TopCenter = AbsoluteCoordinates.Shift(0, -verticalFov / 2, 0);
-            TopLeft = AbsoluteCoordinates.Shift(-horizontalFov / 2, (-verticalFov / 2), 0);
-            BottomLeft = AbsoluteCoordinates.Shift(-horizontalFov / 2, (verticalFov / 2), 0);
-
-            VFoVDegTop = Math.Abs(TopCenter.Dec - AbsoluteCoordinates.Dec);
-            VFoVDegBottom = Math.Abs(AbsoluteCoordinates.Dec - BottomLeft.Dec);
-
-            HFoVDeg = TopLeft.RADegrees > TopCenter.RADegrees
-                ? TopLeft.RADegrees - TopCenter.RADegrees
-                : TopLeft.RADegrees - TopCenter.RADegrees + 360;
-            HFoVDeg *= 2;
-
-            AboveZero = referenceCoordinate.Dec > 0;
-
-            // if the bottom left point is below 0 assume fov for bottom is the same as for top
-            if (BottomLeft.Dec < 0) {
-                VFoVDegBottom = VFoVDegTop;
-            }
-
-            // if we're below 0 we need to flip all calculated decs
-            if (referenceCoordinate.Dec < 0) {
-                BottomLeft.Dec *= -1;
-                TopLeft.Dec *= -1;
-                TopCenter.Dec *= -1;
-            }
-
-            if (Math.Abs(TopCenter.RADegrees - referenceCoordinate.RADegrees) > 0.0001) {
-                // horizontal fov becomes 360 here and vertical fov the difference between center and 90deg
-                HFoVDeg = 360;
-                VFoVDegTop = 90 - AbsoluteCoordinates.Dec;
-                IsAbove90 = true;
-            }
-        }
-    }
-
-    internal class FrameLineMatrix : BaseINPC {
-        private readonly double[] RASTEPS = { 0.46875, 0.9375, 1.875, 3.75, 7.5, 15 };
-
-        private readonly double[] DECSTEPS = { 1, 2, 4, 8, 16, 32, 64 };
-
-        private const double MAXDEC = 89;
-
-        public FrameLineMatrix() {
-            RAPoints = new AsyncObservableCollection<PointCollectionAndClosed>();
-            DecPoints = new AsyncObservableCollection<PointCollectionAndClosed>();
-        }
-
-        public void Calculate(SkySurveyImage image, FoVCalculations calculations) {
-            var coordDec = image.Coordinates.Dec;
-
-            var arcSecWidth = Astrometry.ArcminToArcsec(image.FoVWidth) / image.Image.PixelWidth;
-            var arcSecHeight = Astrometry.ArcminToArcsec(image.FoVHeight) / image.Image.PixelHeight;
-
-            var imageCenterPoint = new Point(image.Image.PixelWidth / 2.0, image.Image.PixelHeight / 2.0);
-            var rotation = image.Rotation;
-
-            // calculate the lines based on fov height and current dec to avoid projection issues
-            // atan gnomoric projection cannot project properly over 90deg, it will result in the same results as prior
-            // and dec lines will overlap each other
-            var realTopDec = Math.Abs(coordDec) + calculations.VFoVDegTop;
-            var realBottomDec = Math.Abs(coordDec) - calculations.VFoVDegBottom;
-
-            double raStep;
-            double decStep;
-            double raStart;
-            double raStop;
-            double decStart;
-            double decStop;
-
-            if (realTopDec >= MAXDEC) {
-                realTopDec = MAXDEC;
-                raStep = 30; // 12 lines at top
-                decStep = 1;
-
-                raStart = 0;
-                raStop = 360 - raStep;
-            } else {
-                // we want at least 4 lines
-                // get the steps that are closest to vFovDegTotal and closest to hFovDeg
-                decStep = (calculations.VFoVDegTop + calculations.VFoVDegBottom) / 4;
-                decStep = DECSTEPS.OrderBy(item => Math.Abs(decStep - item)).First();
-
-                raStep = calculations.HFoVDeg / 4;
-                raStep = RASTEPS.OrderBy(item => Math.Abs(raStep - item)).First();
-
-                while (realTopDec + decStep > MAXDEC) {
-                    if (decStep == 1) {
-                        realTopDec = MAXDEC;
-                        raStep = 30;
-                        break;
-                    }
-
-                    decStep = DECSTEPS[Array.FindIndex(DECSTEPS, w => w == decStep) - 1];
-                }
-
-                raStop = calculations.TopLeft.RADegrees - calculations.HFoVDeg < 0
-                    ? RoundToHigherValue(calculations.TopLeft.RADegrees - calculations.HFoVDeg, raStep)
-                    : RoundToLowerValue(calculations.TopLeft.RADegrees - calculations.HFoVDeg, raStep);
-                raStart = RoundToHigherValue(calculations.TopLeft.RADegrees, raStep);
-            }
-
-            if (realTopDec == MAXDEC) {
-                decStart = RoundToHigherValue(realBottomDec, decStep);
-            } else {
-                decStart = realBottomDec < 0
-                    ? RoundToHigherValue(realBottomDec, decStep)
-                    : RoundToLowerValue(realBottomDec, decStep);
-            }
-
-            decStop = RoundToHigherValue(realTopDec, decStep);
-            if (decStop >= MAXDEC) {
-                decStop = MAXDEC;
-            }
-
-            // flip coordinates if necessary, also consider 0 because Math.Sign(0) returns 0
-            decStart *= Math.Sign(coordDec) == 0 ? 1 : Math.Sign(coordDec);
-            decStop *= Math.Sign(coordDec) == 0 ? 1 : Math.Sign(coordDec);
-
-            var pointsByDecDict = new Dictionary<double, PointCollectionAndClosed>();
-
-            bool raClosed = raStop + raStep == 360;
-
-            for (double ra = Math.Min(raStart, raStop);
-                ra <= Math.Max(raStop, raStart);
-                ra += raStep) {
-                PointCollection raPointCollection = new PointCollection();
-
-                for (double dec = Math.Min(decStart, decStop);
-                    dec <= Math.Max(decStart, decStop);
-                    dec += decStep) {
-                    var point = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees)
-                        .ProjectFromCenterToXY(
-                            image.Coordinates,
-                            imageCenterPoint,
-                            arcSecWidth,
-                            arcSecHeight,
-                            rotation
-                        );
-
-                    if (!pointsByDecDict.ContainsKey(dec)) {
-                        pointsByDecDict.Add(dec, new PointCollectionAndClosed() { Closed = raClosed, Collection = new PointCollection(new List<Point> { point }) });
-                    } else {
-                        pointsByDecDict[dec].Collection.Add(point);
-                    }
-
-                    raPointCollection.Add(point);
-                }
-
-                // those are the vertical lines
-                RAPoints.Add(new PointCollectionAndClosed {
-                    Closed = false,
-                    Collection = raPointCollection
-                });
-            }
-
-            // those are actually the circles
-            foreach (KeyValuePair<double, PointCollectionAndClosed> item in pointsByDecDict) {
-                DecPoints.Add(item.Value);
-            }
-        }
-
-        private AsyncObservableCollection<PointCollectionAndClosed> raPoints;
-        private AsyncObservableCollection<PointCollectionAndClosed> decPoints;
-
-        public AsyncObservableCollection<PointCollectionAndClosed> RAPoints {
-            get { return raPoints; }
-            set {
-                raPoints = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public AsyncObservableCollection<PointCollectionAndClosed> DecPoints {
-            get { return decPoints; }
-            set {
-                decPoints = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public static double RoundToHigherValue(double value, double multiple) {
-            return (Math.Abs(value) + (multiple - Math.Abs(value) % multiple)) * Math.Sign(value);
-        }
-
-        public static double RoundToLowerValue(double value, double multiple) {
-            return (Math.Abs(value) - (Math.Abs(value) % multiple)) * Math.Sign(value);
-        }
-    }
-
-    public class PointCollectionAndClosed : BaseINPC {
-        private PointCollection collection;
-        private bool closed;
-
-        public PointCollection Collection {
-            get => collection;
-            set {
-                collection = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public bool Closed {
-            get => closed;
-            set {
-                closed = value;
-                RaisePropertyChanged();
-            }
-        }
     }
 }
