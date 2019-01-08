@@ -1152,6 +1152,11 @@ namespace NINA.ViewModel {
 
     internal class FrameLineMatrix : BaseINPC {
         private double raStep;
+        private readonly double[] RASTEPS = { 0.46875, 0.9375, 1.875, 3.75, 7.5, 15 };
+
+        private readonly double[] DECSTEPS = { 1, 2, 4, 8, 16, 32, 64 };
+
+        private const double MAXDEC = 89;
 
         /// <summary>
         /// Constructor for a Framing DSO.
@@ -1176,26 +1181,31 @@ namespace NINA.ViewModel {
             var realTopDec = Math.Abs(coordDec) + vFovDegTop;
             var realBottomDec = Math.Abs(coordDec) - vFovDegBottom;
 
-            if (realTopDec >= 89) {
-                realTopDec = 89;
-            }
+            double decStep;
 
-            // TODO: variable calculation based on hfovdeg and dec
-            raStep = 3.75;
-            var decStep = 3.75;
-            if (Math.Abs(coordDec) > 50) {
-                raStep *= 2;
-                decStep = 3.75;
-            }
+            if (realTopDec >= MAXDEC) {
+                realTopDec = MAXDEC;
+                raStep = 30; // 12 lines at top
+                decStep = 1;
+            } else {
+                // TODO: variable calculation based on hfovdeg and dec
+                decStep = (vFovDegTop + vFovDegBottom) / 4;
+                decStep = DECSTEPS.OrderBy(item => Math.Abs(decStep - item)).First();
 
-            if (Math.Abs(coordDec) > 70) {
-                raStep *= 2;
-                decStep = 3.75 / 2;
-            }
+                // we want at least 4 lines
+                raStep = hFovDeg / 4;
+                // get the raStep that is closest to hFovDeg
+                raStep = RASTEPS.OrderBy(item => Math.Abs(raStep - item)).First();
 
-            if (realTopDec == 89) {
-                raStep *= 2;
-                decStep = 3.75 / 2 / 2;
+                while (realTopDec + decStep > MAXDEC) {
+                    if (decStep == 1) {
+                        realTopDec = MAXDEC;
+                        raStep = 30;
+                        break;
+                    }
+
+                    decStep = DECSTEPS[Array.FindIndex(DECSTEPS, w => w == decStep) - 1];
+                }
             }
 
             double raStart;
@@ -1204,7 +1214,7 @@ namespace NINA.ViewModel {
             // we calculate the dec lines from the starting point of the RA to the end point. we don't have to wrap around
             // because the algorithms work well with negative degrees or degrees over 360
             // if realTopDec is 89 we want full circles
-            if (realTopDec == 89) {
+            if (realTopDec == MAXDEC) {
                 raStart = 0;
                 raStop = 360 - raStep;
             } else {
@@ -1218,10 +1228,14 @@ namespace NINA.ViewModel {
                 ? RoundToHigherValue(realBottomDec, decStep)
                 : RoundToLowerValue(realBottomDec, decStep);
 
+            if (realTopDec == MAXDEC) {
+                decStart = RoundToHigherValue(realBottomDec, decStep);
+            }
+
             // if decStop become larger than 89 we want to keep it at 89
             double decStop = RoundToHigherValue(realTopDec, decStep);
-            if (decStop >= 89) {
-                decStop = 89;
+            if (decStop >= MAXDEC) {
+                decStop = MAXDEC;
             }
 
             // flip coordinates, also consider 0 because Math.Sign(0) returns 0
@@ -1246,7 +1260,7 @@ namespace NINA.ViewModel {
                                 rotation
                             ),
                         Dec = dec,
-                        RA = ra
+                        RA = ra,
                     });
                 }
             }
@@ -1262,12 +1276,12 @@ namespace NINA.ViewModel {
 
         public List<PointCollectionAndClosed> PointsByRA => decLinePoints.GroupBy(p => p.RA).Select(g => new PointCollectionAndClosed() {
             Collection = new PointCollection(g.Select(p => p.Point)),
-            Closed = (360.0 / g.Count() == raStep)
+            Closed = false
         }).ToList();
 
         public List<PointCollectionAndClosed> PointsByDec => decLinePoints.GroupBy(p => p.Dec).Select(g => new PointCollectionAndClosed() {
             Collection = new PointCollection(g.Select(p => p.Point)),
-            Closed = (360.0 / g.Count() == raStep)
+            Closed = 360 / raStep == g.Select(p => p.Point).Count()
         }).ToList();
 
         private List<DecLinePoint> decLinePoints;
