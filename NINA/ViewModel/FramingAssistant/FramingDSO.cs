@@ -9,8 +9,8 @@ namespace NINA.ViewModel.FramingAssistant {
     internal class FramingDSO : BaseINPC {
         private const int DSO_DEFAULT_SIZE = 30;
 
-        private readonly double arcSecWidth;
-        private readonly double arcSecHeight;
+        private double arcSecWidth;
+        private double arcSecHeight;
         private readonly double sizeWidth;
         private readonly double sizeHeight;
         private Coordinates coordinates;
@@ -66,7 +66,11 @@ namespace NINA.ViewModel.FramingAssistant {
 
         public void RecalculateTopLeft(ViewportFoV reference) {
             var projectedPoint = coordinates.GnomonicTanProjection(reference);
+            arcSecWidth = reference.ArcSecWidth;
+            arcSecHeight = reference.ArcSecHeight;
             TopLeftPoint = new Point(projectedPoint.X - SizeWidth / 2, projectedPoint.Y - SizeHeight / 2);
+            RaisePropertyChanged(nameof(SizeWidth));
+            RaisePropertyChanged(nameof(SizeHeight));
         }
 
         public double SizeWidth => sizeWidth / arcSecWidth;
