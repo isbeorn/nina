@@ -39,11 +39,19 @@ namespace NINA.Utility.Astrometry {
             Hours
         }
 
+        private Angle raAngle;
+        private Angle decAngle;
+
         /// <summary>
         /// Right Ascension in hours
         /// </summary>
         [XmlElement(nameof(RA))]
-        public double RA { get; set; }
+        public double RA {
+            get => raAngle.Hours;
+            set {
+                raAngle = Angle.ByHours(value);
+            }
+        }
 
         [XmlIgnore]
         public string RAString {
@@ -57,7 +65,7 @@ namespace NINA.Utility.Astrometry {
         /// </summary>
         public double RADegrees {
             get {
-                return RA * 360 / 24;
+                return raAngle.Degree;
             }
         }
 
@@ -65,7 +73,12 @@ namespace NINA.Utility.Astrometry {
         /// Declination in Degrees
         /// </summary>
         [XmlElement(nameof(Dec))]
-        public double Dec { get; set; }
+        public double Dec {
+            get => decAngle.Degree;
+            set {
+                decAngle = Angle.ByDegree(value);
+            }
+        }
 
         [XmlIgnore]
         public string DecString {
@@ -87,14 +100,26 @@ namespace NINA.Utility.Astrometry {
         /// <param name="dec">   Declination in degrees</param>
         /// <param name="epoch"> J2000|JNOW</param>
         /// <param name="ratype">Degrees|Hours</param>
-        public Coordinates(double ra, double dec, Epoch epoch, RAType ratype) {
-            this.RA = ra;
-            this.Dec = dec;
-            this.Epoch = epoch;
+        public Coordinates(double ra, double dec, Epoch epoch, RAType ratype)
+            : this(
+                  ratype == RAType.Hours
+                    ? Angle.ByHours(ra)
+                    : Angle.ByDegree(ra),
+                  Angle.ByDegree(dec),
+                  epoch
+            ) {
+        }
 
-            if (ratype == RAType.Degrees) {
-                this.RA = (this.RA * 24) / 360;
-            }
+        /// <summary>
+        /// Creates new coordinates
+        /// </summary>
+        /// <param name="ra">    Right Ascension</param>
+        /// <param name="dec">   Declination</param>
+        /// <param name="epoch"> J2000|JNOW</param>
+        public Coordinates(Angle ra, Angle dec, Epoch epoch) {
+            this.raAngle = ra;
+            this.decAngle = dec;
+            this.Epoch = epoch;
         }
 
         /// <summary>
@@ -104,7 +129,7 @@ namespace NINA.Utility.Astrometry {
         /// <returns></returns>
         public Coordinates Transform(Epoch targetEpoch) {
             if (Epoch == targetEpoch) {
-                return new Coordinates(this.RA, this.Dec, this.Epoch, RAType.Hours);
+                return new Coordinates(this.raAngle, this.decAngle, this.Epoch);
             }
 
             if (targetEpoch == Epoch.JNOW) {
@@ -124,12 +149,12 @@ namespace NINA.Utility.Astrometry {
             double jdTT = GetJdTTNow();
 
             double ri = 0, di = 0, eo = 0;
-            SOFA.CelestialToIntermediate(Astrometry.ToRadians(RADegrees), Astrometry.ToRadians(Dec), 0.0, 0.0, 0.0, 0.0, jdTT, 0.0, ref ri, ref di, ref eo);
+            SOFA.CelestialToIntermediate(raAngle.Radians, decAngle.Radians, 0.0, 0.0, 0.0, 0.0, jdTT, 0.0, ref ri, ref di, ref eo);
 
-            double raApparent = Astrometry.ToDegree(SOFA.Anp(ri - eo));
-            double decApparent = Astrometry.ToDegree(di);
+            var raApparent = Angle.ByRadians(SOFA.Anp(ri - eo));
+            var decApparent = Angle.ByRadians(di);
 
-            return new Coordinates(raApparent, decApparent, Epoch.JNOW, RAType.Degrees);
+            return new Coordinates(raApparent, decApparent, Epoch.JNOW);
         }
 
         private double GetJdTTNow() {
@@ -162,12 +187,12 @@ namespace NINA.Utility.Astrometry {
             var jdTT = GetJdTTNow();
             var jdUTC = GetJdUTCNow();
             double rc = 0, dc = 0, eo = 0;
-            SOFA.IntermediateToCelestial(SOFA.Anp(Astrometry.ToRadians(RADegrees) + SOFA.Eo06a(jdUTC, 0.0)), Astrometry.ToRadians(Dec), jdTT, 0.0, ref rc, ref dc, ref eo);
+            SOFA.IntermediateToCelestial(SOFA.Anp(raAngle.Radians + SOFA.Eo06a(jdUTC, 0.0)), decAngle.Radians, jdTT, 0.0, ref rc, ref dc, ref eo);
 
-            var raCelestial = Astrometry.ToDegree(rc);
-            var decCelestial = Astrometry.ToDegree(dc);
+            var raCelestial = Angle.ByRadians(rc);
+            var decCelestial = Angle.ByRadians(dc);
 
-            return new Coordinates(raCelestial, decCelestial, Epoch.J2000, RAType.Degrees);
+            return new Coordinates(raCelestial, decCelestial, Epoch.J2000);
         }
 
         /// <summary>
@@ -178,45 +203,44 @@ namespace NINA.Utility.Astrometry {
         /// <param name="rotation">rotation relative to delta values</param>
         /// <returns></returns>
         public Coordinates Shift(double deltaX, double deltaY, double rotation) {
-            var deltaXDeg = -deltaX;
-            var deltaYDeg = -deltaY;
-            var rotationRad = Astrometry.ToRadians(rotation);
+            var deltaXAngle = Angle.ByDegree(-deltaX);
+            var deltaYAngle = Angle.ByDegree(-deltaY);
 
-            if (rotation != 0) {
+            var rotationAngle = Angle.ByDegree(rotation);
+
+            if (rotationAngle.Degree != 0) {
                 //Recalculate delta based on rotation
                 //No spherical or other aberrations are assumed
-                var originalDeltaX = deltaXDeg;
-                deltaXDeg = deltaXDeg * Math.Cos(rotationRad) - deltaYDeg * Math.Sin(rotationRad);
-                deltaYDeg = deltaYDeg * Math.Cos(rotationRad) + originalDeltaX * Math.Sin(rotationRad);
+                var originalDeltaX = deltaXAngle;
+                var rotationAngleSin = rotationAngle.Sin();
+                var rotationAngleCos = rotationAngle.Cos();
+                deltaXAngle = deltaXAngle * rotationAngleCos - deltaYAngle * rotationAngleSin;
+                deltaYAngle = deltaYAngle * rotationAngleCos + originalDeltaX * rotationAngleSin;
             }
 
-            var originRARad = Astrometry.ToRadians(this.RADegrees);
-            var originDecRad = Astrometry.ToRadians(this.Dec);
+            var originRA = this.raAngle;
 
-            var deltaXRad = Astrometry.ToRadians(deltaXDeg);
-            var deltaYRad = Astrometry.ToRadians(deltaYDeg);
+            var originDec = this.decAngle;
+            var originDecSin = originDec.Sin();
+            var originDecCos = originDec.Cos();
 
             // refer to http://faculty.wcas.northwestern.edu/nchapman/coding/worldpos.py
 
-            var targetRARad = originRARad + Math.Atan2(deltaXRad, Math.Cos(originDecRad) - deltaYRad * Math.Sin(originDecRad));
-            var targetDecRad =
-                Math.Atan(
-                    Math.Cos(targetRARad - originRARad)
-                    * (deltaYRad * Math.Cos(originDecRad) + Math.Sin(originDecRad))
-                    / (Math.Cos(originDecRad) - deltaYRad * Math.Sin(originDecRad))
-                );
+            var targetRA = originRA + Angle.Atan2(deltaXAngle, originDecCos - deltaYAngle * originDecSin);
 
-            var targetRA = Astrometry.ToDegree(targetRARad);
-            if (targetRA < 0) { targetRA += 360; }
-            if (targetRA >= 360) { targetRA -= 360; }
+            var targetDec = (
+                (targetRA - originRA).Cos()
+                * (deltaYAngle * originDecCos + originDecSin)
+                / (originDecCos - deltaYAngle * originDecSin)
+            ).Atan();
 
-            var targetDec = Astrometry.ToDegree(targetDecRad);
+            if (targetRA.Degree < 0) { targetRA = Angle.ByDegree(targetRA.Degree + 360); }
+            if (targetRA.Degree >= 360) { targetRA = Angle.ByDegree(targetRA.Degree - 360); }
 
             return new Coordinates(
                 targetRA,
                 targetDec,
-                Epoch.J2000,
-                Coordinates.RAType.Degrees
+                Epoch
             );
         }
 

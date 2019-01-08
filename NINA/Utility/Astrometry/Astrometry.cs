@@ -131,8 +131,12 @@ namespace NINA.Utility.Astrometry {
         /// <param name="rightAscension"></param>
         /// <returns>Hour Angle in hours</returns>
         public static double GetHourAngle(double siderealTime, double rightAscension) {
-            double hourAngle = siderealTime - rightAscension;
-            if (hourAngle < 0) { hourAngle += 24; }
+            return GetHourAngle(Angle.ByHours(siderealTime), Angle.ByHours(rightAscension)).Hours;
+        }
+
+        public static Angle GetHourAngle(Angle siderealTime, Angle rightAscension) {
+            var hourAngle = siderealTime - rightAscension;
+            if (hourAngle.Hours < 0) { hourAngle = Angle.ByHours(hourAngle.Hours + 24); }
             return hourAngle;
         }
 
@@ -148,14 +152,18 @@ namespace NINA.Utility.Astrometry {
         /// <param name="declination">in degrees</param>
         /// <returns></returns>
         public static double GetAltitude(double hourAngle, double latitude, double declination) {
-            var radX = ToRadians(hourAngle);
-            var sinAlt = Math.Sin(ToRadians(declination))
-                         * Math.Sin(ToRadians(latitude))
-                         + Math.Cos(ToRadians(declination))
-                         * Math.Cos(ToRadians(latitude))
-                         * Math.Cos(radX);
-            var altitude = Astrometry.ToDegree(Math.Asin(sinAlt));
-            return altitude;
+            return GetAltitude(Angle.ByDegree(hourAngle), Angle.ByDegree(latitude), Angle.ByDegree(declination)).Degree;
+        }
+
+        /// <summary>
+        /// Calculates altitude for given location and time
+        /// </summary>
+        /// <param name="hourAngle"></param>
+        /// <param name="latitude"></param>
+        /// <param name="declination"></param>
+        /// <returns></returns>
+        public static Angle GetAltitude(Angle hourAngle, Angle latitude, Angle declination) {
+            return (declination.Sin() * latitude.Sin() + declination.Cos() * latitude.Cos() * hourAngle.Cos()).Asin();
         }
 
         /// <summary>
@@ -167,22 +175,28 @@ namespace NINA.Utility.Astrometry {
         /// <param name="declination">in degrees</param>
         /// <returns></returns>
         public static double GetAzimuth(double hourAngle, double altitude, double latitude, double declination) {
-            var radHA = ToRadians(hourAngle);
-            var radAlt = ToRadians(altitude);
-            var radLat = ToRadians(latitude);
-            var radDec = ToRadians(declination);
+            return GetAzimuth(Angle.ByDegree(hourAngle), Angle.ByDegree(altitude), Angle.ByDegree(latitude), Angle.ByDegree(declination)).Degree;
+        }
 
-            var cosA = (Math.Sin(radDec) - Math.Sin(radAlt) * Math.Sin(radLat)) /
-                        (Math.Cos(radAlt) * Math.Cos(radLat));
+        /// <summary>
+        /// Calculates azimuth for given location and time
+        /// </summary>
+        /// <param name="hourAngle"></param>
+        /// <param name="altitude"></param>
+        /// <param name="latitude"></param>
+        /// <param name="declination"></param>
+        /// <returns></returns>
+        public static Angle GetAzimuth(Angle hourAngle, Angle altitude, Angle latitude, Angle declination) {
+            var cosAz = (declination.Sin() - altitude.Sin() * latitude.Sin()) / (altitude.Cos() * latitude.Cos());
 
             //fix double precision issues
-            if (cosA < -1) { cosA = -1; }
-            if (cosA > 1) { cosA = 1; }
+            if (cosAz.Radians < -1) { cosAz = Angle.ByRadians(-1); }
+            if (cosAz.Radians > 1) { cosAz = Angle.ByRadians(1); }
 
-            if (Math.Sin(radHA) < 0) {
-                return ToDegree(Math.Acos(cosA));
+            if (hourAngle.Sin().Radians < 0) {
+                return cosAz.Acos();
             } else {
-                return 360 - ToDegree(Math.Acos(cosA));
+                return Angle.ByDegree(360 - cosAz.Acos().Degree);
             }
         }
 
@@ -388,18 +402,22 @@ namespace NINA.Utility.Astrometry {
             var moonPosition = tuple.Item1;
             var sunPosition = tuple.Item2;
 
-            var raDiffRad = ToRadians(HoursToDegrees(sunPosition.RA - moonPosition.RA));
-            var moonDecRad = ToRadians(moonPosition.Dec);
-            var sunDecRad = ToRadians(sunPosition.Dec);
+            var sunRAAngle = Angle.ByHours(sunPosition.RA);
+            var sunDecAngle = Angle.ByDegree(sunPosition.Dec);
+            var moonRAAngle = Angle.ByHours(moonPosition.RA);
+            var moonDecAngle = Angle.ByDegree(moonPosition.Dec);
 
-            var phi = Math.Acos(
-                        Math.Sin(sunDecRad) * Math.Sin(moonDecRad) +
-                        Math.Cos(sunDecRad) * Math.Cos(moonDecRad) * Math.Cos(raDiffRad)
-                      );
+            var phi = (
+                sunDecAngle.Sin() * moonDecAngle.Sin()
+                + sunDecAngle.Cos() * moonDecAngle.Cos() * (sunRAAngle - moonRAAngle).Cos()
+                ).Acos();
 
-            var phaseAngle = Math.Atan2(sunPosition.Dis * Math.Sin(phi), moonPosition.Dis - sunPosition.Dis * Math.Cos(phi));
+            var phaseAngle = Angle.Atan2(
+                sunPosition.Dis * phi.Sin(),
+                moonPosition.Dis - sunPosition.Dis * phi.Cos()
+            );
 
-            var illuminatedFraction = (1.0 + Math.Cos(phaseAngle)) / 2.0;
+            var illuminatedFraction = (1.0 + phaseAngle.Cos().Radians) / 2.0;
 
             return illuminatedFraction;
         }

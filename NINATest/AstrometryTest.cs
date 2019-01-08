@@ -29,8 +29,8 @@ namespace NINATest {
 
     [TestFixture]
     public class AstrometryTest {
-        private const int DOUBLE_TOLERANCE = 12;
         private const double DEWPOINT_TOLERANCE = 0.5;
+        private static double ANGLE_TOLERANCE = 0.0000000000001;
 
         [Test]
         public void ToRadians_ValueTest() {
@@ -133,60 +133,32 @@ namespace NINATest {
         }
 
         [Test]
-        public void GetAltitude_0Angle_Northern_ValueTest() {
-            var angle = 0;
-            var latitude = 0;
-            var longitude = 0;
-
+        [TestCase(0, 0, 0, 90)]
+        [TestCase(360, 0, 0, 90)]
+        [TestCase(180, 0, 0, -90)]
+        [TestCase(90, 0, 0, 0)]
+        [TestCase(270, 0, 0, 0)]
+        public void GetAltitudeTest(double angle, double latitude, double longitude, double expectedAltitude) {
             var alt = Astrometry.GetAltitude(angle, latitude, longitude);
 
-            Assert.AreEqual(90, alt);
+            Assert.AreEqual(expectedAltitude, alt, ANGLE_TOLERANCE);
         }
 
         [Test]
-        public void GetAltitude_360Angle_Northern_ValueTest() {
-            var angle = 360;
-            var latitude = 0;
-            var longitude = 0;
+        [TestCase(0, 10, 0, 0, 270)]
+        [TestCase(360, 20, 0, 10, 79.350963258685638)]
+        [TestCase(180, 30, 0, 80, 360)]
+        [TestCase(90, 40, 0, -80, 180)]
+        [TestCase(270, 50, 0, -10, 105.6731100510834d)]
+        [TestCase(0, 10, 20, 0, 266.32035559963668)]
+        [TestCase(360, 20, 20, 10, 86.32035559963667)]
+        [TestCase(180, 30, 20, 80, 359.99999914622634)]
+        [TestCase(90, 40, 20, -80, 180)]
+        [TestCase(270, 50, 20, -10, 136.15769484583683)]
+        public void GetAzimuthTest(double angle, double altitude, double latitude, double declination, double expectedAzimuth) {
+            var az = Astrometry.GetAzimuth(angle, altitude, latitude, declination);
 
-            var alt = Astrometry.GetAltitude(angle, latitude, longitude);
-
-            Assert.AreEqual(90, alt);
-        }
-
-        [Test]
-        public void GetAltitude_180Angle_Northern_ValueTest() {
-            var angle = 180;
-            var latitude = 0;
-            var longitude = 0;
-
-            var alt = Astrometry.GetAltitude(angle, latitude, longitude);
-
-            Assert.AreEqual(-90, alt);
-        }
-
-        [Test]
-        public void GetAltitude_90Angle_Northern_ValueTest() {
-            var angle = 90;
-            var latitude = 0;
-            var longitude = 0;
-
-            var alt = Astrometry.GetAltitude(angle, latitude, longitude);
-            alt = Math.Round(alt, DOUBLE_TOLERANCE);
-
-            Assert.AreEqual(0, alt);
-        }
-
-        [Test]
-        public void GetAltitude_270Angle_Northern_ValueTest() {
-            var angle = 270;
-            var latitude = 0;
-            var longitude = 0;
-
-            var alt = Astrometry.GetAltitude(angle, latitude, longitude);
-            alt = Math.Round(alt, DOUBLE_TOLERANCE);
-
-            Assert.AreEqual(0, alt);
+            Assert.AreEqual(expectedAzimuth, az, ANGLE_TOLERANCE);
         }
 
         [Test]
@@ -256,7 +228,7 @@ namespace NINATest {
         public void DMSToDegrees(string hms, double expected) {
             var value = Astrometry.DMSToDegrees(hms);
 
-            Assert.AreEqual(expected, value);
+            Assert.AreEqual(expected, value, ANGLE_TOLERANCE);
         }
 
         [Test]
@@ -595,14 +567,26 @@ namespace NINATest {
         [TestCase("00:00:00", 0)]
         [TestCase("1:00:00", 15)]
         [TestCase("-1:00:00", -15)]
-        [TestCase("23:59:59", 359.9958333)]
-        [TestCase("-23:59:59", -359.9958333)]
+        [TestCase("23:59:59", 359.99583333333339)]
+        [TestCase("-23:59:59", -359.99583333333339)]
         [TestCase("5:30:0", 82.5)]
         [TestCase("-5:30:0", -82.5)]
         public void HMSToDegrees(string hms, double expected) {
             var value = Astrometry.HMSToDegrees(hms);
 
-            Assert.AreEqual(expected, value, DOUBLE_TOLERANCE);
+            Assert.AreEqual(expected, value, ANGLE_TOLERANCE);
+        }
+
+        [Test]
+        [TestCase(0, 0, 0)]
+        [TestCase(12, 4, 8.0)]
+        [TestCase(24, 24, 0)]
+        [TestCase(1.657982, 21.657498, 4.0004840000000002)]
+        [TestCase(22.68498, 15.135684, 7.549296)]
+        public void GetHourAngleTest(double siderealTime, double rightAscension, double expectedHourAngle) {
+            var hourAngle = Astrometry.GetHourAngle(siderealTime, rightAscension);
+
+            Assert.AreEqual(expectedHourAngle, hourAngle, ANGLE_TOLERANCE);
         }
     }
 }

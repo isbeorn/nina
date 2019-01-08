@@ -29,66 +29,93 @@ using System.Threading.Tasks;
 
 namespace NINA.Utility.Astrometry {
 
-    internal class Angle {
+    public class Angle {
 
-        public static Angle CreateByHours(double hours) {
+        public static Angle ByHours(double hours) {
             var degree = Astrometry.HoursToDegrees(hours);
-            return new Angle() {
-                Degree = degree,
-                Radians = Astrometry.ToRadians(degree),
-                Hours = hours
-            };
+            return new Angle(degree, Astrometry.ToRadians(degree), hours);
         }
 
-        public static Angle CreateByDegree(double degree) {
-            return new Angle() {
-                Degree = degree,
-                Radians = Astrometry.ToRadians(degree),
-                Hours = Astrometry.DegreesToHours(degree)
-            };
+        public static Angle ByDegree(double degree) {
+            return new Angle(degree, Astrometry.ToRadians(degree), Astrometry.DegreesToHours(degree));
         }
 
-        public static Angle CreateByRadians(double radians) {
+        public static Angle ByRadians(double radians) {
             var degree = Astrometry.ToDegree(radians);
-            return new Angle() {
-                Degree = Astrometry.ToDegree(radians),
-                Radians = radians,
-                Hours = Astrometry.DegreesToHours(degree)
-            };
+            return new Angle(Astrometry.ToDegree(radians), radians, Astrometry.DegreesToHours(degree));
         }
 
-        private Angle() {
+        private Angle(double degree, double radians, double hours) {
+            this.Degree = degree;
+            this.Radians = radians;
+            this.Hours = hours;
         }
 
-        public double Degree { get; private set; }
+        public double Degree { get; }
         public double ArcMinutes => Degree * 60d;
         public double ArcSeconds => ArcMinutes * 60d;
 
-        public double Radians { get; private set; }
-        public double Hours { get; private set; }
+        public double Radians { get; }
+        public double Hours { get; }
 
         public override string ToString() {
             return Astrometry.DegreesToDMS(Degree);
         }
 
         public Angle Sin() {
-            return Angle.CreateByRadians(Math.Sin(this.Radians));
+            return Angle.ByRadians(Math.Sin(this.Radians));
+        }
+
+        public Angle Asin() {
+            return Angle.ByRadians(Math.Asin(this.Radians));
         }
 
         public Angle Cos() {
-            return Angle.CreateByRadians(Math.Cos(this.Radians));
+            return Angle.ByRadians(Math.Cos(this.Radians));
         }
 
         public Angle Acos() {
-            return Angle.CreateByRadians(Math.Acos(this.Radians));
+            return Angle.ByRadians(Math.Acos(this.Radians));
         }
 
         public Angle Atan() {
-            return Angle.CreateByRadians(Math.Atan(this.Radians));
+            return Angle.ByRadians(Math.Atan(this.Radians));
         }
 
         public Angle Atan2(Angle angle) {
-            return Angle.CreateByRadians(Math.Atan2(angle.Radians, this.Radians));
+            return Angle.ByRadians(Math.Atan2(angle.Radians, this.Radians));
+        }
+
+        public static Angle Atan2(Angle y, Angle x) {
+            return Angle.ByRadians(Math.Atan2(y.Radians, x.Radians));
+        }
+
+        public static Angle operator +(Angle a, Angle b) {
+            return Angle.ByRadians(a.Radians + b.Radians);
+        }
+
+        public static Angle operator +(double a, Angle b) {
+            return Angle.ByRadians(a + b.Radians);
+        }
+
+        public static Angle operator -(Angle a, Angle b) {
+            return Angle.ByRadians(a.Radians - b.Radians);
+        }
+
+        public static Angle operator -(double a, Angle b) {
+            return Angle.ByRadians(a - b.Radians);
+        }
+
+        public static Angle operator *(Angle a, Angle b) {
+            return Angle.ByRadians(a.Radians * b.Radians);
+        }
+
+        public static Angle operator *(double a, Angle b) {
+            return Angle.ByRadians(a * b.Radians);
+        }
+
+        public static Angle operator /(Angle a, Angle b) {
+            return Angle.ByRadians(a.Radians / b.Radians);
         }
     }
 }
