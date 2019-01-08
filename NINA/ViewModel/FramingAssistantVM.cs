@@ -79,7 +79,7 @@ namespace NINA.ViewModel {
             DragMoveCommand = new RelayCommand(DragMove);
             ClearCacheCommand = new RelayCommand(ClearCache);
 
-            frameLineMatrix = new FrameLineMatrix();
+            FrameLineMatrix = new FrameLineMatrix();
 
             DeepSkyObjectSearchVM = new DeepSkyObjectSearchVM(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
             DeepSkyObjectSearchVM.PropertyChanged += DeepSkyObjectSearchVM_PropertyChanged;
@@ -153,6 +153,14 @@ namespace NINA.ViewModel {
             DSOInImage = new AsyncObservableCollection<FramingDSO>();
 
             dbInstance = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
+        }
+
+        public FrameLineMatrix FrameLineMatrix {
+            get { return frameLineMatrix; }
+            set {
+                frameLineMatrix = value;
+                RaisePropertyChanged();
+            }
         }
 
         private async void ResizeTimer_Tick(object sender, EventArgs e) {
@@ -805,10 +813,10 @@ namespace NINA.ViewModel {
                         }
                         DSOInImage = new AsyncObservableCollection<FramingDSO>(l);
 
-                        await TaskEx.Run(() => frameLineMatrix.Calculate(ImageParameter, topLeftRADegree, hFovDeg, vFovDegTop, vFovDegBottom));
+                        await Dispatcher.CurrentDispatcher.BeginInvoke((Action)(() => frameLineMatrix.Calculate(ImageParameter, topLeftRADegree, hFovDeg, vFovDegTop, vFovDegBottom)));
 
-                        RAPathPoints = new ObservableCollection<PointCollectionAndClosed>(frameLineMatrix.PointsByRA);
-                        DecPathPoints = new ObservableCollection<PointCollectionAndClosed>(frameLineMatrix.PointsByDec);
+                        //RAPathPoints = new ObservableCollection<PointCollectionAndClosed>(frameLineMatrix.PointsByRADict.Values);
+                        //DecPathPoints = new ObservableCollection<PointCollectionAndClosed>(frameLineMatrix.PointsByDecDict.Values);
 
                         deltaSum = new Vector(0, 0);
                     }
@@ -958,18 +966,15 @@ namespace NINA.ViewModel {
             }
         }
 
-        private readonly FrameLineMatrix frameLineMatrix;
+        private FrameLineMatrix frameLineMatrix;
 
         private void DragStart(object obj) {
-            RAPathPoints = new ObservableCollection<PointCollectionAndClosed>();
-            DecPathPoints = new ObservableCollection<PointCollectionAndClosed>();
+            FrameLineMatrix.RAPoints = new AsyncObservableCollection<PointCollectionAndClosed>();
+            FrameLineMatrix.DecPoints = new AsyncObservableCollection<PointCollectionAndClosed>();
         }
 
         private async void DragStop(object obj) {
-            await TaskEx.Run(() => frameLineMatrix.Calculate(ImageParameter, topLeftRADegree, hFovDeg, vFovDegTop, vFovDegBottom));
-
-            RAPathPoints = new ObservableCollection<PointCollectionAndClosed>(frameLineMatrix.PointsByRA);
-            DecPathPoints = new ObservableCollection<PointCollectionAndClosed>(frameLineMatrix.PointsByDec);
+            await Dispatcher.CurrentDispatcher.BeginInvoke((Action)(() => frameLineMatrix.Calculate(ImageParameter, topLeftRADegree, hFovDeg, vFovDegTop, vFovDegBottom)));
         }
 
         private void DragMove(object obj) {
@@ -1151,12 +1156,16 @@ namespace NINA.ViewModel {
     }
 
     internal class FrameLineMatrix : BaseINPC {
-        private double raStep;
         private readonly double[] RASTEPS = { 0.46875, 0.9375, 1.875, 3.75, 7.5, 15 };
 
         private readonly double[] DECSTEPS = { 1, 2, 4, 8, 16, 32, 64 };
 
         private const double MAXDEC = 89;
+
+        public FrameLineMatrix() {
+            RAPoints = new AsyncObservableCollection<PointCollectionAndClosed>();
+            DecPoints = new AsyncObservableCollection<PointCollectionAndClosed>();
+        }
 
         /// <summary>
         /// Constructor for a Framing DSO.
@@ -1181,20 +1190,27 @@ namespace NINA.ViewModel {
             var realTopDec = Math.Abs(coordDec) + vFovDegTop;
             var realBottomDec = Math.Abs(coordDec) - vFovDegBottom;
 
+            double raStep;
             double decStep;
+            double raStart;
+            double raStop;
+            double decStart;
+            double decStop;
 
             if (realTopDec >= MAXDEC) {
                 realTopDec = MAXDEC;
                 raStep = 30; // 12 lines at top
                 decStep = 1;
+
+                raStart = 0;
+                raStop = 360 - raStep;
             } else {
-                // TODO: variable calculation based on hfovdeg and dec
+                // we want at least 4 lines
+                // get the steps that are closest to vFovDegTotal and closest to hFovDeg
                 decStep = (vFovDegTop + vFovDegBottom) / 4;
                 decStep = DECSTEPS.OrderBy(item => Math.Abs(decStep - item)).First();
 
-                // we want at least 4 lines
                 raStep = hFovDeg / 4;
-                // get the raStep that is closest to hFovDeg
                 raStep = RASTEPS.OrderBy(item => Math.Abs(raStep - item)).First();
 
                 while (realTopDec + decStep > MAXDEC) {
@@ -1206,63 +1222,89 @@ namespace NINA.ViewModel {
 
                     decStep = DECSTEPS[Array.FindIndex(DECSTEPS, w => w == decStep) - 1];
                 }
-            }
 
-            double raStart;
-            double raStop;
-
-            // we calculate the dec lines from the starting point of the RA to the end point. we don't have to wrap around
-            // because the algorithms work well with negative degrees or degrees over 360
-            // if realTopDec is 89 we want full circles
-            if (realTopDec == MAXDEC) {
-                raStart = 0;
-                raStop = 360 - raStep;
-            } else {
                 raStop = leftRADegrees - hFovDeg < 0
                     ? RoundToHigherValue(leftRADegrees - hFovDeg, raStep)
                     : RoundToLowerValue(leftRADegrees - hFovDeg, raStep);
                 raStart = RoundToHigherValue(leftRADegrees, raStep);
             }
 
-            var decStart = realBottomDec < 0
-                ? RoundToHigherValue(realBottomDec, decStep)
-                : RoundToLowerValue(realBottomDec, decStep);
-
             if (realTopDec == MAXDEC) {
                 decStart = RoundToHigherValue(realBottomDec, decStep);
+            } else {
+                decStart = realBottomDec < 0
+                    ? RoundToHigherValue(realBottomDec, decStep)
+                    : RoundToLowerValue(realBottomDec, decStep);
             }
 
-            // if decStop become larger than 89 we want to keep it at 89
-            double decStop = RoundToHigherValue(realTopDec, decStep);
+            decStop = RoundToHigherValue(realTopDec, decStep);
             if (decStop >= MAXDEC) {
                 decStop = MAXDEC;
             }
 
-            // flip coordinates, also consider 0 because Math.Sign(0) returns 0
+            // flip coordinates if necessary, also consider 0 because Math.Sign(0) returns 0
             decStart *= Math.Sign(coordDec) == 0 ? 1 : Math.Sign(coordDec);
             decStop *= Math.Sign(coordDec) == 0 ? 1 : Math.Sign(coordDec);
 
-            decLinePoints = new List<DecLinePoint>();
+            var pointsByDecDict = new Dictionary<double, PointCollectionAndClosed>();
+
+            bool raClosed = raStop + raStep == 360;
 
             for (double ra = Math.Min(raStart, raStop);
                 ra <= Math.Max(raStop, raStart);
                 ra += raStep) {
+                PointCollection raPointCollection = new PointCollection();
+
                 for (double dec = Math.Min(decStart, decStop);
                     dec <= Math.Max(decStart, decStop);
                     dec += decStep) {
-                    decLinePoints.Add(new DecLinePoint() {
-                        Point = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees)
-                            .ProjectFromCenterToXY(
-                                image.Coordinates,
-                                imageCenterPoint,
-                                arcSecWidth,
-                                arcSecHeight,
-                                rotation
-                            ),
-                        Dec = dec,
-                        RA = ra,
-                    });
+                    var point = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees)
+                        .ProjectFromCenterToXY(
+                            image.Coordinates,
+                            imageCenterPoint,
+                            arcSecWidth,
+                            arcSecHeight,
+                            rotation
+                        );
+
+                    if (!pointsByDecDict.ContainsKey(dec)) {
+                        pointsByDecDict.Add(dec, new PointCollectionAndClosed() { Closed = raClosed, Collection = new PointCollection(new List<Point> { point }) });
+                    } else {
+                        pointsByDecDict[dec].Collection.Add(point);
+                    }
+
+                    raPointCollection.Add(point);
                 }
+
+                // those are the vertical lines
+                RAPoints.Add(new PointCollectionAndClosed {
+                    Closed = false,
+                    Collection = raPointCollection
+                });
+            }
+
+            // those are actually the circles
+            foreach (KeyValuePair<double, PointCollectionAndClosed> item in pointsByDecDict) {
+                DecPoints.Add(item.Value);
+            }
+        }
+
+        private AsyncObservableCollection<PointCollectionAndClosed> raPoints;
+        private AsyncObservableCollection<PointCollectionAndClosed> decPoints;
+
+        public AsyncObservableCollection<PointCollectionAndClosed> RAPoints {
+            get { return raPoints; }
+            set {
+                raPoints = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public AsyncObservableCollection<PointCollectionAndClosed> DecPoints {
+            get { return decPoints; }
+            set {
+                decPoints = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -1272,24 +1314,6 @@ namespace NINA.ViewModel {
 
         public static double RoundToLowerValue(double value, double multiple) {
             return (Math.Abs(value) - (Math.Abs(value) % multiple)) * Math.Sign(value);
-        }
-
-        public List<PointCollectionAndClosed> PointsByRA => decLinePoints.GroupBy(p => p.RA).Select(g => new PointCollectionAndClosed() {
-            Collection = new PointCollection(g.Select(p => p.Point)),
-            Closed = false
-        }).ToList();
-
-        public List<PointCollectionAndClosed> PointsByDec => decLinePoints.GroupBy(p => p.Dec).Select(g => new PointCollectionAndClosed() {
-            Collection = new PointCollection(g.Select(p => p.Point)),
-            Closed = 360 / raStep == g.Select(p => p.Point).Count()
-        }).ToList();
-
-        private List<DecLinePoint> decLinePoints;
-
-        public struct DecLinePoint {
-            public Point Point;
-            public double Dec;
-            public double RA;
         }
     }
 
