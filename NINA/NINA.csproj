@@ -548,7 +548,11 @@
     <Compile Include="ViewModel\FlatWizard\IFlatWizardExposureTimeFinderService.cs" />
     <Compile Include="ViewModel\FlatWizard\IFlatWizardVM.cs" />
     <Compile Include="ViewModel\FocuserVM.cs" />
-    <Compile Include="ViewModel\FramingAssistantVM.cs" />
+    <Compile Include="ViewModel\FramingAssistant\DSOAnnotator.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FrameLineMatrix.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FramingAssistantVM.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FramingDSO.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FramingRectangle.cs" />
     <Compile Include="ViewModel\Interfaces\IApplicationStatusVM.cs" />
     <Compile Include="ViewModel\Interfaces\ICameraVM.cs" />
     <Compile Include="ViewModel\Interfaces\IDeviceVM.cs" />
@@ -594,6 +598,7 @@
     <Compile Include="ViewModel\OptionsVM.cs" />
     <Compile Include="ViewModel\GuiderVM.cs" />
     <Compile Include="ViewModel\PlatesolveVM.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FrameLine.cs" />
     <Compile Include="ViewModel\PolarAlignmentVM.cs" />
     <Compile Include="ViewModel\ProfileSelectVM.cs" />
     <Compile Include="Model\RMS.cs" />
@@ -604,6 +609,7 @@
     <Compile Include="ViewModel\TelescopeVM.cs" />
     <Compile Include="ViewModel\ThumbnailVM.cs" />
     <Compile Include="ViewModel\VersionCheckVM.cs" />
+    <Compile Include="ViewModel\FramingAssistant\ViewportFoV.cs" />
     <Compile Include="ViewModel\WeatherDataVM.cs" />
     <Compile Include="View\AberrationInspectorView.xaml.cs">
       <DependentUpon>AberrationInspectorView.xaml</DependentUpon>
