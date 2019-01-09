@@ -43,7 +43,7 @@ namespace NINA.ViewModel.FramingAssistant {
                     var point = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees).GnomonicTanProjection(viewport);
 
                     if (!pointsByDecDict.ContainsKey(dec)) {
-                        pointsByDecDict.Add(dec, new FrameLine() { Closed = raIsClosed, Collection = new PointCollection(new List<Point> { point }), Stroke = dec == 0 ? 3 : 1 });
+                        pointsByDecDict.Add(dec, new FrameLine() { Closed = raIsClosed, Collection = new PointCollection(new List<Point> { point }), StrokeThickness = dec == 0 ? 3 : 1 });
                     } else {
                         pointsByDecDict[dec].Collection.Add(point);
                     }
@@ -53,7 +53,7 @@ namespace NINA.ViewModel.FramingAssistant {
 
                 // those are the vertical lines
                 RAPoints.Add(new FrameLine {
-                    Stroke = ra == 0 ? 3 : 1,
+                    StrokeThickness = ra == 0 ? 3 : 1,
                     Closed = false,
                     Collection = raPointCollection
                 });

@@ -473,7 +473,7 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Canvas>
-                                            <util:CardinalSplineShape Points="{Binding Collection}" Closed="{Binding Closed}" StrokeThickness="{Binding Stroke}">
+                                            <util:CardinalSplineShape Points="{Binding Collection}" Closed="{Binding Closed}" StrokeThickness="{Binding StrokeThickness}">
                                                 <util:CardinalSplineShape.Stroke>
                                                     <SolidColorBrush>
                                                         <SolidColorBrush.Color>
@@ -499,7 +499,7 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Canvas>
-                                            <util:CardinalSplineShape Points="{Binding Collection}" Closed="{Binding Closed}" StrokeThickness="{Binding Stroke}">
+                                            <util:CardinalSplineShape Points="{Binding Collection}" Closed="{Binding Closed}" StrokeThickness="{Binding StrokeThickness}">
                                                 <util:CardinalSplineShape.Stroke>
                                                     <SolidColorBrush>
                                                         <SolidColorBrush.Color>

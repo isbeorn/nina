@@ -6,7 +6,7 @@ namespace NINA.ViewModel.FramingAssistant {
     public class FrameLine : BaseINPC {
         private PointCollection collection;
         private bool closed;
-        private double stroke;
+        private double _strokeThickness;
 
         public PointCollection Collection {
             get => collection;
@@ -24,10 +24,10 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
-        public double Stroke {
-            get => stroke;
+        public double StrokeThickness {
+            get => _strokeThickness;
             set {
-                stroke = value;
+                _strokeThickness = value;
                 RaisePropertyChanged();
             }
         }
