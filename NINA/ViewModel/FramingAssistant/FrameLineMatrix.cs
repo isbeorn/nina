@@ -86,10 +86,10 @@ namespace NINA.ViewModel.FramingAssistant {
                 // we want at least 4 lines
                 // get the steps that are closest to vFovDegTotal and closest to hFovDeg
                 decStep = viewport.VFoVDeg / 4;
-                decStep = DECSTEPS.OrderBy(item => Math.Abs(decStep - item)).First();
+                decStep = DECSTEPS.Aggregate((x, y) => Math.Abs(x - decStep) < Math.Abs(y - decStep) ? x : y);
 
                 raStep = viewport.HFoVDeg / 4;
-                raStep = RASTEPS.OrderBy(item => Math.Abs(raStep - item)).First();
+                raStep = RASTEPS.Aggregate((x, y) => Math.Abs(x - raStep) < Math.Abs(y - raStep) ? x : y);
 
                 // avoid "crash" using a higher fov and getting close to dec, so it doesn't move from e.g. 16 to 1 instantly but "smoothly"
                 if (realTopDec + decStep > MAXDEC) {
