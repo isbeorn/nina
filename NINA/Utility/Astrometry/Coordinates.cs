@@ -252,26 +252,34 @@ namespace NINA.Utility.Astrometry {
             var targetDecRad = Astrometry.ToRadians(Dec);
             var imageRotationRad = Astrometry.ToRadians(rotation);
 
+            var targetDecSin = Math.Sin(targetDecRad);
+            var targetDecCos = Math.Cos(targetDecRad);
+
+            var centerDegSin = Math.Sin(centerDegRad);
+            var centerDegCos = Math.Cos(centerDegRad);
+
+            var targetRaSubCenterRaSin = Math.Sin(targetRaRad - centerRaRad);
+            var targetRaSubCenterRaCos = Math.Cos(targetRaRad - centerRaRad);
+
+            var imageRotationSin = Math.Sin(imageRotationRad);
+            var imageRotationCos = Math.Cos(imageRotationRad);
+
             // _xypix -tan projection
             // refer to http://faculty.wcas.northwestern.edu/nchapman/coding/worldpos.py
 
-            var modDivisor = (Math.Sin(targetDecRad) * Math.Sin(centerDegRad) + Math.Cos(targetDecRad) *
-                              Math.Cos(centerDegRad) * Math.Cos(targetRaRad - centerRaRad));
+            var modDivisor = (targetDecSin * centerDegSin + targetDecCos * centerDegCos * targetRaSubCenterRaCos);
 
-            var raModRad = (Math.Sin(targetRaRad - centerRaRad) * Math.Cos(targetDecRad)) /
-                           modDivisor;
-            var decModRad = (Math.Sin(targetDecRad) * Math.Cos(centerDegRad) - Math.Cos(targetDecRad) *
-                             Math.Sin(centerDegRad) * Math.Cos(targetRaRad - centerRaRad)) /
-                            modDivisor;
+            var raModRad = (targetRaSubCenterRaSin * targetDecCos) / modDivisor;
+            var decModRad = (targetDecSin * centerDegCos - targetDecCos * centerDegSin * targetRaSubCenterRaCos) / modDivisor;
 
             double deltaXDegrees;
             double deltaYDegrees;
 
             if (imageRotationRad != 0) {
-                deltaXDegrees = Astrometry.ToDegree(raModRad) * Math.Cos(imageRotationRad) +
-                                    Astrometry.ToDegree(decModRad) * Math.Sin(imageRotationRad);
-                deltaYDegrees = Astrometry.ToDegree(decModRad) * Math.Cos(imageRotationRad) -
-                                    Astrometry.ToDegree(raModRad) * Math.Sin(imageRotationRad);
+                deltaXDegrees = Astrometry.ToDegree(raModRad) * imageRotationCos +
+                                    Astrometry.ToDegree(decModRad) * imageRotationSin;
+                deltaYDegrees = Astrometry.ToDegree(decModRad) * imageRotationCos -
+                                    Astrometry.ToDegree(raModRad) * imageRotationSin;
             } else {
                 deltaXDegrees = Astrometry.ToDegree(raModRad);
                 deltaYDegrees = Astrometry.ToDegree(decModRad);
