@@ -473,8 +473,8 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Canvas>
-                                            <util:CardinalSplineShape Points="{Binding Collection}" Closed="{Binding Closed}" StrokeThickness="{Binding StrokeThickness}">
-                                                <util:CardinalSplineShape.Stroke>
+                                            <ninactrl:CardinalSplineShape Points="{Binding Collection}" Closed="{Binding Closed}" StrokeThickness="{Binding StrokeThickness}">
+                                                <ninactrl:CardinalSplineShape.Stroke>
                                                     <SolidColorBrush>
                                                         <SolidColorBrush.Color>
                                                             <Color
@@ -484,8 +484,8 @@
                                                                 R="128" />
                                                         </SolidColorBrush.Color>
                                                     </SolidColorBrush>
-                                                </util:CardinalSplineShape.Stroke>
-                                            </util:CardinalSplineShape>
+                                                </ninactrl:CardinalSplineShape.Stroke>
+                                            </ninactrl:CardinalSplineShape>
                                         </Canvas>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
@@ -499,8 +499,8 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Canvas>
-                                            <util:CardinalSplineShape Points="{Binding Collection}" Closed="{Binding Closed}" StrokeThickness="{Binding StrokeThickness}">
-                                                <util:CardinalSplineShape.Stroke>
+                                            <ninactrl:CardinalSplineShape Points="{Binding Collection}" Closed="{Binding Closed}" StrokeThickness="{Binding StrokeThickness}">
+                                                <ninactrl:CardinalSplineShape.Stroke>
                                                     <SolidColorBrush>
                                                         <SolidColorBrush.Color>
                                                             <Color
@@ -510,8 +510,8 @@
                                                                 R="128" />
                                                         </SolidColorBrush.Color>
                                                     </SolidColorBrush>
-                                                </util:CardinalSplineShape.Stroke>
-                                            </util:CardinalSplineShape>
+                                                </ninactrl:CardinalSplineShape.Stroke>
+                                            </ninactrl:CardinalSplineShape>
                                         </Canvas>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>

@@ -1,29 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace NINA.Utility {
+namespace NINACustomControlLibrary {
+
     public class CardinalSplineShape : Shape {
+
         #region Fields
 
-        StreamGeometry _StreamGeometry;
+        private StreamGeometry _StreamGeometry;
 
-        #endregion
+        #endregion Fields
 
         #region Constructors
 
         public CardinalSplineShape() {
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Dependency Props
-
 
         public static readonly DependencyProperty PointsProperty =
             Polyline.PointsProperty.AddOwner(typeof(CardinalSplineShape),
@@ -41,20 +37,19 @@ namespace NINA.Utility {
             typeof(CardinalSplineShape),
             new FrameworkPropertyMetadata(false, OnMeasurePropertyChanged));
 
-
-        static void OnMeasurePropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args) {
+        private static void OnMeasurePropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args) {
             (obj as CardinalSplineShape).OnMeasurePropertyChanged(args);
         }
 
-        static void OnRenderPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args) {
+        private static void OnRenderPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args) {
             (obj as CardinalSplineShape).OnRenderPropertyChanged(args);
         }
 
-        #endregion
+        #endregion Dependency Props
 
         #region Event
 
-        void OnMeasurePropertyChanged(DependencyPropertyChangedEventArgs args) {
+        private void OnMeasurePropertyChanged(DependencyPropertyChangedEventArgs args) {
             if (_StreamGeometry == null)
                 _StreamGeometry = new StreamGeometry();
 
@@ -76,11 +71,11 @@ namespace NINA.Utility {
             OnRenderPropertyChanged(args);
         }
 
-        void OnRenderPropertyChanged(DependencyPropertyChangedEventArgs args) {
+        private void OnRenderPropertyChanged(DependencyPropertyChangedEventArgs args) {
             InvalidateVisual();
         }
 
-        #endregion
+        #endregion Event
 
         #region Properties
 
@@ -97,10 +92,9 @@ namespace NINA.Utility {
         public bool Closed {
             set { SetValue(ClosedProperty, value); }
             get { return (bool)GetValue(ClosedProperty); }
-
         }
 
-        #endregion
+        #endregion Properties
 
         #region DefiningGeometry
 
@@ -108,10 +102,10 @@ namespace NINA.Utility {
             get { return _StreamGeometry; }
         }
 
-        #endregion
+        #endregion DefiningGeometry
 
         /*
-         * 
+         *
          * This is what you are after!
          * Below:
          */
@@ -169,7 +163,6 @@ namespace NINA.Utility {
             return new PointCollection(retPnt);
         }
 
-        #endregion
-
+        #endregion Calculation of Spline
     }
 }

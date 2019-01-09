@@ -753,12 +753,12 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
-        private async void DragStart(object obj) {
-            await Dispatcher.CurrentDispatcher.BeginInvoke((Action)(() => DSOAnnotator.ClearFrameLineMatrix()));
+        private void DragStart(object obj) {
+            Dispatcher.CurrentDispatcher.Invoke(() => DSOAnnotator.ClearFrameLineMatrix());
         }
 
-        private async void DragStop(object obj) {
-            await Dispatcher.CurrentDispatcher.BeginInvoke((Action)(() => DSOAnnotator.CalculateFrameLineMatrix()));
+        private void DragStop(object obj) {
+            Dispatcher.CurrentDispatcher.Invoke(() => DSOAnnotator.CalculateFrameLineMatrix());
         }
 
         private void DragMove(object obj) {
