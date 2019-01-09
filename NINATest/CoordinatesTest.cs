@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace NINATest {
 
@@ -193,6 +194,53 @@ namespace NINATest {
 
             Assert.AreEqual(expectedRA, shifted.RADegrees, ANGLE_TOLERANCE);
             Assert.AreEqual(expectedDec, shifted.Dec, ANGLE_TOLERANCE);
+        }
+
+        [Test]
+        [TestCase(0, 0, 0, 0, 100, 100, 1, 0, 100, 100)]
+        [TestCase(0, 10, 0, 0, 100, 100, 1, 0, 100, -36270.050511967027)]
+        [TestCase(10, 0, 0, 0, 100, 100, 1, 0, -36270.050511967027, 100)]
+        [TestCase(10, 10, 0, 0, 100, 100, 1, 0, -36270.05051196702, -36831.117165480086)]
+        [TestCase(-10, 0, 0, 0, 100, 100, 1, 0, 36470.050511967027, 100)]
+        [TestCase(0, -10, 0, 0, 100, 100, 1, 0, 100, 36470.050511967027)]
+        [TestCase(-10, -10, 0, 0, 100, 100, 1, 0, 36470.05051196702, 37031.117165480086)]
+        /* Rotation 90 */
+        [TestCase(0, 0, 0, 0, 100, 100, 1, 90, 100, 100)]
+        [TestCase(0, 10, 0, 0, 100, 100, 1, 90, -36270.050511967027, 99.999999999997769)]
+        [TestCase(10, 0, 0, 0, 100, 100, 1, 90, 99.999999999997769, 36470.050511967027)]
+        [TestCase(10, 10, 0, 0, 100, 100, 1, 90, -36831.117165480086, 36470.05051196702)]
+        [TestCase(-10, 0, 0, 0, 100, 100, 1, 90, 100.00000000000223, -36270.050511967027)]
+        [TestCase(0, -10, 0, 0, 100, 100, 1, 90, 36470.050511967027, 100.00000000000223)]
+        [TestCase(-10, -10, 0, 0, 100, 100, 1, 90, 37031.117165480086, -36270.05051196702)]
+        /* Center high dec */
+        [TestCase(80, 80, 80, 80, 100, 100, 1, 0, 100, 100)]
+        [TestCase(0, 0, 80, 80, 100, 100, 1, 0, 6736628.1997940624, 1169885.8456961261)]
+        [TestCase(0, 10, 80, 80, 100, 100, 1, 0, 996809.1228493352, 142187.83605427248)]
+        [TestCase(10, 0, 80, 80, 100, 100, 1, 0, 3263640.7132176529, 1169885.8456961263)]
+        [TestCase(10, 10, 80, 80, 100, 100, 1, 0, 831828.69500885683, 271124.45064052724)]
+        [TestCase(-10, 0, 80, 80, 100, 100, 1, 0, 1.9399404130470604E+22, 1169885.8456961261)]
+        [TestCase(0, -10, 80, 80, 100, 100, 1, 0, -1415502.6695668532, -289729.61543120455)]
+        [TestCase(-10, -10, 80, 80, 100, 100, 1, 0, -1187731.6779271192, -36270.050511967114)]
+        /* Center high dec Rotation 90*/
+        [TestCase(80, 80, 80, 80, 100, 100, 1, 90, 100, 100)]
+        [TestCase(0, 0, 80, 80, 100, 100, 1, 90, 1169885.8456961266, -6736428.1997940624)]
+        [TestCase(0, 10, 80, 80, 100, 100, 1, 90, 142187.83605427254, -996609.1228493352)]
+        [TestCase(10, 0, 80, 80, 100, 100, 1, 90, 1169885.8456961266, -3263440.7132176529)]
+        [TestCase(10, 10, 80, 80, 100, 100, 1, 90, 271124.4506405273, -831628.69500885683)]
+        [TestCase(-10, 0, 80, 80, 100, 100, 1, 90, 2357717.5236232448, -1.9399404130470604E+22)]
+        [TestCase(0, -10, 80, 80, 100, 100, 1, 90, -289729.61543120461, 1415702.6695668532)]
+        [TestCase(-10, -10, 80, 80, 100, 100, 1, 90, -36270.050511967194, 1187931.6779271192)]
+        public void GnomonicTanProjectionTest(double ra, double dec, double centerRa, double centerDec, double centerX, double centerY, double arcSecPerPixel, double rotation, double expectedX, double expectedY) {
+            var coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees);
+            var centerPoint = new Point(centerX, centerY);
+            var center = new Coordinates(centerRa, centerDec, Epoch.J2000, Coordinates.RAType.Degrees);
+
+            var p = coordinates.GnomonicTanProjection(center, centerPoint, arcSecPerPixel, arcSecPerPixel, rotation);
+
+            var expectedPoint = new Point(expectedX, expectedY);
+
+            Assert.AreEqual(expectedPoint.X, p.X, ANGLE_TOLERANCE);
+            Assert.AreEqual(expectedPoint.Y, p.Y, ANGLE_TOLERANCE);
         }
     }
 }

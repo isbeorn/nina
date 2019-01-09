@@ -29,6 +29,8 @@ using System.Text.RegularExpressions;
 namespace NINA.Utility.Astrometry {
 
     public class Astrometry {
+        private static double DegreeToRadiansFactor = Math.PI / 180d;
+        private static double RadiansToDegreeFactor = 180d / Math.PI;
 
         /// <summary>
         /// Convert degree to radians
@@ -36,7 +38,7 @@ namespace NINA.Utility.Astrometry {
         /// <param name="val"></param>
         /// <returns></returns>
         public static double ToRadians(double val) {
-            return (Math.PI / 180) * val;
+            return DegreeToRadiansFactor * val;
         }
 
         /// <summary>
@@ -45,39 +47,39 @@ namespace NINA.Utility.Astrometry {
         /// <param name="angle"></param>
         /// <returns></returns>
         public static double ToDegree(double angle) {
-            return angle * (180.0 / Math.PI);
+            return angle * RadiansToDegreeFactor;
         }
 
         public static double DegreeToArcmin(double degree) {
-            return degree * 60;
+            return degree * 60d;
         }
 
         public static double DegreeToArcsec(double degree) {
-            return degree * 60 * 60;
+            return degree * 60d * 60d;
         }
 
         public static double ArcminToArcsec(double arcmin) {
-            return arcmin * 60;
+            return arcmin * 60d;
         }
 
         public static double ArcminToDegree(double arcmin) {
-            return arcmin / 60;
+            return arcmin / 60d;
         }
 
         public static double ArcsecToArcmin(double arcsec) {
-            return arcsec / 60;
+            return arcsec / 60d;
         }
 
         public static double ArcsecToDegree(double arcsec) {
-            return arcsec / 60 / 60;
+            return arcsec / 60d / 60d;
         }
 
         public static double HoursToDegrees(double hours) {
-            return hours * 15;
+            return hours * 15d;
         }
 
         public static double DegreesToHours(double deg) {
-            return deg / 15;
+            return deg / 15d;
         }
 
         public static double GetLocalSiderealTimeNow(double longitude) {

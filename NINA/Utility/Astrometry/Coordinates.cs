@@ -203,6 +203,9 @@ namespace NINA.Utility.Astrometry {
         /// <param name="deltaY">delta y in degree</param>
         /// <param name="rotation">rotation relative to delta values</param>
         /// <returns></returns>
+        /// <remarks>
+        ///     based on http://faculty.wcas.northwestern.edu/nchapman/coding/worldpos.py
+        /// </remarks>
         public Coordinates Shift(double deltaX, double deltaY, double rotation) {
             var deltaXAngle = Angle.ByDegree(-deltaX);
             var deltaYAngle = Angle.ByDegree(-deltaY);
@@ -224,8 +227,6 @@ namespace NINA.Utility.Astrometry {
             var originDec = this.decAngle;
             var originDecSin = originDec.Sin();
             var originDecCos = originDec.Cos();
-
-            // refer to http://faculty.wcas.northwestern.edu/nchapman/coding/worldpos.py
 
             var targetRA = originRA + Angle.Atan2(deltaXAngle, originDecCos - deltaYAngle * originDecSin);
 
@@ -259,6 +260,9 @@ namespace NINA.Utility.Astrometry {
         /// <param name="vertResArcSecPix">Vertical resolution in ArcSec/Px</param>
         /// <param name="rotation">Rotation in degrees</param>
         /// <returns></returns>
+        /// <remarks>
+        ///     based on http://faculty.wcas.northwestern.edu/nchapman/coding/worldpos.py
+        /// </remarks>
         public Point GnomonicTanProjection(Coordinates center, Point centerPointPixels, double horizResArcSecPx, double vertResArcSecPix, double rotation) {
             var raDegreesSanitized = RADegrees;
             var deltaRa = (raDegreesSanitized - center.RADegrees);
@@ -270,47 +274,40 @@ namespace NINA.Utility.Astrometry {
                 raDegreesSanitized += 360;
             }
 
-            var centerRaRad = Astrometry.ToRadians(center.RADegrees);
-            var centerDegRad = Astrometry.ToRadians(center.Dec);
-            var targetRaRad = Astrometry.ToRadians(raDegreesSanitized);
-            var targetDecRad = Astrometry.ToRadians(Dec);
-            var imageRotationRad = Astrometry.ToRadians(rotation);
+            var centerRa = Angle.ByDegree(center.RADegrees);
+            var centerDec = Angle.ByDegree(center.Dec);
+            var targetRa = Angle.ByDegree(raDegreesSanitized);
+            var targetDec = decAngle;
+            var imageRotation = Angle.ByDegree(rotation);
 
-            var targetDecSin = Math.Sin(targetDecRad);
-            var targetDecCos = Math.Cos(targetDecRad);
+            var targetDecSin = targetDec.Sin();
+            var targetDecCos = targetDec.Cos();
 
-            var centerDegSin = Math.Sin(centerDegRad);
-            var centerDegCos = Math.Cos(centerDegRad);
+            var centerDegSin = centerDec.Sin();
+            var centerDegCos = centerDec.Cos();
 
-            var targetRaSubCenterRaSin = Math.Sin(targetRaRad - centerRaRad);
-            var targetRaSubCenterRaCos = Math.Cos(targetRaRad - centerRaRad);
+            var substraction = targetRa - centerRa;
+            var targetRaSubCenterRaSin = substraction.Sin();
+            var targetRaSubCenterRaCos = substraction.Cos();
 
-            var imageRotationSin = Math.Sin(imageRotationRad);
-            var imageRotationCos = Math.Cos(imageRotationRad);
-
-            // _xypix -tan projection
-            // refer to http://faculty.wcas.northwestern.edu/nchapman/coding/worldpos.py
+            var imageRotationSin = imageRotation.Sin();
+            var imageRotationCos = imageRotation.Cos();
 
             var modDivisor = (targetDecSin * centerDegSin + targetDecCos * centerDegCos * targetRaSubCenterRaCos);
 
-            var raModRad = (targetRaSubCenterRaSin * targetDecCos) / modDivisor;
-            var decModRad = (targetDecSin * centerDegCos - targetDecCos * centerDegSin * targetRaSubCenterRaCos) / modDivisor;
+            var raMod = (targetRaSubCenterRaSin * targetDecCos) / modDivisor;
+            var decMod = (targetDecSin * centerDegCos - targetDecCos * centerDegSin * targetRaSubCenterRaCos) / modDivisor;
 
-            double deltaXDegrees;
-            double deltaYDegrees;
+            var deltaX = raMod;
+            var deltaY = decMod;
 
-            if (imageRotationRad != 0) {
-                deltaXDegrees = Astrometry.ToDegree(raModRad) * imageRotationCos +
-                                    Astrometry.ToDegree(decModRad) * imageRotationSin;
-                deltaYDegrees = Astrometry.ToDegree(decModRad) * imageRotationCos -
-                                    Astrometry.ToDegree(raModRad) * imageRotationSin;
-            } else {
-                deltaXDegrees = Astrometry.ToDegree(raModRad);
-                deltaYDegrees = Astrometry.ToDegree(decModRad);
+            if (imageRotation.Degree != 0) {
+                deltaX = raMod * imageRotationCos + decMod * imageRotationSin;
+                deltaY = decMod * imageRotationCos - raMod * imageRotationSin;
             }
 
-            return new Point(centerPointPixels.X - Astrometry.DegreeToArcsec(deltaXDegrees) / horizResArcSecPx,
-                centerPointPixels.Y - Astrometry.DegreeToArcsec(deltaYDegrees) / vertResArcSecPix);
+            return new Point(centerPointPixels.X - deltaX.ArcSeconds / horizResArcSecPx,
+                centerPointPixels.Y - deltaY.ArcSeconds / vertResArcSecPix);
         }
 
         /// <summary>
