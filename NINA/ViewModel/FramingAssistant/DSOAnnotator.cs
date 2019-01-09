@@ -16,10 +16,12 @@ namespace NINA.ViewModel.FramingAssistant {
         private AsyncObservableCollection<FramingDSO> dsoInViewport;
         private ViewportFoV viewportFoV;
         private FrameLineMatrix frameLineMatrix;
+        private AsyncObservableCollection<FramingConstellation> constellationsInViewport;
 
         public DSOAnnotator(string databaseLocation) {
             dbInstance = new DatabaseInteraction(databaseLocation);
             DSOInViewport = new AsyncObservableCollection<FramingDSO>();
+            ConstellationsInViewport = new AsyncObservableCollection<FramingConstellation>();
             FrameLineMatrix = new FrameLineMatrix();
         }
 
@@ -29,6 +31,13 @@ namespace NINA.ViewModel.FramingAssistant {
             ClearFrameLineMatrix();
 
             await UpdateDSO(ct);
+
+            var constellations = await dbInstance.GetConstellationsWithStars(ct);
+
+            ConstellationsInViewport.Clear();
+            foreach (var constellation in constellations) {
+                ConstellationsInViewport.Add(new FramingConstellation(constellation, viewportFoV));
+            }
 
             FrameLineMatrix.CalculatePoints(viewportFoV);
         }
@@ -45,6 +54,14 @@ namespace NINA.ViewModel.FramingAssistant {
             get => dsoInViewport;
             set {
                 dsoInViewport = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public AsyncObservableCollection<FramingConstellation> ConstellationsInViewport {
+            get => constellationsInViewport;
+            set {
+                constellationsInViewport = value;
                 RaisePropertyChanged();
             }
         }
@@ -146,6 +163,10 @@ namespace NINA.ViewModel.FramingAssistant {
                 } else {
                     DSOInViewport.RemoveAt(i);
                 }
+            }
+
+            foreach (var constellation in ConstellationsInViewport) {
+                constellation.RecalculateStarPositions(viewportFoV);
             }
 
             var dsosToAdd = allGatheredDSO.Where(x => !existingDSOs.Any(y => y == x.Value.Id));

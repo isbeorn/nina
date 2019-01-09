@@ -158,6 +158,41 @@ namespace NINA.Utility {
             public double? DecThru { get; set; } = null;
         }
 
+        public async Task<List<Constellation>> GetConstellationsWithStars(CancellationToken token) {
+            List<Constellation> constellations = new List<Constellation>();
+
+            try {
+                using (SQLiteConnection connection = new SQLiteConnection(_connectionString)) {
+                    connection.Open();
+                    using (SQLiteCommand command = connection.CreateCommand()) {
+                        command.CommandText = "SELECT constellationid, star1.name, star1.ra, star1.dec, star1.mag, star2.name, star2.ra, star2.dec, star2.mag\r\n" +
+                                              "FROM constellation\r\n" +
+                                              "INNER JOIN constellationstar AS star1 ON constellation.starid = star1.id\r\n" +
+                                              "INNER JOIN constellationstar AS star2 ON constellation.followstarid = star2.id";
+
+                        var reader = await command.ExecuteReaderAsync(token);
+
+                        while (reader.Read()) {
+                            var constId = reader.GetString(0);
+                            var constellation = constellations.SingleOrDefault(c => c.Id == constId);
+                            if (constellation == null) {
+                                constellation = new Constellation(constId);
+                                constellations.Add(constellation);
+                            }
+                            Star star1 = new Star(reader.GetString(1), new Coordinates(reader.GetDouble(2), reader.GetDouble(3), Epoch.J2000, Coordinates.RAType.Degrees), reader.GetDouble(4));
+                            Star star2 = new Star(reader.GetString(5), new Coordinates(reader.GetDouble(6), reader.GetDouble(7), Epoch.J2000, Coordinates.RAType.Degrees), reader.GetDouble(8));
+                            constellation.StarConnections.Add(new Tuple<Star, Star>(star1, star2));
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                Notification.Notification.ShowError(ex.Message);
+            }
+
+            return constellations;
+        }
+
         public async Task<List<DeepSkyObject>> GetDeepSkyObjects(
             string imageRepository,
             DeepSkyObjectSearchParams searchParams,
