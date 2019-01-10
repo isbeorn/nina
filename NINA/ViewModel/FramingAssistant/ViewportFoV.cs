@@ -11,8 +11,10 @@ namespace NINA.ViewModel.FramingAssistant {
         public Coordinates TopLeft { get; private set; }
         public Coordinates BottomLeft { get; private set; }
         public Coordinates CenterCoordinates { get; private set; }
+        public double AbsCalcTopDec { get; private set; }
+        public double AbsCalcBottomDec { get; private set; }
         public double CalcTopDec { get; private set; }
-        public double CalcBotomDec { get; private set; }
+        public double CalcBottomDec { get; private set; }
         public double VFoVDegTop { get; private set; }
         public double VFoVDegBottom { get; private set; }
         public double VFoVDeg => VFoVDegTop + VFoVDegBottom;
@@ -25,6 +27,9 @@ namespace NINA.ViewModel.FramingAssistant {
         public double Rotation { get; }
         public double OriginalVFoV { get; }
         public double OriginalHFoV { get; }
+
+        public double CalcRAMin { get; private set; }
+        public double CalcRAMax { get; private set; }
 
         public ViewportFoV(Coordinates centerCoordinates, double vFoVDegrees, double width, double height, double rotation) {
             OriginalVFoV = vFoVDegrees;
@@ -40,6 +45,17 @@ namespace NINA.ViewModel.FramingAssistant {
             ArcSecHeight = Astrometry.DegreeToArcsec(OriginalVFoV) / height;
 
             Shift(new Vector(0, 0));
+        }
+
+        public bool ContainsCoordinates(Coordinates coordinates) {
+            return ContainsCoordinates(coordinates.RADegrees, coordinates.Dec);
+        }
+
+        public bool ContainsCoordinates(double ra, double dec) {
+            return ((CalcRAMin > CalcRAMax && (ra > CalcRAMin || ra < CalcRAMax)) // case viewport is going over 0
+                    || (ra < CalcRAMax && ra > CalcRAMin) // case viewport is "normal"
+                    || IsAbove90 // case dec viewport is above 90deg
+                    ) && (dec > CalcBottomDec && dec < CalcTopDec); // is in between dec
         }
 
         public void Shift(Vector delta) {
@@ -88,8 +104,17 @@ namespace NINA.ViewModel.FramingAssistant {
                 IsAbove90 = false;
             }
 
-            CalcTopDec = AbsoluteCenterCoordinates.Dec + VFoVDegTop;
-            CalcBotomDec = AbsoluteCenterCoordinates.Dec - VFoVDegBottom;
+            AbsCalcTopDec = AbsoluteCenterCoordinates.Dec + VFoVDegTop;
+            AbsCalcBottomDec = AbsoluteCenterCoordinates.Dec - VFoVDegBottom;
+
+            CalcTopDec = CenterCoordinates.Dec + VFoVDegTop;
+            CalcBottomDec = CenterCoordinates.Dec - VFoVDegBottom;
+
+            CalcRAMax = TopLeft.RADegrees;
+            CalcRAMin = CalcRAMax - HFoVDeg;
+            if (CalcRAMin < 0) {
+                CalcRAMin += 360;
+            }
         }
     }
 }

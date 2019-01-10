@@ -25,6 +25,7 @@ using NINA.Model;
 using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.SQLite;
 using System.Linq;
 using System.Threading;
@@ -184,6 +185,11 @@ namespace NINA.Utility {
                             constellation.StarConnections.Add(new Tuple<Star, Star>(star1, star2));
                         }
                     }
+                }
+
+                // make a list of unique stars
+                foreach (var constellation in constellations) {
+                    constellation.Stars = new ObservableCollection<Star>(constellation.StarConnections.Select(t => t.Item1).Concat(constellation.StarConnections.Select(t => t.Item2)).GroupBy(b => b.Name).Select(b => b.First()).ToList());
                 }
             } catch (Exception ex) {
                 Logger.Error(ex);

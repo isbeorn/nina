@@ -11,14 +11,15 @@ using System.Windows;
 
 namespace NINA.ViewModel.FramingAssistant {
 
-    internal class DSOAnnotator : BaseINPC {
+    internal class SkyMapAnnotator : BaseINPC {
         private readonly DatabaseInteraction dbInstance;
         private AsyncObservableCollection<FramingDSO> dsoInViewport;
         private ViewportFoV viewportFoV;
         private FrameLineMatrix frameLineMatrix;
         private AsyncObservableCollection<FramingConstellation> constellationsInViewport;
+        private List<Constellation> dbConstellations;
 
-        public DSOAnnotator(string databaseLocation) {
+        public SkyMapAnnotator(string databaseLocation) {
             dbInstance = new DatabaseInteraction(databaseLocation);
             DSOInViewport = new AsyncObservableCollection<FramingDSO>();
             ConstellationsInViewport = new AsyncObservableCollection<FramingConstellation>();
@@ -28,16 +29,12 @@ namespace NINA.ViewModel.FramingAssistant {
         public async void Initialize(Coordinates centerCoordinates, double vFoVDegrees, double imageWidth, double imageHeight, double imageRotation, CancellationToken ct) {
             viewportFoV = new ViewportFoV(centerCoordinates, vFoVDegrees, imageWidth, imageHeight, imageRotation);
 
-            ClearFrameLineMatrix();
-
-            await UpdateDSO(ct);
-
-            var constellations = await dbInstance.GetConstellationsWithStars(ct);
+            dbConstellations = await dbInstance.GetConstellationsWithStars(ct);
 
             ConstellationsInViewport.Clear();
-            foreach (var constellation in constellations) {
-                ConstellationsInViewport.Add(new FramingConstellation(constellation, viewportFoV));
-            }
+            ClearFrameLineMatrix();
+
+            await UpdateSkyMap(ct);
 
             FrameLineMatrix.CalculatePoints(viewportFoV);
         }
@@ -151,7 +148,7 @@ namespace NINA.ViewModel.FramingAssistant {
             FrameLineMatrix.CalculatePoints(viewportFoV);
         }
 
-        public async Task UpdateDSO(CancellationToken ct) {
+        public async Task UpdateSkyMap(CancellationToken ct) {
             var allGatheredDSO = await GetDeepSkyObjectsForViewport(ct);
 
             var existingDSOs = new List<string>();
@@ -165,8 +162,36 @@ namespace NINA.ViewModel.FramingAssistant {
                 }
             }
 
-            foreach (var constellation in ConstellationsInViewport) {
-                constellation.RecalculateStarPositions(viewportFoV);
+            foreach (var constellation in dbConstellations) {
+                FramingConstellation viewPortConstellation = null;
+                foreach (var f in ConstellationsInViewport) {
+                    if (f.Id != constellation.Id) {
+                        continue;
+                    }
+
+                    viewPortConstellation = f;
+                    break;
+                }
+
+                var isInViewport = false;
+                foreach (var star in constellation.Stars) {
+                    if (!viewportFoV.ContainsCoordinates(star.Coords)) {
+                        continue;
+                    }
+
+                    isInViewport = true;
+                    break;
+                }
+
+                if (isInViewport) {
+                    if (viewPortConstellation == null) {
+                        ConstellationsInViewport.Add(new FramingConstellation(constellation, viewportFoV));
+                    } else {
+                        viewPortConstellation.RecalculateStarPositions(viewportFoV);
+                    }
+                } else if (viewPortConstellation != null) {
+                    ConstellationsInViewport.Remove(viewPortConstellation);
+                }
             }
 
             var dsosToAdd = allGatheredDSO.Where(x => !existingDSOs.Any(y => y == x.Value.Id));

@@ -80,7 +80,7 @@ namespace NINA.ViewModel.FramingAssistant {
             DeepSkyObjectSearchVM = new DeepSkyObjectSearchVM(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
             DeepSkyObjectSearchVM.PropertyChanged += DeepSkyObjectSearchVM_PropertyChanged;
 
-            DSOAnnotator = new DSOAnnotator(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
+            SkyMapAnnotator = new SkyMapAnnotator(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
 
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(async (object parameter) => {
                 var vm = (ApplicationVM)Application.Current.Resources["AppVM"];
@@ -605,7 +605,7 @@ namespace NINA.ViewModel.FramingAssistant {
                             RaisePropertyChanged(nameof(ImageCacheInfo));
                         }
 
-                        DSOAnnotator.Initialize(skySurveyImage.Coordinates, FieldOfView, skySurveyImage.Image.Width, skySurveyImage.Image.Height, ImageParameter.Rotation, _loadImageSource.Token);
+                        SkyMapAnnotator.Initialize(skySurveyImage.Coordinates, FieldOfView, skySurveyImage.Image.Width, skySurveyImage.Image.Height, ImageParameter.Rotation, _loadImageSource.Token);
                     }
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
@@ -754,11 +754,11 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         private void DragStart(object obj) {
-            Dispatcher.CurrentDispatcher.Invoke(() => DSOAnnotator.ClearFrameLineMatrix());
+            Dispatcher.CurrentDispatcher.Invoke(() => SkyMapAnnotator.ClearFrameLineMatrix());
         }
 
         private void DragStop(object obj) {
-            Dispatcher.CurrentDispatcher.Invoke(() => DSOAnnotator.CalculateFrameLineMatrix());
+            Dispatcher.CurrentDispatcher.Invoke(() => SkyMapAnnotator.CalculateFrameLineMatrix());
         }
 
         private void DragMove(object obj) {
@@ -766,11 +766,11 @@ namespace NINA.ViewModel.FramingAssistant {
             if (FramingAssistantSource == SkySurveySource.SKYATLAS) {
                 delta = new Vector(-delta.X, -delta.Y);
 
-                var newCenter = DSOAnnotator.ShiftViewport(delta);
+                var newCenter = SkyMapAnnotator.ShiftViewport(delta);
                 DSO.Coordinates = newCenter;
                 ImageParameter.Coordinates = newCenter;
                 CalculateRectangle(ImageParameter);
-                DSOAnnotator.UpdateDSO(_loadImageSource.Token).Wait();
+                SkyMapAnnotator.UpdateSkyMap(_loadImageSource.Token).Wait();
             } else {
                 var imageArcsecWidth =
                     Astrometry.ArcminToArcsec(ImageParameter.FoVWidth) / ImageParameter.Image.Width;
@@ -789,7 +789,7 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         private bool prevCameraConnected = false;
-        private DSOAnnotator dsoAnnotator;
+        private SkyMapAnnotator skyMapAnnotator;
 
         public void UpdateDeviceInfo(CameraInfo cameraInfo) {
             if (cameraInfo != null) {
@@ -820,10 +820,10 @@ namespace NINA.ViewModel.FramingAssistant {
         public ICommand ClearCacheCommand { get; private set; }
         public ICommand ScrollViewerSizeChangedCommand { get; }
 
-        public DSOAnnotator DSOAnnotator {
-            get => dsoAnnotator;
+        public SkyMapAnnotator SkyMapAnnotator {
+            get => skyMapAnnotator;
             set {
-                dsoAnnotator = value;
+                skyMapAnnotator = value;
                 RaisePropertyChanged();
             }
         }
