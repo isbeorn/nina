@@ -162,7 +162,9 @@ namespace NINA.ViewModel.FramingAssistant {
                     var point = coordinates.GnomonicTanProjection(viewportFoV);
                     frameLine.Collection.Add(point);
                 }
-                ConstellationBoundariesInViewPort.Add(frameLine);
+                if (frameLine.Collection.Any((x) => x.X > 0 && x.Y > 0 && x.X < viewportFoV.Width && x.Y < viewportFoV.Height)) {
+                    ConstellationBoundariesInViewPort.Add(frameLine);
+                }
             }
         }
 
