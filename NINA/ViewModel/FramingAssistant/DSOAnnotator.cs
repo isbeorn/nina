@@ -1,6 +1,7 @@
 ﻿using NINA.Model;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -21,6 +22,9 @@ namespace NINA.ViewModel.FramingAssistant {
             dbInstance = new DatabaseInteraction(databaseLocation);
             DSOInViewport = new AsyncObservableCollection<FramingDSO>();
             FrameLineMatrix = new FrameLineMatrix();
+            ConstellationBoundaries = new AsyncLazy<Dictionary<string, ConstellationBoundary>>(async delegate {
+                return await GetConstellationBoundaries();
+            });
         }
 
         public async void Initialize(Coordinates centerCoordinates, double vFoVDegrees, double imageWidth, double imageHeight, double imageRotation, CancellationToken ct) {
@@ -132,6 +136,34 @@ namespace NINA.ViewModel.FramingAssistant {
 
         public void CalculateFrameLineMatrix() {
             FrameLineMatrix.CalculatePoints(viewportFoV);
+        }
+
+        private AsyncLazy<Dictionary<string, ConstellationBoundary>> ConstellationBoundaries;
+
+        private async Task<Dictionary<string, ConstellationBoundary>> GetConstellationBoundaries() {
+            var dic = new Dictionary<string, ConstellationBoundary>();
+            var list = await dbInstance.GetConstellationBoundaries(new CancellationToken());
+            foreach (var item in list) {
+                dic.Add(item.Name, item);
+            }
+            return dic;
+        }
+
+        public AsyncObservableCollection<FrameLine> ConstellationBoundariesInViewPort { get; private set; } = new AsyncObservableCollection<FrameLine>();
+
+        public void ClearConstellationBoundaries() {
+            ConstellationBoundariesInViewPort.Clear();
+        }
+
+        public async Task CalculateConstellationBoundaries() {
+            foreach (var boundary in await ConstellationBoundaries) {
+                var frameLine = new FrameLine() { Closed = true, StrokeThickness = 1, Collection = new System.Windows.Media.PointCollection() };
+                foreach (var coordinates in boundary.Value.Boundaries) {
+                    var point = coordinates.GnomonicTanProjection(viewportFoV);
+                    frameLine.Collection.Add(point);
+                }
+                ConstellationBoundariesInViewPort.Add(frameLine);
+            }
         }
 
         public async Task UpdateDSO(CancellationToken ct) {
