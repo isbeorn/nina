@@ -473,7 +473,7 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Canvas>
-                                            <Polyline
+                                            <Polygon
                                                 Points="{Binding Collection}"
                                                 Stroke="Yellow"
                                                 StrokeThickness="{Binding StrokeThickness}" />

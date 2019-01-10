@@ -31,6 +31,7 @@ namespace NINA.ViewModel.FramingAssistant {
             viewportFoV = new ViewportFoV(centerCoordinates, vFoVDegrees, imageWidth, imageHeight, imageRotation);
 
             ClearFrameLineMatrix();
+            ClearConstellationBoundaries();
 
             await UpdateDSO(ct);
 
