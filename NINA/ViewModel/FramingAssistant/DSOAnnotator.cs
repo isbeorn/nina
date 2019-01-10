@@ -27,7 +27,7 @@ namespace NINA.ViewModel.FramingAssistant {
             });
         }
 
-        public async void Initialize(Coordinates centerCoordinates, double vFoVDegrees, double imageWidth, double imageHeight, double imageRotation, CancellationToken ct) {
+        public async Task Initialize(Coordinates centerCoordinates, double vFoVDegrees, double imageWidth, double imageHeight, double imageRotation, CancellationToken ct) {
             viewportFoV = new ViewportFoV(centerCoordinates, vFoVDegrees, imageWidth, imageHeight, imageRotation);
 
             ClearFrameLineMatrix();
@@ -35,6 +35,7 @@ namespace NINA.ViewModel.FramingAssistant {
             await UpdateDSO(ct);
 
             FrameLineMatrix.CalculatePoints(viewportFoV);
+            await CalculateConstellationBoundaries();
         }
 
         public FrameLineMatrix FrameLineMatrix {

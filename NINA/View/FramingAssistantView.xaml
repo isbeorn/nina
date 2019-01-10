@@ -473,14 +473,10 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Canvas>
-                                            <ninactrl:CardinalSplineShape
-                                                Closed="{Binding Closed}"
+                                            <Polyline
                                                 Points="{Binding Collection}"
-                                                StrokeThickness="{Binding StrokeThickness}">
-                                                <ninactrl:CardinalSplineShape.Stroke>
-                                                    <SolidColorBrush Color="Yellow" />
-                                                </ninactrl:CardinalSplineShape.Stroke>
-                                            </ninactrl:CardinalSplineShape>
+                                                Stroke="Yellow"
+                                                StrokeThickness="{Binding StrokeThickness}" />
                                         </Canvas>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>

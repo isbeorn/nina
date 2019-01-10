@@ -605,7 +605,7 @@ namespace NINA.ViewModel.FramingAssistant {
                             RaisePropertyChanged(nameof(ImageCacheInfo));
                         }
 
-                        DSOAnnotator.Initialize(skySurveyImage.Coordinates, FieldOfView, skySurveyImage.Image.Width, skySurveyImage.Image.Height, ImageParameter.Rotation, _loadImageSource.Token);
+                        await DSOAnnotator.Initialize(skySurveyImage.Coordinates, FieldOfView, skySurveyImage.Image.Width, skySurveyImage.Image.Height, ImageParameter.Rotation, _loadImageSource.Token);
                     }
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
