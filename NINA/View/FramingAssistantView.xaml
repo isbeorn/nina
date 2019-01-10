@@ -517,6 +517,7 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                             <ItemsControl ItemsSource="{Binding SkyMapAnnotator.FrameLineMatrix.RAPoints}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
+                            <ItemsControl ItemsSource="{Binding SkyMapAnnotator.ConstellationBoundariesInViewPort}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <Canvas />
@@ -525,7 +526,27 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Canvas>
-                                            <ninactrl:CardinalSplineShape Points="{Binding Collection}" Closed="{Binding Closed}" StrokeThickness="{Binding StrokeThickness}">
+                                            <Polygon
+                                                Points="{Binding Collection}"
+                                                Stroke="Yellow"
+                                                StrokeThickness="{Binding StrokeThickness}" />
+                                        </Canvas>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <ItemsControl ItemsSource="{Binding SkyMapAnnotator.FrameLineMatrix.RAPoints}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Canvas />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Canvas>
+                                            <ninactrl:CardinalSplineShape
+                                                Closed="{Binding Closed}"
+                                                Points="{Binding Collection}"
+                                                StrokeThickness="{Binding StrokeThickness}">
                                                 <ninactrl:CardinalSplineShape.Stroke>
                                                     <SolidColorBrush>
                                                         <SolidColorBrush.Color>
@@ -551,7 +572,10 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Canvas>
-                                            <ninactrl:CardinalSplineShape Points="{Binding Collection}" Closed="{Binding Closed}" StrokeThickness="{Binding StrokeThickness}">
+                                            <ninactrl:CardinalSplineShape
+                                                Closed="{Binding Closed}"
+                                                Points="{Binding Collection}"
+                                                StrokeThickness="{Binding StrokeThickness}">
                                                 <ninactrl:CardinalSplineShape.Stroke>
                                                     <SolidColorBrush>
                                                         <SolidColorBrush.Color>
@@ -604,20 +628,20 @@
                                                     Grid.Row="1"
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center"
-                                                    Text="{Binding Name1}"
-                                                    Foreground="White" />
+                                                    Foreground="White"
+                                                    Text="{Binding Name1}" />
                                                 <TextBlock
                                                     Grid.Row="2"
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center"
-                                                    Text="{Binding Name2}"
-                                                    Foreground="White" />
+                                                    Foreground="White"
+                                                    Text="{Binding Name2}" />
                                                 <TextBlock
                                                     Grid.Row="3"
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center"
-                                                    Text="{Binding Name3}"
-                                                    Foreground="White" />
+                                                    Foreground="White"
+                                                    Text="{Binding Name3}" />
                                             </Grid>
                                         </Border>
                                     </DataTemplate>

@@ -32,9 +32,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Utility {
-
     internal class DatabaseInteraction {
-
         static DatabaseInteraction() {
             DllLoader.LoadDll("SQLite\\SQLite.Interop.dll");
         }
@@ -197,6 +195,39 @@ namespace NINA.Utility {
             }
 
             return constellations;
+        }
+
+        public async Task<List<ConstellationBoundary>> GetConstellationBoundaries(CancellationToken token) {
+            List<ConstellationBoundary> constellationBoundaries = new List<ConstellationBoundary>();
+            try {
+                using (SQLiteConnection connection = new SQLiteConnection(_connectionString)) {
+                    connection.Open();
+                    var query = "SELECT constellation, ra ,dec FROM constellationboundaries where constellation in ('AQR', 'AQL', 'ARI', 'AUR', 'BOO', 'CNC', 'CMA', 'CAP', 'CAS', 'CYG', 'GEM', 'LEO', 'LIB', 'LYR', 'ORI', 'PEG', 'PER', 'PSC', 'SGR', 'SCO', 'TAU', 'UMA', 'VIR') ORDER BY constellation, position;";
+                    using (SQLiteCommand command = connection.CreateCommand()) {
+                        command.CommandText = query;
+
+                        ConstellationBoundary boundary = null;
+                        var reader = await command.ExecuteReaderAsync(token);
+                        var prevName = string.Empty;
+                        while (reader.Read()) {
+                            var name = reader.GetString(0);
+                            if (prevName != name) {
+                                prevName = name;
+                                boundary = new ConstellationBoundary();
+                                constellationBoundaries.Add(boundary);
+                                boundary.Name = name;
+                            }
+                            boundary.Boundaries.Add(new Coordinates(reader.GetDouble(1), reader.GetDouble(2), Epoch.J2000, Coordinates.RAType.Hours));
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                if (!ex.Message.Contains("Execution was aborted by the user")) {
+                    Logger.Error(ex);
+                    Notification.Notification.ShowError(ex.Message);
+                }
+            }
+            return constellationBoundaries;
         }
 
         public async Task<List<DeepSkyObject>> GetDeepSkyObjects(

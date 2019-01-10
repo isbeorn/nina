@@ -1,16 +1,11 @@
-﻿using NINA.Model;
-using NINA.Utility;
-using NINA.Utility.Astrometry;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace NINA.ViewModel.FramingAssistant {
-
     internal class SkyMapAnnotator : BaseINPC {
         private readonly DatabaseInteraction dbInstance;
         private AsyncObservableCollection<FramingDSO> dsoInViewport;
@@ -24,19 +19,24 @@ namespace NINA.ViewModel.FramingAssistant {
             DSOInViewport = new AsyncObservableCollection<FramingDSO>();
             ConstellationsInViewport = new AsyncObservableCollection<FramingConstellation>();
             FrameLineMatrix = new FrameLineMatrix();
+            ConstellationBoundaries = new AsyncLazy<Dictionary<string, ConstellationBoundary>>(async delegate {
+                return await GetConstellationBoundaries();
+            });
         }
 
-        public async void Initialize(Coordinates centerCoordinates, double vFoVDegrees, double imageWidth, double imageHeight, double imageRotation, CancellationToken ct) {
+        public async Task Initialize(Coordinates centerCoordinates, double vFoVDegrees, double imageWidth, double imageHeight, double imageRotation, CancellationToken ct) {
             viewportFoV = new ViewportFoV(centerCoordinates, vFoVDegrees, imageWidth, imageHeight, imageRotation);
 
             dbConstellations = await dbInstance.GetConstellationsWithStars(ct);
 
             ConstellationsInViewport.Clear();
             ClearFrameLineMatrix();
+            ClearConstellationBoundaries();
 
             await UpdateSkyMap(ct);
 
             FrameLineMatrix.CalculatePoints(viewportFoV);
+            await CalculateConstellationBoundaries();
         }
 
         public FrameLineMatrix FrameLineMatrix {
@@ -146,6 +146,36 @@ namespace NINA.ViewModel.FramingAssistant {
 
         public void CalculateFrameLineMatrix() {
             FrameLineMatrix.CalculatePoints(viewportFoV);
+        }
+
+        private AsyncLazy<Dictionary<string, ConstellationBoundary>> ConstellationBoundaries;
+
+        private async Task<Dictionary<string, ConstellationBoundary>> GetConstellationBoundaries() {
+            var dic = new Dictionary<string, ConstellationBoundary>();
+            var list = await dbInstance.GetConstellationBoundaries(new CancellationToken());
+            foreach (var item in list) {
+                dic.Add(item.Name, item);
+            }
+            return dic;
+        }
+
+        public AsyncObservableCollection<FrameLine> ConstellationBoundariesInViewPort { get; private set; } = new AsyncObservableCollection<FrameLine>();
+
+        public void ClearConstellationBoundaries() {
+            ConstellationBoundariesInViewPort.Clear();
+        }
+
+        public async Task CalculateConstellationBoundaries() {
+            foreach (var boundary in await ConstellationBoundaries) {
+                var frameLine = new FrameLine() { Closed = true, StrokeThickness = 1, Collection = new System.Windows.Media.PointCollection() };
+                foreach (var coordinates in boundary.Value.Boundaries) {
+                    var point = coordinates.GnomonicTanProjection(viewportFoV);
+                    frameLine.Collection.Add(point);
+                }
+                if (frameLine.Collection.Any((x) => x.X > 0 && x.Y > 0 && x.X < viewportFoV.Width && x.Y < viewportFoV.Height)) {
+                    ConstellationBoundariesInViewPort.Add(frameLine);
+                }
+            }
         }
 
         public async Task UpdateSkyMap(CancellationToken ct) {

@@ -21,6 +21,8 @@ namespace NINA.ViewModel.FramingAssistant {
         public double HFoVDeg { get; private set; }
         public bool AboveZero { get; private set; }
         public bool IsAbove90 { get; private set; }
+        public double Width { get; }
+        public double Height { get; }
         public double ArcSecWidth { get; }
         public double ArcSecHeight { get; }
         public Point ViewPortCenterPoint { get; }
@@ -32,6 +34,8 @@ namespace NINA.ViewModel.FramingAssistant {
         public double CalcRAMax { get; private set; }
 
         public ViewportFoV(Coordinates centerCoordinates, double vFoVDegrees, double width, double height, double rotation) {
+            Width = width;
+            Height = height;
             OriginalVFoV = vFoVDegrees;
             OriginalHFoV = (width / height) * vFoVDegrees;
 

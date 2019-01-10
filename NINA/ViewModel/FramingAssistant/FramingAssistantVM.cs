@@ -21,16 +21,6 @@
 
 #endregion "copyright"
 
-using NINA.Model;
-using NINA.Model.MyCamera;
-using NINA.PlateSolving;
-using NINA.Utility;
-using NINA.Utility.Astrometry;
-using NINA.Utility.Behaviors;
-using NINA.Utility.Mediator.Interfaces;
-using NINA.Utility.Notification;
-using NINA.Utility.Profile;
-using NINA.Utility.SkySurvey;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -39,15 +29,10 @@ using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
-using System.Xml.Linq;
 
 namespace NINA.ViewModel.FramingAssistant {
-
     internal class FramingAssistantVM : BaseVM, ICameraConsumer {
-
         public FramingAssistantVM(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator, IImagingMediator imagingMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterConsumer(this);
@@ -605,7 +590,7 @@ namespace NINA.ViewModel.FramingAssistant {
                             RaisePropertyChanged(nameof(ImageCacheInfo));
                         }
 
-                        SkyMapAnnotator.Initialize(skySurveyImage.Coordinates, FieldOfView, skySurveyImage.Image.Width, skySurveyImage.Image.Height, ImageParameter.Rotation, _loadImageSource.Token);
+                        await SkyMapAnnotator.Initialize(skySurveyImage.Coordinates, FieldOfView, skySurveyImage.Image.Width, skySurveyImage.Image.Height, ImageParameter.Rotation, _loadImageSource.Token);
                     }
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
@@ -754,11 +739,17 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         private void DragStart(object obj) {
-            Dispatcher.CurrentDispatcher.Invoke(() => SkyMapAnnotator.ClearFrameLineMatrix());
+            Dispatcher.CurrentDispatcher.Invoke(() => {
+                SkyMapAnnotator.ClearFrameLineMatrix();
+                SkyMapAnnotator.ClearConstellationBoundaries();
+            });
         }
 
         private void DragStop(object obj) {
-            Dispatcher.CurrentDispatcher.Invoke(() => SkyMapAnnotator.CalculateFrameLineMatrix());
+            Dispatcher.CurrentDispatcher.Invoke(() => {
+                SkyMapAnnotator.CalculateFrameLineMatrix();
+                SkyMapAnnotator.CalculateConstellationBoundaries();
+            });
         }
 
         private void DragMove(object obj) {
