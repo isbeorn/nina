@@ -59,7 +59,7 @@ namespace NINA.ViewModel.FramingAssistant {
             return ((CalcRAMin > CalcRAMax && (ra > CalcRAMin || ra < CalcRAMax)) // case viewport is going over 0
                     || (ra < CalcRAMax && ra > CalcRAMin) // case viewport is "normal"
                     || IsAbove90 // case dec viewport is above 90deg
-                    ) && (dec > CalcBottomDec && dec < CalcTopDec); // is in between dec
+                    ) && ((!AboveZero && dec < CalcBottomDec && dec > CalcTopDec) || (AboveZero && dec > CalcBottomDec && dec < CalcTopDec)); // is in between dec
         }
 
         public void Shift(Vector delta) {
@@ -111,8 +111,14 @@ namespace NINA.ViewModel.FramingAssistant {
             AbsCalcTopDec = AbsoluteCenterCoordinates.Dec + VFoVDegTop;
             AbsCalcBottomDec = AbsoluteCenterCoordinates.Dec - VFoVDegBottom;
 
-            CalcTopDec = CenterCoordinates.Dec + VFoVDegTop;
-            CalcBottomDec = CenterCoordinates.Dec - VFoVDegBottom;
+            if (AboveZero) {
+                CalcTopDec = CenterCoordinates.Dec + VFoVDegTop;
+                CalcBottomDec = CenterCoordinates.Dec - VFoVDegBottom;
+            }
+            else {
+                CalcTopDec = CenterCoordinates.Dec - VFoVDegTop;
+                CalcBottomDec = CenterCoordinates.Dec + VFoVDegBottom;
+            }
 
             CalcRAMax = TopLeft.RADegrees;
             CalcRAMin = CalcRAMax - HFoVDeg;

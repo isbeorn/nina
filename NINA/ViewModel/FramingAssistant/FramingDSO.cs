@@ -14,7 +14,8 @@ namespace NINA.ViewModel.FramingAssistant {
         private readonly double sizeWidth;
         private readonly double sizeHeight;
         private Coordinates coordinates;
-        private Point topLeftPoint;
+        private Point centerPoint;
+        private Point textPosition;
 
         /// <summary>
         /// Constructor for a Framing DSO.
@@ -64,23 +65,31 @@ namespace NINA.ViewModel.FramingAssistant {
             RecalculateTopLeft(viewport);
         }
 
-        public void RecalculateTopLeft(ViewportFoV reference) {
-            var projectedPoint = coordinates.GnomonicTanProjection(reference);
-            arcSecWidth = reference.ArcSecWidth;
-            arcSecHeight = reference.ArcSecHeight;
-            TopLeftPoint = new Point(projectedPoint.X - SizeWidth / 2, projectedPoint.Y - SizeHeight / 2);
-            RaisePropertyChanged(nameof(SizeWidth));
-            RaisePropertyChanged(nameof(SizeHeight));
+        public Point TextPosition {
+            get => textPosition;
+            set {
+                textPosition = value;
+                RaisePropertyChanged();
+            }
         }
 
-        public double SizeWidth => sizeWidth / arcSecWidth;
+        public void RecalculateTopLeft(ViewportFoV reference) {
+            CenterPoint = coordinates.GnomonicTanProjection(reference);
+            arcSecWidth = reference.ArcSecWidth;
+            arcSecHeight = reference.ArcSecHeight;
+            TextPosition = new Point(CenterPoint.X, CenterPoint.Y + RadiusHeight + 5);
+            RaisePropertyChanged(nameof(RadiusWidth));
+            RaisePropertyChanged(nameof(RadiusHeight));
+        }
 
-        public double SizeHeight => sizeHeight / arcSecHeight;
+        public double RadiusWidth => (sizeWidth / arcSecWidth) / 2;
 
-        public Point TopLeftPoint {
-            get => topLeftPoint;
+        public double RadiusHeight => (sizeHeight / arcSecHeight) / 2;
+
+        public Point CenterPoint {
+            get => centerPoint;
             private set {
-                topLeftPoint = value;
+                centerPoint = value;
                 RaisePropertyChanged();
             }
         }

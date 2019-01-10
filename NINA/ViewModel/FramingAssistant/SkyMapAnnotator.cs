@@ -1,11 +1,17 @@
-﻿using System;
+﻿using NINA.Model;
+using NINA.Utility;
+using NINA.Utility.Astrometry;
+using Nito.AsyncEx;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace NINA.ViewModel.FramingAssistant {
+
     internal class SkyMapAnnotator : BaseINPC {
         private readonly DatabaseInteraction dbInstance;
         private AsyncObservableCollection<FramingDSO> dsoInViewport;
@@ -167,14 +173,32 @@ namespace NINA.ViewModel.FramingAssistant {
 
         public async Task CalculateConstellationBoundaries() {
             foreach (var boundary in await ConstellationBoundaries) {
-                var frameLine = new FrameLine() { Closed = true, StrokeThickness = 1, Collection = new System.Windows.Media.PointCollection() };
+                var frameLine = new FrameLine() { Closed = false, StrokeThickness = 0.5, Collection = new System.Windows.Media.PointCollection() };
+                bool isInViewport = false;
+                foreach (var coordinates in boundary.Value.Boundaries) {
+                    isInViewport = viewportFoV.ContainsCoordinates(coordinates);
+                    if (isInViewport) {
+                        break;
+                    }
+                }
+
+                if (!isInViewport) {
+                    continue;
+                }
+
+                var bounds = 300;
+
                 foreach (var coordinates in boundary.Value.Boundaries) {
                     var point = coordinates.GnomonicTanProjection(viewportFoV);
+                    if (point.X < -1 * bounds || point.X > viewportFoV.Width + bounds || point.Y < -1 * bounds ||
+                        point.Y > viewportFoV.Height + bounds) {
+                        continue;
+                    }
+
                     frameLine.Collection.Add(point);
                 }
-                if (frameLine.Collection.Any((x) => x.X > 0 && x.Y > 0 && x.X < viewportFoV.Width && x.Y < viewportFoV.Height)) {
-                    ConstellationBoundariesInViewPort.Add(frameLine);
-                }
+
+                ConstellationBoundariesInViewPort.Add(frameLine);
             }
         }
 
@@ -194,12 +218,12 @@ namespace NINA.ViewModel.FramingAssistant {
 
             foreach (var constellation in dbConstellations) {
                 FramingConstellation viewPortConstellation = null;
-                foreach (var f in ConstellationsInViewport) {
-                    if (f.Id != constellation.Id) {
+                foreach (var constellationsInViewport in ConstellationsInViewport) {
+                    if (constellationsInViewport.Id != constellation.Id) {
                         continue;
                     }
 
-                    viewPortConstellation = f;
+                    viewPortConstellation = constellationsInViewport;
                     break;
                 }
 

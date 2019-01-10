@@ -479,9 +479,9 @@
                                                         <SolidColorBrush.Color>
                                                             <Color
                                                                 A="128"
-                                                                B="153"
+                                                                B="0"
                                                                 G="255"
-                                                                R="255" />
+                                                                R="0" />
                                                         </SolidColorBrush.Color>
                                                     </SolidColorBrush>
                                                 </TextBlock.Foreground>
@@ -501,9 +501,9 @@
                                                                         <SolidColorBrush.Color>
                                                                             <Color
                                                                                 A="128"
-                                                                                B="153"
+                                                                                B="0"
                                                                                 G="255"
-                                                                                R="255" />
+                                                                                R="0" />
                                                                         </SolidColorBrush.Color>
                                                                     </SolidColorBrush>
                                                                 </Line.Stroke>
@@ -516,7 +516,6 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-                            <ItemsControl ItemsSource="{Binding SkyMapAnnotator.FrameLineMatrix.RAPoints}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
                             <ItemsControl ItemsSource="{Binding SkyMapAnnotator.ConstellationBoundariesInViewPort}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
@@ -528,8 +527,19 @@
                                         <Canvas>
                                             <Polygon
                                                 Points="{Binding Collection}"
-                                                Stroke="Yellow"
-                                                StrokeThickness="{Binding StrokeThickness}" />
+                                                StrokeThickness="{Binding StrokeThickness}">
+                                                <Polygon.Stroke>
+                                                    <SolidColorBrush>
+                                                        <SolidColorBrush.Color>
+                                                            <Color
+                                                                A="128"
+                                                                B="153"
+                                                                G="255"
+                                                                R="255" />
+                                                        </SolidColorBrush.Color>
+                                                    </SolidColorBrush>
+                                                </Polygon.Stroke>
+                                            </Polygon>
                                         </Canvas>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
@@ -600,66 +610,57 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Border BorderBrush="White" BorderThickness="0">
-                                            <Grid>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition />
-                                                    <RowDefinition />
-                                                    <RowDefinition />
-                                                    <RowDefinition />
-                                                </Grid.RowDefinitions>
-                                                <Ellipse
-                                                    Width="{Binding SizeWidth}"
-                                                    Height="{Binding SizeHeight}"
-                                                    Stroke="White">
-                                                    <Ellipse.Fill>
-                                                        <SolidColorBrush>
-                                                            <SolidColorBrush.Color>
-                                                                <Color
+                                        <Canvas>
+                                            <Path Stroke="White">
+                                                <Path.Fill>
+                                                    <SolidColorBrush>
+                                                        <SolidColorBrush.Color>
+                                                            <Color
                                                                     A="10"
                                                                     B="255"
                                                                     G="255"
                                                                     R="255" />
-                                                            </SolidColorBrush.Color>
-                                                        </SolidColorBrush>
-                                                    </Ellipse.Fill>
-                                                </Ellipse>
+                                                        </SolidColorBrush.Color>
+                                                    </SolidColorBrush>
+                                                </Path.Fill>
+                                                <Path.Data>
+                                                    <EllipseGeometry Center="{Binding CenterPoint}" RadiusX="{Binding RadiusWidth}" RadiusY="{Binding RadiusHeight}" />
+                                                </Path.Data>
+                                            </Path>
+                                            <Grid Canvas.Top="{Binding TextPosition.Y}">
+                                                <Canvas.Left>
+                                                    <MultiBinding Converter="{StaticResource SubtractHalfConverter}">
+                                                        <Binding Path="TextPosition.X" />
+                                                        <Binding Path="ActualWidth" RelativeSource="{RelativeSource Self}" />
+                                                    </MultiBinding>
+                                                </Canvas.Left>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+                                                <TextBlock
+                                                    Grid.Row="0"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Bottom"
+                                                    Foreground="White"
+                                                    Text="{Binding Name1}" />
                                                 <TextBlock
                                                     Grid.Row="1"
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center"
                                                     Foreground="White"
-                                                    Text="{Binding Name1}" />
+                                                    Text="{Binding Name2}" />
                                                 <TextBlock
                                                     Grid.Row="2"
                                                     HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"
-                                                    Foreground="White"
-                                                    Text="{Binding Name2}" />
-                                                <TextBlock
-                                                    Grid.Row="3"
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"
+                                                    VerticalAlignment="Top"
                                                     Foreground="White"
                                                     Text="{Binding Name3}" />
                                             </Grid>
-                                        </Border>
+                                        </Canvas>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
-                                <ItemsControl.ItemContainerStyle>
-                                    <Style TargetType="ContentPresenter">
-                                        <Setter Property="Canvas.Left">
-                                            <Setter.Value>
-                                                <Binding Path="TopLeftPoint.X" />
-                                            </Setter.Value>
-                                        </Setter>
-                                        <Setter Property="Canvas.Top">
-                                            <Setter.Value>
-                                                <Binding Path="TopLeftPoint.Y" />
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </ItemsControl.ItemContainerStyle>
                             </ItemsControl>
                         </Canvas>
                         <Grid>
