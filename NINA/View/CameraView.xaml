@@ -24,6 +24,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Locale"
+    xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
     xmlns:util="clr-namespace:NINA.Utility"
     xmlns:view="clr-namespace:NINA.View"
     d:DesignHeight="300"
@@ -547,7 +548,7 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="110" />
                                         <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="40" />
                                     </Grid.ColumnDefinitions>
                                     <TextBlock
                                         VerticalAlignment="Center"
@@ -562,20 +563,35 @@
                                         SmallChange="1"
                                         TickPlacement="BottomRight"
                                         Value="{Binding TargetTemp}" />
-                                    <TextBlock
+                                    <TextBox
                                         Grid.Column="2"
                                         VerticalAlignment="Center"
                                         DockPanel.Dock="Right"
-                                        Text="{Binding TargetTemp, StringFormat=\{0:0.0\}}" />
+                                        IsEnabled="{Binding CoolingRunning, Converter={StaticResource InverseBooleanConverter}}">
+                                        <TextBox.Text>
+                                            <Binding
+                                                Path="TargetTemp"
+                                                StringFormat="0.0"
+                                                UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:DoubleRangeRule>
+                                                        <rules:DoubleRangeRule.ValidRange>
+                                                            <rules:DoubleRangeChecker Maximum="20" Minimum="-50" />
+                                                        </rules:DoubleRangeRule.ValidRange>
+                                                    </rules:DoubleRangeRule>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
                                 </Grid>
 
                                 <Grid Grid.Row="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="110" />
                                         <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="40" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDuration}" />
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMinDuration}" />
                                     <Slider
                                         Grid.Column="1"
                                         IsEnabled="{Binding CoolingRunning, Converter={StaticResource InverseBooleanConverter}}"
@@ -585,10 +601,25 @@
                                         SmallChange="1"
                                         TickPlacement="BottomRight"
                                         Value="{Binding Duration}" />
-                                    <TextBlock
+                                    <TextBox
                                         Grid.Column="2"
                                         VerticalAlignment="Center"
-                                        Text="{Binding Duration, StringFormat=\{0:0.0\}}" />
+                                        IsEnabled="{Binding CoolingRunning, Converter={StaticResource InverseBooleanConverter}}">
+                                        <TextBox.Text>
+                                            <Binding
+                                                Path="Duration"
+                                                StringFormat="0.0"
+                                                UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:DoubleRangeRule>
+                                                        <rules:DoubleRangeRule.ValidRange>
+                                                            <rules:DoubleRangeChecker Maximum="30" Minimum="0" />
+                                                        </rules:DoubleRangeRule.ValidRange>
+                                                    </rules:DoubleRangeRule>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
                                 </Grid>
 
                                 <Grid Grid.Row="2">
