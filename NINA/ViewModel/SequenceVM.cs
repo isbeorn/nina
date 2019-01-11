@@ -417,6 +417,9 @@ namespace NINA.ViewModel {
 
         private async Task<bool> StartSequencing(IProgress<ApplicationStatus> progress) {
             try {
+                _actualDownloadTimes.Clear();
+                _canceltoken = new CancellationTokenSource();
+                _pauseTokenSource = new PauseTokenSource();
                 IsPaused = false;
                 IsRunning = true;
                 autoUpdateTimer.Stop();
@@ -425,30 +428,27 @@ namespace NINA.ViewModel {
                         csl.IsFinished = false;
                         csl.IsRunning = true;
                         Sequence = csl;
-                        await StartSequence(csl, progress);
+                        await StartSequence(csl, _canceltoken.Token, _pauseTokenSource.Token, progress);
+                        csl.IsFinished = true;
                     } finally {
                         csl.IsRunning = false;
-                        csl.IsFinished = true;
                     }
                 }
-                return true;
+            } catch (OperationCanceledException) {
             } finally {
                 IsPaused = false;
                 IsRunning = false;
                 autoUpdateTimer.Start();
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
+            return true;
         }
 
-        private async Task<bool> StartSequence(CaptureSequenceList csl, IProgress<ApplicationStatus> progress) {
+        private async Task<bool> StartSequence(CaptureSequenceList csl, CancellationToken ct, PauseToken pt, IProgress<ApplicationStatus> progress) {
             try {
                 if (csl.Count <= 0) {
                     return false;
                 }
-                _actualDownloadTimes.Clear();
-                _canceltoken = new CancellationTokenSource();
-                _pauseTokenSource = new PauseTokenSource();
-                RaisePropertyChanged(nameof(IsPaused));
 
                 CalculateETA();
 
@@ -465,7 +465,7 @@ namespace NINA.ViewModel {
 
                 await StartGuiding(csl, progress);
 
-                return await ProcessSequence(csl, _canceltoken.Token, _pauseTokenSource.Token, progress);
+                return await ProcessSequence(csl, ct, pt, progress);
             } finally {
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
@@ -475,7 +475,7 @@ namespace NINA.ViewModel {
             var autoFocus = new AutoFocusVM(profileService, focuserMediator, guiderMediator, imagingMediator, applicationStatusMediator);
             var service = WindowServiceFactory.Create();
             service.Show(autoFocus, this.Title + " - " + autoFocus.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
-            await autoFocus.StartAutoFocus(filter, _canceltoken.Token, progress);
+            await autoFocus.StartAutoFocus(filter, token, progress);
             service.DelayedClose(TimeSpan.FromSeconds(10));
         }
 
@@ -545,7 +545,8 @@ namespace NINA.ViewModel {
                         actualFilter = filterWheelInfo?.SelectedFilter;
                         prevFilterPosition = actualFilter?.Position ?? -1;
                     }
-                } catch (OperationCanceledException) {
+                } catch (OperationCanceledException ex) {
+                    throw ex;
                 } catch (CameraConnectionLostException) {
                 } catch (Exception ex) {
                     Logger.Error(ex);

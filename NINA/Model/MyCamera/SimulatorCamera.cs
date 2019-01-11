@@ -445,7 +445,6 @@ namespace NINA.Model.MyCamera {
         }
 
         public void AbortExposure() {
-            throw new NotImplementedException();
         }
 
         public async Task<bool> Connect(CancellationToken token) {
