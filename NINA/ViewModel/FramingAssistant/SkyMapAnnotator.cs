@@ -186,12 +186,9 @@ namespace NINA.ViewModel.FramingAssistant {
                     continue;
                 }
 
-                var bounds = 300;
-
                 foreach (var coordinates in boundary.Value.Boundaries) {
                     var point = coordinates.GnomonicTanProjection(viewportFoV);
-                    if (point.X < -1 * bounds || point.X > viewportFoV.Width + bounds || point.Y < -1 * bounds ||
-                        point.Y > viewportFoV.Height + bounds) {
+                    if (viewportFoV.IsOutOfBounds(point)) {
                         continue;
                     }
 
@@ -241,7 +238,7 @@ namespace NINA.ViewModel.FramingAssistant {
                     if (viewPortConstellation == null) {
                         ConstellationsInViewport.Add(new FramingConstellation(constellation, viewportFoV));
                     } else {
-                        viewPortConstellation.RecalculateStarPositions(viewportFoV);
+                        viewPortConstellation.RecalculateConstellationPoints(viewportFoV);
                     }
                 } else if (viewPortConstellation != null) {
                     ConstellationsInViewport.Remove(viewPortConstellation);

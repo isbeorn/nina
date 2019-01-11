@@ -33,6 +33,10 @@ namespace NINA.ViewModel.FramingAssistant {
         public double CalcRAMin { get; private set; }
         public double CalcRAMax { get; private set; }
 
+        public double HorizontalBoundsPad { get; }
+
+        public double VerticalBoundsPad { get; }
+
         public ViewportFoV(Coordinates centerCoordinates, double vFoVDegrees, double width, double height, double rotation) {
             Width = width;
             Height = height;
@@ -49,6 +53,9 @@ namespace NINA.ViewModel.FramingAssistant {
             ArcSecHeight = Astrometry.DegreeToArcsec(OriginalVFoV) / height;
 
             Shift(new Vector(0, 0));
+
+            HorizontalBoundsPad = width / 8;
+            VerticalBoundsPad = width / 8;
         }
 
         public bool ContainsCoordinates(Coordinates coordinates) {
@@ -60,6 +67,13 @@ namespace NINA.ViewModel.FramingAssistant {
                     || (ra < CalcRAMax && ra > CalcRAMin) // case viewport is "normal"
                     || IsAbove90 // case dec viewport is above 90deg
                     ) && ((!AboveZero && dec < CalcBottomDec && dec > CalcTopDec) || (AboveZero && dec > CalcBottomDec && dec < CalcTopDec)); // is in between dec
+        }
+
+        public bool IsOutOfBounds(Point point) {
+            return (point.X < -1 * HorizontalBoundsPad ||
+                     point.X > Width + HorizontalBoundsPad ||
+                     point.Y < -1 * VerticalBoundsPad ||
+                     point.Y > Height + VerticalBoundsPad);
         }
 
         public void Shift(Vector delta) {
@@ -114,8 +128,7 @@ namespace NINA.ViewModel.FramingAssistant {
             if (AboveZero) {
                 CalcTopDec = CenterCoordinates.Dec + VFoVDegTop;
                 CalcBottomDec = CenterCoordinates.Dec - VFoVDegBottom;
-            }
-            else {
+            } else {
                 CalcTopDec = CenterCoordinates.Dec - VFoVDegTop;
                 CalcBottomDec = CenterCoordinates.Dec + VFoVDegBottom;
             }

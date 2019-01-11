@@ -2,16 +2,13 @@
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 
 namespace NINA.ViewModel.FramingAssistant {
 
     internal class FramingConstellation : BaseINPC {
-        private const int DSO_DEFAULT_SIZE = 30;
-
-        private double arcSecWidth;
-        private double arcSecHeight;
         private Constellation constellation;
         private Point centerPoint;
 
@@ -23,8 +20,6 @@ namespace NINA.ViewModel.FramingAssistant {
         /// <param name="constellation">The DSO including its coordinates</param>
         /// <param name="viewport">The viewport of the offending DSO</param>
         public FramingConstellation(Constellation constellation, ViewportFoV viewport) {
-            arcSecWidth = viewport.ArcSecWidth;
-            arcSecHeight = viewport.ArcSecHeight;
             this.constellation = constellation;
 
             Id = constellation.Id;
@@ -41,18 +36,22 @@ namespace NINA.ViewModel.FramingAssistant {
 
             Points = new AsyncObservableCollection<Tuple<Point, Point>>();
 
-            RecalculateStarPositions(viewport);
+            RecalculateConstellationPoints(viewport);
         }
+
+        private List<FrameLine> starLines;
 
         private AsyncObservableCollection<Tuple<Point, Point>> points;
         private Coordinates centerCoordinates;
 
-        public void RecalculateStarPositions(ViewportFoV reference) {
+        public void RecalculateConstellationPoints(ViewportFoV reference) {
             Points.Clear();
             foreach (var starConnection in constellation.StarConnections) {
                 var point1 = starConnection.Item1.Coords.GnomonicTanProjection(reference);
                 var point2 = starConnection.Item2.Coords.GnomonicTanProjection(reference);
-                Points.Add(new Tuple<Point, Point>(point1, point2));
+                if (!reference.IsOutOfBounds(point1) && !reference.IsOutOfBounds(point2)) {
+                    Points.Add(new Tuple<Point, Point>(point1, point2));
+                }
             }
 
             CenterPoint = centerCoordinates.GnomonicTanProjection(reference);
