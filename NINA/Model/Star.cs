@@ -1,5 +1,6 @@
 ﻿using NINA.Utility;
 using NINA.Utility.Astrometry;
+using System.Windows;
 
 namespace NINA.Model {
 
@@ -7,12 +8,16 @@ namespace NINA.Model {
         private double mag;
         private string name;
         private Coordinates coords;
+        private Point position;
 
-        public Star(string name, Coordinates coords, double mag) {
+        public Star(int id, string name, Coordinates coords, double mag) {
+            Id = id;
             Mag = mag;
             Name = name;
             Coords = coords;
         }
+
+        public int Id { get; set; }
 
         public string Name {
             get => name;
@@ -34,6 +39,14 @@ namespace NINA.Model {
             get => mag;
             set {
                 mag = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Point Position {
+            get => position;
+            set {
+                position = value;
                 RaisePropertyChanged();
             }
         }

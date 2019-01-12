@@ -606,6 +606,54 @@
                                                     </SolidColorBrush>
                                                 </TextBlock.Foreground>
                                             </TextBlock>
+                                            <ItemsControl ItemsSource="{Binding Stars}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <Canvas />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Canvas>
+                                                            <TextBlock Text="{Binding Name}" Canvas.Top="{Binding Position.Y}" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                                    <Canvas.Left>
+                                                                        <MultiBinding Converter="{StaticResource SubtractHalfConverter}">
+                                                                            <Binding Path="Position.X" />
+                                                                            <Binding Path="ActualWidth" RelativeSource="{RelativeSource Self}" />
+                                                                        </MultiBinding>
+                                                                    </Canvas.Left>
+                                                                <TextBlock.Foreground>
+                                                                    <SolidColorBrush>
+                                                                        <SolidColorBrush.Color>
+                                                                            <Color
+                                                                                    A="128"
+                                                                                    B="0"
+                                                                                    G="255"
+                                                                                    R="0" />
+                                                                        </SolidColorBrush.Color>
+                                                                    </SolidColorBrush>
+                                                                </TextBlock.Foreground>
+                                                            </TextBlock>
+                                                            <Path Stroke="White">
+                                                                <Path.Fill>
+                                                                    <SolidColorBrush>
+                                                                        <SolidColorBrush.Color>
+                                                                            <Color
+                                                                                A="255"
+                                                                                B="255"
+                                                                                G="255"
+                                                                                R="255" />
+                                                                        </SolidColorBrush.Color>
+                                                                    </SolidColorBrush>
+                                                                </Path.Fill>
+                                                                <Path.Data>
+                                                                    <EllipseGeometry Center="{Binding Position}" RadiusX="2.5" RadiusY="2.5" />
+                                                                </Path.Data>
+                                                            </Path>
+                                                        </Canvas>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
                                             <ItemsControl ItemsSource="{Binding Points}">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
@@ -615,7 +663,7 @@
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <Canvas>
-                                                            <Line X1="{Binding Item1.X}" X2="{Binding Item2.X}" Y1="{Binding Item1.Y}" Y2="{Binding Item2.Y}" StrokeThickness="1">
+                                                            <Line X1="{Binding Item1.Position.X}" X2="{Binding Item2.Position.X}" Y1="{Binding Item1.Position.Y}" Y2="{Binding Item2.Position.Y}" StrokeThickness="1">
                                                                 <Line.Stroke>
                                                                     <SolidColorBrush>
                                                                         <SolidColorBrush.Color>

@@ -40,39 +40,56 @@ namespace NINA.ViewModel.FramingAssistant {
                     centerRa -= 360;
                 }
 
-                centerCoordinates = new Coordinates(centerRa,
+                constellationCenter = new Coordinates(centerRa,
                     constellationStopDec + (constellationStartDec - constellationStopDec) / 2, Epoch.J2000, Coordinates.RAType.Degrees);
             } else {
                 var constellationStartRA = constellation.Stars.Select(m => m.Coords.RADegrees).Min();
                 var constellationStopRA = constellation.Stars.Select(m => m.Coords.RADegrees).Max();
 
-                centerCoordinates = new Coordinates(
+                constellationCenter = new Coordinates(
                     constellationStopRA + (constellationStartRA - constellationStopRA) / 2,
                     constellationStopDec + (constellationStartDec - constellationStopDec) / 2, Epoch.J2000,
                     Coordinates.RAType.Degrees);
             }
 
-            Points = new AsyncObservableCollection<Tuple<Point, Point>>();
+            Points = new AsyncObservableCollection<Tuple<Star, Star>>();
+            Stars = new AsyncObservableCollection<Star>();
 
             RecalculateConstellationPoints(viewport);
         }
 
         private List<FrameLine> starLines;
 
-        private AsyncObservableCollection<Tuple<Point, Point>> points;
-        private Coordinates centerCoordinates;
+        private AsyncObservableCollection<Star> stars;
+        private AsyncObservableCollection<Tuple<Star, Star>> points;
+        private readonly Coordinates constellationCenter;
 
         public void RecalculateConstellationPoints(ViewportFoV reference) {
-            Points.Clear();
-            foreach (var starConnection in constellation.StarConnections) {
-                var point1 = starConnection.Item1.Coords.GnomonicTanProjection(reference);
-                var point2 = starConnection.Item2.Coords.GnomonicTanProjection(reference);
-                if (!(reference.IsOutOfBounds(point1) && reference.IsOutOfBounds(point2))) {
-                    Points.Add(new Tuple<Point, Point>(point1, point2));
+            // calculate all star positions for the constellation once and add them to the star collection for drawing if they're visible
+            foreach (var star in constellation.Stars) {
+                star.Position = star.Coords.GnomonicTanProjection(reference);
+                var isInBounds = !reference.IsOutOfBounds(star.Position);
+                var index = Stars.IndexOf(star);
+                if (isInBounds && index == -1) {
+                    Stars.Add(star);
+                } else if (!isInBounds && index > 0) {
+                    Stars.Remove(star);
                 }
             }
 
-            CenterPoint = centerCoordinates.GnomonicTanProjection(reference);
+            // now we check what lines are visible in the fov and only add those connections as well
+            foreach (var starConnection in constellation.StarConnections) {
+                var isInBounds = !(reference.IsOutOfBounds(starConnection.Item1.Position) &&
+                                    reference.IsOutOfBounds(starConnection.Item2.Position));
+                var index = Points.IndexOf(starConnection);
+                if (isInBounds && index == -1) {
+                    Points.Add(starConnection);
+                } else if (!isInBounds && index > 0) {
+                    Points.Remove(starConnection);
+                }
+            }
+
+            CenterPoint = constellationCenter.GnomonicTanProjection(reference);
         }
 
         public Point CenterPoint {
@@ -86,7 +103,15 @@ namespace NINA.ViewModel.FramingAssistant {
         public string Id { get; }
         public string Name { get; }
 
-        public AsyncObservableCollection<Tuple<Point, Point>> Points {
+        public AsyncObservableCollection<Star> Stars {
+            get => stars;
+            set {
+                stars = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public AsyncObservableCollection<Tuple<Star, Star>> Points {
             get => points;
             set {
                 points = value;
