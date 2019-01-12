@@ -789,4 +789,6 @@ Calculated HFR: {2}
     <s:String x:Key="LblPhd2StartProcessError">Could not start PHD2. Check logs for details.</s:String>
     <s:String x:Key="LblPhd2FailedEquipmentConnection">PHD2 wasn't able to connect to the equipment</s:String>
     <s:String x:Key="LblPHD2Path">PHD2 path</s:String>
+    <s:String x:Key="LblMinDuration">Min. Duration</s:String>
+    <s:String x:Key="LblWaitForTemperatureStep">Waiting for camera to reach next temperature step</s:String>
 </ResourceDictionary>
