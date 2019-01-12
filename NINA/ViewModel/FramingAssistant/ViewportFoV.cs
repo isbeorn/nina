@@ -1,6 +1,6 @@
 ﻿using NINA.Utility.Astrometry;
-using System;
 using System.Windows;
+using Math = System.Math;
 using Point = System.Windows.Point;
 
 namespace NINA.ViewModel.FramingAssistant {
@@ -38,24 +38,32 @@ namespace NINA.ViewModel.FramingAssistant {
         public double VerticalBoundsPad { get; }
 
         public ViewportFoV(Coordinates centerCoordinates, double vFoVDegrees, double width, double height, double rotation) {
-            Width = width;
-            Height = height;
-            OriginalVFoV = vFoVDegrees;
-            OriginalHFoV = (width / height) * vFoVDegrees;
+            Rotation = rotation;
+
+            (Width, Height) = GetRotatedWidthAndHeight(-Rotation - 90, width, height);
+
+            (OriginalHFoV, OriginalVFoV) = GetRotatedWidthAndHeight(-Rotation - 90, (width / height) * vFoVDegrees, vFoVDegrees);
+
+            ArcSecWidth = Astrometry.DegreeToArcsec(OriginalHFoV) / Width;
+            ArcSecHeight = Astrometry.DegreeToArcsec(OriginalVFoV) / Height;
 
             CenterCoordinates = centerCoordinates;
 
-            Rotation = rotation;
-
             ViewPortCenterPoint = new Point(width / 2, height / 2);
-
-            ArcSecWidth = Astrometry.DegreeToArcsec(OriginalHFoV) / width;
-            ArcSecHeight = Astrometry.DegreeToArcsec(OriginalVFoV) / height;
 
             Shift(new Vector(0, 0));
 
-            HorizontalBoundsPad = width / 8;
-            VerticalBoundsPad = width / 8;
+            HorizontalBoundsPad = Width / 8;
+            VerticalBoundsPad = Height / 8;
+        }
+
+        private (double width, double height) GetRotatedWidthAndHeight(double rotation, double width, double height) {
+            if (rotation == 0) {
+                return (width, height);
+            }
+            var rot = Astrometry.ToRadians(rotation);
+
+            return (Math.Abs(width * Math.Sin(rot) + height * Math.Cos(rot)), Math.Abs(height * Math.Sin(rot) + width * Math.Cos(rot)));
         }
 
         public bool ContainsCoordinates(Coordinates coordinates) {

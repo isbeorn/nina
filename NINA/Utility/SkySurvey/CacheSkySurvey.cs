@@ -21,17 +21,14 @@
 
 #endregion "copyright"
 
+using NINA.Utility.Astrometry;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
-using NINA.Utility.Astrometry;
 
 namespace NINA.Utility.SkySurvey {
 
@@ -197,7 +194,8 @@ namespace NINA.Utility.SkySurvey {
             }
 
             JpegBitmapDecoder JpgDec = new JpegBitmapDecoder(new Uri(filename), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-            return JpgDec.Frames[0];
+
+            return FileSkySurvey.ConvertTo96Dpi(JpgDec.Frames[0]);
         }
     }
 }

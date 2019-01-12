@@ -353,6 +353,36 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
+        private bool annotateConstellationBoundaries;
+
+        public bool AnnotateConstellationBoundaries {
+            get => annotateConstellationBoundaries;
+            set {
+                annotateConstellationBoundaries = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool annotateConstellations;
+
+        public bool AnnotateConstellations {
+            get => annotateConstellations;
+            set {
+                annotateConstellations = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool annotateGrid;
+
+        public bool AnnotateGrid {
+            get => annotateGrid;
+            set {
+                annotateGrid = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private bool annotateDSO;
 
         public bool AnnotateDSO {
@@ -426,6 +456,7 @@ namespace NINA.ViewModel.FramingAssistant {
                 _framingAssistantSource = value;
                 if (_framingAssistantSource == SkySurveySource.SKYATLAS) {
                     AnnotateDSO = true;
+                    AnnotateGrid = true;
                 }
                 if (profileService.ActiveProfile.FramingAssistantSettings.LastSelectedImageSource != value) {
                     profileService.ActiveProfile.FramingAssistantSettings.LastSelectedImageSource = _framingAssistantSource;
@@ -605,7 +636,7 @@ namespace NINA.ViewModel.FramingAssistant {
                             RaisePropertyChanged(nameof(ImageCacheInfo));
                         }
 
-                        await SkyMapAnnotator.Initialize(skySurveyImage.Coordinates, FieldOfView, skySurveyImage.Image.Width, skySurveyImage.Image.Height, ImageParameter.Rotation, _loadImageSource.Token);
+                        await SkyMapAnnotator.Initialize(skySurveyImage.Coordinates, Astrometry.ArcminToDegree(skySurveyImage.FoVHeight), ImageParameter.Image.PixelWidth, ImageParameter.Image.PixelHeight, ImageParameter.Rotation, _loadImageSource.Token);
                     }
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
@@ -634,8 +665,8 @@ namespace NINA.ViewModel.FramingAssistant {
                     rotation -= 360;
                 }
                 skySurveyImage.Coordinates = psResult.Coordinates;
-                skySurveyImage.FoVWidth = Astrometry.ArcsecToArcmin(psResult.Pixscale * skySurveyImage.Image.Width);
-                skySurveyImage.FoVHeight = Astrometry.ArcsecToArcmin(psResult.Pixscale * skySurveyImage.Image.Height);
+                skySurveyImage.FoVWidth = Astrometry.ArcsecToArcmin(psResult.Pixscale * skySurveyImage.Image.PixelWidth);
+                skySurveyImage.FoVHeight = Astrometry.ArcsecToArcmin(psResult.Pixscale * skySurveyImage.Image.PixelHeight);
                 skySurveyImage.Rotation = rotation;
             } else {
                 throw new Exception("Platesolve failed to retrieve coordinates for image");

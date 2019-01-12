@@ -49,7 +49,7 @@ namespace NINA.ViewModel.FramingAssistant {
             foreach (var starConnection in constellation.StarConnections) {
                 var point1 = starConnection.Item1.Coords.GnomonicTanProjection(reference);
                 var point2 = starConnection.Item2.Coords.GnomonicTanProjection(reference);
-                if (!reference.IsOutOfBounds(point1) && !reference.IsOutOfBounds(point2)) {
+                if (!(reference.IsOutOfBounds(point1) && reference.IsOutOfBounds(point2))) {
                     Points.Add(new Tuple<Point, Point>(point1, point2));
                 }
             }
