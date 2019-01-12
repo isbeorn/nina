@@ -605,7 +605,7 @@ namespace NINA.ViewModel.FramingAssistant {
                             RaisePropertyChanged(nameof(ImageCacheInfo));
                         }
 
-                        DSOAnnotator.Initialize(skySurveyImage.Coordinates, FieldOfView, skySurveyImage.Image.Width, skySurveyImage.Image.Height, ImageParameter.Rotation, _loadImageSource.Token);
+                        await DSOAnnotator.Initialize(skySurveyImage.Coordinates, FieldOfView, skySurveyImage.Image.Width, skySurveyImage.Image.Height, ImageParameter.Rotation, _loadImageSource.Token);
                     }
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
@@ -754,11 +754,17 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         private void DragStart(object obj) {
-            Dispatcher.CurrentDispatcher.Invoke(() => DSOAnnotator.ClearFrameLineMatrix());
+            Dispatcher.CurrentDispatcher.Invoke(() => {
+                DSOAnnotator.ClearFrameLineMatrix();
+                DSOAnnotator.ClearConstellationBoundaries();
+            });
         }
 
         private void DragStop(object obj) {
-            Dispatcher.CurrentDispatcher.Invoke(() => DSOAnnotator.CalculateFrameLineMatrix());
+            Dispatcher.CurrentDispatcher.Invoke(() => {
+                DSOAnnotator.CalculateFrameLineMatrix();
+                DSOAnnotator.CalculateConstellationBoundaries();
+            });
         }
 
         private void DragMove(object obj) {

@@ -295,6 +295,7 @@
     <Compile Include="Locale\ILoc.cs" />
     <Compile Include="Locale\Loc.cs" />
     <Compile Include="Model\ApplicationStatus.cs" />
+    <Compile Include="Model\ConstellationBoundary.cs" />
     <Compile Include="Model\FocusTarget.cs" />
     <Compile Include="Model\Sequence\CaptureSequence.cs" />
     <Compile Include="Model\DeepSkyObject.cs" />
