@@ -83,17 +83,29 @@ namespace NINA.Utility.SkySurvey {
 
         private BitmapSource LoadPng(string filename) {
             PngBitmapDecoder PngDec = new PngBitmapDecoder(new Uri(filename), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-            return PngDec.Frames[0];
+            return ConvertTo96Dpi(PngDec.Frames[0]);
         }
 
         private BitmapSource LoadJpg(string filename) {
             JpegBitmapDecoder JpgDec = new JpegBitmapDecoder(new Uri(filename), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-            return JpgDec.Frames[0];
+            return ConvertTo96Dpi(JpgDec.Frames[0]);
         }
 
         private BitmapSource LoadTiff(string filename) {
             TiffBitmapDecoder TifDec = new TiffBitmapDecoder(new Uri(filename), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-            return TifDec.Frames[0];
+            return ConvertTo96Dpi(TifDec.Frames[0]);
+        }
+
+        public static BitmapSource ConvertTo96Dpi(BitmapSource image) {
+            if (image.DpiX != 96) {
+                byte[] pixelData = new byte[image.PixelWidth * 4 * image.PixelHeight];
+                image.CopyPixels(pixelData, image.PixelWidth * 4, 0);
+
+                return BitmapSource.Create(image.PixelWidth, image.PixelHeight, 96, 96, image.Format, null, pixelData,
+                    image.PixelWidth * 4);
+            }
+
+            return image;
         }
 
         private async Task<BitmapSource> LoadRAW(string filename, CancellationToken ct) {

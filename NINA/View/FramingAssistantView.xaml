@@ -424,6 +424,120 @@
                         <ToggleButton
                             Width="35"
                             Margin="5"
+                            IsChecked="{Binding AnnotateConstellationBoundaries}">
+                            <ToggleButton.ToolTip>
+                                <ToolTip ToolTipService.ShowOnDisabled="False">
+                                    <TextBlock Text="{ns:Loc LblAnnotateConstellationBoundaries}" />
+                                </ToolTip>
+                            </ToggleButton.ToolTip>
+                            <ToggleButton.Style>
+                                <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource BordersSVG}"
+                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                        Stretch="Uniform" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource BordersSVG}"
+                                                        Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                        Stretch="Uniform" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+                        <ToggleButton
+                            Width="35"
+                            Margin="5"
+                            IsChecked="{Binding AnnotateConstellations}">
+                            <ToggleButton.ToolTip>
+                                <ToolTip ToolTipService.ShowOnDisabled="False">
+                                    <TextBlock Text="{ns:Loc LblAnnotateConstellations}" />
+                                </ToolTip>
+                            </ToggleButton.ToolTip>
+                            <ToggleButton.Style>
+                                <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource ConstellationSVG}"
+                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                        Stretch="Uniform" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource ConstellationSVG}"
+                                                        Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                        Stretch="Uniform" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+                        <ToggleButton
+                            Width="35"
+                            Margin="5"
+                            IsChecked="{Binding AnnotateGrid}">
+                            <ToggleButton.ToolTip>
+                                <ToolTip ToolTipService.ShowOnDisabled="False">
+                                    <TextBlock Text="{ns:Loc LblAnnotateGrid}" />
+                                </ToolTip>
+                            </ToggleButton.ToolTip>
+                            <ToggleButton.Style>
+                                <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource GridSVG}"
+                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                        Stretch="Uniform" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource GridSVG}"
+                                                        Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                        Stretch="Uniform" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+                        <ToggleButton
+                            Width="35"
+                            Margin="5"
                             IsChecked="{Binding AnnotateDSO}">
                             <ToggleButton.ToolTip>
                                 <ToolTip ToolTipService.ShowOnDisabled="False">
@@ -464,7 +578,7 @@
                 <local:ImageView.ImageAreaContent>
                     <Canvas Width="{Binding Path=FramingAssistantVM.ImageParameter.Image.PixelWidth, Source={StaticResource AppVM}}" Height="{Binding Path=FramingAssistantVM.ImageParameter.Image.PixelHeight, Source={StaticResource AppVM}}">
                         <Canvas IsHitTestVisible="False">
-                            <ItemsControl ItemsSource="{Binding DSOAnnotator.FrameLineMatrix.RAPoints}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
+                            <ItemsControl ItemsSource="{Binding SkyMapAnnotator.ConstellationsInViewport}" Visibility="{Binding AnnotateConstellations, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <Canvas />
@@ -473,7 +587,144 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Canvas>
-                                            <ninactrl:CardinalSplineShape Points="{Binding Collection}" Closed="{Binding Closed}" StrokeThickness="{Binding StrokeThickness}">
+                                            <TextBlock Text="{Binding Name}" Canvas.Top="{Binding CenterPoint.Y}" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold">
+                                                <Canvas.Left>
+                                                    <MultiBinding Converter="{StaticResource SubtractHalfConverter}">
+                                                        <Binding Path="CenterPoint.X" />
+                                                        <Binding Path="ActualWidth" RelativeSource="{RelativeSource Self}" />
+                                                    </MultiBinding>
+                                                </Canvas.Left>
+                                                <TextBlock.Foreground>
+                                                    <SolidColorBrush>
+                                                        <SolidColorBrush.Color>
+                                                            <Color
+                                                                A="128"
+                                                                B="153"
+                                                                G="255"
+                                                                R="255" />
+                                                        </SolidColorBrush.Color>
+                                                    </SolidColorBrush>
+                                                </TextBlock.Foreground>
+                                            </TextBlock>
+                                            <ItemsControl ItemsSource="{Binding Stars}" Canvas.ZIndex="1">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <Canvas />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Canvas>
+                                                            <TextBlock Text="{Binding Name}" Canvas.Top="{Binding TextPadding}" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" FontStyle="Italic">
+                                                                    <Canvas.Left>
+                                                                        <MultiBinding Converter="{StaticResource SubtractHalfConverter}">
+                                                                            <Binding Path="Position.X" />
+                                                                            <Binding Path="ActualWidth" RelativeSource="{RelativeSource Self}" />
+                                                                        </MultiBinding>
+                                                                    </Canvas.Left>
+                                                                <TextBlock.Foreground>
+                                                                    <SolidColorBrush>
+                                                                        <SolidColorBrush.Color>
+                                                                            <Color
+                                                                                    A="128"
+                                                                                    B="0"
+                                                                                    G="215"
+                                                                                    R="255" />
+                                                                        </SolidColorBrush.Color>
+                                                                    </SolidColorBrush>
+                                                                </TextBlock.Foreground>
+                                                            </TextBlock>
+                                                            <Path>
+                                                                <Path.Fill>
+                                                                    <SolidColorBrush>
+                                                                        <SolidColorBrush.Color>
+                                                                            <Color
+                                                                                A="128"
+                                                                                B="255"
+                                                                                G="255"
+                                                                                R="255" />
+                                                                        </SolidColorBrush.Color>
+                                                                    </SolidColorBrush>
+                                                                </Path.Fill>
+                                                                <Path.Data>
+                                                                    <EllipseGeometry Center="{Binding Position}" RadiusX="{Binding Radius}" RadiusY="{Binding Radius}" />
+                                                                </Path.Data>
+                                                            </Path>
+                                                        </Canvas>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                            <ItemsControl ItemsSource="{Binding Points}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <Canvas />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Canvas>
+                                                            <Line X1="{Binding Item1.Position.X}" X2="{Binding Item2.Position.X}" Y1="{Binding Item1.Position.Y}" Y2="{Binding Item2.Position.Y}" StrokeThickness="1">
+                                                                <Line.Stroke>
+                                                                    <SolidColorBrush>
+                                                                        <SolidColorBrush.Color>
+                                                                            <Color
+                                                                                A="128"
+                                                                                B="0"
+                                                                                G="255"
+                                                                                R="0" />
+                                                                        </SolidColorBrush.Color>
+                                                                    </SolidColorBrush>
+                                                                </Line.Stroke>
+                                                            </Line>
+                                                        </Canvas>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </Canvas>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <ItemsControl ItemsSource="{Binding SkyMapAnnotator.ConstellationBoundariesInViewPort}" Visibility="{Binding AnnotateConstellationBoundaries, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Canvas />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Canvas>
+                                            <Polygon
+                                                Points="{Binding Collection}"
+                                                StrokeThickness="{Binding StrokeThickness}">
+                                                <Polygon.Stroke>
+                                                    <SolidColorBrush>
+                                                        <SolidColorBrush.Color>
+                                                            <Color
+                                                                A="128"
+                                                                B="153"
+                                                                G="255"
+                                                                R="255" />
+                                                        </SolidColorBrush.Color>
+                                                    </SolidColorBrush>
+                                                </Polygon.Stroke>
+                                            </Polygon>
+                                        </Canvas>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <ItemsControl ItemsSource="{Binding SkyMapAnnotator.FrameLineMatrix.RAPoints}" Visibility="{Binding AnnotateGrid, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Canvas />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Canvas>
+                                            <ninactrl:CardinalSplineShape
+                                                Closed="{Binding Closed}"
+                                                Points="{Binding Collection}"
+                                                StrokeThickness="{Binding StrokeThickness}">
                                                 <ninactrl:CardinalSplineShape.Stroke>
                                                     <SolidColorBrush>
                                                         <SolidColorBrush.Color>
@@ -490,7 +741,7 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-                            <ItemsControl ItemsSource="{Binding DSOAnnotator.FrameLineMatrix.DecPoints}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
+                            <ItemsControl ItemsSource="{Binding SkyMapAnnotator.FrameLineMatrix.DecPoints}" Visibility="{Binding AnnotateGrid, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <Canvas />
@@ -499,7 +750,10 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Canvas>
-                                            <ninactrl:CardinalSplineShape Points="{Binding Collection}" Closed="{Binding Closed}" StrokeThickness="{Binding StrokeThickness}">
+                                            <ninactrl:CardinalSplineShape
+                                                Closed="{Binding Closed}"
+                                                Points="{Binding Collection}"
+                                                StrokeThickness="{Binding StrokeThickness}">
                                                 <ninactrl:CardinalSplineShape.Stroke>
                                                     <SolidColorBrush>
                                                         <SolidColorBrush.Color>
@@ -516,7 +770,7 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-                            <ItemsControl ItemsSource="{Binding DSOAnnotator.DSOInViewport}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
+                            <ItemsControl ItemsSource="{Binding SkyMapAnnotator.DSOInViewport}" Visibility="{Binding AnnotateDSO, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <Canvas />
@@ -524,66 +778,57 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Border BorderBrush="White" BorderThickness="0">
-                                            <Grid>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition />
-                                                    <RowDefinition />
-                                                    <RowDefinition />
-                                                    <RowDefinition />
-                                                </Grid.RowDefinitions>
-                                                <Ellipse
-                                                    Width="{Binding SizeWidth}"
-                                                    Height="{Binding SizeHeight}"
-                                                    Stroke="White">
-                                                    <Ellipse.Fill>
-                                                        <SolidColorBrush>
-                                                            <SolidColorBrush.Color>
-                                                                <Color
+                                        <Canvas>
+                                            <Path Stroke="White">
+                                                <Path.Fill>
+                                                    <SolidColorBrush>
+                                                        <SolidColorBrush.Color>
+                                                            <Color
                                                                     A="10"
                                                                     B="255"
                                                                     G="255"
                                                                     R="255" />
-                                                            </SolidColorBrush.Color>
-                                                        </SolidColorBrush>
-                                                    </Ellipse.Fill>
-                                                </Ellipse>
+                                                        </SolidColorBrush.Color>
+                                                    </SolidColorBrush>
+                                                </Path.Fill>
+                                                <Path.Data>
+                                                    <EllipseGeometry Center="{Binding CenterPoint}" RadiusX="{Binding RadiusWidth}" RadiusY="{Binding RadiusHeight}" />
+                                                </Path.Data>
+                                            </Path>
+                                            <Grid Canvas.Top="{Binding TextPosition.Y}">
+                                                <Canvas.Left>
+                                                    <MultiBinding Converter="{StaticResource SubtractHalfConverter}">
+                                                        <Binding Path="TextPosition.X" />
+                                                        <Binding Path="ActualWidth" RelativeSource="{RelativeSource Self}" />
+                                                    </MultiBinding>
+                                                </Canvas.Left>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+                                                <TextBlock
+                                                    Grid.Row="0"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Bottom"
+                                                    Foreground="White"
+                                                    Text="{Binding Name1}" />
                                                 <TextBlock
                                                     Grid.Row="1"
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center"
-                                                    Text="{Binding Name1}"
-                                                    Foreground="White" />
+                                                    Foreground="White"
+                                                    Text="{Binding Name2}" />
                                                 <TextBlock
                                                     Grid.Row="2"
                                                     HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"
-                                                    Text="{Binding Name2}"
-                                                    Foreground="White" />
-                                                <TextBlock
-                                                    Grid.Row="3"
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"
-                                                    Text="{Binding Name3}"
-                                                    Foreground="White" />
+                                                    VerticalAlignment="Top"
+                                                    Foreground="White"
+                                                    Text="{Binding Name3}" />
                                             </Grid>
-                                        </Border>
+                                        </Canvas>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
-                                <ItemsControl.ItemContainerStyle>
-                                    <Style TargetType="ContentPresenter">
-                                        <Setter Property="Canvas.Left">
-                                            <Setter.Value>
-                                                <Binding Path="TopLeftPoint.X" />
-                                            </Setter.Value>
-                                        </Setter>
-                                        <Setter Property="Canvas.Top">
-                                            <Setter.Value>
-                                                <Binding Path="TopLeftPoint.Y" />
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </ItemsControl.ItemContainerStyle>
                             </ItemsControl>
                         </Canvas>
                         <Grid>

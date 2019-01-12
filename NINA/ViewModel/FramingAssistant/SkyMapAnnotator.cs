@@ -1,6 +1,7 @@
 ﻿using NINA.Model;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -11,26 +12,37 @@ using System.Windows;
 
 namespace NINA.ViewModel.FramingAssistant {
 
-    internal class DSOAnnotator : BaseINPC {
+    internal class SkyMapAnnotator : BaseINPC {
         private readonly DatabaseInteraction dbInstance;
         private AsyncObservableCollection<FramingDSO> dsoInViewport;
         private ViewportFoV viewportFoV;
         private FrameLineMatrix frameLineMatrix;
+        private AsyncObservableCollection<FramingConstellation> constellationsInViewport;
+        private List<Constellation> dbConstellations;
 
-        public DSOAnnotator(string databaseLocation) {
+        public SkyMapAnnotator(string databaseLocation) {
             dbInstance = new DatabaseInteraction(databaseLocation);
             DSOInViewport = new AsyncObservableCollection<FramingDSO>();
+            ConstellationsInViewport = new AsyncObservableCollection<FramingConstellation>();
             FrameLineMatrix = new FrameLineMatrix();
+            ConstellationBoundaries = new AsyncLazy<Dictionary<string, ConstellationBoundary>>(async delegate {
+                return await GetConstellationBoundaries();
+            });
         }
 
-        public async void Initialize(Coordinates centerCoordinates, double vFoVDegrees, double imageWidth, double imageHeight, double imageRotation, CancellationToken ct) {
+        public async Task Initialize(Coordinates centerCoordinates, double vFoVDegrees, double imageWidth, double imageHeight, double imageRotation, CancellationToken ct) {
             viewportFoV = new ViewportFoV(centerCoordinates, vFoVDegrees, imageWidth, imageHeight, imageRotation);
 
-            ClearFrameLineMatrix();
+            dbConstellations = await dbInstance.GetConstellationsWithStars(ct);
 
-            await UpdateDSO(ct);
+            ConstellationsInViewport.Clear();
+            ClearFrameLineMatrix();
+            ClearConstellationBoundaries();
+
+            await UpdateSkyMap(ct);
 
             FrameLineMatrix.CalculatePoints(viewportFoV);
+            await CalculateConstellationBoundaries();
         }
 
         public FrameLineMatrix FrameLineMatrix {
@@ -45,6 +57,14 @@ namespace NINA.ViewModel.FramingAssistant {
             get => dsoInViewport;
             set {
                 dsoInViewport = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public AsyncObservableCollection<FramingConstellation> ConstellationsInViewport {
+            get => constellationsInViewport;
+            set {
+                constellationsInViewport = value;
                 RaisePropertyChanged();
             }
         }
@@ -134,7 +154,52 @@ namespace NINA.ViewModel.FramingAssistant {
             FrameLineMatrix.CalculatePoints(viewportFoV);
         }
 
-        public async Task UpdateDSO(CancellationToken ct) {
+        private AsyncLazy<Dictionary<string, ConstellationBoundary>> ConstellationBoundaries;
+
+        private async Task<Dictionary<string, ConstellationBoundary>> GetConstellationBoundaries() {
+            var dic = new Dictionary<string, ConstellationBoundary>();
+            var list = await dbInstance.GetConstellationBoundaries(new CancellationToken());
+            foreach (var item in list) {
+                dic.Add(item.Name, item);
+            }
+            return dic;
+        }
+
+        public AsyncObservableCollection<FrameLine> ConstellationBoundariesInViewPort { get; private set; } = new AsyncObservableCollection<FrameLine>();
+
+        public void ClearConstellationBoundaries() {
+            ConstellationBoundariesInViewPort.Clear();
+        }
+
+        public async Task CalculateConstellationBoundaries() {
+            foreach (var boundary in await ConstellationBoundaries) {
+                var frameLine = new FrameLine() { Closed = false, StrokeThickness = 0.5, Collection = new System.Windows.Media.PointCollection() };
+                bool isInViewport = false;
+                foreach (var coordinates in boundary.Value.Boundaries) {
+                    isInViewport = viewportFoV.ContainsCoordinates(coordinates);
+                    if (isInViewport) {
+                        break;
+                    }
+                }
+
+                if (!isInViewport) {
+                    continue;
+                }
+
+                foreach (var coordinates in boundary.Value.Boundaries) {
+                    var point = coordinates.GnomonicTanProjection(viewportFoV);
+                    if (viewportFoV.IsOutOfViewportBounds(point)) {
+                        continue;
+                    }
+
+                    frameLine.Collection.Add(point);
+                }
+
+                ConstellationBoundariesInViewPort.Add(frameLine);
+            }
+        }
+
+        public async Task UpdateSkyMap(CancellationToken ct) {
             var allGatheredDSO = await GetDeepSkyObjectsForViewport(ct);
 
             var existingDSOs = new List<string>();
@@ -145,6 +210,38 @@ namespace NINA.ViewModel.FramingAssistant {
                     existingDSOs.Add(dso.Id);
                 } else {
                     DSOInViewport.RemoveAt(i);
+                }
+            }
+
+            foreach (var constellation in dbConstellations) {
+                FramingConstellation viewPortConstellation = null;
+                foreach (var constellationsInViewport in ConstellationsInViewport) {
+                    if (constellationsInViewport.Id != constellation.Id) {
+                        continue;
+                    }
+
+                    viewPortConstellation = constellationsInViewport;
+                    break;
+                }
+
+                var isInViewport = false;
+                foreach (var star in constellation.Stars) {
+                    if (!viewportFoV.ContainsCoordinates(star.Coords)) {
+                        continue;
+                    }
+
+                    isInViewport = true;
+                    break;
+                }
+
+                if (isInViewport) {
+                    if (viewPortConstellation == null) {
+                        ConstellationsInViewport.Add(new FramingConstellation(constellation, viewportFoV));
+                    } else {
+                        viewPortConstellation.RecalculateConstellationPoints(viewportFoV);
+                    }
+                } else if (viewPortConstellation != null) {
+                    ConstellationsInViewport.Remove(viewPortConstellation);
                 }
             }
 

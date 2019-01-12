@@ -30,7 +30,7 @@ namespace NINA.ViewModel.FramingAssistant {
             var pointsByDecDict = new Dictionary<double, FrameLine>();
 
             // if raStep is 30 and decStep is 1 just
-            bool raIsClosed = RoundToHigherValue(viewport.CalcTopDec, decStep) >= MAXDEC;
+            bool raIsClosed = RoundToHigherValue(viewport.AbsCalcTopDec, decStep) >= MAXDEC;
 
             for (double ra = Math.Min(raStart, raStop);
                 ra <= Math.Max(raStop, raStart);
@@ -72,8 +72,8 @@ namespace NINA.ViewModel.FramingAssistant {
             double decStop;
             double raStep;
             double decStep;
-            var realTopDec = viewport.CalcTopDec;
-            var realBottomDec = viewport.CalcBotomDec;
+            var realTopDec = viewport.AbsCalcTopDec;
+            var realBottomDec = viewport.AbsCalcBottomDec;
 
             if (realTopDec >= MAXDEC) {
                 realTopDec = MAXDEC;
