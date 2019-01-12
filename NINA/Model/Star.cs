@@ -5,10 +5,8 @@ using System.Windows;
 namespace NINA.Model {
 
     internal class Star : BaseINPC {
-        private double mag;
-        private string name;
-        private Coordinates coords;
         private Point position;
+        private double radius;
 
         public Star(int id, string name, Coordinates coords, double mag) {
             Id = id;
@@ -17,37 +15,31 @@ namespace NINA.Model {
             Coords = coords;
         }
 
-        public int Id { get; set; }
+        public int Id { get; }
 
-        public string Name {
-            get => name;
+        public string Name { get; }
+
+        public Coordinates Coords { get; }
+
+        public double Mag { get; }
+
+        public double Radius {
+            get => radius;
             set {
-                name = value;
+                radius = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(TextPadding));
             }
         }
 
-        public Coordinates Coords {
-            get => coords;
-            set {
-                coords = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double Mag {
-            get => mag;
-            set {
-                mag = value;
-                RaisePropertyChanged();
-            }
-        }
+        public double TextPadding => Position.Y + Radius;
 
         public Point Position {
             get => position;
             set {
                 position = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(TextPadding));
             }
         }
     }

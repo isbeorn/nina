@@ -438,7 +438,7 @@
                                                 <Setter.Value>
                                                     <Path
                                                         Margin="5"
-                                                        Data="{StaticResource AnnotateDSOSVG}"
+                                                        Data="{StaticResource BordersSVG}"
                                                         Fill="{StaticResource ButtonForegroundBrush}"
                                                         Stretch="Uniform" />
                                                 </Setter.Value>
@@ -449,7 +449,7 @@
                                                 <Setter.Value>
                                                     <Path
                                                         Margin="5"
-                                                        Data="{StaticResource AnnotateDSOSVG}"
+                                                        Data="{StaticResource BordersSVG}"
                                                         Fill="{StaticResource ButtonForegroundDisabledBrush}"
                                                         Stretch="Uniform" />
                                                 </Setter.Value>
@@ -476,7 +476,7 @@
                                                 <Setter.Value>
                                                     <Path
                                                         Margin="5"
-                                                        Data="{StaticResource AnnotateDSOSVG}"
+                                                        Data="{StaticResource ConstellationSVG}"
                                                         Fill="{StaticResource ButtonForegroundBrush}"
                                                         Stretch="Uniform" />
                                                 </Setter.Value>
@@ -487,7 +487,7 @@
                                                 <Setter.Value>
                                                     <Path
                                                         Margin="5"
-                                                        Data="{StaticResource AnnotateDSOSVG}"
+                                                        Data="{StaticResource ConstellationSVG}"
                                                         Fill="{StaticResource ButtonForegroundDisabledBrush}"
                                                         Stretch="Uniform" />
                                                 </Setter.Value>
@@ -514,7 +514,7 @@
                                                 <Setter.Value>
                                                     <Path
                                                         Margin="5"
-                                                        Data="{StaticResource AnnotateDSOSVG}"
+                                                        Data="{StaticResource GridSVG}"
                                                         Fill="{StaticResource ButtonForegroundBrush}"
                                                         Stretch="Uniform" />
                                                 </Setter.Value>
@@ -525,7 +525,7 @@
                                                 <Setter.Value>
                                                     <Path
                                                         Margin="5"
-                                                        Data="{StaticResource AnnotateDSOSVG}"
+                                                        Data="{StaticResource GridSVG}"
                                                         Fill="{StaticResource ButtonForegroundDisabledBrush}"
                                                         Stretch="Uniform" />
                                                 </Setter.Value>
@@ -587,7 +587,7 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Canvas>
-                                            <TextBlock Text="{Binding Name}" Canvas.Top="{Binding CenterPoint.Y}" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                            <TextBlock Text="{Binding Name}" Canvas.Top="{Binding CenterPoint.Y}" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold">
                                                 <Canvas.Left>
                                                     <MultiBinding Converter="{StaticResource SubtractHalfConverter}">
                                                         <Binding Path="CenterPoint.X" />
@@ -599,14 +599,14 @@
                                                         <SolidColorBrush.Color>
                                                             <Color
                                                                 A="128"
-                                                                B="0"
+                                                                B="153"
                                                                 G="255"
-                                                                R="0" />
+                                                                R="255" />
                                                         </SolidColorBrush.Color>
                                                     </SolidColorBrush>
                                                 </TextBlock.Foreground>
                                             </TextBlock>
-                                            <ItemsControl ItemsSource="{Binding Stars}">
+                                            <ItemsControl ItemsSource="{Binding Stars}" Canvas.ZIndex="1">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
                                                         <Canvas />
@@ -615,7 +615,7 @@
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <Canvas>
-                                                            <TextBlock Text="{Binding Name}" Canvas.Top="{Binding Position.Y}" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                            <TextBlock Text="{Binding Name}" Canvas.Top="{Binding TextPadding}" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" FontStyle="Italic">
                                                                     <Canvas.Left>
                                                                         <MultiBinding Converter="{StaticResource SubtractHalfConverter}">
                                                                             <Binding Path="Position.X" />
@@ -628,18 +628,18 @@
                                                                             <Color
                                                                                     A="128"
                                                                                     B="0"
-                                                                                    G="255"
-                                                                                    R="0" />
+                                                                                    G="215"
+                                                                                    R="255" />
                                                                         </SolidColorBrush.Color>
                                                                     </SolidColorBrush>
                                                                 </TextBlock.Foreground>
                                                             </TextBlock>
-                                                            <Path Stroke="White">
+                                                            <Path>
                                                                 <Path.Fill>
                                                                     <SolidColorBrush>
                                                                         <SolidColorBrush.Color>
                                                                             <Color
-                                                                                A="255"
+                                                                                A="128"
                                                                                 B="255"
                                                                                 G="255"
                                                                                 R="255" />
@@ -647,7 +647,7 @@
                                                                     </SolidColorBrush>
                                                                 </Path.Fill>
                                                                 <Path.Data>
-                                                                    <EllipseGeometry Center="{Binding Position}" RadiusX="2.5" RadiusY="2.5" />
+                                                                    <EllipseGeometry Center="{Binding Position}" RadiusX="{Binding Radius}" RadiusY="{Binding Radius}" />
                                                                 </Path.Data>
                                                             </Path>
                                                         </Canvas>

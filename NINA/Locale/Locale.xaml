@@ -781,6 +781,9 @@ Calculated HFR: {2}
     <s:String x:Key="LblOpacity">Opacity</s:String>
     <s:String x:Key="LblManualFocusTargets">Manual Focus Targets</s:String>
     <s:String x:Key="LblAnnotateDSO">Annotate Deep Sky Objects</s:String>
+    <s:String x:Key="LblAnnotateGrid">Display Grid</s:String>
+    <s:String x:Key="LblAnnotateConstellations">Display and annotate Constellations</s:String>
+    <s:String x:Key="LblAnnotateConstellationboundaries">Display Constellation Boundaries</s:String>
     <s:String x:Key="LblSkyAtlasSkySurvey">SkyAtlas (Offline Framing)</s:String>
     <s:String x:Key="LblPhd2PathNotFound">Could not start PHD2. Path not found</s:String>
     <s:String x:Key="LblPhd2StartProcessError">Could not start PHD2. Check logs for details.</s:String>

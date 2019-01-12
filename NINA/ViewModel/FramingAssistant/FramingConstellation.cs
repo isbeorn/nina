@@ -55,6 +55,10 @@ namespace NINA.ViewModel.FramingAssistant {
             Points = new AsyncObservableCollection<Tuple<Star, Star>>();
             Stars = new AsyncObservableCollection<Star>();
 
+            foreach (var star in constellation.Stars) {
+                star.Radius = (-3.375 * star.Mag + 23.25) / (viewport.VFoVDeg / 8);
+            }
+
             RecalculateConstellationPoints(viewport);
         }
 
@@ -68,7 +72,7 @@ namespace NINA.ViewModel.FramingAssistant {
             // calculate all star positions for the constellation once and add them to the star collection for drawing if they're visible
             foreach (var star in constellation.Stars) {
                 star.Position = star.Coords.GnomonicTanProjection(reference);
-                var isInBounds = !reference.IsOutOfBounds(star.Position);
+                var isInBounds = !reference.IsOutOfViewportBounds(star.Position);
                 var index = Stars.IndexOf(star);
                 if (isInBounds && index == -1) {
                     Stars.Add(star);
@@ -79,8 +83,8 @@ namespace NINA.ViewModel.FramingAssistant {
 
             // now we check what lines are visible in the fov and only add those connections as well
             foreach (var starConnection in constellation.StarConnections) {
-                var isInBounds = !(reference.IsOutOfBounds(starConnection.Item1.Position) &&
-                                    reference.IsOutOfBounds(starConnection.Item2.Position));
+                var isInBounds = !(reference.IsOutOfViewportBounds(starConnection.Item1.Position) &&
+                                    reference.IsOutOfViewportBounds(starConnection.Item2.Position));
                 var index = Points.IndexOf(starConnection);
                 if (isInBounds && index == -1) {
                     Points.Add(starConnection);

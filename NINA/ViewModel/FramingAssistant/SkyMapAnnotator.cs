@@ -188,7 +188,7 @@ namespace NINA.ViewModel.FramingAssistant {
 
                 foreach (var coordinates in boundary.Value.Boundaries) {
                     var point = coordinates.GnomonicTanProjection(viewportFoV);
-                    if (viewportFoV.IsOutOfBounds(point)) {
+                    if (viewportFoV.IsOutOfViewportBounds(point)) {
                         continue;
                     }
 

@@ -29,20 +29,18 @@ namespace NINA.ViewModel.FramingAssistant {
         public double Rotation { get; }
         public double OriginalVFoV { get; }
         public double OriginalHFoV { get; }
-
         public double CalcRAMin { get; private set; }
         public double CalcRAMax { get; private set; }
-
-        public double HorizontalBoundsPad { get; }
-
-        public double VerticalBoundsPad { get; }
+        private readonly double horizontalBoundsPadding;
+        private readonly double verticalBoundsPadding;
 
         public ViewportFoV(Coordinates centerCoordinates, double vFoVDegrees, double width, double height, double rotation) {
             Rotation = rotation;
 
-            (Width, Height) = GetRotatedWidthAndHeight(-Rotation - 90, width, height);
+            // I don't know why you need to use -Rotation-90 but this is what works
+            (Width, Height) = GetBoundingBoxOfRotatedRectangle(-Rotation - 90, width, height);
 
-            (OriginalHFoV, OriginalVFoV) = GetRotatedWidthAndHeight(-Rotation - 90, (width / height) * vFoVDegrees, vFoVDegrees);
+            (OriginalHFoV, OriginalVFoV) = GetBoundingBoxOfRotatedRectangle(-Rotation - 90, (width / height) * vFoVDegrees, vFoVDegrees);
 
             ArcSecWidth = Astrometry.DegreeToArcsec(OriginalHFoV) / Width;
             ArcSecHeight = Astrometry.DegreeToArcsec(OriginalVFoV) / Height;
@@ -53,11 +51,11 @@ namespace NINA.ViewModel.FramingAssistant {
 
             Shift(new Vector(0, 0));
 
-            HorizontalBoundsPad = Width / 8;
-            VerticalBoundsPad = Height / 8;
+            horizontalBoundsPadding = Width / 6;
+            verticalBoundsPadding = Height / 6;
         }
 
-        private (double width, double height) GetRotatedWidthAndHeight(double rotation, double width, double height) {
+        private (double width, double height) GetBoundingBoxOfRotatedRectangle(double rotation, double width, double height) {
             if (rotation == 0) {
                 return (width, height);
             }
@@ -77,11 +75,11 @@ namespace NINA.ViewModel.FramingAssistant {
                     ) && ((!AboveZero && dec < CalcBottomDec && dec > CalcTopDec) || (AboveZero && dec > CalcBottomDec && dec < CalcTopDec)); // is in between dec
         }
 
-        public bool IsOutOfBounds(Point point) {
-            return (point.X < -1 * HorizontalBoundsPad ||
-                     point.X > Width + HorizontalBoundsPad ||
-                     point.Y < -1 * VerticalBoundsPad ||
-                     point.Y > Height + VerticalBoundsPad);
+        public bool IsOutOfViewportBounds(Point point) {
+            return (point.X < -1 * horizontalBoundsPadding ||
+                     point.X > Width + horizontalBoundsPadding ||
+                     point.Y < -1 * verticalBoundsPadding ||
+                     point.Y > Height + verticalBoundsPadding);
         }
 
         public void Shift(Vector delta) {
