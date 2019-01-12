@@ -190,6 +190,16 @@ namespace NINA.Utility {
                 // make a list of unique stars
                 foreach (var constellation in constellations) {
                     constellation.Stars = new ObservableCollection<Star>(constellation.StarConnections.Select(t => t.Item1).Concat(constellation.StarConnections.Select(t => t.Item2)).GroupBy(b => b.Name).Select(b => b.First()).ToList());
+                    bool goesOver0 = false;
+                    foreach (var pair in constellation.StarConnections) {
+                        goesOver0 = Math.Max(pair.Item1.Coords.RADegrees, pair.Item2.Coords.RADegrees) -
+                                    Math.Min(pair.Item1.Coords.RADegrees, pair.Item2.Coords.RADegrees) > 180;
+                        if (goesOver0) {
+                            break;
+                        }
+                    }
+
+                    constellation.GoesOverRaZero = goesOver0;
                 }
             } catch (Exception ex) {
                 Logger.Error(ex);

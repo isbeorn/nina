@@ -587,7 +587,13 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Canvas>
-                                            <TextBlock Text="{Binding Name}" Canvas.Left="{Binding CenterPoint.X}" Canvas.Top="{Binding CenterPoint.Y}" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                            <TextBlock Text="{Binding Name}" Canvas.Top="{Binding CenterPoint.Y}" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                <Canvas.Left>
+                                                    <MultiBinding Converter="{StaticResource SubtractHalfConverter}">
+                                                        <Binding Path="CenterPoint.X" />
+                                                        <Binding Path="ActualWidth" RelativeSource="{RelativeSource Self}" />
+                                                    </MultiBinding>
+                                                </Canvas.Left>
                                                 <TextBlock.Foreground>
                                                     <SolidColorBrush>
                                                         <SolidColorBrush.Color>

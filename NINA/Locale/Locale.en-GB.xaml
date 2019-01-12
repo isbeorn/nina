@@ -537,6 +537,8 @@ Should the Application try to recover from the error? (Can lead to unexpected be
     <s:String x:Key="LblConstellation_SCL">Sculptor</s:String>
     <s:String x:Key="LblConstellation_SCT">Scutum</s:String>
     <s:String x:Key="LblConstellation_SER">Serpens</s:String>
+    <s:String x:Key="LblConstellation_SER2">Serpens cauda</s:String>
+    <s:String x:Key="LblConstellation_SER1">Serpens caput</s:String>
     <s:String x:Key="LblConstellation_SEX">Sextans</s:String>
     <s:String x:Key="LblConstellation_TAU">Taurus</s:String>
     <s:String x:Key="LblConstellation_TEL">Telescopium</s:String>

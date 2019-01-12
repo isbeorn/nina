@@ -12,27 +12,45 @@ namespace NINA.ViewModel.FramingAssistant {
         private Constellation constellation;
         private Point centerPoint;
 
-        /// <summary>
-        /// Constructor for a Framing DSO.
-        /// It takes a ViewportFoV and a DeepSkyObject and calculates XY values in pixels from the top left edge of the image subtracting half of its size.
-        /// Those coordinates can be used to place the DSO including its name and size in any given image.
-        /// </summary>
-        /// <param name="constellation">The DSO including its coordinates</param>
-        /// <param name="viewport">The viewport of the offending DSO</param>
         public FramingConstellation(Constellation constellation, ViewportFoV viewport) {
             this.constellation = constellation;
 
             Id = constellation.Id;
             Name = constellation.Name;
 
-            var constellationStartRA = constellation.Stars.Select(m => m.Coords.RADegrees).Min();
-            var constellationStopRA = constellation.Stars.Select(m => m.Coords.RADegrees).Max();
-
             var constellationStartDec = constellation.Stars.Select(m => m.Coords.Dec).Min();
             var constellationStopDec = constellation.Stars.Select(m => m.Coords.Dec).Max();
 
-            centerCoordinates = new Coordinates(constellationStopRA + (constellationStartRA - constellationStopRA) / 2,
-                constellationStopDec + (constellationStartDec - constellationStopDec) / 2, Epoch.J2000, Coordinates.RAType.Degrees);
+            if (constellation.GoesOverRaZero) {
+                double stopRA = 0;
+                double startRA = 0;
+                IEnumerable<IGrouping<bool, Star>> groups = constellation.Stars.GroupBy(s => s.Coords.RADegrees > 180);
+                foreach (var group in groups) {
+                    if (group.Key) {
+                        stopRA = group.Select(m => m.Coords.RADegrees).Min();
+                    } else {
+                        startRA = group.Select(m => m.Coords.RADegrees).Max();
+                    }
+                }
+
+                var distance = startRA + 360 - stopRA;
+
+                var centerRa = stopRA + distance / 2;
+                if (centerRa > 360) {
+                    centerRa -= 360;
+                }
+
+                centerCoordinates = new Coordinates(centerRa,
+                    constellationStopDec + (constellationStartDec - constellationStopDec) / 2, Epoch.J2000, Coordinates.RAType.Degrees);
+            } else {
+                var constellationStartRA = constellation.Stars.Select(m => m.Coords.RADegrees).Min();
+                var constellationStopRA = constellation.Stars.Select(m => m.Coords.RADegrees).Max();
+
+                centerCoordinates = new Coordinates(
+                    constellationStopRA + (constellationStartRA - constellationStopRA) / 2,
+                    constellationStopDec + (constellationStartDec - constellationStopDec) / 2, Epoch.J2000,
+                    Coordinates.RAType.Degrees);
+            }
 
             Points = new AsyncObservableCollection<Tuple<Point, Point>>();
 

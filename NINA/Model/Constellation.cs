@@ -17,6 +17,8 @@ namespace NINA.Model {
 
         public string Id { get; }
 
+        public bool GoesOverRaZero { get; set; }
+
         public string Name {
             get => name;
             set {

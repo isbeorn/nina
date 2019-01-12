@@ -538,6 +538,8 @@ Soll die Anwendung versuchen sich von dem Fehler zu erholen? (Kann zu unerwartet
     <s:String x:Key="LblConstellation_SCL">Bildhauer</s:String>
     <s:String x:Key="LblConstellation_SCT">Schild</s:String>
     <s:String x:Key="LblConstellation_SER">Schlange</s:String>
+    <s:String x:Key="LblConstellation_SER2">Schlange, Schwanz</s:String>
+    <s:String x:Key="LblConstellation_SER1">Schlange, Kopf</s:String>
     <s:String x:Key="LblConstellation_SEX">Sextant</s:String>
     <s:String x:Key="LblConstellation_TAU">Stier</s:String>
     <s:String x:Key="LblConstellation_TEL">Teleskop</s:String>
