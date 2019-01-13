@@ -246,6 +246,24 @@ namespace NINA.Utility.Astrometry {
             );
         }
 
+        public enum ProjectionType {
+            Gnomonic,
+            Stenographic
+        }
+
+        public Point XYProjection(ViewportFoV viewPort, ProjectionType type = ProjectionType.Gnomonic) {
+            switch (type) {
+                case ProjectionType.Gnomonic:
+                    return GnomonicTanProjection(viewPort);
+
+                case ProjectionType.Stenographic:
+                    return StenographicProjection(viewPort);
+
+                default:
+                    return GnomonicTanProjection(viewPort);
+            }
+        }
+
         public Point GnomonicTanProjection(ViewportFoV viewPort) {
             return GnomonicTanProjection(viewPort.CenterCoordinates, viewPort.ViewPortCenterPoint, viewPort.ArcSecWidth,
                 viewPort.ArcSecHeight, viewPort.Rotation);
@@ -297,6 +315,62 @@ namespace NINA.Utility.Astrometry {
 
             var raMod = (targetRaSubCenterRaSin * targetDecCos) / modDivisor;
             var decMod = (targetDecSin * centerDegCos - targetDecCos * centerDegSin * targetRaSubCenterRaCos) / modDivisor;
+
+            var deltaX = raMod;
+            var deltaY = decMod;
+
+            if (imageRotation.Degree != 0) {
+                deltaX = raMod * imageRotationCos + decMod * imageRotationSin;
+                deltaY = decMod * imageRotationCos - raMod * imageRotationSin;
+            }
+
+            return new Point(centerPointPixels.X - deltaX.ArcSeconds / horizResArcSecPx,
+                centerPointPixels.Y - deltaY.ArcSeconds / vertResArcSecPix);
+        }
+
+        public Point StenographicProjection(ViewportFoV viewPort) {
+            return StenographicProjection(viewPort.CenterCoordinates, viewPort.ViewPortCenterPoint, viewPort.ArcSecWidth,
+                viewPort.ArcSecHeight, viewPort.Rotation);
+        }
+
+        /// <summary>
+        /// Generates a Point with relative X/Y values for centering the current coordinates relative to a given point using steonographic projection.
+        /// </summary>
+        /// <remarks>
+        ///     based on http://faculty.wcas.northwestern.edu/nchapman/coding/worldpos.py
+        /// </remarks>
+        public Point StenographicProjection(Coordinates center, Point centerPointPixels, double horizResArcSecPx, double vertResArcSecPix, double rotation) {
+            var raDegreesSanitized = RADegrees;
+            var deltaRa = (raDegreesSanitized - center.RADegrees);
+            if (deltaRa > 180) {
+                raDegreesSanitized -= 360;
+            }
+
+            if (deltaRa < -180) {
+                raDegreesSanitized += 360;
+            }
+
+            var centerRa = Angle.ByDegree(center.RADegrees);
+            var centerDec = Angle.ByDegree(center.Dec);
+            var targetRa = Angle.ByDegree(raDegreesSanitized);
+            var targetDec = decAngle;
+            var imageRotation = Angle.ByDegree(rotation);
+
+            var targetDecSin = targetDec.Sin();
+            var targetDecCos = targetDec.Cos();
+
+            var centerDegSin = centerDec.Sin();
+            var centerDegCos = centerDec.Cos();
+
+            var raDiff = targetRa - centerRa;
+            var raDiffCos = raDiff.Cos();
+
+            var imageRotationSin = imageRotation.Sin();
+            var imageRotationCos = imageRotation.Cos();
+
+            var dd = Angle.ByRadians(2.0 / (1.0 + targetDecSin * centerDegSin + targetDecCos * centerDegCos * raDiffCos).Radians);
+            var raMod = dd * raDiff.Sin() * targetDecCos;
+            var decMod = dd * (targetDecSin * centerDegCos - targetDecCos * centerDegSin * raDiffCos);
 
             var deltaX = raMod;
             var deltaY = decMod;
