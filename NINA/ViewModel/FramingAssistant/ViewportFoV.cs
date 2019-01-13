@@ -29,6 +29,8 @@ namespace NINA.ViewModel.FramingAssistant {
         public double Rotation { get; }
         public double OriginalVFoV { get; }
         public double OriginalHFoV { get; }
+        public double OriginalWidth { get; }
+        public double OriginalHeight { get; }
         public double CalcRAMin { get; private set; }
         public double CalcRAMax { get; private set; }
         private readonly double horizontalBoundsPadding;
@@ -36,6 +38,9 @@ namespace NINA.ViewModel.FramingAssistant {
 
         public ViewportFoV(Coordinates centerCoordinates, double vFoVDegrees, double width, double height, double rotation) {
             Rotation = rotation;
+
+            OriginalWidth = width;
+            OriginalHeight = height;
 
             // I don't know why you need to use -Rotation-90 but this is what works
             (Width, Height) = GetBoundingBoxOfRotatedRectangle(-Rotation - 90, width, height);

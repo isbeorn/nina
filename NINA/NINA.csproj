@@ -767,6 +767,9 @@
     <Compile Include="View\SkyAtlasView.xaml.cs">
       <DependentUpon>SkyAtlasView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\SkyMapOverlayView.xaml.cs">
+      <DependentUpon>SkyMapOverlayView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\TelescopeLatLongSyncView.xaml.cs">
       <DependentUpon>TelescopeLatLongSyncView.xaml</DependentUpon>
     </Compile>
@@ -1144,6 +1147,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\SkyAtlasView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\SkyMapOverlayView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
