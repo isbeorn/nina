@@ -60,8 +60,9 @@ namespace NINA.ViewModel.FramingAssistant {
                     if (!raCoordinateMatrix.ContainsKey(ra)) {
                         raCoordinateMatrix[ra] = new List<Coordinates>();
                     }
+
                     raCoordinateMatrix[ra].Add(coordinate);
-                    raCoordinateMatrix[ra].Add(coordinate2);
+                    raCoordinateMatrix[ra].Insert(0, coordinate2);
                 }
             } while (i < maxDec);
         }
@@ -125,6 +126,11 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
+        private PointF Project(ViewportFoV viewport, Coordinates coordinates) {
+            var p = coordinates.GnomonicTanProjection(viewport);
+            return new PointF((float)p.X, (float)p.Y);
+        }
+
         /// <summary>
         /// Calculate the lines spanning from pole to pole
         /// </summary>
@@ -133,15 +139,27 @@ namespace NINA.ViewModel.FramingAssistant {
         private void CalculateRAPoints(ViewportFoV viewport, double ra) {
             var list = new List<PointF>();
             var thickness = 1;
+            Coordinates prevCoordinate = null;
+            bool atLeastOneInside = false;
             foreach (var coordinate in raCoordinateMatrix[ra]) {
                 if (viewport.ContainsCoordinates(coordinate)) {
+                    atLeastOneInside = true;
+                    if (prevCoordinate != null) {
+                        list.Add(Project(viewport, prevCoordinate));
+                        prevCoordinate = null;
+                    }
+
                     if (coordinate.RADegrees == 0 || coordinate.RADegrees == 180) {
                         thickness = 3;
                     }
-                    var p = coordinate.GnomonicTanProjection(viewport);
-                    var pointF = new PointF((float)p.X, (float)p.Y);
-
-                    list.Add(pointF);
+                    list.Add(Project(viewport, coordinate));
+                } else {
+                    if (atLeastOneInside) {
+                        list.Add(Project(viewport, coordinate));
+                        break;
+                    } else {
+                        prevCoordinate = coordinate;
+                    }
                 }
             }
             RAPoints.Add(new FrameLine() { Collection = list, StrokeThickness = thickness, Closed = false });
@@ -173,9 +191,7 @@ namespace NINA.ViewModel.FramingAssistant {
                     if (stepRA == null && prevRA != null) {
                         stepRA = Math.Round((prevRA.Value - coordinate.RADegrees), 5);
                     }
-
-                    var p = coordinate.GnomonicTanProjection(viewport);
-                    var pointF = new PointF((float)p.X, (float)p.Y);
+                    var pointF = Project(viewport, coordinate);
 
                     if (prevRA != null && Math.Round((prevRA.Value - coordinate.RADegrees), 5) != stepRA) {
                         node = list.First;
