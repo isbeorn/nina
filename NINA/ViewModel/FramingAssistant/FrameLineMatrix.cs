@@ -151,7 +151,7 @@ namespace NINA.ViewModel.FramingAssistant {
             return (Math.Abs(value) - (Math.Abs(value) % multiple)) * Math.Sign(value);
         }
 
-        private System.Drawing.Pen gridPen = new System.Drawing.Pen(System.Drawing.Color.SteelBlue);
+        private static System.Drawing.Pen gridPen = new System.Drawing.Pen(System.Drawing.Color.SteelBlue);
 
         public void Draw(Graphics g) {
             foreach (var frameLine in this.RAPoints) {

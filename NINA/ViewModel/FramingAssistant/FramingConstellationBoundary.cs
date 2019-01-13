@@ -30,8 +30,8 @@ using System.Threading.Tasks;
 
 namespace NINA.ViewModel.FramingAssistant {
 
-    internal class FrameConstellation {
-        private Pen boundaryPen = new Pen(Color.Khaki);
+    internal class FramingConstellationBoundary {
+        private static Pen boundaryPen = new Pen(Color.Khaki);
         public List<PointF> Points = new List<PointF>();
 
         public void Draw(Graphics g) {

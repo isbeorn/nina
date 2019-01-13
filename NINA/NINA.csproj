@@ -323,6 +323,7 @@
     <Compile Include="Model\MyFilterWheel\FilterWheelInfo.cs" />
     <Compile Include="Model\MyFilterWheel\FlatWizardFilterSettings.cs" />
     <Compile Include="Utility\Astrometry\Angle.cs" />
+    <Compile Include="Utility\Behaviors\MouseWheelCommandBehavior.cs" />
     <Compile Include="Utility\Converters\CollectionContainsMoreThanOneItemToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\DoubleToHalfValueConverter.cs" />
     <Compile Include="Utility\Converters\MultiToListConverter.cs" />
@@ -553,7 +554,7 @@
     <Compile Include="ViewModel\FlatWizard\IFlatWizardExposureTimeFinderService.cs" />
     <Compile Include="ViewModel\FlatWizard\IFlatWizardVM.cs" />
     <Compile Include="ViewModel\FocuserVM.cs" />
-    <Compile Include="ViewModel\FramingAssistant\FrameConstellation.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FramingConstellationBoundary.cs" />
     <Compile Include="ViewModel\FramingAssistant\SkyMapAnnotator.cs" />
     <Compile Include="ViewModel\FramingAssistant\FrameLineMatrix.cs" />
     <Compile Include="ViewModel\FramingAssistant\FramingAssistantVM.cs" />
