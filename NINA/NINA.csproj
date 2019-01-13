@@ -553,6 +553,7 @@
     <Compile Include="ViewModel\FlatWizard\IFlatWizardExposureTimeFinderService.cs" />
     <Compile Include="ViewModel\FlatWizard\IFlatWizardVM.cs" />
     <Compile Include="ViewModel\FocuserVM.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FrameConstellation.cs" />
     <Compile Include="ViewModel\FramingAssistant\SkyMapAnnotator.cs" />
     <Compile Include="ViewModel\FramingAssistant\FrameLineMatrix.cs" />
     <Compile Include="ViewModel\FramingAssistant\FramingAssistantVM.cs" />

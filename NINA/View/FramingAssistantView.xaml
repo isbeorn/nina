@@ -424,7 +424,8 @@
                         <ToggleButton
                             Width="35"
                             Margin="5"
-                            IsChecked="{Binding AnnotateConstellationBoundaries}">
+                            Command="{Binding RefreshSkyMapAnnotationCommand}"
+                            IsChecked="{Binding SkyMapAnnotator.AnnotateConstellationBoundaries}">
                             <ToggleButton.ToolTip>
                                 <ToolTip ToolTipService.ShowOnDisabled="False">
                                     <TextBlock Text="{ns:Loc LblAnnotateConstellationBoundaries}" />
@@ -462,7 +463,8 @@
                         <ToggleButton
                             Width="35"
                             Margin="5"
-                            IsChecked="{Binding AnnotateConstellations}">
+                            Command="{Binding RefreshSkyMapAnnotationCommand}"
+                            IsChecked="{Binding SkyMapAnnotator.AnnotateConstellations}">
                             <ToggleButton.ToolTip>
                                 <ToolTip ToolTipService.ShowOnDisabled="False">
                                     <TextBlock Text="{ns:Loc LblAnnotateConstellations}" />
@@ -500,7 +502,8 @@
                         <ToggleButton
                             Width="35"
                             Margin="5"
-                            IsChecked="{Binding AnnotateGrid}">
+                            Command="{Binding RefreshSkyMapAnnotationCommand}"
+                            IsChecked="{Binding SkyMapAnnotator.AnnotateGrid}">
                             <ToggleButton.ToolTip>
                                 <ToolTip ToolTipService.ShowOnDisabled="False">
                                     <TextBlock Text="{ns:Loc LblAnnotateGrid}" />
@@ -538,7 +541,8 @@
                         <ToggleButton
                             Width="35"
                             Margin="5"
-                            IsChecked="{Binding AnnotateDSO}">
+                            Command="{Binding RefreshSkyMapAnnotationCommand}"
+                            IsChecked="{Binding SkyMapAnnotator.AnnotateDSO}">
                             <ToggleButton.ToolTip>
                                 <ToolTip ToolTipService.ShowOnDisabled="False">
                                     <TextBlock Text="{ns:Loc LblAnnotateDSO}" />

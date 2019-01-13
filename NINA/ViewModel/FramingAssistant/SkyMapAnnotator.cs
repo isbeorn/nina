@@ -33,12 +33,13 @@ namespace NINA.ViewModel.FramingAssistant {
             DSOInViewport = new List<FramingDSO>();
             ConstellationsInViewport = new List<FramingConstellation>();
             FrameLineMatrix = new FrameLineMatrix();
-            ConstellationBoundaries = new AsyncLazy<Dictionary<string, ConstellationBoundary>>(async delegate {
-                return await GetConstellationBoundaries();
-            });
+            ConstellationBoundaries = new Dictionary<string, ConstellationBoundary>();
         }
 
         public async Task Initialize(Coordinates centerCoordinates, double vFoVDegrees, double imageWidth, double imageHeight, double imageRotation, CancellationToken ct) {
+            AnnotateDSO = true;
+            AnnotateGrid = true;
+
             viewportFoV = new ViewportFoV(centerCoordinates, vFoVDegrees, imageWidth, imageHeight, imageRotation);
 
             dbConstellations = await dbInstance.GetConstellationsWithStars(ct);
@@ -60,17 +61,18 @@ namespace NINA.ViewModel.FramingAssistant {
 
             ConstellationsInViewport.Clear();
             ClearFrameLineMatrix();
-            ClearConstellationBoundaries();
 
             img = new Bitmap((int)viewportFoV.OriginalWidth, (int)viewportFoV.OriginalHeight, PixelFormat.Format32bppArgb);
 
             g = Graphics.FromImage(img);
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            UpdateSkyMap();
-
             FrameLineMatrix.CalculatePoints(viewportFoV);
-            await CalculateConstellationBoundaries();
+            if (ConstellationBoundaries.Count == 0) {
+                ConstellationBoundaries = await GetConstellationBoundaries();
+            }
+
+            UpdateSkyMap();
         }
 
         public FrameLineMatrix FrameLineMatrix { get; private set; }
@@ -78,6 +80,46 @@ namespace NINA.ViewModel.FramingAssistant {
         public List<FramingDSO> DSOInViewport { get; private set; }
 
         public List<FramingConstellation> ConstellationsInViewport { get; private set; }
+
+        private bool annotateConstellationBoundaries;
+
+        public bool AnnotateConstellationBoundaries {
+            get => annotateConstellationBoundaries;
+            set {
+                annotateConstellationBoundaries = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool annotateConstellations;
+
+        public bool AnnotateConstellations {
+            get => annotateConstellations;
+            set {
+                annotateConstellations = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool annotateGrid;
+
+        public bool AnnotateGrid {
+            get => annotateGrid;
+            set {
+                annotateGrid = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool annotateDSO;
+
+        public bool AnnotateDSO {
+            get => annotateDSO;
+            set {
+                annotateDSO = value;
+                RaisePropertyChanged();
+            }
+        }
 
         /// <summary>
         /// Query for skyobjects for a reference coordinate that overlap the current viewport
@@ -128,7 +170,7 @@ namespace NINA.ViewModel.FramingAssistant {
             FrameLineMatrix.CalculatePoints(viewportFoV);
         }
 
-        private AsyncLazy<Dictionary<string, ConstellationBoundary>> ConstellationBoundaries;
+        private Dictionary<string, ConstellationBoundary> ConstellationBoundaries;
         private BitmapSource skyMapOverlay;
 
         private async Task<Dictionary<string, ConstellationBoundary>> GetConstellationBoundaries() {
@@ -140,15 +182,12 @@ namespace NINA.ViewModel.FramingAssistant {
             return dic;
         }
 
-        public AsyncObservableCollection<FrameLine> ConstellationBoundariesInViewPort { get; private set; } = new AsyncObservableCollection<FrameLine>();
+        public List<FrameConstellation> ConstellationBoundariesInViewPort { get; private set; } = new List<FrameConstellation>();
 
-        public void ClearConstellationBoundaries() {
+        public void CalculateConstellationBoundaries() {
             ConstellationBoundariesInViewPort.Clear();
-        }
-
-        public async Task CalculateConstellationBoundaries() {
-            foreach (var boundary in await ConstellationBoundaries) {
-                var frameLine = new FrameLine() { Closed = false, StrokeThickness = 0.5, Collection = new System.Windows.Media.PointCollection() };
+            foreach (var boundary in ConstellationBoundaries) {
+                var frameLine = new FrameConstellation();
                 bool isInViewport = false;
                 foreach (var coordinates in boundary.Value.Boundaries) {
                     isInViewport = viewportFoV.ContainsCoordinates(coordinates);
@@ -167,14 +206,14 @@ namespace NINA.ViewModel.FramingAssistant {
                         continue;
                     }
 
-                    frameLine.Collection.Add(point);
+                    frameLine.Points.Add(new PointF((float)point.X, (float)point.Y));
                 }
 
                 ConstellationBoundariesInViewPort.Add(frameLine);
             }
         }
 
-        public void UpdateSkyMap() {
+        private void RedrawDSOs() {
             var allGatheredDSO = GetDeepSkyObjectsForViewport();
 
             var existingDSOs = new List<string>();
@@ -188,6 +227,30 @@ namespace NINA.ViewModel.FramingAssistant {
                 }
             }
 
+            var dsosToAdd = allGatheredDSO.Where(x => !existingDSOs.Any(y => y == x.Value.Id));
+            foreach (var dso in dsosToAdd) {
+                DSOInViewport.Add(new FramingDSO(dso.Value, viewportFoV));
+            }
+
+            foreach (var dso in DSOInViewport) {
+                g.FillEllipse(dsoFillColorBrush, (float)(dso.CenterPoint.X - dso.RadiusWidth), (float)(dso.CenterPoint.Y - dso.RadiusHeight),
+                    (float)(dso.RadiusWidth * 2), (float)(dso.RadiusHeight * 2));
+                g.DrawEllipse(dsoStrokePen, (float)(dso.CenterPoint.X - dso.RadiusWidth), (float)(dso.CenterPoint.Y - dso.RadiusHeight),
+                    (float)(dso.RadiusWidth * 2), (float)(dso.RadiusHeight * 2));
+                var size1 = g.MeasureString(dso.Name1, fontdso);
+                g.DrawString(dso.Name1, fontdso, dsoFontColorBrush, (float)(dso.TextPosition.X - size1.Width / 2), (float)(dso.TextPosition.Y));
+                if (dso.Name2 != null) {
+                    var size2 = g.MeasureString(dso.Name2, fontdso);
+                    g.DrawString(dso.Name2, fontdso, dsoFontColorBrush, (float)(dso.TextPosition.X - size2.Width / 2), (float)(dso.TextPosition.Y + size1.Height + 2));
+                    if (dso.Name3 != null) {
+                        var size3 = g.MeasureString(dso.Name3, fontdso);
+                        g.DrawString(dso.Name3, fontdso, dsoFontColorBrush, (float)(dso.TextPosition.X - size3.Width / 2), (float)(dso.TextPosition.Y + size1.Height + 2 + size2.Height + 2));
+                    }
+                }
+            }
+        }
+
+        private void RedrawConstellations() {
             foreach (var constellation in dbConstellations) {
                 var viewPortConstellation = ConstellationsInViewport.FirstOrDefault(x => x.Id == constellation.Id);
 
@@ -212,20 +275,9 @@ namespace NINA.ViewModel.FramingAssistant {
                 }
             }
 
-            var dsosToAdd = allGatheredDSO.Where(x => !existingDSOs.Any(y => y == x.Value.Id));
-            foreach (var dso in dsosToAdd) {
-                DSOInViewport.Add(new FramingDSO(dso.Value, viewportFoV));
-            }
-            Draw();
-        }
-
-        private void Draw() {
-            g.Clear(Color.Transparent);
-
             foreach (var constellation in ConstellationsInViewport) {
                 var constellationSize = g.MeasureString(constellation.Name, fontconst);
                 g.DrawString(constellation.Name, fontconst, constColorBrush, (float)(constellation.CenterPoint.X - constellationSize.Width / 2), (float)(constellation.CenterPoint.Y));
-
                 foreach (var starConnection in constellation.Points) {
                     g.DrawLine(constLinePen, (float)starConnection.Item1.Position.X,
                     (float)starConnection.Item1.Position.Y, (float)starConnection.Item2.Position.X,
@@ -238,22 +290,30 @@ namespace NINA.ViewModel.FramingAssistant {
                     g.DrawString(star.Name, font, starFontColorBrush, (float)(star.Position.X + star.Radius - size.Width / 2), (float)(star.Position.Y + star.Radius * 2 + 5));
                 }
             }
+        }
 
-            foreach (var dso in DSOInViewport) {
-                g.FillEllipse(dsoFillColorBrush, (float)(dso.CenterPoint.X - dso.RadiusWidth), (float)(dso.CenterPoint.Y - dso.RadiusHeight),
-                    (float)(dso.RadiusWidth * 2), (float)(dso.RadiusHeight * 2));
-                g.DrawEllipse(dsoStrokePen, (float)(dso.CenterPoint.X - dso.RadiusWidth), (float)(dso.CenterPoint.Y - dso.RadiusHeight),
-                    (float)(dso.RadiusWidth * 2), (float)(dso.RadiusHeight * 2));
-                var size1 = g.MeasureString(dso.Name1, fontdso);
-                g.DrawString(dso.Name1, fontdso, dsoFontColorBrush, (float)(dso.TextPosition.X - size1.Width / 2), (float)(dso.TextPosition.Y));
-                if (dso.Name2 != null) {
-                    var size2 = g.MeasureString(dso.Name2, fontdso);
-                    g.DrawString(dso.Name2, fontdso, dsoFontColorBrush, (float)(dso.TextPosition.X - size2.Width / 2), (float)(dso.TextPosition.Y + size1.Height + 2));
-                    if (dso.Name3 != null) {
-                        var size3 = g.MeasureString(dso.Name3, fontdso);
-                        g.DrawString(dso.Name3, fontdso, dsoFontColorBrush, (float)(dso.TextPosition.X - size3.Width / 2), (float)(dso.TextPosition.Y + size1.Height + 2 + size2.Height + 2));
-                    }
+        private void RedrawConstellationBoundaries() {
+            CalculateConstellationBoundaries();
+            foreach (var constellationBoundary in ConstellationBoundariesInViewPort) {
+                if (constellationBoundary.Points.Count > 1) {
+                    g.DrawPolygon(starPen, constellationBoundary.Points.ToArray());
                 }
+            }
+        }
+
+        public void UpdateSkyMap() {
+            g.Clear(Color.Transparent);
+
+            if (AnnotateDSO) {
+                RedrawDSOs();
+            }
+
+            if (annotateConstellations) {
+                RedrawConstellations();
+            }
+
+            if (AnnotateConstellationBoundaries) {
+                RedrawConstellationBoundaries();
             }
 
             var source = ImageAnalysis.ConvertBitmap(img, PixelFormats.Bgra32);
