@@ -1,11 +1,8 @@
-﻿using NINA.Utility;
-using NINA.Utility.Astrometry;
+﻿using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows;
-using System.Windows.Media;
 
 namespace NINA.ViewModel.FramingAssistant {
 
@@ -41,7 +38,7 @@ namespace NINA.ViewModel.FramingAssistant {
                 for (double dec = Math.Min(decStart, decStop);
                     dec <= Math.Max(decStart, decStop);
                     dec += decStep) {
-                    var point = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees).GnomonicTanProjection(viewport);
+                    var point = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees).XYProjection(viewport);
                     var pointf = new PointF((float)point.X, (float)point.Y);
                     if (!pointsByDecDict.ContainsKey(dec)) {
                         pointsByDecDict.Add(dec, new FrameLine() { Closed = raIsClosed, Collection = new List<PointF> { pointf }, StrokeThickness = dec == 0 ? 3 : 1 });
@@ -193,14 +190,16 @@ namespace NINA.ViewModel.FramingAssistant {
             PointF p1, p2;
             float tension = t * (1f / 3f); //we are calculating contolpoints.
 
-            if (closed)
+            if (closed) {
                 nrRetPts = (pts.Count + 1) * 3 - 2;
-            else
+            } else {
                 nrRetPts = pts.Count * 3 - 2;
+            }
 
             PointF[] retPnt = new PointF[nrRetPts];
-            for (i = 0; i < nrRetPts; i++)
+            for (i = 0; i < nrRetPts; i++) {
                 retPnt[i] = new PointF();
+            }
 
             if (!closed) {
                 CalcCurveEnd(pts[0], pts[1], tension, out p1);

@@ -1,12 +1,10 @@
 ﻿using NINA.Model;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
-using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,8 +12,6 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Color = System.Drawing.Color;
-using FontStyle = System.Drawing.FontStyle;
-using Pen = System.Drawing.Pen;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace NINA.ViewModel.FramingAssistant {
@@ -162,14 +158,16 @@ namespace NINA.ViewModel.FramingAssistant {
                         (x.Value.Coordinates.RADegrees > 360 + raFrom || x.Value.Coordinates.RADegrees < raThru)
                         && x.Value.Coordinates.Dec > Math.Min(ViewportFoV.TopCenter.Dec, ViewportFoV.BottomLeft.Dec)
                         && x.Value.Coordinates.Dec < Math.Max(ViewportFoV.BottomLeft.Dec, ViewportFoV.TopCenter.Dec)
-                    ).ToDictionary(x => x.Key, y => y.Value); ;
+                    ).ToDictionary(x => x.Key, y => y.Value);
+                    ;
                 } else {
                     dsoList = filteredDbDSO.Where(x =>
                         x.Value.Coordinates.RADegrees > (ViewportFoV.TopLeft.RADegrees - ViewportFoV.HFoVDeg)
                         && x.Value.Coordinates.RADegrees < (ViewportFoV.TopLeft.RADegrees)
                         && x.Value.Coordinates.Dec > Math.Min(ViewportFoV.TopCenter.Dec, ViewportFoV.BottomLeft.Dec)
                         && x.Value.Coordinates.Dec < Math.Max(ViewportFoV.BottomLeft.Dec, ViewportFoV.TopCenter.Dec)
-                    ).ToDictionary(x => x.Key, y => y.Value); ;
+                    ).ToDictionary(x => x.Key, y => y.Value);
+                    ;
                 }
             }
             return dsoList;
@@ -221,7 +219,7 @@ namespace NINA.ViewModel.FramingAssistant {
                 }
 
                 foreach (var coordinates in boundary.Value.Boundaries) {
-                    var point = coordinates.GnomonicTanProjection(ViewportFoV);
+                    var point = coordinates.XYProjection(ViewportFoV);
                     if (ViewportFoV.IsOutOfViewportBounds(point)) {
                         continue;
                     }

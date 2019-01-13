@@ -1,12 +1,9 @@
 ﻿using NINA.Model;
-using NINA.Utility;
 using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
-using System.Windows;
 
 namespace NINA.ViewModel.FramingAssistant {
 
@@ -70,7 +67,7 @@ namespace NINA.ViewModel.FramingAssistant {
         public void RecalculateConstellationPoints(ViewportFoV reference) {
             // calculate all star positions for the constellation once and add them to the star collection for drawing if they're visible
             foreach (var star in constellation.Stars) {
-                var starPosition = star.Coords.GnomonicTanProjection(reference);
+                var starPosition = star.Coords.XYProjection(reference);
                 star.Position = new PointF((float)starPosition.X, (float)starPosition.Y);
                 var isInBounds = !reference.IsOutOfViewportBounds(star.Position);
                 var contains = Stars.Contains(star);
@@ -92,7 +89,7 @@ namespace NINA.ViewModel.FramingAssistant {
                     Points.Remove(starConnection);
                 }
             }
-            var p = constellationCenter.GnomonicTanProjection(reference);
+            var p = constellationCenter.XYProjection(reference);
             CenterPoint = new PointF((float)p.X, (float)p.Y);
         }
 

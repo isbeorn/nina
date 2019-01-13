@@ -1,9 +1,7 @@
 ﻿using NINA.Model;
-using NINA.Utility;
 using NINA.Utility.Astrometry;
 using System.Drawing;
 using System.Linq;
-using System.Windows;
 
 namespace NINA.ViewModel.FramingAssistant {
 
@@ -67,7 +65,7 @@ namespace NINA.ViewModel.FramingAssistant {
         public PointF TextPosition { get; private set; }
 
         public void RecalculateTopLeft(ViewportFoV reference) {
-            CenterPoint = coordinates.GnomonicTanProjection(reference);
+            CenterPoint = coordinates.XYProjection(reference);
             arcSecWidth = reference.ArcSecWidth;
             arcSecHeight = reference.ArcSecHeight;
             TextPosition = new PointF((float)CenterPoint.X, (float)(CenterPoint.Y + RadiusHeight + 5));
