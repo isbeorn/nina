@@ -54,7 +54,7 @@ namespace NINA.ViewModel.FramingAssistant {
 
                 // those are the vertical lines
                 RAPoints.Add(new FrameLine {
-                    StrokeThickness = ra == 0 ? 3 : 1,
+                    StrokeThickness = (ra == 0 || ra == 180) ? 3 : 1,
                     Closed = false,
                     Collection = raPointCollection
                 });

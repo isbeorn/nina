@@ -307,14 +307,23 @@ namespace NINA.ViewModel.FramingAssistant {
 
             foreach (var frameLine in FrameLineMatrix.RAPoints) {
                 var points = cardinalSpline(frameLine.Collection, 0.5f, frameLine.Closed);
-
-                g.DrawBeziers(gridPen, points.ToArray());
+                if (frameLine.StrokeThickness != 1) {
+                    var pen = new Pen(gridPen.Color, frameLine.StrokeThickness);
+                    g.DrawBeziers(pen, points.ToArray());
+                } else {
+                    g.DrawBeziers(gridPen, points.ToArray());
+                }
             }
 
             foreach (var frameLine in FrameLineMatrix.DecPoints) {
                 var points = cardinalSpline(frameLine.Collection, 0.5f, frameLine.Closed);
 
-                g.DrawBeziers(gridPen, points.ToArray());
+                if (frameLine.StrokeThickness != 1) {
+                    var pen = new Pen(gridPen.Color, frameLine.StrokeThickness);
+                    g.DrawBeziers(pen, points.ToArray());
+                } else {
+                    g.DrawBeziers(gridPen, points.ToArray());
+                }
             }
         }
 
