@@ -269,21 +269,20 @@ namespace NINA.ViewModel.FramingAssistant {
             using (MyStopWatch.Measure("Graphics")) {
                 g.Clear(Color.Transparent);
 
-                foreach (var starconnection in ConstellationsInViewport.SelectMany(c => c.Points)) {
-                    g.DrawLine(constLinePen, (float)starconnection.Item1.Position.X,
-                        (float)starconnection.Item1.Position.Y, (float)starconnection.Item2.Position.X,
-                        (float)starconnection.Item2.Position.Y);
-                }
-
                 foreach (var constellation in ConstellationsInViewport) {
                     var size = g.MeasureString(constellation.Name, fontconst);
                     g.DrawString(constellation.Name, fontconst, constColorBrush, (float)(constellation.CenterPoint.X - size.Width / 2), (float)(constellation.CenterPoint.Y));
-                }
+                    foreach (var starconnection in constellation.Points) {
+                        g.DrawLine(constLinePen, (float)starconnection.Item1.Position.X,
+                            (float)starconnection.Item1.Position.Y, (float)starconnection.Item2.Position.X,
+                            (float)starconnection.Item2.Position.Y);
+                    }
 
-                foreach (var star in ConstellationsInViewport.SelectMany(c => c.Stars)) {
-                    g.DrawEllipse(starPen, (float)(star.Position.X - star.Radius), (float)(star.Position.Y - star.Radius), (float)star.Radius * 2, (float)star.Radius * 2);
-                    var size = g.MeasureString(star.Name, font);
-                    g.DrawString(star.Name, font, starFontColorBrush, (float)(star.Position.X + star.Radius - size.Width / 2), (float)(star.Position.Y + star.Radius * 2 + 5));
+                    foreach (var star in constellation.Stars) {
+                        g.DrawEllipse(starPen, (float)(star.Position.X - star.Radius), (float)(star.Position.Y - star.Radius), (float)star.Radius * 2, (float)star.Radius * 2);
+                        var startext = g.MeasureString(star.Name, font);
+                        g.DrawString(star.Name, font, starFontColorBrush, (float)(star.Position.X + star.Radius - startext.Width / 2), (float)(star.Position.Y + star.Radius * 2 + 5));
+                    }
                 }
 
                 foreach (var dso in DSOInViewport) {
