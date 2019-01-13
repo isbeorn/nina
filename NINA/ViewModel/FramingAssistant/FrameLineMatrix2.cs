@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 namespace NINA.ViewModel.FramingAssistant {
 
     internal class FrameLineMatrix2 {
-        private List<double> STEPSIZES = new List<double>() { 1, 2, 4, 8, 24 };
+        private List<double> STEPSIZES = new List<double>() { 1, 2, 4, 12, 20 };
 
         public FrameLineMatrix2() {
             RAPoints = new List<FrameLine>();
@@ -44,20 +44,21 @@ namespace NINA.ViewModel.FramingAssistant {
         private Dictionary<double, List<Coordinates>> raCoordinateMatrix = new Dictionary<double, List<Coordinates>>();
         private Dictionary<double, List<Coordinates>> decCoordinateMatrix = new Dictionary<double, List<Coordinates>>();
 
-        private const double minDec = -80;
-        private const double maxDec = 80;
+        private const double maxDec = 89;
         private const double minRA = 0;
         private const double maxRA = 0;
 
         private void GenerateRACoordinateMatrix(double raStep) {
             raCoordinateMatrix.Clear();
-            for (double i = minDec; i <= maxDec; i += resolution) {
+            for (double i = 0; i <= maxDec; i += resolution) {
                 for (double ra = 0; ra < 360; ra += raStep) {
                     var coordinate = new Coordinates(Angle.ByDegree(ra), Angle.ByDegree(i), Epoch.J2000);
+                    var coordinate2 = new Coordinates(Angle.ByDegree(ra), Angle.ByDegree(-i), Epoch.J2000);
                     if (!raCoordinateMatrix.ContainsKey(ra)) {
                         raCoordinateMatrix[ra] = new List<Coordinates>();
                     }
                     raCoordinateMatrix[ra].Add(coordinate);
+                    raCoordinateMatrix[ra].Add(coordinate2);
                 }
             }
         }
@@ -66,12 +67,17 @@ namespace NINA.ViewModel.FramingAssistant {
             decCoordinateMatrix.Clear();
 
             for (double i = 0; i < 360; i += resolution) {
-                for (double dec = minDec; dec <= maxDec; dec += decStep) {
+                for (double dec = 0; dec <= maxDec; dec += decStep) {
                     var coordinate = new Coordinates(Angle.ByDegree(i), Angle.ByDegree(dec), Epoch.J2000);
+                    var coordinate2 = new Coordinates(Angle.ByDegree(i), Angle.ByDegree(-dec), Epoch.J2000);
                     if (!decCoordinateMatrix.ContainsKey(dec)) {
                         decCoordinateMatrix[dec] = new List<Coordinates>();
                     }
+                    if (!decCoordinateMatrix.ContainsKey(-dec)) {
+                        decCoordinateMatrix[-dec] = new List<Coordinates>();
+                    }
                     decCoordinateMatrix[dec].Add(coordinate);
+                    decCoordinateMatrix[-dec].Add(coordinate2);
                 }
             }
         }
@@ -104,57 +110,85 @@ namespace NINA.ViewModel.FramingAssistant {
             RAPoints.Clear();
             DecPoints.Clear();
 
-            //vertical
             for (double ra = 0; ra < 360; ra += currentRAStep) {
-                var list = new List<PointF>();
-                foreach (var coordinate in raCoordinateMatrix[ra]) {
-                    if (viewport.ContainsCoordinates(coordinate)) {
-                        var p = coordinate.GnomonicTanProjection(viewport);
-                        var pointF = new PointF((float)p.X, (float)p.Y);
-
-                        list.Add(pointF);
-                    }
-                }
-                RAPoints.Add(new FrameLine() { Collection = list, StrokeThickness = 1, Closed = false });
+                CalculateRAPoints(viewport, ra);
             }
 
-            for (double dec = minDec; dec <= maxDec; dec += currentDecStep) {
-                double? prevRA = null;
-                double? stepRA = null;
-                var circled = false;
-                var inViewDegreeSum = 0d;
-                var degreeSum = 0d;
-                var list = new LinkedList<PointF>();
+            for (double dec = 0; dec <= maxDec; dec += currentDecStep) {
+                CalculateDecPoints(viewport, dec);
+            }
+            for (double dec = 0; dec >= -maxDec; dec -= currentDecStep) {
+                CalculateDecPoints(viewport, dec);
+            }
+        }
 
-                LinkedListNode<PointF> node = null;
-                foreach (var coordinate in decCoordinateMatrix[dec]) {
-                    degreeSum += coordinate.RADegrees;
-                    if (viewport.ContainsCoordinates(coordinate)) {
-                        inViewDegreeSum += coordinate.RADegrees;
+        /// <summary>
+        /// Calculate the lines spanning from pole to pole
+        /// </summary>
+        /// <param name="viewport"></param>
+        /// <param name="ra"></param>
+        private void CalculateRAPoints(ViewportFoV viewport, double ra) {
+            var list = new List<PointF>();
+            var thickness = 1;
+            foreach (var coordinate in raCoordinateMatrix[ra]) {
+                if (viewport.ContainsCoordinates(coordinate)) {
+                    if (coordinate.RADegrees == 0 || coordinate.RADegrees == 180) {
+                        thickness = 3;
+                    }
+                    var p = coordinate.GnomonicTanProjection(viewport);
+                    var pointF = new PointF((float)p.X, (float)p.Y);
 
-                        if (stepRA == null && prevRA != null) {
-                            stepRA = Math.Round((prevRA.Value - coordinate.RADegrees), 5);
-                        }
+                    list.Add(pointF);
+                }
+            }
+            RAPoints.Add(new FrameLine() { Collection = list, StrokeThickness = thickness, Closed = false });
+        }
 
-                        var p = coordinate.GnomonicTanProjection(viewport);
-                        var pointF = new PointF((float)p.X, (float)p.Y);
+        /// <summary>
+        /// Calculates the circles (or curved lines when not completely in view)
+        /// </summary>
+        /// <param name="viewport"></param>
+        /// <param name="dec"></param>
+        private void CalculateDecPoints(ViewportFoV viewport, double dec) {
+            var thickness = 1;
+            double? prevRA = null;
+            double? stepRA = null;
+            var circled = false;
+            var inViewDegreeSum = 0d;
+            var degreeSum = 0d;
+            var list = new LinkedList<PointF>();
 
-                        if (prevRA != null && Math.Round((prevRA.Value - coordinate.RADegrees), 5) != stepRA) {
-                            node = list.First;
-                            circled = true;
-                            node = list.AddBefore(node, pointF);
+            LinkedListNode<PointF> node = null;
+            foreach (var coordinate in decCoordinateMatrix[dec]) {
+                degreeSum += coordinate.RADegrees;
+                if (viewport.ContainsCoordinates(coordinate)) {
+                    if (coordinate.Dec == 0) {
+                        thickness = 3;
+                    }
+                    inViewDegreeSum += coordinate.RADegrees;
+
+                    if (stepRA == null && prevRA != null) {
+                        stepRA = Math.Round((prevRA.Value - coordinate.RADegrees), 5);
+                    }
+
+                    var p = coordinate.GnomonicTanProjection(viewport);
+                    var pointF = new PointF((float)p.X, (float)p.Y);
+
+                    if (prevRA != null && Math.Round((prevRA.Value - coordinate.RADegrees), 5) != stepRA) {
+                        node = list.First;
+                        circled = true;
+                        node = list.AddBefore(node, pointF);
+                    } else {
+                        if (circled) {
+                            node = list.AddAfter(node, pointF);
                         } else {
-                            if (circled) {
-                                node = list.AddAfter(node, pointF);
-                            } else {
-                                node = list.AddLast(pointF);
-                            }
+                            node = list.AddLast(pointF);
                         }
-                        prevRA = coordinate.RADegrees;
                     }
+                    prevRA = coordinate.RADegrees;
                 }
-                DecPoints.Add(new FrameLine() { Collection = new List<PointF>(list), StrokeThickness = 1, Closed = inViewDegreeSum == degreeSum });
             }
+            DecPoints.Add(new FrameLine() { Collection = new List<PointF>(list), StrokeThickness = thickness, Closed = inViewDegreeSum == degreeSum });
         }
 
         public List<FrameLine> RAPoints { get; private set; }
