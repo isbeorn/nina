@@ -807,7 +807,7 @@ namespace NINA.ViewModel.FramingAssistant {
                 DSO.Coordinates = newCenter;
                 ImageParameter.Coordinates = newCenter;
                 CalculateRectangle(ImageParameter);
-                SkyMapAnnotator.UpdateSkyMap(_loadImageSource.Token).Wait();
+                SkyMapAnnotator.UpdateSkyMap();
             } else {
                 var imageArcsecWidth =
                     Astrometry.ArcminToArcsec(ImageParameter.FoVWidth) / ImageParameter.Image.Width;

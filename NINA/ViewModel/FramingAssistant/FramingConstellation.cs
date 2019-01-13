@@ -22,15 +22,17 @@ namespace NINA.ViewModel.FramingAssistant {
             var constellationStopDec = constellation.Stars.Select(m => m.Coords.Dec).Max();
 
             if (constellation.GoesOverRaZero) {
-                double stopRA = 0;
+                double stopRA = double.MaxValue;
                 double startRA = 0;
-                IEnumerable<IGrouping<bool, Star>> groups = constellation.Stars.GroupBy(s => s.Coords.RADegrees > 180);
-                foreach (var group in groups) {
-                    if (group.Key) {
-                        stopRA = group.Select(m => m.Coords.RADegrees).Min();
+                foreach (var star in constellation.Stars) {
+                    if (star.Coords.RADegrees > 180) {
+                        stopRA = Math.Min(stopRA, star.Coords.RADegrees);
                     } else {
-                        startRA = group.Select(m => m.Coords.RADegrees).Max();
+                        startRA = Math.Max(startRA, star.Coords.RADegrees);
                     }
+                }
+                if (stopRA == double.MaxValue) {
+                    stopRA = 0;
                 }
 
                 var distance = startRA + 360 - stopRA;

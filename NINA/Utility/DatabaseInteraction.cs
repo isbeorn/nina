@@ -201,7 +201,7 @@ namespace NINA.Utility {
 
                 // make a list of unique stars
                 foreach (var constellation in constellations) {
-                    constellation.Stars = new ObservableCollection<Star>(constellation.StarConnections.Select(t => t.Item1).Concat(constellation.StarConnections.Select(t => t.Item2)).GroupBy(b => b.Name).Select(b => b.First()).ToList());
+                    constellation.Stars = new List<Star>(constellation.StarConnections.Select(t => t.Item1).Concat(constellation.StarConnections.Select(t => t.Item2)).GroupBy(b => b.Name).Select(b => b.First()).ToList());
                     bool goesOver0 = false;
                     foreach (var pair in constellation.StarConnections) {
                         goesOver0 = Math.Max(pair.Item1.Coords.RADegrees, pair.Item2.Coords.RADegrees) -
@@ -380,10 +380,10 @@ namespace NINA.Utility {
                         var reader = await command.ExecuteReaderAsync(token);
 
                         while (reader.Read()) {
-                            var dso = new DeepSkyObject(reader.GetString(0), imageRepository);
-
+                            var id = reader.GetString(0);
                             var coords = new Coordinates(reader.GetDouble(1), reader.GetDouble(2), Epoch.J2000, Coordinates.RAType.Degrees);
-                            dso.Coordinates = coords;
+                            var dso = new DeepSkyObject(reader.GetString(0), coords, imageRepository);
+
                             dso.DSOType = reader.GetString(3);
 
                             if (!reader.IsDBNull(4)) {

@@ -24,13 +24,14 @@ namespace NINA.ViewModel.FramingAssistant {
         private readonly DatabaseInteraction dbInstance;
         private ViewportFoV viewportFoV;
         private List<Constellation> dbConstellations;
+        private Dictionary<string, DeepSkyObject> dbDSOs;
         private Bitmap img;
         private Graphics g;
 
         public SkyMapAnnotator(string databaseLocation) {
             dbInstance = new DatabaseInteraction(databaseLocation);
             DSOInViewport = new List<FramingDSO>();
-            ConstellationsInViewport = new Dictionary<string, FramingConstellation>();
+            ConstellationsInViewport = new List<FramingConstellation>();
             FrameLineMatrix = new FrameLineMatrix();
             ConstellationBoundaries = new AsyncLazy<Dictionary<string, ConstellationBoundary>>(async delegate {
                 return await GetConstellationBoundaries();
@@ -42,6 +43,21 @@ namespace NINA.ViewModel.FramingAssistant {
 
             dbConstellations = await dbInstance.GetConstellationsWithStars(ct);
 
+            using (MyStopWatch.Measure()) {
+                var param = new DatabaseInteraction.DeepSkyObjectSearchParams();
+                // calculate size, at 10deg fov we want all items, at 45deg fov only the items that are larger than 100
+                // basic linear regression (:calculus:)
+                var minSize = (2.857 * viewportFoV.OriginalVFoV - 28.57);
+                var maxSize = Astrometry.DegreeToArcsec(2 * Math.Max(viewportFoV.OriginalHFoV, viewportFoV.OriginalVFoV));
+
+                param.Size = new DatabaseInteraction.DeepSkyObjectSearchFromThru<string> {
+                    From = Math.Max(0, minSize).ToString(CultureInfo.InvariantCulture),
+                    Thru = maxSize.ToString(CultureInfo.InvariantCulture)
+                };
+
+                dbDSOs = (await dbInstance.GetDeepSkyObjects(string.Empty, param, ct)).ToDictionary(x => x.Id, y => y);
+            }
+
             ConstellationsInViewport.Clear();
             ClearFrameLineMatrix();
             ClearConstellationBoundaries();
@@ -51,7 +67,7 @@ namespace NINA.ViewModel.FramingAssistant {
             g = Graphics.FromImage(img);
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            await UpdateSkyMap(ct);
+            UpdateSkyMap();
 
             FrameLineMatrix.CalculatePoints(viewportFoV);
             await CalculateConstellationBoundaries();
@@ -61,75 +77,39 @@ namespace NINA.ViewModel.FramingAssistant {
 
         public List<FramingDSO> DSOInViewport { get; private set; }
 
-        public Dictionary<string, FramingConstellation> ConstellationsInViewport { get; private set; }
+        public List<FramingConstellation> ConstellationsInViewport { get; private set; }
 
         /// <summary>
         /// Query for skyobjects for a reference coordinate that overlap the current viewport
         /// </summary>
         /// <returns></returns>
-        public async Task<Dictionary<string, DeepSkyObject>> GetDeepSkyObjectsForViewport(CancellationToken ct) {
-            Dictionary<string, DeepSkyObject> dsoList = new Dictionary<string, DeepSkyObject>();
-
-            DatabaseInteraction.DeepSkyObjectSearchParams param =
-                new DatabaseInteraction.DeepSkyObjectSearchParams();
-
-            // calculate size, at 10deg fov we want all items, at 45deg fov only the items that are larger than 100
-            // basic linear regression (:calculus:)
-            var size = (2.857 * viewportFoV.OriginalVFoV - 28.57);
-            if (size > 0) {
-                param.Size = new DatabaseInteraction.DeepSkyObjectSearchFromThru<string> {
-                    From = size.ToString(CultureInfo.InvariantCulture)
-                };
-            }
+        public Dictionary<string, DeepSkyObject> GetDeepSkyObjectsForViewport() {
+            var dsoList = new Dictionary<string, DeepSkyObject>();
 
             // if we're above 90deg centerTop will be different than centerBottom, otherwise it is equal
             if (viewportFoV.IsAbove90) {
-                // then we want everything from bottomLeft to 90 or -90 to bottomLeft (which is flipped when dec < 0 so it's actually "top" left)
-                param.Declination = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = !viewportFoV.AboveZero ? -90 : viewportFoV.BottomLeft.Dec,
-                    Thru = !viewportFoV.AboveZero ? viewportFoV.BottomLeft.Dec : 90
-                };
-                param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = 0,
-                    Thru = 360
-                };
+                dsoList = dbDSOs.Where(x =>
+                    x.Value.Coordinates.Dec > (!viewportFoV.AboveZero ? -90 : viewportFoV.BottomLeft.Dec)
+                    && x.Value.Coordinates.Dec < (!viewportFoV.AboveZero ? viewportFoV.BottomLeft.Dec : 90)
+                ).ToDictionary(x => x.Key, y => y.Value);
             } else {
-                // depending on orientation we might be flipped so we search from lowest point to highest point
-                param.Declination = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = Math.Min(viewportFoV.TopCenter.Dec, viewportFoV.BottomLeft.Dec),
-                    Thru = Math.Max(viewportFoV.BottomLeft.Dec, viewportFoV.TopCenter.Dec)
-                };
-                // since topLeft.RADegrees is always higher than centerTop.RADegrees (counterclockwise circle) we can subtract hFovDeg to get the full RA
-                param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = viewportFoV.TopLeft.RADegrees - viewportFoV.HFoVDeg,
-                    Thru = viewportFoV.TopLeft.RADegrees
-                };
-            }
-
-            // if the calculated from RA is lower than zero we have to search from that point to 360
-            // add the dso and then later search from 0 to the previous thru ra
-            if (param.RightAscension.From < 0) {
-                param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = 360 + param.RightAscension.From,
-                    Thru = 360
-                };
-
-                foreach (var dso in await dbInstance.GetDeepSkyObjects(
-                    string.Empty, param, ct)) {
-                    dsoList.Add(dso.Id, dso);
+                var raFrom = viewportFoV.TopLeft.RADegrees - viewportFoV.HFoVDeg;
+                var raThru = viewportFoV.TopLeft.RADegrees;
+                if (raFrom < 0) {
+                    dsoList = dbDSOs.Where(x =>
+                        (x.Value.Coordinates.RADegrees > 360 + raFrom || x.Value.Coordinates.RADegrees < raThru)
+                        && x.Value.Coordinates.Dec > Math.Min(viewportFoV.TopCenter.Dec, viewportFoV.BottomLeft.Dec)
+                        && x.Value.Coordinates.Dec < Math.Max(viewportFoV.BottomLeft.Dec, viewportFoV.TopCenter.Dec)
+                    ).ToDictionary(x => x.Key, y => y.Value); ;
+                } else {
+                    dsoList = dbDSOs.Where(x =>
+                        x.Value.Coordinates.RADegrees > (viewportFoV.TopLeft.RADegrees - viewportFoV.HFoVDeg)
+                        && x.Value.Coordinates.RADegrees < (viewportFoV.TopLeft.RADegrees)
+                        && x.Value.Coordinates.Dec > Math.Min(viewportFoV.TopCenter.Dec, viewportFoV.BottomLeft.Dec)
+                        && x.Value.Coordinates.Dec < Math.Max(viewportFoV.BottomLeft.Dec, viewportFoV.TopCenter.Dec)
+                    ).ToDictionary(x => x.Key, y => y.Value); ;
                 }
-
-                param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = 0,
-                    Thru = viewportFoV.TopLeft.RADegrees
-                };
             }
-
-            foreach (var dso in await dbInstance.GetDeepSkyObjects(
-                string.Empty, param, ct)) {
-                dsoList.Add(dso.Id, dso);
-            }
-
             return dsoList;
         }
 
@@ -194,8 +174,8 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
-        public async Task UpdateSkyMap(CancellationToken ct) {
-            var allGatheredDSO = await GetDeepSkyObjectsForViewport(ct);
+        public void UpdateSkyMap() {
+            var allGatheredDSO = GetDeepSkyObjectsForViewport();
 
             var existingDSOs = new List<string>();
             for (int i = DSOInViewport.Count - 1; i >= 0; i--) {
@@ -209,8 +189,7 @@ namespace NINA.ViewModel.FramingAssistant {
             }
 
             foreach (var constellation in dbConstellations) {
-                FramingConstellation viewPortConstellation = null;
-                ConstellationsInViewport.TryGetValue(constellation.Id, out viewPortConstellation);
+                var viewPortConstellation = ConstellationsInViewport.FirstOrDefault(x => x.Id == constellation.Id);
 
                 var isInViewport = false;
                 foreach (var star in constellation.Stars) {
@@ -224,12 +203,12 @@ namespace NINA.ViewModel.FramingAssistant {
 
                 if (isInViewport) {
                     if (viewPortConstellation == null) {
-                        ConstellationsInViewport.Add(constellation.Id, new FramingConstellation(constellation, viewportFoV));
+                        ConstellationsInViewport.Add(new FramingConstellation(constellation, viewportFoV));
                     } else {
                         viewPortConstellation.RecalculateConstellationPoints(viewportFoV);
                     }
                 } else if (viewPortConstellation != null) {
-                    ConstellationsInViewport.Remove(viewPortConstellation.Id);
+                    ConstellationsInViewport.Remove(viewPortConstellation);
                 }
             }
 
@@ -237,46 +216,49 @@ namespace NINA.ViewModel.FramingAssistant {
             foreach (var dso in dsosToAdd) {
                 DSOInViewport.Add(new FramingDSO(dso.Value, viewportFoV));
             }
+            Draw();
+        }
 
-            using (MyStopWatch.Measure("Graphics")) {
-                g.Clear(Color.Transparent);
+        private void Draw() {
+            g.Clear(Color.Transparent);
 
-                foreach (var constellation in ConstellationsInViewport.Values) {
-                    var constellationSize = g.MeasureString(constellation.Name, fontconst);
-                    g.DrawString(constellation.Name, fontconst, constColorBrush, (float)(constellation.CenterPoint.X - constellationSize.Width / 2), (float)(constellation.CenterPoint.Y));
+            foreach (var constellation in ConstellationsInViewport) {
+                var constellationSize = g.MeasureString(constellation.Name, fontconst);
+                g.DrawString(constellation.Name, fontconst, constColorBrush, (float)(constellation.CenterPoint.X - constellationSize.Width / 2), (float)(constellation.CenterPoint.Y));
 
-                    foreach (var starConnection in constellation.Points) {
-                        g.DrawLine(constLinePen, (float)starConnection.Item1.Position.X,
-                        (float)starConnection.Item1.Position.Y, (float)starConnection.Item2.Position.X,
-                        (float)starConnection.Item2.Position.Y);
-                    }
-
-                    foreach (var star in constellation.Stars) {
-                        g.DrawEllipse(starPen, (float)(star.Position.X - star.Radius), (float)(star.Position.Y - star.Radius), (float)star.Radius * 2, (float)star.Radius * 2);
-                        var size = g.MeasureString(star.Name, font);
-                        g.DrawString(star.Name, font, starFontColorBrush, (float)(star.Position.X + star.Radius - size.Width / 2), (float)(star.Position.Y + star.Radius * 2 + 5));
-                    }
+                foreach (var starConnection in constellation.Points) {
+                    g.DrawLine(constLinePen, (float)starConnection.Item1.Position.X,
+                    (float)starConnection.Item1.Position.Y, (float)starConnection.Item2.Position.X,
+                    (float)starConnection.Item2.Position.Y);
                 }
 
-                foreach (var dso in DSOInViewport) {
-                    g.FillEllipse(dsoFillColorBrush, (float)(dso.CenterPoint.X - dso.RadiusWidth), (float)(dso.CenterPoint.Y - dso.RadiusHeight),
-                        (float)(dso.RadiusWidth * 2), (float)(dso.RadiusHeight * 2));
-                    g.DrawEllipse(dsoStrokePen, (float)(dso.CenterPoint.X - dso.RadiusWidth), (float)(dso.CenterPoint.Y - dso.RadiusHeight),
-                        (float)(dso.RadiusWidth * 2), (float)(dso.RadiusHeight * 2));
-                    var size1 = g.MeasureString(dso.Name1, fontdso);
-                    g.DrawString(dso.Name1, fontdso, dsoFontColorBrush, (float)(dso.TextPosition.X - size1.Width / 2), (float)(dso.TextPosition.Y));
-                    if (dso.Name2 != null) {
-                        var size2 = g.MeasureString(dso.Name2, fontdso);
-                        g.DrawString(dso.Name2, fontdso, dsoFontColorBrush, (float)(dso.TextPosition.X - size2.Width / 2), (float)(dso.TextPosition.Y + size1.Height + 2));
-                        if (dso.Name3 != null) {
-                            var size3 = g.MeasureString(dso.Name3, fontdso);
-                            g.DrawString(dso.Name3, fontdso, dsoFontColorBrush, (float)(dso.TextPosition.X - size3.Width / 2), (float)(dso.TextPosition.Y + size1.Height + 2 + size2.Height + 2));
-                        }
+                foreach (var star in constellation.Stars) {
+                    g.DrawEllipse(starPen, (float)(star.Position.X - star.Radius), (float)(star.Position.Y - star.Radius), (float)star.Radius * 2, (float)star.Radius * 2);
+                    var size = g.MeasureString(star.Name, font);
+                    g.DrawString(star.Name, font, starFontColorBrush, (float)(star.Position.X + star.Radius - size.Width / 2), (float)(star.Position.Y + star.Radius * 2 + 5));
+                }
+            }
+
+            foreach (var dso in DSOInViewport) {
+                g.FillEllipse(dsoFillColorBrush, (float)(dso.CenterPoint.X - dso.RadiusWidth), (float)(dso.CenterPoint.Y - dso.RadiusHeight),
+                    (float)(dso.RadiusWidth * 2), (float)(dso.RadiusHeight * 2));
+                g.DrawEllipse(dsoStrokePen, (float)(dso.CenterPoint.X - dso.RadiusWidth), (float)(dso.CenterPoint.Y - dso.RadiusHeight),
+                    (float)(dso.RadiusWidth * 2), (float)(dso.RadiusHeight * 2));
+                var size1 = g.MeasureString(dso.Name1, fontdso);
+                g.DrawString(dso.Name1, fontdso, dsoFontColorBrush, (float)(dso.TextPosition.X - size1.Width / 2), (float)(dso.TextPosition.Y));
+                if (dso.Name2 != null) {
+                    var size2 = g.MeasureString(dso.Name2, fontdso);
+                    g.DrawString(dso.Name2, fontdso, dsoFontColorBrush, (float)(dso.TextPosition.X - size2.Width / 2), (float)(dso.TextPosition.Y + size1.Height + 2));
+                    if (dso.Name3 != null) {
+                        var size3 = g.MeasureString(dso.Name3, fontdso);
+                        g.DrawString(dso.Name3, fontdso, dsoFontColorBrush, (float)(dso.TextPosition.X - size3.Width / 2), (float)(dso.TextPosition.Y + size1.Height + 2 + size2.Height + 2));
                     }
                 }
             }
 
-            SkyMapOverlay = ImageAnalysis.ConvertBitmap(img, PixelFormats.Bgra32);
+            var source = ImageAnalysis.ConvertBitmap(img, PixelFormats.Bgra32);
+            source.Freeze();
+            SkyMapOverlay = source;
         }
 
         private Font font = new Font("Segoe UI", 8, FontStyle.Italic);
