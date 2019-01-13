@@ -44,8 +44,8 @@ namespace NINA.ViewModel.FramingAssistant {
         private Dictionary<double, List<Coordinates>> raCoordinateMatrix = new Dictionary<double, List<Coordinates>>();
         private Dictionary<double, List<Coordinates>> decCoordinateMatrix = new Dictionary<double, List<Coordinates>>();
 
-        private const double minDec = -80;
-        private const double maxDec = 80;
+        private const double minDec = -89;
+        private const double maxDec = 89;
         private const double minRA = 0;
         private const double maxRA = 0;
 
