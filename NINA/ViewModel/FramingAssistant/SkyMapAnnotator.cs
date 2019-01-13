@@ -27,6 +27,8 @@ namespace NINA.ViewModel.FramingAssistant {
         private FrameLineMatrix frameLineMatrix;
         private AsyncObservableCollection<FramingConstellation> constellationsInViewport;
         private List<Constellation> dbConstellations;
+        private Bitmap img;
+        private Graphics g;
 
         public SkyMapAnnotator(string databaseLocation) {
             dbInstance = new DatabaseInteraction(databaseLocation);
@@ -46,6 +48,11 @@ namespace NINA.ViewModel.FramingAssistant {
             ConstellationsInViewport.Clear();
             ClearFrameLineMatrix();
             ClearConstellationBoundaries();
+
+            img = new Bitmap((int)viewportFoV.OriginalWidth, (int)viewportFoV.OriginalHeight, PixelFormat.Format32bppArgb);
+
+            g = Graphics.FromImage(img);
+            g.SmoothingMode = SmoothingMode.AntiAlias;
 
             await UpdateSkyMap(ct);
 
@@ -259,30 +266,14 @@ namespace NINA.ViewModel.FramingAssistant {
                 DSOInViewport.Add(new FramingDSO(dso.Value, viewportFoV));
             }
 
-            Bitmap img;
             using (MyStopWatch.Measure("Graphics")) {
-                img = new Bitmap((int)viewportFoV.Width, (int)viewportFoV.Height, PixelFormat.Format32bppArgb);
-
-                Graphics g = Graphics.FromImage(img);
-                //g.Clear(Color.FromArgb(255, 30, 30, 30));
-                g.SmoothingMode = SmoothingMode.AntiAlias;
+                g.Clear(Color.Transparent);
 
                 foreach (var starconnection in ConstellationsInViewport.SelectMany(c => c.Points)) {
-                    g.DrawLine(new Pen(Color.FromArgb(128, 0, 255, 0)), (float)starconnection.Item1.Position.X,
+                    g.DrawLine(constLinePen, (float)starconnection.Item1.Position.X,
                         (float)starconnection.Item1.Position.Y, (float)starconnection.Item2.Position.X,
                         (float)starconnection.Item2.Position.Y);
                 }
-
-                var font = new Font("Segoe UI", 8, FontStyle.Italic);
-                var fontconst = new Font("Segoe UI", 11, FontStyle.Bold);
-                var fontdso = new Font("Segoe UI", 10, FontStyle.Regular);
-
-                var constColorBrush = new SolidBrush(Color.FromArgb(128, 255, 255, 153));
-                var starPen = new Pen(Color.FromArgb(128, 255, 255, 255));
-                var starFontColorBrush = new SolidBrush(Color.FromArgb(128, 255, 215, 0));
-                var dsoFillColorBrush = new SolidBrush(Color.FromArgb(10, 255, 255, 255));
-                var dsoStrokePen = new Pen(Color.FromArgb(255, 255, 255, 255));
-                var dsoFontColorBrush = new SolidBrush(Color.FromArgb(255, 255, 255, 255));
 
                 foreach (var constellation in ConstellationsInViewport) {
                     var size = g.MeasureString(constellation.Name, fontconst);
@@ -313,25 +304,20 @@ namespace NINA.ViewModel.FramingAssistant {
                 }
             }
 
-            SkyMapOverlay = Convert(img);
-
-            //img.Save(@"D:\test.png", ImageFormat.Png);
+            SkyMapOverlay = ImageAnalysis.ConvertBitmap(img, PixelFormats.Bgra32);
         }
 
-        public BitmapSource Convert(System.Drawing.Bitmap bitmap) {
-            var bitmapData = bitmap.LockBits(
-                new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
-                System.Drawing.Imaging.ImageLockMode.ReadOnly, bitmap.PixelFormat);
+        private Font font = new Font("Segoe UI", 8, FontStyle.Italic);
+        private Font fontconst = new Font("Segoe UI", 11, FontStyle.Bold);
+        private Font fontdso = new Font("Segoe UI", 10, FontStyle.Regular);
 
-            var bitmapSource = BitmapSource.Create(
-                bitmapData.Width, bitmapData.Height,
-                bitmap.HorizontalResolution, bitmap.VerticalResolution,
-                PixelFormats.Bgra32, null,
-                bitmapData.Scan0, bitmapData.Stride * bitmapData.Height, bitmapData.Stride);
-
-            bitmap.UnlockBits(bitmapData);
-            return bitmapSource;
-        }
+        private Pen constLinePen = new Pen(Color.FromArgb(128, 0, 255, 0));
+        private SolidBrush constColorBrush = new SolidBrush(Color.FromArgb(128, 255, 255, 153));
+        private Pen starPen = new Pen(Color.FromArgb(128, 255, 255, 255));
+        private SolidBrush starFontColorBrush = new SolidBrush(Color.FromArgb(128, 255, 215, 0));
+        private SolidBrush dsoFillColorBrush = new SolidBrush(Color.FromArgb(10, 255, 255, 255));
+        private Pen dsoStrokePen = new Pen(Color.FromArgb(255, 255, 255, 255));
+        private SolidBrush dsoFontColorBrush = new SolidBrush(Color.FromArgb(255, 255, 255, 255));
 
         public BitmapSource SkyMapOverlay {
             get => skyMapOverlay;
