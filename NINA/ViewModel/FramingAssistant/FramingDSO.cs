@@ -84,12 +84,12 @@ namespace NINA.ViewModel.FramingAssistant {
         public string Name2 { get; }
         public string Name3 { get; }
 
-        private SolidBrush dsoFillColorBrush = new SolidBrush(Color.FromArgb(10, 255, 255, 255));
-        private SolidBrush dsoFontColorBrush = new SolidBrush(Color.FromArgb(255, 255, 255, 255));
+        private static SolidBrush dsoFillColorBrush = new SolidBrush(Color.FromArgb(10, 255, 255, 255));
+        private static SolidBrush dsoFontColorBrush = new SolidBrush(Color.FromArgb(255, 255, 255, 255));
 
-        private Pen dsoStrokePen = new Pen(Color.FromArgb(255, 255, 255, 255));
+        private static Pen dsoStrokePen = new Pen(Color.FromArgb(255, 255, 255, 255));
 
-        private Font fontdso = new Font("Segoe UI", 10, System.Drawing.FontStyle.Regular);
+        private static Font fontdso = new Font("Segoe UI", 10, System.Drawing.FontStyle.Regular);
 
         public void Draw(System.Drawing.Graphics g) {
             g.FillEllipse(dsoFillColorBrush, (float)(this.CenterPoint.X - this.RadiusWidth), (float)(this.CenterPoint.Y - this.RadiusHeight),
