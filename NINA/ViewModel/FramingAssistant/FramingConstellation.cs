@@ -4,6 +4,7 @@ using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Linq;
 using System.Windows;
 
@@ -58,7 +59,7 @@ namespace NINA.ViewModel.FramingAssistant {
             Stars = new HashSet<Star>();
 
             foreach (var star in constellation.Stars) {
-                star.Radius = (-3.375 * star.Mag + 23.25) / (viewport.VFoVDeg / 8);
+                star.Radius = (-3.375f * star.Mag + 23.25f) / (float)(viewport.VFoVDeg / 8f);
             }
 
             RecalculateConstellationPoints(viewport);
@@ -69,7 +70,8 @@ namespace NINA.ViewModel.FramingAssistant {
         public void RecalculateConstellationPoints(ViewportFoV reference) {
             // calculate all star positions for the constellation once and add them to the star collection for drawing if they're visible
             foreach (var star in constellation.Stars) {
-                star.Position = star.Coords.GnomonicTanProjection(reference);
+                var starPosition = star.Coords.GnomonicTanProjection(reference);
+                star.Position = new PointF((float)starPosition.X, (float)starPosition.Y);
                 var isInBounds = !reference.IsOutOfViewportBounds(star.Position);
                 var contains = Stars.Contains(star);
                 if (isInBounds && !contains) {
@@ -90,11 +92,33 @@ namespace NINA.ViewModel.FramingAssistant {
                     Points.Remove(starConnection);
                 }
             }
-
-            CenterPoint = constellationCenter.GnomonicTanProjection(reference);
+            var p = constellationCenter.GnomonicTanProjection(reference);
+            CenterPoint = new PointF((float)p.X, (float)p.Y);
         }
 
-        public Point CenterPoint { get; private set; }
+        public void Draw(Graphics g) {
+            var constellationSize = g.MeasureString(this.Name, font);
+            g.DrawString(this.Name, font, constColorBrush, (this.CenterPoint.X - constellationSize.Width / 2), (this.CenterPoint.Y));
+            foreach (var starConnection in this.Points) {
+                g.DrawLine(constLinePen, starConnection.Item1.Position.X,
+                starConnection.Item1.Position.Y, starConnection.Item2.Position.X,
+                starConnection.Item2.Position.Y);
+            }
+
+            foreach (var star in this.Stars) {
+                g.DrawEllipse(starPen, (star.Position.X - star.Radius), (star.Position.Y - star.Radius), star.Radius * 2, star.Radius * 2);
+                var size = g.MeasureString(star.Name, font);
+                g.DrawString(star.Name, font, starFontColorBrush, (star.Position.X + star.Radius - size.Width / 2), (star.Position.Y + star.Radius * 2 + 5));
+            }
+        }
+
+        private Font font = new Font("Segoe UI", 11, System.Drawing.FontStyle.Bold);
+        private SolidBrush constColorBrush = new SolidBrush(Color.FromArgb(128, 255, 255, 153));
+        private Pen starPen = new Pen(Color.FromArgb(128, 255, 255, 255));
+        private Pen constLinePen = new Pen(Color.FromArgb(128, 0, 255, 0));
+        private SolidBrush starFontColorBrush = new SolidBrush(Color.FromArgb(128, 255, 215, 0));
+
+        public PointF CenterPoint { get; private set; }
 
         public string Id { get; }
         public string Name { get; }

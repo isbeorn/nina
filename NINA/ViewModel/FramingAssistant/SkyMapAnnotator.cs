@@ -213,7 +213,7 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
-        private void RedrawDSOs() {
+        private void UpdateDSOs() {
             var allGatheredDSO = GetDeepSkyObjectsForViewport();
 
             var existingDSOs = new List<string>();
@@ -233,24 +233,11 @@ namespace NINA.ViewModel.FramingAssistant {
             }
 
             foreach (var dso in DSOInViewport) {
-                g.FillEllipse(dsoFillColorBrush, (float)(dso.CenterPoint.X - dso.RadiusWidth), (float)(dso.CenterPoint.Y - dso.RadiusHeight),
-                    (float)(dso.RadiusWidth * 2), (float)(dso.RadiusHeight * 2));
-                g.DrawEllipse(dsoStrokePen, (float)(dso.CenterPoint.X - dso.RadiusWidth), (float)(dso.CenterPoint.Y - dso.RadiusHeight),
-                    (float)(dso.RadiusWidth * 2), (float)(dso.RadiusHeight * 2));
-                var size1 = g.MeasureString(dso.Name1, fontdso);
-                g.DrawString(dso.Name1, fontdso, dsoFontColorBrush, (float)(dso.TextPosition.X - size1.Width / 2), (float)(dso.TextPosition.Y));
-                if (dso.Name2 != null) {
-                    var size2 = g.MeasureString(dso.Name2, fontdso);
-                    g.DrawString(dso.Name2, fontdso, dsoFontColorBrush, (float)(dso.TextPosition.X - size2.Width / 2), (float)(dso.TextPosition.Y + size1.Height + 2));
-                    if (dso.Name3 != null) {
-                        var size3 = g.MeasureString(dso.Name3, fontdso);
-                        g.DrawString(dso.Name3, fontdso, dsoFontColorBrush, (float)(dso.TextPosition.X - size3.Width / 2), (float)(dso.TextPosition.Y + size1.Height + 2 + size2.Height + 2));
-                    }
-                }
+                dso.Draw(g);
             }
         }
 
-        private void RedrawConstellations() {
+        private void UpdateConstellations() {
             foreach (var constellation in dbConstellations) {
                 var viewPortConstellation = ConstellationsInViewport.FirstOrDefault(x => x.Id == constellation.Id);
 
@@ -276,146 +263,47 @@ namespace NINA.ViewModel.FramingAssistant {
             }
 
             foreach (var constellation in ConstellationsInViewport) {
-                var constellationSize = g.MeasureString(constellation.Name, fontconst);
-                g.DrawString(constellation.Name, fontconst, constColorBrush, (float)(constellation.CenterPoint.X - constellationSize.Width / 2), (float)(constellation.CenterPoint.Y));
-                foreach (var starConnection in constellation.Points) {
-                    g.DrawLine(constLinePen, (float)starConnection.Item1.Position.X,
-                    (float)starConnection.Item1.Position.Y, (float)starConnection.Item2.Position.X,
-                    (float)starConnection.Item2.Position.Y);
-                }
-
-                foreach (var star in constellation.Stars) {
-                    g.DrawEllipse(starPen, (float)(star.Position.X - star.Radius), (float)(star.Position.Y - star.Radius), (float)star.Radius * 2, (float)star.Radius * 2);
-                    var size = g.MeasureString(star.Name, font);
-                    g.DrawString(star.Name, font, starFontColorBrush, (float)(star.Position.X + star.Radius - size.Width / 2), (float)(star.Position.Y + star.Radius * 2 + 5));
-                }
+                constellation.Draw(g);
             }
         }
 
-        private void RedrawConstellationBoundaries() {
+        private void UpdateConstellationBoundaries() {
             CalculateConstellationBoundaries();
             foreach (var constellationBoundary in ConstellationBoundariesInViewPort) {
-                if (constellationBoundary.Points.Count > 1) {
-                    g.DrawPolygon(boundaryPen, constellationBoundary.Points.ToArray());
-                }
+                constellationBoundary.Draw(g);
             }
         }
 
-        private void RedrawGrid() {
+        private void UpdateGrid() {
             ClearFrameLineMatrix();
             CalculateFrameLineMatrix();
 
-            foreach (var frameLine in FrameLineMatrix.RAPoints) {
-                var points = cardinalSpline(frameLine.Collection, 0.5f, frameLine.Closed);
-                if (frameLine.StrokeThickness != 1) {
-                    var pen = new Pen(gridPen.Color, frameLine.StrokeThickness);
-                    g.DrawBeziers(pen, points.ToArray());
-                } else {
-                    g.DrawBeziers(gridPen, points.ToArray());
-                }
-            }
-
-            foreach (var frameLine in FrameLineMatrix.DecPoints) {
-                var points = cardinalSpline(frameLine.Collection, 0.5f, frameLine.Closed);
-
-                if (frameLine.StrokeThickness != 1) {
-                    var pen = new Pen(gridPen.Color, frameLine.StrokeThickness);
-                    g.DrawBeziers(pen, points.ToArray());
-                } else {
-                    g.DrawBeziers(gridPen, points.ToArray());
-                }
-            }
-        }
-
-        private static void CalcCurve(PointF[] pts, float tenstion, out PointF p1, out PointF p2) {
-            float deltaX, deltaY;
-            deltaX = pts[2].X - pts[0].X;
-            deltaY = pts[2].Y - pts[0].Y;
-            p1 = new PointF((pts[1].X - tenstion * deltaX), (pts[1].Y - tenstion * deltaY));
-            p2 = new PointF((pts[1].X + tenstion * deltaX), (pts[1].Y + tenstion * deltaY));
-        }
-
-        private void CalcCurveEnd(PointF end, PointF adj, float tension, out PointF p1) {
-            p1 = new PointF(((tension * (adj.X - end.X) + end.X)), ((tension * (adj.Y - end.Y) + end.Y)));
-        }
-
-        private List<PointF> cardinalSpline(List<PointF> pts, float t, bool closed) {
-            int i, nrRetPts;
-            PointF p1, p2;
-            float tension = t * (1f / 3f); //we are calculating contolpoints.
-
-            if (closed)
-                nrRetPts = (pts.Count + 1) * 3 - 2;
-            else
-                nrRetPts = pts.Count * 3 - 2;
-
-            PointF[] retPnt = new PointF[nrRetPts];
-            for (i = 0; i < nrRetPts; i++)
-                retPnt[i] = new PointF();
-
-            if (!closed) {
-                CalcCurveEnd(pts[0], pts[1], tension, out p1);
-                retPnt[0] = pts[0];
-                retPnt[1] = p1;
-            }
-            for (i = 0; i < pts.Count - (closed ? 1 : 2); i++) {
-                CalcCurve(new PointF[] { pts[i], pts[i + 1], pts[(i + 2) % pts.Count] }, tension, out p1, out p2);
-                retPnt[3 * i + 2] = p1;
-                retPnt[3 * i + 3] = pts[i + 1];
-                retPnt[3 * i + 4] = p2;
-            }
-            if (closed) {
-                CalcCurve(new PointF[] { pts[pts.Count - 1], pts[0], pts[1] }, tension, out p1, out p2);
-                retPnt[nrRetPts - 2] = p1;
-                retPnt[0] = pts[0];
-                retPnt[1] = p2;
-                retPnt[nrRetPts - 1] = retPnt[0];
-            } else {
-                CalcCurveEnd(pts[pts.Count - 1], pts[pts.Count - 2], tension, out p1);
-                retPnt[nrRetPts - 2] = p1;
-                retPnt[nrRetPts - 1] = pts[pts.Count - 1];
-            }
-            return new List<PointF>(retPnt);
+            FrameLineMatrix.Draw(g);
         }
 
         public void UpdateSkyMap() {
             g.Clear(Color.Transparent);
 
             if (AnnotateDSO) {
-                RedrawDSOs();
+                UpdateDSOs();
             }
 
             if (AnnotateConstellations) {
-                RedrawConstellations();
+                UpdateConstellations();
             }
 
             if (AnnotateConstellationBoundaries) {
-                RedrawConstellationBoundaries();
+                UpdateConstellationBoundaries();
             }
 
             if (AnnotateGrid) {
-                RedrawGrid();
+                UpdateGrid();
             }
 
             var source = ImageAnalysis.ConvertBitmap(img, PixelFormats.Bgra32);
             source.Freeze();
             SkyMapOverlay = source;
         }
-
-        private Font font = new Font("Segoe UI", 8, FontStyle.Italic);
-        private Font fontconst = new Font("Segoe UI", 11, FontStyle.Bold);
-        private Font fontdso = new Font("Segoe UI", 10, FontStyle.Regular);
-
-        private SolidBrush constColorBrush = new SolidBrush(Color.FromArgb(128, 255, 255, 153));
-        private SolidBrush starFontColorBrush = new SolidBrush(Color.FromArgb(128, 255, 215, 0));
-        private SolidBrush dsoFillColorBrush = new SolidBrush(Color.FromArgb(10, 255, 255, 255));
-        private SolidBrush dsoFontColorBrush = new SolidBrush(Color.FromArgb(255, 255, 255, 255));
-
-        private Pen constLinePen = new Pen(Color.FromArgb(128, 0, 255, 0));
-        private Pen starPen = new Pen(Color.FromArgb(128, 255, 255, 255));
-        private Pen dsoStrokePen = new Pen(Color.FromArgb(255, 255, 255, 255));
-        private Pen gridPen = new Pen(Color.SteelBlue);
-        private Pen boundaryPen = new Pen(Color.Yellow);
 
         public BitmapSource SkyMapOverlay {
             get => skyMapOverlay;

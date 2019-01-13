@@ -176,7 +176,7 @@ namespace NINA.Utility {
                         while (reader.Read()) {
                             starList.Add(new Star(reader.GetInt32(0), reader.GetString(1),
                                 new Coordinates(reader.GetDouble(2), reader.GetDouble(3), Epoch.J2000,
-                                    Coordinates.RAType.Degrees), reader.GetDouble(4)));
+                                    Coordinates.RAType.Degrees), (float)reader.GetDouble(4)));
                         }
                     }
 
