@@ -3,6 +3,7 @@ using NINA.Utility;
 using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 
@@ -52,8 +53,8 @@ namespace NINA.ViewModel.FramingAssistant {
                     Coordinates.RAType.Degrees);
             }
 
-            Points = new AsyncObservableCollection<Tuple<Star, Star>>();
-            Stars = new AsyncObservableCollection<Star>();
+            Points = new ObservableCollection<Tuple<Star, Star>>();
+            Stars = new ObservableCollection<Star>();
 
             foreach (var star in constellation.Stars) {
                 star.Radius = (-3.375 * star.Mag + 23.25) / (viewport.VFoVDeg / 8);
@@ -64,8 +65,8 @@ namespace NINA.ViewModel.FramingAssistant {
 
         private List<FrameLine> starLines;
 
-        private AsyncObservableCollection<Star> stars;
-        private AsyncObservableCollection<Tuple<Star, Star>> points;
+        private ObservableCollection<Star> stars;
+        private ObservableCollection<Tuple<Star, Star>> points;
         private readonly Coordinates constellationCenter;
 
         public void RecalculateConstellationPoints(ViewportFoV reference) {
@@ -107,7 +108,7 @@ namespace NINA.ViewModel.FramingAssistant {
         public string Id { get; }
         public string Name { get; }
 
-        public AsyncObservableCollection<Star> Stars {
+        public ObservableCollection<Star> Stars {
             get => stars;
             set {
                 stars = value;
@@ -115,7 +116,7 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
-        public AsyncObservableCollection<Tuple<Star, Star>> Points {
+        public ObservableCollection<Tuple<Star, Star>> Points {
             get => points;
             set {
                 points = value;

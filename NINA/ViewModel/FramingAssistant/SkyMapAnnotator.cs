@@ -4,11 +4,19 @@ using NINA.Utility.Astrometry;
 using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using Color = System.Drawing.Color;
+using FontStyle = System.Drawing.FontStyle;
+using Pen = System.Drawing.Pen;
+using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace NINA.ViewModel.FramingAssistant {
 
@@ -155,6 +163,7 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         private AsyncLazy<Dictionary<string, ConstellationBoundary>> ConstellationBoundaries;
+        private BitmapSource skyMapOverlay;
 
         private async Task<Dictionary<string, ConstellationBoundary>> GetConstellationBoundaries() {
             var dic = new Dictionary<string, ConstellationBoundary>();
@@ -248,6 +257,87 @@ namespace NINA.ViewModel.FramingAssistant {
             var dsosToAdd = allGatheredDSO.Where(x => !existingDSOs.Any(y => y == x.Value.Id));
             foreach (var dso in dsosToAdd) {
                 DSOInViewport.Add(new FramingDSO(dso.Value, viewportFoV));
+            }
+
+            Bitmap img;
+            using (MyStopWatch.Measure("Graphics")) {
+                img = new Bitmap((int)viewportFoV.Width, (int)viewportFoV.Height, PixelFormat.Format32bppArgb);
+
+                Graphics g = Graphics.FromImage(img);
+                //g.Clear(Color.FromArgb(255, 30, 30, 30));
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+
+                foreach (var starconnection in ConstellationsInViewport.SelectMany(c => c.Points)) {
+                    g.DrawLine(new Pen(Color.FromArgb(128, 0, 255, 0)), (float)starconnection.Item1.Position.X,
+                        (float)starconnection.Item1.Position.Y, (float)starconnection.Item2.Position.X,
+                        (float)starconnection.Item2.Position.Y);
+                }
+
+                var font = new Font("Segoe UI", 8, FontStyle.Italic);
+                var fontconst = new Font("Segoe UI", 11, FontStyle.Bold);
+                var fontdso = new Font("Segoe UI", 10, FontStyle.Regular);
+
+                var constColorBrush = new SolidBrush(Color.FromArgb(128, 255, 255, 153));
+                var starPen = new Pen(Color.FromArgb(128, 255, 255, 255));
+                var starFontColorBrush = new SolidBrush(Color.FromArgb(128, 255, 215, 0));
+                var dsoFillColorBrush = new SolidBrush(Color.FromArgb(10, 255, 255, 255));
+                var dsoStrokePen = new Pen(Color.FromArgb(255, 255, 255, 255));
+                var dsoFontColorBrush = new SolidBrush(Color.FromArgb(255, 255, 255, 255));
+
+                foreach (var constellation in ConstellationsInViewport) {
+                    var size = g.MeasureString(constellation.Name, fontconst);
+                    g.DrawString(constellation.Name, fontconst, constColorBrush, (float)(constellation.CenterPoint.X - size.Width / 2), (float)(constellation.CenterPoint.Y));
+                }
+
+                foreach (var star in ConstellationsInViewport.SelectMany(c => c.Stars)) {
+                    g.DrawEllipse(starPen, (float)(star.Position.X - star.Radius), (float)(star.Position.Y - star.Radius), (float)star.Radius * 2, (float)star.Radius * 2);
+                    var size = g.MeasureString(star.Name, font);
+                    g.DrawString(star.Name, font, starFontColorBrush, (float)(star.Position.X + star.Radius - size.Width / 2), (float)(star.Position.Y + star.Radius * 2 + 5));
+                }
+
+                foreach (var dso in DSOInViewport) {
+                    g.FillEllipse(dsoFillColorBrush, (float)(dso.CenterPoint.X - dso.RadiusWidth), (float)(dso.CenterPoint.Y - dso.RadiusHeight),
+                        (float)(dso.RadiusWidth * 2), (float)(dso.RadiusHeight * 2));
+                    g.DrawEllipse(dsoStrokePen, (float)(dso.CenterPoint.X - dso.RadiusWidth), (float)(dso.CenterPoint.Y - dso.RadiusHeight),
+                        (float)(dso.RadiusWidth * 2), (float)(dso.RadiusHeight * 2));
+                    var size1 = g.MeasureString(dso.Name1, fontdso);
+                    g.DrawString(dso.Name1, fontdso, dsoFontColorBrush, (float)(dso.TextPosition.X - size1.Width / 2), (float)(dso.TextPosition.Y));
+                    if (dso.Name2 != null) {
+                        var size2 = g.MeasureString(dso.Name2, fontdso);
+                        g.DrawString(dso.Name2, fontdso, dsoFontColorBrush, (float)(dso.TextPosition.X - size2.Width / 2), (float)(dso.TextPosition.Y + size1.Height + 2));
+                        if (dso.Name3 != null) {
+                            var size3 = g.MeasureString(dso.Name3, fontdso);
+                            g.DrawString(dso.Name3, fontdso, dsoFontColorBrush, (float)(dso.TextPosition.X - size3.Width / 2), (float)(dso.TextPosition.Y + size1.Height + 2 + size2.Height + 2));
+                        }
+                    }
+                }
+            }
+
+            SkyMapOverlay = Convert(img);
+
+            //img.Save(@"D:\test.png", ImageFormat.Png);
+        }
+
+        public BitmapSource Convert(System.Drawing.Bitmap bitmap) {
+            var bitmapData = bitmap.LockBits(
+                new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                System.Drawing.Imaging.ImageLockMode.ReadOnly, bitmap.PixelFormat);
+
+            var bitmapSource = BitmapSource.Create(
+                bitmapData.Width, bitmapData.Height,
+                bitmap.HorizontalResolution, bitmap.VerticalResolution,
+                PixelFormats.Bgra32, null,
+                bitmapData.Scan0, bitmapData.Stride * bitmapData.Height, bitmapData.Stride);
+
+            bitmap.UnlockBits(bitmapData);
+            return bitmapSource;
+        }
+
+        public BitmapSource SkyMapOverlay {
+            get => skyMapOverlay;
+            set {
+                skyMapOverlay = value;
+                RaisePropertyChanged();
             }
         }
     }
