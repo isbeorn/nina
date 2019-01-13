@@ -742,15 +742,9 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         private void DragStart(object obj) {
-            Dispatcher.CurrentDispatcher.Invoke(() => {
-                SkyMapAnnotator.ClearFrameLineMatrix();
-            });
         }
 
         private void DragStop(object obj) {
-            Dispatcher.CurrentDispatcher.Invoke(() => {
-                SkyMapAnnotator.CalculateFrameLineMatrix();
-            });
         }
 
         private void DragMove(object obj) {

@@ -296,9 +296,77 @@ namespace NINA.ViewModel.FramingAssistant {
             CalculateConstellationBoundaries();
             foreach (var constellationBoundary in ConstellationBoundariesInViewPort) {
                 if (constellationBoundary.Points.Count > 1) {
-                    g.DrawPolygon(starPen, constellationBoundary.Points.ToArray());
+                    g.DrawPolygon(boundaryPen, constellationBoundary.Points.ToArray());
                 }
             }
+        }
+
+        private void RedrawGrid() {
+            ClearFrameLineMatrix();
+            CalculateFrameLineMatrix();
+
+            foreach (var frameLine in FrameLineMatrix.RAPoints) {
+                var points = cardinalSpline(frameLine.Collection, 0.5f, frameLine.Closed);
+
+                g.DrawBeziers(gridPen, points.ToArray());
+            }
+
+            foreach (var frameLine in FrameLineMatrix.DecPoints) {
+                var points = cardinalSpline(frameLine.Collection, 0.5f, frameLine.Closed);
+
+                g.DrawBeziers(gridPen, points.ToArray());
+            }
+        }
+
+        private static void CalcCurve(PointF[] pts, float tenstion, out PointF p1, out PointF p2) {
+            float deltaX, deltaY;
+            deltaX = pts[2].X - pts[0].X;
+            deltaY = pts[2].Y - pts[0].Y;
+            p1 = new PointF((pts[1].X - tenstion * deltaX), (pts[1].Y - tenstion * deltaY));
+            p2 = new PointF((pts[1].X + tenstion * deltaX), (pts[1].Y + tenstion * deltaY));
+        }
+
+        private void CalcCurveEnd(PointF end, PointF adj, float tension, out PointF p1) {
+            p1 = new PointF(((tension * (adj.X - end.X) + end.X)), ((tension * (adj.Y - end.Y) + end.Y)));
+        }
+
+        private List<PointF> cardinalSpline(List<PointF> pts, float t, bool closed) {
+            int i, nrRetPts;
+            PointF p1, p2;
+            float tension = t * (1f / 3f); //we are calculating contolpoints.
+
+            if (closed)
+                nrRetPts = (pts.Count + 1) * 3 - 2;
+            else
+                nrRetPts = pts.Count * 3 - 2;
+
+            PointF[] retPnt = new PointF[nrRetPts];
+            for (i = 0; i < nrRetPts; i++)
+                retPnt[i] = new PointF();
+
+            if (!closed) {
+                CalcCurveEnd(pts[0], pts[1], tension, out p1);
+                retPnt[0] = pts[0];
+                retPnt[1] = p1;
+            }
+            for (i = 0; i < pts.Count - (closed ? 1 : 2); i++) {
+                CalcCurve(new PointF[] { pts[i], pts[i + 1], pts[(i + 2) % pts.Count] }, tension, out p1, out p2);
+                retPnt[3 * i + 2] = p1;
+                retPnt[3 * i + 3] = pts[i + 1];
+                retPnt[3 * i + 4] = p2;
+            }
+            if (closed) {
+                CalcCurve(new PointF[] { pts[pts.Count - 1], pts[0], pts[1] }, tension, out p1, out p2);
+                retPnt[nrRetPts - 2] = p1;
+                retPnt[0] = pts[0];
+                retPnt[1] = p2;
+                retPnt[nrRetPts - 1] = retPnt[0];
+            } else {
+                CalcCurveEnd(pts[pts.Count - 1], pts[pts.Count - 2], tension, out p1);
+                retPnt[nrRetPts - 2] = p1;
+                retPnt[nrRetPts - 1] = pts[pts.Count - 1];
+            }
+            return new List<PointF>(retPnt);
         }
 
         public void UpdateSkyMap() {
@@ -308,12 +376,16 @@ namespace NINA.ViewModel.FramingAssistant {
                 RedrawDSOs();
             }
 
-            if (annotateConstellations) {
+            if (AnnotateConstellations) {
                 RedrawConstellations();
             }
 
             if (AnnotateConstellationBoundaries) {
                 RedrawConstellationBoundaries();
+            }
+
+            if (AnnotateGrid) {
+                RedrawGrid();
             }
 
             var source = ImageAnalysis.ConvertBitmap(img, PixelFormats.Bgra32);
@@ -325,13 +397,16 @@ namespace NINA.ViewModel.FramingAssistant {
         private Font fontconst = new Font("Segoe UI", 11, FontStyle.Bold);
         private Font fontdso = new Font("Segoe UI", 10, FontStyle.Regular);
 
-        private Pen constLinePen = new Pen(Color.FromArgb(128, 0, 255, 0));
         private SolidBrush constColorBrush = new SolidBrush(Color.FromArgb(128, 255, 255, 153));
-        private Pen starPen = new Pen(Color.FromArgb(128, 255, 255, 255));
         private SolidBrush starFontColorBrush = new SolidBrush(Color.FromArgb(128, 255, 215, 0));
         private SolidBrush dsoFillColorBrush = new SolidBrush(Color.FromArgb(10, 255, 255, 255));
-        private Pen dsoStrokePen = new Pen(Color.FromArgb(255, 255, 255, 255));
         private SolidBrush dsoFontColorBrush = new SolidBrush(Color.FromArgb(255, 255, 255, 255));
+
+        private Pen constLinePen = new Pen(Color.FromArgb(128, 0, 255, 0));
+        private Pen starPen = new Pen(Color.FromArgb(128, 255, 255, 255));
+        private Pen dsoStrokePen = new Pen(Color.FromArgb(255, 255, 255, 255));
+        private Pen gridPen = new Pen(Color.SteelBlue);
+        private Pen boundaryPen = new Pen(Color.Yellow);
 
         public BitmapSource SkyMapOverlay {
             get => skyMapOverlay;

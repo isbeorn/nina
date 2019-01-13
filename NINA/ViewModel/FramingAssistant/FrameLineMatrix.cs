@@ -2,13 +2,14 @@
 using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 
 namespace NINA.ViewModel.FramingAssistant {
 
-    public class FrameLineMatrix : BaseINPC {
+    public class FrameLineMatrix {
         private readonly double[] RASTEPS = { 0.46875, 0.9375, 1.875, 3.75, 7.5, 15 };
 
         private readonly double[] DECSTEPS = { 1, 2, 4, 8, 16, 32, 64 };
@@ -16,8 +17,8 @@ namespace NINA.ViewModel.FramingAssistant {
         private const double MAXDEC = 89;
 
         public FrameLineMatrix() {
-            RAPoints = new AsyncObservableCollection<FrameLine>();
-            DecPoints = new AsyncObservableCollection<FrameLine>();
+            RAPoints = new List<FrameLine>();
+            DecPoints = new List<FrameLine>();
         }
 
         public void CalculatePoints(ViewportFoV viewport) {
@@ -35,20 +36,20 @@ namespace NINA.ViewModel.FramingAssistant {
             for (double ra = Math.Min(raStart, raStop);
                 ra <= Math.Max(raStop, raStart);
                 ra += raStep) {
-                PointCollection raPointCollection = new PointCollection();
+                List<PointF> raPointCollection = new List<PointF>();
 
                 for (double dec = Math.Min(decStart, decStop);
                     dec <= Math.Max(decStart, decStop);
                     dec += decStep) {
                     var point = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees).GnomonicTanProjection(viewport);
-
+                    var pointf = new PointF((float)point.X, (float)point.Y);
                     if (!pointsByDecDict.ContainsKey(dec)) {
-                        pointsByDecDict.Add(dec, new FrameLine() { Closed = raIsClosed, Collection = new PointCollection(new List<Point> { point }), StrokeThickness = dec == 0 ? 3 : 1 });
+                        pointsByDecDict.Add(dec, new FrameLine() { Closed = raIsClosed, Collection = new List<PointF> { pointf }, StrokeThickness = dec == 0 ? 3 : 1 });
                     } else {
-                        pointsByDecDict[dec].Collection.Add(point);
+                        pointsByDecDict[dec].Collection.Add(pointf);
                     }
 
-                    raPointCollection.Add(point);
+                    raPointCollection.Add(pointf);
                 }
 
                 // those are the vertical lines
@@ -138,24 +139,9 @@ namespace NINA.ViewModel.FramingAssistant {
             return (raStep, decStep, raStart, raStop, decStart, decStop);
         }
 
-        private AsyncObservableCollection<FrameLine> raPoints;
-        private AsyncObservableCollection<FrameLine> decPoints;
+        public List<FrameLine> RAPoints { get; private set; }
 
-        public AsyncObservableCollection<FrameLine> RAPoints {
-            get { return raPoints; }
-            set {
-                raPoints = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public AsyncObservableCollection<FrameLine> DecPoints {
-            get { return decPoints; }
-            set {
-                decPoints = value;
-                RaisePropertyChanged();
-            }
-        }
+        public List<FrameLine> DecPoints { get; private set; }
 
         public static double RoundToHigherValue(double value, double multiple) {
             return (Math.Abs(value) + (multiple - Math.Abs(value) % multiple)) * Math.Sign(value);

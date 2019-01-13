@@ -1,35 +1,19 @@
 ﻿using NINA.Utility;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Media;
 
 namespace NINA.ViewModel.FramingAssistant {
 
-    public class FrameLine : BaseINPC {
+    public class FrameLine {
         private PointCollection collection;
         private bool closed;
         private double _strokeThickness;
 
-        public PointCollection Collection {
-            get => collection;
-            set {
-                collection = value;
-                RaisePropertyChanged();
-            }
-        }
+        public List<PointF> Collection { get; set; }
 
-        public bool Closed {
-            get => closed;
-            set {
-                closed = value;
-                RaisePropertyChanged();
-            }
-        }
+        public bool Closed { get; set; }
 
-        public double StrokeThickness {
-            get => _strokeThickness;
-            set {
-                _strokeThickness = value;
-                RaisePropertyChanged();
-            }
-        }
+        public double StrokeThickness { get; set; }
     }
 }
