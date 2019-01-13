@@ -22,18 +22,15 @@ namespace NINA.ViewModel.FramingAssistant {
 
     internal class SkyMapAnnotator : BaseINPC {
         private readonly DatabaseInteraction dbInstance;
-        private AsyncObservableCollection<FramingDSO> dsoInViewport;
         private ViewportFoV viewportFoV;
-        private FrameLineMatrix frameLineMatrix;
-        private AsyncObservableCollection<FramingConstellation> constellationsInViewport;
         private List<Constellation> dbConstellations;
         private Bitmap img;
         private Graphics g;
 
         public SkyMapAnnotator(string databaseLocation) {
             dbInstance = new DatabaseInteraction(databaseLocation);
-            DSOInViewport = new AsyncObservableCollection<FramingDSO>();
-            ConstellationsInViewport = new AsyncObservableCollection<FramingConstellation>();
+            DSOInViewport = new List<FramingDSO>();
+            ConstellationsInViewport = new Dictionary<string, FramingConstellation>();
             FrameLineMatrix = new FrameLineMatrix();
             ConstellationBoundaries = new AsyncLazy<Dictionary<string, ConstellationBoundary>>(async delegate {
                 return await GetConstellationBoundaries();
@@ -60,29 +57,11 @@ namespace NINA.ViewModel.FramingAssistant {
             await CalculateConstellationBoundaries();
         }
 
-        public FrameLineMatrix FrameLineMatrix {
-            get => frameLineMatrix;
-            set {
-                frameLineMatrix = value;
-                RaisePropertyChanged();
-            }
-        }
+        public FrameLineMatrix FrameLineMatrix { get; private set; }
 
-        public AsyncObservableCollection<FramingDSO> DSOInViewport {
-            get => dsoInViewport;
-            set {
-                dsoInViewport = value;
-                RaisePropertyChanged();
-            }
-        }
+        public List<FramingDSO> DSOInViewport { get; private set; }
 
-        public AsyncObservableCollection<FramingConstellation> ConstellationsInViewport {
-            get => constellationsInViewport;
-            set {
-                constellationsInViewport = value;
-                RaisePropertyChanged();
-            }
-        }
+        public Dictionary<string, FramingConstellation> ConstellationsInViewport { get; private set; }
 
         /// <summary>
         /// Query for skyobjects for a reference coordinate that overlap the current viewport
@@ -231,14 +210,7 @@ namespace NINA.ViewModel.FramingAssistant {
 
             foreach (var constellation in dbConstellations) {
                 FramingConstellation viewPortConstellation = null;
-                foreach (var constellationsInViewport in ConstellationsInViewport) {
-                    if (constellationsInViewport.Id != constellation.Id) {
-                        continue;
-                    }
-
-                    viewPortConstellation = constellationsInViewport;
-                    break;
-                }
+                ConstellationsInViewport.TryGetValue(constellation.Id, out viewPortConstellation);
 
                 var isInViewport = false;
                 foreach (var star in constellation.Stars) {
@@ -252,12 +224,12 @@ namespace NINA.ViewModel.FramingAssistant {
 
                 if (isInViewport) {
                     if (viewPortConstellation == null) {
-                        ConstellationsInViewport.Add(new FramingConstellation(constellation, viewportFoV));
+                        ConstellationsInViewport.Add(constellation.Id, new FramingConstellation(constellation, viewportFoV));
                     } else {
                         viewPortConstellation.RecalculateConstellationPoints(viewportFoV);
                     }
                 } else if (viewPortConstellation != null) {
-                    ConstellationsInViewport.Remove(viewPortConstellation);
+                    ConstellationsInViewport.Remove(viewPortConstellation.Id);
                 }
             }
 
@@ -269,21 +241,21 @@ namespace NINA.ViewModel.FramingAssistant {
             using (MyStopWatch.Measure("Graphics")) {
                 g.Clear(Color.Transparent);
 
-                foreach (var starconnection in ConstellationsInViewport.SelectMany(c => c.Points)) {
-                    g.DrawLine(constLinePen, (float)starconnection.Item1.Position.X,
-                        (float)starconnection.Item1.Position.Y, (float)starconnection.Item2.Position.X,
-                        (float)starconnection.Item2.Position.Y);
-                }
+                foreach (var constellation in ConstellationsInViewport.Values) {
+                    var constellationSize = g.MeasureString(constellation.Name, fontconst);
+                    g.DrawString(constellation.Name, fontconst, constColorBrush, (float)(constellation.CenterPoint.X - constellationSize.Width / 2), (float)(constellation.CenterPoint.Y));
 
-                foreach (var constellation in ConstellationsInViewport) {
-                    var size = g.MeasureString(constellation.Name, fontconst);
-                    g.DrawString(constellation.Name, fontconst, constColorBrush, (float)(constellation.CenterPoint.X - size.Width / 2), (float)(constellation.CenterPoint.Y));
-                }
+                    foreach (var starConnection in constellation.Points) {
+                        g.DrawLine(constLinePen, (float)starConnection.Item1.Position.X,
+                        (float)starConnection.Item1.Position.Y, (float)starConnection.Item2.Position.X,
+                        (float)starConnection.Item2.Position.Y);
+                    }
 
-                foreach (var star in ConstellationsInViewport.SelectMany(c => c.Stars)) {
-                    g.DrawEllipse(starPen, (float)(star.Position.X - star.Radius), (float)(star.Position.Y - star.Radius), (float)star.Radius * 2, (float)star.Radius * 2);
-                    var size = g.MeasureString(star.Name, font);
-                    g.DrawString(star.Name, font, starFontColorBrush, (float)(star.Position.X + star.Radius - size.Width / 2), (float)(star.Position.Y + star.Radius * 2 + 5));
+                    foreach (var star in constellation.Stars) {
+                        g.DrawEllipse(starPen, (float)(star.Position.X - star.Radius), (float)(star.Position.Y - star.Radius), (float)star.Radius * 2, (float)star.Radius * 2);
+                        var size = g.MeasureString(star.Name, font);
+                        g.DrawString(star.Name, font, starFontColorBrush, (float)(star.Position.X + star.Radius - size.Width / 2), (float)(star.Position.Y + star.Radius * 2 + 5));
+                    }
                 }
 
                 foreach (var dso in DSOInViewport) {

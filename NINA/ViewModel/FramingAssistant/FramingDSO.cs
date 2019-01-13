@@ -6,7 +6,7 @@ using System.Windows;
 
 namespace NINA.ViewModel.FramingAssistant {
 
-    internal class FramingDSO : BaseINPC {
+    internal class FramingDSO {
         private const int DSO_DEFAULT_SIZE = 30;
 
         private double arcSecWidth;
@@ -14,8 +14,6 @@ namespace NINA.ViewModel.FramingAssistant {
         private readonly double sizeWidth;
         private readonly double sizeHeight;
         private Coordinates coordinates;
-        private Point centerPoint;
-        private Point textPosition;
 
         /// <summary>
         /// Constructor for a Framing DSO.
@@ -65,34 +63,20 @@ namespace NINA.ViewModel.FramingAssistant {
             RecalculateTopLeft(viewport);
         }
 
-        public Point TextPosition {
-            get => textPosition;
-            set {
-                textPosition = value;
-                RaisePropertyChanged();
-            }
-        }
+        public Point TextPosition { get; private set; }
 
         public void RecalculateTopLeft(ViewportFoV reference) {
             CenterPoint = coordinates.GnomonicTanProjection(reference);
             arcSecWidth = reference.ArcSecWidth;
             arcSecHeight = reference.ArcSecHeight;
             TextPosition = new Point(CenterPoint.X, CenterPoint.Y + RadiusHeight + 5);
-            RaisePropertyChanged(nameof(RadiusWidth));
-            RaisePropertyChanged(nameof(RadiusHeight));
         }
 
         public double RadiusWidth => (sizeWidth / arcSecWidth) / 2;
 
         public double RadiusHeight => (sizeHeight / arcSecHeight) / 2;
 
-        public Point CenterPoint {
-            get => centerPoint;
-            private set {
-                centerPoint = value;
-                RaisePropertyChanged();
-            }
-        }
+        public Point CenterPoint { get; private set; }
 
         public string Id { get; }
         public string Name1 { get; }

@@ -9,9 +9,8 @@ using System.Windows;
 
 namespace NINA.ViewModel.FramingAssistant {
 
-    internal class FramingConstellation : BaseINPC {
+    internal class FramingConstellation {
         private Constellation constellation;
-        private Point centerPoint;
 
         public FramingConstellation(Constellation constellation, ViewportFoV viewport) {
             this.constellation = constellation;
@@ -53,8 +52,8 @@ namespace NINA.ViewModel.FramingAssistant {
                     Coordinates.RAType.Degrees);
             }
 
-            Points = new ObservableCollection<Tuple<Star, Star>>();
-            Stars = new ObservableCollection<Star>();
+            Points = new HashSet<Tuple<Star, Star>>();
+            Stars = new HashSet<Star>();
 
             foreach (var star in constellation.Stars) {
                 star.Radius = (-3.375 * star.Mag + 23.25) / (viewport.VFoVDeg / 8);
@@ -63,10 +62,6 @@ namespace NINA.ViewModel.FramingAssistant {
             RecalculateConstellationPoints(viewport);
         }
 
-        private List<FrameLine> starLines;
-
-        private ObservableCollection<Star> stars;
-        private ObservableCollection<Tuple<Star, Star>> points;
         private readonly Coordinates constellationCenter;
 
         public void RecalculateConstellationPoints(ViewportFoV reference) {
@@ -74,10 +69,10 @@ namespace NINA.ViewModel.FramingAssistant {
             foreach (var star in constellation.Stars) {
                 star.Position = star.Coords.GnomonicTanProjection(reference);
                 var isInBounds = !reference.IsOutOfViewportBounds(star.Position);
-                var index = Stars.IndexOf(star);
-                if (isInBounds && index == -1) {
+                var contains = Stars.Contains(star);
+                if (isInBounds && !contains) {
                     Stars.Add(star);
-                } else if (!isInBounds && index > 0) {
+                } else if (!isInBounds && contains) {
                     Stars.Remove(star);
                 }
             }
@@ -86,10 +81,10 @@ namespace NINA.ViewModel.FramingAssistant {
             foreach (var starConnection in constellation.StarConnections) {
                 var isInBounds = !(reference.IsOutOfViewportBounds(starConnection.Item1.Position) &&
                                     reference.IsOutOfViewportBounds(starConnection.Item2.Position));
-                var index = Points.IndexOf(starConnection);
-                if (isInBounds && index == -1) {
+                var contains = Points.Contains(starConnection);
+                if (isInBounds && !contains) {
                     Points.Add(starConnection);
-                } else if (!isInBounds && index > 0) {
+                } else if (!isInBounds && contains) {
                     Points.Remove(starConnection);
                 }
             }
@@ -97,31 +92,13 @@ namespace NINA.ViewModel.FramingAssistant {
             CenterPoint = constellationCenter.GnomonicTanProjection(reference);
         }
 
-        public Point CenterPoint {
-            get => centerPoint;
-            set {
-                centerPoint = value;
-                RaisePropertyChanged();
-            }
-        }
+        public Point CenterPoint { get; private set; }
 
         public string Id { get; }
         public string Name { get; }
 
-        public ObservableCollection<Star> Stars {
-            get => stars;
-            set {
-                stars = value;
-                RaisePropertyChanged();
-            }
-        }
+        public HashSet<Star> Stars { get; private set; }
 
-        public ObservableCollection<Tuple<Star, Star>> Points {
-            get => points;
-            set {
-                points = value;
-                RaisePropertyChanged();
-            }
-        }
+        public HashSet<Tuple<Star, Star>> Points { get; private set; }
     }
 }
