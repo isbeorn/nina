@@ -28,7 +28,7 @@ namespace NINA.ViewModel.FramingAssistant {
             dbInstance = new DatabaseInteraction(databaseLocation);
             DSOInViewport = new List<FramingDSO>();
             ConstellationsInViewport = new List<FramingConstellation>();
-            FrameLineMatrix = new FrameLineMatrix();
+            FrameLineMatrix = new FrameLineMatrix2();
             ConstellationBoundaries = new Dictionary<string, ConstellationBoundary>();
         }
 
@@ -74,7 +74,7 @@ namespace NINA.ViewModel.FramingAssistant {
             return ViewportFoV;
         }
 
-        public FrameLineMatrix FrameLineMatrix { get; private set; }
+        public FrameLineMatrix2 FrameLineMatrix { get; private set; }
 
         public List<FramingDSO> DSOInViewport { get; private set; }
 
