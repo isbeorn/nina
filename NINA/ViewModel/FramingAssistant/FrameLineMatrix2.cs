@@ -44,13 +44,16 @@ namespace NINA.ViewModel.FramingAssistant {
         private Dictionary<double, List<Coordinates>> raCoordinateMatrix = new Dictionary<double, List<Coordinates>>();
         private Dictionary<double, List<Coordinates>> decCoordinateMatrix = new Dictionary<double, List<Coordinates>>();
 
-        private const double maxDec = 89;
+        private const double maxDec = 89.999;
         private const double minRA = 0;
         private const double maxRA = 0;
 
         private void GenerateRACoordinateMatrix(double raStep) {
             raCoordinateMatrix.Clear();
-            for (double i = 0; i <= maxDec; i += resolution) {
+            double i = 0;
+            do {
+                i = Math.Min(maxDec, i + resolution);
+
                 for (double ra = 0; ra < 360; ra += raStep) {
                     var coordinate = new Coordinates(Angle.ByDegree(ra), Angle.ByDegree(i), Epoch.J2000);
                     var coordinate2 = new Coordinates(Angle.ByDegree(ra), Angle.ByDegree(-i), Epoch.J2000);
@@ -60,7 +63,7 @@ namespace NINA.ViewModel.FramingAssistant {
                     raCoordinateMatrix[ra].Add(coordinate);
                     raCoordinateMatrix[ra].Add(coordinate2);
                 }
-            }
+            } while (i < maxDec);
         }
 
         private void GenerateDecCoordinateMatrix(double decStep) {
