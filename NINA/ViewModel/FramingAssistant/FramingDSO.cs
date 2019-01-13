@@ -1,12 +1,13 @@
 ﻿using NINA.Model;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using System.Drawing;
 using System.Linq;
 using System.Windows;
 
 namespace NINA.ViewModel.FramingAssistant {
 
-    internal class FramingDSO : BaseINPC {
+    internal class FramingDSO {
         private const int DSO_DEFAULT_SIZE = 30;
 
         private double arcSecWidth;
@@ -14,8 +15,6 @@ namespace NINA.ViewModel.FramingAssistant {
         private readonly double sizeWidth;
         private readonly double sizeHeight;
         private Coordinates coordinates;
-        private Point centerPoint;
-        private Point textPosition;
 
         /// <summary>
         /// Constructor for a Framing DSO.
@@ -65,38 +64,48 @@ namespace NINA.ViewModel.FramingAssistant {
             RecalculateTopLeft(viewport);
         }
 
-        public Point TextPosition {
-            get => textPosition;
-            set {
-                textPosition = value;
-                RaisePropertyChanged();
-            }
-        }
+        public PointF TextPosition { get; private set; }
 
         public void RecalculateTopLeft(ViewportFoV reference) {
             CenterPoint = coordinates.GnomonicTanProjection(reference);
             arcSecWidth = reference.ArcSecWidth;
             arcSecHeight = reference.ArcSecHeight;
-            TextPosition = new Point(CenterPoint.X, CenterPoint.Y + RadiusHeight + 5);
-            RaisePropertyChanged(nameof(RadiusWidth));
-            RaisePropertyChanged(nameof(RadiusHeight));
+            TextPosition = new PointF((float)CenterPoint.X, (float)(CenterPoint.Y + RadiusHeight + 5));
         }
 
         public double RadiusWidth => (sizeWidth / arcSecWidth) / 2;
 
         public double RadiusHeight => (sizeHeight / arcSecHeight) / 2;
 
-        public Point CenterPoint {
-            get => centerPoint;
-            private set {
-                centerPoint = value;
-                RaisePropertyChanged();
-            }
-        }
+        public System.Windows.Point CenterPoint { get; private set; }
 
         public string Id { get; }
         public string Name1 { get; }
         public string Name2 { get; }
         public string Name3 { get; }
+
+        private SolidBrush dsoFillColorBrush = new SolidBrush(Color.FromArgb(10, 255, 255, 255));
+        private SolidBrush dsoFontColorBrush = new SolidBrush(Color.FromArgb(255, 255, 255, 255));
+
+        private Pen dsoStrokePen = new Pen(Color.FromArgb(255, 255, 255, 255));
+
+        private Font fontdso = new Font("Segoe UI", 10, System.Drawing.FontStyle.Regular);
+
+        public void Draw(System.Drawing.Graphics g) {
+            g.FillEllipse(dsoFillColorBrush, (float)(this.CenterPoint.X - this.RadiusWidth), (float)(this.CenterPoint.Y - this.RadiusHeight),
+                    (float)(this.RadiusWidth * 2), (float)(this.RadiusHeight * 2));
+            g.DrawEllipse(dsoStrokePen, (float)(this.CenterPoint.X - this.RadiusWidth), (float)(this.CenterPoint.Y - this.RadiusHeight),
+                (float)(this.RadiusWidth * 2), (float)(this.RadiusHeight * 2));
+            var size1 = g.MeasureString(this.Name1, fontdso);
+            g.DrawString(this.Name1, fontdso, dsoFontColorBrush, this.TextPosition.X - size1.Width / 2, (float)(this.TextPosition.Y));
+            if (this.Name2 != null) {
+                var size2 = g.MeasureString(this.Name2, fontdso);
+                g.DrawString(this.Name2, fontdso, dsoFontColorBrush, this.TextPosition.X - size2.Width / 2, (float)(this.TextPosition.Y + size1.Height + 2));
+                if (this.Name3 != null) {
+                    var size3 = g.MeasureString(this.Name3, fontdso);
+                    g.DrawString(this.Name3, fontdso, dsoFontColorBrush, this.TextPosition.X - size3.Width / 2, (float)(this.TextPosition.Y + size1.Height + 2 + size2.Height + 2));
+                }
+            }
+        }
     }
 }

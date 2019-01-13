@@ -2,13 +2,14 @@
 using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 
 namespace NINA.ViewModel.FramingAssistant {
 
-    public class FrameLineMatrix : BaseINPC {
+    public class FrameLineMatrix {
         private readonly double[] RASTEPS = { 0.46875, 0.9375, 1.875, 3.75, 7.5, 15 };
 
         private readonly double[] DECSTEPS = { 1, 2, 4, 8, 16, 32, 64 };
@@ -16,8 +17,8 @@ namespace NINA.ViewModel.FramingAssistant {
         private const double MAXDEC = 89;
 
         public FrameLineMatrix() {
-            RAPoints = new AsyncObservableCollection<FrameLine>();
-            DecPoints = new AsyncObservableCollection<FrameLine>();
+            RAPoints = new List<FrameLine>();
+            DecPoints = new List<FrameLine>();
         }
 
         public void CalculatePoints(ViewportFoV viewport) {
@@ -35,25 +36,25 @@ namespace NINA.ViewModel.FramingAssistant {
             for (double ra = Math.Min(raStart, raStop);
                 ra <= Math.Max(raStop, raStart);
                 ra += raStep) {
-                PointCollection raPointCollection = new PointCollection();
+                List<PointF> raPointCollection = new List<PointF>();
 
                 for (double dec = Math.Min(decStart, decStop);
                     dec <= Math.Max(decStart, decStop);
                     dec += decStep) {
                     var point = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees).GnomonicTanProjection(viewport);
-
+                    var pointf = new PointF((float)point.X, (float)point.Y);
                     if (!pointsByDecDict.ContainsKey(dec)) {
-                        pointsByDecDict.Add(dec, new FrameLine() { Closed = raIsClosed, Collection = new PointCollection(new List<Point> { point }), StrokeThickness = dec == 0 ? 3 : 1 });
+                        pointsByDecDict.Add(dec, new FrameLine() { Closed = raIsClosed, Collection = new List<PointF> { pointf }, StrokeThickness = dec == 0 ? 3 : 1 });
                     } else {
-                        pointsByDecDict[dec].Collection.Add(point);
+                        pointsByDecDict[dec].Collection.Add(pointf);
                     }
 
-                    raPointCollection.Add(point);
+                    raPointCollection.Add(pointf);
                 }
 
                 // those are the vertical lines
                 RAPoints.Add(new FrameLine {
-                    StrokeThickness = ra == 0 ? 3 : 1,
+                    StrokeThickness = (ra == 0 || ra == 180) ? 3 : 1,
                     Closed = false,
                     Collection = raPointCollection
                 });
@@ -138,24 +139,9 @@ namespace NINA.ViewModel.FramingAssistant {
             return (raStep, decStep, raStart, raStop, decStart, decStop);
         }
 
-        private AsyncObservableCollection<FrameLine> raPoints;
-        private AsyncObservableCollection<FrameLine> decPoints;
+        public List<FrameLine> RAPoints { get; private set; }
 
-        public AsyncObservableCollection<FrameLine> RAPoints {
-            get { return raPoints; }
-            set {
-                raPoints = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public AsyncObservableCollection<FrameLine> DecPoints {
-            get { return decPoints; }
-            set {
-                decPoints = value;
-                RaisePropertyChanged();
-            }
-        }
+        public List<FrameLine> DecPoints { get; private set; }
 
         public static double RoundToHigherValue(double value, double multiple) {
             return (Math.Abs(value) + (multiple - Math.Abs(value) % multiple)) * Math.Sign(value);
@@ -163,6 +149,82 @@ namespace NINA.ViewModel.FramingAssistant {
 
         public static double RoundToLowerValue(double value, double multiple) {
             return (Math.Abs(value) - (Math.Abs(value) % multiple)) * Math.Sign(value);
+        }
+
+        private System.Drawing.Pen gridPen = new System.Drawing.Pen(System.Drawing.Color.SteelBlue);
+
+        public void Draw(Graphics g) {
+            foreach (var frameLine in this.RAPoints) {
+                DrawFrameLineCollection(g, frameLine);
+            }
+
+            foreach (var frameLine in this.DecPoints) {
+                DrawFrameLineCollection(g, frameLine);
+            }
+        }
+
+        private void DrawFrameLineCollection(Graphics g, FrameLine frameLine) {
+            if (frameLine.Collection.Count > 1) {
+                var points = CardinalSpline(frameLine.Collection, 0.5f, frameLine.Closed);
+
+                if (frameLine.StrokeThickness != 1) {
+                    var pen = new System.Drawing.Pen(gridPen.Color, frameLine.StrokeThickness);
+                    g.DrawBeziers(pen, points.ToArray());
+                } else {
+                    g.DrawBeziers(gridPen, points.ToArray());
+                }
+            }
+        }
+
+        private static void CalcCurve(PointF[] pts, float tension, out PointF p1, out PointF p2) {
+            float deltaX, deltaY;
+            deltaX = pts[2].X - pts[0].X;
+            deltaY = pts[2].Y - pts[0].Y;
+            p1 = new PointF((pts[1].X - tension * deltaX), (pts[1].Y - tension * deltaY));
+            p2 = new PointF((pts[1].X + tension * deltaX), (pts[1].Y + tension * deltaY));
+        }
+
+        private void CalcCurveEnd(PointF end, PointF adj, float tension, out PointF p1) {
+            p1 = new PointF(((tension * (adj.X - end.X) + end.X)), ((tension * (adj.Y - end.Y) + end.Y)));
+        }
+
+        private List<PointF> CardinalSpline(List<PointF> pts, float t, bool closed) {
+            int i, nrRetPts;
+            PointF p1, p2;
+            float tension = t * (1f / 3f); //we are calculating contolpoints.
+
+            if (closed)
+                nrRetPts = (pts.Count + 1) * 3 - 2;
+            else
+                nrRetPts = pts.Count * 3 - 2;
+
+            PointF[] retPnt = new PointF[nrRetPts];
+            for (i = 0; i < nrRetPts; i++)
+                retPnt[i] = new PointF();
+
+            if (!closed) {
+                CalcCurveEnd(pts[0], pts[1], tension, out p1);
+                retPnt[0] = pts[0];
+                retPnt[1] = p1;
+            }
+            for (i = 0; i < pts.Count - (closed ? 1 : 2); i++) {
+                CalcCurve(new PointF[] { pts[i], pts[i + 1], pts[(i + 2) % pts.Count] }, tension, out p1, out p2);
+                retPnt[3 * i + 2] = p1;
+                retPnt[3 * i + 3] = pts[i + 1];
+                retPnt[3 * i + 4] = p2;
+            }
+            if (closed) {
+                CalcCurve(new PointF[] { pts[pts.Count - 1], pts[0], pts[1] }, tension, out p1, out p2);
+                retPnt[nrRetPts - 2] = p1;
+                retPnt[0] = pts[0];
+                retPnt[1] = p2;
+                retPnt[nrRetPts - 1] = retPnt[0];
+            } else {
+                CalcCurveEnd(pts[pts.Count - 1], pts[pts.Count - 2], tension, out p1);
+                retPnt[nrRetPts - 2] = p1;
+                retPnt[nrRetPts - 1] = pts[pts.Count - 1];
+            }
+            return new List<PointF>(retPnt);
         }
     }
 }

@@ -87,6 +87,13 @@ namespace NINA.ViewModel.FramingAssistant {
                      point.Y > Height + verticalBoundsPadding);
         }
 
+        public bool IsOutOfViewportBounds(System.Drawing.PointF point) {
+            return (point.X < -1 * horizontalBoundsPadding ||
+                     point.X > Width + horizontalBoundsPadding ||
+                     point.Y < -1 * verticalBoundsPadding ||
+                     point.Y > Height + verticalBoundsPadding);
+        }
+
         public void Shift(Vector delta) {
             if (delta.X == 0 && delta.Y == 0 && AbsoluteCenterCoordinates != null) {
                 return;
