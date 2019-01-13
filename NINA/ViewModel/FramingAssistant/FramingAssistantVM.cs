@@ -31,6 +31,7 @@ using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using NINA.Utility.SkySurvey;
+using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -58,6 +59,8 @@ namespace NINA.ViewModel.FramingAssistant {
             Cache = new CacheSkySurvey(profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory);
             Opacity = 0.2;
 
+            SkyMapAnnotator = new SkyMapAnnotator(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
+
             var defaultCoordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
             DSO = new DeepSkyObject(string.Empty, defaultCoordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
 
@@ -80,8 +83,6 @@ namespace NINA.ViewModel.FramingAssistant {
 
             DeepSkyObjectSearchVM = new DeepSkyObjectSearchVM(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
             DeepSkyObjectSearchVM.PropertyChanged += DeepSkyObjectSearchVM_PropertyChanged;
-
-            SkyMapAnnotator = new SkyMapAnnotator(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
 
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(async (object parameter) => {
                 var vm = (ApplicationVM)Application.Current.Resources["AppVM"];
@@ -148,6 +149,29 @@ namespace NINA.ViewModel.FramingAssistant {
             profileService.LocationChanged += (object sender, EventArgs e) => {
                 DSO = new DeepSkyObject(DSO.Name, DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
             };
+
+            ZoomCommand = new DelegateCommand<MouseWheelEventArgs>((sender) => {
+                var eventArgs = (MouseWheelEventArgs)sender;
+
+                if (FramingAssistantSource != SkySurveySource.SKYATLAS) {
+                    eventArgs.Handled = false;
+                    return;
+                }
+
+                if (eventArgs.Delta > 0) {
+                    if (FieldOfView > 1) {
+                        FieldOfView -= 1;
+                    }
+                } else {
+                    if (FieldOfView < 60) {
+                        FieldOfView += 1;
+                    }
+                }
+
+                CalculateRectangle(SkyMapAnnotator.ChangeFoV(FieldOfView).Result);
+
+                eventArgs.Handled = true;
+            });
         }
 
         private async void ResizeTimer_Tick(object sender, EventArgs e) {
@@ -392,7 +416,7 @@ namespace NINA.ViewModel.FramingAssistant {
             set {
                 profileService.ActiveProfile.FramingAssistantSettings.CameraWidth = value;
                 RaisePropertyChanged();
-                CalculateRectangle(ImageParameter);
+                CalculateRectangle(SkyMapAnnotator.ViewportFoV);
             }
         }
 
@@ -403,7 +427,7 @@ namespace NINA.ViewModel.FramingAssistant {
             set {
                 profileService.ActiveProfile.FramingAssistantSettings.CameraHeight = value;
                 RaisePropertyChanged();
-                CalculateRectangle(ImageParameter);
+                CalculateRectangle(SkyMapAnnotator.ViewportFoV);
             }
         }
 
@@ -432,7 +456,7 @@ namespace NINA.ViewModel.FramingAssistant {
             set {
                 _cameraPixelSize = value;
                 RaisePropertyChanged();
-                CalculateRectangle(ImageParameter);
+                CalculateRectangle(SkyMapAnnotator.ViewportFoV);
             }
         }
 
@@ -460,7 +484,7 @@ namespace NINA.ViewModel.FramingAssistant {
             set {
                 horizontalPanels = value;
                 RaisePropertyChanged();
-                CalculateRectangle(ImageParameter);
+                CalculateRectangle(SkyMapAnnotator.ViewportFoV);
             }
         }
 
@@ -473,7 +497,7 @@ namespace NINA.ViewModel.FramingAssistant {
             set {
                 verticalPanels = value;
                 RaisePropertyChanged();
-                CalculateRectangle(ImageParameter);
+                CalculateRectangle(SkyMapAnnotator.ViewportFoV);
             }
         }
 
@@ -486,7 +510,7 @@ namespace NINA.ViewModel.FramingAssistant {
             set {
                 overlapPercentage = value;
                 RaisePropertyChanged();
-                CalculateRectangle(ImageParameter);
+                CalculateRectangle(SkyMapAnnotator.ViewportFoV);
             }
         }
 
@@ -526,7 +550,7 @@ namespace NINA.ViewModel.FramingAssistant {
             set {
                 _focalLength = value;
                 RaisePropertyChanged();
-                CalculateRectangle(ImageParameter);
+                CalculateRectangle(SkyMapAnnotator.ViewportFoV);
             }
         }
 
@@ -580,8 +604,6 @@ namespace NINA.ViewModel.FramingAssistant {
                             skySurveyImage = await PlateSolveSkySurvey(skySurveyImage);
                         }
 
-                        CalculateRectangle(skySurveyImage);
-
                         await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
                             ImageParameter = null;
                             GC.Collect();
@@ -594,6 +616,8 @@ namespace NINA.ViewModel.FramingAssistant {
                         }
 
                         await SkyMapAnnotator.Initialize(skySurveyImage.Coordinates, Astrometry.ArcminToDegree(skySurveyImage.FoVHeight), ImageParameter.Image.PixelWidth, ImageParameter.Image.PixelHeight, ImageParameter.Rotation, _loadImageSource.Token);
+
+                        CalculateRectangle(SkyMapAnnotator.ViewportFoV);
                     }
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
@@ -656,24 +680,24 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
-        private void CalculateRectangle(SkySurveyImage parameter) {
+        private void CalculateRectangle(ViewportFoV parameter) {
             if (parameter != null) {
                 Rectangle = null;
                 Rotation = parameter.Rotation;
                 CameraRectangles.Clear();
 
-                var centerCoordinates = new Coordinates(parameter.Coordinates.RA, parameter.Coordinates.Dec, Epoch.J2000, Coordinates.RAType.Hours);
+                var centerCoordinates = parameter.CenterCoordinates;
 
-                var imageArcsecWidth = Astrometry.ArcminToArcsec(parameter.FoVWidth) / parameter.Image.Width;
-                var imageArcsecHeight = Astrometry.ArcminToArcsec(parameter.FoVHeight) / parameter.Image.Height;
+                var imageArcsecWidth = Astrometry.DegreeToArcsec(parameter.OriginalHFoV) / parameter.OriginalWidth;
+                var imageArcsecHeight = Astrometry.DegreeToArcsec(parameter.OriginalVFoV) / parameter.OriginalHeight;
 
                 var arcsecPerPix = Astrometry.ArcsecPerPixel(CameraPixelSize, FocalLength);
                 var conversion = arcsecPerPix / imageArcsecWidth;
 
                 var width = CameraWidth * conversion;
                 var height = CameraHeight * conversion;
-                var x = parameter.Image.Width / 2d - width / 2d;
-                var y = parameter.Image.Height / 2d - height / 2d;
+                var x = parameter.OriginalWidth / 2d - width / 2d;
+                var y = parameter.OriginalHeight / 2d - height / 2d;
 
                 var cameraWidthArcSec = (CameraWidth) * arcsecPerPix;
                 var cameraHeightArcSec = (CameraHeight) * arcsecPerPix;
@@ -699,8 +723,8 @@ namespace NINA.ViewModel.FramingAssistant {
 
                     width = HorizontalPanels * panelWidth - (HorizontalPanels - 1) * panelOverlapWidth;
                     height = VerticalPanels * panelHeight - (VerticalPanels - 1) * panelOverlapHeight;
-                    x = parameter.Image.Width / 2d - width / 2d;
-                    y = parameter.Image.Height / 2d - height / 2d;
+                    x = parameter.OriginalWidth / 2d - width / 2d;
+                    y = parameter.OriginalHeight / 2d - height / 2d;
                     var center = new Point(x + width / 2d, y + height / 2d);
 
                     var id = 1;
@@ -755,7 +779,7 @@ namespace NINA.ViewModel.FramingAssistant {
                 var newCenter = SkyMapAnnotator.ShiftViewport(delta);
                 DSO.Coordinates = newCenter;
                 ImageParameter.Coordinates = newCenter;
-                CalculateRectangle(ImageParameter);
+                CalculateRectangle(SkyMapAnnotator.ViewportFoV);
 
                 SkyMapAnnotator.UpdateSkyMap();
             } else {
@@ -807,6 +831,7 @@ namespace NINA.ViewModel.FramingAssistant {
         public ICommand ClearCacheCommand { get; private set; }
         public ICommand ScrollViewerSizeChangedCommand { get; }
         public ICommand RefreshSkyMapAnnotationCommand { get; }
+        public DelegateCommand<MouseWheelEventArgs> ZoomCommand { get; }
 
         public SkyMapAnnotator SkyMapAnnotator {
             get => skyMapAnnotator;

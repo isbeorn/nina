@@ -1,12 +1,9 @@
 ﻿using NINA.Model;
-using NINA.Utility;
 using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
-using System.Windows;
 
 namespace NINA.ViewModel.FramingAssistant {
 
@@ -106,17 +103,18 @@ namespace NINA.ViewModel.FramingAssistant {
             }
 
             foreach (var star in this.Stars) {
-                g.DrawEllipse(starPen, (star.Position.X - star.Radius), (star.Position.Y - star.Radius), star.Radius * 2, star.Radius * 2);
-                var size = g.MeasureString(star.Name, font);
-                g.DrawString(star.Name, font, starFontColorBrush, (star.Position.X + star.Radius - size.Width / 2), (star.Position.Y + star.Radius * 2 + 5));
+                g.FillEllipse(starColorBrush, (star.Position.X - star.Radius), (star.Position.Y - star.Radius), star.Radius * 2, star.Radius * 2);
+                var size = g.MeasureString(star.Name, starfont);
+                g.DrawString(star.Name, starfont, starFontColorBrush, (star.Position.X + star.Radius - size.Width / 2), (star.Position.Y + star.Radius * 2 + 5));
             }
         }
 
         private Font font = new Font("Segoe UI", 11, System.Drawing.FontStyle.Bold);
+        private Font starfont = new Font("Segoe UI", 9, System.Drawing.FontStyle.Italic);
         private SolidBrush constColorBrush = new SolidBrush(Color.FromArgb(128, 255, 255, 153));
-        private Pen starPen = new Pen(Color.FromArgb(128, 255, 255, 255));
         private Pen constLinePen = new Pen(Color.FromArgb(128, 0, 255, 0));
         private SolidBrush starFontColorBrush = new SolidBrush(Color.FromArgb(128, 255, 215, 0));
+        private SolidBrush starColorBrush = new SolidBrush(Color.FromArgb(128, 255, 255, 255));
 
         public PointF CenterPoint { get; private set; }
 
