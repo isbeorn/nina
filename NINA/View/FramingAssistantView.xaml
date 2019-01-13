@@ -30,7 +30,6 @@
     xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:survey="clr-namespace:NINA.Utility.SkySurvey"
     xmlns:util="clr-namespace:NINA.Utility"
-    xmlns:prism="http://prismlibrary.com/"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
@@ -411,9 +410,6 @@
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SizeChanged" SourceObject="{Binding RelativeSource={RelativeSource AncestorType=local:ImageView, Mode=FindAncestor}, Path=PART_ScrollViewerBinding}">
                         <i:InvokeCommandAction Command="{Binding ScrollViewerSizeChangedCommand}" />
-                    </i:EventTrigger>
-                    <i:EventTrigger EventName="PreviewMouseWheel">
-                        <prism:InvokeCommandAction Command="{Binding ZoomCommand}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <local:ImageView.ButtonHeaderContent>
