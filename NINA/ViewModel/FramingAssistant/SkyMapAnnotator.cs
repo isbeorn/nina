@@ -94,6 +94,18 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
+        private bool dynamicFoV;
+
+        public bool DynamicFoV {
+            get {
+                return dynamicFoV;
+            }
+            set {
+                dynamicFoV = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private bool annotateConstellations;
 
         public bool AnnotateConstellations {

@@ -79,6 +79,7 @@ namespace NINA.ViewModel.FramingAssistant {
             DragMoveCommand = new RelayCommand(DragMove);
             ClearCacheCommand = new RelayCommand(ClearCache);
             RefreshSkyMapAnnotationCommand = new RelayCommand((object o) => SkyMapAnnotator.UpdateSkyMap());
+            MouseWheelCommand = new RelayCommand(MouseWheel);
 
             DeepSkyObjectSearchVM = new DeepSkyObjectSearchVM(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
             DeepSkyObjectSearchVM.PropertyChanged += DeepSkyObjectSearchVM_PropertyChanged;
@@ -148,6 +149,21 @@ namespace NINA.ViewModel.FramingAssistant {
             profileService.LocationChanged += (object sender, EventArgs e) => {
                 DSO = new DeepSkyObject(DSO.Name, DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
             };
+        }
+
+        private void MouseWheel(object obj) {
+            var delta = ((MouseWheelResult)obj).Delta;
+            var stepSize = 2;
+            if (delta > 0) {
+                if (FieldOfView > 1) {
+                    FieldOfView = Math.Max(1, FieldOfView - stepSize);
+                }
+            } else {
+                if (FieldOfView < 60) {
+                    FieldOfView = Math.Min(60, FieldOfView + stepSize);
+                }
+            }
+            CalculateRectangle(SkyMapAnnotator.ChangeFoV(FieldOfView));
         }
 
         private async void ResizeTimer_Tick(object sender, EventArgs e) {
@@ -586,12 +602,16 @@ namespace NINA.ViewModel.FramingAssistant {
                             ImageParameter = skySurveyImage;
                         }));
 
+                        var dynamicFoV = true;
+
                         if (FramingAssistantSource != SkySurveySource.SKYATLAS) {
                             SelectedImageCacheInfo = Cache.SaveImageToCache(skySurveyImage);
                             RaisePropertyChanged(nameof(ImageCacheInfo));
+                            dynamicFoV = false;
                         }
 
                         await SkyMapAnnotator.Initialize(skySurveyImage.Coordinates, Astrometry.ArcminToDegree(skySurveyImage.FoVHeight), ImageParameter.Image.PixelWidth, ImageParameter.Image.PixelHeight, ImageParameter.Rotation, _loadImageSource.Token);
+                        SkyMapAnnotator.DynamicFoV = dynamicFoV;
 
                         CalculateRectangle(SkyMapAnnotator.ViewportFoV);
                     }
@@ -807,6 +827,7 @@ namespace NINA.ViewModel.FramingAssistant {
         public ICommand ClearCacheCommand { get; private set; }
         public ICommand ScrollViewerSizeChangedCommand { get; }
         public ICommand RefreshSkyMapAnnotationCommand { get; }
+        public ICommand MouseWheelCommand { get; }
 
         public SkyMapAnnotator SkyMapAnnotator {
             get => skyMapAnnotator;
