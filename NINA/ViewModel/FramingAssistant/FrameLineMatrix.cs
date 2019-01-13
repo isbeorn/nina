@@ -155,16 +155,16 @@ namespace NINA.ViewModel.FramingAssistant {
 
         public void Draw(Graphics g) {
             foreach (var frameLine in this.RAPoints) {
-                var points = CardinalSpline(frameLine.Collection, 0.5f, frameLine.Closed);
-                if (frameLine.StrokeThickness != 1) {
-                    var pen = new System.Drawing.Pen(gridPen.Color, frameLine.StrokeThickness);
-                    g.DrawBeziers(pen, points.ToArray());
-                } else {
-                    g.DrawBeziers(gridPen, points.ToArray());
-                }
+                DrawFrameLineCollection(g, frameLine);
             }
 
             foreach (var frameLine in this.DecPoints) {
+                DrawFrameLineCollection(g, frameLine);
+            }
+        }
+
+        private void DrawFrameLineCollection(Graphics g, FrameLine frameLine) {
+            if (frameLine.Collection.Count > 1) {
                 var points = CardinalSpline(frameLine.Collection, 0.5f, frameLine.Closed);
 
                 if (frameLine.StrokeThickness != 1) {
