@@ -127,7 +127,7 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         private PointF Project(ViewportFoV viewport, Coordinates coordinates) {
-            var p = coordinates.GnomonicTanProjection(viewport);
+            var p = coordinates.XYProjection(viewport);
             return new PointF((float)p.X, (float)p.Y);
         }
 
