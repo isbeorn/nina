@@ -163,7 +163,7 @@ namespace NINA.ViewModel.FramingAssistant {
                     }
                 }
             }
-            RAPoints.Add(new FrameLine() { Collection = list, StrokeThickness = thickness, Closed = false });
+            RAPoints.Add(new FrameLine() { Collection = list, StrokeThickness = thickness, Closed = false, Angle = Angle.ByDegree(ra) });
         }
 
         private double nfmod(double a, double b) {
@@ -207,7 +207,7 @@ namespace NINA.ViewModel.FramingAssistant {
                 } while (iterator <= coordinates.Count / 2d);
             }
 
-            DecPoints.Add(new FrameLine() { Collection = new List<PointF>(list), StrokeThickness = thickness, Closed = false });
+            DecPoints.Add(new FrameLine() { Collection = new List<PointF>(list), StrokeThickness = thickness, Closed = false, Angle = Angle.ByDegree(dec) });
             //var thickness = 1;
             //double? prevRA = null;
             //double? stepRA = null;
@@ -274,24 +274,51 @@ namespace NINA.ViewModel.FramingAssistant {
 
         public void Draw(Graphics g) {
             foreach (var frameLine in this.RAPoints) {
-                DrawFrameLineCollection(g, frameLine);
+                DrawRALineCollection(g, frameLine);
             }
 
             foreach (var frameLine in this.DecPoints) {
+                DrawDecLineCollection(g, frameLine);
+            }
+        }
+
+        private static Font gridAnnotationFont = new Font("Segoe UI", 9, System.Drawing.FontStyle.Italic);
+        private static SolidBrush gridAnnotationBrush = new SolidBrush(System.Drawing.Color.SteelBlue);
+
+        private void DrawRALineCollection(Graphics g, FrameLine frameLine) {
+            if (frameLine.Collection.Count > 1) {
+                var position = frameLine.Collection.FirstOrDefault(x => x.X > 0 && x.Y > 0 && x.X < currentViewport.Width && x.Y < currentViewport.Height);
+                if (position != null) {
+                    var hms = Astrometry.HoursToHMS(frameLine.Angle.Hours);
+                    var text = $"{hms.Substring(0, hms.Length - 3)}h";
+                    var size = g.MeasureString(text, gridAnnotationFont);
+                    g.DrawString(text, gridAnnotationFont, gridAnnotationBrush, (position.X), Math.Max(0, (position.Y - size.Height)));
+                }
+
+                DrawFrameLineCollection(g, frameLine);
+            }
+        }
+
+        private void DrawDecLineCollection(Graphics g, FrameLine frameLine) {
+            if (frameLine.Collection.Count > 1) {
+                var position = frameLine.Collection.FirstOrDefault(x => x.X > 0 && x.Y > 0);
+                if (position != null) {
+                    var text = $"{string.Format("{0:N2}", frameLine.Angle.Degree)}°";
+                    var size = g.MeasureString(text, gridAnnotationFont);
+                    g.DrawString(text, gridAnnotationFont, gridAnnotationBrush, (position.X), (position.Y));
+                }
                 DrawFrameLineCollection(g, frameLine);
             }
         }
 
         private void DrawFrameLineCollection(Graphics g, FrameLine frameLine) {
-            if (frameLine.Collection.Count > 1) {
-                var points = CardinalSpline(frameLine.Collection, 0.5f, frameLine.Closed);
+            var points = CardinalSpline(frameLine.Collection, 0.5f, frameLine.Closed);
 
-                if (frameLine.StrokeThickness != 1) {
-                    var pen = new System.Drawing.Pen(gridPen.Color, frameLine.StrokeThickness);
-                    g.DrawBeziers(pen, points.ToArray());
-                } else {
-                    g.DrawBeziers(gridPen, points.ToArray());
-                }
+            if (frameLine.StrokeThickness != 1) {
+                var pen = new System.Drawing.Pen(gridPen.Color, frameLine.StrokeThickness);
+                g.DrawBeziers(pen, points.ToArray());
+            } else {
+                g.DrawBeziers(gridPen, points.ToArray());
             }
         }
 
