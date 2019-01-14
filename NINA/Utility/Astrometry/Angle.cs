@@ -98,12 +98,20 @@ namespace NINA.Utility.Astrometry {
             return Angle.ByRadians(a + b.Radians);
         }
 
+        public static Angle operator +(Angle a, double b) {
+            return Angle.ByRadians(a.Radians + b);
+        }
+
         public static Angle operator -(Angle a, Angle b) {
             return Angle.ByRadians(a.Radians - b.Radians);
         }
 
         public static Angle operator -(double a, Angle b) {
             return Angle.ByRadians(a - b.Radians);
+        }
+
+        public static Angle operator -(Angle a, double b) {
+            return Angle.ByRadians(a.Radians - b);
         }
 
         public static Angle operator *(Angle a, Angle b) {
@@ -116,6 +124,14 @@ namespace NINA.Utility.Astrometry {
 
         public static Angle operator /(Angle a, Angle b) {
             return Angle.ByRadians(a.Radians / b.Radians);
+        }
+
+        public static Angle operator /(Angle a, double b) {
+            return Angle.ByRadians(a.Radians / b);
+        }
+
+        public static Angle operator /(double a, Angle b) {
+            return Angle.ByRadians(a / b.Radians);
         }
     }
 }

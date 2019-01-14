@@ -44,23 +44,27 @@ namespace NINA.ViewModel.FramingAssistant {
         private Dictionary<double, List<Coordinates>> raCoordinateMatrix = new Dictionary<double, List<Coordinates>>();
         private Dictionary<double, List<Coordinates>> decCoordinateMatrix = new Dictionary<double, List<Coordinates>>();
 
-        private const double maxDec = 89;
+        private const double maxDec = 89.999;
         private const double minRA = 0;
         private const double maxRA = 0;
 
         private void GenerateRACoordinateMatrix(double raStep) {
             raCoordinateMatrix.Clear();
-            for (double i = 0; i <= maxDec; i += resolution) {
+            double i = 0;
+            do {
+                i = Math.Min(maxDec, i + resolution);
+
                 for (double ra = 0; ra < 360; ra += raStep) {
                     var coordinate = new Coordinates(Angle.ByDegree(ra), Angle.ByDegree(i), Epoch.J2000);
                     var coordinate2 = new Coordinates(Angle.ByDegree(ra), Angle.ByDegree(-i), Epoch.J2000);
                     if (!raCoordinateMatrix.ContainsKey(ra)) {
                         raCoordinateMatrix[ra] = new List<Coordinates>();
                     }
+
                     raCoordinateMatrix[ra].Add(coordinate);
-                    raCoordinateMatrix[ra].Add(coordinate2);
+                    raCoordinateMatrix[ra].Insert(0, coordinate2);
                 }
-            }
+            } while (i < maxDec);
         }
 
         private void GenerateDecCoordinateMatrix(double decStep) {
@@ -82,14 +86,14 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
-        private void DetermineStepSizes(ViewportFoV viewport) {
-            var decStep = viewport.VFoVDeg / 4d;
+        private void DetermineStepSizes() {
+            var decStep = currentViewport.VFoVDeg / 4d;
             decStep = STEPSIZES.Aggregate((x, y) => Math.Abs(x - decStep) < Math.Abs(y - decStep) ? x : y);
 
-            var raStep = viewport.HFoVDeg / 4d;
+            var raStep = currentViewport.HFoVDeg / 4d;
             raStep = STEPSIZES.Aggregate((x, y) => Math.Abs(x - raStep) < Math.Abs(y - raStep) ? x : y);
 
-            resolution = Math.Min(raStep, decStep) / 3;
+            resolution = Math.Min(raStep, decStep) / 4;
 
             if (currentRAStep != raStep) {
                 currentRAStep = raStep;
@@ -105,21 +109,27 @@ namespace NINA.ViewModel.FramingAssistant {
         private double currentDecStep;
 
         public void CalculatePoints(ViewportFoV viewport) {
-            DetermineStepSizes(viewport);
+            this.currentViewport = viewport;
+            DetermineStepSizes();
 
             RAPoints.Clear();
             DecPoints.Clear();
 
             for (double ra = 0; ra < 360; ra += currentRAStep) {
-                CalculateRAPoints(viewport, ra);
+                CalculateRAPoints(ra);
             }
 
             for (double dec = 0; dec <= maxDec; dec += currentDecStep) {
-                CalculateDecPoints(viewport, dec);
+                CalculateDecPoints(dec);
             }
             for (double dec = 0; dec >= -maxDec; dec -= currentDecStep) {
-                CalculateDecPoints(viewport, dec);
+                CalculateDecPoints(dec);
             }
+        }
+
+        private PointF Project(Coordinates coordinates) {
+            var p = coordinates.XYProjection(currentViewport);
+            return new PointF((float)p.X, (float)p.Y);
         }
 
         /// <summary>
@@ -127,21 +137,37 @@ namespace NINA.ViewModel.FramingAssistant {
         /// </summary>
         /// <param name="viewport"></param>
         /// <param name="ra"></param>
-        private void CalculateRAPoints(ViewportFoV viewport, double ra) {
+        private void CalculateRAPoints(double ra) {
             var list = new List<PointF>();
             var thickness = 1;
+            Coordinates prevCoordinate = null;
+            bool atLeastOneInside = false;
             foreach (var coordinate in raCoordinateMatrix[ra]) {
-                if (viewport.ContainsCoordinates(coordinate)) {
+                if (currentViewport.ContainsCoordinates(coordinate)) {
+                    atLeastOneInside = true;
+                    if (prevCoordinate != null) {
+                        list.Add(Project(prevCoordinate));
+                        prevCoordinate = null;
+                    }
+
                     if (coordinate.RADegrees == 0 || coordinate.RADegrees == 180) {
                         thickness = 3;
                     }
-                    var p = coordinate.GnomonicTanProjection(viewport);
-                    var pointF = new PointF((float)p.X, (float)p.Y);
-
-                    list.Add(pointF);
+                    list.Add(Project(coordinate));
+                } else {
+                    if (atLeastOneInside) {
+                        list.Add(Project(coordinate));
+                        break;
+                    } else {
+                        prevCoordinate = coordinate;
+                    }
                 }
             }
-            RAPoints.Add(new FrameLine() { Collection = list, StrokeThickness = thickness, Closed = false });
+            RAPoints.Add(new FrameLine() { Collection = list, StrokeThickness = thickness, Closed = false, Angle = Angle.ByDegree(ra) });
+        }
+
+        private double nfmod(double a, double b) {
+            return a - b * Math.Floor(a / b);
         }
 
         /// <summary>
@@ -149,74 +175,95 @@ namespace NINA.ViewModel.FramingAssistant {
         /// </summary>
         /// <param name="viewport"></param>
         /// <param name="dec"></param>
-        private void CalculateDecPoints(ViewportFoV viewport, double dec) {
-            var thickness = 1;
-            double? prevRA = null;
-            double? stepRA = null;
-            var circled = false;
-            var inViewDegreeSum = 0d;
-            var degreeSum = 0d;
+        private void CalculateDecPoints(double dec) {
+            var thickness = dec == 0 ? 3 : 1;
+            var coordinates = decCoordinateMatrix[dec];
+
+            var center = currentViewport.CenterCoordinates;
+            var startRA = coordinates.Aggregate((x, y) => Math.Abs(x.RADegrees - center.RADegrees) < Math.Abs(y.RADegrees - center.RADegrees) ? x : y);
+            var startIdx = coordinates.FindIndex(x => startRA.RADegrees == x.RADegrees);
+            var iterator = 0;
             var list = new LinkedList<PointF>();
 
-            LinkedListNode<PointF> node = null;
-            foreach (var coordinate in decCoordinateMatrix[dec]) {
-                degreeSum += coordinate.RADegrees;
-                if (viewport.ContainsCoordinates(coordinate)) {
-                    if (coordinate.Dec == 0) {
-                        thickness = 3;
-                    }
-                    inViewDegreeSum += coordinate.RADegrees;
+            if (currentViewport.ContainsCoordinates(startRA)) {
+                var pointF = Project(startRA);
+                list.AddLast(pointF);
 
-                    if (stepRA == null && prevRA != null) {
-                        stepRA = Math.Round((prevRA.Value - coordinate.RADegrees), 5);
-                    }
+                do {
+                    iterator++;
 
-                    var p = coordinate.GnomonicTanProjection(viewport);
-                    var pointF = new PointF((float)p.X, (float)p.Y);
+                    var rightCoordinate = coordinates[(int)nfmod((startIdx + iterator), coordinates.Count)];
+                    var leftCoordinate = coordinates[(int)nfmod((startIdx - iterator), coordinates.Count)];
 
-                    if (prevRA != null && Math.Round((prevRA.Value - coordinate.RADegrees), 5) != stepRA) {
-                        node = list.First;
-                        circled = true;
-                        node = list.AddBefore(node, pointF);
-                    } else {
-                        if (circled) {
-                            node = list.AddAfter(node, pointF);
-                        } else {
-                            node = list.AddLast(pointF);
-                        }
+                    var leftPointF = Project(leftCoordinate);
+                    var rightPointF = Project(rightCoordinate);
+
+                    list.AddLast(leftPointF);
+                    list.AddFirst(rightPointF);
+
+                    if (!currentViewport.ContainsCoordinates(leftCoordinate) && !currentViewport.ContainsCoordinates(rightCoordinate)) {
+                        break;
                     }
-                    prevRA = coordinate.RADegrees;
-                }
+                } while (iterator <= coordinates.Count / 2d);
             }
-            DecPoints.Add(new FrameLine() { Collection = new List<PointF>(list), StrokeThickness = thickness, Closed = inViewDegreeSum == degreeSum });
+
+            DecPoints.Add(new FrameLine() { Collection = new List<PointF>(list), StrokeThickness = thickness, Closed = false, Angle = Angle.ByDegree(dec) });
         }
 
         public List<FrameLine> RAPoints { get; private set; }
 
         public List<FrameLine> DecPoints { get; private set; }
 
-        private static System.Drawing.Pen gridPen = new System.Drawing.Pen(System.Drawing.Color.SteelBlue);
+        private static System.Drawing.Pen gridPen = new System.Drawing.Pen(Color.FromArgb(127, System.Drawing.Color.SteelBlue));
+        private ViewportFoV currentViewport;
 
         public void Draw(Graphics g) {
             foreach (var frameLine in this.RAPoints) {
-                DrawFrameLineCollection(g, frameLine);
+                DrawRALineCollection(g, frameLine);
             }
 
             foreach (var frameLine in this.DecPoints) {
+                DrawDecLineCollection(g, frameLine);
+            }
+        }
+
+        private static Font gridAnnotationFont = new Font("Segoe UI", 7, System.Drawing.FontStyle.Italic);
+        private static SolidBrush gridAnnotationBrush = new SolidBrush(System.Drawing.Color.SteelBlue);
+
+        private void DrawRALineCollection(Graphics g, FrameLine frameLine) {
+            if (frameLine.Collection.Count > 1) {
+                var position = frameLine.Collection.FirstOrDefault(x => x.X > 0 && x.Y > 0 && x.X < currentViewport.Width && x.Y < currentViewport.Height);
+                if (position != null) {
+                    var hms = Astrometry.HoursToHMS(frameLine.Angle.Hours);
+                    var text = $"{hms.Substring(0, hms.Length - 3)}h";
+                    var size = g.MeasureString(text, gridAnnotationFont);
+                    g.DrawString(text, gridAnnotationFont, gridAnnotationBrush, (position.X), Math.Max(0, (position.Y - size.Height)));
+                }
+
+                DrawFrameLineCollection(g, frameLine);
+            }
+        }
+
+        private void DrawDecLineCollection(Graphics g, FrameLine frameLine) {
+            if (frameLine.Collection.Count > 1) {
+                var position = frameLine.Collection.FirstOrDefault(x => x.X > 0 && x.Y > 0);
+                if (position != null) {
+                    var text = $"{string.Format("{0:N2}", frameLine.Angle.Degree)}°";
+                    var size = g.MeasureString(text, gridAnnotationFont);
+                    g.DrawString(text, gridAnnotationFont, gridAnnotationBrush, (position.X), (position.Y));
+                }
                 DrawFrameLineCollection(g, frameLine);
             }
         }
 
         private void DrawFrameLineCollection(Graphics g, FrameLine frameLine) {
-            if (frameLine.Collection.Count > 1) {
-                var points = CardinalSpline(frameLine.Collection, 0.5f, frameLine.Closed);
+            var points = CardinalSpline(frameLine.Collection, 0.5f, frameLine.Closed);
 
-                if (frameLine.StrokeThickness != 1) {
-                    var pen = new System.Drawing.Pen(gridPen.Color, frameLine.StrokeThickness);
-                    g.DrawBeziers(pen, points.ToArray());
-                } else {
-                    g.DrawBeziers(gridPen, points.ToArray());
-                }
+            if (frameLine.StrokeThickness != 1) {
+                var pen = new System.Drawing.Pen(gridPen.Color, frameLine.StrokeThickness);
+                g.DrawBeziers(pen, points.ToArray());
+            } else {
+                g.DrawBeziers(gridPen, points.ToArray());
             }
         }
 

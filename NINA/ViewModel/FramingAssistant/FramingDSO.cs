@@ -85,7 +85,7 @@ namespace NINA.ViewModel.FramingAssistant {
         private static SolidBrush dsoFillColorBrush = new SolidBrush(Color.FromArgb(10, 255, 255, 255));
         private static SolidBrush dsoFontColorBrush = new SolidBrush(Color.FromArgb(255, 255, 255, 255));
 
-        private static Pen dsoStrokePen = new Pen(Color.FromArgb(255, 255, 255, 255));
+        private static Pen dsoStrokePen = new Pen(Color.FromArgb(127, 255, 255, 255));
 
         private static Font fontdso = new Font("Segoe UI", 10, System.Drawing.FontStyle.Regular);
 

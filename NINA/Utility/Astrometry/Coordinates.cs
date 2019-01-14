@@ -206,7 +206,7 @@ namespace NINA.Utility.Astrometry {
         /// <remarks>
         ///     based on http://faculty.wcas.northwestern.edu/nchapman/coding/worldpos.py
         /// </remarks>
-        public Coordinates Shift(double deltaX, double deltaY, double rotation) {
+        private Coordinates ShiftGnomonic(double deltaX, double deltaY, double rotation) {
             var deltaXAngle = Angle.ByDegree(-deltaX);
             var deltaYAngle = Angle.ByDegree(-deltaY);
 
@@ -246,27 +246,102 @@ namespace NINA.Utility.Astrometry {
             );
         }
 
-        public enum ProjectionType {
-            Gnomonic,
-            Stenographic
+        private Coordinates ShiftStenographic(double deltaX, double deltaY, double rotation) {
+            var deltaXAngle = Angle.ByDegree(-deltaX);
+            var deltaYAngle = Angle.ByDegree(-deltaY);
+
+            var rotationAngle = Angle.ByDegree(rotation);
+
+            if (rotationAngle.Degree != 0) {
+                //Recalculate delta based on rotation
+                //No spherical or other aberrations are assumed
+                var originalDeltaX = deltaXAngle;
+                var rotationAngleSin = rotationAngle.Sin();
+                var rotationAngleCos = rotationAngle.Cos();
+                deltaXAngle = deltaXAngle * rotationAngleCos - deltaYAngle * rotationAngleSin;
+                deltaYAngle = deltaYAngle * rotationAngleCos + originalDeltaX * rotationAngleSin;
+            }
+
+            var originDecSin = decAngle.Sin();
+            var originDecCos = decAngle.Cos();
+
+            var sins = deltaXAngle * deltaXAngle + deltaYAngle * deltaYAngle;
+
+            var dz = (4.0 - sins) / (4.0 + sins);
+
+            var targetDec = (dz * originDecSin + deltaYAngle * originDecCos * (1.0 + dz) / 2.0).Asin();
+            var targetRA = (deltaXAngle * (1.0 + dz) / (2.0 * targetDec.Cos())).Asin();
+
+            var mg = 2 * (targetDec.Sin() * originDecCos - targetDec.Cos() * originDecSin * targetRA.Cos()) /
+                (1.0 + targetDec.Sin() * originDecSin + targetDec.Cos() * originDecCos * targetRA.Cos());
+
+            if (Math.Abs((mg - deltaYAngle).Radians) > 1.0e-5) {
+                targetRA = Math.PI - targetRA;
+            }
+
+            targetRA += raAngle;
+
+            if (targetRA.Degree < 0) { targetRA = Angle.ByDegree(targetRA.Degree + 360); }
+            if (targetRA.Degree >= 360) { targetRA = Angle.ByDegree(targetRA.Degree - 360); }
+
+            return new Coordinates(
+                targetRA,
+                targetDec,
+                Epoch
+            );
         }
 
-        public Point XYProjection(ViewportFoV viewPort, ProjectionType type = ProjectionType.Gnomonic) {
+        public enum ProjectionType {
+            Gnomonic,
+            Stereographic
+        }
+
+        public Coordinates Shift(
+            double deltaX,
+            double deltaY,
+            double rotation,
+            double scaleX,
+            double scaleY,
+            ProjectionType type = ProjectionType.Stereographic
+        ) {
+            var deltaXDeg = deltaX * Astrometry.ArcsecToDegree(scaleX);
+            var deltaYDeg = deltaY * Astrometry.ArcsecToDegree(scaleY);
+            return this.Shift(deltaXDeg, deltaYDeg, rotation, type);
+        }
+
+        public Coordinates Shift(double deltaX, double deltaY, double rotation, ProjectionType type = ProjectionType.Stereographic) {
             switch (type) {
                 case ProjectionType.Gnomonic:
-                    return GnomonicTanProjection(viewPort);
+                    return ShiftGnomonic(deltaX, deltaY, rotation);
 
-                case ProjectionType.Stenographic:
-                    return StenographicProjection(viewPort);
+                case ProjectionType.Stereographic:
+                    return ShiftStenographic(deltaX, deltaY, rotation);
 
                 default:
-                    return GnomonicTanProjection(viewPort);
+                    return ShiftGnomonic(deltaX, deltaY, rotation);
             }
         }
 
-        public Point GnomonicTanProjection(ViewportFoV viewPort) {
-            return GnomonicTanProjection(viewPort.CenterCoordinates, viewPort.ViewPortCenterPoint, viewPort.ArcSecWidth,
-                viewPort.ArcSecHeight, viewPort.Rotation);
+        public Point XYProjection(ViewportFoV viewPort, ProjectionType type = ProjectionType.Stereographic) {
+            return XYProjection(
+                viewPort.CenterCoordinates,
+                viewPort.ViewPortCenterPoint,
+                viewPort.ArcSecWidth,
+                viewPort.ArcSecHeight,
+                viewPort.Rotation);
+        }
+
+        public Point XYProjection(Coordinates center, Point centerPointPixels, double horizResArcSecPx, double vertResArcSecPix, double rotation, ProjectionType type = ProjectionType.Stereographic) {
+            switch (type) {
+                case ProjectionType.Gnomonic:
+                    return GnomonicTanProjection(center, centerPointPixels, horizResArcSecPx, vertResArcSecPix, rotation);
+
+                case ProjectionType.Stereographic:
+                    return StenographicProjection(center, centerPointPixels, horizResArcSecPx, vertResArcSecPix, rotation);
+
+                default:
+                    return GnomonicTanProjection(center, centerPointPixels, horizResArcSecPx, vertResArcSecPix, rotation);
+            }
         }
 
         /// <summary>
@@ -281,7 +356,7 @@ namespace NINA.Utility.Astrometry {
         /// <remarks>
         ///     based on http://faculty.wcas.northwestern.edu/nchapman/coding/worldpos.py
         /// </remarks>
-        public Point GnomonicTanProjection(Coordinates center, Point centerPointPixels, double horizResArcSecPx, double vertResArcSecPix, double rotation) {
+        private Point GnomonicTanProjection(Coordinates center, Point centerPointPixels, double horizResArcSecPx, double vertResArcSecPix, double rotation) {
             var raDegreesSanitized = RADegrees;
             var deltaRa = (raDegreesSanitized - center.RADegrees);
             if (deltaRa > 180) {
@@ -328,18 +403,13 @@ namespace NINA.Utility.Astrometry {
                 centerPointPixels.Y - deltaY.ArcSeconds / vertResArcSecPix);
         }
 
-        public Point StenographicProjection(ViewportFoV viewPort) {
-            return StenographicProjection(viewPort.CenterCoordinates, viewPort.ViewPortCenterPoint, viewPort.ArcSecWidth,
-                viewPort.ArcSecHeight, viewPort.Rotation);
-        }
-
         /// <summary>
         /// Generates a Point with relative X/Y values for centering the current coordinates relative to a given point using steonographic projection.
         /// </summary>
         /// <remarks>
         ///     based on http://faculty.wcas.northwestern.edu/nchapman/coding/worldpos.py
         /// </remarks>
-        public Point StenographicProjection(Coordinates center, Point centerPointPixels, double horizResArcSecPx, double vertResArcSecPix, double rotation) {
+        private Point StenographicProjection(Coordinates center, Point centerPointPixels, double horizResArcSecPx, double vertResArcSecPix, double rotation) {
             var raDegreesSanitized = RADegrees;
             var deltaRa = (raDegreesSanitized - center.RADegrees);
             if (deltaRa > 180) {
@@ -368,7 +438,7 @@ namespace NINA.Utility.Astrometry {
             var imageRotationSin = imageRotation.Sin();
             var imageRotationCos = imageRotation.Cos();
 
-            var dd = Angle.ByRadians(2.0 / (1.0 + targetDecSin * centerDegSin + targetDecCos * centerDegCos * raDiffCos).Radians);
+            var dd = 2.0 / (1.0 + targetDecSin * centerDegSin + targetDecCos * centerDegCos * raDiffCos);
             var raMod = dd * raDiff.Sin() * targetDecCos;
             var decMod = dd * (targetDecSin * centerDegCos - targetDecCos * centerDegSin * raDiffCos);
 
@@ -382,28 +452,6 @@ namespace NINA.Utility.Astrometry {
 
             return new Point(centerPointPixels.X - deltaX.ArcSeconds / horizResArcSecPx,
                 centerPointPixels.Y - deltaY.ArcSeconds / vertResArcSecPix);
-        }
-
-        /// <summary>
-        /// Shift coordinates by a delta in pixel
-        /// </summary>
-        /// <param name="origin">Coordinates to shift from</param>
-        /// <param name="deltaX">delta x</param>
-        /// <param name="deltaY">delta y</param>
-        /// <param name="rotation">rotation relative to delta values</param>
-        /// <param name="scaleX">scale relative to deltaX in arcsecs</param>
-        /// <param name="scaleY">scale raltive to deltaY in arcsecs</param>
-        /// <returns></returns>
-        public Coordinates Shift(
-                double deltaX,
-                double deltaY,
-                double rotation,
-                double scaleX,
-                double scaleY
-        ) {
-            var deltaXDeg = deltaX * Astrometry.ArcsecToDegree(scaleX);
-            var deltaYDeg = deltaY * Astrometry.ArcsecToDegree(scaleY);
-            return this.Shift(deltaXDeg, deltaYDeg, rotation);
         }
     }
 }

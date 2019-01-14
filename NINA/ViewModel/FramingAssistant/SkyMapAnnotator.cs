@@ -139,7 +139,11 @@ namespace NINA.ViewModel.FramingAssistant {
         public Dictionary<string, DeepSkyObject> GetDeepSkyObjectsForViewport() {
             var dsoList = new Dictionary<string, DeepSkyObject>();
 
-            var minSize = (2.857 * ViewportFoV.OriginalVFoV - 28.57);
+            double minSize = 0;
+            if (!(Math.Min(ViewportFoV.OriginalHFoV, ViewportFoV.OriginalVFoV) < 10)) {
+                // Stuff has to be at least 3 pixel wide
+                minSize = 3 * Math.Min(ViewportFoV.ArcSecWidth, ViewportFoV.ArcSecHeight);
+            }
             var maxSize = Astrometry.DegreeToArcsec(2 * Math.Max(ViewportFoV.OriginalHFoV, ViewportFoV.OriginalVFoV));
 
             var filteredDbDSO = dbDSOs.Where(d => (d.Value.Size != null && d.Value.Size > minSize && d.Value.Size < maxSize) || ViewportFoV.VFoVDeg <= 10).ToList();
@@ -147,8 +151,8 @@ namespace NINA.ViewModel.FramingAssistant {
             // if we're above 90deg centerTop will be different than centerBottom, otherwise it is equal
             if (ViewportFoV.IsAbove90) {
                 dsoList = filteredDbDSO.Where(x =>
-                    x.Value.Coordinates.Dec > (!ViewportFoV.AboveZero ? -90 : ViewportFoV.BottomLeft.Dec)
-                    && x.Value.Coordinates.Dec < (!ViewportFoV.AboveZero ? ViewportFoV.BottomLeft.Dec : 90)
+                    x.Value.Coordinates.Dec > (!ViewportFoV.AboveZero ? -90 : ViewportFoV.CenterCoordinates.Dec - ViewportFoV.VFoVDegBottom)
+                    && x.Value.Coordinates.Dec < (!ViewportFoV.AboveZero ? ViewportFoV.CenterCoordinates.Dec + ViewportFoV.VFoVDegBottom : 90)
                 ).ToDictionary(x => x.Key, y => y.Value);
             } else {
                 var raFrom = ViewportFoV.TopLeft.RADegrees - ViewportFoV.HFoVDeg;
@@ -156,18 +160,16 @@ namespace NINA.ViewModel.FramingAssistant {
                 if (raFrom < 0) {
                     dsoList = filteredDbDSO.Where(x =>
                         (x.Value.Coordinates.RADegrees > 360 + raFrom || x.Value.Coordinates.RADegrees < raThru)
-                        && x.Value.Coordinates.Dec > Math.Min(ViewportFoV.TopCenter.Dec, ViewportFoV.BottomLeft.Dec)
-                        && x.Value.Coordinates.Dec < Math.Max(ViewportFoV.BottomLeft.Dec, ViewportFoV.TopCenter.Dec)
+                        && x.Value.Coordinates.Dec > ViewportFoV.CenterCoordinates.Dec - ViewportFoV.VFoVDegBottom
+                        && x.Value.Coordinates.Dec < ViewportFoV.CenterCoordinates.Dec + ViewportFoV.VFoVDegTop
                     ).ToDictionary(x => x.Key, y => y.Value);
-                    ;
                 } else {
                     dsoList = filteredDbDSO.Where(x =>
                         x.Value.Coordinates.RADegrees > (ViewportFoV.TopLeft.RADegrees - ViewportFoV.HFoVDeg)
                         && x.Value.Coordinates.RADegrees < (ViewportFoV.TopLeft.RADegrees)
-                        && x.Value.Coordinates.Dec > Math.Min(ViewportFoV.TopCenter.Dec, ViewportFoV.BottomLeft.Dec)
-                        && x.Value.Coordinates.Dec < Math.Max(ViewportFoV.BottomLeft.Dec, ViewportFoV.TopCenter.Dec)
+                        && x.Value.Coordinates.Dec > ViewportFoV.CenterCoordinates.Dec - ViewportFoV.VFoVDegBottom
+                        && x.Value.Coordinates.Dec < ViewportFoV.CenterCoordinates.Dec + ViewportFoV.VFoVDegTop
                     ).ToDictionary(x => x.Key, y => y.Value);
-                    ;
                 }
             }
             return dsoList;
