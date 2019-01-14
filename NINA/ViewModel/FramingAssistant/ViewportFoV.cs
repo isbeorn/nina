@@ -1,4 +1,5 @@
-﻿using NINA.Utility.Astrometry;
+﻿using System;
+using NINA.Utility.Astrometry;
 using System.Windows;
 using Math = System.Math;
 using Point = System.Windows.Point;
@@ -10,6 +11,7 @@ namespace NINA.ViewModel.FramingAssistant {
         public Coordinates TopCenter { get; private set; }
         public Coordinates TopLeft { get; private set; }
         public Coordinates BottomLeft { get; private set; }
+        public Coordinates BottomCenter { get; private set; }
         public Coordinates CenterCoordinates { get; private set; }
         public double AbsCalcTopDec { get; private set; }
         public double AbsCalcBottomDec { get; private set; }
@@ -106,25 +108,22 @@ namespace NINA.ViewModel.FramingAssistant {
             TopCenter = AbsoluteCenterCoordinates.Shift(0, -OriginalVFoV / 2, 0);
             TopLeft = AbsoluteCenterCoordinates.Shift(-OriginalHFoV / 2, (-OriginalVFoV / 2), 0);
             BottomLeft = AbsoluteCenterCoordinates.Shift(-OriginalHFoV / 2, (OriginalVFoV / 2), 0);
+            BottomCenter = AbsoluteCenterCoordinates.Shift(0, OriginalVFoV / 2, 0);
 
-            VFoVDegTop = Math.Abs(TopCenter.Dec - AbsoluteCenterCoordinates.Dec);
-            VFoVDegBottom = Math.Abs(AbsoluteCenterCoordinates.Dec - BottomLeft.Dec);
+            VFoVDegTop = Math.Abs(Math.Max(TopCenter.Dec, TopLeft.Dec) - AbsoluteCenterCoordinates.Dec);
+            VFoVDegBottom = Math.Abs(AbsoluteCenterCoordinates.Dec - Math.Min(BottomLeft.Dec, BottomCenter.Dec));
 
             HFoVDeg = TopLeft.RADegrees > TopCenter.RADegrees
                 ? TopLeft.RADegrees - TopCenter.RADegrees
                 : TopLeft.RADegrees - TopCenter.RADegrees + 360;
             HFoVDeg *= 2;
 
-            // if the bottom left point is below 0 assume fov for bottom is the same as for top
-            if (BottomLeft.Dec < 0) {
-                VFoVDegBottom = VFoVDegTop;
-            }
-
             // if we're below 0 we need to flip all calculated decs
             if (CenterCoordinates.Dec < 0) {
                 BottomLeft.Dec *= -1;
                 TopLeft.Dec *= -1;
                 TopCenter.Dec *= -1;
+                BottomCenter.Dec *= -1;
                 AboveZero = false;
             } else {
                 AboveZero = true;
