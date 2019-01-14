@@ -87,11 +87,17 @@ namespace NINA.ViewModel.FramingAssistant {
 
         private static SolidBrush dsoFillColorBrush = new SolidBrush(Color.FromArgb(10, 255, 255, 255));
 
-        private static Pen galxyStrokePen = new Pen(Color.FromArgb(128, Color.Cyan));
-        private static SolidBrush galxyFontColorBrush = new SolidBrush(Color.Cyan);
+        private static Pen galxyStrokePen = new Pen(Color.FromArgb(128, Color.BurlyWood));
+        private static SolidBrush galxyFontColorBrush = new SolidBrush(Color.BurlyWood);
 
-        private static Pen nebulaStrokePen = new Pen(Color.FromArgb(128, Color.OrangeRed));
-        private static SolidBrush nebulaFontColorBrush = new SolidBrush(Color.OrangeRed);
+        private static Pen nebulaStrokePen = new Pen(Color.FromArgb(128, Color.Violet));
+        private static SolidBrush nebulaFontColorBrush = new SolidBrush(Color.Violet);
+
+        private static Pen plNebulaStrokePen = new Pen(Color.FromArgb(128, Color.Cyan));
+        private static SolidBrush plNebulaFontColorBrush = new SolidBrush(Color.Cyan);
+
+        private static Pen gloclStrokePen = new Pen(Color.FromArgb(128, Color.Yellow));
+        private static SolidBrush gloclFontColorBrush = new SolidBrush(Color.Yellow);
 
         private static Pen dsoDefaultStrokePen = new Pen(Color.FromArgb(127, 255, 255, 255));
         private static SolidBrush dsoDefaultFontColorBrush = new SolidBrush(Color.FromArgb(255, 255, 255, 255));
@@ -109,11 +115,20 @@ namespace NINA.ViewModel.FramingAssistant {
                     dsoSolidBrush = galxyFontColorBrush;
                     break;
 
-                case "BRTNB":
                 case "PLNNB":
+                    dsoPen = plNebulaStrokePen;
+                    dsoSolidBrush = plNebulaFontColorBrush;
+                    break;
+
+                case "BRTNB":
                 case "CL+NB":
                     dsoPen = nebulaStrokePen;
                     dsoSolidBrush = nebulaFontColorBrush;
+                    break;
+
+                case "GLOCL":
+                    dsoPen = gloclStrokePen;
+                    dsoSolidBrush = gloclFontColorBrush;
                     break;
 
                 default:
