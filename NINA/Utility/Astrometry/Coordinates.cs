@@ -293,7 +293,7 @@ namespace NINA.Utility.Astrometry {
 
         public enum ProjectionType {
             Gnomonic,
-            Stenographic
+            Stereographic
         }
 
         public Coordinates Shift(
@@ -302,19 +302,19 @@ namespace NINA.Utility.Astrometry {
             double rotation,
             double scaleX,
             double scaleY,
-            ProjectionType type = ProjectionType.Stenographic
+            ProjectionType type = ProjectionType.Stereographic
         ) {
             var deltaXDeg = deltaX * Astrometry.ArcsecToDegree(scaleX);
             var deltaYDeg = deltaY * Astrometry.ArcsecToDegree(scaleY);
             return this.Shift(deltaXDeg, deltaYDeg, rotation, type);
         }
 
-        public Coordinates Shift(double deltaX, double deltaY, double rotation, ProjectionType type = ProjectionType.Stenographic) {
+        public Coordinates Shift(double deltaX, double deltaY, double rotation, ProjectionType type = ProjectionType.Stereographic) {
             switch (type) {
                 case ProjectionType.Gnomonic:
                     return ShiftGnomonic(deltaX, deltaY, rotation);
 
-                case ProjectionType.Stenographic:
+                case ProjectionType.Stereographic:
                     return ShiftStenographic(deltaX, deltaY, rotation);
 
                 default:
@@ -322,7 +322,7 @@ namespace NINA.Utility.Astrometry {
             }
         }
 
-        public Point XYProjection(ViewportFoV viewPort, ProjectionType type = ProjectionType.Stenographic) {
+        public Point XYProjection(ViewportFoV viewPort, ProjectionType type = ProjectionType.Stereographic) {
             return XYProjection(
                 viewPort.CenterCoordinates,
                 viewPort.ViewPortCenterPoint,
@@ -331,12 +331,12 @@ namespace NINA.Utility.Astrometry {
                 viewPort.Rotation);
         }
 
-        public Point XYProjection(Coordinates center, Point centerPointPixels, double horizResArcSecPx, double vertResArcSecPix, double rotation, ProjectionType type = ProjectionType.Stenographic) {
+        public Point XYProjection(Coordinates center, Point centerPointPixels, double horizResArcSecPx, double vertResArcSecPix, double rotation, ProjectionType type = ProjectionType.Stereographic) {
             switch (type) {
                 case ProjectionType.Gnomonic:
                     return GnomonicTanProjection(center, centerPointPixels, horizResArcSecPx, vertResArcSecPix, rotation);
 
-                case ProjectionType.Stenographic:
+                case ProjectionType.Stereographic:
                     return StenographicProjection(center, centerPointPixels, horizResArcSecPx, vertResArcSecPix, rotation);
 
                 default:
