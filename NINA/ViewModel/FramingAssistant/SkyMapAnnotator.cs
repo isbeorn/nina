@@ -259,7 +259,9 @@ namespace NINA.ViewModel.FramingAssistant {
             foreach (var dso in DSOInViewport) {
                 dso.Draw(g);
             }
+        }
 
+        private void DrawStars() {
             foreach (var constellation in ConstellationsInViewport) {
                 constellation.DrawStars(g);
             }
@@ -318,10 +320,14 @@ namespace NINA.ViewModel.FramingAssistant {
 
             if (!AnnotateConstellations && AnnotateDSO || AnnotateConstellations) {
                 UpdateAndAnnotateConstellations(AnnotateConstellations);
+                if (!AnnotateDSO) {
+                    DrawStars();
+                }
             }
 
             if (AnnotateDSO) {
                 UpdateAndAnnotateDSOs();
+                DrawStars();
             }
 
             if (AnnotateConstellationBoundaries) {
