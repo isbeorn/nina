@@ -139,7 +139,11 @@ namespace NINA.ViewModel.FramingAssistant {
         public Dictionary<string, DeepSkyObject> GetDeepSkyObjectsForViewport() {
             var dsoList = new Dictionary<string, DeepSkyObject>();
 
-            var minSize = (2.857 * ViewportFoV.OriginalVFoV - 28.57);
+            double minSize = 0;
+            if (!(Math.Min(ViewportFoV.OriginalHFoV, ViewportFoV.OriginalVFoV) < 10)) {
+                // Stuff has to be at least 3 pixel wide
+                minSize = 3 * Math.Min(ViewportFoV.ArcSecWidth, ViewportFoV.ArcSecHeight);
+            }
             var maxSize = Astrometry.DegreeToArcsec(2 * Math.Max(ViewportFoV.OriginalHFoV, ViewportFoV.OriginalVFoV));
 
             var filteredDbDSO = dbDSOs.Where(d => (d.Value.Size != null && d.Value.Size > minSize && d.Value.Size < maxSize) || ViewportFoV.VFoVDeg <= 10).ToList();

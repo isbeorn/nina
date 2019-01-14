@@ -214,7 +214,7 @@ namespace NINA.ViewModel.FramingAssistant {
 
         public List<FrameLine> DecPoints { get; private set; }
 
-        private static System.Drawing.Pen gridPen = new System.Drawing.Pen(System.Drawing.Color.SteelBlue);
+        private static System.Drawing.Pen gridPen = new System.Drawing.Pen(Color.FromArgb(127, System.Drawing.Color.SteelBlue));
         private ViewportFoV currentViewport;
 
         public void Draw(Graphics g) {
@@ -227,7 +227,7 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
-        private static Font gridAnnotationFont = new Font("Segoe UI", 9, System.Drawing.FontStyle.Italic);
+        private static Font gridAnnotationFont = new Font("Segoe UI", 7, System.Drawing.FontStyle.Italic);
         private static SolidBrush gridAnnotationBrush = new SolidBrush(System.Drawing.Color.SteelBlue);
 
         private void DrawRALineCollection(Graphics g, FrameLine frameLine) {
