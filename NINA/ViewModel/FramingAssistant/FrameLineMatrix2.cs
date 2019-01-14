@@ -166,67 +166,103 @@ namespace NINA.ViewModel.FramingAssistant {
             RAPoints.Add(new FrameLine() { Collection = list, StrokeThickness = thickness, Closed = false });
         }
 
+        private double nfmod(double a, double b) {
+            return a - b * Math.Floor(a / b);
+        }
+
         /// <summary>
         /// Calculates the circles (or curved lines when not completely in view)
         /// </summary>
         /// <param name="viewport"></param>
         /// <param name="dec"></param>
         private void CalculateDecPoints(double dec) {
-            var thickness = 1;
-            double? prevRA = null;
-            double? stepRA = null;
-            var circled = false;
-            var inViewDegreeSum = 0d;
-            var degreeSum = 0d;
+            var thickness = dec == 0 ? 3 : 1;
+            var coordinates = decCoordinateMatrix[dec];
+
+            var center = currentViewport.CenterCoordinates;
+            var startRA = coordinates.Aggregate((x, y) => Math.Abs(x.RADegrees - center.RADegrees) < Math.Abs(y.RADegrees - center.RADegrees) ? x : y);
+            var startIdx = coordinates.FindIndex(x => startRA.RADegrees == x.RADegrees);
+            var iterator = 0;
             var list = new LinkedList<PointF>();
-            bool lastInside = false;
 
-            LinkedListNode<PointF> node = null;
-            Coordinates previous = null;
-            foreach (var coordinate in decCoordinateMatrix[dec]) {
-                degreeSum += coordinate.RADegrees;
-                if (currentViewport.ContainsCoordinates(coordinate)) {
-                    if (coordinate.Dec == 0) {
-                        thickness = 3;
-                    }
-                    inViewDegreeSum += coordinate.RADegrees;
+            if (currentViewport.ContainsCoordinates(startRA)) {
+                var pointF = Project(startRA);
+                list.AddLast(pointF);
 
-                    if (stepRA == null && prevRA != null) {
-                        stepRA = Math.Round((prevRA.Value - coordinate.RADegrees), 5);
-                    }
-                    var pointF = Project(coordinate);
+                do {
+                    iterator++;
 
-                    if (prevRA != null && Math.Round((prevRA.Value - coordinate.RADegrees), 5) != stepRA) {
-                        node = list.First;
-                        circled = true;
-                        node = list.AddBefore(node, pointF);
-                    } else {
-                        if (circled) {
-                            node = list.AddAfter(node, pointF);
-                        } else {
-                            node = list.AddLast(pointF);
-                        }
-                    }
+                    var rightCoordinate = coordinates[(int)nfmod((startIdx + iterator), coordinates.Count)];
+                    var leftCoordinate = coordinates[(int)nfmod((startIdx - iterator), coordinates.Count)];
 
-                    if (!lastInside && previous != null) {
-                        if (circled) {
-                            list.AddBefore(node, Project(previous));
-                        } else {
-                            list.AddLast(Project(previous));
-                        }
-                    }
+                    var leftPointF = Project(leftCoordinate);
+                    var rightPointF = Project(rightCoordinate);
 
-                    lastInside = true;
-                    prevRA = coordinate.RADegrees;
-                } else {
-                    if (lastInside) {
-                        list.AddAfter(node, Project(coordinate));
-                        lastInside = false;
+                    list.AddLast(leftPointF);
+                    list.AddFirst(rightPointF);
+
+                    if (!currentViewport.ContainsCoordinates(leftCoordinate) && !currentViewport.ContainsCoordinates(rightCoordinate)) {
+                        break;
                     }
-                }
-                previous = coordinate;
+                } while (iterator <= coordinates.Count / 2d);
             }
-            DecPoints.Add(new FrameLine() { Collection = new List<PointF>(list), StrokeThickness = thickness, Closed = inViewDegreeSum == degreeSum });
+
+            DecPoints.Add(new FrameLine() { Collection = new List<PointF>(list), StrokeThickness = thickness, Closed = false });
+            //var thickness = 1;
+            //double? prevRA = null;
+            //double? stepRA = null;
+            //var circled = false;
+            //var inViewDegreeSum = 0d;
+            //var degreeSum = 0d;
+            //var list = new LinkedList<PointF>();
+            //bool lastInside = false;
+
+            //LinkedListNode<PointF> node = null;
+            //Coordinates previous = null;
+            //foreach (var coordinate in decCoordinateMatrix[dec]) {
+            //    degreeSum += coordinate.RADegrees;
+            //    if (currentViewport.ContainsCoordinates(coordinate)) {
+            //        if (coordinate.Dec == 0) {
+            //            thickness = 3;
+            //        }
+            //        inViewDegreeSum += coordinate.RADegrees;
+
+            //        if (stepRA == null && prevRA != null) {
+            //            stepRA = Math.Round((prevRA.Value - coordinate.RADegrees), 5);
+            //        }
+            //        var pointF = Project(coordinate);
+
+            //        if (prevRA != null && Math.Round((prevRA.Value - coordinate.RADegrees), 5) != stepRA) {
+            //            node = list.First;
+            //            circled = true;
+            //            node = list.AddBefore(node, pointF);
+            //        } else {
+            //            if (circled) {
+            //                node = list.AddAfter(node, pointF);
+            //            } else {
+            //                node = list.AddLast(pointF);
+            //            }
+            //        }
+
+            //        if (!lastInside && previous != null) {
+            //            if (circled) {
+            //                list.AddBefore(node, Project(previous));
+            //            } else {
+            //                list.AddLast(Project(previous));
+            //            }
+            //        }
+
+            //        lastInside = true;
+            //        prevRA = coordinate.RADegrees;
+            //    } else {
+            //        if (lastInside) {
+            //            list.AddAfter(node, Project(coordinate));
+            //            lastInside = false;
+            //        }
+            //    }
+            //    previous = coordinate;
+            //}
+            //DecPoints.Add(new FrameLine() { Collection = new List<PointF>(list), StrokeThickness = thickness, Closed = inViewDegreeSum == degreeSum });
         }
 
         public List<FrameLine> RAPoints { get; private set; }
