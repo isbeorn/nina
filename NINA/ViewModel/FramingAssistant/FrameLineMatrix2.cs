@@ -86,11 +86,11 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
-        private void DetermineStepSizes(ViewportFoV viewport) {
-            var decStep = viewport.VFoVDeg / 4d;
+        private void DetermineStepSizes() {
+            var decStep = currentViewport.VFoVDeg / 4d;
             decStep = STEPSIZES.Aggregate((x, y) => Math.Abs(x - decStep) < Math.Abs(y - decStep) ? x : y);
 
-            var raStep = viewport.HFoVDeg / 4d;
+            var raStep = currentViewport.HFoVDeg / 4d;
             raStep = STEPSIZES.Aggregate((x, y) => Math.Abs(x - raStep) < Math.Abs(y - raStep) ? x : y);
 
             resolution = Math.Min(raStep, decStep) / 4;
@@ -109,25 +109,26 @@ namespace NINA.ViewModel.FramingAssistant {
         private double currentDecStep;
 
         public void CalculatePoints(ViewportFoV viewport) {
-            DetermineStepSizes(viewport);
+            this.currentViewport = viewport;
+            DetermineStepSizes();
 
             RAPoints.Clear();
             DecPoints.Clear();
 
             for (double ra = 0; ra < 360; ra += currentRAStep) {
-                CalculateRAPoints(viewport, ra);
+                CalculateRAPoints(ra);
             }
 
             for (double dec = 0; dec <= maxDec; dec += currentDecStep) {
-                CalculateDecPoints(viewport, dec);
+                CalculateDecPoints(dec);
             }
             for (double dec = 0; dec >= -maxDec; dec -= currentDecStep) {
-                CalculateDecPoints(viewport, dec);
+                CalculateDecPoints(dec);
             }
         }
 
-        private PointF Project(ViewportFoV viewport, Coordinates coordinates) {
-            var p = coordinates.XYProjection(viewport);
+        private PointF Project(Coordinates coordinates) {
+            var p = coordinates.XYProjection(currentViewport);
             return new PointF((float)p.X, (float)p.Y);
         }
 
@@ -136,26 +137,26 @@ namespace NINA.ViewModel.FramingAssistant {
         /// </summary>
         /// <param name="viewport"></param>
         /// <param name="ra"></param>
-        private void CalculateRAPoints(ViewportFoV viewport, double ra) {
+        private void CalculateRAPoints(double ra) {
             var list = new List<PointF>();
             var thickness = 1;
             Coordinates prevCoordinate = null;
             bool atLeastOneInside = false;
             foreach (var coordinate in raCoordinateMatrix[ra]) {
-                if (viewport.ContainsCoordinates(coordinate)) {
+                if (currentViewport.ContainsCoordinates(coordinate)) {
                     atLeastOneInside = true;
                     if (prevCoordinate != null) {
-                        list.Add(Project(viewport, prevCoordinate));
+                        list.Add(Project(prevCoordinate));
                         prevCoordinate = null;
                     }
 
                     if (coordinate.RADegrees == 0 || coordinate.RADegrees == 180) {
                         thickness = 3;
                     }
-                    list.Add(Project(viewport, coordinate));
+                    list.Add(Project(coordinate));
                 } else {
                     if (atLeastOneInside) {
-                        list.Add(Project(viewport, coordinate));
+                        list.Add(Project(coordinate));
                         break;
                     } else {
                         prevCoordinate = coordinate;
@@ -170,7 +171,7 @@ namespace NINA.ViewModel.FramingAssistant {
         /// </summary>
         /// <param name="viewport"></param>
         /// <param name="dec"></param>
-        private void CalculateDecPoints(ViewportFoV viewport, double dec) {
+        private void CalculateDecPoints(double dec) {
             var thickness = 1;
             double? prevRA = null;
             double? stepRA = null;
@@ -184,7 +185,7 @@ namespace NINA.ViewModel.FramingAssistant {
             Coordinates previous = null;
             foreach (var coordinate in decCoordinateMatrix[dec]) {
                 degreeSum += coordinate.RADegrees;
-                if (viewport.ContainsCoordinates(coordinate)) {
+                if (currentViewport.ContainsCoordinates(coordinate)) {
                     if (coordinate.Dec == 0) {
                         thickness = 3;
                     }
@@ -193,7 +194,7 @@ namespace NINA.ViewModel.FramingAssistant {
                     if (stepRA == null && prevRA != null) {
                         stepRA = Math.Round((prevRA.Value - coordinate.RADegrees), 5);
                     }
-                    var pointF = Project(viewport, coordinate);
+                    var pointF = Project(coordinate);
 
                     if (prevRA != null && Math.Round((prevRA.Value - coordinate.RADegrees), 5) != stepRA) {
                         node = list.First;
@@ -209,9 +210,9 @@ namespace NINA.ViewModel.FramingAssistant {
 
                     if (!lastInside && previous != null) {
                         if (circled) {
-                            list.AddBefore(node, Project(viewport, previous));
+                            list.AddBefore(node, Project(previous));
                         } else {
-                            list.AddLast(Project(viewport, previous));
+                            list.AddLast(Project(previous));
                         }
                     }
 
@@ -219,7 +220,7 @@ namespace NINA.ViewModel.FramingAssistant {
                     prevRA = coordinate.RADegrees;
                 } else {
                     if (lastInside) {
-                        list.AddAfter(node, Project(viewport, coordinate));
+                        list.AddAfter(node, Project(coordinate));
                         lastInside = false;
                     }
                 }
@@ -233,6 +234,7 @@ namespace NINA.ViewModel.FramingAssistant {
         public List<FrameLine> DecPoints { get; private set; }
 
         private static System.Drawing.Pen gridPen = new System.Drawing.Pen(System.Drawing.Color.SteelBlue);
+        private ViewportFoV currentViewport;
 
         public void Draw(Graphics g) {
             foreach (var frameLine in this.RAPoints) {
