@@ -58,7 +58,7 @@ namespace NINA.ViewModel.FramingAssistant {
             Cache = new CacheSkySurvey(profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory);
             Opacity = 0.2;
 
-            SkyMapAnnotator = new SkyMapAnnotator(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
+            SkyMapAnnotator = new SkyMapAnnotator(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation, telescopeMediator);
 
             var defaultCoordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
             DSO = new DeepSkyObject(string.Empty, defaultCoordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
@@ -159,8 +159,8 @@ namespace NINA.ViewModel.FramingAssistant {
                     FieldOfView = Math.Max(1, FieldOfView - stepSize);
                 }
             } else {
-                if (FieldOfView < 60) {
-                    FieldOfView = Math.Min(60, FieldOfView + stepSize);
+                if (FieldOfView < 200) {
+                    FieldOfView = Math.Min(200, FieldOfView + stepSize);
                 }
             }
             CalculateRectangle(SkyMapAnnotator.ChangeFoV(FieldOfView));

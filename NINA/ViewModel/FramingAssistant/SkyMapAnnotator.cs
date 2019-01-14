@@ -1,6 +1,8 @@
 ﻿using NINA.Model;
+using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Mediator.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,11 +14,12 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Color = System.Drawing.Color;
+using Pen = System.Drawing.Pen;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace NINA.ViewModel.FramingAssistant {
 
-    internal class SkyMapAnnotator : BaseINPC {
+    internal class SkyMapAnnotator : BaseINPC, ITelescopeConsumer {
         private readonly DatabaseInteraction dbInstance;
         public ViewportFoV ViewportFoV { get; private set; }
         private List<Constellation> dbConstellations;
@@ -24,7 +27,8 @@ namespace NINA.ViewModel.FramingAssistant {
         private Bitmap img;
         private Graphics g;
 
-        public SkyMapAnnotator(string databaseLocation) {
+        public SkyMapAnnotator(string databaseLocation, ITelescopeMediator mediator) {
+            mediator.RegisterConsumer(this);
             dbInstance = new DatabaseInteraction(databaseLocation);
             DSOInViewport = new List<FramingDSO>();
             ConstellationsInViewport = new List<FramingConstellation>();
@@ -328,16 +332,51 @@ namespace NINA.ViewModel.FramingAssistant {
                 UpdateAndDrawGrid();
             }
 
+            if (telescopeConnected) {
+                DrawTelescope();
+            }
+
             var source = ImageAnalysis.ConvertBitmap(img, PixelFormats.Bgra32);
             source.Freeze();
             SkyMapOverlay = source;
         }
+
+        private void DrawTelescope() {
+            System.Windows.Point scopePosition = telescopeCoordinates.XYProjection(ViewportFoV);
+            g.DrawEllipse(ScopePen, (float)(scopePosition.X - 15), (float)(scopePosition.Y - 15), 30, 30);
+            g.DrawLine(ScopePen, (float)(scopePosition.X), (float)(scopePosition.Y - 15),
+                (float)(scopePosition.X), (float)(scopePosition.Y - 5));
+            g.DrawLine(ScopePen, (float)(scopePosition.X), (float)(scopePosition.Y + 5),
+                (float)(scopePosition.X), (float)(scopePosition.Y + 15));
+            g.DrawLine(ScopePen, (float)(scopePosition.X - 15), (float)(scopePosition.Y),
+                (float)(scopePosition.X - 5), (float)(scopePosition.Y));
+            g.DrawLine(ScopePen, (float)(scopePosition.X + 5), (float)(scopePosition.Y),
+                (float)(scopePosition.X + 15), (float)(scopePosition.Y));
+        }
+
+        private static readonly Pen ScopePen = new Pen(Color.FromArgb(128, Color.Yellow), 2.0f);
 
         public BitmapSource SkyMapOverlay {
             get => skyMapOverlay;
             set {
                 skyMapOverlay = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        private bool telescopeConnected;
+        private Coordinates telescopeCoordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
+
+        public void UpdateDeviceInfo(TelescopeInfo deviceInfo) {
+            if (deviceInfo.Connected) {
+                telescopeConnected = true;
+                var coordinates = deviceInfo.Coordinates.Transform(Epoch.J2000);
+                if (Math.Abs(telescopeCoordinates.RADegrees - coordinates.RADegrees) > 0.0001 || Math.Abs(telescopeCoordinates.Dec - coordinates.Dec) > 0.0001) {
+                    telescopeCoordinates = coordinates;
+                    UpdateSkyMap();
+                }
+            } else {
+                telescopeConnected = false;
             }
         }
     }
