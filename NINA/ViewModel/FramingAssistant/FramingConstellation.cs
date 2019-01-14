@@ -58,13 +58,11 @@ namespace NINA.ViewModel.FramingAssistant {
             foreach (var star in constellation.Stars) {
                 star.Radius = (-3.375f * star.Mag + 23.25f) / (float)(viewport.VFoVDeg / 8f);
             }
-
-            RecalculateConstellationPoints(viewport);
         }
 
         private readonly Coordinates constellationCenter;
 
-        public void RecalculateConstellationPoints(ViewportFoV reference) {
+        public void RecalculateConstellationPoints(ViewportFoV reference, bool calculateConnections) {
             // calculate all star positions for the constellation once and add them to the star collection for drawing if they're visible
             foreach (var star in constellation.Stars) {
                 var starPosition = star.Coords.XYProjection(reference);
@@ -78,22 +76,25 @@ namespace NINA.ViewModel.FramingAssistant {
                 }
             }
 
-            // now we check what lines are visible in the fov and only add those connections as well
-            foreach (var starConnection in constellation.StarConnections) {
-                var isInBounds = !(reference.IsOutOfViewportBounds(starConnection.Item1.Position) &&
-                                    reference.IsOutOfViewportBounds(starConnection.Item2.Position));
-                var contains = Points.Contains(starConnection);
-                if (isInBounds && !contains) {
-                    Points.Add(starConnection);
-                } else if (!isInBounds && contains) {
-                    Points.Remove(starConnection);
+            if (calculateConnections) {
+                // now we check what lines are visible in the fov and only add those connections as well
+                foreach (var starConnection in constellation.StarConnections) {
+                    var isInBounds = !(reference.IsOutOfViewportBounds(starConnection.Item1.Position) &&
+                                       reference.IsOutOfViewportBounds(starConnection.Item2.Position));
+                    var contains = Points.Contains(starConnection);
+                    if (isInBounds && !contains) {
+                        Points.Add(starConnection);
+                    } else if (!isInBounds && contains) {
+                        Points.Remove(starConnection);
+                    }
                 }
+
+                var p = constellationCenter.XYProjection(reference);
+                CenterPoint = new PointF((float)p.X, (float)p.Y);
             }
-            var p = constellationCenter.XYProjection(reference);
-            CenterPoint = new PointF((float)p.X, (float)p.Y);
         }
 
-        public void Draw(Graphics g) {
+        public void DrawAnnotations(Graphics g) {
             var constellationSize = g.MeasureString(this.Name, font);
             g.DrawString(this.Name, font, constColorBrush, (this.CenterPoint.X - constellationSize.Width / 2), (this.CenterPoint.Y));
             foreach (var starConnection in this.Points) {
@@ -103,19 +104,24 @@ namespace NINA.ViewModel.FramingAssistant {
             }
 
             foreach (var star in this.Stars) {
-                g.FillEllipse(starColorBrush, (star.Position.X - star.Radius), (star.Position.Y - star.Radius), star.Radius * 2, star.Radius * 2);
                 var size = g.MeasureString(star.Name, starfont);
                 g.DrawString(star.Name, starfont, starFontColorBrush, (star.Position.X + star.Radius - size.Width / 2), (star.Position.Y + star.Radius * 2 + 5));
             }
         }
 
+        public void DrawStars(Graphics g) {
+            foreach (var star in this.Stars) {
+                g.FillEllipse(starColorBrush, (star.Position.X - star.Radius), (star.Position.Y - star.Radius), star.Radius * 2, star.Radius * 2);
+            }
+        }
+
         private static Font font = new Font("Segoe UI", 11, System.Drawing.FontStyle.Bold);
-        private static Font starfont = new Font("Segoe UI", 9, System.Drawing.FontStyle.Italic);
+        private static Font starfont = new Font("Segoe UI", 8, System.Drawing.FontStyle.Italic);
         private static SolidBrush constColorBrush = new SolidBrush(Color.FromArgb(128, 255, 255, 153));
         private static Pen starPen = new Pen(Color.FromArgb(128, 255, 255, 255));
         private static Pen constLinePen = new Pen(Color.FromArgb(128, 0, 255, 0));
         private static SolidBrush starFontColorBrush = new SolidBrush(Color.FromArgb(128, 255, 215, 0));
-        private static SolidBrush starColorBrush = new SolidBrush(Color.FromArgb(128, 255, 255, 255));
+        private static SolidBrush starColorBrush = new SolidBrush(Color.FromArgb(200, 255, 255, 255));
 
         public PointF CenterPoint { get; private set; }
 

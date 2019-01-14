@@ -21,17 +21,13 @@
 
 #endregion "copyright"
 
-using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NINA.ViewModel.FramingAssistant {
 
     internal class FramingConstellationBoundary {
-        private static Pen boundaryPen = new Pen(Color.Khaki);
+        private static Pen boundaryPen = new Pen(Color.FromArgb(128, Color.Khaki), 0.1f);
         public List<PointF> Points = new List<PointF>();
 
         public void Draw(Graphics g) {

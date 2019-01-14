@@ -233,7 +233,7 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
-        private void UpdateDSOs() {
+        private void UpdateAndAnnotateDSOs() {
             var allGatheredDSO = GetDeepSkyObjectsForViewport();
 
             var existingDSOs = new List<string>();
@@ -255,9 +255,13 @@ namespace NINA.ViewModel.FramingAssistant {
             foreach (var dso in DSOInViewport) {
                 dso.Draw(g);
             }
+
+            foreach (var constellation in ConstellationsInViewport) {
+                constellation.DrawStars(g);
+            }
         }
 
-        private void UpdateConstellations() {
+        private void UpdateAndAnnotateConstellations(bool drawAnnotations) {
             foreach (var constellation in dbConstellations) {
                 var viewPortConstellation = ConstellationsInViewport.FirstOrDefault(x => x.Id == constellation.Id);
 
@@ -273,28 +277,32 @@ namespace NINA.ViewModel.FramingAssistant {
 
                 if (isInViewport) {
                     if (viewPortConstellation == null) {
-                        ConstellationsInViewport.Add(new FramingConstellation(constellation, ViewportFoV));
+                        var framingConstellation = new FramingConstellation(constellation, ViewportFoV);
+                        framingConstellation.RecalculateConstellationPoints(ViewportFoV, drawAnnotations);
+                        ConstellationsInViewport.Add(framingConstellation);
                     } else {
-                        viewPortConstellation.RecalculateConstellationPoints(ViewportFoV);
+                        viewPortConstellation.RecalculateConstellationPoints(ViewportFoV, drawAnnotations);
                     }
                 } else if (viewPortConstellation != null) {
                     ConstellationsInViewport.Remove(viewPortConstellation);
                 }
             }
 
-            foreach (var constellation in ConstellationsInViewport) {
-                constellation.Draw(g);
+            if (drawAnnotations) {
+                foreach (var constellation in ConstellationsInViewport) {
+                    constellation.DrawAnnotations(g);
+                }
             }
         }
 
-        private void UpdateConstellationBoundaries() {
+        private void UpdateAndDrawConstellationBoundaries() {
             CalculateConstellationBoundaries();
             foreach (var constellationBoundary in ConstellationBoundariesInViewPort) {
                 constellationBoundary.Draw(g);
             }
         }
 
-        private void UpdateGrid() {
+        private void UpdateAndDrawGrid() {
             ClearFrameLineMatrix();
             CalculateFrameLineMatrix();
 
@@ -304,20 +312,20 @@ namespace NINA.ViewModel.FramingAssistant {
         public void UpdateSkyMap() {
             g.Clear(Color.Transparent);
 
-            if (AnnotateDSO) {
-                UpdateDSOs();
+            if (!AnnotateConstellations && AnnotateDSO || AnnotateConstellations) {
+                UpdateAndAnnotateConstellations(AnnotateConstellations);
             }
 
-            if (AnnotateConstellations) {
-                UpdateConstellations();
+            if (AnnotateDSO) {
+                UpdateAndAnnotateDSOs();
             }
 
             if (AnnotateConstellationBoundaries) {
-                UpdateConstellationBoundaries();
+                UpdateAndDrawConstellationBoundaries();
             }
 
             if (AnnotateGrid) {
-                UpdateGrid();
+                UpdateAndDrawGrid();
             }
 
             var source = ImageAnalysis.ConvertBitmap(img, PixelFormats.Bgra32);
