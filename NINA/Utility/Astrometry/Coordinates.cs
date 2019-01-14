@@ -246,6 +246,51 @@ namespace NINA.Utility.Astrometry {
             );
         }
 
+        private Coordinates ShiftStenographic(double deltaX, double deltaY, double rotation) {
+            var deltaXAngle = Angle.ByDegree(-deltaX);
+            var deltaYAngle = Angle.ByDegree(-deltaY);
+
+            var rotationAngle = Angle.ByDegree(rotation);
+
+            if (rotationAngle.Degree != 0) {
+                //Recalculate delta based on rotation
+                //No spherical or other aberrations are assumed
+                var originalDeltaX = deltaXAngle;
+                var rotationAngleSin = rotationAngle.Sin();
+                var rotationAngleCos = rotationAngle.Cos();
+                deltaXAngle = deltaXAngle * rotationAngleCos - deltaYAngle * rotationAngleSin;
+                deltaYAngle = deltaYAngle * rotationAngleCos + originalDeltaX * rotationAngleSin;
+            }
+
+            var originDecSin = decAngle.Sin();
+            var originDecCos = decAngle.Cos();
+
+            var sins = deltaXAngle * deltaXAngle + deltaYAngle * deltaYAngle;
+
+            var dz = (4.0 - sins) / (4.0 + sins);
+
+            var targetDec = (dz * originDecSin + deltaYAngle * originDecCos * (1.0 + dz) / 2.0).Asin();
+            var targetRA = (deltaXAngle * (1.0 + dz) / (2.0 * targetDec.Cos())).Asin();
+
+            var mg = 2 * (targetDec.Sin() * originDecCos - targetDec.Cos() * originDecSin * targetRA.Cos()) /
+                (1.0 + targetDec.Sin() * originDecSin + targetDec.Cos() * originDecCos * targetRA.Cos());
+
+            if (Math.Abs((mg - deltaYAngle).Radians) > 1.0e-5) {
+                targetRA = Math.PI - targetRA;
+            }
+
+            targetRA += raAngle;
+
+            if (targetRA.Degree < 0) { targetRA = Angle.ByDegree(targetRA.Degree + 360); }
+            if (targetRA.Degree >= 360) { targetRA = Angle.ByDegree(targetRA.Degree - 360); }
+
+            return new Coordinates(
+                targetRA,
+                targetDec,
+                Epoch
+            );
+        }
+
         public enum ProjectionType {
             Gnomonic,
             Stenographic
@@ -257,27 +302,27 @@ namespace NINA.Utility.Astrometry {
             double rotation,
             double scaleX,
             double scaleY,
-            ProjectionType type = ProjectionType.Gnomonic
+            ProjectionType type = ProjectionType.Stenographic
         ) {
             var deltaXDeg = deltaX * Astrometry.ArcsecToDegree(scaleX);
             var deltaYDeg = deltaY * Astrometry.ArcsecToDegree(scaleY);
             return this.Shift(deltaXDeg, deltaYDeg, rotation, type);
         }
 
-        public Coordinates Shift(double deltaX, double deltaY, double rotation, ProjectionType type = ProjectionType.Gnomonic) {
+        public Coordinates Shift(double deltaX, double deltaY, double rotation, ProjectionType type = ProjectionType.Stenographic) {
             switch (type) {
                 case ProjectionType.Gnomonic:
                     return ShiftGnomonic(deltaX, deltaY, rotation);
 
                 case ProjectionType.Stenographic:
-                    throw new NotImplementedException();
+                    return ShiftStenographic(deltaX, deltaY, rotation);
 
                 default:
                     return ShiftGnomonic(deltaX, deltaY, rotation);
             }
         }
 
-        public Point XYProjection(ViewportFoV viewPort, ProjectionType type = ProjectionType.Gnomonic) {
+        public Point XYProjection(ViewportFoV viewPort, ProjectionType type = ProjectionType.Stenographic) {
             return XYProjection(
                 viewPort.CenterCoordinates,
                 viewPort.ViewPortCenterPoint,
@@ -286,7 +331,7 @@ namespace NINA.Utility.Astrometry {
                 viewPort.Rotation);
         }
 
-        public Point XYProjection(Coordinates center, Point centerPointPixels, double horizResArcSecPx, double vertResArcSecPix, double rotation, ProjectionType type = ProjectionType.Gnomonic) {
+        public Point XYProjection(Coordinates center, Point centerPointPixels, double horizResArcSecPx, double vertResArcSecPix, double rotation, ProjectionType type = ProjectionType.Stenographic) {
             switch (type) {
                 case ProjectionType.Gnomonic:
                     return GnomonicTanProjection(center, centerPointPixels, horizResArcSecPx, vertResArcSecPix, rotation);
@@ -393,7 +438,7 @@ namespace NINA.Utility.Astrometry {
             var imageRotationSin = imageRotation.Sin();
             var imageRotationCos = imageRotation.Cos();
 
-            var dd = Angle.ByRadians(2.0 / (1.0 + targetDecSin * centerDegSin + targetDecCos * centerDegCos * raDiffCos).Radians);
+            var dd = 2.0 / (1.0 + targetDecSin * centerDegSin + targetDecCos * centerDegCos * raDiffCos);
             var raMod = dd * raDiff.Sin() * targetDecCos;
             var decMod = dd * (targetDecSin * centerDegCos - targetDecCos * centerDegSin * raDiffCos);
 
