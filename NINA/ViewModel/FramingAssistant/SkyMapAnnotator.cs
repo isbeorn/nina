@@ -342,16 +342,18 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         private void DrawTelescope() {
-            System.Windows.Point scopePosition = telescopeCoordinates.XYProjection(ViewportFoV);
-            g.DrawEllipse(ScopePen, (float)(scopePosition.X - 15), (float)(scopePosition.Y - 15), 30, 30);
-            g.DrawLine(ScopePen, (float)(scopePosition.X), (float)(scopePosition.Y - 15),
-                (float)(scopePosition.X), (float)(scopePosition.Y - 5));
-            g.DrawLine(ScopePen, (float)(scopePosition.X), (float)(scopePosition.Y + 5),
-                (float)(scopePosition.X), (float)(scopePosition.Y + 15));
-            g.DrawLine(ScopePen, (float)(scopePosition.X - 15), (float)(scopePosition.Y),
-                (float)(scopePosition.X - 5), (float)(scopePosition.Y));
-            g.DrawLine(ScopePen, (float)(scopePosition.X + 5), (float)(scopePosition.Y),
-                (float)(scopePosition.X + 15), (float)(scopePosition.Y));
+            if (ViewportFoV.ContainsCoordinates(telescopeCoordinates)) {
+                System.Windows.Point scopePosition = telescopeCoordinates.XYProjection(ViewportFoV);
+                g.DrawEllipse(ScopePen, (float)(scopePosition.X - 15), (float)(scopePosition.Y - 15), 30, 30);
+                g.DrawLine(ScopePen, (float)(scopePosition.X), (float)(scopePosition.Y - 15),
+                    (float)(scopePosition.X), (float)(scopePosition.Y - 5));
+                g.DrawLine(ScopePen, (float)(scopePosition.X), (float)(scopePosition.Y + 5),
+                    (float)(scopePosition.X), (float)(scopePosition.Y + 15));
+                g.DrawLine(ScopePen, (float)(scopePosition.X - 15), (float)(scopePosition.Y),
+                    (float)(scopePosition.X - 5), (float)(scopePosition.Y));
+                g.DrawLine(ScopePen, (float)(scopePosition.X + 5), (float)(scopePosition.Y),
+                    (float)(scopePosition.X + 15), (float)(scopePosition.Y));
+            }
         }
 
         private static readonly Pen ScopePen = new Pen(Color.FromArgb(128, Color.Yellow), 2.0f);
@@ -371,7 +373,7 @@ namespace NINA.ViewModel.FramingAssistant {
             if (deviceInfo.Connected) {
                 telescopeConnected = true;
                 var coordinates = deviceInfo.Coordinates.Transform(Epoch.J2000);
-                if (Math.Abs(telescopeCoordinates.RADegrees - coordinates.RADegrees) > 0.0001 || Math.Abs(telescopeCoordinates.Dec - coordinates.Dec) > 0.0001) {
+                if (Math.Abs(telescopeCoordinates.RADegrees - coordinates.RADegrees) > 0.01 || Math.Abs(telescopeCoordinates.Dec - coordinates.Dec) > 0.01) {
                     telescopeCoordinates = coordinates;
                     UpdateSkyMap();
                 }
