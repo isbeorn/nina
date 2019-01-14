@@ -93,7 +93,7 @@ namespace NINA.ViewModel.FramingAssistant {
             var raStep = viewport.HFoVDeg / 4d;
             raStep = STEPSIZES.Aggregate((x, y) => Math.Abs(x - raStep) < Math.Abs(y - raStep) ? x : y);
 
-            resolution = Math.Min(raStep, decStep) / 3;
+            resolution = Math.Min(raStep, decStep) / 4;
 
             if (currentRAStep != raStep) {
                 currentRAStep = raStep;
@@ -178,8 +178,10 @@ namespace NINA.ViewModel.FramingAssistant {
             var inViewDegreeSum = 0d;
             var degreeSum = 0d;
             var list = new LinkedList<PointF>();
+            bool lastInside = false;
 
             LinkedListNode<PointF> node = null;
+            Coordinates previous = null;
             foreach (var coordinate in decCoordinateMatrix[dec]) {
                 degreeSum += coordinate.RADegrees;
                 if (viewport.ContainsCoordinates(coordinate)) {
@@ -204,8 +206,24 @@ namespace NINA.ViewModel.FramingAssistant {
                             node = list.AddLast(pointF);
                         }
                     }
+
+                    if (!lastInside && previous != null) {
+                        if (circled) {
+                            list.AddBefore(node, Project(viewport, previous));
+                        } else {
+                            list.AddLast(Project(viewport, previous));
+                        }
+                    }
+
+                    lastInside = true;
                     prevRA = coordinate.RADegrees;
+                } else {
+                    if (lastInside) {
+                        list.AddAfter(node, Project(viewport, coordinate));
+                        lastInside = false;
+                    }
                 }
+                previous = coordinate;
             }
             DecPoints.Add(new FrameLine() { Collection = new List<PointF>(list), StrokeThickness = thickness, Closed = inViewDegreeSum == degreeSum });
         }
