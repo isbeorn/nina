@@ -1,4 +1,5 @@
-﻿using NINA.Utility.Astrometry;
+﻿using System;
+using NINA.Utility.Astrometry;
 using System.Windows;
 using Math = System.Math;
 using Point = System.Windows.Point;
@@ -10,6 +11,7 @@ namespace NINA.ViewModel.FramingAssistant {
         public Coordinates TopCenter { get; private set; }
         public Coordinates TopLeft { get; private set; }
         public Coordinates BottomLeft { get; private set; }
+        public Coordinates BottomCenter { get; private set; }
         public Coordinates CenterCoordinates { get; private set; }
         public double AbsCalcTopDec { get; private set; }
         public double AbsCalcBottomDec { get; private set; }
@@ -29,6 +31,8 @@ namespace NINA.ViewModel.FramingAssistant {
         public double Rotation { get; }
         public double OriginalVFoV { get; }
         public double OriginalHFoV { get; }
+        public double OriginalWidth { get; }
+        public double OriginalHeight { get; }
         public double CalcRAMin { get; private set; }
         public double CalcRAMax { get; private set; }
         private readonly double horizontalBoundsPadding;
@@ -36,6 +40,9 @@ namespace NINA.ViewModel.FramingAssistant {
 
         public ViewportFoV(Coordinates centerCoordinates, double vFoVDegrees, double width, double height, double rotation) {
             Rotation = rotation;
+
+            OriginalWidth = width;
+            OriginalHeight = height;
 
             // I don't know why you need to use -Rotation-90 but this is what works
             (Width, Height) = GetBoundingBoxOfRotatedRectangle(-Rotation - 90, width, height);
@@ -82,6 +89,13 @@ namespace NINA.ViewModel.FramingAssistant {
                      point.Y > Height + verticalBoundsPadding);
         }
 
+        public bool IsOutOfViewportBounds(System.Drawing.PointF point) {
+            return (point.X < -1 * horizontalBoundsPadding ||
+                     point.X > Width + horizontalBoundsPadding ||
+                     point.Y < -1 * verticalBoundsPadding ||
+                     point.Y > Height + verticalBoundsPadding);
+        }
+
         public void Shift(Vector delta) {
             if (delta.X == 0 && delta.Y == 0 && AbsoluteCenterCoordinates != null) {
                 return;
@@ -94,25 +108,22 @@ namespace NINA.ViewModel.FramingAssistant {
             TopCenter = AbsoluteCenterCoordinates.Shift(0, -OriginalVFoV / 2, 0);
             TopLeft = AbsoluteCenterCoordinates.Shift(-OriginalHFoV / 2, (-OriginalVFoV / 2), 0);
             BottomLeft = AbsoluteCenterCoordinates.Shift(-OriginalHFoV / 2, (OriginalVFoV / 2), 0);
+            BottomCenter = AbsoluteCenterCoordinates.Shift(0, OriginalVFoV / 2, 0);
 
-            VFoVDegTop = Math.Abs(TopCenter.Dec - AbsoluteCenterCoordinates.Dec);
-            VFoVDegBottom = Math.Abs(AbsoluteCenterCoordinates.Dec - BottomLeft.Dec);
+            VFoVDegTop = Math.Abs(Math.Max(TopCenter.Dec, TopLeft.Dec) - AbsoluteCenterCoordinates.Dec);
+            VFoVDegBottom = Math.Abs(AbsoluteCenterCoordinates.Dec - Math.Min(BottomLeft.Dec, BottomCenter.Dec));
 
             HFoVDeg = TopLeft.RADegrees > TopCenter.RADegrees
                 ? TopLeft.RADegrees - TopCenter.RADegrees
                 : TopLeft.RADegrees - TopCenter.RADegrees + 360;
             HFoVDeg *= 2;
 
-            // if the bottom left point is below 0 assume fov for bottom is the same as for top
-            if (BottomLeft.Dec < 0) {
-                VFoVDegBottom = VFoVDegTop;
-            }
-
             // if we're below 0 we need to flip all calculated decs
             if (CenterCoordinates.Dec < 0) {
                 BottomLeft.Dec *= -1;
                 TopLeft.Dec *= -1;
                 TopCenter.Dec *= -1;
+                BottomCenter.Dec *= -1;
                 AboveZero = false;
             } else {
                 AboveZero = true;

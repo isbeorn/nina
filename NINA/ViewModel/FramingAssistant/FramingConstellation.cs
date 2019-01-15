@@ -1,16 +1,14 @@
 ﻿using NINA.Model;
-using NINA.Utility;
 using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
-using System.Windows;
 
 namespace NINA.ViewModel.FramingAssistant {
 
-    internal class FramingConstellation : BaseINPC {
+    internal class FramingConstellation {
         private Constellation constellation;
-        private Point centerPoint;
 
         public FramingConstellation(Constellation constellation, ViewportFoV viewport) {
             this.constellation = constellation;
@@ -22,15 +20,17 @@ namespace NINA.ViewModel.FramingAssistant {
             var constellationStopDec = constellation.Stars.Select(m => m.Coords.Dec).Max();
 
             if (constellation.GoesOverRaZero) {
-                double stopRA = 0;
+                double stopRA = double.MaxValue;
                 double startRA = 0;
-                IEnumerable<IGrouping<bool, Star>> groups = constellation.Stars.GroupBy(s => s.Coords.RADegrees > 180);
-                foreach (var group in groups) {
-                    if (group.Key) {
-                        stopRA = group.Select(m => m.Coords.RADegrees).Min();
+                foreach (var star in constellation.Stars) {
+                    if (star.Coords.RADegrees > 180) {
+                        stopRA = Math.Min(stopRA, star.Coords.RADegrees);
                     } else {
-                        startRA = group.Select(m => m.Coords.RADegrees).Max();
+                        startRA = Math.Max(startRA, star.Coords.RADegrees);
                     }
+                }
+                if (stopRA == double.MaxValue) {
+                    stopRA = 0;
                 }
 
                 var distance = startRA + 360 - stopRA;
@@ -52,75 +52,84 @@ namespace NINA.ViewModel.FramingAssistant {
                     Coordinates.RAType.Degrees);
             }
 
-            Points = new AsyncObservableCollection<Tuple<Star, Star>>();
-            Stars = new AsyncObservableCollection<Star>();
+            Points = new HashSet<Tuple<Star, Star>>();
+            Stars = new HashSet<Star>();
 
             foreach (var star in constellation.Stars) {
-                star.Radius = (-3.375 * star.Mag + 23.25) / (viewport.VFoVDeg / 8);
+                star.Radius = (-3.375f * star.Mag + 23.25f) / (float)(viewport.VFoVDeg / 8f);
             }
-
-            RecalculateConstellationPoints(viewport);
         }
 
-        private List<FrameLine> starLines;
-
-        private AsyncObservableCollection<Star> stars;
-        private AsyncObservableCollection<Tuple<Star, Star>> points;
         private readonly Coordinates constellationCenter;
 
-        public void RecalculateConstellationPoints(ViewportFoV reference) {
+        public void RecalculateConstellationPoints(ViewportFoV reference, bool calculateConnections) {
             // calculate all star positions for the constellation once and add them to the star collection for drawing if they're visible
             foreach (var star in constellation.Stars) {
-                star.Position = star.Coords.GnomonicTanProjection(reference);
+                var starPosition = star.Coords.XYProjection(reference);
+                star.Position = new PointF((float)starPosition.X, (float)starPosition.Y);
                 var isInBounds = !reference.IsOutOfViewportBounds(star.Position);
-                var index = Stars.IndexOf(star);
-                if (isInBounds && index == -1) {
+                var contains = Stars.Contains(star);
+                if (isInBounds && !contains) {
                     Stars.Add(star);
-                } else if (!isInBounds && index > 0) {
+                } else if (!isInBounds && contains) {
                     Stars.Remove(star);
                 }
             }
 
-            // now we check what lines are visible in the fov and only add those connections as well
-            foreach (var starConnection in constellation.StarConnections) {
-                var isInBounds = !(reference.IsOutOfViewportBounds(starConnection.Item1.Position) &&
-                                    reference.IsOutOfViewportBounds(starConnection.Item2.Position));
-                var index = Points.IndexOf(starConnection);
-                if (isInBounds && index == -1) {
-                    Points.Add(starConnection);
-                } else if (!isInBounds && index > 0) {
-                    Points.Remove(starConnection);
+            if (calculateConnections) {
+                // now we check what lines are visible in the fov and only add those connections as well
+                foreach (var starConnection in constellation.StarConnections) {
+                    var isInBounds = !(reference.IsOutOfViewportBounds(starConnection.Item1.Position) &&
+                                       reference.IsOutOfViewportBounds(starConnection.Item2.Position));
+                    var contains = Points.Contains(starConnection);
+                    if (isInBounds && !contains) {
+                        Points.Add(starConnection);
+                    } else if (!isInBounds && contains) {
+                        Points.Remove(starConnection);
+                    }
                 }
-            }
 
-            CenterPoint = constellationCenter.GnomonicTanProjection(reference);
-        }
-
-        public Point CenterPoint {
-            get => centerPoint;
-            set {
-                centerPoint = value;
-                RaisePropertyChanged();
+                var p = constellationCenter.XYProjection(reference);
+                CenterPoint = new PointF((float)p.X, (float)p.Y);
             }
         }
+
+        public void DrawAnnotations(Graphics g) {
+            var constellationSize = g.MeasureString(this.Name, font);
+            g.DrawString(this.Name, font, constColorBrush, (this.CenterPoint.X - constellationSize.Width / 2), (this.CenterPoint.Y));
+            foreach (var starConnection in this.Points) {
+                g.DrawLine(constLinePen, starConnection.Item1.Position.X,
+                starConnection.Item1.Position.Y, starConnection.Item2.Position.X,
+                starConnection.Item2.Position.Y);
+            }
+
+            foreach (var star in this.Stars) {
+                var size = g.MeasureString(star.Name, starfont);
+                g.DrawString(star.Name, starfont, starFontColorBrush, (star.Position.X + star.Radius - size.Width / 2), (star.Position.Y + star.Radius * 2 + 5));
+            }
+        }
+
+        public void DrawStars(Graphics g) {
+            foreach (var star in this.Stars) {
+                g.FillEllipse(starColorBrush, (star.Position.X - star.Radius), (star.Position.Y - star.Radius), star.Radius * 2, star.Radius * 2);
+            }
+        }
+
+        private static Font font = new Font("Segoe UI", 11, System.Drawing.FontStyle.Bold);
+        private static Font starfont = new Font("Segoe UI", 8, System.Drawing.FontStyle.Italic);
+        private static SolidBrush constColorBrush = new SolidBrush(Color.FromArgb(128, 255, 255, 153));
+        private static Pen starPen = new Pen(Color.FromArgb(128, 255, 255, 255));
+        private static Pen constLinePen = new Pen(Color.FromArgb(128, 0, 255, 0));
+        private static SolidBrush starFontColorBrush = new SolidBrush(Color.FromArgb(128, 255, 215, 0));
+        private static SolidBrush starColorBrush = new SolidBrush(Color.FromArgb(200, 255, 255, 255));
+
+        public PointF CenterPoint { get; private set; }
 
         public string Id { get; }
         public string Name { get; }
 
-        public AsyncObservableCollection<Star> Stars {
-            get => stars;
-            set {
-                stars = value;
-                RaisePropertyChanged();
-            }
-        }
+        public HashSet<Star> Stars { get; private set; }
 
-        public AsyncObservableCollection<Tuple<Star, Star>> Points {
-            get => points;
-            set {
-                points = value;
-                RaisePropertyChanged();
-            }
-        }
+        public HashSet<Tuple<Star, Star>> Points { get; private set; }
     }
 }

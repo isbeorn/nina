@@ -1,70 +1,137 @@
 ﻿using NINA.Model;
+using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
-using Nito.AsyncEx;
+using NINA.Utility.Mediator.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using Color = System.Drawing.Color;
+using Pen = System.Drawing.Pen;
+using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace NINA.ViewModel.FramingAssistant {
 
-    internal class SkyMapAnnotator : BaseINPC {
+    internal class SkyMapAnnotator : BaseINPC, ITelescopeConsumer {
         private readonly DatabaseInteraction dbInstance;
-        private AsyncObservableCollection<FramingDSO> dsoInViewport;
-        private ViewportFoV viewportFoV;
-        private FrameLineMatrix frameLineMatrix;
-        private AsyncObservableCollection<FramingConstellation> constellationsInViewport;
+        public ViewportFoV ViewportFoV { get; private set; }
         private List<Constellation> dbConstellations;
+        private Dictionary<string, DeepSkyObject> dbDSOs;
+        private Bitmap img;
+        private Graphics g;
 
-        public SkyMapAnnotator(string databaseLocation) {
+        public SkyMapAnnotator(string databaseLocation, ITelescopeMediator mediator) {
+            mediator.RegisterConsumer(this);
             dbInstance = new DatabaseInteraction(databaseLocation);
-            DSOInViewport = new AsyncObservableCollection<FramingDSO>();
-            ConstellationsInViewport = new AsyncObservableCollection<FramingConstellation>();
-            FrameLineMatrix = new FrameLineMatrix();
-            ConstellationBoundaries = new AsyncLazy<Dictionary<string, ConstellationBoundary>>(async delegate {
-                return await GetConstellationBoundaries();
-            });
+            DSOInViewport = new List<FramingDSO>();
+            ConstellationsInViewport = new List<FramingConstellation>();
+            FrameLineMatrix = new FrameLineMatrix2();
+            ConstellationBoundaries = new Dictionary<string, ConstellationBoundary>();
         }
 
         public async Task Initialize(Coordinates centerCoordinates, double vFoVDegrees, double imageWidth, double imageHeight, double imageRotation, CancellationToken ct) {
-            viewportFoV = new ViewportFoV(centerCoordinates, vFoVDegrees, imageWidth, imageHeight, imageRotation);
+            AnnotateDSO = true;
+            AnnotateGrid = true;
 
-            dbConstellations = await dbInstance.GetConstellationsWithStars(ct);
+            ViewportFoV = new ViewportFoV(centerCoordinates, vFoVDegrees, imageWidth, imageHeight, imageRotation);
+
+            if (dbConstellations == null) {
+                dbConstellations = await dbInstance.GetConstellationsWithStars(ct);
+            }
+
+            if (dbDSOs == null) {
+                dbDSOs = (await dbInstance.GetDeepSkyObjects(string.Empty, new DatabaseInteraction.DeepSkyObjectSearchParams(), ct)).ToDictionary(x => x.Id, y => y);
+            }
 
             ConstellationsInViewport.Clear();
             ClearFrameLineMatrix();
-            ClearConstellationBoundaries();
 
-            await UpdateSkyMap(ct);
+            img = new Bitmap((int)ViewportFoV.OriginalWidth, (int)ViewportFoV.OriginalHeight, PixelFormat.Format32bppArgb);
 
-            FrameLineMatrix.CalculatePoints(viewportFoV);
-            await CalculateConstellationBoundaries();
+            g = Graphics.FromImage(img);
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+
+            FrameLineMatrix.CalculatePoints(ViewportFoV);
+            if (ConstellationBoundaries.Count == 0) {
+                ConstellationBoundaries = await GetConstellationBoundaries();
+            }
+
+            UpdateSkyMap();
         }
 
-        public FrameLineMatrix FrameLineMatrix {
-            get => frameLineMatrix;
+        public ViewportFoV ChangeFoV(double vFoVDegrees) {
+            ConstellationsInViewport.Clear();
+            ClearFrameLineMatrix();
+            ViewportFoV = new ViewportFoV(ViewportFoV.CenterCoordinates, vFoVDegrees, ViewportFoV.OriginalWidth, ViewportFoV.OriginalHeight, ViewportFoV.Rotation);
+
+            FrameLineMatrix.CalculatePoints(ViewportFoV);
+
+            UpdateSkyMap();
+
+            return ViewportFoV;
+        }
+
+        public FrameLineMatrix2 FrameLineMatrix { get; private set; }
+
+        public List<FramingDSO> DSOInViewport { get; private set; }
+
+        public List<FramingConstellation> ConstellationsInViewport { get; private set; }
+
+        private bool annotateConstellationBoundaries;
+
+        public bool AnnotateConstellationBoundaries {
+            get => annotateConstellationBoundaries;
             set {
-                frameLineMatrix = value;
+                annotateConstellationBoundaries = value;
                 RaisePropertyChanged();
             }
         }
 
-        public AsyncObservableCollection<FramingDSO> DSOInViewport {
-            get => dsoInViewport;
+        private bool dynamicFoV;
+
+        public bool DynamicFoV {
+            get {
+                return dynamicFoV;
+            }
             set {
-                dsoInViewport = value;
+                dynamicFoV = value;
                 RaisePropertyChanged();
             }
         }
 
-        public AsyncObservableCollection<FramingConstellation> ConstellationsInViewport {
-            get => constellationsInViewport;
+        private bool annotateConstellations;
+
+        public bool AnnotateConstellations {
+            get => annotateConstellations;
             set {
-                constellationsInViewport = value;
+                annotateConstellations = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool annotateGrid;
+
+        public bool AnnotateGrid {
+            get => annotateGrid;
+            set {
+                annotateGrid = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool annotateDSO;
+
+        public bool AnnotateDSO {
+            get => annotateDSO;
+            set {
+                annotateDSO = value;
                 RaisePropertyChanged();
             }
         }
@@ -73,76 +140,49 @@ namespace NINA.ViewModel.FramingAssistant {
         /// Query for skyobjects for a reference coordinate that overlap the current viewport
         /// </summary>
         /// <returns></returns>
-        public async Task<Dictionary<string, DeepSkyObject>> GetDeepSkyObjectsForViewport(CancellationToken ct) {
-            Dictionary<string, DeepSkyObject> dsoList = new Dictionary<string, DeepSkyObject>();
+        public Dictionary<string, DeepSkyObject> GetDeepSkyObjectsForViewport() {
+            var dsoList = new Dictionary<string, DeepSkyObject>();
 
-            DatabaseInteraction.DeepSkyObjectSearchParams param =
-                new DatabaseInteraction.DeepSkyObjectSearchParams();
-
-            // calculate size, at 10deg fov we want all items, at 45deg fov only the items that are larger than 100
-            // basic linear regression (:calculus:)
-            var size = (2.857 * viewportFoV.OriginalVFoV - 28.57);
-            if (size > 0) {
-                param.Size = new DatabaseInteraction.DeepSkyObjectSearchFromThru<string> {
-                    From = size.ToString(CultureInfo.InvariantCulture)
-                };
+            double minSize = 0;
+            if (!(Math.Min(ViewportFoV.OriginalHFoV, ViewportFoV.OriginalVFoV) < 10)) {
+                // Stuff has to be at least 3 pixel wide
+                minSize = 3 * Math.Min(ViewportFoV.ArcSecWidth, ViewportFoV.ArcSecHeight);
             }
+            var maxSize = Astrometry.DegreeToArcsec(2 * Math.Max(ViewportFoV.OriginalHFoV, ViewportFoV.OriginalVFoV));
+
+            var filteredDbDSO = dbDSOs.Where(d => (d.Value.Size != null && d.Value.Size > minSize && d.Value.Size < maxSize) || ViewportFoV.VFoVDeg <= 10).ToList();
 
             // if we're above 90deg centerTop will be different than centerBottom, otherwise it is equal
-            if (viewportFoV.IsAbove90) {
-                // then we want everything from bottomLeft to 90 or -90 to bottomLeft (which is flipped when dec < 0 so it's actually "top" left)
-                param.Declination = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = !viewportFoV.AboveZero ? -90 : viewportFoV.BottomLeft.Dec,
-                    Thru = !viewportFoV.AboveZero ? viewportFoV.BottomLeft.Dec : 90
-                };
-                param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = 0,
-                    Thru = 360
-                };
+            if (ViewportFoV.IsAbove90) {
+                dsoList = filteredDbDSO.Where(x =>
+                    x.Value.Coordinates.Dec > (!ViewportFoV.AboveZero ? -90 : ViewportFoV.CenterCoordinates.Dec - ViewportFoV.VFoVDegBottom)
+                    && x.Value.Coordinates.Dec < (!ViewportFoV.AboveZero ? ViewportFoV.CenterCoordinates.Dec + ViewportFoV.VFoVDegBottom : 90)
+                ).ToDictionary(x => x.Key, y => y.Value);
             } else {
-                // depending on orientation we might be flipped so we search from lowest point to highest point
-                param.Declination = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = Math.Min(viewportFoV.TopCenter.Dec, viewportFoV.BottomLeft.Dec),
-                    Thru = Math.Max(viewportFoV.BottomLeft.Dec, viewportFoV.TopCenter.Dec)
-                };
-                // since topLeft.RADegrees is always higher than centerTop.RADegrees (counterclockwise circle) we can subtract hFovDeg to get the full RA
-                param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = viewportFoV.TopLeft.RADegrees - viewportFoV.HFoVDeg,
-                    Thru = viewportFoV.TopLeft.RADegrees
-                };
-            }
-
-            // if the calculated from RA is lower than zero we have to search from that point to 360
-            // add the dso and then later search from 0 to the previous thru ra
-            if (param.RightAscension.From < 0) {
-                param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = 360 + param.RightAscension.From,
-                    Thru = 360
-                };
-
-                foreach (var dso in await dbInstance.GetDeepSkyObjects(
-                    string.Empty, param, ct)) {
-                    dsoList.Add(dso.Id, dso);
+                var raFrom = ViewportFoV.TopLeft.RADegrees - ViewportFoV.HFoVDeg;
+                var raThru = ViewportFoV.TopLeft.RADegrees;
+                if (raFrom < 0) {
+                    dsoList = filteredDbDSO.Where(x =>
+                        (x.Value.Coordinates.RADegrees > 360 + raFrom || x.Value.Coordinates.RADegrees < raThru)
+                        && x.Value.Coordinates.Dec > ViewportFoV.CenterCoordinates.Dec - ViewportFoV.VFoVDegBottom
+                        && x.Value.Coordinates.Dec < ViewportFoV.CenterCoordinates.Dec + ViewportFoV.VFoVDegTop
+                    ).ToDictionary(x => x.Key, y => y.Value);
+                } else {
+                    dsoList = filteredDbDSO.Where(x =>
+                        x.Value.Coordinates.RADegrees > (ViewportFoV.TopLeft.RADegrees - ViewportFoV.HFoVDeg)
+                        && x.Value.Coordinates.RADegrees < (ViewportFoV.TopLeft.RADegrees)
+                        && x.Value.Coordinates.Dec > ViewportFoV.CenterCoordinates.Dec - ViewportFoV.VFoVDegBottom
+                        && x.Value.Coordinates.Dec < ViewportFoV.CenterCoordinates.Dec + ViewportFoV.VFoVDegTop
+                    ).ToDictionary(x => x.Key, y => y.Value);
                 }
-
-                param.RightAscension = new DatabaseInteraction.DeepSkyObjectSearchFromThru<double?> {
-                    From = 0,
-                    Thru = viewportFoV.TopLeft.RADegrees
-                };
             }
-
-            foreach (var dso in await dbInstance.GetDeepSkyObjects(
-                string.Empty, param, ct)) {
-                dsoList.Add(dso.Id, dso);
-            }
-
             return dsoList;
         }
 
         public Coordinates ShiftViewport(Vector delta) {
-            viewportFoV.Shift(delta);
+            ViewportFoV.Shift(delta);
 
-            return viewportFoV.CenterCoordinates;
+            return ViewportFoV.CenterCoordinates;
         }
 
         public void ClearFrameLineMatrix() {
@@ -151,10 +191,11 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         public void CalculateFrameLineMatrix() {
-            FrameLineMatrix.CalculatePoints(viewportFoV);
+            FrameLineMatrix.CalculatePoints(ViewportFoV);
         }
 
-        private AsyncLazy<Dictionary<string, ConstellationBoundary>> ConstellationBoundaries;
+        private Dictionary<string, ConstellationBoundary> ConstellationBoundaries;
+        private BitmapSource skyMapOverlay;
 
         private async Task<Dictionary<string, ConstellationBoundary>> GetConstellationBoundaries() {
             var dic = new Dictionary<string, ConstellationBoundary>();
@@ -165,18 +206,15 @@ namespace NINA.ViewModel.FramingAssistant {
             return dic;
         }
 
-        public AsyncObservableCollection<FrameLine> ConstellationBoundariesInViewPort { get; private set; } = new AsyncObservableCollection<FrameLine>();
+        public List<FramingConstellationBoundary> ConstellationBoundariesInViewPort { get; private set; } = new List<FramingConstellationBoundary>();
 
-        public void ClearConstellationBoundaries() {
+        public void CalculateConstellationBoundaries() {
             ConstellationBoundariesInViewPort.Clear();
-        }
-
-        public async Task CalculateConstellationBoundaries() {
-            foreach (var boundary in await ConstellationBoundaries) {
-                var frameLine = new FrameLine() { Closed = false, StrokeThickness = 0.5, Collection = new System.Windows.Media.PointCollection() };
+            foreach (var boundary in ConstellationBoundaries) {
+                var frameLine = new FramingConstellationBoundary();
                 bool isInViewport = false;
                 foreach (var coordinates in boundary.Value.Boundaries) {
-                    isInViewport = viewportFoV.ContainsCoordinates(coordinates);
+                    isInViewport = ViewportFoV.ContainsCoordinates(coordinates);
                     if (isInViewport) {
                         break;
                     }
@@ -187,46 +225,55 @@ namespace NINA.ViewModel.FramingAssistant {
                 }
 
                 foreach (var coordinates in boundary.Value.Boundaries) {
-                    var point = coordinates.GnomonicTanProjection(viewportFoV);
-                    if (viewportFoV.IsOutOfViewportBounds(point)) {
+                    var point = coordinates.XYProjection(ViewportFoV);
+                    if (ViewportFoV.IsOutOfViewportBounds(point)) {
                         continue;
                     }
 
-                    frameLine.Collection.Add(point);
+                    frameLine.Points.Add(new PointF((float)point.X, (float)point.Y));
                 }
 
                 ConstellationBoundariesInViewPort.Add(frameLine);
             }
         }
 
-        public async Task UpdateSkyMap(CancellationToken ct) {
-            var allGatheredDSO = await GetDeepSkyObjectsForViewport(ct);
+        private void UpdateAndAnnotateDSOs() {
+            var allGatheredDSO = GetDeepSkyObjectsForViewport();
 
             var existingDSOs = new List<string>();
             for (int i = DSOInViewport.Count - 1; i >= 0; i--) {
                 var dso = DSOInViewport[i];
                 if (allGatheredDSO.ContainsKey(dso.Id)) {
-                    dso.RecalculateTopLeft(viewportFoV);
+                    dso.RecalculateTopLeft(ViewportFoV);
                     existingDSOs.Add(dso.Id);
                 } else {
                     DSOInViewport.RemoveAt(i);
                 }
             }
 
-            foreach (var constellation in dbConstellations) {
-                FramingConstellation viewPortConstellation = null;
-                foreach (var constellationsInViewport in ConstellationsInViewport) {
-                    if (constellationsInViewport.Id != constellation.Id) {
-                        continue;
-                    }
+            var dsosToAdd = allGatheredDSO.Where(x => !existingDSOs.Any(y => y == x.Value.Id));
+            foreach (var dso in dsosToAdd) {
+                DSOInViewport.Add(new FramingDSO(dso.Value, ViewportFoV));
+            }
 
-                    viewPortConstellation = constellationsInViewport;
-                    break;
-                }
+            foreach (var dso in DSOInViewport) {
+                dso.Draw(g);
+            }
+        }
+
+        private void DrawStars() {
+            foreach (var constellation in ConstellationsInViewport) {
+                constellation.DrawStars(g);
+            }
+        }
+
+        private void UpdateAndAnnotateConstellations(bool drawAnnotations) {
+            foreach (var constellation in dbConstellations) {
+                var viewPortConstellation = ConstellationsInViewport.FirstOrDefault(x => x.Id == constellation.Id);
 
                 var isInViewport = false;
                 foreach (var star in constellation.Stars) {
-                    if (!viewportFoV.ContainsCoordinates(star.Coords)) {
+                    if (!ViewportFoV.ContainsCoordinates(star.Coords)) {
                         continue;
                     }
 
@@ -236,18 +283,108 @@ namespace NINA.ViewModel.FramingAssistant {
 
                 if (isInViewport) {
                     if (viewPortConstellation == null) {
-                        ConstellationsInViewport.Add(new FramingConstellation(constellation, viewportFoV));
+                        var framingConstellation = new FramingConstellation(constellation, ViewportFoV);
+                        framingConstellation.RecalculateConstellationPoints(ViewportFoV, drawAnnotations);
+                        ConstellationsInViewport.Add(framingConstellation);
                     } else {
-                        viewPortConstellation.RecalculateConstellationPoints(viewportFoV);
+                        viewPortConstellation.RecalculateConstellationPoints(ViewportFoV, drawAnnotations);
                     }
                 } else if (viewPortConstellation != null) {
                     ConstellationsInViewport.Remove(viewPortConstellation);
                 }
             }
 
-            var dsosToAdd = allGatheredDSO.Where(x => !existingDSOs.Any(y => y == x.Value.Id));
-            foreach (var dso in dsosToAdd) {
-                DSOInViewport.Add(new FramingDSO(dso.Value, viewportFoV));
+            if (drawAnnotations) {
+                foreach (var constellation in ConstellationsInViewport) {
+                    constellation.DrawAnnotations(g);
+                }
+            }
+        }
+
+        private void UpdateAndDrawConstellationBoundaries() {
+            CalculateConstellationBoundaries();
+            foreach (var constellationBoundary in ConstellationBoundariesInViewPort) {
+                constellationBoundary.Draw(g);
+            }
+        }
+
+        private void UpdateAndDrawGrid() {
+            ClearFrameLineMatrix();
+            CalculateFrameLineMatrix();
+
+            FrameLineMatrix.Draw(g);
+        }
+
+        public void UpdateSkyMap() {
+            g.Clear(Color.Transparent);
+
+            if (!AnnotateConstellations && AnnotateDSO || AnnotateConstellations) {
+                UpdateAndAnnotateConstellations(AnnotateConstellations);
+                if (!AnnotateDSO) {
+                    DrawStars();
+                }
+            }
+
+            if (AnnotateDSO) {
+                UpdateAndAnnotateDSOs();
+                DrawStars();
+            }
+
+            if (AnnotateConstellationBoundaries) {
+                UpdateAndDrawConstellationBoundaries();
+            }
+
+            if (AnnotateGrid) {
+                UpdateAndDrawGrid();
+            }
+
+            if (telescopeConnected) {
+                DrawTelescope();
+            }
+
+            var source = ImageAnalysis.ConvertBitmap(img, PixelFormats.Bgra32);
+            source.Freeze();
+            SkyMapOverlay = source;
+        }
+
+        private void DrawTelescope() {
+            if (ViewportFoV.ContainsCoordinates(telescopeCoordinates)) {
+                System.Windows.Point scopePosition = telescopeCoordinates.XYProjection(ViewportFoV);
+                g.DrawEllipse(ScopePen, (float)(scopePosition.X - 15), (float)(scopePosition.Y - 15), 30, 30);
+                g.DrawLine(ScopePen, (float)(scopePosition.X), (float)(scopePosition.Y - 15),
+                    (float)(scopePosition.X), (float)(scopePosition.Y - 5));
+                g.DrawLine(ScopePen, (float)(scopePosition.X), (float)(scopePosition.Y + 5),
+                    (float)(scopePosition.X), (float)(scopePosition.Y + 15));
+                g.DrawLine(ScopePen, (float)(scopePosition.X - 15), (float)(scopePosition.Y),
+                    (float)(scopePosition.X - 5), (float)(scopePosition.Y));
+                g.DrawLine(ScopePen, (float)(scopePosition.X + 5), (float)(scopePosition.Y),
+                    (float)(scopePosition.X + 15), (float)(scopePosition.Y));
+            }
+        }
+
+        private static readonly Pen ScopePen = new Pen(Color.FromArgb(128, Color.Yellow), 2.0f);
+
+        public BitmapSource SkyMapOverlay {
+            get => skyMapOverlay;
+            set {
+                skyMapOverlay = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool telescopeConnected;
+        private Coordinates telescopeCoordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
+
+        public void UpdateDeviceInfo(TelescopeInfo deviceInfo) {
+            if (deviceInfo.Connected) {
+                telescopeConnected = true;
+                var coordinates = deviceInfo.Coordinates.Transform(Epoch.J2000);
+                if (Math.Abs(telescopeCoordinates.RADegrees - coordinates.RADegrees) > 0.01 || Math.Abs(telescopeCoordinates.Dec - coordinates.Dec) > 0.01) {
+                    telescopeCoordinates = coordinates;
+                    UpdateSkyMap();
+                }
+            } else {
+                telescopeConnected = false;
             }
         }
     }

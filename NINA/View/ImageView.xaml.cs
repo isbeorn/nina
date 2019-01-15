@@ -49,7 +49,7 @@ namespace NINA.View {
 
             PART_ScrollViewer.SizeChanged += Sv_SizeChanged;
             PART_ScrollViewer.ScrollChanged += OnsvScrollChanged;
-            PART_ScrollViewer.PreviewMouseWheel += OnPreviewMouseWheel;
+            //PART_ScrollViewer.PreviewMouseWheel += OnPreviewMouseWheel;
 
             PART_ScrollViewer.MouseLeftButtonUp += OnMouseLeftButtonUp;
             PART_ScrollViewer.PreviewMouseLeftButtonDown += OnMouseLeftButtonDown;
@@ -131,7 +131,6 @@ namespace NINA.View {
             var centerOfViewport = new Point(PART_ScrollViewer.ViewportWidth / 2,
                                              PART_ScrollViewer.ViewportHeight / 2);
             lastCenterPositionOnTarget = PART_ScrollViewer.TranslatePoint(centerOfViewport, PART_Canvas);
-            e.Handled = true;
         }
 
         private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
