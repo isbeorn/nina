@@ -232,12 +232,15 @@ namespace NINA.ViewModel.FramingAssistant {
 
         private void DrawRALineCollection(Graphics g, FrameLine frameLine) {
             if (frameLine.Collection.Count > 1) {
-                var position = frameLine.Collection.FirstOrDefault(x => x.X > 0 && x.Y > 0 && x.X < currentViewport.Width && x.Y < currentViewport.Height);
+                //Prevent annotations to overlap on southern pole
+                var southPole = new Coordinates(0, -maxDec, Epoch.J2000, Coordinates.RAType.Degrees).XYProjection(currentViewport);
+                PointF? position = frameLine.Collection.FirstOrDefault(x => x.X > 0 && x.Y > 0 && x.X < currentViewport.Width && x.Y < currentViewport.Height && Math.Abs(x.X - southPole.X) > 5 && Math.Abs(x.Y - southPole.Y) > 5);
+
                 if (position != null) {
                     var hms = Astrometry.HoursToHMS(frameLine.Angle.Hours);
                     var text = $"{hms.Substring(0, hms.Length - 3)}h";
                     var size = g.MeasureString(text, gridAnnotationFont);
-                    g.DrawString(text, gridAnnotationFont, gridAnnotationBrush, (position.X), Math.Max(0, (position.Y - size.Height)));
+                    g.DrawString(text, gridAnnotationFont, gridAnnotationBrush, (position.Value.X), Math.Max(0, (position.Value.Y - size.Height)));
                 }
 
                 DrawFrameLineCollection(g, frameLine);
