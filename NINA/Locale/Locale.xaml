@@ -537,6 +537,8 @@ Should the Application try to recover from the error? (Can lead to unexpected be
     <s:String x:Key="LblConstellation_SCL">Sculptor</s:String>
     <s:String x:Key="LblConstellation_SCT">Scutum</s:String>
     <s:String x:Key="LblConstellation_SER">Serpens</s:String>
+    <s:String x:Key="LblConstellation_SER2">Serpens cauda</s:String>
+    <s:String x:Key="LblConstellation_SER1">Serpens caput</s:String>
     <s:String x:Key="LblConstellation_SEX">Sextans</s:String>
     <s:String x:Key="LblConstellation_TAU">Taurus</s:String>
     <s:String x:Key="LblConstellation_TEL">Telescopium</s:String>
@@ -779,9 +781,14 @@ Calculated HFR: {2}
     <s:String x:Key="LblOpacity">Opacity</s:String>
     <s:String x:Key="LblManualFocusTargets">Manual Focus Targets</s:String>
     <s:String x:Key="LblAnnotateDSO">Annotate Deep Sky Objects</s:String>
+    <s:String x:Key="LblAnnotateGrid">Display Grid</s:String>
+    <s:String x:Key="LblAnnotateConstellations">Display and annotate Constellations</s:String>
+    <s:String x:Key="LblAnnotateConstellationboundaries">Display Constellation Boundaries</s:String>
     <s:String x:Key="LblSkyAtlasSkySurvey">SkyAtlas (Offline Framing)</s:String>
     <s:String x:Key="LblPhd2PathNotFound">Could not start PHD2. Path not found</s:String>
     <s:String x:Key="LblPhd2StartProcessError">Could not start PHD2. Check logs for details.</s:String>
     <s:String x:Key="LblPhd2FailedEquipmentConnection">PHD2 wasn't able to connect to the equipment</s:String>
     <s:String x:Key="LblPHD2Path">PHD2 path</s:String>
+    <s:String x:Key="LblMinDuration">Min. Duration</s:String>
+    <s:String x:Key="LblWaitForTemperatureStep">Waiting for camera to reach next temperature step</s:String>
 </ResourceDictionary>

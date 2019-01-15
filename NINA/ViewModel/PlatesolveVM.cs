@@ -28,7 +28,6 @@ using NINA.PlateSolving;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -292,7 +291,7 @@ namespace NINA.ViewModel {
 
             canceltoken.ThrowIfCancellationRequested();
 
-            var success = await Solve(Image, progress, canceltoken, silent); ;
+            var success = await Solve(Image, progress, canceltoken, silent);
             Image = null;
             return success;
         }
@@ -453,7 +452,7 @@ namespace NINA.ViewModel {
                 var binning = CameraInfo.BinX;
                 if (binning < 1) { binning = 1; }
 
-                solver = PlateSolverFactory.CreateInstance(profileService, profileService.ActiveProfile.PlateSolveSettings.PlateSolverType, binning, img.Width, img.Height, coords);
+                solver = PlateSolverFactory.CreateInstance(profileService, profileService.ActiveProfile.PlateSolveSettings.PlateSolverType, binning, img.PixelWidth, img.PixelHeight, coords);
             }
 
             return solver;

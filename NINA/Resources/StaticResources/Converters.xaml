@@ -49,4 +49,5 @@
     <converters:OneValueGreaterThanAnotherToVisiblityConverter x:Key="GreaterThanToVisiblityConverter" />
     <converters:CollectionContainsMoreThanOneItemToVisibilityConverter x:Key="CollectionContainsMoreThanOneItemToVisibilityConverter" />
     <converters:MultiToListConverter x:Key="MultiToListConverter" />
+    <converters:SubtractHalfConverter x:Key="SubtractHalfConverter" />
 </ResourceDictionary>

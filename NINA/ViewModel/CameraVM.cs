@@ -55,7 +55,7 @@ namespace NINA.ViewModel {
             ChooseCameraCommand = new AsyncCommand<bool>(ChooseCamera);
             CancelConnectCameraCommand = new RelayCommand(CancelConnectCamera);
             DisconnectCommand = new RelayCommand(DisconnectDiag);
-            CoolCamCommand = new AsyncCommand<bool>(() => CoolCamera(new Progress<double>(p => CoolingProgress = p)));
+            CoolCamCommand = new AsyncCommand<bool>(() => StartCoolCamera(new Progress<double>(p => CoolingProgress = p)));
             CancelCoolCamCommand = new RelayCommand(CancelCoolCamera);
             RefreshCameraListCommand = new RelayCommand(RefreshCameraList);
 
@@ -80,20 +80,45 @@ namespace NINA.ViewModel {
             CameraChooserVM.GetEquipment();
         }
 
-        private async Task CoolCamera_Tick(IProgress<double> progress, CancellationToken token) {
+        private async Task WaitForTargetTemperatureStep(double targetTemperatureStep, double percentage, CancellationToken token) {
+            var interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
+            var threshold = 0.5;
+            double temperature = 0.0;
+            while (Math.Abs((temperature = Cam.Temperature) - targetTemperatureStep) > threshold) {
+                applicationStatusMediator.StatusUpdate(
+                    new ApplicationStatus() {
+                        Source = Title,
+                        Status = Locale.Loc.Instance["LblCooling"],
+                        Progress = percentage,
+                        Status2 = Locale.Loc.Instance["LblWaitForTemperatureStep"]
+                    }
+                );
+                await Utility.Utility.Wait(TimeSpan.FromSeconds(interval), token);
+            }
+        }
+
+        private async Task<double> GetNextTemperatureStep(CancellationToken token) {
+            var interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
             double currentTemp = Cam.Temperature;
             double deltaTemp = currentTemp - TargetTemp;
 
-            var delta = await Utility.Utility.Delay(300, token);
+            var delta = await Utility.Utility.Delay(TimeSpan.FromSeconds(interval), token);
 
-            Duration = Duration - ((double)delta.TotalMilliseconds / (1000 * 60));
+            _remainingDuration = _remainingDuration - ((double)delta.TotalMilliseconds / (1000 * 60));
+            if (_remainingDuration < 0) { _remainingDuration = 0; }
 
-            if (Duration < 0) { Duration = 0; }
+            return GetY(_startPoint, _endPoint, new Vector2(-_startPoint.X, _startPoint.Y), _remainingDuration);
+        }
 
-            double newTemp = GetY(_startPoint, _endPoint, new Vector2(-_startPoint.X, _startPoint.Y), Duration);
-            Cam.TemperatureSetPoint = newTemp;
+        private async Task SetNextTemperatureStep(IProgress<double> progress, CancellationToken token) {
+            var targetTemperatureStep = await GetNextTemperatureStep(token);
 
-            var percentage = 1 - (Duration / _initalDuration);
+            Cam.TemperatureSetPoint = targetTemperatureStep;
+
+            var percentage = 1 - (_remainingDuration / _initalDuration);
+
+            await WaitForTargetTemperatureStep(targetTemperatureStep, percentage, token);
+
             progress.Report(percentage);
 
             applicationStatusMediator.StatusUpdate(
@@ -148,6 +173,7 @@ namespace NINA.ViewModel {
         private Vector2 _endPoint;
 
         private double _initalDuration;
+        private double _remainingDuration;
         private double _coolingProgress;
 
         public double CoolingProgress {
@@ -175,34 +201,35 @@ namespace NINA.ViewModel {
 
         private CancellationTokenSource _cancelCoolCameraSource;
 
-        private async Task<bool> CoolCamera(IProgress<double> progress) {
+        private async Task<bool> StartCoolCamera(IProgress<double> progress) {
             _cancelCoolCameraSource = new CancellationTokenSource();
+            _remainingDuration = Duration;
             return await Task<bool>.Run(async () => {
-                if (Duration == 0) {
+                if (_remainingDuration == 0) {
                     Cam.TemperatureSetPoint = TargetTemp;
                     Cam.CoolerOn = true;
                     progress.Report(1);
                 } else {
                     try {
                         double currentTemp = Cam.Temperature;
-                        _startPoint = new Vector2(Duration, currentTemp);
+                        _startPoint = new Vector2(_remainingDuration, currentTemp);
                         _endPoint = new Vector2(0, TargetTemp);
                         Cam.TemperatureSetPoint = currentTemp;
-                        _initalDuration = Duration;
+                        _initalDuration = _remainingDuration;
 
                         Cam.CoolerOn = true;
                         CoolingRunning = true;
                         do {
-                            await CoolCamera_Tick(progress, _cancelCoolCameraSource.Token);
+                            await SetNextTemperatureStep(progress, _cancelCoolCameraSource.Token);
 
                             _cancelCoolCameraSource.Token.ThrowIfCancellationRequested();
-                        } while (Duration > 0);
+                        } while (_remainingDuration > 0);
                     } catch (OperationCanceledException ex) {
                         Cam.TemperatureSetPoint = Cam.Temperature;
                         Logger.Trace(ex.Message);
                     } finally {
                         progress.Report(1);
-                        Duration = 0;
+                        _remainingDuration = 0;
                         CoolingRunning = false;
                         applicationStatusMediator.StatusUpdate(
                             new ApplicationStatus() {
@@ -319,6 +346,10 @@ namespace NINA.ViewModel {
                             }
 
                             BroadcastCameraInfo();
+
+                            if (Cam.CanSetTemperature) {
+                                TargetTemp = Cam.TemperatureSetPoint;
+                            }
 
                             return true;
                         } else {

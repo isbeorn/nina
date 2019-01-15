@@ -296,6 +296,8 @@
     <Compile Include="Locale\Loc.cs" />
     <Compile Include="Model\ApplicationStatus.cs" />
     <Compile Include="Model\ConstellationBoundary.cs" />
+    <Compile Include="Model\Constellation.cs" />
+    <Compile Include="Model\Star.cs" />
     <Compile Include="Model\FocusTarget.cs" />
     <Compile Include="Model\Sequence\CaptureSequence.cs" />
     <Compile Include="Model\DeepSkyObject.cs" />
@@ -321,10 +323,12 @@
     <Compile Include="Model\MyFilterWheel\FilterWheelInfo.cs" />
     <Compile Include="Model\MyFilterWheel\FlatWizardFilterSettings.cs" />
     <Compile Include="Utility\Astrometry\Angle.cs" />
+    <Compile Include="Utility\Behaviors\MouseWheelCommandBehavior.cs" />
     <Compile Include="Utility\Converters\CollectionContainsMoreThanOneItemToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\DoubleToHalfValueConverter.cs" />
     <Compile Include="Utility\Converters\MultiToListConverter.cs" />
     <Compile Include="Utility\Converters\OneValueGreaterThanAnotherToVisiblityConverter.cs" />
+    <Compile Include="Utility\Converters\SubtractHalfConverter.cs" />
     <Compile Include="Utility\Converters\WidthAndValueToWidthConverter.cs" />
     <Compile Include="Utility\DataPipes.cs" />
     <Compile Include="Utility\Extensions\ProcessExtension.cs" />
@@ -550,9 +554,12 @@
     <Compile Include="ViewModel\FlatWizard\IFlatWizardExposureTimeFinderService.cs" />
     <Compile Include="ViewModel\FlatWizard\IFlatWizardVM.cs" />
     <Compile Include="ViewModel\FocuserVM.cs" />
-    <Compile Include="ViewModel\FramingAssistant\DSOAnnotator.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FrameLineMatrix2.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FramingConstellationBoundary.cs" />
+    <Compile Include="ViewModel\FramingAssistant\SkyMapAnnotator.cs" />
     <Compile Include="ViewModel\FramingAssistant\FrameLineMatrix.cs" />
     <Compile Include="ViewModel\FramingAssistant\FramingAssistantVM.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FramingConstellation.cs" />
     <Compile Include="ViewModel\FramingAssistant\FramingDSO.cs" />
     <Compile Include="ViewModel\FramingAssistant\FramingRectangle.cs" />
     <Compile Include="ViewModel\Interfaces\IApplicationStatusVM.cs" />
@@ -762,6 +769,9 @@
     </Compile>
     <Compile Include="View\SkyAtlasView.xaml.cs">
       <DependentUpon>SkyAtlasView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SkyMapOverlayView.xaml.cs">
+      <DependentUpon>SkyMapOverlayView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\TelescopeLatLongSyncView.xaml.cs">
       <DependentUpon>TelescopeLatLongSyncView.xaml</DependentUpon>
@@ -1140,6 +1150,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\SkyAtlasView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\SkyMapOverlayView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

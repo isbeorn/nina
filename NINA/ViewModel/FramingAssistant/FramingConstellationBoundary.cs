@@ -21,13 +21,19 @@
 
 #endregion "copyright"
 
-using NINA.Utility.Astrometry;
 using System.Collections.Generic;
+using System.Drawing;
 
-namespace NINA.Model {
+namespace NINA.ViewModel.FramingAssistant {
 
-    internal class ConstellationBoundary {
-        public string Name { get; set; }
-        public List<Coordinates> Boundaries { get; set; } = new List<Coordinates>();
+    internal class FramingConstellationBoundary {
+        private static Pen boundaryPen = new Pen(Color.FromArgb(128, Color.Khaki), 0.1f);
+        public List<PointF> Points = new List<PointF>();
+
+        public void Draw(Graphics g) {
+            if (this.Points.Count > 1) {
+                g.DrawPolygon(boundaryPen, this.Points.ToArray());
+            }
+        }
     }
 }

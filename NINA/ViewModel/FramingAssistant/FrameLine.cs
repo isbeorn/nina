@@ -1,35 +1,18 @@
 ﻿using NINA.Utility;
+using NINA.Utility.Astrometry;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Media;
 
 namespace NINA.ViewModel.FramingAssistant {
 
-    public class FrameLine : BaseINPC {
-        private PointCollection collection;
-        private bool closed;
-        private double _strokeThickness;
+    public class FrameLine {
+        public List<PointF> Collection { get; set; }
 
-        public PointCollection Collection {
-            get => collection;
-            set {
-                collection = value;
-                RaisePropertyChanged();
-            }
-        }
+        public bool Closed { get; set; }
 
-        public bool Closed {
-            get => closed;
-            set {
-                closed = value;
-                RaisePropertyChanged();
-            }
-        }
+        public float StrokeThickness { get; set; }
 
-        public double StrokeThickness {
-            get => _strokeThickness;
-            set {
-                _strokeThickness = value;
-                RaisePropertyChanged();
-            }
-        }
+        public Angle Angle { get; set; }
     }
 }

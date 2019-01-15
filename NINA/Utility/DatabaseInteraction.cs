@@ -25,6 +25,7 @@ using NINA.Model;
 using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.SQLite;
 using System.Linq;
 using System.Threading;
@@ -158,12 +159,74 @@ namespace NINA.Utility {
             public double? DecThru { get; set; } = null;
         }
 
+        public async Task<List<Constellation>> GetConstellationsWithStars(CancellationToken token) {
+            List<Constellation> constellations = new List<Constellation>();
+            List<Star> starList = new List<Star>();
+
+            try {
+                using (SQLiteConnection connection = new SQLiteConnection(_connectionString)) {
+                    connection.Open();
+
+                    using (SQLiteCommand command = connection.CreateCommand()) {
+                        command.CommandText = "SELECT *\r\n" +
+                                              "FROM constellationstar\r\n";
+
+                        var reader = await command.ExecuteReaderAsync(token);
+
+                        while (reader.Read()) {
+                            starList.Add(new Star(reader.GetInt32(0), reader.GetString(1),
+                                new Coordinates(reader.GetDouble(2), reader.GetDouble(3), Epoch.J2000,
+                                    Coordinates.RAType.Degrees), (float)reader.GetDouble(4)));
+                        }
+                    }
+
+                    using (SQLiteCommand command = connection.CreateCommand()) {
+                        command.CommandText = "SELECT * FROM constellation ORDER BY constellationid";
+
+                        var reader = await command.ExecuteReaderAsync(token);
+                        while (reader.Read()) {
+                            var constId = reader.GetString(0);
+                            var constellation = constellations.SingleOrDefault(c => c.Id == constId);
+                            if (constellation == null) {
+                                constellation = new Constellation(constId);
+                                constellations.Add(constellation);
+                            }
+                            Star star1 = starList.First(s => s.Id == reader.GetInt32(1));
+                            Star star2 = starList.First(s => s.Id == reader.GetInt32(2));
+
+                            constellation.StarConnections.Add(new Tuple<Star, Star>(star1, star2));
+                        }
+                    }
+                }
+
+                // make a list of unique stars
+                foreach (var constellation in constellations) {
+                    constellation.Stars = new List<Star>(constellation.StarConnections.Select(t => t.Item1).Concat(constellation.StarConnections.Select(t => t.Item2)).GroupBy(b => b.Name).Select(b => b.First()).ToList());
+                    bool goesOver0 = false;
+                    foreach (var pair in constellation.StarConnections) {
+                        goesOver0 = Math.Max(pair.Item1.Coords.RADegrees, pair.Item2.Coords.RADegrees) -
+                                    Math.Min(pair.Item1.Coords.RADegrees, pair.Item2.Coords.RADegrees) > 180;
+                        if (goesOver0) {
+                            break;
+                        }
+                    }
+
+                    constellation.GoesOverRaZero = goesOver0;
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                Notification.Notification.ShowError(ex.Message);
+            }
+
+            return constellations;
+        }
+
         public async Task<List<ConstellationBoundary>> GetConstellationBoundaries(CancellationToken token) {
             List<ConstellationBoundary> constellationBoundaries = new List<ConstellationBoundary>();
             try {
                 using (SQLiteConnection connection = new SQLiteConnection(_connectionString)) {
                     connection.Open();
-                    var query = "SELECT constellation, ra ,dec FROM constellationboundaries where constellation in ('AQR', 'AQL', 'ARI', 'AUR', 'BOO', 'CNC', 'CMA', 'CAP', 'CAS', 'CYG', 'GEM', 'LEO', 'LIB', 'LYR', 'ORI', 'PEG', 'PER', 'PSC', 'SGR', 'SCO', 'TAU', 'UMA', 'VIR') ORDER BY constellation, position;";
+                    var query = "SELECT constellation, ra ,dec FROM constellationboundaries ORDER BY constellation, position"; //" where constellation in ('AQR', 'AQL', 'ARI', 'AUR', 'BOO', 'CNC', 'CMA', 'CAP', 'CAS', 'CYG', 'GEM', 'LEO', 'LIB', 'LYR', 'ORI', 'PEG', 'PER', 'PSC', 'SGR', 'SCO', 'TAU', 'UMA', 'VIR') ORDER BY constellation, position;";
                     using (SQLiteCommand command = connection.CreateCommand()) {
                         command.CommandText = query;
 
@@ -317,10 +380,10 @@ namespace NINA.Utility {
                         var reader = await command.ExecuteReaderAsync(token);
 
                         while (reader.Read()) {
-                            var dso = new DeepSkyObject(reader.GetString(0), imageRepository);
-
+                            var id = reader.GetString(0);
                             var coords = new Coordinates(reader.GetDouble(1), reader.GetDouble(2), Epoch.J2000, Coordinates.RAType.Degrees);
-                            dso.Coordinates = coords;
+                            var dso = new DeepSkyObject(reader.GetString(0), coords, imageRepository);
+
                             dso.DSOType = reader.GetString(3);
 
                             if (!reader.IsDBNull(4)) {
