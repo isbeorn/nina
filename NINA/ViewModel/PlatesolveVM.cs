@@ -40,6 +40,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace NINA.ViewModel {
 
@@ -242,32 +243,27 @@ namespace NINA.ViewModel {
         private BitmapSource _image;
 
         public BitmapSource Image {
-            get {
-                return _image;
-            }
+            get => _image;
             set {
                 _image = value;
-                if (_image != null) {
-                    var factor = 300 / _image.Width;
-
-                    BitmapSource scaledBitmap = new WriteableBitmap(new TransformedBitmap(_image, new ScaleTransform(factor, factor)));
-                    scaledBitmap.Freeze();
-                    Thumbnail = scaledBitmap;
-                }
-
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(Thumbnail));
             }
         }
 
-        private BitmapSource thumbnail;
+        private Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
 
         public BitmapSource Thumbnail {
             get {
-                return thumbnail;
-            }
-            set {
-                thumbnail = value;
-                RaisePropertyChanged();
+                BitmapSource scaledBitmap = null;
+                if (Image != null) {
+                    dispatcher.Invoke(() => {
+                        var factor = 300 / _image.Width;
+                        scaledBitmap = new WriteableBitmap(new TransformedBitmap(_image, new ScaleTransform(factor, factor)));
+                        scaledBitmap.Freeze();
+                    }, DispatcherPriority.Background);
+                }
+                return scaledBitmap;
             }
         }
 
