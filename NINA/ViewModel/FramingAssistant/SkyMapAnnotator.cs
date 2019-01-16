@@ -26,9 +26,10 @@ namespace NINA.ViewModel.FramingAssistant {
         private Dictionary<string, DeepSkyObject> dbDSOs;
         private Bitmap img;
         private Graphics g;
+        private ITelescopeMediator telescopeMediator;
 
         public SkyMapAnnotator(string databaseLocation, ITelescopeMediator mediator) {
-            mediator.RegisterConsumer(this);
+            this.telescopeMediator = mediator;
             dbInstance = new DatabaseInteraction(databaseLocation);
             DSOInViewport = new List<FramingDSO>();
             ConstellationsInViewport = new List<FramingConstellation>();
@@ -37,6 +38,8 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         public async Task Initialize(Coordinates centerCoordinates, double vFoVDegrees, double imageWidth, double imageHeight, double imageRotation, CancellationToken ct) {
+            telescopeMediator.RemoveConsumer(this);
+
             AnnotateDSO = true;
             AnnotateGrid = true;
 
@@ -62,6 +65,8 @@ namespace NINA.ViewModel.FramingAssistant {
             if (ConstellationBoundaries.Count == 0) {
                 ConstellationBoundaries = await GetConstellationBoundaries();
             }
+
+            telescopeMediator.RegisterConsumer(this);
 
             UpdateSkyMap();
         }
