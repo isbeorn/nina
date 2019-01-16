@@ -212,28 +212,14 @@ namespace NINA.ViewModel.FramingAssistant {
             ConstellationBoundariesInViewPort.Clear();
             foreach (var boundary in ConstellationBoundaries) {
                 var frameLine = new FramingConstellationBoundary();
-                bool isInViewport = false;
-                foreach (var coordinates in boundary.Value.Boundaries) {
-                    isInViewport = ViewportFoV.ContainsCoordinates(coordinates);
-                    if (isInViewport) {
-                        break;
-                    }
-                }
-
-                if (!isInViewport) {
-                    continue;
-                }
-
-                foreach (var coordinates in boundary.Value.Boundaries) {
-                    var point = coordinates.XYProjection(ViewportFoV);
-                    if (ViewportFoV.IsOutOfViewportBounds(point)) {
-                        continue;
+                if (boundary.Value.Boundaries.Any((x) => ViewportFoV.ContainsCoordinates(x))) {
+                    foreach (var coordinates in boundary.Value.Boundaries) {
+                        var point = coordinates.XYProjection(ViewportFoV);
+                        frameLine.Points.Add(new PointF((float)point.X, (float)point.Y));
                     }
 
-                    frameLine.Points.Add(new PointF((float)point.X, (float)point.Y));
+                    ConstellationBoundariesInViewPort.Add(frameLine);
                 }
-
-                ConstellationBoundariesInViewPort.Add(frameLine);
             }
         }
 
