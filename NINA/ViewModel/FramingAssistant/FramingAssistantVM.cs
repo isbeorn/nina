@@ -772,14 +772,12 @@ namespace NINA.ViewModel.FramingAssistant {
             if (FramingAssistantSource == SkySurveySource.SKYATLAS) {
                 delta = new Vector(-delta.X, -delta.Y);
 
-                SkyMapAnnotator.Drag(obj);
-
-                var newCenter = SkyMapAnnotator.ViewportFoV.CenterCoordinates;
+                var newCenter = SkyMapAnnotator.ShiftViewport(delta);
                 DSO.Coordinates = newCenter;
                 ImageParameter.Coordinates = newCenter;
                 CalculateRectangle(SkyMapAnnotator.ViewportFoV);
 
-                //SkyMapAnnotator.UpdateSkyMap();
+                SkyMapAnnotator.UpdateSkyMap();
             } else {
                 var imageArcsecWidth =
                     Astrometry.ArcminToArcsec(ImageParameter.FoVWidth) / ImageParameter.Image.Width;
