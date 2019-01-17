@@ -67,6 +67,7 @@ namespace NINA.ViewModel.FramingAssistant {
             }
 
             telescopeMediator.RegisterConsumer(this);
+            Initialized = true;
 
             UpdateSkyMap();
         }
@@ -86,6 +87,8 @@ namespace NINA.ViewModel.FramingAssistant {
         public FrameLineMatrix2 FrameLineMatrix { get; private set; }
 
         public List<FramingDSO> DSOInViewport { get; private set; }
+
+        public bool Initialized { get; private set; }
 
         public List<FramingConstellation> ConstellationsInViewport { get; private set; }
 
@@ -307,35 +310,37 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         public void UpdateSkyMap() {
-            g.Clear(Color.Transparent);
+            if (Initialized) {
+                g.Clear(Color.Transparent);
 
-            if (!AnnotateConstellations && AnnotateDSO || AnnotateConstellations) {
-                UpdateAndAnnotateConstellations(AnnotateConstellations);
-                if (!AnnotateDSO) {
+                if (!AnnotateConstellations && AnnotateDSO || AnnotateConstellations) {
+                    UpdateAndAnnotateConstellations(AnnotateConstellations);
+                    if (!AnnotateDSO) {
+                        DrawStars();
+                    }
+                }
+
+                if (AnnotateDSO) {
+                    UpdateAndAnnotateDSOs();
                     DrawStars();
                 }
-            }
 
-            if (AnnotateDSO) {
-                UpdateAndAnnotateDSOs();
-                DrawStars();
-            }
+                if (AnnotateConstellationBoundaries) {
+                    UpdateAndDrawConstellationBoundaries();
+                }
 
-            if (AnnotateConstellationBoundaries) {
-                UpdateAndDrawConstellationBoundaries();
-            }
+                if (AnnotateGrid) {
+                    UpdateAndDrawGrid();
+                }
 
-            if (AnnotateGrid) {
-                UpdateAndDrawGrid();
-            }
+                if (telescopeConnected) {
+                    DrawTelescope();
+                }
 
-            if (telescopeConnected) {
-                DrawTelescope();
+                var source = ImageAnalysis.ConvertBitmap(img, PixelFormats.Bgra32);
+                source.Freeze();
+                SkyMapOverlay = source;
             }
-
-            var source = ImageAnalysis.ConvertBitmap(img, PixelFormats.Bgra32);
-            source.Freeze();
-            SkyMapOverlay = source;
         }
 
         private void DrawTelescope() {
