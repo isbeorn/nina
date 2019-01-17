@@ -27,12 +27,17 @@ using System.Drawing;
 namespace NINA.ViewModel.FramingAssistant {
 
     internal class FramingConstellationBoundary {
+
+        public FramingConstellationBoundary(int pointCount) {
+            Points = new PointF[pointCount];
+        }
+
         private static Pen boundaryPen = new Pen(Color.FromArgb(128, Color.Khaki), 0.1f);
-        public List<PointF> Points = new List<PointF>();
+        public PointF[] Points;
 
         public void Draw(Graphics g) {
-            if (this.Points.Count > 1) {
-                g.DrawPolygon(boundaryPen, this.Points.ToArray());
+            if (this.Points.Length > 1) {
+                g.DrawPolygon(boundaryPen, this.Points);
             }
         }
     }

@@ -231,17 +231,20 @@ namespace NINA.ViewModel.FramingAssistant {
 
         public void CalculateConstellationBoundaries() {
             ConstellationBoundariesInViewPort.Clear();
-            foreach (var boundary in ConstellationBoundaries) {
-                var frameLine = new FramingConstellationBoundary();
-                if (boundary.Value.Boundaries.Any((x) => ViewportFoV.ContainsCoordinates(x))) {
-                    foreach (var coordinates in boundary.Value.Boundaries) {
-                        var point = coordinates.XYProjection(ViewportFoV);
-                        frameLine.Points.Add(new PointF((float)point.X, (float)point.Y));
-                    }
+            Parallel.ForEach(
+                ConstellationBoundaries,
+                boundary => {
+                    if (boundary.Value.Boundaries.Any((x) => ViewportFoV.ContainsCoordinates(x))) {
+                        var frameLine = new FramingConstellationBoundary(boundary.Value.Boundaries.Count);
+                        var idx = 0;
+                        foreach (var coordinates in boundary.Value.Boundaries) {
+                            var point = coordinates.XYProjection(ViewportFoV);
+                            frameLine.Points[idx++] = new PointF((float)point.X, (float)point.Y);
+                        }
 
-                    ConstellationBoundariesInViewPort.Add(frameLine);
-                }
-            }
+                        ConstellationBoundariesInViewPort.Add(frameLine);
+                    }
+                });
         }
 
         private void UpdateAndAnnotateDSOs() {
