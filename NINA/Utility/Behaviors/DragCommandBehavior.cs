@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using System;
 using System.Windows;
 using System.Windows.Input;
 
@@ -94,11 +95,110 @@ namespace NINA.Utility.Behaviors {
                 element.MouseLeftButtonUp += instance.ElementOnMouseLeftButtonUp;
                 element.MouseMove += instance.ElementOnMouseMove;
                 element.MouseLeave += instance.Element_MouseLeave;
+
+                element.TouchDown += instance.ElementOnTouchDown;
+                element.TouchMove += instance.ElementOnTouchMove;
+                element.TouchUp += instance.ElementOnTouchUp;
+
+                element.StylusDown += instance.ElementOnStylusDown;
+                element.StylusMove += instance.ElementOnStylusMove;
+                element.StylusUp += instance.ElementOnStylusUp;
             } else {
                 element.MouseLeftButtonDown -= instance.ElementOnMouseLeftButtonDown;
                 element.MouseLeftButtonUp -= instance.ElementOnMouseLeftButtonUp;
                 element.MouseMove -= instance.ElementOnMouseMove;
+                element.MouseLeave -= instance.Element_MouseLeave;
+
+                element.TouchDown -= instance.ElementOnTouchDown;
+                element.TouchMove -= instance.ElementOnTouchMove;
+                element.TouchUp -= instance.ElementOnTouchUp;
+
+                element.StylusDown -= instance.ElementOnStylusDown;
+                element.StylusMove -= instance.ElementOnStylusMove;
+                element.StylusUp -= instance.ElementOnStylusUp;
             }
+        }
+
+        private void OnMove(FrameworkElement element, Point p) {
+            var delta = p - _prevPosition;
+
+            var cmd = GetDragMoveCommand(element);
+            cmd?.Execute(new DragResult() { Delta = delta, Mode = _mode });
+
+            _prevPosition = p;
+        }
+
+        private void OnUp(FrameworkElement element) {
+            var cmd = GetDragStopCommand(element);
+            cmd?.Execute(null);
+        }
+
+        private void OnDown(FrameworkElement element, Point p) {
+            _prevPosition = p;
+
+            var cmd = GetDragStartCommand(element);
+            cmd?.Execute(null);
+        }
+
+        private void ElementOnStylusMove(object sender, StylusEventArgs e) {
+            if (e.StylusDevice.Id == stylusId) {
+                var element = (FrameworkElement)sender;
+                var parent = (UIElement)element.Parent;
+                var point = e.GetPosition(parent);
+
+                OnMove(element, point);
+            }
+        }
+
+        private void ElementOnStylusUp(object sender, StylusEventArgs e) {
+            if (e.StylusDevice.Id == stylusId) {
+                var element = (FrameworkElement)sender;
+                element.ReleaseStylusCapture();
+                OnUp(element);
+                stylusId = -1;
+            }
+        }
+
+        private int stylusId = -1;
+
+        private void ElementOnStylusDown(object sender, StylusDownEventArgs e) {
+            if (stylusId == -1) {
+                var id = e.StylusDevice.Id;
+                var element = (FrameworkElement)sender;
+
+                var parent = (UIElement)element.Parent;
+                var point = e.GetPosition(parent);
+
+                OnDown(element, point);
+
+                stylusId = id;
+                element.CaptureStylus();
+            }
+        }
+
+        private void ElementOnTouchMove(object sender, TouchEventArgs e) {
+            var element = (FrameworkElement)sender;
+            var parent = (UIElement)element.Parent;
+            var point = e.TouchDevice.GetTouchPoint(parent).Position;
+
+            OnMove(element, point);
+        }
+
+        private void ElementOnTouchUp(object sender, TouchEventArgs e) {
+            var element = (FrameworkElement)sender;
+            element.ReleaseTouchCapture(e.TouchDevice);
+            OnUp(element);
+        }
+
+        private void ElementOnTouchDown(object sender, TouchEventArgs e) {
+            var element = (FrameworkElement)sender;
+
+            var parent = (UIElement)element.Parent;
+            var point = e.TouchDevice.GetTouchPoint(parent).Position;
+
+            OnDown(element, point);
+
+            element.CaptureTouch(e.TouchDevice);
         }
 
         private void Element_MouseLeave(object sender, MouseEventArgs e) {
@@ -157,10 +257,8 @@ namespace NINA.Utility.Behaviors {
                 }
             }
 
-            _prevMousePos = mousePos;
+            OnDown(element, mousePos);
 
-            var cmd = GetDragStartCommand(element);
-            cmd?.Execute(null);
             element.CaptureMouse();
         }
 
@@ -170,11 +268,10 @@ namespace NINA.Utility.Behaviors {
             _elementStartPosition2.Y = Transform.Y;*/
             var element = (FrameworkElement)sender;
             element.ReleaseMouseCapture();
-            var cmd = GetDragStopCommand(element);
-            cmd?.Execute(null);
+            OnUp(element);
         }
 
-        private Point _prevMousePos;
+        private Point _prevPosition;
         private DragMode _mode;
 
         private void ElementOnMouseMove(object sender, MouseEventArgs mouseEventArgs) {
@@ -214,12 +311,7 @@ namespace NINA.Utility.Behaviors {
                     }
                 }
             } else {
-                var delta = mousePos - _prevMousePos;
-
-                var cmd = GetDragMoveCommand(element);
-                cmd?.Execute(new DragResult() { Delta = delta, Mode = _mode });
-
-                _prevMousePos = mousePos;
+                OnMove(element, mousePos);
             }
         }
 
