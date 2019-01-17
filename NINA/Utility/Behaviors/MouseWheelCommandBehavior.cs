@@ -32,7 +32,17 @@ using System.Windows.Input;
 namespace NINA.Utility.Behaviors {
 
     internal class MouseWheelCommandBehavior {
-        public static MouseWheelCommandBehavior Instance { get; private set; } = new MouseWheelCommandBehavior();
+
+        public static MouseWheelCommandBehavior GetBehavior(DependencyObject obj) {
+            return (MouseWheelCommandBehavior)obj.GetValue(BehaviorProperty);
+        }
+
+        public static readonly DependencyProperty BehaviorProperty =
+          DependencyProperty.RegisterAttached(
+              "Behavior",
+              typeof(MouseWheelCommandBehavior),
+              typeof(MouseWheelCommandBehavior),
+              new PropertyMetadata(new MouseWheelCommandBehavior()));
 
         public static readonly DependencyProperty IsEnabledProperty =
           DependencyProperty.RegisterAttached(
@@ -64,12 +74,12 @@ namespace NINA.Utility.Behaviors {
             var element = (UIElement)sender;
             var isEnabled = (bool)(e.NewValue);
 
-            Instance = new MouseWheelCommandBehavior();
+            var instance = GetBehavior(element);
 
             if (isEnabled) {
-                element.MouseWheel += Instance.ElementMouseWheel;
+                element.MouseWheel += instance.ElementMouseWheel;
             } else {
-                element.MouseWheel += Instance.ElementMouseWheel;
+                element.MouseWheel -= instance.ElementMouseWheel;
             }
         }
 

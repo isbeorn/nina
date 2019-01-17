@@ -27,12 +27,32 @@ using System.Windows.Input;
 namespace NINA.Utility.Behaviors {
 
     internal class DragCommandBehavior {
-        private static DragCommandBehavior _instance = new DragCommandBehavior();
 
-        public static DragCommandBehavior Instance {
-            get { return _instance; }
-            set { _instance = value; }
+        public static DragCommandBehavior GetBehavior(DependencyObject obj) {
+            return (DragCommandBehavior)obj.GetValue(BehaviorProperty);
         }
+
+        public static readonly DependencyProperty BehaviorProperty =
+          DependencyProperty.RegisterAttached(
+              "Behavior",
+              typeof(DragCommandBehavior),
+              typeof(DragCommandBehavior),
+              new PropertyMetadata(new DragCommandBehavior()));
+
+        public static bool GetOverrideCursor(DependencyObject obj) {
+            return (bool)obj.GetValue(OverrideCursorProperty);
+        }
+
+        public static void SetOverrideCursor(DependencyObject obj, bool value) {
+            obj.SetValue(OverrideCursorProperty, value);
+        }
+
+        public static readonly DependencyProperty OverrideCursorProperty =
+          DependencyProperty.RegisterAttached(
+              "OverrideCursor",
+              typeof(bool),
+              typeof(DragCommandBehavior),
+              new PropertyMetadata(false));
 
         public static bool GetDrag(DependencyObject obj) {
             return (bool)obj.GetValue(IsDragProperty);
@@ -62,27 +82,31 @@ namespace NINA.Utility.Behaviors {
 
         //private RectangleDragMode _subSampleRectangleDragMode;
 
-        private static void OnDragChanged(object sender, DependencyPropertyChangedEventArgs e) {
+        private static void OnDragChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             // ignoring error checking
-            var element = (UIElement)sender;
+            var element = (UIElement)d;
             var isDrag = (bool)(e.NewValue);
 
-            Instance = new DragCommandBehavior();
+            var instance = GetBehavior(element);
 
             if (isDrag) {
-                element.MouseLeftButtonDown += Instance.ElementOnMouseLeftButtonDown;
-                element.MouseLeftButtonUp += Instance.ElementOnMouseLeftButtonUp;
-                element.MouseMove += Instance.ElementOnMouseMove;
-                element.MouseLeave += Element_MouseLeave;
+                element.MouseLeftButtonDown += instance.ElementOnMouseLeftButtonDown;
+                element.MouseLeftButtonUp += instance.ElementOnMouseLeftButtonUp;
+                element.MouseMove += instance.ElementOnMouseMove;
+                element.MouseLeave += instance.Element_MouseLeave;
             } else {
-                element.MouseLeftButtonDown -= Instance.ElementOnMouseLeftButtonDown;
-                element.MouseLeftButtonUp -= Instance.ElementOnMouseLeftButtonUp;
-                element.MouseMove -= Instance.ElementOnMouseMove;
+                element.MouseLeftButtonDown -= instance.ElementOnMouseLeftButtonDown;
+                element.MouseLeftButtonUp -= instance.ElementOnMouseLeftButtonUp;
+                element.MouseMove -= instance.ElementOnMouseMove;
             }
         }
 
-        private static void Element_MouseLeave(object sender, MouseEventArgs e) {
-            Mouse.OverrideCursor = null;
+        private void Element_MouseLeave(object sender, MouseEventArgs e) {
+            var element = (FrameworkElement)sender;
+            var overrideCursor = GetOverrideCursor(element);
+            if (overrideCursor) {
+                Mouse.OverrideCursor = null;
+            }
         }
 
         private void ElementOnMouseLeftButtonDown(object sender, MouseButtonEventArgs mouseButtonEventArgs) {
@@ -90,51 +114,54 @@ namespace NINA.Utility.Behaviors {
             _mouseStartPosition2 = mouseButtonEventArgs.GetPosition(parent);*/
 
             var element = (FrameworkElement)sender;
-            element.CaptureMouse();
 
             var parent = (UIElement)element.Parent;
             var boundary = GetResizeBoundary(element);
             var startPoint = mouseButtonEventArgs.GetPosition(element);
             var mousePos = mouseButtonEventArgs.GetPosition(parent);
 
-            if (!double.IsNaN(boundary)) {
-                if (startPoint.X < boundary && startPoint.Y < boundary) {
-                    Mouse.OverrideCursor = Cursors.SizeNWSE;
-                    _mode = DragMode.Resize_Top_Left;
-                } else if (startPoint.X < boundary && startPoint.Y > element.Height - boundary) {
-                    Mouse.OverrideCursor = Cursors.SizeNESW;
-                    _mode = DragMode.Resize_Bottom_Left;
-                } else if (startPoint.X > element.Width - boundary && startPoint.Y < boundary) {
-                    Mouse.OverrideCursor = Cursors.SizeNESW;
-                    _mode = DragMode.Resize_Top_Right;
-                } else if (startPoint.X > element.Width - boundary && startPoint.Y > element.Height - boundary) {
-                    Mouse.OverrideCursor = Cursors.SizeNWSE;
-                    _mode = DragMode.Resize_Bottom_Right;
-                } else if (startPoint.X < boundary) {
-                    Mouse.OverrideCursor = Cursors.SizeWE;
-                    _mode = DragMode.Resize_Left;
-                } else if (startPoint.Y < boundary) {
-                    Mouse.OverrideCursor = Cursors.SizeNS;
-                    _mode = DragMode.Resize_Top;
-                } else if (startPoint.X > element.Width - boundary) {
-                    Mouse.OverrideCursor = Cursors.SizeWE;
-                    _mode = DragMode.Resize_Right;
-                } else if (startPoint.Y > element.Height - boundary) {
-                    Mouse.OverrideCursor = Cursors.SizeNS;
-                    _mode = DragMode.Resize_Bottom;
+            var overrideCursor = GetOverrideCursor(element);
+            if (overrideCursor) {
+                if (!double.IsNaN(boundary)) {
+                    if (startPoint.X < boundary && startPoint.Y < boundary) {
+                        Mouse.OverrideCursor = Cursors.SizeNWSE;
+                        _mode = DragMode.Resize_Top_Left;
+                    } else if (startPoint.X < boundary && startPoint.Y > element.Height - boundary) {
+                        Mouse.OverrideCursor = Cursors.SizeNESW;
+                        _mode = DragMode.Resize_Bottom_Left;
+                    } else if (startPoint.X > element.Width - boundary && startPoint.Y < boundary) {
+                        Mouse.OverrideCursor = Cursors.SizeNESW;
+                        _mode = DragMode.Resize_Top_Right;
+                    } else if (startPoint.X > element.Width - boundary && startPoint.Y > element.Height - boundary) {
+                        Mouse.OverrideCursor = Cursors.SizeNWSE;
+                        _mode = DragMode.Resize_Bottom_Right;
+                    } else if (startPoint.X < boundary) {
+                        Mouse.OverrideCursor = Cursors.SizeWE;
+                        _mode = DragMode.Resize_Left;
+                    } else if (startPoint.Y < boundary) {
+                        Mouse.OverrideCursor = Cursors.SizeNS;
+                        _mode = DragMode.Resize_Top;
+                    } else if (startPoint.X > element.Width - boundary) {
+                        Mouse.OverrideCursor = Cursors.SizeWE;
+                        _mode = DragMode.Resize_Right;
+                    } else if (startPoint.Y > element.Height - boundary) {
+                        Mouse.OverrideCursor = Cursors.SizeNS;
+                        _mode = DragMode.Resize_Bottom;
+                    } else {
+                        Mouse.OverrideCursor = Cursors.SizeAll;
+                        _mode = DragMode.Move;
+                    }
                 } else {
                     Mouse.OverrideCursor = Cursors.SizeAll;
                     _mode = DragMode.Move;
                 }
-            } else {
-                Mouse.OverrideCursor = Cursors.SizeAll;
-                _mode = DragMode.Move;
             }
 
             _prevMousePos = mousePos;
 
             var cmd = GetDragStartCommand(element);
             cmd?.Execute(null);
+            element.CaptureMouse();
         }
 
         private void ElementOnMouseLeftButtonUp(object sender, MouseButtonEventArgs mouseButtonEventArgs) {
@@ -160,28 +187,31 @@ namespace NINA.Utility.Behaviors {
             var boundary = GetResizeBoundary(element);
 
             if (!element.IsMouseCaptured) {
-                if (!double.IsNaN(boundary)) {
-                    if (startPoint.X < boundary && startPoint.Y < boundary) {
-                        Mouse.OverrideCursor = Cursors.SizeNWSE;
-                    } else if (startPoint.X < boundary && startPoint.Y > element.Height - boundary) {
-                        Mouse.OverrideCursor = Cursors.SizeNESW;
-                    } else if (startPoint.X > element.Width - boundary && startPoint.Y < boundary) {
-                        Mouse.OverrideCursor = Cursors.SizeNESW;
-                    } else if (startPoint.X > element.Width - boundary && startPoint.Y > element.Height - boundary) {
-                        Mouse.OverrideCursor = Cursors.SizeNWSE;
-                    } else if (startPoint.X < boundary) {
-                        Mouse.OverrideCursor = Cursors.SizeWE;
-                    } else if (startPoint.Y < boundary) {
-                        Mouse.OverrideCursor = Cursors.SizeNS;
-                    } else if (startPoint.X > element.Width - boundary) {
-                        Mouse.OverrideCursor = Cursors.SizeWE;
-                    } else if (startPoint.Y > element.Height - boundary) {
-                        Mouse.OverrideCursor = Cursors.SizeNS;
+                var overrideCursor = GetOverrideCursor(element);
+                if (overrideCursor) {
+                    if (!double.IsNaN(boundary)) {
+                        if (startPoint.X < boundary && startPoint.Y < boundary) {
+                            Mouse.OverrideCursor = Cursors.SizeNWSE;
+                        } else if (startPoint.X < boundary && startPoint.Y > element.Height - boundary) {
+                            Mouse.OverrideCursor = Cursors.SizeNESW;
+                        } else if (startPoint.X > element.Width - boundary && startPoint.Y < boundary) {
+                            Mouse.OverrideCursor = Cursors.SizeNESW;
+                        } else if (startPoint.X > element.Width - boundary && startPoint.Y > element.Height - boundary) {
+                            Mouse.OverrideCursor = Cursors.SizeNWSE;
+                        } else if (startPoint.X < boundary) {
+                            Mouse.OverrideCursor = Cursors.SizeWE;
+                        } else if (startPoint.Y < boundary) {
+                            Mouse.OverrideCursor = Cursors.SizeNS;
+                        } else if (startPoint.X > element.Width - boundary) {
+                            Mouse.OverrideCursor = Cursors.SizeWE;
+                        } else if (startPoint.Y > element.Height - boundary) {
+                            Mouse.OverrideCursor = Cursors.SizeNS;
+                        } else {
+                            Mouse.OverrideCursor = Cursors.SizeAll;
+                        }
                     } else {
                         Mouse.OverrideCursor = Cursors.SizeAll;
                     }
-                } else {
-                    Mouse.OverrideCursor = Cursors.SizeAll;
                 }
             } else {
                 var delta = mousePos - _prevMousePos;

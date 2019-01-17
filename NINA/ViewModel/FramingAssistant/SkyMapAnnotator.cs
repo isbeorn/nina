@@ -2,6 +2,7 @@
 using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Behaviors;
 using NINA.Utility.Mediator.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Color = System.Drawing.Color;
@@ -35,6 +37,15 @@ namespace NINA.ViewModel.FramingAssistant {
             ConstellationsInViewport = new List<FramingConstellation>();
             FrameLineMatrix = new FrameLineMatrix2();
             ConstellationBoundaries = new Dictionary<string, ConstellationBoundary>();
+            DragCommand = new RelayCommand(Drag);
+        }
+
+        public void Drag(object obj) {
+            var delta = ((DragResult)obj).Delta;
+            delta = new Vector(-delta.X, -delta.Y);
+            var newCenter = ShiftViewport(delta);
+
+            UpdateSkyMap();
         }
 
         public async Task Initialize(Coordinates centerCoordinates, double vFoVDegrees, double imageWidth, double imageHeight, double imageRotation, CancellationToken ct) {
@@ -83,6 +94,8 @@ namespace NINA.ViewModel.FramingAssistant {
 
             return ViewportFoV;
         }
+
+        public ICommand DragCommand { get; private set; }
 
         public FrameLineMatrix2 FrameLineMatrix { get; private set; }
 
