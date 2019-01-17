@@ -39,6 +39,7 @@ namespace NINA.Utility {
     public static class Utility {
         public static char[] PATHSEPARATORS = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
         public static string APPLICATIONTEMPPATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NINA");
+        public static DateTime ApplicationStartDate = DateTime.Now;
 
         public static string Version {
             get {
