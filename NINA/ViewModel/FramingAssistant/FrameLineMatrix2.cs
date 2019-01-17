@@ -44,15 +44,13 @@ namespace NINA.ViewModel.FramingAssistant {
         private Dictionary<double, List<Coordinates>> raCoordinateMatrix = new Dictionary<double, List<Coordinates>>();
         private Dictionary<double, List<Coordinates>> decCoordinateMatrix = new Dictionary<double, List<Coordinates>>();
 
-        private const double maxDec = 89.999;
-        private const double minRA = 0;
-        private const double maxRA = 0;
+        private const double MAXDEC = 89.999;
 
         private void GenerateRACoordinateMatrix(double raStep) {
             raCoordinateMatrix.Clear();
             double i = 0;
             do {
-                i = Math.Min(maxDec, i + resolution);
+                i = Math.Min(MAXDEC, i + resolution);
 
                 for (double ra = 0; ra < 360; ra += raStep) {
                     var coordinate = new Coordinates(Angle.ByDegree(ra), Angle.ByDegree(i), Epoch.J2000);
@@ -64,14 +62,14 @@ namespace NINA.ViewModel.FramingAssistant {
                     raCoordinateMatrix[ra].Add(coordinate);
                     raCoordinateMatrix[ra].Insert(0, coordinate2);
                 }
-            } while (i < maxDec);
+            } while (i < MAXDEC);
         }
 
         private void GenerateDecCoordinateMatrix(double decStep) {
             decCoordinateMatrix.Clear();
 
             for (double i = 0; i < 360; i += resolution) {
-                for (double dec = 0; dec <= maxDec; dec += decStep) {
+                for (double dec = 0; dec <= MAXDEC; dec += decStep) {
                     var coordinate = new Coordinates(Angle.ByDegree(i), Angle.ByDegree(dec), Epoch.J2000);
                     var coordinate2 = new Coordinates(Angle.ByDegree(i), Angle.ByDegree(-dec), Epoch.J2000);
                     if (!decCoordinateMatrix.ContainsKey(dec)) {
@@ -115,15 +113,41 @@ namespace NINA.ViewModel.FramingAssistant {
             RAPoints.Clear();
             DecPoints.Clear();
 
-            for (double ra = 0; ra < 360; ra += currentRAStep) {
-                CalculateRAPoints(ra);
+            var raMin = nfmod(viewport.CalcRAMin - viewport.CalcRAMin % currentRAStep - currentRAStep, 360);
+            var raMax = nfmod(viewport.CalcRAMax - viewport.CalcRAMax % currentRAStep + currentRAStep, 360);
+            if (viewport.HFoVDeg == 360) {
+                raMin = 0;
+                raMax = 360 - currentRAStep;
             }
 
-            for (double dec = 0; dec <= maxDec; dec += currentDecStep) {
-                CalculateDecPoints(dec);
+            if (raMin > raMax) {
+                for (double ra = 0; ra <= raMax; ra += currentRAStep) {
+                    CalculateRAPoints(ra);
+                }
+                for (double ra = raMin; ra < 360; ra += currentRAStep) {
+                    CalculateRAPoints(ra);
+                }
+            } else {
+                for (double ra = raMin; ra <= raMax; ra += currentRAStep) {
+                    CalculateRAPoints(ra);
+                }
             }
-            for (double dec = 0; dec >= -maxDec; dec -= currentDecStep) {
-                CalculateDecPoints(dec);
+
+            var currentMinDec = Math.Max(-MAXDEC, Math.Min(viewport.CalcTopDec, viewport.CalcBottomDec));
+            var currentMaxDec = Math.Min(MAXDEC, Math.Max(viewport.CalcTopDec, viewport.CalcBottomDec));
+
+            if (currentMaxDec > 0) {
+                var start = Math.Max(0, Math.Max(0, currentMinDec) % currentDecStep - currentDecStep);
+                for (double dec = start; dec <= currentMaxDec; dec += currentDecStep) {
+                    CalculateDecPoints(dec);
+                }
+            }
+
+            if (currentMinDec < 0) {
+                var start = Math.Min(0, Math.Min(0, currentMinDec) % currentDecStep + currentDecStep);
+                for (double dec = start; dec >= currentMinDec; dec -= currentDecStep) {
+                    CalculateDecPoints(dec);
+                }
             }
         }
 
@@ -233,7 +257,7 @@ namespace NINA.ViewModel.FramingAssistant {
         private void DrawRALineCollection(Graphics g, FrameLine frameLine) {
             if (frameLine.Collection.Count > 1) {
                 //Prevent annotations to overlap on southern pole
-                var southPole = new Coordinates(0, -maxDec, Epoch.J2000, Coordinates.RAType.Degrees).XYProjection(currentViewport);
+                var southPole = new Coordinates(0, -MAXDEC, Epoch.J2000, Coordinates.RAType.Degrees).XYProjection(currentViewport);
                 PointF? position = frameLine.Collection.FirstOrDefault(x => x.X > 0 && x.Y > 0 && x.X < currentViewport.Width && x.Y < currentViewport.Height && Math.Abs(x.X - southPole.X) > 5 && Math.Abs(x.Y - southPole.Y) > 5);
 
                 if (position != null) {

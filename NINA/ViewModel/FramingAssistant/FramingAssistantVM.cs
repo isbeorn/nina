@@ -78,7 +78,7 @@ namespace NINA.ViewModel.FramingAssistant {
             DragStopCommand = new RelayCommand(DragStop);
             DragMoveCommand = new RelayCommand(DragMove);
             ClearCacheCommand = new RelayCommand(ClearCache);
-            RefreshSkyMapAnnotationCommand = new RelayCommand((object o) => SkyMapAnnotator.UpdateSkyMap());
+            RefreshSkyMapAnnotationCommand = new RelayCommand((object o) => SkyMapAnnotator.UpdateSkyMap(), (object o) => SkyMapAnnotator.Initialized);
             MouseWheelCommand = new RelayCommand(MouseWheel);
 
             DeepSkyObjectSearchVM = new DeepSkyObjectSearchVM(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
@@ -772,12 +772,14 @@ namespace NINA.ViewModel.FramingAssistant {
             if (FramingAssistantSource == SkySurveySource.SKYATLAS) {
                 delta = new Vector(-delta.X, -delta.Y);
 
-                var newCenter = SkyMapAnnotator.ShiftViewport(delta);
+                SkyMapAnnotator.Drag(obj);
+
+                var newCenter = SkyMapAnnotator.ViewportFoV.CenterCoordinates;
                 DSO.Coordinates = newCenter;
                 ImageParameter.Coordinates = newCenter;
                 CalculateRectangle(SkyMapAnnotator.ViewportFoV);
 
-                SkyMapAnnotator.UpdateSkyMap();
+                //SkyMapAnnotator.UpdateSkyMap();
             } else {
                 var imageArcsecWidth =
                     Astrometry.ArcminToArcsec(ImageParameter.FoVWidth) / ImageParameter.Image.Width;
