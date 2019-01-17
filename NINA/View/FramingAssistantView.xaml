@@ -406,7 +406,7 @@
             VerticalAlignment="Stretch" />
 
         <Grid Grid.Column="2">
-            <local:ImageView Image="{Binding ImageParameter.Image, IsAsync=True}">
+            <local:ImageView Image="{Binding ImageParameter.Image, IsAsync=True}" ScrollEnabled="{Binding SkyMapAnnotator.DynamicFoV, Converter={StaticResource InverseBooleanConverter}}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SizeChanged" SourceObject="{Binding RelativeSource={RelativeSource AncestorType=local:ImageView, Mode=FindAncestor}, Path=PART_ScrollViewerBinding}">
                         <i:InvokeCommandAction Command="{Binding ScrollViewerSizeChangedCommand}" />
