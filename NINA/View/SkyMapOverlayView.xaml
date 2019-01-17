@@ -12,7 +12,7 @@
     mc:Ignorable="d">
     <Canvas
         behaviors:DragCommandBehavior.Drag="{Binding SkyMapAnnotator.DynamicFoV}"
-        behaviors:DragCommandBehavior.DragMoveCommand="{Binding SkyMapAnnotator.DragCommand}"
+        behaviors:DragCommandBehavior.DragMoveCommand="{Binding DragMoveCommand}"
         behaviors:DragCommandBehavior.OverrideCursor="False"
         behaviors:MouseWheelCommandBehavior.Enabled="{Binding SkyMapAnnotator.DynamicFoV}"
         behaviors:MouseWheelCommandBehavior.MouseWheelCommand="{Binding MouseWheelCommand}"
