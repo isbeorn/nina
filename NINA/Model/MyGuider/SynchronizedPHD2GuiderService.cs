@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
+using System.ServiceModel.Channels;
 using System.Text;
 using System.Threading.Tasks;
 using NINA.Utility.Profile;
@@ -15,7 +16,13 @@ namespace NINA.Model.MyGuider {
         void Initialize();
 
         [OperationContract]
+        void Ping();
+
+        [OperationContract]
         void ConnectClient(SynchronizedClientInfo clientInfo);
+
+        [OperationContract]
+        void DisconnectClient(Guid clientId);
     }
 
     internal class SynchronizedPHD2GuiderService : ISynchronizedPHD2GuiderService {
@@ -36,6 +43,14 @@ namespace NINA.Model.MyGuider {
             } else {
                 clientInfos.Add(clientInfo);
             }
+        }
+
+        public void Ping() {
+        }
+
+        /// <inheritdoc />
+        public void DisconnectClient(Guid clientId) {
+            clientInfos.RemoveAll(c => c.InstanceID == clientId);
         }
     }
 

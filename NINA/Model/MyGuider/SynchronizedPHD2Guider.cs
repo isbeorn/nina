@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.ServiceModel;
+using System.ServiceModel.Description;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,7 +16,13 @@ namespace NINA.Model.MyGuider {
         private readonly IProfileService profileService;
 
         /// <inheritdoc />
-        public bool Connected { get; private set; }
+        public bool Connected {
+            get { return _connected; }
+            private set {
+                _connected = value;
+                RaisePropertyChanged();
+            }
+        }
 
         /// <inheritdoc />
         public double PixelScale { get; set; }
@@ -43,6 +50,7 @@ namespace NINA.Model.MyGuider {
 
         private TaskCompletionSource<bool> serverStarted;
         private CancellationTokenSource disconnectTokenSource;
+        private bool _connected;
 
         /// <inheritdoc />
         public async Task<bool> Connect(CancellationToken ct) {
@@ -55,11 +63,30 @@ namespace NINA.Model.MyGuider {
 
             guiderService = ConnectToServer();
 
-            guiderService.ConnectClient(new SynchronizedClientInfo { InstanceID = profileService.ActiveProfile.Id });
-
             Connected = true;
 
-            return true;
+            Task.Run(() => RunClientListener(disconnectTokenSource.Token));
+
+            return Connected;
+        }
+
+        private async Task RunClientListener(CancellationToken ct) {
+            bool faulted = false;
+            try {
+                guiderService.ConnectClient(new SynchronizedClientInfo { InstanceID = profileService.ActiveProfile.Id });
+                while (!ct.IsCancellationRequested) {
+                    guiderService.Ping();
+
+                    await Task.Delay(TimeSpan.FromMilliseconds(1000), ct);
+                }
+            } catch {
+                Connected = false;
+                faulted = true;
+            }
+
+            if (!faulted) {
+                guiderService.DisconnectClient(profileService.ActiveProfile.Id);
+            }
         }
 
         private async Task RunServer(CancellationToken ct) {
@@ -78,8 +105,10 @@ namespace NINA.Model.MyGuider {
         }
 
         private ISynchronizedPHD2GuiderService ConnectToServer() {
-            ChannelFactory<ISynchronizedPHD2GuiderService> httpFactory = new ChannelFactory<ISynchronizedPHD2GuiderService>(new NetNamedPipeBinding(), new EndpointAddress(LocalHostUri + "/" + ServiceEndPoint));
-            return httpFactory.CreateChannel();
+            ChannelFactory<ISynchronizedPHD2GuiderService> guiderServiceChannelFactory
+                = new ChannelFactory<ISynchronizedPHD2GuiderService>(new NetNamedPipeBinding(), new EndpointAddress(LocalHostUri + "/" + ServiceEndPoint));
+            guiderServiceChannelFactory.Open();
+            return guiderServiceChannelFactory.CreateChannel();
         }
 
         /// <inheritdoc />
@@ -89,7 +118,10 @@ namespace NINA.Model.MyGuider {
 
         /// <inheritdoc />
         public bool Disconnect() {
-            throw new NotImplementedException();
+            disconnectTokenSource.Cancel();
+
+            Connected = false;
+            return true;
         }
 
         /// <inheritdoc />

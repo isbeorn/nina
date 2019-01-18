@@ -64,7 +64,7 @@
                                     Grid.Column="1"
                                     MinHeight="40"
                                     DisplayMemberPath="Name"
-                                    IsEnabled="{Binding GuiderInfo.Connected, Converter={StaticResource InverseBooleanConverter}}"
+                                    IsEnabled="{Binding GuiderInfo.Connected, Converter={StaticResource InverseBooleanConverter}, UpdateSourceTrigger=PropertyChanged}"
                                     ItemsSource="{Binding GuiderChooserVM.Guiders}"
                                     SelectedItem="{Binding GuiderChooserVM.SelectedGuider}"
                                     Visibility="{Binding GuiderChooserVM.Guiders, Converter={StaticResource CollectionContainsMoreThanOneItemToVisibilityConverter}}"

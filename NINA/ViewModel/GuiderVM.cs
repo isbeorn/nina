@@ -200,6 +200,11 @@ namespace NINA.ViewModel {
                     rms.AddDataPoint(step.RADistanceRaw, step.DecDistanceRaw);
                 }
             }
+
+            if (e.PropertyName == nameof(IGuider.Connected)) {
+                GuiderInfo.Connected = Guider.Connected;
+                BroadcastGuiderInfo();
+            }
         }
 
         public GuiderScaleEnum GuiderScale {
