@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using NINA.Utility;
+using NINA.Utility.Profile;
+using System;
 using System.ServiceModel;
-using System.ServiceModel.Description;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Utility;
-using NINA.Utility.Profile;
 
 namespace NINA.Model.MyGuider {
 
@@ -17,27 +12,43 @@ namespace NINA.Model.MyGuider {
 
         /// <inheritdoc />
         public bool Connected {
-            get { return _connected; }
-            private set {
-                _connected = value;
+            get => connected;
+            set {
+                connected = value;
                 RaisePropertyChanged();
             }
         }
 
+        private double pixelScale;
+
         /// <inheritdoc />
-        public double PixelScale { get; set; }
+        public double PixelScale {
+            get => pixelScale;
+            set {
+                pixelScale = value;
+                RaisePropertyChanged();
+            }
+        }
 
         /// <inheritdoc />
         public string State {
-            get { return _state; }
-            private set {
-                _state = value;
-                RaisePropertyChanged();
+            get => state;
+            set {
+                state = value;
+                RaisePropertyChanged(nameof(State));
             }
         }
 
         /// <inheritdoc />
-        public IGuideStep GuideStep { get; private set; }
+        public IGuideStep GuideStep {
+            get => guideStep;
+            set {
+                if (value != null) {
+                    guideStep = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         /// <inheritdoc />
         public string Name => "Synchronized PHD2 Guider " + (isServer ? "Host" : "Client");
@@ -56,8 +67,9 @@ namespace NINA.Model.MyGuider {
 
         private TaskCompletionSource<bool> serverStarted;
         private CancellationTokenSource disconnectTokenSource;
-        private bool _connected;
-        private string _state;
+        private bool connected;
+        private string state;
+        private IGuideStep guideStep;
 
         /// <inheritdoc />
         public async Task<bool> Connect(CancellationToken ct) {
@@ -85,17 +97,20 @@ namespace NINA.Model.MyGuider {
         private async Task RunClientListener(CancellationToken ct) {
             bool faulted = false;
             try {
-                guiderService.ConnectClient(profileService.ActiveProfile.Id);
+                PixelScale = guiderService.ConnectAndGetPixelScale(profileService.ActiveProfile.Id);
                 while (!ct.IsCancellationRequested) {
                     var guideInfos = guiderService.GetUpdatedGuideInfos(profileService.ActiveProfile.Id);
 
-                    State = guideInfos.AppState?.ToString();
+                    State = guideInfos.State;
+                    GuideStep = guideInfos.GuideStep;
 
                     await Task.Delay(TimeSpan.FromMilliseconds(1000), ct);
                 }
-            } catch {
+            } catch (Exception e) {
                 Connected = false;
                 faulted = true;
+                State = "";
+                PixelScale = 0;
                 disconnectTokenSource.Cancel();
             }
 
@@ -109,6 +124,7 @@ namespace NINA.Model.MyGuider {
             using (ServiceHost host = new ServiceHost(new SynchronizedPHD2GuiderService(), new Uri(LocalHostUri))) {
                 host.AddServiceEndpoint(typeof(ISynchronizedPHD2GuiderService), new NetNamedPipeBinding(), ServiceEndPoint);
                 var behavior = host.Description.Behaviors.Find<ServiceBehaviorAttribute>();
+                behavior.IncludeExceptionDetailInFaults = true;
                 behavior.InstanceContextMode = InstanceContextMode.Single;
                 host.Open();
                 ((SynchronizedPHD2GuiderService)host.SingletonInstance).ProfileService = profileService;
@@ -158,6 +174,24 @@ namespace NINA.Model.MyGuider {
 
         /// <inheritdoc />
         public Task<bool> Dither(CancellationToken ct) {
+            throw new NotImplementedException();
+        }
+    }
+
+    public interface IParameterInspector {
+
+        void AfterCall(string operationName, object[] outputs, object returnValue, object correlationState);
+
+        object BeforeCall(string operationName, object[] inputs);
+    }
+
+    public class UserLogger : IParameterInspector {
+
+        public void AfterCall(string operationName, object[] outputs, object returnValue, object correlationState) {
+            throw new NotImplementedException();
+        }
+
+        public object BeforeCall(string operationName, object[] inputs) {
             throw new NotImplementedException();
         }
     }

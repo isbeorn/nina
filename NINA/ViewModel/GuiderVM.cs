@@ -55,6 +55,8 @@ namespace NINA.ViewModel {
 
             GuiderChooserVM = guiderChooserVM;
 
+            GuiderChooserVM.SelectedGuider.PropertyChanged += (sender, args) => RaisePropertyChanged(nameof(Guider));
+
             DisconnectGuiderCommand = new RelayCommand((object o) => Disconnect(), (object o) => Guider?.Connected == true);
             ClearGraphCommand = new RelayCommand((object o) => ResetGraphValues());
 
@@ -156,6 +158,7 @@ namespace NINA.ViewModel {
                     Connected = connected
                 };
                 BroadcastGuiderInfo();
+                RaisePropertyChanged(nameof(Guider));
             } catch (OperationCanceledException) {
             }
 

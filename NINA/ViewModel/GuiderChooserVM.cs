@@ -41,12 +41,13 @@ namespace NINA.ViewModel {
             set {
                 _selectedGuider = value;
                 RaisePropertyChanged();
+                profileService.ActiveProfile.GuiderSettings.GuiderName = _selectedGuider.Name;
             }
         }
 
         public void DetermineSelectedDevice(string name) {
             if (Guiders.Count > 0) {
-                var items = (from device in Guiders where device.Name == name select device).ToList();
+                var items = (from guider in Guiders where guider.Name == name select guider).ToList();
                 SelectedGuider = items.Any() ? items.First() : Guiders.First();
             }
         }

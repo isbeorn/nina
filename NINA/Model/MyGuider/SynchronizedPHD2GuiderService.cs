@@ -1,13 +1,11 @@
-﻿using System;
+﻿using NINA.Utility.Profile;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
-using System.ServiceModel.Channels;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Utility.Profile;
 
 namespace NINA.Model.MyGuider {
 
@@ -17,10 +15,11 @@ namespace NINA.Model.MyGuider {
         Task<bool> Initialize();
 
         [OperationContract]
+        [FaultContract(typeof(PHD2Fault))]
         GuideInfo GetUpdatedGuideInfos(Guid clientId);
 
         [OperationContract]
-        void ConnectClient(Guid clientId);
+        double ConnectAndGetPixelScale(Guid clientId);
 
         [OperationContract]
         void DisconnectClient(Guid clientId);
@@ -32,30 +31,46 @@ namespace NINA.Model.MyGuider {
         bool AutoSelectGuideStar();
     }
 
+    internal class PHD2Fault { }
+
     internal class SynchronizedPHD2GuiderService : ISynchronizedPHD2GuiderService {
         private PHD2Guider guiderInstance;
         private List<SynchronizedClientInfo> clientInfos;
+        private bool phd2Connected = false;
 
         public IProfileService ProfileService;
 
         public async Task<bool> Initialize() {
             guiderInstance = new PHD2Guider(ProfileService);
             clientInfos = new List<SynchronizedClientInfo>();
-            return await guiderInstance.Connect(new CancellationTokenSource().Token);
+            phd2Connected = await guiderInstance.Connect(new CancellationTokenSource().Token);
+            if (phd2Connected) {
+                guiderInstance.PHD2ConnectionLost += (sender, args) => phd2Connected = false;
+            }
+            return phd2Connected;
         }
 
-        public void ConnectClient(Guid clientId) {
+        public double ConnectAndGetPixelScale(Guid clientId) {
             var existingInfo = clientInfos.SingleOrDefault(c => c.InstanceID == clientId);
             if (existingInfo != null) {
                 clientInfos[clientInfos.IndexOf(existingInfo)].LastPing = DateTime.Now;
             } else {
                 clientInfos.Add(new SynchronizedClientInfo { InstanceID = clientId, LastPing = DateTime.Now });
             }
+
+            return guiderInstance.PixelScale;
         }
 
         public GuideInfo GetUpdatedGuideInfos(Guid clientId) {
+            if (!phd2Connected) {
+                throw new FaultException("PHD2 disconnected");
+            }
             clientInfos.Single(c => c.InstanceID == clientId).LastPing = DateTime.Now;
-            return new GuideInfo() { AppState = guiderInstance.AppState };
+
+            return new GuideInfo() {
+                State = guiderInstance.AppState?.State,
+                GuideStep = (PHD2Guider.PhdEventGuideStep)guiderInstance.GuideStep
+            };
         }
 
         /// <inheritdoc />
@@ -77,16 +92,17 @@ namespace NINA.Model.MyGuider {
 
     [DataContract]
     internal class GuideInfo {
-        public PHD2Guider.PhdEventAppState AppState { get; set; }
+
+        [DataMember]
+        public string State { get; set; }
+
+        [DataMember]
+        public PHD2Guider.PhdEventGuideStep GuideStep { get; set; }
     }
 
-    [DataContract]
     internal class SynchronizedClientInfo {
-
-        [DataMember]
         public Guid InstanceID { get; set; }
 
-        [DataMember]
         public DateTime LastPing { get; set; }
     }
 }

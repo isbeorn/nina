@@ -21,15 +21,14 @@
 
 #endregion "copyright"
 
-using System;
-using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Threading;
+using System.Runtime.Serialization;
 
 namespace NINA.Utility {
 
     [System.Serializable()]
+    [DataContract]
     public abstract class BaseINPC : INotifyPropertyChanged {
 
         protected void RaisePropertyChanged([CallerMemberName] string propertyName = null) {
