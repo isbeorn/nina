@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -28,7 +28,7 @@ namespace NINACustomControlLibrary {
 
     public class HintTextBox : TextBox {
 
-        public HintTextBox() {
+        static HintTextBox() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(HintTextBox), new FrameworkPropertyMetadata(typeof(HintTextBox)));
         }
 

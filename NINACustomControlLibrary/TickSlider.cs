@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -115,21 +115,21 @@ namespace NINACustomControlLibrary {
         }
 
         public static readonly DependencyProperty MaxActualValueIncreasePerTickProperty =
-            DependencyProperty.Register("MaxActualValueIncreasePerTick", typeof(double), typeof(TickSlider), new UIPropertyMetadata((double)0.5));
+            DependencyProperty.Register(nameof(MaxActualValueIncreasePerTick), typeof(double), typeof(TickSlider), new UIPropertyMetadata((double)0.5));
 
         public static readonly DependencyProperty InitialSpeedTickValueProperty =
-            DependencyProperty.Register("InitialSpeedTickValue", typeof(double), typeof(TickSlider), new UIPropertyMetadata((double)0.5));
+            DependencyProperty.Register(nameof(InitialSpeedTickValue), typeof(double), typeof(TickSlider), new UIPropertyMetadata((double)0.5));
 
         public static readonly DependencyProperty ActualValueProperty =
-            DependencyProperty.Register("ActualValue", typeof(double), typeof(TickSlider), new UIPropertyMetadata((double)0));
+            DependencyProperty.Register(nameof(ActualValue), typeof(double), typeof(TickSlider), new UIPropertyMetadata((double)0));
 
         public static readonly DependencyProperty MinimumActualValueProperty =
-            DependencyProperty.Register("ActualValueMinimum", typeof(double), typeof(TickSlider), new UIPropertyMetadata(double.MinValue));
+            DependencyProperty.Register(nameof(ActualValueMinimum), typeof(double), typeof(TickSlider), new UIPropertyMetadata(double.MinValue));
 
         public static readonly DependencyProperty MaximumActualValueProperty =
-            DependencyProperty.Register("ActualValueMaximum", typeof(double), typeof(TickSlider), new UIPropertyMetadata(double.MaxValue));
+            DependencyProperty.Register(nameof(ActualValueMaximum), typeof(double), typeof(TickSlider), new UIPropertyMetadata(double.MaxValue));
 
         public static readonly DependencyProperty SpeedTickPercentageChangePerTickProperty =
-            DependencyProperty.Register("SpeedTickPercentageChangePerTick", typeof(double), typeof(TickSlider), new UIPropertyMetadata((double)0.9));
+            DependencyProperty.Register(nameof(SpeedTickPercentageChangePerTick), typeof(double), typeof(TickSlider), new UIPropertyMetadata((double)0.9));
     }
 }

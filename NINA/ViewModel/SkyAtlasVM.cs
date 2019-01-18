@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -286,24 +286,29 @@ namespace NINA.ViewModel {
                     SearchResult = null;
                     var db = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
                     var types = ObjectTypes.Where((x) => x.Selected).Select((x) => x.Name).ToList();
+
+                    var searchParams = new DatabaseInteraction.DeepSkyObjectSearchParams();
+                    searchParams.Constellation = SelectedConstellation;
+                    searchParams.DsoTypes = types;
+                    searchParams.ObjectName = SearchObjectName;
+                    searchParams.RightAscension.From = SelectedRAFrom;
+                    searchParams.RightAscension.Thru = SelectedRAThrough;
+                    searchParams.Declination.From = Nullable.Compare(SelectedDecFrom, SelectedDecThrough) > 0 ? SelectedDecThrough : SelectedDecFrom;
+                    searchParams.Declination.Thru = Nullable.Compare(SelectedDecFrom, SelectedDecThrough) > 0 ? SelectedDecFrom : SelectedDecThrough;
+                    searchParams.Brightness.From = SelectedBrightnessFrom;
+                    searchParams.Brightness.Thru = SelectedBrightnessThrough;
+                    searchParams.Magnitude.From = SelectedMagnitudeFrom;
+                    searchParams.Magnitude.Thru = SelectedMagnitudeThrough;
+                    searchParams.Size.From = SelectedSizeFrom;
+                    searchParams.Size.Thru = SelectedSizeThrough;
+                    searchParams.SearchOrder.Field = OrderByField.ToString().ToLower();
+                    searchParams.SearchOrder.Direction = OrderByDirection.ToString();
+
                     var result = await db.GetDeepSkyObjects(
                         profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository,
-                        _searchTokenSource.Token,
-                        SelectedConstellation,
-                        SelectedRAFrom,
-                        SelectedRAThrough,
-                        Nullable.Compare(SelectedDecFrom, SelectedDecThrough) > 0 ? SelectedDecThrough : SelectedDecFrom,
-                        Nullable.Compare(SelectedDecFrom, SelectedDecThrough) > 0 ? SelectedDecFrom : SelectedDecThrough,
-                        SelectedSizeFrom,
-                        SelectedSizeThrough,
-                        types,
-                        SelectedBrightnessFrom,
-                        SelectedBrightnessThrough,
-                        SelectedMagnitudeFrom,
-                        SelectedMagnitudeThrough,
-                        SearchObjectName,
-                        OrderByField.ToString().ToLower(),
-                        OrderByDirection.ToString());
+                        searchParams,
+                        _searchTokenSource.Token
+                    );
 
                     var longitude = profileService.ActiveProfile.AstrometrySettings.Longitude;
                     var latitude = profileService.ActiveProfile.AstrometrySettings.Latitude;
@@ -413,10 +418,11 @@ namespace NINA.ViewModel {
         }
 
         private void InitializeObjectTypeFilters() {
-            var l = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation).GetObjectTypes(new System.Threading.CancellationToken());
+            var task = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation).GetObjectTypes(new System.Threading.CancellationToken());
+            var list = task.Result?.OrderBy(x => x).ToList();
             ObjectTypes = new AsyncObservableCollection<DSOObjectType>();
-            foreach (var t in l.Result) {
-                ObjectTypes.Add(new DSOObjectType(t));
+            foreach (var type in list) {
+                ObjectTypes.Add(new DSOObjectType(type));
             }
         }
 

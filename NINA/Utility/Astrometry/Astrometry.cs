@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -24,10 +24,13 @@
 using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace NINA.Utility.Astrometry {
 
     public class Astrometry {
+        private static double DegreeToRadiansFactor = Math.PI / 180d;
+        private static double RadiansToDegreeFactor = 180d / Math.PI;
 
         /// <summary>
         /// Convert degree to radians
@@ -35,7 +38,7 @@ namespace NINA.Utility.Astrometry {
         /// <param name="val"></param>
         /// <returns></returns>
         public static double ToRadians(double val) {
-            return (Math.PI / 180) * val;
+            return DegreeToRadiansFactor * val;
         }
 
         /// <summary>
@@ -44,39 +47,39 @@ namespace NINA.Utility.Astrometry {
         /// <param name="angle"></param>
         /// <returns></returns>
         public static double ToDegree(double angle) {
-            return angle * (180.0 / Math.PI);
+            return angle * RadiansToDegreeFactor;
         }
 
         public static double DegreeToArcmin(double degree) {
-            return degree * 60;
+            return degree * 60d;
         }
 
         public static double DegreeToArcsec(double degree) {
-            return degree * 60 * 60;
+            return degree * 60d * 60d;
         }
 
         public static double ArcminToArcsec(double arcmin) {
-            return arcmin * 60;
+            return arcmin * 60d;
         }
 
         public static double ArcminToDegree(double arcmin) {
-            return arcmin / 60;
+            return arcmin / 60d;
         }
 
         public static double ArcsecToArcmin(double arcsec) {
-            return arcsec / 60;
+            return arcsec / 60d;
         }
 
         public static double ArcsecToDegree(double arcsec) {
-            return arcsec / 60 / 60;
+            return arcsec / 60d / 60d;
         }
 
         public static double HoursToDegrees(double hours) {
-            return hours * 15;
+            return hours * 15d;
         }
 
         public static double DegreesToHours(double deg) {
-            return deg / 15;
+            return deg / 15d;
         }
 
         public static double GetLocalSiderealTimeNow(double longitude) {
@@ -130,8 +133,12 @@ namespace NINA.Utility.Astrometry {
         /// <param name="rightAscension"></param>
         /// <returns>Hour Angle in hours</returns>
         public static double GetHourAngle(double siderealTime, double rightAscension) {
-            double hourAngle = siderealTime - rightAscension;
-            if (hourAngle < 0) { hourAngle += 24; }
+            return GetHourAngle(Angle.ByHours(siderealTime), Angle.ByHours(rightAscension)).Hours;
+        }
+
+        public static Angle GetHourAngle(Angle siderealTime, Angle rightAscension) {
+            var hourAngle = siderealTime - rightAscension;
+            if (hourAngle.Hours < 0) { hourAngle = Angle.ByHours(hourAngle.Hours + 24); }
             return hourAngle;
         }
 
@@ -147,14 +154,18 @@ namespace NINA.Utility.Astrometry {
         /// <param name="declination">in degrees</param>
         /// <returns></returns>
         public static double GetAltitude(double hourAngle, double latitude, double declination) {
-            var radX = ToRadians(hourAngle);
-            var sinAlt = Math.Sin(ToRadians(declination))
-                         * Math.Sin(ToRadians(latitude))
-                         + Math.Cos(ToRadians(declination))
-                         * Math.Cos(ToRadians(latitude))
-                         * Math.Cos(radX);
-            var altitude = Astrometry.ToDegree(Math.Asin(sinAlt));
-            return altitude;
+            return GetAltitude(Angle.ByDegree(hourAngle), Angle.ByDegree(latitude), Angle.ByDegree(declination)).Degree;
+        }
+
+        /// <summary>
+        /// Calculates altitude for given location and time
+        /// </summary>
+        /// <param name="hourAngle"></param>
+        /// <param name="latitude"></param>
+        /// <param name="declination"></param>
+        /// <returns></returns>
+        public static Angle GetAltitude(Angle hourAngle, Angle latitude, Angle declination) {
+            return (declination.Sin() * latitude.Sin() + declination.Cos() * latitude.Cos() * hourAngle.Cos()).Asin();
         }
 
         /// <summary>
@@ -166,22 +177,28 @@ namespace NINA.Utility.Astrometry {
         /// <param name="declination">in degrees</param>
         /// <returns></returns>
         public static double GetAzimuth(double hourAngle, double altitude, double latitude, double declination) {
-            var radHA = ToRadians(hourAngle);
-            var radAlt = ToRadians(altitude);
-            var radLat = ToRadians(latitude);
-            var radDec = ToRadians(declination);
+            return GetAzimuth(Angle.ByDegree(hourAngle), Angle.ByDegree(altitude), Angle.ByDegree(latitude), Angle.ByDegree(declination)).Degree;
+        }
 
-            var cosA = (Math.Sin(radDec) - Math.Sin(radAlt) * Math.Sin(radLat)) /
-                        (Math.Cos(radAlt) * Math.Cos(radLat));
+        /// <summary>
+        /// Calculates azimuth for given location and time
+        /// </summary>
+        /// <param name="hourAngle"></param>
+        /// <param name="altitude"></param>
+        /// <param name="latitude"></param>
+        /// <param name="declination"></param>
+        /// <returns></returns>
+        public static Angle GetAzimuth(Angle hourAngle, Angle altitude, Angle latitude, Angle declination) {
+            var cosAz = (declination.Sin() - altitude.Sin() * latitude.Sin()) / (altitude.Cos() * latitude.Cos());
 
             //fix double precision issues
-            if (cosA < -1) { cosA = -1; }
-            if (cosA > 1) { cosA = 1; }
+            if (cosAz.Radians < -1) { cosAz = Angle.ByRadians(-1); }
+            if (cosAz.Radians > 1) { cosAz = Angle.ByRadians(1); }
 
-            if (Math.Sin(radHA) < 0) {
-                return ToDegree(Math.Acos(cosA));
+            if (hourAngle.Sin().Radians < 0) {
+                return cosAz.Acos();
             } else {
-                return 360 - ToDegree(Math.Acos(cosA));
+                return Angle.ByDegree(360 - cosAz.Acos().Degree);
             }
         }
 
@@ -256,7 +273,8 @@ namespace NINA.Utility.Astrometry {
         /// <param name="deg"></param>
         /// <returns></returns>
         public static string DegreesToFitsDMS(double deg) {
-            return DegreesToDMS(deg).Replace("°", "").Replace("'", "").Replace("\"", ""); ;
+            return DegreesToDMS(deg).Replace("°", "").Replace("'", "").Replace("\"", "");
+            ;
         }
 
         /// <summary>
@@ -284,6 +302,53 @@ namespace NINA.Utility.Astrometry {
         /// <returns></returns>
         public static string HoursToFitsHMS(double hours) {
             return HoursToHMS(hours).Replace(':', ' ');
+        }
+
+        /// <summary>
+        /// Restores double degree value out of dms string
+        /// </summary>
+        /// <param name="hms">hms string</param>
+        /// <returns>value in degree</returns>
+        public static double HMSToDegrees(string hms) {
+            return HoursToDegrees(DMSToDegrees(hms));
+        }
+
+        /// <summary>
+        /// Restores double degree value out of dms string
+        /// </summary>
+        /// <param name="dms">dms string</param>
+        /// <returns>value in degree</returns>
+        public static double DMSToDegrees(string dms) {
+            dms = dms.Trim();
+
+            double signFactor = 1d;
+            if (dms.Contains('-')) {
+                signFactor = -1d;
+            }
+
+            var pattern = "[0-9\\.]+";
+            if (dms.Contains(",")) {
+                pattern = "[0-9\\,]+";
+            }
+            var regex = new Regex(pattern);
+
+            var matches = regex.Matches(dms);
+
+            double degree = 0, minutes = 0, seconds = 0;
+
+            if (matches.Count > 0) {
+                degree = double.Parse(matches[0].Value);
+
+                if (matches.Count > 1) {
+                    minutes = ArcminToDegree(double.Parse(matches[1].Value));
+                }
+
+                if (matches.Count > 2) {
+                    seconds = ArcsecToDegree(double.Parse(matches[2].Value));
+                }
+            }
+
+            return signFactor * (degree + minutes + seconds);
         }
 
         private static Tuple<NOVAS.SkyPosition, NOVAS.SkyPosition> GetMoonAndSunPosition(DateTime date, double jd) {
@@ -339,18 +404,22 @@ namespace NINA.Utility.Astrometry {
             var moonPosition = tuple.Item1;
             var sunPosition = tuple.Item2;
 
-            var raDiffRad = ToRadians(HoursToDegrees(sunPosition.RA - moonPosition.RA));
-            var moonDecRad = ToRadians(moonPosition.Dec);
-            var sunDecRad = ToRadians(sunPosition.Dec);
+            var sunRAAngle = Angle.ByHours(sunPosition.RA);
+            var sunDecAngle = Angle.ByDegree(sunPosition.Dec);
+            var moonRAAngle = Angle.ByHours(moonPosition.RA);
+            var moonDecAngle = Angle.ByDegree(moonPosition.Dec);
 
-            var phi = Math.Acos(
-                        Math.Sin(sunDecRad) * Math.Sin(moonDecRad) +
-                        Math.Cos(sunDecRad) * Math.Cos(moonDecRad) * Math.Cos(raDiffRad)
-                      );
+            var phi = (
+                sunDecAngle.Sin() * moonDecAngle.Sin()
+                + sunDecAngle.Cos() * moonDecAngle.Cos() * (sunRAAngle - moonRAAngle).Cos()
+                ).Acos();
 
-            var phaseAngle = Math.Atan2(sunPosition.Dis * Math.Sin(phi), moonPosition.Dis - sunPosition.Dis * Math.Cos(phi));
+            var phaseAngle = Angle.Atan2(
+                sunPosition.Dis * phi.Sin(),
+                moonPosition.Dis - sunPosition.Dis * phi.Cos()
+            );
 
-            var illuminatedFraction = (1.0 + Math.Cos(phaseAngle)) / 2.0;
+            var illuminatedFraction = (1.0 + phaseAngle.Cos().Radians) / 2.0;
 
             return illuminatedFraction;
         }

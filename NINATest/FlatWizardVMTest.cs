@@ -26,7 +26,7 @@ namespace NINATest {
         private Mock<IApplicationStatusMediator> applicationStatusMediatorMock = new Mock<IApplicationStatusMediator>();
         private Mock<IFlatWizardExposureTimeFinderService> exposureServiceMock = new Mock<IFlatWizardExposureTimeFinderService>();
         private Mock<ILoc> localeMock = new Mock<ILoc>();
-        private Mock<IResourceDictionary> resourceDictionaryMock = new Mock<IResourceDictionary>();
+        private Mock<IApplicationResourceDictionary> resourceDictionaryMock = new Mock<IApplicationResourceDictionary>();
         private Mock<IProfile> profileMock = new Mock<IProfile>();
         private Mock<IFlatWizardSettings> flatWizardSettingsMock = new Mock<IFlatWizardSettings>();
         private Mock<ICameraSettings> cameraSettingsMock = new Mock<ICameraSettings>();
@@ -51,7 +51,7 @@ namespace NINATest {
             applicationStatusMediatorMock = new Mock<IApplicationStatusMediator>();
             exposureServiceMock = new Mock<IFlatWizardExposureTimeFinderService>();
             localeMock = new Mock<ILoc>();
-            resourceDictionaryMock = new Mock<IResourceDictionary>();
+            resourceDictionaryMock = new Mock<IApplicationResourceDictionary>();
             profileMock = new Mock<IProfile>();
             flatWizardSettingsMock = new Mock<IFlatWizardSettings>();
             cameraSettingsMock = new Mock<ICameraSettings>();
@@ -129,8 +129,8 @@ namespace NINATest {
             // assert
 
             sut.CameraConnected.Should().BeTrue();
-            sut.SingleFlatWizardFilterSettings.CameraInfo.Should().BeEquivalentTo(cameraInfo);
-            sut.Filters.Select(m => m.CameraInfo).Should().AllBeEquivalentTo(cameraInfo);
+            sut.SingleFlatWizardFilterSettings.BitDepth.Should().Be(cameraInfo.BitDepth);
+            sut.Filters.Select(m => m.BitDepth).Should().AllBeEquivalentTo(cameraInfo.BitDepth);
         }
 
         [Test]
@@ -170,7 +170,7 @@ namespace NINATest {
 
             // assert cameraInfo on all filters and unused filters are removed
             sut.Filters.Select(f => f.Filter).Should().BeEquivalentTo(filters);
-            sut.Filters.Select(f => f.CameraInfo).Should().AllBeEquivalentTo(cameraInfo);
+            sut.Filters.Select(f => f.BitDepth).Should().AllBeEquivalentTo(cameraInfo.BitDepth);
             sut.SelectedFilter.Should().BeEquivalentTo(selectedFilter);
 
             // add another filter
@@ -183,7 +183,7 @@ namespace NINATest {
 
             // assert cameraInfo still on all filters even on the ones that were added
             sut.Filters.Select(f => f.Filter).Should().BeEquivalentTo(filters);
-            sut.Filters.Select(f => f.CameraInfo).Should().AllBeEquivalentTo(cameraInfo);
+            sut.Filters.Select(f => f.BitDepth).Should().AllBeEquivalentTo(cameraInfo.BitDepth);
             sut.SelectedFilter.Should().BeEquivalentTo(selectedFilter);
         }
 

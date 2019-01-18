@@ -296,6 +296,11 @@
     <Compile Include="Locale\ILoc.cs" />
     <Compile Include="Locale\Loc.cs" />
     <Compile Include="Model\ApplicationStatus.cs" />
+    <Compile Include="Model\ConstellationBoundary.cs" />
+    <Compile Include="Model\Constellation.cs" />
+    <Compile Include="Model\Star.cs" />
+    <Compile Include="Model\FocusTarget.cs" />
+    <Compile Include="Model\Sequence\CaptureSequence.cs" />
     <Compile Include="Model\DeepSkyObject.cs" />
     <Compile Include="Model\DeviceInfo.cs" />
     <Compile Include="Model\DummyDevice.cs" />
@@ -312,19 +317,29 @@
     <Compile Include="Model\MyCamera\ImageArray.cs" />
     <Compile Include="Model\MyCamera\ImageStatistics.cs" />
     <Compile Include="Model\MyCamera\NikonCamera.cs" />
+    <Compile Include="Model\MyCamera\SimulatorCamera.cs" />
     <Compile Include="Model\MyFilterWheel\FilterInfo.cs" />
     <Compile Include="Model\MyCamera\SensorType.cs" />
     <Compile Include="Model\MyCamera\ToupTekCamera.cs" />
     <Compile Include="Model\MyFilterWheel\FilterWheelInfo.cs" />
     <Compile Include="Model\MyFilterWheel\FlatWizardFilterSettings.cs" />
+    <Compile Include="Utility\Astrometry\Angle.cs" />
+    <Compile Include="Utility\Behaviors\MouseWheelCommandBehavior.cs" />
     <Compile Include="Model\MyGuider\DummyGuider.cs" />
     <Compile Include="Utility\Converters\CollectionContainsMoreThanOneItemToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\DoubleToHalfValueConverter.cs" />
+    <Compile Include="Utility\Converters\MultiToListConverter.cs" />
     <Compile Include="Utility\Converters\OneValueGreaterThanAnotherToVisiblityConverter.cs" />
+    <Compile Include="Utility\Converters\SubtractHalfConverter.cs" />
     <Compile Include="Utility\Converters\WidthAndValueToWidthConverter.cs" />
-    <Compile Include="Utility\IResourceDictionary.cs" />
-    <Compile Include="Utility\ResourceDictionary.cs" />
+    <Compile Include="Utility\DataPipes.cs" />
+    <Compile Include="Utility\Extensions\ProcessExtension.cs" />
+    <Compile Include="Utility\IApplicationResourceDictionary.cs" />
+    <Compile Include="Utility\ApplicationResourceDictionary.cs" />
+    <Compile Include="Utility\SkySurvey\SkyAtlasSkySurvey.cs" />
     <Compile Include="Utility\ValidationRules\DoubleRangeRule.cs" />
+    <Compile Include="ViewModel\DeepSkyObjectSearchVM.cs" />
+    <Compile Include="ViewModel\FocusTargetsVM.cs" />
     <Compile Include="ViewModel\FlatWizard\FlatWizardExposureTimeFinderService.cs" />
     <Compile Include="ViewModel\FlatWizard\FlatWizardFilterSettingsWrapper.cs" />
     <Compile Include="Model\MyFilterWheel\ManualFilterWheel.cs" />
@@ -344,6 +359,8 @@
     <Compile Include="Model\MyCamera\AscomCamera.cs" />
     <Compile Include="Model\MyCamera\ASICamera.cs" />
     <Compile Include="Model\MyWeatherData\OpenWeatherMapData.cs" />
+    <Compile Include="Model\Sequence\CaptureSequenceList.cs" />
+    <Compile Include="Model\Sequence\SequenceMode.cs" />
     <Compile Include="MyMessageBox\MyMessageBox.cs" />
     <Compile Include="MyMessageBox\MyMessageBoxView.xaml.cs">
       <DependentUpon>MyMessageBoxView.xaml</DependentUpon>
@@ -539,7 +556,14 @@
     <Compile Include="ViewModel\FlatWizard\IFlatWizardExposureTimeFinderService.cs" />
     <Compile Include="ViewModel\FlatWizard\IFlatWizardVM.cs" />
     <Compile Include="ViewModel\FocuserVM.cs" />
-    <Compile Include="ViewModel\FramingAssistantVM.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FrameLineMatrix2.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FramingConstellationBoundary.cs" />
+    <Compile Include="ViewModel\FramingAssistant\SkyMapAnnotator.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FrameLineMatrix.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FramingAssistantVM.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FramingConstellation.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FramingDSO.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FramingRectangle.cs" />
     <Compile Include="ViewModel\Interfaces\IApplicationStatusVM.cs" />
     <Compile Include="ViewModel\Interfaces\ICameraVM.cs" />
     <Compile Include="ViewModel\Interfaces\IDeviceVM.cs" />
@@ -551,7 +575,6 @@
     <Compile Include="PlateSolving\LocalPlateSolver.cs" />
     <Compile Include="PlateSolving\AstrometryPlateSolver.cs" />
     <Compile Include="PlateSolving\IPlateSolver.cs" />
-    <Compile Include="Model\CaptureSequence.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -587,6 +610,7 @@
     <Compile Include="ViewModel\OptionsVM.cs" />
     <Compile Include="ViewModel\GuiderVM.cs" />
     <Compile Include="ViewModel\PlatesolveVM.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FrameLine.cs" />
     <Compile Include="ViewModel\PolarAlignmentVM.cs" />
     <Compile Include="ViewModel\ProfileSelectVM.cs" />
     <Compile Include="Model\RMS.cs" />
@@ -597,6 +621,7 @@
     <Compile Include="ViewModel\TelescopeVM.cs" />
     <Compile Include="ViewModel\ThumbnailVM.cs" />
     <Compile Include="ViewModel\VersionCheckVM.cs" />
+    <Compile Include="ViewModel\FramingAssistant\ViewportFoV.cs" />
     <Compile Include="ViewModel\WeatherDataVM.cs" />
     <Compile Include="View\AberrationInspectorView.xaml.cs">
       <DependentUpon>AberrationInspectorView.xaml</DependentUpon>
@@ -606,6 +631,9 @@
     </Compile>
     <Compile Include="View\AnchorableAutoFocusView.xaml.cs">
       <DependentUpon>AnchorableAutoFocusView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AnchorableFocusTargetsView.xaml.cs">
+      <DependentUpon>AnchorableFocusTargetsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\AnchorableCameraControlView.xaml.cs">
       <DependentUpon>AnchorableCameraControlView.xaml</DependentUpon>
@@ -739,8 +767,14 @@
     <Compile Include="View\SequenceView.xaml.cs">
       <DependentUpon>SequenceView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\SimulatorCameraSetupView.xaml.cs">
+      <DependentUpon>SimulatorCameraSetupView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\SkyAtlasView.xaml.cs">
       <DependentUpon>SkyAtlasView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SkyMapOverlayView.xaml.cs">
+      <DependentUpon>SkyMapOverlayView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\TelescopeLatLongSyncView.xaml.cs">
       <DependentUpon>TelescopeLatLongSyncView.xaml</DependentUpon>
@@ -934,6 +968,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\AnchorableFocusTargetsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\AnchorableCameraControlView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1110,7 +1148,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\SimulatorCameraSetupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\SkyAtlasView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\SkyMapOverlayView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -234,7 +234,10 @@ namespace NINA.Utility {
 
             _minStarSize = (int)Math.Floor(5 * _resizefactor);
             //Prevent Hotpixels to be detected
-            if (_minStarSize < 2) _minStarSize = 2;
+            if (_minStarSize < 2) {
+                _minStarSize = 2;
+            }
+
             _maxStarSize = (int)Math.Ceiling(150 * _resizefactor);
         }
 
@@ -282,7 +285,9 @@ namespace NINA.Utility {
                     foreach (PixelData data in this.pixelData) {
                         allSum += data.value;
                         if (InsideCircle(data.PosX, data.PosY, this.Position.X, this.Position.Y, outerRadius)) {
-                            if (data.value < 0) data.value = 0;
+                            if (data.value < 0) {
+                                data.value = 0;
+                            }
 
                             sum += data.value;
                             sumDist += data.value * Math.Sqrt(Math.Pow((double)data.PosX - (double)centerX, 2.0d) + Math.Pow((double)data.PosY - (double)centerY, 2.0d));
@@ -398,7 +403,8 @@ namespace NINA.Utility {
                     continue;
                 }
                 var points = _blobCounter.GetBlobsEdgePoints(blob);
-                AForge.Point centerpoint; float radius;
+                AForge.Point centerpoint;
+                float radius;
                 var rect = new Rectangle((int)Math.Floor(blob.Rectangle.X * _inverseResizefactor), (int)Math.Floor(blob.Rectangle.Y * _inverseResizefactor), (int)Math.Ceiling(blob.Rectangle.Width * _inverseResizefactor), (int)Math.Ceiling(blob.Rectangle.Height * _inverseResizefactor));
                 //Star is circle
                 Star s;
@@ -667,8 +673,9 @@ namespace NINA.Utility {
             get { return _grayMap16; }
             set {
                 // check the map
-                if ((value == null) || (value.Length != 65536))
+                if ((value == null) || (value.Length != 65536)) {
                     throw new ArgumentException("A map should be array with 65536 value.");
+                }
 
                 _grayMap16 = value;
             }
@@ -694,28 +701,19 @@ namespace NINA.Utility {
                 throw new UnsupportedImageFormatException("Source pixel format is not supported by the routine.");
             }
 
-            int pixelSize = System.Drawing.Image.GetPixelFormatSize(image.PixelFormat) / 8;
-
             // processing start and stop X,Y positions
-            int startX = rect.Left;
-            int startY = rect.Top;
-            int stopX = startX + rect.Width;
-            int stopY = startY + rect.Height;
-            int offset = image.Stride - rect.Width * pixelSize;
+            int stopX = rect.Width;
+            int stopY = rect.Height;
 
             // do the job
             ushort* ptr = (ushort*)image.ImageData.ToPointer();
 
-            // allign pointer to the first pixel to process
-            ptr += (startY * image.Stride + startX * pixelSize);
-
             // grayscale image
-            for (int y = startY; y < stopY; y++) {
-                for (int x = startX; x < stopX; x++, ptr++) {
+            for (int y = 0; y < stopY; y++) {
+                for (int x = 0; x < stopX; x++, ptr++) {
                     // gray
                     *ptr = GrayMap16[*ptr];
                 }
-                ptr += offset;
             }
         }
     }

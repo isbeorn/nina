@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -23,7 +23,6 @@
 
 using NINA.Utility;
 using NINA.Utility.Astrometry;
-using NINA.Utility.Profile;
 using OxyPlot;
 using OxyPlot.Axes;
 using System;
@@ -42,12 +41,25 @@ namespace NINA.Model {
             this.imageRepository = imageRepository;
         }
 
-        public DeepSkyObject(string name, string imageRepository) : this(imageRepository) {
-            Name = name;
+        public DeepSkyObject(string id, string imageRepository) : this(imageRepository) {
+            Id = id;
+            Name = id;
         }
 
-        public DeepSkyObject(string name, Coordinates coords, string imageRepository) : this(name, imageRepository) {
+        public DeepSkyObject(string id, Coordinates coords, string imageRepository) : this(id, imageRepository) {
             _coordinates = coords;
+        }
+
+        private string id;
+
+        public string Id {
+            get {
+                return id;
+            }
+            set {
+                id = value;
+                RaisePropertyChanged();
+            }
         }
 
         private string _name;
@@ -263,7 +275,7 @@ namespace NINA.Model {
                         this.Coordinates.Dec.ToString(CultureInfo.InvariantCulture),
                         (size * 9.0 / 16.0).ToString(CultureInfo.InvariantCulture),
                         size.ToString(CultureInfo.InvariantCulture));*/
-                    var file = Path.Combine(imageRepository, this.Name + ".gif");
+                    var file = Path.Combine(imageRepository, this.Id + ".gif");
                     if (File.Exists(file)) {
                         _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                             //var img = new BitmapImage(new Uri(file));

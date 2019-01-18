@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -23,14 +23,13 @@
 
 using NINA.Utility.Enum;
 using System;
+using System.IO;
 using System.Runtime.Serialization;
 
 namespace NINA.Utility.Profile {
-
     [Serializable()]
     [DataContract]
     public class GuiderSettings : Settings, IGuiderSettings {
-
         public GuiderSettings() {
             SetDefaultValues();
         }
@@ -50,6 +49,13 @@ namespace NINA.Utility.Profile {
             pHD2GuiderScale = GuiderScaleEnum.PIXELS;
             settlePixels = 1.5;
             settleTimeout = 40;
+
+            var defaultPHD2Path = Environment.ExpandEnvironmentVariables(@"%programfiles(x86)%\PHDGuiding2\phd2.exe");
+
+            phd2Path =
+                File.Exists(defaultPHD2Path)
+                ? defaultPHD2Path
+                : string.Empty;
             guiderName = "PHD2";
         }
 
@@ -115,6 +121,17 @@ namespace NINA.Utility.Profile {
             get => pHD2LargeHistorySize;
             set {
                 pHD2LargeHistorySize = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string phd2Path;
+
+        [DataMember]
+        public string PHD2Path {
+            get => phd2Path;
+            set {
+                phd2Path = value;
                 RaisePropertyChanged();
             }
         }

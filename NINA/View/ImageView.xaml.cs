@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -40,6 +40,10 @@ namespace NINA.View {
 
         private double fittingScale = 1;
 
+        public object PART_ScrollViewerBinding {
+            get => PART_ScrollViewer;
+        }
+
         public ImageView() {
             InitializeComponent();
 
@@ -55,6 +59,14 @@ namespace NINA.View {
             PART_ScaleTransform.ScaleX = fittingScale;
             PART_ScaleTransform.ScaleY = fittingScale;
             PART_TextblockScale.Text = 1d.ToString("P0", CultureInfo.InvariantCulture);
+        }
+
+        public static readonly DependencyProperty ScrollEnabledProperty =
+            DependencyProperty.Register(nameof(ScrollEnabled), typeof(bool), typeof(ImageView), new PropertyMetadata(true));
+
+        public bool ScrollEnabled {
+            get { return (bool)GetValue(ScrollEnabledProperty); }
+            set { SetValue(ScrollEnabledProperty, value); }
         }
 
         public static readonly DependencyProperty ImageAreaContentProperty =
@@ -112,22 +124,23 @@ namespace NINA.View {
         }
 
         private void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e) {
-            lastMousePositionOnTarget = Mouse.GetPosition(PART_Canvas);
+            if (ScrollEnabled) {
+                lastMousePositionOnTarget = Mouse.GetPosition(PART_Canvas);
 
-            var val = PART_ScaleTransform.ScaleX;
-            if (e.Delta > 0) {
-                val += val * .25;
+                var val = PART_ScaleTransform.ScaleX;
+                if (e.Delta > 0) {
+                    val += val * .25;
+                }
+                if (e.Delta < 0) {
+                    val -= val * .25;
+                }
+
+                Zoom(val);
+
+                var centerOfViewport = new Point(PART_ScrollViewer.ViewportWidth / 2,
+                                                 PART_ScrollViewer.ViewportHeight / 2);
+                lastCenterPositionOnTarget = PART_ScrollViewer.TranslatePoint(centerOfViewport, PART_Canvas);
             }
-            if (e.Delta < 0) {
-                val -= val * .25;
-            }
-
-            Zoom(val);
-
-            var centerOfViewport = new Point(PART_ScrollViewer.ViewportWidth / 2,
-                                             PART_ScrollViewer.ViewportHeight / 2);
-            lastCenterPositionOnTarget = PART_ScrollViewer.TranslatePoint(centerOfViewport, PART_Canvas);
-            e.Handled = true;
         }
 
         private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {

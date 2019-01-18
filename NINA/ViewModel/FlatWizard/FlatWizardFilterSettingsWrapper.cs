@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -33,13 +33,23 @@ namespace NINA.ViewModel.FlatWizard {
         private bool isChecked = false;
 
         private FlatWizardFilterSettings settings;
+        private int bitDepth;
 
-        private CameraInfo cameraInfo;
-
-        public FlatWizardFilterSettingsWrapper(FilterInfo filterInfo, FlatWizardFilterSettings settings) {
+        public FlatWizardFilterSettingsWrapper(FilterInfo filterInfo, FlatWizardFilterSettings settings, int bitDepth) {
             this.filterInfo = filterInfo;
             this.settings = settings;
+            this.bitDepth = bitDepth;
             settings.PropertyChanged += Settings_PropertyChanged;
+        }
+
+        public int BitDepth {
+            get => bitDepth;
+            set {
+                bitDepth = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(HistogramMeanTargetADU));
+                RaisePropertyChanged(nameof(HistogramToleranceADU));
+            }
         }
 
         public FilterInfo Filter {
@@ -54,14 +64,14 @@ namespace NINA.ViewModel.FlatWizard {
 
         public string HistogramMeanTargetADU {
             get {
-                return FlatWizardExposureTimeFinderService.HistogramMeanAndCameraBitDepthToAdu(settings.HistogramMeanTarget, CameraInfo.BitDepth).ToString("0");
+                return FlatWizardExposureTimeFinderService.HistogramMeanAndCameraBitDepthToAdu(settings.HistogramMeanTarget, BitDepth).ToString("0");
             }
         }
 
         public string HistogramToleranceADU {
             get {
-                return FlatWizardExposureTimeFinderService.GetLowerToleranceBoundInAdu(settings.HistogramMeanTarget, CameraInfo.BitDepth, settings.HistogramTolerance).ToString("0")
-                    + " - " + FlatWizardExposureTimeFinderService.GetUpperToleranceBoundInAdu(settings.HistogramMeanTarget, CameraInfo.BitDepth, settings.HistogramTolerance).ToString("0");
+                return FlatWizardExposureTimeFinderService.GetLowerToleranceBoundInAdu(settings.HistogramMeanTarget, BitDepth, settings.HistogramTolerance).ToString("0")
+                    + " - " + FlatWizardExposureTimeFinderService.GetUpperToleranceBoundInAdu(settings.HistogramMeanTarget, BitDepth, settings.HistogramTolerance).ToString("0");
             }
         }
 
@@ -83,17 +93,6 @@ namespace NINA.ViewModel.FlatWizard {
             set {
                 settings = value;
                 RaisePropertyChanged();
-            }
-        }
-
-        public CameraInfo CameraInfo {
-            get {
-                return cameraInfo;
-            }
-            set {
-                cameraInfo = value;
-                RaisePropertyChanged(nameof(HistogramMeanTargetADU));
-                RaisePropertyChanged(nameof(HistogramToleranceADU));
             }
         }
 

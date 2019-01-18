@@ -64,6 +64,8 @@
     <Content Include="ninasplash-small.png" />
     <Content Include="RtfTheme.xml" />
     <Content Include="vcredist_x86.exe" />
+    <Content Include="vc_redist2017.x64.exe" />
+    <Content Include="vc_redist2017.x86.exe" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" Condition=" '$(WixTargetsPath)' != '' " />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets" Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets') " />

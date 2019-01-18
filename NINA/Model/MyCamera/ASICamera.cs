@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -41,30 +41,26 @@ namespace NINA.Model.MyCamera {
         public ASICamera(int cameraId, IProfileService profileService) {
             this.profileService = profileService;
             _cameraId = cameraId;
-            Id = cameraId.ToString();
         }
 
         private IProfileService profileService;
         private int _cameraId;
 
-        private string _id;
-
-        public string Id {
-            get {
-                return _id;
-            }
-            set {
-                _id = value;
-                RaisePropertyChanged();
-            }
-        }
+        public string Id => $"{Name} #{_cameraId}";
 
         private ASICameraDll.ASI_CAMERA_INFO? _info;
 
         private ASICameraDll.ASI_CAMERA_INFO Info {
-            // info is cached only while camera is open
+            // [obsolete] info is cached only while camera is open
             get {
-                return _info ?? ASICameraDll.GetCameraProperties(_cameraId);
+                if (_info == null) {
+                    // this needs to be called otherwise GetCameraProperties shuts down other instances of the camera
+                    ASICameraDll.OpenCamera(_cameraId);
+                    // at this point we might as well cache the properties anyway
+                    _info = ASICameraDll.GetCameraProperties(_cameraId);
+                }
+
+                return _info.Value;
             }
         }
 

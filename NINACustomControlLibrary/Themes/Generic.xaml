@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -28,5 +28,6 @@
         <ResourceDictionary Source="/NINACustomControlLibrary;component/Themes/LoadingControl.Generic.xaml" />
         <ResourceDictionary Source="/NINACustomControlLibrary;component/Themes/AsyncProcessButton.Generic.xaml" />
         <ResourceDictionary Source="/NINACustomControlLibrary;component/Themes/Arc.Generic.xaml" />
+        <ResourceDictionary Source="/NINACustomControlLibrary;component/Themes/AutoCompleteBox.Generic.xaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

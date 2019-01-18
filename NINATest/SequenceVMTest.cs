@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -367,16 +367,7 @@ namespace NINATest {
     }
 
     internal class SequenceProfile : IProfile {
-
-        public IApplicationSettings ApplicationSettings {
-            get {
-                throw new NotImplementedException();
-            }
-
-            set {
-                throw new NotImplementedException();
-            }
-        }
+        public IApplicationSettings ApplicationSettings { get; set; } = new ApplicationSettings();
 
         public IAstrometrySettings AstrometrySettings { get; set; } = new AstrometrySettings();
 

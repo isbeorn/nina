@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -49,4 +48,6 @@
     <converters:WidthAndValueToWidthConverter x:Key="WidthAndValueToWidthConverter" />
     <converters:OneValueGreaterThanAnotherToVisiblityConverter x:Key="GreaterThanToVisiblityConverter" />
     <converters:CollectionContainsMoreThanOneItemToVisibilityConverter x:Key="CollectionContainsMoreThanOneItemToVisibilityConverter" />
+    <converters:MultiToListConverter x:Key="MultiToListConverter" />
+    <converters:SubtractHalfConverter x:Key="SubtractHalfConverter" />
 </ResourceDictionary>

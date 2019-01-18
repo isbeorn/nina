@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -31,32 +31,6 @@ namespace NINA.Utility {
 
     [System.Serializable()]
     public abstract class BaseINPC : INotifyPropertyChanged {
-
-        [field: System.NonSerialized]
-        private ConcurrentDictionary<string, Timer> delayedTimers = new ConcurrentDictionary<string, Timer>();
-
-        protected void DelayedPropertyChanged([CallerMemberName] string propertyName = null, TimeSpan delay = default(TimeSpan)) {
-            if (delay == default(TimeSpan)) {
-                delay = TimeSpan.FromMilliseconds(500);
-            }
-            if (delayedTimers == null) {
-                delayedTimers = new ConcurrentDictionary<string, Timer>();
-            }
-
-            if (!delayedTimers.ContainsKey(propertyName)) {
-                var timer = new Timer(new TimerCallback((x) => TimedPropertyChanged(propertyName)), new object(), delay.Milliseconds, Timeout.Infinite);
-                delayedTimers.TryAdd(propertyName, timer);
-            }
-        }
-
-        private void TimedPropertyChanged([CallerMemberName] string propertyName = null) {
-            if (delayedTimers.ContainsKey(propertyName)) {
-                delayedTimers[propertyName].Change(Timeout.Infinite, Timeout.Infinite);
-                Timer t;
-                delayedTimers.TryRemove(propertyName, out t);
-                RaisePropertyChanged(propertyName);
-            }
-        }
 
         protected void RaisePropertyChanged([CallerMemberName] string propertyName = null) {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

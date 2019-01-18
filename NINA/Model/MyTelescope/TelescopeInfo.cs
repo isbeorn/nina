@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -21,17 +21,11 @@
 
 #endregion "copyright"
 
-using NINA.Utility;
 using NINA.Utility.Astrometry;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NINA.Model.MyTelescope {
 
-    internal class TelescopeInfo : DeviceInfo {
+    public class TelescopeInfo : DeviceInfo {
         private double siderealTime;
 
         public double SiderealTime {

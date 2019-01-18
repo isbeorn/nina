@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.OptionsPlateSolverView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -219,11 +218,17 @@
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Center"
                                     Text="{Binding AstrometryAPIKey}" />
+
+                                <TextBlock VerticalAlignment="Center" Text="">
+                                    <Hyperlink Command="{Binding OpenWebRequestCommand}" CommandParameter="http://nova.astrometry.net/api_help">
+                                        <Run Text="?" />
+                                    </Hyperlink>
+                                </TextBlock>
                             </StackPanel>
                             <StackPanel MaxHeight="150" Margin="0,6,0,6">
                                 <TextBlock Text="{ns:Loc LblPlatesolveProvidedBy}" />
                                 <TextBlock MaxHeight="73" HorizontalAlignment="Left">
-                                    <Hyperlink NavigateUri="http://www.astrometry.net/" RequestNavigate="Hyperlink_RequestNavigate">
+                                    <Hyperlink Command="{Binding OpenWebRequestCommand}" CommandParameter="http://nova.astrometry.net/">
                                         <Image Source="/NINA;component/Resources/astrometry.net.png" Stretch="Uniform" />
                                     </Hyperlink>
                                 </TextBlock>
@@ -324,7 +329,7 @@
                             <StackPanel MaxHeight="150" Margin="0,5,0,5">
                                 <TextBlock Text="{ns:Loc LblPlatesolveProvidedBy}" />
                                 <TextBlock MaxHeight="73" HorizontalAlignment="Left">
-                                    <Hyperlink NavigateUri="http://www.astrometry.net/" RequestNavigate="Hyperlink_RequestNavigate">
+                                    <Hyperlink Command="{Binding OpenWebRequestCommand}" CommandParameter="http://nova.astrometry.net/">
                                         <Image Source="/NINA;component/Resources/astrometry.net.png" Stretch="Uniform" />
                                     </Hyperlink>
                                 </TextBlock>

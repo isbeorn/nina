@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -43,7 +43,7 @@ namespace NINA.ViewModel.FlatWizard {
 
         public async System.Threading.Tasks.Task<FlatWizardUserPromptVMResponse> EvaluateUserPromptResultAsync(IImageArray imageArray, double exposureTime, string message, FlatWizardFilterSettingsWrapper wrapper) {
             var flatsWizardUserPrompt = new FlatWizardUserPromptVM(message,
-                                                    imageArray.Statistics.Mean, CameraBitDepthToAdu(wrapper.CameraInfo.BitDepth), wrapper, exposureTime);
+                                                    imageArray.Statistics.Mean, CameraBitDepthToAdu(wrapper.BitDepth), wrapper, exposureTime);
             await WindowService.ShowDialog(flatsWizardUserPrompt, Locale["LblFlatUserPromptFailure"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
 
             if (flatsWizardUserPrompt.Reset) {
@@ -59,11 +59,11 @@ namespace NINA.ViewModel.FlatWizard {
         public double GetExpectedExposureTime(FlatWizardFilterSettingsWrapper wrapper) {
             var trendLine = new TrendLine(dataPoints);
 
-            return (wrapper.Settings.HistogramMeanTarget * CameraBitDepthToAdu(wrapper.CameraInfo.BitDepth) - trendLine.Offset) / trendLine.Slope;
+            return (wrapper.Settings.HistogramMeanTarget * CameraBitDepthToAdu(wrapper.BitDepth) - trendLine.Offset) / trendLine.Slope;
         }
 
         public FlatWizardExposureAduState GetFlatExposureState(IImageArray imageArray, double exposureTime, FlatWizardFilterSettingsWrapper wrapper) {
-            var histogramMeanAdu = HistogramMeanAndCameraBitDepthToAdu(wrapper.Settings.HistogramMeanTarget, wrapper.CameraInfo.BitDepth);
+            var histogramMeanAdu = HistogramMeanAndCameraBitDepthToAdu(wrapper.Settings.HistogramMeanTarget, wrapper.BitDepth);
             var histogramToleranceUpperBound = GetUpperToleranceAduFromAdu(histogramMeanAdu, wrapper.Settings.HistogramTolerance);
             var histogramToleranceLowerBound = GetLowerToleranceAduFromAdu(histogramMeanAdu, wrapper.Settings.HistogramTolerance);
             var currentMean = imageArray.Statistics.Mean;

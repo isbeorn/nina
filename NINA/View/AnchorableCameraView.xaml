@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -162,6 +162,7 @@
                             <ninactrl:StepperControl
                                 AddSVG="{StaticResource AddSVG}"
                                 ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                                IsEnabled="{Binding CoolingRunning, Converter={StaticResource InverseBooleanConverter}}"
                                 MaxValue="20"
                                 MinValue="-50"
                                 StepSize="0.5"
@@ -175,10 +176,11 @@
                         BorderThickness="0"
                         Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
-                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDuration}" />
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMinDuration}" />
                             <ninactrl:StepperControl
                                 AddSVG="{StaticResource AddSVG}"
                                 ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                                IsEnabled="{Binding CoolingRunning, Converter={StaticResource InverseBooleanConverter}}"
                                 MinValue="0"
                                 StepSize="0.5"
                                 SubstractSVG="{StaticResource SubstractSVG}"

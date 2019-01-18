@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -318,7 +318,18 @@
                             ItemsSource="{Binding ColorSchemas.Items}"
                             SelectedValue="{Binding ColorSchemaName}"
                             SelectedValuePath="Name" />
-                        <Grid />
+                        <Button
+                            Width="40"
+                            Height="30"
+                            Margin="5,5,0,0"
+                            HorizontalAlignment="Left"
+                            Command="{Binding CopyToCustomSchemaCommand}">
+                            <Path
+                                Margin="5"
+                                Data="{StaticResource CopySVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform" />
+                        </Button>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
                                 Width="170"
@@ -493,7 +504,18 @@
                             ItemsSource="{Binding ColorSchemas.Items}"
                             SelectedValue="{Binding AlternativeColorSchemaName}"
                             SelectedValuePath="Name" />
-                        <Grid />
+                        <Button
+                            Width="40"
+                            Height="30"
+                            Margin="5,5,0,0"
+                            HorizontalAlignment="Left"
+                            Command="{Binding CopyToAlternativeCustomSchemaCommand}">
+                            <Path
+                                Margin="5"
+                                Data="{StaticResource CopySVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform" />
+                        </Button>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
                                 Width="170"
@@ -726,7 +748,26 @@
                         </UniformGrid>
                         <UniformGrid Margin="0,5,0,0" Columns="2">
                             <TextBlock Text="{ns:Loc LblAPIKey}" />
-                            <TextBox HorizontalAlignment="Stretch" Text="{Binding OpenWeatherMapAPIKey}" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox
+                                    HorizontalAlignment="Stretch"
+                                    DockPanel.Dock="Left"
+                                    Text="{Binding OpenWeatherMapAPIKey}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Width="Auto"
+                                    VerticalAlignment="Center"
+                                    DockPanel.Dock="Right"
+                                    Text="">
+                                    <Hyperlink Command="{Binding OpenWebRequestCommand}" CommandParameter="https://home.openweathermap.org/api_keys">
+                                        <Run Text="?" />
+                                    </Hyperlink>
+                                </TextBlock>
+                            </Grid>
                         </UniformGrid>
                     </StackPanel>
                 </GroupBox>
@@ -1316,6 +1357,44 @@
                     Grid.Column="1"
                     Header="{ns:Loc LblPHD2Settings}">
                     <StackPanel Orientation="Vertical">
+                        <Grid Margin="0,5,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblPHD2Path}" />
+
+                            <TextBox
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="PHD2Path" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:FileExistsRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+
+                            <Button
+                                Grid.Column="2"
+                                Width="30"
+                                Height="30"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Command="{Binding OpenPHD2DiagCommand}">
+                                <Path
+                                    Margin="4,17,4,4"
+                                    Data="{StaticResource DotsSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform" />
+                            </Button>
+                        </Grid>
                         <UniformGrid Columns="2">
                             <UniformGrid
                                 Margin="0,6,0,6"

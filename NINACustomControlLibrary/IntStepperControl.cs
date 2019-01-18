@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -139,16 +139,14 @@ namespace NINACustomControlLibrary {
         }
 
         private void Button_PART_Increment_Click(object sender, RoutedEventArgs e) {
-            Value += StepSize;
-            if (Value > MaxValue) {
-                Value = MaxValue;
+            if (Value + StepSize <= MaxValue) {
+                Value += StepSize;
             }
         }
 
         private void Button_PART_Decrement_Click(object sender, RoutedEventArgs e) {
-            Value -= StepSize;
-            if (Value < MinValue) {
-                Value = MinValue;
+            if (Value - StepSize >= MinValue) {
+                Value -= StepSize;
             }
         }
 

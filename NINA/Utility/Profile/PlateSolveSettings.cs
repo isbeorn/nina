@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -25,6 +25,7 @@ using NINA.Model.MyFilterWheel;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 using System;
+using System.IO;
 using System.Runtime.Serialization;
 
 namespace NINA.Utility.Profile {
@@ -54,7 +55,12 @@ namespace NINA.Utility.Profile {
             threshold = 1.0d;
             rotationTolerance = 1.0d;
             filter = null;
-            aspsLocation = string.Empty;
+
+            var defaultASPSLocation = Environment.ExpandEnvironmentVariables(@"%programfiles(x86)%\PlateSolver\PlateSolver.exe");
+            aspsLocation =
+                File.Exists(defaultASPSLocation)
+                ? defaultASPSLocation
+                : string.Empty;
         }
 
         [DataMember]

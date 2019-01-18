@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -21,9 +21,9 @@
 
 #endregion "copyright"
 
+using NINA.Model.MyCamera;
 using System;
 using System.Runtime.Serialization;
-using NINA.Model.MyCamera;
 
 namespace NINA.Utility.Profile {
 
@@ -46,6 +46,7 @@ namespace NINA.Utility.Profile {
             histogramMeanTarget = 0.5;
             stepSize = 0.5;
             binningMode = new BinningMode(1, 1);
+            darkFlatCount = 0;
         }
 
         private int flatCount;
@@ -109,6 +110,17 @@ namespace NINA.Utility.Profile {
             }
             set {
                 binningMode = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int darkFlatCount;
+
+        [DataMember]
+        public int DarkFlatCount {
+            get => darkFlatCount;
+            set {
+                darkFlatCount = value;
                 RaisePropertyChanged();
             }
         }

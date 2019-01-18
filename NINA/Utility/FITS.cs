@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -79,10 +79,8 @@ namespace NINA.Utility {
             /* Write image data */
             for (int i = 0; i < this._imageData.Length; i++) {
                 var val = (short)(this._imageData[i] - (short.MaxValue + 1));
-
-                var bytes = BitConverter.GetBytes(val);
-                s.WriteByte(bytes[1]);
-                s.WriteByte(bytes[0]);
+                s.WriteByte((byte)(val >> 8));
+                s.WriteByte((byte)val);
             }
 
             long remainingBlockPadding = (long)Math.Ceiling((double)s.Position / (double)BLOCKSIZE) * (long)BLOCKSIZE - s.Position;

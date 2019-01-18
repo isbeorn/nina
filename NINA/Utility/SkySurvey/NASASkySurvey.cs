@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -21,20 +21,18 @@
 
 #endregion "copyright"
 
+using NINA.Utility.Astrometry;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Utility.Astrometry;
 
 namespace NINA.Utility.SkySurvey {
 
     internal class NASASkySurvey : ISkySurvey {
         private const string Url = "https://skyview.gsfc.nasa.gov/current/cgi/runquery.pl?Survey=dss2r&Position={0},{1}&Size={2}&Pixels={3}&Return=JPG";
 
-        public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress) {
+        public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, int width,
+            int height, CancellationToken ct, IProgress<int> progress) {
             var arcSecPerPixel = 0.5;
             fieldOfView = Math.Round(fieldOfView, 2);
             var pixels = Math.Min(Astrometry.Astrometry.ArcminToArcsec(fieldOfView) * arcSecPerPixel, 5000);

@@ -49,12 +49,17 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CardinalSplineShape.cs" />
     <Compile Include="TickSlider.cs" />
     <Page Include="Themes\Arc.Generic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\AsyncProcessButton.Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\AutoCompleteBox.Generic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -68,6 +73,7 @@
     </Page>
     <Compile Include="Arc.cs" />
     <Compile Include="AsyncProcessButton.cs" />
+    <Compile Include="AutoCompleteBox.cs" />
     <Compile Include="CancellableButton.cs" />
     <Compile Include="Converters\InverseBoolToVisibilityConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />

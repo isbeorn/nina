@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -540,7 +540,15 @@
                                 VerticalAlignment="Center"
                                 Columns="2">
                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTargetName}" />
-                                <TextBox Margin="5,0,0,0" Text="{Binding TargetName}" />
+                                <ninactrl:AutoCompleteBox
+                                    Margin="5,0,0,0"
+                                    Foreground="{StaticResource PrimaryBrush}"
+                                    HintText="{ns:Loc LblObjectNameHint}"
+                                    PopupBackground="{StaticResource TertiaryBackgroundBrush}"
+                                    SearchResult="{Binding Source={StaticResource AppVM}, Path=SeqVM.DeepSkyObjectSearchVM.TargetSearchResult.Result}"
+                                    SelectedSearchResult="{Binding Source={StaticResource AppVM}, Path=SeqVM.DeepSkyObjectSearchVM.SelectedTargetSearchResult, Mode=TwoWay}"
+                                    ShowPopup="{Binding Source={StaticResource AppVM}, Path=SeqVM.DeepSkyObjectSearchVM.ShowPopup, Mode=TwoWay}"
+                                    Text="{Binding TargetName, UpdateSourceTrigger=PropertyChanged}" />
                             </UniformGrid>
                         </UniformGrid>
                     </Border>

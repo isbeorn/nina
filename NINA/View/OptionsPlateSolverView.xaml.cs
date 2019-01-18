@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -21,9 +21,7 @@
 
 #endregion "copyright"
 
-using System.Diagnostics;
 using System.Windows.Controls;
-using System.Windows.Navigation;
 
 namespace NINA.View {
 
@@ -34,11 +32,6 @@ namespace NINA.View {
 
         public OptionsPlateSolverView() {
             InitializeComponent();
-        }
-
-        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e) {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
-            e.Handled = true;
         }
     }
 }

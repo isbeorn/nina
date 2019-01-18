@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -44,6 +44,9 @@ namespace NINA.Model {
         public ImagePatterns() {
             patterns = new Dictionary<string, ImagePattern>();
             var p = new ImagePattern(ImagePatternKeys.Filter, Locale.Loc.Instance["LblFilternameDescription"]);
+            patterns.Add(p.Key, p);
+
+            p = new ImagePattern(ImagePatternKeys.ApplicationStartDate, Locale.Loc.Instance["LblApplicationStartDateDescription"]);
             patterns.Add(p.Key, p);
 
             p = new ImagePattern(ImagePatternKeys.Date, Locale.Loc.Instance["LblDateFormatDescription"]);
@@ -138,6 +141,7 @@ namespace NINA.Model {
             p.Set(ImagePatternKeys.RMS, 0.35);
             p.Set(ImagePatternKeys.RMSArcSec, 0.65);
             p.Set(ImagePatternKeys.FocuserPosition, 12542);
+            p.Set(ImagePatternKeys.ApplicationStartDate, Utility.Utility.ApplicationStartDate.ToString("yyyy-MM-dd"));
             return p;
         }
     }
@@ -161,6 +165,7 @@ namespace NINA.Model {
         public static readonly string RMS = "$$RMS$$";
         public static readonly string RMSArcSec = "$$RMSARCSEC$$";
         public static readonly string FocuserPosition = "$$FOCUSERPOSITION$$";
+        public static readonly string ApplicationStartDate = "$$APPLICATIONSTARTDATE$$";
     }
 
     public class ImagePattern {

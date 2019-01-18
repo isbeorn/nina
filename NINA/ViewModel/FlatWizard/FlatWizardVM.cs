@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -31,10 +31,13 @@ using NINA.Utility.Profile;
 using NINA.ViewModel.Interfaces;
 using Nito.AsyncEx;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 
 namespace NINA.ViewModel.FlatWizard {
@@ -59,7 +62,7 @@ namespace NINA.ViewModel.FlatWizard {
         public FlatWizardVM(IProfileService profileService,
                             IImagingVM imagingVM,
                             ICameraMediator cameraMediator,
-                            IResourceDictionary resourceDictionary,
+                            IApplicationResourceDictionary resourceDictionary,
                             IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblFlatWizard";
             ImageGeometry = (System.Windows.Media.GeometryGroup)resourceDictionary["FlatWizardSVG"];
@@ -79,32 +82,49 @@ namespace NINA.ViewModel.FlatWizard {
             PauseFlatExposureSequenceCommand = new RelayCommand(obj => { IsPaused = true; pauseTokenSource.IsPaused = IsPaused; });
             ResumeFlatExposureSequenceCommand = new RelayCommand(obj => { IsPaused = false; pauseTokenSource.IsPaused = IsPaused; });
 
+            FlatCount = profileService.ActiveProfile.FlatWizardSettings.FlatCount;
+            DarkFlatCount = profileService.ActiveProfile.FlatWizardSettings.DarkFlatCount;
+            BinningMode = profileService.ActiveProfile.FlatWizardSettings.BinningMode;
+
+            Filters = new ObservableCollection<FlatWizardFilterSettingsWrapper>();
+
+            profileService.ProfileChanged += (sender, args) => {
+                UpdateSingleFlatWizardFilterSettings(profileService);
+                watchedFilterList.CollectionChanged -= FiltersCollectionChanged;
+                watchedFilterList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+                watchedFilterList.CollectionChanged += FiltersCollectionChanged;
+                UpdateFilterWheelsSettings();
+            };
+
+            watchedFilterList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
+            watchedFilterList.CollectionChanged += FiltersCollectionChanged;
+
+            // first update filters
+
+            UpdateSingleFlatWizardFilterSettings(profileService);
+            UpdateFilterWheelsSettings();
+
+            // then register consumer and get the cameraInfo so it's populated to all filters including the singleflatwizardfiltersettings
+
+            cameraMediator.RegisterConsumer(this);
+        }
+
+        private void UpdateSingleFlatWizardFilterSettings(IProfileService profileService) {
+            if (SingleFlatWizardFilterSettings != null) {
+                SingleFlatWizardFilterSettings.Settings.PropertyChanged -= UpdateProfileValues;
+            }
+
             SingleFlatWizardFilterSettings = new FlatWizardFilterSettingsWrapper(null, new FlatWizardFilterSettings {
                 HistogramMeanTarget = profileService.ActiveProfile.FlatWizardSettings.HistogramMeanTarget,
                 HistogramTolerance = profileService.ActiveProfile.FlatWizardSettings.HistogramTolerance,
                 MaxFlatExposureTime = profileService.ActiveProfile.CameraSettings.MaxFlatExposureTime,
                 MinFlatExposureTime = profileService.ActiveProfile.CameraSettings.MinFlatExposureTime,
                 StepSize = profileService.ActiveProfile.FlatWizardSettings.StepSize
-            });
-
-            SingleFlatWizardFilterSettings.CameraInfo = cameraInfo;
-
-            FlatCount = profileService.ActiveProfile.FlatWizardSettings.FlatCount;
-            BinningMode = profileService.ActiveProfile.FlatWizardSettings.BinningMode;
-
-            Filters = new ObservableCollection<FlatWizardFilterSettingsWrapper>();
-
-            profileService.ActiveProfile.FilterWheelSettings.PropertyChanged += UpdateFilterWheelsSettings;
+            }, cameraInfo?.BitDepth ?? (int)profileService.ActiveProfile.CameraSettings.BitDepth);
             SingleFlatWizardFilterSettings.Settings.PropertyChanged += UpdateProfileValues;
-
-            // first update filters
-
-            UpdateFilterWheelsSettings(null, null);
-
-            // then register consumer and get the cameraInfo so it's populated to all filters including the singleflatwizardfiltersettings
-
-            cameraMediator.RegisterConsumer(this);
         }
+
+        private ObserveAllCollection<FilterInfo> watchedFilterList;
 
         private enum FilterCaptureMode {
             SINGLE = 0,
@@ -168,6 +188,19 @@ namespace NINA.ViewModel.FlatWizard {
                     profileService.ActiveProfile.FlatWizardSettings.FlatCount = flatCount;
                 }
 
+                RaisePropertyChanged();
+            }
+        }
+
+        private int darkFlatCount;
+
+        public int DarkFlatCount {
+            get => darkFlatCount;
+            set {
+                darkFlatCount = value;
+                if (darkFlatCount != profileService.ActiveProfile.FlatWizardSettings.DarkFlatCount) {
+                    profileService.ActiveProfile.FlatWizardSettings.DarkFlatCount = darkFlatCount;
+                }
                 RaisePropertyChanged();
             }
         }
@@ -340,14 +373,21 @@ namespace NINA.ViewModel.FlatWizard {
                 flatSequenceCts = new CancellationTokenSource();
             }
 
+            Dictionary<FlatWizardFilterSettingsWrapper, double> filterToExposureTime = new Dictionary<FlatWizardFilterSettingsWrapper, double>();
+            CaptureSequence captureSequence;
+
             try {
                 if ((FilterCaptureMode)Mode == FilterCaptureMode.SINGLE) {
                     await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, SingleFlatWizardFilterSettings);
-                    await StartFlatCaptureSequence(progress, flatSequenceCts.Token, pt, SingleFlatWizardFilterSettings.Filter);
+                    captureSequence = new CaptureSequence(CalculatedExposureTime, CaptureSequence.ImageTypes.FLAT, SingleFlatWizardFilterSettings.Filter, BinningMode, FlatCount) { Gain = Gain };
+                    await StartCaptureSequence(captureSequence, progress, flatSequenceCts.Token, pt);
+                    filterToExposureTime.Add(SingleFlatWizardFilterSettings, CalculatedExposureTime);
                 } else {
                     foreach (var filterSettings in Filters.Where(f => f.IsChecked)) {
                         await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, filterSettings);
-                        await StartFlatCaptureSequence(progress, flatSequenceCts.Token, pt, filterSettings.Filter);
+                        captureSequence = new CaptureSequence(CalculatedExposureTime, CaptureSequence.ImageTypes.FLAT, filterSettings.Filter, BinningMode, FlatCount) { Gain = Gain };
+                        await StartCaptureSequence(captureSequence, progress, flatSequenceCts.Token, pt);
+                        filterToExposureTime.Add(filterSettings, CalculatedExposureTime);
                         filterSettings.IsChecked = false;
                         CalculatedExposureTime = 0;
                         CalculatedHistogramMean = 0;
@@ -358,6 +398,23 @@ namespace NINA.ViewModel.FlatWizard {
                 CalculatedExposureTime = 0;
                 CalculatedHistogramMean = 0;
                 FlatWizardExposureTimeFinderService.ClearDataPoints();
+            }
+
+            try {
+                if (filterToExposureTime.Count > 0 && DarkFlatCount > 0) {
+                    progress.Report(new ApplicationStatus() { Status = Locale["LblPreparingDarkFlatSequence"], Source = Title });
+                    var dialogResult = MyMessageBox.MyMessageBox.Show(
+                        Locale["LblCoverScopeMsgBox"],
+                        Locale["LblCoverScopeMsgBoxTitle"], MessageBoxButton.OKCancel, MessageBoxResult.OK);
+                    if (dialogResult == MessageBoxResult.OK) {
+                        flatSequenceCts = new CancellationTokenSource();
+                        foreach (var kvp in filterToExposureTime) {
+                            captureSequence = new CaptureSequence(kvp.Value, CaptureSequence.ImageTypes.DARKFLAT, kvp.Key.Filter, BinningMode, DarkFlatCount) { Gain = Gain };
+                            await StartCaptureSequence(captureSequence, progress, flatSequenceCts.Token, pt);
+                        }
+                    }
+                }
+            } catch (OperationCanceledException) {
             }
 
             ImagingVM.DestroyImage();
@@ -371,9 +428,8 @@ namespace NINA.ViewModel.FlatWizard {
             return true;
         }
 
-        private async Task<bool> StartFlatCaptureSequence(IProgress<ApplicationStatus> progress, CancellationToken ct, PauseToken pt, FilterInfo filter) {
-            var sequence =
-                new CaptureSequence(CalculatedExposureTime, "FLAT", filter, BinningMode, FlatCount) { Gain = Gain };
+        private async Task<bool> StartCaptureSequence(CaptureSequence sequence, IProgress<ApplicationStatus> progress,
+            CancellationToken ct, PauseToken pt) {
             while (sequence.ProgressExposureCount < sequence.TotalExposureCount) {
                 if (sequence.ProgressExposureCount != sequence.TotalExposureCount - 1) {
                     await ImagingVM.CaptureImageWithoutProcessingAndSaveAsync(sequence, ct, progress);
@@ -391,32 +447,40 @@ namespace NINA.ViewModel.FlatWizard {
             return true;
         }
 
-        private void UpdateFilterWheelsSettings(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            var selectedFilter = SelectedFilter;
-            var newList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Select(s => new FlatWizardFilterSettingsWrapper(s, s.FlatWizardFilterSettings)).ToList();
-            var tempList = new FlatWizardFilterSettingsWrapper[Filters.Count];
-            Filters.CopyTo(tempList, 0);
-            foreach (var item in tempList) {
-                var newListItem = newList.SingleOrDefault(f => f.Filter.Name == item.Filter.Name);
-                Filters[Filters.IndexOf(item)] = newListItem;
-                newList.Remove(newListItem);
+        private void FiltersCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+            if (watchedFilterList.Count != filters.Count) {
+                UpdateFilterWheelsSettings();
             }
+        }
 
-            foreach (var item in newList) {
-                item.CameraInfo = cameraInfo;
-                Filters.Add(item);
+        private void UpdateFilterWheelsSettings() {
+            using (MyStopWatch.Measure()) {
+                var selectedFilter = SelectedFilter;
+                var newList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters
+                    .Select(s => new FlatWizardFilterSettingsWrapper(s, s.FlatWizardFilterSettings, cameraInfo?.BitDepth ?? (int)profileService.ActiveProfile.CameraSettings.BitDepth)).ToList();
+                var tempList = new FlatWizardFilterSettingsWrapper[Filters.Count];
+                Filters.CopyTo(tempList, 0);
+                foreach (var item in tempList) {
+                    var newListItem = newList.SingleOrDefault(f => f.Filter.Name == item.Filter.Name);
+                    Filters[Filters.IndexOf(item)] = newListItem;
+                    newList.Remove(newListItem);
+                }
+
+                foreach (var item in newList) {
+                    Filters.Add(item);
+                }
+
+                while (Filters.Contains(null)) {
+                    Filters.Remove(null);
+                }
+
+                if (selectedFilter != null) {
+                    SelectedFilter = Filters.FirstOrDefault(f => f.Filter.Name == selectedFilter.Name)?.Filter;
+                }
+
+                RaisePropertyChanged(nameof(Filters));
+                RaisePropertyChanged(nameof(FilterInfos));
             }
-
-            while (Filters.Contains(null)) {
-                Filters.Remove(null);
-            }
-
-            if (selectedFilter != null) {
-                SelectedFilter = Filters.FirstOrDefault(f => f.Filter.Name == selectedFilter.Name)?.Filter;
-            }
-
-            RaisePropertyChanged(nameof(Filters));
-            RaisePropertyChanged(nameof(FilterInfos));
         }
 
         private void UpdateProfileValues(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
@@ -454,13 +518,16 @@ namespace NINA.ViewModel.FlatWizard {
         }
 
         public void UpdateDeviceInfo(CameraInfo deviceInfo) {
+            var prevBitDepth = cameraInfo?.BitDepth ?? 0;
             cameraInfo = deviceInfo;
             CameraConnected = cameraInfo.Connected;
-            foreach (var filter in Filters) {
-                filter.CameraInfo = cameraInfo;
-            }
 
-            SingleFlatWizardFilterSettings.CameraInfo = cameraInfo;
+            if (prevBitDepth != cameraInfo.BitDepth) {
+                SingleFlatWizardFilterSettings.BitDepth = cameraInfo.BitDepth;
+                foreach (var filter in Filters) {
+                    filter.BitDepth = cameraInfo.BitDepth;
+                }
+            }
         }
     }
 }

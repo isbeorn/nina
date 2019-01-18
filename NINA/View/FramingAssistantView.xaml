@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -30,7 +30,6 @@
     xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:survey="clr-namespace:NINA.Utility.SkySurvey"
     xmlns:util="clr-namespace:NINA.Utility"
-    xmlns:vm="clr-namespace:NINA.ViewModel"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
@@ -136,11 +135,15 @@
                                 VerticalAlignment="Center"
                                 Columns="2">
                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblName}" />
-                                <TextBox
-                                    MinWidth="40"
+                                <ninactrl:AutoCompleteBox
                                     Margin="5,0,0,0"
-                                    Text="{Binding DSO.Name}"
-                                    TextAlignment="Left" />
+                                    Foreground="{StaticResource PrimaryBrush}"
+                                    HintText="{ns:Loc LblObjectNameHint}"
+                                    PopupBackground="{StaticResource TertiaryBackgroundBrush}"
+                                    SearchResult="{Binding DeepSkyObjectSearchVM.TargetSearchResult.Result}"
+                                    SelectedSearchResult="{Binding DeepSkyObjectSearchVM.SelectedTargetSearchResult, Mode=TwoWay}"
+                                    ShowPopup="{Binding DeepSkyObjectSearchVM.ShowPopup, Mode=TwoWay}"
+                                    Text="{Binding DeepSkyObjectSearchVM.TargetName, UpdateSourceTrigger=PropertyChanged}" />
                             </UniformGrid>
                             <UniformGrid
                                 Margin="0,0,0,6"
@@ -241,7 +244,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     <ninactrl:StepperControl
                                         Margin="5,0,0,0"
-                                        MaxValue="10"
+                                        MaxValue="200"
                                         MinValue="0.1"
                                         Value="{Binding FieldOfView, Mode=TwoWay}" />
                                     <TextBlock
@@ -369,10 +372,22 @@
                             Height="25"
                             Margin="5"
                             HorizontalAlignment="Stretch"
-                            Command="{Binding SetSequenceCoordinatesCommand}">
+                            Command="{Binding SetSequenceCoordinatesCommand}"
+                            CommandParameter="Replace">
                             <TextBlock
                                 Foreground="{StaticResource ButtonForegroundBrush}"
-                                Text="{ns:Loc LblSetAsSequenceTarget}"
+                                Text="{ns:Loc LblReplaceSequenceTarget}"
+                                TextWrapping="Wrap" />
+                        </Button>
+                        <Button
+                            Height="25"
+                            Margin="5"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding SetSequenceCoordinatesCommand}"
+                            CommandParameter="Add">
+                            <TextBlock
+                                Foreground="{StaticResource ButtonForegroundBrush}"
+                                Text="{ns:Loc LblAddSequenceTarget}"
                                 TextWrapping="Wrap" />
                         </Button>
                     </UniformGrid>
@@ -390,130 +405,294 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch" />
 
-        <local:ImageView Grid.Column="2" Image="{Binding ImageParameter.Image, IsAsync=True}">
-            <!--<local:ImageView.ButtonHeaderContent>
-            </local:ImageView.ButtonHeaderContent>-->
-            <local:ImageView.ImageAreaContent>
-                <Grid>
-                    <Grid.Resources>
-                        <s:Int32 x:Key="zero">0</s:Int32>
-                    </Grid.Resources>
-                    <ItemsControl ItemsSource="{Binding CameraRectangles}" RenderTransformOrigin="0.5,0.5">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Grid />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
-                                    <Rectangle
-                                        Width="{Binding Width}"
-                                        Height="{Binding Height}"
-                                        RenderTransformOrigin="0.5,0.5"
-                                        Stroke="{StaticResource SecondaryBrush}"
-                                        StrokeThickness="5">
+        <Grid Grid.Column="2">
+            <local:ImageView Image="{Binding ImageParameter.Image, IsAsync=True}" ScrollEnabled="{Binding SkyMapAnnotator.DynamicFoV, Converter={StaticResource InverseBooleanConverter}}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SizeChanged" SourceObject="{Binding RelativeSource={RelativeSource AncestorType=local:ImageView, Mode=FindAncestor}, Path=PART_ScrollViewerBinding}">
+                        <i:InvokeCommandAction Command="{Binding ScrollViewerSizeChangedCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <local:ImageView.ButtonHeaderContent>
+                    <StackPanel Margin="0,0,2,0" Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblOpacity}" />
+                        <ninactrl:StepperControl
+                            Margin="2,0,0,0"
+                            MaxValue="1"
+                            MinValue="0"
+                            StepSize=".1"
+                            Value="{Binding Opacity, Mode=TwoWay}" />
+                        <ToggleButton
+                            Width="35"
+                            Margin="5"
+                            Command="{Binding RefreshSkyMapAnnotationCommand}"
+                            IsChecked="{Binding SkyMapAnnotator.AnnotateConstellationBoundaries}">
+                            <ToggleButton.ToolTip>
+                                <ToolTip ToolTipService.ShowOnDisabled="False">
+                                    <TextBlock Text="{ns:Loc LblAnnotateConstellationBoundaries}" />
+                                </ToolTip>
+                            </ToggleButton.ToolTip>
+                            <ToggleButton.Style>
+                                <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource BordersSVG}"
+                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                        Stretch="Uniform" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource BordersSVG}"
+                                                        Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                        Stretch="Uniform" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+                        <ToggleButton
+                            Width="35"
+                            Margin="5"
+                            Command="{Binding RefreshSkyMapAnnotationCommand}"
+                            IsChecked="{Binding SkyMapAnnotator.AnnotateConstellations}">
+                            <ToggleButton.ToolTip>
+                                <ToolTip ToolTipService.ShowOnDisabled="False">
+                                    <TextBlock Text="{ns:Loc LblAnnotateConstellations}" />
+                                </ToolTip>
+                            </ToggleButton.ToolTip>
+                            <ToggleButton.Style>
+                                <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource ConstellationSVG}"
+                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                        Stretch="Uniform" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource ConstellationSVG}"
+                                                        Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                        Stretch="Uniform" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+                        <ToggleButton
+                            Width="35"
+                            Margin="5"
+                            Command="{Binding RefreshSkyMapAnnotationCommand}"
+                            IsChecked="{Binding SkyMapAnnotator.AnnotateGrid}">
+                            <ToggleButton.ToolTip>
+                                <ToolTip ToolTipService.ShowOnDisabled="False">
+                                    <TextBlock Text="{ns:Loc LblAnnotateGrid}" />
+                                </ToolTip>
+                            </ToggleButton.ToolTip>
+                            <ToggleButton.Style>
+                                <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource GridSVG}"
+                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                        Stretch="Uniform" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource GridSVG}"
+                                                        Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                        Stretch="Uniform" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+                        <ToggleButton
+                            Width="35"
+                            Margin="5"
+                            Command="{Binding RefreshSkyMapAnnotationCommand}"
+                            IsChecked="{Binding SkyMapAnnotator.AnnotateDSO}">
+                            <ToggleButton.ToolTip>
+                                <ToolTip ToolTipService.ShowOnDisabled="False">
+                                    <TextBlock Text="{ns:Loc LblAnnotateDSO}" />
+                                </ToolTip>
+                            </ToggleButton.ToolTip>
+                            <ToggleButton.Style>
+                                <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource AnnotateDSOSVG}"
+                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                        Stretch="Uniform" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource AnnotateDSOSVG}"
+                                                        Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                        Stretch="Uniform" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+                    </StackPanel>
+                </local:ImageView.ButtonHeaderContent>
+                <local:ImageView.ImageAreaContent>
+                    <Canvas Width="{Binding Path=FramingAssistantVM.ImageParameter.Image.PixelWidth, Source={StaticResource AppVM}}" Height="{Binding Path=FramingAssistantVM.ImageParameter.Image.PixelHeight, Source={StaticResource AppVM}}">
+                        <local:SkyMapOverlayView />
+                        <Grid>
+                            <Grid.Resources>
+                                <s:Int32 x:Key="zero">0</s:Int32>
+                            </Grid.Resources>
+                            <Grid>
+                                <ItemsControl ItemsSource="{Binding CameraRectangles}" RenderTransformOrigin="0.5,0.5">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <Grid />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+                                                <Rectangle
+                                                    Width="{Binding Width}"
+                                                    Height="{Binding Height}"
+                                                    RenderTransformOrigin="0.5,0.5"
+                                                    Stroke="{StaticResource SecondaryBrush}"
+                                                    StrokeThickness="5">
+                                                    <Rectangle.Fill>
+                                                        <SolidColorBrush Opacity="{Binding Path=FramingAssistantVM.Opacity, Source={StaticResource AppVM}}" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
+                                                    </Rectangle.Fill>
+                                                </Rectangle>
+                                                <TextBlock
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding Id}" />
+                                                <Grid.Margin>
+                                                    <MultiBinding Converter="{StaticResource MultiMarginConverter}">
 
-                                        <Rectangle.Fill>
-                                            <SolidColorBrush Opacity=".25" Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
-                                        </Rectangle.Fill>
-                                    </Rectangle>
-                                    <StackPanel
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Orientation="Vertical">
-                                        <TextBlock
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            Text="{Binding Id}" />
-                                        <TextBlock
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            Text="{Binding Coordinates.RAString}" />
-                                        <TextBlock
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            Text="{Binding Coordinates.DecString}" />
-                                    </StackPanel>
+                                                        <Binding Path="X" />
+                                                        <Binding Path="Y" />
+                                                        <Binding Source="{StaticResource zero}" />
+                                                        <Binding Source="{StaticResource zero}" />
+                                                    </MultiBinding>
+                                                </Grid.Margin>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                    <ItemsControl.RenderTransform>
+                                        <RotateTransform Angle="{Binding Rectangle.Rotation}" />
+                                    </ItemsControl.RenderTransform>
+                                    <ItemsControl.Margin>
+                                        <MultiBinding Converter="{StaticResource MultiMarginConverter}">
+
+                                            <Binding Path="Rectangle.X" />
+                                            <Binding Path="Rectangle.Y" />
+                                            <Binding Source="{StaticResource zero}" />
+                                            <Binding Source="{StaticResource zero}" />
+                                        </MultiBinding>
+                                    </ItemsControl.Margin>
+                                </ItemsControl>
+                                <Rectangle
+                                    Width="{Binding Rectangle.Width}"
+                                    Height="{Binding Rectangle.Height}"
+                                    behaviors:DragCommandBehavior.Drag="True"
+                                    behaviors:DragCommandBehavior.DragMoveCommand="{Binding DragMoveCommand}"
+                                    behaviors:DragCommandBehavior.DragStartCommand="{Binding DragStartCommand}"
+                                    behaviors:DragCommandBehavior.DragStopCommand="{Binding DragStopCommand}"
+                                    Fill="Transparent"
+                                    RenderTransformOrigin="0.5,0.5"
+                                    Stroke="{StaticResource ButtonForegroundBrush}"
+                                    StrokeThickness="5">
+                                    <Rectangle.RenderTransform>
+                                        <RotateTransform Angle="{Binding Rectangle.Rotation}" />
+                                    </Rectangle.RenderTransform>
+                                    <Rectangle.Margin>
+                                        <MultiBinding Converter="{StaticResource MultiMarginConverter}">
+
+                                            <Binding Path="Rectangle.X" />
+                                            <Binding Path="Rectangle.Y" />
+                                            <Binding Source="{StaticResource zero}" />
+                                            <Binding Source="{StaticResource zero}" />
+                                        </MultiBinding>
+                                    </Rectangle.Margin>
+                                </Rectangle>
+                                <Grid
+                                    Width="{Binding Rectangle.Width}"
+                                    Height="{Binding Rectangle.Height}"
+                                    IsHitTestVisible="False"
+                                    RenderTransformOrigin="0.5,0.5">
                                     <Grid.Margin>
                                         <MultiBinding Converter="{StaticResource MultiMarginConverter}">
 
-                                            <Binding Path="X" />
-                                            <Binding Path="Y" />
+                                            <Binding Path="Rectangle.X" />
+                                            <Binding Path="Rectangle.Y" />
                                             <Binding Source="{StaticResource zero}" />
                                             <Binding Source="{StaticResource zero}" />
                                         </MultiBinding>
                                     </Grid.Margin>
                                 </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                        <ItemsControl.RenderTransform>
-                            <RotateTransform Angle="{Binding Rectangle.Rotation}" />
-                        </ItemsControl.RenderTransform>
-                        <ItemsControl.Margin>
-                            <MultiBinding Converter="{StaticResource MultiMarginConverter}">
-
-                                <Binding Path="Rectangle.X" />
-                                <Binding Path="Rectangle.Y" />
-                                <Binding Source="{StaticResource zero}" />
-                                <Binding Source="{StaticResource zero}" />
-                            </MultiBinding>
-                        </ItemsControl.Margin>
-                    </ItemsControl>
-                    <Rectangle
-                        Width="{Binding Rectangle.Width}"
-                        Height="{Binding Rectangle.Height}"
-                        behaviors:DragCommandBehavior.Drag="True"
-                        behaviors:DragCommandBehavior.DragMoveCommand="{Binding DragMoveCommand}"
-                        behaviors:DragCommandBehavior.DragStartCommand="{Binding DragStartCommand}"
-                        behaviors:DragCommandBehavior.DragStopCommand="{Binding DragStopCommand}"
-                        Fill="Transparent"
-                        RenderTransformOrigin="0.5,0.5"
-                        Stroke="{StaticResource ButtonForegroundBrush}"
-                        StrokeThickness="5">
-                        <Rectangle.RenderTransform>
-                            <RotateTransform Angle="{Binding Rectangle.Rotation}" />
-                        </Rectangle.RenderTransform>
-                        <Rectangle.Margin>
-                            <MultiBinding Converter="{StaticResource MultiMarginConverter}">
-
-                                <Binding Path="Rectangle.X" />
-                                <Binding Path="Rectangle.Y" />
-                                <Binding Source="{StaticResource zero}" />
-                                <Binding Source="{StaticResource zero}" />
-                            </MultiBinding>
-                        </Rectangle.Margin>
-                    </Rectangle>
-                    <Grid
-                        Width="{Binding Rectangle.Width}"
-                        Height="{Binding Rectangle.Height}"
-                        IsHitTestVisible="False"
-                        RenderTransformOrigin="0.5,0.5">
-                        <Viewbox Height="150" Stretch="Uniform">
-                            <StackPanel Orientation="Vertical">
-
-                                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding Rectangle.Coordinates.RAString}" />
-                                </StackPanel>
-                                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDec}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding Rectangle.Coordinates.DecString}" />
-                                </StackPanel>
-                            </StackPanel>
-                        </Viewbox>
-                        <Grid.Margin>
-                            <MultiBinding Converter="{StaticResource MultiMarginConverter}">
-
-                                <Binding Path="Rectangle.X" />
-                                <Binding Path="Rectangle.Y" />
-                                <Binding Source="{StaticResource zero}" />
-                                <Binding Source="{StaticResource zero}" />
-                            </MultiBinding>
-                        </Grid.Margin>
-                    </Grid>
-                </Grid>
-            </local:ImageView.ImageAreaContent>
-        </local:ImageView>
+                            </Grid>
+                        </Grid>
+                    </Canvas>
+                </local:ImageView.ImageAreaContent>
+            </local:ImageView>
+            <StackPanel
+                Margin="5,0,0,5"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Orientation="Vertical">
+                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding Rectangle.Coordinates.RAString}" />
+                </StackPanel>
+                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDec}" />
+                    <TextBlock Margin="5,0,0,0" Text="{Binding Rectangle.Coordinates.DecString}" />
+                </StackPanel>
+            </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>

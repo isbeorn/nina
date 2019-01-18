@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -31,6 +31,7 @@ using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -48,11 +49,13 @@ namespace NINA.ViewModel {
 
             this.filterWheelMediator = filterWheelMediator;
 
+            OpenWebRequestCommand = new RelayCommand(OpenWebRequest);
             PreviewFileCommand = new RelayCommand(PreviewFile);
             OpenImageFileDiagCommand = new RelayCommand(OpenImageFileDiag);
             OpenSequenceTemplateDiagCommand = new RelayCommand(OpenSequenceTemplateDiag);
             OpenCygwinFileDiagCommand = new RelayCommand(OpenCygwinFileDiag);
             OpenPS2FileDiagCommand = new RelayCommand(OpenPS2FileDiag);
+            OpenPHD2DiagCommand = new RelayCommand(OpenPHD2FileDiag);
             OpenASPSFileDiagCommand = new RelayCommand(OpenASPSFileDiag);
             ToggleColorsCommand = new RelayCommand(ToggleColors);
             DownloadIndexesCommand = new RelayCommand(DownloadIndexes);
@@ -67,6 +70,9 @@ namespace NINA.ViewModel {
             SelectProfileCommand = new RelayCommand(SelectProfile, (o) => {
                 return SelectedProfile != null;
             });
+
+            CopyToCustomSchemaCommand = new RelayCommand(CopyToCustomSchema, (object o) => AlternativeColorSchemaName != "Custom");
+            CopyToAlternativeCustomSchemaCommand = new RelayCommand(CopyToAlternativeCustomSchema, (object o) => ColorSchemaName != "Alternative Custom");
 
             ImagePatterns = ImagePatterns.CreateExample();
 
@@ -87,6 +93,54 @@ namespace NINA.ViewModel {
             };
 
             FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
+        }
+
+        private void OpenWebRequest(object obj) {
+            var url = new Uri(obj.ToString());
+            Process.Start(new ProcessStartInfo(url.AbsoluteUri));
+        }
+
+        public RelayCommand OpenPHD2DiagCommand { get; set; }
+
+        private void CopyToAlternativeCustomSchema(object obj) {
+            var schema = ColorSchemas.Items.Where((x) => x.Name == "Alternative Custom").First();
+
+            schema.PrimaryColor = AltPrimaryColor;
+            schema.SecondaryColor = AltSecondaryColor;
+            schema.BorderColor = AltBorderColor;
+            schema.BackgroundColor = AltBackgroundColor;
+            schema.SecondaryBackgroundColor = AltSecondaryBackgroundColor;
+            schema.TertiaryBackgroundColor = AltTertiaryBackgroundColor;
+            schema.ButtonBackgroundColor = AltButtonBackgroundColor;
+            schema.ButtonBackgroundSelectedColor = AltButtonBackgroundSelectedColor;
+            schema.ButtonForegroundColor = AltButtonForegroundColor;
+            schema.ButtonForegroundDisabledColor = AltButtonForegroundDisabledColor;
+            schema.NotificationWarningColor = AltNotificationWarningColor;
+            schema.NotificationWarningTextColor = AltNotificationWarningTextColor;
+            schema.NotificationErrorColor = AltNotificationErrorColor;
+            schema.NotificationErrorTextColor = AltNotificationErrorTextColor;
+            AlternativeColorSchemaName = schema.Name;
+        }
+
+        private void CopyToCustomSchema(object obj) {
+            var schema = ColorSchemas.Items.Where((x) => x.Name == "Custom").First();
+
+            schema.PrimaryColor = PrimaryColor;
+            schema.SecondaryColor = SecondaryColor;
+            schema.BorderColor = BorderColor;
+            schema.BackgroundColor = BackgroundColor;
+            schema.SecondaryBackgroundColor = SecondaryBackgroundColor;
+            schema.TertiaryBackgroundColor = TertiaryBackgroundColor;
+            schema.ButtonBackgroundColor = ButtonBackgroundColor;
+            schema.ButtonBackgroundSelectedColor = ButtonBackgroundSelectedColor;
+            schema.ButtonForegroundColor = ButtonForegroundColor;
+            schema.ButtonForegroundDisabledColor = ButtonForegroundDisabledColor;
+            schema.NotificationWarningColor = NotificationWarningColor;
+            schema.NotificationWarningTextColor = NotificationWarningTextColor;
+            schema.NotificationErrorColor = NotificationErrorColor;
+            schema.NotificationErrorTextColor = NotificationErrorTextColor;
+
+            ColorSchemaName = schema.Name;
         }
 
         private void CloneProfile(object obj) {
@@ -167,14 +221,13 @@ namespace NINA.ViewModel {
 
         private void ImportFilters(object obj) {
             var filters = filterWheelMediator.GetAllFilters();
-            if (filters != null) {
+            if (filters?.Count > 0) {
                 FilterWheelFilters.Clear();
                 FilterWheelFilters.CollectionChanged -= FilterWheelFilters_CollectionChanged;
-                var l = new List<FilterInfo>();
-                foreach (FilterInfo filter in filters) {
-                    l.Add(filter);
+                var l = filters.OrderBy(x => x.Position);
+                foreach (var filter in l) {
+                    FilterWheelFilters.Add(filter);
                 }
-                FilterWheelFilters = new ObserveAllCollection<FilterInfo>(l.OrderBy((x) => x.Position));
                 FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
             }
         }
@@ -237,21 +290,35 @@ namespace NINA.ViewModel {
         }
 
         private void OpenPS2FileDiag(object o) {
-            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
-            dialog.FileName = profileService.ActiveProfile.PlateSolveSettings.PS2Location;
-
+            var dialog = GetFilteredFileDialog(profileService.ActiveProfile.PlateSolveSettings.PS2Location, "PlateSolve2.exe", "PlateSolve2|PlateSolve2.exe");
             if (dialog.ShowDialog() == true) {
                 PS2Location = dialog.FileName;
             }
         }
 
-        private void OpenASPSFileDiag(object o) {
-            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
-            dialog.FileName = profileService.ActiveProfile.PlateSolveSettings.AspsLocation;
+        private void OpenPHD2FileDiag(object o) {
+            var dialog = GetFilteredFileDialog(profileService.ActiveProfile.GuiderSettings.PHD2Path, "phd2.exe", "PHD2|phd2.exe");
+            if (dialog.ShowDialog() == true) {
+                PHD2Path = dialog.FileName;
+            }
+        }
 
+        private void OpenASPSFileDiag(object o) {
+            var dialog = GetFilteredFileDialog(profileService.ActiveProfile.PlateSolveSettings.AspsLocation, "PlateSolver.exe", "ASPS|PlateSolver.exe");
             if (dialog.ShowDialog() == true) {
                 AspsLocation = dialog.FileName;
             }
+        }
+
+        private Microsoft.Win32.OpenFileDialog GetFilteredFileDialog(string path, string filename, string filter) {
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+
+            if (File.Exists(path)) {
+                dialog.InitialDirectory = Path.GetDirectoryName(path);
+            }
+            dialog.FileName = filename;
+            dialog.Filter = filter;
+            return dialog;
         }
 
         private void ScanForIndexFiles() {
@@ -295,6 +362,8 @@ namespace NINA.ViewModel {
 
         public ICommand OpenSequenceTemplateDiagCommand { get; private set; }
 
+        public ICommand OpenWebRequestCommand { get; private set; }
+
         public ICommand PreviewFileCommand { get; private set; }
 
         public ICommand ToggleColorsCommand { get; private set; }
@@ -311,6 +380,9 @@ namespace NINA.ViewModel {
         public ICommand AddProfileCommand { get; private set; }
         public ICommand CloneProfileCommand { get; private set; }
         public ICommand RemoveProfileCommand { get; private set; }
+
+        public ICommand CopyToCustomSchemaCommand { get; private set; }
+        public ICommand CopyToAlternativeCustomSchemaCommand { get; private set; }
 
         public ICommand SelectProfileCommand { get; private set; }
 
@@ -430,6 +502,14 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string PHD2Path {
+            get => profileService.ActiveProfile.GuiderSettings.PHD2Path;
+            set {
+                profileService.ActiveProfile.GuiderSettings.PHD2Path = value;
                 RaisePropertyChanged();
             }
         }

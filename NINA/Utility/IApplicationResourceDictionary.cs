@@ -1,6 +1,6 @@
 ﻿namespace NINA.Utility {
 
-    public interface IResourceDictionary {
+    public interface IApplicationResourceDictionary {
         object this[string key] { get; }
     }
 }

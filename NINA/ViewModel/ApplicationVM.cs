@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -27,12 +27,12 @@ using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using NINA.ViewModel.FlatWizard;
+using NINA.ViewModel.FramingAssistant;
 using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using ResourceDictionary = NINA.Utility.ResourceDictionary;
 
 namespace NINA.ViewModel {
 
@@ -133,6 +133,7 @@ namespace NINA.ViewModel {
             DockManagerVM.Anchorables.Add(PlatesolveVM);
             DockManagerVM.Anchorables.Add(PolarAlignVM);
             DockManagerVM.Anchorables.Add(AutoFocusVM);
+            DockManagerVM.Anchorables.Add(FocusTargetsVM);
 
             DockManagerVM.AnchorableInfoPanels.Add(ImagingVM.ImageControl);
             DockManagerVM.AnchorableInfoPanels.Add(CameraVM);
@@ -151,6 +152,7 @@ namespace NINA.ViewModel {
             DockManagerVM.AnchorableTools.Add(PlatesolveVM);
             DockManagerVM.AnchorableTools.Add(PolarAlignVM);
             DockManagerVM.AnchorableTools.Add(AutoFocusVM);
+            DockManagerVM.AnchorableTools.Add(FocusTargetsVM);
         }
 
         public void ChangeTab(ApplicationTab tab) {
@@ -373,7 +375,7 @@ namespace NINA.ViewModel {
                     _flatWizardVM = new FlatWizardVM(profileService,
                         new ImagingVM(profileService, new ImagingMediator(), cameraMediator, telescopeMediator, filterWheelMediator, focuserMediator, guiderMediator, applicationStatusMediator),
                         cameraMediator,
-                        new ResourceDictionary(),
+                        new ApplicationResourceDictionary(),
                         applicationStatusMediator);
                 }
                 return _flatWizardVM;
@@ -489,6 +491,16 @@ namespace NINA.ViewModel {
             }
         }
 
+        private FocusTargetsVM focusTargetsVM;
+
+        public FocusTargetsVM FocusTargetsVM {
+            get => focusTargetsVM ?? (focusTargetsVM = new FocusTargetsVM(profileService, telescopeMediator, new ApplicationResourceDictionary()));
+            set {
+                focusTargetsVM = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private AutoFocusVM _autoFocusVM;
 
         public AutoFocusVM AutoFocusVM {
@@ -552,6 +564,7 @@ namespace NINA.ViewModel {
         GUIDER,
         SKYATLAS,
         FRAMINGASSISTANT,
+        FLATWIZARD,
         SEQUENCE,
         IMAGING,
         OPTIONS

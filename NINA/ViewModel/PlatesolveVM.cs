@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -28,7 +28,6 @@ using NINA.PlateSolving;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -41,6 +40,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace NINA.ViewModel {
 
@@ -243,32 +243,27 @@ namespace NINA.ViewModel {
         private BitmapSource _image;
 
         public BitmapSource Image {
-            get {
-                return _image;
-            }
+            get => _image;
             set {
                 _image = value;
-                if (_image != null) {
-                    var factor = 300 / _image.Width;
-
-                    BitmapSource scaledBitmap = new WriteableBitmap(new TransformedBitmap(_image, new ScaleTransform(factor, factor)));
-                    scaledBitmap.Freeze();
-                    Thumbnail = scaledBitmap;
-                }
-
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(Thumbnail));
             }
         }
 
-        private BitmapSource thumbnail;
+        private Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
 
         public BitmapSource Thumbnail {
             get {
-                return thumbnail;
-            }
-            set {
-                thumbnail = value;
-                RaisePropertyChanged();
+                BitmapSource scaledBitmap = null;
+                if (Image != null) {
+                    dispatcher.Invoke(() => {
+                        var factor = 300 / _image.Width;
+                        scaledBitmap = new WriteableBitmap(new TransformedBitmap(_image, new ScaleTransform(factor, factor)));
+                        scaledBitmap.Freeze();
+                    }, DispatcherPriority.Background);
+                }
+                return scaledBitmap;
             }
         }
 
@@ -292,7 +287,7 @@ namespace NINA.ViewModel {
 
             canceltoken.ThrowIfCancellationRequested();
 
-            var success = await Solve(Image, progress, canceltoken, silent); ;
+            var success = await Solve(Image, progress, canceltoken, silent);
             Image = null;
             return success;
         }
@@ -453,7 +448,7 @@ namespace NINA.ViewModel {
                 var binning = CameraInfo.BinX;
                 if (binning < 1) { binning = 1; }
 
-                solver = PlateSolverFactory.CreateInstance(profileService, profileService.ActiveProfile.PlateSolveSettings.PlateSolverType, binning, img.Width, img.Height, coords);
+                solver = PlateSolverFactory.CreateInstance(profileService, profileService.ActiveProfile.PlateSolveSettings.PlateSolverType, binning, img.PixelWidth, img.PixelHeight, coords);
             }
 
             return solver;

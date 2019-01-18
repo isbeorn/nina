@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -22,6 +22,7 @@
 #endregion "copyright"
 
 using NINA.Model.MyCamera;
+using NINA.Utility.Extensions;
 using System;
 using System.IO;
 using System.Text;
@@ -43,17 +44,18 @@ namespace NINA.Utility.RawConverter {
             return await Task.Run(async () => {
                 using (MyStopWatch.Measure()) {
                     var fileextension = ".raw";
-                    var filename = Path.Combine(Utility.APPLICATIONTEMPPATH, DCRaw.FILEPREFIX + fileextension);
+                    var rawfile = Path.Combine(Utility.APPLICATIONTEMPPATH, FILEPREFIX + fileextension);
 
-                    System.IO.FileStream filestream = new System.IO.FileStream(filename, System.IO.FileMode.Create);
-                    s.WriteTo(filestream);
+                    using (var filestream = new System.IO.FileStream(rawfile, System.IO.FileMode.Create)) {
+                        s.WriteTo(filestream);
+                    }
 
                     ImageArray iarr = null;
-                    var rawfile = Path.Combine(Utility.APPLICATIONTEMPPATH, FILEPREFIX + fileextension);
-                    var file = Path.Combine(Utility.APPLICATIONTEMPPATH, FILEPREFIX + ".tiff");
+                    var outputFile = Path.Combine(Utility.APPLICATIONTEMPPATH, FILEPREFIX + ".tiff");
                     try {
                         System.Diagnostics.Process process;
                         System.Diagnostics.ProcessStartInfo startInfo;
+                        var sb = new StringBuilder();
                         using (MyStopWatch.Measure("DCRawStart")) {
                             process = new System.Diagnostics.Process();
                             startInfo = new System.Diagnostics.ProcessStartInfo();
@@ -61,23 +63,33 @@ namespace NINA.Utility.RawConverter {
                             startInfo.FileName = DCRAWLOCATION;
                             startInfo.UseShellExecute = false;
                             startInfo.RedirectStandardOutput = true;
+                            startInfo.RedirectStandardError = true;
+                            startInfo.RedirectStandardInput = true;
                             startInfo.CreateNoWindow = true;
-                            startInfo.Arguments = "-4 -d -T -t 0 " + rawfile;
+                            startInfo.Arguments = "-4 -d -T -t 0 -v \"" + rawfile + "\"";
                             process.StartInfo = startInfo;
-                            process.Start();
-                        }
+                            process.EnableRaisingEvents = true;
 
-                        var sb = new StringBuilder();
-                        using (MyStopWatch.Measure("DCRawWrite")) {
-                            while (!process.StandardOutput.EndOfStream) {
-                                sb.AppendLine(process.StandardOutput.ReadLine());
-                                token.ThrowIfCancellationRequested();
-                            }
+                            process.OutputDataReceived += (object sender, System.Diagnostics.DataReceivedEventArgs e) => {
+                                sb.AppendLine(e.Data);
+                            };
+
+                            process.ErrorDataReceived += (object sender, System.Diagnostics.DataReceivedEventArgs e) => {
+                                sb.AppendLine(e.Data);
+                            };
+
+                            process.Start();
+                            process.BeginOutputReadLine();
+                            process.BeginErrorReadLine();
+
+                            await process.WaitForExitAsync(token);
+
+                            Logger.Trace(sb.ToString());
                         }
 
                         using (MyStopWatch.Measure("DCRawReadIntoImageArray")) {
-                            if (File.Exists(file)) {
-                                TiffBitmapDecoder TifDec = new TiffBitmapDecoder(new Uri(file), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+                            if (File.Exists(outputFile)) {
+                                TiffBitmapDecoder TifDec = new TiffBitmapDecoder(new Uri(outputFile), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
                                 BitmapFrame bmp = TifDec.Frames[0];
                                 ushort[] pixels = new ushort[bmp.PixelWidth * bmp.PixelHeight];
                                 bmp.CopyPixels(pixels, 2 * bmp.PixelWidth, 0);
@@ -88,21 +100,19 @@ namespace NINA.Utility.RawConverter {
                                 iarr = await ImageArray.CreateInstance(pixels, (int)bmp.PixelWidth, (int)bmp.PixelHeight, bitDepth, true, calculateStatistics, histogramResolution);
                                 iarr.RAWData = s.ToArray();
                             } else {
-                                Notification.Notification.ShowError("Error occured during DCRaw conversion." + Environment.NewLine + sb.ToString());
-                                Logger.Error(sb.ToString(), null);
-                                Logger.Error("File not found: " + file, null);
+                                Logger.Error("File not found: " + outputFile, null);
+                                throw new Exception("Error occured during DCRaw conversion." + Environment.NewLine + sb.ToString());
                             }
                         }
                     } catch (Exception ex) {
                         Notification.Notification.ShowError(ex.Message);
                         Logger.Error(ex);
                     } finally {
-                        filestream.Dispose();
                         if (File.Exists(rawfile)) {
                             File.Delete(rawfile);
                         }
-                        if (File.Exists(file)) {
-                            File.Delete(file);
+                        if (File.Exists(outputFile)) {
+                            File.Delete(outputFile);
                         }
                     }
                     return iarr;

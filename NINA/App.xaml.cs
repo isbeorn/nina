@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -25,6 +25,7 @@ using NINA.Utility;
 using NINA.ViewModel;
 using System;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace NINA {
 
@@ -49,6 +50,18 @@ namespace NINA {
                 e.Handled = true;
                 Application.Current.Shutdown();
             }
+        }
+
+        protected override void OnStartup(StartupEventArgs e) {
+            EventManager.RegisterClassHandler(typeof(TextBox),
+                TextBox.GotFocusEvent,
+                new RoutedEventHandler(TextBox_GotFocus));
+
+            base.OnStartup(e);
+        }
+
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e) {
+            (sender as TextBox).SelectAll();
         }
 
         private void Application_Exit(object sender, ExitEventArgs e) {

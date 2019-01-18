@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -33,6 +33,7 @@ using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using NINA.Utility.WindowService;
+using NINACustomControlLibrary;
 using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
@@ -78,6 +79,9 @@ namespace NINA.ViewModel {
             this.imagingMediator = imagingMediator;
             this.applicationStatusMediator = applicationStatusMediator;
 
+            this.DeepSkyObjectSearchVM = new DeepSkyObjectSearchVM(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
+            this.DeepSkyObjectSearchVM.PropertyChanged += DeepSkyObjectDetailVM_PropertyChanged;
+
             this.profileService = profileService;
             Title = "LblSequence";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current?.Resources["SequenceSVG"];
@@ -107,6 +111,19 @@ namespace NINA.ViewModel {
             };
 
             autoUpdateTimer.Start();
+        }
+
+        private void DeepSkyObjectDetailVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(DeepSkyObjectSearchVM.SelectedTargetSearchResult)) {
+                if (DeepSkyObjectSearchVM.SelectedTargetSearchResult != null) {
+                    Sequence.PropertyChanged -= _sequence_PropertyChanged;
+
+                    Sequence.TargetName = DeepSkyObjectSearchVM.SelectedTargetSearchResult.Column1;
+                    Sequence.Coordinates = DeepSkyObjectSearchVM.Coordinates;
+
+                    Sequence.PropertyChanged += _sequence_PropertyChanged;
+                }
+            }
         }
 
         private DispatcherTimer autoUpdateTimer;
@@ -168,12 +185,14 @@ namespace NINA.ViewModel {
 
         private void ResumeSequence(object obj) {
             if (_pauseTokenSource != null) {
+                autoUpdateTimer.Stop();
                 _pauseTokenSource.IsPaused = false;
             }
         }
 
         private void PauseSequence(object obj) {
             if (_pauseTokenSource != null) {
+                autoUpdateTimer.Start();
                 _pauseTokenSource.IsPaused = true;
             }
         }
@@ -398,6 +417,9 @@ namespace NINA.ViewModel {
 
         private async Task<bool> StartSequencing(IProgress<ApplicationStatus> progress) {
             try {
+                _actualDownloadTimes.Clear();
+                _canceltoken = new CancellationTokenSource();
+                _pauseTokenSource = new PauseTokenSource();
                 IsPaused = false;
                 IsRunning = true;
                 autoUpdateTimer.Stop();
@@ -406,30 +428,27 @@ namespace NINA.ViewModel {
                         csl.IsFinished = false;
                         csl.IsRunning = true;
                         Sequence = csl;
-                        await StartSequence(csl, progress);
+                        await StartSequence(csl, _canceltoken.Token, _pauseTokenSource.Token, progress);
+                        csl.IsFinished = true;
                     } finally {
                         csl.IsRunning = false;
-                        csl.IsFinished = true;
                     }
                 }
-                return true;
+            } catch (OperationCanceledException) {
             } finally {
                 IsPaused = false;
                 IsRunning = false;
                 autoUpdateTimer.Start();
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
+            return true;
         }
 
-        private async Task<bool> StartSequence(CaptureSequenceList csl, IProgress<ApplicationStatus> progress) {
+        private async Task<bool> StartSequence(CaptureSequenceList csl, CancellationToken ct, PauseToken pt, IProgress<ApplicationStatus> progress) {
             try {
                 if (csl.Count <= 0) {
                     return false;
                 }
-                _actualDownloadTimes.Clear();
-                _canceltoken = new CancellationTokenSource();
-                _pauseTokenSource = new PauseTokenSource();
-                RaisePropertyChanged(nameof(IsPaused));
 
                 CalculateETA();
 
@@ -446,7 +465,7 @@ namespace NINA.ViewModel {
 
                 await StartGuiding(csl, progress);
 
-                return await ProcessSequence(csl, _canceltoken.Token, _pauseTokenSource.Token, progress);
+                return await ProcessSequence(csl, ct, pt, progress);
             } finally {
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
@@ -456,7 +475,7 @@ namespace NINA.ViewModel {
             var autoFocus = new AutoFocusVM(profileService, focuserMediator, guiderMediator, imagingMediator, applicationStatusMediator);
             var service = WindowServiceFactory.Create();
             service.Show(autoFocus, this.Title + " - " + autoFocus.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
-            await autoFocus.StartAutoFocus(filter, _canceltoken.Token, progress);
+            await autoFocus.StartAutoFocus(filter, token, progress);
             service.DelayedClose(TimeSpan.FromSeconds(10));
         }
 
@@ -526,7 +545,8 @@ namespace NINA.ViewModel {
                         actualFilter = filterWheelInfo?.SelectedFilter;
                         prevFilterPosition = actualFilter?.Position ?? -1;
                     }
-                } catch (OperationCanceledException) {
+                } catch (OperationCanceledException ex) {
+                    throw ex;
                 } catch (CameraConnectionLostException) {
                 } catch (Exception ex) {
                     Logger.Error(ex);
@@ -637,6 +657,8 @@ namespace NINA.ViewModel {
         }
 
         public async Task<bool> SetSequenceCoordiantes(DeepSkyObject dso) {
+            Sequence.PropertyChanged -= _sequence_PropertyChanged;
+
             var sequenceDso = new DeepSkyObject(dso.AlsoKnownAs.FirstOrDefault() ?? dso.Name ?? string.Empty, dso.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
             sequenceDso.Rotation = dso.Rotation;
             await Task.Run(() => {
@@ -644,12 +666,18 @@ namespace NINA.ViewModel {
             });
 
             Sequence.SetSequenceTarget(sequenceDso);
+
+            Sequence.PropertyChanged += _sequence_PropertyChanged;
+
             return true;
         }
 
-        public async Task<bool> SetSequenceCoordiantes(ICollection<DeepSkyObject> deepSkyObjects) {
-            Targets.Clear();
-            Sequence = null;
+        public async Task<bool> SetSequenceCoordiantes(ICollection<DeepSkyObject> deepSkyObjects, bool replace = true) {
+            if (replace) {
+                Targets.Clear();
+                Sequence = null;
+            }
+
             foreach (var dso in deepSkyObjects) {
                 AddTarget(null);
                 Sequence = Targets.Last();
@@ -703,14 +731,26 @@ namespace NINA.ViewModel {
         public CaptureSequenceList Sequence {
             get {
                 if (_sequence == null) {
-                    _sequence = GetTemplate();
+                    Sequence = GetTemplate();
                     SelectedSequenceRowIdx = _sequence.Count - 1;
                 }
                 return _sequence;
             }
             set {
+                if (_sequence != null) _sequence.PropertyChanged -= _sequence_PropertyChanged;
                 _sequence = value;
+                if (_sequence != null) _sequence.PropertyChanged += _sequence_PropertyChanged;
                 RaisePropertyChanged();
+            }
+        }
+
+        public DeepSkyObjectSearchVM DeepSkyObjectSearchVM { get; private set; }
+
+        private void _sequence_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(CaptureSequenceList.TargetName)) {
+                if (Sequence.TargetName.Length > 1) {
+                    DeepSkyObjectSearchVM.TargetName = Sequence.TargetName;
+                }
             }
         }
 

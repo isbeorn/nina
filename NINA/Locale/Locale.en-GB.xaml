@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -18,7 +18,6 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:NINA.Locale"
     xmlns:s="clr-namespace:System;assembly=mscorlib">
     <s:String x:Key="LblName">Name</s:String>
     <s:String x:Key="LblCameraState">Camera State</s:String>
@@ -538,6 +537,8 @@ Should the Application try to recover from the error? (Can lead to unexpected be
     <s:String x:Key="LblConstellation_SCL">Sculptor</s:String>
     <s:String x:Key="LblConstellation_SCT">Scutum</s:String>
     <s:String x:Key="LblConstellation_SER">Serpens</s:String>
+    <s:String x:Key="LblConstellation_SER2">Serpens cauda</s:String>
+    <s:String x:Key="LblConstellation_SER1">Serpens caput</s:String>
     <s:String x:Key="LblConstellation_SEX">Sextans</s:String>
     <s:String x:Key="LblConstellation_TAU">Taurus</s:String>
     <s:String x:Key="LblConstellation_TEL">Telescopium</s:String>
@@ -744,6 +745,10 @@ Calculated HFR: {2}
     <s:String x:Key="LblFlatWizard">Flat Wizard</s:String>
     <s:String x:Key="LblFlatWizardCapture">Flat Wizard Capture</s:String>
     <s:String x:Key="LblFlatCount">Flats to take</s:String>
+    <s:String x:Key="LblDarkFlatCount">Dark Flats to take</s:String>
+    <s:String x:Key="LblPreparingDarkFlatSequence">Preparing Dark Flat Sequence</s:String>
+    <s:String x:Key="LblCoverScopeMsgBox">Cover your scope now and press OK to start taking the dark flats.</s:String>
+    <s:String x:Key="LblCoverScopeMsgBoxTitle">Cover your scope now</s:String>
     <s:String x:Key="LblFlatMinExposureTime">Flat Min Exposure</s:String>
     <s:String x:Key="LblFlatMaxExposureTime">Flat Max Exposure</s:String>
     <s:String x:Key="LblFlatStepSize">Flat Step Size</s:String>
@@ -774,4 +779,20 @@ Calculated HFR: {2}
     <s:String x:Key="LblReadoutForNormalImagesToolTip">This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT and DARKFLAT frames in sequences.</s:String>
     <s:String x:Key="LblBlackClipping">Black clipping</s:String>
     <s:String x:Key="LblLblBlackClippingTooltip">Black clipping factor in sigma units from the median</s:String>
+    <s:String x:Key="LblReplaceSequenceTarget">Replace as Sequence Target</s:String>
+    <s:String x:Key="LblAddSequenceTarget">Add as Sequence Target</s:String>
+    <s:String x:Key="LblOpacity">Opacity</s:String>
+    <s:String x:Key="LblManualFocusTargets">Manual Focus Targets</s:String>
+    <s:String x:Key="LblAnnotateDSO">Annotate Deep Sky Objects</s:String>
+    <s:String x:Key="LblAnnotateGrid">Display Grid</s:String>
+    <s:String x:Key="LblAnnotateConstellations">Display and annotate Constellations</s:String>
+    <s:String x:Key="LblAnnotateConstellationBoundaries">Display Constellation Boundaries</s:String>
+    <s:String x:Key="LblSkyAtlasSkySurvey">SkyAtlas (Offline Framing)</s:String>
+    <s:String x:Key="LblPhd2PathNotFound">Could not start PHD2. Path not found</s:String>
+    <s:String x:Key="LblPhd2StartProcessError">Could not start PHD2. Check logs for details.</s:String>
+    <s:String x:Key="LblPhd2FailedEquipmentConnection">PHD2 wasn't able to connect to the equipment</s:String>
+    <s:String x:Key="LblPHD2Path">PHD2 path</s:String>
+    <s:String x:Key="LblMinDuration">Min. Duration</s:String>
+    <s:String x:Key="LblWaitForTemperatureStep">Waiting for camera to reach next temperature step</s:String>
+    <s:String x:Key="LblApplicationStartDateDescription">Application start date with format YYYY-MM-DD</s:String>
 </ResourceDictionary>

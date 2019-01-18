@@ -3,11 +3,13 @@
   <?if $(var.Platform) = x64 ?>
   <?define SetupMsiName = "NINASetup.msi" ?>
   <?define SetupSource = "$(var.NINASetup.TargetDir)" ?>
+  <?define VCRedist2017 = "$(var.ProjectDir)\vc_redist2017.x64.exe" ?>
   <?else ?>
   <?define SetupMsiName = "NINASetup.msi" ?>
   <?define SetupSource = "$(var.NINASetup.TargetDir)" ?>
+  <?define VCRedist2017 = "$(var.ProjectDir)\vc_redist2017.x86.exe" ?>
   <?endif ?>
-  <Bundle Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Version="1.7.1.5" Manufacturer="N.I.N.A." UpgradeCode="E51BC85C-6DE1-4653-9B0B-3C80754E4C90">
+  <Bundle Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Version="1.7.1.10" Manufacturer="N.I.N.A." UpgradeCode="E51BC85C-6DE1-4653-9B0B-3C80754E4C90">
     <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense">
       <bal:WixStandardBootstrapperApplication
         ThemeFile="$(var.ProjectDir)\RtfTheme.xml"
@@ -16,6 +18,7 @@
         ShowVersion="yes" />
     </BootstrapperApplicationRef>
     <Chain>
+      <!-- VCRedist 2013 for Atik drivers -->
       <ExePackage
          Cache="no"
          Compressed="yes"
@@ -24,6 +27,23 @@
          Vital="yes"
          Name="vcredist_x86.exe"
          SourceFile="$(var.ProjectDir)\vcredist_x86.exe"
+         InstallCommand="/install /quiet /norestart">
+
+        <ExitCode Value="3010" Behavior="success" />
+
+        <!-- Ignore "Newer version installed" error -->
+        <ExitCode Value="1638" Behavior="success" />
+      </ExePackage>
+
+      <!-- VCRedist 2017 for NOVAS & SOFA libs-->
+      <ExePackage
+         Cache="no"
+         Compressed="yes"
+         PerMachine="yes"
+         Permanent="yes"
+         Vital="yes"
+         Name="vcredist.exe"
+         SourceFile="$(var.VCRedist2017)"
          InstallCommand="/install /quiet /norestart">
 
         <ExitCode Value="3010" Behavior="success" />

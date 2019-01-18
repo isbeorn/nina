@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -259,6 +259,12 @@
                             <view:ThumbnailListView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.ThumbnailTemplate>
+
+                    <util:PaneTemplateSelector.FocusTargetsTemplate>
+                        <DataTemplate>
+                            <view:AnchorableFocusTargetsView />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.FocusTargetsTemplate>
 
                     <util:PaneTemplateSelector.PlatesolveTemplate>
                         <DataTemplate>

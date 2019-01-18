@@ -128,6 +128,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="AngleTest.cs" />
     <Compile Include="AstrometryTest.cs" />
     <Compile Include="CaptureSequenceTest.cs" />
     <Compile Include="CoordinatesTest.cs" />

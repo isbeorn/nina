@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2018 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -21,16 +21,7 @@
 
 #endregion "copyright"
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using NINA.Model;
-using NINA.Utility.Astrometry;
-using NINA.ViewModel;
 
 namespace NINA.Utility.SkySurvey {
 
@@ -52,6 +43,9 @@ namespace NINA.Utility.SkySurvey {
 
                 case SkySurveySource.FILE:
                     return new FileSkySurvey();
+
+                case SkySurveySource.SKYATLAS:
+                    return new SkyAtlasSkySurvey();
 
                 default:
                     return new NASASkySurvey();
@@ -79,10 +73,13 @@ namespace NINA.Utility.SkySurvey {
         [Description("LblEsoSkySurvey")]
         ESO,
 
+        [Description("LblSkyAtlasSkySurvey")]
+        SKYATLAS,
+
         [Description("LblFile")]
         FILE,
 
         [Description("LblCache")]
-        CACHE
+        CACHE,
     }
 }
