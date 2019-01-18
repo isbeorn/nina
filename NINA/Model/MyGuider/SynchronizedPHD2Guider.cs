@@ -63,16 +63,21 @@ namespace NINA.Model.MyGuider {
         public async Task<bool> Connect(CancellationToken ct) {
             disconnectTokenSource = new CancellationTokenSource();
             serverStarted = new TaskCompletionSource<bool>();
+            var connected = true;
             if (isServer) {
                 Task.Run(() => RunServer(disconnectTokenSource.Token));
-                await serverStarted.Task;
+                connected = await serverStarted.Task;
             }
 
             guiderService = ConnectToServer();
 
-            Connected = true;
+            Connected = guiderService != null && connected;
 
-            Task.Run(() => RunClientListener(disconnectTokenSource.Token));
+            if (Connected) {
+                Task.Run(() => RunClientListener(disconnectTokenSource.Token));
+            } else {
+                disconnectTokenSource.Cancel();
+            }
 
             return Connected;
         }
@@ -107,8 +112,7 @@ namespace NINA.Model.MyGuider {
                 behavior.InstanceContextMode = InstanceContextMode.Single;
                 host.Open();
                 ((SynchronizedPHD2GuiderService)host.SingletonInstance).ProfileService = profileService;
-                ((SynchronizedPHD2GuiderService)host.SingletonInstance).Initialize();
-                serverStarted.TrySetResult(true);
+                serverStarted.TrySetResult(await ((SynchronizedPHD2GuiderService)host.SingletonInstance).Initialize());
                 while (!ct.IsCancellationRequested) {
                     await Task.Delay(TimeSpan.FromMilliseconds(1000), ct);
                 }
@@ -126,7 +130,7 @@ namespace NINA.Model.MyGuider {
 
         /// <inheritdoc />
         public Task<bool> AutoSelectGuideStar() {
-            throw new NotImplementedException();
+            return Task.Run(() => guiderService.AutoSelectGuideStar());
         }
 
         /// <inheritdoc />

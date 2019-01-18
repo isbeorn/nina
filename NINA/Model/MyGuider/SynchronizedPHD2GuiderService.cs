@@ -14,7 +14,7 @@ namespace NINA.Model.MyGuider {
     [ServiceContract]
     internal interface ISynchronizedPHD2GuiderService {
 
-        void Initialize();
+        Task<bool> Initialize();
 
         [OperationContract]
         GuideInfo GetUpdatedGuideInfos(Guid clientId);
@@ -27,6 +27,9 @@ namespace NINA.Model.MyGuider {
 
         [OperationContract]
         bool StartGuiding();
+
+        [OperationContract]
+        bool AutoSelectGuideStar();
     }
 
     internal class SynchronizedPHD2GuiderService : ISynchronizedPHD2GuiderService {
@@ -35,9 +38,10 @@ namespace NINA.Model.MyGuider {
 
         public IProfileService ProfileService;
 
-        public void Initialize() {
+        public async Task<bool> Initialize() {
             guiderInstance = new PHD2Guider(ProfileService);
             clientInfos = new List<SynchronizedClientInfo>();
+            return await guiderInstance.Connect(new CancellationTokenSource().Token);
         }
 
         public void ConnectClient(Guid clientId) {
@@ -63,6 +67,11 @@ namespace NINA.Model.MyGuider {
         public bool StartGuiding() {
             CancellationTokenSource cts = new CancellationTokenSource();
             return guiderInstance.StartGuiding(cts.Token).Result;
+        }
+
+        /// <inheritdoc />
+        public bool AutoSelectGuideStar() {
+            return guiderInstance.AutoSelectGuideStar().Result;
         }
     }
 
