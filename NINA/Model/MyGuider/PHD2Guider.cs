@@ -39,7 +39,9 @@ using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace NINA.Model.MyGuider {
+
     public class PHD2Guider : BaseINPC, IGuider {
+
         public PHD2Guider(IProfileService profileService) {
             this.profileService = profileService;
         }
@@ -192,7 +194,7 @@ namespace NINA.Model.MyGuider {
         }*/
         private TaskCompletionSource<bool> _tcs;
 
-        public async Task<bool> Connect() {
+        public async Task<bool> Connect(CancellationToken ct) {
             _tcs = new TaskCompletionSource<bool>();
             var startedPHD2 = await StartPHD2Process();
 #pragma warning disable 4014
@@ -200,13 +202,14 @@ namespace NINA.Model.MyGuider {
 #pragma warning restore 4014
             bool connected = await _tcs.Task;
 
-            if (startedPHD2 && connected) {
-                await ConnectPHD2Equipment();
-                await SendMessage(PHD2EventId.LOOP, PHD2Methods.LOOP);
-            }
+            try {
+                if (startedPHD2 && connected) {
+                    await ConnectPHD2Equipment();
+                    await SendMessage(PHD2EventId.LOOP, PHD2Methods.LOOP);
+                }
 
-            var resp = await SendMessage(PHD2EventId.GET_PIXEL_SCALE, PHD2Methods.GET_PIXEL_SCALE);
-            PixelScale = double.Parse(resp.result.ToString().Replace(",", "."), CultureInfo.InvariantCulture);
+                var resp = await SendMessage(PHD2EventId.GET_PIXEL_SCALE, PHD2Methods.GET_PIXEL_SCALE);
+                PixelScale = double.Parse(resp.result.ToString().Replace(",", "."), CultureInfo.InvariantCulture);
 
                 Notification.ShowSuccess(Locale.Loc.Instance["LblGuiderConnected"]);
             } catch (OperationCanceledException) {
