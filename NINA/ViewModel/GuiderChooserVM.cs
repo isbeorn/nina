@@ -27,6 +27,8 @@ namespace NINA.ViewModel {
 
         public void GetEquipment() {
             Guiders.Add(new PHD2Guider(profileService));
+            Guiders.Add(new SynchronizedPHD2Guider(profileService, true));
+            Guiders.Add(new SynchronizedPHD2Guider(profileService, false));
             //Guiders.Add(new DummyGuider());
 
             DetermineSelectedDevice(profileService.ActiveProfile.GuiderSettings.GuiderName);

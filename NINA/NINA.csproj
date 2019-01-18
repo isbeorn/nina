@@ -238,6 +238,7 @@
     <Reference Include="System.Management" />
     <Reference Include="System.Net" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -292,6 +293,8 @@
     <Compile Include="EquipmentChooser\EquipmentChooser.xaml.cs">
       <DependentUpon>EquipmentChooser.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Model\MyGuider\SynchronizedPHD2Guider.cs" />
+    <Compile Include="Model\MyGuider\SynchronizedPHD2GuiderService.cs" />
     <Compile Include="ViewModel\GuiderChooserVM.cs" />
     <Compile Include="Locale\ILoc.cs" />
     <Compile Include="Locale\Loc.cs" />
