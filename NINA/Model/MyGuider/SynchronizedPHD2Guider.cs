@@ -28,7 +28,13 @@ namespace NINA.Model.MyGuider {
         public double PixelScale { get; set; }
 
         /// <inheritdoc />
-        public string State { get; private set; }
+        public string State {
+            get { return _state; }
+            private set {
+                _state = value;
+                RaisePropertyChanged();
+            }
+        }
 
         /// <inheritdoc />
         public IGuideStep GuideStep { get; private set; }
@@ -36,7 +42,7 @@ namespace NINA.Model.MyGuider {
         /// <inheritdoc />
         public string Name => "Synchronized PHD2 Guider " + (isServer ? "Host" : "Client");
 
-        private bool isServer;
+        private readonly bool isServer;
 
         private const string LocalHostUri = "net.pipe://localhost";
         private const string ServiceEndPoint = "SynchronizedPHD2Guider";
@@ -51,6 +57,7 @@ namespace NINA.Model.MyGuider {
         private TaskCompletionSource<bool> serverStarted;
         private CancellationTokenSource disconnectTokenSource;
         private bool _connected;
+        private string _state;
 
         /// <inheritdoc />
         public async Task<bool> Connect(CancellationToken ct) {
@@ -73,15 +80,18 @@ namespace NINA.Model.MyGuider {
         private async Task RunClientListener(CancellationToken ct) {
             bool faulted = false;
             try {
-                guiderService.ConnectClient(new SynchronizedClientInfo { InstanceID = profileService.ActiveProfile.Id });
+                guiderService.ConnectClient(profileService.ActiveProfile.Id);
                 while (!ct.IsCancellationRequested) {
-                    guiderService.Ping();
+                    var guideInfos = guiderService.GetUpdatedGuideInfos(profileService.ActiveProfile.Id);
+
+                    State = guideInfos.AppState?.ToString();
 
                     await Task.Delay(TimeSpan.FromMilliseconds(1000), ct);
                 }
             } catch {
                 Connected = false;
                 faulted = true;
+                disconnectTokenSource.Cancel();
             }
 
             if (!faulted) {
@@ -90,6 +100,7 @@ namespace NINA.Model.MyGuider {
         }
 
         private async Task RunServer(CancellationToken ct) {
+            // here we initialize a server singleton so we can pass on the profileservice and call initialize
             using (ServiceHost host = new ServiceHost(new SynchronizedPHD2GuiderService(), new Uri(LocalHostUri))) {
                 host.AddServiceEndpoint(typeof(ISynchronizedPHD2GuiderService), new NetNamedPipeBinding(), ServiceEndPoint);
                 var behavior = host.Description.Behaviors.Find<ServiceBehaviorAttribute>();
@@ -105,6 +116,8 @@ namespace NINA.Model.MyGuider {
         }
 
         private ISynchronizedPHD2GuiderService ConnectToServer() {
+            // this could maybe need a duplexchannelfactory for back-communication
+            // maybe necessary for error handling
             ChannelFactory<ISynchronizedPHD2GuiderService> guiderServiceChannelFactory
                 = new ChannelFactory<ISynchronizedPHD2GuiderService>(new NetNamedPipeBinding(), new EndpointAddress(LocalHostUri + "/" + ServiceEndPoint));
             guiderServiceChannelFactory.Open();
@@ -130,8 +143,8 @@ namespace NINA.Model.MyGuider {
         }
 
         /// <inheritdoc />
-        public Task<bool> StartGuiding(CancellationToken ct) {
-            throw new NotImplementedException();
+        public async Task<bool> StartGuiding(CancellationToken ct) {
+            return await Task.Run(() => guiderService.StartGuiding(), ct);
         }
 
         /// <inheritdoc />
