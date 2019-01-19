@@ -556,6 +556,8 @@ namespace NINA.ViewModel {
                     });
                 }
                 token.ThrowIfCancellationRequested();
+                CameraInfo.IsExposing = false;
+                BroadcastCameraInfo();
             }
         }
 

@@ -12,7 +12,10 @@ namespace NINA.Model.MyGuider {
 
         [OperationContract]
         [FaultContract(typeof(PHD2Fault))]
-        GuideInfo SyncInformationState(ProfileCameraState profileCameraState);
+        Task<GuideInfo> GetGuideInfo(Guid clientId);
+
+        [OperationContract]
+        Task UpdateCameraInfo(ProfileCameraState profileCameraState);
 
         [OperationContract]
         double ConnectAndGetPixelScale(Guid clientId);

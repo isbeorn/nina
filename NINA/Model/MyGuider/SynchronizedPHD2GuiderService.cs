@@ -37,23 +37,27 @@ namespace NINA.Model.MyGuider {
             return guiderInstance.PixelScale;
         }
 
-        public GuideInfo SyncInformationState(ProfileCameraState profileCameraState) {
+        public async Task<GuideInfo> GetGuideInfo(Guid clientId) {
             if (!phd2Connected) {
                 throw new FaultException("PHD2 disconnected");
             }
 
-            var clientInfo = clientInfos.Single(c => c.InstanceID == profileCameraState.InstanceID);
+            var clientInfo = clientInfos.Single(c => c.InstanceID == clientId);
             clientInfo.LastPing = DateTime.Now;
-            clientInfo.IsExposing = profileCameraState.IsExposing;
-            clientInfo.NextExposureTime = profileCameraState.NextExposureTime;
-            Console.WriteLine("IsExposing: " + clientInfo.IsExposing);
-            Console.WriteLine("NextExposureTime: " + clientInfo.NextExposureTime);
-            clientInfo.ExposureEndTime = profileCameraState.ExposureEndTime;
 
             return new GuideInfo() {
                 State = guiderInstance.AppState?.State,
                 GuideStep = (PHD2Guider.PhdEventGuideStep)guiderInstance.GuideStep
             };
+        }
+
+        public async Task UpdateCameraInfo(ProfileCameraState profileCameraState) {
+            var clientInfo = clientInfos.Single(c => c.InstanceID == profileCameraState.InstanceID);
+            clientInfo.IsExposing = profileCameraState.IsExposing;
+            clientInfo.NextExposureTime = profileCameraState.NextExposureTime;
+            Console.WriteLine(clientInfo.InstanceID + " IsExposing: " + clientInfo.IsExposing);
+            Console.WriteLine(clientInfo.InstanceID + " NextExposureTime: " + clientInfo.NextExposureTime);
+            clientInfo.ExposureEndTime = profileCameraState.ExposureEndTime;
         }
 
         /// <inheritdoc />
@@ -156,18 +160,47 @@ namespace NINA.Model.MyGuider {
         private readonly object ditherLock = new object();
 
         public async Task<bool> SynchronizedDither(Guid instanceId) {
+            lock (ditherLock) {
+                if (ditherCancellationTokenSource == null) {
+                    ditherCancellationTokenSource = new CancellationTokenSource();
+                    ditherTaskCompletionSource = new TaskCompletionSource<bool>();
+                }
+            }
+
             var clientInfo = clientInfos.Single(c => c.InstanceID == instanceId);
+
             clientInfo.IsWaitingForDither = true;
 
-            ditherCancellationTokenSource = new CancellationTokenSource();
+            var otherClientsExist = clientInfos.Any(c => c.IsAlive && c.InstanceID != clientInfo.InstanceID);
 
-            var result = await guiderInstance.Dither(ditherCancellationTokenSource.Token);
+            if (!otherClientsExist) {
+                var output = await guiderInstance.Dither(ditherCancellationTokenSource.Token);
+                ditherCancellationTokenSource = null;
+                return output;
+            }
+
+            if (!clientInfos.Any(c => c.IsAlive && c.IsExposing)) {
+                Task.Run(() => DitherTask(ditherTaskCompletionSource));
+            }
+
+            var result = await ditherTaskCompletionSource.Task;
 
             foreach (var client in clientInfos) {
                 client.IsWaitingForDither = false;
             }
 
+            lock (ditherLock) {
+                if (ditherCancellationTokenSource != null) {
+                    ditherCancellationTokenSource = null;
+                }
+            }
+
             return result;
+        }
+
+        private async Task DitherTask(TaskCompletionSource<bool> tcs) {
+            var result = await guiderInstance.Dither(ditherCancellationTokenSource.Token);
+            tcs.TrySetResult(result);
         }
 
         public void CancelSynchronizedDither() {
@@ -190,6 +223,8 @@ namespace NINA.Model.MyGuider {
 
         public DateTime LastPing { get; set; }
 
+        public bool IsAlive => DateTime.Now.Subtract(LastPing).TotalSeconds < 2;
+
         public DateTime ExposureEndTime { get; set; }
 
         public bool IsExposing { get; set; }
@@ -201,10 +236,17 @@ namespace NINA.Model.MyGuider {
 
     [DataContract]
     internal class ProfileCameraState {
-        [DataMember] public Guid InstanceID { get; set; }
-        [DataMember] public bool IsExposing { get; set; }
-        [DataMember] public DateTime ExposureEndTime { get; set; }
 
-        [DataMember] public double NextExposureTime { get; set; }
+        [DataMember]
+        public Guid InstanceID { get; set; }
+
+        [DataMember]
+        public bool IsExposing { get; set; }
+
+        [DataMember]
+        public DateTime ExposureEndTime { get; set; }
+
+        [DataMember]
+        public double NextExposureTime { get; set; }
     }
 }
