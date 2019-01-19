@@ -293,6 +293,7 @@
     <Compile Include="EquipmentChooser\EquipmentChooser.xaml.cs">
       <DependentUpon>EquipmentChooser.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Model\MyGuider\ISynchronizedPHD2GuiderService.cs" />
     <Compile Include="Model\MyGuider\SynchronizedPHD2Guider.cs" />
     <Compile Include="Model\MyGuider\SynchronizedPHD2GuiderService.cs" />
     <Compile Include="ViewModel\GuiderChooserVM.cs" />

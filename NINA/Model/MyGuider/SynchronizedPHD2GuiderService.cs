@@ -9,30 +9,6 @@ using System.Threading.Tasks;
 
 namespace NINA.Model.MyGuider {
 
-    [ServiceContract]
-    internal interface ISynchronizedPHD2GuiderService {
-
-        Task<bool> Initialize();
-
-        [OperationContract]
-        [FaultContract(typeof(PHD2Fault))]
-        GuideInfo GetUpdatedGuideInfos(Guid clientId);
-
-        [OperationContract]
-        double ConnectAndGetPixelScale(Guid clientId);
-
-        [OperationContract]
-        void DisconnectClient(Guid clientId);
-
-        [OperationContract]
-        bool StartGuiding();
-
-        [OperationContract]
-        bool AutoSelectGuideStar();
-    }
-
-    internal class PHD2Fault { }
-
     internal class SynchronizedPHD2GuiderService : ISynchronizedPHD2GuiderService {
         private PHD2Guider guiderInstance;
         private List<SynchronizedClientInfo> clientInfos;
@@ -40,10 +16,10 @@ namespace NINA.Model.MyGuider {
 
         public IProfileService ProfileService;
 
-        public async Task<bool> Initialize() {
+        public async Task<bool> Initialize(CancellationToken ct) {
             guiderInstance = new PHD2Guider(ProfileService);
             clientInfos = new List<SynchronizedClientInfo>();
-            phd2Connected = await guiderInstance.Connect(new CancellationTokenSource().Token);
+            phd2Connected = await guiderInstance.Connect(ct);
             if (phd2Connected) {
                 guiderInstance.PHD2ConnectionLost += (sender, args) => phd2Connected = false;
             }
@@ -78,15 +54,107 @@ namespace NINA.Model.MyGuider {
             clientInfos.RemoveAll(c => c.InstanceID == clientId);
         }
 
+        private CancellationTokenSource startGuidingCancellationTokenSource;
+        private TaskCompletionSource<bool> startGuidingTaskCompletionSource;
+        private readonly object startGuidingLock = new object();
+
         /// <inheritdoc />
-        public bool StartGuiding() {
-            CancellationTokenSource cts = new CancellationTokenSource();
-            return guiderInstance.StartGuiding(cts.Token).Result;
+        public async Task<bool> StartGuiding() {
+            lock (startGuidingLock) {
+                if (startGuidingCancellationTokenSource == null) {
+                    startGuidingCancellationTokenSource = new CancellationTokenSource();
+                    startGuidingTaskCompletionSource = new TaskCompletionSource<bool>();
+                    Task.Run(() => StartGuidingTask(startGuidingTaskCompletionSource));
+                }
+            }
+
+            var result = await startGuidingTaskCompletionSource.Task;
+
+            startGuidingCancellationTokenSource = null;
+            return result;
+        }
+
+        private async Task StartGuidingTask(TaskCompletionSource<bool> tcs) {
+            var result = await guiderInstance.StartGuiding(startGuidingCancellationTokenSource.Token);
+            tcs.TrySetResult(result);
+        }
+
+        public void CancelStartGuiding() {
+            startGuidingCancellationTokenSource?.Cancel();
         }
 
         /// <inheritdoc />
-        public bool AutoSelectGuideStar() {
-            return guiderInstance.AutoSelectGuideStar().Result;
+        public Task<bool> AutoSelectGuideStar() {
+            return guiderInstance.AutoSelectGuideStar();
+        }
+
+        private CancellationTokenSource startPauseCancellationTokenSource;
+        private TaskCompletionSource<bool> startPauseTaskCompletionSource;
+        private readonly object startPauseLock = new object();
+
+        public async Task<bool> StartPause(bool pause) {
+            lock (startPauseLock) {
+                if (startPauseCancellationTokenSource == null) {
+                    startPauseCancellationTokenSource = new CancellationTokenSource();
+                    startPauseTaskCompletionSource = new TaskCompletionSource<bool>();
+                    Task.Run(() => StartPauseTask(startPauseTaskCompletionSource, pause));
+                }
+            }
+
+            var result = await startPauseTaskCompletionSource.Task;
+
+            startPauseCancellationTokenSource = null;
+            return result;
+        }
+
+        private async Task StartPauseTask(TaskCompletionSource<bool> tcs, bool pause) {
+            var result = await guiderInstance.Pause(pause, startPauseCancellationTokenSource.Token);
+            tcs.TrySetResult(result);
+        }
+
+        public void CancelStartPause() {
+            startPauseCancellationTokenSource?.Cancel();
+        }
+
+        private CancellationTokenSource stopGuidingCancellationTokenSource;
+        private TaskCompletionSource<bool> stopGuidingTaskCompletionSource;
+        private readonly object stopGuidingLock = new object();
+
+        public async Task<bool> StopGuiding() {
+            lock (stopGuidingLock) {
+                if (stopGuidingCancellationTokenSource == null) {
+                    stopGuidingCancellationTokenSource = new CancellationTokenSource();
+                    stopGuidingTaskCompletionSource = new TaskCompletionSource<bool>();
+                    Task.Run(() => StopGuidingTask(stopGuidingTaskCompletionSource));
+                }
+            }
+
+            var result = await stopGuidingTaskCompletionSource.Task;
+
+            stopGuidingCancellationTokenSource = null;
+            return result;
+        }
+
+        private async Task StopGuidingTask(TaskCompletionSource<bool> tcs) {
+            var result = await guiderInstance.StopGuiding(stopGuidingCancellationTokenSource.Token);
+            tcs.TrySetResult(result);
+        }
+
+        public void CancelStopGuiding() {
+            stopGuidingCancellationTokenSource?.Cancel();
+        }
+
+        private CancellationTokenSource ditherCancellationTokenSource;
+        private TaskCompletionSource<bool> ditherTaskCompletionSource;
+        private readonly object ditherLock = new object();
+
+        public async Task<bool> SynchronizedDither() {
+            ditherCancellationTokenSource = new CancellationTokenSource();
+            return await guiderInstance.Dither(ditherCancellationTokenSource.Token);
+        }
+
+        public void CancelSynchronizedDither() {
+            ditherCancellationTokenSource?.Cancel();
         }
     }
 

@@ -65,7 +65,7 @@ namespace NINA.Model.MyGuider {
             this.isServer = isServer;
         }
 
-        private TaskCompletionSource<bool> serverStarted;
+        private TaskCompletionSource<bool> startServerTcs;
         private CancellationTokenSource disconnectTokenSource;
         private bool connected;
         private string state;
@@ -74,11 +74,11 @@ namespace NINA.Model.MyGuider {
         /// <inheritdoc />
         public async Task<bool> Connect(CancellationToken ct) {
             disconnectTokenSource = new CancellationTokenSource();
-            serverStarted = new TaskCompletionSource<bool>();
+            startServerTcs = new TaskCompletionSource<bool>();
             var connected = true;
             if (isServer) {
                 Task.Run(() => RunServer(disconnectTokenSource.Token));
-                connected = await serverStarted.Task;
+                connected = await startServerTcs.Task;
             }
 
             guiderService = ConnectToServer();
@@ -106,9 +106,13 @@ namespace NINA.Model.MyGuider {
 
                     await Task.Delay(TimeSpan.FromMilliseconds(1000), ct);
                 }
-            } catch (Exception e) {
-                Connected = false;
+            } catch (FaultException<PHD2Fault>) {
+                // throw some error message
                 faulted = true;
+            } catch (Exception) {
+                faulted = true;
+            } finally {
+                Connected = false;
                 State = "";
                 PixelScale = 0;
                 disconnectTokenSource.Cancel();
@@ -128,7 +132,9 @@ namespace NINA.Model.MyGuider {
                 behavior.InstanceContextMode = InstanceContextMode.Single;
                 host.Open();
                 ((SynchronizedPHD2GuiderService)host.SingletonInstance).ProfileService = profileService;
-                serverStarted.TrySetResult(await ((SynchronizedPHD2GuiderService)host.SingletonInstance).Initialize());
+                startServerTcs.TrySetResult(await ((SynchronizedPHD2GuiderService)host.SingletonInstance).Initialize(ct));
+
+                // loop to keep the server alive
                 while (!ct.IsCancellationRequested) {
                     await Task.Delay(TimeSpan.FromMilliseconds(1000), ct);
                 }
@@ -145,11 +151,6 @@ namespace NINA.Model.MyGuider {
         }
 
         /// <inheritdoc />
-        public Task<bool> AutoSelectGuideStar() {
-            return Task.Run(() => guiderService.AutoSelectGuideStar());
-        }
-
-        /// <inheritdoc />
         public bool Disconnect() {
             disconnectTokenSource.Cancel();
 
@@ -158,41 +159,40 @@ namespace NINA.Model.MyGuider {
         }
 
         /// <inheritdoc />
-        public Task<bool> Pause(bool pause, CancellationToken ct) {
-            throw new NotImplementedException();
+        public Task<bool> AutoSelectGuideStar() {
+            return Task.Run(() => guiderService.AutoSelectGuideStar());
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> Pause(bool pause, CancellationToken ct) {
+            return await Task.Run(async () => {
+                ct.Register(guiderService.CancelStartPause);
+                return await guiderService.StartPause(pause);
+            }, ct);
         }
 
         /// <inheritdoc />
         public async Task<bool> StartGuiding(CancellationToken ct) {
-            return await Task.Run(() => guiderService.StartGuiding(), ct);
+            return await Task.Run(async () => {
+                ct.Register(guiderService.CancelStartGuiding);
+                return await guiderService.StartGuiding();
+            }, ct);
         }
 
         /// <inheritdoc />
-        public Task<bool> StopGuiding(CancellationToken ct) {
-            throw new NotImplementedException();
+        public async Task<bool> StopGuiding(CancellationToken ct) {
+            return await Task.Run(async () => {
+                ct.Register(guiderService.CancelStopGuiding);
+                return await guiderService.StopGuiding();
+            }, ct);
         }
 
         /// <inheritdoc />
-        public Task<bool> Dither(CancellationToken ct) {
-            throw new NotImplementedException();
-        }
-    }
-
-    public interface IParameterInspector {
-
-        void AfterCall(string operationName, object[] outputs, object returnValue, object correlationState);
-
-        object BeforeCall(string operationName, object[] inputs);
-    }
-
-    public class UserLogger : IParameterInspector {
-
-        public void AfterCall(string operationName, object[] outputs, object returnValue, object correlationState) {
-            throw new NotImplementedException();
-        }
-
-        public object BeforeCall(string operationName, object[] inputs) {
-            throw new NotImplementedException();
+        public async Task<bool> Dither(CancellationToken ct) {
+            return await Task.Run(async () => {
+                ct.Register(guiderService.CancelSynchronizedDither);
+                return await guiderService.SynchronizedDither();
+            }, ct);
         }
     }
 }
