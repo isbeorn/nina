@@ -12,7 +12,7 @@ namespace NINA.Model.MyGuider {
 
         [OperationContract]
         [FaultContract(typeof(PHD2Fault))]
-        GuideInfo GetUpdatedGuideInfos(Guid clientId);
+        GuideInfo SyncInformationState(ProfileCameraState profileCameraState);
 
         [OperationContract]
         double ConnectAndGetPixelScale(Guid clientId);
@@ -42,7 +42,7 @@ namespace NINA.Model.MyGuider {
         void CancelStopGuiding();
 
         [OperationContract]
-        Task<bool> SynchronizedDither();
+        Task<bool> SynchronizedDither(Guid clientId);
 
         [OperationContract]
         void CancelSynchronizedDither();

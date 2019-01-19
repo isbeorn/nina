@@ -1,4 +1,6 @@
-﻿using NINA.Utility;
+﻿using NINA.Model.MyCamera;
+using NINA.Utility;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Profile;
 using System;
 using System.ServiceModel;
@@ -7,8 +9,9 @@ using System.Threading.Tasks;
 
 namespace NINA.Model.MyGuider {
 
-    internal class SynchronizedPHD2Guider : BaseINPC, IGuider {
+    internal class SynchronizedPHD2Guider : BaseINPC, IGuider, ICameraConsumer {
         private readonly IProfileService profileService;
+        private readonly ICameraMediator cameraMediator;
 
         /// <inheritdoc />
         public bool Connected {
@@ -60,8 +63,9 @@ namespace NINA.Model.MyGuider {
 
         private ISynchronizedPHD2GuiderService guiderService;
 
-        public SynchronizedPHD2Guider(IProfileService profileService, bool isServer) {
+        public SynchronizedPHD2Guider(IProfileService profileService, ICameraMediator cameraMediator, bool isServer) {
             this.profileService = profileService;
+            this.cameraMediator = cameraMediator;
             this.isServer = isServer;
         }
 
@@ -96,10 +100,16 @@ namespace NINA.Model.MyGuider {
 
         private async Task RunClientListener(CancellationToken ct) {
             bool faulted = false;
+            cameraMediator.RegisterConsumer(this);
             try {
                 PixelScale = guiderService.ConnectAndGetPixelScale(profileService.ActiveProfile.Id);
                 while (!ct.IsCancellationRequested) {
-                    var guideInfos = guiderService.GetUpdatedGuideInfos(profileService.ActiveProfile.Id);
+                    var guideInfos = guiderService.SyncInformationState(new ProfileCameraState() {
+                        ExposureEndTime = exposureEndTime,
+                        InstanceID = profileService.ActiveProfile.Id,
+                        IsExposing = cameraIsExposing,
+                        NextExposureTime = nextExposureLength
+                    });
 
                     State = guideInfos.State;
                     GuideStep = guideInfos.GuideStep;
@@ -121,6 +131,8 @@ namespace NINA.Model.MyGuider {
             if (!faulted) {
                 guiderService.DisconnectClient(profileService.ActiveProfile.Id);
             }
+
+            cameraMediator.RemoveConsumer(this);
         }
 
         private async Task RunServer(CancellationToken ct) {
@@ -191,8 +203,18 @@ namespace NINA.Model.MyGuider {
         public async Task<bool> Dither(CancellationToken ct) {
             return await Task.Run(async () => {
                 ct.Register(guiderService.CancelSynchronizedDither);
-                return await guiderService.SynchronizedDither();
+                return await guiderService.SynchronizedDither(profileService.ActiveProfile.Id);
             }, ct);
         }
+
+        public void UpdateDeviceInfo(CameraInfo deviceInfo) {
+            exposureEndTime = deviceInfo.ExposureEndTime;
+            cameraIsExposing = deviceInfo.IsExposing;
+            nextExposureLength = deviceInfo.NextExposureLength;
+        }
+
+        private DateTime exposureEndTime;
+        private bool cameraIsExposing;
+        private double nextExposureLength;
     }
 }

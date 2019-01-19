@@ -33,7 +33,6 @@ using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using NINA.Utility.WindowService;
-using NINACustomControlLibrary;
 using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
@@ -504,6 +503,8 @@ namespace NINA.ViewModel {
                     while ((seq = csl.Next()) != null) {
                         exposureCount++;
 
+                        seq.NextSequence = csl.GetNextSequenceItem(seq);
+
                         await CheckMeridianFlip(seq, ct, progress);
 
                         Stopwatch seqDuration = Stopwatch.StartNew();
@@ -737,9 +738,15 @@ namespace NINA.ViewModel {
                 return _sequence;
             }
             set {
-                if (_sequence != null) _sequence.PropertyChanged -= _sequence_PropertyChanged;
+                if (_sequence != null) {
+                    _sequence.PropertyChanged -= _sequence_PropertyChanged;
+                }
+
                 _sequence = value;
-                if (_sequence != null) _sequence.PropertyChanged += _sequence_PropertyChanged;
+                if (_sequence != null) {
+                    _sequence.PropertyChanged += _sequence_PropertyChanged;
+                }
+
                 RaisePropertyChanged();
             }
         }

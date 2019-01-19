@@ -33,6 +33,7 @@ using System.Xml;
 using System.Xml.Serialization;
 
 namespace NINA.Model {
+
     [Serializable()]
     [XmlRoot(nameof(CaptureSequenceList))]
     public class CaptureSequenceList : BaseINPC {
@@ -191,6 +192,45 @@ namespace NINA.Model {
                 _isFinished = value;
                 RaisePropertyChanged();
             }
+        }
+
+        public CaptureSequence GetNextSequenceItem(CaptureSequence currentItem) {
+            if (Items.Count == 0) { return null; }
+
+            CaptureSequence seq = currentItem;
+
+            if (Mode == SequenceMode.STANDARD) {
+                if (seq?.ProgressExposureCount == seq?.TotalExposureCount) {
+                    //No exposures remaining. Get next Sequence
+                    var idx = Items.IndexOf(seq) + 1;
+                    seq = Items.Skip(idx).Where(i => i.Enabled).FirstOrDefault();
+                    if (seq != null) {
+                        return GetNextSequenceItem(seq);
+                    }
+                }
+            } else if (Mode == SequenceMode.ROTATE) {
+                //Check if all sequences are done
+                if (Items.Where(x => x.Enabled).Count() == Items.Where(x => x.ProgressExposureCount == x.TotalExposureCount && x.Enabled).Count()) {
+                    //All sequences done
+                    return null;
+                }
+
+                if (seq == Items.FirstOrDefault(i => i.Enabled) && seq?.ProgressExposureCount == 0 && seq?.TotalExposureCount > 0) {
+                    //first sequence active
+                    seq = Items.First(i => i.Enabled);
+                } else {
+                    do {
+                        var idx = (Items.IndexOf(seq) + 1) % Items.Count;
+                        seq = Items[idx];
+                    } while (!seq.Enabled);
+                }
+
+                if (seq.ProgressExposureCount == seq.TotalExposureCount) {
+                    return this.GetNextSequenceItem(seq); //Search for next sequence where exposurecount > 0
+                }
+            }
+
+            return seq;
         }
 
         public CaptureSequence Next() {

@@ -1,5 +1,6 @@
 ﻿using NINA.Model.MyGuider;
 using NINA.Utility;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Profile;
 using NINA.ViewModel.Interfaces;
 using System.Linq;
@@ -7,8 +8,10 @@ using System.Linq;
 namespace NINA.ViewModel {
 
     public class GuiderChooserVM : BaseVM, IGuiderChooserVM {
+        private readonly ICameraMediator cameraMediator;
 
-        public GuiderChooserVM(IProfileService profileService) : base(profileService) {
+        public GuiderChooserVM(IProfileService profileService, ICameraMediator cameraMediator) : base(profileService) {
+            this.cameraMediator = cameraMediator;
             this.profileService = profileService;
             GetEquipment();
         }
@@ -27,8 +30,8 @@ namespace NINA.ViewModel {
 
         public void GetEquipment() {
             Guiders.Add(new PHD2Guider(profileService));
-            Guiders.Add(new SynchronizedPHD2Guider(profileService, true));
-            Guiders.Add(new SynchronizedPHD2Guider(profileService, false));
+            Guiders.Add(new SynchronizedPHD2Guider(profileService, cameraMediator, true));
+            Guiders.Add(new SynchronizedPHD2Guider(profileService, cameraMediator, false));
             //Guiders.Add(new DummyGuider());
 
             DetermineSelectedDevice(profileService.ActiveProfile.GuiderSettings.GuiderName);

@@ -521,6 +521,10 @@ namespace NINA.ViewModel {
             IProgress<ApplicationStatus> progress) {
             double exposureTime = sequence.ExposureTime;
             if (CameraInfo.Connected == true) {
+                CameraInfo.IsExposing = true;
+                CameraInfo.ExposureEndTime = DateTime.Now.AddSeconds(sequence.ExposureTime);
+                CameraInfo.NextExposureLength = sequence.NextSequence?.ExposureTime ?? -1;
+                BroadcastCameraInfo();
                 Cam.StartExposure(sequence);
 
                 var start = DateTime.Now;
@@ -567,6 +571,9 @@ namespace NINA.ViewModel {
                 Cam?.AbortExposure();
                 BroadcastCameraInfo();
             }
+
+            CameraInfo.IsExposing = false;
+            CameraInfo.ExposureEndTime = DateTime.Now;
         }
 
         public void SetGain(short gain) {
@@ -585,6 +592,9 @@ namespace NINA.ViewModel {
         }
 
         public Task<ImageArray> Download(CancellationToken token, bool calculateStatistics) {
+            CameraInfo.IsExposing = false;
+            CameraInfo.ExposureEndTime = DateTime.Now;
+            BroadcastCameraInfo();
             if (CameraInfo.Connected == true) {
                 var output = Cam.DownloadExposure(token, calculateStatistics);
                 return output;
