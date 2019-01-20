@@ -52,9 +52,10 @@ namespace NINA.Model.MyGuider {
         }
 
         public async Task UpdateCameraInfo(ProfileCameraState profileCameraState) {
-            var clientInfo = clientInfos.Single(c => c.InstanceID == profileCameraState.InstanceID);
+            var clientInfo = clientInfos.Single(c => c.InstanceID == profileCameraState.InstanceId);
             clientInfo.IsExposing = profileCameraState.IsExposing;
             clientInfo.NextExposureTime = profileCameraState.NextExposureTime;
+            clientInfo.MaxWaitTime = profileCameraState.MaxWaitTime;
             Console.WriteLine(clientInfo.InstanceID + " IsExposing: " + clientInfo.IsExposing);
             Console.WriteLine(clientInfo.InstanceID + " NextExposureTime: " + clientInfo.NextExposureTime);
             clientInfo.ExposureEndTime = profileCameraState.ExposureEndTime;
@@ -160,47 +161,72 @@ namespace NINA.Model.MyGuider {
         private readonly object ditherLock = new object();
 
         public async Task<bool> SynchronizedDither(Guid instanceId) {
-            lock (ditherLock) {
-                if (ditherCancellationTokenSource == null) {
-                    ditherCancellationTokenSource = new CancellationTokenSource();
-                    ditherTaskCompletionSource = new TaskCompletionSource<bool>();
-                }
+            var client = clientInfos.Single(c => c.InstanceID == instanceId);
+
+            // no further exposures, just return
+            if (client.NextExposureTime == -1) {
+                return true;
             }
 
-            var clientInfo = clientInfos.Single(c => c.InstanceID == instanceId);
+            var otherClientsExist = clientInfos.Any(c => c.IsAlive && c.InstanceID != client.InstanceID);
 
-            clientInfo.IsWaitingForDither = true;
-
-            var otherClientsExist = clientInfos.Any(c => c.IsAlive && c.InstanceID != clientInfo.InstanceID);
-
+            // no other clients exist, just dither
             if (!otherClientsExist) {
                 var output = await guiderInstance.Dither(ditherCancellationTokenSource.Token);
                 ditherCancellationTokenSource = null;
                 return output;
             }
 
-            if (!clientInfos.Any(c => c.IsAlive && c.IsExposing)) {
-                Task.Run(() => DitherTask(ditherTaskCompletionSource));
+            if (clientInfos.All(c => c.ExposureEndTime < DateTime.Now.AddSeconds(client.MaxWaitTime))) {
+                // if all clients finish before our max waiting time we just continue
+            } else if (clientInfos.Any(c =>
+                c.InstanceID != client.InstanceID && c.IsExposing && c.IsAlive &&
+                c.ExposureEndTime.AddSeconds(c.MaxWaitTime) >= DateTime.Now.AddSeconds(client.NextExposureTime))) {
+                // squeeze in more exposures
+                // if there are any clients that are (AND)
+                //    - exposing
+                //    - alive
+                //    - have an endtime + waittime that is higher than now+next exposure time
+                return true;
             }
+
+            // one client has to launch the dither task that will wait for all alive clients to dither
+            lock (ditherLock) {
+                if (ditherCancellationTokenSource == null) {
+                    ditherCancellationTokenSource = new CancellationTokenSource();
+                    ditherTaskCompletionSource = new TaskCompletionSource<bool>();
+                    Task.Run(() => DitherTask(ditherTaskCompletionSource));
+                }
+            }
+
+            client.IsWaitingForDither = true;
 
             var result = await ditherTaskCompletionSource.Task;
 
-            foreach (var client in clientInfos) {
-                client.IsWaitingForDither = false;
-            }
+            client.IsWaitingForDither = false;
 
             lock (ditherLock) {
-                if (ditherCancellationTokenSource != null) {
-                    ditherCancellationTokenSource = null;
-                }
+                ditherCancellationTokenSource = null;
             }
 
             return result;
         }
 
         private async Task DitherTask(TaskCompletionSource<bool> tcs) {
-            var result = await guiderInstance.Dither(ditherCancellationTokenSource.Token);
-            tcs.TrySetResult(result);
+            // here we wait for all alive clients collectively to be
+            // either not shooting (sequence end) or waiting for dither (midst of a sequence)
+            try {
+                while (!clientInfos.Where(c => c.IsAlive)
+                    .All(c => c.IsWaitingForDither || c.ExposureEndTime < DateTime.Now)) {
+                    await Task.Delay(TimeSpan.FromSeconds(1), ditherCancellationTokenSource.Token);
+                    ditherCancellationTokenSource.Token.ThrowIfCancellationRequested();
+                }
+
+                var result = await guiderInstance.Dither(ditherCancellationTokenSource.Token);
+                tcs.TrySetResult(result);
+            } catch (OperationCanceledException) {
+                tcs.TrySetResult(false);
+            }
         }
 
         public void CancelSynchronizedDither() {
@@ -232,13 +258,15 @@ namespace NINA.Model.MyGuider {
         public bool IsWaitingForDither { get; set; }
 
         public double NextExposureTime { get; set; }
+
+        public double MaxWaitTime { get; set; }
     }
 
     [DataContract]
     internal class ProfileCameraState {
 
         [DataMember]
-        public Guid InstanceID { get; set; }
+        public Guid InstanceId { get; set; }
 
         [DataMember]
         public bool IsExposing { get; set; }
@@ -248,5 +276,8 @@ namespace NINA.Model.MyGuider {
 
         [DataMember]
         public double NextExposureTime { get; set; }
+
+        [DataMember]
+        public double MaxWaitTime { get; set; }
     }
 }

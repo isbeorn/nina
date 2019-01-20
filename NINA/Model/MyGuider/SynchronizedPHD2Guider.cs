@@ -54,19 +54,16 @@ namespace NINA.Model.MyGuider {
         }
 
         /// <inheritdoc />
-        public string Name => "Synchronized PHD2 Guider " + (isServer ? "Host" : "Client");
-
-        private readonly bool isServer;
+        public string Name => "Synchronized PHD2 Guider";
 
         private const string LocalHostUri = "net.pipe://localhost";
         private const string ServiceEndPoint = "SynchronizedPHD2Guider";
 
         private ISynchronizedPHD2GuiderService guiderService;
 
-        public SynchronizedPHD2Guider(IProfileService profileService, ICameraMediator cameraMediator, bool isServer) {
+        public SynchronizedPHD2Guider(IProfileService profileService, ICameraMediator cameraMediator) {
             this.profileService = profileService;
             this.cameraMediator = cameraMediator;
-            this.isServer = isServer;
         }
 
         private TaskCompletionSource<bool> startServerTcs;
@@ -79,15 +76,14 @@ namespace NINA.Model.MyGuider {
         public async Task<bool> Connect(CancellationToken ct) {
             disconnectTokenSource = new CancellationTokenSource();
             startServerTcs = new TaskCompletionSource<bool>();
-            var connected = true;
-            if (isServer) {
-                Task.Run(() => RunServer(disconnectTokenSource.Token));
-                connected = await startServerTcs.Task;
-            }
+
+            // try to run as server
+            Task.Run(() => RunServer(disconnectTokenSource.Token));
+            await startServerTcs.Task;
 
             guiderService = ConnectToServer();
 
-            Connected = guiderService != null && connected;
+            Connected = guiderService != null;
 
             if (Connected) {
                 Task.Run(() => RunClientListener(disconnectTokenSource.Token));
@@ -100,27 +96,42 @@ namespace NINA.Model.MyGuider {
 
         private async Task RunClientListener(CancellationToken ct) {
             bool faulted = false;
-            try {
-                PixelScale = guiderService.ConnectAndGetPixelScale(profileService.ActiveProfile.Id);
-                cameraMediator.RegisterConsumer(this);
-                while (!ct.IsCancellationRequested) {
-                    var guideInfos = await guiderService.GetGuideInfo(profileService.ActiveProfile.Id);
+            while (!faulted) {
+                try {
+                    PixelScale = guiderService.ConnectAndGetPixelScale(profileService.ActiveProfile.Id);
+                    cameraMediator.RegisterConsumer(this);
+                    while (true) {
+                        var guideInfos = await guiderService.GetGuideInfo(profileService.ActiveProfile.Id);
 
-                    State = guideInfos.State;
-                    GuideStep = guideInfos.GuideStep;
+                        State = guideInfos.State;
+                        GuideStep = guideInfos.GuideStep;
 
-                    await Task.Delay(TimeSpan.FromMilliseconds(1000), ct);
+                        await Task.Delay(TimeSpan.FromMilliseconds(1000), ct);
+                        ct.ThrowIfCancellationRequested();
+                    }
+                } catch (FaultException<PHD2Fault>) {
+                    // phd2 is not running for whatever reason, throw some error message
+                    faulted = true;
+                    Connected = false;
+                    State = "";
+                    PixelScale = 0;
+                    disconnectTokenSource.Cancel();
+                } catch (OperationCanceledException) {
+                    disconnectTokenSource.Cancel();
+                    Connected = false;
+                    State = "";
+                    PixelScale = 0;
+                    break;
+                } catch (Exception) {
+                    // assume nina other instance crash, restart server
+                    cameraMediator.RemoveConsumer(this);
+                    startServerTcs = new TaskCompletionSource<bool>();
+                    Task.Run(() => RunServer(disconnectTokenSource.Token));
+                    await startServerTcs.Task;
+                    guiderService = ConnectToServer();
+                    Connected = guiderService != null;
+                    faulted = Connected;
                 }
-            } catch (FaultException<PHD2Fault>) {
-                // throw some error message
-                faulted = true;
-            } catch (Exception) {
-                faulted = true;
-            } finally {
-                Connected = false;
-                State = "";
-                PixelScale = 0;
-                disconnectTokenSource.Cancel();
             }
 
             if (!faulted) {
@@ -133,14 +144,22 @@ namespace NINA.Model.MyGuider {
         private async Task RunServer(CancellationToken ct) {
             // here we initialize a server singleton so we can pass on the profileservice and call initialize
             using (ServiceHost host = new ServiceHost(new SynchronizedPHD2GuiderService(), new Uri(LocalHostUri))) {
-                host.AddServiceEndpoint(typeof(ISynchronizedPHD2GuiderService), new NetNamedPipeBinding(), ServiceEndPoint);
+                host.AddServiceEndpoint(typeof(ISynchronizedPHD2GuiderService), new NetNamedPipeBinding(),
+                    ServiceEndPoint);
                 var behavior = host.Description.Behaviors.Find<ServiceBehaviorAttribute>();
                 behavior.IncludeExceptionDetailInFaults = true;
                 behavior.InstanceContextMode = InstanceContextMode.Single;
                 behavior.ConcurrencyMode = ConcurrencyMode.Multiple;
-                host.Open();
+                try {
+                    host.Open();
+                } catch (Exception) {
+                    startServerTcs.TrySetResult(false);
+                    return;
+                }
+
                 ((SynchronizedPHD2GuiderService)host.SingletonInstance).ProfileService = profileService;
-                startServerTcs.TrySetResult(await ((SynchronizedPHD2GuiderService)host.SingletonInstance).Initialize(ct));
+                startServerTcs.TrySetResult(await ((SynchronizedPHD2GuiderService)host.SingletonInstance)
+                    .Initialize(ct));
 
                 // loop to keep the server alive
                 while (!ct.IsCancellationRequested) {
@@ -154,8 +173,13 @@ namespace NINA.Model.MyGuider {
             // maybe necessary for error handling
             ChannelFactory<ISynchronizedPHD2GuiderService> guiderServiceChannelFactory
                 = new ChannelFactory<ISynchronizedPHD2GuiderService>(new NetNamedPipeBinding(), new EndpointAddress(LocalHostUri + "/" + ServiceEndPoint));
+            guiderServiceChannelFactory.Endpoint.Binding.OpenTimeout = TimeSpan.FromSeconds(1);
+            guiderServiceChannelFactory.Endpoint.Binding.CloseTimeout = TimeSpan.FromSeconds(1);
+            guiderServiceChannelFactory.Endpoint.Binding.ReceiveTimeout = TimeSpan.FromSeconds(600);
             guiderServiceChannelFactory.Open();
-            return guiderServiceChannelFactory.CreateChannel();
+            var channel = guiderServiceChannelFactory.CreateChannel();
+            ((IContextChannel)channel).OperationTimeout = TimeSpan.FromSeconds(600);
+            return channel;
         }
 
         /// <inheritdoc />
@@ -212,9 +236,10 @@ namespace NINA.Model.MyGuider {
 
                 await guiderService.UpdateCameraInfo(new ProfileCameraState() {
                     ExposureEndTime = exposureEndTime,
-                    InstanceID = profileService.ActiveProfile.Id,
+                    InstanceId = profileService.ActiveProfile.Id,
                     IsExposing = cameraIsExposing,
-                    NextExposureTime = nextExposureLength
+                    NextExposureTime = nextExposureLength,
+                    MaxWaitTime = 20
                 });
             }
         }
