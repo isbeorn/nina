@@ -99,7 +99,7 @@ namespace NINA.Model.MyGuider {
             bool faulted = false;
             while (!faulted) {
                 try {
-                    PixelScale = guiderService.ConnectAndGetPixelScale(profileService.ActiveProfile.Id);
+                    PixelScale = await guiderService.ConnectAndGetPixelScale(profileService.ActiveProfile.Id);
                     cameraMediator.RegisterConsumer(this);
                     while (true) {
                         var guideInfos = await guiderService.GetGuideInfo(profileService.ActiveProfile.Id);

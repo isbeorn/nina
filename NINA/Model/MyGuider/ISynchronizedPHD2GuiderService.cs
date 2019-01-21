@@ -19,7 +19,7 @@ namespace NINA.Model.MyGuider {
         Task UpdateCameraInfo(ProfileCameraState profileCameraState);
 
         [OperationContract]
-        double ConnectAndGetPixelScale(Guid clientId);
+        Task<double> ConnectAndGetPixelScale(Guid clientId);
 
         [OperationContract]
         void DisconnectClient(Guid clientId);

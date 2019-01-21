@@ -13,8 +13,10 @@ namespace NINA.Model.MyGuider {
         private IGuider guiderInstance;
         public List<SynchronizedClientInfo> ConnectedClients;
         public bool PHD2Connected { get; private set; } = false;
+        private TaskCompletionSource<bool> initializeTaskCompletionSource;
 
         public async Task<bool> Initialize(IGuider guider, CancellationToken ct) {
+            initializeTaskCompletionSource = new TaskCompletionSource<bool>();
             guiderInstance = guider;
             ConnectedClients = new List<SynchronizedClientInfo>();
             PHD2Connected = await guiderInstance.Connect(ct);
@@ -22,10 +24,16 @@ namespace NINA.Model.MyGuider {
                 ((PHD2Guider)guiderInstance).PHD2ConnectionLost += (sender, args) => PHD2Connected = false;
                 Notification.ShowSuccess("Synchronized PHD2 Service started");
             }
+
+            initializeTaskCompletionSource.TrySetResult(PHD2Connected);
             return PHD2Connected;
         }
 
-        public double ConnectAndGetPixelScale(Guid clientId) {
+        public async Task<double> ConnectAndGetPixelScale(Guid clientId) {
+            var phd2Initialized = await initializeTaskCompletionSource.Task;
+            if (!phd2Initialized) {
+                throw new FaultException<PHD2Fault>(new PHD2Fault());
+            }
             var existingInfo = ConnectedClients.SingleOrDefault(c => c.InstanceID == clientId);
             if (existingInfo != null) {
                 ConnectedClients[ConnectedClients.IndexOf(existingInfo)].LastPing = DateTime.Now;
