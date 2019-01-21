@@ -1,6 +1,7 @@
 ﻿using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.Mediator.Interfaces;
+using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
 using System.ServiceModel;
@@ -111,6 +112,7 @@ namespace NINA.Model.MyGuider {
                     }
                 } catch (FaultException<PHD2Fault>) {
                     // phd2 is not running for whatever reason, throw some error message
+                    Notification.ShowError("PHD2 aborted connection");
                     faulted = true;
                     Connected = false;
                     State = "";
@@ -124,13 +126,14 @@ namespace NINA.Model.MyGuider {
                     break;
                 } catch (Exception) {
                     // assume nina other instance crash, restart server
+                    Notification.ShowWarning("Synchronized PHD2 Service crashed, restarting this Synchronized PHD2 Guider as Service");
                     cameraMediator.RemoveConsumer(this);
                     startServerTcs = new TaskCompletionSource<bool>();
                     Task.Run(() => RunServer(disconnectTokenSource.Token));
                     await startServerTcs.Task;
                     guiderService = ConnectToServer();
                     Connected = guiderService != null;
-                    faulted = Connected;
+                    faulted = !Connected;
                 }
             }
 
@@ -157,9 +160,8 @@ namespace NINA.Model.MyGuider {
                     return;
                 }
 
-                ((SynchronizedPHD2GuiderService)host.SingletonInstance).ProfileService = profileService;
                 startServerTcs.TrySetResult(await ((SynchronizedPHD2GuiderService)host.SingletonInstance)
-                    .Initialize(ct));
+                    .Initialize(new PHD2Guider(profileService), ct));
 
                 // loop to keep the server alive
                 while (!ct.IsCancellationRequested) {

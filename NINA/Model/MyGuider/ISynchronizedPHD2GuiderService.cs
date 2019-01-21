@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ namespace NINA.Model.MyGuider {
     [ServiceContract]
     internal interface ISynchronizedPHD2GuiderService {
 
-        Task<bool> Initialize(CancellationToken ct);
+        Task<bool> Initialize(IGuider guider, CancellationToken ct);
 
         [OperationContract]
         [FaultContract(typeof(PHD2Fault))]
@@ -51,5 +52,6 @@ namespace NINA.Model.MyGuider {
         void CancelSynchronizedDither();
     }
 
+    [DataContract]
     internal class PHD2Fault { }
 }
