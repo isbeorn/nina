@@ -65,28 +65,27 @@ namespace NINA.Model.MyGuider {
         }
 
         private CancellationTokenSource startGuidingCancellationTokenSource;
-        private TaskCompletionSource<bool> startGuidingTaskCompletionSource;
         private readonly object startGuidingLock = new object();
+        private Task<bool> startGuidingTask;
 
         /// <inheritdoc />
         public async Task<bool> StartGuiding() {
             lock (startGuidingLock) {
                 if (startGuidingCancellationTokenSource == null) {
                     startGuidingCancellationTokenSource = new CancellationTokenSource();
-                    startGuidingTaskCompletionSource = new TaskCompletionSource<bool>();
-                    Task.Run(() => StartGuidingTask(startGuidingTaskCompletionSource));
+                    startGuidingTask = StartGuidingTask();
                 }
             }
 
-            var result = await startGuidingTaskCompletionSource.Task;
+            var result = await startGuidingTask;
 
             startGuidingCancellationTokenSource = null;
             return result;
         }
 
-        private async Task StartGuidingTask(TaskCompletionSource<bool> tcs) {
+        private async Task<bool> StartGuidingTask() {
             var result = await guiderInstance.StartGuiding(startGuidingCancellationTokenSource.Token);
-            tcs.TrySetResult(result);
+            return result;
         }
 
         public void CancelStartGuiding() {
@@ -99,27 +98,26 @@ namespace NINA.Model.MyGuider {
         }
 
         private CancellationTokenSource startPauseCancellationTokenSource;
-        private TaskCompletionSource<bool> startPauseTaskCompletionSource;
         private readonly object startPauseLock = new object();
+        private Task<bool> startPauseTask;
 
         public async Task<bool> StartPause(bool pause) {
             lock (startPauseLock) {
                 if (startPauseCancellationTokenSource == null) {
                     startPauseCancellationTokenSource = new CancellationTokenSource();
-                    startPauseTaskCompletionSource = new TaskCompletionSource<bool>();
-                    Task.Run(() => StartPauseTask(startPauseTaskCompletionSource, pause));
+                    startPauseTask = StartPauseTask(pause);
                 }
             }
 
-            var result = await startPauseTaskCompletionSource.Task;
+            var result = await startPauseTask;
 
             startPauseCancellationTokenSource = null;
             return result;
         }
 
-        private async Task StartPauseTask(TaskCompletionSource<bool> tcs, bool pause) {
+        private async Task<bool> StartPauseTask(bool pause) {
             var result = await guiderInstance.Pause(pause, startPauseCancellationTokenSource.Token);
-            tcs.TrySetResult(result);
+            return result;
         }
 
         public void CancelStartPause() {
@@ -127,27 +125,26 @@ namespace NINA.Model.MyGuider {
         }
 
         private CancellationTokenSource stopGuidingCancellationTokenSource;
-        private TaskCompletionSource<bool> stopGuidingTaskCompletionSource;
         private readonly object stopGuidingLock = new object();
+        private Task<bool> stopGuidingTask;
 
         public async Task<bool> StopGuiding() {
             lock (stopGuidingLock) {
                 if (stopGuidingCancellationTokenSource == null) {
                     stopGuidingCancellationTokenSource = new CancellationTokenSource();
-                    stopGuidingTaskCompletionSource = new TaskCompletionSource<bool>();
-                    Task.Run(() => StopGuidingTask(stopGuidingTaskCompletionSource));
+                    stopGuidingTask = StopGuidingTask();
                 }
             }
 
-            var result = await stopGuidingTaskCompletionSource.Task;
+            var result = await stopGuidingTask;
 
             stopGuidingCancellationTokenSource = null;
             return result;
         }
 
-        private async Task StopGuidingTask(TaskCompletionSource<bool> tcs) {
+        private async Task<bool> StopGuidingTask() {
             var result = await guiderInstance.StopGuiding(stopGuidingCancellationTokenSource.Token);
-            tcs.TrySetResult(result);
+            return result;
         }
 
         public void CancelStopGuiding() {
@@ -155,9 +152,8 @@ namespace NINA.Model.MyGuider {
         }
 
         private CancellationTokenSource ditherCancellationTokenSource;
-        private TaskCompletionSource<bool> ditherTaskCompletionSource;
         private readonly object ditherLock = new object();
-        private Task ditherTask;
+        private Task<bool> ditherTask;
 
         public async Task<bool> SynchronizedDither(Guid instanceId) {
             lock (ditherLock) {
@@ -187,15 +183,13 @@ namespace NINA.Model.MyGuider {
                 // one client has to launch the dither task that will wait for all alive clients to dither
                 lock (ditherLock) {
                     if (ditherTask == null) {
-                        ditherTaskCompletionSource = new TaskCompletionSource<bool>();
-                        ditherTask = DitherTask(ditherTaskCompletionSource);
-                        Task.Run(() => ditherTask.RunSynchronously());
+                        ditherTask = DitherTask();
                     }
                 }
 
                 client.IsWaitingForDither = true;
 
-                var result = await ditherTaskCompletionSource.Task;
+                var result = await ditherTask;
 
                 client.IsWaitingForDither = false;
 
@@ -222,7 +216,7 @@ namespace NINA.Model.MyGuider {
             return false;
         }
 
-        private async Task DitherTask(TaskCompletionSource<bool> tcs) {
+        private async Task<bool> DitherTask() {
             // here we wait for all alive clients collectively to be
             // either not shooting (sequence end) or waiting for dither (midst of a sequence)
             try {
@@ -233,9 +227,9 @@ namespace NINA.Model.MyGuider {
                 }
 
                 var result = await guiderInstance.Dither(ditherCancellationTokenSource.Token);
-                tcs.TrySetResult(result);
+                return result;
             } catch (OperationCanceledException) {
-                tcs.TrySetResult(false);
+                return false;
             }
         }
 
