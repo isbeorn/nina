@@ -662,6 +662,7 @@ namespace NINA.ViewModel {
 
                 p.Set(ImagePatternKeys.Filter, parameters.FilterName);
                 p.Set(ImagePatternKeys.ExposureTime, parameters.ExposureTime);
+                p.Set(ImagePatternKeys.ApplicationStartDate, Utility.Utility.ApplicationStartDate.ToString("yyyy-MM-dd"));
                 p.Set(ImagePatternKeys.Date, DateTime.Now.ToString("yyyy-MM-dd"));
                 p.Set(ImagePatternKeys.Time, DateTime.Now.ToString("HH-mm-ss"));
                 p.Set(ImagePatternKeys.DateTime, DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));

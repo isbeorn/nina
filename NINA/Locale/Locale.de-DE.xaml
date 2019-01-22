@@ -791,7 +791,7 @@ Berechneter HFR: {2}
     <s:String x:Key="LblAnnotateDSO">Deep Sky Objekte beschriften</s:String>
     <s:String x:Key="LblAnnotateGrid">Rastergitter anzeigen</s:String>
     <s:String x:Key="LblAnnotateConstellations">Konstellationen anzeigen und beschriften</s:String>
-    <s:String x:Key="LblAnnotateConstellationboundaries">Konstellationsgrenzen anzeigen</s:String>
+    <s:String x:Key="LblAnnotateConstellationBoundaries">Konstellationsgrenzen anzeigen</s:String>
     <s:String x:Key="LblSkyAtlasSkySurvey">Sternenatlas (Offlineausrichtung)</s:String>
     <s:String x:Key="LblPhd2PathNotFound">Konnte PHD2 nicht starten. Der Pfad wurde nicht gefunden</s:String>
     <s:String x:Key="LblPhd2StartProcessError">Konnte PHD2 nicht starten. Prüfen Sie die Log-Dateien für weitere Details</s:String>
@@ -799,4 +799,5 @@ Berechneter HFR: {2}
     <s:String x:Key="LblPHD2Path">Pfad zu PHD2</s:String>
     <s:String x:Key="LblMinDuration">Min. Dauer</s:String>
     <s:String x:Key="LblWaitForTemperatureStep">Warte auf Kamera auf Erreichen des nächsten Temperaturschritts</s:String>
+    <s:String x:Key="LblApplicationStartDateDescription">Applikationsstartdatum mit Format YYYY-MM-DD</s:String>
 </ResourceDictionary>
