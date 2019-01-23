@@ -29,7 +29,7 @@
   the background itself will be moved like in an orrery  
 
 ### Guiding
- - Added Synchronized PHD2 Guider
+ - Added Synchronized PHD2 Guider (experimental)
  - Synchronized PHD2 Guider will synchronize your Dither requests between multiple instances of N.I.N.A.
 	- Known limitations: Dithering will happen every possible synchronized frame and is not changeable
 

@@ -797,7 +797,7 @@ Connected clients: {0}</s:String>
     <s:String x:Key="LblPhd2SynchronizedServiceClientDisconnected">Client disconnected to synchronized PHD2 service.
 Connected clients: {0}</s:String>
     <s:String x:Key="LblPhd2SynchronizedServiceStarted">Synchronized PHD2 service started</s:String>
-    <s:String x:Key="LblSynchronizedPHD2Guider">Synchronized PHD2</s:String>
+    <s:String x:Key="LblSynchronizedPHD2Guider">Synchronized PHD2 (Experimental)</s:String>
     <s:String x:Key="LblSynchronizedPHD2ServiceCrashed">Synchronized PHD2 Service crashed, restarting this Synchronized PHD2 Guider as Service</s:String>
     <s:String x:Key="LblSynchronizedPHD2MaxWaitTime">Maximum wait time (s)</s:String>
 </ResourceDictionary>
