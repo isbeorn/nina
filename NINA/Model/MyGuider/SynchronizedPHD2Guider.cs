@@ -7,12 +7,16 @@ using System;
 using System.ServiceModel;
 using System.Threading;
 using System.Threading.Tasks;
+using NINA.Locale;
+
+#pragma warning disable 4014
 
 namespace NINA.Model.MyGuider {
 
     internal class SynchronizedPHD2Guider : BaseINPC, IGuider, ICameraConsumer {
         private readonly IProfileService profileService;
         private readonly ICameraMediator cameraMediator;
+        private ILoc Locale { get; set; } = Loc.Instance;
 
         /// <inheritdoc />
         public bool Connected {
@@ -55,7 +59,7 @@ namespace NINA.Model.MyGuider {
         }
 
         /// <inheritdoc />
-        public string Name => "Synchronized PHD2 Guider";
+        public string Name => Locale["LblSynchronizedPHD2Guider"];
 
         private const string LocalHostUri = "net.pipe://localhost";
         private const string ServiceEndPoint = "SynchronizedPHD2Guider";
@@ -76,15 +80,8 @@ namespace NINA.Model.MyGuider {
         /// <inheritdoc />
         public async Task<bool> Connect(CancellationToken ct) {
             disconnectTokenSource = new CancellationTokenSource();
-            startServerTcs = new TaskCompletionSource<bool>();
 
-            // try to run as server
-            Task.Run(() => RunServer(disconnectTokenSource.Token));
-            await startServerTcs.Task;
-
-            guiderService = ConnectToServer();
-
-            Connected = guiderService != null;
+            await TryStartServiceAndConnect();
 
             if (Connected) {
                 Task.Run(() => RunClientListener(disconnectTokenSource.Token));
@@ -102,7 +99,7 @@ namespace NINA.Model.MyGuider {
                     PixelScale = await guiderService.ConnectAndGetPixelScale(profileService.ActiveProfile.Id);
                     cameraMediator.RegisterConsumer(this);
                     while (true) {
-                        var guideInfos = await guiderService.GetGuideInfo(profileService.ActiveProfile.Id);
+                        var guideInfos = guiderService.GetGuideInfo(profileService.ActiveProfile.Id);
 
                         State = guideInfos.State;
                         GuideStep = guideInfos.GuideStep;
@@ -126,22 +123,27 @@ namespace NINA.Model.MyGuider {
                     break;
                 } catch (Exception) {
                     // assume nina other instance crash, restart server
-                    Notification.ShowWarning("Synchronized PHD2 Service crashed, restarting this Synchronized PHD2 Guider as Service");
+                    Notification.ShowWarning(Locale["LblSynchronizedPHD2ServiceCrashed"]);
                     cameraMediator.RemoveConsumer(this);
-                    startServerTcs = new TaskCompletionSource<bool>();
-                    Task.Run(() => RunServer(disconnectTokenSource.Token));
-                    await startServerTcs.Task;
-                    guiderService = ConnectToServer();
-                    Connected = guiderService != null;
+                    await TryStartServiceAndConnect();
                     faulted = !Connected;
                 }
             }
 
+            // faulted is false when the client disconnected willfully, not forcefully
             if (!faulted) {
                 guiderService.DisconnectClient(profileService.ActiveProfile.Id);
             }
 
             cameraMediator.RemoveConsumer(this);
+        }
+
+        private async Task TryStartServiceAndConnect() {
+            startServerTcs = new TaskCompletionSource<bool>();
+            Task.Run(() => RunServer(disconnectTokenSource.Token));
+            await startServerTcs.Task;
+            guiderService = ConnectToSynchronizedPHD2Service();
+            Connected = guiderService != null;
         }
 
         private async Task RunServer(CancellationToken ct) {
@@ -170,18 +172,18 @@ namespace NINA.Model.MyGuider {
             }
         }
 
-        private ISynchronizedPHD2GuiderService ConnectToServer() {
-            // this could maybe need a duplexchannelfactory for back-communication
-            // maybe necessary for error handling
-            ChannelFactory<ISynchronizedPHD2GuiderService> guiderServiceChannelFactory
+        private ISynchronizedPHD2GuiderService ConnectToSynchronizedPHD2Service() {
+            var guiderServiceChannelFactory
                 = new ChannelFactory<ISynchronizedPHD2GuiderService>(new NetNamedPipeBinding(), new EndpointAddress(LocalHostUri + "/" + ServiceEndPoint));
             guiderServiceChannelFactory.Endpoint.Binding.OpenTimeout = TimeSpan.FromSeconds(1);
             guiderServiceChannelFactory.Endpoint.Binding.CloseTimeout = TimeSpan.FromSeconds(1);
             guiderServiceChannelFactory.Endpoint.Binding.ReceiveTimeout = TimeSpan.FromSeconds(600);
             guiderServiceChannelFactory.Open();
-            var channel = guiderServiceChannelFactory.CreateChannel();
-            ((IContextChannel)channel).OperationTimeout = TimeSpan.FromSeconds(600);
-            return channel;
+            ISynchronizedPHD2GuiderService serviceChannel = guiderServiceChannelFactory.CreateChannel();
+            // timespan for waiting for a method to return, to be on the safe side set to 10 minutes
+            // the 'suspicious' cast is not suspicious at all, the IDE doesn't understand it's a channel we get returned
+            ((IContextChannel)serviceChannel).OperationTimeout = TimeSpan.FromMinutes(10);
+            return serviceChannel;
         }
 
         /// <inheritdoc />
@@ -229,19 +231,19 @@ namespace NINA.Model.MyGuider {
             }, ct);
         }
 
-        public async void UpdateDeviceInfo(CameraInfo deviceInfo) {
+        public void UpdateDeviceInfo(CameraInfo deviceInfo) {
             if (exposureEndTime != deviceInfo.ExposureEndTime || cameraIsExposing != deviceInfo.IsExposing ||
                 nextExposureLength != deviceInfo.NextExposureLength) {
                 exposureEndTime = deviceInfo.ExposureEndTime;
                 cameraIsExposing = deviceInfo.IsExposing;
                 nextExposureLength = deviceInfo.NextExposureLength;
 
-                await guiderService.UpdateCameraInfo(new ProfileCameraState() {
+                guiderService.UpdateCameraInfo(new ProfileCameraState() {
                     ExposureEndTime = exposureEndTime,
                     InstanceId = profileService.ActiveProfile.Id,
                     IsExposing = cameraIsExposing,
                     NextExposureTime = nextExposureLength,
-                    MaxWaitTime = 20
+                    AverageDownloadTime = profileService.ActiveProfile.SequenceSettings.EstimatedDownloadTime.TotalSeconds
                 });
             }
         }

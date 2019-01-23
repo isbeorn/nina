@@ -6,10 +6,12 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Threading;
 using System.Threading.Tasks;
+using NINA.Locale;
 
 namespace NINA.Model.MyGuider {
 
     internal class SynchronizedPHD2GuiderService : ISynchronizedPHD2GuiderService {
+        private ILoc Locale { get; set; } = Loc.Instance;
         private IGuider guiderInstance;
         public List<SynchronizedClientInfo> ConnectedClients;
         public bool PHD2Connected { get; private set; } = false;
@@ -22,7 +24,7 @@ namespace NINA.Model.MyGuider {
             PHD2Connected = await guiderInstance.Connect(ct);
             if (PHD2Connected) {
                 ((PHD2Guider)guiderInstance).PHD2ConnectionLost += (sender, args) => PHD2Connected = false;
-                Notification.ShowSuccess("Synchronized PHD2 Service started");
+                Notification.ShowSuccess(Locale["LblPhd2SynchronizedServiceStarted"]);
             }
 
             initializeTaskCompletionSource.TrySetResult(PHD2Connected);
@@ -39,13 +41,13 @@ namespace NINA.Model.MyGuider {
                 ConnectedClients[ConnectedClients.IndexOf(existingInfo)].LastPing = DateTime.Now;
             } else {
                 ConnectedClients.Add(new SynchronizedClientInfo { InstanceID = clientId, LastPing = DateTime.Now });
-                Notification.ShowSuccess("Client connected to synchronized PHD2 service, connected clients: " + ConnectedClients.Count(c => c.IsAlive));
+                Notification.ShowSuccess(string.Format(Locale["LblPhd2SynchronizedServiceClientConnected"], ConnectedClients.Count(c => c.IsAlive)));
             }
 
             return guiderInstance.PixelScale;
         }
 
-        public async Task<GuideInfo> GetGuideInfo(Guid clientId) {
+        public GuideInfo GetGuideInfo(Guid clientId) {
             if (!PHD2Connected) {
                 throw new FaultException<PHD2Fault>(new PHD2Fault());
             }
@@ -59,17 +61,18 @@ namespace NINA.Model.MyGuider {
             };
         }
 
-        public async Task UpdateCameraInfo(ProfileCameraState profileCameraState) {
+        public void UpdateCameraInfo(ProfileCameraState profileCameraState) {
             var clientInfo = ConnectedClients.Single(c => c.InstanceID == profileCameraState.InstanceId);
             clientInfo.IsExposing = profileCameraState.IsExposing;
             clientInfo.NextExposureTime = profileCameraState.NextExposureTime;
-            clientInfo.MaxWaitTime = profileCameraState.MaxWaitTime;
+            clientInfo.AverageDownloadTime = profileCameraState.AverageDownloadTime;
             clientInfo.ExposureEndTime = profileCameraState.ExposureEndTime;
         }
 
         /// <inheritdoc />
         public void DisconnectClient(Guid clientId) {
             ConnectedClients.RemoveAll(c => c.InstanceID == clientId);
+            Notification.ShowSuccess(string.Format(Locale["LblPhd2SynchronizedServiceClientDisconnected"], ConnectedClients.Count(c => c.IsAlive)));
         }
 
         private CancellationTokenSource startGuidingCancellationTokenSource;
@@ -173,20 +176,20 @@ namespace NINA.Model.MyGuider {
             var client = ConnectedClients.Single(c => c.InstanceID == instanceId);
 
             // no further exposures, just return
-            if (client.NextExposureTime == -1) {
+            if (client.NextExposureTime < 0) {
                 return true;
             }
 
-            var otherClientsExist = ConnectedClients.Any(c => c.IsAlive && c.InstanceID != client.InstanceID);
+            var otherAliveClients = ConnectedClients.Where(c => c.IsAlive).Where(c => c.InstanceID != client.InstanceID).ToList();
 
             // no other clients exist, just dither
-            if (!otherClientsExist) {
+            if (!otherAliveClients.Any()) {
                 var output = await guiderInstance.Dither(ditherCancellationTokenSource.Token);
                 ditherCancellationTokenSource = null;
                 return output;
             }
 
-            if (ConnectedClients.All(c => c.ExposureEndTime < DateTime.Now.AddSeconds(client.MaxWaitTime))) {
+            if (otherAliveClients.All(c => c.ExposureEndTime < DateTime.Now.AddSeconds(client.AverageDownloadTime))) {
                 // if all clients finish before our max waiting time we just continue
                 // one client has to launch the dither task that will wait for all alive clients to dither
                 lock (ditherLock) {
@@ -209,14 +212,14 @@ namespace NINA.Model.MyGuider {
                 return result;
             }
 
-            if (ConnectedClients.Any(c =>
-                c.InstanceID != client.InstanceID && c.IsExposing && c.IsAlive &&
-                c.ExposureEndTime.AddSeconds(c.MaxWaitTime) >= DateTime.Now.AddSeconds(client.NextExposureTime))) {
+            if (otherAliveClients.Any(c =>
+                c.InstanceID != client.InstanceID && c.IsExposing &&
+                c.ExposureEndTime.AddSeconds(client.AverageDownloadTime * 1.25) >= DateTime.Now.AddSeconds(client.NextExposureTime))) {
                 // squeeze in more exposures
                 // if there are any clients that are (AND)
                 //    - exposing
                 //    - alive
-                //    - have an endtime + waittime that is higher than now+next exposure time
+                //    - have an endtime + curClient.AvgDLTime that is higher than now+curClient.next exposure time
                 return true;
             }
 
@@ -271,7 +274,7 @@ namespace NINA.Model.MyGuider {
 
         public double NextExposureTime { get; set; }
 
-        public double MaxWaitTime { get; set; }
+        public double AverageDownloadTime { get; set; }
     }
 
     [DataContract]
@@ -290,6 +293,6 @@ namespace NINA.Model.MyGuider {
         public double NextExposureTime { get; set; }
 
         [DataMember]
-        public double MaxWaitTime { get; set; }
+        public double AverageDownloadTime { get; set; }
     }
 }
