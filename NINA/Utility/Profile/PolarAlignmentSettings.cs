@@ -43,7 +43,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private double altitudeMeridianOffset = -65;
+        private double altitudeMeridianOffset = 90;
 
         [DataMember]
         public double AltitudeMeridianOffset {
@@ -69,7 +69,7 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private double azimuthMeridianOffset = 90;
+        private double azimuthMeridianOffset = 0;
 
         [DataMember]
         public double AzimuthMeridianOffset {
