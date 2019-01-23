@@ -1,4 +1,5 @@
-﻿using NINA.Utility.Notification;
+﻿using NINA.Locale;
+using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,6 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Locale;
 
 namespace NINA.Model.MyGuider {
 
@@ -47,7 +47,7 @@ namespace NINA.Model.MyGuider {
             return guiderInstance.PixelScale;
         }
 
-        public GuideInfo GetGuideInfo(Guid clientId) {
+        public async Task<GuideInfo> GetGuideInfo(Guid clientId) {
             if (!PHD2Connected) {
                 throw new FaultException<PHD2Fault>(new PHD2Fault());
             }
@@ -61,7 +61,7 @@ namespace NINA.Model.MyGuider {
             };
         }
 
-        public void UpdateCameraInfo(ProfileCameraState profileCameraState) {
+        public async Task UpdateCameraInfo(ProfileCameraState profileCameraState) {
             var clientInfo = ConnectedClients.Single(c => c.InstanceID == profileCameraState.InstanceId);
             clientInfo.IsExposing = profileCameraState.IsExposing;
             clientInfo.NextExposureTime = profileCameraState.NextExposureTime;

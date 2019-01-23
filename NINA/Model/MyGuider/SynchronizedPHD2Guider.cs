@@ -1,4 +1,5 @@
-﻿using NINA.Model.MyCamera;
+﻿using NINA.Locale;
+using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
@@ -7,7 +8,6 @@ using System;
 using System.ServiceModel;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Locale;
 
 #pragma warning disable 4014
 
@@ -99,7 +99,7 @@ namespace NINA.Model.MyGuider {
                     PixelScale = await guiderService.ConnectAndGetPixelScale(profileService.ActiveProfile.Id);
                     cameraMediator.RegisterConsumer(this);
                     while (true) {
-                        var guideInfos = guiderService.GetGuideInfo(profileService.ActiveProfile.Id);
+                        var guideInfos = await guiderService.GetGuideInfo(profileService.ActiveProfile.Id);
 
                         State = guideInfos.State;
                         GuideStep = guideInfos.GuideStep;
@@ -142,6 +142,7 @@ namespace NINA.Model.MyGuider {
             startServerTcs = new TaskCompletionSource<bool>();
             Task.Run(() => RunServer(disconnectTokenSource.Token));
             await startServerTcs.Task;
+            await Task.Delay(TimeSpan.FromSeconds(0.5));
             guiderService = ConnectToSynchronizedPHD2Service();
             Connected = guiderService != null;
         }
@@ -231,14 +232,14 @@ namespace NINA.Model.MyGuider {
             }, ct);
         }
 
-        public void UpdateDeviceInfo(CameraInfo deviceInfo) {
-            if (exposureEndTime != deviceInfo.ExposureEndTime || cameraIsExposing != deviceInfo.IsExposing ||
-                nextExposureLength != deviceInfo.NextExposureLength) {
+        public async void UpdateDeviceInfo(CameraInfo deviceInfo) {
+            if ((exposureEndTime != deviceInfo.ExposureEndTime || cameraIsExposing != deviceInfo.IsExposing ||
+                nextExposureLength != deviceInfo.NextExposureLength) && connected) {
                 exposureEndTime = deviceInfo.ExposureEndTime;
                 cameraIsExposing = deviceInfo.IsExposing;
                 nextExposureLength = deviceInfo.NextExposureLength;
 
-                guiderService.UpdateCameraInfo(new ProfileCameraState() {
+                await guiderService.UpdateCameraInfo(new ProfileCameraState() {
                     ExposureEndTime = exposureEndTime,
                     InstanceId = profileService.ActiveProfile.Id,
                     IsExposing = cameraIsExposing,

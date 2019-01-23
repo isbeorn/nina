@@ -13,10 +13,10 @@ namespace NINA.Model.MyGuider {
 
         [OperationContract]
         [FaultContract(typeof(PHD2Fault))]
-        GuideInfo GetGuideInfo(Guid clientId);
+        Task<GuideInfo> GetGuideInfo(Guid clientId);
 
         [OperationContract]
-        void UpdateCameraInfo(ProfileCameraState profileCameraState);
+        Task UpdateCameraInfo(ProfileCameraState profileCameraState);
 
         [OperationContract]
         [FaultContract(typeof(PHD2Fault))]
