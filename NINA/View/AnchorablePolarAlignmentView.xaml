@@ -66,7 +66,6 @@
                                     VerticalAlignment="Center"
                                     Orientation="Vertical">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAltitudeMeasurementSide}" />
-                                    <ComboBox ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:AltitudeSite}}}" SelectedItem="{Binding AltitudeSiteType}" />
 
                                     <ninactrl:CancellableButton
                                         Height="25"
