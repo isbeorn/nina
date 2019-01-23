@@ -96,8 +96,11 @@ namespace NINA.Model.MyGuider {
             bool faulted = false;
             while (!faulted) {
                 try {
+                    // connect and register to the service and get the pixelscale (that's the only information we need only once)
                     PixelScale = await guiderService.ConnectAndGetPixelScale(profileService.ActiveProfile.Id);
+                    // register to camera consumer so the camera info data is updated to the service
                     cameraMediator.RegisterConsumer(this);
+                    // loop getting the latest phd2 service information indefinitely
                     while (true) {
                         var guideInfos = await guiderService.GetGuideInfo(profileService.ActiveProfile.Id);
 
@@ -108,14 +111,14 @@ namespace NINA.Model.MyGuider {
                         ct.ThrowIfCancellationRequested();
                     }
                 } catch (FaultException<PHD2Fault>) {
-                    // phd2 is not running for whatever reason, throw some error message
-                    Notification.ShowError("PHD2 aborted connection");
+                    // phd2 connection lost
                     faulted = true;
                     Connected = false;
                     State = "";
                     PixelScale = 0;
                     disconnectTokenSource.Cancel();
                 } catch (OperationCanceledException) {
+                    // user disconnected
                     disconnectTokenSource.Cancel();
                     Connected = false;
                     State = "";
@@ -124,7 +127,9 @@ namespace NINA.Model.MyGuider {
                 } catch (Exception) {
                     // assume nina other instance crash, restart server
                     Notification.ShowWarning(Locale["LblSynchronizedPHD2ServiceCrashed"]);
+                    // remove the consumer since we will restart the loop getting all information and re-registering on the service
                     cameraMediator.RemoveConsumer(this);
+                    // try to restart the server
                     await TryStartServiceAndConnect();
                     faulted = !Connected;
                 }
@@ -140,9 +145,11 @@ namespace NINA.Model.MyGuider {
 
         private async Task TryStartServiceAndConnect() {
             startServerTcs = new TaskCompletionSource<bool>();
+            // try to run the server loop
             Task.Run(() => RunServer(disconnectTokenSource.Token));
+            // wait for the server to be either started or failed to be started
             await startServerTcs.Task;
-            await Task.Delay(TimeSpan.FromSeconds(0.5));
+            // try to connect to any existing server
             guiderService = ConnectToSynchronizedPHD2Service();
             Connected = guiderService != null;
         }
@@ -163,6 +170,7 @@ namespace NINA.Model.MyGuider {
                     return;
                 }
 
+                // initialize the server, try to start and connect to phd2
                 startServerTcs.TrySetResult(await ((SynchronizedPHD2GuiderService)host.SingletonInstance)
                     .Initialize(new PHD2Guider(profileService), ct));
 
