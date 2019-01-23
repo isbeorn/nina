@@ -786,6 +786,8 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
+        public bool IsUsingSynchronizedGuider => false;
+
         public Task<bool> Dither(CancellationToken token) {
             throw new NotImplementedException();
         }

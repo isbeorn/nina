@@ -78,7 +78,7 @@ namespace NINATest {
             await sut.Initialize(guider.Object, cts.Token);
 
             // act
-            Func<Task> act = async () => { await sut.GetGuideInfo(id); };
+            Action act = () => sut.GetGuideInfo(id);
 
             // assert
             act.Should().Throw<FaultException<PHD2Fault>>();

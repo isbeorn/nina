@@ -46,5 +46,7 @@ namespace NINA.ViewModel.Interfaces {
         Task<bool> AutoSelectGuideStar(CancellationToken token);
 
         RMS StopRMSRecording(Guid handle);
+
+        bool GuiderIsSynchronized { get; }
     }
 }

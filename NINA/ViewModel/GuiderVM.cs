@@ -97,6 +97,8 @@ namespace NINA.ViewModel {
             }
         }
 
+        public bool GuiderIsSynchronized => Guider is SynchronizedPHD2Guider;
+
         public async Task<bool> AutoSelectGuideStar(CancellationToken token) {
             if (Guider?.Connected == true) {
                 var result = await Guider?.AutoSelectGuideStar();

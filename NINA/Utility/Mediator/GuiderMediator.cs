@@ -26,15 +26,13 @@ using NINA.Model.MyGuider;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.ViewModel.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Utility.Mediator {
 
     internal class GuiderMediator : DeviceMediator<IGuiderVM, IGuiderConsumer, GuiderInfo>, IGuiderMediator {
+        public bool IsUsingSynchronizedGuider => handler.GuiderIsSynchronized;
 
         public Task<bool> Dither(CancellationToken token) {
             return handler.Dither(token);
