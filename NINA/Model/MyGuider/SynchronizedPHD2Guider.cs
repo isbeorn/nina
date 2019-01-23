@@ -242,17 +242,18 @@ namespace NINA.Model.MyGuider {
 
         public async void UpdateDeviceInfo(CameraInfo deviceInfo) {
             if ((exposureEndTime != deviceInfo.ExposureEndTime || cameraIsExposing != deviceInfo.IsExposing ||
-                nextExposureLength != deviceInfo.NextExposureLength) && connected) {
+                nextExposureLength != deviceInfo.NextExposureLength || lastDownloadTime != deviceInfo.LastDownloadTime) && connected) {
                 exposureEndTime = deviceInfo.ExposureEndTime;
                 cameraIsExposing = deviceInfo.IsExposing;
                 nextExposureLength = deviceInfo.NextExposureLength;
+                lastDownloadTime = deviceInfo.LastDownloadTime == -1 ? lastDownloadTime : deviceInfo.LastDownloadTime;
 
                 await guiderService.UpdateCameraInfo(new ProfileCameraState() {
                     ExposureEndTime = exposureEndTime,
                     InstanceId = profileService.ActiveProfile.Id,
                     IsExposing = cameraIsExposing,
                     NextExposureTime = nextExposureLength,
-                    AverageDownloadTime = profileService.ActiveProfile.SequenceSettings.EstimatedDownloadTime.TotalSeconds
+                    LastDownloadTime = lastDownloadTime
                 });
             }
         }
@@ -260,5 +261,6 @@ namespace NINA.Model.MyGuider {
         private DateTime exposureEndTime;
         private bool cameraIsExposing;
         private double nextExposureLength;
+        private double lastDownloadTime;
     }
 }

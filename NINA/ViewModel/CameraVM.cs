@@ -33,6 +33,7 @@ using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Async;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -593,12 +594,16 @@ namespace NINA.ViewModel {
             }
         }
 
-        public Task<ImageArray> Download(CancellationToken token, bool calculateStatistics) {
+        public async Task<ImageArray> Download(CancellationToken token, bool calculateStatistics) {
             CameraInfo.IsExposing = false;
             CameraInfo.ExposureEndTime = DateTime.Now;
             BroadcastCameraInfo();
             if (CameraInfo.Connected == true) {
-                var output = Cam.DownloadExposure(token, calculateStatistics);
+                Stopwatch seqDuration = Stopwatch.StartNew();
+                var output = await Cam.DownloadExposure(token, calculateStatistics);
+                seqDuration.Stop();
+                CameraInfo.LastDownloadTime = seqDuration.Elapsed.TotalSeconds;
+                BroadcastCameraInfo();
                 return output;
             } else {
                 return null;

@@ -232,5 +232,15 @@ namespace NINA.Model.MyCamera {
                 RaisePropertyChanged();
             }
         }
+
+        private double lastDownloadTime = -1;
+
+        public double LastDownloadTime {
+            get => lastDownloadTime;
+            set {
+                lastDownloadTime = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 }

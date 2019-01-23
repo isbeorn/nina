@@ -65,7 +65,7 @@ namespace NINA.Model.MyGuider {
             var clientInfo = ConnectedClients.Single(c => c.InstanceID == profileCameraState.InstanceId);
             clientInfo.IsExposing = profileCameraState.IsExposing;
             clientInfo.NextExposureTime = profileCameraState.NextExposureTime;
-            clientInfo.AverageDownloadTime = profileCameraState.AverageDownloadTime;
+            clientInfo.LastDownloadTime = profileCameraState.LastDownloadTime;
             clientInfo.ExposureEndTime = profileCameraState.ExposureEndTime;
         }
 
@@ -189,7 +189,17 @@ namespace NINA.Model.MyGuider {
                 return output;
             }
 
-            if (otherAliveClients.All(c => c.ExposureEndTime < DateTime.Now.AddSeconds(client.AverageDownloadTime))) {
+            if (otherAliveClients.Any(c => c.IsExposing &&
+                c.ExposureEndTime.AddSeconds(client.LastDownloadTime) >= DateTime.Now.AddSeconds(client.NextExposureTime))) {
+                // squeeze in more exposures
+                // if there are any clients that are (AND)
+                //    - exposing
+                //    - alive
+                //    - have an endtime + curClient.AvgDLTime that is higher than now+curClient.next exposure time
+                return true;
+            }
+
+            if (otherAliveClients.All(c => c.ExposureEndTime < DateTime.Now.AddSeconds(client.NextExposureTime))) {
                 // if all clients finish before our max waiting time we just continue
                 // one client has to launch the dither task that will wait for all alive clients to dither
                 lock (ditherLock) {
@@ -210,17 +220,6 @@ namespace NINA.Model.MyGuider {
                 }
 
                 return result;
-            }
-
-            if (otherAliveClients.Any(c =>
-                c.InstanceID != client.InstanceID && c.IsExposing &&
-                c.ExposureEndTime.AddSeconds(client.AverageDownloadTime * 1.25) >= DateTime.Now.AddSeconds(client.NextExposureTime))) {
-                // squeeze in more exposures
-                // if there are any clients that are (AND)
-                //    - exposing
-                //    - alive
-                //    - have an endtime + curClient.AvgDLTime that is higher than now+curClient.next exposure time
-                return true;
             }
 
             // should never be called
@@ -274,7 +273,7 @@ namespace NINA.Model.MyGuider {
 
         public double NextExposureTime { get; set; }
 
-        public double AverageDownloadTime { get; set; }
+        public double LastDownloadTime { get; set; }
     }
 
     [DataContract]
@@ -293,6 +292,6 @@ namespace NINA.Model.MyGuider {
         public double NextExposureTime { get; set; }
 
         [DataMember]
-        public double AverageDownloadTime { get; set; }
+        public double LastDownloadTime { get; set; }
     }
 }
