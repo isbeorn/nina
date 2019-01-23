@@ -28,6 +28,11 @@
 - Instead of dragging the rectangular through the initial image like in the other framing sources
   the background itself will be moved like in an orrery  
 
+### Guiding
+ - Added Synchronized PHD2 Guider
+ - Synchronized PHD2 Guider will synchronize your Dither requests between multiple instances of N.I.N.A.
+	- Known limitations: Dithering will happen every possible synchronized frame and is not changeable
+
 
 ## Bugfixes
 
