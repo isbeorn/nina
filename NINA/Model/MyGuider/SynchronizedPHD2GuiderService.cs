@@ -73,6 +73,7 @@ namespace NINA.Model.MyGuider {
     ///         1. They return immediately and no dithering happens
     ///             - this will happen when any other client is currently exposing
     ///             - the other client needs to have a longer still ongoing exposure time than the current client + its download time
+    ///             - the client has no further exposures
     ///         2. They wait for the other instances and dithering happens
     ///             - this will happen if 1 is not fulfilled
     ///         3. Dithering happens immediately
@@ -294,31 +295,26 @@ namespace NINA.Model.MyGuider {
 
             // if all clients finish before our added next exposure time we will dither
             // one client has to launch the dither task that will wait for all alive clients to dither
-            if (otherAliveClients.All(c => c.ExposureEndTime < DateTime.Now.AddSeconds(client.NextExposureTime))) {
-                lock (ditherLock) {
-                    if (ditherTask == null) {
-                        ditherTask = DitherTask();
-                    }
+            lock (ditherLock) {
+                if (ditherTask == null) {
+                    ditherTask = DitherTask();
                 }
-
-                // this will indicate to the DitherTask that this client is waiting for dithering
-                // the DitherTask will call dithering when all clients are waiting or doing nothing
-                client.IsWaitingForDither = true;
-
-                var result = await ditherTask;
-
-                client.IsWaitingForDither = false;
-
-                lock (ditherLock) {
-                    ditherCancellationTokenSource = null;
-                    ditherTask = null;
-                }
-
-                return result;
             }
 
-            // should never be called
-            return false;
+            // this will indicate to the DitherTask that this client is waiting for dithering
+            // the DitherTask will call dithering when all clients are waiting or doing nothing
+            client.IsWaitingForDither = true;
+
+            var result = await ditherTask;
+
+            client.IsWaitingForDither = false;
+
+            lock (ditherLock) {
+                ditherCancellationTokenSource = null;
+                ditherTask = null;
+            }
+
+            return result;
         }
 
         /// <inheritdoc />
