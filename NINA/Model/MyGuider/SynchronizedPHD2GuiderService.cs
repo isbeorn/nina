@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace NINA.Model.MyGuider {
 
+    /// <summary>
+    /// This class is used to send over guide data from the service to the guider client.
+    /// </summary>
     [DataContract]
     internal class GuideInfo {
 
@@ -20,6 +23,9 @@ namespace NINA.Model.MyGuider {
         public string State { get; set; }
     }
 
+    /// <summary>
+    /// This class is used to send over camera data from the guider client to this service.
+    /// </summary>
     [DataContract]
     internal class ProfileCameraState {
 
@@ -39,10 +45,12 @@ namespace NINA.Model.MyGuider {
         public double NextExposureTime { get; set; }
     }
 
+    /// <summary>
+    /// This class holds information in the service about the connected client
+    /// </summary>
     internal class SynchronizedClientInfo {
         public DateTime ExposureEndTime { get; set; }
         public Guid InstanceID { get; set; }
-
         public bool IsAlive => DateTime.Now.Subtract(LastPing).TotalSeconds < 5;
         public bool IsExposing { get; set; }
         public bool IsWaitingForDither { get; set; }
@@ -51,6 +59,31 @@ namespace NINA.Model.MyGuider {
         public double NextExposureTime { get; set; }
     }
 
+    /// <summary>
+    /// The basic flow of this class is as follows
+    /// 1. It is instanced by a ChannelFactory
+    /// 2. Initialize is called which passes an IGuider object of type PHD2Guider, replacing the standard constructor
+    /// 3. Clients connect with ConnectAndGetPixelScale
+    /// 4a. Clients loop and get new information with GetGuideInfo, updating their LastPing time which also determines if they are alive
+    /// 4b. Clients loop and push new information when changed with UpdateCameraInfo
+    /// 5a. Methods are called as normal from the clients and they are being forwarded to the PHD2Guider, executing them
+    ///     - Methods can be cancelled synchronized with CancelMethodName which is implemented in the Clients with the Client CancellationToken
+    /// 5b. Exception to that is the SynchronizedDither method, which is the main usage of this GuiderService
+    ///     - Clients will call that method with following possible outcomes
+    ///         1. They return immediately and no dithering happens
+    ///             - this will happen when any other client is currently exposing
+    ///             - the other client needs to have a longer still ongoing exposure time than the current client + its download time
+    ///         2. They wait for the other instances and dithering happens
+    ///             - this will happen if 1 is not fulfilled
+    ///         3. Dithering happens immediately
+    ///             - this will only happen if no other clients are connected
+    /// 6. Clients can de-register themselves by using DisconnectClient
+    ///     - if clients crash or fail to send the information from the loop as stated in 4a, they will be considered as dead and not be taken into consideration in 5b
+    /// </summary>
+    /// <remarks>
+    ///     The methods in this service are implemented in a way that multi-threading is possible.
+    ///     This is important for the asynchronized calls of UpdateCameraInfo as well as GetGuideInfo
+    /// </remarks>
     internal class SynchronizedPHD2GuiderService : ISynchronizedPHD2GuiderService {
         private readonly object ditherLock = new object();
         private readonly object startGuidingLock = new object();
@@ -107,22 +140,27 @@ namespace NINA.Model.MyGuider {
             return guiderInstance.AutoSelectGuideStar();
         }
 
+        /// <inheritdoc />
         public void CancelStartGuiding() {
             startGuidingCancellationTokenSource?.Cancel();
         }
 
+        /// <inheritdoc />
         public void CancelStartPause() {
             startPauseCancellationTokenSource?.Cancel();
         }
 
+        /// <inheritdoc />
         public void CancelStopGuiding() {
             stopGuidingCancellationTokenSource?.Cancel();
         }
 
+        /// <inheritdoc />
         public void CancelSynchronizedDither() {
             ditherCancellationTokenSource?.Cancel();
         }
 
+        /// <inheritdoc />
         public async Task<double> ConnectAndGetPixelScale(Guid clientId) {
             var phd2Initialized = await initializeTaskCompletionSource.Task;
             if (!phd2Initialized) {
@@ -145,6 +183,7 @@ namespace NINA.Model.MyGuider {
             Notification.ShowSuccess(string.Format(Locale["LblPhd2SynchronizedServiceClientDisconnected"], ConnectedClients.Count(c => c.IsAlive)));
         }
 
+        /// <inheritdoc />
         public async Task<GuideInfo> GetGuideInfo(Guid clientId) {
             if (!PHD2Connected) {
                 throw new FaultException<PHD2Fault>(new PHD2Fault());
@@ -159,6 +198,7 @@ namespace NINA.Model.MyGuider {
             };
         }
 
+        /// <inheritdoc />
         public async Task<bool> Initialize(IGuider guider, CancellationToken ct) {
             initializeTaskCompletionSource = new TaskCompletionSource<bool>();
             guiderInstance = guider;
@@ -188,6 +228,7 @@ namespace NINA.Model.MyGuider {
             return result;
         }
 
+        /// <inheritdoc />
         public async Task<bool> StartPause(bool pause) {
             lock (startPauseLock) {
                 if (startPauseCancellationTokenSource == null) {
@@ -202,6 +243,7 @@ namespace NINA.Model.MyGuider {
             return result;
         }
 
+        /// <inheritdoc />
         public async Task<bool> StopGuiding() {
             lock (stopGuidingLock) {
                 if (stopGuidingCancellationTokenSource == null) {
@@ -216,6 +258,7 @@ namespace NINA.Model.MyGuider {
             return result;
         }
 
+        /// <inheritdoc />
         public async Task<bool> SynchronizedDither(Guid instanceId) {
             lock (ditherLock) {
                 if (ditherCancellationTokenSource == null) {
@@ -239,25 +282,27 @@ namespace NINA.Model.MyGuider {
                 return output;
             }
 
+            // squeeze in more exposures
+            // if there are any clients that are (AND)
+            //    - exposing
+            //    - alive
+            //    - have an endtime + curClient.LastDownloadTime that is higher than now+curClient.NextExposureTime
             if (otherAliveClients.Any(c => c.IsExposing &&
                 c.ExposureEndTime.AddSeconds(client.LastDownloadTime) >= DateTime.Now.AddSeconds(client.NextExposureTime))) {
-                // squeeze in more exposures
-                // if there are any clients that are (AND)
-                //    - exposing
-                //    - alive
-                //    - have an endtime + curClient.AvgDLTime that is higher than now+curClient.next exposure time
                 return true;
             }
 
+            // if all clients finish before our added next exposure time we will dither
+            // one client has to launch the dither task that will wait for all alive clients to dither
             if (otherAliveClients.All(c => c.ExposureEndTime < DateTime.Now.AddSeconds(client.NextExposureTime))) {
-                // if all clients finish before our max waiting time we just continue
-                // one client has to launch the dither task that will wait for all alive clients to dither
                 lock (ditherLock) {
                     if (ditherTask == null) {
                         ditherTask = DitherTask();
                     }
                 }
 
+                // this will indicate to the DitherTask that this client is waiting for dithering
+                // the DitherTask will call dithering when all clients are waiting or doing nothing
                 client.IsWaitingForDither = true;
 
                 var result = await ditherTask;
@@ -276,6 +321,7 @@ namespace NINA.Model.MyGuider {
             return false;
         }
 
+        /// <inheritdoc />
         public async Task UpdateCameraInfo(ProfileCameraState profileCameraState) {
             var clientInfo = ConnectedClients.Single(c => c.InstanceID == profileCameraState.InstanceId);
             clientInfo.IsExposing = profileCameraState.IsExposing;

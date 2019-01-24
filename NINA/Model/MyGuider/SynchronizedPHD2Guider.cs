@@ -27,7 +27,7 @@ namespace NINA.Model.MyGuider {
         private double lastDownloadTime;
         private double nextExposureLength;
         private double pixelScale;
-        private TaskCompletionSource<bool> startServerTcs;
+        private TaskCompletionSource<bool> startServiceTcs;
         private string state;
 
         public SynchronizedPHD2Guider(IProfileService profileService, ICameraMediator cameraMediator) {
@@ -78,7 +78,7 @@ namespace NINA.Model.MyGuider {
             }
         }
 
-        private ISynchronizedPHD2GuiderService ConnectToSynchronizedPHD2Service() {
+        private ISynchronizedPHD2GuiderService ConnectToService() {
             var guiderServiceChannelFactory
                 = new ChannelFactory<ISynchronizedPHD2GuiderService>(new NetNamedPipeBinding(), new EndpointAddress(LocalHostUri + "/" + ServiceEndPoint));
             guiderServiceChannelFactory.Endpoint.Binding.OpenTimeout = TimeSpan.FromSeconds(1);
@@ -143,27 +143,31 @@ namespace NINA.Model.MyGuider {
             cameraMediator.RemoveConsumer(this);
         }
 
-        private async Task RunServer(CancellationToken ct) {
-            // here we initialize a server singleton so we can pass on the profileservice and call initialize
+        private async Task RunService(CancellationToken ct) {
+            // here we initialize a service singleton so we can call initialize without making the phd2guider serializable
             using (ServiceHost host = new ServiceHost(new SynchronizedPHD2GuiderService(), new Uri(LocalHostUri))) {
                 host.AddServiceEndpoint(typeof(ISynchronizedPHD2GuiderService), new NetNamedPipeBinding(),
                     ServiceEndPoint);
                 var behavior = host.Description.Behaviors.Find<ServiceBehaviorAttribute>();
                 behavior.IncludeExceptionDetailInFaults = true;
+                // single instance => singleton
                 behavior.InstanceContextMode = InstanceContextMode.Single;
+                // multiple concurrencymode => multithreading, it is not on by default and async Task methods will actually lock
                 behavior.ConcurrencyMode = ConcurrencyMode.Multiple;
+
+                // try to open the host, if it crashes this instance is most definitely not the service
                 try {
                     host.Open();
                 } catch (Exception) {
-                    startServerTcs.TrySetResult(false);
+                    startServiceTcs.TrySetResult(false);
                     return;
                 }
 
-                // initialize the server, try to start and connect to phd2
-                startServerTcs.TrySetResult(await ((SynchronizedPHD2GuiderService)host.SingletonInstance)
+                // initialize the service, try to start and connect to phd2
+                startServiceTcs.TrySetResult(await ((SynchronizedPHD2GuiderService)host.SingletonInstance)
                     .Initialize(new PHD2Guider(profileService), ct));
 
-                // loop to keep the server alive
+                // loop to keep the service alive
                 while (!ct.IsCancellationRequested) {
                     await Task.Delay(TimeSpan.FromMilliseconds(1000), ct);
                 }
@@ -171,13 +175,13 @@ namespace NINA.Model.MyGuider {
         }
 
         private async Task TryStartServiceAndConnect() {
-            startServerTcs = new TaskCompletionSource<bool>();
+            startServiceTcs = new TaskCompletionSource<bool>();
             // try to run the server loop
-            Task.Run(() => RunServer(disconnectTokenSource.Token));
+            Task.Run(() => RunService(disconnectTokenSource.Token));
             // wait for the server to be either started or failed to be started
-            await startServerTcs.Task;
+            await startServiceTcs.Task;
             // try to connect to any existing server
-            guiderService = ConnectToSynchronizedPHD2Service();
+            guiderService = ConnectToService();
             Connected = guiderService != null;
         }
 
