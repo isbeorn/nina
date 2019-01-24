@@ -10,30 +10,35 @@ namespace NINA.Model.MyGuider {
     internal interface ISynchronizedPHD2GuiderService {
 
         /// <summary>
-        /// Has to be called once, will launch and/or connect to PHD2. Replaces the constructor.
+        /// Forwards AutoSelectGuideStar to the PHD2 instance.
         /// </summary>
-        /// <param name="guider"></param>
-        /// <param name="ct"></param>
-        /// <returns></returns>
-        Task<bool> Initialize(IGuider guider, CancellationToken ct);
-
-        /// <summary>
-        /// Returns current GuideInfo containing the latest GuideStep and GuideState of PHD2. Also acts as a keep-alive string from the client to the service.
-        /// Updates the services internal IsAlive and LastPing of the corresponding clientId.
-        /// </summary>
-        /// <param name="clientId"></param>
         /// <returns></returns>
         [OperationContract]
-        [FaultContract(typeof(PHD2Fault))]
-        Task<GuideInfo> GetGuideInfo(Guid clientId);
+        Task<bool> AutoSelectGuideStar();
 
         /// <summary>
-        /// Method to sync current camera information to the service. Required so clients know when they are able to dither and when not.
+        /// Cancels the StartGuiding request.
         /// </summary>
-        /// <param name="profileCameraState"></param>
-        /// <returns></returns>
         [OperationContract]
-        Task UpdateCameraInfo(ProfileCameraState profileCameraState);
+        void CancelStartGuiding();
+
+        /// <summary>
+        /// Cancels the StartPause request.
+        /// </summary>
+        [OperationContract]
+        void CancelStartPause();
+
+        /// <summary>
+        /// Cancels the StopGuiding request.
+        /// </summary>
+        [OperationContract]
+        void CancelStopGuiding();
+
+        /// <summary>
+        /// Cancels an ongoing Dither request.
+        /// </summary>
+        [OperationContract]
+        void CancelSynchronizedDither();
 
         /// <summary>
         /// Connects and initializes a client to the service. Has to be called first. Returns the PixelScale and adds the client to the internal client list of the service.
@@ -52,24 +57,29 @@ namespace NINA.Model.MyGuider {
         void DisconnectClient(Guid clientId);
 
         /// <summary>
+        /// Returns current GuideInfo containing the latest GuideStep and GuideState of PHD2. Also acts as a keep-alive string from the client to the service.
+        /// Updates the services internal IsAlive and LastPing of the corresponding clientId.
+        /// </summary>
+        /// <param name="clientId"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [FaultContract(typeof(PHD2Fault))]
+        Task<GuideInfo> GetGuideInfo(Guid clientId);
+
+        /// <summary>
+        /// Has to be called once, will launch and/or connect to PHD2. Replaces the constructor.
+        /// </summary>
+        /// <param name="guider"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        Task<bool> Initialize(IGuider guider, CancellationToken ct);
+
+        /// <summary>
         /// Forwards StartGuiding to the PHD2 instance and thus initiates guiding. Can be called from multiple instances simultaneously.
         /// </summary>
         /// <returns></returns>
         [OperationContract]
         Task<bool> StartGuiding();
-
-        /// <summary>
-        /// Cancels the StartGuiding request.
-        /// </summary>
-        [OperationContract]
-        void CancelStartGuiding();
-
-        /// <summary>
-        /// Forwards AutoSelectGuideStar to the PHD2 instance.
-        /// </summary>
-        /// <returns></returns>
-        [OperationContract]
-        Task<bool> AutoSelectGuideStar();
 
         /// <summary>
         /// Forwards the Pause or Resume command to the PHD2 instance and pauses or resumes PHD2. Can be called from multiple instances simultaneously.
@@ -80,23 +90,11 @@ namespace NINA.Model.MyGuider {
         Task<bool> StartPause(bool pause);
 
         /// <summary>
-        /// Cancels the StartPause request.
-        /// </summary>
-        [OperationContract]
-        void CancelStartPause();
-
-        /// <summary>
         /// Forwards StopGuiding to the PHD2 instance and stops guiding. Can be called from multiple instances simultaneously.
         /// </summary>
         /// <returns></returns>
         [OperationContract]
         Task<bool> StopGuiding();
-
-        /// <summary>
-        /// Cancels the StopGuiding request.
-        /// </summary>
-        [OperationContract]
-        void CancelStopGuiding();
 
         /// <summary>
         /// Request to Dither to the PHD2 instance. Will return immediately if should not dither or will wait for the other client to call the same method to synchronize a Dither request.
@@ -107,10 +105,12 @@ namespace NINA.Model.MyGuider {
         Task<bool> SynchronizedDither(Guid clientId);
 
         /// <summary>
-        /// Cancels an ongoing Dither request.
+        /// Method to sync current camera information to the service. Required so clients know when they are able to dither and when not.
         /// </summary>
+        /// <param name="profileCameraState"></param>
+        /// <returns></returns>
         [OperationContract]
-        void CancelSynchronizedDither();
+        Task UpdateCameraInfo(ProfileCameraState profileCameraState);
     }
 
     [DataContract]
