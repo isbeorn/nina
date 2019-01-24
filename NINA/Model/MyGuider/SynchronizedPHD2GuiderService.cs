@@ -37,12 +37,12 @@ namespace NINA.Model.MyGuider {
                 throw new FaultException<PHD2Fault>(new PHD2Fault());
             }
             var existingInfo = ConnectedClients.SingleOrDefault(c => c.InstanceID == clientId);
-            if (existingInfo != null) {
-                ConnectedClients[ConnectedClients.IndexOf(existingInfo)].LastPing = DateTime.Now;
-            } else {
-                ConnectedClients.Add(new SynchronizedClientInfo { InstanceID = clientId, LastPing = DateTime.Now });
-                Notification.ShowSuccess(string.Format(Locale["LblPhd2SynchronizedServiceClientConnected"], ConnectedClients.Count(c => c.IsAlive)));
+            if (existingInfo != null && existingInfo.IsAlive) {
+                throw new FaultException<ClientAlreadyExistsFault>(new ClientAlreadyExistsFault());
             }
+
+            ConnectedClients.Add(new SynchronizedClientInfo { InstanceID = clientId, LastPing = DateTime.Now });
+            Notification.ShowSuccess(string.Format(Locale["LblPhd2SynchronizedServiceClientConnected"], ConnectedClients.Count(c => c.IsAlive)));
 
             return guiderInstance.PixelScale;
         }

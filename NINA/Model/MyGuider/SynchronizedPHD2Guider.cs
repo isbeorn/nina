@@ -110,6 +110,13 @@ namespace NINA.Model.MyGuider {
                         await Task.Delay(TimeSpan.FromMilliseconds(1000), ct);
                         ct.ThrowIfCancellationRequested();
                     }
+                } catch (FaultException<ClientAlreadyExistsFault>) {
+                    faulted = true;
+                    Connected = false;
+                    State = "";
+                    PixelScale = 0;
+                    disconnectTokenSource.Cancel();
+                    Notification.ShowError(Locale["LblSynchronizedPHD2ServiceClientAlreadyExists"]);
                 } catch (FaultException<PHD2Fault>) {
                     // phd2 connection lost
                     faulted = true;
@@ -248,13 +255,17 @@ namespace NINA.Model.MyGuider {
                 nextExposureLength = deviceInfo.NextExposureLength;
                 lastDownloadTime = deviceInfo.LastDownloadTime == -1 ? lastDownloadTime : deviceInfo.LastDownloadTime;
 
-                await guiderService.UpdateCameraInfo(new ProfileCameraState() {
-                    ExposureEndTime = exposureEndTime,
-                    InstanceId = profileService.ActiveProfile.Id,
-                    IsExposing = cameraIsExposing,
-                    NextExposureTime = nextExposureLength,
-                    LastDownloadTime = lastDownloadTime
-                });
+                try {
+                    await guiderService.UpdateCameraInfo(new ProfileCameraState() {
+                        ExposureEndTime = exposureEndTime,
+                        InstanceId = profileService.ActiveProfile.Id,
+                        IsExposing = cameraIsExposing,
+                        NextExposureTime = nextExposureLength,
+                        LastDownloadTime = lastDownloadTime
+                    });
+                } catch {
+                    // catch everything, handling is done in the loop of the client
+                }
             }
         }
 

@@ -115,4 +115,7 @@ namespace NINA.Model.MyGuider {
 
     [DataContract]
     internal class PHD2Fault { }
+
+    [DataContract]
+    internal class ClientAlreadyExistsFault { }
 }
