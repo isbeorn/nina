@@ -236,13 +236,20 @@
     <s:String x:Key="LblMeridianOffset">Meridian Absatz</s:String>
     <s:String x:Key="LblPlateSolvedPolarAlignment">Polarausrichtung mit Hilfe von Platesolving</s:String>
     <s:String x:Key="LblAltitudeMeasurement">Höhenmessung</s:String>
-    <s:String x:Key="LblAltitudeMeasurementDescription" xml:space="preserve">Teleskop nach osten oder westen ausrichten.
-Combobox Wert entsprechend anpassen</s:String>
+    <s:String x:Key="LblAltitudeMeasurementDescription">Teleskop nach Osten oder Westen in die Nähe vom Horizont und Deklination 0 ausrichten.</s:String>
     <s:String x:Key="LblAltitudeMeasurementSide">Höhenmessungsseite</s:String>
-    <s:String x:Key="LblAltitudeMeasurementButtonTooltip">Höhenfehler messen. Teleskop nach osten oder westen ausrichten</s:String>
+    <s:String x:Key="LblAltitudeMeasurementButtonTooltip" xml:space="preserve">Misst den Höhenfehler in drei Schritten
+1. Es wird ein Bild aufgenommen und mittels Platesolving die aktuelle Position ermittelt
+2. Das Teleskop wird um die Rektaszensionsaxe um 0.5 Grad geschwenkt
+3. An der neuen Position wird erneut ein Bild aufgenommen und per Platesolve auch diese Position ermittelt
+Anhand der zwei Punkte wird dann der Höhenfehler errechnet und angezeigt</s:String>
     <s:String x:Key="LblAzimuthMeasurement">Azimutmessung</s:String>
     <s:String x:Key="LblAzimuthMeasurementDescription">Teleskop nahe Meridian ausrichten</s:String>
-    <s:String x:Key="LblAzimuthMeasurementButtonTooltip">Azimutfehler messen. Teleskop nahe Meridian ausrichten</s:String>
+    <s:String x:Key="LblAzimuthMeasurementButtonTooltip" xml:space="preserve">Misst den Azimuthfehler in drei Schritten
+1. Es wird ein Bild aufgenommen und mittels Platesolving die aktuelle Position ermittelt
+2. Das Teleskop wird um die Rektaszensionsaxe um 0.5 Grad geschwenkt
+3. An der neuen Position wird erneut ein Bild aufgenommen und per Platesolve auch diese Position ermittelt
+Anhand der zwei Punkte wird dann der Azimuthfehler errechnet und angezeigt</s:String>
     <s:String x:Key="LblDARVSlew">D.A.R.V. Schwenken</s:String>
     <s:String x:Key="LblDARVSlewDescription">Dauer der D.A.R.V. Prozedur festlegen. Teleskop wird für die hälfte der Zeit in eine richtung schwenken entlang der Rektaszensionachse. Danach schwenkt das Teleskop zurück. Idealerweise sieht man dann eine gerade Linie. Falls die Montierung nicht richtig ausgerichtet ist, sieht man jedoch eine V Linie. Für Azimuthfehlermessung das Teleskop in die nähe des Meridians schwenken, ansonsten nach Osten oder Westen.</s:String>
     <s:String x:Key="LblSlewRateDegSec">Schwenkrate (Grad/Sekunden)</s:String>

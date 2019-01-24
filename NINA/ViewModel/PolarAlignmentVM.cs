@@ -432,8 +432,6 @@ namespace NINA.ViewModel {
             cancelMeasureErrorToken?.Cancel();
         }
 
-        private AltitudeSite altitudeSiteType;
-
         private CameraInfo cameraInfo;
 
         public CameraInfo CameraInfo {
@@ -442,16 +440,6 @@ namespace NINA.ViewModel {
             }
             private set {
                 cameraInfo = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public AltitudeSite AltitudeSiteType {
-            get {
-                return altitudeSiteType;
-            }
-            set {
-                altitudeSiteType = value;
                 RaisePropertyChanged();
             }
         }
@@ -474,6 +462,14 @@ namespace NINA.ViewModel {
             if (CameraInfo?.Connected == true) {
                 cancelMeasureErrorToken = new CancellationTokenSource();
                 try {
+                    var siderealTime = Astrometry.GetLocalSiderealTimeNow(profileService.ActiveProfile.AstrometrySettings.Longitude);
+                    var latitude = Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude);
+                    var dec = Angle.ByDegree(TelescopeInfo.Declination);
+                    var hourAngle = Astrometry.GetHourAngle(Angle.ByHours(siderealTime), Angle.ByHours(TelescopeInfo.Coordinates.RA));
+                    var altitude = Astrometry.GetAltitude(hourAngle, latitude, dec);
+                    var azimuth = Astrometry.GetAzimuth(hourAngle, altitude, latitude, dec);
+                    var altitudeSide = azimuth.Degree < 180 ? AltitudeSite.EAST : AltitudeSite.WEST;
+
                     double poleErr = await CalculatePoleError(progress, cancelMeasureErrorToken.Token);
                     string poleErrString = Deg2str(Math.Abs(poleErr), 4);
                     cancelMeasureErrorToken.Token.ThrowIfCancellationRequested();
@@ -487,7 +483,7 @@ namespace NINA.ViewModel {
 
                     if (direction == Direction.ALTITUDE) {
                         if (profileService.ActiveProfile.AstrometrySettings.HemisphereType == Hemisphere.NORTHERN) {
-                            if (AltitudeSiteType == AltitudeSite.EAST) {
+                            if (altitudeSide == AltitudeSite.EAST) {
                                 if (poleErr < 0) {
                                     msg = poleErrString + " too low";
                                 } else {
@@ -501,7 +497,7 @@ namespace NINA.ViewModel {
                                 }
                             }
                         } else {
-                            if (AltitudeSiteType == AltitudeSite.EAST) {
+                            if (altitudeSide == AltitudeSite.EAST) {
                                 if (poleErr < 0) {
                                     msg = poleErrString + " too high";
                                 } else {
@@ -624,9 +620,9 @@ namespace NINA.ViewModel {
         }
 
         public async Task<bool> SlewToMeridianOffset(double meridianOffset, double declination) {
-            double curSiderealTime = TelescopeInfo.SiderealTime;
+            var lst = Astrometry.GetLocalSiderealTimeNow(profileService.ActiveProfile.AstrometrySettings.Longitude);
 
-            double slew_ra = curSiderealTime + (meridianOffset * 24.0 / 360.0);
+            double slew_ra = lst + (Astrometry.DegreesToHours(meridianOffset));
             if (slew_ra >= 24.0) {
                 slew_ra -= 24.0;
             } else if (slew_ra < 0.0) {
