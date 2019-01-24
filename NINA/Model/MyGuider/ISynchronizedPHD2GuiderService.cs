@@ -47,6 +47,7 @@ namespace NINA.Model.MyGuider {
         /// <returns></returns>
         [OperationContract]
         [FaultContract(typeof(PHD2Fault))]
+        [FaultContract(typeof(ClientAlreadyExistsFault))]
         Task<double> ConnectAndGetPixelScale(Guid clientId);
 
         /// <summary>
