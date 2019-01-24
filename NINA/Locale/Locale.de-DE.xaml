@@ -807,5 +807,4 @@ Verbundene Clients: {0}</s:String>
     <s:String x:Key="LblPhd2SynchronizedServiceStarted">Synchronisierter PHD2 Service gestartet</s:String>
     <s:String x:Key="LblSynchronizedPHD2Guider">Synchronisiertes PHD2 (Experimentell)</s:String>
     <s:String x:Key="LblSynchronizedPHD2ServiceCrashed">Synchronisierter PHD2 Service ist abgestürzt, starte diese synchronisierte PHD2 Instanz als Service neu</s:String>
-    <s:String x:Key="LblSynchronizedPHD2MaxWaitTime">Maximale Wartezeit (s)</s:String>
 </ResourceDictionary>
