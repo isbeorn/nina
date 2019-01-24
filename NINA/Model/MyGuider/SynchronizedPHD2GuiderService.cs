@@ -10,27 +10,158 @@ using System.Threading.Tasks;
 
 namespace NINA.Model.MyGuider {
 
+    /// <summary>
+    /// This class is used to send over guide data from the service to the guider client.
+    /// </summary>
+    [DataContract]
+    internal class GuideInfo {
+
+        [DataMember]
+        public PHD2Guider.PhdEventGuideStep GuideStep { get; set; }
+
+        [DataMember]
+        public string State { get; set; }
+    }
+
+    /// <summary>
+    /// This class is used to send over camera data from the guider client to this service.
+    /// </summary>
+    [DataContract]
+    internal class ProfileCameraState {
+
+        [DataMember]
+        public DateTime ExposureEndTime { get; set; }
+
+        [DataMember]
+        public Guid InstanceId { get; set; }
+
+        [DataMember]
+        public bool IsExposing { get; set; }
+
+        [DataMember]
+        public double LastDownloadTime { get; set; }
+
+        [DataMember]
+        public double NextExposureTime { get; set; }
+    }
+
+    /// <summary>
+    /// This class holds information in the service about the connected client
+    /// </summary>
+    internal class SynchronizedClientInfo {
+        public DateTime ExposureEndTime { get; set; }
+        public Guid InstanceID { get; set; }
+        public bool IsAlive => DateTime.Now.Subtract(LastPing).TotalSeconds < 5;
+        public bool IsExposing { get; set; }
+        public bool IsWaitingForDither { get; set; }
+        public double LastDownloadTime { get; set; }
+        public DateTime LastPing { get; set; }
+        public double NextExposureTime { get; set; }
+    }
+
+    /// <summary>
+    /// The basic flow of this class is as follows
+    /// 1. It is instanced by a ChannelFactory
+    /// 2. Initialize is called which passes an IGuider object of type PHD2Guider, replacing the standard constructor
+    /// 3. Clients connect with ConnectAndGetPixelScale
+    /// 4a. Clients loop and get new information with GetGuideInfo, updating their LastPing time which also determines if they are alive
+    /// 4b. Clients loop and push new information when changed with UpdateCameraInfo
+    /// 5a. Methods are called as normal from the clients and they are being forwarded to the PHD2Guider, executing them
+    ///     - Methods can be cancelled synchronized with CancelMethodName which is implemented in the Clients with the Client CancellationToken
+    /// 5b. Exception to that is the SynchronizedDither method, which is the main usage of this GuiderService
+    ///     - Clients will call that method with following possible outcomes
+    ///         1. They return immediately and no dithering happens
+    ///             - this will happen when any other client is currently exposing
+    ///             - the other client needs to have a longer still ongoing exposure time than the current client + its download time
+    ///             - the client has no further exposures
+    ///         2. They wait for the other instances and dithering happens
+    ///             - this will happen if 1 is not fulfilled
+    ///         3. Dithering happens immediately
+    ///             - this will only happen if no other clients are connected
+    /// 6. Clients can de-register themselves by using DisconnectClient
+    ///     - if clients crash or fail to send the information from the loop as stated in 4a, they will be considered as dead and not be taken into consideration in 5b
+    /// </summary>
+    /// <remarks>
+    ///     The methods in this service are implemented in a way that multi-threading is possible.
+    ///     This is important for the asynchronized calls of UpdateCameraInfo as well as GetGuideInfo
+    /// </remarks>
     internal class SynchronizedPHD2GuiderService : ISynchronizedPHD2GuiderService {
-        private ILoc Locale { get; set; } = Loc.Instance;
+        private readonly object ditherLock = new object();
+        private readonly object startGuidingLock = new object();
+        private readonly object startPauseLock = new object();
+        private readonly object stopGuidingLock = new object();
+        private CancellationTokenSource ditherCancellationTokenSource;
+        private Task<bool> ditherTask;
         private IGuider guiderInstance;
-        public List<SynchronizedClientInfo> ConnectedClients;
-        public bool PHD2Connected { get; private set; } = false;
         private TaskCompletionSource<bool> initializeTaskCompletionSource;
+        private CancellationTokenSource startGuidingCancellationTokenSource;
+        private Task<bool> startGuidingTask;
+        private CancellationTokenSource startPauseCancellationTokenSource;
+        private Task<bool> startPauseTask;
+        private CancellationTokenSource stopGuidingCancellationTokenSource;
+        private Task<bool> stopGuidingTask;
+        public List<SynchronizedClientInfo> ConnectedClients;
+        private ILoc Locale { get; set; } = Loc.Instance;
+        public bool PHD2Connected { get; private set; } = false;
 
-        public async Task<bool> Initialize(IGuider guider, CancellationToken ct) {
-            initializeTaskCompletionSource = new TaskCompletionSource<bool>();
-            guiderInstance = guider;
-            ConnectedClients = new List<SynchronizedClientInfo>();
-            PHD2Connected = await guiderInstance.Connect(ct);
-            if (PHD2Connected) {
-                ((PHD2Guider)guiderInstance).PHD2ConnectionLost += (sender, args) => PHD2Connected = false;
-                Notification.ShowSuccess(Locale["LblPhd2SynchronizedServiceStarted"]);
+        private async Task<bool> DitherTask() {
+            // here we wait for all alive clients collectively to be
+            // either not shooting (sequence end) or waiting for dither (midst of a sequence)
+            try {
+                while (!ConnectedClients.Where(c => c.IsAlive)
+                    .All(c => c.IsWaitingForDither || c.ExposureEndTime < DateTime.Now)) {
+                    await Task.Delay(TimeSpan.FromSeconds(1), ditherCancellationTokenSource.Token);
+                    ditherCancellationTokenSource.Token.ThrowIfCancellationRequested();
+                }
+
+                var result = await guiderInstance.Dither(ditherCancellationTokenSource.Token);
+                return result;
+            } catch (OperationCanceledException) {
+                return false;
             }
-
-            initializeTaskCompletionSource.TrySetResult(PHD2Connected);
-            return PHD2Connected;
         }
 
+        private async Task<bool> StartGuidingTask() {
+            var result = await guiderInstance.StartGuiding(startGuidingCancellationTokenSource.Token);
+            return result;
+        }
+
+        private async Task<bool> StartPauseTask(bool pause) {
+            var result = await guiderInstance.Pause(pause, startPauseCancellationTokenSource.Token);
+            return result;
+        }
+
+        private async Task<bool> StopGuidingTask() {
+            var result = await guiderInstance.StopGuiding(stopGuidingCancellationTokenSource.Token);
+            return result;
+        }
+
+        /// <inheritdoc />
+        public Task<bool> AutoSelectGuideStar() {
+            return guiderInstance.AutoSelectGuideStar();
+        }
+
+        /// <inheritdoc />
+        public void CancelStartGuiding() {
+            startGuidingCancellationTokenSource?.Cancel();
+        }
+
+        /// <inheritdoc />
+        public void CancelStartPause() {
+            startPauseCancellationTokenSource?.Cancel();
+        }
+
+        /// <inheritdoc />
+        public void CancelStopGuiding() {
+            stopGuidingCancellationTokenSource?.Cancel();
+        }
+
+        /// <inheritdoc />
+        public void CancelSynchronizedDither() {
+            ditherCancellationTokenSource?.Cancel();
+        }
+
+        /// <inheritdoc />
         public async Task<double> ConnectAndGetPixelScale(Guid clientId) {
             var phd2Initialized = await initializeTaskCompletionSource.Task;
             if (!phd2Initialized) {
@@ -47,6 +178,13 @@ namespace NINA.Model.MyGuider {
             return guiderInstance.PixelScale;
         }
 
+        /// <inheritdoc />
+        public void DisconnectClient(Guid clientId) {
+            ConnectedClients.RemoveAll(c => c.InstanceID == clientId);
+            Notification.ShowSuccess(string.Format(Locale["LblPhd2SynchronizedServiceClientDisconnected"], ConnectedClients.Count(c => c.IsAlive)));
+        }
+
+        /// <inheritdoc />
         public async Task<GuideInfo> GetGuideInfo(Guid clientId) {
             if (!PHD2Connected) {
                 throw new FaultException<PHD2Fault>(new PHD2Fault());
@@ -61,23 +199,20 @@ namespace NINA.Model.MyGuider {
             };
         }
 
-        public async Task UpdateCameraInfo(ProfileCameraState profileCameraState) {
-            var clientInfo = ConnectedClients.Single(c => c.InstanceID == profileCameraState.InstanceId);
-            clientInfo.IsExposing = profileCameraState.IsExposing;
-            clientInfo.NextExposureTime = profileCameraState.NextExposureTime;
-            clientInfo.LastDownloadTime = profileCameraState.LastDownloadTime;
-            clientInfo.ExposureEndTime = profileCameraState.ExposureEndTime;
-        }
-
         /// <inheritdoc />
-        public void DisconnectClient(Guid clientId) {
-            ConnectedClients.RemoveAll(c => c.InstanceID == clientId);
-            Notification.ShowSuccess(string.Format(Locale["LblPhd2SynchronizedServiceClientDisconnected"], ConnectedClients.Count(c => c.IsAlive)));
-        }
+        public async Task<bool> Initialize(IGuider guider, CancellationToken ct) {
+            initializeTaskCompletionSource = new TaskCompletionSource<bool>();
+            guiderInstance = guider;
+            ConnectedClients = new List<SynchronizedClientInfo>();
+            PHD2Connected = await guiderInstance.Connect(ct);
+            if (PHD2Connected) {
+                ((PHD2Guider)guiderInstance).PHD2ConnectionLost += (sender, args) => PHD2Connected = false;
+                Notification.ShowSuccess(Locale["LblPhd2SynchronizedServiceStarted"]);
+            }
 
-        private CancellationTokenSource startGuidingCancellationTokenSource;
-        private readonly object startGuidingLock = new object();
-        private Task<bool> startGuidingTask;
+            initializeTaskCompletionSource.TrySetResult(PHD2Connected);
+            return PHD2Connected;
+        }
 
         /// <inheritdoc />
         public async Task<bool> StartGuiding() {
@@ -94,24 +229,7 @@ namespace NINA.Model.MyGuider {
             return result;
         }
 
-        private async Task<bool> StartGuidingTask() {
-            var result = await guiderInstance.StartGuiding(startGuidingCancellationTokenSource.Token);
-            return result;
-        }
-
-        public void CancelStartGuiding() {
-            startGuidingCancellationTokenSource?.Cancel();
-        }
-
         /// <inheritdoc />
-        public Task<bool> AutoSelectGuideStar() {
-            return guiderInstance.AutoSelectGuideStar();
-        }
-
-        private CancellationTokenSource startPauseCancellationTokenSource;
-        private readonly object startPauseLock = new object();
-        private Task<bool> startPauseTask;
-
         public async Task<bool> StartPause(bool pause) {
             lock (startPauseLock) {
                 if (startPauseCancellationTokenSource == null) {
@@ -126,19 +244,7 @@ namespace NINA.Model.MyGuider {
             return result;
         }
 
-        private async Task<bool> StartPauseTask(bool pause) {
-            var result = await guiderInstance.Pause(pause, startPauseCancellationTokenSource.Token);
-            return result;
-        }
-
-        public void CancelStartPause() {
-            startPauseCancellationTokenSource?.Cancel();
-        }
-
-        private CancellationTokenSource stopGuidingCancellationTokenSource;
-        private readonly object stopGuidingLock = new object();
-        private Task<bool> stopGuidingTask;
-
+        /// <inheritdoc />
         public async Task<bool> StopGuiding() {
             lock (stopGuidingLock) {
                 if (stopGuidingCancellationTokenSource == null) {
@@ -153,19 +259,7 @@ namespace NINA.Model.MyGuider {
             return result;
         }
 
-        private async Task<bool> StopGuidingTask() {
-            var result = await guiderInstance.StopGuiding(stopGuidingCancellationTokenSource.Token);
-            return result;
-        }
-
-        public void CancelStopGuiding() {
-            stopGuidingCancellationTokenSource?.Cancel();
-        }
-
-        private CancellationTokenSource ditherCancellationTokenSource;
-        private readonly object ditherLock = new object();
-        private Task<bool> ditherTask;
-
+        /// <inheritdoc />
         public async Task<bool> SynchronizedDither(Guid instanceId) {
             lock (ditherLock) {
                 if (ditherCancellationTokenSource == null) {
@@ -189,109 +283,47 @@ namespace NINA.Model.MyGuider {
                 return output;
             }
 
+            // squeeze in more exposures
+            // if there are any clients that are (AND)
+            //    - exposing
+            //    - alive
+            //    - have an endtime + curClient.LastDownloadTime that is higher than now+curClient.NextExposureTime
             if (otherAliveClients.Any(c => c.IsExposing &&
                 c.ExposureEndTime.AddSeconds(client.LastDownloadTime) >= DateTime.Now.AddSeconds(client.NextExposureTime))) {
-                // squeeze in more exposures
-                // if there are any clients that are (AND)
-                //    - exposing
-                //    - alive
-                //    - have an endtime + curClient.AvgDLTime that is higher than now+curClient.next exposure time
                 return true;
             }
 
-            if (otherAliveClients.All(c => c.ExposureEndTime < DateTime.Now.AddSeconds(client.NextExposureTime))) {
-                // if all clients finish before our max waiting time we just continue
-                // one client has to launch the dither task that will wait for all alive clients to dither
-                lock (ditherLock) {
-                    if (ditherTask == null) {
-                        ditherTask = DitherTask();
-                    }
+            // if all clients finish before our added next exposure time we will dither
+            // one client has to launch the dither task that will wait for all alive clients to dither
+            lock (ditherLock) {
+                if (ditherTask == null) {
+                    ditherTask = DitherTask();
                 }
-
-                client.IsWaitingForDither = true;
-
-                var result = await ditherTask;
-
-                client.IsWaitingForDither = false;
-
-                lock (ditherLock) {
-                    ditherCancellationTokenSource = null;
-                    ditherTask = null;
-                }
-
-                return result;
             }
 
-            // should never be called
-            return false;
-        }
+            // this will indicate to the DitherTask that this client is waiting for dithering
+            // the DitherTask will call dithering when all clients are waiting or doing nothing
+            client.IsWaitingForDither = true;
 
-        private async Task<bool> DitherTask() {
-            // here we wait for all alive clients collectively to be
-            // either not shooting (sequence end) or waiting for dither (midst of a sequence)
-            try {
-                while (!ConnectedClients.Where(c => c.IsAlive)
-                    .All(c => c.IsWaitingForDither || c.ExposureEndTime < DateTime.Now)) {
-                    await Task.Delay(TimeSpan.FromSeconds(1), ditherCancellationTokenSource.Token);
-                    ditherCancellationTokenSource.Token.ThrowIfCancellationRequested();
-                }
+            var result = await ditherTask;
 
-                var result = await guiderInstance.Dither(ditherCancellationTokenSource.Token);
-                return result;
-            } catch (OperationCanceledException) {
-                return false;
+            client.IsWaitingForDither = false;
+
+            lock (ditherLock) {
+                ditherCancellationTokenSource = null;
+                ditherTask = null;
             }
+
+            return result;
         }
 
-        public void CancelSynchronizedDither() {
-            ditherCancellationTokenSource?.Cancel();
+        /// <inheritdoc />
+        public async Task UpdateCameraInfo(ProfileCameraState profileCameraState) {
+            var clientInfo = ConnectedClients.Single(c => c.InstanceID == profileCameraState.InstanceId);
+            clientInfo.IsExposing = profileCameraState.IsExposing;
+            clientInfo.NextExposureTime = profileCameraState.NextExposureTime;
+            clientInfo.LastDownloadTime = profileCameraState.LastDownloadTime;
+            clientInfo.ExposureEndTime = profileCameraState.ExposureEndTime;
         }
-    }
-
-    [DataContract]
-    internal class GuideInfo {
-
-        [DataMember]
-        public string State { get; set; }
-
-        [DataMember]
-        public PHD2Guider.PhdEventGuideStep GuideStep { get; set; }
-    }
-
-    internal class SynchronizedClientInfo {
-        public Guid InstanceID { get; set; }
-
-        public DateTime LastPing { get; set; }
-
-        public bool IsAlive => DateTime.Now.Subtract(LastPing).TotalSeconds < 5;
-
-        public DateTime ExposureEndTime { get; set; }
-
-        public bool IsExposing { get; set; }
-
-        public bool IsWaitingForDither { get; set; }
-
-        public double NextExposureTime { get; set; }
-
-        public double LastDownloadTime { get; set; }
-    }
-
-    [DataContract]
-    internal class ProfileCameraState {
-
-        [DataMember]
-        public Guid InstanceId { get; set; }
-
-        [DataMember]
-        public bool IsExposing { get; set; }
-
-        [DataMember]
-        public DateTime ExposureEndTime { get; set; }
-
-        [DataMember]
-        public double NextExposureTime { get; set; }
-
-        [DataMember]
-        public double LastDownloadTime { get; set; }
     }
 }
