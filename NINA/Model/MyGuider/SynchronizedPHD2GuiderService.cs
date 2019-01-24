@@ -8,6 +8,8 @@ using System.ServiceModel;
 using System.Threading;
 using System.Threading.Tasks;
 
+#pragma warning disable 1998
+
 namespace NINA.Model.MyGuider {
 
     /// <summary>

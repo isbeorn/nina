@@ -1,12 +1,12 @@
 ﻿using NINA.Utility;
-using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
+
+#pragma warning disable 1998
 
 namespace NINA.Model.MyGuider {
 
     public class DummyGuider : BaseINPC, IGuider {
-
         public string Name => "Dummy";
 
         private bool _connected;
