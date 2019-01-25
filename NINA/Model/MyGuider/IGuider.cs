@@ -35,7 +35,7 @@ namespace NINA.Model.MyGuider {
 
         string Name { get; }
 
-        Task<bool> Connect(CancellationToken ct);
+        Task<bool> Connect();
 
         Task<bool> AutoSelectGuideStar();
 

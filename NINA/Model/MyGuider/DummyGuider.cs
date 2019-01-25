@@ -23,7 +23,7 @@ namespace NINA.Model.MyGuider {
         public string State => "Being a dummy";
         public IGuideStep GuideStep { get; }
 
-        public async Task<bool> Connect(CancellationToken ct) {
+        public async Task<bool> Connect() {
             Connected = true;
 
             return Connected;

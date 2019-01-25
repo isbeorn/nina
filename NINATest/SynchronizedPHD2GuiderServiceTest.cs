@@ -17,7 +17,7 @@ namespace NINATest {
         [OneTimeSetUp]
         public void Init() {
             // return false otherwise it won't work since we I cast it to a phd2 guider when it's actually connected but whatever
-            guider.Setup(m => m.Connect(It.IsAny<CancellationToken>())).ReturnsAsync(false);
+            guider.Setup(m => m.Connect()).ReturnsAsync(false);
         }
 
         [Test]
@@ -30,7 +30,7 @@ namespace NINATest {
 
             // assert
             result.Should().Be(false);
-            guider.Verify(m => m.Connect(cts.Token), Times.Once);
+            guider.Verify(m => m.Connect(), Times.Once);
         }
 
         [Test]

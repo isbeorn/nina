@@ -195,7 +195,7 @@ namespace NINA.Model.MyGuider {
         }*/
         private TaskCompletionSource<bool> _tcs;
 
-        public async Task<bool> Connect(CancellationToken ct) {
+        public async Task<bool> Connect() {
             _tcs = new TaskCompletionSource<bool>();
             var startedPHD2 = await StartPHD2Process();
 #pragma warning disable 4014

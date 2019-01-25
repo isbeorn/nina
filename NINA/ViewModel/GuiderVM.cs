@@ -40,7 +40,7 @@ namespace NINA.ViewModel {
 
     internal class GuiderVM : DockableVM, IGuiderVM {
 
-        public GuiderVM(IProfileService profileService, IGuiderMediator guiderMediator, IApplicationStatusMediator applicationStatusMediator, IGuiderChooserVM guiderChooserVM) : base(profileService) {
+        public GuiderVM(IProfileService profileService, IGuiderMediator guiderMediator, ICameraMediator cameraMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblGuider";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["GuiderSVG"];
 
@@ -53,7 +53,7 @@ namespace NINA.ViewModel {
 
             CancelConnectGuiderCommand = new RelayCommand(CancelConnectGuider);
 
-            GuiderChooserVM = guiderChooserVM;
+            GuiderChooserVM = new GuiderChooserVM(profileService, cameraMediator);
 
             GuiderChooserVM.SelectedGuider.PropertyChanged += (sender, args) => RaisePropertyChanged(nameof(Guider));
 
@@ -153,7 +153,7 @@ namespace NINA.ViewModel {
 
             try {
                 _cancelConnectGuiderSource = new CancellationTokenSource();
-                connected = await Guider.Connect(_cancelConnectGuiderSource.Token);
+                connected = await Guider.Connect();
                 _cancelConnectGuiderSource.Token.ThrowIfCancellationRequested();
 
                 GuiderInfo = new GuiderInfo {
@@ -162,6 +162,11 @@ namespace NINA.ViewModel {
                 BroadcastGuiderInfo();
                 RaisePropertyChanged(nameof(Guider));
             } catch (OperationCanceledException) {
+                Guider?.Disconnect();
+                GuiderInfo = new GuiderInfo {
+                    Connected = false
+                };
+                BroadcastGuiderInfo();
             }
 
             return connected;

@@ -123,19 +123,16 @@ namespace NINA.Model.MyGuider {
             }
         }
 
-        private async Task<bool> StartGuidingTask() {
-            var result = await guiderInstance.StartGuiding(startGuidingCancellationTokenSource.Token);
-            return result;
+        private Task<bool> StartGuidingTask() {
+            return guiderInstance.StartGuiding(startGuidingCancellationTokenSource.Token);
         }
 
-        private async Task<bool> StartPauseTask(bool pause) {
-            var result = await guiderInstance.Pause(pause, startPauseCancellationTokenSource.Token);
-            return result;
+        private Task<bool> StartPauseTask(bool pause) {
+            return guiderInstance.Pause(pause, startPauseCancellationTokenSource.Token);
         }
 
-        private async Task<bool> StopGuidingTask() {
-            var result = await guiderInstance.StopGuiding(stopGuidingCancellationTokenSource.Token);
-            return result;
+        private Task<bool> StopGuidingTask() {
+            return guiderInstance.StopGuiding(stopGuidingCancellationTokenSource.Token);
         }
 
         /// <inheritdoc />
@@ -206,7 +203,7 @@ namespace NINA.Model.MyGuider {
             initializeTaskCompletionSource = new TaskCompletionSource<bool>();
             guiderInstance = guider;
             ConnectedClients = new List<SynchronizedClientInfo>();
-            PHD2Connected = await guiderInstance.Connect(ct);
+            PHD2Connected = await guiderInstance.Connect();
             if (PHD2Connected) {
                 ((PHD2Guider)guiderInstance).PHD2ConnectionLost += (sender, args) => PHD2Connected = false;
                 Notification.ShowSuccess(Locale["LblPhd2SynchronizedServiceStarted"]);
