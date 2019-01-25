@@ -123,18 +123,6 @@ namespace NINA.Model.MyGuider {
             }
         }
 
-        private Task<bool> StartGuidingTask() {
-            return guiderInstance.StartGuiding(startGuidingCancellationTokenSource.Token);
-        }
-
-        private Task<bool> StartPauseTask(bool pause) {
-            return guiderInstance.Pause(pause, startPauseCancellationTokenSource.Token);
-        }
-
-        private Task<bool> StopGuidingTask() {
-            return guiderInstance.StopGuiding(stopGuidingCancellationTokenSource.Token);
-        }
-
         /// <inheritdoc />
         public Task<bool> AutoSelectGuideStar() {
             return guiderInstance.AutoSelectGuideStar();
@@ -214,48 +202,51 @@ namespace NINA.Model.MyGuider {
         }
 
         /// <inheritdoc />
-        public async Task<bool> StartGuiding() {
+        public Task<bool> StartGuiding() {
             lock (startGuidingLock) {
-                if (startGuidingCancellationTokenSource == null) {
+                var taskStatus = startGuidingTask?.Status;
+                if (taskStatus == TaskStatus.Faulted ||
+                    taskStatus == TaskStatus.Canceled ||
+                    taskStatus == TaskStatus.RanToCompletion ||
+                    startGuidingTask == null) {
                     startGuidingCancellationTokenSource = new CancellationTokenSource();
-                    startGuidingTask = StartGuidingTask();
+                    startGuidingTask = guiderInstance.StartGuiding(startGuidingCancellationTokenSource.Token);
                 }
             }
 
-            var result = await startGuidingTask;
-
-            startGuidingCancellationTokenSource = null;
-            return result;
+            return startGuidingTask;
         }
 
         /// <inheritdoc />
-        public async Task<bool> StartPause(bool pause) {
+        public Task<bool> StartPause(bool pause) {
             lock (startPauseLock) {
-                if (startPauseCancellationTokenSource == null) {
+                var taskStatus = startPauseTask?.Status;
+                if (taskStatus == TaskStatus.Faulted ||
+                    taskStatus == TaskStatus.Canceled ||
+                    taskStatus == TaskStatus.RanToCompletion ||
+                    startPauseTask == null) {
                     startPauseCancellationTokenSource = new CancellationTokenSource();
-                    startPauseTask = StartPauseTask(pause);
+                    startPauseTask = guiderInstance.Pause(pause, startPauseCancellationTokenSource.Token);
                 }
             }
 
-            var result = await startPauseTask;
-
-            startPauseCancellationTokenSource = null;
-            return result;
+            return startPauseTask;
         }
 
         /// <inheritdoc />
-        public async Task<bool> StopGuiding() {
+        public Task<bool> StopGuiding() {
             lock (stopGuidingLock) {
-                if (stopGuidingCancellationTokenSource == null) {
+                var taskStatus = stopGuidingTask?.Status;
+                if (taskStatus == TaskStatus.Faulted ||
+                    taskStatus == TaskStatus.Canceled ||
+                    taskStatus == TaskStatus.RanToCompletion ||
+                    stopGuidingTask == null) {
                     stopGuidingCancellationTokenSource = new CancellationTokenSource();
-                    stopGuidingTask = StopGuidingTask();
+                    stopGuidingTask = guiderInstance.StopGuiding(stopGuidingCancellationTokenSource.Token);
                 }
             }
 
-            var result = await stopGuidingTask;
-
-            stopGuidingCancellationTokenSource = null;
-            return result;
+            return stopGuidingTask;
         }
 
         /// <inheritdoc />
