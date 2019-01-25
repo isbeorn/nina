@@ -221,32 +221,32 @@ namespace NINA.Model.MyGuider {
         }
 
         /// <inheritdoc />
-        public async Task<bool> Dither(CancellationToken ct) {
-            return await Task.Run(async () => {
+        public Task<bool> Dither(CancellationToken ct) {
+            return Task.Run(async () => {
                 ct.Register(guiderService.CancelSynchronizedDither);
                 return await guiderService.SynchronizedDither(profileService.ActiveProfile.Id);
             }, ct);
         }
 
         /// <inheritdoc />
-        public async Task<bool> Pause(bool pause, CancellationToken ct) {
-            return await Task.Run(async () => {
+        public Task<bool> Pause(bool pause, CancellationToken ct) {
+            return Task.Run(async () => {
                 ct.Register(guiderService.CancelStartPause);
                 return await guiderService.StartPause(pause);
             }, ct);
         }
 
         /// <inheritdoc />
-        public async Task<bool> StartGuiding(CancellationToken ct) {
-            return await Task.Run(async () => {
+        public Task<bool> StartGuiding(CancellationToken ct) {
+            return Task.Run(async () => {
                 ct.Register(guiderService.CancelStartGuiding);
                 return await guiderService.StartGuiding();
             }, ct);
         }
 
         /// <inheritdoc />
-        public async Task<bool> StopGuiding(CancellationToken ct) {
-            return await Task.Run(async () => {
+        public Task<bool> StopGuiding(CancellationToken ct) {
+            return Task.Run(async () => {
                 ct.Register(guiderService.CancelStopGuiding);
                 return await guiderService.StopGuiding();
             }, ct);
