@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using System;
 using System.Collections.Generic;
 
 namespace NINA.Model.MyCamera {
@@ -198,6 +199,46 @@ namespace NINA.Model.MyCamera {
             get => normalReadoutMode;
             set {
                 normalReadoutMode = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool isExposing;
+
+        public bool IsExposing {
+            get => isExposing;
+            set {
+                isExposing = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private DateTime exposureEndTime = DateTime.Now;
+
+        public DateTime ExposureEndTime {
+            get => exposureEndTime;
+            set {
+                exposureEndTime = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double nextExposureLength = -1;
+
+        public double NextExposureLength {
+            get => nextExposureLength;
+            set {
+                nextExposureLength = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double lastDownloadTime = -1;
+
+        public double LastDownloadTime {
+            get => lastDownloadTime;
+            set {
+                lastDownloadTime = value;
                 RaisePropertyChanged();
             }
         }

@@ -24,6 +24,7 @@
 using NINA.Model;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
+using NINA.Model.MyGuider;
 using NINA.Model.MyRotator;
 using NINA.Model.MyTelescope;
 using NINA.PlateSolving;
@@ -33,7 +34,6 @@ using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using NINA.Utility.WindowService;
-using NINACustomControlLibrary;
 using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
@@ -49,7 +49,7 @@ using System.Windows.Threading;
 
 namespace NINA.ViewModel {
 
-    internal class SequenceVM : DockableVM, ITelescopeConsumer, IFocuserConsumer, IFilterWheelConsumer, IRotatorConsumer {
+    internal class SequenceVM : DockableVM, ITelescopeConsumer, IFocuserConsumer, IFilterWheelConsumer, IRotatorConsumer, IGuiderConsumer {
 
         public SequenceVM(
                 IProfileService profileService,
@@ -75,6 +75,8 @@ namespace NINA.ViewModel {
             this.rotatorMediator.RegisterConsumer(this);
 
             this.guiderMediator = guiderMediator;
+            this.guiderMediator.RegisterConsumer(this);
+
             this.cameraMediator = cameraMediator;
             this.imagingMediator = imagingMediator;
             this.applicationStatusMediator = applicationStatusMediator;
@@ -163,9 +165,20 @@ namespace NINA.ViewModel {
                             profileService.ActiveProfile.AstrometrySettings.Latitude,
                             profileService.ActiveProfile.AstrometrySettings.Longitude
                         );
+                        AdjustCaptureSequenceListForSynchronization(l);
                         this.Targets.Add(l);
                     }
                 }
+            }
+        }
+
+        private bool isUsingSynchronizedGuider;
+
+        public bool IsUsingSynchronizedGuider {
+            get => isUsingSynchronizedGuider;
+            set {
+                isUsingSynchronizedGuider = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -504,6 +517,8 @@ namespace NINA.ViewModel {
                     while ((seq = csl.Next()) != null) {
                         exposureCount++;
 
+                        seq.NextSequence = csl.GetNextSequenceItem(seq);
+
                         await CheckMeridianFlip(seq, ct, progress);
 
                         Stopwatch seqDuration = Stopwatch.StartNew();
@@ -703,6 +718,15 @@ namespace NINA.ViewModel {
             }
         }
 
+        private void AdjustCaptureSequenceListForSynchronization(CaptureSequenceList csl) {
+            if (IsUsingSynchronizedGuider) {
+                foreach (var item in csl.Items) {
+                    item.Dither = true;
+                    item.DitherAmount = 1;
+                }
+            }
+        }
+
         private CaptureSequenceList GetTemplate() {
             CaptureSequenceList csl = null;
             if (File.Exists(profileService.ActiveProfile.SequenceSettings.TemplatePath)) {
@@ -713,6 +737,7 @@ namespace NINA.ViewModel {
                         profileService.ActiveProfile.AstrometrySettings.Latitude,
                         profileService.ActiveProfile.AstrometrySettings.Longitude
                     );
+                    AdjustCaptureSequenceListForSynchronization(csl);
                 }
             } else {
                 var seq = new CaptureSequence();
@@ -722,6 +747,7 @@ namespace NINA.ViewModel {
                     profileService.ActiveProfile.AstrometrySettings.Latitude,
                     profileService.ActiveProfile.AstrometrySettings.Longitude
                 );
+                AdjustCaptureSequenceListForSynchronization(csl);
             }
             return csl;
         }
@@ -737,9 +763,15 @@ namespace NINA.ViewModel {
                 return _sequence;
             }
             set {
-                if (_sequence != null) _sequence.PropertyChanged -= _sequence_PropertyChanged;
+                if (_sequence != null) {
+                    _sequence.PropertyChanged -= _sequence_PropertyChanged;
+                }
+
                 _sequence = value;
-                if (_sequence != null) _sequence.PropertyChanged += _sequence_PropertyChanged;
+                if (_sequence != null) {
+                    _sequence.PropertyChanged += _sequence_PropertyChanged;
+                }
+
                 RaisePropertyChanged();
             }
         }
@@ -802,6 +834,7 @@ namespace NINA.ViewModel {
         public void AddSequenceRow(object o) {
             Sequence.Add(new CaptureSequence());
             SelectedSequenceRowIdx = Sequence.Count - 1;
+            AdjustCaptureSequenceListForSynchronization(Sequence);
         }
 
         private void RemoveSequenceRow(object obj) {
@@ -844,5 +877,14 @@ namespace NINA.ViewModel {
         public ICommand ResumeSequenceCommand { get; private set; }
         public ICommand LoadSequenceCommand { get; private set; }
         public ICommand SaveSequenceCommand { get; private set; }
+
+        public void UpdateDeviceInfo(GuiderInfo deviceInfo) {
+            if (guiderMediator.IsUsingSynchronizedGuider != IsUsingSynchronizedGuider) {
+                IsUsingSynchronizedGuider = guiderMediator.IsUsingSynchronizedGuider;
+                foreach (var item in Targets) {
+                    AdjustCaptureSequenceListForSynchronization(item);
+                }
+            }
+        }
     }
 }

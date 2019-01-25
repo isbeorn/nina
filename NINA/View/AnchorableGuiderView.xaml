@@ -39,7 +39,7 @@
                 <StackPanel Height="25" Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblState}" />
                     <TextBlock VerticalAlignment="Center" Text=": " />
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Guider.AppState.State}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Guider.State}" />
                 </StackPanel>
                 <Border Height="25" BorderBrush="{x:Null}">
                     <TextBlock

@@ -1,8 +1,6 @@
 ﻿using NINA.Utility;
-using NINA.Utility.Profile;
 using System;
 using System.Xml;
-using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace NINA.Model {
@@ -197,6 +195,17 @@ namespace NINA.Model {
             }
             set {
                 _ditherAmount = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private CaptureSequence nextSequence;
+
+        [XmlIgnore]
+        public CaptureSequence NextSequence {
+            get => nextSequence;
+            set {
+                nextSequence = value;
                 RaisePropertyChanged();
             }
         }

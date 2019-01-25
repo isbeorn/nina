@@ -867,7 +867,7 @@
                     Header="{ns:Loc LblDither}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Dither, UpdateSourceTrigger=PropertyChanged}" />
+                            <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Dither, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding Source={StaticResource AppVM}, Path=SeqVM.IsUsingSynchronizedGuider, Converter={StaticResource InverseBooleanConverter}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -885,6 +885,7 @@
                                 MinValue="0"
                                 StepSize="1"
                                 SubstractSVG="{StaticResource SubstractSVG}"
+                                IsEnabled="{Binding Source={StaticResource AppVM}, Path=SeqVM.IsUsingSynchronizedGuider, Converter={StaticResource InverseBooleanConverter}}"
                                 Value="{Binding DitherAmount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
@@ -893,6 +894,7 @@
                             <TextBlock
                                 Margin="5,0,5,0"
                                 VerticalAlignment="Center"
+                                IsEnabled="{Binding Source={StaticResource AppVM}, Path=SeqVM.IsUsingSynchronizedGuider, Converter={StaticResource InverseBooleanConverter}}"
                                 Text="{Binding DitherAmount}"
                                 TextAlignment="Center" />
                         </DataTemplate>
