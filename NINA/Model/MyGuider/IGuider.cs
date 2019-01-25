@@ -21,18 +21,19 @@
 
 #endregion "copyright"
 
-using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyGuider {
 
-    internal interface IGuider : INotifyPropertyChanged {
+    public interface IGuider : INotifyPropertyChanged {
         bool Connected { get; }
         double PixelScale { get; set; }
         string State { get; }
         IGuideStep GuideStep { get; }
+
+        string Name { get; }
 
         Task<bool> Connect();
 

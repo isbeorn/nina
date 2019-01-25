@@ -466,7 +466,8 @@ namespace NINA.ViewModel {
         public GuiderVM GuiderVM {
             get {
                 if (_guiderVM == null) {
-                    _guiderVM = new GuiderVM(profileService, guiderMediator, applicationStatusMediator);
+                    _guiderVM = new
+                        GuiderVM(profileService, guiderMediator, cameraMediator, applicationStatusMediator);
                 }
                 return _guiderVM;
             }

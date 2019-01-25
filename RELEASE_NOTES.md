@@ -24,10 +24,14 @@
 - Added a list of manual focus targets (bright stars) that are currently visible in the sky
 
 ### Framing Assistant Offline Sky Chart
-- Based on Sky Atlas data a basic sky chart showing objects added
+- Based on Sky Atlas data a basic sky chart showing objects can be displayed
 - Instead of dragging the rectangular through the initial image like in the other framing sources
   the background itself will be moved like in an orrery  
-*Known issue*: Projection beyond Dec +-80 is not working as expected.
+
+### Guiding
+ - Added Synchronized PHD2 Guider (experimental)
+ - Synchronized PHD2 Guider will synchronize your Dither requests between multiple instances of N.I.N.A.
+	- Known limitations: Dithering will happen every possible synchronized frame and is not changeable
 
 
 ## Bugfixes

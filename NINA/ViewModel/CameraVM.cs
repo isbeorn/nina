@@ -33,6 +33,7 @@ using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Async;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -521,6 +522,10 @@ namespace NINA.ViewModel {
             IProgress<ApplicationStatus> progress) {
             double exposureTime = sequence.ExposureTime;
             if (CameraInfo.Connected == true) {
+                CameraInfo.IsExposing = true;
+                CameraInfo.ExposureEndTime = DateTime.Now.AddSeconds(sequence.ExposureTime);
+                CameraInfo.NextExposureLength = sequence.NextSequence?.ExposureTime ?? -1;
+                BroadcastCameraInfo();
                 Cam.StartExposure(sequence);
 
                 var start = DateTime.Now;
@@ -552,6 +557,8 @@ namespace NINA.ViewModel {
                     });
                 }
                 token.ThrowIfCancellationRequested();
+                CameraInfo.IsExposing = false;
+                BroadcastCameraInfo();
             }
         }
 
@@ -567,6 +574,9 @@ namespace NINA.ViewModel {
                 Cam?.AbortExposure();
                 BroadcastCameraInfo();
             }
+
+            CameraInfo.IsExposing = false;
+            CameraInfo.ExposureEndTime = DateTime.Now;
         }
 
         public void SetGain(short gain) {
@@ -584,9 +594,16 @@ namespace NINA.ViewModel {
             }
         }
 
-        public Task<ImageArray> Download(CancellationToken token, bool calculateStatistics) {
+        public async Task<ImageArray> Download(CancellationToken token, bool calculateStatistics) {
+            CameraInfo.IsExposing = false;
+            CameraInfo.ExposureEndTime = DateTime.Now;
+            BroadcastCameraInfo();
             if (CameraInfo.Connected == true) {
-                var output = Cam.DownloadExposure(token, calculateStatistics);
+                Stopwatch seqDuration = Stopwatch.StartNew();
+                var output = await Cam.DownloadExposure(token, calculateStatistics);
+                seqDuration.Stop();
+                CameraInfo.LastDownloadTime = seqDuration.Elapsed.TotalSeconds;
+                BroadcastCameraInfo();
                 return output;
             } else {
                 return null;

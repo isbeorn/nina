@@ -236,13 +236,20 @@
     <s:String x:Key="LblMeridianOffset">Meridian Offset</s:String>
     <s:String x:Key="LblPlateSolvedPolarAlignment">Plate Solved Polar Alignment</s:String>
     <s:String x:Key="LblAltitudeMeasurement">Altitude Measurement</s:String>
-    <s:String x:Key="LblAltitudeMeasurementDescription" xml:space="preserve">Point telescope east or west.
-Adjust combobox value accordingly</s:String>
+    <s:String x:Key="LblAltitudeMeasurementDescription">Point telescope east or west near declination 0 and near horizon.</s:String>
     <s:String x:Key="LblAltitudeMeasurementSide">Altitude Measurement side</s:String>
-    <s:String x:Key="LblAltitudeMeasurementButtonTooltip">Measure Altitude Error. Point Scope East or West and adjust Side of Pier combobox accordingly</s:String>
+    <s:String x:Key="LblAltitudeMeasurementButtonTooltip" xml:space="preserve">Measures Altitude Error by three steps.
+1. Takes image and platesolves for actual coordinates at current position
+2. Slew telescope using Right Ascension axis by 0.5 degrees
+3. Take another image at the new position, plate solves it for the actual position
+Using those two points the actual altitude error will be calculated and displayed</s:String>
     <s:String x:Key="LblAzimuthMeasurement">Azimuth Measurement</s:String>
-    <s:String x:Key="LblAzimuthMeasurementDescription">Point Telescope South near meridian</s:String>
-    <s:String x:Key="LblAzimuthMeasurementButtonTooltip">Measure Azimuth Error. Point Scope South near Meridian</s:String>
+    <s:String x:Key="LblAzimuthMeasurementDescription">Point Telescope South near declination 0 and near meridian</s:String>
+    <s:String x:Key="LblAzimuthMeasurementButtonTooltip" xml:space="preserve">Measures Azimuth Error by three steps.
+1. Takes image and platesolves for actual coordinates at current position
+2. Slew telescope using Right Ascension axis by 0.5 degrees
+3. Take another image at the new position, plate solves it for the actual position
+Using those two points the actual azimuth error will be calculated and displayed</s:String>
     <s:String x:Key="LblDARVSlew">D.A.R.V. Slew</s:String>
     <s:String x:Key="LblDARVSlewDescription">Specify the duration for the D.A.R.V. procedure. The telescope will slew half the time in one direction on RA axis and then slew back. In case of no Polar Alignment error it will display as a straight line. Otherwise a V shaped line. For Azimuth Error Measurement slew the scope near meridian, otherwise east or west.</s:String>
     <s:String x:Key="LblSlewRateDegSec">Slew Rate (deg/sec)</s:String>
@@ -786,7 +793,7 @@ Calculated HFR: {2}
     <s:String x:Key="LblAnnotateDSO">Annotate Deep Sky Objects</s:String>
     <s:String x:Key="LblAnnotateGrid">Display Grid</s:String>
     <s:String x:Key="LblAnnotateConstellations">Display and annotate Constellations</s:String>
-    <s:String x:Key="LblAnnotateConstellationboundaries">Display Constellation Boundaries</s:String>
+    <s:String x:Key="LblAnnotateConstellationBoundaries">Display Constellation Boundaries</s:String>
     <s:String x:Key="LblSkyAtlasSkySurvey">SkyAtlas (Offline Framing)</s:String>
     <s:String x:Key="LblPhd2PathNotFound">Could not start PHD2. Path not found</s:String>
     <s:String x:Key="LblPhd2StartProcessError">Could not start PHD2. Check logs for details.</s:String>
@@ -794,4 +801,14 @@ Calculated HFR: {2}
     <s:String x:Key="LblPHD2Path">PHD2 path</s:String>
     <s:String x:Key="LblMinDuration">Min. Duration</s:String>
     <s:String x:Key="LblWaitForTemperatureStep">Waiting for camera to reach next temperature step</s:String>
+    <s:String x:Key="LblApplicationStartDateDescription">Application start date with format YYYY-MM-DD</s:String>
+    <s:String x:Key="LblPhd2SynchronizedServiceClientConnected">Client connected to synchronized PHD2 service.
+Connected clients: {0}</s:String>
+    <s:String x:Key="LblPhd2SynchronizedServiceClientDisconnected">Client disconnected to synchronized PHD2 service.
+Connected clients: {0}</s:String>
+    <s:String x:Key="LblPhd2SynchronizedServiceStarted">Synchronized PHD2 service started</s:String>
+    <s:String x:Key="LblSynchronizedPHD2Guider">Synchronized PHD2 (Experimental)</s:String>
+    <s:String x:Key="LblSynchronizedPHD2ServiceCrashed">Synchronized PHD2 Service crashed, restarting this Synchronized PHD2 Guider as Service</s:String>
+    <s:String x:Key="LblSynchronizedPHD2ServiceClientAlreadyExists">This profile is already connected to the Synchronized PHD2 Guider.
+You cannot connect the same profile twice, please choose a different NINA profile.</s:String>
 </ResourceDictionary>

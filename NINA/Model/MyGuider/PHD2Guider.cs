@@ -32,6 +32,7 @@ using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -51,6 +52,8 @@ namespace NINA.Model.MyGuider {
         private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
         private PhdEventVersion _version;
+
+        public string Name => "PHD2";
 
         public PhdEventVersion Version {
             get {
@@ -200,15 +203,21 @@ namespace NINA.Model.MyGuider {
 #pragma warning restore 4014
             bool connected = await _tcs.Task;
 
-            if (startedPHD2 && connected) {
-                await ConnectPHD2Equipment();
-                await SendMessage(PHD2EventId.LOOP, PHD2Methods.LOOP);
+            try {
+                if (startedPHD2 && connected) {
+                    await ConnectPHD2Equipment();
+                    await SendMessage(PHD2EventId.LOOP, PHD2Methods.LOOP);
+                }
+
+                var resp = await SendMessage(PHD2EventId.GET_PIXEL_SCALE, PHD2Methods.GET_PIXEL_SCALE);
+                PixelScale = double.Parse(resp.result.ToString().Replace(",", "."), CultureInfo.InvariantCulture);
+
+                Notification.ShowSuccess(Locale.Loc.Instance["LblGuiderConnected"]);
+            } catch (OperationCanceledException) {
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                Notification.ShowError(ex.Message);
             }
-
-            var resp = await SendMessage(PHD2EventId.GET_PIXEL_SCALE, PHD2Methods.GET_PIXEL_SCALE);
-            PixelScale = double.Parse(resp.result.ToString().Replace(",", "."), CultureInfo.InvariantCulture);
-
-            Notification.ShowSuccess(Locale.Loc.Instance["LblGuiderConnected"]);
 
             return connected;
         }
@@ -532,9 +541,12 @@ namespace NINA.Model.MyGuider {
                     PixelScale = 0.0d;
                     Connected = false;
                     _tcs.TrySetResult(false);
+                    PHD2ConnectionLost(this, EventArgs.Empty);
                 }
             }
         }
+
+        public event EventHandler PHD2ConnectionLost;
 
         public class PhdMethodResponse {
             public string jsonrpc;
@@ -556,10 +568,19 @@ namespace NINA.Model.MyGuider {
             public string message;
         }
 
+        [DataContract]
         public class PhdEvent : BaseINPC, IGuideEvent {
+
+            [DataMember]
             public string Event { get; set; }
+
+            [DataMember]
             public string TimeStamp { get; set; }
+
+            [DataMember]
             public string Host { get; set; }
+
+            [DataMember]
             public int Inst { get; set; }
         }
 
@@ -660,31 +681,82 @@ namespace NINA.Model.MyGuider {
         public class PhdEventResumed : PhdEvent {
         }
 
+        [DataContract]
         public class PhdEventGuideStep : PhdEvent, IGuideStep {
+
+            [DataMember]
             private double frame;
+
+            [DataMember]
             private double time;
+
+            [DataMember]
             private string mount;
+
+            [DataMember]
             private double dx;
+
+            [DataMember]
             private double dy;
+
+            [DataMember]
             private double rADistanceRaw;
+
+            [DataMember]
             private double decDistanceRaw;
+
+            [DataMember]
             private double raDistanceDisplay;
+
+            [DataMember]
             private double decDistanceDisplay;
+
+            [DataMember]
             private double rADistanceGuide;
+
+            [DataMember]
             private double decDistanceGuide;
+
+            [DataMember]
             private double raDistanceGuideDisplay;
+
+            [DataMember]
             private double decDistanceGuideDisplay;
+
+            [DataMember]
             private double rADuration;
+
+            [DataMember]
             private string rADirection;
+
+            [DataMember]
             private double dECDuration;
+
+            [DataMember]
             private string decDirection;
+
+            [DataMember]
             private double starMass;
+
+            [DataMember]
             private double sNR;
+
+            [DataMember]
             private double avgDist;
+
+            [DataMember]
             private bool rALimited;
+
+            [DataMember]
             private bool decLimited;
+
+            [DataMember]
             private double errorCode;
 
+            public PhdEventGuideStep() {
+            }
+
+            [DataMember]
             public double RADistanceRawDisplay {
                 get {
                     return raDistanceDisplay;
@@ -694,6 +766,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double DecDistanceRawDisplay {
                 get {
                     return decDistanceDisplay;
@@ -703,6 +776,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double RADistanceGuideDisplay {
                 get {
                     return raDistanceGuideDisplay;
@@ -712,6 +786,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double DecDistanceGuideDisplay {
                 get {
                     return decDistanceGuideDisplay;
@@ -721,6 +796,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double Frame {
                 get {
                     return frame;
@@ -731,6 +807,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double Time {
                 get {
                     return time;
@@ -743,18 +820,23 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double TimeRA {
                 get {
                     return Time - 0.15;
                 }
+                set { Time = value + 0.15; }
             }
 
+            [DataMember]
             public double TimeDec {
                 get {
                     return Time + 0.15;
                 }
+                set { Time = value - 0.15; }
             }
 
+            [DataMember]
             public string Mount {
                 get {
                     return mount;
@@ -765,6 +847,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double Dx {
                 get {
                     return dx;
@@ -775,6 +858,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double Dy {
                 get {
                     return dy;
@@ -785,6 +869,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double RADistanceRaw {
                 get {
                     return -rADistanceRaw;
@@ -796,6 +881,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double DecDistanceRaw {
                 get {
                     return decDistanceRaw;
@@ -807,6 +893,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double RADistanceGuide {
                 get {
                     return rADistanceGuide;
@@ -818,6 +905,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double DecDistanceGuide {
                 get {
                     return decDistanceGuide;
@@ -829,6 +917,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double RADuration {
                 get {
                     if (RADirection == "East") {
@@ -843,6 +932,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public string RADirection {
                 get {
                     return rADirection;
@@ -853,6 +943,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double DECDuration {
                 get {
                     if (DecDirection == "South") {
@@ -867,6 +958,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public string DecDirection {
                 get {
                     return decDirection;
@@ -877,6 +969,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double StarMass {
                 get {
                     return starMass;
@@ -887,6 +980,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double SNR {
                 get {
                     return sNR;
@@ -897,6 +991,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double AvgDist {
                 get {
                     return avgDist;
@@ -907,6 +1002,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public bool RALimited {
                 get {
                     return rALimited;
@@ -917,6 +1013,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public bool DecLimited {
                 get {
                     return decLimited;
@@ -927,6 +1024,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double ErrorCode {
                 get {
                     return errorCode;

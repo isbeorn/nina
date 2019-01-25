@@ -23,11 +23,6 @@
 
 using NINA.Utility.Astrometry;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace NINATest {
@@ -235,7 +230,7 @@ namespace NINATest {
             var centerPoint = new Point(centerX, centerY);
             var center = new Coordinates(centerRa, centerDec, Epoch.J2000, Coordinates.RAType.Degrees);
 
-            var p = coordinates.GnomonicTanProjection(center, centerPoint, arcSecPerPixel, arcSecPerPixel, rotation);
+            var p = coordinates.XYProjection(center, centerPoint, arcSecPerPixel, arcSecPerPixel, rotation, Coordinates.ProjectionType.Gnomonic);
 
             var expectedPoint = new Point(expectedX, expectedY);
 

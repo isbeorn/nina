@@ -236,13 +236,20 @@
     <s:String x:Key="LblMeridianOffset">Meridian Absatz</s:String>
     <s:String x:Key="LblPlateSolvedPolarAlignment">Polarausrichtung mit Hilfe von Platesolving</s:String>
     <s:String x:Key="LblAltitudeMeasurement">Höhenmessung</s:String>
-    <s:String x:Key="LblAltitudeMeasurementDescription" xml:space="preserve">Teleskop nach osten oder westen ausrichten.
-Combobox Wert entsprechend anpassen</s:String>
+    <s:String x:Key="LblAltitudeMeasurementDescription">Teleskop nach Osten oder Westen in die Nähe vom Horizont und Deklination 0 ausrichten.</s:String>
     <s:String x:Key="LblAltitudeMeasurementSide">Höhenmessungsseite</s:String>
-    <s:String x:Key="LblAltitudeMeasurementButtonTooltip">Höhenfehler messen. Teleskop nach osten oder westen ausrichten</s:String>
+    <s:String x:Key="LblAltitudeMeasurementButtonTooltip" xml:space="preserve">Misst den Höhenfehler in drei Schritten
+1. Es wird ein Bild aufgenommen und mittels Platesolving die aktuelle Position ermittelt
+2. Das Teleskop wird um die Rektaszensionsaxe um 0.5 Grad geschwenkt
+3. An der neuen Position wird erneut ein Bild aufgenommen und per Platesolve auch diese Position ermittelt
+Anhand der zwei Punkte wird dann der Höhenfehler errechnet und angezeigt</s:String>
     <s:String x:Key="LblAzimuthMeasurement">Azimutmessung</s:String>
     <s:String x:Key="LblAzimuthMeasurementDescription">Teleskop nahe Meridian ausrichten</s:String>
-    <s:String x:Key="LblAzimuthMeasurementButtonTooltip">Azimutfehler messen. Teleskop nahe Meridian ausrichten</s:String>
+    <s:String x:Key="LblAzimuthMeasurementButtonTooltip" xml:space="preserve">Misst den Azimuthfehler in drei Schritten
+1. Es wird ein Bild aufgenommen und mittels Platesolving die aktuelle Position ermittelt
+2. Das Teleskop wird um die Rektaszensionsaxe um 0.5 Grad geschwenkt
+3. An der neuen Position wird erneut ein Bild aufgenommen und per Platesolve auch diese Position ermittelt
+Anhand der zwei Punkte wird dann der Azimuthfehler errechnet und angezeigt</s:String>
     <s:String x:Key="LblDARVSlew">D.A.R.V. Schwenken</s:String>
     <s:String x:Key="LblDARVSlewDescription">Dauer der D.A.R.V. Prozedur festlegen. Teleskop wird für die hälfte der Zeit in eine richtung schwenken entlang der Rektaszensionachse. Danach schwenkt das Teleskop zurück. Idealerweise sieht man dann eine gerade Linie. Falls die Montierung nicht richtig ausgerichtet ist, sieht man jedoch eine V Linie. Für Azimuthfehlermessung das Teleskop in die nähe des Meridians schwenken, ansonsten nach Osten oder Westen.</s:String>
     <s:String x:Key="LblSlewRateDegSec">Schwenkrate (Grad/Sekunden)</s:String>
@@ -791,7 +798,7 @@ Berechneter HFR: {2}
     <s:String x:Key="LblAnnotateDSO">Deep Sky Objekte beschriften</s:String>
     <s:String x:Key="LblAnnotateGrid">Rastergitter anzeigen</s:String>
     <s:String x:Key="LblAnnotateConstellations">Konstellationen anzeigen und beschriften</s:String>
-    <s:String x:Key="LblAnnotateConstellationboundaries">Konstellationsgrenzen anzeigen</s:String>
+    <s:String x:Key="LblAnnotateConstellationBoundaries">Konstellationsgrenzen anzeigen</s:String>
     <s:String x:Key="LblSkyAtlasSkySurvey">Sternenatlas (Offlineausrichtung)</s:String>
     <s:String x:Key="LblPhd2PathNotFound">Konnte PHD2 nicht starten. Der Pfad wurde nicht gefunden</s:String>
     <s:String x:Key="LblPhd2StartProcessError">Konnte PHD2 nicht starten. Prüfen Sie die Log-Dateien für weitere Details</s:String>
@@ -799,4 +806,14 @@ Berechneter HFR: {2}
     <s:String x:Key="LblPHD2Path">Pfad zu PHD2</s:String>
     <s:String x:Key="LblMinDuration">Min. Dauer</s:String>
     <s:String x:Key="LblWaitForTemperatureStep">Warte auf Kamera auf Erreichen des nächsten Temperaturschritts</s:String>
+    <s:String x:Key="LblApplicationStartDateDescription">Applikationsstartdatum mit Format YYYY-MM-DD</s:String>
+    <s:String x:Key="LblPhd2SynchronizedServiceClientConnected">Client hat sich zum synchronisierten PHD2 Service verbunden.
+Verbundene Clients: {0}</s:String>
+    <s:String x:Key="LblPhd2SynchronizedServiceClientDisconnected">Client hat sich zum synchronisierten PHD2 Service verbunden.
+Verbundene Clients: {0}</s:String>
+    <s:String x:Key="LblPhd2SynchronizedServiceStarted">Synchronisierter PHD2 Service gestartet</s:String>
+    <s:String x:Key="LblSynchronizedPHD2Guider">Synchronisiertes PHD2 (Experimentell)</s:String>
+    <s:String x:Key="LblSynchronizedPHD2ServiceCrashed">Synchronisierter PHD2 Service ist abgestürzt, starte diese synchronisierte PHD2 Instanz als Service neu</s:String>
+    <s:String x:Key="LblSynchronizedPHD2ServiceClientAlreadyExists">Dieses Profil ist bereits mit dem synchronisierten PHD2 Service verbunden.
+Sie können dasselbe Profil nicht mehrfach verbinden, bitte wählen Sie ein anderes NINA Profil.</s:String>
 </ResourceDictionary>
