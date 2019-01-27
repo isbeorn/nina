@@ -811,4 +811,5 @@ Connected clients: {0}</s:String>
     <s:String x:Key="LblSynchronizedPHD2ServiceCrashed">Synchronized PHD2 Service crashed, restarting this Synchronized PHD2 Guider as Service</s:String>
     <s:String x:Key="LblSynchronizedPHD2ServiceClientAlreadyExists">This profile is already connected to the Synchronized PHD2 Guider.
 You cannot connect the same profile twice, please choose a different NINA profile.</s:String>
+    <s:String x:Key="LblExposureStartDateDescription">Exposure Start Date with format YYYY-MM-DD_HH-mm-ss.FFF</s:String>
 </ResourceDictionary>

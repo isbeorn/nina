@@ -73,6 +73,9 @@ namespace NINA.Model {
             p = new ImagePattern(ImagePatternKeys.ExposureTime, Locale.Loc.Instance["LblExposureTimeDescription"]);
             patterns.Add(p.Key, p);
 
+            p = new ImagePattern(ImagePatternKeys.ExposureStartDate, Locale.Loc.Instance["LblExposureStartDateDescription"]);
+            patterns.Add(p.Key, p);
+
             p = new ImagePattern(ImagePatternKeys.TargetName, Locale.Loc.Instance["LblTargetNameDescription"]);
             patterns.Add(p.Key, p);
 
@@ -142,6 +145,7 @@ namespace NINA.Model {
             p.Set(ImagePatternKeys.RMSArcSec, 0.65);
             p.Set(ImagePatternKeys.FocuserPosition, 12542);
             p.Set(ImagePatternKeys.ApplicationStartDate, Utility.Utility.ApplicationStartDate.ToString("yyyy-MM-dd"));
+            p.Set(ImagePatternKeys.ExposureStartDate, DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss.FFF"));
             return p;
         }
     }
@@ -166,6 +170,7 @@ namespace NINA.Model {
         public static readonly string RMSArcSec = "$$RMSARCSEC$$";
         public static readonly string FocuserPosition = "$$FOCUSERPOSITION$$";
         public static readonly string ApplicationStartDate = "$$APPLICATIONSTARTDATE$$";
+        public static readonly string ExposureStartDate = "$$EXPOSURESTARTDATE$$";
     }
 
     public class ImagePattern {

@@ -816,4 +816,5 @@ Verbundene Clients: {0}</s:String>
     <s:String x:Key="LblSynchronizedPHD2ServiceCrashed">Synchronisierter PHD2 Service ist abgestürzt, starte diese synchronisierte PHD2 Instanz als Service neu</s:String>
     <s:String x:Key="LblSynchronizedPHD2ServiceClientAlreadyExists">Dieses Profil ist bereits mit dem synchronisierten PHD2 Service verbunden.
 Sie können dasselbe Profil nicht mehrfach verbinden, bitte wählen Sie ein anderes NINA Profil.</s:String>
+    <s:String x:Key="LblExposureStartDateDescription">Belichtungsstartdatum mit Format YYYY-MM-DD_HH-mm-ss.FFF</s:String>
 </ResourceDictionary>

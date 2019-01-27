@@ -668,6 +668,7 @@ namespace NINA.ViewModel {
                 p.Set(ImagePatternKeys.DateTime, DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
                 p.Set(ImagePatternKeys.FrameNr, parameters.ExposureNumber);
                 p.Set(ImagePatternKeys.ImageType, parameters.ImageType);
+                p.Set(ImagePatternKeys.ExposureStartDate, parameters.ExposureStart.ToString("yyyy-MM-dd_HH-mm-ss.FFF"));
 
                 if (focuserInfo.Connected) {
                     p.Set(ImagePatternKeys.FocuserPosition, focuserInfo.Position);
@@ -926,6 +927,7 @@ namespace NINA.ViewModel {
     }
 
     public class ImageParameters {
+        public DateTime ExposureStart { get; internal set; }
         public string FilterName { get; internal set; }
         public int ExposureNumber { get; internal set; }
         public string ImageType { get; internal set; }
