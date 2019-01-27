@@ -822,4 +822,8 @@ Berechneter HFR: {2}
         Dieses Profil ist bereits mit dem synchronisierten PHD2 Service verbunden.
         Sie können dasselbe Profil nicht mehrfach verbinden, bitte wählen Sie ein anderes NINA Profil.
     </s:String>
+    <s:String x:Key="LblAutoUpdateSource">Aktualisierungsquelle</s:String>
+    <s:String x:Key="LblRelease">Veröffentlicht</s:String>
+    <s:String x:Key="LblBeta">Beta</s:String>
+    <s:String x:Key="LblNightly">Nächtlich</s:String>
 </ResourceDictionary>

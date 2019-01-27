@@ -814,4 +814,8 @@ Calculated HFR: {2}
         This profile is already connected to the Synchronized PHD2 Guider.
         You cannot connect the same profile twice, please choose a different NINA profile.
     </s:String>
+    <s:String x:Key="LblAutoUpdateSource">Auto Update Source</s:String>
+    <s:String x:Key="LblRelease">Release</s:String>
+    <s:String x:Key="LblBeta">Beta</s:String>
+    <s:String x:Key="LblNightly">Nightly</s:String>
 </ResourceDictionary>

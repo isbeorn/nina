@@ -23,7 +23,9 @@
 
 using Newtonsoft.Json.Linq;
 using NINA.Utility;
+using NINA.Utility.Enum;
 using NINA.Utility.Http;
+using NINA.Utility.Profile;
 using NINA.Utility.WindowService;
 using System;
 using System.Collections.Generic;
@@ -31,6 +33,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -38,17 +41,18 @@ using System.Windows.Input;
 namespace NINA.ViewModel {
 
     internal class VersionCheckVM : BaseINPC {
-        private const string VERSIONSURL = "https://api.bitbucket.org/2.0/repositories/Isbeorn/nina/versions";
-        private const string DOWNLOADSURL = "https://api.bitbucket.org/2.0/repositories/Isbeorn/nina/downloads";
+        private const string BASEURL = "https://nighttime-imaging.eu/";
+        private const string VERSIONSURL = BASEURL + "index.php/wp-json/nina/v1/versioninfo/{0}";
 
         public VersionCheckVM() {
             UpdateCommand = new RelayCommand(Update);
         }
 
+        private IProfileService profileService;
+
         public ICommand UpdateCommand { get; set; }
         private CancellationTokenSource _cancelTokenSource;
 
-        private Version _latestVersion;
         private string _setupLocation;
 
         private IWindowServiceFactory windowServiceFactory;
@@ -68,9 +72,10 @@ namespace NINA.ViewModel {
         public async Task<bool> CheckUpdate() {
             _cancelTokenSource = new CancellationTokenSource();
             try {
-                var updateAvailable = await CheckIfUpdateIsAvailable();
-                if (updateAvailable) {
-                    var result = MyMessageBox.MyMessageBox.Show(string.Format(Locale.Loc.Instance["LblNewUpdateAvailable"], _latestVersion.ToString()), "", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.Yes);
+                var versionInfo = await GetVersionInfo((AutoUpdateSourceEnum)NINA.Properties.Settings.Default.AutoUpdateSource);
+
+                if (versionInfo?.IsNewer() == true) {
+                    var result = MyMessageBox.MyMessageBox.Show(string.Format(Locale.Loc.Instance["LblNewUpdateAvailable"], versionInfo.version.ToString()), "", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.Yes);
                     if (result == System.Windows.MessageBoxResult.Yes) {
                         var ws = WindowServiceFactory.Create();
                         ws.OnDialogResultChanged += (s, e) => {
@@ -81,12 +86,17 @@ namespace NINA.ViewModel {
                         };
                         var t = ws.ShowDialog(this, Locale.Loc.Instance["LblUpdating"], System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.SingleBorderWindow);
 
-                        _setupLocation = await DownloadLatestVersion();
-                        _setupLocation = Unzip(_setupLocation);
-                        if (!string.IsNullOrEmpty(_setupLocation)) {
-                            UpdateReady = true;
+                        _setupLocation = await DownloadLatestVersion(versionInfo);
+                        if (ValidateChecksum(versionInfo, _setupLocation)) {
+                            _setupLocation = Unzip(_setupLocation);
+                            if (!string.IsNullOrEmpty(_setupLocation)) {
+                                UpdateReady = true;
+                            }
+                            await t;
+                        } else {
+                            await ws.Close();
+                            throw new Exception("Checksum does not match expected value. Downloaded file may be corrupted!");
                         }
-                        await t;
                     }
                 } else {
                     return false;
@@ -98,6 +108,15 @@ namespace NINA.ViewModel {
             return true;
         }
 
+        private bool ValidateChecksum(VersionInfo versionInfo, string file) {
+            using (var md5 = MD5.Create()) {
+                using (var stream = File.OpenRead(file)) {
+                    var fileChecksum = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", string.Empty);
+                    return fileChecksum == versionInfo?.GetChecksum();
+                }
+            }
+        }
+
         private void Update(object o) {
             ProcessStartInfo Info = new ProcessStartInfo();
             Info.WindowStyle = ProcessWindowStyle.Hidden;
@@ -105,21 +124,6 @@ namespace NINA.ViewModel {
             Info.FileName = _setupLocation + "NINASetupBundle.exe";
             Process.Start(Info);
             System.Windows.Application.Current.Shutdown();
-        }
-
-        private async Task<bool> CheckIfUpdateIsAvailable() {
-            try {
-                _latestVersion = await GetLatestVersion();
-
-                if (_latestVersion > CurrentVersion) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } catch (Exception ex) {
-                Logger.Error(ex);
-            }
-            return false;
         }
 
         private string Unzip(string zipLocation) {
@@ -132,8 +136,8 @@ namespace NINA.ViewModel {
             return destination;
         }
 
-        private async Task<string> DownloadLatestVersion() {
-            var url = await GetDownloadUrl(_latestVersion.ToString());
+        private async Task<string> DownloadLatestVersion(VersionInfo versionInfo) {
+            var url = versionInfo.GetFileUrl();
             var destination = Path.GetTempPath() + "NINASetup.zip";
             Progress<int> downloadProgress = new Progress<int>((p) => { Progress = p; });
             var request = new HttpDownloadFileRequest(url, destination);
@@ -165,84 +169,60 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task<string> GetDownloadUrl(string version) {
-            var downloads = await GetBitBucketRecursive<BitBucketDownload>(DOWNLOADSURL);
+        private async Task<VersionInfo> GetVersionInfo(AutoUpdateSourceEnum source) {
+            try {
+                var request = new Utility.Http.HttpGetRequest(string.Format(VERSIONSURL, source.ToString().ToLower()));
+                var response = await request.Request(new CancellationToken());
 
-            var filename = "NINASetupBundle_{0}{1}.zip";
-            if (DllLoader.IsX86()) {
-                filename = string.Format(filename, version, "_x86");
-            } else {
-                filename = string.Format(filename, version, "");
+                var jobj = JObject.Parse(response);
+                var versionInfo = jobj.ToObject<VersionInfo>();
+                return versionInfo;
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
-
-            var download = downloads.values.Where((x) => x.name == filename).FirstOrDefault();
-            if (download != null) {
-                return download.links.self.href;
-            } else {
-                return "";
-            }
+            return null;
         }
 
-        private async Task<Version> GetLatestVersion() {
-            var versions = await GetBitBucketRecursive<BitBucketVersion>(VERSIONSURL);
+        public class VersionInfo {
+            public Version version;
+            public string checksum;
+            public string file;
+            public string checksum_x86;
+            public string file_x86;
+            public string changelog;
 
-            var max = versions.values.Max((x) => x.name);
-            return max;
-        }
-
-        private async Task<BitBucketBase<T>> GetBitBucketRecursive<T>(string url) {
-            var request = new HttpGetRequest(url);
-            string stringversions = await request.Request(_cancelTokenSource.Token);
-            JObject o = JObject.Parse(stringversions);
-            BitBucketBase<T> versions = o.ToObject<BitBucketBase<T>>();
-
-            _cancelTokenSource.Token.ThrowIfCancellationRequested();
-
-            if (string.IsNullOrEmpty(versions.next)) {
-                return versions;
-            } else {
-                var next = await GetBitBucketRecursive<T>(versions.next);
-                foreach (T v in next.values) {
-                    versions.values.Add(v);
+            public string GetChecksum() {
+                if (DllLoader.IsX86()) {
+                    return this.checksum_x86;
+                } else {
+                    return this.checksum;
                 }
-                return versions;
             }
-        }
 
-        private Version CurrentVersion {
-            get {
+            public string GetFileUrl() {
+                string filename = "";
+                if (DllLoader.IsX86()) {
+                    filename = BASEURL + this.file_x86;
+                } else {
+                    filename = BASEURL + this.file;
+                }
+                return filename;
+            }
+
+            public bool IsNewer() {
+                if (GetApplicationVersion() < this.version) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            private Version GetApplicationVersion() {
                 System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
                 FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
                 Version version = new Version(fvi.FileVersion);
                 return version;
             }
         }
-    }
-
-    public class BitBucketBase<T> {
-        public int pagelen;
-        public ICollection<T> values;
-        public int page;
-        public int size;
-        public string next;
-    }
-
-    public class BitBucketDownload {
-        public string name;
-        public BitBucketLink links;
-        public string type;
-        public int size;
-    }
-
-    public class BitBucketLink {
-        public BitBucketHRef self;
-    }
-
-    public class BitBucketHRef {
-        public string href;
-    }
-
-    public class BitBucketVersion {
-        public Version name;
     }
 }

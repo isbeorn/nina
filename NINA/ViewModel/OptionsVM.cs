@@ -1170,6 +1170,17 @@ namespace NINA.ViewModel {
             }
         }
 
+        public AutoUpdateSourceEnum AutoUpdateSource {
+            get {
+                return (AutoUpdateSourceEnum)NINA.Properties.Settings.Default.AutoUpdateSource;
+            }
+            set {
+                NINA.Properties.Settings.Default.AutoUpdateSource = (int)value;
+                NINA.Properties.Settings.Default.Save();
+                RaisePropertyChanged();
+            }
+        }
+
         public string SkySurveyCacheDirectory {
             get {
                 return profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory;
