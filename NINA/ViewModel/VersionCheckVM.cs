@@ -45,15 +45,19 @@ namespace NINA.ViewModel {
         private const string VERSIONSURL = BASEURL + "index.php/wp-json/nina/v1/versioninfo/{0}";
 
         public VersionCheckVM() {
+            DownloadCommand = new AsyncCommand<bool>(Download);
+            CancelDownloadCommand = new RelayCommand(CancelDownload);
             UpdateCommand = new RelayCommand(Update);
         }
 
-        private IProfileService profileService;
-
         public ICommand UpdateCommand { get; set; }
-        private CancellationTokenSource _cancelTokenSource;
+        public ICommand CancelDownloadCommand { get; set; }
+        public IAsyncCommand DownloadCommand { get; set; }
+        private CancellationTokenSource checkCts;
+        private CancellationTokenSource downloadCts;
+        private VersionInfo versionInfo;
 
-        private string _setupLocation;
+        private string setupLocation;
 
         private IWindowServiceFactory windowServiceFactory;
 
@@ -70,39 +74,20 @@ namespace NINA.ViewModel {
         }
 
         public async Task<bool> CheckUpdate() {
-            _cancelTokenSource = new CancellationTokenSource();
+            checkCts = new CancellationTokenSource();
             try {
-                var versionInfo = await GetVersionInfo((AutoUpdateSourceEnum)NINA.Properties.Settings.Default.AutoUpdateSource);
-
+                versionInfo = await GetVersionInfo((AutoUpdateSourceEnum)NINA.Properties.Settings.Default.AutoUpdateSource, checkCts.Token);
                 if (versionInfo?.IsNewer() == true) {
-                    var result = MyMessageBox.MyMessageBox.Show(string.Format(Locale.Loc.Instance["LblNewUpdateAvailable"], versionInfo.version.ToString()), "", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.Yes);
-                    if (result == System.Windows.MessageBoxResult.Yes) {
-                        var ws = WindowServiceFactory.Create();
-                        ws.OnDialogResultChanged += (s, e) => {
-                            var dialogResult = (DialogResultEventArgs)e;
-                            if (dialogResult.DialogResult != true) {
-                                _cancelTokenSource.Cancel();
-                            }
-                        };
-                        var t = ws.ShowDialog(this, Locale.Loc.Instance["LblUpdating"], System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.SingleBorderWindow);
+                    Changelog = await GetChangelog(versionInfo, checkCts.Token);
 
-                        _setupLocation = await DownloadLatestVersion(versionInfo);
-                        if (ValidateChecksum(versionInfo, _setupLocation)) {
-                            _setupLocation = Unzip(_setupLocation);
-                            if (!string.IsNullOrEmpty(_setupLocation)) {
-                                UpdateReady = true;
-                            }
-                            await t;
-                        } else {
-                            await ws.Close();
-                            throw new Exception("Checksum does not match expected value. Downloaded file may be corrupted!");
-                        }
-                    }
+                    var ws = WindowServiceFactory.Create();
+                    await ws.ShowDialog(this, string.Format(Locale.Loc.Instance["LblNewUpdateAvailable"], versionInfo.version.ToString()), System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.SingleBorderWindow);
                 } else {
                     return false;
                 }
             } catch (OperationCanceledException) {
             } catch (Exception ex) {
+                versionInfo = null;
                 Logger.Error(ex);
             }
             return true;
@@ -121,9 +106,34 @@ namespace NINA.ViewModel {
             ProcessStartInfo Info = new ProcessStartInfo();
             Info.WindowStyle = ProcessWindowStyle.Hidden;
             Info.CreateNoWindow = true;
-            Info.FileName = _setupLocation + "NINASetupBundle.exe";
+            Info.FileName = setupLocation + "NINASetupBundle.exe";
             Process.Start(Info);
             System.Windows.Application.Current.Shutdown();
+        }
+
+        private async Task<bool> Download() {
+            downloadCts = new CancellationTokenSource();
+            try {
+                Downloading = true;
+                setupLocation = await DownloadLatestVersion(versionInfo);
+                if (ValidateChecksum(versionInfo, setupLocation)) {
+                    setupLocation = Unzip(setupLocation);
+                    if (!string.IsNullOrEmpty(setupLocation)) {
+                        UpdateReady = true;
+                    }
+                } else {
+                    Utility.Notification.Notification.ShowError("Checksum does not match expected value. Downloaded file may be corrupted!");
+                    UpdateReady = false;
+                }
+                return UpdateReady;
+            } catch (OperationCanceledException) {
+            }
+            Downloading = false;
+            return UpdateReady;
+        }
+
+        private void CancelDownload(object o) {
+            downloadCts?.Cancel();
         }
 
         private string Unzip(string zipLocation) {
@@ -131,7 +141,7 @@ namespace NINA.ViewModel {
             if (Directory.Exists(destination)) {
                 Directory.Delete(destination, true);
             }
-            _cancelTokenSource.Token.ThrowIfCancellationRequested();
+            checkCts.Token.ThrowIfCancellationRequested();
             ZipFile.ExtractToDirectory(zipLocation, destination);
             return destination;
         }
@@ -141,7 +151,7 @@ namespace NINA.ViewModel {
             var destination = Path.GetTempPath() + "NINASetup.zip";
             Progress<int> downloadProgress = new Progress<int>((p) => { Progress = p; });
             var request = new HttpDownloadFileRequest(url, destination);
-            await request.Request(_cancelTokenSource.Token, downloadProgress);
+            await request.Request(downloadCts.Token, downloadProgress);
             return destination;
         }
 
@@ -153,6 +163,18 @@ namespace NINA.ViewModel {
             }
             set {
                 _progress = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool downloadReady = false;
+
+        public bool Downloading {
+            get {
+                return downloadReady;
+            }
+            set {
+                downloadReady = value;
                 RaisePropertyChanged();
             }
         }
@@ -169,10 +191,22 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task<VersionInfo> GetVersionInfo(AutoUpdateSourceEnum source) {
+        private string changelog = string.Empty;
+
+        public string Changelog {
+            get {
+                return changelog;
+            }
+            set {
+                changelog = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private async Task<VersionInfo> GetVersionInfo(AutoUpdateSourceEnum source, CancellationToken ct) {
             try {
                 var request = new Utility.Http.HttpGetRequest(string.Format(VERSIONSURL, source.ToString().ToLower()));
-                var response = await request.Request(new CancellationToken());
+                var response = await request.Request(ct);
 
                 var jobj = JObject.Parse(response);
                 var versionInfo = jobj.ToObject<VersionInfo>();
@@ -181,6 +215,21 @@ namespace NINA.ViewModel {
                 Logger.Error(ex);
             }
             return null;
+        }
+
+        private async Task<string> GetChangelog(VersionInfo versionInfo, CancellationToken ct) {
+            string changelog = string.Empty;
+            var changelogUrl = versionInfo.GetChangelogUrl();
+            if (!string.IsNullOrEmpty(changelogUrl)) {
+                try {
+                    var request = new HttpGetRequest(changelogUrl);
+                    changelog = await request.Request(ct);
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                    changelog = string.Empty;
+                }
+            }
+            return changelog;
         }
 
         public class VersionInfo {
@@ -197,6 +246,10 @@ namespace NINA.ViewModel {
                 } else {
                     return this.checksum;
                 }
+            }
+
+            public string GetChangelogUrl() {
+                return BASEURL + this.changelog;
             }
 
             public string GetFileUrl() {
@@ -218,10 +271,7 @@ namespace NINA.ViewModel {
             }
 
             private Version GetApplicationVersion() {
-                System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-                FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-                Version version = new Version(fvi.FileVersion);
-                return version;
+                return new Version(Utility.Utility.Version);
             }
         }
     }
