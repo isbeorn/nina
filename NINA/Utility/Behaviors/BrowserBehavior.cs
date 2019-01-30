@@ -50,8 +50,9 @@ namespace NINA.Utility.Behaviors {
 
         private static void OnHtmlChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             WebBrowser wb = d as WebBrowser;
-            if (wb != null)
-                wb.NavigateToString(e.NewValue as string);
+            var html = e.NewValue as string;
+            if (wb != null && !string.IsNullOrEmpty(html))
+                wb.NavigateToString(html);
         }
     }
 }
