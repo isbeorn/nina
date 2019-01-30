@@ -302,6 +302,7 @@
     <Compile Include="Model\MyGuider\ISynchronizedPHD2GuiderService.cs" />
     <Compile Include="Model\MyGuider\SynchronizedPHD2Guider.cs" />
     <Compile Include="Model\MyGuider\SynchronizedPHD2GuiderService.cs" />
+    <Compile Include="Utility\ProjectVersion.cs" />
     <Compile Include="Utility\Behaviors\BrowserBehavior.cs" />
     <Compile Include="Utility\Enum\AutoUpdateSourceEnum.cs" />
     <Compile Include="ViewModel\GuiderChooserVM.cs" />

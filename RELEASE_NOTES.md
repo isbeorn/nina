@@ -1,4 +1,4 @@
-# Version tbd
+# Version 1.8
 
 ## Features
 
@@ -76,7 +76,7 @@
 
 ___
 
-# Version 1.7.0.0
+# Version 1.7
 
 ## Features
 
