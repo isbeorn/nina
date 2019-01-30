@@ -39,7 +39,7 @@ namespace NINA.Utility {
         }
 
         /// <summary>
-        /// N.I.N.A.utilizes the versioning scheme MAJOR.MINOR.PATCH.KIND|BUILDNRXXX
+        /// N.I.N.A. utilizes the versioning scheme MAJOR.MINOR.PATCH.CHANNEL|BUILDNRXXX
         /// There is currently no automation used and versions are maintained manually.
         ///
         /// MAJOR version increases for big changes, like changing technologies etc.
@@ -48,32 +48,31 @@ namespace NINA.Utility {
         ///
         /// PATCH version is reserved to apply Hotfixes to a released versions
         ///
-        /// KIND|BUILDNR will not be displayed for Released versions, as these are only used to identify Release, RC, Beta and Develop versions
+        /// CHANNEL|BUILDNR will not be displayed for Released versions, as these are only used to identify Release, RC, Beta and Develop versions
         ///
-        /// KIND consists of the following values:
-        /// * 0: Develop
-        /// * 1: Beta
-        /// * 2: Release Candidate
+        /// CHANNEL consists of the following values:
+        /// * 1: Nightly
+        /// * 2: Beta
+        /// * 3: Release Candidate
         /// * 9: Release
         ///
         /// BUILDNR should be incremented each nightly build(only in develop, beta and rc versions) by using 3 digits.
         ///
         /// Examples:
-        /// Release: 1.8.0.9000             (Displayed as "1.8.0")
-        /// Release: 1.8.1.9000             (Displayed as "1.8.0 HF1")
-        /// Release Candidate: 1.8.0.2001   (Displayed as "1.8.0 RC 1")
-        /// Beta: 1.8.0.1004                (Displayed as "1.8.0 BETA 1")
-        /// Develop: 1.8.0.0022             (Displayed as "1.8.0 DEVELOP 022")
+        /// Release: 1.8.0.9001             (Displayed as "1.8")
+        /// Release: 1.8.1.9001             (Displayed as "1.8 HF1")
+        /// Release Candidate: 1.8.0.3001   (Displayed as "1.8 RC1")
+        /// Beta: 1.8.0.2004                (Displayed as "1.8 BETA4")
+        /// Develop: 1.8.0.1022             (Displayed as "1.8 NIGHTLY #022")
         /// </summary>
         /// <returns></returns>
         public override string ToString() {
             int major = version.Major;
             int minor = version.Minor;
             int build = version.Build;
-            // (PadLeft is used to pad the leading DEV zeros, as those are truncated by version object)
-            string revision = version.Revision.ToString().PadLeft(4, '0');
+            string revision = version.Revision.ToString();
 
-            string kind = revision.Substring(0, 1);
+            string channel = revision.Substring(0, 1);
             string buildNumber = revision.Substring(1, revision.Length - 1);
 
             string patch = string.Empty;
@@ -81,16 +80,20 @@ namespace NINA.Utility {
                 patch = $"HF{build} ";
             }
 
-            if (kind == "9") {
-                //Release does not show anything after patch
-                return $"{major}.{minor} {patch}";
-            } else if (kind == "1") {
-                return $"{major}.{minor} {patch}BETA{buildNumber}";
-            } else if (kind == "2") {
-                return $"{major}.{minor} {patch}RC{buildNumber}";
-            } else {
-                var buildDate = new System.IO.FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).LastWriteTime;
-                return $"{major}.{minor} {patch}DEVELOP{buildNumber} - Build Date {buildDate}";
+            switch (channel) {
+                case "9":
+                    //Release does not show anything after patch
+                    return $"{major}.{minor} {patch}";
+
+                case "2":
+                    return $"{major}.{minor} {patch}BETA{buildNumber}";
+
+                case "3":
+                    return $"{major}.{minor} {patch}RC{buildNumber}";
+
+                default:
+                    var buildDate = new System.IO.FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).LastWriteTime;
+                    return $"{major}.{minor} {patch}NIGHTLY #{buildNumber} - Build Date {buildDate}";
             }
         }
     }
