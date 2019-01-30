@@ -36,6 +36,35 @@ This project is utilizing a standard git flow where it has the following branche
 
 [A more in-depth guide about this model can be found here](https://nvie.com/posts/a-successful-git-branching-model/)
 
+### Versioning in N.I.N.A.
+
+N.I.N.A. utilizes the versioning scheme MAJOR.MINOR.PATCH.KIND|BUILDNRXXX  
+There is currently no automation used and versions are maintained manually.  
+
+MAJOR version increases for big changes, like changing technologies etc.
+
+MINOR version will increase for every new released version
+
+PATCH version is reserved to apply Hotfixes to a released versions
+
+KIND|BUILDNR will not be displayed for Released versions, as these are only used to identify Release, RC, Beta and Develop versions
+
+KIND consists of the following values:  
+* 0: Develop
+* 1: Beta
+* 2: Release Candidate
+* 9: Release
+
+BUILDNR should be incremented each nightly build (only in develop,beta and rc versions) by using 3 digits.
+
+Examples:
+Release: 1.8.0.9000             (Displayed as "1.8.0")  
+Release: 1.8.1.9000             (Displayed as "1.8.0 HF1")  
+Release Candidate: 1.8.0.2001   (Displayed as "1.8.0 RC 1")  
+Beta: 1.8.0.1004                (Displayed as "1.8.0 BETA 1")  
+Develop: 1.8.0.0022             (Displayed as "1.8.0 DEVELOP 022")  
+
+
 ### Setting up the developer environment
 
 * Install Visual Studio Community 2017 or better

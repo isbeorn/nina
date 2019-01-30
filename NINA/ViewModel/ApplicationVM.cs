@@ -161,7 +161,7 @@ namespace NINA.ViewModel {
 
         public string Version {
             get {
-                return Utility.Utility.Version;
+                return new ProjectVersion(Utility.Utility.Version).ToString();
             }
         }
 
