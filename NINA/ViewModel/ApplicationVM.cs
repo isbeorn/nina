@@ -83,6 +83,14 @@ namespace NINA.ViewModel {
             });
 
             InitAvalonDockLayout();
+
+            OptionsVM.PropertyChanged += OptionsVM_PropertyChanged;
+        }
+
+        private async void OptionsVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(OptionsVM.AutoUpdateSource)) {
+                await CheckUpdate();
+            }
         }
 
         private ICameraMediator cameraMediator;
@@ -101,7 +109,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> CheckUpdate() {
-            return await new VersionCheckVM().CheckUpdate();
+            return await VersionCheckVM.CheckUpdate();
         }
 
         private static string NINAMANUAL = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Documentation", "NINA.html");
@@ -179,6 +187,21 @@ namespace NINA.ViewModel {
             }
             set {
                 _tabIndex = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private VersionCheckVM versionCheckVM;
+
+        public VersionCheckVM VersionCheckVM {
+            get {
+                if (versionCheckVM == null) {
+                    versionCheckVM = new VersionCheckVM();
+                }
+                return versionCheckVM;
+            }
+            private set {
+                versionCheckVM = value;
                 RaisePropertyChanged();
             }
         }

@@ -45,6 +45,7 @@ namespace NINA.ViewModel {
         private const string VERSIONSURL = BASEURL + "index.php/wp-json/nina/v1/versioninfo/{0}";
 
         public VersionCheckVM() {
+            ShowDownloadCommand = new AsyncCommand<bool>(ShowDownload);
             DownloadCommand = new AsyncCommand<bool>(Download);
             CancelDownloadCommand = new RelayCommand(CancelDownload);
             UpdateCommand = new RelayCommand(Update);
@@ -53,6 +54,7 @@ namespace NINA.ViewModel {
         public ICommand UpdateCommand { get; set; }
         public ICommand CancelDownloadCommand { get; set; }
         public IAsyncCommand DownloadCommand { get; set; }
+        public IAsyncCommand ShowDownloadCommand { get; set; }
         private CancellationTokenSource checkCts;
         private CancellationTokenSource downloadCts;
         private VersionInfo versionInfo;
@@ -78,10 +80,9 @@ namespace NINA.ViewModel {
             try {
                 versionInfo = await GetVersionInfo((AutoUpdateSourceEnum)NINA.Properties.Settings.Default.AutoUpdateSource, checkCts.Token);
                 if (versionInfo?.IsNewer() == true) {
+                    UpdateAvailable = true;
+                    UpdateAvailableText = string.Format(Locale.Loc.Instance["LblNewUpdateAvailable"], versionInfo.version.ToString());
                     Changelog = await GetChangelog(versionInfo, checkCts.Token);
-
-                    var ws = WindowServiceFactory.Create();
-                    await ws.ShowDialog(this, string.Format(Locale.Loc.Instance["LblNewUpdateAvailable"], versionInfo.version.ToString()), System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.SingleBorderWindow);
                 } else {
                     return false;
                 }
@@ -109,6 +110,12 @@ namespace NINA.ViewModel {
             Info.FileName = setupLocation + "NINASetupBundle.exe";
             Process.Start(Info);
             System.Windows.Application.Current.Shutdown();
+        }
+
+        private async Task<bool> ShowDownload() {
+            var ws = WindowServiceFactory.Create();
+            await ws.ShowDialog(this, UpdateAvailableText, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.SingleBorderWindow);
+            return true;
         }
 
         private async Task<bool> Download() {
@@ -187,6 +194,28 @@ namespace NINA.ViewModel {
             }
             set {
                 _updateReady = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool updateAvailable = false;
+
+        public bool UpdateAvailable {
+            get {
+                return updateAvailable;
+            }
+            set {
+                updateAvailable = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string updateAvailableText;
+
+        public string UpdateAvailableText {
+            get => updateAvailableText;
+            set {
+                updateAvailableText = value;
                 RaisePropertyChanged();
             }
         }
