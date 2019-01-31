@@ -81,7 +81,8 @@ namespace NINA.ViewModel {
                 versionInfo = await GetVersionInfo((AutoUpdateSourceEnum)NINA.Properties.Settings.Default.AutoUpdateSource, checkCts.Token);
                 if (versionInfo?.IsNewer() == true) {
                     UpdateAvailable = true;
-                    UpdateAvailableText = string.Format(Locale.Loc.Instance["LblNewUpdateAvailable"], versionInfo.version.ToString());
+                    var projectVersion = new ProjectVersion(versionInfo.version);
+                    UpdateAvailableText = string.Format(Locale.Loc.Instance["LblNewUpdateAvailable"], projectVersion);
                     Changelog = await GetChangelog(versionInfo, checkCts.Token);
                 } else {
                     return false;

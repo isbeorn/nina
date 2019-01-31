@@ -38,6 +38,10 @@ namespace NINA.Utility {
             this.version = new Version(version);
         }
 
+        public ProjectVersion(Version version) {
+            this.version = version;
+        }
+
         /// <summary>
         /// N.I.N.A. utilizes the versioning scheme MAJOR.MINOR.PATCH.CHANNEL|BUILDNRXXX
         /// There is currently no automation used and versions are maintained manually.
