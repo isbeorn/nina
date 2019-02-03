@@ -33,6 +33,9 @@
  - Synchronized PHD2 Guider will synchronize your Dither requests between multiple instances of N.I.N.A.
 	- Known limitations: Dithering will happen every possible synchronized frame and is not changeable
 
+### Auto-Update Channels
+ - Previously the auto update was always just looking for released versions. Now multiple sources (Release, Beta and Nightly) can be selected and the auto updater updates to the respective version accordingls.
+
 
 ## Bugfixes
 
