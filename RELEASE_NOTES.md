@@ -35,6 +35,7 @@
 
 ### Auto-Update Channels
  - Previously the auto update was always just looking for released versions. Now multiple sources (Release, Beta and Nightly) can be selected and the auto updater updates to the respective version accordingls.
+ - Additionally the changelog for the new version will now be displayed prior to updating, too. 
 
 
 ## Bugfixes
