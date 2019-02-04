@@ -191,7 +191,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public VersionCheckVM VersionCheckVM { get; private set} = new VersionCheckVM();
+        public VersionCheckVM VersionCheckVM { get; private set; } = new VersionCheckVM();
 
         private ApplicationStatusVM _applicationStatusVM;
 
