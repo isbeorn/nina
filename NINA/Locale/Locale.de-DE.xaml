@@ -826,4 +826,5 @@ Berechneter HFR: {2}
     <s:String x:Key="LblRelease">Veröffentlicht</s:String>
     <s:String x:Key="LblBeta">Beta</s:String>
     <s:String x:Key="LblNightly">Nächtlich</s:String>
+    <s:String x:Key="LblChecksumError">Checksumme entspricht nicht dem erwartetem Wert. Die heruntergeladene Datei ist möglicherweise beschädigt!</s:String>
 </ResourceDictionary>

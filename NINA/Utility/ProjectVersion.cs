@@ -96,8 +96,7 @@ namespace NINA.Utility {
                     return $"{major}.{minor} {patch}RC{buildNumber}";
 
                 default:
-                    var buildDate = new System.IO.FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).LastWriteTime;
-                    return $"{major}.{minor} {patch}NIGHTLY #{buildNumber} - Build Date {buildDate.ToUniversalTime().ToString("yyyy-MM-dd")}";
+                    return $"{major}.{minor} {patch}NIGHTLY #{buildNumber}";
             }
         }
     }

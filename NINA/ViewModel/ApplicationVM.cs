@@ -108,8 +108,8 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task<bool> CheckUpdate() {
-            return await VersionCheckVM.CheckUpdate();
+        private Task<bool> CheckUpdate() {
+            return VersionCheckVM.CheckUpdate();
         }
 
         private static string NINAMANUAL = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Documentation", "NINA.html");
@@ -191,20 +191,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private VersionCheckVM versionCheckVM;
-
-        public VersionCheckVM VersionCheckVM {
-            get {
-                if (versionCheckVM == null) {
-                    versionCheckVM = new VersionCheckVM();
-                }
-                return versionCheckVM;
-            }
-            private set {
-                versionCheckVM = value;
-                RaisePropertyChanged();
-            }
-        }
+        public VersionCheckVM VersionCheckVM { get; private set} = new VersionCheckVM();
 
         private ApplicationStatusVM _applicationStatusVM;
 

@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NINA.Utility;
 using NINA.Utility.Enum;
@@ -81,7 +82,7 @@ namespace NINA.ViewModel {
                 versionInfo = await GetVersionInfo((AutoUpdateSourceEnum)NINA.Properties.Settings.Default.AutoUpdateSource, checkCts.Token);
                 if (versionInfo?.IsNewer() == true) {
                     UpdateAvailable = true;
-                    var projectVersion = new ProjectVersion(versionInfo.version);
+                    var projectVersion = new ProjectVersion(versionInfo.Version);
                     UpdateAvailableText = string.Format(Locale.Loc.Instance["LblNewUpdateAvailable"], projectVersion);
                     Changelog = await GetChangelog(versionInfo, checkCts.Token);
                 } else {
@@ -108,7 +109,7 @@ namespace NINA.ViewModel {
             ProcessStartInfo Info = new ProcessStartInfo();
             Info.WindowStyle = ProcessWindowStyle.Hidden;
             Info.CreateNoWindow = true;
-            Info.FileName = setupLocation + "NINASetupBundle.exe";
+            Info.FileName = Path.Combine(setupLocation, "NINASetupBundle.exe");
             Process.Start(Info);
             System.Windows.Application.Current.Shutdown();
         }
@@ -130,7 +131,7 @@ namespace NINA.ViewModel {
                         UpdateReady = true;
                     }
                 } else {
-                    Utility.Notification.Notification.ShowError("Checksum does not match expected value. Downloaded file may be corrupted!");
+                    Utility.Notification.Notification.ShowError(Locale.Loc.Instance["LblChecksumError"]);
                     UpdateReady = false;
                 }
                 return UpdateReady;
@@ -145,7 +146,7 @@ namespace NINA.ViewModel {
         }
 
         private string Unzip(string zipLocation) {
-            var destination = Path.GetTempPath() + "NINASetup\\";
+            var destination = Path.Combine(Path.GetTempPath(), "NINASetup");
             if (Directory.Exists(destination)) {
                 Directory.Delete(destination, true);
             }
@@ -156,7 +157,7 @@ namespace NINA.ViewModel {
 
         private async Task<string> DownloadLatestVersion(VersionInfo versionInfo) {
             var url = versionInfo.GetFileUrl();
-            var destination = Path.GetTempPath() + "NINASetup.zip";
+            var destination = Path.Combine(Path.GetTempPath(), "NINASetup.zip");
             Progress<int> downloadProgress = new Progress<int>((p) => { Progress = p; });
             var request = new HttpDownloadFileRequest(url, destination);
             await request.Request(downloadCts.Token, downloadProgress);
@@ -235,12 +236,28 @@ namespace NINA.ViewModel {
 
         private async Task<VersionInfo> GetVersionInfo(AutoUpdateSourceEnum source, CancellationToken ct) {
             try {
-                var request = new Utility.Http.HttpGetRequest(string.Format(VERSIONSURL, source.ToString().ToLower()));
+                var url = string.Empty;
+                switch (source) {
+                    case AutoUpdateSourceEnum.NIGHTLY:
+                        url = string.Format(VERSIONSURL, "nightly");
+                        break;
+
+                    case AutoUpdateSourceEnum.BETA:
+                        url = string.Format(VERSIONSURL, "beta");
+                        break;
+
+                    default:
+                        url = string.Format(VERSIONSURL, "release");
+                        break;
+                }
+
+                var request = new Utility.Http.HttpGetRequest(url);
                 var response = await request.Request(ct);
 
                 var jobj = JObject.Parse(response);
                 var versionInfo = jobj.ToObject<VersionInfo>();
                 return versionInfo;
+            } catch (OperationCanceledException) {
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
@@ -254,6 +271,7 @@ namespace NINA.ViewModel {
                 try {
                     var request = new HttpGetRequest(changelogUrl);
                     changelog = await request.Request(ct);
+                } catch (OperationCanceledException) {
                 } catch (Exception ex) {
                     Logger.Error(ex);
                     changelog = string.Empty;
@@ -263,37 +281,49 @@ namespace NINA.ViewModel {
         }
 
         public class VersionInfo {
-            public Version version;
-            public string checksum;
-            public string file;
-            public string checksum_x86;
-            public string file_x86;
-            public string changelog;
+
+            [JsonProperty(PropertyName = "version")]
+            public Version Version;
+
+            [JsonProperty(PropertyName = "checksum")]
+            public string Checksum;
+
+            [JsonProperty(PropertyName = "file")]
+            public string File;
+
+            [JsonProperty(PropertyName = "checksum_x86")]
+            public string Checksum_x86;
+
+            [JsonProperty(PropertyName = "file_x86")]
+            public string File_x86;
+
+            [JsonProperty(PropertyName = "changelog")]
+            public string Changelog;
 
             public string GetChecksum() {
                 if (DllLoader.IsX86()) {
-                    return this.checksum_x86;
+                    return this.Checksum_x86;
                 } else {
-                    return this.checksum;
+                    return this.Checksum;
                 }
             }
 
             public string GetChangelogUrl() {
-                return BASEURL + this.changelog;
+                return BASEURL + this.Changelog;
             }
 
             public string GetFileUrl() {
                 string filename = "";
                 if (DllLoader.IsX86()) {
-                    filename = BASEURL + this.file_x86;
+                    filename = BASEURL + this.File_x86;
                 } else {
-                    filename = BASEURL + this.file;
+                    filename = BASEURL + this.File;
                 }
                 return filename;
             }
 
             public bool IsNewer() {
-                if (GetApplicationVersion() < this.version) {
+                if (GetApplicationVersion() < this.Version) {
                     return true;
                 } else {
                     return false;

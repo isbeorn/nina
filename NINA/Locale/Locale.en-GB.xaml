@@ -821,4 +821,5 @@ Calculated HFR: {2}
     <s:String x:Key="LblRelease">Release</s:String>
     <s:String x:Key="LblBeta">Beta</s:String>
     <s:String x:Key="LblNightly">Nightly</s:String>
+    <s:String x:Key="LblChecksumError">Checksum does not match expected value. Downloaded file may be corrupted!</s:String>
 </ResourceDictionary>
