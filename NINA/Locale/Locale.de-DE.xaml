@@ -807,13 +807,19 @@ Berechneter HFR: {2}
     <s:String x:Key="LblMinDuration">Min. Dauer</s:String>
     <s:String x:Key="LblWaitForTemperatureStep">Warte auf Kamera auf Erreichen des nächsten Temperaturschritts</s:String>
     <s:String x:Key="LblApplicationStartDateDescription">Applikationsstartdatum mit Format YYYY-MM-DD</s:String>
-    <s:String x:Key="LblPhd2SynchronizedServiceClientConnected">Client hat sich zum synchronisierten PHD2 Service verbunden.
-Verbundene Clients: {0}</s:String>
-    <s:String x:Key="LblPhd2SynchronizedServiceClientDisconnected">Client hat sich zum synchronisierten PHD2 Service verbunden.
-Verbundene Clients: {0}</s:String>
+    <s:String x:Key="LblPhd2SynchronizedServiceClientConnected">
+        Client hat sich zum synchronisierten PHD2 Service verbunden.
+        Verbundene Clients: {0}
+    </s:String>
+    <s:String x:Key="LblPhd2SynchronizedServiceClientDisconnected">
+        Client hat sich zum synchronisierten PHD2 Service verbunden.
+        Verbundene Clients: {0}
+    </s:String>
     <s:String x:Key="LblPhd2SynchronizedServiceStarted">Synchronisierter PHD2 Service gestartet</s:String>
     <s:String x:Key="LblSynchronizedPHD2Guider">Synchronisiertes PHD2 (Experimentell)</s:String>
     <s:String x:Key="LblSynchronizedPHD2ServiceCrashed">Synchronisierter PHD2 Service ist abgestürzt, starte diese synchronisierte PHD2 Instanz als Service neu</s:String>
-    <s:String x:Key="LblSynchronizedPHD2ServiceClientAlreadyExists">Dieses Profil ist bereits mit dem synchronisierten PHD2 Service verbunden.
-Sie können dasselbe Profil nicht mehrfach verbinden, bitte wählen Sie ein anderes NINA Profil.</s:String>
+    <s:String x:Key="LblSynchronizedPHD2ServiceClientAlreadyExists">
+        Dieses Profil ist bereits mit dem synchronisierten PHD2 Service verbunden.
+        Sie können dasselbe Profil nicht mehrfach verbinden, bitte wählen Sie ein anderes NINA Profil.
+    </s:String>
 </ResourceDictionary>

@@ -327,6 +327,7 @@ namespace NINA.ViewModel {
                     var rmsHandle = this.guiderMediator.StartRMSRecording();
 
                     /*Capture*/
+                    var exposureStart = DateTime.Now;
                     await Capture(sequence, token, progress);
 
                     /* Stop RMS Recording */
@@ -356,6 +357,7 @@ namespace NINA.ViewModel {
                     }
 
                     var parameters = new ImageParameters() {
+                        ExposureStart = exposureStart,
                         Binning = sequence.Binning.Name,
                         ExposureNumber = sequence.ProgressExposureCount,
                         ExposureTime = sequence.ExposureTime,

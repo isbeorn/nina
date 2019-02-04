@@ -799,13 +799,19 @@ Calculated HFR: {2}
     <s:String x:Key="LblMinDuration">Min. Duration</s:String>
     <s:String x:Key="LblWaitForTemperatureStep">Waiting for camera to reach next temperature step</s:String>
     <s:String x:Key="LblApplicationStartDateDescription">Application start date with format YYYY-MM-DD</s:String>
-    <s:String x:Key="LblPhd2SynchronizedServiceClientConnected">Client connected to synchronized PHD2 service.
-Connected clients: {0}</s:String>
-    <s:String x:Key="LblPhd2SynchronizedServiceClientDisconnected">Client disconnected to synchronized PHD2 service.
-Connected clients: {0}</s:String>
+    <s:String x:Key="LblPhd2SynchronizedServiceClientConnected">
+        Client connected to synchronized PHD2 service.
+        Connected clients: {0}
+    </s:String>
+    <s:String x:Key="LblPhd2SynchronizedServiceClientDisconnected">
+        Client disconnected to synchronized PHD2 service.
+        Connected clients: {0}
+    </s:String>
     <s:String x:Key="LblPhd2SynchronizedServiceStarted">Synchronized PHD2 service started</s:String>
     <s:String x:Key="LblSynchronizedPHD2Guider">Synchronized PHD2 (Experimental)</s:String>
     <s:String x:Key="LblSynchronizedPHD2ServiceCrashed">Synchronized PHD2 Service crashed, restarting this Synchronized PHD2 Guider as Service</s:String>
-    <s:String x:Key="LblSynchronizedPHD2ServiceClientAlreadyExists">This profile is already connected to the Synchronized PHD2 Guider.
-You cannot connect the same profile twice, please choose a different NINA profile.</s:String>
+    <s:String x:Key="LblSynchronizedPHD2ServiceClientAlreadyExists">
+        This profile is already connected to the Synchronized PHD2 Guider.
+        You cannot connect the same profile twice, please choose a different NINA profile.
+    </s:String>
 </ResourceDictionary>
