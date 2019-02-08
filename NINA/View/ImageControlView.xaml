@@ -30,7 +30,7 @@
     d:DesignWidth="300"
     mc:Ignorable="d">
 
-    <local:ImageView Image="{Binding Image, IsAsync=True}">
+    <local:ImageView Image="{Binding Image}">
         <local:ImageView.ButtonHeaderContent>
             <StackPanel Orientation="Horizontal">
                 <Button
