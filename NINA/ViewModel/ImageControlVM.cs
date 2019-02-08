@@ -583,18 +583,13 @@ namespace NINA.ViewModel {
                         iarr.Statistics.ExposureTime = parameters.ExposureTime;
                     }
 
-                    //await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                    Image = null;
-                    ImgArr = null;
-                    GC.Collect();
-                    //GC.WaitForPendingFinalizers();
                     ImgArr = iarr;
                     Image = source;
+                    GC.Collect();
                     if (addToStatistics)
                         ImgStatisticsVM.Add(ImgArr.Statistics);
                     if (addToHistory)
                         ImgHistoryVM.Add(iarr.Statistics);
-                    //}));
 
                     if (ShowBahtinovAnalyzer) {
                         AnalyzeBahtinov();
