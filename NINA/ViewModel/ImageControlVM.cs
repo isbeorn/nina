@@ -677,6 +677,7 @@ namespace NINA.ViewModel {
                 p.Set(ImagePatternKeys.SensorTemp, cameraInfo.Temperature);
                 p.Set(ImagePatternKeys.TargetName, parameters.TargetName);
                 p.Set(ImagePatternKeys.Gain, cameraInfo.Gain);
+                p.Set(ImagePatternKeys.Offset, cameraInfo.Offset);
                 p.Set(ImagePatternKeys.RMS, parameters.RecordedRMS.Total);
                 p.Set(ImagePatternKeys.RMSArcSec, parameters.RecordedRMS.Total * parameters.RecordedRMS.Scale);
 

@@ -542,7 +542,7 @@ namespace NINA.Model.MyGuider {
                     PixelScale = 0.0d;
                     Connected = false;
                     _tcs.TrySetResult(false);
-                    PHD2ConnectionLost(this, EventArgs.Empty);
+                    PHD2ConnectionLost?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
