@@ -279,7 +279,10 @@ namespace NINA.Utility.Notification {
         }
 
         protected virtual void RequestShowNotification(ShowNotificationEventArgs e) {
-            ShowNotificationRequested?.Invoke(this, e);
+            try {
+                ShowNotificationRequested?.Invoke(this, e);
+            } catch (InvalidOperationException) {
+            }
         }
 
         protected virtual void RequestCloseNotification(CloseNotificationEventArgs e) {
