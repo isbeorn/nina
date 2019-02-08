@@ -122,15 +122,22 @@ namespace NINA.ViewModel {
         private async Task<bool> StartLiveView() {
             ImageControl.IsLiveViewEnabled = true;
             _liveViewCts = new CancellationTokenSource();
-            var liveViewEnumerable = cameraMediator.LiveView(_liveViewCts.Token);
-            await liveViewEnumerable.ForEachAsync(async iarr => {
-                await ImageControl.PrepareImage(iarr, _liveViewCts.Token, false);
-            });
+            try {
+                await Task.Run(async () => {
+                    var liveViewEnumerable = cameraMediator.LiveView(_liveViewCts.Token);
+                    await liveViewEnumerable.ForEachAsync(async iarr => {
+                        await ImageControl.PrepareImage(iarr, _liveViewCts.Token, false);
+                    });
+                });
+            } catch (OperationCanceledException) {
+            } finally {
+                ImageControl.IsLiveViewEnabled = false;
+            }
+
             return true;
         }
 
         private void StopLiveView(object o) {
-            ImageControl.IsLiveViewEnabled = false;
             _liveViewCts?.Cancel();
         }
 
@@ -148,8 +155,6 @@ namespace NINA.ViewModel {
                 applicationStatusMediator.StatusUpdate(_status);
             }
         }
-
-        private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
         private bool _loop;
 

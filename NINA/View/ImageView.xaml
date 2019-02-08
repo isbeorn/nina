@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.ImageView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -122,10 +121,8 @@
             PanningMode="Both">
             <utility:DataPiping.DataPipes>
                 <utility:DataPipeCollection>
-                    <utility:DataPipe Source="{Binding RelativeSource={RelativeSource AncestorType={x:Type ScrollViewer}}, Path=ViewportWidth}"
-                                Target="{Binding Path=BoundWidth, Mode=OneWayToSource}" />
-                    <utility:DataPipe Source="{Binding RelativeSource={RelativeSource AncestorType={x:Type ScrollViewer}}, Path=ViewportHeight}"
-                                Target="{Binding Path=BoundHeight, Mode=OneWayToSource}" />
+                    <utility:DataPipe Source="{Binding RelativeSource={RelativeSource AncestorType={x:Type ScrollViewer}}, Path=ViewportWidth}" Target="{Binding Path=BoundWidth, Mode=OneWayToSource}" />
+                    <utility:DataPipe Source="{Binding RelativeSource={RelativeSource AncestorType={x:Type ScrollViewer}}, Path=ViewportHeight}" Target="{Binding Path=BoundHeight, Mode=OneWayToSource}" />
                 </utility:DataPipeCollection>
             </utility:DataPiping.DataPipes>
             <ScrollViewer.Style>
@@ -211,7 +208,7 @@
                                     <Image
                                         x:Name="PART_Image"
                                         RenderOptions.BitmapScalingMode="HighQuality"
-                                        Source="{Binding Image, ElementName=PART_ImageView}"
+                                        Source="{Binding Image, ElementName=PART_ImageView, IsAsync=True}"
                                         Stretch="Uniform" />
                                 </VisualBrush.Visual>
                             </VisualBrush>
