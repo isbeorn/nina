@@ -357,8 +357,6 @@ namespace NINA.ViewModel {
 
         private CancellationTokenSource _plateSolveToken;
 
-        private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
-
         private ImageArray _imgArr;
 
         public ImageArray ImgArr {
@@ -410,7 +408,9 @@ namespace NINA.ViewModel {
             set {
                 _image = value;
                 if (_image != null) {
-                    ResizeRectangleToImageSize(_image, BahtinovRectangle);
+                    if (ShowBahtinovAnalyzer) {
+                        ResizeRectangleToImageSize(_image, BahtinovRectangle);
+                    }
                     // when subsampling is enabled and a new image is loaded disable the subsampler
                     // so it doesn't get resized
                     if (cameraInfo.IsSubSampleEnabled) {
@@ -583,18 +583,13 @@ namespace NINA.ViewModel {
                         iarr.Statistics.ExposureTime = parameters.ExposureTime;
                     }
 
-                    await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                        Image = null;
-                        ImgArr = null;
-                        GC.Collect();
-                        GC.WaitForPendingFinalizers();
-                        ImgArr = iarr;
-                        Image = source;
-                        if (addToStatistics)
-                            ImgStatisticsVM.Add(ImgArr.Statistics);
-                        if (addToHistory)
-                            ImgHistoryVM.Add(iarr.Statistics);
-                    }));
+                    ImgArr = iarr;
+                    Image = source;
+                    GC.Collect();
+                    if (addToStatistics)
+                        ImgStatisticsVM.Add(ImgArr.Statistics);
+                    if (addToHistory)
+                        ImgHistoryVM.Add(iarr.Statistics);
 
                     if (ShowBahtinovAnalyzer) {
                         AnalyzeBahtinov();
