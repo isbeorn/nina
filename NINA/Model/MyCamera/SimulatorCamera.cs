@@ -593,16 +593,46 @@ namespace NINA.Model.MyCamera {
             dialog.DefaultExt = ".tiff";
 
             if (dialog.ShowDialog() == true) {
-                TiffBitmapDecoder TifDec = new TiffBitmapDecoder(new Uri(dialog.FileName), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                BitmapFrame bmp = TifDec.Frames[0];
-                int stride = (bmp.PixelWidth * bmp.Format.BitsPerPixel + 7) / 8;
-                int arraySize = stride * bmp.PixelHeight;
-                ushort[] pixels = new ushort[(int)(bmp.Width * bmp.Height)];
-                bmp.CopyPixels(pixels, stride, 0);
-                Image = await ImageArray.CreateInstance(pixels, (int)bmp.Width, (int)bmp.Height, 16, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
-                return true;
+                BitmapDecoder decoder = null;
+                switch (Path.GetExtension(dialog.FileName).ToLower()) {
+                    case ".gif":
+                        decoder = new GifBitmapDecoder(new Uri(dialog.FileName), BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.OnLoad);
+                        break;
+
+                    case ".tif":
+                    case ".tiff":
+                        decoder = new TiffBitmapDecoder(new Uri(dialog.FileName), BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.OnLoad);
+                        break;
+
+                    case ".jpg":
+                    case ".jpeg":
+                        decoder = new JpegBitmapDecoder(new Uri(dialog.FileName), BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.OnLoad);
+                        break;
+
+                    case ".png":
+                        decoder = new PngBitmapDecoder(new Uri(dialog.FileName), BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.OnLoad);
+                        break;
+                }
+                if (decoder != null) {
+                    Image = await LoadFromFile(decoder);
+                    return true;
+                }
             }
             return false;
+        }
+
+        private Task<ImageArray> LoadFromFile(BitmapDecoder decoder) {
+            var bmp = new FormatConvertedBitmap();
+            bmp.BeginInit();
+            bmp.Source = decoder.Frames[0];
+            bmp.DestinationFormat = System.Windows.Media.PixelFormats.Gray16;
+            bmp.EndInit();
+
+            int stride = (bmp.PixelWidth * bmp.Format.BitsPerPixel + 7) / 8;
+            int arraySize = stride * bmp.PixelHeight;
+            ushort[] pixels = new ushort[(int)(bmp.Width * bmp.Height)];
+            bmp.CopyPixels(pixels, stride, 0);
+            return ImageArray.CreateInstance(pixels, (int)bmp.Width, (int)bmp.Height, 16, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
         }
 
         public IAsyncCommand LoadImageCommand { get; private set; }

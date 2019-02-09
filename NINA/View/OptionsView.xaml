@@ -199,6 +199,17 @@
                                 SelectedItem="{Binding Language}" />
                         </StackPanel>
 
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                Width="140"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblAutoUpdateSource}" />
+                            <ComboBox
+                                Margin="10,0,0,0"
+                                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:AutoUpdateSourceEnum}}}"
+                                SelectedItem="{Binding AutoUpdateSource}" />
+                        </StackPanel>
+
                         <Grid Margin="0,5,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="140" />

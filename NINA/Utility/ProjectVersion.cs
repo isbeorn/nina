@@ -38,6 +38,10 @@ namespace NINA.Utility {
             this.version = new Version(version);
         }
 
+        public ProjectVersion(Version version) {
+            this.version = version;
+        }
+
         /// <summary>
         /// N.I.N.A. utilizes the versioning scheme MAJOR.MINOR.PATCH.CHANNEL|BUILDNRXXX
         /// There is currently no automation used and versions are maintained manually.
@@ -92,8 +96,7 @@ namespace NINA.Utility {
                     return $"{major}.{minor} {patch}RC{buildNumber}";
 
                 default:
-                    var buildDate = new System.IO.FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).LastWriteTime;
-                    return $"{major}.{minor} {patch}NIGHTLY #{buildNumber} - Build Date {buildDate.ToUniversalTime().ToString("yyyy-MM-dd")}";
+                    return $"{major}.{minor} {patch}NIGHTLY #{buildNumber}";
             }
         }
     }

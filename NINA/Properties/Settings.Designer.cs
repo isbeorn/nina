@@ -1126,5 +1126,17 @@ namespace NINA.Properties {
                 this["UseSavedProfileSelection"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int AutoUpdateSource {
+            get {
+                return ((int)(this["AutoUpdateSource"]));
+            }
+            set {
+                this["AutoUpdateSource"] = value;
+            }
+        }
     }
 }
