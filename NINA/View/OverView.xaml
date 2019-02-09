@@ -204,38 +204,76 @@
             </i:Interaction.Triggers>
 
             <dock:DockingManager.Resources>
+                <DataTemplate DataType="{x:Type vm:CameraVM}">
+                    <view:AnchorableCameraView />
+                </DataTemplate>
 
-                <!--<DataTemplate DataType="{x:Type vm:ImagingVM}">
-                    <view:AnchorableCameraControlView />
+                <DataTemplate DataType="{x:Type vm:TelescopeVM}">
+                    <view:AnchorableTelescopeView />
                 </DataTemplate>
-                <DataTemplate DataType="{x:Type vm:PlatesolveVM}">
-                    <view:AnchorablePlateSolveView />
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type vm:FilterWheelVM}">
-                    <view:AnchorableFilterWheelView />
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type vm:ImageHistoryVM}">
-                    <view:AnchorableImageHistoryView />
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type vm:ImageStatisticsVM}">
-                    <view:AnchorableImageStatisticsView />
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type vm:PolarAlignmentVM}">
-                    <view:AnchorablePolarAlignmentView />
-                </DataTemplate>
-                <DataTemplate DataType="ImageStatistics">
-                    <view:AnchorableImageStatisticsView />
-                </DataTemplate>
+
                 <DataTemplate DataType="{x:Type vm:ImageControlVM}">
                     <view:ImageControlView />
                 </DataTemplate>
 
+                <DataTemplate DataType="{x:Type vm:ThumbnailVM}">
+                    <view:ThumbnailListView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:FocusTargetsVM}">
+                    <view:AnchorableFocusTargetsView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:PlatesolveVM}">
+                    <view:AnchorablePlateSolveView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:PolarAlignmentVM}">
+                    <view:AnchorablePolarAlignmentView />
+                </DataTemplate>
+
                 <DataTemplate DataType="{x:Type vm:GuiderVM}">
-                    <view:AnchorableGuideriew />
-                </DataTemplate>-->
+                    <view:AnchorableGuiderView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:FilterWheelVM}">
+                    <view:AnchorableFilterWheelView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:ImagingVM}">
+                    <view:AnchorableCameraControlView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:ImageHistoryVM}">
+                    <view:AnchorableImageHistoryView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:ImageStatisticsVM}">
+                    <view:AnchorableImageStatisticsView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:SequenceVM}">
+                    <view:AnchorableSequenceView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:RotatorVM}">
+                    <view:AnchorableRotatorView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:WeatherDataVM}">
+                    <view:AnchorableWeatherDataView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:FocuserVM}">
+                    <view:AnchorableFocuserView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:AutoFocusVM}">
+                    <view:AnchorableAutoFocusView />
+                </DataTemplate>
             </dock:DockingManager.Resources>
 
-            <dock:DockingManager.LayoutItemTemplateSelector>
+            <!--<dock:DockingManager.LayoutItemTemplateSelector>
                 <util:PaneTemplateSelector>
                     <util:PaneTemplateSelector.CameraTemplate>
                         <DataTemplate>
@@ -338,7 +376,7 @@
                         </DataTemplate>
                     </util:PaneTemplateSelector.AutoFocusTemplate>
                 </util:PaneTemplateSelector>
-            </dock:DockingManager.LayoutItemTemplateSelector>
+            </dock:DockingManager.LayoutItemTemplateSelector>-->
 
             <dock:DockingManager.LayoutItemContainerStyleSelector>
                 <util:PaneStyleSelector>

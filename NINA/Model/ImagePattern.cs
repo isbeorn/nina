@@ -79,6 +79,9 @@ namespace NINA.Model {
             p = new ImagePattern(ImagePatternKeys.Gain, Locale.Loc.Instance["LblGainDescription"]);
             patterns.Add(p.Key, p);
 
+            p = new ImagePattern(ImagePatternKeys.Offset, Locale.Loc.Instance["LblOffsetDescription"]);
+            patterns.Add(p.Key, p);
+
             p = new ImagePattern(ImagePatternKeys.RMS, Locale.Loc.Instance["LblGuidingRMSDescription"]);
             patterns.Add(p.Key, p);
 
@@ -138,6 +141,7 @@ namespace NINA.Model {
             p.Set(ImagePatternKeys.ExposureTime, 10.21234);
             p.Set(ImagePatternKeys.TargetName, "M33");
             p.Set(ImagePatternKeys.Gain, "1600");
+            p.Set(ImagePatternKeys.Offset, "10");
             p.Set(ImagePatternKeys.RMS, 0.35);
             p.Set(ImagePatternKeys.RMSArcSec, 0.65);
             p.Set(ImagePatternKeys.FocuserPosition, 12542);
@@ -162,6 +166,7 @@ namespace NINA.Model {
         public static readonly string ExposureTime = "$$EXPOSURETIME$$";
         public static readonly string TargetName = "$$TARGETNAME$$";
         public static readonly string Gain = "$$GAIN$$";
+        public static readonly string Offset = "$$OFFSET$$";
         public static readonly string RMS = "$$RMS$$";
         public static readonly string RMSArcSec = "$$RMSARCSEC$$";
         public static readonly string FocuserPosition = "$$FOCUSERPOSITION$$";

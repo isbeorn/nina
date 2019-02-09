@@ -695,11 +695,13 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StopLiveView() {
-            if (!camera.put_Option(ToupCam.eOPTION.OPTION_TRIGGER, 1)) {
-                Disconnect();
-                throw new Exception("ToupTekCamera - Could not set Trigger manual mode. Reconnect Camera!");
-            }
-            LiveViewEnabled = false;
+            downloadLiveExposure.Task.ContinueWith((Task<object> o) => {
+                if (!camera.put_Option(ToupCam.eOPTION.OPTION_TRIGGER, 1)) {
+                    Disconnect();
+                    throw new Exception("ToupTekCamera - Could not set Trigger manual mode. Reconnect Camera!");
+                }
+                LiveViewEnabled = false;
+            });
         }
     }
 }

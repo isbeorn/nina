@@ -373,17 +373,19 @@ namespace NINA.Model.MyCamera {
 
         public bool CanShowLiveView {
             get {
-                return false;
+                return true;
             }
         }
 
+        private bool _liveViewEnabled;
+
         public bool LiveViewEnabled {
             get {
-                return false;
+                return _liveViewEnabled;
             }
-
             set {
-                throw new NotImplementedException();
+                _liveViewEnabled = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -672,15 +674,15 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StartLiveView() {
-            throw new NotImplementedException();
+            LiveViewEnabled = true;
         }
 
         public Task<ImageArray> DownloadLiveView(CancellationToken token) {
-            throw new NotImplementedException();
+            return DownloadExposure(token, true);
         }
 
         public void StopLiveView() {
-            throw new NotImplementedException();
+            LiveViewEnabled = false;
         }
     }
 }

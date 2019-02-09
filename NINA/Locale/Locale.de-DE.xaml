@@ -414,6 +414,7 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblExposureTimeDescription">Belichtungszeit in Sekunden</s:String>
     <s:String x:Key="LblTargetNameDescription">Zielname wenn verfügbar</s:String>
     <s:String x:Key="LblGainDescription">Kameragain</s:String>
+    <s:String x:Key="LblOffsetDescription">Kamera Offset</s:String>
     <s:String x:Key="LblLoadSequence">Sequenz laden</s:String>
     <s:String x:Key="LblLoadSequenceToolTip">Lade Sequenz von XML Datei</s:String>
     <s:String x:Key="LblSaveSequence">Sequenz speichern</s:String>

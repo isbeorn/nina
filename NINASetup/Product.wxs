@@ -378,9 +378,6 @@
       <Component Win64="$(var.Win64)" Id="NINACustomControlLibrary.dll" Guid="f6c5c2f4-cd1b-4243-a976-2b3b886263b2">
         <File Id="NINACustomControlLibrary.dll" Name="NINACustomControlLibrary.dll" Source="$(var.NINACustomControlLibrary_TargetDir)NINACustomControlLibrary.dll" />
       </Component>
-      <Component Win64="$(var.Win64)" Id="Xceed.Wpf.DataGrid.dll" Guid="02a06593-3e87-4418-9851-887c8246ac59">
-        <File Id="Xceed.Wpf.DataGrid.dll" Name="Xceed.Wpf.DataGrid.dll" Source="$(var.NINA_TargetDir)Xceed.Wpf.DataGrid.dll" />
-      </Component>
       <Component Win64="$(var.Win64)" Id="Xceed.Wpf.Toolkit.dll" Guid="d7a57155-3e94-4748-9cae-84bf4184952f">
         <File Id="Xceed.Wpf.Toolkit.dll" Name="Xceed.Wpf.Toolkit.dll" Source="$(var.NINA_TargetDir)Xceed.Wpf.Toolkit.dll" />
       </Component>
