@@ -43,8 +43,8 @@
     <Content Include="Images\WixUIBannerBmp.bmp" />
     <Content Include="Images\WixUIDialogBmp.bmp" />
     <Content Include="LICENSE.rtf" />
+    <Content Include="Logo_Nina.ico" />
     <Content Include="NINASetup.wax" />
-    <Content Include="observatory.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\nikoncswrapper\nikoncswrapper.csproj">

@@ -59,7 +59,7 @@
     <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>observatory.ico</ApplicationIcon>
+    <ApplicationIcon>Logo_Nina.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>D53E041E3EAACF37CBF5FD6A81ECCF6577A70301</ManifestCertificateThumbprint>
@@ -1410,6 +1410,9 @@
     <Content Include="External\x86\SQLite\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Logo_Nina.ico" />
+    <Resource Include="Resources\Logo_Nina.png" />
+    <Resource Include="Resources\Logo_Nina.ico" />
     <Content Include="Utility\ColorSchema\ColorSchemas.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

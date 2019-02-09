@@ -54,12 +54,9 @@
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 Orientation="Horizontal">
-                                <Rectangle
-                                    Width="18"
-                                    Height="18"
+                                <Image Source="/NINA;component/Resources/Logo_Nina.png" Width="18" Height="18"
                                     HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"
-                                    Fill="{StaticResource Observatory}" />
+                                    VerticalAlignment="Center" />
                                 <TextBlock
                                     Margin="4,0,0,0"
                                     VerticalAlignment="Center"

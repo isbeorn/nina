@@ -29,12 +29,12 @@
   <?define NINA_TargetDir=$(var.NINA.TargetDir)?>
   <?define nikoncswrapper_TargetDir=$(var.nikoncswrapper.TargetDir)?>
   <?define NINACustomControlLibrary_TargetDir=$(var.NINACustomControlLibrary.TargetDir)?>
-  <Product Id="DE44F6F7-434C-4892-AC91-D63A48BABB7E" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Language="1033" Version="1.8.0.1013" Manufacturer="N.I.N.A." UpgradeCode="5DC025EA-3D24-4E6B-9F82-79718D70896A">
+  <Product Id="05F73043-F6C5-46F8-BF9C-7CFC39400540" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Language="1033" Version="1.8.0.1014" Manufacturer="N.I.N.A." UpgradeCode="5DC025EA-3D24-4E6B-9F82-79718D70896A">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
     <!--Todo does not find file-->
-    <Icon Id="observatory.ico" SourceFile="observatory.ico" />
-    <Property Id="ARPPRODUCTICON" Value="observatory.ico" />
+    <Icon Id="Logo_Nina.ico" SourceFile="Logo_Nina.ico" />
+    <Property Id="ARPPRODUCTICON" Value="Logo_Nina.ico" />
 
     <WixVariable Id="WixUIBannerBmp" Value="Images\WixUIBannerBmp.bmp" />
     <WixVariable Id="WixUIDialogBmp" Value="Images\WixUIDialogBmp.bmp" />
