@@ -5,23 +5,24 @@ There are many areas where you can contribute, ranging from improving the docume
 When contributing code or documentation to this repository, please first discuss your plans via an issue, discord or mail with the repo owners, before making a change
 
 # Table of Contents
-* [Bug Reporting]  
-  * [Checklist]
-  * [What to include]
-* [Contributing code]  
-  * [Quick Start]  
-  * [Coding rules]  
-  * [Branching model]  
-  * [Versioning in N.I.N.A.]  
-  * [Setting up the developer environment]  
-  * [Pull Requests]
-  * [NINASetupBundle Prerequisites]  
+* [Bug Reporting](#bug-reporting)  
+  * [Checklist](#bug-reporting)
+  * [What to include](#bug-reporting-what-to-include)
+* [Contributing code](#contributing-code)  
+  * [Quick Start](#contributing-code-quick-start)  
+  * [Coding rules](#contributing-code-coding-rules)  
+  * [Branching model](#contributing-code-branching-model)  
+  * [Versioning in N.I.N.A.](#contributing-code-versioning)  
+  * [Setting up the developer environment](#contributing-code-setting-up)  
+  * [Pull Requests](#contributing-code-pull-requests)
+  * [NINASetupBundle Prerequisites](#contributing-code-setup-bundle)  
 
-
+<a name="bug-reporting"></a>
 # Bug Reporting
 
 If you encounter a bug with N.I.N.A. you can report this via the [issue tracker](https://bitbucket.org/Isbeorn/nina/issues?status=new&status=open)  
 
+<a name="bug-reporting-checklist"></a>
 ## Checklist
 1. Ensure that the problem still persists on the latest version
 2. If the problem still persists, check the issue tracker if there is already an issue open for it
@@ -31,6 +32,7 @@ If you encounter a bug with N.I.N.A. you can report this via the [issue tracker]
     * The more info is available for an issue, the better and faster we can track down the root cause and fix it!
   * If no issue is already existing create a new one
 
+<a name="bug-reporting-what-to-include"></a>
 ## What to include
 
 When creating an issue, you should always use the following template
@@ -59,8 +61,10 @@ For reporting bugs please use the following guideline to describe the problem:
 
 Also attach your log file of that session (if applicable), which can be found inside %localappdata%\NINA\Logs
 
+<a name="contributing-code"></a>
 # Contributing code
 
+<a name="contributing-code-quick-start"></a>
 ## Quick Start
 1. Fork the repository
 2. Add your changes
@@ -73,24 +77,27 @@ Also attach your log file of that session (if applicable), which can be found in
    Required changes that might be requested during this phase have to be implemented.
    Once this is done, the pull request can be merged.
 
+<a name="contributing-code-coding-rules"></a>
 ## Coding rules
 
 * Always be backwards compatible when having some major rework of a module (e.g. settings change)
 * Follow clean code guidelines. There are many resources about this topic available online.
 * Try to unit test your code
 
+<a name="contributing-code-branching-model"></a>
 ## Branching model
 
-This project is utilizing a standard git flow where it has the following branches
+This project is utilizing a standard git flow where it has the following branches  
 * master: all officially released code  
-* hotfix/&lt;hotfixname&gt;: used to fix critical issues inside master  
-* release/&lt;version&gt;: when preparing a release with new features a temporary release branch is created for that new release  
-* bugfix/&lt;bugfixname&gt;: issues that are found during a release will be fixed here  
+* hotfix//&lt;hotfixname&gt;: used to fix critical issues inside master  
+* release//&lt;version&gt;: when preparing a release with new features a temporary release branch is created for that new release  
+* bugfix//&lt;bugfixname&gt;: issues that are found during a release will be fixed here  
 * develop: a general develop branch that will contain unreleased new features  
-* feature/&lt;featurename&gt;: new features that will be developed and merged to the develop branch  
+* feature//&lt;featurename&gt;: new features that will be developed and merged to the develop branch  
 
 [A more in-depth guide about this model can be found here](https://nvie.com/posts/a-successful-git-branching-model/)
 
+<a name="contributing-code-versioning"></a>
 ## Versioning in N.I.N.A.
 
 N.I.N.A. utilizes the versioning scheme MAJOR.MINOR.PATCH.CHANNEL|BUILDNRXXX  
@@ -119,7 +126,7 @@ Release Candidate: 1.8.0.3001   (Displayed as "1.8 RC1")
 Beta: 1.8.0.2004                (Displayed as "1.8 BETA4")  
 Develop: 1.8.0.1022             (Displayed as "1.8 NIGHTLY #022")  
 
-
+<a name="contributing-code-setting-up"></a>
 ## Setting up the developer environment
 
 * Install Visual Studio Community 2017 or better
@@ -133,6 +140,7 @@ Develop: 1.8.0.1022             (Displayed as "1.8 NIGHTLY #022")
     * Due to licensing of those files, they must not be put into a public repository
 * (Optional) To be able to build the setup projects you need to install [WiX](http://wixtoolset.org/) and their [Visual Studio plugin](https://marketplace.visualstudio.com/items?itemName=RobMensching.WixToolsetVisualStudio2017Extension)
 
+<a name="contributing-code-pull-requests"></a>
 ## Pull Requests
 
 * Before making large changes, that will change existing patterns or disrupt ongoing features, please first discuss this via an issue or in discord, before starting to work on the changes! This way we can make sure, that it is the proper time for this change.  
@@ -156,6 +164,7 @@ Screenshots
 Notes
 ```
 
+<a name="contributing-code-setup-bundle"></a>
 ## NINASetupBundle Prerequisites
 
 * To provide release notes for the setup bundle, there is a build event using "pandoc" that creates an rtf file out of RELEASE_NOTES.md
