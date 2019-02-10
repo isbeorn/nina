@@ -9,7 +9,7 @@
   <?define SetupSource = "$(var.NINASetup.TargetDir)" ?>
   <?define VCRedist2017 = "$(var.ProjectDir)\vc_redist2017.x86.exe" ?>
   <?endif ?>
-  <Bundle Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Version="1.8.0.1012" Manufacturer="N.I.N.A." UpgradeCode="E51BC85C-6DE1-4653-9B0B-3C80754E4C90">
+  <Bundle Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Version="1.8.0.1014" Manufacturer="N.I.N.A." UpgradeCode="E51BC85C-6DE1-4653-9B0B-3C80754E4C90">
     <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense">
       <bal:WixStandardBootstrapperApplication
         ThemeFile="$(var.ProjectDir)\RtfTheme.xml"

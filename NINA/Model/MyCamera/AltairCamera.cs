@@ -694,11 +694,13 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StopLiveView() {
-            if (!camera.put_Option(AltairCam.eOPTION.OPTION_TRIGGER, 1)) {
-                Disconnect();
-                throw new Exception("AltairCamera - Could not set Trigger manual mode. Reconnect Camera!");
-            }
-            LiveViewEnabled = false;
+            downloadLiveExposure.Task.ContinueWith((Task<object> o) => {
+                if (!camera.put_Option(AltairCam.eOPTION.OPTION_TRIGGER, 1)) {
+                    Disconnect();
+                    throw new Exception("AltairCamera - Could not set Trigger manual mode. Reconnect Camera!");
+                }
+                LiveViewEnabled = false;
+            });
         }
     }
 }

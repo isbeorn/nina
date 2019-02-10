@@ -227,7 +227,7 @@
                                             HorizontalContentAlignment="Stretch"
                                             ScrollViewer.CanContentScroll="False">
                                             <Expander.Header>
-                                                <Grid Margin="5,5,5,15" HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}">
+                                                <Grid Margin="5,5,5,5" HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}">
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="4*" />
                                                         <ColumnDefinition Width="1*" />

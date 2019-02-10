@@ -29,12 +29,12 @@
   <?define NINA_TargetDir=$(var.NINA.TargetDir)?>
   <?define nikoncswrapper_TargetDir=$(var.nikoncswrapper.TargetDir)?>
   <?define NINACustomControlLibrary_TargetDir=$(var.NINACustomControlLibrary.TargetDir)?>
-  <Product Id="C6A70DE6-61D0-4509-939B-2AA3013E2EEA" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Language="1033" Version="1.8.0.1012" Manufacturer="N.I.N.A." UpgradeCode="5DC025EA-3D24-4E6B-9F82-79718D70896A">
+  <Product Id="05F73043-F6C5-46F8-BF9C-7CFC39400540" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Language="1033" Version="1.8.0.1014" Manufacturer="N.I.N.A." UpgradeCode="5DC025EA-3D24-4E6B-9F82-79718D70896A">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
     <!--Todo does not find file-->
-    <Icon Id="observatory.ico" SourceFile="observatory.ico" />
-    <Property Id="ARPPRODUCTICON" Value="observatory.ico" />
+    <Icon Id="Logo_Nina.ico" SourceFile="Logo_Nina.ico" />
+    <Property Id="ARPPRODUCTICON" Value="Logo_Nina.ico" />
 
     <WixVariable Id="WixUIBannerBmp" Value="Images\WixUIBannerBmp.bmp" />
     <WixVariable Id="WixUIDialogBmp" Value="Images\WixUIDialogBmp.bmp" />
@@ -377,9 +377,6 @@
       </Component>
       <Component Win64="$(var.Win64)" Id="NINACustomControlLibrary.dll" Guid="f6c5c2f4-cd1b-4243-a976-2b3b886263b2">
         <File Id="NINACustomControlLibrary.dll" Name="NINACustomControlLibrary.dll" Source="$(var.NINACustomControlLibrary_TargetDir)NINACustomControlLibrary.dll" />
-      </Component>
-      <Component Win64="$(var.Win64)" Id="Xceed.Wpf.DataGrid.dll" Guid="02a06593-3e87-4418-9851-887c8246ac59">
-        <File Id="Xceed.Wpf.DataGrid.dll" Name="Xceed.Wpf.DataGrid.dll" Source="$(var.NINA_TargetDir)Xceed.Wpf.DataGrid.dll" />
       </Component>
       <Component Win64="$(var.Win64)" Id="Xceed.Wpf.Toolkit.dll" Guid="d7a57155-3e94-4748-9cae-84bf4184952f">
         <File Id="Xceed.Wpf.Toolkit.dll" Name="Xceed.Wpf.Toolkit.dll" Source="$(var.NINA_TargetDir)Xceed.Wpf.Toolkit.dll" />

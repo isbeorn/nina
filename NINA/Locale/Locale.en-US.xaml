@@ -413,6 +413,7 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblExposureTimeDescription">Exposure Time in seconds</s:String>
     <s:String x:Key="LblTargetNameDescription">Target Name if available</s:String>
     <s:String x:Key="LblGainDescription">Camera Gain</s:String>
+    <s:String x:Key="LblOffsetDescription">Camera Offset</s:String>
     <s:String x:Key="LblLoadSequence">Load Sequence</s:String>
     <s:String x:Key="LblLoadSequenceToolTip">Load Sequence from xml file</s:String>
     <s:String x:Key="LblSaveSequence">Save Sequence</s:String>
@@ -817,4 +818,9 @@ Calculated HFR: {2}
         This profile is already connected to the Synchronized PHD2 Guider.
         You cannot connect the same profile twice, please choose a different NINA profile.
     </s:String>
+    <s:String x:Key="LblAutoUpdateSource">Auto Update Source</s:String>
+    <s:String x:Key="LblRelease">Release</s:String>
+    <s:String x:Key="LblBeta">Beta</s:String>
+    <s:String x:Key="LblNightly">Nightly</s:String>
+    <s:String x:Key="LblChecksumError">Checksum does not match expected value. Downloaded file may be corrupted!</s:String>
 </ResourceDictionary>

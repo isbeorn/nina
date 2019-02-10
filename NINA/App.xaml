@@ -41,7 +41,6 @@
                 <!--  UI Styles  -->
                 <ResourceDictionary Source="Resources\Styles\Button.xaml" />
                 <ResourceDictionary Source="Resources\Styles\Path.xaml" />
-                <ResourceDictionary Source="Resources\Styles\Window.xaml" />
                 <ResourceDictionary Source="Resources\Styles\TextBlock.xaml" />
                 <ResourceDictionary Source="Resources\Styles\TextBox.xaml" />
                 <ResourceDictionary Source="Resources\Styles\TabControl.xaml" />
@@ -63,6 +62,7 @@
                 <ResourceDictionary Source="Resources\Styles\Oxyplot.xaml" />
                 <ResourceDictionary Source="Resources\Styles\DatePicker.xaml" />
                 <ResourceDictionary Source="Resources\Styles\StepperControl.xaml" />
+                <ResourceDictionary Source="Resources\Styles\Window.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/ToastNotifications.Messages;component/Themes/Default.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

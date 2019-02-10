@@ -29,7 +29,7 @@
     Title="{Binding Title}"
     Background="{StaticResource BackgroundBrush}"
     DataContext="{StaticResource AppVM}"
-    Icon="/NINA;component/Resources/observatory.png"
+    Icon="/NINA;component/Resources/Logo_Nina.ico"
     Style="{StaticResource MainWindow}">
 
     <Window.InputBindings>

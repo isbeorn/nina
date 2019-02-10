@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Version 1.8</title>
+</head>
+<body>
+
+    <h1 id="version-1.8">Version 1.8</h1>
+<h2 id="features">Features</h2>
+<h3 id="sequence">Sequence</h3>
+<ul>
+<li>Enable/Disable sequence entries</li>
+</ul>
+<h3 id="plate-solving">Plate Solving</h3>
+<ul>
+<li>Added interface for All Sky Platesolver</li>
+</ul>
+<h3 id="camera-control">Camera Control</h3>
+<ul>
+<li>Altair native driver support</li>
+<li>ToupTek native driver support</li>
+<li>Added support for anti-dew heaters in ZWO cameras</li>
+<li>On ASCOM drivers support for setting readout modes</li>
+</ul>
+<h3 id="framing-assistant">Framing Assistant</h3>
+<ul>
+<li>Add SkyAtlas image source which allows for framing based on offline SkyAtlas data</li>
+</ul>
+<h3 id="flat-wizard">Flat Wizard</h3>
+<ul>
+<li>Supports you taking flats</li>
+</ul>
+<h3 id="imaging">Imaging</h3>
+<ul>
+<li>Added a list of manual focus targets (bright stars) that are currently visible in the sky</li>
+</ul>
+<h3 id="framing-assistant-offline-sky-chart">Framing Assistant Offline Sky Chart</h3>
+<ul>
+<li>Based on Sky Atlas data a basic sky chart showing objects can be displayed</li>
+<li>Instead of dragging the rectangular through the initial image like in the other framing sources
+the background itself will be moved like in an orrery</li>
+</ul>
+<h3 id="guiding">Guiding</h3>
+<ul>
+<li>Added Synchronized PHD2 Guider (experimental)</li>
+<li>Synchronized PHD2 Guider will synchronize your Dither requests between multiple instances of N.I.N.A.
+<ul>
+<li>Known limitations: Dithering will happen every possible synchronized frame and is not changeable</li>
+</ul>
+</li>
+</ul>
+<h3 id="auto-update-channels">Auto-Update Channels</h3>
+<ul>
+<li>Previously the auto update was always just looking for released versions. Now multiple sources (Release, Beta and Nightly) can be selected and the auto updater updates to the respective version accordingls.</li>
+<li>Additionally the changelog for the new version will now be displayed prior to updating, too.</li>
+</ul>
+<h2 id="bugfixes">Bugfixes</h2>
+<ul>
+<li>Corrected Max Binning level for ASI Cameras</li>
+<li>Focuser move command fixed where lots of move commands where sent by accident</li>
+<li>Rotation value now considered for sequence import|export</li>
+<li>Canon: Fixed bulb mode for exposure times &lt;30s</li>
+<li>Canon: All shutter speeds now correctly added when step set custom function is set to 1/3</li>
+<li>Meridian Flip window does not get stuck anymore when clicking on cancel</li>
+<li>Log Level will now be set on application start based on profile settings.</li>
+<li>ASI Cameras will not shut down their cooling and progress on opening multiple instances of NINA</li>
+</ul>
+<h2 id="improvements">Improvements</h2>
+<ul>
+<li>Clear button for PHD2 Graph</li>
+<li>Hide camera cooler controls when not available for current camera model</li>
+<li>Zero Floating point numbers now displayed as &quot;0.00&quot; instead of &quot;.00&quot;</li>
+<li>Show better exception message when an ASCOM Interop Exception occurs</li>
+<li>Canon: Errors are now shown to users in a readable format if any occur</li>
+<li>Removed hard requirement of ASCOM platform. Application can now function without it</li>
+<li>Improved UI Style.
+<ul>
+<li>Tweaked some color themes for more consistent colors</li>
+<li>Better spacing between elements to reduce wasted space</li>
+<li>Two new background colors to better pronounce some ui elements</li>
+<li>Reworked Imaging tab to have a common style.</li>
+<li>Imaging tab tools pane (to hide/show panels) moved to the top and split into two separate categories</li>
+</ul>
+</li>
+<li>Profiles don't get overriden when using multiple instances of N.I.N.A. with each one having a separate profile active</li>
+<li>Autostretch replaced by a better midpoint transformation function</li>
+<li>Autostretch now has black point clipping options</li>
+<li>Vastly improved Image Statistics calculation.</li>
+<li>Estimated Finish Time will automatically update in the sequencing view</li>
+<li>Added copy button for existing color schemas to copy over to custom and alternative custom schemas</li>
+<li>Framing tab:
+<ul>
+<li>Moved coordinates out of framing boxes to not obscure target</li>
+<li>Added a new button to be able to add the framing target to a sequence instead of replacing</li>
+<li>Control to adjust opacity of framing box</li>
+</ul>
+</li>
+<li>Improved Framing Assistant and Sequence Target Textboxes by giving up to 50 target hints based on input to select from</li>
+<li>Framing Assistant now can annotate DSO</li>
+<li>Attempt to start PHD2 and connect all equipment when connecting to guider and PHD2 is not running</li>
+<li>Adaptive Cooling: Duration for cool/warm camera is now a minimum duration. In case the cooler cannot keep up with the set duration, the application will wait for the camera to reach the checkpoints instead of just continuing setting new targets without the camera having any chance to reach those in the timeframe.</li>
+</ul>
+<hr />
+<h1 id="version-1.7">Version 1.7</h1>
+<h2 id="features-1">Features</h2>
+<h3 id="framing-assistant-1">Framing Assistant</h3>
+<ul>
+<li>Mosaic planning for framing assistant</li>
+<li>Added multiple new SkySurveys to choose from for framing</li>
+<li>DSLR RAW files can now be loaded into framing assistant</li>
+</ul>
+<h3 id="sequences">Sequences</h3>
+<ul>
+<li>Sequence multiple target planning. Import/Export also available</li>
+<li>Consider Rotation for framing assistant when set for a sequence during platesolves</li>
+</ul>
+<h3 id="filter-wheel">Filter Wheel</h3>
+<ul>
+<li>Added a manual FilterWheel for users without a motorized wheel or with a filter drawer. There will pop up a window and prompt the user when a filter change is requested</li>
+</ul>
+<h3 id="rotators">Rotators</h3>
+<ul>
+<li>Support for ASCOM Rotators added</li>
+<li>A manual rotator option is added, for users without an automatic rotator. A pop up will show with the current angle and target angle for a user to manually rotate to</li>
+</ul>
+<h3 id="imaging-1">Imaging</h3>
+<ul>
+<li>DSLR Users: Images will now always be saved as RAW to prevent any loss of data due to conversions</li>
+<li>Aberration inspector added to imaging tab. It will show a 3x3 Panel containing the current image</li>
+<li>Battery display for DSLRs</li>
+</ul>
+<h3 id="settings">Settings</h3>
+<ul>
+<li>Added ImageParameter <span class="math">RMSARCSEC</span> and <span class="math">FOCUSPOSITION</span></li>
+<li>Latitude and Longitude can now be synced from application to telescope and vica versa (when supported).</li>
+<li>Serial Relay (via USB) interaction for Nikon Bulb</li>
+</ul>
+<h2 id="bugfixes-1">Bugfixes</h2>
+<ul>
+<li>Fixed Canon issue that a second exposure is accidentally triggered, causing the camera to be stuck</li>
+<li>Fixed memory leak when using Free Image RAW Converter</li>
+</ul>
+<h2 id="improvements-1">Improvements</h2>
+<ul>
+<li>Guider is also connected when pushing &quot;Connect All&quot;</li>
+<li>Changed FilterWheel UI for switching filters</li>
+<li>Some improvements to memory consumption</li>
+<li>Automatically triggered Autofocus and Platesolving now spawns inside a separate window</li>
+<li>Guiding Dither thresholds now configurable</li>
+<li>Flipped + and - for Stepper Controls</li>
+<li>Minor UI Layout improvements</li>
+<li>Made SkySurvey Cache directory configurable</li>
+<li>Local astrometry.net client will now downscale image for faster image solving</li>
+<li>ImagePatterns inside options can now be dragged from the list to the textbox</li>
+<li>Major code refactorings for better maintainability</li>
+<li>Lots and lots of minor bugfixes and improvements</li>
+</ul>
+
+
+</body>
+</html>

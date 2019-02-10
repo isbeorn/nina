@@ -61,6 +61,7 @@ namespace NINA.ViewModel.FramingAssistant {
             img = new Bitmap((int)ViewportFoV.OriginalWidth, (int)ViewportFoV.OriginalHeight, PixelFormat.Format32bppArgb);
 
             g = Graphics.FromImage(img);
+            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
             FrameLineMatrix.CalculatePoints(ViewportFoV);

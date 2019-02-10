@@ -54,12 +54,9 @@
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 Orientation="Horizontal">
-                                <Rectangle
-                                    Width="18"
-                                    Height="18"
+                                <Image Source="/NINA;component/Resources/Logo_Nina.png" Width="18" Height="18"
                                     HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"
-                                    Fill="{StaticResource Observatory}" />
+                                    VerticalAlignment="Center" />
                                 <TextBlock
                                     Margin="4,0,0,0"
                                     VerticalAlignment="Center"
@@ -77,6 +74,24 @@
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
                                 Orientation="Horizontal">
+                                <Button
+                                    Visibility="{Binding Source={StaticResource AppVM}, Path=VersionCheckVM.UpdateAvailable, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                    Height="15"
+                                    Command="{Binding Source={StaticResource AppVM}, Path=VersionCheckVM.ShowDownloadCommand}"
+                                    Style="{StaticResource SecondaryBackgroundButton}"
+                                    WindowChrome.IsHitTestVisibleInChrome="True">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock
+                                            VerticalAlignment="Center"
+                                            Style="{StaticResource WindowButtonTextBlock}"
+                                            Text="{Binding Source={StaticResource AppVM}, Path=VersionCheckVM.UpdateAvailableText}" />
+                                        <Path
+                                            Margin="2"
+                                            Data="{StaticResource DownloadSVG}"
+                                            Stretch="Uniform"
+                                            Style="{StaticResource WindowButtonPath}" />
+                                    </StackPanel>
+                                </Button>
                                 <Button
                                     Width="20"
                                     Height="15"
