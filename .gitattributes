@@ -1,4 +1,4 @@
-* text=crlf
+* text=auto
 
 *.cs text
 *.xaml text
