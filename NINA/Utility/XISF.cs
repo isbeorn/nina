@@ -299,7 +299,7 @@ namespace NINA.Utility {
 
                 public static readonly string[] Gain = { Namespace + nameof(Gain), "Float32", "EGAIN" };
                 public static readonly string[] ISOSpeed = { Namespace + nameof(ISOSpeed), "Int32" };
-                public static readonly string[] Name = { Namespace + nameof(Name), "String" };
+                public static readonly string[] Name = { Namespace + nameof(Name), "String", "INSTRUME" };
                 public static readonly string[] ReadoutNoise = { Namespace + nameof(ReadoutNoise), "Float32" };
                 public static readonly string[] Rotation = { Namespace + nameof(Rotation), "Float32" };
                 public static readonly string[] XBinning = { Namespace + nameof(XBinning), "Int32", "XBINNING" };
