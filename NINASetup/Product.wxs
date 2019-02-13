@@ -61,6 +61,7 @@
       <ComponentGroupRef Id="Documentation_files" />
       <ComponentGroupRef Id="External_x64_ASI_files" />
       <ComponentGroupRef Id="External_x64_Atik_files" />
+      <ComponentGroupRef Id="External_x64_QHY_files" />
       <ComponentGroupRef Id="External_x64_FreeImage_files" />
       <ComponentGroupRef Id="External_x64_Nikon_Type0001_files" />
       <ComponentGroupRef Id="External_x64_Nikon_Type0002_files" />
@@ -86,6 +87,7 @@
       <ComponentGroupRef Id="External_x64_Nikon_Type0022_files" />
       <ComponentGroupRef Id="External_x86_ASI_files" />
       <ComponentGroupRef Id="External_x86_Atik_files" />
+      <ComponentGroupRef Id="External_x86_QHY_files" />
       <ComponentGroupRef Id="External_x86_Canon_files" />
       <ComponentGroupRef Id="External_x86_FreeImage_files" />
       <ComponentGroupRef Id="External_x86_Nikon_Type0001_files" />
@@ -138,6 +140,7 @@
             <Directory Id="External_x64" Name="x64">
               <Directory Id="External_x64_ASI" Name="ASI" />
               <Directory Id="External_x64_Atik" Name="Atik" />
+              <Directory Id="External_x64_QHY" Name="QHYCCD" />
               <Directory Id="External_x64_Canon" Name="Canon" />
               <Directory Id="External_x64_FreeImage" Name="FreeImage" />
               <Directory Id="External_x64_Nikon" Name="Nikon">
@@ -198,6 +201,7 @@
               <Directory Id="External_x86_FreeImage" Name="FreeImage" />
               <Directory Id="External_x86_Canon" Name="Canon" />
               <Directory Id="External_x86_Atik" Name="Atik" />
+              <Directory Id="External_x86_QHY" Name="QHYCCD" />
               <Directory Id="External_x86_ASI" Name="ASI" />
               <Directory Id="External_x86_SQLite" Name="SQLite" />
               <Directory Id="External_x86_Altair" Name="Altair" />
@@ -605,6 +609,20 @@
   </Fragment>
 
   <Fragment>
+    <ComponentGroup Id="External_x64_QHY_files" Directory="External_x64_QHY">
+      <Component Win64="$(var.Win64)" Id="External_x64_QHY_ftd2xx.dll" Guid="E0901281-7521-4106-BA83-D347A113D2FF">
+        <File Id="External_x64_QHY_ftd2xx.dll" Name="ftd2xx.dll" Source="$(var.NINA_ProjectDir)External\x64\QHYCCD\ftd2xx.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="External_x64_QHY_qhyccd.dll" Guid="FA219C9F-D76D-4699-A3CB-D5F6092C8B1F">
+        <File Id="External_x64_QHY_qhyccd.dll" Name="qhyccd.dll" Source="$(var.NINA_ProjectDir)External\x64\QHYCCD\qhyccd.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="External_x64_QHY_tbb.dll" Guid="8E94E826-4666-46D5-B955-321C32ABCE14">
+        <File Id="External_x64_QHY_tbb.dll" Name="tbb.dll" Source="$(var.NINA_ProjectDir)External\x64\QHYCCD\tbb.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
     <ComponentGroup Id="External_x64_FreeImage_files" Directory="External_x64_FreeImage">
       <Component Win64="$(var.Win64)" Id="External_x64_FreeImage_FreeImage.dll" Guid="8baf48c2-ac6b-4740-a1c9-023e68e14a60">
         <File Id="External_x64_FreeImage_FreeImage.dll" Name="FreeImage.dll" Source="$(var.NINA_TargetDir)External\x64\FreeImage\FreeImage.dll" />
@@ -875,6 +893,20 @@
       </Component>
       <Component Win64="$(var.Win64)" Id="External_x86_Atik_libusb_1.0.dll" Guid="BEBAFF26-2134-4CA2-9283-10A970A9C99D">
         <File Id="External_x86_Atik_libusb_1.0.dll" Name="libusb-1.0.dll" Source="$(var.NINA_ProjectDir)External\x86\Atik\libusb-1.0.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="External_x86_QHY_files" Directory="External_x86_QHY">
+      <Component Win64="$(var.Win64)" Id="External_x86_QHY_ftd2xx.dll" Guid="F5709DC0-F98F-400E-8E79-CA06FC0ED6CF">
+        <File Id="External_x86_QHY_ftd2xx.dll" Name="ftd2xx.dll" Source="$(var.NINA_ProjectDir)External\x86\QHYCCD\ftd2xx.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="External_x86_QHY_qhyccd.dll" Guid="E6E3178C-6F6B-4892-A4A8-EF5C5B91B8F9">
+        <File Id="External_x86_QHY_qhyccd.dll" Name="qhyccd.dll" Source="$(var.NINA_ProjectDir)External\x86\QHYCCD\qhyccd.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="External_x86_QHY_tbb.dll" Guid="8ACD316D-8318-48A2-AC3D-14AA56132D53">
+        <File Id="External_x86_QHY_tbb.dll" Name="tbb.dll" Source="$(var.NINA_ProjectDir)External\x86\QHYCCD\tbb.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
