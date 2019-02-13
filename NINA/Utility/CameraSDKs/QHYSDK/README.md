@@ -6,12 +6,12 @@ Inside the Windows SDK zip file you will see both 32 and 64bit DLLs in the base 
 
 | File          | Destination Folder                   |
 |---------------|:------------------------------------ |
-|`tbb.dll`      | `NINA/External/QHYCCD/x86/tbb.dll`   |
-|`tbb_x64.dll`  | `NINA/External/QHYCCD/x64/tbb.dll`   |
-|`ftd2xx.dll`   | `NINA/External/QHYCCD/x86/ftd2xx.dll`|
-|`ftd2xx64.dll` | `NINA/External/QHYCCD/x64/ftd2xx.dll`|
-|`DLLwithDebugOutput/qhyccd.dll` | `NINA/External/QHYCCD/x86/qhyccd.dll`|
-|`DLLwithDebugOutput/qhyccd_x64.dll` | `NINA/External/QHYCCD/x64/qhyccd.dll`|
+|`tbb.dll`      | `NINA/External/x86/QHYCCD/tbb.dll`   |
+|`tbb_x64.dll`  | `NINA/External/x64/QHYCCD/tbb.dll`   |
+|`ftd2xx.dll`   | `NINA/External/x86/QHYCCD/ftd2xx.dll`|
+|`ftd2xx64.dll` | `NINA/External/x64/QHYCCD/ftd2xx.dll`|
+|`DLLwithDebugOutput/qhyccd.dll` | `NINA/External/x86/QHYCCD/qhyccd.dll`|
+|`DLLwithDebugOutput/qhyccd_x64.dll` | `NINA/External/x64/QHYCCD/qhyccd.dll`|
 
 Do not copy the `qhyccd*.dll` file in the root folder as they are not compatible with debugging and will crash upon being loaded in a Debug build of NINA. Instead, there should be a folder named `DLLwithDebugOutput` which contains SDK DLLs which do have debugging symbols enabled.
 
