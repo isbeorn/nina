@@ -38,6 +38,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ZWOptical.ASISDK;
+using QHYCCD;
 
 namespace NINA.ViewModel {
 
@@ -694,6 +695,24 @@ namespace NINA.ViewModel {
                     if (AtikCameraDll.ArtemisDeviceIsCamera(i)) {
                         var cam = new AtikCamera(i, profileService);
                         Devices.Add(cam);
+                    }
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
+            /* QHYCCD */
+            try {
+                Logger.Debug("Adding QHYCCD Cameras");
+                uint numCameras = QHYCameras.Count;
+
+                if (numCameras > 0) {
+                    for (uint i = 0; i < numCameras; i++) {
+                        var cam = QHYCameras.GetCamera(i, profileService);
+                        if (!string.IsNullOrEmpty(cam.Name)) {
+                            Logger.Debug(string.Format("Adding QHY camera {0}: {1} (as {2})", i, cam.Id, cam.Name));
+                            Devices.Add(cam);
+                        }
                     }
                 }
             } catch (Exception ex) {
