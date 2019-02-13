@@ -35,7 +35,7 @@ namespace QHYCCD {
             get {
                 uint num;
 
-                num = libqhyccd.ScanQHYCCD();
+                num = LibQHYCCD.ScanQHYCCD();
                 Logger.Trace(String.Format("QHYCamera - found {0} camera(s)", num));
                 return num;
             }

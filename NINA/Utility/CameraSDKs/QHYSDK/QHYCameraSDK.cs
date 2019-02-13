@@ -33,11 +33,11 @@ using System.Runtime.InteropServices;
 
 namespace QHYCCD
 {
-    public static class libqhyccd
+    public static class LibQHYCCD
     {
         private const string DLLNAME = "qhyccd.dll";
 
-        static libqhyccd()
+        static LibQHYCCD()
         {
             DllLoader.LoadDll("QHYCCD/" + DLLNAME);
 
@@ -58,7 +58,7 @@ namespace QHYCCD
 
         /// <summary>
         /// Sensor bayer mask pattern
-        /// <seealso cref="libqhyccd.CONTROL_ID.CAM_COLOR"/>
+        /// <seealso cref="LibQHYCCD.CONTROL_ID.CAM_COLOR"/>
         /// </summary>
         public enum BAYER_ID
         {
@@ -197,7 +197,7 @@ namespace QHYCCD
 
             /// <summary>
             /// Color sensor bayer pattern
-            /// <seealso cref="libqhyccd.BAYER_ID"/>
+            /// <seealso cref="LibQHYCCD.BAYER_ID"/>
             /// </summary>
             CAM_COLOR,
 
@@ -380,7 +380,7 @@ namespace QHYCCD
 
         /// <summary>
         /// For setting QHY camera exposure mode
-        /// <seealso cref="libqhyccd.SetQHYCCDStreamMode(IntPtr, byte)"/>
+        /// <seealso cref="LibQHYCCD.SetQHYCCDStreamMode(IntPtr, byte)"/>
         /// </summary>
         public enum QHYCCD_CAMERA_MODE : byte
         {
@@ -427,10 +427,10 @@ namespace QHYCCD
         private static void CheckReturn(uint code, MethodBase callingMethod, params object[] parameters)
         {
             switch (code) {
-                case libqhyccd.QHYCCD_SUCCESS:
+                case LibQHYCCD.QHYCCD_SUCCESS:
                     break;
 
-                case libqhyccd.QHYCCD_ERROR:
+                case LibQHYCCD.QHYCCD_ERROR:
                     throw new QHYCameraException("QHY SDK returned and error stauts", callingMethod, parameters);
                 default:
                     throw new ArgumentOutOfRangeException("QHY SDK returned an unknown error");
@@ -608,7 +608,7 @@ namespace QHYCCD
         {
             /// <summary>
             /// Sensor bayer pattern
-            /// <seealso cref="libqhyccd.BAYER_ID"/>
+            /// <seealso cref="LibQHYCCD.BAYER_ID"/>
             /// </summary>
             public BAYER_ID BayerPattern;
 
@@ -619,7 +619,7 @@ namespace QHYCCD
 
             /// <summary>
             /// The camera's current state (managed by NINA, not by SDK)
-            /// <seealso cref="libqhyccd.QHYCCD_CAMERA_STATE"/>
+            /// <seealso cref="LibQHYCCD.QHYCCD_CAMERA_STATE"/>
             /// </summary>
             public string CamState;
 
