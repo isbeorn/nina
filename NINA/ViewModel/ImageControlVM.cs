@@ -23,20 +23,19 @@
 
 using NINA.Model;
 using NINA.Model.MyCamera;
+using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
+using NINA.Model.MyRotator;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Behaviors;
 using NINA.Utility.Enum;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using NINA.Utility.WindowService;
-using nom.tam.fits;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -46,13 +45,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 
 namespace NINA.ViewModel {
 
-    internal class ImageControlVM : DockableVM, ICameraConsumer, ITelescopeConsumer, IFocuserConsumer {
+    internal class ImageControlVM : DockableVM, ICameraConsumer, ITelescopeConsumer, IFilterWheelConsumer, IFocuserConsumer, IRotatorConsumer {
 
-        public ImageControlVM(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator, IFocuserMediator focuserMediator, IImagingMediator imagingMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+        public ImageControlVM(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator, IFilterWheelMediator filterWheelMediator, IFocuserMediator focuserMediator, IRotatorMediator rotatorMediator, IImagingMediator imagingMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblImage";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PictureSVG"];
 
@@ -60,10 +58,17 @@ namespace NINA.ViewModel {
             this.cameraMediator.RegisterConsumer(this);
 
             this.telescopeMediator = telescopeMediator;
+            this.telescopeMediator = telescopeMediator;
             this.telescopeMediator.RegisterConsumer(this);
+
+            this.filterWheelMediator = filterWheelMediator;
+            this.filterWheelMediator.RegisterConsumer(this);
 
             this.focuserMediator = focuserMediator;
             this.focuserMediator.RegisterConsumer(this);
+
+            this.rotatorMediator = rotatorMediator;
+            this.rotatorMediator.RegisterConsumer(this);
 
             this.imagingMediator = imagingMediator;
             this.applicationStatusMediator = applicationStatusMediator;
@@ -534,10 +539,14 @@ namespace NINA.ViewModel {
         private CameraInfo cameraInfo = DeviceInfo.CreateDefaultInstance<CameraInfo>();
         private ITelescopeMediator telescopeMediator;
         private TelescopeInfo telescopeInfo = DeviceInfo.CreateDefaultInstance<TelescopeInfo>();
+        private IFilterWheelMediator filterWheelMediator;
         private IFocuserMediator focuserMediator;
+        private IRotatorMediator rotatorMediator;
         private IImagingMediator imagingMediator;
         private IApplicationStatusMediator applicationStatusMediator;
+        private FilterWheelInfo filterWheelInfo = DeviceInfo.CreateDefaultInstance<FilterWheelInfo>();
         private FocuserInfo focuserInfo = DeviceInfo.CreateDefaultInstance<FocuserInfo>();
+        private RotatorInfo rotatorInfo = DeviceInfo.CreateDefaultInstance<RotatorInfo>();
 
         public async Task<BitmapSource> PrepareImage(
                 ImageArray iarr,
@@ -777,6 +786,13 @@ namespace NINA.ViewModel {
                 f.AddHeaderCard("SITELAT", Astrometry.HoursToHMS(profileService.ActiveProfile.AstrometrySettings.Latitude), "");
                 f.AddHeaderCard("SITELONG", Astrometry.HoursToHMS(profileService.ActiveProfile.AstrometrySettings.Longitude), "");
 
+                if (filterWheelInfo.Connected) {
+                    if (!string.IsNullOrEmpty(filterWheelInfo.Name) && !string.IsNullOrWhiteSpace(filterWheelInfo.Name)) {
+                        /* fits4win */
+                        f.AddHeaderCard("FWHEEL", filterWheelInfo.Name, "");
+                    }
+                }
+
                 if (!string.IsNullOrEmpty(parameters.FilterName)) {
                     f.AddHeaderCard("FILTER", parameters.FilterName, "");
                 }
@@ -802,6 +818,54 @@ namespace NINA.ViewModel {
                 if (!double.IsNaN(temp)) {
                     f.AddHeaderCard("TEMPERAT", temp, "");
                     f.AddHeaderCard("CCD-TEMP", temp, "");
+                }
+
+                if (focuserInfo.Connected) {
+                    if (!string.IsNullOrEmpty(focuserInfo.Name) && !string.IsNullOrWhiteSpace(focuserInfo.Name)) {
+                        /* fits4win, SGP */
+                        f.AddHeaderCard("FOCNAME", focuserInfo.Name, "");
+                    }
+
+                    if (focuserInfo.Position != -1) {
+                        /* fits4win, SGP */
+                        f.AddHeaderCard("FOCPOS", focuserInfo.Position, "steps");
+
+                        /* MaximDL, several obervatories */
+                        f.AddHeaderCard("FOCUSPOS", focuserInfo.Position, "steps");
+                    }
+
+                    if (!double.IsNaN(focuserInfo.StepSize)) {
+                        /* MaximDL */
+                        f.AddHeaderCard("FOCUSSZ", focuserInfo.StepSize, "microns");
+                    }
+
+                    if (!double.IsNaN(focuserInfo.Temperature)) {
+                        /* fits4win, SGP */
+                        f.AddHeaderCard("FOCTEMP", focuserInfo.Temperature, "celcius");
+
+                        /* MaximDL, several obervatories */
+                        f.AddHeaderCard("FOCUSTEM", focuserInfo.Temperature, "celcius");
+                    }
+                }
+
+                if (rotatorInfo.Connected) {
+                    if (!string.IsNullOrEmpty(focuserInfo.Name) && !string.IsNullOrWhiteSpace(focuserInfo.Name)) {
+                        /* NINA */
+                        f.AddHeaderCard("ROTNAME", rotatorInfo.Name, "");
+                    }
+
+                    if (!float.IsNaN(rotatorInfo.Position)) {
+                        /* fits4win */
+                        f.AddHeaderCard("ROTATOR", rotatorInfo.Position, "degrees");
+
+                        /* MaximDL, several observatories */
+                        f.AddHeaderCard("ROTATANG", rotatorInfo.Position, "degrees");
+                    }
+
+                    if (!float.IsNaN(rotatorInfo.StepSize)) {
+                        /* NINA */
+                        f.AddHeaderCard("ROTSTPSZ", rotatorInfo.StepSize, "degrees");
+                    }
                 }
 
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
@@ -890,6 +954,73 @@ namespace NINA.ViewModel {
                     header.AddImageProperty(XISFImageProperty.Instrument.Sensor.Temperature, temp.ToString(CultureInfo.InvariantCulture));
                 }
 
+                if (focuserInfo.Connected) {
+                    if (!string.IsNullOrEmpty(focuserInfo.Name) && !string.IsNullOrWhiteSpace(focuserInfo.Name)) {
+                        /* fits4win, SGP */
+                        header.AddImageFITSKeyword("FOCNAME", focuserInfo.Name, "");
+                    }
+
+                    /*
+                     * XISF 1.0 defines Instrument:Focuser:Position as the only focuser-related image property.
+                     * This image property is: "(Float32) Estimated position of the focuser in millimeters, measured with respect to a device-dependent origin."
+                     * This unit is different from FOCUSPOS FITSKeyword, so we must do two separate actions: calculate distance from origin in millimeters and insert
+                     * that as the XISF Instrument:Focuser:Position property, and then insert the separate FOCUSPOS FITSKeyword (measured in steps).
+                     */
+                    if (focuserInfo.Position != -1) {
+                        if (!double.IsNaN(focuserInfo.StepSize)) {
+                            /* steps * step size (microns) converted to millimeters, single-precision float */
+                            float focusDistance = (focuserInfo.Position * (float)focuserInfo.StepSize) / 1000;
+                            header.AddImageProperty(XISFImageProperty.Instrument.Focuser.Position, focusDistance.ToString(CultureInfo.InvariantCulture));
+                        }
+
+                        /* fits4win, SGP */
+                        header.AddImageFITSKeyword("FOCPOS", focuserInfo.Position.ToString(CultureInfo.InvariantCulture), "steps");
+
+                        /* MaximDL, several obervatories */
+                        header.AddImageFITSKeyword("FOCUSPOS", focuserInfo.Position.ToString(CultureInfo.InvariantCulture), "steps");
+                    }
+
+                    if (!double.IsNaN(focuserInfo.StepSize)) {
+                        /* MaximDL */
+                        header.AddImageFITSKeyword("FOCUSSZ", focuserInfo.StepSize.ToString(CultureInfo.InvariantCulture), "microns");
+                    }
+
+                    if (!double.IsNaN(focuserInfo.Temperature)) {
+                        /* fits4win, SGP */
+                        header.AddImageFITSKeyword("FOCTEMP", focuserInfo.Temperature.ToString(CultureInfo.InvariantCulture), "celcius");
+
+                        /* MaximDL, several obervatories */
+                        header.AddImageFITSKeyword("FOCUSTEM", focuserInfo.Temperature.ToString(CultureInfo.InvariantCulture), "celcius");
+                    }
+                }
+
+                if (rotatorInfo.Connected) {
+                    if (!string.IsNullOrEmpty(focuserInfo.Name) && !string.IsNullOrWhiteSpace(focuserInfo.Name)) {
+                        /* NINA */
+                        header.AddImageFITSKeyword("ROTNAME", rotatorInfo.Name, "");
+                    }
+
+                    if (!float.IsNaN(rotatorInfo.Position)) {
+                        /* fits4win */
+                        header.AddImageFITSKeyword("ROTATOR", rotatorInfo.Position.ToString(CultureInfo.InvariantCulture), "degrees");
+
+                        /* MaximDL, several observatories */
+                        header.AddImageFITSKeyword("ROTATANG", rotatorInfo.Position.ToString(CultureInfo.InvariantCulture), "degrees");
+                    }
+
+                    if (!float.IsNaN(rotatorInfo.StepSize)) {
+                        /* NINA */
+                        header.AddImageFITSKeyword("ROTSTPSZ", rotatorInfo.StepSize.ToString(CultureInfo.InvariantCulture), "degrees");
+                    }
+                }
+
+                if (filterWheelInfo.Connected) {
+                    if (!string.IsNullOrEmpty(filterWheelInfo.Name) && !string.IsNullOrWhiteSpace(filterWheelInfo.Name)) {
+                        /* fits4win */
+                        header.AddImageFITSKeyword("FWHEEL", filterWheelInfo.Name, "");
+                    }
+                }
+
                 if (!string.IsNullOrEmpty(parameters.FilterName)) {
                     header.AddImageProperty(XISFImageProperty.Instrument.Filter.Name, parameters.FilterName);
                 }
@@ -920,8 +1051,16 @@ namespace NINA.ViewModel {
             this.telescopeInfo = telescopeInfo;
         }
 
+        public void UpdateDeviceInfo(FilterWheelInfo deviceInfo) {
+            this.filterWheelInfo = deviceInfo;
+        }
+
         public void UpdateDeviceInfo(FocuserInfo deviceInfo) {
             this.focuserInfo = deviceInfo;
+        }
+
+        public void UpdateDeviceInfo(RotatorInfo deviceInfo) {
+            this.rotatorInfo = deviceInfo;
         }
     }
 

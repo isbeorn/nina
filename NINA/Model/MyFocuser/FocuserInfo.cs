@@ -21,12 +21,6 @@
 
 #endregion "copyright"
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace NINA.Model.MyFocuser {
 
     internal class FocuserInfo : DeviceInfo {
@@ -35,6 +29,13 @@ namespace NINA.Model.MyFocuser {
         public int Position {
             get { return position; }
             set { position = value; RaisePropertyChanged(); }
+        }
+
+        private double stepsize;
+
+        public double StepSize {
+            get { return stepsize; }
+            set { stepsize = value; RaiseAllPropertiesChanged(); }
         }
 
         private double temperature;

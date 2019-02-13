@@ -30,8 +30,6 @@ using NINA.Utility.Profile;
 using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -106,6 +104,9 @@ namespace NINA.ViewModel {
 
             rotatorValues.TryGetValue(nameof(RotatorInfo.Position), out o);
             RotatorInfo.Position = (float)(o ?? 0f);
+
+            rotatorValues.TryGetValue(nameof(RotatorInfo.StepSize), out o);
+            RotatorInfo.StepSize = (float)(o ?? 0f);
 
             rotatorValues.TryGetValue(nameof(RotatorInfo.IsMoving), out o);
             RotatorInfo.IsMoving = (bool)(o ?? false);

@@ -24,7 +24,6 @@
 using NINA.Model;
 using NINA.Model.MyFocuser;
 using NINA.Utility;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -149,6 +148,7 @@ namespace NINA.ViewModel {
                                 IsMoving = Focuser.IsMoving,
                                 Name = Focuser.Name,
                                 Position = Focuser.Position,
+                                StepSize = Focuser.StepSize,
                                 TempComp = Focuser.TempComp,
                                 Temperature = Focuser.Temperature
                             };

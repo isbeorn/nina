@@ -21,12 +21,6 @@
 
 #endregion "copyright"
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace NINA.Model.MyRotator {
 
     internal class RotatorInfo : DeviceInfo {
@@ -35,6 +29,13 @@ namespace NINA.Model.MyRotator {
         public float Position {
             get { return position; }
             set { position = value; RaisePropertyChanged(); }
+        }
+
+        private float stepsize;
+
+        public float StepSize {
+            get { return stepsize; }
+            set { stepsize = value; RaisePropertyChanged(); }
         }
 
         private bool isMoving;

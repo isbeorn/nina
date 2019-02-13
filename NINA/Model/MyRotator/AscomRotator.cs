@@ -25,9 +25,6 @@ using ASCOM.DriverAccess;
 using NINA.Utility;
 using NINA.Utility.Notification;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -56,6 +53,16 @@ namespace NINA.Model.MyRotator {
             get {
                 if (Connected) {
                     return rotator.Position;
+                } else {
+                    return float.NaN;
+                }
+            }
+        }
+
+        public float StepSize {
+            get {
+                if (Connected) {
+                    return rotator.StepSize;
                 } else {
                     return float.NaN;
                 }

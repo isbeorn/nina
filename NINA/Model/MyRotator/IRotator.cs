@@ -21,18 +21,14 @@
 
 #endregion "copyright"
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace NINA.Model.MyRotator {
 
     internal interface IRotator : IDevice {
         bool IsMoving { get; }
 
         float Position { get; }
+
+        float StepSize { get; }
 
         void Move(float position);
 
