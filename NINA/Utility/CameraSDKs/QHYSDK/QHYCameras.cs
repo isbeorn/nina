@@ -1,4 +1,5 @@
 ﻿#region "copyright"
+
 /*
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -19,6 +20,7 @@
 /*
  * Copyright (c) 2019 Dale Ghent <daleg@elemental.org> All rights reserved.
  */
+
 #endregion "copyright"
 
 using NINA.Model.MyCamera;
@@ -26,9 +28,10 @@ using NINA.Utility.Profile;
 using NINA.Utility;
 using System;
 
-namespace QHYCCD {
-
-    public static class QHYCameras {
+namespace QHYCCD
+{
+    public static class QHYCameras
+    {
         private static readonly QHYCamera[] _cameras = new QHYCamera[16];
 
         public static uint Count {
@@ -36,12 +39,13 @@ namespace QHYCCD {
                 uint num;
 
                 num = LibQHYCCD.ScanQHYCCD();
-                Logger.Trace(String.Format("QHYCamera - found {0} camera(s)", num));
+                Logger.Trace(string.Format("QHYCamera - found {0} camera(s)", num));
                 return num;
             }
         }
 
-        public static QHYCamera GetCamera(uint cameraId, IProfileService profileService) {
+        public static QHYCamera GetCamera(uint cameraId, IProfileService profileService)
+        {
             if (cameraId > Count)
                 throw new IndexOutOfRangeException();
 
