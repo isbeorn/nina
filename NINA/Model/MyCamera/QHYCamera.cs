@@ -27,6 +27,7 @@ using NINA.Utility;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
+using System.Linq;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
@@ -73,7 +74,7 @@ namespace NINA.Model.MyCamera
             Info.Index = cameraIdx;
             Info.Id = cameraId;
 
-            Logger.Info(string.Format("QHCCD: Found camera {0}", Info.Id));
+            Logger.Debug(string.Format("QHCCD: Found camera {0}", Info.Id));
         }
 
         private List<int> SupportedBinFactors {
@@ -315,17 +316,7 @@ namespace NINA.Model.MyCamera
             }
         }
 
-        public short MaxBinX {
-            get {
-                short maxBin = 1;
-
-                foreach (short binlvl in Info.SupportedBins) {
-                    maxBin = Math.Max(maxBin, binlvl);
-                }
-                return maxBin;
-            }
-        }
-
+        public short MaxBinX => (short)Info.SupportedBins.Max();
         public short MaxBinY => MaxBinX;
 
         public string Name {
@@ -405,11 +396,9 @@ namespace NINA.Model.MyCamera
             get {
                 double rv = Double.NaN;
 
-                if (Connected) {
-                    if (Info.HasChipTemp) {
-                        if ((rv = GetControlValue(libqhyccd.CONTROL_ID.CONTROL_CURTEMP)) != libqhyccd.QHYCCD_ERROR)
-                            return rv;
-                    }
+                if (Connected && Info.HasChipTemp) {
+                    if ((rv = GetControlValue(libqhyccd.CONTROL_ID.CONTROL_CURTEMP)) != libqhyccd.QHYCCD_ERROR)
+                        return rv;
                 }
 
                 return rv;
@@ -433,10 +422,8 @@ namespace NINA.Model.MyCamera
             get {
                 double rv;
 
-                if (Connected) {
-                    if ((rv = GetControlValue(libqhyccd.CONTROL_ID.CONTROL_USBTRAFFIC)) != libqhyccd.QHYCCD_ERROR)
-                        return unchecked((int)rv);
-                }
+                if (Connected && ((rv = GetControlValue(libqhyccd.CONTROL_ID.CONTROL_USBTRAFFIC)) != libqhyccd.QHYCCD_ERROR))
+                    return unchecked((int)rv);
 
                 return -1;
             }
@@ -498,7 +485,7 @@ namespace NINA.Model.MyCamera
                 Logger.Debug(string.Format("QHYCCD: Got Control {0} = {1}", type, rv));
                 return rv;
             } else {
-                Logger.Debug(string.Format("QHYCCD: Failed to Get value for control {0}", type));
+                Logger.Error(string.Format("QHYCCD: Failed to Get value for control {0}", type), null);
                 return libqhyccd.QHYCCD_ERROR;
             }
         }
@@ -507,22 +494,18 @@ namespace NINA.Model.MyCamera
         {
             uint rv;
 
-            rv = libqhyccd.IsQHYCCDControlAvailable(CameraP, libqhyccd.CONTROL_ID.CAM_COLOR);
-            Info.BayerPattern = (libqhyccd.BAYER_ID)rv;
+            Info.BayerPattern = (libqhyccd.BAYER_ID)libqhyccd.IsQHYCCDControlAvailable(CameraP, libqhyccd.CONTROL_ID.CAM_COLOR);
 
-            if (rv != libqhyccd.QHYCCD_ERROR) {
-                switch (Info.BayerPattern) {
-                    case libqhyccd.BAYER_ID.BAYER_GB:
-                    case libqhyccd.BAYER_ID.BAYER_GR:
-                    case libqhyccd.BAYER_ID.BAYER_BG:
-                    case libqhyccd.BAYER_ID.BAYER_RG:
-                        return true;
+            switch (Info.BayerPattern) {
+                case libqhyccd.BAYER_ID.BAYER_GB:
+                case libqhyccd.BAYER_ID.BAYER_GR:
+                case libqhyccd.BAYER_ID.BAYER_BG:
+                case libqhyccd.BAYER_ID.BAYER_RG:
+                    return true;
 
-                    default:
-                        return false;
-                }
+                default:
+                    return false;
             }
-            return false;
         }
 
         private bool IsQHYControl(libqhyccd.CONTROL_ID type)
@@ -552,9 +535,9 @@ namespace NINA.Model.MyCamera
             StopExposure();
         }
 
-        public async Task<bool> Connect(CancellationToken ct)
+        public Task<bool> Connect(CancellationToken ct)
         {
-            return await Task<bool>.Run(() => {
+            return Task<bool>.Run(() => {
                 var success = false;
                 double min = 0, max = 0, step = 0;
                 StringBuilder cameraID = new StringBuilder(libqhyccd.QHYCCD_ID_LEN);
@@ -998,6 +981,6 @@ namespace NINA.Model.MyCamera
             return false;
         }
 
-#endregion "Quirks"
+        #endregion "Quirks"
     }
 }
