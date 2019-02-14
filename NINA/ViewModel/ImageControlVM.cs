@@ -781,6 +781,10 @@ namespace NINA.ViewModel {
                     f.AddHeaderCard("FILTER", parameters.FilterName, "");
                 }
 
+                if (!string.IsNullOrEmpty(cameraInfo.Name)) {
+                    f.AddHeaderCard("INSTRUME", cameraInfo.Name, "");
+                }
+
                 if (cameraInfo.BinX > 0) {
                     f.AddHeaderCard("XBINNING", cameraInfo.BinX, "");
                 }

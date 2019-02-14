@@ -399,7 +399,7 @@
                             HorizontalAlignment="Right"
                             MaxValue="{Binding Cam.USBLimitMax}"
                             MinValue="{Binding Cam.USBLimitMin}"
-                            StepSize="1"
+                            StepSize="{Binding Cam.USBLimitStep}"
                             Value="{Binding Cam.USBLimit, Mode=TwoWay}" />
                     </DockPanel>
                     <DockPanel Margin="0,0,0,6" Visibility="{Binding Cam.ReadoutModes, Converter={StaticResource CollectionContainsMoreThanOneItemToVisibilityConverter}}">

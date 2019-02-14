@@ -1,4 +1,4 @@
-* text=crlf
+* text=auto
 
 *.cs text
 *.xaml text
@@ -8,7 +8,6 @@
 
 *.png binary
 *.sqlite binary
-*.md binary
 *.dll binary
 *.lib binary
 *.md3 binary
