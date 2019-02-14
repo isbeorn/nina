@@ -29,7 +29,7 @@
   <?define NINA_TargetDir=$(var.NINA.TargetDir)?>
   <?define nikoncswrapper_TargetDir=$(var.nikoncswrapper.TargetDir)?>
   <?define NINACustomControlLibrary_TargetDir=$(var.NINACustomControlLibrary.TargetDir)?>
-  <Product Id="A7AA0EED-2401-4654-BCAA-F34A4BA3A76E" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Language="1033" Version="1.8.0.1015" Manufacturer="N.I.N.A." UpgradeCode="5DC025EA-3D24-4E6B-9F82-79718D70896A">
+  <Product Id="0F3D61E6-8C0D-437C-8E87-210718A7F50D" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Language="1033" Version="1.8.0.1016" Manufacturer="N.I.N.A." UpgradeCode="5DC025EA-3D24-4E6B-9F82-79718D70896A">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
     <!--Todo does not find file-->
