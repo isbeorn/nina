@@ -36,9 +36,6 @@ namespace NINA.Utility.AtikSDK {
         }
 
         public static bool Disconnect(IntPtr camera) {
-            try {
-                ArtemisCoolerWarmUp(camera);
-            } catch (Exception) { }
             return ArtemisDisconnect(camera);
         }
 
@@ -444,7 +441,7 @@ namespace NINA.Utility.AtikSDK {
         /// temperature to go further down before going up.
         /// </summary>
         [DllImport(DLLNAME, EntryPoint = "ArtemisCoolerWarmUp", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private static extern ArtemisErrorCode ArtemisCoolerWarmUp(IntPtr camera);
+        public static extern ArtemisErrorCode ArtemisCoolerWarmUp(IntPtr camera);
 
         /*
          * Not yet added: Internal and External Filter Wheel and Guiding Methods.
@@ -503,7 +500,7 @@ namespace NINA.Utility.AtikSDK {
             ARTEMIS_COLOUR_RGGB
         }
 
-        private enum ArtemisErrorCode {
+        public enum ArtemisErrorCode {
 
             /// <summary>
             /// The function call has been successful
