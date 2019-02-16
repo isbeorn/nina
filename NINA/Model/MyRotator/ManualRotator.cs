@@ -25,26 +25,20 @@ using NINA.Utility;
 using NINA.Utility.Profile;
 using NINA.Utility.WindowService;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NINA.Model.MyRotator
-{
-    internal class ManualRotator : BaseINPC, IRotator
-    {
+namespace NINA.Model.MyRotator {
+
+    internal class ManualRotator : BaseINPC, IRotator {
         private IProfileService profileService;
 
-        public ManualRotator(IProfileService profileService)
-        {
+        public ManualRotator(IProfileService profileService) {
             this.profileService = profileService;
             this.profileService.LocaleChanged += ProfileService_LocaleChanged;
         }
 
-        private void ProfileService_LocaleChanged(object sender, EventArgs e)
-        {
+        private void ProfileService_LocaleChanged(object sender, EventArgs e) {
             RaisePropertyChanged(nameof(Name));
             RaisePropertyChanged(nameof(Description));
         }
@@ -95,19 +89,16 @@ namespace NINA.Model.MyRotator
             }
         }
 
-        public Task<bool> Connect(CancellationToken token)
-        {
+        public Task<bool> Connect(CancellationToken token) {
             Connected = true;
             return Task.FromResult(Connected);
         }
 
-        public void Disconnect()
-        {
+        public void Disconnect() {
             Connected = false;
         }
 
-        public void Halt()
-        {
+        public void Halt() {
         }
 
         private IWindowService windowService;
@@ -147,8 +138,7 @@ namespace NINA.Model.MyRotator
             }
         }
 
-        public void Move(float position)
-        {
+        public void Move(float position) {
             IsMoving = true;
 
             TargetPosition = Position + position;
@@ -171,13 +161,11 @@ namespace NINA.Model.MyRotator
             IsMoving = false;
         }
 
-        public void MoveAbsolute(float position)
-        {
+        public void MoveAbsolute(float position) {
             Move(position - Position);
         }
 
-        public void SetupDialog()
-        {
+        public void SetupDialog() {
         }
     }
 }
