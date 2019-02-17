@@ -22,7 +22,6 @@
 #endregion "copyright"
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;

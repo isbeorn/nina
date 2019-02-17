@@ -24,14 +24,13 @@
 #endregion "copyright"
 
 using NINA.Model.MyCamera;
-using NINA.Utility.Profile;
 using NINA.Utility;
+using NINA.Utility.Profile;
 using System;
 
-namespace QHYCCD
-{
-    public static class QHYCameras
-    {
+namespace QHYCCD {
+
+    public static class QHYCameras {
         private static readonly QHYCamera[] _cameras = new QHYCamera[16];
 
         public static uint Count {
@@ -44,8 +43,7 @@ namespace QHYCCD
             }
         }
 
-        public static QHYCamera GetCamera(uint cameraId, IProfileService profileService)
-        {
+        public static QHYCamera GetCamera(uint cameraId, IProfileService profileService) {
             if (cameraId > Count)
                 throw new IndexOutOfRangeException();
 

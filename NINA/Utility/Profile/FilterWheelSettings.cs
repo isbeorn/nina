@@ -22,7 +22,6 @@
 #endregion "copyright"
 
 using NINA.Model.MyFilterWheel;
-using NINA.Utility.Mediator;
 using System;
 using System.Linq;
 using System.Runtime.Serialization;

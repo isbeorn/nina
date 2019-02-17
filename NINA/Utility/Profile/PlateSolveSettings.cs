@@ -23,7 +23,6 @@
 
 using NINA.Model.MyFilterWheel;
 using NINA.Utility.Enum;
-using NINA.Utility.Mediator;
 using System;
 using System.IO;
 using System.Runtime.Serialization;

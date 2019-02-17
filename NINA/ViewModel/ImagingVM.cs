@@ -35,7 +35,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 using static NINA.Model.CaptureSequence;
 
 namespace NINA.ViewModel {

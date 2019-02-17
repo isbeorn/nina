@@ -26,20 +26,19 @@
 using NINA.Utility;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
+using QHYCCD;
 using System;
-using System.Linq;
-using System.Text;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using QHYCCD;
 
-namespace NINA.Model.MyCamera
-{
-    public class QHYCamera : BaseINPC, ICamera
-    {
+namespace NINA.Model.MyCamera {
+
+    public class QHYCamera : BaseINPC, ICamera {
         private static IntPtr CameraP;
         private AsyncObservableCollection<BinningMode> _binningModes;
         private bool _connected = false;
@@ -50,8 +49,7 @@ namespace NINA.Model.MyCamera
         private LibQHYCCD.QHYCCD_CAMERA_INFO Info;
         private IProfileService profileService;
 
-        public QHYCamera(uint cameraIdx, IProfileService profileService)
-        {
+        public QHYCamera(uint cameraIdx, IProfileService profileService) {
             this.profileService = profileService;
             StringBuilder cameraId = new StringBuilder(LibQHYCCD.QHYCCD_ID_LEN);
             StringBuilder cameraModel = new StringBuilder(0);
@@ -444,8 +442,7 @@ namespace NINA.Model.MyCamera
         //
         // To manage this, we will create a task to run constantly in the background while CoolerOn = true.
         /// </summary>
-        private async Task CoolerWorker(CancellationToken ct)
-        {
+        private async Task CoolerWorker(CancellationToken ct) {
             try {
                 bool previous = Info.CoolerOn;
 
@@ -464,14 +461,12 @@ namespace NINA.Model.MyCamera
                     /* sleep 2 seconds (cancelable) */
                     await Task.Delay(LibQHYCCD.QHYCCD_COOLER_DELAY, ct);
                 }
-            }
-            catch (OperationCanceledException) {
+            } catch (OperationCanceledException) {
                 Logger.Debug("QHYCCD: CoolerWorker task cancelled");
             }
         }
 
-        private double GetControlValue(LibQHYCCD.CONTROL_ID type)
-        {
+        private double GetControlValue(LibQHYCCD.CONTROL_ID type) {
             double rv;
 
             if ((rv = LibQHYCCD.GetQHYCCDParam(CameraP, type)) != LibQHYCCD.QHYCCD_ERROR) {
@@ -483,8 +478,7 @@ namespace NINA.Model.MyCamera
             }
         }
 
-        private bool IsColorCam()
-        {
+        private bool IsColorCam() {
             Info.BayerPattern = (LibQHYCCD.BAYER_ID)LibQHYCCD.IsQHYCCDControlAvailable(CameraP, LibQHYCCD.CONTROL_ID.CAM_COLOR);
 
             switch (Info.BayerPattern) {
@@ -499,8 +493,7 @@ namespace NINA.Model.MyCamera
             }
         }
 
-        private bool IsQHYControl(LibQHYCCD.CONTROL_ID type)
-        {
+        private bool IsQHYControl(LibQHYCCD.CONTROL_ID type) {
             if (LibQHYCCD.IsQHYCCDControlAvailable(CameraP, type) == LibQHYCCD.QHYCCD_SUCCESS) {
                 Logger.Debug(string.Format("QHYCCD: Control {0} exists", type));
                 return true;
@@ -510,8 +503,7 @@ namespace NINA.Model.MyCamera
             }
         }
 
-        private bool SetControlValue(LibQHYCCD.CONTROL_ID type, double value)
-        {
+        private bool SetControlValue(LibQHYCCD.CONTROL_ID type, double value) {
             if (LibQHYCCD.SetQHYCCDParam(CameraP, type, value) == LibQHYCCD.QHYCCD_SUCCESS) {
                 Logger.Debug(string.Format("QHYCCD: Setting Control {0} to {1}", type, value));
                 return true;
@@ -521,13 +513,11 @@ namespace NINA.Model.MyCamera
             }
         }
 
-        public void AbortExposure()
-        {
+        public void AbortExposure() {
             StopExposure();
         }
 
-        public Task<bool> Connect(CancellationToken ct)
-        {
+        public Task<bool> Connect(CancellationToken ct) {
             return Task<bool>.Run(() => {
                 var success = false;
                 double min = 0, max = 0, step = 0;
@@ -713,8 +703,7 @@ namespace NINA.Model.MyCamera
 
                     RaisePropertyChanged(nameof(Connected));
                     RaiseAllPropertiesChanged();
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                 }
@@ -722,8 +711,7 @@ namespace NINA.Model.MyCamera
             });
         }
 
-        public void Disconnect()
-        {
+        public void Disconnect() {
             if (Connected == false)
                 return;
 
@@ -747,8 +735,7 @@ namespace NINA.Model.MyCamera
             LibQHYCCD.N_CloseQHYCCD(CameraP);
         }
 
-        public Task<ImageArray> DownloadExposure(CancellationToken ct, bool calculateStatistics)
-        {
+        public Task<ImageArray> DownloadExposure(CancellationToken ct, bool calculateStatistics) {
             uint width = 0;
             uint height = 0;
             uint bpp = 0;
@@ -796,22 +783,18 @@ namespace NINA.Model.MyCamera
             return ImageArray.CreateInstance(arr, (int)width, (int)height, (int)bpp, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
         }
 
-        public Task<ImageArray> DownloadLiveView(CancellationToken ct)
-        {
+        public Task<ImageArray> DownloadLiveView(CancellationToken ct) {
             throw new NotImplementedException();
         }
 
-        public void SetBinning(short x, short y)
-        {
+        public void SetBinning(short x, short y) {
             BinX = x;
         }
 
-        public void SetupDialog()
-        {
+        public void SetupDialog() {
         }
 
-        public void StartExposure(CaptureSequence sequence)
-        {
+        public void StartExposure(CaptureSequence sequence) {
             uint rv;
             /*
              * Setup camera with the desired exposure setttings
@@ -856,18 +839,15 @@ namespace NINA.Model.MyCamera
             CameraState = LibQHYCCD.QHYCCD_CAMERA_STATE.EXPOSING.ToString();
         }
 
-        public void StartLiveView()
-        {
+        public void StartLiveView() {
         }
 
-        public void StopExposure()
-        {
+        public void StopExposure() {
             if (LibQHYCCD.CancelQHYCCDExposingAndReadout(CameraP) != LibQHYCCD.QHYCCD_ERROR)
                 CameraState = LibQHYCCD.QHYCCD_CAMERA_STATE.IDLE.ToString();
         }
 
-        public void StopLiveView()
-        {
+        public void StopLiveView() {
         }
 
         #region "Quirks"
@@ -890,8 +870,7 @@ namespace NINA.Model.MyCamera
         //
         // Valid issue as of SDK V20180502_0
         ///</summary>
-        private void QuirkGainDiv10()
-        {
+        private void QuirkGainDiv10() {
             /* Save a copy of what our current gain is so we can restore it later */
             double saveGain = GetControlValue(LibQHYCCD.CONTROL_ID.CONTROL_GAIN);
 
@@ -917,8 +896,7 @@ namespace NINA.Model.MyCamera
         //
         // Valid issue as of SDK V20180502_0
         ///</summary>
-        private void QuirkInflatedOffset()
-        {
+        private void QuirkInflatedOffset() {
             double saveOffset = GetControlValue(LibQHYCCD.CONTROL_ID.CONTROL_OFFSET);
 
             double wantOffset = 1;
@@ -947,8 +925,7 @@ namespace NINA.Model.MyCamera
         //
         // Valid issue as of SDK V20180502_0
         ///</summary>
-        private bool QuirkNoUSBTraffic()
-        {
+        private bool QuirkNoUSBTraffic() {
             double wantUSB;
             double saveUSB = GetControlValue(LibQHYCCD.CONTROL_ID.CONTROL_USBTRAFFIC);
 

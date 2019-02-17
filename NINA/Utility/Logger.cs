@@ -22,7 +22,6 @@
 #endregion "copyright"
 
 using NINA.Utility.Enum;
-using NINA.Utility.Profile;
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;

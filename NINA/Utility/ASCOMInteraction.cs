@@ -21,7 +21,6 @@
 
 #endregion "copyright"
 
-using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
@@ -30,9 +29,6 @@ using NINA.Model.MyTelescope;
 using NINA.Utility.Profile;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NINA.Utility {
 

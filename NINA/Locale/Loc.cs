@@ -22,7 +22,6 @@
 #endregion "copyright"
 
 using NINA.Utility;
-using NINA.Utility.Mediator;
 using System;
 using System.Windows;
 using System.Windows.Data;

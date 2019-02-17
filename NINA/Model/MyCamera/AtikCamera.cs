@@ -441,11 +441,9 @@ namespace NINA.Model.MyCamera {
         }
 
         public void Disconnect() {
-            try
-            {
+            try {
                 AtikCameraDll.ArtemisCoolerWarmUp(_cameraP);
-            }
-            catch (Exception) { }
+            } catch (Exception) { }
             AtikCameraDll.Disconnect(_cameraP);
             _binningModes = null;
             RaisePropertyChanged(nameof(Connected));

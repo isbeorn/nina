@@ -572,6 +572,7 @@ namespace NINA.Model.MyCamera {
                 return 1;
             }
         }
+
         private int GetControlValue(ASICameraDll.ASI_CONTROL_TYPE type) {
             var control = GetControl(type);
             return control?.Value ?? 0;

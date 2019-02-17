@@ -1,7 +1,5 @@
-﻿using NINA.Utility;
-using NINA.Utility.Astrometry;
+﻿using NINA.Utility.Astrometry;
 using System.Drawing;
-using System.Windows;
 
 namespace NINA.Model {
 

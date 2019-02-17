@@ -25,7 +25,6 @@ using NINA.Model;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
 using System;
 using System.Globalization;
 using System.IO;

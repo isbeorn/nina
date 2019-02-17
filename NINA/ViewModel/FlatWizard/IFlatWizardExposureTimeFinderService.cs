@@ -1,5 +1,4 @@
 ﻿using NINA.Model.MyCamera;
-using System.Threading;
 
 namespace NINA.ViewModel.FlatWizard {
 

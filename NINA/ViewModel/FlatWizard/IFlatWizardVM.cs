@@ -1,12 +1,12 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows.Media.Imaging;
+﻿using NINA.Locale;
 using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
-using NINA.Locale;
-using NINA.ViewModel.Interfaces;
 using NINA.Utility.Mediator.Interfaces;
+using NINA.ViewModel.Interfaces;
+using System.Collections.ObjectModel;
+using System.Windows.Media.Imaging;
 
 namespace NINA.ViewModel.FlatWizard {
 

@@ -47,6 +47,7 @@ namespace ZWOptical.ASISDK {
 
             //Supported image type
             ASI_IMG_RAW8 = 0,
+
             ASI_IMG_RGB24,
             ASI_IMG_RAW16,
             ASI_IMG_Y8,
@@ -422,7 +423,6 @@ namespace ZWOptical.ASISDK {
 
             return version;
         }
-
     }
 
     [Serializable]

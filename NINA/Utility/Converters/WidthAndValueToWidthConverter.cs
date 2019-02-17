@@ -27,7 +27,6 @@ using System.Windows.Data;
 
 namespace NINA.Utility.Converters {
 
-
     /// <summary>
     /// Very specific converter to convert width and a value up to 0.5 to a new width
     /// </summary>
