@@ -27,9 +27,9 @@
     Title="{Binding Title}"
     MinWidth="250"
     MinHeight="155"
-    ContentRendered="Window_ContentRendered"
     util:DialogCloser.DialogResult="{Binding DialogResult}"
     Background="{StaticResource BackgroundBrush}"
+    ContentRendered="Window_ContentRendered"
     SizeToContent="WidthAndHeight"
     mc:Ignorable="d">
     <Window.Style>
@@ -39,9 +39,7 @@
             <Setter Property="WindowChrome.WindowChrome">
                 <Setter.Value>
                     <WindowChrome
-
                         CaptionHeight="20"
-
                         GlassFrameThickness="-1"
                         UseAeroCaptionButtons="False" />
                 </Setter.Value>
@@ -64,12 +62,12 @@
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
                                     Orientation="Horizontal">
-                                    <Rectangle
+                                    <Image
                                         Width="18"
                                         Height="18"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        Fill="{StaticResource Observatory}" />
+                                        Source="/NINA;component/Resources/Logo_Nina.png" />
                                     <TextBlock
                                         Margin="4,0,0,0"
                                         VerticalAlignment="Center"
@@ -108,7 +106,10 @@
             </Setter>
         </Style>
     </Window.Style>
-    <Grid x:Name="TheContent" Margin="15" Background="{StaticResource BackgroundBrush}">
+    <Grid
+        x:Name="TheContent"
+        Margin="15"
+        Background="{StaticResource BackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
