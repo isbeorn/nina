@@ -21,18 +21,11 @@
 
 #endregion "copyright"
 
-using NINA.Utility.Profile;
 using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
-using System.Net.Cache;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
-using System.Windows.Media.Imaging;
 
 namespace NINA.Utility {
 

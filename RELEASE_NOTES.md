@@ -80,7 +80,14 @@
 - Adaptive Cooling: Duration for cool/warm camera is now a minimum duration. In case the cooler cannot keep up with the set duration, the application will wait for the camera to reach the checkpoints instead of just continuing setting new targets without the camera having any chance to reach those in the timeframe.
 
 ## Special Thanks
-- The N.I.N.A. team would like to thank the staff at QHYCCD dealer [Cloud Break Optics](https://cloudbreakoptics.com/) for graciously lending a QHY183C to assist in the development and testing of N.I.N.A.'s QHYCCD SDK integration. Thank you for your support!
+The N.I.N.A. team would like to thank 
+
+- Nick Smith from [Altair Astro](https://www.altairastro.com/) for providing a GPCAM2 290C to integrate Altair SDK
+- Elias Erdnuess from [Astroshop.eu](https://www.astroshop.eu) for providing multiple Toupcam Cameras to integrate ToupTek SDK
+- The staff at QHYCCD dealer [Cloud Break Optics](https://cloudbreakoptics.com/) for lending a QHY183C to integrate QHYCCD SDK
+
+These items helped a lot during development and testing.  
+Thank you for your support!
 
 ___
 

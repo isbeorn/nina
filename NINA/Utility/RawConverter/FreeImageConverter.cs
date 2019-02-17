@@ -21,17 +21,13 @@
 
 #endregion "copyright"
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 using FreeImageAPI;
 using FreeImageAPI.Metadata;
 using NINA.Model.MyCamera;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace NINA.Utility.RawConverter {
 

@@ -2,6 +2,7 @@
 using System.ComponentModel;
 
 namespace NINA.Model {
+
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum SequenceMode {
 

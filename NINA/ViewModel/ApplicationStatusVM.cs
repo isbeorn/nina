@@ -22,7 +22,6 @@
 #endregion "copyright"
 
 using NINA.Model;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Profile;
 using NINA.ViewModel.Interfaces;

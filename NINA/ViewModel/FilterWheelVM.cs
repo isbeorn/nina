@@ -24,7 +24,6 @@
 using NINA.Model;
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;

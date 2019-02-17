@@ -25,7 +25,6 @@ using NINA.Model;
 using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data.SQLite;
 using System.Linq;
 using System.Threading;

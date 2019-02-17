@@ -21,14 +21,11 @@
 
 #endregion "copyright"
 
-using NINA.Utility;
 using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NINA.ViewModel.FramingAssistant {
 

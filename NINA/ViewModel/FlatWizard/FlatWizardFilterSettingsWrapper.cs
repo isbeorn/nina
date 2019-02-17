@@ -21,7 +21,6 @@
 
 #endregion "copyright"
 
-using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 

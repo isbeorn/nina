@@ -22,7 +22,6 @@
 #endregion "copyright"
 
 using NINA.Utility.Astrometry;
-using NINA.Utility.Mediator;
 using System;
 using System.Runtime.Serialization;
 

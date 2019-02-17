@@ -27,9 +27,11 @@ using System.IO;
 using System.Runtime.Serialization;
 
 namespace NINA.Utility.Profile {
+
     [Serializable()]
     [DataContract]
     public class GuiderSettings : Settings, IGuiderSettings {
+
         public GuiderSettings() {
             SetDefaultValues();
         }

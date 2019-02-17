@@ -24,7 +24,6 @@
 using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.Enum;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;

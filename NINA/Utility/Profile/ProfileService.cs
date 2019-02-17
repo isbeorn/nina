@@ -23,7 +23,6 @@
 
 using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
-using NINA.Utility.Mediator;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

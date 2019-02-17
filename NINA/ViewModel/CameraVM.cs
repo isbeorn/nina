@@ -30,6 +30,7 @@ using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using NINA.ViewModel.Interfaces;
+using QHYCCD;
 using System;
 using System.Collections.Async;
 using System.Collections.Generic;
@@ -38,7 +39,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ZWOptical.ASISDK;
-using QHYCCD;
 
 namespace NINA.ViewModel {
 

@@ -25,9 +25,6 @@ using ASCOM.DriverAccess;
 using NINA.Utility;
 using NINA.Utility.Notification;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 

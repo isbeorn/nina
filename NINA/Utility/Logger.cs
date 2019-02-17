@@ -22,7 +22,6 @@
 #endregion "copyright"
 
 using NINA.Utility.Enum;
-using NINA.Utility.Profile;
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -33,9 +32,10 @@ namespace NINA.Utility {
     internal static class Logger {
 
         static Logger() {
-            LOGDATE = DateTime.Now.ToString("yyyy-MM-dd");
+            LOGDATE = DateTime.Now.ToString("yyyyMMdd-HHmmss");
             var logDir = Path.Combine(Utility.APPLICATIONTEMPPATH, "Logs");
-            LOGFILEPATH = Path.Combine(logDir, LOGDATE + " - v" + Utility.Version + " - log.txt");
+            var processId = System.Diagnostics.Process.GetCurrentProcess().Id;
+            LOGFILEPATH = Path.Combine(logDir, $"{LOGDATE}-{Utility.Version}.{processId}.log");
 
             if (!Directory.Exists(logDir)) {
                 Directory.CreateDirectory(logDir);

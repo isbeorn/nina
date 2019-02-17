@@ -54,9 +54,12 @@
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 Orientation="Horizontal">
-                                <Image Source="/NINA;component/Resources/Logo_Nina.png" Width="18" Height="18"
+                                <Image
+                                    Width="18"
+                                    Height="18"
                                     HorizontalAlignment="Left"
-                                    VerticalAlignment="Center" />
+                                    VerticalAlignment="Center"
+                                    Source="/NINA;component/Resources/Logo_Nina.png" />
                                 <TextBlock
                                     Margin="4,0,0,0"
                                     VerticalAlignment="Center"
@@ -75,10 +78,10 @@
                                 VerticalAlignment="Center"
                                 Orientation="Horizontal">
                                 <Button
-                                    Visibility="{Binding Source={StaticResource AppVM}, Path=VersionCheckVM.UpdateAvailable, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                                     Height="15"
                                     Command="{Binding Source={StaticResource AppVM}, Path=VersionCheckVM.ShowDownloadCommand}"
                                     Style="{StaticResource SecondaryBackgroundButton}"
+                                    Visibility="{Binding Source={StaticResource AppVM}, Path=VersionCheckVM.UpdateAvailable, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                                     WindowChrome.IsHitTestVisibleInChrome="True">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock
@@ -209,12 +212,12 @@
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 Orientation="Horizontal">
-                                <Rectangle
+                                <Image
                                     Width="18"
                                     Height="18"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
-                                    Fill="{StaticResource Observatory}" />
+                                    Source="/NINA;component/Resources/Logo_Nina.png" />
                                 <TextBlock
                                     Margin="4,0,0,0"
                                     VerticalAlignment="Center"

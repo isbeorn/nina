@@ -22,7 +22,6 @@
 #endregion "copyright"
 
 using NINA.Utility;
-using NINA.ViewModel;
 using System.Windows;
 
 namespace NINA.MyMessageBox {

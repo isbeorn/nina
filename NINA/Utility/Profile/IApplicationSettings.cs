@@ -21,8 +21,8 @@
 
 #endregion "copyright"
 
-using System.Globalization;
 using NINA.Utility.Enum;
+using System.Globalization;
 
 namespace NINA.Utility.Profile {
 

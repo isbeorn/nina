@@ -2,7 +2,6 @@
 using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
-using NINA.Utility.Behaviors;
 using NINA.Utility.Mediator.Interfaces;
 using System;
 using System.Collections.Generic;

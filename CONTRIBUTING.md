@@ -118,6 +118,10 @@ Develop: 1.8.0.1022             (Displayed as "1.8 NIGHTLY #022")
 	* ToupTek SDK: SDK is available at http://www.touptek.com/upload/download/toupcamsdk.zip
 	* QHYCCD SDK: Instructions for integrating the QHYCCD SDK can be found in `NINA\Utility\CameraSDKs\QHYCCD\README.md`
     * Due to licensing of those files, they must not be put into a public repository
+* Recommended Visual Studio Extensions:
+    * [CodeMaid](http://www.codemaid.net/): A code cleanup Utility
+    * [XAML Styler](https://github.com/Xavalon/XamlStyler/) A XAML style formatter
+    * [MarkdownEditor](https://github.com/madskristensen/MarkdownEditor) To edit Markdown and auto generate HTML files
 * (Optional) To be able to build the setup projects you need to install [WiX](http://wixtoolset.org/) and their [Visual Studio plugin](https://marketplace.visualstudio.com/items?itemName=RobMensching.WixToolsetVisualStudio2017Extension)
 
 ## Pull Requests

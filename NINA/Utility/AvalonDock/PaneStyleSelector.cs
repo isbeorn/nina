@@ -21,7 +21,6 @@
 
 #endregion "copyright"
 
-using NINA.ViewModel;
 using System.Windows;
 using System.Windows.Controls;
 

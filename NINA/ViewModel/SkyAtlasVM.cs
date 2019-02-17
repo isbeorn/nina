@@ -22,10 +22,8 @@
 #endregion "copyright"
 
 using NINA.Model;
-using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Profile;
 using OxyPlot;

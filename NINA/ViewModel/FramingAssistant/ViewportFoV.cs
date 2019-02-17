@@ -1,5 +1,4 @@
-﻿using System;
-using NINA.Utility.Astrometry;
+﻿using NINA.Utility.Astrometry;
 using System.Windows;
 using Math = System.Math;
 using Point = System.Windows.Point;

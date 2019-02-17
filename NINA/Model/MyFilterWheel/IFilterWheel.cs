@@ -22,10 +22,7 @@
 #endregion "copyright"
 
 using NINA.Utility;
-using System;
 using System.Collections;
-using System.Runtime.Serialization;
-using System.Xml.Serialization;
 
 namespace NINA.Model.MyFilterWheel {
 

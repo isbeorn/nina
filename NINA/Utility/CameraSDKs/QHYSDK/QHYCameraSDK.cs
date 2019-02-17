@@ -25,20 +25,18 @@
 
 using NINA.Utility;
 using System;
-using System.Text;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
 
-namespace QHYCCD
-{
-    public static class LibQHYCCD
-    {
+namespace QHYCCD {
+
+    public static class LibQHYCCD {
         private const string DLLNAME = "qhyccd.dll";
 
-        static LibQHYCCD()
-        {
+        static LibQHYCCD() {
             DllLoader.LoadDll("QHYCCD/" + DLLNAME);
 
             N_InitQHYCCDResource();
@@ -60,8 +58,8 @@ namespace QHYCCD
         /// Sensor bayer mask pattern
         /// <seealso cref="LibQHYCCD.CONTROL_ID.CAM_COLOR"/>
         /// </summary>
-        public enum BAYER_ID
-        {
+        public enum BAYER_ID {
+
             /// <summary>
             /// GBRG
             /// </summary>
@@ -87,8 +85,8 @@ namespace QHYCCD
         /// QHYCCD Camera parameter control IDs.
         /// These are sourced from qhyccd.h provided by the QHY SDK distribution.
         /// </summary>
-        public enum CONTROL_ID
-        {
+        public enum CONTROL_ID {
+
             /// <summary>
             /// Image Brightness
             /// </summary>
@@ -382,8 +380,8 @@ namespace QHYCCD
         /// For setting QHY camera exposure mode
         /// <seealso cref="LibQHYCCD.SetQHYCCDStreamMode(IntPtr, byte)"/>
         /// </summary>
-        public enum QHYCCD_CAMERA_MODE : byte
-        {
+        public enum QHYCCD_CAMERA_MODE : byte {
+
             /// <summary>
             /// Single exposure mode
             /// </summary>
@@ -414,8 +412,7 @@ namespace QHYCCD
         /// <summary>
         /// Values for tracking the current camera state within NINA
         /// </summary>
-        public enum QHYCCD_CAMERA_STATE
-        {
+        public enum QHYCCD_CAMERA_STATE {
             IDLE = 0,
             EXPOSING,
             DOWNLOADING,
@@ -424,8 +421,7 @@ namespace QHYCCD
 
         #endregion "NINA constants"
 
-        private static void CheckReturn(uint code, MethodBase callingMethod, params object[] parameters)
-        {
+        private static void CheckReturn(uint code, MethodBase callingMethod, params object[] parameters) {
             switch (code) {
                 case LibQHYCCD.QHYCCD_SUCCESS:
                     break;
@@ -437,14 +433,12 @@ namespace QHYCCD
             }
         }
 
-        public unsafe static uint C_GetQHYCCDFWVersion(IntPtr handle, byte[] verBuf)
-        {
+        public unsafe static uint C_GetQHYCCDFWVersion(IntPtr handle, byte[] verBuf) {
             fixed (byte* pverBuf = verBuf)
                 return GetQHYCCDFWVersion(handle, pverBuf);
         }
 
-        public unsafe static uint C_GetQHYCCDSingleFrame(IntPtr handle, ref uint w, ref uint h, ref uint bpp, ref uint channels, byte[] rawArray)
-        {
+        public unsafe static uint C_GetQHYCCDSingleFrame(IntPtr handle, ref uint w, ref uint h, ref uint bpp, ref uint channels, byte[] rawArray) {
             uint ret;
             fixed (byte* prawArray = rawArray)
                 ret = GetQHYCCDSingleFrame(handle, ref w, ref h, ref bpp, ref channels, prawArray);
@@ -509,8 +503,7 @@ namespace QHYCCD
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDSingleFrame", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint GetQHYCCDSingleFrame(IntPtr handle, ref uint w, ref uint h, ref uint bpp, ref uint channels, byte* rawArray);
 
-        public static string GetSDKFormattedVersion()
-        {
+        public static string GetSDKFormattedVersion() {
             uint year = 0, month = 0, day = 0, subday = 0;
 
             CheckReturn(GetQHYCCDSDKVersion(ref year, ref month, ref day, ref subday), MethodBase.GetCurrentMethod());
@@ -528,33 +521,27 @@ namespace QHYCCD
         [DllImport(DLLNAME, EntryPoint = "IsQHYCCDControlAvailable", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint IsQHYCCDControlAvailable(IntPtr handle, CONTROL_ID controlid);
 
-        public static void N_CloseQHYCCD(IntPtr handle)
-        {
+        public static void N_CloseQHYCCD(IntPtr handle) {
             CheckReturn(CloseQHYCCD(handle), MethodBase.GetCurrentMethod(), handle);
         }
 
-        public static void N_GetQHYCCDId(uint index, StringBuilder id)
-        {
+        public static void N_GetQHYCCDId(uint index, StringBuilder id) {
             CheckReturn(GetQHYCCDId(index, id), MethodBase.GetCurrentMethod(), index, new object[] { id });
         }
 
-        public static void N_GetQHYCCDModel(StringBuilder id, StringBuilder model)
-        {
+        public static void N_GetQHYCCDModel(StringBuilder id, StringBuilder model) {
             CheckReturn(GetQHYCCDModel(id, model), MethodBase.GetCurrentMethod(), new object[] { model });
         }
 
-        public static void N_InitQHYCCD(IntPtr handle)
-        {
+        public static void N_InitQHYCCD(IntPtr handle) {
             CheckReturn(InitQHYCCD(handle), MethodBase.GetCurrentMethod(), handle);
         }
 
-        public static void N_InitQHYCCDResource()
-        {
+        public static void N_InitQHYCCDResource() {
             CheckReturn(InitQHYCCDResource(), MethodBase.GetCurrentMethod());
         }
 
-        public static IntPtr N_OpenQHYCCD(StringBuilder id)
-        {
+        public static IntPtr N_OpenQHYCCD(StringBuilder id) {
             IntPtr cameraP = OpenQHYCCD(id);
 
             if (cameraP == IntPtr.Zero) {
@@ -563,8 +550,7 @@ namespace QHYCCD
             return cameraP;
         }
 
-        public static void N_ReleaseQHYCCDResource()
-        {
+        public static void N_ReleaseQHYCCDResource() {
             CheckReturn(ReleaseQHYCCDResource(), MethodBase.GetCurrentMethod());
         }
 
@@ -604,8 +590,8 @@ namespace QHYCCD
         /// <summary>
         /// Structure for keeping camera instance information in NINA.
         /// </summary>
-        public struct QHYCCD_CAMERA_INFO
-        {
+        public struct QHYCCD_CAMERA_INFO {
+
             /// <summary>
             /// Sensor bayer pattern
             /// <seealso cref="LibQHYCCD.BAYER_ID"/>
@@ -811,14 +797,12 @@ namespace QHYCCD
             public double USBStep;
         };
 
-        public class QHYCameraException : Exception
-        {
-            public QHYCameraException(string message, MethodBase callingMethod, object[] parameters) : base(CreateMessage(message, callingMethod, parameters))
-            {
+        public class QHYCameraException : Exception {
+
+            public QHYCameraException(string message, MethodBase callingMethod, object[] parameters) : base(CreateMessage(message, callingMethod, parameters)) {
             }
 
-            private static string CreateMessage(string message, MethodBase callingMethod, object[] parameters)
-            {
+            private static string CreateMessage(string message, MethodBase callingMethod, object[] parameters) {
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine("Error '" + message + "' from call to ");
                 sb.Append("QHY" + callingMethod.Name + "(");

@@ -23,11 +23,7 @@
 
 using NINA.Utility;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyCamera {

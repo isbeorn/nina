@@ -22,7 +22,6 @@
 #endregion "copyright"
 
 using NINA.Utility;
-using System;
 
 namespace NINA.Model {
 
