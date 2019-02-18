@@ -830,7 +830,7 @@ namespace NINA.ViewModel {
                         /* fits4win, SGP */
                         f.AddHeaderCard("FOCPOS", focuserInfo.Position, "steps");
 
-                        /* MaximDL, several obervatories */
+                        /* MaximDL, several observatories */
                         f.AddHeaderCard("FOCUSPOS", focuserInfo.Position, "steps");
                     }
 
@@ -843,7 +843,7 @@ namespace NINA.ViewModel {
                         /* fits4win, SGP */
                         f.AddHeaderCard("FOCTEMP", focuserInfo.Temperature, "celcius");
 
-                        /* MaximDL, several obervatories */
+                        /* MaximDL, several observatories */
                         f.AddHeaderCard("FOCUSTEM", focuserInfo.Temperature, "celcius");
                     }
                 }
@@ -976,7 +976,7 @@ namespace NINA.ViewModel {
                         /* fits4win, SGP */
                         header.AddImageFITSKeyword("FOCPOS", focuserInfo.Position.ToString(CultureInfo.InvariantCulture), "steps");
 
-                        /* MaximDL, several obervatories */
+                        /* MaximDL, several observatories */
                         header.AddImageFITSKeyword("FOCUSPOS", focuserInfo.Position.ToString(CultureInfo.InvariantCulture), "steps");
                     }
 
@@ -989,7 +989,7 @@ namespace NINA.ViewModel {
                         /* fits4win, SGP */
                         header.AddImageFITSKeyword("FOCTEMP", focuserInfo.Temperature.ToString(CultureInfo.InvariantCulture), "celcius");
 
-                        /* MaximDL, several obervatories */
+                        /* MaximDL, several observatories */
                         header.AddImageFITSKeyword("FOCUSTEM", focuserInfo.Temperature.ToString(CultureInfo.InvariantCulture), "celcius");
                     }
                 }
