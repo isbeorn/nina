@@ -22,6 +22,13 @@
 #endregion "copyright"
 
 using System.Reflection;
+
+#if DEBUG
+
+using System.Runtime.CompilerServices;
+
+#endif
+
 using System.Runtime.InteropServices;
 using System.Windows;
 
