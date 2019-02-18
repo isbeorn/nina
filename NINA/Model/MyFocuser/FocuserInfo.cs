@@ -35,7 +35,7 @@ namespace NINA.Model.MyFocuser {
 
         public double StepSize {
             get { return stepsize; }
-            set { stepsize = value; RaiseAllPropertiesChanged(); }
+            set { stepsize = value; RaisePropertyChanged(); }
         }
 
         private double temperature;
