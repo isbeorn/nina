@@ -23,7 +23,9 @@
 
 using NINA.Utility;
 using NINA.Utility.Profile;
+using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows.Input;
 
 namespace NINA.ViewModel {
@@ -91,7 +93,18 @@ namespace NINA.ViewModel {
                 };
 
                 if (System.IO.File.Exists(Utility.AvalonDock.LayoutInitializer.LAYOUTFILEPATH)) {
-                    serializer.Deserialize(Utility.AvalonDock.LayoutInitializer.LAYOUTFILEPATH);
+                    try {
+                        serializer.Deserialize(Utility.AvalonDock.LayoutInitializer.LAYOUTFILEPATH);
+                    } catch (Exception ex) {
+                        Logger.Error("Failed to load AvalonDock Layout. Loading default Layout!", ex);
+                        using (var stream = new StringReader(Properties.Resources.avalondock)) {
+                            serializer.Deserialize(stream);
+                        }
+                    }
+                } else {
+                    using (var stream = new StringReader(Properties.Resources.avalondock)) {
+                        serializer.Deserialize(stream);
+                    }
                 }
                 _dockloaded = true;
             }

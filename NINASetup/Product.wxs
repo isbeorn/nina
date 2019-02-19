@@ -56,7 +56,6 @@
       <ComponentRef Id="FramingAssistantCacheFolderComponent" />
       <ComponentRef Id="LogsFolderComponent" />
 
-      <ComponentGroupRef Id="AvalonDock" />
       <ComponentGroupRef Id="Database" />
       <ComponentGroupRef Id="Documentation_images_files" />
       <ComponentGroupRef Id="Documentation_files" />
@@ -268,13 +267,6 @@
       <Component Win64="$(var.Win64)" Id="NINA.sqlite" Guid="59C5D8EB-EECB-4CA7-B7E6-739371DC0679">
         <File Id="NINA.sqlite" Name="NINA.sqlite" Source="$(var.SolutionDir)NINA\Database\NINA.sqlite" />
         <RemoveFile Id="NINA.sqlite" Name="NINA.sqlite" Directory="NinaAppDataFolder" On="uninstall" />
-        <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="installed" Type="integer" Value="1" KeyPath="yes" />
-      </Component>
-    </ComponentGroup>
-    <ComponentGroup Id="AvalonDock" Directory="NinaAppDataFolder">
-      <Component Win64="$(var.Win64)" Id="avalondock.config" Guid="18AB9F1E-B75A-4071-B00F-BE34DBD0AA5B">
-        <File Id="avalondock.config" Name="avalondock.config" Source="$(var.SolutionDir)NINA\Resources\avalondock.config" />
-        <RemoveFile Id="avalondock.config" Name="avalondock.config" Directory="NinaAppDataFolder" On="both" />
         <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="installed" Type="integer" Value="1" KeyPath="yes" />
       </Component>
     </ComponentGroup>

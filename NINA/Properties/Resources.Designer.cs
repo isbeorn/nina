@@ -59,5 +59,20 @@ namespace NINA.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;LayoutRoot&gt;
+        ///  &lt;RootPanel Orientation=&quot;Horizontal&quot;&gt;
+        ///    &lt;LayoutPanel Orientation=&quot;Vertical&quot; DockWidth=&quot;1.53420195439739*&quot;&gt;
+        ///      &lt;LayoutPanel Orientation=&quot;Horizontal&quot; DockHeight=&quot;1.51559251559252*&quot;&gt;
+        ///        &lt;LayoutAnchorablePaneGroup Orientation=&quot;Vertical&quot; DockWidth=&quot;0.47013434562044*&quot;&gt;
+        ///          &lt;LayoutAnchorablePane Id=&quot;1d68f044-3c78-4d8c-930c-eb30630ffd98&quot; DockHeight=&quot;0.79281289136495*&quot; FloatingWidth=&quot;1370&quot; FloatingHeight=&quot;689&quot; FloatingLeft=&quot;-596&quot; FloatingTop= [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string avalondock {
+            get {
+                return ResourceManager.GetString("avalondock", resourceCulture);
+            }
+        }
     }
 }
