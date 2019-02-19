@@ -75,7 +75,7 @@ namespace NINA.ViewModel {
             }
 
             FocusTargets = new ObservableCollection<FocusTarget>(allFocusTargets.Where(b => b.Altitude > 10).OrderByDescending(b => b.Altitude));
-            SelectedFocusTarget = FocusTargets.SingleOrDefault(b => b.Name == selectedBrightStarName) ?? FocusTargets.First();
+            SelectedFocusTarget = FocusTargets.SingleOrDefault(b => b.Name == selectedBrightStarName) ?? FocusTargets.FirstOrDefault();
         }
 
         public void UpdateDeviceInfo(TelescopeInfo deviceInfo) {
