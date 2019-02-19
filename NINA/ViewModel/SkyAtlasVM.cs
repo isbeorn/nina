@@ -278,6 +278,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> Search() {
+            _searchTokenSource?.Dispose();
             _searchTokenSource = new CancellationTokenSource();
             return await Task.Run(async () => {
                 try {

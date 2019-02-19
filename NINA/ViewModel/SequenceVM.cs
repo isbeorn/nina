@@ -431,6 +431,7 @@ namespace NINA.ViewModel {
         private async Task<bool> StartSequencing(IProgress<ApplicationStatus> progress) {
             try {
                 _actualDownloadTimes.Clear();
+                _canceltoken?.Dispose();
                 _canceltoken = new CancellationTokenSource();
                 _pauseTokenSource = new PauseTokenSource();
                 IsPaused = false;

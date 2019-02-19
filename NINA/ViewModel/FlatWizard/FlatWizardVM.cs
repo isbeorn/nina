@@ -74,6 +74,7 @@ namespace NINA.ViewModel.FlatWizard {
 
             this.applicationStatusMediator = applicationStatusMediator;
 
+            flatSequenceCts?.Dispose();
             flatSequenceCts = new CancellationTokenSource();
             var pauseTokenSource = new PauseTokenSource();
 
@@ -370,6 +371,7 @@ namespace NINA.ViewModel.FlatWizard {
 
         private async Task<bool> StartFlatCapture(IProgress<ApplicationStatus> progress, PauseToken pt) {
             if (flatSequenceCts.IsCancellationRequested) {
+                flatSequenceCts?.Dispose();
                 flatSequenceCts = new CancellationTokenSource();
             }
 
@@ -407,6 +409,7 @@ namespace NINA.ViewModel.FlatWizard {
                         Locale["LblCoverScopeMsgBox"],
                         Locale["LblCoverScopeMsgBoxTitle"], MessageBoxButton.OKCancel, MessageBoxResult.OK);
                     if (dialogResult == MessageBoxResult.OK) {
+                        flatSequenceCts?.Dispose();
                         flatSequenceCts = new CancellationTokenSource();
                         foreach (var kvp in filterToExposureTime) {
                             captureSequence = new CaptureSequence(kvp.Value, CaptureSequence.ImageTypes.DARKFLAT, kvp.Key.Filter, BinningMode, DarkFlatCount) { Gain = Gain };

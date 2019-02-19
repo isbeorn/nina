@@ -199,6 +199,7 @@ namespace NINA.Model.MyGuider {
 
         /// <inheritdoc />
         public async Task<bool> Connect() {
+            disconnectTokenSource?.Dispose();
             disconnectTokenSource = new CancellationTokenSource();
 
             await TryStartServiceAndConnect();

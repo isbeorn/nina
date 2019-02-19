@@ -64,6 +64,7 @@ namespace NINA.ViewModel {
                 if (!SkipSearch) {
                     if (TargetName.Length > 1) {
                         targetSearchCts?.Cancel();
+                        targetSearchCts?.Dispose();
                         targetSearchCts = new CancellationTokenSource();
                         TargetSearchResult = NotifyTaskCompletion.Create(SearchDSOs(TargetName, targetSearchCts.Token));
                     } else {

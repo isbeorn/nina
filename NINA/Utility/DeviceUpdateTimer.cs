@@ -52,6 +52,7 @@ namespace NINA.Utility {
 
         public async void Start() {
             task = Task.Run(async () => {
+                cts?.Dispose();
                 cts = new CancellationTokenSource();
                 Dictionary<string, object> values = new Dictionary<string, object>();
                 try {

@@ -79,6 +79,7 @@ namespace NINA.ViewModel {
         private CancellationTokenSource _cancelMove;
 
         public async Task<int> MoveFocuser(int position) {
+            _cancelMove?.Dispose();
             _cancelMove = new CancellationTokenSource();
             int pos = -1;
             await Task.Run(async () => {
@@ -135,6 +136,7 @@ namespace NINA.ViewModel {
                 );
 
                 var focuser = (IFocuser)FocuserChooserVM.SelectedDevice;
+                _cancelChooseFocuserSource?.Dispose();
                 _cancelChooseFocuserSource = new CancellationTokenSource();
                 if (focuser != null) {
                     try {

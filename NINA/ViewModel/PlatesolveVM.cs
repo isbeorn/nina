@@ -293,6 +293,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> CaptureSolveSyncAndReslew(IProgress<ApplicationStatus> progress) {
+            _solveCancelToken?.Dispose();
             _solveCancelToken = new CancellationTokenSource();
             var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
             seq.Gain = SnapGain;

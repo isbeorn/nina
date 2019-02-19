@@ -84,6 +84,7 @@ namespace NINA.ViewModel {
                     Task.Run(
 
                         async () => {
+                            _autoFocusCancelToken?.Dispose();
                             _autoFocusCancelToken = new CancellationTokenSource();
                             FilterInfo filter = null;
                             if (this.filterInfo?.SelectedFilter != null) {

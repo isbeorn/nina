@@ -209,6 +209,7 @@ namespace NINA.Model.MyGuider {
                     taskStatus == TaskStatus.Canceled ||
                     taskStatus == TaskStatus.RanToCompletion ||
                     startGuidingTask == null) {
+                    startGuidingCancellationTokenSource?.Dispose();
                     startGuidingCancellationTokenSource = new CancellationTokenSource();
                     startGuidingTask = guiderInstance.StartGuiding(startGuidingCancellationTokenSource.Token);
                 }
@@ -225,6 +226,7 @@ namespace NINA.Model.MyGuider {
                     taskStatus == TaskStatus.Canceled ||
                     taskStatus == TaskStatus.RanToCompletion ||
                     startPauseTask == null) {
+                    startPauseCancellationTokenSource?.Dispose();
                     startPauseCancellationTokenSource = new CancellationTokenSource();
                     startPauseTask = guiderInstance.Pause(pause, startPauseCancellationTokenSource.Token);
                 }
@@ -241,6 +243,7 @@ namespace NINA.Model.MyGuider {
                     taskStatus == TaskStatus.Canceled ||
                     taskStatus == TaskStatus.RanToCompletion ||
                     stopGuidingTask == null) {
+                    stopGuidingCancellationTokenSource?.Dispose();
                     stopGuidingCancellationTokenSource = new CancellationTokenSource();
                     stopGuidingTask = guiderInstance.StopGuiding(stopGuidingCancellationTokenSource.Token);
                 }
@@ -253,6 +256,7 @@ namespace NINA.Model.MyGuider {
         public async Task<bool> SynchronizedDither(Guid instanceId) {
             lock (ditherLock) {
                 if (ditherCancellationTokenSource == null) {
+                    ditherCancellationTokenSource?.Dispose();
                     ditherCancellationTokenSource = new CancellationTokenSource();
                 }
             }

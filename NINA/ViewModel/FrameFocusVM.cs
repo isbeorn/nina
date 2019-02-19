@@ -140,6 +140,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> Snap(IProgress<ApplicationStatus> progress) {
             do {
+                _captureImageToken?.Dispose();
                 _captureImageToken = new CancellationTokenSource();
                 var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
 

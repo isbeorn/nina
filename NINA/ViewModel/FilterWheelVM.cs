@@ -54,6 +54,7 @@ namespace NINA.ViewModel {
             DisconnectCommand = new RelayCommand(DisconnectFW);
             RefreshFWListCommand = new RelayCommand(RefreshFWList);
             ChangeFilterCommand = new AsyncCommand<bool>(async () => {
+                _changeFilterCancellationSource?.Dispose();
                 _changeFilterCancellationSource = new CancellationTokenSource();
                 await ChangeFilter(TargetFilter, _changeFilterCancellationSource.Token);
                 return true;
@@ -172,6 +173,7 @@ namespace NINA.ViewModel {
                 );
 
                 var fW = (IFilterWheel)FilterWheelChooserVM.SelectedDevice;
+                _cancelChooseFilterWheelSource?.Dispose();
                 _cancelChooseFilterWheelSource = new CancellationTokenSource();
                 if (fW != null) {
                     try {

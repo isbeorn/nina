@@ -201,6 +201,7 @@ namespace NINA.Model.MyCamera {
         /// </summary>
         private void CoolerPowerUpdateTask() {
             Task.Run(async () => {
+                coolerPowerReadoutCts?.Dispose();
                 coolerPowerReadoutCts = new CancellationTokenSource();
                 try {
                     camera.get_Option(ToupCam.eOPTION.OPTION_TEC_VOLTAGE_MAX, out var maxVoltage);

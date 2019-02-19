@@ -641,6 +641,7 @@ namespace NINA.Model.MyCamera {
                          * for as long as the camera is connected.
                          */
                         Logger.Debug("QHYCCD: Starting CoolerWorker task");
+                        coolerWorkerCts?.Dispose();
                         coolerWorkerCts = new CancellationTokenSource();
                         coolerTask = CoolerWorker(coolerWorkerCts.Token);
                     }

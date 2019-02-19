@@ -120,6 +120,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> StartLiveView() {
             ImageControl.IsLiveViewEnabled = true;
+            _liveViewCts?.Dispose();
             _liveViewCts = new CancellationTokenSource();
             try {
                 await Task.Run(async () => {
@@ -445,6 +446,7 @@ namespace NINA.ViewModel {
         }
 
         public async Task<bool> SnapImage(IProgress<ApplicationStatus> progress) {
+            _captureImageToken?.Dispose();
             _captureImageToken = new CancellationTokenSource();
 
             try {

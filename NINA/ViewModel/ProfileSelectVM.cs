@@ -106,6 +106,7 @@ namespace NINA.ViewModel {
         public bool UseSavedProfile { get; set; } = Properties.Settings.Default.UseSavedProfileSelection;
 
         public void SelectProfile() {
+            _cancelTokenSource?.Dispose();
             _cancelTokenSource = new CancellationTokenSource();
             try {
                 if (!UseSavedProfile) {

@@ -74,6 +74,7 @@ namespace NINA.ViewModel {
         }
 
         public async Task<bool> CheckUpdate() {
+            checkCts?.Dispose();
             checkCts = new CancellationTokenSource();
             try {
                 versionInfo = await GetVersionInfo((AutoUpdateSourceEnum)NINA.Properties.Settings.Default.AutoUpdateSource, checkCts.Token);
@@ -118,6 +119,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> Download() {
+            downloadCts?.Dispose();
             downloadCts = new CancellationTokenSource();
             try {
                 Downloading = true;

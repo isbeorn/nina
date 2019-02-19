@@ -152,6 +152,7 @@ namespace NINA.ViewModel {
             bool connected = false;
 
             try {
+                _cancelConnectGuiderSource?.Dispose();
                 _cancelConnectGuiderSource = new CancellationTokenSource();
                 connected = await Guider.Connect();
                 _cancelConnectGuiderSource.Token.ThrowIfCancellationRequested();

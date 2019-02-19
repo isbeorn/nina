@@ -493,6 +493,7 @@ namespace NINA.Model.MyGuider {
 
         private async Task RunListener() {
             JsonLoadSettings jls = new JsonLoadSettings() { LineInfoHandling = LineInfoHandling.Ignore, CommentHandling = CommentHandling.Ignore };
+            _clientCTS?.Dispose();
             _clientCTS = new CancellationTokenSource();
             using (var client = new TcpClient()) {
                 try {

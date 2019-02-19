@@ -62,6 +62,7 @@ namespace NINA.AstrometryIndexDownloader {
         }
 
         private async Task<bool> DownloadAsync(IProgress<string> progress) {
+            _cancelDownloadToken?.Dispose();
             _cancelDownloadToken = new CancellationTokenSource();
 
             return await Task<bool>.Run(async () => await Download(progress));

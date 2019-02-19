@@ -579,6 +579,7 @@ namespace NINA.ViewModel.FramingAssistant {
         private async Task<bool> LoadImage() {
             using (MyStopWatch.Measure()) {
                 CancelLoadImage();
+                _loadImageSource?.Dispose();
                 _loadImageSource = new CancellationTokenSource();
                 try {
                     SkySurveyImage skySurveyImage;

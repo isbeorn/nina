@@ -401,6 +401,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> Darvslew(IProgress<ApplicationStatus> cameraprogress, IProgress<string> slewprogress) {
             if (CameraInfo?.Connected == true) {
+                cancelDARVSlewToken?.Dispose();
                 cancelDARVSlewToken = new CancellationTokenSource();
                 try {
                     var oldAutoStretch = imagingMediator.SetAutoStretch(true);
@@ -459,6 +460,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> MeasurePolarError(IProgress<ApplicationStatus> progress, Direction direction) {
             if (CameraInfo?.Connected == true) {
+                cancelMeasureErrorToken?.Dispose();
                 cancelMeasureErrorToken = new CancellationTokenSource();
                 try {
                     var siderealTime = Astrometry.GetLocalSiderealTimeNow(profileService.ActiveProfile.AstrometrySettings.Longitude);

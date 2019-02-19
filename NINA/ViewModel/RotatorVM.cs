@@ -70,6 +70,7 @@ namespace NINA.ViewModel {
         }
 
         public async Task<float> Move(float targetPosition) {
+            _moveCts?.Dispose();
             _moveCts = new CancellationTokenSource();
             float pos = float.NaN;
             await Task.Run(() => {
@@ -198,6 +199,7 @@ namespace NINA.ViewModel {
                 );
 
                 var rotator = (IRotator)RotatorChooserVM.SelectedDevice;
+                _connectRotatorCts?.Dispose();
                 _connectRotatorCts = new CancellationTokenSource();
                 if (rotator != null) {
                     try {

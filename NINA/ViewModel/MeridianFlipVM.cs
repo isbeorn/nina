@@ -266,6 +266,7 @@ namespace NINA.ViewModel {
         /// <returns></returns>
         public async Task<bool> MeridianFlip(CaptureSequence seq, TelescopeInfo telescopeInfo) {
             var service = WindowServiceFactory.Create();
+            this._tokensource?.Dispose();
             this._tokensource = new CancellationTokenSource();
             this._progress = new Progress<ApplicationStatus>(p => Status = p);
             var flip = DoMeridianFlip(telescopeInfo);

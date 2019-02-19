@@ -329,6 +329,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> PlateSolveImage() {
             if (Image != null) {
+                _plateSolveToken?.Dispose();
                 _plateSolveToken = new CancellationTokenSource();
                 if (!AutoStretch) {
                     AutoStretch = true;
@@ -447,6 +448,7 @@ namespace NINA.ViewModel {
                 _prepImageTask?.Wait(_prepImageCancellationSource.Token);
             } catch (OperationCanceledException) {
             }
+            _prepImageCancellationSource?.Dispose();
             _prepImageCancellationSource = new CancellationTokenSource();
             _prepImageTask = PrepareImage(ImgArr, _prepImageCancellationSource.Token);
             await _prepImageTask;

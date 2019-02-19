@@ -204,6 +204,7 @@ namespace NINA.ViewModel {
         private CancellationTokenSource _cancelCoolCameraSource;
 
         private async Task<bool> StartCoolCamera(IProgress<double> progress) {
+            _cancelCoolCameraSource?.Dispose();
             _cancelCoolCameraSource = new CancellationTokenSource();
             _remainingDuration = Duration;
             return await Task<bool>.Run(async () => {
@@ -306,6 +307,7 @@ namespace NINA.ViewModel {
                 );
 
                 var cam = (ICamera)CameraChooserVM.SelectedDevice;
+                _cancelConnectCameraSource?.Dispose();
                 _cancelConnectCameraSource = new CancellationTokenSource();
                 if (cam != null) {
                     try {

@@ -150,6 +150,7 @@ namespace NINA.ViewModel {
                 );
 
                 var telescope = (ITelescope)TelescopeChooserVM.SelectedDevice;
+                _cancelChooseTelescopeSource?.Dispose();
                 _cancelChooseTelescopeSource = new CancellationTokenSource();
                 if (telescope != null) {
                     try {
