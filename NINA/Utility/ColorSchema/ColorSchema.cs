@@ -43,7 +43,7 @@ namespace NINA.Utility {
 
         public static ColorSchemas ReadColorSchemas() {
             ColorSchemas schemas = null;
-            var schemafile = System.AppDomain.CurrentDomain.BaseDirectory + "Utility\\ColorSchema\\ColorSchemas.xml";
+            var schemafile = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Utility", "ColorSchema", "ColorSchemas.xml");
             if (File.Exists(schemafile)) {
                 try {
                     var schemasxml = XElement.Load(schemafile);
