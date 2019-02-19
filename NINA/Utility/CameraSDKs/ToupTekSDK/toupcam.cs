@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 using NINA.Utility;
+using System.IO;
 
 #if !(NETFX_CORE || WINDOWS_UWP)
 
@@ -27,7 +28,7 @@ namespace ToupTek {
         private const string DLLNAME = "toupcam.dll";
 
         static SafeCamHandle() {
-            DllLoader.LoadDll("ToupTek/" + DLLNAME);
+            DllLoader.LoadDll(Path.Combine("ToupTek", DLLNAME));
         }
 
         [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
@@ -51,7 +52,7 @@ namespace ToupTek {
         private const string DLLNAME = "toupcam.dll";
 
         static SafeCamHandle() {
-            DllLoader.LoadDll("ToupTek/" + DLLNAME);
+            DllLoader.LoadDll(Path.Combine("ToupTek", DLLNAME));
         }
 
         [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
@@ -79,7 +80,7 @@ namespace ToupTek {
         private const string DLLNAME = "toupcam.dll";
 
         static ToupCam() {
-            DllLoader.LoadDll("ToupTek/" + DLLNAME);
+            DllLoader.LoadDll(Path.Combine("ToupTek", DLLNAME));
         }
 
         [Flags]

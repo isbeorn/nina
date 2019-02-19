@@ -36,7 +36,7 @@ namespace NINA.Utility {
         private static double JPL_EPHEM_END_DATE = 2525008.5; // Last date of data in the ephemerides file
 
         static NOVAS() {
-            DllLoader.LoadDll("NOVAS/" + DLLNAME);
+            DllLoader.LoadDll(Path.Combine("NOVAS", DLLNAME));
 
             short a = 0;
             var ephemLocation = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "External", "JPLEPH");

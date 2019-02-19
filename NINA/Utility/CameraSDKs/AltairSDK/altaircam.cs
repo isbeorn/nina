@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 using NINA.Utility;
+using System.IO;
 
 #if !(NETFX_CORE || WINDOWS_UWP)
 
@@ -27,7 +28,7 @@ namespace Altair {
         private const string DLLNAME = "altaircam.dll";
 
         static SafeCamHandle() {
-            DllLoader.LoadDll("Altair/" + DLLNAME);
+            DllLoader.LoadDll(Path.Combine("Altair", DLLNAME));
         }
 
         [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
@@ -51,7 +52,7 @@ namespace Altair {
         private const string DLLNAME = "altaircam.dll";
 
         static SafeCamHandle() {
-            DllLoader.LoadDll("Altair/" + DLLNAME);
+            DllLoader.LoadDll(Path.Combine("Altair", DLLNAME));
         }
 
         [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
@@ -79,7 +80,7 @@ namespace Altair {
         private const string DLLNAME = "altaircam.dll";
 
         static AltairCam() {
-            DllLoader.LoadDll("Altair/" + DLLNAME);
+            DllLoader.LoadDll(Path.Combine("Altair", DLLNAME));
         }
 
         [Flags]

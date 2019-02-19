@@ -1,5 +1,6 @@
 ﻿using NINA.Model.MyCamera;
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -12,7 +13,7 @@ namespace NINA.Utility.AtikSDK {
         private const string DLLNAME = "ArtemisHSC.dll";
 
         static AtikCameraDll() {
-            DllLoader.LoadDll("Atik/" + DLLNAME);
+            DllLoader.LoadDll(Path.Combine("Atik", DLLNAME));
         }
 
         public static int RefreshDevicesCount() {

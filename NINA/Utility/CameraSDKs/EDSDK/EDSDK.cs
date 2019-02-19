@@ -1,6 +1,7 @@
 using NINA.Utility;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace EDSDKLib {
@@ -8,7 +9,7 @@ namespace EDSDKLib {
     public class EDSDK {
 
         static EDSDK() {
-            DllLoader.LoadDll("Canon/EDSDK.dll");
+            DllLoader.LoadDll(Path.Combine("Canon", "EDSDK.dll"));
 
             uint err;
             err = EDSDK.EdsInitializeSDK();

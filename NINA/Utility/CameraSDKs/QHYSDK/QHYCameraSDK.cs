@@ -26,6 +26,7 @@
 using NINA.Utility;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -37,7 +38,7 @@ namespace QHYCCD {
         private const string DLLNAME = "qhyccd.dll";
 
         static LibQHYCCD() {
-            DllLoader.LoadDll("QHYCCD/" + DLLNAME);
+            DllLoader.LoadDll(Path.Combine("QHYCCD", DLLNAME));
 
             N_InitQHYCCDResource();
         }

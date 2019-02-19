@@ -34,7 +34,7 @@ namespace NINA.Utility.RawConverter {
     internal class FreeImageConverter : IRawConverter {
 
         public FreeImageConverter() {
-            DllLoader.LoadDll("FreeImage/FreeImage.dll");
+            DllLoader.LoadDll(Path.Combine("FreeImage", "FreeImage.dll"));
         }
 
         public async Task<ImageArray> ConvertToImageArray(MemoryStream s, int bitDepth, int histogramResolution, bool calculateStatistics, CancellationToken token) {

@@ -1,6 +1,7 @@
 ﻿using NINA.Utility;
 using System;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -13,7 +14,7 @@ namespace ZWOptical.ASISDK {
         private const string DLLNAME = "ASICamera2.dll";
 
         static ASICameraDll() {
-            DllLoader.LoadDll("ASI/" + DLLNAME);
+            DllLoader.LoadDll(Path.Combine("ASI", DLLNAME));
         }
 
         public enum ASI_CONTROL_TYPE {

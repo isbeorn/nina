@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace NINA.Utility {
@@ -32,7 +33,7 @@ namespace NINA.Utility {
         private const string DLLNAME = "SOFAlib.dll";
 
         static SOFA() {
-            DllLoader.LoadDll("SOFA/" + DLLNAME);
+            DllLoader.LoadDll(Path.Combine("SOFA", DLLNAME));
         }
 
         #region "Public Methods"

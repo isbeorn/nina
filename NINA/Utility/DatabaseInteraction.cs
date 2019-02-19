@@ -26,6 +26,7 @@ using NINA.Utility.Astrometry;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,7 +36,7 @@ namespace NINA.Utility {
     internal class DatabaseInteraction {
 
         static DatabaseInteraction() {
-            DllLoader.LoadDll("SQLite\\SQLite.Interop.dll");
+            DllLoader.LoadDll(Path.Combine("SQLite", "SQLite.Interop.dll"));
         }
 
         private string _connectionString;
