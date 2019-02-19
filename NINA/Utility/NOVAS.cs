@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace NINA.Utility {
@@ -31,15 +32,18 @@ namespace NINA.Utility {
     public static class NOVAS {
         private const string DLLNAME = "NOVAS31lib.dll";
 
-        private static double JPL_EPHEM_START_DATE = 2305424.5; // First date of data in the ephemeredes file
-        private static double JPL_EPHEM_END_DATE = 2525008.5; // Last date of data in the ephemeredes file
+        private static double JPL_EPHEM_START_DATE = 2305424.5; // First date of data in the ephemerides file
+        private static double JPL_EPHEM_END_DATE = 2525008.5; // Last date of data in the ephemerides file
 
         static NOVAS() {
             DllLoader.LoadDll("NOVAS/" + DLLNAME);
 
             short a = 0;
-            var ephemLocation = System.AppDomain.CurrentDomain.BaseDirectory + "/External/JPLEPH";
-            EphemOpen(ephemLocation, ref JPL_EPHEM_START_DATE, ref JPL_EPHEM_END_DATE, ref a);
+            var ephemLocation = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "External", "JPLEPH");
+            var code = EphemOpen(ephemLocation, ref JPL_EPHEM_START_DATE, ref JPL_EPHEM_END_DATE, ref a);
+            if (code > 0) {
+                Logger.Warning($"Failed to load ephemerides file due to error {code}");
+            }
         }
 
         #region "Public Methods"
