@@ -63,6 +63,7 @@
     <Content Include="NINASetupBundle.wax" />
     <Content Include="ninasplash-small.png" />
     <Content Include="RtfTheme.xml" />
+    <Content Include="vcredist_x64.exe" />
     <Content Include="vcredist_x86.exe" />
     <Content Include="vc_redist2017.x64.exe" />
     <Content Include="vc_redist2017.x86.exe" />
