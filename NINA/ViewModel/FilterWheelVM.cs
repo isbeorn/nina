@@ -194,6 +194,14 @@ namespace NINA.ViewModel {
                                 FilterWheelInfo.SelectedFilter = FW.Filters[FW.Position];
                             }
 
+                            // Auto import filters to profile, when profile does not have any filters set yet.
+                            if (FW.Filters.Count > 0 && profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Count == 0) {
+                                var l = FW.Filters.OrderBy(x => x.Position);
+                                foreach (var filter in l) {
+                                    profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Add(filter);
+                                }
+                            }
+
                             TargetFilter = FilterWheelInfo.SelectedFilter;
 
                             BroadcastFilterWheelInfo();
