@@ -65,6 +65,9 @@ the background itself will be moved like in an orrery</li>
 <li>Meridian Flip window does not get stuck anymore when clicking on cancel</li>
 <li>Log Level will now be set on application start based on profile settings.</li>
 <li>ASI Cameras will not shut down their cooling and progress on opening multiple instances of NINA</li>
+<li>In some cases the application stayed open in the background after closing. This should not happen anymore</li>
+<li><span class="math">DATETime</span> and <span class="math">TIME</span> will now use timestamp on exposure start, not on exposure end</li>
+<li>Fixed Meridian Offset default values for plate solved polar alignment</li>
 </ul>
 <h2 id="improvements">Improvements</h2>
 <ul>
@@ -76,6 +79,8 @@ the background itself will be moved like in an orrery</li>
 <li>Removed hard requirement of ASCOM platform. Application can now function without it</li>
 <li>Improved UI Style.
 <ul>
+<li>New logo</li>
+<li>Better version display</li>
 <li>Tweaked some color themes for more consistent colors</li>
 <li>Better spacing between elements to reduce wasted space</li>
 <li>Two new background colors to better pronounce some ui elements</li>
@@ -86,7 +91,7 @@ the background itself will be moved like in an orrery</li>
 <li>Profiles don't get overriden when using multiple instances of N.I.N.A. with each one having a separate profile active</li>
 <li>Autostretch replaced by a better midpoint transformation function</li>
 <li>Autostretch now has black point clipping options</li>
-<li>Vastly improved Image Statistics calculation.</li>
+<li>Vastly improved image statistics calculation time.</li>
 <li>Estimated Finish Time will automatically update in the sequencing view</li>
 <li>Added copy button for existing color schemas to copy over to custom and alternative custom schemas</li>
 <li>Framing tab:
@@ -100,6 +105,10 @@ the background itself will be moved like in an orrery</li>
 <li>Framing Assistant now can annotate DSO</li>
 <li>Attempt to start PHD2 and connect all equipment when connecting to guider and PHD2 is not running</li>
 <li>Adaptive Cooling: Duration for cool/warm camera is now a minimum duration. In case the cooler cannot keep up with the set duration, the application will wait for the camera to reach the checkpoints instead of just continuing setting new targets without the camera having any chance to reach those in the timeframe.</li>
+<li>Automatically import filter wheel filters to the profile on connection when profile filter list is still empty</li>
+<li>Load a default imaging tab layout in case the layout file is corrupted or not compatible anymore</li>
+<li>Removed Altitude Side combobox from plate solved polar alignment. It will be automatically determined based on alt/az coordinates.</li>
+<li>Changed log file format. Each application start will write to a separate log file for better distinction</li>
 </ul>
 <h2 id="special-thanks">Special Thanks</h2>
 <p>The N.I.N.A. team would like to thank</p>

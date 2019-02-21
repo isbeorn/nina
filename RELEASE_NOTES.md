@@ -49,6 +49,9 @@
 - Meridian Flip window does not get stuck anymore when clicking on cancel
 - Log Level will now be set on application start based on profile settings.
 - ASI Cameras will not shut down their cooling and progress on opening multiple instances of NINA
+- In some cases the application stayed open in the background after closing. This should not happen anymore
+- $$DATETime$$ and $$TIME$$ will now use timestamp on exposure start, not on exposure end
+- Fixed Meridian Offset default values for plate solved polar alignment 
 
 ## Improvements
 
@@ -59,6 +62,8 @@
 - Canon: Errors are now shown to users in a readable format if any occur
 - Removed hard requirement of ASCOM platform. Application can now function without it
 - Improved UI Style. 
+    - New logo
+    - Better version display
     - Tweaked some color themes for more consistent colors
     - Better spacing between elements to reduce wasted space
     - Two new background colors to better pronounce some ui elements
@@ -67,7 +72,7 @@
 - Profiles don't get overriden when using multiple instances of N.I.N.A. with each one having a separate profile active
 - Autostretch replaced by a better midpoint transformation function
 - Autostretch now has black point clipping options
-- Vastly improved Image Statistics calculation.
+- Vastly improved image statistics calculation time.
 - Estimated Finish Time will automatically update in the sequencing view
 - Added copy button for existing color schemas to copy over to custom and alternative custom schemas    
 - Framing tab: 
@@ -78,6 +83,10 @@
 - Framing Assistant now can annotate DSO
 - Attempt to start PHD2 and connect all equipment when connecting to guider and PHD2 is not running
 - Adaptive Cooling: Duration for cool/warm camera is now a minimum duration. In case the cooler cannot keep up with the set duration, the application will wait for the camera to reach the checkpoints instead of just continuing setting new targets without the camera having any chance to reach those in the timeframe.
+- Automatically import filter wheel filters to the profile on connection when profile filter list is still empty
+- Load a default imaging tab layout in case the layout file is corrupted or not compatible anymore
+- Removed Altitude Side combobox from plate solved polar alignment. It will be automatically determined based on alt/az coordinates.
+- Changed log file format. Each application start will write to a separate log file for better distinction
 
 ## Special Thanks
 The N.I.N.A. team would like to thank 
