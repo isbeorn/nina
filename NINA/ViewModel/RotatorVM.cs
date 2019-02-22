@@ -105,6 +105,9 @@ namespace NINA.ViewModel {
             rotatorValues.TryGetValue(nameof(RotatorInfo.Position), out o);
             RotatorInfo.Position = (float)(o ?? 0f);
 
+            rotatorValues.TryGetValue(nameof(RotatorInfo.StepSize), out o);
+            RotatorInfo.StepSize = (float)(o ?? 0f);
+
             rotatorValues.TryGetValue(nameof(RotatorInfo.IsMoving), out o);
             RotatorInfo.IsMoving = (bool)(o ?? false);
 
