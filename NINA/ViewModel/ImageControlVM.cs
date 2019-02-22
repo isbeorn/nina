@@ -792,6 +792,8 @@ namespace NINA.ViewModel {
                 f.AddHeaderCard("EGAIN", cameraInfo.Gain, "");
 
                 if (telescopeInfo != null) {
+                    f.AddHeaderCard("RA", Astrometry.HoursToDegrees(telescopeInfo.RightAscension), "[deg] Telescope pointing RA");
+                    f.AddHeaderCard("DEC", telescopeInfo.Declination, "[deg] Telescope pointing DEC");
                     f.AddHeaderCard("OBJCTRA", Astrometry.HoursToFitsHMS(telescopeInfo.RightAscension), "");
                     f.AddHeaderCard("OBJCTDEC", Astrometry.DegreesToFitsDMS(telescopeInfo.Declination), "");
                 }
@@ -857,12 +859,14 @@ namespace NINA.ViewModel {
                     /* Location */
                     header.AddImageProperty(XISFImageProperty.Observation.Location.Elevation, telescopeInfo.SiteElevation.ToString(CultureInfo.InvariantCulture));
                     /* convert to degrees */
-                    var RA = telescopeInfo.RightAscension * 360 / 24;
+                    var RA = Astrometry.HoursToDegrees(telescopeInfo.RightAscension);
                     header.AddImageProperty(XISFImageProperty.Observation.Center.RA, RA.ToString(CultureInfo.InvariantCulture), string.Empty, false);
                     header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.RA[2], Astrometry.HoursToFitsHMS(telescopeInfo.RightAscension));
+                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.RA[3], RA.ToString(CultureInfo.InvariantCulture), "[deg] Telescope pointing RA");
 
                     header.AddImageProperty(XISFImageProperty.Observation.Center.Dec, telescopeInfo.Declination.ToString(CultureInfo.InvariantCulture), string.Empty, false);
                     header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.Dec[2], Astrometry.DegreesToFitsDMS(telescopeInfo.Declination));
+                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.Dec[3], telescopeInfo.Declination.ToString(CultureInfo.InvariantCulture), "[deg] Telescope pointing DEC");
                 }
 
                 header.AddImageProperty(XISFImageProperty.Instrument.Camera.Name, cameraInfo.Name);

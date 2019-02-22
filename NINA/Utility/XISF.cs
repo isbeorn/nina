@@ -246,8 +246,8 @@ namespace NINA.Utility {
 
             public static class Center {
                 public static readonly string Namespace = Observation.Namespace + "Center:";
-                public static readonly string[] Dec = { Namespace + nameof(Dec), "Float64", "OBJCTDEC" };
-                public static readonly string[] RA = { Namespace + nameof(RA), "Float64", "OBJCTRA" };
+                public static readonly string[] Dec = { Namespace + nameof(Dec), "Float64", "OBJCTDEC", "DEC" };
+                public static readonly string[] RA = { Namespace + nameof(RA), "Float64", "OBJCTRA", "RA" };
                 public static readonly string[] X = { Namespace + nameof(X), "Float64" };
                 public static readonly string[] Y = { Namespace + nameof(Y), "Float64" };
             }
