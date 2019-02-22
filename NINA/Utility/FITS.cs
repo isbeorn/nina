@@ -29,8 +29,12 @@ using System.Text;
 
 namespace NINA.Utility {
 
+    /// <summary>
+    /// Specification:
+    /// https://fits.gsfc.nasa.gov/fits_standard.html
+    /// http://archive.stsci.edu/fits/fits_standard/fits_standard.html
+    /// </summary>
     public class FITS {
-        /* Specification: http://archive.stsci.edu/fits/fits_standard/fits_standard.html */
 
         public FITS(ushort[] data, int width, int height, string imageType, double exposuretime) {
             this._imageData = data;
@@ -47,7 +51,7 @@ namespace NINA.Utility {
         }
 
         public void AddHeaderCard(string keyword, string value, string comment) {
-            EncodeHeader(keyword, "'" + value + "'", comment);
+            EncodeCharacterStringHeader(keyword, value, comment);
         }
 
         public void AddHeaderCard(string keyword, int value, string comment) {
@@ -101,9 +105,36 @@ namespace NINA.Utility {
         private List<byte[]> _encodedHeader = new List<byte[]>();
         private ushort[] _imageData;
 
+        /// <summary>
+        /// Encode a character string by adding quotations to the value '{value}'
+        /// </summary>
+        /// <param name="keyword">FITS Keyword. Max length 8 chars</param>
+        /// <param name="value">Keyword string value</param>
+        /// <param name="comment">Description of Keyword</param>
+        private void EncodeCharacterStringHeader(string keyword, string value, string comment) {
+            var encodedValue = $"'{value}'".PadRight(20);
+            EncodeHeader(keyword, encodedValue, comment);
+        }
+
+        /// <summary>
+        /// Encodes a FITS header according to FITS specifications to be exactly 80 characters long
+        /// value + comment length must not exceed 67 characters
+        /// </summary>
+        /// <param name="keyword">FITS Keyword. Max length 8 chars</param>
+        /// <param name="value">Keyword Value</param>
+        /// <param name="comment">Description of Keyword</param>
+        /// <remarks>
+        /// Header Specification:
+        /// http://archive.stsci.edu/fits/fits_standard/node29.html#SECTION00912100000000000000
+        /// More in depth: https://fits.gsfc.nasa.gov/fits_standard.html
+        /// </remarks>
         private void EncodeHeader(string keyword, string value, string comment) {
-            /* Header Specification: http://archive.stsci.edu/fits/fits_standard/node29.html#SECTION00912100000000000000 */
-            var header = keyword.ToUpper().PadRight(8) + "=" + value.PadLeft(21) + " / " + comment.PadRight(47);
+            var encodedKeyword = keyword.ToUpper().PadRight(8);
+            var encodedValue = value.PadLeft(20);
+
+            var header = $"{encodedKeyword}= {encodedValue} / ";
+            var encodedComment = comment.PadRight(80 - header.Length);
+            header += encodedComment;
             _encodedHeader.Add(ascii.GetBytes(header));
         }
     }
