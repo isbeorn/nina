@@ -65,6 +65,7 @@ namespace NINA.Utility {
                 }
             } else {
                 convertedSource = ImageAnalysis.BitmapFromSource(originalSource, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+                convertedSource.Palette = ImageAnalysis.GetGrayScalePalette();
             }
 
             Bitmap bahtinovedBitmap = new Bitmap(convertedSource.Width, convertedSource.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
@@ -663,6 +664,20 @@ namespace NINA.Utility {
                 var debayered = filter.Apply(bmp);
                 return debayered;
             }
+        }
+
+        public static ColorPalette GetGrayScalePalette() {
+            Bitmap bmp = new Bitmap(1, 1, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+
+            ColorPalette monoPalette = bmp.Palette;
+
+            System.Drawing.Color[] entries = monoPalette.Entries;
+
+            for (int i = 0; i < 256; i++) {
+                entries[i] = System.Drawing.Color.FromArgb(i, i, i);
+            }
+
+            return monoPalette;
         }
     }
 
