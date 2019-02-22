@@ -28,6 +28,8 @@ namespace NINA.Model.MyRotator {
 
         float Position { get; }
 
+        float StepSize { get; }
+
         void Move(float position);
 
         void MoveAbsolute(float position);

@@ -150,6 +150,7 @@ namespace NINA.ViewModel {
                                 IsMoving = Focuser.IsMoving,
                                 Name = Focuser.Name,
                                 Position = Focuser.Position,
+                                StepSize = Focuser.StepSize,
                                 TempComp = Focuser.TempComp,
                                 Temperature = Focuser.Temperature
                             };

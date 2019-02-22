@@ -59,6 +59,16 @@ namespace NINA.Model.MyRotator {
             }
         }
 
+        public float StepSize {
+            get {
+                if (Connected) {
+                    return rotator.StepSize;
+                } else {
+                    return float.NaN;
+                }
+            }
+        }
+
         public bool HasSetupDialog {
             get {
                 return true;

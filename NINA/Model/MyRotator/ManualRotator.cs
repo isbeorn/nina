@@ -49,6 +49,8 @@ namespace NINA.Model.MyRotator {
 
         public float Position { get; set; }
 
+        public float StepSize { get; set; }
+
         public float TargetPosition { get; set; }
 
         public bool HasSetupDialog {

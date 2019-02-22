@@ -31,6 +31,13 @@ namespace NINA.Model.MyRotator {
             set { position = value; RaisePropertyChanged(); }
         }
 
+        private float stepsize;
+
+        public float StepSize {
+            get { return stepsize; }
+            set { stepsize = value; RaisePropertyChanged(); }
+        }
+
         private bool isMoving;
 
         public bool IsMoving {
