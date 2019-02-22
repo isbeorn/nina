@@ -419,7 +419,7 @@ namespace NINA.ViewModel {
             image = BitmapFrame.Create(source);
             /* Read image into memorystream */
             using (var ms = new MemoryStream()) {
-                JpegBitmapEncoder encoder = new JpegBitmapEncoder() { QualityLevel = 100 };
+                PngBitmapEncoder encoder = new PngBitmapEncoder();
                 encoder.Frames.Add(image);
 
                 encoder.Save(ms);
