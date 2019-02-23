@@ -39,27 +39,71 @@ namespace NINA.Utility {
 
         public static async Task<ImageArray> LoadImageArrayFromFile(Uri filePath, bool isBayered, int histogramResolution) {
             using (FileStream fs = new FileStream(filePath.LocalPath, FileMode.Open)) {
-                byte[] arr = new byte[16];
-                fs.Read(arr, 0, 16);
-                var xml = XElement.Load(fs);
+                //Skip to the header length info starting at byte 9
+                fs.Seek(8, SeekOrigin.Current);
+                byte[] headerLengthInfo = new byte[8];
+                fs.Read(headerLengthInfo, 0, 8);
+                var headerLength = BitConverter.ToInt32(headerLengthInfo, 0);
+
+                byte[] bytes = new byte[headerLength];
+                fs.Read(bytes, 0, headerLength);
+                string xmlString = System.Text.UTF8Encoding.UTF8.GetString(bytes);
+
+                var xml = XElement.Parse(xmlString);
                 var imageTag = xml.Element("Image");
                 var geometry = imageTag.Attribute("geometry").Value.Split(':');
                 int width = Int32.Parse(geometry[0]);
                 int height = Int32.Parse(geometry[1]);
 
-                var base64Img = xml.Element("Image").Element("Data").Value;
-                byte[] encodedImg = Convert.FromBase64String(base64Img);
-                ushort[] img = new ushort[(int)Math.Ceiling(encodedImg.Length / 2.0)];
-                Buffer.BlockCopy(encodedImg, 0, img, 0, encodedImg.Length);
-
                 //Seems to be no attribute to identify the bit depth. Assume 16.
                 var bitDepth = 16;
-                return await ImageArray.CreateInstance(img, width, height, bitDepth, isBayered, true, histogramResolution);
+                if (imageTag.Attribute("location").Value.StartsWith("attachment")) {
+                    var location = imageTag.Attribute("location").Value.Split(':');
+                    var start = int.Parse(location[1]);
+                    var size = int.Parse(location[2]);
+
+                    byte[] raw = new byte[size];
+                    fs.Seek(start, SeekOrigin.Begin);
+                    fs.Read(raw, 0, size);
+                    ushort[] img = new ushort[raw.Length / 2];
+                    Buffer.BlockCopy(raw, 0, img, 0, raw.Length);
+
+                    return await ImageArray.CreateInstance(img, width, height, bitDepth, isBayered, true, histogramResolution);
+                } else {
+                    var base64Img = xml.Element("Image").Element("Data").Value;
+                    byte[] encodedImg = Convert.FromBase64String(base64Img);
+                    ushort[] img = new ushort[(int)Math.Ceiling(encodedImg.Length / 2.0)];
+                    Buffer.BlockCopy(encodedImg, 0, img, 0, encodedImg.Length);
+
+                    return await ImageArray.CreateInstance(img, width, height, bitDepth, isBayered, true, histogramResolution);
+                }
             }
         }
 
+        public void AddAttachedImage(ImageArray arr, string imageType) {
+            var currentHeaderSize = System.Text.ASCIIEncoding.UTF8.GetByteCount(Header.Header.ToString()) + 100;
+
+            var targetHeaderBlock = currentHeaderSize + (1024 - currentHeaderSize % 1024);
+
+            Header.Image.Add(new XAttribute("location", $"attachment:{targetHeaderBlock}:{arr.FlatArray.Length * sizeof(ushort)}"));
+
+            _imageData = arr.FlatArray;
+        }
+
+        private ushort[] _imageData;
+
         public bool Save(Stream s) {
             Header.Save(s);
+            if (this._imageData != null) {
+                /* Write image data
+                 * XISF's default endianess is little endian
+                 */
+                for (int i = 0; i < this._imageData.Length; i++) {
+                    var val = this._imageData[i];
+                    s.WriteByte((byte)val);
+                    s.WriteByte((byte)(val >> 8));
+                }
+            }
             return true;
         }
     }
@@ -170,6 +214,31 @@ namespace NINA.Utility {
             elem.Add(xelem);
         }
 
+        /// <summary>
+        /// Adds the image metadata to the header
+        /// Image data has to be added at a later point to the xisf body
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <param name="imageType"></param>
+        public void AddImageMetaData(ImageArray arr, string imageType) {
+            var image = new XElement("Image",
+                    new XAttribute("geometry", arr.Statistics.Width + ":" + arr.Statistics.Height + ":" + "1"),
+                    new XAttribute("sampleFormat", "UInt16"),
+                    new XAttribute("imageType", imageType),
+                    new XAttribute("colorSpace", "Gray")
+                    );
+
+            Image = image;
+            Xisf.Add(image);
+
+            AddImageFITSKeyword("IMAGETYP", imageType);
+        }
+
+        /// <summary>
+        /// Adds the image tage to the Header and embedds the image as base64 inside the header image as a data block
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <param name="imageType"></param>
         public void AddEmbeddedImage(ImageArray arr, string imageType) {
             var image = new XElement("Image",
                     new XAttribute("geometry", arr.Statistics.Width + ":" + arr.Statistics.Height + ":" + "1"),
@@ -208,6 +277,13 @@ namespace NINA.Utility {
 
             using (System.Xml.XmlWriter sw = System.Xml.XmlWriter.Create(s, new System.Xml.XmlWriterSettings { OmitXmlDeclaration = true, Indent = true, Encoding = Encoding.UTF8 })) {
                 Header.Save(sw);
+            }
+
+            long remainingBlockPadding = (long)Math.Ceiling((double)s.Position / (double)1024) * (long)1024 - s.Position;
+            byte zeroByte = 0;
+            //Pad remaining XISF block with zero values
+            for (int i = 0; i < remainingBlockPadding; i++) {
+                s.WriteByte(zeroByte);
             }
         }
     }

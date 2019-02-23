@@ -593,21 +593,21 @@ namespace NINA.Model.MyCamera {
                 BitmapDecoder decoder = null;
                 switch (Path.GetExtension(dialog.FileName).ToLower()) {
                     case ".gif":
-                        decoder = new GifBitmapDecoder(new Uri(dialog.FileName), BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.OnLoad);
+                        decoder = new GifBitmapDecoder(new Uri(dialog.FileName), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
                         break;
 
                     case ".tif":
                     case ".tiff":
-                        decoder = new TiffBitmapDecoder(new Uri(dialog.FileName), BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.OnLoad);
+                        decoder = new TiffBitmapDecoder(new Uri(dialog.FileName), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
                         break;
 
                     case ".jpg":
                     case ".jpeg":
-                        decoder = new JpegBitmapDecoder(new Uri(dialog.FileName), BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.OnLoad);
+                        decoder = new JpegBitmapDecoder(new Uri(dialog.FileName), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
                         break;
 
                     case ".png":
-                        decoder = new PngBitmapDecoder(new Uri(dialog.FileName), BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.OnLoad);
+                        decoder = new PngBitmapDecoder(new Uri(dialog.FileName), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
                         break;
                 }
                 if (decoder != null) {
