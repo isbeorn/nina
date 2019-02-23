@@ -87,6 +87,7 @@
 - Load a default imaging tab layout in case the layout file is corrupted or not compatible anymore
 - Removed Altitude Side combobox from plate solved polar alignment. It will be automatically determined based on alt/az coordinates.
 - Changed log file format. Each application start will write to a separate log file for better distinction
+- Improved XISF save speed and resulting file size by not embedding the image as base64 string, but instead as attached raw byte data
 
 ## Special Thanks
 The N.I.N.A. team would like to thank 
