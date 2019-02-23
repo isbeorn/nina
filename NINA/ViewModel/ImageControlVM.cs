@@ -912,7 +912,7 @@ namespace NINA.ViewModel {
             try {
                 var header = new XISFHeader();
 
-                header.AddEmbeddedImage(ImgArr, parameters.ImageType);
+                header.AddImageMetaData(ImgArr, parameters.ImageType);
 
                 header.AddImageProperty(XISFImageProperty.Observation.Time.Start, DateTime.UtcNow.ToString("s", System.Globalization.CultureInfo.InvariantCulture));
                 header.AddImageProperty(XISFImageProperty.Observation.Location.Latitude, profileService.ActiveProfile.AstrometrySettings.Latitude.ToString(CultureInfo.InvariantCulture));
@@ -1034,6 +1034,8 @@ namespace NINA.ViewModel {
                 header.AddImageProperty(XISFImageProperty.Instrument.ExposureTime, parameters.ExposureTime.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
                 XISF img = new XISF(header);
+
+                img.AddAttachedImage(ImgArr, parameters.ImageType);
 
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 var uniquePath = Utility.Utility.GetUniqueFilePath(path + ".xisf");
