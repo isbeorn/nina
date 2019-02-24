@@ -265,20 +265,23 @@ namespace NINA.Model.MyCamera {
                 if (Connected && CanGetGain) {
                     double rv;
 
-                    if ((rv = GetControlValue(LibQHYCCD.CONTROL_ID.CONTROL_GAIN)) != LibQHYCCD.QHYCCD_ERROR) {
-                        if (Info.GainDiv10)
-                            rv = rv * 10;
-
-                        return unchecked((short)rv);
+                    if (Info.HasUnreliableGain) {
+                        rv = Info.CurGain;
+                    } else {
+                        rv = GetControlValue(LibQHYCCD.CONTROL_ID.CONTROL_GAIN);
                     }
+
+                    return unchecked((short)rv);
                 }
 
                 return 1;
             }
             set {
                 if (Connected && CanSetGain) {
-                    if (SetControlValue(LibQHYCCD.CONTROL_ID.CONTROL_GAIN, value))
+                    if (SetControlValue(LibQHYCCD.CONTROL_ID.CONTROL_GAIN, value)) {
+                        Info.CurGain = value;
                         RaisePropertyChanged();
+                    }
                 }
             }
         }
@@ -461,7 +464,8 @@ namespace NINA.Model.MyCamera {
                     /* sleep 2 seconds (cancelable) */
                     await Task.Delay(LibQHYCCD.QHYCCD_COOLER_DELAY, ct);
                 }
-            } catch (OperationCanceledException) {
+            }
+            catch (OperationCanceledException) {
                 Logger.Debug("QHYCCD: CoolerWorker task cancelled");
             }
         }
@@ -566,7 +570,7 @@ namespace NINA.Model.MyCamera {
                     }
 
                     /*
-                     * Get out min and max shutter speed (exposure times)
+                     * Get our min and max shutter speed (exposure times)
                      * The QHY SDK reports this value in microseconds (us)
                      */
                     LibQHYCCD.GetQHYCCDParamMinMaxStep(CameraP,
@@ -590,7 +594,17 @@ namespace NINA.Model.MyCamera {
                     Logger.Debug(string.Format("QHYCCD: GainMin={0}, GainMax={1}, GainStep={2}",
                         Info.GainMin, Info.GainMax, Info.GainStep));
 
-                    QuirkGainDiv10();
+                    /*
+                     * Check for gain setting bugs
+                     */
+                    Info.HasUnreliableGain = QuirkUnreliableGain();
+
+                    /*
+                     * If we have to keep track of gain ourselves, initialize the gain to Info.GainMin
+                     */
+                    if (Info.HasUnreliableGain == true) {
+                        Gain = Info.GainMin;
+                    }
 
                     /*
                      * Get our min and max offset
@@ -704,7 +718,8 @@ namespace NINA.Model.MyCamera {
 
                     RaisePropertyChanged(nameof(Connected));
                     RaiseAllPropertiesChanged();
-                } catch (Exception ex) {
+                }
+                catch (Exception ex) {
                     Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                 }
@@ -865,30 +880,38 @@ namespace NINA.Model.MyCamera {
         // by 10. Ie, setting the gain to 420 will result in the gain being reported as 42.0
         // by the SDK.
         //
+        // Other camera models (such as the QHY168C) will report absolutely false values for
+        // their gain, so we must track that value internally because we will revcieve unreliable
+        // answers from the camera.
+        //
         // We will venture to detect this kind of situation by issuing a gain setting to the
-        // camera and then testing the value returned by GetQHYCCDParam(). If we find it, we
+        // camera and then testing the value returned by GetQHYCCDParam(). If we find that what
         // will flag it necessary to normalize Get'd values.
         //
-        // Valid issue as of SDK V20180502_0
+        // Valid issue as of SDK V2019.02.11.0
         ///</summary>
-        private void QuirkGainDiv10() {
+        private bool QuirkUnreliableGain() {
             /* Save a copy of what our current gain is so we can restore it later */
             double saveGain = GetControlValue(LibQHYCCD.CONTROL_ID.CONTROL_GAIN);
 
             /*
-             * Set the gain to the maximum gain value for the camera. We will then query the camera and
-             * test whether we get GainMax/10 (which indicates the bug). Normally we should get GainMax back.
+             * Set the gain to the maximum gain value minus one step for the camera. We will then query the camera and
+             * test whether we get the value we set or not (which indicates the bug).
              */
-            SetControlValue(LibQHYCCD.CONTROL_ID.CONTROL_GAIN, Info.GainMax);
-            double curGain = GetControlValue(LibQHYCCD.CONTROL_ID.CONTROL_GAIN);
+            double wantGain = Info.GainMax - Info.GainStep;
+            SetControlValue(LibQHYCCD.CONTROL_ID.CONTROL_GAIN, wantGain);
 
-            if (curGain == (Info.GainMax / 10)) {
-                Logger.Debug("QHYCCD_QUIRK: This camera has the gain divisor bug!");
-                Info.GainDiv10 = true;
-            }
+            double curGain = GetControlValue(LibQHYCCD.CONTROL_ID.CONTROL_GAIN);
 
             /* Restore our original gain setting */
             SetControlValue(LibQHYCCD.CONTROL_ID.CONTROL_GAIN, saveGain);
+
+            if (wantGain != curGain) {
+                Logger.Debug("QHYCCD_QUIRK: This camera reports false gain values");
+                return true;
+            }
+
+            return false;
         }
 
         ///<summary>
