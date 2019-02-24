@@ -667,9 +667,9 @@ namespace QHYCCD {
 
             /// <summary>
             /// Does SDK misreport the gain?
-            /// <seealso cref="NINA.Model.MyCamera.QHYCamera.QuirkGainDiv10"/>
+            /// <seealso cref="NINA.Model.MyCamera.QHYCamera.QuirkUnreliableGain"/>
             /// </summary>
-            public bool GainDiv10;
+            public bool HasUnreliableGain;
 
             /// <summary>
             /// Maximum sensor gain
@@ -685,6 +685,12 @@ namespace QHYCCD {
             /// Minimum sensor gain increment
             /// </summary>
             public double GainStep;
+
+            /// <summary>
+            /// Internally-stored gain setting
+            /// <seealso cref="NINA.Model.MyCamera.QHYCamera.QuirkUnreliableGain"/>
+            /// </summary>
+            public double CurGain;
 
             /// <summary>
             /// Camera has temperature sensor?
