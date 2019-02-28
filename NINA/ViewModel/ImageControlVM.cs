@@ -811,6 +811,10 @@ namespace NINA.ViewModel {
                 }
                 f.AddHeaderCard("EGAIN", cameraInfo.Gain, "");
 
+                if (!string.IsNullOrEmpty(parameters.TargetName) || !string.IsNullOrWhiteSpace(parameters.TargetName)) {
+                    f.AddHeaderCard("OBJECT", parameters.TargetName, "Name of the object of interest");
+                }
+
                 if (telescopeInfo.Connected) {
                     f.AddHeaderCard("RA", Astrometry.HoursToDegrees(telescopeInfo.RightAscension), "[deg] Telescope pointing RA");
                     f.AddHeaderCard("DEC", telescopeInfo.Declination, "[deg] Telescope pointing DEC");
@@ -920,6 +924,10 @@ namespace NINA.ViewModel {
                 header.AddImageProperty(XISFImageProperty.Instrument.Telescope.FocalLength, profileService.ActiveProfile.TelescopeSettings.FocalLength.ToString(CultureInfo.InvariantCulture));
                 header.AddImageProperty(XISFImageProperty.Instrument.Sensor.XPixelSize, profileService.ActiveProfile.CameraSettings.PixelSize.ToString(CultureInfo.InvariantCulture));
                 header.AddImageProperty(XISFImageProperty.Instrument.Sensor.YPixelSize, profileService.ActiveProfile.CameraSettings.PixelSize.ToString(CultureInfo.InvariantCulture));
+
+                if (!string.IsNullOrEmpty(parameters.TargetName) || !string.IsNullOrWhiteSpace(parameters.TargetName)) {
+                    header.AddImageProperty(XISFImageProperty.Observation.Object.Name, parameters.TargetName, "Name of the object of interest");
+                }
 
                 if (telescopeInfo.Connected) {
                     header.AddImageProperty(XISFImageProperty.Instrument.Telescope.Name, telescopeInfo.Name);
