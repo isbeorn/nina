@@ -822,10 +822,8 @@ namespace NINA.ViewModel {
                     f.AddHeaderCard("OBJCTDEC", Astrometry.DegreesToFitsDMS(telescopeInfo.Declination), "");
                 }
 
-                var temp = cameraInfo.Temperature;
-                if (!double.IsNaN(temp)) {
-                    f.AddHeaderCard("TEMPERAT", temp, "");
-                    f.AddHeaderCard("CCD-TEMP", temp, "");
+                if (!double.IsNaN(cameraInfo.Temperature)) {
+                    f.AddHeaderCard("CCD-TEMP", cameraInfo.Temperature, "");
                 }
 
                 if (focuserInfo.Connected) {
