@@ -811,6 +811,11 @@ namespace NINA.ViewModel {
                 }
                 f.AddHeaderCard("EGAIN", cameraInfo.Gain, "");
 
+                if (cameraInfo.Offset >= 0) {
+                    /* SharpCap */
+                    f.AddHeaderCard("OFFSET", cameraInfo.Offset, "");
+                }
+
                 if (!string.IsNullOrEmpty(parameters.TargetName) || !string.IsNullOrWhiteSpace(parameters.TargetName)) {
                     f.AddHeaderCard("OBJECT", parameters.TargetName, "Name of the object of interest");
                 }
@@ -946,12 +951,12 @@ namespace NINA.ViewModel {
                 header.AddImageProperty(XISFImageProperty.Instrument.Camera.Name, cameraInfo.Name);
 
                 if (cameraInfo.Gain > 0) {
-                    /* Add offset as a comment. There is no dedicated keyword for this */
-                    string offset = string.Empty;
-                    if (cameraInfo.Offset > 0) {
-                        offset = cameraInfo.Offset.ToString(CultureInfo.InvariantCulture);
-                    }
-                    header.AddImageProperty(XISFImageProperty.Instrument.Camera.Gain, cameraInfo.Gain.ToString(CultureInfo.InvariantCulture), offset);
+                    header.AddImageProperty(XISFImageProperty.Instrument.Camera.Gain, cameraInfo.Gain.ToString(CultureInfo.InvariantCulture));
+                }
+
+                if (cameraInfo.Offset >= 0) {
+                    /* SharpCap */
+                    header.AddImageFITSKeyword("OFFSET", cameraInfo.Offset.ToString(CultureInfo.InvariantCulture), "");
                 }
 
                 if (cameraInfo.BinX > 0) {
