@@ -811,7 +811,7 @@ namespace NINA.ViewModel {
                 }
                 f.AddHeaderCard("EGAIN", cameraInfo.Gain, "");
 
-                if (telescopeInfo != null) {
+                if (telescopeInfo.Connected) {
                     f.AddHeaderCard("RA", Astrometry.HoursToDegrees(telescopeInfo.RightAscension), "[deg] Telescope pointing RA");
                     f.AddHeaderCard("DEC", telescopeInfo.Declination, "[deg] Telescope pointing DEC");
                     f.AddHeaderCard("OBJCTRA", Astrometry.HoursToFitsHMS(telescopeInfo.RightAscension), "");
@@ -921,7 +921,7 @@ namespace NINA.ViewModel {
                 header.AddImageProperty(XISFImageProperty.Instrument.Sensor.XPixelSize, profileService.ActiveProfile.CameraSettings.PixelSize.ToString(CultureInfo.InvariantCulture));
                 header.AddImageProperty(XISFImageProperty.Instrument.Sensor.YPixelSize, profileService.ActiveProfile.CameraSettings.PixelSize.ToString(CultureInfo.InvariantCulture));
 
-                if (telescopeInfo != null) {
+                if (telescopeInfo.Connected) {
                     header.AddImageProperty(XISFImageProperty.Instrument.Telescope.Name, telescopeInfo.Name);
 
                     /* Location */
