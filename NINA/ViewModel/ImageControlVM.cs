@@ -792,11 +792,11 @@ namespace NINA.ViewModel {
                     if (!string.IsNullOrEmpty(filterWheelInfo.Name) && !string.IsNullOrWhiteSpace(filterWheelInfo.Name)) {
                         /* fits4win */
                         f.AddHeaderCard("FWHEEL", filterWheelInfo.Name, "");
-                    }
-                }
 
-                if (!string.IsNullOrEmpty(parameters.FilterName)) {
-                    f.AddHeaderCard("FILTER", parameters.FilterName, "");
+                        if (!string.IsNullOrEmpty(parameters.FilterName)) {
+                            f.AddHeaderCard("FILTER", parameters.FilterName, "");
+                        }
+                    }
                 }
 
                 if (!string.IsNullOrEmpty(cameraInfo.Name)) {
@@ -1032,11 +1032,11 @@ namespace NINA.ViewModel {
                     if (!string.IsNullOrEmpty(filterWheelInfo.Name) && !string.IsNullOrWhiteSpace(filterWheelInfo.Name)) {
                         /* fits4win */
                         header.AddImageFITSKeyword("FWHEEL", filterWheelInfo.Name, "");
-                    }
-                }
 
-                if (!string.IsNullOrEmpty(parameters.FilterName)) {
-                    header.AddImageProperty(XISFImageProperty.Instrument.Filter.Name, parameters.FilterName);
+                        if (!string.IsNullOrEmpty(parameters.FilterName)) {
+                            header.AddImageProperty(XISFImageProperty.Instrument.Filter.Name, parameters.FilterName);
+                        }
+                    }
                 }
 
                 header.AddImageProperty(XISFImageProperty.Instrument.ExposureTime, parameters.ExposureTime.ToString(System.Globalization.CultureInfo.InvariantCulture));
