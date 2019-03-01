@@ -388,7 +388,7 @@ namespace NINA.Utility {
                 public static readonly string Namespace = Observation.Namespace + "Object:";
                 public static readonly string[] Dec = { Namespace + nameof(Dec), "Float64" };
                 public static readonly string[] RA = { Namespace + nameof(RA), "Float64" };
-                public static readonly string[] Name = { Namespace + nameof(Name), "String" };
+                public static readonly string[] Name = { Namespace + nameof(Name), "String", "OBJECT" };
             }
 
             public static class Time {

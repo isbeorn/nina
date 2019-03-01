@@ -792,11 +792,11 @@ namespace NINA.ViewModel {
                     if (!string.IsNullOrEmpty(filterWheelInfo.Name) && !string.IsNullOrWhiteSpace(filterWheelInfo.Name)) {
                         /* fits4win */
                         f.AddHeaderCard("FWHEEL", filterWheelInfo.Name, "");
-                    }
-                }
 
-                if (!string.IsNullOrEmpty(parameters.FilterName)) {
-                    f.AddHeaderCard("FILTER", parameters.FilterName, "");
+                        if (!string.IsNullOrEmpty(parameters.FilterName)) {
+                            f.AddHeaderCard("FILTER", parameters.FilterName, "");
+                        }
+                    }
                 }
 
                 if (!string.IsNullOrEmpty(cameraInfo.Name)) {
@@ -811,17 +811,24 @@ namespace NINA.ViewModel {
                 }
                 f.AddHeaderCard("EGAIN", cameraInfo.Gain, "");
 
-                if (telescopeInfo != null) {
+                if (cameraInfo.Offset >= 0) {
+                    /* SharpCap */
+                    f.AddHeaderCard("OFFSET", cameraInfo.Offset, "");
+                }
+
+                if (!string.IsNullOrEmpty(parameters.TargetName) || !string.IsNullOrWhiteSpace(parameters.TargetName)) {
+                    f.AddHeaderCard("OBJECT", parameters.TargetName, "Name of the object of interest");
+                }
+
+                if (telescopeInfo.Connected) {
                     f.AddHeaderCard("RA", Astrometry.HoursToDegrees(telescopeInfo.RightAscension), "[deg] Telescope pointing RA");
                     f.AddHeaderCard("DEC", telescopeInfo.Declination, "[deg] Telescope pointing DEC");
                     f.AddHeaderCard("OBJCTRA", Astrometry.HoursToFitsHMS(telescopeInfo.RightAscension), "");
                     f.AddHeaderCard("OBJCTDEC", Astrometry.DegreesToFitsDMS(telescopeInfo.Declination), "");
                 }
 
-                var temp = cameraInfo.Temperature;
-                if (!double.IsNaN(temp)) {
-                    f.AddHeaderCard("TEMPERAT", temp, "");
-                    f.AddHeaderCard("CCD-TEMP", temp, "");
+                if (!double.IsNaN(cameraInfo.Temperature)) {
+                    f.AddHeaderCard("CCD-TEMP", cameraInfo.Temperature, "");
                 }
 
                 if (focuserInfo.Connected) {
@@ -921,7 +928,11 @@ namespace NINA.ViewModel {
                 header.AddImageProperty(XISFImageProperty.Instrument.Sensor.XPixelSize, profileService.ActiveProfile.CameraSettings.PixelSize.ToString(CultureInfo.InvariantCulture));
                 header.AddImageProperty(XISFImageProperty.Instrument.Sensor.YPixelSize, profileService.ActiveProfile.CameraSettings.PixelSize.ToString(CultureInfo.InvariantCulture));
 
-                if (telescopeInfo != null) {
+                if (!string.IsNullOrEmpty(parameters.TargetName) || !string.IsNullOrWhiteSpace(parameters.TargetName)) {
+                    header.AddImageProperty(XISFImageProperty.Observation.Object.Name, parameters.TargetName, "Name of the object of interest");
+                }
+
+                if (telescopeInfo.Connected) {
                     header.AddImageProperty(XISFImageProperty.Instrument.Telescope.Name, telescopeInfo.Name);
 
                     /* Location */
@@ -940,12 +951,12 @@ namespace NINA.ViewModel {
                 header.AddImageProperty(XISFImageProperty.Instrument.Camera.Name, cameraInfo.Name);
 
                 if (cameraInfo.Gain > 0) {
-                    /* Add offset as a comment. There is no dedicated keyword for this */
-                    string offset = string.Empty;
-                    if (cameraInfo.Offset > 0) {
-                        offset = cameraInfo.Offset.ToString(CultureInfo.InvariantCulture);
-                    }
-                    header.AddImageProperty(XISFImageProperty.Instrument.Camera.Gain, cameraInfo.Gain.ToString(CultureInfo.InvariantCulture), offset);
+                    header.AddImageProperty(XISFImageProperty.Instrument.Camera.Gain, cameraInfo.Gain.ToString(CultureInfo.InvariantCulture));
+                }
+
+                if (cameraInfo.Offset >= 0) {
+                    /* SharpCap */
+                    header.AddImageFITSKeyword("OFFSET", cameraInfo.Offset.ToString(CultureInfo.InvariantCulture), "");
                 }
 
                 if (cameraInfo.BinX > 0) {
@@ -1024,11 +1035,11 @@ namespace NINA.ViewModel {
                     if (!string.IsNullOrEmpty(filterWheelInfo.Name) && !string.IsNullOrWhiteSpace(filterWheelInfo.Name)) {
                         /* fits4win */
                         header.AddImageFITSKeyword("FWHEEL", filterWheelInfo.Name, "");
-                    }
-                }
 
-                if (!string.IsNullOrEmpty(parameters.FilterName)) {
-                    header.AddImageProperty(XISFImageProperty.Instrument.Filter.Name, parameters.FilterName);
+                        if (!string.IsNullOrEmpty(parameters.FilterName)) {
+                            header.AddImageProperty(XISFImageProperty.Instrument.Filter.Name, parameters.FilterName);
+                        }
+                    }
                 }
 
                 header.AddImageProperty(XISFImageProperty.Instrument.ExposureTime, parameters.ExposureTime.ToString(System.Globalization.CultureInfo.InvariantCulture));
