@@ -50,7 +50,7 @@
 - Log Level will now be set on application start based on profile settings.
 - ASI Cameras will not shut down their cooling and progress on opening multiple instances of NINA
 - In some cases the application stayed open in the background after closing. This should not happen anymore
-- `$$DATETime$$ and `$$TIME$$` will now use timestamp on exposure start, not on exposure end
+- `$$DATETime$$` and `$$TIME$$` will now use timestamp on exposure start, not on exposure end
 - Fixed Meridian Offset default values for plate solved polar alignment 
 
 ## Improvements
@@ -92,6 +92,7 @@
 - Additional FITS keywords are now added to images if their associated data is available:
 	- `OBJECT`: The name of the target, as supplied in the active Sequence
 	- `DEC` and `RA`: The DEC and RA of the telescope at the time of the exposure
+	- `INSTRUME`: The name of the connected camera
 	- `OFFSET`: The sensor offset, if applicable
 	- `FWHEEL`: Name of the connected filter wheel
 	- `FOCNAME`: Name of the connected focuser
