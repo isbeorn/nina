@@ -50,7 +50,7 @@
 - Log Level will now be set on application start based on profile settings.
 - ASI Cameras will not shut down their cooling and progress on opening multiple instances of NINA
 - In some cases the application stayed open in the background after closing. This should not happen anymore
-- $$DATETime$$ and $$TIME$$ will now use timestamp on exposure start, not on exposure end
+- `$$DATETime$$` and `$$TIME$$` will now use timestamp on exposure start, not on exposure end
 - Fixed Meridian Offset default values for plate solved polar alignment 
 
 ## Improvements
@@ -81,6 +81,7 @@
 	- Control to adjust opacity of framing box
 - Improved Framing Assistant and Sequence Target Textboxes by giving up to 50 target hints based on input to select from
 - Framing Assistant now can annotate DSO
+- Sensor offset is now available as an image file name token (`$$OFFSET$$`)
 - Attempt to start PHD2 and connect all equipment when connecting to guider and PHD2 is not running
 - Adaptive Cooling: Duration for cool/warm camera is now a minimum duration. In case the cooler cannot keep up with the set duration, the application will wait for the camera to reach the checkpoints instead of just continuing setting new targets without the camera having any chance to reach those in the timeframe.
 - Automatically import filter wheel filters to the profile on connection when profile filter list is still empty
@@ -88,6 +89,20 @@
 - Removed Altitude Side combobox from plate solved polar alignment. It will be automatically determined based on alt/az coordinates.
 - Changed log file format. Each application start will write to a separate log file for better distinction
 - Improved XISF save speed and resulting file size by not embedding the image as base64 string, but instead as attached raw byte data
+- Additional FITS keywords are now added to images if their associated data is available:
+	- `OBJECT`: The name of the target, as supplied in the active Sequence
+	- `DEC` and `RA`: The DEC and RA of the telescope at the time of the exposure
+	- `INSTRUME`: The name of the connected camera
+	- `OFFSET`: The sensor offset, if applicable
+	- `FWHEEL`: Name of the connected filter wheel
+	- `FOCNAME`: Name of the connected focuser
+	- `FOCPOS` and `FOCUSPOS`: Position of the focuser, in steps
+	- `FOCUSSZ`: Size of a focuser step, in microns
+	- `FOCTEMP` and `FOCUSTEM`: Temperature reported by the focuser
+	- `ROTNAME` Name of the connected rotator
+	- `ROTATOR` and `ROTATANG`: Angle of the rotator
+	- `ROTSTPSZ` Minimum rotator step size, in degrees
+	- Applicable XISF Image Property analogs of the above, as defined by XISF 1.0 Section 11.5.3
 
 ## Special Thanks
 The N.I.N.A. team would like to thank 
@@ -127,7 +142,7 @@ ___
 - Battery display for DSLRs
 
 ### Settings
-- Added ImageParameter $$RMSARCSEC$$ and $$FOCUSPOSITION$$
+- Added ImageParameter `$$RMSARCSEC$$` and `$$FOCUSPOSITION$$`
 - Latitude and Longitude can now be synced from application to telescope and vica versa (when supported).
 - Serial Relay (via USB) interaction for Nikon Bulb
 
