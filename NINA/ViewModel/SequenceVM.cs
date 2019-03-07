@@ -436,17 +436,27 @@ namespace NINA.ViewModel {
                 _pauseTokenSource = new PauseTokenSource();
                 IsPaused = false;
                 IsRunning = true;
-                autoUpdateTimer.Stop();
-                foreach (CaptureSequenceList csl in this.Targets) {
-                    try {
-                        csl.IsFinished = false;
-                        csl.IsRunning = true;
-                        Sequence = csl;
-                        await StartSequence(csl, _canceltoken.Token, _pauseTokenSource.Token, progress);
-                        csl.IsFinished = true;
-                    } finally {
-                        csl.IsRunning = false;
-                    }
+                if (this.Targets.Count > 0) {
+                    autoUpdateTimer.Stop();
+                    var iterator = 0;
+                    do {
+                        var csl = this.Targets[iterator];
+                        try {
+                            csl.IsFinished = false;
+                            csl.IsRunning = true;
+                            Sequence = csl;
+                            await StartSequence(csl, _canceltoken.Token, _pauseTokenSource.Token, progress);
+                            csl.IsFinished = true;
+                        } finally {
+                            csl.IsRunning = false;
+
+                            //Check if current target was not removed during pause
+                            if (this.Targets.Contains(csl)) {
+                                //Check the current index of current target (for the case that a previous target was removed during pause) and increment by one
+                                iterator = this.Targets.IndexOf(csl) + 1;
+                            }
+                        }
+                    } while (iterator < this.Targets.Count);
                 }
             } catch (OperationCanceledException) {
             } finally {
