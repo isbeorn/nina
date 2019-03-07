@@ -87,6 +87,7 @@ namespace NINATest {
             Assert.AreEqual(vm, focuserMediator.Consumer);
             Assert.AreEqual(vm, filterWheelMediator.Consumer);
             Assert.AreEqual(vm, rotatorMediator.Consumer);
+            Assert.AreEqual(vm, guiderMediator.Consumer);
         }
 
         [Test]
@@ -796,8 +797,10 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
+        public IGuiderConsumer Consumer;
+
         public void RegisterConsumer(IGuiderConsumer consumer) {
-            throw new NotImplementedException();
+            this.Consumer = consumer;
         }
 
         public void RegisterHandler(IGuiderVM handler) {

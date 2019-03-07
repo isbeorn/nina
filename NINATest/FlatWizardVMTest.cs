@@ -97,7 +97,7 @@ namespace NINATest {
             flatWizardSettingsMock.Verify(m => m.FlatCount, Times.AtMost(2));
             flatWizardSettingsMock.Verify(m => m.BinningMode, Times.AtMost(2));
 
-            filterWheelSettingsMock.Verify(m => m.FilterWheelFilters, Times.Once);
+            filterWheelSettingsMock.Verify(m => m.FilterWheelFilters, Times.AtMost(2));
 
             cameraMediatorMock.Verify(m => m.RegisterConsumer(sut), Times.Once);
 
