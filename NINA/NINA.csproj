@@ -750,13 +750,16 @@
     <Compile Include="View\MeridianFlipView.xaml.cs">
       <DependentUpon>MeridianFlipView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\OptionsImagingView.xaml.cs">
+    <Compile Include="View\Options\EquipmentView.xaml.cs">
+      <DependentUpon>EquipmentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Options\OptionsImagingView.xaml.cs">
       <DependentUpon>OptionsImagingView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\OptionsPlateSolverView.xaml.cs">
+    <Compile Include="View\Options\OptionsPlateSolverView.xaml.cs">
       <DependentUpon>OptionsPlateSolverView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\OptionsView.xaml.cs">
+    <Compile Include="View\Options\OptionsView.xaml.cs">
       <DependentUpon>OptionsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\OverView.xaml.cs">
@@ -1120,15 +1123,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\OptionsImagingView.xaml">
+    <Page Include="View\Options\EquipmentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\OptionsPlateSolverView.xaml">
+    <Page Include="View\Options\OptionsImagingView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\OptionsView.xaml">
+    <Page Include="View\Options\OptionsPlateSolverView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Options\OptionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
