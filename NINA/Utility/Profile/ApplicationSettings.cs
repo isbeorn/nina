@@ -46,7 +46,7 @@ namespace NINA.Utility.Profile {
             language = new CultureInfo("en-GB");
             logLevel = LogLevelEnum.ERROR;
             databaseLocation = @"%localappdata%\NINA\NINA.sqlite";
-            devicePollingInterval = 0.5;
+            devicePollingInterval = 2;
             skyAtlasImageRepository = string.Empty;
             skySurveyCacheDirectory = Path.Combine(Utility.APPLICATIONTEMPPATH, "FramingAssistantCache");
         }
