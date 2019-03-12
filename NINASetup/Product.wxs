@@ -57,8 +57,8 @@
       <ComponentRef Id="LogsFolderComponent" />
 
       <ComponentGroupRef Id="Database" />
-      <ComponentGroupRef Id="Documentation_images_files" />
-      <ComponentGroupRef Id="Documentation_files" />
+      <!--<ComponentGroupRef Id="Documentation_images_files" />
+      <ComponentGroupRef Id="Documentation_files" />-->
       <ComponentGroupRef Id="External_x64_ASI_files" />
       <ComponentGroupRef Id="External_x64_Atik_files" />
       <ComponentGroupRef Id="External_x64_QHY_files" />
@@ -133,9 +133,9 @@
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="$(var.PlatformProgramFilesFolder)">
         <Directory Id="INSTALLFOLDER" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy">
-          <Directory Id="Documentation" Name="Documentation">
+          <!--<Directory Id="Documentation" Name="Documentation">
             <Directory Id="Documentation_images" Name="images" />
-          </Directory>
+          </Directory>-->
           <Directory Id="External" Name="External">
             <Directory Id="External_x64" Name="x64">
               <Directory Id="External_x64_ASI" Name="ASI" />
@@ -383,7 +383,7 @@
       </Component>
     </ComponentGroup>
   </Fragment>
-  <Fragment>
+  <!--<Fragment>
     <ComponentGroup Id="Documentation_images_files" Directory="Documentation_images">
       <Component Win64="$(var.Win64)" Id="Documentation_images_nina_logo.png" Guid="6442988e-c67a-4438-ba88-8dc6d333f6aa">
         <File Id="Documentation_images_nina_logo.png" Name="nina-logo.png" Source="$(var.NINA_TargetDir)Documentation\images\nina-logo.png" />
@@ -570,11 +570,8 @@
       <Component Win64="$(var.Win64)" Id="Documentation_NINA.html" Guid="8be1a4d2-6812-400c-9a78-f875df6266dd">
         <File Id="Documentation_NINA.html" Name="NINA.html" Source="$(var.NINA_TargetDir)Documentation\NINA.html" />
       </Component>
-      <!--<Component Win64="$(var.Win64)" Id="Documentation_table_of_contents.html" Guid="9b93d516-6254-4f91-ae4e-375589ed582b">
-        <File Id="Documentation_table_of_contents.html" Name="table-of-contents.html" Source="$(var.NINA_TargetDir)Documentation\table-of-contents.html" />
-      </Component>-->
     </ComponentGroup>
-  </Fragment>
+  </Fragment>-->
 
   <Fragment>
     <ComponentGroup Id="External_x64_ASI_files" Directory="External_x64_ASI">

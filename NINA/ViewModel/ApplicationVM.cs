@@ -112,14 +112,8 @@ namespace NINA.ViewModel {
             return VersionCheckVM.CheckUpdate();
         }
 
-        private static string NINAMANUAL = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Documentation", "NINA.html");
-
         private void OpenManual(object o) {
-            if (File.Exists(NINAMANUAL)) {
-                System.Diagnostics.Process.Start(NINAMANUAL);
-            } else {
-                Notification.ShowError(Locale.Loc.Instance["LblManualNotFound"]);
-            }
+            System.Diagnostics.Process.Start("https://nighttime-imaging.eu/docs/documentation/");
         }
 
         public void InitAvalonDockLayout() {
