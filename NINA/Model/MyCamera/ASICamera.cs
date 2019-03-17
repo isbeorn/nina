@@ -140,7 +140,8 @@ namespace NINA.Model.MyCamera {
             }
             set {
                 if (CanSetTemperature) {
-                    if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP, (int)value)) {
+                    var nearest = (int)Math.Round(value);
+                    if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP, nearest)) {
                         RaisePropertyChanged();
                     }
                 }
