@@ -84,7 +84,7 @@ namespace NINA.ViewModel {
 
         private async Task WaitForTargetTemperatureStep(double targetTemperatureStep, double percentage, CancellationToken token) {
             var interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
-            var threshold = 0.5;
+            var threshold = 1;
             double temperature = 0.0;
             while (Math.Abs((temperature = Cam.Temperature) - targetTemperatureStep) > threshold) {
                 applicationStatusMediator.StatusUpdate(
@@ -109,7 +109,7 @@ namespace NINA.ViewModel {
             _remainingDuration = _remainingDuration - ((double)delta.TotalMilliseconds / (1000 * 60));
             if (_remainingDuration < 0) { _remainingDuration = 0; }
 
-            return GetY(_startPoint, _endPoint, new Vector2(-_startPoint.X, _startPoint.Y), _remainingDuration);
+            return GetY(_startPoint, _endPoint, _remainingDuration);
         }
 
         private async Task SetNextTemperatureStep(IProgress<double> progress, CancellationToken token) {
@@ -117,9 +117,12 @@ namespace NINA.ViewModel {
 
             Cam.TemperatureSetPoint = targetTemperatureStep;
 
+            targetTemperatureStep = Cam.TemperatureSetPoint;
+
             var percentage = 1 - (_remainingDuration / _initalDuration);
 
-            await WaitForTargetTemperatureStep(targetTemperatureStep, percentage, token);
+            //Use the camera set point here (some cameras like the ASI cameras can only set integer values and lose precision)
+            await WaitForTargetTemperatureStep(Cam.TemperatureSetPoint, percentage, token);
 
             progress.Report(percentage);
 
