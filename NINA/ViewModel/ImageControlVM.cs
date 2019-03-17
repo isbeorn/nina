@@ -785,8 +785,8 @@ namespace NINA.ViewModel {
                 f.AddHeaderCard("FOCALLEN", profileService.ActiveProfile.TelescopeSettings.FocalLength, "");
                 f.AddHeaderCard("XPIXSZ", profileService.ActiveProfile.CameraSettings.PixelSize, "");
                 f.AddHeaderCard("YPIXSZ", profileService.ActiveProfile.CameraSettings.PixelSize, "");
-                f.AddHeaderCard("SITELAT", Astrometry.HoursToHMS(profileService.ActiveProfile.AstrometrySettings.Latitude), "");
-                f.AddHeaderCard("SITELONG", Astrometry.HoursToHMS(profileService.ActiveProfile.AstrometrySettings.Longitude), "");
+                f.AddHeaderCard("SITELAT", profileService.ActiveProfile.AstrometrySettings.Latitude, "Observation site latitude");
+                f.AddHeaderCard("SITELONG", profileService.ActiveProfile.AstrometrySettings.Longitude, "Observation site longitude");
 
                 if (filterWheelInfo.Connected) {
                     if (!string.IsNullOrEmpty(filterWheelInfo.Name) && !string.IsNullOrWhiteSpace(filterWheelInfo.Name)) {
@@ -922,7 +922,8 @@ namespace NINA.ViewModel {
                 header.AddImageMetaData(ImgArr, parameters.ImageType);
 
                 header.AddImageProperty(XISFImageProperty.Observation.Time.Start, DateTime.UtcNow.ToString("s", System.Globalization.CultureInfo.InvariantCulture));
-                header.AddImageProperty(XISFImageProperty.Observation.Location.Latitude, profileService.ActiveProfile.AstrometrySettings.Latitude.ToString(CultureInfo.InvariantCulture));
+                header.AddImageProperty(XISFImageProperty.Observation.Location.Latitude, profileService.ActiveProfile.AstrometrySettings.Latitude.ToString(CultureInfo.InvariantCulture), "Observation site latitude");
+                header.AddImageProperty(XISFImageProperty.Observation.Location.Latitude, profileService.ActiveProfile.AstrometrySettings.Latitude.ToString(CultureInfo.InvariantCulture), "Observation site longitude");
                 header.AddImageProperty(XISFImageProperty.Observation.Location.Longitude, profileService.ActiveProfile.AstrometrySettings.Longitude.ToString(CultureInfo.InvariantCulture));
                 header.AddImageProperty(XISFImageProperty.Instrument.Telescope.FocalLength, profileService.ActiveProfile.TelescopeSettings.FocalLength.ToString(CultureInfo.InvariantCulture));
                 header.AddImageProperty(XISFImageProperty.Instrument.Sensor.XPixelSize, profileService.ActiveProfile.CameraSettings.PixelSize.ToString(CultureInfo.InvariantCulture));
