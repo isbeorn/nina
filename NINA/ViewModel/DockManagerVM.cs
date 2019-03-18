@@ -87,6 +87,7 @@ namespace NINA.ViewModel {
         public void LoadAvalonDockLayout(object o) {
             if (!_dockloaded) {
                 _dockmanager = (Xceed.Wpf.AvalonDock.DockingManager)o;
+
                 var serializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
                 serializer.LayoutSerializationCallback += (s, args) => {
                     args.Content = args.Content;
