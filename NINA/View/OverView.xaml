@@ -203,7 +203,7 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
 
-            <dock:DockingManager.Resources>
+            <!--<dock:DockingManager.Resources>
                 <DataTemplate DataType="{x:Type vm:CameraVM}">
                     <view:AnchorableCameraView />
                 </DataTemplate>
@@ -271,9 +271,9 @@
                 <DataTemplate DataType="{x:Type vm:AutoFocusVM}">
                     <view:AnchorableAutoFocusView />
                 </DataTemplate>
-            </dock:DockingManager.Resources>
+            </dock:DockingManager.Resources>-->
 
-            <!--<dock:DockingManager.LayoutItemTemplateSelector>
+            <dock:DockingManager.LayoutItemTemplateSelector>
                 <util:PaneTemplateSelector>
                     <util:PaneTemplateSelector.CameraTemplate>
                         <DataTemplate>
@@ -376,7 +376,7 @@
                         </DataTemplate>
                     </util:PaneTemplateSelector.AutoFocusTemplate>
                 </util:PaneTemplateSelector>
-            </dock:DockingManager.LayoutItemTemplateSelector>-->
+            </dock:DockingManager.LayoutItemTemplateSelector>
 
             <dock:DockingManager.LayoutItemContainerStyleSelector>
                 <util:PaneStyleSelector>
