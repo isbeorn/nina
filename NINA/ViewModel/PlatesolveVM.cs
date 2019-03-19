@@ -466,6 +466,8 @@ namespace NINA.ViewModel {
                     type = PlateSolverEnum.LOCAL;
                 } else if (profileService.ActiveProfile.PlateSolveSettings.BlindSolverType == BlindSolverEnum.ASPS) {
                     type = PlateSolverEnum.ASPS;
+                } else if (profileService.ActiveProfile.PlateSolveSettings.BlindSolverType == BlindSolverEnum.ASTAP) {
+                    type = PlateSolverEnum.ASTAP;
                 } else {
                     type = PlateSolverEnum.ASTROMETRY_NET;
                 }

@@ -90,6 +90,24 @@ namespace NINA.PlateSolving {
                         profileService.ActiveProfile.PlateSolveSettings.AspsLocation
                     );
                 }
+            } else if (solver == PlateSolverEnum.ASTAP) {
+                if (profileService.ActiveProfile.PlateSolveSettings.SearchRadius > 0 && coords != null) {
+                    Platesolver = new ASTAPSolver(
+                        profileService.ActiveProfile.TelescopeSettings.FocalLength,
+                        profileService.ActiveProfile.CameraSettings.PixelSize * binning,
+                        width,
+                        profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
+                        coords,
+                        profileService.ActiveProfile.PlateSolveSettings.ASTAPLocation
+                    );
+                } else {
+                    Platesolver = new ASTAPSolver(
+                        profileService.ActiveProfile.TelescopeSettings.FocalLength,
+                        profileService.ActiveProfile.CameraSettings.PixelSize * binning,
+                        width,
+                        profileService.ActiveProfile.PlateSolveSettings.ASTAPLocation
+                    );
+                }
             }
 
             return Platesolver;

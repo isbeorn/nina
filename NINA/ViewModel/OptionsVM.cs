@@ -56,6 +56,7 @@ namespace NINA.ViewModel {
             OpenPS2FileDiagCommand = new RelayCommand(OpenPS2FileDiag);
             OpenPHD2DiagCommand = new RelayCommand(OpenPHD2FileDiag);
             OpenASPSFileDiagCommand = new RelayCommand(OpenASPSFileDiag);
+            OpenASTAPFileDiagCommand = new RelayCommand(OpenASTAPFileDiag);
             ToggleColorsCommand = new RelayCommand(ToggleColors);
             DownloadIndexesCommand = new RelayCommand(DownloadIndexes);
             OpenSkyAtlasImageRepositoryDiagCommand = new RelayCommand(OpenSkyAtlasImageRepositoryDiag);
@@ -309,6 +310,13 @@ namespace NINA.ViewModel {
             }
         }
 
+        private void OpenASTAPFileDiag(object o) {
+            var dialog = GetFilteredFileDialog(profileService.ActiveProfile.PlateSolveSettings.ASTAPLocation, "astap.exe", "ASTAP|astap.exe");
+            if (dialog.ShowDialog() == true) {
+                ASTAPLocation = dialog.FileName;
+            }
+        }
+
         private Microsoft.Win32.OpenFileDialog GetFilteredFileDialog(string path, string filename, string filter) {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
 
@@ -356,6 +364,8 @@ namespace NINA.ViewModel {
         public ICommand OpenPS2FileDiagCommand { get; private set; }
 
         public ICommand OpenASPSFileDiagCommand { get; private set; }
+
+        public ICommand OpenASTAPFileDiagCommand { get; private set; }
 
         public ICommand OpenImageFileDiagCommand { get; private set; }
 
@@ -622,6 +632,16 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.PlateSolveSettings.AspsLocation = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string ASTAPLocation {
+            get {
+                return profileService.ActiveProfile.PlateSolveSettings.ASTAPLocation;
+            }
+            set {
+                profileService.ActiveProfile.PlateSolveSettings.ASTAPLocation = value;
                 RaisePropertyChanged();
             }
         }

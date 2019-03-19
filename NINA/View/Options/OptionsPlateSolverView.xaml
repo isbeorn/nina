@@ -203,6 +203,9 @@
                                     <DataTrigger Binding="{Binding ElementName=PART_PlateSolverList, Path=SelectedIndex}" Value="3">
                                         <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=PART_PlateSolverList, Path=SelectedIndex}" Value="4">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Grid.Style>
@@ -252,6 +255,9 @@
                                         <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding ElementName=PART_PlateSolverList, Path=SelectedIndex}" Value="3">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=PART_PlateSolverList, Path=SelectedIndex}" Value="4">
                                         <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -376,6 +382,9 @@
                                     <DataTrigger Binding="{Binding ElementName=PART_PlateSolverList, Path=SelectedIndex}" Value="3">
                                         <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=PART_PlateSolverList, Path=SelectedIndex}" Value="4">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Grid.Style>
@@ -468,6 +477,9 @@
                                     <DataTrigger Binding="{Binding ElementName=PART_PlateSolverList, Path=SelectedIndex}" Value="2">
                                         <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=PART_PlateSolverList, Path=SelectedIndex}" Value="4">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Grid.Style>
@@ -508,6 +520,101 @@
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
                                     Command="{Binding OpenASPSFileDiagCommand}">
+                                    <Path
+                                        Margin="4,17,4,4"
+                                        Data="{StaticResource DotsSVG}"
+                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                        Stretch="Uniform" />
+                                </Button>
+                            </Grid>
+                            <UniformGrid Columns="2">
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock
+                                        Width="130"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblSearchRadius}" />
+                                    <TextBox
+                                        MinWidth="80"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Center">
+                                        <TextBox.Text>
+                                            <Binding Path="AnsvrSearchRadius" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:GreaterZeroRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                </UniformGrid>
+                            </UniformGrid>
+                        </StackPanel>
+                    </Grid>
+
+                    <!--  ASTAP  -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.Style>
+                            <Style TargetType="{x:Type Grid}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=PART_PlateSolverList, Path=SelectedIndex}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=PART_PlateSolverList, Path=SelectedIndex}" Value="1">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=PART_PlateSolverList, Path=SelectedIndex}" Value="2">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ElementName=PART_PlateSolverList, Path=SelectedIndex}" Value="3">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <StackPanel Orientation="Vertical">
+                            <Grid Margin="0,6,0,6" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock
+                                    Width="130"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblASTAPDirectory}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    Grid.ColumnSpan="2"
+                                    MinWidth="130"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center">
+                                    <TextBox.Text>
+                                        <Binding Path="ASTAPLocation" UpdateSourceTrigger="LostFocus">
+                                            <Binding.ValidationRules>
+                                                <rules:DirectoryExistsRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
+
+                                <Button
+                                    Grid.Column="3"
+                                    Width="30"
+                                    Height="30"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding OpenASTAPFileDiagCommand}">
                                     <Path
                                         Margin="4,17,4,4"
                                         Data="{StaticResource DotsSVG}"

@@ -828,4 +828,7 @@ Berechneter HFR: {2}
     <s:String x:Key="LblBeta">Beta</s:String>
     <s:String x:Key="LblNightly">Nächtlich</s:String>
     <s:String x:Key="LblChecksumError">Checksumme entspricht nicht dem erwartetem Wert. Die heruntergeladene Datei ist möglicherweise beschädigt!</s:String>
+    <s:String x:Key="LblASTAP">ASTAP, the Astrometric STAcking Program, astrometric solver and FITS viewer</s:String>
+    <s:String x:Key="LblASTAPNotFound">ASTAP exe wurde nicht gefunden</s:String>
+    <s:String x:Key="LblASTAPDirectory">ASTAP Location</s:String>
 </ResourceDictionary>
