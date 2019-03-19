@@ -40,7 +40,7 @@ namespace NINA.Utility.Enum {
         [Description("LblASPS")]
         ASPS,
 
-        [Description("LblASTAP")]
+        [Description("LblASTAPShort")]
         ASTAP
     }
 }

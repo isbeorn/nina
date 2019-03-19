@@ -167,6 +167,7 @@
                 <ListView
                     x:Name="PART_PlateSolverList"
                     MinWidth="180"
+                    MaxWidth="250"
                     ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:PlateSolverEnum}}}"
                     SelectedIndex="0">
                     <ListView.Resources>
