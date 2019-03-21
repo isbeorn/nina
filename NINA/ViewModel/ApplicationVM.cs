@@ -85,6 +85,18 @@ namespace NINA.ViewModel {
             InitAvalonDockLayout();
 
             OptionsVM.PropertyChanged += OptionsVM_PropertyChanged;
+
+            profileService.ProfileChanged += ProfileService_ProfileChanged;
+        }
+
+        public IProfile ActiveProfile {
+            get {
+                return profileService.ActiveProfile;
+            }
+        }
+
+        private void ProfileService_ProfileChanged(object sender, EventArgs e) {
+            RaisePropertyChanged(nameof(ActiveProfile));
         }
 
         private async void OptionsVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {

@@ -270,10 +270,10 @@ namespace NINA.ViewModel {
 
         private void OpenImageFileDiag(object o) {
             var diag = new System.Windows.Forms.FolderBrowserDialog();
-            diag.SelectedPath = ImageFilePath;
+            diag.SelectedPath = ActiveProfile.ImageFileSettings.FilePath;
             System.Windows.Forms.DialogResult result = diag.ShowDialog();
             if (result == System.Windows.Forms.DialogResult.OK) {
-                ImageFilePath = diag.SelectedPath + "\\";
+                ActiveProfile.ImageFileSettings.FilePath = diag.SelectedPath + "\\";
             }
         }
 
@@ -285,7 +285,7 @@ namespace NINA.ViewModel {
             dialog.Filter = "XML documents|*.xml";
 
             if (dialog.ShowDialog() == true) {
-                SequenceTemplatePath = dialog.FileName;
+                ActiveProfile.SequenceSettings.TemplatePath = dialog.FileName;
             }
         }
 
@@ -484,36 +484,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        public string ImageFilePath {
-            get {
-                return profileService.ActiveProfile.ImageFileSettings.FilePath;
-            }
-            set {
-                profileService.ActiveProfile.ImageFileSettings.FilePath = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string SequenceTemplatePath {
-            get {
-                return profileService.ActiveProfile.SequenceSettings.TemplatePath;
-            }
-            set {
-                profileService.ActiveProfile.SequenceSettings.TemplatePath = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string ImageFilePattern {
-            get {
-                return profileService.ActiveProfile.ImageFileSettings.FilePattern;
-            }
-            set {
-                profileService.ActiveProfile.ImageFileSettings.FilePattern = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public string PHD2ServerUrl {
             get {
                 return profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl;
@@ -528,46 +498,6 @@ namespace NINA.ViewModel {
             get => profileService.ActiveProfile.GuiderSettings.PHD2Path;
             set {
                 profileService.ActiveProfile.GuiderSettings.PHD2Path = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double AutoStretchFactor {
-            get {
-                return profileService.ActiveProfile.ImageSettings.AutoStretchFactor;
-            }
-            set {
-                profileService.ActiveProfile.ImageSettings.AutoStretchFactor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double BlackClipping {
-            get {
-                return profileService.ActiveProfile.ImageSettings.BlackClipping;
-            }
-            set {
-                profileService.ActiveProfile.ImageSettings.BlackClipping = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public bool AnnotateImage {
-            get {
-                return profileService.ActiveProfile.ImageSettings.AnnotateImage;
-            }
-            set {
-                profileService.ActiveProfile.ImageSettings.AnnotateImage = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public bool DebayerImage {
-            get {
-                return profileService.ActiveProfile.ImageSettings.DebayerImage;
-            }
-            set {
-                profileService.ActiveProfile.ImageSettings.DebayerImage = value;
                 RaisePropertyChanged();
             }
         }
@@ -815,16 +745,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        public FileTypeEnum FileType {
-            get {
-                return profileService.ActiveProfile.ImageFileSettings.FileType;
-            }
-            set {
-                profileService.ActiveProfile.ImageFileSettings.FileType = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public Color ButtonBackgroundColor {
             get {
                 return profileService.ActiveProfile.ColorSchemaSettings.ButtonBackgroundColor;
@@ -993,56 +913,6 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.ColorSchemaSettings.AltButtonForegroundDisabledColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public bool AutoMeridianFlip {
-            get {
-                return profileService.ActiveProfile.MeridianFlipSettings.Enabled;
-            }
-            set {
-                profileService.ActiveProfile.MeridianFlipSettings.Enabled = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double MinutesAfterMeridian {
-            get {
-                return profileService.ActiveProfile.MeridianFlipSettings.MinutesAfterMeridian;
-            }
-            set {
-                profileService.ActiveProfile.MeridianFlipSettings.MinutesAfterMeridian = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double PauseTimeBeforeMeridian {
-            get {
-                return profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian;
-            }
-            set {
-                profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public int MeridianFlipSettleTime {
-            get {
-                return profileService.ActiveProfile.MeridianFlipSettings.SettleTime;
-            }
-            set {
-                profileService.ActiveProfile.MeridianFlipSettings.SettleTime = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public bool RecenterAfterFlip {
-            get {
-                return profileService.ActiveProfile.MeridianFlipSettings.Recenter;
-            }
-            set {
-                profileService.ActiveProfile.MeridianFlipSettings.Recenter = value;
                 RaisePropertyChanged();
             }
         }
@@ -1340,30 +1210,6 @@ namespace NINA.ViewModel {
             set {
                 profileService.ActiveProfile.CameraSettings.RawConverter = value;
                 RaisePropertyChanged();
-            }
-        }
-
-        public int HistogramResolution {
-            get {
-                return profileService.ActiveProfile.ImageSettings.HistogramResolution;
-            }
-            set {
-                profileService.ActiveProfile.ImageSettings.HistogramResolution = value;
-                RaisePropertyChanged();
-                RaisePropertyChanged(nameof(HistogramMajorStep));
-                RaisePropertyChanged(nameof(HistogramMinorStep));
-            }
-        }
-
-        public double HistogramMajorStep {
-            get {
-                return HistogramResolution / 2;
-            }
-        }
-
-        public double HistogramMinorStep {
-            get {
-                return HistogramResolution / 4;
             }
         }
 

@@ -26,11 +26,12 @@
     xmlns:ns="clr-namespace:NINA.Locale"
     xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
     xmlns:util="clr-namespace:NINA.Utility"
+    Name="UC"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
-    <UniformGrid Columns="2">
-        <GroupBox Header="{ns:Loc LblFileSettings}">
+    <UniformGrid Columns="2" DataContext="{Binding ActiveProfile}">
+        <GroupBox DataContext="{Binding ImageFileSettings}" Header="{ns:Loc LblFileSettings}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100" />
@@ -50,7 +51,7 @@
                     Text="{ns:Loc LblSaveImageAs}" />
                 <ComboBox
                     Grid.Column="1"
-                    ItemsSource="{Binding FileTypes}"
+                    ItemsSource="{Binding DataContext.FileTypes, ElementName=UC}"
                     SelectedItem="{Binding FileType}" />
                 <StackPanel
                     Grid.Row="1"
@@ -74,7 +75,7 @@
                     Grid.Row="2"
                     Grid.Column="1"
                     VerticalAlignment="Center"
-                    Text="{Binding ImageFilePath}" />
+                    Text="{Binding FilePath}" />
                 <Button
                     Grid.Row="2"
                     Grid.Column="2"
@@ -82,7 +83,7 @@
                     Height="30"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Command="{Binding OpenImageFileDiagCommand}">
+                    Command="{Binding DataContext.OpenImageFileDiagCommand, ElementName=UC}">
                     <Path
                         Margin="4,17,4,4"
                         Data="{StaticResource DotsSVG}"
@@ -104,7 +105,7 @@
                     DragEnter="TextBox_DragEnter"
                     Drop="TextBox_Drop"
                     PreviewDragOver="TextBox_PreviewDragOver"
-                    Text="{Binding ImageFilePattern}"
+                    Text="{Binding FilePattern}"
                     TextWrapping="Wrap" />
                 <Button
                     Grid.Row="3"
@@ -113,7 +114,7 @@
                     Height="30"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Command="{Binding PreviewFileCommand}">
+                    Command="{Binding DataContext.PreviewFileCommand, ElementName=UC}">
                     <Path
                         Margin="5"
                         Data="{StaticResource PreviewSVG}"
@@ -126,7 +127,7 @@
                     Grid.Row="4"
                     Grid.ColumnSpan="3"
                     Margin="0,5,0,0"
-                    ItemsSource="{Binding ImagePatterns.Items}">
+                    ItemsSource="{Binding DataContext.ImagePatterns.Items, ElementName=UC}">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn
@@ -150,7 +151,7 @@
             </Grid>
         </GroupBox>
         <StackPanel Orientation="Vertical">
-            <GroupBox Header="{ns:Loc LblAutoMeridianFlip}">
+            <GroupBox DataContext="{Binding MeridianFlipSettings}" Header="{ns:Loc LblAutoMeridianFlip}">
                 <StackPanel Orientation="Vertical">
                     <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                         <TextBlock
@@ -162,7 +163,7 @@
                             Width="75"
                             Height="25"
                             HorizontalAlignment="Left"
-                            IsChecked="{Binding AutoMeridianFlip}" />
+                            IsChecked="{Binding Enabled}" />
                     </StackPanel>
                     <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                         <TextBlock
@@ -194,7 +195,7 @@
                             Width="75"
                             Height="25"
                             HorizontalAlignment="Left"
-                            IsChecked="{Binding RecenterAfterFlip}" />
+                            IsChecked="{Binding Recenter}" />
                     </StackPanel>
                     <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                         <TextBlock
@@ -208,7 +209,7 @@
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Center">
                             <TextBox.Text>
-                                <Binding Path="MeridianFlipSettleTime" UpdateSourceTrigger="LostFocus">
+                                <Binding Path="SettleTime" UpdateSourceTrigger="LostFocus">
                                     <Binding.ValidationRules>
                                         <rules:GreaterZeroRule />
                                     </Binding.ValidationRules>
@@ -238,7 +239,7 @@
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Header="{ns:Loc LblImageOptions}">
+            <GroupBox DataContext="{Binding ImageSettings}" Header="{ns:Loc LblImageOptions}">
                 <StackPanel Orientation="Vertical">
                     <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                         <TextBlock
@@ -350,7 +351,7 @@
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
-            <GroupBox Header="{ns:Loc LblSequence}">
+            <GroupBox DataContext="{Binding SequenceSettings}" Header="{ns:Loc LblSequence}">
                 <StackPanel Orientation="Vertical">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -365,14 +366,14 @@
                         <TextBox
                             Grid.Column="1"
                             VerticalAlignment="Center"
-                            Text="{Binding SequenceTemplatePath}" />
+                            Text="{Binding TemplatePath}" />
                         <Button
                             Grid.Column="2"
                             Width="30"
                             Height="30"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Command="{Binding OpenSequenceTemplateDiagCommand}">
+                            Command="{Binding DataContext.OpenSequenceTemplateDiagCommand, ElementName=UC}">
                             <Path
                                 Margin="4,17,4,4"
                                 Data="{StaticResource DotsSVG}"

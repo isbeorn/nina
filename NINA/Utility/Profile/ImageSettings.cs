@@ -111,5 +111,17 @@ namespace NINA.Utility.Profile {
                 RaisePropertyChanged();
             }
         }
+
+        public double HistogramMajorStep {
+            get {
+                return HistogramResolution / 2;
+            }
+        }
+
+        public double HistogramMinorStep {
+            get {
+                return HistogramResolution / 4;
+            }
+        }
     }
 }
