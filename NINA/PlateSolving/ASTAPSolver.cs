@@ -42,22 +42,22 @@ namespace NINA.PlateSolving {
         private static string TMPSOLUTIONFILEPATH = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "astap_tmp.ini");
         private string executableLocation;
         private Coordinates target;
-        private double width;
+        private double height;
         private double fov;
         private double pixelSize;
         private double focalLength;
         private double arcSecPerPixel;
         private double searchRadius;
 
-        public ASTAPSolver(int focalLength, double pixelSize, double width, string executableLocation) {
+        public ASTAPSolver(int focalLength, double pixelSize, double height, string executableLocation) {
             this.focalLength = focalLength;
             this.pixelSize = pixelSize;
             this.arcSecPerPixel = Astrometry.ArcsecPerPixel(pixelSize, focalLength);
             this.executableLocation = executableLocation;
-            this.width = width;
+            this.height = height;
         }
 
-        public ASTAPSolver(int focalLength, double pixelSize, double width, double searchRadius, Coordinates target, string executableLocation) : this(focalLength, pixelSize, width, executableLocation) {
+        public ASTAPSolver(int focalLength, double pixelSize, double height, double searchRadius, Coordinates target, string executableLocation) : this(focalLength, pixelSize, height, executableLocation) {
             this.searchRadius = searchRadius;
             this.target = target;
         }
@@ -129,7 +129,7 @@ namespace NINA.PlateSolving {
             args.Add($"-f {TMPIMGFILEPATH}");
 
             //Field height of image
-            args.Add($"-fov {Astrometry.ArcsecToDegree(this.arcSecPerPixel * width).ToString(CultureInfo.InvariantCulture)}");
+            args.Add($"-fov {Astrometry.ArcsecToDegree(this.arcSecPerPixel * height).ToString(CultureInfo.InvariantCulture)}");
 
             //Downsample factor
             args.Add("-z 2");
