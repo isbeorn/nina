@@ -153,7 +153,16 @@ namespace NINA.ViewModel {
             }
         }
 
+        public IProfile ActiveProfile {
+            get {
+                return profileService.ActiveProfile;
+            }
+        }
+
         private void ProfileChanged() {
+            RaisePropertyChanged(nameof(ActiveProfile));
+            RaisePropertyChanged(nameof(IndexFiles));
+
             RaisePropertyChanged(nameof(ColorSchemaName));
             RaisePropertyChanged(nameof(PrimaryColor));
             RaisePropertyChanged(nameof(SecondaryColor));
@@ -255,7 +264,7 @@ namespace NINA.ViewModel {
         }
 
         private void DownloadIndexes(object obj) {
-            AstrometryIndexDownloader.AstrometryIndexDownloaderVM.Show(CygwinLocation);
+            AstrometryIndexDownloader.AstrometryIndexDownloaderVM.Show(ActiveProfile.PlateSolveSettings.CygwinLocation);
             ScanForIndexFiles();
         }
 
@@ -285,14 +294,14 @@ namespace NINA.ViewModel {
             dialog.SelectedPath = profileService.ActiveProfile.PlateSolveSettings.CygwinLocation;
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                CygwinLocation = dialog.SelectedPath;
+                ActiveProfile.PlateSolveSettings.CygwinLocation = dialog.SelectedPath;
             }
         }
 
         private void OpenPS2FileDiag(object o) {
             var dialog = GetFilteredFileDialog(profileService.ActiveProfile.PlateSolveSettings.PS2Location, "PlateSolve2.exe", "PlateSolve2|PlateSolve2.exe");
             if (dialog.ShowDialog() == true) {
-                PS2Location = dialog.FileName;
+                ActiveProfile.PlateSolveSettings.PS2Location = dialog.FileName;
             }
         }
 
@@ -306,14 +315,14 @@ namespace NINA.ViewModel {
         private void OpenASPSFileDiag(object o) {
             var dialog = GetFilteredFileDialog(profileService.ActiveProfile.PlateSolveSettings.AspsLocation, "PlateSolver.exe", "ASPS|PlateSolver.exe");
             if (dialog.ShowDialog() == true) {
-                AspsLocation = dialog.FileName;
+                ActiveProfile.PlateSolveSettings.AspsLocation = dialog.FileName;
             }
         }
 
         private void OpenASTAPFileDiag(object o) {
             var dialog = GetFilteredFileDialog(profileService.ActiveProfile.PlateSolveSettings.ASTAPLocation, "astap.exe", "ASTAP|astap.exe");
             if (dialog.ShowDialog() == true) {
-                ASTAPLocation = dialog.FileName;
+                ActiveProfile.PlateSolveSettings.ASTAPLocation = dialog.FileName;
             }
         }
 
@@ -331,7 +340,7 @@ namespace NINA.ViewModel {
         private void ScanForIndexFiles() {
             IndexFiles.Clear();
             try {
-                DirectoryInfo di = new DirectoryInfo(CygwinLocation + @"\usr\share\astrometry\data");
+                DirectoryInfo di = new DirectoryInfo(ActiveProfile.PlateSolveSettings.CygwinLocation + @"\usr\share\astrometry\data");
                 if (di.Exists) {
                     foreach (FileInfo f in di.GetFiles("*.fits")) {
                         IndexFiles.Add(f.Name);
@@ -563,26 +572,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        public PlateSolverEnum PlateSolverType {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.PlateSolverType;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.PlateSolverType = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public BlindSolverEnum BlindSolverType {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.BlindSolverType;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.BlindSolverType = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public Epoch EpochType {
             get {
                 return profileService.ActiveProfile.AstrometrySettings.EpochType;
@@ -602,107 +591,6 @@ namespace NINA.ViewModel {
 
                 RaisePropertyChanged();
                 Latitude = Latitude;
-            }
-        }
-
-        public string CygwinLocation {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.CygwinLocation;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.CygwinLocation = value;
-                ScanForIndexFiles();
-                RaisePropertyChanged();
-            }
-        }
-
-        public string PS2Location {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.PS2Location;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.PS2Location = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string AspsLocation {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.AspsLocation;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.AspsLocation = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string ASTAPLocation {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.ASTAPLocation;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.ASTAPLocation = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double AnsvrSearchRadius {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.SearchRadius;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.SearchRadius = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public int PS2Regions {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.Regions;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.Regions = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double PlateSolveExposureTime {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.ExposureTime;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.ExposureTime = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public FilterInfo PlateSolveFilter {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.Filter;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.Filter = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double PlateSolveThreshold {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.Threshold;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.Threshold = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double PlateSolveRotationTolerance {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.RotationTolerance;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.RotationTolerance = value;
-                RaisePropertyChanged();
             }
         }
 

@@ -825,7 +825,7 @@
             <TabItem.Header>
                 <TextBlock Style="{StaticResource TabItemTextBox}" Text="{ns:Loc LblPlateSolving}" />
             </TabItem.Header>
-            <local:OptionsPlateSolverView />
+            <local:OptionsPlateSolverView DataContext="{Binding}" />
         </TabItem>
     </TabControl>
 </UserControl>
