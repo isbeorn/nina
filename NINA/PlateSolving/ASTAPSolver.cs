@@ -132,7 +132,7 @@ namespace NINA.PlateSolving {
             args.Add($"-fov {Astrometry.ArcsecToDegree(this.arcSecPerPixel * width).ToString(CultureInfo.InvariantCulture)}");
 
             //Downsample factor
-            args.Add("-z 1");
+            args.Add("-z 2");
 
             //Max number of stars
             args.Add("-s 500");
@@ -142,7 +142,7 @@ namespace NINA.PlateSolving {
                 args.Add($"-r {searchRadius}");
 
                 //Right Ascension in degrees
-                args.Add($"-ra {target.RADegrees.ToString(CultureInfo.InvariantCulture)}");
+                args.Add($"-ra {target.RA.ToString(CultureInfo.InvariantCulture)}");
 
                 //Declination in degrees
                 args.Add($"-dec {target.Dec.ToString(CultureInfo.InvariantCulture)}");

@@ -95,7 +95,7 @@ namespace NINA.PlateSolving {
                     Platesolver = new ASTAPSolver(
                         profileService.ActiveProfile.TelescopeSettings.FocalLength,
                         profileService.ActiveProfile.CameraSettings.PixelSize * binning,
-                        width,
+                        height,
                         profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
                         coords,
                         profileService.ActiveProfile.PlateSolveSettings.ASTAPLocation
@@ -104,7 +104,7 @@ namespace NINA.PlateSolving {
                     Platesolver = new ASTAPSolver(
                         profileService.ActiveProfile.TelescopeSettings.FocalLength,
                         profileService.ActiveProfile.CameraSettings.PixelSize * binning,
-                        width,
+                        height,
                         profileService.ActiveProfile.PlateSolveSettings.ASTAPLocation
                     );
                 }
