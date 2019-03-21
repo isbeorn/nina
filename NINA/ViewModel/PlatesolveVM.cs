@@ -423,6 +423,7 @@ namespace NINA.ViewModel {
                 var parameter = new PlateSolveParameter() {
                     FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
                     PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize * binning,
+                    DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
                     ImageWidth = source.PixelWidth,
                     ImageHeight = source.PixelHeight,
                     Image = ms
@@ -453,6 +454,7 @@ namespace NINA.ViewModel {
                     PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize * binning,
                     SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
                     Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
+                    DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
                     Coordinates = coordinates,
                     ImageWidth = source.PixelWidth,
                     ImageHeight = source.PixelHeight,

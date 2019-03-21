@@ -59,7 +59,7 @@ namespace NINA.PlateSolving {
             options.Add("-u arcsecperpix");
             options.Add("--no-plots");
             options.Add("-r");
-            options.Add("--downsample 2");
+            options.Add($"--downsample {parameter.DownSampleFactor}");
             var lowArcSecPerPix = parameter.ArcSecPerPixel - 0.2;
             var highArcSecPerPix = parameter.ArcSecPerPixel + 0.2;
             options.Add(string.Format("-L {0}", lowArcSecPerPix.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));

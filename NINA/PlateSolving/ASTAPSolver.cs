@@ -95,7 +95,7 @@ namespace NINA.PlateSolving {
             args.Add($"-fov {parameter.FoVH.ToString(CultureInfo.InvariantCulture)}");
 
             //Downsample factor
-            args.Add("-z 2");
+            args.Add($"-z {parameter.DownSampleFactor}");
 
             //Max number of stars
             args.Add("-s 500");

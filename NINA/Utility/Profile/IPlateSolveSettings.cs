@@ -40,5 +40,6 @@ namespace NINA.Utility.Profile {
         double RotationTolerance { get; set; }
         string AspsLocation { get; set; }
         string ASTAPLocation { get; set; }
+        int DownSampleFactor { get; set; }
     }
 }

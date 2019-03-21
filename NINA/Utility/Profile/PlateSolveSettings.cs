@@ -54,6 +54,7 @@ namespace NINA.Utility.Profile {
             threshold = 1.0d;
             rotationTolerance = 1.0d;
             filter = null;
+            downSampleFactor = 2;
 
             var defaultASPSLocation = Environment.ExpandEnvironmentVariables(@"%programfiles(x86)%\PlateSolver\PlateSolver.exe");
             aspsLocation =
@@ -230,6 +231,19 @@ namespace NINA.Utility.Profile {
             }
             set {
                 aSTAPLocation = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int downSampleFactor;
+
+        [DataMember]
+        public int DownSampleFactor {
+            get {
+                return downSampleFactor;
+            }
+            set {
+                downSampleFactor = value;
                 RaisePropertyChanged();
             }
         }
