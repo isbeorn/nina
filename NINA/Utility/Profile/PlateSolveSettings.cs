@@ -55,6 +55,7 @@ namespace NINA.Utility.Profile {
             rotationTolerance = 1.0d;
             filter = null;
             downSampleFactor = 2;
+            maxObjects = 500;
 
             var defaultASPSLocation = Environment.ExpandEnvironmentVariables(@"%programfiles(x86)%\PlateSolver\PlateSolver.exe");
             aspsLocation =
@@ -244,6 +245,19 @@ namespace NINA.Utility.Profile {
             }
             set {
                 downSampleFactor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int maxObjects;
+
+        [DataMember]
+        public int MaxObjects {
+            get {
+                return maxObjects;
+            }
+            set {
+                maxObjects = value;
                 RaisePropertyChanged();
             }
         }

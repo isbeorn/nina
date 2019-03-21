@@ -16,6 +16,7 @@ namespace NINA.PlateSolving {
         public double SearchRadius { get; set; }
         public double Regions { get; set; }
         public int DownSampleFactor { get; set; }
+        public int MaxObjects { get; set; }
         public Coordinates Coordinates { get; set; }
         public Stream Image { get; set; }
 

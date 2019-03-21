@@ -98,7 +98,7 @@ namespace NINA.PlateSolving {
             args.Add($"-z {parameter.DownSampleFactor}");
 
             //Max number of stars
-            args.Add("-s 500");
+            args.Add($"-s {parameter.MaxObjects}");
 
             if (parameter.SearchRadius > 0 && parameter.Coordinates != null) {
                 //Search field radius

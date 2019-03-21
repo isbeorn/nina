@@ -41,5 +41,6 @@ namespace NINA.Utility.Profile {
         string AspsLocation { get; set; }
         string ASTAPLocation { get; set; }
         int DownSampleFactor { get; set; }
+        int MaxObjects { get; set; }
     }
 }

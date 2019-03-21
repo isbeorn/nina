@@ -46,27 +46,28 @@ namespace NINA.PlateSolving {
         protected override string GetArguments(PlateSolveParameter parameter) {
             List<string> options = new List<string>();
 
-            options.Add("-p");
-            options.Add("-O");
-            options.Add("-U none");
-            options.Add("-B none");
-            options.Add("-R none");
-            options.Add("-M none");
-            options.Add("-N none");
-            options.Add("-C cancel--crpix");
+            options.Add("--overwrite");
+            options.Add("--index-xyls none");
+            options.Add("--corr none");
+            options.Add("--rdls none");
+            options.Add("--match none");
+            options.Add("--new-fits none");
+            //options.Add("-C cancel--crpix");
             options.Add("-center");
-            options.Add("--objs 100");
-            options.Add("-u arcsecperpix");
+            options.Add($"--objs {parameter.MaxObjects}");
             options.Add("--no-plots");
-            options.Add("-r");
+            options.Add("--resort");
             options.Add($"--downsample {parameter.DownSampleFactor}");
             var lowArcSecPerPix = parameter.ArcSecPerPixel - 0.2;
             var highArcSecPerPix = parameter.ArcSecPerPixel + 0.2;
+            options.Add("--scale-units arcsecperpix");
             options.Add(string.Format("-L {0}", lowArcSecPerPix.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
             options.Add(string.Format("-H {0}", highArcSecPerPix.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
 
             if (parameter.SearchRadius > 0 && parameter.Coordinates != null) {
-                options.Add(string.Format("-3 {0} -4 {1} -5 {2}", parameter.Coordinates.RADegrees.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), parameter.Coordinates.Dec.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture), parameter.SearchRadius.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
+                options.Add($"--ra {parameter.Coordinates.RADegrees.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}");
+                options.Add($"--dec {parameter.Coordinates.Dec.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}");
+                options.Add($"--radius {parameter.SearchRadius.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}");
             }
 
             return string.Format("/C \"\"{0}\" --login -c '/usr/bin/solve-field {1} \"{2}\"'\"", bashLocation, string.Join(" ", options), imageFilePath.Replace("\\", "/"));

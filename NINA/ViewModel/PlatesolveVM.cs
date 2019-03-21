@@ -424,6 +424,7 @@ namespace NINA.ViewModel {
                     FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
                     PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize * binning,
                     DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
+                    MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
                     ImageWidth = source.PixelWidth,
                     ImageHeight = source.PixelHeight,
                     Image = ms
@@ -455,6 +456,7 @@ namespace NINA.ViewModel {
                     SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
                     Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
                     DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
+                    MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
                     Coordinates = coordinates,
                     ImageWidth = source.PixelWidth,
                     ImageHeight = source.PixelHeight,
