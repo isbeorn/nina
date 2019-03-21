@@ -37,35 +37,17 @@ using NINA.Utility.Notification;
 
 namespace NINA.PlateSolving {
 
-    internal class ASTAPSolver : IPlateSolver {
-        private static string TMPIMGFILEPATH = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "astap_tmp.jpg");
-        private static string TMPSOLUTIONFILEPATH = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "astap_tmp.ini");
-        private string executableLocation;
-        private Coordinates target;
-        private double height;
-        private double fov;
-        private double pixelSize;
-        private double focalLength;
-        private double arcSecPerPixel;
-        private double searchRadius;
+    internal class ASTAPSolver : CLISolver {
+        private static string imageFilePath = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "astap_tmp.jpg");
+        private static string outputFilePath = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "astap_tmp.ini");
 
-        public ASTAPSolver(int focalLength, double pixelSize, double height, string executableLocation) {
-            this.focalLength = focalLength;
-            this.pixelSize = pixelSize;
-            this.arcSecPerPixel = Astrometry.ArcsecPerPixel(pixelSize, focalLength);
-            this.executableLocation = executableLocation;
-            this.height = height;
+        public ASTAPSolver(string executableLocation) : base(executableLocation, imageFilePath, outputFilePath) {
         }
 
-        public ASTAPSolver(int focalLength, double pixelSize, double height, double searchRadius, Coordinates target, string executableLocation) : this(focalLength, pixelSize, height, executableLocation) {
-            this.searchRadius = searchRadius;
-            this.target = target;
-        }
-
-        private PlateSolveResult ExtractResult() {
+        protected override PlateSolveResult ReadResult(PlateSolveParameter parameter) {
             var result = new PlateSolveResult() { Success = false };
-            if (File.Exists(TMPSOLUTIONFILEPATH)) {
-                var dict = File.ReadLines(TMPSOLUTIONFILEPATH)
+            if (File.Exists(outputFilePath)) {
+                var dict = File.ReadLines(outputFilePath)
                    .Where(line => !string.IsNullOrWhiteSpace(line))
                    .Select(line => line.Split(new char[] { '=' }, 2, 0))
                    .ToDictionary(parts => parts[0], parts => parts[1]);
@@ -80,39 +62,20 @@ namespace NINA.PlateSolving {
                             Coordinates.RAType.Degrees
                         );
                         result.Orientation = double.Parse(dict["CROTA2"], CultureInfo.InvariantCulture);
-                        result.Pixscale = this.arcSecPerPixel;
+                        result.Pixscale = parameter.ArcSecPerPixel;
                     }
                 }
             }
             return result;
         }
 
-        public async Task<PlateSolveResult> SolveAsync(MemoryStream image, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
+        public override async Task<PlateSolveResult> SolveAsync(PlateSolveParameter parameter, IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var result = new PlateSolveResult() { Success = false };
             try {
-                //Copy Image to local app data
-                using (FileStream fs = new FileStream(TMPIMGFILEPATH, FileMode.Create)) {
-                    image.CopyTo(fs);
-                }
-
-                canceltoken.ThrowIfCancellationRequested();
-
-                //Start astap
-                await StartASTAPProcess(progress);
-
-                canceltoken.ThrowIfCancellationRequested();
-
-                //Extract solution coordinates
-                result = ExtractResult();
-            } finally {
-                if (File.Exists(TMPSOLUTIONFILEPATH)) {
-                    File.Delete(TMPSOLUTIONFILEPATH);
-                }
-
-                if (File.Exists(TMPIMGFILEPATH)) {
-                    File.Delete(TMPIMGFILEPATH);
-                }
-                progress.Report(new ApplicationStatus() { Status = string.Empty });
+                result = await this.Solve(parameter, progress, ct);
+            } catch (FileNotFoundException ex) {
+                Logger.Error(ex);
+                Notification.ShowError(Locale.Loc.Instance["LblASTAPNotFound"] + Environment.NewLine + executableLocation);
             }
             return result;
         }
@@ -122,14 +85,14 @@ namespace NINA.PlateSolving {
         /// </summary>
         /// <returns></returns>
         /// <remarks>http://www.hnsky.org/astap.htm#astap_command_line</remarks>
-        private string GetArguments() {
+        protected override string GetArguments(PlateSolveParameter parameter) {
             var args = new List<string>();
 
             //File location to solve
-            args.Add($"-f {TMPIMGFILEPATH}");
+            args.Add($"-f \"{imageFilePath}\"");
 
             //Field height of image
-            args.Add($"-fov {Astrometry.ArcsecToDegree(this.arcSecPerPixel * height).ToString(CultureInfo.InvariantCulture)}");
+            args.Add($"-fov {parameter.FoVH.ToString(CultureInfo.InvariantCulture)}");
 
             //Downsample factor
             args.Add("-z 2");
@@ -137,55 +100,18 @@ namespace NINA.PlateSolving {
             //Max number of stars
             args.Add("-s 500");
 
-            if (searchRadius > 0 && target != null) {
+            if (parameter.SearchRadius > 0 && parameter.Coordinates != null) {
                 //Search field radius
-                args.Add($"-r {searchRadius}");
+                args.Add($"-r {parameter.SearchRadius}");
 
                 //Right Ascension in degrees
-                args.Add($"-ra {target.RA.ToString(CultureInfo.InvariantCulture)}");
+                args.Add($"-ra {parameter.Coordinates.RA.ToString(CultureInfo.InvariantCulture)}");
 
                 //Declination in degrees
-                args.Add($"-dec {target.Dec.ToString(CultureInfo.InvariantCulture)}");
+                args.Add($"-dec {parameter.Coordinates.Dec.ToString(CultureInfo.InvariantCulture)}");
             }
 
             return string.Join(" ", args);
-        }
-
-        /// <summary>
-        /// Runs the ASTAP process
-        /// </summary>
-        /// <returns>true: ran successfully; false: not found</returns>
-        private Task StartASTAPProcess(IProgress<ApplicationStatus> progress) {
-            var location = Path.GetFullPath(this.executableLocation);
-
-            if (!File.Exists(location)) {
-                Notification.ShowError(Locale.Loc.Instance["LblASTAPNotFound"] + Environment.NewLine + location);
-                return Task.FromResult(0);
-            }
-
-            System.Diagnostics.Process process = new System.Diagnostics.Process();
-            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-
-            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
-            startInfo.FileName = location;
-            startInfo.UseShellExecute = false;
-            startInfo.RedirectStandardOutput = true;
-            startInfo.CreateNoWindow = true;
-            startInfo.Arguments = GetArguments();
-            process.StartInfo = startInfo;
-            process.EnableRaisingEvents = true;
-
-            process.OutputDataReceived += (object sender, System.Diagnostics.DataReceivedEventArgs e) => {
-                progress.Report(new ApplicationStatus() { Status = e.Data });
-            };
-
-            process.ErrorDataReceived += (object sender, System.Diagnostics.DataReceivedEventArgs e) => {
-                progress.Report(new ApplicationStatus() { Status = e.Data });
-            };
-
-            process.Start();
-
-            return process.WaitForExitAsync();
         }
     }
 }
