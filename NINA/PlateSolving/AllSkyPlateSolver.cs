@@ -81,10 +81,10 @@ namespace NINA.PlateSolving {
             var args = new List<string>();
 
             //FileName
-            args.Add(imageFilePath);
+            args.Add($"\"{imageFilePath}\"");
 
             //OutFile
-            args.Add(outputFilePath);
+            args.Add($"\"{outputFilePath}\"");
 
             //FocalLength
             args.Add(parameter.FocalLength.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));

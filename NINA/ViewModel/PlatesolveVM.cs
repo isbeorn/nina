@@ -415,9 +415,14 @@ namespace NINA.ViewModel {
                 encoder.Save(ms);
                 ms.Seek(0, SeekOrigin.Begin);
 
+                var binning = 1;
+                if (CameraInfo.BinX > 1) {
+                    binning = CameraInfo.BinX;
+                }
+
                 var parameter = new PlateSolveParameter() {
                     FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
-                    PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize * CameraInfo.BinX,
+                    PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize * binning,
                     ImageWidth = source.PixelWidth,
                     ImageHeight = source.PixelHeight,
                     Image = ms
@@ -438,9 +443,14 @@ namespace NINA.ViewModel {
                 encoder.Save(ms);
                 ms.Seek(0, SeekOrigin.Begin);
 
+                var binning = 1;
+                if (CameraInfo.BinX > 1) {
+                    binning = CameraInfo.BinX;
+                }
+
                 var parameter = new PlateSolveParameter() {
                     FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
-                    PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize * CameraInfo.BinX,
+                    PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize * binning,
                     SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
                     Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
                     Coordinates = coordinates,
