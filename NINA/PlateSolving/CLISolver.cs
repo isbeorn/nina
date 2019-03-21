@@ -1,4 +1,5 @@
 ﻿using NINA.Model;
+using NINA.Utility;
 using NINA.Utility.Extensions;
 using NINA.Utility.Notification;
 using System;
@@ -81,7 +82,7 @@ namespace NINA.PlateSolving {
             process.ErrorDataReceived += (object sender, System.Diagnostics.DataReceivedEventArgs e) => {
                 progress.Report(new ApplicationStatus() { Status = e.Data });
             };
-
+            Logger.Debug($"Starting process '{executableLocation}' with args '{startInfo.Arguments}'");
             process.Start();
             await process.WaitForExitAsync(ct);
         }
