@@ -34,7 +34,7 @@
     d:DesignWidth="300"
     Background="{StaticResource BackgroundBrush}"
     mc:Ignorable="d">
-    <TabControl TabStripPlacement="Top">
+    <TabControl x:Name="UC" TabStripPlacement="Top">
         <TabItem>
             <TabItem.Header>
                 <TextBlock Style="{StaticResource TabItemTextBox}" Text="{ns:Loc LblGeneral}" />
@@ -226,7 +226,7 @@
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center">
                                     <TextBox.Text>
-                                        <Binding Path="SkyAtlasImageRepository" UpdateSourceTrigger="LostFocus">
+                                        <Binding Path="ActiveProfile.ApplicationSettings.SkyAtlasImageRepository" UpdateSourceTrigger="LostFocus">
                                             <Binding.ValidationRules>
                                                 <rules:DirectoryExistsRule />
                                             </Binding.ValidationRules>
@@ -265,7 +265,7 @@
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center">
                                     <TextBox.Text>
-                                        <Binding Path="SkySurveyCacheDirectory" UpdateSourceTrigger="LostFocus">
+                                        <Binding Path="ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory" UpdateSourceTrigger="LostFocus">
                                             <Binding.ValidationRules>
                                                 <rules:DirectoryExistsRule />
                                             </Binding.ValidationRules>
@@ -311,7 +311,7 @@
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center">
                                     <TextBox.Text>
-                                        <Binding Path="DevicePollingInterval" UpdateSourceTrigger="LostFocus">
+                                        <Binding Path="ActiveProfile.ApplicationSettings.DevicePollingInterval" UpdateSourceTrigger="LostFocus">
                                             <Binding.ValidationRules>
                                                 <rules:GreaterZeroRule />
                                             </Binding.ValidationRules>
@@ -722,7 +722,7 @@
                                         Name="epochcombo"
                                         Margin="10,0,0,0"
                                         ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:Epoch}}}"
-                                        SelectedItem="{Binding EpochType}" />
+                                        SelectedItem="{Binding ActiveProfile.AstrometrySettings.EpochType}" />
                                 </StackPanel>
 
                                 <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
@@ -733,7 +733,7 @@
                                     <ComboBox
                                         Margin="10,0,0,0"
                                         ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:Hemisphere}}}"
-                                        SelectedItem="{Binding HemisphereType}" />
+                                        SelectedItem="{Binding ActiveProfile.AstrometrySettings.HemisphereType}" />
                                 </StackPanel>
                             </UniformGrid>
 
@@ -776,10 +776,10 @@
                             <ComboBox
                                 Name="weatherdatacombo"
                                 ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:WeatherDataEnum}}}"
-                                SelectedItem="{Binding WeatherDataType}" />
+                                SelectedItem="{Binding ActiveProfile.WeatherDataSettings.WeatherDataType}" />
                             <UniformGrid Margin="0,5,0,0" Columns="2">
                                 <TextBlock Text="{ns:Loc LblURL}" />
-                                <TextBox HorizontalAlignment="Stretch" Text="{Binding OpenWeatherMapUrl}" />
+                                <TextBox HorizontalAlignment="Stretch" Text="{Binding ActiveProfile.WeatherDataSettings.OpenWeatherMapUrl}" />
                             </UniformGrid>
                             <UniformGrid Margin="0,5,0,0" Columns="2">
                                 <TextBlock Text="{ns:Loc LblAPIKey}" />
@@ -791,7 +791,7 @@
                                     <TextBox
                                         HorizontalAlignment="Stretch"
                                         DockPanel.Dock="Left"
-                                        Text="{Binding OpenWeatherMapAPIKey}" />
+                                        Text="{Binding ActiveProfile.WeatherDataSettings.OpenWeatherMapAPIKey}" />
                                     <TextBlock
                                         Grid.Column="1"
                                         Width="Auto"

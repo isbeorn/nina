@@ -239,19 +239,19 @@ namespace NINA.ViewModel {
 
         private void OpenSkyAtlasImageRepositoryDiag(object obj) {
             System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
-            dialog.SelectedPath = profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository;
+            dialog.SelectedPath = ActiveProfile.ApplicationSettings.SkyAtlasImageRepository;
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                SkyAtlasImageRepository = dialog.SelectedPath;
+                ActiveProfile.ApplicationSettings.SkyAtlasImageRepository = dialog.SelectedPath;
             }
         }
 
         private void OpenSkySurveyCacheDirectoryDiag(object obj) {
             System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
-            dialog.SelectedPath = profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory;
+            dialog.SelectedPath = ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory;
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                SkySurveyCacheDirectory = dialog.SelectedPath;
+                ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory = dialog.SelectedPath;
             }
         }
 
@@ -426,54 +426,12 @@ namespace NINA.ViewModel {
             }
         }
 
-        public Epoch EpochType {
-            get {
-                return profileService.ActiveProfile.AstrometrySettings.EpochType;
-            }
-            set {
-                profileService.ActiveProfile.AstrometrySettings.EpochType = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Hemisphere HemisphereType {
-            get {
-                return profileService.ActiveProfile.AstrometrySettings.HemisphereType;
-            }
-            set {
-                profileService.ChangeHemisphere(value);
-
-                RaisePropertyChanged();
-                Latitude = Latitude;
-            }
-        }
-
         public WeatherDataEnum WeatherDataType {
             get {
                 return profileService.ActiveProfile.WeatherDataSettings.WeatherDataType;
             }
             set {
                 profileService.ActiveProfile.WeatherDataSettings.WeatherDataType = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string OpenWeatherMapAPIKey {
-            get {
-                return profileService.ActiveProfile.WeatherDataSettings.OpenWeatherMapAPIKey;
-            }
-            set {
-                profileService.ActiveProfile.WeatherDataSettings.OpenWeatherMapAPIKey = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string OpenWeatherMapUrl {
-            get {
-                return profileService.ActiveProfile.WeatherDataSettings.OpenWeatherMapUrl;
-            }
-            set {
-                profileService.ActiveProfile.WeatherDataSettings.OpenWeatherMapUrl = value;
                 RaisePropertyChanged();
             }
         }
@@ -831,16 +789,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        public string SkyAtlasImageRepository {
-            get {
-                return profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository;
-            }
-            set {
-                profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public AutoUpdateSourceEnum AutoUpdateSource {
             get {
                 return (AutoUpdateSourceEnum)NINA.Properties.Settings.Default.AutoUpdateSource;
@@ -848,16 +796,6 @@ namespace NINA.ViewModel {
             set {
                 NINA.Properties.Settings.Default.AutoUpdateSource = (int)value;
                 NINA.Properties.Settings.Default.Save();
-                RaisePropertyChanged();
-            }
-        }
-
-        public string SkySurveyCacheDirectory {
-            get {
-                return profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory;
-            }
-            set {
-                profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory = value;
                 RaisePropertyChanged();
             }
         }
@@ -939,18 +877,6 @@ namespace NINA.ViewModel {
             set {
                 profileService.ActiveProfile.ColorSchemaSettings.AltNotificationErrorTextColor = value;
                 RaisePropertyChanged();
-            }
-        }
-
-        public double DevicePollingInterval {
-            get {
-                return profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
-            }
-            set {
-                if (value > 0) {
-                    profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval = value;
-                    RaisePropertyChanged();
-                }
             }
         }
 
