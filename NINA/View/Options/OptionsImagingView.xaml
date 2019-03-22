@@ -189,6 +189,18 @@
                             MinWidth="200"
                             MinHeight="20"
                             VerticalAlignment="Center"
+                            Text="{ns:Loc LblUseSideOfPier}" />
+                        <CheckBox
+                            Width="75"
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            IsChecked="{Binding UseSideOfPier}" />
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="200"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
                             Text="{ns:Loc LblRecenterAfterFlip}" />
                         <CheckBox
                             Width="75"
