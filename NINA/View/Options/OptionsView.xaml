@@ -813,7 +813,7 @@
             <TabItem.Header>
                 <TextBlock Style="{StaticResource TabItemTextBox}" Text="{ns:Loc LblEquipment}" />
             </TabItem.Header>
-            <options:EquipmentView />
+            <options:EquipmentView DataContext="{Binding}" />
         </TabItem>
         <TabItem>
             <TabItem.Header>

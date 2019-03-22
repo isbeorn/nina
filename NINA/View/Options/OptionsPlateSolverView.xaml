@@ -100,7 +100,7 @@
                         <ComboBox
                             Height="25"
                             DisplayMemberPath="Name"
-                            ItemsSource="{Binding DataContext.FilterWheelFilters, ElementName=UC}"
+                            ItemsSource="{Binding DataContext.ActiveProfile.FilterWheelSettings.FilterWheelFilters, ElementName=UC}"
                             SelectedItem="{Binding Filter, Mode=TwoWay}"
                             SelectedValuePath="Name" />
                     </StackPanel>
