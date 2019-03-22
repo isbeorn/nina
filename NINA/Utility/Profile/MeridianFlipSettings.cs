@@ -68,6 +68,26 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        /// <summary>
+        /// Adding this user-side parameter for backwards compatibility: some mounts always report PierSide as East or mix up West and East.
+        /// If method were to consider SideOfPier by default and flip only if not East, such mounts would stop performing flip.
+        /// Default value is False, to preserve prior behavior.
+        /// </summary>
+        
+        private bool useSideOfPier = false;
+
+        [DataMember]
+        public bool UseSideOfPier {
+            get {
+                return useSideOfPier;
+            }
+            set {
+                useSideOfPier = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
         private int settleTime = 5;
 
         [DataMember]

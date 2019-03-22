@@ -146,6 +146,18 @@ namespace NINA.Model.MyTelescope {
             }
         }
 
+        private PierSide sideOfPier;
+
+        public PierSide SideOfPier {
+            get {
+                return sideOfPier;
+            }
+            set {
+                sideOfPier = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private string altitudeString;
 
         public string AltitudeString {
