@@ -1,3 +1,8 @@
+# Version 1.9
+
+## Improvements
+- If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips
+
 # Version 1.8
 
 ## Features
