@@ -38,7 +38,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 namespace NINA.ViewModel {
+
     internal class OptionsVM : DockableVM {
+
         public OptionsVM(IProfileService profileService, IFilterWheelMediator filterWheelMediator) : base(profileService) {
             Title = "LblOptions";
             CanClose = false;
@@ -420,26 +422,6 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ChangeLocale(value);
-                RaisePropertyChanged();
-            }
-        }
-
-        public WeatherDataEnum WeatherDataType {
-            get {
-                return profileService.ActiveProfile.WeatherDataSettings.WeatherDataType;
-            }
-            set {
-                profileService.ActiveProfile.WeatherDataSettings.WeatherDataType = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string AstrometryAPIKey {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.AstrometryAPIKey;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.AstrometryAPIKey = value;
                 RaisePropertyChanged();
             }
         }
