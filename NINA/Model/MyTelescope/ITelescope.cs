@@ -54,6 +54,8 @@ namespace NINA.Model.MyTelescope {
 
         void MoveAxis(TelescopeAxes axis, double rate);
 
+        void PulseGuide(GuideDirections direction, int duration);
+
         void Park();
 
         void Setpark();

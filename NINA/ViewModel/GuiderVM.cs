@@ -40,7 +40,7 @@ namespace NINA.ViewModel {
 
     internal class GuiderVM : DockableVM, IGuiderVM {
 
-        public GuiderVM(IProfileService profileService, IGuiderMediator guiderMediator, ICameraMediator cameraMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+        public GuiderVM(IProfileService profileService, IGuiderMediator guiderMediator, ICameraMediator cameraMediator, IApplicationStatusMediator applicationStatusMediator, ITelescopeMediator telescopeMediator) : base(profileService) {
             Title = "LblGuider";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["GuiderSVG"];
 
@@ -53,7 +53,7 @@ namespace NINA.ViewModel {
 
             CancelConnectGuiderCommand = new RelayCommand(CancelConnectGuider);
 
-            GuiderChooserVM = new GuiderChooserVM(profileService, cameraMediator);
+            GuiderChooserVM = new GuiderChooserVM(profileService, cameraMediator, telescopeMediator);
 
             GuiderChooserVM.SelectedGuider.PropertyChanged += (sender, args) => RaisePropertyChanged(nameof(Guider));
 

@@ -35,6 +35,10 @@ namespace NINA.Utility.Mediator {
             handler.MoveAxis(axis, rate);
         }
 
+        public void PulseGuide(GuideDirections direction, int duration) {
+            handler.PulseGuide(direction, duration);
+        }
+
         public bool Sync(double ra, double dec) {
             return handler.Sync(ra, dec);
         }
