@@ -29,5 +29,9 @@ namespace NINA.Utility.Profile {
         double AutoStretchFactor { get; set; }
         double BlackClipping { get; set; }
         int HistogramResolution { get; set; }
+
+        double HistogramMajorStep { get; }
+
+        double HistogramMinorStep { get; }
     }
 }

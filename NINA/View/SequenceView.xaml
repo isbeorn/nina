@@ -821,7 +821,7 @@
                         <DataTemplate>
                             <ComboBox
                                 DisplayMemberPath="Name"
-                                ItemsSource="{Binding Source={StaticResource AppVM}, Path=OptionsVM.FilterWheelFilters}"
+                                ItemsSource="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}"
                                 SelectedItem="{Binding FilterType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 SelectedValuePath="Name" />
                         </DataTemplate>

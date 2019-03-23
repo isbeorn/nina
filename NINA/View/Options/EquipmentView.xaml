@@ -27,10 +27,11 @@
     xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
     xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:util="clr-namespace:NINA.Utility"
+    Name="UC"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Grid>
+    <Grid DataContext="{Binding ActiveProfile}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition />
@@ -40,7 +41,7 @@
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <GroupBox Header="{ns:Loc LblCamera}">
+        <GroupBox DataContext="{Binding CameraSettings}" Header="{ns:Loc LblCamera}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel Orientation="Vertical">
                     <UniformGrid Columns="2">
@@ -58,7 +59,7 @@
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center">
                                 <TextBox.Text>
-                                    <Binding Path="CameraPixelSize" UpdateSourceTrigger="LostFocus">
+                                    <Binding Path="PixelSize" UpdateSourceTrigger="LostFocus">
                                         <Binding.ValidationRules>
                                             <rules:GreaterZeroRule />
                                         </Binding.ValidationRules>
@@ -198,7 +199,7 @@
                             <ComboBox
                                 Name="cbBulbMode"
                                 ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:CameraBulbModeEnum}}}"
-                                SelectedItem="{Binding CameraBulbMode}" />
+                                SelectedItem="{Binding BulbMode}" />
                         </UniformGrid>
                         <UniformGrid
                             Margin="0,6,0,6"
@@ -251,7 +252,7 @@
                                 MinHeight="20"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                SelectedItem="{Binding CameraSerialPort}">
+                                SelectedItem="{Binding SerialPort}">
                                 <s:String>COM1</s:String>
                                 <s:String>COM2</s:String>
                                 <s:String>COM3</s:String>
@@ -308,7 +309,7 @@
                                 MinHeight="20"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding TelescopeSnapPortStart}" />
+                                Text="{Binding DataContext.ActiveProfile.TelescopeSettings.SnapPortStart, ElementName=UC}" />
                         </UniformGrid>
                         <UniformGrid
                             Margin="5,6,0,6"
@@ -328,7 +329,7 @@
                                 MinHeight="20"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
-                                Text="{Binding TelescopeSnapPortStop}" />
+                                Text="{Binding DataContext.ActiveProfile.TelescopeSettings.SnapPortStop, ElementName=UC}" />
                         </UniformGrid>
                     </UniformGrid>
                 </StackPanel>
@@ -337,6 +338,7 @@
         <GroupBox
             Grid.RowSpan="2"
             Grid.Column="1"
+            DataContext="{Binding FilterWheelSettings}"
             Header="{ns:Loc LblFilterWheel}">
             <Grid>
                 <Grid.RowDefinitions>
@@ -349,7 +351,7 @@
                     HeadersVisibility="Column"
                     HorizontalScrollBarVisibility="Disabled"
                     ItemsSource="{Binding FilterWheelFilters}"
-                    SelectedItem="{Binding SelectedFilter}"
+                    SelectedItem="{Binding DataContext.SelectedFilter, ElementName=UC}"
                     SelectionMode="Single"
                     VerticalScrollBarVisibility="Auto">
                     <DataGrid.Columns>
@@ -438,7 +440,7 @@
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
-                <Grid Grid.Row="1">
+                <Grid Grid.Row="1" DataContext="{Binding DataContext, ElementName=UC}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
                         <ColumnDefinition />
@@ -478,7 +480,10 @@
                 </Grid>
             </Grid>
         </GroupBox>
-        <GroupBox Grid.Row="1" Header="{ns:Loc LblTelescope}">
+        <GroupBox
+            Grid.Row="1"
+            DataContext="{Binding TelescopeSettings}"
+            Header="{ns:Loc LblTelescope}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel Orientation="Vertical">
                     <UniformGrid Columns="2">
@@ -496,7 +501,7 @@
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center">
                                 <TextBox.Text>
-                                    <Binding Path="TelescopeFocalLength" UpdateSourceTrigger="LostFocus">
+                                    <Binding Path="FocalLength" UpdateSourceTrigger="LostFocus">
                                         <Binding.ValidationRules>
                                             <rules:GreaterZeroRule />
                                         </Binding.ValidationRules>
@@ -520,7 +525,7 @@
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center">
                                 <TextBox.Text>
-                                    <Binding Path="TelescopeSettleTime" UpdateSourceTrigger="LostFocus">
+                                    <Binding Path="SettleTime" UpdateSourceTrigger="LostFocus">
                                         <Binding.ValidationRules>
                                             <rules:GreaterZeroRule />
                                         </Binding.ValidationRules>
@@ -532,7 +537,10 @@
                 </StackPanel>
             </ScrollViewer>
         </GroupBox>
-        <GroupBox Grid.Row="2" Header="{ns:Loc LblFocuser}">
+        <GroupBox
+            Grid.Row="2"
+            DataContext="{Binding FocuserSettings}"
+            Header="{ns:Loc LblFocuser}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel Orientation="Vertical">
                     <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
@@ -549,7 +557,7 @@
                             Width="75"
                             Height="25"
                             HorizontalAlignment="Left"
-                            IsChecked="{Binding FocuserUseFilterWheelOffsets}" />
+                            IsChecked="{Binding UseFilterWheelOffsets}" />
                     </StackPanel>
 
                     <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
@@ -566,7 +574,7 @@
                             Width="75"
                             Height="25"
                             HorizontalAlignment="Left"
-                            Text="{Binding FocuserAutoFocusStepSize}" />
+                            Text="{Binding AutoFocusStepSize}" />
                     </StackPanel>
 
                     <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
@@ -583,7 +591,7 @@
                             Width="75"
                             Height="25"
                             HorizontalAlignment="Left"
-                            Text="{Binding FocuserAutoFocusInitialOffsetSteps}" />
+                            Text="{Binding AutoFocusInitialOffsetSteps}" />
                     </StackPanel>
                     <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                         <TextBlock
@@ -600,7 +608,7 @@
                             Height="25"
                             HorizontalAlignment="Left">
                             <TextBox.Text>
-                                <Binding Path="FocuserAutoFocusExposureTime" UpdateSourceTrigger="LostFocus">
+                                <Binding Path="AutoFocusExposureTime" UpdateSourceTrigger="LostFocus">
                                     <Binding.ValidationRules>
                                         <rules:GreaterZeroRule />
                                     </Binding.ValidationRules>
@@ -614,6 +622,7 @@
         <GroupBox
             Grid.Row="2"
             Grid.Column="1"
+            DataContext="{Binding GuiderSettings}"
             Header="{ns:Loc LblPHD2Settings}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel Orientation="Vertical">
@@ -647,7 +656,7 @@
                             Margin="5,0,0,0"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Command="{Binding OpenPHD2DiagCommand}">
+                            Command="{Binding DataContext.OpenPHD2DiagCommand, ElementName=UC}">
                             <Path
                                 Margin="4,17,4,4"
                                 Data="{StaticResource DotsSVG}"
@@ -724,7 +733,7 @@
                                 Text="{ns:Loc LblSettlePixelTolerance}" />
                             <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center">
                                 <TextBox.Text>
-                                    <Binding Path="GuiderSettlePixels" UpdateSourceTrigger="LostFocus">
+                                    <Binding Path="SettlePixels" UpdateSourceTrigger="LostFocus">
                                         <Binding.ValidationRules>
                                             <rules:GreaterZeroRule />
                                         </Binding.ValidationRules>
@@ -742,7 +751,7 @@
                                 Text="{ns:Loc LblMinimumSettleTime}" />
                             <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center">
                                 <TextBox.Text>
-                                    <Binding Path="GuiderSettleTime" UpdateSourceTrigger="LostFocus">
+                                    <Binding Path="SettleTime" UpdateSourceTrigger="LostFocus">
                                         <Binding.ValidationRules>
                                             <rules:GreaterZeroRule />
                                         </Binding.ValidationRules>
@@ -760,7 +769,7 @@
                                 Text="{ns:Loc LblSettleTimeout}" />
                             <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center">
                                 <TextBox.Text>
-                                    <Binding Path="GuiderSettleTimeout" UpdateSourceTrigger="LostFocus">
+                                    <Binding Path="SettleTimeout" UpdateSourceTrigger="LostFocus">
                                         <Binding.ValidationRules>
                                             <rules:GreaterZeroRule />
                                         </Binding.ValidationRules>

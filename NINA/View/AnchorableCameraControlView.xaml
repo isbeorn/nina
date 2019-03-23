@@ -61,7 +61,7 @@
                                 Height="25"
                                 Margin="5,0,0,0"
                                 DisplayMemberPath="Name"
-                                ItemsSource="{Binding Source={StaticResource AppVM}, Path=OptionsVM.FilterWheelFilters}"
+                                ItemsSource="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}"
                                 SelectedItem="{Binding SnapFilter, Mode=TwoWay}"
                                 SelectedValuePath="Name" />
                         </UniformGrid>
