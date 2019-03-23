@@ -38,9 +38,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 namespace NINA.ViewModel {
-
     internal class OptionsVM : DockableVM {
-
         public OptionsVM(IProfileService profileService, IFilterWheelMediator filterWheelMediator) : base(profileService) {
             Title = "LblOptions";
             CanClose = false;
@@ -56,6 +54,7 @@ namespace NINA.ViewModel {
             OpenPS2FileDiagCommand = new RelayCommand(OpenPS2FileDiag);
             OpenPHD2DiagCommand = new RelayCommand(OpenPHD2FileDiag);
             OpenASPSFileDiagCommand = new RelayCommand(OpenASPSFileDiag);
+            OpenASTAPFileDiagCommand = new RelayCommand(OpenASTAPFileDiag);
             ToggleColorsCommand = new RelayCommand(ToggleColors);
             DownloadIndexesCommand = new RelayCommand(DownloadIndexes);
             OpenSkyAtlasImageRepositoryDiagCommand = new RelayCommand(OpenSkyAtlasImageRepositoryDiag);
@@ -90,8 +89,6 @@ namespace NINA.ViewModel {
             profileService.ProfileChanged += (object sender, EventArgs e) => {
                 ProfileChanged();
             };
-
-            FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
         }
 
         private void OpenWebRequest(object obj) {
@@ -152,7 +149,16 @@ namespace NINA.ViewModel {
             }
         }
 
+        public IProfile ActiveProfile {
+            get {
+                return profileService.ActiveProfile;
+            }
+        }
+
         private void ProfileChanged() {
+            RaisePropertyChanged(nameof(ActiveProfile));
+            RaisePropertyChanged(nameof(IndexFiles));
+
             RaisePropertyChanged(nameof(ColorSchemaName));
             RaisePropertyChanged(nameof(PrimaryColor));
             RaisePropertyChanged(nameof(SecondaryColor));
@@ -202,68 +208,62 @@ namespace NINA.ViewModel {
         }
 
         private void RemoveFilter(object obj) {
-            if (SelectedFilter == null && FilterWheelFilters.Count > 0) {
-                SelectedFilter = FilterWheelFilters.Last();
+            if (SelectedFilter == null && ActiveProfile.FilterWheelSettings.FilterWheelFilters.Count > 0) {
+                SelectedFilter = ActiveProfile.FilterWheelSettings.FilterWheelFilters.Last();
             }
-            FilterWheelFilters.Remove(SelectedFilter);
-            if (FilterWheelFilters.Count > 0) {
-                SelectedFilter = FilterWheelFilters.Last();
+            ActiveProfile.FilterWheelSettings.FilterWheelFilters.Remove(SelectedFilter);
+            if (ActiveProfile.FilterWheelSettings.FilterWheelFilters.Count > 0) {
+                SelectedFilter = ActiveProfile.FilterWheelSettings.FilterWheelFilters.Last();
             }
         }
 
         private void AddFilter(object obj) {
-            var pos = FilterWheelFilters.Count;
+            var pos = ActiveProfile.FilterWheelSettings.FilterWheelFilters.Count;
             var filter = new FilterInfo(Locale.Loc.Instance["LblFilter"] + (pos + 1), 0, (short)pos, 0);
-            FilterWheelFilters.Add(filter);
+            ActiveProfile.FilterWheelSettings.FilterWheelFilters.Add(filter);
             SelectedFilter = filter;
         }
 
         private void ImportFilters(object obj) {
             var filters = filterWheelMediator.GetAllFilters();
             if (filters?.Count > 0) {
-                FilterWheelFilters.Clear();
-                FilterWheelFilters.CollectionChanged -= FilterWheelFilters_CollectionChanged;
+                ActiveProfile.FilterWheelSettings.FilterWheelFilters.Clear();
                 var l = filters.OrderBy(x => x.Position);
                 foreach (var filter in l) {
-                    FilterWheelFilters.Add(filter);
+                    ActiveProfile.FilterWheelSettings.FilterWheelFilters.Add(filter);
                 }
-                FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
             }
-        }
-
-        private void FilterWheelFilters_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
-            FilterWheelFilters = FilterWheelFilters;
         }
 
         private void OpenSkyAtlasImageRepositoryDiag(object obj) {
             System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
-            dialog.SelectedPath = profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository;
+            dialog.SelectedPath = ActiveProfile.ApplicationSettings.SkyAtlasImageRepository;
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                SkyAtlasImageRepository = dialog.SelectedPath;
+                ActiveProfile.ApplicationSettings.SkyAtlasImageRepository = dialog.SelectedPath;
             }
         }
 
         private void OpenSkySurveyCacheDirectoryDiag(object obj) {
             System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
-            dialog.SelectedPath = profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory;
+            dialog.SelectedPath = ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory;
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                SkySurveyCacheDirectory = dialog.SelectedPath;
+                ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory = dialog.SelectedPath;
             }
         }
 
         private void DownloadIndexes(object obj) {
-            AstrometryIndexDownloader.AstrometryIndexDownloaderVM.Show(CygwinLocation);
+            AstrometryIndexDownloader.AstrometryIndexDownloaderVM.Show(ActiveProfile.PlateSolveSettings.CygwinLocation);
             ScanForIndexFiles();
         }
 
         private void OpenImageFileDiag(object o) {
             var diag = new System.Windows.Forms.FolderBrowserDialog();
-            diag.SelectedPath = ImageFilePath;
+            diag.SelectedPath = ActiveProfile.ImageFileSettings.FilePath;
             System.Windows.Forms.DialogResult result = diag.ShowDialog();
             if (result == System.Windows.Forms.DialogResult.OK) {
-                ImageFilePath = diag.SelectedPath + "\\";
+                ActiveProfile.ImageFileSettings.FilePath = diag.SelectedPath + "\\";
             }
         }
 
@@ -275,7 +275,7 @@ namespace NINA.ViewModel {
             dialog.Filter = "XML documents|*.xml";
 
             if (dialog.ShowDialog() == true) {
-                SequenceTemplatePath = dialog.FileName;
+                ActiveProfile.SequenceSettings.TemplatePath = dialog.FileName;
             }
         }
 
@@ -284,28 +284,35 @@ namespace NINA.ViewModel {
             dialog.SelectedPath = profileService.ActiveProfile.PlateSolveSettings.CygwinLocation;
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                CygwinLocation = dialog.SelectedPath;
+                ActiveProfile.PlateSolveSettings.CygwinLocation = dialog.SelectedPath;
             }
         }
 
         private void OpenPS2FileDiag(object o) {
             var dialog = GetFilteredFileDialog(profileService.ActiveProfile.PlateSolveSettings.PS2Location, "PlateSolve2.exe", "PlateSolve2|PlateSolve2.exe");
             if (dialog.ShowDialog() == true) {
-                PS2Location = dialog.FileName;
+                ActiveProfile.PlateSolveSettings.PS2Location = dialog.FileName;
             }
         }
 
         private void OpenPHD2FileDiag(object o) {
             var dialog = GetFilteredFileDialog(profileService.ActiveProfile.GuiderSettings.PHD2Path, "phd2.exe", "PHD2|phd2.exe");
             if (dialog.ShowDialog() == true) {
-                PHD2Path = dialog.FileName;
+                ActiveProfile.GuiderSettings.PHD2Path = dialog.FileName;
             }
         }
 
         private void OpenASPSFileDiag(object o) {
             var dialog = GetFilteredFileDialog(profileService.ActiveProfile.PlateSolveSettings.AspsLocation, "PlateSolver.exe", "ASPS|PlateSolver.exe");
             if (dialog.ShowDialog() == true) {
-                AspsLocation = dialog.FileName;
+                ActiveProfile.PlateSolveSettings.AspsLocation = dialog.FileName;
+            }
+        }
+
+        private void OpenASTAPFileDiag(object o) {
+            var dialog = GetFilteredFileDialog(profileService.ActiveProfile.PlateSolveSettings.ASTAPLocation, "astap.exe", "ASTAP|astap.exe");
+            if (dialog.ShowDialog() == true) {
+                ActiveProfile.PlateSolveSettings.ASTAPLocation = dialog.FileName;
             }
         }
 
@@ -323,7 +330,7 @@ namespace NINA.ViewModel {
         private void ScanForIndexFiles() {
             IndexFiles.Clear();
             try {
-                DirectoryInfo di = new DirectoryInfo(CygwinLocation + @"\usr\share\astrometry\data");
+                DirectoryInfo di = new DirectoryInfo(ActiveProfile.PlateSolveSettings.CygwinLocation + @"\usr\share\astrometry\data");
                 if (di.Exists) {
                     foreach (FileInfo f in di.GetFiles("*.fits")) {
                         IndexFiles.Add(f.Name);
@@ -356,6 +363,8 @@ namespace NINA.ViewModel {
         public ICommand OpenPS2FileDiagCommand { get; private set; }
 
         public ICommand OpenASPSFileDiagCommand { get; private set; }
+
+        public ICommand OpenASTAPFileDiagCommand { get; private set; }
 
         public ICommand OpenImageFileDiagCommand { get; private set; }
 
@@ -411,327 +420,6 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ChangeLocale(value);
-                RaisePropertyChanged();
-            }
-        }
-
-        public double ReadNoise {
-            get {
-                return profileService.ActiveProfile.CameraSettings.ReadNoise;
-            }
-            set {
-                profileService.ActiveProfile.CameraSettings.ReadNoise = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double BitDepth {
-            get {
-                return profileService.ActiveProfile.CameraSettings.BitDepth;
-            }
-            set {
-                profileService.ActiveProfile.CameraSettings.BitDepth = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double Offset {
-            get {
-                return profileService.ActiveProfile.CameraSettings.Offset;
-            }
-            set {
-                profileService.ActiveProfile.CameraSettings.Offset = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double FullWellCapacity {
-            get {
-                return profileService.ActiveProfile.CameraSettings.FullWellCapacity;
-            }
-            set {
-                profileService.ActiveProfile.CameraSettings.FullWellCapacity = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double DownloadToDataRatio {
-            get {
-                return profileService.ActiveProfile.CameraSettings.DownloadToDataRatio;
-            }
-            set {
-                profileService.ActiveProfile.CameraSettings.DownloadToDataRatio = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string ImageFilePath {
-            get {
-                return profileService.ActiveProfile.ImageFileSettings.FilePath;
-            }
-            set {
-                profileService.ActiveProfile.ImageFileSettings.FilePath = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string SequenceTemplatePath {
-            get {
-                return profileService.ActiveProfile.SequenceSettings.TemplatePath;
-            }
-            set {
-                profileService.ActiveProfile.SequenceSettings.TemplatePath = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string ImageFilePattern {
-            get {
-                return profileService.ActiveProfile.ImageFileSettings.FilePattern;
-            }
-            set {
-                profileService.ActiveProfile.ImageFileSettings.FilePattern = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string PHD2ServerUrl {
-            get {
-                return profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl;
-            }
-            set {
-                profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string PHD2Path {
-            get => profileService.ActiveProfile.GuiderSettings.PHD2Path;
-            set {
-                profileService.ActiveProfile.GuiderSettings.PHD2Path = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double AutoStretchFactor {
-            get {
-                return profileService.ActiveProfile.ImageSettings.AutoStretchFactor;
-            }
-            set {
-                profileService.ActiveProfile.ImageSettings.AutoStretchFactor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double BlackClipping {
-            get {
-                return profileService.ActiveProfile.ImageSettings.BlackClipping;
-            }
-            set {
-                profileService.ActiveProfile.ImageSettings.BlackClipping = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public bool AnnotateImage {
-            get {
-                return profileService.ActiveProfile.ImageSettings.AnnotateImage;
-            }
-            set {
-                profileService.ActiveProfile.ImageSettings.AnnotateImage = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public bool DebayerImage {
-            get {
-                return profileService.ActiveProfile.ImageSettings.DebayerImage;
-            }
-            set {
-                profileService.ActiveProfile.ImageSettings.DebayerImage = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public PlateSolverEnum PlateSolverType {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.PlateSolverType;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.PlateSolverType = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public BlindSolverEnum BlindSolverType {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.BlindSolverType;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.BlindSolverType = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Epoch EpochType {
-            get {
-                return profileService.ActiveProfile.AstrometrySettings.EpochType;
-            }
-            set {
-                profileService.ActiveProfile.AstrometrySettings.EpochType = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Hemisphere HemisphereType {
-            get {
-                return profileService.ActiveProfile.AstrometrySettings.HemisphereType;
-            }
-            set {
-                profileService.ChangeHemisphere(value);
-
-                RaisePropertyChanged();
-                Latitude = Latitude;
-            }
-        }
-
-        public string CygwinLocation {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.CygwinLocation;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.CygwinLocation = value;
-                ScanForIndexFiles();
-                RaisePropertyChanged();
-            }
-        }
-
-        public string PS2Location {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.PS2Location;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.PS2Location = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string AspsLocation {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.AspsLocation;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.AspsLocation = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double AnsvrSearchRadius {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.SearchRadius;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.SearchRadius = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public int PS2Regions {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.Regions;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.Regions = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double PlateSolveExposureTime {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.ExposureTime;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.ExposureTime = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public FilterInfo PlateSolveFilter {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.Filter;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.Filter = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double PlateSolveThreshold {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.Threshold;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.Threshold = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double PlateSolveRotationTolerance {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.RotationTolerance;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.RotationTolerance = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public WeatherDataEnum WeatherDataType {
-            get {
-                return profileService.ActiveProfile.WeatherDataSettings.WeatherDataType;
-            }
-            set {
-                profileService.ActiveProfile.WeatherDataSettings.WeatherDataType = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string OpenWeatherMapAPIKey {
-            get {
-                return profileService.ActiveProfile.WeatherDataSettings.OpenWeatherMapAPIKey;
-            }
-            set {
-                profileService.ActiveProfile.WeatherDataSettings.OpenWeatherMapAPIKey = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string OpenWeatherMapUrl {
-            get {
-                return profileService.ActiveProfile.WeatherDataSettings.OpenWeatherMapUrl;
-            }
-            set {
-                profileService.ActiveProfile.WeatherDataSettings.OpenWeatherMapUrl = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string AstrometryAPIKey {
-            get {
-                return profileService.ActiveProfile.PlateSolveSettings.AstrometryAPIKey;
-            }
-            set {
-                profileService.ActiveProfile.PlateSolveSettings.AstrometryAPIKey = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public int PHD2ServerPort {
-            get {
-                return profileService.ActiveProfile.GuiderSettings.PHD2ServerPort;
-            }
-            set {
-                profileService.ActiveProfile.GuiderSettings.PHD2ServerPort = value;
                 RaisePropertyChanged();
             }
         }
@@ -907,16 +595,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        public FileTypeEnum FileType {
-            get {
-                return profileService.ActiveProfile.ImageFileSettings.FileType;
-            }
-            set {
-                profileService.ActiveProfile.ImageFileSettings.FileType = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public Color ButtonBackgroundColor {
             get {
                 return profileService.ActiveProfile.ColorSchemaSettings.ButtonBackgroundColor;
@@ -953,26 +631,6 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.ColorSchemaSettings.ButtonForegroundDisabledColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double DitherPixels {
-            get {
-                return profileService.ActiveProfile.GuiderSettings.DitherPixels;
-            }
-            set {
-                profileService.ActiveProfile.GuiderSettings.DitherPixels = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public bool DitherRAOnly {
-            get {
-                return profileService.ActiveProfile.GuiderSettings.DitherRAOnly;
-            }
-            set {
-                profileService.ActiveProfile.GuiderSettings.DitherRAOnly = value;
                 RaisePropertyChanged();
             }
         }
@@ -1089,66 +747,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        public bool AutoMeridianFlip {
-            get {
-                return profileService.ActiveProfile.MeridianFlipSettings.Enabled;
-            }
-            set {
-                profileService.ActiveProfile.MeridianFlipSettings.Enabled = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double MinutesAfterMeridian {
-            get {
-                return profileService.ActiveProfile.MeridianFlipSettings.MinutesAfterMeridian;
-            }
-            set {
-                profileService.ActiveProfile.MeridianFlipSettings.MinutesAfterMeridian = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public bool UseSideOfPier {
-            get {
-                return profileService.ActiveProfile.MeridianFlipSettings.UseSideOfPier;
-            }
-            set {
-                profileService.ActiveProfile.MeridianFlipSettings.UseSideOfPier = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double PauseTimeBeforeMeridian {
-            get {
-                return profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian;
-            }
-            set {
-                profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public int MeridianFlipSettleTime {
-            get {
-                return profileService.ActiveProfile.MeridianFlipSettings.SettleTime;
-            }
-            set {
-                profileService.ActiveProfile.MeridianFlipSettings.SettleTime = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public bool RecenterAfterFlip {
-            get {
-                return profileService.ActiveProfile.MeridianFlipSettings.Recenter;
-            }
-            set {
-                profileService.ActiveProfile.MeridianFlipSettings.Recenter = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public double Latitude {
             get {
                 return profileService.ActiveProfile.AstrometrySettings.Latitude;
@@ -1169,16 +767,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        public string SkyAtlasImageRepository {
-            get {
-                return profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository;
-            }
-            set {
-                profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public AutoUpdateSourceEnum AutoUpdateSource {
             get {
                 return (AutoUpdateSourceEnum)NINA.Properties.Settings.Default.AutoUpdateSource;
@@ -1186,16 +774,6 @@ namespace NINA.ViewModel {
             set {
                 NINA.Properties.Settings.Default.AutoUpdateSource = (int)value;
                 NINA.Properties.Settings.Default.Save();
-                RaisePropertyChanged();
-            }
-        }
-
-        public string SkySurveyCacheDirectory {
-            get {
-                return profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory;
-            }
-            set {
-                profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory = value;
                 RaisePropertyChanged();
             }
         }
@@ -1280,88 +858,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        public bool FocuserUseFilterWheelOffsets {
-            get {
-                return profileService.ActiveProfile.FocuserSettings.UseFilterWheelOffsets;
-            }
-            set {
-                profileService.ActiveProfile.FocuserSettings.UseFilterWheelOffsets = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public int FocuserAutoFocusInitialOffsetSteps {
-            get {
-                return profileService.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps;
-            }
-            set {
-                profileService.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public int FocuserAutoFocusStepSize {
-            get {
-                return profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize;
-            }
-            set {
-                profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public int FocuserAutoFocusExposureTime {
-            get {
-                return profileService.ActiveProfile.FocuserSettings.AutoFocusExposureTime;
-            }
-            set {
-                profileService.ActiveProfile.FocuserSettings.AutoFocusExposureTime = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string TelescopeSnapPortStart {
-            get {
-                return profileService.ActiveProfile.TelescopeSettings.SnapPortStart;
-            }
-            set {
-                profileService.ActiveProfile.TelescopeSettings.SnapPortStart = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string TelescopeSnapPortStop {
-            get {
-                return profileService.ActiveProfile.TelescopeSettings.SnapPortStop;
-            }
-            set {
-                profileService.ActiveProfile.TelescopeSettings.SnapPortStop = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public int TelescopeSettleTime {
-            get {
-                return profileService.ActiveProfile.TelescopeSettings.SettleTime;
-            }
-            set {
-                profileService.ActiveProfile.TelescopeSettings.SettleTime = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double DevicePollingInterval {
-            get {
-                return profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
-            }
-            set {
-                if (value > 0) {
-                    profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
         public LogLevelEnum LogLevel {
             get {
                 return profileService.ActiveProfile.ApplicationSettings.LogLevel;
@@ -1369,56 +865,6 @@ namespace NINA.ViewModel {
             set {
                 profileService.ActiveProfile.ApplicationSettings.LogLevel = value;
                 Logger.SetLogLevel(value);
-                RaisePropertyChanged();
-            }
-        }
-
-        public CameraBulbModeEnum CameraBulbMode {
-            get {
-                return profileService.ActiveProfile.CameraSettings.BulbMode;
-            }
-            set {
-                profileService.ActiveProfile.CameraSettings.BulbMode = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string CameraSerialPort {
-            get {
-                return profileService.ActiveProfile.CameraSettings.SerialPort;
-            }
-            set {
-                profileService.ActiveProfile.CameraSettings.SerialPort = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double CameraPixelSize {
-            get {
-                return profileService.ActiveProfile.CameraSettings.PixelSize;
-            }
-            set {
-                profileService.ActiveProfile.CameraSettings.PixelSize = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public int TelescopeFocalLength {
-            get {
-                return profileService.ActiveProfile.TelescopeSettings.FocalLength;
-            }
-            set {
-                profileService.ActiveProfile.TelescopeSettings.FocalLength = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public ObserveAllCollection<FilterInfo> FilterWheelFilters {
-            get {
-                return profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters;
-            }
-            set {
-                profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters = value;
                 RaisePropertyChanged();
             }
         }
@@ -1431,70 +877,6 @@ namespace NINA.ViewModel {
             }
             set {
                 _selectedFilter = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public RawConverterEnum RawConverter {
-            get {
-                return profileService.ActiveProfile.CameraSettings.RawConverter;
-            }
-            set {
-                profileService.ActiveProfile.CameraSettings.RawConverter = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public int HistogramResolution {
-            get {
-                return profileService.ActiveProfile.ImageSettings.HistogramResolution;
-            }
-            set {
-                profileService.ActiveProfile.ImageSettings.HistogramResolution = value;
-                RaisePropertyChanged();
-                RaisePropertyChanged(nameof(HistogramMajorStep));
-                RaisePropertyChanged(nameof(HistogramMinorStep));
-            }
-        }
-
-        public double HistogramMajorStep {
-            get {
-                return HistogramResolution / 2;
-            }
-        }
-
-        public double HistogramMinorStep {
-            get {
-                return HistogramResolution / 4;
-            }
-        }
-
-        public int GuiderSettleTime {
-            get {
-                return profileService.ActiveProfile.GuiderSettings.SettleTime;
-            }
-            set {
-                profileService.ActiveProfile.GuiderSettings.SettleTime = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double GuiderSettlePixels {
-            get {
-                return profileService.ActiveProfile.GuiderSettings.SettlePixels;
-            }
-            set {
-                profileService.ActiveProfile.GuiderSettings.SettlePixels = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public int GuiderSettleTimeout {
-            get {
-                return profileService.ActiveProfile.GuiderSettings.SettleTimeout;
-            }
-            set {
-                profileService.ActiveProfile.GuiderSettings.SettleTimeout = value;
                 RaisePropertyChanged();
             }
         }

@@ -54,12 +54,19 @@ namespace NINA.Utility.Profile {
             threshold = 1.0d;
             rotationTolerance = 1.0d;
             filter = null;
+            downSampleFactor = 2;
+            maxObjects = 500;
 
             var defaultASPSLocation = Environment.ExpandEnvironmentVariables(@"%programfiles(x86)%\PlateSolver\PlateSolver.exe");
             aspsLocation =
                 File.Exists(defaultASPSLocation)
                 ? defaultASPSLocation
                 : string.Empty;
+
+            var defaultASTAPLocation = Environment.ExpandEnvironmentVariables(@"%programfiles%\astap\astap.exe"); aspsLocation =
+            aSTAPLocation = File.Exists(defaultASTAPLocation)
+                 ? defaultASTAPLocation
+                 : string.Empty;
         }
 
         [DataMember]
@@ -212,6 +219,45 @@ namespace NINA.Utility.Profile {
             }
             set {
                 aspsLocation = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string aSTAPLocation;
+
+        [DataMember]
+        public string ASTAPLocation {
+            get {
+                return Environment.ExpandEnvironmentVariables(aSTAPLocation);
+            }
+            set {
+                aSTAPLocation = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int downSampleFactor;
+
+        [DataMember]
+        public int DownSampleFactor {
+            get {
+                return downSampleFactor;
+            }
+            set {
+                downSampleFactor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int maxObjects;
+
+        [DataMember]
+        public int MaxObjects {
+            get {
+                return maxObjects;
+            }
+            set {
+                maxObjects = value;
                 RaisePropertyChanged();
             }
         }

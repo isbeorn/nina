@@ -39,5 +39,8 @@ namespace NINA.Utility.Profile {
         double Threshold { get; set; }
         double RotationTolerance { get; set; }
         string AspsLocation { get; set; }
+        string ASTAPLocation { get; set; }
+        int DownSampleFactor { get; set; }
+        int MaxObjects { get; set; }
     }
 }

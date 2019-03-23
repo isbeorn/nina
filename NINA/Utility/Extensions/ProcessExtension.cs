@@ -42,8 +42,14 @@ namespace NINA.Utility.Extensions {
             var tcs = new TaskCompletionSource<object>();
             process.EnableRaisingEvents = true;
             process.Exited += (sender, args) => tcs.TrySetResult(null);
-            if (cancellationToken != default(CancellationToken))
-                cancellationToken.Register(() => tcs.TrySetCanceled());
+            if (cancellationToken != default(CancellationToken)) {
+                cancellationToken.Register(() => {
+                    tcs.TrySetCanceled();
+                    if (!process.HasExited) {
+                        process.Kill();
+                    }
+                });
+            }
 
             return tcs.Task;
         }

@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.HistogramView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -50,12 +49,12 @@
                     IsZoomEnabled="False"
                     MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
                     MajorGridlineStyle="Solid"
-                    MajorStep="{Binding Source={StaticResource AppVM}, Path=OptionsVM.HistogramMajorStep}"
-                    Maximum="{Binding Source={StaticResource AppVM}, Path=OptionsVM.HistogramResolution}"
+                    MajorStep="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.HistogramMajorStep}"
+                    Maximum="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.HistogramResolution}"
                     Minimum="0"
                     MinorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=50}"
                     MinorGridlineStyle="Solid"
-                    MinorStep="{Binding Source={StaticResource AppVM}, Path=OptionsVM.HistogramMinorStep}"
+                    MinorStep="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.HistogramMinorStep}"
                     Position="Bottom"
                     TextColor="Transparent" />
             </oxy:Plot.Axes>

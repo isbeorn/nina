@@ -1,17 +1,28 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>Version 1.8</title>
+    <title>Version 1.9</title>
 </head>
 <body>
 
-    <h1 id="version-1.8">Version 1.8</h1>
+    <h1 id="version-1.9">Version 1.9</h1>
 <h2 id="features">Features</h2>
+<h3 id="plate-solving">Plate Solving</h3>
+<ul>
+<li>Added interface for ASTAP, the Astrometric STAcking Program, astrometric solver and FITS viewer as a plate solver</li>
+</ul>
+<h2 id="improvements">Improvements</h2>
+<ul>
+<li>If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips</li>
+<li>Added options to adjust downsample factor and maximum number of considered stars for ASTAP and local astrometry.net solvers</li>
+</ul>
+<h1 id="version-1.8">Version 1.8</h1>
+<h2 id="features-1">Features</h2>
 <h3 id="sequence">Sequence</h3>
 <ul>
 <li>Enable/Disable sequence entries</li>
 </ul>
-<h3 id="plate-solving">Plate Solving</h3>
+<h3 id="plate-solving-1">Plate Solving</h3>
 <ul>
 <li>Added interface for All Sky Platesolver</li>
 </ul>
@@ -66,10 +77,10 @@ the background itself will be moved like in an orrery</li>
 <li>Log Level will now be set on application start based on profile settings.</li>
 <li>ASI Cameras will not shut down their cooling and progress on opening multiple instances of NINA</li>
 <li>In some cases the application stayed open in the background after closing. This should not happen anymore</li>
-<li><span class="math">DATETime</span> and <span class="math">TIME</span> will now use timestamp on exposure start, not on exposure end</li>
+<li><code>$$DATETime$$</code> and <code>$$TIME$$</code> will now use timestamp on exposure start, not on exposure end</li>
 <li>Fixed Meridian Offset default values for plate solved polar alignment</li>
 </ul>
-<h2 id="improvements">Improvements</h2>
+<h2 id="improvements-1">Improvements</h2>
 <ul>
 <li>Clear button for PHD2 Graph</li>
 <li>Hide camera cooler controls when not available for current camera model</li>
@@ -103,6 +114,7 @@ the background itself will be moved like in an orrery</li>
 </li>
 <li>Improved Framing Assistant and Sequence Target Textboxes by giving up to 50 target hints based on input to select from</li>
 <li>Framing Assistant now can annotate DSO</li>
+<li>Sensor offset is now available as an image file name token (<code>$$OFFSET$$</code>)</li>
 <li>Attempt to start PHD2 and connect all equipment when connecting to guider and PHD2 is not running</li>
 <li>Adaptive Cooling: Duration for cool/warm camera is now a minimum duration. In case the cooler cannot keep up with the set duration, the application will wait for the camera to reach the checkpoints instead of just continuing setting new targets without the camera having any chance to reach those in the timeframe.</li>
 <li>Automatically import filter wheel filters to the profile on connection when profile filter list is still empty</li>
@@ -110,6 +122,23 @@ the background itself will be moved like in an orrery</li>
 <li>Removed Altitude Side combobox from plate solved polar alignment. It will be automatically determined based on alt/az coordinates.</li>
 <li>Changed log file format. Each application start will write to a separate log file for better distinction</li>
 <li>Improved XISF save speed and resulting file size by not embedding the image as base64 string, but instead as attached raw byte data</li>
+<li>Additional FITS keywords are now added to images if their associated data is available:
+<ul>
+<li><code>OBJECT</code>: The name of the target, as supplied in the active Sequence</li>
+<li><code>DEC</code> and <code>RA</code>: The DEC and RA of the telescope at the time of the exposure</li>
+<li><code>INSTRUME</code>: The name of the connected camera</li>
+<li><code>OFFSET</code>: The sensor offset, if applicable</li>
+<li><code>FWHEEL</code>: Name of the connected filter wheel</li>
+<li><code>FOCNAME</code>: Name of the connected focuser</li>
+<li><code>FOCPOS</code> and <code>FOCUSPOS</code>: Position of the focuser, in steps</li>
+<li><code>FOCUSSZ</code>: Size of a focuser step, in microns</li>
+<li><code>FOCTEMP</code> and <code>FOCUSTEM</code>: Temperature reported by the focuser</li>
+<li><code>ROTNAME</code> Name of the connected rotator</li>
+<li><code>ROTATOR</code> and <code>ROTATANG</code>: Angle of the rotator</li>
+<li><code>ROTSTPSZ</code> Minimum rotator step size, in degrees</li>
+<li>Applicable XISF Image Property analogs of the above, as defined by XISF 1.0 Section 11.5.3</li>
+</ul>
+</li>
 </ul>
 <h2 id="special-thanks">Special Thanks</h2>
 <p>The N.I.N.A. team would like to thank</p>
@@ -122,7 +151,7 @@ the background itself will be moved like in an orrery</li>
 Thank you for your support!</p>
 <hr />
 <h1 id="version-1.7">Version 1.7</h1>
-<h2 id="features-1">Features</h2>
+<h2 id="features-2">Features</h2>
 <h3 id="framing-assistant-1">Framing Assistant</h3>
 <ul>
 <li>Mosaic planning for framing assistant</li>
@@ -151,7 +180,7 @@ Thank you for your support!</p>
 </ul>
 <h3 id="settings">Settings</h3>
 <ul>
-<li>Added ImageParameter <span class="math">RMSARCSEC</span> and <span class="math">FOCUSPOSITION</span></li>
+<li>Added ImageParameter <code>$$RMSARCSEC$$</code> and <code>$$FOCUSPOSITION$$</code></li>
 <li>Latitude and Longitude can now be synced from application to telescope and vica versa (when supported).</li>
 <li>Serial Relay (via USB) interaction for Nikon Bulb</li>
 </ul>
@@ -160,7 +189,7 @@ Thank you for your support!</p>
 <li>Fixed Canon issue that a second exposure is accidentally triggered, causing the camera to be stuck</li>
 <li>Fixed memory leak when using Free Image RAW Converter</li>
 </ul>
-<h2 id="improvements-1">Improvements</h2>
+<h2 id="improvements-2">Improvements</h2>
 <ul>
 <li>Guider is also connected when pushing &quot;Connect All&quot;</li>
 <li>Changed FilterWheel UI for switching filters</li>

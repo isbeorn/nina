@@ -828,4 +828,14 @@ Calculated HFR: {2}
     <s:String x:Key="LblBeta">Beta</s:String>
     <s:String x:Key="LblNightly">Nightly</s:String>
     <s:String x:Key="LblChecksumError">Checksum does not match expected value. Downloaded file may be corrupted!</s:String>
+    <s:String x:Key="LblASTAP">ASTAP, the Astrometric STAcking Program, astrometric solver and FITS viewer</s:String>
+    <s:String x:Key="LblASTAPShort">ASTAP</s:String>
+    <s:String x:Key="LblASTAPNotFound">ASTAP exe not found</s:String>
+    <s:String x:Key="LblASTAPDirectory">ASTAP Location</s:String>
+    <s:String x:Key="LblSolving">Solving...</s:String>
+    <s:String x:Key="LblASPSNotFound">ASPS exe not found</s:String>
+    <s:String x:Key="LblPlatesolveNoCoordinates">No reference coordinates available</s:String>
+    <s:String x:Key="LblUseBlindSolveNoCoordinatesRollover">No reference coordinates available. Should the blind solver be used instead?</s:String>
+    <s:String x:Key="LblDownSampleFactor">Downsample factor</s:String>
+    <s:String x:Key="LblMaxObjects">Maximum objects</s:String>
 </ResourceDictionary>
