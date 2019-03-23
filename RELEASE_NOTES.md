@@ -52,6 +52,8 @@
 - In some cases the application stayed open in the background after closing. This should not happen anymore
 - `$$DATETime$$` and `$$TIME$$` will now use timestamp on exposure start, not on exposure end
 - Fixed Meridian Offset default values for plate solved polar alignment 
+- On sequence target guiding will be paused, prior to slewing to a new target
+- Autofocus will not trigger a pause/resume command anymore, as this was not reliable in some cases. Instead PHD2 is stopped and started, similar to what is done during meridian flip.
 
 ## Improvements
 
