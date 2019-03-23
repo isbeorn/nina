@@ -33,10 +33,10 @@ namespace NINA.Utility.Http {
     internal class HttpUploadFile : HttpRequest<string> {
         public string ContentType { get; }
         public NameValueCollection NameValueCollection { get; }
-        public MemoryStream File { get; }
+        public Stream File { get; }
         public string ParamName { get; }
 
-        public HttpUploadFile(string url, MemoryStream file, string paramName, string contentType, NameValueCollection nvc) : base(url) {
+        public HttpUploadFile(string url, Stream file, string paramName, string contentType, NameValueCollection nvc) : base(url) {
             this.File = file;
             this.ParamName = paramName;
             this.ContentType = contentType;

@@ -7,6 +7,7 @@
 
 ## Improvements
 - If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips
+- Added options to adjust downsample factor and maximum number of considered stars for ASTAP and local astrometry.net solvers
 
 # Version 1.8
 
