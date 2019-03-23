@@ -430,7 +430,7 @@ namespace NINA.Model.MyTelescope {
                 PierSide val = PierSide.pierUnknown;
                 try {
                     if (Connected && _canGetSideOfPier) {
-                        val = _telescope.SideOfPier;
+                        val = (PierSide)_telescope.SideOfPier;
                     }
                 } catch (PropertyNotImplementedException) {
                     _canGetSideOfPier = false;
@@ -440,7 +440,7 @@ namespace NINA.Model.MyTelescope {
             set {
                 try {
                     if (Connected && CanSetPierSide) {
-                        _telescope.SideOfPier = value;
+                        _telescope.SideOfPier = (ASCOM.DeviceInterface.PierSide)value;
                         RaisePropertyChanged();
                     }
                 } catch (PropertyNotImplementedException ex) {
