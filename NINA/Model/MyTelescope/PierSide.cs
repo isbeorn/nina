@@ -21,14 +21,18 @@
 
 #endregion "copyright"
 
-namespace NINA.Utility.Profile {
+namespace NINA.Model.MyTelescope {
+    
+    public enum PierSide {
+    
+        //Telescope is East of Pier
+        pierEast = 0,
 
-    public interface IMeridianFlipSettings : ISettings {
-        bool Enabled { get; set; }
-        double MinutesAfterMeridian { get; set; }
-        double PauseTimeBeforeMeridian { get; set; }
-        bool Recenter { get; set; }
-        int SettleTime { get; set; }
-        bool UseSideOfPier { get; set; }
+        //Telescope Side of Pier is Unknown
+        pierUnknown = -1,
+
+        //Telescope is West of Pier
+        pierWest = 1
+        
     }
 }
