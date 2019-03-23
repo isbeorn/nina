@@ -60,6 +60,11 @@ namespace NINA.Utility.Profile {
                 File.Exists(defaultASPSLocation)
                 ? defaultASPSLocation
                 : string.Empty;
+
+            var defaultASTAPLocation = Environment.ExpandEnvironmentVariables(@"%programfiles%\astap\astap.exe"); aspsLocation =
+            aSTAPLocation = File.Exists(defaultASTAPLocation)
+                 ? defaultASTAPLocation
+                 : string.Empty;
         }
 
         [DataMember]
@@ -212,6 +217,19 @@ namespace NINA.Utility.Profile {
             }
             set {
                 aspsLocation = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string aSTAPLocation;
+
+        [DataMember]
+        public string ASTAPLocation {
+            get {
+                return Environment.ExpandEnvironmentVariables(aSTAPLocation);
+            }
+            set {
+                aSTAPLocation = value;
                 RaisePropertyChanged();
             }
         }
