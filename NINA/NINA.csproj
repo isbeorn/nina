@@ -305,7 +305,6 @@
     <Compile Include="Model\MyGuider\SynchronizedPHD2GuiderService.cs" />
     <Compile Include="Model\MyTelescope\GuideDirections.cs" />
     <Compile Include="Model\MyTelescope\PierSide.cs" />
-    <Compile Include="Model\MyTelescope\PierSide.cs" />
     <Compile Include="PlateSolving\ASTAPSolver.cs" />
     <Compile Include="PlateSolving\CLISolver.cs" />
     <Compile Include="PlateSolving\PlateSolveParameter.cs" />
