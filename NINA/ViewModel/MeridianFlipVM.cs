@@ -222,8 +222,22 @@ namespace NINA.ViewModel {
         }
 
         public static bool ShouldFlip(IProfileService profileService, double exposureTime, TelescopeInfo telescopeInfo) {
-            if (profileService.ActiveProfile.MeridianFlipSettings.Enabled) {
+            if (profileService.ActiveProfile.MeridianFlipSettings.Enabled && !profileService.ActiveProfile.MeridianFlipSettings.UseSideOfPier) {
                 if (telescopeInfo.Connected == true) {
+                    if ((telescopeInfo.TimeToMeridianFlip - (profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian / 60)) < (exposureTime / 60 / 60)) {
+                        return true;
+                    }
+                }
+            }
+            else if (profileService.ActiveProfile.MeridianFlipSettings.Enabled && profileService.ActiveProfile.MeridianFlipSettings.UseSideOfPier) {
+                var pierside = telescopeInfo.SideOfPier;
+                
+                // Logging if reported side of pier is East, as users may be wondering why Meridian Flip didn't occur
+                if(pierside==PierSide.pierEast) {
+                    Logger.Trace("Telescope reports East Side of Pier, Automated Flip will not be performed.");
+                }
+                
+                if (telescopeInfo.Connected == true && pierside != PierSide.pierEast) {
                     if ((telescopeInfo.TimeToMeridianFlip - (profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian / 60)) < (exposureTime / 60 / 60)) {
                         return true;
                     }

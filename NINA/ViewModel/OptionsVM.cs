@@ -1017,6 +1017,16 @@ namespace NINA.ViewModel {
             }
         }
 
+        public bool UseSideOfPier {
+            get {
+                return profileService.ActiveProfile.MeridianFlipSettings.UseSideOfPier;
+            }
+            set {
+                profileService.ActiveProfile.MeridianFlipSettings.UseSideOfPier = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public double PauseTimeBeforeMeridian {
             get {
                 return profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian;

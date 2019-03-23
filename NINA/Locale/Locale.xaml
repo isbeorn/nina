@@ -170,6 +170,7 @@
     <s:String x:Key="LblAutoMeridianFlip">Auto Meridian Flip</s:String>
     <s:String x:Key="LblEnabled">Enabled</s:String>
     <s:String x:Key="LblMinutesAfterMeridian">Minutes after Meridian</s:String>
+    <s:String x:Key="LblUseSideOfPier">Use Telescope Side of Pier</s:String>
     <s:String x:Key="LblRecenterAfterFlip">Recenter after Flip</s:String>
     <s:String x:Key="LblScopeSettleTimeAfterFlip">Scope settle time after flip (seconds)</s:String>
     <s:String x:Key="LblPlateSolving">Plate Solving</s:String>
