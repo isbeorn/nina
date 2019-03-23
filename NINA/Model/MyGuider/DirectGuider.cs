@@ -13,7 +13,6 @@ using System.Windows;
 namespace NINA.Model.MyGuider {
 
     public class DirectGuider : BaseINPC, IGuider, ITelescopeConsumer {
-
         private IProfileService profileService;
         private ITelescopeMediator telescopeMediator;
 
@@ -103,10 +102,9 @@ namespace NINA.Model.MyGuider {
 
         public async Task<bool> Dither(CancellationToken ct) {
             State = "Dithering...";
-            // TODO: UI element to let user specify duration
-            int Duration = 2000;
 
-            // TODO: Separate PHD2 settings from Direct Guider Settings from overall Guiding settings
+            int Duration = profileService.ActiveProfile.GuiderSettings.DirectGuideDuration * 1000;
+
             bool DitherRAOnly = profileService.ActiveProfile.GuiderSettings.DitherRAOnly;
             int SettleTime = profileService.ActiveProfile.GuiderSettings.SettleTime * 1000;
 
@@ -132,11 +130,11 @@ namespace NINA.Model.MyGuider {
                     if (raDirection) {
                         direction = GuideDirections.guideEast;
                     }
-                //Adjust Pulse Duration for RA only dithering. Otherwise RA only dithering will likely provide terrible results.
-                Duration = (int)Math.Round(Duration*(0.5+random.NextDouble()));
-                telescopeMediator.PulseGuide(direction, Duration);
-                await Utility.Utility.Delay(TimeSpan.FromMilliseconds(Duration), ct);
-                await Utility.Utility.Delay(TimeSpan.FromMilliseconds(SettleTime), ct);
+                    //Adjust Pulse Duration for RA only dithering. Otherwise RA only dithering will likely provide terrible results.
+                    Duration = (int)Math.Round(Duration * (0.5 + random.NextDouble()));
+                    telescopeMediator.PulseGuide(direction, Duration);
+                    await Utility.Utility.Delay(TimeSpan.FromMilliseconds(Duration), ct);
+                    await Utility.Utility.Delay(TimeSpan.FromMilliseconds(SettleTime), ct);
                 }
             }
             State = "Idle";
