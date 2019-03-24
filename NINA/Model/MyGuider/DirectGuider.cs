@@ -39,6 +39,8 @@ namespace NINA.Model.MyGuider {
                         return true;
                     }
                     else {
+                        Notification.ShowWarning(Locale.Loc.Instance["LblDirectGuiderTelescopeDisconnect"]);
+                        Logger.Trace("Telescope is disconnected. Direct Guide will disconnect. Dither will not occur.");
                         return Disconnect();
                     }
                 }
@@ -72,7 +74,14 @@ namespace NINA.Model.MyGuider {
                 Connected = true;
             }
             else {
-                Notification.ShowWarning(Locale.Loc.Instance["LblDirectGuiderConnectionFail"]);
+                var telescopeConnect = await telescopeMediator.Connect();
+                if (telescopeConnect) {
+                    Connected = true;
+                }
+                else {
+                    Notification.ShowWarning(Locale.Loc.Instance["LblDirectGuiderConnectionFail"]);
+                    Connected = false;
+                }
             }
 
             return Connected;
@@ -110,8 +119,6 @@ namespace NINA.Model.MyGuider {
 
             //In theory should not be hit as guider gets disconnected when telescope disconnects
             if (!telescopeInfo.Connected) {
-                Logger.Trace("Telescope is disconnected. Direct Guide dither will not occur.");
-                State = "Disconnected";
                 return false;
             }
             else {
