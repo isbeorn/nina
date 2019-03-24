@@ -24,7 +24,9 @@
 namespace NINA.Utility.Profile {
 
     public interface ITelescopeSettings : ISettings {
+        string Name { get; set; }
         int FocalLength { get; set; }
+        double FocalRatio { get; set; }
         string Id { get; set; }
         int SettleTime { get; set; }
         string SnapPortStart { get; set; }

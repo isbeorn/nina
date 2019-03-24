@@ -487,7 +487,9 @@ namespace NINA.Utility.Profile {
                 p.SequenceSettings.TemplatePath = Properties.Settings.Default.SequenceTemplatePath;
                 p.SequenceSettings.EstimatedDownloadTime = Properties.Settings.Default.EstimatedDownloadTime;
 
+                p.TelescopeSettings.Name = Properties.Settings.Default.TelescopeName;
                 p.TelescopeSettings.FocalLength = Properties.Settings.Default.TelescopeFocalLength;
+                p.TelescopeSettings.FocalRatio = Properties.Settings.Default.TelescopeFocalRatio;
                 p.TelescopeSettings.Id = Properties.Settings.Default.TelescopeId;
                 p.TelescopeSettings.SnapPortStart = Properties.Settings.Default.TelescopeSnapPortStart;
                 p.TelescopeSettings.SnapPortStop = Properties.Settings.Default.TelescopeSnapPortStop;

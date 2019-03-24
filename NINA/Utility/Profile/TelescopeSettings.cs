@@ -42,6 +42,19 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        private string name = "Generic Telescope";
+
+        [DataMember]
+        public string Name {
+            get {
+                return name;
+            }
+            set {
+                name = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private int focalLength = 800;
 
         [DataMember]
@@ -51,6 +64,19 @@ namespace NINA.Utility.Profile {
             }
             set {
                 focalLength = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double focalRatio = 7.0;
+
+        [DataMember]
+        public double FocalRatio {
+            get {
+                return focalRatio;
+            }
+            set {
+                focalRatio = value;
                 RaisePropertyChanged();
             }
         }

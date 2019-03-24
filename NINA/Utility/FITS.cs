@@ -1,8 +1,6 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
-
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
     N.I.N.A. is free software: you can redistribute it and/or modify
@@ -18,6 +16,11 @@
     You should have received a copy of the GNU General Public License
     along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
 */
+
+/*
+ * Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+ * Copyright 2019 Dale Ghent <daleg@elemental.org>
+ */
 
 #endregion "copyright"
 
@@ -38,6 +41,9 @@ namespace NINA.Utility {
 
         public FITS(ushort[] data, int width, int height, string imageType, double exposuretime) {
             this._imageData = data;
+
+            DateTime now = DateTime.Now;
+
             AddHeaderCard("SIMPLE", true, "C# FITS");
             AddHeaderCard("BITPIX", 16, "");
             AddHeaderCard("NAXIS", 2, "Dimensionality");
@@ -45,9 +51,10 @@ namespace NINA.Utility {
             AddHeaderCard("NAXIS2", height, "");
             AddHeaderCard("BZERO", 32768, "");
             AddHeaderCard("EXTEND", true, "Extensions are permitted");
-            AddHeaderCard("DATE-OBS", DateTime.UtcNow.ToString("s", System.Globalization.CultureInfo.InvariantCulture), "");
-            AddHeaderCard("IMAGETYP", imageType, "");
-            AddHeaderCard("EXPOSURE", exposuretime, "");
+            AddHeaderCard("DATE-OBS", now.ToUniversalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ss.fff", System.Globalization.CultureInfo.InvariantCulture), "Time of observation (UTC)");
+            AddHeaderCard("DATE-LOC", now.ToLocalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ss.fff", System.Globalization.CultureInfo.InvariantCulture), "Time of observation (local)");
+            AddHeaderCard("IMAGETYP", imageType, "Type of exposure");
+            AddHeaderCard("EXPOSURE", exposuretime, "[s] Exposure duration");
         }
 
         public void AddHeaderCard(string keyword, string value, string comment) {
