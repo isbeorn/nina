@@ -338,8 +338,7 @@ namespace NINA.ViewModel {
                         IndexFiles.Add(f.Name);
                     }
                 }
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Logger.Error(ex);
             }
         }
