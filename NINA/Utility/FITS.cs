@@ -112,6 +112,12 @@ namespace NINA.Utility {
         /// <param name="value">Keyword string value</param>
         /// <param name="comment">Description of Keyword</param>
         private void EncodeCharacterStringHeader(string keyword, string value, string comment) {
+            /*
+             * FITS Standard 4.0, Section 4.2.1:
+             * A single quote is represented within a string as two successive single quotes
+             */
+            value = value.Replace(@"'", @"''");
+
             var encodedValue = $"'{value}'".PadRight(20);
             EncodeHeader(keyword, encodedValue, comment);
         }
