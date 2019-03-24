@@ -476,6 +476,8 @@ namespace NINA.ViewModel {
 
                 CalculateETA();
 
+                await this.guiderMediator.StopGuiding(ct);
+
                 /* delay sequence start by given amount */
                 await DelaySequence(csl, progress);
 
