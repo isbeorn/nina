@@ -38,7 +38,7 @@ namespace NINA.Model.MyGuider {
                     }
                     else {
                         Notification.ShowWarning(Locale.Loc.Instance["LblDirectGuiderTelescopeDisconnect"]);
-                        Logger.Trace("Telescope is disconnected. Direct Guide will disconnect. Dither will not occur.");
+                        Logger.Warning("Telescope is disconnected. Direct Guide will disconnect. Dither will not occur.");
                         return Disconnect();
                     }
                 }
