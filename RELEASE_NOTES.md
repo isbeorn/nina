@@ -12,6 +12,15 @@
 ## Improvements
 - If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips
 - Added options to adjust downsample factor and maximum number of considered stars for ASTAP and local astrometry.net solvers
+- All FITS keywords now have descriptive comments with units of measurment noted if applicable
+- FITS keyword `DATE-OBS` now has millisecond resolution, eg: `2019-03-24T04:04:55.045`
+- Additional FITS keywords are now added to images if their associated data is available:
+	- `DATE-LOC`: Date and time of exposure adjusted for local time
+	- `FOCRATIO`: Focal ratio of the telescope, user-configurable under Options->Equipment->Telescope
+	- `SET-TEMP`: The configured CCD cooling setpoint
+	- `SITEELEV`: Elevation of the observing site, in meters
+	- `SWCREATE`: Contains `N.I.N.A. <version> <architecture>`
+	- `TELESCOP`: Telescope name if provided under Options->Equipment->Telescope. Falls back to ASCOM mount driver name
 
 # Version 1.8
 
@@ -67,6 +76,8 @@
 - In some cases the application stayed open in the background after closing. This should not happen anymore
 - `$$DATETime$$` and `$$TIME$$` will now use timestamp on exposure start, not on exposure end
 - Fixed Meridian Offset default values for plate solved polar alignment 
+- On sequence target guiding will be paused, prior to slewing to a new target
+- Autofocus will not trigger a pause/resume command anymore, as this was not reliable in some cases. Instead PHD2 is stopped and started, similar to what is done during meridian flip.
 
 ## Improvements
 

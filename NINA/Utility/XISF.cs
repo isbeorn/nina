@@ -1,8 +1,6 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
-
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
     N.I.N.A. is free software: you can redistribute it and/or modify
@@ -18,6 +16,11 @@
     You should have received a copy of the GNU General Public License
     along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
 */
+
+/*
+ * Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+ * Copyright 2019 Dale Ghent <daleg@elemental.org>
+ */
 
 #endregion "copyright"
 
@@ -277,7 +280,7 @@ namespace NINA.Utility {
             Image = image;
             Xisf.Add(image);
 
-            AddImageFITSKeyword("IMAGETYP", imageType);
+            AddImageFITSKeyword("IMAGETYP", imageType, "Type of exposure");
         }
 
         /// <summary>
@@ -368,7 +371,7 @@ namespace NINA.Utility {
 
             public static class Location {
                 public static readonly string Namespace = Observation.Namespace + "Location:";
-                public static readonly string[] Elevation = { Namespace + nameof(Elevation), "Float64" };
+                public static readonly string[] Elevation = { Namespace + nameof(Elevation), "Float64", "SITEELEV" };
                 public static readonly string[] Latitude = { Namespace + nameof(Latitude), "Float64", "SITELAT" };
                 public static readonly string[] Longitude = { Namespace + nameof(Longitude), "Float64", "SITELONG" };
                 public static readonly string[] Name = { Namespace + nameof(Name), "String" };
@@ -439,7 +442,7 @@ namespace NINA.Utility {
                 public static readonly string[] Aperture = { Namespace + nameof(Aperture), "Float32" };
                 public static readonly string[] CollectingArea = { Namespace + nameof(CollectingArea), "Float32" };
                 public static readonly string[] FocalLength = { Namespace + nameof(FocalLength), "Float32", "FOCALLEN" };
-                public static readonly string[] Name = { Namespace + nameof(Name), "String" };
+                public static readonly string[] Name = { Namespace + nameof(Name), "String", "TELESCOP" };
             }
         }
 

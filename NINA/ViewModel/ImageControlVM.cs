@@ -1,8 +1,6 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
-
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
     N.I.N.A. is free software: you can redistribute it and/or modify
@@ -18,6 +16,11 @@
     You should have received a copy of the GNU General Public License
     along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
 */
+
+/*
+ * Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+ * Copyright 2019 Dale Ghent <daleg@elemental.org>
+ */
 
 #endregion "copyright"
 
@@ -782,38 +785,61 @@ namespace NINA.ViewModel {
                     parameters.ExposureTime
                 );
 
-                f.AddHeaderCard("FOCALLEN", profileService.ActiveProfile.TelescopeSettings.FocalLength, "");
-                f.AddHeaderCard("XPIXSZ", profileService.ActiveProfile.CameraSettings.PixelSize, "");
-                f.AddHeaderCard("YPIXSZ", profileService.ActiveProfile.CameraSettings.PixelSize, "");
-                f.AddHeaderCard("SITELAT", profileService.ActiveProfile.AstrometrySettings.Latitude, "Observation site latitude");
-                f.AddHeaderCard("SITELONG", profileService.ActiveProfile.AstrometrySettings.Longitude, "Observation site longitude");
+                /*
+                 * First we see if the user manually gave their telescope a name. If not, we default to using the ASCOM-provided driver name.
+                 */
+                string telescopeName = string.Empty;
+                if (!string.IsNullOrEmpty(profileService.ActiveProfile.TelescopeSettings.Name) || !string.IsNullOrWhiteSpace(profileService.ActiveProfile.TelescopeSettings.Name)) {
+                    telescopeName = profileService.ActiveProfile.TelescopeSettings.Name;
+                } else if (telescopeInfo.Connected) {
+                    telescopeName = telescopeInfo.Name;
+                }
+
+                if (telescopeName != string.Empty) {
+                    f.AddHeaderCard("TELESCOP", telescopeName, "Name of telescope");
+                }
+
+                f.AddHeaderCard("FOCALLEN", profileService.ActiveProfile.TelescopeSettings.FocalLength, "[mm] Focal length");
+
+                if (!double.IsNaN(profileService.ActiveProfile.TelescopeSettings.FocalRatio) && profileService.ActiveProfile.TelescopeSettings.FocalRatio > 0) {
+                    f.AddHeaderCard("FOCRATIO", profileService.ActiveProfile.TelescopeSettings.FocalRatio, "Focal ratio");
+                }
+
+                f.AddHeaderCard("XPIXSZ", profileService.ActiveProfile.CameraSettings.PixelSize, "[um] Pixel X axis size");
+                f.AddHeaderCard("YPIXSZ", profileService.ActiveProfile.CameraSettings.PixelSize, "[um] Pixel Y axis size");
+                f.AddHeaderCard("SITELAT", profileService.ActiveProfile.AstrometrySettings.Latitude, "[deg] Observation site latitude");
+                f.AddHeaderCard("SITELONG", profileService.ActiveProfile.AstrometrySettings.Longitude, "[deg] Observation site longitude");
+
+                if (!double.IsNaN(telescopeInfo.SiteElevation)) {
+                    f.AddHeaderCard("SITEELEV", telescopeInfo.SiteElevation, "[m] Observation site elevation");
+                }
 
                 if (filterWheelInfo.Connected) {
                     if (!string.IsNullOrEmpty(filterWheelInfo.Name) && !string.IsNullOrWhiteSpace(filterWheelInfo.Name)) {
                         /* fits4win */
-                        f.AddHeaderCard("FWHEEL", filterWheelInfo.Name, "");
+                        f.AddHeaderCard("FWHEEL", filterWheelInfo.Name, "Filter Wheel name");
 
                         if (!string.IsNullOrEmpty(parameters.FilterName)) {
-                            f.AddHeaderCard("FILTER", parameters.FilterName, "");
+                            f.AddHeaderCard("FILTER", parameters.FilterName, "Active filter name");
                         }
                     }
                 }
 
                 if (!string.IsNullOrEmpty(cameraInfo.Name)) {
-                    f.AddHeaderCard("INSTRUME", cameraInfo.Name, "");
+                    f.AddHeaderCard("INSTRUME", cameraInfo.Name, "Imaging instrument name");
                 }
 
                 if (cameraInfo.BinX > 0) {
-                    f.AddHeaderCard("XBINNING", cameraInfo.BinX, "");
+                    f.AddHeaderCard("XBINNING", cameraInfo.BinX, "X axis binning factor");
                 }
                 if (cameraInfo.BinY > 0) {
-                    f.AddHeaderCard("YBINNING", cameraInfo.BinY, "");
+                    f.AddHeaderCard("YBINNING", cameraInfo.BinY, "Y axis binning factor");
                 }
-                f.AddHeaderCard("EGAIN", cameraInfo.Gain, "");
+                f.AddHeaderCard("EGAIN", cameraInfo.Gain, "Sensor gain");
 
                 if (cameraInfo.Offset >= 0) {
                     /* SharpCap */
-                    f.AddHeaderCard("OFFSET", cameraInfo.Offset, "");
+                    f.AddHeaderCard("OFFSET", cameraInfo.Offset, "Sensor gain offset");
                 }
 
                 if (!string.IsNullOrEmpty(parameters.TargetName) || !string.IsNullOrWhiteSpace(parameters.TargetName)) {
@@ -821,63 +847,69 @@ namespace NINA.ViewModel {
                 }
 
                 if (telescopeInfo.Connected) {
-                    f.AddHeaderCard("RA", Astrometry.HoursToDegrees(telescopeInfo.RightAscension), "[deg] Telescope pointing RA");
-                    f.AddHeaderCard("DEC", telescopeInfo.Declination, "[deg] Telescope pointing DEC");
-                    f.AddHeaderCard("OBJCTRA", Astrometry.HoursToFitsHMS(telescopeInfo.RightAscension), "");
-                    f.AddHeaderCard("OBJCTDEC", Astrometry.DegreesToFitsDMS(telescopeInfo.Declination), "");
+                    f.AddHeaderCard("RA", Astrometry.HoursToDegrees(telescopeInfo.RightAscension), "[deg] RA of telescope");
+                    f.AddHeaderCard("DEC", telescopeInfo.Declination, "[deg] Declination of telescope");
+                    f.AddHeaderCard("OBJCTRA", Astrometry.HoursToFitsHMS(telescopeInfo.RightAscension), "[H M S] RA of imaged object");
+                    f.AddHeaderCard("OBJCTDEC", Astrometry.DegreesToFitsDMS(telescopeInfo.Declination), "[D M S] Declination of imaged object");
+                }
+
+                if (!double.IsNaN(cameraInfo.TemperatureSetPoint)) {
+                    f.AddHeaderCard("SET-TEMP", cameraInfo.TemperatureSetPoint, "[C] CCD temperature setpoint");
                 }
 
                 if (!double.IsNaN(cameraInfo.Temperature)) {
-                    f.AddHeaderCard("CCD-TEMP", cameraInfo.Temperature, "");
+                    f.AddHeaderCard("CCD-TEMP", cameraInfo.Temperature, "[C] CCD temperature");
                 }
 
                 if (focuserInfo.Connected) {
                     if (!string.IsNullOrEmpty(focuserInfo.Name) && !string.IsNullOrWhiteSpace(focuserInfo.Name)) {
                         /* fits4win, SGP */
-                        f.AddHeaderCard("FOCNAME", focuserInfo.Name, "");
+                        f.AddHeaderCard("FOCNAME", focuserInfo.Name, "Focusing equipment name");
                     }
 
                     if (focuserInfo.Position != -1) {
                         /* fits4win, SGP */
-                        f.AddHeaderCard("FOCPOS", focuserInfo.Position, "steps");
+                        f.AddHeaderCard("FOCPOS", focuserInfo.Position, "[step] Focuser position");
 
                         /* MaximDL, several observatories */
-                        f.AddHeaderCard("FOCUSPOS", focuserInfo.Position, "steps");
+                        f.AddHeaderCard("FOCUSPOS", focuserInfo.Position, "[step] Focuser position");
                     }
 
                     if (!double.IsNaN(focuserInfo.StepSize)) {
                         /* MaximDL */
-                        f.AddHeaderCard("FOCUSSZ", focuserInfo.StepSize, "microns");
+                        f.AddHeaderCard("FOCUSSZ", focuserInfo.StepSize, "[um] Focuser step size");
                     }
 
                     if (!double.IsNaN(focuserInfo.Temperature)) {
                         /* fits4win, SGP */
-                        f.AddHeaderCard("FOCTEMP", focuserInfo.Temperature, "celcius");
+                        f.AddHeaderCard("FOCTEMP", focuserInfo.Temperature, "[C] Focuser temperature");
 
                         /* MaximDL, several observatories */
-                        f.AddHeaderCard("FOCUSTEM", focuserInfo.Temperature, "celcius");
+                        f.AddHeaderCard("FOCUSTEM", focuserInfo.Temperature, "[C] Focuser temperature");
                     }
                 }
 
                 if (rotatorInfo.Connected) {
                     if (!string.IsNullOrEmpty(focuserInfo.Name) && !string.IsNullOrWhiteSpace(focuserInfo.Name)) {
                         /* NINA */
-                        f.AddHeaderCard("ROTNAME", rotatorInfo.Name, "");
+                        f.AddHeaderCard("ROTNAME", rotatorInfo.Name, "Rotator equipment name");
                     }
 
                     if (!float.IsNaN(rotatorInfo.Position)) {
                         /* fits4win */
-                        f.AddHeaderCard("ROTATOR", rotatorInfo.Position, "degrees");
+                        f.AddHeaderCard("ROTATOR", rotatorInfo.Position, "[deg] Rotator angle");
 
                         /* MaximDL, several observatories */
-                        f.AddHeaderCard("ROTATANG", rotatorInfo.Position, "degrees");
+                        f.AddHeaderCard("ROTATANG", rotatorInfo.Position, "[deg] Rotator angle");
                     }
 
                     if (!float.IsNaN(rotatorInfo.StepSize)) {
                         /* NINA */
-                        f.AddHeaderCard("ROTSTPSZ", rotatorInfo.StepSize, "degrees");
+                        f.AddHeaderCard("ROTSTPSZ", rotatorInfo.StepSize, "[deg] Rotator step size");
                     }
                 }
+
+                f.AddHeaderCard("SWCREATE", string.Format("N.I.N.A. {0} ({1})", Utility.Utility.Version, DllLoader.IsX86() ? "x86" : "x64"), "Software that created this file");
 
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 var uniquePath = Utility.Utility.GetUniqueFilePath(path + ".fits");
@@ -894,7 +926,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private string SaveTiff(String path, TiffCompressOption c) {
+        private string SaveTiff(string path, TiffCompressOption c) {
             try {
                 BitmapSource bmpSource = ImageAnalysis.CreateSourceFromArray(ImgArr, System.Windows.Media.PixelFormats.Gray16);
 
@@ -915,135 +947,160 @@ namespace NINA.ViewModel {
             }
         }
 
-        private string SaveXisf(String path, ImageParameters parameters) {
+        private string SaveXisf(string path, ImageParameters parameters) {
             try {
                 var header = new XISFHeader();
+                DateTime now = DateTime.Now;
 
                 header.AddImageMetaData(ImgArr, parameters.ImageType);
 
-                header.AddImageProperty(XISFImageProperty.Observation.Time.Start, DateTime.UtcNow.ToString("s", System.Globalization.CultureInfo.InvariantCulture));
-                header.AddImageProperty(XISFImageProperty.Observation.Location.Latitude, profileService.ActiveProfile.AstrometrySettings.Latitude.ToString(CultureInfo.InvariantCulture), "Observation site latitude");
-                header.AddImageProperty(XISFImageProperty.Observation.Location.Latitude, profileService.ActiveProfile.AstrometrySettings.Latitude.ToString(CultureInfo.InvariantCulture), "Observation site longitude");
-                header.AddImageProperty(XISFImageProperty.Observation.Location.Longitude, profileService.ActiveProfile.AstrometrySettings.Longitude.ToString(CultureInfo.InvariantCulture));
-                header.AddImageProperty(XISFImageProperty.Instrument.Telescope.FocalLength, profileService.ActiveProfile.TelescopeSettings.FocalLength.ToString(CultureInfo.InvariantCulture));
-                header.AddImageProperty(XISFImageProperty.Instrument.Sensor.XPixelSize, profileService.ActiveProfile.CameraSettings.PixelSize.ToString(CultureInfo.InvariantCulture));
-                header.AddImageProperty(XISFImageProperty.Instrument.Sensor.YPixelSize, profileService.ActiveProfile.CameraSettings.PixelSize.ToString(CultureInfo.InvariantCulture));
+                header.AddImageProperty(XISFImageProperty.Observation.Time.Start, now.ToUniversalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ss.fff", CultureInfo.InvariantCulture), "Time of observation (UTC)");
+                header.AddImageFITSKeyword("DATE-LOC", now.ToLocalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ss.fff", CultureInfo.InvariantCulture), "Time of observation (local)");
+                header.AddImageProperty(XISFImageProperty.Observation.Location.Latitude, profileService.ActiveProfile.AstrometrySettings.Latitude.ToString(CultureInfo.InvariantCulture), "[deg] Observation site latitude");
+                header.AddImageProperty(XISFImageProperty.Observation.Location.Longitude, profileService.ActiveProfile.AstrometrySettings.Longitude.ToString(CultureInfo.InvariantCulture), "[deg] Observation site longitude");
+
+                if (!double.IsNaN(telescopeInfo.SiteElevation)) {
+                    header.AddImageProperty(XISFImageProperty.Observation.Location.Elevation, telescopeInfo.SiteElevation.ToString(CultureInfo.InvariantCulture), "[m] Observation site elevation");
+                }
+
+                /*
+                 * First we see if the user manually gave their telescope a name. If not, we default to using the ASCOM-provided driver name.
+                 */
+                string telescopeName = string.Empty;
+                if (!string.IsNullOrEmpty(profileService.ActiveProfile.TelescopeSettings.Name) || !string.IsNullOrWhiteSpace(profileService.ActiveProfile.TelescopeSettings.Name)) {
+                    telescopeName = profileService.ActiveProfile.TelescopeSettings.Name;
+                } else if (telescopeInfo.Connected) {
+                    telescopeName = telescopeInfo.Name;
+                }
+
+                if (telescopeName != string.Empty) {
+                    header.AddImageProperty(XISFImageProperty.Instrument.Telescope.Name, telescopeName.ToString(CultureInfo.InvariantCulture), "Name of telescope");
+                }
+
+                header.AddImageProperty(XISFImageProperty.Instrument.Telescope.FocalLength, profileService.ActiveProfile.TelescopeSettings.FocalLength.ToString(CultureInfo.InvariantCulture), "[mm] Focal length");
+
+                if (!double.IsNaN(profileService.ActiveProfile.TelescopeSettings.FocalRatio) && profileService.ActiveProfile.TelescopeSettings.FocalRatio > 0) {
+                    header.AddImageFITSKeyword("FOCRATIO", profileService.ActiveProfile.TelescopeSettings.FocalRatio.ToString(CultureInfo.InvariantCulture), "Focal ratio");
+                }
+
+                header.AddImageProperty(XISFImageProperty.Instrument.Sensor.XPixelSize, profileService.ActiveProfile.CameraSettings.PixelSize.ToString(CultureInfo.InvariantCulture), "[um] Pixel X axis size");
+                header.AddImageProperty(XISFImageProperty.Instrument.Sensor.YPixelSize, profileService.ActiveProfile.CameraSettings.PixelSize.ToString(CultureInfo.InvariantCulture), "[um] Pixel Y axis size");
 
                 if (!string.IsNullOrEmpty(parameters.TargetName) || !string.IsNullOrWhiteSpace(parameters.TargetName)) {
                     header.AddImageProperty(XISFImageProperty.Observation.Object.Name, parameters.TargetName, "Name of the object of interest");
                 }
 
                 if (telescopeInfo.Connected) {
-                    header.AddImageProperty(XISFImageProperty.Instrument.Telescope.Name, telescopeInfo.Name);
-
-                    /* Location */
-                    header.AddImageProperty(XISFImageProperty.Observation.Location.Elevation, telescopeInfo.SiteElevation.ToString(CultureInfo.InvariantCulture));
                     /* convert to degrees */
                     var RA = Astrometry.HoursToDegrees(telescopeInfo.RightAscension);
                     header.AddImageProperty(XISFImageProperty.Observation.Center.RA, RA.ToString(CultureInfo.InvariantCulture), string.Empty, false);
-                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.RA[2], Astrometry.HoursToFitsHMS(telescopeInfo.RightAscension));
-                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.RA[3], RA.ToString(CultureInfo.InvariantCulture), "[deg] Telescope pointing RA");
+                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.RA[2], Astrometry.HoursToFitsHMS(telescopeInfo.RightAscension), "[H M S] RA of imaged object");
+                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.RA[3], RA.ToString(CultureInfo.InvariantCulture), "[deg] RA of telescope");
 
                     header.AddImageProperty(XISFImageProperty.Observation.Center.Dec, telescopeInfo.Declination.ToString(CultureInfo.InvariantCulture), string.Empty, false);
-                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.Dec[2], Astrometry.DegreesToFitsDMS(telescopeInfo.Declination));
-                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.Dec[3], telescopeInfo.Declination.ToString(CultureInfo.InvariantCulture), "[deg] Telescope pointing DEC");
+                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.Dec[2], Astrometry.DegreesToFitsDMS(telescopeInfo.Declination), "[D M S] Declination of imaged object");
+                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.Dec[3], telescopeInfo.Declination.ToString(CultureInfo.InvariantCulture), "[deg] Declination of telescope");
                 }
 
-                header.AddImageProperty(XISFImageProperty.Instrument.Camera.Name, cameraInfo.Name);
+                header.AddImageProperty(XISFImageProperty.Instrument.Camera.Name, cameraInfo.Name, "Imaging instrument name");
 
                 if (cameraInfo.Gain > 0) {
-                    header.AddImageProperty(XISFImageProperty.Instrument.Camera.Gain, cameraInfo.Gain.ToString(CultureInfo.InvariantCulture));
+                    header.AddImageProperty(XISFImageProperty.Instrument.Camera.Gain, cameraInfo.Gain.ToString(CultureInfo.InvariantCulture), "Sensor gain");
                 }
 
                 if (cameraInfo.Offset >= 0) {
                     /* SharpCap */
-                    header.AddImageFITSKeyword("OFFSET", cameraInfo.Offset.ToString(CultureInfo.InvariantCulture), "");
+                    header.AddImageFITSKeyword("OFFSET", cameraInfo.Offset.ToString(CultureInfo.InvariantCulture), "Sensor gain offset");
                 }
 
                 if (cameraInfo.BinX > 0) {
-                    header.AddImageProperty(XISFImageProperty.Instrument.Camera.XBinning, cameraInfo.BinX.ToString(CultureInfo.InvariantCulture));
+                    header.AddImageProperty(XISFImageProperty.Instrument.Camera.XBinning, cameraInfo.BinX.ToString(CultureInfo.InvariantCulture), "X axis binning factor");
                 }
                 if (cameraInfo.BinY > 0) {
-                    header.AddImageProperty(XISFImageProperty.Instrument.Camera.YBinning, cameraInfo.BinY.ToString(CultureInfo.InvariantCulture));
+                    header.AddImageProperty(XISFImageProperty.Instrument.Camera.YBinning, cameraInfo.BinY.ToString(CultureInfo.InvariantCulture), "Y axis binning factor");
                 }
 
-                var temp = cameraInfo.Temperature;
-                if (!double.IsNaN(temp)) {
-                    header.AddImageProperty(XISFImageProperty.Instrument.Sensor.Temperature, temp.ToString(CultureInfo.InvariantCulture));
+                if (!double.IsNaN(cameraInfo.TemperatureSetPoint)) {
+                    header.AddImageFITSKeyword("SET-TEMP", cameraInfo.TemperatureSetPoint.ToString(CultureInfo.InvariantCulture), "[C] CCD temperature setpoint");
+                }
+
+                if (!double.IsNaN(cameraInfo.Temperature)) {
+                    header.AddImageProperty(XISFImageProperty.Instrument.Sensor.Temperature, cameraInfo.Temperature.ToString(CultureInfo.InvariantCulture), "[C] CCD temperature");
                 }
 
                 if (focuserInfo.Connected) {
                     if (!string.IsNullOrEmpty(focuserInfo.Name) && !string.IsNullOrWhiteSpace(focuserInfo.Name)) {
                         /* fits4win, SGP */
-                        header.AddImageFITSKeyword("FOCNAME", focuserInfo.Name, "");
+                        header.AddImageFITSKeyword("FOCNAME", focuserInfo.Name, "Focusing equipment name");
                     }
 
                     /*
                      * XISF 1.0 defines Instrument:Focuser:Position as the only focuser-related image property.
-                     * This image property is: "(Float32) Estimated position of the focuser in millimeters, measured with respect to a device-dependent origin."
-                     * This unit is different from FOCUSPOS FITSKeyword, so we must do two separate actions: calculate distance from origin in millimeters and insert
+                     * This image property is: "(Float32) Estimated position of the focuser in millimetres, measured with respect to a device-dependent origin."
+                     * This unit is different from FOCUSPOS FITSKeyword, so we must do two separate actions: calculate distance from origin in millimetres and insert
                      * that as the XISF Instrument:Focuser:Position property, and then insert the separate FOCUSPOS FITSKeyword (measured in steps).
                      */
                     if (focuserInfo.Position != -1) {
                         if (!double.IsNaN(focuserInfo.StepSize)) {
-                            /* steps * step size (microns) converted to millimeters, single-precision float */
+                            /* steps * step size (microns) converted to millimetres, single-precision float */
                             float focusDistance = (focuserInfo.Position * (float)focuserInfo.StepSize) / 1000;
                             header.AddImageProperty(XISFImageProperty.Instrument.Focuser.Position, focusDistance.ToString(CultureInfo.InvariantCulture));
                         }
 
                         /* fits4win, SGP */
-                        header.AddImageFITSKeyword("FOCPOS", focuserInfo.Position.ToString(CultureInfo.InvariantCulture), "steps");
+                        header.AddImageFITSKeyword("FOCPOS", focuserInfo.Position.ToString(CultureInfo.InvariantCulture), "[step] Focuser position");
 
                         /* MaximDL, several observatories */
-                        header.AddImageFITSKeyword("FOCUSPOS", focuserInfo.Position.ToString(CultureInfo.InvariantCulture), "steps");
+                        header.AddImageFITSKeyword("FOCUSPOS", focuserInfo.Position.ToString(CultureInfo.InvariantCulture), "[step] Focuser position");
                     }
 
                     if (!double.IsNaN(focuserInfo.StepSize)) {
                         /* MaximDL */
-                        header.AddImageFITSKeyword("FOCUSSZ", focuserInfo.StepSize.ToString(CultureInfo.InvariantCulture), "microns");
+                        header.AddImageFITSKeyword("FOCUSSZ", focuserInfo.StepSize.ToString(CultureInfo.InvariantCulture), "[um] Focuser step size");
                     }
 
                     if (!double.IsNaN(focuserInfo.Temperature)) {
                         /* fits4win, SGP */
-                        header.AddImageFITSKeyword("FOCTEMP", focuserInfo.Temperature.ToString(CultureInfo.InvariantCulture), "celcius");
+                        header.AddImageFITSKeyword("FOCTEMP", focuserInfo.Temperature.ToString(CultureInfo.InvariantCulture), "[C] Focuser temperature");
 
                         /* MaximDL, several observatories */
-                        header.AddImageFITSKeyword("FOCUSTEM", focuserInfo.Temperature.ToString(CultureInfo.InvariantCulture), "celcius");
+                        header.AddImageFITSKeyword("FOCUSTEM", focuserInfo.Temperature.ToString(CultureInfo.InvariantCulture), "[C] Focuser temperature");
                     }
                 }
 
                 if (rotatorInfo.Connected) {
                     if (!string.IsNullOrEmpty(focuserInfo.Name) && !string.IsNullOrWhiteSpace(focuserInfo.Name)) {
                         /* NINA */
-                        header.AddImageFITSKeyword("ROTNAME", rotatorInfo.Name, "");
+                        header.AddImageFITSKeyword("ROTNAME", rotatorInfo.Name, "Rotator equipment name");
                     }
 
                     if (!float.IsNaN(rotatorInfo.Position)) {
                         /* fits4win */
-                        header.AddImageFITSKeyword("ROTATOR", rotatorInfo.Position.ToString(CultureInfo.InvariantCulture), "degrees");
+                        header.AddImageFITSKeyword("ROTATOR", rotatorInfo.Position.ToString(CultureInfo.InvariantCulture), "[deg] Rotator angle");
 
                         /* MaximDL, several observatories */
-                        header.AddImageFITSKeyword("ROTATANG", rotatorInfo.Position.ToString(CultureInfo.InvariantCulture), "degrees");
+                        header.AddImageFITSKeyword("ROTATANG", rotatorInfo.Position.ToString(CultureInfo.InvariantCulture), "[deg] Rotator angle");
                     }
 
                     if (!float.IsNaN(rotatorInfo.StepSize)) {
                         /* NINA */
-                        header.AddImageFITSKeyword("ROTSTPSZ", rotatorInfo.StepSize.ToString(CultureInfo.InvariantCulture), "degrees");
+                        header.AddImageFITSKeyword("ROTSTPSZ", rotatorInfo.StepSize.ToString(CultureInfo.InvariantCulture), "[deg] Rotator step size");
                     }
                 }
 
                 if (filterWheelInfo.Connected) {
                     if (!string.IsNullOrEmpty(filterWheelInfo.Name) && !string.IsNullOrWhiteSpace(filterWheelInfo.Name)) {
                         /* fits4win */
-                        header.AddImageFITSKeyword("FWHEEL", filterWheelInfo.Name, "");
+                        header.AddImageFITSKeyword("FWHEEL", filterWheelInfo.Name, "Filter Wheel name");
 
                         if (!string.IsNullOrEmpty(parameters.FilterName)) {
-                            header.AddImageProperty(XISFImageProperty.Instrument.Filter.Name, parameters.FilterName);
+                            header.AddImageProperty(XISFImageProperty.Instrument.Filter.Name, parameters.FilterName, "Active filter name");
                         }
                     }
                 }
 
-                header.AddImageProperty(XISFImageProperty.Instrument.ExposureTime, parameters.ExposureTime.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                header.AddImageProperty(XISFImageProperty.Instrument.ExposureTime, parameters.ExposureTime.ToString(System.Globalization.CultureInfo.InvariantCulture), "[s] Exposure duration");
+                header.AddImageFITSKeyword("SWCREATE", string.Format("N.I.N.A. {0} ({1})", Utility.Utility.Version, DllLoader.IsX86() ? "x86" : "x64"), "Software that created this file");
 
                 XISF img = new XISF(header);
 

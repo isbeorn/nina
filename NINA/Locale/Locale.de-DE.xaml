@@ -179,7 +179,9 @@
     <s:String x:Key="LblScopeSettleTimeAfterFlip">Teleskop Ruhezeit nach Flip (Sekunden)</s:String>
     <s:String x:Key="LblPlateSolving">Plate Solving</s:String>
     <s:String x:Key="LblPlatesolve2Directory">Platesolve2 Ort</s:String>
+    <s:String x:Key="LblTelescopeName">Teleskopname</s:String>
     <s:String x:Key="LblFocalLength">Brennweite</s:String>
+    <s:String x:Key="LblFocalRatio">Fokusverhältnis</s:String>
     <s:String x:Key="LblPixelSize">Pixelgröße</s:String>
     <s:String x:Key="LblRegions">Regionen</s:String>
     <s:String x:Key="LblPlatesolveProvidedBy">Platesolve service zur Verfügung gestellt von</s:String>

@@ -236,7 +236,7 @@ namespace NINA.ViewModel {
             RightTrend = null;
             _minimum = new DataPoint(0, 0);
             try {
-                await this.guiderMediator.PauseGuiding(token);
+                await this.guiderMediator.StopGuiding(token);
 
                 var offsetSteps = profileService.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps;
                 var offset = offsetSteps;
@@ -298,7 +298,7 @@ namespace NINA.ViewModel {
                 Notification.ShowError(ex.Message);
                 Logger.Error(ex);
             } finally {
-                await this.guiderMediator.ResumeGuiding(token);
+                await this.guiderMediator.StartGuiding(token);
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
 

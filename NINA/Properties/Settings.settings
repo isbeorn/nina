@@ -230,8 +230,14 @@
     <Setting Name="CameraSerialPort" Type="System.String" Scope="User">
       <Value Profile="(Default)">COM1</Value>
     </Setting>
+    <Setting Name="TelescopeName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Generic Telescope</Value>
+    </Setting>
     <Setting Name="TelescopeFocalLength" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">800</Value>
+    </Setting>
+    <Setting Name="TelescopeFocalRatio" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">7.0</Value>
     </Setting>
     <Setting Name="CameraPixelSize" Type="System.Double" Scope="User">
       <Value Profile="(Default)">3.8</Value>
