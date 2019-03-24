@@ -8,8 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
-#pragma warning disable 1998
-
 namespace NINA.Model.MyGuider {
 
     public class DirectGuider : BaseINPC, IGuider, ITelescopeConsumer {
@@ -87,8 +85,8 @@ namespace NINA.Model.MyGuider {
             return Connected;
         }
 
-        public async Task<bool> AutoSelectGuideStar() {
-            return true;
+        public Task<bool> AutoSelectGuideStar() {
+            return Task.FromResult(true);
         }
 
         public bool Disconnect() {
@@ -97,55 +95,58 @@ namespace NINA.Model.MyGuider {
             return Connected;
         }
 
-        public async Task<bool> Pause(bool pause, CancellationToken ct) {
-            return true;
+        public Task<bool> Pause(bool pause, CancellationToken ct) {
+            return Task.FromResult(true);
         }
 
-        public async Task<bool> StartGuiding(CancellationToken ct) {
-            return true;
+        public Task<bool> StartGuiding(CancellationToken ct) {
+            return Task.FromResult(true);
         }
 
-        public async Task<bool> StopGuiding(CancellationToken ct) {
-            return true;
+        public Task<bool> StopGuiding(CancellationToken ct) {
+            return Task.FromResult(true);
         }
 
         public async Task<bool> Dither(CancellationToken ct) {
             State = "Dithering...";
 
-            int Duration = profileService.ActiveProfile.GuiderSettings.DirectGuideDuration * 1000;
+            TimeSpan Duration = TimeSpan.FromSeconds(profileService.ActiveProfile.GuiderSettings.DirectGuideDuration);
+            TimeSpan SettleTime = TimeSpan.FromSeconds(profileService.ActiveProfile.GuiderSettings.SettleTime);
 
             bool DitherRAOnly = profileService.ActiveProfile.GuiderSettings.DitherRAOnly;
-            int SettleTime = profileService.ActiveProfile.GuiderSettings.SettleTime * 1000;
+            
 
             //In theory should not be hit as guider gets disconnected when telescope disconnects
             if (!telescopeInfo.Connected) {
                 return false;
             }
             else {
+                GuidePulses PulseInstructions = SelectDitherPulse(Duration);
                 if (!DitherRAOnly) {
-                    var PulseInstructions = SelectDitherPulse(Duration);
-                    telescopeMediator.PulseGuide(PulseInstructions.Item1, PulseInstructions.Item2);
-                    await Utility.Utility.Delay(TimeSpan.FromMilliseconds(PulseInstructions.Item2), ct);
-                    telescopeMediator.PulseGuide(PulseInstructions.Item3, PulseInstructions.Item4);
-                    await Utility.Utility.Delay(TimeSpan.FromMilliseconds(PulseInstructions.Item4), ct);
-                    await Utility.Utility.Delay(TimeSpan.FromMilliseconds(SettleTime), ct);
+                    telescopeMediator.PulseGuide(PulseInstructions.directionWestEast, (int)PulseInstructions.durationWestEast.TotalMilliseconds);
+                    await Utility.Utility.Delay(PulseInstructions.durationWestEast, ct);
+                    telescopeMediator.PulseGuide(PulseInstructions.directionNorthSouth, (int)PulseInstructions.durationNorthSouth.TotalMilliseconds);
+                    await Utility.Utility.Delay(PulseInstructions.durationNorthSouth, ct);
+                    await Utility.Utility.Delay(SettleTime, ct);
                 }
                 else {
-                    GuideDirections direction = GuideDirections.guideWest;
                     Random random = new Random();
-                    bool raDirection = random.NextDouble() >= 0.5;
-                    if (raDirection) {
-                        direction = GuideDirections.guideEast;
-                    }
                     //Adjust Pulse Duration for RA only dithering. Otherwise RA only dithering will likely provide terrible results.
-                    Duration = (int)Math.Round(Duration * (0.5 + random.NextDouble()));
-                    telescopeMediator.PulseGuide(direction, Duration);
-                    await Utility.Utility.Delay(TimeSpan.FromMilliseconds(Duration), ct);
-                    await Utility.Utility.Delay(TimeSpan.FromMilliseconds(SettleTime), ct);
+                    Duration = TimeSpan.FromMilliseconds((int)Math.Round(Duration.TotalMilliseconds * (0.5 + random.NextDouble())));
+                    telescopeMediator.PulseGuide(PulseInstructions.directionWestEast, (int)Duration.TotalMilliseconds);
+                    await Utility.Utility.Delay(Duration, ct);
+                    await Utility.Utility.Delay(SettleTime, ct);
                 }
             }
             State = "Idle";
             return true;
+        }
+
+        private struct GuidePulses {
+            public GuideDirections directionWestEast;
+            public GuideDirections directionNorthSouth;
+            public TimeSpan durationWestEast;
+            public TimeSpan durationNorthSouth;
         }
 
         /// <summary>
@@ -158,32 +159,31 @@ namespace NINA.Model.MyGuider {
         /// <param name="duration">Rather than a time, should be considered as actual distance from origin prior to dither</param>
         /// <returns>Parameters for two guide pulses, one in N/S direction and one in E/W direction</returns>
 
-        private (GuideDirections, int, GuideDirections, int) SelectDitherPulse(int duration) {
+        private GuidePulses SelectDitherPulse(TimeSpan duration) {
             Random random = new Random();
             double ditherAngle = random.NextDouble() * 2 * Math.PI;
             double cosAngle = Math.Cos(ditherAngle);
             double sinAngle = Math.Sin(ditherAngle);
-            GuideDirections direction1;
-            GuideDirections direction2;
+            GuidePulses resultPulses = new GuidePulses();
 
             if (cosAngle >= 0) {
-                direction1 = GuideDirections.guideEast;
+                resultPulses.directionWestEast = GuideDirections.guideEast;
             }
             else {
-                direction1 = GuideDirections.guideWest;
+                resultPulses.directionWestEast = GuideDirections.guideWest;
             }
 
             if (sinAngle >= 0) {
-                direction2 = GuideDirections.guideNorth;
+                resultPulses.directionNorthSouth = GuideDirections.guideNorth;
             }
             else {
-                direction2 = GuideDirections.guideSouth;
+                resultPulses.directionNorthSouth = GuideDirections.guideSouth;
             }
 
-            int duration1 = (int)Math.Round(Math.Abs(duration * cosAngle));
-            int duration2 = (int)Math.Round(Math.Abs(duration * sinAngle));
+            resultPulses.durationWestEast = TimeSpan.FromMilliseconds((int)Math.Round(Math.Abs(duration.TotalMilliseconds * cosAngle)));
+            resultPulses.durationNorthSouth = TimeSpan.FromMilliseconds((int)Math.Round(Math.Abs(duration.TotalMilliseconds * sinAngle)));
 
-            return (direction1, duration1, direction2, duration2);
+            return resultPulses;
         }
     }
 }
