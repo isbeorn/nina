@@ -2,6 +2,10 @@
 
 ## Features
 
+### Dither without guiding
+
+- A new Direct Guider has been added, which doesn't require a guide camera. It can only perform random dithers. It connects directly to the telescope, and will if required perform a dither via a Pulse Guide of a user-provided duration in a random direction.
+
 ### Plate Solving
 - Added interface for ASTAP, the Astrometric STAcking Program, astrometric solver and FITS viewer as a plate solver
 

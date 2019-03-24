@@ -9,10 +9,12 @@ namespace NINA.ViewModel {
 
     public class GuiderChooserVM : BaseVM, IGuiderChooserVM {
         private readonly ICameraMediator cameraMediator;
+        private ITelescopeMediator telescopeMediator;
 
-        public GuiderChooserVM(IProfileService profileService, ICameraMediator cameraMediator) : base(profileService) {
+        public GuiderChooserVM(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator) : base(profileService) {
             this.cameraMediator = cameraMediator;
             this.profileService = profileService;
+            this.telescopeMediator = telescopeMediator;
             GetEquipment();
         }
 
@@ -31,6 +33,7 @@ namespace NINA.ViewModel {
         public void GetEquipment() {
             Guiders.Add(new PHD2Guider(profileService));
             Guiders.Add(new SynchronizedPHD2Guider(profileService, cameraMediator));
+            Guiders.Add(new DirectGuider(profileService, telescopeMediator));
             //Guiders.Add(new DummyGuider());
 
             DetermineSelectedDevice(profileService.ActiveProfile.GuiderSettings.GuiderName);

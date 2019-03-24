@@ -21,27 +21,17 @@
 
 #endregion "copyright"
 
-using NINA.Model.MyTelescope;
-using NINA.Utility.Astrometry;
-using NINA.ViewModel.Interfaces;
-using System.Threading.Tasks;
+namespace NINA.Model.MyTelescope {
+    
+    public enum GuideDirections {
+    
+        guideNorth = 0,
 
-namespace NINA.Utility.Mediator.Interfaces {
+        guideSouth = 1,
 
-    public interface ITelescopeMediator : IDeviceMediator<ITelescopeVM, ITelescopeConsumer, TelescopeInfo> {
+        guideEast = 2,
 
-        void MoveAxis(TelescopeAxes axis, double rate);
-
-        void PulseGuide(GuideDirections direction, int duration);
-
-        bool Sync(double ra, double dec);
-
-        Task<bool> SlewToCoordinatesAsync(Coordinates coords);
-
-        bool MeridianFlip(Coordinates targetCoordinates);
-
-        bool SetTracking(bool tracking);
-
-        bool SendToSnapPort(bool start);
+        guideWest = 3
+        
     }
 }

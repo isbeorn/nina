@@ -1007,6 +1007,28 @@ namespace NINA.Model.MyTelescope {
             }
         }
 
+        public void PulseGuide(GuideDirections direction, int duration) {
+            if (Connected) {
+                if (CanPulseGuide) {
+                    if (!AtPark) {
+
+                        try {
+                            _telescope.PulseGuide((ASCOM.DeviceInterface.GuideDirections)direction,duration);
+                        } catch (Exception e) {
+                            Notification.ShowError(e.Message);
+                        }
+                    } else {
+                        Notification.ShowWarning(Locale.Loc.Instance["LblTelescopeParkedWarn"]);
+                    }
+                } else {
+
+                    Notification.ShowWarning(Locale.Loc.Instance["LblTelescopeCannotPulseGuide"]);
+                }
+            } else {
+                Notification.ShowWarning(Locale.Loc.Instance["LblTelescopeNotConnected"]);
+            }
+        }
+
         public void Park() {
             if (Connected && CanPark) {
                 try {

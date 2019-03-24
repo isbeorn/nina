@@ -157,9 +157,10 @@
     <s:String x:Key="LblAPIKey">API Key</s:String>
     <s:String x:Key="LblLocation">Location</s:String>
     <s:String x:Key="LblPHD2Settings">PHD2 Settings</s:String>
+    <s:String x:Key="LblGuiderSettings">Guider Settings</s:String>
     <s:String x:Key="LblPHD2ServerUrl">PHD2 Server Url</s:String>
     <s:String x:Key="LblPHD2ServerPort">PHD2 Server Port</s:String>
-    <s:String x:Key="LblDitherPixels">Dither Pixels</s:String>
+    <s:String x:Key="LblDitherPixels">PHD2 Dither Pixels</s:String>
     <s:String x:Key="LblDitherRAOnly">Dither RA Only</s:String>
     <s:String x:Key="LblImaging">Imaging</s:String>
     <s:String x:Key="LblFileSettings">File Settings</s:String>
@@ -272,6 +273,7 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
     <s:String x:Key="LblRotatorConnectionLost">Rotator connection lost! Please reconnect rotator!</s:String>
     <s:String x:Key="LblTelescopeParkedWarn">Telescope is parked. Cannot slew while parked</s:String>
     <s:String x:Key="LblTelescopeCannotSlew">Telescope cannot slew</s:String>
+    <s:String x:Key="LblTelescopeCannotPulseGuide">Telescope cannot Pulse Guide</s:String>
     <s:String x:Key="LblTelescopeNotConnected">Telescope not connected</s:String>
     <s:String x:Key="LblCameraBusy">Camera is busy</s:String>
     <s:String x:Key="LblCameraBattery">Camera Battery</s:String>
@@ -279,6 +281,8 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
     <s:String x:Key="LblNoCameraConnected">No camera connected</s:String>
     <s:String x:Key="LblGuiderDitherButNotConnected">Guider Dither is enabled, but application is not connected to Guider</s:String>
     <s:String x:Key="LblGuiderNoResume">Guider did not send resume message in time. Sequence will resume, but make sure Guider is guiding again!</s:String>
+    <s:String x:Key="LblDirectGuiderConnectionFail">Direct Guider could not connect to Telescope</s:String>
+    <s:String x:Key="LblDirectGuiderTelescopeDisconnect">Telescope has been disconnected. Direct Guider will disconnect. Dithering no longer effective!</s:String>
     <s:String x:Key="LblUnableToSync">Unable to sync. Telescope is not connected</s:String>
     <s:String x:Key="LblSyncFailed">Telescope sync failed</s:String>
     <s:String x:Key="LblNoCoordinatesForSync">No coordinates available to sync telescope to</s:String>
@@ -721,9 +725,10 @@ Calculated HFR: {2}
     <s:String x:Key="LblClockwise">Clockwise</s:String>
     <s:String x:Key="LblRotationTolerance">Rotation Tolerance</s:String>
     <s:String x:Key="LblAberrationInspector">Aberration Inspector</s:String>
-    <s:String x:Key="LblSettlePixelTolerance">Settle Pixel Tolerance</s:String>
+    <s:String x:Key="LblSettlePixelTolerance">PHD2 Settle Pixel Tolerance</s:String>
     <s:String x:Key="LblMinimumSettleTime">Minimum Settle Time</s:String>
-    <s:String x:Key="LblSettleTimeout">Settle Timeout</s:String>
+    <s:String x:Key="LblDirectGuideDuration">Direct Guide Duration</s:String>
+    <s:String x:Key="LblSettleTimeout">PHD2 Settle Timeout</s:String>
     <s:String x:Key="LblTargets">Targets</s:String>
     <s:String x:Key="LblTargetWidthDegrees">Minimum Width (degree)</s:String>
     <s:String x:Key="LblTargetHeightDegrees">Minimum Height (degree)</s:String>

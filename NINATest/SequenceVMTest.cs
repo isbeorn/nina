@@ -624,6 +624,10 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
+        public void PulseGuide(GuideDirections direction, int duration) {
+            throw new NotImplementedException();
+        }
+
         public ITelescopeConsumer Consumer;
 
         public void RegisterConsumer(ITelescopeConsumer consumer) {

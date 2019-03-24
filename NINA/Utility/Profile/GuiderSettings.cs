@@ -51,6 +51,7 @@ namespace NINA.Utility.Profile {
             pHD2GuiderScale = GuiderScaleEnum.PIXELS;
             settlePixels = 1.5;
             settleTimeout = 40;
+            directGuideDuration = 2;
 
             var defaultPHD2Path = Environment.ExpandEnvironmentVariables(@"%programfiles(x86)%\PHDGuiding2\phd2.exe");
 
@@ -169,6 +170,18 @@ namespace NINA.Utility.Profile {
 
             set {
                 settleTimeout = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int directGuideDuration;
+
+        [DataMember]
+        public int DirectGuideDuration {
+            get => directGuideDuration;
+
+            set {
+                directGuideDuration = value;
                 RaisePropertyChanged();
             }
         }

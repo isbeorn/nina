@@ -363,6 +363,12 @@ namespace NINA.ViewModel {
             }
         }
 
+        public void PulseGuide(GuideDirections direction, int duration) {
+            if (TelescopeInfo.Connected) {
+                Telescope.PulseGuide(direction, duration);
+            }
+        }
+
         public bool Sync(double ra, double dec) {
             if (TelescopeInfo.Connected) {
                 return Telescope.Sync(ra, dec);

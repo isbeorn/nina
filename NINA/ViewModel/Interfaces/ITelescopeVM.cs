@@ -33,6 +33,8 @@ namespace NINA.ViewModel.Interfaces {
 
         void MoveAxis(TelescopeAxes axis, double rate);
 
+        void PulseGuide(GuideDirections direction, int duration);
+
         bool Sync(double ra, double dec);
 
         bool MeridianFlip(Coordinates targetCoordinates);
