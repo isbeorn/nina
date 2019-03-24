@@ -38,7 +38,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 namespace NINA.ViewModel {
+
     internal class OptionsVM : DockableVM {
+
         public OptionsVM(IProfileService profileService, IFilterWheelMediator filterWheelMediator) : base(profileService) {
             Title = "LblOptions";
             CanClose = false;
@@ -336,7 +338,8 @@ namespace NINA.ViewModel {
                         IndexFiles.Add(f.Name);
                     }
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 Logger.Error(ex);
             }
         }
