@@ -362,7 +362,7 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblAutoFocusExposureTime">Autofokus Belichtungszeit</s:String>
     <s:String x:Key="LblDefaultAutoFocusExposureTime">Standard Autofokus Belichtungszeit</s:String>
     <s:String x:Key="LblFocuserSettleTime">Okularauszug Ruhezeit</s:String>
-    <s:String x:Key="LblFocuserSettleTimeTooltip">If the focuser introduces image shift when moving, set a settle time in seconds here.</s:String>
+    <s:String x:Key="LblFocuserSettleTimeTooltip">Falls durch die Fokusiererbewegung sich das Bild verschiebt, kann hier eine Ruhezeit nach Bewegung festgelegt werden.</s:String>
     <s:String x:Key="LblAutoFocusExposureTimeTooltip">Belichtungszeit, die für Autofokus genutzt werden soll, falls kein Filter genutzt wird oder der Filterspezifische Wert null ist.</s:String>
     <s:String x:Key="LblCameraOptions">Kameraoptionen</s:String>
     <s:String x:Key="LblUseSnapPort">Teleskop Snap Port nutzen</s:String>
