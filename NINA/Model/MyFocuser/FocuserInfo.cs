@@ -52,6 +52,13 @@ namespace NINA.Model.MyFocuser {
             set { isMoving = value; RaisePropertyChanged(); }
         }
 
+        private bool isSettling;
+
+        public bool IsSettling {
+            get { return isSettling; }
+            set { isSettling = value; RaisePropertyChanged(); }
+        }
+
         private bool tempComp;
 
         public bool TempComp {

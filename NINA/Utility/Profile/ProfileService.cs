@@ -444,6 +444,7 @@ namespace NINA.Utility.Profile {
                 p.FocuserSettings.AutoFocusExposureTime = Properties.Settings.Default.FocuserAutoFocusExposureTime;
                 p.FocuserSettings.AutoFocusInitialOffsetSteps = Properties.Settings.Default.FocuserAutoFocusInitialOffsetSteps;
                 p.FocuserSettings.AutoFocusStepSize = Properties.Settings.Default.FocuserAutoFocusStepSize;
+                p.FocuserSettings.FocuserSettleTime = Properties.Settings.Default.FocuserSettleTime;
                 p.FocuserSettings.Id = Properties.Settings.Default.FocuserId;
                 p.FocuserSettings.UseFilterWheelOffsets = Properties.Settings.Default.FocuserUseFilterWheelOffsets;
 

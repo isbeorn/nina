@@ -70,6 +70,23 @@
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblIsSettling}" />
+                            <CheckBox
+                                Width="20"
+                                Height="20"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                BorderBrush="Transparent"
+                                IsChecked="{Binding FocuserInfo.IsSettling, FallbackValue=False, Mode=OneWay}"
+                                IsEnabled="False"
+                                Style="{StaticResource CheckmarkCheckbox}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblPosition}" />
                             <TextBlock
                                 Margin="5,0,0,0"

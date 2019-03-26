@@ -498,9 +498,9 @@
                                 Text="{ns:Loc LblTelescopeName}" />
                             <TextBox
                                 MinWidth="48"
-                                MaxLength="48"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
+                                MaxLength="48"
                                 Text="{Binding Name}" />
                         </UniformGrid>
                     </UniformGrid>
@@ -651,6 +651,29 @@
                             HorizontalAlignment="Left">
                             <TextBox.Text>
                                 <Binding Path="AutoFocusExposureTime" UpdateSourceTrigger="LostFocus">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="200"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblFocuserSettleTime}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc LblFocuserSettleTimeTooltip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="75"
+                            Height="25"
+                            HorizontalAlignment="Left">
+                            <TextBox.Text>
+                                <Binding Path="FocuserSettleTime" UpdateSourceTrigger="LostFocus">
                                     <Binding.ValidationRules>
                                         <rules:GreaterZeroRule />
                                     </Binding.ValidationRules>

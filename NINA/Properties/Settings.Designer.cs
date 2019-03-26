@@ -839,6 +839,18 @@ namespace NINA.Properties {
                 this["FocuserAutoFocusInitialOffsetSteps"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int FocuserSettleTime {
+            get {
+                return ((int)(this["FocuserSettleTime"]));
+            }
+            set {
+                this["FocuserSettleTime"] = value;
+            }
+        }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
