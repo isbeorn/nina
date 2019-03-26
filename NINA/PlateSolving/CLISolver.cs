@@ -32,6 +32,15 @@ namespace NINA.PlateSolving {
         protected async Task<PlateSolveResult> Solve(PlateSolveParameter parameter, IProgress<ApplicationStatus> progress, CancellationToken ct) {
             var result = new PlateSolveResult() { Success = false };
             try {
+                //Cleanup files from previous solves
+                if (File.Exists(outputFilePath)) {
+                    File.Delete(outputFilePath);
+                }
+
+                if (File.Exists(imageFilePath)) {
+                    File.Delete(imageFilePath);
+                }
+
                 //Copy Image to local app data
                 using (FileStream fs = new FileStream(imageFilePath, FileMode.Create)) {
                     parameter.Image.CopyTo(fs);
@@ -44,13 +53,6 @@ namespace NINA.PlateSolving {
                 //Extract solution coordinates
                 result = ReadResult(parameter);
             } finally {
-                if (File.Exists(outputFilePath)) {
-                    File.Delete(outputFilePath);
-                }
-
-                if (File.Exists(imageFilePath)) {
-                    File.Delete(imageFilePath);
-                }
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
             return result;

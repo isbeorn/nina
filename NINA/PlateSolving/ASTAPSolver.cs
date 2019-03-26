@@ -92,7 +92,8 @@ namespace NINA.PlateSolving {
             args.Add($"-f \"{imageFilePath}\"");
 
             //Field height of image
-            args.Add($"-fov {parameter.FoVH.ToString(CultureInfo.InvariantCulture)}");
+            var fov = Math.Round(parameter.FoVH, 6);
+            args.Add($"-fov {fov.ToString(CultureInfo.InvariantCulture)}");
 
             //Downsample factor
             args.Add($"-z {parameter.DownSampleFactor}");
@@ -104,11 +105,13 @@ namespace NINA.PlateSolving {
                 //Search field radius
                 args.Add($"-r {parameter.SearchRadius}");
 
+                var ra = Math.Round(parameter.Coordinates.RA, 6);
                 //Right Ascension in degrees
-                args.Add($"-ra {parameter.Coordinates.RA.ToString(CultureInfo.InvariantCulture)}");
+                args.Add($"-ra {ra.ToString(CultureInfo.InvariantCulture)}");
 
-                //Declination in degrees
-                args.Add($"-dec {parameter.Coordinates.Dec.ToString(CultureInfo.InvariantCulture)}");
+                var spd = Math.Round(parameter.Coordinates.Dec + 90.0, 6);
+                //South pole distance in degrees
+                args.Add($"-spd {spd.ToString(CultureInfo.InvariantCulture)}");
             }
 
             return string.Join(" ", args);
