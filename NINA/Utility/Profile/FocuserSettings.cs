@@ -93,5 +93,18 @@ namespace NINA.Utility.Profile {
                 RaisePropertyChanged();
             }
         }
+
+        private int focuserSettleTime = 0;
+
+        [DataMember]
+        public int FocuserSettleTime {
+            get {
+                return focuserSettleTime;
+            }
+            set {
+                focuserSettleTime = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 }

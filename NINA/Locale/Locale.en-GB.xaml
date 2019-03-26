@@ -90,6 +90,7 @@
     <s:String x:Key="LblZoomStretch">Fit Image to Area</s:String>
     <s:String x:Key="LblFocuser">Focuser</s:String>
     <s:String x:Key="LblIsMoving">Is Moving</s:String>
+    <s:String x:Key="LblIsSettling">Is Settling</s:String>
     <s:String x:Key="LblMove">Move</s:String>
     <s:String x:Key="LblHalt">Halt</s:String>
     <s:String x:Key="LblMaxIncrement">Max Increment</s:String>
@@ -360,6 +361,8 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblAutoFocusExposureTime">Auto Focus Exposure Time</s:String>
     <s:String x:Key="LblDefaultAutoFocusExposureTime">Default Auto Focus Exposure Time</s:String>
     <s:String x:Key="LblAutoFocusExposureTimeTooltip">Exposure Time used for auto focus when no filter specific time is set or the filter specific time is zero</s:String>
+    <s:String x:Key="LblFocuserSettleTime">Focuser Settle Time</s:String>
+    <s:String x:Key="LblFocuserSettleTimeTooltip">If the focuser introduces image shift when moving, set a settle time in seconds here.</s:String>
     <s:String x:Key="LblCameraOptions">Camera Options</s:String>
     <s:String x:Key="LblUseSnapPort">Use Telescope Snap Port</s:String>
     <s:String x:Key="LblSnapPortStart">Snap Port Start Command</s:String>
@@ -841,4 +844,5 @@ Calculated HFR: {2}
     <s:String x:Key="LblUseBlindSolveNoCoordinatesRollover">No reference coordinates available. Should the blind solver be used instead?</s:String>
     <s:String x:Key="LblDownSampleFactor">Downsample factor</s:String>
     <s:String x:Key="LblMaxObjects">Maximum objects</s:String>
+    <s:String x:Key="LblASTAPMinimumVersionNote">Note: Requires an ASTAP version of 0.9.192 or above. For lower versions, please use ASTAP as Platesolve2 replacement.</s:String>
 </ResourceDictionary>

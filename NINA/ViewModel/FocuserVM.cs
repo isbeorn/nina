@@ -94,11 +94,26 @@ namespace NINA.ViewModel {
                         _cancelMove.Token.ThrowIfCancellationRequested();
                         await Focuser.Move(position, _cancelMove.Token);
                     }
+                    //Wait for focuser to settle
+                    if (profileService.ActiveProfile.FocuserSettings.FocuserSettleTime > 0) {
+                        FocuserInfo.IsSettling = true;
+                        TimeSpan totalSettleTime = TimeSpan.FromSeconds(profileService.ActiveProfile.FocuserSettings.FocuserSettleTime);
+                        TimeSpan elapsedSettleTime = TimeSpan.Zero;
+                        while (elapsedSettleTime.TotalMilliseconds < totalSettleTime.TotalMilliseconds) {
+                            applicationStatusMediator.StatusUpdate(new ApplicationStatus { Source = Title, Status = Locale.Loc.Instance["LblSettle"], Progress = elapsedSettleTime.TotalSeconds, MaxProgress = (int)totalSettleTime.TotalSeconds, ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue });
+                            await Utility.Utility.Delay(TimeSpan.FromSeconds(1), _cancelMove.Token);
+                            elapsedSettleTime = elapsedSettleTime.Add(TimeSpan.FromSeconds(1));
+                        }
+                    }
+
                     FocuserInfo.Position = position;
                     pos = position;
                     ToggleTempComp(tempComp);
                     BroadcastFocuserInfo();
                 } catch (OperationCanceledException) {
+                } finally {
+                    FocuserInfo.IsSettling = false;
+                    applicationStatusMediator.StatusUpdate(new ApplicationStatus { Source = Title, Status = string.Empty });
                 }
             });
             return pos;

@@ -29,5 +29,6 @@ namespace NINA.Utility.Profile {
         int AutoFocusStepSize { get; set; }
         string Id { get; set; }
         bool UseFilterWheelOffsets { get; set; }
+        int FocuserSettleTime { get; set;}
     }
 }

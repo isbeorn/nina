@@ -253,7 +253,8 @@ namespace NINA.ViewModel {
         }
 
         private async Task Capture(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            await cameraMediator.Capture(seq, token, progress);
+            if (ImageControl.IsLiveViewEnabled) _liveViewCts?.Cancel();
+            else await cameraMediator.Capture(seq, token, progress);
         }
 
         private Task<ImageArray> Download(CancellationToken token, IProgress<ApplicationStatus> progress, bool calculateStatistics) {

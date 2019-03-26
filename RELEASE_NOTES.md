@@ -21,6 +21,7 @@
 	- `SITEELEV`: Elevation of the observing site, in meters
 	- `SWCREATE`: Contains `N.I.N.A. <version> <architecture>`
 	- `TELESCOP`: Telescope name if provided under Options->Equipment->Telescope. Falls back to ASCOM mount driver name
+- A new focuser settle time parameter has been added, in case the focuser shifts the image when moving (SCT, lens belt focusing, etc.). This should help with auto-focus in particular.
 
 # Version 1.8
 
