@@ -849,4 +849,5 @@ Berechneter HFR: {2}
     <s:String x:Key="LblUseBlindSolveNoCoordinatesRollover">Keine Referenzkoordinaten verfügbar. Soll der Blindsolver stattdessen benutzt werden?</s:String>
     <s:String x:Key="LblDownSampleFactor">Downsample Faktor</s:String>
     <s:String x:Key="LblMaxObjects">Maximum Objekte</s:String>
+    <s:String x:Key="LblASTAPMinimumVersionNote">Notiz: Benötigt minimum Version 0.9.192 von ASTAP. Für niedrigere Versionen, bitte als Platesolve2 nutzen.</s:String>
 </ResourceDictionary>

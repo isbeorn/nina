@@ -612,7 +612,6 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
-                            <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <Grid.Style>
                             <Style TargetType="{x:Type Grid}">
@@ -752,6 +751,7 @@
                                     </TextBox>
                                 </UniformGrid>
                             </UniformGrid>
+                            <TextBlock FontStyle="Italic" Text="{ns:Loc LblASTAPMinimumVersionNote}" />
                         </StackPanel>
                     </Grid>
                 </Grid>
