@@ -100,12 +100,10 @@ namespace NINA.ViewModel {
                         TimeSpan totalSettleTime = TimeSpan.FromSeconds(profileService.ActiveProfile.FocuserSettings.FocuserSettleTime);
                         TimeSpan elapsedSettleTime = TimeSpan.Zero;
                         while (elapsedSettleTime.TotalMilliseconds < totalSettleTime.TotalMilliseconds) {
-                            applicationStatusMediator.StatusUpdate(new ApplicationStatus {Source = Title, Status = Locale.Loc.Instance["LblSettle"], Progress = elapsedSettleTime.TotalSeconds, MaxProgress = (int)totalSettleTime.TotalSeconds, ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue});
+                            applicationStatusMediator.StatusUpdate(new ApplicationStatus { Source = Title, Status = Locale.Loc.Instance["LblSettle"], Progress = elapsedSettleTime.TotalSeconds, MaxProgress = (int)totalSettleTime.TotalSeconds, ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue });
                             await Utility.Utility.Delay(TimeSpan.FromSeconds(1), _cancelMove.Token);
                             elapsedSettleTime = elapsedSettleTime.Add(TimeSpan.FromSeconds(1));
                         }
-                        applicationStatusMediator.StatusUpdate(new ApplicationStatus { Source = Title, Status = string.Empty});
-                        FocuserInfo.IsSettling = false;
                     }
 
                     FocuserInfo.Position = position;
@@ -113,8 +111,9 @@ namespace NINA.ViewModel {
                     ToggleTempComp(tempComp);
                     BroadcastFocuserInfo();
                 } catch (OperationCanceledException) {
+                } finally {
                     FocuserInfo.IsSettling = false;
-                    applicationStatusMediator.StatusUpdate(new ApplicationStatus { Source = Title, Status = string.Empty});
+                    applicationStatusMediator.StatusUpdate(new ApplicationStatus { Source = Title, Status = string.Empty });
                 }
             });
             return pos;
