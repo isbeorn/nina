@@ -53,6 +53,7 @@ namespace NINA.ViewModel {
             applicationStatusMediator = new ApplicationStatusMediator();
 
             ExitCommand = new RelayCommand(ExitApplication);
+            ClosingCommand = new RelayCommand(ClosingApplication);
             MinimizeWindowCommand = new RelayCommand(MinimizeWindow);
             MaximizeWindowCommand = new RelayCommand(MaximizeWindow);
             CheckProfileCommand = new RelayCommand(LoadProfile);
@@ -230,14 +231,16 @@ namespace NINA.ViewModel {
             DockManagerVM.SaveAvalonDockLayout();
             if (CameraVM?.Cam?.Connected == true) {
                 var diag = MyMessageBox.MyMessageBox.Show("Camera still connected. Exit anyway?", "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
-                if (diag == MessageBoxResult.OK) {
-                    DisconnectEquipment();
-                    Application.Current.Shutdown();
+                if (diag != MessageBoxResult.OK) {
+                    return;
                 }
-            } else {
-                DisconnectEquipment();
-                Application.Current.Shutdown();
             }
+            Application.Current.Shutdown();
+        }
+
+        private void ClosingApplication(object o) {
+            Notification.Dispose();
+            DisconnectEquipment();
         }
 
         public void DisconnectEquipment() {
@@ -570,6 +573,7 @@ namespace NINA.ViewModel {
         public ICommand CheckUpdateCommand { get; private set; }
         public ICommand OpenManualCommand { get; private set; }
         public ICommand ExitCommand { get; private set; }
+        public ICommand ClosingCommand { get; private set; }
         public ICommand ConnectAllDevicesCommand { get; private set; }
         public ICommand DisconnectAllDevicesCommand { get; private set; }
     }

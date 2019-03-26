@@ -41,6 +41,9 @@
             <i:InvokeCommandAction Command="{Binding CheckProfileCommand}" />
             <i:InvokeCommandAction Command="{Binding CheckUpdateCommand}" />
         </i:EventTrigger>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding ClosingCommand}" />
+        </i:EventTrigger>
     </i:Interaction.Triggers>
     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
         <Grid>
