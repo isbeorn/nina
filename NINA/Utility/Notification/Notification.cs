@@ -75,18 +75,22 @@ namespace NINA.Utility.Notification {
 
         public static void ShowInformation(string message, TimeSpan lifetime) {
             lock (_lock) {
-                dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                    notifier.Notify<CustomNotification>(() => new CustomNotification(message));
-                }));
+                if (notifier != null) {
+                    dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                        notifier.Notify<CustomNotification>(() => new CustomNotification(message));
+                    }));
+                }
             }
         }
 
         public static void ShowSuccess(string message) {
             lock (_lock) {
-                dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                    var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CheckedCircledSVG"];
-                    notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol));
-                }));
+                if (notifier != null) {
+                    dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                        var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CheckedCircledSVG"];
+                        notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol));
+                    }));
+                }
             }
         }
 
@@ -96,23 +100,37 @@ namespace NINA.Utility.Notification {
 
         public static void ShowWarning(string message, TimeSpan lifetime) {
             lock (_lock) {
-                dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                    var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ExclamationCircledSVG"];
-                    var brush = (Brush)System.Windows.Application.Current.Resources["NotificationWarningBrush"];
-                    var foregroundBrush = (Brush)System.Windows.Application.Current.Resources["NotificationWarningTextBrush"];
-                    notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, brush, foregroundBrush));
-                }));
+                if (notifier != null) {
+                    dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                        var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ExclamationCircledSVG"];
+                        var brush = (Brush)System.Windows.Application.Current.Resources["NotificationWarningBrush"];
+                        var foregroundBrush = (Brush)System.Windows.Application.Current.Resources["NotificationWarningTextBrush"];
+                        notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, brush, foregroundBrush));
+                    }));
+                }
             }
         }
 
         public static void ShowError(string message) {
             lock (_lock) {
-                dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                    var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CancelCircledSVG"];
-                    var brush = (Brush)System.Windows.Application.Current.Resources["NotificationErrorBrush"];
-                    var foregroundBrush = (Brush)System.Windows.Application.Current.Resources["NotificationErrorTextBrush"];
-                    notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, brush, foregroundBrush, true));
-                }));
+                if (notifier != null) {
+                    dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                        var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CancelCircledSVG"];
+                        var brush = (Brush)System.Windows.Application.Current.Resources["NotificationErrorBrush"];
+                        var foregroundBrush = (Brush)System.Windows.Application.Current.Resources["NotificationErrorTextBrush"];
+                        notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, brush, foregroundBrush, true));
+                    }));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Disposes the notifier instance and supresses further notifications
+        /// </summary>
+        public static void Dispose() {
+            lock (_lock) {
+                notifier.Dispose();
+                notifier = null;
             }
         }
     }
