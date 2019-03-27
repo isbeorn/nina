@@ -453,5 +453,32 @@ namespace NINA.Utility.Astrometry {
             return new Point(centerPointPixels.X - deltaX.ArcSeconds / horizResArcSecPx,
                 centerPointPixels.Y - deltaY.ArcSeconds / vertResArcSecPix);
         }
+
+        public static Separation operator -(Coordinates a, Coordinates b) {
+            var raDiff = a.raAngle - b.raAngle;
+            var decDiff = a.decAngle - b.decAngle;
+            var distance = (a.decAngle.Sin() * b.decAngle.Sin() + a.decAngle.Cos() * b.decAngle.Cos() * raDiff.Cos()).Acos();
+
+            var y = raDiff.Sin() * b.decAngle.Cos();
+            var x = a.decAngle.Cos() * b.decAngle.Sin() - a.decAngle.Sin() * b.decAngle.Cos() * raDiff.Cos();
+            var bearing = Angle.Atan2(y, x);
+
+            return new Separation() {
+                RA = raDiff,
+                Dec = decDiff,
+                Distance = distance,
+                Bearing = bearing
+            };
+        }
+    }
+
+    /// <summary>
+    /// Separation properties between two coordinates
+    /// </summary>
+    public class Separation {
+        public Angle RA { get; set; }
+        public Angle Dec { get; set; }
+        public Angle Distance { get; set; }
+        public Angle Bearing { get; set; }
     }
 }

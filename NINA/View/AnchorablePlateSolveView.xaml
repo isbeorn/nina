@@ -250,6 +250,11 @@
                                 IsReadOnly="True" />
                             <DataGridTextColumn
                                 Width="*"
+                                Binding="{Binding Separation.Distance}"
+                                Header="{ns:Loc LblErrorDistance}"
+                                IsReadOnly="True" />
+                            <DataGridTextColumn
+                                Width="*"
                                 Binding="{Binding RaErrorString}"
                                 Header="{ns:Loc LblRAError}"
                                 IsReadOnly="True" />
