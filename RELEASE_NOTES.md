@@ -54,6 +54,8 @@
 - Fixed Meridian Offset default values for plate solved polar alignment 
 - On sequence target guiding will be paused, prior to slewing to a new target
 - Autofocus will not trigger a pause/resume command anymore, as this was not reliable in some cases. Instead PHD2 is stopped and started, similar to what is done during meridian flip.
+- Fixed Platesolve result reporting wrong Dec Error.
+- Platesolve recenter now considers proper angular distance calculation instead of relying just on Right Ascension.
 
 ## Improvements
 
