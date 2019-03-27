@@ -842,4 +842,5 @@ Calculated HFR: {2}
     <s:String x:Key="LblDownSampleFactor">Downsample factor</s:String>
     <s:String x:Key="LblMaxObjects">Maximum objects</s:String>
     <s:String x:Key="LblASTAPMinimumVersionNote">Note: Requires an ASTAP version of 0.9.192 or above. For lower versions, please use ASTAP as Platesolve2 replacement.</s:String>
+    <s:String x:Key="LblErrorDistance">Error Distance</s:String>
 </ResourceDictionary>

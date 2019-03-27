@@ -25,6 +25,7 @@ using NINA.Utility.Astrometry;
 using System;
 
 namespace NINA.PlateSolving {
+
     public class PlateSolveResult {
 
         public PlateSolveResult() {
@@ -44,31 +45,29 @@ namespace NINA.PlateSolving {
 
         public bool Success { get; set; }
 
-        public double RaError { get; set; }
-
-        public double DecError { get; set; }
+        public Separation Separation { get; set; }
 
         public string RaErrorString {
             get {
-                return Astrometry.DegreesToHMS(RaError);
+                return Astrometry.DegreesToHMS(Separation?.RA.Degree ?? 0);
             }
         }
 
         public double RaPixError {
             get {
-                return Astrometry.DegreeToArcsec(RaError) / Pixscale;
+                return Separation?.RA.ArcSeconds / Pixscale ?? 0;
             }
         }
 
         public double DecPixError {
             get {
-                return Astrometry.DegreeToArcsec(DecError) / Pixscale;
+                return Separation?.Dec.ArcSeconds / Pixscale ?? 0;
             }
         }
 
         public string DecErrorString {
             get {
-                return Astrometry.DegreesToDMS(RaError);
+                return Astrometry.DegreesToDMS(Separation?.Dec.Degree ?? 0);
             }
         }
     }
