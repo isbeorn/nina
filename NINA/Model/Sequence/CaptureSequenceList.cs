@@ -356,6 +356,7 @@ namespace NINA.Model {
         }
 
         private void RaiseCoordinatesChanged() {
+            RaisePropertyChanged(nameof(Rotation));
             RaisePropertyChanged(nameof(Coordinates));
             RaisePropertyChanged(nameof(RAHours));
             RaisePropertyChanged(nameof(RAMinutes));
