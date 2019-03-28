@@ -102,11 +102,10 @@ namespace NINA.Model.MyCamera {
 
         private void CalculateInternal(ushort[] array) {
             using (MyStopWatch.Measure()) {
-                ushort maxPossibleValue = (ushort)((1 << BitDepth) - 1);
                 long sum = 0;
                 long squareSum = 0;
                 int count = array.Count();
-                ushort min = maxPossibleValue;
+                ushort min = ushort.MaxValue;
                 ushort oldmin = min;
                 ushort max = 0;
                 ushort oldmax = max;
@@ -114,7 +113,7 @@ namespace NINA.Model.MyCamera {
                 long minOccurrences = 0;
 
                 /* Array mapping: pixel value -> total number of occurrences of that pixel value */
-                int[] histogram = new int[maxPossibleValue + 1];
+                int[] histogram = new int[ushort.MaxValue + 1];
                 for (var i = 0; i < array.Length; i++) {
                     ushort val = array[i];
 
@@ -153,7 +152,7 @@ namespace NINA.Model.MyCamera {
                 var medianlength = array.Length / 2.0;
 
                 /* Determine median out of histogram array */
-                for (ushort i = 0; i < maxPossibleValue; i++) {
+                for (ushort i = 0; i < ushort.MaxValue; i++) {
                     occurrences += histogram[i];
                     if (occurrences > medianlength) {
                         median1 = i;
@@ -161,7 +160,7 @@ namespace NINA.Model.MyCamera {
                         break;
                     } else if (occurrences == medianlength) {
                         median1 = i;
-                        for (int j = i + 1; j <= maxPossibleValue; j++) {
+                        for (int j = i + 1; j <= ushort.MaxValue; j++) {
                             if (histogram[j] > 0) {
                                 median2 = j;
                                 break;
@@ -197,7 +196,7 @@ namespace NINA.Model.MyCamera {
 
                     idxUp++;
                     idxDown--;
-                    if (idxUp > maxPossibleValue) {
+                    if (idxUp > ushort.MaxValue) {
                         break;
                     }
                 }
@@ -210,10 +209,12 @@ namespace NINA.Model.MyCamera {
                 this.Mean = mean;
                 this.Median = median;
                 this.MedianAbsoluteDeviation = medianAbsoluteDeviation;
+                var maxPossibleValue = (ushort)((1 << BitDepth) - 1);
+                var factor = (double)resolution / maxPossibleValue;
                 this.Histogram = histogram
                     .Select((value, index) => new { Index = index, Value = value })
                     .GroupBy(
-                        x => Math.Floor((double)x.Index * ((double)resolution / maxPossibleValue)),
+                        x => Math.Floor((double)Math.Min(maxPossibleValue, x.Index) * factor),
                         x => x.Value)
                     .Select(g => new OxyPlot.DataPoint(g.Key, g.Sum()))
                     .OrderBy(item => item.X).ToList();
