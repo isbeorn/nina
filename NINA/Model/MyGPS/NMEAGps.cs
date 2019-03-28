@@ -123,7 +123,7 @@ namespace NINA.Model.MyGPS {
         ///checks GPS messages, transfers location to the options view
         ///if a fix is obtained
         /// </summary>
-        private void device_MessageReceived(object sender, NmeaParser.NmeaMessageReceivedEventArgs args) {
+        private void Device_MessageReceived(object sender, NmeaParser.NmeaMessageReceivedEventArgs args) {
             var message = args.Message;
             if (message is NmeaParser.Nmea.Rmc) {
                 Coords[0] = ((NmeaParser.Nmea.Rmc)message).Longitude;
@@ -138,10 +138,12 @@ namespace NINA.Model.MyGPS {
 
             if (Double.IsNaN(Coords[0]) || Double.IsNaN(Coords[1])) return; // no fix yet
             try {
-                currentDevice.MessageReceived -= device_MessageReceived; // unsubscribe to avoid multiple messages
+                currentDevice.MessageReceived -= Device_MessageReceived; // unsubscribe to avoid multiple messages
                 fixTimer.Enabled = false;
                 fixTimer.Dispose();
-            } catch (Exception e) { }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
             Notification.ShowSuccess(Locale.Loc.Instance["LblGPSLocationSet"]);
             gotGPSFix.TrySetResult(true);
         }
@@ -151,17 +153,18 @@ namespace NINA.Model.MyGPS {
             try {
                 var device = new NmeaParser.SerialPortDevice(new System.IO.Ports.SerialPort(portName, baudRate));
                 currentDevice = device;
-                device.MessageReceived += device_MessageReceived;
+                device.MessageReceived += Device_MessageReceived;
                 fixTimer = new System.Timers.Timer(4000); // try for 4 secs
                 fixTimer.Elapsed += OnFixTimedEvent;
                 fixTimer.AutoReset = false;
                 fixTimer.Enabled = true;
                 gotGPSFix = new TaskCompletionSource<bool>();
                 connected = true;
-                device.OpenAsync();
+                await device.OpenAsync();
                 Notification.ShowSuccess(Locale.Loc.Instance["LblGPSConnected"] + " " + portName);
                 return await gotGPSFix.Task;
             } catch (System.Exception ex) {
+                Logger.Error(ex);
                 Notification.ShowError(Locale.Loc.Instance["LblGPSConnectFail"] + " " + portName);
                 return false;
             }
@@ -173,8 +176,9 @@ namespace NINA.Model.MyGPS {
                 fixTimer.Enabled = false;
                 fixTimer.Dispose();
                 currentDevice.Dispose();
-            } catch (Exception e) {
+            } catch (Exception ex) {
                 // something went wrong
+                Logger.Error(ex);
             }
             connected = false;
         }
@@ -226,8 +230,9 @@ namespace NINA.Model.MyGPS {
                                 continue;
                             }
                             success = true;
-                        } catch {
+                        } catch (Exception ex) {
                             //Error reading
+                            Logger.Error(ex);
                         } finally {
                             port.Close();
                         }
