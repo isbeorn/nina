@@ -108,6 +108,12 @@
     <s:String x:Key="LblSiteLatitude">Standort Breitengrad</s:String>
     <s:String x:Key="LblSiteLongitude">Standort Längengrad</s:String>
     <s:String x:Key="LblSiteElevation">Standort Höhe</s:String>
+    <s:String x:Key="LblSiteFromGPS">von GPS</s:String>
+    <s:String x:Key="LblGPSNoFix">GPS konnte keine Satellitenverbindung aufbauen</s:String>
+    <s:String x:Key="LblGPSLocationSet">Standort wurde von GPS gesetzt</s:String>
+    <s:String x:Key="LblGPSConnected">GPS verbunden:</s:String>
+    <s:String x:Key="LblGPSConnectFail">Konnte zu keinem GPS verbinden:</s:String>
+    <s:String x:Key="LblGPSNotFound">Es konnte kein kompatibler GPS Adapter gefunden werden</s:String>
     <s:String x:Key="LblSiderealTime">Sternzeit</s:String>
     <s:String x:Key="LblMeridianIn">Meridian in</s:String>
     <s:String x:Key="LblRightAscension">Rektaszension</s:String>

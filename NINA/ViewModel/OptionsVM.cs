@@ -47,7 +47,6 @@ namespace NINA.ViewModel {
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SettingsSVG"];
 
             this.filterWheelMediator = filterWheelMediator;
-
             OpenWebRequestCommand = new RelayCommand(OpenWebRequest);
             PreviewFileCommand = new RelayCommand(PreviewFile);
             OpenImageFileDiagCommand = new RelayCommand(OpenImageFileDiag);
@@ -73,6 +72,7 @@ namespace NINA.ViewModel {
 
             CopyToCustomSchemaCommand = new RelayCommand(CopyToCustomSchema, (object o) => AlternativeColorSchemaName != "Custom");
             CopyToAlternativeCustomSchemaCommand = new RelayCommand(CopyToAlternativeCustomSchema, (object o) => ColorSchemaName != "Alternative Custom");
+            SiteFromGPSCommand = new AsyncCommand<bool>( () => { return SiteFromGPS(); } );
 
             ImagePatterns = ImagePatterns.CreateExample();
 
@@ -97,7 +97,6 @@ namespace NINA.ViewModel {
             var url = new Uri(obj.ToString());
             Process.Start(new ProcessStartInfo(url.AbsoluteUri));
         }
-
         public RelayCommand OpenPHD2DiagCommand { get; set; }
 
         private void CopyToAlternativeCustomSchema(object obj) {
@@ -118,6 +117,25 @@ namespace NINA.ViewModel {
             schema.NotificationErrorColor = AltNotificationErrorColor;
             schema.NotificationErrorTextColor = AltNotificationErrorTextColor;
             AlternativeColorSchemaName = schema.Name;
+        }
+
+        private async System.Threading.Tasks.Task<bool> SiteFromGPS()
+        {
+            bool loc = false; // if location was acquired
+            using (var gps = new Model.MyGPS.NMEAGps(0, profileService))
+            {
+                gps.Initialize();
+                if (gps.AutoDiscover())
+                {
+                    loc = await gps.Connect(new System.Threading.CancellationToken());
+                    if (loc)
+                    {
+                        Latitude = gps.Coords[1];
+                        Longitude = gps.Coords[0];
+                    }
+                }
+                return loc;
+            }
         }
 
         private void CopyToCustomSchema(object obj) {
@@ -393,6 +411,7 @@ namespace NINA.ViewModel {
 
         public ICommand CopyToCustomSchemaCommand { get; private set; }
         public ICommand CopyToAlternativeCustomSchemaCommand { get; private set; }
+        public ICommand SiteFromGPSCommand { get; private set; }
 
         public ICommand SelectProfileCommand { get; private set; }
 

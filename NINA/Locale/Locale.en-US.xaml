@@ -104,6 +104,12 @@
     <s:String x:Key="LblSiteLatitude">Site Latitude</s:String>
     <s:String x:Key="LblSiteLongitude">Site Longitude</s:String>
     <s:String x:Key="LblSiteElevation">Site Elevation</s:String>
+    <s:String x:Key="LblSiteFromGPS">from GPS</s:String>
+    <s:String x:Key="LblGPSNoFix">GPS has No Fix</s:String>
+    <s:String x:Key="LblGPSLocationSet">Location set from GPS</s:String>
+    <s:String x:Key="LblGPSConnected">GPS connected on port</s:String>
+    <s:String x:Key="LblGPSConnectFail">Cannot Connect to GPS on port</s:String>
+    <s:String x:Key="LblGPSNotFound">No GPS module detected</s:String>
     <s:String x:Key="LblSiderealTime">Sidereal Time</s:String>
     <s:String x:Key="LblMeridianIn">Meridian in</s:String>
     <s:String x:Key="LblRightAscension">Right Ascension</s:String>

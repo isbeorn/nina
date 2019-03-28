@@ -9,6 +9,9 @@
 ### Plate Solving
 - Added interface for ASTAP, the Astrometric STAcking Program, astrometric solver and FITS viewer as a plate solver
 
+### GPS Assisted Location
+- Added a NMEA GPS interface to retrieve the current location
+
 ## Improvements
 - If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips
 - Added options to adjust downsample factor and maximum number of considered stars for ASTAP and local astrometry.net solvers
