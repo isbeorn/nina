@@ -1,8 +1,8 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com> 
- 
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
     N.I.N.A. is free software: you can redistribute it and/or modify
@@ -34,14 +34,13 @@ using System;
 using NmeaParser;
 using System.Collections.Generic;
 
-namespace NINA.Model.MyGPS
-{
+namespace NINA.Model.MyGPS {
+
     /// <summary>
     /// NMEA GPS Class detects comport based NMEA GPS Devices
     /// Flow : construct -> Autodiscover [detect, Connect, listens to messages]
     /// </summary>
-    internal class NMEAGps : BaseINPC, IDevice, IDisposable
-    {
+    internal class NMEAGps : BaseINPC, IDevice, IDisposable {
         private IProfileService profileService;
         private int gpsId;
         private bool connected;
@@ -52,8 +51,7 @@ namespace NINA.Model.MyGPS
         private TaskCompletionSource<bool> gotGPSFix;
         public double[] Coords = new double[2];
 
-        public NMEAGps(int gpsId, IProfileService profileService)
-        {
+        public NMEAGps(int gpsId, IProfileService profileService) {
             this.profileService = profileService;
             this.gpsId = gpsId;
             connected = false;
@@ -61,125 +59,96 @@ namespace NINA.Model.MyGPS
 
         public string Id => $"#{gpsId} (#{portName})";
 
-        public string Name
-        {
-            get
-            {
+        public string Name {
+            get {
                 return "NMEA GPS Device";
             }
         }
 
-        public string Description
-        {
-            get
-            {
+        public string Description {
+            get {
                 return string.Empty;
             }
         }
 
-        public string DriverInfo
-        {
-            get
-            {
+        public string DriverInfo {
+            get {
                 string s = "NMEA GPS";
                 return s;
             }
         }
 
-        public string DriverVersion
-        {
-            get
-            {
+        public string DriverVersion {
+            get {
                 string version = "0.1";
                 return version;
             }
         }
 
-        public bool HasSetupDialog
-        {
-            get
-            {
+        public bool HasSetupDialog {
+            get {
                 return false;
             }
         }
 
-        public void SetupDialog()
-        {
+        public void SetupDialog() {
             //TODO : allow the user to select a specific com port maybe?
         }
 
-        public void Initialize()
-        {
+        public void Initialize() {
             if (connected) Disconnect();
             connected = false;
             baudRate = 0;
             portName = "";
         }
 
-        private void OnFixTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
-        {
+        private void OnFixTimedEvent(Object source, System.Timers.ElapsedEventArgs e) {
             // give up with a connected GPS that has no Fix
             Notification.ShowWarning(Locale.Loc.Instance["LblGPSNoFix"]);
             Disconnect();
             gotGPSFix.TrySetResult(false);
         }
 
-
-        public bool Connected
-        {
-            get
-            {
+        public bool Connected {
+            get {
                 return connected;
             }
-            set
-            {
+            set {
                 connected = value;
-                RaisePropertyChanged(); 
+                RaisePropertyChanged();
             }
         }
 
         /// <summary>
-        ///checks GPS messages, transfers location to the options view 
-        ///if a fix is obtained 
+        ///checks GPS messages, transfers location to the options view
+        ///if a fix is obtained
         /// </summary>
-        private void device_MessageReceived(object sender, NmeaParser.NmeaMessageReceivedEventArgs args)
-        {
+        private void device_MessageReceived(object sender, NmeaParser.NmeaMessageReceivedEventArgs args) {
             var message = args.Message;
-            if (message is NmeaParser.Nmea.Rmc)
-            {
+            if (message is NmeaParser.Nmea.Rmc) {
                 Coords[0] = ((NmeaParser.Nmea.Rmc)message).Longitude;
                 Coords[1] = ((NmeaParser.Nmea.Rmc)message).Latitude;
-            }
-            else if (args.Message is NmeaParser.Nmea.Gga)
-            {
+            } else if (args.Message is NmeaParser.Nmea.Gga) {
                 Coords[0] = ((NmeaParser.Nmea.Gga)message).Longitude;
                 Coords[1] = ((NmeaParser.Nmea.Gga)message).Latitude;
-            }
-            else if (args.Message is NmeaParser.Nmea.Gll)
-            {
+            } else if (args.Message is NmeaParser.Nmea.Gll) {
                 Coords[0] = ((NmeaParser.Nmea.Gll)message).Longitude;
                 Coords[1] = ((NmeaParser.Nmea.Gll)message).Latitude;
-            }
-            else return;
+            } else return;
 
             if (Double.IsNaN(Coords[0]) || Double.IsNaN(Coords[1])) return; // no fix yet
-            try
-            {
+            try {
                 currentDevice.MessageReceived -= device_MessageReceived; // unsubscribe to avoid multiple messages
                 fixTimer.Enabled = false;
                 fixTimer.Dispose();
-            }
-            catch (Exception e)
-            { }
-            Notification.ShowSuccess(Locale.Loc.Instance["LblGPSLocationSet"]);  
+            } catch (Exception e) { }
+            Notification.ShowSuccess(Locale.Loc.Instance["LblGPSLocationSet"]);
             gotGPSFix.TrySetResult(true);
         }
 
-        public async Task<bool> Connect(CancellationToken token)
-        {
-            if ((currentDevice != null)||(baudRate == 0 ))  return false; // disconenct first
-            try
-            {
+        public async Task<bool> Connect(CancellationToken token) {
+            if ((currentDevice != null) || (baudRate == 0)) return false; // disconenct first
+            try {
                 var device = new NmeaParser.SerialPortDevice(new System.IO.Ports.SerialPort(portName, baudRate));
                 currentDevice = device;
                 device.MessageReceived += device_MessageReceived;
@@ -192,55 +161,45 @@ namespace NINA.Model.MyGPS
                 device.OpenAsync();
                 Notification.ShowSuccess(Locale.Loc.Instance["LblGPSConnected"] + " " + portName);
                 return await gotGPSFix.Task;
-            }
-            catch (System.Exception ex)
-            {
+            } catch (System.Exception ex) {
                 Notification.ShowError(Locale.Loc.Instance["LblGPSConnectFail"] + " " + portName);
                 return false;
             }
         }
 
-        public void Disconnect()
-        {
+        public void Disconnect() {
             if (currentDevice.IsOpen) currentDevice.CloseAsync();
-            try
-            {
+            try {
                 fixTimer.Enabled = false;
                 fixTimer.Dispose();
                 currentDevice.Dispose();
+            } catch (Exception e) {
+                // something went wrong
             }
-            catch (Exception e)
-            {
-                 // something went wrong
-            }
-           connected = false;
+            connected = false;
         }
 
-        private static string[] GetComPorts()
-        {
+        private static string[] GetComPorts() {
             var ports = System.IO.Ports.SerialPort.GetPortNames().OrderBy(s => s);
             string[] ret = new string[ports.Count()];
             int i = 0;
             foreach (var cportName in ports)
-               ret[i++] = cportName;
+                ret[i++] = cportName;
             return ret;
         }
 
         /// <summary>
         /// this finds a suitable comport, connects and listens for CPS messages
         /// </summary>
-        private System.IO.Ports.SerialPort FindPort()
-        {
+        private System.IO.Ports.SerialPort FindPort() {
             string[] allPorts = GetComPorts();
             int[,] portRates = new int[allPorts.Length, 7];
             // set port / baud test precedence
-            for (int pnum = 0; pnum < allPorts.Length; pnum++)
-            {
+            for (int pnum = 0; pnum < allPorts.Length; pnum++) {
                 List<int> baudRatesToTest = new List<int>(new[]
                    { 9600, 4800, 115200, 19200, 57600, 38400, 2400 });
                 string cportName = allPorts[pnum];
-                using (var port = new System.IO.Ports.SerialPort(cportName))
-                {
+                using (var port = new System.IO.Ports.SerialPort(cportName)) {
                     var defaultRate = port.BaudRate;
                     if (baudRatesToTest.Contains(defaultRate)) baudRatesToTest.Remove(defaultRate);
                     baudRatesToTest.Insert(0, defaultRate);
@@ -250,40 +209,29 @@ namespace NINA.Model.MyGPS
             }
             // use computed precedences to test the ports
             for (int bnum = 0; bnum < 7; bnum++)
-                for (var pnum = 0; pnum < allPorts.Length; pnum++)
-                {
+                for (var pnum = 0; pnum < allPorts.Length; pnum++) {
                     string cportName = allPorts[pnum];
                     int baud = portRates[pnum, bnum];
-                    using (var port = new System.IO.Ports.SerialPort(cportName))
-                    {
+                    using (var port = new System.IO.Ports.SerialPort(cportName)) {
                         port.BaudRate = baud;
                         port.ReadTimeout = 2000;
                         bool success = false;
-                        try
-                        {
+                        try {
                             port.Open();
                             if (!port.IsOpen)
                                 continue; //couldn't open port
-                            try
-                            { // ths is blocking
+                            try { // ths is blocking
                                 port.ReadTo("$GP");
-                            }
-                            catch (TimeoutException)
-                            {
+                            } catch (TimeoutException) {
                                 continue;
                             }
                             success = true;
-                        }
-                        catch
-                        {
+                        } catch {
                             //Error reading
-                        }
-                        finally
-                        {
+                        } finally {
                             port.Close();
                         }
-                        if (success)
-                        {
+                        if (success) {
                             return new System.IO.Ports.SerialPort(cportName, baud);
                         }
                     }
@@ -291,35 +239,28 @@ namespace NINA.Model.MyGPS
             return null;
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             if (connected) Disconnect();
         }
 
         /// <summary>
         /// discovers the first GPS device connected to a serial port
         /// </summary>
-        public bool AutoDiscover()
-        {
+        public bool AutoDiscover() {
             System.IO.Ports.SerialPort port = FindPort();
-          
+
             if (port != null) //we found a port with a GPS
             {
                 portName = port.PortName;
                 baudRate = port.BaudRate;
                 return true;
-            }
-            else // no GPS found
-            {  
+            } else // no GPS found
+              {
                 portName = "";
                 baudRate = 0;
                 Notification.ShowError(Locale.Loc.Instance["LblGPSNotFound"]);
                 return false;
             }
         }
-
-
-
     }
-
 }
