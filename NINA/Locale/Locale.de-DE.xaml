@@ -857,4 +857,5 @@ Berechneter HFR: {2}
     <s:String x:Key="LblMaxObjects">Maximum Objekte</s:String>
     <s:String x:Key="LblASTAPMinimumVersionNote">Notiz: Benötigt minimum Version 0.9.192 von ASTAP. Für niedrigere Versionen, bitte als Platesolve2 nutzen.</s:String>
     <s:String x:Key="LblErrorDistance">Fehlerabstand</s:String>
+    <s:String x:Key="LblGPSTooltip">Standord von einem NMEA GPS Gerät importieren</s:String>
 </ResourceDictionary>

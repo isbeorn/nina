@@ -762,16 +762,22 @@
                                         VerticalAlignment="Center"
                                         Text="{Binding Longitude}" />
                                     <Button
-                                            Width="40"
-                                            Height="30"
+                                        Width="40"
+                                        Height="30"
+                                        Margin="5"
+                                        HorizontalAlignment="Center"
+                                        Command="{Binding SiteFromGPSCommand}">
+                                        <Button.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblGPSTooltip}" />
+                                        </Button.ToolTip>
+                                        <Path
                                             Margin="5"
-                                            HorizontalAlignment="Center"
-                                                Command="{Binding SiteFromGPSCommand}">
-                                        <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblSiteFromGPS}" />
+                                            Data="{StaticResource GPSSVG}"
+                                            Fill="{StaticResource ButtonForegroundBrush}"
+                                            Stretch="Uniform" />
                                     </Button>
                                 </StackPanel>
-             
-                        </UniformGrid>
+                            </UniformGrid>
                         </StackPanel>
                     </ScrollViewer>
                 </GroupBox>
