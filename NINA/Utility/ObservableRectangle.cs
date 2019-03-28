@@ -104,11 +104,7 @@ namespace NINA.Utility {
         public double DisplayedRotation {
             get {
                 var rotation = _rotationOffset + Rotation;
-                if (rotation < 0) {
-                    rotation += 360;
-                } else if (rotation >= 360) {
-                    rotation -= 360;
-                }
+                rotation = Astrometry.Astrometry.MathMod(rotation, 360);
                 return Math.Round(rotation, 2);
             }
         }

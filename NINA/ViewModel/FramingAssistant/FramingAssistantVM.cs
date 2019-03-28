@@ -679,6 +679,7 @@ namespace NINA.ViewModel.FramingAssistant {
 
         private void CalculateRectangle(ViewportFoV parameter) {
             if (parameter != null) {
+                var previousRotation = Rectangle?.Rotation ?? 0;
                 Rectangle = null;
                 Rotation = parameter.Rotation;
                 CameraRectangles.Clear();
@@ -705,7 +706,7 @@ namespace NINA.ViewModel.FramingAssistant {
                         Height = height,
                         X = 0,
                         Y = 0,
-                        Rotation = 0,
+                        Rotation = previousRotation,
                         Coordinates = centerCoordinates
                     });
                 } else {
@@ -743,7 +744,7 @@ namespace NINA.ViewModel.FramingAssistant {
                                 Height = panelHeight,
                                 X = panelX,
                                 Y = panelY,
-                                Rotation = 0,
+                                Rotation = previousRotation,
                                 Coordinates = panelCenterCoordinates
                             };
                             CameraRectangles.Add(rect);
@@ -756,7 +757,7 @@ namespace NINA.ViewModel.FramingAssistant {
                     Height = height,
                     X = x,
                     Y = y,
-                    Rotation = 0,
+                    Rotation = previousRotation,
                     Coordinates = centerCoordinates
                 };
             }

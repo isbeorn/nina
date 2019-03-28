@@ -91,6 +91,10 @@ namespace NINA.Utility.Astrometry {
             return NOVAS.JulianDate((short)utcdate.Year, (short)utcdate.Month, (short)utcdate.Day, utcdate.Hour + utcdate.Minute / 60.0 + utcdate.Second / 60.0 / 60.0);
         }
 
+        public static double MathMod(double a, double b) {
+            return (Math.Abs(a * b) + a) % b;
+        }
+
         /// <summary>
         /// Calculates the value of DeltaT using SOFA
         /// Published DeltaT information: https://www.usno.navy.mil/USNO/earth-orientation/eo-products/long-term
