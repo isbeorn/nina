@@ -34,6 +34,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -72,7 +73,7 @@ namespace NINA.ViewModel {
 
             CopyToCustomSchemaCommand = new RelayCommand(CopyToCustomSchema, (object o) => AlternativeColorSchemaName != "Custom");
             CopyToAlternativeCustomSchemaCommand = new RelayCommand(CopyToAlternativeCustomSchema, (object o) => ColorSchemaName != "Alternative Custom");
-            SiteFromGPSCommand = new AsyncCommand<bool>( () => { return SiteFromGPS(); } );
+            SiteFromGPSCommand = new AsyncCommand<bool>(() => Task.Run(SiteFromGPS));
 
             ImagePatterns = ImagePatterns.CreateExample();
 
@@ -97,6 +98,7 @@ namespace NINA.ViewModel {
             var url = new Uri(obj.ToString());
             Process.Start(new ProcessStartInfo(url.AbsoluteUri));
         }
+
         public RelayCommand OpenPHD2DiagCommand { get; set; }
 
         private void CopyToAlternativeCustomSchema(object obj) {
@@ -119,17 +121,13 @@ namespace NINA.ViewModel {
             AlternativeColorSchemaName = schema.Name;
         }
 
-        private async System.Threading.Tasks.Task<bool> SiteFromGPS()
-        {
+        private async Task<bool> SiteFromGPS() {
             bool loc = false; // if location was acquired
-            using (var gps = new Model.MyGPS.NMEAGps(0, profileService))
-            {
+            using (var gps = new Model.MyGPS.NMEAGps(0, profileService)) {
                 gps.Initialize();
-                if (gps.AutoDiscover())
-                {
+                if (gps.AutoDiscover()) {
                     loc = await gps.Connect(new System.Threading.CancellationToken());
-                    if (loc)
-                    {
+                    if (loc) {
                         Latitude = gps.Coords[1];
                         Longitude = gps.Coords[0];
                     }
