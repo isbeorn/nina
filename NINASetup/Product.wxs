@@ -381,6 +381,9 @@
       <Component Win64="$(var.Win64)" Id="AsyncEnumerable.dll" Guid="8dd0fdbc-bacd-4fdf-a83d-0e0e4b7dc56f">
         <File Id="AsyncEnumerable.dll" Name="AsyncEnumerable.dll" Source="$(var.NINA_TargetDir)AsyncEnumerable.dll" />
       </Component>
+      <Component Win64="$(var.Win64)" Id="NmeaParser.dll" Guid="e45c807d-d193-4e13-825b-2f5b9ea92b63">
+        <File Id="NmeaParser.dll" Name="NmeaParser.dll" Source="$(var.NINA_TargetDir)NmeaParser.dll" />
+      </Component>
     </ComponentGroup>
   </Fragment>
   <!--<Fragment>

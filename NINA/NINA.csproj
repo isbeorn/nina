@@ -218,6 +218,9 @@
     <Reference Include="Nito.AsyncEx.Enlightenment, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Nito.AsyncEx.4.0.1\lib\net45\Nito.AsyncEx.Enlightenment.dll</HintPath>
     </Reference>
+    <Reference Include="NmeaParser, Version=1.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpGIS.NmeaParser.1.10.0\lib\net451\NmeaParser.dll</HintPath>
+    </Reference>
     <Reference Include="OxyPlot, Version=1.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
       <HintPath>..\packages\OxyPlot.Core.1.0.0\lib\net45\OxyPlot.dll</HintPath>
     </Reference>
@@ -305,6 +308,7 @@
     <Compile Include="Model\MyGuider\SynchronizedPHD2GuiderService.cs" />
     <Compile Include="Model\MyTelescope\GuideDirections.cs" />
     <Compile Include="Model\MyTelescope\PierSide.cs" />
+    <Compile Include="Model\MyGPS\NMEAGps.cs" />
     <Compile Include="PlateSolving\ASTAPSolver.cs" />
     <Compile Include="PlateSolving\CLISolver.cs" />
     <Compile Include="PlateSolving\PlateSolveParameter.cs" />

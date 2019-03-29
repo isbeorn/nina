@@ -9,6 +9,9 @@
 ### Plate Solving
 - Added interface for ASTAP, the Astrometric STAcking Program, astrometric solver and FITS viewer as a plate solver
 
+### GPS Assisted Location
+- Added a NMEA GPS interface to retrieve the current location
+
 ## Improvements
 - If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips
 - Added options to adjust downsample factor and maximum number of considered stars for ASTAP and local astrometry.net solvers
@@ -79,6 +82,8 @@
 - Fixed Meridian Offset default values for plate solved polar alignment 
 - On sequence target guiding will be paused, prior to slewing to a new target
 - Autofocus will not trigger a pause/resume command anymore, as this was not reliable in some cases. Instead PHD2 is stopped and started, similar to what is done during meridian flip.
+- Fixed Platesolve result reporting wrong Dec Error.
+- Platesolve recenter now considers proper angular distance calculation instead of relying just on Right Ascension.
 
 ## Improvements
 

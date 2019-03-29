@@ -103,6 +103,12 @@
     <s:String x:Key="LblTelescope">Telescope</s:String>
     <s:String x:Key="LblSiteLatitude">Site Latitude</s:String>
     <s:String x:Key="LblSiteLongitude">Site Longitude</s:String>
+    <s:String x:Key="LblSiteFromGPS">from GPS</s:String>
+    <s:String x:Key="LblGPSNoFix">GPS has No Fix</s:String>
+    <s:String x:Key="LblGPSLocationSet">Location set from GPS</s:String>
+    <s:String x:Key="LblGPSConnected">GPS connected on port</s:String>
+    <s:String x:Key="LblGPSConnectFail">Cannot Connect to GPS on port</s:String>
+    <s:String x:Key="LblGPSNotFound">No GPS module detected</s:String>
     <s:String x:Key="LblSiteElevation">Site Elevation</s:String>
     <s:String x:Key="LblSiderealTime">Sidereal Time</s:String>
     <s:String x:Key="LblMeridianIn">Meridian in</s:String>
@@ -845,4 +851,6 @@ Calculated HFR: {2}
     <s:String x:Key="LblDownSampleFactor">Downsample factor</s:String>
     <s:String x:Key="LblMaxObjects">Maximum objects</s:String>
     <s:String x:Key="LblASTAPMinimumVersionNote">Note: Requires an ASTAP version of 0.9.192 or above. For lower versions, please use ASTAP as Platesolve2 replacement.</s:String>
+    <s:String x:Key="LblErrorDistance">Error Distance</s:String>
+    <s:String x:Key="LblGPSTooltip">Import location using an NMEA GPS device</s:String>
 </ResourceDictionary>

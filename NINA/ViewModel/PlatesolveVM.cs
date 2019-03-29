@@ -332,7 +332,7 @@ namespace NINA.ViewModel {
                     }
                 }
 
-                if (solveresult?.Success == true && repeat && Math.Abs(Astrometry.DegreeToArcmin(solveresult.RaError)) > repeatThreshold) {
+                if (solveresult?.Success == true && repeat && Math.Abs(solveresult.Separation.Distance.ArcMinutes) > repeatThreshold) {
                     repeatPlateSolve = true;
                     progress.Report(new ApplicationStatus() { Status = "Telescope not inside tolerance. Repeating..." });
                     //Let the scope settle
@@ -357,8 +357,9 @@ namespace NINA.ViewModel {
 
                 var coords = new Coordinates(TelescopeInfo.RightAscension, TelescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
 
-                PlateSolveResult.RaError = coords.RADegrees - solved.RADegrees;
-                PlateSolveResult.DecError = coords.Dec - solved.Dec;
+                var separation = coords - solved;
+
+                PlateSolveResult.Separation = coords - solved;
             }
         }
 
