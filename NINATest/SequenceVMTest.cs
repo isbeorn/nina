@@ -275,7 +275,7 @@ namespace NINATest {
             await vm.StartSequenceCommand.ExecuteAsync(null);
 
             //Assert
-            Assert.AreEqual(true, guiderMediator.StartGuidingCalled);
+            Assert.AreEqual(1, guiderMediator.StartGuidingCalled);
         }
 
         [Test]
@@ -289,7 +289,7 @@ namespace NINATest {
             await vm.StartSequenceCommand.ExecuteAsync(null);
 
             //Assert
-            Assert.AreEqual(false, guiderMediator.StartGuidingCalled);
+            Assert.AreEqual(0, guiderMediator.StartGuidingCalled);
         }
 
         [Test]
@@ -815,10 +815,11 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
-        public bool StartGuidingCalled = false;
+        public int StartGuidingCalled = 0;
+        public int StopGuidingCalled = 0;
 
         public async Task<bool> StartGuiding(CancellationToken token) {
-            StartGuidingCalled = true;
+            Interlocked.Add(ref StartGuidingCalled, 1);
             return true;
         }
 
@@ -826,8 +827,9 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
-        public Task<bool> StopGuiding(CancellationToken token) {
-            throw new NotImplementedException();
+        public async Task<bool> StopGuiding(CancellationToken token) {
+            Interlocked.Add(ref StopGuidingCalled, 1);
+            return true;
         }
 
         public RMS StopRMSRecording(Guid handle) {
