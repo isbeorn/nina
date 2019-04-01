@@ -420,7 +420,8 @@ namespace NINA.ViewModel {
         private ObservableCollection<CultureInfo> _availableLanguages = new ObservableCollection<CultureInfo>() {
             new CultureInfo("en-GB"),
             new CultureInfo("en-US"),
-            new CultureInfo("de-DE")
+            new CultureInfo("de-DE"),
+            new CultureInfo("it-IT")
         };
 
         public ObservableCollection<CultureInfo> AvailableLanguages {

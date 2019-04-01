@@ -373,7 +373,7 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblSnapPortStart">Snap Port Start Command</s:String>
     <s:String x:Key="LblSnapPortStop">Snap Port Stop Command</s:String>
     <s:String x:Key="LblAutoFocusGearNotConnected">Cannot start Auto Focus. Camera or Focuser is not connected!</s:String>
-    <s:String x:Key="LblAutoFocusNotEnoughtSpreadedPoints">Not enough HFR difference for set of focuspoints. Either the step size is too low or the stars ar too much out of focus.</s:String>
+    <s:String x:Key="LblAutoFocusNotEnoughtSpreadedPoints">Not enough HFR difference for set of focuspoints. Either the step size is too low or the stars are too much out of focus.</s:String>
 
     <s:String x:Key="LblOneToOne">Scale Image to 1:1</s:String>
     <s:String x:Key="LblDevicePollingInterval">Device polling interval</s:String>
@@ -850,4 +850,6 @@ Calculated HFR: {2}
     <s:String x:Key="LblASTAPMinimumVersionNote">Note: Requires an ASTAP version of 0.9.192 or above. For lower versions, please use ASTAP as Platesolve2 replacement.</s:String>
     <s:String x:Key="LblErrorDistance">Error Distance</s:String>
     <s:String x:Key="LblGPSTooltip">Import location using an NMEA GPS device</s:String>
+    <s:String x:Key="LblPlanetariumCoordsOk">Coordinates acquired from {0}</s:String>
+    <s:String x:Key="LblPlanetariumCoordsError">Unable to acquire coordinates from {0}</s:String>
 </ResourceDictionary>
