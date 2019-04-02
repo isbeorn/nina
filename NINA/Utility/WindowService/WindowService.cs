@@ -52,6 +52,7 @@ namespace NINA.Utility.WindowService {
                 window.CloseCommand = new RelayCommand((object o) => window.Close());
                 window.ContentRendered += (object sender, EventArgs e) => window.InvalidateVisual();
                 window.Content = content;
+                window.Owner = Application.Current.MainWindow;
                 window.Show();
             }));
         }
@@ -90,6 +91,7 @@ namespace NINA.Utility.WindowService {
                 window.Content = content;
                 var mainwindow = System.Windows.Application.Current.MainWindow;
                 mainwindow.Opacity = 0.8;
+                window.Owner = Application.Current.MainWindow;
                 var result = window.ShowDialog();
                 this.OnDialogResultChanged?.Invoke(this, new DialogResultEventArgs(result));
                 mainwindow.Opacity = 1;
