@@ -1,5 +1,11 @@
 # N.I.N.A. - Nighttime Imaging 'N' Astronomy #
 
+N.I.N.A. is an astrophotography suite designed for all DSO imagers.  
+If you are totally new to the world of DSO imaging or a seasoned veteran our goal is to make your image acquisition easier, faster and more comfortable.
+
+## Homepage
+
+https://nighttime-imaging.eu/
 
 ## System Requirements
 
@@ -14,8 +20,8 @@
 
 ## Manual
 
-A manual including detailed descriptions about all features can be found inside the Wiki section  
-https://bitbucket.org/Isbeorn/nina/wiki/Home  
+A manual including detailed descriptions about all features can be found on the homepage  
+https://nighttime-imaging.eu/docs/documentation/introduction/  
 
 ## Features 
 
