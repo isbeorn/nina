@@ -858,4 +858,7 @@ Berechneter HFR: {2}
     <s:String x:Key="LblASTAPMinimumVersionNote">Notiz: Benötigt minimum Version 0.9.192 von ASTAP. Für niedrigere Versionen, bitte als Platesolve2 nutzen.</s:String>
     <s:String x:Key="LblErrorDistance">Fehlerabstand</s:String>
     <s:String x:Key="LblGPSTooltip">Standord von einem NMEA GPS Gerät importieren</s:String>
+    <s:String x:Key="LblPlanetariumCoordsOk">Koordinaten von {0} erhalten</s:String>
+    <s:String x:Key="LblPlanetariumCoordsError">Konnte nicht die Koordinaten von {0} erhalten</s:String>
+
 </ResourceDictionary>
