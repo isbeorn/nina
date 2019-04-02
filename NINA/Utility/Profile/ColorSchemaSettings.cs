@@ -1,4 +1,26 @@
-﻿using NINA.Utility.Mediator;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -22,6 +44,8 @@ namespace NINA.Utility.Profile {
                 SecondaryColor = secondaryColor,
                 BorderColor = borderColor,
                 BackgroundColor = backgroundColor,
+                SecondaryBackgroundColor = secondaryBackgroundColor,
+                TertiaryBackgroundColor = tertiaryBackgroundColor,
                 ButtonBackgroundColor = buttonBackgroundColor,
                 ButtonBackgroundSelectedColor = buttonBackgroundSelectedColor,
                 ButtonForegroundColor = buttonForegroundColor,
@@ -38,6 +62,8 @@ namespace NINA.Utility.Profile {
                 SecondaryColor = altSecondaryColor,
                 BorderColor = altBorderColor,
                 BackgroundColor = altBackgroundColor,
+                SecondaryBackgroundColor = altSecondaryBackgroundColor,
+                TertiaryBackgroundColor = altTertiaryBackgroundColor,
                 ButtonBackgroundColor = altButtonBackgroundColor,
                 ButtonBackgroundSelectedColor = altButtonBackgroundSelectedColor,
                 ButtonForegroundColor = altButtonForegroundColor,
@@ -170,6 +196,40 @@ namespace NINA.Utility.Profile {
         }
 
         [DataMember]
+        private Color secondaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF0d3956");
+
+        [DataMember]
+        public Color SecondaryBackgroundColor {
+            get {
+                return ColorSchema.SecondaryBackgroundColor;
+            }
+            set {
+                if (ColorSchema != null && (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom")) {
+                    ColorSchema.SecondaryBackgroundColor = value;
+                    secondaryBackgroundColor = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [DataMember]
+        private Color tertiaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF0d3956");
+
+        [DataMember]
+        public Color TertiaryBackgroundColor {
+            get {
+                return ColorSchema.TertiaryBackgroundColor;
+            }
+            set {
+                if (ColorSchema != null && (ColorSchemaName == "Custom" || ColorSchemaName == "Alternative Custom")) {
+                    ColorSchema.TertiaryBackgroundColor = value;
+                    tertiaryBackgroundColor = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [DataMember]
         private Color buttonBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF0B3C5D");
 
         [DataMember]
@@ -204,7 +264,7 @@ namespace NINA.Utility.Profile {
         }
 
         [DataMember]
-        private Color buttonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF1D2731");
+        private Color buttonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FFc5d2db");
 
         [DataMember]
         public Color ButtonForegroundDisabledColor {
@@ -323,7 +383,7 @@ namespace NINA.Utility.Profile {
         }
 
         [DataMember]
-        private Color altSecondaryColor = (Color)ColorConverter.ConvertFromString("#FF1B2A41");
+        private Color altSecondaryColor = (Color)ColorConverter.ConvertFromString("#FF2d060d");
 
         [DataMember]
         public Color AltSecondaryColor {
@@ -334,6 +394,40 @@ namespace NINA.Utility.Profile {
                 if (AltColorSchema != null && (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom")) {
                     AltColorSchema.SecondaryColor = value;
                     altSecondaryColor = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [DataMember]
+        private Color altSecondaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF");
+
+        [DataMember]
+        public Color AltSecondaryBackgroundColor {
+            get {
+                return AltColorSchema.SecondaryBackgroundColor;
+            }
+            set {
+                if (AltColorSchema != null && (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom")) {
+                    AltColorSchema.SecondaryBackgroundColor = value;
+                    altSecondaryBackgroundColor = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [DataMember]
+        private Color altTertiaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF");
+
+        [DataMember]
+        public Color AltTertiaryBackgroundColor {
+            get {
+                return AltColorSchema.TertiaryBackgroundColor;
+            }
+            set {
+                if (AltColorSchema != null && (AltColorSchemaName == "Alternative Custom" || AltColorSchemaName == "Custom")) {
+                    AltColorSchema.TertiaryBackgroundColor = value;
+                    altTertiaryBackgroundColor = value;
                     RaisePropertyChanged();
                 }
             }

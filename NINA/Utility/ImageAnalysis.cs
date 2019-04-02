@@ -1,4 +1,27 @@
-﻿using AForge;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using AForge;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
 using AForge.Math.Geometry;
@@ -33,11 +56,16 @@ namespace NINA.Utility {
         public BahtinovImage GrabBahtinov() {
             var bahtinovImage = new BahtinovImage();
 
-            if (originalSource.Format != System.Windows.Media.PixelFormats.Gray16) {
-                var imgToConvert = ImageAnalysis.BitmapFromSource(originalSource, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-                convertedSource = new Grayscale(0.2125, 0.7154, 0.0721).Apply(imgToConvert);
+            if (originalSource.Format != System.Windows.Media.PixelFormats.Gray8) {
+                if (originalSource.Format != System.Windows.Media.PixelFormats.Gray16) {
+                    var imgToConvert = ImageAnalysis.BitmapFromSource(originalSource, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                    convertedSource = new Grayscale(0.2125, 0.7154, 0.0721).Apply(imgToConvert);
+                } else {
+                    convertedSource = ImageAnalysis.Convert16BppTo8Bpp(originalSource);
+                }
             } else {
-                convertedSource = ImageAnalysis.Convert16BppTo8Bpp(originalSource);
+                convertedSource = ImageAnalysis.BitmapFromSource(originalSource, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+                convertedSource.Palette = ImageAnalysis.GetGrayScalePalette();
             }
 
             Bitmap bahtinovedBitmap = new Bitmap(convertedSource.Width, convertedSource.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
@@ -207,7 +235,10 @@ namespace NINA.Utility {
 
             _minStarSize = (int)Math.Floor(5 * _resizefactor);
             //Prevent Hotpixels to be detected
-            if (_minStarSize < 2) _minStarSize = 2;
+            if (_minStarSize < 2) {
+                _minStarSize = 2;
+            }
+
             _maxStarSize = (int)Math.Ceiling(150 * _resizefactor);
         }
 
@@ -255,7 +286,9 @@ namespace NINA.Utility {
                     foreach (PixelData data in this.pixelData) {
                         allSum += data.value;
                         if (InsideCircle(data.PosX, data.PosY, this.Position.X, this.Position.Y, outerRadius)) {
-                            if (data.value < 0) data.value = 0;
+                            if (data.value < 0) {
+                                data.value = 0;
+                            }
 
                             sum += data.value;
                             sumDist += data.value * Math.Sqrt(Math.Pow((double)data.PosX - (double)centerX, 2.0d) + Math.Pow((double)data.PosY - (double)centerY, 2.0d));
@@ -371,7 +404,8 @@ namespace NINA.Utility {
                     continue;
                 }
                 var points = _blobCounter.GetBlobsEdgePoints(blob);
-                AForge.Point centerpoint; float radius;
+                AForge.Point centerpoint;
+                float radius;
                 var rect = new Rectangle((int)Math.Floor(blob.Rectangle.X * _inverseResizefactor), (int)Math.Floor(blob.Rectangle.Y * _inverseResizefactor), (int)Math.Ceiling(blob.Rectangle.Width * _inverseResizefactor), (int)Math.Ceiling(blob.Rectangle.Height * _inverseResizefactor));
                 //Star is circle
                 Star s;
@@ -482,29 +516,64 @@ namespace NINA.Utility {
             }
         }
 
-        public static ColorRemapping16bpp GetColorRemappingFilter(double mean, double targetHistogramMeanPct) {
-            ushort[] map = GetStretchMap(mean, targetHistogramMeanPct);
+        public static ColorRemapping16bpp GetColorRemappingFilter(IImageStatistics statistics, double targetHistogramMeanPct, double shadowsClipping) {
+            ushort[] map = GetStretchMap(statistics, targetHistogramMeanPct, shadowsClipping);
 
             var filter = new ColorRemapping16bpp(map);
 
             return filter;
         }
 
-        private static ushort[] GetStretchMap(double mean, double targetHistogramMeanPct) {
-            double power;
-            if (mean <= 1) {
-                power = Math.Log(ushort.MaxValue * targetHistogramMeanPct, 2);
-            } else {
-                power = Math.Log(ushort.MaxValue * targetHistogramMeanPct, mean);
+        /// <summary>
+        /// Adjusts x for a given midToneBalance
+        /// </summary>
+        /// <param name="midToneBalance"></param>
+        /// <param name="x"></param>
+        /// <returns></returns>
+        private static double MidtonesTransferFunction(double midToneBalance, double x) {
+            if (x > 0) {
+                if (x < 1) {
+                    return (midToneBalance - 1) * x / ((2 * midToneBalance - 1) * x - midToneBalance);
+                }
+                return 1;
             }
+            return 0;
+        }
 
+        /// <summary>
+        /// Converts a value from range [0;65535] to [0;1]
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        private static double NormalizeUShort(double val) {
+            return val / (double)ushort.MaxValue;
+        }
+
+        /// <summary>
+        /// Converts a value from range [0;1] to [0;65535]
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        private static ushort DenormalizeUShort(double val) {
+            return (ushort)(val * ushort.MaxValue);
+        }
+
+        private static ushort[] GetStretchMap(IImageStatistics statistics, double targetHistogramMedianPercent, double shadowsClipping) {
             ushort[] map = new ushort[ushort.MaxValue + 1];
 
-            for (int i = 2; i < map.Length; i++) {
-                map[i] = (ushort)Math.Min(ushort.MaxValue, Math.Pow(i, power));
+            var normalizedMedian = NormalizeUShort(statistics.Median);
+            var normalizedMAD = NormalizeUShort(statistics.MedianAbsoluteDeviation);
+
+            var scaleFactor = 1.4826; // see https://en.wikipedia.org/wiki/Median_absolute_deviation
+            var zero = normalizedMedian + shadowsClipping * normalizedMAD * scaleFactor;
+
+            var mtf = MidtonesTransferFunction(targetHistogramMedianPercent, normalizedMedian - zero);
+
+            for (int i = 0; i < map.Length; i++) {
+                double value = NormalizeUShort(i);
+
+                map[i] = DenormalizeUShort(MidtonesTransferFunction(mtf, value - zero));
             }
-            map[0] = 0;
-            map[1] = (ushort)(map[2] / 2);
 
             return map;
         }
@@ -596,6 +665,20 @@ namespace NINA.Utility {
                 return debayered;
             }
         }
+
+        public static ColorPalette GetGrayScalePalette() {
+            Bitmap bmp = new Bitmap(1, 1, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+
+            ColorPalette monoPalette = bmp.Palette;
+
+            System.Drawing.Color[] entries = monoPalette.Entries;
+
+            for (int i = 0; i < 256; i++) {
+                entries[i] = System.Drawing.Color.FromArgb(i, i, i);
+            }
+
+            return monoPalette;
+        }
     }
 
     public class ColorRemapping16bpp : ColorRemapping {
@@ -605,8 +688,9 @@ namespace NINA.Utility {
             get { return _grayMap16; }
             set {
                 // check the map
-                if ((value == null) || (value.Length != 65536))
+                if ((value == null) || (value.Length != 65536)) {
                     throw new ArgumentException("A map should be array with 65536 value.");
+                }
 
                 _grayMap16 = value;
             }
@@ -632,28 +716,19 @@ namespace NINA.Utility {
                 throw new UnsupportedImageFormatException("Source pixel format is not supported by the routine.");
             }
 
-            int pixelSize = System.Drawing.Image.GetPixelFormatSize(image.PixelFormat) / 8;
-
             // processing start and stop X,Y positions
-            int startX = rect.Left;
-            int startY = rect.Top;
-            int stopX = startX + rect.Width;
-            int stopY = startY + rect.Height;
-            int offset = image.Stride - rect.Width * pixelSize;
+            int stopX = rect.Width;
+            int stopY = rect.Height;
 
             // do the job
             ushort* ptr = (ushort*)image.ImageData.ToPointer();
 
-            // allign pointer to the first pixel to process
-            ptr += (startY * image.Stride + startX * pixelSize);
-
             // grayscale image
-            for (int y = startY; y < stopY; y++) {
-                for (int x = startX; x < stopX; x++, ptr++) {
+            for (int y = 0; y < stopY; y++) {
+                for (int x = 0; x < stopX; x++, ptr++) {
                     // gray
                     *ptr = GrayMap16[*ptr];
                 }
-                ptr += offset;
             }
         }
     }

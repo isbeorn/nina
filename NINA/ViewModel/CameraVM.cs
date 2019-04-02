@@ -1,13 +1,36 @@
-﻿using EDSDKLib;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using EDSDKLib;
 using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.AtikSDK;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using NINA.ViewModel.Interfaces;
+using QHYCCD;
 using System;
 using System.Collections.Async;
 using System.Collections.Generic;
@@ -34,7 +57,7 @@ namespace NINA.ViewModel {
             ChooseCameraCommand = new AsyncCommand<bool>(ChooseCamera);
             CancelConnectCameraCommand = new RelayCommand(CancelConnectCamera);
             DisconnectCommand = new RelayCommand(DisconnectDiag);
-            CoolCamCommand = new AsyncCommand<bool>(() => CoolCamera(new Progress<double>(p => CoolingProgress = p)));
+            CoolCamCommand = new AsyncCommand<bool>(() => StartCoolCamera(new Progress<double>(p => CoolingProgress = p)));
             CancelCoolCamCommand = new RelayCommand(CancelCoolCamera);
             RefreshCameraListCommand = new RelayCommand(RefreshCameraList);
 
@@ -42,6 +65,7 @@ namespace NINA.ViewModel {
             CoolerPowerHistory = new AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>>(100);
             CCDTemperatureHistory = new AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>>(100);
             ToggleCoolerOnCommand = new RelayCommand(ToggleCoolerOn);
+            ToggleDewHeaterOnCommand = new RelayCommand(ToggleDewHeaterOn);
 
             updateTimer = new DeviceUpdateTimer(
                 GetCameraValues,
@@ -58,20 +82,48 @@ namespace NINA.ViewModel {
             CameraChooserVM.GetEquipment();
         }
 
-        private async Task CoolCamera_Tick(IProgress<double> progress, CancellationToken token) {
+        private async Task WaitForTargetTemperatureStep(double targetTemperatureStep, double percentage, CancellationToken token) {
+            var interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
+            var threshold = 1;
+            double temperature = 0.0;
+            while (Math.Abs((temperature = Cam.Temperature) - targetTemperatureStep) > threshold) {
+                applicationStatusMediator.StatusUpdate(
+                    new ApplicationStatus() {
+                        Source = Title,
+                        Status = Locale.Loc.Instance["LblCooling"],
+                        Progress = percentage,
+                        Status2 = Locale.Loc.Instance["LblWaitForTemperatureStep"]
+                    }
+                );
+                await Utility.Utility.Wait(TimeSpan.FromSeconds(interval), token);
+            }
+        }
+
+        private async Task<double> GetNextTemperatureStep(CancellationToken token) {
+            var interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
             double currentTemp = Cam.Temperature;
             double deltaTemp = currentTemp - TargetTemp;
 
-            var delta = await Utility.Utility.Delay(300, token);
+            var delta = await Utility.Utility.Delay(TimeSpan.FromSeconds(interval), token);
 
-            Duration = Duration - ((double)delta.TotalMilliseconds / (1000 * 60));
+            _remainingDuration = _remainingDuration - ((double)delta.TotalMilliseconds / (1000 * 60));
+            if (_remainingDuration < 0) { _remainingDuration = 0; }
 
-            if (Duration < 0) { Duration = 0; }
+            return GetY(_startPoint, _endPoint, _remainingDuration);
+        }
 
-            double newTemp = GetY(_startPoint, _endPoint, new Vector2(-_startPoint.X, _startPoint.Y), Duration);
-            Cam.TemperatureSetPoint = newTemp;
+        private async Task SetNextTemperatureStep(IProgress<double> progress, CancellationToken token) {
+            var targetTemperatureStep = await GetNextTemperatureStep(token);
 
-            var percentage = 1 - (Duration / _initalDuration);
+            Cam.TemperatureSetPoint = targetTemperatureStep;
+
+            targetTemperatureStep = Cam.TemperatureSetPoint;
+
+            var percentage = 1 - (_remainingDuration / _initalDuration);
+
+            //Use the camera set point here (some cameras like the ASI cameras can only set integer values and lose precision)
+            await WaitForTargetTemperatureStep(Cam.TemperatureSetPoint, percentage, token);
+
             progress.Report(percentage);
 
             applicationStatusMediator.StatusUpdate(
@@ -126,6 +178,7 @@ namespace NINA.ViewModel {
         private Vector2 _endPoint;
 
         private double _initalDuration;
+        private double _remainingDuration;
         private double _coolingProgress;
 
         public double CoolingProgress {
@@ -153,34 +206,36 @@ namespace NINA.ViewModel {
 
         private CancellationTokenSource _cancelCoolCameraSource;
 
-        private async Task<bool> CoolCamera(IProgress<double> progress) {
+        private async Task<bool> StartCoolCamera(IProgress<double> progress) {
+            _cancelCoolCameraSource?.Dispose();
             _cancelCoolCameraSource = new CancellationTokenSource();
+            _remainingDuration = Duration;
             return await Task<bool>.Run(async () => {
-                if (Duration == 0) {
+                if (_remainingDuration == 0) {
                     Cam.TemperatureSetPoint = TargetTemp;
                     Cam.CoolerOn = true;
                     progress.Report(1);
                 } else {
                     try {
                         double currentTemp = Cam.Temperature;
-                        _startPoint = new Vector2(Duration, currentTemp);
+                        _startPoint = new Vector2(_remainingDuration, currentTemp);
                         _endPoint = new Vector2(0, TargetTemp);
                         Cam.TemperatureSetPoint = currentTemp;
-                        _initalDuration = Duration;
+                        _initalDuration = _remainingDuration;
 
                         Cam.CoolerOn = true;
                         CoolingRunning = true;
                         do {
-                            await CoolCamera_Tick(progress, _cancelCoolCameraSource.Token);
+                            await SetNextTemperatureStep(progress, _cancelCoolCameraSource.Token);
 
                             _cancelCoolCameraSource.Token.ThrowIfCancellationRequested();
-                        } while (Duration > 0);
+                        } while (_remainingDuration > 0);
                     } catch (OperationCanceledException ex) {
                         Cam.TemperatureSetPoint = Cam.Temperature;
                         Logger.Trace(ex.Message);
                     } finally {
                         progress.Report(1);
-                        Duration = 0;
+                        _remainingDuration = 0;
                         CoolingRunning = false;
                         applicationStatusMediator.StatusUpdate(
                             new ApplicationStatus() {
@@ -255,6 +310,7 @@ namespace NINA.ViewModel {
                 );
 
                 var cam = (ICamera)CameraChooserVM.SelectedDevice;
+                _cancelConnectCameraSource?.Dispose();
                 _cancelConnectCameraSource = new CancellationTokenSource();
                 if (cam != null) {
                     try {
@@ -271,6 +327,7 @@ namespace NINA.ViewModel {
                                 Connected = true,
                                 CoolerOn = Cam.CoolerOn,
                                 CoolerPower = Cam.CoolerPower,
+                                DewHeaterOn = Cam.DewHeaterOn,
                                 Gain = Cam.Gain,
                                 HasShutter = Cam.HasShutter,
                                 IsSubSampleEnabled = Cam.EnableSubSample,
@@ -281,7 +338,8 @@ namespace NINA.ViewModel {
                                 TemperatureSetPoint = Cam.TemperatureSetPoint,
                                 XSize = Cam.CameraXSize,
                                 YSize = Cam.CameraYSize,
-                                Battery = Cam.BatteryLevel
+                                Battery = Cam.BatteryLevel,
+                                BitDepth = Cam.BitDepth
                             };
 
                             Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
@@ -296,12 +354,21 @@ namespace NINA.ViewModel {
 
                             BroadcastCameraInfo();
 
+                            if (Cam.CanSetTemperature) {
+                                TargetTemp = Cam.TemperatureSetPoint;
+                            }
+
                             return true;
                         } else {
                             this.Cam = null;
                             return false;
                         }
                     } catch (OperationCanceledException) {
+                        if (CameraInfo.Connected) { Disconnect(); }
+                        CameraInfo.Connected = false;
+                        return false;
+                    } catch (Exception ex) {
+                        Logger.Error(ex);
                         if (CameraInfo.Connected) { Disconnect(); }
                         CameraInfo.Connected = false;
                         return false;
@@ -341,6 +408,12 @@ namespace NINA.ViewModel {
             }
         }
 
+        private void ToggleDewHeaterOn(object o) {
+            if (CameraInfo.Connected) {
+                Cam.DewHeaterOn = (bool)o;
+            }
+        }
+
         private void BroadcastCameraInfo() {
             cameraMediator.Broadcast(CameraInfo);
         }
@@ -363,6 +436,9 @@ namespace NINA.ViewModel {
             cameraValues.TryGetValue(nameof(CameraInfo.CoolerPower), out o);
             CameraInfo.CoolerPower = (double)(o ?? double.NaN);
 
+            cameraValues.TryGetValue(nameof(CameraInfo.DewHeaterOn), out o);
+            CameraInfo.DewHeaterOn = (bool)(o ?? false);
+
             cameraValues.TryGetValue(nameof(CameraInfo.CameraState), out o);
             CameraInfo.CameraState = (string)(o ?? string.Empty);
 
@@ -382,6 +458,7 @@ namespace NINA.ViewModel {
             cameraValues.Add(nameof(CameraInfo.CoolerOn), _cam?.CoolerOn ?? false);
             cameraValues.Add(nameof(CameraInfo.Temperature), _cam?.Temperature ?? double.NaN);
             cameraValues.Add(nameof(CameraInfo.CoolerPower), _cam?.CoolerPower ?? double.NaN);
+            cameraValues.Add(nameof(CameraInfo.DewHeaterOn), _cam?.DewHeaterOn ?? false);
             cameraValues.Add(nameof(CameraInfo.CameraState), _cam?.CameraState ?? string.Empty);
             if (_cam != null && _cam.HasBattery) {
                 cameraValues.Add(nameof(CameraInfo.Battery), _cam?.BatteryLevel ?? -1);
@@ -447,9 +524,15 @@ namespace NINA.ViewModel {
             });
         }
 
-        public async Task Capture(double exposureTime, bool isLightFrame, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        public async Task Capture(CaptureSequence sequence, CancellationToken token,
+            IProgress<ApplicationStatus> progress) {
+            double exposureTime = sequence.ExposureTime;
             if (CameraInfo.Connected == true) {
-                Cam.StartExposure(exposureTime, isLightFrame);
+                CameraInfo.IsExposing = true;
+                CameraInfo.ExposureEndTime = DateTime.Now.AddSeconds(sequence.ExposureTime);
+                CameraInfo.NextExposureLength = sequence.NextSequence?.ExposureTime ?? -1;
+                BroadcastCameraInfo();
+                Cam.StartExposure(sequence);
 
                 var start = DateTime.Now;
                 var elapsed = 0.0d;
@@ -461,6 +544,7 @@ namespace NINA.ViewModel {
                     ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
                 });
                 /* Wait for Capture */
+
                 if (exposureTime >= 1) {
                     await Task.Run(async () => {
                         do {
@@ -479,6 +563,8 @@ namespace NINA.ViewModel {
                     });
                 }
                 token.ThrowIfCancellationRequested();
+                CameraInfo.IsExposing = false;
+                BroadcastCameraInfo();
             }
         }
 
@@ -494,6 +580,9 @@ namespace NINA.ViewModel {
                 Cam?.AbortExposure();
                 BroadcastCameraInfo();
             }
+
+            CameraInfo.IsExposing = false;
+            CameraInfo.ExposureEndTime = DateTime.Now;
         }
 
         public void SetGain(short gain) {
@@ -511,9 +600,17 @@ namespace NINA.ViewModel {
             }
         }
 
-        public Task<ImageArray> Download(CancellationToken token) {
+        public async Task<ImageArray> Download(CancellationToken token, bool calculateStatistics) {
+            CameraInfo.IsExposing = false;
+            CameraInfo.ExposureEndTime = DateTime.Now;
+            BroadcastCameraInfo();
             if (CameraInfo.Connected == true) {
-                return Cam.DownloadExposure(token);
+                Stopwatch seqDuration = Stopwatch.StartNew();
+                var output = await Cam.DownloadExposure(token, calculateStatistics);
+                seqDuration.Stop();
+                CameraInfo.LastDownloadTime = seqDuration.Elapsed.TotalSeconds;
+                BroadcastCameraInfo();
+                return output;
             } else {
                 return null;
             }
@@ -540,6 +637,7 @@ namespace NINA.ViewModel {
         public AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>> CCDTemperatureHistory { get; private set; }
         public ICommand ToggleCoolerOnCommand { get; private set; }
         public ICommand CoolCamCommand { get; private set; }
+        public ICommand ToggleDewHeaterOnCommand { get; private set; }
 
         private IApplicationStatusMediator applicationStatusMediator;
 
@@ -565,6 +663,10 @@ namespace NINA.ViewModel {
 
             Devices.Add(new Model.DummyDevice(Locale.Loc.Instance["LblNoCamera"]));
 
+#if DEBUG
+            Devices.Add(new Model.MyCamera.SimulatorCamera(profileService));
+#endif
+
             /* ASI */
             try {
                 Logger.Trace("Adding ASI Cameras");
@@ -574,6 +676,17 @@ namespace NINA.ViewModel {
                         Logger.Trace(string.Format("Adding {0}", cam.Name));
                         Devices.Add(cam);
                     }
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
+            /* Altair */
+            try {
+                Logger.Trace("Adding Altair Cameras");
+                foreach (var instance in Altair.AltairCam.EnumV2()) {
+                    var cam = new AltairCamera(instance, profileService);
+                    Devices.Add(cam);
                 }
             } catch (Exception ex) {
                 Logger.Error(ex);
@@ -593,17 +706,28 @@ namespace NINA.ViewModel {
                 Logger.Error(ex);
             }
 
+            /* QHYCCD */
+            try {
+                Logger.Debug("Adding QHYCCD Cameras");
+                uint numCameras = QHYCameras.Count;
+
+                if (numCameras > 0) {
+                    for (uint i = 0; i < numCameras; i++) {
+                        var cam = QHYCameras.GetCamera(i, profileService);
+                        if (!string.IsNullOrEmpty(cam.Name)) {
+                            Logger.Debug(string.Format("Adding QHY camera {0}: {1} (as {2})", i, cam.Id, cam.Name));
+                            Devices.Add(cam);
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
             /* ASCOM */
             try {
-                var ascomDevices = new ASCOM.Utilities.Profile();
-                foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Camera")) {
-                    try {
-                        AscomCamera cam = new AscomCamera(device.Key, device.Value + " (ASCOM)", profileService);
-                        Logger.Trace(string.Format("Adding {0}", cam.Name));
-                        Devices.Add(cam);
-                    } catch (Exception) {
-                        //only add cameras which are supported. e.g. x86 drivers will not work in x64
-                    }
+                foreach (ICamera cam in ASCOMInteraction.GetCameras(profileService)) {
+                    Devices.Add(cam);
                 }
             } catch (Exception ex) {
                 Logger.Error(ex);
@@ -635,6 +759,17 @@ namespace NINA.ViewModel {
             /* NIKON */
             try {
                 Devices.Add(new NikonCamera(profileService, telescopeMediator));
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
+            /* ToupTek */
+            try {
+                Logger.Trace("Adding ToupTek Cameras");
+                foreach (var instance in ToupTek.ToupCam.EnumV2()) {
+                    var cam = new ToupTekCamera(instance, profileService);
+                    Devices.Add(cam);
+                }
             } catch (Exception ex) {
                 Logger.Error(ex);
             }

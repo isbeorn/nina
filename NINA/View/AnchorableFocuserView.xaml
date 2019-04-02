@@ -1,4 +1,21 @@
-﻿<UserControl
+﻿<!--
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
+<UserControl
     x:Class="NINA.View.AnchorableFocuserView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -15,15 +32,15 @@
             <Grid IsEnabled="{Binding FocuserInfo.Connected}">
                 <StackPanel Orientation="Vertical">
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblConnected}" />
                             <CheckBox
                                 Width="20"
                                 Height="20"
-                                Margin="5"
+                                Margin="5,0,0,0"
                                 HorizontalAlignment="Left"
                                 BorderBrush="Transparent"
                                 IsChecked="{Binding FocuserInfo.Connected, FallbackValue=False, Mode=OneWay}"
@@ -32,15 +49,15 @@
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblIsMoving}" />
                             <CheckBox
                                 Width="20"
                                 Height="20"
-                                Margin="5"
+                                Margin="5,0,0,0"
                                 HorizontalAlignment="Left"
                                 BorderBrush="Transparent"
                                 IsChecked="{Binding FocuserInfo.IsMoving, FallbackValue=False, Mode=OneWay}"
@@ -49,9 +66,9 @@
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblPosition}" />
                             <TextBlock
@@ -61,9 +78,21 @@
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1"
+                        BorderThickness="0">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock Text="{ns:Loc LblTemperature}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                Text="{Binding FocuserInfo.Temperature, StringFormat=\{0:0.00\}}"
+                                TextWrapping="WrapWithOverflow" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0"
                         IsEnabled="{Binding Focuser.TempCompAvailable}">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTempComp}" />
@@ -78,21 +107,9 @@
                         </UniformGrid>
                     </Border>
                     <Border
-                        MinHeight="30"
+                        Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
-                        <UniformGrid VerticalAlignment="Center" Columns="2">
-                            <TextBlock Text="{ns:Loc LblTemperature}" />
-                            <TextBlock
-                                Margin="5,0,0,0"
-                                Text="{Binding FocuserInfo.Temperature, StringFormat=\{0:#.00\}}"
-                                TextWrapping="WrapWithOverflow" />
-                        </UniformGrid>
-                    </Border>
-                    <Border
-                        MinHeight="30"
-                        BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0,0,0,1">
+                        BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTargetPosition}" />
                             <StackPanel Orientation="Horizontal">
@@ -106,10 +123,10 @@
                         </UniformGrid>
                     </Border>
 
-                    <Grid MinHeight="30" IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
+                    <Grid Margin="0,5,0,0" IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
                         <ninactrl:CancellableButton
-                            Height="35"
-                            Margin="10"
+                            Height="25"
+                            Margin="10,10,10,0"
                             ButtonText="{ns:Loc LblMove}"
                             CancelButtonImage="{StaticResource CancelSVG}"
                             CancelCommand="{Binding HaltFocuserCommand}"

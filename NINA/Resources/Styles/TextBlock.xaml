@@ -1,4 +1,21 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<!--
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style TargetType="{x:Type TextBlock}">
         <Setter Property="Background" Value="Transparent" />
@@ -7,6 +24,26 @@
             <Trigger Property="IsEnabled" Value="false">
                 <Setter Property="Opacity" Value="0.6" />
             </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="SideBarTextBlock" TargetType="{x:Type TextBlock}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="FontSize" Value="9" />
+        <Setter Property="Margin" Value="0,-4,0,0" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="{StaticResource ButtonForegroundDisabledBrush}" />
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="Opacity" Value="0.6" />
+            </Trigger>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabItem}}, Path=IsSelected}" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource ButtonForegroundBrush}" />
+                <Setter Property="FontWeight" Value="Bold" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabItem}}, Path=IsMouseOver}" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource ButtonForegroundBrush}" />
+            </DataTrigger>
         </Style.Triggers>
     </Style>
 
@@ -33,6 +70,20 @@
             <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type MenuItem}}, Path=IsMouseOver}" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
                 <Setter Property="Background" Value="{StaticResource SecondaryBrush}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="WindowButtonTextBlock" TargetType="{x:Type TextBlock}">
+        <Setter Property="Foreground" Value="{StaticResource ButtonForegroundDisabledBrush}" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="Opacity" Value="0.6" />
+            </Trigger>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Path=IsMouseOver}" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource ButtonForegroundBrush}" />
             </DataTrigger>
         </Style.Triggers>
     </Style>

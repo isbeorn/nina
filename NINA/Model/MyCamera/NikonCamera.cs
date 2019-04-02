@@ -1,8 +1,29 @@
-using ASCOM.DeviceInterface;
+#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
 using Nikon;
 using NINA.Utility;
 using NINA.Utility.Enum;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -70,6 +91,12 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public int BitDepth {
+            get {
+                return (int)profileService.ActiveProfile.CameraSettings.BitDepth;
+            }
+        }
+
         public void StartLiveView() {
             _camera.LiveViewEnabled = true;
             LiveViewEnabled = true;
@@ -96,7 +123,7 @@ namespace NINA.Model.MyCamera {
             ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
             bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
 
-            var iarr = await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, false, false, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+            var iarr = await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, BitDepth, false, false, profileService.ActiveProfile.ImageSettings.HistogramResolution);
 
             memStream.Close();
             memStream.Dispose();
@@ -378,7 +405,6 @@ namespace NINA.Model.MyCamera {
             get {
                 return false;
             }
-
             set {
             }
         }
@@ -386,6 +412,20 @@ namespace NINA.Model.MyCamera {
         public double CoolerPower {
             get {
                 return double.NaN;
+            }
+        }
+
+        public bool HasDewHeater {
+            get {
+                return false;
+            }
+        }
+
+        public bool DewHeaterOn {
+            get {
+                return false;
+            }
+            set {
             }
         }
 
@@ -524,6 +564,28 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public ICollection ReadoutModes => new List<string> { "Default" };
+
+        private short _readoutModeForSnapImages;
+
+        public short ReadoutModeForSnapImages {
+            get => _readoutModeForSnapImages;
+            set {
+                _readoutModeForSnapImages = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private short _readoutModeForNormalImages;
+
+        public short ReadoutModeForNormalImages {
+            get => _readoutModeForNormalImages;
+            set {
+                _readoutModeForNormalImages = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private AsyncObservableCollection<BinningMode> _binningModes;
 
         public AsyncObservableCollection<BinningMode> BinningModes {
@@ -577,13 +639,13 @@ namespace NINA.Model.MyCamera {
             serialPortInteraction = null;
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token) {
+        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
             Logger.Debug("Waiting for download of exposure");
             await _downloadExposure.Task;
             Logger.Debug("Downloading of exposure complete. Converting image to internal array");
 
             var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
-            var iarr = await converter.ConvertToImageArray(_memoryStream, token, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+            var iarr = await converter.ConvertToImageArray(_memoryStream, BitDepth, profileService.ActiveProfile.ImageSettings.HistogramResolution, calculateStatistics, token);
             iarr.RAWType = "nef";
             _memoryStream.Dispose();
             _memoryStream = null;
@@ -599,9 +661,10 @@ namespace NINA.Model.MyCamera {
         private Dictionary<int, double> _shutterSpeeds = new Dictionary<int, double>();
         private int _bulbShutterSpeedIndex;
 
-        public void StartExposure(double exposureTime, bool isLightFrame) {
+        public void StartExposure(CaptureSequence sequence) {
             if (Connected) {
-                Logger.Debug("Prepare start of exposure: " + exposureTime);
+                double exposureTime = sequence.ExposureTime;
+                Logger.Debug("Prepare start of exposure: " + sequence);
                 _downloadExposure = new TaskCompletionSource<object>();
 
                 if (exposureTime <= 30.0) {

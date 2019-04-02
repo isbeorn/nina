@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
+  <?if $(var.Platform) = x64 ?>
+  <?define SetupMsiName = "NINASetup.msi" ?>
+  <?define SetupSource = "$(var.NINASetup.TargetDir)" ?>
+  <?define VCRedist2013 = "$(var.ProjectDir)\vcredist_x64.exe" ?>
+  <?define VCRedist2017 = "$(var.ProjectDir)\vc_redist2017.x64.exe" ?>
+  <?else ?>
+  <?define SetupMsiName = "NINASetup.msi" ?>
+  <?define SetupSource = "$(var.NINASetup.TargetDir)" ?>
+  <?define VCRedist2013 = "$(var.ProjectDir)\vcredist_x86.exe" ?>
+  <?define VCRedist2017 = "$(var.ProjectDir)\vc_redist2017.x86.exe" ?>
+  <?endif ?>
+  <Bundle Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Version="!(bind.packageVersion.NINASetup)" Manufacturer="N.I.N.A." UpgradeCode="E51BC85C-6DE1-4653-9B0B-3C80754E4C90">
+    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense">
+      <bal:WixStandardBootstrapperApplication
+        ThemeFile="$(var.ProjectDir)\RtfTheme.xml"
+        LogoFile="$(var.ProjectDir)\ninasplash-small.png"
+        LicenseFile="$(var.SolutionDir)\RELEASE_NOTES.rtf"
+        ShowVersion="yes" />
+    </BootstrapperApplicationRef>
+    <Chain>
+      <!-- VCRedist 2013 (required for Atik, Nikon)-->
+      <ExePackage
+         Cache="no"
+         Compressed="yes"
+         PerMachine="yes"
+         Permanent="yes"
+         Vital="yes"
+         Name="vcredist_x86.exe"
+         SourceFile="$(var.VCRedist2013)"
+         InstallCommand="/install /quiet /norestart">
+
+        <ExitCode Value="3010" Behavior="success" />
+
+        <!-- Ignore "Newer version installed" error -->
+        <ExitCode Value="1638" Behavior="success" />
+      </ExePackage>
+
+      <!-- VCRedist 2017 (required for NOVAS, SOFA)-->
+      <ExePackage
+         Cache="no"
+         Compressed="yes"
+         PerMachine="yes"
+         Permanent="yes"
+         Vital="yes"
+         Name="vcredist.exe"
+         SourceFile="$(var.VCRedist2017)"
+         InstallCommand="/install /quiet /norestart">
+
+        <ExitCode Value="3010" Behavior="success" />
+
+        <!-- Ignore "Newer version installed" error -->
+        <ExitCode Value="1638" Behavior="success" />
+      </ExePackage>
+
+      <PackageGroupRef Id="NetFx472Redist" />
+      <MsiPackage Id="NINASetup" Name="$(var.SetupMsiName)" SourceFile="$(var.SetupSource)" DisplayInternalUI="yes" />
+    </Chain>
+  </Bundle>
+</Wix>

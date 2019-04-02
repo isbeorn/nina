@@ -1,4 +1,27 @@
-﻿using System;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using System;
 
 namespace NINA.Model.MyGuider {
 
@@ -10,6 +33,7 @@ namespace NINA.Model.MyGuider {
         public const string DITHER = "5";
         public const string STOP_CAPTURE = "6";
         public const string PAUSE = "10";
+        public const string SET_CONNECTED = "20";
 
         public const string GET_PIXEL_SCALE = "96";
         public const string GET_STAR_IMAGE = "97";
@@ -33,6 +57,8 @@ namespace NINA.Model.MyGuider {
         public static string STOP_CAPTURE = "{\"method\": \"stop_capture\", \"id\": " + PHD2EventId.STOP_CAPTURE + "}" + Environment.NewLine;
 
         public static string AUTO_SELECT_STAR = "{\"method\": \"find_star\", \"id\": " + PHD2EventId.AUTO_SELECT_STAR + "}" + Environment.NewLine;
+
+        public static string SET_CONNECTED = "{{\"method\": \"set_connected\", \"params\": [{0}], \"id\": " + PHD2EventId.SET_CONNECTED + "}}" + Environment.NewLine;
 
         /// <summary>
         /// 0: RECALIBRATE: true/false Not Variable:

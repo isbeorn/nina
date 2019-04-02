@@ -1,8 +1,30 @@
-﻿using NINA.Model;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.Exceptions;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -13,7 +35,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 using static NINA.Model.CaptureSequence;
 
 namespace NINA.ViewModel {
@@ -27,6 +48,7 @@ namespace NINA.ViewModel {
                 ITelescopeMediator telescopeMediator,
                 IFilterWheelMediator filterWheelMediator,
                 IFocuserMediator focuserMediator,
+                IRotatorMediator rotatorMediator,
                 IGuiderMediator guiderMediator,
                 IApplicationStatusMediator applicationStatusMediator
         ) : base(profileService) {
@@ -49,7 +71,7 @@ namespace NINA.ViewModel {
             StartLiveViewCommand = new AsyncCommand<bool>(StartLiveView);
             StopLiveViewCommand = new RelayCommand(StopLiveView);
 
-            ImageControl = new ImageControlVM(profileService, cameraMediator, telescopeMediator, focuserMediator, imagingMediator, applicationStatusMediator);
+            ImageControl = new ImageControlVM(profileService, cameraMediator, telescopeMediator, filterWheelMediator, focuserMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
         }
 
         private ImageControlVM _imageControl;
@@ -99,16 +121,24 @@ namespace NINA.ViewModel {
 
         private async Task<bool> StartLiveView() {
             ImageControl.IsLiveViewEnabled = true;
+            _liveViewCts?.Dispose();
             _liveViewCts = new CancellationTokenSource();
-            var liveViewEnumerable = cameraMediator.LiveView(_liveViewCts.Token);
-            await liveViewEnumerable.ForEachAsync(async iarr => {
-                await ImageControl.PrepareImage(iarr, _liveViewCts.Token, false);
-            });
+            try {
+                await Task.Run(async () => {
+                    var liveViewEnumerable = cameraMediator.LiveView(_liveViewCts.Token);
+                    await liveViewEnumerable.ForEachAsync(async iarr => {
+                        await ImageControl.PrepareImage(iarr, _liveViewCts.Token, false);
+                    });
+                });
+            } catch (OperationCanceledException) {
+            } finally {
+                ImageControl.IsLiveViewEnabled = false;
+            }
+
             return true;
         }
 
         private void StopLiveView(object o) {
-            ImageControl.IsLiveViewEnabled = false;
             _liveViewCts?.Cancel();
         }
 
@@ -126,8 +156,6 @@ namespace NINA.ViewModel {
                 applicationStatusMediator.StatusUpdate(_status);
             }
         }
-
-        private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
         private bool _loop;
 
@@ -225,18 +253,12 @@ namespace NINA.ViewModel {
         }
 
         private async Task Capture(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            double duration = seq.ExposureTime;
-            bool isLight = false;
-            if (CameraInfo.HasShutter) {
-                isLight = true;
-            }
-
-            await cameraMediator.Capture(duration, isLight, token, progress);
+            await cameraMediator.Capture(seq, token, progress);
         }
 
-        private Task<ImageArray> Download(CancellationToken token, IProgress<ApplicationStatus> progress) {
+        private Task<ImageArray> Download(CancellationToken token, IProgress<ApplicationStatus> progress, bool calculateStatistics) {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDownloading"] });
-            return cameraMediator.Download(token);
+            return cameraMediator.Download(token, calculateStatistics);
         }
 
         private async Task<bool> Dither(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
@@ -251,7 +273,7 @@ namespace NINA.ViewModel {
         private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
         public async Task<BitmapSource> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            var iarr = await CaptureImage(sequence, token, progress);
+            var iarr = await CaptureImage(sequence, token, progress, false, "");
             if (iarr != null) {
                 return await _currentPrepareImageTask;
             } else {
@@ -259,21 +281,29 @@ namespace NINA.ViewModel {
             }
         }
 
-        public async Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, string targetname = "") {
-            //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released
-            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitingForCamera"] });
-            await semaphoreSlim.WaitAsync(token);
-
-            if (CameraInfo.Connected != true) {
-                Notification.ShowWarning(Locale.Loc.Instance["LblNoCameraConnected"]);
-                semaphoreSlim.Release();
-                return null;
-            }
-
-            return await Task.Run<ImageArray>(async () => {
+        public Task<ImageArray> CaptureImage(
+                CaptureSequence sequence,
+                CancellationToken token,
+                IProgress<ApplicationStatus> progress,
+                bool bSave = false,
+                string targetname = "",
+                bool calculateStatistics = true,
+                bool addtoStatistics = true,
+                bool addToHistory = true) {
+            return Task.Run<ImageArray>(async () => {
                 ImageArray arr = null;
 
                 try {
+                    //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released
+                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitingForCamera"] });
+                    await semaphoreSlim.WaitAsync(token);
+
+                    if (CameraInfo.Connected != true) {
+                        Notification.ShowWarning(Locale.Loc.Instance["LblNoCameraConnected"]);
+                        semaphoreSlim.Release();
+                        return null;
+                    }
+
                     if (CameraInfo.Connected != true) {
                         throw new CameraConnectionLostException();
                     }
@@ -303,12 +333,11 @@ namespace NINA.ViewModel {
                     var rmsHandle = this.guiderMediator.StartRMSRecording();
 
                     /*Capture*/
+                    var exposureStart = DateTime.Now;
                     await Capture(sequence, token, progress);
 
                     /* Stop RMS Recording */
                     var rms = this.guiderMediator.StopRMSRecording(rmsHandle);
-
-                    token.ThrowIfCancellationRequested();
 
                     if (CameraInfo.Connected != true) {
                         throw new CameraConnectionLostException();
@@ -318,7 +347,7 @@ namespace NINA.ViewModel {
                     var ditherTask = Dither(sequence, token, progress);
 
                     /*Download Image */
-                    arr = await Download(token, progress);
+                    arr = await Download(token, progress, calculateStatistics);
                     if (arr == null) {
                         throw new OperationCanceledException();
                     }
@@ -334,6 +363,7 @@ namespace NINA.ViewModel {
                     }
 
                     var parameters = new ImageParameters() {
+                        ExposureStart = exposureStart,
                         Binning = sequence.Binning.Name,
                         ExposureNumber = sequence.ProgressExposureCount,
                         ExposureTime = sequence.ExposureTime,
@@ -342,7 +372,7 @@ namespace NINA.ViewModel {
                         TargetName = targetname,
                         RecordedRMS = rms
                     };
-                    _currentPrepareImageTask = ImageControl.PrepareImage(arr, token, bSave, parameters);
+                    _currentPrepareImageTask = ImageControl.PrepareImage(arr, token, bSave, parameters, addtoStatistics, addToHistory);
 
                     //Wait for dither to finish. Runs in parallel to download and save.
                     progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForDither"] });
@@ -355,7 +385,7 @@ namespace NINA.ViewModel {
                     Notification.ShowError(Locale.Loc.Instance["LblCameraConnectionLost"]);
                     throw ex;
                 } catch (Exception ex) {
-                    Notification.ShowError(Locale.Loc.Instance["LblUnexpectedError"]);
+                    Notification.ShowError(Locale.Loc.Instance["LblUnexpectedError"] + Environment.NewLine + ex.Message);
                     Logger.Error(ex);
                     cameraMediator.AbortExposure();
                     throw ex;
@@ -417,6 +447,7 @@ namespace NINA.ViewModel {
         }
 
         public async Task<bool> SnapImage(IProgress<ApplicationStatus> progress) {
+            _captureImageToken?.Dispose();
             _captureImageToken = new CancellationTokenSource();
 
             try {
@@ -460,6 +491,32 @@ namespace NINA.ViewModel {
 
         public Task<BitmapSource> PrepareImage(ImageArray iarr, CancellationToken token, bool bSave = false, ImageParameters parameters = null) {
             return ImageControl.PrepareImage(iarr, token, bSave, parameters);
+        }
+
+        public void DestroyImage() {
+            ImageControl.Image = null;
+            ImageControl.ImgArr = null;
+        }
+
+        public Task<ImageArray> CaptureImageWithoutHistoryAndThumbnail(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool calculateStatistics = true) {
+            return CaptureImage(sequence, token, progress, false, "", calculateStatistics, false, false);
+        }
+
+        public Task<ImageArray> CaptureImageWithoutProcessingAndSaveAsync(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            return CaptureImage(sequence, token, progress, true, "", false, false, false);
+        }
+
+        public async Task<BitmapSource> CaptureImageWithoutProcessingAndSaveSync(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            var iarr = await CaptureImageWithoutProcessingAndSaveAsync(sequence, token, progress);
+            if (iarr != null) {
+                return await _currentPrepareImageTask;
+            } else {
+                return null;
+            }
+        }
+
+        public Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, bool calculateStatistics = true, string targetname = "") {
+            return CaptureImage(sequence, token, progress, bSave, targetname, calculateStatistics, true, true);
         }
     }
 }

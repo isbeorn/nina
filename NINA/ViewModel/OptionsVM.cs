@@ -1,15 +1,36 @@
-﻿using NINA.Model;
-using NINA.Model.MyCamera;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using NINA.Model;
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Profile;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -27,11 +48,14 @@ namespace NINA.ViewModel {
 
             this.filterWheelMediator = filterWheelMediator;
 
+            OpenWebRequestCommand = new RelayCommand(OpenWebRequest);
             PreviewFileCommand = new RelayCommand(PreviewFile);
             OpenImageFileDiagCommand = new RelayCommand(OpenImageFileDiag);
             OpenSequenceTemplateDiagCommand = new RelayCommand(OpenSequenceTemplateDiag);
             OpenCygwinFileDiagCommand = new RelayCommand(OpenCygwinFileDiag);
             OpenPS2FileDiagCommand = new RelayCommand(OpenPS2FileDiag);
+            OpenPHD2DiagCommand = new RelayCommand(OpenPHD2FileDiag);
+            OpenASPSFileDiagCommand = new RelayCommand(OpenASPSFileDiag);
             ToggleColorsCommand = new RelayCommand(ToggleColors);
             DownloadIndexesCommand = new RelayCommand(DownloadIndexes);
             OpenSkyAtlasImageRepositoryDiagCommand = new RelayCommand(OpenSkyAtlasImageRepositoryDiag);
@@ -45,6 +69,9 @@ namespace NINA.ViewModel {
             SelectProfileCommand = new RelayCommand(SelectProfile, (o) => {
                 return SelectedProfile != null;
             });
+
+            CopyToCustomSchemaCommand = new RelayCommand(CopyToCustomSchema, (object o) => AlternativeColorSchemaName != "Custom");
+            CopyToAlternativeCustomSchemaCommand = new RelayCommand(CopyToAlternativeCustomSchema, (object o) => ColorSchemaName != "Alternative Custom");
 
             ImagePatterns = ImagePatterns.CreateExample();
 
@@ -67,6 +94,54 @@ namespace NINA.ViewModel {
             FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
         }
 
+        private void OpenWebRequest(object obj) {
+            var url = new Uri(obj.ToString());
+            Process.Start(new ProcessStartInfo(url.AbsoluteUri));
+        }
+
+        public RelayCommand OpenPHD2DiagCommand { get; set; }
+
+        private void CopyToAlternativeCustomSchema(object obj) {
+            var schema = ColorSchemas.Items.Where((x) => x.Name == "Alternative Custom").First();
+
+            schema.PrimaryColor = AltPrimaryColor;
+            schema.SecondaryColor = AltSecondaryColor;
+            schema.BorderColor = AltBorderColor;
+            schema.BackgroundColor = AltBackgroundColor;
+            schema.SecondaryBackgroundColor = AltSecondaryBackgroundColor;
+            schema.TertiaryBackgroundColor = AltTertiaryBackgroundColor;
+            schema.ButtonBackgroundColor = AltButtonBackgroundColor;
+            schema.ButtonBackgroundSelectedColor = AltButtonBackgroundSelectedColor;
+            schema.ButtonForegroundColor = AltButtonForegroundColor;
+            schema.ButtonForegroundDisabledColor = AltButtonForegroundDisabledColor;
+            schema.NotificationWarningColor = AltNotificationWarningColor;
+            schema.NotificationWarningTextColor = AltNotificationWarningTextColor;
+            schema.NotificationErrorColor = AltNotificationErrorColor;
+            schema.NotificationErrorTextColor = AltNotificationErrorTextColor;
+            AlternativeColorSchemaName = schema.Name;
+        }
+
+        private void CopyToCustomSchema(object obj) {
+            var schema = ColorSchemas.Items.Where((x) => x.Name == "Custom").First();
+
+            schema.PrimaryColor = PrimaryColor;
+            schema.SecondaryColor = SecondaryColor;
+            schema.BorderColor = BorderColor;
+            schema.BackgroundColor = BackgroundColor;
+            schema.SecondaryBackgroundColor = SecondaryBackgroundColor;
+            schema.TertiaryBackgroundColor = TertiaryBackgroundColor;
+            schema.ButtonBackgroundColor = ButtonBackgroundColor;
+            schema.ButtonBackgroundSelectedColor = ButtonBackgroundSelectedColor;
+            schema.ButtonForegroundColor = ButtonForegroundColor;
+            schema.ButtonForegroundDisabledColor = ButtonForegroundDisabledColor;
+            schema.NotificationWarningColor = NotificationWarningColor;
+            schema.NotificationWarningTextColor = NotificationWarningTextColor;
+            schema.NotificationErrorColor = NotificationErrorColor;
+            schema.NotificationErrorTextColor = NotificationErrorTextColor;
+
+            ColorSchemaName = schema.Name;
+        }
+
         private void CloneProfile(object obj) {
             profileService.Clone(SelectedProfile.Id);
         }
@@ -83,6 +158,8 @@ namespace NINA.ViewModel {
             RaisePropertyChanged(nameof(SecondaryColor));
             RaisePropertyChanged(nameof(BorderColor));
             RaisePropertyChanged(nameof(BackgroundColor));
+            RaisePropertyChanged(nameof(SecondaryBackgroundColor));
+            RaisePropertyChanged(nameof(TertiaryBackgroundColor));
             RaisePropertyChanged(nameof(ButtonBackgroundColor));
             RaisePropertyChanged(nameof(ButtonBackgroundSelectedColor));
             RaisePropertyChanged(nameof(ButtonForegroundColor));
@@ -96,6 +173,8 @@ namespace NINA.ViewModel {
             RaisePropertyChanged(nameof(AltSecondaryColor));
             RaisePropertyChanged(nameof(AltBorderColor));
             RaisePropertyChanged(nameof(AltBackgroundColor));
+            RaisePropertyChanged(nameof(AltSecondaryBackgroundColor));
+            RaisePropertyChanged(nameof(AltTertiaryBackgroundColor));
             RaisePropertyChanged(nameof(AltButtonBackgroundColor));
             RaisePropertyChanged(nameof(AltButtonBackgroundSelectedColor));
             RaisePropertyChanged(nameof(AltButtonForegroundColor));
@@ -141,14 +220,13 @@ namespace NINA.ViewModel {
 
         private void ImportFilters(object obj) {
             var filters = filterWheelMediator.GetAllFilters();
-            if (filters != null) {
+            if (filters?.Count > 0) {
                 FilterWheelFilters.Clear();
                 FilterWheelFilters.CollectionChanged -= FilterWheelFilters_CollectionChanged;
-                var l = new List<FilterInfo>();
-                foreach (FilterInfo filter in filters) {
-                    l.Add(filter);
+                var l = filters.OrderBy(x => x.Position);
+                foreach (var filter in l) {
+                    FilterWheelFilters.Add(filter);
                 }
-                FilterWheelFilters = new ObserveAllCollection<FilterInfo>(l.OrderBy((x) => x.Position));
                 FilterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
             }
         }
@@ -211,12 +289,35 @@ namespace NINA.ViewModel {
         }
 
         private void OpenPS2FileDiag(object o) {
-            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
-            dialog.FileName = profileService.ActiveProfile.PlateSolveSettings.PS2Location;
-
+            var dialog = GetFilteredFileDialog(profileService.ActiveProfile.PlateSolveSettings.PS2Location, "PlateSolve2.exe", "PlateSolve2|PlateSolve2.exe");
             if (dialog.ShowDialog() == true) {
                 PS2Location = dialog.FileName;
             }
+        }
+
+        private void OpenPHD2FileDiag(object o) {
+            var dialog = GetFilteredFileDialog(profileService.ActiveProfile.GuiderSettings.PHD2Path, "phd2.exe", "PHD2|phd2.exe");
+            if (dialog.ShowDialog() == true) {
+                PHD2Path = dialog.FileName;
+            }
+        }
+
+        private void OpenASPSFileDiag(object o) {
+            var dialog = GetFilteredFileDialog(profileService.ActiveProfile.PlateSolveSettings.AspsLocation, "PlateSolver.exe", "ASPS|PlateSolver.exe");
+            if (dialog.ShowDialog() == true) {
+                AspsLocation = dialog.FileName;
+            }
+        }
+
+        private Microsoft.Win32.OpenFileDialog GetFilteredFileDialog(string path, string filename, string filter) {
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+
+            if (File.Exists(path)) {
+                dialog.InitialDirectory = Path.GetDirectoryName(path);
+            }
+            dialog.FileName = filename;
+            dialog.Filter = filter;
+            return dialog;
         }
 
         private void ScanForIndexFiles() {
@@ -254,9 +355,13 @@ namespace NINA.ViewModel {
 
         public ICommand OpenPS2FileDiagCommand { get; private set; }
 
+        public ICommand OpenASPSFileDiagCommand { get; private set; }
+
         public ICommand OpenImageFileDiagCommand { get; private set; }
 
         public ICommand OpenSequenceTemplateDiagCommand { get; private set; }
+
+        public ICommand OpenWebRequestCommand { get; private set; }
 
         public ICommand PreviewFileCommand { get; private set; }
 
@@ -274,6 +379,9 @@ namespace NINA.ViewModel {
         public ICommand AddProfileCommand { get; private set; }
         public ICommand CloneProfileCommand { get; private set; }
         public ICommand RemoveProfileCommand { get; private set; }
+
+        public ICommand CopyToCustomSchemaCommand { get; private set; }
+        public ICommand CopyToAlternativeCustomSchemaCommand { get; private set; }
 
         public ICommand SelectProfileCommand { get; private set; }
 
@@ -397,12 +505,30 @@ namespace NINA.ViewModel {
             }
         }
 
+        public string PHD2Path {
+            get => profileService.ActiveProfile.GuiderSettings.PHD2Path;
+            set {
+                profileService.ActiveProfile.GuiderSettings.PHD2Path = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public double AutoStretchFactor {
             get {
                 return profileService.ActiveProfile.ImageSettings.AutoStretchFactor;
             }
             set {
                 profileService.ActiveProfile.ImageSettings.AutoStretchFactor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double BlackClipping {
+            get {
+                return profileService.ActiveProfile.ImageSettings.BlackClipping;
+            }
+            set {
+                profileService.ActiveProfile.ImageSettings.BlackClipping = value;
                 RaisePropertyChanged();
             }
         }
@@ -486,6 +612,16 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.PlateSolveSettings.PS2Location = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string AspsLocation {
+            get {
+                return profileService.ActiveProfile.PlateSolveSettings.AspsLocation;
+            }
+            set {
+                profileService.ActiveProfile.PlateSolveSettings.AspsLocation = value;
                 RaisePropertyChanged();
             }
         }
@@ -606,6 +742,8 @@ namespace NINA.ViewModel {
             var tmpSecondaryColor = SecondaryColor;
             var tmpBorderColor = BorderColor;
             var tmpBackgroundColor = BackgroundColor;
+            var tmpSecondaryBackgroundColor = SecondaryBackgroundColor;
+            var tmpTertiaryBackgroundColor = TertiaryBackgroundColor;
             var tmpButtonBackgroundColor = ButtonBackgroundColor;
             var tmpButtonBackgroundSelectedColor = ButtonBackgroundSelectedColor;
             var tmpButtonForegroundColor = ButtonForegroundColor;
@@ -620,6 +758,8 @@ namespace NINA.ViewModel {
             SecondaryColor = AltSecondaryColor;
             BorderColor = AltBorderColor;
             BackgroundColor = AltBackgroundColor;
+            SecondaryBackgroundColor = AltSecondaryBackgroundColor;
+            TertiaryBackgroundColor = AltTertiaryBackgroundColor;
             ButtonBackgroundColor = AltButtonBackgroundColor;
             ButtonBackgroundSelectedColor = AltButtonBackgroundSelectedColor;
             ButtonForegroundColor = AltButtonForegroundColor;
@@ -634,6 +774,8 @@ namespace NINA.ViewModel {
             AltSecondaryColor = tmpSecondaryColor;
             AltBorderColor = tmpBorderColor;
             AltBackgroundColor = tmpBackgroundColor;
+            AltSecondaryBackgroundColor = tmpSecondaryBackgroundColor;
+            AltTertiaryBackgroundColor = tmpTertiaryBackgroundColor;
             AltButtonBackgroundColor = tmpButtonBackgroundColor;
             AltButtonBackgroundSelectedColor = tmpButtonBackgroundSelectedColor;
             AltButtonForegroundColor = tmpButtonForegroundColor;
@@ -655,6 +797,8 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged(nameof(SecondaryColor));
                 RaisePropertyChanged(nameof(BorderColor));
                 RaisePropertyChanged(nameof(BackgroundColor));
+                RaisePropertyChanged(nameof(SecondaryBackgroundColor));
+                RaisePropertyChanged(nameof(TertiaryBackgroundColor));
                 RaisePropertyChanged(nameof(ButtonBackgroundColor));
                 RaisePropertyChanged(nameof(ButtonBackgroundSelectedColor));
                 RaisePropertyChanged(nameof(ButtonForegroundColor));
@@ -683,6 +827,8 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged(nameof(AltSecondaryColor));
                 RaisePropertyChanged(nameof(AltBorderColor));
                 RaisePropertyChanged(nameof(AltBackgroundColor));
+                RaisePropertyChanged(nameof(AltSecondaryBackgroundColor));
+                RaisePropertyChanged(nameof(AltTertiaryBackgroundColor));
                 RaisePropertyChanged(nameof(AltButtonBackgroundColor));
                 RaisePropertyChanged(nameof(AltButtonBackgroundSelectedColor));
                 RaisePropertyChanged(nameof(AltButtonForegroundColor));
@@ -728,6 +874,26 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.ColorSchemaSettings.BackgroundColor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Color SecondaryBackgroundColor {
+            get {
+                return profileService.ActiveProfile.ColorSchemaSettings.SecondaryBackgroundColor;
+            }
+            set {
+                profileService.ActiveProfile.ColorSchemaSettings.SecondaryBackgroundColor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Color TertiaryBackgroundColor {
+            get {
+                return profileService.ActiveProfile.ColorSchemaSettings.TertiaryBackgroundColor;
+            }
+            set {
+                profileService.ActiveProfile.ColorSchemaSettings.TertiaryBackgroundColor = value;
                 RaisePropertyChanged();
             }
         }
@@ -863,6 +1029,26 @@ namespace NINA.ViewModel {
             }
         }
 
+        public Color AltSecondaryBackgroundColor {
+            get {
+                return profileService.ActiveProfile.ColorSchemaSettings.AltSecondaryBackgroundColor;
+            }
+            set {
+                profileService.ActiveProfile.ColorSchemaSettings.AltSecondaryBackgroundColor = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public Color AltTertiaryBackgroundColor {
+            get {
+                return profileService.ActiveProfile.ColorSchemaSettings.AltTertiaryBackgroundColor;
+            }
+            set {
+                profileService.ActiveProfile.ColorSchemaSettings.AltTertiaryBackgroundColor = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public Color AltButtonBackgroundColor {
             get {
                 return profileService.ActiveProfile.ColorSchemaSettings.AltButtonBackgroundColor;
@@ -979,6 +1165,17 @@ namespace NINA.ViewModel {
             }
             set {
                 profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public AutoUpdateSourceEnum AutoUpdateSource {
+            get {
+                return (AutoUpdateSourceEnum)NINA.Properties.Settings.Default.AutoUpdateSource;
+            }
+            set {
+                NINA.Properties.Settings.Default.AutoUpdateSource = (int)value;
+                NINA.Properties.Settings.Default.Save();
                 RaisePropertyChanged();
             }
         }

@@ -1,13 +1,38 @@
-﻿using Newtonsoft.Json.Linq;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using Newtonsoft.Json.Linq;
 using NINA.Utility;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,6 +52,8 @@ namespace NINA.Model.MyGuider {
         private Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
         private PhdEventVersion _version;
+
+        public string Name => "PHD2";
 
         public PhdEventVersion Version {
             get {
@@ -169,15 +196,29 @@ namespace NINA.Model.MyGuider {
         private TaskCompletionSource<bool> _tcs;
 
         public async Task<bool> Connect() {
-            bool connected = false;
             _tcs = new TaskCompletionSource<bool>();
-            StartListener();
-            connected = await _tcs.Task;
+            var startedPHD2 = await StartPHD2Process();
+#pragma warning disable 4014
+            Task.Run(RunListener);
+#pragma warning restore 4014
+            bool connected = await _tcs.Task;
 
-            var resp = await SendMessage(PHD2EventId.GET_PIXEL_SCALE, PHD2Methods.GET_PIXEL_SCALE);
-            PixelScale = double.Parse(resp.result.ToString().Replace(",", "."), CultureInfo.InvariantCulture);
+            try {
+                if (startedPHD2 && connected) {
+                    await Task.Run(ConnectPHD2Equipment);
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    await SendMessage(PHD2EventId.LOOP, PHD2Methods.LOOP);
+                }
 
-            Notification.ShowSuccess(Locale.Loc.Instance["LblGuiderConnected"]);
+                var resp = await SendMessage(PHD2EventId.GET_PIXEL_SCALE, PHD2Methods.GET_PIXEL_SCALE);
+                PixelScale = double.Parse(resp.result.ToString().Replace(",", "."), CultureInfo.InvariantCulture);
+
+                Notification.ShowSuccess(Locale.Loc.Instance["LblGuiderConnected"]);
+            } catch (OperationCanceledException) {
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                Notification.ShowError(ex.Message);
+            }
 
             return connected;
         }
@@ -416,57 +457,98 @@ namespace NINA.Model.MyGuider {
             return foo != null ? foo.State : TcpState.Unknown;
         }
 
-        private void StartListener() {
-            Task.Run(async () => {
-                JsonLoadSettings jls = new JsonLoadSettings() { LineInfoHandling = LineInfoHandling.Ignore, CommentHandling = CommentHandling.Ignore };
-                _clientCTS = new CancellationTokenSource();
-                using (var client = new TcpClient()) {
-                    try {
-                        await client.ConnectAsync(profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl, profileService.ActiveProfile.GuiderSettings.PHD2ServerPort);
-                        Connected = true;
-                        _tcs.TrySetResult(false);
+        private async Task ConnectPHD2Equipment() {
+            var connectMsg = await SendMessage(
+                PHD2EventId.SET_CONNECTED,
+                string.Format(PHD2Methods.SET_CONNECTED, "true"));
+            if (connectMsg.error != null) {
+                Notification.ShowWarning(Locale.Loc.Instance["LblPhd2FailedEquipmentConnection"]);
+            }
+        }
 
-                        using (NetworkStream s = client.GetStream()) {
-                            while (true) {
-                                var state = GetState(client);
-                                if (state == TcpState.CloseWait) {
-                                    throw new Exception(Locale.Loc.Instance["LblPhd2ServerConnectionLost"]);
-                                }
-                                var message = string.Empty;
-                                while (s.DataAvailable) {
-                                    byte[] response = new byte[1024];
-                                    await s.ReadAsync(response, 0, response.Length, _clientCTS.Token);
-                                    message += System.Text.Encoding.ASCII.GetString(response);
-                                }
+        private async Task<bool> StartPHD2Process() {
+            // if phd2 is not running start it
+            try {
+                if (Process.GetProcessesByName("phd2").Length == 0) {
+                    if (!File.Exists(profileService.ActiveProfile.GuiderSettings.PHD2Path)) {
+                        throw new FileNotFoundException();
+                    }
 
-                                foreach (string line in message.Split(new[] { Environment.NewLine }, StringSplitOptions.None)) {
-                                    if (!string.IsNullOrEmpty(line) && !line.StartsWith("\0")) {
-                                        JObject o = JObject.Parse(line, jls);
-                                        JToken t = o.GetValue("Event");
-                                        string phdevent = "";
-                                        if (t != null) {
-                                            phdevent = t.ToString();
-                                            ProcessEvent(phdevent, o);
-                                        }
+                    var process = Process.Start(profileService.ActiveProfile.GuiderSettings.PHD2Path);
+                    process?.WaitForInputIdle();
+
+                    await Task.Delay(1500);
+
+                    return true;
+                }
+            } catch (FileNotFoundException) {
+                Notification.ShowError(Locale.Loc.Instance["LblPhd2PathNotFound"]);
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                Notification.ShowError(Locale.Loc.Instance["LblPhd2StartProcessError"]);
+            }
+
+            return false;
+        }
+
+        private async Task RunListener() {
+            JsonLoadSettings jls = new JsonLoadSettings() { LineInfoHandling = LineInfoHandling.Ignore, CommentHandling = CommentHandling.Ignore };
+            _clientCTS?.Dispose();
+            _clientCTS = new CancellationTokenSource();
+            using (var client = new TcpClient()) {
+                try {
+                    await client.ConnectAsync(profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl,
+                        profileService.ActiveProfile.GuiderSettings.PHD2ServerPort);
+                    Connected = true;
+                    _tcs.TrySetResult(true);
+
+                    using (NetworkStream s = client.GetStream()) {
+                        while (true) {
+                            var state = GetState(client);
+                            if (state == TcpState.CloseWait) {
+                                throw new Exception(Locale.Loc.Instance["LblPhd2ServerConnectionLost"]);
+                            }
+
+                            var message = string.Empty;
+                            while (s.DataAvailable) {
+                                byte[] response = new byte[1024];
+                                await s.ReadAsync(response, 0, response.Length, _clientCTS.Token);
+                                message += System.Text.Encoding.ASCII.GetString(response);
+                            }
+
+                            foreach (string line in message.Split(new[] { Environment.NewLine },
+                                StringSplitOptions.None)) {
+                                if (!string.IsNullOrEmpty(line) && !line.StartsWith("\0")) {
+                                    JObject o = JObject.Parse(line, jls);
+                                    JToken t = o.GetValue("Event");
+                                    string phdevent = "";
+                                    if (t != null) {
+                                        phdevent = t.ToString();
+                                        ProcessEvent(phdevent, o);
                                     }
                                 }
-                                await Task.Delay(TimeSpan.FromMilliseconds(500), _clientCTS.Token);
                             }
+
+                            await Task.Delay(TimeSpan.FromMilliseconds(500), _clientCTS.Token);
                         }
-                    } catch (OperationCanceledException) {
-                    } catch (Exception ex) {
-                        Logger.Error(ex);
-                        Notification.ShowError("PHD2 Error: " + ex.Message);
-                    } finally {
-                        _isDithering = false;
-                        AppState = new PhdEventAppState() { State = "" };
-                        PixelScale = 0.0d;
-                        Connected = false;
-                        _tcs.TrySetResult(false);
                     }
+                } catch (OperationCanceledException) {
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                    Notification.ShowError("PHD2 Error: " + ex.Message);
+                    throw;
+                } finally {
+                    _isDithering = false;
+                    AppState = new PhdEventAppState() { State = "" };
+                    PixelScale = 0.0d;
+                    Connected = false;
+                    _tcs.TrySetResult(false);
+                    PHD2ConnectionLost?.Invoke(this, EventArgs.Empty);
                 }
-            });
+            }
         }
+
+        public event EventHandler PHD2ConnectionLost;
 
         public class PhdMethodResponse {
             public string jsonrpc;
@@ -488,10 +570,19 @@ namespace NINA.Model.MyGuider {
             public string message;
         }
 
+        [DataContract]
         public class PhdEvent : BaseINPC, IGuideEvent {
+
+            [DataMember]
             public string Event { get; set; }
+
+            [DataMember]
             public string TimeStamp { get; set; }
+
+            [DataMember]
             public string Host { get; set; }
+
+            [DataMember]
             public int Inst { get; set; }
         }
 
@@ -592,31 +683,82 @@ namespace NINA.Model.MyGuider {
         public class PhdEventResumed : PhdEvent {
         }
 
+        [DataContract]
         public class PhdEventGuideStep : PhdEvent, IGuideStep {
+
+            [DataMember]
             private double frame;
+
+            [DataMember]
             private double time;
+
+            [DataMember]
             private string mount;
+
+            [DataMember]
             private double dx;
+
+            [DataMember]
             private double dy;
+
+            [DataMember]
             private double rADistanceRaw;
+
+            [DataMember]
             private double decDistanceRaw;
+
+            [DataMember]
             private double raDistanceDisplay;
+
+            [DataMember]
             private double decDistanceDisplay;
+
+            [DataMember]
             private double rADistanceGuide;
+
+            [DataMember]
             private double decDistanceGuide;
+
+            [DataMember]
             private double raDistanceGuideDisplay;
+
+            [DataMember]
             private double decDistanceGuideDisplay;
+
+            [DataMember]
             private double rADuration;
+
+            [DataMember]
             private string rADirection;
+
+            [DataMember]
             private double dECDuration;
+
+            [DataMember]
             private string decDirection;
+
+            [DataMember]
             private double starMass;
+
+            [DataMember]
             private double sNR;
+
+            [DataMember]
             private double avgDist;
+
+            [DataMember]
             private bool rALimited;
+
+            [DataMember]
             private bool decLimited;
+
+            [DataMember]
             private double errorCode;
 
+            public PhdEventGuideStep() {
+            }
+
+            [DataMember]
             public double RADistanceRawDisplay {
                 get {
                     return raDistanceDisplay;
@@ -626,6 +768,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double DecDistanceRawDisplay {
                 get {
                     return decDistanceDisplay;
@@ -635,6 +778,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double RADistanceGuideDisplay {
                 get {
                     return raDistanceGuideDisplay;
@@ -644,6 +788,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double DecDistanceGuideDisplay {
                 get {
                     return decDistanceGuideDisplay;
@@ -653,6 +798,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double Frame {
                 get {
                     return frame;
@@ -663,6 +809,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double Time {
                 get {
                     return time;
@@ -675,18 +822,23 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double TimeRA {
                 get {
                     return Time - 0.15;
                 }
+                set { Time = value + 0.15; }
             }
 
+            [DataMember]
             public double TimeDec {
                 get {
                     return Time + 0.15;
                 }
+                set { Time = value - 0.15; }
             }
 
+            [DataMember]
             public string Mount {
                 get {
                     return mount;
@@ -697,6 +849,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double Dx {
                 get {
                     return dx;
@@ -707,6 +860,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double Dy {
                 get {
                     return dy;
@@ -717,6 +871,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double RADistanceRaw {
                 get {
                     return -rADistanceRaw;
@@ -728,6 +883,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double DecDistanceRaw {
                 get {
                     return decDistanceRaw;
@@ -739,6 +895,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double RADistanceGuide {
                 get {
                     return rADistanceGuide;
@@ -750,6 +907,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double DecDistanceGuide {
                 get {
                     return decDistanceGuide;
@@ -761,6 +919,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double RADuration {
                 get {
                     if (RADirection == "East") {
@@ -775,6 +934,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public string RADirection {
                 get {
                     return rADirection;
@@ -785,6 +945,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double DECDuration {
                 get {
                     if (DecDirection == "South") {
@@ -799,6 +960,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public string DecDirection {
                 get {
                     return decDirection;
@@ -809,6 +971,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double StarMass {
                 get {
                     return starMass;
@@ -819,6 +982,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double SNR {
                 get {
                     return sNR;
@@ -829,6 +993,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double AvgDist {
                 get {
                     return avgDist;
@@ -839,6 +1004,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public bool RALimited {
                 get {
                     return rALimited;
@@ -849,6 +1015,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public bool DecLimited {
                 get {
                     return decLimited;
@@ -859,6 +1026,7 @@ namespace NINA.Model.MyGuider {
                 }
             }
 
+            [DataMember]
             public double ErrorCode {
                 get {
                     return errorCode;

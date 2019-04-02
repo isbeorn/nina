@@ -1,8 +1,29 @@
-﻿using NINA.Model;
-using NINA.Model.MyTelescope;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using NINA.Model;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Profile;
 using OxyPlot;
@@ -99,9 +120,14 @@ namespace NINA.ViewModel {
                 if (_nightDuration == null) {
                     var twilight = TwilightRiseAndSet;
                     if (twilight != null) {
+                        var rise = twilight.Rise;
+                        var set = twilight.Set;
+
+                        if (rise.HasValue) rise = rise.Value.AddDays(1);
+
                         _nightDuration = new AsyncObservableCollection<DataPoint>() {
-                        new DataPoint(DateTimeAxis.ToDouble(twilight.RiseDate), 90),
-                        new DataPoint(DateTimeAxis.ToDouble(twilight.SetDate), 90) };
+                        new DataPoint(DateTimeAxis.ToDouble(rise), 90),
+                        new DataPoint(DateTimeAxis.ToDouble(set), 90) };
                     } else {
                         _nightDuration = new AsyncObservableCollection<DataPoint>();
                     }
@@ -118,17 +144,25 @@ namespace NINA.ViewModel {
                     var twilight = SunRiseAndSet;
                     var night = TwilightRiseAndSet;
                     if (twilight != null) {
+                        var twilightRise = twilight.Rise;
+                        var twilightSet = twilight.Set;
+                        var rise = night.Rise;
+                        var set = night.Set;
+
+                        if (twilightRise.HasValue) twilightRise = twilightRise.Value.AddDays(1);
+                        if (rise.HasValue) rise = rise.Value.AddDays(1);
+
                         _twilightDuration = new AsyncObservableCollection<DataPoint>();
-                        _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(twilight.SetDate), 90));
+                        _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(twilightSet), 90));
 
                         if (night != null) {
-                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.SetDate), 90));
-                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.SetDate), 0));
-                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.RiseDate), 0));
-                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(night.RiseDate), 90));
+                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(set), 90));
+                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(set), 0));
+                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(rise), 0));
+                            _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(rise), 90));
                         }
 
-                        _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(twilight.RiseDate), 90));
+                        _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(twilightRise), 90));
                     } else {
                         _twilightDuration = new AsyncObservableCollection<DataPoint>();
                     }
@@ -137,9 +171,9 @@ namespace NINA.ViewModel {
             }
         }
 
-        private Astrometry.RiseAndSetAstroEvent _twilightRiseAndSet;
+        private RiseAndSetEvent _twilightRiseAndSet;
 
-        public Astrometry.RiseAndSetAstroEvent TwilightRiseAndSet {
+        public RiseAndSetEvent TwilightRiseAndSet {
             get {
                 if (_twilightRiseAndSet == null) {
                     var d = GetReferenceDate(SelectedDate);
@@ -153,9 +187,9 @@ namespace NINA.ViewModel {
             }
         }
 
-        private Astrometry.RiseAndSetAstroEvent _moonRiseAndSet;
+        private RiseAndSetEvent _moonRiseAndSet;
 
-        public Astrometry.RiseAndSetAstroEvent MoonRiseAndSet {
+        public RiseAndSetEvent MoonRiseAndSet {
             get {
                 if (_moonRiseAndSet == null) {
                     var d = GetReferenceDate(SelectedDate);
@@ -201,9 +235,9 @@ namespace NINA.ViewModel {
             }
         }
 
-        private Astrometry.RiseAndSetAstroEvent _sunRiseAndSet;
+        private RiseAndSetEvent _sunRiseAndSet;
 
-        public Astrometry.RiseAndSetAstroEvent SunRiseAndSet {
+        public RiseAndSetEvent SunRiseAndSet {
             get {
                 if (_sunRiseAndSet == null) {
                     var d = GetReferenceDate(SelectedDate);
@@ -244,30 +278,36 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> Search() {
+            _searchTokenSource?.Dispose();
             _searchTokenSource = new CancellationTokenSource();
             return await Task.Run(async () => {
                 try {
                     SearchResult = null;
                     var db = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
                     var types = ObjectTypes.Where((x) => x.Selected).Select((x) => x.Name).ToList();
+
+                    var searchParams = new DatabaseInteraction.DeepSkyObjectSearchParams();
+                    searchParams.Constellation = SelectedConstellation;
+                    searchParams.DsoTypes = types;
+                    searchParams.ObjectName = SearchObjectName;
+                    searchParams.RightAscension.From = SelectedRAFrom;
+                    searchParams.RightAscension.Thru = SelectedRAThrough;
+                    searchParams.Declination.From = Nullable.Compare(SelectedDecFrom, SelectedDecThrough) > 0 ? SelectedDecThrough : SelectedDecFrom;
+                    searchParams.Declination.Thru = Nullable.Compare(SelectedDecFrom, SelectedDecThrough) > 0 ? SelectedDecFrom : SelectedDecThrough;
+                    searchParams.Brightness.From = SelectedBrightnessFrom;
+                    searchParams.Brightness.Thru = SelectedBrightnessThrough;
+                    searchParams.Magnitude.From = SelectedMagnitudeFrom;
+                    searchParams.Magnitude.Thru = SelectedMagnitudeThrough;
+                    searchParams.Size.From = SelectedSizeFrom;
+                    searchParams.Size.Thru = SelectedSizeThrough;
+                    searchParams.SearchOrder.Field = OrderByField.ToString().ToLower();
+                    searchParams.SearchOrder.Direction = OrderByDirection.ToString();
+
                     var result = await db.GetDeepSkyObjects(
                         profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository,
-                        _searchTokenSource.Token,
-                        SelectedConstellation,
-                        SelectedRAFrom,
-                        SelectedRAThrough,
-                        Nullable.Compare(SelectedDecFrom, SelectedDecThrough) > 0 ? SelectedDecThrough : SelectedDecFrom,
-                        Nullable.Compare(SelectedDecFrom, SelectedDecThrough) > 0 ? SelectedDecFrom : SelectedDecThrough,
-                        SelectedSizeFrom,
-                        SelectedSizeThrough,
-                        types,
-                        SelectedBrightnessFrom,
-                        SelectedBrightnessThrough,
-                        SelectedMagnitudeFrom,
-                        SelectedMagnitudeThrough,
-                        SearchObjectName,
-                        OrderByField.ToString().ToLower(),
-                        OrderByDirection.ToString());
+                        searchParams,
+                        _searchTokenSource.Token
+                    );
 
                     var longitude = profileService.ActiveProfile.AstrometrySettings.Longitude;
                     var latitude = profileService.ActiveProfile.AstrometrySettings.Latitude;
@@ -377,10 +417,11 @@ namespace NINA.ViewModel {
         }
 
         private void InitializeObjectTypeFilters() {
-            var l = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation).GetObjectTypes(new System.Threading.CancellationToken());
+            var task = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation).GetObjectTypes(new System.Threading.CancellationToken());
+            var list = task.Result?.OrderBy(x => x).ToList();
             ObjectTypes = new AsyncObservableCollection<DSOObjectType>();
-            foreach (var t in l.Result) {
-                ObjectTypes.Add(new DSOObjectType(t));
+            foreach (var type in list) {
+                ObjectTypes.Add(new DSOObjectType(type));
             }
         }
 

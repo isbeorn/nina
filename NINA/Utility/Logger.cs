@@ -1,5 +1,27 @@
-﻿using NINA.Utility.Enum;
-using NINA.Utility.Profile;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using NINA.Utility.Enum;
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -10,9 +32,10 @@ namespace NINA.Utility {
     internal static class Logger {
 
         static Logger() {
-            LOGDATE = DateTime.Now.ToString("yyyy-MM-dd");
+            LOGDATE = DateTime.Now.ToString("yyyyMMdd-HHmmss");
             var logDir = Path.Combine(Utility.APPLICATIONTEMPPATH, "Logs");
-            LOGFILEPATH = Path.Combine(logDir, LOGDATE + " - v" + Utility.Version + " - log.txt");
+            var processId = System.Diagnostics.Process.GetCurrentProcess().Id;
+            LOGFILEPATH = Path.Combine(logDir, $"{LOGDATE}-{Utility.Version}.{processId}.log");
 
             if (!Directory.Exists(logDir)) {
                 Directory.CreateDirectory(logDir);
@@ -29,7 +52,11 @@ namespace NINA.Utility {
                 Append(PadBoth("NINA - Nighttime Imaging 'N' Astronomy", 70, '-'));
                 Append(PadBoth(string.Format("Running NINA Version {0}", Utility.Version), 70, '-'));
                 Append(PadBoth(DateTime.Now.ToString("s"), 70, '-'));
-                Append(PadBoth("ASCOM Platform Version {0}", 70, '-', Utility.AscomUtil.PlatformVersion));
+                try {
+                    Append(PadBoth("ASCOM Platform {0}", 70, '-', ASCOMInteraction.GetVersion()));
+                } catch (Exception) {
+                    Append(PadBoth("ASCOM Platform {0}", 70, '-', "Not Installed"));
+                }
                 Append(PadBoth(".NET Version {0}", 70, '-', Environment.Version.ToString()));
                 Append(PadBoth("Oparating System Information", 70, '-'));
                 Append(PadBoth("Is 64bit OS {0}", 70, '-', Environment.Is64BitOperatingSystem.ToString()));
@@ -93,7 +120,7 @@ namespace NINA.Utility {
                 Exception ex,
                 [CallerMemberName] string memberName = "",
                 [CallerFilePath] string sourceFilePath = "") {
-            Error(ex.Message, ex.StackTrace, memberName, sourceFilePath);
+            Error(ex.Message.Replace("{", "{{").Replace("}", "}}"), ex.StackTrace, memberName, sourceFilePath);
         }
 
         public static void Info(string message,

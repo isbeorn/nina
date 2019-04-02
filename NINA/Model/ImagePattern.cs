@@ -1,10 +1,31 @@
-﻿using System;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NINA.Model {
 
@@ -21,6 +42,9 @@ namespace NINA.Model {
         public ImagePatterns() {
             patterns = new Dictionary<string, ImagePattern>();
             var p = new ImagePattern(ImagePatternKeys.Filter, Locale.Loc.Instance["LblFilternameDescription"]);
+            patterns.Add(p.Key, p);
+
+            p = new ImagePattern(ImagePatternKeys.ApplicationStartDate, Locale.Loc.Instance["LblApplicationStartDateDescription"]);
             patterns.Add(p.Key, p);
 
             p = new ImagePattern(ImagePatternKeys.Date, Locale.Loc.Instance["LblDateFormatDescription"]);
@@ -51,6 +75,9 @@ namespace NINA.Model {
             patterns.Add(p.Key, p);
 
             p = new ImagePattern(ImagePatternKeys.Gain, Locale.Loc.Instance["LblGainDescription"]);
+            patterns.Add(p.Key, p);
+
+            p = new ImagePattern(ImagePatternKeys.Offset, Locale.Loc.Instance["LblOffsetDescription"]);
             patterns.Add(p.Key, p);
 
             p = new ImagePattern(ImagePatternKeys.RMS, Locale.Loc.Instance["LblGuidingRMSDescription"]);
@@ -112,9 +139,11 @@ namespace NINA.Model {
             p.Set(ImagePatternKeys.ExposureTime, 10.21234);
             p.Set(ImagePatternKeys.TargetName, "M33");
             p.Set(ImagePatternKeys.Gain, "1600");
+            p.Set(ImagePatternKeys.Offset, "10");
             p.Set(ImagePatternKeys.RMS, 0.35);
             p.Set(ImagePatternKeys.RMSArcSec, 0.65);
             p.Set(ImagePatternKeys.FocuserPosition, 12542);
+            p.Set(ImagePatternKeys.ApplicationStartDate, Utility.Utility.ApplicationStartDate.ToString("yyyy-MM-dd"));
             return p;
         }
     }
@@ -135,9 +164,11 @@ namespace NINA.Model {
         public static readonly string ExposureTime = "$$EXPOSURETIME$$";
         public static readonly string TargetName = "$$TARGETNAME$$";
         public static readonly string Gain = "$$GAIN$$";
+        public static readonly string Offset = "$$OFFSET$$";
         public static readonly string RMS = "$$RMS$$";
         public static readonly string RMSArcSec = "$$RMSARCSEC$$";
         public static readonly string FocuserPosition = "$$FOCUSERPOSITION$$";
+        public static readonly string ApplicationStartDate = "$$APPLICATIONSTARTDATE$$";
     }
 
     public class ImagePattern {

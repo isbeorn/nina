@@ -1,7 +1,29 @@
-﻿using NINA.Model;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using NINA.Model;
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -32,6 +54,7 @@ namespace NINA.ViewModel {
             DisconnectCommand = new RelayCommand(DisconnectFW);
             RefreshFWListCommand = new RelayCommand(RefreshFWList);
             ChangeFilterCommand = new AsyncCommand<bool>(async () => {
+                _changeFilterCancellationSource?.Dispose();
                 _changeFilterCancellationSource = new CancellationTokenSource();
                 await ChangeFilter(TargetFilter, _changeFilterCancellationSource.Token);
                 return true;
@@ -150,6 +173,7 @@ namespace NINA.ViewModel {
                 );
 
                 var fW = (IFilterWheel)FilterWheelChooserVM.SelectedDevice;
+                _cancelChooseFilterWheelSource?.Dispose();
                 _cancelChooseFilterWheelSource = new CancellationTokenSource();
                 if (fW != null) {
                     try {
@@ -168,6 +192,14 @@ namespace NINA.ViewModel {
                             profileService.ActiveProfile.FilterWheelSettings.Id = FW.Id;
                             if (FW.Position > -1) {
                                 FilterWheelInfo.SelectedFilter = FW.Filters[FW.Position];
+                            }
+
+                            // Auto import filters to profile, when profile does not have any filters set yet.
+                            if (FW.Filters.Count > 0 && profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Count == 0) {
+                                var l = FW.Filters.OrderBy(x => x.Position);
+                                foreach (var filter in l) {
+                                    profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Add(filter);
+                                }
                             }
 
                             TargetFilter = FilterWheelInfo.SelectedFilter;
@@ -289,15 +321,12 @@ namespace NINA.ViewModel {
 
             Devices.Add(new DummyDevice(Locale.Loc.Instance["LblNoFilterwheel"]));
 
-            var ascomDevices = new ASCOM.Utilities.Profile();
-
-            foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("FilterWheel")) {
-                try {
-                    AscomFilterWheel cam = new AscomFilterWheel(device.Key, device.Value);
-                    Devices.Add(cam);
-                } catch (Exception) {
-                    //only add filter wheels which are supported. e.g. x86 drivers will not work in x64
+            try {
+                foreach (IFilterWheel fw in ASCOMInteraction.GetFilterWheels(profileService)) {
+                    Devices.Add(fw);
                 }
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
 
             Devices.Add(new ManualFilterWheel(this.profileService));

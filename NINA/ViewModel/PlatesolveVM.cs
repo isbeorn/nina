@@ -1,11 +1,33 @@
-﻿using NINA.Model;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Model.MyTelescope;
 using NINA.PlateSolving;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -18,6 +40,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace NINA.ViewModel {
 
@@ -220,32 +243,27 @@ namespace NINA.ViewModel {
         private BitmapSource _image;
 
         public BitmapSource Image {
-            get {
-                return _image;
-            }
+            get => _image;
             set {
                 _image = value;
-                if (_image != null) {
-                    var factor = 300 / _image.Width;
-
-                    BitmapSource scaledBitmap = new WriteableBitmap(new TransformedBitmap(_image, new ScaleTransform(factor, factor)));
-                    scaledBitmap.Freeze();
-                    Thumbnail = scaledBitmap;
-                }
-
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(Thumbnail));
             }
         }
 
-        private BitmapSource thumbnail;
+        private Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
 
         public BitmapSource Thumbnail {
             get {
-                return thumbnail;
-            }
-            set {
-                thumbnail = value;
-                RaisePropertyChanged();
+                BitmapSource scaledBitmap = null;
+                if (Image != null) {
+                    dispatcher.Invoke(() => {
+                        var factor = 300 / _image.Width;
+                        scaledBitmap = new WriteableBitmap(new TransformedBitmap(_image, new ScaleTransform(factor, factor)));
+                        scaledBitmap.Freeze();
+                    }, DispatcherPriority.Background);
+                }
+                return scaledBitmap;
             }
         }
 
@@ -269,12 +287,13 @@ namespace NINA.ViewModel {
 
             canceltoken.ThrowIfCancellationRequested();
 
-            var success = await Solve(Image, progress, canceltoken, silent); ;
+            var success = await Solve(Image, progress, canceltoken, silent);
             Image = null;
             return success;
         }
 
         private async Task<bool> CaptureSolveSyncAndReslew(IProgress<ApplicationStatus> progress) {
+            _solveCancelToken?.Dispose();
             _solveCancelToken = new CancellationTokenSource();
             var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
             seq.Gain = SnapGain;
@@ -313,7 +332,7 @@ namespace NINA.ViewModel {
                     }
                 }
 
-                if (solveresult?.Success == true && repeat && Math.Abs(Astrometry.DegreeToArcmin(solveresult.RaError)) > repeatThreshold) {
+                if (solveresult?.Success == true && repeat && Math.Abs(solveresult.Separation.Distance.ArcMinutes) > repeatThreshold) {
                     repeatPlateSolve = true;
                     progress.Report(new ApplicationStatus() { Status = "Telescope not inside tolerance. Repeating..." });
                     //Let the scope settle
@@ -338,8 +357,9 @@ namespace NINA.ViewModel {
 
                 var coords = new Coordinates(TelescopeInfo.RightAscension, TelescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
 
-                PlateSolveResult.RaError = coords.RADegrees - solved.RADegrees;
-                PlateSolveResult.DecError = coords.Dec - solved.Dec;
+                var separation = coords - solved;
+
+                PlateSolveResult.Separation = coords - solved;
             }
         }
 
@@ -430,7 +450,7 @@ namespace NINA.ViewModel {
                 var binning = CameraInfo.BinX;
                 if (binning < 1) { binning = 1; }
 
-                solver = PlateSolverFactory.CreateInstance(profileService, profileService.ActiveProfile.PlateSolveSettings.PlateSolverType, binning, img.Width, img.Height, coords);
+                solver = PlateSolverFactory.CreateInstance(profileService, profileService.ActiveProfile.PlateSolveSettings.PlateSolverType, binning, img.PixelWidth, img.PixelHeight, coords);
             }
 
             return solver;
@@ -445,6 +465,8 @@ namespace NINA.ViewModel {
                 PlateSolverEnum type;
                 if (profileService.ActiveProfile.PlateSolveSettings.BlindSolverType == BlindSolverEnum.LOCAL) {
                     type = PlateSolverEnum.LOCAL;
+                } else if (profileService.ActiveProfile.PlateSolveSettings.BlindSolverType == BlindSolverEnum.ASPS) {
+                    type = PlateSolverEnum.ASPS;
                 } else {
                     type = PlateSolverEnum.ASTROMETRY_NET;
                 }

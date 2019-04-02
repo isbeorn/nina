@@ -1,4 +1,27 @@
-﻿using NINA.Model;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using NINA.Model;
 using NINA.Model.MyRotator;
 using NINA.Utility;
 using NINA.Utility.Mediator.Interfaces;
@@ -7,8 +30,6 @@ using NINA.Utility.Profile;
 using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -49,6 +70,7 @@ namespace NINA.ViewModel {
         }
 
         public async Task<float> Move(float targetPosition) {
+            _moveCts?.Dispose();
             _moveCts = new CancellationTokenSource();
             float pos = float.NaN;
             await Task.Run(() => {
@@ -83,6 +105,9 @@ namespace NINA.ViewModel {
 
             rotatorValues.TryGetValue(nameof(RotatorInfo.Position), out o);
             RotatorInfo.Position = (float)(o ?? 0f);
+
+            rotatorValues.TryGetValue(nameof(RotatorInfo.StepSize), out o);
+            RotatorInfo.StepSize = (float)(o ?? 0f);
 
             rotatorValues.TryGetValue(nameof(RotatorInfo.IsMoving), out o);
             RotatorInfo.IsMoving = (bool)(o ?? false);
@@ -177,6 +202,7 @@ namespace NINA.ViewModel {
                 );
 
                 var rotator = (IRotator)RotatorChooserVM.SelectedDevice;
+                _connectRotatorCts?.Dispose();
                 _connectRotatorCts = new CancellationTokenSource();
                 if (rotator != null) {
                     try {
@@ -262,15 +288,12 @@ namespace NINA.ViewModel {
 
             Devices.Add(new DummyDevice(Locale.Loc.Instance["LblNoRotator"]));
 
-            var ascomDevices = new ASCOM.Utilities.Profile();
-
-            foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Rotator")) {
-                try {
-                    AscomRotator rotator = new AscomRotator(device.Key, device.Value);
+            try {
+                foreach (IRotator rotator in ASCOMInteraction.GetRotators(profileService)) {
                     Devices.Add(rotator);
-                } catch (Exception) {
-                    //only add filter wheels which are supported. e.g. x86 drivers will not work in x64
                 }
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
 
             Devices.Add(new ManualRotator(profileService));

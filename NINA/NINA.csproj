@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NINA</RootNamespace>
     <AssemblyName>NINA</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -44,6 +44,7 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -55,9 +56,10 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>observatory.ico</ApplicationIcon>
+    <ApplicationIcon>Logo_Nina.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>D53E041E3EAACF37CBF5FD6A81ECCF6577A70301</ManifestCertificateThumbprint>
@@ -87,6 +89,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -97,6 +100,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -107,6 +111,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -117,6 +122,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>NINA.App</StartupObject>
@@ -132,33 +138,47 @@
       <HintPath>..\packages\AForge.Math.2.2.5\lib\AForge.Math.dll</HintPath>
     </Reference>
     <Reference Include="ASCOM.Astrometry, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Astrometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.Attributes, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Attributes.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ASCOM.Cache, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Cache.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.Controls, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Controls.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.DeviceInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.DeviceInterfaces.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.DriverAccess, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.DriverAccess.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.Exceptions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Exceptions.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.Internal.Extensions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Internal.Extensions.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.SettingsProvider, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.SettingsProvider.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.Utilities, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Utilities.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ASCOM.Utilities.Video, Version=6.1.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
+      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Utilities.Video.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AsyncEnumerable, Version=2.2.1.0, Culture=neutral, PublicKeyToken=0426b068161bd1d1, processorArchitecture=MSIL">
@@ -186,8 +206,8 @@
     <Reference Include="Microsoft.Threading.Tasks.Extensions.Desktop, Version=1.0.168.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.Desktop.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Nito.AsyncEx, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Nito.AsyncEx.4.0.1\lib\net45\Nito.AsyncEx.dll</HintPath>
@@ -208,14 +228,14 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.SQLite, Version=1.0.108.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Data.SQLite.Core.1.0.108.0\lib\net46\System.Data.SQLite.dll</HintPath>
+    <Reference Include="System.Data.SQLite, Version=1.0.109.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Core.1.0.109.2\lib\net46\System.Data.SQLite.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.SQLite.EF6, Version=1.0.108.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.108.0\lib\net46\System.Data.SQLite.EF6.dll</HintPath>
+    <Reference Include="System.Data.SQLite.EF6, Version=1.0.109.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.109.0\lib\net46\System.Data.SQLite.EF6.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.SQLite.Linq, Version=1.0.108.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.108.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
+    <Reference Include="System.Data.SQLite.Linq, Version=1.0.109.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.109.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
@@ -224,6 +244,7 @@
     <Reference Include="System.Management" />
     <Reference Include="System.Net" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -238,32 +259,29 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="ToastNotifications, Version=2.2.5.0, Culture=neutral, PublicKeyToken=e89d9d7314a7c797, processorArchitecture=MSIL">
-      <HintPath>..\packages\ToastNotifications.2.2.5\lib\net40\ToastNotifications.dll</HintPath>
+    <Reference Include="ToastNotifications, Version=2.5.0.0, Culture=neutral, PublicKeyToken=e89d9d7314a7c797, processorArchitecture=MSIL">
+      <HintPath>..\packages\ToastNotifications.2.5.0\lib\net40\ToastNotifications.dll</HintPath>
     </Reference>
-    <Reference Include="ToastNotifications.Messages, Version=2.2.5.0, Culture=neutral, PublicKeyToken=e89d9d7314a7c797, processorArchitecture=MSIL">
-      <HintPath>..\packages\ToastNotifications.Messages.2.2.5\lib\net40\ToastNotifications.Messages.dll</HintPath>
+    <Reference Include="ToastNotifications.Messages, Version=2.5.0.0, Culture=neutral, PublicKeyToken=e89d9d7314a7c797, processorArchitecture=MSIL">
+      <HintPath>..\packages\ToastNotifications.Messages.2.5.0\lib\net40\ToastNotifications.Messages.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.5.3.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\NINA.WpfToolkit.3.5.3\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.5.3.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\NINA.WpfToolkit.3.5.3\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.5.3.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\NINA.WpfToolkit.3.5.3\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.5.3.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\NINA.WpfToolkit.3.5.3\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.DataGrid, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.Toolkit, Version=3.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.4.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.5.3.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\NINA.WpfToolkit.3.5.3\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -271,6 +289,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="AstrometryIndexDownloader\AstrometryIndexDownloader.xaml.cs">
       <DependentUpon>AstrometryIndexDownloader.xaml</DependentUpon>
     </Compile>
@@ -278,21 +299,64 @@
     <Compile Include="EquipmentChooser\EquipmentChooser.xaml.cs">
       <DependentUpon>EquipmentChooser.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Model\MyGuider\ISynchronizedPHD2GuiderService.cs" />
+    <Compile Include="Model\MyGuider\SynchronizedPHD2Guider.cs" />
+    <Compile Include="Model\MyGuider\SynchronizedPHD2GuiderService.cs" />
+    <Compile Include="PlateSolving\PlateSolveResult.cs" />
+    <Compile Include="Utility\ProjectVersion.cs" />
+    <Compile Include="Utility\Behaviors\BrowserBehavior.cs" />
+    <Compile Include="Utility\Enum\AutoUpdateSourceEnum.cs" />
+    <Compile Include="ViewModel\GuiderChooserVM.cs" />
+    <Compile Include="Locale\ILoc.cs" />
     <Compile Include="Locale\Loc.cs" />
     <Compile Include="Model\ApplicationStatus.cs" />
+    <Compile Include="Model\ConstellationBoundary.cs" />
+    <Compile Include="Model\Constellation.cs" />
+    <Compile Include="Model\Star.cs" />
+    <Compile Include="Model\FocusTarget.cs" />
+    <Compile Include="Model\Sequence\CaptureSequence.cs" />
     <Compile Include="Model\DeepSkyObject.cs" />
     <Compile Include="Model\DeviceInfo.cs" />
     <Compile Include="Model\DummyDevice.cs" />
     <Compile Include="Model\GuideStepsHistory.cs" />
     <Compile Include="Model\IDevice.cs" />
     <Compile Include="Model\ImagePattern.cs" />
+    <Compile Include="Model\MyCamera\AltairCamera.cs" />
     <Compile Include="Model\MyCamera\AtikCamera.cs" />
+    <Compile Include="Model\MyCamera\CameraDataToManaged.cs" />
     <Compile Include="Model\MyCamera\CameraInfo.cs" />
     <Compile Include="Model\MyCamera\EDCamera.cs" />
+    <Compile Include="Model\MyCamera\IImageArray.cs" />
+    <Compile Include="Model\MyCamera\IImageStatistics.cs" />
     <Compile Include="Model\MyCamera\ImageArray.cs" />
     <Compile Include="Model\MyCamera\ImageStatistics.cs" />
     <Compile Include="Model\MyCamera\NikonCamera.cs" />
+    <Compile Include="Model\MyCamera\SimulatorCamera.cs" />
+    <Compile Include="Model\MyFilterWheel\FilterInfo.cs" />
+    <Compile Include="Model\MyCamera\QHYCamera.cs" />
+    <Compile Include="Model\MyCamera\SensorType.cs" />
+    <Compile Include="Model\MyCamera\ToupTekCamera.cs" />
     <Compile Include="Model\MyFilterWheel\FilterWheelInfo.cs" />
+    <Compile Include="Model\MyFilterWheel\FlatWizardFilterSettings.cs" />
+    <Compile Include="Utility\Astrometry\Angle.cs" />
+    <Compile Include="Utility\Behaviors\MouseWheelCommandBehavior.cs" />
+    <Compile Include="Model\MyGuider\DummyGuider.cs" />
+    <Compile Include="Utility\Converters\CollectionContainsMoreThanOneItemToVisibilityConverter.cs" />
+    <Compile Include="Utility\Converters\DoubleToHalfValueConverter.cs" />
+    <Compile Include="Utility\Converters\MultiToListConverter.cs" />
+    <Compile Include="Utility\Converters\OneValueGreaterThanAnotherToVisiblityConverter.cs" />
+    <Compile Include="Utility\Converters\SubtractHalfConverter.cs" />
+    <Compile Include="Utility\Converters\WidthAndValueToWidthConverter.cs" />
+    <Compile Include="Utility\DataPipes.cs" />
+    <Compile Include="Utility\Extensions\ProcessExtension.cs" />
+    <Compile Include="Utility\IApplicationResourceDictionary.cs" />
+    <Compile Include="Utility\ApplicationResourceDictionary.cs" />
+    <Compile Include="Utility\SkySurvey\SkyAtlasSkySurvey.cs" />
+    <Compile Include="Utility\ValidationRules\DoubleRangeRule.cs" />
+    <Compile Include="ViewModel\DeepSkyObjectSearchVM.cs" />
+    <Compile Include="ViewModel\FocusTargetsVM.cs" />
+    <Compile Include="ViewModel\FlatWizard\FlatWizardExposureTimeFinderService.cs" />
+    <Compile Include="ViewModel\FlatWizard\FlatWizardFilterSettingsWrapper.cs" />
     <Compile Include="Model\MyFilterWheel\ManualFilterWheel.cs" />
     <Compile Include="Model\MyFocuser\AscomFocuser.cs" />
     <Compile Include="Model\MyFocuser\FocuserInfo.cs" />
@@ -304,29 +368,47 @@
     <Compile Include="Model\MyRotator\IRotator.cs" />
     <Compile Include="Model\MyRotator\ManualRotator.cs" />
     <Compile Include="Model\MyRotator\RotatorInfo.cs" />
+    <Compile Include="Model\MyTelescope\TelescopeAxes.cs" />
     <Compile Include="Model\MyTelescope\TelescopeInfo.cs" />
     <Compile Include="Model\MyWeatherData\IWeatherData.cs" />
     <Compile Include="Model\MyCamera\AscomCamera.cs" />
     <Compile Include="Model\MyCamera\ASICamera.cs" />
     <Compile Include="Model\MyWeatherData\OpenWeatherMapData.cs" />
+    <Compile Include="Model\Sequence\CaptureSequenceList.cs" />
+    <Compile Include="Model\Sequence\SequenceMode.cs" />
     <Compile Include="MyMessageBox\MyMessageBox.cs" />
     <Compile Include="MyMessageBox\MyMessageBoxView.xaml.cs">
       <DependentUpon>MyMessageBoxView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PlateSolving\AllSkyPlateSolver.cs" />
     <Compile Include="PlateSolving\Platesolve2Solver.cs" />
     <Compile Include="PlateSolving\PlateSolverFactory.cs" />
-    <Compile Include="Utility\ASISDK\ASICameraDll.cs" />
+    <Compile Include="Utility\ASCOMInteraction.cs" />
+    <Compile Include="Utility\Astrometry\RiseAndSet\AstronomicalTwilightRiseAndSet.cs" />
+    <Compile Include="Utility\Astrometry\Body\Body.cs" />
+    <Compile Include="Utility\Astrometry\Coordinates.cs" />
+    <Compile Include="Utility\Astrometry\Body\Earth.cs" />
+    <Compile Include="Utility\Astrometry\Body\Moon.cs" />
+    <Compile Include="Utility\Astrometry\RiseAndSet\MoonRiseAndSet.cs" />
+    <Compile Include="Utility\Astrometry\RiseAndSet\RiseAndSetEvent.cs" />
+    <Compile Include="Utility\Astrometry\Body\Sun.cs" />
+    <Compile Include="Utility\Astrometry\RiseAndSet\SunRiseAndSet.cs" />
+    <Compile Include="Utility\CameraSDKs\AltairSDK\altaircam.cs" />
+    <Compile Include="Utility\CameraSDKs\ASISDK\ASICameraDll.cs" />
     <Compile Include="Model\MyFilterWheel\AscomFilterWheel.cs" />
     <Compile Include="Model\MyFilterWheel\IFilterWheel.cs" />
     <Compile Include="Model\MyTelescope\AscomTelescope.cs" />
     <Compile Include="Model\MyTelescope\ITelescope.cs" />
-    <Compile Include="Utility\ASISDK\ASICameras.cs" />
-    <Compile Include="Utility\AtikSDK\AtikCameraDll.cs" />
+    <Compile Include="Utility\CameraSDKs\ASISDK\ASICameras.cs" />
+    <Compile Include="Utility\CameraSDKs\AtikSDK\AtikCameraDll.cs" />
     <Compile Include="Utility\AvalonDock\PaneStyleSelector.cs" />
     <Compile Include="Utility\AvalonDock\PaneTemplateSelector.cs" />
     <Compile Include="Utility\Behaviors\DragCommandBehavior.cs" />
     <Compile Include="Utility\BindingProxy.cs" />
     <Compile Include="Utility\ButtonHelper.cs" />
+    <Compile Include="Utility\CameraSDKs\QHYSDK\QHYCameras.cs" />
+    <Compile Include="Utility\CameraSDKs\QHYSDK\QHYCameraSDK.cs" />
+    <Compile Include="Utility\CameraSDKs\ToupTekSDK\toupcam.cs" />
     <Compile Include="Utility\ColorSchema\ColorSchema.cs" />
     <Compile Include="Utility\Converters\ArcsecToLabelConverter.cs" />
     <Compile Include="Utility\Converters\BooleanAndConverter.cs" />
@@ -355,6 +437,12 @@
     <Compile Include="Utility\DatabaseInteraction.cs" />
     <Compile Include="Utility\DeviceUpdateTimer.cs" />
     <Compile Include="Utility\Enum\RawConverterEnum.cs" />
+    <Compile Include="Utility\Http\HttpDownloadFileRequest.cs" />
+    <Compile Include="Utility\Http\HttpDownloadImageRequest.cs" />
+    <Compile Include="Utility\Http\HttpGetRequest.cs" />
+    <Compile Include="Utility\Http\HttpPostRequest.cs" />
+    <Compile Include="Utility\Http\HttpRequest.cs" />
+    <Compile Include="Utility\Http\HttpUploadFile.cs" />
     <Compile Include="Utility\Mediator\ApplicationStatusMediator.cs" />
     <Compile Include="Utility\Mediator\CameraMediator.cs" />
     <Compile Include="Utility\Mediator\DeviceMediator.cs" />
@@ -381,11 +469,14 @@
     <Compile Include="Utility\Mediator\Interfaces\ITelescopeMediator.cs" />
     <Compile Include="Utility\Mediator\RotatorMediator.cs" />
     <Compile Include="Utility\Mediator\TelescopeMediator.cs" />
+    <Compile Include="Utility\Profile\FlatWizardSettings.cs" />
+    <Compile Include="Utility\NOVAS.cs" />
     <Compile Include="Utility\Profile\IApplicationSettings.cs" />
     <Compile Include="Utility\Profile\IAstrometrySettings.cs" />
     <Compile Include="Utility\Profile\ICameraSettings.cs" />
     <Compile Include="Utility\Profile\IColorSchemaSettings.cs" />
     <Compile Include="Utility\Profile\IFilterWheelSettings.cs" />
+    <Compile Include="Utility\Profile\IFlatWizardSettings.cs" />
     <Compile Include="Utility\Profile\IFocuserSettings.cs" />
     <Compile Include="Utility\Profile\IFramingAssistantSettings.cs" />
     <Compile Include="Utility\Profile\IGuiderSettings.cs" />
@@ -408,7 +499,7 @@
     <Compile Include="EquipmentChooser\EquipmentChooserVM.cs" />
     <Compile Include="Utility\AvalonDock\LayoutInitializer.cs" />
     <Compile Include="Utility\DllLoader.cs" />
-    <Compile Include="Utility\EDSDK\EDSDK.cs" />
+    <Compile Include="Utility\CameraSDKs\EDSDK\EDSDK.cs" />
     <Compile Include="Utility\Enum\BlindSolverEnum.cs" />
     <Compile Include="Utility\Enum\CameraBulbModeEnum.cs" />
     <Compile Include="Utility\Enum\FileTypeEnum.cs" />
@@ -457,6 +548,7 @@
     <Compile Include="Utility\SkySurvey\SkyServerSkySurvey.cs" />
     <Compile Include="Utility\SkySurvey\SkySurveyFactory.cs" />
     <Compile Include="Utility\SkySurvey\StsciSkySurvey.cs" />
+    <Compile Include="Utility\SOFA.cs" />
     <Compile Include="Utility\Ticker.cs" />
     <Compile Include="Utility\ValidationRules\DegreesRule.cs" />
     <Compile Include="Utility\ValidationRules\DirectoryExistsRule.cs" />
@@ -466,6 +558,7 @@
     <Compile Include="Utility\ValidationRules\MinutesRule.cs" />
     <Compile Include="Utility\ValidationRules\SecondsRule.cs" />
     <Compile Include="Utility\ValidationRules\ShortRangeRule.cs" />
+    <Compile Include="Utility\WindowService\CustomWindow.cs" />
     <Compile Include="Utility\WindowService\WindowService.cs" />
     <Compile Include="Utility\WindowService\WindowServiceFactory.cs" />
     <Compile Include="Utility\XISF.cs" />
@@ -475,8 +568,19 @@
     <Compile Include="ViewModel\DockableVM.cs" />
     <Compile Include="ViewModel\DockManagerVM.cs" />
     <Compile Include="ViewModel\EquipmentChooserVM.cs" />
+    <Compile Include="ViewModel\FlatWizard\FlatWizardUserPromptVM.cs" />
+    <Compile Include="ViewModel\FlatWizard\FlatWizardVM.cs" />
+    <Compile Include="ViewModel\FlatWizard\IFlatWizardExposureTimeFinderService.cs" />
+    <Compile Include="ViewModel\FlatWizard\IFlatWizardVM.cs" />
     <Compile Include="ViewModel\FocuserVM.cs" />
-    <Compile Include="ViewModel\FramingAssistantVM.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FrameLineMatrix2.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FramingConstellationBoundary.cs" />
+    <Compile Include="ViewModel\FramingAssistant\SkyMapAnnotator.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FrameLineMatrix.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FramingAssistantVM.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FramingConstellation.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FramingDSO.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FramingRectangle.cs" />
     <Compile Include="ViewModel\Interfaces\IApplicationStatusVM.cs" />
     <Compile Include="ViewModel\Interfaces\ICameraVM.cs" />
     <Compile Include="ViewModel\Interfaces\IDeviceVM.cs" />
@@ -488,13 +592,12 @@
     <Compile Include="PlateSolving\LocalPlateSolver.cs" />
     <Compile Include="PlateSolving\AstrometryPlateSolver.cs" />
     <Compile Include="PlateSolving\IPlateSolver.cs" />
-    <Compile Include="Model\CaptureSequence.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Utility\Astrometry.cs" />
+    <Compile Include="Utility\Astrometry\Astrometry.cs" />
     <Compile Include="Utility\AsyncCommand.cs" />
     <Compile Include="Utility\AsyncObservableCollection.cs" />
     <Compile Include="Utility\BaseINPC.cs" />
@@ -515,6 +618,7 @@
     <Compile Include="ViewModel\ImageHistoryVM.cs" />
     <Compile Include="ViewModel\ImageStatisticsVM.cs" />
     <Compile Include="ViewModel\ImagingVM.cs" />
+    <Compile Include="ViewModel\Interfaces\IGuiderChooserVM.cs" />
     <Compile Include="ViewModel\Interfaces\IGuiderVM.cs" />
     <Compile Include="ViewModel\Interfaces\IImagingVM.cs" />
     <Compile Include="ViewModel\Interfaces\IRotatorVM.cs" />
@@ -523,6 +627,7 @@
     <Compile Include="ViewModel\OptionsVM.cs" />
     <Compile Include="ViewModel\GuiderVM.cs" />
     <Compile Include="ViewModel\PlatesolveVM.cs" />
+    <Compile Include="ViewModel\FramingAssistant\FrameLine.cs" />
     <Compile Include="ViewModel\PolarAlignmentVM.cs" />
     <Compile Include="ViewModel\ProfileSelectVM.cs" />
     <Compile Include="Model\RMS.cs" />
@@ -533,6 +638,7 @@
     <Compile Include="ViewModel\TelescopeVM.cs" />
     <Compile Include="ViewModel\ThumbnailVM.cs" />
     <Compile Include="ViewModel\VersionCheckVM.cs" />
+    <Compile Include="ViewModel\FramingAssistant\ViewportFoV.cs" />
     <Compile Include="ViewModel\WeatherDataVM.cs" />
     <Compile Include="View\AberrationInspectorView.xaml.cs">
       <DependentUpon>AberrationInspectorView.xaml</DependentUpon>
@@ -542,6 +648,9 @@
     </Compile>
     <Compile Include="View\AnchorableAutoFocusView.xaml.cs">
       <DependentUpon>AnchorableAutoFocusView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\AnchorableFocusTargetsView.xaml.cs">
+      <DependentUpon>AnchorableFocusTargetsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\AnchorableCameraControlView.xaml.cs">
       <DependentUpon>AnchorableCameraControlView.xaml</DependentUpon>
@@ -600,6 +709,15 @@
     <Compile Include="View\FilterWheelView.xaml.cs">
       <DependentUpon>FilterWheelView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\FlatWizardFilterSettingsWrapperView.xaml.cs">
+      <DependentUpon>FlatWizardFilterSettingsWrapperView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\FlatWizardUserPrompt.xaml.cs">
+      <DependentUpon>FlatWizardUserPrompt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\FlatWizardView.xaml.cs">
+      <DependentUpon>FlatWizardView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\FocuserView.xaml.cs">
       <DependentUpon>FocuserView.xaml</DependentUpon>
     </Compile>
@@ -633,16 +751,16 @@
     <Compile Include="View\MeridianFlipView.xaml.cs">
       <DependentUpon>MeridianFlipView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\MinimalisticGuiderGraph.xaml.cs">
-      <DependentUpon>MinimalisticGuiderGraph.xaml</DependentUpon>
+    <Compile Include="View\Options\EquipmentView.xaml.cs">
+      <DependentUpon>EquipmentView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\OptionsImagingView.xaml.cs">
+    <Compile Include="View\Options\OptionsImagingView.xaml.cs">
       <DependentUpon>OptionsImagingView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\OptionsPlateSolverView.xaml.cs">
+    <Compile Include="View\Options\OptionsPlateSolverView.xaml.cs">
       <DependentUpon>OptionsPlateSolverView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\OptionsView.xaml.cs">
+    <Compile Include="View\Options\OptionsView.xaml.cs">
       <DependentUpon>OptionsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\OverView.xaml.cs">
@@ -669,8 +787,14 @@
     <Compile Include="View\SequenceView.xaml.cs">
       <DependentUpon>SequenceView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\SimulatorCameraSetupView.xaml.cs">
+      <DependentUpon>SimulatorCameraSetupView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\SkyAtlasView.xaml.cs">
       <DependentUpon>SkyAtlasView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SkyMapOverlayView.xaml.cs">
+      <DependentUpon>SkyMapOverlayView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\TelescopeLatLongSyncView.xaml.cs">
       <DependentUpon>TelescopeLatLongSyncView.xaml</DependentUpon>
@@ -729,7 +853,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\DataTemplates.xaml">
+    <Page Include="Resources\StaticResources\DataTemplates.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -757,7 +881,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\SVGDictionary.xaml">
+    <Page Include="Resources\StaticResources\SVGDictionary.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Resources\StaticResources\ViewModels.xaml">
@@ -864,6 +988,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\AnchorableFocusTargetsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\AnchorableCameraControlView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -940,6 +1068,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\FlatWizardFilterSettingsWrapperView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\FlatWizardUserPrompt.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\FlatWizardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\FocuserView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -984,19 +1124,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\MinimalisticGuiderGraph.xaml">
+    <Page Include="View\Options\EquipmentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\OptionsImagingView.xaml">
+    <Page Include="View\Options\OptionsImagingView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\OptionsPlateSolverView.xaml">
+    <Page Include="View\Options\OptionsPlateSolverView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\OptionsView.xaml">
+    <Page Include="View\Options\OptionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1032,7 +1172,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\SimulatorCameraSetupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\SkyAtlasView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\SkyMapOverlayView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1066,514 +1214,120 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Content Include="Documentation\images\nina-logo.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\panel-autofocus.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\panel-camera.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\panel-customization_1.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\panel-customization_2.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\panel-customization_3.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\panel-customization_4.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\panel-filterwheel.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\panel-focuser.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\panel-guiding.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\panel-hfrhistory.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\panel-image.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\panel-imagehistory.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\panel-imaging.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\panel-platesolving.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\panel-polaralignment.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\panel-sequence-running.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\panel-sequence.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\panel-statistics.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\panel-telescope.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\panel-weather.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\quickstart-camera.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\quickstart-defocusedstarfield.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\quickstart-disablepanels.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\quickstart-focusedstarfield.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\quickstart-focusing.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\quickstart-imaging.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\quickstart-running-sequence.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\quickstart-sequence.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\quickstart-settings-equipment.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\quickstart-settings-imaging.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\quickstart-telescope.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\quickstart-ui-overview.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\tab-camera.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\tab-filterwheelfocuser.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\tab-framingassistant.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\tab-imaging.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\tab-objectbrowser.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\tab-phd2.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\tab-sequencing.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\tab-settings-equipment.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\tab-settings-general.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\tab-settings-imaging.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\tab-settings-platesolving-astrometry.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\tab-settings-platesolving-localplatesolver-indexfiles.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\tab-settings-platesolving-localplatesolver.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\tab-settings-platesolving-platesolve2.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\tab-telescope.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\panel-image-bahtinov.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\panel-image-subsampling.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\usage-autoflip-settings.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\usage-bulbshutter-mountsnapport.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\usage-bulbshutter-serial.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\usage-bulbshutter-settings.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\usage-bulbshutter-snapport.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\usage-dithering-sequence.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\usage-dithering-settings-phd2.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\images\usage-objectbrowser-object.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\md-template.html" />
-    <Content Include="Documentation\modest.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\NINA.html">
+    <None Include="Documentation\images\nina-logo.png" />
+    <None Include="Documentation\images\panel-autofocus.png" />
+    <None Include="Documentation\images\panel-camera.png" />
+    <None Include="Documentation\images\panel-customization_1.png" />
+    <None Include="Documentation\images\panel-customization_2.png" />
+    <None Include="Documentation\images\panel-customization_3.png" />
+    <None Include="Documentation\images\panel-customization_4.png" />
+    <None Include="Documentation\images\panel-filterwheel.png" />
+    <None Include="Documentation\images\panel-focuser.png" />
+    <None Include="Documentation\images\panel-guiding.png" />
+    <None Include="Documentation\images\panel-hfrhistory.png" />
+    <None Include="Documentation\images\panel-image.png" />
+    <None Include="Documentation\images\panel-imagehistory.png" />
+    <None Include="Documentation\images\panel-imaging.png" />
+    <None Include="Documentation\images\panel-platesolving.png" />
+    <None Include="Documentation\images\panel-polaralignment.png" />
+    <None Include="Documentation\images\panel-sequence-running.png" />
+    <None Include="Documentation\images\panel-sequence.png" />
+    <None Include="Documentation\images\panel-statistics.png" />
+    <None Include="Documentation\images\panel-telescope.png" />
+    <None Include="Documentation\images\panel-weather.png" />
+    <None Include="Documentation\images\quickstart-camera.png" />
+    <None Include="Documentation\images\quickstart-defocusedstarfield.png" />
+    <None Include="Documentation\images\quickstart-disablepanels.png" />
+    <None Include="Documentation\images\quickstart-focusedstarfield.png" />
+    <None Include="Documentation\images\quickstart-focusing.png" />
+    <None Include="Documentation\images\quickstart-imaging.png" />
+    <None Include="Documentation\images\quickstart-running-sequence.png" />
+    <None Include="Documentation\images\quickstart-sequence.png" />
+    <None Include="Documentation\images\quickstart-settings-equipment.png" />
+    <None Include="Documentation\images\quickstart-settings-imaging.png" />
+    <None Include="Documentation\images\quickstart-telescope.png" />
+    <None Include="Documentation\images\quickstart-ui-overview.png" />
+    <None Include="Documentation\images\tab-camera.png" />
+    <None Include="Documentation\images\tab-filterwheelfocuser.png" />
+    <None Include="Documentation\images\tab-framingassistant.png" />
+    <None Include="Documentation\images\tab-imaging.png" />
+    <None Include="Documentation\images\tab-objectbrowser.png" />
+    <None Include="Documentation\images\tab-phd2.png" />
+    <None Include="Documentation\images\tab-sequencing.png" />
+    <None Include="Documentation\images\tab-settings-equipment.png" />
+    <None Include="Documentation\images\tab-settings-general.png" />
+    <None Include="Documentation\images\tab-settings-imaging.png" />
+    <None Include="Documentation\images\tab-settings-platesolving-astrometry.png" />
+    <None Include="Documentation\images\tab-settings-platesolving-localplatesolver-indexfiles.png" />
+    <None Include="Documentation\images\tab-settings-platesolving-localplatesolver.png" />
+    <None Include="Documentation\images\tab-settings-platesolving-platesolve2.png" />
+    <None Include="Documentation\images\tab-telescope.png" />
+    <None Include="Documentation\images\panel-image-bahtinov.png" />
+    <None Include="Documentation\images\panel-image-subsampling.png" />
+    <None Include="Documentation\images\usage-autoflip-settings.png" />
+    <None Include="Documentation\images\usage-bulbshutter-mountsnapport.png" />
+    <None Include="Documentation\images\usage-bulbshutter-serial.png" />
+    <None Include="Documentation\images\usage-bulbshutter-settings.png" />
+    <None Include="Documentation\images\usage-bulbshutter-snapport.png" />
+    <None Include="Documentation\images\usage-dithering-sequence.png" />
+    <None Include="Documentation\images\usage-dithering-settings-phd2.png" />
+    <None Include="Documentation\images\usage-objectbrowser-object.png" />
+    <None Include="Documentation\md-template.html" />
+    <None Include="Documentation\modest.css" />
+    <None Include="Documentation\NINA.html">
       <DependentUpon>NINA.md</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Documentation\table-of-contents.html">
+    </None>
+    <None Include="Documentation\table-of-contents.html">
       <DependentUpon>table-of-contents.md</DependentUpon>
-    </Content>
-    <Content Include="External\x64\ASI\ASICamera2.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </None>
     <Resource Include="Resources\astrometry.net.png" />
-    <Content Include="External\x64\Atik\ArtemisHSC.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Atik\ArtemisHscDefn.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Atik\Atik.Core.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="External\x64\FreeImage\FreeImage.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0001\NkdPTP.dll">
+    <Content Include="External\x64\NOVAS\NOVAS31lib.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Nikon\Type0002\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0003\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0004\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0005\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0006\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0007\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0008\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0009\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0010\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0011\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0012\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0013\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0014\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0015\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0016\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0017\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0018\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0019\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0020\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0021\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0022\NkdPTP.dll">
+    <Content Include="External\x64\SOFA\SOFAlib.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x64\SQLite\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x86\ASI\ASICamera2.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Atik\ArtemisHSC.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Atik\ArtemisHscDefn.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Atik\Atik.Core.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Canon\EDSDK.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="External\x86\FreeImage\FreeImage.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x86\Nikon\Type0001\NkdPTP.dll">
+    <Content Include="External\x86\NOVAS\NOVAS31lib.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x86\Nikon\Type0002\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0003\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0004\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0005\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0006\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0007\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0008\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0009\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0010\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0011\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0012\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0013\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0014\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0015\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0016\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0017\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0018\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0019\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0020\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0021\NkdPTP.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0022\NkdPTP.dll">
+    <Content Include="External\x86\SOFA\SOFAlib.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\SQLite\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Logo_Nina.ico" />
+    <Resource Include="Resources\Logo_Nina.png" />
+    <Resource Include="Resources\Logo_Nina.ico" />
     <Content Include="Utility\ColorSchema\ColorSchemas.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Utility\DCRaw\dcraw.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\Canon\EDSDK.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="Database\NINA.sqlite" />
-    <Content Include="External\x64\ASI\ASICamera2.lib">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0001\Type0001.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0002\Type0002.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0003\Type0003.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0004\Type0004.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0005\Type0005.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0006\Type0006.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0007\Type0007.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0008\Type0008.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0009\Type0009.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0010\Type0010.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0011\Type0011.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0012\Type0012.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0013\Type0013.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0014\Type0014.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0015\Type0015.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0016\Type0016.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0017\Type0017.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0018\Type0018.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0019\Type0019.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0020\Type0020.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0021\Type0021.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\Nikon\Type0022\Type0022.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="Documentation\NINA.md" />
     <None Include="Documentation\table-of-contents.md" />
-    <None Include="External\x86\ASI\ASICamera2.lib">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <Content Include="External\x86\Nikon\Type0001\Type0001.md3">
+    <Content Include="External\x64\NOVAS\cio_ra.bin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x86\Nikon\Type0002\Type0002.md3">
+    <Content Include="External\JPLEPH">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x86\Nikon\Type0003\Type0003.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0004\Type0004.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0005\Type0005.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0006\Type0006.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0007\Type0007.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0008\Type0008.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0009\Type0009.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0010\Type0010.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0011\Type0011.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0012\Type0012.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0013\Type0013.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0014\Type0014.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0015\Type0015.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0016\Type0016.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0017\Type0017.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0018\Type0018.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0019\Type0019.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0020\Type0020.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0021\Type0021.md3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x86\Nikon\Type0022\Type0022.md3">
+    <Content Include="External\x86\NOVAS\cio_ra.bin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config" />
+    <None Include="ReadMe.md" />
     <None Include="Resources\avalondock.config" />
     <SplashScreen Include="Resources\ninasplash.png" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -1581,7 +1335,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="AstrophotographyBuddy_TemporaryKey.pfx" />
-    <Content Include="LICENCE.txt">
+    <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Properties\app.manifest" />
@@ -1630,22 +1384,104 @@
       <Name>NINACustomControlLibrary</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="External\x64\Altair\" />
+    <Folder Include="External\x64\ASI\" />
+    <Folder Include="External\x64\Atik\" />
+    <Folder Include="External\x64\Canon\" />
+    <Folder Include="External\x64\Nikon\Type0001\" />
+    <Folder Include="External\x64\Nikon\Type0002\" />
+    <Folder Include="External\x64\Nikon\Type0003\" />
+    <Folder Include="External\x64\Nikon\Type0004\" />
+    <Folder Include="External\x64\Nikon\Type0005\" />
+    <Folder Include="External\x64\Nikon\Type0006\" />
+    <Folder Include="External\x64\Nikon\Type0007\" />
+    <Folder Include="External\x64\Nikon\Type0008\" />
+    <Folder Include="External\x64\Nikon\Type0009\" />
+    <Folder Include="External\x64\Nikon\Type0010\" />
+    <Folder Include="External\x64\Nikon\Type0011\" />
+    <Folder Include="External\x64\Nikon\Type0012\" />
+    <Folder Include="External\x64\Nikon\Type0013\" />
+    <Folder Include="External\x64\Nikon\Type0014\" />
+    <Folder Include="External\x64\Nikon\Type0015\" />
+    <Folder Include="External\x64\Nikon\Type0016\" />
+    <Folder Include="External\x64\Nikon\Type0017\" />
+    <Folder Include="External\x64\Nikon\Type0018\" />
+    <Folder Include="External\x64\Nikon\Type0019\" />
+    <Folder Include="External\x64\Nikon\Type0020\" />
+    <Folder Include="External\x64\Nikon\Type0021\" />
+    <Folder Include="External\x64\Nikon\Type0022\" />
+    <Folder Include="External\x64\QHYCCD\" />
+    <Folder Include="External\x64\ToupTek\" />
+    <Folder Include="External\x86\Altair\" />
+    <Folder Include="External\x86\ASI\" />
+    <Folder Include="External\x86\Atik\" />
+    <Folder Include="External\x86\Canon\" />
+    <Folder Include="External\x86\Nikon\Type0001\" />
+    <Folder Include="External\x86\Nikon\Type0002\" />
+    <Folder Include="External\x86\Nikon\Type0003\" />
+    <Folder Include="External\x86\Nikon\Type0004\" />
+    <Folder Include="External\x86\Nikon\Type0005\" />
+    <Folder Include="External\x86\Nikon\Type0006\" />
+    <Folder Include="External\x86\Nikon\Type0007\" />
+    <Folder Include="External\x86\Nikon\Type0008\" />
+    <Folder Include="External\x86\Nikon\Type0009\" />
+    <Folder Include="External\x86\Nikon\Type0010\" />
+    <Folder Include="External\x86\Nikon\Type0011\" />
+    <Folder Include="External\x86\Nikon\Type0012\" />
+    <Folder Include="External\x86\Nikon\Type0013\" />
+    <Folder Include="External\x86\Nikon\Type0014\" />
+    <Folder Include="External\x86\Nikon\Type0015\" />
+    <Folder Include="External\x86\Nikon\Type0016\" />
+    <Folder Include="External\x86\Nikon\Type0017\" />
+    <Folder Include="External\x86\Nikon\Type0018\" />
+    <Folder Include="External\x86\Nikon\Type0019\" />
+    <Folder Include="External\x86\Nikon\Type0020\" />
+    <Folder Include="External\x86\Nikon\Type0021\" />
+    <Folder Include="External\x86\Nikon\Type0022\" />
+    <Folder Include="External\x86\QHYCCD\" />
+    <Folder Include="External\x86\ToupTek\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>echo "Copy Altair DLLs"
+xcopy "$(ProjectDir)External\x64\Altair" "$(TargetDir)\External\x64\Altair" /h/i/c/k/e/r/y
+xcopy "$(ProjectDir)External\x86\Altair" "$(TargetDir)\External\x86\Altair" /h/i/c/k/e/r/y
+
+echo "Copy ASI DLLs"
+xcopy "$(ProjectDir)External\x64\ASI" "$(TargetDir)\External\x64\ASI" /h/i/c/k/e/r/y
+xcopy "$(ProjectDir)External\x86\ASI" "$(TargetDir)\External\x86\ASI" /h/i/c/k/e/r/y
+
+echo "Copy Atik DLLs"
+xcopy "$(ProjectDir)External\x64\Atik" "$(TargetDir)\External\x64\Atik" /h/i/c/k/e/r/y
+xcopy "$(ProjectDir)External\x86\Atik" "$(TargetDir)\External\x86\Atik" /h/i/c/k/e/r/y
+
+echo "Copy Canon DLLs"
+xcopy "$(ProjectDir)External\x64\Canon" "$(TargetDir)\External\x64\Canon" /h/i/c/k/e/r/y
+xcopy "$(ProjectDir)External\x86\Canon" "$(TargetDir)\External\x86\Canon" /h/i/c/k/e/r/y
+
+echo "Copy Nikon DLLs"
+xcopy "$(ProjectDir)External\x64\Nikon" "$(TargetDir)\External\x64\Nikon" /h/i/c/k/e/r/y
+xcopy "$(ProjectDir)External\x86\Nikon" "$(TargetDir)\External\x86\Nikon" /h/i/c/k/e/r/y
+
+echo "Copy ToupTek DLLs"
+xcopy "$(ProjectDir)External\x64\ToupTek" "$(TargetDir)\External\x64\ToupTek" /h/i/c/k/e/r/y
+xcopy "$(ProjectDir)External\x86\ToupTek" "$(TargetDir)\External\x86\ToupTek" /h/i/c/k/e/r/y
+
+echo "Copy QHYCCD DLLs"
+xcopy "$(ProjectDir)External\x64\QHYCCD" "$(TargetDir)\External\x64\QHYCCD" /h/i/c/k/e/r/y
+xcopy "$(ProjectDir)External\x86\QHYCCD" "$(TargetDir)\External\x86\QHYCCD" /h/i/c/k/e/r/y</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
-    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.108.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.108.0\build\net46\System.Data.SQLite.Core.targets'))" />
+    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets'))" />
     <Error Condition="!Exists('..\packages\VVVV.FreeImage.3.15.1.1\build\net40\VVVV.FreeImage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\VVVV.FreeImage.3.15.1.1\build\net40\VVVV.FreeImage.targets'))" />
   </Target>
-  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
-  <Import Project="..\packages\System.Data.SQLite.Core.1.0.108.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.108.0\build\net46\System.Data.SQLite.Core.targets')" />
+  <Import Project="..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets')" />
   <Import Project="..\packages\VVVV.FreeImage.3.15.1.1\build\net40\VVVV.FreeImage.targets" Condition="Exists('..\packages\VVVV.FreeImage.3.15.1.1\build\net40\VVVV.FreeImage.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

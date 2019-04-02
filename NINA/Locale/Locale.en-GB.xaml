@@ -1,7 +1,23 @@
-﻿<ResourceDictionary
+﻿<!--
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
+<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:NINA.Locale"
     xmlns:s="clr-namespace:System;assembly=mscorlib">
     <s:String x:Key="LblName">Name</s:String>
     <s:String x:Key="LblCameraState">Camera State</s:String>
@@ -26,10 +42,12 @@
     <s:String x:Key="LblOffset">Offset</s:String>
     <s:String x:Key="LblUSBLimit">USB Limit</s:String>
     <s:String x:Key="LblTempControl">Temperature Control</s:String>
-    <s:String x:Key="LblCoolerOn">Cooler On</s:String>
+    <s:String x:Key="LblCoolerOn">Cooler</s:String>
     <s:String x:Key="LblCoolerPower">Cooler Power</s:String>
     <s:String x:Key="LblChipTemp">Chip Temperature</s:String>
     <s:String x:Key="LblTargetTemp">Target Temperature</s:String>
+    <s:String x:Key="LblDewHeater">Dew Heater</s:String>
+    <s:String x:Key="LblDewHeaterShort">Dew Heater</s:String>
     <s:String x:Key="LblDuration">Duration</s:String>
     <s:String x:Key="LblExposureTime">Exposure Time</s:String>
     <s:String x:Key="LblFilter">Filter</s:String>
@@ -218,13 +236,20 @@
     <s:String x:Key="LblMeridianOffset">Meridian Offset</s:String>
     <s:String x:Key="LblPlateSolvedPolarAlignment">Plate Solved Polar Alignment</s:String>
     <s:String x:Key="LblAltitudeMeasurement">Altitude Measurement</s:String>
-    <s:String x:Key="LblAltitudeMeasurementDescription" xml:space="preserve">Point telescope east or west.
-Adjust combobox value accordingly</s:String>
+    <s:String x:Key="LblAltitudeMeasurementDescription">Point telescope east or west near declination 0 and near horizon.</s:String>
     <s:String x:Key="LblAltitudeMeasurementSide">Altitude Measurement side</s:String>
-    <s:String x:Key="LblAltitudeMeasurementButtonTooltip">Measure Altitude Error. Point Scope East or West and adjust Side of Pier combobox accordingly</s:String>
+    <s:String x:Key="LblAltitudeMeasurementButtonTooltip" xml:space="preserve">Measures Altitude Error by three steps.
+1. Takes image and platesolves for actual coordinates at current position
+2. Slew telescope using Right Ascension axis by 0.5 degrees
+3. Take another image at the new position, plate solves it for the actual position
+Using those two points the actual altitude error will be calculated and displayed</s:String>
     <s:String x:Key="LblAzimuthMeasurement">Azimuth Measurement</s:String>
-    <s:String x:Key="LblAzimuthMeasurementDescription">Point Telescope South near meridian</s:String>
-    <s:String x:Key="LblAzimuthMeasurementButtonTooltip">Measure Azimuth Error. Point Scope South near Meridian</s:String>
+    <s:String x:Key="LblAzimuthMeasurementDescription">Point Telescope South near declination 0 and near meridian</s:String>
+    <s:String x:Key="LblAzimuthMeasurementButtonTooltip" xml:space="preserve">Measures Azimuth Error by three steps.
+1. Takes image and platesolves for actual coordinates at current position
+2. Slew telescope using Right Ascension axis by 0.5 degrees
+3. Take another image at the new position, plate solves it for the actual position
+Using those two points the actual azimuth error will be calculated and displayed</s:String>
     <s:String x:Key="LblDARVSlew">D.A.R.V. Slew</s:String>
     <s:String x:Key="LblDARVSlewDescription">Specify the duration for the D.A.R.V. procedure. The telescope will slew half the time in one direction on RA axis and then slew back. In case of no Polar Alignment error it will display as a straight line. Otherwise a V shaped line. For Azimuth Error Measurement slew the scope near meridian, otherwise east or west.</s:String>
     <s:String x:Key="LblSlewRateDegSec">Slew Rate (deg/sec)</s:String>
@@ -388,6 +413,7 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblExposureTimeDescription">Exposure Time in seconds</s:String>
     <s:String x:Key="LblTargetNameDescription">Target Name if available</s:String>
     <s:String x:Key="LblGainDescription">Camera Gain</s:String>
+    <s:String x:Key="LblOffsetDescription">Camera Offset</s:String>
     <s:String x:Key="LblLoadSequence">Load Sequence</s:String>
     <s:String x:Key="LblLoadSequenceToolTip">Load Sequence from xml file</s:String>
     <s:String x:Key="LblSaveSequence">Save Sequence</s:String>
@@ -519,6 +545,8 @@ Should the Application try to recover from the error? (Can lead to unexpected be
     <s:String x:Key="LblConstellation_SCL">Sculptor</s:String>
     <s:String x:Key="LblConstellation_SCT">Scutum</s:String>
     <s:String x:Key="LblConstellation_SER">Serpens</s:String>
+    <s:String x:Key="LblConstellation_SER2">Serpens cauda</s:String>
+    <s:String x:Key="LblConstellation_SER1">Serpens caput</s:String>
     <s:String x:Key="LblConstellation_SEX">Sextans</s:String>
     <s:String x:Key="LblConstellation_TAU">Taurus</s:String>
     <s:String x:Key="LblConstellation_TEL">Telescopium</s:String>
@@ -712,4 +740,88 @@ Calculated HFR: {2}
     <s:String x:Key="LblNINA">NINA</s:String>
     <s:String x:Key="LblFocuserPositionDescription">Current focuser position</s:String>
     <s:String x:Key="LblSaveImageAsDSLRNote">For DSLRs the image file format setting is ignored. RAW format will be saved instead!</s:String>
+    <s:String x:Key="LblClear">Clear</s:String>
+    <s:String x:Key="LblASPS">All Sky Plate Solver</s:String>
+    <s:String x:Key="LblASPSDirectory">ASPS Location</s:String>
+    <s:String x:Key="LblAscomInterOpDriverException">An ASCOM driver interop exception occurred. This is most likely caused by a mismatch between the driver being installed as {0} and N.I.N.A. being {1}. Please install the driver as {1}</s:String>
+    <s:String x:Key="LblCanonErrorOccurred">A Canon error occored: {0}</s:String>
+    <s:String x:Key="LblSkyAtlas">Sky Atlas</s:String>
+    <s:String x:Key="LblFraming">Framing</s:String>
+    <s:String x:Key="LblTools">Tools</s:String>
+    <s:String x:Key="LblSecondaryBackground">Secondary Background</s:String>
+    <s:String x:Key="LblTertiaryBackground">Tertiary Background</s:String>
+    <s:String x:Key="LblFlatWizard">Flat Wizard</s:String>
+    <s:String x:Key="LblFlatWizardCapture">Flat Wizard Capture</s:String>
+    <s:String x:Key="LblFlatCount">Flats to take</s:String>
+    <s:String x:Key="LblDarkFlatCount">Dark Flats to take</s:String>
+    <s:String x:Key="LblPreparingDarkFlatSequence">Preparing Dark Flat Sequence</s:String>
+    <s:String x:Key="LblCoverScopeMsgBox">Cover your scope now and press OK to start taking the dark flats.</s:String>
+    <s:String x:Key="LblCoverScopeMsgBoxTitle">Cover your scope now</s:String>
+    <s:String x:Key="LblFlatMinExposureTime">Flat Min Exposure</s:String>
+    <s:String x:Key="LblFlatMaxExposureTime">Flat Max Exposure</s:String>
+    <s:String x:Key="LblFlatStepSize">Flat Step Size</s:String>
+    <s:String x:Key="LblFlatExposureCalcStart">Starting Exposure Time calculation at {0}</s:String>
+    <s:String x:Key="LblFlatExposureCalcContinue">Mean ADU was {0}, starting Exposure Time calculation at {1}</s:String>
+    <s:String x:Key="LblFlatExposureCalcFinished">Mean ADU is {0} target Exposure Time is {1}</s:String>
+    <s:String x:Key="LblCurrentMean">Current Mean</s:String>
+    <s:String x:Key="LblBitDepthADU">Bit Depth in ADU</s:String>
+    <s:String x:Key="LblEstimatedExposureTime">Estimated Exposure Time</s:String>
+    <s:String x:Key="LblFlatHistogramMeanTarget">Histogram Mean Target</s:String>
+    <s:String x:Key="LblFlatHistogramTolerance">Mean Tolerance</s:String>
+    <s:String x:Key="LblFlatCalculatedExposureTime">Calculated Target Exposure Time</s:String>
+    <s:String x:Key="LblFlatCalculatedHistogramMean">Calculated Target Histogram Mean</s:String>
+    <s:String x:Key="LblFlatUserPromptFailure">Failed to get proper Flat Exposure</s:String>
+    <s:String x:Key="LblFlatUserPromptFlatTooDim">Your flats are too dim, brighten the light, adjust the tolerance, target mean or the maximum exposure time</s:String>
+    <s:String x:Key="LblFlatUserPromptFlatTooBright">Your flats are too bright, dim the light, adjust the tolerance, target mean or the minimum exposure time</s:String>
+    <s:String x:Key="LblFlatSequenceCancelled">Flat Sequence Cancelled, could not determine a flat exposure time</s:String>
+    <s:String x:Key="LblContinue">Continue</s:String>
+    <s:String x:Key="LblResetAndContinue">Reset and Continue</s:String>
+    <s:String x:Key="LblFlatUserPromptCancel">Cancel Flat Wizard</s:String>
+    <s:String x:Key="LblFlatUserCurrentExposureCalculation">Current Exposure Calculations</s:String>
+    <s:String x:Key="LblFlatUserFlatSettings">Flat Wizard Settings</s:String>
+    <s:String x:Key="LblMedian">Median</s:String>
+    <s:String x:Key="LblMAD">MAD</s:String>
+    <s:String x:Key="LblReadoutForSnapImages">Readout mode for SNAP</s:String>
+    <s:String x:Key="LblReadoutForSnapImagesToolTip">This readout mode of your camera will be used for plate solving, framing and autofocus</s:String>
+    <s:String x:Key="LblReadoutForNormalImages">Readout mode for Sequence</s:String>
+    <s:String x:Key="LblReadoutForNormalImagesToolTip">This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT and DARKFLAT frames in sequences.</s:String>
+    <s:String x:Key="LblBlackClipping">Black clipping</s:String>
+    <s:String x:Key="LblLblBlackClippingTooltip">Black clipping factor in sigma units from the median</s:String>
+    <s:String x:Key="LblReplaceSequenceTarget">Replace as Sequence Target</s:String>
+    <s:String x:Key="LblAddSequenceTarget">Add as Sequence Target</s:String>
+    <s:String x:Key="LblOpacity">Opacity</s:String>
+    <s:String x:Key="LblManualFocusTargets">Manual Focus Targets</s:String>
+    <s:String x:Key="LblAnnotateDSO">Annotate Deep Sky Objects</s:String>
+    <s:String x:Key="LblAnnotateGrid">Display Grid</s:String>
+    <s:String x:Key="LblAnnotateConstellations">Display and annotate Constellations</s:String>
+    <s:String x:Key="LblAnnotateConstellationBoundaries">Display Constellation Boundaries</s:String>
+    <s:String x:Key="LblSkyAtlasSkySurvey">SkyAtlas (Offline Framing)</s:String>
+    <s:String x:Key="LblPhd2PathNotFound">Could not start PHD2. Path not found</s:String>
+    <s:String x:Key="LblPhd2StartProcessError">Could not start PHD2. Check logs for details.</s:String>
+    <s:String x:Key="LblPhd2FailedEquipmentConnection">PHD2 wasn't able to connect to the equipment</s:String>
+    <s:String x:Key="LblPHD2Path">PHD2 path</s:String>
+    <s:String x:Key="LblMinDuration">Min. Duration</s:String>
+    <s:String x:Key="LblWaitForTemperatureStep">Waiting for camera to reach next temperature step</s:String>
+    <s:String x:Key="LblApplicationStartDateDescription">Application start date with format YYYY-MM-DD</s:String>
+    <s:String x:Key="LblPhd2SynchronizedServiceClientConnected">
+        Client connected to synchronized PHD2 service.
+        Connected clients: {0}
+    </s:String>
+    <s:String x:Key="LblPhd2SynchronizedServiceClientDisconnected">
+        Client disconnected to synchronized PHD2 service.
+        Connected clients: {0}
+    </s:String>
+    <s:String x:Key="LblPhd2SynchronizedServiceStarted">Synchronized PHD2 service started</s:String>
+    <s:String x:Key="LblSynchronizedPHD2Guider">Synchronized PHD2 (Experimental)</s:String>
+    <s:String x:Key="LblSynchronizedPHD2ServiceCrashed">Synchronized PHD2 Service crashed, restarting this Synchronized PHD2 Guider as Service</s:String>
+    <s:String x:Key="LblSynchronizedPHD2ServiceClientAlreadyExists">
+        This profile is already connected to the Synchronized PHD2 Guider.
+        You cannot connect the same profile twice, please choose a different NINA profile.
+    </s:String>
+    <s:String x:Key="LblAutoUpdateSource">Auto Update Source</s:String>
+    <s:String x:Key="LblRelease">Release</s:String>
+    <s:String x:Key="LblBeta">Beta</s:String>
+    <s:String x:Key="LblNightly">Nightly</s:String>
+    <s:String x:Key="LblChecksumError">Checksum does not match expected value. Downloaded file may be corrupted!</s:String>
+    <s:String x:Key="LblErrorDistance">Error Distance</s:String>
 </ResourceDictionary>

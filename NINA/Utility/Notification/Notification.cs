@@ -1,5 +1,27 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -11,6 +33,7 @@ using System.Windows.Threading;
 using ToastNotifications;
 using ToastNotifications.Core;
 using ToastNotifications.Lifetime;
+using ToastNotifications.Lifetime.Clear;
 using ToastNotifications.Position;
 using ToastNotifications.Utilities;
 
@@ -40,7 +63,7 @@ namespace NINA.Utility.Notification {
                 cfg.PositionProvider = new PrimaryScreenPositionProvider(
                     corner: Corner.BottomRight,
                     offsetX: 1,
-                    offsetY: 40);
+                    offsetY: 1);
 
                 cfg.LifetimeSupervisor = new CustomLifetimeSupervisor();
             });
@@ -52,18 +75,22 @@ namespace NINA.Utility.Notification {
 
         public static void ShowInformation(string message, TimeSpan lifetime) {
             lock (_lock) {
-                dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                    notifier.Notify<CustomNotification>(() => new CustomNotification(message));
-                }));
+                if (notifier != null) {
+                    dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                        notifier.Notify<CustomNotification>(() => new CustomNotification(message));
+                    }));
+                }
             }
         }
 
         public static void ShowSuccess(string message) {
             lock (_lock) {
-                dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                    var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CheckedCircledSVG"];
-                    notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol));
-                }));
+                if (notifier != null) {
+                    dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                        var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CheckedCircledSVG"];
+                        notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol));
+                    }));
+                }
             }
         }
 
@@ -73,23 +100,37 @@ namespace NINA.Utility.Notification {
 
         public static void ShowWarning(string message, TimeSpan lifetime) {
             lock (_lock) {
-                dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                    var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ExclamationCircledSVG"];
-                    var brush = (Brush)System.Windows.Application.Current.Resources["NotificationWarningBrush"];
-                    var foregroundBrush = (Brush)System.Windows.Application.Current.Resources["NotificationWarningTextBrush"];
-                    notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, brush, foregroundBrush));
-                }));
+                if (notifier != null) {
+                    dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                        var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["ExclamationCircledSVG"];
+                        var brush = (Brush)System.Windows.Application.Current.Resources["NotificationWarningBrush"];
+                        var foregroundBrush = (Brush)System.Windows.Application.Current.Resources["NotificationWarningTextBrush"];
+                        notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, brush, foregroundBrush));
+                    }));
+                }
             }
         }
 
         public static void ShowError(string message) {
             lock (_lock) {
-                dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
-                    var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CancelCircledSVG"];
-                    var brush = (Brush)System.Windows.Application.Current.Resources["NotificationErrorBrush"];
-                    var foregroundBrush = (Brush)System.Windows.Application.Current.Resources["NotificationErrorTextBrush"];
-                    notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, brush, foregroundBrush, true));
-                }));
+                if (notifier != null) {
+                    dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                        var symbol = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CancelCircledSVG"];
+                        var brush = (Brush)System.Windows.Application.Current.Resources["NotificationErrorBrush"];
+                        var foregroundBrush = (Brush)System.Windows.Application.Current.Resources["NotificationErrorTextBrush"];
+                        notifier.Notify<CustomNotification>(() => new CustomNotification(message, symbol, brush, foregroundBrush, true));
+                    }));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Disposes the notifier instance and supresses further notifications
+        /// </summary>
+        public static void Dispose() {
+            lock (_lock) {
+                notifier.Dispose();
+                notifier = null;
             }
         }
     }
@@ -255,7 +296,10 @@ namespace NINA.Utility.Notification {
         }
 
         protected virtual void RequestShowNotification(ShowNotificationEventArgs e) {
-            ShowNotificationRequested?.Invoke(this, e);
+            try {
+                ShowNotificationRequested?.Invoke(this, e);
+            } catch (InvalidOperationException) {
+            }
         }
 
         protected virtual void RequestCloseNotification(CloseNotificationEventArgs e) {
@@ -305,12 +349,19 @@ namespace NINA.Utility.Notification {
             }
         }
 
+        public void ClearMessages(IClearStrategy clearStrategy) {
+            var notifications = clearStrategy.GetNotificationsToRemove(_notifications);
+            foreach (var notification in notifications) {
+                CloseNotification(notification);
+            }
+        }
+
         public event EventHandler<ShowNotificationEventArgs> ShowNotificationRequested;
 
         public event EventHandler<CloseNotificationEventArgs> CloseNotificationRequested;
     }
 
-    public class CustomNotificationsList : ConcurrentDictionary<int, NotificationMetaData> {
+    public class CustomNotificationsList : NotificationsList {
         private int _id = 0;
 
         public NotificationMetaData Add(INotification notification, bool neverEnding) {

@@ -1,18 +1,42 @@
-﻿using System.Reflection;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using System.Reflection;
+
+#if DEBUG
+
 using System.Runtime.CompilerServices;
+
+#endif
+
 using System.Runtime.InteropServices;
 using System.Windows;
 
 // General Information about an assembly is controlled through the following set of attributes.
 // Change these attribute values to modify the information associated with an assembly.
-[assembly: AssemblyTitle("NINA")]
+[assembly: AssemblyTitle("N.I.N.A. - Nighttime Imaging 'N' Astronomy")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("NINA")]
-[assembly: AssemblyCopyright("Copyright ©  2016 - 2018 Stefan Berg and the NINA contributors")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
 #if DEBUG
 [assembly: InternalsVisibleTo("NINATest")]
 #endif
@@ -38,12 +62,3 @@ using System.Windows;
                                               //(used if a resource is not found in the page,
                                               // app, or any theme specific resource dictionaries)
 )]
-
-// Version information for an assembly consists of the following four values:
-//
-// Major Version Minor Version Build Number Revision
-//
-// You can specify all the values or you can default the Build and Revision Numbers by using the '*'
-// as shown below: [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.7.0.0")]
-[assembly: AssemblyFileVersion("1.7.0.0")]

@@ -1,14 +1,35 @@
-﻿using NINA.Model;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
 using NINA.Model.MyGuider;
 using NINA.Model.MyRotator;
 using NINA.Model.MyTelescope;
-using NINA.PlateSolving;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Profile;
 using NINA.ViewModel;
@@ -18,8 +39,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -68,6 +87,7 @@ namespace NINATest {
             Assert.AreEqual(vm, focuserMediator.Consumer);
             Assert.AreEqual(vm, filterWheelMediator.Consumer);
             Assert.AreEqual(vm, rotatorMediator.Consumer);
+            Assert.AreEqual(vm, guiderMediator.Consumer);
         }
 
         [Test]
@@ -255,7 +275,7 @@ namespace NINATest {
             await vm.StartSequenceCommand.ExecuteAsync(null);
 
             //Assert
-            Assert.AreEqual(true, guiderMediator.StartGuidingCalled);
+            Assert.AreEqual(1, guiderMediator.StartGuidingCalled);
         }
 
         [Test]
@@ -269,7 +289,7 @@ namespace NINATest {
             await vm.StartSequenceCommand.ExecuteAsync(null);
 
             //Assert
-            Assert.AreEqual(false, guiderMediator.StartGuidingCalled);
+            Assert.AreEqual(0, guiderMediator.StartGuidingCalled);
         }
 
         [Test]
@@ -348,16 +368,7 @@ namespace NINATest {
     }
 
     internal class SequenceProfile : IProfile {
-
-        public IApplicationSettings ApplicationSettings {
-            get {
-                throw new NotImplementedException();
-            }
-
-            set {
-                throw new NotImplementedException();
-            }
-        }
+        public IApplicationSettings ApplicationSettings { get; set; } = new ApplicationSettings();
 
         public IAstrometrySettings AstrometrySettings { get; set; } = new AstrometrySettings();
 
@@ -516,6 +527,7 @@ namespace NINATest {
         }
 
         public IRotatorSettings RotatorSettings { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public IFlatWizardSettings FlatWizardSettings { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -534,7 +546,8 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
-        public Task Capture(double exposureTime, bool isLightFrame, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        public Task Capture(CaptureSequence sequence, CancellationToken token,
+            IProgress<ApplicationStatus> progress) {
             throw new NotImplementedException();
         }
 
@@ -583,6 +596,10 @@ namespace NINATest {
         public void SetSubSampleArea(int x, int y, int width, int height) {
             throw new NotImplementedException();
         }
+
+        public Task<ImageArray> Download(CancellationToken token, bool calculateStatistics) {
+            throw new NotImplementedException();
+        }
     }
 
     internal class SequenceTelescopeMediator : ITelescopeMediator {
@@ -603,7 +620,7 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
-        public void MoveAxis(ASCOM.DeviceInterface.TelescopeAxes axis, double rate) {
+        public void MoveAxis(TelescopeAxes axis, double rate) {
             throw new NotImplementedException();
         }
 
@@ -716,6 +733,7 @@ namespace NINATest {
     }
 
     internal class SequenceRotatorMediator : IRotatorMediator {
+
         public void Broadcast(RotatorInfo deviceInfo) {
             throw new NotImplementedException();
         }
@@ -750,6 +768,7 @@ namespace NINATest {
             throw new NotImplementedException();
         }
     }
+
     internal class SequenceGuiderMediator : IGuiderMediator {
 
         public Task<bool> AutoSelectGuideStar(CancellationToken token) {
@@ -768,6 +787,8 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
+        public bool IsUsingSynchronizedGuider => false;
+
         public Task<bool> Dither(CancellationToken token) {
             throw new NotImplementedException();
         }
@@ -776,8 +797,10 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
+        public IGuiderConsumer Consumer;
+
         public void RegisterConsumer(IGuiderConsumer consumer) {
-            throw new NotImplementedException();
+            this.Consumer = consumer;
         }
 
         public void RegisterHandler(IGuiderVM handler) {
@@ -792,10 +815,11 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
-        public bool StartGuidingCalled = false;
+        public int StartGuidingCalled = 0;
+        public int StopGuidingCalled = 0;
 
         public async Task<bool> StartGuiding(CancellationToken token) {
-            StartGuidingCalled = true;
+            Interlocked.Add(ref StartGuidingCalled, 1);
             return true;
         }
 
@@ -803,8 +827,9 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
-        public Task<bool> StopGuiding(CancellationToken token) {
-            throw new NotImplementedException();
+        public async Task<bool> StopGuiding(CancellationToken token) {
+            Interlocked.Add(ref StopGuidingCalled, 1);
+            return true;
         }
 
         public RMS StopRMSRecording(Guid handle) {
@@ -825,6 +850,14 @@ namespace NINATest {
         }
 
         public Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, string targetname = "") {
+            throw new NotImplementedException();
+        }
+
+        public Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, bool bCalculateStatistics = true, string targetname = "") {
+            throw new NotImplementedException();
+        }
+
+        public void DestroyImage() {
             throw new NotImplementedException();
         }
 

@@ -1,8 +1,33 @@
-﻿using NINA.Utility;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using NINA.Utility;
 using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
+using NINA.ViewModel.FlatWizard;
+using NINA.ViewModel.FramingAssistant;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -17,6 +42,7 @@ namespace NINA.ViewModel {
         }
 
         public ApplicationVM(IProfileService profileService) : base(profileService) {
+            Logger.SetLogLevel(profileService.ActiveProfile.ApplicationSettings.LogLevel);
             cameraMediator = new CameraMediator();
             telescopeMediator = new TelescopeMediator();
             focuserMediator = new FocuserMediator();
@@ -27,6 +53,7 @@ namespace NINA.ViewModel {
             applicationStatusMediator = new ApplicationStatusMediator();
 
             ExitCommand = new RelayCommand(ExitApplication);
+            ClosingCommand = new RelayCommand(ClosingApplication);
             MinimizeWindowCommand = new RelayCommand(MinimizeWindow);
             MaximizeWindowCommand = new RelayCommand(MaximizeWindow);
             CheckProfileCommand = new RelayCommand(LoadProfile);
@@ -57,6 +84,14 @@ namespace NINA.ViewModel {
             });
 
             InitAvalonDockLayout();
+
+            OptionsVM.PropertyChanged += OptionsVM_PropertyChanged;
+        }
+
+        private async void OptionsVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(OptionsVM.AutoUpdateSource)) {
+                await CheckUpdate();
+            }
         }
 
         private ICameraMediator cameraMediator;
@@ -74,37 +109,53 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task<bool> CheckUpdate() {
-            return await new VersionCheckVM().CheckUpdate();
+        private Task<bool> CheckUpdate() {
+            return VersionCheckVM.CheckUpdate();
         }
 
-        private static string NINAMANUAL = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Documentation", "NINA.html");
-
         private void OpenManual(object o) {
-            if (File.Exists(NINAMANUAL)) {
-                System.Diagnostics.Process.Start(NINAMANUAL);
-            } else {
-                Notification.ShowError(Locale.Loc.Instance["LblManualNotFound"]);
-            }
+            System.Diagnostics.Process.Start("https://nighttime-imaging.eu/docs/documentation/");
         }
 
         public void InitAvalonDockLayout() {
-            DockManagerVM.Documents.Add(ImagingVM.ImageControl);
-            DockManagerVM.Anchorables.Add(ThumbnailVM);
+            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl);
             DockManagerVM.Anchorables.Add(CameraVM);
-            DockManagerVM.Anchorables.Add(TelescopeVM);
-            DockManagerVM.Anchorables.Add(PlatesolveVM);
-            DockManagerVM.Anchorables.Add(PolarAlignVM);
-            DockManagerVM.Anchorables.Add(WeatherDataVM);
-            DockManagerVM.Anchorables.Add(GuiderVM);
-            DockManagerVM.Anchorables.Add(SeqVM);
             DockManagerVM.Anchorables.Add(FilterWheelVM);
             DockManagerVM.Anchorables.Add(FocuserVM);
-            DockManagerVM.Anchorables.Add(ImagingVM);
-            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgHistoryVM);
-            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgStatisticsVM);
-            DockManagerVM.Anchorables.Add(AutoFocusVM);
             DockManagerVM.Anchorables.Add(RotatorVM);
+            DockManagerVM.Anchorables.Add(TelescopeVM);
+            DockManagerVM.Anchorables.Add(GuiderVM);
+
+            DockManagerVM.Anchorables.Add(ImagingVM);
+            DockManagerVM.Anchorables.Add(SeqVM);
+            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgStatisticsVM);
+            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgHistoryVM);
+
+            DockManagerVM.Anchorables.Add(ThumbnailVM);
+            DockManagerVM.Anchorables.Add(WeatherDataVM);
+            DockManagerVM.Anchorables.Add(PlatesolveVM);
+            DockManagerVM.Anchorables.Add(PolarAlignVM);
+            DockManagerVM.Anchorables.Add(AutoFocusVM);
+            DockManagerVM.Anchorables.Add(FocusTargetsVM);
+
+            DockManagerVM.AnchorableInfoPanels.Add(ImagingVM.ImageControl);
+            DockManagerVM.AnchorableInfoPanels.Add(CameraVM);
+            DockManagerVM.AnchorableInfoPanels.Add(FilterWheelVM);
+            DockManagerVM.AnchorableInfoPanels.Add(FocuserVM);
+            DockManagerVM.AnchorableInfoPanels.Add(RotatorVM);
+            DockManagerVM.AnchorableInfoPanels.Add(TelescopeVM);
+            DockManagerVM.AnchorableInfoPanels.Add(GuiderVM);
+            DockManagerVM.AnchorableInfoPanels.Add(SeqVM);
+            DockManagerVM.AnchorableInfoPanels.Add(ImagingVM.ImageControl.ImgStatisticsVM);
+            DockManagerVM.AnchorableInfoPanels.Add(ImagingVM.ImageControl.ImgHistoryVM);
+
+            DockManagerVM.AnchorableTools.Add(ImagingVM);
+            DockManagerVM.AnchorableTools.Add(ThumbnailVM);
+            DockManagerVM.AnchorableTools.Add(WeatherDataVM);
+            DockManagerVM.AnchorableTools.Add(PlatesolveVM);
+            DockManagerVM.AnchorableTools.Add(PolarAlignVM);
+            DockManagerVM.AnchorableTools.Add(AutoFocusVM);
+            DockManagerVM.AnchorableTools.Add(FocusTargetsVM);
         }
 
         public void ChangeTab(ApplicationTab tab) {
@@ -113,7 +164,13 @@ namespace NINA.ViewModel {
 
         public string Version {
             get {
-                return Utility.Utility.Version;
+                return new ProjectVersion(Utility.Utility.Version).ToString();
+            }
+        }
+
+        public string Title {
+            get {
+                return Utility.Utility.Title;
             }
         }
 
@@ -128,6 +185,8 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
+
+        public VersionCheckVM VersionCheckVM { get; private set; } = new VersionCheckVM();
 
         private ApplicationStatusVM _applicationStatusVM;
 
@@ -160,14 +219,16 @@ namespace NINA.ViewModel {
             DockManagerVM.SaveAvalonDockLayout();
             if (CameraVM?.Cam?.Connected == true) {
                 var diag = MyMessageBox.MyMessageBox.Show("Camera still connected. Exit anyway?", "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
-                if (diag == MessageBoxResult.OK) {
-                    DisconnectEquipment();
-                    Application.Current.Shutdown();
+                if (diag != MessageBoxResult.OK) {
+                    return;
                 }
-            } else {
-                DisconnectEquipment();
-                Application.Current.Shutdown();
             }
+            Application.Current.Shutdown();
+        }
+
+        private void ClosingApplication(object o) {
+            Notification.Dispose();
+            DisconnectEquipment();
         }
 
         public void DisconnectEquipment() {
@@ -313,6 +374,25 @@ namespace NINA.ViewModel {
             }
         }
 
+        private FlatWizardVM _flatWizardVM;
+
+        public FlatWizardVM FlatWizardVM {
+            get {
+                if (_flatWizardVM == null) {
+                    _flatWizardVM = new FlatWizardVM(profileService,
+                        new ImagingVM(profileService, new ImagingMediator(), cameraMediator, telescopeMediator, filterWheelMediator, focuserMediator, rotatorMediator, guiderMediator, applicationStatusMediator),
+                        cameraMediator,
+                        new ApplicationResourceDictionary(),
+                        applicationStatusMediator);
+                }
+                return _flatWizardVM;
+            }
+            set {
+                _flatWizardVM = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private SequenceVM _seqVM;
 
         public SequenceVM SeqVM {
@@ -333,7 +413,7 @@ namespace NINA.ViewModel {
         public ImagingVM ImagingVM {
             get {
                 if (_imagingVM == null) {
-                    _imagingVM = new ImagingVM(profileService, imagingMediator, cameraMediator, telescopeMediator, filterWheelMediator, focuserMediator, guiderMediator, applicationStatusMediator);
+                    _imagingVM = new ImagingVM(profileService, imagingMediator, cameraMediator, telescopeMediator, filterWheelMediator, focuserMediator, rotatorMediator, guiderMediator, applicationStatusMediator);
                 }
                 return _imagingVM;
             }
@@ -393,7 +473,8 @@ namespace NINA.ViewModel {
         public GuiderVM GuiderVM {
             get {
                 if (_guiderVM == null) {
-                    _guiderVM = new GuiderVM(profileService, guiderMediator, applicationStatusMediator);
+                    _guiderVM = new
+                        GuiderVM(profileService, guiderMediator, cameraMediator, applicationStatusMediator);
                 }
                 return _guiderVM;
             }
@@ -414,6 +495,16 @@ namespace NINA.ViewModel {
             }
             set {
                 _optionsVM = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private FocusTargetsVM focusTargetsVM;
+
+        public FocusTargetsVM FocusTargetsVM {
+            get => focusTargetsVM ?? (focusTargetsVM = new FocusTargetsVM(profileService, telescopeMediator, new ApplicationResourceDictionary()));
+            set {
+                focusTargetsVM = value;
                 RaisePropertyChanged();
             }
         }
@@ -470,6 +561,7 @@ namespace NINA.ViewModel {
         public ICommand CheckUpdateCommand { get; private set; }
         public ICommand OpenManualCommand { get; private set; }
         public ICommand ExitCommand { get; private set; }
+        public ICommand ClosingCommand { get; private set; }
         public ICommand ConnectAllDevicesCommand { get; private set; }
         public ICommand DisconnectAllDevicesCommand { get; private set; }
     }
@@ -481,6 +573,7 @@ namespace NINA.ViewModel {
         GUIDER,
         SKYATLAS,
         FRAMINGASSISTANT,
+        FLATWIZARD,
         SEQUENCE,
         IMAGING,
         OPTIONS

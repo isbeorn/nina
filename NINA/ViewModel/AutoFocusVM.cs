@@ -1,9 +1,31 @@
-﻿using NINA.Model;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
 using NINA.Utility;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -62,6 +84,7 @@ namespace NINA.ViewModel {
                     Task.Run(
 
                         async () => {
+                            _autoFocusCancelToken?.Dispose();
                             _autoFocusCancelToken = new CancellationTokenSource();
                             FilterInfo filter = null;
                             if (this.filterInfo?.SelectedFilter != null) {
@@ -177,7 +200,7 @@ namespace NINA.ViewModel {
         private async Task<double> EvaluateExposure(ImageArray iarr, CancellationToken token, IProgress<ApplicationStatus> progress) {
             Logger.Trace("Evaluating Expsoure");
             var source = ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
-            source = await ImageControlVM.StretchAsync(iarr, source, profileService.ActiveProfile.ImageSettings.AutoStretchFactor);
+            source = await ImageControlVM.StretchAsync(iarr, source, profileService.ActiveProfile.ImageSettings.AutoStretchFactor, profileService.ActiveProfile.ImageSettings.BlackClipping);
             var analysis = new ImageAnalysis(source, iarr);
             await analysis.DetectStarsAsync(progress, token);
 
@@ -213,7 +236,7 @@ namespace NINA.ViewModel {
             RightTrend = null;
             _minimum = new DataPoint(0, 0);
             try {
-                await this.guiderMediator.PauseGuiding(token);
+                await this.guiderMediator.StopGuiding(token);
 
                 var offsetSteps = profileService.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps;
                 var offset = offsetSteps;
@@ -275,7 +298,7 @@ namespace NINA.ViewModel {
                 Notification.ShowError(ex.Message);
                 Logger.Error(ex);
             } finally {
-                await this.guiderMediator.ResumeGuiding(token);
+                await this.guiderMediator.StartGuiding(token);
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
 

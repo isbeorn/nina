@@ -1,4 +1,27 @@
-﻿using ASCOM;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using ASCOM;
 using ASCOM.DeviceInterface;
 using ASCOM.DriverAccess;
 using NINA.Utility;
@@ -6,8 +29,8 @@ using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -349,6 +372,20 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public bool HasDewHeater {
+            get {
+                return false;
+            }
+        }
+
+        public bool DewHeaterOn {
+            get {
+                return false;
+            }
+            set {
+            }
+        }
+
         public string Description {
             get {
                 string val = string.Empty;
@@ -519,6 +556,36 @@ namespace NINA.Model.MyCamera {
                     }
                     RaisePropertyChanged();
                 }
+            }
+        }
+
+        public ICollection ReadoutModes {
+            get {
+                if (!CanFastReadout) {
+                    return ReadoutModesArrayList;
+                }
+
+                return new List<string>() { "Default", "Fast Readout" };
+            }
+        }
+
+        private short readoutModeForSnapImages;
+
+        public short ReadoutModeForSnapImages {
+            get => readoutModeForSnapImages;
+            set {
+                readoutModeForSnapImages = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private short readoutModeForNormalImages;
+
+        public short ReadoutModeForNormalImages {
+            get => readoutModeForNormalImages;
+            set {
+                readoutModeForNormalImages = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -800,7 +867,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public ArrayList ReadoutModes {
+        public ArrayList ReadoutModesArrayList {
             get {
                 ArrayList val = new ArrayList();
                 if (Connected && !CanFastReadout) {
@@ -826,7 +893,38 @@ namespace NINA.Model.MyCamera {
         public SensorType SensorType {
             get {
                 if (Connected) {
-                    return _camera.SensorType;
+                    SensorType type;
+                    switch (_camera.SensorType) {
+                        case ASCOM.DeviceInterface.SensorType.Monochrome:
+                            type = SensorType.Monochrome;
+                            break;
+
+                        case ASCOM.DeviceInterface.SensorType.Color:
+                            type = SensorType.Color;
+                            break;
+
+                        case ASCOM.DeviceInterface.SensorType.RGGB:
+                            type = SensorType.RGGB;
+                            break;
+
+                        case ASCOM.DeviceInterface.SensorType.CMYG:
+                            type = SensorType.CMYG;
+                            break;
+
+                        case ASCOM.DeviceInterface.SensorType.CMYG2:
+                            type = SensorType.CMYG2;
+                            break;
+
+                        case ASCOM.DeviceInterface.SensorType.LRGB:
+                            type = SensorType.LRGB;
+                            break;
+
+                        default:
+                            type = SensorType.Monochrome;
+                            break;
+                    }
+
+                    return type;
                 } else {
                     return SensorType.Monochrome;
                 }
@@ -922,23 +1020,21 @@ namespace NINA.Model.MyCamera {
             _camera = null;
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token) {
+        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
             using (MyStopWatch.Measure("ASCOM Download")) {
                 return await Task.Run(async () => {
                     try {
                         using (MyStopWatch.Measure("ASCOM WaitForCamera")) {
-                            ASCOM.Utilities.Util U = Utility.Utility.AscomUtil;
                             while (!ImageReady && Connected) {
                                 //Console.Write(".");
-                                U.WaitForMilliseconds(100);
-                                token.ThrowIfCancellationRequested();
+                                await Utility.Utility.Wait(TimeSpan.FromMilliseconds(100), token);
                             }
                         }
 
                         if (SensorType != SensorType.Color) {
-                            return await MyCamera.ImageArray.CreateInstance((Int32[,])ImageArray, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                            return await MyCamera.ImageArray.CreateInstance((Int32[,])ImageArray, BitDepth, SensorType != SensorType.Monochrome, calculateStatistics, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                         } else {
-                            return await MyCamera.ImageArray.CreateInstance((Int32[,,])ImageArray, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                            return await MyCamera.ImageArray.CreateInstance((Int32[,,])ImageArray, BitDepth, false, calculateStatistics, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                         }
                     } catch (OperationCanceledException) {
                     } catch (Exception ex) {
@@ -949,7 +1045,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public void StartExposure(double exposureTime, bool isLightFrame) {
+        public void StartExposure(CaptureSequence sequence) {
             if (EnableSubSample) {
                 StartX = SubSampleX;
                 StartY = SubSampleY;
@@ -961,7 +1057,23 @@ namespace NINA.Model.MyCamera {
                 NumX = CameraXSize / BinX;
                 NumY = CameraYSize / BinY;
             }
-            _camera.StartExposure(exposureTime, isLightFrame);
+
+            bool isSnap = sequence.ImageType == CaptureSequence.ImageTypes.SNAP;
+
+            if (CanFastReadout) {
+                _camera.FastReadout = isSnap ? readoutModeForSnapImages != 0 : readoutModeForNormalImages != 0;
+            } else {
+                _camera.ReadoutMode =
+                    isSnap
+                        ? readoutModeForSnapImages
+                        : readoutModeForNormalImages;
+            }
+
+            var isLightFrame = !(sequence.ImageType == CaptureSequence.ImageTypes.DARK ||
+                              sequence.ImageType == CaptureSequence.ImageTypes.BIAS ||
+                              sequence.ImageType == CaptureSequence.ImageTypes.DARKFLAT);
+
+            _camera.StartExposure(sequence.ExposureTime, isLightFrame);
         }
 
         public void StopExposure() {
@@ -1062,8 +1174,11 @@ namespace NINA.Model.MyCamera {
                         RaiseAllPropertiesChanged();
                     }
                 } catch (ASCOM.DriverAccessCOMException ex) {
-                    Notification.ShowError(ex.Message);
+                    Utility.Utility.HandleAscomCOMException(ex);
+                } catch (System.Runtime.InteropServices.COMException ex) {
+                    Utility.Utility.HandleAscomCOMException(ex);
                 } catch (Exception ex) {
+                    Logger.Error(ex);
                     Notification.ShowError("Unable to connect to camera " + ex.Message);
                 }
                 return Connected;
@@ -1097,5 +1212,11 @@ namespace NINA.Model.MyCamera {
         public int BatteryLevel => -1;
 
         public bool HasBattery => false;
+
+        public int BitDepth {
+            get {
+                return (int)profileService.ActiveProfile.CameraSettings.BitDepth;
+            }
+        }
     }
 }

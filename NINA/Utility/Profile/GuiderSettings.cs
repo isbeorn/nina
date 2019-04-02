@@ -1,6 +1,29 @@
-﻿using NINA.Utility.Enum;
-using NINA.Utility.Mediator;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using NINA.Utility.Enum;
 using System;
+using System.IO;
 using System.Runtime.Serialization;
 
 namespace NINA.Utility.Profile {
@@ -28,15 +51,21 @@ namespace NINA.Utility.Profile {
             pHD2GuiderScale = GuiderScaleEnum.PIXELS;
             settlePixels = 1.5;
             settleTimeout = 40;
+
+            var defaultPHD2Path = Environment.ExpandEnvironmentVariables(@"%programfiles(x86)%\PHDGuiding2\phd2.exe");
+
+            phd2Path =
+                File.Exists(defaultPHD2Path)
+                ? defaultPHD2Path
+                : string.Empty;
+            guiderName = "PHD2";
         }
 
         private double ditherPixels;
 
         [DataMember]
         public double DitherPixels {
-            get {
-                return ditherPixels;
-            }
+            get => ditherPixels;
             set {
                 ditherPixels = value;
                 RaisePropertyChanged();
@@ -47,9 +76,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public bool DitherRAOnly {
-            get {
-                return ditherRAOnly;
-            }
+            get => ditherRAOnly;
             set {
                 ditherRAOnly = value;
                 RaisePropertyChanged();
@@ -60,9 +87,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public int SettleTime {
-            get {
-                return settleTime;
-            }
+            get => settleTime;
             set {
                 settleTime = value;
                 RaisePropertyChanged();
@@ -73,9 +98,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public string PHD2ServerUrl {
-            get {
-                return pHD2ServerUrl;
-            }
+            get => pHD2ServerUrl;
             set {
                 pHD2ServerUrl = value;
                 RaisePropertyChanged();
@@ -86,9 +109,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public int PHD2ServerPort {
-            get {
-                return pHD2ServerPort;
-            }
+            get => pHD2ServerPort;
             set {
                 pHD2ServerPort = value;
                 RaisePropertyChanged();
@@ -99,11 +120,20 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public int PHD2HistorySize {
-            get {
-                return pHD2LargeHistorySize;
-            }
+            get => pHD2LargeHistorySize;
             set {
                 pHD2LargeHistorySize = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string phd2Path;
+
+        [DataMember]
+        public string PHD2Path {
+            get => phd2Path;
+            set {
+                phd2Path = value;
                 RaisePropertyChanged();
             }
         }
@@ -112,9 +142,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public GuiderScaleEnum PHD2GuiderScale {
-            get {
-                return pHD2GuiderScale;
-            }
+            get => pHD2GuiderScale;
             set {
                 pHD2GuiderScale = value;
                 RaisePropertyChanged();
@@ -125,9 +153,7 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public double SettlePixels {
-            get {
-                return settlePixels;
-            }
+            get => settlePixels;
 
             set {
                 settlePixels = value;
@@ -139,12 +165,21 @@ namespace NINA.Utility.Profile {
 
         [DataMember]
         public int SettleTimeout {
-            get {
-                return settleTimeout;
-            }
+            get => settleTimeout;
 
             set {
                 settleTimeout = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string guiderName;
+
+        [DataMember]
+        public string GuiderName {
+            get => guiderName;
+            set {
+                guiderName = value;
                 RaisePropertyChanged();
             }
         }

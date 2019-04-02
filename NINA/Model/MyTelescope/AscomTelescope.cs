@@ -1,4 +1,27 @@
-﻿using ASCOM;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using ASCOM;
 using ASCOM.DeviceInterface;
 using ASCOM.DriverAccess;
 using NINA.Utility;
@@ -96,7 +119,7 @@ namespace NINA.Model.MyTelescope {
 
         public string AltitudeString {
             get {
-                return Utility.Utility.AscomUtil.DegreesToDMS(Altitude);
+                return Astrometry.DegreesToDMS(Altitude);
             }
         }
 
@@ -118,7 +141,7 @@ namespace NINA.Model.MyTelescope {
 
         public string AzimuthString {
             get {
-                return Utility.Utility.AscomUtil.DegreesToDMS(Azimuth);
+                return Astrometry.DegreesToDMS(Azimuth);
             }
         }
 
@@ -352,7 +375,7 @@ namespace NINA.Model.MyTelescope {
 
         public string DeclinationString {
             get {
-                return Utility.Utility.AscomUtil.DegreesToDMS(Declination);
+                return Astrometry.DegreesToDMS(Declination);
             }
         }
 
@@ -534,7 +557,7 @@ namespace NINA.Model.MyTelescope {
 
         public string RightAscensionString {
             get {
-                return Utility.Utility.AscomUtil.HoursToHMS(RightAscension);
+                return Astrometry.HoursToHMS(RightAscension);
             }
         }
 
@@ -550,7 +573,7 @@ namespace NINA.Model.MyTelescope {
 
         public string SiderealTimeString {
             get {
-                return Utility.Utility.AscomUtil.HoursToHMS(SiderealTime);
+                return Astrometry.HoursToHMS(SiderealTime);
             }
         }
 
@@ -951,7 +974,25 @@ namespace NINA.Model.MyTelescope {
                 if (CanSlew) {
                     if (!AtPark) {
                         try {
-                            _telescope.MoveAxis(axis, rate);
+                            ASCOM.DeviceInterface.TelescopeAxes translatedAxis;
+                            switch (axis) {
+                                case TelescopeAxes.Primary:
+                                    translatedAxis = ASCOM.DeviceInterface.TelescopeAxes.axisPrimary;
+                                    break;
+
+                                case TelescopeAxes.Secondary:
+                                    translatedAxis = ASCOM.DeviceInterface.TelescopeAxes.axisSecondary;
+                                    break;
+
+                                case TelescopeAxes.Tertiary:
+                                    translatedAxis = ASCOM.DeviceInterface.TelescopeAxes.axisTertiary;
+                                    break;
+
+                                default:
+                                    translatedAxis = ASCOM.DeviceInterface.TelescopeAxes.axisPrimary;
+                                    break;
+                            }
+                            _telescope.MoveAxis(translatedAxis, rate);
                         } catch (Exception e) {
                             Notification.ShowError(e.Message);
                         }
@@ -1039,8 +1080,13 @@ namespace NINA.Model.MyTelescope {
             }
         }
 
+        private static readonly Lazy<ASCOM.Utilities.Util> lazyAscomUtil =
+            new Lazy<ASCOM.Utilities.Util>(() => new ASCOM.Utilities.Util());
+
+        private static ASCOM.Utilities.Util AscomUtil { get { return lazyAscomUtil.Value; } }
+
         public bool Sync(string ra, string dec) {
-            return Sync(Utility.Utility.AscomUtil.HMSToHours(ra), Utility.Utility.AscomUtil.DMSToDegrees(dec));
+            return Sync(AscomUtil.HMSToHours(ra), AscomUtil.DMSToDegrees(dec));
         }
 
         public bool Sync(double ra, double dec) {
@@ -1086,7 +1132,7 @@ namespace NINA.Model.MyTelescope {
 
         public string HoursToMeridianString {
             get {
-                return Utility.Utility.AscomUtil.HoursToHMS(HoursToMeridian);
+                return Astrometry.HoursToHMS(HoursToMeridian);
             }
         }
 
@@ -1107,7 +1153,7 @@ namespace NINA.Model.MyTelescope {
 
         public string TimeToMeridianFlipString {
             get {
-                return Utility.Utility.AscomUtil.HoursToHMS(TimeToMeridianFlip);
+                return Astrometry.HoursToHMS(TimeToMeridianFlip);
             }
         }
 
@@ -1125,7 +1171,7 @@ namespace NINA.Model.MyTelescope {
 
                     double max = double.MinValue;
                     double min = double.MaxValue;
-                    IAxisRates r = _telescope.AxisRates(TelescopeAxes.axisSecondary);
+                    IAxisRates r = _telescope.AxisRates(ASCOM.DeviceInterface.TelescopeAxes.axisSecondary);
                     IEnumerator e = r.GetEnumerator();
                     foreach (IRate item in r) {
                         if (min > item.Minimum) {
@@ -1197,8 +1243,11 @@ namespace NINA.Model.MyTelescope {
                         RaiseAllPropertiesChanged();
                     }
                 } catch (ASCOM.DriverAccessCOMException ex) {
-                    Notification.ShowError(ex.Message);
+                    Utility.Utility.HandleAscomCOMException(ex);
+                } catch (System.Runtime.InteropServices.COMException ex) {
+                    Utility.Utility.HandleAscomCOMException(ex);
                 } catch (Exception ex) {
+                    Logger.Error(ex);
                     Notification.ShowError("Unable to connect to telescope " + ex.Message);
                 }
                 return Connected;

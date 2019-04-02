@@ -1,6 +1,28 @@
-﻿using NINA.Utility;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using NINA.Utility;
 using NINA.Utility.Astrometry;
-using NINA.Utility.Profile;
 using OxyPlot;
 using OxyPlot.Axes;
 using System;
@@ -19,12 +41,25 @@ namespace NINA.Model {
             this.imageRepository = imageRepository;
         }
 
-        public DeepSkyObject(string name, string imageRepository) : this(imageRepository) {
-            Name = name;
+        public DeepSkyObject(string id, string imageRepository) : this(imageRepository) {
+            Id = id;
+            Name = id;
         }
 
-        public DeepSkyObject(string name, Coordinates coords, string imageRepository) : this(name, imageRepository) {
+        public DeepSkyObject(string id, Coordinates coords, string imageRepository) : this(id, imageRepository) {
             _coordinates = coords;
+        }
+
+        private string id;
+
+        public string Id {
+            get {
+                return id;
+            }
+            set {
+                id = value;
+                RaisePropertyChanged();
+            }
         }
 
         private string _name;
@@ -240,7 +275,7 @@ namespace NINA.Model {
                         this.Coordinates.Dec.ToString(CultureInfo.InvariantCulture),
                         (size * 9.0 / 16.0).ToString(CultureInfo.InvariantCulture),
                         size.ToString(CultureInfo.InvariantCulture));*/
-                    var file = Path.Combine(imageRepository, this.Name + ".gif");
+                    var file = Path.Combine(imageRepository, this.Id + ".gif");
                     if (File.Exists(file)) {
                         _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
                             //var img = new BitmapImage(new Uri(file));

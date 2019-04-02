@@ -10,8 +10,8 @@
 
 namespace NINA.Properties {
     using System;
-
-
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -19,19 +19,19 @@ namespace NINA.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
-
+        
         private static global::System.Resources.ResourceManager resourceMan;
-
+        
         private static global::System.Globalization.CultureInfo resourceCulture;
-
+        
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Resources() {
         }
-
+        
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -45,7 +45,7 @@ namespace NINA.Properties {
                 return resourceMan;
             }
         }
-
+        
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -57,6 +57,21 @@ namespace NINA.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;LayoutRoot&gt;
+        ///  &lt;RootPanel Orientation=&quot;Horizontal&quot;&gt;
+        ///    &lt;LayoutPanel Orientation=&quot;Vertical&quot; DockWidth=&quot;1.53420195439739*&quot;&gt;
+        ///      &lt;LayoutPanel Orientation=&quot;Horizontal&quot; DockHeight=&quot;1.51559251559252*&quot;&gt;
+        ///        &lt;LayoutAnchorablePaneGroup Orientation=&quot;Vertical&quot; DockWidth=&quot;0.47013434562044*&quot;&gt;
+        ///          &lt;LayoutAnchorablePane Id=&quot;1d68f044-3c78-4d8c-930c-eb30630ffd98&quot; DockHeight=&quot;0.79281289136495*&quot; FloatingWidth=&quot;1370&quot; FloatingHeight=&quot;689&quot; FloatingLeft=&quot;-596&quot; FloatingTop= [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string avalondock {
+            get {
+                return ResourceManager.GetString("avalondock", resourceCulture);
             }
         }
     }

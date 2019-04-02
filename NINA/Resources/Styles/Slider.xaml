@@ -1,4 +1,25 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<!--
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
     <Style x:Key="SliderRepeatButtonStyle" TargetType="{x:Type RepeatButton}">
         <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -21,6 +42,70 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type RepeatButton}">
                     <Rectangle Fill="{StaticResource ButtonBackgroundBrush}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SliderRepeatButtonDecreaseFromCenterStyle" TargetType="{x:Type RepeatButton}">
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="IsTabStop" Value="false" />
+        <Setter Property="Focusable" Value="false" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RepeatButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <Rectangle Fill="{StaticResource ButtonBackgroundSelectedBrush}">
+                            <Rectangle.Resources>
+                                <sys:Double x:Key="comparisonValue">0.5</sys:Double>
+                            </Rectangle.Resources>
+                            <Rectangle.Width>
+                                <MultiBinding Converter="{StaticResource WidthAndValueToWidthConverter}">
+                                    <Binding RelativeSource="{RelativeSource AncestorType=Track}" Path="ActualWidth" />
+                                    <Binding RelativeSource="{RelativeSource AncestorType=Slider}" Path="Value" />
+                                </MultiBinding>
+                            </Rectangle.Width>
+                            <Rectangle.Visibility>
+                                <MultiBinding Converter="{StaticResource GreaterThanToVisiblityConverter}">
+                                    <Binding Source="{StaticResource comparisonValue}" />
+                                    <Binding RelativeSource="{RelativeSource AncestorType=Slider}" Path="Value" />
+                                </MultiBinding>
+                            </Rectangle.Visibility>
+                        </Rectangle>
+                        <Rectangle Fill="{StaticResource ButtonBackgroundBrush}" Width="{Binding RelativeSource={RelativeSource AncestorType=Track}, Path=ActualWidth, Converter={StaticResource DoubleToHalfConverter}}" />
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SliderRepeatButtonIncreaseFromCenterStyle" TargetType="{x:Type RepeatButton}">
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="IsTabStop" Value="false" />
+        <Setter Property="Focusable" Value="false" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RepeatButton}">
+                    <StackPanel Orientation="Horizontal">
+                        <Rectangle Fill="{StaticResource ButtonBackgroundBrush}" Width="{Binding RelativeSource={RelativeSource AncestorType=Track}, Path=ActualWidth, Converter={StaticResource DoubleToHalfConverter}}" />
+                        <Rectangle Fill="{StaticResource ButtonBackgroundSelectedBrush}">
+                            <Rectangle.Resources>
+                                <sys:Double x:Key="comparisonValue">0.5</sys:Double>
+                            </Rectangle.Resources>
+                            <Rectangle.Width>
+                                <MultiBinding Converter="{StaticResource WidthAndValueToWidthConverter}">
+                                    <Binding RelativeSource="{RelativeSource AncestorType=Track}" Path="ActualWidth" />
+                                    <Binding RelativeSource="{RelativeSource AncestorType=Slider}" Path="Value" />
+                                </MultiBinding>
+                            </Rectangle.Width>
+                            <Rectangle.Visibility>
+                                <MultiBinding Converter="{StaticResource GreaterThanToVisiblityConverter}">
+                                    <Binding RelativeSource="{RelativeSource AncestorType=Slider}" Path="Value" />
+                                    <Binding Source="{StaticResource comparisonValue}" />
+                                </MultiBinding>
+                            </Rectangle.Visibility>
+                        </Rectangle>
+                    </StackPanel>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -58,7 +143,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" MinWidth="{TemplateBinding MinWidth}" />
             </Grid.ColumnDefinitions>
-            <Track x:Name="PART_Track">
+            <Track x:Name="PART_Track" Margin="0">
                 <Track.DecreaseRepeatButton>
                     <RepeatButton
                         Width="12"
@@ -124,6 +209,44 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
+    <ControlTemplate x:Key="HorizontalTickSlider" TargetType="{x:Type ninactrl:TickSlider}">
+        <Grid Margin="5">
+            <Grid.RowDefinitions>
+
+                <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}" />
+            </Grid.RowDefinitions>
+            <Track x:Name="PART_Track" Grid.Row="1">
+                <Track.DecreaseRepeatButton>
+                    <RepeatButton
+                        Height="12"
+                        Command="{x:Static Slider.DecreaseLarge}"
+                        Style="{StaticResource SliderRepeatButtonIncreaseFromCenterStyle}" />
+                </Track.DecreaseRepeatButton>
+                <Track.IncreaseRepeatButton>
+                    <RepeatButton
+                        Height="12"
+                        Command="{x:Static Slider.IncreaseLarge}"
+                        Style="{StaticResource SliderRepeatButtonDecreaseFromCenterStyle}" />
+                </Track.IncreaseRepeatButton>
+                <Track.Thumb>
+                    <Thumb x:Name="Thumb" Style="{StaticResource SliderThumbStyle}" />
+                </Track.Thumb>
+            </Track>
+            <TickBar
+                Height="16"
+                Margin="0,-4,0,0"
+                Fill="{StaticResource BackgroundBrush}"
+                IsHitTestVisible="False"
+                SnapsToDevicePixels="True"
+                Visibility="Visible" />
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="PART_Track" Property="Opacity" Value="0.5" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
     <Style x:Key="MyFocusVisualStyte">
         <Setter Property="Control.Template">
             <Setter.Value>
@@ -150,6 +273,24 @@
                 <Setter Property="MinWidth" Value="104" />
                 <Setter Property="MinHeight" Value="21" />
                 <Setter Property="Template" Value="{StaticResource HorizontalSlider}" />
+            </Trigger>
+            <Trigger Property="Orientation" Value="Vertical">
+                <Setter Property="MinWidth" Value="21" />
+                <Setter Property="MinHeight" Value="104" />
+                <Setter Property="Template" Value="{StaticResource VerticalSlider}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type ninactrl:TickSlider}">
+        <!--<Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyte}" />-->
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Style.Triggers>
+            <Trigger Property="Orientation" Value="Horizontal">
+                <Setter Property="MinWidth" Value="104" />
+                <Setter Property="MinHeight" Value="21" />
+                <Setter Property="Template" Value="{StaticResource HorizontalTickSlider}" />
             </Trigger>
             <Trigger Property="Orientation" Value="Vertical">
                 <Setter Property="MinWidth" Value="21" />

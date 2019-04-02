@@ -1,4 +1,21 @@
-﻿<UserControl
+﻿<!--
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
+<UserControl
     x:Class="NINA.View.OverView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,6 +24,7 @@
     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ns="clr-namespace:NINA.Locale"
     xmlns:util="clr-namespace:NINA.Utility.AvalonDock"
     xmlns:view="clr-namespace:NINA.View"
     xmlns:vm="clr-namespace:NINA.ViewModel"
@@ -18,64 +36,164 @@
         <dock:BoolToVisibilityConverter x:Key="btvc" />
     </UserControl.Resources>
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="40" />
-        </Grid.ColumnDefinitions>
+    <Grid Background="{StaticResource TertiaryBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
 
-        <ItemsControl Grid.Column="1" ItemsSource="{Binding Anchorables}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <ToggleButton
-                        Height="40"
-                        Margin="2.5"
-                        Command="{Binding HideCommand}"
-                        IsChecked="{Binding IsVisible, Mode=OneWay}">
-                        <ToggleButton.ToolTip>
-                            <TextBlock Text="{Binding Title}" />
-                        </ToggleButton.ToolTip>
-                        <ToggleButton.Style>
-                            <Style BasedOn="{StaticResource TB}" TargetType="ToggleButton">
-                                <Style.Triggers>
-                                    <Trigger Property="IsChecked" Value="True">
-                                        <Setter Property="Content">
-                                            <Setter.Value>
-                                                <Path
-                                                    Margin="5"
-                                                    Data="{Binding ImageGeometry}"
-                                                    Fill="{StaticResource PrimaryBrush}"
-                                                    Stretch="Uniform" />
-                                            </Setter.Value>
-                                        </Setter>
-                                        <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
-                                    </Trigger>
-                                    <Trigger Property="IsChecked" Value="False">
-                                        <Setter Property="Content">
-                                            <Setter.Value>
-                                                <Path
-                                                    Margin="5"
-                                                    Data="{Binding ImageGeometry}"
-                                                    Fill="{StaticResource PrimaryBrush}"
-                                                    Opacity="0.4"
-                                                    Stretch="Uniform" />
-                                            </Setter.Value>
-                                        </Setter>
-                                        <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ToggleButton.Style>
-                    </ToggleButton>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <Grid>
+            <StackPanel
+                Margin="2,0,0,0"
+                HorizontalAlignment="Left"
+                Orientation="Horizontal">
+                <ItemsControl ItemsSource="{Binding AnchorableInfoPanels}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ToggleButton
+                                Width="30"
+                                Height="30"
+                                Margin="2.5"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Command="{Binding HideCommand}"
+                                IsChecked="{Binding IsVisible, Mode=OneWay}">
+                                <ToggleButton.ToolTip>
+                                    <TextBlock Text="{Binding Title}" />
+                                </ToggleButton.ToolTip>
+                                <ToggleButton.Style>
+                                    <Style BasedOn="{StaticResource AvalonSideBarToggleButton}" TargetType="ToggleButton">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <Path
+                                                            Margin="5"
+                                                            Data="{Binding ImageGeometry}"
+                                                            Fill="Pink"
+                                                            Stretch="Uniform" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <Path
+                                                            Margin="5"
+                                                            Data="{Binding ImageGeometry}"
+                                                            Fill="{StaticResource ButtonForegroundBrush}"
+                                                            Stretch="Uniform" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                            <Trigger Property="IsChecked" Value="False">
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <Path
+                                                            Margin="5"
+                                                            Data="{Binding ImageGeometry}"
+                                                            Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                            Stretch="Uniform" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ToggleButton.Style>
+                            </ToggleButton>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Foreground="{StaticResource ButtonForegroundBrush}"
+                    Text="{ns:Loc LblInfo}"
+                    TextAlignment="Center" />
+            </StackPanel>
 
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Foreground="{StaticResource ButtonForegroundBrush}"
+                    Text="{ns:Loc LblTools}"
+                    TextAlignment="Center" />
+                <ItemsControl ItemsSource="{Binding AnchorableTools}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ToggleButton
+                                Width="30"
+                                Height="30"
+                                Margin="2.5"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Command="{Binding HideCommand}"
+                                IsChecked="{Binding IsVisible, Mode=OneWay}">
+                                <ToggleButton.ToolTip>
+                                    <TextBlock Text="{Binding Title}" />
+                                </ToggleButton.ToolTip>
+                                <ToggleButton.Style>
+                                    <Style BasedOn="{StaticResource AvalonSideBarToggleButton}" TargetType="ToggleButton">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <Path
+                                                            Margin="5"
+                                                            Data="{Binding ImageGeometry}"
+                                                            Fill="Pink"
+                                                            Stretch="Uniform" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <Path
+                                                            Margin="5"
+                                                            Data="{Binding ImageGeometry}"
+                                                            Fill="{StaticResource ButtonForegroundBrush}"
+                                                            Stretch="Uniform" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                            <Trigger Property="IsChecked" Value="False">
+                                                <Setter Property="Content">
+                                                    <Setter.Value>
+                                                        <Path
+                                                            Margin="5"
+                                                            Data="{Binding ImageGeometry}"
+                                                            Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                                            Stretch="Uniform" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ToggleButton.Style>
+                            </ToggleButton>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Grid>
         <dock:DockingManager
             x:Name="dockManager"
+            Grid.Row="1"
+            Margin="1,0,0,0"
             AnchorablesSource="{Binding Anchorables}"
-            DataContext="{Binding}"
-            DocumentsSource="{Binding Documents}">
+            DataContext="{Binding}">
             <!--<dock:DockingManager.Theme>
                 <dock:MetroTheme />
             </dock:DockingManager.Theme>-->
@@ -85,37 +203,75 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
 
-            <dock:DockingManager.Resources>
+            <!--<dock:DockingManager.Resources>
+                <DataTemplate DataType="{x:Type vm:CameraVM}">
+                    <view:AnchorableCameraView />
+                </DataTemplate>
 
-                <!--<DataTemplate DataType="{x:Type vm:ImagingVM}">
-                    <view:AnchorableCameraControlView />
+                <DataTemplate DataType="{x:Type vm:TelescopeVM}">
+                    <view:AnchorableTelescopeView />
                 </DataTemplate>
-                <DataTemplate DataType="{x:Type vm:PlatesolveVM}">
-                    <view:AnchorablePlateSolveView />
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type vm:FilterWheelVM}">
-                    <view:AnchorableFilterWheelView />
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type vm:ImageHistoryVM}">
-                    <view:AnchorableImageHistoryView />
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type vm:ImageStatisticsVM}">
-                    <view:AnchorableImageStatisticsView />
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type vm:PolarAlignmentVM}">
-                    <view:AnchorablePolarAlignmentView />
-                </DataTemplate>
-                <DataTemplate DataType="ImageStatistics">
-                    <view:AnchorableImageStatisticsView />
-                </DataTemplate>
+
                 <DataTemplate DataType="{x:Type vm:ImageControlVM}">
                     <view:ImageControlView />
                 </DataTemplate>
 
+                <DataTemplate DataType="{x:Type vm:ThumbnailVM}">
+                    <view:ThumbnailListView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:FocusTargetsVM}">
+                    <view:AnchorableFocusTargetsView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:PlatesolveVM}">
+                    <view:AnchorablePlateSolveView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:PolarAlignmentVM}">
+                    <view:AnchorablePolarAlignmentView />
+                </DataTemplate>
+
                 <DataTemplate DataType="{x:Type vm:GuiderVM}">
-                    <view:AnchorableGuideriew />
-                </DataTemplate>-->
-            </dock:DockingManager.Resources>
+                    <view:AnchorableGuiderView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:FilterWheelVM}">
+                    <view:AnchorableFilterWheelView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:ImagingVM}">
+                    <view:AnchorableCameraControlView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:ImageHistoryVM}">
+                    <view:AnchorableImageHistoryView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:ImageStatisticsVM}">
+                    <view:AnchorableImageStatisticsView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:SequenceVM}">
+                    <view:AnchorableSequenceView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:RotatorVM}">
+                    <view:AnchorableRotatorView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:WeatherDataVM}">
+                    <view:AnchorableWeatherDataView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:FocuserVM}">
+                    <view:AnchorableFocuserView />
+                </DataTemplate>
+
+                <DataTemplate DataType="{x:Type vm:AutoFocusVM}">
+                    <view:AnchorableAutoFocusView />
+                </DataTemplate>
+            </dock:DockingManager.Resources>-->
 
             <dock:DockingManager.LayoutItemTemplateSelector>
                 <util:PaneTemplateSelector>
@@ -141,6 +297,12 @@
                             <view:ThumbnailListView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.ThumbnailTemplate>
+
+                    <util:PaneTemplateSelector.FocusTargetsTemplate>
+                        <DataTemplate>
+                            <view:AnchorableFocusTargetsView />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.FocusTargetsTemplate>
 
                     <util:PaneTemplateSelector.PlatesolveTemplate>
                         <DataTemplate>
@@ -227,13 +389,13 @@
                             <Setter Property="ContentId" Value="{Binding Model.ContentId}" />
                         </Style>
                     </util:PaneStyleSelector.AnchorableStyle>
-                    <util:PaneStyleSelector.DocumentStyle>
+                    <!--<util:PaneStyleSelector.DocumentStyle>
                         <Style TargetType="{x:Type dock:LayoutItem}">
                             <Setter Property="Title" Value="{Binding Model.Title}" />
                             <Setter Property="CanClose" Value="{Binding Model.CanClose}" />
                             <Setter Property="ContentId" Value="{Binding Model.ContentId}" />
                         </Style>
-                    </util:PaneStyleSelector.DocumentStyle>
+                    </util:PaneStyleSelector.DocumentStyle>-->
                 </util:PaneStyleSelector>
             </dock:DockingManager.LayoutItemContainerStyleSelector>
 
@@ -257,7 +419,7 @@
                 <dock:LayoutPanel Orientation="Horizontal">
                     <!--<dock:LayoutAnchorablePane Name="ToolsPaneLeft" DockWidth="*">
                     </dock:LayoutAnchorablePane>-->
-                    <dock:LayoutDocumentPane DockWidth="4*" />
+                    <!--<dock:LayoutDocumentPane DockWidth="4*" />-->
                     <dock:LayoutAnchorablePane Name="ToolsPane" DockWidth="*" />
                 </dock:LayoutPanel>
             </dock:LayoutRoot>

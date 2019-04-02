@@ -1,28 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using NINA.Utility.Astrometry;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using NINA.Utility.Astrometry;
 
 namespace NINA.Utility.SkySurvey {
 
     internal abstract class MosaicSkySurvey : ISkySurvey {
         protected double MaxFoVPerImage = 60;
 
-        public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress) {
+        public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, int width,
+            int height, CancellationToken ct, IProgress<int> progress) {
             return await Task.Run(async () => {
                 if (fieldOfView > MaxFoVPerImage * 3) {
                     throw new Exception(string.Format("Sky Survey only supports up to {0} degree", Astrometry.Astrometry.ArcminToDegree(MaxFoVPerImage * 3)));
                 } else {
                     BitmapSource image;
                     if (fieldOfView <= MaxFoVPerImage) {
-                        image = await GetSingleImage(coordinates, fieldOfView, fieldOfView, ct);
+                        image = await GetSingleImage(coordinates, fieldOfView, fieldOfView, ct, width, height);
                     } else {
-                        image = await GetMosaicImage(name, coordinates, fieldOfView, ct, progress);
+                        image = await GetMosaicImage(name, coordinates, fieldOfView, width, height, ct, progress);
                     }
 
                     image.Freeze();
@@ -39,8 +60,9 @@ namespace NINA.Utility.SkySurvey {
             });
         }
 
-        private async Task<BitmapSource> GetMosaicImage(string name, Coordinates coordinates, double fieldOfView, CancellationToken ct, IProgress<int> progress) {
-            var centerTask = GetSingleImage(coordinates, MaxFoVPerImage, MaxFoVPerImage, ct);
+        private async Task<BitmapSource> GetMosaicImage(string name, Coordinates coordinates, double fieldOfView,
+            int width, int height, CancellationToken ct, IProgress<int> progress) {
+            var centerTask = GetSingleImage(coordinates, MaxFoVPerImage, MaxFoVPerImage, ct, width, height);
 
             var borderFoV = (fieldOfView - MaxFoVPerImage) / 2.0;
             var shiftedDegree = Astrometry.Astrometry.ArcminToDegree(MaxFoVPerImage) / 2.0 + Astrometry.Astrometry.ArcminToDegree(borderFoV) / 2.0;
@@ -50,7 +72,9 @@ namespace NINA.Utility.SkySurvey {
                 new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 borderFoV,
                 borderFoV,
-                ct
+                ct,
+                width,
+                height
             );
 
             newCoordinates = coordinates.Shift(0, -shiftedDegree, 0);
@@ -58,7 +82,9 @@ namespace NINA.Utility.SkySurvey {
                 new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 MaxFoVPerImage,
                 borderFoV,
-                ct
+                ct,
+                width,
+                height
             );
 
             newCoordinates = coordinates.Shift(shiftedDegree, -shiftedDegree, 0);
@@ -66,7 +92,9 @@ namespace NINA.Utility.SkySurvey {
                 new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 borderFoV,
                 borderFoV,
-                ct
+                ct,
+                width,
+                height
             );
 
             newCoordinates = coordinates.Shift(-shiftedDegree, 0, 0);
@@ -74,7 +102,9 @@ namespace NINA.Utility.SkySurvey {
                 new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 borderFoV,
                 MaxFoVPerImage,
-                ct
+                ct,
+                width,
+                height
             );
 
             newCoordinates = coordinates.Shift(shiftedDegree, 0, 0);
@@ -82,7 +112,9 @@ namespace NINA.Utility.SkySurvey {
                 new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 borderFoV,
                 MaxFoVPerImage,
-                ct
+                ct,
+                width,
+                height
             );
 
             newCoordinates = coordinates.Shift(-shiftedDegree, shiftedDegree, 0);
@@ -90,7 +122,9 @@ namespace NINA.Utility.SkySurvey {
                 new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 borderFoV,
                 borderFoV,
-                ct
+                ct,
+                width,
+                height
             );
 
             newCoordinates = coordinates.Shift(0, shiftedDegree, 0);
@@ -98,7 +132,9 @@ namespace NINA.Utility.SkySurvey {
                 new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 MaxFoVPerImage,
                 borderFoV,
-                ct
+                ct,
+                width,
+                height
             );
 
             newCoordinates = coordinates.Shift(shiftedDegree, shiftedDegree, 0);
@@ -106,7 +142,9 @@ namespace NINA.Utility.SkySurvey {
                 new Coordinates(newCoordinates.RADegrees, newCoordinates.Dec, Epoch.J2000, Coordinates.RAType.Degrees),
                 borderFoV,
                 borderFoV,
-                ct
+                ct,
+                width,
+                height
             );
 
             /*
@@ -157,6 +195,6 @@ namespace NINA.Utility.SkySurvey {
             return bmp;
         }
 
-        protected abstract Task<BitmapSource> GetSingleImage(Coordinates coordinates, double fovW, double fovH, CancellationToken ct);
+        protected abstract Task<BitmapSource> GetSingleImage(Coordinates coordinates, double fovW, double fovH, CancellationToken ct, int width, int height);
     }
 }

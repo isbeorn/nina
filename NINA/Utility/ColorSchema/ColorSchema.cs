@@ -1,4 +1,27 @@
-﻿using System;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
@@ -20,7 +43,7 @@ namespace NINA.Utility {
 
         public static ColorSchemas ReadColorSchemas() {
             ColorSchemas schemas = null;
-            var schemafile = System.AppDomain.CurrentDomain.BaseDirectory + "Utility\\ColorSchema\\ColorSchemas.xml";
+            var schemafile = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Utility", "ColorSchema", "ColorSchemas.xml");
             if (File.Exists(schemafile)) {
                 try {
                     var schemasxml = XElement.Load(schemafile);
@@ -48,6 +71,8 @@ namespace NINA.Utility {
                 SecondaryColor = (Color)ColorConverter.ConvertFromString("#FF1B2A41"),
                 BorderColor = (Color)ColorConverter.ConvertFromString("#FF550C18"),
                 BackgroundColor = (Color)ColorConverter.ConvertFromString("#FF02010A"),
+                SecondaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF230409"),
+                TertiaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF2d060d"),
                 ButtonBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF550C18"),
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF96031A"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FF02010A"),
@@ -66,10 +91,12 @@ namespace NINA.Utility {
                 SecondaryColor = (Color)ColorConverter.ConvertFromString("#FF54748C"),
                 BorderColor = (Color)ColorConverter.ConvertFromString("#AABCBCBC"),
                 BackgroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
+                SecondaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF0d3956"),
+                TertiaryBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF114f77"),
                 ButtonBackgroundColor = (Color)ColorConverter.ConvertFromString("#FF0B3C5D"),
                 ButtonBackgroundSelectedColor = (Color)ColorConverter.ConvertFromString("#FF2190DB"),
                 ButtonForegroundColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
-                ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FF1D2731"),
+                ButtonForegroundDisabledColor = (Color)ColorConverter.ConvertFromString("#FFc5d2db"),
                 NotificationWarningColor = (Color)ColorConverter.ConvertFromString("#FFF5A300"),
                 NotificationErrorColor = (Color)ColorConverter.ConvertFromString("#FFDB0606"),
                 NotificationWarningTextColor = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"),
@@ -102,6 +129,14 @@ namespace NINA.Utility {
         [XmlElement(Type = typeof(XmlColor))]
         [DataMember]
         public Color BackgroundColor { get; set; }
+
+        [XmlElement(Type = typeof(XmlColor))]
+        [DataMember]
+        public Color SecondaryBackgroundColor { get; set; }
+
+        [XmlElement(Type = typeof(XmlColor))]
+        [DataMember]
+        public Color TertiaryBackgroundColor { get; set; }
 
         [XmlElement(Type = typeof(XmlColor))]
         [DataMember]
@@ -142,7 +177,8 @@ namespace NINA.Utility {
     public class XmlColor {
         private Color _color = Colors.Black;
 
-        public XmlColor() { }
+        public XmlColor() {
+        }
 
         public XmlColor(Color c) {
             _color = c;

@@ -1,25 +1,46 @@
-﻿using NINA.Model.MyGuider;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
 using NINA.Model;
+using NINA.Model.MyGuider;
 using NINA.Utility;
 using NINA.Utility.Enum;
-using NINA.Utility.Mediator;
+using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Profile;
+using NINA.ViewModel.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
-using NINA.ViewModel.Interfaces;
-using System.Collections.Generic;
-using NINA.Utility.Mediator.Interfaces;
 
 namespace NINA.ViewModel {
 
     internal class GuiderVM : DockableVM, IGuiderVM {
 
-        public GuiderVM(IProfileService profileService, IGuiderMediator guiderMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+        public GuiderVM(IProfileService profileService, IGuiderMediator guiderMediator, ICameraMediator cameraMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblGuider";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["GuiderSVG"];
 
@@ -28,16 +49,21 @@ namespace NINA.ViewModel {
 
             this.applicationStatusMediator = applicationStatusMediator;
 
-            ConnectGuiderCommand = new AsyncCommand<bool>(
-                async () =>
-                    await Task.Run<bool>(() => Connect()),
-                (object o) =>
-                    !(Guider?.Connected == true)
-            );
+            ConnectGuiderCommand = new AsyncCommand<bool>(Connect);
+
+            CancelConnectGuiderCommand = new RelayCommand(CancelConnectGuider);
+
+            GuiderChooserVM = new GuiderChooserVM(profileService, cameraMediator);
+
+            GuiderChooserVM.SelectedGuider.PropertyChanged += (sender, args) => RaisePropertyChanged(nameof(Guider));
+
             DisconnectGuiderCommand = new RelayCommand((object o) => Disconnect(), (object o) => Guider?.Connected == true);
+            ClearGraphCommand = new RelayCommand((object o) => ResetGraphValues());
 
             GuideStepsHistory = new GuideStepsHistory(HistorySize);
         }
+
+        public IGuiderChooserVM GuiderChooserVM { get; set; }
 
         public enum GuideStepsHistoryType {
             GuideStepsLarge,
@@ -70,6 +96,8 @@ namespace NINA.ViewModel {
                 return null;
             }
         }
+
+        public bool GuiderIsSynchronized => Guider is SynchronizedPHD2Guider && Guider.Connected;
 
         public async Task<bool> AutoSelectGuideStar(CancellationToken token) {
             if (Guider?.Connected == true) {
@@ -118,23 +146,35 @@ namespace NINA.ViewModel {
 
         public async Task<bool> Connect() {
             ResetGraphValues();
-            Guider = new PHD2Guider(profileService);
-            Guider.PropertyChanged += Guider_PropertyChanged;
 
-            var connected = await Guider.Connect();
+            GuiderChooserVM.SelectedGuider.PropertyChanged += Guider_PropertyChanged;
 
-            GuiderInfo = new GuiderInfo {
-                Connected = connected
-            };
-            BroadcastGuiderInfo();
+            bool connected = false;
+
+            try {
+                _cancelConnectGuiderSource?.Dispose();
+                _cancelConnectGuiderSource = new CancellationTokenSource();
+                connected = await Guider.Connect();
+                _cancelConnectGuiderSource.Token.ThrowIfCancellationRequested();
+
+                GuiderInfo = new GuiderInfo {
+                    Connected = connected
+                };
+                BroadcastGuiderInfo();
+                RaisePropertyChanged(nameof(Guider));
+            } catch (OperationCanceledException) {
+                Guider?.Disconnect();
+                GuiderInfo = new GuiderInfo {
+                    Connected = false
+                };
+                BroadcastGuiderInfo();
+            }
 
             return connected;
         }
 
         public void Disconnect() {
-            ResetGraphValues();
             Guider?.Disconnect();
-            Guider = null;
             GuiderInfo = DeviceInfo.CreateDefaultInstance<GuiderInfo>();
             BroadcastGuiderInfo();
         }
@@ -170,6 +210,11 @@ namespace NINA.ViewModel {
                 foreach (RMS rms in recordedRMS.Values) {
                     rms.AddDataPoint(step.RADistanceRaw, step.DecDistanceRaw);
                 }
+            }
+
+            if (e.PropertyName == nameof(IGuider.Connected)) {
+                GuiderInfo.Connected = Guider.Connected;
+                BroadcastGuiderInfo();
             }
         }
 
@@ -229,23 +274,22 @@ namespace NINA.ViewModel {
 
         private Dictionary<Guid, RMS> recordedRMS = new Dictionary<Guid, RMS>();
 
-        private IGuider _guider;
+        public IGuider Guider => GuiderChooserVM.SelectedGuider;
 
-        public IGuider Guider {
-            get {
-                return _guider;
-            }
-            set {
-                _guider = value;
-                RaisePropertyChanged();
-            }
+        private void CancelConnectGuider(object o) {
+            _cancelConnectGuiderSource?.Cancel();
         }
 
         private IGuiderMediator guiderMediator;
         private IApplicationStatusMediator applicationStatusMediator;
+        private CancellationTokenSource _cancelConnectGuiderSource;
 
         public ICommand ConnectGuiderCommand { get; private set; }
 
         public ICommand DisconnectGuiderCommand { get; private set; }
+
+        public ICommand ClearGraphCommand { get; private set; }
+
+        public ICommand CancelConnectGuiderCommand { get; }
     }
 }

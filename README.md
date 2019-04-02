@@ -14,7 +14,7 @@ https://nighttime-imaging.eu/
 
 * .NET Framework 4.6.2 or later
 
-* ASCOM Platform 6.3 or later
+* ASCOM Platform 6.3 or later (optional - but most equipment besides the camera requires ascom)
 
 * Visual Studio C++ Redistributable 2013
 

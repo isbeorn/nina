@@ -1,7 +1,29 @@
-﻿using NINA.Model.MyCamera;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.Enum;
-using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
@@ -146,7 +168,7 @@ namespace NINA.ViewModel {
                     fs.Position = 0;
                     fs.CopyTo(ms);
                     ms.Position = 0;
-                    var iarr = await converter.ConvertToImageArray(ms, new System.Threading.CancellationToken(), profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                    var iarr = await converter.ConvertToImageArray(ms, 16, profileService.ActiveProfile.ImageSettings.HistogramResolution, true, new System.Threading.CancellationToken());
                     return iarr;
                 }
             }
@@ -163,7 +185,7 @@ namespace NINA.ViewModel {
             int arraySize = stride * bmp.PixelHeight;
             ushort[] pixels = new ushort[(int)(bmp.Width * bmp.Height)];
             bmp.CopyPixels(pixels, stride, 0);
-            return ImageArray.CreateInstance(pixels, (int)bmp.Width, (int)bmp.Height, IsBayered, true, histogramResolution);
+            return ImageArray.CreateInstance(pixels, (int)bmp.Width, (int)bmp.Height, 16, IsBayered, true, histogramResolution);
         }
 
         private Task<ImageArray> LoadFits() {
@@ -180,7 +202,7 @@ namespace NINA.ViewModel {
                     pixels[i++] = (ushort)(val + short.MaxValue);
                 }
             }
-            return ImageArray.CreateInstance(pixels, width, height, IsBayered, true, histogramResolution);
+            return ImageArray.CreateInstance(pixels, width, height, 16, IsBayered, true, histogramResolution);
         }
 
         public BitmapSource ThumbnailImage { get; set; }
