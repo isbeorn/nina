@@ -78,7 +78,9 @@
     <s:String x:Key="LblSequence">Sequence</s:String>
     <s:String x:Key="LblTooltipAddSequence">Add new row to sequence list</s:String>
     <s:String x:Key="LblTooltipRemoveSequence">Remove selected row from sequence list</s:String>
+    <s:String x:Key="LblTooltipResetSequence">Reset progress of selected row in sequence list</s:String>
     <s:String x:Key="LblTooltipStartSequence">Starts sequences</s:String>
+    <s:String x:Key="LblTooltipResetTarget">Reset progress of all sequence items in target</s:String>
     <s:String x:Key="LblGeneral">General</s:String>
     <s:String x:Key="LblDownload">Download</s:String>
     <s:String x:Key="LblOn">On</s:String>

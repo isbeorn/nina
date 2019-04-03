@@ -88,6 +88,18 @@ namespace NINA.Model {
             }
         }
 
+        public void ResetAt(int idx) {
+            Items[idx].ProgressExposureCount = 0;
+        }
+
+        public bool ResetActiveSequence() {
+            if (Items.Count > 0) {
+                ActiveSequence = Items[0];
+                return true;
+            }
+            return false;
+        }
+
         public void Save(string path) {
             try {
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(CaptureSequenceList));
