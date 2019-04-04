@@ -109,6 +109,28 @@
                                                 CommandParameter="{Binding}">
                                                 X
                                             </Button>
+                                            <Button
+                                                x:Name="PART_Reset"
+                                                Grid.Column="3"
+                                                Width="25"
+                                                Height="25"
+                                                Margin="0,0,70,0"
+                                                HorizontalAlignment="Right"
+                                                Command="{Binding DataContext.ResetTargetCommand, RelativeSource={RelativeSource AncestorType=local:SequenceView}}"
+                                                CommandParameter="{Binding}">
+                                                <Button.ToolTip>
+                                                    <ToolTip ToolTipService.ShowOnDisabled="True">
+                                                        <TextBlock Text="{ns:Loc LblTooltipResetTarget}" />
+                                                    </ToolTip>
+                                                </Button.ToolTip>
+                                                <Grid>
+                                                    <Path
+                                                        Margin="5"
+                                                        Data="{StaticResource LoopSVG}"
+                                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                                        Stretch="Uniform" />
+                                                </Grid>
+                                            </Button>
                                         </Grid>
                                     </Grid>
                                     <ControlTemplate.Triggers>
@@ -123,6 +145,9 @@
                                         </Trigger>
                                         <Trigger Property="IsMouseOver" Value="False">
                                             <Setter TargetName="PART_Close" Property="Visibility" Value="Collapsed" />
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="False">
+                                            <Setter TargetName="PART_Reset" Property="Visibility" Value="Collapsed" />
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -867,7 +892,10 @@
                     Header="{ns:Loc LblDither}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <CheckBox HorizontalAlignment="Center" IsChecked="{Binding Dither, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding Source={StaticResource AppVM}, Path=SeqVM.IsUsingSynchronizedGuider, Converter={StaticResource InverseBooleanConverter}}" />
+                            <CheckBox
+                                HorizontalAlignment="Center"
+                                IsChecked="{Binding Dither, UpdateSourceTrigger=PropertyChanged}"
+                                IsEnabled="{Binding Source={StaticResource AppVM}, Path=SeqVM.IsUsingSynchronizedGuider, Converter={StaticResource InverseBooleanConverter}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -882,10 +910,10 @@
                                 Margin="5,0,5,0"
                                 HorizontalAlignment="Stretch"
                                 AddSVG="{StaticResource AddSVG}"
+                                IsEnabled="{Binding Source={StaticResource AppVM}, Path=SeqVM.IsUsingSynchronizedGuider, Converter={StaticResource InverseBooleanConverter}}"
                                 MinValue="0"
                                 StepSize="1"
                                 SubstractSVG="{StaticResource SubstractSVG}"
-                                IsEnabled="{Binding Source={StaticResource AppVM}, Path=SeqVM.IsUsingSynchronizedGuider, Converter={StaticResource InverseBooleanConverter}}"
                                 Value="{Binding DitherAmount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
@@ -1020,6 +1048,24 @@
                     <Path
                         Margin="5"
                         Data="{StaticResource SubstractSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                </Button>
+
+                <Button
+                    Width="40"
+                    Margin="1,0,0,0"
+                    Command="{Binding ResetSequenceRowCommand}"
+                    CommandParameter="{Binding}"
+                    IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblTooltipResetSequence}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="4"
+                        Data="{StaticResource LoopSVG}"
                         Fill="{StaticResource ButtonForegroundBrush}"
                         Stretch="Uniform" />
                 </Button>

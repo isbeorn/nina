@@ -91,7 +91,9 @@ namespace NINA.ViewModel {
             AddSequenceRowCommand = new RelayCommand(AddSequenceRow);
             AddTargetCommand = new RelayCommand(AddTarget);
             RemoveTargetCommand = new RelayCommand(RemoveTarget, (object o) => this.Targets.Count > 1);
+            ResetTargetCommand = new RelayCommand(ResetTarget, ResetTargetEnabled);
             RemoveSequenceRowCommand = new RelayCommand(RemoveSequenceRow);
+            ResetSequenceRowCommand = new RelayCommand(ResetSequenceRow, ResetSequenceRowEnabled);
             StartSequenceCommand = new AsyncCommand<bool>(() => StartSequencing(new Progress<ApplicationStatus>(p => Status = p)));
             SaveSequenceCommand = new RelayCommand(SaveSequence);
             LoadSequenceCommand = new RelayCommand(LoadSequence);
@@ -142,6 +144,23 @@ namespace NINA.ViewModel {
                     Sequence = this.Targets.First();
                 }
             }
+        }
+
+        private void ResetTarget(object obj) {
+           var target = (CaptureSequenceList)obj;
+           foreach (CaptureSequence cs in target) {
+                cs.ProgressExposureCount = 0;
+           }
+
+           target.IsFinished = false;
+        }
+
+        private bool ResetTargetEnabled(object obj) {
+            var target = (CaptureSequenceList)obj;
+            foreach (CaptureSequence cs in target) {
+                if (cs.ProgressExposureCount != 0) return true;
+            }
+            return false;
         }
 
         private void AddTarget(object obj) {
@@ -438,6 +457,10 @@ namespace NINA.ViewModel {
                 IsRunning = true;
                 if (this.Targets.Count > 0) {
                     autoUpdateTimer.Stop();
+                    // If sequencing was stopped (vs paused) and started again, reset active sequence of each target to the first one
+                    foreach (CaptureSequenceList csl in this.Targets) {
+                            csl.ResetActiveSequence();
+                    }
                     var iterator = 0;
                     do {
                         var csl = this.Targets[iterator];
@@ -527,6 +550,7 @@ namespace NINA.ViewModel {
                     var lastAutoFocusTime = DateTime.UtcNow;
                     var lastAutoFocusTemperature = focuserInfo?.Temperature ?? double.NaN;
                     var exposureCount = 0;
+
                     while ((seq = csl.Next()) != null) {
                         exposureCount++;
 
@@ -862,6 +886,18 @@ namespace NINA.ViewModel {
             }
         }
 
+        private void ResetSequenceRow(object obj) {
+            var idx = SelectedSequenceRowIdx;
+            Sequence.ResetAt(idx);
+            Sequence.IsFinished = false;
+        }
+
+        private bool ResetSequenceRowEnabled(object obj) {
+            var idx = SelectedSequenceRowIdx;
+            if (idx < 0 || idx >= Sequence.Items.Count) return false;
+            return Sequence.Items[idx].ProgressExposureCount != 0;
+        }
+
         public void UpdateDeviceInfo(FocuserInfo focuserInfo) {
             this.focuserInfo = focuserInfo;
         }
@@ -881,7 +917,9 @@ namespace NINA.ViewModel {
         public ICommand AddSequenceRowCommand { get; private set; }
         public ICommand AddTargetCommand { get; private set; }
         public ICommand RemoveTargetCommand { get; private set; }
+        public ICommand ResetTargetCommand { get; private set; }
         public ICommand RemoveSequenceRowCommand { get; private set; }
+        public ICommand ResetSequenceRowCommand { get; private set; }        
 
         public IAsyncCommand StartSequenceCommand { get; private set; }
 
