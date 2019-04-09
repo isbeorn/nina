@@ -932,8 +932,14 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
+        public void PauseSave() {
+        }
+
         public void RemoveProfile(Guid guid) {
             throw new NotImplementedException();
+        }
+
+        public void ResumeSave() {
         }
 
         public void SelectProfile(Guid guid) {

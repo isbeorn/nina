@@ -1,3 +1,8 @@
+# Version 1.8 Hotfix 1
+
+- Prevent an unnecessary profile saving on application start
+- Profiles where always saved after a sequence exposure, which slows down the image saving process. During sequence capture the profile saving is disabled now.
+
 # Version 1.8
 
 ## Features
