@@ -47,6 +47,10 @@ namespace NINA.Utility.Profile {
 
         void ChangeLongitude(double longitude);
 
+        void PauseSave();
+
+        void ResumeSave();
+
         event EventHandler LocaleChanged;
 
         event EventHandler LocationChanged;

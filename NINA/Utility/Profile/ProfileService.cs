@@ -83,8 +83,18 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        private bool saveProfiles = true;
+
+        public void PauseSave() {
+            saveProfiles = false;
+        }
+
+        public void ResumeSave() {
+            saveProfiles = true;
+        }
+
         private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if (e.PropertyName == "Settings") {
+            if (saveProfiles && e.PropertyName == "Settings") {
                 System.Threading.Tasks.Task.Run(() => TryScheduleSave());
             }
         }

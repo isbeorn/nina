@@ -46,7 +46,6 @@ namespace NINA.ViewModel {
             set {
                 _selectedGuider = value;
                 RaisePropertyChanged();
-                profileService.ActiveProfile.GuiderSettings.GuiderName = _selectedGuider.Name;
             }
         }
 

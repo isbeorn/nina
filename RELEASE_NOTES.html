@@ -15,6 +15,10 @@
 <ul>
 <li>Added interface for ASTAP, the Astrometric STAcking Program, astrometric solver and FITS viewer as a plate solver</li>
 </ul>
+<h3 id="gps-assisted-location">GPS Assisted Location</h3>
+<ul>
+<li>Added a NMEA GPS interface to retrieve the current location</li>
+</ul>
 <h2 id="improvements">Improvements</h2>
 <ul>
 <li>If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips</li>
@@ -32,6 +36,12 @@
 </ul>
 </li>
 <li>A new focuser settle time parameter has been added, in case the focuser shifts the image when moving (SCT, lens belt focusing, etc.). This should help with auto-focus in particular.</li>
+<li>It is now possible to reset the progress of a sequence item, or of a whole sequence target. If an item that occurred prior to the active sequence item is reset, stopping and starting the sequence will get back to it, but pausing/playing will keep going from the current item.</li>
+</ul>
+<h1 id="version-1.8-hotfix-1">Version 1.8 Hotfix 1</h1>
+<ul>
+<li>Prevent an unnecessary profile saving on application start</li>
+<li>Profiles where always saved after a sequence exposure, which slows down the image saving process. During sequence capture the profile saving is disabled now.</li>
 </ul>
 <h1 id="version-1.8">Version 1.8</h1>
 <h2 id="features-1">Features</h2>
