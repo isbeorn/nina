@@ -449,6 +449,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> StartSequencing(IProgress<ApplicationStatus> progress) {
             try {
+                profileService.PauseSave();
                 _actualDownloadTimes.Clear();
                 _canceltoken?.Dispose();
                 _canceltoken = new CancellationTokenSource();
@@ -483,6 +484,7 @@ namespace NINA.ViewModel {
                 }
             } catch (OperationCanceledException) {
             } finally {
+                profileService.ResumeSave();
                 IsPaused = false;
                 IsRunning = false;
                 autoUpdateTimer.Start();
