@@ -23,6 +23,7 @@
 
 using NINA.Model;
 using NINA.Model.MyCamera;
+using NINA.Model.MyPlanetarium;
 using NINA.PlateSolving;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
@@ -33,7 +34,6 @@ using NINA.Utility.Profile;
 using NINA.Utility.SkySurvey;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -80,6 +80,8 @@ namespace NINA.ViewModel.FramingAssistant {
             ClearCacheCommand = new RelayCommand(ClearCache);
             RefreshSkyMapAnnotationCommand = new RelayCommand((object o) => SkyMapAnnotator.UpdateSkyMap(), (object o) => SkyMapAnnotator.Initialized);
             MouseWheelCommand = new RelayCommand(MouseWheel);
+
+            CoordsFromPlanetariumCommand = new AsyncCommand<bool>(() => Task.Run(CoordsFromPlanetarium));
 
             DeepSkyObjectSearchVM = new DeepSkyObjectSearchVM(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
             DeepSkyObjectSearchVM.PropertyChanged += DeepSkyObjectSearchVM_PropertyChanged;
@@ -452,12 +454,12 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
-        private ObservableCollection<FramingRectangle> cameraRectangles;
+        private AsyncObservableCollection<FramingRectangle> cameraRectangles;
 
-        public ObservableCollection<FramingRectangle> CameraRectangles {
+        public AsyncObservableCollection<FramingRectangle> CameraRectangles {
             get {
                 if (cameraRectangles == null) {
-                    cameraRectangles = new ObservableCollection<FramingRectangle>();
+                    cameraRectangles = new AsyncObservableCollection<FramingRectangle>();
                 }
                 return cameraRectangles;
             }
@@ -817,6 +819,17 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
+        private async Task<bool> CoordsFromPlanetarium() {
+            IPlanetarium s = PlanetariumFactory.GetPlanetarium(profileService);
+            DeepSkyObject resp = await s.GetTarget();
+            if (resp != null) {
+                await SetCoordinates(resp);
+                Notification.ShowSuccess(String.Format(Locale.Loc.Instance["LblPlanetariumCoordsOk"], s.Name));
+            } else Notification.ShowError(String.Format(Locale.Loc.Instance["LblPlanetariumCoordsError"], s.Name));
+            return (resp != null);
+        }
+
+        public ICommand CoordsFromPlanetariumCommand { get; set; }
         public ICommand DragStartCommand { get; private set; }
         public ICommand DragStopCommand { get; private set; }
         public ICommand DragMoveCommand { get; private set; }

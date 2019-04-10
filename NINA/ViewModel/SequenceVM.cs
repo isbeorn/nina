@@ -25,6 +25,7 @@ using NINA.Model;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
 using NINA.Model.MyGuider;
+using NINA.Model.MyPlanetarium;
 using NINA.Model.MyRotator;
 using NINA.Model.MyTelescope;
 using NINA.PlateSolving;
@@ -100,6 +101,7 @@ namespace NINA.ViewModel {
             CancelSequenceCommand = new RelayCommand(CancelSequence);
             PauseSequenceCommand = new RelayCommand(PauseSequence, (object o) => !_pauseTokenSource?.IsPaused == true);
             ResumeSequenceCommand = new RelayCommand(ResumeSequence);
+            CoordsFromPlanetariumCommand = new AsyncCommand<bool>(() => Task.Run(CoordsFromPlanetarium));
 
             autoUpdateTimer = new DispatcherTimer(DispatcherPriority.Background);
             autoUpdateTimer.Interval = TimeSpan.FromSeconds(1);
@@ -147,12 +149,12 @@ namespace NINA.ViewModel {
         }
 
         private void ResetTarget(object obj) {
-           var target = (CaptureSequenceList)obj;
-           foreach (CaptureSequence cs in target) {
+            var target = (CaptureSequenceList)obj;
+            foreach (CaptureSequence cs in target) {
                 cs.ProgressExposureCount = 0;
-           }
+            }
 
-           target.IsFinished = false;
+            target.IsFinished = false;
         }
 
         private bool ResetTargetEnabled(object obj) {
@@ -460,7 +462,7 @@ namespace NINA.ViewModel {
                     autoUpdateTimer.Stop();
                     // If sequencing was stopped (vs paused) and started again, reset active sequence of each target to the first one
                     foreach (CaptureSequenceList csl in this.Targets) {
-                            csl.ResetActiveSequence();
+                        csl.ResetActiveSequence();
                     }
                     var iterator = 0;
                     do {
@@ -916,12 +918,24 @@ namespace NINA.ViewModel {
             this.rotatorInfo = deviceInfo;
         }
 
+        private async Task<bool> CoordsFromPlanetarium() {
+            IPlanetarium s = PlanetariumFactory.GetPlanetarium(profileService);
+            DeepSkyObject resp = await s.GetTarget();
+            if (resp != null) {
+                Sequence.Coordinates = resp.Coordinates;
+                Sequence.TargetName = resp.Name;
+                Notification.ShowSuccess(String.Format(Locale.Loc.Instance["LblPlanetariumCoordsOk"], s.Name));
+            } else Notification.ShowError(String.Format(Locale.Loc.Instance["LblPlanetariumCoordsError"], s.Name));
+            return (resp != null);
+        }
+
+        public ICommand CoordsFromPlanetariumCommand { get; set; }
         public ICommand AddSequenceRowCommand { get; private set; }
         public ICommand AddTargetCommand { get; private set; }
         public ICommand RemoveTargetCommand { get; private set; }
         public ICommand ResetTargetCommand { get; private set; }
         public ICommand RemoveSequenceRowCommand { get; private set; }
-        public ICommand ResetSequenceRowCommand { get; private set; }        
+        public ICommand ResetSequenceRowCommand { get; private set; }
 
         public IAsyncCommand StartSequenceCommand { get; private set; }
 

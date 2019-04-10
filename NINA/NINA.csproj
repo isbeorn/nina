@@ -306,6 +306,15 @@
     <Compile Include="Model\MyGuider\ISynchronizedPHD2GuiderService.cs" />
     <Compile Include="Model\MyGuider\SynchronizedPHD2Guider.cs" />
     <Compile Include="Model\MyGuider\SynchronizedPHD2GuiderService.cs" />
+    <Compile Include="Model\MyPlanetarium\CartesDuCiel.cs" />
+    <Compile Include="Model\MyPlanetarium\Coords.cs" />
+    <Compile Include="Model\MyPlanetarium\PlanetariumFactory.cs" />
+    <Compile Include="Utility\Api\ApiParameters.cs" />
+    <Compile Include="Model\MyPlanetarium\IPlanetarium.cs" />
+    <Compile Include="Utility\Api\RawTcp.cs" />
+    <Compile Include="Utility\Api\ITcpIpApi.cs" />
+    <Compile Include="Model\MyPlanetarium\Stellarium.cs" />
+    <Compile Include="Utility\Api\JSONApi.cs" />
     <Compile Include="Model\MyTelescope\GuideDirections.cs" />
     <Compile Include="Model\MyTelescope\PierSide.cs" />
     <Compile Include="Model\MyGPS\NMEAGps.cs" />
@@ -313,6 +322,9 @@
     <Compile Include="PlateSolving\CLISolver.cs" />
     <Compile Include="PlateSolving\PlateSolveParameter.cs" />
     <Compile Include="PlateSolving\PlateSolveResult.cs" />
+    <Compile Include="Utility\Enum\PlanetariumEnum.cs" />
+    <Compile Include="Utility\Profile\IPlanetariumSettings.cs" />
+    <Compile Include="Utility\Profile\PlanetariumSettings.cs" />
     <Compile Include="Utility\ProjectVersion.cs" />
     <Compile Include="Utility\Behaviors\BrowserBehavior.cs" />
     <Compile Include="Utility\Enum\AutoUpdateSourceEnum.cs" />
@@ -767,6 +779,9 @@
     <Compile Include="View\Options\OptionsImagingView.xaml.cs">
       <DependentUpon>OptionsImagingView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Options\OptionsPlanetariumView.xaml.cs">
+      <DependentUpon>OptionsPlanetariumView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Options\OptionsPlateSolverView.xaml.cs">
       <DependentUpon>OptionsPlateSolverView.xaml</DependentUpon>
     </Compile>
@@ -830,12 +845,12 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Locale\Locale.en-GB.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Locale\Locale.en-US.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Locale\Locale.it-IT.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -1145,6 +1160,10 @@
     <Page Include="View\Options\OptionsImagingView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Options\OptionsPlanetariumView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Options\OptionsPlateSolverView.xaml">
       <SubType>Designer</SubType>

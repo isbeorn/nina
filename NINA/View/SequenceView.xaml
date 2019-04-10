@@ -543,164 +543,171 @@
             </GroupBox>
             <GroupBox DataContext="{Binding Sequence}" Visibility="{Binding DSO, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                 <GroupBox.Header>
-                    <Grid Height="40" Margin="5">
-                        <TextBlock
+                    <UniformGrid Columns="2">
+                        <Grid Height="40" Margin="5">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="20"
+                                Text="{ns:Loc LblTarget}" />
+                        </Grid>
+                        <Button
+                            Width="25"
+                            Height="25"
+                            Margin="5,0,5,0"
+                            HorizontalAlignment="Right"
                             VerticalAlignment="Center"
-                            FontSize="20"
-                            Text="{ns:Loc LblTarget}" />
-                    </Grid>
+                            HorizontalContentAlignment="Center"
+                            Command="{Binding DataContext.CoordsFromPlanetariumCommand, RelativeSource={RelativeSource AncestorType=local:SequenceView}}">
+                            <Button.ToolTip>
+                                <ToolTip ToolTipService.ShowOnDisabled="False">
+                                    <TextBlock Text="{ns:Loc LblPlanetariumTooltip}" />
+                                </ToolTip>
+                            </Button.ToolTip>
+                            <Path
+                                Margin="5"
+                                Data="{StaticResource GetCoordsSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform" />
+                        </Button>
+                    </UniformGrid>
                 </GroupBox.Header>
+
                 <Grid Visibility="{Binding Coordinates, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" MinHeight="25" />
+                        <RowDefinition Height="Auto" MinHeight="25" />
+                        <RowDefinition Height="Auto" MinHeight="25" />
+                        <RowDefinition Height="Auto" MinHeight="25" />
                         <RowDefinition />
                     </Grid.RowDefinitions>
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
-                        <UniformGrid Columns="2">
-                            <UniformGrid
-                                Margin="0,6,0,6"
-                                VerticalAlignment="Center"
-                                Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTargetName}" />
-                                <ninactrl:AutoCompleteBox
-                                    Margin="5,0,0,0"
-                                    Foreground="{StaticResource PrimaryBrush}"
-                                    HintText="{ns:Loc LblObjectNameHint}"
-                                    PopupBackground="{StaticResource TertiaryBackgroundBrush}"
-                                    SearchResult="{Binding Source={StaticResource AppVM}, Path=SeqVM.DeepSkyObjectSearchVM.TargetSearchResult.Result}"
-                                    SelectedSearchResult="{Binding Source={StaticResource AppVM}, Path=SeqVM.DeepSkyObjectSearchVM.SelectedTargetSearchResult, Mode=TwoWay}"
-                                    ShowPopup="{Binding Source={StaticResource AppVM}, Path=SeqVM.DeepSkyObjectSearchVM.ShowPopup, Mode=TwoWay}"
-                                    Text="{Binding TargetName, UpdateSourceTrigger=PropertyChanged}" />
-                            </UniformGrid>
-                        </UniformGrid>
-                    </Border>
-                    <Border
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTargetName}" />
+                    <ninactrl:AutoCompleteBox
+                        Grid.Column="1"
+                        Margin="5,0,0,0"
+                        Foreground="{StaticResource PrimaryBrush}"
+                        HintText="{ns:Loc LblObjectNameHint}"
+                        PopupBackground="{StaticResource TertiaryBackgroundBrush}"
+                        SearchResult="{Binding Source={StaticResource AppVM}, Path=SeqVM.DeepSkyObjectSearchVM.TargetSearchResult.Result}"
+                        SelectedSearchResult="{Binding Source={StaticResource AppVM}, Path=SeqVM.DeepSkyObjectSearchVM.SelectedTargetSearchResult, Mode=TwoWay}"
+                        ShowPopup="{Binding Source={StaticResource AppVM}, Path=SeqVM.DeepSkyObjectSearchVM.ShowPopup, Mode=TwoWay}"
+                        Text="{Binding TargetName, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <TextBlock
                         Grid.Row="1"
-                        BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0">
-                        <UniformGrid Columns="2">
-                            <UniformGrid
-                                Margin="0,6,0,6"
-                                VerticalAlignment="Center"
-                                Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRA}" />
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBox
-                                        MinWidth="40"
-                                        Margin="5,0,0,0"
-                                        TextAlignment="Right">
-                                        <TextBox.Text>
-                                            <Binding Path="RAHours" UpdateSourceTrigger="LostFocus">
-                                                <Binding.ValidationRules>
-                                                    <rules:HoursRule />
-                                                </Binding.ValidationRules>
-                                            </Binding>
-                                        </TextBox.Text>
-                                    </TextBox>
-                                    <TextBlock VerticalAlignment="Center">h</TextBlock>
-                                    <TextBox
-                                        MinWidth="40"
-                                        Margin="5,0,0,0"
-                                        TextAlignment="Right">
-                                        <TextBox.Text>
-                                            <Binding Path="RAMinutes" UpdateSourceTrigger="LostFocus">
-                                                <Binding.ValidationRules>
-                                                    <rules:MinutesRule />
-                                                </Binding.ValidationRules>
-                                            </Binding>
-                                        </TextBox.Text>
-                                    </TextBox>
-                                    <TextBlock VerticalAlignment="Center">m</TextBlock>
-                                    <TextBox
-                                        MinWidth="40"
-                                        Margin="5,0,0,0"
-                                        TextAlignment="Right">
-                                        <TextBox.Text>
-                                            <Binding Path="RASeconds" UpdateSourceTrigger="LostFocus">
-                                                <Binding.ValidationRules>
-                                                    <rules:SecondsRule />
-                                                </Binding.ValidationRules>
-                                            </Binding>
-                                        </TextBox.Text>
-                                    </TextBox>
-                                    <TextBlock VerticalAlignment="Center">s</TextBlock>
-                                </StackPanel>
-                            </UniformGrid>
-                        </UniformGrid>
-                    </Border>
-                    <Border
+                        VerticalAlignment="Center"
+                        Text="{ns:Loc LblRA}" />
+                    <StackPanel
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Orientation="Horizontal">
+                        <TextBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            TextAlignment="Right">
+                            <TextBox.Text>
+                                <Binding Path="RAHours" UpdateSourceTrigger="LostFocus">
+                                    <Binding.ValidationRules>
+                                        <rules:HoursRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock VerticalAlignment="Center">h</TextBlock>
+                        <TextBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            TextAlignment="Right">
+                            <TextBox.Text>
+                                <Binding Path="RAMinutes" UpdateSourceTrigger="LostFocus">
+                                    <Binding.ValidationRules>
+                                        <rules:MinutesRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock VerticalAlignment="Center">m</TextBlock>
+                        <TextBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            TextAlignment="Right">
+                            <TextBox.Text>
+                                <Binding Path="RASeconds" UpdateSourceTrigger="LostFocus">
+                                    <Binding.ValidationRules>
+                                        <rules:SecondsRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock VerticalAlignment="Center">s</TextBlock>
+                    </StackPanel>
+
+                    <TextBlock
                         Grid.Row="2"
-                        BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0">
-                        <UniformGrid Columns="2">
-                            <UniformGrid
-                                Margin="0,6,0,6"
-                                VerticalAlignment="Center"
-                                Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDec}" />
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBox
-                                        MinWidth="40"
-                                        Margin="5,0,0,0"
-                                        TextAlignment="Right">
-                                        <TextBox.Text>
-                                            <Binding Path="DecDegrees" UpdateSourceTrigger="LostFocus">
-                                                <Binding.ValidationRules>
-                                                    <rules:DegreesRule />
-                                                </Binding.ValidationRules>
-                                            </Binding>
-                                        </TextBox.Text>
-                                    </TextBox>
-                                    <TextBlock VerticalAlignment="Center">d</TextBlock>
-                                    <TextBox
-                                        MinWidth="40"
-                                        Margin="5,0,0,0"
-                                        TextAlignment="Right">
-                                        <TextBox.Text>
-                                            <Binding Path="DecMinutes" UpdateSourceTrigger="LostFocus">
-                                                <Binding.ValidationRules>
-                                                    <rules:MinutesRule />
-                                                </Binding.ValidationRules>
-                                            </Binding>
-                                        </TextBox.Text>
-                                    </TextBox>
-                                    <TextBlock VerticalAlignment="Center">m</TextBlock>
-                                    <TextBox
-                                        MinWidth="40"
-                                        Margin="5,0,0,0"
-                                        TextAlignment="Right">
-                                        <TextBox.Text>
-                                            <Binding Path="DecSeconds" UpdateSourceTrigger="LostFocus">
-                                                <Binding.ValidationRules>
-                                                    <rules:SecondsRule />
-                                                </Binding.ValidationRules>
-                                            </Binding>
-                                        </TextBox.Text>
-                                    </TextBox>
-                                    <TextBlock VerticalAlignment="Center">s</TextBlock>
-                                </StackPanel>
-                            </UniformGrid>
-                        </UniformGrid>
-                    </Border>
-                    <Border
+                        VerticalAlignment="Center"
+                        Text="{ns:Loc LblDec}" />
+                    <StackPanel
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Orientation="Horizontal">
+                        <TextBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            TextAlignment="Right">
+                            <TextBox.Text>
+                                <Binding Path="DecDegrees" UpdateSourceTrigger="LostFocus">
+                                    <Binding.ValidationRules>
+                                        <rules:DegreesRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock VerticalAlignment="Center">d</TextBlock>
+                        <TextBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            TextAlignment="Right">
+                            <TextBox.Text>
+                                <Binding Path="DecMinutes" UpdateSourceTrigger="LostFocus">
+                                    <Binding.ValidationRules>
+                                        <rules:MinutesRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock VerticalAlignment="Center">m</TextBlock>
+                        <TextBox
+                            MinWidth="40"
+                            Margin="5,0,0,0"
+                            TextAlignment="Right">
+                            <TextBox.Text>
+                                <Binding Path="DecSeconds" UpdateSourceTrigger="LostFocus">
+                                    <Binding.ValidationRules>
+                                        <rules:SecondsRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock VerticalAlignment="Center">s</TextBlock>
+                    </StackPanel>
+
+                    <TextBlock
                         Grid.Row="3"
-                        BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0">
-                        <UniformGrid Columns="2">
-                            <UniformGrid
-                                Margin="0,6,0,6"
-                                VerticalAlignment="Center"
-                                Columns="2">
-                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRotation}" />
-                                <TextBox Margin="5,0,0,0" Text="{Binding Rotation}" />
-                            </UniformGrid>
-                        </UniformGrid>
-                    </Border>
+                        VerticalAlignment="Center"
+                        Text="{ns:Loc LblRotation}" />
+                    <TextBox
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        Margin="5,0,0,0"
+                        Text="{Binding Rotation}" />
+
                     <Grid
                         Grid.Row="4"
+                        Grid.ColumnSpan="2"
                         Margin="0,0,0,0"
                         Visibility="{Binding AltitudeVisible, Converter={StaticResource VisibilityConverter}}">
                         <local:AltitudeChart

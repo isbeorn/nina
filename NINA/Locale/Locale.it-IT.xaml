@@ -577,7 +577,7 @@ Vuoi che l'applicazione provi a risolvere quell'errore? (Può portare a comporta
     <s:String x:Key="LblObjectType_DRKNB">Nebulosa scura</s:String>
     <s:String x:Key="LblObjectType_GALCL">Ammasso di Galassie</s:String>
     <s:String x:Key="LblObjectType_GALXY">Galassia</s:String>
-    <s:String x:Key="LblObjectType_GLOCL">Amamsso Globulare </s:String>
+    <s:String x:Key="LblObjectType_GLOCL">Ammasso Globulare</s:String>
     <s:String x:Key="LblObjectType_GX+DN">Nebula Diffusa dentro a Galassia</s:String>
     <s:String x:Key="LblObjectType_GX+GC">Ammasso Globulare in una Galassia</s:String>
     <s:String x:Key="LblObjectType_G+C+N">Ammasso con Nebulosità in una Galassia</s:String>
@@ -660,7 +660,7 @@ Si vogliono sincronizzare i valori?</s:String>
     <s:String x:Key="LblFullWellCapacity">Capacità Full Well in e</s:String>
     <s:String x:Key="LblDataToDownloadRatio">Rapporto Download Dati</s:String>
     <s:String x:Key="LblCurrentDownloadToDataRatio">Rapporto Download:Data attuale</s:String>
-    <s:String x:Key="LblPHD2HistorySize">Dimensione Storia PHD2 </s:String>
+    <s:String x:Key="LblPHD2HistorySize">Dimensione Storia PHD2</s:String>
     <s:String x:Key="LblPHD2MinimalHistorySize">Dimensione Storia  PHD2 (Imaging)</s:String>
     <s:String x:Key="LblPHD2RARMS">RA: {0} ({1}&quot;)</s:String>
     <s:String x:Key="LblPHD2DecRMS">Dec: {0} ({1}&quot;)</s:String>
@@ -691,7 +691,7 @@ Trascina il rettangolo  sulla parte del fotogramma che vuoi estrarre ed abilita 
     <s:String x:Key="LblStretchImage">Stretching Immagine</s:String>
     <s:String x:Key="LblDebayeringImage">Debayering Immagine</s:String>
     <s:String x:Key="LblToolTipLiveView">Live View</s:String>
-        <s:String x:Key="LblFocusPointValidationFailed" xml:space="preserve">HFR Calcoalto per il fuoco in posizione {0} differisce più del 25% dall'HFR attuale
+    <s:String x:Key="LblFocusPointValidationFailed" xml:space="preserve">HFR Calcoalto per il fuoco in posizione {0} differisce più del 25% dall'HFR attuale
 HFR Attuale : {1}
 HFR Calcolato: {2}
     </s:String>
@@ -723,12 +723,12 @@ HFR Calcolato: {2}
     <s:String x:Key="LblPleaseChangeToFilter">Pregasi passare al filtro {0}</s:String>
     <s:String x:Key="LblFilterChangeRequired">Cambio filtro richiesto</s:String>
     <s:String x:Key="LblManualFilterWheel">Filterwheel Manuale</s:String>
-        <s:String x:Key="LblManualFilterWheelDescription">Copia i filtri che sono impostati nelle opzioni. Quando un cambio filtro è richiesto una notifica apaprirà per cambiarlo manualmente.</s:String>
+    <s:String x:Key="LblManualFilterWheelDescription">Copia i filtri che sono impostati nelle opzioni. Quando un cambio filtro è richiesto una notifica apaprirà per cambiarlo manualmente.</s:String>
     <s:String x:Key="LblRotator">Rotator</s:String>
     <s:String x:Key="LblNoRotator">Nessun Rotator</s:String>
     <s:String x:Key="LblManualRotator">Rotator Manuale</s:String>
-        <s:String x:Key="LblManualRotatorDescription">Quando una rotazione è necessaria apparirà una notifica per ruotare manualmente</s:String>
-        <s:String x:Key="LblPleaseRotate">Pregasi di rotare di {0}</s:String>
+    <s:String x:Key="LblManualRotatorDescription">Quando una rotazione è necessaria apparirà una notifica per ruotare manualmente</s:String>
+    <s:String x:Key="LblPleaseRotate">Pregasi di rotare di {0}</s:String>
     <s:String x:Key="LblRotationRequired">Rotazione Camera Richiesta</s:String>
     <s:String x:Key="LblCurrentPosition">Posizione Corrente</s:String>
     <s:String x:Key="LblCounterclockwise">Antiorario</s:String>
@@ -736,9 +736,9 @@ HFR Calcolato: {2}
     <s:String x:Key="LblRotationTolerance">Tolleranza di rotazione</s:String>
     <s:String x:Key="LblAberrationInspector">Ispettore di Aberrazione</s:String>
     <s:String x:Key="LblSettlePixelTolerance">Tolleranza del PHD2 Settle Pixel</s:String>
-    <s:String x:Key="LblMinimumSettleTime">Tempo di settle Minimo </s:String>
+    <s:String x:Key="LblMinimumSettleTime">Tempo di settle Minimo</s:String>
     <s:String x:Key="LblDirectGuideDuration">Durata guida diretta</s:String>
-        <s:String x:Key="LblSettleTimeout">Timeout PHD2 Settle</s:String>
+    <s:String x:Key="LblSettleTimeout">Timeout PHD2 Settle</s:String>
     <s:String x:Key="LblTargets">Targets</s:String>
     <s:String x:Key="LblTargetWidthDegrees">Larghezza minima (gradi)</s:String>
     <s:String x:Key="LblTargetHeightDegrees">Altezza minima (gradi)</s:String>
@@ -747,12 +747,12 @@ HFR Calcolato: {2}
     <s:String x:Key="LblSource">Sorgente</s:String>
     <s:String x:Key="LblHorizontalPanels">Pannelli Orizzontali</s:String>
     <s:String x:Key="LblVerticalPanels">Pannelli verticali</s:String>
-        <s:String x:Key="LblSkySurveyCacheDirectory">Directory Cache Sky Survey</s:String>
+    <s:String x:Key="LblSkySurveyCacheDirectory">Directory Cache Sky Survey</s:String>
     <s:String x:Key="LblNINAToTelescope">Da NINA al telescopio</s:String>
     <s:String x:Key="LblTelescopeToNINA">Dal telescopio a NINA</s:String>
     <s:String x:Key="LblNINA">NINA</s:String>
     <s:String x:Key="LblFocuserPositionDescription">Posizione corrente focuser</s:String>
-        <s:String x:Key="LblSaveImageAsDSLRNote">Per le DSLR il settaggio del formato file viene ignorato. Il formato RAW format verrà usato!</s:String>
+    <s:String x:Key="LblSaveImageAsDSLRNote">Per le DSLR il settaggio del formato file viene ignorato. Il formato RAW format verrà usato!</s:String>
     <s:String x:Key="LblClear">Clear</s:String>
     <s:String x:Key="LblASPS">All Sky Plate Solver</s:String>
     <s:String x:Key="LblASPSDirectory">Percorso ASPS</s:String>
@@ -824,7 +824,7 @@ HFR Calcolato: {2}
         Client disconnesso dal servizio sincronizzato PHD2.
         clients connessi: {0}
     </s:String>
-        <s:String x:Key="LblPhd2SynchronizedServiceStarted">Servizio sincronizzato PHD2 avviato</s:String>
+    <s:String x:Key="LblPhd2SynchronizedServiceStarted">Servizio sincronizzato PHD2 avviato</s:String>
     <s:String x:Key="LblSynchronizedPHD2Guider">PHD2 Sincronizzato (Sperimentale)</s:String>
     <s:String x:Key="LblSynchronizedPHD2ServiceCrashed">Servizio sincronizzato PHD2 in crash, riavviando il guider PHD2 sincronizzato come servizio</s:String>
     <s:String x:Key="LblSynchronizedPHD2ServiceClientAlreadyExists">
@@ -843,9 +843,20 @@ HFR Calcolato: {2}
     <s:String x:Key="LblSolving">Solving...</s:String>
     <s:String x:Key="LblASPSNotFound">ASPS exe non trovato</s:String>
     <s:String x:Key="LblPlatesolveNoCoordinates">Nessuna coordinata di referenza disponibile</s:String>
-        <s:String x:Key="LblUseBlindSolveNoCoordinatesRollover">Nessuna coordinata di referenza disponibile. Vuoi usare il blind solver?</s:String>
-        <s:String x:Key="LblDownSampleFactor">Fattore di downsample</s:String>
+    <s:String x:Key="LblUseBlindSolveNoCoordinatesRollover">Nessuna coordinata di referenza disponibile. Vuoi usare il blind solver?</s:String>
+    <s:String x:Key="LblDownSampleFactor">Fattore di downsample</s:String>
     <s:String x:Key="LblMaxObjects">Oggetti Massimi</s:String>
     <s:String x:Key="LblPlanetariumCoordsOk">Coordinate impostate da {0}</s:String>
     <s:String x:Key="LblPlanetariumCoordsError">Impossibile recuperare coordinate da {0}</s:String>
+    <s:String x:Key="LblPlanetarium">Planetario</s:String>
+    <s:String x:Key="LblStellarium">Stellarium</s:String>
+    <s:String x:Key="LblHost">Host</s:String>
+    <s:String x:Key="LblPort">Port</s:String>
+    <s:String x:Key="LblTimeout">Timeout</s:String>
+    <s:String x:Key="LblStellariumUse">Utilizza Stellarium</s:String>
+    <s:String x:Key="LblStellariumUseNotice">Per poter utilizzare Stellarium il remote plugin deve essere instalalto ed attivo sull'Host e Porta specificati sopra</s:String>
+    <s:String x:Key="LblPlanetariumTooltip">Ottieni le coordinate dal software di Planetario</s:String>
+    <s:String x:Key="LblCdC">Cartes du Ciel</s:String>
+    <s:String x:Key="LblPlanetariumPrefs">Preferenze Planetario</s:String>
+    <s:String x:Key="LblPreferredPlanetarium">Programma Planetario Preferito</s:String>
 </ResourceDictionary>

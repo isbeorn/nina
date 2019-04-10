@@ -128,7 +128,34 @@
                             </Grid>
                         </StackPanel>
                     </GroupBox>
-                    <GroupBox Header="{ns:Loc LblCoordinates}">
+                    <GroupBox >
+                        <GroupBox.Header>
+                            <DockPanel>
+                                <TextBlock Text="{ns:Loc LblCoordinates}" 
+                                           DockPanel.Dock="Left"
+                                           FontSize="20"/>
+                                <Button DockPanel.Dock="Right"
+                                      Width="25"
+                                      Height="25"
+                                      Margin="1,0,0,0"
+                                      HorizontalContentAlignment ="Right"
+                                        HorizontalAlignment ="Right"
+                                      Command="{Binding CoordsFromPlanetariumCommand}">
+                                    <Button.ToolTip>
+                                        <ToolTip ToolTipService.ShowOnDisabled="False">
+                                            <TextBlock Text="{ns:Loc LblPlanetariumTooltip}" />
+                                        </ToolTip>
+                                    </Button.ToolTip>
+                                    <Grid>
+                                        <Path
+                                Margin="5"
+                                Data="{StaticResource GetCoordsSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform" />
+                                    </Grid>
+                                </Button>
+                            </DockPanel>
+                        </GroupBox.Header>
                         <StackPanel Orientation="Vertical">
                             <UniformGrid
                                 Margin="0,6,0,6"
