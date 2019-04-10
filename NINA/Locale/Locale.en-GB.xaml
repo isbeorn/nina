@@ -861,6 +861,7 @@ Calculated HFR: {2}
     <s:String x:Key="LblPlanetarium">Planetarium</s:String>
     <s:String x:Key="LblStellarium">Stellarium</s:String>
     <s:String x:Key="LblHost">Host</s:String>
+    <s:String x:Key="LblPort">Port</s:String>
     <s:String x:Key="LblTimeout">Timeout</s:String>
     <s:String x:Key="LblStellariumUse">Use Stellarium</s:String>
     <s:String x:Key="LblStellariumUseNotice">In order to use Stellarium you need to have the remote plugin installed and active on the Host and Port specified above</s:String>
