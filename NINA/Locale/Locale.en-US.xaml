@@ -14,7 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/. -->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -857,4 +857,14 @@ Calculated HFR: {2}
     <s:String x:Key="LblGPSTooltip">Import location using an NMEA GPS device</s:String>
     <s:String x:Key="LblPlanetariumCoordsOk">Coordinates acquired from {0}</s:String>
     <s:String x:Key="LblPlanetariumCoordsError">Unable to acquire coordinates from {0}</s:String>
+    <s:String x:Key="LblPlanetarium">Planetarium</s:String>
+    <s:String x:Key="LblStellarium">Stellarium</s:String>
+    <s:String x:Key="LblHost">Host</s:String>
+    <s:String x:Key="LblTimeout">Timeout</s:String>
+    <s:String x:Key="LblStellariumUse">Use Stellarium</s:String>
+    <s:String x:Key="LblStellariumUseNotice">In order to use Stellarium you need to have the remote plugin installed and active on the Host and Port specified above</s:String>
+    <s:String x:Key="LblPlanetariumTooltip">Get coordinates from the Planetarium Software</s:String>
+    <s:String x:Key="LblCdC">Cartes du Ciel</s:String>
+    <s:String x:Key="LblPlanetariumPrefs">Planetarium Preferences</s:String>
+    <s:String x:Key="LblPreferredPlanetarium">Preferred Planetatium software</s:String>
 </ResourceDictionary>

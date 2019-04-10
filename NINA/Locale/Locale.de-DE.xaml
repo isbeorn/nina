@@ -862,5 +862,16 @@ Berechneter HFR: {2}
     <s:String x:Key="LblGPSTooltip">Standord von einem NMEA GPS Gerät importieren</s:String>
     <s:String x:Key="LblPlanetariumCoordsOk">Koordinaten von {0} erhalten</s:String>
     <s:String x:Key="LblPlanetariumCoordsError">Konnte nicht die Koordinaten von {0} erhalten</s:String>
+    <s:String x:Key="LblPlanetarium">Planetarium</s:String>
+    <s:String x:Key="LblStellarium">Stellarium</s:String>
+    <s:String x:Key="LblHost">Host</s:String>
+    <s:String x:Key="LblPort">Port</s:String>
+    <s:String x:Key="LblTimeout">Timeout</s:String>
+    <s:String x:Key="LblStellariumUse">Use Stellarium</s:String>
+    <s:String x:Key="LblStellariumUseNotice">Um Stellarium nutzen zu können, muss das Remote Plugin installiert und auf dem Host sowie Port aktiv sein, welcher oben spezifiziert ist</s:String>
+    <s:String x:Key="LblPlanetariumTooltip">Koordinaten von der Planetariumsoftware erhalten</s:String>
+    <s:String x:Key="LblCdC">Cartes du Ciel</s:String>
+    <s:String x:Key="LblPlanetariumPrefs">Planetarium Einstellungen</s:String>
+    <s:String x:Key="LblPreferredPlanetarium">Bevorzugte Planetarium Software</s:String>
 
 </ResourceDictionary>

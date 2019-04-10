@@ -543,13 +543,16 @@
             </GroupBox>
             <GroupBox DataContext="{Binding Sequence}" Visibility="{Binding DSO, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                 <GroupBox.Header>
-                    <Grid Height="40" Margin="5">
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            FontSize="20"
-                            Text="{ns:Loc LblTarget}" />
-                    </Grid>
-                </GroupBox.Header>
+                    <UniformGrid Columns="2">
+                            <Grid Height="40" Margin="5">
+                                <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="20"
+                                Text="{ns:Loc LblTarget}" />
+                            </Grid>
+                        </UniformGrid>
+                    </GroupBox.Header>
+                   
                 <Grid Visibility="{Binding Coordinates, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -558,6 +561,31 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition />
                     </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="50"/>
+                    </Grid.ColumnDefinitions>
+                    <Button           Grid.Column="1"
+                                      Width="25"
+                                      Height="25"
+                                      Margin="5,0,5,0"
+                                      HorizontalContentAlignment ="Center"
+                                      HorizontalAlignment ="Center"
+                                      VerticalAlignment="Center"
+                                      Command="{Binding DataContext.CoordsFromPlanetariumCommand, RelativeSource={RelativeSource AncestorType=local:SequenceView}}">
+                        <Button.ToolTip>
+                            <ToolTip ToolTipService.ShowOnDisabled="False">
+                                <TextBlock Text="{ns:Loc LblPlanetariumTooltip}" />
+                            </ToolTip>
+                        </Button.ToolTip>
+                        <Grid>
+                            <Path
+                                Margin="5"
+                                Data="{StaticResource GetCoordsSVG}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
+                                Stretch="Uniform" />
+                        </Grid>
+                    </Button>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                         <UniformGrid Columns="2">
                             <UniformGrid

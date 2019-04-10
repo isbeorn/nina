@@ -776,6 +776,21 @@
                                             Fill="{StaticResource ButtonForegroundBrush}"
                                             Stretch="Uniform" />
                                     </Button>
+                                    <Button
+                                        Width="40"
+                                        Height="30"
+                                        Margin="5"
+                                        HorizontalAlignment="Center"
+                                        Command="{Binding SiteFromPlanetariumCommand}">
+                                        <Button.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblPlanetariumTooltip}" />
+                                        </Button.ToolTip>
+                                        <Path   
+                                            Margin="5"
+                                            Data="{StaticResource GetCoordsSVG}"
+                                            Fill="{StaticResource ButtonForegroundBrush}" 
+                                            Stretch="Uniform" />
+                                    </Button>
                                 </StackPanel>
                             </UniformGrid>
                         </StackPanel>
@@ -841,6 +856,12 @@
                 <TextBlock Style="{StaticResource TabItemTextBox}" Text="{ns:Loc LblPlateSolving}" />
             </TabItem.Header>
             <local:OptionsPlateSolverView DataContext="{Binding}" />
+        </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <TextBlock Style="{StaticResource TabItemTextBox}" Text="{ns:Loc LblPlanetarium}" />
+            </TabItem.Header>
+            <local:OptionsPlanetariumView DataContext="{Binding}" />
         </TabItem>
     </TabControl>
 </UserControl>

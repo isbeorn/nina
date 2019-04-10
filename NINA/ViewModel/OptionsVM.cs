@@ -23,10 +23,11 @@
 
 using NINA.Model;
 using NINA.Model.MyFilterWheel;
+using NINA.Model.MyPlanetarium;
 using NINA.Utility;
-using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator.Interfaces;
+using NINA.Utility.Notification;
 using NINA.Utility.Profile;
 using System;
 using System.Collections.ObjectModel;
@@ -74,7 +75,7 @@ namespace NINA.ViewModel {
             CopyToCustomSchemaCommand = new RelayCommand(CopyToCustomSchema, (object o) => AlternativeColorSchemaName != "Custom");
             CopyToAlternativeCustomSchemaCommand = new RelayCommand(CopyToAlternativeCustomSchema, (object o) => ColorSchemaName != "Alternative Custom");
             SiteFromGPSCommand = new AsyncCommand<bool>(() => Task.Run(SiteFromGPS));
-
+            SiteFromPlanetariumCommand = new AsyncCommand<bool>(() => Task.Run(SiteFromPlanetarium));
             ImagePatterns = ImagePatterns.CreateExample();
 
             ScanForIndexFiles();
@@ -134,6 +135,19 @@ namespace NINA.ViewModel {
                 }
                 return loc;
             }
+        }
+
+        private async Task<bool> SiteFromPlanetarium() {
+            IPlanetarium s = PlanetariumFactory.GetPlanetarium(profileService);
+            Coords loc = await s.GetSite();
+            if (loc != null) {
+                Latitude = loc.Latitude;
+                Longitude = loc.Longitude;
+                Notification.ShowSuccess(String.Format(Locale.Loc.Instance["LblPlanetariumCoordsOk"], s.Name));
+                // Elevation = loc.Elevation;
+            } else Notification.ShowError(String.Format(Locale.Loc.Instance["LblPlanetariumCoordsError"], s.Name));
+
+            return (loc != null);
         }
 
         private void CopyToCustomSchema(object obj) {
@@ -410,6 +424,7 @@ namespace NINA.ViewModel {
         public ICommand CopyToCustomSchemaCommand { get; private set; }
         public ICommand CopyToAlternativeCustomSchemaCommand { get; private set; }
         public ICommand SiteFromGPSCommand { get; private set; }
+        public ICommand SiteFromPlanetariumCommand { get; private set; }
 
         public ICommand SelectProfileCommand { get; private set; }
 

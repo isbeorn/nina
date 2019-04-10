@@ -48,7 +48,7 @@ namespace NINA.Utility.Profile {
         ISequenceSettings SequenceSettings { get; set; }
         ITelescopeSettings TelescopeSettings { get; set; }
         IWeatherDataSettings WeatherDataSettings { get; set; }
-
+        IPlanetariumSettings PlanetariumSettings { get; set; }
         void MatchFilterSettingsWithFilterList();
     }
 }
