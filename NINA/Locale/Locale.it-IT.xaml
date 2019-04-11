@@ -79,6 +79,17 @@
     <s:String x:Key="LblTooltipAddSequence">Aggiungi una riga alla lista delle sequenze</s:String>
     <s:String x:Key="LblTooltipRemoveSequence">Rimuovi la riga selezionata dalla lista delle sequenze</s:String>
     <s:String x:Key="LblTooltipStartSequence">Avvia le sequenze</s:String>
+    <s:String x:Key="LblStartSequenceAnyway">Iniziare la sequenza comunque?</s:String>
+    <s:String x:Key="LblPreSequenceChecklist">I seguenti possibili problemi sono stati individuati con la tua sequenza:</s:String>
+    <s:String x:Key="LblPreSequenceChecklistHeader">Checklist pre-sequenza:</s:String>
+    <s:String x:Key="LblCameraNotAtTargetTemp">La Camera è a {0}°C, ma la temperatura target è {1}°C</s:String>
+    <s:String x:Key="LblCameraHighPower" xml:space="preserve">Il Cooler della camera è al {0}% di potenza e potrebbe non essere
+in grado di compensare le variazioni della temperatura ambiente</s:String>
+    <s:String x:Key="LblDitherOnButGuiderNotConnected">Il dithering è abilitato, tuttavia il guider non è connesso</s:String>
+    <s:String x:Key="LblAFOnButFocuserNotConnected">L'auto-focs è abilitato, ma il focuser non è connesso</s:String>
+    <s:String x:Key="LblCameraCoolerNotEnabled">La camera ha un cooler, ma questo non è stato abilitato</s:String>
+    <s:String x:Key="LblSlewEnabledButTelescopeNotConnected">Slew al target è abilitato, ma il telescopio non è connesso</s:String>
+    <s:String x:Key="LblStartGuidingButGuiderNotConnected">&quot;Inizia guida&quot; è abilitato, tuttavia il guider non è connesso</s:String>
     <s:String x:Key="LblGeneral">Generale</s:String>
     <s:String x:Key="LblDownload">Download</s:String>
     <s:String x:Key="LblOn">On</s:String>
@@ -257,7 +268,7 @@ Usando questi due punti l'errore attuale di altitudine verra' calcolato e mostra
     <s:String x:Key="LblAzimuthMeasurementDescription">Punta il telescopio verso Sud vicino alla declinazione 0 e al meridiano</s:String>
     <s:String x:Key="LblAzimuthMeasurementButtonTooltip" xml:space="preserve">Misura l'errore di Azimuth con i seguenti tre steps.
 1. Cattura Imamgine ed effettua un platesolve per le coordinate attuali della posizione corrente
-2. Muove il telescopio usando l'asse RA di 0.5 gradi 
+2. Muove il telescopio usando l'asse RA di 0.5 gradi
 3. Cattura ulteriore immagine alla nuova posizione, effettua un plate solve su di essa per la posizione attuale
 Usando questi due punti l'errore attuale di azimuth verra' calcolato e mostrato</s:String>
     <s:String x:Key="LblDARVSlew">D.A.R.V. Slew</s:String>

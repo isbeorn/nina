@@ -453,6 +453,7 @@ namespace NINA.ViewModel {
 
             try {
                 var success = true;
+                if (Loop) IsLooping = true;
                 do {
                     var seq = new CaptureSequence(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1);
                     seq.EnableSubSample = SnapSubSample;
@@ -463,6 +464,7 @@ namespace NINA.ViewModel {
             } catch (OperationCanceledException) {
             } finally {
                 await _currentPrepareImageTask;
+                IsLooping = false;
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
 
@@ -498,6 +500,8 @@ namespace NINA.ViewModel {
             ImageControl.Image = null;
             ImageControl.ImgArr = null;
         }
+
+        public bool IsLooping { get; set; }
 
         public Task<ImageArray> CaptureImageWithoutHistoryAndThumbnail(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool calculateStatistics = true) {
             return CaptureImage(sequence, token, progress, false, "", calculateStatistics, false, false);

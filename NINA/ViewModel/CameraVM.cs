@@ -330,6 +330,7 @@ namespace NINA.ViewModel {
                                 DewHeaterOn = Cam.DewHeaterOn,
                                 Gain = Cam.Gain,
                                 HasShutter = Cam.HasShutter,
+                                CanSetTemperature = Cam.CanSetTemperature,
                                 IsSubSampleEnabled = Cam.EnableSubSample,
                                 Name = Cam.Name,
                                 Offset = Cam.Offset,
@@ -622,6 +623,12 @@ namespace NINA.ViewModel {
                 Cam.SubSampleY = y;
                 Cam.SubSampleWidth = width;
                 Cam.SubSampleHeight = height;
+            }
+        }
+
+        public bool AtTargetTemp {
+            get {
+                return Math.Abs(cameraInfo.Temperature - TargetTemp) <= 2;
             }
         }
 

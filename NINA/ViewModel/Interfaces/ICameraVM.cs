@@ -41,6 +41,10 @@ namespace NINA.ViewModel.Interfaces {
         void SetSubSampleArea(int x, int y, int width, int height);
 
         void AbortExposure();
+        
+        bool AtTargetTemp { get; }
+
+        double TargetTemp { get; }
 
         Task Capture(CaptureSequence sequence, CancellationToken token,
             IProgress<ApplicationStatus> progress);

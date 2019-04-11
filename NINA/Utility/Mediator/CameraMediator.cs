@@ -66,5 +66,17 @@ namespace NINA.Utility.Mediator {
         public void SetSubSampleArea(int x, int y, int width, int height) {
             handler.SetSubSampleArea(x, y, width, height);
         }
+
+        public bool AtTargetTemp {
+            get {
+                return handler.AtTargetTemp;
+            }
+        }
+
+        public double TargetTemp {
+            get {
+                return handler.TargetTemp;
+            }
+        }
     }
 }

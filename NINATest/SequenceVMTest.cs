@@ -551,6 +551,18 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
+        public bool AtTargetTemp {
+            get {
+                return false;
+            }
+        }
+
+        public double TargetTemp {
+            get {
+                return 0;
+            }
+        }
+
         public Task<bool> Connect() {
             throw new NotImplementedException();
         }
@@ -568,7 +580,7 @@ namespace NINATest {
         }
 
         public void RegisterConsumer(ICameraConsumer consumer) {
-            throw new NotImplementedException();
+            this.Consumer = consumer;
         }
 
         public void RegisterHandler(ICameraVM handler) {
@@ -863,6 +875,12 @@ namespace NINATest {
 
         public void DestroyImage() {
             throw new NotImplementedException();
+        }
+
+        public bool IsLooping {
+            get {
+                return false;
+            }
         }
 
         public void OnImageSaved(ImageSavedEventArgs e) {
