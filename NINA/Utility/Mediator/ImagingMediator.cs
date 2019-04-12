@@ -80,5 +80,11 @@ namespace NINA.Utility.Mediator {
         public void DestroyImage() {
             handler.DestroyImage();
         }
+
+        public bool IsLooping {
+            get {
+                return handler.IsLooping;
+            }
+        }
     }
 }

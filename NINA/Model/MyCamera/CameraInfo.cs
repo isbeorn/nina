@@ -27,6 +27,13 @@ using System.Collections.Generic;
 namespace NINA.Model.MyCamera {
 
     public class CameraInfo : DeviceInfo {
+        private bool canSetTemperature;
+
+        public bool CanSetTemperature {
+            get { return canSetTemperature; }
+            set { canSetTemperature = value; RaisePropertyChanged(); }
+        }
+
         private bool hasShutter;
 
         public bool HasShutter {

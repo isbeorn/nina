@@ -22,6 +22,7 @@
 #endregion "copyright"
 
 using NINA.Model;
+using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
 using NINA.Model.MyGuider;
@@ -42,6 +43,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Security.AccessControl;
 using System.Threading;
 using System.Threading.Tasks;
@@ -50,7 +52,7 @@ using System.Windows.Threading;
 
 namespace NINA.ViewModel {
 
-    internal class SequenceVM : DockableVM, ITelescopeConsumer, IFocuserConsumer, IFilterWheelConsumer, IRotatorConsumer, IGuiderConsumer {
+    internal class SequenceVM : DockableVM, ITelescopeConsumer, IFocuserConsumer, IFilterWheelConsumer, IRotatorConsumer, IGuiderConsumer, ICameraConsumer {
 
         public SequenceVM(
                 IProfileService profileService,
@@ -79,6 +81,8 @@ namespace NINA.ViewModel {
             this.guiderMediator.RegisterConsumer(this);
 
             this.cameraMediator = cameraMediator;
+            this.cameraMediator.RegisterConsumer(this);
+
             this.imagingMediator = imagingMediator;
             this.applicationStatusMediator = applicationStatusMediator;
 
@@ -95,7 +99,7 @@ namespace NINA.ViewModel {
             ResetTargetCommand = new RelayCommand(ResetTarget, ResetTargetEnabled);
             RemoveSequenceRowCommand = new RelayCommand(RemoveSequenceRow);
             ResetSequenceRowCommand = new RelayCommand(ResetSequenceRow, ResetSequenceRowEnabled);
-            StartSequenceCommand = new AsyncCommand<bool>(() => StartSequencing(new Progress<ApplicationStatus>(p => Status = p)));
+            StartSequenceCommand = new AsyncCommand<bool>(() => StartSequencing(new Progress<ApplicationStatus>(p => Status = p)), (object o) => !imagingMediator.IsLooping);
             SaveSequenceCommand = new RelayCommand(SaveSequence);
             LoadSequenceCommand = new RelayCommand(LoadSequence);
             CancelSequenceCommand = new RelayCommand(CancelSequence);
@@ -458,6 +462,12 @@ namespace NINA.ViewModel {
                 _pauseTokenSource = new PauseTokenSource();
                 IsPaused = false;
                 IsRunning = true;
+
+                /* Validate if preconditions are met */
+                if (!CheckPreconditions()) {
+                    return false;
+                }
+
                 if (this.Targets.Count > 0) {
                     autoUpdateTimer.Stop();
                     // If sequencing was stopped (vs paused) and started again, reset active sequence of each target to the first one
@@ -540,11 +550,6 @@ namespace NINA.ViewModel {
                 try {
                     //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released
                     await semaphoreSlim.WaitAsync(ct);
-
-                    /* Validate if preconditions are met */
-                    if (!CheckPreconditions()) {
-                        return false;
-                    }
 
                     csl.IsRunning = true;
 
@@ -666,6 +671,56 @@ namespace NINA.ViewModel {
         }
 
         private bool CheckPreconditions() {
+            StringBuilder messageStringBuilder = new StringBuilder();
+            bool displayMessage = false;
+
+            messageStringBuilder.AppendLine(Locale.Loc.Instance["LblPreSequenceChecklist"]).AppendLine();
+
+            if (cameraInfo.CoolerOn && !cameraMediator.AtTargetTemp) {
+                messageStringBuilder.AppendFormat(Locale.Loc.Instance["LblCameraNotAtTargetTemp"], Math.Round(cameraInfo.Temperature, 2), cameraMediator.TargetTemp).AppendLine();
+                displayMessage = true;
+            }
+
+            if (cameraInfo.CoolerOn && cameraInfo.CoolerPower >= 80) {
+                messageStringBuilder.AppendFormat(Locale.Loc.Instance["LblCameraHighPower"], Math.Round(cameraInfo.CoolerPower, 0)).AppendLine();
+                displayMessage = true;
+            }
+
+            if (!guiderInfo.Connected && Targets.Any(target => target.Items.Any(item => item.Dither && item.Enabled))) {
+                messageStringBuilder.AppendLine(Locale.Loc.Instance["LblDitherOnButGuiderNotConnected"]);
+                displayMessage = true;
+            }
+
+            if (!guiderInfo.Connected && Targets.Any(target => target.StartGuiding)) {
+                messageStringBuilder.AppendLine(Locale.Loc.Instance["LblStartGuidingButGuiderNotConnected"]);
+                displayMessage = true;
+            }
+
+            if (!focuserInfo.Connected && Targets.Any(target => target.AutoFocusAfterSetExposures || target.AutoFocusAfterSetTime || target.AutoFocusAfterTemperatureChange || target.AutoFocusOnFilterChange || target.AutoFocusOnStart)) {
+                messageStringBuilder.AppendLine(Locale.Loc.Instance["LblAFOnButFocuserNotConnected"]);
+                displayMessage = true;
+            }
+
+            if (cameraInfo.CanSetTemperature && !cameraInfo.CoolerOn) {
+                messageStringBuilder.AppendLine(Locale.Loc.Instance["LblCameraCoolerNotEnabled"]);
+                displayMessage = true;
+            }
+
+            if (!telescopeInfo.Connected && Targets.Any(target => target.SlewToTarget)) {
+                messageStringBuilder.AppendLine(Locale.Loc.Instance["LblSlewEnabledButTelescopeNotConnected"]);
+                displayMessage = true;
+            }
+
+            messageStringBuilder.AppendLine();
+            messageStringBuilder.Append(Locale.Loc.Instance["LblStartSequenceAnyway"]);
+
+            if (displayMessage) {
+                var diag = MyMessageBox.MyMessageBox.Show(messageStringBuilder.ToString(), Locale.Loc.Instance["LblPreSequenceChecklistHeader"], System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
+                if (diag == System.Windows.MessageBoxResult.Cancel) {
+                    return false;
+                }
+            }
+
             bool valid = true;
 
             valid = HasWritePermission(profileService.ActiveProfile.ImageFileSettings.FilePath);
@@ -850,8 +905,10 @@ namespace NINA.ViewModel {
         private IImagingMediator imagingMediator;
         private IApplicationStatusMediator applicationStatusMediator;
         private TelescopeInfo telescopeInfo = DeviceInfo.CreateDefaultInstance<TelescopeInfo>();
+        private CameraInfo cameraInfo = DeviceInfo.CreateDefaultInstance<CameraInfo>();
         private IRotatorMediator rotatorMediator;
         private RotatorInfo rotatorInfo;
+        private GuiderInfo guiderInfo = DeviceInfo.CreateDefaultInstance<GuiderInfo>();
 
         public ObservableCollection<string> ImageTypes {
             get {
@@ -914,6 +971,10 @@ namespace NINA.ViewModel {
             this.telescopeInfo = telescopeInfo;
         }
 
+        public void UpdateDeviceInfo(CameraInfo cameraInfo) {
+            this.cameraInfo = cameraInfo;
+        }
+
         public void UpdateDeviceInfo(RotatorInfo deviceInfo) {
             this.rotatorInfo = deviceInfo;
         }
@@ -952,6 +1013,7 @@ namespace NINA.ViewModel {
                     AdjustCaptureSequenceListForSynchronization(item);
                 }
             }
+            this.guiderInfo = deviceInfo;
         }
     }
 }

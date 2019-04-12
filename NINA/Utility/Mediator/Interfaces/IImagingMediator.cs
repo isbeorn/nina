@@ -49,6 +49,8 @@ namespace NINA.Utility.Mediator.Interfaces {
 
         void DestroyImage();
 
+        bool IsLooping {  get; }
+
         event EventHandler<ImageSavedEventArgs> ImageSaved;
 
         void OnImageSaved(ImageSavedEventArgs e);

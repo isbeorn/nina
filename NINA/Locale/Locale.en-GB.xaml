@@ -81,6 +81,17 @@
     <s:String x:Key="LblTooltipRemoveSequence">Remove selected row from sequence list</s:String>
     <s:String x:Key="LblTooltipResetSequence">Reset progress of selected row in sequence list</s:String>
     <s:String x:Key="LblTooltipStartSequence">Starts sequences</s:String>
+    <s:String x:Key="LblStartSequenceAnyway">Start Sequence Anyway?</s:String>
+    <s:String x:Key="LblPreSequenceChecklist">The following potential issues have been found with your sequence:</s:String>
+    <s:String x:Key="LblPreSequenceChecklistHeader">Pre-Sequence Checklist</s:String>
+    <s:String x:Key="LblCameraNotAtTargetTemp">Camera is at {0}°C yet target temperature is {1}°C</s:String>
+    <s:String x:Key="LblCameraHighPower" xml:space="preserve">Camera cooler is running at {0}% power and may not be
+able to compensate for ambient temperature variations</s:String>
+    <s:String x:Key="LblDitherOnButGuiderNotConnected">Dithering is enabled, yet guider is not connected</s:String>
+    <s:String x:Key="LblAFOnButFocuserNotConnected">Auto-Focus is enabled, yet focuser is not connected</s:String>
+    <s:String x:Key="LblCameraCoolerNotEnabled">Camera has cooler, yet it is not enabled</s:String>
+    <s:String x:Key="LblSlewEnabledButTelescopeNotConnected">Slew to target is enabled, yet telescope is not connected</s:String>
+    <s:String x:Key="LblStartGuidingButGuiderNotConnected">Start Guiding is enabled, yet guider is not connected</s:String>
     <s:String x:Key="LblTooltipResetTarget">Reset progress of all sequence items in target</s:String>
     <s:String x:Key="LblGeneral">General</s:String>
     <s:String x:Key="LblDownload">Download</s:String>

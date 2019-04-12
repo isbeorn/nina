@@ -49,5 +49,9 @@ namespace NINA.Utility.Mediator.Interfaces {
         void SetSubSample(bool subSample);
 
         void SetSubSampleArea(int x, int y, int width, int height);
+
+        bool AtTargetTemp { get; }
+
+        double TargetTemp { get; }
     }
 }

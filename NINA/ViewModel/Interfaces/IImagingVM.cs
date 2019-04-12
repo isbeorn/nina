@@ -36,6 +36,8 @@ namespace NINA.ViewModel.Interfaces {
 
         bool SetAutoStretch(bool value);
 
+        bool IsLooping { get; set; }
+
         void DestroyImage();
 
         Task<BitmapSource> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress);
