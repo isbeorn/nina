@@ -446,6 +446,12 @@ namespace NINA.ViewModel {
             cameraValues.TryGetValue(nameof(CameraInfo.Battery), out o);
             CameraInfo.Battery = (int)(o ?? -1);
 
+            cameraValues.TryGetValue(nameof(CameraInfo.Offset), out o);
+            CameraInfo.Offset = (int)(o ?? -1);
+
+            cameraValues.TryGetValue(nameof(CameraInfo.TemperatureSetPoint), out o);
+            CameraInfo.TemperatureSetPoint = (double)(o ?? double.NaN);
+
             DateTime x = DateTime.Now;
             CoolerPowerHistory.Add(new KeyValuePair<DateTime, double>(x, CameraInfo.CoolerPower));
             CCDTemperatureHistory.Add(new KeyValuePair<DateTime, double>(x, CameraInfo.Temperature));
@@ -461,13 +467,16 @@ namespace NINA.ViewModel {
             cameraValues.Add(nameof(CameraInfo.CoolerPower), _cam?.CoolerPower ?? double.NaN);
             cameraValues.Add(nameof(CameraInfo.DewHeaterOn), _cam?.DewHeaterOn ?? false);
             cameraValues.Add(nameof(CameraInfo.CameraState), _cam?.CameraState ?? string.Empty);
+            cameraValues.Add(nameof(CameraInfo.TemperatureSetPoint), _cam?.TemperatureSetPoint ?? double.NaN);
+
+            if (_cam != null && _cam.CanSetOffset) {
+                cameraValues.Add(nameof(CameraInfo.Offset), _cam?.Offset ?? -1);
+            }
+
             if (_cam != null && _cam.HasBattery) {
                 cameraValues.Add(nameof(CameraInfo.Battery), _cam?.BatteryLevel ?? -1);
             }
 
-            //cameraValues.Add(nameof(FullWellCapacity),_cam?.FullWellCapacity ?? double.NaN);
-            //cameraValues.Add(nameof(HeatSinkTemperature),_cam?.HeatSinkTemperature ?? false);
-            //cameraValues.Add(nameof(IsPulseGuiding),_cam?.IsPulseGuiding ?? false);
             return cameraValues;
         }
 
