@@ -3,7 +3,6 @@
 ## Features
 
 ### Dither without guiding
-
 - A new Direct Guider has been added, which doesn't require a guide camera. It can only perform random dithers. It connects directly to the telescope, and will if required perform a dither via a Pulse Guide of a user-provided duration in a random direction.
 
 ### Plate Solving
@@ -28,6 +27,7 @@
 - It is now possible to reset the progress of a sequence item, or of a whole sequence target. If an item that occurred prior to the active sequence item is reset, stopping and starting the sequence will get back to it, but pausing/playing will keep going from the current item.
 - A pre-sequence check is now triggered, and will notify end users of a variety of potential issues (camera not cooled yet, guider not connected, etc.) at sequence start
 - The sequence start button is unavailable if an imaging loop is in progress in the imaging tab
+- Imaging tab - Equipment specific views will only show the "Connected" flag when the device is not connected to save space
 
 # Version 1.8 Hotfix 1
 

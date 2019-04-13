@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace NINA.Model {
 
-    internal interface IDevice : INotifyPropertyChanged {
+    public interface IDevice : INotifyPropertyChanged {
         bool HasSetupDialog { get; }
         string Id { get; }
         string Name { get; }

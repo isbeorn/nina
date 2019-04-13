@@ -146,4 +146,44 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <ControlTemplate x:Key="SecondLevelLeftTabTemplate" TargetType="TabControl">
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TabPanel
+                MinWidth="80"
+                HorizontalAlignment="Left"
+                Background="{StaticResource TertiaryBackgroundBrush}"
+                IsItemsHost="true" />
+            <Border
+                Grid.Column="1"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,0">
+                <ContentPresenter
+                    x:Name="ContentPresenter"
+                    Margin="0,0,0,0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    ContentSource="SelectedContent" />
+            </Border>
+        </Grid>
+    </ControlTemplate>
+
+    <Style x:Key="SecondLevelTabControl" TargetType="{x:Type TabControl}">
+        <Setter Property="Background" Value="{StaticResource BackgroundBrush}" />
+        <Style.Triggers>
+            <Trigger Property="TabStripPlacement" Value="Left">
+                <Setter Property="Template" Value="{StaticResource SecondLevelLeftTabTemplate}" />
+                <Setter Property="ItemContainerStyle" Value="{StaticResource LeftTabItem}" />
+            </Trigger>
+            <Trigger Property="TabStripPlacement" Value="Top">
+                <Setter Property="Template" Value="{StaticResource TopTabTemplate}" />
+                <Setter Property="ItemContainerStyle" Value="{StaticResource TopTabItem}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

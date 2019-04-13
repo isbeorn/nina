@@ -24,6 +24,7 @@
 using NINA.Model;
 using NINA.Model.MyFilterWheel;
 using NINA.Utility.Mediator.Interfaces;
+using NINA.ViewModel.Equipment.FilterWheel;
 using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Generic;
