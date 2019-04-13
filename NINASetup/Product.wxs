@@ -321,15 +321,6 @@
       <Component Win64="$(var.Win64)" Id="Newtonsoft.Json.dll" Guid="d5f1d68a-daa3-46fe-af3a-db698064bb12">
         <File Id="Newtonsoft.Json.dll" Name="Newtonsoft.Json.dll" Source="$(var.NINA_TargetDir)Newtonsoft.Json.dll" />
       </Component>
-      <Component Win64="$(var.Win64)" Id="Nito.AsyncEx.Concurrent.dll" Guid="9bbeb87e-2996-49e6-9705-60b525876a1b">
-        <File Id="Nito.AsyncEx.Concurrent.dll" Name="Nito.AsyncEx.Concurrent.dll" Source="$(var.NINA_TargetDir)Nito.AsyncEx.Concurrent.dll" />
-      </Component>
-      <Component Win64="$(var.Win64)" Id="Nito.AsyncEx.dll" Guid="29a41e20-2489-444b-972b-43f52fab8b2f">
-        <File Id="Nito.AsyncEx.dll" Name="Nito.AsyncEx.dll" Source="$(var.NINA_TargetDir)Nito.AsyncEx.dll" />
-      </Component>
-      <Component Win64="$(var.Win64)" Id="Nito.AsyncEx.Enlightenment.dll" Guid="2986bb8f-59af-4b6c-85d4-f77fc993d4fb">
-        <File Id="Nito.AsyncEx.Enlightenment.dll" Name="Nito.AsyncEx.Enlightenment.dll" Source="$(var.NINA_TargetDir)Nito.AsyncEx.Enlightenment.dll" />
-      </Component>
       <Component Win64="$(var.Win64)" Id="OxyPlot.Wpf.dll" Guid="0da70938-063f-489f-a562-ec3c949f8484">
         <File Id="OxyPlot.Wpf.dll" Name="OxyPlot.Wpf.dll" Source="$(var.NINA_TargetDir)OxyPlot.Wpf.dll" />
       </Component>
