@@ -120,6 +120,8 @@ namespace NINA.ViewModel {
             rotatorValues.Add(nameof(RotatorInfo.Connected), rotator?.Connected ?? false);
             rotatorValues.Add(nameof(RotatorInfo.Position), rotator?.Position ?? 0);
             rotatorValues.Add(nameof(RotatorInfo.IsMoving), rotator?.IsMoving ?? false);
+            rotatorValues.Add(nameof(RotatorInfo.StepSize), rotator?.StepSize ?? 0);
+
             return rotatorValues;
         }
 
@@ -217,6 +219,7 @@ namespace NINA.ViewModel {
                                 Name = rotator.Name,
                                 Description = rotator.Description,
                                 Position = rotator.Position,
+                                StepSize = rotator.StepSize,
                                 DriverInfo = rotator.DriverInfo,
                                 DriverVersion = rotator.DriverVersion
                             };
