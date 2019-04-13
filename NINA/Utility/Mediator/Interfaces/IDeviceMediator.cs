@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using NINA.ViewModel.Equipment;
 using NINA.ViewModel.Interfaces;
 using System.Threading.Tasks;
 

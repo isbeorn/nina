@@ -26,6 +26,12 @@ using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Utility.Profile;
+using NINA.ViewModel.Equipment.Camera;
+using NINA.ViewModel.Equipment.FilterWheel;
+using NINA.ViewModel.Equipment.Focuser;
+using NINA.ViewModel.Equipment.Guider;
+using NINA.ViewModel.Equipment.Rotator;
+using NINA.ViewModel.Equipment.Telescope;
 using NINA.ViewModel.FlatWizard;
 using NINA.ViewModel.FramingAssistant;
 using System;
@@ -579,10 +585,7 @@ namespace NINA.ViewModel {
     }
 
     public enum ApplicationTab {
-        CAMERA,
-        FWANDFOCUSER,
-        TELESCOPE,
-        GUIDER,
+        EQUIPMENT,
         SKYATLAS,
         FRAMINGASSISTANT,
         FLATWIZARD,

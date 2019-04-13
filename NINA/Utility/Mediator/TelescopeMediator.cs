@@ -24,6 +24,7 @@
 using NINA.Model.MyTelescope;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator.Interfaces;
+using NINA.ViewModel.Equipment.Telescope;
 using NINA.ViewModel.Interfaces;
 using System.Threading.Tasks;
 

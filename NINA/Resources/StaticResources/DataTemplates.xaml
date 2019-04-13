@@ -19,6 +19,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:camera="clr-namespace:NINA.Model.MyCamera"
+    xmlns:equip="clr-namespace:NINA.View.Equipment"
     xmlns:fw="clr-namespace:NINA.ViewModel.FlatWizard"
     xmlns:local="clr-namespace:NINA.Resources.StaticResources"
     xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
@@ -53,7 +54,7 @@
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type vm:TelescopeLatLongSyncVM}">
-        <view:TelescopeLatLongSyncView />
+        <equip:TelescopeLatLongSyncView />
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type fw:FlatWizardUserPromptVM}">

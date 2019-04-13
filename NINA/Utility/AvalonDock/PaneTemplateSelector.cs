@@ -22,6 +22,12 @@
 #endregion "copyright"
 
 using NINA.ViewModel;
+using NINA.ViewModel.Equipment.Camera;
+using NINA.ViewModel.Equipment.FilterWheel;
+using NINA.ViewModel.Equipment.Focuser;
+using NINA.ViewModel.Equipment.Guider;
+using NINA.ViewModel.Equipment.Rotator;
+using NINA.ViewModel.Equipment.Telescope;
 using System.Windows;
 using System.Windows.Controls;
 using Xceed.Wpf.AvalonDock.Layout;

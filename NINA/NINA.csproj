@@ -325,10 +325,16 @@
     <Compile Include="Utility\Enum\PlanetariumEnum.cs" />
     <Compile Include="Utility\Profile\IPlanetariumSettings.cs" />
     <Compile Include="Utility\Profile\PlanetariumSettings.cs" />
+    <Compile Include="Utility\Converters\InverseBooleanToVisibilityCollapsedConverter.cs" />
     <Compile Include="Utility\ProjectVersion.cs" />
     <Compile Include="Utility\Behaviors\BrowserBehavior.cs" />
     <Compile Include="Utility\Enum\AutoUpdateSourceEnum.cs" />
-    <Compile Include="ViewModel\GuiderChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\Camera\CameraChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\FilterWheel\FilterWheelChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\Focuser\FocuserChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\Rotator\RotatorChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\Telescope\TelescopeChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\Guider\GuiderChooserVM.cs" />
     <Compile Include="Locale\ILoc.cs" />
     <Compile Include="Locale\Loc.cs" />
     <Compile Include="Model\ApplicationStatus.cs" />
@@ -594,7 +600,7 @@
     <Compile Include="ViewModel\FlatWizard\FlatWizardVM.cs" />
     <Compile Include="ViewModel\FlatWizard\IFlatWizardExposureTimeFinderService.cs" />
     <Compile Include="ViewModel\FlatWizard\IFlatWizardVM.cs" />
-    <Compile Include="ViewModel\FocuserVM.cs" />
+    <Compile Include="ViewModel\Equipment\Focuser\FocuserVM.cs" />
     <Compile Include="ViewModel\FramingAssistant\FrameLineMatrix2.cs" />
     <Compile Include="ViewModel\FramingAssistant\FramingConstellationBoundary.cs" />
     <Compile Include="ViewModel\FramingAssistant\SkyMapAnnotator.cs" />
@@ -604,10 +610,10 @@
     <Compile Include="ViewModel\FramingAssistant\FramingDSO.cs" />
     <Compile Include="ViewModel\FramingAssistant\FramingRectangle.cs" />
     <Compile Include="ViewModel\Interfaces\IApplicationStatusVM.cs" />
-    <Compile Include="ViewModel\Interfaces\ICameraVM.cs" />
-    <Compile Include="ViewModel\Interfaces\IDeviceVM.cs" />
-    <Compile Include="ViewModel\Interfaces\IFilterWheelVM.cs" />
-    <Compile Include="ViewModel\Interfaces\IFocuserVM.cs" />
+    <Compile Include="ViewModel\Equipment\Camera\ICameraVM.cs" />
+    <Compile Include="ViewModel\Equipment\IDeviceVM.cs" />
+    <Compile Include="ViewModel\Equipment\FilterWheel\IFilterWheelVM.cs" />
+    <Compile Include="ViewModel\Equipment\Focuser\IFocuserVM.cs" />
     <Compile Include="ViewModel\ImageControlVM.cs" />
     <Compile Include="Model\MyCamera\BinningMode.cs" />
     <Compile Include="Model\MyCamera\ICamera.cs" />
@@ -635,29 +641,29 @@
     <Compile Include="Utility\Utility.cs" />
     <Compile Include="Utility\ValidationRules.cs" />
     <Compile Include="ViewModel\BaseVM.cs" />
-    <Compile Include="ViewModel\FilterWheelVM.cs" />
+    <Compile Include="ViewModel\Equipment\FilterWheel\FilterWheelVM.cs" />
     <Compile Include="ViewModel\FrameFocusVM.cs" />
     <Compile Include="ViewModel\ImageHistoryVM.cs" />
     <Compile Include="ViewModel\ImageStatisticsVM.cs" />
     <Compile Include="ViewModel\ImagingVM.cs" />
-    <Compile Include="ViewModel\Interfaces\IGuiderChooserVM.cs" />
-    <Compile Include="ViewModel\Interfaces\IGuiderVM.cs" />
+    <Compile Include="ViewModel\Equipment\Guider\IGuiderChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\Guider\IGuiderVM.cs" />
     <Compile Include="ViewModel\Interfaces\IImagingVM.cs" />
-    <Compile Include="ViewModel\Interfaces\IRotatorVM.cs" />
-    <Compile Include="ViewModel\Interfaces\ITelescopeVM.cs" />
+    <Compile Include="ViewModel\Equipment\Rotator\IRotatorVM.cs" />
+    <Compile Include="ViewModel\Equipment\Telescope\ITelescopeVM.cs" />
     <Compile Include="ViewModel\MeridianFlipVM.cs" />
     <Compile Include="ViewModel\OptionsVM.cs" />
-    <Compile Include="ViewModel\GuiderVM.cs" />
+    <Compile Include="ViewModel\Equipment\Guider\GuiderVM.cs" />
     <Compile Include="ViewModel\PlatesolveVM.cs" />
     <Compile Include="ViewModel\FramingAssistant\FrameLine.cs" />
     <Compile Include="ViewModel\PolarAlignmentVM.cs" />
     <Compile Include="ViewModel\ProfileSelectVM.cs" />
     <Compile Include="Model\RMS.cs" />
-    <Compile Include="ViewModel\RotatorVM.cs" />
+    <Compile Include="ViewModel\Equipment\Rotator\RotatorVM.cs" />
     <Compile Include="ViewModel\SequenceVM.cs" />
     <Compile Include="ViewModel\SkyAtlasVM.cs" />
     <Compile Include="ViewModel\TelescopeLatLongSyncVM.cs" />
-    <Compile Include="ViewModel\TelescopeVM.cs" />
+    <Compile Include="ViewModel\Equipment\Telescope\TelescopeVM.cs" />
     <Compile Include="ViewModel\ThumbnailVM.cs" />
     <Compile Include="ViewModel\VersionCheckVM.cs" />
     <Compile Include="ViewModel\FramingAssistant\ViewportFoV.cs" />
@@ -668,49 +674,49 @@
     <Compile Include="View\AltitudeChart.xaml.cs">
       <DependentUpon>AltitudeChart.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableAutoFocusView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableAutoFocusView.xaml.cs">
       <DependentUpon>AnchorableAutoFocusView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableFocusTargetsView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableFocusTargetsView.xaml.cs">
       <DependentUpon>AnchorableFocusTargetsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableCameraControlView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableCameraControlView.xaml.cs">
       <DependentUpon>AnchorableCameraControlView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableCameraView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableCameraView.xaml.cs">
       <DependentUpon>AnchorableCameraView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableFilterWheelView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableFilterWheelView.xaml.cs">
       <DependentUpon>AnchorableFilterWheelView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableFocuserView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableFocuserView.xaml.cs">
       <DependentUpon>AnchorableFocuserView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableImageHistoryView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableImageHistoryView.xaml.cs">
       <DependentUpon>AnchorableImageHistoryView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableImageStatisticsView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableImageStatisticsView.xaml.cs">
       <DependentUpon>AnchorableImageStatisticsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableGuiderView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableGuiderView.xaml.cs">
       <DependentUpon>AnchorableGuiderView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorablePlateSolveView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorablePlateSolveView.xaml.cs">
       <DependentUpon>AnchorablePlateSolveView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorablePolarAlignmentView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorablePolarAlignmentView.xaml.cs">
       <DependentUpon>AnchorablePolarAlignmentView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableRotatorView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableRotatorView.xaml.cs">
       <DependentUpon>AnchorableRotatorView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableSequenceView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableSequenceView.xaml.cs">
       <DependentUpon>AnchorableSequenceView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableTelescopeView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableTelescopeView.xaml.cs">
       <DependentUpon>AnchorableTelescopeView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableWeatherDataView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableWeatherDataView.xaml.cs">
       <DependentUpon>AnchorableWeatherDataView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ApplicationMenu.xaml.cs">
@@ -722,13 +728,19 @@
     <Compile Include="View\CameraControlView.xaml.cs">
       <DependentUpon>CameraControlView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\CameraCoolingChartsView.xaml.cs">
+    <Compile Include="View\Equipment\Camera\CameraCoolingChartsView.xaml.cs">
       <DependentUpon>CameraCoolingChartsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\CameraView.xaml.cs">
+    <Compile Include="View\Equipment\Camera\CameraView.xaml.cs">
       <DependentUpon>CameraView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\FilterWheelView.xaml.cs">
+    <Compile Include="View\Equipment\Connector.xaml.cs">
+      <DependentUpon>Connector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\TabPage.xaml.cs">
+      <DependentUpon>TabPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\FilterWheel\FilterWheelView.xaml.cs">
       <DependentUpon>FilterWheelView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\FlatWizardFilterSettingsWrapperView.xaml.cs">
@@ -740,7 +752,7 @@
     <Compile Include="View\FlatWizardView.xaml.cs">
       <DependentUpon>FlatWizardView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\FocuserView.xaml.cs">
+    <Compile Include="View\Equipment\Focuser\FocuserView.xaml.cs">
       <DependentUpon>FocuserView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\FrameFocusView.xaml.cs">
@@ -764,7 +776,7 @@
     <Compile Include="View\ImageView.xaml.cs">
       <DependentUpon>ImageView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\ImagingView.xaml.cs">
+    <Compile Include="View\Imaging\ImagingView.xaml.cs">
       <DependentUpon>ImagingView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ManualRotatorView.xaml.cs">
@@ -788,13 +800,13 @@
     <Compile Include="View\Options\OptionsView.xaml.cs">
       <DependentUpon>OptionsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\OverView.xaml.cs">
+    <Compile Include="View\Imaging\OverView.xaml.cs">
       <DependentUpon>OverView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\GuiderGraph.xaml.cs">
+    <Compile Include="View\Equipment\Guider\GuiderGraph.xaml.cs">
       <DependentUpon>GuiderGraph.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\GuiderView.xaml.cs">
+    <Compile Include="View\Equipment\Guider\GuiderView.xaml.cs">
       <DependentUpon>GuiderView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\PlateSolveView.xaml.cs">
@@ -806,7 +818,7 @@
     <Compile Include="View\PolarScopeView.xaml.cs">
       <DependentUpon>PolarScopeView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\RotatorView.xaml.cs">
+    <Compile Include="View\Equipment\Rotator\RotatorView.xaml.cs">
       <DependentUpon>RotatorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SequenceView.xaml.cs">
@@ -821,10 +833,10 @@
     <Compile Include="View\SkyMapOverlayView.xaml.cs">
       <DependentUpon>SkyMapOverlayView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\TelescopeLatLongSyncView.xaml.cs">
+    <Compile Include="View\Equipment\Telescope\TelescopeLatLongSyncView.xaml.cs">
       <DependentUpon>TelescopeLatLongSyncView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\TelescopeView.xaml.cs">
+    <Compile Include="View\Equipment\Telescope\TelescopeView.xaml.cs">
       <DependentUpon>TelescopeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ThumbnailListView.xaml.cs">
@@ -865,7 +877,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ViewModel\ApplicationVM.cs" />
-    <Compile Include="ViewModel\CameraVM.cs" />
+    <Compile Include="ViewModel\Equipment\Camera\CameraVM.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -1013,63 +1025,63 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableAutoFocusView.xaml">
+    <Page Include="View\Imaging\AnchorableAutoFocusView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableFocusTargetsView.xaml">
+    <Page Include="View\Imaging\AnchorableFocusTargetsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableCameraControlView.xaml">
+    <Page Include="View\Imaging\AnchorableCameraControlView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableCameraView.xaml">
+    <Page Include="View\Imaging\AnchorableCameraView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableFilterWheelView.xaml">
+    <Page Include="View\Imaging\AnchorableFilterWheelView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableFocuserView.xaml">
+    <Page Include="View\Imaging\AnchorableFocuserView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableImageHistoryView.xaml">
+    <Page Include="View\Imaging\AnchorableImageHistoryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableImageStatisticsView.xaml">
+    <Page Include="View\Imaging\AnchorableImageStatisticsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableGuiderView.xaml">
+    <Page Include="View\Imaging\AnchorableGuiderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorablePlateSolveView.xaml">
+    <Page Include="View\Imaging\AnchorablePlateSolveView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorablePolarAlignmentView.xaml">
+    <Page Include="View\Imaging\AnchorablePolarAlignmentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableRotatorView.xaml">
+    <Page Include="View\Imaging\AnchorableRotatorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableSequenceView.xaml">
+    <Page Include="View\Imaging\AnchorableSequenceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableTelescopeView.xaml">
+    <Page Include="View\Imaging\AnchorableTelescopeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableWeatherDataView.xaml">
+    <Page Include="View\Imaging\AnchorableWeatherDataView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1085,15 +1097,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\CameraCoolingChartsView.xaml">
+    <Page Include="View\Equipment\Camera\CameraCoolingChartsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\CameraView.xaml">
+    <Page Include="View\Equipment\Camera\CameraView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\FilterWheelView.xaml">
+    <Page Include="View\Equipment\Connector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\TabPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\FilterWheel\FilterWheelView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1109,7 +1129,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\FocuserView.xaml">
+    <Page Include="View\Equipment\Focuser\FocuserView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1141,7 +1161,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\ImagingView.xaml">
+    <Page Include="View\Imaging\ImagingView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1173,15 +1193,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\OverView.xaml">
+    <Page Include="View\Imaging\OverView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\GuiderGraph.xaml">
+    <Page Include="View\Equipment\Guider\GuiderGraph.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\GuiderView.xaml">
+    <Page Include="View\Equipment\Guider\GuiderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1197,7 +1217,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\RotatorView.xaml">
+    <Page Include="View\Equipment\Rotator\RotatorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1217,11 +1237,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\TelescopeLatLongSyncView.xaml">
+    <Page Include="View\Equipment\Telescope\TelescopeLatLongSyncView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\TelescopeView.xaml">
+    <Page Include="View\Equipment\Telescope\TelescopeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

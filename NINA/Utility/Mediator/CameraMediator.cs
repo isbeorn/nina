@@ -24,6 +24,7 @@
 using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Utility.Mediator.Interfaces;
+using NINA.ViewModel.Equipment.Camera;
 using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Async;
