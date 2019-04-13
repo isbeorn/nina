@@ -25,23 +25,24 @@ using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINACustomControlLibrary;
 using Nito.AsyncEx;
+using Nito.Mvvm;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NINA.ViewModel {
-
-    internal class DeepSkyObjectSearchVM : BaseINPC {
-
+namespace NINA.ViewModel
+{
+    internal class DeepSkyObjectSearchVM : BaseINPC
+    {
         public DeepSkyObjectSearchVM(string databaseLocation) : base() {
             this.databaseLocation = databaseLocation;
         }
 
         private CancellationTokenSource targetSearchCts;
 
-        private INotifyTaskCompletion<List<IAutoCompleteItem>> targetSearchResult;
+        private NotifyTask<List<IAutoCompleteItem>> targetSearchResult;
 
-        public INotifyTaskCompletion<List<IAutoCompleteItem>> TargetSearchResult {
+        public NotifyTask<List<IAutoCompleteItem>> TargetSearchResult {
             get {
                 return targetSearchResult;
             }
@@ -66,7 +67,8 @@ namespace NINA.ViewModel {
                         targetSearchCts?.Cancel();
                         targetSearchCts?.Dispose();
                         targetSearchCts = new CancellationTokenSource();
-                        TargetSearchResult = NotifyTaskCompletion.Create(SearchDSOs(TargetName, targetSearchCts.Token));
+
+                        TargetSearchResult = NotifyTask.Create(SearchDSOs(TargetName, targetSearchCts.Token));
                     } else {
                         ShowPopup = false;
                     }
@@ -124,7 +126,8 @@ namespace NINA.ViewModel {
             }
         }
 
-        private class DSOAutoCompleteItem : IAutoCompleteItem {
+        private class DSOAutoCompleteItem : IAutoCompleteItem
+        {
             public string Column1 { get; set; }
 
             public string Column2 { get; set; }

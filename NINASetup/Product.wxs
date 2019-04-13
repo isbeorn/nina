@@ -384,6 +384,27 @@
       <Component Win64="$(var.Win64)" Id="NmeaParser.dll" Guid="e45c807d-d193-4e13-825b-2f5b9ea92b63">
         <File Id="NmeaParser.dll" Name="NmeaParser.dll" Source="$(var.NINA_TargetDir)NmeaParser.dll" />
       </Component>
+      <Component Win64="$(var.Win64)" Id="Nito.Collections.Deque.dll" Guid="ac93f123-4673-4016-8b4b-7a7e3390ec56">
+        <File Id="Nito.Collections.Deque.dll" Name="Nito.Collections.Deque.dll" Source="$(var.NINA_TargetDir)Nito.Collections.Deque.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="Nito.Mvvm.Async.dll" Guid="4e0e05c8-e441-49b9-9174-f87e16bed772">
+        <File Id="Nito.Mvvm.Async.dll" Name="Nito.Mvvm.Async.dll" Source="$(var.NINA_TargetDir)Nito.Mvvm.Async.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="Nito.AsyncEx.Coordination.dll" Guid="889df583-c3f3-4eb3-91ed-c1c81701b3d8">
+        <File Id="Nito.AsyncEx.Coordination.dll" Name="Nito.AsyncEx.Coordination.dll" Source="$(var.NINA_TargetDir)Nito.AsyncEx.Coordination.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="Nito.AsyncEx.Tasks.dll" Guid="a78ed08a-b271-4809-aeac-4a9acb3cdf75">
+        <File Id="Nito.AsyncEx.Tasks.dll" Name="Nito.AsyncEx.Tasks.dll" Source="$(var.NINA_TargetDir)Nito.AsyncEx.Tasks.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="System.Collections.Immutable.dll" Guid="0fbd3c23-916a-485a-8c4d-d3df8bb3f15e">
+        <File Id="System.Collections.Immutable.dll" Name="System.Collections.Immutable.dll" Source="$(var.NINA_TargetDir)System.Collections.Immutable.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="Nito.Disposables.dll" Guid="ae91aa58-7ac0-49a1-8eb8-87e3bb2d70a9">
+        <File Id="Nito.Disposables.dll" Name="Nito.Disposables.dll" Source="$(var.NINA_TargetDir)Nito.Disposables.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="Nito.Mvvm.Core.dll" Guid="8d518177-e613-47f9-a11e-b89508c26fc9">
+        <File Id="Nito.Mvvm.Core.dll" Name="Nito.Mvvm.Core.dll" Source="$(var.NINA_TargetDir)Nito.Mvvm.Core.dll" />
+      </Component>
     </ComponentGroup>
   </Fragment>
   <!--<Fragment>
