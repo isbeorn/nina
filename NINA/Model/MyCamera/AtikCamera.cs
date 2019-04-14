@@ -219,6 +219,8 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public double ElectronsPerADU => double.NaN;
+
         public short MaxBinX {
             get {
                 AtikCameraDll.GetMaxBinning(_cameraP, out var x, out var y);

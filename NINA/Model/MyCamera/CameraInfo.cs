@@ -55,6 +55,13 @@ namespace NINA.Model.MyCamera {
             set { gain = value; RaisePropertyChanged(); }
         }
 
+        private double electronsPerADU;
+
+        public double ElectronsPerADU {
+            get { return electronsPerADU; }
+            set { electronsPerADU = value; RaisePropertyChanged(); }
+        }
+
         private short binxX;
 
         public short BinX {
