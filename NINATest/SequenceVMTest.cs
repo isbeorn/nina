@@ -535,6 +535,16 @@ namespace NINATest {
         public IRotatorSettings RotatorSettings { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public IFlatWizardSettings FlatWizardSettings { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
+        public IPlanetariumSettings PlanetariumSettings {
+            get {
+                throw new NotImplementedException();
+            }
+
+            set {
+                throw new NotImplementedException();
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void MatchFilterSettingsWithFilterList() {

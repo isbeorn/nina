@@ -371,6 +371,8 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public double ElectronsPerADU => double.NaN;
+
         public short MaxBinX {
             get {
                 return 1;

@@ -835,11 +835,15 @@ namespace NINA.ViewModel {
                 if (cameraInfo.BinY > 0) {
                     f.AddHeaderCard("YBINNING", cameraInfo.BinY, "Y axis binning factor");
                 }
-                f.AddHeaderCard("EGAIN", cameraInfo.Gain, "Sensor gain");
+
+                f.AddHeaderCard("GAIN", cameraInfo.Gain, "Sensor gain");
 
                 if (cameraInfo.Offset >= 0) {
-                    /* SharpCap */
                     f.AddHeaderCard("OFFSET", cameraInfo.Offset, "Sensor gain offset");
+                }
+
+                if (!double.IsNaN(cameraInfo.ElectronsPerADU)) {
+                    f.AddHeaderCard("EGAIN", cameraInfo.ElectronsPerADU, "[e-/ADU] Electrons per A/D unit");
                 }
 
                 if (!string.IsNullOrEmpty(parameters.TargetName) || !string.IsNullOrWhiteSpace(parameters.TargetName)) {
@@ -1004,13 +1008,14 @@ namespace NINA.ViewModel {
 
                 header.AddImageProperty(XISFImageProperty.Instrument.Camera.Name, cameraInfo.Name, "Imaging instrument name");
 
-                if (cameraInfo.Gain > 0) {
-                    header.AddImageProperty(XISFImageProperty.Instrument.Camera.Gain, cameraInfo.Gain.ToString(CultureInfo.InvariantCulture), "Sensor gain");
-                }
+                header.AddImageFITSKeyword("GAIN", cameraInfo.Gain.ToString(CultureInfo.InvariantCulture), "Sensor gain");
 
                 if (cameraInfo.Offset >= 0) {
-                    /* SharpCap */
                     header.AddImageFITSKeyword("OFFSET", cameraInfo.Offset.ToString(CultureInfo.InvariantCulture), "Sensor gain offset");
+                }
+
+                if (!double.IsNaN(cameraInfo.ElectronsPerADU)) {
+                    header.AddImageProperty(XISFImageProperty.Instrument.Camera.Gain, cameraInfo.ElectronsPerADU.ToString(CultureInfo.InvariantCulture), "[e-/ADU] Electrons per A/D unit");
                 }
 
                 if (cameraInfo.BinX > 0) {

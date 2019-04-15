@@ -11,6 +11,9 @@
 ### GPS Assisted Location
 - Added a NMEA GPS interface to retrieve the current location
 
+### Interfacing with planetarium programs
+- NINA can interface with Cartes du Ciel, Stellarium, and TheSkyX through their repsective TCP services to import the selected object for use in the Framing Assistant, as well as setting the observing location to match that which is set in those programs
+
 ## Improvements
 - If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips
 - Added options to adjust downsample factor and maximum number of considered stars for ASTAP and local astrometry.net solvers
@@ -28,6 +31,7 @@
 - A pre-sequence check is now triggered, and will notify end users of a variety of potential issues (camera not cooled yet, guider not connected, etc.) at sequence start
 - The sequence start button is unavailable if an imaging loop is in progress in the imaging tab
 - Imaging tab - Equipment specific views will only show the "Connected" flag when the device is not connected to save space
+- Enhanced direct guider to accept decimal durations (e.g. 0.5s), and to perform random angle selection in a way that minimizes target deviation from center.
 
 # Version 1.8 Hotfix 1
 

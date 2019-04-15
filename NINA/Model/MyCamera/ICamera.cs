@@ -71,6 +71,7 @@ namespace NINA.Model.MyCamera {
         short GainMax { get; }
         short GainMin { get; }
         short Gain { get; set; }
+        double ElectronsPerADU { get; }
         ICollection ReadoutModes { get; }
         short ReadoutModeForSnapImages { get; set; }
         short ReadoutModeForNormalImages { get; set; }

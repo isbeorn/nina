@@ -107,6 +107,10 @@ namespace NINA.Model.MyGuider {
             return Task.FromResult(true);
         }
 
+        private Random random = new Random();
+
+        private double previousAngle = 0;
+
         public async Task<bool> Dither(CancellationToken ct) {
             State = "Dithering...";
 
@@ -130,7 +134,6 @@ namespace NINA.Model.MyGuider {
                     await Utility.Utility.Delay(SettleTime, ct);
                 }
                 else {
-                    Random random = new Random();
                     //Adjust Pulse Duration for RA only dithering. Otherwise RA only dithering will likely provide terrible results.
                     Duration = TimeSpan.FromMilliseconds((int)Math.Round(Duration.TotalMilliseconds * (0.5 + random.NextDouble())));
                     telescopeMediator.PulseGuide(PulseInstructions.directionWestEast, (int)Duration.TotalMilliseconds);
@@ -154,14 +157,15 @@ namespace NINA.Model.MyGuider {
         /// a random guide direction equivalent to a total guide pulse duration set by the user.
         /// Note that total guide pulse duration sent to mount will be more than the guide
         /// pulse duration set by the user, but overall distance from origin will be the same
-        /// as if the pulse had been fully applied to one of the N/S/W/E axes.
+        /// as if the pulse had been fully applied to one of the N/S/W/E axes. Guide directions are
+        /// set to be roughly countering one another, to avoid too much deviation from target.
         /// </summary>
         /// <param name="duration">Rather than a time, should be considered as actual distance from origin prior to dither</param>
         /// <returns>Parameters for two guide pulses, one in N/S direction and one in E/W direction</returns>
 
         private GuidePulses SelectDitherPulse(TimeSpan duration) {
-            Random random = new Random();
-            double ditherAngle = random.NextDouble() * 2 * Math.PI;
+            double ditherAngle = (previousAngle + Math.PI) + random.NextDouble() * Math.PI - Math.PI / 2;
+            previousAngle = ditherAngle;
             double cosAngle = Math.Cos(ditherAngle);
             double sinAngle = Math.Sin(ditherAngle);
             GuidePulses resultPulses = new GuidePulses();

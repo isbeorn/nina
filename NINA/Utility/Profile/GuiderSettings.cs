@@ -174,10 +174,10 @@ namespace NINA.Utility.Profile {
             }
         }
 
-        private int directGuideDuration;
+        private double directGuideDuration;
 
         [DataMember]
-        public int DirectGuideDuration {
+        public double DirectGuideDuration {
             get => directGuideDuration;
 
             set {

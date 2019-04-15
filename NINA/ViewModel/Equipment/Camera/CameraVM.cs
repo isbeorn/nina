@@ -336,7 +336,8 @@ namespace NINA.ViewModel.Equipment.Camera {
                                 XSize = Cam.CameraXSize,
                                 YSize = Cam.CameraYSize,
                                 Battery = Cam.BatteryLevel,
-                                BitDepth = Cam.BitDepth
+                                BitDepth = Cam.BitDepth,
+                                ElectronsPerADU = Cam.ElectronsPerADU
                             };
 
                             Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
@@ -448,6 +449,9 @@ namespace NINA.ViewModel.Equipment.Camera {
             cameraValues.TryGetValue(nameof(CameraInfo.TemperatureSetPoint), out o);
             CameraInfo.TemperatureSetPoint = (double)(o ?? double.NaN);
 
+            cameraValues.TryGetValue(nameof(CameraInfo.ElectronsPerADU), out o);
+            CameraInfo.ElectronsPerADU = (double)(o ?? double.NaN);
+
             DateTime x = DateTime.Now;
             CoolerPowerHistory.Add(new KeyValuePair<DateTime, double>(x, CameraInfo.CoolerPower));
             CCDTemperatureHistory.Add(new KeyValuePair<DateTime, double>(x, CameraInfo.Temperature));
@@ -464,6 +468,7 @@ namespace NINA.ViewModel.Equipment.Camera {
             cameraValues.Add(nameof(CameraInfo.DewHeaterOn), _cam?.DewHeaterOn ?? false);
             cameraValues.Add(nameof(CameraInfo.CameraState), _cam?.CameraState ?? string.Empty);
             cameraValues.Add(nameof(CameraInfo.TemperatureSetPoint), _cam?.TemperatureSetPoint ?? double.NaN);
+            cameraValues.Add(nameof(CameraInfo.ElectronsPerADU), _cam?.ElectronsPerADU ?? double.NaN);
 
             if (_cam != null && _cam.CanSetOffset) {
                 cameraValues.Add(nameof(CameraInfo.Offset), _cam?.Offset ?? -1);

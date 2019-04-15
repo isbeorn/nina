@@ -427,7 +427,7 @@ namespace NINA.Model.MyCamera {
 
         public double ElectronsPerADU {
             get {
-                double val = -1;
+                double val = double.NaN;
                 if (Connected) {
                     val = _camera.ElectronsPerADU;
                 }

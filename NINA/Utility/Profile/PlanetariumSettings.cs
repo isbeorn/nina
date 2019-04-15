@@ -36,7 +36,7 @@ namespace NINA.Utility.Profile {
         }
 
         [OnDeserializing]
-        public void OnDesiralization(StreamingContext context) {
+        public void OnDeserialization(StreamingContext context) {
             SetDefaultValues();
         }
 
@@ -47,6 +47,9 @@ namespace NINA.Utility.Profile {
             cdCTimeout = 300;
             cdCPort = 3292;
             cdCHost = "localhost";
+            TSXTimeout = 300;
+            TSXPort = 3040;
+            TSXHost = "localhost";
             preferredPlanetarium = PlanetariumEnum.CDC;
         }
 
@@ -128,8 +131,48 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        private string tsxHost;
+
+        [DataMember]
+        public string TSXHost {
+            get {
+                return tsxHost;
+            }
+            set {
+                tsxHost = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int _TSXPort;
+
+        [DataMember]
+        public int TSXPort {
+            get {
+                return _TSXPort;
+            }
+            set {
+                _TSXPort = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int _TSXTimeout;
+
+        [DataMember]
+        public int TSXTimeout {
+            get {
+                return _TSXTimeout;
+            }
+            set {
+                _TSXTimeout = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private PlanetariumEnum preferredPlanetarium;
 
+        [DataMember]
         public PlanetariumEnum PreferredPlanetarium {
             get {
                 return preferredPlanetarium;

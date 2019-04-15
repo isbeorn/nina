@@ -238,6 +238,8 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public double ElectronsPerADU => Info.ElecPerADU;
+
         public short MaxBinX {
             get {
                 int[] binlist = Info.SupportedBins;

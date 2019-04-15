@@ -20,20 +20,21 @@
 */
 
 #endregion "copyright"
+
 using System.ComponentModel;
 
 namespace NINA.Utility.Enum {
 
-
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
-
     public enum PlanetariumEnum {
+
         [Description("LblCdC")]
         CDC,
 
         [Description("LblStellarium")]
-        STELLARIUM
+        STELLARIUM,
+
+        [Description("LblTheSkyX")]
+        THESKYX
     }
-
 }
-
