@@ -883,6 +883,7 @@ Berechneter HFR: {2}
     <s:String x:Key="LblPlanetariumTooltip">Koordinaten von der Planetariumsoftware erhalten</s:String>
     <s:String x:Key="LblCdC">Cartes du Ciel</s:String>
     <s:String x:Key="LblTheSkyX">TheSkyX</s:String>
+    <s:String x:Key="LblHNSKY">HNSKY</s:String>
     <s:String x:Key="LblPlanetariumPrefs">Planetarium Einstellungen</s:String>
     <s:String x:Key="LblPreferredPlanetarium">Bevorzugte Planetarium Software</s:String>
 </ResourceDictionary>

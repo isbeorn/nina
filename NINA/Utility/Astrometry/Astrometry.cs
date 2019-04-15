@@ -31,6 +31,7 @@ namespace NINA.Utility.Astrometry {
     public class Astrometry {
         private static double DegreeToRadiansFactor = Math.PI / 180d;
         private static double RadiansToDegreeFactor = 180d / Math.PI;
+        private static double RadianstoHourFactor = 12d / Math.PI;
 
         /// <summary>
         /// Convert degree to radians
@@ -48,6 +49,15 @@ namespace NINA.Utility.Astrometry {
         /// <returns></returns>
         public static double ToDegree(double angle) {
             return angle * RadiansToDegreeFactor;
+        }
+
+        /// <summary>
+        /// Convert radians to hour
+        /// </summary>
+        /// <param name="radian"></param>
+        /// <returns></returns>
+        public static double RadianToHour(double radian) {
+            return radian * RadianstoHourFactor;
         }
 
         public static double DegreeToArcmin(double degree) {

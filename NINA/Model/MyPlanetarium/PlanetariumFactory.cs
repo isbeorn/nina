@@ -45,6 +45,9 @@ namespace NINA.Model.MyPlanetarium {
                 case PlanetariumEnum.THESKYX:
                     return new TheSkyX(profileService);
 
+                case PlanetariumEnum.HNSKY:
+                    return new HNSKY(profileService);
+
                 default:
                     return null;
             }

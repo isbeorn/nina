@@ -115,7 +115,6 @@ namespace NINA.Model.MyPlanetarium {
             string response;
             string[] rsp;
             string[] coords;
-            double longitude;
 
             if (!IsConnected) {
                 Connect();
@@ -150,22 +149,12 @@ namespace NINA.Model.MyPlanetarium {
                 coords = rsp[0].Split(',');
 
                 /*
-                 * TSX has a bug where longitude is signed incorrectly. Western longitudes are positive
-                 * and eastern longitudes are signed negative. Because of this, we need to flip the sign so
-                 * that West is negative and east is positive. If this bug is fixed in TSX, this work-around
-                 * will need to be undone.
+                 * East is negative and West is positive in TheSkyX.
+                 * We must flip longitude's sign here.
                  */
-                longitude = double.Parse(coords[1]);
-
-                if (longitude < 0) {
-                    longitude = Math.Abs(longitude);
-                } else {
-                    longitude = longitude * -1;
-                }
-
-                loc.Latitude = double.Parse(coords[0]);
-                loc.Longitude = longitude;
-                loc.Elevation = double.Parse(coords[2]);
+                loc.Latitude = double.Parse(coords[0], System.Globalization.CultureInfo.InvariantCulture);
+                loc.Longitude = double.Parse(coords[1], System.Globalization.CultureInfo.InvariantCulture) * -1;
+                loc.Elevation = double.Parse(coords[2], System.Globalization.CultureInfo.InvariantCulture);
             }
 
             Disconnect();
