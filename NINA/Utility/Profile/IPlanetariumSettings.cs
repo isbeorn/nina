@@ -35,6 +35,9 @@ namespace NINA.Utility.Profile {
         string TSXHost { get; set; }
         int TSXPort { get; set; }
         int TSXTimeout { get; set; }
+        string HNSKYHost { get; set; }
+        int HNSKYPort { get; set; }
+        int HNSKYTimeout { get; set; }
         PlanetariumEnum PreferredPlanetarium { get; set; }
     }
 }

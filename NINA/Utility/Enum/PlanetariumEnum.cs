@@ -35,6 +35,9 @@ namespace NINA.Utility.Enum {
         STELLARIUM,
 
         [Description("LblTheSkyX")]
-        THESKYX
+        THESKYX,
+
+        [Description("LblHNSKY")]
+        HNSKY
     }
 }

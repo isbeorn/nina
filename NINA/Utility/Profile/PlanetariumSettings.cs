@@ -50,6 +50,9 @@ namespace NINA.Utility.Profile {
             TSXTimeout = 300;
             TSXPort = 3040;
             TSXHost = "localhost";
+            HNSKYTimeout = 300;
+            HNSKYPort = 7700;
+            HNSKYHost = "localhost";
             preferredPlanetarium = PlanetariumEnum.CDC;
         }
 
@@ -166,6 +169,45 @@ namespace NINA.Utility.Profile {
             }
             set {
                 _TSXTimeout = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string hnskyHost;
+
+        [DataMember]
+        public string HNSKYHost {
+            get {
+                return hnskyHost;
+            }
+            set {
+                hnskyHost = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int hnskyPort;
+
+        [DataMember]
+        public int HNSKYPort {
+            get {
+                return hnskyPort;
+            }
+            set {
+                hnskyPort = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int hnskyTimeout;
+
+        [DataMember]
+        public int HNSKYTimeout {
+            get {
+                return hnskyTimeout;
+            }
+            set {
+                hnskyTimeout = value;
                 RaisePropertyChanged();
             }
         }

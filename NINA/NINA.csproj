@@ -322,6 +322,7 @@
     <Compile Include="Model\MyPlanetarium\CartesDuCiel.cs" />
     <Compile Include="Model\MyPlanetarium\Coords.cs" />
     <Compile Include="Model\MyPlanetarium\PlanetariumFactory.cs" />
+    <Compile Include="Model\MyPlanetarium\HNSKY.cs" />
     <Compile Include="Model\MyPlanetarium\TheSkyX.cs" />
     <Compile Include="Utility\Api\ApiParameters.cs" />
     <Compile Include="Model\MyPlanetarium\IPlanetarium.cs" />
