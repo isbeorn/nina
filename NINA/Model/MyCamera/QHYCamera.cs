@@ -253,6 +253,7 @@ namespace NINA.Model.MyCamera {
         public string DriverVersion => LibQHYCCD.GetSDKFormattedVersion();
         public bool EnableSubSample { get; set; }
         public double ExposureMax => Info.ExpMax / 1e6;
+        public double ElectronsPerADU => double.NaN;
 
         /// <summary>
         // We store the camera's exposure times in microseconds
@@ -464,8 +465,7 @@ namespace NINA.Model.MyCamera {
                     /* sleep 2 seconds (cancelable) */
                     await Task.Delay(LibQHYCCD.QHYCCD_COOLER_DELAY, ct);
                 }
-            }
-            catch (OperationCanceledException) {
+            } catch (OperationCanceledException) {
                 Logger.Debug("QHYCCD: CoolerWorker task cancelled");
             }
         }
@@ -718,8 +718,7 @@ namespace NINA.Model.MyCamera {
 
                     RaisePropertyChanged(nameof(Connected));
                     RaiseAllPropertiesChanged();
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                 }

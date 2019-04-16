@@ -11,6 +11,9 @@
 ### GPS Assisted Location
 - Added a NMEA GPS interface to retrieve the current location
 
+### Interfacing with planetarium programs
+- NINA can interface with Cartes du Ciel, HNSKY, Stellarium, and TheSkyX through their repsective TCP services to import the selected object for use in the Sequence Editor and Framing Assistant, as well as setting the observing location to match that which is set in those programs
+
 ## Improvements
 - If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips
 - Added options to adjust downsample factor and maximum number of considered stars for ASTAP and local astrometry.net solvers

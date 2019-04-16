@@ -36,7 +36,7 @@ namespace NINA.Utility.Profile {
         }
 
         [OnDeserializing]
-        public void OnDesiralization(StreamingContext context) {
+        public void OnDeserialization(StreamingContext context) {
             SetDefaultValues();
         }
 
@@ -47,6 +47,12 @@ namespace NINA.Utility.Profile {
             cdCTimeout = 300;
             cdCPort = 3292;
             cdCHost = "localhost";
+            TSXTimeout = 300;
+            TSXPort = 3040;
+            TSXHost = "localhost";
+            HNSKYTimeout = 300;
+            HNSKYPort = 7700;
+            HNSKYHost = "localhost";
             preferredPlanetarium = PlanetariumEnum.CDC;
         }
 
@@ -128,8 +134,87 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        private string tsxHost;
+
+        [DataMember]
+        public string TSXHost {
+            get {
+                return tsxHost;
+            }
+            set {
+                tsxHost = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int _TSXPort;
+
+        [DataMember]
+        public int TSXPort {
+            get {
+                return _TSXPort;
+            }
+            set {
+                _TSXPort = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int _TSXTimeout;
+
+        [DataMember]
+        public int TSXTimeout {
+            get {
+                return _TSXTimeout;
+            }
+            set {
+                _TSXTimeout = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string hnskyHost;
+
+        [DataMember]
+        public string HNSKYHost {
+            get {
+                return hnskyHost;
+            }
+            set {
+                hnskyHost = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int hnskyPort;
+
+        [DataMember]
+        public int HNSKYPort {
+            get {
+                return hnskyPort;
+            }
+            set {
+                hnskyPort = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int hnskyTimeout;
+
+        [DataMember]
+        public int HNSKYTimeout {
+            get {
+                return hnskyTimeout;
+            }
+            set {
+                hnskyTimeout = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private PlanetariumEnum preferredPlanetarium;
 
+        [DataMember]
         public PlanetariumEnum PreferredPlanetarium {
             get {
                 return preferredPlanetarium;

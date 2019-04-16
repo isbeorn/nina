@@ -868,6 +868,8 @@ HFR Calcolato: {2}
     <s:String x:Key="LblStellariumUseNotice">Per poter utilizzare Stellarium il remote plugin deve essere instalalto ed attivo sull'Host e Porta specificati sopra</s:String>
     <s:String x:Key="LblPlanetariumTooltip">Ottieni le coordinate dal software di Planetario</s:String>
     <s:String x:Key="LblCdC">Cartes du Ciel</s:String>
+    <s:String x:Key="LblTheSkyX">TheSkyX</s:String>
+    <s:String x:Key="LblHNSKY">HNSKY</s:String>
     <s:String x:Key="LblPlanetariumPrefs">Preferenze Planetario</s:String>
     <s:String x:Key="LblPreferredPlanetarium">Programma Planetario Preferito</s:String>
 </ResourceDictionary>
