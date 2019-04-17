@@ -398,6 +398,28 @@
                     </Grid>
                 </StackPanel>
             </GroupBox>
+            <GroupBox Header="{ns:Loc LblLayout}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblResetDockLayout}" />
+                    <Button
+                        Grid.Column="1"
+                        Width="75"
+                        Height="30"
+                        HorizontalAlignment="Left"
+                        Command="{Binding Source={StaticResource AppVM}, Path=DockManagerVM.ResetDockLayoutCommand}"
+                        ToolTip="{ns:Loc LblResetDockLayout}">
+                        <Path
+                            Margin="5"
+                            Data="{StaticResource ResetSVG}"
+                            Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                            Stretch="Uniform" />
+                    </Button>
+                </Grid>
+            </GroupBox>
         </StackPanel>
     </UniformGrid>
 </UserControl>

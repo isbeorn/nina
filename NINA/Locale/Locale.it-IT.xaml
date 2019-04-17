@@ -873,4 +873,7 @@ HFR Calcolato: {2}
     <s:String x:Key="LblPlanetariumPrefs">Preferenze Planetario</s:String>
     <s:String x:Key="LblPreferredPlanetarium">Programma Planetario Preferito</s:String>
     <s:String x:Key="LblSlewToZenith">Punta allo zenit</s:String>
+    <s:String x:Key="LblResetDockLayout">Ripristinare il layout</s:String>
+    <s:String x:Key="LblResetDockLayoutConfirmation">Dovrebbe essere ripristinato il layout?</s:String>
+    <s:String x:Key="LblLayout">Layout</s:String>
 </ResourceDictionary>
