@@ -39,6 +39,8 @@ namespace NINA.Utility.Mediator.Interfaces {
 
         Task<bool> SlewToCoordinatesAsync(Coordinates coords);
 
+        Task<bool> SlewToCoordinatesAsync(TopocentricCoordinates coords);
+
         bool MeridianFlip(Coordinates targetCoordinates);
 
         bool SetTracking(bool tracking);

@@ -10,7 +10,7 @@ using System.Windows.Media.Imaging;
 
 namespace NINA.ViewModel.FlatWizard {
 
-    public interface IFlatWizardVM : ICameraConsumer {
+    public interface IFlatWizardVM : ICameraConsumer, IFilterWheelConsumer, ITelescopeConsumer {
         BinningMode BinningMode { get; set; }
         double CalculatedExposureTime { get; set; }
         double CalculatedHistogramMean { get; set; }
@@ -18,7 +18,6 @@ namespace NINA.ViewModel.FlatWizard {
         RelayCommand CancelFlatExposureSequenceCommand { get; }
         ObservableCollection<FilterInfo> FilterInfos { get; }
         ObservableCollection<FlatWizardFilterSettingsWrapper> Filters { get; set; }
-        IAsyncCommand FindExposureTimeCommand { get; }
         int FlatCount { get; set; }
         IFlatWizardExposureTimeFinderService FlatWizardExposureTimeFinderService { get; set; }
         ILoc Locale { get; set; }

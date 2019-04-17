@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 
 namespace NINA.Utility.Mediator.Interfaces {
 
-    internal interface IFilterWheelMediator : IDeviceMediator<IFilterWheelVM, IFilterWheelConsumer, FilterWheelInfo> {
+    public interface IFilterWheelMediator : IDeviceMediator<IFilterWheelVM, IFilterWheelConsumer, FilterWheelInfo> {
 
         Task<FilterInfo> ChangeFilter(FilterInfo inputFilter, CancellationToken token = new CancellationToken(), IProgress<ApplicationStatus> progress = null);
 

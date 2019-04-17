@@ -29,9 +29,9 @@ namespace NINA.ViewModel.FramingAssistant {
         private Graphics g;
         private ITelescopeMediator telescopeMediator;
 
-        public SkyMapAnnotator(string databaseLocation, ITelescopeMediator mediator) {
+        public SkyMapAnnotator(ITelescopeMediator mediator) {
             this.telescopeMediator = mediator;
-            dbInstance = new DatabaseInteraction(databaseLocation);
+            dbInstance = new DatabaseInteraction();
             DSOInViewport = new List<FramingDSO>();
             ConstellationsInViewport = new List<FramingConstellation>();
             FrameLineMatrix = new FrameLineMatrix2();

@@ -337,6 +337,8 @@
     <Compile Include="PlateSolving\CLISolver.cs" />
     <Compile Include="PlateSolving\PlateSolveParameter.cs" />
     <Compile Include="PlateSolving\PlateSolveResult.cs" />
+    <Compile Include="Utility\Astrometry\TopocentricCoordinates.cs" />
+    <Compile Include="Utility\Enum\AltitudeSite.cs" />
     <Compile Include="Utility\Enum\PlanetariumEnum.cs" />
     <Compile Include="Utility\Profile\IPlanetariumSettings.cs" />
     <Compile Include="Utility\Profile\PlanetariumSettings.cs" />
