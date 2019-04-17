@@ -193,8 +193,10 @@ namespace NINA.Model.MyGuider {
             ConnectedClients = new List<SynchronizedClientInfo>();
             PHD2Connected = await guiderInstance.Connect();
             if (PHD2Connected) {
-                ((PHD2Guider)guiderInstance).PHD2ConnectionLost += (sender, args) => PHD2Connected = false;
-                Notification.ShowSuccess(Locale["LblPhd2SynchronizedServiceStarted"]);
+                try {
+                    ((PHD2Guider)guiderInstance).PHD2ConnectionLost += (sender, args) => PHD2Connected = false;
+                    Notification.ShowSuccess(Locale["LblPhd2SynchronizedServiceStarted"]);
+                } catch (InvalidCastException) { }
             }
 
             initializeTaskCompletionSource.TrySetResult(PHD2Connected);
