@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 
 namespace NINA.ViewModel.Equipment.FilterWheel {
 
-    internal interface IFilterWheelVM : IDeviceVM<FilterWheelInfo> {
+    public interface IFilterWheelVM : IDeviceVM<FilterWheelInfo> {
 
         Task<FilterInfo> ChangeFilter(FilterInfo inputFilter, CancellationToken token = new CancellationToken(), IProgress<ApplicationStatus> progress = null);
 

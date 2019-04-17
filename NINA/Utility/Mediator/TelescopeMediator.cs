@@ -48,6 +48,10 @@ namespace NINA.Utility.Mediator {
             return handler.SlewToCoordinatesAsync(coords);
         }
 
+        public Task<bool> SlewToCoordinatesAsync(TopocentricCoordinates coords) {
+            return handler.SlewToCoordinatesAsync(coords);
+        }
+
         public bool MeridianFlip(Coordinates targetCoordinates) {
             return handler.MeridianFlip(targetCoordinates);
         }

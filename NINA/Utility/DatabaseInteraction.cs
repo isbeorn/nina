@@ -41,8 +41,8 @@ namespace NINA.Utility {
 
         private string _connectionString;
 
-        public DatabaseInteraction(string dbLocation) {
-            _connectionString = string.Format(@"Data Source={0};foreign keys=true;", dbLocation);
+        public DatabaseInteraction() {
+            _connectionString = string.Format(@"Data Source={0};foreign keys=true;", Environment.ExpandEnvironmentVariables(@"%localappdata%\NINA\NINA.sqlite"));
         }
 
         public async Task<ICollection<string>> GetConstellations(CancellationToken token) {
@@ -92,6 +92,36 @@ namespace NINA.Utility {
             }
 
             return dsotypes;
+        }
+
+        public async Task<double> GetUT1_UTC(DateTime date, CancellationToken token) {
+            string query = @"SELECT ut1_utc
+                            FROM earthrotationparameters
+                            ORDER BY ABS(date - $date)
+                            LIMIT 1;";
+            try {
+                using (SQLiteConnection connection = new SQLiteConnection(_connectionString)) {
+                    connection.Open();
+                    using (SQLiteCommand command = connection.CreateCommand()) {
+                        command.CommandText = query;
+
+                        var unixTimestamp = (int)(date.ToUniversalTime().Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+                        command.Parameters.AddWithValue("$date", unixTimestamp);
+
+                        var reader = await command.ExecuteReaderAsync(token);
+
+                        while (reader.Read()) {
+                            return reader.GetDouble(0);
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                if (!ex.Message.Contains("Execution was aborted by the user")) {
+                    Logger.Error(ex);
+                    Notification.Notification.ShowError(ex.Message);
+                }
+            }
+            return double.NaN;
         }
 
         public async Task<List<FocusTarget>> GetBrightStars() {

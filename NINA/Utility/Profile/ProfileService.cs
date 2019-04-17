@@ -434,7 +434,6 @@ namespace NINA.Utility.Profile {
 
                 p.ApplicationSettings.Language = Properties.Settings.Default.Language;
                 p.ApplicationSettings.LogLevel = (LogLevelEnum)Properties.Settings.Default.LogLevel;
-                p.ApplicationSettings.DatabaseLocation = Properties.Settings.Default.DatabaseLocation;
                 p.ApplicationSettings.DevicePollingInterval = Properties.Settings.Default.DevicePollingInterval;
                 p.ApplicationSettings.SkyAtlasImageRepository = Properties.Settings.Default.SkyAtlasImageRepository;
 

@@ -32,6 +32,10 @@
 - The sequence start button is unavailable if an imaging loop is in progress in the imaging tab
 - Imaging tab - Equipment specific views will only show the "Connected" flag when the device is not connected to save space
 - Enhanced direct guider to accept decimal durations (e.g. 0.5s), and to perform random angle selection in a way that minimizes target deviation from center.
+- Added a layout reset button to the imaging tab to restore the default dock layout.
+- Flat Wizard
+	- Progress bars for remaining filters and exposures
+	- Slew to zenith button with option for east or west pier side
 
 # Version 1.8 Hotfix 1
 

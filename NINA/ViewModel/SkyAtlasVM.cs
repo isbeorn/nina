@@ -283,7 +283,7 @@ namespace NINA.ViewModel {
             return await Task.Run(async () => {
                 try {
                     SearchResult = null;
-                    var db = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
+                    var db = new DatabaseInteraction();
                     var types = ObjectTypes.Where((x) => x.Selected).Select((x) => x.Name).ToList();
 
                     var searchParams = new DatabaseInteraction.DeepSkyObjectSearchParams();
@@ -412,12 +412,12 @@ namespace NINA.ViewModel {
         }
 
         private void InitializeConstellationFilters() {
-            var l = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation).GetConstellations(new System.Threading.CancellationToken());
+            var l = new DatabaseInteraction().GetConstellations(new System.Threading.CancellationToken());
             Constellations = new AsyncObservableCollection<string>(l.Result);
         }
 
         private void InitializeObjectTypeFilters() {
-            var task = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation).GetObjectTypes(new System.Threading.CancellationToken());
+            var task = new DatabaseInteraction().GetObjectTypes(new System.Threading.CancellationToken());
             var list = task.Result?.OrderBy(x => x).ToList();
             ObjectTypes = new AsyncObservableCollection<DSOObjectType>();
             foreach (var type in list) {

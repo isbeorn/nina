@@ -688,6 +688,10 @@ namespace NINATest {
         public bool Sync(double ra, double dec) {
             throw new NotImplementedException();
         }
+
+        public Task<bool> SlewToCoordinatesAsync(TopocentricCoordinates coords) {
+            throw new NotImplementedException();
+        }
     }
 
     internal class SequenceFocuserMediator : IFocuserMediator {

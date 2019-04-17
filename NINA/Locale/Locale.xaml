@@ -878,4 +878,8 @@ Calculated HFR: {2}
     <s:String x:Key="LblHNSKY">HNSKY</s:String>
     <s:String x:Key="LblPlanetariumPrefs">Planetarium Preferences</s:String>
     <s:String x:Key="LblPreferredPlanetarium">Preferred Planetatium software</s:String>
+    <s:String x:Key="LblSlewToZenith">Slew to zenith</s:String>
+    <s:String x:Key="LblResetDockLayout">Reset layout</s:String>
+    <s:String x:Key="LblResetDockLayoutConfirmation">Should the layout be reset?</s:String>
+    <s:String x:Key="LblLayout">Layout</s:String>
 </ResourceDictionary>
