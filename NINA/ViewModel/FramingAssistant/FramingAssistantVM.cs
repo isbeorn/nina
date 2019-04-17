@@ -58,7 +58,7 @@ namespace NINA.ViewModel.FramingAssistant {
             Cache = new CacheSkySurvey(profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory);
             Opacity = 0.2;
 
-            SkyMapAnnotator = new SkyMapAnnotator(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation, telescopeMediator);
+            SkyMapAnnotator = new SkyMapAnnotator(telescopeMediator);
 
             var defaultCoordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
             DSO = new DeepSkyObject(string.Empty, defaultCoordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
@@ -83,7 +83,7 @@ namespace NINA.ViewModel.FramingAssistant {
 
             CoordsFromPlanetariumCommand = new AsyncCommand<bool>(() => Task.Run(CoordsFromPlanetarium));
 
-            DeepSkyObjectSearchVM = new DeepSkyObjectSearchVM(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
+            DeepSkyObjectSearchVM = new DeepSkyObjectSearchVM();
             DeepSkyObjectSearchVM.PropertyChanged += DeepSkyObjectSearchVM_PropertyChanged;
 
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(async (object parameter) => {

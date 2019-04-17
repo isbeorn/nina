@@ -31,6 +31,8 @@ namespace NINA.ViewModel.Equipment.Telescope {
 
         Task<bool> SlewToCoordinatesAsync(Coordinates coords);
 
+        Task<bool> SlewToCoordinatesAsync(TopocentricCoordinates coordinates);
+
         void MoveAxis(TelescopeAxes axis, double rate);
 
         void PulseGuide(GuideDirections direction, int duration);

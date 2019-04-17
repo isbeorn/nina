@@ -546,6 +546,11 @@ namespace NINA.ViewModel.Equipment.Telescope {
             return TelescopeInfo;
         }
 
+        public Task<bool> SlewToCoordinatesAsync(TopocentricCoordinates coordinates) {
+            var transformed = coordinates.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
+            return this.SlewToCoordinatesAsync(transformed);
+        }
+
         public ICommand SlewToCoordinatesCommand { get; private set; }
 
         public IAsyncCommand ChooseTelescopeCommand { get; private set; }

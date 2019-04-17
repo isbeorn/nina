@@ -25,7 +25,10 @@ using NINA.Locale;
 using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
+using NINA.Model.MyTelescope;
 using NINA.Utility;
+using NINA.Utility.Astrometry;
+using NINA.Utility.Enum;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Profile;
 using NINA.ViewModel.Interfaces;
@@ -49,6 +52,7 @@ namespace NINA.ViewModel.FlatWizard {
         private double calculatedHistogramMean;
         private bool cameraConnected;
         private CameraInfo cameraInfo;
+        private FilterWheelInfo filterWheelInfo;
         private ObservableCollection<FlatWizardFilterSettingsWrapper> filters = new ObservableCollection<FlatWizardFilterSettingsWrapper>();
         private int flatCount;
         private CancellationTokenSource flatSequenceCts;
@@ -62,6 +66,8 @@ namespace NINA.ViewModel.FlatWizard {
         public FlatWizardVM(IProfileService profileService,
                             IImagingVM imagingVM,
                             ICameraMediator cameraMediator,
+                            IFilterWheelMediator filterWheelMediator,
+                            ITelescopeMediator telescopeMediator,
                             IApplicationResourceDictionary resourceDictionary,
                             IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblFlatWizard";
@@ -78,7 +84,19 @@ namespace NINA.ViewModel.FlatWizard {
             flatSequenceCts = new CancellationTokenSource();
             var pauseTokenSource = new PauseTokenSource();
 
-            StartFlatSequenceCommand = new AsyncCommand<bool>(() => StartFlatCapture(new Progress<ApplicationStatus>(p => Status = p), pauseTokenSource.Token));
+            StartFlatSequenceCommand = new AsyncCommand<bool>(
+                () => StartSingleFlatCapture(new Progress<ApplicationStatus>(p => Status = p), pauseTokenSource.Token),
+                (object o) => cameraInfo.Connected
+            );
+            StartMultiFlatSequenceCommand = new AsyncCommand<bool>(
+                () => StartMultiFlatCapture(new Progress<ApplicationStatus>(p => Status = p), pauseTokenSource.Token),
+                (object o) => cameraInfo.Connected && filterWheelInfo.Connected
+            );
+            SlewToZenithCommand = new AsyncCommand<bool>(
+                () => SlewToZenith(),
+                (object o) => telescopeInfo.Connected
+            );
+
             CancelFlatExposureSequenceCommand = new RelayCommand(CancelFindExposureTime);
             PauseFlatExposureSequenceCommand = new RelayCommand(obj => { IsPaused = true; pauseTokenSource.IsPaused = IsPaused; });
             ResumeFlatExposureSequenceCommand = new RelayCommand(obj => { IsPaused = false; pauseTokenSource.IsPaused = IsPaused; });
@@ -108,6 +126,26 @@ namespace NINA.ViewModel.FlatWizard {
             // then register consumer and get the cameraInfo so it's populated to all filters including the singleflatwizardfiltersettings
 
             cameraMediator.RegisterConsumer(this);
+            filterWheelMediator.RegisterConsumer(this);
+            this.telescopeMediator = telescopeMediator;
+            this.telescopeMediator.RegisterConsumer(this);
+        }
+
+        private AltitudeSite altitudeSite;
+
+        public AltitudeSite AltitudeSite {
+            get => altitudeSite;
+            set {
+                altitudeSite = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private Task<bool> SlewToZenith() {
+            var latitude = Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude);
+            var longitude = Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude);
+            var azimuth = AltitudeSite == AltitudeSite.EAST ? Angle.ByDegree(90) : Angle.ByDegree(270);
+            return telescopeMediator.SlewToCoordinatesAsync(new TopocentricCoordinates(azimuth, Angle.ByDegree(89), latitude, longitude));
         }
 
         private void UpdateSingleFlatWizardFilterSettings(IProfileService profileService) {
@@ -126,11 +164,6 @@ namespace NINA.ViewModel.FlatWizard {
         }
 
         private ObserveAllCollection<FilterInfo> watchedFilterList;
-
-        private enum FilterCaptureMode {
-            SINGLE = 0,
-            MULTI = 1
-        }
 
         public BinningMode BinningMode {
             get => binningMode;
@@ -178,8 +211,6 @@ namespace NINA.ViewModel.FlatWizard {
                 RaisePropertyChanged();
             }
         }
-
-        public IAsyncCommand FindExposureTimeCommand { get; private set; }
 
         public int FlatCount {
             get => flatCount;
@@ -266,6 +297,10 @@ namespace NINA.ViewModel.FlatWizard {
         }
 
         public IAsyncCommand StartFlatSequenceCommand { get; }
+        public IAsyncCommand StartMultiFlatSequenceCommand { get; }
+        public IAsyncCommand SlewToZenithCommand { get; }
+
+        private ApplicationStatus prevStatus;
 
         public ApplicationStatus Status {
             get => status;
@@ -273,6 +308,26 @@ namespace NINA.ViewModel.FlatWizard {
                 status = value;
                 if (status.Source == null) {
                     status.Source = Locale["LblFlatWizardCapture"];
+                } else if (status.Source == Title) {
+                    if (prevStatus != null) {
+                        if (string.IsNullOrWhiteSpace(status.Status) && (status.Status2 != null || status.Status3 != null)) {
+                            status.Status = prevStatus.Status;
+                        }
+
+                        if (status.Status2 == null && prevStatus.Status2 != null) {
+                            status.Status2 = prevStatus.Status2;
+                            status.Progress2 = prevStatus.Progress2;
+                            status.MaxProgress2 = prevStatus.MaxProgress2;
+                            status.ProgressType2 = prevStatus.ProgressType2;
+                        }
+                        if (status.Status3 == null && prevStatus.Status3 != null) {
+                            status.Status3 = prevStatus.Status3;
+                            status.Progress3 = prevStatus.Progress3;
+                            status.MaxProgress3 = prevStatus.MaxProgress3;
+                            status.ProgressType3 = prevStatus.ProgressType3;
+                        }
+                    }
+                    prevStatus = status;
                 }
 
                 RaisePropertyChanged();
@@ -313,7 +368,7 @@ namespace NINA.ViewModel.FlatWizard {
                             flatSequenceCts.Cancel();
                         } else {
                             exposureTime = result.NextExposureTime;
-                            progress.Report(new ApplicationStatus() { Status = string.Format(Locale["LblFlatExposureCalcContinue"], imageArray?.Statistics.Mean, exposureTime), Source = Title });
+                            progress.Report(new ApplicationStatus() { Status = string.Format(Locale["LblFlatExposureCalcContinue"], Math.Round(imageArray?.Statistics.Mean ?? 0, 2), exposureTime), Source = Title });
                         }
                         break;
                 }
@@ -335,12 +390,12 @@ namespace NINA.ViewModel.FlatWizard {
                     case FlatWizardExposureAduState.ExposureFinished:
                         CalculatedHistogramMean = imageArray.Statistics.Mean;
                         CalculatedExposureTime = exposureTime;
-                        progress.Report(new ApplicationStatus { Status = string.Format(Locale["LblFlatExposureCalcFinished"], CalculatedHistogramMean, CalculatedExposureTime), Source = Title });
+                        progress.Report(new ApplicationStatus { Status = string.Format(Locale["LblFlatExposureCalcFinished"], Math.Round(CalculatedHistogramMean, 2), CalculatedExposureTime), Source = Title });
                         break;
 
                     case FlatWizardExposureAduState.ExposureAduBelowMean:
                         exposureTime = FlatWizardExposureTimeFinderService.GetNextExposureTime(exposureTime, wrapper);
-                        progress.Report(new ApplicationStatus { Status = string.Format(Locale["LblFlatExposureCalcContinue"], imageArray.Statistics.Mean, exposureTime), Source = Title });
+                        progress.Report(new ApplicationStatus { Status = string.Format(Locale["LblFlatExposureCalcContinue"], Math.Round(imageArray.Statistics.Mean, 2), exposureTime), Source = Title });
                         break;
 
                     case FlatWizardExposureAduState.ExposureAduAboveMean:
@@ -369,57 +424,150 @@ namespace NINA.ViewModel.FlatWizard {
             return true;
         }
 
-        private async Task<bool> StartFlatCapture(IProgress<ApplicationStatus> progress, PauseToken pt) {
-            if (flatSequenceCts.IsCancellationRequested) {
-                flatSequenceCts?.Dispose();
-                flatSequenceCts = new CancellationTokenSource();
+        private Task<bool> StartMultiFlatCapture(IProgress<ApplicationStatus> progress, PauseToken pt) {
+            return StartFlatMagic(Filters.Where(f => f.IsChecked), progress, pt);
+        }
+
+        private Task<bool> StartSingleFlatCapture(IProgress<ApplicationStatus> progress, PauseToken pt) {
+            return StartFlatMagic(new List<FlatWizardFilterSettingsWrapper>() { SingleFlatWizardFilterSettings }, progress, pt);
+        }
+
+        private async Task<bool> StartFlatMagic(IEnumerable<FlatWizardFilterSettingsWrapper> filters, IProgress<ApplicationStatus> progress, PauseToken pt) {
+            try {
+                if (flatSequenceCts.IsCancellationRequested) {
+                    flatSequenceCts?.Dispose();
+                    flatSequenceCts = new CancellationTokenSource();
+                }
+                var filterCount = 0;
+                progress.Report(new ApplicationStatus() {
+                    Status2 = string.Empty,
+                    Progress2 = 0,
+                    MaxProgress2 = 0,
+                    ProgressType2 = ApplicationStatus.StatusProgressType.ValueOfMaxValue,
+                    Source = Title
+                });
+                var totalFilterCount = filters.Count();
+                foreach (var filterSettings in filters) {
+                    filterCount++;
+                    var filterName = filterSettings?.Filter?.Name ?? string.Empty;
+                    progress.Report(new ApplicationStatus() {
+                        Status2 = $"{Locale["LblFilter"]} {filterName}",
+                        Progress2 = filterCount,
+                        MaxProgress2 = totalFilterCount,
+                        ProgressType2 = ApplicationStatus.StatusProgressType.ValueOfMaxValue,
+                        Source = Title
+                    });
+
+                    await FindExposureTimesAndTakeImages(filterSettings, progress, pt);
+                }
+
+                await TakeDarkFlats(progress, pt);
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                return false;
+            } finally {
+                Cleanup(progress);
             }
 
-            Dictionary<FlatWizardFilterSettingsWrapper, double> filterToExposureTime = new Dictionary<FlatWizardFilterSettingsWrapper, double>();
-            CaptureSequence captureSequence;
+            return true;
+        }
 
+        private Dictionary<FlatWizardFilterSettingsWrapper, double> filterToExposureTime = new Dictionary<FlatWizardFilterSettingsWrapper, double>();
+        private ITelescopeMediator telescopeMediator;
+        private TelescopeInfo telescopeInfo;
+
+        private async Task<bool> FindExposureTimesAndTakeImages(FlatWizardFilterSettingsWrapper filterSettings, IProgress<ApplicationStatus> progress, PauseToken pt) {
             try {
-                if ((FilterCaptureMode)Mode == FilterCaptureMode.SINGLE) {
-                    await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, SingleFlatWizardFilterSettings);
-                    captureSequence = new CaptureSequence(CalculatedExposureTime, CaptureSequence.ImageTypes.FLAT, SingleFlatWizardFilterSettings.Filter, BinningMode, FlatCount) { Gain = Gain };
+                progress.Report(new ApplicationStatus() {
+                    Status3 = Locale["LblExposures"],
+                    Progress3 = 0,
+                    MaxProgress3 = 0,
+                    ProgressType3 = ApplicationStatus.StatusProgressType.ValueOfMaxValue,
+                    Source = Title
+                });
+
+                await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, filterSettings);
+                filterToExposureTime.Add(filterSettings, CalculatedExposureTime);
+                for (var i = 0; i < FlatCount; i++) {
+                    progress.Report(new ApplicationStatus() {
+                        Status3 = Locale["LblExposures"],
+                        Progress3 = i,
+                        MaxProgress3 = FlatCount,
+                        ProgressType3 = ApplicationStatus.StatusProgressType.ValueOfMaxValue,
+                        Source = Title
+                    });
+
+                    var captureSequence = new CaptureSequence(CalculatedExposureTime, CaptureSequence.ImageTypes.FLAT, filterSettings.Filter, BinningMode, 1) { Gain = Gain };
                     await StartCaptureSequence(captureSequence, progress, flatSequenceCts.Token, pt);
-                    filterToExposureTime.Add(SingleFlatWizardFilterSettings, CalculatedExposureTime);
-                } else {
-                    foreach (var filterSettings in Filters.Where(f => f.IsChecked)) {
-                        await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, filterSettings);
-                        captureSequence = new CaptureSequence(CalculatedExposureTime, CaptureSequence.ImageTypes.FLAT, filterSettings.Filter, BinningMode, FlatCount) { Gain = Gain };
-                        await StartCaptureSequence(captureSequence, progress, flatSequenceCts.Token, pt);
-                        filterToExposureTime.Add(filterSettings, CalculatedExposureTime);
-                        filterSettings.IsChecked = false;
-                        CalculatedExposureTime = 0;
-                        CalculatedHistogramMean = 0;
-                    }
                 }
+                filterSettings.IsChecked = false;
+                CalculatedExposureTime = 0;
+                CalculatedHistogramMean = 0;
             } catch (OperationCanceledException) {
             } finally {
                 CalculatedExposureTime = 0;
                 CalculatedHistogramMean = 0;
                 FlatWizardExposureTimeFinderService.ClearDataPoints();
             }
+            return true;
+        }
 
-            try {
-                if (filterToExposureTime.Count > 0 && DarkFlatCount > 0) {
-                    progress.Report(new ApplicationStatus() { Status = Locale["LblPreparingDarkFlatSequence"], Source = Title });
-                    var dialogResult = MyMessageBox.MyMessageBox.Show(
-                        Locale["LblCoverScopeMsgBox"],
-                        Locale["LblCoverScopeMsgBoxTitle"], MessageBoxButton.OKCancel, MessageBoxResult.OK);
-                    if (dialogResult == MessageBoxResult.OK) {
-                        flatSequenceCts?.Dispose();
-                        flatSequenceCts = new CancellationTokenSource();
-                        foreach (var kvp in filterToExposureTime) {
-                            captureSequence = new CaptureSequence(kvp.Value, CaptureSequence.ImageTypes.DARKFLAT, kvp.Key.Filter, BinningMode, DarkFlatCount) { Gain = Gain };
-                            await StartCaptureSequence(captureSequence, progress, flatSequenceCts.Token, pt);
-                        }
+        private async Task TakeDarkFlats(IProgress<ApplicationStatus> progress, PauseToken pt) {
+            if (filterToExposureTime.Count > 0 && DarkFlatCount > 0) {
+                progress.Report(new ApplicationStatus() { Status = Locale["LblPreparingDarkFlatSequence"], Source = Title });
+                var dialogResult = MyMessageBox.MyMessageBox.Show(
+                    Locale["LblCoverScopeMsgBox"],
+                    Locale["LblCoverScopeMsgBoxTitle"], MessageBoxButton.OKCancel, MessageBoxResult.OK);
+                if (dialogResult == MessageBoxResult.OK) {
+                    progress.Report(new ApplicationStatus() {
+                        Status2 = string.Empty,
+                        Progress2 = 0,
+                        MaxProgress2 = 0,
+                        ProgressType2 = ApplicationStatus.StatusProgressType.ValueOfMaxValue,
+                        Source = Title
+                    });
+
+                    var filterCount = 0;
+                    var totalFilterCount = filterToExposureTime.Count;
+                    foreach (var kvp in filterToExposureTime) {
+                        filterCount++;
+                        var filterName = kvp.Key.Filter?.Name ?? string.Empty;
+                        progress.Report(new ApplicationStatus() {
+                            Status2 = $"{Locale["LblFilter"]} {filterName}",
+                            Progress2 = filterCount,
+                            MaxProgress2 = totalFilterCount,
+                            ProgressType2 = ApplicationStatus.StatusProgressType.ValueOfMaxValue,
+                            Source = Title
+                        });
+                        await TakeDarkFlatsForFilter(kvp.Value, kvp.Key.Filter, progress, pt);
                     }
                 }
-            } catch (OperationCanceledException) {
             }
+        }
 
+        private async Task TakeDarkFlatsForFilter(double exposureTime, FilterInfo filter, IProgress<ApplicationStatus> progress, PauseToken pt) {
+            progress.Report(new ApplicationStatus() {
+                Status3 = Locale["LblExposures"],
+                Progress3 = 0,
+                MaxProgress3 = 0,
+                ProgressType3 = ApplicationStatus.StatusProgressType.ValueOfMaxValue,
+                Source = Title
+            });
+            for (var i = 0; i < DarkFlatCount; i++) {
+                progress.Report(new ApplicationStatus() {
+                    Status3 = Locale["LblExposures"],
+                    Progress3 = i,
+                    MaxProgress3 = DarkFlatCount,
+                    ProgressType3 = ApplicationStatus.StatusProgressType.ValueOfMaxValue,
+                    Source = Title
+                });
+                var captureSequence = new CaptureSequence(exposureTime, CaptureSequence.ImageTypes.DARKFLAT, filter, BinningMode, 1) { Gain = Gain };
+                await StartCaptureSequence(captureSequence, progress, flatSequenceCts.Token, pt);
+            }
+        }
+
+        private void Cleanup(IProgress<ApplicationStatus> progress) {
+            filterToExposureTime.Clear();
             ImagingVM.DestroyImage();
             Image = null;
             GC.Collect();
@@ -427,8 +575,7 @@ namespace NINA.ViewModel.FlatWizard {
 
             progress.Report(new ApplicationStatus());
             progress.Report(new ApplicationStatus() { Source = Title });
-
-            return true;
+            FlatWizardExposureTimeFinderService.ClearDataPoints();
         }
 
         private async Task<bool> StartCaptureSequence(CaptureSequence sequence, IProgress<ApplicationStatus> progress,
@@ -531,6 +678,14 @@ namespace NINA.ViewModel.FlatWizard {
                     filter.BitDepth = cameraInfo.BitDepth;
                 }
             }
+        }
+
+        public void UpdateDeviceInfo(FilterWheelInfo deviceInfo) {
+            this.filterWheelInfo = deviceInfo;
+        }
+
+        public void UpdateDeviceInfo(TelescopeInfo deviceInfo) {
+            this.telescopeInfo = deviceInfo;
         }
     }
 }

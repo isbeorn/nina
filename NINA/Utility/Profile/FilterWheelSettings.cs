@@ -31,7 +31,17 @@ namespace NINA.Utility.Profile {
     [Serializable()]
     [DataContract]
     public class FilterWheelSettings : Settings, IFilterWheelSettings {
-        private string id = "No_Device";
+
+        public FilterWheelSettings() {
+            SetDefaultValues();
+        }
+
+        private void SetDefaultValues() {
+            id = "No_Device";
+            filterWheelFilters = new ObserveAllCollection<FilterInfo>();
+        }
+
+        private string id;
 
         [DataMember]
         public string Id {
@@ -44,6 +54,11 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        [OnDeserializing]
+        public void OnDesiralization(StreamingContext context) {
+            SetDefaultValues();
+        }
+
         [OnDeserialized]
         public void Deserializing(StreamingContext context) {
             // set default flatwizardsettings
@@ -52,21 +67,23 @@ namespace NINA.Utility.Profile {
             }
         }
 
+        private void FilterWheelFilters_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
+            RaisePropertyChanged(nameof(FilterWheelFilters));
+        }
+
         private ObserveAllCollection<FilterInfo> filterWheelFilters;
 
         [DataMember]
         public ObserveAllCollection<FilterInfo> FilterWheelFilters {
             get {
-                if (filterWheelFilters == null) {
-                    filterWheelFilters = new ObserveAllCollection<FilterInfo>();
-                    /*for (short i = 0; i < 8; i++) {
-                        filterWheelFilters.Add(new FilterInfo(Locale.Loc.Instance["LblFilter"] + (i + 1), 0, i, 0));
-                    }*/
-                }
                 return filterWheelFilters;
             }
             set {
+                if (filterWheelFilters != null) {
+                    filterWheelFilters.CollectionChanged -= FilterWheelFilters_CollectionChanged;
+                }
                 filterWheelFilters = value;
+                filterWheelFilters.CollectionChanged += FilterWheelFilters_CollectionChanged;
                 RaisePropertyChanged();
             }
         }

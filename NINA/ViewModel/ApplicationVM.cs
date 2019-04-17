@@ -400,6 +400,8 @@ namespace NINA.ViewModel {
                     _flatWizardVM = new FlatWizardVM(profileService,
                         new ImagingVM(profileService, new ImagingMediator(), cameraMediator, telescopeMediator, filterWheelMediator, focuserMediator, rotatorMediator, guiderMediator, applicationStatusMediator),
                         cameraMediator,
+                        filterWheelMediator,
+                        telescopeMediator,
                         new ApplicationResourceDictionary(),
                         applicationStatusMediator);
                 }

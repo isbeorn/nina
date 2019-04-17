@@ -45,7 +45,6 @@ namespace NINA.Utility.Profile {
         private void SetDefaultValues() {
             language = new CultureInfo("en-GB");
             logLevel = LogLevelEnum.ERROR;
-            databaseLocation = @"%localappdata%\NINA\NINA.sqlite";
             devicePollingInterval = 2;
             skyAtlasImageRepository = string.Empty;
             skySurveyCacheDirectory = Path.Combine(Utility.APPLICATIONTEMPPATH, "FramingAssistantCache");
@@ -83,19 +82,6 @@ namespace NINA.Utility.Profile {
             }
             set {
                 logLevel = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private string databaseLocation;
-
-        [DataMember]
-        public string DatabaseLocation {
-            get {
-                return Environment.ExpandEnvironmentVariables(databaseLocation);
-            }
-            set {
-                databaseLocation = value;
                 RaisePropertyChanged();
             }
         }

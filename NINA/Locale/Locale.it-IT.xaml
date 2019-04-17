@@ -872,4 +872,5 @@ HFR Calcolato: {2}
     <s:String x:Key="LblHNSKY">HNSKY</s:String>
     <s:String x:Key="LblPlanetariumPrefs">Preferenze Planetario</s:String>
     <s:String x:Key="LblPreferredPlanetarium">Programma Planetario Preferito</s:String>
+    <s:String x:Key="LblSlewToZenith">Punta allo zenit</s:String>
 </ResourceDictionary>

@@ -17,13 +17,14 @@ namespace NINATest {
         [OneTimeSetUp]
         public void Init() {
             // return false otherwise it won't work since we I cast it to a phd2 guider when it's actually connected but whatever
-            guider.Setup(m => m.Connect()).ReturnsAsync(false);
+            guider.Setup(m => m.Connect()).ReturnsAsync(true);
         }
 
         [Test]
         public async Task Initialize_WhenInitializing_ConnectToPhd2() {
             // setup
             CancellationTokenSource cts = new CancellationTokenSource();
+            guider.Setup(m => m.Connect()).ReturnsAsync(false);
 
             // act
             var result = await sut.Initialize(guider.Object, cts.Token);
@@ -42,7 +43,7 @@ namespace NINATest {
             guider.Setup(m => m.PixelScale).Returns(1);
 
             // act
-            var result = sut.ConnectAndGetPixelScale(id);
+            var result = await sut.ConnectAndGetPixelScale(id);
 
             // assert
             result.Should().Be(1);
@@ -61,7 +62,7 @@ namespace NINATest {
             sut.ConnectedClients.Add(new SynchronizedClientInfo { InstanceID = prevId });
 
             // act
-            var result = sut.ConnectAndGetPixelScale(id);
+            var result = await sut.ConnectAndGetPixelScale(id);
 
             // assert
             result.Should().Be(1);
@@ -75,10 +76,13 @@ namespace NINATest {
             // setup
             Guid id = Guid.NewGuid();
             CancellationTokenSource cts = new CancellationTokenSource();
+            guider.Setup(m => m.Connect()).ReturnsAsync(false);
             await sut.Initialize(guider.Object, cts.Token);
 
             // act
-            Action act = () => sut.GetGuideInfo(id);
+            Func<Task> act = async () => {
+                await sut.GetGuideInfo(id);
+            };
 
             // assert
             act.Should().Throw<FaultException<PHD2Fault>>();

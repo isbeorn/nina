@@ -61,7 +61,7 @@ namespace NINA.ViewModel {
         public IAsyncCommand SlewToCoordinatesCommand { get; }
 
         private async void LoadFocusTargets() {
-            var db = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
+            var db = new DatabaseInteraction();
             allFocusTargets = new List<FocusTarget>(await db.GetBrightStars());
             CalculateVisibleStars();
         }
