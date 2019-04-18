@@ -857,6 +857,14 @@ HFR Calcolato: {2}
     <s:String x:Key="LblUseBlindSolveNoCoordinatesRollover">Nessuna coordinata di referenza disponibile. Vuoi usare il blind solver?</s:String>
     <s:String x:Key="LblDownSampleFactor">Fattore di downsample</s:String>
     <s:String x:Key="LblMaxObjects">Oggetti Massimi</s:String>
+    <s:String x:Key="LblASTAPMinimumVersionNote">Nota: Richiede una versione di ASTAP uguale o superiore alla 0.9.192. Per versioni precedenti, usare ASTAP come solver in Platesolve2.</s:String>
+    <s:String x:Key="LblErrorDistance">Distanza Errore</s:String>
+    <s:String x:Key="LblCam">Camera</s:String>
+    <s:String x:Key="LblFocuserSettleTime">Settle time del Focuser</s:String>
+    <s:String x:Key="LblFocuserSettleTimeTooltip">Se il focuser introduce uno spostamento immagine mentre si muove, impostare un valore basso in secondi qui.</s:String>
+    <s:String x:Key="LblGPSTooltip">Importa coordinate del luogo da GPS NMEA</s:String>
+    <s:String x:Key="LblTooltipResetSequence">Resetta progresso della riga selezionata nella lista sequenze</s:String>
+    <s:String x:Key="LblTooltipResetTarget">Resetta progresso di tutte le sequenze in target</s:String>
     <s:String x:Key="LblPlanetariumCoordsOk">Coordinate impostate da {0}</s:String>
     <s:String x:Key="LblPlanetariumCoordsError">Impossibile recuperare coordinate da {0}</s:String>
     <s:String x:Key="LblPlanetarium">Planetario</s:String>
