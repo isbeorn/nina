@@ -584,8 +584,8 @@
             DataContext="{Binding FocuserSettings}"
             Header="{ns:Loc LblFocuser}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <StackPanel Orientation="Vertical">
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                <UniformGrid Columns="2">
+                    <UniformGrid Margin="0,5,0,0" Columns="2">
                         <TextBlock
                             MinWidth="200"
                             MinHeight="20"
@@ -600,26 +600,24 @@
                             Height="25"
                             HorizontalAlignment="Left"
                             IsChecked="{Binding UseFilterWheelOffsets}" />
-                    </StackPanel>
+                    </UniformGrid>
 
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                    <UniformGrid Margin="0,5,0,0" Columns="2">
                         <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
+                            Height="25"
+                            HorizontalAlignment="Stretch"
                             Text="{ns:Loc LblFocuserAutoFocusStepSize}">
                             <TextBlock.ToolTip>
                                 <TextBlock Text="{ns:Loc LblFocuserAutoFocusStepSizeTooltip}" />
                             </TextBlock.ToolTip>
                         </TextBlock>
                         <TextBox
-                            Width="75"
                             Height="25"
-                            HorizontalAlignment="Left"
+                            HorizontalAlignment="Stretch"
                             Text="{Binding AutoFocusStepSize}" />
-                    </StackPanel>
+                    </UniformGrid>
 
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                    <UniformGrid Margin="0,5,0,0" Columns="2">
                         <TextBlock
                             MinWidth="200"
                             MinHeight="20"
@@ -630,12 +628,11 @@
                             </TextBlock.ToolTip>
                         </TextBlock>
                         <TextBox
-                            Width="75"
                             Height="25"
-                            HorizontalAlignment="Left"
+                            HorizontalAlignment="Stretch"
                             Text="{Binding AutoFocusInitialOffsetSteps}" />
-                    </StackPanel>
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                    </UniformGrid>
+                    <UniformGrid Margin="0,5,0,0" Columns="2">
                         <TextBlock
                             MinWidth="200"
                             MinHeight="20"
@@ -645,10 +642,7 @@
                                 <TextBlock Text="{ns:Loc LblAutoFocusExposureTimeTooltip}" />
                             </TextBlock.ToolTip>
                         </TextBlock>
-                        <TextBox
-                            Width="75"
-                            Height="25"
-                            HorizontalAlignment="Left">
+                        <TextBox Height="25" HorizontalAlignment="Stretch">
                             <TextBox.Text>
                                 <Binding Path="AutoFocusExposureTime" UpdateSourceTrigger="LostFocus">
                                     <Binding.ValidationRules>
@@ -657,8 +651,8 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                    </StackPanel>
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                    </UniformGrid>
+                    <UniformGrid Margin="0,5,0,0" Columns="2">
                         <TextBlock
                             MinWidth="200"
                             MinHeight="20"
@@ -668,10 +662,7 @@
                                 <TextBlock Text="{ns:Loc LblFocuserSettleTimeTooltip}" />
                             </TextBlock.ToolTip>
                         </TextBlock>
-                        <TextBox
-                            Width="75"
-                            Height="25"
-                            HorizontalAlignment="Left">
+                        <TextBox Height="25" HorizontalAlignment="Stretch">
                             <TextBox.Text>
                                 <Binding Path="FocuserSettleTime" UpdateSourceTrigger="LostFocus">
                                     <Binding.ValidationRules>
@@ -680,8 +671,8 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                    </StackPanel>
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                    </UniformGrid>
+                    <UniformGrid Margin="0,5,0,0" Columns="2">
                         <TextBlock
                             MinWidth="200"
                             MinHeight="20"
@@ -691,10 +682,7 @@
                                 <TextBlock Text="{ns:Loc LblAutoFocusNumberOfAttemptsTooltip}" />
                             </TextBlock.ToolTip>
                         </TextBlock>
-                        <TextBox
-                            Width="75"
-                            Height="25"
-                            HorizontalAlignment="Left">
+                        <TextBox Height="25" HorizontalAlignment="Stretch">
                             <TextBox.Text>
                                 <Binding Path="AutoFocusTotalNumberOfAttempts" UpdateSourceTrigger="LostFocus">
                                     <Binding.ValidationRules>
@@ -703,8 +691,8 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                    </StackPanel>
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                    </UniformGrid>
+                    <UniformGrid Margin="0,5,0,0" Columns="2">
                         <TextBlock
                             MinWidth="200"
                             MinHeight="20"
@@ -714,10 +702,7 @@
                                 <TextBlock Text="{ns:Loc LblAutoFocusNumberOfFramesPerPointTooltip}" />
                             </TextBlock.ToolTip>
                         </TextBlock>
-                        <TextBox
-                            Width="75"
-                            Height="25"
-                            HorizontalAlignment="Left">
+                        <TextBox Height="25" HorizontalAlignment="Stretch">
                             <TextBox.Text>
                                 <Binding Path="AutoFocusNumberOfFramesPerPoint" UpdateSourceTrigger="LostFocus">
                                     <Binding.ValidationRules>
@@ -726,8 +711,8 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                    </StackPanel>
-                </StackPanel>
+                    </UniformGrid>
+                </UniformGrid>
             </ScrollViewer>
         </GroupBox>
         <GroupBox
