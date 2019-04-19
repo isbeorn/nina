@@ -382,6 +382,13 @@ Quando la durata è impostata, l'applicazione diminuirà lentamente la temperatu
     <s:String x:Key="LblSnapPortStop">Comando stop porta snap del telescopio</s:String>
     <s:String x:Key="LblAutoFocusGearNotConnected">Impossibile iniziare Auto Focus. Camera o Focuser non connessi!</s:String>
     <s:String x:Key="LblAutoFocusNotEnoughtSpreadedPoints">Insufficiente differenza HFR per impostare i punti di focus. O la dimensione dello step Comando avvio porta snap del telescopio troppo bassa o le stelle sono troppo sfuocate.</s:String>
+    <s:String x:Key="LblAutoFocusNumberOfAttempts">Numero tentativi AF</s:String>
+    <s:String x:Key="LblAutoFocusNumberOfAttemptsTooltip">Se l'autofocus fallisce perchè ha ottenuto un HFR peggiore del focus originale, quante volte si deve ritentare la routine di autofocus fintanto che si ha un successo o che si ritorna alla posizione originale.</s:String>
+    <s:String x:Key="LblAutoFocusNumberOfFramesPerPoint">Numero fotogrammi per punto AF</s:String>
+    <s:String x:Key="LblAutoFocusNumberOfFramesPerPointTooltip">Quanti fotogrammi prendere per ogni punto di fuoco. Se maggiore di uno, svaruiati fotogrammi verranno presi per un punto di fuoco e la media dei loro HFR verrà usata per calcolare l'HFR del punto di fuoco.</s:String>
+    <s:String x:Key="LblAutoFocusReattempting">Riprovando Autofocus</s:String>
+    <s:String x:Key="LblAutoFocusRestoringOriginalPosition">Ripristinando posizione di fuoco iniziale</s:String>
+    <s:String x:Key="LblAutoFocusNewWorseThanOriginal">Il nuovo HFR {0} del punto di fuoco è considerabilmente peggiore dell' HFR originale {1}</s:String>
     <s:String x:Key="LblOneToOne">Scala Immagine to 1:1</s:String>
     <s:String x:Key="LblDevicePollingInterval">Intervallo interrogazione device</s:String>
     <s:String x:Key="LblDirectoryNotFound">Directory per salvare le immagini non trovata!</s:String>

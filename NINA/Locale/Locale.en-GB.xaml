@@ -389,6 +389,13 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblSnapPortStop">Snap Port Stop Command</s:String>
     <s:String x:Key="LblAutoFocusGearNotConnected">Cannot start Auto Focus. Camera or Focuser is not connected!</s:String>
     <s:String x:Key="LblAutoFocusNotEnoughtSpreadedPoints">Not enough HFR difference for set of focuspoints. Either the step size is too low or the stars are too much out of focus.</s:String>
+    <s:String x:Key="LblAutoFocusNumberOfAttempts">AF Number of Attempts</s:String>
+    <s:String x:Key="LblAutoFocusNumberOfAttemptsTooltip">If autofocus fails because it got worse HFR than original focus, how many times to reattempt autofocus routine until it is either successful or it moves back to original focus position.</s:String>
+    <s:String x:Key="LblAutoFocusNumberOfFramesPerPoint">AF Number of Frames per Point</s:String>
+    <s:String x:Key="LblAutoFocusNumberOfFramesPerPointTooltip">How many frames to take for each focus point. If greater than one, multiple frames will be taken for a focus point, and their HFR will be averaged to compute focus point HFR</s:String>
+    <s:String x:Key="LblAutoFocusReattempting">Reattempting Autofocus</s:String>
+    <s:String x:Key="LblAutoFocusRestoringOriginalPosition">Restoring original focus position</s:String>
+    <s:String x:Key="LblAutoFocusNewWorseThanOriginal">New focus point HFR {0} is significantly worse than original HFR {1}</s:String>
     <s:String x:Key="LblOneToOne">Scale Image to 1:1</s:String>
     <s:String x:Key="LblDevicePollingInterval">Device polling interval</s:String>
     <s:String x:Key="LblDirectoryNotFound">Directory to save image to not found!</s:String>

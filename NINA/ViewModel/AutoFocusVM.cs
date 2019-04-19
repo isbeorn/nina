@@ -160,18 +160,20 @@ namespace NINA.ViewModel {
 
         private async Task GetFocusPoints(FilterInfo filter, int nrOfSteps, IProgress<ApplicationStatus> progress, CancellationToken token, int offset = 0) {
             var stepSize = profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize;
+
             if (offset != 0) {
                 //Move to initial position
                 _focusPosition = await focuserMediator.MoveFocuserRelative(offset * stepSize);
             }
 
             var comparer = new FocusPointComparer();
+
+            var exposuresPerFocusPoint = profileService.ActiveProfile.FocuserSettings.AutoFocusNumberOfFramesPerPoint;
+
             for (int i = 0; i < nrOfSteps; i++) {
                 token.ThrowIfCancellationRequested();
 
-                var iarr = await TakeExposure(filter, token, progress);
-
-                var hfr = await EvaluateExposure(iarr, token, progress);
+                double hfr = getAverageHFR(filter, token, progress).Result;
 
                 token.ThrowIfCancellationRequested();
 
@@ -209,16 +211,21 @@ namespace NINA.ViewModel {
             return analysis.AverageHFR;
         }
 
-        private async Task ValidateCalculatedFocusPosition(DataPoint focusPoint, FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        private async Task<bool> ValidateCalculatedFocusPosition(DataPoint focusPoint, FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress, double initialHFR) {
             _focusPosition = await focuserMediator.MoveFocuser((int)focusPoint.X);
 
-            var iarr = await TakeExposure(filter, token, progress);
-
-            var hfr = await EvaluateExposure(iarr, token, progress);
+            double hfr = getAverageHFR(filter, token, progress).Result;
 
             if (hfr > (focusPoint.Y * 1.25)) {
                 Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFocusPointValidationFailed"], focusPoint.X, focusPoint.Y, hfr));
             }
+
+            if (hfr > (initialHFR * 1.15)) {
+                Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblAutoFocusNewWorseThanOriginal"], hfr, initialHFR));
+                Logger.Warning(string.Format("New focus point HFR {0} is significantly worse than original HFR {1}", hfr, initialHFR));
+                return false;
+            }
+            return true;
         }
 
         private void CalculateTrends() {
@@ -229,68 +236,117 @@ namespace NINA.ViewModel {
             RightTrend = new TrendLine(rightTrendPoints);
         }
 
+        private async Task<double> getAverageHFR(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            var exposuresPerFocusPoint = profileService.ActiveProfile.FocuserSettings.AutoFocusNumberOfFramesPerPoint;
+            
+            //Average HFR  of multiple exposures (if configured this way)
+            double sumHfr = 0;
+            for (int i = 0; i < exposuresPerFocusPoint; i++) {
+                var iarr = await TakeExposure(filter, token, progress);
+                var partialHfr = await EvaluateExposure(iarr, token, progress);
+                sumHfr = sumHfr + partialHfr;
+                token.ThrowIfCancellationRequested();
+            }
+
+            return sumHfr / exposuresPerFocusPoint;
+        }
+
         public async Task<bool> StartAutoFocus(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
             Logger.Trace("Starting Autofocus");
             FocusPoints.Clear();
             LeftTrend = null;
             RightTrend = null;
             _minimum = new DataPoint(0, 0);
+            int numberOfAttempts = 0;
+            int initialFocusPosition;
+            double initialHFR = 0;
+
             try {
                 await this.guiderMediator.StopGuiding(token);
 
-                var offsetSteps = profileService.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps;
-                var offset = offsetSteps;
+                //Get initial position information, as average of multiple exposures, if configured this way
+                initialHFR = getAverageHFR(filter, token, progress).Result;
+                initialFocusPosition = focuserInfo.Position;
 
-                var nrOfSteps = offsetSteps + 1;
-
-                await GetFocusPoints(filter, nrOfSteps, progress, token, offset);
-
-                var laststeps = offset;
-
-                int leftcount = LeftTrend.DataPoints.Count(), rightcount = RightTrend.DataPoints.Count();
-                //When datapoints are not sufficient analyze and take more
+                bool reattempt = false;
                 do {
-                    if (leftcount == 0 && rightcount == 0) {
-                        Notification.ShowWarning(Locale.Loc.Instance["LblAutoFocusNotEnoughtSpreadedPoints"]);
-                        progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocusNotEnoughtSpreadedPoints"] });
-                        return false;
-                    }
+                    numberOfAttempts = numberOfAttempts + 1;
 
-                    var remainingSteps = Math.Min(Math.Abs(leftcount - rightcount), offsetSteps);
-                    if (leftcount == rightcount && leftcount < offsetSteps) {
-                        remainingSteps = offsetSteps - leftcount;
-                    }
+                    var offsetSteps = profileService.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps;
+                    var offset = offsetSteps;
 
-                    if ((LeftTrend.DataPoints.Count() < offsetSteps && leftcount < rightcount)
-                            || (leftcount == rightcount && remainingSteps > 0)) {
-                        Logger.Trace("More datapoints needed to the left of the minimum");
-                        //More points needed to the left
-                        laststeps += remainingSteps;
-                        await GetFocusPoints(filter, remainingSteps, progress, token, -1);
-                    } else if (RightTrend.DataPoints.Count() < offsetSteps && leftcount > rightcount) {
-                        Logger.Trace("More datapoints needed to the right of the minimum");
-                        //More points needed to the right
-                        offset = laststeps + remainingSteps;  //todo
-                        laststeps = remainingSteps - 1;
-                        await GetFocusPoints(filter, remainingSteps, progress, token, offset);
-                    }
+                    var nrOfSteps = offsetSteps + 1;
 
-                    leftcount = LeftTrend.DataPoints.Count();
-                    rightcount = RightTrend.DataPoints.Count();
+                    await GetFocusPoints(filter, nrOfSteps, progress, token, offset);
+
+                    var laststeps = offset;
+
+                    int leftcount = LeftTrend.DataPoints.Count(), rightcount = RightTrend.DataPoints.Count();
+                    //When datapoints are not sufficient analyze and take more
+                    do {
+                        if (leftcount == 0 && rightcount == 0) {
+                            Notification.ShowWarning(Locale.Loc.Instance["LblAutoFocusNotEnoughtSpreadedPoints"]);
+                            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocusNotEnoughtSpreadedPoints"] });
+                            //Reattempting in this situation is very likely meaningless - just move back to initial focus position and call it a day
+                            await focuserMediator.MoveFocuser(initialFocusPosition);
+                            return false;
+                        }
+
+                        var remainingSteps = Math.Min(Math.Abs(leftcount - rightcount), offsetSteps);
+                        if (leftcount == rightcount && leftcount < offsetSteps) {
+                            remainingSteps = offsetSteps - leftcount;
+                        }
+
+                        if ((LeftTrend.DataPoints.Count() < offsetSteps && leftcount < rightcount)
+                                || (leftcount == rightcount && remainingSteps > 0)) {
+                            Logger.Trace("More datapoints needed to the left of the minimum");
+                            //More points needed to the left
+                            laststeps += remainingSteps;
+                            await GetFocusPoints(filter, remainingSteps, progress, token, -1);
+                        } else if (RightTrend.DataPoints.Count() < offsetSteps && leftcount > rightcount) {
+                            Logger.Trace("More datapoints needed to the right of the minimum");
+                            //More points needed to the right
+                            offset = laststeps + remainingSteps;  //todo
+                            laststeps = remainingSteps - 1;
+                            await GetFocusPoints(filter, remainingSteps, progress, token, offset);
+                        }
+
+                        leftcount = LeftTrend.DataPoints.Count();
+                        rightcount = RightTrend.DataPoints.Count();
+
+                        token.ThrowIfCancellationRequested();
+                    } while (rightcount < offsetSteps || leftcount < offsetSteps);
 
                     token.ThrowIfCancellationRequested();
-                } while (rightcount < offsetSteps || leftcount < offsetSteps);
 
-                token.ThrowIfCancellationRequested();
+                    //Get Trendline Intersection
+                    var p = LeftTrend.Intersect(RightTrend);
 
-                //Get Trendline Intersection
-                var p = LeftTrend.Intersect(RightTrend);
+                    LastAutoFocusPoint = new AutoFocusPoint { Focuspoint = p, Temperature = focuserInfo.Temperature, Timestamp = DateTime.Now };
 
-                LastAutoFocusPoint = new AutoFocusPoint { Focuspoint = p, Temperature = focuserInfo.Temperature, Timestamp = DateTime.Now };
+                    //Todo when data is too noisy for trend lines find something else
 
-                //Todo when data is too noisy for trend lines find something else
+                    bool goodAutoFocus = await ValidateCalculatedFocusPosition(p, filter, token, progress, initialHFR);
 
-                await ValidateCalculatedFocusPosition(p, filter, token, progress);
+                    if (!goodAutoFocus) {
+                        if (numberOfAttempts < profileService.ActiveProfile.FocuserSettings.AutoFocusTotalNumberOfAttempts) {
+                            Notification.ShowWarning(Locale.Loc.Instance["LblAutoFocusReattempting"]);
+                            await focuserMediator.MoveFocuser(initialFocusPosition);
+                            Logger.Warning("Potentially bad auto-focus. Reattempting.");
+                            FocusPoints.Clear();
+                            LeftTrend = null;
+                            RightTrend = null;
+                            _minimum = new DataPoint(0, 0);
+                            reattempt = true;
+                        } else {
+                            Notification.ShowWarning(Locale.Loc.Instance["LblAutoFocusRestoringOriginalPosition"]);
+                            Logger.Warning("Potentially bad auto-focus. Restoring original focus position.");
+                            reattempt = false;
+                            await focuserMediator.MoveFocuser(initialFocusPosition);
+                            return false;
+                        }
+                    }
+                } while (reattempt);
                 //_focusPosition = await Mediator.Instance.RequestAsync(new MoveFocuserMessage() { Position = (int)p.X, Absolute = true, Token = token });
             } catch (OperationCanceledException) {
                 FocusPoints.Clear();
@@ -301,7 +357,6 @@ namespace NINA.ViewModel {
                 await this.guiderMediator.StartGuiding(token);
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
-
             return true;
         }
 

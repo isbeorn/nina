@@ -19,6 +19,10 @@
 <ul>
 <li>Added a NMEA GPS interface to retrieve the current location</li>
 </ul>
+<h3 id="interfacing-with-planetarium-programs">Interfacing with planetarium programs</h3>
+<ul>
+<li>NINA can interface with Cartes du Ciel, HNSKY, Stellarium, and TheSkyX through their repsective TCP services to import the selected object for use in the Sequence Editor and Framing Assistant, as well as setting the observing location to match that which is set in those programs</li>
+</ul>
 <h2 id="improvements">Improvements</h2>
 <ul>
 <li>If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips</li>
@@ -40,6 +44,21 @@
 <li>A pre-sequence check is now triggered, and will notify end users of a variety of potential issues (camera not cooled yet, guider not connected, etc.) at sequence start</li>
 <li>The sequence start button is unavailable if an imaging loop is in progress in the imaging tab</li>
 <li>Imaging tab - Equipment specific views will only show the &quot;Connected&quot; flag when the device is not connected to save space</li>
+<li>Enhanced direct guider to accept decimal durations (e.g. 0.5s), and to perform random angle selection in a way that minimizes target deviation from center.</li>
+<li>Added a layout reset button to the imaging tab to restore the default dock layout.</li>
+<li>Flat Wizard
+<ul>
+<li>Progress bars for remaining filters and exposures</li>
+<li>Slew to zenith button with option for east or west pier side</li>
+</ul>
+</li>
+<li>More resilient autofocus:
+<ul>
+<li>Ability to automatically reattempt autofocus from scratch several times in case it failed</li>
+<li>Automatically go back to original focus position if obtained HFR is significantly worse than original</li>
+<li>Ability to take multiple autofocus exposures per focus point and average their HFR. This leads to smoother autofocus curves.</li>
+</ul>
+</li>
 </ul>
 <h1 id="version-1.8-hotfix-1">Version 1.8 Hotfix 1</h1>
 <ul>

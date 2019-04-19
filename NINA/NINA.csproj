@@ -346,6 +346,7 @@
     <Compile Include="Utility\ProjectVersion.cs" />
     <Compile Include="Utility\Behaviors\BrowserBehavior.cs" />
     <Compile Include="Utility\Enum\AutoUpdateSourceEnum.cs" />
+    <Compile Include="Utility\ValidationRules\StrictGreaterZeroRule.cs" />
     <Compile Include="ViewModel\Equipment\Camera\CameraChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\FilterWheel\FilterWheelChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\Focuser\FocuserChooserVM.cs" />
