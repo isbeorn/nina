@@ -106,5 +106,33 @@ namespace NINA.Utility.Profile {
                 RaisePropertyChanged();
             }
         }
+
+        private int autoFocusTotalNumberOfAttempts = 1;
+
+        [DataMember]
+        public int AutoFocusTotalNumberOfAttempts {
+            get {
+                if (autoFocusTotalNumberOfAttempts < 1) { return 1; }
+                return autoFocusTotalNumberOfAttempts;
+            }
+            set {
+                autoFocusTotalNumberOfAttempts = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int autoFocusNumberOfFramesPerPoint = 1;
+
+        [DataMember]
+        public int AutoFocusNumberOfFramesPerPoint {
+            get {
+                if (autoFocusNumberOfFramesPerPoint < 1) { return 1; }
+                return autoFocusNumberOfFramesPerPoint;
+            }
+            set {
+                autoFocusNumberOfFramesPerPoint = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 }

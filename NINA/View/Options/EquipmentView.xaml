@@ -681,6 +681,52 @@
                             </TextBox.Text>
                         </TextBox>
                     </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="200"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblAutoFocusNumberOfAttempts}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc LblAutoFocusNumberOfAttemptsTooltip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="75"
+                            Height="25"
+                            HorizontalAlignment="Left">
+                            <TextBox.Text>
+                                <Binding Path="AutoFocusTotalNumberOfAttempts" UpdateSourceTrigger="LostFocus">
+                                    <Binding.ValidationRules>
+                                        <rules:StrictGreaterZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="200"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblAutoFocusNumberOfFramesPerPoint}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc LblAutoFocusNumberOfFramesPerPointTooltip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="75"
+                            Height="25"
+                            HorizontalAlignment="Left">
+                            <TextBox.Text>
+                                <Binding Path="AutoFocusNumberOfFramesPerPoint" UpdateSourceTrigger="LostFocus">
+                                    <Binding.ValidationRules>
+                                        <rules:StrictGreaterZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
                 </StackPanel>
             </ScrollViewer>
         </GroupBox>

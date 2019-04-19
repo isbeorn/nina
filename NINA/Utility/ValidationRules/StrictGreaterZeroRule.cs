@@ -21,16 +21,25 @@
 
 #endregion "copyright"
 
-namespace NINA.Utility.Profile {
+using System;
+using System.Globalization;
+using System.Windows.Controls;
 
-    public interface IFocuserSettings : ISettings {
-        int AutoFocusExposureTime { get; set; }
-        int AutoFocusInitialOffsetSteps { get; set; }
-        int AutoFocusStepSize { get; set; }
-        string Id { get; set; }
-        bool UseFilterWheelOffsets { get; set; }
-        int FocuserSettleTime { get; set;}
-        int AutoFocusTotalNumberOfAttempts { get; set; }
-        int AutoFocusNumberOfFramesPerPoint { get; set; }
+namespace NINA.Utility.ValidationRules {
+
+    public class StrictGreaterZeroRule : ValidationRule {
+
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo) {
+            double dbl = 0.0d;
+            if (Double.TryParse(value.ToString(), out dbl)) {
+                if (dbl <= 0) {
+                    return new ValidationResult(false, "Value must be strictly greater than 0");
+                } else {
+                    return new ValidationResult(true, null);
+                }
+            } else {
+                return new ValidationResult(false, "Invalid value");
+            }
+        }
     }
 }

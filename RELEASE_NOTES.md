@@ -36,6 +36,10 @@
 - Flat Wizard
 	- Progress bars for remaining filters and exposures
 	- Slew to zenith button with option for east or west pier side
+- More resilient autofocus:
+  - Ability to automatically reattempt autofocus from scratch several times in case it failed
+  - Automatically go back to original focus position if obtained HFR is significantly worse than original
+  - Ability to take multiple autofocus exposures per focus point and average their HFR. This leads to smoother autofocus curves.
 
 # Version 1.8 Hotfix 1
 

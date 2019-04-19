@@ -389,6 +389,13 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblSnapPortStop">Snap Port Stop Kommando</s:String>
     <s:String x:Key="LblAutoFocusGearNotConnected">Autofokus kann nicht gestartet werden. Kamera oder Motorfokus ist nicht verbunden!</s:String>
     <s:String x:Key="LblAutoFocusNotEnoughtSpreadedPoints">Die HFR Werte der Fokuspunkte liegen zu dicht beieinander. Entweder ist der Okularauszug zu weit außerhalb des Fokuses oder die Schrittgröße ist zu klein eingestellt.</s:String>
+    <s:String x:Key="LblAutoFocusNumberOfAttempts">Anzahl der AF Versuche</s:String>
+    <s:String x:Key="LblAutoFocusNumberOfAttemptsTooltip">Wenn Autofokus fehlschlägt, da der HFR schlechter ist als der ursprünglische Fokus, bestimmt dies wieviele Autofokus Versuche gemacht werden sollen bis es erfolgreich ist. Anderenfalls wird die Ursprüngliche Fokuspoition wiederhergestellt.</s:String>
+    <s:String x:Key="LblAutoFocusNumberOfFramesPerPoint">Anzahl der AF Bilder pro Punkt</s:String>
+    <s:String x:Key="LblAutoFocusNumberOfFramesPerPointTooltip">Wieviele Bilder pro Fokuspunkt aufgenommen werden. Ist dies größer als eins, werden mehrere Bilder pro Fokuspunkt aufgenommen und deren durchschnittlicher HFR ermittelt um den Fokuspunkt HFR zu berechnen.</s:String>
+    <s:String x:Key="LblAutoFocusReattempting">Wiederhole Autofocus</s:String>
+    <s:String x:Key="LblAutoFocusRestoringOriginalPosition">Stelle ursprüngliche Fokusposition wieder her</s:String>
+    <s:String x:Key="LblAutoFocusNewWorseThanOriginal">Neuer Fokuspunkt HFR {0} erheblich schlechter als der ursprüngliche HFR {1}</s:String>
     <s:String x:Key="LblOneToOne">Skaliere Bild 1:1</s:String>
     <s:String x:Key="LblDevicePollingInterval">Gerätepolling Interval</s:String>
     <s:String x:Key="LblDirectoryNotFound">Verzeichnis zum speichern des Bildes wurde nicht gefunden!</s:String>
