@@ -425,11 +425,18 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private bool canReadElectronsPerADU = true;
+
         public double ElectronsPerADU {
             get {
                 double val = double.NaN;
-                if (Connected) {
-                    val = _camera.ElectronsPerADU;
+                if (canReadElectronsPerADU && Connected) {
+                    try {
+                        val = _camera.ElectronsPerADU;
+                    } catch (Exception) {
+                        val = double.NaN;
+                        canReadElectronsPerADU = false;
+                    }
                 }
                 return val;
             }
