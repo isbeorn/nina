@@ -12,7 +12,7 @@ https://nighttime-imaging.eu/
 * 64-bit Windows 7 or later
 * (32-bit version is available, but may be unstable due to memory consumption)
 
-* .NET Framework 4.6.2 or later
+* .NET Framework 4.7.2 or later
 
 * ASCOM Platform 6.3 or later (optional - but most equipment besides the camera requires ascom)
 
@@ -33,6 +33,9 @@ https://nighttime-imaging.eu/docs/documentation/introduction/
      * Tested with ASI 1600 MMC
 * Native Atik Driver *(experimental)*
      * Undergoing tests with Atik-383L+
+* Native ToupTek Driver
+* Native Altair Driver
+* Native QHY Driver
 * Nikon
      * Tested with Nikon D5100, D7100
      * Serial cable support for bulb exposures using either telescope snap port or serial cable using RTS signal
@@ -49,15 +52,23 @@ https://nighttime-imaging.eu/docs/documentation/introduction/
 ### Filterwheel Control
 * ASCOM Driver
      * Tested with Starlight XPress motorized Filterwheel, Atik EFW2
+* Manual Mode
+     * For manual filter wheels a prompt to change the filter will pop up when required
 
 ### Autofocuser Control
 * ASCOM Driver
      * Tested with Lacerta Motorfocus
+     
+### Rotator Control
+* ASCOM Driver
+* Manual Mode
+     * For manual rotators a prompt to change the rotation will pop up when required
 
 ### Autoguider Control
 * via communication with PHD2 Server
 * Graphically shows corrections in a graph
 * Calculates RMS Error values
+* Synchronize between multiple instances for dithering
 
 ### Profiles
 * Save and load individual profiles for different sets of equipment
@@ -92,6 +103,7 @@ https://nighttime-imaging.eu/docs/documentation/introduction/
 * Astrometry.net
 * Local instance of Astrometry.net and cygwin
 * Platesolve2 by Planewave
+* ASPS
 
 ### Polar alignment assistant 
 * Polaris position in polar scope 
@@ -113,6 +125,7 @@ https://nighttime-imaging.eu/docs/documentation/introduction/
 * By entering camera and telescope specs a rectangle with the respective field of view is generated
 * The rectangle can be rotated and dragged to the desired location
 * Once satisfied the coordinates where the rectangle is located can be set for a sequence to start imaging
+* Offline Framing Atlas with an interactive map
 
 ### Image History
 * Thumbnail and statistics of images during an image session
