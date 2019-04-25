@@ -24,7 +24,7 @@
 
 using NINA.Utility;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using NINA.Model;
 using System.Linq;
 using System.Windows.Threading;

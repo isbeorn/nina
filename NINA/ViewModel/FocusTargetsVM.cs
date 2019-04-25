@@ -2,7 +2,7 @@
 using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Mediator.Interfaces;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

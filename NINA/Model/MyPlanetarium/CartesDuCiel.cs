@@ -23,7 +23,7 @@
 
 using NINA.Utility.Api;
 using NINA.Utility.Astrometry;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 using System.Threading.Tasks;
 

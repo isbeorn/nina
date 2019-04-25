@@ -25,7 +25,7 @@ using NINA.Model;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator.Interfaces;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using OxyPlot;
 using OxyPlot.Axes;
 using System;

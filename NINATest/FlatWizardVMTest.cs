@@ -5,7 +5,7 @@ using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Mediator.Interfaces;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using NINA.ViewModel.FlatWizard;
 using NINA.ViewModel.Interfaces;
 using NUnit.Framework;

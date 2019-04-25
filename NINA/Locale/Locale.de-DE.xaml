@@ -897,4 +897,7 @@ Berechneter HFR: {2}
     <s:String x:Key="LblResetDockLayout">Layout zurücksetzen</s:String>
     <s:String x:Key="LblResetDockLayoutConfirmation">Soll das Layout im Imaging Fenster zurückgesetzt werden?</s:String>
     <s:String x:Key="LblLayout">Layout</s:String>
+    <s:String x:Key="LblDeleteProfileInUseWarning">Profil kann nicht gelöscht werden. Es wird bereits von einer anderen N.I.N.A. Instanz verwendet!</s:String>
+    <s:String x:Key="LblLoadProfileInUseWarning">Profil kann nicht geladen werden. Es wird bereits von einer anderen N.I.N.A. Instanz verwendet!</s:String>
+    <s:String x:Key="LblSelectProfileInUseWarning">Profil kann nicht ausgewählt werden. Es wird bereits von einer anderen N.I.N.A. Instanz verwendet!</s:String>
 </ResourceDictionary>

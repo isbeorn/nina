@@ -24,7 +24,7 @@
 using EDSDKLib;
 using NINA.Utility;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using NINA.Utility.RawConverter;
 using System;
 using System.Collections;
@@ -534,7 +534,7 @@ namespace NINA.Model.MyCamera {
                         token.ThrowIfCancellationRequested();
 
                         using (var memoryStream = new System.IO.MemoryStream(rawImageData)) {
-                            var converter = RawConverter.CreateInstance(profileService.Profiles.ActiveProfile.CameraSettings.RawConverter);
+                            var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
                             var iarr = await converter.ConvertToImageArray(memoryStream, BitDepth, profileService.ActiveProfile.ImageSettings.HistogramResolution, calculateStatistics, token);
                             iarr.RAWType = "cr2";
                             return iarr;

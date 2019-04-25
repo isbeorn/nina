@@ -28,7 +28,7 @@ using NINA.Utility;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -172,12 +172,16 @@ namespace NINA.ViewModel {
         }
 
         private void CloneProfile(object obj) {
-            profileService.Clone(SelectedProfile.Id);
+            if (!profileService.Clone(SelectedProfile)) {
+                Notification.ShowWarning(Locale.Loc.Instance["LblLoadProfileInUseWarning"]);
+            }
         }
 
         private void RemoveProfile(object obj) {
             if (MyMessageBox.MyMessageBox.Show(string.Format(Locale.Loc.Instance["LblRemoveProfileText"], SelectedProfile?.Name, SelectedProfile?.Id), Locale.Loc.Instance["LblRemoveProfileCaption"], System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
-                profileService.RemoveProfile(SelectedProfile.Id);
+                if (!profileService.RemoveProfile(SelectedProfile)) {
+                    Notification.ShowWarning(Locale.Loc.Instance["LblDeleteProfileInUseWarning"]);
+                }
             }
         }
 
@@ -231,8 +235,11 @@ namespace NINA.ViewModel {
         }
 
         private void SelectProfile(object obj) {
-            profileService.SelectProfile(SelectedProfile.Id);
-            ProfileChanged();
+            if (profileService.SelectProfile(SelectedProfile)) {
+                ProfileChanged();
+            } else {
+                Notification.ShowWarning(Locale.Loc.Instance["LblLoadProfileInUseWarning"]);
+            }
         }
 
         private void AddProfile(object obj) {
@@ -916,10 +923,10 @@ namespace NINA.ViewModel {
             }
         }
 
-        private IProfile _selectedProfile;
+        private ProfileMeta _selectedProfile;
         private IFilterWheelMediator filterWheelMediator;
 
-        public IProfile SelectedProfile {
+        public ProfileMeta SelectedProfile {
             get {
                 return _selectedProfile;
             }
@@ -929,9 +936,9 @@ namespace NINA.ViewModel {
             }
         }
 
-        public ObservableCollection<IProfile> Profiles {
+        public AsyncObservableCollection<ProfileMeta> Profiles {
             get {
-                return profileService.Profiles.ProfileList;
+                return profileService.Profiles;
             }
         }
     }

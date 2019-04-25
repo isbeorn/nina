@@ -24,7 +24,7 @@
 using Newtonsoft.Json.Linq;
 using NINA.Utility;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 using System.Diagnostics;
 using System.Globalization;

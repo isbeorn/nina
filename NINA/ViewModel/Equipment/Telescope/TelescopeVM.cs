@@ -27,7 +27,7 @@ using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using NINA.Utility.WindowService;
 using NINA.ViewModel.Interfaces;
 using System;

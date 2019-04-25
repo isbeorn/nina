@@ -24,7 +24,7 @@
 using NINA.Model;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 
 namespace NINA.ViewModel.Equipment.Telescope {

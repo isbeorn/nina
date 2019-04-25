@@ -25,7 +25,7 @@ using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.Mediator;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

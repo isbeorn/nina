@@ -23,7 +23,7 @@
 
 using NINA.Model;
 using NINA.Utility.Mediator.Interfaces;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.ObjectModel;

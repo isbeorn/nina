@@ -24,7 +24,7 @@
 using NINA.Model.MyWeatherData;
 using NINA.Utility;
 using NINA.Utility.Enum;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Threading;
