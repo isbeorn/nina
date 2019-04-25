@@ -28,7 +28,6 @@ using System;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyPlanetarium {
-
     internal class CartesDuCiel : RawTcp, IPlanetarium {
         private IProfileService profileService;
 
@@ -113,7 +112,7 @@ namespace NINA.Model.MyPlanetarium {
                 loc = new Coords();
 
                 loc.Latitude = Astrometry.DMSToDegrees(lat);
-                loc.Longitude = Astrometry.DMSToDegrees(lon);
+                loc.Longitude = -Astrometry.DMSToDegrees(lon); //CdC uses Negative East Longitude internally
                 double elev;
                 if (Double.TryParse(alt, out elev))
                     loc.Elevation = elev;
