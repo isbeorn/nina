@@ -22,7 +22,7 @@
 #endregion "copyright"
 
 using NINA.Utility;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using NINA.Utility.RawConverter;
 using NINA.Utility.WindowService;
 using System;

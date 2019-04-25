@@ -893,4 +893,7 @@ Calculated HFR: {2}
     <s:String x:Key="LblResetDockLayout">Reset layout</s:String>
     <s:String x:Key="LblResetDockLayoutConfirmation">Should the layout be reset?</s:String>
     <s:String x:Key="LblLayout">Layout</s:String>
+    <s:String x:Key="LblDeleteProfileInUseWarning">Cannot delete profile. It is already in use by another N.I.N.A. instance!</s:String>
+    <s:String x:Key="LblLoadProfileInUseWarning">Cannot load profile. It is already in use by another N.I.N.A. instance!</s:String>
+    <s:String x:Key="LblSelectProfileInUseWarning">Selected profile cannot be chosen. It is already in use by another N.I.N.A. instance!</s:String>
 </ResourceDictionary>

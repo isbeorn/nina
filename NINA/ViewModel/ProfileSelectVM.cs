@@ -22,11 +22,14 @@
 #endregion "copyright"
 
 using NINA.Utility;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using NINA.Utility.WindowService;
 using System;
 using System.Globalization;
 using System.Threading;
+using System.Collections.Generic;
+using NINA.Utility.Notification;
+using System.Linq;
 
 namespace NINA.ViewModel {
 
@@ -37,23 +40,39 @@ namespace NINA.ViewModel {
 
         public ProfileSelectVM(IProfileService profileService) {
             this.profileService = profileService;
-            Profiles = profileService.Profiles.ProfileList;
+            Profiles = profileService.Profiles;
+            selectedProfileMeta = profileService.Profiles.Where(x => x.Id == profileService.ActiveProfile.Id).First();
             _tempProfile = profileService.ActiveProfile;
             _defaultProfile = ActiveProfile;
         }
 
         private IProfileService profileService;
 
+        public ICollection<ProfileMeta> Profiles { set; get; }
+
+        private ProfileMeta selectedProfileMeta;
+
+        public ProfileMeta SelectedProfileMeta {
+            get => selectedProfileMeta;
+            set {
+                if (profileService.SelectProfile(value)) {
+                    selectedProfileMeta = value;
+                    RaisePropertyChanged(nameof(ActiveProfile));
+                    RaisePropertyChanged(nameof(Camera));
+                    RaisePropertyChanged(nameof(FilterWheel));
+                    RaisePropertyChanged(nameof(Telescope));
+                    RaisePropertyChanged(nameof(FocalLength));
+                    RaisePropertyChanged(nameof(Focuser));
+                } else {
+                    Notification.ShowWarning(Locale.Loc.Instance["LblSelectProfileInUseWarning"]);
+                }
+                RaisePropertyChanged();
+            }
+        }
+
         public IProfile ActiveProfile {
             get {
-                return _tempProfile;
-            }
-            set {
-                if (_tempProfile?.Id != value.Id || _tempProfile == null) {
-                    _tempProfile = value;
-                    profileService.SelectProfile(value.Id);
-                    RaiseAllPropertiesChanged();
-                }
+                return profileService.ActiveProfile;
             }
         }
 
@@ -80,8 +99,6 @@ namespace NINA.ViewModel {
                 return ActiveProfile.FocuserSettings.Id;
             }
         }
-
-        public ObserveAllCollection<IProfile> Profiles { set; get; }
 
         public string Telescope {
             get {
@@ -115,7 +132,7 @@ namespace NINA.ViewModel {
                         var dialogResult = (DialogResultEventArgs)e;
                         if (dialogResult.DialogResult != true) {
                             _cancelTokenSource.Cancel();
-                            profileService.SelectProfile(_defaultProfile.Id);
+                            profileService.SelectProfile(new ProfileMeta() { Id = _defaultProfile.Id, Name = _defaultProfile.Name, Location = _defaultProfile.Location });
                         } else {
                             if (UseSavedProfile == true) {
                                 Properties.Settings.Default.UseSavedProfileSelection = true;

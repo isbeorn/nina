@@ -57,81 +57,50 @@
                             <RowDefinition Height="45" />
                         </Grid.RowDefinitions>
 
-                        <DataGrid
-                            AutoGenerateColumns="False"
-                            CanUserAddRows="False"
-                            HeadersVisibility="Column"
-                            HorizontalScrollBarVisibility="Disabled"
-                            ItemsSource="{Binding Profiles}"
-                            SelectedItem="{Binding SelectedProfile}"
-                            SelectionMode="Single"
-                            VerticalScrollBarVisibility="Auto">
-                            <DataGrid.Columns>
-                                <DataGridTemplateColumn
-                                    Width="*"
-                                    CanUserSort="False"
-                                    Header="{ns:Loc LblActive}">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <CheckBox
-                                                Width="20"
-                                                Height="20"
-                                                HorizontalAlignment="Center"
-                                                IsChecked="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}"
-                                                IsEnabled="False"
-                                                Style="{StaticResource BorderlessCheckmarkAndEmptyCheckbox}" />
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTemplateColumn
-                                    Width="3*"
-                                    CanUserSort="False"
-                                    Header="{ns:Loc LblName}">
-                                    <DataGridTemplateColumn.CellEditingTemplate>
-                                        <DataTemplate>
-                                            <TextBox
-                                                Margin="5,0,5,0"
-                                                VerticalAlignment="Center"
-                                                Text="{Binding Name}"
-                                                TextAlignment="Center" />
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellEditingTemplate>
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock
-                                                Margin="5,0,5,0"
-                                                VerticalAlignment="Center"
-                                                Text="{Binding Name}"
-                                                TextAlignment="Center" />
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTemplateColumn
-                                    Width="3*"
-                                    CanUserSort="False"
-                                    Header="{ns:Loc LblId}">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock
-                                                Margin="5,0,5,0"
-                                                VerticalAlignment="Center"
-                                                Text="{Binding Id}"
-                                                TextAlignment="Center" />
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                            </DataGrid.Columns>
-                        </DataGrid>
-
-                        <!--<ListView ItemsSource="{Binding Profiles}" SelectedItem="{Binding SelectedProfile}">
+                        <ListView ItemsSource="{Binding Profiles}" SelectedItem="{Binding SelectedProfile}">
+                            <ListView.ItemContainerStyle>
+                                <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="ListViewItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
                             <ListView.View>
                                 <GridView>
-                                    <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="{ns:Loc LblName}" />
-                                    <GridViewColumn DisplayMemberBinding="{Binding Id}" Header="{ns:Loc LblId}" />
-                                    <GridViewColumn DisplayMemberBinding="{Binding IsActive}" Header="{ns:Loc LblActive}" />
+                                    <GridViewColumn Header="{ns:Loc LblActive}">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <CheckBox
+                                                    Width="20"
+                                                    Height="20"
+                                                    HorizontalAlignment="Center"
+                                                    IsChecked="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}"
+                                                    IsEnabled="False"
+                                                    Style="{StaticResource BorderlessCheckmarkAndEmptyCheckbox}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Width="200" Header="{ns:Loc LblName}">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding Name}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="{ns:Loc LblId}">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding Id}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
                                 </GridView>
                             </ListView.View>
-                        </ListView>-->
+                        </ListView>
                         <StackPanel Grid.Row="1" Orientation="Horizontal">
                             <Button
                                 Width="40"
@@ -188,6 +157,20 @@
                 <GroupBox Grid.Column="1" Header="{ns:Loc LblGeneral}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel>
+                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="140"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblName}" />
+                                <TextBox
+                                    MinWidth="120"
+                                    Margin="10,0,0,0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding ActiveProfile.Name}" />
+
+                            </StackPanel>
                             <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                                 <TextBlock
                                     Width="140"
@@ -785,10 +768,10 @@
                                         <Button.ToolTip>
                                             <TextBlock Text="{ns:Loc LblPlanetariumTooltip}" />
                                         </Button.ToolTip>
-                                        <Path   
+                                        <Path
                                             Margin="5"
                                             Data="{StaticResource GetCoordsSVG}"
-                                            Fill="{StaticResource ButtonForegroundBrush}" 
+                                            Fill="{StaticResource ButtonForegroundBrush}"
                                             Stretch="Uniform" />
                                     </Button>
                                 </StackPanel>

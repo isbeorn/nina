@@ -26,7 +26,7 @@ using ASCOM.DeviceInterface;
 using ASCOM.DriverAccess;
 using NINA.Utility;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -425,11 +425,18 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private bool canReadElectronsPerADU = true;
+
         public double ElectronsPerADU {
             get {
                 double val = double.NaN;
-                if (Connected) {
-                    val = _camera.ElectronsPerADU;
+                if (canReadElectronsPerADU && Connected) {
+                    try {
+                        val = _camera.ElectronsPerADU;
+                    } catch (Exception) {
+                        val = double.NaN;
+                        canReadElectronsPerADU = false;
+                    }
                 }
                 return val;
             }

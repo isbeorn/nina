@@ -26,7 +26,7 @@ using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.AtikSDK;
 using NINA.Utility.Mediator.Interfaces;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using QHYCCD;
 using System;
 using ZWOptical.ASISDK;

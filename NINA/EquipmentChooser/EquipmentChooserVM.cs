@@ -25,7 +25,7 @@ using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using NINA.ViewModel;
 using System;
 using System.Collections.ObjectModel;

@@ -31,7 +31,7 @@ using NINA.Model.MyTelescope;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator.Interfaces;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using NINA.ViewModel;
 using NINA.ViewModel.Equipment.Camera;
 using NINA.ViewModel.Equipment.FilterWheel;
@@ -48,6 +48,7 @@ using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using NINA.Utility;
 
 namespace NINATest {
 
@@ -545,9 +546,29 @@ namespace NINATest {
             }
         }
 
+        public string Location {
+            get {
+                throw new NotImplementedException();
+            }
+        }
+
+        public DateTime LastUsed {
+            get {
+                throw new NotImplementedException();
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public void Dispose() {
+            throw new NotImplementedException();
+        }
+
         public void MatchFilterSettingsWithFilterList() {
+            throw new NotImplementedException();
+        }
+
+        public void Save() {
             throw new NotImplementedException();
         }
     }
@@ -944,6 +965,12 @@ namespace NINATest {
 
         public IProfile ActiveProfile { get; set; }
 
+        AsyncObservableCollection<ProfileMeta> IProfileService.Profiles {
+            get {
+                throw new NotImplementedException();
+            }
+        }
+
         public event EventHandler LocaleChanged;
 
         public event EventHandler LocationChanged;
@@ -974,6 +1001,10 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
+        public bool Clone(ProfileMeta profileInfos) {
+            throw new NotImplementedException();
+        }
+
         public void PauseSave() {
         }
 
@@ -981,10 +1012,18 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
+        public bool RemoveProfile(ProfileMeta profileInfo) {
+            throw new NotImplementedException();
+        }
+
         public void ResumeSave() {
         }
 
         public void SelectProfile(Guid guid) {
+            throw new NotImplementedException();
+        }
+
+        public bool SelectProfile(ProfileMeta profileInfo) {
             throw new NotImplementedException();
         }
     }

@@ -26,7 +26,7 @@ using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
 using NINA.Model.MyRotator;
 using NINA.Model.MyTelescope;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 using System.Collections.Generic;
 

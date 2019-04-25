@@ -25,7 +25,7 @@ using NINA.Utility;
 using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using NINA.ViewModel.Equipment.Camera;
 using NINA.ViewModel.Equipment.FilterWheel;
 using NINA.ViewModel.Equipment.Focuser;
@@ -122,7 +122,7 @@ namespace NINA.ViewModel {
         private IApplicationStatusMediator applicationStatusMediator;
 
         private void LoadProfile(object obj) {
-            if (profileService.Profiles.ProfileList.Count > 1) {
+            if (profileService.Profiles.Count > 1) {
                 new ProfileSelectVM(profileService).SelectProfile();
             }
         }

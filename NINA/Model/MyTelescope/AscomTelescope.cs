@@ -27,7 +27,7 @@ using ASCOM.DriverAccess;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 using System.Collections;
 using System.Threading;

@@ -891,4 +891,7 @@ HFR Calcolato: {2}
     <s:String x:Key="LblResetDockLayout">Ripristinare il layout</s:String>
     <s:String x:Key="LblResetDockLayoutConfirmation">Dovrebbe essere ripristinato il layout?</s:String>
     <s:String x:Key="LblLayout">Layout</s:String>
+    <s:String x:Key="LblDeleteProfileInUseWarning">Impossibile eliminare il profilo. E' già usato da un'altra istanza di  N.I.N.A.!</s:String>
+    <s:String x:Key="LblLoadProfileInUseWarning">Impossibile caricare il profilo. E' già usato da un'altra istanza di  N.I.N.A.!</s:String>
+    <s:String x:Key="LblSelectProfileInUseWarning">Il profilo selezionato non può essere utilizzato. E' già usato da un'altra istanza di  N.I.N.A.!</s:String>
 </ResourceDictionary>

@@ -30,7 +30,7 @@ using NINA.Utility.Astrometry;
 using NINA.Utility.Behaviors;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using NINA.Utility.SkySurvey;
 using System;
 using System.Collections.Generic;

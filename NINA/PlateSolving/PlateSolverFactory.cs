@@ -24,7 +24,7 @@
 using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
 
 namespace NINA.PlateSolving {
 

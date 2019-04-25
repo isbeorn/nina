@@ -30,7 +30,7 @@ using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator.Interfaces;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using NINA.ViewModel.Interfaces;
 using Nito.AsyncEx;
 using System;

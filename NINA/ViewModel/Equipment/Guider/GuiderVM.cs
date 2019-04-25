@@ -26,7 +26,7 @@ using NINA.Model.MyGuider;
 using NINA.Utility;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator.Interfaces;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Generic;

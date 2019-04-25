@@ -25,7 +25,7 @@
 
 using NINA.Utility;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using QHYCCD;
 using System;
 using System.Collections;
