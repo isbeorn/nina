@@ -45,6 +45,8 @@ namespace NINA.Model.MyTelescope {
 
         private IProfileService profileService;
 
+        public string Category { get; } = "ASCOM";
+
         private void init() {
             _canGetAlignmentMode = true;
             _canGetAltitude = true;
@@ -1011,9 +1013,8 @@ namespace NINA.Model.MyTelescope {
             if (Connected) {
                 if (CanPulseGuide) {
                     if (!AtPark) {
-
                         try {
-                            _telescope.PulseGuide((ASCOM.DeviceInterface.GuideDirections)direction,duration);
+                            _telescope.PulseGuide((ASCOM.DeviceInterface.GuideDirections)direction, duration);
                         } catch (Exception e) {
                             Notification.ShowError(e.Message);
                         }
@@ -1021,7 +1022,6 @@ namespace NINA.Model.MyTelescope {
                         Notification.ShowWarning(Locale.Loc.Instance["LblTelescopeParkedWarn"]);
                     }
                 } else {
-
                     Notification.ShowWarning(Locale.Loc.Instance["LblTelescopeCannotPulseGuide"]);
                 }
             } else {

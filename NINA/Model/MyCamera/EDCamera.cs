@@ -47,6 +47,8 @@ namespace NINA.Model.MyCamera {
             Name = info.szDeviceDescription;
         }
 
+        public string Category { get; } = "Canon";
+
         private IProfileService profileService;
 
         private IntPtr _cam;

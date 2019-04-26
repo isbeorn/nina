@@ -43,6 +43,8 @@ namespace NINA.Model.MyRotator {
             RaisePropertyChanged(nameof(Description));
         }
 
+        public string Category { get; } = "N.I.N.A.";
+
         public bool IsMoving { get; set; }
 
         public bool Connected { get; set; }

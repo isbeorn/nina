@@ -57,6 +57,8 @@ namespace NINA.Model.MyGPS {
             connected = false;
         }
 
+        public string Category { get; } = "NMEA";
+
         public string Id => $"#{gpsId} (#{portName})";
 
         public string Name {

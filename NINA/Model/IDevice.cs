@@ -31,6 +31,8 @@ namespace NINA.Model {
         bool HasSetupDialog { get; }
         string Id { get; }
         string Name { get; }
+
+        string Category { get; }
         bool Connected { get; }
         string Description { get; }
         string DriverInfo { get; }

@@ -31,6 +31,38 @@
         x:Name="LayoutRoot"
         Grid.Column="1"
         Margin="5">
+
+        <Grid.Resources>
+            <CollectionViewSource x:Key="GroupedDevices" Source="{Binding Devices}">
+                <CollectionViewSource.GroupDescriptions>
+                    <PropertyGroupDescription PropertyName="Category" />
+                </CollectionViewSource.GroupDescriptions>
+            </CollectionViewSource>
+            <DataTemplate x:Key="DeviceItemTemplate">
+                <TextBlock Margin="10,0,0,0" Text="{Binding Name}" />
+            </DataTemplate>
+            <Style x:Key="ContainerStyle" TargetType="{x:Type GroupItem}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type GroupItem}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Border
+                                    x:Name="ComboExpander"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="0,0,0,1">
+                                    <TextBlock FontStyle="Italic" FontWeight="Bold" Text="{Binding Name}" />
+                                </Border>
+                                <ItemsPresenter Grid.Row="1" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="40" />
             <ColumnDefinition />
@@ -47,11 +79,14 @@
         <ComboBox
             Grid.Column="1"
             MinHeight="40"
-            DisplayMemberPath="Name"
             IsEnabled="{Binding Connected, Converter={StaticResource InverseBooleanConverter}}"
-            ItemsSource="{Binding Devices}"
-            SelectedItem="{Binding SelectedDevice}"
-            SelectedValuePath="Name" />
+            ItemTemplate="{StaticResource DeviceItemTemplate}"
+            ItemsSource="{Binding Source={StaticResource GroupedDevices}}"
+            SelectedItem="{Binding SelectedDevice}">
+            <ComboBox.GroupStyle>
+                <GroupStyle ContainerStyle="{StaticResource ContainerStyle}" />
+            </ComboBox.GroupStyle>
+        </ComboBox>
         <Button
             Grid.Column="2"
             Width="40"

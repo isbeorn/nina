@@ -46,6 +46,7 @@ namespace NINA.Model.MyCamera {
         private IProfileService profileService;
         private int _cameraId;
 
+        public string Category { get; } = "ZWOptical";
         public string Id => $"{Name} #{_cameraId}";
 
         private ASICameraDll.ASI_CAMERA_INFO? _info;
