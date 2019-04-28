@@ -48,6 +48,12 @@ namespace NINA.ViewModel {
         }
 
         public ApplicationVM(IProfileService profileService) : base(profileService) {
+            if (NINA.Properties.Settings.Default.UpdateSettings) {
+                NINA.Properties.Settings.Default.Upgrade();
+                NINA.Properties.Settings.Default.UpdateSettings = false;
+                NINA.Properties.Settings.Default.Save();
+            }
+
             Logger.SetLogLevel(profileService.ActiveProfile.ApplicationSettings.LogLevel);
             cameraMediator = new CameraMediator();
             telescopeMediator = new TelescopeMediator();
