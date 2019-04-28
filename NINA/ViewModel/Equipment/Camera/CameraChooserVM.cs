@@ -125,6 +125,13 @@ namespace NINA.ViewModel.Equipment.Camera {
             /* CANON */
             try {
                 IntPtr cameraList;
+                try {
+                    EDSDK.Initialize();
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                    Utility.Notification.Notification.ShowError(ex.Message);
+                }
+
                 uint err = EDSDK.EdsGetCameraList(out cameraList);
                 if (err == (uint)EDSDK.EDS_ERR.OK) {
                     int count;

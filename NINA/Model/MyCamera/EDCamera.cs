@@ -749,10 +749,9 @@ namespace NINA.Model.MyCamera {
 
         public async Task<bool> Connect(CancellationToken token) {
             return await Task.Run(() => {
-                uint err = EDSDK.EdsOpenSession(_cam);
-                if (err != (uint)EDSDK.EDS_ERR.OK) {
-                    return false;
-                } else {
+                try {
+                    CheckAndThrowError(EDSDK.EdsOpenSession(_cam));
+
                     Connected = true;
                     if (!Initialize()) {
                         Disconnect();
@@ -760,6 +759,9 @@ namespace NINA.Model.MyCamera {
                     }
                     RaiseAllPropertiesChanged();
                     return true;
+                } catch (Exception ex) {
+                    Notification.ShowError(ex.Message);
+                    return false;
                 }
             });
         }

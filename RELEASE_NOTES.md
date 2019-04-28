@@ -41,6 +41,7 @@
   - Automatically go back to original focus position if obtained HFR is significantly worse than original
   - Ability to take multiple autofocus exposures per focus point and average their HFR. This leads to smoother autofocus curves.
 - Equipment chooser dropdowns are grouped by driver categories to easily distinguish between for example ASCOM drivers and other vendor drivers
+- When EOS Utility is running in the background, the x64 N.I.N.A. client will scan for this app and prevent a crash due to the EOS utility being open. Instead a notification will show up to close the EOS Utility.
 
 # Version 1.8 Hotfix 1
 
