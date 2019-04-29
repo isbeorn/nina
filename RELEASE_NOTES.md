@@ -14,6 +14,10 @@
 ### Interfacing with planetarium programs
 - NINA can interface with Cartes du Ciel, HNSKY, Stellarium, and TheSkyX through their repsective TCP services to import the selected object for use in the Sequence Editor and Framing Assistant, as well as setting the observing location to match that which is set in those programs
 
+## Bugfixes
+- Fixed when FramingAssistant was not opened before and a DSO was selected from the SkyAtlas as Framing Source an error could occur
+- Fixed scrolling through Framing Assistant Offline Sky Map while cursor was inside Rectangle ignored zooming
+
 ## Improvements
 - If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips
 - Added options to adjust downsample factor and maximum number of considered stars for ASTAP and local astrometry.net solvers
