@@ -21,27 +21,32 @@
 
 #endregion "copyright"
 
-using System.ComponentModel;
-using System.Threading;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.ModelConfiguration;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace NINA.Model {
+namespace NINA.Database.Schema {
 
-    public interface IDevice : INotifyPropertyChanged {
-        bool HasSetupDialog { get; }
-        string Id { get; }
-        string Name { get; }
+    internal class VisualDescription {
+        public virtual DsoDetail DsoDetail { get; set; }
 
-        string Category { get; }
-        bool Connected { get; }
-        string Description { get; }
-        string DriverInfo { get; }
-        string DriverVersion { get; }
+        [ForeignKey("DsoDetail")]
+        public string dsodetailid { get; set; }
 
-        Task<bool> Connect(CancellationToken token);
+        public string description { get; set; }
+    }
 
-        void Disconnect();
+    internal class VisualDescriptionConfiguration : EntityTypeConfiguration<VisualDescription> {
 
-        void SetupDialog();
+        public VisualDescriptionConfiguration() {
+            ToTable("dbo.visualdescription");
+            HasKey(x => new { x.dsodetailid, x.description });
+            Property(x => x.dsodetailid).HasColumnName("dsodetailid").IsRequired();
+            Property(x => x.description).HasColumnName("description").IsRequired();
+        }
     }
 }

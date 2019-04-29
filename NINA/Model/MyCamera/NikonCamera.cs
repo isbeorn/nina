@@ -50,6 +50,8 @@ namespace NINA.Model.MyCamera {
             _nikonManagers = new List<NikonManager>();
         }
 
+        public string Category { get; } = "Nikon";
+
         private ITelescopeMediator telescopeMediator;
         private IProfileService profileService;
         private List<NikonManager> _nikonManagers;

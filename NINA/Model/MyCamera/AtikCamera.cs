@@ -45,6 +45,8 @@ namespace NINA.Model.MyCamera {
         private int _cameraId;
         private IntPtr _cameraP;
 
+        public string Category { get; } = "Atik";
+
         private AtikCameraDll.ArtemisPropertiesStruct _info;
 
         private AtikCameraDll.ArtemisPropertiesStruct Info {

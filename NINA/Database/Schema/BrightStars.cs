@@ -21,27 +21,33 @@
 
 #endregion "copyright"
 
-using System.ComponentModel;
-using System.Threading;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Data.Entity.ModelConfiguration;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace NINA.Model {
+namespace NINA.Database.Schema {
 
-    public interface IDevice : INotifyPropertyChanged {
-        bool HasSetupDialog { get; }
-        string Id { get; }
-        string Name { get; }
+    internal class BrightStars {
 
-        string Category { get; }
-        bool Connected { get; }
-        string Description { get; }
-        string DriverInfo { get; }
-        string DriverVersion { get; }
+        [Key]
+        public string name { get; set; }
 
-        Task<bool> Connect(CancellationToken token);
+        public double ra { get; set; }
+        public double dec { get; set; }
+        public double magnitude { get; set; }
+        public string syncedfrom { get; set; }
+    }
 
-        void Disconnect();
+    internal class BrightStarsConfiguration : EntityTypeConfiguration<BrightStars> {
 
-        void SetupDialog();
+        public BrightStarsConfiguration() {
+            ToTable("dbo.brightstars");
+            HasKey(x => x.name);
+            Property(x => x.name).HasColumnName("name").IsRequired();
+        }
     }
 }

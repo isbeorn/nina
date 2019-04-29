@@ -106,6 +106,20 @@ Release Candidate: 1.8.0.3001   (Displayed as "1.8 RC1")
 Beta: 1.8.0.2004                (Displayed as "1.8 BETA4")  
 Develop: 1.8.0.1022             (Displayed as "1.8 NIGHTLY #022")  
 
+## Database enhancements
+
+N.I.N.A. uses an SQLite database to store various data. The database is located inside %LOCALAPPDATA%\NINA\NINA.sqlite. 
+This database will be automatically created by the EntityFramework based on the files inside <SolutionDir>\NINA\Database\Initial and <SolutionDir>\NINA\Database\Migration
+* Files inside "Initial" folder will be called when the database needs to be created from scratch.
+	* Do not alter these files! Changes here won't get applied for an existing database (e.g. from a previous version)
+	* In case additions have to be made to the database, add a new migration file as described below
+* Files inside migration will be called depending on the current version that is returned via "PRAGMA user_version" of the existing database
+	* The migration is kept simple and follows a naming convention. The migration .sql file matches the version it should migrate to. (Files are named like "1.sql", "2.sql" etc.)
+	* This requires that the same user_version is set as the file name specifies inside the file (e.g. "1.sql" must contain a "PRAGMA user_version = 1;" statement)
+	* Only those files where the version is greater than the current database user_version will be executed
+* During migration the foreign key constraints are deactivated, for easier data manipulation. Be cautious to not corrupt data that way!
+* After a migration a VACUUM will be performed
+
 ## Setting up the developer environment
 
 * Install Visual Studio Community 2017 or better

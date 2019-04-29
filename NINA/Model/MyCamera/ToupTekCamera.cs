@@ -50,6 +50,8 @@ namespace NINA.Model.MyCamera {
 
         private IProfileService profileService;
 
+        public string Category { get; } = "ToupTek";
+
         public bool HasShutter {
             get {
                 return false;

@@ -47,6 +47,8 @@ namespace NINA.Model.MyFilterWheel {
             Filters = l;
         }
 
+        public string Category { get; } = "ASCOM";
+
         private string _id;
 
         public string Id {

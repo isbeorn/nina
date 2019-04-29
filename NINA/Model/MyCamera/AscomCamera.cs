@@ -48,6 +48,8 @@ namespace NINA.Model.MyCamera {
         private string _id;
         private IProfileService profileService;
 
+        public string Category { get; } = "ASCOM";
+
         public string Id {
             get {
                 return _id;

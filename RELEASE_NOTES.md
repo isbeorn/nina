@@ -14,6 +14,10 @@
 ### Interfacing with planetarium programs
 - NINA can interface with Cartes du Ciel, HNSKY, Stellarium, and TheSkyX through their repsective TCP services to import the selected object for use in the Sequence Editor and Framing Assistant, as well as setting the observing location to match that which is set in those programs
 
+## Bugfixes
+- Fixed when FramingAssistant was not opened before and a DSO was selected from the SkyAtlas as Framing Source an error could occur
+- Fixed scrolling through Framing Assistant Offline Sky Map while cursor was inside Rectangle ignored zooming
+
 ## Improvements
 - If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips
 - Added options to adjust downsample factor and maximum number of considered stars for ASTAP and local astrometry.net solvers
@@ -40,6 +44,9 @@
   - Ability to automatically reattempt autofocus from scratch several times in case it failed
   - Automatically go back to original focus position if obtained HFR is significantly worse than original
   - Ability to take multiple autofocus exposures per focus point and average their HFR. This leads to smoother autofocus curves.
+- Equipment chooser dropdowns are grouped by driver categories to easily distinguish between for example ASCOM drivers and other vendor drivers
+- When EOS Utility is running in the background, the x64 N.I.N.A. client will scan for this app and prevent a crash due to the EOS utility being open. Instead a notification will show up to close the EOS Utility.
+- N.I.N.A. SQLite Database will be created on demand and migrated to new versions on application startup instead of just being overwritten by the installer.
 
 # Version 1.8 Hotfix 1
 

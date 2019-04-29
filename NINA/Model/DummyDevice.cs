@@ -39,6 +39,8 @@ namespace NINA.Model {
             }
         }
 
+        public string Category { get; } = string.Empty;
+
         public string Id {
             get {
                 return "No_Device";

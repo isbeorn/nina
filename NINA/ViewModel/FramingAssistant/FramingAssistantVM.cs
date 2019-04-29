@@ -250,6 +250,9 @@ namespace NINA.ViewModel.FramingAssistant {
             }
 
             RaiseCoordinatesChanged();
+            while (boundWidth == 0) {
+                await Task.Delay(50);
+            }
             await LoadImageCommand.ExecuteAsync(null);
             return true;
         }

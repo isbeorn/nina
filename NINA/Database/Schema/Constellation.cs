@@ -21,27 +21,29 @@
 
 #endregion "copyright"
 
-using System.ComponentModel;
-using System.Threading;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Data.Entity.ModelConfiguration;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace NINA.Model {
+namespace NINA.Database.Schema {
 
-    public interface IDevice : INotifyPropertyChanged {
-        bool HasSetupDialog { get; }
-        string Id { get; }
-        string Name { get; }
+    internal class Constellation {
+        public string constellationid { get; set; }
 
-        string Category { get; }
-        bool Connected { get; }
-        string Description { get; }
-        string DriverInfo { get; }
-        string DriverVersion { get; }
+        public int starid { get; set; }
+        public int followstarid { get; set; }
+    }
 
-        Task<bool> Connect(CancellationToken token);
+    internal class ConstellationConfiguration : EntityTypeConfiguration<Constellation> {
 
-        void Disconnect();
-
-        void SetupDialog();
+        public ConstellationConfiguration() {
+            ToTable("dbo.constellation");
+            HasKey(x => new { x.constellationid, x.starid, x.followstarid });
+            Property(x => x.constellationid).HasColumnName("constellationid").IsRequired();
+        }
     }
 }

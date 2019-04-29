@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using NINA.Database;
 using System;
 using System.ComponentModel;
 using System.Linq;

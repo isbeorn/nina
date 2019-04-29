@@ -52,6 +52,8 @@ namespace NINA.Model.MyCamera {
 
         private object lockObj = new object();
 
+        public string Category { get; } = "N.I.N.A.";
+
         public bool HasShutter {
             get {
                 return false;
@@ -95,13 +97,13 @@ namespace NINA.Model.MyCamera {
 
         public string Description {
             get {
-                return "NINA_SIM_Simulator";
+                return "A basic simulator to generate random noise for a specific median or load in an image that will be displayed on capture";
             }
         }
 
         public string DriverInfo {
             get {
-                return "NINA_SIM_DriverInfo";
+                return string.Empty;
             }
         }
 
@@ -113,7 +115,7 @@ namespace NINA.Model.MyCamera {
 
         public string SensorName {
             get {
-                return "NINA_SIM_Sensor";
+                return "Simulated Sensor";
             }
         }
 
@@ -196,7 +198,7 @@ namespace NINA.Model.MyCamera {
 
         public string CameraState {
             get {
-                return "NINA_SIM_State";
+                return "TestState";
             }
         }
 
@@ -289,7 +291,7 @@ namespace NINA.Model.MyCamera {
 
         public string Name {
             get {
-                return "NINA_SIM";
+                return "N.I.N.A. Simulator Camera";
             }
         }
 

@@ -45,10 +45,6 @@ namespace NINA.ViewModel.Equipment.Camera {
 
             Devices.Add(new Model.DummyDevice(Locale.Loc.Instance["LblNoCamera"]));
 
-#if DEBUG
-            Devices.Add(new Model.MyCamera.SimulatorCamera(profileService));
-#endif
-
             /* ASI */
             try {
                 Logger.Trace("Adding ASI Cameras");
@@ -106,6 +102,17 @@ namespace NINA.ViewModel.Equipment.Camera {
                 Logger.Error(ex);
             }
 
+            /* ToupTek */
+            try {
+                Logger.Trace("Adding ToupTek Cameras");
+                foreach (var instance in ToupTek.ToupCam.EnumV2()) {
+                    var cam = new ToupTekCamera(instance, profileService);
+                    Devices.Add(cam);
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
             /* ASCOM */
             try {
                 foreach (ICamera cam in ASCOMInteraction.GetCameras(profileService)) {
@@ -118,6 +125,13 @@ namespace NINA.ViewModel.Equipment.Camera {
             /* CANON */
             try {
                 IntPtr cameraList;
+                try {
+                    EDSDK.Initialize();
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                    Utility.Notification.Notification.ShowError(ex.Message);
+                }
+
                 uint err = EDSDK.EdsGetCameraList(out cameraList);
                 if (err == (uint)EDSDK.EDS_ERR.OK) {
                     int count;
@@ -145,16 +159,7 @@ namespace NINA.ViewModel.Equipment.Camera {
                 Logger.Error(ex);
             }
 
-            /* ToupTek */
-            try {
-                Logger.Trace("Adding ToupTek Cameras");
-                foreach (var instance in ToupTek.ToupCam.EnumV2()) {
-                    var cam = new ToupTekCamera(instance, profileService);
-                    Devices.Add(cam);
-                }
-            } catch (Exception ex) {
-                Logger.Error(ex);
-            }
+            Devices.Add(new Model.MyCamera.SimulatorCamera(profileService));
 
             DetermineSelectedDevice(profileService.ActiveProfile.CameraSettings.Id);
         }

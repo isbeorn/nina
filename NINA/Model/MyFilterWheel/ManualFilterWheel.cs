@@ -46,6 +46,8 @@ namespace NINA.Model.MyFilterWheel {
         private bool connected;
         private IProfileService profileService;
 
+        public string Category { get; } = "N.I.N.A.";
+
         public bool Connected {
             get {
                 return connected;

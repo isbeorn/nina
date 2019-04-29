@@ -128,19 +128,21 @@
                             </Grid>
                         </StackPanel>
                     </GroupBox>
-                    <GroupBox >
+                    <GroupBox>
                         <GroupBox.Header>
                             <DockPanel>
-                                <TextBlock Text="{ns:Loc LblCoordinates}" 
-                                           DockPanel.Dock="Left"
-                                           FontSize="20"/>
-                                <Button DockPanel.Dock="Right"
-                                      Width="25"
-                                      Height="25"
-                                      Margin="1,0,0,0"
-                                      HorizontalContentAlignment ="Right"
-                                        HorizontalAlignment ="Right"
-                                      Command="{Binding CoordsFromPlanetariumCommand}">
+                                <TextBlock
+                                    DockPanel.Dock="Left"
+                                    FontSize="20"
+                                    Text="{ns:Loc LblCoordinates}" />
+                                <Button
+                                    Width="25"
+                                    Height="25"
+                                    Margin="1,0,0,0"
+                                    HorizontalAlignment="Right"
+                                    HorizontalContentAlignment="Right"
+                                    Command="{Binding CoordsFromPlanetariumCommand}"
+                                    DockPanel.Dock="Right">
                                     <Button.ToolTip>
                                         <ToolTip ToolTipService.ShowOnDisabled="False">
                                             <TextBlock Text="{ns:Loc LblPlanetariumTooltip}" />
@@ -148,10 +150,10 @@
                                     </Button.ToolTip>
                                     <Grid>
                                         <Path
-                                Margin="5"
-                                Data="{StaticResource GetCoordsSVG}"
-                                Fill="{StaticResource ButtonForegroundBrush}"
-                                Stretch="Uniform" />
+                                            Margin="5"
+                                            Data="{StaticResource GetCoordsSVG}"
+                                            Fill="{StaticResource ButtonForegroundBrush}"
+                                            Stretch="Uniform" />
                                     </Grid>
                                 </Button>
                             </DockPanel>
@@ -669,6 +671,8 @@
                                     behaviors:DragCommandBehavior.DragMoveCommand="{Binding DragMoveCommand}"
                                     behaviors:DragCommandBehavior.DragStartCommand="{Binding DragStartCommand}"
                                     behaviors:DragCommandBehavior.DragStopCommand="{Binding DragStopCommand}"
+                                    behaviors:MouseWheelCommandBehavior.Enabled="{Binding SkyMapAnnotator.DynamicFoV}"
+                                    behaviors:MouseWheelCommandBehavior.MouseWheelCommand="{Binding MouseWheelCommand}"
                                     Fill="Transparent"
                                     RenderTransformOrigin="0.5,0.5"
                                     Stroke="{StaticResource ButtonForegroundBrush}"

@@ -40,6 +40,8 @@ namespace NINA.Model.MyFocuser {
 
         private Focuser _focuser;
 
+        public string Category { get; } = "ASCOM";
+
         private string _id;
 
         public string Id {

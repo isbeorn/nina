@@ -72,8 +72,10 @@ namespace NINA.Model.MyCamera {
             Info.Index = cameraIdx;
             Info.Id = cameraId;
 
-            Logger.Debug(string.Format("QHCCD: Found camera {0}", Info.Id));
+            Logger.Debug(string.Format("QHYCCD: Found camera {0}", Info.Id));
         }
+
+        public string Category { get; } = "QHYCCD";
 
         private List<int> SupportedBinFactors {
             get {
