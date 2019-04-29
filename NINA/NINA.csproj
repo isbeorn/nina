@@ -312,6 +312,15 @@
       <DependentUpon>AstrometryIndexDownloader.xaml</DependentUpon>
     </Compile>
     <Compile Include="AstrometryIndexDownloader\AstrometryIndexDownloaderVM.cs" />
+    <Compile Include="Database\Schema\BrightStars.cs" />
+    <Compile Include="Database\Schema\CatalogueNr.cs" />
+    <Compile Include="Database\Schema\Constellation.cs" />
+    <Compile Include="Database\Schema\ConstellationBoundaries.cs" />
+    <Compile Include="Database\Schema\ConstellationStar.cs" />
+    <Compile Include="Database\Schema\DsoDetail.cs" />
+    <Compile Include="Database\Schema\EarthRotationParameters.cs" />
+    <Compile Include="Database\NINADbContext.cs" />
+    <Compile Include="Database\Schema\VisualDescription.cs" />
     <Compile Include="EquipmentChooser\EquipmentChooser.xaml.cs">
       <DependentUpon>EquipmentChooser.xaml</DependentUpon>
     </Compile>
@@ -344,6 +353,7 @@
     <Compile Include="Profile\Interfaces\IPlanetariumSettings.cs" />
     <Compile Include="Profile\PlanetariumSettings.cs" />
     <Compile Include="Utility\Converters\InverseBooleanToVisibilityCollapsedConverter.cs" />
+    <Compile Include="Utility\Extensions\IOrderedQueryableExtension.cs" />
     <Compile Include="Utility\ProjectVersion.cs" />
     <Compile Include="Utility\Behaviors\BrowserBehavior.cs" />
     <Compile Include="Utility\Enum\AutoUpdateSourceEnum.cs" />
@@ -481,7 +491,7 @@
     <Compile Include="Utility\Converters\PercentageConverter.cs" />
     <Compile Include="Utility\Converters\SetAlphaToColorConverter.cs" />
     <Compile Include="Utility\Converters\ValueToLocaleConverter.cs" />
-    <Compile Include="Utility\DatabaseInteraction.cs" />
+    <Compile Include="Database\DatabaseInteraction.cs" />
     <Compile Include="Utility\DeviceUpdateTimer.cs" />
     <Compile Include="Utility\Enum\RawConverterEnum.cs" />
     <Compile Include="Utility\Http\HttpDownloadFileRequest.cs" />
@@ -1354,6 +1364,15 @@
       <DependentUpon>table-of-contents.md</DependentUpon>
     </None>
     <Resource Include="Resources\astrometry.net.png" />
+    <Content Include="Database\Initial\initial_data.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Database\Initial\initial_schema.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Database\Migration\1.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="External\x64\FreeImage\FreeImage.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1387,7 +1406,6 @@
     <Content Include="Utility\DCRaw\dcraw.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Database\NINA.sqlite" />
     <None Include="Documentation\NINA.md" />
     <None Include="Documentation\table-of-contents.md" />
     <Content Include="External\x64\NOVAS\cio_ra.bin">

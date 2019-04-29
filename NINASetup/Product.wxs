@@ -55,8 +55,6 @@
       <ComponentRef Id="NinaAppDataFolderComponent" />
       <ComponentRef Id="FramingAssistantCacheFolderComponent" />
       <ComponentRef Id="LogsFolderComponent" />
-
-      <ComponentGroupRef Id="Database" />
       <!--<ComponentGroupRef Id="Documentation_images_files" />
       <ComponentGroupRef Id="Documentation_files" />-->
       <ComponentGroupRef Id="External_x64_ASI_files" />
@@ -126,6 +124,8 @@
       <ComponentGroupRef Id="External_x86_SOFA_files" />
       <ComponentGroupRef Id="External_x64_SOFA_files" />
       <ComponentGroupRef Id="External_JPLEPH_files" />
+      <ComponentGroupRef Id="Database_Initial_files" />
+      <ComponentGroupRef Id="Database_Migration_files" />
     </Feature>
   </Product>
 
@@ -214,6 +214,10 @@
             <Directory Id="Utility_DCRaw" Name="DCRaw" />
             <Directory Id="Utility_ColorSchema" Name="ColorSchema" />
           </Directory>
+          <Directory Id="Database" Name="Database">
+            <Directory Id="Database_Initial" Name="Initial" />
+            <Directory Id="Database_Migration" Name="Migration" />
+          </Directory>
         </Directory>
       </Directory>
       <Directory Id="ProgramMenuFolder">
@@ -260,16 +264,6 @@
         <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="installed" Type="integer" Value="1" KeyPath="yes" />
       </Component>
     </DirectoryRef>
-  </Fragment>
-
-  <Fragment>
-    <ComponentGroup Id="Database" Directory="NinaAppDataFolder">
-      <Component Win64="$(var.Win64)" Id="NINA.sqlite" Guid="59C5D8EB-EECB-4CA7-B7E6-739371DC0679">
-        <File Id="NINA.sqlite" Name="NINA.sqlite" Source="$(var.SolutionDir)NINA\Database\NINA.sqlite" />
-        <RemoveFile Id="NINA.sqlite" Name="NINA.sqlite" Directory="NinaAppDataFolder" On="uninstall" />
-        <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="installed" Type="integer" Value="1" KeyPath="yes" />
-      </Component>
-    </ComponentGroup>
   </Fragment>
 
   <Fragment>
@@ -1295,6 +1289,23 @@
     <ComponentGroup Id="External_x64_SOFA_files" Directory="External_x64_SOFA">
       <Component Win64="$(var.Win64)" Id="External_x64_SOFA_SOFAlib.dll" Guid="7e84f09e-ef65-4075-93f9-34a61f47a2af">
         <File Id="External_x64_SOFA_SOFAlib.dll" Name="SOFAlib.dll" Source="$(var.NINA_TargetDir)External\x64\SOFA\SOFAlib.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="Database_Initial_files" Directory="Database_Initial">
+      <Component Win64="$(var.Win64)" Id="Database_Initial_initial_data.sql" Guid="eac6318b-a3a6-4faf-93a4-e393a978f8d2">
+        <File Id="Database_Initial_initial_data.sql" Name="initial_data.sql" Source="$(var.NINA_TargetDir)Database\Initial\initial_data.sql" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="Database_Initial_initial_schema.sql" Guid="45a87858-1713-4e88-ad91-8daa2e732b1b">
+        <File Id="Database_Initial_initial_schema.sql" Name="initial_schema.sql" Source="$(var.NINA_TargetDir)Database\Initial\initial_schema.sql" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="Database_Migration_files" Directory="Database_Migration">
+      <Component Win64="$(var.Win64)" Id="Database_Migration_1.sql" Guid="9d6f78f7-1a32-4230-b611-925d274e9dc7">
+        <File Id="Database_Migration_1.sql" Name="1.sql" Source="$(var.NINA_TargetDir)Database\Migration\1.sql" />
       </Component>
     </ComponentGroup>
   </Fragment>

@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using NINA.Database;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINACustomControlLibrary;

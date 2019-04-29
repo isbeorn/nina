@@ -36,6 +36,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using NINA.Database;
 
 namespace NINA.ViewModel {
 
@@ -480,16 +481,16 @@ namespace NINA.ViewModel {
         private double? _selectedDecThrough;
         private AsyncObservableCollection<string> _brightnessFrom;
         private AsyncObservableCollection<string> _brightnessThrough;
-        private string _selectedBrightnessFrom;
-        private string _selectedBrightnessThrough;
+        private double? _selectedBrightnessFrom;
+        private double? _selectedBrightnessThrough;
         private AsyncObservableCollection<KeyValuePair<string, string>> _sizesFrom;
         private AsyncObservableCollection<KeyValuePair<string, string>> _sizesThrough;
-        private string _selectedSizeFrom;
-        private string _selectedSizeThrough;
+        private double? _selectedSizeFrom;
+        private double? _selectedSizeThrough;
         private AsyncObservableCollection<string> _magnitudesFrom;
         private AsyncObservableCollection<string> _magnitudesThrough;
-        private string _selectedMagnitudeFrom;
-        private string _selectedMagnitudeThrough;
+        private double? _selectedMagnitudeFrom;
+        private double? _selectedMagnitudeThrough;
         private PagedList<DeepSkyObject> _searchResult;
         private AsyncObservableCollection<DateTime> _altitudeTimesFrom;
         private AsyncObservableCollection<DateTime> _altitudeTimesThrough;
@@ -712,7 +713,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public string SelectedBrightnessFrom {
+        public double? SelectedBrightnessFrom {
             get {
                 return _selectedBrightnessFrom;
             }
@@ -723,7 +724,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public string SelectedBrightnessThrough {
+        public double? SelectedBrightnessThrough {
             get {
                 return _selectedBrightnessThrough;
             }
@@ -756,7 +757,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public string SelectedSizeFrom {
+        public double? SelectedSizeFrom {
             get {
                 return _selectedSizeFrom;
             }
@@ -767,7 +768,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public string SelectedSizeThrough {
+        public double? SelectedSizeThrough {
             get {
                 return _selectedSizeThrough;
             }
@@ -800,7 +801,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public string SelectedMagnitudeFrom {
+        public double? SelectedMagnitudeFrom {
             get {
                 return _selectedMagnitudeFrom;
             }
@@ -811,7 +812,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public string SelectedMagnitudeThrough {
+        public double? SelectedMagnitudeThrough {
             get {
                 return _selectedMagnitudeThrough;
             }
