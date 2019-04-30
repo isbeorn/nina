@@ -1,0 +1,79 @@
+﻿<Window
+    x:Class="NINALocaleManager.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:NINALocaleManager"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="N.I.N.A. Locale Manager"
+    Width="800"
+    Height="450"
+    mc:Ignorable="d">
+    <Grid DataContext="{StaticResource AppVM}">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TabControl DisplayMemberPath="Name" ItemsSource="{Binding Locales}">
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <ItemsControl
+                        ItemsSource="{Binding Entries}"
+                        ScrollViewer.CanContentScroll="True"
+                        VirtualizingStackPanel.IsVirtualizing="True">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="2*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Key}" />
+                                    <ComboBox
+                                        Grid.Column="1"
+                                        SelectedValue="{Binding Space, Mode=TwoWay}"
+                                        SelectedValuePath="Content">
+                                        <ComboBox.Items>
+                                            <ComboBoxItem>default</ComboBoxItem>
+                                            <ComboBoxItem>preserve</ComboBoxItem>
+                                        </ComboBox.Items>
+                                    </ComboBox>
+                                    <TextBox
+                                        Grid.Column="2"
+                                        AcceptsReturn="True"
+                                        Text="{Binding Value, Mode=TwoWay}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.Template>
+                            <ControlTemplate>
+                                <Border
+                                    Padding="{TemplateBinding Control.Padding}"
+                                    Background="{TemplateBinding Panel.Background}"
+                                    BorderBrush="{TemplateBinding Border.BorderBrush}"
+                                    BorderThickness="{TemplateBinding Border.BorderThickness}"
+                                    SnapsToDevicePixels="True">
+                                    <ScrollViewer Padding="{TemplateBinding Control.Padding}" Focusable="False">
+                                        <ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                                    </ScrollViewer>
+                                </Border>
+                            </ControlTemplate>
+                        </ItemsControl.Template>
+                    </ItemsControl>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
+        <UniformGrid Grid.Row="1" Columns="4">
+            <Button Command="{Binding AddCommand}">+</Button>
+            <Button Command="{Binding ValidateCommand}">Validate</Button>
+            <Button Command="{Binding OrphanCheckCommand}">Orphan Check</Button>
+            <Button Command="{Binding SaveCommand}">Save</Button>
+        </UniformGrid>
+    </Grid>
+</Window>
