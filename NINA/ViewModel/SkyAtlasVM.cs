@@ -120,11 +120,9 @@ namespace NINA.ViewModel {
             get {
                 if (_nightDuration == null) {
                     var twilight = TwilightRiseAndSet;
-                    if (twilight != null) {
+                    if (twilight != null && twilight.Rise.HasValue && twilight.Set.HasValue) {
                         var rise = twilight.Rise;
                         var set = twilight.Set;
-
-                        if (rise.HasValue) rise = rise.Value.AddDays(1);
 
                         _nightDuration = new AsyncObservableCollection<DataPoint>() {
                         new DataPoint(DateTimeAxis.ToDouble(rise), 90),
@@ -144,19 +142,16 @@ namespace NINA.ViewModel {
                 if (_twilightDuration == null) {
                     var twilight = SunRiseAndSet;
                     var night = TwilightRiseAndSet;
-                    if (twilight != null) {
+                    if (twilight != null && twilight.Rise.HasValue && twilight.Set.HasValue) {
                         var twilightRise = twilight.Rise;
                         var twilightSet = twilight.Set;
                         var rise = night.Rise;
                         var set = night.Set;
 
-                        if (twilightRise.HasValue) twilightRise = twilightRise.Value.AddDays(1);
-                        if (rise.HasValue) rise = rise.Value.AddDays(1);
-
                         _twilightDuration = new AsyncObservableCollection<DataPoint>();
                         _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(twilightSet), 90));
 
-                        if (night != null) {
+                        if (night != null && night.Rise.HasValue && night.Set.HasValue) {
                             _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(set), 90));
                             _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(set), 0));
                             _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(rise), 0));

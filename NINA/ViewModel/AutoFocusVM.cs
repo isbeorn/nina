@@ -168,12 +168,10 @@ namespace NINA.ViewModel {
 
             var comparer = new FocusPointComparer();
 
-            var exposuresPerFocusPoint = profileService.ActiveProfile.FocuserSettings.AutoFocusNumberOfFramesPerPoint;
-
             for (int i = 0; i < nrOfSteps; i++) {
                 token.ThrowIfCancellationRequested();
 
-                double hfr = getAverageHFR(filter, token, progress).Result;
+                double hfr = await GetAverageHFR(filter, token, progress);
 
                 token.ThrowIfCancellationRequested();
 
@@ -214,7 +212,7 @@ namespace NINA.ViewModel {
         private async Task<bool> ValidateCalculatedFocusPosition(DataPoint focusPoint, FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress, double initialHFR) {
             _focusPosition = await focuserMediator.MoveFocuser((int)focusPoint.X);
 
-            double hfr = getAverageHFR(filter, token, progress).Result;
+            double hfr = await GetAverageHFR(filter, token, progress);
 
             if (hfr > (focusPoint.Y * 1.25)) {
                 Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFocusPointValidationFailed"], focusPoint.X, focusPoint.Y, hfr));
@@ -236,9 +234,9 @@ namespace NINA.ViewModel {
             RightTrend = new TrendLine(rightTrendPoints);
         }
 
-        private async Task<double> getAverageHFR(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        private async Task<double> GetAverageHFR(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
             var exposuresPerFocusPoint = profileService.ActiveProfile.FocuserSettings.AutoFocusNumberOfFramesPerPoint;
-            
+
             //Average HFR  of multiple exposures (if configured this way)
             double sumHfr = 0;
             for (int i = 0; i < exposuresPerFocusPoint; i++) {
@@ -265,7 +263,7 @@ namespace NINA.ViewModel {
                 await this.guiderMediator.StopGuiding(token);
 
                 //Get initial position information, as average of multiple exposures, if configured this way
-                initialHFR = getAverageHFR(filter, token, progress).Result;
+                initialHFR = await GetAverageHFR(filter, token, progress);
                 initialFocusPosition = focuserInfo.Position;
 
                 bool reattempt = false;
