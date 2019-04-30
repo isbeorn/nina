@@ -17,6 +17,7 @@
 ## Bugfixes
 - Fixed when FramingAssistant was not opened before and a DSO was selected from the SkyAtlas as Framing Source an error could occur
 - Fixed scrolling through Framing Assistant Offline Sky Map while cursor was inside Rectangle ignored zooming
+- Fixed Alitude charts displaying wrong Twilight/Night predictions for some scenarios
 
 ## Improvements
 - If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips
