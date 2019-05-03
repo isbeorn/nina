@@ -361,7 +361,7 @@ namespace NINATest {
 
         public bool ParkMountAtSequenceEnd { get; set; }
 
-        public bool WarmCamAtSequenceEnd {  get; set; }
+        public bool WarmCamAtSequenceEnd { get; set; }
 
         public long TimeSpanInTicks { get; set; }
 
@@ -596,8 +596,6 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
-
-
         public bool AtTargetTemp {
             get {
                 return false;
@@ -659,6 +657,10 @@ namespace NINATest {
         public Task<ImageArray> Download(CancellationToken token, bool calculateStatistics) {
             throw new NotImplementedException();
         }
+
+        public Task<bool> StartChangeCameraTemp(IProgress<double> progress, double temperature, TimeSpan duration, bool turnOffCooler, CancellationToken cancelWarmCameraToken) {
+            throw new NotImplementedException();
+        }
     }
 
     internal class SequenceTelescopeMediator : ITelescopeMediator {
@@ -717,7 +719,7 @@ namespace NINATest {
             return true;
         }
 
-        public bool CanSetTracking { 
+        public bool CanSetTracking {
             get {
                 return false;
             }
@@ -725,13 +727,13 @@ namespace NINATest {
 
         public bool Tracking { get; set; }
 
-        public bool CanPark { 
+        public bool CanPark {
             get {
                 return false;
             }
         }
 
-        public bool CanSetPark { 
+        public bool CanSetPark {
             get {
                 return false;
             }
