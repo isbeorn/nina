@@ -199,5 +199,26 @@ namespace NINA.Model.MyTelescope {
             get { return tracking; }
             set { tracking = value; RaisePropertyChanged(); }
         }
+
+        private bool canPark;
+
+        public bool CanPark {
+            get {  return canPark; }
+            set {  canPark = value; RaisePropertyChanged(); }
+        }
+
+        private bool canSetPark;
+
+        public bool CanSetPark {
+            get {  return canSetPark; }
+            set {  canSetPark = value; RaisePropertyChanged(); }
+        }
+
+        private bool canSetTracking;
+
+        public bool CanSetTracking {
+            get {  return canSetTracking; }
+            set {  canSetTracking = value; RaisePropertyChanged(); }
+        }
     }
 }

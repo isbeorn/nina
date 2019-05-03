@@ -63,5 +63,9 @@ namespace NINA.Utility.Mediator {
         public bool SendToSnapPort(bool start) {
             return handler.SendToSnapPort(start);
         }
+
+        public Task<bool> ParkTelescope() {
+            return handler.ParkTelescope();
+        }
     }
 }

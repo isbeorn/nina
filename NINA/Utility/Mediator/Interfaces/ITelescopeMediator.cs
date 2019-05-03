@@ -46,5 +46,7 @@ namespace NINA.Utility.Mediator.Interfaces {
         bool SetTracking(bool tracking);
 
         bool SendToSnapPort(bool start);
+
+        Task<bool> ParkTelescope();
     }
 }

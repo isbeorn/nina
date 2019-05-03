@@ -359,6 +359,10 @@ namespace NINATest {
 
         public string TemplatePath { get; set; }
 
+        public bool ParkMountAtSequenceEnd { get; set; }
+
+        public bool WarmCamAtSequenceEnd {  get; set; }
+
         public long TimeSpanInTicks { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -583,10 +587,16 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
+        public Task<bool> StartWarmCamera(IProgress<double> progress, double temperature, TimeSpan duration, bool turnOffCooler, CancellationTokenSource cancelWarmCameraSource) {
+            throw new NotImplementedException();
+        }
+
         public Task Capture(CaptureSequence sequence, CancellationToken token,
             IProgress<ApplicationStatus> progress) {
             throw new NotImplementedException();
         }
+
+
 
         public bool AtTargetTemp {
             get {
@@ -689,6 +699,7 @@ namespace NINATest {
 
         public void RemoveConsumer(ITelescopeConsumer consumer) {
             throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public bool SendToSnapPort(bool start) {
@@ -704,6 +715,30 @@ namespace NINATest {
         public async Task<bool> SlewToCoordinatesAsync(Coordinates coords) {
             this.SlewToCoordinatesAsyncParams = coords;
             return true;
+        }
+
+        public bool CanSetTracking { 
+            get {
+                return false;
+            }
+        }
+
+        public bool Tracking { get; set; }
+
+        public bool CanPark { 
+            get {
+                return false;
+            }
+        }
+
+        public bool CanSetPark { 
+            get {
+                return false;
+            }
+        }
+
+        public Task<bool> ParkTelescope() {
+            throw new NotImplementedException();
         }
 
         public bool Sync(double ra, double dec) {

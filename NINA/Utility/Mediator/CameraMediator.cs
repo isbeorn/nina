@@ -48,6 +48,10 @@ namespace NINA.Utility.Mediator {
             return handler.Download(token, calculateStatistics);
         }
 
+        public Task<bool> StartChangeCameraTemp(IProgress<double> progress, double temperature, TimeSpan duration, bool turnOffCooler, CancellationToken cancelWarmCameraToken) {
+            return handler.StartChangeCameraTemp(progress, temperature, duration, turnOffCooler, cancelWarmCameraToken);
+        }
+
         public void AbortExposure() {
             handler.AbortExposure();
         }

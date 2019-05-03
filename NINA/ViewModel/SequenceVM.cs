@@ -36,6 +36,7 @@ using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Profile;
 using NINA.Utility.WindowService;
+using NINA.Utility.Astrometry;
 using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
@@ -496,6 +497,7 @@ namespace NINA.ViewModel {
                 }
             } catch (OperationCanceledException) {
             } finally {
+                await RunEndOfSequenceOptions(progress);
                 profileService.ResumeSave();
                 IsPaused = false;
                 IsRunning = false;
@@ -606,6 +608,7 @@ namespace NINA.ViewModel {
                         actualFilter = filterWheelInfo?.SelectedFilter;
                         prevFilterPosition = actualFilter?.Position ?? -1;
                     }
+                    
                 } catch (OperationCanceledException ex) {
                     throw ex;
                 } catch (CameraConnectionLostException) {
@@ -708,6 +711,21 @@ namespace NINA.ViewModel {
 
             if (!telescopeInfo.Connected && Targets.Any(target => target.SlewToTarget)) {
                 messageStringBuilder.AppendLine(Locale.Loc.Instance["LblSlewEnabledButTelescopeNotConnected"]);
+                displayMessage = true;
+            }
+
+            if (telescopeInfo.Connected && !telescopeInfo.CanPark && !telescopeInfo.CanSetTracking && profileService.ActiveProfile.SequenceSettings.ParkMountAtSequenceEnd) {
+                messageStringBuilder.AppendLine(Locale.Loc.Instance["LblParkEnabledButTelescopeCannotPark"]);
+                displayMessage = true;
+            }
+
+            if (!telescopeInfo.Connected && profileService.ActiveProfile.SequenceSettings.ParkMountAtSequenceEnd) {
+                messageStringBuilder.AppendLine(Locale.Loc.Instance["LblParkEnabledButTelescopeNotConnected"]);
+                displayMessage = true;
+            }
+
+            if (!cameraInfo.CanSetTemperature && profileService.ActiveProfile.SequenceSettings.WarmCamAtSequenceEnd) {
+                messageStringBuilder.AppendLine(Locale.Loc.Instance["LblWarmEnabledButCameraCannotWarm"]);
                 displayMessage = true;
             }
 
@@ -989,6 +1007,50 @@ namespace NINA.ViewModel {
             } else Notification.ShowError(String.Format(Locale.Loc.Instance["LblPlanetariumCoordsError"], s.Name));
             return (resp != null);
         }
+
+        private async Task<bool> RunEndOfSequenceOptions(IProgress<ApplicationStatus> progress) {          
+            bool parkTelescope = false;
+            bool warmCamera = false;
+            StringBuilder message = new StringBuilder();
+
+            message.AppendLine(Locale.Loc.Instance["LblEndOfSequenceDecision"]).AppendLine();
+
+            if (profileService.ActiveProfile.SequenceSettings.ParkMountAtSequenceEnd) {
+                if (telescopeInfo.CanPark || telescopeInfo.CanSetTracking) {
+                    parkTelescope = true;
+                    message.AppendLine(Locale.Loc.Instance["LblEndOfSequenceParkTelescope"]);
+                }
+            }
+
+            if (profileService.ActiveProfile.SequenceSettings.WarmCamAtSequenceEnd) {
+                if (cameraInfo.CanSetTemperature && cameraInfo.CoolerOn) {
+                    warmCamera = true;
+                    message.AppendLine(Locale.Loc.Instance["LblEndOfSequenceWarmCamera"]);
+                }
+            }
+
+            if (warmCamera || parkTelescope) {
+                if (Targets.Any(target => target.Items.Any(item => (item.ProgressExposureCount < item.TotalExposureCount) && item.Enabled))) { // Sequence still has some uncompleted items - ask before proceeding with end of sequence options
+                    var diag = MyMessageBox.MyMessageBox.Show(message.ToString(), Locale.Loc.Instance["LblEndOfSequenceOptions"], System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
+                    if (diag !=  System.Windows.MessageBoxResult.OK) { 
+                        parkTelescope = false; 
+                        warmCamera = false;
+                    }
+                }
+                if (parkTelescope) {
+                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblEndOfSequenceParkTelescope"] });
+                    await telescopeMediator.ParkTelescope();
+                }
+                if (warmCamera) {
+                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblEndOfSequenceWarmCamera"] });
+                    Logger.Trace("Starting to warm the camera");
+                    IProgress<double> warmProgress = new Progress<double>();
+                    await cameraMediator.StartChangeCameraTemp(warmProgress,10,TimeSpan.FromMinutes(20), true, _canceltoken.Token);
+                    Logger.Trace("Camera has been warmed");
+                }
+            }
+            return true;
+        } 
 
         public ICommand CoordsFromPlanetariumCommand { get; set; }
         public ICommand AddSequenceRowCommand { get; private set; }

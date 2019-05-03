@@ -396,6 +396,32 @@
                             </Button.ToolTip>
                         </Button>
                     </Grid>
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="300"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblParkMountAtSequenceEnd}" />
+                            <CheckBox
+                                Width="75"
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding ParkMountAtSequenceEnd}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="300"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblWarmCamAtSequenceEnd}" />
+                            <CheckBox
+                                Width="75"
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding WarmCamAtSequenceEnd}" />
+                        </StackPanel>
+                    </StackPanel>
                 </StackPanel>
             </GroupBox>
             <GroupBox Header="{ns:Loc LblLayout}">
