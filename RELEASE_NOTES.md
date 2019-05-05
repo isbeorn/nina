@@ -51,6 +51,7 @@
 - End of Sequence Options are now available, which include:
   - Parking the telescope - This will invoke the mount Park method if available, otherwise the mount will slew to near the celestial pole (on the same side of Meridian it last was) and stop tracking. **Before using this in production, test out the feature at the telescope, with your finger on the power switch. This is to avoid any crash into the pier for mounts that do not have limits.**
   - Warming the camera - the camera will be slowly cooled, with the cooler eventually turned off
+- Setup Installer can be run in less clicks and is also capable of launching the application after successful installation.
 
 # Version 1.8 Hotfix 1
 

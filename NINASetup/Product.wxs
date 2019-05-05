@@ -37,14 +37,6 @@
     <Icon Id="Logo_Nina.ico" SourceFile="Logo_Nina.ico" />
     <Property Id="ARPPRODUCTICON" Value="Logo_Nina.ico" />
 
-    <WixVariable Id="WixUIBannerBmp" Value="Images\WixUIBannerBmp.bmp" />
-    <WixVariable Id="WixUIDialogBmp" Value="Images\WixUIDialogBmp.bmp" />
-
-    <WixVariable Id="WixUILicenseRtf" Value="$(var.NINA.ProjectDir)\license.rtf" />
-
-    <UIRef Id="WixUI_InstallDir" />
-    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
-
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate EmbedCab="yes" />
 
