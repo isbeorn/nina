@@ -58,6 +58,7 @@ namespace NINA.ViewModel.Equipment.Camera {
             RefreshCameraListCommand = new RelayCommand(RefreshCameraList);
 
             CoolingRunning = false;
+            WarmingRunning = false;
             CoolerPowerHistory = new AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>>(100);
             CCDTemperatureHistory = new AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>>(100);
             ToggleCoolerOnCommand = new RelayCommand(ToggleCoolerOn);
@@ -83,14 +84,25 @@ namespace NINA.ViewModel.Equipment.Camera {
             var threshold = 1;
             double temperature = 0.0;
             while (Math.Abs((temperature = Cam.Temperature) - targetTemperatureStep) > threshold) {
-                applicationStatusMediator.StatusUpdate(
-                    new ApplicationStatus() {
-                        Source = Title,
-                        Status = Locale.Loc.Instance["LblCooling"],
-                        Progress = percentage,
-                        Status2 = Locale.Loc.Instance["LblWaitForTemperatureStep"]
-                    }
-                );
+                if (CoolingRunning) { 
+                    applicationStatusMediator.StatusUpdate(
+                        new ApplicationStatus() {
+                            Source = Title,
+                            Status = Locale.Loc.Instance["LblCooling"],
+                            Progress = percentage,
+                            Status2 = Locale.Loc.Instance["LblWaitForTemperatureStep"]
+                        }
+                    );
+                } else {
+                    applicationStatusMediator.StatusUpdate(
+                        new ApplicationStatus() {
+                            Source = Title,
+                            Status = Locale.Loc.Instance["LblWarming"],
+                            Progress = percentage,
+                            Status2 = Locale.Loc.Instance["LblWaitForTemperatureStep"]
+                        }
+                    );
+                }
                 await Utility.Utility.Wait(TimeSpan.FromSeconds(interval), token);
             }
         }
@@ -122,13 +134,23 @@ namespace NINA.ViewModel.Equipment.Camera {
 
             progress.Report(percentage);
 
-            applicationStatusMediator.StatusUpdate(
-                new ApplicationStatus() {
-                    Source = Title,
-                    Status = Locale.Loc.Instance["LblCooling"],
-                    Progress = percentage
-                }
-            );
+            if (CoolingRunning) { 
+                applicationStatusMediator.StatusUpdate(
+                    new ApplicationStatus() {
+                        Source = Title,
+                        Status = Locale.Loc.Instance["LblCooling"],
+                        Progress = percentage
+                    }
+                );
+            } else {
+                    applicationStatusMediator.StatusUpdate(
+                    new ApplicationStatus() {
+                        Source = Title,
+                        Status = Locale.Loc.Instance["LblWarming"],
+                        Progress = percentage
+                    }
+                );
+            }
         }
 
         private ICameraMediator cameraMediator;
@@ -205,33 +227,46 @@ namespace NINA.ViewModel.Equipment.Camera {
         private async Task<bool> StartCoolCamera(IProgress<double> progress) {
             _cancelCoolCameraSource?.Dispose();
             _cancelCoolCameraSource = new CancellationTokenSource();
-            _remainingDuration = Duration;
+            return await StartChangeCameraTemp(progress, TargetTemp, TimeSpan.FromMinutes(Duration), false, _cancelCoolCameraSource.Token);
+        }
+
+        public async Task<bool> StartChangeCameraTemp(IProgress<double> progress, double temperature, TimeSpan duration, bool turnOffCooler, CancellationToken cancelChangeCameraTempToken) {
+            _remainingDuration = duration.TotalMinutes;
             return await Task<bool>.Run(async () => {
                 if (_remainingDuration == 0) {
-                    Cam.TemperatureSetPoint = TargetTemp;
+                    Cam.TemperatureSetPoint = temperature;
                     Cam.CoolerOn = true;
                     progress.Report(1);
                 } else {
                     try {
                         double currentTemp = Cam.Temperature;
                         _startPoint = new Vector2(_remainingDuration, currentTemp);
-                        _endPoint = new Vector2(0, TargetTemp);
+                        _endPoint = new Vector2(0, temperature);
                         Cam.TemperatureSetPoint = currentTemp;
                         _initalDuration = _remainingDuration;
 
                         Cam.CoolerOn = true;
-                        CoolingRunning = true;
+                        if (temperature >= currentTemp) {
+                            WarmingRunning = true;
+                            CoolingRunning = false;
+                        } else {
+                            CoolingRunning = true;
+                            WarmingRunning = false;
+                        }
                         do {
-                            await SetNextTemperatureStep(progress, _cancelCoolCameraSource.Token);
-
-                            _cancelCoolCameraSource.Token.ThrowIfCancellationRequested();
+                            await SetNextTemperatureStep(progress, cancelChangeCameraTempToken);
+                            cancelChangeCameraTempToken.ThrowIfCancellationRequested();
                         } while (_remainingDuration > 0);
+                        if (turnOffCooler) {
+                            Cam.CoolerOn = false;
+                        }
                     } catch (OperationCanceledException ex) {
                         Cam.TemperatureSetPoint = Cam.Temperature;
                         Logger.Trace(ex.Message);
                     } finally {
                         progress.Report(1);
                         _remainingDuration = 0;
+                        WarmingRunning = false;
                         CoolingRunning = false;
                         applicationStatusMediator.StatusUpdate(
                             new ApplicationStatus() {
@@ -243,6 +278,18 @@ namespace NINA.ViewModel.Equipment.Camera {
                 }
                 return true;
             });
+        }
+
+        private bool _warmingRunning;
+
+        public bool WarmingRunning {
+            get {
+                return _warmingRunning;
+            }
+            set {
+                _warmingRunning = value;
+                RaisePropertyChanged();
+            }
         }
 
         private void CancelCoolCamera(object o) {
@@ -496,6 +543,7 @@ namespace NINA.ViewModel.Equipment.Camera {
             updateTimer?.Stop();
             _cancelCoolCameraSource?.Cancel();
             CoolingRunning = false;
+            WarmingRunning = false;
             Cam?.Disconnect();
             Cam = null;
             CameraInfo = DeviceInfo.CreateDefaultInstance<CameraInfo>();

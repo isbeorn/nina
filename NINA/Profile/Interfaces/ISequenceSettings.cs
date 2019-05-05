@@ -29,5 +29,7 @@ namespace NINA.Profile {
         TimeSpan EstimatedDownloadTime { get; set; }
         string TemplatePath { get; set; }
         long TimeSpanInTicks { get; set; }
+        bool ParkMountAtSequenceEnd { get; set; }
+        bool WarmCamAtSequenceEnd {  get; set; }
     }
 }

@@ -3,11 +3,13 @@
   <?if $(var.Platform) = x64 ?>
   <?define SetupMsiName = "NINASetup.msi" ?>
   <?define SetupSource = "$(var.NINASetup.TargetDir)" ?>
+  <?define DefaultInstallDir = "[ProgramFiles64Folder]N.I.N.A. - Nighttime Imaging 'N' Astronomy" ?>
   <?define VCRedist2013 = "$(var.ProjectDir)\vcredist_x64.exe" ?>
   <?define VCRedist2017 = "$(var.ProjectDir)\vc_redist2017.x64.exe" ?>
   <?else ?>
   <?define SetupMsiName = "NINASetup.msi" ?>
   <?define SetupSource = "$(var.NINASetup.TargetDir)" ?>
+  <?define DefaultInstallDir = "[ProgramFilesFolder]N.I.N.A. - Nighttime Imaging 'N' Astronomy" ?>
   <?define VCRedist2013 = "$(var.ProjectDir)\vcredist_x86.exe" ?>
   <?define VCRedist2017 = "$(var.ProjectDir)\vc_redist2017.x86.exe" ?>
   <?endif ?>
@@ -17,9 +19,14 @@
         ThemeFile="$(var.ProjectDir)\RtfTheme.xml"
         LogoFile="$(var.ProjectDir)\ninasplash-small.png"
         LicenseFile="$(var.SolutionDir)\RELEASE_NOTES.rtf"
+         LicenseUrl="https://www.gnu.org/licenses/gpl-3.0.en.html"
         ShowVersion="yes" />
     </BootstrapperApplicationRef>
+    <Variable Name="InstallFolder" Type="string" Value="$(var.DefaultInstallDir)" Persisted="yes" />
+    <Variable Name="LaunchTarget" Value="[InstallFolder]\NINA.exe" Persisted="yes" />
+
     <Chain>
+
       <!-- VCRedist 2013 (required for Atik, Nikon)-->
       <ExePackage
          Cache="no"
@@ -55,7 +62,9 @@
       </ExePackage>
 
       <PackageGroupRef Id="NetFx472Redist" />
-      <MsiPackage Id="NINASetup" Name="$(var.SetupMsiName)" SourceFile="$(var.SetupSource)" DisplayInternalUI="yes" />
+      <MsiPackage Id="NINASetup" Name="$(var.SetupMsiName)" SourceFile="$(var.SetupSource)" DisplayInternalUI="yes">
+        <MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]" />
+      </MsiPackage>
     </Chain>
   </Bundle>
 </Wix>

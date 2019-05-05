@@ -25,10 +25,12 @@ using System;
 using System.Runtime.Serialization;
 
 namespace NINA.Profile {
-
     [Serializable()]
     [DataContract]
     public class SequenceSettings : Settings, ISequenceSettings {
+        public SequenceSettings() {
+            SetDefaultValues();
+        }
 
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
@@ -36,6 +38,8 @@ namespace NINA.Profile {
         }
 
         protected override void SetDefaultValues() {
+            parkMountAtSequenceEnd = false;
+            warmCamAtSequenceEnd = false;
             templatePath = string.Empty;
             estimatedDownloadTime = TimeSpan.FromSeconds(0);
         }
@@ -50,6 +54,36 @@ namespace NINA.Profile {
             set {
                 if (templatePath != value) {
                     templatePath = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool parkMountAtSequenceEnd;
+
+        [DataMember]
+        public bool ParkMountAtSequenceEnd {
+            get {
+                return parkMountAtSequenceEnd;
+            }
+            set {
+                if (parkMountAtSequenceEnd != value) {
+                    parkMountAtSequenceEnd = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool warmCamAtSequenceEnd;
+
+        [DataMember]
+        public bool WarmCamAtSequenceEnd {
+            get {
+                return warmCamAtSequenceEnd;
+            }
+            set {
+                if (warmCamAtSequenceEnd != value) {
+                    warmCamAtSequenceEnd = value;
                     RaisePropertyChanged();
                 }
             }

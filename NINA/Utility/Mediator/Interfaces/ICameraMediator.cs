@@ -54,5 +54,7 @@ namespace NINA.Utility.Mediator.Interfaces {
         bool AtTargetTemp { get; }
 
         double TargetTemp { get; }
+
+        Task<bool> StartChangeCameraTemp(IProgress<double> progress, double temperature, TimeSpan duration, bool turnOffCooler, CancellationToken cancelWarmCameraToken);
     }
 }

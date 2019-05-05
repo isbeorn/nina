@@ -48,6 +48,10 @@
 - Equipment chooser dropdowns are grouped by driver categories to easily distinguish between for example ASCOM drivers and other vendor drivers
 - When EOS Utility is running in the background, the x64 N.I.N.A. client will scan for this app and prevent a crash due to the EOS utility being open. Instead a notification will show up to close the EOS Utility.
 - N.I.N.A. SQLite Database will be created on demand and migrated to new versions on application startup instead of just being overwritten by the installer.
+- End of Sequence Options are now available, which include:
+  - Parking the telescope - This will invoke the mount Park method if available, otherwise the mount will slew to near the celestial pole (on the same side of Meridian it last was) and stop tracking. **Before using this in production, test out the feature at the telescope, with your finger on the power switch. This is to avoid any crash into the pier for mounts that do not have limits.**
+  - Warming the camera - the camera will be slowly cooled, with the cooler eventually turned off
+- Setup Installer can be run in less clicks and is also capable of launching the application after successful installation.
 
 # Version 1.8 Hotfix 1
 

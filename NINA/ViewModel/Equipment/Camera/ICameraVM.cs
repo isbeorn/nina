@@ -41,7 +41,7 @@ namespace NINA.ViewModel.Equipment.Camera {
         void SetSubSampleArea(int x, int y, int width, int height);
 
         void AbortExposure();
-        
+
         bool AtTargetTemp { get; }
 
         double TargetTemp { get; }
@@ -52,5 +52,7 @@ namespace NINA.ViewModel.Equipment.Camera {
         IAsyncEnumerable<ImageArray> LiveView(CancellationToken token);
 
         Task<ImageArray> Download(CancellationToken token, bool calculateStatistics);
+
+        Task<bool> StartChangeCameraTemp(IProgress<double> progress, double temperature, TimeSpan duration, bool turnOffCooler, CancellationToken cancelWarmCameraToken);
     }
 }

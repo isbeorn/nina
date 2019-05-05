@@ -59,6 +59,12 @@
 <li>Ability to take multiple autofocus exposures per focus point and average their HFR. This leads to smoother autofocus curves.</li>
 </ul>
 </li>
+<li>End of Sequence Options are now available, which include:
+<ul>
+<li>Parking the telescope - This will invoke the mount Park method if available, otherwise the mount will slew to near the celestial pole (on the same side of Meridian it last was) and stop tracking. <strong>Before using this in production, test out the feature at the telescope, with your finger on the power switch. This is to avoid any crash into the pier for mounts that do not have limits.</strong></li>
+<li>Warming the camera - the camera will be slowly cooled, with the cooler eventually turned off</li>
+</ul>
+</li>
 </ul>
 <h1 id="version-1.8-hotfix-1">Version 1.8 Hotfix 1</h1>
 <ul>

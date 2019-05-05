@@ -44,5 +44,8 @@ namespace NINA.ViewModel.Equipment.Telescope {
         bool SetTracking(bool tracking);
 
         bool SendToSnapPort(bool start);
+
+        Task<bool> ParkTelescope();
+
     }
 }

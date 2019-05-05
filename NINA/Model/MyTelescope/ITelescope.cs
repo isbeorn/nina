@@ -43,12 +43,15 @@ namespace NINA.Model.MyTelescope {
         string TimeToMeridianFlipString { get; }
         double MovingRate { get; set; }
         PierSide SideOfPier { get; }
+        bool CanSetTracking { get; }
         bool Tracking { get; set; }
         double SiteLatitude { get; set; }
         double SiteLongitude { get; set; }
         double SiteElevation { get; }
         bool CanSetSiteLatLong { get; }
         bool AtPark { get; }
+        bool CanPark { get; }
+        bool CanSetPark { get; }
 
         bool MeridianFlip(Coordinates targetCoordinates);
 

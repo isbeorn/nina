@@ -91,8 +91,54 @@ namespace NINA.ViewModel.Equipment.Telescope {
             TelescopeChooserVM.GetEquipment();
         }
 
-        private async Task<bool> ParkTelescope() {
-            return await Task.Run<bool>(() => { Telescope.Park(); return true; });
+        public async Task<bool> ParkTelescope() {
+            if (Telescope.CanPark && Telescope.CanSetPark) { //Park position can be set, assume user set it properly
+                Logger.Trace("Telescope will park according to mount defined park position");
+                return await Task.Run<bool>(() => { Telescope.Park(); return true; });
+            } else if (Telescope.CanPark) { //Park position cannot be set, mount could park right where it is, slew first
+                Coordinates targetCoords = GetHomeCoordinates(Telescope.Coordinates);
+                Logger.Trace(String.Format("Telescope will slew to RA {0} and Dec {1}", targetCoords.RAString, targetCoords.DecString));
+                await SlewToCoordinatesAsync(targetCoords);
+                Logger.Trace("Telescope will stop tracking");
+                SetTracking(false);
+                Logger.Trace("Telescope will now park according to mount defined park method");
+                return await Task.Run<bool>(() => { Telescope.Park(); return true; });
+            } else { //Telescope cannot park, slew and stop tracking
+                Coordinates targetCoords = GetHomeCoordinates(telescopeInfo.Coordinates);
+                Logger.Trace(String.Format("Telescope will slew to RA {0} and Dec {1}", targetCoords.RAString, targetCoords.DecString));
+                await SlewToCoordinatesAsync(targetCoords);
+                Logger.Trace("Telescope will stop tracking");
+                SetTracking(false);
+            }
+            Logger.Trace("Telescope has been parked");
+            return true;
+        }
+
+        /// <summary>
+        /// Finds a theoretical home position for the telescope to return to. It will be pointing to the Celestial Pole, but in such a way that
+        /// CW bar should be nearly vertical, and there is no meridian flip involved.
+        /// </summary>
+        /// <param name="currentCoordinates"></param>
+        /// <returns></returns>
+        private Coordinates GetHomeCoordinates(Coordinates currentCoordinates) {
+            double siderealTime = Astrometry.GetLocalSiderealTimeNow(profileService.ActiveProfile.AstrometrySettings.Longitude);
+            if (siderealTime > 24) {
+                siderealTime -= 24;
+            }
+            if (siderealTime < 0) {
+                siderealTime += 24;
+            }
+            double timeToMed = currentCoordinates.RA - siderealTime;
+            Coordinates returnCoordinates = new Coordinates(Angle.ByHours(0),Angle.ByDegree(0),Epoch.J2000);
+            if (profileService.ActiveProfile.AstrometrySettings.HemisphereType == Hemisphere.NORTHERN) {
+                    returnCoordinates.Dec = 89;
+                    returnCoordinates.RA = siderealTime + 6*Math.Sign(timeToMed);
+            }
+            if (profileService.ActiveProfile.AstrometrySettings.HemisphereType == Hemisphere.SOUTHERN) {
+                    returnCoordinates.Dec = -89;
+                    returnCoordinates.RA = siderealTime + 6*Math.Sign(timeToMed);
+            }
+            return returnCoordinates;
         }
 
         private void UnparkTelescope(object o) {
@@ -197,7 +243,10 @@ namespace NINA.ViewModel.Equipment.Telescope {
                                 SiteLongitude = Telescope.SiteLongitude,
                                 TimeToMeridianFlip = Telescope.TimeToMeridianFlip,
                                 SideOfPier = Telescope.SideOfPier,
-                                Tracking = Telescope.Tracking
+                                Tracking = Telescope.Tracking,
+                                CanSetTracking = Telescope.CanSetTracking,
+                                CanPark = Telescope.CanPark,
+                                CanSetPark = Telescope.CanSetPark
                             };
 
                             BroadcastTelescopeInfo();
