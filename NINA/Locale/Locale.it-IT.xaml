@@ -312,10 +312,10 @@ Quando le linee non sono allineate significa che c'è un errore di allineamento 
   <s:String x:Key="LblEast" xml:space="default">Est</s:String>
   <s:String x:Key="LblEDCameraNotInManualMode" xml:space="default">La camera non e' impostata su manuale or bulb mode! Pregasi di impostare su manuale o bulb mode prima di connetterla</s:String>
   <s:String x:Key="LblEnabled" xml:space="default">Abilitato</s:String>
-  <s:String x:Key="LblEndOfSequenceDecision">Eseguire le opzioni di fine sequenza?</s:String>
-  <s:String x:Key="LblEndOfSequenceOptions">Opzioni fine sequenza</s:String>
-  <s:String x:Key="LblEndOfSequenceParkTelescope">Parcheggia telescopio</s:String>
-  <s:String x:Key="LblEndOfSequenceWarmCamera">Riscalda camera</s:String>
+  <s:String x:Key="LblEndOfSequenceDecision" xml:space="default">Eseguire le opzioni di fine sequenza?</s:String>
+  <s:String x:Key="LblEndOfSequenceOptions" xml:space="default">Opzioni fine sequenza</s:String>
+  <s:String x:Key="LblEndOfSequenceParkTelescope" xml:space="default">Parcheggia telescopio</s:String>
+  <s:String x:Key="LblEndOfSequenceWarmCamera" xml:space="default">Riscalda camera</s:String>
   <s:String x:Key="LblEpoch" xml:space="default">Epoca</s:String>
   <s:String x:Key="LblEquipment" xml:space="default">Equipaggiamento</s:String>
   <s:String x:Key="LblError" xml:space="default">Errore</s:String>
@@ -573,9 +573,9 @@ HFR Calcolato: {2}
   <s:String x:Key="LblOverlapPercentage" xml:space="default">Percentuale sovrapposizione</s:String>
   <s:String x:Key="LblPanel" xml:space="default">Pannello</s:String>
   <s:String x:Key="LblPark" xml:space="default">Park</s:String>
-  <s:String x:Key="LblParkEnabledButTelescopeCannotPark">Il telescopio è impostato per parcheggiarsi al termine della sequenza, ma non è possibile completare il comando</s:String>
-  <s:String x:Key="LblParkEnabledButTelescopeNotConnected">Il telescopio è impostato per parcheggiarsi al termine della sequenza, ma non è collegato</s:String>
-  <s:String x:Key="LblParkMountAtSequenceEnd">Parcheggia il telescopio quando la sequenza finisce</s:String>
+  <s:String x:Key="LblParkEnabledButTelescopeCannotPark" xml:space="default">Il telescopio è impostato per parcheggiarsi al termine della sequenza, ma non è possibile completare il comando</s:String>
+  <s:String x:Key="LblParkEnabledButTelescopeNotConnected" xml:space="default">Il telescopio è impostato per parcheggiarsi al termine della sequenza, ma non è collegato</s:String>
+  <s:String x:Key="LblParkMountAtSequenceEnd" xml:space="default">Parcheggia il telescopio quando la sequenza finisce</s:String>
   <s:String x:Key="LblPassMeridian" xml:space="default">Passaggio Meridiano</s:String>
   <s:String x:Key="LblPatternName" xml:space="default">Nome Pattern</s:String>
   <s:String x:Key="LblPaused" xml:space="default">In Pausa</s:String>
@@ -740,6 +740,7 @@ Questo tempalte sarà usato all'avvio per inizializzare la sequenza invece di qu
   <s:String x:Key="LblSlewRateDegSec" xml:space="default">Slew Rate (gradi/sec)</s:String>
   <s:String x:Key="LblSlewToTarget" xml:space="default">Punta al target</s:String>
   <s:String x:Key="LblSlewToZenith" xml:space="default">Punta allo zenit</s:String>
+  <s:String x:Key="LblSlewWhenTargetCoordsUnset" xml:space="default">Almeno un target con slew abilitato non ha le coordinate impostate</s:String>
   <s:String x:Key="LblSnapPortStart" xml:space="default">Comando avvio porta snap del telescopio</s:String>
   <s:String x:Key="LblSnapPortStop" xml:space="default">Comando stop porta snap del telescopio</s:String>
   <s:String x:Key="LblSolving" xml:space="default">Solving...</s:String>
@@ -865,9 +866,9 @@ Trascina il rettangolo  sulla parte del fotogramma che vuoi estrarre ed abilita 
   <s:String x:Key="LblWaitForImageProcessing" xml:space="default">In attesa che l'immagine precedente finisca di essere processata</s:String>
   <s:String x:Key="LblWaitForTemperatureStep" xml:space="default">In attesa che al camera raggiunga il prossimo step di temperatura</s:String>
   <s:String x:Key="LblWaitingForCamera" xml:space="default">Aspettando la Camera</s:String>
-  <s:String x:Key="LblWarmCamAtSequenceEnd">Riscalda camera quando la sequenza termina</s:String>
-  <s:String x:Key="LblWarmEnabledButCameraCannotWarm">La camera è impostata per scaldarsi al termine della sequenza, ma non è possibile completare il comando</s:String>
-  <s:String x:Key="LblWarming">Riscaldamento</s:String>
+  <s:String x:Key="LblWarmCamAtSequenceEnd" xml:space="default">Riscalda camera quando la sequenza termina</s:String>
+  <s:String x:Key="LblWarmEnabledButCameraCannotWarm" xml:space="default">La camera è impostata per scaldarsi al termine della sequenza, ma non è possibile completare il comando</s:String>
+  <s:String x:Key="LblWarming" xml:space="default">Riscaldamento</s:String>
   <s:String x:Key="LblWarning" xml:space="default">Attenzione</s:String>
   <s:String x:Key="LblWeather" xml:space="default">Meteo</s:String>
   <s:String x:Key="LblWeatherData" xml:space="default">Dati Meteo</s:String>

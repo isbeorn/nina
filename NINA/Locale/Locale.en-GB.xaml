@@ -312,10 +312,10 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
   <s:String x:Key="LblEast" xml:space="default">East</s:String>
   <s:String x:Key="LblEDCameraNotInManualMode" xml:space="default">Camera is not set to manual or bulb mode! Please set it to manual or bulb mode before connecting</s:String>
   <s:String x:Key="LblEnabled" xml:space="default">Enabled</s:String>
-  <s:String x:Key="LblEndOfSequenceDecision">Run end of sequence options?</s:String>
-  <s:String x:Key="LblEndOfSequenceOptions">End of Sequence Options</s:String>
-  <s:String x:Key="LblEndOfSequenceParkTelescope">Park Telescope</s:String>
-  <s:String x:Key="LblEndOfSequenceWarmCamera">Warm Camera</s:String>
+  <s:String x:Key="LblEndOfSequenceDecision" xml:space="default">Run end of sequence options?</s:String>
+  <s:String x:Key="LblEndOfSequenceOptions" xml:space="default">End of Sequence Options</s:String>
+  <s:String x:Key="LblEndOfSequenceParkTelescope" xml:space="default">Park Telescope</s:String>
+  <s:String x:Key="LblEndOfSequenceWarmCamera" xml:space="default">Warm Camera</s:String>
   <s:String x:Key="LblEpoch" xml:space="default">Epoch</s:String>
   <s:String x:Key="LblEquipment" xml:space="default">Equipment</s:String>
   <s:String x:Key="LblError" xml:space="default">Error</s:String>
@@ -573,9 +573,9 @@ Calculated HFR: {2}
   <s:String x:Key="LblOverlapPercentage" xml:space="default">Overlap percentage</s:String>
   <s:String x:Key="LblPanel" xml:space="default">Panel</s:String>
   <s:String x:Key="LblPark" xml:space="default">Park</s:String>
-  <s:String x:Key="LblParkEnabledButTelescopeCannotPark">Telescope is set to park at sequence end, yet it is unable to do so</s:String>
-  <s:String x:Key="LblParkEnabledButTelescopeNotConnected">Telescope is set to park at sequence end, yet it is not connected</s:String>
-  <s:String x:Key="LblParkMountAtSequenceEnd">Park mount when sequence ends</s:String>
+  <s:String x:Key="LblParkEnabledButTelescopeCannotPark" xml:space="default">Telescope is set to park at sequence end, yet it is unable to do so</s:String>
+  <s:String x:Key="LblParkEnabledButTelescopeNotConnected" xml:space="default">Telescope is set to park at sequence end, yet it is not connected</s:String>
+  <s:String x:Key="LblParkMountAtSequenceEnd" xml:space="default">Park mount when sequence ends</s:String>
   <s:String x:Key="LblPassMeridian" xml:space="default">Pass Meridian</s:String>
   <s:String x:Key="LblPatternName" xml:space="default">Pattern Name</s:String>
   <s:String x:Key="LblPaused" xml:space="default">Paused</s:String>
@@ -740,6 +740,7 @@ This template will be used on startup to initialize the sequence instead of the 
   <s:String x:Key="LblSlewRateDegSec" xml:space="default">Slew Rate (deg/sec)</s:String>
   <s:String x:Key="LblSlewToTarget" xml:space="default">Slew to target</s:String>
   <s:String x:Key="LblSlewToZenith" xml:space="default">Slew to zenith</s:String>
+  <s:String x:Key="LblSlewWhenTargetCoordsUnset" xml:space="default">At least one target with slew enabled has no target coordinates set</s:String>
   <s:String x:Key="LblSnapPortStart" xml:space="default">Snap Port Start Command</s:String>
   <s:String x:Key="LblSnapPortStop" xml:space="default">Snap Port Stop Command</s:String>
   <s:String x:Key="LblSolving" xml:space="default">Solving...</s:String>
@@ -865,9 +866,9 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
   <s:String x:Key="LblWaitForImageProcessing" xml:space="default">Waiting for previous image to finish processing</s:String>
   <s:String x:Key="LblWaitForTemperatureStep" xml:space="default">Waiting for camera to reach next temperature step</s:String>
   <s:String x:Key="LblWaitingForCamera" xml:space="default">Waiting for Camera</s:String>
-  <s:String x:Key="LblWarmCamAtSequenceEnd">Warm camera when sequence ends</s:String>
-  <s:String x:Key="LblWarmEnabledButCameraCannotWarm">Camera is set to warm up at end of sequence, yet it is unable to do so</s:String>
-  <s:String x:Key="LblWarming">Warming</s:String>
+  <s:String x:Key="LblWarmCamAtSequenceEnd" xml:space="default">Warm camera when sequence ends</s:String>
+  <s:String x:Key="LblWarmEnabledButCameraCannotWarm" xml:space="default">Camera is set to warm up at end of sequence, yet it is unable to do so</s:String>
+  <s:String x:Key="LblWarming" xml:space="default">Warming</s:String>
   <s:String x:Key="LblWarning" xml:space="default">Warning</s:String>
   <s:String x:Key="LblWeather" xml:space="default">Weather</s:String>
   <s:String x:Key="LblWeatherData" xml:space="default">Weather Data</s:String>
