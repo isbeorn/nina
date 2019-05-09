@@ -364,7 +364,7 @@ namespace NINA.ViewModel {
                 float position = 0.0f;
                 do {
                     if (plateSolveResult == null) {
-                        plateSolveResult = await solver.SolveWithCapture(solveseq, progress, _canceltoken.Token);
+                        plateSolveResult = await solver.SolveWithCapture(solveseq, progress, _canceltoken.Token, true);
                     }
 
                     if (!plateSolveResult.Success) {
@@ -397,22 +397,23 @@ namespace NINA.ViewModel {
             PlateSolveResult plateSolveResult = null;
             if (csl.CenterTarget) {
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblCenterTarget"] });
-
+              
                 var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
-                var solveseq = new CaptureSequence() {
-                    ExposureTime = profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
-                    FilterType = profileService.ActiveProfile.PlateSolveSettings.Filter,
-                    ImageType = CaptureSequence.ImageTypes.SNAP,
-                    TotalExposureCount = 1
-                };
+
                 var service = WindowServiceFactory.Create();
                 service.Show(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
-                plateSolveResult = await solver.CaptureSolveSyncAndReslew(solveseq, true, true, true, _canceltoken.Token, progress, false, profileService.ActiveProfile.PlateSolveSettings.Threshold);
+                PlatesolveVM.SolveParameters solveParameters = new PlatesolveVM.SolveParameters {
+                    syncScope = true,
+                    slewToTarget = true,
+                    repeat = true,
+                    silent = true,
+                    repeatThreshold = profileService.ActiveProfile.PlateSolveSettings.Threshold,
+                    numberOfAttempts = profileService.ActiveProfile.PlateSolveSettings.NumberOfAttempts,
+                    delayDuration = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay)
+                };
+                
+                plateSolveResult = await solver.CaptureSolveSyncReslewReattempt(solveParameters, _canceltoken.Token, progress);
                 service.DelayedClose(TimeSpan.FromSeconds(10));
-
-                if (plateSolveResult == null || !plateSolveResult.Success) {
-                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPlatesolveFailed"] });
-                }
             }
             return plateSolveResult;
         }
@@ -1055,7 +1056,7 @@ namespace NINA.ViewModel {
                 }
             }
             return true;
-        } 
+        }
 
         public ICommand CoordsFromPlanetariumCommand { get; set; }
         public ICommand AddSequenceRowCommand { get; private set; }

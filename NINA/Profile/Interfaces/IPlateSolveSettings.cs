@@ -38,6 +38,8 @@ namespace NINA.Profile {
         double SearchRadius { get; set; }
         double Threshold { get; set; }
         double RotationTolerance { get; set; }
+        double ReattemptDelay { get; set; }
+        int NumberOfAttempts { get; set; }
         string AspsLocation { get; set; }
         string ASTAPLocation { get; set; }
         int DownSampleFactor { get; set; }

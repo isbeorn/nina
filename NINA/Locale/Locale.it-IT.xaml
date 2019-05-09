@@ -617,11 +617,17 @@ HFR Calcolato: {2}
   <s:String x:Key="LblPlatesolve2NoCoordinates" xml:space="default">Coordinate non disponbibili. Platesolve2 richiede coordinate per funzionare!</s:String>
   <s:String x:Key="LblPlatesolve2NotFound" xml:space="default">Platesolve2 exe non trovato</s:String>
   <s:String x:Key="LblPlateSolvedPolarAlignment" xml:space="default">Allineamento polare con Plate Solve</s:String>
+  <s:String x:Key="LblPlateSolveEnding" xml:space="default">Platesolve ha raggiunto il numero massimo di tentativi, o è necessario un Meridian Flip</s:String>
   <s:String x:Key="LblPlatesolveFailed" xml:space="default">Platesolve fallito</s:String>
+  <s:String x:Key="LblPlateSolveFailedDelay" xml:space="default">Intervallo tra tentativi</s:String>
+  <s:String x:Key="LblPlateSolveFailedDelayTooltip" xml:space="default">Intervallo, in minuti, tra due tentativi di plate solve</s:String>
   <s:String x:Key="LblPlateSolveImage" xml:space="default">Plate solve immagine corrente</s:String>
+  <s:String x:Key="LblPlateSolveNbOfAttempts" xml:space="default">Numero di Tentativi</s:String>
+  <s:String x:Key="LblPlateSolveNbOfAttemptsTooltip" xml:space="default">Quante volte una operazione di platesolve a metà sequenza sarà considerata fallita</s:String>
   <s:String x:Key="LblPlatesolveNoCoordinates" xml:space="default">Nessuna coordinata di referenza disponibile</s:String>
   <s:String x:Key="LblPlatesolveProvidedBy" xml:space="default">Servizio Platesolve fornito da</s:String>
   <s:String x:Key="LblPlateSolver" xml:space="default">Plate Solver</s:String>
+  <s:String x:Key="LblPlateSolveReattemptDelay" xml:space="default">In attesa del prossimo tentativo di plate solve : {0}</s:String>
   <s:String x:Key="LblPlateSolveSettings" xml:space="default">Settaggi Plate Solver</s:String>
   <s:String x:Key="LblPlateSolving" xml:space="default">Plate Solving</s:String>
   <s:String x:Key="LblPleaseChangeToFilter" xml:space="default">Pregasi passare al filtro {0}</s:String>

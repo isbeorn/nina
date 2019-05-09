@@ -49,6 +49,8 @@ namespace NINA.Profile {
             exposureTime = 2.0d;
             threshold = 1.0d;
             rotationTolerance = 1.0d;
+            reattemptDelay = 10;
+            numberOfAttempts = 1;
             filter = null;
             downSampleFactor = 2;
             maxObjects = 500;
@@ -208,6 +210,38 @@ namespace NINA.Profile {
             set {
                 if (rotationTolerance != value) {
                     rotationTolerance = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int numberOfAttempts;
+
+        [DataMember]
+        public int NumberOfAttempts {
+            get {
+                return numberOfAttempts;
+            }
+            set {
+                if (numberOfAttempts != value)
+                {
+                    numberOfAttempts = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private double reattemptDelay;
+
+        [DataMember]
+        public double ReattemptDelay {
+            get {
+                return reattemptDelay;
+            }
+            set {
+                if (reattemptDelay != value)
+                {
+                    reattemptDelay = value;
                     RaisePropertyChanged();
                 }
             }
