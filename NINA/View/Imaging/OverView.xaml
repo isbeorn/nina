@@ -375,6 +375,12 @@
                             <view:AnchorableAutoFocusView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.AutoFocusTemplate>
+
+                    <util:PaneTemplateSelector.SwitchTemplate>
+                        <DataTemplate>
+                            <view:AnchorableSwitchHubView />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.SwitchTemplate>
                 </util:PaneTemplateSelector>
             </dock:DockingManager.LayoutItemTemplateSelector>
 

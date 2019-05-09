@@ -519,6 +519,7 @@ Berechneter HFR: {2}
   <s:String x:Key="LblNoImage" xml:space="default">Kein Bild vorhanden</s:String>
   <s:String x:Key="LblNoRotator" xml:space="default">Kein Rotator</s:String>
   <s:String x:Key="LblNorthern" xml:space="default">Nördlich</s:String>
+  <s:String x:Key="LblNoSwitch" xml:space="default">Kein Schalter</s:String>
   <s:String x:Key="LblNoTelescope" xml:space="default">Kein Teleskop</s:String>
   <s:String x:Key="LblNotificationError" xml:space="default">Fehlerbenachrichtigung</s:String>
   <s:String x:Key="LblNotificationErrorText" xml:space="default">Fehlertext</s:String>
@@ -724,6 +725,7 @@ Diese Vorlage wird beim Starten der Applikation geladen, statt der Standard Sequ
   <s:String x:Key="LblSerialRelay" xml:space="default">Serielles Relay</s:String>
   <s:String x:Key="LblSetAsSequenceTarget" xml:space="default">Als Sequenzziel setzen</s:String>
   <s:String x:Key="LblSetForFramingAssistant" xml:space="default">Für Bildausrichtungsassistent setzen</s:String>
+  <s:String x:Key="LblSetNewValue" xml:space="default">Neuen Wert einstellen</s:String>
   <s:String x:Key="LblSettings" xml:space="default">Einstellungen</s:String>
   <s:String x:Key="LblSettle" xml:space="default">Finalisieren</s:String>
   <s:String x:Key="LblSettlePixelTolerance" xml:space="default">PHD2 Pixeltoleranz nach Ruhezeit</s:String>
@@ -776,6 +778,9 @@ Diese Vorlage wird beim Starten der Applikation geladen, statt der Standard Sequ
   <s:String x:Key="LblSunset" xml:space="default">Sonnenuntergang</s:String>
   <s:String x:Key="LblSunSet" xml:space="default">Sonnenuntergang</s:String>
   <s:String x:Key="LblSurfaceBrightness" xml:space="default">Oberflächenhelligkeit</s:String>
+  <s:String x:Key="LblSwitch" xml:space="default">Schalter</s:String>
+  <s:String x:Key="LblSwitchConnected" xml:space="default">Schalter verbunden</s:String>
+  <s:String x:Key="LblSwitchConnectionLost" xml:space="default">Schalterverbindung verloren!</s:String>
   <s:String x:Key="LblSwitchingFilter" xml:space="default">Wechsle Filter</s:String>
   <s:String x:Key="LblSync" xml:space="default">Sync</s:String>
   <s:String x:Key="LblSyncFailed" xml:space="default">Synchronization des Teleskops fehlgeschlagen</s:String>
@@ -827,6 +832,7 @@ Sollen die Werte synchronisiert werden?</s:String>
   <s:String x:Key="LblTime" xml:space="default">Zeit</s:String>
   <s:String x:Key="LblTimeFormatDescription" xml:space="default">Zeit mit Format HH-mm-ss</s:String>
   <s:String x:Key="LblTimeout" xml:space="default">Timeout</s:String>
+  <s:String x:Key="LblTimeoutToSetSwitchValue" xml:space="default">Zeitüberschreitung zum Festlegen des Schalterwertes {0} für Schalter [Id: {1}, Name: {2}]. Aktueller Wert ist {3}.</s:String>
   <s:String x:Key="LblTimeZone" xml:space="default">Zeitzone</s:String>
   <s:String x:Key="LblTo" xml:space="default">bis</s:String>
   <s:String x:Key="LblTools" xml:space="default">Werkzeuge</s:String>

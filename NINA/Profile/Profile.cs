@@ -52,6 +52,7 @@ namespace NINA.Profile {
     [KnownType(typeof(WeatherDataSettings))]
     [KnownType(typeof(FlatWizardSettings))]
     [KnownType(typeof(PlanetariumSettings))]
+    [KnownType(typeof(SwitchSettings))]
     public class Profile : BaseINPC, IProfile {
 
         /// <summary>
@@ -99,6 +100,7 @@ namespace NINA.Profile {
             PolarAlignmentSettings = new PolarAlignmentSettings();
             RotatorSettings = new RotatorSettings();
             SequenceSettings = new SequenceSettings();
+            SwitchSettings = new SwitchSettings();
             TelescopeSettings = new TelescopeSettings();
             WeatherDataSettings = new WeatherDataSettings();
         }
@@ -124,6 +126,7 @@ namespace NINA.Profile {
             PolarAlignmentSettings.PropertyChanged += SettingsChanged;
             RotatorSettings.PropertyChanged += SettingsChanged;
             SequenceSettings.PropertyChanged += SettingsChanged;
+            SwitchSettings.PropertyChanged += SettingsChanged;
             TelescopeSettings.PropertyChanged += SettingsChanged;
             WeatherDataSettings.PropertyChanged += SettingsChanged;
         }
@@ -229,6 +232,9 @@ namespace NINA.Profile {
 
         [DataMember]
         public ISequenceSettings SequenceSettings { get; set; }
+
+        [DataMember]
+        public ISwitchSettings SwitchSettings { get; set; }
 
         [DataMember]
         public ITelescopeSettings TelescopeSettings { get; set; }

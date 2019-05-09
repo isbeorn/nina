@@ -519,6 +519,7 @@ HFR Calcolato: {2}
   <s:String x:Key="LblNoImage" xml:space="default">Nessuna Imamgine disponibile</s:String>
   <s:String x:Key="LblNoRotator" xml:space="default">Nessun Rotator</s:String>
   <s:String x:Key="LblNorthern" xml:space="default">Settentrionale</s:String>
+  <s:String x:Key="LblNoSwitch" xml:space="default">Nessuno Switch</s:String>
   <s:String x:Key="LblNoTelescope" xml:space="default">Nessun Telescopio</s:String>
   <s:String x:Key="LblNotificationError" xml:space="default">Notifiche di Errre</s:String>
   <s:String x:Key="LblNotificationErrorText" xml:space="default">Testo Errore</s:String>
@@ -724,6 +725,7 @@ Questo tempalte sarà usato all'avvio per inizializzare la sequenza invece di qu
   <s:String x:Key="LblSerialRelay" xml:space="default">Relay Seriale</s:String>
   <s:String x:Key="LblSetAsSequenceTarget" xml:space="default">Imposta come sequenza target</s:String>
   <s:String x:Key="LblSetForFramingAssistant" xml:space="default">Set per framing assistant</s:String>
+  <s:String x:Key="LblSetNewValue" xml:space="default">Imposta un nuovo valore</s:String>
   <s:String x:Key="LblSettings" xml:space="default">Settaggi</s:String>
   <s:String x:Key="LblSettle" xml:space="default">Settle</s:String>
   <s:String x:Key="LblSettlePixelTolerance" xml:space="default">Tolleranza del PHD2 Settle Pixel</s:String>
@@ -776,6 +778,9 @@ Questo tempalte sarà usato all'avvio per inizializzare la sequenza invece di qu
   <s:String x:Key="LblSunset" xml:space="default">Tramonto</s:String>
   <s:String x:Key="LblSunSet" xml:space="default">Tramonto</s:String>
   <s:String x:Key="LblSurfaceBrightness" xml:space="default">Luminosità superficie</s:String>
+  <s:String x:Key="LblSwitch" xml:space="default">Switch</s:String>
+  <s:String x:Key="LblSwitchConnected" xml:space="default">Switch Connesso</s:String>
+  <s:String x:Key="LblSwitchConnectionLost" xml:space="default">Connessione allo switch persa!</s:String>
   <s:String x:Key="LblSwitchingFilter" xml:space="default">Cambio Filtro</s:String>
   <s:String x:Key="LblSync" xml:space="default">Sincronizza</s:String>
   <s:String x:Key="LblSyncFailed" xml:space="default">Sincronizzazione telescopio fallita</s:String>
@@ -827,6 +832,7 @@ Si vogliono sincronizzare i valori?</s:String>
   <s:String x:Key="LblTime" xml:space="default">Tempo</s:String>
   <s:String x:Key="LblTimeFormatDescription" xml:space="default">Tempo con formato HH-mm-ss</s:String>
   <s:String x:Key="LblTimeout" xml:space="default">Timeout</s:String>
+  <s:String x:Key="LblTimeoutToSetSwitchValue" xml:space="default">Timeout per impostare il switch valore {0} per il switch [Id: {1}, Nome: {2}]. Il valore corrente è {3}.</s:String>
   <s:String x:Key="LblTimeZone" xml:space="default">Time Zone</s:String>
   <s:String x:Key="LblTo" xml:space="default">A</s:String>
   <s:String x:Key="LblTools" xml:space="default">Strumenti</s:String>

@@ -50,5 +50,6 @@
     <converters:CollectionContainsMoreThanOneItemToVisibilityConverter x:Key="CollectionContainsMoreThanOneItemToVisibilityConverter" />
     <converters:MultiToListConverter x:Key="MultiToListConverter" />
     <converters:SubtractHalfConverter x:Key="SubtractHalfConverter" />
+    <converters:DoubleToBooleanConverter x:Key="DoubleToBooleanConverter" />
     <converters:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBooleanToVisibilityCollapsedConverter" />
 </ResourceDictionary>

@@ -25,6 +25,8 @@
     xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Locale"
     xmlns:rotator="clr-namespace:NINA.Model.MyRotator"
+    xmlns:switch="clr-namespace:NINA.Model.MySwitch"
+    xmlns:switchview="clr-namespace:NINA.View.Equipment.Switch"
     xmlns:view="clr-namespace:NINA.View"
     xmlns:vm="clr-namespace:NINA.ViewModel">
 
@@ -67,5 +69,9 @@
 
     <DataTemplate DataType="{x:Type camera:SimulatorCamera}">
         <view:SimulatorCameraSetupView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type switch:Eagle}">
+        <switchview:EagleSetupView />
     </DataTemplate>
 </ResourceDictionary>

@@ -2,6 +2,9 @@
 
 ## Features
 
+### Switch Hubs
+- A new equipment type "Switch" has been added which can connect to an AscomSwitch or to a PrimaLuceLab EAGLE PC
+
 ### Dither without guiding
 - A new Direct Guider has been added, which doesn't require a guide camera. It can only perform random dithers. It connects directly to the telescope, and will if required perform a dither via a Pulse Guide of a user-provided duration in a random direction.
 
