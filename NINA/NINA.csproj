@@ -333,6 +333,8 @@
     <Compile Include="Model\MyPlanetarium\PlanetariumFactory.cs" />
     <Compile Include="Model\MyPlanetarium\HNSKY.cs" />
     <Compile Include="Model\MyPlanetarium\TheSkyX.cs" />
+    <Compile Include="Model\MySwitch\Ascom\AscomV1Switch.cs" />
+    <Compile Include="Model\MySwitch\Ascom\AscomWritableV1Switch.cs" />
     <Compile Include="Profile\ProfileInfo.cs" />
     <Compile Include="Utility\Api\ApiParameters.cs" />
     <Compile Include="Model\MyPlanetarium\IPlanetarium.cs" />
@@ -340,6 +342,19 @@
     <Compile Include="Utility\Api\ITcpIpApi.cs" />
     <Compile Include="Model\MyPlanetarium\Stellarium.cs" />
     <Compile Include="Utility\Api\JSONApi.cs" />
+    <Compile Include="Model\MySwitch\Ascom\AscomSwitch.cs" />
+    <Compile Include="Model\MySwitch\Ascom\AscomSwitchHub.cs" />
+    <Compile Include="Model\MySwitch\Ascom\AscomWritableSwitch.cs" />
+    <Compile Include="Model\MySwitch\Eagle\Eagle.cs" />
+    <Compile Include="Model\MySwitch\Eagle\Eagle12VPower.cs" />
+    <Compile Include="Model\MySwitch\Eagle\EagleInputPower.cs" />
+    <Compile Include="Model\MySwitch\Eagle\EagleSwitch.cs" />
+    <Compile Include="Model\MySwitch\Eagle\EagleUSBSwitch.cs" />
+    <Compile Include="Model\MySwitch\Eagle\EagleVariablePower.cs" />
+    <Compile Include="Model\MySwitch\Eagle\EagleWritableSwitch.cs" />
+    <Compile Include="Model\MySwitch\ISwitch.cs" />
+    <Compile Include="Model\MySwitch\ISwitchHub.cs" />
+    <Compile Include="Model\MySwitch\SwitchInfo.cs" />
     <Compile Include="Model\MyTelescope\GuideDirections.cs" />
     <Compile Include="Model\MyTelescope\PierSide.cs" />
     <Compile Include="Model\MyGPS\NMEAGps.cs" />
@@ -352,8 +367,14 @@
     <Compile Include="Utility\Enum\PlanetariumEnum.cs" />
     <Compile Include="Profile\Interfaces\IPlanetariumSettings.cs" />
     <Compile Include="Profile\PlanetariumSettings.cs" />
+    <Compile Include="Utility\Converters\DoubleToBooleanConverter.cs" />
     <Compile Include="Utility\Converters\InverseBooleanToVisibilityCollapsedConverter.cs" />
+    <Compile Include="Profile\Interfaces\ISwitchSettings.cs" />
+    <Compile Include="Profile\SwitchSettings.cs" />
     <Compile Include="Utility\Extensions\IOrderedQueryableExtension.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\ISwitchConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\ISwitchMediator.cs" />
+    <Compile Include="Utility\Mediator\SwitchMediator.cs" />
     <Compile Include="Utility\ProjectVersion.cs" />
     <Compile Include="Utility\Behaviors\BrowserBehavior.cs" />
     <Compile Include="Utility\Enum\AutoUpdateSourceEnum.cs" />
@@ -364,6 +385,12 @@
     <Compile Include="ViewModel\Equipment\Rotator\RotatorChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\Telescope\TelescopeChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\Guider\GuiderChooserVM.cs" />
+    <Compile Include="View\Equipment\Switch\EagleSetupView.xaml.cs">
+      <DependentUpon>EagleSetupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Switch\SwitchHubTemplateSelector.cs" />
+    <Compile Include="ViewModel\Equipment\Switch\SwitchChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\Switch\SwitchVM.cs" />
     <Compile Include="Locale\ILoc.cs" />
     <Compile Include="Locale\Loc.cs" />
     <Compile Include="Model\ApplicationStatus.cs" />
@@ -680,6 +707,7 @@
     <Compile Include="ViewModel\Interfaces\IImagingVM.cs" />
     <Compile Include="ViewModel\Equipment\Rotator\IRotatorVM.cs" />
     <Compile Include="ViewModel\Equipment\Telescope\ITelescopeVM.cs" />
+    <Compile Include="ViewModel\Equipment\Switch\ISwitchVM.cs" />
     <Compile Include="ViewModel\MeridianFlipVM.cs" />
     <Compile Include="ViewModel\OptionsVM.cs" />
     <Compile Include="ViewModel\Equipment\Guider\GuiderVM.cs" />
@@ -742,6 +770,9 @@
     <Compile Include="View\Imaging\AnchorableSequenceView.xaml.cs">
       <DependentUpon>AnchorableSequenceView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Imaging\AnchorableSwitchHubView.xaml.cs">
+      <DependentUpon>AnchorableSwitchHubView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Imaging\AnchorableTelescopeView.xaml.cs">
       <DependentUpon>AnchorableTelescopeView.xaml</DependentUpon>
     </Compile>
@@ -766,6 +797,16 @@
     <Compile Include="View\Equipment\Connector.xaml.cs">
       <DependentUpon>Connector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Equipment\Switch\Eagle.xaml.cs">
+      <DependentUpon>Eagle.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Switch\Generic.xaml.cs">
+      <DependentUpon>Generic.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Switch\SwitchHubView.xaml.cs">
+      <DependentUpon>SwitchHubView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Switch\SwitchTemplateSelector.cs" />
     <Compile Include="View\Equipment\TabPage.xaml.cs">
       <DependentUpon>TabPage.xaml</DependentUpon>
     </Compile>
@@ -1106,6 +1147,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\Imaging\AnchorableSwitchHubView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Imaging\AnchorableTelescopeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1135,6 +1180,22 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Equipment\Connector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\Switch\Eagle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\Switch\EagleSetupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\Switch\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\Switch\SwitchHubView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1534,33 +1595,35 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>echo "Copy Altair DLLs"
-xcopy "$(ProjectDir)External\x64\Altair" "$(TargetDir)\External\x64\Altair" /h/i/c/k/e/r/y
-xcopy "$(ProjectDir)External\x86\Altair" "$(TargetDir)\External\x86\Altair" /h/i/c/k/e/r/y
+    <PostBuildEvent>
+      echo "Copy Altair DLLs"
+      xcopy "$(ProjectDir)External\x64\Altair" "$(TargetDir)\External\x64\Altair" /h/i/c/k/e/r/y
+      xcopy "$(ProjectDir)External\x86\Altair" "$(TargetDir)\External\x86\Altair" /h/i/c/k/e/r/y
 
-echo "Copy ASI DLLs"
-xcopy "$(ProjectDir)External\x64\ASI" "$(TargetDir)\External\x64\ASI" /h/i/c/k/e/r/y
-xcopy "$(ProjectDir)External\x86\ASI" "$(TargetDir)\External\x86\ASI" /h/i/c/k/e/r/y
+      echo "Copy ASI DLLs"
+      xcopy "$(ProjectDir)External\x64\ASI" "$(TargetDir)\External\x64\ASI" /h/i/c/k/e/r/y
+      xcopy "$(ProjectDir)External\x86\ASI" "$(TargetDir)\External\x86\ASI" /h/i/c/k/e/r/y
 
-echo "Copy Atik DLLs"
-xcopy "$(ProjectDir)External\x64\Atik" "$(TargetDir)\External\x64\Atik" /h/i/c/k/e/r/y
-xcopy "$(ProjectDir)External\x86\Atik" "$(TargetDir)\External\x86\Atik" /h/i/c/k/e/r/y
+      echo "Copy Atik DLLs"
+      xcopy "$(ProjectDir)External\x64\Atik" "$(TargetDir)\External\x64\Atik" /h/i/c/k/e/r/y
+      xcopy "$(ProjectDir)External\x86\Atik" "$(TargetDir)\External\x86\Atik" /h/i/c/k/e/r/y
 
-echo "Copy Canon DLLs"
-xcopy "$(ProjectDir)External\x64\Canon" "$(TargetDir)\External\x64\Canon" /h/i/c/k/e/r/y
-xcopy "$(ProjectDir)External\x86\Canon" "$(TargetDir)\External\x86\Canon" /h/i/c/k/e/r/y
+      echo "Copy Canon DLLs"
+      xcopy "$(ProjectDir)External\x64\Canon" "$(TargetDir)\External\x64\Canon" /h/i/c/k/e/r/y
+      xcopy "$(ProjectDir)External\x86\Canon" "$(TargetDir)\External\x86\Canon" /h/i/c/k/e/r/y
 
-echo "Copy Nikon DLLs"
-xcopy "$(ProjectDir)External\x64\Nikon" "$(TargetDir)\External\x64\Nikon" /h/i/c/k/e/r/y
-xcopy "$(ProjectDir)External\x86\Nikon" "$(TargetDir)\External\x86\Nikon" /h/i/c/k/e/r/y
+      echo "Copy Nikon DLLs"
+      xcopy "$(ProjectDir)External\x64\Nikon" "$(TargetDir)\External\x64\Nikon" /h/i/c/k/e/r/y
+      xcopy "$(ProjectDir)External\x86\Nikon" "$(TargetDir)\External\x86\Nikon" /h/i/c/k/e/r/y
 
-echo "Copy ToupTek DLLs"
-xcopy "$(ProjectDir)External\x64\ToupTek" "$(TargetDir)\External\x64\ToupTek" /h/i/c/k/e/r/y
-xcopy "$(ProjectDir)External\x86\ToupTek" "$(TargetDir)\External\x86\ToupTek" /h/i/c/k/e/r/y
+      echo "Copy ToupTek DLLs"
+      xcopy "$(ProjectDir)External\x64\ToupTek" "$(TargetDir)\External\x64\ToupTek" /h/i/c/k/e/r/y
+      xcopy "$(ProjectDir)External\x86\ToupTek" "$(TargetDir)\External\x86\ToupTek" /h/i/c/k/e/r/y
 
-echo "Copy QHYCCD DLLs"
-xcopy "$(ProjectDir)External\x64\QHYCCD" "$(TargetDir)\External\x64\QHYCCD" /h/i/c/k/e/r/y
-xcopy "$(ProjectDir)External\x86\QHYCCD" "$(TargetDir)\External\x86\QHYCCD" /h/i/c/k/e/r/y</PostBuildEvent>
+      echo "Copy QHYCCD DLLs"
+      xcopy "$(ProjectDir)External\x64\QHYCCD" "$(TargetDir)\External\x64\QHYCCD" /h/i/c/k/e/r/y
+      xcopy "$(ProjectDir)External\x86\QHYCCD" "$(TargetDir)\External\x86\QHYCCD" /h/i/c/k/e/r/y
+    </PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -32,6 +32,7 @@ using NINA.ViewModel.Equipment.Focuser;
 using NINA.ViewModel.Equipment.Guider;
 using NINA.ViewModel.Equipment.Rotator;
 using NINA.ViewModel.Equipment.Telescope;
+using NINA.ViewModel.Equipment.Switch;
 using NINA.ViewModel.FlatWizard;
 using NINA.ViewModel.FramingAssistant;
 using System;
@@ -63,6 +64,9 @@ namespace NINA.ViewModel {
             guiderMediator = new GuiderMediator();
             imagingMediator = new ImagingMediator();
             applicationStatusMediator = new ApplicationStatusMediator();
+            switchMediator = new SwitchMediator();
+
+            SwitchVM = new SwitchVM(profileService, applicationStatusMediator, switchMediator);
 
             ExitCommand = new RelayCommand(ExitApplication);
             ClosingCommand = new RelayCommand(ClosingApplication);
@@ -126,6 +130,7 @@ namespace NINA.ViewModel {
         private IGuiderMediator guiderMediator;
         private IImagingMediator imagingMediator;
         private IApplicationStatusMediator applicationStatusMediator;
+        private SwitchMediator switchMediator;
 
         private void LoadProfile(object obj) {
             if (profileService.Profiles.Count > 1) {
@@ -149,6 +154,7 @@ namespace NINA.ViewModel {
             DockManagerVM.Anchorables.Add(RotatorVM);
             DockManagerVM.Anchorables.Add(TelescopeVM);
             DockManagerVM.Anchorables.Add(GuiderVM);
+            DockManagerVM.Anchorables.Add(SwitchVM);
 
             DockManagerVM.Anchorables.Add(ImagingVM);
             DockManagerVM.Anchorables.Add(SeqVM);
@@ -170,6 +176,7 @@ namespace NINA.ViewModel {
             DockManagerVM.AnchorableInfoPanels.Add(TelescopeVM);
             DockManagerVM.AnchorableInfoPanels.Add(GuiderVM);
             DockManagerVM.AnchorableInfoPanels.Add(SeqVM);
+            DockManagerVM.AnchorableInfoPanels.Add(SwitchVM);
             DockManagerVM.AnchorableInfoPanels.Add(ImagingVM.ImageControl.ImgStatisticsVM);
             DockManagerVM.AnchorableInfoPanels.Add(ImagingVM.ImageControl.ImgHistoryVM);
 
@@ -337,6 +344,8 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
+
+        public SwitchVM SwitchVM { get; private set; }
 
         private FilterWheelVM _filterWheelVM;
 

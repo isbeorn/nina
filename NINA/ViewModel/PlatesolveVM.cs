@@ -30,6 +30,7 @@ using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
+using NINA.Utility.WindowService;
 using NINA.Profile;
 using System;
 using System.ComponentModel;
@@ -300,6 +301,47 @@ namespace NINA.ViewModel {
             return await this.CaptureSolveSyncAndReslew(seq, this.SyncScope, this.SlewToTarget, this.Repeat, _solveCancelToken.Token, progress) != null;
         }
 
+        public async Task<PlateSolveResult> CaptureSolveSyncReslewReattempt(
+                SolveParameters solveParameters,
+                CancellationToken token,
+                IProgress<ApplicationStatus> progress) {
+            
+            bool repeatAll = false;
+            int currentAttempt = 0;
+            PlateSolveResult plateSolveResult = null;
+
+            do {
+                currentAttempt += 1;
+                var solveseq = new CaptureSequence() {
+                    ExposureTime = profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
+                    FilterType = profileService.ActiveProfile.PlateSolveSettings.Filter,
+                    ImageType = CaptureSequence.ImageTypes.SNAP,
+                    TotalExposureCount = 1
+                };
+
+                plateSolveResult = await CaptureSolveSyncAndReslew(solveseq, solveParameters.syncScope, solveParameters.slewToTarget, solveParameters.repeat, token, progress, solveParameters.silent, solveParameters.repeatThreshold);
+
+
+                if (plateSolveResult == null || !plateSolveResult.Success) {
+                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPlatesolveFailed"] });
+                    if (currentAttempt < solveParameters.numberOfAttempts && !MeridianFlipVM.ShouldFlip(profileService, solveParameters.delayDuration.TotalSeconds, telescopeInfo)) {
+                        repeatAll = true;
+                        var delay = solveParameters.delayDuration.TotalSeconds;
+                        while (delay > 0) {
+                            await Task.Delay(TimeSpan.FromSeconds(1), token);
+                            delay--;
+                            progress.Report(new ApplicationStatus() { Status = string.Format(Locale.Loc.Instance["LblPlateSolveReattemptDelay"], delay) });
+                        }
+                    } else {
+                        repeatAll = false;
+                        Notification.ShowWarning(Locale.Loc.Instance["LblPlateSolveEnding"]);
+                        Logger.Warning("Platesolve attempts exhausted, or Meridian Flip approaching. Aborting plate solve.");
+                    }
+                }
+            } while (repeatAll);
+            return plateSolveResult;
+        }
+
         /// <summary>
         /// Calls "SolveWithCaputre" and syncs + reslews afterwards if set
         /// </summary>
@@ -555,6 +597,16 @@ namespace NINA.ViewModel {
 
                 RaisePropertyChanged();
             }
+        }
+
+        public struct SolveParameters {
+            public bool syncScope;
+            public bool slewToTarget;
+            public bool repeat;
+            public bool silent;
+            public double repeatThreshold;
+            public int numberOfAttempts;
+            public TimeSpan delayDuration;
         }
     }
 }

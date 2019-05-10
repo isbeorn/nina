@@ -152,6 +152,58 @@
                             VerticalAlignment="Center"
                             Text="{ns:Loc LblDegree}" />
                     </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="140"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblPlateSolveNbOfAttempts}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc LblPlateSolveNbOfAttemptsTooltip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="120"
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Mode="TwoWay" Path="NumberOfAttempts">
+                                    <Binding.ValidationRules>
+                                        <rules:StrictGreaterZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="140"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblPlateSolveFailedDelay}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc LblPlateSolveFailedDelayTooltip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox
+                            Width="120"
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Mode="TwoWay" Path="ReattemptDelay">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblMinutesShort}" />
+                    </StackPanel>
                 </StackPanel>
             </Grid>
         </GroupBox>

@@ -51,7 +51,6 @@ using System.Windows.Media.Imaging;
 using NINA.Utility;
 
 namespace NINATest {
-
     [TestFixture]
     public class SequenceVMTest {
         public TestContext TestContext { get; set; }
@@ -540,6 +539,16 @@ namespace NINATest {
         public IRotatorSettings RotatorSettings { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public IFlatWizardSettings FlatWizardSettings { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
+        public ISwitchSettings SwitchSettings {
+            get {
+                throw new NotImplementedException();
+            }
+
+            set {
+                throw new NotImplementedException();
+            }
+        }
+
         public IPlanetariumSettings PlanetariumSettings {
             get {
                 throw new NotImplementedException();
@@ -578,7 +587,6 @@ namespace NINATest {
     }
 
     internal class SequenceCameraMediator : ICameraMediator {
-
         public void AbortExposure() {
             throw new NotImplementedException();
         }
@@ -664,7 +672,6 @@ namespace NINATest {
     }
 
     internal class SequenceTelescopeMediator : ITelescopeMediator {
-
         public void Broadcast(TelescopeInfo deviceInfo) {
             throw new NotImplementedException();
         }
@@ -753,7 +760,6 @@ namespace NINATest {
     }
 
     internal class SequenceFocuserMediator : IFocuserMediator {
-
         public void Broadcast(FocuserInfo deviceInfo) {
             throw new NotImplementedException();
         }
@@ -790,7 +796,6 @@ namespace NINATest {
     }
 
     internal class SequenceFilterWheelMediator : IFilterWheelMediator {
-
         public void Broadcast(FilterWheelInfo deviceInfo) {
             throw new NotImplementedException();
         }
@@ -827,7 +832,6 @@ namespace NINATest {
     }
 
     internal class SequenceRotatorMediator : IRotatorMediator {
-
         public void Broadcast(RotatorInfo deviceInfo) {
             throw new NotImplementedException();
         }
@@ -864,7 +868,6 @@ namespace NINATest {
     }
 
     internal class SequenceGuiderMediator : IGuiderMediator {
-
         public Task<bool> AutoSelectGuideStar(CancellationToken token) {
             throw new NotImplementedException();
         }
@@ -932,7 +935,6 @@ namespace NINATest {
     }
 
     internal class SequenceImagingMediator : IImagingMediator {
-
         public event EventHandler<ImageSavedEventArgs> ImageSaved;
 
         public Task<System.Windows.Media.Imaging.BitmapSource> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
@@ -983,7 +985,6 @@ namespace NINATest {
     }
 
     internal class SequenceApplicationStatusMediator : IApplicationStatusMediator {
-
         public void RegisterHandler(IApplicationStatusVM handler) {
             throw new NotImplementedException();
         }
@@ -993,7 +994,6 @@ namespace NINATest {
     }
 
     internal class SequenceProfileService : IProfileService {
-
         public Profiles Profiles {
             get {
                 throw new NotImplementedException();

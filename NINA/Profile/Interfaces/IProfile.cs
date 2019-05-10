@@ -48,6 +48,7 @@ namespace NINA.Profile {
         IPolarAlignmentSettings PolarAlignmentSettings { get; set; }
         IRotatorSettings RotatorSettings { get; set; }
         ISequenceSettings SequenceSettings { get; set; }
+        ISwitchSettings SwitchSettings { get; set; }
         ITelescopeSettings TelescopeSettings { get; set; }
         IWeatherDataSettings WeatherDataSettings { get; set; }
 

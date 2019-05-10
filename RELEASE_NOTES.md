@@ -2,6 +2,9 @@
 
 ## Features
 
+### Switch Hubs
+- A new equipment type "Switch" has been added which can connect to an AscomSwitch or to a PrimaLuceLab EAGLE PC
+
 ### Dither without guiding
 - A new Direct Guider has been added, which doesn't require a guide camera. It can only perform random dithers. It connects directly to the telescope, and will if required perform a dither via a Pulse Guide of a user-provided duration in a random direction.
 
@@ -52,6 +55,11 @@
   - Parking the telescope - This will invoke the mount Park method if available, otherwise the mount will slew to near the celestial pole (on the same side of Meridian it last was) and stop tracking. **Before using this in production, test out the feature at the telescope, with your finger on the power switch. This is to avoid any crash into the pier for mounts that do not have limits.**
   - Warming the camera - the camera will be slowly cooled, with the cooler eventually turned off
 - Setup Installer can be run in less clicks and is also capable of launching the application after successful installation.
+- Mid-sequence plate solve operations (when slewing to target, or after Meridian Flip) have been enhanced to have the following behavior:
+  - If plate solve fails, it automatically falls back to blind failover
+  - If blind failover also fails, plate solve can be set to await a certain time period (by default 10 minutes) before trying again, up to a certain number of attempts (user-defined)
+  - If all attempts fail, or Meridian is getting close, plate solve will be considered failed, but sequence will continue as usual
+
 
 # Version 1.8 Hotfix 1
 

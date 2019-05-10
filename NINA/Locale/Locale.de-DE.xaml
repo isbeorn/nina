@@ -519,6 +519,7 @@ Berechneter HFR: {2}
   <s:String x:Key="LblNoImage" xml:space="default">Kein Bild vorhanden</s:String>
   <s:String x:Key="LblNoRotator" xml:space="default">Kein Rotator</s:String>
   <s:String x:Key="LblNorthern" xml:space="default">Nördlich</s:String>
+  <s:String x:Key="LblNoSwitch" xml:space="default">Kein Schalter</s:String>
   <s:String x:Key="LblNoTelescope" xml:space="default">Kein Teleskop</s:String>
   <s:String x:Key="LblNotificationError" xml:space="default">Fehlerbenachrichtigung</s:String>
   <s:String x:Key="LblNotificationErrorText" xml:space="default">Fehlertext</s:String>
@@ -617,11 +618,17 @@ Berechneter HFR: {2}
   <s:String x:Key="LblPlatesolve2NoCoordinates" xml:space="default">Keine Koordinaten verfügbar. Platesolve2 benötigt Koordinaten zum platesolven!</s:String>
   <s:String x:Key="LblPlatesolve2NotFound" xml:space="default">Platesolve2 exe wurde nicht gefunden werden</s:String>
   <s:String x:Key="LblPlateSolvedPolarAlignment" xml:space="default">Polarausrichtung mit Hilfe von Platesolving</s:String>
+  <s:String x:Key="LblPlateSolveEnding" xml:space="default">Platesolve hat die maximale Anzahl Versuche erreicht oder ein Meridian Flip ist notwendig</s:String>
   <s:String x:Key="LblPlatesolveFailed" xml:space="default">Platesolve fehlgeschlagen</s:String>
+  <s:String x:Key="LblPlateSolveFailedDelay" xml:space="default">Verzögerung zwischen Versuchen</s:String>
+  <s:String x:Key="LblPlateSolveFailedDelayTooltip" xml:space="default">Verzögerung zwischen zwei Platesolve Versuchen in Minuten</s:String>
   <s:String x:Key="LblPlateSolveImage" xml:space="default">Aktuelles Bild platesolven</s:String>
+  <s:String x:Key="LblPlateSolveNbOfAttempts" xml:space="default">Anzahl Versuche</s:String>
+  <s:String x:Key="LblPlateSolveNbOfAttemptsTooltip" xml:space="default">Wie viele Versuche ein wiederholtes Platesolve unternehmen soll bevor es als fehlgeschlagen angesehen wird</s:String>
   <s:String x:Key="LblPlatesolveNoCoordinates" xml:space="default">Keine Referenzkoordinaten verfügbar</s:String>
   <s:String x:Key="LblPlatesolveProvidedBy" xml:space="default">Platesolve service zur Verfügung gestellt von</s:String>
   <s:String x:Key="LblPlateSolver" xml:space="default">Plate Solver</s:String>
+  <s:String x:Key="LblPlateSolveReattemptDelay" xml:space="default">Warte auf den nächsten Platesolve Versuch: {0}</s:String>
   <s:String x:Key="LblPlateSolveSettings" xml:space="default">Plate Solver Settings</s:String>
   <s:String x:Key="LblPlateSolving" xml:space="default">Plate Solving</s:String>
   <s:String x:Key="LblPleaseChangeToFilter" xml:space="default">Bitte zu Filter {0} wechseln</s:String>
@@ -718,6 +725,7 @@ Diese Vorlage wird beim Starten der Applikation geladen, statt der Standard Sequ
   <s:String x:Key="LblSerialRelay" xml:space="default">Serielles Relay</s:String>
   <s:String x:Key="LblSetAsSequenceTarget" xml:space="default">Als Sequenzziel setzen</s:String>
   <s:String x:Key="LblSetForFramingAssistant" xml:space="default">Für Bildausrichtungsassistent setzen</s:String>
+  <s:String x:Key="LblSetNewValue" xml:space="default">Neuen Wert einstellen</s:String>
   <s:String x:Key="LblSettings" xml:space="default">Einstellungen</s:String>
   <s:String x:Key="LblSettle" xml:space="default">Finalisieren</s:String>
   <s:String x:Key="LblSettlePixelTolerance" xml:space="default">PHD2 Pixeltoleranz nach Ruhezeit</s:String>
@@ -770,6 +778,9 @@ Diese Vorlage wird beim Starten der Applikation geladen, statt der Standard Sequ
   <s:String x:Key="LblSunset" xml:space="default">Sonnenuntergang</s:String>
   <s:String x:Key="LblSunSet" xml:space="default">Sonnenuntergang</s:String>
   <s:String x:Key="LblSurfaceBrightness" xml:space="default">Oberflächenhelligkeit</s:String>
+  <s:String x:Key="LblSwitch" xml:space="default">Schalter</s:String>
+  <s:String x:Key="LblSwitchConnected" xml:space="default">Schalter verbunden</s:String>
+  <s:String x:Key="LblSwitchConnectionLost" xml:space="default">Schalterverbindung verloren!</s:String>
   <s:String x:Key="LblSwitchingFilter" xml:space="default">Wechsle Filter</s:String>
   <s:String x:Key="LblSync" xml:space="default">Sync</s:String>
   <s:String x:Key="LblSyncFailed" xml:space="default">Synchronization des Teleskops fehlgeschlagen</s:String>
@@ -821,6 +832,7 @@ Sollen die Werte synchronisiert werden?</s:String>
   <s:String x:Key="LblTime" xml:space="default">Zeit</s:String>
   <s:String x:Key="LblTimeFormatDescription" xml:space="default">Zeit mit Format HH-mm-ss</s:String>
   <s:String x:Key="LblTimeout" xml:space="default">Timeout</s:String>
+  <s:String x:Key="LblTimeoutToSetSwitchValue" xml:space="default">Zeitüberschreitung zum Festlegen des Schalterwertes {0} für Schalter [Id: {1}, Name: {2}]. Aktueller Wert ist {3}.</s:String>
   <s:String x:Key="LblTimeZone" xml:space="default">Zeitzone</s:String>
   <s:String x:Key="LblTo" xml:space="default">bis</s:String>
   <s:String x:Key="LblTools" xml:space="default">Werkzeuge</s:String>

@@ -65,6 +65,9 @@ namespace NINA.Locale {
 
         public string this[string key] {
             get {
+                if (key == null) {
+                    return string.Empty;
+                }
                 return _locale?[key]?.ToString() ?? "MISSING LABEL " + key;
             }
         }

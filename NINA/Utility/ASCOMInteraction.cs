@@ -25,6 +25,7 @@ using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
 using NINA.Model.MyRotator;
+using NINA.Model.MySwitch;
 using NINA.Model.MyTelescope;
 using NINA.Profile;
 using System;
@@ -102,6 +103,21 @@ namespace NINA.Utility {
                 try {
                     AscomFocuser focuser = new AscomFocuser(device.Key, device.Value);
                     l.Add(focuser);
+                } catch (Exception) {
+                    //only add filter wheels which are supported. e.g. x86 drivers will not work in x64
+                }
+            }
+            return l;
+        }
+
+        public static List<ISwitchHub> GetSwitches(IProfileService profileService) {
+            var l = new List<ISwitchHub>();
+            var ascomDevices = new ASCOM.Utilities.Profile();
+
+            foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Switch")) {
+                try {
+                    AscomSwitchHub ascomSwitch = new AscomSwitchHub(device.Key, device.Value);
+                    l.Add(ascomSwitch);
                 } catch (Exception) {
                     //only add filter wheels which are supported. e.g. x86 drivers will not work in x64
                 }

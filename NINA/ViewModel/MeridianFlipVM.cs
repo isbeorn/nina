@@ -27,6 +27,7 @@ using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
+using NINA.PlateSolving;
 using NINA.Profile;
 using NINA.Utility.WindowService;
 using System;
@@ -183,18 +184,20 @@ namespace NINA.ViewModel {
         private async Task<bool> Recenter(CancellationToken token, IProgress<ApplicationStatus> progress) {
             if (profileService.ActiveProfile.MeridianFlipSettings.Recenter) {
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblInitiatePlatesolve"] });
-
+                PlateSolveResult plateSolveResult = null;
                 var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
-                var seq = new CaptureSequence(
-                    profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
-                    CaptureSequence.ImageTypes.SNAP,
-                    profileService.ActiveProfile.PlateSolveSettings.Filter,
-                    new Model.MyCamera.BinningMode(1, 1),
-                    1);
-
-                await solver.CaptureSolveSyncAndReslew(seq, true, true, true, token, progress, true, profileService.ActiveProfile.PlateSolveSettings.Threshold);
+                PlatesolveVM.SolveParameters solveParameters = new PlatesolveVM.SolveParameters {
+                    syncScope = true,
+                    slewToTarget = true,
+                    repeat = true,
+                    silent = true,
+                    repeatThreshold = profileService.ActiveProfile.PlateSolveSettings.Threshold,
+                    numberOfAttempts = profileService.ActiveProfile.PlateSolveSettings.NumberOfAttempts,
+                    delayDuration = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay)
+                };
+                plateSolveResult = await solver.CaptureSolveSyncReslewReattempt(solveParameters, token, progress);
             }
-            return true;
+        return true;
         }
 
         private async Task<bool> ResumeAutoguider(CancellationToken token, IProgress<ApplicationStatus> progress) {
