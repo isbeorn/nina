@@ -339,7 +339,7 @@ Quando le linee non sono allineate significa che c'è un errore di allineamento 
   <s:String x:Key="LblFilterName" xml:space="default">Nome Filtro</s:String>
   <s:String x:Key="LblFilternameDescription" xml:space="default">Nome Filtro</s:String>
   <s:String x:Key="LblFilterNotFoundForPosition" xml:space="default">Nessun filtro trovat in posizione {0}. Pregasi verificare i filtri nei settaggi in modo che corrispondano all tua filterwheel!</s:String>
-  <s:String x:Key="LblFilterSetButFilterWheelNotConnected" xml:space="default">One or more sequence items have a filter set, but filter wheel is not connected</s:String>
+  <s:String x:Key="LblFilterSetButFilterWheelNotConnected" xml:space="default">Uno o più elementi della sequenza hanno un filtro impostato, ma la filter wheel non è connessa</s:String>
   <s:String x:Key="LblFilterWheel" xml:space="default">Filterwheel</s:String>
   <s:String x:Key="LblFilterwheelConnected" xml:space="default">Filterwheel connessa</s:String>
   <s:String x:Key="LblFilterwheelConnectionLost" xml:space="default">Connessione alla filterwheel persa! Si prega di riconnettere la filterwheel!</s:String>
