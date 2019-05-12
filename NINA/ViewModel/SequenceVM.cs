@@ -695,6 +695,11 @@ namespace NINA.ViewModel {
                 displayMessage = true;
             }
 
+            if (!filterWheelInfo.Connected && Targets.Any(target => target.Items.Any(item => item.FilterType != null && item.Enabled))) {
+                messageStringBuilder.AppendLine(Locale.Loc.Instance["LblFilterSetButFilterWheelNotConnected"]);
+                displayMessage = true;
+            }
+
             if (!guiderInfo.Connected && Targets.Any(target => target.StartGuiding)) {
                 messageStringBuilder.AppendLine(Locale.Loc.Instance["LblStartGuidingButGuiderNotConnected"]);
                 displayMessage = true;
