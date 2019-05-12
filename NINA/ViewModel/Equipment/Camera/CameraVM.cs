@@ -79,11 +79,12 @@ namespace NINA.ViewModel.Equipment.Camera {
             CameraChooserVM.GetEquipment();
         }
 
-        private async Task WaitForTargetTemperatureStep(double targetTemperatureStep, double percentage, CancellationToken token) {
+        private async Task WaitForTargetTemperatureStep(TimeSpan maximumStepDuration, double targetTemperatureStep, double percentage, CancellationToken token) {
             var interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
             var threshold = 1;
+            TimeSpan timeWaited = TimeSpan.Zero;
             double temperature = 0.0;
-            while (Math.Abs((temperature = Cam.Temperature) - targetTemperatureStep) > threshold) {
+            while ((Math.Abs((temperature = cameraInfo.Temperature) - targetTemperatureStep) > threshold) && timeWaited < maximumStepDuration) {
                 if (CoolingRunning) { 
                     applicationStatusMediator.StatusUpdate(
                         new ApplicationStatus() {
@@ -102,35 +103,36 @@ namespace NINA.ViewModel.Equipment.Camera {
                             Status2 = Locale.Loc.Instance["LblWaitForTemperatureStep"]
                         }
                     );
+                    if (CameraInfo.CoolerPower == 0) { 
+                        _remainingDuration = TimeSpan.Zero;
+                        break;
+                    }
                 }
-                await Utility.Utility.Wait(TimeSpan.FromSeconds(interval), token);
+                timeWaited = timeWaited + await Utility.Utility.Wait(TimeSpan.FromSeconds(interval), token);
             }
         }
 
         private async Task<double> GetNextTemperatureStep(CancellationToken token) {
             var interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
-            double currentTemp = Cam.Temperature;
-            double deltaTemp = currentTemp - TargetTemp;
-
             var delta = await Utility.Utility.Delay(TimeSpan.FromSeconds(interval), token);
 
-            _remainingDuration = _remainingDuration - ((double)delta.TotalMilliseconds / (1000 * 60));
-            if (_remainingDuration < 0) { _remainingDuration = 0; }
+            _remainingDuration = _remainingDuration - delta;
+            if (_remainingDuration < TimeSpan.Zero) { _remainingDuration = TimeSpan.Zero; }
 
-            return GetY(_startPoint, _endPoint, _remainingDuration);
+            return GetY(_startPoint, _endPoint, _remainingDuration.TotalMilliseconds);
         }
 
-        private async Task SetNextTemperatureStep(IProgress<double> progress, CancellationToken token) {
+        private async Task SetNextTemperatureStep(TimeSpan maximumDurationPerDegree, IProgress<double> progress, CancellationToken token) {
             var targetTemperatureStep = await GetNextTemperatureStep(token);
+
+            TimeSpan maximumStepDuration = TimeSpan.FromMilliseconds(Math.Round(maximumDurationPerDegree.TotalMilliseconds * Math.Abs(cameraInfo.Temperature - targetTemperatureStep)));
 
             Cam.TemperatureSetPoint = targetTemperatureStep;
 
-            targetTemperatureStep = Cam.TemperatureSetPoint;
-
-            var percentage = 1 - (_remainingDuration / _initalDuration);
+            var percentage = 1 - ((double)_remainingDuration.TotalMilliseconds / _initalDuration.TotalMilliseconds);
 
             //Use the camera set point here (some cameras like the ASI cameras can only set integer values and lose precision)
-            await WaitForTargetTemperatureStep(Cam.TemperatureSetPoint, percentage, token);
+            await WaitForTargetTemperatureStep(maximumStepDuration, Cam.TemperatureSetPoint, percentage, token);
 
             progress.Report(percentage);
 
@@ -195,8 +197,8 @@ namespace NINA.ViewModel.Equipment.Camera {
         private Vector2 _startPoint;
         private Vector2 _endPoint;
 
-        private double _initalDuration;
-        private double _remainingDuration;
+        private TimeSpan _initalDuration;
+        private TimeSpan _remainingDuration;
         private double _coolingProgress;
 
         public double CoolingProgress {
@@ -231,16 +233,17 @@ namespace NINA.ViewModel.Equipment.Camera {
         }
 
         public async Task<bool> StartChangeCameraTemp(IProgress<double> progress, double temperature, TimeSpan duration, bool turnOffCooler, CancellationToken cancelChangeCameraTempToken) {
-            _remainingDuration = duration.TotalMinutes;
+            _remainingDuration = duration;
+            TimeSpan maximumDurationPerDegree = TimeSpan.FromMilliseconds(Math.Round(1.2 * (double)duration.TotalMilliseconds / Math.Abs(cameraInfo.Temperature - temperature)));
             return await Task<bool>.Run(async () => {
-                if (_remainingDuration == 0) {
+                if (_remainingDuration == TimeSpan.Zero) {
                     Cam.TemperatureSetPoint = temperature;
                     Cam.CoolerOn = true;
                     progress.Report(1);
                 } else {
                     try {
                         double currentTemp = Cam.Temperature;
-                        _startPoint = new Vector2(_remainingDuration, currentTemp);
+                        _startPoint = new Vector2(_remainingDuration.TotalMilliseconds, currentTemp);
                         _endPoint = new Vector2(0, temperature);
                         Cam.TemperatureSetPoint = currentTemp;
                         _initalDuration = _remainingDuration;
@@ -254,10 +257,12 @@ namespace NINA.ViewModel.Equipment.Camera {
                             WarmingRunning = false;
                         }
                         do {
-                            await SetNextTemperatureStep(progress, cancelChangeCameraTempToken);
+                            await SetNextTemperatureStep(maximumDurationPerDegree, progress, cancelChangeCameraTempToken);
                             cancelChangeCameraTempToken.ThrowIfCancellationRequested();
-                        } while (_remainingDuration > 0);
+                        } while (_remainingDuration > TimeSpan.Zero);
                         if (turnOffCooler) {
+                            //adding a delay - Some cams seem to not like to immediately have their cooler set to off
+                            await Utility.Utility.Delay(TimeSpan.FromSeconds(10), cancelChangeCameraTempToken);
                             Cam.CoolerOn = false;
                         }
                     } catch (OperationCanceledException ex) {
@@ -265,7 +270,7 @@ namespace NINA.ViewModel.Equipment.Camera {
                         Logger.Trace(ex.Message);
                     } finally {
                         progress.Report(1);
-                        _remainingDuration = 0;
+                        _remainingDuration = TimeSpan.Zero;
                         WarmingRunning = false;
                         CoolingRunning = false;
                         applicationStatusMediator.StatusUpdate(
