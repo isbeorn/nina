@@ -1045,6 +1045,7 @@ namespace NINA.ViewModel {
                 }
                 if (parkTelescope) {
                     progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblEndOfSequenceParkTelescope"] });
+                    await this.guiderMediator.StopGuiding(_canceltoken.Token);
                     await telescopeMediator.ParkTelescope();
                 }
                 if (warmCamera) {
