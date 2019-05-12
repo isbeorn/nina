@@ -15,7 +15,7 @@
                 Margin="0,5,0,0"
                 BorderBrush="{StaticResource BorderBrush}"
                 BorderThickness="0">
-                <ComboBox ItemsSource="{Binding FocusTargets}" SelectedItem="{Binding SelectedFocusTarget}" />
+                <ComboBox ItemsSource="{Binding FocusTargets}" SelectedItem="{Binding SelectedFocusTarget}" DisplayMemberPath="Information" />
             </Border>
             <Border
                 Margin="0,5,0,0"

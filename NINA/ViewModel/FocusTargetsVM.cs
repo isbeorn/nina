@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using NINA.Database;
+using Nito.AsyncEx;
 
 namespace NINA.ViewModel {
 
@@ -25,10 +26,13 @@ namespace NINA.ViewModel {
 
             telescopeMediator.RegisterConsumer(this);
 
-            new Task(LoadFocusTargets).Start();
+            AsyncContext.Run(LoadFocusTargets);
 
             updateTimer = new Timer(TimeSpan.FromMinutes(1).TotalMilliseconds) { AutoReset = true };
             updateTimer.Elapsed += (sender, args) => CalculateVisibleStars();
+            if (IsVisible) {
+                updateTimer.Start();
+            }
 
             SlewToCoordinatesCommand = new AsyncCommand<bool>(async () => await telescopeMediator.SlewToCoordinatesAsync(SelectedFocusTarget.Coordinates));
         }
@@ -61,10 +65,14 @@ namespace NINA.ViewModel {
 
         public IAsyncCommand SlewToCoordinatesCommand { get; }
 
-        private async void LoadFocusTargets() {
-            var db = new DatabaseInteraction();
-            allFocusTargets = new List<FocusTarget>(await db.GetBrightStars());
-            CalculateVisibleStars();
+        private async Task LoadFocusTargets() {
+            try {
+                var db = new DatabaseInteraction();
+                allFocusTargets = await db.GetBrightStars();
+                CalculateVisibleStars();
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
         }
 
         private void CalculateVisibleStars() {
