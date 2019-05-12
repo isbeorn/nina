@@ -339,6 +339,7 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
   <s:String x:Key="LblFilterName" xml:space="default">Filter Name</s:String>
   <s:String x:Key="LblFilternameDescription" xml:space="default">Filtername</s:String>
   <s:String x:Key="LblFilterNotFoundForPosition" xml:space="default">Filter an Position {0} wurde nicht gefunden. Bitte die Filtereinstellungen in den Optionen überprüfen, dass diese dem Filterrad entsprechen!</s:String>
+  <s:String x:Key="LblFilterSetButFilterWheelNotConnected" xml:space="default">Einem oder mehreren Sequenzeinträgen wurde ein Filter zugewiesen, jedoch ist kein Filterrad verbunden</s:String>
   <s:String x:Key="LblFilterWheel" xml:space="default">Filterrad</s:String>
   <s:String x:Key="LblFilterwheelConnected" xml:space="default">Filterrad verbunden</s:String>
   <s:String x:Key="LblFilterwheelConnectionLost" xml:space="default">Verbindung zum Filterrad verloren! Bitte Filterrad erneut verbinden!</s:String>

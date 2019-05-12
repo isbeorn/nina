@@ -695,6 +695,11 @@ namespace NINA.ViewModel {
                 displayMessage = true;
             }
 
+            if (!filterWheelInfo.Connected && Targets.Any(target => target.Items.Any(item => item.FilterType != null && item.Enabled))) {
+                messageStringBuilder.AppendLine(Locale.Loc.Instance["LblFilterSetButFilterWheelNotConnected"]);
+                displayMessage = true;
+            }
+
             if (!guiderInfo.Connected && Targets.Any(target => target.StartGuiding)) {
                 messageStringBuilder.AppendLine(Locale.Loc.Instance["LblStartGuidingButGuiderNotConnected"]);
                 displayMessage = true;
@@ -1045,6 +1050,7 @@ namespace NINA.ViewModel {
                 }
                 if (parkTelescope) {
                     progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblEndOfSequenceParkTelescope"] });
+                    await this.guiderMediator.StopGuiding(_canceltoken.Token);
                     await telescopeMediator.ParkTelescope();
                 }
                 if (warmCamera) {

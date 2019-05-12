@@ -339,6 +339,7 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
   <s:String x:Key="LblFilterName" xml:space="default">Filter Name</s:String>
   <s:String x:Key="LblFilternameDescription" xml:space="default">Filter Name</s:String>
   <s:String x:Key="LblFilterNotFoundForPosition" xml:space="default">No filter found at position {0}. Please re-evaluate the filters inside the setting, that they correspond your filter wheel!</s:String>
+  <s:String x:Key="LblFilterSetButFilterWheelNotConnected" xml:space="default">One or more sequence items have a filter set, but filter wheel is not connected</s:String>
   <s:String x:Key="LblFilterWheel" xml:space="default">Filterwheel</s:String>
   <s:String x:Key="LblFilterwheelConnected" xml:space="default">Filterwheel connected</s:String>
   <s:String x:Key="LblFilterwheelConnectionLost" xml:space="default">Filterwheel connection lost! Please reconnect filterwheel!</s:String>

@@ -67,6 +67,7 @@ namespace NINA.Model {
             var degAngle = Astrometry.HoursToDegrees(hourAngle);
             Altitude = Astrometry.GetAltitude(degAngle, latitude, Coordinates.Dec);
             Azimuth = Astrometry.GetAzimuth(degAngle, Altitude, latitude, Coordinates.Dec);
+            RaisePropertyChanged(nameof(Information));
         }
 
         private double altitude;
@@ -86,8 +87,12 @@ namespace NINA.Model {
             }
         }
 
+        public string Information {
+            get => $"{Name} ({SkyDirection}, Alt: {Altitude:0.00}°, Az: {Azimuth:0.00}°)";
+        }
+
         public override string ToString() {
-            return $"{Name} ({SkyDirection}, Alt: {Altitude:0.00}°, Az: {Azimuth:0.00}°)";
+            return Information;
         }
     }
 }
