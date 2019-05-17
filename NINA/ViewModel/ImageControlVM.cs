@@ -569,6 +569,12 @@ namespace NINA.ViewModel {
                     _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPrepareImage"] });
                     source = ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
 
+                    if (iarr.Statistics.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage) {
+                        _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDebayeringImage"] });
+                        source = ImageAnalysis.Debayer(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
+                    }
+
+
                     if (AutoStretch) {
                         _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStretchImage"] });
                         source = await StretchAsync(iarr, source, profileService.ActiveProfile.ImageSettings.AutoStretchFactor, profileService.ActiveProfile.ImageSettings.BlackClipping);
@@ -586,12 +592,9 @@ namespace NINA.ViewModel {
                         iarr.Statistics.DetectedStars = analysis.DetectedStars;
                     }
 
-                    source = ImageAnalysis.Convert16BppTo8BppSource(source);
+                    //source = ImageAnalysis.Convert16BppTo8BppSource(source);
 
-                    if (iarr.Statistics.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage) {
-                        _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDebayeringImage"] });
-                        source = ImageAnalysis.Debayer(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
-                    }
+
 
                     if (parameters != null) {
                         iarr.Statistics.ExposureTime = parameters.ExposureTime;
