@@ -631,9 +631,9 @@ namespace NINA.Model.MyCamera {
 
             int stride = (bmp.PixelWidth * bmp.Format.BitsPerPixel + 7) / 8;
             int arraySize = stride * bmp.PixelHeight;
-            ushort[] pixels = new ushort[(int)(bmp.Width * bmp.Height)];
+            ushort[] pixels = new ushort[bmp.PixelWidth * bmp.PixelHeight];
             bmp.CopyPixels(pixels, stride, 0);
-            return ImageArray.CreateInstance(pixels, (int)bmp.Width, (int)bmp.Height, 16, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+            return ImageArray.CreateInstance(pixels, bmp.PixelWidth, bmp.PixelHeight, 16, IsBayered, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
         }
 
         public IAsyncCommand LoadImageCommand { get; private set; }
@@ -652,6 +652,16 @@ namespace NINA.Model.MyCamera {
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(CameraXSize));
                 RaisePropertyChanged(nameof(CameraYSize));
+            }
+        }
+
+        private bool isBayered;
+
+        public bool IsBayered {
+            get => isBayered;
+            set {
+                isBayered = value;
+                RaisePropertyChanged();
             }
         }
 
