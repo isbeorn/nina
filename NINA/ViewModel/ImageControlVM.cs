@@ -583,9 +583,12 @@ namespace NINA.ViewModel {
                         _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStretchImage"] });
                         if (iarr.Statistics.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage && unlinkedStretch) {
                             ImageAnalysis.RGBArrays rGBArrays = ImageAnalysis.ChannelsToFlatArrays(ImageAnalysis.BitmapFromSource(source, System.Drawing.Imaging.PixelFormat.Format48bppRgb));
-                            ImageArray redArray = await ImageArray.CreateInstance(rGBArrays.redArray, source.PixelWidth, source.PixelHeight, 16, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
-                            ImageArray greenArray = await ImageArray.CreateInstance(rGBArrays.greenArray, source.PixelWidth, source.PixelHeight, 16, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
-                            ImageArray blueArray = await ImageArray.CreateInstance(rGBArrays.blueArray, source.PixelWidth, source.PixelHeight, 16, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                            var redTask = ImageArray.CreateInstance(rGBArrays.redArray, source.PixelWidth, source.PixelHeight, 16, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                            var greenTask = ImageArray.CreateInstance(rGBArrays.greenArray, source.PixelWidth, source.PixelHeight, 16, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                            var blueTask = ImageArray.CreateInstance(rGBArrays.blueArray, source.PixelWidth, source.PixelHeight, 16, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                            ImageArray redArray = await redTask;
+                            ImageArray greenArray = await greenTask;
+                            ImageArray blueArray = await blueTask;
                             source = await StretchAsyncUnlinked(redArray, greenArray, blueArray, source, pixelFormat, profileService.ActiveProfile.ImageSettings.AutoStretchFactor, profileService.ActiveProfile.ImageSettings.BlackClipping);
                         } else {
                             source = await StretchAsync(iarr, source, pixelFormat, profileService.ActiveProfile.ImageSettings.AutoStretchFactor, profileService.ActiveProfile.ImageSettings.BlackClipping);
