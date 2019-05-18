@@ -59,32 +59,43 @@
         <GroupBox Grid.Row="1" Header="Load Image">
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Is Bayered" />
+                    <CheckBox Margin="5,0,0,0" IsChecked="{Binding IsBayered}" />
+                </StackPanel>
                 <Button
+                    Grid.Row="1"
                     Height="40"
+                    Margin="0,5,0,0"
                     Command="{Binding LoadImageCommand}"
                     Visibility="{Binding Image, Converter={StaticResource InverseNullToVisibilityConverter}}">
                     Load Image
                 </Button>
                 <Button
+                    Grid.Row="1"
                     Height="40"
+                    Margin="0,5,0,0"
                     Command="{Binding UnloadImageCommand}"
                     Visibility="{Binding Image, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                     Unload Image
                 </Button>
 
                 <Button
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Height="40"
+                    Margin="0,5,0,0"
                     Command="{Binding LoadRAWImageCommand}"
                     Visibility="{Binding RAWImageStream, Converter={StaticResource InverseNullToVisibilityConverter}}">
                     Load RAW
                 </Button>
                 <Button
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Height="40"
+                    Margin="0,5,0,0"
                     Command="{Binding UnloadRAWImageCommand}"
                     Visibility="{Binding RAWImageStream, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                     Unload RAW
