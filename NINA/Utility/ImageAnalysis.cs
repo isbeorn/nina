@@ -555,7 +555,7 @@ internal class ImageAnalysis {
         public static ColorRemappingGeneral GetColorRemappingFilterUnlinked(IImageStatistics redStatistics, IImageStatistics greenStatistics, IImageStatistics blueStatistics, double targetHistogramMeanPct, double shadowsClipping, System.Windows.Media.PixelFormat pf) {
             ushort[] mapRed = GetStretchMap(redStatistics, targetHistogramMeanPct, shadowsClipping);
             ushort[] mapGreen = GetStretchMap(greenStatistics, targetHistogramMeanPct, shadowsClipping);
-            ushort[] mapBlue = GetStretchMap(greenStatistics, targetHistogramMeanPct, shadowsClipping);
+            ushort[] mapBlue = GetStretchMap(blueStatistics, targetHistogramMeanPct, shadowsClipping);
             if (pf == PixelFormats.Rgb48) {
                 var filter = new ColorRemappingGeneral(mapRed, mapGreen, mapBlue);
                 return filter;
