@@ -114,6 +114,9 @@ namespace NINA.Profile {
             set {
                 if (debayerImage != value) {
                     debayerImage = value;
+                    if (!debayerImage) {
+                        UnlinkedStretch = false;
+                    }
                     RaisePropertyChanged();
                 }
             }
