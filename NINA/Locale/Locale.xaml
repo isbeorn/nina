@@ -898,4 +898,8 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
   <s:String x:Key="LblZoomIn" xml:space="default">Zoom in by 25%</s:String>
   <s:String x:Key="LblZoomOut" xml:space="default">Zoom out by 25%</s:String>
   <s:String x:Key="LblZoomStretch" xml:space="default">Fit Image to Area</s:String>
+    <s:String x:Key="LblUnlinkedStretch" xml:space="default">Unlinked Stretch</s:String>
+    <s:String x:Key="LblUnlinkedStretchTooltip" xml:space="default">When enabled, color channels will be stretched separately, helping hide the
+sky background and enhancing autofocus and platesolving reliablity, especially
+in light polluted areas. Processing time is however increased.</s:String>
 </ResourceDictionary>

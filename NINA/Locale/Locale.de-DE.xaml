@@ -899,4 +899,8 @@ Das Rechteck über einen Teil des Bildes bewegen das Sie fotografieren wollen un
   <s:String x:Key="LblZoomIn" xml:space="default">25% hineinzoomen</s:String>
   <s:String x:Key="LblZoomOut" xml:space="default">25% herauszoomen</s:String>
   <s:String x:Key="LblZoomStretch" xml:space="default">Passe Bildgröße an Fläche an</s:String>
+    <s:String x:Key="LblUnlinkedStretch" xml:space="default">Unlinked Stretch</s:String>
+    <s:String x:Key="LblUnlinkedStretchTooltip" xml:space="preserve">Wenn aktiv, werden die Farbkanäle separat gestretcht. Dies hilft den Himmelshintergrund
+zu kaschieren und verbessert zuverlässig Autofokus sowie Platesolving vor allem in
+Lichtverschmutzten Gebieten. Berechnungszeit ist jedoch erhöht.</s:String>
 </ResourceDictionary>

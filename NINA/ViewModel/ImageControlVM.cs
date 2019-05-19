@@ -571,8 +571,6 @@ namespace NINA.ViewModel {
 
                     System.Windows.Media.PixelFormat pixelFormat = System.Windows.Media.PixelFormats.Gray16;
 
-                    bool unlinkedStretch = true;
-
                     if (iarr.Statistics.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage) {
                         _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDebayeringImage"] });
                         source = ImageAnalysis.Debayer(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
@@ -581,7 +579,7 @@ namespace NINA.ViewModel {
 
                     if (AutoStretch) {
                         _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStretchImage"] });
-                        if (iarr.Statistics.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage && unlinkedStretch) {
+                        if (iarr.Statistics.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage && profileService.ActiveProfile.ImageSettings.UnlinkedStretch) {
                             ImageAnalysis.RGBArrays rGBArrays = ImageAnalysis.ChannelsToFlatArrays(ImageAnalysis.BitmapFromSource(source, System.Drawing.Imaging.PixelFormat.Format48bppRgb));
                             var redTask = ImageArray.CreateInstance(rGBArrays.redArray, source.PixelWidth, source.PixelHeight, 16, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
                             var greenTask = ImageArray.CreateInstance(rGBArrays.greenArray, source.PixelWidth, source.PixelHeight, 16, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);

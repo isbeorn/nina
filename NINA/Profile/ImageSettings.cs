@@ -40,7 +40,8 @@ namespace NINA.Profile {
             blackClipping = -2.8;
             histogramResolution = 300;
             annotateImage = false;
-            debayerImage = false;
+            debayerImage = true;
+            unlinkedStretch = true;
         }
 
         private double autoStretchFactor;
@@ -113,6 +114,24 @@ namespace NINA.Profile {
             set {
                 if (debayerImage != value) {
                     debayerImage = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool unlinkedStretch;
+
+        [DataMember]
+        public bool UnlinkedStretch {
+            get {
+                return unlinkedStretch;
+            }
+            set {
+                if (unlinkedStretch != value) {
+                    unlinkedStretch = value;
+                    if (unlinkedStretch) {
+                        DebayerImage = unlinkedStretch;
+                    }
                     RaisePropertyChanged();
                 }
             }

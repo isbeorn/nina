@@ -898,4 +898,8 @@ Trascina il rettangolo  sulla parte del fotogramma che vuoi estrarre ed abilita 
   <s:String x:Key="LblZoomIn" xml:space="default">Zoom in del 25%</s:String>
   <s:String x:Key="LblZoomOut" xml:space="default">Zoom out del 25%</s:String>
   <s:String x:Key="LblZoomStretch" xml:space="default">Aggiusta l'immagine all'area</s:String>
+    <s:String x:Key="LblUnlinkedStretch" xml:space="default">Unlinked Stretch</s:String>
+    <s:String x:Key="LblUnlinkedStretchTooltip" xml:space="preserve">Quando abilitato, i canali colore saranno allungati separatamente, aiutando a nascondere lo sfondo
+del cielo e migliorando l'autofocus e l'affidabilità del platesolving, particolarmente in
+aree ad alto inquinamento luminoso. Il tempo di processo sarà  tuttavia aumentato.</s:String>
 </ResourceDictionary>
