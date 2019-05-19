@@ -872,6 +872,10 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
   <s:String x:Key="LblUnableToSync" xml:space="default">Unable to sync. Telescope is not connected</s:String>
   <s:String x:Key="LblUnexpectedError" xml:space="default">Unexpected error occurred</s:String>
   <s:String x:Key="LblUnhandledException" xml:space="default">Unhandled Exception occurred</s:String>
+  <s:String x:Key="LblUnlinkedStretch" xml:space="default">Unlinked Stretch</s:String>
+  <s:String x:Key="LblUnlinkedStretchTooltip" xml:space="default">When enabled, color channels will be stretched separately, helping hide the
+sky background and enhancing autofocus and platesolving reliablity, especially
+in light polluted areas. Processing time is however increased.</s:String>
   <s:String x:Key="LblUnpark" xml:space="default">Unpark</s:String>
   <s:String x:Key="LblUpdate" xml:space="default">Update</s:String>
   <s:String x:Key="LblUpdating" xml:space="default">Updating</s:String>
