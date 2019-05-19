@@ -17,6 +17,14 @@
 ### Interfacing with planetarium programs
 - NINA can interface with Cartes du Ciel, HNSKY, Stellarium, and TheSkyX through their repsective TCP services to import the selected object for use in the Sequence Editor and Framing Assistant, as well as setting the observing location to match that which is set in those programs
 
+### Manual Camera
+- Inside the camera selection there is a new entry for "Manual Camera".
+- This simulated camera will enable the use of cameras which lack an SDK, while still using the whole N.I.N.A. workflow.
+- It will watch a specified folder for newly created files. These files will be stored inside an internal queue.
+- Each time the application wants to download an exposure from the camera, the first item of this file queue is resolved and loaded into N.I.N.A.
+- Additionally a manual Bulb Mode trigger can be activated, so it will use the selected Bulb Mode in Settings-&gt;Equipment-&gt;Camera on Exposure Start.
+- When this trigger is deactivated the application will just skip the Start Exposure and wait for another file to roll into the specified folder
+
 ## Bugfixes
 - Fixed when FramingAssistant was not opened before and a DSO was selected from the SkyAtlas as Framing Source an error could occur
 - Fixed scrolling through Framing Assistant Offline Sky Map while cursor was inside Rectangle ignored zooming

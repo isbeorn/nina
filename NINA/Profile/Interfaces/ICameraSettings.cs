@@ -38,5 +38,8 @@ namespace NINA.Profile {
         string SerialPort { get; set; }
         double MinFlatExposureTime { get; set; }
         double MaxFlatExposureTime { get; set; }
+        string FileCameraFolder { get; set; }
+        bool FileCameraUseBulbMode { get; set; }
+        bool FileCameraIsBayered { get; set; }
     }
 }

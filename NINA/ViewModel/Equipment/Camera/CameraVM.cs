@@ -85,7 +85,7 @@ namespace NINA.ViewModel.Equipment.Camera {
             TimeSpan timeWaited = TimeSpan.Zero;
             double temperature = 0.0;
             while ((Math.Abs((temperature = cameraInfo.Temperature) - targetTemperatureStep) > threshold) && timeWaited < maximumStepDuration) {
-                if (CoolingRunning) { 
+                if (CoolingRunning) {
                     applicationStatusMediator.StatusUpdate(
                         new ApplicationStatus() {
                             Source = Title,
@@ -103,7 +103,7 @@ namespace NINA.ViewModel.Equipment.Camera {
                             Status2 = Locale.Loc.Instance["LblWaitForTemperatureStep"]
                         }
                     );
-                    if (CameraInfo.CoolerPower == 0) { 
+                    if (CameraInfo.CoolerPower == 0) {
                         _remainingDuration = TimeSpan.Zero;
                         break;
                     }
@@ -136,7 +136,7 @@ namespace NINA.ViewModel.Equipment.Camera {
 
             progress.Report(percentage);
 
-            if (CoolingRunning) { 
+            if (CoolingRunning) {
                 applicationStatusMediator.StatusUpdate(
                     new ApplicationStatus() {
                         Source = Title,
@@ -145,13 +145,13 @@ namespace NINA.ViewModel.Equipment.Camera {
                     }
                 );
             } else {
-                    applicationStatusMediator.StatusUpdate(
-                    new ApplicationStatus() {
-                        Source = Title,
-                        Status = Locale.Loc.Instance["LblWarming"],
-                        Progress = percentage
-                    }
-                );
+                applicationStatusMediator.StatusUpdate(
+                new ApplicationStatus() {
+                    Source = Title,
+                    Status = Locale.Loc.Instance["LblWarming"],
+                    Progress = percentage
+                }
+            );
             }
         }
 
@@ -418,6 +418,7 @@ namespace NINA.ViewModel.Equipment.Camera {
                         CameraInfo.Connected = false;
                         return false;
                     } catch (Exception ex) {
+                        Notification.ShowError(ex.Message);
                         Logger.Error(ex);
                         if (CameraInfo.Connected) { Disconnect(); }
                         CameraInfo.Connected = false;

@@ -324,6 +324,7 @@
     <Compile Include="EquipmentChooser\EquipmentChooser.xaml.cs">
       <DependentUpon>EquipmentChooser.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Model\MyCamera\FileCamera.cs" />
     <Compile Include="Model\MyGuider\DirectGuider.cs" />
     <Compile Include="Model\MyGuider\ISynchronizedPHD2GuiderService.cs" />
     <Compile Include="Model\MyGuider\SynchronizedPHD2Guider.cs" />
@@ -731,6 +732,9 @@
     <Compile Include="View\AltitudeChart.xaml.cs">
       <DependentUpon>AltitudeChart.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Equipment\Camera\FileCameraSetupView.xaml.cs">
+      <DependentUpon>FileCameraSetupView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Imaging\AnchorableAutoFocusView.xaml.cs">
       <DependentUpon>AnchorableAutoFocusView.xaml</DependentUpon>
     </Compile>
@@ -1092,6 +1096,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\AltitudeChart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\Camera\FileCameraSetupView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
