@@ -7,9 +7,15 @@
 
 ### Dither without guiding
 - A new Direct Guider has been added, which doesn't require a guide camera. It can only perform random dithers. It connects directly to the telescope, and will if required perform a dither via a Pulse Guide of a user-provided duration in a random direction.
+- Enhanced direct guider will accept decimal durations (e.g. 0.5s), and perform random angle selection in a way that minimizes target deviation from center, even after many dither operations.
 
 ### Plate Solving
 - Added interface for ASTAP, the Astrometric STAcking Program, astrometric solver and FITS viewer as a plate solver
+- Mid-sequence plate solve operations (when slewing to target, or after Meridian Flip) have been enhanced to have the following behavior:
+  - If plate solve fails, it automatically falls back to blind failover
+  - If blind failover also fails, plate solve can be set to await a certain time period (by default 10 minutes) before trying again, up to a certain number of attempts (user-defined)
+  - If all attempts fail, or Meridian is getting close, plate solve will be considered failed, but sequence will continue as usual
+- Added options to adjust downsample factor and maximum number of considered stars for ASTAP and local astrometry.net solvers
 
 ### GPS Assisted Location
 - Added a NMEA GPS interface to retrieve the current location
@@ -17,16 +23,33 @@
 ### Interfacing with planetarium programs
 - NINA can interface with Cartes du Ciel, HNSKY, Stellarium, and TheSkyX through their repsective TCP services to import the selected object for use in the Sequence Editor and Framing Assistant, as well as setting the observing location to match that which is set in those programs
 
-## Bugfixes
-- Fixed when FramingAssistant was not opened before and a DSO was selected from the SkyAtlas as Framing Source an error could occur
-- Fixed scrolling through Framing Assistant Offline Sky Map while cursor was inside Rectangle ignored zooming
-- Fixed Alitude charts displaying wrong Twilight/Night predictions for some scenarios
-- Manual focus target list was not updating in some scenarios. Now it will always update. The interval for updates is one minute.
+### Focusing
+- A new focuser settle time parameter has been added, in case the focuser shifts the image when moving (SCT, lens belt focusing, etc.). This should help with auto-focus in particular.
+- More resilient autofocus:
+  - Ability to automatically reattempt autofocus from scratch several times in case it failed
+  - Automatically go back to original focus position if obtained HFR is significantly worse than original
+  - Ability to take multiple autofocus exposures per focus point and average their HFR. This leads to smoother autofocus curves.
 
-## Improvements
+### Sequencing
+- End of Sequence Options are now available, which include:
+  - Parking the telescope - This will stop the guiding, and invoke the mount Park method if available, otherwise the mount will slew to near the celestial pole (on the same side of Meridian it last was) and stop tracking. **Before using this in production, test out the feature at the telescope, with your finger on the power switch. This is to avoid any crash into the pier for mounts that do not have limits.**
+  - Warming the camera - the camera will be slowly cooled, with the cooler eventually turned off
+- A pre-sequence check is now triggered, and will notify end users of a variety of potential issues (camera not cooled yet, guider not connected, telescope not connected but slew enabled, etc.) at sequence start
+- It is now possible to reset the progress of a sequence item, or of a whole sequence target. If an item that occurred prior to the active sequence item is reset, stopping and starting the sequence will get back to it, but pausing/playing will keep going from the current item.
+- The sequence start button is unavailable if an imaging loop is in progress in the imaging tab
 - If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips
-- Added options to adjust downsample factor and maximum number of considered stars for ASTAP and local astrometry.net solvers
-- All FITS keywords now have descriptive comments with units of measurment noted if applicable
+
+### Flat Wizard
+- Progress bars have been added for remaining filters and exposures
+- A new Slew to Zenith button has been added for easier flats. This includes an option for east or west pier side, depending on which side of pier the mount should approach zenith from.
+
+### Interface
+- Imaging tab - Equipment specific views will only show the "Connected" flag when the device is not connected to save space
+- Added a layout reset button to the imaging tab to restore the default dock layout.
+- Equipment chooser dropdowns are now grouped by driver categories to easily distinguish between for example ASCOM drivers and other vendor drivers
+
+### File Handling
+- All FITS keywords now have descriptive comments with units of measurement noted if applicable
 - FITS keyword `DATE-OBS` now has millisecond resolution, eg: `2019-03-24T04:04:55.045`
 - Additional FITS keywords are now added to images if their associated data is available:
 	- `DATE-LOC`: Date and time of exposure adjusted for local time
@@ -35,32 +58,21 @@
 	- `SITEELEV`: Elevation of the observing site, in meters
 	- `SWCREATE`: Contains `N.I.N.A. <version> <architecture>`
 	- `TELESCOP`: Telescope name if provided under Options->Equipment->Telescope. Falls back to ASCOM mount driver name
-- A new focuser settle time parameter has been added, in case the focuser shifts the image when moving (SCT, lens belt focusing, etc.). This should help with auto-focus in particular.
-- It is now possible to reset the progress of a sequence item, or of a whole sequence target. If an item that occurred prior to the active sequence item is reset, stopping and starting the sequence will get back to it, but pausing/playing will keep going from the current item.
-- A pre-sequence check is now triggered, and will notify end users of a variety of potential issues (camera not cooled yet, guider not connected, etc.) at sequence start
-- The sequence start button is unavailable if an imaging loop is in progress in the imaging tab
-- Imaging tab - Equipment specific views will only show the "Connected" flag when the device is not connected to save space
-- Enhanced direct guider to accept decimal durations (e.g. 0.5s), and to perform random angle selection in a way that minimizes target deviation from center.
-- Added a layout reset button to the imaging tab to restore the default dock layout.
-- Flat Wizard
-	- Progress bars for remaining filters and exposures
-	- Slew to zenith button with option for east or west pier side
-- More resilient autofocus:
-  - Ability to automatically reattempt autofocus from scratch several times in case it failed
-  - Automatically go back to original focus position if obtained HFR is significantly worse than original
-  - Ability to take multiple autofocus exposures per focus point and average their HFR. This leads to smoother autofocus curves.
-- Equipment chooser dropdowns are grouped by driver categories to easily distinguish between for example ASCOM drivers and other vendor drivers
+
+### OSC Camera Handling
+- Debayering is now applied prior to plate-solving or auto-focus star detection
+- An Unlinked Stretch option has been added. When enabled, color channels will be stretched separately, helping hide the sky background. This results in more visible celestial objects, and helps enhance both autofocus and platesolving reliablity, especially in light polluted areas. Processing time is however increased.
+
+## Bugfixes
+- Fixed when FramingAssistant was not opened before and a DSO was selected from the SkyAtlas as Framing Source an error could occur
+- Fixed scrolling through Framing Assistant Offline Sky Map while cursor was inside Rectangle ignored zooming
+- Fixed Alitude charts displaying wrong Twilight/Night predictions for some scenarios
+- Manual focus target list was not updating in some scenarios. Now it will always update. The interval for updates is one minute.
+
+## Improvements
 - When EOS Utility is running in the background, the x64 N.I.N.A. client will scan for this app and prevent a crash due to the EOS utility being open. Instead a notification will show up to close the EOS Utility.
 - N.I.N.A. SQLite Database will be created on demand and migrated to new versions on application startup instead of just being overwritten by the installer.
-- End of Sequence Options are now available, which include:
-  - Parking the telescope - This will invoke the mount Park method if available, otherwise the mount will slew to near the celestial pole (on the same side of Meridian it last was) and stop tracking. **Before using this in production, test out the feature at the telescope, with your finger on the power switch. This is to avoid any crash into the pier for mounts that do not have limits.**
-  - Warming the camera - the camera will be slowly cooled, with the cooler eventually turned off
-- Setup Installer can be run in less clicks and is also capable of launching the application after successful installation.
-- Mid-sequence plate solve operations (when slewing to target, or after Meridian Flip) have been enhanced to have the following behavior:
-  - If plate solve fails, it automatically falls back to blind failover
-  - If blind failover also fails, plate solve can be set to await a certain time period (by default 10 minutes) before trying again, up to a certain number of attempts (user-defined)
-  - If all attempts fail, or Meridian is getting close, plate solve will be considered failed, but sequence will continue as usual
-
+- Setup Installer can be run in fewer clicks and is also capable of launching the application after successful installation.
 
 # Version 1.8 Hotfix 1
 
