@@ -866,6 +866,10 @@ Das Rechteck über einen Teil des Bildes bewegen das Sie fotografieren wollen un
   <s:String x:Key="LblUnableToSync" xml:space="default">Synchronization ist nicht möglich, da kein Teleskop verbunden ist.</s:String>
   <s:String x:Key="LblUnexpectedError" xml:space="default">Unerwarteter Fehler aufgetreten</s:String>
   <s:String x:Key="LblUnhandledException" xml:space="default">Unbehandelter Ausnahmefehler</s:String>
+  <s:String x:Key="LblUnlinkedStretch" xml:space="default">Unlinked Stretch</s:String>
+  <s:String x:Key="LblUnlinkedStretchTooltip" xml:space="preserve">Wenn aktiv, werden die Farbkanäle separat gestretcht. Dies hilft den Himmelshintergrund
+zu kaschieren und verbessert zuverlässig Autofokus sowie Platesolving vor allem in
+Lichtverschmutzten Gebieten. Berechnungszeit ist jedoch erhöht.</s:String>
   <s:String x:Key="LblUnpark" xml:space="default">Ausparken</s:String>
   <s:String x:Key="LblUpdate" xml:space="default">Aktualisieren</s:String>
   <s:String x:Key="LblUpdating" xml:space="default">Updating</s:String>
@@ -899,8 +903,4 @@ Das Rechteck über einen Teil des Bildes bewegen das Sie fotografieren wollen un
   <s:String x:Key="LblZoomIn" xml:space="default">25% hineinzoomen</s:String>
   <s:String x:Key="LblZoomOut" xml:space="default">25% herauszoomen</s:String>
   <s:String x:Key="LblZoomStretch" xml:space="default">Passe Bildgröße an Fläche an</s:String>
-    <s:String x:Key="LblUnlinkedStretch" xml:space="default">Unlinked Stretch</s:String>
-    <s:String x:Key="LblUnlinkedStretchTooltip" xml:space="preserve">Wenn aktiv, werden die Farbkanäle separat gestretcht. Dies hilft den Himmelshintergrund
-zu kaschieren und verbessert zuverlässig Autofokus sowie Platesolving vor allem in
-Lichtverschmutzten Gebieten. Berechnungszeit ist jedoch erhöht.</s:String>
 </ResourceDictionary>
