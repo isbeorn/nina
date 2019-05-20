@@ -1041,11 +1041,15 @@ namespace NINA.ViewModel {
             }
 
             if (warmCamera || parkTelescope) {
-                if (Targets.Any(target => target.Items.Any(item => (item.ProgressExposureCount < item.TotalExposureCount) && item.Enabled))) { // Sequence still has some uncompleted items - ask before proceeding with end of sequence options
+                if (_canceltoken.Token.IsCancellationRequested) { // Sequence was manually cancelled - ask before proceeding with end of sequence options
                     var diag = MyMessageBox.MyMessageBox.Show(message.ToString(), Locale.Loc.Instance["LblEndOfSequenceOptions"], System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
                     if (diag !=  System.Windows.MessageBoxResult.OK) { 
                         parkTelescope = false; 
                         warmCamera = false;
+                    } else {
+                        // Need to reinitialize the cancellation token, as it is set to cancelation requested since sequence was manually cancelled.
+                        _canceltoken?.Dispose();
+                        _canceltoken = new CancellationTokenSource();
                     }
                 }
                 if (parkTelescope) {
