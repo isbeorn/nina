@@ -332,6 +332,11 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
   <s:String x:Key="LblExposureTimeDescription" xml:space="default">Exposure Time in seconds</s:String>
   <s:String x:Key="LblFieldOfView" xml:space="default">Field Of View</s:String>
   <s:String x:Key="LblFile" xml:space="default">File</s:String>
+  <s:String x:Key="LblFileCameraDescription" xml:space="preserve">This simulated camera will enable the use of cameras which lack an SDK, while still using the whole N.I.N.A. workflow.
+This simulated camera will watch the specified folder for newly created files. These files will be stored inside an internal queue.
+Each time the application wants to download an exposure from the camera, the first item of this file queue is resolved and loaded into N.I.N.A.
+Additionally a manual Bulb Mode trigger can be activated, so it will use the selected Bulb Mode in Settings-&gt;Equipment-&gt;Camera on Exposure Start.
+When this trigger is deactivated the application will just skip the Start Exposure and just wait for another file to roll into the specified folder</s:String>
   <s:String x:Key="LblFileExample" xml:space="default">Example File Name</s:String>
   <s:String x:Key="LblFileSettings" xml:space="default">File Settings</s:String>
   <s:String x:Key="LblFilter" xml:space="default">Filter</s:String>
@@ -385,6 +390,7 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
 Actual HFR : {1}
 Calculated HFR: {2}
     </s:String>
+  <s:String x:Key="LblFolderToWatch" xml:space="default">Folder to watch</s:String>
   <s:String x:Key="LblFrameNFocus" xml:space="default">Frame &amp; Focus</s:String>
   <s:String x:Key="LblFrameNrDescription" xml:space="default"># of the Frame with format ####</s:String>
   <s:String x:Key="LblFraming" xml:space="default">Framing</s:String>
@@ -443,6 +449,7 @@ Calculated HFR: {2}
   <s:String x:Key="LblInvalidMode" xml:space="default">Invalid mode</s:String>
   <s:String x:Key="LblInvalidModeBulb" xml:space="default">Invalid mode (bulb) for Exposure Time &lt;1s</s:String>
   <s:String x:Key="LblInvalidModeManual" xml:space="default">Invalid mode (manual) for Exposure Time &gt;30s</s:String>
+  <s:String x:Key="LblIsBayered" xml:space="default">Is Bayered</s:String>
   <s:String x:Key="LblIsMoving" xml:space="default">Is Moving</s:String>
   <s:String x:Key="LblIsSettling" xml:space="default">Is Settling</s:String>
   <s:String x:Key="LblItemsPerPage" xml:space="default">Items per page</s:String>
@@ -865,6 +872,10 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
   <s:String x:Key="LblUnableToSync" xml:space="default">Unable to sync. Telescope is not connected</s:String>
   <s:String x:Key="LblUnexpectedError" xml:space="default">Unexpected error occurred</s:String>
   <s:String x:Key="LblUnhandledException" xml:space="default">Unhandled Exception occurred</s:String>
+  <s:String x:Key="LblUnlinkedStretch" xml:space="default">Unlinked Stretch</s:String>
+  <s:String x:Key="LblUnlinkedStretchTooltip" xml:space="default">When enabled, color channels will be stretched separately, helping hide the
+sky background and enhancing autofocus and platesolving reliablity, especially
+in light polluted areas. Processing time is however increased.</s:String>
   <s:String x:Key="LblUnpark" xml:space="default">Unpark</s:String>
   <s:String x:Key="LblUpdate" xml:space="default">Update</s:String>
   <s:String x:Key="LblUpdating" xml:space="default">Updating</s:String>
@@ -872,6 +883,7 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
   <s:String x:Key="LblUSBLimit" xml:space="default">USB Limit</s:String>
   <s:String x:Key="LblUseBlindSolveFailover" xml:space="default">Plate solve failed. Try to solve using Blind Solver?</s:String>
   <s:String x:Key="LblUseBlindSolveNoCoordinatesRollover" xml:space="default">No reference coordinates available. Should the blind solver be used instead?</s:String>
+  <s:String x:Key="LblUseBuldMode" xml:space="default">Use bulb mode</s:String>
   <s:String x:Key="LblUseSideOfPier" xml:space="default">Use Telescope Side of Pier</s:String>
   <s:String x:Key="LblUseSnapPort" xml:space="default">Use Telescope Snap Port</s:String>
   <s:String x:Key="LblVerticalPanels" xml:space="default">Vertical Panels</s:String>

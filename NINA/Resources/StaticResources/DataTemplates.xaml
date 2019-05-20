@@ -71,6 +71,10 @@
         <view:SimulatorCameraSetupView />
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type camera:FileCamera}">
+        <equip:FileCameraSetupView />
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type switch:Eagle}">
         <switchview:EagleSetupView />
     </DataTemplate>

@@ -159,6 +159,7 @@ namespace NINA.ViewModel.Equipment.Camera {
                 Logger.Error(ex);
             }
 
+            Devices.Add(new Model.MyCamera.FileCamera(profileService, telescopeMediator));
             Devices.Add(new Model.MyCamera.SimulatorCamera(profileService));
 
             DetermineSelectedDevice(profileService.ActiveProfile.CameraSettings.Id);

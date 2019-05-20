@@ -49,6 +49,7 @@ namespace NINA.Profile {
             rawConverter = RawConverterEnum.DCRAW;
             minFlatExposureTime = 0.2;
             maxFlatExposureTime = 20;
+            fileCameraFolder = string.Empty;
         }
 
         private string id;
@@ -206,6 +207,45 @@ namespace NINA.Profile {
             set {
                 if (maxFlatExposureTime != value) {
                     maxFlatExposureTime = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private string fileCameraFolder;
+
+        [DataMember]
+        public string FileCameraFolder {
+            get => fileCameraFolder;
+            set {
+                if (fileCameraFolder != value) {
+                    fileCameraFolder = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool fileCameraUseBulbMode;
+
+        [DataMember]
+        public bool FileCameraUseBulbMode {
+            get => fileCameraUseBulbMode;
+            set {
+                if (fileCameraUseBulbMode != value) {
+                    fileCameraUseBulbMode = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool fileCameraIsBayered;
+
+        [DataMember]
+        public bool FileCameraIsBayered {
+            get => fileCameraIsBayered;
+            set {
+                if (fileCameraIsBayered != value) {
+                    fileCameraIsBayered = value;
                     RaisePropertyChanged();
                 }
             }

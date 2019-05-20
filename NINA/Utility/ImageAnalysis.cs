@@ -58,8 +58,9 @@ namespace NINA.Utility {
 
             if (originalSource.Format != System.Windows.Media.PixelFormats.Gray8) {
                 if (originalSource.Format != System.Windows.Media.PixelFormats.Gray16) {
-                    var imgToConvert = ImageAnalysis.BitmapFromSource(originalSource, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                    var imgToConvert = ImageAnalysis.BitmapFromSource(originalSource, System.Drawing.Imaging.PixelFormat.Format48bppRgb);
                     convertedSource = new Grayscale(0.2125, 0.7154, 0.0721).Apply(imgToConvert);
+                    convertedSource = ImageAnalysis.Convert16BppTo8Bpp(ImageAnalysis.ConvertBitmap(convertedSource,System.Windows.Media.PixelFormats.Gray16));
                 } else {
                     convertedSource = ImageAnalysis.Convert16BppTo8Bpp(originalSource);
                 }
@@ -217,11 +218,12 @@ namespace NINA.Utility {
         public double Distance { get; set; }
     }
 
-    internal class ImageAnalysis {
+internal class ImageAnalysis {
         private static System.Drawing.Pen ELLIPSEPEN = new System.Drawing.Pen(System.Drawing.Brushes.LightYellow, 1);
         private static SolidBrush TEXTBRUSH = new SolidBrush(System.Drawing.Color.Yellow);
         private static System.Drawing.FontFamily FONTFAMILY = new System.Drawing.FontFamily("Arial");
         private static Font FONT = new Font(FONTFAMILY, 32, System.Drawing.FontStyle.Regular, GraphicsUnit.Pixel);
+
 
         public ImageAnalysis(BitmapSource source, ImageArray iarr) {
             _iarr = iarr;
@@ -242,6 +244,14 @@ namespace NINA.Utility {
             _maxStarSize = (int)Math.Ceiling(150 * _resizefactor);
         }
 
+        public ImageAnalysis(BitmapSource source, ImageArray iarr, System.Windows.Media.PixelFormat pf) : this(source,iarr) {
+            if (pf == System.Windows.Media.PixelFormats.Rgb48) {
+                Bitmap img = new Grayscale(0.2125, 0.7154, 0.0721).Apply(BitmapFromSource(_originalBitmapSource, System.Drawing.Imaging.PixelFormat.Format48bppRgb));
+                _originalBitmapSource = ConvertBitmap(img, System.Windows.Media.PixelFormats.Gray16);
+                _originalBitmapSource.Freeze();
+            }
+        }
+
         private int _maxWidth = 1552;
         private int _minStarSize;
         private int _maxStarSize;
@@ -256,6 +266,18 @@ namespace NINA.Utility {
 
         public int DetectedStars { get; private set; }
         public double AverageHFR { get; private set; }
+
+        public struct RGBArrays {
+            public ushort[] redArray;
+            public ushort[] greenArray;
+            public ushort[] blueArray;
+
+            public RGBArrays(ushort[] red, ushort[] green, ushort[] blue) {
+                redArray = red;
+                greenArray = green;
+                blueArray = blue;
+            }
+        }
 
         private class Star {
             public double radius;
@@ -516,12 +538,30 @@ namespace NINA.Utility {
             }
         }
 
-        public static ColorRemapping16bpp GetColorRemappingFilter(IImageStatistics statistics, double targetHistogramMeanPct, double shadowsClipping) {
+        public static ColorRemappingGeneral GetColorRemappingFilter(IImageStatistics statistics, double targetHistogramMeanPct, double shadowsClipping, System.Windows.Media.PixelFormat pf) {
             ushort[] map = GetStretchMap(statistics, targetHistogramMeanPct, shadowsClipping);
 
-            var filter = new ColorRemapping16bpp(map);
+            if (pf == PixelFormats.Gray16) { 
+                var filter = new ColorRemappingGeneral(map);
+                return filter;
+            } else if (pf == PixelFormats.Rgb48) {
+                var filter = new ColorRemappingGeneral(map,map,map);
+                return filter;
+            } else {
+                throw new NotSupportedException();
+            }
+        }
 
-            return filter;
+        public static ColorRemappingGeneral GetColorRemappingFilterUnlinked(IImageStatistics redStatistics, IImageStatistics greenStatistics, IImageStatistics blueStatistics, double targetHistogramMeanPct, double shadowsClipping, System.Windows.Media.PixelFormat pf) {
+            ushort[] mapRed = GetStretchMap(redStatistics, targetHistogramMeanPct, shadowsClipping);
+            ushort[] mapGreen = GetStretchMap(greenStatistics, targetHistogramMeanPct, shadowsClipping);
+            ushort[] mapBlue = GetStretchMap(blueStatistics, targetHistogramMeanPct, shadowsClipping);
+            if (pf == PixelFormats.Rgb48) {
+                var filter = new ColorRemappingGeneral(mapRed, mapGreen, mapBlue);
+                return filter;
+            } else {
+                throw new NotSupportedException();
+            }
         }
 
         /// <summary>
@@ -641,15 +681,12 @@ namespace NINA.Utility {
 
         public static BitmapSource Debayer(BitmapSource source, System.Drawing.Imaging.PixelFormat pf) {
             using (MyStopWatch.Measure()) {
-                if (pf == System.Drawing.Imaging.PixelFormat.Format16bppGrayScale) {
-                    source = Convert16BppTo8BppSource(source);
-                } else if (pf == System.Drawing.Imaging.PixelFormat.Format8bppIndexed) {
-                } else {
+                if (pf != System.Drawing.Imaging.PixelFormat.Format16bppGrayScale) {
                     throw new NotSupportedException();
                 }
-                using (var bmp = BitmapFromSource(source, System.Drawing.Imaging.PixelFormat.Format8bppIndexed)) {
+                using (var bmp = BitmapFromSource(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale)) {
                     using (var debayeredBmp = Debayer(bmp)) {
-                        var newSource = ConvertBitmap(debayeredBmp, PixelFormats.Rgb24);
+                        var newSource = ConvertBitmap(debayeredBmp, PixelFormats.Rgb48);
                         newSource.Freeze();
                         return newSource;
                     }
@@ -657,9 +694,38 @@ namespace NINA.Utility {
             }
         }
 
+        public static unsafe RGBArrays ChannelsToFlatArrays(Bitmap image) {
+
+            int stopX = image.Width;
+            int stopY = image.Height;
+
+            RGBArrays flatArrays = new RGBArrays(new ushort[stopX * stopY], new ushort[stopX * stopY], new ushort[stopX * stopY]);
+
+            BitmapData imageData = image.LockBits(
+                new Rectangle(0, 0, stopX, stopY),
+                ImageLockMode.ReadWrite, image.PixelFormat);
+            
+            UnmanagedImage unmanagedImage = new UnmanagedImage(imageData);
+
+            int i = 0;
+
+            ushort* ptr = (ushort*)unmanagedImage.ImageData.ToPointer();
+
+            for (int y = 0; y < stopY; y++) {
+                for (int x = 0; x < stopX; x++, ptr += 3) {
+                    flatArrays.redArray[i] = ptr[RGB.R];
+                    flatArrays.greenArray[i] = ptr[RGB.G];
+                    flatArrays.blueArray[i] = ptr[RGB.B];
+                    i++;
+                }
+            }
+            image.UnlockBits(imageData);
+            return flatArrays;
+        }
+
         public static Bitmap Debayer(Bitmap bmp) {
             using (MyStopWatch.Measure()) {
-                var filter = new BayerFilter();
+                var filter = new BayerFilter16bpp();
                 filter.BayerPattern = new int[,] { { RGB.B, RGB.G }, { RGB.G, RGB.R } };
                 var debayered = filter.Apply(bmp);
                 return debayered;
@@ -681,27 +747,189 @@ namespace NINA.Utility {
         }
     }
 
-    public class ColorRemapping16bpp : ColorRemapping {
-        private ushort[] _grayMap16;
+    public class BayerFilter16bpp : BayerFilter {
 
-        public ushort[] GrayMap16 {
-            get { return _grayMap16; }
+        public BayerFilter16bpp() : base() {
+            // initialize format translation dictionary
+            FormatTranslations[System.Drawing.Imaging.PixelFormat.Format16bppGrayScale] = System.Drawing.Imaging.PixelFormat.Format48bppRgb;
+        }
+
+        protected override unsafe void ProcessFilter(UnmanagedImage sourceData, UnmanagedImage destinationData) {
+            // get width and height
+            int width = sourceData.Width;
+            int height = sourceData.Height;
+
+            int widthM1 = width - 1;
+            int heightM1 = height - 1;
+
+            int srcStride = sourceData.Stride / 2;
+
+            int srcOffset = (srcStride - width) / 2;
+            int dstOffset = (destinationData.Stride - width * 6) / 6;
+
+            // do the job
+            ushort* src = (ushort*)sourceData.ImageData.ToPointer();
+            ushort* dst = (ushort*)destinationData.ImageData.ToPointer();
+
+            int[] rgbValues = new int[3];
+            int[] rgbCounters = new int[3];
+
+            if (!PerformDemosaicing) {
+                // for each line
+                for (int y = 0; y < height; y++) {
+                    // for each pixel
+                    for (int x = 0; x < width; x++, src++, dst += 3) {
+                        dst[RGB.R] = dst[RGB.G] = dst[RGB.B] = 0;
+                        dst[BayerPattern[y & 1, x & 1]] = *src;
+                    }
+                    src += srcOffset;
+                    dst += dstOffset;
+                }
+            } else {
+                // for each line
+                for (int y = 0; y < height; y++) {
+                    // for each pixel
+                    for (int x = 0; x < width; x++, src++, dst += 3) {
+                        rgbValues[0] = rgbValues[1] = rgbValues[2] = 0;
+                        rgbCounters[0] = rgbCounters[1] = rgbCounters[2] = 0;
+
+                        int bayerIndex = BayerPattern[y & 1, x & 1];
+
+                        rgbValues[bayerIndex] += *src;
+                        rgbCounters[bayerIndex]++;
+
+                        if (x != 0) {
+                            bayerIndex = BayerPattern[y & 1, (x - 1) & 1];
+
+                            rgbValues[bayerIndex] += src[-1];
+                            rgbCounters[bayerIndex]++;
+                        }
+
+                        if (x != widthM1) {
+                            bayerIndex = BayerPattern[y & 1, (x + 1) & 1];
+
+                            rgbValues[bayerIndex] += src[1];
+                            rgbCounters[bayerIndex]++;
+                        }
+
+                        if (y != 0) {
+                            bayerIndex = BayerPattern[(y - 1) & 1, x & 1];
+
+                            rgbValues[bayerIndex] += src[-srcStride];
+                            rgbCounters[bayerIndex]++;
+
+                            if (x != 0) {
+                                bayerIndex = BayerPattern[(y - 1) & 1, (x - 1) & 1];
+
+                                rgbValues[bayerIndex] += src[-srcStride - 1];
+                                rgbCounters[bayerIndex]++;
+                            }
+
+                            if (x != widthM1) {
+                                bayerIndex = BayerPattern[(y - 1) & 1, (x + 1) & 1];
+
+                                rgbValues[bayerIndex] += src[-srcStride + 1];
+                                rgbCounters[bayerIndex]++;
+                            }
+                        }
+
+                        if (y != heightM1) {
+                            bayerIndex = BayerPattern[(y + 1) & 1, x & 1];
+
+                            rgbValues[bayerIndex] += src[srcStride];
+                            rgbCounters[bayerIndex]++;
+
+                            if (x != 0) {
+                                bayerIndex = BayerPattern[(y + 1) & 1, (x - 1) & 1];
+
+                                rgbValues[bayerIndex] += src[srcStride - 1];
+                                rgbCounters[bayerIndex]++;
+                            }
+
+                            if (x != widthM1) {
+                                bayerIndex = BayerPattern[(y + 1) & 1, (x + 1) & 1];
+                                rgbValues[bayerIndex] += src[srcStride + 1];
+                                rgbCounters[bayerIndex]++;
+                            }
+                        }
+
+                        dst[RGB.R] = (ushort)(rgbValues[RGB.R] / rgbCounters[RGB.R]);
+                        dst[RGB.G] = (ushort)(rgbValues[RGB.G] / rgbCounters[RGB.G]);
+                        dst[RGB.B] = (ushort)(rgbValues[RGB.B] / rgbCounters[RGB.B]);
+                    }
+                    src += srcOffset;
+                    dst += dstOffset;
+                }
+            }
+        }
+    }
+
+    public class ColorRemappingGeneral : ColorRemapping {
+        // color maps
+        private ushort[] redMap;
+        private ushort[] greenMap;
+        private ushort[] blueMap;
+        private ushort[] grayMap;
+
+        public ushort[] RedMap16 {
+            get { return redMap; }
             set {
                 // check the map
-                if ((value == null) || (value.Length != 65536)) {
+                if ((value == null) || (value.Length != 65536))
                     throw new ArgumentException("A map should be array with 65536 value.");
-                }
 
-                _grayMap16 = value;
+                redMap = value;
+            }
+        }
+
+        public ushort[] GreenMap16 {
+            get { return greenMap; }
+            set {
+                // check the map
+                if ((value == null) || (value.Length != 65536))
+                    throw new ArgumentException("A map should be array with 65536 value.");
+
+                greenMap = value;
+            }
+        }
+
+        public ushort[] BlueMap16 {
+            get { return blueMap; }
+            set {
+                // check the map
+                if ((value == null) || (value.Length != 65536))
+                    throw new ArgumentException("A map should be array with 65536 value.");
+
+                blueMap = value;
+            }
+        }
+
+        public ushort[] GrayMap16 {
+            get { return grayMap; }
+            set {
+                // check the map
+                if ((value == null) || (value.Length != 65536))
+                    throw new ArgumentException("A map should be array with 65536 value.");
+
+                grayMap = value;
             }
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ColorRemapping16bpp"/> class.
+        /// Initializes a new instance of the <see cref="ColorRemapping"/> class.
         /// </summary>
-        /// <param name="grayMap">Gray map.</param>
-        /// <remarks>This constructor is supposed for 16bit grayscale images.</remarks>
-        public ColorRemapping16bpp(ushort[] grayMap) : base() {
+        /// 
+        /// <remarks>Initializes the filter without any remapping. All
+        /// pixel values are mapped to the same values.</remarks>
+        /// 
+        public ColorRemappingGeneral(ushort[] redMap, ushort[] greenMap, ushort[] blueMap) {
+            FormatTranslations[System.Drawing.Imaging.PixelFormat.Format48bppRgb] = System.Drawing.Imaging.PixelFormat.Format48bppRgb;
+            RedMap16 = redMap;
+            GreenMap16 = greenMap;
+            BlueMap16 = blueMap;
+        }
+
+        public ColorRemappingGeneral(ushort[] grayMap) {
             FormatTranslations[System.Drawing.Imaging.PixelFormat.Format16bppGrayScale] = System.Drawing.Imaging.PixelFormat.Format16bppGrayScale;
             GrayMap16 = grayMap;
         }
@@ -709,25 +937,37 @@ namespace NINA.Utility {
         /// <summary>
         /// Process the filter on the specified image.
         /// </summary>
+        /// 
         /// <param name="image">Source image data.</param>
-        /// <param name="rect"> Image rectangle for processing by the filter.</param>
+        /// <param name="rect">Image rectangle for processing by the filter.</param>
+        ///
         protected override unsafe void ProcessFilter(UnmanagedImage image, Rectangle rect) {
-            if (image.PixelFormat != System.Drawing.Imaging.PixelFormat.Format16bppGrayScale) {
-                throw new UnsupportedImageFormatException("Source pixel format is not supported by the routine.");
-            }
-
             // processing start and stop X,Y positions
             int stopX = rect.Width;
             int stopY = rect.Height;
-
+            
             // do the job
             ushort* ptr = (ushort*)image.ImageData.ToPointer();
 
-            // grayscale image
-            for (int y = 0; y < stopY; y++) {
-                for (int x = 0; x < stopX; x++, ptr++) {
-                    // gray
-                    *ptr = GrayMap16[*ptr];
+            if (image.PixelFormat == System.Drawing.Imaging.PixelFormat.Format16bppGrayScale) {
+                // grayscale image
+                for (int y = 0; y < stopY; y++) {
+                    for (int x = 0; x < stopX; x++, ptr++) {
+                        // gray
+                        *ptr = grayMap[*ptr];
+                    }
+                }
+            } else {
+                // RGB image
+                for (int y = 0; y < stopY; y++) {
+                    for (int x = 0; x < stopX; x++, ptr += 3) {
+                        // red
+                        ptr[RGB.R] = redMap[ptr[RGB.R]];
+                        // green
+                        ptr[RGB.G] = greenMap[ptr[RGB.G]];
+                        // blue
+                        ptr[RGB.B] = blueMap[ptr[RGB.B]];
+                    }
                 }
             }
         }

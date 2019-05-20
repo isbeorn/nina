@@ -332,6 +332,11 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
   <s:String x:Key="LblExposureTimeDescription" xml:space="default">Belichtungszeit in Sekunden</s:String>
   <s:String x:Key="LblFieldOfView" xml:space="default">Bildfeld</s:String>
   <s:String x:Key="LblFile" xml:space="default">Datei</s:String>
+  <s:String x:Key="LblFileCameraDescription" xml:space="preserve">Durch diese simulierte Kamera wird es ermöglicht auch Kameras zu nutzen, die kein SDK zur verfügung stellen. Dadurch kann dennoch der ganze N.I.N.A. Workflow genutzt werden.
+Es wird einfach ein bestimmter Ordner angegeben, in dem neue Dateien die erstellt werden überwacht werden. Diese werden dann in eine interne Queue gestellt.
+Jedesmal wenn ein Bild in der Applikation heruntergeladen wird, wird der erste Eintrag dieser Queue geladen und die entsprechende Bilddatei in N.I.N.A. geladen.
+Zusätzlich kann ein manueller Bulb Modus Auslöser aktiviert werden. Dieser wird den selektierten Bulb Modus in den Einstellungen bei Aufnahmestart auslösen.
+Ist dieser Auslöser deaktiviert, wird dieser Schritt übersprungen.</s:String>
   <s:String x:Key="LblFileExample" xml:space="default">Beispiel Dateiname</s:String>
   <s:String x:Key="LblFileSettings" xml:space="default">Datei Einstellungen</s:String>
   <s:String x:Key="LblFilter" xml:space="default">Filter</s:String>
@@ -385,6 +390,7 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
 Aktueller HFR : {1}
 Berechneter HFR: {2}
     </s:String>
+  <s:String x:Key="LblFolderToWatch" xml:space="default">Zu überwachender Ordner</s:String>
   <s:String x:Key="LblFrameNFocus" xml:space="default">Frame &amp; Fokus</s:String>
   <s:String x:Key="LblFrameNrDescription" xml:space="default">Bildnummer mit Format ####</s:String>
   <s:String x:Key="LblFraming" xml:space="default">Rahmung</s:String>
@@ -443,6 +449,7 @@ Berechneter HFR: {2}
   <s:String x:Key="LblInvalidMode" xml:space="default">Ungültiger Modus</s:String>
   <s:String x:Key="LblInvalidModeBulb" xml:space="default">Ungültiger Modus (Bulb) für Belichtungszeiten &lt;1s</s:String>
   <s:String x:Key="LblInvalidModeManual" xml:space="default">Ungültiger Modus (Manuell) für Belichtungszeiten &gt;30s</s:String>
+  <s:String x:Key="LblIsBayered" xml:space="default">Ist Bayered</s:String>
   <s:String x:Key="LblIsMoving" xml:space="default">Bewegt sich</s:String>
   <s:String x:Key="LblIsSettling" xml:space="default">Is Settling</s:String>
   <s:String x:Key="LblItemsPerPage" xml:space="default">Objekte pro Seite</s:String>
@@ -866,6 +873,10 @@ Das Rechteck über einen Teil des Bildes bewegen das Sie fotografieren wollen un
   <s:String x:Key="LblUnableToSync" xml:space="default">Synchronization ist nicht möglich, da kein Teleskop verbunden ist.</s:String>
   <s:String x:Key="LblUnexpectedError" xml:space="default">Unerwarteter Fehler aufgetreten</s:String>
   <s:String x:Key="LblUnhandledException" xml:space="default">Unbehandelter Ausnahmefehler</s:String>
+  <s:String x:Key="LblUnlinkedStretch" xml:space="default">Unlinked Stretch</s:String>
+  <s:String x:Key="LblUnlinkedStretchTooltip" xml:space="preserve">Wenn aktiv, werden die Farbkanäle separat gestretcht. Dies hilft den Himmelshintergrund
+zu kaschieren und verbessert zuverlässig Autofokus sowie Platesolving vor allem in
+Lichtverschmutzten Gebieten. Berechnungszeit ist jedoch erhöht.</s:String>
   <s:String x:Key="LblUnpark" xml:space="default">Ausparken</s:String>
   <s:String x:Key="LblUpdate" xml:space="default">Aktualisieren</s:String>
   <s:String x:Key="LblUpdating" xml:space="default">Updating</s:String>
@@ -873,6 +884,7 @@ Das Rechteck über einen Teil des Bildes bewegen das Sie fotografieren wollen un
   <s:String x:Key="LblUSBLimit" xml:space="default">USB Limit</s:String>
   <s:String x:Key="LblUseBlindSolveFailover" xml:space="default">Platesolve fehlgeschlagen. Soll ein Platesolveversuch mit dem Blind Solver gestartet werden?</s:String>
   <s:String x:Key="LblUseBlindSolveNoCoordinatesRollover" xml:space="default">Keine Referenzkoordinaten verfügbar. Soll der Blindsolver stattdessen benutzt werden?</s:String>
+  <s:String x:Key="LblUseBuldMode" xml:space="default">Bulb Modus benutzen</s:String>
   <s:String x:Key="LblUseSideOfPier" xml:space="default">Teleskop Pierseite benutzen</s:String>
   <s:String x:Key="LblUseSnapPort" xml:space="default">Teleskop Snap Port nutzen</s:String>
   <s:String x:Key="LblVerticalPanels" xml:space="default">Vertikale Felder</s:String>

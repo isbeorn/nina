@@ -332,6 +332,11 @@ Quando le linee non sono allineate significa che c'è un errore di allineamento 
   <s:String x:Key="LblExposureTimeDescription" xml:space="default">Tempo esposizione in secondi</s:String>
   <s:String x:Key="LblFieldOfView" xml:space="default">Campo Visivo (FOV)</s:String>
   <s:String x:Key="LblFile" xml:space="default">File</s:String>
+  <s:String x:Key="LblFileCameraDescription" xml:space="preserve">Questa camera simulata permetterà l'utilizzo di fotocamere che non hanno un SDK, pur continuando ad impiegare il workflow completo di N.I.N.A.
+La fotocamera simulata controllerà il folder specificato cercando nuovi files creati. Questi files verranno inseriti in una coda interna.
+Ogni volta che l'applicazione vuole scaricare una immagine dalla fotocamera, il primo file nella coda viene selezionato e caricato in N.I.N.A.
+In aggiunta una modalità bulb trigger può essere attivata e utilizzerà la nmodalità bulb selezionata in Settings-&gt;Equipment-&gt;Camera all'inizio dell'esposizione.
+Quando il trigger è disattivato, l'applicazione si limita ad ignorare l'inizio esposizione e semplicemente attende che un nuovo file venga depositato nel folder specificato.</s:String>
   <s:String x:Key="LblFileExample" xml:space="default">Esempio nome File</s:String>
   <s:String x:Key="LblFileSettings" xml:space="default">Settaggi File</s:String>
   <s:String x:Key="LblFilter" xml:space="default">Filtro</s:String>
@@ -385,6 +390,7 @@ Quando le linee non sono allineate significa che c'è un errore di allineamento 
 HFR Attuale : {1}
 HFR Calcolato: {2}
     </s:String>
+  <s:String x:Key="LblFolderToWatch" xml:space="default">Folder da controllare</s:String>
   <s:String x:Key="LblFrameNFocus" xml:space="default">Frame &amp; Focus</s:String>
   <s:String x:Key="LblFrameNrDescription" xml:space="default"># del fotogramma con formato ####</s:String>
   <s:String x:Key="LblFraming" xml:space="default">Framing</s:String>
@@ -443,6 +449,7 @@ HFR Calcolato: {2}
   <s:String x:Key="LblInvalidMode" xml:space="default">Modalità non valida</s:String>
   <s:String x:Key="LblInvalidModeBulb" xml:space="default">Modalità non valida (bulb) per tempo di esposizione &lt;1s</s:String>
   <s:String x:Key="LblInvalidModeManual" xml:space="default">Modalità non valida (manual) per tempo di esposizione &gt;30s</s:String>
+  <s:String x:Key="LblIsBayered" xml:space="default">E' Bayered</s:String>
   <s:String x:Key="LblIsMoving" xml:space="default">In Movimento</s:String>
   <s:String x:Key="LblIsSettling" xml:space="default">Is Settlin</s:String>
   <s:String x:Key="LblItemsPerPage" xml:space="default">Elementi per pagina</s:String>
@@ -865,6 +872,10 @@ Trascina il rettangolo  sulla parte del fotogramma che vuoi estrarre ed abilita 
   <s:String x:Key="LblUnableToSync" xml:space="default">Impossibile sincronizzare. Il telescopio non e' connesso</s:String>
   <s:String x:Key="LblUnexpectedError" xml:space="default">Errore inatteso</s:String>
   <s:String x:Key="LblUnhandledException" xml:space="default">Exception non gestita</s:String>
+  <s:String x:Key="LblUnlinkedStretch" xml:space="default">Unlinked Stretch</s:String>
+  <s:String x:Key="LblUnlinkedStretchTooltip" xml:space="preserve">Quando abilitato, i canali colore saranno allungati separatamente, aiutando a nascondere lo sfondo
+del cielo e migliorando l'autofocus e l'affidabilità del platesolving, particolarmente in
+aree ad alto inquinamento luminoso. Il tempo di processo sarà  tuttavia aumentato.</s:String>
   <s:String x:Key="LblUnpark" xml:space="default">Unpark</s:String>
   <s:String x:Key="LblUpdate" xml:space="default">Aggiorna</s:String>
   <s:String x:Key="LblUpdating" xml:space="default">Aggiornamento in corso</s:String>
@@ -872,6 +883,7 @@ Trascina il rettangolo  sulla parte del fotogramma che vuoi estrarre ed abilita 
   <s:String x:Key="LblUSBLimit" xml:space="default">Limite USB</s:String>
   <s:String x:Key="LblUseBlindSolveFailover" xml:space="default">Plate solve fallito. Provare a risolvere con Blind Solver?</s:String>
   <s:String x:Key="LblUseBlindSolveNoCoordinatesRollover" xml:space="default">Nessuna coordinata di referenza disponibile. Vuoi usare il blind solver?</s:String>
+  <s:String x:Key="LblUseBuldMode" xml:space="default">Usa modalità bulb</s:String>
   <s:String x:Key="LblUseSideOfPier" xml:space="default">Usa il lato del Pier del Telescopio</s:String>
   <s:String x:Key="LblUseSnapPort" xml:space="default">Usa porta snap del Telescopio</s:String>
   <s:String x:Key="LblVerticalPanels" xml:space="default">Pannelli verticali</s:String>
