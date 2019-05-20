@@ -3,6 +3,7 @@ using NINA.Model;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.ImageAnalysis;
 using NINA.Utility.Mediator.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -342,7 +343,7 @@ namespace NINA.ViewModel.FramingAssistant {
                     DrawTelescope();
                 }
 
-                var source = ImageAnalysis.ConvertBitmap(img, PixelFormats.Bgra32);
+                var source = ImageUtility.ConvertBitmap(img, PixelFormats.Bgra32);
                 source.Freeze();
                 SkyMapOverlay = source;
             }

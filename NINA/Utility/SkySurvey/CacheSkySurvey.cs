@@ -195,7 +195,19 @@ namespace NINA.Utility.SkySurvey {
 
             JpegBitmapDecoder JpgDec = new JpegBitmapDecoder(new Uri(filename), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
 
-            return FileSkySurvey.ConvertTo96Dpi(JpgDec.Frames[0]);
+            return ConvertTo96Dpi(JpgDec.Frames[0]);
+        }
+
+        private BitmapSource ConvertTo96Dpi(BitmapSource image) {
+            if (image.DpiX != 96) {
+                byte[] pixelData = new byte[image.PixelWidth * 4 * image.PixelHeight];
+                image.CopyPixels(pixelData, image.PixelWidth * 4, 0);
+
+                return BitmapSource.Create(image.PixelWidth, image.PixelHeight, 96, 96, image.Format, null, pixelData,
+                    image.PixelWidth * 4);
+            }
+
+            return image;
         }
     }
 }

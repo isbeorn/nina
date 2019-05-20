@@ -285,7 +285,7 @@ namespace NINA.Model.MyCamera {
 
         public string Id {
             get {
-                return "NINA_SIM_Id";
+                return "4C0BBF74-0D95-41F6-AAD8-D6D58668CF2C";
             }
         }
 
@@ -594,46 +594,10 @@ namespace NINA.Model.MyCamera {
             dialog.DefaultExt = ".tiff";
 
             if (dialog.ShowDialog() == true) {
-                BitmapDecoder decoder = null;
-                switch (Path.GetExtension(dialog.FileName).ToLower()) {
-                    case ".gif":
-                        decoder = new GifBitmapDecoder(new Uri(dialog.FileName), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                        break;
-
-                    case ".tif":
-                    case ".tiff":
-                        decoder = new TiffBitmapDecoder(new Uri(dialog.FileName), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                        break;
-
-                    case ".jpg":
-                    case ".jpeg":
-                        decoder = new JpegBitmapDecoder(new Uri(dialog.FileName), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                        break;
-
-                    case ".png":
-                        decoder = new PngBitmapDecoder(new Uri(dialog.FileName), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                        break;
-                }
-                if (decoder != null) {
-                    Image = await LoadFromFile(decoder);
-                    return true;
-                }
+                Image = await ImageArray.FromFile(dialog.FileName, BitDepth, IsBayered, profileService.ActiveProfile.ImageSettings.HistogramResolution, profileService.ActiveProfile.CameraSettings.RawConverter);
+                return true;
             }
             return false;
-        }
-
-        private Task<ImageArray> LoadFromFile(BitmapDecoder decoder) {
-            var bmp = new FormatConvertedBitmap();
-            bmp.BeginInit();
-            bmp.Source = decoder.Frames[0];
-            bmp.DestinationFormat = System.Windows.Media.PixelFormats.Gray16;
-            bmp.EndInit();
-
-            int stride = (bmp.PixelWidth * bmp.Format.BitsPerPixel + 7) / 8;
-            int arraySize = stride * bmp.PixelHeight;
-            ushort[] pixels = new ushort[bmp.PixelWidth * bmp.PixelHeight];
-            bmp.CopyPixels(pixels, stride, 0);
-            return ImageArray.CreateInstance(pixels, bmp.PixelWidth, bmp.PixelHeight, 16, IsBayered, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
         }
 
         public IAsyncCommand LoadImageCommand { get; private set; }

@@ -112,6 +112,9 @@ namespace NINA.PlateSolving {
                 var spd = Math.Round(parameter.Coordinates.Dec + 90.0, 6);
                 //South pole distance in degrees
                 args.Add($"-spd {spd.ToString(CultureInfo.InvariantCulture)}");
+            } else {
+                //Search field radius
+                args.Add($"-r {360}");
             }
 
             return string.Join(" ", args);
