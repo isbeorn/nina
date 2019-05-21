@@ -22,9 +22,15 @@
 #endregion "copyright"
 
 using NINA.Utility;
+using NINA.Utility.Enum;
 using NINA.Utility.Notification;
+using NINA.Utility.RawConverter;
+using nom.tam.fits;
 using System;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace NINA.Model.MyCamera {
 
@@ -89,6 +95,101 @@ namespace NINA.Model.MyCamera {
             }
 
             return imgArray;
+        }
+
+        /// <summary>
+        /// Loads an image from a given file path
+        /// </summary>
+        /// <param name="path">File Path to image</param>
+        /// <param name="bitDepth">bit depth of each pixel</param>
+        /// <param name="isBayered">Flag to indicate if the image is bayer matrix encoded</param>
+        /// <param name="histogramResolution">Resolution of the histogram</param>
+        /// <param name="rawConverter">Which type of raw converter to use, when image is in RAW format</param>
+        /// <param name="ct">Token to cancel operation</param>
+        /// <returns></returns>
+        public static async Task<ImageArray> FromFile(string path, int bitDepth, bool isBayered, int histogramResolution, RawConverterEnum rawConverter, CancellationToken ct = default(CancellationToken)) {
+            if (!File.Exists(path)) {
+                throw new FileNotFoundException();
+            }
+            BitmapDecoder decoder;
+            switch (Path.GetExtension(path).ToLower()) {
+                case ".gif":
+                    decoder = new GifBitmapDecoder(new Uri(path), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+                    return await BitmapToImageArray(decoder, isBayered, histogramResolution);
+
+                case ".tif":
+                case ".tiff":
+                    decoder = new TiffBitmapDecoder(new Uri(path), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+                    return await BitmapToImageArray(decoder, isBayered, histogramResolution);
+
+                case ".jpg":
+                case ".jpeg":
+                    decoder = new JpegBitmapDecoder(new Uri(path), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+                    return await BitmapToImageArray(decoder, isBayered, histogramResolution);
+
+                case ".png":
+                    decoder = new PngBitmapDecoder(new Uri(path), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+                    return await BitmapToImageArray(decoder, isBayered, histogramResolution);
+
+                case ".xisf":
+                    return await XISF.LoadImageArrayFromFile(new Uri(path), isBayered, histogramResolution);
+
+                case ".fit":
+                case ".fits":
+                    return await FitsToImageArray(path, bitDepth, isBayered, histogramResolution);
+
+                case ".cr2":
+                case ".nef":
+                case ".raf":
+                case ".raw":
+                    return await RawToImageArray(path, bitDepth, histogramResolution, rawConverter, ct);
+
+                default:
+                    throw new NotSupportedException();
+            }
+        }
+
+        private static Task<ImageArray> FitsToImageArray(string path, int bitDepth, bool isBayered, int histogramResolution) {
+            Fits f = new Fits(path);
+            ImageHDU hdu = (ImageHDU)f.ReadHDU();
+            Array[] arr = (Array[])hdu.Data.DataArray;
+
+            var width = hdu.Header.GetIntValue("NAXIS1");
+            var height = hdu.Header.GetIntValue("NAXIS2");
+            ushort[] pixels = new ushort[width * height];
+            var i = 0;
+            foreach (var row in arr) {
+                foreach (short val in row) {
+                    pixels[i++] = (ushort)(val + short.MaxValue);
+                }
+            }
+            return ImageArray.CreateInstance(pixels, width, height, bitDepth, isBayered, true, histogramResolution);
+        }
+
+        private static async Task<ImageArray> RawToImageArray(string path, int bitDepth, int histogramResolution, RawConverterEnum rawConverter, CancellationToken ct) {
+            using (var fs = new FileStream(path, FileMode.Open)) {
+                using (var ms = new System.IO.MemoryStream()) {
+                    fs.CopyTo(ms);
+                    var converter = RawConverter.CreateInstance(rawConverter);
+                    var iarr = await converter.ConvertToImageArray(ms, bitDepth, histogramResolution, true, ct);
+                    iarr.RAWType = Path.GetExtension(path).ToLower().Substring(1);
+                    return iarr;
+                }
+            }
+        }
+
+        private static Task<ImageArray> BitmapToImageArray(BitmapDecoder decoder, bool isBayered, int histogramResolution) {
+            var bmp = new FormatConvertedBitmap();
+            bmp.BeginInit();
+            bmp.Source = decoder.Frames[0];
+            bmp.DestinationFormat = System.Windows.Media.PixelFormats.Gray16;
+            bmp.EndInit();
+
+            int stride = (bmp.PixelWidth * bmp.Format.BitsPerPixel + 7) / 8;
+            int arraySize = stride * bmp.PixelHeight;
+            ushort[] pixels = new ushort[bmp.PixelWidth * bmp.PixelHeight];
+            bmp.CopyPixels(pixels, stride, 0);
+            return ImageArray.CreateInstance(pixels, bmp.PixelWidth, bmp.PixelHeight, 16, isBayered, true, histogramResolution);
         }
 
         private void FlipAndConvert(Array input) {

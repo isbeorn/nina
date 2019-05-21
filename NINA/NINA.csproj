@@ -373,6 +373,11 @@
     <Compile Include="Profile\Interfaces\ISwitchSettings.cs" />
     <Compile Include="Profile\SwitchSettings.cs" />
     <Compile Include="Utility\Extensions\IOrderedQueryableExtension.cs" />
+    <Compile Include="Utility\ImageAnalysis\BahtinovAnalysis.cs" />
+    <Compile Include="Utility\ImageAnalysis\BahtinovImage.cs" />
+    <Compile Include="Utility\ImageAnalysis\BayerFilter16bpp.cs" />
+    <Compile Include="Utility\ImageAnalysis\ColorRemappingGeneral.cs" />
+    <Compile Include="Utility\ImageAnalysis\ImageUtility.cs" />
     <Compile Include="Utility\Mediator\Interfaces\ISwitchConsumer.cs" />
     <Compile Include="Utility\Mediator\Interfaces\ISwitchMediator.cs" />
     <Compile Include="Utility\Mediator\SwitchMediator.cs" />
@@ -687,7 +692,7 @@
     <Compile Include="Utility\AsyncObservableCollection.cs" />
     <Compile Include="Utility\BaseINPC.cs" />
     <Compile Include="Utility\EnumBindingSourceExtension.cs" />
-    <Compile Include="Utility\ImageAnalysis.cs" />
+    <Compile Include="Utility\ImageAnalysis\StarDetection.cs" />
     <Compile Include="Utility\ImageArray\ImageArray.cs" />
     <Compile Include="Utility\Logger.cs" />
     <Compile Include="Utility\TabControlEx.cs" />

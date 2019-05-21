@@ -36,6 +36,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using NINA.Utility.ImageAnalysis;
 
 namespace NINA.ViewModel {
 
@@ -199,10 +200,10 @@ namespace NINA.ViewModel {
 
         private async Task<double> EvaluateExposure(ImageArray iarr, CancellationToken token, IProgress<ApplicationStatus> progress) {
             Logger.Trace("Evaluating Expsoure");
-            var source = ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
-            source = await ImageControlVM.StretchAsync(iarr, source, profileService.ActiveProfile.ImageSettings.AutoStretchFactor, profileService.ActiveProfile.ImageSettings.BlackClipping);
-            var analysis = new ImageAnalysis(source, iarr);
-            await analysis.DetectStarsAsync(progress, token);
+            var source = ImageUtility.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
+            source = await ImageUtility.StretchAsync(iarr, source, profileService.ActiveProfile.ImageSettings.AutoStretchFactor, profileService.ActiveProfile.ImageSettings.BlackClipping);
+            var analysis = new StarDetection(source, iarr);
+            await analysis.DetectAsync(progress, token);
 
             Logger.Debug(string.Format("Current Focus: Position: {0}, HRF: {1}", _focusPosition, analysis.AverageHFR));
 

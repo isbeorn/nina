@@ -138,17 +138,7 @@ namespace NINA.ViewModel {
 
             try {
                 if (File.Exists(ImagePath.LocalPath)) {
-                    if (FileType == FileTypeEnum.FITS) {
-                        iarr = await LoadFits();
-                    } else if (FileType == FileTypeEnum.XISF) {
-                        iarr = await LoadXisf();
-                    } else if (FileType == FileTypeEnum.TIFF) {
-                        iarr = await LoadTiff();
-                    } else if (FileType == FileTypeEnum.RAW) {
-                        iarr = await LoadRaw(profileService);
-                    } else {
-                        throw new NotSupportedException("Fileformat is not supported");
-                    }
+                    iarr = await ImageArray.FromFile(ImagePath.LocalPath, (int)profileService.ActiveProfile.CameraSettings.BitDepth, IsBayered, profileService.ActiveProfile.ImageSettings.HistogramResolution, profileService.ActiveProfile.CameraSettings.RawConverter);
                     iarr.Statistics.Id = StatisticsId;
                 } else {
                     Notification.ShowError("File does not exist");
@@ -159,50 +149,6 @@ namespace NINA.ViewModel {
             }
 
             return iarr;
-        }
-
-        private async Task<ImageArray> LoadRaw(IProfileService profileService) {
-            var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
-            using (var fs = new FileStream(ImagePath.LocalPath, FileMode.Open)) {
-                using (var ms = new MemoryStream()) {
-                    fs.Position = 0;
-                    fs.CopyTo(ms);
-                    ms.Position = 0;
-                    var iarr = await converter.ConvertToImageArray(ms, 16, profileService.ActiveProfile.ImageSettings.HistogramResolution, true, new System.Threading.CancellationToken());
-                    return iarr;
-                }
-            }
-        }
-
-        private Task<ImageArray> LoadXisf() {
-            return XISF.LoadImageArrayFromFile(ImagePath, IsBayered, histogramResolution);
-        }
-
-        private Task<ImageArray> LoadTiff() {
-            TiffBitmapDecoder TifDec = new TiffBitmapDecoder(ImagePath, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-            BitmapFrame bmp = TifDec.Frames[0];
-            int stride = bmp.PixelWidth * ((bmp.Format.BitsPerPixel + 7) / 8);
-            int arraySize = stride * bmp.PixelHeight;
-            ushort[] pixels = new ushort[(int)(bmp.Width * bmp.Height)];
-            bmp.CopyPixels(pixels, stride, 0);
-            return ImageArray.CreateInstance(pixels, (int)bmp.Width, (int)bmp.Height, 16, IsBayered, true, histogramResolution);
-        }
-
-        private Task<ImageArray> LoadFits() {
-            Fits f = new Fits(ImagePath);
-            ImageHDU hdu = (ImageHDU)f.ReadHDU();
-            Array[] arr = (Array[])hdu.Data.DataArray;
-
-            var width = hdu.Header.GetIntValue("NAXIS1");
-            var height = hdu.Header.GetIntValue("NAXIS2");
-            ushort[] pixels = new ushort[width * height];
-            var i = 0;
-            foreach (var row in arr) {
-                foreach (short val in row) {
-                    pixels[i++] = (ushort)(val + short.MaxValue);
-                }
-            }
-            return ImageArray.CreateInstance(pixels, width, height, 16, IsBayered, true, histogramResolution);
         }
 
         public BitmapSource ThumbnailImage { get; set; }

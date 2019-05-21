@@ -42,6 +42,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using NINA.Utility.ImageAnalysis;
 
 namespace NINA.ViewModel.FlatWizard {
 
@@ -377,9 +378,9 @@ namespace NINA.ViewModel.FlatWizard {
                 var sequence = new CaptureSequence(exposureTime, "FLAT", wrapper.Filter, BinningMode, 1) { Gain = Gain };
 
                 imageArray = await ImagingVM.CaptureImageWithoutHistoryAndThumbnail(sequence, ct, progress, true);
-                Image = await ImageControlVM.StretchAsync(
+                Image = await ImageUtility.StretchAsync(
                     imageArray.Statistics,
-                    ImageAnalysis.CreateSourceFromArray(imageArray, System.Windows.Media.PixelFormats.Gray16),
+                    ImageUtility.CreateSourceFromArray(imageArray, System.Windows.Media.PixelFormats.Gray16),
                     profileService.ActiveProfile.ImageSettings.AutoStretchFactor, profileService.ActiveProfile.ImageSettings.BlackClipping);
 
                 // check for exposure ADU state

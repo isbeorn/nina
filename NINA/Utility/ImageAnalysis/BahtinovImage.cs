@@ -21,32 +21,12 @@
 
 #endregion "copyright"
 
-using NINA.Model.MyCamera;
-using NINA.Utility.Enum;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
-namespace NINA.Utility.RawConverter {
+namespace NINA.Utility.ImageAnalysis {
 
-    public class RawConverter {
-
-        public static IRawConverter CreateInstance(RawConverterEnum converter) {
-            switch (converter) {
-                case Enum.RawConverterEnum.DCRAW:
-                    return new DCRaw();
-
-                case Enum.RawConverterEnum.FREEIMAGE:
-                    return new FreeImageConverter();
-
-                default:
-                    return new DCRaw();
-            }
-        }
-    }
-
-    public interface IRawConverter {
-
-        Task<ImageArray> ConvertToImageArray(MemoryStream s, int bitDepth, int histogramResolution, bool calculateStatistics, CancellationToken token);
+    public class BahtinovImage {
+        public BitmapSource Image { get; set; }
+        public double Distance { get; set; }
     }
 }

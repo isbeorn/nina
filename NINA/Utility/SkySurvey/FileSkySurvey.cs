@@ -21,7 +21,9 @@
 
 #endregion "copyright"
 
+using NINA.Model.MyCamera;
 using NINA.Utility.Astrometry;
+using NINA.Utility.ImageAnalysis;
 using System;
 using System.IO;
 using System.Threading;
@@ -39,29 +41,13 @@ namespace NINA.Utility.SkySurvey {
             dialog.FileName = "";
             dialog.DefaultExt = ".tif";
             dialog.Multiselect = false;
-            dialog.Filter = "Image files|*.tif;*.tiff;*.jpeg;*.jpg;*.png;*.cr2;*.nef|TIFF files|*.tif;*.tiff;|JPEG files|*.jpeg;*.jpg|PNG Files|*.png|RAW Files|*.cr2;*.nef";
+            dialog.Filter = "Image files|*.tif;*.tiff;*.jpeg;*.jpg;*.png;*.cr2;*.nef;*.fit;*.fits;*.xisf|TIFF files|*.tif;*.tiff;|JPEG files|*.jpeg;*.jpg|PNG Files|*.png|RAW Files|*.cr2;*.nef|XISF Files|*.xisf|FITS Files|*.fit;*.fits";
 
             if (dialog.ShowDialog() == true) {
-                BitmapSource img = null;
-                switch (Path.GetExtension(dialog.FileName).ToLower()) {
-                    case ".tif":
-                    case ".tiff":
-                        img = LoadTiff(dialog.FileName);
-                        break;
+                var arr = await ImageArray.FromFile(dialog.FileName, 16, false, 10, Enum.RawConverterEnum.DCRAW, ct);
 
-                    case ".png":
-                        img = LoadPng(dialog.FileName);
-                        break;
-
-                    case ".jpg":
-                        img = LoadJpg(dialog.FileName);
-                        break;
-
-                    case ".cr2":
-                    case ".nef":
-                        img = await LoadRAW(dialog.FileName, ct);
-                        break;
-                }
+                var img = ImageUtility.CreateSourceFromArray(arr, System.Windows.Media.PixelFormats.Gray16);
+                img = await ImageUtility.StretchAsync(arr, img, img.Format, 0.2, -2.8);
 
                 if (img == null) {
                     return null;
@@ -78,44 +64,6 @@ namespace NINA.Utility.SkySurvey {
                 };
             } else {
                 return null;
-            }
-        }
-
-        private BitmapSource LoadPng(string filename) {
-            PngBitmapDecoder PngDec = new PngBitmapDecoder(new Uri(filename), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-            return ConvertTo96Dpi(PngDec.Frames[0]);
-        }
-
-        private BitmapSource LoadJpg(string filename) {
-            JpegBitmapDecoder JpgDec = new JpegBitmapDecoder(new Uri(filename), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-            return ConvertTo96Dpi(JpgDec.Frames[0]);
-        }
-
-        private BitmapSource LoadTiff(string filename) {
-            TiffBitmapDecoder TifDec = new TiffBitmapDecoder(new Uri(filename), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-            return ConvertTo96Dpi(TifDec.Frames[0]);
-        }
-
-        public static BitmapSource ConvertTo96Dpi(BitmapSource image) {
-            if (image.DpiX != 96) {
-                byte[] pixelData = new byte[image.PixelWidth * 4 * image.PixelHeight];
-                image.CopyPixels(pixelData, image.PixelWidth * 4, 0);
-
-                return BitmapSource.Create(image.PixelWidth, image.PixelHeight, 96, 96, image.Format, null, pixelData,
-                    image.PixelWidth * 4);
-            }
-
-            return image;
-        }
-
-        private async Task<BitmapSource> LoadRAW(string filename, CancellationToken ct) {
-            using (FileStream fs = new FileStream(filename, FileMode.Open)) {
-                using (MemoryStream ms = new MemoryStream()) {
-                    fs.CopyTo(ms);
-                    var converter = RawConverter.RawConverter.CreateInstance(Enum.RawConverterEnum.DCRAW);
-                    var iarr = await converter.ConvertToImageArray(ms, 16, 0, false, ct);
-                    return ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
-                }
             }
         }
     }

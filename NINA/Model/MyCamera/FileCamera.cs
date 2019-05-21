@@ -289,7 +289,7 @@ namespace NINA.Model.MyCamera {
 
         public string Id {
             get {
-                return "NINA_SIM_Id";
+                return "209D6981-1E09-438C-A1B6-7452F5C34A59";
             }
         }
 
@@ -489,7 +489,7 @@ namespace NINA.Model.MyCamera {
         private void AddQueueItem(string path) {
             lock (lockObj) {
                 var fileExt = Path.GetExtension(path).ToLower();
-                if (Regex.IsMatch(fileExt, @"\.tiff|\.tif|\.png|\.gif|\.jpg|\.jpeg|\.png|\.cr2|\.nef|\.raw|\.raf")) {
+                if (Regex.IsMatch(fileExt, @"\.tiff|\.tif|\.png|\.gif|\.jpg|\.jpeg|\.png|\.cr2|\.nef|\.raw|\.raf|\.xisf|\.fit|\.fits")) {
                     Logger.Trace($"Added file to Queue at {path}");
                     fileQueue.Enqueue(path);
                 } else {
@@ -521,7 +521,7 @@ namespace NINA.Model.MyCamera {
                     while (true) {
                         tries++;
                         try {
-                            var image = await LoadImage(path);
+                            var image = await ImageArray.FromFile(path, BitDepth, IsBayered, profileService.ActiveProfile.ImageSettings.HistogramResolution, profileService.ActiveProfile.CameraSettings.RawConverter, token);
                             return image;
                         } catch (Exception ex) {
                             if (tries > 3) {
@@ -562,65 +562,12 @@ namespace NINA.Model.MyCamera {
             WindowService.ShowDialog(this, "File Camera Setup", System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.SingleBorderWindow);
         }
 
-        private async Task<ImageArray> LoadImage(string path) {
-            BitmapDecoder decoder = null;
-            switch (Path.GetExtension(path).ToLower()) {
-                case ".gif":
-                    decoder = new GifBitmapDecoder(new Uri(path), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                    return await LoadFromFile(decoder);
-
-                case ".tif":
-                case ".tiff":
-                    decoder = new TiffBitmapDecoder(new Uri(path), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                    return await LoadFromFile(decoder);
-
-                case ".jpg":
-                case ".jpeg":
-                    decoder = new JpegBitmapDecoder(new Uri(path), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                    return await LoadFromFile(decoder);
-
-                case ".png":
-                    decoder = new PngBitmapDecoder(new Uri(path), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                    return await LoadFromFile(decoder);
-
-                case ".cr2":
-                case ".nef":
-                case ".raf":
-                case ".raw":
-                    using (var fs = new FileStream(path, FileMode.Open)) {
-                        using (var ms = new System.IO.MemoryStream()) {
-                            fs.CopyTo(ms);
-                            var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
-                            var iarr = await converter.ConvertToImageArray(ms, BitDepth, profileService.ActiveProfile.ImageSettings.HistogramResolution, true, new CancellationToken());
-                            iarr.RAWType = Path.GetExtension(path).ToLower().Substring(1);
-                            return iarr;
-                        }
-                    }
-            }
-
-            return null;
-        }
-
         public bool IsBayered {
             get => profileService.ActiveProfile.CameraSettings.FileCameraIsBayered;
             set {
                 profileService.ActiveProfile.CameraSettings.FileCameraIsBayered = value;
                 RaisePropertyChanged();
             }
-        }
-
-        private Task<ImageArray> LoadFromFile(BitmapDecoder decoder) {
-            var bmp = new FormatConvertedBitmap();
-            bmp.BeginInit();
-            bmp.Source = decoder.Frames[0];
-            bmp.DestinationFormat = System.Windows.Media.PixelFormats.Gray16;
-            bmp.EndInit();
-
-            int stride = (bmp.PixelWidth * bmp.Format.BitsPerPixel + 7) / 8;
-            int arraySize = stride * bmp.PixelHeight;
-            ushort[] pixels = new ushort[bmp.PixelWidth * bmp.PixelHeight];
-            bmp.CopyPixels(pixels, stride, 0);
-            return ImageArray.CreateInstance(pixels, bmp.PixelWidth, bmp.PixelHeight, 16, IsBayered, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
         }
 
         public bool UseBulbMode {
