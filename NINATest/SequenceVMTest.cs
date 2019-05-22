@@ -937,6 +937,10 @@ namespace NINATest {
     internal class SequenceImagingMediator : IImagingMediator {
         public event EventHandler<ImageSavedEventArgs> ImageSaved;
 
+        public Task<SourceAndArray> CaptureArrayAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            throw new NotImplementedException();
+        }
+
         public Task<System.Windows.Media.Imaging.BitmapSource> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
             throw new NotImplementedException();
         }
