@@ -606,8 +606,6 @@ namespace NINA.ViewModel {
                         iarr.Statistics.DetectedStars = analysis.DetectedStars;
                     }
 
-                    //source = ImageAnalysis.Convert16BppTo8BppSource(source);
-
                     if (parameters != null) {
                         iarr.Statistics.ExposureTime = parameters.ExposureTime;
                     }

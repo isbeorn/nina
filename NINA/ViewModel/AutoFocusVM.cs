@@ -187,7 +187,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task<ImageArray> TakeExposure(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        private async Task<ImageData> TakeExposure(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
             Logger.Trace("Starting Exposure for autofocus");
             double expTime = profileService.ActiveProfile.FocuserSettings.AutoFocusExposureTime;
             if (filter != null && filter.AutoFocusExposureTime > 0) {
@@ -195,14 +195,28 @@ namespace NINA.ViewModel {
             }
             var seq = new CaptureSequence(expTime, CaptureSequence.ImageTypes.SNAP, filter, null, 1);
 
-            return await imagingMediator.CaptureImage(seq, token, progress);
+            var oldAutoStretch = imagingMediator.SetAutoStretch(true);
+            var oldDetectStars = imagingMediator.SetDetectStars(false);
+
+            ImageData image = await imagingMediator.CaptureArrayAndPrepareImage(seq, token, progress);
+
+            imagingMediator.SetAutoStretch(oldAutoStretch);
+            imagingMediator.SetDetectStars(oldDetectStars);
+
+            return image;
         }
 
-        private async Task<double> EvaluateExposure(ImageArray iarr, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            Logger.Trace("Evaluating Expsoure");
-            var source = ImageUtility.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
-            source = await ImageUtility.StretchAsync(iarr, source, profileService.ActiveProfile.ImageSettings.AutoStretchFactor, profileService.ActiveProfile.ImageSettings.BlackClipping);
-            var analysis = new StarDetection(source, iarr);
+        private async Task<double> EvaluateExposure(ImageData image, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            Logger.Trace("Evaluating Exposure");
+            System.Windows.Media.PixelFormat pixelFormat;
+
+            if (image.Data.Statistics.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage) {
+                pixelFormat = System.Windows.Media.PixelFormats.Rgb48;
+            } else {
+                pixelFormat = System.Windows.Media.PixelFormats.Gray16;
+            }
+
+            var analysis = new StarDetection(image.Image, image.Data, pixelFormat);
             await analysis.DetectAsync(progress, token);
 
             Logger.Debug(string.Format("Current Focus: Position: {0}, HRF: {1}", _focusPosition, analysis.AverageHFR));
@@ -241,8 +255,8 @@ namespace NINA.ViewModel {
             //Average HFR  of multiple exposures (if configured this way)
             double sumHfr = 0;
             for (int i = 0; i < exposuresPerFocusPoint; i++) {
-                var iarr = await TakeExposure(filter, token, progress);
-                var partialHfr = await EvaluateExposure(iarr, token, progress);
+                var image = await TakeExposure(filter, token, progress);
+                var partialHfr = await EvaluateExposure(image, token, progress);
                 sumHfr = sumHfr + partialHfr;
                 token.ThrowIfCancellationRequested();
             }

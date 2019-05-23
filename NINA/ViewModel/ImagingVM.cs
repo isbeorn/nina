@@ -273,6 +273,20 @@ namespace NINA.ViewModel {
         //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
         private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
+        public async Task<ImageData> CaptureArrayAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            ImageData output = new ImageData();
+            var iarr = await CaptureImage(sequence, token, progress, false, "");
+            if (iarr != null) {
+                output.Image = await _currentPrepareImageTask;
+                output.Data = iarr;
+                return output;
+            } else {
+                output.Image = null;
+                output.Data = null;
+                return output;
+            }
+        }
+
         public async Task<BitmapSource> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
             var iarr = await CaptureImage(sequence, token, progress, false, "");
             if (iarr != null) {

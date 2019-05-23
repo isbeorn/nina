@@ -55,6 +55,10 @@ namespace NINA.Utility.Mediator {
             return handler.CaptureAndPrepareImage(sequence, token, progress);
         }
 
+        public Task<ImageData> CaptureArrayAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            return handler.CaptureArrayAndPrepareImage(sequence, token, progress);
+        }
+
         public Task<bool> CaptureAndSaveImage(CaptureSequence seq, bool save, CancellationToken ct, IProgress<ApplicationStatus> progress, string targetname = "") {
             return handler.CaptureAndSaveImage(seq, save, ct, progress, targetname);
         }
