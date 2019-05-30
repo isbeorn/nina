@@ -55,6 +55,10 @@ Soll die Anwendung versuchen sich von dem Fehler zu erholen? (Kann zu unerwartet
   <s:String x:Key="LblAutoFocusAfterSetTime" xml:space="default">Nach verstrichener Zeit</s:String>
   <s:String x:Key="LblAutoFocusAfterTemperatureChange" xml:space="default">Nach Temperaturänderung</s:String>
   <s:String x:Key="LblAutoFocusAfterTemperatureChangeAmount" xml:space="default">Temperaturbetrag</s:String>
+  <s:String x:Key="LblAutoFocusCropRatio" xml:space="default">AF Crop Ratio</s:String>
+  <s:String x:Key="LblAutoFocusCropRatioTooltip" xml:space="preserve">If set to a value less than one, star detection during autofocus will only use
+a centered subframe of the total sensor (if supported by camera). If unsupported
+by the camera, stars near the edge will be ignored during star detection.</s:String>
   <s:String x:Key="LblAutoFocusExposureTime" xml:space="default">Autofokus Belichtungszeit</s:String>
   <s:String x:Key="LblAutoFocusExposureTimeTooltip" xml:space="default">Belichtungszeit, die für Autofokus genutzt werden soll, falls kein Filter genutzt wird oder der Filterspezifische Wert null ist.</s:String>
   <s:String x:Key="LblAutoFocusGearNotConnected" xml:space="default">Autofokus kann nicht gestartet werden. Kamera oder Motorfokus ist nicht verbunden!</s:String>

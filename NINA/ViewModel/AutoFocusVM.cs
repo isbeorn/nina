@@ -80,6 +80,7 @@ namespace NINA.ViewModel {
             this.applicationStatusMediator = applicationStatusMediator;
 
             FocusPoints = new AsyncObservableCollection<DataPoint>();
+            
 
             StartAutoFocusCommand = new AsyncCommand<bool>(
                 () =>
@@ -195,12 +196,20 @@ namespace NINA.ViewModel {
                 expTime = filter.AutoFocusExposureTime;
             }
             var seq = new CaptureSequence(expTime, CaptureSequence.ImageTypes.SNAP, filter, null, 1);
+            seq.EnableSubSample = _setSubSample;
 
             var oldAutoStretch = imagingMediator.SetAutoStretch(true);
             var oldDetectStars = imagingMediator.SetDetectStars(false);
-
-            IImageData image = await imagingMediator.CaptureAndPrepareImage(seq, token, progress);
-
+            IImageData image;
+            try { 
+                image = await imagingMediator.CaptureAndPrepareImage(seq, token, progress);
+            } catch (Exception e) {
+                Logger.Warning("Camera error, trying without subsample");
+                Logger.Warning(e.Message);
+                _setSubSample = false;
+                seq.EnableSubSample = _setSubSample;
+                image = await imagingMediator.CaptureAndPrepareImage(seq, token, progress);
+            }
             imagingMediator.SetAutoStretch(oldAutoStretch);
             imagingMediator.SetDetectStars(oldDetectStars);
 
@@ -218,7 +227,15 @@ namespace NINA.ViewModel {
             }
 
             var analysis = new StarDetection(image, pixelFormat);
+            if (profileService.ActiveProfile.FocuserSettings.AutoFocusCropRatio < 1 && !_setSubSample) {
+                analysis.IgnoreImageEdges = true;
+                analysis.CropRatio = profileService.ActiveProfile.FocuserSettings.AutoFocusCropRatio;
+            }
             await analysis.DetectAsync(progress, token);
+
+            if (profileService.ActiveProfile.ImageSettings.AnnotateImage) {
+                imagingMediator.SetImage(analysis.GetAnnotatedImage());
+            }
 
             Logger.Debug(string.Format("Current Focus: Position: {0}, HRF: {1}", _focusPosition, analysis.AverageHFR));
 
@@ -274,6 +291,24 @@ namespace NINA.ViewModel {
             int numberOfAttempts = 0;
             int initialFocusPosition;
             double initialHFR = 0;
+
+            System.Drawing.Rectangle oldSubSample = new System.Drawing.Rectangle(); 
+
+            if (profileService.ActiveProfile.FocuserSettings.AutoFocusCropRatio < 1 && cameraInfo.CanSubSample) {
+                oldSubSample = new System.Drawing.Rectangle(cameraInfo.SubSampleX, cameraInfo.SubSampleY, cameraInfo.SubSampleWidth, cameraInfo.SubSampleHeight);
+                int subSampleWidth = (int)Math.Round(cameraInfo.XSize * profileService.ActiveProfile.FocuserSettings.AutoFocusCropRatio);
+                int subSampleHeight = (int)Math.Round(cameraInfo.YSize * profileService.ActiveProfile.FocuserSettings.AutoFocusCropRatio);
+                int subSampleX = (int)Math.Round((cameraInfo.XSize - subSampleWidth) / 2.0d);
+                int subSampleY = (int)Math.Round((cameraInfo.YSize - subSampleHeight) / 2.0d);
+                try { 
+                    cameraMediator.SetSubSampleArea(subSampleX, subSampleY, subSampleWidth, subSampleHeight);
+                } catch (Exception e) {
+                    Logger.Warning("Could not set subsample of rectangle X = "+ subSampleX+", Y = "+ subSampleY+", Width = "+subSampleWidth+", Height = "+subSampleHeight);
+                    Logger.Warning(e.Message);
+                    _setSubSample = false;
+                }
+                _setSubSample = true;
+            }
 
             try {
                 await this.guiderMediator.StopGuiding(token);
@@ -368,6 +403,16 @@ namespace NINA.ViewModel {
                 Notification.ShowError(ex.Message);
                 Logger.Error(ex);
             } finally {
+                //Restore original sub-sample rectangle, if appropriate
+                if (_setSubSample && oldSubSample.X >= 0 && oldSubSample.Y >= 0 && oldSubSample.Width > 0 && oldSubSample.Height > 0) {
+                    try { 
+                        cameraMediator.SetSubSampleArea((int)oldSubSample.X, (int)oldSubSample.Y, (int)oldSubSample.Width, (int)oldSubSample.Height);
+                    } catch(Exception e) {
+                        Logger.Warning("Could not set back old sub sample area");
+                        Logger.Warning(e.Message);
+                        Notification.ShowError(e.Message);
+                    }
+                }
                 await this.guiderMediator.StartGuiding(token);
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
@@ -380,6 +425,7 @@ namespace NINA.ViewModel {
         private IFocuserMediator focuserMediator;
         private IFilterWheelMediator filterWheelMediator;
         private FilterWheelInfo filterInfo;
+        private bool _setSubSample = false;
 
         public AutoFocusPoint LastAutoFocusPoint {
             get {

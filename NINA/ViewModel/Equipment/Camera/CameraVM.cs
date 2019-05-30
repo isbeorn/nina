@@ -373,6 +373,10 @@ namespace NINA.ViewModel.Equipment.Camera {
                                 BinY = Cam.BinY,
                                 CameraState = Cam.CameraState,
                                 CanSubSample = Cam.CanSubSample,
+                                SubSampleX = Cam.SubSampleX,
+                                SubSampleY = Cam.SubSampleY,
+                                SubSampleWidth = Cam.SubSampleWidth,
+                                SubSampleHeight = Cam. SubSampleHeight,
                                 Connected = true,
                                 CoolerOn = Cam.CoolerOn,
                                 CoolerPower = Cam.CoolerPower,
@@ -506,6 +510,18 @@ namespace NINA.ViewModel.Equipment.Camera {
             cameraValues.TryGetValue(nameof(CameraInfo.ElectronsPerADU), out o);
             CameraInfo.ElectronsPerADU = (double)(o ?? double.NaN);
 
+            cameraValues.TryGetValue(nameof(CameraInfo.SubSampleX), out o);
+            CameraInfo.SubSampleX = (int)(o ?? -1);
+
+            cameraValues.TryGetValue(nameof(CameraInfo.SubSampleY), out o);
+            CameraInfo.SubSampleY = (int)(o ?? -1);
+
+            cameraValues.TryGetValue(nameof(CameraInfo.SubSampleWidth), out o);
+            CameraInfo.SubSampleWidth = (int)(o ?? -1);
+
+            cameraValues.TryGetValue(nameof(CameraInfo.SubSampleHeight), out o);
+            CameraInfo.SubSampleHeight = (int)(o ?? -1);
+
             DateTime x = DateTime.Now;
             CoolerPowerHistory.Add(new KeyValuePair<DateTime, double>(x, CameraInfo.CoolerPower));
             CCDTemperatureHistory.Add(new KeyValuePair<DateTime, double>(x, CameraInfo.Temperature));
@@ -523,6 +539,10 @@ namespace NINA.ViewModel.Equipment.Camera {
             cameraValues.Add(nameof(CameraInfo.CameraState), _cam?.CameraState ?? string.Empty);
             cameraValues.Add(nameof(CameraInfo.TemperatureSetPoint), _cam?.TemperatureSetPoint ?? double.NaN);
             cameraValues.Add(nameof(CameraInfo.ElectronsPerADU), _cam?.ElectronsPerADU ?? double.NaN);
+            cameraValues.Add(nameof(CameraInfo.SubSampleX), _cam?.SubSampleX ?? -1);
+            cameraValues.Add(nameof(CameraInfo.SubSampleY), _cam?.SubSampleY ?? -1);
+            cameraValues.Add(nameof(CameraInfo.SubSampleWidth), _cam?.SubSampleWidth ?? -1);
+            cameraValues.Add(nameof(CameraInfo.SubSampleHeight), _cam?.SubSampleHeight ?? -1);
 
             if (_cam != null && _cam.CanSetOffset) {
                 cameraValues.Add(nameof(CameraInfo.Offset), _cam?.Offset ?? -1);

@@ -77,5 +77,9 @@ namespace NINA.Utility.Mediator {
                 return handler.IsLooping;
             }
         }
+
+        public void SetImage(BitmapSource img) {
+            handler.SetImage(img);
+        }
     }
 }

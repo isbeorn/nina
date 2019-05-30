@@ -156,6 +156,10 @@ namespace NINA.ViewModel {
             return true;
         }
 
+        public void SetImage(BitmapSource img) {
+            ImageControl.Image = img;
+        }
+
         private void StopLiveView(object o) {
             _liveViewCts?.Cancel();
         }

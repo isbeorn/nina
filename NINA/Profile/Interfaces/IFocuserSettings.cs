@@ -32,5 +32,6 @@ namespace NINA.Profile {
         int FocuserSettleTime { get; set;}
         int AutoFocusTotalNumberOfAttempts { get; set; }
         int AutoFocusNumberOfFramesPerPoint { get; set; }
+        double AutoFocusCropRatio { get; set; }
     }
 }

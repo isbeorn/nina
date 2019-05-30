@@ -55,6 +55,10 @@ Should the Application try to recover from the error? (Can lead to unexpected be
   <s:String x:Key="LblAutoFocusAfterSetTime" xml:space="default">After elapsed Time</s:String>
   <s:String x:Key="LblAutoFocusAfterTemperatureChange" xml:space="default">After temperature change</s:String>
   <s:String x:Key="LblAutoFocusAfterTemperatureChangeAmount" xml:space="default">Temperature amount</s:String>
+  <s:String x:Key="LblAutoFocusCropRatio" xml:space="default">AF Crop Ratio</s:String>
+  <s:String x:Key="LblAutoFocusCropRatioTooltip" xml:space="preserve">If set to a value less than one, star detection during autofocus will only use
+a centered subframe of the total sensor (if supported by camera). If unsupported
+by the camera, stars near the edge will be ignored during star detection.</s:String>
   <s:String x:Key="LblAutoFocusExposureTime" xml:space="default">Auto Focus Exposure Time</s:String>
   <s:String x:Key="LblAutoFocusExposureTimeTooltip" xml:space="default">Exposure Time used for auto focus when no filter specific time is set or the filter specific time is zero</s:String>
   <s:String x:Key="LblAutoFocusGearNotConnected" xml:space="default">Cannot start Auto Focus. Camera or Focuser is not connected!</s:String>
