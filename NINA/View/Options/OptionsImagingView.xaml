@@ -353,30 +353,6 @@
                             HorizontalAlignment="Left"
                             IsChecked="{Binding UnlinkedStretch}" />
                     </StackPanel>
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                        <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblHistogramResolution}">
-                            <TextBlock.ToolTip>
-                                <TextBlock Text="{ns:Loc LblHistogramResolutionTooltip}" />
-                            </TextBlock.ToolTip>
-                        </TextBlock>
-                        <TextBox
-                            MinWidth="75"
-                            MinHeight="20"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center">
-                            <TextBox.Text>
-                                <Binding Path="HistogramResolution" UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:GreaterZeroRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                    </StackPanel>
                 </StackPanel>
             </GroupBox>
             <GroupBox DataContext="{Binding SequenceSettings}" Header="{ns:Loc LblSequence}">

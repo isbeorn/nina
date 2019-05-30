@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using NINA.Model.ImageData;
 
 namespace NINA.Model.MyCamera {
 
@@ -453,15 +454,15 @@ namespace NINA.Model.MyCamera {
             RaisePropertyChanged(nameof(Connected));
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
+        public async Task<IImageData> DownloadExposure(CancellationToken token) {
             using (MyStopWatch.Measure("ATIK Download")) {
-                return await Task.Run<ImageArray>(async () => {
+                return await Task.Run<IImageData>(async () => {
                     try {
                         do {
                             await Task.Delay(100, token);
                         } while (!AtikCameraDll.ImageReady(_cameraP));
 
-                        return await AtikCameraDll.DownloadExposure(_cameraP, BitDepth, SensorType != SensorType.Monochrome, calculateStatistics, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                        return AtikCameraDll.DownloadExposure(_cameraP, BitDepth, SensorType != SensorType.Monochrome);
                     } catch (OperationCanceledException) {
                     } catch (Exception ex) {
                         Logger.Error(ex);
@@ -499,7 +500,7 @@ namespace NINA.Model.MyCamera {
             throw new NotImplementedException();
         }
 
-        public Task<ImageArray> DownloadLiveView(CancellationToken token) {
+        public Task<IImageData> DownloadLiveView(CancellationToken token) {
             throw new NotImplementedException();
         }
 

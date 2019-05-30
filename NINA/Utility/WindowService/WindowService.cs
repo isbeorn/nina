@@ -38,7 +38,7 @@ namespace NINA.Utility.WindowService {
         protected CustomWindow window;
 
         public void Show(object content, string title = "", ResizeMode resizeMode = ResizeMode.NoResize, WindowStyle windowStyle = WindowStyle.None) {
-            dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+            dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => {
                 window = new CustomWindow() {
                     SizeToContent = SizeToContent.WidthAndHeight,
                     Title = title,

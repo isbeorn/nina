@@ -185,19 +185,20 @@ namespace NINA.ViewModel {
             if (profileService.ActiveProfile.MeridianFlipSettings.Recenter) {
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblInitiatePlatesolve"] });
                 PlateSolveResult plateSolveResult = null;
-                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
-                PlatesolveVM.SolveParameters solveParameters = new PlatesolveVM.SolveParameters {
-                    syncScope = true,
-                    slewToTarget = true,
-                    repeat = true,
-                    silent = true,
-                    repeatThreshold = profileService.ActiveProfile.PlateSolveSettings.Threshold,
-                    numberOfAttempts = profileService.ActiveProfile.PlateSolveSettings.NumberOfAttempts,
-                    delayDuration = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay)
-                };
-                plateSolveResult = await solver.CaptureSolveSyncReslewReattempt(solveParameters, token, progress);
+                using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
+                    PlatesolveVM.SolveParameters solveParameters = new PlatesolveVM.SolveParameters {
+                        syncScope = true,
+                        slewToTarget = true,
+                        repeat = true,
+                        silent = true,
+                        repeatThreshold = profileService.ActiveProfile.PlateSolveSettings.Threshold,
+                        numberOfAttempts = profileService.ActiveProfile.PlateSolveSettings.NumberOfAttempts,
+                        delayDuration = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay)
+                    };
+                    plateSolveResult = await solver.CaptureSolveSyncReslewReattempt(solveParameters, token, progress);
+                }
             }
-        return true;
+            return true;
         }
 
         private async Task<bool> ResumeAutoguider(CancellationToken token, IProgress<ApplicationStatus> progress) {
@@ -231,15 +232,14 @@ namespace NINA.ViewModel {
                         return true;
                     }
                 }
-            }
-            else if (profileService.ActiveProfile.MeridianFlipSettings.Enabled && profileService.ActiveProfile.MeridianFlipSettings.UseSideOfPier) {
+            } else if (profileService.ActiveProfile.MeridianFlipSettings.Enabled && profileService.ActiveProfile.MeridianFlipSettings.UseSideOfPier) {
                 var pierside = telescopeInfo.SideOfPier;
-                
+
                 // Logging if reported side of pier is East, as users may be wondering why Meridian Flip didn't occur
-                if(pierside==PierSide.pierEast) {
+                if (pierside == PierSide.pierEast) {
                     Logger.Trace("Telescope reports East Side of Pier, Automated Flip will not be performed.");
                 }
-                
+
                 if (telescopeInfo.Connected == true && pierside != PierSide.pierEast) {
                     if ((telescopeInfo.TimeToMeridianFlip - (profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian / 60)) < (exposureTime / 60 / 60)) {
                         return true;

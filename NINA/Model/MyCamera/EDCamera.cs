@@ -35,6 +35,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using NINA.Model.ImageData;
 
 namespace NINA.Model.MyCamera {
 
@@ -499,8 +500,8 @@ namespace NINA.Model.MyCamera {
             Connected = false;
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
-            return await Task<ImageArray>.Run(async () => {
+        public Task<IImageData> DownloadExposure(CancellationToken token) {
+            return Task<IImageData>.Run(async () => {
                 var memoryStreamHandle = IntPtr.Zero;
                 var imageDataPointer = IntPtr.Zero;
                 try {
@@ -537,8 +538,8 @@ namespace NINA.Model.MyCamera {
 
                         using (var memoryStream = new System.IO.MemoryStream(rawImageData)) {
                             var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
-                            var iarr = await converter.ConvertToImageArray(memoryStream, BitDepth, profileService.ActiveProfile.ImageSettings.HistogramResolution, calculateStatistics, token);
-                            iarr.RAWType = "cr2";
+                            var iarr = await converter.Convert(memoryStream, BitDepth, token);
+                            iarr.Data.RAWType = "cr2";
                             return iarr;
                         }
                     }
@@ -798,62 +799,65 @@ namespace NINA.Model.MyCamera {
             LiveViewEnabled = false;
         }
 
-        public async Task<ImageArray> DownloadLiveView(CancellationToken token) {
-            IntPtr stream = IntPtr.Zero;
-            IntPtr imageRef = IntPtr.Zero;
-            IntPtr pointer = IntPtr.Zero;
-            try {
-                CheckAndThrowError(EDSDK.EdsCreateMemoryStream(0, out stream));
+        public Task<IImageData> DownloadLiveView(CancellationToken token) {
+            return Task.Run(async () => {
+                IntPtr stream = IntPtr.Zero;
+                IntPtr imageRef = IntPtr.Zero;
+                IntPtr pointer = IntPtr.Zero;
+                try {
+                    CheckAndThrowError(EDSDK.EdsCreateMemoryStream(0, out stream));
 
-                CheckAndThrowError(EDSDK.EdsCreateEvfImageRef(stream, out imageRef));
+                    CheckAndThrowError(EDSDK.EdsCreateEvfImageRef(stream, out imageRef));
 
-                EDSDK.EDS_ERR err;
-                do {
-                    err = GetError(EDSDK.EdsDownloadEvfImage(_cam, imageRef));
-                    if (err == EDSDK.EDS_ERR.OBJECT_NOTREADY) {
-                        await Utility.Utility.Wait(TimeSpan.FromMilliseconds(100), token);
+                    EDSDK.EDS_ERR err;
+                    do {
+                        err = GetError(EDSDK.EdsDownloadEvfImage(_cam, imageRef));
+                        if (err == EDSDK.EDS_ERR.OBJECT_NOTREADY) {
+                            await Utility.Utility.Wait(TimeSpan.FromMilliseconds(100), token);
+                        }
+                    } while (err == EDSDK.EDS_ERR.OBJECT_NOTREADY);
+
+                    CheckAndThrowError(err);
+
+                    EDSDK.EdsGetPointer(stream, out pointer);
+                    EDSDK.EdsGetLength(stream, out var length);
+
+                    byte[] bytes = new byte[length];
+
+                    //Move from unmanaged to managed code.
+                    Marshal.Copy(pointer, bytes, 0, bytes.Length);
+
+                    using (var memoryStream = new System.IO.MemoryStream(bytes)) {
+                        JpegBitmapDecoder decoder = new JpegBitmapDecoder(memoryStream, BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.OnLoad);
+
+                        FormatConvertedBitmap bitmap = new FormatConvertedBitmap();
+                        bitmap.BeginInit();
+                        bitmap.Source = decoder.Frames[0];
+                        bitmap.DestinationFormat = System.Windows.Media.PixelFormats.Gray16;
+                        bitmap.EndInit();
+
+                        ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
+                        bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
+
+                        IImageData data = new ImageData.ImageData(outArray, bitmap.PixelWidth, bitmap.PixelHeight, BitDepth, false);
+                        return data;
                     }
-                } while (err == EDSDK.EDS_ERR.OBJECT_NOTREADY);
-
-                CheckAndThrowError(err);
-
-                EDSDK.EdsGetPointer(stream, out pointer);
-                EDSDK.EdsGetLength(stream, out var length);
-
-                byte[] bytes = new byte[length];
-
-                //Move from unmanaged to managed code.
-                Marshal.Copy(pointer, bytes, 0, bytes.Length);
-
-                using (var memoryStream = new System.IO.MemoryStream(bytes)) {
-                    JpegBitmapDecoder decoder = new JpegBitmapDecoder(memoryStream, BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.OnLoad);
-
-                    FormatConvertedBitmap bitmap = new FormatConvertedBitmap();
-                    bitmap.BeginInit();
-                    bitmap.Source = decoder.Frames[0];
-                    bitmap.DestinationFormat = System.Windows.Media.PixelFormats.Gray16;
-                    bitmap.EndInit();
-
-                    ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
-                    bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
-
-                    return await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, BitDepth, false, false, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                } finally {
+                    /* Memory cleanup */
+                    if (stream != IntPtr.Zero) {
+                        EDSDK.EdsRelease(stream);
+                        stream = IntPtr.Zero;
+                    }
+                    if (pointer != IntPtr.Zero) {
+                        EDSDK.EdsRelease(pointer);
+                        pointer = IntPtr.Zero;
+                    }
+                    if (imageRef != IntPtr.Zero) {
+                        EDSDK.EdsRelease(imageRef);
+                        imageRef = IntPtr.Zero;
+                    }
                 }
-            } finally {
-                /* Memory cleanup */
-                if (stream != IntPtr.Zero) {
-                    EDSDK.EdsRelease(stream);
-                    stream = IntPtr.Zero;
-                }
-                if (pointer != IntPtr.Zero) {
-                    EDSDK.EdsRelease(pointer);
-                    pointer = IntPtr.Zero;
-                }
-                if (imageRef != IntPtr.Zero) {
-                    EDSDK.EdsRelease(imageRef);
-                    imageRef = IntPtr.Zero;
-                }
-            }
+            });
         }
     }
 }

@@ -165,8 +165,9 @@ namespace NINA.ViewModel.FramingAssistant {
                 var points = CardinalSpline(frameLine.Collection, 0.5f, frameLine.Closed);
 
                 if (frameLine.StrokeThickness != 1) {
-                    var pen = new System.Drawing.Pen(gridPen.Color, frameLine.StrokeThickness);
-                    g.DrawBeziers(pen, points.ToArray());
+                    using (var pen = new System.Drawing.Pen(gridPen.Color, frameLine.StrokeThickness)) {
+                        g.DrawBeziers(pen, points.ToArray());
+                    }
                 } else {
                     g.DrawBeziers(gridPen, points.ToArray());
                 }

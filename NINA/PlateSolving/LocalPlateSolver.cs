@@ -83,36 +83,37 @@ namespace NINA.PlateSolving {
                 startInfo.RedirectStandardOutput = true;
                 startInfo.CreateNoWindow = true;
                 startInfo.Arguments = string.Format("/C \"\"{0}\" --login -c 'wcsinfo \"{1}\"'\"", bashLocation, outputFilePath.Replace("\\", "/"));
-                var process = new System.Diagnostics.Process();
-                process.StartInfo = startInfo;
-                process.Start();
-                Dictionary<string, string> wcsinfo = new Dictionary<string, string>();
-                while (!process.StandardOutput.EndOfStream) {
-                    var line = process.StandardOutput.ReadLine();
-                    if (line != null) {
-                        var valuepair = line.Split(' ');
-                        if (valuepair != null && valuepair.Length == 2) {
-                            wcsinfo[valuepair[0]] = valuepair[1];
+                using (var process = new System.Diagnostics.Process()) {
+                    process.StartInfo = startInfo;
+                    process.Start();
+                    Dictionary<string, string> wcsinfo = new Dictionary<string, string>();
+                    while (!process.StandardOutput.EndOfStream) {
+                        var line = process.StandardOutput.ReadLine();
+                        if (line != null) {
+                            var valuepair = line.Split(' ');
+                            if (valuepair != null && valuepair.Length == 2) {
+                                wcsinfo[valuepair[0]] = valuepair[1];
+                            }
                         }
                     }
-                }
 
-                double ra = 0, dec = 0;
-                if (wcsinfo.ContainsKey("ra_center")) {
-                    ra = double.Parse(wcsinfo["ra_center"], CultureInfo.InvariantCulture);
-                }
-                if (wcsinfo.ContainsKey("dec_center")) {
-                    dec = double.Parse(wcsinfo["dec_center"], CultureInfo.InvariantCulture);
-                }
-                if (wcsinfo.ContainsKey("orientation_center")) {
-                    result.Orientation = double.Parse(wcsinfo["orientation_center"], CultureInfo.InvariantCulture);
-                }
-                if (wcsinfo.ContainsKey("pixscale")) {
-                    result.Pixscale = double.Parse(wcsinfo["pixscale"], CultureInfo.InvariantCulture);
-                }
+                    double ra = 0, dec = 0;
+                    if (wcsinfo.ContainsKey("ra_center")) {
+                        ra = double.Parse(wcsinfo["ra_center"], CultureInfo.InvariantCulture);
+                    }
+                    if (wcsinfo.ContainsKey("dec_center")) {
+                        dec = double.Parse(wcsinfo["dec_center"], CultureInfo.InvariantCulture);
+                    }
+                    if (wcsinfo.ContainsKey("orientation_center")) {
+                        result.Orientation = double.Parse(wcsinfo["orientation_center"], CultureInfo.InvariantCulture);
+                    }
+                    if (wcsinfo.ContainsKey("pixscale")) {
+                        result.Pixscale = double.Parse(wcsinfo["pixscale"], CultureInfo.InvariantCulture);
+                    }
 
-                result.Coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees);
-                result.Success = true;
+                    result.Coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees);
+                    result.Success = true;
+                }
             }
             return result;
         }

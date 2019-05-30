@@ -125,11 +125,13 @@
     <Compile Include="FlatWizardExposureTimeFinderServiceTest.cs" />
     <Compile Include="FlatWizardVMTest.cs" />
     <Compile Include="GuideStepsHistoryTest.cs" />
-    <Compile Include="ImageArrayTest.cs" />
+    <Compile Include="ImageDataTest.cs" />
+    <Compile Include="ImageMetaDataTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RMSTest.cs" />
     <Compile Include="SequenceVMTest.cs" />
     <Compile Include="SynchronizedPHD2GuiderServiceTest.cs" />
+    <Compile Include="XISFTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NINA\NINA.csproj">

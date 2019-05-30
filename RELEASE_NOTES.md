@@ -82,6 +82,7 @@
 - N.I.N.A. SQLite Database will be created on demand and migrated to new versions on application startup instead of just being overwritten by the installer.
 - Setup Installer can be run in fewer clicks and is also capable of launching the application after successful installation.
 - Star detection has been enhanced to detect more stars more accurately, while avoiding picking up noise by checking that the star is a local maximum
+- Image History Graph will only contain statistics from sequence items
 
 # Version 1.8 Hotfix 1
 

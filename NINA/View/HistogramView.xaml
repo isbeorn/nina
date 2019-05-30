@@ -49,12 +49,12 @@
                     IsZoomEnabled="False"
                     MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=100}"
                     MajorGridlineStyle="Solid"
-                    MajorStep="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ImageSettings.HistogramMajorStep}"
-                    Maximum="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ImageSettings.HistogramResolution}"
+                    MajorStep="50"
+                    Maximum="100"
                     Minimum="0"
                     MinorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=50}"
                     MinorGridlineStyle="Solid"
-                    MinorStep="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ImageSettings.HistogramMinorStep}"
+                    MinorStep="25"
                     Position="Bottom"
                     TextColor="Transparent" />
             </oxy:Plot.Axes>

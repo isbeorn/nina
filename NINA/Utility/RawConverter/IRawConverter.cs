@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using NINA.Utility.Enum;
 using System.IO;
@@ -47,6 +48,6 @@ namespace NINA.Utility.RawConverter {
 
     public interface IRawConverter {
 
-        Task<ImageArray> ConvertToImageArray(MemoryStream s, int bitDepth, int histogramResolution, bool calculateStatistics, CancellationToken token);
+        Task<IImageData> Convert(MemoryStream s, int bitDepth, CancellationToken token);
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace NINA.Model.MyCamera {
+namespace NINA.Model.ImageData {
 
     public interface IImageStatistics {
         int BitDepth { get; }

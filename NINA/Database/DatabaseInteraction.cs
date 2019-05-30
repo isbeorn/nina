@@ -93,7 +93,6 @@ namespace NINA.Database {
             } catch (Exception ex) {
                 if (!ex.Message.Contains("Execution was aborted by the user")) {
                     Logger.Error(ex);
-                    Notification.ShowError(ex.Message);
                 }
             }
             return double.NaN;

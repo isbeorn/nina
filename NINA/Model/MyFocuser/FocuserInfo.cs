@@ -23,7 +23,7 @@
 
 namespace NINA.Model.MyFocuser {
 
-    internal class FocuserInfo : DeviceInfo {
+    public class FocuserInfo : DeviceInfo {
         private int position;
 
         public int Position {

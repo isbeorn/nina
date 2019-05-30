@@ -21,7 +21,11 @@
 
 #endregion "copyright"
 
+using FluentAssertions;
+using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
+using NINA.Utility;
+using NINA.Utility.Astrometry;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
@@ -29,7 +33,66 @@ using System.Threading.Tasks;
 namespace NINATest {
 
     [TestFixture]
-    public class ImageArrayTest {
+    public class ImageDataTest {
+        private ImageMetaData MetaData;
+
+        [OneTimeSetUp]
+        public void Setup() {
+            MetaData = new ImageMetaData() {
+                Image = {
+                    ExposureStart  = new DateTime(2019,1,1,12,2,3,333),
+                    ExposureNumber  = 5,
+                    ImageType  = "LIGHT",
+                    Binning  = "1x1",
+                    ExposureTime  = 300,
+                    RecordedRMS  = new NINA.Model.RMS() {
+                        Total = 10,
+                    }
+                },
+                Camera = {
+                    Name = "TestCamera",
+                    BinX = 2,
+                    BinY  = 3,
+                    PixelSize  = 3.9,
+                    Temperature = -10,
+                    Gain = 139,
+                    Offset = 10,
+                    ElectronsPerADU = 3.1,
+                    SetPoint = -11
+                },
+                Telescope = {
+                    Name = "TestTelescope",
+                    FocalLength = 500,
+                    FocalRatio = 4,
+                    Coordinates = new Coordinates(Angle.ByDegree(10), Angle.ByDegree(1), Epoch.J2000)
+                },
+                Focuser = {
+                    Name = "TestFocuser",
+                    Position = 100,
+                    StepSize = 20,
+                    Temperature = 10
+                },
+                Rotator = {
+                    Name = "TestRotator",
+                    Position = 100,
+                    StepSize = 20,
+                },
+                FilterWheel = {
+                    Name = "TestFilterWheel",
+                    Filter = "RED"
+                },
+                Target = {
+                    Name = "M81",
+                    Coordinates = new Coordinates(Angle.ByDegree(11), Angle.ByDegree(2), Epoch.J2000)
+                },
+                Observer = {
+                    Latitude = 10,
+                    Longitude = 20,
+                    Elevation = 100
+                }
+            };
+            MetaData.Image.RecordedRMS.SetScale(5);
+        }
 
         [Test]
         public async Task CreateInstance2dArray() {
@@ -46,16 +109,16 @@ namespace NINATest {
             ushort[] expFlatArr = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000 };
 
             //Act
-            ImageArray result = await ImageArray.CreateInstance(arr, 16, false, true, 100);
+            ImageData result = await ImageData.Create(arr, 16, false);
 
             //Assert
             Assert.AreEqual(expX, result.Statistics.Width);
             Assert.AreEqual(expY, result.Statistics.Height);
-            CollectionAssert.AreEqual(expFlatArr, result.FlatArray);
+            CollectionAssert.AreEqual(expFlatArr, result.Data.FlatArray);
         }
 
         [Test]
-        public async Task CreateInstanceFlatArrArray() {
+        public void CreateInstanceFlatArrArray() {
             //Arrange
             ushort[] arr = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000 };
             ushort width = 4;
@@ -66,12 +129,12 @@ namespace NINATest {
             ushort[] expFlatArr = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000 };
 
             //Act
-            ImageArray result = await ImageArray.CreateInstance(arr, width, height, 16, false, true, 100);
+            ImageData result = new ImageData(arr, width, height, 16, false);
 
             //Assert
             Assert.AreEqual(expX, result.Statistics.Width);
             Assert.AreEqual(expY, result.Statistics.Height);
-            CollectionAssert.AreEqual(expFlatArr, result.FlatArray);
+            CollectionAssert.AreEqual(expFlatArr, result.Data.FlatArray);
         }
 
         [Test]
@@ -80,7 +143,7 @@ namespace NINATest {
                 //Arrange
                 var arr = new Int32[5, 5, 5];
                 //Act
-                ImageArray result = await ImageArray.CreateInstance(arr, 16, false, true, 100);
+                ImageData result = await ImageData.Create(arr, 16, false);
             }
             );
         }
@@ -115,7 +178,8 @@ namespace NINATest {
             double mean = 4116;
 
             //Act
-            ImageArray result = await ImageArray.CreateInstance(arr, 16, false, true, 100);
+            ImageData result = await ImageData.Create(arr, 16, false);
+            await result.CalculateStatistics();
 
             //Assert
             Assert.AreEqual(stdev, result.Statistics.StDev);
@@ -152,7 +216,8 @@ namespace NINATest {
             double mean = 32767.5;
 
             //Act
-            ImageArray result = await ImageArray.CreateInstance(arr, 16, false, true, 100);
+            ImageData result = await ImageData.Create(arr, 16, false);
+            await result.CalculateStatistics();
 
             //Assert
             Assert.AreEqual(stdev, result.Statistics.StDev);
@@ -173,7 +238,8 @@ namespace NINATest {
             }
 
             //Act
-            ImageArray result = await ImageArray.CreateInstance(arr, 16, false, true, 100);
+            ImageData result = await ImageData.Create(arr, 16, false);
+            await result.CalculateStatistics();
 
             //Assert
             Assert.AreEqual(stdev, result.Statistics.StDev, 0.000001);
@@ -192,13 +258,13 @@ namespace NINATest {
             }
 
             //Act
-            var imgArr = await ImageArray.CreateInstance(arr, width, height, bitDepth, isBayered, false, resolution);
+            var imgData = new ImageData(arr, width, height, bitDepth, isBayered);
 
             //Assert
-            Assert.AreEqual(width, imgArr.Statistics.Width);
-            Assert.AreEqual(height, imgArr.Statistics.Height);
-            Assert.AreEqual(bitDepth, imgArr.Statistics.BitDepth);
-            Assert.AreEqual(isBayered, imgArr.Statistics.IsBayered);
+            Assert.AreEqual(width, imgData.Statistics.Width);
+            Assert.AreEqual(height, imgData.Statistics.Height);
+            Assert.AreEqual(bitDepth, imgData.Statistics.BitDepth);
+            Assert.AreEqual(isBayered, imgData.Statistics.IsBayered);
         }
 
         [Test]
@@ -215,13 +281,13 @@ namespace NINATest {
             }
 
             //Act
-            var imgArr = await ImageArray.CreateInstance(arr, bitDepth, isBayered, false, resolution);
+            var imgData = await ImageData.Create(arr, bitDepth, isBayered);
 
             //Assert
-            Assert.AreEqual(width, imgArr.Statistics.Width);
-            Assert.AreEqual(height, imgArr.Statistics.Height);
-            Assert.AreEqual(bitDepth, imgArr.Statistics.BitDepth);
-            Assert.AreEqual(isBayered, imgArr.Statistics.IsBayered);
+            Assert.AreEqual(width, imgData.Statistics.Width);
+            Assert.AreEqual(height, imgData.Statistics.Height);
+            Assert.AreEqual(bitDepth, imgData.Statistics.BitDepth);
+            Assert.AreEqual(isBayered, imgData.Statistics.IsBayered);
         }
 
         [Test]
@@ -251,7 +317,8 @@ namespace NINATest {
             arr[3, 4] = 5;
 
             //Act
-            ImageArray result = await ImageArray.CreateInstance(arr, 16, false, true, 100);
+            var result = await ImageData.Create(arr, 16, false);
+            await result.CalculateStatistics();
 
             //Assert
             Assert.AreEqual(5, result.Statistics.Min);
@@ -268,10 +335,108 @@ namespace NINATest {
         [TestCase(new ushort[] { 10, 10, 10, 10, 10, 10, 10, 10, 15, 20, 20, 20, 20, 20, 50, 50, 50, 50 }, 10, 17.5, 7.5)]
         [TestCase(new ushort[] { 0, 0, 65535, 65535 }, 16, 32767.5, 32767.5)]
         public async Task MedianTest(ushort[] arr, int bitDepth, double expectedMedian, double expectedMAD) {
-            var result = await ImageArray.CreateInstance(arr, arr.Length / 2, arr.Length / 2, bitDepth, false, true, 100);
+            var result = new ImageData(arr, arr.Length / 2, arr.Length / 2, bitDepth, false);
+            await result.CalculateStatistics();
 
             Assert.AreEqual(expectedMedian, result.Statistics.Median);
             Assert.AreEqual(expectedMAD, result.Statistics.MedianAbsoluteDeviation);
         }
+
+        [Test]
+        [TestCase(NINA.Utility.Enum.FileTypeEnum.XISF)]
+        [TestCase(NINA.Utility.Enum.FileTypeEnum.FITS)]
+        [TestCase(NINA.Utility.Enum.FileTypeEnum.TIFF)]
+        [TestCase(NINA.Utility.Enum.FileTypeEnum.TIFF_LZW)]
+        [TestCase(NINA.Utility.Enum.FileTypeEnum.TIFF_ZIP)]
+        public async Task SaveToDiskXISFSimpleTest(NINA.Utility.Enum.FileTypeEnum fileType) {
+            var data = new ushort[] {
+                3,1,1,
+                3,4,5,
+                3,2,3
+            };
+            var folder = TestContext.CurrentContext.TestDirectory;
+            var pattern = "TestFile";
+
+            var sut = new ImageData(data, 3, 3, 16, false);
+
+            var file = await sut.SaveToDisk(folder, pattern, fileType, default);
+
+            System.IO.File.Exists(file).Should().BeTrue();
+            System.IO.File.Delete(file);
+            System.IO.Path.GetFileNameWithoutExtension(file).Should().Equals(pattern);
+        }
+
+        [Test]
+        public async Task SaveToDiskPatternMetaDataTest() {
+            var fileType = NINA.Utility.Enum.FileTypeEnum.XISF;
+            var data = new ushort[] {
+                3,1,1,
+                3,4,5,
+                3,2,3
+            };
+            var folder = TestContext.CurrentContext.TestDirectory;
+            var pattern = $"$$FILTER$$" +
+                $"#$$DATE$$" +
+                $"#$$DATETIME$$" +
+                $"#$$TIME$$" +
+                $"#$$FRAMENR$$" +
+                $"#$$IMAGETYPE$$" +
+                $"#$$BINNING$$" +
+                $"#$$SENSORTEMP$$" +
+                $"#$$EXPOSURETIME$$" +
+                $"#$$TARGETNAME$$" +
+                $"#$$GAIN$$" +
+                $"#$$OFFSET$$" +
+                $"#$$RMS$$" +
+                $"#$$RMSARCSEC$$" +
+                $"#$$FOCUSERPOSITION$$" +
+                $"#$$APPLICATIONSTARTDATE$$";
+
+            var sut = new ImageData(data, 3, 3, 16, false);
+            sut.MetaData = MetaData;
+            var file = await sut.SaveToDisk(folder, pattern, fileType, default);
+            System.IO.File.Delete(file);
+
+            var expectedPattern = $"{MetaData.FilterWheel.Filter}" +
+                $"#{MetaData.Image.ExposureStart.ToString("yyyy-MM-dd")}" +
+                $"#{MetaData.Image.ExposureStart.ToString("yyyy-MM-dd_HH-mm-ss")}" +
+                $"#{MetaData.Image.ExposureStart.ToString("HH-mm-ss")}" +
+                $"#{MetaData.Image.ExposureNumber}" +
+                $"#{MetaData.Image.ImageType}" +
+                $"#{MetaData.Camera.Binning}" +
+                $"#{MetaData.Camera.Temperature}" +
+                $"#{MetaData.Image.ExposureTime}" +
+                $"#{MetaData.Target.Name}" +
+                $"#{MetaData.Camera.Gain}" +
+                $"#{MetaData.Camera.Offset}" +
+                $"#{MetaData.Image.RecordedRMS.Total}" +
+                $"#{MetaData.Image.RecordedRMS.Total * MetaData.Image.RecordedRMS.Scale}" +
+                $"#{MetaData.Focuser.Position}" +
+                $"#{Utility.ApplicationStartDate.ToString("yyyy-MM-dd")}";
+
+            System.IO.Path.GetFileNameWithoutExtension(file).Should().Equals(expectedPattern);
+        }
+
+        //[Test]
+        //public async Task SaveToDiskXISFDeepMetaDataTest() {
+        //    Uncomment once xisf loading knows to extract meta data
+        //    var fileType = NINA.Utility.Enum.FileTypeEnum.XISF;
+        //    var data = new ushort[] {
+        //        3,1,1,
+        //        3,4,5,
+        //        3,2,3
+        //    };
+        //    var folder = TestContext.CurrentContext.TestDirectory;
+        //    var pattern = "XisfTestFile";
+
+        //    var sut = new ImageData(data, 3, 3, 16, false);
+        //    sut.MetaData = MetaData;
+        //    var file = await sut.SaveToDisk(folder, pattern, fileType, default);
+
+        //    var xisf = await XISF.Load(new Uri(file), false);
+        //    System.IO.File.Delete(file);
+
+        //    xisf.MetaData.Should().BeEquivalentTo(MetaData);
+        //}
     }
 }

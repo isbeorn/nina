@@ -31,7 +31,7 @@ namespace NINA.Model.MyFilterWheel {
     [DataContract]
     public class FilterInfo : BaseINPC {
 
-        private FilterInfo() {
+        public FilterInfo() {
         }
 
         private string _name;

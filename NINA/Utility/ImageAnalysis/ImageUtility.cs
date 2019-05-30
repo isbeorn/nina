@@ -1,4 +1,5 @@
 ﻿using AForge.Imaging;
+using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using System;
 using System.Collections.Generic;
@@ -146,12 +147,12 @@ namespace NINA.Utility.ImageAnalysis {
             return s;
         }
 
-        public static BitmapSource CreateSourceFromArray(ImageArray arr, System.Windows.Media.PixelFormat pf) {
+        public static BitmapSource CreateSourceFromArray(IImageArray arr, IImageStatistics statistics, System.Windows.Media.PixelFormat pf) {
             //int stride = C.CameraYSize * ((Convert.ToString(C.MaxADU, 2)).Length + 7) / 8;
-            int stride = (arr.Statistics.Width * pf.BitsPerPixel + 7) / 8;
+            int stride = (statistics.Width * pf.BitsPerPixel + 7) / 8;
             double dpi = 96;
 
-            BitmapSource source = BitmapSource.Create(arr.Statistics.Width, arr.Statistics.Height, dpi, dpi, pf, null, arr.FlatArray, stride);
+            BitmapSource source = BitmapSource.Create(statistics.Width, statistics.Height, dpi, dpi, pf, null, arr.FlatArray, stride);
             source.Freeze();
             return source;
         }
@@ -181,22 +182,22 @@ namespace NINA.Utility.ImageAnalysis {
                 new Rectangle(0, 0, stopX, stopY),
                 ImageLockMode.ReadWrite, image.PixelFormat);
 
-            UnmanagedImage unmanagedImage = new UnmanagedImage(imageData);
+            using (var unmanagedImage = new UnmanagedImage(imageData)) {
+                int i = 0;
 
-            int i = 0;
+                ushort* ptr = (ushort*)unmanagedImage.ImageData.ToPointer();
 
-            ushort* ptr = (ushort*)unmanagedImage.ImageData.ToPointer();
-
-            for (int y = 0; y < stopY; y++) {
-                for (int x = 0; x < stopX; x++, ptr += 3) {
-                    flatArrays.redArray[i] = ptr[RGB.R];
-                    flatArrays.greenArray[i] = ptr[RGB.G];
-                    flatArrays.blueArray[i] = ptr[RGB.B];
-                    i++;
+                for (int y = 0; y < stopY; y++) {
+                    for (int x = 0; x < stopX; x++, ptr += 3) {
+                        flatArrays.Red[i] = ptr[RGB.R];
+                        flatArrays.Green[i] = ptr[RGB.G];
+                        flatArrays.Blue[i] = ptr[RGB.B];
+                        i++;
+                    }
                 }
+                image.UnlockBits(imageData);
+                return flatArrays;
             }
-            image.UnlockBits(imageData);
-            return flatArrays;
         }
 
         public static Bitmap Debayer(Bitmap bmp) {
@@ -209,69 +210,66 @@ namespace NINA.Utility.ImageAnalysis {
         }
 
         public static ColorPalette GetGrayScalePalette() {
-            Bitmap bmp = new Bitmap(1, 1, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+            using (var bmp = new Bitmap(1, 1, System.Drawing.Imaging.PixelFormat.Format8bppIndexed)) {
+                ColorPalette monoPalette = bmp.Palette;
 
-            ColorPalette monoPalette = bmp.Palette;
+                System.Drawing.Color[] entries = monoPalette.Entries;
 
-            System.Drawing.Color[] entries = monoPalette.Entries;
+                for (int i = 0; i < 256; i++) {
+                    entries[i] = System.Drawing.Color.FromArgb(i, i, i);
+                }
 
-            for (int i = 0; i < 256; i++) {
-                entries[i] = System.Drawing.Color.FromArgb(i, i, i);
+                return monoPalette;
             }
-
-            return monoPalette;
         }
 
-        public struct RGBArrays {
-            public ushort[] redArray;
-            public ushort[] greenArray;
-            public ushort[] blueArray;
+        public class RGBArrays {
+            public ushort[] Red { get; }
+            public ushort[] Green { get; }
+            public ushort[] Blue { get; }
 
             public RGBArrays(ushort[] red, ushort[] green, ushort[] blue) {
-                redArray = red;
-                greenArray = green;
-                blueArray = blue;
+                Red = red;
+                Green = green;
+                Blue = blue;
             }
         }
 
-        public static async Task<BitmapSource> StretchAsync(ImageArray iarr, BitmapSource source, double factor, double blackClipping) {
-            return await Task<BitmapSource>.Run(() => Stretch(iarr.Statistics, source, System.Windows.Media.PixelFormats.Gray16, factor, blackClipping));
-        }
-
-        public static async Task<BitmapSource> StretchAsync(ImageArray iarr, BitmapSource source, System.Windows.Media.PixelFormat pf, double factor, double blackClipping) {
-            return await Task<BitmapSource>.Run(() => Stretch(iarr.Statistics, source, pf, factor, blackClipping));
-        }
-
-        public static async Task<BitmapSource> StretchAsyncUnlinked(ImageArray iarrRed, ImageArray iarrGreen, ImageArray iarrBlue, BitmapSource source, System.Windows.Media.PixelFormat pf, double factor, double blackClipping) {
-            return await Task<BitmapSource>.Run(() => StretchUnlinked(iarrRed.Statistics, iarrGreen.Statistics, iarrBlue.Statistics, source, pf, factor, blackClipping));
-        }
-
-        public static async Task<BitmapSource> StretchAsync(IImageStatistics statistics, BitmapSource source, double factor, double blackClipping) {
-            return await Task<BitmapSource>.Run(() => Stretch(statistics, source, System.Windows.Media.PixelFormats.Gray16, factor, blackClipping));
-        }
-
-        public static BitmapSource Stretch(IImageStatistics statistics, BitmapSource source, System.Windows.Media.PixelFormat pf, double factor, double blackClipping) {
-            if (pf == System.Windows.Media.PixelFormats.Gray16) {
-                using (var img = ImageUtility.BitmapFromSource(source)) {
-                    return Stretch(statistics, img, pf, factor, blackClipping);
+        public static Task<BitmapSource> Stretch(ImageData data, double factor, double blackClipping) {
+            return Task.Run(() => {
+                if (data.Image.Format == System.Windows.Media.PixelFormats.Gray16) {
+                    using (var img = ImageUtility.BitmapFromSource(data.Image, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale)) {
+                        return Stretch(data.Statistics, img, data.Image.Format, factor, blackClipping);
+                    }
+                } else if (data.Image.Format == System.Windows.Media.PixelFormats.Rgb48) {
+                    using (var img = ImageUtility.BitmapFromSource(data.Image, System.Drawing.Imaging.PixelFormat.Format48bppRgb)) {
+                        return Stretch(data.Statistics, img, data.Image.Format, factor, blackClipping);
+                    }
+                } else {
+                    throw new NotSupportedException();
                 }
-            } else if (pf == System.Windows.Media.PixelFormats.Rgb48) {
-                using (var img = ImageUtility.BitmapFromSource(source, System.Drawing.Imaging.PixelFormat.Format48bppRgb)) {
-                    return Stretch(statistics, img, pf, factor, blackClipping);
-                }
-            } else {
-                throw new NotSupportedException();
-            }
+            });
         }
 
-        public static BitmapSource StretchUnlinked(IImageStatistics redStatistics, IImageStatistics greenStatistics, IImageStatistics blueStatistics, BitmapSource source, System.Windows.Media.PixelFormat pf, double factor, double blackClipping) {
-            if (pf != System.Windows.Media.PixelFormats.Rgb48) {
-                throw new NotSupportedException();
-            } else {
-                using (var img = ImageUtility.BitmapFromSource(source, System.Drawing.Imaging.PixelFormat.Format48bppRgb)) {
-                    return StretchUnlinked(redStatistics, greenStatistics, blueStatistics, img, pf, factor, blackClipping);
+        public static Task<BitmapSource> StretchUnlinked(ImageData data, double factor, double blackClipping) {
+            return Task.Run(async () => {
+                if (data.Image.Format != System.Windows.Media.PixelFormats.Rgb48) {
+                    throw new NotSupportedException();
+                } else {
+                    using (var source = BitmapFromSource(data.Image, System.Drawing.Imaging.PixelFormat.Format48bppRgb)) {
+                        RGBArrays rGBArrays = ChannelsToFlatArrays(source);
+                        var r = new Model.ImageData.ImageStatistics(data.Image.PixelWidth, data.Image.PixelHeight, data.Statistics.BitDepth, false);
+                        var g = new Model.ImageData.ImageStatistics(data.Image.PixelWidth, data.Image.PixelHeight, data.Statistics.BitDepth, false);
+                        var b = new Model.ImageData.ImageStatistics(data.Image.PixelWidth, data.Image.PixelHeight, data.Statistics.BitDepth, false);
+                        await Task.WhenAll(r.Calculate(rGBArrays.Red), g.Calculate(rGBArrays.Green), b.Calculate(rGBArrays.Blue));
+                        rGBArrays = null;
+                        GC.Collect();
+                        using (var img = ImageUtility.BitmapFromSource(data.Image, System.Drawing.Imaging.PixelFormat.Format48bppRgb)) {
+                            return StretchUnlinked(r, g, b, img, data.Image.Format, factor, blackClipping);
+                        }
+                    }
                 }
-            }
+            });
         }
 
         public static BitmapSource StretchUnlinked(IImageStatistics redStatistics, IImageStatistics greenStatistics, IImageStatistics blueStatistics, System.Drawing.Bitmap img, System.Windows.Media.PixelFormat pf, double factor, double blackClipping) {

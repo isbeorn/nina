@@ -23,6 +23,6 @@
 
 namespace NINA.Model.MyGuider {
 
-    internal class GuiderInfo : DeviceInfo {
+    public class GuiderInfo : DeviceInfo {
     }
 }

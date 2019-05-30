@@ -35,8 +35,7 @@ namespace NINA.Model.MyGuider {
                 if (_connected) {
                     if (telescopeInfo.Connected) {
                         return true;
-                    }
-                    else {
+                    } else {
                         Notification.ShowWarning(Locale.Loc.Instance["LblDirectGuiderTelescopeDisconnect"]);
                         Logger.Warning("Telescope is disconnected. Direct Guide will disconnect. Dither will not occur.");
                         return Disconnect();
@@ -70,13 +69,11 @@ namespace NINA.Model.MyGuider {
             Connected = false;
             if (telescopeInfo.Connected) {
                 Connected = true;
-            }
-            else {
+            } else {
                 var telescopeConnect = await telescopeMediator.Connect();
                 if (telescopeConnect) {
                     Connected = true;
-                }
-                else {
+                } else {
                     Notification.ShowWarning(Locale.Loc.Instance["LblDirectGuiderConnectionFail"]);
                     Connected = false;
                 }
@@ -118,13 +115,11 @@ namespace NINA.Model.MyGuider {
             TimeSpan SettleTime = TimeSpan.FromSeconds(profileService.ActiveProfile.GuiderSettings.SettleTime);
 
             bool DitherRAOnly = profileService.ActiveProfile.GuiderSettings.DitherRAOnly;
-            
 
             //In theory should not be hit as guider gets disconnected when telescope disconnects
             if (!telescopeInfo.Connected) {
                 return false;
-            }
-            else {
+            } else {
                 GuidePulses PulseInstructions = SelectDitherPulse(Duration);
                 if (!DitherRAOnly) {
                     telescopeMediator.PulseGuide(PulseInstructions.directionWestEast, (int)PulseInstructions.durationWestEast.TotalMilliseconds);
@@ -132,8 +127,7 @@ namespace NINA.Model.MyGuider {
                     telescopeMediator.PulseGuide(PulseInstructions.directionNorthSouth, (int)PulseInstructions.durationNorthSouth.TotalMilliseconds);
                     await Utility.Utility.Delay(PulseInstructions.durationNorthSouth, ct);
                     await Utility.Utility.Delay(SettleTime, ct);
-                }
-                else {
+                } else {
                     //Adjust Pulse Duration for RA only dithering. Otherwise RA only dithering will likely provide terrible results.
                     Duration = TimeSpan.FromMilliseconds((int)Math.Round(Duration.TotalMilliseconds * (0.5 + random.NextDouble())));
                     telescopeMediator.PulseGuide(PulseInstructions.directionWestEast, (int)Duration.TotalMilliseconds);
@@ -172,15 +166,13 @@ namespace NINA.Model.MyGuider {
 
             if (cosAngle >= 0) {
                 resultPulses.directionWestEast = GuideDirections.guideEast;
-            }
-            else {
+            } else {
                 resultPulses.directionWestEast = GuideDirections.guideWest;
             }
 
             if (sinAngle >= 0) {
                 resultPulses.directionNorthSouth = GuideDirections.guideNorth;
-            }
-            else {
+            } else {
                 resultPulses.directionNorthSouth = GuideDirections.guideSouth;
             }
 
@@ -188,6 +180,10 @@ namespace NINA.Model.MyGuider {
             resultPulses.durationNorthSouth = TimeSpan.FromMilliseconds((int)Math.Round(Math.Abs(duration.TotalMilliseconds * sinAngle)));
 
             return resultPulses;
+        }
+
+        public void Dispose() {
+            this.telescopeMediator.RemoveConsumer(this);
         }
     }
 }

@@ -890,6 +890,7 @@ Lichtverschmutzten Gebieten. Berechnungszeit ist jedoch erhöht.</s:String>
   <s:String x:Key="LblVerticalPanels" xml:space="default">Vertikale Felder</s:String>
   <s:String x:Key="LblWaitForDither" xml:space="default">Warte auf Beendend des Ditherns</s:String>
   <s:String x:Key="LblWaitForImageProcessing" xml:space="default">Warte auf Verarbeitung des vorherigen Bildes</s:String>
+  <s:String x:Key="LblWaitForImageSaving" xml:space="default">Warte auf Speichern des Bildes</s:String>
   <s:String x:Key="LblWaitForTemperatureStep" xml:space="default">Warte auf Kamera auf Erreichen des nächsten Temperaturschritts</s:String>
   <s:String x:Key="LblWaitingForCamera" xml:space="default">Warten auf Kamera</s:String>
   <s:String x:Key="LblWarmCamAtSequenceEnd" xml:space="default">Warm camera when sequence ends</s:String>

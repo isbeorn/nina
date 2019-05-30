@@ -24,6 +24,7 @@ namespace NINA.ViewModel {
             Title = "LblManualFocusTargets";
             ImageGeometry = (System.Windows.Media.GeometryGroup)resourceDictionary["FocusTargetsSVG"];
 
+            this.telescopeMediator = telescopeMediator;
             telescopeMediator.RegisterConsumer(this);
 
             AsyncContext.Run(LoadFocusTargets);
@@ -62,6 +63,7 @@ namespace NINA.ViewModel {
         }
 
         private List<FocusTarget> allFocusTargets = new List<FocusTarget>();
+        private ITelescopeMediator telescopeMediator;
 
         public IAsyncCommand SlewToCoordinatesCommand { get; }
 
@@ -101,6 +103,10 @@ namespace NINA.ViewModel {
             } else {
                 updateTimer.Stop();
             }
+        }
+
+        public void Dispose() {
+            telescopeMediator.RemoveConsumer(this);
         }
     }
 }

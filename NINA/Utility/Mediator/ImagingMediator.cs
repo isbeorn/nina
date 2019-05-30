@@ -22,6 +22,7 @@
 #endregion "copyright"
 
 using NINA.Model;
+using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.ViewModel;
@@ -51,28 +52,14 @@ namespace NINA.Utility.Mediator {
             return handler.SetAutoStretch(value);
         }
 
-        public Task<BitmapSource> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            return handler.CaptureAndPrepareImage(sequence, token, progress);
+        public Task<IImageData> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            return handler.CaptureImage(sequence, token, progress);
         }
 
-        public Task<ImageData> CaptureArrayAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            return handler.CaptureArrayAndPrepareImage(sequence, token, progress);
-        }
-
-        public Task<bool> CaptureAndSaveImage(CaptureSequence seq, bool save, CancellationToken ct, IProgress<ApplicationStatus> progress, string targetname = "") {
-            return handler.CaptureAndSaveImage(seq, save, ct, progress, targetname);
-        }
-
-        public Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool save = false, bool calculateStatistics = true, string targetname = "") {
-            return handler.CaptureImage(sequence, token, progress, save, calculateStatistics, targetname);
-        }
-
-        public Task<BitmapSource> PrepareImage(
-                ImageArray iarr,
-                CancellationToken token,
-                bool save = false,
-                ImageParameters parameters = null) {
-            return handler.PrepareImage(iarr, token, save, parameters);
+        public Task<IImageData> PrepareImage(
+                IImageData data,
+                CancellationToken token) {
+            return handler.PrepareImage(data, token);
         }
 
         public event EventHandler<ImageSavedEventArgs> ImageSaved;

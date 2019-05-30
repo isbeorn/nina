@@ -281,7 +281,8 @@ namespace NINA.ViewModel {
             var oldAutoStretch = imagingMediator.SetAutoStretch(true);
             var oldDetectStars = imagingMediator.SetDetectStars(false);
 
-            Image = await imagingMediator.CaptureAndPrepareImage(seq, canceltoken, progress);
+            var data = await imagingMediator.CaptureAndPrepareImage(seq, canceltoken, progress);
+            Image = data.Image;
 
             imagingMediator.SetAutoStretch(oldAutoStretch);
             imagingMediator.SetDetectStars(oldDetectStars);
@@ -305,7 +306,6 @@ namespace NINA.ViewModel {
                 SolveParameters solveParameters,
                 CancellationToken token,
                 IProgress<ApplicationStatus> progress) {
-            
             bool repeatAll = false;
             int currentAttempt = 0;
             PlateSolveResult plateSolveResult = null;
@@ -320,7 +320,6 @@ namespace NINA.ViewModel {
                 };
 
                 plateSolveResult = await CaptureSolveSyncAndReslew(solveseq, solveParameters.syncScope, solveParameters.slewToTarget, solveParameters.repeat, token, progress, solveParameters.silent, solveParameters.repeatThreshold);
-
 
                 if (plateSolveResult == null || !plateSolveResult.Success) {
                     progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPlatesolveFailed"] });
@@ -532,6 +531,11 @@ namespace NINA.ViewModel {
 
         public void UpdateDeviceInfo(TelescopeInfo telescopeInfo) {
             this.TelescopeInfo = telescopeInfo;
+        }
+
+        public void Dispose() {
+            this.cameraMediator.RemoveConsumer(this);
+            this.telescopeMediator.RemoveConsumer(this);
         }
 
         private ICameraMediator cameraMediator;

@@ -275,20 +275,22 @@ namespace NINA.ViewModel {
         }
 
         private void OpenSkyAtlasImageRepositoryDiag(object obj) {
-            System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
-            dialog.SelectedPath = ActiveProfile.ApplicationSettings.SkyAtlasImageRepository;
+            using (var dialog = new System.Windows.Forms.FolderBrowserDialog()) {
+                dialog.SelectedPath = ActiveProfile.ApplicationSettings.SkyAtlasImageRepository;
 
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                ActiveProfile.ApplicationSettings.SkyAtlasImageRepository = dialog.SelectedPath;
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                    ActiveProfile.ApplicationSettings.SkyAtlasImageRepository = dialog.SelectedPath;
+                }
             }
         }
 
         private void OpenSkySurveyCacheDirectoryDiag(object obj) {
-            System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
-            dialog.SelectedPath = ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory;
+            using (var dialog = new System.Windows.Forms.FolderBrowserDialog()) {
+                dialog.SelectedPath = ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory;
 
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory = dialog.SelectedPath;
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                    ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory = dialog.SelectedPath;
+                }
             }
         }
 
@@ -298,11 +300,12 @@ namespace NINA.ViewModel {
         }
 
         private void OpenImageFileDiag(object o) {
-            var diag = new System.Windows.Forms.FolderBrowserDialog();
-            diag.SelectedPath = ActiveProfile.ImageFileSettings.FilePath;
-            System.Windows.Forms.DialogResult result = diag.ShowDialog();
-            if (result == System.Windows.Forms.DialogResult.OK) {
-                ActiveProfile.ImageFileSettings.FilePath = diag.SelectedPath + "\\";
+            using (var diag = new System.Windows.Forms.FolderBrowserDialog()) {
+                diag.SelectedPath = ActiveProfile.ImageFileSettings.FilePath;
+                System.Windows.Forms.DialogResult result = diag.ShowDialog();
+                if (result == System.Windows.Forms.DialogResult.OK) {
+                    ActiveProfile.ImageFileSettings.FilePath = diag.SelectedPath + "\\";
+                }
             }
         }
 
@@ -319,11 +322,12 @@ namespace NINA.ViewModel {
         }
 
         private void OpenCygwinFileDiag(object o) {
-            System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
-            dialog.SelectedPath = profileService.ActiveProfile.PlateSolveSettings.CygwinLocation;
+            using (var dialog = new System.Windows.Forms.FolderBrowserDialog()) {
+                dialog.SelectedPath = profileService.ActiveProfile.PlateSolveSettings.CygwinLocation;
 
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                ActiveProfile.PlateSolveSettings.CygwinLocation = dialog.SelectedPath;
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                    ActiveProfile.PlateSolveSettings.CygwinLocation = dialog.SelectedPath;
+                }
             }
         }
 

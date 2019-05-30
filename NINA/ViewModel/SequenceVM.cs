@@ -124,6 +124,21 @@ namespace NINA.ViewModel {
             autoUpdateTimer.Start();
         }
 
+        private ImageHistoryVM imgHistoryVM;
+
+        public ImageHistoryVM ImgHistoryVM {
+            get {
+                if (imgHistoryVM == null) {
+                    imgHistoryVM = new ImageHistoryVM(profileService);
+                }
+                return imgHistoryVM;
+            }
+            set {
+                imgHistoryVM = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private void DeepSkyObjectDetailVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(DeepSkyObjectSearchVM.SelectedTargetSearchResult)) {
                 if (DeepSkyObjectSearchVM.SelectedTargetSearchResult != null) {
@@ -209,15 +224,16 @@ namespace NINA.ViewModel {
         }
 
         private void SaveSequence(object obj) {
-            var dialog = new System.Windows.Forms.FolderBrowserDialog();
-            dialog.Description = Locale.Loc.Instance["LblSaveSequence"];
+            using (var dialog = new System.Windows.Forms.FolderBrowserDialog()) {
+                dialog.Description = Locale.Loc.Instance["LblSaveSequence"];
 
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                var path = dialog.SelectedPath;
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                    var path = dialog.SelectedPath;
 
-                foreach (var target in Targets) {
-                    var filePath = Utility.Utility.GetUniqueFilePath(Path.Combine(path, target.TargetName + ".xml"));
-                    target.Save(filePath);
+                    foreach (var target in Targets) {
+                        var filePath = Utility.Utility.GetUniqueFilePath(Path.Combine(path, target.TargetName + ".xml"));
+                        target.Save(filePath);
+                    }
                 }
             }
         }
@@ -266,7 +282,9 @@ namespace NINA.ViewModel {
                 _status = value;
                 _status.Source = Title;
 
-                if (Sequence.ActiveSequence != null) {
+                var activeSequence = Sequence.ActiveSequence;
+
+                if (activeSequence != null) {
                     _status.Status2 = Locale.Loc.Instance["LblSequence"];
                     _status.ProgressType2 = ApplicationStatus.StatusProgressType.ValueOfMaxValue;
                     _status.Progress2 = Sequence.ActiveSequenceIndex;
@@ -274,8 +292,8 @@ namespace NINA.ViewModel {
 
                     _status.Status3 = Locale.Loc.Instance["LblExposures"];
                     _status.ProgressType3 = ApplicationStatus.StatusProgressType.ValueOfMaxValue;
-                    _status.Progress3 = Sequence.ActiveSequence.ProgressExposureCount;
-                    _status.MaxProgress3 = Sequence.ActiveSequence.TotalExposureCount;
+                    _status.Progress3 = activeSequence.ProgressExposureCount;
+                    _status.MaxProgress3 = activeSequence.TotalExposureCount;
                 }
 
                 RaisePropertyChanged();
@@ -349,37 +367,38 @@ namespace NINA.ViewModel {
         private async Task RotateEquipment(CaptureSequenceList csl, PlateSolveResult plateSolveResult, IProgress<ApplicationStatus> progress) {
             // Rotate to desired angle
             if (csl.CenterTarget && rotatorInfo?.Connected == true) {
-                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
-                var solveseq = new CaptureSequence() {
-                    ExposureTime = profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
-                    FilterType = profileService.ActiveProfile.PlateSolveSettings.Filter,
-                    ImageType = CaptureSequence.ImageTypes.SNAP,
-                    TotalExposureCount = 1
-                };
-                var service = WindowServiceFactory.Create();
+                using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
+                    var solveseq = new CaptureSequence() {
+                        ExposureTime = profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
+                        FilterType = profileService.ActiveProfile.PlateSolveSettings.Filter,
+                        ImageType = CaptureSequence.ImageTypes.SNAP,
+                        TotalExposureCount = 1
+                    };
+                    var service = WindowServiceFactory.Create();
 
-                service.Show(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
+                    service.Show(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
 
-                var orientation = (float)(plateSolveResult?.Orientation ?? 0.0f);
-                float position = 0.0f;
-                do {
-                    if (plateSolveResult == null) {
-                        plateSolveResult = await solver.SolveWithCapture(solveseq, progress, _canceltoken.Token, true);
-                    }
+                    var orientation = (float)(plateSolveResult?.Orientation ?? 0.0f);
+                    float position = 0.0f;
+                    do {
+                        if (plateSolveResult == null) {
+                            plateSolveResult = await solver.SolveWithCapture(solveseq, progress, _canceltoken.Token, true);
+                        }
 
-                    if (!plateSolveResult.Success) {
-                        break;
-                    }
+                        if (!plateSolveResult.Success) {
+                            break;
+                        }
 
-                    orientation = (float)plateSolveResult.Orientation;
+                        orientation = (float)plateSolveResult.Orientation;
 
-                    position = (float)((float)csl.DSO.Rotation - orientation);
-                    if (Math.Abs(position) > profileService.ActiveProfile.PlateSolveSettings.RotationTolerance) {
-                        await rotatorMediator.MoveRelative(position);
-                    }
-                    plateSolveResult = null;
-                } while (Math.Abs(position) > profileService.ActiveProfile.PlateSolveSettings.RotationTolerance);
-                service.DelayedClose(TimeSpan.FromSeconds(10));
+                        position = (float)((float)csl.DSO.Rotation - orientation);
+                        if (Math.Abs(position) > profileService.ActiveProfile.PlateSolveSettings.RotationTolerance) {
+                            await rotatorMediator.MoveRelative(position);
+                        }
+                        plateSolveResult = null;
+                    } while (Math.Abs(position) > profileService.ActiveProfile.PlateSolveSettings.RotationTolerance);
+                    service.DelayedClose(TimeSpan.FromSeconds(10));
+                }
             }
         }
 
@@ -397,23 +416,23 @@ namespace NINA.ViewModel {
             PlateSolveResult plateSolveResult = null;
             if (csl.CenterTarget) {
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblCenterTarget"] });
-              
-                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
 
-                var service = WindowServiceFactory.Create();
-                service.Show(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
-                PlatesolveVM.SolveParameters solveParameters = new PlatesolveVM.SolveParameters {
-                    syncScope = true,
-                    slewToTarget = true,
-                    repeat = true,
-                    silent = true,
-                    repeatThreshold = profileService.ActiveProfile.PlateSolveSettings.Threshold,
-                    numberOfAttempts = profileService.ActiveProfile.PlateSolveSettings.NumberOfAttempts,
-                    delayDuration = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay)
-                };
-                
-                plateSolveResult = await solver.CaptureSolveSyncReslewReattempt(solveParameters, _canceltoken.Token, progress);
-                service.DelayedClose(TimeSpan.FromSeconds(10));
+                using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
+                    var service = WindowServiceFactory.Create();
+                    service.Show(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
+                    PlatesolveVM.SolveParameters solveParameters = new PlatesolveVM.SolveParameters {
+                        syncScope = true,
+                        slewToTarget = true,
+                        repeat = true,
+                        silent = true,
+                        repeatThreshold = profileService.ActiveProfile.PlateSolveSettings.Threshold,
+                        numberOfAttempts = profileService.ActiveProfile.PlateSolveSettings.NumberOfAttempts,
+                        delayDuration = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay)
+                    };
+
+                    plateSolveResult = await solver.CaptureSolveSyncReslewReattempt(solveParameters, _canceltoken.Token, progress);
+                    service.DelayedClose(TimeSpan.FromSeconds(10));
+                }
             }
             return plateSolveResult;
         }
@@ -538,11 +557,12 @@ namespace NINA.ViewModel {
         }
 
         private async Task AutoFocus(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            var autoFocus = new AutoFocusVM(profileService, focuserMediator, guiderMediator, imagingMediator, applicationStatusMediator);
-            var service = WindowServiceFactory.Create();
-            service.Show(autoFocus, this.Title + " - " + autoFocus.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
-            await autoFocus.StartAutoFocus(filter, token, progress);
-            service.DelayedClose(TimeSpan.FromSeconds(10));
+            using (var autoFocus = new AutoFocusVM(profileService, focuserMediator, guiderMediator, imagingMediator, applicationStatusMediator)) {
+                var service = WindowServiceFactory.Create();
+                service.Show(autoFocus, this.Title + " - " + autoFocus.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
+                await autoFocus.StartAutoFocus(filter, token, progress);
+                service.DelayedClose(TimeSpan.FromSeconds(10));
+            }
         }
 
         //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
@@ -562,7 +582,7 @@ namespace NINA.ViewModel {
                     var lastAutoFocusTime = DateTime.UtcNow;
                     var lastAutoFocusTemperature = focuserInfo?.Temperature ?? double.NaN;
                     var exposureCount = 0;
-
+                    Task saveTask = null;
                     while ((seq = csl.Next()) != null) {
                         exposureCount++;
 
@@ -578,14 +598,43 @@ namespace NINA.ViewModel {
                             await AutoFocus(seq.FilterType, _canceltoken.Token, progress);
                             lastAutoFocusTime = DateTime.UtcNow;
                             lastAutoFocusTemperature = focuserInfo?.Temperature ?? double.NaN;
-                            progress.Report(new ApplicationStatus() { Status = string.Empty });
+                            progress.Report(new ApplicationStatus() { Status = " " });
                         }
 
-                        progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPrepareExposure"] });
+                        progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblImaging"] });
 
-                        await imagingMediator.CaptureAndSaveImage(seq, true, ct, progress, csl.TargetName);
+                        var data = await imagingMediator.CaptureAndPrepareImage(seq, ct, progress);
+                        data.MetaData.Target.Name = csl.TargetName;
+                        progress.Report(new ApplicationStatus() { Status = " " });
 
-                        progress.Report(new ApplicationStatus() { Status = string.Empty });
+                        //Wait for previous prepare image task to complete
+                        if (saveTask != null && !saveTask.IsCompleted) {
+                            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForImageSaving"] });
+                            await saveTask;
+                        }
+
+                        saveTask = Task.Run(async () => {
+                            var path = await data.SaveToDisk(
+                                profileService.ActiveProfile.ImageFileSettings.FilePath,
+                                profileService.ActiveProfile.ImageFileSettings.FilePattern,
+                                profileService.ActiveProfile.ImageFileSettings.FileType,
+                                ct
+                            );
+                            imagingMediator.OnImageSaved(
+                                    new ImageSavedEventArgs() {
+                                        PathToImage = new Uri(path),
+                                        Image = data.Image,
+                                        FileType = profileService.ActiveProfile.ImageFileSettings.FileType,
+                                        Mean = data.Statistics.Mean,
+                                        HFR = data.Statistics.HFR,
+                                        Duration = data.MetaData.Image.ExposureTime,
+                                        IsBayered = data.Statistics.IsBayered,
+                                        Filter = data.MetaData.FilterWheel.Filter,
+                                        StatisticsId = data.Statistics.Id
+                                    }
+                            );
+                            ImgHistoryVM.Add(data.Statistics);
+                        });
 
                         seqDuration.Stop();
 
@@ -609,7 +658,10 @@ namespace NINA.ViewModel {
                         actualFilter = filterWheelInfo?.SelectedFilter;
                         prevFilterPosition = actualFilter?.Position ?? -1;
                     }
-                    
+                    if (saveTask != null && !saveTask.IsCompleted) {
+                        progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForImageSaving"] });
+                        await saveTask;
+                    }
                 } catch (OperationCanceledException ex) {
                     throw ex;
                 } catch (CameraConnectionLostException) {
@@ -1019,7 +1071,7 @@ namespace NINA.ViewModel {
             return (resp != null);
         }
 
-        private async Task<bool> RunEndOfSequenceOptions(IProgress<ApplicationStatus> progress) {          
+        private async Task<bool> RunEndOfSequenceOptions(IProgress<ApplicationStatus> progress) {
             bool parkTelescope = false;
             bool warmCamera = false;
             StringBuilder message = new StringBuilder();
@@ -1043,8 +1095,8 @@ namespace NINA.ViewModel {
             if (warmCamera || parkTelescope) {
                 if (_canceltoken.Token.IsCancellationRequested) { // Sequence was manually cancelled - ask before proceeding with end of sequence options
                     var diag = MyMessageBox.MyMessageBox.Show(message.ToString(), Locale.Loc.Instance["LblEndOfSequenceOptions"], System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
-                    if (diag !=  System.Windows.MessageBoxResult.OK) { 
-                        parkTelescope = false; 
+                    if (diag != System.Windows.MessageBoxResult.OK) {
+                        parkTelescope = false;
                         warmCamera = false;
                     } else {
                         // Need to reinitialize the cancellation token, as it is set to cancelation requested since sequence was manually cancelled.
@@ -1061,7 +1113,7 @@ namespace NINA.ViewModel {
                     progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblEndOfSequenceWarmCamera"] });
                     Logger.Trace("Starting to warm the camera");
                     IProgress<double> warmProgress = new Progress<double>();
-                    await cameraMediator.StartChangeCameraTemp(warmProgress,10,TimeSpan.FromMinutes(20), true, _canceltoken.Token);
+                    await cameraMediator.StartChangeCameraTemp(warmProgress, 10, TimeSpan.FromMinutes(20), true, _canceltoken.Token);
                     Logger.Trace("Camera has been warmed");
                 }
             }
@@ -1092,6 +1144,15 @@ namespace NINA.ViewModel {
                 }
             }
             this.guiderInfo = deviceInfo;
+        }
+
+        public void Dispose() {
+            this.telescopeMediator.RemoveConsumer(this);
+            this.filterWheelMediator.RemoveConsumer(this);
+            this.focuserMediator.RemoveConsumer(this);
+            this.rotatorMediator.RemoveConsumer(this);
+            this.guiderMediator.RemoveConsumer(this);
+            this.cameraMediator.RemoveConsumer(this);
         }
     }
 }

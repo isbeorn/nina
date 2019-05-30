@@ -22,6 +22,7 @@
 #endregion "copyright"
 
 using NINA.Database;
+using Nito.AsyncEx;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -152,7 +153,12 @@ namespace NINA.Utility.Astrometry {
             var utcDate = date.ToUniversalTime();
 
             var db = new DatabaseInteraction();
-            var deltaUT = db.GetUT1_UTC(utcDate, new System.Threading.CancellationToken()).Result;
+            var deltaUT = 0d;
+            try {
+                deltaUT = AsyncContext.Run(() => db.GetUT1_UTC(utcDate, default));
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
 
             if (date.Date == DateTime.UtcNow.Date) {
                 DeltaUTToday = deltaUT;

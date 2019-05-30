@@ -38,7 +38,6 @@ namespace NINA.Profile {
         protected override void SetDefaultValues() {
             autoStretchFactor = 0.2;
             blackClipping = -2.8;
-            histogramResolution = 300;
             annotateImage = false;
             debayerImage = true;
             unlinkedStretch = true;
@@ -69,21 +68,6 @@ namespace NINA.Profile {
             set {
                 if (blackClipping != value) {
                     blackClipping = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private int histogramResolution;
-
-        [DataMember]
-        public int HistogramResolution {
-            get {
-                return histogramResolution;
-            }
-            set {
-                if (histogramResolution != value) {
-                    histogramResolution = value;
                     RaisePropertyChanged();
                 }
             }
@@ -137,18 +121,6 @@ namespace NINA.Profile {
                     }
                     RaisePropertyChanged();
                 }
-            }
-        }
-
-        public double HistogramMajorStep {
-            get {
-                return HistogramResolution / 2;
-            }
-        }
-
-        public double HistogramMinorStep {
-            get {
-                return HistogramResolution / 4;
             }
         }
     }

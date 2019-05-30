@@ -21,9 +21,11 @@
 
 #endregion "copyright"
 
+using System;
+
 namespace NINA.Utility.Mediator.Interfaces {
 
-    public interface IDeviceConsumer<TInfo> {
+    public interface IDeviceConsumer<TInfo> : IDisposable {
 
         void UpdateDeviceInfo(TInfo deviceInfo);
     }

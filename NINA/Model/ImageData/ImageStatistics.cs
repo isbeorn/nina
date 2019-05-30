@@ -27,9 +27,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NINA.Model.MyCamera {
+namespace NINA.Model.ImageData {
 
     public class ImageStatistics : BaseINPC, IImageStatistics {
+        public const int HISTOGRAMRESOLUTION = 100;
 
         /// <summary>
         /// Create new instance of ImageStatistics
@@ -40,11 +41,10 @@ namespace NINA.Model.MyCamera {
         /// <param name="bitDepth">bit depth of a pixel</param>
         /// <param name="isBayered">Flag to indicate if the image is bayer matrix encoded</param>
         /// <param name="resolution">Target histogram resolution</param>
-        public ImageStatistics(int width, int height, int bitDepth, bool isBayered, int resolution) {
+        public ImageStatistics(int width, int height, int bitDepth, bool isBayered) {
             this.Width = width;
             this.Height = height;
             this.IsBayered = isBayered;
-            this.resolution = resolution;
             this.BitDepth = bitDepth;
         }
 
@@ -77,7 +77,6 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        private int resolution;
         private double hFR;
 
         public double HFR {
@@ -210,7 +209,7 @@ namespace NINA.Model.MyCamera {
                 this.Median = median;
                 this.MedianAbsoluteDeviation = medianAbsoluteDeviation;
                 var maxPossibleValue = (ushort)((1 << BitDepth) - 1);
-                var factor = (double)resolution / maxPossibleValue;
+                var factor = (double)HISTOGRAMRESOLUTION / maxPossibleValue;
                 this.Histogram = histogram
                     .Select((value, index) => new { Index = index, Value = value })
                     .GroupBy(
