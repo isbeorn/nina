@@ -299,18 +299,10 @@ namespace NINA.ViewModel {
             return cameraMediator.Download(token);
         }
 
-        private async Task<bool> Dither(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            if (seq.Dither && ((seq.ProgressExposureCount % seq.DitherAmount) == 0)) {
-                return await this.guiderMediator.Dither(token);
-            }
-            token.ThrowIfCancellationRequested();
-            return false;
-        }
-
         //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
         private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
-        public async Task<IImageData> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        public async Task<IImageData> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
             var iarr = await CaptureImage(sequence, token, string.Empty);
             if (iarr != null) {
                 return await _imageProcessingTask;
@@ -319,11 +311,15 @@ namespace NINA.ViewModel {
             }
         }
 
+        public Task<IImageData> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            return CaptureImage(sequence, token, string.Empty, true);
+        }
+
         private Task<IImageData> CaptureImage(
                 CaptureSequence sequence,
                 CancellationToken token,
                 string targetName = "",
-                bool addToStatistics = true
+                bool skipProcessing = false
                 ) {
             return Task.Run(async () => {
                 try {
@@ -378,9 +374,6 @@ namespace NINA.ViewModel {
                             throw new CameraConnectionLostException();
                         }
 
-                        /*Dither*/
-                        var ditherTask = Dither(sequence, token, progress);
-
                         /*Download Image */
                         data = await Download(token, progress);
                         if (data == null) {
@@ -393,27 +386,14 @@ namespace NINA.ViewModel {
 
                         AddMetaData(data, sequence, exposureStart, rms, targetName);
 
-                        //Wait for previous prepare image task to complete
-                        if (_imageProcessingTask != null && !_imageProcessingTask.IsCompleted) {
-                            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForImageProcessing"] });
-                            await _imageProcessingTask;
-                        }
-
-                        _imageProcessingTask = Task.Run(async () => {
-                            Task<IImageData> process = ImageControl.PrepareImage(data, token);
-
-                            var processedData = await process;
-
-                            if (addToStatistics) {
-                                ImgStatisticsVM.Add(data.Statistics);
+                        if (!skipProcessing) {
+                            //Wait for previous prepare image task to complete
+                            if (_imageProcessingTask != null && !_imageProcessingTask.IsCompleted) {
+                                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForImageProcessing"] });
+                                await _imageProcessingTask;
                             }
-                            return processedData;
-                        }, token);
 
-                        if (ditherTask?.IsCompleted != true) {
-                            //Wait for dither to finish. Runs in parallel to download and save.
-                            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForDither"] });
-                            await ditherTask;
+                            _imageProcessingTask = PrepareImage(data, token);
                         }
                     } catch (System.OperationCanceledException ex) {
                         cameraMediator.AbortExposure();
@@ -525,7 +505,7 @@ namespace NINA.ViewModel {
                     seq.EnableSubSample = SnapSubSample;
                     seq.Gain = SnapGain;
 
-                    var data = await CaptureImage(seq, _captureImageToken.Token, progress);
+                    var data = await CaptureAndPrepareImage(seq, _captureImageToken.Token, progress);
                     if (SnapSave) {
                         var path = await data.SaveToDisk(
                             profileService.ActiveProfile.ImageFileSettings.FilePath,
@@ -596,7 +576,15 @@ namespace NINA.ViewModel {
         }
 
         public Task<IImageData> PrepareImage(IImageData data, CancellationToken token) {
-            return ImageControl.PrepareImage(data, token);
+            _imageProcessingTask = Task.Run(async () => {
+                Task<IImageData> process = ImageControl.PrepareImage(data, token);
+
+                var processedData = await process;
+
+                ImgStatisticsVM.Add(data.Statistics);
+                return processedData;
+            }, token);
+            return _imageProcessingTask;
         }
 
         public void DestroyImage() {

@@ -387,7 +387,7 @@ namespace NINA.ViewModel.FlatWizard {
                 // capture a flat
                 var sequence = new CaptureSequence(exposureTime, "FLAT", wrapper.Filter, BinningMode, 1) { Gain = Gain };
 
-                data = await ImagingVM.CaptureImage(sequence, ct, progress);
+                data = await ImagingVM.CaptureAndPrepareImage(sequence, ct, progress);
                 await data.Stretch(profileService.ActiveProfile.ImageSettings.AutoStretchFactor, profileService.ActiveProfile.ImageSettings.BlackClipping, false);
                 Image = data.Image;
 
@@ -595,6 +595,8 @@ namespace NINA.ViewModel.FlatWizard {
             while (sequence.ProgressExposureCount < sequence.TotalExposureCount) {
                 var data = await ImagingVM.CaptureImage(sequence, ct, progress);
 
+                var prepareTask = ImagingVM.PrepareImage(data, ct);
+
                 if (saveTask != null && !saveTask.IsCompleted) {
                     progress.Report(new ApplicationStatus() { Status = Locale["LblWaitForImageSaving"] });
                     await saveTask;
@@ -606,6 +608,8 @@ namespace NINA.ViewModel.FlatWizard {
                     profileService.ActiveProfile.ImageFileSettings.FileType,
                     ct
                 );
+
+                await prepareTask;
 
                 sequence.ProgressExposureCount++;
 

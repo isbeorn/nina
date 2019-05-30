@@ -40,6 +40,8 @@ namespace NINA.Utility.Mediator.Interfaces {
 
         bool SetAutoStretch(bool value);
 
+        Task<IImageData> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress);
+
         Task<IImageData> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress);
 
         Task<IImageData> PrepareImage(IImageData iarr, CancellationToken token);
