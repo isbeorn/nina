@@ -338,45 +338,13 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public int SubSampleX {
-            get {
-                throw new NotImplementedException();
-            }
+        public int SubSampleX { get; set; }
 
-            set {
-                throw new NotImplementedException();
-            }
-        }
+        public int SubSampleY { get; set; }
 
-        public int SubSampleY {
-            get {
-                throw new NotImplementedException();
-            }
+        public int SubSampleWidth { get; set; }
 
-            set {
-                throw new NotImplementedException();
-            }
-        }
-
-        public int SubSampleWidth {
-            get {
-                throw new NotImplementedException();
-            }
-
-            set {
-                throw new NotImplementedException();
-            }
-        }
-
-        public int SubSampleHeight {
-            get {
-                throw new NotImplementedException();
-            }
-
-            set {
-                throw new NotImplementedException();
-            }
-        }
+        public int SubSampleHeight { get; set; }
 
         public bool CanShowLiveView {
             get {

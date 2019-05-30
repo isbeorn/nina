@@ -44,6 +44,7 @@ namespace NINA.Profile {
             focuserSettleTime = 0;
             autoFocusTotalNumberOfAttempts = 1;
             autoFocusNumberOfFramesPerPoint = 1;
+            autoFocusCropRatio = 1;
         }
 
         private string id;
@@ -163,6 +164,27 @@ namespace NINA.Profile {
             set {
                 if (autoFocusNumberOfFramesPerPoint != value) {
                     autoFocusNumberOfFramesPerPoint = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private double autoFocusCropRatio;
+
+        [DataMember]
+        public double AutoFocusCropRatio {
+            get {
+                return autoFocusCropRatio;
+            }
+            set {
+                if (autoFocusCropRatio != value) {
+                    if (value > 1) {
+                        autoFocusCropRatio = 1; 
+                    } else if (value < 0.2) {
+                        autoFocusCropRatio = 0.2;
+                    } else {
+                        autoFocusCropRatio = value;
+                    }
                     RaisePropertyChanged();
                 }
             }

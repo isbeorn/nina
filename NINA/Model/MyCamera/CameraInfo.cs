@@ -180,6 +180,34 @@ namespace NINA.Model.MyCamera {
             set { canSubSample = value; RaisePropertyChanged(); }
         }
 
+        private int subSampleX;
+
+        public int SubSampleX {
+            get { return subSampleX; }
+            set { subSampleX = value; RaisePropertyChanged(); }
+        }
+
+        private int subSampleY;
+
+        public int SubSampleY {
+            get { return subSampleY; }
+            set { subSampleY = value; RaisePropertyChanged(); }
+        }
+
+        private int subSampleWidth;
+
+        public int SubSampleWidth {
+            get { return subSampleWidth; }
+            set { subSampleWidth = value; RaisePropertyChanged(); }
+        }
+
+        private int subSampleHeight;
+
+        public int SubSampleHeight {
+            get { return subSampleHeight; }
+            set { subSampleHeight = value; RaisePropertyChanged(); }
+        }
+
         private double temperatureSetPoint;
 
         public double TemperatureSetPoint {

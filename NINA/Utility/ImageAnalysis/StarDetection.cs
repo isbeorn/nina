@@ -43,6 +43,7 @@ namespace NINA.Utility.ImageAnalysis {
 
     internal class StarDetection {
         private static System.Drawing.Pen ELLIPSEPEN = new System.Drawing.Pen(System.Drawing.Brushes.LightYellow, 1);
+        private static System.Drawing.Pen RECTPEN = new System.Drawing.Pen(System.Drawing.Brushes.LightYellow, 2);
         private static SolidBrush TEXTBRUSH = new SolidBrush(System.Drawing.Color.Yellow);
         private static System.Drawing.FontFamily FONTFAMILY = new System.Drawing.FontFamily("Arial");
         private static Font FONT = new Font(FONTFAMILY, 32, System.Drawing.FontStyle.Regular, GraphicsUnit.Pixel);
@@ -93,6 +94,17 @@ namespace NINA.Utility.ImageAnalysis {
 
         public int DetectedStars { get; private set; }
         public double AverageHFR { get; private set; }
+        public double CropRatio { get; set; }
+
+        public bool ignoreImageEdges = false;
+        public bool IgnoreImageEdges {
+            get { 
+                return ignoreImageEdges;
+            }
+            set { 
+            ignoreImageEdges = value;
+            } 
+        }
 
         private class Star {
             public double radius;
@@ -236,6 +248,15 @@ namespace NINA.Utility.ImageAnalysis {
                     || blob.Rectangle.Height < _minStarSize) {
                     continue;
                 }
+
+                // If camera cannot subSample, but crop ratio is set, ignore blobs that are too close to the edge
+                if (IgnoreImageEdges
+                    && (blob.Rectangle.X + blob.Rectangle.Width / 2 < (1 - CropRatio) * _bitmapToAnalyze.Width / 2 
+                    || blob.Rectangle.X + blob.Rectangle.Width / 2 > _bitmapToAnalyze.Width * (1 - (1 - CropRatio) / 2)
+                    || blob.Rectangle.Y + blob.Rectangle.Height / 2 < (1 - CropRatio) * _bitmapToAnalyze.Height / 2
+                    || blob.Rectangle.Y + blob.Rectangle.Height / 2 > _bitmapToAnalyze.Height * (1 - (1 - CropRatio) / 2))) { 
+                    continue;
+                }
                 var points = _blobCounter.GetBlobsEdgePoints(blob);
                 AForge.Point centerpoint;
                 float radius;
@@ -289,7 +310,7 @@ namespace NINA.Utility.ImageAnalysis {
                 double starMean = starPixelSum / (double)starPixelCount;
                 double largeRectMean = largeRectPixelSum / (double)(largeRect.Height * largeRect.Width - rect.Height * rect.Width);
 
-                if (starMean > largeRectMean * 1.1) { //It's a local minimum, so likely to be a star. Let's add it to our star dictionary.
+                if (starMean > largeRectMean * 1.1) { //It's a local maximum, so likely to be a star. Let's add it to our star dictionary.
                     sumRadius += s.radius;
                     sumSquares += s.radius * s.radius;
                     s.CalculateHfr();
@@ -339,6 +360,11 @@ namespace NINA.Utility.ImageAnalysis {
                                 graphics.DrawString(star.HFR.ToString("##.##"), FONT, TEXTBRUSH, new PointF(Convert.ToSingle(textposx - 1.5 * offset), Convert.ToSingle(textposy + 2.5 * offset)));
                             }
                         }
+
+                        if (IgnoreImageEdges) {
+                            graphics.DrawRectangle(RECTPEN, (float)(1 - CropRatio) * statistics.Width / 2, (float)(1 - CropRatio) * statistics.Height / 2, (float)CropRatio * statistics.Width, (float)CropRatio * statistics.Height);
+                        }
+
                         var img = ImageUtility.ConvertBitmap(newBitmap, System.Windows.Media.PixelFormats.Bgr24);
 
                         img.Freeze();

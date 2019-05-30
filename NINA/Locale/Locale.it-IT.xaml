@@ -55,6 +55,10 @@ Vuoi che l'applicazione provi a risolvere quell'errore? (Può portare a comporta
   <s:String x:Key="LblAutoFocusAfterSetTime" xml:space="default">Dopo tempo trascorso</s:String>
   <s:String x:Key="LblAutoFocusAfterTemperatureChange" xml:space="default">Dopo cambiamento temperatura</s:String>
   <s:String x:Key="LblAutoFocusAfterTemperatureChangeAmount" xml:space="default">Valore Temperatura</s:String>
+  <s:String x:Key="LblAutoFocusCropRatio" xml:space="default">AF Crop Ratio</s:String>
+  <s:String x:Key="LblAutoFocusCropRatioTooltip" xml:space="preserve">Se impostato ad un valore inferiore ad uno, la detection delle stelle durante l'autofocus userà
+solo la parte centrale del sensore (se supportato dalla camera). Se non supportato dalla camera, le
+stelle nei pressi dei bordi dell' immagine saranno ignorate durante la detection automatica.</s:String>
   <s:String x:Key="LblAutoFocusExposureTime" xml:space="default">Tempo di esposizione Auto Focus</s:String>
   <s:String x:Key="LblAutoFocusExposureTimeTooltip" xml:space="default">Tempo di Esposizione usato per l-auto-focs qaundo non è impostato alcun tempo specifico per il filtro o se il tempo specifico per il filtro è zero</s:String>
   <s:String x:Key="LblAutoFocusGearNotConnected" xml:space="default">Impossibile iniziare Auto Focus. Camera o Focuser non connessi!</s:String>

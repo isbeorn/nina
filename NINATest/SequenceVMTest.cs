@@ -960,6 +960,10 @@ namespace NINATest {
 
         public event EventHandler<ImageSavedEventArgs> ImageSaved;
 
+        public void SetImage(BitmapSource img) {
+            throw new NotImplementedException();
+        }
+
         Task<IImageData> IImagingMediator.CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
             throw new NotImplementedException();
         }

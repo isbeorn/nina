@@ -51,6 +51,8 @@ namespace NINA.Utility.Mediator.Interfaces {
         event EventHandler<ImageSavedEventArgs> ImageSaved;
 
         void OnImageSaved(ImageSavedEventArgs e);
+
+        void SetImage(BitmapSource img);
     }
 
     public class ImageSavedEventArgs : EventArgs {
