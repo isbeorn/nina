@@ -37,6 +37,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using NINA.Model.ImageData;
 
 namespace NINA.Model.MyCamera {
 
@@ -109,28 +110,28 @@ namespace NINA.Model.MyCamera {
             LiveViewEnabled = false;
         }
 
-        public async Task<ImageArray> DownloadLiveView(CancellationToken token) {
-            byte[] buffer = _camera.GetLiveViewImage().JpegBuffer;
-            var memStream = new MemoryStream(buffer);
-            memStream.Position = 0;
+        public Task<IImageData> DownloadLiveView(CancellationToken token) {
+            return Task.Run(() => {
+                byte[] buffer = _camera.GetLiveViewImage().JpegBuffer;
+                using (var memStream = new MemoryStream(buffer)) {
+                    memStream.Position = 0;
 
-            JpegBitmapDecoder decoder = new JpegBitmapDecoder(memStream, BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.OnLoad);
+                    JpegBitmapDecoder decoder = new JpegBitmapDecoder(memStream, BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.OnLoad);
 
-            FormatConvertedBitmap bitmap = new FormatConvertedBitmap();
-            bitmap.BeginInit();
-            bitmap.Source = decoder.Frames[0];
-            bitmap.DestinationFormat = System.Windows.Media.PixelFormats.Gray16;
-            bitmap.EndInit();
+                    FormatConvertedBitmap bitmap = new FormatConvertedBitmap();
+                    bitmap.BeginInit();
+                    bitmap.Source = decoder.Frames[0];
+                    bitmap.DestinationFormat = System.Windows.Media.PixelFormats.Gray16;
+                    bitmap.EndInit();
 
-            ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
-            bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
+                    ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
+                    bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
 
-            var iarr = await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, BitDepth, false, false, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                    IImageData iarr = new ImageData.ImageData(outArray, bitmap.PixelWidth, bitmap.PixelHeight, BitDepth, false);
 
-            memStream.Close();
-            memStream.Dispose();
-
-            return iarr;
+                    return iarr;
+                }
+            });
         }
 
         private void CleanupUnusedManagers(NikonManager activeManager) {
@@ -643,14 +644,14 @@ namespace NINA.Model.MyCamera {
             serialPortInteraction = null;
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
+        public async Task<IImageData> DownloadExposure(CancellationToken token) {
             Logger.Debug("Waiting for download of exposure");
             await _downloadExposure.Task;
             Logger.Debug("Downloading of exposure complete. Converting image to internal array");
 
             var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
-            var iarr = await converter.ConvertToImageArray(_memoryStream, BitDepth, profileService.ActiveProfile.ImageSettings.HistogramResolution, calculateStatistics, token);
-            iarr.RAWType = "nef";
+            var iarr = await converter.Convert(_memoryStream, BitDepth, token);
+            iarr.Data.RAWType = "nef";
             _memoryStream.Dispose();
             _memoryStream = null;
             return iarr;

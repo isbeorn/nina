@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using ToupTek;
+using NINA.Model.ImageData;
 
 namespace NINA.Model.MyCamera {
 
@@ -498,8 +499,6 @@ namespace NINA.Model.MyCamera {
             StopExposure();
         }
 
-        private bool calculateStatisticsOnDownload;
-
         private void ReadOutBinning() {
             /* Found no way to readout available binning modes. Assume 4x4 for all cams for now */
             BinningModes.Clear();
@@ -598,15 +597,14 @@ namespace NINA.Model.MyCamera {
             camera = null;
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
-            calculateStatisticsOnDownload = calculateStatistics;
+        public async Task<IImageData> DownloadExposure(CancellationToken token) {
             await downloadExposure.Task;
-            return await imageTask;
+            return imageData;
         }
 
-        public async Task<ImageArray> DownloadLiveView(CancellationToken token) {
+        public async Task<IImageData> DownloadLiveView(CancellationToken token) {
             await downloadLiveExposure.Task;
-            var arr = await imageTask;
+            var arr = imageData;
             downloadLiveExposure = new TaskCompletionSource<object>();
             return arr;
         }
@@ -656,7 +654,7 @@ namespace NINA.Model.MyCamera {
                 var cameraDataToManaged = new CameraDataToManaged(pData, width, height, BitDepth);
                 var arr = cameraDataToManaged.GetData();
 
-                imageTask = ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, calculateStatisticsOnDownload, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                imageData = new ImageData.ImageData(arr, width, height, BitDepth, SensorType != SensorType.Monochrome);
                 if (LiveViewEnabled) {
                     downloadLiveExposure?.TrySetResult(true);
                 } else {
@@ -667,7 +665,7 @@ namespace NINA.Model.MyCamera {
 
         private TaskCompletionSource<object> downloadExposure;
         private TaskCompletionSource<object> downloadLiveExposure;
-        private Task<ImageArray> imageTask;
+        private IImageData imageData;
         private int bitDepth;
 
         public int BitDepth {

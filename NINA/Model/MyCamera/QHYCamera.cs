@@ -35,6 +35,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using NINA.Model.ImageData;
 
 namespace NINA.Model.MyCamera {
 
@@ -752,55 +753,57 @@ namespace NINA.Model.MyCamera {
             LibQHYCCD.N_CloseQHYCCD(CameraP);
         }
 
-        public Task<ImageArray> DownloadExposure(CancellationToken ct, bool calculateStatistics) {
-            uint width = 0;
-            uint height = 0;
-            uint bpp = 0;
-            uint channels = 0;
-            byte[] ImgData;
-            uint rv;
+        public Task<IImageData> DownloadExposure(CancellationToken ct) {
+            return Task.Run(() => {
+                uint width = 0;
+                uint height = 0;
+                uint bpp = 0;
+                uint channels = 0;
+                byte[] ImgData;
+                uint rv;
 
-            /*
-             * Ask the SDK how big the exposure will be
-             */
-            uint size = LibQHYCCD.GetQHYCCDMemLength(CameraP);
+                /*
+                 * Ask the SDK how big the exposure will be
+                 */
+                uint size = LibQHYCCD.GetQHYCCDMemLength(CameraP);
 
-            if (size == 0) {
-                Logger.Warning("QHYCCD: SDK reported a 0-length image buffer!");
-                throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
-            }
-            Logger.Debug(string.Format("QHYCCD: Image size will be {0} bytes", size));
+                if (size == 0) {
+                    Logger.Warning("QHYCCD: SDK reported a 0-length image buffer!");
+                    throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
+                }
+                Logger.Debug(string.Format("QHYCCD: Image size will be {0} bytes", size));
 
-            /*
-             * Size the image data byte array for the image
-             */
-            ImgData = new byte[size];
+                /*
+                 * Size the image data byte array for the image
+                 */
+                ImgData = new byte[size];
 
-            /*
-             * Download the image from the camera
-             */
-            CameraState = LibQHYCCD.QHYCCD_CAMERA_STATE.DOWNLOADING.ToString();
-            if ((rv = LibQHYCCD.C_GetQHYCCDSingleFrame(CameraP, ref width, ref height, ref bpp, ref channels, ImgData)) != LibQHYCCD.QHYCCD_SUCCESS) {
-                Logger.Warning(string.Format("QHYCCD: Failed to download image from camera! rv = {0}", rv));
-                throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
-            }
+                /*
+                 * Download the image from the camera
+                 */
+                CameraState = LibQHYCCD.QHYCCD_CAMERA_STATE.DOWNLOADING.ToString();
+                if ((rv = LibQHYCCD.C_GetQHYCCDSingleFrame(CameraP, ref width, ref height, ref bpp, ref channels, ImgData)) != LibQHYCCD.QHYCCD_SUCCESS) {
+                    Logger.Warning(string.Format("QHYCCD: Failed to download image from camera! rv = {0}", rv));
+                    throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
+                }
 
-            /*
-             * Copy the image byte array to an allocated buffer
-             */
-            IntPtr buf = Marshal.AllocHGlobal(ImgData.Length);
-            Marshal.Copy(ImgData, 0, buf, ImgData.Length);
-            var cameraDataToManaged = new CameraDataToManaged(buf, (int)width, (int)height, (int)bpp);
-            var arr = cameraDataToManaged.GetData();
-            ImgData = null;
-            Marshal.FreeHGlobal(buf);
+                /*
+                 * Copy the image byte array to an allocated buffer
+                 */
+                IntPtr buf = Marshal.AllocHGlobal(ImgData.Length);
+                Marshal.Copy(ImgData, 0, buf, ImgData.Length);
+                var cameraDataToManaged = new CameraDataToManaged(buf, (int)width, (int)height, (int)bpp);
+                var arr = cameraDataToManaged.GetData();
+                ImgData = null;
+                Marshal.FreeHGlobal(buf);
 
-            CameraState = LibQHYCCD.QHYCCD_CAMERA_STATE.IDLE.ToString();
+                CameraState = LibQHYCCD.QHYCCD_CAMERA_STATE.IDLE.ToString();
 
-            return ImageArray.CreateInstance(arr, (int)width, (int)height, (int)bpp, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                return Task.FromResult<IImageData>(new ImageData.ImageData(arr, (int)width, (int)height, (int)bpp, SensorType != SensorType.Monochrome));
+            }, ct);
         }
 
-        public Task<ImageArray> DownloadLiveView(CancellationToken ct) {
+        public Task<IImageData> DownloadLiveView(CancellationToken ct) {
             throw new NotImplementedException();
         }
 

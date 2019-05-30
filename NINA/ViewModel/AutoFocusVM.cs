@@ -37,6 +37,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using NINA.Utility.ImageAnalysis;
+using NINA.Model.ImageData;
 
 namespace NINA.ViewModel {
 
@@ -187,7 +188,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task<ImageData> TakeExposure(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        private async Task<IImageData> TakeExposure(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
             Logger.Trace("Starting Exposure for autofocus");
             double expTime = profileService.ActiveProfile.FocuserSettings.AutoFocusExposureTime;
             if (filter != null && filter.AutoFocusExposureTime > 0) {
@@ -198,7 +199,7 @@ namespace NINA.ViewModel {
             var oldAutoStretch = imagingMediator.SetAutoStretch(true);
             var oldDetectStars = imagingMediator.SetDetectStars(false);
 
-            ImageData image = await imagingMediator.CaptureArrayAndPrepareImage(seq, token, progress);
+            IImageData image = await imagingMediator.CaptureAndPrepareImage(seq, token, progress);
 
             imagingMediator.SetAutoStretch(oldAutoStretch);
             imagingMediator.SetDetectStars(oldDetectStars);
@@ -206,17 +207,17 @@ namespace NINA.ViewModel {
             return image;
         }
 
-        private async Task<double> EvaluateExposure(ImageData image, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        private async Task<double> EvaluateExposure(IImageData image, CancellationToken token, IProgress<ApplicationStatus> progress) {
             Logger.Trace("Evaluating Exposure");
             System.Windows.Media.PixelFormat pixelFormat;
 
-            if (image.Data.Statistics.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage) {
+            if (image.Statistics.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage) {
                 pixelFormat = System.Windows.Media.PixelFormats.Rgb48;
             } else {
                 pixelFormat = System.Windows.Media.PixelFormats.Gray16;
             }
 
-            var analysis = new StarDetection(image.Image, image.Data, pixelFormat);
+            var analysis = new StarDetection(image, pixelFormat);
             await analysis.DetectAsync(progress, token);
 
             Logger.Debug(string.Format("Current Focus: Position: {0}, HRF: {1}", _focusPosition, analysis.AverageHFR));
@@ -404,6 +405,12 @@ namespace NINA.ViewModel {
 
         public void UpdateDeviceInfo(FilterWheelInfo deviceInfo) {
             this.filterInfo = deviceInfo;
+        }
+
+        public void Dispose() {
+            this.cameraMediator?.RemoveConsumer(this);
+            this.filterWheelMediator?.RemoveConsumer(this);
+            this.focuserMediator?.RemoveConsumer(this);
         }
 
         public ICommand StartAutoFocusCommand { get; private set; }

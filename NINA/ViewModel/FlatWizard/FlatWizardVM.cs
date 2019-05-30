@@ -43,6 +43,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using NINA.Utility.ImageAnalysis;
+using NINA.Model.ImageData;
 
 namespace NINA.ViewModel.FlatWizard {
 
@@ -125,11 +126,20 @@ namespace NINA.ViewModel.FlatWizard {
             UpdateFilterWheelsSettings();
 
             // then register consumer and get the cameraInfo so it's populated to all filters including the singleflatwizardfiltersettings
-
+            this.cameraMediator = cameraMediator;
             cameraMediator.RegisterConsumer(this);
+            this.filterWheelMediator = filterWheelMediator;
             filterWheelMediator.RegisterConsumer(this);
             this.telescopeMediator = telescopeMediator;
             this.telescopeMediator.RegisterConsumer(this);
+        }
+
+        public void Dispose() {
+            flatSequenceCts?.Dispose();
+            ImagingVM.Dispose();
+            this.cameraMediator.RemoveConsumer(this);
+            this.filterWheelMediator.RemoveConsumer(this);
+            this.telescopeMediator.RemoveConsumer(this);
         }
 
         private AltitudeSite altitudeSite;
@@ -343,7 +353,7 @@ namespace NINA.ViewModel.FlatWizard {
 
         private async Task<bool> StartFindingExposureTimeSequence(IProgress<ApplicationStatus> progress, CancellationToken ct, PauseToken pt, FlatWizardFilterSettingsWrapper wrapper) {
             var exposureTime = wrapper.Settings.MinFlatExposureTime;
-            ImageArray imageArray = null;
+            IImageData data = null;
 
             progress.Report(new ApplicationStatus { Status = string.Format(Locale["LblFlatExposureCalcStart"], wrapper.Settings.MinFlatExposureTime), Source = Title });
 
@@ -363,13 +373,13 @@ namespace NINA.ViewModel.FlatWizard {
                     case FlatWizardExposureTimeState.ExposureTimeAboveMaxTime:
                         exposureTime = FlatWizardExposureTimeFinderService.GetNextExposureTime(exposureTime, wrapper);
 
-                        var result = await FlatWizardExposureTimeFinderService.EvaluateUserPromptResultAsync(imageArray, exposureTime, Locale["LblFlatUserPromptFlatTooDim"], wrapper);
+                        var result = await FlatWizardExposureTimeFinderService.EvaluateUserPromptResultAsync(data, exposureTime, Locale["LblFlatUserPromptFlatTooDim"], wrapper);
 
                         if (!result.Continue) {
                             flatSequenceCts.Cancel();
                         } else {
                             exposureTime = result.NextExposureTime;
-                            progress.Report(new ApplicationStatus() { Status = string.Format(Locale["LblFlatExposureCalcContinue"], Math.Round(imageArray?.Statistics.Mean ?? 0, 2), exposureTime), Source = Title });
+                            progress.Report(new ApplicationStatus() { Status = string.Format(Locale["LblFlatExposureCalcContinue"], Math.Round(data?.Statistics.Mean ?? 0, 2), exposureTime), Source = Title });
                         }
                         break;
                 }
@@ -377,32 +387,30 @@ namespace NINA.ViewModel.FlatWizard {
                 // capture a flat
                 var sequence = new CaptureSequence(exposureTime, "FLAT", wrapper.Filter, BinningMode, 1) { Gain = Gain };
 
-                imageArray = await ImagingVM.CaptureImageWithoutHistoryAndThumbnail(sequence, ct, progress, true);
-                Image = await ImageUtility.StretchAsync(
-                    imageArray.Statistics,
-                    ImageUtility.CreateSourceFromArray(imageArray, System.Windows.Media.PixelFormats.Gray16),
-                    profileService.ActiveProfile.ImageSettings.AutoStretchFactor, profileService.ActiveProfile.ImageSettings.BlackClipping);
+                data = await ImagingVM.CaptureImage(sequence, ct, progress);
+                await data.Stretch(profileService.ActiveProfile.ImageSettings.AutoStretchFactor, profileService.ActiveProfile.ImageSettings.BlackClipping, false);
+                Image = data.Image;
 
                 // check for exposure ADU state
-                exposureAduState = FlatWizardExposureTimeFinderService.GetFlatExposureState(imageArray, exposureTime, wrapper);
-                FlatWizardExposureTimeFinderService.AddDataPoint(exposureTime, imageArray.Statistics.Mean);
+                exposureAduState = FlatWizardExposureTimeFinderService.GetFlatExposureState(data, exposureTime, wrapper);
+                FlatWizardExposureTimeFinderService.AddDataPoint(exposureTime, data.Statistics.Mean);
 
                 switch (exposureAduState) {
                     case FlatWizardExposureAduState.ExposureFinished:
-                        CalculatedHistogramMean = imageArray.Statistics.Mean;
+                        CalculatedHistogramMean = data.Statistics.Mean;
                         CalculatedExposureTime = exposureTime;
                         progress.Report(new ApplicationStatus { Status = string.Format(Locale["LblFlatExposureCalcFinished"], Math.Round(CalculatedHistogramMean, 2), CalculatedExposureTime), Source = Title });
                         break;
 
                     case FlatWizardExposureAduState.ExposureAduBelowMean:
                         exposureTime = FlatWizardExposureTimeFinderService.GetNextExposureTime(exposureTime, wrapper);
-                        progress.Report(new ApplicationStatus { Status = string.Format(Locale["LblFlatExposureCalcContinue"], Math.Round(imageArray.Statistics.Mean, 2), exposureTime), Source = Title });
+                        progress.Report(new ApplicationStatus { Status = string.Format(Locale["LblFlatExposureCalcContinue"], Math.Round(data.Statistics.Mean, 2), exposureTime), Source = Title });
                         break;
 
                     case FlatWizardExposureAduState.ExposureAduAboveMean:
                         exposureTime = FlatWizardExposureTimeFinderService.GetNextExposureTime(exposureTime, wrapper);
 
-                        var result = await FlatWizardExposureTimeFinderService.EvaluateUserPromptResultAsync(imageArray, exposureTime, Locale["LblFlatUserPromptFlatTooBright"], wrapper);
+                        var result = await FlatWizardExposureTimeFinderService.EvaluateUserPromptResultAsync(data, exposureTime, Locale["LblFlatUserPromptFlatTooBright"], wrapper);
 
                         if (!result.Continue) {
                             flatSequenceCts.Cancel();
@@ -474,6 +482,8 @@ namespace NINA.ViewModel.FlatWizard {
         }
 
         private Dictionary<FlatWizardFilterSettingsWrapper, double> filterToExposureTime = new Dictionary<FlatWizardFilterSettingsWrapper, double>();
+        private IFilterWheelMediator filterWheelMediator;
+        private ICameraMediator cameraMediator;
         private ITelescopeMediator telescopeMediator;
         private TelescopeInfo telescopeInfo;
 
@@ -581,18 +591,31 @@ namespace NINA.ViewModel.FlatWizard {
 
         private async Task<bool> StartCaptureSequence(CaptureSequence sequence, IProgress<ApplicationStatus> progress,
             CancellationToken ct, PauseToken pt) {
+            Task saveTask = null;
             while (sequence.ProgressExposureCount < sequence.TotalExposureCount) {
-                if (sequence.ProgressExposureCount != sequence.TotalExposureCount - 1) {
-                    await ImagingVM.CaptureImageWithoutProcessingAndSaveAsync(sequence, ct, progress);
-                } else {
-                    await ImagingVM.CaptureImageWithoutProcessingAndSaveSync(sequence, ct, progress);
+                var data = await ImagingVM.CaptureImage(sequence, ct, progress);
+
+                if (saveTask != null && !saveTask.IsCompleted) {
+                    progress.Report(new ApplicationStatus() { Status = Locale["LblWaitForImageSaving"] });
+                    await saveTask;
                 }
+
+                saveTask = data.SaveToDisk(
+                    profileService.ActiveProfile.ImageFileSettings.FilePath,
+                    profileService.ActiveProfile.ImageFileSettings.FilePattern,
+                    profileService.ActiveProfile.ImageFileSettings.FileType,
+                    ct
+                );
 
                 sequence.ProgressExposureCount++;
 
                 await WaitWhilePaused(progress, pt, ct);
 
                 ct.ThrowIfCancellationRequested();
+            }
+            if (saveTask != null && !saveTask.IsCompleted) {
+                progress.Report(new ApplicationStatus() { Status = Locale["LblWaitForImageSaving"] });
+                await saveTask;
             }
 
             return true;

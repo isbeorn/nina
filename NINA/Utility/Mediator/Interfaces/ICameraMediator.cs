@@ -22,6 +22,7 @@
 #endregion "copyright"
 
 using NINA.Model;
+using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using NINA.ViewModel.Equipment.Camera;
 using NINA.ViewModel.Interfaces;
@@ -37,9 +38,9 @@ namespace NINA.Utility.Mediator.Interfaces {
         Task Capture(CaptureSequence sequence, CancellationToken token,
             IProgress<ApplicationStatus> progress);
 
-        IAsyncEnumerable<ImageArray> LiveView(CancellationToken token);
+        IAsyncEnumerable<IImageData> LiveView(CancellationToken token);
 
-        Task<ImageArray> Download(CancellationToken token, bool calculateStatistics);
+        Task<IImageData> Download(CancellationToken token);
 
         void AbortExposure();
 

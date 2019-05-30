@@ -24,6 +24,7 @@
 using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Profile;
+using NINA.Model.ImageData;
 
 namespace NINA.ViewModel {
 

@@ -564,9 +564,9 @@ namespace NINA.ViewModel {
                 var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
                 seq.Gain = SnapGain;
 
-                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
-                PlateSolveResult = await solver.SolveWithCapture(seq, progress, canceltoken);
-
+                using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
+                    PlateSolveResult = await solver.SolveWithCapture(seq, progress, canceltoken);
+                }
                 canceltoken.ThrowIfCancellationRequested();
 
                 PlateSolving.PlateSolveResult startSolveResult = PlateSolveResult;
@@ -593,9 +593,9 @@ namespace NINA.ViewModel {
                 seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
                 seq.Gain = SnapGain;
 
-                solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
-                PlateSolveResult = await solver.SolveWithCapture(seq, progress, canceltoken);
-
+                using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
+                    PlateSolveResult = await solver.SolveWithCapture(seq, progress, canceltoken);
+                }
                 canceltoken.ThrowIfCancellationRequested();
 
                 PlateSolving.PlateSolveResult targetSolveResult = PlateSolveResult;
@@ -659,6 +659,11 @@ namespace NINA.ViewModel {
 
         public void UpdateDeviceInfo(TelescopeInfo telescopeInfo) {
             this.TelescopeInfo = telescopeInfo;
+        }
+
+        public void Dispose() {
+            this.cameraMediator.RemoveConsumer(this);
+            this.telescopeMediator.RemoveConsumer(this);
         }
     }
 }

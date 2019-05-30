@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using NINA.Model.ImageData;
 using NINA.Utility;
 using System.Collections;
 using System.Threading;
@@ -88,12 +89,12 @@ namespace NINA.Model.MyCamera {
 
         void StartLiveView();
 
-        Task<ImageArray> DownloadLiveView(CancellationToken token);
+        Task<IImageData> DownloadLiveView(CancellationToken token);
 
         void StopLiveView();
 
         void AbortExposure();
 
-        Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics);
+        Task<IImageData> DownloadExposure(CancellationToken token);
     }
 }

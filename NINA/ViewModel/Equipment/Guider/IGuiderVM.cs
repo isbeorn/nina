@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 
 namespace NINA.ViewModel.Equipment.Guider {
 
-    internal interface IGuiderVM : IDeviceVM<GuiderInfo> {
+    public interface IGuiderVM : IDeviceVM<GuiderInfo> {
 
         Task<bool> Dither(CancellationToken token);
 

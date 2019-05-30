@@ -48,10 +48,11 @@ namespace NINA.Utility {
                 try {
                     var schemasxml = XElement.Load(schemafile);
 
-                    System.IO.StringReader reader = new System.IO.StringReader(schemasxml.ToString());
-                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(ColorSchemas));
+                    using (var reader = new System.IO.StringReader(schemasxml.ToString())) {
+                        XmlSerializer xmlSerializer = new XmlSerializer(typeof(ColorSchemas));
 
-                    schemas = (ColorSchemas)xmlSerializer.Deserialize(reader);
+                        schemas = (ColorSchemas)xmlSerializer.Deserialize(reader);
+                    }
                 } catch (Exception e) {
                     schemas = new ColorSchemas();
                     Logger.Error("Could not load color schema xml", e);

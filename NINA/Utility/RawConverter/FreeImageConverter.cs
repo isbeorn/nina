@@ -23,6 +23,7 @@
 
 using FreeImageAPI;
 using FreeImageAPI.Metadata;
+using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using System.IO;
 using System.Threading;
@@ -37,8 +38,8 @@ namespace NINA.Utility.RawConverter {
             DllLoader.LoadDll(Path.Combine("FreeImage", "FreeImage.dll"));
         }
 
-        public async Task<ImageArray> ConvertToImageArray(MemoryStream s, int bitDepth, int histogramResolution, bool calculateStatistics, CancellationToken token) {
-            return await Task.Run(async () => {
+        public Task<IImageData> Convert(MemoryStream s, int bitDepth, CancellationToken token) {
+            return Task.Run(() => {
                 using (MyStopWatch.Measure()) {
                     FIBITMAP img;
                     int left, top, imgWidth, imgHeight;
@@ -54,21 +55,21 @@ namespace NINA.Utility.RawConverter {
                     imgWidth = int.Parse(widthTag.ToString());
                     imgHeight = int.Parse(heightTag.ToString());
 
-                    var memStream = new MemoryStream();
-                    FreeImage.SaveToStream(img, memStream, FREE_IMAGE_FORMAT.FIF_TIFF, FREE_IMAGE_SAVE_FLAGS.TIFF_NONE);
-                    memStream.Position = 0;
+                    using (var memStream = new MemoryStream()) {
+                        FreeImage.SaveToStream(img, memStream, FREE_IMAGE_FORMAT.FIF_TIFF, FREE_IMAGE_SAVE_FLAGS.TIFF_NONE);
+                        memStream.Position = 0;
 
-                    var decoder = new TiffBitmapDecoder(memStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+                        var decoder = new TiffBitmapDecoder(memStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
 
-                    CroppedBitmap cropped = new CroppedBitmap(decoder.Frames[0], new System.Windows.Int32Rect(left, top, imgWidth, imgHeight));
+                        CroppedBitmap cropped = new CroppedBitmap(decoder.Frames[0], new System.Windows.Int32Rect(left, top, imgWidth, imgHeight));
 
-                    ushort[] outArray = new ushort[cropped.PixelWidth * cropped.PixelHeight];
-                    cropped.CopyPixels(outArray, 2 * cropped.PixelWidth, 0);
-                    memStream.Dispose();
-                    FreeImage.UnloadEx(ref img);
-                    var iarr = await ImageArray.CreateInstance(outArray, cropped.PixelWidth, cropped.PixelHeight, bitDepth, true, calculateStatistics, histogramResolution);
-                    iarr.RAWData = s.ToArray();
-                    return iarr;
+                        ushort[] outArray = new ushort[cropped.PixelWidth * cropped.PixelHeight];
+                        cropped.CopyPixels(outArray, 2 * cropped.PixelWidth, 0);
+                        FreeImage.UnloadEx(ref img);
+                        var data = new ImageData(outArray, cropped.PixelWidth, cropped.PixelHeight, bitDepth, true);
+                        data.Data.RAWData = s.ToArray();
+                        return Task.FromResult<IImageData>(data);
+                    }
                 }
             });
         }

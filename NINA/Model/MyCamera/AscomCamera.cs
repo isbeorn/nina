@@ -34,6 +34,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using NINA.Model.ImageData;
 
 namespace NINA.Model.MyCamera {
 
@@ -1029,7 +1030,7 @@ namespace NINA.Model.MyCamera {
             _camera = null;
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
+        public async Task<IImageData> DownloadExposure(CancellationToken token) {
             using (MyStopWatch.Measure("ASCOM Download")) {
                 return await Task.Run(async () => {
                     try {
@@ -1041,9 +1042,9 @@ namespace NINA.Model.MyCamera {
                         }
 
                         if (SensorType != SensorType.Color) {
-                            return await MyCamera.ImageArray.CreateInstance((Int32[,])ImageArray, BitDepth, SensorType != SensorType.Monochrome, calculateStatistics, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                            return await ImageData.ImageData.Create((Int32[,])ImageArray, BitDepth, SensorType != SensorType.Monochrome);
                         } else {
-                            return await MyCamera.ImageArray.CreateInstance((Int32[,,])ImageArray, BitDepth, false, calculateStatistics, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                            throw new NotSupportedException();
                         }
                     } catch (OperationCanceledException) {
                     } catch (Exception ex) {
@@ -1198,7 +1199,7 @@ namespace NINA.Model.MyCamera {
             throw new System.NotImplementedException();
         }
 
-        public Task<ImageArray> DownloadLiveView(CancellationToken token) {
+        public Task<IImageData> DownloadLiveView(CancellationToken token) {
             throw new System.NotImplementedException();
         }
 

@@ -158,8 +158,8 @@ namespace NINA.ViewModel {
 
             DockManagerVM.Anchorables.Add(ImagingVM);
             DockManagerVM.Anchorables.Add(SeqVM);
-            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgStatisticsVM);
-            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgHistoryVM);
+            DockManagerVM.Anchorables.Add(ImagingVM.ImgStatisticsVM);
+            DockManagerVM.Anchorables.Add(SeqVM.ImgHistoryVM);
 
             DockManagerVM.Anchorables.Add(ThumbnailVM);
             DockManagerVM.Anchorables.Add(WeatherDataVM);
@@ -177,8 +177,8 @@ namespace NINA.ViewModel {
             DockManagerVM.AnchorableInfoPanels.Add(GuiderVM);
             DockManagerVM.AnchorableInfoPanels.Add(SeqVM);
             DockManagerVM.AnchorableInfoPanels.Add(SwitchVM);
-            DockManagerVM.AnchorableInfoPanels.Add(ImagingVM.ImageControl.ImgStatisticsVM);
-            DockManagerVM.AnchorableInfoPanels.Add(ImagingVM.ImageControl.ImgHistoryVM);
+            DockManagerVM.AnchorableInfoPanels.Add(ImagingVM.ImgStatisticsVM);
+            DockManagerVM.AnchorableInfoPanels.Add(SeqVM.ImgHistoryVM);
 
             DockManagerVM.AnchorableTools.Add(ImagingVM);
             DockManagerVM.AnchorableTools.Add(ThumbnailVM);

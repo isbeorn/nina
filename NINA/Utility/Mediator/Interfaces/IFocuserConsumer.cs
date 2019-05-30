@@ -25,6 +25,6 @@ using NINA.Model.MyFocuser;
 
 namespace NINA.Utility.Mediator.Interfaces {
 
-    internal interface IFocuserConsumer : IDeviceConsumer<FocuserInfo> {
+    public interface IFocuserConsumer : IDeviceConsumer<FocuserInfo> {
     }
 }

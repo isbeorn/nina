@@ -389,5 +389,9 @@ namespace NINA.ViewModel.FramingAssistant {
                 telescopeConnected = false;
             }
         }
+
+        public void Dispose() {
+            telescopeMediator.RemoveConsumer(this);
+        }
     }
 }

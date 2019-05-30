@@ -22,6 +22,7 @@
 #endregion "copyright"
 
 using Altair;
+using NINA.Model.ImageData;
 using NINA.Utility;
 using NINA.Utility.Notification;
 using NINA.Profile;
@@ -596,17 +597,15 @@ namespace NINA.Model.MyCamera {
             camera = null;
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
-            calculateStatisticsOnDownload = calculateStatistics;
+        public async Task<IImageData> DownloadExposure(CancellationToken token) {
             await downloadExposure.Task;
-            return await imageTask;
+            return imageData;
         }
 
-        public async Task<ImageArray> DownloadLiveView(CancellationToken token) {
+        public async Task<IImageData> DownloadLiveView(CancellationToken token) {
             await downloadLiveExposure.Task;
-            var arr = await imageTask;
             downloadLiveExposure = new TaskCompletionSource<object>();
-            return arr;
+            return imageData;
         }
 
         public void SetBinning(short x, short y) {
@@ -654,7 +653,7 @@ namespace NINA.Model.MyCamera {
                 var cameraDataToManaged = new CameraDataToManaged(pData, width, height, BitDepth);
                 var arr = cameraDataToManaged.GetData();
 
-                imageTask = ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, calculateStatisticsOnDownload, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                imageData = new ImageData.ImageData(arr, width, height, BitDepth, SensorType != SensorType.Monochrome);
                 if (LiveViewEnabled) {
                     downloadLiveExposure?.TrySetResult(true);
                 } else {
@@ -665,9 +664,8 @@ namespace NINA.Model.MyCamera {
 
         private TaskCompletionSource<object> downloadExposure;
         private TaskCompletionSource<object> downloadLiveExposure;
-        private Task<ImageArray> imageTask;
+        private IImageData imageData;
         private int bitDepth;
-        private bool calculateStatisticsOnDownload;
 
         public int BitDepth {
             get {

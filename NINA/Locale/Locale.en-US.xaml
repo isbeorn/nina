@@ -889,6 +889,7 @@ in light polluted areas. Processing time is however increased.</s:String>
   <s:String x:Key="LblVerticalPanels" xml:space="default">Vertical Panels</s:String>
   <s:String x:Key="LblWaitForDither" xml:space="default">Waiting for dither to finish</s:String>
   <s:String x:Key="LblWaitForImageProcessing" xml:space="default">Waiting for previous image to finish processing</s:String>
+  <s:String x:Key="LblWaitForImageSaving" xml:space="default">Waiting for image saving</s:String>
   <s:String x:Key="LblWaitForTemperatureStep" xml:space="default">Waiting for camera to reach next temperature step</s:String>
   <s:String x:Key="LblWaitingForCamera" xml:space="default">Waiting for Camera</s:String>
   <s:String x:Key="LblWarmCamAtSequenceEnd" xml:space="default">Warm camera when sequence ends</s:String>

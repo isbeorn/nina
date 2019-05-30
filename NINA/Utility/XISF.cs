@@ -24,6 +24,7 @@
 
 #endregion "copyright"
 
+using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using System;
 using System.IO;
@@ -46,10 +47,10 @@ namespace NINA.Utility {
         /// The header xml + padding will consist of a muliple of bytes from this size
         /// </summary>
         public int PaddedBlockSize {
-            get => 1024;
+            get => 4096;
         }
 
-        public static async Task<ImageArray> LoadImageArrayFromFile(Uri filePath, bool isBayered, int histogramResolution) {
+        public static async Task<ImageData> Load(Uri filePath, bool isBayered) {
             using (FileStream fs = new FileStream(filePath.LocalPath, FileMode.Open)) {
                 //Skip to the header length info starting at byte 9
                 fs.Seek(8, SeekOrigin.Current);
@@ -71,6 +72,7 @@ namespace NINA.Utility {
 
                 //Seems to be no attribute to identify the bit depth. Assume 16.
                 var bitDepth = 16;
+                ImageData imageData = null;
                 if (imageTag.Attribute("location").Value.StartsWith("attachment")) {
                     var location = imageTag.Attribute("location").Value.Split(':');
                     var start = int.Parse(location[1]);
@@ -82,19 +84,25 @@ namespace NINA.Utility {
                     ushort[] img = new ushort[raw.Length / 2];
                     Buffer.BlockCopy(raw, 0, img, 0, raw.Length);
 
-                    return await ImageArray.CreateInstance(img, width, height, bitDepth, isBayered, true, histogramResolution);
+                    imageData = new ImageData(img, width, height, bitDepth, isBayered);
                 } else {
                     var base64Img = xml.Element("Image").Element("Data").Value;
                     byte[] encodedImg = Convert.FromBase64String(base64Img);
                     ushort[] img = new ushort[(int)Math.Ceiling(encodedImg.Length / 2.0)];
                     Buffer.BlockCopy(encodedImg, 0, img, 0, encodedImg.Length);
 
-                    return await ImageArray.CreateInstance(img, width, height, bitDepth, isBayered, true, histogramResolution);
+                    imageData = new ImageData(img, width, height, bitDepth, isBayered);
                 }
+
+                await imageData.CalculateStatistics();
+                imageData.RenderImage();
+                return imageData;
             }
         }
 
-        public void AddAttachedImage(ImageArray arr, string imageType) {
+        public void AddAttachedImage(ushort[] data, string imageType) {
+            if (this.Header.Image == null) { throw new InvalidOperationException("No Image Header Information available for attaching image. Add Image Header first!"); }
+
             var headerLengthBytes = 4;
             var reservedBytes = 4;
             var attachmentInfoMaxBytes = 100;   //Assume max 100 bytes for the attachment:{start}:{length} attribute. Should be more than enough
@@ -103,9 +111,9 @@ namespace NINA.Utility {
             var dataBlockStart = currentHeaderSize + (PaddedBlockSize - currentHeaderSize % PaddedBlockSize);
 
             //Add Attached data location info to header
-            Header.Image.Add(new XAttribute("location", $"attachment:{dataBlockStart}:{arr.FlatArray.Length * sizeof(ushort)}"));
+            Header.Image.Add(new XAttribute("location", $"attachment:{dataBlockStart}:{data.Length * sizeof(ushort)}"));
 
-            Data = new XISFData(arr.FlatArray);
+            Data = new XISFData(data);
         }
 
         private byte[] xisfSignature = new byte[] { 88, 73, 83, 70, 48, 49, 48, 48 };
@@ -164,7 +172,6 @@ namespace NINA.Utility {
 
         private XNamespace xmlns = XNamespace.Get("http://www.pixinsight.com/xisf");
         private XNamespace xsi = XNamespace.Get("http://www.w3.org/2001/XMLSchema-instance");
-        private XNamespace propertyns = "XISF";
 
         /* Create Header with embedded Image */
 
@@ -225,6 +232,7 @@ namespace NINA.Utility {
         /// <param name="comment">    optional comment</param>
         /// <param name="autoaddfits">default: true; if fitskey available automatically add FITSHeader</param>
         public void AddImageProperty(string[] property, string value, string comment = "", bool autoaddfits = true) {
+            if (Image == null) { throw new InvalidOperationException("No Image component available to add property!"); }
             AddProperty(Image, property, value, comment);
             if (property.Length > 2 && autoaddfits) {
                 AddImageFITSKeyword(property[2], value, comment);
@@ -232,6 +240,7 @@ namespace NINA.Utility {
         }
 
         public void AddImageFITSKeyword(string name, string value, string comment = "") {
+            if (Image == null) { throw new InvalidOperationException("No Image component available to add FITS Keyword!"); }
             Image.Add(new XElement("FITSKeyword",
                         new XAttribute("name", name),
                         new XAttribute("value", value),
@@ -269,9 +278,9 @@ namespace NINA.Utility {
         /// </summary>
         /// <param name="arr"></param>
         /// <param name="imageType"></param>
-        public void AddImageMetaData(ImageArray arr, string imageType) {
+        public void AddImageMetaData(IImageStatistics statistics, string imageType) {
             var image = new XElement("Image",
-                    new XAttribute("geometry", arr.Statistics.Width + ":" + arr.Statistics.Height + ":" + "1"),
+                    new XAttribute("geometry", statistics.Width + ":" + statistics.Height + ":" + "1"),
                     new XAttribute("sampleFormat", "UInt16"),
                     new XAttribute("imageType", imageType),
                     new XAttribute("colorSpace", "Gray")
@@ -289,14 +298,14 @@ namespace NINA.Utility {
         /// </summary>
         /// <param name="arr"></param>
         /// <param name="imageType"></param>
-        public void AddEmbeddedImage(ImageArray arr, string imageType) {
+        public void AddEmbeddedImage(IImageData imageData, string imageType) {
             if (Image == null) {
-                AddImageMetaData(arr, imageType);
+                AddImageMetaData(imageData.Statistics, imageType);
             }
             Image.Add(new XAttribute("location", "embedded"));
 
-            byte[] result = new byte[arr.FlatArray.Length * sizeof(ushort)];
-            Buffer.BlockCopy(arr.FlatArray, 0, result, 0, result.Length);
+            byte[] result = new byte[imageData.Data.FlatArray.Length * sizeof(ushort)];
+            Buffer.BlockCopy(imageData.Data.FlatArray, 0, result, 0, result.Length);
 
             var base64 = Convert.ToBase64String(result);
 

@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using NINA.Utility.Astrometry;
 using NINA.Utility.ImageAnalysis;
@@ -44,12 +45,11 @@ namespace NINA.Utility.SkySurvey {
             dialog.Filter = "Image files|*.tif;*.tiff;*.jpeg;*.jpg;*.png;*.cr2;*.nef;*.fit;*.fits;*.xisf|TIFF files|*.tif;*.tiff;|JPEG files|*.jpeg;*.jpg|PNG Files|*.png|RAW Files|*.cr2;*.nef|XISF Files|*.xisf|FITS Files|*.fit;*.fits";
 
             if (dialog.ShowDialog() == true) {
-                var arr = await ImageArray.FromFile(dialog.FileName, 16, false, 10, Enum.RawConverterEnum.DCRAW, ct);
+                var arr = await ImageData.FromFile(dialog.FileName, 16, false, Enum.RawConverterEnum.DCRAW, ct);
+                arr.RenderImage();
+                await arr.Stretch(0.2, -2.8, false);
 
-                var img = ImageUtility.CreateSourceFromArray(arr, System.Windows.Media.PixelFormats.Gray16);
-                img = await ImageUtility.StretchAsync(arr, img, img.Format, 0.2, -2.8);
-
-                if (img == null) {
+                if (arr.Image == null) {
                     return null;
                 }
 
@@ -58,7 +58,7 @@ namespace NINA.Utility.SkySurvey {
                     Coordinates = null,
                     FoVHeight = double.NaN,
                     FoVWidth = double.NaN,
-                    Image = img,
+                    Image = arr.Image,
                     Rotation = double.NaN,
                     Source = nameof(FileSkySurvey)
                 };

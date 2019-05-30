@@ -889,6 +889,7 @@ aree ad alto inquinamento luminoso. Il tempo di processo sarà  tuttavia aumenta
   <s:String x:Key="LblVerticalPanels" xml:space="default">Pannelli verticali</s:String>
   <s:String x:Key="LblWaitForDither" xml:space="default">In attesa che il dither finisca</s:String>
   <s:String x:Key="LblWaitForImageProcessing" xml:space="default">In attesa che l'immagine precedente finisca di essere processata</s:String>
+  <s:String x:Key="LblWaitForImageSaving" xml:space="default">Waiting for image saving</s:String>
   <s:String x:Key="LblWaitForTemperatureStep" xml:space="default">In attesa che al camera raggiunga il prossimo step di temperatura</s:String>
   <s:String x:Key="LblWaitingForCamera" xml:space="default">Aspettando la Camera</s:String>
   <s:String x:Key="LblWarmCamAtSequenceEnd" xml:space="default">Riscalda camera quando la sequenza termina</s:String>

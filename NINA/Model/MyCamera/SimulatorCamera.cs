@@ -33,6 +33,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using NINA.Model.ImageData;
 
 namespace NINA.Model.MyCamera {
 
@@ -459,7 +460,7 @@ namespace NINA.Model.MyCamera {
             Connected = false;
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
+        public async Task<IImageData> DownloadExposure(CancellationToken token) {
             int width, height, mean, stdev;
             if (Image != null) {
                 return Image;
@@ -467,8 +468,9 @@ namespace NINA.Model.MyCamera {
 
             if (RAWImageStream != null) {
                 var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
-                var iarr = await converter.ConvertToImageArray(RAWImageStream, BitDepth, profileService.ActiveProfile.ImageSettings.HistogramResolution, true, token);
+                var iarr = await converter.Convert(RAWImageStream, BitDepth, token);
                 RAWImageStream.Position = 0;
+                iarr.Data.RAWType = rawType;
 
                 return iarr;
             }
@@ -492,7 +494,7 @@ namespace NINA.Model.MyCamera {
                 input[i] = (ushort)randNormal;
             }
 
-            return await ImageArray.CreateInstance(input, width, height, BitDepth, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+            return new ImageData.ImageData(input, width, height, BitDepth, false);
         }
 
         private int randomImageWidth;
@@ -574,6 +576,7 @@ namespace NINA.Model.MyCamera {
             dialog.DefaultExt = ".cr2";
 
             if (dialog.ShowDialog() == true) {
+                rawType = Path.GetExtension(dialog.FileName).TrimStart('.').ToLower();
                 await Task.Run(() => {
                     using (var fileStream = File.OpenRead(dialog.FileName)) {
                         var memStream = new MemoryStream();
@@ -594,7 +597,7 @@ namespace NINA.Model.MyCamera {
             dialog.DefaultExt = ".tiff";
 
             if (dialog.ShowDialog() == true) {
-                Image = await ImageArray.FromFile(dialog.FileName, BitDepth, IsBayered, profileService.ActiveProfile.ImageSettings.HistogramResolution, profileService.ActiveProfile.CameraSettings.RawConverter);
+                Image = await ImageData.ImageData.FromFile(dialog.FileName, BitDepth, IsBayered, profileService.ActiveProfile.CameraSettings.RawConverter);
                 return true;
             }
             return false;
@@ -605,9 +608,9 @@ namespace NINA.Model.MyCamera {
         public IAsyncCommand LoadRAWImageCommand { get; private set; }
         public ICommand UnloadRAWImageCommand { get; private set; }
 
-        private ImageArray _image;
+        private IImageData _image;
 
-        public ImageArray Image {
+        public IImageData Image {
             get => _image;
             set {
                 lock (lockObj) {
@@ -629,6 +632,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private string rawType = "cr2";
         private MemoryStream rawImageStream = null;
 
         public MemoryStream RAWImageStream {
@@ -652,8 +656,8 @@ namespace NINA.Model.MyCamera {
             LiveViewEnabled = true;
         }
 
-        public Task<ImageArray> DownloadLiveView(CancellationToken token) {
-            return DownloadExposure(token, true);
+        public Task<IImageData> DownloadLiveView(CancellationToken token) {
+            return DownloadExposure(token);
         }
 
         public void StopLiveView() {

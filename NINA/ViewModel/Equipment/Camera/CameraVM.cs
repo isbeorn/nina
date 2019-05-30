@@ -35,6 +35,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using NINA.Model.ImageData;
 
 namespace NINA.ViewModel.Equipment.Camera {
 
@@ -565,8 +566,8 @@ namespace NINA.ViewModel.Equipment.Camera {
             });
         }
 
-        public IAsyncEnumerable<ImageArray> LiveView(CancellationToken ct) {
-            return new AsyncEnumerable<ImageArray>(async yield => {
+        public IAsyncEnumerable<IImageData> LiveView(CancellationToken ct) {
+            return new AsyncEnumerable<IImageData>(async yield => {
                 if (CameraInfo.Connected && _cam.CanShowLiveView) {
                     try {
                         _cam.StartLiveView();
@@ -591,6 +592,7 @@ namespace NINA.ViewModel.Equipment.Camera {
 
         public async Task Capture(CaptureSequence sequence, CancellationToken token,
             IProgress<ApplicationStatus> progress) {
+            this.exposureTime = sequence.ExposureTime;
             double exposureTime = sequence.ExposureTime;
             if (CameraInfo.Connected == true) {
                 CameraInfo.IsExposing = true;
@@ -665,16 +667,20 @@ namespace NINA.ViewModel.Equipment.Camera {
             }
         }
 
-        public async Task<ImageArray> Download(CancellationToken token, bool calculateStatistics) {
+        public async Task<IImageData> Download(CancellationToken token) {
             CameraInfo.IsExposing = false;
             CameraInfo.ExposureEndTime = DateTime.Now;
             BroadcastCameraInfo();
             if (CameraInfo.Connected == true) {
                 Stopwatch seqDuration = Stopwatch.StartNew();
-                var output = await Cam.DownloadExposure(token, calculateStatistics);
+                var output = await Cam.DownloadExposure(token);
                 seqDuration.Stop();
                 CameraInfo.LastDownloadTime = seqDuration.Elapsed.TotalSeconds;
                 BroadcastCameraInfo();
+                output.MetaData.FromProfile(this.profileService.ActiveProfile);
+                output.MetaData.FromCameraInfo(this.CameraInfo);
+                output.MetaData.Image.ExposureTime = this.exposureTime;
+                await output.CalculateStatistics();
                 return output;
             } else {
                 return null;
@@ -711,6 +717,7 @@ namespace NINA.ViewModel.Equipment.Camera {
         public ICommand ToggleDewHeaterOnCommand { get; private set; }
 
         private IApplicationStatusMediator applicationStatusMediator;
+        private double exposureTime;
 
         public IAsyncCommand ChooseCameraCommand { get; private set; }
 

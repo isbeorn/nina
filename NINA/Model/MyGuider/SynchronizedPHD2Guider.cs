@@ -274,5 +274,9 @@ namespace NINA.Model.MyGuider {
                 }
             }
         }
+
+        public void Dispose() {
+            cameraMediator.RemoveConsumer(this);
+        }
     }
 }

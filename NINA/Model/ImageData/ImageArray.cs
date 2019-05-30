@@ -21,13 +21,34 @@
 
 #endregion "copyright"
 
-namespace NINA.Profile {
+using NINA.Utility;
+using NINA.Utility.Enum;
+using NINA.Utility.Notification;
+using NINA.Utility.RawConverter;
+using nom.tam.fits;
+using System;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
-    public interface IImageSettings : ISettings {
-        bool AnnotateImage { get; set; }
-        bool DebayerImage { get; set; }
-        bool UnlinkedStretch { get; set; }
-        double AutoStretchFactor { get; set; }
-        double BlackClipping { get; set; }
+namespace NINA.Model.ImageData {
+
+    public class ImageArray : IImageArray {
+
+        public ImageArray() {
+        }
+
+        public ushort[] FlatArray { get; set; }
+
+        /// <summary>
+        /// Contains RAW DSLR Data if available
+        /// </summary>
+        public byte[] RAWData { get; set; }
+
+        /// <summary>
+        /// Contains the type of DSLR data (e.g. cr2)
+        /// </summary>
+        public string RAWType { get; set; }
     }
 }

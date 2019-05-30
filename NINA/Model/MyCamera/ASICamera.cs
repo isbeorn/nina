@@ -33,6 +33,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using ZWOptical.ASISDK;
+using NINA.Model.ImageData;
 
 namespace NINA.Model.MyCamera {
 
@@ -406,8 +407,8 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
-            return await Task.Run<ImageArray>(async () => {
+        public async Task<IImageData> DownloadExposure(CancellationToken token) {
+            return await Task.Run<IImageData>(async () => {
                 try {
                     var status = ExposureStatus;
                     while (status == ASICameraDll.ASI_EXPOSURE_STATUS.ASI_EXP_WORKING) {
@@ -429,7 +430,7 @@ namespace NINA.Model.MyCamera {
                     var arr = cameraDataToManaged.GetData();
                     Marshal.FreeHGlobal(pointer);
 
-                    return await ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, calculateStatistics, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                    return new ImageData.ImageData(arr, width, height, BitDepth, SensorType != SensorType.Monochrome);
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
                     Logger.Error(ex);
@@ -685,23 +686,25 @@ namespace NINA.Model.MyCamera {
             ASICameraDll.StartVideoCapture(_cameraId);
         }
 
-        public async Task<ImageArray> DownloadLiveView(CancellationToken token) {
-            var width = CaptureAreaInfo.Size.Width;
-            var height = CaptureAreaInfo.Size.Height;
+        public Task<IImageData> DownloadLiveView(CancellationToken token) {
+            return Task.Run(() => {
+                var width = CaptureAreaInfo.Size.Width;
+                var height = CaptureAreaInfo.Size.Height;
 
-            int size = width * height * 2;
+                int size = width * height * 2;
 
-            var pointer = Marshal.AllocHGlobal(size);
-            int buffersize = (width * height * 16 + 7) / 8;
-            if (!GetVideoData(pointer, buffersize)) {
-                throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
-            }
+                var pointer = Marshal.AllocHGlobal(size);
+                int buffersize = (width * height * 16 + 7) / 8;
+                if (!GetVideoData(pointer, buffersize)) {
+                    throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
+                }
 
-            var cameraDataToManaged = new CameraDataToManaged(pointer, width, height, 16);
-            var arr = cameraDataToManaged.GetData();
-            Marshal.FreeHGlobal(pointer);
+                var cameraDataToManaged = new CameraDataToManaged(pointer, width, height, 16);
+                var arr = cameraDataToManaged.GetData();
+                Marshal.FreeHGlobal(pointer);
 
-            return await ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                return Task.FromResult<IImageData>(new ImageData.ImageData(arr, width, height, BitDepth, SensorType != SensorType.Monochrome));
+            });
         }
 
         private bool GetVideoData(IntPtr buffer, int bufferSize) {

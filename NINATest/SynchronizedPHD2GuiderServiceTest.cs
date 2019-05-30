@@ -12,11 +12,11 @@ namespace NINATest {
     [TestFixture]
     public class SynchronizedPHD2GuiderServiceTest {
         private SynchronizedPHD2GuiderService sut = new SynchronizedPHD2GuiderService();
-        private Mock<IGuider> guider = new Mock<IGuider>(MockBehavior.Strict);
+        private Mock<IGuider> guider;
 
-        [OneTimeSetUp]
+        [SetUp]
         public void Init() {
-            // return false otherwise it won't work since we I cast it to a phd2 guider when it's actually connected but whatever
+            guider = new Mock<IGuider>(MockBehavior.Strict);
             guider.Setup(m => m.Connect()).ReturnsAsync(true);
         }
 
@@ -24,6 +24,7 @@ namespace NINATest {
         public async Task Initialize_WhenInitializing_ConnectToPhd2() {
             // setup
             CancellationTokenSource cts = new CancellationTokenSource();
+            var localguider = new Mock<IGuider>(MockBehavior.Strict);
             guider.Setup(m => m.Connect()).ReturnsAsync(false);
 
             // act

@@ -22,6 +22,7 @@
 #endregion "copyright"
 
 using NINA.Model;
+using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using System;
 using System.Collections.Async;
@@ -49,9 +50,9 @@ namespace NINA.ViewModel.Equipment.Camera {
         Task Capture(CaptureSequence sequence, CancellationToken token,
             IProgress<ApplicationStatus> progress);
 
-        IAsyncEnumerable<ImageArray> LiveView(CancellationToken token);
+        IAsyncEnumerable<IImageData> LiveView(CancellationToken token);
 
-        Task<ImageArray> Download(CancellationToken token, bool calculateStatistics);
+        Task<IImageData> Download(CancellationToken token);
 
         Task<bool> StartChangeCameraTemp(IProgress<double> progress, double temperature, TimeSpan duration, bool turnOffCooler, CancellationToken cancelWarmCameraToken);
     }

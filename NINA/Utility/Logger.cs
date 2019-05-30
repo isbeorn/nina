@@ -85,7 +85,6 @@ namespace NINA.Utility {
                 lock (lockObj) {
                     using (StreamWriter writer = new StreamWriter(LOGFILEPATH, true)) {
                         writer.WriteLine(string.Format(msg, msgParams));
-                        writer.Close();
                     }
                 }
             } catch (Exception ex) {

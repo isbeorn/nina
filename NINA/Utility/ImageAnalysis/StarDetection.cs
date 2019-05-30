@@ -25,6 +25,7 @@ using AForge.Imaging;
 using AForge.Imaging.Filters;
 using AForge.Math.Geometry;
 using NINA.Model;
+using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using System;
 using System.Collections.Generic;
@@ -46,13 +47,14 @@ namespace NINA.Utility.ImageAnalysis {
         private static System.Drawing.FontFamily FONTFAMILY = new System.Drawing.FontFamily("Arial");
         private static Font FONT = new Font(FONTFAMILY, 32, System.Drawing.FontStyle.Regular, GraphicsUnit.Pixel);
 
-        public StarDetection(BitmapSource source, ImageArray iarr) {
-            _iarr = iarr;
-            _originalBitmapSource = source;
+        public StarDetection(IImageData imageData) {
+            _iarr = imageData.Data;
+            _originalBitmapSource = imageData.Image;
+            statistics = imageData.Statistics;
 
             _resizefactor = 1.0;
-            if (iarr.Statistics.Width > _maxWidth) {
-                _resizefactor = (double)_maxWidth / iarr.Statistics.Width;
+            if (imageData.Statistics.Width > _maxWidth) {
+                _resizefactor = (double)_maxWidth / imageData.Statistics.Width;
             }
             _inverseResizefactor = 1.0 / _resizefactor;
 
@@ -65,11 +67,14 @@ namespace NINA.Utility.ImageAnalysis {
             _maxStarSize = (int)Math.Ceiling(150 * _resizefactor);
         }
 
-        public StarDetection(BitmapSource source, ImageArray iarr, System.Windows.Media.PixelFormat pf) : this(source, iarr) {
+        public StarDetection(IImageData imageData, System.Windows.Media.PixelFormat pf) : this(imageData) {
             if (pf == System.Windows.Media.PixelFormats.Rgb48) {
-                Bitmap img = new Grayscale(0.2125, 0.7154, 0.0721).Apply(ImageUtility.BitmapFromSource(_originalBitmapSource, System.Drawing.Imaging.PixelFormat.Format48bppRgb));
-                _originalBitmapSource = ImageUtility.ConvertBitmap(img, System.Windows.Media.PixelFormats.Gray16);
-                _originalBitmapSource.Freeze();
+                using (var source = ImageUtility.BitmapFromSource(_originalBitmapSource, System.Drawing.Imaging.PixelFormat.Format48bppRgb)) {
+                    using (var img = new Grayscale(0.2125, 0.7154, 0.0721).Apply(source)) {
+                        _originalBitmapSource = ImageUtility.ConvertBitmap(img, System.Windows.Media.PixelFormats.Gray16);
+                        _originalBitmapSource.Freeze();
+                    }
+                }
             }
         }
 
@@ -78,7 +83,8 @@ namespace NINA.Utility.ImageAnalysis {
         private int _maxStarSize;
         private double _resizefactor;
         private double _inverseResizefactor;
-        private ImageArray _iarr;
+        private IImageArray _iarr;
+        private IImageStatistics statistics;
         private BitmapSource _originalBitmapSource;
         private BlobCounter _blobCounter;
         private Bitmap _bitmapToAnalyze;
@@ -223,7 +229,6 @@ namespace NINA.Utility.ImageAnalysis {
             double sumSquares = 0;
             foreach (Blob blob in blobs) {
                 _token.ThrowIfCancellationRequested();
-                
 
                 if (blob.Rectangle.Width > _maxStarSize
                     || blob.Rectangle.Height > _maxStarSize
@@ -240,9 +245,9 @@ namespace NINA.Utility.ImageAnalysis {
                 int largeRectXPos = Math.Max(rect.X - rect.Width, 0);
                 int largeRectYPos = Math.Max(rect.Y - rect.Height, 0);
                 int largeRectWidth = rect.Width * 3;
-                if (largeRectXPos + largeRectWidth > _iarr.Statistics.Width) { largeRectWidth = _iarr.Statistics.Width - largeRectXPos; }
+                if (largeRectXPos + largeRectWidth > statistics.Width) { largeRectWidth = statistics.Width - largeRectXPos; }
                 int largeRectHeight = rect.Height * 3;
-                if (largeRectYPos + largeRectHeight > _iarr.Statistics.Height) { largeRectHeight = _iarr.Statistics.Height - largeRectYPos; }
+                if (largeRectYPos + largeRectHeight > statistics.Height) { largeRectHeight = statistics.Height - largeRectYPos; }
                 var largeRect = new Rectangle(largeRectXPos, largeRectYPos, largeRectWidth, largeRectHeight);
 
                 //Star is circle
@@ -265,13 +270,13 @@ namespace NINA.Utility.ImageAnalysis {
 
                 for (int x = largeRect.X; x < largeRect.X + largeRect.Width; x++) {
                     for (int y = largeRect.Y; y < largeRect.Y + largeRect.Height; y++) {
-                        var pixelValue = _iarr.FlatArray[x + (_iarr.Statistics.Width * y)];
+                        var pixelValue = _iarr.FlatArray[x + (statistics.Width * y)];
                         if (x >= s.Rectangle.X && x < s.Rectangle.X + s.Rectangle.Width && y >= s.Rectangle.Y && y < s.Rectangle.Y + s.Rectangle.Height) { //We're in the small rectangle directly surrounding the star
                             if (s.InsideCircle(x, y, s.Position.X, s.Position.Y, s.radius)) { // We're in the inner sanctum of the star
                                 starPixelSum += pixelValue;
                                 starPixelCount++;
                             }
-                            var value = pixelValue - _iarr.Statistics.Mean;
+                            var value = pixelValue - statistics.Mean;
                             if (value < 0) { value = 0; }
                             PixelData pd = new PixelData { PosX = x, PosY = y, value = (ushort)value };
                             s.AddPixelData(pd);
@@ -293,7 +298,7 @@ namespace NINA.Utility.ImageAnalysis {
             }
 
             //Now that we have a properly filtered star list, let's compute stats and further filter out from the mean
-            if(starlist.Count > 0) {
+            if (starlist.Count > 0) {
                 double avg = sumRadius / (double)starlist.Count();
                 double stdev = Math.Sqrt((sumSquares - starlist.Count() * avg * avg) / starlist.Count());
                 starlist = starlist.Where(s => s.radius <= avg + 1.5 * stdev && s.radius >= avg - 1.5 * stdev).ToList<Star>();
@@ -362,7 +367,7 @@ namespace NINA.Utility.ImageAnalysis {
         private void PrepareForStructureDetection(Bitmap bmp) {
             var sw = Stopwatch.StartNew();
 
-            new CannyEdgeDetector(10,80).ApplyInPlace(bmp);
+            new CannyEdgeDetector(10, 80).ApplyInPlace(bmp);
             _token.ThrowIfCancellationRequested();
             new SISThreshold().ApplyInPlace(bmp);
             _token.ThrowIfCancellationRequested();

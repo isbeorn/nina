@@ -235,8 +235,6 @@ namespace NINA.Model.MyGPS {
                         } catch (Exception ex) {
                             //Error reading
                             Logger.Error(ex);
-                        } finally {
-                            port.Close();
                         }
                         if (success) {
                             return new System.IO.Ports.SerialPort(cportName, baud);
@@ -254,19 +252,19 @@ namespace NINA.Model.MyGPS {
         /// discovers the first GPS device connected to a serial port
         /// </summary>
         public bool AutoDiscover() {
-            System.IO.Ports.SerialPort port = FindPort();
-
-            if (port != null) //we found a port with a GPS
-            {
-                portName = port.PortName;
-                baudRate = port.BaudRate;
-                return true;
-            } else // no GPS found
-              {
-                portName = "";
-                baudRate = 0;
-                Notification.ShowError(Locale.Loc.Instance["LblGPSNotFound"]);
-                return false;
+            using (System.IO.Ports.SerialPort port = FindPort()) {
+                if (port != null) //we found a port with a GPS
+                {
+                    portName = port.PortName;
+                    baudRate = port.BaudRate;
+                    return true;
+                } else // no GPS found
+                  {
+                    portName = "";
+                    baudRate = 0;
+                    Notification.ShowError(Locale.Loc.Instance["LblGPSNotFound"]);
+                    return false;
+                }
             }
         }
     }

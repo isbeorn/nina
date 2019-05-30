@@ -55,6 +55,8 @@ namespace NINA.Profile {
         private FileSystemWatcher profileFileWatcher;
 
         private void CreateWatcher() {
+            profileFileWatcher?.Dispose();
+
             profileFileWatcher = new FileSystemWatcher() {
                 Path = PROFILEFOLDER,
                 NotifyFilter = NotifyFilters.FileName,
@@ -325,18 +327,18 @@ namespace NINA.Profile {
                     profileFileWatcher.EnableRaisingEvents = false;
                 }
 
-                var p = new Profile("Default");
-                p.Save();
+                using (var p = new Profile("Default")) {
+                    p.Save();
 
-                var info = new ProfileMeta() { Id = p.Id, Name = p.Name, Location = p.Location };
-                Profiles.Add(info);
-                p.Dispose();
+                    var info = new ProfileMeta() { Id = p.Id, Name = p.Name, Location = p.Location };
+                    Profiles.Add(info);
 
-                if (profileFileWatcher != null) {
-                    profileFileWatcher.EnableRaisingEvents = true;
+                    if (profileFileWatcher != null) {
+                        profileFileWatcher.EnableRaisingEvents = true;
+                    }
+
+                    return info;
                 }
-
-                return info;
             }
         }
 

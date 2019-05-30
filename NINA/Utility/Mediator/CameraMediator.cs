@@ -22,6 +22,7 @@
 #endregion "copyright"
 
 using NINA.Model;
+using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.ViewModel.Equipment.Camera;
@@ -40,12 +41,12 @@ namespace NINA.Utility.Mediator {
             return handler.Capture(sequence, token, progress);
         }
 
-        public IAsyncEnumerable<ImageArray> LiveView(CancellationToken token) {
+        public IAsyncEnumerable<IImageData> LiveView(CancellationToken token) {
             return handler.LiveView(token);
         }
 
-        public Task<ImageArray> Download(CancellationToken token, bool calculateStatistics) {
-            return handler.Download(token, calculateStatistics);
+        public Task<IImageData> Download(CancellationToken token) {
+            return handler.Download(token);
         }
 
         public Task<bool> StartChangeCameraTemp(IProgress<double> progress, double temperature, TimeSpan duration, bool turnOffCooler, CancellationToken cancelWarmCameraToken) {

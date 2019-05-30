@@ -1,4 +1,5 @@
-﻿using NINA.Profile;
+﻿using NINA.Model.ImageData;
+using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator.Interfaces;
@@ -29,11 +30,12 @@ namespace NINA.Model.MyCamera {
         }
 
         private void OpenFolderDiag(object obj) {
-            System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
-            dialog.SelectedPath = FolderPath;
+            using (var dialog = new System.Windows.Forms.FolderBrowserDialog()) {
+                dialog.SelectedPath = FolderPath;
 
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                FolderPath = dialog.SelectedPath;
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                    FolderPath = dialog.SelectedPath;
+                }
             }
         }
 
@@ -457,6 +459,8 @@ namespace NINA.Model.MyCamera {
 
             fileQueue = new ConcurrentQueue<string>();
 
+            if (fileWatcher != null) fileWatcher.Dispose();
+
             fileWatcher = new FileSystemWatcher() {
                 Path = FolderPath,
                 NotifyFilter = NotifyFilters.FileName,
@@ -509,7 +513,7 @@ namespace NINA.Model.MyCamera {
             Connected = false;
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
+        public async Task<IImageData> DownloadExposure(CancellationToken token) {
             try {
                 while (fileQueue.Count == 0) {
                     CameraState = "Waiting for file";
@@ -521,7 +525,7 @@ namespace NINA.Model.MyCamera {
                     while (true) {
                         tries++;
                         try {
-                            var image = await ImageArray.FromFile(path, BitDepth, IsBayered, profileService.ActiveProfile.ImageSettings.HistogramResolution, profileService.ActiveProfile.CameraSettings.RawConverter, token);
+                            var image = await ImageData.ImageData.FromFile(path, BitDepth, IsBayered, profileService.ActiveProfile.CameraSettings.RawConverter, token);
                             return image;
                         } catch (Exception ex) {
                             if (tries > 3) {
@@ -680,7 +684,7 @@ namespace NINA.Model.MyCamera {
         public void StartLiveView() {
         }
 
-        public Task<ImageArray> DownloadLiveView(CancellationToken token) {
+        public Task<IImageData> DownloadLiveView(CancellationToken token) {
             return null;
         }
 
