@@ -644,7 +644,7 @@ namespace NINA.ViewModel {
                         /* Download Image */
                         progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDownloading"] });
                         var data = await cameraMediator.Download(ct);
-                        AddMetaData(data, seq, exposureStart, rms, csl.TargetName);
+                        AddMetaData(data, csl, seq, exposureStart, rms);
 
                         /* Process Image for View */
                         var imageProcessingTask = imagingMediator.PrepareImage(data, ct);
@@ -699,7 +699,7 @@ namespace NINA.ViewModel {
             });
         }
 
-        private void AddMetaData(IImageData data, CaptureSequence sequence, DateTime start, RMS rms, string targetName) {
+        private void AddMetaData(IImageData data, CaptureSequenceList csl, CaptureSequence sequence, DateTime start, RMS rms) {
             data.MetaData.Image.ExposureStart = start;
             data.MetaData.Image.Binning = sequence.Binning.Name;
             data.MetaData.Image.ExposureNumber = sequence.ProgressExposureCount;
@@ -707,8 +707,8 @@ namespace NINA.ViewModel {
             data.MetaData.Image.ImageType = sequence.ImageType;
             data.MetaData.Image.RecordedRMS = rms;
 
-            data.MetaData.Target.Name = targetName;
-            data.MetaData.FilterWheel.Filter = sequence.FilterType?.Name ?? string.Empty;
+            data.MetaData.Target.Name = csl.TargetName;
+            data.MetaData.Target.Coordinates = csl.Coordinates;
 
             // Fill all available info from profile
             data.MetaData.FromProfile(profileService.ActiveProfile);
@@ -716,6 +716,8 @@ namespace NINA.ViewModel {
             data.MetaData.FromFilterWheelInfo(filterWheelInfo);
             data.MetaData.FromRotatorInfo(rotatorInfo);
             data.MetaData.FromFocuserInfo(focuserInfo);
+
+            data.MetaData.FilterWheel.Filter = sequence.FilterType?.Name ?? data.MetaData.FilterWheel.Filter;
         }
 
         private Task Save(IImageData data, Task imageProcessingTask, CancellationToken ct) {
