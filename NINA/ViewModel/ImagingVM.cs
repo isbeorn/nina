@@ -330,24 +330,6 @@ namespace NINA.ViewModel {
                         /*Change Filter*/
                         await ChangeFilter(sequence, token, progress);
 
-                        if (CameraInfo.Connected != true) {
-                            throw new CameraConnectionLostException();
-                        }
-
-                        token.ThrowIfCancellationRequested();
-
-                        /*Set Camera Gain */
-                        //SetGain(sequence);
-
-                        /*Set Camera Binning*/
-                        //SetBinning(sequence);
-
-                        //SetSubSample(sequence);
-
-                        if (CameraInfo.Connected != true) {
-                            throw new CameraConnectionLostException();
-                        }
-
                         /* Start RMS Recording */
                         var rmsHandle = this.guiderMediator.StartRMSRecording();
 
@@ -358,19 +340,8 @@ namespace NINA.ViewModel {
                         /* Stop RMS Recording */
                         var rms = this.guiderMediator.StopRMSRecording(rmsHandle);
 
-                        if (CameraInfo.Connected != true) {
-                            throw new CameraConnectionLostException();
-                        }
-
                         /*Download Image */
                         data = await Download(token, progress);
-                        if (data == null) {
-                            throw new OperationCanceledException();
-                        }
-
-                        if (CameraInfo.Connected != true) {
-                            throw new CameraConnectionLostException();
-                        }
 
                         AddMetaData(data, sequence, exposureStart, rms, targetName);
 
