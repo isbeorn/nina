@@ -569,6 +569,29 @@ namespace NINA.ViewModel {
         //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
         private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
+        /// <summary>
+        /// Processes all sequence items in given capture sequence list
+        ///
+        /// One Sequence item is processed like:
+        ///
+        /// 1) Check if Autofocus is required
+        /// 2) Wait for previous item's parallel actions 5a, 5b to finish
+        /// 3) Change Filter
+        /// 4) Capture
+        /// 5) Parallel Actions after Capture
+        ///     5a) Dither
+        ///     5b) Change Filter if next sequence item has a different filter set
+        /// 6) Download Image
+        /// 7) Wait for previous item's parallel actions 8a, 8b to finish
+        /// 8) Parallel Actions after Download
+        ///     8a) Save ImageData
+        ///     8b) Process ImageData for display
+        /// </summary>
+        /// <param name="csl">List containing Sequence Items to process</param>
+        /// <param name="ct">Token to cancel process</param>
+        /// <param name="pt">Token to pause process</param>
+        /// <param name="progress">Progress to report to application</param>
+        /// <returns></returns>
         private async Task<bool> ProcessSequence(CaptureSequenceList csl, CancellationToken ct, PauseToken pt, IProgress<ApplicationStatus> progress) {
             return await Task.Run<bool>(async () => {
                 try {
