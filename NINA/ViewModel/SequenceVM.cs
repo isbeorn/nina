@@ -574,8 +574,8 @@ namespace NINA.ViewModel {
         ///
         /// One Sequence item is processed like:
         ///
-        /// 1) Check if Autofocus is required
-        /// 2) Wait for previous item's parallel actions 5a, 5b to finish
+        /// 1) Wait for previous item's parallel actions 5a, 5b to
+        /// 2) Check if Autofocus is requiredfinish
         /// 3) Change Filter
         /// 4) Capture
         /// 5) Parallel Actions after Capture
@@ -618,7 +618,22 @@ namespace NINA.ViewModel {
 
                         Stopwatch seqDuration = Stopwatch.StartNew();
 
-                        /* Check if autofocus should be done */
+                        /* 1) Wait for previous item's parallel action 5a to finish */
+                        if (ditherTask?.IsCompleted == false) {
+                            /* Wait for dither to finish. Runs in parallel to download and save. */
+                            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForDither"] });
+                            await ditherTask;
+                        }
+
+                        /* 1) Wait for previous item's parallel action 5b to finish */
+                        if (filterChangeTask?.IsCompleted == false) {
+                            /* Wait for FilterChange to finish. Runs in parallel to download and save. */
+                            progress.Report(new ApplicationStatus() { Status = $"{Locale.Loc.Instance["LblChange"]} {Locale.Loc.Instance["LblFilter"]}" });
+
+                            await filterChangeTask;
+                        }
+
+                        /* 2) Check if Autofocus is requiredfinish */
                         if (ShouldAutoFocus(csl, seq, exposureCount, prevFilterPosition, lastAutoFocusTime, lastAutoFocusTemperature)) {
                             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocus"] });
                             await AutoFocus(seq.FilterType, _canceltoken.Token, progress);
@@ -627,20 +642,7 @@ namespace NINA.ViewModel {
                             progress.Report(new ApplicationStatus() { Status = " " });
                         }
 
-                        if (filterChangeTask?.IsCompleted == false) {
-                            /* Wait for FilterChange to finish. Runs in parallel to download and save. */
-                            progress.Report(new ApplicationStatus() { Status = $"{Locale.Loc.Instance["LblChange"]} {Locale.Loc.Instance["LblFilter"]}" });
-
-                            await filterChangeTask;
-                        }
-
-                        if (ditherTask?.IsCompleted == false) {
-                            /* Wait for dither to finish. Runs in parallel to download and save. */
-                            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForDither"] });
-                            await ditherTask;
-                        }
-
-                        /* Change Filter */
+                        /* 3) Change Filter */
                         if (seq.FilterType != null) {
                             await filterWheelMediator.ChangeFilter(seq.FilterType, ct, progress);
                         }
@@ -649,36 +651,37 @@ namespace NINA.ViewModel {
                         /* Start RMS Recording */
                         var rmsHandle = this.guiderMediator.StartRMSRecording();
 
-                        /* Capture */
+                        /* 4) Capture */
                         var exposureStart = DateTime.Now;
                         await cameraMediator.Capture(seq, ct, progress);
 
                         /* Stop RMS Recording */
                         var rms = this.guiderMediator.StopRMSRecording(rmsHandle);
 
-                        /* Dither */
+                        /* 5a) Dither */
                         ditherTask = ShouldDither(seq, ct, progress);
 
-                        /* Change Filter directly after capture in parallel to downloading */
+                        /* 5b) Change Filter if next sequence item has a different filter set */
                         if (seq.NextSequence != null && seq.NextSequence != seq) {
                             filterChangeTask = filterWheelMediator.ChangeFilter(seq.NextSequence.FilterType, ct, progress);
                         }
 
-                        /* Download Image */
+                        /* 6) Download Image */
                         progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDownloading"] });
                         var data = await cameraMediator.Download(ct);
                         AddMetaData(data, csl, seq, exposureStart, rms);
 
-                        /* Process Image for View */
+                        /* 8b) Process ImageData for display */
                         var imageProcessingTask = imagingMediator.PrepareImage(data, ct);
                         progress.Report(new ApplicationStatus() { Status = " " });
 
-                        /* Wait for previous save image task to complete */
+                        /* 7) Wait for previous item's parallel actions 8a, 8b to finish */
                         if (saveTask?.IsCompleted == false) {
                             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForImageSaving"] });
                             await saveTask;
                         }
 
+                        /* 8a) Save ImageData */
                         saveTask = Save(data, imageProcessingTask, ct);
 
                         seqDuration.Stop();
