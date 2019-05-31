@@ -583,6 +583,7 @@ namespace NINA.ViewModel {
                     var lastAutoFocusTemperature = focuserInfo?.Temperature ?? double.NaN;
                     var exposureCount = 0;
                     Task saveTask = null;
+                    Task ditherTask = null;
                     while ((seq = csl.Next()) != null) {
                         exposureCount++;
 
@@ -601,14 +602,24 @@ namespace NINA.ViewModel {
                             progress.Report(new ApplicationStatus() { Status = " " });
                         }
 
-                        progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblImaging"] });
+                        if (ditherTask?.IsCompleted == false) {
+                            //Wait for dither to finish. Runs in parallel to download and save.
+                            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForDither"] });
+                            await ditherTask;
+                        }
 
-                        var data = await imagingMediator.CaptureAndPrepareImage(seq, ct, progress);
+                        progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblImaging"] });
+                        var data = await imagingMediator.CaptureImage(seq, ct, progress);
                         data.MetaData.Target.Name = csl.TargetName;
+
+                        /*Dither*/
+                        ditherTask = ShouldDither(seq, ct, progress);
+
+                        var process = imagingMediator.PrepareImage(data, ct);
                         progress.Report(new ApplicationStatus() { Status = " " });
 
                         //Wait for previous prepare image task to complete
-                        if (saveTask != null && !saveTask.IsCompleted) {
+                        if (saveTask?.IsCompleted == false) {
                             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForImageSaving"] });
                             await saveTask;
                         }
@@ -620,6 +631,7 @@ namespace NINA.ViewModel {
                                 profileService.ActiveProfile.ImageFileSettings.FileType,
                                 ct
                             );
+                            await process;
                             imagingMediator.OnImageSaved(
                                     new ImageSavedEventArgs() {
                                         PathToImage = new Uri(path),
@@ -675,6 +687,14 @@ namespace NINA.ViewModel {
                 }
                 return true;
             });
+        }
+
+        private async Task<bool> ShouldDither(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            if (seq.Dither && ((seq.ProgressExposureCount % seq.DitherAmount) == 0)) {
+                return await this.guiderMediator.Dither(token);
+            }
+            token.ThrowIfCancellationRequested();
+            return false;
         }
 
         private bool ShouldAutoFocus(CaptureSequenceList csl, CaptureSequence seq, int exposureCount, short previousFilterPosition, DateTime lastAutoFocusTime, double lastAutoFocusTemperature) {

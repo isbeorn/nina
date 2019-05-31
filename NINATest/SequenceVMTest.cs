@@ -1005,6 +1005,10 @@ namespace NINATest {
         public Task<bool> CaptureAndSaveImage(CaptureSequence seq, CancellationToken ct, IProgress<ApplicationStatus> progress, string targetname = "") {
             throw new NotImplementedException();
         }
+
+        public Task<IImageData> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            throw new NotImplementedException();
+        }
     }
 
     internal class SequenceApplicationStatusMediator : IApplicationStatusMediator {
