@@ -650,7 +650,7 @@ namespace NINA.ViewModel {
                         var imageProcessingTask = imagingMediator.PrepareImage(data, ct);
                         progress.Report(new ApplicationStatus() { Status = " " });
 
-                        /* Wait for previous prepare image task to complete */
+                        /* Wait for previous save image task to complete */
                         if (saveTask?.IsCompleted == false) {
                             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForImageSaving"] });
                             await saveTask;
