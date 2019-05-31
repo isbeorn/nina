@@ -83,6 +83,9 @@
 - Setup Installer can be run in fewer clicks and is also capable of launching the application after successful installation.
 - Star detection has been enhanced to detect more stars more accurately, while avoiding picking up noise by checking that the star is a local maximum
 - Image History Graph will only contain statistics from sequence items
+- Further increased parallelism during sequencing. 
+	- After capture during image download: Parallel dither and change filter (if required)
+	- After download: Parallel image saving and processing to display the image
 
 # Version 1.8 Hotfix 1
 
