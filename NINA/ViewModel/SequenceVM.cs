@@ -50,6 +50,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
+using NINA.Model.ImageData;
 
 namespace NINA.ViewModel {
 
@@ -615,7 +616,7 @@ namespace NINA.ViewModel {
                         /*Dither*/
                         ditherTask = ShouldDither(seq, ct, progress);
 
-                        var process = imagingMediator.PrepareImage(data, ct);
+                        var imageProcessingTask = imagingMediator.PrepareImage(data, ct);
                         progress.Report(new ApplicationStatus() { Status = " " });
 
                         //Wait for previous prepare image task to complete
@@ -624,29 +625,7 @@ namespace NINA.ViewModel {
                             await saveTask;
                         }
 
-                        saveTask = Task.Run(async () => {
-                            var path = await data.SaveToDisk(
-                                profileService.ActiveProfile.ImageFileSettings.FilePath,
-                                profileService.ActiveProfile.ImageFileSettings.FilePattern,
-                                profileService.ActiveProfile.ImageFileSettings.FileType,
-                                ct
-                            );
-                            await process;
-                            imagingMediator.OnImageSaved(
-                                    new ImageSavedEventArgs() {
-                                        PathToImage = new Uri(path),
-                                        Image = data.Image,
-                                        FileType = profileService.ActiveProfile.ImageFileSettings.FileType,
-                                        Mean = data.Statistics.Mean,
-                                        HFR = data.Statistics.HFR,
-                                        Duration = data.MetaData.Image.ExposureTime,
-                                        IsBayered = data.Statistics.IsBayered,
-                                        Filter = data.MetaData.FilterWheel.Filter,
-                                        StatisticsId = data.Statistics.Id
-                                    }
-                            );
-                            ImgHistoryVM.Add(data.Statistics);
-                        });
+                        saveTask = Save(data, imageProcessingTask, ct);
 
                         seqDuration.Stop();
 
@@ -686,6 +665,32 @@ namespace NINA.ViewModel {
                     semaphoreSlim.Release();
                 }
                 return true;
+            });
+        }
+
+        private Task Save(IImageData data, Task imageProcessingTask, CancellationToken ct) {
+            return Task.Run(async () => {
+                var path = await data.SaveToDisk(
+                    profileService.ActiveProfile.ImageFileSettings.FilePath,
+                    profileService.ActiveProfile.ImageFileSettings.FilePattern,
+                    profileService.ActiveProfile.ImageFileSettings.FileType,
+                    ct
+                );
+                await imageProcessingTask;
+                imagingMediator.OnImageSaved(
+                        new ImageSavedEventArgs() {
+                            PathToImage = new Uri(path),
+                            Image = data.Image,
+                            FileType = profileService.ActiveProfile.ImageFileSettings.FileType,
+                            Mean = data.Statistics.Mean,
+                            HFR = data.Statistics.HFR,
+                            Duration = data.MetaData.Image.ExposureTime,
+                            IsBayered = data.Statistics.IsBayered,
+                            Filter = data.MetaData.FilterWheel.Filter,
+                            StatisticsId = data.Statistics.Id
+                        }
+                );
+                ImgHistoryVM.Add(data.Statistics);
             });
         }
 

@@ -277,18 +277,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void SetBinning(CaptureSequence seq) {
-            if (seq.Binning == null) {
-                cameraMediator.SetBinning(1, 1);
-            } else {
-                cameraMediator.SetBinning(seq.Binning.X, seq.Binning.Y);
-            }
-        }
-
-        private void SetSubSample(CaptureSequence seq) {
-            cameraMediator.SetSubSample(seq.EnableSubSample);
-        }
-
         private async Task Capture(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
             if (ImageControl.IsLiveViewEnabled) _liveViewCts?.Cancel();
             else await cameraMediator.Capture(seq, token, progress);
@@ -349,12 +337,12 @@ namespace NINA.ViewModel {
                         token.ThrowIfCancellationRequested();
 
                         /*Set Camera Gain */
-                        SetGain(sequence);
+                        //SetGain(sequence);
 
                         /*Set Camera Binning*/
-                        SetBinning(sequence);
+                        //SetBinning(sequence);
 
-                        SetSubSample(sequence);
+                        //SetSubSample(sequence);
 
                         if (CameraInfo.Connected != true) {
                             throw new CameraConnectionLostException();
@@ -438,12 +426,6 @@ namespace NINA.ViewModel {
         }
 
         private Task<IImageData> _imageProcessingTask;
-
-        private void SetGain(CaptureSequence seq) {
-            if (seq.Gain != -1) {
-                cameraMediator.SetGain(seq.Gain);
-            }
-        }
 
         private Model.MyFilterWheel.FilterInfo _snapFilter;
 

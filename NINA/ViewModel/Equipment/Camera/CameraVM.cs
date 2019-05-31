@@ -376,7 +376,7 @@ namespace NINA.ViewModel.Equipment.Camera {
                                 SubSampleX = Cam.SubSampleX,
                                 SubSampleY = Cam.SubSampleY,
                                 SubSampleWidth = Cam.SubSampleWidth,
-                                SubSampleHeight = Cam. SubSampleHeight,
+                                SubSampleHeight = Cam.SubSampleHeight,
                                 Connected = true,
                                 CoolerOn = Cam.CoolerOn,
                                 CoolerPower = Cam.CoolerPower,
@@ -615,6 +615,18 @@ namespace NINA.ViewModel.Equipment.Camera {
             this.exposureTime = sequence.ExposureTime;
             double exposureTime = sequence.ExposureTime;
             if (CameraInfo.Connected == true) {
+                if (sequence.Gain > -1) {
+                    SetGain(sequence.Gain);
+                }
+
+                if (sequence.Binning == null) {
+                    SetBinning(1, 1);
+                } else {
+                    SetBinning(sequence.Binning.X, sequence.Binning.Y);
+                }
+
+                SetSubSample(sequence.EnableSubSample);
+
                 CameraInfo.IsExposing = true;
                 CameraInfo.ExposureEndTime = DateTime.Now.AddSeconds(sequence.ExposureTime);
                 CameraInfo.NextExposureLength = sequence.NextSequence?.ExposureTime ?? -1;
