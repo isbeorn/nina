@@ -55,8 +55,6 @@ namespace NINA.ViewModel.Equipment.Guider {
 
             GuiderChooserVM = new GuiderChooserVM(profileService, cameraMediator, telescopeMediator);
 
-            GuiderChooserVM.SelectedGuider.PropertyChanged += (sender, args) => RaisePropertyChanged(nameof(Guider));
-
             DisconnectGuiderCommand = new RelayCommand((object o) => Disconnect(), (object o) => Guider?.Connected == true);
             ClearGraphCommand = new RelayCommand((object o) => ResetGraphValues());
 
@@ -147,22 +145,30 @@ namespace NINA.ViewModel.Equipment.Guider {
         public async Task<bool> Connect() {
             ResetGraphValues();
 
-            GuiderChooserVM.SelectedGuider.PropertyChanged += Guider_PropertyChanged;
-
             bool connected = false;
 
             try {
+                if (Guider != null) {
+                    Guider.PropertyChanged -= Guider_PropertyChanged;
+                    Guider.GuideEvent -= Guider_GuideEvent;
+                }
                 _cancelConnectGuiderSource?.Dispose();
                 _cancelConnectGuiderSource = new CancellationTokenSource();
+                Guider = GuiderChooserVM.SelectedGuider;
                 connected = await Guider.Connect();
                 _cancelConnectGuiderSource.Token.ThrowIfCancellationRequested();
 
-                GuiderInfo = new GuiderInfo {
-                    Connected = connected
-                };
-                BroadcastGuiderInfo();
-                RaisePropertyChanged(nameof(Guider));
-                profileService.ActiveProfile.GuiderSettings.GuiderName = Guider.Name;
+                if (connected) {
+                    Guider.PropertyChanged += Guider_PropertyChanged;
+                    Guider.GuideEvent += Guider_GuideEvent;
+
+                    GuiderInfo = new GuiderInfo {
+                        Connected = connected
+                    };
+                    BroadcastGuiderInfo();
+                    RaisePropertyChanged(nameof(Guider));
+                    profileService.ActiveProfile.GuiderSettings.GuiderName = Guider.Name;
+                }
             } catch (OperationCanceledException) {
                 Guider?.Disconnect();
                 GuiderInfo = new GuiderInfo {
@@ -174,7 +180,32 @@ namespace NINA.ViewModel.Equipment.Guider {
             return connected;
         }
 
+        private void Guider_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == "PixelScale") {
+                GuideStepsHistory.PixelScale = Guider.PixelScale;
+            }
+
+            if (e.PropertyName == nameof(IGuider.Connected)) {
+                GuiderInfo.Connected = Guider.Connected;
+                BroadcastGuiderInfo();
+            }
+        }
+
+        private void Guider_GuideEvent(object sender, IGuideStep e) {
+            var step = e;
+
+            GuideStepsHistory.AddGuideStep(step);
+
+            foreach (RMS rms in recordedRMS.Values) {
+                rms.AddDataPoint(step.RADistanceRaw, step.DECDistanceRaw);
+            }
+        }
+
         public void Disconnect() {
+            if (Guider != null) {
+                Guider.PropertyChanged -= Guider_PropertyChanged;
+                Guider.GuideEvent -= Guider_GuideEvent;
+            }
             Guider?.Disconnect();
             GuiderInfo = DeviceInfo.CreateDefaultInstance<GuiderInfo>();
             BroadcastGuiderInfo();
@@ -197,26 +228,6 @@ namespace NINA.ViewModel.Equipment.Guider {
 
         private void BroadcastGuiderInfo() {
             this.guiderMediator.Broadcast(GuiderInfo);
-        }
-
-        private void Guider_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == "PixelScale") {
-                GuideStepsHistory.PixelScale = Guider.PixelScale;
-            }
-            if (e.PropertyName == "GuideStep") {
-                var step = Guider.GuideStep;
-
-                GuideStepsHistory.AddGuideStep(step);
-
-                foreach (RMS rms in recordedRMS.Values) {
-                    rms.AddDataPoint(step.RADistanceRaw, step.DecDistanceRaw);
-                }
-            }
-
-            if (e.PropertyName == nameof(IGuider.Connected)) {
-                GuiderInfo.Connected = Guider.Connected;
-                BroadcastGuiderInfo();
-            }
         }
 
         public GuiderScaleEnum GuiderScale {
@@ -275,7 +286,15 @@ namespace NINA.ViewModel.Equipment.Guider {
 
         private Dictionary<Guid, RMS> recordedRMS = new Dictionary<Guid, RMS>();
 
-        public IGuider Guider => GuiderChooserVM.SelectedGuider;
+        private IGuider guider;
+
+        public IGuider Guider {
+            get => guider;
+            set {
+                guider = value;
+                RaisePropertyChanged();
+            }
+        }
 
         private void CancelConnectGuider(object o) {
             _cancelConnectGuiderSource?.Cancel();

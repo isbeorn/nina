@@ -1,4 +1,5 @@
 ﻿using NINA.Utility;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,6 +12,8 @@ namespace NINA.Model.MyGuider {
 
         private bool _connected;
 
+        public event EventHandler<IGuideStep> GuideEvent;
+
         public bool Connected {
             get => _connected;
             set {
@@ -21,7 +24,6 @@ namespace NINA.Model.MyGuider {
 
         public double PixelScale { get; set; }
         public string State => "Being a dummy";
-        public IGuideStep GuideStep { get; }
 
         public async Task<bool> Connect() {
             Connected = true;

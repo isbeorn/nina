@@ -126,30 +126,6 @@ namespace NINA.Model.MyGuider {
             }
         }
 
-        private IGuideStep _prevGuideStep;
-
-        public IGuideStep PrevGuideStep {
-            get {
-                return _prevGuideStep;
-            }
-            set {
-                _prevGuideStep = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private IGuideStep _guideStep;
-
-        public IGuideStep GuideStep {
-            get {
-                return _guideStep;
-            }
-            set {
-                _guideStep = value;
-                RaisePropertyChanged();
-            }
-        }
-
         private CancellationTokenSource _clientCTS;
 
         private static object lockobj = new object();
@@ -397,8 +373,8 @@ namespace NINA.Model.MyGuider {
                     }
                 case "GuideStep": {
                         AppState = new PhdEventAppState() { State = "Guiding" };
-                        PrevGuideStep = GuideStep;
-                        GuideStep = message.ToObject<PhdEventGuideStep>();
+                        var step = message.ToObject<PhdEventGuideStep>();
+                        GuideEvent?.Invoke(this, step);
                         break;
                     }
                 case "GuidingDithered": {
@@ -549,6 +525,8 @@ namespace NINA.Model.MyGuider {
         }
 
         public event EventHandler PHD2ConnectionLost;
+
+        public event EventHandler<IGuideStep> GuideEvent;
 
         public class PhdMethodResponse {
             public string jsonrpc;
@@ -769,7 +747,7 @@ namespace NINA.Model.MyGuider {
             }
 
             [DataMember]
-            public double DecDistanceRawDisplay {
+            public double DECDistanceRawDisplay {
                 get {
                     return decDistanceDisplay;
                 }
@@ -884,14 +862,14 @@ namespace NINA.Model.MyGuider {
             }
 
             [DataMember]
-            public double DecDistanceRaw {
+            public double DECDistanceRaw {
                 get {
                     return decDistanceRaw;
                 }
 
                 set {
                     decDistanceRaw = value;
-                    DecDistanceRawDisplay = DecDistanceRaw;
+                    DECDistanceRawDisplay = DECDistanceRaw;
                 }
             }
 
@@ -908,14 +886,14 @@ namespace NINA.Model.MyGuider {
             }
 
             [DataMember]
-            public double DecDistanceGuide {
+            public double DECDistanceGuide {
                 get {
                     return decDistanceGuide;
                 }
 
                 set {
                     decDistanceGuide = value;
-                    DecDistanceGuideDisplay = DecDistanceRaw;
+                    DecDistanceGuideDisplay = DECDistanceRaw;
                 }
             }
 
@@ -948,7 +926,7 @@ namespace NINA.Model.MyGuider {
             [DataMember]
             public double DECDuration {
                 get {
-                    if (DecDirection == "South") {
+                    if (DECDirection == "South") {
                         return -dECDuration;
                     } else {
                         return dECDuration;
@@ -961,7 +939,7 @@ namespace NINA.Model.MyGuider {
             }
 
             [DataMember]
-            public string DecDirection {
+            public string DECDirection {
                 get {
                     return decDirection;
                 }

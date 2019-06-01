@@ -23,12 +23,13 @@ namespace NINA.Model.MyGuider {
         private CancellationTokenSource disconnectTokenSource;
         private DateTime exposureEndTime;
         private ISynchronizedPHD2GuiderService guiderService;
-        private IGuideStep guideStep;
         private double lastDownloadTime;
         private double nextExposureLength;
         private double pixelScale;
         private TaskCompletionSource<bool> startServiceTcs;
         private string state;
+
+        public event EventHandler<IGuideStep> GuideEvent;
 
         public SynchronizedPHD2Guider(IProfileService profileService, ICameraMediator cameraMediator) {
             this.profileService = profileService;
@@ -43,17 +44,6 @@ namespace NINA.Model.MyGuider {
             set {
                 connected = value;
                 RaisePropertyChanged();
-            }
-        }
-
-        /// <inheritdoc />
-        public IGuideStep GuideStep {
-            get => guideStep;
-            set {
-                if (value != null) {
-                    guideStep = value;
-                    RaisePropertyChanged();
-                }
             }
         }
 
@@ -105,7 +95,9 @@ namespace NINA.Model.MyGuider {
                         var guideInfos = await guiderService.GetGuideInfo(profileService.ActiveProfile.Id);
 
                         State = guideInfos.State;
-                        GuideStep = guideInfos.GuideStep;
+                        if (guideInfos.GuideStep != null) {
+                            GuideEvent?.Invoke(this, guideInfos.GuideStep);
+                        }
 
                         await Task.Delay(TimeSpan.FromMilliseconds(1000), ct);
                         ct.ThrowIfCancellationRequested();

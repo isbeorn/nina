@@ -180,7 +180,7 @@
                     <oxy:LineSeries
                         Title="{ns:Loc LblDec}"
                         DataFieldX="Time"
-                        DataFieldY="DecDistanceRawDisplay"
+                        DataFieldY="DECDistanceRawDisplay"
                         ItemsSource="{Binding GuideSteps}"
                         XAxisKey="DataAxisX"
                         YAxisKey="DistanceAxis"
