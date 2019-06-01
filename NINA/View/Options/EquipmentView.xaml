@@ -1,6 +1,4 @@
 ﻿<!--
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
-
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
     N.I.N.A. is free software: you can redistribute it and/or modify
@@ -14,7 +12,11 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/
+
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright 2019 Dale Ghent <daleg@elemental.org>
+-->
 <UserControl
     x:Class="NINA.View.Options.EquipmentView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -37,6 +39,7 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition />
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
@@ -733,6 +736,91 @@
                         </TextBox>
                     </UniformGrid>
                 </UniformGrid>
+            </ScrollViewer>
+        </GroupBox>
+        <GroupBox
+            Grid.Row="3"
+            DataContext="{Binding WeatherDataSettings}"
+            Header="{ns:Loc LblWeather}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Orientation="Vertical">
+                    <UniformGrid Columns="2">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                Width="130"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblWeatherDisplayFahrenheit}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblWeatherDisplayFahrenheitTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Width="75"
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding DisplayFahrenheit}" />
+                        </UniformGrid>
+                    </UniformGrid>
+                    <UniformGrid Columns="2">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                Width="130"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblWeatherDisplayImperial}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblWeatherDisplayImperialTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Width="75"
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding DisplayImperial}" />
+                        </UniformGrid>
+                    </UniformGrid>
+                    <UniformGrid Columns="2">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                Width="160"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblOpenWeatherMapAPIKey}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblWeatherDisplayImperialTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox
+                                Grid.Column="2"
+                                HorizontalAlignment="Stretch"
+                                DockPanel.Dock="Left"
+                                MinWidth="36"
+                                Text="{Binding OpenWeatherMapAPIKey}" />
+                            <TextBlock
+                                Grid.Column="2"
+                                Width="Auto"
+                                VerticalAlignment="Center"
+                                DockPanel.Dock="Right"
+                                Text="">
+                                <Hyperlink
+                                    Command="{Binding Source={StaticResource AppVM}, Path=OptionsVM.OpenWebRequestCommand}"
+                                    CommandParameter="https://home.openweathermap.org/api_keys">
+                                    <Run Text="?" />
+                                </Hyperlink>
+                            </TextBlock>
+                        </UniformGrid>
+                    </UniformGrid>
+                </StackPanel>
             </ScrollViewer>
         </GroupBox>
         <GroupBox

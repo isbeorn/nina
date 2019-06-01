@@ -1,8 +1,6 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
-
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
     N.I.N.A. is free software: you can redistribute it and/or modify
@@ -19,6 +17,11 @@
     along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+ * Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+ * Copyright 2019 Dale Ghent <daleg@elemental.org>
+ */
+
 #endregion "copyright"
 
 using NINA.Utility;
@@ -33,10 +36,10 @@ using NINA.ViewModel.Equipment.Guider;
 using NINA.ViewModel.Equipment.Rotator;
 using NINA.ViewModel.Equipment.Telescope;
 using NINA.ViewModel.Equipment.Switch;
+using NINA.ViewModel.Equipment.WeatherData;
 using NINA.ViewModel.FlatWizard;
 using NINA.ViewModel.FramingAssistant;
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -65,6 +68,7 @@ namespace NINA.ViewModel {
             imagingMediator = new ImagingMediator();
             applicationStatusMediator = new ApplicationStatusMediator();
             switchMediator = new SwitchMediator();
+            weatherDataMediator = new WeatherDataMediator();
 
             SwitchVM = new SwitchVM(profileService, applicationStatusMediator, switchMediator);
 
@@ -85,7 +89,8 @@ namespace NINA.ViewModel {
                         var focuser = focuserMediator.Connect();
                         var rotator = rotatorMediator.Connect();
                         var guider = guiderMediator.Connect();
-                        await Task.WhenAll(cam, fw, telescope, focuser, rotator, guider);
+                        var weather = weatherDataMediator.Connect();
+                        await Task.WhenAll(cam, fw, telescope, focuser, rotator, guider, weather);
                         return true;
                     });
                 } else {
@@ -131,6 +136,7 @@ namespace NINA.ViewModel {
         private IImagingMediator imagingMediator;
         private IApplicationStatusMediator applicationStatusMediator;
         private SwitchMediator switchMediator;
+        private IWeatherDataMediator weatherDataMediator;
 
         private void LoadProfile(object obj) {
             if (profileService.Profiles.Count > 1) {
@@ -155,6 +161,7 @@ namespace NINA.ViewModel {
             DockManagerVM.Anchorables.Add(TelescopeVM);
             DockManagerVM.Anchorables.Add(GuiderVM);
             DockManagerVM.Anchorables.Add(SwitchVM);
+            DockManagerVM.Anchorables.Add(WeatherDataVM);
 
             DockManagerVM.Anchorables.Add(ImagingVM);
             DockManagerVM.Anchorables.Add(SeqVM);
@@ -177,12 +184,12 @@ namespace NINA.ViewModel {
             DockManagerVM.AnchorableInfoPanels.Add(GuiderVM);
             DockManagerVM.AnchorableInfoPanels.Add(SeqVM);
             DockManagerVM.AnchorableInfoPanels.Add(SwitchVM);
+            DockManagerVM.AnchorableInfoPanels.Add(WeatherDataVM);
             DockManagerVM.AnchorableInfoPanels.Add(ImagingVM.ImgStatisticsVM);
             DockManagerVM.AnchorableInfoPanels.Add(SeqVM.ImgHistoryVM);
 
             DockManagerVM.AnchorableTools.Add(ImagingVM);
             DockManagerVM.AnchorableTools.Add(ThumbnailVM);
-            DockManagerVM.AnchorableTools.Add(WeatherDataVM);
             DockManagerVM.AnchorableTools.Add(PlatesolveVM);
             DockManagerVM.AnchorableTools.Add(PolarAlignVM);
             DockManagerVM.AnchorableTools.Add(AutoFocusVM);
@@ -298,6 +305,12 @@ namespace NINA.ViewModel {
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
+
+            try {
+                weatherDataMediator.Disconnect();
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
         }
 
         private DockManagerVM _dockManagerVM;
@@ -397,7 +410,7 @@ namespace NINA.ViewModel {
         public WeatherDataVM WeatherDataVM {
             get {
                 if (_weatherDataVM == null) {
-                    _weatherDataVM = new WeatherDataVM(profileService);
+                    _weatherDataVM = new WeatherDataVM(profileService, weatherDataMediator, applicationStatusMediator);
                 }
                 return _weatherDataVM;
             }

@@ -18,18 +18,32 @@
 */
 
 /*
- * Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
  * Copyright 2019 Dale Ghent <daleg@elemental.org>
  */
 
 #endregion "copyright"
 
-namespace NINA.Profile {
+using System;
+using System.Globalization;
+using System.Windows.Data;
 
-    public interface IWeatherDataSettings : ISettings {
-        string Id { get; set; }
-        bool DisplayFahrenheit { get; set; }
-        bool DisplayImperial { get; set; }
-        string OpenWeatherMapAPIKey { get; set; }
+namespace NINA.Utility.Converters {
+
+    public class NaNToVisibilityConverter : IValueConverter {
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+            System.Windows.Visibility result;
+            if (double.IsNaN((double)value)) {
+                result = System.Windows.Visibility.Hidden;
+            } else {
+                result = System.Windows.Visibility.Visible;
+            }
+
+            return result;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+            throw new NotImplementedException();
+        }
     }
 }

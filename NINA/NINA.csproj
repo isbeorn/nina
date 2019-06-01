@@ -341,7 +341,12 @@
     <Compile Include="Model\MyPlanetarium\TheSkyX.cs" />
     <Compile Include="Model\MySwitch\Ascom\AscomV1Switch.cs" />
     <Compile Include="Model\MySwitch\Ascom\AscomWritableV1Switch.cs" />
+    <Compile Include="Model\MyWeatherData\AscomObservingConditions.cs" />
+    <Compile Include="Model\MyWeatherData\OpenWeatherMap.cs" />
+    <Compile Include="Model\MyWeatherData\WeatherDataInfo.cs" />
+    <Compile Include="Profile\Interfaces\IWeatherDataSettings.cs" />
     <Compile Include="Profile\ProfileInfo.cs" />
+    <Compile Include="Profile\WeatherDataSettings.cs" />
     <Compile Include="Utility\Api\ApiParameters.cs" />
     <Compile Include="Model\MyPlanetarium\IPlanetarium.cs" />
     <Compile Include="Utility\Api\RawTcp.cs" />
@@ -369,6 +374,12 @@
     <Compile Include="PlateSolving\PlateSolveParameter.cs" />
     <Compile Include="PlateSolving\PlateSolveResult.cs" />
     <Compile Include="Utility\Astrometry\TopocentricCoordinates.cs" />
+    <Compile Include="Utility\Converters\NaNToVisibilityConverter.cs" />
+    <Compile Include="Utility\Converters\WeatherBrightnessConverter.cs" />
+    <Compile Include="Utility\Converters\WeatherPressureConverter.cs" />
+    <Compile Include="Utility\Converters\WeatherRainRateConverter.cs" />
+    <Compile Include="Utility\Converters\WeatherTemperatureConverter.cs" />
+    <Compile Include="Utility\Converters\WeatherVelocityConverter.cs" />
     <Compile Include="Utility\Enum\AltitudeSite.cs" />
     <Compile Include="Utility\Enum\PlanetariumEnum.cs" />
     <Compile Include="Profile\Interfaces\IPlanetariumSettings.cs" />
@@ -385,6 +396,9 @@
     <Compile Include="Utility\ImageAnalysis\ImageUtility.cs" />
     <Compile Include="Utility\Mediator\Interfaces\ISwitchConsumer.cs" />
     <Compile Include="Utility\Mediator\Interfaces\ISwitchMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IWeatherDataConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IWeatherDataMediator.cs" />
+    <Compile Include="Utility\Mediator\WeatherDataMediator.cs" />
     <Compile Include="Utility\Mediator\SwitchMediator.cs" />
     <Compile Include="Utility\ProjectVersion.cs" />
     <Compile Include="Utility\Behaviors\BrowserBehavior.cs" />
@@ -396,6 +410,9 @@
     <Compile Include="ViewModel\Equipment\Rotator\RotatorChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\Telescope\TelescopeChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\Guider\GuiderChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\WeatherData\IWeatherDataVM.cs" />
+    <Compile Include="ViewModel\Equipment\WeatherData\WeatherDataChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\WeatherData\WeatherDataVM.cs" />
     <Compile Include="View\Equipment\Switch\EagleSetupView.xaml.cs">
       <DependentUpon>EagleSetupView.xaml</DependentUpon>
     </Compile>
@@ -468,7 +485,6 @@
     <Compile Include="Model\MyWeatherData\IWeatherData.cs" />
     <Compile Include="Model\MyCamera\AscomCamera.cs" />
     <Compile Include="Model\MyCamera\ASICamera.cs" />
-    <Compile Include="Model\MyWeatherData\OpenWeatherMapData.cs" />
     <Compile Include="Model\Sequence\CaptureSequenceList.cs" />
     <Compile Include="Model\Sequence\SequenceMode.cs" />
     <Compile Include="MyMessageBox\MyMessageBox.cs" />
@@ -586,7 +602,6 @@
     <Compile Include="Profile\Interfaces\ISequenceSettings.cs" />
     <Compile Include="Profile\Interfaces\ISettings.cs" />
     <Compile Include="Profile\Interfaces\ITelescopeSettings.cs" />
-    <Compile Include="Profile\Interfaces\IWeatherDataSettings.cs" />
     <Compile Include="Profile\RotatorSettings.cs" />
     <Compile Include="Profile\Settings.cs" />
     <Compile Include="Utility\RawConverter\DCRaw.cs" />
@@ -601,7 +616,6 @@
     <Compile Include="Utility\Enum\GuiderScaleEnum.cs" />
     <Compile Include="Utility\Enum\LogLevelEnum.cs" />
     <Compile Include="Utility\Enum\PlateSolverEnum.cs" />
-    <Compile Include="Utility\Enum\WeatherDataEnum.cs" />
     <Compile Include="Utility\Exceptions\CameraConnectionLostException.cs" />
     <Compile Include="Utility\FITS.cs" />
     <Compile Include="Utility\MyStopWatch.cs" />
@@ -629,7 +643,6 @@
     <Compile Include="Profile\Profiles.cs" />
     <Compile Include="Profile\SequenceSettings.cs" />
     <Compile Include="Profile\TelescopeSettings.cs" />
-    <Compile Include="Profile\WeatherDataSettings.cs" />
     <Compile Include="Utility\RawConverter\FreeImageConverter.cs" />
     <Compile Include="Utility\RawConverter\IRawConverter.cs" />
     <Compile Include="Utility\SerialRelayInteraction.cs" />
@@ -735,7 +748,6 @@
     <Compile Include="ViewModel\ThumbnailVM.cs" />
     <Compile Include="ViewModel\VersionCheckVM.cs" />
     <Compile Include="ViewModel\FramingAssistant\ViewportFoV.cs" />
-    <Compile Include="ViewModel\WeatherDataVM.cs" />
     <Compile Include="View\AberrationInspectorView.xaml.cs">
       <DependentUpon>AberrationInspectorView.xaml</DependentUpon>
     </Compile>
@@ -744,6 +756,9 @@
     </Compile>
     <Compile Include="View\Equipment\Camera\FileCameraSetupView.xaml.cs">
       <DependentUpon>FileCameraSetupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\WeatherData\WeatherDataView.xaml.cs">
+      <DependentUpon>WeatherDataView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Imaging\AnchorableAutoFocusView.xaml.cs">
       <DependentUpon>AnchorableAutoFocusView.xaml</DependentUpon>
@@ -1110,6 +1125,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Equipment\Camera\FileCameraSetupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\WeatherData\WeatherDataView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

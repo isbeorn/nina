@@ -1,8 +1,6 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
-
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
     N.I.N.A. is free software: you can redistribute it and/or modify
@@ -19,9 +17,13 @@
     along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+ * Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+ * Copyright 2019 Dale Ghent <daleg@elemental.org>
+ */
+
 #endregion "copyright"
 
-using NINA.Utility.Enum;
 using System;
 using System.Runtime.Serialization;
 
@@ -37,27 +39,52 @@ namespace NINA.Profile {
         }
 
         protected override void SetDefaultValues() {
-            weatherDataType = WeatherDataEnum.OPENWEATHERMAP;
-            openWeatherMapAPIKey = string.Empty;
-            openWeatherMapUrl = "http://api.openweathermap.org/data/2.5/weather";
+            Id = "No_Device";
+            DisplayFahrenheit = false;
+            DisplayImperial = false;
+            OpenWeatherMapAPIKey = string.Empty;
         }
 
-        private WeatherDataEnum weatherDataType;
+        private string id = string.Empty;
 
         [DataMember]
-        public WeatherDataEnum WeatherDataType {
+        public string Id {
             get {
-                return weatherDataType;
+                return id;
             }
             set {
-                if (weatherDataType != value) {
-                    weatherDataType = value;
-                    RaisePropertyChanged();
-                }
+                id = value;
+                RaisePropertyChanged();
             }
         }
 
-        private string openWeatherMapAPIKey;
+        private bool displayFahrenheit = false;
+
+        [DataMember]
+        public bool DisplayFahrenheit {
+            get {
+                return displayFahrenheit;
+            }
+            set {
+                displayFahrenheit = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool displayImperial = false;
+
+        [DataMember]
+        public bool DisplayImperial {
+            get {
+                return displayImperial;
+            }
+            set {
+                displayImperial = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string openWeatherMapAPIKey = string.Empty;
 
         [DataMember]
         public string OpenWeatherMapAPIKey {
@@ -65,25 +92,8 @@ namespace NINA.Profile {
                 return openWeatherMapAPIKey;
             }
             set {
-                if (openWeatherMapAPIKey != value) {
-                    openWeatherMapAPIKey = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private string openWeatherMapUrl;
-
-        [DataMember]
-        public string OpenWeatherMapUrl {
-            get {
-                return openWeatherMapUrl;
-            }
-            set {
-                if (openWeatherMapUrl != value) {
-                    openWeatherMapUrl = value;
-                    RaisePropertyChanged();
-                }
+                openWeatherMapAPIKey = value;
+                RaisePropertyChanged();
             }
         }
     }
