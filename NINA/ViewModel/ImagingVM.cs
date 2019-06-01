@@ -277,18 +277,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void SetBinning(CaptureSequence seq) {
-            if (seq.Binning == null) {
-                cameraMediator.SetBinning(1, 1);
-            } else {
-                cameraMediator.SetBinning(seq.Binning.X, seq.Binning.Y);
-            }
-        }
-
-        private void SetSubSample(CaptureSequence seq) {
-            cameraMediator.SetSubSample(seq.EnableSubSample);
-        }
-
         private async Task Capture(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
             if (ImageControl.IsLiveViewEnabled) _liveViewCts?.Cancel();
             else await cameraMediator.Capture(seq, token, progress);
@@ -342,24 +330,6 @@ namespace NINA.ViewModel {
                         /*Change Filter*/
                         await ChangeFilter(sequence, token, progress);
 
-                        if (CameraInfo.Connected != true) {
-                            throw new CameraConnectionLostException();
-                        }
-
-                        token.ThrowIfCancellationRequested();
-
-                        /*Set Camera Gain */
-                        SetGain(sequence);
-
-                        /*Set Camera Binning*/
-                        SetBinning(sequence);
-
-                        SetSubSample(sequence);
-
-                        if (CameraInfo.Connected != true) {
-                            throw new CameraConnectionLostException();
-                        }
-
                         /* Start RMS Recording */
                         var rmsHandle = this.guiderMediator.StartRMSRecording();
 
@@ -370,19 +340,8 @@ namespace NINA.ViewModel {
                         /* Stop RMS Recording */
                         var rms = this.guiderMediator.StopRMSRecording(rmsHandle);
 
-                        if (CameraInfo.Connected != true) {
-                            throw new CameraConnectionLostException();
-                        }
-
                         /*Download Image */
                         data = await Download(token, progress);
-                        if (data == null) {
-                            throw new OperationCanceledException();
-                        }
-
-                        if (CameraInfo.Connected != true) {
-                            throw new CameraConnectionLostException();
-                        }
 
                         AddMetaData(data, sequence, exposureStart, rms, targetName);
 
@@ -438,12 +397,6 @@ namespace NINA.ViewModel {
         }
 
         private Task<IImageData> _imageProcessingTask;
-
-        private void SetGain(CaptureSequence seq) {
-            if (seq.Gain != -1) {
-                cameraMediator.SetGain(seq.Gain);
-            }
-        }
 
         private Model.MyFilterWheel.FilterInfo _snapFilter;
 

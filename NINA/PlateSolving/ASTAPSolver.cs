@@ -114,7 +114,7 @@ namespace NINA.PlateSolving {
                 args.Add($"-spd {spd.ToString(CultureInfo.InvariantCulture)}");
             } else {
                 //Search field radius
-                args.Add($"-r {360}");
+                args.Add($"-r {180}");
             }
 
             return string.Join(" ", args);

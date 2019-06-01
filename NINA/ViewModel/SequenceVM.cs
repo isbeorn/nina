@@ -50,6 +50,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
+using NINA.Model.ImageData;
 
 namespace NINA.ViewModel {
 
@@ -568,6 +569,29 @@ namespace NINA.ViewModel {
         //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
         private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
+        /// <summary>
+        /// Processes all sequence items in given capture sequence list
+        ///
+        /// One Sequence item is processed like:
+        ///
+        /// 1) Wait for previous item's parallel actions 5a, 5b to
+        /// 2) Check if Autofocus is requiredfinish
+        /// 3) Change Filter
+        /// 4) Capture
+        /// 5) Parallel Actions after Capture
+        ///     5a) Dither
+        ///     5b) Change Filter if next sequence item has a different filter set
+        /// 6) Download Image
+        /// 7) Wait for previous item's parallel actions 8a, 8b to finish
+        /// 8) Parallel Actions after Download
+        ///     8a) Save ImageData
+        ///     8b) Process ImageData for display
+        /// </summary>
+        /// <param name="csl">List containing Sequence Items to process</param>
+        /// <param name="ct">Token to cancel process</param>
+        /// <param name="pt">Token to pause process</param>
+        /// <param name="progress">Progress to report to application</param>
+        /// <returns></returns>
         private async Task<bool> ProcessSequence(CaptureSequenceList csl, CancellationToken ct, PauseToken pt, IProgress<ApplicationStatus> progress) {
             return await Task.Run<bool>(async () => {
                 try {
@@ -584,6 +608,7 @@ namespace NINA.ViewModel {
                     var exposureCount = 0;
                     Task saveTask = null;
                     Task ditherTask = null;
+                    Task filterChangeTask = null;
                     while ((seq = csl.Next()) != null) {
                         exposureCount++;
 
@@ -593,7 +618,22 @@ namespace NINA.ViewModel {
 
                         Stopwatch seqDuration = Stopwatch.StartNew();
 
-                        //Check if autofocus should be done
+                        /* 1) Wait for previous item's parallel action 5a to finish */
+                        if (ditherTask?.IsCompleted == false) {
+                            /* Wait for dither to finish. Runs in parallel to download and save. */
+                            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForDither"] });
+                            await ditherTask;
+                        }
+
+                        /* 1) Wait for previous item's parallel action 5b to finish */
+                        if (filterChangeTask?.IsCompleted == false) {
+                            /* Wait for FilterChange to finish. Runs in parallel to download and save. */
+                            progress.Report(new ApplicationStatus() { Status = $"{Locale.Loc.Instance["LblChange"]} {Locale.Loc.Instance["LblFilter"]}" });
+
+                            await filterChangeTask;
+                        }
+
+                        /* 2) Check if Autofocus is requiredfinish */
                         if (ShouldAutoFocus(csl, seq, exposureCount, prevFilterPosition, lastAutoFocusTime, lastAutoFocusTemperature)) {
                             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocus"] });
                             await AutoFocus(seq.FilterType, _canceltoken.Token, progress);
@@ -602,51 +642,47 @@ namespace NINA.ViewModel {
                             progress.Report(new ApplicationStatus() { Status = " " });
                         }
 
-                        if (ditherTask?.IsCompleted == false) {
-                            //Wait for dither to finish. Runs in parallel to download and save.
-                            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForDither"] });
-                            await ditherTask;
+                        /* 3) Change Filter */
+                        if (seq.FilterType != null) {
+                            await filterWheelMediator.ChangeFilter(seq.FilterType, ct, progress);
                         }
 
                         progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblImaging"] });
-                        var data = await imagingMediator.CaptureImage(seq, ct, progress);
-                        data.MetaData.Target.Name = csl.TargetName;
+                        /* Start RMS Recording */
+                        var rmsHandle = this.guiderMediator.StartRMSRecording();
 
-                        /*Dither*/
+                        /* 4) Capture */
+                        var exposureStart = DateTime.Now;
+                        await cameraMediator.Capture(seq, ct, progress);
+
+                        /* Stop RMS Recording */
+                        var rms = this.guiderMediator.StopRMSRecording(rmsHandle);
+
+                        /* 5a) Dither */
                         ditherTask = ShouldDither(seq, ct, progress);
 
-                        var process = imagingMediator.PrepareImage(data, ct);
+                        /* 5b) Change Filter if next sequence item has a different filter set */
+                        if (seq.NextSequence != null && seq.NextSequence != seq) {
+                            filterChangeTask = filterWheelMediator.ChangeFilter(seq.NextSequence.FilterType, ct, progress);
+                        }
+
+                        /* 6) Download Image */
+                        progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDownloading"] });
+                        var data = await cameraMediator.Download(ct);
+                        AddMetaData(data, csl, seq, exposureStart, rms);
+
+                        /* 8b) Process ImageData for display */
+                        var imageProcessingTask = imagingMediator.PrepareImage(data, ct);
                         progress.Report(new ApplicationStatus() { Status = " " });
 
-                        //Wait for previous prepare image task to complete
+                        /* 7) Wait for previous item's parallel actions 8a, 8b to finish */
                         if (saveTask?.IsCompleted == false) {
                             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForImageSaving"] });
                             await saveTask;
                         }
 
-                        saveTask = Task.Run(async () => {
-                            var path = await data.SaveToDisk(
-                                profileService.ActiveProfile.ImageFileSettings.FilePath,
-                                profileService.ActiveProfile.ImageFileSettings.FilePattern,
-                                profileService.ActiveProfile.ImageFileSettings.FileType,
-                                ct
-                            );
-                            await process;
-                            imagingMediator.OnImageSaved(
-                                    new ImageSavedEventArgs() {
-                                        PathToImage = new Uri(path),
-                                        Image = data.Image,
-                                        FileType = profileService.ActiveProfile.ImageFileSettings.FileType,
-                                        Mean = data.Statistics.Mean,
-                                        HFR = data.Statistics.HFR,
-                                        Duration = data.MetaData.Image.ExposureTime,
-                                        IsBayered = data.Statistics.IsBayered,
-                                        Filter = data.MetaData.FilterWheel.Filter,
-                                        StatisticsId = data.Statistics.Id
-                                    }
-                            );
-                            ImgHistoryVM.Add(data.Statistics);
-                        });
+                        /* 8a) Save ImageData */
+                        saveTask = Save(data, imageProcessingTask, ct);
 
                         seqDuration.Stop();
 
@@ -686,6 +722,53 @@ namespace NINA.ViewModel {
                     semaphoreSlim.Release();
                 }
                 return true;
+            });
+        }
+
+        private void AddMetaData(IImageData data, CaptureSequenceList csl, CaptureSequence sequence, DateTime start, RMS rms) {
+            data.MetaData.Image.ExposureStart = start;
+            data.MetaData.Image.Binning = sequence.Binning.Name;
+            data.MetaData.Image.ExposureNumber = sequence.ProgressExposureCount;
+            data.MetaData.Image.ExposureTime = sequence.ExposureTime;
+            data.MetaData.Image.ImageType = sequence.ImageType;
+            data.MetaData.Image.RecordedRMS = rms;
+
+            data.MetaData.Target.Name = csl.TargetName;
+            data.MetaData.Target.Coordinates = csl.Coordinates;
+
+            // Fill all available info from profile
+            data.MetaData.FromProfile(profileService.ActiveProfile);
+            data.MetaData.FromTelescopeInfo(telescopeInfo);
+            data.MetaData.FromFilterWheelInfo(filterWheelInfo);
+            data.MetaData.FromRotatorInfo(rotatorInfo);
+            data.MetaData.FromFocuserInfo(focuserInfo);
+
+            data.MetaData.FilterWheel.Filter = sequence.FilterType?.Name ?? data.MetaData.FilterWheel.Filter;
+        }
+
+        private Task Save(IImageData data, Task imageProcessingTask, CancellationToken ct) {
+            return Task.Run(async () => {
+                var path = await data.SaveToDisk(
+                    profileService.ActiveProfile.ImageFileSettings.FilePath,
+                    profileService.ActiveProfile.ImageFileSettings.FilePattern,
+                    profileService.ActiveProfile.ImageFileSettings.FileType,
+                    ct
+                );
+                await imageProcessingTask;
+                imagingMediator.OnImageSaved(
+                        new ImageSavedEventArgs() {
+                            PathToImage = new Uri(path),
+                            Image = data.Image,
+                            FileType = profileService.ActiveProfile.ImageFileSettings.FileType,
+                            Mean = data.Statistics.Mean,
+                            HFR = data.Statistics.HFR,
+                            Duration = data.MetaData.Image.ExposureTime,
+                            IsBayered = data.Statistics.IsBayered,
+                            Filter = data.MetaData.FilterWheel.Filter,
+                            StatisticsId = data.Statistics.Id
+                        }
+                );
+                ImgHistoryVM.Add(data.Statistics);
             });
         }
 

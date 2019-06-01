@@ -518,21 +518,21 @@ namespace NINA.Model.ImageData {
             switch (Path.GetExtension(path).ToLower()) {
                 case ".gif":
                     decoder = new GifBitmapDecoder(new Uri(path), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                    return BitmapToImageArray(decoder, isBayered);
+                    return await BitmapToImageArray(decoder, isBayered);
 
                 case ".tif":
                 case ".tiff":
                     decoder = new TiffBitmapDecoder(new Uri(path), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                    return BitmapToImageArray(decoder, isBayered);
+                    return await BitmapToImageArray(decoder, isBayered);
 
                 case ".jpg":
                 case ".jpeg":
                     decoder = new JpegBitmapDecoder(new Uri(path), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                    return BitmapToImageArray(decoder, isBayered);
+                    return await BitmapToImageArray(decoder, isBayered);
 
                 case ".png":
                     decoder = new PngBitmapDecoder(new Uri(path), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                    return BitmapToImageArray(decoder, isBayered);
+                    return await BitmapToImageArray(decoder, isBayered);
 
                 case ".xisf":
                     return await XISF.Load(new Uri(path), isBayered);
@@ -553,7 +553,7 @@ namespace NINA.Model.ImageData {
         }
 
         private static Task<IImageData> FitsToImageArray(string path, int bitDepth, bool isBayered) {
-            return Task.Run(() => {
+            return Task.Run(async () => {
                 Fits f = new Fits(path);
                 ImageHDU hdu = (ImageHDU)f.ReadHDU();
                 Array[] arr = (Array[])hdu.Data.DataArray;
@@ -567,7 +567,9 @@ namespace NINA.Model.ImageData {
                         pixels[i++] = (ushort)(val + short.MaxValue);
                     }
                 }
-                return Task.FromResult<IImageData>(new ImageData(pixels, width, height, bitDepth, isBayered));
+                var data = await Task.FromResult<IImageData>(new ImageData(pixels, width, height, bitDepth, isBayered));
+                await data.CalculateStatistics();
+                return data;
             });
         }
 
@@ -578,12 +580,13 @@ namespace NINA.Model.ImageData {
                     var converter = RawConverter.CreateInstance(rawConverter);
                     var data = await converter.Convert(ms, bitDepth, ct);
                     data.Data.RAWType = Path.GetExtension(path).ToLower().Substring(1);
+                    await data.CalculateStatistics();
                     return data;
                 }
             }
         }
 
-        private static ImageData BitmapToImageArray(BitmapDecoder decoder, bool isBayered) {
+        private static async Task<IImageData> BitmapToImageArray(BitmapDecoder decoder, bool isBayered) {
             var bmp = new FormatConvertedBitmap();
             bmp.BeginInit();
             bmp.Source = decoder.Frames[0];
@@ -594,7 +597,9 @@ namespace NINA.Model.ImageData {
             int arraySize = stride * bmp.PixelHeight;
             ushort[] pixels = new ushort[bmp.PixelWidth * bmp.PixelHeight];
             bmp.CopyPixels(pixels, stride, 0);
-            return new ImageData(pixels, bmp.PixelWidth, bmp.PixelHeight, 16, isBayered);
+            var data = new ImageData(pixels, bmp.PixelWidth, bmp.PixelHeight, 16, isBayered);
+            await data.CalculateStatistics();
+            return data;
         }
 
         #endregion "Load"
