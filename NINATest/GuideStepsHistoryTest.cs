@@ -58,22 +58,22 @@ namespace NINATest {
 
             IGuideStep step1 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -25,
-                DecDistanceRaw = -36
+                DECDistanceRaw = -36
             };
 
             IGuideStep step2 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -625,
-                DecDistanceRaw = -1296
+                DECDistanceRaw = -1296
             };
 
             IGuideStep step3 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -25,
-                DecDistanceRaw = -36
+                DECDistanceRaw = -36
             };
 
             IGuideStep step4 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -625,
-                DecDistanceRaw = -1296
+                DECDistanceRaw = -1296
             };
 
             gsh.AddGuideStep(step1);
@@ -98,22 +98,22 @@ namespace NINATest {
 
             IGuideStep step1 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -25,
-                DecDistanceRaw = -36
+                DECDistanceRaw = -36
             };
 
             IGuideStep step2 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -625,
-                DecDistanceRaw = -1296
+                DECDistanceRaw = -1296
             };
 
             IGuideStep step3 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -25,
-                DecDistanceRaw = -36
+                DECDistanceRaw = -36
             };
 
             IGuideStep step4 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -625,
-                DecDistanceRaw = -1296
+                DECDistanceRaw = -1296
             };
 
             gsh.AddGuideStep(step1);
@@ -138,22 +138,22 @@ namespace NINATest {
 
             IGuideStep step1 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -25,
-                DecDistanceRaw = -36
+                DECDistanceRaw = -36
             };
 
             IGuideStep step2 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -625,
-                DecDistanceRaw = -1296
+                DECDistanceRaw = -1296
             };
 
             IGuideStep step3 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -25,
-                DecDistanceRaw = -36
+                DECDistanceRaw = -36
             };
 
             IGuideStep step4 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -625,
-                DecDistanceRaw = -1296
+                DECDistanceRaw = -1296
             };
 
             gsh.AddGuideStep(step1);
@@ -178,32 +178,32 @@ namespace NINATest {
 
             IGuideStep step1 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -1,
-                DecDistanceRaw = -1
+                DECDistanceRaw = -1
             };
 
             IGuideStep step2 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -2,
-                DecDistanceRaw = -2
+                DECDistanceRaw = -2
             };
 
             IGuideStep step3 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -3,
-                DecDistanceRaw = -3
+                DECDistanceRaw = -3
             };
 
             IGuideStep step4 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -4,
-                DecDistanceRaw = -4
+                DECDistanceRaw = -4
             };
 
             IGuideStep step5 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -5,
-                DecDistanceRaw = -5
+                DECDistanceRaw = -5
             };
 
             IGuideStep step6 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -6,
-                DecDistanceRaw = -6
+                DECDistanceRaw = -6
             };
 
             gsh.AddGuideStep(step1);
@@ -227,32 +227,32 @@ namespace NINATest {
 
             IGuideStep step1 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -1,
-                DecDistanceRaw = -1
+                DECDistanceRaw = -1
             };
 
             IGuideStep step2 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -2,
-                DecDistanceRaw = -2
+                DECDistanceRaw = -2
             };
 
             IGuideStep step3 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -3,
-                DecDistanceRaw = -3
+                DECDistanceRaw = -3
             };
 
             IGuideStep step4 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -4,
-                DecDistanceRaw = -4
+                DECDistanceRaw = -4
             };
 
             IGuideStep step5 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -5,
-                DecDistanceRaw = -5
+                DECDistanceRaw = -5
             };
 
             IGuideStep step6 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -6,
-                DecDistanceRaw = -6
+                DECDistanceRaw = -6
             };
 
             gsh.AddGuideStep(step1);

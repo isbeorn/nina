@@ -18,18 +18,16 @@
 */
 
 /*
- * Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
  * Copyright 2019 Dale Ghent <daleg@elemental.org>
  */
 
 #endregion "copyright"
 
-namespace NINA.Profile {
+using NINA.Model.MyWeatherData;
+using NINA.ViewModel.Equipment.WeatherData;
 
-    public interface IWeatherDataSettings : ISettings {
-        string Id { get; set; }
-        bool DisplayFahrenheit { get; set; }
-        bool DisplayImperial { get; set; }
-        string OpenWeatherMapAPIKey { get; set; }
+namespace NINA.Utility.Mediator.Interfaces {
+
+    internal interface IWeatherDataMediator : IDeviceMediator<IWeatherDataVM, IWeatherDataConsumer, WeatherDataInfo> {
     }
 }

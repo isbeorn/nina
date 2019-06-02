@@ -63,8 +63,6 @@ namespace NINA.Model.MyGuider {
             }
         }
 
-        public IGuideStep GuideStep { get; }
-
         public async Task<bool> Connect() {
             Connected = false;
             if (telescopeInfo.Connected) {
@@ -107,6 +105,8 @@ namespace NINA.Model.MyGuider {
         private Random random = new Random();
 
         private double previousAngle = 0;
+
+        public event EventHandler<IGuideStep> GuideEvent;
 
         public async Task<bool> Dither(CancellationToken ct) {
             State = "Dithering...";

@@ -18,18 +18,33 @@
 */
 
 /*
- * Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
  * Copyright 2019 Dale Ghent <daleg@elemental.org>
  */
 
 #endregion "copyright"
 
-namespace NINA.Profile {
+using System;
+using System.Globalization;
+using System.Windows.Data;
 
-    public interface IWeatherDataSettings : ISettings {
-        string Id { get; set; }
-        bool DisplayFahrenheit { get; set; }
-        bool DisplayImperial { get; set; }
-        string OpenWeatherMapAPIKey { get; set; }
+namespace NINA.Utility.Converters {
+
+    public class WeatherPressureConverter : IMultiValueConverter {
+
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
+            string output;
+
+            if ((bool)values[1]) {
+                output = string.Format("{0:0.00} inHg", (double)values[0] * 0.02952998751);
+            } else {
+                output = string.Format("{0:0.00} hPa", values[0]);
+            }
+
+            return output;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetType, object parameter, CultureInfo culture) {
+            throw new NotImplementedException();
+        }
     }
 }

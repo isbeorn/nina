@@ -145,7 +145,7 @@ able to compensate for ambient temperature variations</s:String>
   <s:String x:Key="LblClear" xml:space="default">Clear</s:String>
   <s:String x:Key="LblClearCache" xml:space="default">Clear Cache</s:String>
   <s:String x:Key="LblClockwise" xml:space="default">Clockwise</s:String>
-  <s:String x:Key="LblCloudCoverage" xml:space="default">Cloud Coverage</s:String>
+  <s:String x:Key="LblCloudCover" xml:space="default">Cloud Cover</s:String>
   <s:String x:Key="LblColorSensorNotSupported" xml:space="default">Color sensor is not supported yet</s:String>
   <s:String x:Key="LblConnect" xml:space="default">Connect</s:String>
   <s:String x:Key="LblConnected" xml:space="default">Connected</s:String>
@@ -433,6 +433,7 @@ Calculated HFR: {2}
   <s:String x:Key="LblHNSKY" xml:space="default">HNSKY</s:String>
   <s:String x:Key="LblHorizontalPanels" xml:space="default">Horizontal Panels</s:String>
   <s:String x:Key="LblHost" xml:space="default">Host</s:String>
+  <s:String x:Key="LblHour" xml:space="default">Hour</s:String>
   <s:String x:Key="LblHumidity" xml:space="default">Humidity</s:String>
   <s:String x:Key="LblId" xml:space="default">Id</s:String>
   <s:String x:Key="LblIllumination" xml:space="default">Illumination</s:String>
@@ -578,7 +579,9 @@ Calculated HFR: {2}
   <s:String x:Key="LblOneToOne" xml:space="default">Scale Image to 1:1</s:String>
   <s:String x:Key="LblOpacity" xml:space="default">Opacity</s:String>
   <s:String x:Key="LblOpenManual" xml:space="default">Open Manual</s:String>
-  <s:String x:Key="LblOpenWeatherMapOrg" xml:space="default">openweathermap.org</s:String>
+  <s:String x:Key="LblOpenWeatherMapAPIKey" xml:space="default">OpenWeatherMap API Key</s:String>
+  <s:String x:Key="LblOpenWeatherMapClientDescription" xml:space="default">Uses OpenWeatherMap's Current Weather API. Weather data is refreshed every 10 minutes.</s:String>
+  <s:String x:Key="LblOpenWeatherMapClientInfo" xml:space="default">NINA internal OpenWeatherMap API client</s:String>
   <s:String x:Key="LblOptimalExposureTime" xml:space="default">Optimal exposure time</s:String>
   <s:String x:Key="LblOptions" xml:space="default">Options</s:String>
   <s:String x:Key="LblOrderBy" xml:space="default">Order by</s:String>
@@ -663,6 +666,7 @@ Calculated HFR: {2}
   <s:String x:Key="LblRACorrections" xml:space="default">RA Corrections</s:String>
   <s:String x:Key="LblRadius" xml:space="default">Radius</s:String>
   <s:String x:Key="LblRAError" xml:space="default">RA Error</s:String>
+  <s:String x:Key="LblRainRate" xml:space="default">Rain Rate</s:String>
   <s:String x:Key="LblRAPixError" xml:space="default">RA Pix Error</s:String>
   <s:String x:Key="LblRate" xml:space="default">Rate</s:String>
   <s:String x:Key="LblRawConverter" xml:space="default">Raw converter</s:String>
@@ -681,8 +685,6 @@ Calculated HFR: {2}
   <s:String x:Key="LblReconnectFocuser" xml:space="default">Please reconnect focuser!</s:String>
   <s:String x:Key="LblReconnectTelescope" xml:space="default">Please reconnect telescope!</s:String>
   <s:String x:Key="LblReferenceDate" xml:space="default">Reference Date</s:String>
-  <s:String x:Key="LblRefresh" xml:space="default">Refresh</s:String>
-  <s:String x:Key="LblRefreshWeatherTooltip" xml:space="default">Toggles refreshing of weather data every 60 seconds on/off</s:String>
   <s:String x:Key="LblRegions" xml:space="default">Regions</s:String>
   <s:String x:Key="LblRelease" xml:space="default">Release</s:String>
   <s:String x:Key="LblRemaining" xml:space="default">Remaining</s:String>
@@ -752,8 +754,11 @@ This template will be used on startup to initialize the sequence instead of the 
   <s:String x:Key="LblSkyAtlas" xml:space="default">Sky Atlas</s:String>
   <s:String x:Key="LblSkyAtlasImageDirectory" xml:space="default">Sky Atlas Image Directory</s:String>
   <s:String x:Key="LblSkyAtlasSkySurvey" xml:space="default">SkyAtlas (Offline Framing)</s:String>
+  <s:String x:Key="LblSkyBrightness" xml:space="default">Sky Brightness</s:String>
+  <s:String x:Key="LblSkyQuality" xml:space="default">Sky Quality</s:String>
   <s:String x:Key="LblSkyServerSkySurvey" xml:space="default">SkyServer Sky Survey</s:String>
   <s:String x:Key="LblSkySurveyCacheDirectory" xml:space="default">Sky Survey Cache Directory</s:String>
+  <s:String x:Key="LblSkyTemperature" xml:space="default">Sky Temperature</s:String>
   <s:String x:Key="LblSlew" xml:space="default">Slew</s:String>
   <s:String x:Key="LblSlewDuration" xml:space="default">Slew Duration</s:String>
   <s:String x:Key="LblSlewEnabledButTelescopeNotConnected" xml:space="default">Slew to target is enabled, yet telescope is not connected</s:String>
@@ -766,6 +771,7 @@ This template will be used on startup to initialize the sequence instead of the 
   <s:String x:Key="LblSolving" xml:space="default">Solving...</s:String>
   <s:String x:Key="LblSource" xml:space="default">Source</s:String>
   <s:String x:Key="LblSouthern" xml:space="default">Southern</s:String>
+  <s:String x:Key="LblStarFWHM" xml:space="default">Star FWHM</s:String>
   <s:String x:Key="LblStartAutoFocus" xml:space="default">Start Auto Focus</s:String>
   <s:String x:Key="LblStartGuiding" xml:space="default">Start guiding</s:String>
   <s:String x:Key="LblStartGuidingButGuiderNotConnected" xml:space="default">Start Guiding is enabled, yet guider is not connected</s:String>
@@ -785,10 +791,6 @@ This template will be used on startup to initialize the sequence instead of the 
   <s:String x:Key="LblStsciSkySurvey" xml:space="default">Stsci Sky Survey</s:String>
   <s:String x:Key="LblSubSample" xml:space="default">Enable SubSampling</s:String>
   <s:String x:Key="LblSuccess" xml:space="default">Success</s:String>
-  <s:String x:Key="LblSunrise" xml:space="default">Sunrise</s:String>
-  <s:String x:Key="LblSunRise" xml:space="default">Sunrise</s:String>
-  <s:String x:Key="LblSunset" xml:space="default">Sunset</s:String>
-  <s:String x:Key="LblSunSet" xml:space="default">Sunset</s:String>
   <s:String x:Key="LblSurfaceBrightness" xml:space="default">Surface Brightness</s:String>
   <s:String x:Key="LblSwitch" xml:space="default">Switch</s:String>
   <s:String x:Key="LblSwitchConnected" xml:space="default">Switch connected</s:String>
@@ -901,11 +903,21 @@ in light polluted areas. Processing time is however increased.</s:String>
   <s:String x:Key="LblWarming" xml:space="default">Warming</s:String>
   <s:String x:Key="LblWarning" xml:space="default">Warning</s:String>
   <s:String x:Key="LblWeather" xml:space="default">Weather</s:String>
-  <s:String x:Key="LblWeatherData" xml:space="default">Weather Data</s:String>
+  <s:String x:Key="LblWeatherASCOMConnectFailed" xml:space="default">Unable to connect to ASCOM ObservingConditions driver:</s:String>
+  <s:String x:Key="LblWeatherConnected" xml:space="default">Weather data source connected</s:String>
+  <s:String x:Key="LblWeatherConnectionLost" xml:space="default">Weather data source connection failed.</s:String>
+  <s:String x:Key="LblWeatherDisconnect" xml:space="default">Weather data source disconnected</s:String>
+  <s:String x:Key="LblWeatherDisplayFahrenheit" xml:space="default">Fahrenheit Temperatures</s:String>
+  <s:String x:Key="LblWeatherDisplayFahrenheitTooltip" xml:space="default">Display temperatures in Fahrenheit</s:String>
+  <s:String x:Key="LblWeatherDisplayImperial" xml:space="default">Imperial Units</s:String>
+  <s:String x:Key="LblWeatherDisplayImperialTooltip" xml:space="default">Display non-temperature weather data in Imperial units</s:String>
+  <s:String x:Key="LblWeatherNoSource" xml:space="default">No Weather Data Source</s:String>
+  <s:String x:Key="LblWeatherReconnect" xml:space="default">Weather data source connection lost! Error message:</s:String>
   <s:String x:Key="LblWelcome" xml:space="default">Welcome to Nighttime Imaging 'N' Astronomy!</s:String>
   <s:String x:Key="LblWest" xml:space="default">West</s:String>
   <s:String x:Key="LblWidth" xml:space="default">Width</s:String>
   <s:String x:Key="LblWindDirection" xml:space="default">Wind Direction</s:String>
+  <s:String x:Key="LblWindGust" xml:space="default">Wind Gust</s:String>
   <s:String x:Key="LblWindSpeed" xml:space="default">Wind Speed</s:String>
   <s:String x:Key="LblXAxisScale" xml:space="default">X-Axis Scale</s:String>
   <s:String x:Key="LblXisf" xml:space="default">XISF</s:String>

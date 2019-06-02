@@ -1,8 +1,6 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
-
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
     N.I.N.A. is free software: you can redistribute it and/or modify
@@ -19,6 +17,11 @@
     along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+ * Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+ * Copyright 2019 Dale Ghent <daleg@elemental.org>
+ */
+
 #endregion "copyright"
 
 using NINA.Model.MyCamera;
@@ -27,14 +30,13 @@ using NINA.Model.MyFocuser;
 using NINA.Model.MyRotator;
 using NINA.Model.MySwitch;
 using NINA.Model.MyTelescope;
+using NINA.Model.MyWeatherData;
 using NINA.Profile;
 using System;
 using System.Collections.Generic;
 
 namespace NINA.Utility {
-
     internal class ASCOMInteraction {
-
         public static List<ICamera> GetCameras(IProfileService profileService) {
             var l = new List<ICamera>();
             using (var ascomDevices = new ASCOM.Utilities.Profile()) {
@@ -124,6 +126,20 @@ namespace NINA.Utility {
                 }
                 return l;
             }
+        }
+
+        public static List<IWeatherData> GetWeatherDataSources(IProfileService profileService) {
+            var l = new List<IWeatherData>();
+            var ascomDevices = new ASCOM.Utilities.Profile();
+
+            foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("ObservingConditions")) {
+                try {
+                    AscomObservingConditions obsdev = new AscomObservingConditions(device.Key, device.Value);
+                    l.Add(obsdev);
+                } catch (Exception) {
+                }
+            }
+            return l;
         }
 
         public static string GetVersion() {
