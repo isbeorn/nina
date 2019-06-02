@@ -65,7 +65,7 @@
                                     <Grid Width="50" Height="50">
                                         <Path
                                             Margin="5"
-                                            Data="{StaticResource QuestionSVG}"
+                                            Data="{StaticResource EquipmentSVG}"
                                             Stretch="Uniform"
                                             Style="{StaticResource TabItemPath}" />
                                     </Grid>
