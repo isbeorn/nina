@@ -31,6 +31,12 @@
 - Additionally a manual Bulb Mode trigger can be activated, so it will use the selected Bulb Mode in Settings-&gt;Equipment-&gt;Camera on Exposure Start.
 - When this trigger is deactivated the application will just skip the Start Exposure and wait for another file to roll into the specified folder
 
+### Weather data sources
+- The existing OpenWeatherMap implementation has been replaced with a full weather data interface.
+- The new interface allows devices with ASCOM ObservingConditions class drivers to supply N.I.N.A. with weather data and other conditions.
+- Native OpenWeatherMap functionality is maintained, and any configured OWM API key is retained and utilized by the new native OWM client.
+- Weather data sources are now configured under the Equipment section.
+
 ### Focusing
 - A new focuser settle time parameter has been added, in case the focuser shifts the image when moving (SCT, lens belt focusing, etc.). This should help with auto-focus in particular.
 - More resilient autofocus:
