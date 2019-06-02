@@ -155,11 +155,11 @@ namespace NINA.ViewModel.Equipment.Guider {
                 _cancelConnectGuiderSource?.Dispose();
                 _cancelConnectGuiderSource = new CancellationTokenSource();
                 Guider = GuiderChooserVM.SelectedGuider;
+                Guider.PropertyChanged += Guider_PropertyChanged;
                 connected = await Guider.Connect();
                 _cancelConnectGuiderSource.Token.ThrowIfCancellationRequested();
 
                 if (connected) {
-                    Guider.PropertyChanged += Guider_PropertyChanged;
                     Guider.GuideEvent += Guider_GuideEvent;
 
                     GuiderInfo = new GuiderInfo {
@@ -170,6 +170,7 @@ namespace NINA.ViewModel.Equipment.Guider {
                     profileService.ActiveProfile.GuiderSettings.GuiderName = Guider.Name;
                 }
             } catch (OperationCanceledException) {
+                Guider.PropertyChanged -= Guider_PropertyChanged;
                 Guider?.Disconnect();
                 GuiderInfo = new GuiderInfo {
                     Connected = false
