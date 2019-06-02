@@ -10,6 +10,8 @@
   <s:String x:Key="LblAddSequenceTarget" xml:space="default">Als Sequenzziel hinzufügen</s:String>
   <s:String x:Key="LblAFOnButFocuserNotConnected" xml:space="default">Autofokus ist aktiviert, jedoch ist kein Okularauszug verbunden</s:String>
   <s:String x:Key="LblAfter" xml:space="default">Nach</s:String>
+  <s:String x:Key="LblAFUseBrightestStars" xml:space="default">Nutze hellste n Sterne</s:String>
+  <s:String x:Key="LblAFUseBrightestStarsTooltip" xml:space="default">Limitiere AF auf hellste Sterne. 0 bedeutet kein Limit</s:String>
   <s:String x:Key="LblAlternativeUIColorSchema" xml:space="default">Alternatives UI Farbschema</s:String>
   <s:String x:Key="LblAltitude" xml:space="default">Höhe</s:String>
   <s:String x:Key="LblAltitudeErrorMeasurement" xml:space="default">Messe Höhenfehler</s:String>

@@ -91,6 +91,25 @@ namespace NINA.Utility.ImageAnalysis {
         private Bitmap _bitmapToAnalyze;
         private CancellationToken _token;
         private List<Star> _starlist = new List<Star>();
+        private List<AForge.Point> _brightestStarPositions = new List<AForge.Point>();
+        private int _numberOfAFStars = 0;
+
+        public List<AForge.Point> BrightestStarPositions {
+            get {
+                return _brightestStarPositions;
+            }
+            set { 
+                _brightestStarPositions = value;
+            }
+        }
+
+        public int NumberOfAFStars {
+            get {
+                return _numberOfAFStars;
+            } set {
+                _numberOfAFStars = value;
+            }
+        }
 
         public int DetectedStars { get; private set; }
         public double AverageHFR { get; private set; }
@@ -110,6 +129,7 @@ namespace NINA.Utility.ImageAnalysis {
             public double radius;
             public double HFR;
             public AForge.Point Position;
+            public double meanBrightness;
             private List<PixelData> pixelData;
             public double Average { get; private set; } = 0;
 
@@ -307,14 +327,33 @@ namespace NINA.Utility.ImageAnalysis {
                     }
                 }
 
-                double starMean = starPixelSum / (double)starPixelCount;
+                s.meanBrightness = starPixelSum / (double)starPixelCount;
                 double largeRectMean = largeRectPixelSum / (double)(largeRect.Height * largeRect.Width - rect.Height * rect.Width);
 
-                if (starMean > largeRectMean * 1.1) { //It's a local maximum, so likely to be a star. Let's add it to our star dictionary.
+                if (s.meanBrightness > largeRectMean * 1.1) { //It's a local maximum, so likely to be a star. Let's add it to our star dictionary.
                     sumRadius += s.radius;
                     sumSquares += s.radius * s.radius;
                     s.CalculateHfr();
                     starlist.Add(s);
+                }
+            }
+
+            //We are performing AF with only a limited number of stars
+            if (NumberOfAFStars > 0) {
+                //First AF exposure, let's find the brightest star positions and store them
+                if (starlist.Count() != 0 && BrightestStarPositions.Count() == 0) {
+                    if (starlist.Count() <= NumberOfAFStars) {
+                        BrightestStarPositions = starlist.ConvertAll(s => s.Position);
+                        return starlist;
+                    } else { 
+                        starlist = starlist.OrderByDescending(s => s.radius * 0.3 + s.meanBrightness * 0.7).Take(NumberOfAFStars).ToList<Star>();
+                        BrightestStarPositions = starlist.ConvertAll(i => i.Position);
+                        return starlist;
+                    }
+                } else { //find the closest stars to the brightest stars previously identified
+                    List<Star> topStars = new List<Star>();
+                    BrightestStarPositions.ForEach(p => topStars.Add(starlist.Aggregate((min, next) => min.Position.DistanceTo(p) < next.Position.DistanceTo(p) ? min : next)));
+                    return topStars;
                 }
             }
 

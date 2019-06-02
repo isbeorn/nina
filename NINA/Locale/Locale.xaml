@@ -10,6 +10,8 @@
   <s:String x:Key="LblAddSequenceTarget" xml:space="default">Add as Sequence Target</s:String>
   <s:String x:Key="LblAFOnButFocuserNotConnected" xml:space="default">Auto-Focus is enabled, yet focuser is not connected</s:String>
   <s:String x:Key="LblAfter" xml:space="default">After</s:String>
+  <s:String x:Key="LblAFUseBrightestStars" xml:space="default">Use brightest n stars</s:String>
+  <s:String x:Key="LblAFUseBrightestStarsTooltip" xml:space="default">Limit AF to brightest stars. 0 means no limit.</s:String>
   <s:String x:Key="LblAlternativeUIColorSchema" xml:space="default">Alternative UI Color Schema</s:String>
   <s:String x:Key="LblAltitude" xml:space="default">Altitude</s:String>
   <s:String x:Key="LblAltitudeErrorMeasurement" xml:space="default">Measure Altitude Error</s:String>

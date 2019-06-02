@@ -45,6 +45,7 @@ namespace NINA.Profile {
             autoFocusTotalNumberOfAttempts = 1;
             autoFocusNumberOfFramesPerPoint = 1;
             autoFocusCropRatio = 1;
+            autoFocusUseBrightestStars = 0;
         }
 
         private string id;
@@ -185,6 +186,21 @@ namespace NINA.Profile {
                     } else {
                         autoFocusCropRatio = value;
                     }
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int autoFocusUseBrightestStars;
+
+        [DataMember]
+        public int AutoFocusUseBrightestStars {
+            get {
+                return autoFocusUseBrightestStars;
+            }
+            set {
+                if (autoFocusUseBrightestStars != value) {
+                    autoFocusUseBrightestStars = value;
                     RaisePropertyChanged();
                 }
             }
