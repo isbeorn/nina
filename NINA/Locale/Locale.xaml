@@ -793,6 +793,8 @@ This template will be used on startup to initialize the sequence instead of the 
   <s:String x:Key="LblStsciSkySurvey" xml:space="default">Stsci Sky Survey</s:String>
   <s:String x:Key="LblSubSample" xml:space="default">Enable SubSampling</s:String>
   <s:String x:Key="LblSuccess" xml:space="default">Success</s:String>
+  <s:String x:Key="LblSunRise" xml:space="default">Sunrise</s:String>
+  <s:String x:Key="LblSunSet" xml:space="default">Sunset</s:String>
   <s:String x:Key="LblSurfaceBrightness" xml:space="default">Surface Brightness</s:String>
   <s:String x:Key="LblSwitch" xml:space="default">Switch</s:String>
   <s:String x:Key="LblSwitchConnected" xml:space="default">Switch connected</s:String>

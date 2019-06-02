@@ -793,6 +793,8 @@ Questo tempalte sarà usato all'avvio per inizializzare la sequenza invece di qu
   <s:String x:Key="LblStsciSkySurvey" xml:space="default">Stsci Sky Survey</s:String>
   <s:String x:Key="LblSubSample" xml:space="default">Abilita SubSampling</s:String>
   <s:String x:Key="LblSuccess" xml:space="default">Successo</s:String>
+  <s:String x:Key="LblSunRise" xml:space="default">Alba</s:String>
+  <s:String x:Key="LblSunSet" xml:space="default">Tramonto</s:String>
   <s:String x:Key="LblSurfaceBrightness" xml:space="default">Luminosità superficie</s:String>
   <s:String x:Key="LblSwitch" xml:space="default">Switch</s:String>
   <s:String x:Key="LblSwitchConnected" xml:space="default">Switch Connesso</s:String>

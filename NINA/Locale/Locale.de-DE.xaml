@@ -793,6 +793,8 @@ Diese Vorlage wird beim Starten der Applikation geladen, statt der Standard Sequ
   <s:String x:Key="LblStsciSkySurvey" xml:space="default">Stsci Sky Survey</s:String>
   <s:String x:Key="LblSubSample" xml:space="default">Teilbild aktivieren</s:String>
   <s:String x:Key="LblSuccess" xml:space="default">Erfolg</s:String>
+  <s:String x:Key="LblSunRise" xml:space="default">Sonnenaufgang</s:String>
+  <s:String x:Key="LblSunSet" xml:space="default">Sonnenuntergang</s:String>
   <s:String x:Key="LblSurfaceBrightness" xml:space="default">Oberflächenhelligkeit</s:String>
   <s:String x:Key="LblSwitch" xml:space="default">Schalter</s:String>
   <s:String x:Key="LblSwitchConnected" xml:space="default">Schalter verbunden</s:String>
