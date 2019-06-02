@@ -43,6 +43,8 @@
   - Ability to automatically reattempt autofocus from scratch several times in case it failed
   - Automatically go back to original focus position if obtained HFR is significantly worse than original
   - Ability to take multiple autofocus exposures per focus point and average their HFR. This leads to smoother autofocus curves.
+  - A crop ratio has been added to the autofocus, letting users autofocus only on the center of the frame
+  - Autofocus can now be set to use only the top brightest stars, so the same stars are used throughout the autofocus routine. This will work best on sparse star fields, and for stable, well-aligned equipment (e.g. so stars don't move between auto-focus exposures)
 
 ### Sequencing
 - End of Sequence Options are now available, which include:

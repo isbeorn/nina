@@ -107,6 +107,7 @@ namespace NINA.ViewModel {
         private IImagingMediator imagingMediator;
         private IGuiderMediator guiderMediator;
         private IApplicationStatusMediator applicationStatusMediator;
+        private List<AForge.Point> brightestStarPositions = new List<AForge.Point>();
 
         public AsyncObservableCollection<DataPoint> FocusPoints {
             get {
@@ -231,7 +232,16 @@ namespace NINA.ViewModel {
                 analysis.IgnoreImageEdges = true;
                 analysis.CropRatio = profileService.ActiveProfile.FocuserSettings.AutoFocusCropRatio;
             }
+
+            //Let's set the brightest star list - if it's the first exposure, it's going to be empty
+            analysis.BrightestStarPositions = brightestStarPositions;
+            analysis.NumberOfAFStars = profileService.ActiveProfile.FocuserSettings.AutoFocusUseBrightestStars;
             await analysis.DetectAsync(progress, token);
+
+            //If current star list is empty, we're doing the first AF point, let's get the brightest star lists from the Star Detector instance
+            if (brightestStarPositions.Count() == 0) {
+                brightestStarPositions = analysis.BrightestStarPositions;
+            }
 
             if (profileService.ActiveProfile.ImageSettings.AnnotateImage) {
                 imagingMediator.SetImage(analysis.GetAnnotatedImage());
@@ -413,6 +423,7 @@ namespace NINA.ViewModel {
                         Notification.ShowError(e.Message);
                     }
                 }
+                brightestStarPositions.Clear();
                 await this.guiderMediator.StartGuiding(token);
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }

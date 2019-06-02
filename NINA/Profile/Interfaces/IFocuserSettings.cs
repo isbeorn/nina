@@ -33,5 +33,6 @@ namespace NINA.Profile {
         int AutoFocusTotalNumberOfAttempts { get; set; }
         int AutoFocusNumberOfFramesPerPoint { get; set; }
         double AutoFocusCropRatio { get; set; }
+        int AutoFocusUseBrightestStars { get; set; }
     }
 }

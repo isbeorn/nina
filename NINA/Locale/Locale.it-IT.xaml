@@ -10,6 +10,8 @@
   <s:String x:Key="LblAddSequenceTarget" xml:space="default">Affiungi come target di sequenza</s:String>
   <s:String x:Key="LblAFOnButFocuserNotConnected" xml:space="default">L'auto-focs è abilitato, ma il focuser non è connesso</s:String>
   <s:String x:Key="LblAfter" xml:space="default">Dopo</s:String>
+  <s:String x:Key="LblAFUseBrightestStars" xml:space="default">Usa le n stelle più luminose</s:String>
+  <s:String x:Key="LblAFUseBrightestStarsTooltip" xml:space="default">Limita AF alle stelle più luminose. 0 equivale a "nessun limite"</s:String>
   <s:String x:Key="LblAlternativeUIColorSchema" xml:space="default">Schema Colori UI Alternativo</s:String>
   <s:String x:Key="LblAltitude" xml:space="default">Altitudine</s:String>
   <s:String x:Key="LblAltitudeErrorMeasurement" xml:space="default">Misura Error Altitudine</s:String>
@@ -791,6 +793,8 @@ Questo tempalte sarà usato all'avvio per inizializzare la sequenza invece di qu
   <s:String x:Key="LblStsciSkySurvey" xml:space="default">Stsci Sky Survey</s:String>
   <s:String x:Key="LblSubSample" xml:space="default">Abilita SubSampling</s:String>
   <s:String x:Key="LblSuccess" xml:space="default">Successo</s:String>
+  <s:String x:Key="LblSunRise" xml:space="default">Alba</s:String>
+  <s:String x:Key="LblSunSet" xml:space="default">Tramonto</s:String>
   <s:String x:Key="LblSurfaceBrightness" xml:space="default">Luminosità superficie</s:String>
   <s:String x:Key="LblSwitch" xml:space="default">Switch</s:String>
   <s:String x:Key="LblSwitchConnected" xml:space="default">Switch Connesso</s:String>
