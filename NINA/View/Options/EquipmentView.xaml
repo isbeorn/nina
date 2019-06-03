@@ -755,6 +755,35 @@
                             </TextBox.Text>
                         </TextBox>
                     </UniformGrid>
+                    <UniformGrid Margin="0,5,0,0" Columns="3">
+                        <TextBlock
+                            MinWidth="200"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblFocuserBacklash}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc LblFocuserBacklashTooltip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <TextBox Height="25" Margin="5,0,5,0">
+                            <TextBox.Text>
+                                <Binding Path="BacklashIn" UpdateSourceTrigger="LostFocus">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBox Height="25" Margin="5,0,5,0">
+                            <TextBox.Text>
+                                <Binding Path="BacklashOut" UpdateSourceTrigger="LostFocus">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </UniformGrid>
                 </UniformGrid>
             </ScrollViewer>
         </GroupBox>

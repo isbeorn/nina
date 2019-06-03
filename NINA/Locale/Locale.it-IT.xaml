@@ -384,6 +384,8 @@ Quando il trigger è disattivato, l'applicazione si limita ad ignorare l'inizio 
   <s:String x:Key="LblFocuserAutoFocusInitialOffsetStepsTooltip" xml:space="default">Valore iniziale di steps di cui il focuser si allontanerà per iniziare la procedura di auto-focus.</s:String>
   <s:String x:Key="LblFocuserAutoFocusStepSize" xml:space="default">Dimensione step Auto Focus</s:String>
   <s:String x:Key="LblFocuserAutoFocusStepSizeTooltip" xml:space="default">La dimensione dello step di focus impiegata nell'auto-focus. Uno step dovrebbe essere inferiore alla tolelranza del punto critico di fuoco</s:String>
+  <s:String x:Key="LblFocuserBacklash" xml:space="default">Backlash IN/OUT</s:String>
+  <s:String x:Key="LblFocuserBacklashTooltip" xml:space="default">Inwards and outwards focuser backlash, in focuser steps</s:String>
   <s:String x:Key="LblFocuserConnected" xml:space="default">Focuser connesso</s:String>
   <s:String x:Key="LblFocuserConnectionLost" xml:space="default">Connessione al focuser persa! si prega di riconnettere il focuser!</s:String>
   <s:String x:Key="LblFocuserPositionDescription" xml:space="default">Posizione corrente focuser</s:String>

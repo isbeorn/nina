@@ -384,6 +384,8 @@ When this trigger is deactivated the application will just skip the Start Exposu
   <s:String x:Key="LblFocuserAutoFocusInitialOffsetStepsTooltip" xml:space="default">Initial amount of steps the focuser will move out to begin auto focus procedure.</s:String>
   <s:String x:Key="LblFocuserAutoFocusStepSize" xml:space="default">Auto Focus Step Size</s:String>
   <s:String x:Key="LblFocuserAutoFocusStepSizeTooltip" xml:space="default">The size of one focus step used for auto focusing. One step should be less than the critical focus point tolerance</s:String>
+  <s:String x:Key="LblFocuserBacklash" xml:space="default">Backlash IN/OUT</s:String>
+  <s:String x:Key="LblFocuserBacklashTooltip" xml:space="default">Inwards and outwards focuser backlash, in focuser steps</s:String>
   <s:String x:Key="LblFocuserConnected" xml:space="default">Focuser connected</s:String>
   <s:String x:Key="LblFocuserConnectionLost" xml:space="default">Focuser connection lost! Please reconnect focuser!</s:String>
   <s:String x:Key="LblFocuserPositionDescription" xml:space="default">Current focuser position</s:String>

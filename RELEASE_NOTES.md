@@ -39,6 +39,7 @@
 
 ### Focusing
 - A new focuser settle time parameter has been added, in case the focuser shifts the image when moving (SCT, lens belt focusing, etc.). This should help with auto-focus in particular.
+- Focuser backlash (in and out) can now be specified. The backlash will be applied to focuser movements whenever the focuser reverses directions.
 - More resilient autofocus:
   - Ability to automatically reattempt autofocus from scratch several times in case it failed
   - Automatically go back to original focus position if obtained HFR is significantly worse than original

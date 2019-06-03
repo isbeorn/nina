@@ -76,12 +76,24 @@ namespace NINA.ViewModel.Equipment.Focuser {
             Focuser.Halt();
         }
 
+        private enum Direction {
+            IN,
+            OUT,
+            NONE
+        }
+
+        private Direction _lastFocuserDirection = Direction.NONE;
+        private int _focuserOffset = 0;
         private CancellationTokenSource _cancelMove;
 
         public async Task<int> MoveFocuser(int position) {
             _cancelMove?.Dispose();
             _cancelMove = new CancellationTokenSource();
             int pos = -1;
+            int initialPos = this.Position;
+            int backlashCompensation = GetBacklashCompensation(initialPos, position);
+            position += backlashCompensation;
+            position += _focuserOffset;
             await Task.Run(async () => {
                 try {
                     var tempComp = false;
@@ -106,8 +118,11 @@ namespace NINA.ViewModel.Equipment.Focuser {
                         }
                     }
 
-                    FocuserInfo.Position = position;
-                    pos = position;
+                    _lastFocuserDirection = MoveDirection(initialPos, position);
+                    _focuserOffset += backlashCompensation;
+
+                    FocuserInfo.Position = this.Position;
+                    pos = this.Position;
                     ToggleTempComp(tempComp);
                     BroadcastFocuserInfo();
                 } catch (OperationCanceledException) {
@@ -119,11 +134,31 @@ namespace NINA.ViewModel.Equipment.Focuser {
             return pos;
         }
 
+        private int GetBacklashCompensation(int oldPos, int newPos) {
+            if (newPos > oldPos && _lastFocuserDirection == Direction.IN) { 
+                return profileService.ActiveProfile.FocuserSettings.BacklashOut;
+            } else if (newPos < oldPos && _lastFocuserDirection == Direction.OUT) {
+                return profileService.ActiveProfile.FocuserSettings.BacklashIn * -1;
+            } else {
+                return 0;
+            }
+        }
+
+        private Direction MoveDirection(int oldPos,int newPos) {
+            if (newPos > oldPos) {
+                return Direction.OUT;
+            } else if (newPos < oldPos) {
+                return Direction.IN;
+            } else {
+                return _lastFocuserDirection;
+            }
+        }
+
         public async Task<int> MoveFocuserRelative(int offset) {
             int pos = -1;
             if (Focuser?.Connected == true) {
-                pos = Focuser.Position + offset;
-                await MoveFocuser(pos);
+                pos = this.Position + offset;
+                pos = await MoveFocuser(pos);
             }
             return pos;
         }
@@ -164,7 +199,7 @@ namespace NINA.ViewModel.Equipment.Focuser {
                                 Connected = true,
                                 IsMoving = Focuser.IsMoving,
                                 Name = Focuser.Name,
-                                Position = Focuser.Position,
+                                Position = this.Position,
                                 StepSize = Focuser.StepSize,
                                 TempComp = Focuser.TempComp,
                                 Temperature = Focuser.Temperature
@@ -175,7 +210,7 @@ namespace NINA.ViewModel.Equipment.Focuser {
                             updateTimer.Interval = profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
                             updateTimer.Start();
 
-                            TargetPosition = Focuser.Position;
+                            TargetPosition = this.Position;
                             profileService.ActiveProfile.FocuserSettings.Id = Focuser.Id;
                             return true;
                         } else {
@@ -208,7 +243,7 @@ namespace NINA.ViewModel.Equipment.Focuser {
         private Dictionary<string, object> GetFocuserValues() {
             Dictionary<string, object> focuserValues = new Dictionary<string, object>();
             focuserValues.Add(nameof(FocuserInfo.Connected), _focuser?.Connected ?? false);
-            focuserValues.Add(nameof(FocuserInfo.Position), _focuser?.Position ?? 0);
+            focuserValues.Add(nameof(FocuserInfo.Position), this?.Position ?? 0);
             focuserValues.Add(nameof(FocuserInfo.Temperature), _focuser?.Temperature ?? double.NaN);
             focuserValues.Add(nameof(FocuserInfo.IsMoving), _focuser?.IsMoving ?? false);
             focuserValues.Add(nameof(FocuserInfo.TempComp), _focuser?.TempComp ?? false);
@@ -263,6 +298,12 @@ namespace NINA.ViewModel.Equipment.Focuser {
             set {
                 _targetPosition = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        public int Position {
+            get {
+                return Focuser.Position - _focuserOffset;
             }
         }
 
