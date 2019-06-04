@@ -384,6 +384,8 @@ Ist dieser Auslöser deaktiviert, wird dieser Schritt übersprungen.</s:String>
   <s:String x:Key="LblFocuserAutoFocusInitialOffsetStepsTooltip" xml:space="default">Initiale Anzahl von Schritten, die der Fokussierer herausfährt, um die Autofokus Prozedur zu starten.</s:String>
   <s:String x:Key="LblFocuserAutoFocusStepSize" xml:space="default">Autofokus Schrittgröße</s:String>
   <s:String x:Key="LblFocuserAutoFocusStepSizeTooltip" xml:space="default">Die größe eines Schrittes der für Autofokus genutzt werden soll. Ein Schritt sollte kleiner sein, als die Toleranz des kritischen Fokuspunktes.</s:String>
+  <s:String x:Key="LblFocuserBacklash" xml:space="default">Backlash IN/OUT</s:String>
+  <s:String x:Key="LblFocuserBacklashTooltip" xml:space="default">Inwards and outwards focuser backlash, in focuser steps</s:String>
   <s:String x:Key="LblFocuserConnected" xml:space="default">Okularauszug verbunden</s:String>
   <s:String x:Key="LblFocuserConnectionLost" xml:space="default">Verbindung zum Okularauszug verloren! Bitte Okularauszug erneut verbinden!</s:String>
   <s:String x:Key="LblFocuserPositionDescription" xml:space="default">Derzeitige Okularauszugsposition</s:String>

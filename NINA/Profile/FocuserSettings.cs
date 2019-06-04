@@ -46,6 +46,8 @@ namespace NINA.Profile {
             autoFocusNumberOfFramesPerPoint = 1;
             autoFocusCropRatio = 1;
             autoFocusUseBrightestStars = 0;
+            backlashIn = 0;
+            backlashOut = 0;
         }
 
         private string id;
@@ -186,6 +188,36 @@ namespace NINA.Profile {
                     } else {
                         autoFocusCropRatio = value;
                     }
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int backlashIn;
+
+        [DataMember]
+        public int BacklashIn {
+            get {
+                return backlashIn;
+            }
+            set {
+                if (backlashIn != value) {
+                    backlashIn = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int backlashOut;
+
+        [DataMember]
+        public int BacklashOut {
+            get {
+                return backlashOut;
+            }
+            set {
+                if (backlashOut != value) {
+                    backlashOut = value;
                     RaisePropertyChanged();
                 }
             }
