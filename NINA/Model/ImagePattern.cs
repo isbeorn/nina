@@ -33,7 +33,7 @@ namespace NINA.Model {
 
         public ReadOnlyCollection<ImagePattern> Items {
             get {
-                return patterns.Values.ToList().AsReadOnly();
+                return patterns.Values.OrderBy(x => x.Key).ToList().AsReadOnly();
             }
         }
 
@@ -87,6 +87,12 @@ namespace NINA.Model {
             patterns.Add(p.Key, p);
 
             p = new ImagePattern(ImagePatternKeys.FocuserPosition, Locale.Loc.Instance["LblFocuserPositionDescription"]);
+            patterns.Add(p.Key, p);
+
+            p = new ImagePattern(ImagePatternKeys.FocuserTemp, Locale.Loc.Instance["LblFocuserTempDescription"]);
+            patterns.Add(p.Key, p);
+
+            p = new ImagePattern(ImagePatternKeys.HFR, Locale.Loc.Instance["LblHFRPatternDescription"]);
             patterns.Add(p.Key, p);
         }
 
@@ -143,7 +149,9 @@ namespace NINA.Model {
             p.Set(ImagePatternKeys.RMS, 0.35);
             p.Set(ImagePatternKeys.RMSArcSec, 0.65);
             p.Set(ImagePatternKeys.FocuserPosition, 12542);
+            p.Set(ImagePatternKeys.FocuserTemp, "3.94");
             p.Set(ImagePatternKeys.ApplicationStartDate, Utility.Utility.ApplicationStartDate.ToString("yyyy-MM-dd"));
+            p.Set(ImagePatternKeys.HFR, 3.25);
             return p;
         }
     }
@@ -168,7 +176,9 @@ namespace NINA.Model {
         public static readonly string RMS = "$$RMS$$";
         public static readonly string RMSArcSec = "$$RMSARCSEC$$";
         public static readonly string FocuserPosition = "$$FOCUSERPOSITION$$";
+        public static readonly string FocuserTemp = "$$FOCUSERTEMP$$";
         public static readonly string ApplicationStartDate = "$$APPLICATIONSTARTDATE$$";
+        public static readonly string HFR = "$$HFR$$";
     }
 
     public class ImagePattern {

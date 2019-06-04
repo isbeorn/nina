@@ -111,6 +111,10 @@ namespace NINA.Model.ImageData {
                     p.Set(ImagePatternKeys.FocuserPosition, MetaData.Focuser.Position);
                 }
 
+                if (!double.IsNaN(MetaData.Focuser.Temperature)) {
+                    p.Set(ImagePatternKeys.FocuserTemp, MetaData.Focuser.Temperature);
+                }
+
                 if (MetaData.Camera.Binning == string.Empty) {
                     p.Set(ImagePatternKeys.Binning, "1x1");
                 } else {
@@ -125,6 +129,10 @@ namespace NINA.Model.ImageData {
                 }
                 if (!double.IsNaN(MetaData.Camera.Offset)) {
                     p.Set(ImagePatternKeys.Offset, MetaData.Camera.Offset);
+                }
+
+                if (!double.IsNaN(Statistics.HFR)) {
+                    p.Set(ImagePatternKeys.HFR, Statistics.HFR);
                 }
 
                 path = Path.GetFullPath(path);

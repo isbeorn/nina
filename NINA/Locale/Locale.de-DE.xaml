@@ -391,6 +391,7 @@ Ist dieser Auslöser deaktiviert, wird dieser Schritt übersprungen.</s:String>
   <s:String x:Key="LblFocuserPositionDescription" xml:space="default">Derzeitige Okularauszugsposition</s:String>
   <s:String x:Key="LblFocuserSettleTime" xml:space="default">Okularauszug Ruhezeit</s:String>
   <s:String x:Key="LblFocuserSettleTimeTooltip" xml:space="default">Falls durch die Fokusiererbewegung sich das Bild verschiebt, kann hier eine Ruhezeit nach Bewegung festgelegt werden.</s:String>
+  <s:String x:Key="LblFocuserTempDescription" xml:space="default">Okularauszugtemperatur</s:String>
   <s:String x:Key="LblFocuserUseFilterWheelOffsets" xml:space="default">Filterrad Offsets nutzen</s:String>
   <s:String x:Key="LblFocuserUseFilterWheelOffsetsTooltip" xml:space="default">Wenn von einem Filter zum Anderen gewechselt wird, wird der Fokussierer relativ zum Offset zwischen den beiden Filtern bewegt.</s:String>
   <s:String x:Key="LblFocusOffset" xml:space="default">Fokus Offset</s:String>
@@ -430,6 +431,7 @@ Berechneter HFR: {2}
   <s:String x:Key="LblHemisphere" xml:space="default">Hemisphäre</s:String>
   <s:String x:Key="LblHFR" xml:space="default">HFR</s:String>
   <s:String x:Key="LblHFRHistory" xml:space="default">HRF Historie</s:String>
+  <s:String x:Key="LblHFRPatternDescription" xml:space="default">Berechneter HFR der Aufnahme (HFR Erkennung muss aktiv sein)</s:String>
   <s:String x:Key="LblHistogram" xml:space="default">Histogramm</s:String>
   <s:String x:Key="LblHistogramResolution" xml:space="default">Histogramm Auflösung</s:String>
   <s:String x:Key="LblHistogramResolutionTooltip" xml:space="default">Spezifiziert die Anzahl an Datenpunkten, die für das Histogramm genutzt werden sollen</s:String>
