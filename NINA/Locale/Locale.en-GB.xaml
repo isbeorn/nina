@@ -391,6 +391,7 @@ When this trigger is deactivated the application will just skip the Start Exposu
   <s:String x:Key="LblFocuserPositionDescription" xml:space="default">Current focuser position</s:String>
   <s:String x:Key="LblFocuserSettleTime" xml:space="default">Focuser Settle Time</s:String>
   <s:String x:Key="LblFocuserSettleTimeTooltip" xml:space="default">If the focuser introduces image shift when moving, set a settle time in seconds here.</s:String>
+  <s:String x:Key="LblFocuserTempDescription" xml:space="default">Focuser Temperature</s:String>
   <s:String x:Key="LblFocuserUseFilterWheelOffsets" xml:space="default">Use FilterWheel Offsets</s:String>
   <s:String x:Key="LblFocuserUseFilterWheelOffsetsTooltip" xml:space="default">When switching from one filter to another the focuser will change it's position relative to the given offset specified for that filter</s:String>
   <s:String x:Key="LblFocusOffset" xml:space="default">Focus Offset</s:String>
@@ -430,6 +431,7 @@ Calculated HFR: {2}
   <s:String x:Key="LblHemisphere" xml:space="default">Hemisphere</s:String>
   <s:String x:Key="LblHFR" xml:space="default">HFR</s:String>
   <s:String x:Key="LblHFRHistory" xml:space="default">HFR History</s:String>
+  <s:String x:Key="LblHFRPatternDescription" xml:space="default">Calculated HFR of image (HFR detection has to be enabled)</s:String>
   <s:String x:Key="LblHistogram" xml:space="default">Histogram</s:String>
   <s:String x:Key="LblHistogramResolution" xml:space="default">Histogram Resolution</s:String>
   <s:String x:Key="LblHistogramResolutionTooltip" xml:space="default">Specifies the number of data points that should be used for the histogram</s:String>

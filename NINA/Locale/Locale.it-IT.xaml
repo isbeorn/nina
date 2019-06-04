@@ -391,6 +391,7 @@ Quando il trigger è disattivato, l'applicazione si limita ad ignorare l'inizio 
   <s:String x:Key="LblFocuserPositionDescription" xml:space="default">Posizione corrente focuser</s:String>
   <s:String x:Key="LblFocuserSettleTime" xml:space="default">Settle time del Focuser</s:String>
   <s:String x:Key="LblFocuserSettleTimeTooltip" xml:space="default">Se il focuser introduce uno spostamento immagine mentre si muove, impostare un valore basso in secondi qui.</s:String>
+  <s:String x:Key="LblFocuserTempDescription" xml:space="default">Focuser Temperatura</s:String>
   <s:String x:Key="LblFocuserUseFilterWheelOffsets" xml:space="default">Usa Offset FilterWheel</s:String>
   <s:String x:Key="LblFocuserUseFilterWheelOffsetsTooltip" xml:space="default">Passando da un filtro ad un altro il focuser aggiusterà la sua posizionoe relativa all'offset impostato per quel filtro</s:String>
   <s:String x:Key="LblFocusOffset" xml:space="default">Offset Focus</s:String>
@@ -430,6 +431,7 @@ HFR Calcolato: {2}
   <s:String x:Key="LblHemisphere" xml:space="default">Emisfero</s:String>
   <s:String x:Key="LblHFR" xml:space="default">HFR</s:String>
   <s:String x:Key="LblHFRHistory" xml:space="default">Storia HFR</s:String>
+  <s:String x:Key="LblHFRPatternDescription" xml:space="default">Calcolo della HFR dell'immagine (deve essere abilitato il rilevamento HFR)</s:String>
   <s:String x:Key="LblHistogram" xml:space="default">Istogramma</s:String>
   <s:String x:Key="LblHistogramResolution" xml:space="default">Risoluzione Istogramma</s:String>
   <s:String x:Key="LblHistogramResolutionTooltip" xml:space="default">Specifica il numero di punti di dati che dovrebbero essere usati epr l'istogramma</s:String>

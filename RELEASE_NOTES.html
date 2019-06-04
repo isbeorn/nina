@@ -55,6 +55,7 @@
 <h3 id="focusing">Focusing</h3>
 <ul>
 <li>A new focuser settle time parameter has been added, in case the focuser shifts the image when moving (SCT, lens belt focusing, etc.). This should help with auto-focus in particular.</li>
+<li>Focuser backlash (in and out) can now be specified. The backlash will be applied to focuser movements whenever the focuser reverses directions.</li>
 <li>More resilient autofocus:
 <ul>
 <li>Ability to automatically reattempt autofocus from scratch several times in case it failed</li>
@@ -129,6 +130,8 @@
 <li>After download: Parallel image saving and processing to display the image</li>
 </ul>
 </li>
+<li>Image HFR is now available as an image file name token (<code>$$HFR$$</code>)</li>
+<li>Focuser Temperature is now available as an image file name token (<code>$$FOCUSERTEMP$$</code>)</li>
 </ul>
 <h1 id="version-1.8-hotfix-1">Version 1.8 Hotfix 1</h1>
 <ul>

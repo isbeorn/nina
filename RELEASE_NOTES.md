@@ -95,6 +95,8 @@
 - Further increased parallelism during sequencing. 
 	- After capture during image download: Parallel dither and change filter (if required)
 	- After download: Parallel image saving and processing to display the image
+- Image HFR is now available as an image file name token (`$$HFR$$`)
+- Focuser Temperature is now available as an image file name token (`$$FOCUSERTEMP$$`)
 
 # Version 1.8 Hotfix 1
 
