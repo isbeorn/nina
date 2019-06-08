@@ -23,5 +23,9 @@ namespace NINA.Model.ImageData {
         Task Stretch(double factor, double blackClipping, bool unlinked);
 
         Task<string> SaveToDisk(string path, string pattern, FileTypeEnum fileType, CancellationToken token = default);
+
+        Task<string> PrepareSave(string path, FileTypeEnum fileType, CancellationToken token = default);
+
+        string FinalizeSave(string file, string pattern);
     }
 }

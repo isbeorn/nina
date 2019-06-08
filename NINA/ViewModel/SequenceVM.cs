@@ -748,13 +748,11 @@ namespace NINA.ViewModel {
 
         private Task Save(IImageData data, Task imageProcessingTask, CancellationToken ct) {
             return Task.Run(async () => {
-                var path = await data.SaveToDisk(
-                    profileService.ActiveProfile.ImageFileSettings.FilePath,
-                    profileService.ActiveProfile.ImageFileSettings.FilePattern,
-                    profileService.ActiveProfile.ImageFileSettings.FileType,
-                    ct
-                );
+                var tempPath = await data.PrepareSave(profileService.ActiveProfile.ImageFileSettings.FilePath, profileService.ActiveProfile.ImageFileSettings.FileType, ct);
                 await imageProcessingTask;
+
+                var path = data.FinalizeSave(tempPath, profileService.ActiveProfile.ImageFileSettings.FilePattern);
+
                 imagingMediator.OnImageSaved(
                         new ImageSavedEventArgs() {
                             PathToImage = new Uri(path),
@@ -768,6 +766,7 @@ namespace NINA.ViewModel {
                             StatisticsId = data.Statistics.Id
                         }
                 );
+
                 ImgHistoryVM.Add(data.Statistics);
             });
         }
