@@ -417,6 +417,58 @@ namespace NINATest {
             System.IO.Path.GetFileNameWithoutExtension(file).Should().Equals(expectedPattern);
         }
 
+        [Test]
+        public async Task PrepareFinalizeSavePatternMetaDataTest() {
+            var fileType = NINA.Utility.Enum.FileTypeEnum.XISF;
+            var data = new ushort[] {
+                3,1,1,
+                3,4,5,
+                3,2,3
+            };
+            var folder = TestContext.CurrentContext.TestDirectory;
+            var pattern = $"$$FILTER$$" +
+                $"#$$DATE$$" +
+                $"#$$DATETIME$$" +
+                $"#$$TIME$$" +
+                $"#$$FRAMENR$$" +
+                $"#$$IMAGETYPE$$" +
+                $"#$$BINNING$$" +
+                $"#$$SENSORTEMP$$" +
+                $"#$$EXPOSURETIME$$" +
+                $"#$$TARGETNAME$$" +
+                $"#$$GAIN$$" +
+                $"#$$OFFSET$$" +
+                $"#$$RMS$$" +
+                $"#$$RMSARCSEC$$" +
+                $"#$$FOCUSERPOSITION$$" +
+                $"#$$APPLICATIONSTARTDATE$$";
+
+            var sut = new ImageData(data, 3, 3, 16, false);
+            sut.MetaData = MetaData;
+            var file = await sut.PrepareSave(folder, fileType, default);
+            file = sut.FinalizeSave(file, pattern);
+            System.IO.File.Delete(file);
+
+            var expectedPattern = $"{MetaData.FilterWheel.Filter}" +
+                $"#{MetaData.Image.ExposureStart.ToString("yyyy-MM-dd")}" +
+                $"#{MetaData.Image.ExposureStart.ToString("yyyy-MM-dd_HH-mm-ss")}" +
+                $"#{MetaData.Image.ExposureStart.ToString("HH-mm-ss")}" +
+                $"#{MetaData.Image.ExposureNumber}" +
+                $"#{MetaData.Image.ImageType}" +
+                $"#{MetaData.Camera.Binning}" +
+                $"#{MetaData.Camera.Temperature}" +
+                $"#{MetaData.Image.ExposureTime}" +
+                $"#{MetaData.Target.Name}" +
+                $"#{MetaData.Camera.Gain}" +
+                $"#{MetaData.Camera.Offset}" +
+                $"#{MetaData.Image.RecordedRMS.Total}" +
+                $"#{MetaData.Image.RecordedRMS.Total * MetaData.Image.RecordedRMS.Scale}" +
+                $"#{MetaData.Focuser.Position}" +
+                $"#{Utility.ApplicationStartDate.ToString("yyyy-MM-dd")}";
+
+            System.IO.Path.GetFileNameWithoutExtension(file).Should().Equals(expectedPattern);
+        }
+
         //[Test]
         //public async Task SaveToDiskXISFDeepMetaDataTest() {
         //    Uncomment once xisf loading knows to extract meta data

@@ -70,11 +70,17 @@ namespace NINA.Model.ImageData {
 
         #region "Save"
 
-        public async Task<string> SaveToDisk(string path, string pattern, FileTypeEnum fileType, CancellationToken token) {
+        /// <summary>
+        ///  Saves file to application temp path
+        /// </summary>
+        /// <param name="fileType"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public async Task<string> PrepareSave(string filePath, FileTypeEnum fileType, CancellationToken token = default) {
             var actualPath = string.Empty;
             try {
                 using (MyStopWatch.Measure()) {
-                    actualPath = await SaveToDiskAsync(path, pattern, fileType, token);
+                    actualPath = await SaveToDiskAsync(filePath, fileType, token);
                 }
             } catch (OperationCanceledException ex) {
                 throw ex;
@@ -86,59 +92,103 @@ namespace NINA.Model.ImageData {
             return actualPath;
         }
 
-        private Task<string> SaveToDiskAsync(string path, string pattern, FileTypeEnum fileType, CancellationToken token) {
+        /// <summary>
+        /// Renames and moves file to destination according to pattern
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="targetPath"></param>
+        /// <param name="pattern"></param>
+        /// <returns></returns>
+        public string FinalizeSave(string file, string pattern) {
+            try {
+                var imagePatterns = GetImagePatterns();
+                var fileName = imagePatterns.GetImageFileString(pattern);
+                var extension = Path.GetExtension(file);
+                var targetPath = Path.GetDirectoryName(file);
+                var newFileName = Utility.Utility.GetUniqueFilePath(Path.Combine(targetPath, $"{fileName}.{extension}"));
+
+                var fi = new FileInfo(newFileName);
+                if (!fi.Directory.Exists) {
+                    fi.Directory.Create();
+                }
+
+                File.Move(file, newFileName);
+                return newFileName;
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                throw ex;
+            } finally {
+            }
+        }
+
+        private ImagePatterns GetImagePatterns() {
+            var p = new ImagePatterns();
+            p.Set(ImagePatternKeys.Filter, MetaData.FilterWheel.Filter);
+            p.Set(ImagePatternKeys.ExposureTime, MetaData.Image.ExposureTime);
+            p.Set(ImagePatternKeys.ApplicationStartDate, Utility.Utility.ApplicationStartDate.ToString("yyyy-MM-dd"));
+            p.Set(ImagePatternKeys.Date, MetaData.Image.ExposureStart.ToString("yyyy-MM-dd"));
+            p.Set(ImagePatternKeys.Time, MetaData.Image.ExposureStart.ToString("HH-mm-ss"));
+            p.Set(ImagePatternKeys.DateTime, MetaData.Image.ExposureStart.ToString("yyyy-MM-dd_HH-mm-ss"));
+            p.Set(ImagePatternKeys.FrameNr, MetaData.Image.ExposureNumber);
+            p.Set(ImagePatternKeys.ImageType, MetaData.Image.ImageType);
+
+            p.Set(ImagePatternKeys.TargetName, MetaData.Target.Name);
+
+            if (MetaData.Image.RecordedRMS != null) {
+                p.Set(ImagePatternKeys.RMS, MetaData.Image.RecordedRMS.Total);
+                p.Set(ImagePatternKeys.RMSArcSec, MetaData.Image.RecordedRMS.Total * MetaData.Image.RecordedRMS.Scale);
+            }
+
+            if (!double.IsNaN(MetaData.Focuser.Position)) {
+                p.Set(ImagePatternKeys.FocuserPosition, MetaData.Focuser.Position);
+            }
+
+            if (!double.IsNaN(MetaData.Focuser.Temperature)) {
+                p.Set(ImagePatternKeys.FocuserTemp, MetaData.Focuser.Temperature);
+            }
+
+            if (MetaData.Camera.Binning == string.Empty) {
+                p.Set(ImagePatternKeys.Binning, "1x1");
+            } else {
+                p.Set(ImagePatternKeys.Binning, MetaData.Camera.Binning);
+            }
+
+            if (!double.IsNaN(MetaData.Camera.Temperature)) {
+                p.Set(ImagePatternKeys.SensorTemp, MetaData.Camera.Temperature);
+            }
+            if (!double.IsNaN(MetaData.Camera.Gain)) {
+                p.Set(ImagePatternKeys.Gain, MetaData.Camera.Gain);
+            }
+            if (!double.IsNaN(MetaData.Camera.Offset)) {
+                p.Set(ImagePatternKeys.Offset, MetaData.Camera.Offset);
+            }
+
+            if (!double.IsNaN(Statistics.HFR)) {
+                p.Set(ImagePatternKeys.HFR, Statistics.HFR);
+            }
+            return p;
+        }
+
+        public async Task<string> SaveToDisk(string path, string pattern, FileTypeEnum fileType, CancellationToken token) {
+            var actualPath = string.Empty;
+            try {
+                using (MyStopWatch.Measure()) {
+                    var tempPath = await SaveToDiskAsync(path, fileType, token);
+                    actualPath = FinalizeSave(tempPath, pattern);
+                }
+            } catch (OperationCanceledException ex) {
+                throw ex;
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                throw ex;
+            } finally {
+            }
+            return actualPath;
+        }
+
+        private Task<string> SaveToDiskAsync(string path, FileTypeEnum fileType, CancellationToken token) {
             return Task.Run(() => {
-                string completefilename = string.Empty;
-                ImagePatterns p = new ImagePatterns();
-
-                p.Set(ImagePatternKeys.Filter, MetaData.FilterWheel.Filter);
-                p.Set(ImagePatternKeys.ExposureTime, MetaData.Image.ExposureTime);
-                p.Set(ImagePatternKeys.ApplicationStartDate, Utility.Utility.ApplicationStartDate.ToString("yyyy-MM-dd"));
-                p.Set(ImagePatternKeys.Date, MetaData.Image.ExposureStart.ToString("yyyy-MM-dd"));
-                p.Set(ImagePatternKeys.Time, MetaData.Image.ExposureStart.ToString("HH-mm-ss"));
-                p.Set(ImagePatternKeys.DateTime, MetaData.Image.ExposureStart.ToString("yyyy-MM-dd_HH-mm-ss"));
-                p.Set(ImagePatternKeys.FrameNr, MetaData.Image.ExposureNumber);
-                p.Set(ImagePatternKeys.ImageType, MetaData.Image.ImageType);
-
-                p.Set(ImagePatternKeys.TargetName, MetaData.Target.Name);
-
-                if (MetaData.Image.RecordedRMS != null) {
-                    p.Set(ImagePatternKeys.RMS, MetaData.Image.RecordedRMS.Total);
-                    p.Set(ImagePatternKeys.RMSArcSec, MetaData.Image.RecordedRMS.Total * MetaData.Image.RecordedRMS.Scale);
-                }
-
-                if (!double.IsNaN(MetaData.Focuser.Position)) {
-                    p.Set(ImagePatternKeys.FocuserPosition, MetaData.Focuser.Position);
-                }
-
-                if (!double.IsNaN(MetaData.Focuser.Temperature)) {
-                    p.Set(ImagePatternKeys.FocuserTemp, MetaData.Focuser.Temperature);
-                }
-
-                if (MetaData.Camera.Binning == string.Empty) {
-                    p.Set(ImagePatternKeys.Binning, "1x1");
-                } else {
-                    p.Set(ImagePatternKeys.Binning, MetaData.Camera.Binning);
-                }
-
-                if (!double.IsNaN(MetaData.Camera.Temperature)) {
-                    p.Set(ImagePatternKeys.SensorTemp, MetaData.Camera.Temperature);
-                }
-                if (!double.IsNaN(MetaData.Camera.Gain)) {
-                    p.Set(ImagePatternKeys.Gain, MetaData.Camera.Gain);
-                }
-                if (!double.IsNaN(MetaData.Camera.Offset)) {
-                    p.Set(ImagePatternKeys.Offset, MetaData.Camera.Offset);
-                }
-
-                if (!double.IsNaN(Statistics.HFR)) {
-                    p.Set(ImagePatternKeys.HFR, Statistics.HFR);
-                }
-
-                path = Path.GetFullPath(path);
-                string filename = p.GetImageFileString(pattern);
-                completefilename = Path.Combine(path, filename);
-
+                var completefilename = Path.Combine(path, Guid.NewGuid().ToString());
                 if (this.Data.RAWData != null) {
                     completefilename = SaveRAW(completefilename);
                     fileType = FileTypeEnum.RAW;
