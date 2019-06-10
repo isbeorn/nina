@@ -38,6 +38,7 @@
 - Weather data sources are now configured under the Equipment section.
 
 ### Focusing
+- Quick focuser movement buttons have been added (fine/coarse move IN/OUT) to the focuser views
 - A new focuser settle time parameter has been added, in case the focuser shifts the image when moving (SCT, lens belt focusing, etc.). This should help with auto-focus in particular.
 - Focuser backlash (in and out) can now be specified. The backlash will be applied to focuser movements whenever the focuser reverses directions.
 - More resilient autofocus:
