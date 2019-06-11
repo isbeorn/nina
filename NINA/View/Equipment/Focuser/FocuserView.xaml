@@ -239,6 +239,59 @@
                         </UniformGrid>
                     </UniformGrid>
                 </Border>
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                    <UniformGrid Columns="2">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="4">
+                            <Grid IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
+                                <ninactrl:CancellableButton
+                                    Height="25"
+                                    Margin="5,0,5,0"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Center"
+                                    ButtonText="&lt;&lt; "
+                                    CancelButtonImage="{StaticResource CancelSVG}"
+                                    CancelCommand="{Binding HaltFocuserCommand}"
+                                    Command="{Binding MoveFocuserInLargeCommand}"/>
+                            </Grid>
+                            <Grid IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
+                                <ninactrl:CancellableButton
+                                    Height="25"
+                                    Margin="5,0,5,0"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Center"
+                                    ButtonText="&lt; "
+                                    CancelButtonImage="{StaticResource CancelSVG}"
+                                    CancelCommand="{Binding HaltFocuserCommand}"
+                                    Command="{Binding MoveFocuserInSmallCommand}"/>
+                            </Grid>
+                            <Grid IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
+                                <ninactrl:CancellableButton
+                                    Height="25"
+                                    Margin="5,0,5,0"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Center"
+                                    ButtonText="&gt;"
+                                    CancelButtonImage="{StaticResource CancelSVG}"
+                                    CancelCommand="{Binding HaltFocuserCommand}"
+                                    Command="{Binding MoveFocuserOutSmallCommand}"/>
+                            </Grid>
+                            <Grid IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
+                                <ninactrl:CancellableButton
+                                    Height="25"
+                                    Margin="5,0,5,0"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Center"
+                                    ButtonText="&gt;&gt;"
+                                    CancelButtonImage="{StaticResource CancelSVG}"
+                                    CancelCommand="{Binding HaltFocuserCommand}"
+                                    Command="{Binding MoveFocuserOutLargeCommand}"/>
+                            </Grid>
+                        </UniformGrid>
+                    </UniformGrid>
+                </Border>
             </StackPanel>
         </Grid>
     </GroupBox>

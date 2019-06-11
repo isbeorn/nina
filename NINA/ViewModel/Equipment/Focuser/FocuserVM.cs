@@ -50,6 +50,10 @@ namespace NINA.ViewModel.Equipment.Focuser {
             CancelChooseFocuserCommand = new RelayCommand(CancelChooseFocuser);
             DisconnectCommand = new RelayCommand(DisconnectDiag);
             RefreshFocuserListCommand = new RelayCommand(RefreshFocuserList);
+            MoveFocuserInSmallCommand = new AsyncCommand<int>(() => MoveFocuserRelative((int)Math.Round(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize / -2d)), (p) => FocuserInfo.Connected);
+            MoveFocuserInLargeCommand = new AsyncCommand<int>(() => MoveFocuserRelative(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize * -5), (p) => FocuserInfo.Connected);
+            MoveFocuserOutSmallCommand = new AsyncCommand<int>(() => MoveFocuserRelative((int)Math.Round(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize / 2d)), (p) => FocuserInfo.Connected);
+            MoveFocuserOutLargeCommand = new AsyncCommand<int>(() => MoveFocuserRelative(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize * 5), (p) => FocuserInfo.Connected);
             MoveFocuserCommand = new AsyncCommand<int>(() => MoveFocuser(TargetPosition), (p) => FocuserInfo.Connected);
             HaltFocuserCommand = new RelayCommand(HaltFocuser);
             ToggleTempCompCommand = new RelayCommand(ToggleTempComp);
@@ -372,7 +376,10 @@ namespace NINA.ViewModel.Equipment.Focuser {
         public ICommand DisconnectCommand { get; private set; }
 
         public ICommand MoveFocuserCommand { get; private set; }
-
+        public ICommand MoveFocuserInSmallCommand { get; private set; }
+        public ICommand MoveFocuserInLargeCommand { get; private set; }
+        public ICommand MoveFocuserOutSmallCommand { get; private set; }
+        public ICommand MoveFocuserOutLargeCommand { get; private set; }
         public ICommand HaltFocuserCommand { get; private set; }
         public ICommand ToggleTempCompCommand { get; private set; }
     }
