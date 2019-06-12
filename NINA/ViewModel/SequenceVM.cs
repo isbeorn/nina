@@ -476,6 +476,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> StartSequencing(IProgress<ApplicationStatus> progress) {
+            bool canceledAtStart = false;
             try {
                 profileService.PauseSave();
                 _actualDownloadTimes.Clear();
@@ -487,6 +488,7 @@ namespace NINA.ViewModel {
 
                 /* Validate if preconditions are met */
                 if (!CheckPreconditions()) {
+                    canceledAtStart = true;
                     return false;
                 }
 
@@ -518,7 +520,9 @@ namespace NINA.ViewModel {
                 }
             } catch (OperationCanceledException) {
             } finally {
-                await RunEndOfSequenceOptions(progress);
+                if (!canceledAtStart) { 
+                    await RunEndOfSequenceOptions(progress);
+                }
                 profileService.ResumeSave();
                 IsPaused = false;
                 IsRunning = false;
