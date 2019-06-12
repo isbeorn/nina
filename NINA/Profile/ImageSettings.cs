@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using NINA.Utility.Enum;
 using System;
 using System.Runtime.Serialization;
 
@@ -41,6 +42,7 @@ namespace NINA.Profile {
             annotateImage = false;
             debayerImage = true;
             unlinkedStretch = true;
+            starSensitivity = StarSensitivityEnum.Normal;
         }
 
         private double autoStretchFactor;
@@ -119,6 +121,21 @@ namespace NINA.Profile {
                     if (unlinkedStretch) {
                         DebayerImage = unlinkedStretch;
                     }
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private StarSensitivityEnum starSensitivity;
+
+        [DataMember]
+        public StarSensitivityEnum StarSensitivity {
+            get {
+                return starSensitivity;
+            }
+            set {
+                if (starSensitivity != value) {
+                    starSensitivity = value;
                     RaisePropertyChanged();
                 }
             }

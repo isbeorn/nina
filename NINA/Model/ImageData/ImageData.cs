@@ -56,8 +56,8 @@ namespace NINA.Model.ImageData {
             }
         }
 
-        public async Task DetectStars(bool annotate, CancellationToken ct = default(CancellationToken), IProgress<ApplicationStatus> progress = default(Progress<ApplicationStatus>)) {
-            var analysis = new StarDetection(this, this.Image.Format);
+        public async Task DetectStars(bool annotate, StarSensitivityEnum sensitivity, CancellationToken ct = default(CancellationToken), IProgress<ApplicationStatus> progress = default(Progress<ApplicationStatus>)) {
+            var analysis = new StarDetection(this, this.Image.Format, sensitivity);
             await analysis.DetectAsync(progress, ct);
 
             if (annotate) {

@@ -27,6 +27,7 @@ using AForge.Math.Geometry;
 using NINA.Model;
 using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
+using NINA.Utility.Enum;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -48,14 +49,19 @@ namespace NINA.Utility.ImageAnalysis {
         private static System.Drawing.FontFamily FONTFAMILY = new System.Drawing.FontFamily("Arial");
         private static Font FONT = new Font(FONTFAMILY, 32, System.Drawing.FontStyle.Regular, GraphicsUnit.Pixel);
 
-        public StarDetection(IImageData imageData) {
+        public StarDetection(IImageData imageData, StarSensitivityEnum sensitivity) {
             _iarr = imageData.Data;
             _originalBitmapSource = imageData.Image;
             statistics = imageData.Statistics;
+            _sensitivity = sensitivity;
 
             _resizefactor = 1.0;
             if (imageData.Statistics.Width > _maxWidth) {
-                _resizefactor = (double)_maxWidth / imageData.Statistics.Width;
+                if (_sensitivity == StarSensitivityEnum.Highest) {
+                    _resizefactor = Math.Max(0.625, (double)_maxWidth / imageData.Statistics.Width);
+                } else { 
+                    _resizefactor = (double)_maxWidth / imageData.Statistics.Width;
+                }
             }
             _inverseResizefactor = 1.0 / _resizefactor;
 
@@ -68,7 +74,7 @@ namespace NINA.Utility.ImageAnalysis {
             _maxStarSize = (int)Math.Ceiling(150 * _resizefactor);
         }
 
-        public StarDetection(IImageData imageData, System.Windows.Media.PixelFormat pf) : this(imageData) {
+        public StarDetection(IImageData imageData, System.Windows.Media.PixelFormat pf, StarSensitivityEnum sensitivity) : this(imageData, sensitivity) {
             if (pf == System.Windows.Media.PixelFormats.Rgb48) {
                 using (var source = ImageUtility.BitmapFromSource(_originalBitmapSource, System.Drawing.Imaging.PixelFormat.Format48bppRgb)) {
                     using (var img = new Grayscale(0.2125, 0.7154, 0.0721).Apply(source)) {
@@ -93,6 +99,7 @@ namespace NINA.Utility.ImageAnalysis {
         private List<Star> _starlist = new List<Star>();
         private List<AForge.Point> _brightestStarPositions = new List<AForge.Point>();
         private int _numberOfAFStars = 0;
+        private StarSensitivityEnum _sensitivity = StarSensitivityEnum.Normal;
 
         public List<AForge.Point> BrightestStarPositions {
             get {
@@ -256,7 +263,6 @@ namespace NINA.Utility.ImageAnalysis {
             Blob[] blobs = _blobCounter.GetObjectsInformation();
             SimpleShapeChecker checker = new SimpleShapeChecker();
             List<Star> starlist = new List<Star>();
-
             double sumRadius = 0;
             double sumSquares = 0;
             foreach (Blob blob in blobs) {
@@ -308,6 +314,8 @@ namespace NINA.Utility.ImageAnalysis {
                 double starPixelSum = 0;
                 int starPixelCount = 0;
                 double largeRectPixelSum = 0;
+                double largeRectPixelSumSquares = 0;
+                List <ushort> innerStarPixelValues = new List<ushort>();
 
                 for (int x = largeRect.X; x < largeRect.X + largeRect.Width; x++) {
                     for (int y = largeRect.Y; y < largeRect.Y + largeRect.Height; y++) {
@@ -316,6 +324,7 @@ namespace NINA.Utility.ImageAnalysis {
                             if (s.InsideCircle(x, y, s.Position.X, s.Position.Y, s.radius)) { // We're in the inner sanctum of the star
                                 starPixelSum += pixelValue;
                                 starPixelCount++;
+                                innerStarPixelValues.Add(pixelValue);
                             }
                             var value = pixelValue - statistics.Mean;
                             if (value < 0) { value = 0; }
@@ -323,14 +332,18 @@ namespace NINA.Utility.ImageAnalysis {
                             s.AddPixelData(pd);
                         } else { //We're in the larger surrounding holed rectangle, providing local background
                             largeRectPixelSum += pixelValue;
+                            largeRectPixelSumSquares += pixelValue * pixelValue;
                         }
                     }
                 }
 
                 s.meanBrightness = starPixelSum / (double)starPixelCount;
-                double largeRectMean = largeRectPixelSum / (double)(largeRect.Height * largeRect.Width - rect.Height * rect.Width);
+                double largeRectPixelCount = largeRect.Height * largeRect.Width - rect.Height * rect.Width;
+                double largeRectMean = largeRectPixelSum / largeRectPixelCount;
+                double largeRectStdev = Math.Sqrt((largeRectPixelSumSquares - largeRectPixelCount * largeRectMean * largeRectMean) / largeRectPixelCount);
+                int minimumNumberOfPixels = (int)Math.Ceiling(Math.Max(_originalBitmapSource.PixelWidth, _originalBitmapSource.PixelHeight) / 1000d);
 
-                if (s.meanBrightness > largeRectMean * 1.1) { //It's a local maximum, so likely to be a star. Let's add it to our star dictionary.
+                if (s.meanBrightness > largeRectMean * 1.1 && innerStarPixelValues.Count(pv => pv > largeRectMean + 1.5 * largeRectStdev) > minimumNumberOfPixels) { //It's a local maximum, and has enough bright pixels, so likely to be a star. Let's add it to our star dictionary.
                     sumRadius += s.radius;
                     sumSquares += s.radius * s.radius;
                     s.CalculateHfr();
@@ -361,7 +374,12 @@ namespace NINA.Utility.ImageAnalysis {
             if (starlist.Count > 0) {
                 double avg = sumRadius / (double)starlist.Count();
                 double stdev = Math.Sqrt((sumSquares - starlist.Count() * avg * avg) / starlist.Count());
-                starlist = starlist.Where(s => s.radius <= avg + 1.5 * stdev && s.radius >= avg - 1.5 * stdev).ToList<Star>();
+                if (_sensitivity == StarSensitivityEnum.Normal) {
+                    starlist = starlist.Where(s => s.radius <= avg + 1.5 * stdev && s.radius >= avg - 1.5 * stdev).ToList<Star>();
+                } else {
+                    //More sensitivity means getting fainter and smaller stars, and maybe some noise, skewing the distribution towards low radius. Let's be more permissive towards the large star end.
+                    starlist = starlist.Where(s => s.radius <= avg + 2 * stdev && s.radius >= avg - 1.5 * stdev).ToList<Star>();
+                }
             }
             return starlist;
         }
@@ -431,8 +449,26 @@ namespace NINA.Utility.ImageAnalysis {
 
         private void PrepareForStructureDetection(Bitmap bmp) {
             var sw = Stopwatch.StartNew();
-
-            new CannyEdgeDetector(10, 80).ApplyInPlace(bmp);
+            
+            if (_sensitivity == StarSensitivityEnum.Normal) {
+                new CannyEdgeDetector(10,80).ApplyInPlace(bmp);
+            } else { 
+                int kernelSize = (int)Math.Max(Math.Floor(Math.Max(_originalBitmapSource.PixelWidth, _originalBitmapSource.PixelHeight) * _resizefactor / 500), 3);
+                //Apply blur or sharpen operation prior to applying the Canny Edge Detector
+                if (_inverseResizefactor > 1.6) {
+                    //Strong blur occurred while resizing, apply fairly strong Gaussian Sharpen
+                    new GaussianSharpen(1.8, kernelSize).ApplyInPlace(bmp);
+                } else if (_inverseResizefactor > 1) {
+                    //Some blur occurred during resizing, apply Gaussian Sharpen with relative strength proportional to resize factor
+                    double sigma = (_inverseResizefactor - 1) * 3;
+                    new GaussianSharpen(sigma, kernelSize).ApplyInPlace(bmp);
+                } else {
+                    //No resizing occurred, apply weak Gaussian blur
+                    new GaussianBlur(0.7, 5).ApplyInPlace(bmp);
+                }
+                _token.ThrowIfCancellationRequested();
+                new NoBlurCannyEdgeDetector(10,80).ApplyInPlace(bmp);
+            }
             _token.ThrowIfCancellationRequested();
             new SISThreshold().ApplyInPlace(bmp);
             _token.ThrowIfCancellationRequested();
@@ -446,7 +482,7 @@ namespace NINA.Utility.ImageAnalysis {
 
         private void ResizeBitmapToAnalyze() {
             if (_bitmapToAnalyze.Width > _maxWidth) {
-                var bmp = new ResizeBicubic(_maxWidth, (int)Math.Floor(_bitmapToAnalyze.Height * _resizefactor)).Apply(_bitmapToAnalyze);
+                var bmp = new ResizeBicubic((int)Math.Floor(_bitmapToAnalyze.Width * _resizefactor), (int)Math.Floor(_bitmapToAnalyze.Height * _resizefactor)).Apply(_bitmapToAnalyze);
                 _bitmapToAnalyze.Dispose();
                 _bitmapToAnalyze = bmp;
             }
