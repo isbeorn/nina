@@ -198,6 +198,7 @@ namespace NINA.ViewModel {
             }
             var seq = new CaptureSequence(expTime, CaptureSequence.ImageTypes.SNAP, filter, null, 1);
             seq.EnableSubSample = _setSubSample;
+            seq.Binning = new BinningMode(profileService.ActiveProfile.FocuserSettings.AutoFocusBinning, profileService.ActiveProfile.FocuserSettings.AutoFocusBinning);
 
             var oldAutoStretch = imagingMediator.SetAutoStretch(true);
             var oldDetectStars = imagingMediator.SetDetectStars(false);

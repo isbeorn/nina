@@ -36,5 +36,6 @@ namespace NINA.Profile {
         int AutoFocusUseBrightestStars { get; set; }
         int BacklashIn { get; set; }
         int BacklashOut { get; set; }
+        short AutoFocusBinning { get; set; }
     }
 }
