@@ -1023,6 +1023,54 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
+
+                <!--  Free Offset Setting  -->
+                <DataGridTemplateColumn
+                    Width="*"
+                    CanUserSort="False"
+                    Header="{ns:Loc LblOffset}">
+                    <DataGridTemplateColumn.Visibility>
+                        <PriorityBinding>
+                            <Binding
+                                Converter="{StaticResource BooleanToVisibilityHiddenConverter}"
+                                Path="CameraVM.Cam.CanSetOffset"
+                                Source="{StaticResource AppVM}" />
+                            <Binding
+                                Converter="{StaticResource NullToVisibilityConverter}"
+                                Path="CameraVM.Cam"
+                                Source="{StaticResource AppVM}" />
+                        </PriorityBinding>
+                    </DataGridTemplateColumn.Visibility>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox>
+                                <TextBox.Text>
+                                    <Binding
+                                        Converter="{StaticResource MinusOneToEmptyStringConverter}"
+                                        Path="Offset"
+                                        UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <util:ShortRangeRule>
+                                                <util:ShortRangeRule.ValidRange>
+                                                    <util:ShortRangeChecker Maximum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.OffsetMax}" Minimum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.OffsetMin}" />
+                                                </util:ShortRangeRule.ValidRange>
+                                            </util:ShortRangeRule>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock
+                                Margin="5,0,5,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding Offset, Converter={StaticResource MinusOneToEmptyStringConverter}}"
+                                TextAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
         <DockPanel Grid.Row="3" Margin="5">

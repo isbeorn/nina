@@ -56,6 +56,7 @@
 - It is now possible to reset the progress of a sequence item, or of a whole sequence target. If an item that occurred prior to the active sequence item is reset, stopping and starting the sequence will get back to it, but pausing/playing will keep going from the current item.
 - The sequence start button is unavailable if an imaging loop is in progress in the imaging tab
 - If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips
+- It is now possible to set the Offset in addition to the Gain within each sequence item
 
 ### Flat Wizard
 - Progress bars have been added for remaining filters and exposures

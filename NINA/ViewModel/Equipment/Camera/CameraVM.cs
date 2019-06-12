@@ -619,6 +619,10 @@ namespace NINA.ViewModel.Equipment.Camera {
                     SetGain(sequence.Gain);
                 }
 
+                if (sequence.Offset > -1) {
+                    SetOffset(sequence.Offset);
+                }
+
                 if (sequence.Binning == null) {
                     SetBinning(1, 1);
                 } else {
@@ -688,6 +692,14 @@ namespace NINA.ViewModel.Equipment.Camera {
             if (CameraInfo.Connected == true) {
                 Cam.Gain = gain;
                 CameraInfo.Gain = Cam.Gain;
+                BroadcastCameraInfo();
+            }
+        }
+
+        public void SetOffset(int offset) {
+            if (CameraInfo.Connected == true) {
+                Cam.Offset = offset;
+                CameraInfo.Offset = Cam.Offset;
                 BroadcastCameraInfo();
             }
         }
