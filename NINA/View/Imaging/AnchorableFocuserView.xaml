@@ -144,13 +144,62 @@
                     <Grid Margin="0,5,0,0" IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
                         <ninactrl:CancellableButton
                             Height="25"
-                            Margin="10,10,10,0"
+                            Margin="10,5,10,0"
                             ButtonText="{ns:Loc LblMove}"
                             CancelButtonImage="{StaticResource CancelSVG}"
                             CancelCommand="{Binding HaltFocuserCommand}"
                             Command="{Binding MoveFocuserCommand}"
                             ToolTip="" />
                     </Grid>
+                    <UniformGrid
+                            Margin="0,2,0,2"
+                            VerticalAlignment="Center"
+                            Columns="4">
+                        <Grid HorizontalAlignment="Center" IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
+                            <ninactrl:CancellableButton
+                                    Height="20"
+                                    Margin="1,0,1,0"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Center"
+                                    ButtonText="&lt;&lt;"
+                                    CancelButtonImage="{StaticResource CancelSVG}"
+                                    CancelCommand="{Binding HaltFocuserCommand}"
+                                    Command="{Binding MoveFocuserInLargeCommand}"/>
+                        </Grid>
+                        <Grid HorizontalAlignment="Center" IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
+                            <ninactrl:CancellableButton
+                                    Height="20"
+                                    Margin="1,0,1,0"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Center"
+                                    ButtonText="&lt;"
+                                    CancelButtonImage="{StaticResource CancelSVG}"
+                                    CancelCommand="{Binding HaltFocuserCommand}"
+                                    Command="{Binding MoveFocuserInSmallCommand}"/>
+                        </Grid>
+                        <Grid HorizontalAlignment="Center" IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
+                            <ninactrl:CancellableButton
+                                    Height="20"
+                                    Margin="1,0,1,0"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Center"
+                                    ButtonText="&gt;"
+                                    CancelButtonImage="{StaticResource CancelSVG}"
+                                    CancelCommand="{Binding HaltFocuserCommand}"
+                                    Command="{Binding MoveFocuserOutSmallCommand}"/>
+                        </Grid>
+                        <Grid HorizontalAlignment="Center" IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
+                            <ninactrl:CancellableButton
+                                    Height="20"
+                                    Margin="1,0,1,0"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Center"
+                                    ButtonText="&gt;&gt;"
+                                    CancelButtonImage="{StaticResource CancelSVG}"
+                                    CancelCommand="{Binding HaltFocuserCommand}"
+                                    Command="{Binding MoveFocuserOutLargeCommand}"/>
+                        </Grid>
+                    </UniformGrid>
                 </StackPanel>
             </Grid>
         </Grid>
