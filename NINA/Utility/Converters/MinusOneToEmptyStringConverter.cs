@@ -30,7 +30,7 @@ namespace NINA.Utility.Converters {
     public class MinusOneToEmptyStringConverter : IValueConverter {
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            if ((short)value == -1) {
+            if (System.Convert.ToInt32(value) == -1) {
                 return "";
             }
             return value;
