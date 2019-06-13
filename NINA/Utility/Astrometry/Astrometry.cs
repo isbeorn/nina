@@ -339,8 +339,11 @@ namespace NINA.Utility.Astrometry {
         /// <param name="deg"></param>
         /// <returns></returns>
         public static string DegreesToFitsDMS(double deg) {
-            return DegreesToDMS(deg).Replace("°", "").Replace("'", "").Replace("\"", "");
-            ;
+            if (deg >= 0) {
+                return String.Concat("+",DegreesToDMS(deg).Replace("°", "").Replace("'", "").Replace("\"", ""));
+            } else {
+                return DegreesToDMS(deg).Replace("°", "").Replace("'", "").Replace("\"", "");
+            }
         }
 
         /// <summary>

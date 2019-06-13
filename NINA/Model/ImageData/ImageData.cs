@@ -327,8 +327,8 @@ namespace NINA.Model.ImageData {
             }
 
             if (MetaData.Target.Coordinates != null) {
-                f.AddHeaderCard("OBJCTRA", MetaData.Target.Coordinates.RAString, "[H M S] RA of imaged object");
-                f.AddHeaderCard("OBJCTDEC", MetaData.Target.Coordinates.DecString, "[D M S] Declination of imaged object");
+                f.AddHeaderCard("OBJCTRA", Astrometry.HoursToFitsHMS(MetaData.Target.Coordinates.RA), "[H M S] RA of imaged object");
+                f.AddHeaderCard("OBJCTDEC", Astrometry.DegreesToFitsDMS(MetaData.Target.Coordinates.Dec), "[D M S] Declination of imaged object");
             }
 
             /* Focuser */
@@ -463,11 +463,11 @@ namespace NINA.Model.ImageData {
 
             if (MetaData.Telescope.Coordinates != null) {
                 header.AddImageProperty(XISFImageProperty.Observation.Center.RA, MetaData.Telescope.Coordinates.RADegrees.ToString(CultureInfo.InvariantCulture), string.Empty, false);
-                header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.RA[2], MetaData.Telescope.Coordinates.RAString, "[H M S] RA of imaged object");
+                header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.RA[2], Astrometry.HoursToFitsHMS(MetaData.Telescope.Coordinates.RA), "[H M S] RA of imaged object");
                 header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.RA[3], MetaData.Telescope.Coordinates.RADegrees.ToString(CultureInfo.InvariantCulture), "[deg] RA of telescope");
 
                 header.AddImageProperty(XISFImageProperty.Observation.Center.Dec, MetaData.Telescope.Coordinates.Dec.ToString(CultureInfo.InvariantCulture), string.Empty, false);
-                header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.Dec[2], MetaData.Telescope.Coordinates.DecString, "[D M S] Declination of imaged object");
+                header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.Dec[2], Astrometry.DegreesToFitsDMS(MetaData.Telescope.Coordinates.Dec), "[D M S] Declination of imaged object");
                 header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.Dec[3], MetaData.Telescope.Coordinates.Dec.ToString(CultureInfo.InvariantCulture), "[deg] Declination of telescope");
             }
 
