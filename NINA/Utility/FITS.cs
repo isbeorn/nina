@@ -243,14 +243,9 @@ namespace NINA.Utility {
         }
 
         public void Write(Stream s) {
-
-            var _encodedHeader = new List<byte[]>();
-            foreach(var card in _headerCards) {
-                _encodedHeader.Add(EncodeHeader(card));
-            }
-
             /* Write header */
-            foreach (byte[] b in _encodedHeader) {
+            foreach (var card in _headerCards) {
+                var b = EncodeHeader(card);
                 s.Write(b, 0, HEADERCARDSIZE);
             }
 
@@ -258,7 +253,7 @@ namespace NINA.Utility {
             s.Write(Encoding.ASCII.GetBytes("END".PadRight(HEADERCARDSIZE)), 0, HEADERCARDSIZE);
 
             /* Write blank lines for the rest of the header block */
-            for (var i = _encodedHeader.Count + 1; i % (BLOCKSIZE / HEADERCARDSIZE) != 0; i++) {
+            for (var i = _headerCards.Count + 1; i % (BLOCKSIZE / HEADERCARDSIZE) != 0; i++) {
                 s.Write(Encoding.ASCII.GetBytes("".PadRight(HEADERCARDSIZE)), 0, HEADERCARDSIZE);
             }
 
