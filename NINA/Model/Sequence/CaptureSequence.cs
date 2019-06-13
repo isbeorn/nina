@@ -25,6 +25,7 @@ namespace NINA.Model {
             Dither = false;
             DitherAmount = 1;
             Gain = -1;
+            Offset = -1;
         }
 
         public override string ToString() {
@@ -39,6 +40,7 @@ namespace NINA.Model {
             TotalExposureCount = exposureCount;
             DitherAmount = 1;
             Gain = -1;
+            Offset = -1;
             Enabled = true;
         }
 
@@ -119,6 +121,19 @@ namespace NINA.Model {
             }
             set {
                 _gain = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int _offset;
+
+        [XmlElement(nameof(Offset))]
+        public int Offset {
+            get {
+                return _offset;
+            }
+            set {
+                _offset = value;
                 RaisePropertyChanged();
             }
         }

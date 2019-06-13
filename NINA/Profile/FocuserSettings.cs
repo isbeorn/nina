@@ -48,6 +48,7 @@ namespace NINA.Profile {
             autoFocusUseBrightestStars = 0;
             backlashIn = 0;
             backlashOut = 0;
+            autoFocusBinning = 1;
         }
 
         private string id;
@@ -218,6 +219,25 @@ namespace NINA.Profile {
             set {
                 if (backlashOut != value) {
                     backlashOut = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private short autoFocusBinning;
+
+        [DataMember]
+        public short AutoFocusBinning {
+            get {
+                return autoFocusBinning;
+            }
+            set {
+                if (autoFocusBinning != value) {
+                    if (value > 4) { 
+                        autoFocusBinning = 4;
+                    } else { 
+                        autoFocusBinning = value;
+                    }
                     RaisePropertyChanged();
                 }
             }

@@ -432,6 +432,8 @@ Berechneter HFR: {2}
   <s:String x:Key="LblHFR" xml:space="default">HFR</s:String>
   <s:String x:Key="LblHFRHistory" xml:space="default">HRF Historie</s:String>
   <s:String x:Key="LblHFRPatternDescription" xml:space="default">Berechneter HFR der Aufnahme (HFR Erkennung muss aktiv sein)</s:String>
+  <s:String x:Key="LblHigh" xml:space="default">Hoch</s:String>
+  <s:String x:Key="LblHighest" xml:space="default">Am Höchsten</s:String>
   <s:String x:Key="LblHistogram" xml:space="default">Histogramm</s:String>
   <s:String x:Key="LblHistogramResolution" xml:space="default">Histogramm Auflösung</s:String>
   <s:String x:Key="LblHistogramResolutionTooltip" xml:space="default">Spezifiziert die Anzahl an Datenpunkten, die für das Histogramm genutzt werden sollen</s:String>
@@ -536,6 +538,7 @@ Berechneter HFR: {2}
   <s:String x:Key="LblNoFilterwheel" xml:space="default">Kein Filterrad</s:String>
   <s:String x:Key="LblNoFocuser" xml:space="default">Kein Okularauszug</s:String>
   <s:String x:Key="LblNoImage" xml:space="default">Kein Bild vorhanden</s:String>
+  <s:String x:Key="LblNormal" xml:space="default">Normal</s:String>
   <s:String x:Key="LblNoRotator" xml:space="default">Kein Rotator</s:String>
   <s:String x:Key="LblNorthern" xml:space="default">Nördlich</s:String>
   <s:String x:Key="LblNoSwitch" xml:space="default">Kein Schalter</s:String>
@@ -778,6 +781,8 @@ Diese Vorlage wird beim Starten der Applikation geladen, statt der Standard Sequ
   <s:String x:Key="LblSource" xml:space="default">Quelle</s:String>
   <s:String x:Key="LblSouthern" xml:space="default">Südlich</s:String>
   <s:String x:Key="LblStarFWHM" xml:space="default"></s:String>
+  <s:String x:Key="LblStarSensitivity" xml:space="default">Empfindlichkeit für Sterne</s:String>
+  <s:String x:Key="LblStarSensitivityTooltip" xml:space="default">Legt die Empfindlichkeit des Sternerkennungsalgorithmus fest. Höhere Einstellungen, können dazu führen, dass Rauschen als Sterne erkannt werden und weiter kann es länger dauern.</s:String>
   <s:String x:Key="LblStartAutoFocus" xml:space="default">Starte Autofokus</s:String>
   <s:String x:Key="LblStartGuiding" xml:space="default">Nachführung starten</s:String>
   <s:String x:Key="LblStartGuidingButGuiderNotConnected" xml:space="default">Guider Starten ist aktiviert, jedoch ist kein Guider verbunden</s:String>

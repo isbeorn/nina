@@ -47,6 +47,7 @@
   - Ability to take multiple autofocus exposures per focus point and average their HFR. This leads to smoother autofocus curves.
   - A crop ratio has been added to the autofocus, letting users autofocus only on the center of the frame
   - Autofocus can now be set to use only the top brightest stars, so the same stars are used throughout the autofocus routine. This will work best on sparse star fields, and for stable, well-aligned equipment (e.g. so stars don't move between auto-focus exposures)
+  - Ability to use binning for autofocus
 
 ### Sequencing
 - End of Sequence Options are now available, which include:
@@ -56,6 +57,7 @@
 - It is now possible to reset the progress of a sequence item, or of a whole sequence target. If an item that occurred prior to the active sequence item is reset, stopping and starting the sequence will get back to it, but pausing/playing will keep going from the current item.
 - The sequence start button is unavailable if an imaging loop is in progress in the imaging tab
 - If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips
+- It is now possible to set the Offset in addition to the Gain within each sequence item
 
 ### Flat Wizard
 - Progress bars have been added for remaining filters and exposures
@@ -81,6 +83,14 @@
 - Debayering is now applied prior to plate-solving or auto-focus star detection
 - An Unlinked Stretch option has been added. When enabled, color channels will be stretched separately, helping hide the sky background. This results in more visible celestial objects, and helps enhance both autofocus and platesolving reliablity, especially in light polluted areas. Processing time is however increased.
 
+### Star Detection Sensitivity
+- Star Detection has been enhanced to detect more stars more accurately, while avoiding picking up noise by checking that the star is a local maximum and has sufficient bright pixels
+- In addition, a new Star Sensitivity Parameter is available in the Imaging options. It has three settings:
+	- Normal: use standard NINA star detection
+	- High: More sensitive method, with little to no performance impact. Typically picks up 1.5x - 2.5x more stars than Normal
+	- Highest: Most sensitive method, with some performance impact. Typically picks up 1.5x - 2.5x more stars than High
+- The higher the detection level, the more likely lumps of noise are liable to be picked up (despite rejection parameters to avoid that)
+
 ## Bugfixes
 - Fixed when FramingAssistant was not opened before and a DSO was selected from the SkyAtlas as Framing Source an error could occur
 - Fixed scrolling through Framing Assistant Offline Sky Map while cursor was inside Rectangle ignored zooming
@@ -91,7 +101,6 @@
 - When EOS Utility is running in the background, the x64 N.I.N.A. client will scan for this app and prevent a crash due to the EOS utility being open. Instead a notification will show up to close the EOS Utility.
 - N.I.N.A. SQLite Database will be created on demand and migrated to new versions on application startup instead of just being overwritten by the installer.
 - Setup Installer can be run in fewer clicks and is also capable of launching the application after successful installation.
-- Star detection has been enhanced to detect more stars more accurately, while avoiding picking up noise by checking that the star is a local maximum
 - Image History Graph will only contain statistics from sequence items
 - Further increased parallelism during sequencing. 
 	- After capture during image download: Parallel dither and change filter (if required)

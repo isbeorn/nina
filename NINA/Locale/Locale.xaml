@@ -432,6 +432,8 @@ Calculated HFR: {2}
   <s:String x:Key="LblHFR" xml:space="default">HFR</s:String>
   <s:String x:Key="LblHFRHistory" xml:space="default">HFR History</s:String>
   <s:String x:Key="LblHFRPatternDescription" xml:space="default">Calculated HFR of image (HFR detection has to be enabled)</s:String>
+  <s:String x:Key="LblHigh" xml:space="default">High</s:String>
+  <s:String x:Key="LblHighest" xml:space="default">Highest</s:String>
   <s:String x:Key="LblHistogram" xml:space="default">Histogram</s:String>
   <s:String x:Key="LblHistogramResolution" xml:space="default">Histogram Resolution</s:String>
   <s:String x:Key="LblHistogramResolutionTooltip" xml:space="default">Specifies the number of data points that should be used for the histogram</s:String>
@@ -536,6 +538,7 @@ Calculated HFR: {2}
   <s:String x:Key="LblNoFilterwheel" xml:space="default">No Filterwheel</s:String>
   <s:String x:Key="LblNoFocuser" xml:space="default">No Focuser</s:String>
   <s:String x:Key="LblNoImage" xml:space="default">No Image available</s:String>
+  <s:String x:Key="LblNormal" xml:space="default">Normal</s:String>
   <s:String x:Key="LblNoRotator" xml:space="default">No Rotator</s:String>
   <s:String x:Key="LblNorthern" xml:space="default">Northern</s:String>
   <s:String x:Key="LblNoSwitch" xml:space="default">No Switch</s:String>
@@ -778,6 +781,8 @@ This template will be used on startup to initialize the sequence instead of the 
   <s:String x:Key="LblSource" xml:space="default">Source</s:String>
   <s:String x:Key="LblSouthern" xml:space="default">Southern</s:String>
   <s:String x:Key="LblStarFWHM" xml:space="default">Star FWHM</s:String>
+  <s:String x:Key="LblStarSensitivity" xml:space="default">Star Sensitivity</s:String>
+  <s:String x:Key="LblStarSensitivityTooltip" xml:space="default">Determines sensitivity of star detection algorithm. Higher settings may mistakenly detect noise, and may take more time</s:String>
   <s:String x:Key="LblStartAutoFocus" xml:space="default">Start Auto Focus</s:String>
   <s:String x:Key="LblStartGuiding" xml:space="default">Start guiding</s:String>
   <s:String x:Key="LblStartGuidingButGuiderNotConnected" xml:space="default">Start Guiding is enabled, yet guider is not connected</s:String>

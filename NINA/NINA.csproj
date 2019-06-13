@@ -388,12 +388,14 @@
     <Compile Include="Utility\Converters\InverseBooleanToVisibilityCollapsedConverter.cs" />
     <Compile Include="Profile\Interfaces\ISwitchSettings.cs" />
     <Compile Include="Profile\SwitchSettings.cs" />
+    <Compile Include="Utility\Enum\StarSensitivityEnum.cs" />
     <Compile Include="Utility\Extensions\IOrderedQueryableExtension.cs" />
     <Compile Include="Utility\ImageAnalysis\BahtinovAnalysis.cs" />
     <Compile Include="Utility\ImageAnalysis\BahtinovImage.cs" />
     <Compile Include="Utility\ImageAnalysis\BayerFilter16bpp.cs" />
     <Compile Include="Utility\ImageAnalysis\ColorRemappingGeneral.cs" />
     <Compile Include="Utility\ImageAnalysis\ImageUtility.cs" />
+    <Compile Include="Utility\ImageAnalysis\NoBlurCannyEdgeDetector.cs" />
     <Compile Include="Utility\Mediator\Interfaces\ISwitchConsumer.cs" />
     <Compile Include="Utility\Mediator\Interfaces\ISwitchMediator.cs" />
     <Compile Include="Utility\Mediator\Interfaces\IWeatherDataConsumer.cs" />

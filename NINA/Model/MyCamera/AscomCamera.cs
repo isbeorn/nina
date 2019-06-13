@@ -1132,6 +1132,18 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public int OffsetMin {
+            get {
+                return 0;
+            }
+        }
+
+        public int OffsetMax {
+            get {
+                return 0;
+            }
+        }
+
         public bool CanSetUSBLimit {
             get {
                 return false;

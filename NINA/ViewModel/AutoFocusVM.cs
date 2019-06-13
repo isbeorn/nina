@@ -198,6 +198,7 @@ namespace NINA.ViewModel {
             }
             var seq = new CaptureSequence(expTime, CaptureSequence.ImageTypes.SNAP, filter, null, 1);
             seq.EnableSubSample = _setSubSample;
+            seq.Binning = new BinningMode(profileService.ActiveProfile.FocuserSettings.AutoFocusBinning, profileService.ActiveProfile.FocuserSettings.AutoFocusBinning);
 
             var oldAutoStretch = imagingMediator.SetAutoStretch(true);
             var oldDetectStars = imagingMediator.SetDetectStars(false);
@@ -227,7 +228,7 @@ namespace NINA.ViewModel {
                 pixelFormat = System.Windows.Media.PixelFormats.Gray16;
             }
 
-            var analysis = new StarDetection(image, pixelFormat);
+            var analysis = new StarDetection(image, pixelFormat, profileService.ActiveProfile.ImageSettings.StarSensitivity);
             if (profileService.ActiveProfile.FocuserSettings.AutoFocusCropRatio < 1 && !_setSubSample) {
                 analysis.IgnoreImageEdges = true;
                 analysis.CropRatio = profileService.ActiveProfile.FocuserSettings.AutoFocusCropRatio;

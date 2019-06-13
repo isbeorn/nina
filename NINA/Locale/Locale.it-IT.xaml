@@ -432,6 +432,8 @@ HFR Calcolato: {2}
   <s:String x:Key="LblHFR" xml:space="default">HFR</s:String>
   <s:String x:Key="LblHFRHistory" xml:space="default">Storia HFR</s:String>
   <s:String x:Key="LblHFRPatternDescription" xml:space="default">Calcolo della HFR dell'immagine (deve essere abilitato il rilevamento HFR)</s:String>
+  <s:String x:Key="LblHigh" xml:space="default">Alto</s:String>
+  <s:String x:Key="LblHighest" xml:space="default">Massimo</s:String>
   <s:String x:Key="LblHistogram" xml:space="default">Istogramma</s:String>
   <s:String x:Key="LblHistogramResolution" xml:space="default">Risoluzione Istogramma</s:String>
   <s:String x:Key="LblHistogramResolutionTooltip" xml:space="default">Specifica il numero di punti di dati che dovrebbero essere usati epr l'istogramma</s:String>
@@ -536,6 +538,7 @@ HFR Calcolato: {2}
   <s:String x:Key="LblNoFilterwheel" xml:space="default">Nessuna Filterwheel</s:String>
   <s:String x:Key="LblNoFocuser" xml:space="default">Nessun Focuser</s:String>
   <s:String x:Key="LblNoImage" xml:space="default">Nessuna Imamgine disponibile</s:String>
+  <s:String x:Key="LblNormal" xml:space="default">Normale</s:String>
   <s:String x:Key="LblNoRotator" xml:space="default">Nessun Rotator</s:String>
   <s:String x:Key="LblNorthern" xml:space="default">Settentrionale</s:String>
   <s:String x:Key="LblNoSwitch" xml:space="default">Nessuno Switch</s:String>
@@ -778,6 +781,8 @@ Questo tempalte sarà usato all'avvio per inizializzare la sequenza invece di qu
   <s:String x:Key="LblSource" xml:space="default">Sorgente</s:String>
   <s:String x:Key="LblSouthern" xml:space="default">Meridionale</s:String>
   <s:String x:Key="LblStarFWHM" xml:space="default">FWHM Stelle</s:String>
+  <s:String x:Key="LblStarSensitivity" xml:space="default">Sensitività stelle</s:String>
+  <s:String x:Key="LblStarSensitivityTooltip" xml:space="default">Determina la sensitività dell'algoritmo di rilevazione delle stelle. Valori più alti potrebbero rilievare rumore erroneamente e potrebbero richiedere più tempo</s:String>
   <s:String x:Key="LblStartAutoFocus" xml:space="default">Inizia Auto Focus</s:String>
   <s:String x:Key="LblStartGuiding" xml:space="default">Inizia la guida</s:String>
   <s:String x:Key="LblStartGuidingButGuiderNotConnected" xml:space="default">"Inizia guida" è abilitato, tuttavia il guider non è connesso</s:String>
