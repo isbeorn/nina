@@ -51,40 +51,42 @@ namespace NINA.Utility {
             AddHeaderCard("NAXIS1", width, "");
             AddHeaderCard("NAXIS2", height, "");
             AddHeaderCard("BZERO", 32768, "");
-            AddHeaderCard("EXTEND", true, "Extensions are permitted");   
+            AddHeaderCard("EXTEND", true, "Extensions are permitted");
         }
 
         private List<FITSHeaderCard> _headerCards = new List<FITSHeaderCard>();
+
         public ICollection<FITSHeaderCard> HeaderCards {
             get {
                 return _headerCards.AsReadOnly();
             }
         }
+
         private ushort[] _imageData;
+
         public ICollection<ushort> ImageData {
             get {
                 return Array.AsReadOnly(_imageData);
             }
         }
 
-
         /// <summary>
         /// Fills FITS Header Cards using all available ImageMetaData information
         /// </summary>
         /// <param name="metaData"></param>
         public void PopulateHeaderCards(ImageMetaData metaData) {
-            if(!string.IsNullOrWhiteSpace(metaData.Image.ImageType)) {
+            if (!string.IsNullOrWhiteSpace(metaData.Image.ImageType)) {
                 this.AddHeaderCard("IMAGETYP", metaData.Image.ImageType, "Type of exposure");
             }
 
-            if(!double.IsNaN(metaData.Image.ExposureTime)) { 
+            if (!double.IsNaN(metaData.Image.ExposureTime)) {
                 this.AddHeaderCard("EXPOSURE", metaData.Image.ExposureTime, "[s] Exposure duration");
             }
 
-            if(metaData.Image.ExposureStart > DateTime.MinValue) {
+            if (metaData.Image.ExposureStart > DateTime.MinValue) {
                 this.AddHeaderCard("DATE-LOC", metaData.Image.ExposureStart.ToLocalTime(), "Time of observation (local)");
                 this.AddHeaderCard("DATE-OBS", metaData.Image.ExposureStart.ToUniversalTime(), "Time of observation (UTC)");
-            }            
+            }
 
             /* Camera */
             if (metaData.Camera.BinX > 0) {
@@ -216,14 +218,14 @@ namespace NINA.Utility {
 
             if (!double.IsNaN(metaData.Rotator.StepSize)) {
                 /* NINA */
-                this.AddHeaderCard("ROTSTPSZ", metaData.Rotator.StepSize, "[um] Rotator step size");
+                this.AddHeaderCard("ROTSTPSZ", metaData.Rotator.StepSize, "[deg] Rotator step size");
             }
 
             this.AddHeaderCard("SWCREATE", string.Format("N.I.N.A. {0} ({1})", Utility.Version, DllLoader.IsX86() ? "x86" : "x64"), "Software that created this file");
         }
 
-        private void AddHeaderCard(string keyword, string value, string comment) {            
-            _headerCards.Add(new FITSHeaderCard(keyword, value, comment));            
+        private void AddHeaderCard(string keyword, string value, string comment) {
+            _headerCards.Add(new FITSHeaderCard(keyword, value, comment));
         }
 
         private void AddHeaderCard(string keyword, int value, string comment) {
@@ -231,7 +233,7 @@ namespace NINA.Utility {
         }
 
         private void AddHeaderCard(string keyword, double value, string comment) {
-            _headerCards.Add(new FITSHeaderCard( keyword, value, comment));
+            _headerCards.Add(new FITSHeaderCard(keyword, value, comment));
         }
 
         private void AddHeaderCard(string keyword, bool value, string comment) {
@@ -278,8 +280,6 @@ namespace NINA.Utility {
         private const int HEADERCARDSIZE = 80;
         /* Extended ascii encoding*/
         private Encoding ascii = Encoding.GetEncoding("iso-8859-1");
-                
-        
 
         /// <summary>
         /// Encodes a FITS header according to FITS specifications to be exactly 80 characters long
@@ -305,6 +305,7 @@ namespace NINA.Utility {
     }
 
     public class FITSHeaderCard {
+
         public FITSHeaderCard(string key, string value, string comment) {
             /*
              * FITS Standard 4.0, Section 4.2.1:
@@ -314,26 +315,31 @@ namespace NINA.Utility {
             this.Value = $"'{value.Replace(@"'", @"''")}'".PadRight(20); ;
             this.Comment = comment;
         }
+
         public FITSHeaderCard(string key, bool value, string comment) {
             this.Key = key;
             this.Value = value ? "T" : "F";
             this.Comment = comment;
         }
+
         public FITSHeaderCard(string key, double value, string comment) {
             this.Key = key;
             this.Value = Math.Round(value, 15).ToString(CultureInfo.InvariantCulture);
             this.Comment = comment;
         }
+
         public FITSHeaderCard(string key, DateTime value, string comment) {
             this.Key = key;
             this.Value = value.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fff", System.Globalization.CultureInfo.InvariantCulture);
             this.Comment = comment;
         }
+
         public FITSHeaderCard(string key, int value, string comment) {
             this.Key = key;
             this.Value = value.ToString(CultureInfo.InvariantCulture);
             this.Comment = comment;
         }
+
         public string Key { get; }
         public string Value { get; }
         public string Comment { get; }

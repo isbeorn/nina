@@ -11,16 +11,18 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace NINATest {
+
     [TestFixture]
-    class FITSTest {
+    internal class FITSTest {
+
         [Test]
         public void FITSConstructorTest() {
             //Arragne
             var width = 2;
             var height = 2;
             ushort[] data = new ushort[width * height];
-            for(var i = 0; i < width; i++) {
-                for(var j = 0; j < height; j++) {
+            for (var i = 0; i < width; i++) {
+                for (var j = 0; j < height; j++) {
                     data[i + j] = 1;
                 }
             }
@@ -37,12 +39,12 @@ namespace NINATest {
 
             //Act
             var sut = new FITS(data, width, height);
-                 
+
             //Assert
             sut.ImageData.Should().BeEquivalentTo(data);
             sut.HeaderCards.Count.Should().Be(expectedHeaderCards.Count);
 
-            foreach(var expectedCard in expectedHeaderCards) {
+            foreach (var expectedCard in expectedHeaderCards) {
                 sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
@@ -56,7 +58,6 @@ namespace NINATest {
                 new FITSHeaderCard("XBINNING",1, "X axis binning factor"),
                 new FITSHeaderCard("YBINNING",1, "Y axis binning factor"),
                 new FITSHeaderCard("SWCREATE",string.Format("N.I.N.A. {0} ({1})", Utility.Version, DllLoader.IsX86() ? "x86" : "x64"), "Software that created this file"),
-
             };
 
             //Act
@@ -70,7 +71,7 @@ namespace NINATest {
             }
         }
 
-        [Test] 
+        [Test]
         public void FITSImageMetaDataPopulated() {
             //Arrange
             var now = DateTime.Now;
@@ -84,7 +85,6 @@ namespace NINATest {
                 new FITSHeaderCard("EXPOSURE", metaData.Image.ExposureTime, "[s] Exposure duration"),
                 new FITSHeaderCard("DATE-LOC", metaData.Image.ExposureStart.ToLocalTime(), "Time of observation (local)"),
                 new FITSHeaderCard("DATE-OBS", metaData.Image.ExposureStart.ToUniversalTime(), "Time of observation (UTC)"),
-                
             };
 
             //Act
@@ -104,11 +104,11 @@ namespace NINATest {
             metaData.Camera.Name = "TEST";
 
             metaData.Camera.BinX = 2;
-            metaData.Camera.BinY= 3;
+            metaData.Camera.BinY = 3;
             metaData.Camera.Gain = 200;
             metaData.Camera.Offset = 22;
             metaData.Camera.ElectronsPerADU = 11;
-            metaData.Camera.PixelSize= 12;
+            metaData.Camera.PixelSize = 12;
             metaData.Camera.SetPoint = -5;
             metaData.Camera.Temperature = -4.454;
 
@@ -123,7 +123,6 @@ namespace NINATest {
                 new FITSHeaderCard("YPIXSZ", metaData.Camera.PixelSize, "[um] Pixel Y axis size"),
                 new FITSHeaderCard("SET-TEMP", metaData.Camera.SetPoint, "[C] CCD temperature setpoint"),
                 new FITSHeaderCard("CCD-TEMP", metaData.Camera.Temperature, "[C] CCD temperature"),
-
             };
 
             var sut = new FITS(new ushort[] { 1, 2 }, 1, 1);
@@ -149,7 +148,6 @@ namespace NINATest {
                 new FITSHeaderCard("FOCRATIO", metaData.Telescope.FocalRatio, "Focal ratio"),
                 new FITSHeaderCard("RA", metaData.Telescope.Coordinates.RADegrees, "[deg] RA of telescope"),
                 new FITSHeaderCard("DEC", metaData.Telescope.Coordinates.Dec, "[deg] Declination of telescope")
-
             };
 
             var sut = new FITS(new ushort[] { 1, 2 }, 1, 1);
@@ -172,7 +170,6 @@ namespace NINATest {
                 new FITSHeaderCard("SITEELEV", metaData.Observer.Elevation, "[m] Observation site elevation"),
                 new FITSHeaderCard("SITELAT", metaData.Observer.Latitude, "[deg] Observation site latitude"),
                 new FITSHeaderCard("SITELONG", metaData.Observer.Longitude, "[deg] Observation site longitude")
-
             };
 
             var sut = new FITS(new ushort[] { 1, 2 }, 1, 1);
@@ -193,7 +190,6 @@ namespace NINATest {
             var expectedHeaderCards = new List<FITSHeaderCard>() {
                 new FITSHeaderCard("FWHEEL", metaData.FilterWheel.Name, "Filter Wheel name"),
                 new FITSHeaderCard("FILTER", metaData.FilterWheel.Filter, "Active filter name")
-
             };
 
             var sut = new FITS(new ushort[] { 1, 2 }, 1, 1);
@@ -215,7 +211,6 @@ namespace NINATest {
                 new FITSHeaderCard("OBJECT", metaData.Target.Name, "Name of the object of interest"),
                 new FITSHeaderCard("OBJCTRA", Astrometry.HoursToFitsHMS(metaData.Target.Coordinates.RA), "[H M S] RA of imaged object"),
                 new FITSHeaderCard("OBJCTDEC", Astrometry.DegreesToFitsDMS(metaData.Target.Coordinates.Dec), "[D M S] Declination of imaged object"),
-
             };
 
             var sut = new FITS(new ushort[] { 1, 2 }, 1, 1);
@@ -242,7 +237,6 @@ namespace NINATest {
                 new FITSHeaderCard("FOCUSSZ", metaData.Focuser.StepSize, "[um] Focuser step size"),
                 new FITSHeaderCard("FOCTEMP", metaData.Focuser.Temperature, "[C] Focuser temperature"),
                 new FITSHeaderCard("FOCUSTEM", metaData.Focuser.Temperature, "[C] Focuser temperature"),
-
             };
 
             var sut = new FITS(new ushort[] { 1, 2 }, 1, 1);
@@ -250,7 +244,7 @@ namespace NINATest {
 
             foreach (var expectedCard in expectedHeaderCards) {
                 sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
-            } 
+            }
         }
 
         [Test]
@@ -265,8 +259,7 @@ namespace NINATest {
                 new FITSHeaderCard("ROTNAME", metaData.Rotator.Name, "Rotator equipment name"),
                 new FITSHeaderCard("ROTATOR", metaData.Rotator.Position, "[deg] Rotator angle"),
                 new FITSHeaderCard("ROTATANG", metaData.Rotator.Position, "[deg] Rotator angle"),
-                new FITSHeaderCard("ROTSTPSZ", metaData.Rotator.StepSize, "[um] Rotator step size"),
-
+                new FITSHeaderCard("ROTSTPSZ", metaData.Rotator.StepSize, "[deg] Rotator step size"),
             };
 
             var sut = new FITS(new ushort[] { 1, 2 }, 1, 1);
@@ -405,7 +398,7 @@ namespace NINATest {
         [Test]
         public void FITSHeaderCardDateTest() {
             var key = "SOME";
-            var value = new DateTime(2012,1,10,1,20,12,111);
+            var value = new DateTime(2012, 1, 10, 1, 20, 12, 111);
             var comment = "some comment";
 
             var sut = new FITSHeaderCard(key, value, comment);

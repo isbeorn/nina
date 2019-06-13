@@ -27,6 +27,7 @@
 using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -202,6 +203,165 @@ namespace NINA.Utility {
             }
         }
 
+        public void Populate(ImageMetaData metaData) {
+            if (metaData.Image.ExposureStart > DateTime.MinValue) {
+                this.AddImageProperty(XISFImageProperty.Observation.Time.Start, metaData.Image.ExposureStart.ToUniversalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ss.fff", CultureInfo.InvariantCulture), "Time of observation (UTC)");
+                this.AddImageFITSKeyword("DATE-LOC", metaData.Image.ExposureStart.ToLocalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ss.fff", CultureInfo.InvariantCulture), "Time of observation (local)");
+            }
+
+            if (!double.IsNaN(metaData.Image.ExposureTime)) {
+                this.AddImageProperty(XISFImageProperty.Instrument.ExposureTime, metaData.Image.ExposureTime.ToString(System.Globalization.CultureInfo.InvariantCulture), "[s] Exposure duration");
+            }
+
+            /* Camera */
+            if (!string.IsNullOrWhiteSpace(metaData.Camera.Name)) {
+                this.AddImageProperty(XISFImageProperty.Instrument.Camera.Name, metaData.Camera.Name, "Imaging instrument name");
+            }
+            if (!double.IsNaN(metaData.Camera.Gain) && metaData.Camera.Gain >= 0) {
+                this.AddImageFITSKeyword("GAIN", metaData.Camera.Gain.ToString(CultureInfo.InvariantCulture), "Sensor gain");
+            }
+
+            if (!double.IsNaN(metaData.Camera.Offset) && metaData.Camera.Offset >= 0) {
+                this.AddImageFITSKeyword("OFFSET", metaData.Camera.Offset.ToString(CultureInfo.InvariantCulture), "Sensor gain offset");
+            }
+
+            if (!double.IsNaN(metaData.Camera.ElectronsPerADU)) {
+                this.AddImageProperty(XISFImageProperty.Instrument.Camera.Gain, metaData.Camera.ElectronsPerADU.ToString(CultureInfo.InvariantCulture), "[e-/ADU] Electrons per A/D unit");
+            }
+
+            if (metaData.Camera.BinX > 0) {
+                this.AddImageProperty(XISFImageProperty.Instrument.Camera.XBinning, metaData.Camera.BinX.ToString(CultureInfo.InvariantCulture), "X axis binning factor");
+            }
+            if (metaData.Camera.BinY > 0) {
+                this.AddImageProperty(XISFImageProperty.Instrument.Camera.YBinning, metaData.Camera.BinY.ToString(CultureInfo.InvariantCulture), "Y axis binning factor");
+            }
+
+            if (!double.IsNaN(metaData.Camera.SetPoint)) {
+                this.AddImageFITSKeyword("SET-TEMP", metaData.Camera.SetPoint.ToString(CultureInfo.InvariantCulture), "[C] CCD temperature setpoint");
+            }
+
+            if (!double.IsNaN(metaData.Camera.Temperature)) {
+                this.AddImageProperty(XISFImageProperty.Instrument.Sensor.Temperature, metaData.Camera.Temperature.ToString(CultureInfo.InvariantCulture), "[C] CCD temperature");
+            }
+            if (!double.IsNaN(metaData.Camera.PixelSize)) {
+                this.AddImageProperty(XISFImageProperty.Instrument.Sensor.XPixelSize, metaData.Camera.PixelSize.ToString(CultureInfo.InvariantCulture), "[um] Pixel X axis size");
+                this.AddImageProperty(XISFImageProperty.Instrument.Sensor.YPixelSize, metaData.Camera.PixelSize.ToString(CultureInfo.InvariantCulture), "[um] Pixel Y axis size");
+            }
+
+            /* Observer */
+            if (!double.IsNaN(metaData.Observer.Elevation)) {
+                this.AddImageProperty(XISFImageProperty.Observation.Location.Elevation, metaData.Observer.Elevation.ToString(CultureInfo.InvariantCulture), "[m] Observation site elevation");
+            }
+            if (!double.IsNaN(metaData.Observer.Elevation)) {
+                this.AddImageProperty(XISFImageProperty.Observation.Location.Latitude, metaData.Observer.Latitude.ToString(CultureInfo.InvariantCulture), "[deg] Observation site latitude");
+            }
+            if (!double.IsNaN(metaData.Observer.Elevation)) {
+                this.AddImageProperty(XISFImageProperty.Observation.Location.Longitude, metaData.Observer.Longitude.ToString(CultureInfo.InvariantCulture), "[deg] Observation site longitude");
+            }
+
+            /* Telescope */
+            if (!string.IsNullOrWhiteSpace(metaData.Telescope.Name)) {
+                this.AddImageProperty(XISFImageProperty.Instrument.Telescope.Name, metaData.Telescope.Name.ToString(CultureInfo.InvariantCulture), "Name of telescope");
+            }
+            if (!double.IsNaN(metaData.Telescope.FocalLength)) {
+                this.AddImageProperty(XISFImageProperty.Instrument.Telescope.FocalLength, metaData.Telescope.FocalLength.ToString(CultureInfo.InvariantCulture), "[mm] Focal length");
+
+                if (!double.IsNaN(metaData.Telescope.FocalRatio) && metaData.Telescope.FocalRatio > 0) {
+                    var apterture = metaData.Telescope.FocalLength / metaData.Telescope.FocalRatio;
+                    this.AddImageProperty(XISFImageProperty.Instrument.Telescope.Aperture, apterture.ToString(CultureInfo.InvariantCulture), "[mm] Aperture", false);
+                    this.AddImageFITSKeyword("FOCRATIO", metaData.Telescope.FocalRatio.ToString(CultureInfo.InvariantCulture), "Focal ratio");
+                }
+            }
+
+            if (metaData.Telescope.Coordinates != null) {
+                this.AddImageProperty(XISFImageProperty.Observation.Center.RA, metaData.Telescope.Coordinates.RADegrees.ToString(CultureInfo.InvariantCulture), "[deg] RA of telescope");
+                this.AddImageProperty(XISFImageProperty.Observation.Center.Dec, metaData.Telescope.Coordinates.Dec.ToString(CultureInfo.InvariantCulture), "[deg] Declination of telescope");
+            }
+
+            /* Target */
+            if (!string.IsNullOrWhiteSpace(metaData.Target.Name)) {
+                this.AddImageProperty(XISFImageProperty.Observation.Object.Name, metaData.Target.Name, "Name of the object of interest");
+            }
+
+            if (metaData.Target.Coordinates != null) {
+                this.AddImageProperty(XISFImageProperty.Observation.Object.RA, metaData.Target.Coordinates.RADegrees.ToString(CultureInfo.InvariantCulture), "[deg] RA of imaged object", false);
+                this.AddImageFITSKeyword(XISFImageProperty.Observation.Object.RA[2], Astrometry.Astrometry.HoursToFitsHMS(metaData.Target.Coordinates.RA), "[H M S] RA of imaged object");
+                this.AddImageProperty(XISFImageProperty.Observation.Object.Dec, metaData.Target.Coordinates.Dec.ToString(CultureInfo.InvariantCulture), "[deg] Declination of imaged object", false);
+                this.AddImageFITSKeyword(XISFImageProperty.Observation.Object.Dec[2], Astrometry.Astrometry.DegreesToFitsDMS(metaData.Target.Coordinates.Dec), "[D M S] Declination of imaged object");
+            }
+
+            /* Focuser */
+
+            if (!string.IsNullOrWhiteSpace(metaData.Focuser.Name)) {
+                /* fits4win, SGP */
+                this.AddImageFITSKeyword("FOCNAME", metaData.Focuser.Name, "Focusing equipment name");
+            }
+
+            /*
+             * XISF 1.0 defines Instrument:Focuser:Position as the only focuser-related image property.
+             * This image property is: "(Float32) Estimated position of the focuser in millimetres, measured with respect to a device-dependent origin."
+             * This unit is different from FOCUSPOS FITSKeyword, so we must do two separate actions: calculate distance from origin in millimetres and insert
+             * that as the XISF Instrument:Focuser:Position property, and then insert the separate FOCUSPOS FITSKeyword (measured in steps).
+             */
+            if (!double.IsNaN(metaData.Focuser.Position)) {
+                if (!double.IsNaN(metaData.Focuser.StepSize)) {
+                    /* steps * step size (microns) converted to millimetres, single-precision float */
+                    float focusDistance = (float)((metaData.Focuser.Position * metaData.Focuser.StepSize) / 1000.0);
+                    this.AddImageProperty(XISFImageProperty.Instrument.Focuser.Position, focusDistance.ToString(CultureInfo.InvariantCulture));
+                }
+
+                /* fits4win, SGP */
+                this.AddImageFITSKeyword("FOCPOS", metaData.Focuser.Position.ToString(CultureInfo.InvariantCulture), "[step] Focuser position");
+
+                /* MaximDL, several observatories */
+                this.AddImageFITSKeyword("FOCUSPOS", metaData.Focuser.Position.ToString(CultureInfo.InvariantCulture), "[step] Focuser position");
+            }
+
+            if (!double.IsNaN(metaData.Focuser.StepSize)) {
+                /* MaximDL */
+                this.AddImageFITSKeyword("FOCUSSZ", metaData.Focuser.StepSize.ToString(CultureInfo.InvariantCulture), "[um] Focuser step size");
+            }
+
+            if (!double.IsNaN(metaData.Focuser.Temperature)) {
+                /* fits4win, SGP */
+                this.AddImageFITSKeyword("FOCTEMP", metaData.Focuser.Temperature.ToString(CultureInfo.InvariantCulture), "[C] Focuser temperature");
+
+                /* MaximDL, several observatories */
+                this.AddImageFITSKeyword("FOCUSTEM", metaData.Focuser.Temperature.ToString(CultureInfo.InvariantCulture), "[C] Focuser temperature");
+            }
+
+            /* Rotator */
+            if (!string.IsNullOrWhiteSpace(metaData.Rotator.Name)) {
+                /* NINA */
+                this.AddImageFITSKeyword("ROTNAME", metaData.Rotator.Name, "Rotator equipment name");
+            }
+
+            if (!double.IsNaN(metaData.Rotator.Position)) {
+                /* fits4win */
+                this.AddImageFITSKeyword("ROTATOR", metaData.Rotator.Position.ToString(CultureInfo.InvariantCulture), "[deg] Rotator angle");
+
+                /* MaximDL, several observatories */
+                this.AddImageFITSKeyword("ROTATANG", metaData.Rotator.Position.ToString(CultureInfo.InvariantCulture), "[deg] Rotator angle");
+            }
+
+            if (!double.IsNaN(metaData.Rotator.StepSize)) {
+                /* NINA */
+                this.AddImageFITSKeyword("ROTSTPSZ", metaData.Rotator.StepSize.ToString(CultureInfo.InvariantCulture), "[deg] Rotator step size");
+            }
+
+            if (!string.IsNullOrWhiteSpace(metaData.FilterWheel.Name)) {
+                /* fits4win */
+                this.AddImageFITSKeyword("FWHEEL", metaData.FilterWheel.Name, "Filter Wheel name");
+            }
+
+            if (!string.IsNullOrWhiteSpace(metaData.FilterWheel.Filter)) {
+                /* fits4win */
+                this.AddImageProperty(XISFImageProperty.Instrument.Filter.Name, metaData.FilterWheel.Filter, "Active filter name");
+            }
+
+            this.AddImageFITSKeyword("SWCREATE", string.Format("N.I.N.A. {0} ({1})", Utility.Version, DllLoader.IsX86() ? "x86" : "x64"), "Software that created this file");
+        }
+
         /// <summary>
         /// Add meta data property to file
         /// </summary>
@@ -368,8 +528,8 @@ namespace NINA.Utility {
 
             public static class Center {
                 public static readonly string Namespace = Observation.Namespace + "Center:";
-                public static readonly string[] Dec = { Namespace + nameof(Dec), "Float64", "OBJCTDEC", "DEC" };
-                public static readonly string[] RA = { Namespace + nameof(RA), "Float64", "OBJCTRA", "RA" };
+                public static readonly string[] Dec = { Namespace + nameof(Dec), "Float64", "DEC" };
+                public static readonly string[] RA = { Namespace + nameof(RA), "Float64", "RA" };
                 public static readonly string[] X = { Namespace + nameof(X), "Float64" };
                 public static readonly string[] Y = { Namespace + nameof(Y), "Float64" };
             }
@@ -398,8 +558,8 @@ namespace NINA.Utility {
 
             public static class Object {
                 public static readonly string Namespace = Observation.Namespace + "Object:";
-                public static readonly string[] Dec = { Namespace + nameof(Dec), "Float64" };
-                public static readonly string[] RA = { Namespace + nameof(RA), "Float64" };
+                public static readonly string[] Dec = { Namespace + nameof(Dec), "Float64", "OBJCTDEC" };
+                public static readonly string[] RA = { Namespace + nameof(RA), "Float64", "OBJCTRA" };
                 public static readonly string[] Name = { Namespace + nameof(Name), "String", "OBJECT" };
             }
 
