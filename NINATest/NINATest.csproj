@@ -122,6 +122,7 @@
     <Compile Include="AstrometryTest.cs" />
     <Compile Include="CaptureSequenceTest.cs" />
     <Compile Include="CoordinatesTest.cs" />
+    <Compile Include="FITSTest.cs" />
     <Compile Include="FlatWizardExposureTimeFinderServiceTest.cs" />
     <Compile Include="FlatWizardVMTest.cs" />
     <Compile Include="GuideStepsHistoryTest.cs" />

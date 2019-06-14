@@ -1219,7 +1219,7 @@ namespace NINA.ViewModel {
                     progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblEndOfSequenceWarmCamera"] });
                     Logger.Trace("Starting to warm the camera");
                     IProgress<double> warmProgress = new Progress<double>();
-                    await cameraMediator.StartChangeCameraTemp(warmProgress, 10, TimeSpan.FromMinutes(20), true, _canceltoken.Token);
+                    await cameraMediator.StartChangeCameraTemp(warmProgress, 10, TimeSpan.FromMinutes(10), true, _canceltoken.Token);
                     Logger.Trace("Camera has been warmed");
                 }
             }

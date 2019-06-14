@@ -24,6 +24,7 @@
 
 #endregion "copyright"
 
+using NINA.Model.ImageData;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -39,7 +40,7 @@ namespace NINA.Utility {
     /// </summary>
     public class FITS {
 
-        public FITS(ushort[] data, int width, int height, string imageType, double exposuretime) {
+        public FITS(ushort[] data, int width, int height) {
             this._imageData = data;
 
             DateTime now = DateTime.Now;
@@ -51,31 +52,202 @@ namespace NINA.Utility {
             AddHeaderCard("NAXIS2", height, "");
             AddHeaderCard("BZERO", 32768, "");
             AddHeaderCard("EXTEND", true, "Extensions are permitted");
-            AddHeaderCard("DATE-OBS", now.ToUniversalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ss.fff", System.Globalization.CultureInfo.InvariantCulture), "Time of observation (UTC)");
-            AddHeaderCard("DATE-LOC", now.ToLocalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ss.fff", System.Globalization.CultureInfo.InvariantCulture), "Time of observation (local)");
-            AddHeaderCard("IMAGETYP", imageType, "Type of exposure");
-            AddHeaderCard("EXPOSURE", exposuretime, "[s] Exposure duration");
         }
 
-        public void AddHeaderCard(string keyword, string value, string comment) {
-            EncodeCharacterStringHeader(keyword, value, comment);
+        private List<FITSHeaderCard> _headerCards = new List<FITSHeaderCard>();
+
+        public ICollection<FITSHeaderCard> HeaderCards {
+            get {
+                return _headerCards.AsReadOnly();
+            }
         }
 
-        public void AddHeaderCard(string keyword, int value, string comment) {
-            EncodeHeader(keyword, value.ToString(CultureInfo.InvariantCulture), comment);
+        private ushort[] _imageData;
+
+        public ICollection<ushort> ImageData {
+            get {
+                return Array.AsReadOnly(_imageData);
+            }
         }
 
-        public void AddHeaderCard(string keyword, double value, string comment) {
-            EncodeHeader(keyword, Math.Round(value, 15).ToString(CultureInfo.InvariantCulture), comment);
+        /// <summary>
+        /// Fills FITS Header Cards using all available ImageMetaData information
+        /// </summary>
+        /// <param name="metaData"></param>
+        public void PopulateHeaderCards(ImageMetaData metaData) {
+            if (!string.IsNullOrWhiteSpace(metaData.Image.ImageType)) {
+                this.AddHeaderCard("IMAGETYP", metaData.Image.ImageType, "Type of exposure");
+            }
+
+            if (!double.IsNaN(metaData.Image.ExposureTime)) {
+                this.AddHeaderCard("EXPOSURE", metaData.Image.ExposureTime, "[s] Exposure duration");
+            }
+
+            if (metaData.Image.ExposureStart > DateTime.MinValue) {
+                this.AddHeaderCard("DATE-LOC", metaData.Image.ExposureStart.ToLocalTime(), "Time of observation (local)");
+                this.AddHeaderCard("DATE-OBS", metaData.Image.ExposureStart.ToUniversalTime(), "Time of observation (UTC)");
+            }
+
+            /* Camera */
+            if (metaData.Camera.BinX > 0) {
+                this.AddHeaderCard("XBINNING", metaData.Camera.BinX, "X axis binning factor");
+            }
+            if (metaData.Camera.BinY > 0) {
+                this.AddHeaderCard("YBINNING", metaData.Camera.BinY, "Y axis binning factor");
+            }
+
+            if (!double.IsNaN(metaData.Camera.Gain)) {
+                this.AddHeaderCard("GAIN", metaData.Camera.Gain, "Sensor gain");
+            }
+
+            if (metaData.Camera.Offset >= 0) {
+                this.AddHeaderCard("OFFSET", metaData.Camera.Offset, "Sensor gain offset");
+            }
+
+            if (!double.IsNaN(metaData.Camera.ElectronsPerADU)) {
+                this.AddHeaderCard("EGAIN", metaData.Camera.ElectronsPerADU, "[e-/ADU] Electrons per A/D unit");
+            }
+
+            if (!double.IsNaN(metaData.Camera.PixelSize)) {
+                this.AddHeaderCard("XPIXSZ", metaData.Camera.PixelSize, "[um] Pixel X axis size");
+                this.AddHeaderCard("YPIXSZ", metaData.Camera.PixelSize, "[um] Pixel Y axis size");
+            }
+
+            if (!string.IsNullOrEmpty(metaData.Camera.Name)) {
+                this.AddHeaderCard("INSTRUME", metaData.Camera.Name, "Imaging instrument name");
+            }
+
+            if (!double.IsNaN(metaData.Camera.SetPoint)) {
+                this.AddHeaderCard("SET-TEMP", metaData.Camera.SetPoint, "[C] CCD temperature setpoint");
+            }
+
+            if (!double.IsNaN(metaData.Camera.Temperature)) {
+                this.AddHeaderCard("CCD-TEMP", metaData.Camera.Temperature, "[C] CCD temperature");
+            }
+
+            /* Telescope */
+            if (!string.IsNullOrWhiteSpace(metaData.Telescope.Name)) {
+                this.AddHeaderCard("TELESCOP", metaData.Telescope.Name, "Name of telescope");
+            }
+
+            if (!double.IsNaN(metaData.Telescope.FocalLength)) {
+                this.AddHeaderCard("FOCALLEN", metaData.Telescope.FocalLength, "[mm] Focal length");
+            }
+
+            if (!double.IsNaN(metaData.Telescope.FocalRatio) && metaData.Telescope.FocalRatio > 0) {
+                this.AddHeaderCard("FOCRATIO", metaData.Telescope.FocalRatio, "Focal ratio");
+            }
+
+            if (metaData.Telescope.Coordinates != null) {
+                this.AddHeaderCard("RA", metaData.Telescope.Coordinates.RADegrees, "[deg] RA of telescope");
+                this.AddHeaderCard("DEC", metaData.Telescope.Coordinates.Dec, "[deg] Declination of telescope");
+            }
+
+            /* Observer */
+            if (!double.IsNaN(metaData.Observer.Elevation)) {
+                this.AddHeaderCard("SITEELEV", metaData.Observer.Elevation, "[m] Observation site elevation");
+            }
+            if (!double.IsNaN(metaData.Observer.Elevation)) {
+                this.AddHeaderCard("SITELAT", metaData.Observer.Latitude, "[deg] Observation site latitude");
+            }
+            if (!double.IsNaN(metaData.Observer.Elevation)) {
+                this.AddHeaderCard("SITELONG", metaData.Observer.Longitude, "[deg] Observation site longitude");
+            }
+
+            /* Filter Wheel */
+            if (!string.IsNullOrWhiteSpace(metaData.FilterWheel.Name)) {
+                /* fits4win */
+                this.AddHeaderCard("FWHEEL", metaData.FilterWheel.Name, "Filter Wheel name");
+            }
+
+            if (!string.IsNullOrWhiteSpace(metaData.FilterWheel.Filter)) {
+                /* fits4win */
+                this.AddHeaderCard("FILTER", metaData.FilterWheel.Filter, "Active filter name");
+            }
+
+            /* Target */
+            if (!string.IsNullOrWhiteSpace(metaData.Target.Name)) {
+                this.AddHeaderCard("OBJECT", metaData.Target.Name, "Name of the object of interest");
+            }
+
+            if (metaData.Target.Coordinates != null) {
+                this.AddHeaderCard("OBJCTRA", Astrometry.Astrometry.HoursToFitsHMS(metaData.Target.Coordinates.RA), "[H M S] RA of imaged object");
+                this.AddHeaderCard("OBJCTDEC", Astrometry.Astrometry.DegreesToFitsDMS(metaData.Target.Coordinates.Dec), "[D M S] Declination of imaged object");
+            }
+
+            /* Focuser */
+            if (!string.IsNullOrWhiteSpace(metaData.Focuser.Name)) {
+                /* fits4win, SGP */
+                this.AddHeaderCard("FOCNAME", metaData.Focuser.Name, "Focusing equipment name");
+            }
+
+            if (!double.IsNaN(metaData.Focuser.Position)) {
+                /* fits4win, SGP */
+                this.AddHeaderCard("FOCPOS", metaData.Focuser.Position, "[step] Focuser position");
+
+                /* MaximDL, several observatories */
+                this.AddHeaderCard("FOCUSPOS", metaData.Focuser.Position, "[step] Focuser position");
+            }
+
+            if (!double.IsNaN(metaData.Focuser.StepSize)) {
+                /* MaximDL */
+                this.AddHeaderCard("FOCUSSZ", metaData.Focuser.StepSize, "[um] Focuser step size");
+            }
+
+            if (!double.IsNaN(metaData.Focuser.Temperature)) {
+                /* fits4win, SGP */
+                this.AddHeaderCard("FOCTEMP", metaData.Focuser.Temperature, "[C] Focuser temperature");
+
+                /* MaximDL, several observatories */
+                this.AddHeaderCard("FOCUSTEM", metaData.Focuser.Temperature, "[C] Focuser temperature");
+            }
+
+            /* Rotator */
+            if (!string.IsNullOrEmpty(metaData.Rotator.Name)) {
+                /* NINA */
+                this.AddHeaderCard("ROTNAME", metaData.Rotator.Name, "Rotator equipment name");
+            }
+
+            if (!double.IsNaN(metaData.Rotator.Position)) {
+                /* fits4win */
+                this.AddHeaderCard("ROTATOR", metaData.Rotator.Position, "[deg] Rotator angle");
+
+                /* MaximDL, several observatories */
+                this.AddHeaderCard("ROTATANG", metaData.Rotator.Position, "[deg] Rotator angle");
+            }
+
+            if (!double.IsNaN(metaData.Rotator.StepSize)) {
+                /* NINA */
+                this.AddHeaderCard("ROTSTPSZ", metaData.Rotator.StepSize, "[deg] Rotator step size");
+            }
+
+            this.AddHeaderCard("SWCREATE", string.Format("N.I.N.A. {0} ({1})", Utility.Version, DllLoader.IsX86() ? "x86" : "x64"), "Software that created this file");
         }
 
-        public void AddHeaderCard(string keyword, bool value, string comment) {
-            EncodeHeader(keyword, value ? "T" : "F", comment);
+        private void AddHeaderCard(string keyword, string value, string comment) {
+            _headerCards.Add(new FITSHeaderCard(keyword, value, comment));
+        }
+
+        private void AddHeaderCard(string keyword, int value, string comment) {
+            _headerCards.Add(new FITSHeaderCard(keyword, value, comment));
+        }
+
+        private void AddHeaderCard(string keyword, double value, string comment) {
+            _headerCards.Add(new FITSHeaderCard(keyword, value, comment));
+        }
+
+        private void AddHeaderCard(string keyword, bool value, string comment) {
+            _headerCards.Add(new FITSHeaderCard(keyword, value, comment));
+        }
+
+        private void AddHeaderCard(string keyword, DateTime value, string comment) {
+            _headerCards.Add(new FITSHeaderCard(keyword, value, comment));
         }
 
         public void Write(Stream s) {
             /* Write header */
-            foreach (byte[] b in _encodedHeader) {
+            foreach (var card in _headerCards) {
+                var b = EncodeHeader(card);
                 s.Write(b, 0, HEADERCARDSIZE);
             }
 
@@ -83,7 +255,7 @@ namespace NINA.Utility {
             s.Write(Encoding.ASCII.GetBytes("END".PadRight(HEADERCARDSIZE)), 0, HEADERCARDSIZE);
 
             /* Write blank lines for the rest of the header block */
-            for (var i = _encodedHeader.Count + 1; i % (BLOCKSIZE / HEADERCARDSIZE) != 0; i++) {
+            for (var i = _headerCards.Count + 1; i % (BLOCKSIZE / HEADERCARDSIZE) != 0; i++) {
                 s.Write(Encoding.ASCII.GetBytes("".PadRight(HEADERCARDSIZE)), 0, HEADERCARDSIZE);
             }
 
@@ -109,26 +281,6 @@ namespace NINA.Utility {
         /* Extended ascii encoding*/
         private Encoding ascii = Encoding.GetEncoding("iso-8859-1");
 
-        private List<byte[]> _encodedHeader = new List<byte[]>();
-        private ushort[] _imageData;
-
-        /// <summary>
-        /// Encode a character string by adding quotations to the value '{value}'
-        /// </summary>
-        /// <param name="keyword">FITS Keyword. Max length 8 chars</param>
-        /// <param name="value">Keyword string value</param>
-        /// <param name="comment">Description of Keyword</param>
-        private void EncodeCharacterStringHeader(string keyword, string value, string comment) {
-            /*
-             * FITS Standard 4.0, Section 4.2.1:
-             * A single quote is represented within a string as two successive single quotes
-             */
-            value = value.Replace(@"'", @"''");
-
-            var encodedValue = $"'{value}'".PadRight(20);
-            EncodeHeader(keyword, encodedValue, comment);
-        }
-
         /// <summary>
         /// Encodes a FITS header according to FITS specifications to be exactly 80 characters long
         /// value + comment length must not exceed 67 characters
@@ -141,14 +293,55 @@ namespace NINA.Utility {
         /// http://archive.stsci.edu/fits/fits_standard/node29.html#SECTION00912100000000000000
         /// More in depth: https://fits.gsfc.nasa.gov/fits_standard.html
         /// </remarks>
-        private void EncodeHeader(string keyword, string value, string comment) {
-            var encodedKeyword = keyword.ToUpper().PadRight(8);
-            var encodedValue = value.PadLeft(20);
+        private byte[] EncodeHeader(FITSHeaderCard card) {
+            var encodedKeyword = card.Key.ToUpper().PadRight(8);
+            var encodedValue = card.Value.PadLeft(20);
 
             var header = $"{encodedKeyword}= {encodedValue} / ";
-            var encodedComment = comment.PadRight(80 - header.Length);
+            var encodedComment = card.Comment.PadRight(80 - header.Length);
             header += encodedComment;
-            _encodedHeader.Add(ascii.GetBytes(header));
+            return ascii.GetBytes(header);
         }
+    }
+
+    public class FITSHeaderCard {
+
+        public FITSHeaderCard(string key, string value, string comment) {
+            /*
+             * FITS Standard 4.0, Section 4.2.1:
+             * A single quote is represented within a string as two successive single quotes
+             */
+            this.Key = key;
+            this.Value = $"'{value.Replace(@"'", @"''")}'".PadRight(20); ;
+            this.Comment = comment;
+        }
+
+        public FITSHeaderCard(string key, bool value, string comment) {
+            this.Key = key;
+            this.Value = value ? "T" : "F";
+            this.Comment = comment;
+        }
+
+        public FITSHeaderCard(string key, double value, string comment) {
+            this.Key = key;
+            this.Value = Math.Round(value, 15).ToString(CultureInfo.InvariantCulture);
+            this.Comment = comment;
+        }
+
+        public FITSHeaderCard(string key, DateTime value, string comment) {
+            this.Key = key;
+            this.Value = value.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fff", System.Globalization.CultureInfo.InvariantCulture);
+            this.Comment = comment;
+        }
+
+        public FITSHeaderCard(string key, int value, string comment) {
+            this.Key = key;
+            this.Value = value.ToString(CultureInfo.InvariantCulture);
+            this.Comment = comment;
+        }
+
+        public string Key { get; }
+        public string Value { get; }
+        public string Comment { get; }
     }
 }
