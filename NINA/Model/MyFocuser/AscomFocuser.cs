@@ -107,6 +107,8 @@ namespace NINA.Model.MyFocuser {
                     }
                 } catch (PropertyNotImplementedException) {
                     _canGetPosition = false;
+                } catch (System.NotImplementedException) {
+                    _canGetPosition = false;
                 }
                 return pos;
             }
@@ -122,6 +124,8 @@ namespace NINA.Model.MyFocuser {
                         stepSize = _focuser.StepSize;
                     }
                 } catch (PropertyNotImplementedException) {
+                    _canGetStepSize = false;
+                } catch (System.NotImplementedException) {
                     _canGetStepSize = false;
                 }
                 return stepSize;
@@ -163,6 +167,8 @@ namespace NINA.Model.MyFocuser {
                         temperature = _focuser.Temperature;
                     }
                 } catch (PropertyNotImplementedException) {
+                    _hasTemperature = false;
+                } catch (System.NotImplementedException) {
                     _hasTemperature = false;
                 }
                 return temperature;

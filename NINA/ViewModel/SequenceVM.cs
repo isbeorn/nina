@@ -365,9 +365,10 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task RotateEquipment(CaptureSequenceList csl, PlateSolveResult plateSolveResult, IProgress<ApplicationStatus> progress) {
+        private async Task RotateEquipment(CaptureSequenceList csl, PlateSolveResult plateSolveResult, CancellationToken ct, IProgress<ApplicationStatus> progress) {
             // Rotate to desired angle
             if (csl.CenterTarget && rotatorInfo?.Connected == true) {
+                await StopGuiding(ct, progress);
                 using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
                     var solveseq = new CaptureSequence() {
                         ExposureTime = profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
@@ -403,9 +404,10 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task<PlateSolveResult> SlewToTarget(CaptureSequenceList csl, IProgress<ApplicationStatus> progress) {
+        private async Task<PlateSolveResult> SlewToTarget(CaptureSequenceList csl, CancellationToken ct, IProgress<ApplicationStatus> progress) {
             PlateSolveResult plateSolveResult = null;
             if (csl.SlewToTarget) {
+                await StopGuiding(ct, progress);
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblSlewToTarget"] });
                 await telescopeMediator.SlewToCoordinatesAsync(csl.Coordinates);
                 plateSolveResult = await CenterTarget(csl, progress);
@@ -447,9 +449,10 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task AutoFocusOnStart(CaptureSequenceList csl, IProgress<ApplicationStatus> progress) {
+        private async Task AutoFocusOnStart(CaptureSequenceList csl, CancellationToken ct, IProgress<ApplicationStatus> progress) {
             if (csl.AutoFocusOnStart) {
-                await AutoFocus(csl.Items[0].FilterType, _canceltoken.Token, progress);
+                await StopGuiding(ct, progress);
+                await AutoFocus(csl.Items[0].FilterType, ct, progress);
             }
         }
 
@@ -461,6 +464,11 @@ namespace NINA.ViewModel {
                     Notification.ShowWarning(Locale.Loc.Instance["LblStartGuidingFailed"]);
                 }
             }
+        }
+
+        private async Task StopGuiding(CancellationToken ct, IProgress<ApplicationStatus> progress) {
+            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStopGuiding"] });
+            await this.guiderMediator.StopGuiding(ct);
         }
 
         private bool _isRunning;
@@ -520,7 +528,7 @@ namespace NINA.ViewModel {
                 }
             } catch (OperationCanceledException) {
             } finally {
-                if (!canceledAtStart) { 
+                if (!canceledAtStart) {
                     await RunEndOfSequenceOptions(progress);
                 }
                 profileService.ResumeSave();
@@ -540,18 +548,16 @@ namespace NINA.ViewModel {
 
                 CalculateETA();
 
-                await this.guiderMediator.StopGuiding(ct);
-
                 /* delay sequence start by given amount */
                 await DelaySequence(csl, progress);
 
                 //Slew and center
-                PlateSolveResult plateSolveResult = await SlewToTarget(csl, progress);
+                PlateSolveResult plateSolveResult = await SlewToTarget(csl, ct, progress);
 
                 //Rotate for framing
-                await RotateEquipment(csl, plateSolveResult, progress);
+                await RotateEquipment(csl, plateSolveResult, ct, progress);
 
-                await AutoFocusOnStart(csl, progress);
+                await AutoFocusOnStart(csl, ct, progress);
 
                 await StartGuiding(csl, progress);
 
