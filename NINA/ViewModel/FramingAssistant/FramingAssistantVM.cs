@@ -119,8 +119,6 @@ namespace NINA.ViewModel.FramingAssistant {
                 return await telescopeMediator.SlewToCoordinatesAsync(Rectangle.Coordinates);
             }, (object o) => Rectangle?.Coordinates != null);
 
-            _selectedImageCacheInfo = (XElement)ImageCacheInfo?.FirstNode ?? null;
-
             var appSettings = profileService.ActiveProfile.ApplicationSettings;
             appSettings.PropertyChanged += ApplicationSettings_PropertyChanged;
 
@@ -158,6 +156,7 @@ namespace NINA.ViewModel.FramingAssistant {
             try {
                 Cache = new CacheSkySurvey(profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory);
                 ImageCacheInfo = Cache.Cache;
+                _selectedImageCacheInfo = (XElement)ImageCacheInfo?.FirstNode ?? null;
                 RaisePropertyChanged(nameof(ImageCacheInfo));
             } catch (Exception ex) {
                 Logger.Error(ex);
