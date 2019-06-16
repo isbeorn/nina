@@ -55,7 +55,6 @@ namespace NINA.ViewModel.FramingAssistant {
             this.imagingMediator = imagingMediator;
             this.applicationStatusMediator = applicationStatusMediator;
 
-            Cache = new CacheSkySurvey(profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory);
             Opacity = 0.2;
 
             SkyMapAnnotator = new SkyMapAnnotator(telescopeMediator);
@@ -77,7 +76,7 @@ namespace NINA.ViewModel.FramingAssistant {
             DragStartCommand = new RelayCommand(DragStart);
             DragStopCommand = new RelayCommand(DragStop);
             DragMoveCommand = new RelayCommand(DragMove);
-            ClearCacheCommand = new RelayCommand(ClearCache);
+            ClearCacheCommand = new RelayCommand(ClearCache, (object o) => Cache != null);
             RefreshSkyMapAnnotationCommand = new RelayCommand((object o) => SkyMapAnnotator.UpdateSkyMap(), (object o) => SkyMapAnnotator.Initialized);
             MouseWheelCommand = new RelayCommand(MouseWheel);
 
@@ -120,7 +119,7 @@ namespace NINA.ViewModel.FramingAssistant {
                 return await telescopeMediator.SlewToCoordinatesAsync(Rectangle.Coordinates);
             }, (object o) => Rectangle?.Coordinates != null);
 
-            _selectedImageCacheInfo = (XElement)ImageCacheInfo.FirstNode;
+            _selectedImageCacheInfo = (XElement)ImageCacheInfo?.FirstNode ?? null;
 
             var appSettings = profileService.ActiveProfile.ApplicationSettings;
             appSettings.PropertyChanged += ApplicationSettings_PropertyChanged;
@@ -151,6 +150,21 @@ namespace NINA.ViewModel.FramingAssistant {
             profileService.LocationChanged += (object sender, EventArgs e) => {
                 DSO = new DeepSkyObject(DSO.Name, DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
             };
+
+            InitializeCache();
+        }
+
+        private void InitializeCache() {
+            try {
+                Cache = new CacheSkySurvey(profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory);
+                ImageCacheInfo = Cache.Cache;
+                RaisePropertyChanged(nameof(ImageCacheInfo));
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                Cache = null;
+                ImageCacheInfo = null;
+            }
+            RaisePropertyChanged(nameof(ImageCacheInfo));
         }
 
         private void MouseWheel(object obj) {
@@ -187,8 +201,7 @@ namespace NINA.ViewModel.FramingAssistant {
         public DeepSkyObjectSearchVM DeepSkyObjectSearchVM { get; private set; }
 
         private void ApplicationSettings_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            Cache = new CacheSkySurvey(profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory);
-            RaisePropertyChanged(nameof(ImageCacheInfo));
+            InitializeCache();
         }
 
         private double opacity;
@@ -216,10 +229,12 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         private void ClearCache(object obj) {
-            var diagResult = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblClearCache"] + "?", "", MessageBoxButton.YesNo, MessageBoxResult.No);
-            if (diagResult == MessageBoxResult.Yes) {
-                Cache.Clear();
-                RaisePropertyChanged(nameof(ImageCacheInfo));
+            if (Cache != null) {
+                var diagResult = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblClearCache"] + "?", "", MessageBoxButton.YesNo, MessageBoxResult.No);
+                if (diagResult == MessageBoxResult.Yes) {
+                    Cache.Clear();
+                    RaisePropertyChanged(nameof(ImageCacheInfo));
+                }
             }
         }
 
@@ -587,9 +602,14 @@ namespace NINA.ViewModel.FramingAssistant {
                 _loadImageSource?.Dispose();
                 _loadImageSource = new CancellationTokenSource();
                 try {
-                    SkySurveyImage skySurveyImage;
+                    SkySurveyImage skySurveyImage = null;
                     if (FramingAssistantSource == SkySurveySource.CACHE) {
-                        skySurveyImage = await Cache.GetImage(Guid.Parse(SelectedImageCacheInfo.Attribute("Id").Value));
+                        if (Cache == null) {
+                            throw new Exception("Cache unavailable. Check log file for errors");
+                        }
+                        if (SelectedImageCacheInfo != null) {
+                            skySurveyImage = await Cache.GetImage(Guid.Parse(SelectedImageCacheInfo.Attribute("Id").Value));
+                        }
                     } else {
                         var skySurvey = SkySurveyFactory.Create(FramingAssistantSource);
 
@@ -610,7 +630,7 @@ namespace NINA.ViewModel.FramingAssistant {
 
                         var dynamicFoV = true;
 
-                        if (FramingAssistantSource != SkySurveySource.SKYATLAS) {
+                        if (Cache != null && FramingAssistantSource != SkySurveySource.SKYATLAS) {
                             SelectedImageCacheInfo = Cache.SaveImageToCache(skySurveyImage);
                             RaisePropertyChanged(nameof(ImageCacheInfo));
                             dynamicFoV = false;
@@ -658,7 +678,7 @@ namespace NINA.ViewModel.FramingAssistant {
             return skySurveyImage;
         }
 
-        public XElement ImageCacheInfo => Cache.Cache;
+        public XElement ImageCacheInfo { get; set; }
 
         private CacheSkySurvey Cache { get; set; }
 
