@@ -135,15 +135,15 @@
     <Compile Include="XISFTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+    <None Include="BootstrapAscomProfileStore.ps1" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\NINA\NINA.csproj">
       <Project>{7dec1b46-9701-4e49-90c1-f4427845669e}</Project>
       <Name>NINA</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="BootstrapAscomProfileStore.ps1" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

@@ -34,7 +34,7 @@ namespace NINATest {
         public void XISFAddAttachedImageNoImageTest() {
             var header = new XISFHeader();
             var sut = new XISF(header);
-            Action act = () => sut.AddAttachedImage(new ushort[] { }, "");
+            Action act = () => sut.AddAttachedImage(new ushort[] { });
             act.Should().Throw<InvalidOperationException>().WithMessage("No Image Header Information available for attaching image. Add Image Header first!");
         }
 
@@ -54,7 +54,7 @@ namespace NINATest {
             var header = new XISFHeader();
             header.AddImageMetaData(stats.Object, imageType);
             var sut = new XISF(header);
-            sut.AddAttachedImage(data, imageType);
+            sut.AddAttachedImage(data);
 
             sut.Header.Image.Should().HaveAttribute("location", $"attachment:4096:{length}");
 
