@@ -681,9 +681,9 @@ Calculated HFR: {2}
   <s:String x:Key="LblRawConverter" xml:space="default">Raw converter</s:String>
   <s:String x:Key="LblRawConverterTooltip" xml:space="default">Specifies which tool should be used for DSLR raw file conversion</s:String>
   <s:String x:Key="LblReadNoise" xml:space="default">Read noise in e</s:String>
-  <s:String x:Key="LblReadoutForNormalImages" xml:space="default">Readout mode for sequence</s:String>
+  <s:String x:Key="LblReadoutForNormalImages" xml:space="default">Readout mode for sequences</s:String>
   <s:String x:Key="LblReadoutForNormalImagesToolTip" xml:space="default">This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT and DARKFLAT frames in sequences.</s:String>
-  <s:String x:Key="LblReadoutForSnapImages" xml:space="default">Readout mode for snapshot</s:String>
+  <s:String x:Key="LblReadoutForSnapImages" xml:space="default">Readout mode for snapshots</s:String>
   <s:String x:Key="LblReadoutForSnapImagesToolTip" xml:space="default">This readout mode of your camera will be used for plate solving, framing and autofocus</s:String>
   <s:String x:Key="LblRecenter" xml:space="default">Recenter</s:String>
   <s:String x:Key="LblRecenterAfterFlip" xml:space="default">Recenter after Flip</s:String>
