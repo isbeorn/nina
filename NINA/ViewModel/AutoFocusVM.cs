@@ -196,7 +196,7 @@ namespace NINA.ViewModel {
             if (filter != null && filter.AutoFocusExposureTime > 0) {
                 expTime = filter.AutoFocusExposureTime;
             }
-            var seq = new CaptureSequence(expTime, CaptureSequence.ImageTypes.SNAP, filter, null, 1);
+            var seq = new CaptureSequence(expTime, CaptureSequence.ImageTypes.SNAPSHOT, filter, null, 1);
             seq.EnableSubSample = _setSubSample;
             seq.Binning = new BinningMode(profileService.ActiveProfile.FocuserSettings.AutoFocusBinning, profileService.ActiveProfile.FocuserSettings.AutoFocusBinning);
 

@@ -408,7 +408,7 @@ namespace NINA.ViewModel {
                     var oldAutoStretch = imagingMediator.SetAutoStretch(true);
                     var oldDetectStars = imagingMediator.SetDetectStars(false);
 
-                    var seq = new CaptureSequence(DARVSlewDuration + 5, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
+                    var seq = new CaptureSequence(DARVSlewDuration + 5, CaptureSequence.ImageTypes.SNAPSHOT, SnapFilter, SnapBin, 1);
                     var capture = imagingMediator.CaptureAndPrepareImage(seq, cancelDARVSlewToken.Token, cameraprogress);
                     var slew = DarvTelescopeSlew(slewprogress, cancelDARVSlewToken.Token);
 
@@ -561,7 +561,7 @@ namespace NINA.ViewModel {
 
                 progress.Report(new ApplicationStatus() { Status = "Solving image..." });
 
-                var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
+                var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAPSHOT, SnapFilter, SnapBin, 1);
                 seq.Gain = SnapGain;
 
                 using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
@@ -590,7 +590,7 @@ namespace NINA.ViewModel {
 
                 canceltoken.ThrowIfCancellationRequested();
 
-                seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
+                seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAPSHOT, SnapFilter, SnapBin, 1);
                 seq.Gain = SnapGain;
 
                 using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {

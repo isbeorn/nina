@@ -102,7 +102,7 @@ namespace NINATest {
             //Arrange
             var now = DateTime.Now;
             var metaData = new ImageMetaData();
-            metaData.Image.ImageType = "SNAP";
+            metaData.Image.ImageType = "SNAPSHOT";
             metaData.Image.ExposureStart = now;
             metaData.Image.ExposureTime = 10.23;
 

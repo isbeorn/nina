@@ -142,7 +142,7 @@ namespace NINA.ViewModel {
             do {
                 _captureImageToken?.Dispose();
                 _captureImageToken = new CancellationTokenSource();
-                var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
+                var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAPSHOT, SnapFilter, SnapBin, 1);
 
                 await imagingMediator.CaptureAndPrepareImage(seq, _captureImageToken.Token, progress);
 

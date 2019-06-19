@@ -1068,7 +1068,7 @@ namespace NINA.Model.MyCamera {
                 NumY = CameraYSize / BinY;
             }
 
-            bool isSnap = sequence.ImageType == CaptureSequence.ImageTypes.SNAP;
+            bool isSnap = sequence.ImageType == CaptureSequence.ImageTypes.SNAPSHOT;
 
             if (CanFastReadout) {
                 _camera.FastReadout = isSnap ? readoutModeForSnapImages != 0 : readoutModeForNormalImages != 0;

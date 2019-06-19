@@ -15,7 +15,7 @@ namespace NINA.Model {
             public const string DARK = "DARK";
             public const string BIAS = "BIAS";
             public const string DARKFLAT = "DARKFLAT";
-            public const string SNAP = "SNAP";
+            public const string SNAPSHOT = "SNAPSHOT";
         }
 
         public CaptureSequence() {

@@ -439,7 +439,7 @@ namespace NINA.Utility {
         /// <param name="arr"></param>
         /// <param name="imageType"></param>
         public void AddImageMetaData(IImageStatistics statistics, string imageType) {
-            if (imageType == "SNAP") { imageType = "LIGHT"; }
+            if (imageType == "SNAPSHOT") { imageType = "LIGHT"; }
 
             var image = new XElement("Image",
                     new XAttribute("geometry", statistics.Width + ":" + statistics.Height + ":" + "1"),

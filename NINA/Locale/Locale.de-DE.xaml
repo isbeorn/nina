@@ -453,7 +453,7 @@ Berechneter HFR: {2}
   <s:String x:Key="LblImageHistory" xml:space="default">Bildhistorie</s:String>
   <s:String x:Key="LblImageOptions" xml:space="default">Bildoptionen</s:String>
   <s:String x:Key="LblImageSource" xml:space="default">Bildquelle</s:String>
-  <s:String x:Key="LblImageTypeDescription" xml:space="default">Light, Flat, Dark, Bias</s:String>
+  <s:String x:Key="LblImageTypeDescription" xml:space="default">Light, Flat, Dark, Bias, Snapshot</s:String>
   <s:String x:Key="LblImaging" xml:space="default">Imaging</s:String>
   <s:String x:Key="LblImportFromFilterWheel" xml:space="default">Von Filterrad importieren</s:String>
   <s:String x:Key="LblIndexFile" xml:space="default">Index Datei</s:String>
@@ -683,7 +683,7 @@ Berechneter HFR: {2}
   <s:String x:Key="LblReadNoise" xml:space="default">Ausleserauschen in e</s:String>
   <s:String x:Key="LblReadoutForNormalImages" xml:space="default">Auslesemodus für Sequenzen</s:String>
   <s:String x:Key="LblReadoutForNormalImagesToolTip" xml:space="default">Dieser Auslesemodus wird für LIGHT, BIAS, DARK, FLAT und DARKFLAT Bilder in Sequenzen verwendet</s:String>
-  <s:String x:Key="LblReadoutForSnapImages" xml:space="default">Auslesemodus für SNAP</s:String>
+  <s:String x:Key="LblReadoutForSnapImages" xml:space="default">Auslesemodus für Snapshots</s:String>
   <s:String x:Key="LblReadoutForSnapImagesToolTip" xml:space="default">Dieser Auslesemodus wird für Plate Solving, zur Ausrichtung und Autofokus verwendet</s:String>
   <s:String x:Key="LblRecenter" xml:space="default">Zentrieren</s:String>
   <s:String x:Key="LblRecenterAfterFlip" xml:space="default">Zentrieren nach Flip</s:String>
