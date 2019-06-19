@@ -439,6 +439,8 @@ namespace NINA.Utility {
         /// <param name="arr"></param>
         /// <param name="imageType"></param>
         public void AddImageMetaData(IImageStatistics statistics, string imageType) {
+            if (imageType == "SNAP") { imageType = "LIGHT"; }
+
             var image = new XElement("Image",
                     new XAttribute("geometry", statistics.Width + ":" + statistics.Height + ":" + "1"),
                     new XAttribute("sampleFormat", "UInt16"),
@@ -448,8 +450,6 @@ namespace NINA.Utility {
 
             Image = image;
             Xisf.Add(image);
-
-            if (imageType == "SNAP") { imageType = "LIGHT"; }
             AddImageFITSKeyword("IMAGETYP", imageType, "Type of exposure");
         }
 
