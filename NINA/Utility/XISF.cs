@@ -101,7 +101,7 @@ namespace NINA.Utility {
             }
         }
 
-        public void AddAttachedImage(ushort[] data, string imageType) {
+        public void AddAttachedImage(ushort[] data) {
             if (this.Header.Image == null) { throw new InvalidOperationException("No Image Header Information available for attaching image. Add Image Header first!"); }
 
             var headerLengthBytes = 4;
@@ -449,6 +449,7 @@ namespace NINA.Utility {
             Image = image;
             Xisf.Add(image);
 
+            if (imageType == "SNAP") { imageType = "LIGHT"; }
             AddImageFITSKeyword("IMAGETYP", imageType, "Type of exposure");
         }
 
