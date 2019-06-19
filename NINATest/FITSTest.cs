@@ -98,6 +98,29 @@ namespace NINATest {
         }
 
         [Test]
+        public void FITSImageMetaDataSNAPPopulated() {
+            //Arrange
+            var now = DateTime.Now;
+            var metaData = new ImageMetaData();
+            metaData.Image.ImageType = "SNAP";
+            metaData.Image.ExposureStart = now;
+            metaData.Image.ExposureTime = 10.23;
+
+            var expectedHeaderCards = new List<FITSHeaderCard>() {
+                new FITSHeaderCard("IMAGETYP", "LIGHT", "Type of exposure")
+            };
+
+            //Act
+            var sut = new FITS(new ushort[] { 1, 2 }, 1, 1);
+            sut.PopulateHeaderCards(metaData);
+
+            //Assert
+            foreach (var expectedCard in expectedHeaderCards) {
+                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+            }
+        }
+
+        [Test]
         public void FITSCameraMetaDataPopulated() {
             var now = DateTime.Now;
             var metaData = new ImageMetaData();

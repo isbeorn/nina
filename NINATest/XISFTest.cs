@@ -118,6 +118,27 @@ namespace NINATest {
         }
 
         [Test]
+        public void XISFHeaderAddImageMetaDataSNAPTest() {
+            var stats = new Mock<IImageStatistics>();
+            stats.SetupGet(x => x.Width).Returns(200);
+            stats.SetupGet(x => x.Height).Returns(100);
+            var imageType = "SNAP";
+
+            var sut = new XISFHeader();
+            sut.AddImageMetaData(stats.Object, imageType);
+
+            sut.Image.Should().HaveAttribute("geometry", "200:100:1")
+                .And.HaveAttribute("sampleFormat", "UInt16")
+                .And.HaveAttribute("imageType", "LIGHT")
+                .And.HaveAttribute("colorSpace", "Gray")
+
+                .And.HaveElement("FITSKeyword")
+                    .Which.Should().HaveAttribute("name", "IMAGETYP")
+                    .And.HaveAttribute("value", "LIGHT")
+                    .And.HaveAttribute("comment", "Type of exposure");
+        }
+
+        [Test]
         public void XISFHeaderAddMetaDataPropertyTest() {
             var id = "TestId";
             var type = "TestType";
