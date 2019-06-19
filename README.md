@@ -1,6 +1,6 @@
 # N.I.N.A. - Nighttime Imaging 'N' Astronomy #
 
-This repository contains the source code distribution of N.I.N.A. imaging software.
+This repository contains the source code distribution of the N.I.N.A. imaging software.
 
 N.I.N.A. is an astrophotography suite designed for all DSO imagers.  
 If you are totally new to the world of DSO imaging or a seasoned veteran our goal is to make your image acquisition easier, faster and more comfortable.
