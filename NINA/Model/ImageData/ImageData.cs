@@ -194,7 +194,6 @@ namespace NINA.Model.ImageData {
                     fileType = FileTypeEnum.RAW;
                 } else {
                     if (fileType == FileTypeEnum.FITS) {
-                        if (MetaData.Image.ImageType == "SNAP") MetaData.Image.ImageType = "LIGHT";
                         completefilename = SaveFits(completefilename);
                     } else if (fileType == FileTypeEnum.TIFF) {
                         completefilename = SaveTiff(completefilename, TiffCompressOption.None);
@@ -203,7 +202,6 @@ namespace NINA.Model.ImageData {
                     } else if (fileType == FileTypeEnum.TIFF_LZW) {
                         completefilename = SaveTiff(completefilename, TiffCompressOption.Lzw);
                     } else if (fileType == FileTypeEnum.XISF) {
-                        if (MetaData.Image.ImageType == "SNAP") MetaData.Image.ImageType = "LIGHT";
                         completefilename = SaveXisf(completefilename);
                     } else {
                         completefilename = SaveTiff(completefilename, TiffCompressOption.None);
@@ -263,7 +261,7 @@ namespace NINA.Model.ImageData {
 
             XISF img = new XISF(header);
 
-            img.AddAttachedImage(Data.FlatArray, MetaData.Image.ImageType);
+            img.AddAttachedImage(Data.FlatArray);
 
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             var uniquePath = Utility.Utility.GetUniqueFilePath(path + ".xisf");
