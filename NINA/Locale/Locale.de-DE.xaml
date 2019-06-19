@@ -675,7 +675,7 @@ Berechneter HFR: {2}
   <s:String x:Key="LblRACorrections" xml:space="default">RA Korrekturen</s:String>
   <s:String x:Key="LblRadius" xml:space="default">Radius</s:String>
   <s:String x:Key="LblRAError" xml:space="default">RA Fehler</s:String>
-  <s:String x:Key="LblRainRate" xml:space="default"></s:String>
+  <s:String x:Key="LblRainRate" xml:space="default">Niederschlagsrate</s:String>
   <s:String x:Key="LblRAPixError" xml:space="default">RA Pix Fehler</s:String>
   <s:String x:Key="LblRate" xml:space="default">Rate</s:String>
   <s:String x:Key="LblRawConverter" xml:space="default">Raw Konvertierer</s:String>
@@ -780,7 +780,7 @@ Diese Vorlage wird beim Starten der Applikation geladen, statt der Standard Sequ
   <s:String x:Key="LblSolving" xml:space="default">Solving...</s:String>
   <s:String x:Key="LblSource" xml:space="default">Quelle</s:String>
   <s:String x:Key="LblSouthern" xml:space="default">Südlich</s:String>
-  <s:String x:Key="LblStarFWHM" xml:space="default"></s:String>
+  <s:String x:Key="LblStarFWHM" xml:space="default">Stern FWHM</s:String>
   <s:String x:Key="LblStarSensitivity" xml:space="default">Empfindlichkeit für Sterne</s:String>
   <s:String x:Key="LblStarSensitivityTooltip" xml:space="default">Legt die Empfindlichkeit des Sternerkennungsalgorithmus fest. Höhere Einstellungen, können dazu führen, dass Rauschen als Sterne erkannt werden und weiter kann es länger dauern.</s:String>
   <s:String x:Key="LblStartAutoFocus" xml:space="default">Starte Autofokus</s:String>
