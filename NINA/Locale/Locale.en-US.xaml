@@ -453,7 +453,7 @@ Calculated HFR: {2}
   <s:String x:Key="LblImageHistory" xml:space="default">Image History</s:String>
   <s:String x:Key="LblImageOptions" xml:space="default">Image Options</s:String>
   <s:String x:Key="LblImageSource" xml:space="default">Image source</s:String>
-  <s:String x:Key="LblImageTypeDescription" xml:space="default">Light, Flat, Dark, Bias</s:String>
+  <s:String x:Key="LblImageTypeDescription" xml:space="default">Light, Flat, Dark, Bias, Snapshot</s:String>
   <s:String x:Key="LblImaging" xml:space="default">Imaging</s:String>
   <s:String x:Key="LblImportFromFilterWheel" xml:space="default">Import Filters from Filterwheel</s:String>
   <s:String x:Key="LblIndexFile" xml:space="default">Index File</s:String>
@@ -681,9 +681,9 @@ Calculated HFR: {2}
   <s:String x:Key="LblRawConverter" xml:space="default">Raw converter</s:String>
   <s:String x:Key="LblRawConverterTooltip" xml:space="default">Specifies which tool should be used for DSLR raw file conversion</s:String>
   <s:String x:Key="LblReadNoise" xml:space="default">Read noise in e</s:String>
-  <s:String x:Key="LblReadoutForNormalImages" xml:space="default">Readout mode for Sequence</s:String>
+  <s:String x:Key="LblReadoutForNormalImages" xml:space="default">Readout mode for sequences</s:String>
   <s:String x:Key="LblReadoutForNormalImagesToolTip" xml:space="default">This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT and DARKFLAT frames in sequences.</s:String>
-  <s:String x:Key="LblReadoutForSnapImages" xml:space="default">Readout mode for SNAP</s:String>
+  <s:String x:Key="LblReadoutForSnapImages" xml:space="default">Readout mode for snapshots</s:String>
   <s:String x:Key="LblReadoutForSnapImagesToolTip" xml:space="default">This readout mode of your camera will be used for plate solving, framing and autofocus</s:String>
   <s:String x:Key="LblRecenter" xml:space="default">Recenter</s:String>
   <s:String x:Key="LblRecenterAfterFlip" xml:space="default">Recenter after Flip</s:String>
@@ -739,8 +739,8 @@ Calculated HFR: {2}
   <s:String x:Key="LblSequenceDelay" xml:space="default">Delay start (seconds)</s:String>
   <s:String x:Key="LblSequenceDelayStatus" xml:space="default">Sequence starting in {0} seconds</s:String>
   <s:String x:Key="LblSequenceMode" xml:space="default">Sequence Mode</s:String>
-  <s:String x:Key="LblSequenceModeRotate" xml:space="default">Rotate through</s:String>
-  <s:String x:Key="LblSequenceModeStandard" xml:space="default">One by another</s:String>
+  <s:String x:Key="LblSequenceModeRotate" xml:space="default">Loop</s:String>
+  <s:String x:Key="LblSequenceModeStandard" xml:space="default">One after another</s:String>
   <s:String x:Key="LblSequenceTemplate" xml:space="default">Sequence Template</s:String>
   <s:String x:Key="LblSequenceTemplateTooltip" xml:space="preserve">Specifies a path to a previously exported sequence file that should be used as a template.
 This template will be used on startup to initialize the sequence instead of the default one.</s:String>
@@ -892,9 +892,11 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
   <s:String x:Key="LblUnexpectedError" xml:space="default">Unexpected error occurred</s:String>
   <s:String x:Key="LblUnhandledException" xml:space="default">Unhandled Exception occurred</s:String>
   <s:String x:Key="LblUnlinkedStretch" xml:space="default">Unlinked Stretch</s:String>
-  <s:String x:Key="LblUnlinkedStretchTooltip" xml:space="default">When enabled, color channels will be stretched separately, helping hide the
-sky background and enhancing autofocus and platesolving reliablity, especially
-in light polluted areas. Processing time is however increased.</s:String>
+  <s:String x:Key="LblUnlinkedStretchTooltip" xml:space="default">
+        When enabled, color channels will be stretched separately, helping hide the
+        sky background and enhancing autofocus and platesolving reliablity, especially
+        in light polluted areas. Processing time is however increased.
+    </s:String>
   <s:String x:Key="LblUnpark" xml:space="default">Unpark</s:String>
   <s:String x:Key="LblUpdate" xml:space="default">Update</s:String>
   <s:String x:Key="LblUpdating" xml:space="default">Updating</s:String>

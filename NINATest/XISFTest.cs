@@ -122,7 +122,7 @@ namespace NINATest {
             var stats = new Mock<IImageStatistics>();
             stats.SetupGet(x => x.Width).Returns(200);
             stats.SetupGet(x => x.Height).Returns(100);
-            var imageType = "SNAP";
+            var imageType = "SNAPSHOT";
 
             var sut = new XISFHeader();
             sut.AddImageMetaData(stats.Object, imageType);

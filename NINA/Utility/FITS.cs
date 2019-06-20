@@ -77,7 +77,7 @@ namespace NINA.Utility {
         public void PopulateHeaderCards(ImageMetaData metaData) {
             if (!string.IsNullOrWhiteSpace(metaData.Image.ImageType)) {
                 var imageType = metaData.Image.ImageType;
-                if (imageType == "SNAP") { imageType = "LIGHT"; }
+                if (imageType == "SNAPSHOT") { imageType = "LIGHT"; }
                 this.AddHeaderCard("IMAGETYP", imageType, "Type of exposure");
             }
 

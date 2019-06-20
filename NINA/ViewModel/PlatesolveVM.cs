@@ -297,7 +297,7 @@ namespace NINA.ViewModel {
         private async Task<bool> CaptureSolveSyncAndReslew(IProgress<ApplicationStatus> progress) {
             _solveCancelToken?.Dispose();
             _solveCancelToken = new CancellationTokenSource();
-            var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
+            var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAPSHOT, SnapFilter, SnapBin, 1);
             seq.Gain = SnapGain;
             return await this.CaptureSolveSyncAndReslew(seq, this.SyncScope, this.SlewToTarget, this.Repeat, _solveCancelToken.Token, progress) != null;
         }
@@ -315,7 +315,7 @@ namespace NINA.ViewModel {
                 var solveseq = new CaptureSequence() {
                     ExposureTime = profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
                     FilterType = profileService.ActiveProfile.PlateSolveSettings.Filter,
-                    ImageType = CaptureSequence.ImageTypes.SNAP,
+                    ImageType = CaptureSequence.ImageTypes.SNAPSHOT,
                     TotalExposureCount = 1
                 };
 

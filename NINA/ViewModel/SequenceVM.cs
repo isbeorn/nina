@@ -373,7 +373,7 @@ namespace NINA.ViewModel {
                     var solveseq = new CaptureSequence() {
                         ExposureTime = profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
                         FilterType = profileService.ActiveProfile.PlateSolveSettings.Filter,
-                        ImageType = CaptureSequence.ImageTypes.SNAP,
+                        ImageType = CaptureSequence.ImageTypes.SNAPSHOT,
                         TotalExposureCount = 1
                     };
                     var service = WindowServiceFactory.Create();

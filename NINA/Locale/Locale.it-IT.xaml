@@ -453,7 +453,7 @@ HFR Calcolato: {2}
   <s:String x:Key="LblImageHistory" xml:space="default">Storia Immagini</s:String>
   <s:String x:Key="LblImageOptions" xml:space="default">Opzioni Immagine</s:String>
   <s:String x:Key="LblImageSource" xml:space="default">Sorgente Immagine</s:String>
-  <s:String x:Key="LblImageTypeDescription" xml:space="default">Light, Flat, Dark, Bias</s:String>
+  <s:String x:Key="LblImageTypeDescription" xml:space="default">Light, Flat, Dark, Bias, Snapshot</s:String>
   <s:String x:Key="LblImaging" xml:space="default">Imaging</s:String>
   <s:String x:Key="LblImportFromFilterWheel" xml:space="default">Importa Filtri dalla Filterwheel</s:String>
   <s:String x:Key="LblIndexFile" xml:space="default">File Indice</s:String>
@@ -683,7 +683,7 @@ HFR Calcolato: {2}
   <s:String x:Key="LblReadNoise" xml:space="default">Lettura rumore in e</s:String>
   <s:String x:Key="LblReadoutForNormalImages" xml:space="default">Modalità lettura per Sequenze</s:String>
   <s:String x:Key="LblReadoutForNormalImagesToolTip" xml:space="default">Questa modalità lettura della tua camera sarà usata per fotogrammi LIGHT, BIAS, DARK, FLAT e DARKFLAT nelle sequenze.</s:String>
-  <s:String x:Key="LblReadoutForSnapImages" xml:space="default">Modo lettura per SNAP</s:String>
+  <s:String x:Key="LblReadoutForSnapImages" xml:space="default">Modo lettura per snapshot</s:String>
   <s:String x:Key="LblReadoutForSnapImagesToolTip" xml:space="default">Questo modo di lettura della tua camera sarà usato per il plate solving, framing e autofocus</s:String>
   <s:String x:Key="LblRecenter" xml:space="default">Ricentrare</s:String>
   <s:String x:Key="LblRecenterAfterFlip" xml:space="default">Ri-centra dopo Flip</s:String>
@@ -739,7 +739,7 @@ HFR Calcolato: {2}
   <s:String x:Key="LblSequenceDelay" xml:space="default">Partenza ritardata (secondi)</s:String>
   <s:String x:Key="LblSequenceDelayStatus" xml:space="default">Sequenza in partenza in {0} secondi</s:String>
   <s:String x:Key="LblSequenceMode" xml:space="default">Modalità sequenza</s:String>
-  <s:String x:Key="LblSequenceModeRotate" xml:space="default">Rotate through</s:String>
+  <s:String x:Key="LblSequenceModeRotate" xml:space="default">Loop</s:String>
   <s:String x:Key="LblSequenceModeStandard" xml:space="default">Accostati</s:String>
   <s:String x:Key="LblSequenceTemplate" xml:space="default">Template Sequenza</s:String>
   <s:String x:Key="LblSequenceTemplateTooltip" xml:space="preserve">Specifica il percoso di un file di sequenza precedentemente esportato e che dovrebbe essere usato come template.

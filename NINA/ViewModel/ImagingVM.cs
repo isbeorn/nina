@@ -454,7 +454,7 @@ namespace NINA.ViewModel {
                 var success = true;
                 if (Loop) IsLooping = true;
                 do {
-                    var seq = new CaptureSequence(SnapExposureDuration, ImageTypes.SNAP, SnapFilter, SnapBin, 1);
+                    var seq = new CaptureSequence(SnapExposureDuration, ImageTypes.SNAPSHOT, SnapFilter, SnapBin, 1);
                     seq.EnableSubSample = SnapSubSample;
                     seq.Gain = SnapGain;
 
