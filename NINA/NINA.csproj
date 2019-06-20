@@ -381,6 +381,7 @@
     <Compile Include="Utility\Converters\WeatherTemperatureConverter.cs" />
     <Compile Include="Utility\Converters\WeatherVelocityConverter.cs" />
     <Compile Include="Utility\Enum\AltitudeSite.cs" />
+    <Compile Include="Utility\Enum\NoiseReductionEnum.cs" />
     <Compile Include="Utility\Enum\PlanetariumEnum.cs" />
     <Compile Include="Profile\Interfaces\IPlanetariumSettings.cs" />
     <Compile Include="Profile\PlanetariumSettings.cs" />
@@ -394,6 +395,7 @@
     <Compile Include="Utility\ImageAnalysis\BahtinovImage.cs" />
     <Compile Include="Utility\ImageAnalysis\BayerFilter16bpp.cs" />
     <Compile Include="Utility\ImageAnalysis\ColorRemappingGeneral.cs" />
+    <Compile Include="Utility\ImageAnalysis\FastGaussianBlur.cs" />
     <Compile Include="Utility\ImageAnalysis\ImageUtility.cs" />
     <Compile Include="Utility\ImageAnalysis\NoBlurCannyEdgeDetector.cs" />
     <Compile Include="Utility\Mediator\Interfaces\ISwitchConsumer.cs" />

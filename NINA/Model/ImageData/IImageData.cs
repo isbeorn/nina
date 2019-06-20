@@ -16,7 +16,7 @@ namespace NINA.Model.ImageData {
 
         void Debayer();
 
-        Task DetectStars(bool annotate, StarSensitivityEnum sensitivity, CancellationToken ct = default, IProgress<ApplicationStatus> progress = null);
+        Task DetectStars(bool annotate, StarSensitivityEnum sensitivity, NoiseReductionEnum noiseReduction, CancellationToken ct = default, IProgress<ApplicationStatus> progress = null);
 
         void RenderImage();
 

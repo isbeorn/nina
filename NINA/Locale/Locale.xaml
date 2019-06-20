@@ -539,6 +539,9 @@ Calculated HFR: {2}
   <s:String x:Key="LblNoFilterwheel" xml:space="default">No Filterwheel</s:String>
   <s:String x:Key="LblNoFocuser" xml:space="default">No Focuser</s:String>
   <s:String x:Key="LblNoImage" xml:space="default">No Image available</s:String>
+  <s:String x:Key="LblNoiseReduction" xml:space="default">Noise Reduction</s:String>
+  <s:String x:Key="LblNoiseReductionTooltip" xml:space="default">Noise Reduction applied prior to star detection. This may help with noisy images and short exposures.</s:String>
+  <s:String x:Key="LblNone" xml:space="default">None</s:String>
   <s:String x:Key="LblNormal" xml:space="default">Normal</s:String>
   <s:String x:Key="LblNoRotator" xml:space="default">No Rotator</s:String>
   <s:String x:Key="LblNorthern" xml:space="default">Northern</s:String>

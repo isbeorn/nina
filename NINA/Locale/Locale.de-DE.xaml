@@ -539,6 +539,9 @@ Berechneter HFR: {2}
   <s:String x:Key="LblNoFilterwheel" xml:space="default">Kein Filterrad</s:String>
   <s:String x:Key="LblNoFocuser" xml:space="default">Kein Okularauszug</s:String>
   <s:String x:Key="LblNoImage" xml:space="default">Kein Bild vorhanden</s:String>
+  <s:String x:Key="LblNoiseReduction" xml:space="default">Rauschunterdrückung</s:String>
+  <s:String x:Key="LblNoiseReductionTooltip" xml:space="default">Anwenden von Rauschunterdrückung vor der Sternerkennung. Dies kann bei verrauschten Bildern und kurzen Belichtungszeiten helfen.</s:String>
+  <s:String x:Key="LblNone" xml:space="default">Keine</s:String>
   <s:String x:Key="LblNormal" xml:space="default">Normal</s:String>
   <s:String x:Key="LblNoRotator" xml:space="default">Kein Rotator</s:String>
   <s:String x:Key="LblNorthern" xml:space="default">Nördlich</s:String>
