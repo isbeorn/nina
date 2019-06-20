@@ -8,6 +8,7 @@
   <s:String x:Key="LblActiveFilter" xml:space="default">Aktiver Filter</s:String>
   <s:String x:Key="LblActiveSequenceDetails" xml:space="default">Aktive Sequenz Details</s:String>
   <s:String x:Key="LblAddSequenceTarget" xml:space="default">Als Sequenzziel hinzufügen</s:String>
+  <s:String x:Key="LblAdvancedSettings" xml:space="default">Erweiterte Einstellungen</s:String>
   <s:String x:Key="LblAFOnButFocuserNotConnected" xml:space="default">Autofokus ist aktiviert, jedoch ist kein Okularauszug verbunden</s:String>
   <s:String x:Key="LblAfter" xml:space="default">Nach</s:String>
   <s:String x:Key="LblAFUseBrightestStars" xml:space="default">Nutze hellste n Sterne</s:String>

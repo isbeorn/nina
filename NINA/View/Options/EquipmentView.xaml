@@ -587,221 +587,229 @@
             DataContext="{Binding FocuserSettings}"
             Header="{ns:Loc LblFocuser}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <UniformGrid Columns="2">
-                    <UniformGrid Margin="0,5,0,0" Columns="2">
-                        <TextBlock
+                <StackPanel>
+                    <UniformGrid Columns="2">
+                        <UniformGrid Margin="0,5,0,0" Columns="2">
+                            <TextBlock
                             MinWidth="200"
                             MinHeight="20"
                             VerticalAlignment="Center"
                             Text="{ns:Loc LblFocuserUseFilterWheelOffsets}">
-                            <TextBlock.ToolTip>
-                                <TextBlock Text="{ns:Loc LblFocuserUseFilterWheelOffsetsTooltip}" />
-                            </TextBlock.ToolTip>
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblFocuserUseFilterWheelOffsetsTooltip}" />
+                                </TextBlock.ToolTip>
                         </TextBlock>
-                        <CheckBox
+                            <CheckBox
                             Width="75"
                             Height="25"
                             HorizontalAlignment="Left"
                             IsChecked="{Binding UseFilterWheelOffsets}" />
-                    </UniformGrid>
+                        </UniformGrid>
 
-                    <UniformGrid Margin="0,5,0,0" Columns="2">
-                        <TextBlock
+                        <UniformGrid Margin="0,5,0,0" Columns="2">
+                            <TextBlock
                             Height="25"
                             HorizontalAlignment="Stretch"
                             Text="{ns:Loc LblFocuserAutoFocusStepSize}">
-                            <TextBlock.ToolTip>
-                                <TextBlock Text="{ns:Loc LblFocuserAutoFocusStepSizeTooltip}" />
-                            </TextBlock.ToolTip>
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblFocuserAutoFocusStepSizeTooltip}" />
+                                </TextBlock.ToolTip>
                         </TextBlock>
-                        <TextBox
+                            <TextBox
                             Height="25"
                             HorizontalAlignment="Stretch"
                             Text="{Binding AutoFocusStepSize}" />
-                    </UniformGrid>
+                        </UniformGrid>
 
-                    <UniformGrid Margin="0,5,0,0" Columns="2">
-                        <TextBlock
+                        <UniformGrid Margin="0,5,0,0" Columns="2">
+                            <TextBlock
                             MinWidth="200"
                             MinHeight="20"
                             VerticalAlignment="Center"
                             Text="{ns:Loc LblFocuserAutoFocusInitialOffsetSteps}">
-                            <TextBlock.ToolTip>
-                                <TextBlock Text="{ns:Loc LblFocuserAutoFocusInitialOffsetStepsTooltip}" />
-                            </TextBlock.ToolTip>
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblFocuserAutoFocusInitialOffsetStepsTooltip}" />
+                                </TextBlock.ToolTip>
                         </TextBlock>
-                        <TextBox
+                            <TextBox
                             Height="25"
                             HorizontalAlignment="Stretch"
                             Text="{Binding AutoFocusInitialOffsetSteps}" />
-                    </UniformGrid>
-                    <UniformGrid Margin="0,5,0,0" Columns="2">
-                        <TextBlock
+                        </UniformGrid>
+                        <UniformGrid Margin="0,5,0,0" Columns="2">
+                            <TextBlock
                             MinWidth="200"
                             MinHeight="20"
                             VerticalAlignment="Center"
                             Text="{ns:Loc LblDefaultAutoFocusExposureTime}">
-                            <TextBlock.ToolTip>
-                                <TextBlock Text="{ns:Loc LblAutoFocusExposureTimeTooltip}" />
-                            </TextBlock.ToolTip>
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblAutoFocusExposureTimeTooltip}" />
+                                </TextBlock.ToolTip>
                         </TextBlock>
-                        <TextBox Height="25" HorizontalAlignment="Stretch">
-                            <TextBox.Text>
-                                <Binding Path="AutoFocusExposureTime" UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:GreaterZeroRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
+                            <TextBox Height="25" HorizontalAlignment="Stretch">
+                                <TextBox.Text>
+                                    <Binding Path="AutoFocusExposureTime" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </UniformGrid>
                     </UniformGrid>
-                    <UniformGrid Margin="0,5,0,0" Columns="2">
-                        <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblFocuserSettleTime}">
-                            <TextBlock.ToolTip>
-                                <TextBlock Text="{ns:Loc LblFocuserSettleTimeTooltip}" />
-                            </TextBlock.ToolTip>
-                        </TextBlock>
-                        <TextBox Height="25" HorizontalAlignment="Stretch">
-                            <TextBox.Text>
-                                <Binding Path="FocuserSettleTime" UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:GreaterZeroRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                    </UniformGrid>
-                    <UniformGrid Margin="0,5,0,0" Columns="2">
-                        <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblAutoFocusNumberOfAttempts}">
-                            <TextBlock.ToolTip>
-                                <TextBlock Text="{ns:Loc LblAutoFocusNumberOfAttemptsTooltip}" />
-                            </TextBlock.ToolTip>
-                        </TextBlock>
-                        <TextBox Height="25" HorizontalAlignment="Stretch">
-                            <TextBox.Text>
-                                <Binding Path="AutoFocusTotalNumberOfAttempts" UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:StrictGreaterZeroRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                    </UniformGrid>
-                    <UniformGrid Margin="0,5,0,0" Columns="2">
-                        <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblAutoFocusNumberOfFramesPerPoint}">
-                            <TextBlock.ToolTip>
-                                <TextBlock Text="{ns:Loc LblAutoFocusNumberOfFramesPerPointTooltip}" />
-                            </TextBlock.ToolTip>
-                        </TextBlock>
-                        <TextBox Height="25" HorizontalAlignment="Stretch">
-                            <TextBox.Text>
-                                <Binding Path="AutoFocusNumberOfFramesPerPoint" UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:StrictGreaterZeroRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                    </UniformGrid>
-                    <UniformGrid Margin="0,5,0,0" Columns="2">
-                        <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblAutoFocusCropRatio}">
-                            <TextBlock.ToolTip>
-                                <TextBlock Text="{ns:Loc LblAutoFocusCropRatioTooltip}" />
-                            </TextBlock.ToolTip>
-                        </TextBlock>
-                        <TextBox Height="25" HorizontalAlignment="Stretch">
-                            <TextBox.Text>
-                                <Binding Path="AutoFocusCropRatio" UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:StrictGreaterZeroRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                    </UniformGrid>
-                    <UniformGrid Margin="0,5,0,0" Columns="2">
-                        <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblAFUseBrightestStars}">
-                            <TextBlock.ToolTip>
-                                <TextBlock Text="{ns:Loc LblAFUseBrightestStarsTooltip}" />
-                            </TextBlock.ToolTip>
-                        </TextBlock>
-                        <TextBox Height="25" HorizontalAlignment="Stretch">
-                            <TextBox.Text>
-                                <Binding Path="AutoFocusUseBrightestStars" UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:GreaterZeroRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                    </UniformGrid>
-                    <UniformGrid Margin="0,5,0,0" Columns="3">
-                        <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblFocuserBacklash}">
-                            <TextBlock.ToolTip>
-                                <TextBlock Text="{ns:Loc LblFocuserBacklashTooltip}" />
-                            </TextBlock.ToolTip>
-                        </TextBlock>
-                        <TextBox Height="25" Margin="5,0,5,0">
-                            <TextBox.Text>
-                                <Binding Path="BacklashIn" UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:GreaterZeroRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                        <TextBox Height="25" Margin="5,0,5,0">
-                            <TextBox.Text>
-                                <Binding Path="BacklashOut" UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:GreaterZeroRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                    </UniformGrid>
-                    <UniformGrid Margin="0,5,0,0" Columns="2">
-                        <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblBinning}">
-                        </TextBlock>
-                        <TextBox Height="25" HorizontalAlignment="Stretch">
-                            <TextBox.Text>
-                                <Binding Path="AutoFocusBinning" UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:StrictGreaterZeroRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                    </UniformGrid>
-                </UniformGrid>
+                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,1" Margin="0,10,0,0">
+                        <Expander Header="{ns:Loc LblAdvancedSettings}">
+                            <UniformGrid Columns="2">
+                                <UniformGrid Margin="0,5,0,0" Columns="2">
+                                    <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblFocuserSettleTime}">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblFocuserSettleTimeTooltip}" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <TextBox Height="25" HorizontalAlignment="Stretch">
+                                        <TextBox.Text>
+                                            <Binding Path="FocuserSettleTime" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:GreaterZeroRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                </UniformGrid>
+                                <UniformGrid Margin="0,5,0,0" Columns="2">
+                                    <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblAutoFocusNumberOfAttempts}">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblAutoFocusNumberOfAttemptsTooltip}" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <TextBox Height="25" HorizontalAlignment="Stretch">
+                                        <TextBox.Text>
+                                            <Binding Path="AutoFocusTotalNumberOfAttempts" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:StrictGreaterZeroRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                </UniformGrid>
+                                <UniformGrid Margin="0,5,0,0" Columns="2">
+                                    <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblAutoFocusNumberOfFramesPerPoint}">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblAutoFocusNumberOfFramesPerPointTooltip}" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <TextBox Height="25" HorizontalAlignment="Stretch">
+                                        <TextBox.Text>
+                                            <Binding Path="AutoFocusNumberOfFramesPerPoint" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:StrictGreaterZeroRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                </UniformGrid>
+                                <UniformGrid Margin="0,5,0,0" Columns="2">
+                                    <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblAutoFocusCropRatio}">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblAutoFocusCropRatioTooltip}" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <TextBox Height="25" HorizontalAlignment="Stretch">
+                                        <TextBox.Text>
+                                            <Binding Path="AutoFocusCropRatio" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:StrictGreaterZeroRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                </UniformGrid>
+                                <UniformGrid Margin="0,5,0,0" Columns="2">
+                                    <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblAFUseBrightestStars}">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblAFUseBrightestStarsTooltip}" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <TextBox Height="25" HorizontalAlignment="Stretch">
+                                        <TextBox.Text>
+                                            <Binding Path="AutoFocusUseBrightestStars" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:GreaterZeroRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                </UniformGrid>
+                                <UniformGrid Margin="0,5,0,0" Columns="3">
+                                    <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblFocuserBacklash}">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblFocuserBacklashTooltip}" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <TextBox Height="25" Margin="5,0,5,0">
+                                        <TextBox.Text>
+                                            <Binding Path="BacklashIn" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:GreaterZeroRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                    <TextBox Height="25" Margin="5,0,5,0">
+                                        <TextBox.Text>
+                                            <Binding Path="BacklashOut" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:GreaterZeroRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                </UniformGrid>
+                                <UniformGrid Margin="0,5,0,0" Columns="2">
+                                    <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblBinning}">
+                                    </TextBlock>
+                                    <TextBox Height="25" HorizontalAlignment="Stretch">
+                                        <TextBox.Text>
+                                            <Binding Path="AutoFocusBinning" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:StrictGreaterZeroRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                </UniformGrid>
+                            </UniformGrid>
+                        </Expander>
+                    </Border>
+                </StackPanel>
             </ScrollViewer>
         </GroupBox>
         <GroupBox

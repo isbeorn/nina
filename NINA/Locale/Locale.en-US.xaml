@@ -8,6 +8,7 @@
   <s:String x:Key="LblActiveFilter" xml:space="default">Active filter</s:String>
   <s:String x:Key="LblActiveSequenceDetails" xml:space="default">Active Sequence Details</s:String>
   <s:String x:Key="LblAddSequenceTarget" xml:space="default">Add as Sequence Target</s:String>
+  <s:String x:Key="LblAdvancedSettings" xml:space="default">Advanced Settings</s:String>
   <s:String x:Key="LblAFOnButFocuserNotConnected" xml:space="default">Auto-Focus is enabled, yet focuser is not connected</s:String>
   <s:String x:Key="LblAfter" xml:space="default">After</s:String>
   <s:String x:Key="LblAFUseBrightestStars" xml:space="default">Use brightest n stars</s:String>
