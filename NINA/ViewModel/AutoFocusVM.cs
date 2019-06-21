@@ -228,7 +228,7 @@ namespace NINA.ViewModel {
                 pixelFormat = System.Windows.Media.PixelFormats.Gray16;
             }
 
-            var analysis = new StarDetection(image, pixelFormat, profileService.ActiveProfile.ImageSettings.StarSensitivity);
+            var analysis = new StarDetection(image, pixelFormat, profileService.ActiveProfile.ImageSettings.StarSensitivity, profileService.ActiveProfile.ImageSettings.NoiseReduction);
             if (profileService.ActiveProfile.FocuserSettings.AutoFocusCropRatio < 1 && !_setSubSample) {
                 analysis.IgnoreImageEdges = true;
                 analysis.CropRatio = profileService.ActiveProfile.FocuserSettings.AutoFocusCropRatio;

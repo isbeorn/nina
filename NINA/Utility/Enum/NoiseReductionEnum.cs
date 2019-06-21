@@ -1,4 +1,10 @@
-﻿#region "copyright"
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+#region "copyright"
 
 /*
     Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
@@ -21,17 +27,26 @@
 
 #endregion "copyright"
 
-using NINA.Utility.Enum;
+using System.ComponentModel;
 
-namespace NINA.Profile {
+namespace NINA.Utility.Enum {
 
-    public interface IImageSettings : ISettings {
-        bool AnnotateImage { get; set; }
-        bool DebayerImage { get; set; }
-        bool UnlinkedStretch { get; set; }
-        double AutoStretchFactor { get; set; }
-        double BlackClipping { get; set; }
-        StarSensitivityEnum StarSensitivity { get; set; }
-        NoiseReductionEnum NoiseReduction { get; set; }
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum NoiseReductionEnum {
+
+        [Description("LblNone")]
+        None,
+
+        [Description("LblMedian")]
+        Median,
+
+        [Description("LblNormal")]
+        Normal,
+
+        [Description("LblHigh")]
+        High,
+
+        [Description("LblHighest")]
+        Highest
     }
 }

@@ -360,7 +360,7 @@
                             VerticalAlignment="Center"
                             Text="{ns:Loc LblStarSensitivity}">
                             <TextBlock.ToolTip>
-                                <TextBlock Text="{ns:Loc LblStarSensitivityToolitp}" />
+                                <TextBlock Text="{ns:Loc LblStarSensitivityTooltip}" />
                             </TextBlock.ToolTip>
                         </TextBlock>
                         <ComboBox
@@ -368,6 +368,22 @@
                             Margin="0,0,0,0"
                             ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:StarSensitivityEnum}}}"
                             SelectedItem="{Binding StarSensitivity}" />
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="200"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblNoiseReduction}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc LblNoiseReductionTooltip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <ComboBox
+                            MinWidth="150"
+                            Margin="0,0,0,0"
+                            ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:NoiseReductionEnum}}}"
+                            SelectedItem="{Binding NoiseReduction}" />
                     </StackPanel>
                 </StackPanel>
             </GroupBox>

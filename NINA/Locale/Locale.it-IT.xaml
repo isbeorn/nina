@@ -8,6 +8,7 @@
   <s:String x:Key="LblActiveFilter" xml:space="default">Filtro attivo</s:String>
   <s:String x:Key="LblActiveSequenceDetails" xml:space="default">Dettagli Sequenze Attive</s:String>
   <s:String x:Key="LblAddSequenceTarget" xml:space="default">Affiungi come target di sequenza</s:String>
+  <s:String x:Key="LblAdvancedSettings" xml:space="default">Impostazioni Avanzate</s:String>
   <s:String x:Key="LblAFOnButFocuserNotConnected" xml:space="default">L'auto-focs è abilitato, ma il focuser non è connesso</s:String>
   <s:String x:Key="LblAfter" xml:space="default">Dopo</s:String>
   <s:String x:Key="LblAFUseBrightestStars" xml:space="default">Usa le n stelle più luminose</s:String>
@@ -538,6 +539,9 @@ HFR Calcolato: {2}
   <s:String x:Key="LblNoFilterwheel" xml:space="default">Nessuna Filterwheel</s:String>
   <s:String x:Key="LblNoFocuser" xml:space="default">Nessun Focuser</s:String>
   <s:String x:Key="LblNoImage" xml:space="default">Nessuna Imamgine disponibile</s:String>
+  <s:String x:Key="LblNoiseReduction" xml:space="default">Riduzione Rumore</s:String>
+  <s:String x:Key="LblNoiseReductionTooltip" xml:space="default">Riduzione rumore applicata  prima della star detection. Questo potrebbe aiutare con immagini con molto rumore o corte esposizioni.</s:String>
+  <s:String x:Key="LblNone" xml:space="default">Nessuna</s:String>
   <s:String x:Key="LblNormal" xml:space="default">Normale</s:String>
   <s:String x:Key="LblNoRotator" xml:space="default">Nessun Rotator</s:String>
   <s:String x:Key="LblNorthern" xml:space="default">Settentrionale</s:String>

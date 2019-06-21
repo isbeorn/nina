@@ -534,7 +534,7 @@ namespace NINA.ViewModel {
                     }
 
                     if (DetectStars) {
-                        await data.DetectStars(profileService.ActiveProfile.ImageSettings.AnnotateImage, profileService.ActiveProfile.ImageSettings.StarSensitivity, token);
+                        await data.DetectStars(profileService.ActiveProfile.ImageSettings.AnnotateImage, profileService.ActiveProfile.ImageSettings.StarSensitivity, profileService.ActiveProfile.ImageSettings.NoiseReduction, token);
                     }
 
                     ImgArr = data;

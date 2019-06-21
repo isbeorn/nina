@@ -49,11 +49,12 @@ namespace NINA.Utility.ImageAnalysis {
         private static System.Drawing.FontFamily FONTFAMILY = new System.Drawing.FontFamily("Arial");
         private static Font FONT = new Font(FONTFAMILY, 32, System.Drawing.FontStyle.Regular, GraphicsUnit.Pixel);
 
-        public StarDetection(IImageData imageData, StarSensitivityEnum sensitivity) {
+        public StarDetection(IImageData imageData, StarSensitivityEnum sensitivity, NoiseReductionEnum noiseReduction) {
             _iarr = imageData.Data;
             _originalBitmapSource = imageData.Image;
             statistics = imageData.Statistics;
             _sensitivity = sensitivity;
+            _noiseReduction = noiseReduction;
 
             _resizefactor = 1.0;
             if (imageData.Statistics.Width > _maxWidth) {
@@ -74,7 +75,7 @@ namespace NINA.Utility.ImageAnalysis {
             _maxStarSize = (int)Math.Ceiling(150 * _resizefactor);
         }
 
-        public StarDetection(IImageData imageData, System.Windows.Media.PixelFormat pf, StarSensitivityEnum sensitivity) : this(imageData, sensitivity) {
+        public StarDetection(IImageData imageData, System.Windows.Media.PixelFormat pf, StarSensitivityEnum sensitivity, NoiseReductionEnum noiseReduction) : this(imageData, sensitivity, noiseReduction) {
             if (pf == System.Windows.Media.PixelFormats.Rgb48) {
                 using (var source = ImageUtility.BitmapFromSource(_originalBitmapSource, System.Drawing.Imaging.PixelFormat.Format48bppRgb)) {
                     using (var img = new Grayscale(0.2125, 0.7154, 0.0721).Apply(source)) {
@@ -100,6 +101,7 @@ namespace NINA.Utility.ImageAnalysis {
         private List<AForge.Point> _brightestStarPositions = new List<AForge.Point>();
         private int _numberOfAFStars = 0;
         private StarSensitivityEnum _sensitivity = StarSensitivityEnum.Normal;
+        private NoiseReductionEnum _noiseReduction = NoiseReductionEnum.None;
 
         public List<AForge.Point> BrightestStarPositions {
             get {
@@ -217,6 +219,11 @@ namespace NINA.Utility.ImageAnalysis {
                     sw.Restart();
 
                     _token.ThrowIfCancellationRequested();
+
+                    /* Perform initial noise reduction on full size image if necessary */
+                    if (_noiseReduction != NoiseReductionEnum.None) {
+                        ReduceNoise();
+                    }
 
                     /* Resize to speed up manipulation */
                     ResizeBitmapToAnalyze();
@@ -343,7 +350,7 @@ namespace NINA.Utility.ImageAnalysis {
                 double largeRectStdev = Math.Sqrt((largeRectPixelSumSquares - largeRectPixelCount * largeRectMean * largeRectMean) / largeRectPixelCount);
                 int minimumNumberOfPixels = (int)Math.Ceiling(Math.Max(_originalBitmapSource.PixelWidth, _originalBitmapSource.PixelHeight) / 1000d);
 
-                if (s.meanBrightness > largeRectMean * 1.1 && innerStarPixelValues.Count(pv => pv > largeRectMean + 1.5 * largeRectStdev) > minimumNumberOfPixels) { //It's a local maximum, and has enough bright pixels, so likely to be a star. Let's add it to our star dictionary.
+                if (s.meanBrightness >= largeRectMean + Math.Min(0.1 * largeRectMean, largeRectStdev) && innerStarPixelValues.Count(pv => pv > largeRectMean + 1.5 * largeRectStdev) > minimumNumberOfPixels) { //It's a local maximum, and has enough bright pixels, so likely to be a star. Let's add it to our star dictionary.
                     sumRadius += s.radius;
                     sumSquares += s.radius * s.radius;
                     s.CalculateHfr();
@@ -451,7 +458,13 @@ namespace NINA.Utility.ImageAnalysis {
             var sw = Stopwatch.StartNew();
             
             if (_sensitivity == StarSensitivityEnum.Normal) {
-                new CannyEdgeDetector(10,80).ApplyInPlace(bmp);
+                if (_noiseReduction == NoiseReductionEnum.None || _noiseReduction == NoiseReductionEnum.Median) {
+                    //Still need to apply Gaussian blur, using normal Canny
+                    new CannyEdgeDetector(10, 80).ApplyInPlace(bmp);
+                } else {
+                    //Gaussian blur already applied, using no-blur Canny
+                    new NoBlurCannyEdgeDetector(10,80).ApplyInPlace(bmp);
+                }  
             } else { 
                 int kernelSize = (int)Math.Max(Math.Floor(Math.Max(_originalBitmapSource.PixelWidth, _originalBitmapSource.PixelHeight) * _resizefactor / 500), 3);
                 //Apply blur or sharpen operation prior to applying the Canny Edge Detector
@@ -463,8 +476,12 @@ namespace NINA.Utility.ImageAnalysis {
                     double sigma = (_inverseResizefactor - 1) * 3;
                     new GaussianSharpen(sigma, kernelSize).ApplyInPlace(bmp);
                 } else {
-                    //No resizing occurred, apply weak Gaussian blur
-                    new GaussianBlur(0.7, 5).ApplyInPlace(bmp);
+                    if (_noiseReduction == NoiseReductionEnum.None || _noiseReduction == NoiseReductionEnum.Median) {
+                        //No resizing or gaussian blur occurred, apply weak Gaussian blur
+                        new GaussianBlur(0.7, 5).ApplyInPlace(bmp);
+                    } else { 
+                        //Gaussian blur already occurred, do nothing
+                    }
                 }
                 _token.ThrowIfCancellationRequested();
                 new NoBlurCannyEdgeDetector(10,80).ApplyInPlace(bmp);
@@ -485,6 +502,32 @@ namespace NINA.Utility.ImageAnalysis {
                 var bmp = new ResizeBicubic((int)Math.Floor(_bitmapToAnalyze.Width * _resizefactor), (int)Math.Floor(_bitmapToAnalyze.Height * _resizefactor)).Apply(_bitmapToAnalyze);
                 _bitmapToAnalyze.Dispose();
                 _bitmapToAnalyze = bmp;
+            }
+        }
+
+        private void ReduceNoise() {
+            var sw = Stopwatch.StartNew();
+            if (_bitmapToAnalyze.Width > _maxWidth) {
+                Bitmap bmp;
+                switch (_noiseReduction) {
+                    case NoiseReductionEnum.High:
+                        bmp = new FastGaussianBlur(_bitmapToAnalyze).Process(2);
+                        break;
+                    case NoiseReductionEnum.Highest:
+                        bmp = new FastGaussianBlur(_bitmapToAnalyze).Process(3);
+                        break;
+                    case NoiseReductionEnum.Median:
+                        bmp = new Median().Apply(_bitmapToAnalyze);
+                        break;
+                    default:
+                        bmp = new FastGaussianBlur(_bitmapToAnalyze).Process(1);
+                        break;
+                }
+                _bitmapToAnalyze.Dispose();
+                _bitmapToAnalyze = bmp;
+                sw.Stop();
+                Debug.Print("Time for noise reduction: " + sw.Elapsed);
+                sw = null;
             }
         }
     }

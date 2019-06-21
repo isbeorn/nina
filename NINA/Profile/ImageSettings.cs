@@ -43,6 +43,7 @@ namespace NINA.Profile {
             debayerImage = true;
             unlinkedStretch = true;
             starSensitivity = StarSensitivityEnum.Normal;
+            noiseReduction = NoiseReductionEnum.None;
         }
 
         private double autoStretchFactor;
@@ -136,6 +137,21 @@ namespace NINA.Profile {
             set {
                 if (starSensitivity != value) {
                     starSensitivity = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private NoiseReductionEnum noiseReduction;
+
+        [DataMember]
+        public NoiseReductionEnum NoiseReduction {
+            get {
+                return noiseReduction;
+            }
+            set {
+                if (noiseReduction != value) {
+                    noiseReduction = value;
                     RaisePropertyChanged();
                 }
             }
