@@ -109,6 +109,10 @@ namespace NINA.Model.MyFocuser {
                     _canGetPosition = false;
                 } catch (System.NotImplementedException) {
                     _canGetPosition = false;
+                } catch (DriverException ex) {
+                    Logger.Error(ex);
+                } catch (Exception ex) {
+                    Logger.Error(ex);
                 }
                 return pos;
             }
@@ -127,6 +131,10 @@ namespace NINA.Model.MyFocuser {
                     _canGetStepSize = false;
                 } catch (System.NotImplementedException) {
                     _canGetStepSize = false;
+                } catch (DriverException ex) {
+                    Logger.Error(ex);
+                } catch (Exception ex) {
+                    Logger.Error(ex);
                 }
                 return stepSize;
             }
@@ -170,6 +178,10 @@ namespace NINA.Model.MyFocuser {
                     _hasTemperature = false;
                 } catch (System.NotImplementedException) {
                     _hasTemperature = false;
+                } catch (DriverException ex) {
+                    Logger.Error(ex);
+                } catch (Exception ex) {
+                    Logger.Error(ex);
                 }
                 return temperature;
             }
@@ -289,7 +301,7 @@ namespace NINA.Model.MyFocuser {
                     _focuser = new Focuser(Id);
                     Connected = true;
                     if (Connected) {
-                        init();
+                        Initialize();
                         RaiseAllPropertiesChanged();
                     }
                 } catch (ASCOM.DriverAccessCOMException ex) {
@@ -304,7 +316,7 @@ namespace NINA.Model.MyFocuser {
             });
         }
 
-        private void init() {
+        private void Initialize() {
             _canGetPosition = true;
             _canGetStepSize = true;
             _hasTemperature = true;
