@@ -118,6 +118,11 @@ Dec: {1}</s:String>
   <s:String x:Key="LblCameraConnected" xml:space="default">Kamera verbunden</s:String>
   <s:String x:Key="LblCameraConnectionLost" xml:space="default">Verbindung zur Kamera verloren! Bitte Kamera erneut verbinden!</s:String>
   <s:String x:Key="LblCameraCoolerNotEnabled" xml:space="default">Kamera besitzt einen Kühler, jedoch ist er nicht aktiv</s:String>
+  <s:String x:Key="LblCameraDownloadFailed" xml:space="preserve">Herunterladen der Kamera Bilddaten fehlgeschlagen.
+Belichtungszeit: {0}s
+Typ: {1}
+Gain: {2}
+Filter: {3}</s:String>
   <s:String x:Key="LblCameraHighPower" xml:space="preserve">Kamerakühler läuft bei {0}% und wird wahrscheinlich
 die Umgebungstemperaturvariationen nicht ausgleichen können</s:String>
   <s:String x:Key="LblCameraNotAtTargetTemp" xml:space="default">Kameratemperatur ist bei {0}°C, die Zieltemperatur ist jedoch bei {1}°C</s:String>

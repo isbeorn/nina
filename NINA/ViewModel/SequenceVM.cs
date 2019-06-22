@@ -679,24 +679,29 @@ namespace NINA.ViewModel {
                         /* 6) Download Image */
                         progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDownloading"] });
                         var data = await cameraMediator.Download(ct);
-                        AddMetaData(data, csl, seq, exposureStart, rms);
+                        if (data != null) {
+                            AddMetaData(data, csl, seq, exposureStart, rms);
 
-                        /* 8b) Process ImageData for display */
-                        var imageProcessingTask = imagingMediator.PrepareImage(data, ct);
-                        progress.Report(new ApplicationStatus() { Status = " " });
+                            /* 8b) Process ImageData for display */
+                            var imageProcessingTask = imagingMediator.PrepareImage(data, ct);
+                            progress.Report(new ApplicationStatus() { Status = " " });
 
-                        /* 7) Wait for previous item's parallel actions 8a, 8b to finish */
-                        if (saveTask?.IsCompleted == false) {
-                            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForImageSaving"] });
-                            await saveTask;
+                            /* 7) Wait for previous item's parallel actions 8a, 8b to finish */
+                            if (saveTask?.IsCompleted == false) {
+                                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForImageSaving"] });
+                                await saveTask;
+                            }
+
+                            /* 8a) Save ImageData */
+                            saveTask = Save(data, imageProcessingTask, ct);
+
+                            seqDuration.Stop();
+
+                            AddDownloadTime(seqDuration.Elapsed.Subtract(TimeSpan.FromSeconds(seq.ExposureTime)));
+                        } else {
+                            Logger.Error(new CameraDownloadFailedException(seq));
+                            Notification.ShowError(string.Format(Locale.Loc.Instance["LblCameraDownloadFailed"], seq.ExposureTime, seq.ImageType, seq.Gain, seq.FilterType?.Name ?? string.Empty));
                         }
-
-                        /* 8a) Save ImageData */
-                        saveTask = Save(data, imageProcessingTask, ct);
-
-                        seqDuration.Stop();
-
-                        AddDownloadTime(seqDuration.Elapsed.Subtract(TimeSpan.FromSeconds(seq.ExposureTime)));
 
                         if (pt.IsPaused) {
                             csl.IsRunning = false;

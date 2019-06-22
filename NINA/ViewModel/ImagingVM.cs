@@ -319,11 +319,6 @@ namespace NINA.ViewModel {
                     try {
                         if (CameraInfo.Connected != true) {
                             Notification.ShowWarning(Locale.Loc.Instance["LblNoCameraConnected"]);
-                            semaphoreSlim.Release();
-                            return null;
-                        }
-
-                        if (CameraInfo.Connected != true) {
                             throw new CameraConnectionLostException();
                         }
 
@@ -342,6 +337,12 @@ namespace NINA.ViewModel {
 
                         /*Download Image */
                         data = await Download(token, progress);
+
+                        if (data == null) {
+                            Logger.Error(new CameraDownloadFailedException(sequence));
+                            Notification.ShowError(string.Format(Locale.Loc.Instance["LblCameraDownloadFailed"], sequence.ExposureTime, sequence.ImageType, sequence.Gain, sequence.FilterType?.Name ?? string.Empty));
+                            return null;
+                        }
 
                         AddMetaData(data, sequence, exposureStart, rms, targetName);
 
@@ -488,7 +489,9 @@ namespace NINA.ViewModel {
                 Logger.Error(ex);
                 Notification.ShowError(ex.Message);
             } finally {
-                await _imageProcessingTask;
+                if (_imageProcessingTask != null) {
+                    await _imageProcessingTask;
+                }
                 IsLooping = false;
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
