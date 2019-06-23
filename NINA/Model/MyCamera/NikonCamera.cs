@@ -163,6 +163,13 @@ namespace NINA.Model.MyCamera {
 
             GetShutterSpeeds();
             GetCapabilities();
+
+            /* Setting SaveMedia when supported, to save images via SDRAM and not to the internal memory card */
+            if (Capabilities.ContainsKey(eNkMAIDCapability.kNkMAIDCapability_SaveMedia) && Capabilities[eNkMAIDCapability.kNkMAIDCapability_SaveMedia].CanSet()) {
+                _camera.SetUnsigned(eNkMAIDCapability.kNkMAIDCapability_SaveMedia, (uint)eNkMAIDSaveMedia.kNkMAIDSaveMedia_SDRAM);
+            } else {
+                Logger.Trace("Setting SaveMedia Capability not available. This has to be set manually or is not supported by this model.");
+            }
         }
 
         private void GetCapabilities() {

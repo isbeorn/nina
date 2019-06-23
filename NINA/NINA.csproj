@@ -390,6 +390,7 @@
     <Compile Include="Profile\Interfaces\ISwitchSettings.cs" />
     <Compile Include="Profile\SwitchSettings.cs" />
     <Compile Include="Utility\Enum\StarSensitivityEnum.cs" />
+    <Compile Include="Utility\Exceptions\CameraDownloadFailedException.cs" />
     <Compile Include="Utility\Extensions\IOrderedQueryableExtension.cs" />
     <Compile Include="Utility\ImageAnalysis\BahtinovAnalysis.cs" />
     <Compile Include="Utility\ImageAnalysis\BahtinovImage.cs" />

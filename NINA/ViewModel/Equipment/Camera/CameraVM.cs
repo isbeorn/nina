@@ -721,10 +721,12 @@ namespace NINA.ViewModel.Equipment.Camera {
                 seqDuration.Stop();
                 CameraInfo.LastDownloadTime = seqDuration.Elapsed.TotalSeconds;
                 BroadcastCameraInfo();
-                output.MetaData.FromProfile(this.profileService.ActiveProfile);
-                output.MetaData.FromCameraInfo(this.CameraInfo);
-                output.MetaData.Image.ExposureTime = this.exposureTime;
-                await output.CalculateStatistics();
+                if (output != null) {
+                    output.MetaData.FromProfile(this.profileService.ActiveProfile);
+                    output.MetaData.FromCameraInfo(this.CameraInfo);
+                    output.MetaData.Image.ExposureTime = this.exposureTime;
+                    await output.CalculateStatistics();
+                }
                 return output;
             } else {
                 return null;
