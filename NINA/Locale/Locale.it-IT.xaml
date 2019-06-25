@@ -91,6 +91,8 @@ stelle nei pressi dei bordi dell' immagine saranno ignorate durante la detection
 Usando questi due punti l'errore attuale di azimuth verra' calcolato e mostrato</s:String>
   <s:String x:Key="LblAzimuthMeasurementDescription" xml:space="default">Punta il telescopio verso Sud vicino alla declinazione 0 e al meridiano</s:String>
   <s:String x:Key="LblBackground" xml:space="default">Sfondo</s:String>
+  <s:String x:Key="LblBacklashMeasurementException" xml:space="default">Si è verificato un errore durante la misura del Backlash. I valori di backlash calcolati potrebbero essere sbagliati.</s:String>
+  <s:String x:Key="LblBacklashMeasurements" xml:space="default">I seguenti valori di backlash del Focuser saranno salvati. IN: {0}, OUT: {1}</s:String>
   <s:String x:Key="LblBeta" xml:space="default">Beta</s:String>
   <s:String x:Key="LblBiasMean" xml:space="default">BIAS medio (nativo)</s:String>
   <s:String x:Key="LblBinning" xml:space="default">Binning</s:String>
@@ -513,6 +515,7 @@ HFR Calcolato: {2}
   <s:String x:Key="LblMaxOptimalADU" xml:space="default">ADU MAssimo</s:String>
   <s:String x:Key="LblMaxStep" xml:space="default">Step Massimo</s:String>
   <s:String x:Key="LblMean" xml:space="default">Media</s:String>
+  <s:String x:Key="LblMeasureFocuserBacklash" xml:space="default">Misura backlash del Focuser</s:String>
   <s:String x:Key="LblMedian" xml:space="default">Mediano</s:String>
   <s:String x:Key="LblMeridianFlipFailed" xml:space="default">Flip Meridiano Fallito</s:String>
   <s:String x:Key="LblMeridianFlipInit" xml:space="default">Procedura flip Meridiano iniziata</s:String>
@@ -731,6 +734,7 @@ HFR Calcolato: {2}
   <s:String x:Key="LblRotatorConnected" xml:space="default">Rotator Connesso</s:String>
   <s:String x:Key="LblRotatorConnectionLost" xml:space="default">Connessione al Rotator persa! Si prega di riconnettere il rotator!</s:String>
   <s:String x:Key="LblSave" xml:space="default">Salva</s:String>
+  <s:String x:Key="LblSaveBacklashQuestion" xml:space="default">Salvare i valori del backlash del Focuser?</s:String>
   <s:String x:Key="LblSaveImageAs" xml:space="default">Salva Immagine come</s:String>
   <s:String x:Key="LblSaveImageAsDSLRNote" xml:space="default">Per le DSLR il settaggio del formato file viene ignorato. Il formato RAW format verrà usato!</s:String>
   <s:String x:Key="LblSaveSelectedProfileAndDontAskAgain" xml:space="default">Salva il profilo selezionato e non chiedere più la prossima volta.</s:String>
@@ -795,9 +799,14 @@ Questo tempalte sarà usato all'avvio per inizializzare la sequenza invece di qu
   <s:String x:Key="LblStarSensitivity" xml:space="default">Sensitività stelle</s:String>
   <s:String x:Key="LblStarSensitivityTooltip" xml:space="default">Determina la sensitività dell'algoritmo di rilevazione delle stelle. Valori più alti potrebbero rilievare rumore erroneamente e potrebbero richiedere più tempo</s:String>
   <s:String x:Key="LblStartAutoFocus" xml:space="default">Inizia Auto Focus</s:String>
+  <s:String x:Key="LblStartBacklashMeasurementConfirmation" xml:space="preserve">La misurazione del Backlash  inizierà ora.
+Prima di proseguire, si prega di assicurarsi che il sistema sia a fuoco o vicino ad una buona focalizzazione.</s:String>
+  <s:String x:Key="LblStartBacklashQuestion" xml:space="default">Start Backlash Measurement?</s:String>
   <s:String x:Key="LblStartGuiding" xml:space="default">Inizia la guida</s:String>
   <s:String x:Key="LblStartGuidingButGuiderNotConnected" xml:space="default">"Inizia guida" è abilitato, tuttavia il guider non è connesso</s:String>
   <s:String x:Key="LblStartGuidingFailed" xml:space="default">Avvio guida fallito</s:String>
+  <s:String x:Key="LblStartingINBacklashMeasurement" xml:space="default">Inizio misura Backlash IN</s:String>
+  <s:String x:Key="LblStartingOUTBacklashMeasurement" xml:space="default">Inizio misura Backlash OUT</s:String>
   <s:String x:Key="LblStartSequenceAnyway" xml:space="default">Iniziare la sequenza comunque?</s:String>
   <s:String x:Key="LblState" xml:space="default">Stato</s:String>
   <s:String x:Key="LblStatistics" xml:space="default">Statistiche</s:String>
