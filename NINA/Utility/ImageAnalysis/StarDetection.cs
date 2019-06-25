@@ -50,9 +50,14 @@ namespace NINA.Utility.ImageAnalysis {
         private static Font FONT = new Font(FONTFAMILY, 32, System.Drawing.FontStyle.Regular, GraphicsUnit.Pixel);
 
         public StarDetection(IImageData imageData, StarSensitivityEnum sensitivity, NoiseReductionEnum noiseReduction) {
-            _iarr = imageData.Data;
-            _originalBitmapSource = imageData.Image;
+            //If image was debayered, use debayered array for star HFR and local maximum identification
+            if(imageData.Statistics.IsBayered && imageData.DebayeredData != null && imageData.DebayeredData.Lum !=null && imageData.DebayeredData.Lum.Length > 0) {
+                _iarr = new ImageArray() { FlatArray = imageData.DebayeredData.Lum };
+            } else {
+                _iarr = imageData.Data;
+            }
             statistics = imageData.Statistics;
+            _originalBitmapSource = imageData.Image;
             _sensitivity = sensitivity;
             _noiseReduction = noiseReduction;
 

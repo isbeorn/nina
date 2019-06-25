@@ -342,6 +342,22 @@
                             MinWidth="200"
                             MinHeight="20"
                             VerticalAlignment="Center"
+                            Text="{ns:Loc LblDebayeredHFR}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{ns:Loc LblDebayeredHFRTooltip}" />
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                        <CheckBox
+                            Width="75"
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            IsChecked="{Binding DebayeredHFR}" />
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="200"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
                             Text="{ns:Loc LblUnlinkedStretch}">
                             <TextBlock.ToolTip>
                                 <TextBlock Text="{ns:Loc LblUnlinkedStretchTooltip}" />

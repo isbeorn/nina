@@ -23,6 +23,8 @@
 
 using AForge.Imaging;
 using AForge.Imaging.Filters;
+using NINA.Model.ImageData;
+using System;
 
 namespace NINA.Utility.ImageAnalysis {
 
@@ -33,10 +35,24 @@ namespace NINA.Utility.ImageAnalysis {
             FormatTranslations[System.Drawing.Imaging.PixelFormat.Format16bppGrayScale] = System.Drawing.Imaging.PixelFormat.Format48bppRgb;
         }
 
+        public bool SaveColorChannels { get; set; }
+
+        public bool SaveLumChannel {  get; set; }
+
+        public LRGBArrays LRGBArrays { get; set; }
+
         protected override unsafe void ProcessFilter(UnmanagedImage sourceData, UnmanagedImage destinationData) {
             // get width and height
             int width = sourceData.Width;
             int height = sourceData.Height;
+
+            if (SaveColorChannels && SaveLumChannel) {
+                LRGBArrays = new LRGBArrays(new ushort[width * height], new ushort[width * height], new ushort[width * height], new ushort[width * height]);
+            } else if (!SaveColorChannels && SaveLumChannel) {
+                LRGBArrays = new LRGBArrays(new ushort[width * height], new ushort[0], new ushort[0], new ushort[0]);
+            } else if (SaveColorChannels && !SaveLumChannel) {
+                LRGBArrays = new LRGBArrays(new ushort[0], new ushort[width * height], new ushort[width * height], new ushort[width * height]);
+            }
 
             int widthM1 = width - 1;
             int heightM1 = height - 1;
@@ -65,6 +81,7 @@ namespace NINA.Utility.ImageAnalysis {
                     dst += dstOffset;
                 }
             } else {
+                int counter = 0;
                 // for each line
                 for (int y = 0; y < height; y++) {
                     // for each pixel
@@ -131,10 +148,18 @@ namespace NINA.Utility.ImageAnalysis {
                                 rgbCounters[bayerIndex]++;
                             }
                         }
-
                         dst[RGB.R] = (ushort)(rgbValues[RGB.R] / rgbCounters[RGB.R]);
                         dst[RGB.G] = (ushort)(rgbValues[RGB.G] / rgbCounters[RGB.G]);
                         dst[RGB.B] = (ushort)(rgbValues[RGB.B] / rgbCounters[RGB.B]);
+                        if (SaveColorChannels) {
+                            LRGBArrays.Red[counter] = dst[RGB.R];
+                            LRGBArrays.Green[counter] = dst[RGB.G];
+                            LRGBArrays.Blue[counter] = dst[RGB.B];
+                        }
+                        if (SaveLumChannel) {
+                            LRGBArrays.Lum[counter] = (ushort)Math.Floor((dst[RGB.R]+dst[RGB.G]+dst[RGB.B])/3d);
+                        }
+                        counter++;
                     }
                     src += srcOffset;
                     dst += dstOffset;

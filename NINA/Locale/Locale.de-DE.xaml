@@ -276,6 +276,8 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
   <s:String x:Key="LblDateTimeFormatDescription" xml:space="default">Datum mit Format YYYY-MM-DD_HH-mm-ss</s:String>
   <s:String x:Key="LblDawn" xml:space="default">Morgendämmerung</s:String>
   <s:String x:Key="LblDCRaw" xml:space="default">DCRaw</s:String>
+  <s:String x:Key="LblDebayeredHFR" xml:space="default">Debayered HFR</s:String>
+  <s:String x:Key="LblDebayeredHFRTooltip" xml:space="default">Use debayered image to perform HFR computation. More precise, but more resource-intensive.</s:String>
   <s:String x:Key="LblDebayerImage" xml:space="default">Bild debayern</s:String>
   <s:String x:Key="LblDebayerImageTooltip" xml:space="default">Bild in der Vorschau debayern (gespeichertes Bild ist davon nicht betroffen)</s:String>
   <s:String x:Key="LblDebayeringImage" xml:space="default">Debayere Bild</s:String>

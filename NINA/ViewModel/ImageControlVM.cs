@@ -521,7 +521,7 @@ namespace NINA.ViewModel {
 
                     if (data.Statistics.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage) {
                         _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDebayeringImage"] });
-                        data.Debayer();
+                        data.Debayer(profileService.ActiveProfile.ImageSettings.UnlinkedStretch, (profileService.ActiveProfile.ImageSettings.DebayeredHFR && DetectStars));
                     }
 
                     if (AutoStretch) {

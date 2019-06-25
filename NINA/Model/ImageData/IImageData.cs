@@ -1,4 +1,5 @@
 ﻿using NINA.Utility.Enum;
+using NINA.Utility.ImageAnalysis;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,13 +9,14 @@ namespace NINA.Model.ImageData {
 
     public interface IImageData {
         IImageArray Data { get; }
+        LRGBArrays DebayeredData { get; }
         BitmapSource Image { get; }
         IImageStatistics Statistics { get; set; }
         ImageMetaData MetaData { get; set; }
 
         Task CalculateStatistics();
 
-        void Debayer();
+        void Debayer(bool saveColorChannels = false, bool saveLumChannel = false);
 
         Task DetectStars(bool annotate, StarSensitivityEnum sensitivity, NoiseReductionEnum noiseReduction, CancellationToken ct = default, IProgress<ApplicationStatus> progress = null);
 
