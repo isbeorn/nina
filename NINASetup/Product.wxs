@@ -42,11 +42,14 @@
 
     <Feature Id="ProductFeature" Title="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Level="1">
       <ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="InstallLocationRegistry" />
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="ApplicationShortcutDesktop" />
       <ComponentRef Id="NinaAppDataFolderComponent" />
       <ComponentRef Id="FramingAssistantCacheFolderComponent" />
       <ComponentRef Id="LogsFolderComponent" />
+      <ComponentRef Id="CrashDumpFolderComponent" />
+      <ComponentRef Id="CrashDumpRegistry" />
       <!--<ComponentGroupRef Id="Documentation_images_files" />
       <ComponentGroupRef Id="Documentation_files" />-->
       <ComponentGroupRef Id="External_x64_ASI_files" />
@@ -125,9 +128,20 @@
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="$(var.PlatformProgramFilesFolder)">
         <Directory Id="INSTALLFOLDER" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy">
-          <!--<Directory Id="Documentation" Name="Documentation">
-            <Directory Id="Documentation_images" Name="images" />
-          </Directory>-->
+          <Component Win64="$(var.Win64)" Id="CrashDumpRegistry" Guid="FBD97166-8D65-4B4E-99AF-09A4AD98B64E">
+            <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\NINA.exe" Action="createAndRemoveOnUninstall">
+              <!-- Folder where the dump file should be written to -->
+              <RegistryValue Type="expandable" Name="DumpFolder" Value="%localappdata%\nina\CrashDump" />
+              <!-- Create only a max of 1 dump file -->
+              <RegistryValue Type="integer" Name="DumpCount" Value="1" />
+              <!-- Full Dump = 2-->
+              <RegistryValue Type="integer" Name="DumpType" Value="2" />
+            </RegistryKey>
+          </Component>
+
+          <Component Win64="$(var.Win64)" Id="InstallLocationRegistry" Guid="5D12CAB2-64FB-4643-AA65-7FA32596CD1E">
+            <RegistryValue Root="HKLM" Key="SOFTWARE\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="InstallFolder" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
+          </Component>
           <Directory Id="External" Name="External">
             <Directory Id="External_x64" Name="x64">
               <Directory Id="External_x64_ASI" Name="ASI" />
@@ -220,20 +234,27 @@
         <Directory Id="NinaAppDataFolder" Name="NINA">
           <Component Win64="$(var.Win64)" Id="NinaAppDataFolderComponent" Guid="0004E14E-8B9D-4F52-8D2A-3E7DC2B28EC2">
             <RemoveFolder Id="NinaAppDataFolderRemove" Directory="NinaAppDataFolder" On="uninstall" />
-            <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+            <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="InstallFolder" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
           </Component>
           <Directory Id="LogsFolder" Name="Logs">
             <Component Win64="$(var.Win64)" Id="LogsFolderComponent" Guid="5FE211B5-C7A1-4A31-87CD-F4352E771A50">
               <CreateFolder Directory="LogsFolder" />
               <RemoveFolder Id="LogsFolderRemove" Directory="LogsFolder" On="uninstall" />
-              <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+              <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="InstallFolder" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
             </Component>
           </Directory>
           <Directory Id="FramingAssistantCacheFolder" Name="FramingAssistantCache">
             <Component Win64="$(var.Win64)" Id="FramingAssistantCacheFolderComponent" Guid="55D46CF1-5758-4913-86DA-19285F41C2C9">
               <CreateFolder Directory="FramingAssistantCacheFolder" />
               <RemoveFolder Id="FramingAssistantCacheFolderRemove" Directory="FramingAssistantCacheFolder" On="uninstall" />
-              <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+              <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="InstallFolder" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
+            </Component>
+          </Directory>
+          <Directory Id="CrashDumpFolder" Name="CrashDump">
+            <Component Win64="$(var.Win64)" Id="CrashDumpFolderComponent" Guid="76764150-E6A4-4637-BFB4-574B78515CE6">
+              <CreateFolder Directory="CrashDumpFolder" />
+              <RemoveFolder Id="CrashDumpFolderRemove" Directory="CrashDumpFolder" On="uninstall" />
+              <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="InstallFolder" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
             </Component>
           </Directory>
         </Directory>
@@ -246,14 +267,14 @@
       <Component Win64="$(var.Win64)" Id="ApplicationShortcut" Guid="833331A1-AC4F-4BAE-8090-C27F1CE3F48E">
         <Shortcut Id="ApplicationStartMenuShortcut" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Description="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Target="[INSTALLFOLDER]NINA.exe" WorkingDirectory="INSTALLFOLDER" />
         <RemoveFolder Id="RemoveApplicationProgramsFolder" Directory="ApplicationProgramsFolder" On="uninstall" />
-        <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+        <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="InstallFolder" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
       </Component>
     </DirectoryRef>
     <DirectoryRef Id="DesktopFolder">
       <Component Win64="$(var.Win64)" Id="ApplicationShortcutDesktop" Guid="EA352AD0-8C7C-4956-ABC0-DDB32178C71A">
         <Shortcut Id="ApplicationDesktopShortcut" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Description="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Target="[INSTALLFOLDER]NINA.exe" WorkingDirectory="INSTALLFOLDER" />
         <RemoveFolder Id="RemoveDesktopFolder" Directory="DesktopFolder" On="uninstall" />
-        <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+        <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="InstallFolder" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
       </Component>
     </DirectoryRef>
   </Fragment>

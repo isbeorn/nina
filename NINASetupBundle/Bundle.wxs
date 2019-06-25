@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:bal="http://schemas.microsoft.com/wix/BalExtension" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
   <?if $(var.Platform) = x64 ?>
   <?define SetupMsiName = "NINASetup.msi" ?>
+  <?define Win64 = "yes"?>
   <?define SetupSource = "$(var.NINASetup.TargetDir)" ?>
   <?define DefaultInstallDir = "[ProgramFiles64Folder]N.I.N.A. - Nighttime Imaging 'N' Astronomy" ?>
   <?define VCRedist2013 = "$(var.ProjectDir)\vcredist_x64.exe" ?>
   <?define VCRedist2017 = "$(var.ProjectDir)\vc_redist2017.x64.exe" ?>
   <?else ?>
   <?define SetupMsiName = "NINASetup.msi" ?>
+  <?define Win64 = "no"?>
   <?define SetupSource = "$(var.NINASetup.TargetDir)" ?>
   <?define DefaultInstallDir = "[ProgramFilesFolder]N.I.N.A. - Nighttime Imaging 'N' Astronomy" ?>
   <?define VCRedist2013 = "$(var.ProjectDir)\vcredist_x86.exe" ?>
@@ -22,9 +24,20 @@
          LicenseUrl="https://www.gnu.org/licenses/gpl-3.0.en.html"
         ShowVersion="yes" />
     </BootstrapperApplicationRef>
-    <Variable Name="InstallFolder" Type="string" Value="$(var.DefaultInstallDir)" Persisted="yes" />
-    <Variable Name="LaunchTarget" Value="[InstallFolder]\NINA.exe" Persisted="yes" />
-
+    <Variable Name="InstallFolder" Type="string" Value="$(var.DefaultInstallDir)" />
+    <util:RegistrySearch
+      Id="PreviousInstallFolderSearch"
+      Root="HKLM"
+      Key="SOFTWARE\N.I.N.A. - Nighttime Imaging 'N' Astronomy"
+      Value="InstallFolder"
+      Win64="$(var.Win64)"
+      Variable="PreviousInstallFolder" />
+    <util:DirectorySearch
+      Path='[PreviousInstallFolder]'
+      Variable='InstallFolder'
+      After='PreviousInstallFolderSearch'
+      Condition='PreviousInstallFolder' />
+    <Variable Name="LaunchTarget" Value="[InstallFolder]\NINA.exe" />
     <Chain>
 
       <!-- VCRedist 2013 (required for Atik, Nikon)-->
