@@ -129,14 +129,14 @@ namespace NINA.ViewModel.Equipment.Telescope {
                 siderealTime += 24;
             }
             double timeToMed = currentCoordinates.RA - siderealTime;
-            Coordinates returnCoordinates = new Coordinates(Angle.ByHours(0),Angle.ByDegree(0),Epoch.J2000);
+            Coordinates returnCoordinates = new Coordinates(Angle.ByHours(0), Angle.ByDegree(0), Epoch.J2000);
             if (profileService.ActiveProfile.AstrometrySettings.HemisphereType == Hemisphere.NORTHERN) {
-                    returnCoordinates.Dec = 89;
-                    returnCoordinates.RA = siderealTime + 6*Math.Sign(timeToMed);
+                returnCoordinates.Dec = 89;
+                returnCoordinates.RA = siderealTime + 6 * Math.Sign(timeToMed);
             }
             if (profileService.ActiveProfile.AstrometrySettings.HemisphereType == Hemisphere.SOUTHERN) {
-                    returnCoordinates.Dec = -89;
-                    returnCoordinates.RA = siderealTime + 6*Math.Sign(timeToMed);
+                returnCoordinates.Dec = -89;
+                returnCoordinates.RA = siderealTime + 6 * Math.Sign(timeToMed);
             }
             return returnCoordinates;
         }
@@ -165,6 +165,7 @@ namespace NINA.ViewModel.Equipment.Telescope {
             get {
                 if (_telescopeChooserVM == null) {
                     _telescopeChooserVM = new TelescopeChooserVM(profileService);
+                    _telescopeChooserVM.GetEquipment();
                 }
                 return _telescopeChooserVM;
             }

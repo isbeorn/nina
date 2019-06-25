@@ -31,7 +31,7 @@ namespace NINA.ViewModel.Equipment.Rotator {
 
     internal class RotatorChooserVM : EquipmentChooserVM {
 
-        public RotatorChooserVM(IProfileService profileService) : base(typeof(RotatorChooserVM), profileService) {
+        public RotatorChooserVM(IProfileService profileService) : base(profileService) {
         }
 
         public override void GetEquipment() {

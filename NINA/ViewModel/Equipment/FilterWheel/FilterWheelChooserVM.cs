@@ -31,7 +31,7 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
 
     internal class FilterWheelChooserVM : EquipmentChooserVM {
 
-        public FilterWheelChooserVM(IProfileService profileService) : base(typeof(FilterWheelChooserVM), profileService) {
+        public FilterWheelChooserVM(IProfileService profileService) : base(profileService) {
         }
 
         public override void GetEquipment() {

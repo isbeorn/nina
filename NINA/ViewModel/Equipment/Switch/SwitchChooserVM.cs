@@ -35,7 +35,7 @@ namespace NINA.ViewModel.Equipment.Switch {
 
     internal class SwitchChooserVM : EquipmentChooserVM {
 
-        public SwitchChooserVM(IProfileService profileService) : base(typeof(SwitchChooserVM), profileService) {
+        public SwitchChooserVM(IProfileService profileService) : base(profileService) {
         }
 
         public override void GetEquipment() {

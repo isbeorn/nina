@@ -296,6 +296,7 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
             get {
                 if (_filterWheelChooserVM == null) {
                     _filterWheelChooserVM = new FilterWheelChooserVM(profileService);
+                    _filterWheelChooserVM.GetEquipment();
                 }
                 return _filterWheelChooserVM;
             }
