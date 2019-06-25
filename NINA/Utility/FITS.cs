@@ -98,7 +98,7 @@ namespace NINA.Utility {
                 this.AddHeaderCard("YBINNING", metaData.Camera.BinY, "Y axis binning factor");
             }
 
-            if (!double.IsNaN(metaData.Camera.Gain)) {
+            if (!double.IsNaN(metaData.Camera.Gain) && metaData.Camera.Gain >= 0) {
                 this.AddHeaderCard("GAIN", metaData.Camera.Gain, "Sensor gain");
             }
 

@@ -7,8 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NINATest {
 
@@ -17,7 +15,7 @@ namespace NINATest {
 
         [Test]
         public void FITSConstructorTest() {
-            //Arragne
+            //Arrange
             var width = 2;
             var height = 2;
             ushort[] data = new ushort[width * height];
@@ -125,7 +123,6 @@ namespace NINATest {
             var now = DateTime.Now;
             var metaData = new ImageMetaData();
             metaData.Camera.Name = "TEST";
-
             metaData.Camera.BinX = 2;
             metaData.Camera.BinY = 3;
             metaData.Camera.Gain = 200;
@@ -444,6 +441,19 @@ namespace NINATest {
             sut.Key.Should().Be(key);
             sut.Value.Should().Be(value.ToString());
             sut.Comment.Should().Be(comment);
+        }
+
+        [Test]
+        public void FITSGainNegativeValueTest() {
+            var metaData = new ImageMetaData();
+            metaData.Camera.Gain = -1;
+
+            var notExpectedCard = new FITSHeaderCard("GAIN", metaData.Camera.Gain, "Sensor gain");
+
+            var sut = new FITS(new ushort[] { 1, 2 }, 1, 1);
+            sut.PopulateHeaderCards(metaData);
+
+            sut.HeaderCards.Should().NotContain(notExpectedCard, "Negative Gain values are not allowed");
         }
     }
 }

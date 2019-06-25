@@ -40,6 +40,7 @@ namespace NINA.Model.ImageData {
 
         public void FromCameraInfo(CameraInfo info) {
             if (info.Connected) {
+                Camera.Name = info.Name;
                 Camera.Temperature = info.Temperature;
                 Camera.Gain = info.Gain;
                 Camera.Offset = info.Offset;

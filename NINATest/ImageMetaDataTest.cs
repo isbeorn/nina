@@ -128,6 +128,7 @@ namespace NINATest {
         public void FromCameraInfoConnectedTest() {
             var cameraInfo = new CameraInfo() {
                 Connected = true,
+                Name = "TEST",
                 Temperature = 20.5,
                 Gain = 139,
                 Offset = 10,
@@ -141,7 +142,7 @@ namespace NINATest {
             var sut = new ImageMetaData();
             sut.FromCameraInfo(cameraInfo);
 
-            Assert.AreEqual(string.Empty, sut.Camera.Name);
+            Assert.AreEqual("TEST", sut.Camera.Name);
             Assert.AreEqual("3x2", sut.Camera.Binning);
             Assert.AreEqual(3, sut.Camera.BinX);
             Assert.AreEqual(2, sut.Camera.BinY);
