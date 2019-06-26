@@ -28,6 +28,7 @@ using NINA.Model.MyFocuser;
 using NINA.Model.MyGuider;
 using NINA.Model.MyRotator;
 using NINA.Model.MyTelescope;
+using NINA.Model.MyWeatherData;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator.Interfaces;
@@ -39,6 +40,7 @@ using NINA.ViewModel.Equipment.Focuser;
 using NINA.ViewModel.Equipment.Guider;
 using NINA.ViewModel.Equipment.Rotator;
 using NINA.ViewModel.Equipment.Telescope;
+using NINA.ViewModel.Equipment.WeatherData;
 using NINA.ViewModel.Interfaces;
 using NUnit.Framework;
 using System;
@@ -66,6 +68,7 @@ namespace NINATest {
         private SequenceFilterWheelMediator filterWheelMediator;
         private SequenceGuiderMediator guiderMediator;
         private SequenceRotatorMediator rotatorMediator;
+        private SequenceWeatherDataMediator weatherDataMediator;
         private SequenceImagingMediator imagingMediator;
         private SequenceApplicationStatusMediator applicationStatusMediator;
 
@@ -81,6 +84,7 @@ namespace NINATest {
             filterWheelMediator = new SequenceFilterWheelMediator();
             guiderMediator = new SequenceGuiderMediator();
             rotatorMediator = new SequenceRotatorMediator();
+            weatherDataMediator = new SequenceWeatherDataMediator();
             imagingMediator = new SequenceImagingMediator();
             applicationStatusMediator = new SequenceApplicationStatusMediator();
         }
@@ -91,18 +95,19 @@ namespace NINATest {
 
         [Test]
         public void Sequence_ConsumerRegistered() {
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
 
             Assert.AreEqual(vm, telescopeMediator.Consumer);
             Assert.AreEqual(vm, focuserMediator.Consumer);
             Assert.AreEqual(vm, filterWheelMediator.Consumer);
             Assert.AreEqual(vm, rotatorMediator.Consumer);
+            Assert.AreEqual(vm, weatherDataMediator.Consumer);
             Assert.AreEqual(vm, guiderMediator.Consumer);
         }
 
         [Test]
         public async Task ProcessSequence_Default() {
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
 
             //Act
             await vm.StartSequenceCommand.ExecuteAsync(null);
@@ -123,7 +128,7 @@ namespace NINATest {
 
         [Test]
         public async Task ProcessSequence_StartOptions_DontSlewToTargetTest() {
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
             var l = CreateDummySequenceList();
             l.SlewToTarget = false;
             vm.Sequence = l;
@@ -140,7 +145,7 @@ namespace NINATest {
             var telescope = new Mock<ITelescopeVM>();
             telescope.Setup(x => x.GetDeviceInfo()).Returns(new TelescopeInfo() { Connected = true });
             telescopeMediator.RegisterHandler(telescope.Object);
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
             var l = CreateDummySequenceList();
             l.CenterTarget = true;
             var coordinates = new Coordinates(10, 10, Epoch.J2000, Coordinates.RAType.Degrees);
@@ -282,7 +287,7 @@ namespace NINATest {
             var guider = new Mock<IGuiderVM>();
             guider.Setup(x => x.GetDeviceInfo()).Returns(new GuiderInfo() { Connected = true });
             guiderMediator.RegisterHandler(guider.Object);
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
             var l = CreateDummySequenceList();
             l.StartGuiding = true;
             vm.Sequence = l;
@@ -296,7 +301,7 @@ namespace NINATest {
 
         [Test]
         public async Task ProcessSequence_StartOptions_DontStartGuidingTest() {
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
             var l = CreateDummySequenceList();
             l.StartGuiding = false;
             vm.Sequence = l;
@@ -311,7 +316,7 @@ namespace NINATest {
         [Test]
         public void ProcessSequence_AddSequenceCommand() {
             //Arrange
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
 
             //Act
             vm.AddSequenceRowCommand.Execute(null);
@@ -324,7 +329,7 @@ namespace NINATest {
         [Test]
         public void ProcessSequence_OnEmptySequence_AddSequenceCommand() {
             //Arrange
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
             vm.Sequence = new CaptureSequenceList();
 
             //Act
@@ -338,7 +343,7 @@ namespace NINATest {
         [Test]
         public void ProcessSequence_RemoveSequenceCommand() {
             //Arrange
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
 
             //Act
             vm.RemoveSequenceRowCommand.Execute(null);
@@ -351,7 +356,7 @@ namespace NINATest {
         [Test]
         public void ProcessSequence_OnEmptySequence_RemoveSequenceCommand() {
             //Arrange
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
 
             //Act
             vm.RemoveSequenceRowCommand.Execute(null);
@@ -879,6 +884,35 @@ namespace NINATest {
         }
 
         public void RemoveConsumer(IRotatorConsumer consumer) {
+            throw new NotImplementedException();
+        }
+    }
+
+    internal class SequenceWeatherDataMediator : IWeatherDataMediator {
+
+        public void Broadcast(WeatherDataInfo deviceInfo) {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> Connect() {
+            throw new NotImplementedException();
+        }
+
+        public void Disconnect() {
+            throw new NotImplementedException();
+        }
+
+        public IWeatherDataConsumer Consumer;
+
+        public void RegisterConsumer(IWeatherDataConsumer consumer) {
+            this.Consumer = consumer;
+        }
+
+        public void RegisterHandler(IWeatherDataVM handler) {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveConsumer(IWeatherDataConsumer consumer) {
             throw new NotImplementedException();
         }
     }

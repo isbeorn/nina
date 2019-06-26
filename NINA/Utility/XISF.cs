@@ -25,7 +25,6 @@
 #endregion "copyright"
 
 using NINA.Model.ImageData;
-using NINA.Model.MyCamera;
 using System;
 using System.Globalization;
 using System.IO;
@@ -237,11 +236,11 @@ namespace NINA.Utility {
             }
 
             if (!double.IsNaN(metaData.Camera.SetPoint)) {
-                this.AddImageFITSKeyword("SET-TEMP", metaData.Camera.SetPoint.ToString(CultureInfo.InvariantCulture), "[C] CCD temperature setpoint");
+                this.AddImageFITSKeyword("SET-TEMP", metaData.Camera.SetPoint.ToString(CultureInfo.InvariantCulture), "[degC] CCD temperature setpoint");
             }
 
             if (!double.IsNaN(metaData.Camera.Temperature)) {
-                this.AddImageProperty(XISFImageProperty.Instrument.Sensor.Temperature, metaData.Camera.Temperature.ToString(CultureInfo.InvariantCulture), "[C] CCD temperature");
+                this.AddImageProperty(XISFImageProperty.Instrument.Sensor.Temperature, metaData.Camera.Temperature.ToString(CultureInfo.InvariantCulture), "[degC] CCD temperature");
             }
             if (!double.IsNaN(metaData.Camera.PixelSize)) {
                 this.AddImageProperty(XISFImageProperty.Instrument.Sensor.XPixelSize, metaData.Camera.PixelSize.ToString(CultureInfo.InvariantCulture), "[um] Pixel X axis size");
@@ -291,7 +290,6 @@ namespace NINA.Utility {
             }
 
             /* Focuser */
-
             if (!string.IsNullOrWhiteSpace(metaData.Focuser.Name)) {
                 /* fits4win, SGP */
                 this.AddImageFITSKeyword("FOCNAME", metaData.Focuser.Name, "Focusing equipment name");
@@ -324,10 +322,10 @@ namespace NINA.Utility {
 
             if (!double.IsNaN(metaData.Focuser.Temperature)) {
                 /* fits4win, SGP */
-                this.AddImageFITSKeyword("FOCTEMP", metaData.Focuser.Temperature.ToString(CultureInfo.InvariantCulture), "[C] Focuser temperature");
+                this.AddImageFITSKeyword("FOCTEMP", metaData.Focuser.Temperature.ToString(CultureInfo.InvariantCulture), "[degC] Focuser temperature");
 
                 /* MaximDL, several observatories */
-                this.AddImageFITSKeyword("FOCUSTEM", metaData.Focuser.Temperature.ToString(CultureInfo.InvariantCulture), "[C] Focuser temperature");
+                this.AddImageFITSKeyword("FOCUSTEM", metaData.Focuser.Temperature.ToString(CultureInfo.InvariantCulture), "[degC] Focuser temperature");
             }
 
             /* Rotator */
@@ -357,6 +355,56 @@ namespace NINA.Utility {
             if (!string.IsNullOrWhiteSpace(metaData.FilterWheel.Filter)) {
                 /* fits4win */
                 this.AddImageProperty(XISFImageProperty.Instrument.Filter.Name, metaData.FilterWheel.Filter, "Active filter name");
+            }
+
+            /* Weather Data */
+            if (!double.IsNaN(metaData.WeatherData.CloudCover)) {
+                this.AddImageFITSKeyword("CLOUDCVR", metaData.WeatherData.CloudCover.ToString(CultureInfo.InvariantCulture), "[percent] Cloud cover");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.DewPoint)) {
+                this.AddImageFITSKeyword("DEWPOINT", metaData.WeatherData.DewPoint.ToString(CultureInfo.InvariantCulture), "[degC] Dew point");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.Humidity)) {
+                this.AddImageProperty(XISFImageProperty.Observation.Meteorology.RelativeHumidity, metaData.WeatherData.Humidity.ToString(CultureInfo.InvariantCulture), "[percent] Relative humidity");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.Pressure)) {
+                this.AddImageProperty(XISFImageProperty.Observation.Meteorology.AtmosphericPressure, metaData.WeatherData.Pressure.ToString(CultureInfo.InvariantCulture), "[hPa] Air pressure");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.SkyBrightness)) {
+                this.AddImageFITSKeyword("SKYBRGHT", metaData.WeatherData.SkyBrightness.ToString(CultureInfo.InvariantCulture), "[lux] Sky brightness");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.SkyQuality)) {
+                /* fits4win */
+                this.AddImageFITSKeyword("MPSAS", metaData.WeatherData.SkyQuality.ToString(CultureInfo.InvariantCulture), "[mags/arcsec^2] Sky quality");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.SkyTemperature)) {
+                this.AddImageFITSKeyword("SKYTEMP", metaData.WeatherData.SkyTemperature.ToString(CultureInfo.InvariantCulture), "[degC] Sky temperature");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.StarFWHM)) {
+                this.AddImageFITSKeyword("STARFWHM", metaData.WeatherData.StarFWHM.ToString(CultureInfo.InvariantCulture), "Star FWHM");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.Temperature)) {
+                this.AddImageProperty(XISFImageProperty.Observation.Meteorology.AmbientTemperature, metaData.WeatherData.Temperature.ToString(CultureInfo.InvariantCulture), "[degC] Ambient air temperature");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.WindDirection)) {
+                this.AddImageProperty(XISFImageProperty.Observation.Meteorology.WindDirection, metaData.WeatherData.WindDirection.ToString(CultureInfo.InvariantCulture), "[deg] Wind direction: 0=N, 180=S, 90=E, 270=W");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.WindGust)) {
+                this.AddImageProperty(XISFImageProperty.Observation.Meteorology.WindGust, (metaData.WeatherData.WindGust * 3.6).ToString(CultureInfo.InvariantCulture), "[kph] Wind gust");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.WindSpeed)) {
+                this.AddImageProperty(XISFImageProperty.Observation.Meteorology.WindSpeed, (metaData.WeatherData.WindSpeed * 3.6).ToString(CultureInfo.InvariantCulture), "[kph] Wind speed");
             }
 
             this.AddImageFITSKeyword("SWCREATE", string.Format("N.I.N.A. {0} ({1})", Utility.Version, DllLoader.IsX86() ? "x86" : "x64"), "Software that created this file");
@@ -523,7 +571,6 @@ namespace NINA.Utility {
 
         public static class Observation {
             public static readonly string Namespace = "Observation:";
-
             public static readonly string[] CelestialReferenceSystem = { Namespace + nameof(CelestialReferenceSystem), "String" };
             public static readonly string[] BibliographicReferences = { Namespace + nameof(BibliographicReferences), "String" };
 
@@ -549,12 +596,12 @@ namespace NINA.Utility {
 
             public static class Meteorology {
                 public static readonly string Namespace = Observation.Namespace + "Meteorology:";
-                public static readonly string[] AmbientTemperature = { Namespace + nameof(AmbientTemperature), "Float32" };
-                public static readonly string[] AtmosphericPressure = { Namespace + nameof(AtmosphericPressure), "Float32" };
-                public static readonly string[] RelativeHumidity = { Namespace + nameof(RelativeHumidity), "Float32" };
-                public static readonly string[] WindDirection = { Namespace + nameof(WindDirection), "Float32" };
-                public static readonly string[] WindGust = { Namespace + nameof(WindGust), "Float32" };
-                public static readonly string[] WindSpeed = { Namespace + nameof(WindSpeed), "Float32" };
+                public static readonly string[] AmbientTemperature = { Namespace + nameof(AmbientTemperature), "Float32", "AMBTEMP" };
+                public static readonly string[] AtmosphericPressure = { Namespace + nameof(AtmosphericPressure), "Float32", "PRESSURE" };
+                public static readonly string[] RelativeHumidity = { Namespace + nameof(RelativeHumidity), "Float32", "HUMIDITY" };
+                public static readonly string[] WindDirection = { Namespace + nameof(WindDirection), "Float32", "WINDDIR" };
+                public static readonly string[] WindGust = { Namespace + nameof(WindGust), "Float32", "WINDGUST" };
+                public static readonly string[] WindSpeed = { Namespace + nameof(WindSpeed), "Float32", "WINDSPD" };
             }
 
             public static class Object {

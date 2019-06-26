@@ -41,6 +41,7 @@ using NINA.Model.MyTelescope;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
 using NINA.Model.MyRotator;
+using NINA.Model.MyWeatherData;
 
 namespace NINA.ViewModel {
 
@@ -55,6 +56,7 @@ namespace NINA.ViewModel {
                 IFocuserMediator focuserMediator,
                 IRotatorMediator rotatorMediator,
                 IGuiderMediator guiderMediator,
+                IWeatherDataMediator weatherDataMediator,
                 IApplicationStatusMediator applicationStatusMediator
         ) : base(profileService) {
             Title = "LblImaging";
@@ -80,6 +82,9 @@ namespace NINA.ViewModel {
 
             this.guiderMediator = guiderMediator;
             this.applicationStatusMediator = applicationStatusMediator;
+
+            this.weatherDataMediator = weatherDataMediator;
+            this.weatherDataMediator.RegisterConsumer(this);
 
             SnapExposureDuration = 1;
             progress = new Progress<ApplicationStatus>(p => Status = p);
@@ -221,6 +226,7 @@ namespace NINA.ViewModel {
         private double _snapExposureDuration;
         private IFilterWheelMediator filterWheelMediator;
         private IGuiderMediator guiderMediator;
+        private IWeatherDataMediator weatherDataMediator;
         private IApplicationStatusMediator applicationStatusMediator;
 
         public double SnapExposureDuration {
@@ -395,6 +401,7 @@ namespace NINA.ViewModel {
             data.MetaData.FromFilterWheelInfo(filterWheelInfo);
             data.MetaData.FromRotatorInfo(rotatorInfo);
             data.MetaData.FromFocuserInfo(focuserInfo);
+            data.MetaData.FromWeatherDataInfo(weatherDataInfo);
         }
 
         private Task<IImageData> _imageProcessingTask;
@@ -436,6 +443,7 @@ namespace NINA.ViewModel {
         private FilterWheelInfo filterWheelInfo;
         private FocuserInfo focuserInfo;
         private RotatorInfo rotatorInfo;
+        private WeatherDataInfo weatherDataInfo;
 
         public short SnapGain {
             get {
@@ -519,6 +527,10 @@ namespace NINA.ViewModel {
             this.rotatorInfo = deviceInfo;
         }
 
+        public void UpdateDeviceInfo(WeatherDataInfo deviceInfo) {
+            this.weatherDataInfo = deviceInfo;
+        }
+
         public bool SetDetectStars(bool value) {
             var oldval = ImageControl.DetectStars;
             ImageControl.DetectStars = value;
@@ -554,6 +566,7 @@ namespace NINA.ViewModel {
             this.filterWheelMediator.RemoveConsumer(this);
             this.focuserMediator.RemoveConsumer(this);
             this.rotatorMediator.RemoveConsumer(this);
+            this.weatherDataMediator.RemoveConsumer(this);
         }
 
         public bool IsLooping { get; set; }

@@ -27,6 +27,6 @@ using NINA.Model.MyWeatherData;
 
 namespace NINA.Utility.Mediator.Interfaces {
 
-    internal interface IWeatherDataConsumer : IDeviceConsumer<WeatherDataInfo> {
+    public interface IWeatherDataConsumer : IDeviceConsumer<WeatherDataInfo> {
     }
 }

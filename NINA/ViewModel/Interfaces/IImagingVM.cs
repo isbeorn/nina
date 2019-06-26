@@ -32,7 +32,7 @@ using System.Windows.Media.Imaging;
 
 namespace NINA.ViewModel.Interfaces {
 
-    public interface IImagingVM : ICameraConsumer, ITelescopeConsumer, IFilterWheelConsumer, IFocuserConsumer, IRotatorConsumer {
+    public interface IImagingVM : ICameraConsumer, ITelescopeConsumer, IFilterWheelConsumer, IFocuserConsumer, IRotatorConsumer, IWeatherDataConsumer {
 
         bool SetDetectStars(bool value);
 

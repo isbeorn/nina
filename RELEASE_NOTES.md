@@ -36,6 +36,7 @@
 - The new interface allows devices with ASCOM ObservingConditions class drivers to supply N.I.N.A. with weather data and other conditions.
 - Native OpenWeatherMap functionality is maintained, and any configured OWM API key is retained and utilized by the new native OWM client.
 - Weather data sources are now configured under the Equipment section.
+- Any available weather data types (air temperature, pressure, wind speed, etc.) are inserted into images as FITS keywords and/or XISF image properties.
 
 ### Focusing
 - Quick focuser movement buttons have been added (fine/coarse move IN/OUT) to the focuser views
