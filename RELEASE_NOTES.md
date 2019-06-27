@@ -36,11 +36,13 @@
 - The new interface allows devices with ASCOM ObservingConditions class drivers to supply N.I.N.A. with weather data and other conditions.
 - Native OpenWeatherMap functionality is maintained, and any configured OWM API key is retained and utilized by the new native OWM client.
 - Weather data sources are now configured under the Equipment section.
+- Any available weather data types (air temperature, pressure, wind speed, etc.) are inserted into images as FITS keywords and/or XISF image properties.
 
 ### Focusing
 - Quick focuser movement buttons have been added (fine/coarse move IN/OUT) to the focuser views
 - A new focuser settle time parameter has been added, in case the focuser shifts the image when moving (SCT, lens belt focusing, etc.). This should help with auto-focus in particular.
 - Focuser backlash (in and out) can now be specified. The backlash will be applied to focuser movements whenever the focuser reverses directions.
+- A new Measure Backlash tool has been added in the Auto-Focus view in the imaging tab. When launched, NINA will automatically measure focuser backlash IN and OUT.
 - More resilient autofocus:
   - Ability to automatically reattempt autofocus from scratch several times in case it failed
   - Automatically go back to original focus position if obtained HFR is significantly worse than original
@@ -82,6 +84,7 @@
 ### OSC Camera Handling
 - Debayering is now applied prior to plate-solving or auto-focus star detection
 - An Unlinked Stretch option has been added. When enabled, color channels will be stretched separately, helping hide the sky background. This results in more visible celestial objects, and helps enhance both autofocus and platesolving reliablity, especially in light polluted areas. Processing time is however increased.
+- A Debayered HFR option has been added. When enabled, the HFR computation will be made on the Debayered image rather than the Bayered array, providing better Auto-focus results
 
 ### Star Detection Sensitivity
 - Star Detection has been enhanced to detect more stars more accurately, while avoiding picking up noise by checking that the star is a local maximum and has sufficient bright pixels

@@ -33,7 +33,7 @@ namespace NINA.ViewModel.Equipment.WeatherData {
 
     internal class WeatherDataChooserVM : EquipmentChooserVM {
 
-        public WeatherDataChooserVM(IProfileService profileService) : base(typeof(WeatherDataChooserVM), profileService) {
+        public WeatherDataChooserVM(IProfileService profileService) : base(profileService) {
         }
 
         public override void GetEquipment() {

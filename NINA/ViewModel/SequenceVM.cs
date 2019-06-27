@@ -29,6 +29,7 @@ using NINA.Model.MyGuider;
 using NINA.Model.MyPlanetarium;
 using NINA.Model.MyRotator;
 using NINA.Model.MyTelescope;
+using NINA.Model.MyWeatherData;
 using NINA.PlateSolving;
 using NINA.Utility;
 using NINA.Utility.Exceptions;
@@ -54,7 +55,7 @@ using NINA.Model.ImageData;
 
 namespace NINA.ViewModel {
 
-    internal class SequenceVM : DockableVM, ITelescopeConsumer, IFocuserConsumer, IFilterWheelConsumer, IRotatorConsumer, IGuiderConsumer, ICameraConsumer {
+    internal class SequenceVM : DockableVM, ITelescopeConsumer, IFocuserConsumer, IFilterWheelConsumer, IRotatorConsumer, IGuiderConsumer, ICameraConsumer, IWeatherDataConsumer {
 
         public SequenceVM(
                 IProfileService profileService,
@@ -64,6 +65,7 @@ namespace NINA.ViewModel {
                 IFilterWheelMediator filterWheelMediator,
                 IGuiderMediator guiderMediator,
                 IRotatorMediator rotatorMediator,
+                IWeatherDataMediator weatherDataMediator,
                 IImagingMediator imagingMediator,
                 IApplicationStatusMediator applicationStatusMediator
         ) : base(profileService) {
@@ -84,6 +86,9 @@ namespace NINA.ViewModel {
 
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterConsumer(this);
+
+            this.weatherDataMediator = weatherDataMediator;
+            this.weatherDataMediator.RegisterConsumer(this);
 
             this.imagingMediator = imagingMediator;
             this.applicationStatusMediator = applicationStatusMediator;
@@ -757,6 +762,7 @@ namespace NINA.ViewModel {
             data.MetaData.FromFilterWheelInfo(filterWheelInfo);
             data.MetaData.FromRotatorInfo(rotatorInfo);
             data.MetaData.FromFocuserInfo(focuserInfo);
+            data.MetaData.FromWeatherDataInfo(weatherDataInfo);
 
             data.MetaData.FilterWheel.Filter = sequence.FilterType?.Name ?? data.MetaData.FilterWheel.Filter;
         }
@@ -1106,6 +1112,8 @@ namespace NINA.ViewModel {
         private CameraInfo cameraInfo = DeviceInfo.CreateDefaultInstance<CameraInfo>();
         private IRotatorMediator rotatorMediator;
         private RotatorInfo rotatorInfo;
+        private IWeatherDataMediator weatherDataMediator;
+        private WeatherDataInfo weatherDataInfo;
         private GuiderInfo guiderInfo = DeviceInfo.CreateDefaultInstance<GuiderInfo>();
 
         public ObservableCollection<string> ImageTypes {
@@ -1175,6 +1183,10 @@ namespace NINA.ViewModel {
 
         public void UpdateDeviceInfo(RotatorInfo deviceInfo) {
             this.rotatorInfo = deviceInfo;
+        }
+
+        public void UpdateDeviceInfo(WeatherDataInfo deviceInfo) {
+            this.weatherDataInfo = deviceInfo;
         }
 
         private async Task<bool> CoordsFromPlanetarium() {
@@ -1270,6 +1282,7 @@ namespace NINA.ViewModel {
             this.rotatorMediator.RemoveConsumer(this);
             this.guiderMediator.RemoveConsumer(this);
             this.cameraMediator.RemoveConsumer(this);
+            this.weatherDataMediator.RemoveConsumer(this);
         }
     }
 }

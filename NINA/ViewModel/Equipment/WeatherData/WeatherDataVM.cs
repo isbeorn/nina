@@ -287,6 +287,7 @@ namespace NINA.ViewModel.Equipment.WeatherData {
             get {
                 if (_weatherDataChooserVM == null) {
                     _weatherDataChooserVM = new WeatherDataChooserVM(profileService);
+                    _weatherDataChooserVM.GetEquipment();
                 }
                 return _weatherDataChooserVM;
             }

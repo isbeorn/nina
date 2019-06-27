@@ -4,14 +4,11 @@ using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
 using NINA.Model.MyRotator;
 using NINA.Model.MyTelescope;
+using NINA.Model.MyWeatherData;
 using NINA.Profile;
 using NINA.Utility.Astrometry;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NINATest {
 
@@ -63,6 +60,19 @@ namespace NINATest {
             Assert.AreEqual(double.NaN, sut.Observer.Latitude);
             Assert.AreEqual(double.NaN, sut.Observer.Longitude);
             Assert.AreEqual(double.NaN, sut.Observer.Elevation);
+
+            Assert.AreEqual(double.NaN, sut.WeatherData.CloudCover);
+            Assert.AreEqual(double.NaN, sut.WeatherData.DewPoint);
+            Assert.AreEqual(double.NaN, sut.WeatherData.Humidity);
+            Assert.AreEqual(double.NaN, sut.WeatherData.Pressure);
+            Assert.AreEqual(double.NaN, sut.WeatherData.SkyBrightness);
+            Assert.AreEqual(double.NaN, sut.WeatherData.SkyQuality);
+            Assert.AreEqual(double.NaN, sut.WeatherData.SkyTemperature);
+            Assert.AreEqual(double.NaN, sut.WeatherData.StarFWHM);
+            Assert.AreEqual(double.NaN, sut.WeatherData.Temperature);
+            Assert.AreEqual(double.NaN, sut.WeatherData.WindDirection);
+            Assert.AreEqual(double.NaN, sut.WeatherData.WindGust);
+            Assert.AreEqual(double.NaN, sut.WeatherData.WindSpeed);
         }
 
         [Test]
@@ -128,6 +138,7 @@ namespace NINATest {
         public void FromCameraInfoConnectedTest() {
             var cameraInfo = new CameraInfo() {
                 Connected = true,
+                Name = "TEST",
                 Temperature = 20.5,
                 Gain = 139,
                 Offset = 10,
@@ -141,7 +152,7 @@ namespace NINATest {
             var sut = new ImageMetaData();
             sut.FromCameraInfo(cameraInfo);
 
-            Assert.AreEqual(string.Empty, sut.Camera.Name);
+            Assert.AreEqual("TEST", sut.Camera.Name);
             Assert.AreEqual("3x2", sut.Camera.Binning);
             Assert.AreEqual(3, sut.Camera.BinX);
             Assert.AreEqual(2, sut.Camera.BinY);
@@ -290,6 +301,36 @@ namespace NINATest {
             Assert.AreEqual("TestRotator", sut.Rotator.Name);
             Assert.AreEqual(123, sut.Rotator.Position);
             Assert.AreEqual((double)3.8f, sut.Rotator.StepSize);
+        }
+
+        [Test]
+        public void FromWeatherDataInfoNotConnectedTest() {
+            var info = new WeatherDataInfo() {
+                Connected = false,
+                Temperature = 15,
+                Humidity = 99.8f
+            };
+
+            var sut = new ImageMetaData();
+            sut.FromWeatherDataInfo(info);
+
+            Assert.AreEqual(double.NaN, sut.WeatherData.Temperature);
+            Assert.AreEqual(double.NaN, sut.WeatherData.Humidity);
+        }
+
+        [Test]
+        public void FromWeatherDataInfoConnectedTest() {
+            var info = new WeatherDataInfo() {
+                Connected = true,
+                Temperature = 15,
+                Humidity = 99.8f
+            };
+
+            var sut = new ImageMetaData();
+            sut.FromWeatherDataInfo(info);
+
+            Assert.AreEqual(15, sut.WeatherData.Temperature);
+            Assert.AreEqual((double)99.8f, sut.WeatherData.Humidity);
         }
     }
 }

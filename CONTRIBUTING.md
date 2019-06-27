@@ -46,6 +46,11 @@ For reporting bugs please use the following guideline to describe the problem:
 
 Also attach your log file of that session (if applicable), which can be found inside %localappdata%\NINA\Logs
 
+# Contributing documentation
+
+* Documentation is maintained separately in a different [repository](https://bitbucket.org/Isbeorn/nina.docs/src)
+* For a detailed guide on how to contribute to the documentation go to [N.I.N.A.'s documentation contributing guide](https://bitbucket.org/Isbeorn/nina.docs/src/develop/CONTRIBUTING.md)
+
 # Contributing code
 
 ## Quick Start
@@ -137,6 +142,25 @@ This database will be automatically created by the EntityFramework based on the 
     * [XAML Styler](https://github.com/Xavalon/XamlStyler/) A XAML style formatter
     * [MarkdownEditor](https://github.com/madskristensen/MarkdownEditor) To edit Markdown and auto generate HTML files
 * (Optional) To be able to build the setup projects you need to install [WiX](http://wixtoolset.org/) and their [Visual Studio plugin](https://marketplace.visualstudio.com/items?itemName=RobMensching.WixToolsetVisualStudio2017Extension)
+
+## Automated Unit Tests (AUT)
+
+* The project is using the [NUnit unit-testing framework](https://nunit.org/) to write and run AUTs
+* Additionally to write easy to read assertions [Fluent Assertions](https://fluentassertions.com/) are used
+  * These might seem verbose at first, but they really help reading and understanding the assertions
+* For detailed information about how to use these frameworks please go to their respective homepages
+
+## Running AUTs in Visual Studio
+
+* First double check that your processor architecture for AUTs is set to x64
+  * Test -> Test Settings -> Processor Architecture for AnyCPU Projects -> x64
+  * You also might need to uncheck and re-check "Keep Test Execution Engine Running" for this setting change to become active
+* Prior to running the tests, the project configuration should be set to [Debug][x64]
+* Activate the test explorer
+  * Test -> Windows -> Test Explorer
+* Inside the test explorer you will see all detected AUTs (after building the project)
+* To run all AUTs simply click on "Run All"
+* You can also run and/or debug single AUTs by right clicking inside the respective method and selecting "Run Test" or "Debug Test"
 
 ## Pull Requests
 

@@ -91,6 +91,8 @@ by the camera, stars near the edge will be ignored during star detection.</s:Str
 Anhand der zwei Punkte wird dann der Azimuthfehler errechnet und angezeigt</s:String>
   <s:String x:Key="LblAzimuthMeasurementDescription" xml:space="default">Teleskop nahe Meridian ausrichten</s:String>
   <s:String x:Key="LblBackground" xml:space="default">Hintergrund</s:String>
+  <s:String x:Key="LblBacklashMeasurementException" xml:space="default">Ein Fehler ist bei der Backlashmessung aufgetreten. Berechnete Backlashwerte könnten falsch sein.</s:String>
+  <s:String x:Key="LblBacklashMeasurements" xml:space="default">Folgende Backlash Werte werden für den Okularauszug gespeichert: IN: {0}, OUT: {1}</s:String>
   <s:String x:Key="LblBeta" xml:space="default">Beta</s:String>
   <s:String x:Key="LblBiasMean" xml:space="default">BIAS Mittelwert (Nativ)</s:String>
   <s:String x:Key="LblBinning" xml:space="default">Binning</s:String>
@@ -276,6 +278,8 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
   <s:String x:Key="LblDateTimeFormatDescription" xml:space="default">Datum mit Format YYYY-MM-DD_HH-mm-ss</s:String>
   <s:String x:Key="LblDawn" xml:space="default">Morgendämmerung</s:String>
   <s:String x:Key="LblDCRaw" xml:space="default">DCRaw</s:String>
+  <s:String x:Key="LblDebayeredHFR" xml:space="default">Debayered HFR</s:String>
+  <s:String x:Key="LblDebayeredHFRTooltip" xml:space="default">Use debayered image to perform HFR computation. More precise, but more resource-intensive.</s:String>
   <s:String x:Key="LblDebayerImage" xml:space="default">Bild debayern</s:String>
   <s:String x:Key="LblDebayerImageTooltip" xml:space="default">Bild in der Vorschau debayern (gespeichertes Bild ist davon nicht betroffen)</s:String>
   <s:String x:Key="LblDebayeringImage" xml:space="default">Debayere Bild</s:String>
@@ -511,6 +515,7 @@ Berechneter HFR: {2}
   <s:String x:Key="LblMaxOptimalADU" xml:space="default">Maximum ADU</s:String>
   <s:String x:Key="LblMaxStep" xml:space="default">Max Schritt</s:String>
   <s:String x:Key="LblMean" xml:space="default">Mittelwert</s:String>
+  <s:String x:Key="LblMeasureFocuserBacklash" xml:space="default">Backlash des Okularauszuges messen</s:String>
   <s:String x:Key="LblMedian" xml:space="default">Median</s:String>
   <s:String x:Key="LblMeridianFlipFailed" xml:space="default">Meridian Flip fehlgeschlagen</s:String>
   <s:String x:Key="LblMeridianFlipInit" xml:space="default">Meridian Flip initialisiert</s:String>
@@ -729,6 +734,7 @@ Berechneter HFR: {2}
   <s:String x:Key="LblRotatorConnected" xml:space="default">Rotator verbunden</s:String>
   <s:String x:Key="LblRotatorConnectionLost" xml:space="default">Verbindung zum Rotator verloren! Bitte Rotator erneut verbinden!</s:String>
   <s:String x:Key="LblSave" xml:space="default">Speichern</s:String>
+  <s:String x:Key="LblSaveBacklashQuestion" xml:space="default">Sollen die Backlash Messwerte des Okularauszug gespeichert werden?</s:String>
   <s:String x:Key="LblSaveImageAs" xml:space="default">Bild speichrn unter</s:String>
   <s:String x:Key="LblSaveImageAsDSLRNote" xml:space="default">Bei DSLRs wird die Bilddateiformat Einstellung ignoriert. Stattdessen werden RAW Dateien gespeichert!</s:String>
   <s:String x:Key="LblSaveSelectedProfileAndDontAskAgain" xml:space="default">Gewähltes Profil speichern und nicht nochmal fragen</s:String>
@@ -793,9 +799,14 @@ Diese Vorlage wird beim Starten der Applikation geladen, statt der Standard Sequ
   <s:String x:Key="LblStarSensitivity" xml:space="default">Empfindlichkeit für Sterne</s:String>
   <s:String x:Key="LblStarSensitivityTooltip" xml:space="default">Legt die Empfindlichkeit des Sternerkennungsalgorithmus fest. Höhere Einstellungen, können dazu führen, dass Rauschen als Sterne erkannt werden und weiter kann es länger dauern.</s:String>
   <s:String x:Key="LblStartAutoFocus" xml:space="default">Starte Autofokus</s:String>
+  <s:String x:Key="LblStartBacklashMeasurementConfirmation" xml:space="preserve">Backlashmessung wird gestartet.
+Bitte vergewissern, dass das System gut oder nahe im Fokus ist, bevor fortgefahren wird.</s:String>
+  <s:String x:Key="LblStartBacklashQuestion" xml:space="default">Starte Backlashmessung?</s:String>
   <s:String x:Key="LblStartGuiding" xml:space="default">Nachführung starten</s:String>
   <s:String x:Key="LblStartGuidingButGuiderNotConnected" xml:space="default">Guider Starten ist aktiviert, jedoch ist kein Guider verbunden</s:String>
   <s:String x:Key="LblStartGuidingFailed" xml:space="default">Starten der Nachführung fehlgeschlagen</s:String>
+  <s:String x:Key="LblStartingINBacklashMeasurement" xml:space="default">Beginne Backlashmessung für IN</s:String>
+  <s:String x:Key="LblStartingOUTBacklashMeasurement" xml:space="default">Beginne Backlashmessung für OUT</s:String>
   <s:String x:Key="LblStartSequenceAnyway" xml:space="default">Sequenz trotzdem starten?</s:String>
   <s:String x:Key="LblState" xml:space="default">Status</s:String>
   <s:String x:Key="LblStatistics" xml:space="default">Statistiken</s:String>

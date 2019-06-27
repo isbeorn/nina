@@ -46,6 +46,7 @@ namespace NINA.ViewModel.Equipment.Camera {
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CameraSVG"];
 
             _cameraChooserVM = new CameraChooserVM(profileService, telescopeMediator);
+            _cameraChooserVM.GetEquipment();
 
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterHandler(this);

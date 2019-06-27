@@ -139,7 +139,7 @@ namespace NINA.ViewModel.Equipment.Focuser {
         }
 
         private int GetBacklashCompensation(int oldPos, int newPos) {
-            if (newPos > oldPos && _lastFocuserDirection == Direction.IN) { 
+            if (newPos > oldPos && _lastFocuserDirection == Direction.IN) {
                 return profileService.ActiveProfile.FocuserSettings.BacklashOut;
             } else if (newPos < oldPos && _lastFocuserDirection == Direction.OUT) {
                 return profileService.ActiveProfile.FocuserSettings.BacklashIn * -1;
@@ -148,7 +148,7 @@ namespace NINA.ViewModel.Equipment.Focuser {
             }
         }
 
-        private Direction MoveDirection(int oldPos,int newPos) {
+        private Direction MoveDirection(int oldPos, int newPos) {
             if (newPos > oldPos) {
                 return Direction.OUT;
             } else if (newPos < oldPos) {
@@ -357,6 +357,7 @@ namespace NINA.ViewModel.Equipment.Focuser {
             get {
                 if (_focuserChooserVM == null) {
                     _focuserChooserVM = new FocuserChooserVM(profileService);
+                    _focuserChooserVM.GetEquipment();
                 }
                 return _focuserChooserVM;
             }

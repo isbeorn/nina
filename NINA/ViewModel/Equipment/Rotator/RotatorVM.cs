@@ -155,6 +155,7 @@ namespace NINA.ViewModel.Equipment.Rotator {
             get {
                 if (rotatorChooserVM == null) {
                     rotatorChooserVM = new RotatorChooserVM(profileService);
+                    rotatorChooserVM.GetEquipment();
                 }
                 return rotatorChooserVM;
             }

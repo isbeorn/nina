@@ -98,7 +98,7 @@ namespace NINA.Utility {
                 this.AddHeaderCard("YBINNING", metaData.Camera.BinY, "Y axis binning factor");
             }
 
-            if (!double.IsNaN(metaData.Camera.Gain)) {
+            if (!double.IsNaN(metaData.Camera.Gain) && metaData.Camera.Gain >= 0) {
                 this.AddHeaderCard("GAIN", metaData.Camera.Gain, "Sensor gain");
             }
 
@@ -120,11 +120,11 @@ namespace NINA.Utility {
             }
 
             if (!double.IsNaN(metaData.Camera.SetPoint)) {
-                this.AddHeaderCard("SET-TEMP", metaData.Camera.SetPoint, "[C] CCD temperature setpoint");
+                this.AddHeaderCard("SET-TEMP", metaData.Camera.SetPoint, "[degC] CCD temperature setpoint");
             }
 
             if (!double.IsNaN(metaData.Camera.Temperature)) {
-                this.AddHeaderCard("CCD-TEMP", metaData.Camera.Temperature, "[C] CCD temperature");
+                this.AddHeaderCard("CCD-TEMP", metaData.Camera.Temperature, "[degC] CCD temperature");
             }
 
             /* Telescope */
@@ -198,10 +198,10 @@ namespace NINA.Utility {
 
             if (!double.IsNaN(metaData.Focuser.Temperature)) {
                 /* fits4win, SGP */
-                this.AddHeaderCard("FOCTEMP", metaData.Focuser.Temperature, "[C] Focuser temperature");
+                this.AddHeaderCard("FOCTEMP", metaData.Focuser.Temperature, "[degC] Focuser temperature");
 
                 /* MaximDL, several observatories */
-                this.AddHeaderCard("FOCUSTEM", metaData.Focuser.Temperature, "[C] Focuser temperature");
+                this.AddHeaderCard("FOCUSTEM", metaData.Focuser.Temperature, "[degC] Focuser temperature");
             }
 
             /* Rotator */
@@ -221,6 +221,56 @@ namespace NINA.Utility {
             if (!double.IsNaN(metaData.Rotator.StepSize)) {
                 /* NINA */
                 this.AddHeaderCard("ROTSTPSZ", metaData.Rotator.StepSize, "[deg] Rotator step size");
+            }
+
+            /* Weather Data */
+            if (!double.IsNaN(metaData.WeatherData.CloudCover)) {
+                this.AddHeaderCard("CLOUDCVR", metaData.WeatherData.CloudCover, "[percent] Cloud cover");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.DewPoint)) {
+                this.AddHeaderCard("DEWPOINT", metaData.WeatherData.DewPoint, "[degC] Dew point");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.Humidity)) {
+                this.AddHeaderCard("HUMIDITY", metaData.WeatherData.Humidity, "[percent] Relative humidity");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.Pressure)) {
+                this.AddHeaderCard("PRESSURE", metaData.WeatherData.Pressure, "[hPa] Air pressure");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.SkyBrightness)) {
+                this.AddHeaderCard("SKYBRGHT", metaData.WeatherData.SkyBrightness, "[lux] Sky brightness");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.SkyQuality)) {
+                /* fits4win */
+                this.AddHeaderCard("MPSAS", metaData.WeatherData.SkyQuality, "[mags/arcsec^2] Sky quality");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.SkyTemperature)) {
+                this.AddHeaderCard("SKYTEMP", metaData.WeatherData.SkyTemperature, "[degC] Sky temperature");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.StarFWHM)) {
+                this.AddHeaderCard("STARFWHM", metaData.WeatherData.StarFWHM, "Star FWHM");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.Temperature)) {
+                this.AddHeaderCard("AMBTEMP", metaData.WeatherData.Temperature, "[degC] Ambient air temperature");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.WindDirection)) {
+                this.AddHeaderCard("WINDDIR", metaData.WeatherData.WindDirection, "[deg] Wind direction: 0=N, 180=S, 90=E, 270=W");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.WindGust)) {
+                this.AddHeaderCard("WINDGUST", metaData.WeatherData.WindGust * 3.6, "[kph] Wind gust");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.WindSpeed)) {
+                this.AddHeaderCard("WINDSPD", metaData.WeatherData.WindSpeed * 3.6, "[kph] Wind speed");
             }
 
             this.AddHeaderCard("SWCREATE", string.Format("N.I.N.A. {0} ({1})", Utility.Version, DllLoader.IsX86() ? "x86" : "x64"), "Software that created this file");

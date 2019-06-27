@@ -31,7 +31,7 @@ namespace NINA.ViewModel.Equipment.Focuser {
 
     internal class FocuserChooserVM : EquipmentChooserVM {
 
-        public FocuserChooserVM(IProfileService profileService) : base(typeof(FocuserChooserVM), profileService) {
+        public FocuserChooserVM(IProfileService profileService) : base(profileService) {
         }
 
         public override void GetEquipment() {

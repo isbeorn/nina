@@ -25,6 +25,7 @@ namespace NINA.Model.ImageData {
 
         public BitmapSource Image { get; private set; }
         public IImageArray Data { get; private set; }
+        public LRGBArrays DebayeredData { get; private set; }
         public IImageStatistics Statistics { get; set; }
         public ImageMetaData MetaData { get; set; }
 
@@ -44,8 +45,10 @@ namespace NINA.Model.ImageData {
             Image = ImageUtility.CreateSourceFromArray(this.Data, this.Statistics, System.Windows.Media.PixelFormats.Gray16);
         }
 
-        public void Debayer() {
-            this.Image = ImageUtility.Debayer(this.Image, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
+        public void Debayer(bool saveColorChannels = false, bool saveLumChannel = false) {
+            var debayeredImage = ImageUtility.Debayer(this.Image, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale, saveColorChannels, saveLumChannel);
+            this.Image = debayeredImage.ImageSource;
+            this.DebayeredData = debayeredImage.Data;
         }
 
         public async Task Stretch(double factor, double blackClipping, bool unlinked) {
@@ -53,6 +56,10 @@ namespace NINA.Model.ImageData {
                 this.Image = await ImageUtility.StretchUnlinked(this, factor, blackClipping);
             } else {
                 this.Image = await ImageUtility.Stretch(this, factor, blackClipping);
+            }
+            if (DebayeredData != null) {
+                //RGB arrays no longer needed - Dispose of them
+                DebayeredData.Red = DebayeredData.Green = DebayeredData.Blue = null;
             }
         }
 
@@ -321,6 +328,8 @@ namespace NINA.Model.ImageData {
                 case ".nef":
                 case ".raf":
                 case ".raw":
+                case ".pef":
+                case ".dng":
                     return await RawToImageArray(path, bitDepth, rawConverter, ct);
 
                 default:

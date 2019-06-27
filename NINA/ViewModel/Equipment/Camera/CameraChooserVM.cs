@@ -36,7 +36,7 @@ namespace NINA.ViewModel.Equipment.Camera {
     internal class CameraChooserVM : EquipmentChooserVM {
         private ITelescopeMediator telescopeMediator;
 
-        public CameraChooserVM(IProfileService profileService, ITelescopeMediator telescopeMediator) : base(typeof(CameraChooserVM), profileService) {
+        public CameraChooserVM(IProfileService profileService, ITelescopeMediator telescopeMediator) : base(profileService) {
             this.telescopeMediator = telescopeMediator;
         }
 

@@ -1,4 +1,5 @@
 ﻿using AForge.Imaging;
+using Microsoft.Win32.SafeHandles;
 using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -157,54 +159,27 @@ namespace NINA.Utility.ImageAnalysis {
             return source;
         }
 
-        public static BitmapSource Debayer(BitmapSource source, System.Drawing.Imaging.PixelFormat pf) {
+        public static DebayeredImageData Debayer(BitmapSource source, System.Drawing.Imaging.PixelFormat pf, bool saveColorChannels = false, bool saveLumChannel = false) {
             using (MyStopWatch.Measure()) {
                 if (pf != System.Drawing.Imaging.PixelFormat.Format16bppGrayScale) {
                     throw new NotSupportedException();
                 }
                 using (var bmp = BitmapFromSource(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale)) {
-                    using (var debayeredBmp = Debayer(bmp)) {
-                        var newSource = ConvertBitmap(debayeredBmp, PixelFormats.Rgb48);
-                        newSource.Freeze();
-                        return newSource;
-                    }
+                    return Debayer(bmp, saveColorChannels, saveLumChannel);
                 }
             }
         }
 
-        public static unsafe RGBArrays ChannelsToFlatArrays(Bitmap image) {
-            int stopX = image.Width;
-            int stopY = image.Height;
-
-            RGBArrays flatArrays = new RGBArrays(new ushort[stopX * stopY], new ushort[stopX * stopY], new ushort[stopX * stopY]);
-
-            BitmapData imageData = image.LockBits(
-                new Rectangle(0, 0, stopX, stopY),
-                ImageLockMode.ReadWrite, image.PixelFormat);
-
-            using (var unmanagedImage = new UnmanagedImage(imageData)) {
-                int i = 0;
-
-                ushort* ptr = (ushort*)unmanagedImage.ImageData.ToPointer();
-
-                for (int y = 0; y < stopY; y++) {
-                    for (int x = 0; x < stopX; x++, ptr += 3) {
-                        flatArrays.Red[i] = ptr[RGB.R];
-                        flatArrays.Green[i] = ptr[RGB.G];
-                        flatArrays.Blue[i] = ptr[RGB.B];
-                        i++;
-                    }
-                }
-                image.UnlockBits(imageData);
-                return flatArrays;
-            }
-        }
-
-        public static Bitmap Debayer(Bitmap bmp) {
+        public static DebayeredImageData Debayer(Bitmap bmp, bool saveColorChannels = false, bool saveLumChannel = false) {
             using (MyStopWatch.Measure()) {
                 var filter = new BayerFilter16bpp();
+                filter.SaveColorChannels = saveColorChannels;
+                filter.SaveLumChannel = saveLumChannel;
                 filter.BayerPattern = new int[,] { { RGB.B, RGB.G }, { RGB.G, RGB.R } };
-                var debayered = filter.Apply(bmp);
+                DebayeredImageData debayered = new DebayeredImageData();
+                debayered.ImageSource = ConvertBitmap(filter.Apply(bmp), PixelFormats.Rgb48);
+                debayered.ImageSource.Freeze();
+                debayered.Data = filter.LRGBArrays;
                 return debayered;
             }
         }
@@ -220,18 +195,6 @@ namespace NINA.Utility.ImageAnalysis {
                 }
 
                 return monoPalette;
-            }
-        }
-
-        public class RGBArrays {
-            public ushort[] Red { get; }
-            public ushort[] Green { get; }
-            public ushort[] Blue { get; }
-
-            public RGBArrays(ushort[] red, ushort[] green, ushort[] blue) {
-                Red = red;
-                Green = green;
-                Blue = blue;
             }
         }
 
@@ -256,17 +219,12 @@ namespace NINA.Utility.ImageAnalysis {
                 if (data.Image.Format != System.Windows.Media.PixelFormats.Rgb48) {
                     throw new NotSupportedException();
                 } else {
-                    using (var source = BitmapFromSource(data.Image, System.Drawing.Imaging.PixelFormat.Format48bppRgb)) {
-                        RGBArrays rGBArrays = ChannelsToFlatArrays(source);
-                        var r = new Model.ImageData.ImageStatistics(data.Image.PixelWidth, data.Image.PixelHeight, data.Statistics.BitDepth, false);
-                        var g = new Model.ImageData.ImageStatistics(data.Image.PixelWidth, data.Image.PixelHeight, data.Statistics.BitDepth, false);
-                        var b = new Model.ImageData.ImageStatistics(data.Image.PixelWidth, data.Image.PixelHeight, data.Statistics.BitDepth, false);
-                        await Task.WhenAll(r.Calculate(rGBArrays.Red), g.Calculate(rGBArrays.Green), b.Calculate(rGBArrays.Blue));
-                        rGBArrays = null;
-                        GC.Collect();
-                        using (var img = ImageUtility.BitmapFromSource(data.Image, System.Drawing.Imaging.PixelFormat.Format48bppRgb)) {
-                            return StretchUnlinked(r, g, b, img, data.Image.Format, factor, blackClipping);
-                        }
+                    var r = new Model.ImageData.ImageStatistics(data.Image.PixelWidth, data.Image.PixelHeight, data.Statistics.BitDepth, false);
+                    var g = new Model.ImageData.ImageStatistics(data.Image.PixelWidth, data.Image.PixelHeight, data.Statistics.BitDepth, false);
+                    var b = new Model.ImageData.ImageStatistics(data.Image.PixelWidth, data.Image.PixelHeight, data.Statistics.BitDepth, false);
+                    await Task.WhenAll(r.Calculate(data.DebayeredData.Red), g.Calculate(data.DebayeredData.Green), b.Calculate(data.DebayeredData.Blue));
+                    using (var img = ImageUtility.BitmapFromSource(data.Image, System.Drawing.Imaging.PixelFormat.Format48bppRgb)) {
+                        return StretchUnlinked(r, g, b, img, data.Image.Format, factor, blackClipping);
                     }
                 }
             });

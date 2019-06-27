@@ -41,6 +41,7 @@ namespace NINA.Profile {
             blackClipping = -2.8;
             annotateImage = false;
             debayerImage = true;
+            debayeredHFR = true;
             unlinkedStretch = true;
             starSensitivity = StarSensitivityEnum.Normal;
             noiseReduction = NoiseReductionEnum.None;
@@ -103,6 +104,25 @@ namespace NINA.Profile {
                     debayerImage = value;
                     if (!debayerImage) {
                         UnlinkedStretch = false;
+                        DebayeredHFR = false;
+                    }
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool debayeredHFR;
+
+        [DataMember]
+        public bool DebayeredHFR {
+            get {
+                return debayeredHFR;
+            }
+            set {
+                if (debayeredHFR != value) {
+                    debayeredHFR = value;
+                    if (debayeredHFR) {
+                        DebayerImage = debayeredHFR;
                     }
                     RaisePropertyChanged();
                 }

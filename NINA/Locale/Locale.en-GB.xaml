@@ -91,6 +91,8 @@ by the camera, stars near the edge will be ignored during star detection.</s:Str
 Using those two points the actual azimuth error will be calculated and displayed</s:String>
   <s:String x:Key="LblAzimuthMeasurementDescription" xml:space="default">Point Telescope South near declination 0 and near meridian</s:String>
   <s:String x:Key="LblBackground" xml:space="default">Background</s:String>
+  <s:String x:Key="LblBacklashMeasurementException" xml:space="default">An exception occurred while measuring backlash. Backlash values may be wrong.</s:String>
+  <s:String x:Key="LblBacklashMeasurements" xml:space="default">The following focuser backlash values will be saved. IN: {0}, OUT: {1}</s:String>
   <s:String x:Key="LblBeta" xml:space="default">Beta</s:String>
   <s:String x:Key="LblBiasMean" xml:space="default">BIAS mean (native)</s:String>
   <s:String x:Key="LblBinning" xml:space="default">Binning</s:String>
@@ -276,6 +278,8 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
   <s:String x:Key="LblDateTimeFormatDescription" xml:space="default">Date with format YYYY-MM-DD_HH-mm-ss</s:String>
   <s:String x:Key="LblDawn" xml:space="default">Dawn</s:String>
   <s:String x:Key="LblDCRaw" xml:space="default">DCRaw</s:String>
+  <s:String x:Key="LblDebayeredHFR" xml:space="default">Debayered HFR</s:String>
+  <s:String x:Key="LblDebayeredHFRTooltip" xml:space="default">Use debayered image to perform HFR computation. More precise, but more resource-intensive.</s:String>
   <s:String x:Key="LblDebayerImage" xml:space="default">Debayer Image</s:String>
   <s:String x:Key="LblDebayerImageTooltip" xml:space="default">Debayer Image on preview (won't affect saved file)</s:String>
   <s:String x:Key="LblDebayeringImage" xml:space="default">Debayering image</s:String>
@@ -511,6 +515,7 @@ Calculated HFR: {2}
   <s:String x:Key="LblMaxOptimalADU" xml:space="default">Maximum ADU</s:String>
   <s:String x:Key="LblMaxStep" xml:space="default">Max Step</s:String>
   <s:String x:Key="LblMean" xml:space="default">Mean</s:String>
+  <s:String x:Key="LblMeasureFocuserBacklash" xml:space="default">Measure Focuser Backlash</s:String>
   <s:String x:Key="LblMedian" xml:space="default">Median</s:String>
   <s:String x:Key="LblMeridianFlipFailed" xml:space="default">Meridian Flip failed</s:String>
   <s:String x:Key="LblMeridianFlipInit" xml:space="default">Meridian flip procedure initiated</s:String>
@@ -729,6 +734,7 @@ Calculated HFR: {2}
   <s:String x:Key="LblRotatorConnected" xml:space="default">Rotator Connected</s:String>
   <s:String x:Key="LblRotatorConnectionLost" xml:space="default">Rotator connection lost! Please reconnect rotator!</s:String>
   <s:String x:Key="LblSave" xml:space="default">Save</s:String>
+  <s:String x:Key="LblSaveBacklashQuestion" xml:space="default">Save Focuser Backlash Measurements?</s:String>
   <s:String x:Key="LblSaveImageAs" xml:space="default">Save Image as</s:String>
   <s:String x:Key="LblSaveImageAsDSLRNote" xml:space="default">For DSLRs the image file format setting is ignored. RAW format will be saved instead!</s:String>
   <s:String x:Key="LblSaveSelectedProfileAndDontAskAgain" xml:space="default">Save selected profile and don't ask again next time</s:String>
@@ -793,9 +799,14 @@ This template will be used on startup to initialize the sequence instead of the 
   <s:String x:Key="LblStarSensitivity" xml:space="default">Star Sensitivity</s:String>
   <s:String x:Key="LblStarSensitivityTooltip" xml:space="default">Determines sensitivity of star detection algorithm. Higher settings may mistakenly detect noise, and may take more time</s:String>
   <s:String x:Key="LblStartAutoFocus" xml:space="default">Start Auto Focus</s:String>
+  <s:String x:Key="LblStartBacklashMeasurementConfirmation" xml:space="preserve">Backlash Measurement will start now.
+Before proceeding, please confirm your system is currently at or close to good focus</s:String>
+  <s:String x:Key="LblStartBacklashQuestion" xml:space="default">Start Backlash Measurement?</s:String>
   <s:String x:Key="LblStartGuiding" xml:space="default">Start guiding</s:String>
   <s:String x:Key="LblStartGuidingButGuiderNotConnected" xml:space="default">Start Guiding is enabled, yet guider is not connected</s:String>
   <s:String x:Key="LblStartGuidingFailed" xml:space="default">Start guiding failed</s:String>
+  <s:String x:Key="LblStartingINBacklashMeasurement" xml:space="default">Starting IN Backlash Measurement</s:String>
+  <s:String x:Key="LblStartingOUTBacklashMeasurement" xml:space="default">Starting OUT Backlash Measurement</s:String>
   <s:String x:Key="LblStartSequenceAnyway" xml:space="default">Start Sequence Anyway?</s:String>
   <s:String x:Key="LblState" xml:space="default">State</s:String>
   <s:String x:Key="LblStatistics" xml:space="default">Statistics</s:String>

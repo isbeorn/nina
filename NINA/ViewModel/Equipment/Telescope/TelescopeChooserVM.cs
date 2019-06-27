@@ -31,7 +31,7 @@ namespace NINA.ViewModel.Equipment.Telescope {
 
     internal class TelescopeChooserVM : EquipmentChooserVM {
 
-        public TelescopeChooserVM(IProfileService profileService) : base(typeof(TelescopeChooserVM), profileService) {
+        public TelescopeChooserVM(IProfileService profileService) : base(profileService) {
         }
 
         public override void GetEquipment() {

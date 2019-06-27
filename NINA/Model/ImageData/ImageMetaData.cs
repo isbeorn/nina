@@ -3,13 +3,10 @@ using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
 using NINA.Model.MyRotator;
 using NINA.Model.MyTelescope;
+using NINA.Model.MyWeatherData;
 using NINA.Profile;
 using NINA.Utility.Astrometry;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NINA.Model.ImageData {
 
@@ -22,6 +19,7 @@ namespace NINA.Model.ImageData {
         public FilterWheelParameter FilterWheel { get; set; } = new FilterWheelParameter();
         public TargetParameter Target { get; set; } = new TargetParameter();
         public ObserverParameter Observer { get; set; } = new ObserverParameter();
+        public WeatherDataParameter WeatherData { get; set; } = new WeatherDataParameter();
 
         /// <summary>
         /// Fill relevant info from a Profile
@@ -40,6 +38,7 @@ namespace NINA.Model.ImageData {
 
         public void FromCameraInfo(CameraInfo info) {
             if (info.Connected) {
+                Camera.Name = info.Name;
                 Camera.Temperature = info.Temperature;
                 Camera.Gain = info.Gain;
                 Camera.Offset = info.Offset;
@@ -88,6 +87,23 @@ namespace NINA.Model.ImageData {
                 }
                 Rotator.Position = info.Position;
                 Rotator.StepSize = info.StepSize;
+            }
+        }
+
+        public void FromWeatherDataInfo(WeatherDataInfo info) {
+            if (info.Connected) {
+                WeatherData.CloudCover = info.CloudCover;
+                WeatherData.DewPoint = info.DewPoint;
+                WeatherData.Humidity = info.Humidity;
+                WeatherData.Pressure = info.Pressure;
+                WeatherData.SkyBrightness = info.SkyBrightness;
+                WeatherData.SkyQuality = info.SkyQuality;
+                WeatherData.SkyTemperature = info.SkyTemperature;
+                WeatherData.StarFWHM = info.StarFWHM;
+                WeatherData.Temperature = info.Temperature;
+                WeatherData.WindDirection = info.WindDirection;
+                WeatherData.WindGust = info.WindGust;
+                WeatherData.WindSpeed = info.WindSpeed;
             }
         }
     }
@@ -148,5 +164,20 @@ namespace NINA.Model.ImageData {
         public double Latitude { get; set; } = double.NaN;
         public double Longitude { get; set; } = double.NaN;
         public double Elevation { get; set; } = double.NaN;
+    }
+
+    public class WeatherDataParameter {
+        public double CloudCover { get; set; } = double.NaN;
+        public double DewPoint { get; set; } = double.NaN;
+        public double Humidity { get; set; } = double.NaN;
+        public double Pressure { get; set; } = double.NaN;
+        public double SkyBrightness { get; set; } = double.NaN;
+        public double SkyQuality { get; set; } = double.NaN;
+        public double SkyTemperature { get; set; } = double.NaN;
+        public double StarFWHM { get; set; } = double.NaN;
+        public double Temperature { get; set; } = double.NaN;
+        public double WindDirection { get; set; } = double.NaN;
+        public double WindGust { get; set; } = double.NaN;
+        public double WindSpeed { get; set; } = double.NaN;
     }
 }

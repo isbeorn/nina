@@ -25,7 +25,7 @@
 
 namespace NINA.Model.MyWeatherData {
 
-    internal class WeatherDataInfo : DeviceInfo {
+    public class WeatherDataInfo : DeviceInfo {
         private double averagePeriod = double.NaN;
 
         /// <summary>

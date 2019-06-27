@@ -45,6 +45,7 @@ namespace NINA.ViewModel.Equipment.Switch {
             Title = "LblSwitch";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["SwitchesSVG"];
             SwitchChooserVM = new SwitchChooserVM(profileService);
+            SwitchChooserVM.GetEquipment();
 
             this.applicationStatusMediator = applicationStatusMediator;
             this.switchMediator = switchMediator;

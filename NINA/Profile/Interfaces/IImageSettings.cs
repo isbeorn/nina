@@ -28,6 +28,7 @@ namespace NINA.Profile {
     public interface IImageSettings : ISettings {
         bool AnnotateImage { get; set; }
         bool DebayerImage { get; set; }
+        bool DebayeredHFR { get; set; }
         bool UnlinkedStretch { get; set; }
         double AutoStretchFactor { get; set; }
         double BlackClipping { get; set; }

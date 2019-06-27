@@ -328,7 +328,9 @@
     </Compile>
     <Compile Include="Model\ImageData\IImageData.cs" />
     <Compile Include="Model\ImageData\ImageData.cs" />
+    <Compile Include="Model\ImageData\DebayeredImageData.cs" />
     <Compile Include="Model\ImageData\ImageMetaData.cs" />
+    <Compile Include="Model\ImageData\LRGBArrays.cs" />
     <Compile Include="Model\MyCamera\FileCamera.cs" />
     <Compile Include="Model\MyGuider\DirectGuider.cs" />
     <Compile Include="Model\MyGuider\ISynchronizedPHD2GuiderService.cs" />

@@ -7,8 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NINATest {
 
@@ -17,7 +15,7 @@ namespace NINATest {
 
         [Test]
         public void FITSConstructorTest() {
-            //Arragne
+            //Arrange
             var width = 2;
             var height = 2;
             ushort[] data = new ushort[width * height];
@@ -125,7 +123,6 @@ namespace NINATest {
             var now = DateTime.Now;
             var metaData = new ImageMetaData();
             metaData.Camera.Name = "TEST";
-
             metaData.Camera.BinX = 2;
             metaData.Camera.BinY = 3;
             metaData.Camera.Gain = 200;
@@ -144,8 +141,8 @@ namespace NINATest {
                 new FITSHeaderCard("EGAIN", metaData.Camera.ElectronsPerADU, "[e-/ADU] Electrons per A/D unit"),
                 new FITSHeaderCard("XPIXSZ", metaData.Camera.PixelSize, "[um] Pixel X axis size"),
                 new FITSHeaderCard("YPIXSZ", metaData.Camera.PixelSize, "[um] Pixel Y axis size"),
-                new FITSHeaderCard("SET-TEMP", metaData.Camera.SetPoint, "[C] CCD temperature setpoint"),
-                new FITSHeaderCard("CCD-TEMP", metaData.Camera.Temperature, "[C] CCD temperature"),
+                new FITSHeaderCard("SET-TEMP", metaData.Camera.SetPoint, "[degC] CCD temperature setpoint"),
+                new FITSHeaderCard("CCD-TEMP", metaData.Camera.Temperature, "[degC] CCD temperature"),
             };
 
             var sut = new FITS(new ushort[] { 1, 2 }, 1, 1);
@@ -258,8 +255,8 @@ namespace NINATest {
                 new FITSHeaderCard("FOCPOS", metaData.Focuser.Position, "[step] Focuser position"),
                 new FITSHeaderCard("FOCUSPOS", metaData.Focuser.Position, "[step] Focuser position"),
                 new FITSHeaderCard("FOCUSSZ", metaData.Focuser.StepSize, "[um] Focuser step size"),
-                new FITSHeaderCard("FOCTEMP", metaData.Focuser.Temperature, "[C] Focuser temperature"),
-                new FITSHeaderCard("FOCUSTEM", metaData.Focuser.Temperature, "[C] Focuser temperature"),
+                new FITSHeaderCard("FOCTEMP", metaData.Focuser.Temperature, "[degC] Focuser temperature"),
+                new FITSHeaderCard("FOCUSTEM", metaData.Focuser.Temperature, "[degC] Focuser temperature"),
             };
 
             var sut = new FITS(new ushort[] { 1, 2 }, 1, 1);
@@ -283,6 +280,46 @@ namespace NINATest {
                 new FITSHeaderCard("ROTATOR", metaData.Rotator.Position, "[deg] Rotator angle"),
                 new FITSHeaderCard("ROTATANG", metaData.Rotator.Position, "[deg] Rotator angle"),
                 new FITSHeaderCard("ROTSTPSZ", metaData.Rotator.StepSize, "[deg] Rotator step size"),
+            };
+
+            var sut = new FITS(new ushort[] { 1, 2 }, 1, 1);
+            sut.PopulateHeaderCards(metaData);
+
+            foreach (var expectedCard in expectedHeaderCards) {
+                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+            }
+        }
+
+        [Test]
+        public void FITSWeatherDataMetaDataPopulated() {
+            var now = DateTime.Now;
+            var metaData = new ImageMetaData();
+            metaData.WeatherData.CloudCover = 99.11;
+            metaData.WeatherData.DewPoint = 18.91;
+            metaData.WeatherData.Humidity = 46.52;
+            metaData.WeatherData.Pressure = 1010.4;
+            metaData.WeatherData.SkyBrightness = 43;
+            metaData.WeatherData.SkyQuality = 17.84;
+            metaData.WeatherData.SkyTemperature = -42;
+            metaData.WeatherData.StarFWHM = 2.34;
+            metaData.WeatherData.Temperature = 17.2;
+            metaData.WeatherData.WindDirection = 284.23;
+            metaData.WeatherData.WindGust = 1.76;
+            metaData.WeatherData.WindSpeed = 0.54;
+
+            var expectedHeaderCards = new List<FITSHeaderCard>() {
+                new FITSHeaderCard("CLOUDCVR", metaData.WeatherData.CloudCover, "[percent] Cloud cover"),
+                new FITSHeaderCard("DEWPOINT", metaData.WeatherData.DewPoint, "[degC] Dew point"),
+                new FITSHeaderCard("HUMIDITY", metaData.WeatherData.Humidity, "[percent] Relative humidity"),
+                new FITSHeaderCard("PRESSURE", metaData.WeatherData.Pressure, "[hPa] Air pressure"),
+                new FITSHeaderCard("SKYBRGHT", metaData.WeatherData.SkyBrightness, "[lux] Sky brightness"),
+                new FITSHeaderCard("MPSAS", metaData.WeatherData.SkyQuality, "[mags/arcsec^2] Sky quality"),
+                new FITSHeaderCard("SKYTEMP", metaData.WeatherData.SkyTemperature, "[degC] Sky temperature"),
+                new FITSHeaderCard("STARFWHM", metaData.WeatherData.StarFWHM, "Star FWHM"),
+                new FITSHeaderCard("AMBTEMP", metaData.WeatherData.Temperature, "[degC] Ambient air temperature"),
+                new FITSHeaderCard("WINDDIR", metaData.WeatherData.WindDirection, "[deg] Wind direction: 0=N, 180=S, 90=E, 270=W"),
+                new FITSHeaderCard("WINDGUST", metaData.WeatherData.WindGust * 3.6, "[kph] Wind gust"),
+                new FITSHeaderCard("WINDSPD", metaData.WeatherData.WindSpeed * 3.6, "[kph] Wind speed"),
             };
 
             var sut = new FITS(new ushort[] { 1, 2 }, 1, 1);
@@ -444,6 +481,19 @@ namespace NINATest {
             sut.Key.Should().Be(key);
             sut.Value.Should().Be(value.ToString());
             sut.Comment.Should().Be(comment);
+        }
+
+        [Test]
+        public void FITSGainNegativeValueTest() {
+            var metaData = new ImageMetaData();
+            metaData.Camera.Gain = -1;
+
+            var notExpectedCard = new FITSHeaderCard("GAIN", metaData.Camera.Gain, "Sensor gain");
+
+            var sut = new FITS(new ushort[] { 1, 2 }, 1, 1);
+            sut.PopulateHeaderCards(metaData);
+
+            sut.HeaderCards.Should().NotContain(notExpectedCard, "Negative Gain values are not allowed");
         }
     }
 }
