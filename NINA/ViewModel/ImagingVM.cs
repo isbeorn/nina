@@ -344,6 +344,8 @@ namespace NINA.ViewModel {
                         /*Download Image */
                         data = await Download(token, progress);
 
+                        token.ThrowIfCancellationRequested();
+
                         if (data == null) {
                             Logger.Error(new CameraDownloadFailedException(sequence));
                             Notification.ShowError(string.Format(Locale.Loc.Instance["LblCameraDownloadFailed"], sequence.ExposureTime, sequence.ImageType, sequence.Gain, sequence.FilterType?.Name ?? string.Empty));

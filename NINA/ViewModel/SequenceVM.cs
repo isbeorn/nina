@@ -684,6 +684,9 @@ namespace NINA.ViewModel {
                         /* 6) Download Image */
                         progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDownloading"] });
                         var data = await cameraMediator.Download(ct);
+
+                        ct.ThrowIfCancellationRequested();
+
                         if (data != null) {
                             AddMetaData(data, csl, seq, exposureStart, rms);
 
