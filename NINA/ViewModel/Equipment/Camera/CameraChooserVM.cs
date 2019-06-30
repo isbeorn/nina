@@ -27,8 +27,10 @@ using NINA.Utility;
 using NINA.Utility.AtikSDK;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Profile;
+using FLI;
 using QHYCCD;
 using System;
+using System.Collections.Generic;
 using ZWOptical.ASISDK;
 
 namespace NINA.ViewModel.Equipment.Camera {
@@ -84,16 +86,35 @@ namespace NINA.ViewModel.Equipment.Camera {
                 Logger.Error(ex);
             }
 
+            /* FLI */
+            try {
+                Logger.Trace("Adding FLI Cameras");
+                List<string> cameras = FLICameras.GetCameras();
+
+                if (cameras.Count > 0) {
+                    foreach (var entry in cameras) {
+                        var camera = new FLICamera(entry, profileService);
+
+                        if (!string.IsNullOrEmpty(camera.Name)) {
+                            Logger.Debug($"Adding FLI camera {camera.Id} (as {camera.Name})");
+                            Devices.Add(camera);
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
             /* QHYCCD */
             try {
-                Logger.Debug("Adding QHYCCD Cameras");
+                Logger.Trace("Adding QHYCCD Cameras");
                 uint numCameras = QHYCameras.Count;
 
                 if (numCameras > 0) {
                     for (uint i = 0; i < numCameras; i++) {
                         var cam = QHYCameras.GetCamera(i, profileService);
                         if (!string.IsNullOrEmpty(cam.Name)) {
-                            Logger.Debug(string.Format("Adding QHY camera {0}: {1} (as {2})", i, cam.Id, cam.Name));
+                            Logger.Debug($"Adding QHY camera {i}: {cam.Id} (as {cam.Name})");
                             Devices.Add(cam);
                         }
                     }
@@ -104,7 +125,7 @@ namespace NINA.ViewModel.Equipment.Camera {
 
             /* ToupTek */
             try {
-                Logger.Trace("Adding ToupTek Cameras");
+                Logger.Debug("Adding ToupTek Cameras");
                 foreach (var instance in ToupTek.ToupCam.EnumV2()) {
                     var cam = new ToupTekCamera(instance, profileService);
                     Devices.Add(cam);

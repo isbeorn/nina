@@ -332,6 +332,8 @@
     <Compile Include="Model\ImageData\ImageMetaData.cs" />
     <Compile Include="Model\ImageData\LRGBArrays.cs" />
     <Compile Include="Model\MyCamera\FileCamera.cs" />
+    <Compile Include="Model\MyCamera\FLICamera.cs" />
+    <Compile Include="Model\MyFilterWheel\FLIFilterWheel.cs" />
     <Compile Include="Model\MyGuider\DirectGuider.cs" />
     <Compile Include="Model\MyGuider\ISynchronizedPHD2GuiderService.cs" />
     <Compile Include="Model\MyGuider\SynchronizedPHD2Guider.cs" />
@@ -376,12 +378,15 @@
     <Compile Include="PlateSolving\PlateSolveParameter.cs" />
     <Compile Include="PlateSolving\PlateSolveResult.cs" />
     <Compile Include="Utility\Astrometry\TopocentricCoordinates.cs" />
+    <Compile Include="Utility\CameraSDKs\FLISDK\FLIFilterWheels.cs" />
     <Compile Include="Utility\Converters\NaNToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\WeatherBrightnessConverter.cs" />
     <Compile Include="Utility\Converters\WeatherPressureConverter.cs" />
     <Compile Include="Utility\Converters\WeatherRainRateConverter.cs" />
     <Compile Include="Utility\Converters\WeatherTemperatureConverter.cs" />
     <Compile Include="Utility\Converters\WeatherVelocityConverter.cs" />
+    <Compile Include="Utility\CameraSDKs\FLISDK\FLICameras.cs" />
+    <Compile Include="Utility\CameraSDKs\FLISDK\FLICameraSDK.cs" />
     <Compile Include="Utility\Enum\AltitudeSite.cs" />
     <Compile Include="Utility\Enum\NoiseReductionEnum.cs" />
     <Compile Include="Utility\Enum\PlanetariumEnum.cs" />
@@ -1641,41 +1646,46 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
-echo "Copy Altair DLLs"
-xcopy "$(ProjectDir)External\x64\Altair" "$(TargetDir)\External\x64\Altair" /h/i/c/k/e/r/y
-xcopy "$(ProjectDir)External\x86\Altair" "$(TargetDir)\External\x86\Altair" /h/i/c/k/e/r/y
+      echo "Copy Altair DLLs"
+      xcopy "$(ProjectDir)External\x64\Altair" "$(TargetDir)\External\x64\Altair" /h/i/c/k/e/r/y
+      xcopy "$(ProjectDir)External\x86\Altair" "$(TargetDir)\External\x86\Altair" /h/i/c/k/e/r/y
 
-echo "Copy ASI DLLs"
-xcopy "$(ProjectDir)External\x64\ASI" "$(TargetDir)\External\x64\ASI" /h/i/c/k/e/r/y
-xcopy "$(ProjectDir)External\x86\ASI" "$(TargetDir)\External\x86\ASI" /h/i/c/k/e/r/y
+      echo "Copy ASI DLLs"
+      xcopy "$(ProjectDir)External\x64\ASI" "$(TargetDir)\External\x64\ASI" /h/i/c/k/e/r/y
+      xcopy "$(ProjectDir)External\x86\ASI" "$(TargetDir)\External\x86\ASI" /h/i/c/k/e/r/y
 
-echo "Copy Atik DLLs"
-xcopy "$(ProjectDir)External\x64\Atik" "$(TargetDir)\External\x64\Atik" /h/i/c/k/e/r/y
-xcopy "$(ProjectDir)External\x86\Atik" "$(TargetDir)\External\x86\Atik" /h/i/c/k/e/r/y
+      echo "Copy Atik DLLs"
+      xcopy "$(ProjectDir)External\x64\Atik" "$(TargetDir)\External\x64\Atik" /h/i/c/k/e/r/y
+      xcopy "$(ProjectDir)External\x86\Atik" "$(TargetDir)\External\x86\Atik" /h/i/c/k/e/r/y
 
-echo "Copy Canon DLLs"
-xcopy "$(ProjectDir)External\x64\Canon" "$(TargetDir)\External\x64\Canon" /h/i/c/k/e/r/y
-xcopy "$(ProjectDir)External\x86\Canon" "$(TargetDir)\External\x86\Canon" /h/i/c/k/e/r/y
+      echo "Copy Canon DLLs"
+      xcopy "$(ProjectDir)External\x64\Canon" "$(TargetDir)\External\x64\Canon" /h/i/c/k/e/r/y
+      xcopy "$(ProjectDir)External\x86\Canon" "$(TargetDir)\External\x86\Canon" /h/i/c/k/e/r/y
 
-echo "Copy Nikon DLLs"
-xcopy "$(ProjectDir)External\x64\Nikon" "$(TargetDir)\External\x64\Nikon" /h/i/c/k/e/r/y
-xcopy "$(ProjectDir)External\x86\Nikon" "$(TargetDir)\External\x86\Nikon" /h/i/c/k/e/r/y
+      echo "Copy Nikon DLLs"
+      xcopy "$(ProjectDir)External\x64\Nikon" "$(TargetDir)\External\x64\Nikon" /h/i/c/k/e/r/y
+      xcopy "$(ProjectDir)External\x86\Nikon" "$(TargetDir)\External\x86\Nikon" /h/i/c/k/e/r/y
 
-echo "Copy ToupTek DLLs"
-xcopy "$(ProjectDir)External\x64\ToupTek" "$(TargetDir)\External\x64\ToupTek" /h/i/c/k/e/r/y
-xcopy "$(ProjectDir)External\x86\ToupTek" "$(TargetDir)\External\x86\ToupTek" /h/i/c/k/e/r/y
+      echo "Copy ToupTek DLLs"
+      xcopy "$(ProjectDir)External\x64\ToupTek" "$(TargetDir)\External\x64\ToupTek" /h/i/c/k/e/r/y
+      xcopy "$(ProjectDir)External\x86\ToupTek" "$(TargetDir)\External\x86\ToupTek" /h/i/c/k/e/r/y
 
-echo "Copy QHYCCD DLLs"
-xcopy "$(ProjectDir)External\x64\QHYCCD" "$(TargetDir)\External\x64\QHYCCD" /h/i/c/k/e/r/y
-xcopy "$(ProjectDir)External\x86\QHYCCD" "$(TargetDir)\External\x86\QHYCCD" /h/i/c/k/e/r/y
+      echo "Copy QHYCCD DLLs"
+      xcopy "$(ProjectDir)External\x64\QHYCCD" "$(TargetDir)\External\x64\QHYCCD" /h/i/c/k/e/r/y
+      xcopy "$(ProjectDir)External\x86\QHYCCD" "$(TargetDir)\External\x86\QHYCCD" /h/i/c/k/e/r/y
 
-if $(Platform) == x86 (
-  if exist "$(DevEnvDir)..\..\VC\Auxiliary\Build\vcvars32.bat" (
-    echo "Making x86 large address aware"
-    call "$(DevEnvDir)..\..\VC\Auxiliary\Build\vcvars32.bat"
-    editbin /largeaddressaware "$(TargetPath)"
-  )
-)</PostBuildEvent>
+      echo "Copy FLI DLLs"
+      xcopy "$(ProjectDir)External\x64\FLI" "$(TargetDir)\External\x64\FLI" /h/i/c/k/e/r/y
+      xcopy "$(ProjectDir)External\x86\FLI" "$(TargetDir)\External\x86\FLI" /h/i/c/k/e/r/y
+
+      if $(Platform) == x86 (
+      if exist "$(DevEnvDir)..\..\VC\Auxiliary\Build\vcvars32.bat" (
+      echo "Making x86 large address aware"
+      call "$(DevEnvDir)..\..\VC\Auxiliary\Build\vcvars32.bat"
+      editbin /largeaddressaware "$(TargetPath)"
+      )
+      )
+</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -1688,7 +1698,7 @@ if $(Platform) == x86 (
   </Target>
   <Import Project="..\packages\VVVV.FreeImage.3.15.1.1\build\net40\VVVV.FreeImage.targets" Condition="Exists('..\packages\VVVV.FreeImage.3.15.1.1\build\net40\VVVV.FreeImage.targets')" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.110.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.110.0\build\net46\System.Data.SQLite.Core.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

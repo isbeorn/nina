@@ -136,6 +136,7 @@ This database will be automatically created by the EntityFramework based on the 
 	* Atik SDK: SDK is available at https://www.atik-cameras.com/downloads/
 	* ToupTek SDK: SDK is available at http://www.touptek.com/upload/download/toupcamsdk.zip
 	* QHYCCD SDK: Instructions for integrating the QHYCCD SDK can be found in `NINA\Utility\CameraSDKs\QHYCCD\README.md`
+	* FLI SDK: Instructions for integrating the FLI SDK can be found in `NINA\Utility\CameraSDKs\FLI\README.md`
     * Due to licensing of those files, they must not be put into a public repository
 * Recommended Visual Studio Extensions:
     * [CodeMaid](http://www.codemaid.net/): A code cleanup Utility

@@ -2,6 +2,9 @@
 
 ## Features
 
+### Camera Control
+- Native support for Finger Lakes Instrumentation ProLine/MicroLine cameras and color filter wheels
+
 ### Switch Hubs
 - A new equipment type "Switch" has been added which can connect to an AscomSwitch or to a PrimaLuceLab EAGLE PC
 
@@ -117,6 +120,10 @@
 	- After download: Parallel image saving and processing to display the image
 - Image HFR is now available as an image file name token (`$$HFR$$`)
 - Focuser Temperature is now available as an image file name token (`$$FOCUSERTEMP$$`)
+
+## Special Thanks
+The N.I.N.A. team would like to sincerely thank:
+- The staff at [Cloud Break Optics](https://cloudbreakoptics.com/) and [Finger Lakes Instrumentation](http://flicamera.com/) for arranging a ProLine PL09000 and CFW1-5 to assist in integrating native FLI camera and filter wheel support.
 
 # Version 1.8 Hotfix 1
 
