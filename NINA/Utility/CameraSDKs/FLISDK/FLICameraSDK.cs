@@ -434,18 +434,20 @@ namespace FLI {
             CheckReturn(FLIList(domain, out IntPtr names), MethodBase.GetCurrentMethod(), domain, new object[] { names });
 
             unsafe {
-                for (int i = 0; i < 64; i++) {
-                    p1 = *((IntPtr*)names.ToPointer());
-                    s = Marshal.PtrToStringAnsi(p1);
+                if (names != IntPtr.Zero) {
+                    for (int i = 0; i < 64; i++) {
+                        p1 = *((IntPtr*)names.ToPointer());
+                        s = Marshal.PtrToStringAnsi(p1);
 
-                    if (string.IsNullOrEmpty(s)) {
-                        break;
+                        if (string.IsNullOrEmpty(s)) {
+                            break;
+                        }
+
+                        cameralist.Add(s);
+
+                        n = names.ToInt64() + Marshal.SizeOf(typeof(IntPtr));
+                        names = (IntPtr)n;
                     }
-
-                    cameralist.Add(s);
-
-                    n = names.ToInt64() + Marshal.SizeOf(typeof(IntPtr));
-                    names = (IntPtr)n;
                 }
             }
 
