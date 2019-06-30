@@ -480,7 +480,7 @@ namespace NINA.Model.MyCamera {
                 Logger.Debug(string.Format("QHYCCD: Got Control {0} = {1}", type, rv));
                 return rv;
             } else {
-                Logger.Error(string.Format("QHYCCD: Failed to Get value for control {0}", type), null);
+                Logger.Error(string.Format("QHYCCD: Failed to Get value for control {0}", type));
                 return LibQHYCCD.QHYCCD_ERROR;
             }
         }

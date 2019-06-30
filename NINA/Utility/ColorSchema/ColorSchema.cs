@@ -59,7 +59,7 @@ namespace NINA.Utility {
                 }
             } else {
                 schemas = new ColorSchemas();
-                Logger.Error("Color schema xml not found!", null);
+                Logger.Error("Color schema xml not found!");
             }
 
             return schemas;

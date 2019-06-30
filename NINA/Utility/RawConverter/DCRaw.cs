@@ -101,7 +101,7 @@ namespace NINA.Utility.RawConverter {
                                 data = new ImageData(pixels, (int)bmp.PixelWidth, (int)bmp.PixelHeight, bitDepth, true);
                                 data.Data.RAWData = s.ToArray();
                             } else {
-                                Logger.Error("File not found: " + outputFile, null);
+                                Logger.Error("File not found: " + outputFile);
                                 throw new Exception("Error occured during DCRaw conversion." + Environment.NewLine + sb.ToString());
                             }
                         }
