@@ -83,7 +83,7 @@
       <ComponentGroupRef Id="External_x86_Atik_files" />
       <ComponentGroupRef Id="External_x86_QHY_files" />
       <ComponentGroupRef Id="External_x86_Canon_files" />
-      <ComponentGroupRef Id="External_x86_FLI_files" />
+      <!--<ComponentGroupRef Id="External_x86_FLI_files" />-->
       <ComponentGroupRef Id="External_x86_FreeImage_files" />
       <ComponentGroupRef Id="External_x86_Nikon_Type0001_files" />
       <ComponentGroupRef Id="External_x86_Nikon_Type0002_files" />
@@ -938,13 +938,13 @@
     </ComponentGroup>
   </Fragment>
 
-  <Fragment>
+  <!--<Fragment>
     <ComponentGroup Id="External_x86_FLI_files" Directory="External_x86_FLI">
       <Component Win64="$(var.Win64)" Id="External_x86_FLI_libfli.dll" Guid="6BA4A62F-6E93-4437-A500-9104B33B980A">
         <File Id="External_x86_FLI_libfli.dll" Name="libfli.dll" Source="$(var.NINA_ProjectDir)External\x86\FLI\libfli.dll" />
       </Component>
     </ComponentGroup>
-  </Fragment>
+  </Fragment>-->
 
   <Fragment>
     <ComponentGroup Id="External_x86_Canon_files" Directory="External_x86_Canon">

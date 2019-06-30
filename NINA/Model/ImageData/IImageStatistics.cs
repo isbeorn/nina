@@ -7,7 +7,6 @@ namespace NINA.Model.ImageData {
     public interface IImageStatistics {
         int BitDepth { get; }
         int DetectedStars { get; set; }
-        double ExposureTime { get; set; }
         int Height { get; }
         double HFR { get; set; }
         List<DataPoint> Histogram { get; }

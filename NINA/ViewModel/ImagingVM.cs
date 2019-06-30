@@ -551,7 +551,7 @@ namespace NINA.ViewModel {
 
                 var processedData = await process;
 
-                ImgStatisticsVM.Add(data.Statistics);
+                ImgStatisticsVM.Add(data.Statistics, data.MetaData.Image.ExposureTime);
                 return processedData;
             }, token);
             return _imageProcessingTask;
