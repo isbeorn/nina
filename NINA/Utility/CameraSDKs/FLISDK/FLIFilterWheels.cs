@@ -33,8 +33,9 @@ namespace FLI {
 
         public static List<string> GetFilterWheels() {
             List<string> fwheels;
+            uint domain = (uint)(LibFLI.FLIDomains.DEV_FILTERWHEEL | LibFLI.FLIDomains.IF_USB);
 
-            fwheels = LibFLI.N_FLIList(LibFLI.FLIDomains.DEV_FILTERWHEEL | LibFLI.FLIDomains.IF_USB);
+            fwheels = LibFLI.N_FLIList(domain);
             Logger.Debug(string.Format("FLI: Found {0} filter wheel(s)", fwheels.Count()));
 
             return fwheels;

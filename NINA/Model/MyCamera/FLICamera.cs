@@ -39,7 +39,7 @@ using NINA.Model.ImageData;
 namespace NINA.Model.MyCamera {
 
     public class FLICamera : BaseINPC, ICamera {
-        private long CameraH;
+        private uint CameraH;
         private bool _connected = false;
         private LibFLI.FLICameraInfo Info;
 
@@ -49,7 +49,7 @@ namespace NINA.Model.MyCamera {
             this.profileService = profileService;
             string[] cameraInfo;
             StringBuilder cameraSerial = new StringBuilder(64);
-            long rv;
+            uint rv;
 
             cameraInfo = camera.Split(';');
             Info.Id = cameraInfo[0];
@@ -107,10 +107,10 @@ namespace NINA.Model.MyCamera {
         public short BinX {
             get => Info.BinX;
             set {
-                long rv;
+                uint rv;
 
                 if (Connected) {
-                    if ((rv = LibFLI.FLISetHBin(CameraH, value)) != LibFLI.FLI_SUCCESS) {
+                    if ((rv = LibFLI.FLISetHBin(CameraH, (uint)value)) != LibFLI.FLI_SUCCESS) {
                         Logger.Error($"FLI: BinX.set failed. Returned {rv}");
                         return;
                     }
@@ -123,10 +123,10 @@ namespace NINA.Model.MyCamera {
         public short BinY {
             get => Info.BinY;
             set {
-                long rv;
+                uint rv;
 
                 if (Connected) {
-                    if ((rv = LibFLI.FLISetVBin(CameraH, value)) != LibFLI.FLI_SUCCESS) {
+                    if ((rv = LibFLI.FLISetVBin(CameraH, (uint)value)) != LibFLI.FLI_SUCCESS) {
                         Logger.Error($"FLI: BinY.set failed. Returned {rv}");
                         return;
                     }
@@ -151,14 +151,14 @@ namespace NINA.Model.MyCamera {
         public string CameraState {
             get {
                 string statusString;
-                long status = (long)LibFLI.CameraStatus.UNKNOWN;
-                long rv;
+                uint status = (uint)LibFLI.CameraStatus.UNKNOWN;
+                uint rv;
 
                 if (Connected) {
                     if ((rv = LibFLI.FLIGetDeviceStatus(CameraH, ref status)) != LibFLI.FLI_SUCCESS) {
                         Logger.Error($"FLI: FLIGetDeviceStatus() failed. Returned {rv}");
 
-                        status = (long)LibFLI.CameraStatus.UNKNOWN;
+                        status = (uint)LibFLI.CameraStatus.UNKNOWN;
                     }
                 }
 
@@ -227,7 +227,7 @@ namespace NINA.Model.MyCamera {
         public bool CoolerOn {
             get => Info.CoolerOn;
             set {
-                long rv;
+                uint rv;
 
                 if (Connected && CanSetTemperature) {
                     if (value == false) {
@@ -254,7 +254,7 @@ namespace NINA.Model.MyCamera {
         public double CoolerPower {
             get {
                 double power = double.NaN;
-                long rv;
+                uint rv;
 
                 if (Connected && CanSetTemperature) {
                     if ((rv = LibFLI.FLIGetCoolerPower(CameraH, ref power)) != LibFLI.FLI_SUCCESS) {
@@ -298,16 +298,16 @@ namespace NINA.Model.MyCamera {
         public long ExposureLength {
             get => Info.ExposureLength;
             set {
-                long rv;
+                uint rv;
 
                 if (Connected) {
                     Logger.Debug($"FLI: Setting exposure time to {value}ms");
 
-                    if ((rv = LibFLI.FLISetExposureTime(CameraH, value)) != LibFLI.FLI_SUCCESS) {
+                    if ((rv = LibFLI.FLISetExposureTime(CameraH, (uint)value)) != LibFLI.FLI_SUCCESS) {
                         Logger.Error($"FLI: FLISetExposureTime() failed. Returned {rv}");
                     }
 
-                    Info.ExposureLength = value;
+                    Info.ExposureLength = (uint)value;
                 }
             }
         }
@@ -328,16 +328,16 @@ namespace NINA.Model.MyCamera {
         public long FrameType {
             get => Info.FrameType;
             set {
-                long rv;
+                uint rv;
 
                 if (Connected) {
                     Logger.Debug($"FLI: Setting frame type to {value}");
 
-                    if ((rv = LibFLI.FLISetFrameType(CameraH, value)) != LibFLI.FLI_SUCCESS) {
+                    if ((rv = LibFLI.FLISetFrameType(CameraH, (uint)value)) != LibFLI.FLI_SUCCESS) {
                         Logger.Error($"FLI: FLISetFrameType() failed. Returned {rv}");
                     }
 
-                    Info.FrameType = value;
+                    Info.FrameType = (uint)value;
                 }
             }
         }
@@ -410,8 +410,8 @@ namespace NINA.Model.MyCamera {
 
         public short ReadoutMode {
             get {
-                long mode = 0;
-                long rv;
+                uint mode = 0;
+                uint rv;
 
                 if (Connected) {
                     if ((rv = LibFLI.FLIGetCameraMode(CameraH, ref mode)) != LibFLI.FLI_SUCCESS) {
@@ -428,12 +428,12 @@ namespace NINA.Model.MyCamera {
                 }
             }
             set {
-                long rv;
+                uint rv;
 
                 if (Connected && (value != ReadoutMode)) {
                     Logger.Debug($"FLI: Setting readout mode to {value}");
 
-                    if ((rv = LibFLI.FLISetCameraMode(CameraH, value)) != LibFLI.FLI_SUCCESS) {
+                    if ((rv = LibFLI.FLISetCameraMode(CameraH, (uint)value)) != LibFLI.FLI_SUCCESS) {
                         Logger.Error($"FLI: FLISetCameraMode() failed. Returned {rv}");
                     }
 
@@ -492,10 +492,10 @@ namespace NINA.Model.MyCamera {
         public double Temperature {
             get {
                 double ccdtemp = double.NaN;
-                long rv;
+                uint rv;
 
                 if (Connected) {
-                    if ((rv = LibFLI.FLIReadTemperature(CameraH, (long)LibFLI.FLIChannel.CCD, ref ccdtemp)) != LibFLI.FLI_SUCCESS) {
+                    if ((rv = LibFLI.FLIReadTemperature(CameraH, (uint)LibFLI.FLIChannel.CCD, ref ccdtemp)) != LibFLI.FLI_SUCCESS) {
                         Logger.Error($"FLI: FLIReadTemperature (CCD) failed. Returned {rv}");
                     }
                 }
@@ -507,7 +507,7 @@ namespace NINA.Model.MyCamera {
         public double TemperatureSetPoint {
             get => Info.CoolerTargetTemp;
             set {
-                long rv;
+                uint rv;
 
                 if (Connected) {
                     if ((rv = LibFLI.FLISetTemperature(CameraH, value)) != LibFLI.FLI_SUCCESS) {
@@ -537,12 +537,12 @@ namespace NINA.Model.MyCamera {
 
         public Task<bool> Connect(CancellationToken ct) {
             return Task.Run(() => {
-                long ul_x = 0, ul_y = 0, lr_x = 0, lr_y = 0;
+                uint ul_x = 0, ul_y = 0, lr_x = 0, lr_y = 0;
                 List<string> modeList = new List<string>();
                 StringBuilder modeString = new StringBuilder(32);
-                long modeIndex = 0;
+                uint modeIndex = 0;
                 bool success = false;
-                long rv;
+                uint rv;
 
                 try {
                     /*
@@ -623,7 +623,7 @@ namespace NINA.Model.MyCamera {
                 byte[] rowData;
                 byte[] imgData;
                 IntPtr buff;
-                long rv;
+                uint rv;
 
                 width = SubSampleWidth / BinX;
                 height = SubSampleHeight / BinY;
@@ -670,9 +670,9 @@ namespace NINA.Model.MyCamera {
         public async void StartExposure(CaptureSequence sequence) {
             bool isSnap;
             bool isDarkFrame;
-            long timeLeft = 0;
-            long x, y, w, h;
-            long rv;
+            uint timeLeft = 0;
+            uint x, y, w, h;
+            uint rv;
 
             /*
              * Set the desired readout mode
@@ -698,10 +698,10 @@ namespace NINA.Model.MyCamera {
             /*
              * Set the sensor area we want to capture if subsampling is activated.
              */
-            x = SubSampleX;
-            y = SubSampleY;
-            w = (SubSampleWidth + SubSampleX) / BinX;
-            h = (SubSampleHeight + SubSampleY) / BinY;
+            x = (uint)SubSampleX;
+            y = (uint)SubSampleY;
+            w = (uint)(SubSampleWidth + SubSampleX) / (uint)BinX;
+            h = (uint)(SubSampleHeight + SubSampleY) / (uint)BinY;
 
             if ((rv = LibFLI.FLISetImageArea(CameraH, x, y, w, h)) != LibFLI.FLI_SUCCESS) {
                 Logger.Error($"FLI: FLISetImageArea() failed. Returned {rv}");
@@ -729,7 +729,7 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StopExposure() {
-            long rv;
+            uint rv;
 
             Logger.Debug($"FLI: Cancelling exposure");
 

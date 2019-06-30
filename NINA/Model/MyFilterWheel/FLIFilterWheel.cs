@@ -35,7 +35,7 @@ using System.Threading.Tasks;
 namespace NINA.Model.MyFilterWheel {
 
     public class FLIFilterWheel : BaseINPC, IFilterWheel {
-        private long FWheelH;
+        private uint FWheelH;
         private bool _connected = false;
         private LibFLI.FLIFilterWheelInfo Info;
         private IProfileService profileService;
@@ -57,8 +57,8 @@ namespace NINA.Model.MyFilterWheel {
 
         public async Task<bool> Connect(CancellationToken token) {
             return await Task.Run(() => {
-                long fwheelPostions = 0;
-                long rv;
+                uint fwheelPostions = 0;
+                uint rv;
 
                 if ((rv = LibFLI.FLIOpen(out FWheelH, Info.Id, LibFLI.FLIDomains.DEV_FILTERWHEEL | LibFLI.FLIDomains.IF_USB)) != LibFLI.FLI_SUCCESS) {
                     Logger.Error($"FLI FWheel: FLIOpen() failed. Returned {rv}");
@@ -130,8 +130,8 @@ namespace NINA.Model.MyFilterWheel {
 
         public short Position {
             get {
-                long filterPosition = 0;
-                long rv;
+                uint filterPosition = 0;
+                uint rv;
 
                 if (Connected) {
                     if ((rv = LibFLI.FLIGetFilterPos(FWheelH, ref filterPosition)) != LibFLI.FLI_SUCCESS) {
@@ -147,7 +147,7 @@ namespace NINA.Model.MyFilterWheel {
                 long rv;
 
                 if (Connected && (value < Info.Positions)) {
-                    if ((rv = LibFLI.FLISetFilterPos(FWheelH, value)) != LibFLI.FLI_SUCCESS) {
+                    if ((rv = LibFLI.FLISetFilterPos(FWheelH, (uint)value)) != LibFLI.FLI_SUCCESS) {
                         Logger.Error($"FLI FWheel: FLISetFilterPos() failed. Returned {rv}");
                     }
 
@@ -195,7 +195,7 @@ namespace NINA.Model.MyFilterWheel {
                     for (; i <= positions; i++) {
                         StringBuilder positionName = new StringBuilder(32);
 
-                        if ((rv = LibFLI.FLIGetFilterName(FWheelH, i, positionName, 32)) != LibFLI.FLI_SUCCESS) {
+                        if ((rv = LibFLI.FLIGetFilterName(FWheelH, (uint)i, positionName, 32)) != LibFLI.FLI_SUCCESS) {
                             Logger.Error($"FLI FWheel: FLIGetFilterName() failed. Returned {rv}");
                         }
 

@@ -46,12 +46,12 @@ namespace FLI {
         /// <summary>
         /// API
         /// </summary>
-        public const long FLI_SUCCESS = 0;
+        public const uint FLI_SUCCESS = 0;
 
         /// <summary>
         /// Interface and device type domains
         /// </summary>
-        public enum FLIDomains : long {
+        public enum FLIDomains : uint {
             IF_NONE = 0x00,
             IF_PARALLEL_PORT = 0x01,
             IF_USB = 0x02,
@@ -72,7 +72,7 @@ namespace FLI {
         /// <summary>
         /// Frame types
         /// </summary>
-        public enum FLIFrameType : long {
+        public enum FLIFrameType : uint {
             NORMAL = 0,
             DARK,
             FLOOD,
@@ -82,7 +82,7 @@ namespace FLI {
         /// <summary>
         /// Bit depths
         /// </summary>
-        public enum FLIBitDepth : long {
+        public enum FLIBitDepth : uint {
             DEPTH_8 = 0,
             DEPTH_16
         }
@@ -90,7 +90,7 @@ namespace FLI {
         /// <summary>
         /// Shutter Control
         /// </summary>
-        public enum FLIShutter : long {
+        public enum FLIShutter : uint {
             CLOSE = 0x0000,
             OPEN = 0x0001,
             EXTERNAL_TRIGGER = 0x0002,
@@ -102,7 +102,7 @@ namespace FLI {
         /// <summary>
         /// Flush Control
         /// </summary>
-        public enum FLIBGFlush : long {
+        public enum FLIBGFlush : uint {
             START = 0x0000,
             STOP = 0x0001
         }
@@ -110,7 +110,7 @@ namespace FLI {
         /// <summary>
         /// Temperature sensor channel
         /// </summary>
-        public enum FLIChannel : long {
+        public enum FLIChannel : uint {
             INTERNAL = 0x0000,
             EXTERNAL = 0x0001,
             CCD = 0x0000,
@@ -121,7 +121,7 @@ namespace FLI {
         /// Camera status
         /// </summary>
         [Flags]
-        public enum CameraStatus : long {
+        public enum CameraStatus : uint {
             UNKNOWN = 0xFFFFFFFF,
             MASK = 0x00000003,
             IDLE = 0x00,
@@ -135,7 +135,7 @@ namespace FLI {
         /// Focuser status
         /// </summary>
         [Flags]
-        public enum FocuserStatus : long {
+        public enum FocuserStatus : uint {
             UNKNOWN = 0xFFFFFFFF,
             HOMNIG = 0x00000004,
             MOVING_IN = 0x00000001,
@@ -150,7 +150,7 @@ namespace FLI {
         /// Filter Wheel status
         /// </summary>
         [Flags]
-        public enum FilterWheelStatus : long {
+        public enum FilterWheelStatus : uint {
             VIRTUAL = 0x0,
             PHYSICAL = 0x100,
             LEFT = PHYSICAL | 0x00,
@@ -169,7 +169,7 @@ namespace FLI {
         /// <summary>
         /// FLI SDK debug level
         /// </summary>
-        public enum FLIDebugLevel : long {
+        public enum FLIDebugLevel : uint {
 
             /// <summary>
             /// No messages
@@ -207,225 +207,225 @@ namespace FLI {
         #region "FLI SDK prototypes"
 
         [DllImport(DLLNAME, EntryPoint = "FLIOpen", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIOpen(out long dev, string name, FLIDomains domain);
+        public static extern unsafe uint FLIOpen(out uint dev, string name, FLIDomains domain);
 
         [DllImport(DLLNAME, EntryPoint = "FLISetDebugLevel", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLISetDebugLevel(StringBuilder host, long level);
+        public static extern unsafe uint FLISetDebugLevel(StringBuilder host, uint level);
 
         [DllImport(DLLNAME, EntryPoint = "FLIClose", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIClose(long dev);
+        public static extern unsafe uint FLIClose(uint dev);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGetLibVersion", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGetLibVersion(StringBuilder version, int length);
+        public static extern unsafe uint FLIGetLibVersion(StringBuilder version, int length);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGetModel", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGetModel(long dev, ref double model, int length);
+        public static extern unsafe uint FLIGetModel(uint dev, ref double model, int length);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGetPixelSize", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGetPixelSize(long dev, ref double pixel_x, ref double pixel_y);
+        public static extern unsafe uint FLIGetPixelSize(uint dev, ref double pixel_x, ref double pixel_y);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGetHWRevision", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGetHWRevision(long dev, out long hwrev);
+        public static extern unsafe uint FLIGetHWRevision(uint dev, out uint hwrev);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGetFWRevision", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGetFWRevision(long dev, out long fwrev);
+        public static extern unsafe uint FLIGetFWRevision(uint dev, out uint fwrev);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGetArrayArea", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGetArrayArea(long dev, ref long ul_x, ref long ul_y, ref long lr_x, ref long lr_y);
+        public static extern unsafe uint FLIGetArrayArea(uint dev, ref uint ul_x, ref uint ul_y, ref uint lr_x, ref uint lr_y);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGetVisibleArea", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGetVisibleArea(long dev, ref long ul_x, ref long ul_y, ref long lr_x, ref long lr_y);
+        public static extern unsafe uint FLIGetVisibleArea(uint dev, ref uint ul_x, ref uint ul_y, ref uint lr_x, ref uint lr_y);
 
         [DllImport(DLLNAME, EntryPoint = "FLISetExposureTime", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLISetExposureTime(long dev, long exptime);
+        public static extern unsafe uint FLISetExposureTime(uint dev, uint exptime);
 
         [DllImport(DLLNAME, EntryPoint = "FLISetImageArea", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLISetImageArea(long dev, long ul_x, long ul_y, long lr_x, long lr_y);
+        public static extern unsafe uint FLISetImageArea(uint dev, uint ul_x, uint ul_y, uint lr_x, uint lr_y);
 
         [DllImport(DLLNAME, EntryPoint = "FLISetHBin", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLISetHBin(long dev, long hbin);
+        public static extern unsafe uint FLISetHBin(uint dev, uint hbin);
 
         [DllImport(DLLNAME, EntryPoint = "FLISetVBin", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLISetVBin(long dev, long vbin);
+        public static extern unsafe uint FLISetVBin(uint dev, uint vbin);
 
         [DllImport(DLLNAME, EntryPoint = "FLISetFrameType", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLISetFrameType(long dev, long frametype);
+        public static extern unsafe uint FLISetFrameType(uint dev, uint frametype);
 
         [DllImport(DLLNAME, EntryPoint = "FLICancelExposure", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLICancelExposure(long dev);
+        public static extern unsafe uint FLICancelExposure(uint dev);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGetExposureStatus", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGetExposureStatus(long dev, ref long timeleft);
+        public static extern unsafe uint FLIGetExposureStatus(uint dev, ref uint timeleft);
 
         [DllImport(DLLNAME, EntryPoint = "FLISetTemperature", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLISetTemperature(long dev, double temperature);
+        public static extern unsafe uint FLISetTemperature(uint dev, double temperature);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGetTemperature", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGetTemperature(long dev, ref double temperaure);
+        public static extern unsafe uint FLIGetTemperature(uint dev, ref double temperaure);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGetCoolerPower", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGetCoolerPower(long dev, ref double power);
+        public static extern unsafe uint FLIGetCoolerPower(uint dev, ref double power);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGrabRow", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGrabRow(long dev, [Out] byte[] buff, int width);
+        public static extern unsafe uint FLIGrabRow(uint dev, [Out] byte[] buff, int width);
 
         [DllImport(DLLNAME, EntryPoint = "FLIExposeFrame", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIExposeFrame(long dev);
+        public static extern unsafe uint FLIExposeFrame(uint dev);
 
         [DllImport(DLLNAME, EntryPoint = "FLIFlushRow", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIFlushRow(long dev, long rows, long repeat);
+        public static extern unsafe uint FLIFlushRow(uint dev, uint rows, uint repeat);
 
         [DllImport(DLLNAME, EntryPoint = "FLISetNFlushes", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLISetNFlushes(long dev, long nflushes);
+        public static extern unsafe uint FLISetNFlushes(uint dev, uint nflushes);
 
         [DllImport(DLLNAME, EntryPoint = "FLISetBitDepth", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLISetBitDepth(long dev, long bitdepth);
+        public static extern unsafe uint FLISetBitDepth(uint dev, uint bitdepth);
 
         [DllImport(DLLNAME, EntryPoint = "FLIReadIOPort", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIReadIOPort(long dev, ref long ioportset);
+        public static extern unsafe uint FLIReadIOPort(uint dev, ref uint ioportset);
 
         [DllImport(DLLNAME, EntryPoint = "FLIWriteIOPort", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIWriteIOPort(long dev, long ioportset);
+        public static extern unsafe uint FLIWriteIOPort(uint dev, uint ioportset);
 
         [DllImport(DLLNAME, EntryPoint = "FLIConfigureIOPort", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIConfigureIOPort(long dev, long ioportset);
+        public static extern unsafe uint FLIConfigureIOPort(uint dev, uint ioportset);
 
         [DllImport(DLLNAME, EntryPoint = "FLILockDevice", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLILockDevice(long dev);
+        public static extern unsafe uint FLILockDevice(uint dev);
 
         [DllImport(DLLNAME, EntryPoint = "FLIUnlockDevice", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIUnlockDevice(long dev);
+        public static extern unsafe uint FLIUnlockDevice(uint dev);
 
         [DllImport(DLLNAME, EntryPoint = "FLIControlShutter", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIControlShutter(long dev, long shutter);
+        public static extern unsafe uint FLIControlShutter(uint dev, uint shutter);
 
         [DllImport(DLLNAME, EntryPoint = "FLIControlBackgroundFlush", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIControlBackgroundFlush(long dev, long bgflush);
+        public static extern unsafe uint FLIControlBackgroundFlush(uint dev, uint bgflush);
 
         [DllImport(DLLNAME, EntryPoint = "FLISetDAC", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLISetDAC(long dev, ulong dacset);
+        public static extern unsafe uint FLISetDAC(uint dev, uint dacset);
 
         [DllImport(DLLNAME, EntryPoint = "FLIList", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIList(FLIDomains domain, out IntPtr names);
+        public static extern unsafe uint FLIList(uint domain, out IntPtr names);
 
         [DllImport(DLLNAME, EntryPoint = "FLIFreeList", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIFreeList(IntPtr names);
+        public static extern unsafe uint FLIFreeList(IntPtr names);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGetFilterName", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGetFilterName(long dev, long filter, StringBuilder name, int len);
+        public static extern unsafe uint FLIGetFilterName(uint dev, uint filter, StringBuilder name, int len);
 
         [DllImport(DLLNAME, EntryPoint = "FLISetActiveWheel", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLISetActiveWheel(long dev, long wheel);
+        public static extern unsafe uint FLISetActiveWheel(uint dev, uint wheel);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGetActiveWheel", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGetActiveWheel(long dev, ref long wheel);
+        public static extern unsafe uint FLIGetActiveWheel(uint dev, ref uint wheel);
 
         [DllImport(DLLNAME, EntryPoint = "FLISetFilterPos", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLISetFilterPos(long dev, long filter);
+        public static extern unsafe uint FLISetFilterPos(uint dev, uint filter);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGetFilterPos", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGetFilterPos(long dev, ref long filter);
+        public static extern unsafe uint FLIGetFilterPos(uint dev, ref uint filter);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGetFilterCount", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGetFilterCount(long dev, ref long filter);
+        public static extern unsafe uint FLIGetFilterCount(uint dev, ref uint filter);
 
         [DllImport(DLLNAME, EntryPoint = "FLIStepMotor", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIStepMotor(long dev, long steps);
+        public static extern unsafe uint FLIStepMotor(uint dev, uint steps);
 
         [DllImport(DLLNAME, EntryPoint = "FLIStepMotorAsync", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIStepMotorAsync(long dev, long steps);
+        public static extern unsafe uint FLIStepMotorAsync(uint dev, uint steps);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGetStepperPosition", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGetStepperPosition(long dev, ref long position);
+        public static extern unsafe uint FLIGetStepperPosition(uint dev, ref uint position);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGetStepsRemaining", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGetStepsRemaining(long dev, ref long steps);
+        public static extern unsafe uint FLIGetStepsRemaining(uint dev, ref uint steps);
 
         [DllImport(DLLNAME, EntryPoint = "FLIHomeFocuser", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIHomeFocuser(long dev);
+        public static extern unsafe uint FLIHomeFocuser(uint dev);
 
         [DllImport(DLLNAME, EntryPoint = "FLICreateList", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLICreateList(long domain);
+        public static extern unsafe uint FLICreateList(uint domain);
 
         [DllImport(DLLNAME, EntryPoint = "FLIDeleteList", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIDeleteList();
+        public static extern unsafe uint FLIDeleteList();
 
         [DllImport(DLLNAME, EntryPoint = "FLIListFirst", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIListFirst(long domain, long steps);
+        public static extern unsafe uint FLIListFirst(uint domain, uint steps);
 
         [DllImport(DLLNAME, EntryPoint = "FLIListNext", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIListNext(long dev, long steps);
+        public static extern unsafe uint FLIListNext(uint dev, uint steps);
 
         [DllImport(DLLNAME, EntryPoint = "FLIReadTemperature", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIReadTemperature(long dev, long channel, ref double temperature);
+        public static extern unsafe uint FLIReadTemperature(uint dev, uint channel, ref double temperature);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGetFocuserExtent", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGetFocuserExtent(long dev, ref long extent);
+        public static extern unsafe uint FLIGetFocuserExtent(uint dev, ref uint extent);
 
         [DllImport(DLLNAME, EntryPoint = "FLIUsbBulkIO", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIUsbBulkIO(long dev, ref byte[] buf, ref int len);
+        public static extern unsafe uint FLIUsbBulkIO(uint dev, ref byte[] buf, ref int len);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGetDeviceStatus", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGetDeviceStatus(long dev, ref long status);
+        public static extern unsafe uint FLIGetDeviceStatus(uint dev, ref uint status);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGetCameraModeString", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGetCameraModeString(long dev, long mode_index, StringBuilder mode_string, int siz);
+        public static extern unsafe uint FLIGetCameraModeString(uint dev, uint mode_index, StringBuilder mode_string, int siz);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGetCameraMode", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGetCameraMode(long dev, ref long mode_index);
+        public static extern unsafe uint FLIGetCameraMode(uint dev, ref uint mode_index);
 
         [DllImport(DLLNAME, EntryPoint = "FLISetCameraMode", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLISetCameraMode(long dev, long mode_index);
+        public static extern unsafe uint FLISetCameraMode(uint dev, uint mode_index);
 
         [DllImport(DLLNAME, EntryPoint = "FLIHomeDevice", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIHomeDevice(long dev);
+        public static extern unsafe uint FLIHomeDevice(uint dev);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGrabFrame", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGrabFrame(long dev, byte[] buff, ref int buffsize, ref int bytesgrabbed);
+        public static extern unsafe uint FLIGrabFrame(uint dev, byte[] buff, ref int buffsize, ref int bytesgrabbed);
 
         [DllImport(DLLNAME, EntryPoint = "FLISetTDI", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLISetTDI(long dev, long tdi_rate, long flags);
+        public static extern unsafe uint FLISetTDI(uint dev, uint tdi_rate, uint flags);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGrabVideoFrame", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGrabVideoFrame(long dev, byte[] buff, int size);
+        public static extern unsafe uint FLIGrabVideoFrame(uint dev, byte[] buff, int size);
 
         [DllImport(DLLNAME, EntryPoint = "FLIStopVideoMode", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIStopVideoMode(long dev);
+        public static extern unsafe uint FLIStopVideoMode(uint dev);
 
         [DllImport(DLLNAME, EntryPoint = "FLIStartVideoMode", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIStartVideoMode(long dev);
+        public static extern unsafe uint FLIStartVideoMode(uint dev);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGetSerialString", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGetSerialString(long dev, StringBuilder serial, int len);
+        public static extern unsafe uint FLIGetSerialString(uint dev, StringBuilder serial, int len);
 
         [DllImport(DLLNAME, EntryPoint = "FLIEndExposure", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIEndExposure(long dev);
+        public static extern unsafe uint FLIEndExposure(uint dev);
 
         [DllImport(DLLNAME, EntryPoint = "FLITriggerExposure", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLITriggerExposure(long dev);
+        public static extern unsafe uint FLITriggerExposure(uint dev);
 
         [DllImport(DLLNAME, EntryPoint = "FLISetFanSpeed", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLISetFanSpeed(long dev, long fan_speed);
+        public static extern unsafe uint FLISetFanSpeed(uint dev, uint fan_speed);
 
         [DllImport(DLLNAME, EntryPoint = "FLISetVerticalTableEntry", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLISetVerticalTableEntry(long dev, long index, long height, long bin, long mode);
+        public static extern unsafe uint FLISetVerticalTableEntry(uint dev, uint index, uint height, uint bin, uint mode);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGetVerticalTableEntry", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGetVerticalTableEntry(long dev, long index, ref long height, ref long bin, ref long mode);
+        public static extern unsafe uint FLIGetVerticalTableEntry(uint dev, uint index, ref uint height, ref uint bin, ref uint mode);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGetReadoutDimensions", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIGetReadoutDimensions(long dev, ref long width, ref long hoffset, ref long hbin, ref long height, ref long voffset, ref long vbin);
+        public static extern unsafe uint FLIGetReadoutDimensions(uint dev, ref uint width, ref uint hoffset, ref uint hbin, ref uint height, ref uint voffset, ref uint vbin);
 
         [DllImport(DLLNAME, EntryPoint = "FLIEnableVerticalTable", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIEnableVerticalTable(long dev, long width, long offset, long flags);
+        public static extern unsafe uint FLIEnableVerticalTable(uint dev, uint width, uint offset, uint flags);
 
         [DllImport(DLLNAME, EntryPoint = "FLIReadUserEEPROM", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIReadUserEEPROM(long dev, long loc, long address, long length, ref byte[] rbuf);
+        public static extern unsafe uint FLIReadUserEEPROM(uint dev, uint loc, uint address, uint length, ref byte[] rbuf);
 
         [DllImport(DLLNAME, EntryPoint = "FLIWriteUserEEPROM", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe long FLIWriteUserEEPROM(long dev, long loc, long address, long length, byte[] wbuf);
+        public static extern unsafe uint FLIWriteUserEEPROM(uint dev, uint loc, uint address, uint length, byte[] wbuf);
 
-        public static List<string> N_FLIList(FLIDomains domain) {
+        public static List<string> N_FLIList(uint domain) {
             List<string> cameralist = new List<string>();
             IntPtr p1;
             string s;
@@ -474,7 +474,7 @@ namespace FLI {
             /// <summary>
             /// Pixel bit depth
             /// </summary>
-            public long Bpp;
+            public uint Bpp;
 
             /// <summary>
             /// TEC on/off status
@@ -489,22 +489,22 @@ namespace FLI {
             /// <summary>
             /// Current exposure length
             /// </summary>
-            public long ExposureLength;
+            public uint ExposureLength;
 
             /// <summary>
             /// Device hardware revision
             /// </summary>
-            public long HWrev;
+            public uint HWrev;
 
             /// <summary>
             /// Current frame type
             /// </summary>
-            public long FrameType;
+            public uint FrameType;
 
             /// <summary>
             /// Device firmware revision
             /// </summary>
-            public long FWrev;
+            public uint FWrev;
 
             /// <summary>
             /// The camera's ID
@@ -575,12 +575,12 @@ namespace FLI {
             /// <summary>
             /// Device hardware revision
             /// </summary>
-            public long HWrev;
+            public uint HWrev;
 
             /// <summary>
             /// Device firmware revision
             /// </summary>
-            public long FWrev;
+            public uint FWrev;
 
             /// <summary>
             /// The camera's ID
@@ -600,13 +600,13 @@ namespace FLI {
             /// <summary>
             /// Number of filter wheel positions
             /// </summary>
-            public long Positions;
+            public uint Positions;
         }
 
         /* Number of seconds to pause camera ops following a readout mode change */
         public const int FLI_MODECHANGE_PAUSE = 20;
 
-        private static void CheckReturn(long code, MethodBase callingMethod, params object[] parameters) {
+        private static void CheckReturn(uint code, MethodBase callingMethod, params object[] parameters) {
             if (code != 0) {
                 throw new FLICameraException("FLI SDK returned an error status", callingMethod, code, parameters);
             }
@@ -614,10 +614,10 @@ namespace FLI {
 
         public class FLICameraException : Exception {
 
-            public FLICameraException(string message, MethodBase callingMethod, long code, object[] parameters) : base(CreateMessage(message, callingMethod, code, parameters)) {
+            public FLICameraException(string message, MethodBase callingMethod, uint code, object[] parameters) : base(CreateMessage(message, callingMethod, code, parameters)) {
             }
 
-            private static string CreateMessage(string message, MethodBase callingMethod, long code, object[] parameters) {
+            private static string CreateMessage(string message, MethodBase callingMethod, uint code, object[] parameters) {
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine("Error '" + message + "' from call to ");
                 sb.Append("FLI." + callingMethod.Name + "(");
