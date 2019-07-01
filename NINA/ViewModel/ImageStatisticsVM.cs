@@ -135,11 +135,11 @@ namespace NINA.ViewModel {
             }
         }
 
-        public void Add(IImageStatistics stats) {
+        public void Add(IImageStatistics stats, double exposureTime) {
             Statistics = stats;
 
-            if (stats.ExposureTime > 0) {
-                CalculateRecommendedExposureTime(stats.Mean, stats.ExposureTime);
+            if (exposureTime > 0) {
+                CalculateRecommendedExposureTime(stats.Mean, exposureTime);
             }
         }
 

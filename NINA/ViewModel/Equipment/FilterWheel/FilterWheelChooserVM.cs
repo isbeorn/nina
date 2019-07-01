@@ -21,11 +21,13 @@
 
 #endregion "copyright"
 
+using FLI;
 using NINA.Model;
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Profile;
 using System;
+using System.Collections.Generic;
 
 namespace NINA.ViewModel.Equipment.FilterWheel {
 
@@ -39,6 +41,30 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
 
             Devices.Add(new DummyDevice(Locale.Loc.Instance["LblNoFilterwheel"]));
 
+            /*
+             * FLI
+             */
+            try {
+                Logger.Trace("Adding FLI Filter Wheels");
+                List<string> fwheels = FLIFilterWheels.GetFilterWheels();
+
+                if (fwheels.Count > 0) {
+                    foreach (var entry in fwheels) {
+                        var fwheel = new FLIFilterWheel(entry, profileService);
+
+                        if (!string.IsNullOrEmpty(fwheel.Name)) {
+                            Logger.Debug($"Adding FLI Filter Wheel {fwheel.Id} (as {fwheel.Name})");
+                            Devices.Add(fwheel);
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
+            /*
+             * ASCOM devices
+             */
             try {
                 foreach (IFilterWheel fw in ASCOMInteraction.GetFilterWheels(profileService)) {
                     Devices.Add(fw);

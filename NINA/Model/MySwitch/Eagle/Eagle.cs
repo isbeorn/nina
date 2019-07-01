@@ -114,7 +114,7 @@ namespace NINA.Model.MySwitch {
             Connected = await AddSwitches();
             if (!Connected) {
                 Switches.Clear();
-                Logger.Error("Unable to connect to EAGLE", null);
+                Logger.Error("Unable to connect to EAGLE");
             }
             Logger.Trace("Successfully connected to EAGLE");
             return Connected;

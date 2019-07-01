@@ -86,7 +86,7 @@ namespace NINA.ViewModel.Equipment.Switch {
             if (!success) {
                 var notification = string.Format(Locale.Loc.Instance["LblTimeoutToSetSwitchValue"], aSwitch.TargetValue, aSwitch.Id, aSwitch.Name, aSwitch.Value);
                 Notification.ShowError(notification);
-                Logger.Error(notification, null);
+                Logger.Error(notification);
             }
             return success;
         }

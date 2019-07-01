@@ -54,7 +54,7 @@ namespace NINA.Utility {
                 if (LoadLibrary(path) == IntPtr.Zero) {
                     var error = Marshal.GetLastWin32Error().ToString();
                     var message = $"DllLoader failed to load library {dllSubPath} due to error code {error}";
-                    Logger.Error(message, null);
+                    Logger.Error(message);
                 }
 
                 SetDllDirectory(string.Empty);

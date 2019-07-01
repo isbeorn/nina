@@ -228,7 +228,7 @@ namespace NINA.Model.MyCamera {
                 }
             }
             if (!bulbFound) {
-                Logger.Error("No Bulb speed found!", null);
+                Logger.Error("No Bulb speed found!");
                 throw new NikonException("Failed to find the 'Bulb' exposure mode");
             }
         }

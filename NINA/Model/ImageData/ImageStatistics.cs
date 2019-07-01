@@ -60,7 +60,6 @@ namespace NINA.Model.ImageData {
         public long MaxOccurrences { get; private set; }
         public int Min { get; private set; }
         public long MinOccurrences { get; private set; }
-        public double ExposureTime { get; set; }
         public bool IsBayered { get; private set; }
         public List<OxyPlot.DataPoint> Histogram { get; private set; }
 
