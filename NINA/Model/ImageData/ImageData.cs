@@ -112,7 +112,7 @@ namespace NINA.Model.ImageData {
                 var fileName = imagePatterns.GetImageFileString(pattern);
                 var extension = Path.GetExtension(file);
                 var targetPath = Path.GetDirectoryName(file);
-                var newFileName = Utility.Utility.GetUniqueFilePath(Path.Combine(targetPath, $"{fileName}.{extension}"));
+                var newFileName = Utility.Utility.GetUniqueFilePath(Path.Combine(targetPath, $"{fileName}{extension}"));
 
                 var fi = new FileInfo(newFileName);
                 if (!fi.Directory.Exists) {
