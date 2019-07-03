@@ -29,7 +29,24 @@
     mc:Ignorable="d">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <WrapPanel Margin="1,5,0,0">
+                <Button
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Height="25"
+                    MinWidth="50"
+                    MaxWidth="60"
+                    Margin="5,0,0,0"
+                    Command="{Binding PlotClearCommand}">
+                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblClear}" />
+                </Button>
+            </WrapPanel>
             <oxy:Plot
+                Grid.Row="1"
                 Background="{StaticResource BackgroundBrush}"
                 IsLegendVisible="True"
                 LegendBackground="{Binding Path=Color, Source={StaticResource BackgroundBrush}}"
