@@ -24,6 +24,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ns="clr-namespace:NINA.Locale"
     xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
+    x:Name="Control"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
@@ -35,14 +36,24 @@
             </Grid.RowDefinitions>
             <WrapPanel Margin="1,5,0,0">
                 <Button
-                    Grid.Column="0"
                     Grid.Row="0"
+                    Grid.Column="0"
                     Height="25"
                     MinWidth="50"
                     MaxWidth="60"
                     Margin="5,0,0,0"
                     Command="{Binding PlotClearCommand}">
                     <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblClear}" />
+                    <Button.Style>
+                        <Style BasedOn="{StaticResource StandardButton}" TargetType="{x:Type Button}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=Control, Path=IsMouseOver}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
                 </Button>
             </WrapPanel>
             <oxy:Plot
