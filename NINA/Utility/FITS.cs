@@ -299,7 +299,7 @@ namespace NINA.Utility {
         public void Write(Stream s) {
             /* Write header */
             foreach (var card in _headerCards) {
-                var b = EncodeHeader(card);
+                var b = card.Encode();
                 s.Write(b, 0, HEADERCARDSIZE);
             }
 
@@ -330,8 +330,77 @@ namespace NINA.Utility {
         private const int BLOCKSIZE = 2880;
         /* Header card size Specification: http://archive.stsci.edu/fits/fits_standard/node29.html#SECTION00912100000000000000 */
         private const int HEADERCARDSIZE = 80;
-        /* Extended ascii encoding*/
-        private Encoding ascii = Encoding.GetEncoding("iso-8859-1");
+    }
+
+    public class FITSHeaderCard {/* Extended ascii encoding*/
+        private static Encoding ascii = Encoding.GetEncoding("iso-8859-1");
+
+        public FITSHeaderCard(string key, string value, string comment) {
+            /*
+             * FITS Standard 4.0, Section 4.2.1:
+             * A single quote is represented within a string as two successive single quotes
+             */
+            this.Key = key;
+            if (value.Length > 18) {
+                value = value.Substring(0, 18);
+            }
+            this.Value = $"'{value.Replace(@"'", @"''")}'".PadRight(20);
+
+            if (comment.Length > 45) {
+                comment = comment.Substring(0, 45);
+            }
+            this.Comment = comment;
+        }
+
+        public FITSHeaderCard(string key, bool value, string comment) {
+            this.Key = key;
+            this.Value = value ? "T" : "F";
+            if (comment.Length > 45) {
+                comment = comment.Substring(0, 45);
+            }
+            this.Comment = comment;
+        }
+
+        public FITSHeaderCard(string key, double value, string comment) {
+            this.Key = key;
+            this.Value = Math.Round(value, 15).ToString(CultureInfo.InvariantCulture);
+            if (comment.Length > 45) {
+                comment = comment.Substring(0, 45);
+            }
+            this.Comment = comment;
+        }
+
+        public FITSHeaderCard(string key, DateTime value, string comment) {
+            this.Key = key;
+            this.Value = value.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fff", System.Globalization.CultureInfo.InvariantCulture);
+            if (comment.Length > 45) {
+                comment = comment.Substring(0, 45);
+            }
+            this.Comment = comment;
+        }
+
+        public FITSHeaderCard(string key, int value, string comment) {
+            this.Key = key;
+            this.Value = value.ToString(CultureInfo.InvariantCulture);
+            if (comment.Length > 45) {
+                comment = comment.Substring(0, 45);
+            }
+            this.Comment = comment;
+        }
+
+        public string Key { get; }
+        public string Value { get; }
+        public string Comment { get; }
+
+        public string GetHeaderString() {
+            var encodedKeyword = Key.ToUpper().PadRight(8);
+            var encodedValue = Value.PadLeft(20);
+
+            var header = $"{encodedKeyword}= {encodedValue} / ";
+            var encodedComment = Comment.PadRight(80 - header.Length);
+            header += encodedComment;
+            return header;
+        }
 
         /// <summary>
         /// Encodes a FITS header according to FITS specifications to be exactly 80 characters long
@@ -345,55 +414,8 @@ namespace NINA.Utility {
         /// http://archive.stsci.edu/fits/fits_standard/node29.html#SECTION00912100000000000000
         /// More in depth: https://fits.gsfc.nasa.gov/fits_standard.html
         /// </remarks>
-        private byte[] EncodeHeader(FITSHeaderCard card) {
-            var encodedKeyword = card.Key.ToUpper().PadRight(8);
-            var encodedValue = card.Value.PadLeft(20);
-
-            var header = $"{encodedKeyword}= {encodedValue} / ";
-            var encodedComment = card.Comment.PadRight(80 - header.Length);
-            header += encodedComment;
-            return ascii.GetBytes(header);
+        public byte[] Encode() {
+            return ascii.GetBytes(GetHeaderString());
         }
-    }
-
-    public class FITSHeaderCard {
-
-        public FITSHeaderCard(string key, string value, string comment) {
-            /*
-             * FITS Standard 4.0, Section 4.2.1:
-             * A single quote is represented within a string as two successive single quotes
-             */
-            this.Key = key;
-            this.Value = $"'{value.Replace(@"'", @"''")}'".PadRight(20); ;
-            this.Comment = comment;
-        }
-
-        public FITSHeaderCard(string key, bool value, string comment) {
-            this.Key = key;
-            this.Value = value ? "T" : "F";
-            this.Comment = comment;
-        }
-
-        public FITSHeaderCard(string key, double value, string comment) {
-            this.Key = key;
-            this.Value = Math.Round(value, 15).ToString(CultureInfo.InvariantCulture);
-            this.Comment = comment;
-        }
-
-        public FITSHeaderCard(string key, DateTime value, string comment) {
-            this.Key = key;
-            this.Value = value.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fff", System.Globalization.CultureInfo.InvariantCulture);
-            this.Comment = comment;
-        }
-
-        public FITSHeaderCard(string key, int value, string comment) {
-            this.Key = key;
-            this.Value = value.ToString(CultureInfo.InvariantCulture);
-            this.Comment = comment;
-        }
-
-        public string Key { get; }
-        public string Value { get; }
-        public string Comment { get; }
     }
 }

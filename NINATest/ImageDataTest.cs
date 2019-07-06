@@ -343,12 +343,12 @@ namespace NINATest {
         }
 
         [Test]
-        [TestCase(NINA.Utility.Enum.FileTypeEnum.XISF)]
-        [TestCase(NINA.Utility.Enum.FileTypeEnum.FITS)]
-        [TestCase(NINA.Utility.Enum.FileTypeEnum.TIFF)]
-        [TestCase(NINA.Utility.Enum.FileTypeEnum.TIFF_LZW)]
-        [TestCase(NINA.Utility.Enum.FileTypeEnum.TIFF_ZIP)]
-        public async Task SaveToDiskXISFSimpleTest(NINA.Utility.Enum.FileTypeEnum fileType) {
+        [TestCase(NINA.Utility.Enum.FileTypeEnum.XISF, ".xisf")]
+        [TestCase(NINA.Utility.Enum.FileTypeEnum.FITS, ".fits")]
+        [TestCase(NINA.Utility.Enum.FileTypeEnum.TIFF, ".tif")]
+        [TestCase(NINA.Utility.Enum.FileTypeEnum.TIFF_LZW, ".tif")]
+        [TestCase(NINA.Utility.Enum.FileTypeEnum.TIFF_ZIP, ".tif")]
+        public async Task SaveToDiskXISFSimpleTest(NINA.Utility.Enum.FileTypeEnum fileType, string extension) {
             var data = new ushort[] {
                 3,1,1,
                 3,4,5,
@@ -363,7 +363,7 @@ namespace NINATest {
 
             System.IO.File.Exists(file).Should().BeTrue();
             System.IO.File.Delete(file);
-            System.IO.Path.GetFileNameWithoutExtension(file).Should().Equals(pattern);
+            System.IO.Path.GetFileName(file).Should().Be($"{pattern}{extension}");
         }
 
         [Test]
@@ -404,17 +404,17 @@ namespace NINATest {
                 $"#{MetaData.Image.ExposureNumber}" +
                 $"#{MetaData.Image.ImageType}" +
                 $"#{MetaData.Camera.Binning}" +
-                $"#{MetaData.Camera.Temperature}" +
-                $"#{MetaData.Image.ExposureTime}" +
+                $"#{string.Format("{0:0.00}", MetaData.Camera.Temperature)}" +
+                $"#{string.Format("{0:0.00}", MetaData.Image.ExposureTime)}" +
                 $"#{MetaData.Target.Name}" +
-                $"#{MetaData.Camera.Gain}" +
-                $"#{MetaData.Camera.Offset}" +
-                $"#{MetaData.Image.RecordedRMS.Total}" +
-                $"#{MetaData.Image.RecordedRMS.Total * MetaData.Image.RecordedRMS.Scale}" +
-                $"#{MetaData.Focuser.Position}" +
+                $"#{string.Format("{0:0.00}", MetaData.Camera.Gain)}" +
+                $"#{string.Format("{0:0.00}", MetaData.Camera.Offset)}" +
+                $"#{string.Format("{0:0.00}", MetaData.Image.RecordedRMS.Total)}" +
+                $"#{string.Format("{0:0.00}", MetaData.Image.RecordedRMS.Total * MetaData.Image.RecordedRMS.Scale)}" +
+                $"#{string.Format("{0:0.00}", MetaData.Focuser.Position)}" +
                 $"#{Utility.ApplicationStartDate.ToString("yyyy-MM-dd")}";
 
-            System.IO.Path.GetFileNameWithoutExtension(file).Should().Equals(expectedPattern);
+            System.IO.Path.GetFileName(file).Should().Be($"{expectedPattern}.{fileType.ToString().ToLower()}");
         }
 
         [Test]
@@ -456,17 +456,17 @@ namespace NINATest {
                 $"#{MetaData.Image.ExposureNumber}" +
                 $"#{MetaData.Image.ImageType}" +
                 $"#{MetaData.Camera.Binning}" +
-                $"#{MetaData.Camera.Temperature}" +
-                $"#{MetaData.Image.ExposureTime}" +
+                $"#{string.Format("{0:0.00}", MetaData.Camera.Temperature)}" +
+                $"#{string.Format("{0:0.00}", MetaData.Image.ExposureTime)}" +
                 $"#{MetaData.Target.Name}" +
-                $"#{MetaData.Camera.Gain}" +
-                $"#{MetaData.Camera.Offset}" +
-                $"#{MetaData.Image.RecordedRMS.Total}" +
-                $"#{MetaData.Image.RecordedRMS.Total * MetaData.Image.RecordedRMS.Scale}" +
-                $"#{MetaData.Focuser.Position}" +
+                $"#{string.Format("{0:0.00}", MetaData.Camera.Gain)}" +
+                $"#{string.Format("{0:0.00}", MetaData.Camera.Offset)}" +
+                $"#{string.Format("{0:0.00}", MetaData.Image.RecordedRMS.Total)}" +
+                $"#{string.Format("{0:0.00}", MetaData.Image.RecordedRMS.Total * MetaData.Image.RecordedRMS.Scale)}" +
+                $"#{string.Format("{0:0.00}", MetaData.Focuser.Position)}" +
                 $"#{Utility.ApplicationStartDate.ToString("yyyy-MM-dd")}";
 
-            System.IO.Path.GetFileNameWithoutExtension(file).Should().Equals(expectedPattern);
+            System.IO.Path.GetFileName(file).Should().Be($"{expectedPattern}.{fileType.ToString().ToLower()}");
         }
 
         //[Test]

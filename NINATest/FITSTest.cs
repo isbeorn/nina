@@ -419,6 +419,22 @@ namespace NINATest {
         }
 
         [Test]
+        public void FITSHeaderCardLongStringTest() {
+            var key = "SOME";
+            var value = "QXuUfwRN6t5OumSP9fFoWki4vUIvBXwFVYIDKROyCscAZ9ealUZdQKFzukzaNR6byrZdVUfKCHUwFfzex1iYNFBf1uVobcEX1e5m";
+            var comment = "QXuUfwRN6t5OumSP9fFoWki4vUIvBXwFVYIDKROyCscAZ9ealUZdQKFzukzaNR6byrZdVUfKCHUwFfzex1iYNFBf1uVobcEX1e5m";
+
+            var sut = new FITSHeaderCard(key, value, comment);
+
+            var expectedValue = "'QXuUfwRN6t5OumSP9f'";
+            var expectedComment = "QXuUfwRN6t5OumSP9fFoWki4vUIvBXwFVYIDKROyCscAZ";
+
+            sut.Key.Should().Be(key);
+            sut.Value.Should().Be(expectedValue);
+            sut.Comment.Should().Be(expectedComment);
+        }
+
+        [Test]
         public void FITSHeaderCardBoolTest() {
             var key = "SOME";
             var value = true;

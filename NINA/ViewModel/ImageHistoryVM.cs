@@ -25,6 +25,7 @@ using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Profile;
 using NINA.Model.ImageData;
+using System.Windows.Input;
 
 namespace NINA.ViewModel {
 
@@ -36,6 +37,8 @@ namespace NINA.ViewModel {
 
             _nextStatHistoryId = 1;
             ImgStatHistory = new AsyncObservableLimitedSizedStack<IImageStatistics>(100);
+
+            PlotClearCommand = new RelayCommand((object o) => PlotClear());
         }
 
         private int _nextStatHistoryId;
@@ -58,5 +61,11 @@ namespace NINA.ViewModel {
                 this.ImgStatHistory.Add(stats);
             }
         }
+
+        public void PlotClear() {
+            this.ImgStatHistory.Clear();
+        }
+
+        public ICommand PlotClearCommand { get; private set; }
     }
 }

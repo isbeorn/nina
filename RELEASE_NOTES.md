@@ -120,6 +120,7 @@
 	- After download: Parallel image saving and processing to display the image
 - Image HFR is now available as an image file name token (`$$HFR$$`)
 - Focuser Temperature is now available as an image file name token (`$$FOCUSERTEMP$$`)
+- Added a clear button on HFR History graph. The button will be displayed when hovering the control.
 
 ## Special Thanks
 The N.I.N.A. team would like to sincerely thank:
