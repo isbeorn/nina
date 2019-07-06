@@ -755,7 +755,6 @@ namespace NINA.ViewModel {
             data.MetaData.Image.ExposureTime = sequence.ExposureTime;
             data.MetaData.Image.ImageType = sequence.ImageType;
             data.MetaData.Image.RecordedRMS = rms;
-
             data.MetaData.Target.Name = csl.TargetName;
             data.MetaData.Target.Coordinates = csl.Coordinates;
 
