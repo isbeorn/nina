@@ -960,4 +960,7 @@ aree ad alto inquinamento luminoso. Il tempo di processo sarà  tuttavia aumenta
   <s:String x:Key="LblZoomIn" xml:space="default">Zoom in del 25%</s:String>
   <s:String x:Key="LblZoomOut" xml:space="default">Zoom out del 25%</s:String>
   <s:String x:Key="LblZoomStretch" xml:space="default">Aggiusta l'immagine all'area</s:String>
+    <s:String x:Key="LblAutoFocusAfterHFRChange" xml:space="default">After HFR increase</s:String>
+    <s:String x:Key="LblAutoFocusAfterHFRChangeAmount" xml:space="default">HFR amount</s:String>
+    <s:String x:Key="LblPercentShort" xml:space="default">%</s:String>
 </ResourceDictionary>

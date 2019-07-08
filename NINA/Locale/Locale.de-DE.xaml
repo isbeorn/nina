@@ -961,4 +961,7 @@ Lichtverschmutzten Gebieten. Berechnungszeit ist jedoch erhöht.</s:String>
   <s:String x:Key="LblZoomIn" xml:space="default">25% hineinzoomen</s:String>
   <s:String x:Key="LblZoomOut" xml:space="default">25% herauszoomen</s:String>
   <s:String x:Key="LblZoomStretch" xml:space="default">Passe Bildgröße an Fläche an</s:String>
+    <s:String x:Key="LblAutoFocusAfterHFRChange" xml:space="default">After HFR increase</s:String>
+    <s:String x:Key="LblAutoFocusAfterHFRChangeAmount" xml:space="default">HFR amount</s:String>
+    <s:String x:Key="LblPercentShort" xml:space="default">%</s:String>
 </ResourceDictionary>

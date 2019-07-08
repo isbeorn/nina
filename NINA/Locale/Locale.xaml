@@ -962,4 +962,7 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
   <s:String x:Key="LblZoomIn" xml:space="default">Zoom in by 25%</s:String>
   <s:String x:Key="LblZoomOut" xml:space="default">Zoom out by 25%</s:String>
   <s:String x:Key="LblZoomStretch" xml:space="default">Fit Image to Area</s:String>
+    <s:String x:Key="LblAutoFocusAfterHFRChange" xml:space="default">After HFR increase</s:String>
+    <s:String x:Key="LblAutoFocusAfterHFRChangeAmount" xml:space="default">HFR amount</s:String>
+    <s:String x:Key="LblPercentShort" xml:space="default">%</s:String>
 </ResourceDictionary>
