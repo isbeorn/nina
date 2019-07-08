@@ -393,9 +393,7 @@ namespace NINA.ViewModel {
             data.MetaData.Image.ExposureTime = sequence.ExposureTime;
             data.MetaData.Image.ImageType = sequence.ImageType;
             data.MetaData.Image.RecordedRMS = rms;
-
             data.MetaData.Target.Name = targetName;
-            data.MetaData.FilterWheel.Filter = sequence.FilterType?.Name ?? string.Empty;
 
             // Fill all available info from profile
             data.MetaData.FromProfile(profileService.ActiveProfile);
@@ -404,6 +402,8 @@ namespace NINA.ViewModel {
             data.MetaData.FromRotatorInfo(rotatorInfo);
             data.MetaData.FromFocuserInfo(focuserInfo);
             data.MetaData.FromWeatherDataInfo(weatherDataInfo);
+
+            data.MetaData.FilterWheel.Filter = sequence.FilterType?.Name ?? data.MetaData.FilterWheel.Filter;
         }
 
         private Task<IImageData> _imageProcessingTask;
