@@ -457,7 +457,8 @@ namespace NINA.ViewModel {
         private async Task AutoFocusOnStart(CaptureSequenceList csl, CancellationToken ct, IProgress<ApplicationStatus> progress) {
             if (csl.AutoFocusOnStart) {
                 await StopGuiding(ct, progress);
-                await AutoFocus(csl.Items[0].FilterType, ct, progress);
+                var item = csl.GetNextSequenceItem(csl.ActiveSequence);
+                await AutoFocus(item.FilterType, ct, progress);
             }
         }
 
@@ -547,7 +548,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> StartSequence(CaptureSequenceList csl, CancellationToken ct, PauseToken pt, IProgress<ApplicationStatus> progress) {
             try {
-                if (csl.Count <= 0) {
+                if (csl.Count <= 0 || csl.GetNextSequenceItem(csl.ActiveSequence) == null) {
                     return false;
                 }
 
