@@ -54,6 +54,8 @@ Should the Application try to recover from the error? (Can lead to unexpected be
   <s:String x:Key="LblAstrometry" xml:space="default">Astrometry</s:String>
   <s:String x:Key="LblAstrometryNet" xml:space="default">Astrometry.Net</s:String>
   <s:String x:Key="LblAutoFocus" xml:space="default">Auto Focus</s:String>
+  <s:String x:Key="LblAutoFocusAfterHFRChange" xml:space="default">After HFR increase</s:String>
+  <s:String x:Key="LblAutoFocusAfterHFRChangeAmount" xml:space="default">HFR amount</s:String>
   <s:String x:Key="LblAutoFocusAfterSetExposures" xml:space="default">After # exposures</s:String>
   <s:String x:Key="LblAutoFocusAfterSetTime" xml:space="default">After elapsed Time</s:String>
   <s:String x:Key="LblAutoFocusAfterTemperatureChange" xml:space="default">After temperature change</s:String>
@@ -619,6 +621,7 @@ Calculated HFR: {2}
   <s:String x:Key="LblPatternName" xml:space="default">Pattern Name</s:String>
   <s:String x:Key="LblPaused" xml:space="default">Paused</s:String>
   <s:String x:Key="LblPauseTimeBeforeMeridian" xml:space="default">Pause before Meridian (minutes)</s:String>
+  <s:String x:Key="LblPercentShort" xml:space="default">%</s:String>
   <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0} ({1}")</s:String>
   <s:String x:Key="LblPhd2FailedEquipmentConnection" xml:space="default">PHD2 wasn't able to connect to the equipment</s:String>
   <s:String x:Key="LblPHD2HistorySize" xml:space="default">PHD2 History Size</s:String>
@@ -960,7 +963,4 @@ in light polluted areas. Processing time is however increased.</s:String>
   <s:String x:Key="LblZoomIn" xml:space="default">Zoom in by 25%</s:String>
   <s:String x:Key="LblZoomOut" xml:space="default">Zoom out by 25%</s:String>
   <s:String x:Key="LblZoomStretch" xml:space="default">Fit Image to Area</s:String>
-    <s:String x:Key="LblAutoFocusAfterHFRChange" xml:space="default">After HFR increase</s:String>
-    <s:String x:Key="LblAutoFocusAfterHFRChangeAmount" xml:space="default">HFR amount</s:String>
-    <s:String x:Key="LblPercentShort" xml:space="default">%</s:String>
 </ResourceDictionary>
