@@ -54,8 +54,8 @@ Vuoi che l'applicazione provi a risolvere quell'errore? (Può portare a comporta
   <s:String x:Key="LblAstrometry" xml:space="default">Astrometria</s:String>
   <s:String x:Key="LblAstrometryNet" xml:space="default">Astrometry.Net</s:String>
   <s:String x:Key="LblAutoFocus" xml:space="default">Auto Focus</s:String>
-  <s:String x:Key="LblAutoFocusAfterHFRChange" xml:space="default">After HFR increase</s:String>
-  <s:String x:Key="LblAutoFocusAfterHFRChangeAmount" xml:space="default">HFR amount</s:String>
+  <s:String x:Key="LblAutoFocusAfterHFRChange" xml:space="default">Dopo aumento HFR</s:String>
+  <s:String x:Key="LblAutoFocusAfterHFRChangeAmount" xml:space="default">Valore HFR</s:String>
   <s:String x:Key="LblAutoFocusAfterSetExposures" xml:space="default">Dopo # esposizioni</s:String>
   <s:String x:Key="LblAutoFocusAfterSetTime" xml:space="default">Dopo tempo trascorso</s:String>
   <s:String x:Key="LblAutoFocusAfterTemperatureChange" xml:space="default">Dopo cambiamento temperatura</s:String>

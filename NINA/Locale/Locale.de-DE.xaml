@@ -54,8 +54,8 @@ Soll die Anwendung versuchen sich von dem Fehler zu erholen? (Kann zu unerwartet
   <s:String x:Key="LblAstrometry" xml:space="default">Astrometrie</s:String>
   <s:String x:Key="LblAstrometryNet" xml:space="default">Astrometry.Net</s:String>
   <s:String x:Key="LblAutoFocus" xml:space="default">Autofokus</s:String>
-  <s:String x:Key="LblAutoFocusAfterHFRChange" xml:space="default">After HFR increase</s:String>
-  <s:String x:Key="LblAutoFocusAfterHFRChangeAmount" xml:space="default">HFR amount</s:String>
+  <s:String x:Key="LblAutoFocusAfterHFRChange" xml:space="default">Nach HFR Anstieg</s:String>
+  <s:String x:Key="LblAutoFocusAfterHFRChangeAmount" xml:space="default">HFR Betrag</s:String>
   <s:String x:Key="LblAutoFocusAfterSetExposures" xml:space="default">Nach # Bildern</s:String>
   <s:String x:Key="LblAutoFocusAfterSetTime" xml:space="default">Nach verstrichener Zeit</s:String>
   <s:String x:Key="LblAutoFocusAfterTemperatureChange" xml:space="default">Nach Temperaturänderung</s:String>
