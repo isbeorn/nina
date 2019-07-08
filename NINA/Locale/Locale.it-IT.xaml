@@ -54,6 +54,8 @@ Vuoi che l'applicazione provi a risolvere quell'errore? (Può portare a comporta
   <s:String x:Key="LblAstrometry" xml:space="default">Astrometria</s:String>
   <s:String x:Key="LblAstrometryNet" xml:space="default">Astrometry.Net</s:String>
   <s:String x:Key="LblAutoFocus" xml:space="default">Auto Focus</s:String>
+  <s:String x:Key="LblAutoFocusAfterHFRChange" xml:space="default">Dopo aumento HFR</s:String>
+  <s:String x:Key="LblAutoFocusAfterHFRChangeAmount" xml:space="default">Valore HFR</s:String>
   <s:String x:Key="LblAutoFocusAfterSetExposures" xml:space="default">Dopo # esposizioni</s:String>
   <s:String x:Key="LblAutoFocusAfterSetTime" xml:space="default">Dopo tempo trascorso</s:String>
   <s:String x:Key="LblAutoFocusAfterTemperatureChange" xml:space="default">Dopo cambiamento temperatura</s:String>
@@ -619,6 +621,7 @@ HFR Calcolato: {2}
   <s:String x:Key="LblPatternName" xml:space="default">Nome Pattern</s:String>
   <s:String x:Key="LblPaused" xml:space="default">In Pausa</s:String>
   <s:String x:Key="LblPauseTimeBeforeMeridian" xml:space="default">Pausa prima del meridiano (minuti)</s:String>
+  <s:String x:Key="LblPercentShort" xml:space="default">%</s:String>
   <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0} ({1}")</s:String>
   <s:String x:Key="LblPhd2FailedEquipmentConnection" xml:space="default">PHD2 è riuscito a collegarsi all'equipaggiamento</s:String>
   <s:String x:Key="LblPHD2HistorySize" xml:space="default">Dimensione Storia PHD2</s:String>

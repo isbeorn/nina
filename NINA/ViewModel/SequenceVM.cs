@@ -827,6 +827,12 @@ namespace NINA.ViewModel {
                 return true;
             }
 
+            if (csl.AutoFocusAfterHFRChange && AfHfrIndex < imgHistoryVM.ImgStatHistory.Count() && imgHistoryVM.ImgStatHistory.Last().HFR > imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).HFR * (1 + csl.AutoFocusAfterHFRChangeAmount / 100) && imgHistoryVM.ImgStatHistory.Last().HFR != 0 && imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).HFR !=0) {
+                /* Trigger autofocus after HFR change */
+                AfHfrIndex = imgHistoryVM.ImgStatHistory.Count();
+                return true;
+            }
+
             return false;
         }
 
@@ -883,7 +889,7 @@ namespace NINA.ViewModel {
                 displayMessage = true;
             }
 
-            if (!focuserInfo.Connected && Targets.Any(target => target.AutoFocusAfterSetExposures || target.AutoFocusAfterSetTime || target.AutoFocusAfterTemperatureChange || target.AutoFocusOnFilterChange || target.AutoFocusOnStart)) {
+            if (!focuserInfo.Connected && Targets.Any(target => target.AutoFocusAfterSetExposures || target.AutoFocusAfterSetTime || target.AutoFocusAfterTemperatureChange || target.AutoFocusOnFilterChange || target.AutoFocusOnStart || target.AutoFocusAfterHFRChange)) {
                 messageStringBuilder.AppendLine(Locale.Loc.Instance["LblAFOnButFocuserNotConnected"]);
                 displayMessage = true;
             }
@@ -1118,6 +1124,8 @@ namespace NINA.ViewModel {
         private IWeatherDataMediator weatherDataMediator;
         private WeatherDataInfo weatherDataInfo;
         private GuiderInfo guiderInfo = DeviceInfo.CreateDefaultInstance<GuiderInfo>();
+
+        private int AfHfrIndex = 0;
 
         public ObservableCollection<string> ImageTypes {
             get {

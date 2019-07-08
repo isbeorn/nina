@@ -54,6 +54,8 @@ Soll die Anwendung versuchen sich von dem Fehler zu erholen? (Kann zu unerwartet
   <s:String x:Key="LblAstrometry" xml:space="default">Astrometrie</s:String>
   <s:String x:Key="LblAstrometryNet" xml:space="default">Astrometry.Net</s:String>
   <s:String x:Key="LblAutoFocus" xml:space="default">Autofokus</s:String>
+  <s:String x:Key="LblAutoFocusAfterHFRChange" xml:space="default">Nach HFR Anstieg</s:String>
+  <s:String x:Key="LblAutoFocusAfterHFRChangeAmount" xml:space="default">HFR Betrag</s:String>
   <s:String x:Key="LblAutoFocusAfterSetExposures" xml:space="default">Nach # Bildern</s:String>
   <s:String x:Key="LblAutoFocusAfterSetTime" xml:space="default">Nach verstrichener Zeit</s:String>
   <s:String x:Key="LblAutoFocusAfterTemperatureChange" xml:space="default">Nach Temperaturänderung</s:String>
@@ -619,6 +621,7 @@ Berechneter HFR: {2}
   <s:String x:Key="LblPatternName" xml:space="default">Vorlagenname</s:String>
   <s:String x:Key="LblPaused" xml:space="default">Pausiert</s:String>
   <s:String x:Key="LblPauseTimeBeforeMeridian" xml:space="default">Vor Meridian pausieren (Minuten)</s:String>
+  <s:String x:Key="LblPercentShort" xml:space="default">%</s:String>
   <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0} ({1}")</s:String>
   <s:String x:Key="LblPhd2FailedEquipmentConnection" xml:space="default">PHD2 konnte nicht zur Ausrüstung verbinden</s:String>
   <s:String x:Key="LblPHD2HistorySize" xml:space="default">PHD2 Historieneinträge</s:String>
