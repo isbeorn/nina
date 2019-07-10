@@ -457,7 +457,8 @@ namespace NINA.ViewModel {
         private async Task AutoFocusOnStart(CaptureSequenceList csl, CancellationToken ct, IProgress<ApplicationStatus> progress) {
             if (csl.AutoFocusOnStart) {
                 await StopGuiding(ct, progress);
-                await AutoFocus(csl.Items[0].FilterType, ct, progress);
+                var item = csl.GetNextSequenceItem(csl.ActiveSequence);
+                await AutoFocus(item.FilterType, ct, progress);
             }
         }
 
@@ -547,7 +548,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> StartSequence(CaptureSequenceList csl, CancellationToken ct, PauseToken pt, IProgress<ApplicationStatus> progress) {
             try {
-                if (csl.Count <= 0) {
+                if (csl.Count <= 0 || csl.GetNextSequenceItem(csl.ActiveSequence) == null) {
                     return false;
                 }
 
@@ -755,7 +756,6 @@ namespace NINA.ViewModel {
             data.MetaData.Image.ExposureTime = sequence.ExposureTime;
             data.MetaData.Image.ImageType = sequence.ImageType;
             data.MetaData.Image.RecordedRMS = rms;
-
             data.MetaData.Target.Name = csl.TargetName;
             data.MetaData.Target.Coordinates = csl.Coordinates;
 
@@ -827,6 +827,12 @@ namespace NINA.ViewModel {
                 return true;
             }
 
+            if (csl.AutoFocusAfterHFRChange && AfHfrIndex < imgHistoryVM.ImgStatHistory.Count() && imgHistoryVM.ImgStatHistory.Last().HFR > imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).HFR * (1 + csl.AutoFocusAfterHFRChangeAmount / 100) && imgHistoryVM.ImgStatHistory.Last().HFR != 0 && imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).HFR !=0) {
+                /* Trigger autofocus after HFR change */
+                AfHfrIndex = imgHistoryVM.ImgStatHistory.Count();
+                return true;
+            }
+
             return false;
         }
 
@@ -883,7 +889,7 @@ namespace NINA.ViewModel {
                 displayMessage = true;
             }
 
-            if (!focuserInfo.Connected && Targets.Any(target => target.AutoFocusAfterSetExposures || target.AutoFocusAfterSetTime || target.AutoFocusAfterTemperatureChange || target.AutoFocusOnFilterChange || target.AutoFocusOnStart)) {
+            if (!focuserInfo.Connected && Targets.Any(target => target.AutoFocusAfterSetExposures || target.AutoFocusAfterSetTime || target.AutoFocusAfterTemperatureChange || target.AutoFocusOnFilterChange || target.AutoFocusOnStart || target.AutoFocusAfterHFRChange)) {
                 messageStringBuilder.AppendLine(Locale.Loc.Instance["LblAFOnButFocuserNotConnected"]);
                 displayMessage = true;
             }
@@ -1118,6 +1124,8 @@ namespace NINA.ViewModel {
         private IWeatherDataMediator weatherDataMediator;
         private WeatherDataInfo weatherDataInfo;
         private GuiderInfo guiderInfo = DeviceInfo.CreateDefaultInstance<GuiderInfo>();
+
+        private int AfHfrIndex = 0;
 
         public ObservableCollection<string> ImageTypes {
             get {
