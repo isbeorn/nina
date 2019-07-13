@@ -273,7 +273,7 @@ namespace NINA.Model.MyWeatherData {
                 double wxstat = double.NaN;
                 try {
                     if (Connected && _hasWindGust) {
-                        wxstat = _obscond.Temperature;
+                        wxstat = _obscond.WindGust;
                     }
                 } catch (PropertyNotImplementedException) {
                     _hasWindGust = false;
