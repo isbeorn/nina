@@ -23,6 +23,7 @@
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
 using NINA.Utility;
 using NINA.Utility.Enum;
 using NINA.Utility.Http;
@@ -31,6 +32,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
@@ -253,9 +255,24 @@ namespace NINA.ViewModel {
                 var request = new Utility.Http.HttpGetRequest(url);
                 var response = await request.Request(ct);
 
-                var jobj = JObject.Parse(response);
-                var versionInfo = jobj.ToObject<VersionInfo>();
-                return versionInfo;
+                //Validate the returned json against the schema
+                var schema = await NJsonSchema.JsonSchema.FromJsonAsync(VersionInfo.Schema);
+                var validationErrors = schema.Validate(response);
+                if (validationErrors.Count == 0) {
+                    JObject jobj = JObject.Parse(response);
+                    var versionInfo = jobj.ToObject<VersionInfo>();
+                    return versionInfo;
+                } else {
+                    var errorString = string.Join(Environment.NewLine, validationErrors.Select(v => {
+                        if (v.HasLineInfo) {
+                            return $"Property {v.Property} validation failed due to {v.Kind} at Line {v.LineNumber} Position {v.LinePosition}";
+                        } else {
+                            return $"Property {v.Property} validation failed due to {v.Kind}";
+                        }
+                    }));
+
+                    Logger.Error($"VersionInfo JSON did not validate against schema! {Environment.NewLine}{errorString}");
+                }
             } catch (OperationCanceledException) {
             } catch (Exception ex) {
                 Logger.Error(ex);
@@ -280,6 +297,44 @@ namespace NINA.ViewModel {
         }
 
         public class VersionInfo {
+
+            public static string Schema {
+                get => @"{
+	                '$schema': 'http://json-schema.org/draft-07/schema#',
+                    'additionalProperties': false,
+                    'properties': {
+                      'version': {
+                        'type': 'string',
+                        'pattern': '^(\\d+\\.){3}(\\d+)$'
+                      },
+                      'file': {
+                        'type': 'string',
+                        'format': 'uri-reference'
+                      },
+                      'file_x86': {
+                        'type': 'string',
+                        'format': 'uri-reference'
+                      },
+                      'changelog': {
+                        'type': 'string',
+                        'format': 'uri-reference'
+                      },
+                      'checksum': {
+                        'type': 'string',
+                        'minLength': 32,
+                        'maxLength': 32,
+                        'pattern': '^[A-Fa-f0-9]{32}$'
+                      },
+                      'checksum_x86': {
+                        'type': 'string',
+                        'minLength': 32,
+                        'maxLength': 32,
+                        'pattern': '^[A-Fa-f0-9]{32}$'
+                      }
+                    },
+  	                'required': ['version', 'checksum', 'file', 'checksum_x86', 'file_x86', 'changelog']
+                }";
+            }
 
             [JsonProperty(PropertyName = "version")]
             public Version Version;
