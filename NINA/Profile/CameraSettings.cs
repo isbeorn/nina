@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using NINA.Model.MyCamera;
 using NINA.Utility.Enum;
 using System;
 using System.Runtime.Serialization;
@@ -50,6 +51,11 @@ namespace NINA.Profile {
             minFlatExposureTime = 0.2;
             maxFlatExposureTime = 20;
             fileCameraFolder = string.Empty;
+
+            fliEnableFloodFlush = false;
+            fliFloodDuration = 1;
+            fliFlushCount = 2;
+            fliEnableSnapshotFloodFlush = false;
         }
 
         private string id;
@@ -246,6 +252,71 @@ namespace NINA.Profile {
             set {
                 if (fileCameraIsBayered != value) {
                     fileCameraIsBayered = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool fliEnableFloodFlush;
+
+        [DataMember]
+        public bool FLIEnableFloodFlush {
+            get => fliEnableFloodFlush;
+            set {
+                if (fliEnableFloodFlush != value) {
+                    fliEnableFloodFlush = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private double fliFloodDuration;
+
+        [DataMember]
+        public double FLIFloodDuration {
+            get => fliFloodDuration;
+            set {
+                if (fliFloodDuration != value) {
+                    fliFloodDuration = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private uint fliFlushCount;
+
+        [DataMember]
+        public uint FLIFlushCount {
+            get => fliFlushCount;
+            set {
+                if (fliFlushCount != value) {
+                    fliFlushCount = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private BinningMode fliFloodBin;
+
+        [DataMember]
+        public BinningMode FLIFloodBin {
+            get => fliFloodBin;
+            set {
+                if (fliFloodBin != value) {
+                    fliFloodBin = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool fliEnableSnapshotFloodFlush;
+
+        [DataMember]
+        public bool FLIEnableSnapshotFloodFlush {
+            get => fliEnableSnapshotFloodFlush;
+            set {
+                if (fliEnableSnapshotFloodFlush != value) {
+                    fliEnableSnapshotFloodFlush = value;
                     RaisePropertyChanged();
                 }
             }

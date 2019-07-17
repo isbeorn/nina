@@ -30,11 +30,13 @@ using FLI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Model.ImageData;
+using NINA.Utility.WindowService;
 
 namespace NINA.Model.MyCamera {
 
@@ -42,7 +44,6 @@ namespace NINA.Model.MyCamera {
         private uint CameraH;
         private bool _connected = false;
         private LibFLI.FLICameraInfo Info;
-
         private IProfileService profileService;
 
         public FLICamera(string camera, IProfileService profileService) {
@@ -55,6 +56,9 @@ namespace NINA.Model.MyCamera {
             Info.Id = cameraInfo[0];
             Info.Model = cameraInfo[1];
 
+            Info.FWrev = 0x0;
+            Info.HWrev = 0x0;
+
             if ((rv = LibFLI.FLIOpen(out CameraH, Info.Id, LibFLI.FLIDomains.DEV_CAMERA | LibFLI.FLIDomains.IF_USB)) != LibFLI.FLI_SUCCESS) {
                 Logger.Error($"FLI: FLIOpen() failed. Returned {rv}");
             }
@@ -63,10 +67,6 @@ namespace NINA.Model.MyCamera {
                 Logger.Error($"FLI: FLIGetSerialString() failed. Returned {rv}");
             }
 
-            Info.Serial = cameraSerial.ToString();
-            Info.FWrev = 0x0;
-            Info.HWrev = 0x0;
-
             if ((rv = LibFLI.FLIGetFWRevision(CameraH, out Info.FWrev)) != LibFLI.FLI_SUCCESS) {
                 Logger.Error($"FLI: FLIGetFWRevision() failed. Returned {rv}");
             }
@@ -74,6 +74,8 @@ namespace NINA.Model.MyCamera {
             if ((rv = LibFLI.FLIGetHWRevision(CameraH, out Info.HWrev)) != LibFLI.FLI_SUCCESS) {
                 Logger.Error($"FLI: FLIGetHWRevision() failed. Returned {rv}");
             }
+
+            Info.Serial = cameraSerial.ToString();
 
             Logger.Debug($"FLI Camera: Found camera: {Description}");
 
@@ -220,7 +222,7 @@ namespace NINA.Model.MyCamera {
             get => _connected;
             set {
                 _connected = value;
-                RaisePropertyChanged();
+                RaiseAllPropertiesChanged();
             }
         }
 
@@ -295,7 +297,7 @@ namespace NINA.Model.MyCamera {
         public double ElectronsPerADU => double.NaN;
         public bool EnableSubSample { get; set; }
 
-        public long ExposureLength {
+        public uint ExposureLength {
             get => Info.ExposureLength;
             set {
                 uint rv;
@@ -303,11 +305,11 @@ namespace NINA.Model.MyCamera {
                 if (Connected) {
                     Logger.Debug($"FLI: Setting exposure time to {value}ms");
 
-                    if ((rv = LibFLI.FLISetExposureTime(CameraH, (uint)value)) != LibFLI.FLI_SUCCESS) {
+                    if ((rv = LibFLI.FLISetExposureTime(CameraH, value)) != LibFLI.FLI_SUCCESS) {
                         Logger.Error($"FLI: FLISetExposureTime() failed. Returned {rv}");
                     }
 
-                    Info.ExposureLength = (uint)value;
+                    Info.ExposureLength = value;
                 }
             }
         }
@@ -325,7 +327,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public long FrameType {
+        public LibFLI.FLIFrameType FrameType {
             get => Info.FrameType;
             set {
                 uint rv;
@@ -337,7 +339,7 @@ namespace NINA.Model.MyCamera {
                         Logger.Error($"FLI: FLISetFrameType() failed. Returned {rv}");
                     }
 
-                    Info.FrameType = (uint)value;
+                    Info.FrameType = value;
                 }
             }
         }
@@ -347,10 +349,10 @@ namespace NINA.Model.MyCamera {
         public ArrayList Gains => new ArrayList();
         public bool HasBattery => false;
         public bool HasDewHeater => false;
-        public bool HasSetupDialog => false;
+        public bool HasSetupDialog => Connected ? true : false;
 
         /*
-         * All FLI cammera have shutters
+         * All FLI cameras have shutters
          */
         public bool HasShutter => true;
 
@@ -388,9 +390,9 @@ namespace NINA.Model.MyCamera {
 
                 if (Connected && (pixelSizeX == 0)) {
                     LibFLI.FLIGetPixelSize(CameraH, ref pixelSizeX, ref junk);
-                    Info.PixelX = pixelSizeX * 1e6;
+                    Info.PixelWidthX = pixelSizeX * 1e6;
                 }
-                return Info.PixelX;
+                return Info.PixelWidthX;
             }
         }
 
@@ -402,9 +404,9 @@ namespace NINA.Model.MyCamera {
 
                 if (Connected && (pixelSizeY == 0)) {
                     LibFLI.FLIGetPixelSize(CameraH, ref junk, ref pixelSizeY);
-                    Info.PixelY = pixelSizeY * 1e6;
+                    Info.PixelWidthY = pixelSizeY * 1e6;
                 }
-                return Info.PixelY;
+                return Info.PixelWidthY;
             }
         }
 
@@ -420,7 +422,7 @@ namespace NINA.Model.MyCamera {
                         return -1;
                     }
 
-                    Logger.Debug($"FLI: Readout Mode={mode}");
+                    Logger.Debug($"FLI: Current readout mode: {mode} ({ReadoutModes.Cast<string>().ToArray()[mode]})");
 
                     return (short)mode;
                 } else {
@@ -428,33 +430,53 @@ namespace NINA.Model.MyCamera {
                 }
             }
             set {
+                byte[] rowData;
+                uint timeLeft = 0;
                 uint rv;
 
                 if (Connected && (value != ReadoutMode)) {
-                    Logger.Debug($"FLI: Setting readout mode to {value}");
+                    string modeName = ReadoutModes.Cast<string>().ToArray()[value];
+
+                    Logger.Debug($"FLI: ReadoutMode: Setting readout mode to {value} ({modeName})");
 
                     if ((rv = LibFLI.FLISetCameraMode(CameraH, (uint)value)) != LibFLI.FLI_SUCCESS) {
                         Logger.Error($"FLI: FLISetCameraMode() failed. Returned {rv}");
                     }
 
                     /*
-                     * After changing the readout mode, we must do a 0-second bias frame exposure (the data from which we do not care about)
+                     * After changing the readout mode, we must do a 0-second dark frame exposure (the data from which we do not care about)
                      * This serves to flush the electronics
                      */
-                    Logger.Debug($"FLI: Flushing sensor after changing readout mode to {value}");
+                    Logger.Debug($"FLI: ReadoutMode: Flushing sensor after changing readout mode to {value} ({modeName})");
 
-                    FrameType = (long)LibFLI.FLIFrameType.DARK;
+                    FrameType = LibFLI.FLIFrameType.DARK;
                     ExposureLength = 0;
 
-                    Logger.Debug($"FLI: Exposing DARK frame following readout mode change.");
+                    Logger.Debug($"FLI: ReadoutMode: Exposing DARK frame following readout mode change");
                     if ((rv = LibFLI.FLIExposeFrame(CameraH)) != LibFLI.FLI_SUCCESS) {
                         Logger.Error($"FLI: FLIExposeFrame() failed. Returned {rv}");
                     }
 
-                    Logger.Debug($"FLI: Pausing for {LibFLI.FLI_MODECHANGE_PAUSE} seconds following readout mode change.");
-                    Thread.Sleep(LibFLI.FLI_MODECHANGE_PAUSE * 1000);
+                    if ((rv = LibFLI.FLIGetExposureStatus(CameraH, ref timeLeft)) != LibFLI.FLI_SUCCESS) {
+                        Logger.Error($"FLI: FLIGetExposureStatus() failed. Returned {rv}");
+                    }
 
-                    Logger.Debug("FLI: Flush completed.");
+                    Logger.Debug($"FLI: ReadoutMode: Pausing for {timeLeft}ms after DARK frame exposure");
+                    Thread.Sleep((int)timeLeft);
+
+                    rowData = new byte[GetFullRowSize(Info.ExposureWidth)];
+
+                    Logger.Debug($"FLI: ReadoutMode: Reading out DARK frame following readout mode change");
+
+                    for (int r = 0; r < CameraYSize; r++) {
+                        if ((rv = LibFLI.FLIGrabRow(CameraH, rowData, GetFullRowSize(Info.ExposureWidth))) != LibFLI.FLI_SUCCESS) {
+                            Logger.Error($"FLI: FLIGrabRow() failed at row {r}. Returned {rv}");
+                        }
+                    }
+
+                    BGFlushStart();
+
+                    Logger.Debug($"FLI: ReadoutMode: Flush completed. Readout mode changed to {value} ({modeName})");
                 }
             }
         }
@@ -563,10 +585,14 @@ namespace NINA.Model.MyCamera {
 
                     Logger.Debug($"FLI: Visible Area: ul_X={ul_x}, ul_Y={ul_y}, lr_X={lr_x}, lr_Y={lr_y}");
 
-                    SubSampleWidth = CameraXSize = (int)(lr_x - ul_x);
-                    SubSampleHeight = CameraYSize = (int)(lr_y - ul_y);
-                    SubSampleX = (int)ul_x;
-                    SubSampleY = (int)ul_y;
+                    Info.ExposureOriginPixelX = ul_x;
+                    Info.ExposureOriginPixelY = ul_y;
+                    Info.ExposureEndPixelX = lr_x;
+                    Info.ExposureEndPixelY = lr_y;
+                    Info.ExposureWidth = Info.ExposureEndPixelY - Info.ExposureOriginPixelY;
+                    Info.ExposureHeight = Info.ExposureEndPixelX - Info.ExposureOriginPixelX;
+                    CameraXSize = (int)Info.ExposureHeight;
+                    CameraYSize = (int)Info.ExposureWidth;
 
                     /*
                      * Query the camera for a list of readout modes
@@ -582,6 +608,35 @@ namespace NINA.Model.MyCamera {
                     ReadoutModes = new List<string>(modeList);
 
                     /*
+                     * Set the configured RBI flood bin mode
+                     */
+                    if (FLIFloodBin == null) {
+                        /* 2x2 is the default */
+                        FLIFloodBin = BinningModes.Single(x => x.Name == "2x2");
+                    } else {
+                        FLIFloodBin = BinningModes.Single(x => x.Name == FLIFloodBin?.Name);
+                    }
+
+                    /*
+                     * Attempt to turn on background flushing. Save the result for later attempts
+                     * Background flushing is automatically disabled whenever an exposure is made or
+                     * the shutter is opened, so we must turn it on again after those events.
+                     *
+                     * We set the camera to execute the desired number of pre-exposure flushes.
+                     */
+                    if (FLIEnableFloodFlush) {
+                        BGFlushStart();
+
+                        if (FLIFlushCount > 0) {
+                            Logger.Debug($"FLI: Setting the camera to execute {FLIFlushCount} pre-exposure flushes");
+                            if ((rv = LibFLI.FLISetNFlushes(CameraH, FLIFlushCount)) != LibFLI.FLI_SUCCESS) {
+                                Logger.Error($"FLI: FLISetNFlushes() failed. Returned {rv}");
+                                return success;
+                            }
+                        }
+                    }
+
+                    /*
                      * We can now say that we are connected!
                      */
                     Connected = true;
@@ -590,7 +645,6 @@ namespace NINA.Model.MyCamera {
                     /*
                      * Set some defaults
                      */
-                    SetBinning(1, 1);
                     CoolerOn = false;
                     BitDepth = 16;
 
@@ -608,10 +662,12 @@ namespace NINA.Model.MyCamera {
             if (Connected == false)
                 return;
 
+            BGFlushStop();
+
             CoolerOn = false;
+            Connected = false;
 
             LibFLI.FLIClose(CameraH);
-            Connected = false;
         }
 
         public Task<IImageData> DownloadExposure(CancellationToken ct) {
@@ -625,22 +681,28 @@ namespace NINA.Model.MyCamera {
                 IntPtr buff;
                 uint rv;
 
-                width = SubSampleWidth / BinX;
-                height = SubSampleHeight / BinY;
-                rowSize = width * BitDepth / 8;
+                width = (int)Info.ExposureWidth;
+                height = (int)Info.ExposureHeight;
+                rowSize = GetFullRowSize(Info.ExposureWidth);
                 imgSize = rowSize * height;
+
                 rowData = new byte[rowSize];
                 imgData = new byte[imgSize];
 
                 Logger.Debug($"FLI: Fetching {height} rows from the camera");
 
-                for (int i = 0; i < height; i++) {
+                for (int r = 0; r < height; r++) {
                     if ((rv = LibFLI.FLIGrabRow(CameraH, rowData, rowSize)) != LibFLI.FLI_SUCCESS) {
-                        Logger.Error($"FLI: FLIGrabRow() failed at row {i}. Returned {rv}");
+                        Logger.Error($"FLI: FLIGrabRow() failed at row {r + 1}. Returned {rv}");
                     }
 
-                    Buffer.BlockCopy(rowData, 0, imgData, i * rowSize, rowSize);
+                    Logger.Trace($"FLI: Normal exposure, fetched row {r + 1} of {height}");
+                    Buffer.BlockCopy(rowData, 0, imgData, r * rowSize, rowSize);
                 }
+
+                BGFlushStart();
+
+                Logger.Debug($"FLI: Marshalling {imgSize} bytes");
 
                 buff = Marshal.AllocHGlobal(imgSize);
                 Marshal.Copy(imgData, 0, buff, imgSize);
@@ -660,24 +722,54 @@ namespace NINA.Model.MyCamera {
         }
 
         public void SetBinning(short x, short y) {
+            Logger.Debug($"FLI: Setting binning to {x}x{y}");
+
             BinX = x;
             BinY = y;
         }
 
-        public void SetupDialog() {
+        private IWindowService windowService;
+
+        public IWindowService WindowService {
+            get {
+                if (windowService == null) {
+                    windowService = new WindowService();
+                }
+                return windowService;
+            }
+            set {
+                windowService = value;
+            }
         }
 
-        public async void StartExposure(CaptureSequence sequence) {
+        public void SetupDialog() {
+            WindowService.ShowDialog(this, Locale.Loc.Instance["LblFLICameraSetup"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.SingleBorderWindow);
+        }
+
+        public void StartExposure(CaptureSequence sequence) {
             bool isSnap;
             bool isDarkFrame;
             uint timeLeft = 0;
-            uint x, y, w, h;
+            uint ul_x, ul_y, lr_x, lr_y;
             uint rv;
+
+            isSnap = sequence.ImageType == CaptureSequence.ImageTypes.SNAPSHOT;
+
+            /*
+             * First do any pre-expsoure RBI mananagement
+             */
+            if (FLIEnableFloodFlush == true) {
+                if ((isSnap && FLIEnableSnapshotFloodFlush) || !isSnap) {
+                    if (!FloodControl()) {
+                        Logger.Error("FLI: RBI flood failed. Aborting exposure.");
+                        return;
+                    }
+                }
+            }
 
             /*
              * Set the desired readout mode
              */
-            isSnap = sequence.ImageType == CaptureSequence.ImageTypes.SNAPSHOT;
             ReadoutMode = isSnap ? ReadoutModeForSnapImages : ReadoutModeForNormalImages;
 
             /*
@@ -688,26 +780,33 @@ namespace NINA.Model.MyCamera {
                 sequence.ImageType == CaptureSequence.ImageTypes.DARK ||
                 sequence.ImageType == CaptureSequence.ImageTypes.DARKFLAT;
 
-            FrameType = isDarkFrame ? (long)LibFLI.FLIFrameType.DARK : (long)LibFLI.FLIFrameType.NORMAL;
+            FrameType = isDarkFrame ? LibFLI.FLIFrameType.DARK : LibFLI.FLIFrameType.NORMAL;
 
             /*
              * Convert exposure seconds to milliseconds and set the camera with it.
              */
-            ExposureLength = (long)sequence.ExposureTime * 1000;
+            ExposureLength = (uint)sequence.ExposureTime * 1000;
 
             /*
-             * Set the sensor area we want to capture if subsampling is activated.
+             * Set bin levels
              */
-            x = (uint)SubSampleX;
-            y = (uint)SubSampleY;
-            w = (uint)(SubSampleWidth + SubSampleX) / (uint)BinX;
-            h = (uint)(SubSampleHeight + SubSampleY) / (uint)BinY;
+            SetBinning(sequence.Binning.X, sequence.Binning.Y);
 
-            if ((rv = LibFLI.FLISetImageArea(CameraH, x, y, w, h)) != LibFLI.FLI_SUCCESS) {
+            /*
+             * Set the sensor area we want to capture
+             */
+            ul_x = Info.ExposureOriginPixelX;
+            ul_y = Info.ExposureOriginPixelY;
+            lr_x = Info.ExposureEndPixelX = (uint)((CameraXSize + Info.ExposureOriginPixelX) / BinY);
+            lr_y = Info.ExposureEndPixelY = (uint)((CameraYSize + Info.ExposureOriginPixelY) / BinX);
+            Info.ExposureWidth = Info.ExposureEndPixelX - Info.ExposureOriginPixelX;
+            Info.ExposureHeight = Info.ExposureEndPixelY - Info.ExposureOriginPixelY;
+
+            if ((rv = LibFLI.FLISetImageArea(CameraH, ul_x, ul_y, lr_x, lr_y)) != LibFLI.FLI_SUCCESS) {
                 Logger.Error($"FLI: FLISetImageArea() failed. Returned {rv}");
             }
 
-            Logger.Debug($"FLI: Set exposure area to: ul_X={x}, ul_Y={y}, lr_X={w}, lr_Y={h}");
+            Logger.Debug($"FLI: Setting exposure area to: ul_X={ul_x}, ul_Y={ul_y}, lr_X={lr_x}, lr_Y={lr_y} ({Info.ExposureWidth}x{Info.ExposureHeight})");
 
             /*
              * Initiate the exposure. This blocks until finished.
@@ -724,8 +823,7 @@ namespace NINA.Model.MyCamera {
             }
 
             Logger.Debug($"FLI: StartExposure() pausing for {timeLeft}ms for exposure completion.");
-
-            await Task.Delay(TimeSpan.FromMilliseconds(timeLeft));
+            Thread.Sleep((int)timeLeft);
         }
 
         public void StopExposure() {
@@ -744,6 +842,178 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StopLiveView() {
+        }
+
+        private bool FloodControl() {
+            uint timeLeft = 0;
+            byte[] rowData;
+            uint rows;
+            uint ul_x, ul_y, lr_x, lr_y;
+            uint rv;
+
+            /*
+             * Execute the configured number of flush operations
+             */
+            Logger.Debug($"FLI: RBI: Flooding for {FLIFloodDuration * 1e3}ms and flushing {FLIFlushCount} times at {FLIFloodBin.Name} binning");
+
+            FrameType = LibFLI.FLIFrameType.RBI_FLUSH;
+            ExposureLength = (uint)FLIFloodDuration * 1000;
+            ReadoutMode = ReadoutModeForSnapImages;
+            SetBinning(FLIFloodBin.X, FLIFloodBin.Y);
+
+            ul_x = Info.ExposureOriginPixelX;
+            ul_y = Info.ExposureOriginPixelY;
+            lr_x = Info.ExposureEndPixelX = (uint)((CameraXSize + Info.ExposureOriginPixelX) / BinY);
+            lr_y = Info.ExposureEndPixelY = (uint)((CameraYSize + Info.ExposureOriginPixelY) / BinX);
+            Info.ExposureWidth = Info.ExposureEndPixelX - Info.ExposureOriginPixelX;
+            Info.ExposureHeight = Info.ExposureEndPixelY - Info.ExposureOriginPixelY;
+
+            rowData = new byte[GetFullRowSize(Info.ExposureWidth)];
+
+            if ((rv = LibFLI.FLISetImageArea(CameraH, ul_x, ul_y, lr_x, lr_y)) != LibFLI.FLI_SUCCESS) {
+                Logger.Error($"FLI: FLISetImageArea() failed. Returned {rv}");
+            }
+
+            Logger.Debug($"FLI: RBI: Setting exposure area to: ul_X={ul_x}, ul_Y={ul_y}, lr_X={lr_x}, lr_Y={lr_y} ({Info.ExposureWidth}x{Info.ExposureHeight})");
+
+            if ((rv = LibFLI.FLIExposeFrame(CameraH)) != LibFLI.FLI_SUCCESS) {
+                Logger.Error($"FLI: FLIExposeFrame() failed. Returned {rv}");
+                return false;
+            }
+
+            if ((rv = LibFLI.FLIGetExposureStatus(CameraH, ref timeLeft)) != LibFLI.FLI_SUCCESS) {
+                Logger.Error($"FLI: FLIGetExposureStatus() failed. Returned {rv}");
+            }
+
+            Logger.Debug($"FLI: RBI Flood exposure pausing for {timeLeft}ms for completion.");
+            Thread.Sleep((int)timeLeft);
+
+            rows = Info.ExposureHeight;
+            Logger.Debug($"FLI: RBI: Downloading RBI flood ({rows} rows)");
+
+            for (int r = 0; r < rows; r++) {
+                if ((rv = LibFLI.FLIGrabRow(CameraH, rowData, GetFullRowSize(Info.ExposureWidth))) != LibFLI.FLI_SUCCESS) {
+                    Logger.Error($"FLI: FLIGrabRow() failed at row {r + 1}. Returned {rv}");
+                }
+
+                Logger.Trace($"FLI: RBI: Flood exposure fetched row {r + 1} of {rows}");
+            }
+
+            BGFlushStart();
+
+            Logger.Debug("FLI: RBI operation completed.");
+            return true;
+        }
+
+        private void BGFlushStart() {
+            uint rv;
+
+            if (Info.FWrev >= 0x0110) {
+                Logger.Debug("FLI: Starting background flushing...");
+
+                if ((rv = LibFLI.FLIControlBackgroundFlush(CameraH, LibFLI.FLIBGFlush.START)) != LibFLI.FLI_SUCCESS) {
+                    Logger.Info($"FLI: FLIControlBackgroundFlush() failed. Returned {rv}");
+                } else {
+                    Logger.Debug("FLI: Background flushing started!");
+                }
+            } else {
+                Logger.Debug("FLI: Background flushing is not supported. Camera firmware is too old.");
+            }
+        }
+
+        private void BGFlushStop() {
+            uint rv;
+
+            if (Info.FWrev >= 0x0110) {
+                Logger.Debug("FLI: Stopping background flushing...");
+
+                if ((rv = LibFLI.FLIControlBackgroundFlush(CameraH, LibFLI.FLIBGFlush.STOP)) != LibFLI.FLI_SUCCESS) {
+                    Logger.Info($"FLI: FLIControlBackgroundFlush() failed.  Returned {rv}");
+                } else {
+                    Logger.Debug("FLI: Background flushing stopped!");
+                }
+            }
+        }
+
+        private int GetFullRowSize(uint rowPixels) {
+            return (int)(rowPixels * BitDepth) / 8;
+        }
+
+        public bool FLIEnableFloodFlush {
+            get => profileService.ActiveProfile.CameraSettings.FLIEnableFloodFlush;
+            set {
+                uint rv;
+
+                if (FLIEnableFloodFlush == value) {
+                    return;
+                }
+
+                if (value == true) {
+                    BGFlushStart();
+
+                    if (FLIFlushCount > 0) {
+                        Logger.Debug($"FLI: Setting the camera to execute {FLIFlushCount} pre-exposure flushes");
+                        if ((rv = LibFLI.FLISetNFlushes(CameraH, FLIFlushCount)) != LibFLI.FLI_SUCCESS) {
+                            Logger.Error($"FLI: FLISetNFlushes() failed. Returned {rv}");
+                        }
+                    }
+                } else {
+                    Logger.Debug("FLI: Attempting to stop background flushing...");
+                    BGFlushStop();
+
+                    Logger.Debug("FLI: Setting the camera to execute 0 pre-exposure flushes");
+                    if ((rv = LibFLI.FLISetNFlushes(CameraH, 0)) != LibFLI.FLI_SUCCESS) {
+                        Logger.Error($"FLI: FLISetNFlushes() failed. Returned {rv}");
+                    }
+                }
+
+                profileService.ActiveProfile.CameraSettings.FLIEnableFloodFlush = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public double FLIFloodDuration {
+            get => profileService.ActiveProfile.CameraSettings.FLIFloodDuration;
+            set {
+                double time = value;
+
+                time = Math.Max(time, ExposureMin);
+                time = Math.Min(time, ExposureMax);
+
+                profileService.ActiveProfile.CameraSettings.FLIFloodDuration = time;
+                RaisePropertyChanged();
+            }
+        }
+
+        public uint FLIFlushCount {
+            get => profileService.ActiveProfile.CameraSettings.FLIFlushCount;
+            set {
+                uint rv;
+
+                profileService.ActiveProfile.CameraSettings.FLIFlushCount = value;
+
+                if ((rv = LibFLI.FLISetNFlushes(CameraH, FLIFlushCount)) != LibFLI.FLI_SUCCESS) {
+                    Logger.Error($"FLI: FLISetNFlushes() failed. Returned {rv}");
+                }
+
+                RaisePropertyChanged();
+            }
+        }
+
+        public BinningMode FLIFloodBin {
+            get => profileService.ActiveProfile.CameraSettings.FLIFloodBin;
+            set {
+                profileService.ActiveProfile.CameraSettings.FLIFloodBin = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool FLIEnableSnapshotFloodFlush {
+            get => profileService.ActiveProfile.CameraSettings.FLIEnableSnapshotFloodFlush;
+            set {
+                profileService.ActiveProfile.CameraSettings.FLIEnableSnapshotFloodFlush = value;
+                RaisePropertyChanged();
+            }
         }
     }
 }

@@ -300,7 +300,7 @@ namespace FLI {
         public static extern unsafe uint FLIControlShutter(uint dev, uint shutter);
 
         [DllImport(DLLNAME, EntryPoint = "FLIControlBackgroundFlush", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe uint FLIControlBackgroundFlush(uint dev, uint bgflush);
+        public static extern unsafe uint FLIControlBackgroundFlush(uint dev, FLIBGFlush bgflush);
 
         [DllImport(DLLNAME, EntryPoint = "FLISetDAC", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern unsafe uint FLISetDAC(uint dev, uint dacset);
@@ -489,9 +489,39 @@ namespace FLI {
             public double CoolerTargetTemp;
 
             /// <summary>
-            /// Current exposure length
+            /// Current exposure length in microseconds
             /// </summary>
             public uint ExposureLength;
+
+            /// <summary>
+            /// Exposure's origin pixel (X axis coord)
+            /// </summary>
+            public uint ExposureOriginPixelX;
+
+            /// <summary>
+            /// Exposure's origin pixel (Y axis coord)
+            /// </summary>
+            public uint ExposureOriginPixelY;
+
+            /// <summary>
+            /// Exposure's lower-right pixel (X axis coord)
+            /// </summary>
+            public uint ExposureEndPixelX;
+
+            /// <summary>
+            /// Exposure's lower-right pixel (Y axis coord)
+            /// </summary>
+            public uint ExposureEndPixelY;
+
+            /// <summary>
+            /// Exposure's total width
+            /// </summary>
+            public uint ExposureWidth;
+
+            /// <summary>
+            /// Exposure's total height
+            /// </summary>
+            public uint ExposureHeight;
 
             /// <summary>
             /// Device hardware revision
@@ -501,7 +531,7 @@ namespace FLI {
             /// <summary>
             /// Current frame type
             /// </summary>
-            public uint FrameType;
+            public FLIFrameType FrameType;
 
             /// <summary>
             /// Device firmware revision
@@ -536,12 +566,12 @@ namespace FLI {
             /// <summary>
             /// Physical pixel width (microns)
             /// </summary>
-            public double PixelX;
+            public double PixelWidthX;
 
             /// <summary>
             /// Physical pixel height (microns)
             /// </summary>
-            public double PixelY;
+            public double PixelWidthY;
 
             /// <summary>
             /// List of readout mode names
@@ -604,9 +634,6 @@ namespace FLI {
             /// </summary>
             public uint Positions;
         }
-
-        /* Number of seconds to pause camera ops following a readout mode change */
-        public const int FLI_MODECHANGE_PAUSE = 20;
 
         private static void CheckReturn(uint code, MethodBase callingMethod, params object[] parameters) {
             if (code != 0) {

@@ -387,8 +387,14 @@ When this trigger is deactivated the application will just skip the Start Exposu
   <s:String x:Key="LblFlatUserPromptFlatTooDim" xml:space="default">Your flats are too dim, brighten the light, adjust the tolerance, target mean or the maximum exposure time</s:String>
   <s:String x:Key="LblFlatWizard" xml:space="default">Flat Wizard</s:String>
   <s:String x:Key="LblFlatWizardCapture" xml:space="default">Flat Wizard Capture</s:String>
+  <s:String x:Key="LblFLICameraSetup" xml:space="default">FLI Camera Setup</s:String>
+  <s:String x:Key="LblFLIFloodBin" xml:space="default">Flood Binning</s:String>
+  <s:String x:Key="LblFLIFloodDuration" xml:space="default">Flood Duration</s:String>
+  <s:String x:Key="LblFLIFlushCount" xml:space="default">Pre-exposure Flush Count</s:String>
   <s:String x:Key="LblFlip" xml:space="default">Do the flip</s:String>
   <s:String x:Key="LblFlippingScope" xml:space="default">Flipping Scope</s:String>
+  <s:String x:Key="LblFLIPreRBIMitigation" xml:space="default">RBI Mitigation</s:String>
+  <s:String x:Key="LblFLISnapshotFlood" xml:space="default">Flood for snapshots</s:String>
   <s:String x:Key="LblFocalLength" xml:space="default">Focal Length</s:String>
   <s:String x:Key="LblFocalRatio" xml:space="default">Focal Ratio</s:String>
   <s:String x:Key="LblFocuser" xml:space="default">Focuser</s:String>
