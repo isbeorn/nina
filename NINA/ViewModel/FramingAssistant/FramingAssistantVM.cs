@@ -706,7 +706,7 @@ namespace NINA.ViewModel.FramingAssistant {
             if (parameter != null) {
                 var previousRotation = Rectangle?.Rotation ?? 0;
                 Rectangle = null;
-                Rotation = parameter.Rotation;
+                Rotation = previousRotation;
                 CameraRectangles.Clear();
 
                 var centerCoordinates = parameter.CenterCoordinates;
@@ -761,7 +761,7 @@ namespace NINA.ViewModel.FramingAssistant {
                             var panelDeltaX = panelCenter.X - center.X;
                             var panelDeltaY = panelCenter.Y - center.Y;
 
-                            var panelRotation = parameter.Rotation;
+                            var panelRotation = previousRotation;
                             var panelCenterCoordinates = centerCoordinates.Shift(panelDeltaX, panelDeltaY, panelRotation, imageArcsecWidth, imageArcsecHeight);
                             var rect = new FramingRectangle(parameter.Rotation) {
                                 Id = id++,
@@ -769,7 +769,7 @@ namespace NINA.ViewModel.FramingAssistant {
                                 Height = panelHeight,
                                 X = panelX,
                                 Y = panelY,
-                                Rotation = previousRotation,
+                                Rotation = panelRotation,
                                 Coordinates = panelCenterCoordinates
                             };
                             CameraRectangles.Add(rect);
