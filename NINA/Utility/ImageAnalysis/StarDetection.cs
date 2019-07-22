@@ -146,6 +146,7 @@ namespace NINA.Utility.ImageAnalysis {
             public double meanBrightness;
             private List<PixelData> pixelData;
             public double Average { get; private set; } = 0;
+            public double SurroundingMean {  get; set; } = 0;
 
             public Rectangle Rectangle;
 
@@ -167,12 +168,12 @@ namespace NINA.Utility.ImageAnalysis {
                     int centerY = (int)Math.Floor(this.Position.Y);
 
                     foreach (PixelData data in this.pixelData) {
+                        data.value = (ushort)Math.Round(data.value - SurroundingMean);
+                        if (data.value < 0) {
+                            data.value = 0;
+                        }
                         allSum += data.value;
                         if (InsideCircle(data.PosX, data.PosY, this.Position.X, this.Position.Y, outerRadius)) {
-                            if (data.value < 0) {
-                                data.value = 0;
-                            }
-
                             sum += data.value;
                             sumDist += data.value * Math.Sqrt(Math.Pow((double)data.PosX - (double)centerX, 2.0d) + Math.Pow((double)data.PosY - (double)centerY, 2.0d));
                         }
@@ -338,8 +339,7 @@ namespace NINA.Utility.ImageAnalysis {
                                 starPixelCount++;
                                 innerStarPixelValues.Add(pixelValue);
                             }
-                            var value = pixelValue - statistics.Mean;
-                            if (value < 0) { value = 0; }
+                            ushort value = pixelValue;
                             PixelData pd = new PixelData { PosX = x, PosY = y, value = (ushort)value };
                             s.AddPixelData(pd);
                         } else { //We're in the larger surrounding holed rectangle, providing local background
@@ -349,9 +349,10 @@ namespace NINA.Utility.ImageAnalysis {
                     }
                 }
 
-                s.meanBrightness = starPixelSum / (double)starPixelCount;
+                s.meanBrightness = starPixelSum / (double)starPixelCount;              
                 double largeRectPixelCount = largeRect.Height * largeRect.Width - rect.Height * rect.Width;
                 double largeRectMean = largeRectPixelSum / largeRectPixelCount;
+                s.SurroundingMean = largeRectMean;
                 double largeRectStdev = Math.Sqrt((largeRectPixelSumSquares - largeRectPixelCount * largeRectMean * largeRectMean) / largeRectPixelCount);
                 int minimumNumberOfPixels = (int)Math.Ceiling(Math.Max(_originalBitmapSource.PixelWidth, _originalBitmapSource.PixelHeight) / 1000d);
 

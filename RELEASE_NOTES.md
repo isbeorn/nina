@@ -1,3 +1,8 @@
+# Version 1.0
+
+## Improvements
+- HFR calculation is now computed using the mean background surrounding the star, rather than the image mean
+
 # Version 1.9
 
 ## Features
