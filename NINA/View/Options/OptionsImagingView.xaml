@@ -150,342 +150,345 @@
                 </ListView>
             </Grid>
         </GroupBox>
-        <StackPanel Orientation="Vertical">
-            <GroupBox DataContext="{Binding MeridianFlipSettings}" Header="{ns:Loc LblAutoMeridianFlip}">
-                <StackPanel Orientation="Vertical">
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                        <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblEnabled}" />
-                        <CheckBox
-                            Width="75"
-                            Height="25"
-                            HorizontalAlignment="Left"
-                            IsChecked="{Binding Enabled}" />
-                    </StackPanel>
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                        <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblMinutesAfterMeridian}" />
-                        <TextBox
-                            MinWidth="75"
-                            MinHeight="20"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center">
-                            <TextBox.Text>
-                                <Binding Path="MinutesAfterMeridian" UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:GreaterZeroRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                    </StackPanel>
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                        <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblUseSideOfPier}" />
-                        <CheckBox
-                            Width="75"
-                            Height="25"
-                            HorizontalAlignment="Left"
-                            IsChecked="{Binding UseSideOfPier}" />
-                    </StackPanel>
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                        <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblRecenterAfterFlip}" />
-                        <CheckBox
-                            Width="75"
-                            Height="25"
-                            HorizontalAlignment="Left"
-                            IsChecked="{Binding Recenter}" />
-                    </StackPanel>
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                        <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblScopeSettleTimeAfterFlip}" />
-                        <TextBox
-                            MinWidth="75"
-                            MinHeight="20"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center">
-                            <TextBox.Text>
-                                <Binding Path="SettleTime" UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:GreaterZeroRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                    </StackPanel>
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                        <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblPauseTimeBeforeMeridian}" />
-                        <TextBox
-                            MinWidth="75"
-                            MinHeight="20"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center">
-                            <TextBox.Text>
-                                <Binding Path="PauseTimeBeforeMeridian" UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:GreaterZeroRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                    </StackPanel>
-                </StackPanel>
-            </GroupBox>
-            <GroupBox DataContext="{Binding ImageSettings}" Header="{ns:Loc LblImageOptions}">
-                <StackPanel Orientation="Vertical">
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                        <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblAutoStretchFactor}">
-                            <TextBlock.ToolTip>
-                                <TextBlock Text="{ns:Loc LblAutoStretchFactorTooltip}" />
-                            </TextBlock.ToolTip>
-                        </TextBlock>
-                        <TextBox
-                            MinWidth="75"
-                            MinHeight="20"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center">
-                            <TextBox.Text>
-                                <Binding Path="AutoStretchFactor" UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:GreaterZeroRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                    </StackPanel>
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                        <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblBlackClipping}">
-                            <TextBlock.ToolTip>
-                                <TextBlock Text="{ns:Loc LblLblBlackClippingTooltip}" />
-                            </TextBlock.ToolTip>
-                        </TextBlock>
-                        <TextBox
-                            MinWidth="75"
-                            MinHeight="20"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center">
-                            <TextBox.Text>
-                                <Binding Path="BlackClipping" UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:DoubleRangeRule>
-                                            <rules:DoubleRangeRule.ValidRange>
-                                                <rules:DoubleRangeChecker Maximum="0" Minimum="-10" />
-                                            </rules:DoubleRangeRule.ValidRange>
-                                        </rules:DoubleRangeRule>
-                                    </Binding.ValidationRules>
-                                </Binding>
-                            </TextBox.Text>
-                        </TextBox>
-                    </StackPanel>
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                        <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblAnnotateImage}">
-                            <TextBlock.ToolTip>
-                                <TextBlock Text="{ns:Loc LblAnnotateImageTooltip}" />
-                            </TextBlock.ToolTip>
-                        </TextBlock>
-                        <CheckBox
-                            Width="75"
-                            Height="25"
-                            HorizontalAlignment="Left"
-                            IsChecked="{Binding AnnotateImage}" />
-                    </StackPanel>
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                        <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblDebayerImage}">
-                            <TextBlock.ToolTip>
-                                <TextBlock Text="{ns:Loc LblDebayerImageTooltip}" />
-                            </TextBlock.ToolTip>
-                        </TextBlock>
-                        <CheckBox
-                            Width="75"
-                            Height="25"
-                            HorizontalAlignment="Left"
-                            IsChecked="{Binding DebayerImage}" />
-                    </StackPanel>
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                        <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblDebayeredHFR}">
-                            <TextBlock.ToolTip>
-                                <TextBlock Text="{ns:Loc LblDebayeredHFRTooltip}" />
-                            </TextBlock.ToolTip>
-                        </TextBlock>
-                        <CheckBox
-                            Width="75"
-                            Height="25"
-                            HorizontalAlignment="Left"
-                            IsChecked="{Binding DebayeredHFR}" />
-                    </StackPanel>
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                        <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblUnlinkedStretch}">
-                            <TextBlock.ToolTip>
-                                <TextBlock Text="{ns:Loc LblUnlinkedStretchTooltip}" />
-                            </TextBlock.ToolTip>
-                        </TextBlock>
-                        <CheckBox
-                            Width="75"
-                            Height="25"
-                            HorizontalAlignment="Left"
-                            IsChecked="{Binding UnlinkedStretch}" />
-                    </StackPanel>
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                        <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblStarSensitivity}">
-                            <TextBlock.ToolTip>
-                                <TextBlock Text="{ns:Loc LblStarSensitivityTooltip}" />
-                            </TextBlock.ToolTip>
-                        </TextBlock>
-                        <ComboBox
-                            MinWidth="150"
-                            Margin="0,0,0,0"
-                            ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:StarSensitivityEnum}}}"
-                            SelectedItem="{Binding StarSensitivity}" />
-                    </StackPanel>
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                        <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblNoiseReduction}">
-                            <TextBlock.ToolTip>
-                                <TextBlock Text="{ns:Loc LblNoiseReductionTooltip}" />
-                            </TextBlock.ToolTip>
-                        </TextBlock>
-                        <ComboBox
-                            MinWidth="150"
-                            Margin="0,0,0,0"
-                            ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:NoiseReductionEnum}}}"
-                            SelectedItem="{Binding NoiseReduction}" />
-                    </StackPanel>
-                </StackPanel>
-            </GroupBox>
-            <GroupBox DataContext="{Binding SequenceSettings}" Header="{ns:Loc LblSequence}">
-                <StackPanel Orientation="Vertical">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="200" />
-                            <ColumnDefinition Width="3*" />
-                            <ColumnDefinition Width="50" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock
-                            Grid.Column="0"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblSequenceTemplate}" />
-                        <TextBox
-                            Grid.Column="1"
-                            VerticalAlignment="Center"
-                            Text="{Binding TemplatePath}" />
-                        <Button
-                            Grid.Column="2"
-                            Width="30"
-                            Height="30"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Command="{Binding DataContext.OpenSequenceTemplateDiagCommand, ElementName=UC}">
-                            <Path
-                                Margin="4,17,4,4"
-                                Data="{StaticResource DotsSVG}"
-                                Fill="{StaticResource ButtonForegroundBrush}"
-                                Stretch="Uniform" />
-                            <Button.ToolTip>
-                                <TextBlock Text="{ns:Loc LblSequenceTemplateTooltip}" />
-                            </Button.ToolTip>
-                        </Button>
-                    </Grid>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Orientation="Vertical">
+                <GroupBox DataContext="{Binding MeridianFlipSettings}" Header="{ns:Loc LblAutoMeridianFlip}">
                     <StackPanel Orientation="Vertical">
                         <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                             <TextBlock
-                                MinWidth="300"
+                                MinWidth="200"
                                 MinHeight="20"
                                 VerticalAlignment="Center"
-                                Text="{ns:Loc LblParkMountAtSequenceEnd}" />
+                                Text="{ns:Loc LblEnabled}" />
                             <CheckBox
                                 Width="75"
                                 Height="25"
                                 HorizontalAlignment="Left"
-                                IsChecked="{Binding ParkMountAtSequenceEnd}" />
+                                IsChecked="{Binding Enabled}" />
                         </StackPanel>
                         <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                             <TextBlock
-                                MinWidth="300"
+                                MinWidth="200"
                                 MinHeight="20"
                                 VerticalAlignment="Center"
-                                Text="{ns:Loc LblWarmCamAtSequenceEnd}" />
+                                Text="{ns:Loc LblMinutesAfterMeridian}" />
+                            <TextBox
+                                MinWidth="75"
+                                MinHeight="20"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="MinutesAfterMeridian" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblUseSideOfPier}" />
                             <CheckBox
                                 Width="75"
                                 Height="25"
                                 HorizontalAlignment="Left"
-                                IsChecked="{Binding WarmCamAtSequenceEnd}" />
+                                IsChecked="{Binding UseSideOfPier}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblRecenterAfterFlip}" />
+                            <CheckBox
+                                Width="75"
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding Recenter}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblScopeSettleTimeAfterFlip}" />
+                            <TextBox
+                                MinWidth="75"
+                                MinHeight="20"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="SettleTime" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblPauseTimeBeforeMeridian}" />
+                            <TextBox
+                                MinWidth="75"
+                                MinHeight="20"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="PauseTimeBeforeMeridian" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
                         </StackPanel>
                     </StackPanel>
-                </StackPanel>
-            </GroupBox>
-            <GroupBox Header="{ns:Loc LblLayout}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="200" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblResetDockLayout}" />
-                    <Button
-                        Grid.Column="1"
-                        Width="75"
-                        Height="30"
-                        HorizontalAlignment="Left"
-                        Command="{Binding Source={StaticResource AppVM}, Path=DockManagerVM.ResetDockLayoutCommand}"
-                        ToolTip="{ns:Loc LblResetDockLayout}">
-                        <Path
-                            Margin="5"
-                            Data="{StaticResource ResetSVG}"
-                            Fill="{StaticResource ButtonForegroundDisabledBrush}"
-                            Stretch="Uniform" />
-                    </Button>
-                </Grid>
-            </GroupBox>
-        </StackPanel>
+                </GroupBox>
+                <GroupBox DataContext="{Binding ImageSettings}" Header="{ns:Loc LblImageOptions}">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblAutoStretchFactor}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblAutoStretchFactorTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox
+                                MinWidth="75"
+                                MinHeight="20"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="AutoStretchFactor" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblBlackClipping}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblLblBlackClippingTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <TextBox
+                                MinWidth="75"
+                                MinHeight="20"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="BlackClipping" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:DoubleRangeRule>
+                                                <rules:DoubleRangeRule.ValidRange>
+                                                    <rules:DoubleRangeChecker Maximum="0" Minimum="-10" />
+                                                </rules:DoubleRangeRule.ValidRange>
+                                            </rules:DoubleRangeRule>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblAnnotateImage}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblAnnotateImageTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Width="75"
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding AnnotateImage}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblDebayerImage}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblDebayerImageTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Width="75"
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding DebayerImage}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblDebayeredHFR}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblDebayeredHFRTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Width="75"
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding DebayeredHFR}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblUnlinkedStretch}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblUnlinkedStretchTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <CheckBox
+                                Width="75"
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding UnlinkedStretch}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblStarSensitivity}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblStarSensitivityTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <ComboBox
+                                MinWidth="150"
+                                Margin="0,0,0,0"
+                                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:StarSensitivityEnum}}}"
+                                SelectedItem="{Binding StarSensitivity}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblNoiseReduction}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblNoiseReductionTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <ComboBox
+                                MinWidth="150"
+                                Margin="0,0,0,0"
+                                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:NoiseReductionEnum}}}"
+                                SelectedItem="{Binding NoiseReduction}" />
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox DataContext="{Binding SequenceSettings}" Header="{ns:Loc LblSequence}">
+                    <StackPanel Orientation="Vertical">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="200" />
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="50" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblSequenceTemplate}" />
+                            <TextBox
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Text="{Binding TemplatePath}" />
+                            <Button
+                                Grid.Column="2"
+                                Width="30"
+                                Height="30"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Command="{Binding DataContext.OpenSequenceTemplateDiagCommand, ElementName=UC}">
+                                <Path
+                                    Margin="4,17,4,4"
+                                    Data="{StaticResource DotsSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform" />
+                                <Button.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblSequenceTemplateTooltip}" />
+                                </Button.ToolTip>
+                            </Button>
+                        </Grid>
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    MinWidth="300"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblParkMountAtSequenceEnd}" />
+                                <CheckBox
+                                    Width="75"
+                                    Height="25"
+                                    HorizontalAlignment="Left"
+                                    IsChecked="{Binding ParkMountAtSequenceEnd}" />
+                            </StackPanel>
+                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    MinWidth="300"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblWarmCamAtSequenceEnd}" />
+                                <CheckBox
+                                    Width="75"
+                                    Height="25"
+                                    HorizontalAlignment="Left"
+                                    IsChecked="{Binding WarmCamAtSequenceEnd}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="{ns:Loc LblLayout}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblResetDockLayout}" />
+                        <Button
+                            Grid.Column="1"
+                            Width="75"
+                            Height="30"
+                            HorizontalAlignment="Left"
+                            Command="{Binding Source={StaticResource AppVM}, Path=DockManagerVM.ResetDockLayoutCommand}"
+                            ToolTip="{ns:Loc LblResetDockLayout}">
+                            <Path
+                                Margin="5"
+                                Data="{StaticResource ResetSVG}"
+                                Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                Stretch="Uniform" />
+                        </Button>
+                    </Grid>
+                </GroupBox>
+            </StackPanel>
+        </ScrollViewer>
     </UniformGrid>
 </UserControl>

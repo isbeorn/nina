@@ -15,8 +15,7 @@
     along with N.I.N.A..  If not, see http://www.gnu.org/licenses/
 
     Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
-    Copyright 2019 Dale Ghent <daleg@elemental.org>
--->
+    Copyright 2019 Dale Ghent <daleg@elemental.org>-->
 <UserControl
     x:Class="NINA.View.Options.EquipmentView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -33,19 +32,19 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Grid DataContext="{Binding ActiveProfile}">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <GroupBox DataContext="{Binding CameraSettings}" Header="{ns:Loc LblCamera}">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid DataContext="{Binding ActiveProfile}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <GroupBox DataContext="{Binding CameraSettings}" Header="{ns:Loc LblCamera}">
                 <StackPanel Orientation="Vertical">
                     <UniformGrid Columns="2">
                         <UniformGrid
@@ -336,158 +335,157 @@
                         </UniformGrid>
                     </UniformGrid>
                 </StackPanel>
-            </ScrollViewer>
-        </GroupBox>
-        <GroupBox
-            Grid.RowSpan="2"
-            Grid.Column="1"
-            DataContext="{Binding FilterWheelSettings}"
-            Header="{ns:Loc LblFilterWheel}">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition Height="50" />
-                </Grid.RowDefinitions>
-                <DataGrid
-                    AutoGenerateColumns="False"
-                    CanUserAddRows="False"
-                    HeadersVisibility="Column"
-                    HorizontalScrollBarVisibility="Disabled"
-                    ItemsSource="{Binding FilterWheelFilters}"
-                    SelectedItem="{Binding DataContext.SelectedFilter, ElementName=UC}"
-                    SelectionMode="Single"
-                    VerticalScrollBarVisibility="Auto">
-                    <DataGrid.Columns>
-                        <DataGridTemplateColumn
-                            Width="*"
-                            CanUserSort="False"
-                            Header="{ns:Loc LblPosition}">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock
-                                        Margin="5,0,5,0"
-                                        VerticalAlignment="Center"
-                                        Text="{Binding Position}"
-                                        TextAlignment="Center" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn
-                            Width="*"
-                            CanUserSort="False"
-                            Header="{ns:Loc LblName}">
-                            <DataGridTemplateColumn.CellEditingTemplate>
-                                <DataTemplate>
-                                    <TextBox
-                                        Margin="5,0,5,0"
-                                        VerticalAlignment="Center"
-                                        Text="{Binding Name}"
-                                        TextAlignment="Center" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellEditingTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock
-                                        Margin="5,0,5,0"
-                                        VerticalAlignment="Center"
-                                        Text="{Binding Name}"
-                                        TextAlignment="Center" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn
-                            Width="*"
-                            CanUserSort="False"
-                            Header="{ns:Loc LblFocusOffset}">
-                            <DataGridTemplateColumn.CellEditingTemplate>
-                                <DataTemplate>
-                                    <TextBox
-                                        Margin="5,0,5,0"
-                                        VerticalAlignment="Center"
-                                        Text="{Binding FocusOffset}"
-                                        TextAlignment="Center" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellEditingTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock
-                                        Margin="5,0,5,0"
-                                        VerticalAlignment="Center"
-                                        Text="{Binding FocusOffset}"
-                                        TextAlignment="Center" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn
-                            Width="*"
-                            CanUserSort="False"
-                            Header="{ns:Loc LblAutoFocusExposureTime}">
-                            <DataGridTemplateColumn.CellEditingTemplate>
-                                <DataTemplate>
-                                    <TextBox
-                                        Margin="5,0,5,0"
-                                        VerticalAlignment="Center"
-                                        Text="{Binding AutoFocusExposureTime}"
-                                        TextAlignment="Center" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellEditingTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock
-                                        Margin="5,0,5,0"
-                                        VerticalAlignment="Center"
-                                        Text="{Binding AutoFocusExposureTime}"
-                                        TextAlignment="Center" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-                <Grid Grid.Row="1" DataContext="{Binding DataContext, ElementName=UC}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Horizontal">
-                        <Button
-                            Width="40"
-                            Margin="0,5,0,5"
-                            Command="{Binding AddFilterCommand}">
-                            <Path
-                                Margin="5"
-                                Data="{StaticResource AddSVG}"
-                                Fill="{StaticResource ButtonForegroundBrush}"
-                                Stretch="Uniform" />
-                        </Button>
+            </GroupBox>
+            <GroupBox
+                Grid.RowSpan="2"
+                Grid.Column="1"
+                DataContext="{Binding FilterWheelSettings}"
+                Header="{ns:Loc LblFilterWheel}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="50" />
+                    </Grid.RowDefinitions>
+                    <DataGrid
+                        MaxHeight="300"
+                        AutoGenerateColumns="False"
+                        CanUserAddRows="False"
+                        HeadersVisibility="Column"
+                        HorizontalScrollBarVisibility="Disabled"
+                        ItemsSource="{Binding FilterWheelFilters}"
+                        SelectedItem="{Binding DataContext.SelectedFilter, ElementName=UC}"
+                        SelectionMode="Single"
+                        VerticalScrollBarVisibility="Auto">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn
+                                Width="*"
+                                CanUserSort="False"
+                                Header="{ns:Loc LblPosition}">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Position}"
+                                            TextAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn
+                                Width="*"
+                                CanUserSort="False"
+                                Header="{ns:Loc LblName}">
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <TextBox
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Name}"
+                                            TextAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Name}"
+                                            TextAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn
+                                Width="*"
+                                CanUserSort="False"
+                                Header="{ns:Loc LblFocusOffset}">
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <TextBox
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding FocusOffset}"
+                                            TextAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding FocusOffset}"
+                                            TextAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn
+                                Width="*"
+                                CanUserSort="False"
+                                Header="{ns:Loc LblAutoFocusExposureTime}">
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <TextBox
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding AutoFocusExposureTime}"
+                                            TextAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Margin="5,0,5,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding AutoFocusExposureTime}"
+                                            TextAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Grid Grid.Row="1" DataContext="{Binding DataContext, ElementName=UC}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <Button
+                                Width="40"
+                                Margin="0,5,0,5"
+                                Command="{Binding AddFilterCommand}">
+                                <Path
+                                    Margin="5"
+                                    Data="{StaticResource AddSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform" />
+                            </Button>
+                            <Button
+                                Grid.Column="1"
+                                Width="40"
+                                Margin="1,5,0,5"
+                                Command="{Binding RemoveFilterCommand}">
+                                <Path
+                                    Margin="5"
+                                    Data="{StaticResource SubstractSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform" />
+                            </Button>
+                        </StackPanel>
                         <Button
                             Grid.Column="1"
-                            Width="40"
-                            Margin="1,5,0,5"
-                            Command="{Binding RemoveFilterCommand}">
-                            <Path
-                                Margin="5"
-                                Data="{StaticResource SubstractSVG}"
-                                Fill="{StaticResource ButtonForegroundBrush}"
-                                Stretch="Uniform" />
+                            Width="300"
+                            Margin="5"
+                            Command="{Binding ImportFiltersCommand}">
+                            <Button.Content>
+                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblImportFromFilterWheel}" />
+                            </Button.Content>
                         </Button>
-                    </StackPanel>
-                    <Button
-                        Grid.Column="1"
-                        Width="300"
-                        Margin="5"
-                        Command="{Binding ImportFiltersCommand}">
-                        <Button.Content>
-                            <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblImportFromFilterWheel}" />
-                        </Button.Content>
-                    </Button>
+                    </Grid>
                 </Grid>
-            </Grid>
-        </GroupBox>
-        <GroupBox
-            Grid.Row="1"
-            DataContext="{Binding TelescopeSettings}"
-            Header="{ns:Loc LblTelescope}">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            </GroupBox>
+            <GroupBox
+                Grid.Row="1"
+                DataContext="{Binding TelescopeSettings}"
+                Header="{ns:Loc LblTelescope}">
                 <StackPanel Orientation="Vertical">
                     <UniformGrid Columns="2">
                         <UniformGrid
@@ -580,72 +578,70 @@
                         </UniformGrid>
                     </UniformGrid>
                 </StackPanel>
-            </ScrollViewer>
-        </GroupBox>
-        <GroupBox
-            Grid.Row="2"
-            DataContext="{Binding FocuserSettings}"
-            Header="{ns:Loc LblFocuser}">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            </GroupBox>
+            <GroupBox
+                Grid.Row="2"
+                DataContext="{Binding FocuserSettings}"
+                Header="{ns:Loc LblFocuser}">
                 <StackPanel>
                     <UniformGrid Columns="2">
                         <UniformGrid Margin="0,5,0,0" Columns="2">
                             <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblFocuserUseFilterWheelOffsets}">
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblFocuserUseFilterWheelOffsets}">
                                 <TextBlock.ToolTip>
                                     <TextBlock Text="{ns:Loc LblFocuserUseFilterWheelOffsetsTooltip}" />
                                 </TextBlock.ToolTip>
-                        </TextBlock>
+                            </TextBlock>
                             <CheckBox
-                            Width="75"
-                            Height="25"
-                            HorizontalAlignment="Left"
-                            IsChecked="{Binding UseFilterWheelOffsets}" />
+                                Width="75"
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding UseFilterWheelOffsets}" />
                         </UniformGrid>
 
                         <UniformGrid Margin="0,5,0,0" Columns="2">
                             <TextBlock
-                            Height="25"
-                            HorizontalAlignment="Stretch"
-                            Text="{ns:Loc LblFocuserAutoFocusStepSize}">
+                                Height="25"
+                                HorizontalAlignment="Stretch"
+                                Text="{ns:Loc LblFocuserAutoFocusStepSize}">
                                 <TextBlock.ToolTip>
                                     <TextBlock Text="{ns:Loc LblFocuserAutoFocusStepSizeTooltip}" />
                                 </TextBlock.ToolTip>
-                        </TextBlock>
+                            </TextBlock>
                             <TextBox
-                            Height="25"
-                            HorizontalAlignment="Stretch"
-                            Text="{Binding AutoFocusStepSize}" />
+                                Height="25"
+                                HorizontalAlignment="Stretch"
+                                Text="{Binding AutoFocusStepSize}" />
                         </UniformGrid>
 
                         <UniformGrid Margin="0,5,0,0" Columns="2">
                             <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblFocuserAutoFocusInitialOffsetSteps}">
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblFocuserAutoFocusInitialOffsetSteps}">
                                 <TextBlock.ToolTip>
                                     <TextBlock Text="{ns:Loc LblFocuserAutoFocusInitialOffsetStepsTooltip}" />
                                 </TextBlock.ToolTip>
-                        </TextBlock>
+                            </TextBlock>
                             <TextBox
-                            Height="25"
-                            HorizontalAlignment="Stretch"
-                            Text="{Binding AutoFocusInitialOffsetSteps}" />
+                                Height="25"
+                                HorizontalAlignment="Stretch"
+                                Text="{Binding AutoFocusInitialOffsetSteps}" />
                         </UniformGrid>
                         <UniformGrid Margin="0,5,0,0" Columns="2">
                             <TextBlock
-                            MinWidth="200"
-                            MinHeight="20"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblDefaultAutoFocusExposureTime}">
+                                MinWidth="200"
+                                MinHeight="20"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblDefaultAutoFocusExposureTime}">
                                 <TextBlock.ToolTip>
                                     <TextBlock Text="{ns:Loc LblAutoFocusExposureTimeTooltip}" />
                                 </TextBlock.ToolTip>
-                        </TextBlock>
+                            </TextBlock>
                             <TextBox Height="25" HorizontalAlignment="Stretch">
                                 <TextBox.Text>
                                     <Binding Path="AutoFocusExposureTime" UpdateSourceTrigger="LostFocus">
@@ -657,15 +653,18 @@
                             </TextBox>
                         </UniformGrid>
                     </UniformGrid>
-                    <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,1" Margin="0,10,0,0">
+                    <Border
+                        Margin="0,10,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,1,0,1">
                         <Expander Header="{ns:Loc LblAdvancedSettings}">
                             <UniformGrid Columns="2">
                                 <UniformGrid Margin="0,5,0,0" Columns="2">
                                     <TextBlock
-                                    MinWidth="200"
-                                    MinHeight="20"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblFocuserSettleTime}">
+                                        MinWidth="200"
+                                        MinHeight="20"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblFocuserSettleTime}">
                                         <TextBlock.ToolTip>
                                             <TextBlock Text="{ns:Loc LblFocuserSettleTimeTooltip}" />
                                         </TextBlock.ToolTip>
@@ -682,10 +681,10 @@
                                 </UniformGrid>
                                 <UniformGrid Margin="0,5,0,0" Columns="2">
                                     <TextBlock
-                                    MinWidth="200"
-                                    MinHeight="20"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblAutoFocusNumberOfAttempts}">
+                                        MinWidth="200"
+                                        MinHeight="20"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblAutoFocusNumberOfAttempts}">
                                         <TextBlock.ToolTip>
                                             <TextBlock Text="{ns:Loc LblAutoFocusNumberOfAttemptsTooltip}" />
                                         </TextBlock.ToolTip>
@@ -702,10 +701,10 @@
                                 </UniformGrid>
                                 <UniformGrid Margin="0,5,0,0" Columns="2">
                                     <TextBlock
-                                    MinWidth="200"
-                                    MinHeight="20"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblAutoFocusNumberOfFramesPerPoint}">
+                                        MinWidth="200"
+                                        MinHeight="20"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblAutoFocusNumberOfFramesPerPoint}">
                                         <TextBlock.ToolTip>
                                             <TextBlock Text="{ns:Loc LblAutoFocusNumberOfFramesPerPointTooltip}" />
                                         </TextBlock.ToolTip>
@@ -722,10 +721,10 @@
                                 </UniformGrid>
                                 <UniformGrid Margin="0,5,0,0" Columns="2">
                                     <TextBlock
-                                    MinWidth="200"
-                                    MinHeight="20"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblAutoFocusCropRatio}">
+                                        MinWidth="200"
+                                        MinHeight="20"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblAutoFocusCropRatio}">
                                         <TextBlock.ToolTip>
                                             <TextBlock Text="{ns:Loc LblAutoFocusCropRatioTooltip}" />
                                         </TextBlock.ToolTip>
@@ -742,10 +741,10 @@
                                 </UniformGrid>
                                 <UniformGrid Margin="0,5,0,0" Columns="2">
                                     <TextBlock
-                                    MinWidth="200"
-                                    MinHeight="20"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblAFUseBrightestStars}">
+                                        MinWidth="200"
+                                        MinHeight="20"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblAFUseBrightestStars}">
                                         <TextBlock.ToolTip>
                                             <TextBlock Text="{ns:Loc LblAFUseBrightestStarsTooltip}" />
                                         </TextBlock.ToolTip>
@@ -762,10 +761,10 @@
                                 </UniformGrid>
                                 <UniformGrid Margin="0,5,0,0" Columns="3">
                                     <TextBlock
-                                    MinWidth="200"
-                                    MinHeight="20"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblFocuserBacklash}">
+                                        MinWidth="200"
+                                        MinHeight="20"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblFocuserBacklash}">
                                         <TextBlock.ToolTip>
                                             <TextBlock Text="{ns:Loc LblFocuserBacklashTooltip}" />
                                         </TextBlock.ToolTip>
@@ -791,11 +790,10 @@
                                 </UniformGrid>
                                 <UniformGrid Margin="0,5,0,0" Columns="2">
                                     <TextBlock
-                                    MinWidth="200"
-                                    MinHeight="20"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblBinning}">
-                                    </TextBlock>
+                                        MinWidth="200"
+                                        MinHeight="20"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblBinning}" />
                                     <TextBox Height="25" HorizontalAlignment="Stretch">
                                         <TextBox.Text>
                                             <Binding Path="AutoFocusBinning" UpdateSourceTrigger="LostFocus">
@@ -810,13 +808,11 @@
                         </Expander>
                     </Border>
                 </StackPanel>
-            </ScrollViewer>
-        </GroupBox>
-        <GroupBox
-            Grid.Row="3"
-            DataContext="{Binding WeatherDataSettings}"
-            Header="{ns:Loc LblWeather}">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            </GroupBox>
+            <GroupBox
+                Grid.Row="3"
+                DataContext="{Binding WeatherDataSettings}"
+                Header="{ns:Loc LblWeather}">
                 <StackPanel Orientation="Vertical">
                     <UniformGrid Columns="2">
                         <UniformGrid
@@ -874,35 +870,32 @@
                                     <TextBlock Text="{ns:Loc LblWeatherDisplayImperialTooltip}" />
                                 </TextBlock.ToolTip>
                             </TextBlock>
-                            <TextBox
-                                Grid.Column="2"
-                                HorizontalAlignment="Stretch"
-                                DockPanel.Dock="Left"
-                                MinWidth="36"
-                                Text="{Binding OpenWeatherMapAPIKey}" />
-                            <TextBlock
-                                Grid.Column="2"
-                                Width="Auto"
-                                VerticalAlignment="Center"
-                                DockPanel.Dock="Right"
-                                Text="">
-                                <Hyperlink
-                                    Command="{Binding Source={StaticResource AppVM}, Path=OptionsVM.OpenWebRequestCommand}"
-                                    CommandParameter="https://home.openweathermap.org/api_keys">
-                                    <Run Text="?" />
-                                </Hyperlink>
-                            </TextBlock>
+                            <DockPanel>
+                                <TextBox
+                                    MinWidth="36"
+                                    HorizontalAlignment="Stretch"
+                                    DockPanel.Dock="Left"
+                                    Text="{Binding OpenWeatherMapAPIKey}" />
+                                <TextBlock
+                                    Grid.Column="2"
+                                    Width="Auto"
+                                    VerticalAlignment="Center"
+                                    DockPanel.Dock="Right"
+                                    Text="">
+                                    <Hyperlink Command="{Binding Source={StaticResource AppVM}, Path=OptionsVM.OpenWebRequestCommand}" CommandParameter="https://home.openweathermap.org/api_keys">
+                                        <Run Text="?" />
+                                    </Hyperlink>
+                                </TextBlock>
+                            </DockPanel>
                         </UniformGrid>
                     </UniformGrid>
                 </StackPanel>
-            </ScrollViewer>
-        </GroupBox>
-        <GroupBox
-            Grid.Row="2"
-            Grid.Column="1"
-            DataContext="{Binding GuiderSettings}"
-            Header="{ns:Loc LblGuiderSettings}">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            </GroupBox>
+            <GroupBox
+                Grid.Row="2"
+                Grid.Column="1"
+                DataContext="{Binding GuiderSettings}"
+                Header="{ns:Loc LblGuiderSettings}">
                 <StackPanel Orientation="Vertical">
                     <Grid Margin="0,5,0,0">
                         <Grid.ColumnDefinitions>
@@ -1075,7 +1068,7 @@
                         </UniformGrid>
                     </UniformGrid>
                 </StackPanel>
-            </ScrollViewer>
-        </GroupBox>
-    </Grid>
+            </GroupBox>
+        </Grid>
+    </ScrollViewer>
 </UserControl>
