@@ -387,8 +387,14 @@ Quando il trigger è disattivato, l'applicazione si limita ad ignorare l'inizio 
   <s:String x:Key="LblFlatUserPromptFlatTooDim" xml:space="default">I tuoi files sono troppo scuri, aumenta la luce, aggiusta la tolleranza, prova il tempo di esposizione medio o massimo</s:String>
   <s:String x:Key="LblFlatWizard" xml:space="default">Flat Wizard</s:String>
   <s:String x:Key="LblFlatWizardCapture" xml:space="default">Flat Wizard Capture</s:String>
+  <s:String x:Key="LblFLICameraSetup" xml:space="default">Setup FLI Camera</s:String>
+  <s:String x:Key="LblFLIFloodBin" xml:space="default">Binning Flood</s:String>
+  <s:String x:Key="LblFLIFloodDuration" xml:space="default">Durata Flood</s:String>
+  <s:String x:Key="LblFLIFlushCount" xml:space="default">Conteggio Flush pre-esposizione</s:String>
   <s:String x:Key="LblFlip" xml:space="default">Effettuare il flip</s:String>
   <s:String x:Key="LblFlippingScope" xml:space="default">Flipping del Telescopio</s:String>
+  <s:String x:Key="LblFLIPreRBIMitigation" xml:space="default">Mitigazione RBI</s:String>
+  <s:String x:Key="LblFLISnapshotFlood" xml:space="default">Abilitare Flood per snapshot</s:String>
   <s:String x:Key="LblFocalLength" xml:space="default">Lunghezza Focale</s:String>
   <s:String x:Key="LblFocalRatio" xml:space="default">Ratio Focale</s:String>
   <s:String x:Key="LblFocuser" xml:space="default">Focuser</s:String>
