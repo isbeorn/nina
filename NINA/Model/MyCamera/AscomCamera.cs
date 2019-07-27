@@ -1041,13 +1041,10 @@ namespace NINA.Model.MyCamera {
                             }
                         }
 
-                        if (SensorType != SensorType.Color) {
-                            return await ImageData.ImageData.Create((Int32[,])ImageArray, BitDepth, SensorType != SensorType.Monochrome);
-                        } else {
-                            throw new NotSupportedException();
-                        }
+                        return await ImageData.ImageData.Create((Int32[,])ImageArray, BitDepth, SensorType != SensorType.Monochrome);
                     } catch (OperationCanceledException) {
                     } catch (Exception ex) {
+                        Notification.ShowError(ex.Message);
                         Logger.Error(ex);
                     }
                     return null;

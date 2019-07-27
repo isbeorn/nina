@@ -387,8 +387,14 @@ Ist dieser Auslöser deaktiviert, wird dieser Schritt übersprungen.</s:String>
   <s:String x:Key="LblFlatUserPromptFlatTooDim" xml:space="default">Ihre Flats sind zu dunkel, hellen Sie das Licht auf, adjustieren Sie die Toleranz, das Histogrammdurchschnittsziel oder die maximale Belichtungszeit</s:String>
   <s:String x:Key="LblFlatWizard" xml:space="default">Flat Wizard</s:String>
   <s:String x:Key="LblFlatWizardCapture" xml:space="default">Flat Wizard Aufnahme</s:String>
+  <s:String x:Key="LblFLICameraSetup" xml:space="default">FLI Kamerasetup</s:String>
+  <s:String x:Key="LblFLIFloodBin" xml:space="default">Flut Binning</s:String>
+  <s:String x:Key="LblFLIFloodDuration" xml:space="default">Flutdauer</s:String>
+  <s:String x:Key="LblFLIFlushCount" xml:space="default">Anzahl an Flushs vor Belichtung</s:String>
   <s:String x:Key="LblFlip" xml:space="default">Flippen</s:String>
   <s:String x:Key="LblFlippingScope" xml:space="default">Teleskop flippen</s:String>
+  <s:String x:Key="LblFLIPreRBIMitigation" xml:space="default">RBI Mitigation</s:String>
+  <s:String x:Key="LblFLISnapshotFlood" xml:space="default">Snapshots fluten</s:String>
   <s:String x:Key="LblFocalLength" xml:space="default">Brennweite</s:String>
   <s:String x:Key="LblFocalRatio" xml:space="default">Fokusverhältnis</s:String>
   <s:String x:Key="LblFocuser" xml:space="default">Okularauszug</s:String>

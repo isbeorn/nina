@@ -38,123 +38,126 @@
             <TabItem.Header>
                 <TextBlock Style="{StaticResource TabItemTextBox}" Text="{ns:Loc LblGeneral}" />
             </TabItem.Header>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="2*" />
-                    <RowDefinition Height="2*" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
 
-                <GroupBox Header="{ns:Loc LblProfiles}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition Height="45" />
-                        </Grid.RowDefinitions>
+                    <GroupBox Header="{ns:Loc LblProfiles}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition Height="45" />
+                            </Grid.RowDefinitions>
 
-                        <ListView ItemsSource="{Binding Profiles}" SelectedItem="{Binding SelectedProfile}">
-                            <ListView.ItemContainerStyle>
-                                <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="ListViewItem">
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                </Style>
-                            </ListView.ItemContainerStyle>
-                            <ListView.View>
-                                <GridView>
-                                    <GridViewColumn Header="{ns:Loc LblActive}">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <CheckBox
-                                                    Width="20"
-                                                    Height="20"
-                                                    HorizontalAlignment="Center"
-                                                    IsChecked="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}"
-                                                    IsEnabled="False"
-                                                    Style="{StaticResource BorderlessCheckmarkAndEmptyCheckbox}" />
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Width="200" Header="{ns:Loc LblName}">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"
-                                                    Text="{Binding Name}" />
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Header="{ns:Loc LblId}">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"
-                                                    Text="{Binding Id}" />
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
-                        <StackPanel Grid.Row="1" Orientation="Horizontal">
-                            <Button
-                                Width="40"
-                                Margin="0,5,0,5"
-                                Command="{Binding AddProfileCommand}">
-                                <Path
-                                    Margin="5"
-                                    Data="{StaticResource AddSVG}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                    Stretch="Uniform" />
-                            </Button>
-                            <Button
-                                Width="40"
-                                Margin="1,5,0,5"
-                                Command="{Binding CloneProfileCommand}">
-                                <Path
-                                    Margin="5"
-                                    Data="{StaticResource CopySVG}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                    Stretch="Uniform" />
-                            </Button>
-                            <Button
-                                Width="40"
-                                Margin="1,5,0,5"
-                                Command="{Binding RemoveProfileCommand}">
-                                <Path
-                                    Margin="5"
-                                    Data="{StaticResource SubstractSVG}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                    Stretch="Uniform" />
-                            </Button>
-                            <Button
-                                Grid.Column="1"
-                                Width="100"
-                                Margin="1,5,0,5"
-                                Command="{Binding SelectProfileCommand}">
-                                <Button.Content>
-                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblLoadProfile}" />
-                                </Button.Content>
-                                <Button.IsEnabled>
-                                    <MultiBinding Converter="{StaticResource InverseMultiBooleanANDConverter}" FallbackValue="True">
-                                        <Binding Path="CameraVM.CameraInfo.Connected" Source="{StaticResource AppVM}" />
-                                        <Binding Path="FilterWheelVM.FilterWheelInfo.Connected" Source="{StaticResource AppVM}" />
-                                        <Binding Path="FocuserVM.FocuserInfo.Connected" Source="{StaticResource AppVM}" />
-                                        <Binding Path="RotatorVM.RotatorInfo.Connected" Source="{StaticResource AppVM}" />
-                                        <Binding Path="TelescopeVM.TelescopeInfo.Connected" Source="{StaticResource AppVM}" />
-                                        <Binding Path="GuiderVM.Guider.Connected" Source="{StaticResource AppVM}" />
-                                    </MultiBinding>
-                                </Button.IsEnabled>
-                            </Button>
-                        </StackPanel>
-                    </Grid>
-                </GroupBox>
-                <GroupBox Grid.Column="1" Header="{ns:Loc LblGeneral}">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ListView
+                                MaxHeight="180"
+                                ItemsSource="{Binding Profiles}"
+                                SelectedItem="{Binding SelectedProfile}">
+                                <ListView.ItemContainerStyle>
+                                    <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="{ns:Loc LblActive}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <CheckBox
+                                                        Width="20"
+                                                        Height="20"
+                                                        HorizontalAlignment="Center"
+                                                        IsChecked="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}"
+                                                        IsEnabled="False"
+                                                        Style="{StaticResource BorderlessCheckmarkAndEmptyCheckbox}" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="200" Header="{ns:Loc LblName}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Text="{Binding Name}" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="{ns:Loc LblId}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Text="{Binding Id}" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                <Button
+                                    Width="40"
+                                    Margin="0,5,0,5"
+                                    Command="{Binding AddProfileCommand}">
+                                    <Path
+                                        Margin="5"
+                                        Data="{StaticResource AddSVG}"
+                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                        Stretch="Uniform" />
+                                </Button>
+                                <Button
+                                    Width="40"
+                                    Margin="1,5,0,5"
+                                    Command="{Binding CloneProfileCommand}">
+                                    <Path
+                                        Margin="5"
+                                        Data="{StaticResource CopySVG}"
+                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                        Stretch="Uniform" />
+                                </Button>
+                                <Button
+                                    Width="40"
+                                    Margin="1,5,0,5"
+                                    Command="{Binding RemoveProfileCommand}">
+                                    <Path
+                                        Margin="5"
+                                        Data="{StaticResource SubstractSVG}"
+                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                        Stretch="Uniform" />
+                                </Button>
+                                <Button
+                                    Grid.Column="1"
+                                    Width="100"
+                                    Margin="1,5,0,5"
+                                    Command="{Binding SelectProfileCommand}">
+                                    <Button.Content>
+                                        <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblLoadProfile}" />
+                                    </Button.Content>
+                                    <Button.IsEnabled>
+                                        <MultiBinding Converter="{StaticResource InverseMultiBooleanANDConverter}" FallbackValue="True">
+                                            <Binding Path="CameraVM.CameraInfo.Connected" Source="{StaticResource AppVM}" />
+                                            <Binding Path="FilterWheelVM.FilterWheelInfo.Connected" Source="{StaticResource AppVM}" />
+                                            <Binding Path="FocuserVM.FocuserInfo.Connected" Source="{StaticResource AppVM}" />
+                                            <Binding Path="RotatorVM.RotatorInfo.Connected" Source="{StaticResource AppVM}" />
+                                            <Binding Path="TelescopeVM.TelescopeInfo.Connected" Source="{StaticResource AppVM}" />
+                                            <Binding Path="GuiderVM.Guider.Connected" Source="{StaticResource AppVM}" />
+                                        </MultiBinding>
+                                    </Button.IsEnabled>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Grid.Column="1" Header="{ns:Loc LblGeneral}">
                         <StackPanel>
                             <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                                 <TextBlock
@@ -301,10 +304,8 @@
                                 </TextBox>
                             </StackPanel>
                         </StackPanel>
-                    </ScrollViewer>
-                </GroupBox>
-                <GroupBox Grid.Row="1" Header="{ns:Loc LblCurrentUIColorSchema}">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    </GroupBox>
+                    <GroupBox Grid.Row="1" Header="{ns:Loc LblCurrentUIColorSchema}">
                         <UniformGrid Columns="2">
                             <StackPanel Orientation="Vertical">
 
@@ -496,13 +497,11 @@
                                 </StackPanel>
                             </StackPanel>
                         </UniformGrid>
-                    </ScrollViewer>
-                </GroupBox>
-                <GroupBox
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Header="{ns:Loc LblAlternativeUIColorSchema}">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    </GroupBox>
+                    <GroupBox
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Header="{ns:Loc LblAlternativeUIColorSchema}">
                         <UniformGrid Columns="2">
                             <StackPanel Orientation="Vertical">
                                 <ComboBox
@@ -688,10 +687,8 @@
                                 </StackPanel>
                             </StackPanel>
                         </UniformGrid>
-                    </ScrollViewer>
-                </GroupBox>
-                <GroupBox Grid.Row="2" Header="{ns:Loc LblAstrometry}">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    </GroupBox>
+                    <GroupBox Grid.Row="2" Header="{ns:Loc LblAstrometry}">
                         <StackPanel Margin="0,5,0,0">
                             <UniformGrid Columns="2">
                                 <StackPanel Orientation="Horizontal">
@@ -742,6 +739,8 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         Text="{Binding Longitude}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
                                     <Button
                                         Width="40"
                                         Height="30"
@@ -775,9 +774,9 @@
                                 </StackPanel>
                             </UniformGrid>
                         </StackPanel>
-                    </ScrollViewer>
-                </GroupBox>
-            </Grid>
+                    </GroupBox>
+                </Grid>
+            </ScrollViewer>
         </TabItem>
         <TabItem>
             <TabItem.Header>

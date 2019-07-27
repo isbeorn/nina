@@ -63,6 +63,7 @@
 <li>A new focuser settle time parameter has been added, in case the focuser shifts the image when moving (SCT, lens belt focusing, etc.). This should help with auto-focus in particular.</li>
 <li>Focuser backlash (in and out) can now be specified. The backlash will be applied to focuser movements whenever the focuser reverses directions.</li>
 <li>A new Measure Backlash tool has been added in the Auto-Focus view in the imaging tab. When launched, NINA will automatically measure focuser backlash IN and OUT.</li>
+<li>Sequence Auto-Focus can now be triggered if measured HFR of any frame is X% worse than the first frame taken after the previous auto-focus routine.</li>
 <li>More resilient autofocus:
 <ul>
 <li>Ability to automatically reattempt autofocus from scratch several times in case it failed</li>
@@ -147,6 +148,7 @@
 <li>Fixed scrolling through Framing Assistant Offline Sky Map while cursor was inside Rectangle ignored zooming</li>
 <li>Fixed Alitude charts displaying wrong Twilight/Night predictions for some scenarios</li>
 <li>Manual focus target list was not updating in some scenarios. Now it will always update. The interval for updates is one minute.</li>
+<li>Fixed an issue in FramingAssistant when reloading the image and having multiple panels selected, that the orientation was not considered properly resulting in wrong coordinates</li>
 </ul>
 <h2 id="improvements">Improvements</h2>
 <ul>
