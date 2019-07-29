@@ -137,7 +137,7 @@ namespace NINA.Model.MyCamera {
                 if (CanSetTemperature) {
                     return (double)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP);
                 } else {
-                    return Double.NaN;
+                    return double.NaN;
                 }
             }
             set {
