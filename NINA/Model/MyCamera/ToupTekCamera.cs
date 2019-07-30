@@ -72,7 +72,7 @@ namespace NINA.Model.MyCamera {
                     camera.get_Option(ToupCam.eOPTION.OPTION_TECTARGET, out var target);
                     return target / 10.0;
                 } else {
-                    return double.MinValue;
+                    return double.NaN;
                 }
             }
             set {

@@ -943,7 +943,7 @@ namespace NINA.Model.MyCamera {
 
         public double TemperatureSetPoint {
             get {
-                double val = double.MinValue;
+                double val = double.NaN;
                 if (Connected && CanSetTemperature) {
                     val = _camera.SetCCDTemperature;
                 }
