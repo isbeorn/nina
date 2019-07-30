@@ -1,7 +1,8 @@
-# Version 1.0
+# Version 1.10
 
 ## Improvements
 - HFR calculation is now computed using the mean background surrounding the star, rather than the image mean
+- Added ability to keep guiding during autofocus
 
 # Version 1.9
 

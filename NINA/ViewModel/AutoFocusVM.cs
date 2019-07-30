@@ -435,7 +435,9 @@ namespace NINA.ViewModel {
             }
 
             try {
-                await this.guiderMediator.StopGuiding(token);
+                if (profileService.ActiveProfile.FocuserSettings.AutoFocusDisableGuiding) { 
+                    await this.guiderMediator.StopGuiding(token);
+                }
 
                 //Get initial position information, as average of multiple exposures, if configured this way
                 initialHFR = await GetAverageHFR(filter, profileService.ActiveProfile.FocuserSettings.AutoFocusNumberOfFramesPerPoint, token, progress);

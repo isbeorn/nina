@@ -309,6 +309,8 @@ Quando le linee non sono allineate significa che c'è un errore di allineamento 
   <s:String x:Key="LblDirectGuiderTelescopeDisconnect" xml:space="default">Il telescopio è disconnesso.Il Guider Diretto verrà disconnesso. Il dithering non è più attivo!</s:String>
   <s:String x:Key="LblDirectoryNotFound" xml:space="default">Directory per salvare le immagini non trovata!</s:String>
   <s:String x:Key="LblDirectoryNotWritable" xml:space="default">La directory per salvare le imamgini non ha permesso in scrittura!</s:String>
+  <s:String x:Key="LblDisableAFGuiding" xml:space="default">Disabilita Guida AF</s:String>
+  <s:String x:Key="LblDisableAFGuidingTooltip" xml:space="default">Disabilita guida durante l'auto-focus</s:String>
   <s:String x:Key="LblDisconnect" xml:space="default">Disconnetti</s:String>
   <s:String x:Key="LblDisconnectAll" xml:space="default">Disconnettere tutti i devices?</s:String>
   <s:String x:Key="LblDistance" xml:space="default">Distanza</s:String>

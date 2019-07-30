@@ -41,6 +41,7 @@ namespace NINA.Profile {
             autoFocusStepSize = 10;
             autoFocusInitialOffsetSteps = 4;
             autoFocusExposureTime = 6;
+            autoFocusDisableGuiding = true;
             focuserSettleTime = 0;
             autoFocusTotalNumberOfAttempts = 1;
             autoFocusNumberOfFramesPerPoint = 1;
@@ -121,6 +122,21 @@ namespace NINA.Profile {
             set {
                 if (autoFocusExposureTime != value) {
                     autoFocusExposureTime = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool autoFocusDisableGuiding;
+
+        [DataMember]
+        public bool AutoFocusDisableGuiding {
+            get {
+                return autoFocusDisableGuiding;
+            }
+            set {
+                if (autoFocusDisableGuiding != value) {
+                    autoFocusDisableGuiding = value;
                     RaisePropertyChanged();
                 }
             }
