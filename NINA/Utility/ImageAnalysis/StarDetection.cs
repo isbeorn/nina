@@ -127,17 +127,9 @@ namespace NINA.Utility.ImageAnalysis {
 
         public int DetectedStars { get; private set; }
         public double AverageHFR { get; private set; }
-        public double CropRatio { get; set; }
-
-        public bool ignoreImageEdges = false;
-        public bool IgnoreImageEdges {
-            get { 
-                return ignoreImageEdges;
-            }
-            set { 
-            ignoreImageEdges = value;
-            } 
-        }
+        public double InnerCropRatio { get; set; }
+        public bool UseROI { get; set; } = false;
+        public double OuterCropRatio { get; set; }
 
         private class Star {
             public double radius;
@@ -272,6 +264,26 @@ namespace NINA.Utility.ImageAnalysis {
             return;
         }
 
+        private bool InROI(Blob blob) {
+            if (OuterCropRatio == 1 && (blob.Rectangle.X + blob.Rectangle.Width / 2 > (1 - InnerCropRatio) * _bitmapToAnalyze.Width / 2
+                && blob.Rectangle.X + blob.Rectangle.Width / 2 < _bitmapToAnalyze.Width * (1 - (1 - InnerCropRatio) / 2)
+                && blob.Rectangle.Y + blob.Rectangle.Height / 2 > (1 - InnerCropRatio) * _bitmapToAnalyze.Height / 2
+                && blob.Rectangle.Y + blob.Rectangle.Height / 2 < _bitmapToAnalyze.Height * (1 - (1 - InnerCropRatio) / 2))) {
+                return true;
+            }
+            if (OuterCropRatio < 1 && (blob.Rectangle.X + blob.Rectangle.Width / 2 < (1 - InnerCropRatio) * _bitmapToAnalyze.Width / 2
+                || blob.Rectangle.X + blob.Rectangle.Width / 2 > _bitmapToAnalyze.Width * (1 - (1 - InnerCropRatio) / 2)
+                || blob.Rectangle.Y + blob.Rectangle.Height / 2 < (1 - InnerCropRatio) * _bitmapToAnalyze.Height / 2
+                || blob.Rectangle.Y + blob.Rectangle.Height / 2 > _bitmapToAnalyze.Height * (1 - (1 - InnerCropRatio) / 2)) &&
+                (blob.Rectangle.X + blob.Rectangle.Width / 2 > (1 - OuterCropRatio) * _bitmapToAnalyze.Width / 2
+                && blob.Rectangle.X + blob.Rectangle.Width / 2 < _bitmapToAnalyze.Width * (1 - (1 - OuterCropRatio) / 2)
+                && blob.Rectangle.Y + blob.Rectangle.Height / 2 > (1 - OuterCropRatio) * _bitmapToAnalyze.Height / 2
+                && blob.Rectangle.Y + blob.Rectangle.Height / 2 < _bitmapToAnalyze.Height * (1 - (1 - OuterCropRatio) / 2))) {
+                return true;
+            }
+            return false;
+        }
+
         private List<Star> IdentifyStars() {
             Blob[] blobs = _blobCounter.GetObjectsInformation();
             SimpleShapeChecker checker = new SimpleShapeChecker();
@@ -288,14 +300,11 @@ namespace NINA.Utility.ImageAnalysis {
                     continue;
                 }
 
-                // If camera cannot subSample, but crop ratio is set, ignore blobs that are too close to the edge
-                if (IgnoreImageEdges
-                    && (blob.Rectangle.X + blob.Rectangle.Width / 2 < (1 - CropRatio) * _bitmapToAnalyze.Width / 2 
-                    || blob.Rectangle.X + blob.Rectangle.Width / 2 > _bitmapToAnalyze.Width * (1 - (1 - CropRatio) / 2)
-                    || blob.Rectangle.Y + blob.Rectangle.Height / 2 < (1 - CropRatio) * _bitmapToAnalyze.Height / 2
-                    || blob.Rectangle.Y + blob.Rectangle.Height / 2 > _bitmapToAnalyze.Height * (1 - (1 - CropRatio) / 2))) { 
+                // If camera cannot subSample, but crop ratio is set, use blobs that are either within or without the ROI
+                if (UseROI && !InROI(blob)) {
                     continue;
                 }
+
                 var points = _blobCounter.GetBlobsEdgePoints(blob);
                 AForge.Point centerpoint;
                 float radius;
@@ -431,8 +440,11 @@ namespace NINA.Utility.ImageAnalysis {
                             }
                         }
 
-                        if (IgnoreImageEdges) {
-                            graphics.DrawRectangle(RECTPEN, (float)(1 - CropRatio) * statistics.Width / 2, (float)(1 - CropRatio) * statistics.Height / 2, (float)CropRatio * statistics.Width, (float)CropRatio * statistics.Height);
+                        if (UseROI) {
+                            graphics.DrawRectangle(RECTPEN, (float)(1 - InnerCropRatio) * statistics.Width / 2, (float)(1 - InnerCropRatio) * statistics.Height / 2, (float)InnerCropRatio * statistics.Width, (float)InnerCropRatio * statistics.Height);
+                            if (OuterCropRatio < 1) {
+                                graphics.DrawRectangle(RECTPEN, (float)(1 - OuterCropRatio) * statistics.Width / 2, (float)(1 - OuterCropRatio) * statistics.Height / 2, (float)OuterCropRatio * statistics.Width, (float)OuterCropRatio * statistics.Height);
+                            }
                         }
 
                         var img = ImageUtility.ConvertBitmap(newBitmap, System.Windows.Media.PixelFormats.Bgr24);

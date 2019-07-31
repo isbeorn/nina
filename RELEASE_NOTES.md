@@ -1,6 +1,7 @@
 # Version 1.10
 
 ## Improvements
+- The autofocus crop ratio has been changed to Inner Crop Ratio, and an additional Outer Crop Ratio has been added. This lets users define centered ROI, or a centered "square doughnut" which will be used by star detection, thus avoiding stars in the center and at the edges of the FO
 - HFR calculation is now computed using the mean background surrounding the star, rather than the image mean
 - Added ability to keep guiding during autofocus
 

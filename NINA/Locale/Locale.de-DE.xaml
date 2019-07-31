@@ -60,13 +60,15 @@ Soll die Anwendung versuchen sich von dem Fehler zu erholen? (Kann zu unerwartet
   <s:String x:Key="LblAutoFocusAfterSetTime" xml:space="default">Nach verstrichener Zeit</s:String>
   <s:String x:Key="LblAutoFocusAfterTemperatureChange" xml:space="default">Nach Temperaturänderung</s:String>
   <s:String x:Key="LblAutoFocusAfterTemperatureChangeAmount" xml:space="default">Temperaturbetrag</s:String>
-  <s:String x:Key="LblAutoFocusCropRatio" xml:space="default">AF Crop Ratio</s:String>
-  <s:String x:Key="LblAutoFocusCropRatioTooltip" xml:space="preserve">If set to a value less than one, star detection during autofocus will only use
-a centered subframe of the total sensor (if supported by camera). If unsupported
-by the camera, stars near the edge will be ignored during star detection.</s:String>
   <s:String x:Key="LblAutoFocusExposureTime" xml:space="default">Autofokus Belichtungszeit</s:String>
   <s:String x:Key="LblAutoFocusExposureTimeTooltip" xml:space="default">Belichtungszeit, die für Autofokus genutzt werden soll, falls kein Filter genutzt wird oder der Filterspezifische Wert null ist.</s:String>
   <s:String x:Key="LblAutoFocusGearNotConnected" xml:space="default">Autofokus kann nicht gestartet werden. Kamera oder Motorfokus ist nicht verbunden!</s:String>
+    <s:String x:Key="LblAutoFocusInnerCropRatio" xml:space="default">AF inneres Crop Verhältnis</s:String>
+    <s:String x:Key="LblAutoFocusInnerCropRatioTooltip" xml:space="preserve">Bei einem Wert kleiner eins wird die Sternerkennung während des Autofokuses
+ein zentriertes Teilbild des gesamten Sensors nutzen (sofern von der Kamera unterstützt).
+Falls nicht von der Kamera unterstützt, werden die Sterne in der nähe des Randes ignoriert. 
+Bei einer Kombination des äußeren und inneren Crop Faktors wird ein rechteckiger Teilbereich
+zwischen äußerem Rand und dem inneren Bereich für den Autofokus benutzt.</s:String>
   <s:String x:Key="LblAutoFocusNewWorseThanOriginal" xml:space="default">Neuer Fokuspunkt HFR {0} erheblich schlechter als der ursprüngliche HFR {1}</s:String>
   <s:String x:Key="LblAutoFocusNotEnoughtSpreadedPoints" xml:space="default">Die HFR Werte der Fokuspunkte liegen zu dicht beieinander. Entweder ist der Okularauszug zu weit außerhalb des Fokuses oder die Schrittgröße ist zu klein eingestellt.</s:String>
   <s:String x:Key="LblAutoFocusNrOfExposures" xml:space="default"># Bildern</s:String>
@@ -76,6 +78,7 @@ by the camera, stars near the edge will be ignored during star detection.</s:Str
   <s:String x:Key="LblAutoFocusNumberOfFramesPerPointTooltip" xml:space="default">Wieviele Bilder pro Fokuspunkt aufgenommen werden. Ist dies größer als eins, werden mehrere Bilder pro Fokuspunkt aufgenommen und deren durchschnittlicher HFR ermittelt um den Fokuspunkt HFR zu berechnen.</s:String>
   <s:String x:Key="LblAutoFocusOnFilterChange" xml:space="default">Bei Filterwechsel</s:String>
   <s:String x:Key="LblAutoFocusOnStart" xml:space="default">Beim Start</s:String>
+    <s:String x:Key="LblAutoFocusOuterCropRatio" xml:space="default">AF äußeres Crop Verhältnis</s:String>
   <s:String x:Key="LblAutoFocusReattempting" xml:space="default">Wiederhole Autofocus</s:String>
   <s:String x:Key="LblAutoFocusRestoringOriginalPosition" xml:space="default">Stelle ursprüngliche Fokusposition wieder her</s:String>
   <s:String x:Key="LblAutoFocusSetTime" xml:space="default">Zeit</s:String>

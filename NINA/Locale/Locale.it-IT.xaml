@@ -60,13 +60,15 @@ Vuoi che l'applicazione provi a risolvere quell'errore? (Può portare a comporta
   <s:String x:Key="LblAutoFocusAfterSetTime" xml:space="default">Dopo tempo trascorso</s:String>
   <s:String x:Key="LblAutoFocusAfterTemperatureChange" xml:space="default">Dopo cambiamento temperatura</s:String>
   <s:String x:Key="LblAutoFocusAfterTemperatureChangeAmount" xml:space="default">Valore Temperatura</s:String>
-  <s:String x:Key="LblAutoFocusCropRatio" xml:space="default">AF Crop Ratio</s:String>
-  <s:String x:Key="LblAutoFocusCropRatioTooltip" xml:space="preserve">Se impostato ad un valore inferiore ad uno, la detection delle stelle durante l'autofocus userà
-solo la parte centrale del sensore (se supportato dalla camera). Se non supportato dalla camera, le
-stelle nei pressi dei bordi dell' immagine saranno ignorate durante la detection automatica.</s:String>
   <s:String x:Key="LblAutoFocusExposureTime" xml:space="default">Tempo di esposizione Auto Focus</s:String>
   <s:String x:Key="LblAutoFocusExposureTimeTooltip" xml:space="default">Tempo di Esposizione usato per l-auto-focs qaundo non è impostato alcun tempo specifico per il filtro o se il tempo specifico per il filtro è zero</s:String>
   <s:String x:Key="LblAutoFocusGearNotConnected" xml:space="default">Impossibile iniziare Auto Focus. Camera o Focuser non connessi!</s:String>
+  <s:String x:Key="LblAutoFocusInnerCropRatio" xml:space="default">AF Crop Ratio Interna</s:String>
+  <s:String x:Key="LblAutoFocusInnerCropRatioTooltip" xml:space="preserve">Se impostato ad un valore inferiore ad uno, il rilevamento delle stelle durante l'autofocus userà
+soltanto una parte centrale del sensore (se supportato dalla camera). Qualora questo non fosse supportato, le
+stelle nei pressi dei bordi verranno ignorate durante il rilevamento delle stelle. Se usato in combinazione con una Crop Ratio Esterna
+inferiore ad uno, una fetta rettangolare dell'immagine (tra il rettangolo interno e quello esterno) sarà usata per l'autofocus.
+  </s:String>
   <s:String x:Key="LblAutoFocusNewWorseThanOriginal" xml:space="default">Il nuovo HFR {0} del punto di fuoco è considerabilmente peggiore dell' HFR originale {1}</s:String>
   <s:String x:Key="LblAutoFocusNotEnoughtSpreadedPoints" xml:space="default">Insufficiente differenza HFR per impostare i punti di focus. O la dimensione dello step Comando avvio porta snap del telescopio troppo bassa o le stelle sono troppo sfuocate.</s:String>
   <s:String x:Key="LblAutoFocusNrOfExposures" xml:space="default"># esposizioni</s:String>
@@ -76,6 +78,7 @@ stelle nei pressi dei bordi dell' immagine saranno ignorate durante la detection
   <s:String x:Key="LblAutoFocusNumberOfFramesPerPointTooltip" xml:space="default">Quanti fotogrammi prendere per ogni punto di fuoco. Se maggiore di uno, svaruiati fotogrammi verranno presi per un punto di fuoco e la media dei loro HFR verrà usata per calcolare l'HFR del punto di fuoco.</s:String>
   <s:String x:Key="LblAutoFocusOnFilterChange" xml:space="default">Quando cambia filtro</s:String>
   <s:String x:Key="LblAutoFocusOnStart" xml:space="default">All'avvio</s:String>
+  <s:String x:Key="LblAutoFocusOuterCropRatio" xml:space="default">AF Crop Ratio Esterna</s:String>
   <s:String x:Key="LblAutoFocusReattempting" xml:space="default">Riprovando Autofocus</s:String>
   <s:String x:Key="LblAutoFocusRestoringOriginalPosition" xml:space="default">Ripristinando posizione di fuoco iniziale</s:String>
   <s:String x:Key="LblAutoFocusSetTime" xml:space="default">Tempo</s:String>

@@ -45,7 +45,8 @@ namespace NINA.Profile {
             focuserSettleTime = 0;
             autoFocusTotalNumberOfAttempts = 1;
             autoFocusNumberOfFramesPerPoint = 1;
-            autoFocusCropRatio = 1;
+            autoFocusInnerCropRatio = 1;
+            autoFocusOuterCropRatio = 1;
             autoFocusUseBrightestStars = 0;
             backlashIn = 0;
             backlashOut = 0;
@@ -189,22 +190,31 @@ namespace NINA.Profile {
             }
         }
 
-        private double autoFocusCropRatio;
+        private double autoFocusInnerCropRatio;
 
         [DataMember]
-        public double AutoFocusCropRatio {
+        public double AutoFocusInnerCropRatio {
             get {
-                return autoFocusCropRatio;
+                return autoFocusInnerCropRatio;
             }
             set {
-                if (autoFocusCropRatio != value) {
-                    if (value > 1) {
-                        autoFocusCropRatio = 1; 
-                    } else if (value < 0.2) {
-                        autoFocusCropRatio = 0.2;
-                    } else {
-                        autoFocusCropRatio = value;
-                    }
+                if (autoFocusInnerCropRatio != value) {
+                    autoFocusInnerCropRatio = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private double autoFocusOuterCropRatio;
+
+        [DataMember]
+        public double AutoFocusOuterCropRatio {
+            get {
+                return autoFocusOuterCropRatio;
+            }
+            set {
+                if (autoFocusOuterCropRatio != value) {
+                    autoFocusOuterCropRatio = value;
                     RaisePropertyChanged();
                 }
             }
