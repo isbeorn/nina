@@ -29,10 +29,12 @@ namespace NINA.Profile {
         int AutoFocusStepSize { get; set; }
         string Id { get; set; }
         bool UseFilterWheelOffsets { get; set; }
+        bool AutoFocusDisableGuiding { get; set; }
         int FocuserSettleTime { get; set;}
         int AutoFocusTotalNumberOfAttempts { get; set; }
         int AutoFocusNumberOfFramesPerPoint { get; set; }
-        double AutoFocusCropRatio { get; set; }
+        double AutoFocusInnerCropRatio { get; set; }
+        double AutoFocusOuterCropRatio { get; set;}
         int AutoFocusUseBrightestStars { get; set; }
         int BacklashIn { get; set; }
         int BacklashOut { get; set; }

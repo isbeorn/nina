@@ -664,6 +664,22 @@
                                         MinWidth="200"
                                         MinHeight="20"
                                         VerticalAlignment="Center"
+                                        Text="{ns:Loc LblDisableAFGuiding}">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblDisableAFGuidingTooltip}" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <CheckBox
+                                        Width="75"
+                                        Height="25"
+                                        HorizontalAlignment="Left"
+                                        IsChecked="{Binding AutoFocusDisableGuiding}" />
+                                </UniformGrid>
+                                <UniformGrid Margin="0,5,0,0" Columns="2">
+                                    <TextBlock
+                                        MinWidth="200"
+                                        MinHeight="20"
+                                        VerticalAlignment="Center"
                                         Text="{ns:Loc LblFocuserSettleTime}">
                                         <TextBlock.ToolTip>
                                             <TextBlock Text="{ns:Loc LblFocuserSettleTimeTooltip}" />
@@ -721,30 +737,10 @@
                                 </UniformGrid>
                                 <UniformGrid Margin="0,5,0,0" Columns="2">
                                     <TextBlock
-                                        MinWidth="200"
-                                        MinHeight="20"
-                                        VerticalAlignment="Center"
-                                        Text="{ns:Loc LblAutoFocusCropRatio}">
-                                        <TextBlock.ToolTip>
-                                            <TextBlock Text="{ns:Loc LblAutoFocusCropRatioTooltip}" />
-                                        </TextBlock.ToolTip>
-                                    </TextBlock>
-                                    <TextBox Height="25" HorizontalAlignment="Stretch">
-                                        <TextBox.Text>
-                                            <Binding Path="AutoFocusCropRatio" UpdateSourceTrigger="LostFocus">
-                                                <Binding.ValidationRules>
-                                                    <rules:StrictGreaterZeroRule />
-                                                </Binding.ValidationRules>
-                                            </Binding>
-                                        </TextBox.Text>
-                                    </TextBox>
-                                </UniformGrid>
-                                <UniformGrid Margin="0,5,0,0" Columns="2">
-                                    <TextBlock
-                                        MinWidth="200"
-                                        MinHeight="20"
-                                        VerticalAlignment="Center"
-                                        Text="{ns:Loc LblAFUseBrightestStars}">
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblAFUseBrightestStars}">
                                         <TextBlock.ToolTip>
                                             <TextBlock Text="{ns:Loc LblAFUseBrightestStarsTooltip}" />
                                         </TextBlock.ToolTip>
@@ -754,6 +750,56 @@
                                             <Binding Path="AutoFocusUseBrightestStars" UpdateSourceTrigger="LostFocus">
                                                 <Binding.ValidationRules>
                                                     <rules:GreaterZeroRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                </UniformGrid>
+                                <UniformGrid Margin="0,5,0,0" Columns="2">
+                                    <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblAutoFocusInnerCropRatio}">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblAutoFocusInnerCropRatioTooltip}" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <TextBox Height="25" HorizontalAlignment="Stretch">
+                                        <TextBox.Resources>
+                                            <util:BindingProxy x:Key="proxy" Data="{Binding}" />
+                                        </TextBox.Resources>
+                                        <TextBox.Text>
+                                            <Binding Path="AutoFocusInnerCropRatio" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:DoubleRangeRule>
+                                                        <rules:DoubleRangeRule.ValidRange>
+                                                            <rules:DoubleRangeChecker Maximum="{Binding Source={StaticResource proxy}, Path=Data.AutoFocusOuterCropRatio}" Minimum="0.2" />
+                                                        </rules:DoubleRangeRule.ValidRange>
+                                                    </rules:DoubleRangeRule>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                </UniformGrid>
+                                <UniformGrid Margin="0,5,0,0" Columns="2">
+                                    <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblAutoFocusOuterCropRatio}" />
+                                    <TextBox Height="25" HorizontalAlignment="Stretch">
+                                        <TextBox.Resources>
+                                            <util:BindingProxy x:Key="proxy" Data="{Binding}" />
+                                        </TextBox.Resources>
+                                        <TextBox.Text>
+                                            <Binding Path="AutoFocusOuterCropRatio" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:DoubleRangeRule>
+                                                        <rules:DoubleRangeRule.ValidRange>
+                                                            <rules:DoubleRangeChecker Maximum="1" Minimum="{Binding Source={StaticResource proxy}, Path=Data.AutoFocusInnerCropRatio}" />
+                                                        </rules:DoubleRangeRule.ValidRange>
+                                                    </rules:DoubleRangeRule>
                                                 </Binding.ValidationRules>
                                             </Binding>
                                         </TextBox.Text>

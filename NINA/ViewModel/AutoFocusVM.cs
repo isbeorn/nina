@@ -243,9 +243,10 @@ namespace NINA.ViewModel {
             }
 
             var analysis = new StarDetection(image, pixelFormat, profileService.ActiveProfile.ImageSettings.StarSensitivity, profileService.ActiveProfile.ImageSettings.NoiseReduction);
-            if (profileService.ActiveProfile.FocuserSettings.AutoFocusCropRatio < 1 && !_setSubSample) {
-                analysis.IgnoreImageEdges = true;
-                analysis.CropRatio = profileService.ActiveProfile.FocuserSettings.AutoFocusCropRatio;
+            if (profileService.ActiveProfile.FocuserSettings.AutoFocusInnerCropRatio < 1 && !_setSubSample) {
+                analysis.UseROI = true;
+                analysis.InnerCropRatio = profileService.ActiveProfile.FocuserSettings.AutoFocusInnerCropRatio;
+                analysis.OuterCropRatio = profileService.ActiveProfile.FocuserSettings.AutoFocusOuterCropRatio;
             }
 
             //Let's set the brightest star list - if it's the first exposure, it's going to be empty
@@ -418,10 +419,10 @@ namespace NINA.ViewModel {
 
             System.Drawing.Rectangle oldSubSample = new System.Drawing.Rectangle(); 
 
-            if (profileService.ActiveProfile.FocuserSettings.AutoFocusCropRatio < 1 && cameraInfo.CanSubSample) {
+            if (profileService.ActiveProfile.FocuserSettings.AutoFocusInnerCropRatio < 1 && profileService.ActiveProfile.FocuserSettings.AutoFocusOuterCropRatio == 1 && cameraInfo.CanSubSample) {
                 oldSubSample = new System.Drawing.Rectangle(cameraInfo.SubSampleX, cameraInfo.SubSampleY, cameraInfo.SubSampleWidth, cameraInfo.SubSampleHeight);
-                int subSampleWidth = (int)Math.Round(cameraInfo.XSize * profileService.ActiveProfile.FocuserSettings.AutoFocusCropRatio);
-                int subSampleHeight = (int)Math.Round(cameraInfo.YSize * profileService.ActiveProfile.FocuserSettings.AutoFocusCropRatio);
+                int subSampleWidth = (int)Math.Round(cameraInfo.XSize * profileService.ActiveProfile.FocuserSettings.AutoFocusInnerCropRatio);
+                int subSampleHeight = (int)Math.Round(cameraInfo.YSize * profileService.ActiveProfile.FocuserSettings.AutoFocusInnerCropRatio);
                 int subSampleX = (int)Math.Round((cameraInfo.XSize - subSampleWidth) / 2.0d);
                 int subSampleY = (int)Math.Round((cameraInfo.YSize - subSampleHeight) / 2.0d);
                 try { 
@@ -435,7 +436,9 @@ namespace NINA.ViewModel {
             }
 
             try {
-                await this.guiderMediator.StopGuiding(token);
+                if (profileService.ActiveProfile.FocuserSettings.AutoFocusDisableGuiding) { 
+                    await this.guiderMediator.StopGuiding(token);
+                }
 
                 //Get initial position information, as average of multiple exposures, if configured this way
                 initialHFR = await GetAverageHFR(filter, profileService.ActiveProfile.FocuserSettings.AutoFocusNumberOfFramesPerPoint, token, progress);
