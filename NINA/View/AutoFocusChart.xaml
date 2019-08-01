@@ -55,7 +55,7 @@
                 <oxy:LinearAxis
                     AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                     EndPosition="1"
-                    IsPanEnabled="False"
+                    IsPanEnabled="True"
                     IsZoomEnabled="False"
                     MajorGridlineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}, Converter={StaticResource SetAlphaToColorConverter}, ConverterParameter=60}"
                     MajorGridlineStyle="LongDash"
@@ -67,13 +67,20 @@
                     TicklineColor="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
-                <oxy:LineSeries
+                <oxy:ScatterErrorSeries
                     DataFieldX="FocusPosition"
                     DataFieldY="HFR"
                     ItemsSource="{Binding FocusPoints}"
                     MarkerFill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                     MarkerType="Circle"
-                    Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
+                    ErrorBarColor="{Binding Path=Color, Source={StaticResource NotificationErrorBrush}}"
+                    ErrorBarStrokeThickness="2"
+                    ErrorBarStopWidth="2"/>
+                <oxy:LineSeries
+                    DataFieldX="FocusPosition"
+                    DataFieldY="HFR"
+                    ItemsSource="{Binding PlotFocusPoints}"
+                    Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"/>
             </oxy:Plot.Series>
             <oxy:Plot.Annotations>
                 <oxy:LineAnnotation
@@ -84,6 +91,36 @@
                     Intercept="{Binding RightTrend.Offset}"
                     Slope="{Binding RightTrend.Slope}"
                     Color="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}" />
+                <oxy:FunctionAnnotation
+                    Equation="{Binding QuadraticFitting}"
+                    Color="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}" />
+                <oxy:FunctionAnnotation
+                    Equation="{Binding HyperbolicFitting}"
+                    Color="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}" />
+                <oxy:PointAnnotation
+                    X="{Binding FinalFocusPoint.X}"
+                    Y="{Binding FinalFocusPoint.Y}"
+                    Stroke="{Binding Path=Color, Source={StaticResource NotificationErrorBrush}}"
+                    Fill="{Binding Path=Color, Source={StaticResource NotificationErrorBrush}}"
+                    Shape="Diamond"/>
+                <oxy:PointAnnotation
+                    X="{Binding QuadraticMinimum.X}"
+                    Y="{Binding QuadraticMinimum.Y}"
+                    Stroke="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}"
+                    Fill="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}"
+                    Shape="Circle" />
+                <oxy:PointAnnotation
+                    X="{Binding HyperbolicMinimum.X}"
+                    Y="{Binding HyperbolicMinimum.Y}"
+                    Stroke="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}"
+                    Fill="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}"
+                    Shape="Circle" />
+                <oxy:PointAnnotation
+                    X="{Binding TrendLineIntersection.X}"
+                    Y="{Binding TrendLineIntersection.Y}"
+                    Stroke="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}"
+                    Fill="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}"
+                    Shape="Circle" />
             </oxy:Plot.Annotations>
         </oxy:Plot>
         <StackPanel

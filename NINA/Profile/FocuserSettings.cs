@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using NINA.Utility.Enum;
 using System;
 using System.Runtime.Serialization;
 
@@ -51,6 +52,7 @@ namespace NINA.Profile {
             backlashIn = 0;
             backlashOut = 0;
             autoFocusBinning = 1;
+            autoFocusCurveFitting = AFCurveFittingEnum.TRENDLINES;
         }
 
         private string id;
@@ -279,6 +281,21 @@ namespace NINA.Profile {
             set {
                 if (autoFocusUseBrightestStars != value) {
                     autoFocusUseBrightestStars = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private AFCurveFittingEnum autoFocusCurveFitting;
+
+        [DataMember]
+        public AFCurveFittingEnum AutoFocusCurveFitting {
+            get {
+                return autoFocusCurveFitting;
+            }
+            set {
+                if (autoFocusCurveFitting != value) {
+                    autoFocusCurveFitting = value;
                     RaisePropertyChanged();
                 }
             }

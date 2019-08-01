@@ -21,9 +21,9 @@
 
 #endregion "copyright"
 
-using AForge.Imaging;
-using AForge.Imaging.Filters;
-using AForge.Math.Geometry;
+using Accord.Imaging;
+using Accord.Imaging.Filters;
+using Accord.Math.Geometry;
 using NINA.Model;
 using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
@@ -51,7 +51,7 @@ namespace NINA.Utility.ImageAnalysis {
 
         public StarDetection(IImageData imageData, StarSensitivityEnum sensitivity, NoiseReductionEnum noiseReduction) {
             //If image was debayered, use debayered array for star HFR and local maximum identification
-            if(imageData.Statistics.IsBayered && imageData.DebayeredData != null && imageData.DebayeredData.Lum !=null && imageData.DebayeredData.Lum.Length > 0) {
+            if (imageData.Statistics.IsBayered && imageData.DebayeredData != null && imageData.DebayeredData.Lum != null && imageData.DebayeredData.Lum.Length > 0) {
                 _iarr = new ImageArray() { FlatArray = imageData.DebayeredData.Lum };
             } else {
                 _iarr = imageData.Data;
@@ -65,7 +65,7 @@ namespace NINA.Utility.ImageAnalysis {
             if (imageData.Statistics.Width > _maxWidth) {
                 if (_sensitivity == StarSensitivityEnum.Highest) {
                     _resizefactor = Math.Max(0.625, (double)_maxWidth / imageData.Statistics.Width);
-                } else { 
+                } else {
                     _resizefactor = (double)_maxWidth / imageData.Statistics.Width;
                 }
             }
@@ -103,16 +103,16 @@ namespace NINA.Utility.ImageAnalysis {
         private Bitmap _bitmapToAnalyze;
         private CancellationToken _token;
         private List<Star> _starlist = new List<Star>();
-        private List<AForge.Point> _brightestStarPositions = new List<AForge.Point>();
+        private List<Accord.Point> _brightestStarPositions = new List<Accord.Point>();
         private int _numberOfAFStars = 0;
         private StarSensitivityEnum _sensitivity = StarSensitivityEnum.Normal;
         private NoiseReductionEnum _noiseReduction = NoiseReductionEnum.None;
 
-        public List<AForge.Point> BrightestStarPositions {
+        public List<Accord.Point> BrightestStarPositions {
             get {
                 return _brightestStarPositions;
             }
-            set { 
+            set {
                 _brightestStarPositions = value;
             }
         }
@@ -120,7 +120,8 @@ namespace NINA.Utility.ImageAnalysis {
         public int NumberOfAFStars {
             get {
                 return _numberOfAFStars;
-            } set {
+            }
+            set {
                 _numberOfAFStars = value;
             }
         }
@@ -130,15 +131,16 @@ namespace NINA.Utility.ImageAnalysis {
         public double InnerCropRatio { get; set; }
         public bool UseROI { get; set; } = false;
         public double OuterCropRatio { get; set; }
+        public double HFRStdDev { get; private set; }
 
         private class Star {
             public double radius;
             public double HFR;
-            public AForge.Point Position;
+            public Accord.Point Position;
             public double meanBrightness;
             private List<PixelData> pixelData;
             public double Average { get; private set; } = 0;
-            public double SurroundingMean {  get; set; } = 0;
+            public double SurroundingMean { get; set; } = 0;
 
             public Rectangle Rectangle;
 
@@ -153,11 +155,11 @@ namespace NINA.Utility.ImageAnalysis {
             public void CalculateHfr() {
                 double hfr = 0.0d;
                 if (this.pixelData.Count > 0) {
-                    double outerRadius = this.radius;
+                    double outerRadius = this.radius * 1.2;
                     double sum = 0, sumDist = 0, allSum = 0;
 
-                    int centerX = (int)Math.Floor(this.Position.X);
-                    int centerY = (int)Math.Floor(this.Position.Y);
+                    double centerX = this.Position.X;
+                    double centerY = this.Position.Y;
 
                     foreach (PixelData data in this.pixelData) {
                         data.value = (ushort)Math.Round(data.value - SurroundingMean);
@@ -242,9 +244,12 @@ namespace NINA.Utility.ImageAnalysis {
 
                     if (_starlist.Count > 0) {
                         var m = (from star in _starlist select star.HFR).Average();
+                        var s = Math.Sqrt(((from star in _starlist select star.HFR * star.HFR).Sum() - _starlist.Count() * m * m) / _starlist.Count());
                         Debug.Print("Mean HFR: " + m);
+                        Debug.Print("HFR Standard Dev: " + s);
                         //todo change
                         AverageHFR = m;
+                        HFRStdDev = s;
                         DetectedStars = _starlist.Count;
                     }
 
@@ -306,7 +311,7 @@ namespace NINA.Utility.ImageAnalysis {
                 }
 
                 var points = _blobCounter.GetBlobsEdgePoints(blob);
-                AForge.Point centerpoint;
+                Accord.Point centerpoint;
                 float radius;
                 var rect = new Rectangle((int)Math.Floor(blob.Rectangle.X * _inverseResizefactor), (int)Math.Floor(blob.Rectangle.Y * _inverseResizefactor), (int)Math.Ceiling(blob.Rectangle.Width * _inverseResizefactor), (int)Math.Ceiling(blob.Rectangle.Height * _inverseResizefactor));
 
@@ -322,14 +327,14 @@ namespace NINA.Utility.ImageAnalysis {
                 //Star is circle
                 Star s;
                 if (checker.IsCircle(points, out centerpoint, out radius)) {
-                    s = new Star { Position = new AForge.Point(centerpoint.X * (float)_inverseResizefactor, centerpoint.Y * (float)_inverseResizefactor), radius = radius * _inverseResizefactor, Rectangle = rect };
+                    s = new Star { Position = new Accord.Point(centerpoint.X * (float)_inverseResizefactor, centerpoint.Y * (float)_inverseResizefactor), radius = radius * _inverseResizefactor, Rectangle = rect };
                 } else { //Star is elongated
                     var eccentricity = CalculateEccentricity(rect.Width, rect.Height);
                     //Discard highly elliptical shapes.
                     if (eccentricity > 0.8) {
                         continue;
                     }
-                    s = new Star { Position = new AForge.Point(centerpoint.X * (float)_inverseResizefactor, centerpoint.Y * (float)_inverseResizefactor), radius = Math.Max(rect.Width, rect.Height) / 2, Rectangle = rect };
+                    s = new Star { Position = new Accord.Point(centerpoint.X * (float)_inverseResizefactor, centerpoint.Y * (float)_inverseResizefactor), radius = Math.Max(rect.Width, rect.Height) / 2, Rectangle = rect };
                 }
 
                 /* get pixeldata */
@@ -337,7 +342,7 @@ namespace NINA.Utility.ImageAnalysis {
                 int starPixelCount = 0;
                 double largeRectPixelSum = 0;
                 double largeRectPixelSumSquares = 0;
-                List <ushort> innerStarPixelValues = new List<ushort>();
+                List<ushort> innerStarPixelValues = new List<ushort>();
 
                 for (int x = largeRect.X; x < largeRect.X + largeRect.Width; x++) {
                     for (int y = largeRect.Y; y < largeRect.Y + largeRect.Height; y++) {
@@ -358,7 +363,7 @@ namespace NINA.Utility.ImageAnalysis {
                     }
                 }
 
-                s.meanBrightness = starPixelSum / (double)starPixelCount;              
+                s.meanBrightness = starPixelSum / (double)starPixelCount;
                 double largeRectPixelCount = largeRect.Height * largeRect.Width - rect.Height * rect.Width;
                 double largeRectMean = largeRectPixelSum / largeRectPixelCount;
                 s.SurroundingMean = largeRectMean;
@@ -380,7 +385,7 @@ namespace NINA.Utility.ImageAnalysis {
                     if (starlist.Count() <= NumberOfAFStars) {
                         BrightestStarPositions = starlist.ConvertAll(s => s.Position);
                         return starlist;
-                    } else { 
+                    } else {
                         starlist = starlist.OrderByDescending(s => s.radius * 0.3 + s.meanBrightness * 0.7).Take(NumberOfAFStars).ToList<Star>();
                         BrightestStarPositions = starlist.ConvertAll(i => i.Position);
                         return starlist;
@@ -474,16 +479,16 @@ namespace NINA.Utility.ImageAnalysis {
 
         private void PrepareForStructureDetection(Bitmap bmp) {
             var sw = Stopwatch.StartNew();
-            
+
             if (_sensitivity == StarSensitivityEnum.Normal) {
                 if (_noiseReduction == NoiseReductionEnum.None || _noiseReduction == NoiseReductionEnum.Median) {
                     //Still need to apply Gaussian blur, using normal Canny
                     new CannyEdgeDetector(10, 80).ApplyInPlace(bmp);
                 } else {
                     //Gaussian blur already applied, using no-blur Canny
-                    new NoBlurCannyEdgeDetector(10,80).ApplyInPlace(bmp);
-                }  
-            } else { 
+                    new NoBlurCannyEdgeDetector(10, 80).ApplyInPlace(bmp);
+                }
+            } else {
                 int kernelSize = (int)Math.Max(Math.Floor(Math.Max(_originalBitmapSource.PixelWidth, _originalBitmapSource.PixelHeight) * _resizefactor / 500), 3);
                 //Apply blur or sharpen operation prior to applying the Canny Edge Detector
                 if (_inverseResizefactor > 1.6) {
@@ -497,17 +502,17 @@ namespace NINA.Utility.ImageAnalysis {
                     if (_noiseReduction == NoiseReductionEnum.None || _noiseReduction == NoiseReductionEnum.Median) {
                         //No resizing or gaussian blur occurred, apply weak Gaussian blur
                         new GaussianBlur(0.7, 5).ApplyInPlace(bmp);
-                    } else { 
+                    } else {
                         //Gaussian blur already occurred, do nothing
                     }
                 }
                 _token.ThrowIfCancellationRequested();
-                new NoBlurCannyEdgeDetector(10,80).ApplyInPlace(bmp);
+                new NoBlurCannyEdgeDetector(10, 80).ApplyInPlace(bmp);
             }
             _token.ThrowIfCancellationRequested();
             new SISThreshold().ApplyInPlace(bmp);
             _token.ThrowIfCancellationRequested();
-            new BinaryDilatation3x3().ApplyInPlace(bmp);
+            new BinaryDilation3x3().ApplyInPlace(bmp);
             _token.ThrowIfCancellationRequested();
 
             sw.Stop();
@@ -531,12 +536,15 @@ namespace NINA.Utility.ImageAnalysis {
                     case NoiseReductionEnum.High:
                         bmp = new FastGaussianBlur(_bitmapToAnalyze).Process(2);
                         break;
+
                     case NoiseReductionEnum.Highest:
                         bmp = new FastGaussianBlur(_bitmapToAnalyze).Process(3);
                         break;
+
                     case NoiseReductionEnum.Median:
                         bmp = new Median().Apply(_bitmapToAnalyze);
                         break;
+
                     default:
                         bmp = new FastGaussianBlur(_bitmapToAnalyze).Process(1);
                         break;

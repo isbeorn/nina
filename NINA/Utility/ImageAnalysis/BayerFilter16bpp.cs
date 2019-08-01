@@ -21,8 +21,8 @@
 
 #endregion "copyright"
 
-using AForge.Imaging;
-using AForge.Imaging.Filters;
+using Accord.Imaging;
+using Accord.Imaging.Filters;
 using NINA.Model.ImageData;
 using System;
 
@@ -37,7 +37,7 @@ namespace NINA.Utility.ImageAnalysis {
 
         public bool SaveColorChannels { get; set; }
 
-        public bool SaveLumChannel {  get; set; }
+        public bool SaveLumChannel { get; set; }
 
         public LRGBArrays LRGBArrays { get; set; }
 
@@ -157,7 +157,7 @@ namespace NINA.Utility.ImageAnalysis {
                             LRGBArrays.Blue[counter] = dst[RGB.B];
                         }
                         if (SaveLumChannel) {
-                            LRGBArrays.Lum[counter] = (ushort)Math.Floor((dst[RGB.R]+dst[RGB.G]+dst[RGB.B])/3d);
+                            LRGBArrays.Lum[counter] = (ushort)Math.Floor((dst[RGB.R] + dst[RGB.G] + dst[RGB.B]) / 3d);
                         }
                         counter++;
                     }

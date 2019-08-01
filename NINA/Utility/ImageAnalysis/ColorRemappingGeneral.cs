@@ -21,8 +21,8 @@
 
 #endregion "copyright"
 
-using AForge.Imaging;
-using AForge.Imaging.Filters;
+using Accord.Imaging;
+using Accord.Imaging.Filters;
 using System;
 using System.Drawing;
 

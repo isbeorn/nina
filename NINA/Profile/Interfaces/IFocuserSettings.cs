@@ -21,6 +21,8 @@
 
 #endregion "copyright"
 
+using NINA.Utility.Enum;
+
 namespace NINA.Profile {
 
     public interface IFocuserSettings : ISettings {
@@ -39,5 +41,6 @@ namespace NINA.Profile {
         int BacklashIn { get; set; }
         int BacklashOut { get; set; }
         short AutoFocusBinning { get; set; }
+        AFCurveFittingEnum AutoFocusCurveFitting { get; set; }
     }
 }
