@@ -76,6 +76,8 @@ namespace NINA.ViewModel.Equipment.Rotator {
             await Task.Run(() => {
                 try {
                     RotatorInfo.IsMoving = true;
+                    // Focuser position should be in [0, 360)
+                    targetPosition = NINA.Utility.Astrometry.Astrometry.EuclidianModulus(targetPosition, 360);
                     rotator.MoveAbsolute(targetPosition);
                     while (RotatorInfo.IsMoving && RotatorInfo.Position != targetPosition) {
                         _moveCts.Token.ThrowIfCancellationRequested();
