@@ -26,20 +26,21 @@ using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using NINA.Utility.WindowService;
 using OxyPlot;
+using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
 
 namespace NINA.ViewModel.FlatWizard {
 
     public class FlatWizardExposureTimeFinderService : IFlatWizardExposureTimeFinderService {
-        private List<DataPoint> dataPoints = new List<DataPoint>();
+        private List<ScatterErrorPoint> dataPoints = new List<ScatterErrorPoint>();
 
         public IWindowService WindowService { get; set; } = new WindowService();
 
         public ILoc Locale { get; set; } = Loc.Instance;
 
         public void ClearDataPoints() {
-            dataPoints = new List<DataPoint>();
+            dataPoints = new List<ScatterErrorPoint>();
         }
 
         public async System.Threading.Tasks.Task<FlatWizardUserPromptVMResponse> EvaluateUserPromptResultAsync(IImageData imageData, double exposureTime, string message, FlatWizardFilterSettingsWrapper wrapper) {
@@ -125,7 +126,7 @@ namespace NINA.ViewModel.FlatWizard {
         }
 
         public void AddDataPoint(double exposureTime, double mean) {
-            dataPoints.Add(new DataPoint(exposureTime, mean));
+            dataPoints.Add(new ScatterErrorPoint(exposureTime, mean, 1, 1));
         }
     }
 

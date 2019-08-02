@@ -3,6 +3,12 @@
 ## Improvements
 - The autofocus crop ratio has been changed to Inner Crop Ratio, and an additional Outer Crop Ratio has been added. This lets users define centered ROI, or a centered "square doughnut" which will be used by star detection, thus avoiding stars in the center and at the edges of the FO
 - HFR calculation is now computed using the mean background surrounding the star, rather than the image mean
+- HFR calculation has been enhanced to provide more accurate results, especially for imaging systems with central obstructions
+- Autofocus trend lines are now using a weighted fit based on HFR standard dev in each image rather than an unweighted fit. This provides much better slopes and final focus point.
+- Autofocus has been enhanced to support multiple curve fitting methodologies:
+	- Parabolic fitting, weighted by standard dev
+	- Hyperbolic fitting, weighted by standard dev
+	- Comnbination of parabolic or hyperbolic fitting with trend lines (average of fitting minimum and trend line intersection is then used)
 - Added ability to keep guiding during autofocus
 
 # Version 1.9

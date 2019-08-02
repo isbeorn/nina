@@ -299,17 +299,8 @@
       <Component Win64="$(var.Win64)" Id="NINA.exe.config" Guid="0057b8fb-16be-40f1-b598-b1ad0efbee4f">
         <File Id="NINA.exe.config" Name="NINA.exe.config" Source="$(var.NINA_TargetDir)NINA.exe.config" />
       </Component>
-      <Component Win64="$(var.Win64)" Id="AForge.dll" Guid="706c7e79-29e6-4d22-b2a7-d5afd09dbc25">
-        <File Id="AForge.dll" Name="AForge.dll" Source="$(var.NINA_TargetDir)AForge.dll" />
-      </Component>
-      <Component Win64="$(var.Win64)" Id="AForge.Imaging.dll" Guid="006eb888-f59b-4519-9b77-0232b16119e1">
-        <File Id="AForge.Imaging.dll" Name="AForge.Imaging.dll" Source="$(var.NINA_TargetDir)AForge.Imaging.dll" />
-      </Component>
       <Component Win64="$(var.Win64)" Id="CSharpFITS_v1.1.dll" Guid="f4a90435-8f39-400d-b009-e9ed6d4489ad">
         <File Id="CSharpFITS_v1.1.dll" Name="CSharpFITS_v1.1.dll" Source="$(var.NINA_TargetDir)CSharpFITS_v1.1.dll" />
-      </Component>
-      <Component Win64="$(var.Win64)" Id="AForge.Math.dll" Guid="cfd8dc8f-738d-45d8-9a0e-f4ea1f1dfb7d">
-        <File Id="AForge.Math.dll" Name="AForge.Math.dll" Source="$(var.NINA_TargetDir)AForge.Math.dll" />
       </Component>
       <Component Win64="$(var.Win64)" Id="EntityFramework.dll" Guid="a74e801b-f1d0-4a4e-bfa2-971705dd40aa">
         <File Id="EntityFramework.dll" Name="EntityFramework.dll" Source="$(var.NINA_TargetDir)EntityFramework.dll" />
@@ -415,6 +406,24 @@
       </Component>
       <Component Win64="$(var.Win64)" Id="Namotion.Reflection.dll" Guid="e280d86e-104f-49ea-9c32-b98e532d648d">
         <File Id="Namotion.Reflection.dll" Name="Namotion.Reflection.dll" Source="$(var.NINA_TargetDir)Namotion.Reflection.dll" />
+      </Component>
+      <Component Id="Accord.Math.dll" Guid="e8a942ea-bc91-44a7-ba5f-aa19800d3beb">
+        <File Id="Accord.Math.dll" Name="Accord.Math.dll" Source="$(var.NINA_TargetDir)Accord.Math.dll" />
+      </Component>
+      <Component Id="Accord.Math.Core.dll" Guid="6593c698-4f88-4a15-8990-218573db4288">
+        <File Id="Accord.Math.Core.dll" Name="Accord.Math.Core.dll" Source="$(var.NINA_TargetDir)Accord.Math.Core.dll" />
+      </Component>
+      <Component Id="Accord.dll" Guid="2ea6a34b-6c9a-42da-bb4c-24dcf06e9ef2">
+        <File Id="Accord.dll" Name="Accord.dll" Source="$(var.NINA_TargetDir)Accord.dll" />
+      </Component>
+      <Component Id="Accord.Statistics.dll" Guid="814d20c3-c7fc-4644-bc5c-ac1d8f172fb2">
+        <File Id="Accord.Statistics.dll" Name="Accord.Statistics.dll" Source="$(var.NINA_TargetDir)Accord.Statistics.dll" />
+      </Component>
+      <Component Id="Accord.Imaging.dll" Guid="e01df832-9853-4564-9a43-2bbd5191486d">
+        <File Id="Accord.Imaging.dll" Name="Accord.Imaging.dll" Source="$(var.NINA_TargetDir)Accord.Imaging.dll" />
+      </Component>
+      <Component Id="Accord.dll.config" Guid="c7614cb9-9003-4cdc-965b-46c3b76a789a">
+        <File Id="Accord.dll.config" Name="Accord.dll.config" Source="$(var.NINA_TargetDir)Accord.dll.config" />
       </Component>
     </ComponentGroup>
   </Fragment>

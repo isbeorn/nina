@@ -270,6 +270,7 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
   <s:String x:Key="LblCurrentMean" xml:space="default">Aktueller Mittelwert</s:String>
   <s:String x:Key="LblCurrentPosition" xml:space="default">Startposition</s:String>
   <s:String x:Key="LblCurrentUIColorSchema" xml:space="default">Aktuelles UI Farbschema</s:String>
+  <s:String x:Key="LblCurveFittingMethod" xml:space="default">AF Kurvenanpassung</s:String>
   <s:String x:Key="LblCygwinBashNotFound" xml:space="default">Cygwin bash wurde nicht gefunden</s:String>
   <s:String x:Key="LblCygwinDirectory" xml:space="default">Cygwin Verzeichnis</s:String>
   <s:String x:Key="LblDarkFlatCount" xml:space="default">Anzahl Dark Flats</s:String>
@@ -466,6 +467,7 @@ Berechneter HFR: {2}
   <s:String x:Key="LblHost" xml:space="default">Host</s:String>
   <s:String x:Key="LblHour" xml:space="default">Stunde</s:String>
   <s:String x:Key="LblHumidity" xml:space="default">Feuchtigkeit</s:String>
+  <s:String x:Key="LblHyperbolic" xml:space="default">Hyperbolisch</s:String>
   <s:String x:Key="LblId" xml:space="default">Id</s:String>
   <s:String x:Key="LblIllumination" xml:space="default">Illumination</s:String>
   <s:String x:Key="LblImage" xml:space="default">Bild</s:String>
@@ -624,6 +626,7 @@ Berechneter HFR: {2}
   <s:String x:Key="LblOrientation" xml:space="default">Orientierung</s:String>
   <s:String x:Key="LblOverlapPercentage" xml:space="default">Prozentuale Überlappung</s:String>
   <s:String x:Key="LblPanel" xml:space="default">Feld</s:String>
+  <s:String x:Key="LblParabolic" xml:space="default">Parabolisch</s:String>
   <s:String x:Key="LblPark" xml:space="default">Parken</s:String>
   <s:String x:Key="LblParkEnabledButTelescopeCannotPark" xml:space="default">Telescope is set to park at sequence end, yet it is unable to do so</s:String>
   <s:String x:Key="LblParkEnabledButTelescopeNotConnected" xml:space="default">Telescope is set to park at sequence end, yet it is not connected</s:String>
@@ -918,6 +921,9 @@ Das Rechteck über einen Teil des Bildes bewegen das Sie fotografieren wollen un
   <s:String x:Key="LblTracking" xml:space="default">Nachführung</s:String>
   <s:String x:Key="LblTransitNorth" xml:space="default">Transit Nord</s:String>
   <s:String x:Key="LblTransitSouth" xml:space="default">Transit Süd</s:String>
+  <s:String x:Key="LblTrendHyperbolic" xml:space="default">Trends und Hyperbolisch</s:String>
+  <s:String x:Key="LblTrendLines" xml:space="default">Trendlinien</s:String>
+  <s:String x:Key="LblTrendParabolic" xml:space="default">Trends und Parabolisch</s:String>
   <s:String x:Key="LblType" xml:space="default">Typ</s:String>
   <s:String x:Key="LblUnableToConnectCamera" xml:space="default">Verbindung zur Kamera konnte nicht hergestellt werden</s:String>
   <s:String x:Key="LblUnableToSetExposureTime" xml:space="default">Belichtungszeit konnte nicht gesetzt werden</s:String>

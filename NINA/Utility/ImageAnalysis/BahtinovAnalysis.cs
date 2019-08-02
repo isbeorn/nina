@@ -21,10 +21,10 @@
 
 #endregion "copyright"
 
-using AForge;
-using AForge.Imaging;
-using AForge.Imaging.Filters;
-using AForge.Math.Geometry;
+using Accord;
+using Accord.Imaging;
+using Accord.Imaging.Filters;
+using Accord.Math.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

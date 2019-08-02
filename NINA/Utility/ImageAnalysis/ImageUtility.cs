@@ -1,4 +1,4 @@
-﻿using AForge.Imaging;
+﻿using Accord.Imaging;
 using Microsoft.Win32.SafeHandles;
 using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
@@ -135,7 +135,7 @@ namespace NINA.Utility.ImageAnalysis {
 
         public static Bitmap Convert16BppTo8Bpp(BitmapSource source) {
             using (var bmp = BitmapFromSource(source)) {
-                return AForge.Imaging.Image.Convert16bppTo8bpp(bmp);
+                return Accord.Imaging.Image.Convert16bppTo8bpp(bmp);
             }
         }
 

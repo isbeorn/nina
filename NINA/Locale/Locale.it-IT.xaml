@@ -270,6 +270,7 @@ Quando la durata è impostata, l'applicazione diminuirà lentamente la temperatu
   <s:String x:Key="LblCurrentMean" xml:space="default">Media corrente</s:String>
   <s:String x:Key="LblCurrentPosition" xml:space="default">Posizione Corrente</s:String>
   <s:String x:Key="LblCurrentUIColorSchema" xml:space="default">Schema Colori UI Corrente</s:String>
+  <s:String x:Key="LblCurveFittingMethod" xml:space="default">Adattamento curva AF</s:String>
   <s:String x:Key="LblCygwinBashNotFound" xml:space="default">Cygwin bash non trovata</s:String>
   <s:String x:Key="LblCygwinDirectory" xml:space="default">Directory Cygwin</s:String>
   <s:String x:Key="LblDarkFlatCount" xml:space="default">Flats Scuri da prendere</s:String>
@@ -466,6 +467,7 @@ HFR Calcolato: {2}
   <s:String x:Key="LblHost" xml:space="default">Host</s:String>
   <s:String x:Key="LblHour" xml:space="default">Ora</s:String>
   <s:String x:Key="LblHumidity" xml:space="default">Umidita'</s:String>
+  <s:String x:Key="LblHyperbolic" xml:space="default">Iperbolico</s:String>
   <s:String x:Key="LblId" xml:space="default">Id</s:String>
   <s:String x:Key="LblIllumination" xml:space="default">Illuminazione</s:String>
   <s:String x:Key="LblImage" xml:space="default">Immagine</s:String>
@@ -624,6 +626,7 @@ HFR Calcolato: {2}
   <s:String x:Key="LblOrientation" xml:space="default">Orientamento</s:String>
   <s:String x:Key="LblOverlapPercentage" xml:space="default">Percentuale sovrapposizione</s:String>
   <s:String x:Key="LblPanel" xml:space="default">Pannello</s:String>
+  <s:String x:Key="LblParabolic" xml:space="default">Parabolico</s:String>
   <s:String x:Key="LblPark" xml:space="default">Park</s:String>
   <s:String x:Key="LblParkEnabledButTelescopeCannotPark" xml:space="default">Il telescopio è impostato per parcheggiarsi al termine della sequenza, ma non è possibile completare il comando</s:String>
   <s:String x:Key="LblParkEnabledButTelescopeNotConnected" xml:space="default">Il telescopio è impostato per parcheggiarsi al termine della sequenza, ma non è collegato</s:String>
@@ -917,6 +920,9 @@ Trascina il rettangolo  sulla parte del fotogramma che vuoi estrarre ed abilita 
   <s:String x:Key="LblTracking" xml:space="default">Tracking</s:String>
   <s:String x:Key="LblTransitNorth" xml:space="default">Transit Nord</s:String>
   <s:String x:Key="LblTransitSouth" xml:space="default">Transit Sud</s:String>
+  <s:String x:Key="LblTrendHyperbolic" xml:space="default">Trend + Iperbolico</s:String>
+  <s:String x:Key="LblTrendLines" xml:space="default">Linee di Trend</s:String>
+  <s:String x:Key="LblTrendParabolic" xml:space="default">Trend e Parabolico</s:String>
   <s:String x:Key="LblType" xml:space="default">Tipo</s:String>
   <s:String x:Key="LblUnableToConnectCamera" xml:space="default">Impossibile connetetre camera</s:String>
   <s:String x:Key="LblUnableToSetExposureTime" xml:space="default">Impossibile impostare tempo esposizione</s:String>

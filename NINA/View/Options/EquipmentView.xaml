@@ -680,6 +680,17 @@
                                         MinWidth="200"
                                         MinHeight="20"
                                         VerticalAlignment="Center"
+                                        Text="{ns:Loc LblCurveFittingMethod}" />
+                                    <ComboBox
+                                        Name="cbAFCurveFitting"
+                                        ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:AFCurveFittingEnum}}}"
+                                        SelectedItem="{Binding AutoFocusCurveFitting}" />
+                                </UniformGrid>
+                                <UniformGrid Margin="0,5,0,0" Columns="2">
+                                    <TextBlock
+                                        MinWidth="200"
+                                        MinHeight="20"
+                                        VerticalAlignment="Center"
                                         Text="{ns:Loc LblFocuserSettleTime}">
                                         <TextBlock.ToolTip>
                                             <TextBlock Text="{ns:Loc LblFocuserSettleTimeTooltip}" />
@@ -737,10 +748,10 @@
                                 </UniformGrid>
                                 <UniformGrid Margin="0,5,0,0" Columns="2">
                                     <TextBlock
-                                    MinWidth="200"
-                                    MinHeight="20"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblAFUseBrightestStars}">
+                                        MinWidth="200"
+                                        MinHeight="20"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblAFUseBrightestStars}">
                                         <TextBlock.ToolTip>
                                             <TextBlock Text="{ns:Loc LblAFUseBrightestStarsTooltip}" />
                                         </TextBlock.ToolTip>
@@ -757,10 +768,10 @@
                                 </UniformGrid>
                                 <UniformGrid Margin="0,5,0,0" Columns="2">
                                     <TextBlock
-                                    MinWidth="200"
-                                    MinHeight="20"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblAutoFocusInnerCropRatio}">
+                                        MinWidth="200"
+                                        MinHeight="20"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblAutoFocusInnerCropRatio}">
                                         <TextBlock.ToolTip>
                                             <TextBlock Text="{ns:Loc LblAutoFocusInnerCropRatioTooltip}" />
                                         </TextBlock.ToolTip>
@@ -784,10 +795,10 @@
                                 </UniformGrid>
                                 <UniformGrid Margin="0,5,0,0" Columns="2">
                                     <TextBlock
-                                    MinWidth="200"
-                                    MinHeight="20"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblAutoFocusOuterCropRatio}" />
+                                        MinWidth="200"
+                                        MinHeight="20"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblAutoFocusOuterCropRatio}" />
                                     <TextBox Height="25" HorizontalAlignment="Stretch">
                                         <TextBox.Resources>
                                             <util:BindingProxy x:Key="proxy" Data="{Binding}" />

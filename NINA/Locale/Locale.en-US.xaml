@@ -270,6 +270,7 @@ When duration is set, the application will slowly decrease the temperature durin
   <s:String x:Key="LblCurrentMean" xml:space="default">Current Mean</s:String>
   <s:String x:Key="LblCurrentPosition" xml:space="default">Current Position</s:String>
   <s:String x:Key="LblCurrentUIColorSchema" xml:space="default">Current UI Color Schema</s:String>
+  <s:String x:Key="LblCurveFittingMethod" xml:space="default">AF Curve fitting</s:String>
   <s:String x:Key="LblCygwinBashNotFound" xml:space="default">Cygwin bash not found</s:String>
   <s:String x:Key="LblCygwinDirectory" xml:space="default">Cygwin Directory</s:String>
   <s:String x:Key="LblDarkFlatCount" xml:space="default">Dark Flats to take</s:String>
@@ -466,6 +467,7 @@ Calculated HFR: {2}
   <s:String x:Key="LblHost" xml:space="default">Host</s:String>
   <s:String x:Key="LblHour" xml:space="default">Hour</s:String>
   <s:String x:Key="LblHumidity" xml:space="default">Humidity</s:String>
+  <s:String x:Key="LblHyperbolic" xml:space="default">Hyperbolic</s:String>
   <s:String x:Key="LblId" xml:space="default">Id</s:String>
   <s:String x:Key="LblIllumination" xml:space="default">Illumination</s:String>
   <s:String x:Key="LblImage" xml:space="default">Image</s:String>
@@ -624,6 +626,7 @@ Calculated HFR: {2}
   <s:String x:Key="LblOrientation" xml:space="default">Orientation</s:String>
   <s:String x:Key="LblOverlapPercentage" xml:space="default">Overlap percentage</s:String>
   <s:String x:Key="LblPanel" xml:space="default">Panel</s:String>
+  <s:String x:Key="LblParabolic" xml:space="default">Parabolic</s:String>
   <s:String x:Key="LblPark" xml:space="default">Park</s:String>
   <s:String x:Key="LblParkEnabledButTelescopeCannotPark" xml:space="default">Telescope is set to park at sequence end, yet it is unable to do so</s:String>
   <s:String x:Key="LblParkEnabledButTelescopeNotConnected" xml:space="default">Telescope is set to park at sequence end, yet it is not connected</s:String>
@@ -917,6 +920,9 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
   <s:String x:Key="LblTracking" xml:space="default">Tracking</s:String>
   <s:String x:Key="LblTransitNorth" xml:space="default">Transit North</s:String>
   <s:String x:Key="LblTransitSouth" xml:space="default">Transit South</s:String>
+  <s:String x:Key="LblTrendHyperbolic" xml:space="default">Trends and Hyperbolic</s:String>
+  <s:String x:Key="LblTrendLines" xml:space="default">Trend Lines</s:String>
+  <s:String x:Key="LblTrendParabolic" xml:space="default">Trends and Parabolic</s:String>
   <s:String x:Key="LblType" xml:space="default">Type</s:String>
   <s:String x:Key="LblUnableToConnectCamera" xml:space="default">Unable to connect camera</s:String>
   <s:String x:Key="LblUnableToSetExposureTime" xml:space="default">Unable to set exposure time</s:String>
