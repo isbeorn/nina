@@ -37,5 +37,18 @@ namespace NINA.PlateSolving {
                 return Astrometry.ArcminToDegree(Astrometry.FieldOfView(ArcSecPerPixel, ImageWidth));
             }
         }
+
+        public override string ToString() {
+            var formatCoordinates = Coordinates != null ? $"Reference Coordinates RA: {Coordinates.RAString} Dec: {Coordinates.DecString} Epoch: {Coordinates.Epoch}" : "";
+            return $"FocalLength: {FocalLength}" + Environment.NewLine +
+                $"PixelSize: {PixelSize}" + Environment.NewLine +
+                $"ImageWidth: {ImageWidth}" + Environment.NewLine +
+                $"ImageHeight: {ImageHeight}" + Environment.NewLine +
+                $"SearchRadius: {SearchRadius}" + Environment.NewLine +
+                $"Regions: {Regions}" + Environment.NewLine +
+                $"DownSampleFactor: {DownSampleFactor}" + Environment.NewLine +
+                $"MaxObjects: {MaxObjects}" + Environment.NewLine +
+                $"{formatCoordinates}";
+        }
     }
 }
