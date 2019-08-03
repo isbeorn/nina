@@ -10,6 +10,7 @@
 	- Hyperbolic fitting, weighted by standard dev
 	- Comnbination of parabolic or hyperbolic fitting with trend lines (average of fitting minimum and trend line intersection is then used)
 - Added ability to keep guiding during autofocus
+- The autofocus routine has been changed so that it doesn't attempt to measure the focus twice for the same point
 
 # Version 1.9
 
