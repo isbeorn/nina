@@ -286,6 +286,11 @@ namespace NINA.ViewModel {
 
                 HFRAndError measurement = await GetAverageMeasurement(filter, profileService.ActiveProfile.FocuserSettings.AutoFocusNumberOfFramesPerPoint, token, progress);
 
+                //If star HFR is 0, we didn't detect any stars, and want this point to be ignored by the fitting as much as possible. Setting a very high Stdev will do the trick.
+                if (measurement.HFR == 0) {
+                    measurement.Stdev = 1000;
+                }
+
                 token.ThrowIfCancellationRequested();
 
                 FocusPoints.AddSorted(new ScatterErrorPoint(_focusPosition, measurement.HFR, 0, Math.Max(0.001, measurement.Stdev)), comparer);
@@ -486,7 +491,8 @@ namespace NINA.ViewModel {
         }
 
         private void CalculateTrends() {
-            _minimum = FocusPoints.Aggregate((l, r) => l.Y < r.Y ? l : r);
+            //Get the minimum based on HFR and Error, rather than just HFR. This ensures 0 HFR is never used, and low HFR / High error numbers are also ignored
+            _minimum = FocusPoints.Aggregate((l, r) => l.Y + l.ErrorY < r.Y + r.ErrorY ? l : r);
             IEnumerable<ScatterErrorPoint> leftTrendPoints = FocusPoints.Where((x) => x.X < _minimum.X && x.Y > (_minimum.Y + 0.1));
             IEnumerable<ScatterErrorPoint> rightTrendPoints = FocusPoints.Where((x) => x.X > _minimum.X && x.Y > (_minimum.Y + 0.1));
             LeftTrend = new TrendLine(leftTrendPoints);
@@ -677,23 +683,22 @@ namespace NINA.ViewModel {
                             return false;
                         }
 
-                        var remainingSteps = Math.Min(Math.Abs(leftcount - rightcount), offsetSteps);
-                        if (leftcount == rightcount && leftcount < offsetSteps) {
-                            remainingSteps = offsetSteps - leftcount;
-                        }
-
-                        if ((LeftTrend.DataPoints.Count() < offsetSteps && leftcount < rightcount)
-                                || (leftcount == rightcount && remainingSteps > 0)) {
+                        // Let's keep moving in, one step at a time, until we have enough left trend points. Then we can think about moving out to fill in the right trend points
+                        if (LeftTrend.DataPoints.Count() < offsetSteps) {
                             Logger.Trace("More datapoints needed to the left of the minimum");
+                            //Move to the leftmost point - this should never be necessary since we're already there, but just in case
+                            if (focuserInfo.Position != (int)Math.Round(FocusPoints.FirstOrDefault().X)) {
+                                await focuserMediator.MoveFocuser((int)Math.Round(FocusPoints.FirstOrDefault().X));
+                            }
                             //More points needed to the left
-                            laststeps += remainingSteps;
-                            await GetFocusPoints(filter, remainingSteps, progress, token, -1);
-                        } else if (RightTrend.DataPoints.Count() < offsetSteps && leftcount > rightcount) {
+                            await GetFocusPoints(filter, 1, progress, token, -1);
+                        } else if (RightTrend.DataPoints.Count() < offsetSteps) { //Now we can go to the right, if necessary
                             Logger.Trace("More datapoints needed to the right of the minimum");
-                            //More points needed to the right
-                            offset = laststeps + remainingSteps;  //todo
-                            laststeps = remainingSteps - 1;
-                            await GetFocusPoints(filter, remainingSteps, progress, token, offset);
+                            //More points needed to the right. Let's get to the rightmost point, and keep going right one point at a time
+                            if (focuserInfo.Position != (int)Math.Round(FocusPoints.LastOrDefault().X)) {
+                                await focuserMediator.MoveFocuser((int)Math.Round(FocusPoints.LastOrDefault().X));
+                            }
+                            await GetFocusPoints(filter, 1, progress, token, 1);
                         }
 
                         leftcount = LeftTrend.DataPoints.Count();
