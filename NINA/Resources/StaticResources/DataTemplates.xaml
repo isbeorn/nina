@@ -25,6 +25,7 @@
     xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Locale"
     xmlns:rotator="clr-namespace:NINA.Model.MyRotator"
+    xmlns:simulator="clr-namespace:NINA.Model.MyCamera.Simulator"
     xmlns:switch="clr-namespace:NINA.Model.MySwitch"
     xmlns:switchview="clr-namespace:NINA.View.Equipment.Switch"
     xmlns:view="clr-namespace:NINA.View"
@@ -67,8 +68,8 @@
         <view:FlatWizardFilterSettingsWrapperView />
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type camera:SimulatorCamera}">
-        <view:SimulatorCameraSetupView />
+    <DataTemplate DataType="{x:Type simulator:SimulatorCamera}">
+        <simulator:SetupView />
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type camera:FileCamera}">

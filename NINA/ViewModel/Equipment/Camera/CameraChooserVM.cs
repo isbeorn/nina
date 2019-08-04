@@ -32,6 +32,7 @@ using QHYCCD;
 using System;
 using System.Collections.Generic;
 using ZWOptical.ASISDK;
+using System.Linq;
 
 namespace NINA.ViewModel.Equipment.Camera {
 
@@ -181,7 +182,7 @@ namespace NINA.ViewModel.Equipment.Camera {
             }
 
             Devices.Add(new Model.MyCamera.FileCamera(profileService, telescopeMediator));
-            Devices.Add(new Model.MyCamera.SimulatorCamera(profileService));
+            Devices.Add(new Model.MyCamera.Simulator.SimulatorCamera(profileService, telescopeMediator));
 
             DetermineSelectedDevice(profileService.ActiveProfile.CameraSettings.Id);
         }

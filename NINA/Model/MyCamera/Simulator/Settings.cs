@@ -21,17 +21,24 @@
 
 #endregion "copyright"
 
-using System.Windows.Controls;
+using NINA.Utility;
 
-namespace NINA.View {
+namespace NINA.Model.MyCamera.Simulator {
 
-    /// <summary>
-    /// Interaction logic for SimulatorCameraSetupView.xaml
-    /// </summary>
-    public partial class SimulatorCameraSetupView : UserControl {
+    public class Settings : BaseINPC {
+        private CameraType type = CameraType.RANDOM;
 
-        public SimulatorCameraSetupView() {
-            InitializeComponent();
+        public CameraType Type {
+            get => type;
+            set {
+                type = value;
+
+                RaisePropertyChanged();
+            }
         }
+
+        public RandomSettings RandomSettings { get; set; } = new RandomSettings();
+        public ImageSettings ImageSettings { get; set; } = new ImageSettings();
+        public SkySurveySettings SkySurveySettings { get; set; } = new SkySurveySettings();
     }
 }

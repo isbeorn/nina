@@ -34,24 +34,36 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using NINA.Model.ImageData;
+using NINA.Utility.Mediator.Interfaces;
+using NINA.Model.MyTelescope;
+using System.ComponentModel;
+using NINA.Utility.SkySurvey;
+using System.Windows.Media;
+using NINA.Utility.Astrometry;
 
-namespace NINA.Model.MyCamera {
+namespace NINA.Model.MyCamera.Simulator {
 
-    public class SimulatorCamera : BaseINPC, ICamera {
+    public class SimulatorCamera : BaseINPC, ICamera, ITelescopeConsumer {
 
-        public SimulatorCamera(IProfileService profileService) {
+        public SimulatorCamera(IProfileService profileService, ITelescopeMediator telescopeMediator) {
             this.profileService = profileService;
-            RandomImageWidth = 640;
-            RandomImageHeight = 480;
-            RandomImageMean = 5000;
-            RandomImageStdDev = 100;
-            LoadImageCommand = new AsyncCommand<bool>(() => LoadImage(), (object o) => RAWImageStream == null);
-            UnloadImageCommand = new RelayCommand((object o) => Image = null);
-            LoadRAWImageCommand = new AsyncCommand<bool>(() => LoadRAWImage(), (object o) => Image == null);
-            UnloadRAWImageCommand = new RelayCommand((object o) => { RAWImageStream.Dispose(); RAWImageStream = null; });
+            this.telescopeMediator = telescopeMediator;
+
+            LoadImageCommand = new AsyncCommand<bool>(() => LoadImage(), (object o) => Settings.ImageSettings.RAWImageStream == null);
+            UnloadImageCommand = new RelayCommand((object o) => Settings.ImageSettings.Image = null);
+            LoadRAWImageCommand = new AsyncCommand<bool>(() => LoadRAWImage(), (object o) => Settings.ImageSettings.Image == null);
+            UnloadRAWImageCommand = new RelayCommand((object o) => { Settings.ImageSettings.RAWImageStream.Dispose(); Settings.ImageSettings.RAWImageStream = null; });
         }
 
-        private object lockObj = new object();
+        private Settings settings = new Settings();
+
+        public Settings Settings {
+            get => settings;
+            set {
+                settings = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public string Category { get; } = "N.I.N.A.";
 
@@ -128,13 +140,13 @@ namespace NINA.Model.MyCamera {
 
         public int CameraXSize {
             get {
-                return Image?.Statistics?.Width ?? RandomImageWidth;
+                return Settings.ImageSettings.Image?.Statistics?.Width ?? Settings.RandomSettings.ImageWidth;
             }
         }
 
         public int CameraYSize {
             get {
-                return Image?.Statistics?.Height ?? RandomImageHeight;
+                return Settings.ImageSettings.Image?.Statistics?.Height ?? Settings.RandomSettings.ImageHeight;
             }
         }
 
@@ -346,7 +358,7 @@ namespace NINA.Model.MyCamera {
         }
 
         public int SubSampleX { get; set; }
-        
+
         public int SubSampleY { get; set; }
 
         public int SubSampleWidth { get; set; }
@@ -432,101 +444,85 @@ namespace NINA.Model.MyCamera {
         }
 
         public async Task<bool> Connect(CancellationToken token) {
+            this.telescopeMediator.RegisterConsumer(this);
             Connected = true;
             return true;
         }
 
         public void Disconnect() {
+            this.telescopeMediator.RemoveConsumer(this);
             Connected = false;
         }
 
         public async Task<IImageData> DownloadExposure(CancellationToken token) {
-            int width, height, mean, stdev;
-            if (Image != null) {
-                return Image;
+            switch (Settings.Type) {
+                case CameraType.RANDOM:
+                    int width, height, mean, stdev;
+
+                    width = Settings.RandomSettings.ImageWidth;
+                    height = Settings.RandomSettings.ImageHeight;
+                    mean = Settings.RandomSettings.ImageMean;
+                    stdev = Settings.RandomSettings.ImageStdDev;
+
+                    ushort[] input = new ushort[width * height];
+
+                    Random rand = new Random();
+                    for (int i = 0; i < width * height; i++) {
+                        double u1 = 1.0 - rand.NextDouble(); //uniform(0,1] random doubles
+                        double u2 = 1.0 - rand.NextDouble();
+                        double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) *
+                                     Math.Sin(2.0 * Math.PI * u2); //random normal(0,1)
+                        double randNormal = mean + stdev * randStdNormal; //random normal(mean,stdDev^2)
+                        input[i] = (ushort)randNormal;
+                    }
+
+                    return new ImageData.ImageData(input, width, height, BitDepth, false);
+
+                case CameraType.IMAGE:
+                    if (Settings.ImageSettings.Image != null) {
+                        return Settings.ImageSettings.Image;
+                    }
+
+                    if (Settings.ImageSettings.RAWImageStream != null) {
+                        var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
+                        var iarr = await converter.Convert(Settings.ImageSettings.RAWImageStream, BitDepth, token);
+                        Settings.ImageSettings.RAWImageStream.Position = 0;
+                        iarr.Data.RAWType = Settings.ImageSettings.RawType;
+
+                        return iarr;
+                    }
+                    throw new Exception("No Image source set in Simulator!");
+
+                case CameraType.SKYSURVEY:
+                    if (!telescopeInfo.Connected) {
+                        throw new Exception("Telescope is not connected to get reference coordinates for Simulator Camera Image");
+                    }
+
+                    var survey = new ESOSkySurvey();
+                    var initial = telescopeInfo.Coordinates.Transform(Utility.Astrometry.Epoch.J2000);
+
+                    var coordinates = new Coordinates(Angle.ByDegree(initial.RADegrees + Astrometry.ArcsecToDegree(Settings.SkySurveySettings.RAError)), Angle.ByDegree(initial.Dec + Astrometry.ArcsecToDegree(Settings.SkySurveySettings.DecError)), Epoch.J2000);
+
+                    var image = await survey.GetImage(string.Empty, coordinates, Astrometry.DegreeToArcmin(1), Settings.SkySurveySettings.WidthAndHeight, Settings.SkySurveySettings.WidthAndHeight, token, default);
+                    var data = await ImageData.ImageData.FromBitmapSource(image.Image);
+
+                    var arcsecPerPix = data.Statistics.Width / Astrometry.ArcminToArcsec(image.FoVWidth);
+                    // Assume a fixed pixel Size of 3
+                    var pixelSize = 3;
+                    var factor = Astrometry.DegreeToArcsec(Astrometry.ToDegree(1)) / 1000d;
+                    // Calculate focal length based on assumed pixel size and result image
+                    var focalLength = (factor * pixelSize) / arcsecPerPix;
+
+                    profileService.ActiveProfile.CameraSettings.PixelSize = 3;
+                    profileService.ActiveProfile.TelescopeSettings.FocalLength = (int)focalLength;
+
+                    return data;
             }
-
-            if (RAWImageStream != null) {
-                var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
-                var iarr = await converter.Convert(RAWImageStream, BitDepth, token);
-                RAWImageStream.Position = 0;
-                iarr.Data.RAWType = rawType;
-
-                return iarr;
-            }
-
-            lock (lockObj) {
-                width = RandomImageWidth;
-                height = RandomImageHeight;
-                mean = RandomImageMean;
-                stdev = RandomImageStdDev;
-            }
-
-            ushort[] input = new ushort[width * height];
-
-            Random rand = new Random();
-            for (int i = 0; i < width * height; i++) {
-                double u1 = 1.0 - rand.NextDouble(); //uniform(0,1] random doubles
-                double u2 = 1.0 - rand.NextDouble();
-                double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) *
-                             Math.Sin(2.0 * Math.PI * u2); //random normal(0,1)
-                double randNormal = mean + stdev * randStdNormal; //random normal(mean,stdDev^2)
-                input[i] = (ushort)randNormal;
-            }
-
-            return new ImageData.ImageData(input, width, height, BitDepth, false);
+            throw new NotSupportedException();
         }
 
-        private int randomImageWidth;
         private IProfileService profileService;
-
-        public int RandomImageWidth {
-            get => randomImageWidth;
-            set {
-                lock (lockObj) {
-                    randomImageWidth = value;
-                }
-                RaisePropertyChanged();
-                RaisePropertyChanged(nameof(CameraXSize));
-            }
-        }
-
-        private int randomImageHeight;
-
-        public int RandomImageHeight {
-            get => randomImageHeight;
-            set {
-                lock (lockObj) {
-                    randomImageHeight = value;
-                }
-                RaisePropertyChanged();
-                RaisePropertyChanged(nameof(CameraYSize));
-            }
-        }
-
-        private int randomImageMean;
-
-        public int RandomImageMean {
-            get => randomImageMean;
-            set {
-                lock (lockObj) {
-                    randomImageMean = value;
-                }
-                RaisePropertyChanged();
-            }
-        }
-
-        private int randomImageStdDev;
-
-        public int RandomImageStdDev {
-            get => randomImageStdDev;
-            set {
-                lock (lockObj) {
-                    randomImageStdDev = value;
-                }
-                RaisePropertyChanged();
-            }
-        }
+        private ITelescopeMediator telescopeMediator;
 
         public void SetBinning(short x, short y) {
         }
@@ -556,14 +552,14 @@ namespace NINA.Model.MyCamera {
             dialog.DefaultExt = ".cr2";
 
             if (dialog.ShowDialog() == true) {
-                rawType = Path.GetExtension(dialog.FileName).TrimStart('.').ToLower();
+                Settings.ImageSettings.RawType = Path.GetExtension(dialog.FileName).TrimStart('.').ToLower();
                 await Task.Run(() => {
                     using (var fileStream = File.OpenRead(dialog.FileName)) {
                         var memStream = new MemoryStream();
                         memStream.SetLength(fileStream.Length);
                         fileStream.Read(memStream.GetBuffer(), 0, (int)fileStream.Length);
                         memStream.Position = 0;
-                        RAWImageStream = memStream;
+                        Settings.ImageSettings.RAWImageStream = memStream;
                     }
                 });
             }
@@ -577,7 +573,7 @@ namespace NINA.Model.MyCamera {
             dialog.DefaultExt = ".tiff";
 
             if (dialog.ShowDialog() == true) {
-                Image = await ImageData.ImageData.FromFile(dialog.FileName, BitDepth, IsBayered, profileService.ActiveProfile.CameraSettings.RawConverter);
+                Settings.ImageSettings.Image = await ImageData.ImageData.FromFile(dialog.FileName, BitDepth, Settings.ImageSettings.IsBayered, profileService.ActiveProfile.CameraSettings.RawConverter);
                 return true;
             }
             return false;
@@ -588,40 +584,7 @@ namespace NINA.Model.MyCamera {
         public IAsyncCommand LoadRAWImageCommand { get; private set; }
         public ICommand UnloadRAWImageCommand { get; private set; }
 
-        private IImageData _image;
-
-        public IImageData Image {
-            get => _image;
-            set {
-                lock (lockObj) {
-                    _image = value;
-                }
-                RaisePropertyChanged();
-                RaisePropertyChanged(nameof(CameraXSize));
-                RaisePropertyChanged(nameof(CameraYSize));
-            }
-        }
-
-        private bool isBayered;
-
-        public bool IsBayered {
-            get => isBayered;
-            set {
-                isBayered = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private string rawType = "cr2";
-        private MemoryStream rawImageStream = null;
-
-        public MemoryStream RAWImageStream {
-            get => rawImageStream;
-            private set {
-                rawImageStream = value;
-                RaisePropertyChanged();
-            }
-        }
+        private TelescopeInfo telescopeInfo;
 
         public void StartExposure(CaptureSequence captureSequence) {
         }
@@ -642,6 +605,14 @@ namespace NINA.Model.MyCamera {
 
         public void StopLiveView() {
             LiveViewEnabled = false;
+        }
+
+        public void UpdateDeviceInfo(TelescopeInfo deviceInfo) {
+            this.telescopeInfo = deviceInfo;
+        }
+
+        public void Dispose() {
+            this.telescopeMediator.RemoveConsumer(this);
         }
     }
 }
