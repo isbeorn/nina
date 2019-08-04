@@ -9,6 +9,7 @@ using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace NINA.Model.ImageData {
@@ -35,6 +36,28 @@ namespace NINA.Model.ImageData {
             int height = input.GetLength(1);
             var flatArray = await Task.Run(() => FlipAndConvert2d(input));
             return new ImageData(flatArray, width, height, bitDepth, isBayered);
+        }
+
+        public static async Task<IImageData> FromBitmapSource(BitmapSource source) {
+            var width = source.PixelWidth;
+            var height = source.PixelHeight;
+            var pixels = await Task.Run(() => ArrayFromSource(source));
+            return new ImageData(pixels, width, height, 16, false);
+        }
+
+        private static ushort[] ArrayFromSource(BitmapSource source) {
+            if (source.Format == PixelFormats.Gray16) {
+                return ArrayFrom16BitSource(source);
+            } else if (source.Format == PixelFormats.Gray8 || source.Format == PixelFormats.Indexed8) {
+                return ArrayFrom8BitSource(source);
+            } else if (source.Format == PixelFormats.Bgr24 || source.Format == PixelFormats.Bgr32 || source.Format == PixelFormats.Pbgra32) {
+                WriteableBitmap convertedSource = new WriteableBitmap(
+                   (BitmapSource)(new FormatConvertedBitmap(source, PixelFormats.Gray8, null, 0))
+                );
+                return ArrayFrom8BitSource(convertedSource);
+            } else {
+                throw new FormatException(string.Format("Pixelformat {0} not supported", source.Format));
+            }
         }
 
         public Task CalculateStatistics() {
@@ -415,6 +438,29 @@ namespace NINA.Model.ImageData {
                 }
                 return flatArray;
             }
+        }
+
+        private static ushort[] ArrayFrom8BitSource(BitmapSource source) {
+            int stride = (source.PixelWidth * source.Format.BitsPerPixel + 7) / 8;
+            int arraySize = stride * source.PixelHeight;
+            byte[] pixels = new byte[arraySize];
+            source.CopyPixels(pixels, stride, 0);
+
+            ushort[] array = new ushort[pixels.Length];
+            for (int i = 0; i < array.Length; i++) {
+                array[i] = (ushort)(pixels[i] * (ushort.MaxValue / (double)byte.MaxValue));
+            }
+
+            return array;
+        }
+
+        private static ushort[] ArrayFrom16BitSource(BitmapSource source) {
+            int stride = (source.PixelWidth * source.Format.BitsPerPixel + 7) / 8;
+            int arraySize = stride * source.PixelHeight;
+            ushort[] pixels = new ushort[arraySize];
+            source.CopyPixels(pixels, stride, 0);
+
+            return pixels;
         }
     }
 }

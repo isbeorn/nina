@@ -347,6 +347,11 @@
     <Compile Include="Model\ImageData\LRGBArrays.cs" />
     <Compile Include="Model\MyCamera\FileCamera.cs" />
     <Compile Include="Model\MyCamera\FLICamera.cs" />
+    <Compile Include="Model\MyCamera\Simulator\ImageSettings.cs" />
+    <Compile Include="Model\MyCamera\Simulator\RandomSettings.cs" />
+    <Compile Include="Model\MyCamera\Simulator\Settings.cs" />
+    <Compile Include="Model\MyCamera\Simulator\SkySurveySettings.cs" />
+    <Compile Include="Model\MyCamera\Simulator\CameraType.cs" />
     <Compile Include="Model\MyFilterWheel\FLIFilterWheel.cs" />
     <Compile Include="Model\MyGuider\DirectGuider.cs" />
     <Compile Include="Model\MyGuider\ISynchronizedPHD2GuiderService.cs" />
@@ -473,7 +478,7 @@
     <Compile Include="Model\ImageData\ImageArray.cs" />
     <Compile Include="Model\ImageData\ImageStatistics.cs" />
     <Compile Include="Model\MyCamera\NikonCamera.cs" />
-    <Compile Include="Model\MyCamera\SimulatorCamera.cs" />
+    <Compile Include="Model\MyCamera\Simulator\SimulatorCamera.cs" />
     <Compile Include="Model\MyFilterWheel\FilterInfo.cs" />
     <Compile Include="Model\MyCamera\QHYCamera.cs" />
     <Compile Include="Model\MyCamera\SensorType.cs" />
@@ -953,8 +958,8 @@
     <Compile Include="View\SequenceView.xaml.cs">
       <DependentUpon>SequenceView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\SimulatorCameraSetupView.xaml.cs">
-      <DependentUpon>SimulatorCameraSetupView.xaml</DependentUpon>
+    <Compile Include="Model\MyCamera\Simulator\SetupView.xaml.cs">
+      <DependentUpon>SetupView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SkyAtlasView.xaml.cs">
       <DependentUpon>SkyAtlasView.xaml</DependentUpon>
@@ -1386,7 +1391,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\SimulatorCameraSetupView.xaml">
+    <Page Include="Model\MyCamera\Simulator\SetupView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

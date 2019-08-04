@@ -58,6 +58,7 @@ namespace NINA.ViewModel {
             OpenPHD2DiagCommand = new RelayCommand(OpenPHD2FileDiag);
             OpenASPSFileDiagCommand = new RelayCommand(OpenASPSFileDiag);
             OpenASTAPFileDiagCommand = new RelayCommand(OpenASTAPFileDiag);
+            OpenLogFolderCommand = new RelayCommand(OpenLogFolder);
             ToggleColorsCommand = new RelayCommand(ToggleColors);
             DownloadIndexesCommand = new RelayCommand(DownloadIndexes);
             OpenSkyAtlasImageRepositoryDiagCommand = new RelayCommand(OpenSkyAtlasImageRepositoryDiag);
@@ -93,6 +94,11 @@ namespace NINA.ViewModel {
             profileService.ProfileChanged += (object sender, EventArgs e) => {
                 ProfileChanged();
             };
+        }
+
+        private void OpenLogFolder(object obj) {
+            var path = Environment.ExpandEnvironmentVariables(@"%LOCALAPPDATA%\NINA\Logs");
+            Process.Start(path);
         }
 
         private void OpenWebRequest(object obj) {
@@ -431,7 +437,7 @@ namespace NINA.ViewModel {
         public ICommand AddProfileCommand { get; private set; }
         public ICommand CloneProfileCommand { get; private set; }
         public ICommand RemoveProfileCommand { get; private set; }
-
+        public ICommand OpenLogFolderCommand { get; private set; }
         public ICommand CopyToCustomSchemaCommand { get; private set; }
         public ICommand CopyToAlternativeCustomSchemaCommand { get; private set; }
         public ICommand SiteFromGPSCommand { get; private set; }

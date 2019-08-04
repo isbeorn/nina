@@ -118,7 +118,9 @@ namespace NINA.ViewModel {
 
         private async Task<bool> DoFilp(CancellationToken token, IProgress<ApplicationStatus> progress) {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblFlippingScope"] });
+            Logger.Trace($"Meridian Flip - Scope will flip to coordinates RA: {_targetCoordinates.RAString} Dec: {_targetCoordinates.DecString} Epoch: {_targetCoordinates.Epoch}");
             var flipsuccess = telescopeMediator.MeridianFlip(_targetCoordinates);
+            Logger.Trace($"Meridian Flip - Successful flip: {flipsuccess}");
 
             await Settle(token, progress);
 
@@ -127,6 +129,8 @@ namespace NINA.ViewModel {
 
         private async Task<bool> DoMeridianFlip(TelescopeInfo telescopeInfo) {
             try {
+                Logger.Trace("Meridian Flip - Initializing Meridian Flip");
+
                 var token = _tokensource.Token;
                 Steps = new AutomatedWorkflow();
 
@@ -148,24 +152,33 @@ namespace NINA.ViewModel {
                 Logger.Error(ex);
 
                 try {
+                    Logger.Trace("Meridian Flip - Resuming Autoguider after meridian flip error");
                     await ResumeAutoguider(new CancellationToken(), _progress);
                 } catch (Exception ex2) {
                     Logger.Error(ex2);
                     Notification.ShowError(Locale.Loc.Instance["GuiderResumeFailed"]);
                 }
 
+                Logger.Trace("Meridian Flip - Re-enable Tracking after meridian flip error");
                 telescopeMediator.SetTracking(true);
                 return false;
             } finally {
                 _progress.Report(new ApplicationStatus() { Status = "" });
             }
+            Logger.Trace("Meridian Flip - Exiting meridian flip");
             return true;
         }
 
         private async Task<bool> PassMeridian(TelescopeInfo telescopeInfo, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            Logger.Trace("Meridian Flip - Passing meridian");
+
             var timeToFlip = telescopeInfo.TimeToMeridianFlip * 60 * 60;
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStopTracking"] });
             _targetCoordinates = telescopeInfo.Coordinates;
+
+            Logger.Trace($"Meridian Flip - Current target coordinates RA: {_targetCoordinates.RAString} Dec: {_targetCoordinates.DecString} Epoch: {_targetCoordinates.Epoch}");
+
+            Logger.Trace("Meridian Flip - Stopping tracking to pass meridian");
             telescopeMediator.SetTracking(false);
             do {
                 RemainingTime = TimeSpan.FromSeconds(timeToFlip);
@@ -177,12 +190,18 @@ namespace NINA.ViewModel {
                 timeToFlip -= delta.TotalSeconds;
             } while (RemainingTime.TotalSeconds >= 1);
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblResumeTracking"] });
+
+            Logger.Trace("Meridian Flip - Resuming tracking after passing meridian");
             telescopeMediator.SetTracking(true);
+
+            Logger.Trace("Meridian Flip - Meridian passed");
             return true;
         }
 
         private async Task<bool> Recenter(CancellationToken token, IProgress<ApplicationStatus> progress) {
             if (profileService.ActiveProfile.MeridianFlipSettings.Recenter) {
+                Logger.Trace("Meridian Flip - Recenter after meridian flip");
+
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblInitiatePlatesolve"] });
                 PlateSolveResult plateSolveResult = null;
                 using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
@@ -203,6 +222,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> ResumeAutoguider(CancellationToken token, IProgress<ApplicationStatus> progress) {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblResumeGuiding"] });
+            Logger.Trace("Meridian Flip - Resuming Autoguider");
             var result = await this.guiderMediator.StartGuiding(token);
 
             return result;
@@ -210,11 +230,13 @@ namespace NINA.ViewModel {
 
         private async Task<bool> SelectNewGuideStar(CancellationToken token, IProgress<ApplicationStatus> progress) {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblSelectGuidestar"] });
+            Logger.Trace("Meridian Flip - Selecting new guide star");
             return await this.guiderMediator.AutoSelectGuideStar(token);
         }
 
         private async Task<bool> Settle(CancellationToken token, IProgress<ApplicationStatus> progress) {
             RemainingTime = TimeSpan.FromSeconds(profileService.ActiveProfile.MeridianFlipSettings.SettleTime);
+            Logger.Trace($"Meridian Flip - Settling scope for {profileService.ActiveProfile.MeridianFlipSettings.SettleTime}");
             do {
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblSettle"] + " " + RemainingTime.ToString(@"hh\:mm\:ss") });
 
@@ -237,7 +259,7 @@ namespace NINA.ViewModel {
 
                 // Logging if reported side of pier is East, as users may be wondering why Meridian Flip didn't occur
                 if (pierside == PierSide.pierEast) {
-                    Logger.Trace("Telescope reports East Side of Pier, Automated Flip will not be performed.");
+                    Logger.Trace("Meridian Flip - Telescope reports East Side of Pier, Automated Flip will not be performed.");
                 }
 
                 if (telescopeInfo.Connected == true && pierside != PierSide.pierEast) {
@@ -251,6 +273,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> StopAutoguider(CancellationToken token, IProgress<ApplicationStatus> progress) {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStopGuiding"] });
+            Logger.Trace("Meridian Flip - Stopping Autoguider");
             var result = await this.guiderMediator.StopGuiding(token);
             return result;
         }
