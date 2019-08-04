@@ -31,6 +31,7 @@ namespace NINATest {
     public class AstrometryTest {
         private const double DEWPOINT_TOLERANCE = 0.5;
         private static double ANGLE_TOLERANCE = 0.0000000000001;
+        private static double MODULUS_TOLERANCE = 0.0001;
 
         [Test]
         public void ToRadians_ValueTest() {
@@ -587,6 +588,35 @@ namespace NINATest {
             var hourAngle = Astrometry.GetHourAngle(siderealTime, rightAscension);
 
             Assert.AreEqual(expectedHourAngle, hourAngle, ANGLE_TOLERANCE);
+        }
+
+        [Test]
+        [TestCase(182, 360, 182)]
+        [TestCase(365, 360, 5)]
+        [TestCase(-20, 360, 340)]
+        [TestCase(832, 360, 112)]
+        [TestCase(832, 360.5f, 111)]
+        [TestCase(-380, 360, 340)]
+        [TestCase(-10, -360, -10)]
+        [TestCase(3, 7, 3)]
+        [TestCase(3, -7, -4)]
+        [TestCase(-3, 7, 4)]
+        [TestCase(-3, -7, -3)]
+        [TestCase(7, 3, 1)]
+        [TestCase(7, -3, -2)]
+        [TestCase(-7, 3, 2)]
+        [TestCase(-7, -3, -1)]
+        [TestCase(10.2f, 10, 0.2f)]
+        [TestCase(10.2f, 10.5f, 10.2f)]
+        [TestCase(float.MaxValue, float.MaxValue, 0)]
+        [TestCase(150, float.MaxValue, 150)]
+        [TestCase(float.MaxValue, 10, 0)]
+        [TestCase(12.55f, 10.32f, 2.23f)]
+        [TestCase(122.55f, 10.32f, 9.03f)]
+        public void GetEuclidianModulus(float x, float y, float expected) {
+            var modulus = Astrometry.EuclidianModulus(x, y);
+
+            Assert.AreEqual(expected, modulus, MODULUS_TOLERANCE);
         }
     }
 }

@@ -137,12 +137,21 @@ namespace NINA.Model.MyCamera {
                 if (CanSetTemperature) {
                     return (double)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP);
                 } else {
-                    return Double.NaN;
+                    return double.NaN;
                 }
             }
             set {
                 if (CanSetTemperature) {
+                    //need to be an integer for ASI cameras
                     var nearest = (int)Math.Round(value);
+                    //for temperatures, automatically adjust to max or min accepted values
+                    var maxValue = GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP);
+                    var minValue = GetControlMinValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP);
+                    if (nearest > maxValue) {
+                        nearest = maxValue;
+                    } else if (nearest < minValue) {
+                        nearest = minValue;
+                    }
                     if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP, nearest)) {
                         RaisePropertyChanged();
                     }

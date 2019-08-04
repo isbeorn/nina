@@ -405,7 +405,11 @@ namespace NINA.Model.MyCamera {
 
         public double TemperatureSetPoint {
             get {
-                return Info.CoolerTargetTemp;
+                if (Connected && CanSetTemperature) {
+                    return Info.CoolerTargetTemp;
+                } else {
+                    return double.NaN;
+                }
             }
             set {
                 if (Connected && CanSetTemperature) {

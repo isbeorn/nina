@@ -217,25 +217,28 @@ namespace NINA.ViewModel {
         /// Syncs telescope to solved coordinates
         /// </summary>
         /// <returns></returns>
-        private bool SyncronizeTelescope() {
+        private bool SynchronizeTelescope() {
             var success = false;
 
             if (TelescopeInfo.Connected != true) {
                 Notification.ShowWarning(Locale.Loc.Instance["LblUnableToSync"]);
+                Logger.Warning("Telescope is not connected. Unable to sync");
                 return false;
             }
 
             if (PlateSolveResult != null && PlateSolveResult.Success) {
                 Coordinates solved = PlateSolveResult.Coordinates;
                 solved = solved.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);  //Transform to JNow if required
-
+                Logger.Trace($"Trying to sync to coordinates - RA: {solved.RAString} Dec: {solved.DecString}");
                 if (telescopeMediator.Sync(solved.RA, solved.Dec) == true) {
                     Notification.ShowSuccess(Locale.Loc.Instance["LblTelescopeSynced"]);
                     success = true;
                 } else {
+                    Logger.Warning("Sync to coordinates failed");
                     Notification.ShowWarning(Locale.Loc.Instance["LblSyncFailed"]);
                 }
             } else {
+                Logger.Warning("No coordinates available to sync to");
                 Notification.ShowWarning(Locale.Loc.Instance["LblNoCoordinatesForSync"]);
             }
             return success;
@@ -299,7 +302,7 @@ namespace NINA.ViewModel {
             _solveCancelToken = new CancellationTokenSource();
             var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAPSHOT, SnapFilter, SnapBin, 1);
             seq.Gain = SnapGain;
-            return await this.CaptureSolveSyncAndReslew(seq, this.SyncScope, this.SlewToTarget, this.Repeat, _solveCancelToken.Token, progress) != null;
+            return await this.CaptureSolveSyncAndReslew(seq, this.SyncScope, this.SlewToTarget, this.Repeat, _solveCancelToken.Token, progress, false, this.RepeatThreshold) != null;
         }
 
         public async Task<PlateSolveResult> CaptureSolveSyncReslewReattempt(
@@ -361,20 +364,29 @@ namespace NINA.ViewModel {
                 solveresult = await SolveWithCapture(seq, progress, token, silent);
 
                 if (solveresult != null && solveresult.Success) {
+                    Logger.Trace($"Solved successfully. Current Coordinates RA: {solveresult.Coordinates.RAString} Dec: {solveresult.Coordinates.DecString} Epoch: {solveresult.Coordinates.Epoch}");
                     if (syncScope) {
                         if (TelescopeInfo.Connected != true) {
+                            Logger.Warning("Telescope not connected. Unable to sync");
                             Notification.ShowWarning(Locale.Loc.Instance["LblUnableToSync"]);
                             return null;
                         }
                         var coords = new Coordinates(TelescopeInfo.RightAscension, TelescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
-                        if (SyncronizeTelescope() && slewToTarget) {
-                            await telescopeMediator.SlewToCoordinatesAsync(coords);
+
+                        var syncSuccess = SynchronizeTelescope();
+
+                        if (syncSuccess && slewToTarget) {
+                            if (!repeat || (repeat && Math.Abs(solveresult.Separation.Distance.ArcMinutes) > repeatThreshold)) {
+                                Logger.Trace($"Slewing to target after sync. Target coordinates RA: {coords.RAString} Dec: {coords.DecString} Epoch: {coords.Epoch}");
+                                await telescopeMediator.SlewToCoordinatesAsync(coords);
+                            }
                         }
                     }
                 }
 
                 if (solveresult?.Success == true && repeat && Math.Abs(solveresult.Separation.Distance.ArcMinutes) > repeatThreshold) {
                     repeatPlateSolve = true;
+                    Logger.Trace($"Telescope not inside tolerance. Tolerance: {repeatThreshold}; Error Distance: {Math.Abs(solveresult.Separation.Distance.ArcMinutes)} - Repeating...");
                     progress.Report(new ApplicationStatus() { Status = "Telescope not inside tolerance. Repeating..." });
                     //Let the scope settle
                     await Task.Delay(TimeSpan.FromSeconds(profileService.ActiveProfile.TelescopeSettings.SettleTime));
@@ -472,6 +484,8 @@ namespace NINA.ViewModel {
                     Image = ms
                 };
 
+                Logger.Trace($"Blind solving with parameters: {Environment.NewLine + parameter.ToString()}");
+
                 var result = await solver.SolveAsync(parameter, progress, canceltoken);
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
                 return result;
@@ -504,6 +518,8 @@ namespace NINA.ViewModel {
                     ImageHeight = source.PixelHeight,
                     Image = ms
                 };
+
+                Logger.Trace($"Solving with parameters: {Environment.NewLine + parameter.ToString()}");
 
                 var result = await solver.SolveAsync(parameter, progress, canceltoken);
                 progress.Report(new ApplicationStatus() { Status = string.Empty });

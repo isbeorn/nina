@@ -96,6 +96,20 @@ namespace NINA.Utility.Astrometry {
             return deg / 15d;
         }
 
+        public static float EuclidianModulus(float x, float y) {
+            if (y > 0) {
+                float r = x % y;
+                if (r < 0) {
+                    return r + y;
+                } else {
+                    return r;
+                }
+            } else if (y < 0) {
+                return -1 * EuclidianModulus(-1 * x, -1 * y);
+            } else {
+                return float.NaN;
+            }
+        }
         public static double GetLocalSiderealTimeNow(double longitude) {
             return GetLocalSiderealTime(DateTime.Now, longitude);
         }
