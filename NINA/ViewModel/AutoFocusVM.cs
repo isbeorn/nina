@@ -366,7 +366,7 @@ namespace NINA.ViewModel {
                 imagingMediator.SetImage(analysis.GetAnnotatedImage());
             }
 
-            Logger.Debug(string.Format("Current Focus: Position: {0}, HRF: {1}", _focusPosition, analysis.AverageHFR));
+            Logger.Debug(string.Format("Current Focus: Position: {0}, HFR: {1}", _focusPosition, analysis.AverageHFR));
 
             return new HFRAndError() { HFR = analysis.AverageHFR, Stdev = analysis.HFRStdDev };
         }
@@ -684,7 +684,7 @@ namespace NINA.ViewModel {
                         }
 
                         // Let's keep moving in, one step at a time, until we have enough left trend points. Then we can think about moving out to fill in the right trend points
-                        if (LeftTrend.DataPoints.Count() < offsetSteps) {
+                        if (LeftTrend.DataPoints.Count() < offsetSteps && FocusPoints.Where(dp => dp.X < _minimum.X && dp.Y == 0).Count() < offsetSteps) {
                             Logger.Trace("More datapoints needed to the left of the minimum");
                             //Move to the leftmost point - this should never be necessary since we're already there, but just in case
                             if (focuserInfo.Position != (int)Math.Round(FocusPoints.FirstOrDefault().X)) {
@@ -692,7 +692,7 @@ namespace NINA.ViewModel {
                             }
                             //More points needed to the left
                             await GetFocusPoints(filter, 1, progress, token, -1);
-                        } else if (RightTrend.DataPoints.Count() < offsetSteps) { //Now we can go to the right, if necessary
+                        } else if (RightTrend.DataPoints.Count() < offsetSteps && FocusPoints.Where(dp => dp.X > _minimum.X && dp.Y == 0).Count() < offsetSteps) { //Now we can go to the right, if necessary
                             Logger.Trace("More datapoints needed to the right of the minimum");
                             //More points needed to the right. Let's get to the rightmost point, and keep going right one point at a time
                             if (focuserInfo.Position != (int)Math.Round(FocusPoints.LastOrDefault().X)) {
@@ -705,7 +705,7 @@ namespace NINA.ViewModel {
                         rightcount = RightTrend.DataPoints.Count();
 
                         token.ThrowIfCancellationRequested();
-                    } while (rightcount < offsetSteps || leftcount < offsetSteps);
+                    } while (rightcount + FocusPoints.Where(dp => dp.X > _minimum.X && dp.Y == 0).Count() < offsetSteps || leftcount + FocusPoints.Where(dp => dp.X < _minimum.X && dp.Y == 0).Count() < offsetSteps);
 
                     token.ThrowIfCancellationRequested();
 
