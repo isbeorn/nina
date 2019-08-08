@@ -893,6 +893,7 @@ Sollen die Werte synchronisiert werden?</s:String>
   <s:String x:Key="LblTo" xml:space="default">bis</s:String>
   <s:String x:Key="LblTools" xml:space="default">Werkzeuge</s:String>
   <s:String x:Key="LblTooltipAddSequence" xml:space="default">Fügt eine neue Reihe in die Liste der Sequenzen hinzu</s:String>
+  <s:String x:Key="LblTooltipAddTarget" xml:space="default">Ein neues leeres Ziel hinzufügen</s:String>
   <s:String x:Key="LblTooltipAutoStretch" xml:space="default">Schaltet automatisches Strecken des Histogramms an/aus (nur Anzeige)</s:String>
   <s:String x:Key="LblTooltipBahtinovAnalyzer" xml:space="preserve">Bahtinov Analyzer
 Das Rechteck über einen Stern mit Bahtinov Beugungsmuster bewegen. NINA versucht die Beugung zu erkennen und stellt den Fehler dar.</s:String>

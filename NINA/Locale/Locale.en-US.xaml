@@ -893,6 +893,7 @@ Should the values be synced?</s:String>
   <s:String x:Key="LblTo" xml:space="default">To</s:String>
   <s:String x:Key="LblTools" xml:space="default">Tools</s:String>
   <s:String x:Key="LblTooltipAddSequence" xml:space="default">Add new row to sequence list</s:String>
+  <s:String x:Key="LblTooltipAddTarget" xml:space="default">Add new empty target sequence</s:String>
   <s:String x:Key="LblTooltipAutoStretch" xml:space="default">Toggles an automatic autostretch to image on/off (display only)</s:String>
   <s:String x:Key="LblTooltipBahtinovAnalyzer" xml:space="preserve">Bahtinov Analyzer
 Drag the rectangle over a star whith the bahtinov spikes. NINA will try to detect the spikes and show the error.</s:String>
