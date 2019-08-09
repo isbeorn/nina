@@ -125,6 +125,7 @@
 - Fixed Alitude charts displaying wrong Twilight/Night predictions for some scenarios
 - Manual focus target list was not updating in some scenarios. Now it will always update. The interval for updates is one minute.
 - Fixed an issue in FramingAssistant when reloading the image and having multiple panels selected, that the orientation was not considered properly resulting in wrong coordinates
+- Fixed an issue in the Telescope Equipment tab that could potentially slew to the wrong Declination if the declination angle was negative
 
 ## Improvements
 - When EOS Utility is running in the background, the x64 N.I.N.A. client will scan for this app and prevent a crash due to the EOS utility being open. Instead a notification will show up to close the EOS Utility.

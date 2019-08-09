@@ -901,6 +901,7 @@ Si vogliono sincronizzare i valori?</s:String>
   <s:String x:Key="LblTo" xml:space="default">A</s:String>
   <s:String x:Key="LblTools" xml:space="default">Strumenti</s:String>
   <s:String x:Key="LblTooltipAddSequence" xml:space="default">Aggiungi una riga alla lista delle sequenze</s:String>
+  <s:String x:Key="LblTooltipAddTarget" xml:space="default">Aggiungi una sequenza target vuota</s:String>
   <s:String x:Key="LblTooltipAutoStretch" xml:space="default">Abilita (on/off) Ridimensionamento automatico dell'immagine (solo a video)</s:String>
   <s:String x:Key="LblTooltipBahtinovAnalyzer" xml:space="preserve">Bahtinov Analyzer
 Trascina il rettangolo su una stella con le linee di bahtinov. NINA cercherà le linee e mostrerà l'errore.</s:String>

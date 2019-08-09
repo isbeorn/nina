@@ -127,16 +127,20 @@ namespace NINA.ViewModel {
             return flipsuccess;
         }
 
-        private async Task<bool> DoMeridianFlip(TelescopeInfo telescopeInfo) {
+        private async Task<bool> DoMeridianFlip(Coordinates targetCoordinates, TimeSpan timeToFlip) {
             try {
+                _targetCoordinates = targetCoordinates;
+                RemainingTime = timeToFlip;
+
                 Logger.Trace("Meridian Flip - Initializing Meridian Flip");
+                Logger.Trace($"Meridian Flip - Current target coordinates RA: {_targetCoordinates.RAString} Dec: {_targetCoordinates.DecString} Epoch: {_targetCoordinates.Epoch}");
 
                 var token = _tokensource.Token;
                 Steps = new AutomatedWorkflow();
 
                 Steps.Add(new WorkflowStep("StopAutoguider", Locale.Loc.Instance["LblStopAutoguider"], () => StopAutoguider(token, _progress)));
 
-                Steps.Add(new WorkflowStep("PassMeridian", Locale.Loc.Instance["LblPassMeridian"], () => PassMeridian(telescopeInfo, token, _progress)));
+                Steps.Add(new WorkflowStep("PassMeridian", Locale.Loc.Instance["LblPassMeridian"], () => PassMeridian(token, _progress)));
                 Steps.Add(new WorkflowStep("Flip", Locale.Loc.Instance["LblFlip"], () => DoFilp(token, _progress)));
                 if (profileService.ActiveProfile.MeridianFlipSettings.Recenter) {
                     Steps.Add(new WorkflowStep("Recenter", Locale.Loc.Instance["LblRecenter"], () => Recenter(token, _progress)));
@@ -169,25 +173,20 @@ namespace NINA.ViewModel {
             return true;
         }
 
-        private async Task<bool> PassMeridian(TelescopeInfo telescopeInfo, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        private async Task<bool> PassMeridian(CancellationToken token, IProgress<ApplicationStatus> progress) {
             Logger.Trace("Meridian Flip - Passing meridian");
 
-            var timeToFlip = telescopeInfo.TimeToMeridianFlip * 60 * 60;
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStopTracking"] });
-            _targetCoordinates = telescopeInfo.Coordinates;
-
-            Logger.Trace($"Meridian Flip - Current target coordinates RA: {_targetCoordinates.RAString} Dec: {_targetCoordinates.DecString} Epoch: {_targetCoordinates.Epoch}");
 
             Logger.Trace("Meridian Flip - Stopping tracking to pass meridian");
             telescopeMediator.SetTracking(false);
             do {
-                RemainingTime = TimeSpan.FromSeconds(timeToFlip);
                 progress.Report(new ApplicationStatus() { Status = RemainingTime.ToString(@"hh\:mm\:ss") });
 
                 //progress.Report(string.Format("Next exposure paused until passing meridian. Remaining time: {0} seconds", RemainingTime));
                 var delta = await Utility.Utility.Delay(1000, token);
 
-                timeToFlip -= delta.TotalSeconds;
+                RemainingTime -= delta;
             } while (RemainingTime.TotalSeconds >= 1);
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblResumeTracking"] });
 
@@ -214,6 +213,7 @@ namespace NINA.ViewModel {
                         numberOfAttempts = profileService.ActiveProfile.PlateSolveSettings.NumberOfAttempts,
                         delayDuration = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay)
                     };
+                    solver.PlateSolveTarget = _targetCoordinates;
                     plateSolveResult = await solver.CaptureSolveSyncReslewReattempt(solveParameters, token, progress);
                 }
             }
@@ -302,14 +302,15 @@ namespace NINA.ViewModel {
         ///    target position
         /// 5) Resume Guider
         /// </summary>
-        /// <param name="seq">Current Sequence row</param>
+        /// <param name="targetCoordinates">Reference Coordinates to slew to after flip</param>
+        /// <param name="timeToFlip">Remaining time to actually flip the scope</param>
         /// <returns></returns>
-        public async Task<bool> MeridianFlip(CaptureSequence seq, TelescopeInfo telescopeInfo) {
+        public async Task<bool> MeridianFlip(Coordinates targetCoordinates, TimeSpan timeToFlip) {
             var service = WindowServiceFactory.Create();
             this._tokensource?.Dispose();
             this._tokensource = new CancellationTokenSource();
             this._progress = new Progress<ApplicationStatus>(p => Status = p);
-            var flip = DoMeridianFlip(telescopeInfo);
+            var flip = DoMeridianFlip(targetCoordinates, timeToFlip);
 
             var serviceTask = service.ShowDialog(this, Locale.Loc.Instance["LblAutoMeridianFlip"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.None, CancelCommand);
             var flipResult = await flip;

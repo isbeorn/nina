@@ -371,7 +371,11 @@ namespace NINA.ViewModel {
                             Notification.ShowWarning(Locale.Loc.Instance["LblUnableToSync"]);
                             return null;
                         }
-                        var coords = new Coordinates(TelescopeInfo.RightAscension, TelescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+
+                        Coordinates coords = PlateSolveTarget;
+                        if (coords == null) {
+                            coords = new Coordinates(TelescopeInfo.RightAscension, TelescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+                        }
 
                         var syncSuccess = SynchronizeTelescope();
 
@@ -408,7 +412,10 @@ namespace NINA.ViewModel {
                 Coordinates solved = PlateSolveResult.Coordinates;
                 solved = solved.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
 
-                var coords = new Coordinates(TelescopeInfo.RightAscension, TelescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+                var coords = PlateSolveTarget;
+                if (coords == null) {
+                    coords = new Coordinates(TelescopeInfo.RightAscension, TelescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+                }
 
                 var separation = coords - solved;
 
@@ -423,7 +430,11 @@ namespace NINA.ViewModel {
         /// <param name="canceltoken"></param>
         /// <returns>true: success; false: fail</returns>
         public async Task<PlateSolveResult> Solve(BitmapSource source, IProgress<ApplicationStatus> progress, CancellationToken canceltoken, bool silent = false, Coordinates coordinates = null) {
-            coordinates = coordinates ?? TelescopeInfo.Coordinates;
+            if (PlateSolveTarget != null) {
+                coordinates = PlateSolveTarget;
+            } else {
+                coordinates = coordinates ?? TelescopeInfo.Coordinates;
+            }
 
             PlateSolveResult result = new PlateSolveResult() { Success = false };
             string failedMessage = Locale.Loc.Instance["LblPlatesolveFailed"];
@@ -618,6 +629,8 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
+
+        public Coordinates PlateSolveTarget { get; set; }
 
         public struct SolveParameters {
             public bool syncScope;
