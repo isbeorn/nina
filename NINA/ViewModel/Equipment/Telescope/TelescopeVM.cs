@@ -565,7 +565,7 @@ namespace NINA.ViewModel.Equipment.Telescope {
 
         private void SlewToCoordinates(object obj) {
             var targetRightAscencion = TargetRightAscencionHours + Astrometry.ArcminToDegree(TargetRightAscencionMinutes) + Astrometry.ArcsecToDegree(TargetRightAscencionSeconds);
-            var targetDeclination = TargetDeclinationDegrees + Astrometry.ArcminToDegree(TargetDeclinationMinutes) + Astrometry.ArcsecToDegree(TargetDeclinationSeconds);
+            var targetDeclination = TargetDeclinationDegrees + Math.Sign(TargetDeclinationDegrees) * Astrometry.ArcminToDegree(TargetDeclinationMinutes) + Math.Sign(TargetDeclinationDegrees) * Astrometry.ArcsecToDegree(TargetDeclinationSeconds);
 
             var coords = new Coordinates(targetRightAscencion, targetDeclination, Epoch.J2000, Coordinates.RAType.Hours);
             SlewToCoordinates(coords);
