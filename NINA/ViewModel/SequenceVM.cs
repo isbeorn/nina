@@ -435,9 +435,9 @@ namespace NINA.ViewModel {
                         silent = true,
                         repeatThreshold = profileService.ActiveProfile.PlateSolveSettings.Threshold,
                         numberOfAttempts = profileService.ActiveProfile.PlateSolveSettings.NumberOfAttempts,
-                        delayDuration = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay)
+                        delayDuration = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay),
                     };
-
+                    solver.PlateSolveTarget = GetReferenceCoordinates(csl);
                     plateSolveResult = await solver.CaptureSolveSyncReslewReattempt(solveParameters, _canceltoken.Token, progress);
                     service.DelayedClose(TimeSpan.FromSeconds(10));
                 }
@@ -586,6 +586,19 @@ namespace NINA.ViewModel {
         private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
         /// <summary>
+        /// Gets reference coordinates for the sequence. When centering is enabled it will get the current specified coordinates, otherwise the current scope position
+        /// </summary>
+        /// <param name="csl"></param>
+        /// <returns></returns>
+        private Coordinates GetReferenceCoordinates(CaptureSequenceList csl) {
+            if (csl.CenterTarget) {
+                return csl.Coordinates;
+            } else {
+                return telescopeInfo.Coordinates;
+            }
+        }
+
+        /// <summary>
         /// Processes all sequence items in given capture sequence list
         ///
         /// One Sequence item is processed like:
@@ -622,6 +635,9 @@ namespace NINA.ViewModel {
                     var lastAutoFocusTime = DateTime.UtcNow;
                     var lastAutoFocusTemperature = focuserInfo?.Temperature ?? double.NaN;
                     var exposureCount = 0;
+
+                    var referenceCoordinates = GetReferenceCoordinates(csl);
+
                     Task saveTask = null;
                     Task ditherTask = null;
                     Task filterChangeTask = null;
@@ -630,7 +646,7 @@ namespace NINA.ViewModel {
 
                         seq.NextSequence = csl.GetNextSequenceItem(seq);
 
-                        await CheckMeridianFlip(seq, ct, progress);
+                        await CheckMeridianFlip(referenceCoordinates, seq.ExposureTime, ct, progress);
 
                         Stopwatch seqDuration = Stopwatch.StartNew();
 
@@ -827,7 +843,7 @@ namespace NINA.ViewModel {
                 return true;
             }
 
-            if (csl.AutoFocusAfterHFRChange && AfHfrIndex < imgHistoryVM.ImgStatHistory.Count() && imgHistoryVM.ImgStatHistory.Last().HFR > imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).HFR * (1 + csl.AutoFocusAfterHFRChangeAmount / 100) && imgHistoryVM.ImgStatHistory.Last().HFR != 0 && imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).HFR !=0) {
+            if (csl.AutoFocusAfterHFRChange && AfHfrIndex < imgHistoryVM.ImgStatHistory.Count() && imgHistoryVM.ImgStatHistory.Last().HFR > imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).HFR * (1 + csl.AutoFocusAfterHFRChangeAmount / 100) && imgHistoryVM.ImgStatHistory.Last().HFR != 0 && imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).HFR != 0) {
                 /* Trigger autofocus after HFR change */
                 AfHfrIndex = imgHistoryVM.ImgStatHistory.Count();
                 return true;
@@ -846,14 +862,19 @@ namespace NINA.ViewModel {
         ///    target position
         /// 5) Resume Guider
         /// </summary>
-        /// <param name="seq">        Current Sequence row</param>
+        /// <param name="flipTargetCoordinates">Reference Coordinates for the flip</param>
+        /// <param name="nextExposureTime">Next exposure time</param>
         /// <param name="tokenSource">cancel token</param>
         /// <param name="progress">   progress reporter</param>
         /// <returns></returns>
-        private async Task CheckMeridianFlip(CaptureSequence seq, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        private async Task CheckMeridianFlip(Coordinates flipTargetCoordinates, double nextExposureTime, CancellationToken token, IProgress<ApplicationStatus> progress) {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblCheckMeridianFlip"] });
-            if (telescopeInfo != null && MeridianFlipVM.ShouldFlip(profileService, seq.ExposureTime, telescopeInfo)) {
-                await new MeridianFlipVM(profileService, cameraMediator, telescopeMediator, guiderMediator, imagingMediator, applicationStatusMediator).MeridianFlip(seq, telescopeInfo);
+            if (telescopeInfo != null && MeridianFlipVM.ShouldFlip(profileService, nextExposureTime, telescopeInfo)) {
+                var target = flipTargetCoordinates;
+                if (flipTargetCoordinates.RA == 0 && flipTargetCoordinates.Dec == 0) {
+                    target = telescopeInfo.Coordinates;
+                }
+                await new MeridianFlipVM(profileService, cameraMediator, telescopeMediator, guiderMediator, imagingMediator, applicationStatusMediator).MeridianFlip(target, TimeSpan.FromSeconds(telescopeInfo.TimeToMeridianFlip));
             }
             progress.Report(new ApplicationStatus() { Status = string.Empty });
         }
