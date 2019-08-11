@@ -128,7 +128,7 @@
                         <UniformGrid Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSync}" />
                             <CheckBox
-                                Width="75"
+                                Width="120"
                                 Height="25"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Left"
@@ -142,7 +142,7 @@
                         <UniformGrid Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblReslewToTarget}" />
                             <CheckBox
-                                Width="75"
+                                Width="120"
                                 Height="25"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Left"
@@ -157,7 +157,7 @@
                             <UniformGrid Columns="2">
                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRepeatUntil}" />
                                 <CheckBox
-                                    Width="75"
+                                    Width="120"
                                     Height="25"
                                     Margin="5,0,0,0"
                                     HorizontalAlignment="Left"

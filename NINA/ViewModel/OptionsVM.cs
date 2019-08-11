@@ -24,11 +24,11 @@
 using NINA.Model;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyPlanetarium;
+using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
-using NINA.Profile;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -453,7 +453,8 @@ namespace NINA.ViewModel {
             new CultureInfo("en-GB"),
             new CultureInfo("en-US"),
             new CultureInfo("de-DE"),
-            new CultureInfo("it-IT")
+            new CultureInfo("it-IT"),
+            new CultureInfo("es-US")
         };
 
         public ObservableCollection<CultureInfo> AvailableLanguages {

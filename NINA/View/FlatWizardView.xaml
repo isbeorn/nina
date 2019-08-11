@@ -258,7 +258,7 @@
                                                     <Grid Margin="5,5,5,5" HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}">
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="4*" />
-                                                            <ColumnDefinition Width="1*" />
+                                                            <ColumnDefinition Width="2*" />
                                                         </Grid.ColumnDefinitions>
                                                         <TextBlock
                                                             Grid.Column="0"

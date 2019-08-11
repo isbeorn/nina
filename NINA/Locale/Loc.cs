@@ -43,6 +43,7 @@ namespace NINA.Locale {
                         _locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale.xaml", UriKind.Relative) };
                     }
 #if DEBUG
+                    string dummy = _locale.Source.AbsolutePath;
                     var tmp = new ResourceDictionary();
                     foreach (System.Collections.DictionaryEntry l in _locale) {
                         tmp.Add(l.Key, "##" + l.Value + "##");

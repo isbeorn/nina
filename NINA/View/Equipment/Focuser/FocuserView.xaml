@@ -185,7 +185,7 @@
                             Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblTemperatureCompensation}" />
                             <CheckBox
-                                Width="75"
+                                Width="120"
                                 Height="25"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Left"
@@ -254,7 +254,7 @@
                                     ButtonText="&lt;&lt; "
                                     CancelButtonImage="{StaticResource CancelSVG}"
                                     CancelCommand="{Binding HaltFocuserCommand}"
-                                    Command="{Binding MoveFocuserInLargeCommand}"/>
+                                    Command="{Binding MoveFocuserInLargeCommand}" />
                             </Grid>
                             <Grid IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
                                 <ninactrl:CancellableButton
@@ -265,7 +265,7 @@
                                     ButtonText="&lt; "
                                     CancelButtonImage="{StaticResource CancelSVG}"
                                     CancelCommand="{Binding HaltFocuserCommand}"
-                                    Command="{Binding MoveFocuserInSmallCommand}"/>
+                                    Command="{Binding MoveFocuserInSmallCommand}" />
                             </Grid>
                             <Grid IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
                                 <ninactrl:CancellableButton
@@ -276,7 +276,7 @@
                                     ButtonText="&gt;"
                                     CancelButtonImage="{StaticResource CancelSVG}"
                                     CancelCommand="{Binding HaltFocuserCommand}"
-                                    Command="{Binding MoveFocuserOutSmallCommand}"/>
+                                    Command="{Binding MoveFocuserOutSmallCommand}" />
                             </Grid>
                             <Grid IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
                                 <ninactrl:CancellableButton
@@ -287,7 +287,7 @@
                                     ButtonText="&gt;&gt;"
                                     CancelButtonImage="{StaticResource CancelSVG}"
                                     CancelCommand="{Binding HaltFocuserCommand}"
-                                    Command="{Binding MoveFocuserOutLargeCommand}"/>
+                                    Command="{Binding MoveFocuserOutLargeCommand}" />
                             </Grid>
                         </UniformGrid>
                     </UniformGrid>

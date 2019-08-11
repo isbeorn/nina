@@ -596,7 +596,7 @@
                                 </TextBlock.ToolTip>
                             </TextBlock>
                             <CheckBox
-                                Width="75"
+                                Width="120"
                                 Height="25"
                                 HorizontalAlignment="Left"
                                 IsChecked="{Binding UseFilterWheelOffsets}" />
@@ -886,7 +886,7 @@
                                 </TextBlock.ToolTip>
                             </TextBlock>
                             <CheckBox
-                                Width="75"
+                                Width="120"
                                 Height="25"
                                 HorizontalAlignment="Left"
                                 IsChecked="{Binding DisplayFahrenheit}" />
@@ -907,7 +907,7 @@
                                 </TextBlock.ToolTip>
                             </TextBlock>
                             <CheckBox
-                                Width="75"
+                                Width="120"
                                 Height="25"
                                 HorizontalAlignment="Left"
                                 IsChecked="{Binding DisplayImperial}" />
@@ -1046,7 +1046,7 @@
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblDitherRAOnly}" />
                             <CheckBox
-                                Width="75"
+                                Width="120"
                                 Height="25"
                                 HorizontalAlignment="Left"
                                 IsChecked="{Binding DitherRAOnly}" />
