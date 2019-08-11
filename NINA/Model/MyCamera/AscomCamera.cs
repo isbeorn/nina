@@ -1054,8 +1054,8 @@ namespace NINA.Model.MyCamera {
 
         public void StartExposure(CaptureSequence sequence) {
             if (EnableSubSample) {
-                StartX = SubSampleX;
-                StartY = SubSampleY;
+                StartX = SubSampleX / BinX;
+                StartY = SubSampleY / BinY;
                 NumX = SubSampleWidth / BinX;
                 NumY = SubSampleHeight / BinY;
             } else {
