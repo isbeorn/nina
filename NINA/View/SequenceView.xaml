@@ -236,7 +236,7 @@
                                 Columns="2">
                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblStartGuiding}" />
                                 <CheckBox
-                                    Width="75"
+                                    Width="120"
                                     Margin="5,0,0,0"
                                     HorizontalAlignment="Left"
                                     IsChecked="{Binding StartGuiding}" />
@@ -252,7 +252,7 @@
                                     Columns="2">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSlewToTarget}" />
                                     <CheckBox
-                                        Width="75"
+                                        Width="120"
                                         Margin="5,0,0,0"
                                         HorizontalAlignment="Left"
                                         IsChecked="{Binding SlewToTarget}" />
@@ -263,7 +263,7 @@
                                     Columns="2">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblCenterTarget}" />
                                     <CheckBox
-                                        Width="75"
+                                        Width="120"
                                         Margin="5,0,0,0"
                                         HorizontalAlignment="Left"
                                         IsChecked="{Binding CenterTarget}" />
@@ -380,6 +380,21 @@
                                                     </Style>
                                                 </StackPanel.Style>
                                             </StackPanel>
+                                            <StackPanel Margin="5,0,0,0" Orientation="Horizontal">
+                                                <TextBlock Text="|" />
+                                                <TextBlock Margin="5,0,0,0" Text="{Binding AutoFocusAfterHFRChangeAmount}" />
+                                                <TextBlock Text="{ns:Loc LblPercentShort}" />
+                                                <TextBlock Margin="5,0,0,0" Text="{ns:Loc LblHFR}" />
+                                                <StackPanel.Style>
+                                                    <Style TargetType="StackPanel">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding AutoFocusAfterHFRChange}" Value="False">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </StackPanel.Style>
+                                            </StackPanel>
                                             <StackPanel.Style>
                                                 <Style TargetType="StackPanel">
                                                     <Style.Triggers>
@@ -402,7 +417,7 @@
                                                 Columns="2">
                                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusOnStart}" />
                                                 <CheckBox
-                                                    Width="75"
+                                                    Width="120"
                                                     Margin="5,0,0,0"
                                                     HorizontalAlignment="Left"
                                                     IsChecked="{Binding AutoFocusOnStart}" />
@@ -413,7 +428,7 @@
                                                 Columns="2">
                                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusOnFilterChange}" />
                                                 <CheckBox
-                                                    Width="75"
+                                                    Width="120"
                                                     Margin="5,0,0,0"
                                                     HorizontalAlignment="Left"
                                                     IsChecked="{Binding AutoFocusOnFilterChange}" />
@@ -428,7 +443,7 @@
                                                 Columns="2">
                                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusAfterSetTime}" />
                                                 <CheckBox
-                                                    Width="75"
+                                                    Width="120"
                                                     Margin="5,0,0,0"
                                                     HorizontalAlignment="Left"
                                                     IsChecked="{Binding AutoFocusAfterSetTime}" />
@@ -440,7 +455,7 @@
                                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusSetTime}" />
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBox
-                                                        Width="75"
+                                                        Width="120"
                                                         Margin="5,0,0,0"
                                                         HorizontalAlignment="Left">
                                                         <TextBox.Text>
@@ -452,7 +467,7 @@
                                                         </TextBox.Text>
                                                     </TextBox>
                                                     <TextBlock
-                                                        Width="75"
+                                                        Width="120"
                                                         Margin="5,0,0,0"
                                                         HorizontalAlignment="Left"
                                                         VerticalAlignment="Center"
@@ -469,7 +484,7 @@
                                                 Columns="2">
                                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusAfterSetExposures}" />
                                                 <CheckBox
-                                                    Width="75"
+                                                    Width="120"
                                                     Margin="5,0,0,0"
                                                     HorizontalAlignment="Left"
                                                     IsChecked="{Binding AutoFocusAfterSetExposures}" />
@@ -480,7 +495,7 @@
                                                 Columns="2">
                                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusNrOfExposures}" />
                                                 <TextBox
-                                                    Width="75"
+                                                    Width="120"
                                                     Margin="5,0,0,0"
                                                     HorizontalAlignment="Left">
                                                     <TextBox.Text>
@@ -502,7 +517,7 @@
                                                 Columns="2">
                                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusAfterTemperatureChange}" />
                                                 <CheckBox
-                                                    Width="75"
+                                                    Width="120"
                                                     Margin="5,0,0,0"
                                                     HorizontalAlignment="Left"
                                                     IsChecked="{Binding AutoFocusAfterTemperatureChange}" />
@@ -514,7 +529,7 @@
                                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusAfterTemperatureChangeAmount}" />
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBox
-                                                        Width="75"
+                                                        Width="120"
                                                         Margin="5,0,0,0"
                                                         HorizontalAlignment="Left">
                                                         <TextBox.Text>
@@ -543,7 +558,7 @@
                                                 Columns="2">
                                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusAfterHFRChange}" />
                                                 <CheckBox
-                                                    Width="75"
+                                                    Width="120"
                                                     Margin="5,0,0,0"
                                                     HorizontalAlignment="Left"
                                                     IsChecked="{Binding AutoFocusAfterHFRChange}" />

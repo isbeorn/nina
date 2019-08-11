@@ -24,18 +24,18 @@
 
 #endregion "copyright"
 
+using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
-using NINA.Profile;
 using NINA.ViewModel.Equipment.Camera;
 using NINA.ViewModel.Equipment.FilterWheel;
 using NINA.ViewModel.Equipment.Focuser;
 using NINA.ViewModel.Equipment.Guider;
 using NINA.ViewModel.Equipment.Rotator;
-using NINA.ViewModel.Equipment.Telescope;
 using NINA.ViewModel.Equipment.Switch;
+using NINA.ViewModel.Equipment.Telescope;
 using NINA.ViewModel.Equipment.WeatherData;
 using NINA.ViewModel.FlatWizard;
 using NINA.ViewModel.FramingAssistant;
@@ -90,7 +90,8 @@ namespace NINA.ViewModel {
                         var rotator = rotatorMediator.Connect();
                         var guider = guiderMediator.Connect();
                         var weather = weatherDataMediator.Connect();
-                        await Task.WhenAll(cam, fw, telescope, focuser, rotator, guider, weather);
+                        var swtch = switchMediator.Connect();
+                        await Task.WhenAll(cam, fw, telescope, focuser, rotator, guider, weather, swtch);
                         return true;
                     });
                 } else {

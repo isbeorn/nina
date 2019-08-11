@@ -398,8 +398,8 @@ namespace NINA.Model.MyCamera {
                 return new CaptureAreaInfo(p, res, bin, imageType);
             }
             set {
-                ASICameraDll.SetStartPos(_cameraId, value.Start);
                 ASICameraDll.SetROIFormat(_cameraId, value.Size, value.Binning, value.ImageType);
+                ASICameraDll.SetStartPos(_cameraId, value.Start);
             }
         }
 
@@ -472,7 +472,7 @@ namespace NINA.Model.MyCamera {
                                sequence.ImageType == CaptureSequence.ImageTypes.DARKFLAT;
 
             if (EnableSubSample) {
-                this.CaptureAreaInfo = new CaptureAreaInfo(new Point(SubSampleX, SubSampleY), new Size(SubSampleWidth / BinX, SubSampleHeight / BinY), BinX, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
+                this.CaptureAreaInfo = new CaptureAreaInfo(new Point(SubSampleX / BinX, SubSampleY / BinY), new Size(SubSampleWidth / BinX, SubSampleHeight / BinY), BinX, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
             } else {
                 this.CaptureAreaInfo = new CaptureAreaInfo(new Point(0, 0), new Size(this.Resolution.Width / BinX, this.Resolution.Height / BinY), BinX, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
             }

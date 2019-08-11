@@ -162,7 +162,7 @@
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblEnabled}" />
                             <CheckBox
-                                Width="75"
+                                Width="120"
                                 Height="25"
                                 HorizontalAlignment="Left"
                                 IsChecked="{Binding Enabled}" />
@@ -194,7 +194,7 @@
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblUseSideOfPier}" />
                             <CheckBox
-                                Width="75"
+                                Width="120"
                                 Height="25"
                                 HorizontalAlignment="Left"
                                 IsChecked="{Binding UseSideOfPier}" />
@@ -206,7 +206,7 @@
                                 VerticalAlignment="Center"
                                 Text="{ns:Loc LblRecenterAfterFlip}" />
                             <CheckBox
-                                Width="75"
+                                Width="120"
                                 Height="25"
                                 HorizontalAlignment="Left"
                                 IsChecked="{Binding Recenter}" />
@@ -318,7 +318,7 @@
                                 </TextBlock.ToolTip>
                             </TextBlock>
                             <CheckBox
-                                Width="75"
+                                Width="120"
                                 Height="25"
                                 HorizontalAlignment="Left"
                                 IsChecked="{Binding AnnotateImage}" />
@@ -334,7 +334,7 @@
                                 </TextBlock.ToolTip>
                             </TextBlock>
                             <CheckBox
-                                Width="75"
+                                Width="120"
                                 Height="25"
                                 HorizontalAlignment="Left"
                                 IsChecked="{Binding DebayerImage}" />
@@ -350,7 +350,7 @@
                                 </TextBlock.ToolTip>
                             </TextBlock>
                             <CheckBox
-                                Width="75"
+                                Width="120"
                                 Height="25"
                                 HorizontalAlignment="Left"
                                 IsChecked="{Binding DebayeredHFR}" />
@@ -366,7 +366,7 @@
                                 </TextBlock.ToolTip>
                             </TextBlock>
                             <CheckBox
-                                Width="75"
+                                Width="120"
                                 Height="25"
                                 HorizontalAlignment="Left"
                                 IsChecked="{Binding UnlinkedStretch}" />
@@ -446,7 +446,7 @@
                                     VerticalAlignment="Center"
                                     Text="{ns:Loc LblParkMountAtSequenceEnd}" />
                                 <CheckBox
-                                    Width="75"
+                                    Width="120"
                                     Height="25"
                                     HorizontalAlignment="Left"
                                     IsChecked="{Binding ParkMountAtSequenceEnd}" />
@@ -458,7 +458,7 @@
                                     VerticalAlignment="Center"
                                     Text="{ns:Loc LblWarmCamAtSequenceEnd}" />
                                 <CheckBox
-                                    Width="75"
+                                    Width="120"
                                     Height="25"
                                     HorizontalAlignment="Left"
                                     IsChecked="{Binding WarmCamAtSequenceEnd}" />
