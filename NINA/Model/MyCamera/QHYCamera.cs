@@ -826,7 +826,7 @@ namespace NINA.Model.MyCamera {
 
             /* ROI coordinates and resolution */
             if (EnableSubSample) {
-                rv = LibQHYCCD.SetQHYCCDResolution(CameraP, (uint)SubSampleX, (uint)SubSampleY, (uint)SubSampleWidth / (uint)BinX, (uint)SubSampleHeight / (uint)BinY);
+                rv = LibQHYCCD.SetQHYCCDResolution(CameraP, (uint)SubSampleX / (uint)BinX, (uint)SubSampleY / (uint)BinY, (uint)SubSampleWidth / (uint)BinX, (uint)SubSampleHeight / (uint)BinY);
             } else {
                 rv = LibQHYCCD.SetQHYCCDResolution(CameraP, 0, 0, Info.ImageX / (uint)BinX, Info.ImageY / (uint)BinY);
             }

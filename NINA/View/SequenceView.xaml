@@ -380,6 +380,21 @@
                                                     </Style>
                                                 </StackPanel.Style>
                                             </StackPanel>
+                                            <StackPanel Margin="5,0,0,0" Orientation="Horizontal">
+                                                <TextBlock Text="|" />
+                                                <TextBlock Margin="5,0,0,0" Text="{Binding AutoFocusAfterHFRChangeAmount}" />
+                                                <TextBlock Text="{ns:Loc LblPercentShort}" />
+                                                <TextBlock Margin="5,0,0,0" Text="{ns:Loc LblHFR}" />
+                                                <StackPanel.Style>
+                                                    <Style TargetType="StackPanel">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding AutoFocusAfterHFRChange}" Value="False">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </StackPanel.Style>
+                                            </StackPanel>
                                             <StackPanel.Style>
                                                 <Style TargetType="StackPanel">
                                                     <Style.Triggers>
