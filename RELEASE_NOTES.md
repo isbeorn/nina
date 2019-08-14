@@ -12,6 +12,7 @@
 - Added ability to keep guiding during autofocus
 - The autofocus routine has been changed so that it doesn't attempt to measure the focus twice for the same point
 - Added Spanish Translation
+- The focuser temperature compensation feature is now turned off before an auto-focus session, and turned back on afterwards
 
 # Version 1.9
 
