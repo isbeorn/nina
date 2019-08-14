@@ -441,8 +441,9 @@ namespace NINA.ViewModel {
                 initialHFR = await GetAverageHFR(filter, profileService.ActiveProfile.FocuserSettings.AutoFocusNumberOfFramesPerPoint, token, progress);
                 initialFocusPosition = focuserInfo.Position;
 
-                bool reattempt = false;
+                bool reattempt;
                 do {
+                    reattempt = false;
                     numberOfAttempts = numberOfAttempts + 1;
 
                     var offsetSteps = profileService.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps;
