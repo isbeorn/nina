@@ -410,13 +410,16 @@ namespace NINA.ViewModel {
         private void CalculateError() {
             if (TelescopeInfo.Connected == true) {
                 Coordinates solved = PlateSolveResult.Coordinates;
-                solved = solved.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
 
                 var coords = PlateSolveTarget;
                 if (coords == null) {
                     coords = new Coordinates(TelescopeInfo.RightAscension, TelescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
                 }
-
+                
+                if (solved.Epoch != coords.Epoch) {
+                    solved = solved.Transform(coords.Epoch);
+                }
+                
                 var separation = coords - solved;
 
                 PlateSolveResult.Separation = coords - solved;
