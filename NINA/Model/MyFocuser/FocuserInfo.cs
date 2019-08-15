@@ -65,5 +65,12 @@ namespace NINA.Model.MyFocuser {
             get { return tempComp; }
             set { tempComp = value; RaisePropertyChanged(); }
         }
+
+        private bool tempCompAvailable;
+
+        public bool TempCompAvailable {
+            get { return tempCompAvailable; }
+            set { tempCompAvailable = value; RaisePropertyChanged(); }
+        }
     }
 }

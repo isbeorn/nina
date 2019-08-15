@@ -799,6 +799,10 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
+        public void ToggleTempComp(bool tempComp) {
+            throw new NotImplementedException();
+        }
+
         public IFocuserConsumer Consumer;
 
         public void RegisterConsumer(IFocuserConsumer consumer) {
