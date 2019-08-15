@@ -415,12 +415,6 @@ namespace NINA.ViewModel {
                 if (coords == null) {
                     coords = new Coordinates(TelescopeInfo.RightAscension, TelescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
                 }
-                
-                if (solved.Epoch != coords.Epoch) {
-                    solved = solved.Transform(coords.Epoch);
-                }
-                
-                var separation = coords - solved;
 
                 PlateSolveResult.Separation = coords - solved;
             }
