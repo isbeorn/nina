@@ -465,6 +465,10 @@ namespace NINA.Utility.Astrometry {
         }
 
         public static Separation operator -(Coordinates a, Coordinates b) {
+            if (a.Epoch != b.Epoch) {
+                b = b.Transform(a.Epoch);
+            }
+
             var raDiff = a.raAngle - b.raAngle;
             var decDiff = a.decAngle - b.decAngle;
             var distance = (a.decAngle.Sin() * b.decAngle.Sin() + a.decAngle.Cos() * b.decAngle.Cos() * raDiff.Cos()).Acos();
