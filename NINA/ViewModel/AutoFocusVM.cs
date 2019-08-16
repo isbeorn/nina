@@ -650,7 +650,14 @@ namespace NINA.ViewModel {
                 _setSubSample = true;
             }
 
+            bool tempComp = false;
+
             try {
+                if (focuserInfo.TempCompAvailable && focuserInfo.TempComp) {
+                    tempComp = true;
+                    focuserMediator.ToggleTempComp(false);
+                }
+
                 if (profileService.ActiveProfile.FocuserSettings.AutoFocusDisableGuiding) {
                     await this.guiderMediator.StopGuiding(token);
                 }
@@ -785,6 +792,11 @@ namespace NINA.ViewModel {
                         Notification.ShowError(e.Message);
                     }
                 }
+                //Restore the temperature compensation of the focuser
+                if (focuserInfo.TempCompAvailable && tempComp) {
+                    focuserMediator.ToggleTempComp(true);
+                }
+                
                 brightestStarPositions.Clear();
                 await this.guiderMediator.StartGuiding(token);
                 progress.Report(new ApplicationStatus() { Status = string.Empty });

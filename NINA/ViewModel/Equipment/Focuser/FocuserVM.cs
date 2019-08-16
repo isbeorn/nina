@@ -75,6 +75,12 @@ namespace NINA.ViewModel.Equipment.Focuser {
             }
         }
 
+        public void ToggleTempComp(bool tempComp) {
+            if (FocuserInfo.Connected) {
+                Focuser.TempComp = tempComp;
+            }
+        }
+
         private void HaltFocuser(object obj) {
             _cancelMove?.Cancel();
             Focuser.Halt();
@@ -205,6 +211,7 @@ namespace NINA.ViewModel.Equipment.Focuser {
                                 Name = Focuser.Name,
                                 Position = this.Position,
                                 StepSize = Focuser.StepSize,
+                                TempCompAvailable = Focuser.TempCompAvailable,
                                 TempComp = Focuser.TempComp,
                                 Temperature = Focuser.Temperature
                             };

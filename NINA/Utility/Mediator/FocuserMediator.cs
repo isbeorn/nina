@@ -30,6 +30,9 @@ using System.Threading.Tasks;
 namespace NINA.Utility.Mediator {
 
     internal class FocuserMediator : DeviceMediator<IFocuserVM, IFocuserConsumer, FocuserInfo>, IFocuserMediator {
+        public void ToggleTempComp(bool tempComp) {
+            handler.ToggleTempComp(tempComp);
+        }
 
         public Task<int> MoveFocuser(int position) {
             return handler.MoveFocuser(position);

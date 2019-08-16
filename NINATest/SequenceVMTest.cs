@@ -427,15 +427,7 @@ namespace NINATest {
             }
         }
 
-        public IFocuserSettings FocuserSettings {
-            get {
-                throw new NotImplementedException();
-            }
-
-            set {
-                throw new NotImplementedException();
-            }
-        }
+        public IFocuserSettings FocuserSettings { get; set; } = new FocuserSettings();
 
         public IFramingAssistantSettings FramingAssistantSettings {
             get {
@@ -796,6 +788,10 @@ namespace NINATest {
         }
 
         public Task<int> MoveFocuserRelative(int position) {
+            throw new NotImplementedException();
+        }
+
+        public void ToggleTempComp(bool tempComp) {
             throw new NotImplementedException();
         }
 
