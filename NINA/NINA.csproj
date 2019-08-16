@@ -387,6 +387,7 @@
     <Compile Include="PlateSolving\PlateSolveResult.cs" />
     <Compile Include="Utility\Astrometry\TopocentricCoordinates.cs" />
     <Compile Include="Utility\CameraSDKs\FLISDK\FLIFilterWheels.cs" />
+    <Compile Include="Utility\Converters\NaNToEmptyTextConverter.cs" />
     <Compile Include="Utility\Converters\NaNToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\WeatherBrightnessConverter.cs" />
     <Compile Include="Utility\Converters\WeatherPressureConverter.cs" />
@@ -423,6 +424,7 @@
     <Compile Include="Utility\ProjectVersion.cs" />
     <Compile Include="Utility\Behaviors\BrowserBehavior.cs" />
     <Compile Include="Utility\Enum\AutoUpdateSourceEnum.cs" />
+    <Compile Include="Utility\ValidationRules\GreaterThanZeroRule.cs" />
     <Compile Include="Utility\ValidationRules\StrictGreaterZeroRule.cs" />
     <Compile Include="ViewModel\Equipment\Camera\CameraChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\FilterWheel\FilterWheelChooserVM.cs" />

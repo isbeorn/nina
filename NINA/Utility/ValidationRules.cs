@@ -1,8 +1,6 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
-
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
     N.I.N.A. is free software: you can redistribute it and/or modify
@@ -18,6 +16,11 @@
     You should have received a copy of the GNU General Public License
     along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
 */
+
+/*
+ * Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+ * Copyright 2019 Dale Ghent <daleg@elemental.org>
+ */
 
 #endregion "copyright"
 
@@ -35,6 +38,19 @@ namespace NINA.Utility {
             Double.TryParse(value.ToString(), out dbl);
             if (dbl < 0) {
                 return new ValidationResult(false, "Value must be greater than or equals 0");
+            } else {
+                return new ValidationResult(true, null);
+            }
+        }
+    }
+
+    public class GreaterThanZeroRule : ValidationRule {
+
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo) {
+            double dbl;
+            double.TryParse(value.ToString(), out dbl);
+            if (dbl <= 0) {
+                return new ValidationResult(false, "Value must be greater than 0");
             } else {
                 return new ValidationResult(true, null);
             }

@@ -132,7 +132,7 @@ namespace NINA.Utility {
                 this.AddHeaderCard("TELESCOP", metaData.Telescope.Name, "Name of telescope");
             }
 
-            if (!double.IsNaN(metaData.Telescope.FocalLength)) {
+            if (!double.IsNaN(metaData.Telescope.FocalLength) && metaData.Telescope.FocalLength > 0) {
                 this.AddHeaderCard("FOCALLEN", metaData.Telescope.FocalLength, "[mm] Focal length");
             }
 
