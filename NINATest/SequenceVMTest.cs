@@ -427,15 +427,7 @@ namespace NINATest {
             }
         }
 
-        public IFocuserSettings FocuserSettings {
-            get {
-                throw new NotImplementedException();
-            }
-
-            set {
-                throw new NotImplementedException();
-            }
-        }
+        public IFocuserSettings FocuserSettings { get; set; } = new FocuserSettings();
 
         public IFramingAssistantSettings FramingAssistantSettings {
             get {

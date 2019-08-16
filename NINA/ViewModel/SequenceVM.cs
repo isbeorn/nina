@@ -563,6 +563,10 @@ namespace NINA.ViewModel {
                 //Rotate for framing
                 await RotateEquipment(csl, plateSolveResult, ct, progress);
 
+                if (!profileService.ActiveProfile.FocuserSettings.AutoFocusDisableGuiding) {
+                    await StartGuiding(csl, progress);
+                }
+
                 await AutoFocusOnStart(csl, ct, progress);
 
                 await StartGuiding(csl, progress);
