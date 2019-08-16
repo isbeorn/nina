@@ -339,6 +339,9 @@ namespace NINA.ViewModel {
                         Notification.ShowWarning(Locale.Loc.Instance["LblPlateSolveEnding"]);
                         Logger.Warning("Platesolve attempts exhausted, or Meridian Flip approaching. Aborting plate solve.");
                     }
+                } else {
+                    repeatAll = false;
+                    Logger.Trace("Successful plate solve, no more reattempts needed");
                 }
             } while (repeatAll);
             return plateSolveResult;
