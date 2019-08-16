@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using FluentAssertions;
 using NINA.Utility.Astrometry;
 using NUnit.Framework;
 using System.Windows;
@@ -355,6 +356,36 @@ namespace NINATest {
 
             Assert.AreEqual(expectedPoint.X, p.X, ANGLE_TOLERANCE);
             Assert.AreEqual(expectedPoint.Y, p.Y, ANGLE_TOLERANCE);
+        }
+
+        [Test]
+        /* Zero distance tests */
+        [TestCase(10, 100, Epoch.J2000, 10, 100, Epoch.J2000, 0)]
+        [TestCase(10, 100, Epoch.JNOW, 10, 100, Epoch.JNOW, 0)]
+        [TestCase(10, -100, Epoch.J2000, 10, -100, Epoch.J2000, 0)]
+        [TestCase(10, -100, Epoch.JNOW, 10, -100, Epoch.JNOW, 0)]
+        /* Test that different epoch is considered properly */
+        [TestCase(10, 100, Epoch.JNOW, 10, 100, Epoch.J2000, 334.69)]
+        /* Actual distance tests */
+        [TestCase(0, 0, Epoch.J2000, 0, 10, Epoch.J2000, 36000)]
+        [TestCase(0, 0, Epoch.J2000, 0, -10, Epoch.J2000, 36000)]
+        [TestCase(0, 10, Epoch.J2000, 0, 0, Epoch.J2000, 36000)]
+        [TestCase(0, -10, Epoch.J2000, 0, 0, Epoch.J2000, 36000)]
+        [TestCase(10, 0, Epoch.J2000, 0, 0, Epoch.J2000, 540000)]
+        [TestCase(10, 0, Epoch.J2000, 0, 0, Epoch.J2000, 540000)]
+        [TestCase(0, 0, Epoch.J2000, 10, 0, Epoch.J2000, 540000)]
+        [TestCase(0, 0, Epoch.J2000, 10, 0, Epoch.J2000, 540000)]
+        [TestCase(10, 10, Epoch.J2000, 10, -10, Epoch.J2000, 72000)]
+        [TestCase(10, -10, Epoch.J2000, 10, 10, Epoch.J2000, 72000)]
+        [TestCase(10, 10, Epoch.J2000, 20, 20, Epoch.J2000, 496460.69)]
+        [TestCase(20, 20, Epoch.J2000, 10, 10, Epoch.J2000, 496460.69)]
+        public void CoordinateSubstractionTest(double ra1, double dec1, Epoch epoch1, double ra2, double dec2, Epoch epoch2, double expectedDistance) {
+            var c1 = new Coordinates(Angle.ByHours(ra1), Angle.ByDegree(dec1), epoch1);
+            var c2 = new Coordinates(Angle.ByHours(ra2), Angle.ByDegree(dec2), epoch2);
+
+            var sut = c1 - c2;
+
+            sut.Distance.ArcSeconds.Should().BeApproximately(expectedDistance, 0.01);
         }
     }
 }

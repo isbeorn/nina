@@ -870,12 +870,14 @@ namespace NINA.Model.MyCamera {
                     serialPortInteraction = null;
                     _nikonManagers.Clear();
 
-                    string folder = "x64";
+                    string architecture = "x64";
                     if (DllLoader.IsX86()) {
-                        folder = "x86";
+                        architecture = "x86";
                     }
 
-                    foreach (string file in Directory.GetFiles(string.Format("External/{0}/Nikon", folder), "*.md3", SearchOption.AllDirectories)) {
+                    var md3Folder = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "External", architecture, "Nikon");
+
+                    foreach (string file in Directory.GetFiles(md3Folder, "*.md3", SearchOption.AllDirectories)) {
                         NikonManager mgr = new NikonManager(file);
                         mgr.DeviceAdded += Mgr_DeviceAdded;
                         _nikonManagers.Add(mgr);
@@ -895,6 +897,7 @@ namespace NINA.Model.MyCamera {
                 } finally {
                     CleanupUnusedManagers(_activeNikonManager);
                 }
+
                 return connected;
             });
         }

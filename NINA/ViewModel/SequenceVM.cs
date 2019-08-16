@@ -641,6 +641,7 @@ namespace NINA.ViewModel {
                     Task saveTask = null;
                     Task ditherTask = null;
                     Task filterChangeTask = null;
+                    Task imageProcessingTask = null;
                     while ((seq = csl.Next()) != null) {
                         exposureCount++;
 
@@ -667,6 +668,12 @@ namespace NINA.ViewModel {
 
                         /* 2) Check if Autofocus is requiredfinish */
                         if (ShouldAutoFocus(csl, seq, exposureCount, prevFilterPosition, lastAutoFocusTime, lastAutoFocusTemperature)) {
+                            //Wait for previous image processing task to be done, so Autofocus doesn't turn off HFR calculation too early
+                            if (imageProcessingTask != null && !imageProcessingTask.IsCompleted) {
+                                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForImageProcessing"] });
+                                await imageProcessingTask;
+                            }
+
                             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocus"] });
                             await AutoFocus(seq.FilterType, _canceltoken.Token, progress);
                             lastAutoFocusTime = DateTime.UtcNow;
@@ -708,7 +715,7 @@ namespace NINA.ViewModel {
                             AddMetaData(data, csl, seq, exposureStart, rms);
 
                             /* 8b) Process ImageData for display */
-                            var imageProcessingTask = imagingMediator.PrepareImage(data, ct);
+                            imageProcessingTask = imagingMediator.PrepareImage(data, ct);
                             progress.Report(new ApplicationStatus() { Status = " " });
 
                             /* 7) Wait for previous item's parallel actions 8a, 8b to finish */

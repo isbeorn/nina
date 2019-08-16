@@ -113,6 +113,7 @@
 - Fixed an issue in FramingAssistant when reloading the image and having multiple panels selected, that the orientation was not considered properly resulting in wrong coordinates
 - Fixed an issue in the Telescope Equipment tab that could potentially slew to the wrong Declination if the declination angle was negative
 - Fixed issues in the subsampling logic for ASCOM, ZWO, and QHY cameras - the origin coordinates are now properly set, and take binning into account
+- Fixed a race condition that caused HFR to not be computed for frames right before autofocus in some instances
 
 ## Improvements
 - When EOS Utility is running in the background, the x64 N.I.N.A. client will scan for this app and prevent a crash due to the EOS utility being open. Instead a notification will show up to close the EOS Utility.
