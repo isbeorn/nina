@@ -483,6 +483,7 @@ namespace NINA.ViewModel {
                 PlateSolveResult = result;
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
                 return result;
+            } catch (OperationCanceledException) {
             } catch (Exception ex) {
                 Notification.ShowError(ex.Message);
             }
