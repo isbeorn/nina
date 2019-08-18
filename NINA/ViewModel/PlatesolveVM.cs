@@ -339,6 +339,9 @@ namespace NINA.ViewModel {
                         Notification.ShowWarning(Locale.Loc.Instance["LblPlateSolveEnding"]);
                         Logger.Warning("Platesolve attempts exhausted, or Meridian Flip approaching. Aborting plate solve.");
                     }
+                } else {
+                    repeatAll = false;
+                    Logger.Trace("Successful plate solve, no more reattempts needed");
                 }
             } while (repeatAll);
             return plateSolveResult;
@@ -410,14 +413,11 @@ namespace NINA.ViewModel {
         private void CalculateError() {
             if (TelescopeInfo.Connected == true) {
                 Coordinates solved = PlateSolveResult.Coordinates;
-                solved = solved.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
 
                 var coords = PlateSolveTarget;
                 if (coords == null) {
                     coords = new Coordinates(TelescopeInfo.RightAscension, TelescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
                 }
-
-                var separation = coords - solved;
 
                 PlateSolveResult.Separation = coords - solved;
             }
