@@ -138,7 +138,7 @@ able to compensate for ambient temperature variations</s:String>
   <s:String x:Key="LblCamInfo" xml:space="default">Camera Info</s:String>
   <s:String x:Key="LblCamSettings" xml:space="default">Camera Settings</s:String>
   <s:String x:Key="LblCancel" xml:space="default">Cancel</s:String>
-  <s:String x:Key="LblCanonErrorOccurred" xml:space="default">A Canon error occored: {0}</s:String>
+  <s:String x:Key="LblCanonErrorOccurred" xml:space="default">A Canon error occurred: {0}</s:String>
   <s:String x:Key="LblCaptureImageAndPlatesolve" xml:space="default">Capture Image and Platesolve</s:String>
   <s:String x:Key="LblCdC" xml:space="default">Cartes du Ciel</s:String>
   <s:String x:Key="LblCenterDec" xml:space="default">Center Dec</s:String>
