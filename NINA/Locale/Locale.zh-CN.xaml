@@ -359,7 +359,7 @@ Type: {1}
     <s:String x:Key="LblFileCameraDescription" xml:space="preserve">这个模拟相机将使用缺少SDK的相机，同时仍然使用整个N.I.N.A.流程。
 此模拟摄像机将为新创建的文件监视指定的文件夹。 这些文件将存储在内部队列中。
 每次应用程序想要从相机下载曝光时，该文件队列的第一项被解析并加载到N.I.N.A.
-此外，可以激活手动B门模式触发器，因此它将使用设置中的所选B门模式 - >设备 - ＆gt;曝光启动时的相机。
+此外，可以激活手动B门模式触发器，因此它将使用设置中的所选B门模式 - &gt;设备 - ＆gt;曝光启动时的相机。
 当取消激活此触发器时，应用程序将跳过“开始曝光”并等待另一个文件滚动到指定的文件夹中</s:String>
     <s:String x:Key="LblFileExample" xml:space="default">示例文件名</s:String>
     <s:String x:Key="LblFileSettings" xml:space="default">文件设置</s:String>

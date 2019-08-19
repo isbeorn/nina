@@ -1,986 +1,986 @@
 ﻿<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-  <s:String x:Key="LblAbbrEast" xml:space="default">E</s:String>
-  <s:String x:Key="LblAbbrNorth" xml:space="default">N</s:String>
-  <s:String x:Key="LblAbbrSouth" xml:space="default">S</s:String>
-  <s:String x:Key="LblAbbrWest" xml:space="default">W</s:String>
-  <s:String x:Key="LblAberrationInspector" xml:space="default">Aberration Inspector</s:String>
-  <s:String x:Key="LblActive" xml:space="default">Active</s:String>
-  <s:String x:Key="LblActiveFilter" xml:space="default">Active filter</s:String>
-  <s:String x:Key="LblActiveSequenceDetails" xml:space="default">Active Sequence Details</s:String>
-  <s:String x:Key="LblAddSequenceTarget" xml:space="default">Add as Sequence Target</s:String>
-  <s:String x:Key="LblAdvancedSettings" xml:space="default">Advanced Settings</s:String>
-  <s:String x:Key="LblAFOnButFocuserNotConnected" xml:space="default">Auto-Focus is enabled, yet focuser is not connected</s:String>
-  <s:String x:Key="LblAfter" xml:space="default">After</s:String>
-  <s:String x:Key="LblAFUseBrightestStars" xml:space="default">Use brightest n stars</s:String>
-  <s:String x:Key="LblAFUseBrightestStarsTooltip" xml:space="default">Limit AF to brightest stars. 0 means no limit.</s:String>
-  <s:String x:Key="LblAlternativeUIColorSchema" xml:space="default">Alternative UI Color Schema</s:String>
-  <s:String x:Key="LblAltitude" xml:space="default">Altitude</s:String>
-  <s:String x:Key="LblAltitudeErrorMeasurement" xml:space="default">Measure Altitude Error</s:String>
-  <s:String x:Key="LblAltitudeMeasurement" xml:space="default">Altitude Measurement</s:String>
-  <s:String x:Key="LblAltitudeMeasurementButtonTooltip" xml:space="preserve">Measures Altitude Error by three steps.
+    <s:String x:Key="LblAbbrEast" xml:space="default">E</s:String>
+    <s:String x:Key="LblAbbrNorth" xml:space="default">N</s:String>
+    <s:String x:Key="LblAbbrSouth" xml:space="default">S</s:String>
+    <s:String x:Key="LblAbbrWest" xml:space="default">W</s:String>
+    <s:String x:Key="LblAberrationInspector" xml:space="default">Aberration Inspector</s:String>
+    <s:String x:Key="LblActive" xml:space="default">Active</s:String>
+    <s:String x:Key="LblActiveFilter" xml:space="default">Active filter</s:String>
+    <s:String x:Key="LblActiveSequenceDetails" xml:space="default">Active Sequence Details</s:String>
+    <s:String x:Key="LblAddSequenceTarget" xml:space="default">Add as Sequence Target</s:String>
+    <s:String x:Key="LblAdvancedSettings" xml:space="default">Advanced Settings</s:String>
+    <s:String x:Key="LblAFOnButFocuserNotConnected" xml:space="default">Auto-Focus is enabled, yet focuser is not connected</s:String>
+    <s:String x:Key="LblAfter" xml:space="default">After</s:String>
+    <s:String x:Key="LblAFUseBrightestStars" xml:space="default">Use brightest n stars</s:String>
+    <s:String x:Key="LblAFUseBrightestStarsTooltip" xml:space="default">Limit AF to brightest stars. 0 means no limit.</s:String>
+    <s:String x:Key="LblAlternativeUIColorSchema" xml:space="default">Alternative UI Color Schema</s:String>
+    <s:String x:Key="LblAltitude" xml:space="default">Altitude</s:String>
+    <s:String x:Key="LblAltitudeErrorMeasurement" xml:space="default">Measure Altitude Error</s:String>
+    <s:String x:Key="LblAltitudeMeasurement" xml:space="default">Altitude Measurement</s:String>
+    <s:String x:Key="LblAltitudeMeasurementButtonTooltip" xml:space="preserve">Measures Altitude Error by three steps.
 1. Takes image and platesolves for actual coordinates at current position
 2. Slew telescope using Right Ascension axis by 0.5 degrees
 3. Take another image at the new position, plate solves it for the actual position
 Using those two points the actual altitude error will be calculated and displayed</s:String>
-  <s:String x:Key="LblAltitudeMeasurementDescription" xml:space="default">Point telescope east or west near declination 0 and near horizon.</s:String>
-  <s:String x:Key="LblAltitudeMeasurementSide" xml:space="default">Altitude Measurement side</s:String>
-  <s:String x:Key="LblAnnotateConstellationBoundaries" xml:space="default">Display Constellation Boundaries</s:String>
-  <s:String x:Key="LblAnnotateConstellations" xml:space="default">Display and annotate Constellations</s:String>
-  <s:String x:Key="LblAnnotateDSO" xml:space="default">Annotate Deep Sky Objects</s:String>
-  <s:String x:Key="LblAnnotateGrid" xml:space="default">Display Grid</s:String>
-  <s:String x:Key="LblAnnotateImage" xml:space="default">Annotate Image</s:String>
-  <s:String x:Key="LblAnnotateImageTooltip" xml:space="default">If checked and a star detection for an image is applied, the image will be annotated with the found stars and their respective HFR value</s:String>
-  <s:String x:Key="LblAPIKey" xml:space="default">API Key</s:String>
-  <s:String x:Key="LblApparentMagnitude" xml:space="default">Apparent Magnitude</s:String>
-  <s:String x:Key="LblApparentSize" xml:space="default">Apparent Size</s:String>
-  <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">The Application ran into an unhandled exception and most likely has to shut down.
+    <s:String x:Key="LblAltitudeMeasurementDescription" xml:space="default">Point telescope east or west near declination 0 and near horizon.</s:String>
+    <s:String x:Key="LblAltitudeMeasurementSide" xml:space="default">Altitude Measurement side</s:String>
+    <s:String x:Key="LblAnnotateConstellationBoundaries" xml:space="default">Display Constellation Boundaries</s:String>
+    <s:String x:Key="LblAnnotateConstellations" xml:space="default">Display and annotate Constellations</s:String>
+    <s:String x:Key="LblAnnotateDSO" xml:space="default">Annotate Deep Sky Objects</s:String>
+    <s:String x:Key="LblAnnotateGrid" xml:space="default">Display Grid</s:String>
+    <s:String x:Key="LblAnnotateImage" xml:space="default">Annotate Image</s:String>
+    <s:String x:Key="LblAnnotateImageTooltip" xml:space="default">If checked and a star detection for an image is applied, the image will be annotated with the found stars and their respective HFR value</s:String>
+    <s:String x:Key="LblAPIKey" xml:space="default">API Key</s:String>
+    <s:String x:Key="LblApparentMagnitude" xml:space="default">Apparent Magnitude</s:String>
+    <s:String x:Key="LblApparentSize" xml:space="default">Apparent Size</s:String>
+    <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">The Application ran into an unhandled exception and most likely has to shut down.
 The error has been logged to "%localappdata%\NINA\Logs".
 Should the Application try to recover from the error? (Can lead to unexpected behavior)</s:String>
-  <s:String x:Key="LblApplicationStartDateDescription" xml:space="default">Application start date with format YYYY-MM-DD</s:String>
-  <s:String x:Key="LblArcmin" xml:space="default">arcmin</s:String>
-  <s:String x:Key="LblArcsec" xml:space="default">arcsec</s:String>
-  <s:String x:Key="LblAscending" xml:space="default">Ascending</s:String>
-  <s:String x:Key="LblAscomInterOpDriverException" xml:space="default">An ASCOM driver interop exception occurred. This is most likely caused by a mismatch between the driver being installed as {0} and N.I.N.A. being {1}. Please install the driver as {1}</s:String>
-  <s:String x:Key="LblASIImageDownloadError" xml:space="default">Error retrieving image data from camera!</s:String>
-  <s:String x:Key="LblASIOnly16BitMono" xml:space="default">Only 16 bit Monochrome sensors currently supported</s:String>
-  <s:String x:Key="LblASPS" xml:space="default">All Sky Plate Solver</s:String>
-  <s:String x:Key="LblASPSDirectory" xml:space="default">ASPS Location</s:String>
-  <s:String x:Key="LblASPSNotFound" xml:space="default">ASPS exe not found</s:String>
-  <s:String x:Key="LblASTAP" xml:space="default">ASTAP, the Astrometric STAcking Program, astrometric solver and FITS viewer</s:String>
-  <s:String x:Key="LblASTAPDirectory" xml:space="default">ASTAP Location</s:String>
-  <s:String x:Key="LblASTAPMinimumVersionNote" xml:space="default">Note: Requires an ASTAP version of 0.9.192 or above. For lower versions, please use ASTAP as Platesolve2 replacement.</s:String>
-  <s:String x:Key="LblASTAPNotFound" xml:space="default">ASTAP exe not found</s:String>
-  <s:String x:Key="LblASTAPShort" xml:space="default">ASTAP</s:String>
-  <s:String x:Key="LblAstrometry" xml:space="default">Astrometry</s:String>
-  <s:String x:Key="LblAstrometryNet" xml:space="default">Astrometry.Net</s:String>
-  <s:String x:Key="LblAutoFocus" xml:space="default">Auto Focus</s:String>
-  <s:String x:Key="LblAutoFocusAfterHFRChange" xml:space="default">After HFR increase</s:String>
-  <s:String x:Key="LblAutoFocusAfterHFRChangeAmount" xml:space="default">HFR amount</s:String>
-  <s:String x:Key="LblAutoFocusAfterSetExposures" xml:space="default">After # exposures</s:String>
-  <s:String x:Key="LblAutoFocusAfterSetTime" xml:space="default">After elapsed Time</s:String>
-  <s:String x:Key="LblAutoFocusAfterTemperatureChange" xml:space="default">After temperature change</s:String>
-  <s:String x:Key="LblAutoFocusAfterTemperatureChangeAmount" xml:space="default">Temperature amount</s:String>
-  <s:String x:Key="LblAutoFocusExposureTime" xml:space="default">Auto Focus Exposure Time</s:String>
-  <s:String x:Key="LblAutoFocusExposureTimeTooltip" xml:space="default">Exposure Time used for auto focus when no filter specific time is set or the filter specific time is zero</s:String>
-  <s:String x:Key="LblAutoFocusGearNotConnected" xml:space="default">Cannot start Auto Focus. Camera or Focuser is not connected!</s:String>
-  <s:String x:Key="LblAutoFocusInnerCropRatio" xml:space="default">AF Inner Crop Ratio</s:String>
-  <s:String x:Key="LblAutoFocusInnerCropRatioTooltip" xml:space="preserve">If set to a value less than one, star detection during autofocus will only use
+    <s:String x:Key="LblApplicationStartDateDescription" xml:space="default">Application start date with format YYYY-MM-DD</s:String>
+    <s:String x:Key="LblArcmin" xml:space="default">arcmin</s:String>
+    <s:String x:Key="LblArcsec" xml:space="default">arcsec</s:String>
+    <s:String x:Key="LblAscending" xml:space="default">Ascending</s:String>
+    <s:String x:Key="LblAscomInterOpDriverException" xml:space="default">An ASCOM driver interop exception occurred. This is most likely caused by a mismatch between the driver being installed as {0} and N.I.N.A. being {1}. Please install the driver as {1}</s:String>
+    <s:String x:Key="LblASIImageDownloadError" xml:space="default">Error retrieving image data from camera!</s:String>
+    <s:String x:Key="LblASIOnly16BitMono" xml:space="default">Only 16 bit Monochrome sensors currently supported</s:String>
+    <s:String x:Key="LblASPS" xml:space="default">All Sky Plate Solver</s:String>
+    <s:String x:Key="LblASPSDirectory" xml:space="default">ASPS Location</s:String>
+    <s:String x:Key="LblASPSNotFound" xml:space="default">ASPS exe not found</s:String>
+    <s:String x:Key="LblASTAP" xml:space="default">ASTAP, the Astrometric STAcking Program, astrometric solver and FITS viewer</s:String>
+    <s:String x:Key="LblASTAPDirectory" xml:space="default">ASTAP Location</s:String>
+    <s:String x:Key="LblASTAPMinimumVersionNote" xml:space="default">Note: Requires an ASTAP version of 0.9.192 or above. For lower versions, please use ASTAP as Platesolve2 replacement.</s:String>
+    <s:String x:Key="LblASTAPNotFound" xml:space="default">ASTAP exe not found</s:String>
+    <s:String x:Key="LblASTAPShort" xml:space="default">ASTAP</s:String>
+    <s:String x:Key="LblAstrometry" xml:space="default">Astrometry</s:String>
+    <s:String x:Key="LblAstrometryNet" xml:space="default">Astrometry.Net</s:String>
+    <s:String x:Key="LblAutoFocus" xml:space="default">Auto Focus</s:String>
+    <s:String x:Key="LblAutoFocusAfterHFRChange" xml:space="default">After HFR increase</s:String>
+    <s:String x:Key="LblAutoFocusAfterHFRChangeAmount" xml:space="default">HFR amount</s:String>
+    <s:String x:Key="LblAutoFocusAfterSetExposures" xml:space="default">After # exposures</s:String>
+    <s:String x:Key="LblAutoFocusAfterSetTime" xml:space="default">After elapsed Time</s:String>
+    <s:String x:Key="LblAutoFocusAfterTemperatureChange" xml:space="default">After temperature change</s:String>
+    <s:String x:Key="LblAutoFocusAfterTemperatureChangeAmount" xml:space="default">Temperature amount</s:String>
+    <s:String x:Key="LblAutoFocusExposureTime" xml:space="default">Auto Focus Exposure Time</s:String>
+    <s:String x:Key="LblAutoFocusExposureTimeTooltip" xml:space="default">Exposure Time used for auto focus when no filter specific time is set or the filter specific time is zero</s:String>
+    <s:String x:Key="LblAutoFocusGearNotConnected" xml:space="default">Cannot start Auto Focus. Camera or Focuser is not connected!</s:String>
+    <s:String x:Key="LblAutoFocusInnerCropRatio" xml:space="default">AF Inner Crop Ratio</s:String>
+    <s:String x:Key="LblAutoFocusInnerCropRatioTooltip" xml:space="preserve">If set to a value less than one, star detection during autofocus will only use
 a centered subframe of the total sensor (if supported by camera). If unsupported
 by the camera, stars near the edge will be ignored during star detection. If used in combination
 with a lower than 1 Outer Crop Ratio, a rectangular sliver of the image (between the inner rectangle and the
 outer rectangle) will be used for autofocus.</s:String>
-  <s:String x:Key="LblAutoFocusNewWorseThanOriginal" xml:space="default">New focus point HFR {0} is significantly worse than original HFR {1}</s:String>
-  <s:String x:Key="LblAutoFocusNotEnoughtSpreadedPoints" xml:space="default">Not enough HFR difference for set of focuspoints. Either the step size is too low or the stars are too much out of focus.</s:String>
-  <s:String x:Key="LblAutoFocusNrOfExposures" xml:space="default"># exposures</s:String>
-  <s:String x:Key="LblAutoFocusNumberOfAttempts" xml:space="default">AF Number of Attempts</s:String>
-  <s:String x:Key="LblAutoFocusNumberOfAttemptsTooltip" xml:space="default">If autofocus fails because it got worse HFR than original focus, how many times to reattempt autofocus routine until it is either successful or it moves back to original focus position.</s:String>
-  <s:String x:Key="LblAutoFocusNumberOfFramesPerPoint" xml:space="default">AF Number of Frames per Point</s:String>
-  <s:String x:Key="LblAutoFocusNumberOfFramesPerPointTooltip" xml:space="default">How many frames to take for each focus point. If greater than one, multiple frames will be taken for a focus point, and their HFR will be averaged to compute focus point HFR</s:String>
-  <s:String x:Key="LblAutoFocusOnFilterChange" xml:space="default">On filter change</s:String>
-  <s:String x:Key="LblAutoFocusOnStart" xml:space="default">On start</s:String>
-  <s:String x:Key="LblAutoFocusOuterCropRatio" xml:space="default">AF Outer Crop Ratio</s:String>
-  <s:String x:Key="LblAutoFocusReattempting" xml:space="default">Reattempting Autofocus</s:String>
-  <s:String x:Key="LblAutoFocusRestoringOriginalPosition" xml:space="default">Restoring original focus position</s:String>
-  <s:String x:Key="LblAutoFocusSetTime" xml:space="default">Time</s:String>
-  <s:String x:Key="LblAutoMeridianFlip" xml:space="default">Auto Meridian Flip</s:String>
-  <s:String x:Key="LblAutoStretchFactor" xml:space="default">Autostretch factor</s:String>
-  <s:String x:Key="LblAutoStretchFactorTooltip" xml:space="default">The factor for the autostretch algorithm that is used to display an image and detect stars. Must be a value between 0 and 1. . A value of 0.2 should work most of the time.</s:String>
-  <s:String x:Key="LblAutoUpdateSource" xml:space="default">Auto Update Source</s:String>
-  <s:String x:Key="LblAzimuth" xml:space="default">Azimuth</s:String>
-  <s:String x:Key="LblAzimuthErrorMeasurement" xml:space="default">Measure Azimuth Error</s:String>
-  <s:String x:Key="LblAzimuthMeasurement" xml:space="default">Azimuth Measurement</s:String>
-  <s:String x:Key="LblAzimuthMeasurementButtonTooltip" xml:space="preserve">Measures Azimuth Error by three steps.
+    <s:String x:Key="LblAutoFocusNewWorseThanOriginal" xml:space="default">New focus point HFR {0} is significantly worse than original HFR {1}</s:String>
+    <s:String x:Key="LblAutoFocusNotEnoughtSpreadedPoints" xml:space="default">Not enough HFR difference for set of focuspoints. Either the step size is too low or the stars are too much out of focus.</s:String>
+    <s:String x:Key="LblAutoFocusNrOfExposures" xml:space="default"># exposures</s:String>
+    <s:String x:Key="LblAutoFocusNumberOfAttempts" xml:space="default">AF Number of Attempts</s:String>
+    <s:String x:Key="LblAutoFocusNumberOfAttemptsTooltip" xml:space="default">If autofocus fails because it got worse HFR than original focus, how many times to reattempt autofocus routine until it is either successful or it moves back to original focus position.</s:String>
+    <s:String x:Key="LblAutoFocusNumberOfFramesPerPoint" xml:space="default">AF Number of Frames per Point</s:String>
+    <s:String x:Key="LblAutoFocusNumberOfFramesPerPointTooltip" xml:space="default">How many frames to take for each focus point. If greater than one, multiple frames will be taken for a focus point, and their HFR will be averaged to compute focus point HFR</s:String>
+    <s:String x:Key="LblAutoFocusOnFilterChange" xml:space="default">On filter change</s:String>
+    <s:String x:Key="LblAutoFocusOnStart" xml:space="default">On start</s:String>
+    <s:String x:Key="LblAutoFocusOuterCropRatio" xml:space="default">AF Outer Crop Ratio</s:String>
+    <s:String x:Key="LblAutoFocusReattempting" xml:space="default">Reattempting Autofocus</s:String>
+    <s:String x:Key="LblAutoFocusRestoringOriginalPosition" xml:space="default">Restoring original focus position</s:String>
+    <s:String x:Key="LblAutoFocusSetTime" xml:space="default">Time</s:String>
+    <s:String x:Key="LblAutoMeridianFlip" xml:space="default">Auto Meridian Flip</s:String>
+    <s:String x:Key="LblAutoStretchFactor" xml:space="default">Autostretch factor</s:String>
+    <s:String x:Key="LblAutoStretchFactorTooltip" xml:space="default">The factor for the autostretch algorithm that is used to display an image and detect stars. Must be a value between 0 and 1. . A value of 0.2 should work most of the time.</s:String>
+    <s:String x:Key="LblAutoUpdateSource" xml:space="default">Auto Update Source</s:String>
+    <s:String x:Key="LblAzimuth" xml:space="default">Azimuth</s:String>
+    <s:String x:Key="LblAzimuthErrorMeasurement" xml:space="default">Measure Azimuth Error</s:String>
+    <s:String x:Key="LblAzimuthMeasurement" xml:space="default">Azimuth Measurement</s:String>
+    <s:String x:Key="LblAzimuthMeasurementButtonTooltip" xml:space="preserve">Measures Azimuth Error by three steps.
 1. Takes image and platesolves for actual coordinates at current position
 2. Slew telescope using Right Ascension axis by 0.5 degrees
 3. Take another image at the new position, plate solves it for the actual position
 Using those two points the actual azimuth error will be calculated and displayed</s:String>
-  <s:String x:Key="LblAzimuthMeasurementDescription" xml:space="default">Point Telescope South near declination 0 and near meridian</s:String>
-  <s:String x:Key="LblBackground" xml:space="default">Background</s:String>
-  <s:String x:Key="LblBacklashMeasurementException" xml:space="default">An exception occurred while measuring backlash. Backlash values may be wrong.</s:String>
-  <s:String x:Key="LblBacklashMeasurements" xml:space="default">The following focuser backlash values will be saved. IN: {0}, OUT: {1}</s:String>
-  <s:String x:Key="LblBeta" xml:space="default">Beta</s:String>
-  <s:String x:Key="LblBiasMean" xml:space="default">BIAS mean (native)</s:String>
-  <s:String x:Key="LblBinning" xml:space="default">Binning</s:String>
-  <s:String x:Key="LblBinningDescription" xml:space="default">Camera binning</s:String>
-  <s:String x:Key="LblBitDepth" xml:space="default">Bit Depth</s:String>
-  <s:String x:Key="LblBitDepthADU" xml:space="default">Bit Depth in ADU</s:String>
-  <s:String x:Key="LblBlackClipping" xml:space="default">Black clipping</s:String>
-  <s:String x:Key="LblBlindSolveAttemptForFraming" xml:space="preserve">Image has to be solved for framing.
+    <s:String x:Key="LblAzimuthMeasurementDescription" xml:space="default">Point Telescope South near declination 0 and near meridian</s:String>
+    <s:String x:Key="LblBackground" xml:space="default">Background</s:String>
+    <s:String x:Key="LblBacklashMeasurementException" xml:space="default">An exception occurred while measuring backlash. Backlash values may be wrong.</s:String>
+    <s:String x:Key="LblBacklashMeasurements" xml:space="default">The following focuser backlash values will be saved. IN: {0}, OUT: {1}</s:String>
+    <s:String x:Key="LblBeta" xml:space="default">Beta</s:String>
+    <s:String x:Key="LblBiasMean" xml:space="default">BIAS mean (native)</s:String>
+    <s:String x:Key="LblBinning" xml:space="default">Binning</s:String>
+    <s:String x:Key="LblBinningDescription" xml:space="default">Camera binning</s:String>
+    <s:String x:Key="LblBitDepth" xml:space="default">Bit Depth</s:String>
+    <s:String x:Key="LblBitDepthADU" xml:space="default">Bit Depth in ADU</s:String>
+    <s:String x:Key="LblBlackClipping" xml:space="default">Black clipping</s:String>
+    <s:String x:Key="LblBlindSolveAttemptForFraming" xml:space="preserve">Image has to be solved for framing.
 Should reference coordinates be taken?
 RA: {0}
 Dec: {1}</s:String>
-  <s:String x:Key="LblBlindSolver" xml:space="default">Blind Solver</s:String>
-  <s:String x:Key="LblBorder" xml:space="default">Border</s:String>
-  <s:String x:Key="LblBulbMode" xml:space="default">Bulb Mode</s:String>
-  <s:String x:Key="LblBulbSerialPort" xml:space="default">Bulb Serial Port</s:String>
-  <s:String x:Key="LblButtonBackground" xml:space="default">Button Background</s:String>
-  <s:String x:Key="LblButtonForeground" xml:space="default">Button Foreground</s:String>
-  <s:String x:Key="LblButtonForegroundDisabled" xml:space="default">Button Foreground Disabled</s:String>
-  <s:String x:Key="LblButtonHighlight" xml:space="default">Button Highlight</s:String>
-  <s:String x:Key="LblCache" xml:space="default">Cache</s:String>
-  <s:String x:Key="LblCam" xml:space="default">Cam</s:String>
-  <s:String x:Key="LblCamera" xml:space="default">Camera</s:String>
-  <s:String x:Key="LblCameraBattery" xml:space="default">Camera Battery</s:String>
-  <s:String x:Key="LblCameraBusy" xml:space="default">Camera is busy</s:String>
-  <s:String x:Key="LblCameraConnected" xml:space="default">Camera connected</s:String>
-  <s:String x:Key="LblCameraConnectionLost" xml:space="default">Camera connection lost! Please reconnect camera!</s:String>
-  <s:String x:Key="LblCameraCoolerNotEnabled" xml:space="default">Camera has cooler, yet it is not enabled</s:String>
-  <s:String x:Key="LblCameraDownloadFailed" xml:space="preserve">Camera download failed.
+    <s:String x:Key="LblBlindSolver" xml:space="default">Blind Solver</s:String>
+    <s:String x:Key="LblBorder" xml:space="default">Border</s:String>
+    <s:String x:Key="LblBulbMode" xml:space="default">Bulb Mode</s:String>
+    <s:String x:Key="LblBulbSerialPort" xml:space="default">Bulb Serial Port</s:String>
+    <s:String x:Key="LblButtonBackground" xml:space="default">Button Background</s:String>
+    <s:String x:Key="LblButtonForeground" xml:space="default">Button Foreground</s:String>
+    <s:String x:Key="LblButtonForegroundDisabled" xml:space="default">Button Foreground Disabled</s:String>
+    <s:String x:Key="LblButtonHighlight" xml:space="default">Button Highlight</s:String>
+    <s:String x:Key="LblCache" xml:space="default">Cache</s:String>
+    <s:String x:Key="LblCam" xml:space="default">Cam</s:String>
+    <s:String x:Key="LblCamera" xml:space="default">Camera</s:String>
+    <s:String x:Key="LblCameraBattery" xml:space="default">Camera Battery</s:String>
+    <s:String x:Key="LblCameraBusy" xml:space="default">Camera is busy</s:String>
+    <s:String x:Key="LblCameraConnected" xml:space="default">Camera connected</s:String>
+    <s:String x:Key="LblCameraConnectionLost" xml:space="default">Camera connection lost! Please reconnect camera!</s:String>
+    <s:String x:Key="LblCameraCoolerNotEnabled" xml:space="default">Camera has cooler, yet it is not enabled</s:String>
+    <s:String x:Key="LblCameraDownloadFailed" xml:space="preserve">Camera download failed.
 Exposure time: {0}s
 Type: {1}
 Gain: {2}
 Filter: {3}</s:String>
-  <s:String x:Key="LblCameraHighPower" xml:space="preserve">Camera cooler is running at {0}% power and may not be
+    <s:String x:Key="LblCameraHighPower" xml:space="preserve">Camera cooler is running at {0}% power and may not be
 able to compensate for ambient temperature variations</s:String>
-  <s:String x:Key="LblCameraNotAtTargetTemp" xml:space="default">Camera is at {0}°C yet target temperature is {1}°C</s:String>
-  <s:String x:Key="LblCameraOptions" xml:space="default">Camera Options</s:String>
-  <s:String x:Key="LblCameraParameter" xml:space="default">Camera Parameter</s:String>
-  <s:String x:Key="LblCameraState" xml:space="default">Camera State</s:String>
-  <s:String x:Key="LblCameraXSize" xml:space="default">Camera X Size</s:String>
-  <s:String x:Key="LblCameraYSize" xml:space="default">Camera Y Size</s:String>
-  <s:String x:Key="LblCamInfo" xml:space="default">Camera Info</s:String>
-  <s:String x:Key="LblCamSettings" xml:space="default">Camera Settings</s:String>
-  <s:String x:Key="LblCancel" xml:space="default">Cancel</s:String>
-  <s:String x:Key="LblCanonErrorOccurred" xml:space="default">A Canon error occored: {0}</s:String>
-  <s:String x:Key="LblCaptureImageAndPlatesolve" xml:space="default">Capture Image and Platesolve</s:String>
-  <s:String x:Key="LblCdC" xml:space="default">Cartes du Ciel</s:String>
-  <s:String x:Key="LblCenterDec" xml:space="default">Center Dec</s:String>
-  <s:String x:Key="LblCenterDecdms" xml:space="default">Center Dec dms</s:String>
-  <s:String x:Key="LblCenterRA" xml:space="default">Center RA</s:String>
-  <s:String x:Key="LblCenterRAhms" xml:space="default">Center RA hms</s:String>
-  <s:String x:Key="LblCenterTarget" xml:space="default">Center target</s:String>
-  <s:String x:Key="LblChange" xml:space="default">Change</s:String>
-  <s:String x:Key="LblChangeToBulbMode" xml:space="default">Please change the mode dial to bulb mode</s:String>
-  <s:String x:Key="LblChangeToManualMode" xml:space="default">Please change the mode dial to manual mode</s:String>
-  <s:String x:Key="LblCheckMeridianFlip" xml:space="default">Check Meridian Flip</s:String>
-  <s:String x:Key="LblChecksumError" xml:space="default">Checksum does not match expected value. Downloaded file may be corrupted!</s:String>
-  <s:String x:Key="LblChipTemp" xml:space="default">Chip Temperature</s:String>
-  <s:String x:Key="LblChipTempShort" xml:space="default">Chip Temp.</s:String>
-  <s:String x:Key="LblChooseProfile" xml:space="default">Choose Profile</s:String>
-  <s:String x:Key="LblClear" xml:space="default">Clear</s:String>
-  <s:String x:Key="LblClearCache" xml:space="default">Clear Cache</s:String>
-  <s:String x:Key="LblClockwise" xml:space="default">Clockwise</s:String>
-  <s:String x:Key="LblCloudCover" xml:space="default">Cloud Cover</s:String>
-  <s:String x:Key="LblColorSensorNotSupported" xml:space="default">Color sensor is not supported yet</s:String>
-  <s:String x:Key="LblConnect" xml:space="default">Connect</s:String>
-  <s:String x:Key="LblConnected" xml:space="default">Connected</s:String>
-  <s:String x:Key="LblConnecting" xml:space="default">Connecting</s:String>
-  <s:String x:Key="LblConstellation" xml:space="default">Constellation</s:String>
-  <s:String x:Key="LblConstellation_AND" xml:space="default">Andromeda</s:String>
-  <s:String x:Key="LblConstellation_ANT" xml:space="default">Antlia</s:String>
-  <s:String x:Key="LblConstellation_APS" xml:space="default">Apus</s:String>
-  <s:String x:Key="LblConstellation_AQL" xml:space="default">Aquila</s:String>
-  <s:String x:Key="LblConstellation_AQR" xml:space="default">Aquarius</s:String>
-  <s:String x:Key="LblConstellation_ARA" xml:space="default">Ara</s:String>
-  <s:String x:Key="LblConstellation_ARI" xml:space="default">Aries</s:String>
-  <s:String x:Key="LblConstellation_AUR" xml:space="default">Auriga</s:String>
-  <s:String x:Key="LblConstellation_BOO" xml:space="default">Bootes</s:String>
-  <s:String x:Key="LblConstellation_CAE" xml:space="default">Caelum</s:String>
-  <s:String x:Key="LblConstellation_CAM" xml:space="default">Camelopardalis</s:String>
-  <s:String x:Key="LblConstellation_CAP" xml:space="default">Capricornus</s:String>
-  <s:String x:Key="LblConstellation_CAR" xml:space="default">Carina</s:String>
-  <s:String x:Key="LblConstellation_CAS" xml:space="default">Cassiopeia</s:String>
-  <s:String x:Key="LblConstellation_CEN" xml:space="default">Centaurus</s:String>
-  <s:String x:Key="LblConstellation_CEP" xml:space="default">Cepheus</s:String>
-  <s:String x:Key="LblConstellation_CET" xml:space="default">Cetus</s:String>
-  <s:String x:Key="LblConstellation_CHA" xml:space="default">Chamaeleon</s:String>
-  <s:String x:Key="LblConstellation_CIR" xml:space="default">Circinus</s:String>
-  <s:String x:Key="LblConstellation_CMA" xml:space="default">Canis major</s:String>
-  <s:String x:Key="LblConstellation_CMI" xml:space="default">Canis minor</s:String>
-  <s:String x:Key="LblConstellation_CNC" xml:space="default">Cancer</s:String>
-  <s:String x:Key="LblConstellation_COL" xml:space="default">Columba</s:String>
-  <s:String x:Key="LblConstellation_COM" xml:space="default">Coma berenices</s:String>
-  <s:String x:Key="LblConstellation_CRA" xml:space="default">Corona australis</s:String>
-  <s:String x:Key="LblConstellation_CRB" xml:space="default">Corona borealis</s:String>
-  <s:String x:Key="LblConstellation_CRT" xml:space="default">Crater</s:String>
-  <s:String x:Key="LblConstellation_CRU" xml:space="default">Crux</s:String>
-  <s:String x:Key="LblConstellation_CRV" xml:space="default">Corvus</s:String>
-  <s:String x:Key="LblConstellation_CVN" xml:space="default">Canes venatici</s:String>
-  <s:String x:Key="LblConstellation_CYG" xml:space="default">Cygnus</s:String>
-  <s:String x:Key="LblConstellation_DEL" xml:space="default">Delphinus</s:String>
-  <s:String x:Key="LblConstellation_DOR" xml:space="default">Dorado</s:String>
-  <s:String x:Key="LblConstellation_DRA" xml:space="default">Draco</s:String>
-  <s:String x:Key="LblConstellation_EQU" xml:space="default">Equuleus</s:String>
-  <s:String x:Key="LblConstellation_ERI" xml:space="default">Eridanus</s:String>
-  <s:String x:Key="LblConstellation_FOR" xml:space="default">Fornax</s:String>
-  <s:String x:Key="LblConstellation_GEM" xml:space="default">Gemini</s:String>
-  <s:String x:Key="LblConstellation_GRU" xml:space="default">Grus</s:String>
-  <s:String x:Key="LblConstellation_HER" xml:space="default">Hercules</s:String>
-  <s:String x:Key="LblConstellation_HOR" xml:space="default">Horologium</s:String>
-  <s:String x:Key="LblConstellation_HYA" xml:space="default">Hydra</s:String>
-  <s:String x:Key="LblConstellation_HYI" xml:space="default">Hydrus</s:String>
-  <s:String x:Key="LblConstellation_IND" xml:space="default">Indus</s:String>
-  <s:String x:Key="LblConstellation_LAC" xml:space="default">Lacerta</s:String>
-  <s:String x:Key="LblConstellation_LEO" xml:space="default">Leo</s:String>
-  <s:String x:Key="LblConstellation_LEP" xml:space="default">Lepus</s:String>
-  <s:String x:Key="LblConstellation_LIB" xml:space="default">Libra</s:String>
-  <s:String x:Key="LblConstellation_LMI" xml:space="default">Leo minor</s:String>
-  <s:String x:Key="LblConstellation_LUP" xml:space="default">Lupus</s:String>
-  <s:String x:Key="LblConstellation_LYN" xml:space="default">Lynx</s:String>
-  <s:String x:Key="LblConstellation_LYR" xml:space="default">Lyra</s:String>
-  <s:String x:Key="LblConstellation_MEN" xml:space="default">Mensa</s:String>
-  <s:String x:Key="LblConstellation_MIC" xml:space="default">Microscopium</s:String>
-  <s:String x:Key="LblConstellation_MON" xml:space="default">Monoceros</s:String>
-  <s:String x:Key="LblConstellation_MUS" xml:space="default">Musca</s:String>
-  <s:String x:Key="LblConstellation_NOR" xml:space="default">Norma</s:String>
-  <s:String x:Key="LblConstellation_OCT" xml:space="default">Octans</s:String>
-  <s:String x:Key="LblConstellation_OPH" xml:space="default">Ophiuchus</s:String>
-  <s:String x:Key="LblConstellation_ORI" xml:space="default">Orion</s:String>
-  <s:String x:Key="LblConstellation_PAV" xml:space="default">Pavo</s:String>
-  <s:String x:Key="LblConstellation_PEG" xml:space="default">Pegasus</s:String>
-  <s:String x:Key="LblConstellation_PER" xml:space="default">Perseus</s:String>
-  <s:String x:Key="LblConstellation_PHE" xml:space="default">Phoenix</s:String>
-  <s:String x:Key="LblConstellation_PIC" xml:space="default">Pictor</s:String>
-  <s:String x:Key="LblConstellation_PSA" xml:space="default">Pisces austrinus</s:String>
-  <s:String x:Key="LblConstellation_PSC" xml:space="default">Pisces</s:String>
-  <s:String x:Key="LblConstellation_PUP" xml:space="default">Puppis</s:String>
-  <s:String x:Key="LblConstellation_PYX" xml:space="default">Pyxis</s:String>
-  <s:String x:Key="LblConstellation_RET" xml:space="default">Reticulum</s:String>
-  <s:String x:Key="LblConstellation_SCL" xml:space="default">Sculptor</s:String>
-  <s:String x:Key="LblConstellation_SCO" xml:space="default">Scorpius</s:String>
-  <s:String x:Key="LblConstellation_SCT" xml:space="default">Scutum</s:String>
-  <s:String x:Key="LblConstellation_SER" xml:space="default">Serpens</s:String>
-  <s:String x:Key="LblConstellation_SER1" xml:space="default">Serpens caput</s:String>
-  <s:String x:Key="LblConstellation_SER2" xml:space="default">Serpens cauda</s:String>
-  <s:String x:Key="LblConstellation_SEX" xml:space="default">Sextans</s:String>
-  <s:String x:Key="LblConstellation_SGE" xml:space="default">Sagitta</s:String>
-  <s:String x:Key="LblConstellation_SGR" xml:space="default">Sagittarius</s:String>
-  <s:String x:Key="LblConstellation_TAU" xml:space="default">Taurus</s:String>
-  <s:String x:Key="LblConstellation_TEL" xml:space="default">Telescopium</s:String>
-  <s:String x:Key="LblConstellation_TRA" xml:space="default">Triangulum australe</s:String>
-  <s:String x:Key="LblConstellation_TRI" xml:space="default">Triangulum</s:String>
-  <s:String x:Key="LblConstellation_TUC" xml:space="default">Tucana</s:String>
-  <s:String x:Key="LblConstellation_UMA" xml:space="default">Ursa major</s:String>
-  <s:String x:Key="LblConstellation_UMI" xml:space="default">Ursa minor</s:String>
-  <s:String x:Key="LblConstellation_VEL" xml:space="default">Vela</s:String>
-  <s:String x:Key="LblConstellation_VIR" xml:space="default">Virgo</s:String>
-  <s:String x:Key="LblConstellation_VOL" xml:space="default">Volans</s:String>
-  <s:String x:Key="LblConstellation_VUL" xml:space="default">Vulpecula</s:String>
-  <s:String x:Key="LblContinue" xml:space="default">Continue</s:String>
-  <s:String x:Key="LblCoolCamBtnTooltip" xml:space="preserve">Cool Camera to the given target temperature.
+    <s:String x:Key="LblCameraNotAtTargetTemp" xml:space="default">Camera is at {0}°C yet target temperature is {1}°C</s:String>
+    <s:String x:Key="LblCameraOptions" xml:space="default">Camera Options</s:String>
+    <s:String x:Key="LblCameraParameter" xml:space="default">Camera Parameter</s:String>
+    <s:String x:Key="LblCameraState" xml:space="default">Camera State</s:String>
+    <s:String x:Key="LblCameraXSize" xml:space="default">Camera X Size</s:String>
+    <s:String x:Key="LblCameraYSize" xml:space="default">Camera Y Size</s:String>
+    <s:String x:Key="LblCamInfo" xml:space="default">Camera Info</s:String>
+    <s:String x:Key="LblCamSettings" xml:space="default">Camera Settings</s:String>
+    <s:String x:Key="LblCancel" xml:space="default">Cancel</s:String>
+    <s:String x:Key="LblCanonErrorOccurred" xml:space="default">A Canon error occored: {0}</s:String>
+    <s:String x:Key="LblCaptureImageAndPlatesolve" xml:space="default">Capture Image and Platesolve</s:String>
+    <s:String x:Key="LblCdC" xml:space="default">Cartes du Ciel</s:String>
+    <s:String x:Key="LblCenterDec" xml:space="default">Center Dec</s:String>
+    <s:String x:Key="LblCenterDecdms" xml:space="default">Center Dec dms</s:String>
+    <s:String x:Key="LblCenterRA" xml:space="default">Center RA</s:String>
+    <s:String x:Key="LblCenterRAhms" xml:space="default">Center RA hms</s:String>
+    <s:String x:Key="LblCenterTarget" xml:space="default">Center target</s:String>
+    <s:String x:Key="LblChange" xml:space="default">Change</s:String>
+    <s:String x:Key="LblChangeToBulbMode" xml:space="default">Please change the mode dial to bulb mode</s:String>
+    <s:String x:Key="LblChangeToManualMode" xml:space="default">Please change the mode dial to manual mode</s:String>
+    <s:String x:Key="LblCheckMeridianFlip" xml:space="default">Check Meridian Flip</s:String>
+    <s:String x:Key="LblChecksumError" xml:space="default">Checksum does not match expected value. Downloaded file may be corrupted!</s:String>
+    <s:String x:Key="LblChipTemp" xml:space="default">Chip Temperature</s:String>
+    <s:String x:Key="LblChipTempShort" xml:space="default">Chip Temp.</s:String>
+    <s:String x:Key="LblChooseProfile" xml:space="default">Choose Profile</s:String>
+    <s:String x:Key="LblClear" xml:space="default">Clear</s:String>
+    <s:String x:Key="LblClearCache" xml:space="default">Clear Cache</s:String>
+    <s:String x:Key="LblClockwise" xml:space="default">Clockwise</s:String>
+    <s:String x:Key="LblCloudCover" xml:space="default">Cloud Cover</s:String>
+    <s:String x:Key="LblColorSensorNotSupported" xml:space="default">Color sensor is not supported yet</s:String>
+    <s:String x:Key="LblConnect" xml:space="default">Connect</s:String>
+    <s:String x:Key="LblConnected" xml:space="default">Connected</s:String>
+    <s:String x:Key="LblConnecting" xml:space="default">Connecting</s:String>
+    <s:String x:Key="LblConstellation" xml:space="default">Constellation</s:String>
+    <s:String x:Key="LblConstellation_AND" xml:space="default">Andromeda</s:String>
+    <s:String x:Key="LblConstellation_ANT" xml:space="default">Antlia</s:String>
+    <s:String x:Key="LblConstellation_APS" xml:space="default">Apus</s:String>
+    <s:String x:Key="LblConstellation_AQL" xml:space="default">Aquila</s:String>
+    <s:String x:Key="LblConstellation_AQR" xml:space="default">Aquarius</s:String>
+    <s:String x:Key="LblConstellation_ARA" xml:space="default">Ara</s:String>
+    <s:String x:Key="LblConstellation_ARI" xml:space="default">Aries</s:String>
+    <s:String x:Key="LblConstellation_AUR" xml:space="default">Auriga</s:String>
+    <s:String x:Key="LblConstellation_BOO" xml:space="default">Bootes</s:String>
+    <s:String x:Key="LblConstellation_CAE" xml:space="default">Caelum</s:String>
+    <s:String x:Key="LblConstellation_CAM" xml:space="default">Camelopardalis</s:String>
+    <s:String x:Key="LblConstellation_CAP" xml:space="default">Capricornus</s:String>
+    <s:String x:Key="LblConstellation_CAR" xml:space="default">Carina</s:String>
+    <s:String x:Key="LblConstellation_CAS" xml:space="default">Cassiopeia</s:String>
+    <s:String x:Key="LblConstellation_CEN" xml:space="default">Centaurus</s:String>
+    <s:String x:Key="LblConstellation_CEP" xml:space="default">Cepheus</s:String>
+    <s:String x:Key="LblConstellation_CET" xml:space="default">Cetus</s:String>
+    <s:String x:Key="LblConstellation_CHA" xml:space="default">Chamaeleon</s:String>
+    <s:String x:Key="LblConstellation_CIR" xml:space="default">Circinus</s:String>
+    <s:String x:Key="LblConstellation_CMA" xml:space="default">Canis major</s:String>
+    <s:String x:Key="LblConstellation_CMI" xml:space="default">Canis minor</s:String>
+    <s:String x:Key="LblConstellation_CNC" xml:space="default">Cancer</s:String>
+    <s:String x:Key="LblConstellation_COL" xml:space="default">Columba</s:String>
+    <s:String x:Key="LblConstellation_COM" xml:space="default">Coma berenices</s:String>
+    <s:String x:Key="LblConstellation_CRA" xml:space="default">Corona australis</s:String>
+    <s:String x:Key="LblConstellation_CRB" xml:space="default">Corona borealis</s:String>
+    <s:String x:Key="LblConstellation_CRT" xml:space="default">Crater</s:String>
+    <s:String x:Key="LblConstellation_CRU" xml:space="default">Crux</s:String>
+    <s:String x:Key="LblConstellation_CRV" xml:space="default">Corvus</s:String>
+    <s:String x:Key="LblConstellation_CVN" xml:space="default">Canes venatici</s:String>
+    <s:String x:Key="LblConstellation_CYG" xml:space="default">Cygnus</s:String>
+    <s:String x:Key="LblConstellation_DEL" xml:space="default">Delphinus</s:String>
+    <s:String x:Key="LblConstellation_DOR" xml:space="default">Dorado</s:String>
+    <s:String x:Key="LblConstellation_DRA" xml:space="default">Draco</s:String>
+    <s:String x:Key="LblConstellation_EQU" xml:space="default">Equuleus</s:String>
+    <s:String x:Key="LblConstellation_ERI" xml:space="default">Eridanus</s:String>
+    <s:String x:Key="LblConstellation_FOR" xml:space="default">Fornax</s:String>
+    <s:String x:Key="LblConstellation_GEM" xml:space="default">Gemini</s:String>
+    <s:String x:Key="LblConstellation_GRU" xml:space="default">Grus</s:String>
+    <s:String x:Key="LblConstellation_HER" xml:space="default">Hercules</s:String>
+    <s:String x:Key="LblConstellation_HOR" xml:space="default">Horologium</s:String>
+    <s:String x:Key="LblConstellation_HYA" xml:space="default">Hydra</s:String>
+    <s:String x:Key="LblConstellation_HYI" xml:space="default">Hydrus</s:String>
+    <s:String x:Key="LblConstellation_IND" xml:space="default">Indus</s:String>
+    <s:String x:Key="LblConstellation_LAC" xml:space="default">Lacerta</s:String>
+    <s:String x:Key="LblConstellation_LEO" xml:space="default">Leo</s:String>
+    <s:String x:Key="LblConstellation_LEP" xml:space="default">Lepus</s:String>
+    <s:String x:Key="LblConstellation_LIB" xml:space="default">Libra</s:String>
+    <s:String x:Key="LblConstellation_LMI" xml:space="default">Leo minor</s:String>
+    <s:String x:Key="LblConstellation_LUP" xml:space="default">Lupus</s:String>
+    <s:String x:Key="LblConstellation_LYN" xml:space="default">Lynx</s:String>
+    <s:String x:Key="LblConstellation_LYR" xml:space="default">Lyra</s:String>
+    <s:String x:Key="LblConstellation_MEN" xml:space="default">Mensa</s:String>
+    <s:String x:Key="LblConstellation_MIC" xml:space="default">Microscopium</s:String>
+    <s:String x:Key="LblConstellation_MON" xml:space="default">Monoceros</s:String>
+    <s:String x:Key="LblConstellation_MUS" xml:space="default">Musca</s:String>
+    <s:String x:Key="LblConstellation_NOR" xml:space="default">Norma</s:String>
+    <s:String x:Key="LblConstellation_OCT" xml:space="default">Octans</s:String>
+    <s:String x:Key="LblConstellation_OPH" xml:space="default">Ophiuchus</s:String>
+    <s:String x:Key="LblConstellation_ORI" xml:space="default">Orion</s:String>
+    <s:String x:Key="LblConstellation_PAV" xml:space="default">Pavo</s:String>
+    <s:String x:Key="LblConstellation_PEG" xml:space="default">Pegasus</s:String>
+    <s:String x:Key="LblConstellation_PER" xml:space="default">Perseus</s:String>
+    <s:String x:Key="LblConstellation_PHE" xml:space="default">Phoenix</s:String>
+    <s:String x:Key="LblConstellation_PIC" xml:space="default">Pictor</s:String>
+    <s:String x:Key="LblConstellation_PSA" xml:space="default">Pisces austrinus</s:String>
+    <s:String x:Key="LblConstellation_PSC" xml:space="default">Pisces</s:String>
+    <s:String x:Key="LblConstellation_PUP" xml:space="default">Puppis</s:String>
+    <s:String x:Key="LblConstellation_PYX" xml:space="default">Pyxis</s:String>
+    <s:String x:Key="LblConstellation_RET" xml:space="default">Reticulum</s:String>
+    <s:String x:Key="LblConstellation_SCL" xml:space="default">Sculptor</s:String>
+    <s:String x:Key="LblConstellation_SCO" xml:space="default">Scorpius</s:String>
+    <s:String x:Key="LblConstellation_SCT" xml:space="default">Scutum</s:String>
+    <s:String x:Key="LblConstellation_SER" xml:space="default">Serpens</s:String>
+    <s:String x:Key="LblConstellation_SER1" xml:space="default">Serpens caput</s:String>
+    <s:String x:Key="LblConstellation_SER2" xml:space="default">Serpens cauda</s:String>
+    <s:String x:Key="LblConstellation_SEX" xml:space="default">Sextans</s:String>
+    <s:String x:Key="LblConstellation_SGE" xml:space="default">Sagitta</s:String>
+    <s:String x:Key="LblConstellation_SGR" xml:space="default">Sagittarius</s:String>
+    <s:String x:Key="LblConstellation_TAU" xml:space="default">Taurus</s:String>
+    <s:String x:Key="LblConstellation_TEL" xml:space="default">Telescopium</s:String>
+    <s:String x:Key="LblConstellation_TRA" xml:space="default">Triangulum australe</s:String>
+    <s:String x:Key="LblConstellation_TRI" xml:space="default">Triangulum</s:String>
+    <s:String x:Key="LblConstellation_TUC" xml:space="default">Tucana</s:String>
+    <s:String x:Key="LblConstellation_UMA" xml:space="default">Ursa major</s:String>
+    <s:String x:Key="LblConstellation_UMI" xml:space="default">Ursa minor</s:String>
+    <s:String x:Key="LblConstellation_VEL" xml:space="default">Vela</s:String>
+    <s:String x:Key="LblConstellation_VIR" xml:space="default">Virgo</s:String>
+    <s:String x:Key="LblConstellation_VOL" xml:space="default">Volans</s:String>
+    <s:String x:Key="LblConstellation_VUL" xml:space="default">Vulpecula</s:String>
+    <s:String x:Key="LblContinue" xml:space="default">Continue</s:String>
+    <s:String x:Key="LblCoolCamBtnTooltip" xml:space="preserve">Cool Camera to the given target temperature.
 When duration is set, the application will slowly decrease the temperature during the timeframe until the target temperature is reached.</s:String>
-  <s:String x:Key="LblCoolerOn" xml:space="default">Cooler</s:String>
-  <s:String x:Key="LblCoolerPower" xml:space="default">Cooler Power</s:String>
-  <s:String x:Key="LblCooling" xml:space="default">Cooling</s:String>
-  <s:String x:Key="LblCoordinates" xml:space="default">Coordinates</s:String>
-  <s:String x:Key="LblCounterclockwise" xml:space="default">Counterclockwise</s:String>
-  <s:String x:Key="LblCoverScopeMsgBox" xml:space="default">Cover your scope now and press OK to start taking the dark flats.</s:String>
-  <s:String x:Key="LblCoverScopeMsgBoxTitle" xml:space="default">Cover your scope now</s:String>
-  <s:String x:Key="LblCurrentDownloadToDataRatio" xml:space="default">Current Download:Data ratio</s:String>
-  <s:String x:Key="LblCurrentMean" xml:space="default">Current Mean</s:String>
-  <s:String x:Key="LblCurrentPosition" xml:space="default">Current Position</s:String>
-  <s:String x:Key="LblCurrentUIColorSchema" xml:space="default">Current UI Color Schema</s:String>
-  <s:String x:Key="LblCurveFittingMethod" xml:space="default">AF Curve fitting</s:String>
-  <s:String x:Key="LblCygwinBashNotFound" xml:space="default">Cygwin bash not found</s:String>
-  <s:String x:Key="LblCygwinDirectory" xml:space="default">Cygwin Directory</s:String>
-  <s:String x:Key="LblDarkFlatCount" xml:space="default">Dark Flats to take</s:String>
-  <s:String x:Key="LblDARVSlew" xml:space="default">D.A.R.V. Slew</s:String>
-  <s:String x:Key="LblDARVSlewButtonTooltip" xml:space="preserve">This will take an exposure while slewing the scope slowly to one side and back
+    <s:String x:Key="LblCoolerOn" xml:space="default">Cooler</s:String>
+    <s:String x:Key="LblCoolerPower" xml:space="default">Cooler Power</s:String>
+    <s:String x:Key="LblCooling" xml:space="default">Cooling</s:String>
+    <s:String x:Key="LblCoordinates" xml:space="default">Coordinates</s:String>
+    <s:String x:Key="LblCounterclockwise" xml:space="default">Counterclockwise</s:String>
+    <s:String x:Key="LblCoverScopeMsgBox" xml:space="default">Cover your scope now and press OK to start taking the dark flats.</s:String>
+    <s:String x:Key="LblCoverScopeMsgBoxTitle" xml:space="default">Cover your scope now</s:String>
+    <s:String x:Key="LblCurrentDownloadToDataRatio" xml:space="default">Current Download:Data ratio</s:String>
+    <s:String x:Key="LblCurrentMean" xml:space="default">Current Mean</s:String>
+    <s:String x:Key="LblCurrentPosition" xml:space="default">Current Position</s:String>
+    <s:String x:Key="LblCurrentUIColorSchema" xml:space="default">Current UI Color Schema</s:String>
+    <s:String x:Key="LblCurveFittingMethod" xml:space="default">AF Curve fitting</s:String>
+    <s:String x:Key="LblCygwinBashNotFound" xml:space="default">Cygwin bash not found</s:String>
+    <s:String x:Key="LblCygwinDirectory" xml:space="default">Cygwin Directory</s:String>
+    <s:String x:Key="LblDarkFlatCount" xml:space="default">Dark Flats to take</s:String>
+    <s:String x:Key="LblDARVSlew" xml:space="default">D.A.R.V. Slew</s:String>
+    <s:String x:Key="LblDARVSlewButtonTooltip" xml:space="preserve">This will take an exposure while slewing the scope slowly to one side and back
 when the lines are not aligned there is some Polar Alignment error</s:String>
-  <s:String x:Key="LblDARVSlewDescription" xml:space="default">Specify the duration for the D.A.R.V. procedure. The telescope will slew half the time in one direction on RA axis and then slew back. In case of no Polar Alignment error it will display as a straight line. Otherwise a V shaped line. For Azimuth Error Measurement slew the scope near meridian, otherwise east or west.</s:String>
-  <s:String x:Key="LblDataProvidedBy" xml:space="default">Initial set of DSO Data provided by:</s:String>
-  <s:String x:Key="LblDataToDownloadRatio" xml:space="default">Download to Data ratio</s:String>
-  <s:String x:Key="LblDateFormatDescription" xml:space="default">Date with format YYYY-MM-DD</s:String>
-  <s:String x:Key="LblDateTimeFormatDescription" xml:space="default">Date with format YYYY-MM-DD_HH-mm-ss</s:String>
-  <s:String x:Key="LblDawn" xml:space="default">Dawn</s:String>
-  <s:String x:Key="LblDCRaw" xml:space="default">DCRaw</s:String>
-  <s:String x:Key="LblDebayeredHFR" xml:space="default">Debayered HFR</s:String>
-  <s:String x:Key="LblDebayeredHFRTooltip" xml:space="default">Use debayered image to perform HFR computation. More precise, but more resource-intensive.</s:String>
-  <s:String x:Key="LblDebayerImage" xml:space="default">Debayer Image</s:String>
-  <s:String x:Key="LblDebayerImageTooltip" xml:space="default">Debayer Image on preview (won't affect saved file)</s:String>
-  <s:String x:Key="LblDebayeringImage" xml:space="default">Debayering image</s:String>
-  <s:String x:Key="LblDebug" xml:space="default">Debug</s:String>
-  <s:String x:Key="LblDec" xml:space="default">Dec</s:String>
-  <s:String x:Key="LblDecCorrections" xml:space="default">Dec Corrections</s:String>
-  <s:String x:Key="LblDecError" xml:space="default">Dec Error</s:String>
-  <s:String x:Key="LblDeclination" xml:space="default">Declination</s:String>
-  <s:String x:Key="LblDecPixError" xml:space="default">Dec Pix Error</s:String>
-  <s:String x:Key="LblDefaultAutoFocusExposureTime" xml:space="default">Default Auto Focus Exposure Time</s:String>
-  <s:String x:Key="LblDegree" xml:space="default">degree</s:String>
-  <s:String x:Key="LblDegreeShort" xml:space="default">°</s:String>
-  <s:String x:Key="LblDeleteProfileInUseWarning" xml:space="default">Cannot delete profile. It is already in use by another N.I.N.A. instance!</s:String>
-  <s:String x:Key="LblDescending" xml:space="default">Descending</s:String>
-  <s:String x:Key="LblDescription" xml:space="default">Description</s:String>
-  <s:String x:Key="LblDetails" xml:space="default">Details</s:String>
-  <s:String x:Key="LblDetectedStars" xml:space="default">Detected Stars</s:String>
-  <s:String x:Key="LblDevicePollingInterval" xml:space="default">Device polling interval</s:String>
-  <s:String x:Key="LblDewHeater" xml:space="default">Dew Heater</s:String>
-  <s:String x:Key="LblDewHeaterShort" xml:space="default">Dew Heater</s:String>
-  <s:String x:Key="LblDewpoint" xml:space="default">Dewpoint</s:String>
-  <s:String x:Key="LblDigitalSkySurvey" xml:space="default">Digital Sky Survey</s:String>
-  <s:String x:Key="LblDirectGuideDuration" xml:space="default">Direct Guide Duration</s:String>
-  <s:String x:Key="LblDirectGuiderConnectionFail" xml:space="default">Direct Guider could not connect to Telescope</s:String>
-  <s:String x:Key="LblDirectGuiderTelescopeDisconnect" xml:space="default">Telescope has been disconnected. Direct Guider will disconnect. Dithering no longer effective!</s:String>
-  <s:String x:Key="LblDirectoryNotFound" xml:space="default">Directory to save image to not found!</s:String>
-  <s:String x:Key="LblDirectoryNotWritable" xml:space="default">Directory to save image to does not have write permissions!</s:String>
-  <s:String x:Key="LblDisableAFGuiding" xml:space="default">AF Disable Guiding</s:String>
-  <s:String x:Key="LblDisableAFGuidingTooltip" xml:space="default">Disable guiding during auto-focus</s:String>
-  <s:String x:Key="LblDisconnect" xml:space="default">Disconnect</s:String>
-  <s:String x:Key="LblDisconnectAll" xml:space="default">Disconnect all devices?</s:String>
-  <s:String x:Key="LblDistance" xml:space="default">Distance</s:String>
-  <s:String x:Key="LblDither" xml:space="default">Dither</s:String>
-  <s:String x:Key="LblDitherEveryNoFrame" xml:space="default">Dither Every # Frame</s:String>
-  <s:String x:Key="LblDitherOnButGuiderNotConnected" xml:space="default">Dithering is enabled, yet guider is not connected</s:String>
-  <s:String x:Key="LblDitherPixels" xml:space="default">PHD2 Dither Pixels</s:String>
-  <s:String x:Key="LblDitherRAOnly" xml:space="default">Dither RA Only</s:String>
-  <s:String x:Key="LblDownload" xml:space="default">Download</s:String>
-  <s:String x:Key="LblDownloadImage" xml:space="default">Download Image</s:String>
-  <s:String x:Key="LblDownloadImageTooltip" xml:space="default">Download Image from the NASA skysurvey for the given coordinates</s:String>
-  <s:String x:Key="LblDownloading" xml:space="default">Downloading</s:String>
-  <s:String x:Key="LblDownloadMoreIndexFiles" xml:space="default">Download more index files</s:String>
-  <s:String x:Key="LblDownSampleFactor" xml:space="default">Downsample factor</s:String>
-  <s:String x:Key="LblDriverInfo" xml:space="default">Driver Info</s:String>
-  <s:String x:Key="LblDriverVersion" xml:space="default">Driver Version</s:String>
-  <s:String x:Key="LblDuration" xml:space="default">Duration</s:String>
-  <s:String x:Key="LblDusk" xml:space="default">Dusk</s:String>
-  <s:String x:Key="LblEast" xml:space="default">East</s:String>
-  <s:String x:Key="LblEDCameraNotInManualMode" xml:space="default">Camera is not set to manual or bulb mode! Please set it to manual or bulb mode before connecting</s:String>
-  <s:String x:Key="LblEnabled" xml:space="default">Enabled</s:String>
-  <s:String x:Key="LblEndOfSequenceDecision" xml:space="default">Run end of sequence options?</s:String>
-  <s:String x:Key="LblEndOfSequenceOptions" xml:space="default">End of Sequence Options</s:String>
-  <s:String x:Key="LblEndOfSequenceParkTelescope" xml:space="default">Park Telescope</s:String>
-  <s:String x:Key="LblEndOfSequenceWarmCamera" xml:space="default">Warm Camera</s:String>
-  <s:String x:Key="LblEpoch" xml:space="default">Epoch</s:String>
-  <s:String x:Key="LblEquipment" xml:space="default">Equipment</s:String>
-  <s:String x:Key="LblError" xml:space="default">Error</s:String>
-  <s:String x:Key="LblErrorDistance" xml:space="default">Error Distance</s:String>
-  <s:String x:Key="LblErrorLT" xml:space="default">error &lt;</s:String>
-  <s:String x:Key="LblEsoSkySurvey" xml:space="default">ESO Sky Survey</s:String>
-  <s:String x:Key="LblEstimatedDownloadTime" xml:space="default">Estimated Download Time</s:String>
-  <s:String x:Key="LblEstimatedExposureTime" xml:space="default">Estimated Exposure Time</s:String>
-  <s:String x:Key="LblETA" xml:space="default">Estimated Finish Time</s:String>
-  <s:String x:Key="LblExposing" xml:space="default">Exposing</s:String>
-  <s:String x:Key="LblExposureCalculator" xml:space="default">Optimal Exposure Calculator</s:String>
-  <s:String x:Key="LblExposures" xml:space="default">Exposures</s:String>
-  <s:String x:Key="LblExposureTime" xml:space="default">Exposure Time</s:String>
-  <s:String x:Key="LblExposureTimeDescription" xml:space="default">Exposure Time in seconds</s:String>
-  <s:String x:Key="LblFieldOfView" xml:space="default">Field Of View</s:String>
-  <s:String x:Key="LblFile" xml:space="default">File</s:String>
-  <s:String x:Key="LblFileCameraDescription" xml:space="preserve">This simulated camera will enable the use of cameras which lack an SDK, while still using the whole N.I.N.A. workflow.
+    <s:String x:Key="LblDARVSlewDescription" xml:space="default">Specify the duration for the D.A.R.V. procedure. The telescope will slew half the time in one direction on RA axis and then slew back. In case of no Polar Alignment error it will display as a straight line. Otherwise a V shaped line. For Azimuth Error Measurement slew the scope near meridian, otherwise east or west.</s:String>
+    <s:String x:Key="LblDataProvidedBy" xml:space="default">Initial set of DSO Data provided by:</s:String>
+    <s:String x:Key="LblDataToDownloadRatio" xml:space="default">Download to Data ratio</s:String>
+    <s:String x:Key="LblDateFormatDescription" xml:space="default">Date with format YYYY-MM-DD</s:String>
+    <s:String x:Key="LblDateTimeFormatDescription" xml:space="default">Date with format YYYY-MM-DD_HH-mm-ss</s:String>
+    <s:String x:Key="LblDawn" xml:space="default">Dawn</s:String>
+    <s:String x:Key="LblDCRaw" xml:space="default">DCRaw</s:String>
+    <s:String x:Key="LblDebayeredHFR" xml:space="default">Debayered HFR</s:String>
+    <s:String x:Key="LblDebayeredHFRTooltip" xml:space="default">Use debayered image to perform HFR computation. More precise, but more resource-intensive.</s:String>
+    <s:String x:Key="LblDebayerImage" xml:space="default">Debayer Image</s:String>
+    <s:String x:Key="LblDebayerImageTooltip" xml:space="default">Debayer Image on preview (won't affect saved file)</s:String>
+    <s:String x:Key="LblDebayeringImage" xml:space="default">Debayering image</s:String>
+    <s:String x:Key="LblDebug" xml:space="default">Debug</s:String>
+    <s:String x:Key="LblDec" xml:space="default">Dec</s:String>
+    <s:String x:Key="LblDecCorrections" xml:space="default">Dec Corrections</s:String>
+    <s:String x:Key="LblDecError" xml:space="default">Dec Error</s:String>
+    <s:String x:Key="LblDeclination" xml:space="default">Declination</s:String>
+    <s:String x:Key="LblDecPixError" xml:space="default">Dec Pix Error</s:String>
+    <s:String x:Key="LblDefaultAutoFocusExposureTime" xml:space="default">Default Auto Focus Exposure Time</s:String>
+    <s:String x:Key="LblDegree" xml:space="default">degree</s:String>
+    <s:String x:Key="LblDegreeShort" xml:space="default">°</s:String>
+    <s:String x:Key="LblDeleteProfileInUseWarning" xml:space="default">Cannot delete profile. It is already in use by another N.I.N.A. instance!</s:String>
+    <s:String x:Key="LblDescending" xml:space="default">Descending</s:String>
+    <s:String x:Key="LblDescription" xml:space="default">Description</s:String>
+    <s:String x:Key="LblDetails" xml:space="default">Details</s:String>
+    <s:String x:Key="LblDetectedStars" xml:space="default">Detected Stars</s:String>
+    <s:String x:Key="LblDevicePollingInterval" xml:space="default">Device polling interval</s:String>
+    <s:String x:Key="LblDewHeater" xml:space="default">Dew Heater</s:String>
+    <s:String x:Key="LblDewHeaterShort" xml:space="default">Dew Heater</s:String>
+    <s:String x:Key="LblDewpoint" xml:space="default">Dewpoint</s:String>
+    <s:String x:Key="LblDigitalSkySurvey" xml:space="default">Digital Sky Survey</s:String>
+    <s:String x:Key="LblDirectGuideDuration" xml:space="default">Direct Guide Duration</s:String>
+    <s:String x:Key="LblDirectGuiderConnectionFail" xml:space="default">Direct Guider could not connect to Telescope</s:String>
+    <s:String x:Key="LblDirectGuiderTelescopeDisconnect" xml:space="default">Telescope has been disconnected. Direct Guider will disconnect. Dithering no longer effective!</s:String>
+    <s:String x:Key="LblDirectoryNotFound" xml:space="default">Directory to save image to not found!</s:String>
+    <s:String x:Key="LblDirectoryNotWritable" xml:space="default">Directory to save image to does not have write permissions!</s:String>
+    <s:String x:Key="LblDisableAFGuiding" xml:space="default">AF Disable Guiding</s:String>
+    <s:String x:Key="LblDisableAFGuidingTooltip" xml:space="default">Disable guiding during auto-focus</s:String>
+    <s:String x:Key="LblDisconnect" xml:space="default">Disconnect</s:String>
+    <s:String x:Key="LblDisconnectAll" xml:space="default">Disconnect all devices?</s:String>
+    <s:String x:Key="LblDistance" xml:space="default">Distance</s:String>
+    <s:String x:Key="LblDither" xml:space="default">Dither</s:String>
+    <s:String x:Key="LblDitherEveryNoFrame" xml:space="default">Dither Every # Frame</s:String>
+    <s:String x:Key="LblDitherOnButGuiderNotConnected" xml:space="default">Dithering is enabled, yet guider is not connected</s:String>
+    <s:String x:Key="LblDitherPixels" xml:space="default">PHD2 Dither Pixels</s:String>
+    <s:String x:Key="LblDitherRAOnly" xml:space="default">Dither RA Only</s:String>
+    <s:String x:Key="LblDownload" xml:space="default">Download</s:String>
+    <s:String x:Key="LblDownloadImage" xml:space="default">Download Image</s:String>
+    <s:String x:Key="LblDownloadImageTooltip" xml:space="default">Download Image from the NASA skysurvey for the given coordinates</s:String>
+    <s:String x:Key="LblDownloading" xml:space="default">Downloading</s:String>
+    <s:String x:Key="LblDownloadMoreIndexFiles" xml:space="default">Download more index files</s:String>
+    <s:String x:Key="LblDownSampleFactor" xml:space="default">Downsample factor</s:String>
+    <s:String x:Key="LblDriverInfo" xml:space="default">Driver Info</s:String>
+    <s:String x:Key="LblDriverVersion" xml:space="default">Driver Version</s:String>
+    <s:String x:Key="LblDuration" xml:space="default">Duration</s:String>
+    <s:String x:Key="LblDusk" xml:space="default">Dusk</s:String>
+    <s:String x:Key="LblEast" xml:space="default">East</s:String>
+    <s:String x:Key="LblEDCameraNotInManualMode" xml:space="default">Camera is not set to manual or bulb mode! Please set it to manual or bulb mode before connecting</s:String>
+    <s:String x:Key="LblEnabled" xml:space="default">Enabled</s:String>
+    <s:String x:Key="LblEndOfSequenceDecision" xml:space="default">Run end of sequence options?</s:String>
+    <s:String x:Key="LblEndOfSequenceOptions" xml:space="default">End of Sequence Options</s:String>
+    <s:String x:Key="LblEndOfSequenceParkTelescope" xml:space="default">Park Telescope</s:String>
+    <s:String x:Key="LblEndOfSequenceWarmCamera" xml:space="default">Warm Camera</s:String>
+    <s:String x:Key="LblEpoch" xml:space="default">Epoch</s:String>
+    <s:String x:Key="LblEquipment" xml:space="default">Equipment</s:String>
+    <s:String x:Key="LblError" xml:space="default">Error</s:String>
+    <s:String x:Key="LblErrorDistance" xml:space="default">Error Distance</s:String>
+    <s:String x:Key="LblErrorLT" xml:space="default">error &lt;</s:String>
+    <s:String x:Key="LblEsoSkySurvey" xml:space="default">ESO Sky Survey</s:String>
+    <s:String x:Key="LblEstimatedDownloadTime" xml:space="default">Estimated Download Time</s:String>
+    <s:String x:Key="LblEstimatedExposureTime" xml:space="default">Estimated Exposure Time</s:String>
+    <s:String x:Key="LblETA" xml:space="default">Estimated Finish Time</s:String>
+    <s:String x:Key="LblExposing" xml:space="default">Exposing</s:String>
+    <s:String x:Key="LblExposureCalculator" xml:space="default">Optimal Exposure Calculator</s:String>
+    <s:String x:Key="LblExposures" xml:space="default">Exposures</s:String>
+    <s:String x:Key="LblExposureTime" xml:space="default">Exposure Time</s:String>
+    <s:String x:Key="LblExposureTimeDescription" xml:space="default">Exposure Time in seconds</s:String>
+    <s:String x:Key="LblFieldOfView" xml:space="default">Field Of View</s:String>
+    <s:String x:Key="LblFile" xml:space="default">File</s:String>
+    <s:String x:Key="LblFileCameraDescription" xml:space="preserve">This simulated camera will enable the use of cameras which lack an SDK, while still using the whole N.I.N.A. workflow.
 This simulated camera will watch the specified folder for newly created files. These files will be stored inside an internal queue.
 Each time the application wants to download an exposure from the camera, the first item of this file queue is resolved and loaded into N.I.N.A.
 Additionally a manual Bulb Mode trigger can be activated, so it will use the selected Bulb Mode in Settings-&gt;Equipment-&gt;Camera on Exposure Start.
 When this trigger is deactivated the application will just skip the Start Exposure and just wait for another file to roll into the specified folder</s:String>
-  <s:String x:Key="LblFileExample" xml:space="default">Example File Name</s:String>
-  <s:String x:Key="LblFileSettings" xml:space="default">File Settings</s:String>
-  <s:String x:Key="LblFilter" xml:space="default">Filter</s:String>
-  <s:String x:Key="LblFilterChangeRequired" xml:space="default">Filter Change Required</s:String>
-  <s:String x:Key="LblFilterName" xml:space="default">Filter Name</s:String>
-  <s:String x:Key="LblFilternameDescription" xml:space="default">Filter Name</s:String>
-  <s:String x:Key="LblFilterNotFoundForPosition" xml:space="default">No filter found at position {0}. Please re-evaluate the filters inside the setting, that they correspond your filter wheel!</s:String>
-  <s:String x:Key="LblFilterSetButFilterWheelNotConnected" xml:space="default">One or more sequence items have a filter set, but filter wheel is not connected</s:String>
-  <s:String x:Key="LblFilterWheel" xml:space="default">Filterwheel</s:String>
-  <s:String x:Key="LblFilterwheelConnected" xml:space="default">Filterwheel connected</s:String>
-  <s:String x:Key="LblFilterwheelConnectionLost" xml:space="default">Filterwheel connection lost! Please reconnect filterwheel!</s:String>
-  <s:String x:Key="LblFits" xml:space="default">FITS</s:String>
-  <s:String x:Key="LblFlatCalculatedExposureTime" xml:space="default">Calculated Target Exposure Time</s:String>
-  <s:String x:Key="LblFlatCalculatedHistogramMean" xml:space="default">Calculated Target Histogram Mean</s:String>
-  <s:String x:Key="LblFlatCount" xml:space="default">Flats to take</s:String>
-  <s:String x:Key="LblFlatExposureCalcContinue" xml:space="default">Mean ADU was {0}, starting Exposure Time calculation at {1}</s:String>
-  <s:String x:Key="LblFlatExposureCalcFinished" xml:space="default">Mean ADU is {0} target Exposure Time is {1}</s:String>
-  <s:String x:Key="LblFlatExposureCalcStart" xml:space="default">Starting Exposure Time calculation at {0}</s:String>
-  <s:String x:Key="LblFlatHistogramMeanTarget" xml:space="default">Histogram Mean Target</s:String>
-  <s:String x:Key="LblFlatHistogramTolerance" xml:space="default">Mean Tolerance</s:String>
-  <s:String x:Key="LblFlatMaxExposureTime" xml:space="default">Flat Max Exposure</s:String>
-  <s:String x:Key="LblFlatMinExposureTime" xml:space="default">Flat Min Exposure</s:String>
-  <s:String x:Key="LblFlatSequenceCancelled" xml:space="default">Flat Sequence Canceled, could not determine a flat exposure time</s:String>
-  <s:String x:Key="LblFlatStepSize" xml:space="default">Flat Step Size</s:String>
-  <s:String x:Key="LblFlatUserCurrentExposureCalculation" xml:space="default">Current Exposure Calculations</s:String>
-  <s:String x:Key="LblFlatUserFlatSettings" xml:space="default">Flat Wizard Settings</s:String>
-  <s:String x:Key="LblFlatUserPromptCancel" xml:space="default">Cancel Flat Wizard</s:String>
-  <s:String x:Key="LblFlatUserPromptFailure" xml:space="default">Failed to get proper Flat Exposure</s:String>
-  <s:String x:Key="LblFlatUserPromptFlatTooBright" xml:space="default">Your flats are too bright, dim the light, adjust the tolerance, target mean or the minimum exposure time</s:String>
-  <s:String x:Key="LblFlatUserPromptFlatTooDim" xml:space="default">Your flats are too dim, brighten the light, adjust the tolerance, target mean or the maximum exposure time</s:String>
-  <s:String x:Key="LblFlatWizard" xml:space="default">Flat Wizard</s:String>
-  <s:String x:Key="LblFlatWizardCapture" xml:space="default">Flat Wizard Capture</s:String>
-  <s:String x:Key="LblFLICameraSetup" xml:space="default">FLI Camera Setup</s:String>
-  <s:String x:Key="LblFLIFloodBin" xml:space="default">Flood Binning</s:String>
-  <s:String x:Key="LblFLIFloodDuration" xml:space="default">Flood Duration</s:String>
-  <s:String x:Key="LblFLIFlushCount" xml:space="default">Pre-exposure Flush Count</s:String>
-  <s:String x:Key="LblFlip" xml:space="default">Do the flip</s:String>
-  <s:String x:Key="LblFlippingScope" xml:space="default">Flipping Scope</s:String>
-  <s:String x:Key="LblFLIPreRBIMitigation" xml:space="default">RBI Mitigation</s:String>
-  <s:String x:Key="LblFLISnapshotFlood" xml:space="default">Flood for snapshots</s:String>
-  <s:String x:Key="LblFocalLength" xml:space="default">Focal Length</s:String>
-  <s:String x:Key="LblFocalRatio" xml:space="default">Focal Ratio</s:String>
-  <s:String x:Key="LblFocuser" xml:space="default">Focuser</s:String>
-  <s:String x:Key="LblFocuserAutoFocusInitialOffsetSteps" xml:space="default">Auto Focus Initial Offset Steps</s:String>
-  <s:String x:Key="LblFocuserAutoFocusInitialOffsetStepsTooltip" xml:space="default">Initial amount of steps the focuser will move out to begin auto focus procedure.</s:String>
-  <s:String x:Key="LblFocuserAutoFocusStepSize" xml:space="default">Auto Focus Step Size</s:String>
-  <s:String x:Key="LblFocuserAutoFocusStepSizeTooltip" xml:space="default">The size of one focus step used for auto focusing. One step should be less than the critical focus point tolerance</s:String>
-  <s:String x:Key="LblFocuserBacklash" xml:space="default">Backlash IN/OUT</s:String>
-  <s:String x:Key="LblFocuserBacklashTooltip" xml:space="default">Inwards and outwards focuser backlash, in focuser steps</s:String>
-  <s:String x:Key="LblFocuserConnected" xml:space="default">Focuser connected</s:String>
-  <s:String x:Key="LblFocuserConnectionLost" xml:space="default">Focuser connection lost! Please reconnect focuser!</s:String>
-  <s:String x:Key="LblFocuserPositionDescription" xml:space="default">Current focuser position</s:String>
-  <s:String x:Key="LblFocuserSettleTime" xml:space="default">Focuser Settle Time</s:String>
-  <s:String x:Key="LblFocuserSettleTimeTooltip" xml:space="default">If the focuser introduces image shift when moving, set a settle time in seconds here.</s:String>
-  <s:String x:Key="LblFocuserTempDescription" xml:space="default">Focuser Temperature</s:String>
-  <s:String x:Key="LblFocuserUseFilterWheelOffsets" xml:space="default">Use FilterWheel Offsets</s:String>
-  <s:String x:Key="LblFocuserUseFilterWheelOffsetsTooltip" xml:space="default">When switching from one filter to another the focuser will change it's position relative to the given offset specified for that filter</s:String>
-  <s:String x:Key="LblFocusOffset" xml:space="default">Focus Offset</s:String>
-  <s:String x:Key="LblFocusPointValidationFailed" xml:space="preserve">Calculated HFR for focus at position {0} differs more than 25% from actual HFR
+    <s:String x:Key="LblFileExample" xml:space="default">Example File Name</s:String>
+    <s:String x:Key="LblFileSettings" xml:space="default">File Settings</s:String>
+    <s:String x:Key="LblFilter" xml:space="default">Filter</s:String>
+    <s:String x:Key="LblFilterChangeRequired" xml:space="default">Filter Change Required</s:String>
+    <s:String x:Key="LblFilterName" xml:space="default">Filter Name</s:String>
+    <s:String x:Key="LblFilternameDescription" xml:space="default">Filter Name</s:String>
+    <s:String x:Key="LblFilterNotFoundForPosition" xml:space="default">No filter found at position {0}. Please re-evaluate the filters inside the setting, that they correspond your filter wheel!</s:String>
+    <s:String x:Key="LblFilterSetButFilterWheelNotConnected" xml:space="default">One or more sequence items have a filter set, but filter wheel is not connected</s:String>
+    <s:String x:Key="LblFilterWheel" xml:space="default">Filterwheel</s:String>
+    <s:String x:Key="LblFilterwheelConnected" xml:space="default">Filterwheel connected</s:String>
+    <s:String x:Key="LblFilterwheelConnectionLost" xml:space="default">Filterwheel connection lost! Please reconnect filterwheel!</s:String>
+    <s:String x:Key="LblFits" xml:space="default">FITS</s:String>
+    <s:String x:Key="LblFlatCalculatedExposureTime" xml:space="default">Calculated Target Exposure Time</s:String>
+    <s:String x:Key="LblFlatCalculatedHistogramMean" xml:space="default">Calculated Target Histogram Mean</s:String>
+    <s:String x:Key="LblFlatCount" xml:space="default">Flats to take</s:String>
+    <s:String x:Key="LblFlatExposureCalcContinue" xml:space="default">Mean ADU was {0}, starting Exposure Time calculation at {1}</s:String>
+    <s:String x:Key="LblFlatExposureCalcFinished" xml:space="default">Mean ADU is {0} target Exposure Time is {1}</s:String>
+    <s:String x:Key="LblFlatExposureCalcStart" xml:space="default">Starting Exposure Time calculation at {0}</s:String>
+    <s:String x:Key="LblFlatHistogramMeanTarget" xml:space="default">Histogram Mean Target</s:String>
+    <s:String x:Key="LblFlatHistogramTolerance" xml:space="default">Mean Tolerance</s:String>
+    <s:String x:Key="LblFlatMaxExposureTime" xml:space="default">Flat Max Exposure</s:String>
+    <s:String x:Key="LblFlatMinExposureTime" xml:space="default">Flat Min Exposure</s:String>
+    <s:String x:Key="LblFlatSequenceCancelled" xml:space="default">Flat Sequence Canceled, could not determine a flat exposure time</s:String>
+    <s:String x:Key="LblFlatStepSize" xml:space="default">Flat Step Size</s:String>
+    <s:String x:Key="LblFlatUserCurrentExposureCalculation" xml:space="default">Current Exposure Calculations</s:String>
+    <s:String x:Key="LblFlatUserFlatSettings" xml:space="default">Flat Wizard Settings</s:String>
+    <s:String x:Key="LblFlatUserPromptCancel" xml:space="default">Cancel Flat Wizard</s:String>
+    <s:String x:Key="LblFlatUserPromptFailure" xml:space="default">Failed to get proper Flat Exposure</s:String>
+    <s:String x:Key="LblFlatUserPromptFlatTooBright" xml:space="default">Your flats are too bright, dim the light, adjust the tolerance, target mean or the minimum exposure time</s:String>
+    <s:String x:Key="LblFlatUserPromptFlatTooDim" xml:space="default">Your flats are too dim, brighten the light, adjust the tolerance, target mean or the maximum exposure time</s:String>
+    <s:String x:Key="LblFlatWizard" xml:space="default">Flat Wizard</s:String>
+    <s:String x:Key="LblFlatWizardCapture" xml:space="default">Flat Wizard Capture</s:String>
+    <s:String x:Key="LblFLICameraSetup" xml:space="default">FLI Camera Setup</s:String>
+    <s:String x:Key="LblFLIFloodBin" xml:space="default">Flood Binning</s:String>
+    <s:String x:Key="LblFLIFloodDuration" xml:space="default">Flood Duration</s:String>
+    <s:String x:Key="LblFLIFlushCount" xml:space="default">Pre-exposure Flush Count</s:String>
+    <s:String x:Key="LblFlip" xml:space="default">Do the flip</s:String>
+    <s:String x:Key="LblFlippingScope" xml:space="default">Flipping Scope</s:String>
+    <s:String x:Key="LblFLIPreRBIMitigation" xml:space="default">RBI Mitigation</s:String>
+    <s:String x:Key="LblFLISnapshotFlood" xml:space="default">Flood for snapshots</s:String>
+    <s:String x:Key="LblFocalLength" xml:space="default">Focal Length</s:String>
+    <s:String x:Key="LblFocalRatio" xml:space="default">Focal Ratio</s:String>
+    <s:String x:Key="LblFocuser" xml:space="default">Focuser</s:String>
+    <s:String x:Key="LblFocuserAutoFocusInitialOffsetSteps" xml:space="default">Auto Focus Initial Offset Steps</s:String>
+    <s:String x:Key="LblFocuserAutoFocusInitialOffsetStepsTooltip" xml:space="default">Initial amount of steps the focuser will move out to begin auto focus procedure.</s:String>
+    <s:String x:Key="LblFocuserAutoFocusStepSize" xml:space="default">Auto Focus Step Size</s:String>
+    <s:String x:Key="LblFocuserAutoFocusStepSizeTooltip" xml:space="default">The size of one focus step used for auto focusing. One step should be less than the critical focus point tolerance</s:String>
+    <s:String x:Key="LblFocuserBacklash" xml:space="default">Backlash IN/OUT</s:String>
+    <s:String x:Key="LblFocuserBacklashTooltip" xml:space="default">Inwards and outwards focuser backlash, in focuser steps</s:String>
+    <s:String x:Key="LblFocuserConnected" xml:space="default">Focuser connected</s:String>
+    <s:String x:Key="LblFocuserConnectionLost" xml:space="default">Focuser connection lost! Please reconnect focuser!</s:String>
+    <s:String x:Key="LblFocuserPositionDescription" xml:space="default">Current focuser position</s:String>
+    <s:String x:Key="LblFocuserSettleTime" xml:space="default">Focuser Settle Time</s:String>
+    <s:String x:Key="LblFocuserSettleTimeTooltip" xml:space="default">If the focuser introduces image shift when moving, set a settle time in seconds here.</s:String>
+    <s:String x:Key="LblFocuserTempDescription" xml:space="default">Focuser Temperature</s:String>
+    <s:String x:Key="LblFocuserUseFilterWheelOffsets" xml:space="default">Use FilterWheel Offsets</s:String>
+    <s:String x:Key="LblFocuserUseFilterWheelOffsetsTooltip" xml:space="default">When switching from one filter to another the focuser will change it's position relative to the given offset specified for that filter</s:String>
+    <s:String x:Key="LblFocusOffset" xml:space="default">Focus Offset</s:String>
+    <s:String x:Key="LblFocusPointValidationFailed" xml:space="preserve">Calculated HFR for focus at position {0} differs more than 25% from actual HFR
 Actual HFR : {1}
 Calculated HFR: {2}
     </s:String>
-  <s:String x:Key="LblFolderToWatch" xml:space="default">Folder to watch</s:String>
-  <s:String x:Key="LblFrameNFocus" xml:space="default">Frame &amp; Focus</s:String>
-  <s:String x:Key="LblFrameNrDescription" xml:space="default"># of the Frame with format ####</s:String>
-  <s:String x:Key="LblFraming" xml:space="default">Framing</s:String>
-  <s:String x:Key="LblFramingAssistant" xml:space="default">Framing Assistant</s:String>
-  <s:String x:Key="LblFreeImage" xml:space="default">FreeImage</s:String>
-  <s:String x:Key="LblFrom" xml:space="default">From</s:String>
-  <s:String x:Key="LblFullWellCapacity" xml:space="default">Full Well Capacity in e</s:String>
-  <s:String x:Key="LblGain" xml:space="default">Gain</s:String>
-  <s:String x:Key="LblGainDescription" xml:space="default">Camera Gain</s:String>
-  <s:String x:Key="LblGeneral" xml:space="default">General</s:String>
-  <s:String x:Key="LblGPSConnected" xml:space="default">GPS connected on port</s:String>
-  <s:String x:Key="LblGPSConnectFail" xml:space="default">Cannot Connect to GPS on port</s:String>
-  <s:String x:Key="LblGPSLocationSet" xml:space="default">Location set from GPS</s:String>
-  <s:String x:Key="LblGPSNoFix" xml:space="default">GPS has No Fix</s:String>
-  <s:String x:Key="LblGPSNotFound" xml:space="default">No GPS module detected</s:String>
-  <s:String x:Key="LblGPSTooltip" xml:space="default">Import location using an NMEA GPS device</s:String>
-  <s:String x:Key="LblGuider" xml:space="default">Guider</s:String>
-  <s:String x:Key="LblGuiderConnected" xml:space="default">Guider Connected</s:String>
-  <s:String x:Key="LblGuiderDitherButNotConnected" xml:space="default">Guider Dither is enabled, but application is not connected to Guider</s:String>
-  <s:String x:Key="LblGuiderNoResume" xml:space="default">Guider did not send resume message in time. Sequence will resume, but make sure Guider is guiding again!</s:String>
-  <s:String x:Key="LblGuiderNoSettleDone" xml:space="default">Guider did not send SettleDone message in time. Skipping.</s:String>
-  <s:String x:Key="LblGuiderResumeFailed" xml:space="default">Guider resume failed</s:String>
-  <s:String x:Key="LblGuiderSettings" xml:space="default">Guider Settings</s:String>
-  <s:String x:Key="LblGuiderStatus" xml:space="default">Guider Status</s:String>
-  <s:String x:Key="LblGuidingRMSArcSecDescription" xml:space="default">Root mean square error of guiding during exposure in arc seconds</s:String>
-  <s:String x:Key="LblGuidingRMSDescription" xml:space="default">Root mean square error of guiding during exposure in pixels</s:String>
-  <s:String x:Key="LblHalt" xml:space="default">Halt</s:String>
-  <s:String x:Key="LblHeight" xml:space="default">Height</s:String>
-  <s:String x:Key="LblHemisphere" xml:space="default">Hemisphere</s:String>
-  <s:String x:Key="LblHFR" xml:space="default">HFR</s:String>
-  <s:String x:Key="LblHFRHistory" xml:space="default">HFR History</s:String>
-  <s:String x:Key="LblHFRPatternDescription" xml:space="default">Calculated HFR of image (HFR detection has to be enabled)</s:String>
-  <s:String x:Key="LblHigh" xml:space="default">High</s:String>
-  <s:String x:Key="LblHighest" xml:space="default">Highest</s:String>
-  <s:String x:Key="LblHistogram" xml:space="default">Histogram</s:String>
-  <s:String x:Key="LblHistogramResolution" xml:space="default">Histogram Resolution</s:String>
-  <s:String x:Key="LblHistogramResolutionTooltip" xml:space="default">Specifies the number of data points that should be used for the histogram</s:String>
-  <s:String x:Key="LblHistory" xml:space="default">History</s:String>
-  <s:String x:Key="LblHNSKY" xml:space="default">HNSKY</s:String>
-  <s:String x:Key="LblHorizontalPanels" xml:space="default">Horizontal Panels</s:String>
-  <s:String x:Key="LblHost" xml:space="default">Host</s:String>
-  <s:String x:Key="LblHour" xml:space="default">Hour</s:String>
-  <s:String x:Key="LblHumidity" xml:space="default">Humidity</s:String>
-  <s:String x:Key="LblHyperbolic" xml:space="default">Hyperbolic</s:String>
-  <s:String x:Key="LblId" xml:space="default">Id</s:String>
-  <s:String x:Key="LblIllumination" xml:space="default">Illumination</s:String>
-  <s:String x:Key="LblImage" xml:space="default">Image</s:String>
-  <s:String x:Key="LblImageArea" xml:space="default">Image Area</s:String>
-  <s:String x:Key="LblImageFileError" xml:space="default">Image file error</s:String>
-  <s:String x:Key="LblImageFilePath" xml:space="default">Image File Path</s:String>
-  <s:String x:Key="LblImageFilePattern" xml:space="default">Image File Pattern</s:String>
-  <s:String x:Key="LblImageHistory" xml:space="default">Image History</s:String>
-  <s:String x:Key="LblImageOptions" xml:space="default">Image Options</s:String>
-  <s:String x:Key="LblImageSource" xml:space="default">Image source</s:String>
-  <s:String x:Key="LblImageTypeDescription" xml:space="default">Light, Flat, Dark, Bias, Snapshot</s:String>
-  <s:String x:Key="LblImaging" xml:space="default">Imaging</s:String>
-  <s:String x:Key="LblImportFromFilterWheel" xml:space="default">Import Filters from Filterwheel</s:String>
-  <s:String x:Key="LblIndexFile" xml:space="default">Index File</s:String>
-  <s:String x:Key="LblInfo" xml:space="default">Info</s:String>
-  <s:String x:Key="LblInitiatePlatesolve" xml:space="default">Initiate Platesolve</s:String>
-  <s:String x:Key="LblInvalidMode" xml:space="default">Invalid mode</s:String>
-  <s:String x:Key="LblInvalidModeBulb" xml:space="default">Invalid mode (bulb) for Exposure Time &lt;1s</s:String>
-  <s:String x:Key="LblInvalidModeManual" xml:space="default">Invalid mode (manual) for Exposure Time &gt;30s</s:String>
-  <s:String x:Key="LblIsBayered" xml:space="default">Is Bayered</s:String>
-  <s:String x:Key="LblIsMoving" xml:space="default">Is Moving</s:String>
-  <s:String x:Key="LblIsSettling" xml:space="default">Is Settling</s:String>
-  <s:String x:Key="LblItemsPerPage" xml:space="default">Items per page</s:String>
-  <s:String x:Key="LblJ2000" xml:space="default">J2000</s:String>
-  <s:String x:Key="LblJNOW" xml:space="default">JNOW</s:String>
-  <s:String x:Key="LblLanguage" xml:space="default">Language</s:String>
-  <s:String x:Key="LblLatitude" xml:space="default">Latitude</s:String>
-  <s:String x:Key="LblLayout" xml:space="default">Layout</s:String>
-  <s:String x:Key="LblLblBlackClippingTooltip" xml:space="default">Black clipping factor in sigma units from the median</s:String>
-  <s:String x:Key="LblLoadImage" xml:space="default">Load Image</s:String>
-  <s:String x:Key="LblLoadImageFromFile" xml:space="default">Load Image from File</s:String>
-  <s:String x:Key="LblLoadImageFromFileTooltip" xml:space="default">Download Image from file and use the blindsolver to determine coordinates</s:String>
-  <s:String x:Key="LblLoadProfile" xml:space="default">Load Profile</s:String>
-  <s:String x:Key="LblLoadProfileInUseWarning" xml:space="default">Cannot load profile. It is already in use by another N.I.N.A. instance!</s:String>
-  <s:String x:Key="LblLoadSequence" xml:space="default">Load Sequence</s:String>
-  <s:String x:Key="LblLoadSequenceFailed" xml:space="default">Load sequence failed</s:String>
-  <s:String x:Key="LblLoadSequenceToolTip" xml:space="default">Load Sequence from xml file</s:String>
-  <s:String x:Key="LblLocalPlatesolver" xml:space="default">Local Platesolver</s:String>
-  <s:String x:Key="LblLocation" xml:space="default">Location</s:String>
-  <s:String x:Key="LblLogLevel" xml:space="default">Log Level</s:String>
-  <s:String x:Key="LblLongitude" xml:space="default">Longitude</s:String>
-  <s:String x:Key="LblLoop" xml:space="default">Loop</s:String>
-  <s:String x:Key="LblMAD" xml:space="default">MAD</s:String>
-  <s:String x:Key="LblMagnitude" xml:space="default">Magnitude</s:String>
-  <s:String x:Key="LblManualControl" xml:space="default">Manual Control</s:String>
-  <s:String x:Key="LblManualCoordinates" xml:space="default">Manual Coordinates (J2000)</s:String>
-  <s:String x:Key="LblManualFilterWheel" xml:space="default">Manual Filterwheel</s:String>
-  <s:String x:Key="LblManualFilterWheelDescription" xml:space="default">Mirrors the filters that are set up inside the options. When a filter change is requested a notification will pop up to manually change the filter.</s:String>
-  <s:String x:Key="LblManualFocusTargets" xml:space="default">Manual Focus Targets</s:String>
-  <s:String x:Key="LblManualNotFound" xml:space="default">Manual not found</s:String>
-  <s:String x:Key="LblManualRotator" xml:space="default">Manual Rotator</s:String>
-  <s:String x:Key="LblManualRotatorDescription" xml:space="default">When rotation is requested a notification will pop up to rotate manually</s:String>
-  <s:String x:Key="LblMax" xml:space="default">Max</s:String>
-  <s:String x:Key="LblMaxBinX" xml:space="default">Max Binning X</s:String>
-  <s:String x:Key="LblMaxBinY" xml:space="default">Max Binning Y</s:String>
-  <s:String x:Key="LblMaxExpTime" xml:space="default">Maximum Exposure Time</s:String>
-  <s:String x:Key="LblMaximumExposureTime" xml:space="default">Max recommended time</s:String>
-  <s:String x:Key="LblMaxIncrement" xml:space="default">Max Increment</s:String>
-  <s:String x:Key="LblMaxObjects" xml:space="default">Maximum objects</s:String>
-  <s:String x:Key="LblMaxOptimalADU" xml:space="default">Maximum ADU</s:String>
-  <s:String x:Key="LblMaxStep" xml:space="default">Max Step</s:String>
-  <s:String x:Key="LblMean" xml:space="default">Mean</s:String>
-  <s:String x:Key="LblMeasureFocuserBacklash" xml:space="default">Measure Focuser Backlash</s:String>
-  <s:String x:Key="LblMedian" xml:space="default">Median</s:String>
-  <s:String x:Key="LblMeridianFlipFailed" xml:space="default">Meridian Flip failed</s:String>
-  <s:String x:Key="LblMeridianFlipInit" xml:space="default">Meridian flip procedure initiated</s:String>
-  <s:String x:Key="LblMeridianIn" xml:space="default">Meridian in</s:String>
-  <s:String x:Key="LblMeridianOffset" xml:space="default">Meridian Offset</s:String>
-  <s:String x:Key="LblMin" xml:space="default">Min</s:String>
-  <s:String x:Key="LblMinDuration" xml:space="default">Min. Duration</s:String>
-  <s:String x:Key="LblMinExpTime" xml:space="default">Minimum Exposure Time</s:String>
-  <s:String x:Key="LblMinimumAltitude" xml:space="default">Minimum Altitude</s:String>
-  <s:String x:Key="LblMinimumExposureTime" xml:space="default">Min recommended time</s:String>
-  <s:String x:Key="LblMinimumSettleTime" xml:space="default">Minimum Settle Time</s:String>
-  <s:String x:Key="LblMinOptimalADU" xml:space="default">Minimum ADU</s:String>
-  <s:String x:Key="LblMinutesAfterMeridian" xml:space="default">Minutes after Meridian</s:String>
-  <s:String x:Key="LblMinutesShort" xml:space="default">min</s:String>
-  <s:String x:Key="LblMoonRise" xml:space="default">Moonrise</s:String>
-  <s:String x:Key="LblMoonSet" xml:space="default">Moonset</s:String>
-  <s:String x:Key="LblMove" xml:space="default">Move</s:String>
-  <s:String x:Key="LblName" xml:space="default">Name</s:String>
-  <s:String x:Key="LblNASASkySurvey" xml:space="default">NASA Sky Survey</s:String>
-  <s:String x:Key="LblNative" xml:space="default">Native</s:String>
-  <s:String x:Key="LblNewUpdateAvailable" xml:space="default">New update is available ({0})! Do you want to update now?</s:String>
-  <s:String x:Key="LblNightly" xml:space="default">Nightly</s:String>
-  <s:String x:Key="LblNikonNotFound" xml:space="default">No Nikon camera could be found</s:String>
-  <s:String x:Key="LblNINA" xml:space="default">NINA</s:String>
-  <s:String x:Key="LblNINAToTelescope" xml:space="default">NINA to Telescope</s:String>
-  <s:String x:Key="LblNo" xml:space="default">No</s:String>
-  <s:String x:Key="LblNoCamera" xml:space="default">No Camera</s:String>
-  <s:String x:Key="LblNoCameraConnected" xml:space="default">No camera connected</s:String>
-  <s:String x:Key="LblNoCoordinates" xml:space="default">No coordinates available</s:String>
-  <s:String x:Key="LblNoCoordinatesForSync" xml:space="default">No coordinates available to sync telescope to</s:String>
-  <s:String x:Key="LblNoFilterwheel" xml:space="default">No Filterwheel</s:String>
-  <s:String x:Key="LblNoFocuser" xml:space="default">No Focuser</s:String>
-  <s:String x:Key="LblNoImage" xml:space="default">No Image available</s:String>
-  <s:String x:Key="LblNoiseReduction" xml:space="default">Noise Reduction</s:String>
-  <s:String x:Key="LblNoiseReductionTooltip" xml:space="default">Noise Reduction applied prior to star detection. This may help with noisy images and short exposures.</s:String>
-  <s:String x:Key="LblNone" xml:space="default">None</s:String>
-  <s:String x:Key="LblNormal" xml:space="default">Normal</s:String>
-  <s:String x:Key="LblNoRotator" xml:space="default">No Rotator</s:String>
-  <s:String x:Key="LblNorthern" xml:space="default">Northern</s:String>
-  <s:String x:Key="LblNoSwitch" xml:space="default">No Switch</s:String>
-  <s:String x:Key="LblNoTelescope" xml:space="default">No Telescope</s:String>
-  <s:String x:Key="LblNotificationError" xml:space="default">Notification Error</s:String>
-  <s:String x:Key="LblNotificationErrorText" xml:space="default">Error Text</s:String>
-  <s:String x:Key="LblNotificationWarning" xml:space="default">Notification Warning</s:String>
-  <s:String x:Key="LblNotificationWarningText" xml:space="default">Warning Text</s:String>
-  <s:String x:Key="LblNow" xml:space="default">Now</s:String>
-  <s:String x:Key="LblNrStars" xml:space="default">#Stars</s:String>
-  <s:String x:Key="LblObjectNameHint" xml:space="default">Object name (e.g. M 31)</s:String>
-  <s:String x:Key="LblObjectType" xml:space="default">Object Type</s:String>
-  <s:String x:Key="LblObjectType_1STAR" xml:space="default">1 Star</s:String>
-  <s:String x:Key="LblObjectType_2STAR" xml:space="default">2 Stars</s:String>
-  <s:String x:Key="LblObjectType_3STAR" xml:space="default">3 Stars</s:String>
-  <s:String x:Key="LblObjectType_4STAR" xml:space="default">4 Stars</s:String>
-  <s:String x:Key="LblObjectType_8STAR" xml:space="default">8 Stars</s:String>
-  <s:String x:Key="LblObjectType_ASTER" xml:space="default">Asterism</s:String>
-  <s:String x:Key="LblObjectType_BRTNB" xml:space="default">Bright Nebula</s:String>
-  <s:String x:Key="LblObjectType_CL+NB" xml:space="default">Cluster with Nebulosity</s:String>
-  <s:String x:Key="LblObjectType_DRKNB" xml:space="default">Dark Nebula</s:String>
-  <s:String x:Key="LblObjectType_G+C+N" xml:space="default">Cluster with Nebulosity in a Galaxy</s:String>
-  <s:String x:Key="LblObjectType_GALCL" xml:space="default">Galaxy cluster</s:String>
-  <s:String x:Key="LblObjectType_GALXY" xml:space="default">Galaxy</s:String>
-  <s:String x:Key="LblObjectType_GLOCL" xml:space="default">Globular Cluster</s:String>
-  <s:String x:Key="LblObjectType_GX+DN" xml:space="default">Diffuse Nebula in a Galaxy</s:String>
-  <s:String x:Key="LblObjectType_GX+GC" xml:space="default">Globular Cluster in a Galaxy</s:String>
-  <s:String x:Key="LblObjectType_LMCCN" xml:space="default">Cluster with Nebulosity in the LMC</s:String>
-  <s:String x:Key="LblObjectType_LMCDN" xml:space="default">Diffuse Nebula in the LMC</s:String>
-  <s:String x:Key="LblObjectType_LMCGC" xml:space="default">Globular Cluster in the LMC</s:String>
-  <s:String x:Key="LblObjectType_LMCOC" xml:space="default">Open cluster in the LMC</s:String>
-  <s:String x:Key="LblObjectType_NONEX" xml:space="default">Nonexistent</s:String>
-  <s:String x:Key="LblObjectType_OPNCL" xml:space="default">Open Cluster</s:String>
-  <s:String x:Key="LblObjectType_PLNNB" xml:space="default">Planetary Nebula</s:String>
-  <s:String x:Key="LblObjectType_QUASR" xml:space="default">Quasar</s:String>
-  <s:String x:Key="LblObjectType_SMCCN" xml:space="default">Cluster with Nebulosity in the SMC</s:String>
-  <s:String x:Key="LblObjectType_SMCDN" xml:space="default">Diffuse Nebula in the SMC</s:String>
-  <s:String x:Key="LblObjectType_SMCGC" xml:space="default">Globular Cluster in the SMC</s:String>
-  <s:String x:Key="LblObjectType_SMCOC" xml:space="default">Open cluster in the SMC</s:String>
-  <s:String x:Key="LblObjectType_SNREM" xml:space="default">Supernova Remnant</s:String>
-  <s:String x:Key="LblOf" xml:space="default">Of</s:String>
-  <s:String x:Key="LblOff" xml:space="default">Off</s:String>
-  <s:String x:Key="LblOffset" xml:space="default">Offset</s:String>
-  <s:String x:Key="LblOffsetDescription" xml:space="default">Camera Offset</s:String>
-  <s:String x:Key="LblOK" xml:space="default">OK</s:String>
-  <s:String x:Key="LblOn" xml:space="default">On</s:String>
-  <s:String x:Key="LblOneToOne" xml:space="default">Scale Image to 1:1</s:String>
-  <s:String x:Key="LblOpacity" xml:space="default">Opacity</s:String>
-  <s:String x:Key="LblOpenManual" xml:space="default">Open Manual</s:String>
-  <s:String x:Key="LblOpenWeatherMapAPIKey" xml:space="default">OpenWeatherMap API Key</s:String>
-  <s:String x:Key="LblOpenWeatherMapClientDescription" xml:space="default">Uses OpenWeatherMap's Current Weather API. Weather data is refreshed every 10 minutes.</s:String>
-  <s:String x:Key="LblOpenWeatherMapClientInfo" xml:space="default">NINA internal OpenWeatherMap API client</s:String>
-  <s:String x:Key="LblOptimalExposureTime" xml:space="default">Optimal exposure time</s:String>
-  <s:String x:Key="LblOptions" xml:space="default">Options</s:String>
-  <s:String x:Key="LblOrderBy" xml:space="default">Order by</s:String>
-  <s:String x:Key="LblOrientation" xml:space="default">Orientation</s:String>
-  <s:String x:Key="LblOverlapPercentage" xml:space="default">Overlap percentage</s:String>
-  <s:String x:Key="LblPanel" xml:space="default">Panel</s:String>
-  <s:String x:Key="LblParabolic" xml:space="default">Parabolic</s:String>
-  <s:String x:Key="LblPark" xml:space="default">Park</s:String>
-  <s:String x:Key="LblParkEnabledButTelescopeCannotPark" xml:space="default">Telescope is set to park at sequence end, yet it is unable to do so</s:String>
-  <s:String x:Key="LblParkEnabledButTelescopeNotConnected" xml:space="default">Telescope is set to park at sequence end, yet it is not connected</s:String>
-  <s:String x:Key="LblParkMountAtSequenceEnd" xml:space="default">Park mount when sequence ends</s:String>
-  <s:String x:Key="LblPassMeridian" xml:space="default">Pass Meridian</s:String>
-  <s:String x:Key="LblPatternName" xml:space="default">Pattern Name</s:String>
-  <s:String x:Key="LblPaused" xml:space="default">Paused</s:String>
-  <s:String x:Key="LblPauseTimeBeforeMeridian" xml:space="default">Pause before Meridian (minutes)</s:String>
-  <s:String x:Key="LblPercentShort" xml:space="default">%</s:String>
-  <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0} ({1}")</s:String>
-  <s:String x:Key="LblPhd2FailedEquipmentConnection" xml:space="default">PHD2 wasn't able to connect to the equipment</s:String>
-  <s:String x:Key="LblPHD2HistorySize" xml:space="default">PHD2 History Size</s:String>
-  <s:String x:Key="LblPHD2MinimalHistorySize" xml:space="default">PHD2 History Size (Imaging)</s:String>
-  <s:String x:Key="LblPHD2Path" xml:space="default">PHD2 path</s:String>
-  <s:String x:Key="LblPhd2PathNotFound" xml:space="default">Could not start PHD2. Path not found</s:String>
-  <s:String x:Key="LblPHD2RARMS" xml:space="default">RA: {0} ({1}")</s:String>
-  <s:String x:Key="LblPhd2ServerConnectionLost" xml:space="default">PHD2 Server Connection lost!</s:String>
-  <s:String x:Key="LblPHD2ServerPort" xml:space="default">PHD2 Server Port</s:String>
-  <s:String x:Key="LblPHD2ServerUrl" xml:space="default">PHD2 Server Url</s:String>
-  <s:String x:Key="LblPHD2Settings" xml:space="default">PHD2 Settings</s:String>
-  <s:String x:Key="LblPhd2StartProcessError" xml:space="default">Could not start PHD2. Check logs for details.</s:String>
-  <s:String x:Key="LblPhd2SynchronizedServiceClientConnected" xml:space="default">
+    <s:String x:Key="LblFolderToWatch" xml:space="default">Folder to watch</s:String>
+    <s:String x:Key="LblFrameNFocus" xml:space="default">Frame &amp; Focus</s:String>
+    <s:String x:Key="LblFrameNrDescription" xml:space="default"># of the Frame with format ####</s:String>
+    <s:String x:Key="LblFraming" xml:space="default">Framing</s:String>
+    <s:String x:Key="LblFramingAssistant" xml:space="default">Framing Assistant</s:String>
+    <s:String x:Key="LblFreeImage" xml:space="default">FreeImage</s:String>
+    <s:String x:Key="LblFrom" xml:space="default">From</s:String>
+    <s:String x:Key="LblFullWellCapacity" xml:space="default">Full Well Capacity in e</s:String>
+    <s:String x:Key="LblGain" xml:space="default">Gain</s:String>
+    <s:String x:Key="LblGainDescription" xml:space="default">Camera Gain</s:String>
+    <s:String x:Key="LblGeneral" xml:space="default">General</s:String>
+    <s:String x:Key="LblGPSConnected" xml:space="default">GPS connected on port</s:String>
+    <s:String x:Key="LblGPSConnectFail" xml:space="default">Cannot Connect to GPS on port</s:String>
+    <s:String x:Key="LblGPSLocationSet" xml:space="default">Location set from GPS</s:String>
+    <s:String x:Key="LblGPSNoFix" xml:space="default">GPS has No Fix</s:String>
+    <s:String x:Key="LblGPSNotFound" xml:space="default">No GPS module detected</s:String>
+    <s:String x:Key="LblGPSTooltip" xml:space="default">Import location using an NMEA GPS device</s:String>
+    <s:String x:Key="LblGuider" xml:space="default">Guider</s:String>
+    <s:String x:Key="LblGuiderConnected" xml:space="default">Guider Connected</s:String>
+    <s:String x:Key="LblGuiderDitherButNotConnected" xml:space="default">Guider Dither is enabled, but application is not connected to Guider</s:String>
+    <s:String x:Key="LblGuiderNoResume" xml:space="default">Guider did not send resume message in time. Sequence will resume, but make sure Guider is guiding again!</s:String>
+    <s:String x:Key="LblGuiderNoSettleDone" xml:space="default">Guider did not send SettleDone message in time. Skipping.</s:String>
+    <s:String x:Key="LblGuiderResumeFailed" xml:space="default">Guider resume failed</s:String>
+    <s:String x:Key="LblGuiderSettings" xml:space="default">Guider Settings</s:String>
+    <s:String x:Key="LblGuiderStatus" xml:space="default">Guider Status</s:String>
+    <s:String x:Key="LblGuidingRMSArcSecDescription" xml:space="default">Root mean square error of guiding during exposure in arc seconds</s:String>
+    <s:String x:Key="LblGuidingRMSDescription" xml:space="default">Root mean square error of guiding during exposure in pixels</s:String>
+    <s:String x:Key="LblHalt" xml:space="default">Halt</s:String>
+    <s:String x:Key="LblHeight" xml:space="default">Height</s:String>
+    <s:String x:Key="LblHemisphere" xml:space="default">Hemisphere</s:String>
+    <s:String x:Key="LblHFR" xml:space="default">HFR</s:String>
+    <s:String x:Key="LblHFRHistory" xml:space="default">HFR History</s:String>
+    <s:String x:Key="LblHFRPatternDescription" xml:space="default">Calculated HFR of image (HFR detection has to be enabled)</s:String>
+    <s:String x:Key="LblHigh" xml:space="default">High</s:String>
+    <s:String x:Key="LblHighest" xml:space="default">Highest</s:String>
+    <s:String x:Key="LblHistogram" xml:space="default">Histogram</s:String>
+    <s:String x:Key="LblHistogramResolution" xml:space="default">Histogram Resolution</s:String>
+    <s:String x:Key="LblHistogramResolutionTooltip" xml:space="default">Specifies the number of data points that should be used for the histogram</s:String>
+    <s:String x:Key="LblHistory" xml:space="default">History</s:String>
+    <s:String x:Key="LblHNSKY" xml:space="default">HNSKY</s:String>
+    <s:String x:Key="LblHorizontalPanels" xml:space="default">Horizontal Panels</s:String>
+    <s:String x:Key="LblHost" xml:space="default">Host</s:String>
+    <s:String x:Key="LblHour" xml:space="default">Hour</s:String>
+    <s:String x:Key="LblHumidity" xml:space="default">Humidity</s:String>
+    <s:String x:Key="LblHyperbolic" xml:space="default">Hyperbolic</s:String>
+    <s:String x:Key="LblId" xml:space="default">Id</s:String>
+    <s:String x:Key="LblIllumination" xml:space="default">Illumination</s:String>
+    <s:String x:Key="LblImage" xml:space="default">Image</s:String>
+    <s:String x:Key="LblImageArea" xml:space="default">Image Area</s:String>
+    <s:String x:Key="LblImageFileError" xml:space="default">Image file error</s:String>
+    <s:String x:Key="LblImageFilePath" xml:space="default">Image File Path</s:String>
+    <s:String x:Key="LblImageFilePattern" xml:space="default">Image File Pattern</s:String>
+    <s:String x:Key="LblImageHistory" xml:space="default">Image History</s:String>
+    <s:String x:Key="LblImageOptions" xml:space="default">Image Options</s:String>
+    <s:String x:Key="LblImageSource" xml:space="default">Image source</s:String>
+    <s:String x:Key="LblImageTypeDescription" xml:space="default">Light, Flat, Dark, Bias, Snapshot</s:String>
+    <s:String x:Key="LblImaging" xml:space="default">Imaging</s:String>
+    <s:String x:Key="LblImportFromFilterWheel" xml:space="default">Import Filters from Filterwheel</s:String>
+    <s:String x:Key="LblIndexFile" xml:space="default">Index File</s:String>
+    <s:String x:Key="LblInfo" xml:space="default">Info</s:String>
+    <s:String x:Key="LblInitiatePlatesolve" xml:space="default">Initiate Platesolve</s:String>
+    <s:String x:Key="LblInvalidMode" xml:space="default">Invalid mode</s:String>
+    <s:String x:Key="LblInvalidModeBulb" xml:space="default">Invalid mode (bulb) for Exposure Time &lt;1s</s:String>
+    <s:String x:Key="LblInvalidModeManual" xml:space="default">Invalid mode (manual) for Exposure Time &gt;30s</s:String>
+    <s:String x:Key="LblIsBayered" xml:space="default">Is Bayered</s:String>
+    <s:String x:Key="LblIsMoving" xml:space="default">Is Moving</s:String>
+    <s:String x:Key="LblIsSettling" xml:space="default">Is Settling</s:String>
+    <s:String x:Key="LblItemsPerPage" xml:space="default">Items per page</s:String>
+    <s:String x:Key="LblJ2000" xml:space="default">J2000</s:String>
+    <s:String x:Key="LblJNOW" xml:space="default">JNOW</s:String>
+    <s:String x:Key="LblLanguage" xml:space="default">Language</s:String>
+    <s:String x:Key="LblLatitude" xml:space="default">Latitude</s:String>
+    <s:String x:Key="LblLayout" xml:space="default">Layout</s:String>
+    <s:String x:Key="LblLblBlackClippingTooltip" xml:space="default">Black clipping factor in sigma units from the median</s:String>
+    <s:String x:Key="LblLoadImage" xml:space="default">Load Image</s:String>
+    <s:String x:Key="LblLoadImageFromFile" xml:space="default">Load Image from File</s:String>
+    <s:String x:Key="LblLoadImageFromFileTooltip" xml:space="default">Download Image from file and use the blindsolver to determine coordinates</s:String>
+    <s:String x:Key="LblLoadProfile" xml:space="default">Load Profile</s:String>
+    <s:String x:Key="LblLoadProfileInUseWarning" xml:space="default">Cannot load profile. It is already in use by another N.I.N.A. instance!</s:String>
+    <s:String x:Key="LblLoadSequence" xml:space="default">Load Sequence</s:String>
+    <s:String x:Key="LblLoadSequenceFailed" xml:space="default">Load sequence failed</s:String>
+    <s:String x:Key="LblLoadSequenceToolTip" xml:space="default">Load Sequence from xml file</s:String>
+    <s:String x:Key="LblLocalPlatesolver" xml:space="default">Local Platesolver</s:String>
+    <s:String x:Key="LblLocation" xml:space="default">Location</s:String>
+    <s:String x:Key="LblLogLevel" xml:space="default">Log Level</s:String>
+    <s:String x:Key="LblLongitude" xml:space="default">Longitude</s:String>
+    <s:String x:Key="LblLoop" xml:space="default">Loop</s:String>
+    <s:String x:Key="LblMAD" xml:space="default">MAD</s:String>
+    <s:String x:Key="LblMagnitude" xml:space="default">Magnitude</s:String>
+    <s:String x:Key="LblManualControl" xml:space="default">Manual Control</s:String>
+    <s:String x:Key="LblManualCoordinates" xml:space="default">Manual Coordinates (J2000)</s:String>
+    <s:String x:Key="LblManualFilterWheel" xml:space="default">Manual Filterwheel</s:String>
+    <s:String x:Key="LblManualFilterWheelDescription" xml:space="default">Mirrors the filters that are set up inside the options. When a filter change is requested a notification will pop up to manually change the filter.</s:String>
+    <s:String x:Key="LblManualFocusTargets" xml:space="default">Manual Focus Targets</s:String>
+    <s:String x:Key="LblManualNotFound" xml:space="default">Manual not found</s:String>
+    <s:String x:Key="LblManualRotator" xml:space="default">Manual Rotator</s:String>
+    <s:String x:Key="LblManualRotatorDescription" xml:space="default">When rotation is requested a notification will pop up to rotate manually</s:String>
+    <s:String x:Key="LblMax" xml:space="default">Max</s:String>
+    <s:String x:Key="LblMaxBinX" xml:space="default">Max Binning X</s:String>
+    <s:String x:Key="LblMaxBinY" xml:space="default">Max Binning Y</s:String>
+    <s:String x:Key="LblMaxExpTime" xml:space="default">Maximum Exposure Time</s:String>
+    <s:String x:Key="LblMaximumExposureTime" xml:space="default">Max recommended time</s:String>
+    <s:String x:Key="LblMaxIncrement" xml:space="default">Max Increment</s:String>
+    <s:String x:Key="LblMaxObjects" xml:space="default">Maximum objects</s:String>
+    <s:String x:Key="LblMaxOptimalADU" xml:space="default">Maximum ADU</s:String>
+    <s:String x:Key="LblMaxStep" xml:space="default">Max Step</s:String>
+    <s:String x:Key="LblMean" xml:space="default">Mean</s:String>
+    <s:String x:Key="LblMeasureFocuserBacklash" xml:space="default">Measure Focuser Backlash</s:String>
+    <s:String x:Key="LblMedian" xml:space="default">Median</s:String>
+    <s:String x:Key="LblMeridianFlipFailed" xml:space="default">Meridian Flip failed</s:String>
+    <s:String x:Key="LblMeridianFlipInit" xml:space="default">Meridian flip procedure initiated</s:String>
+    <s:String x:Key="LblMeridianIn" xml:space="default">Meridian in</s:String>
+    <s:String x:Key="LblMeridianOffset" xml:space="default">Meridian Offset</s:String>
+    <s:String x:Key="LblMin" xml:space="default">Min</s:String>
+    <s:String x:Key="LblMinDuration" xml:space="default">Min. Duration</s:String>
+    <s:String x:Key="LblMinExpTime" xml:space="default">Minimum Exposure Time</s:String>
+    <s:String x:Key="LblMinimumAltitude" xml:space="default">Minimum Altitude</s:String>
+    <s:String x:Key="LblMinimumExposureTime" xml:space="default">Min recommended time</s:String>
+    <s:String x:Key="LblMinimumSettleTime" xml:space="default">Minimum Settle Time</s:String>
+    <s:String x:Key="LblMinOptimalADU" xml:space="default">Minimum ADU</s:String>
+    <s:String x:Key="LblMinutesAfterMeridian" xml:space="default">Minutes after Meridian</s:String>
+    <s:String x:Key="LblMinutesShort" xml:space="default">min</s:String>
+    <s:String x:Key="LblMoonRise" xml:space="default">Moonrise</s:String>
+    <s:String x:Key="LblMoonSet" xml:space="default">Moonset</s:String>
+    <s:String x:Key="LblMove" xml:space="default">Move</s:String>
+    <s:String x:Key="LblName" xml:space="default">Name</s:String>
+    <s:String x:Key="LblNASASkySurvey" xml:space="default">NASA Sky Survey</s:String>
+    <s:String x:Key="LblNative" xml:space="default">Native</s:String>
+    <s:String x:Key="LblNewUpdateAvailable" xml:space="default">New update is available ({0})! Do you want to update now?</s:String>
+    <s:String x:Key="LblNightly" xml:space="default">Nightly</s:String>
+    <s:String x:Key="LblNikonNotFound" xml:space="default">No Nikon camera could be found</s:String>
+    <s:String x:Key="LblNINA" xml:space="default">NINA</s:String>
+    <s:String x:Key="LblNINAToTelescope" xml:space="default">NINA to Telescope</s:String>
+    <s:String x:Key="LblNo" xml:space="default">No</s:String>
+    <s:String x:Key="LblNoCamera" xml:space="default">No Camera</s:String>
+    <s:String x:Key="LblNoCameraConnected" xml:space="default">No camera connected</s:String>
+    <s:String x:Key="LblNoCoordinates" xml:space="default">No coordinates available</s:String>
+    <s:String x:Key="LblNoCoordinatesForSync" xml:space="default">No coordinates available to sync telescope to</s:String>
+    <s:String x:Key="LblNoFilterwheel" xml:space="default">No Filterwheel</s:String>
+    <s:String x:Key="LblNoFocuser" xml:space="default">No Focuser</s:String>
+    <s:String x:Key="LblNoImage" xml:space="default">No Image available</s:String>
+    <s:String x:Key="LblNoiseReduction" xml:space="default">Noise Reduction</s:String>
+    <s:String x:Key="LblNoiseReductionTooltip" xml:space="default">Noise Reduction applied prior to star detection. This may help with noisy images and short exposures.</s:String>
+    <s:String x:Key="LblNone" xml:space="default">None</s:String>
+    <s:String x:Key="LblNormal" xml:space="default">Normal</s:String>
+    <s:String x:Key="LblNoRotator" xml:space="default">No Rotator</s:String>
+    <s:String x:Key="LblNorthern" xml:space="default">Northern</s:String>
+    <s:String x:Key="LblNoSwitch" xml:space="default">No Switch</s:String>
+    <s:String x:Key="LblNoTelescope" xml:space="default">No Telescope</s:String>
+    <s:String x:Key="LblNotificationError" xml:space="default">Notification Error</s:String>
+    <s:String x:Key="LblNotificationErrorText" xml:space="default">Error Text</s:String>
+    <s:String x:Key="LblNotificationWarning" xml:space="default">Notification Warning</s:String>
+    <s:String x:Key="LblNotificationWarningText" xml:space="default">Warning Text</s:String>
+    <s:String x:Key="LblNow" xml:space="default">Now</s:String>
+    <s:String x:Key="LblNrStars" xml:space="default">#Stars</s:String>
+    <s:String x:Key="LblObjectNameHint" xml:space="default">Object name (e.g. M 31)</s:String>
+    <s:String x:Key="LblObjectType" xml:space="default">Object Type</s:String>
+    <s:String x:Key="LblObjectType_1STAR" xml:space="default">1 Star</s:String>
+    <s:String x:Key="LblObjectType_2STAR" xml:space="default">2 Stars</s:String>
+    <s:String x:Key="LblObjectType_3STAR" xml:space="default">3 Stars</s:String>
+    <s:String x:Key="LblObjectType_4STAR" xml:space="default">4 Stars</s:String>
+    <s:String x:Key="LblObjectType_8STAR" xml:space="default">8 Stars</s:String>
+    <s:String x:Key="LblObjectType_ASTER" xml:space="default">Asterism</s:String>
+    <s:String x:Key="LblObjectType_BRTNB" xml:space="default">Bright Nebula</s:String>
+    <s:String x:Key="LblObjectType_CL+NB" xml:space="default">Cluster with Nebulosity</s:String>
+    <s:String x:Key="LblObjectType_DRKNB" xml:space="default">Dark Nebula</s:String>
+    <s:String x:Key="LblObjectType_G+C+N" xml:space="default">Cluster with Nebulosity in a Galaxy</s:String>
+    <s:String x:Key="LblObjectType_GALCL" xml:space="default">Galaxy cluster</s:String>
+    <s:String x:Key="LblObjectType_GALXY" xml:space="default">Galaxy</s:String>
+    <s:String x:Key="LblObjectType_GLOCL" xml:space="default">Globular Cluster</s:String>
+    <s:String x:Key="LblObjectType_GX+DN" xml:space="default">Diffuse Nebula in a Galaxy</s:String>
+    <s:String x:Key="LblObjectType_GX+GC" xml:space="default">Globular Cluster in a Galaxy</s:String>
+    <s:String x:Key="LblObjectType_LMCCN" xml:space="default">Cluster with Nebulosity in the LMC</s:String>
+    <s:String x:Key="LblObjectType_LMCDN" xml:space="default">Diffuse Nebula in the LMC</s:String>
+    <s:String x:Key="LblObjectType_LMCGC" xml:space="default">Globular Cluster in the LMC</s:String>
+    <s:String x:Key="LblObjectType_LMCOC" xml:space="default">Open cluster in the LMC</s:String>
+    <s:String x:Key="LblObjectType_NONEX" xml:space="default">Nonexistent</s:String>
+    <s:String x:Key="LblObjectType_OPNCL" xml:space="default">Open Cluster</s:String>
+    <s:String x:Key="LblObjectType_PLNNB" xml:space="default">Planetary Nebula</s:String>
+    <s:String x:Key="LblObjectType_QUASR" xml:space="default">Quasar</s:String>
+    <s:String x:Key="LblObjectType_SMCCN" xml:space="default">Cluster with Nebulosity in the SMC</s:String>
+    <s:String x:Key="LblObjectType_SMCDN" xml:space="default">Diffuse Nebula in the SMC</s:String>
+    <s:String x:Key="LblObjectType_SMCGC" xml:space="default">Globular Cluster in the SMC</s:String>
+    <s:String x:Key="LblObjectType_SMCOC" xml:space="default">Open cluster in the SMC</s:String>
+    <s:String x:Key="LblObjectType_SNREM" xml:space="default">Supernova Remnant</s:String>
+    <s:String x:Key="LblOf" xml:space="default">Of</s:String>
+    <s:String x:Key="LblOff" xml:space="default">Off</s:String>
+    <s:String x:Key="LblOffset" xml:space="default">Offset</s:String>
+    <s:String x:Key="LblOffsetDescription" xml:space="default">Camera Offset</s:String>
+    <s:String x:Key="LblOK" xml:space="default">OK</s:String>
+    <s:String x:Key="LblOn" xml:space="default">On</s:String>
+    <s:String x:Key="LblOneToOne" xml:space="default">Scale Image to 1:1</s:String>
+    <s:String x:Key="LblOpacity" xml:space="default">Opacity</s:String>
+    <s:String x:Key="LblOpenManual" xml:space="default">Open Manual</s:String>
+    <s:String x:Key="LblOpenWeatherMapAPIKey" xml:space="default">OpenWeatherMap API Key</s:String>
+    <s:String x:Key="LblOpenWeatherMapClientDescription" xml:space="default">Uses OpenWeatherMap's Current Weather API. Weather data is refreshed every 10 minutes.</s:String>
+    <s:String x:Key="LblOpenWeatherMapClientInfo" xml:space="default">NINA internal OpenWeatherMap API client</s:String>
+    <s:String x:Key="LblOptimalExposureTime" xml:space="default">Optimal exposure time</s:String>
+    <s:String x:Key="LblOptions" xml:space="default">Options</s:String>
+    <s:String x:Key="LblOrderBy" xml:space="default">Order by</s:String>
+    <s:String x:Key="LblOrientation" xml:space="default">Orientation</s:String>
+    <s:String x:Key="LblOverlapPercentage" xml:space="default">Overlap percentage</s:String>
+    <s:String x:Key="LblPanel" xml:space="default">Panel</s:String>
+    <s:String x:Key="LblParabolic" xml:space="default">Parabolic</s:String>
+    <s:String x:Key="LblPark" xml:space="default">Park</s:String>
+    <s:String x:Key="LblParkEnabledButTelescopeCannotPark" xml:space="default">Telescope is set to park at sequence end, yet it is unable to do so</s:String>
+    <s:String x:Key="LblParkEnabledButTelescopeNotConnected" xml:space="default">Telescope is set to park at sequence end, yet it is not connected</s:String>
+    <s:String x:Key="LblParkMountAtSequenceEnd" xml:space="default">Park mount when sequence ends</s:String>
+    <s:String x:Key="LblPassMeridian" xml:space="default">Pass Meridian</s:String>
+    <s:String x:Key="LblPatternName" xml:space="default">Pattern Name</s:String>
+    <s:String x:Key="LblPaused" xml:space="default">Paused</s:String>
+    <s:String x:Key="LblPauseTimeBeforeMeridian" xml:space="default">Pause before Meridian (minutes)</s:String>
+    <s:String x:Key="LblPercentShort" xml:space="default">%</s:String>
+    <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0} ({1}")</s:String>
+    <s:String x:Key="LblPhd2FailedEquipmentConnection" xml:space="default">PHD2 wasn't able to connect to the equipment</s:String>
+    <s:String x:Key="LblPHD2HistorySize" xml:space="default">PHD2 History Size</s:String>
+    <s:String x:Key="LblPHD2MinimalHistorySize" xml:space="default">PHD2 History Size (Imaging)</s:String>
+    <s:String x:Key="LblPHD2Path" xml:space="default">PHD2 path</s:String>
+    <s:String x:Key="LblPhd2PathNotFound" xml:space="default">Could not start PHD2. Path not found</s:String>
+    <s:String x:Key="LblPHD2RARMS" xml:space="default">RA: {0} ({1}")</s:String>
+    <s:String x:Key="LblPhd2ServerConnectionLost" xml:space="default">PHD2 Server Connection lost!</s:String>
+    <s:String x:Key="LblPHD2ServerPort" xml:space="default">PHD2 Server Port</s:String>
+    <s:String x:Key="LblPHD2ServerUrl" xml:space="default">PHD2 Server Url</s:String>
+    <s:String x:Key="LblPHD2Settings" xml:space="default">PHD2 Settings</s:String>
+    <s:String x:Key="LblPhd2StartProcessError" xml:space="default">Could not start PHD2. Check logs for details.</s:String>
+    <s:String x:Key="LblPhd2SynchronizedServiceClientConnected" xml:space="default">
         Client connected to synchronized PHD2 service.
         Connected clients: {0}
     </s:String>
-  <s:String x:Key="LblPhd2SynchronizedServiceClientDisconnected" xml:space="default">
+    <s:String x:Key="LblPhd2SynchronizedServiceClientDisconnected" xml:space="default">
         Client disconnected to synchronized PHD2 service.
         Connected clients: {0}
     </s:String>
-  <s:String x:Key="LblPhd2SynchronizedServiceStarted" xml:space="default">Synchronized PHD2 service started</s:String>
-  <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0} ({1}")</s:String>
-  <s:String x:Key="LblPixels" xml:space="default">Pixels</s:String>
-  <s:String x:Key="LblPixelScale" xml:space="default">Pixel Scale</s:String>
-  <s:String x:Key="LblPixelSize" xml:space="default">Pixel Size</s:String>
-  <s:String x:Key="LblPixelSizeX" xml:space="default">Pixel Size X</s:String>
-  <s:String x:Key="LblPixelSizeY" xml:space="default">Pixel Size Y</s:String>
-  <s:String x:Key="LblPlanetarium" xml:space="default">Planetarium</s:String>
-  <s:String x:Key="LblPlanetariumCoordsError" xml:space="default">Unable to acquire coordinates from {0}</s:String>
-  <s:String x:Key="LblPlanetariumCoordsOk" xml:space="default">Coordinates acquired from {0}</s:String>
-  <s:String x:Key="LblPlanetariumPrefs" xml:space="default">Planetarium Preferences</s:String>
-  <s:String x:Key="LblPlanetariumTooltip" xml:space="default">Get coordinates from the Planetarium Software</s:String>
-  <s:String x:Key="LblPlatesolve2" xml:space="default">Platesolve2</s:String>
-  <s:String x:Key="LblPlatesolve2Directory" xml:space="default">Platesolve2 Location</s:String>
-  <s:String x:Key="LblPlatesolve2NoCoordinates" xml:space="default">No coordinates available. Platesolve2 requires coordinates to solve!</s:String>
-  <s:String x:Key="LblPlatesolve2NotFound" xml:space="default">Platesolve2 exe not found</s:String>
-  <s:String x:Key="LblPlateSolvedPolarAlignment" xml:space="default">Plate Solved Polar Alignment</s:String>
-  <s:String x:Key="LblPlateSolveEnding" xml:space="default">PlateSolve reached maximum number of attempts, or Meridian Flip necessary.</s:String>
-  <s:String x:Key="LblPlatesolveFailed" xml:space="default">Platesolve failed</s:String>
-  <s:String x:Key="LblPlateSolveFailedDelay" xml:space="default">Delay between attempts</s:String>
-  <s:String x:Key="LblPlateSolveFailedDelayTooltip" xml:space="default">Delay, in minutes, between two plate solve attempts</s:String>
-  <s:String x:Key="LblPlateSolveImage" xml:space="default">Plate solve current image</s:String>
-  <s:String x:Key="LblPlateSolveNbOfAttempts" xml:space="default">Number of Attempts</s:String>
-  <s:String x:Key="LblPlateSolveNbOfAttemptsTooltip" xml:space="default">How many times a mid-sequence platesolve operation will attempt until considered failed</s:String>
-  <s:String x:Key="LblPlatesolveNoCoordinates" xml:space="default">No reference coordinates available</s:String>
-  <s:String x:Key="LblPlatesolveProvidedBy" xml:space="default">Platesolve service provided by</s:String>
-  <s:String x:Key="LblPlateSolver" xml:space="default">Plate Solver</s:String>
-  <s:String x:Key="LblPlateSolveReattemptDelay" xml:space="default">Waiting for next plate solve attempt: {0}</s:String>
-  <s:String x:Key="LblPlateSolveSettings" xml:space="default">Plate Solver Settings</s:String>
-  <s:String x:Key="LblPlateSolving" xml:space="default">Plate Solving</s:String>
-  <s:String x:Key="LblPleaseChangeToFilter" xml:space="default">Please change to filter {0}</s:String>
-  <s:String x:Key="LblPleaseRotate" xml:space="default">Please rotate by {0} degrees</s:String>
-  <s:String x:Key="LblPolarAlignment" xml:space="default">Polar Alignment</s:String>
-  <s:String x:Key="LblPort" xml:space="default">Port</s:String>
-  <s:String x:Key="LblPosition" xml:space="default">Position</s:String>
-  <s:String x:Key="LblPreferredPlanetarium" xml:space="default">Preferred Planetatium software</s:String>
-  <s:String x:Key="LblPrepareExposure" xml:space="default">Prepare Exposure</s:String>
-  <s:String x:Key="LblPrepareImage" xml:space="default">Preparing image</s:String>
-  <s:String x:Key="LblPreparingDarkFlatSequence" xml:space="default">Preparing Dark Flat Sequence</s:String>
-  <s:String x:Key="LblPreSequenceChecklist" xml:space="default">The following potential issues have been found with your sequence:</s:String>
-  <s:String x:Key="LblPreSequenceChecklistHeader" xml:space="default">Pre-Sequence Checklist</s:String>
-  <s:String x:Key="LblPressure" xml:space="default">Pressure</s:String>
-  <s:String x:Key="LblPrimary" xml:space="default">Primary</s:String>
-  <s:String x:Key="LblProfiles" xml:space="default">Profiles</s:String>
-  <s:String x:Key="LblProgress" xml:space="default">Progress</s:String>
-  <s:String x:Key="LblPx" xml:space="default">px</s:String>
-  <s:String x:Key="LblRA" xml:space="default">RA</s:String>
-  <s:String x:Key="LblRACorrections" xml:space="default">RA Corrections</s:String>
-  <s:String x:Key="LblRadius" xml:space="default">Radius</s:String>
-  <s:String x:Key="LblRAError" xml:space="default">RA Error</s:String>
-  <s:String x:Key="LblRainRate" xml:space="default">Rain Rate</s:String>
-  <s:String x:Key="LblRAPixError" xml:space="default">RA Pix Error</s:String>
-  <s:String x:Key="LblRate" xml:space="default">Rate</s:String>
-  <s:String x:Key="LblRawConverter" xml:space="default">Raw converter</s:String>
-  <s:String x:Key="LblRawConverterTooltip" xml:space="default">Specifies which tool should be used for DSLR raw file conversion</s:String>
-  <s:String x:Key="LblReadNoise" xml:space="default">Read noise in e</s:String>
-  <s:String x:Key="LblReadoutForNormalImages" xml:space="default">Readout mode for sequences</s:String>
-  <s:String x:Key="LblReadoutForNormalImagesToolTip" xml:space="default">This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT and DARKFLAT frames in sequences.</s:String>
-  <s:String x:Key="LblReadoutForSnapImages" xml:space="default">Readout mode for snapshots</s:String>
-  <s:String x:Key="LblReadoutForSnapImagesToolTip" xml:space="default">This readout mode of your camera will be used for plate solving, framing and autofocus</s:String>
-  <s:String x:Key="LblRecenter" xml:space="default">Recenter</s:String>
-  <s:String x:Key="LblRecenterAfterFlip" xml:space="default">Recenter after Flip</s:String>
-  <s:String x:Key="LblRecenterImage" xml:space="default">Recenter Image</s:String>
-  <s:String x:Key="LblReconnectAll" xml:space="default">Reconnect all devices?</s:String>
-  <s:String x:Key="LblReconnectCamera" xml:space="default">Please reconnect camera!</s:String>
-  <s:String x:Key="LblReconnectFilterwheel" xml:space="default">Please reconnect filterwheel!</s:String>
-  <s:String x:Key="LblReconnectFocuser" xml:space="default">Please reconnect focuser!</s:String>
-  <s:String x:Key="LblReconnectTelescope" xml:space="default">Please reconnect telescope!</s:String>
-  <s:String x:Key="LblReferenceDate" xml:space="default">Reference Date</s:String>
-  <s:String x:Key="LblRegions" xml:space="default">Regions</s:String>
-  <s:String x:Key="LblRelease" xml:space="default">Release</s:String>
-  <s:String x:Key="LblRemaining" xml:space="default">Remaining</s:String>
-  <s:String x:Key="LblRemainingNo" xml:space="default">Remaining #</s:String>
-  <s:String x:Key="LblRemoveProfileCaption" xml:space="default">Remove Profile?</s:String>
-  <s:String x:Key="LblRemoveProfileText" xml:space="default">Should the Profile with name: {0} and id: {1} be removed?</s:String>
-  <s:String x:Key="LblRepeatUntil" xml:space="default">Repeat until</s:String>
-  <s:String x:Key="LblReplaceSequenceTarget" xml:space="default">Replace as Sequence Target</s:String>
-  <s:String x:Key="LblRescanDevices" xml:space="default">Rescan Devices</s:String>
-  <s:String x:Key="LblResetAndContinue" xml:space="default">Reset and Continue</s:String>
-  <s:String x:Key="LblResetDockLayout" xml:space="default">Reset layout</s:String>
-  <s:String x:Key="LblResetDockLayoutConfirmation" xml:space="default">Should the layout be reset?</s:String>
-  <s:String x:Key="LblReslewToTarget" xml:space="default">Reslew to Target</s:String>
-  <s:String x:Key="LblResumeAutoguider" xml:space="default">Resume Autoguider</s:String>
-  <s:String x:Key="LblResumeGuiding" xml:space="default">Resume Guiding</s:String>
-  <s:String x:Key="LblResumeSettleTime" xml:space="default">Settle Time after resume</s:String>
-  <s:String x:Key="LblResumeTracking" xml:space="default">Resume Tracking</s:String>
-  <s:String x:Key="LblResuming" xml:space="default">Resuming</s:String>
-  <s:String x:Key="LblRightAscension" xml:space="default">Right Ascension</s:String>
-  <s:String x:Key="LblRotation" xml:space="default">Rotation</s:String>
-  <s:String x:Key="LblRotationRequired" xml:space="default">Camera Rotation required</s:String>
-  <s:String x:Key="LblRotationTolerance" xml:space="default">Rotation Tolerance</s:String>
-  <s:String x:Key="LblRotator" xml:space="default">Rotator</s:String>
-  <s:String x:Key="LblRotatorConnected" xml:space="default">Rotator Connected</s:String>
-  <s:String x:Key="LblRotatorConnectionLost" xml:space="default">Rotator connection lost! Please reconnect rotator!</s:String>
-  <s:String x:Key="LblSave" xml:space="default">Save</s:String>
-  <s:String x:Key="LblSaveBacklashQuestion" xml:space="default">Save Focuser Backlash Measurements?</s:String>
-  <s:String x:Key="LblSaveImageAs" xml:space="default">Save Image as</s:String>
-  <s:String x:Key="LblSaveImageAsDSLRNote" xml:space="default">For DSLRs the image file format setting is ignored. RAW format will be saved instead!</s:String>
-  <s:String x:Key="LblSaveSelectedProfileAndDontAskAgain" xml:space="default">Save selected profile and don't ask again next time</s:String>
-  <s:String x:Key="LblSaveSequence" xml:space="default">Save Sequence</s:String>
-  <s:String x:Key="LblSaveSequenceToolTip" xml:space="default">Save Sequence as xml file</s:String>
-  <s:String x:Key="LblScopeSettleTimeAfterFlip" xml:space="default">Scope settle time after flip (seconds)</s:String>
-  <s:String x:Key="LblSearch" xml:space="default">Search</s:String>
-  <s:String x:Key="LblSearchRadius" xml:space="default">Search Radius</s:String>
-  <s:String x:Key="LblSecondary" xml:space="default">Secondary</s:String>
-  <s:String x:Key="LblSecondaryBackground" xml:space="default">Secondary Background</s:String>
-  <s:String x:Key="LblSelectGuidestar" xml:space="default">Select new Guidestar</s:String>
-  <s:String x:Key="LblSelectNewGuideStar" xml:space="default">Select new Guidestar</s:String>
-  <s:String x:Key="LblSelectProfileInUseWarning" xml:space="default">Selected profile cannot be chosen. It is already in use by another N.I.N.A. instance!</s:String>
-  <s:String x:Key="LblSensorName" xml:space="default">Sensor Name</s:String>
-  <s:String x:Key="LblSensorType" xml:space="default">Sensor Type</s:String>
-  <s:String x:Key="LblSequence" xml:space="default">Sequence</s:String>
-  <s:String x:Key="LblSequenceDelay" xml:space="default">Delay start (seconds)</s:String>
-  <s:String x:Key="LblSequenceDelayStatus" xml:space="default">Sequence starting in {0} seconds</s:String>
-  <s:String x:Key="LblSequenceMode" xml:space="default">Sequence Mode</s:String>
-  <s:String x:Key="LblSequenceModeRotate" xml:space="default">Loop</s:String>
-  <s:String x:Key="LblSequenceModeStandard" xml:space="default">One after another</s:String>
-  <s:String x:Key="LblSequenceTemplate" xml:space="default">Sequence Template</s:String>
-  <s:String x:Key="LblSequenceTemplateTooltip" xml:space="preserve">Specifies a path to a previously exported sequence file that should be used as a template.
+    <s:String x:Key="LblPhd2SynchronizedServiceStarted" xml:space="default">Synchronized PHD2 service started</s:String>
+    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0} ({1}")</s:String>
+    <s:String x:Key="LblPixels" xml:space="default">Pixels</s:String>
+    <s:String x:Key="LblPixelScale" xml:space="default">Pixel Scale</s:String>
+    <s:String x:Key="LblPixelSize" xml:space="default">Pixel Size</s:String>
+    <s:String x:Key="LblPixelSizeX" xml:space="default">Pixel Size X</s:String>
+    <s:String x:Key="LblPixelSizeY" xml:space="default">Pixel Size Y</s:String>
+    <s:String x:Key="LblPlanetarium" xml:space="default">Planetarium</s:String>
+    <s:String x:Key="LblPlanetariumCoordsError" xml:space="default">Unable to acquire coordinates from {0}</s:String>
+    <s:String x:Key="LblPlanetariumCoordsOk" xml:space="default">Coordinates acquired from {0}</s:String>
+    <s:String x:Key="LblPlanetariumPrefs" xml:space="default">Planetarium Preferences</s:String>
+    <s:String x:Key="LblPlanetariumTooltip" xml:space="default">Get coordinates from the Planetarium Software</s:String>
+    <s:String x:Key="LblPlatesolve2" xml:space="default">Platesolve2</s:String>
+    <s:String x:Key="LblPlatesolve2Directory" xml:space="default">Platesolve2 Location</s:String>
+    <s:String x:Key="LblPlatesolve2NoCoordinates" xml:space="default">No coordinates available. Platesolve2 requires coordinates to solve!</s:String>
+    <s:String x:Key="LblPlatesolve2NotFound" xml:space="default">Platesolve2 exe not found</s:String>
+    <s:String x:Key="LblPlateSolvedPolarAlignment" xml:space="default">Plate Solved Polar Alignment</s:String>
+    <s:String x:Key="LblPlateSolveEnding" xml:space="default">PlateSolve reached maximum number of attempts, or Meridian Flip necessary.</s:String>
+    <s:String x:Key="LblPlatesolveFailed" xml:space="default">Platesolve failed</s:String>
+    <s:String x:Key="LblPlateSolveFailedDelay" xml:space="default">Delay between attempts</s:String>
+    <s:String x:Key="LblPlateSolveFailedDelayTooltip" xml:space="default">Delay, in minutes, between two plate solve attempts</s:String>
+    <s:String x:Key="LblPlateSolveImage" xml:space="default">Plate solve current image</s:String>
+    <s:String x:Key="LblPlateSolveNbOfAttempts" xml:space="default">Number of Attempts</s:String>
+    <s:String x:Key="LblPlateSolveNbOfAttemptsTooltip" xml:space="default">How many times a mid-sequence platesolve operation will attempt until considered failed</s:String>
+    <s:String x:Key="LblPlatesolveNoCoordinates" xml:space="default">No reference coordinates available</s:String>
+    <s:String x:Key="LblPlatesolveProvidedBy" xml:space="default">Platesolve service provided by</s:String>
+    <s:String x:Key="LblPlateSolver" xml:space="default">Plate Solver</s:String>
+    <s:String x:Key="LblPlateSolveReattemptDelay" xml:space="default">Waiting for next plate solve attempt: {0}</s:String>
+    <s:String x:Key="LblPlateSolveSettings" xml:space="default">Plate Solver Settings</s:String>
+    <s:String x:Key="LblPlateSolving" xml:space="default">Plate Solving</s:String>
+    <s:String x:Key="LblPleaseChangeToFilter" xml:space="default">Please change to filter {0}</s:String>
+    <s:String x:Key="LblPleaseRotate" xml:space="default">Please rotate by {0} degrees</s:String>
+    <s:String x:Key="LblPolarAlignment" xml:space="default">Polar Alignment</s:String>
+    <s:String x:Key="LblPort" xml:space="default">Port</s:String>
+    <s:String x:Key="LblPosition" xml:space="default">Position</s:String>
+    <s:String x:Key="LblPreferredPlanetarium" xml:space="default">Preferred Planetatium software</s:String>
+    <s:String x:Key="LblPrepareExposure" xml:space="default">Prepare Exposure</s:String>
+    <s:String x:Key="LblPrepareImage" xml:space="default">Preparing image</s:String>
+    <s:String x:Key="LblPreparingDarkFlatSequence" xml:space="default">Preparing Dark Flat Sequence</s:String>
+    <s:String x:Key="LblPreSequenceChecklist" xml:space="default">The following potential issues have been found with your sequence:</s:String>
+    <s:String x:Key="LblPreSequenceChecklistHeader" xml:space="default">Pre-Sequence Checklist</s:String>
+    <s:String x:Key="LblPressure" xml:space="default">Pressure</s:String>
+    <s:String x:Key="LblPrimary" xml:space="default">Primary</s:String>
+    <s:String x:Key="LblProfiles" xml:space="default">Profiles</s:String>
+    <s:String x:Key="LblProgress" xml:space="default">Progress</s:String>
+    <s:String x:Key="LblPx" xml:space="default">px</s:String>
+    <s:String x:Key="LblRA" xml:space="default">RA</s:String>
+    <s:String x:Key="LblRACorrections" xml:space="default">RA Corrections</s:String>
+    <s:String x:Key="LblRadius" xml:space="default">Radius</s:String>
+    <s:String x:Key="LblRAError" xml:space="default">RA Error</s:String>
+    <s:String x:Key="LblRainRate" xml:space="default">Rain Rate</s:String>
+    <s:String x:Key="LblRAPixError" xml:space="default">RA Pix Error</s:String>
+    <s:String x:Key="LblRate" xml:space="default">Rate</s:String>
+    <s:String x:Key="LblRawConverter" xml:space="default">Raw converter</s:String>
+    <s:String x:Key="LblRawConverterTooltip" xml:space="default">Specifies which tool should be used for DSLR raw file conversion</s:String>
+    <s:String x:Key="LblReadNoise" xml:space="default">Read noise in e</s:String>
+    <s:String x:Key="LblReadoutForNormalImages" xml:space="default">Readout mode for sequences</s:String>
+    <s:String x:Key="LblReadoutForNormalImagesToolTip" xml:space="default">This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT and DARKFLAT frames in sequences.</s:String>
+    <s:String x:Key="LblReadoutForSnapImages" xml:space="default">Readout mode for snapshots</s:String>
+    <s:String x:Key="LblReadoutForSnapImagesToolTip" xml:space="default">This readout mode of your camera will be used for plate solving, framing and autofocus</s:String>
+    <s:String x:Key="LblRecenter" xml:space="default">Recenter</s:String>
+    <s:String x:Key="LblRecenterAfterFlip" xml:space="default">Recenter after Flip</s:String>
+    <s:String x:Key="LblRecenterImage" xml:space="default">Recenter Image</s:String>
+    <s:String x:Key="LblReconnectAll" xml:space="default">Reconnect all devices?</s:String>
+    <s:String x:Key="LblReconnectCamera" xml:space="default">Please reconnect camera!</s:String>
+    <s:String x:Key="LblReconnectFilterwheel" xml:space="default">Please reconnect filterwheel!</s:String>
+    <s:String x:Key="LblReconnectFocuser" xml:space="default">Please reconnect focuser!</s:String>
+    <s:String x:Key="LblReconnectTelescope" xml:space="default">Please reconnect telescope!</s:String>
+    <s:String x:Key="LblReferenceDate" xml:space="default">Reference Date</s:String>
+    <s:String x:Key="LblRegions" xml:space="default">Regions</s:String>
+    <s:String x:Key="LblRelease" xml:space="default">Release</s:String>
+    <s:String x:Key="LblRemaining" xml:space="default">Remaining</s:String>
+    <s:String x:Key="LblRemainingNo" xml:space="default">Remaining #</s:String>
+    <s:String x:Key="LblRemoveProfileCaption" xml:space="default">Remove Profile?</s:String>
+    <s:String x:Key="LblRemoveProfileText" xml:space="default">Should the Profile with name: {0} and id: {1} be removed?</s:String>
+    <s:String x:Key="LblRepeatUntil" xml:space="default">Repeat until</s:String>
+    <s:String x:Key="LblReplaceSequenceTarget" xml:space="default">Replace as Sequence Target</s:String>
+    <s:String x:Key="LblRescanDevices" xml:space="default">Rescan Devices</s:String>
+    <s:String x:Key="LblResetAndContinue" xml:space="default">Reset and Continue</s:String>
+    <s:String x:Key="LblResetDockLayout" xml:space="default">Reset layout</s:String>
+    <s:String x:Key="LblResetDockLayoutConfirmation" xml:space="default">Should the layout be reset?</s:String>
+    <s:String x:Key="LblReslewToTarget" xml:space="default">Reslew to Target</s:String>
+    <s:String x:Key="LblResumeAutoguider" xml:space="default">Resume Autoguider</s:String>
+    <s:String x:Key="LblResumeGuiding" xml:space="default">Resume Guiding</s:String>
+    <s:String x:Key="LblResumeSettleTime" xml:space="default">Settle Time after resume</s:String>
+    <s:String x:Key="LblResumeTracking" xml:space="default">Resume Tracking</s:String>
+    <s:String x:Key="LblResuming" xml:space="default">Resuming</s:String>
+    <s:String x:Key="LblRightAscension" xml:space="default">Right Ascension</s:String>
+    <s:String x:Key="LblRotation" xml:space="default">Rotation</s:String>
+    <s:String x:Key="LblRotationRequired" xml:space="default">Camera Rotation required</s:String>
+    <s:String x:Key="LblRotationTolerance" xml:space="default">Rotation Tolerance</s:String>
+    <s:String x:Key="LblRotator" xml:space="default">Rotator</s:String>
+    <s:String x:Key="LblRotatorConnected" xml:space="default">Rotator Connected</s:String>
+    <s:String x:Key="LblRotatorConnectionLost" xml:space="default">Rotator connection lost! Please reconnect rotator!</s:String>
+    <s:String x:Key="LblSave" xml:space="default">Save</s:String>
+    <s:String x:Key="LblSaveBacklashQuestion" xml:space="default">Save Focuser Backlash Measurements?</s:String>
+    <s:String x:Key="LblSaveImageAs" xml:space="default">Save Image as</s:String>
+    <s:String x:Key="LblSaveImageAsDSLRNote" xml:space="default">For DSLRs the image file format setting is ignored. RAW format will be saved instead!</s:String>
+    <s:String x:Key="LblSaveSelectedProfileAndDontAskAgain" xml:space="default">Save selected profile and don't ask again next time</s:String>
+    <s:String x:Key="LblSaveSequence" xml:space="default">Save Sequence</s:String>
+    <s:String x:Key="LblSaveSequenceToolTip" xml:space="default">Save Sequence as xml file</s:String>
+    <s:String x:Key="LblScopeSettleTimeAfterFlip" xml:space="default">Scope settle time after flip (seconds)</s:String>
+    <s:String x:Key="LblSearch" xml:space="default">Search</s:String>
+    <s:String x:Key="LblSearchRadius" xml:space="default">Search Radius</s:String>
+    <s:String x:Key="LblSecondary" xml:space="default">Secondary</s:String>
+    <s:String x:Key="LblSecondaryBackground" xml:space="default">Secondary Background</s:String>
+    <s:String x:Key="LblSelectGuidestar" xml:space="default">Select new Guidestar</s:String>
+    <s:String x:Key="LblSelectNewGuideStar" xml:space="default">Select new Guidestar</s:String>
+    <s:String x:Key="LblSelectProfileInUseWarning" xml:space="default">Selected profile cannot be chosen. It is already in use by another N.I.N.A. instance!</s:String>
+    <s:String x:Key="LblSensorName" xml:space="default">Sensor Name</s:String>
+    <s:String x:Key="LblSensorType" xml:space="default">Sensor Type</s:String>
+    <s:String x:Key="LblSequence" xml:space="default">Sequence</s:String>
+    <s:String x:Key="LblSequenceDelay" xml:space="default">Delay start (seconds)</s:String>
+    <s:String x:Key="LblSequenceDelayStatus" xml:space="default">Sequence starting in {0} seconds</s:String>
+    <s:String x:Key="LblSequenceMode" xml:space="default">Sequence Mode</s:String>
+    <s:String x:Key="LblSequenceModeRotate" xml:space="default">Loop</s:String>
+    <s:String x:Key="LblSequenceModeStandard" xml:space="default">One after another</s:String>
+    <s:String x:Key="LblSequenceTemplate" xml:space="default">Sequence Template</s:String>
+    <s:String x:Key="LblSequenceTemplateTooltip" xml:space="preserve">Specifies a path to a previously exported sequence file that should be used as a template.
 This template will be used on startup to initialize the sequence instead of the default one.</s:String>
-  <s:String x:Key="LblSerialPort" xml:space="default">Serial Port</s:String>
-  <s:String x:Key="LblSerialRelay" xml:space="default">Serial Relay</s:String>
-  <s:String x:Key="LblSetAsSequenceTarget" xml:space="default">Set as sequence target</s:String>
-  <s:String x:Key="LblSetForFramingAssistant" xml:space="default">Set for framing assistant</s:String>
-  <s:String x:Key="LblSetNewValue" xml:space="default">Set new value</s:String>
-  <s:String x:Key="LblSettings" xml:space="default">Settings</s:String>
-  <s:String x:Key="LblSettle" xml:space="default">Settle</s:String>
-  <s:String x:Key="LblSettlePixelTolerance" xml:space="default">PHD2 Settle Pixel Tolerance</s:String>
-  <s:String x:Key="LblSettleTimeAfterSlew" xml:space="default">Settle time after slew</s:String>
-  <s:String x:Key="LblSettleTimeout" xml:space="default">PHD2 Settle Timeout</s:String>
-  <s:String x:Key="LblSiderealTime" xml:space="default">Sidereal Time</s:String>
-  <s:String x:Key="LblSiteElevation" xml:space="default">Site Elevation</s:String>
-  <s:String x:Key="LblSiteFromGPS" xml:space="default">from GPS</s:String>
-  <s:String x:Key="LblSiteLatitude" xml:space="default">Site Latitude</s:String>
-  <s:String x:Key="LblSiteLongitude" xml:space="default">Site Longitude</s:String>
-  <s:String x:Key="LblSize" xml:space="default">Size</s:String>
-  <s:String x:Key="LblSkyAtlas" xml:space="default">Sky Atlas</s:String>
-  <s:String x:Key="LblSkyAtlasImageDirectory" xml:space="default">Sky Atlas Image Directory</s:String>
-  <s:String x:Key="LblSkyAtlasSkySurvey" xml:space="default">SkyAtlas (Offline Framing)</s:String>
-  <s:String x:Key="LblSkyBrightness" xml:space="default">Sky Brightness</s:String>
-  <s:String x:Key="LblSkyQuality" xml:space="default">Sky Quality</s:String>
-  <s:String x:Key="LblSkyServerSkySurvey" xml:space="default">SkyServer Sky Survey</s:String>
-  <s:String x:Key="LblSkySurveyCacheDirectory" xml:space="default">Sky Survey Cache Directory</s:String>
-  <s:String x:Key="LblSkyTemperature" xml:space="default">Sky Temperature</s:String>
-  <s:String x:Key="LblSlew" xml:space="default">Slew</s:String>
-  <s:String x:Key="LblSlewDuration" xml:space="default">Slew Duration</s:String>
-  <s:String x:Key="LblSlewEnabledButTelescopeNotConnected" xml:space="default">Slew to target is enabled, yet telescope is not connected</s:String>
-  <s:String x:Key="LblSlewRateDegSec" xml:space="default">Slew Rate (deg/sec)</s:String>
-  <s:String x:Key="LblSlewToTarget" xml:space="default">Slew to target</s:String>
-  <s:String x:Key="LblSlewToZenith" xml:space="default">Slew to zenith</s:String>
-  <s:String x:Key="LblSlewWhenTargetCoordsUnset" xml:space="default">At least one target with slew enabled has no target coordinates set</s:String>
-  <s:String x:Key="LblSnapPortStart" xml:space="default">Snap Port Start Command</s:String>
-  <s:String x:Key="LblSnapPortStop" xml:space="default">Snap Port Stop Command</s:String>
-  <s:String x:Key="LblSolving" xml:space="default">Solving...</s:String>
-  <s:String x:Key="LblSource" xml:space="default">Source</s:String>
-  <s:String x:Key="LblSouthern" xml:space="default">Southern</s:String>
-  <s:String x:Key="LblStarFWHM" xml:space="default">Star FWHM</s:String>
-  <s:String x:Key="LblStarSensitivity" xml:space="default">Star Sensitivity</s:String>
-  <s:String x:Key="LblStarSensitivityTooltip" xml:space="default">Determines sensitivity of star detection algorithm. Higher settings may mistakenly detect noise, and may take more time</s:String>
-  <s:String x:Key="LblStartAutoFocus" xml:space="default">Start Auto Focus</s:String>
-  <s:String x:Key="LblStartBacklashMeasurementConfirmation" xml:space="preserve">Backlash Measurement will start now.
+    <s:String x:Key="LblSerialPort" xml:space="default">Serial Port</s:String>
+    <s:String x:Key="LblSerialRelay" xml:space="default">Serial Relay</s:String>
+    <s:String x:Key="LblSetAsSequenceTarget" xml:space="default">Set as sequence target</s:String>
+    <s:String x:Key="LblSetForFramingAssistant" xml:space="default">Set for framing assistant</s:String>
+    <s:String x:Key="LblSetNewValue" xml:space="default">Set new value</s:String>
+    <s:String x:Key="LblSettings" xml:space="default">Settings</s:String>
+    <s:String x:Key="LblSettle" xml:space="default">Settle</s:String>
+    <s:String x:Key="LblSettlePixelTolerance" xml:space="default">PHD2 Settle Pixel Tolerance</s:String>
+    <s:String x:Key="LblSettleTimeAfterSlew" xml:space="default">Settle time after slew</s:String>
+    <s:String x:Key="LblSettleTimeout" xml:space="default">PHD2 Settle Timeout</s:String>
+    <s:String x:Key="LblSiderealTime" xml:space="default">Sidereal Time</s:String>
+    <s:String x:Key="LblSiteElevation" xml:space="default">Site Elevation</s:String>
+    <s:String x:Key="LblSiteFromGPS" xml:space="default">from GPS</s:String>
+    <s:String x:Key="LblSiteLatitude" xml:space="default">Site Latitude</s:String>
+    <s:String x:Key="LblSiteLongitude" xml:space="default">Site Longitude</s:String>
+    <s:String x:Key="LblSize" xml:space="default">Size</s:String>
+    <s:String x:Key="LblSkyAtlas" xml:space="default">Sky Atlas</s:String>
+    <s:String x:Key="LblSkyAtlasImageDirectory" xml:space="default">Sky Atlas Image Directory</s:String>
+    <s:String x:Key="LblSkyAtlasSkySurvey" xml:space="default">SkyAtlas (Offline Framing)</s:String>
+    <s:String x:Key="LblSkyBrightness" xml:space="default">Sky Brightness</s:String>
+    <s:String x:Key="LblSkyQuality" xml:space="default">Sky Quality</s:String>
+    <s:String x:Key="LblSkyServerSkySurvey" xml:space="default">SkyServer Sky Survey</s:String>
+    <s:String x:Key="LblSkySurveyCacheDirectory" xml:space="default">Sky Survey Cache Directory</s:String>
+    <s:String x:Key="LblSkyTemperature" xml:space="default">Sky Temperature</s:String>
+    <s:String x:Key="LblSlew" xml:space="default">Slew</s:String>
+    <s:String x:Key="LblSlewDuration" xml:space="default">Slew Duration</s:String>
+    <s:String x:Key="LblSlewEnabledButTelescopeNotConnected" xml:space="default">Slew to target is enabled, yet telescope is not connected</s:String>
+    <s:String x:Key="LblSlewRateDegSec" xml:space="default">Slew Rate (deg/sec)</s:String>
+    <s:String x:Key="LblSlewToTarget" xml:space="default">Slew to target</s:String>
+    <s:String x:Key="LblSlewToZenith" xml:space="default">Slew to zenith</s:String>
+    <s:String x:Key="LblSlewWhenTargetCoordsUnset" xml:space="default">At least one target with slew enabled has no target coordinates set</s:String>
+    <s:String x:Key="LblSnapPortStart" xml:space="default">Snap Port Start Command</s:String>
+    <s:String x:Key="LblSnapPortStop" xml:space="default">Snap Port Stop Command</s:String>
+    <s:String x:Key="LblSolving" xml:space="default">Solving...</s:String>
+    <s:String x:Key="LblSource" xml:space="default">Source</s:String>
+    <s:String x:Key="LblSouthern" xml:space="default">Southern</s:String>
+    <s:String x:Key="LblStarFWHM" xml:space="default">Star FWHM</s:String>
+    <s:String x:Key="LblStarSensitivity" xml:space="default">Star Sensitivity</s:String>
+    <s:String x:Key="LblStarSensitivityTooltip" xml:space="default">Determines sensitivity of star detection algorithm. Higher settings may mistakenly detect noise, and may take more time</s:String>
+    <s:String x:Key="LblStartAutoFocus" xml:space="default">Start Auto Focus</s:String>
+    <s:String x:Key="LblStartBacklashMeasurementConfirmation" xml:space="preserve">Backlash Measurement will start now.
 Before proceeding, please confirm your system is currently at or close to good focus</s:String>
-  <s:String x:Key="LblStartBacklashQuestion" xml:space="default">Start Backlash Measurement?</s:String>
-  <s:String x:Key="LblStartGuiding" xml:space="default">Start guiding</s:String>
-  <s:String x:Key="LblStartGuidingButGuiderNotConnected" xml:space="default">Start Guiding is enabled, yet guider is not connected</s:String>
-  <s:String x:Key="LblStartGuidingFailed" xml:space="default">Start guiding failed</s:String>
-  <s:String x:Key="LblStartingINBacklashMeasurement" xml:space="default">Starting IN Backlash Measurement</s:String>
-  <s:String x:Key="LblStartingOUTBacklashMeasurement" xml:space="default">Starting OUT Backlash Measurement</s:String>
-  <s:String x:Key="LblStartSequenceAnyway" xml:space="default">Start Sequence Anyway?</s:String>
-  <s:String x:Key="LblState" xml:space="default">State</s:String>
-  <s:String x:Key="LblStatistics" xml:space="default">Statistics</s:String>
-  <s:String x:Key="LblStDev" xml:space="default">StDev</s:String>
-  <s:String x:Key="LblStellarium" xml:space="default">Stellarium</s:String>
-  <s:String x:Key="LblStellariumUse" xml:space="default">Use Stellarium</s:String>
-  <s:String x:Key="LblStellariumUseNotice" xml:space="default">In order to use Stellarium you need to have the remote plugin installed and active on the Host and Port specified above</s:String>
-  <s:String x:Key="LblStop" xml:space="default">Stop</s:String>
-  <s:String x:Key="LblStopAutoguider" xml:space="default">Pause Autoguider</s:String>
-  <s:String x:Key="LblStopGuiding" xml:space="default">Stop Guiding</s:String>
-  <s:String x:Key="LblStopTracking" xml:space="default">Stop Tracking</s:String>
-  <s:String x:Key="LblStretchImage" xml:space="default">Stretching image</s:String>
-  <s:String x:Key="LblStsciSkySurvey" xml:space="default">Stsci Sky Survey</s:String>
-  <s:String x:Key="LblSubSample" xml:space="default">Enable SubSampling</s:String>
-  <s:String x:Key="LblSuccess" xml:space="default">Success</s:String>
-  <s:String x:Key="LblSunRise" xml:space="default">Sunrise</s:String>
-  <s:String x:Key="LblSunSet" xml:space="default">Sunset</s:String>
-  <s:String x:Key="LblSurfaceBrightness" xml:space="default">Surface Brightness</s:String>
-  <s:String x:Key="LblSwitch" xml:space="default">Switch</s:String>
-  <s:String x:Key="LblSwitchConnected" xml:space="default">Switch connected</s:String>
-  <s:String x:Key="LblSwitchConnectionLost" xml:space="default">Switch Connection lost!</s:String>
-  <s:String x:Key="LblSwitchingFilter" xml:space="default">Switching filter</s:String>
-  <s:String x:Key="LblSync" xml:space="default">Sync</s:String>
-  <s:String x:Key="LblSyncFailed" xml:space="default">Telescope sync failed</s:String>
-  <s:String x:Key="LblSynchronizedPHD2Guider" xml:space="default">Synchronized PHD2 (Experimental)</s:String>
-  <s:String x:Key="LblSynchronizedPHD2ServiceClientAlreadyExists" xml:space="default">
+    <s:String x:Key="LblStartBacklashQuestion" xml:space="default">Start Backlash Measurement?</s:String>
+    <s:String x:Key="LblStartGuiding" xml:space="default">Start guiding</s:String>
+    <s:String x:Key="LblStartGuidingButGuiderNotConnected" xml:space="default">Start Guiding is enabled, yet guider is not connected</s:String>
+    <s:String x:Key="LblStartGuidingFailed" xml:space="default">Start guiding failed</s:String>
+    <s:String x:Key="LblStartingINBacklashMeasurement" xml:space="default">Starting IN Backlash Measurement</s:String>
+    <s:String x:Key="LblStartingOUTBacklashMeasurement" xml:space="default">Starting OUT Backlash Measurement</s:String>
+    <s:String x:Key="LblStartSequenceAnyway" xml:space="default">Start Sequence Anyway?</s:String>
+    <s:String x:Key="LblState" xml:space="default">State</s:String>
+    <s:String x:Key="LblStatistics" xml:space="default">Statistics</s:String>
+    <s:String x:Key="LblStDev" xml:space="default">StDev</s:String>
+    <s:String x:Key="LblStellarium" xml:space="default">Stellarium</s:String>
+    <s:String x:Key="LblStellariumUse" xml:space="default">Use Stellarium</s:String>
+    <s:String x:Key="LblStellariumUseNotice" xml:space="default">In order to use Stellarium you need to have the remote plugin installed and active on the Host and Port specified above</s:String>
+    <s:String x:Key="LblStop" xml:space="default">Stop</s:String>
+    <s:String x:Key="LblStopAutoguider" xml:space="default">Pause Autoguider</s:String>
+    <s:String x:Key="LblStopGuiding" xml:space="default">Stop Guiding</s:String>
+    <s:String x:Key="LblStopTracking" xml:space="default">Stop Tracking</s:String>
+    <s:String x:Key="LblStretchImage" xml:space="default">Stretching image</s:String>
+    <s:String x:Key="LblStsciSkySurvey" xml:space="default">Stsci Sky Survey</s:String>
+    <s:String x:Key="LblSubSample" xml:space="default">Enable SubSampling</s:String>
+    <s:String x:Key="LblSuccess" xml:space="default">Success</s:String>
+    <s:String x:Key="LblSunRise" xml:space="default">Sunrise</s:String>
+    <s:String x:Key="LblSunSet" xml:space="default">Sunset</s:String>
+    <s:String x:Key="LblSurfaceBrightness" xml:space="default">Surface Brightness</s:String>
+    <s:String x:Key="LblSwitch" xml:space="default">Switch</s:String>
+    <s:String x:Key="LblSwitchConnected" xml:space="default">Switch connected</s:String>
+    <s:String x:Key="LblSwitchConnectionLost" xml:space="default">Switch Connection lost!</s:String>
+    <s:String x:Key="LblSwitchingFilter" xml:space="default">Switching filter</s:String>
+    <s:String x:Key="LblSync" xml:space="default">Sync</s:String>
+    <s:String x:Key="LblSyncFailed" xml:space="default">Telescope sync failed</s:String>
+    <s:String x:Key="LblSynchronizedPHD2Guider" xml:space="default">Synchronized PHD2 (Experimental)</s:String>
+    <s:String x:Key="LblSynchronizedPHD2ServiceClientAlreadyExists" xml:space="default">
         This profile is already connected to the Synchronized PHD2 Guider.
         You cannot connect the same profile twice, please choose a different NINA profile.
     </s:String>
-  <s:String x:Key="LblSynchronizedPHD2ServiceCrashed" xml:space="default">Synchronized PHD2 Service crashed, restarting this Synchronized PHD2 Guider as Service</s:String>
-  <s:String x:Key="LblSyncLatLong" xml:space="default">Synchronize Latitude/Longitude</s:String>
-  <s:String x:Key="LblSyncLatLongText" xml:space="preserve">Telescope's Latitude and Longitude differs from NINA's values.
+    <s:String x:Key="LblSynchronizedPHD2ServiceCrashed" xml:space="default">Synchronized PHD2 Service crashed, restarting this Synchronized PHD2 Guider as Service</s:String>
+    <s:String x:Key="LblSyncLatLong" xml:space="default">Synchronize Latitude/Longitude</s:String>
+    <s:String x:Key="LblSyncLatLongText" xml:space="preserve">Telescope's Latitude and Longitude differs from NINA's values.
 Should the values be synced?</s:String>
-  <s:String x:Key="LblTarget" xml:space="default">Target (J2000)</s:String>
-  <s:String x:Key="LblTargetDec" xml:space="default">TargetDec</s:String>
-  <s:String x:Key="LblTargetHeightDegrees" xml:space="default">Minimum Height (degree)</s:String>
-  <s:String x:Key="LblTargetName" xml:space="default">Target Name</s:String>
-  <s:String x:Key="LblTargetNameDescription" xml:space="default">Target Name if available</s:String>
-  <s:String x:Key="LblTargetPosition" xml:space="default">Target Position</s:String>
-  <s:String x:Key="LblTargetRA" xml:space="default">TargetRA</s:String>
-  <s:String x:Key="LblTargets" xml:space="default">Targets</s:String>
-  <s:String x:Key="LblTargetTemp" xml:space="default">Target Temperature</s:String>
-  <s:String x:Key="LblTargetTempShort" xml:space="default">Target Temp.</s:String>
-  <s:String x:Key="LblTargetWidthDegrees" xml:space="default">Minimum Width (degree)</s:String>
-  <s:String x:Key="LblTelescope" xml:space="default">Telescope</s:String>
-  <s:String x:Key="LblTelescopeCannotPulseGuide" xml:space="default">Telescope cannot Pulse Guide</s:String>
-  <s:String x:Key="LblTelescopeCannotSlew" xml:space="default">Telescope cannot slew</s:String>
-  <s:String x:Key="LblTelescopeConnected" xml:space="default">Telescope connected</s:String>
-  <s:String x:Key="LblTelescopeConnectionLost" xml:space="default">Telescope connection lost! Please reconnect telescope!</s:String>
-  <s:String x:Key="LblTelescopeControl" xml:space="default">Telescope Control</s:String>
-  <s:String x:Key="LblTelescopeName" xml:space="default">Telescope Name</s:String>
-  <s:String x:Key="LblTelescopeNotConnected" xml:space="default">Telescope not connected</s:String>
-  <s:String x:Key="LblTelescopeNotConnectedForCommand" xml:space="default">Telescope not connected to send command</s:String>
-  <s:String x:Key="LblTelescopeNotTrackingForSync" xml:space="default">Telescope is not tracking. Sync is only available when tracking!</s:String>
-  <s:String x:Key="LblTelescopeParkedWarn" xml:space="default">Telescope is parked. Cannot slew while parked</s:String>
-  <s:String x:Key="LblTelescopeSnapPort" xml:space="default">Telescope Snap Port</s:String>
-  <s:String x:Key="LblTelescopeSynced" xml:space="default">Telescope synced to coordinates</s:String>
-  <s:String x:Key="LblTelescopeToNINA" xml:space="default">Telescope to NINA</s:String>
-  <s:String x:Key="LblTempComp" xml:space="default">Temp Comp</s:String>
-  <s:String x:Key="LblTempControl" xml:space="default">Temperature Control</s:String>
-  <s:String x:Key="LblTemperature" xml:space="default">Temperature</s:String>
-  <s:String x:Key="LblTemperatureCompensation" xml:space="default">Temperature Compensation</s:String>
-  <s:String x:Key="LblTemperatureDescription" xml:space="default">Camera Temperature</s:String>
-  <s:String x:Key="LblTertiaryBackground" xml:space="default">Tertiary Background</s:String>
-  <s:String x:Key="LblTheSkyX" xml:space="default">TheSkyX</s:String>
-  <s:String x:Key="LblThrough" xml:space="default">Through</s:String>
-  <s:String x:Key="LblTiff" xml:space="default">TIFF</s:String>
-  <s:String x:Key="LblTiffLzw" xml:space="default">TIFF (lzw-compressed)</s:String>
-  <s:String x:Key="LblTiffZip" xml:space="default">TIFF (zip-compressed)</s:String>
-  <s:String x:Key="LblTime" xml:space="default">Time</s:String>
-  <s:String x:Key="LblTimeFormatDescription" xml:space="default">Time with format HH-mm-ss</s:String>
-  <s:String x:Key="LblTimeout" xml:space="default">Timeout</s:String>
-  <s:String x:Key="LblTimeoutToSetSwitchValue" xml:space="default">Timeout to set switch value {0} for switch [Id: {1}, Name: {2}]. Current value is {3}.</s:String>
-  <s:String x:Key="LblTimeZone" xml:space="default">Time Zone</s:String>
-  <s:String x:Key="LblTo" xml:space="default">To</s:String>
-  <s:String x:Key="LblTools" xml:space="default">Tools</s:String>
-  <s:String x:Key="LblTooltipAddSequence" xml:space="default">Add new row to sequence list</s:String>
-  <s:String x:Key="LblTooltipAddTarget" xml:space="default">Add new empty target sequence</s:String>
-  <s:String x:Key="LblTooltipAutoStretch" xml:space="default">Toggles an automatic autostretch to image on/off (display only)</s:String>
-  <s:String x:Key="LblTooltipBahtinovAnalyzer" xml:space="preserve">Bahtinov Analyzer
+    <s:String x:Key="LblTarget" xml:space="default">Target (J2000)</s:String>
+    <s:String x:Key="LblTargetDec" xml:space="default">TargetDec</s:String>
+    <s:String x:Key="LblTargetHeightDegrees" xml:space="default">Minimum Height (degree)</s:String>
+    <s:String x:Key="LblTargetName" xml:space="default">Target Name</s:String>
+    <s:String x:Key="LblTargetNameDescription" xml:space="default">Target Name if available</s:String>
+    <s:String x:Key="LblTargetPosition" xml:space="default">Target Position</s:String>
+    <s:String x:Key="LblTargetRA" xml:space="default">TargetRA</s:String>
+    <s:String x:Key="LblTargets" xml:space="default">Targets</s:String>
+    <s:String x:Key="LblTargetTemp" xml:space="default">Target Temperature</s:String>
+    <s:String x:Key="LblTargetTempShort" xml:space="default">Target Temp.</s:String>
+    <s:String x:Key="LblTargetWidthDegrees" xml:space="default">Minimum Width (degree)</s:String>
+    <s:String x:Key="LblTelescope" xml:space="default">Telescope</s:String>
+    <s:String x:Key="LblTelescopeCannotPulseGuide" xml:space="default">Telescope cannot Pulse Guide</s:String>
+    <s:String x:Key="LblTelescopeCannotSlew" xml:space="default">Telescope cannot slew</s:String>
+    <s:String x:Key="LblTelescopeConnected" xml:space="default">Telescope connected</s:String>
+    <s:String x:Key="LblTelescopeConnectionLost" xml:space="default">Telescope connection lost! Please reconnect telescope!</s:String>
+    <s:String x:Key="LblTelescopeControl" xml:space="default">Telescope Control</s:String>
+    <s:String x:Key="LblTelescopeName" xml:space="default">Telescope Name</s:String>
+    <s:String x:Key="LblTelescopeNotConnected" xml:space="default">Telescope not connected</s:String>
+    <s:String x:Key="LblTelescopeNotConnectedForCommand" xml:space="default">Telescope not connected to send command</s:String>
+    <s:String x:Key="LblTelescopeNotTrackingForSync" xml:space="default">Telescope is not tracking. Sync is only available when tracking!</s:String>
+    <s:String x:Key="LblTelescopeParkedWarn" xml:space="default">Telescope is parked. Cannot slew while parked</s:String>
+    <s:String x:Key="LblTelescopeSnapPort" xml:space="default">Telescope Snap Port</s:String>
+    <s:String x:Key="LblTelescopeSynced" xml:space="default">Telescope synced to coordinates</s:String>
+    <s:String x:Key="LblTelescopeToNINA" xml:space="default">Telescope to NINA</s:String>
+    <s:String x:Key="LblTempComp" xml:space="default">Temp Comp</s:String>
+    <s:String x:Key="LblTempControl" xml:space="default">Temperature Control</s:String>
+    <s:String x:Key="LblTemperature" xml:space="default">Temperature</s:String>
+    <s:String x:Key="LblTemperatureCompensation" xml:space="default">Temperature Compensation</s:String>
+    <s:String x:Key="LblTemperatureDescription" xml:space="default">Camera Temperature</s:String>
+    <s:String x:Key="LblTertiaryBackground" xml:space="default">Tertiary Background</s:String>
+    <s:String x:Key="LblTheSkyX" xml:space="default">TheSkyX</s:String>
+    <s:String x:Key="LblThrough" xml:space="default">Through</s:String>
+    <s:String x:Key="LblTiff" xml:space="default">TIFF</s:String>
+    <s:String x:Key="LblTiffLzw" xml:space="default">TIFF (lzw-compressed)</s:String>
+    <s:String x:Key="LblTiffZip" xml:space="default">TIFF (zip-compressed)</s:String>
+    <s:String x:Key="LblTime" xml:space="default">Time</s:String>
+    <s:String x:Key="LblTimeFormatDescription" xml:space="default">Time with format HH-mm-ss</s:String>
+    <s:String x:Key="LblTimeout" xml:space="default">Timeout</s:String>
+    <s:String x:Key="LblTimeoutToSetSwitchValue" xml:space="default">Timeout to set switch value {0} for switch [Id: {1}, Name: {2}]. Current value is {3}.</s:String>
+    <s:String x:Key="LblTimeZone" xml:space="default">Time Zone</s:String>
+    <s:String x:Key="LblTo" xml:space="default">To</s:String>
+    <s:String x:Key="LblTools" xml:space="default">Tools</s:String>
+    <s:String x:Key="LblTooltipAddSequence" xml:space="default">Add new row to sequence list</s:String>
+    <s:String x:Key="LblTooltipAddTarget" xml:space="default">Add new empty target sequence</s:String>
+    <s:String x:Key="LblTooltipAutoStretch" xml:space="default">Toggles an automatic autostretch to image on/off (display only)</s:String>
+    <s:String x:Key="LblTooltipBahtinovAnalyzer" xml:space="preserve">Bahtinov Analyzer
 Drag the rectangle over a star with the bahtinov spikes. NINA will try to detect the spikes and show the error.</s:String>
-  <s:String x:Key="LblTooltipCrossHair" xml:space="default">Toggles crosshair on/off</s:String>
-  <s:String x:Key="LblTooltipDetectStars" xml:space="default">Toggles automatic star detection and analysis (Half-Flus-Radius) on/off</s:String>
-  <s:String x:Key="LblToolTipLiveView" xml:space="default">Live View</s:String>
-  <s:String x:Key="LblTooltipLoop" xml:space="default">Enables/disables looping exposures</s:String>
-  <s:String x:Key="LblTooltipRemoveSequence" xml:space="default">Remove selected row from sequence list</s:String>
-  <s:String x:Key="LblTooltipResetSequence" xml:space="default">Reset progress of selected row in sequence list</s:String>
-  <s:String x:Key="LblTooltipResetTarget" xml:space="default">Reset progress of all sequence items in target</s:String>
-  <s:String x:Key="LblTooltipStartSequence" xml:space="default">Starts sequences</s:String>
-  <s:String x:Key="LblToolTipSubSample" xml:space="preserve">SubSampling Frame
+    <s:String x:Key="LblTooltipCrossHair" xml:space="default">Toggles crosshair on/off</s:String>
+    <s:String x:Key="LblTooltipDetectStars" xml:space="default">Toggles automatic star detection and analysis (Half-Flus-Radius) on/off</s:String>
+    <s:String x:Key="LblToolTipLiveView" xml:space="default">Live View</s:String>
+    <s:String x:Key="LblTooltipLoop" xml:space="default">Enables/disables looping exposures</s:String>
+    <s:String x:Key="LblTooltipRemoveSequence" xml:space="default">Remove selected row from sequence list</s:String>
+    <s:String x:Key="LblTooltipResetSequence" xml:space="default">Reset progress of selected row in sequence list</s:String>
+    <s:String x:Key="LblTooltipResetTarget" xml:space="default">Reset progress of all sequence items in target</s:String>
+    <s:String x:Key="LblTooltipStartSequence" xml:space="default">Starts sequences</s:String>
+    <s:String x:Key="LblToolTipSubSample" xml:space="preserve">SubSampling Frame
 Drag the rectangle over the part of the frame you want to subsample and enable subsampling in snap. Your camera will only download the selected area.</s:String>
-  <s:String x:Key="LblTooltipTakeExposure" xml:space="default">Starts Exposure</s:String>
-  <s:String x:Key="LblTotalNo" xml:space="default">Total #</s:String>
-  <s:String x:Key="LblTrace" xml:space="default">Trace</s:String>
-  <s:String x:Key="LblTracking" xml:space="default">Tracking</s:String>
-  <s:String x:Key="LblTransitNorth" xml:space="default">Transit North</s:String>
-  <s:String x:Key="LblTransitSouth" xml:space="default">Transit South</s:String>
-  <s:String x:Key="LblTrendHyperbolic" xml:space="default">Trends and Hyperbolic</s:String>
-  <s:String x:Key="LblTrendLines" xml:space="default">Trend Lines</s:String>
-  <s:String x:Key="LblTrendParabolic" xml:space="default">Trends and Parabolic</s:String>
-  <s:String x:Key="LblType" xml:space="default">Type</s:String>
-  <s:String x:Key="LblUnableToConnectCamera" xml:space="default">Unable to connect camera</s:String>
-  <s:String x:Key="LblUnableToSetExposureTime" xml:space="default">Unable to set exposure time</s:String>
-  <s:String x:Key="LblUnableToSetISO" xml:space="default">Unable to set ISO</s:String>
-  <s:String x:Key="LblUnableToStartExposure" xml:space="default">Unable to start camera exposure</s:String>
-  <s:String x:Key="LblUnableToSync" xml:space="default">Unable to sync. Telescope is not connected</s:String>
-  <s:String x:Key="LblUnexpectedError" xml:space="default">Unexpected error occurred</s:String>
-  <s:String x:Key="LblUnhandledException" xml:space="default">Unhandled Exception occurred</s:String>
-  <s:String x:Key="LblUnlinkedStretch" xml:space="default">Unlinked Stretch</s:String>
-  <s:String x:Key="LblUnlinkedStretchTooltip" xml:space="default">
+    <s:String x:Key="LblTooltipTakeExposure" xml:space="default">Starts Exposure</s:String>
+    <s:String x:Key="LblTotalNo" xml:space="default">Total #</s:String>
+    <s:String x:Key="LblTrace" xml:space="default">Trace</s:String>
+    <s:String x:Key="LblTracking" xml:space="default">Tracking</s:String>
+    <s:String x:Key="LblTransitNorth" xml:space="default">Transit North</s:String>
+    <s:String x:Key="LblTransitSouth" xml:space="default">Transit South</s:String>
+    <s:String x:Key="LblTrendHyperbolic" xml:space="default">Trends and Hyperbolic</s:String>
+    <s:String x:Key="LblTrendLines" xml:space="default">Trend Lines</s:String>
+    <s:String x:Key="LblTrendParabolic" xml:space="default">Trends and Parabolic</s:String>
+    <s:String x:Key="LblType" xml:space="default">Type</s:String>
+    <s:String x:Key="LblUnableToConnectCamera" xml:space="default">Unable to connect camera</s:String>
+    <s:String x:Key="LblUnableToSetExposureTime" xml:space="default">Unable to set exposure time</s:String>
+    <s:String x:Key="LblUnableToSetISO" xml:space="default">Unable to set ISO</s:String>
+    <s:String x:Key="LblUnableToStartExposure" xml:space="default">Unable to start camera exposure</s:String>
+    <s:String x:Key="LblUnableToSync" xml:space="default">Unable to sync. Telescope is not connected</s:String>
+    <s:String x:Key="LblUnexpectedError" xml:space="default">Unexpected error occurred</s:String>
+    <s:String x:Key="LblUnhandledException" xml:space="default">Unhandled Exception occurred</s:String>
+    <s:String x:Key="LblUnlinkedStretch" xml:space="default">Unlinked Stretch</s:String>
+    <s:String x:Key="LblUnlinkedStretchTooltip" xml:space="default">
         When enabled, color channels will be stretched separately, helping hide the
         sky background and enhancing autofocus and platesolving reliablity, especially
         in light polluted areas. Processing time is however increased.
     </s:String>
-  <s:String x:Key="LblUnpark" xml:space="default">Unpark</s:String>
-  <s:String x:Key="LblUpdate" xml:space="default">Update</s:String>
-  <s:String x:Key="LblUpdating" xml:space="default">Updating</s:String>
-  <s:String x:Key="LblURL" xml:space="default">Url</s:String>
-  <s:String x:Key="LblUSBLimit" xml:space="default">USB Limit</s:String>
-  <s:String x:Key="LblUseBlindSolveFailover" xml:space="default">Plate solve failed. Try to solve using Blind Solver?</s:String>
-  <s:String x:Key="LblUseBlindSolveNoCoordinatesRollover" xml:space="default">No reference coordinates available. Should the blind solver be used instead?</s:String>
-  <s:String x:Key="LblUseBuldMode" xml:space="default">Use bulb mode</s:String>
-  <s:String x:Key="LblUseSideOfPier" xml:space="default">Use Telescope Side of Pier</s:String>
-  <s:String x:Key="LblUseSnapPort" xml:space="default">Use Telescope Snap Port</s:String>
-  <s:String x:Key="LblVerticalPanels" xml:space="default">Vertical Panels</s:String>
-  <s:String x:Key="LblWaitForDither" xml:space="default">Waiting for dither to finish</s:String>
-  <s:String x:Key="LblWaitForImageProcessing" xml:space="default">Waiting for previous image to finish processing</s:String>
-  <s:String x:Key="LblWaitForImageSaving" xml:space="default">Waiting for image saving</s:String>
-  <s:String x:Key="LblWaitForTemperatureStep" xml:space="default">Waiting for camera to reach next temperature step</s:String>
-  <s:String x:Key="LblWaitingForCamera" xml:space="default">Waiting for Camera</s:String>
-  <s:String x:Key="LblWarmCamAtSequenceEnd" xml:space="default">Warm camera when sequence ends</s:String>
-  <s:String x:Key="LblWarmEnabledButCameraCannotWarm" xml:space="default">Camera is set to warm up at end of sequence, yet it is unable to do so</s:String>
-  <s:String x:Key="LblWarming" xml:space="default">Warming</s:String>
-  <s:String x:Key="LblWarning" xml:space="default">Warning</s:String>
-  <s:String x:Key="LblWeather" xml:space="default">Weather</s:String>
-  <s:String x:Key="LblWeatherASCOMConnectFailed" xml:space="default">Unable to connect to ASCOM ObservingConditions driver:</s:String>
-  <s:String x:Key="LblWeatherConnected" xml:space="default">Weather data source connected</s:String>
-  <s:String x:Key="LblWeatherConnectionLost" xml:space="default">Weather data source connection failed</s:String>
-  <s:String x:Key="LblWeatherDisconnect" xml:space="default">Weather data source disconnected</s:String>
-  <s:String x:Key="LblWeatherDisplayFahrenheit" xml:space="default">Fahrenheit Temperatures</s:String>
-  <s:String x:Key="LblWeatherDisplayFahrenheitTooltip" xml:space="default">Display temperatures in Fahrenheit</s:String>
-  <s:String x:Key="LblWeatherDisplayImperial" xml:space="default">Imperial Units</s:String>
-  <s:String x:Key="LblWeatherDisplayImperialTooltip" xml:space="default">Display non-temperature weather data in Imperial units</s:String>
-  <s:String x:Key="LblWeatherNoSource" xml:space="default">No Weather Data Source</s:String>
-  <s:String x:Key="LblWeatherReconnect" xml:space="default">Weather data source connection lost! Error message:</s:String>
-  <s:String x:Key="LblWelcome" xml:space="default">Welcome to Nighttime Imaging 'N' Astronomy!</s:String>
-  <s:String x:Key="LblWest" xml:space="default">West</s:String>
-  <s:String x:Key="LblWidth" xml:space="default">Width</s:String>
-  <s:String x:Key="LblWindDirection" xml:space="default">Wind Direction</s:String>
-  <s:String x:Key="LblWindGust" xml:space="default">Wind Gust</s:String>
-  <s:String x:Key="LblWindSpeed" xml:space="default">Wind Speed</s:String>
-  <s:String x:Key="LblXAxisScale" xml:space="default">X-Axis Scale</s:String>
-  <s:String x:Key="LblXisf" xml:space="default">XISF</s:String>
-  <s:String x:Key="LblYAxisScale" xml:space="default">Y-Axis Scale</s:String>
-  <s:String x:Key="LblYAxisUnits" xml:space="default">Y-Axis Units</s:String>
-  <s:String x:Key="LblYes" xml:space="default">Yes</s:String>
-  <s:String x:Key="LblZoomIn" xml:space="default">Zoom in by 25%</s:String>
-  <s:String x:Key="LblZoomOut" xml:space="default">Zoom out by 25%</s:String>
-  <s:String x:Key="LblZoomStretch" xml:space="default">Fit Image to Area</s:String>
+    <s:String x:Key="LblUnpark" xml:space="default">Unpark</s:String>
+    <s:String x:Key="LblUpdate" xml:space="default">Update</s:String>
+    <s:String x:Key="LblUpdating" xml:space="default">Updating</s:String>
+    <s:String x:Key="LblURL" xml:space="default">Url</s:String>
+    <s:String x:Key="LblUSBLimit" xml:space="default">USB Limit</s:String>
+    <s:String x:Key="LblUseBlindSolveFailover" xml:space="default">Plate solve failed. Try to solve using Blind Solver?</s:String>
+    <s:String x:Key="LblUseBlindSolveNoCoordinatesRollover" xml:space="default">No reference coordinates available. Should the blind solver be used instead?</s:String>
+    <s:String x:Key="LblUseBuldMode" xml:space="default">Use bulb mode</s:String>
+    <s:String x:Key="LblUseSideOfPier" xml:space="default">Use Telescope Side of Pier</s:String>
+    <s:String x:Key="LblUseSnapPort" xml:space="default">Use Telescope Snap Port</s:String>
+    <s:String x:Key="LblVerticalPanels" xml:space="default">Vertical Panels</s:String>
+    <s:String x:Key="LblWaitForDither" xml:space="default">Waiting for dither to finish</s:String>
+    <s:String x:Key="LblWaitForImageProcessing" xml:space="default">Waiting for previous image to finish processing</s:String>
+    <s:String x:Key="LblWaitForImageSaving" xml:space="default">Waiting for image saving</s:String>
+    <s:String x:Key="LblWaitForTemperatureStep" xml:space="default">Waiting for camera to reach next temperature step</s:String>
+    <s:String x:Key="LblWaitingForCamera" xml:space="default">Waiting for Camera</s:String>
+    <s:String x:Key="LblWarmCamAtSequenceEnd" xml:space="default">Warm camera when sequence ends</s:String>
+    <s:String x:Key="LblWarmEnabledButCameraCannotWarm" xml:space="default">Camera is set to warm up at end of sequence, yet it is unable to do so</s:String>
+    <s:String x:Key="LblWarming" xml:space="default">Warming</s:String>
+    <s:String x:Key="LblWarning" xml:space="default">Warning</s:String>
+    <s:String x:Key="LblWeather" xml:space="default">Weather</s:String>
+    <s:String x:Key="LblWeatherASCOMConnectFailed" xml:space="default">Unable to connect to ASCOM ObservingConditions driver:</s:String>
+    <s:String x:Key="LblWeatherConnected" xml:space="default">Weather data source connected</s:String>
+    <s:String x:Key="LblWeatherConnectionLost" xml:space="default">Weather data source connection failed</s:String>
+    <s:String x:Key="LblWeatherDisconnect" xml:space="default">Weather data source disconnected</s:String>
+    <s:String x:Key="LblWeatherDisplayFahrenheit" xml:space="default">Fahrenheit Temperatures</s:String>
+    <s:String x:Key="LblWeatherDisplayFahrenheitTooltip" xml:space="default">Display temperatures in Fahrenheit</s:String>
+    <s:String x:Key="LblWeatherDisplayImperial" xml:space="default">Imperial Units</s:String>
+    <s:String x:Key="LblWeatherDisplayImperialTooltip" xml:space="default">Display non-temperature weather data in Imperial units</s:String>
+    <s:String x:Key="LblWeatherNoSource" xml:space="default">No Weather Data Source</s:String>
+    <s:String x:Key="LblWeatherReconnect" xml:space="default">Weather data source connection lost! Error message:</s:String>
+    <s:String x:Key="LblWelcome" xml:space="default">Welcome to Nighttime Imaging 'N' Astronomy!</s:String>
+    <s:String x:Key="LblWest" xml:space="default">West</s:String>
+    <s:String x:Key="LblWidth" xml:space="default">Width</s:String>
+    <s:String x:Key="LblWindDirection" xml:space="default">Wind Direction</s:String>
+    <s:String x:Key="LblWindGust" xml:space="default">Wind Gust</s:String>
+    <s:String x:Key="LblWindSpeed" xml:space="default">Wind Speed</s:String>
+    <s:String x:Key="LblXAxisScale" xml:space="default">X-Axis Scale</s:String>
+    <s:String x:Key="LblXisf" xml:space="default">XISF</s:String>
+    <s:String x:Key="LblYAxisScale" xml:space="default">Y-Axis Scale</s:String>
+    <s:String x:Key="LblYAxisUnits" xml:space="default">Y-Axis Units</s:String>
+    <s:String x:Key="LblYes" xml:space="default">Yes</s:String>
+    <s:String x:Key="LblZoomIn" xml:space="default">Zoom in by 25%</s:String>
+    <s:String x:Key="LblZoomOut" xml:space="default">Zoom out by 25%</s:String>
+    <s:String x:Key="LblZoomStretch" xml:space="default">Fit Image to Area</s:String>
 </ResourceDictionary>
