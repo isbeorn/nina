@@ -86,7 +86,9 @@ namespace NINALocaleManager {
                 elem.Add(xmlEntry);
             }
 
-            using (var writer = XmlWriter.Create(filePath, new XmlWriterSettings { OmitXmlDeclaration = true, Indent = true })) {
+            // Use an indent value of 4 spaces to match Visual Studio indentation rules. Otherwise we will incur file rewrites when someone
+            // uses the text editor on a locale file produced by LocaleManager, or when LocaleManager is used on a file produced by a text editor.
+            using (var writer = XmlWriter.Create(filePath, new XmlWriterSettings { OmitXmlDeclaration = true, Indent = true, IndentChars = "    " })) {
                 elem.Save(writer);
             }
         }
