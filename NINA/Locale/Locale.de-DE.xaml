@@ -656,126 +656,126 @@ Berechneter HFR: {2}
         Client hat sich zum synchronisierten PHD2 Service verbunden.
         Verbundene Clients: {0}
     </s:String>
-  <s:String x:Key="LblPhd2SynchronizedServiceStarted" xml:space="default">Synchronisierter PHD2 Service gestartet</s:String>
-  <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0} ({1}")</s:String>
-  <s:String x:Key="LblPixels" xml:space="default">Pixel</s:String>
-  <s:String x:Key="LblPixelScale" xml:space="default">Pixel Maßstab</s:String>
-  <s:String x:Key="LblPixelSize" xml:space="default">Pixelgröße</s:String>
-  <s:String x:Key="LblPixelSizeX" xml:space="default">Pixel Größe X</s:String>
-  <s:String x:Key="LblPixelSizeY" xml:space="default">Pixel Größe Y</s:String>
-  <s:String x:Key="LblPlanetarium" xml:space="default">Planetarium</s:String>
-  <s:String x:Key="LblPlanetariumCoordsError" xml:space="default">Konnte nicht die Koordinaten von {0} erhalten</s:String>
-  <s:String x:Key="LblPlanetariumCoordsOk" xml:space="default">Koordinaten von {0} erhalten</s:String>
-  <s:String x:Key="LblPlanetariumPrefs" xml:space="default">Planetarium Einstellungen</s:String>
-  <s:String x:Key="LblPlanetariumTooltip" xml:space="default">Koordinaten von der Planetariumsoftware erhalten</s:String>
-  <s:String x:Key="LblPlatesolve2" xml:space="default">Platesolve2</s:String>
-  <s:String x:Key="LblPlatesolve2Directory" xml:space="default">Platesolve2 Ort</s:String>
-  <s:String x:Key="LblPlatesolve2NoCoordinates" xml:space="default">Keine Koordinaten verfügbar. Platesolve2 benötigt Koordinaten zum platesolven!</s:String>
-  <s:String x:Key="LblPlatesolve2NotFound" xml:space="default">Platesolve2 exe wurde nicht gefunden werden</s:String>
-  <s:String x:Key="LblPlateSolvedPolarAlignment" xml:space="default">Polarausrichtung mit Hilfe von Platesolving</s:String>
-  <s:String x:Key="LblPlateSolveEnding" xml:space="default">Platesolve hat die maximale Anzahl Versuche erreicht oder ein Meridian Flip ist notwendig</s:String>
-  <s:String x:Key="LblPlatesolveFailed" xml:space="default">Platesolve fehlgeschlagen</s:String>
-  <s:String x:Key="LblPlateSolveFailedDelay" xml:space="default">Verzögerung zwischen Versuchen</s:String>
-  <s:String x:Key="LblPlateSolveFailedDelayTooltip" xml:space="default">Verzögerung zwischen zwei Platesolve Versuchen in Minuten</s:String>
-  <s:String x:Key="LblPlateSolveImage" xml:space="default">Aktuelles Bild platesolven</s:String>
-  <s:String x:Key="LblPlateSolveNbOfAttempts" xml:space="default">Anzahl Versuche</s:String>
-  <s:String x:Key="LblPlateSolveNbOfAttemptsTooltip" xml:space="default">Wie viele Versuche ein wiederholtes Platesolve unternehmen soll bevor es als fehlgeschlagen angesehen wird</s:String>
-  <s:String x:Key="LblPlatesolveNoCoordinates" xml:space="default">Keine Referenzkoordinaten verfügbar</s:String>
-  <s:String x:Key="LblPlateSolveNoFocalLength" xml:space="default">Platesolve abgebrochen. Die effektive Brennweite des Teleskops muss in den Optionen &gt; Equipment angegeben werden</s:String>
-  <s:String x:Key="LblPlatesolveProvidedBy" xml:space="default">Platesolve service zur Verfügung gestellt von</s:String>
-  <s:String x:Key="LblPlateSolver" xml:space="default">Plate Solver</s:String>
-  <s:String x:Key="LblPlateSolveReattemptDelay" xml:space="default">Warte auf den nächsten Platesolve Versuch: {0}</s:String>
-  <s:String x:Key="LblPlateSolveSettings" xml:space="default">Plate Solver Settings</s:String>
-  <s:String x:Key="LblPlateSolving" xml:space="default">Plate Solving</s:String>
-  <s:String x:Key="LblPleaseChangeToFilter" xml:space="default">Bitte zu Filter {0} wechseln</s:String>
-  <s:String x:Key="LblPleaseRotate" xml:space="default">Bitte um {0} Grad drehen</s:String>
-  <s:String x:Key="LblPolarAlignment" xml:space="default">Polarausrichtung</s:String>
-  <s:String x:Key="LblPort" xml:space="default">Port</s:String>
-  <s:String x:Key="LblPosition" xml:space="default">Position</s:String>
-  <s:String x:Key="LblPreferredPlanetarium" xml:space="default">Bevorzugte Planetarium Software</s:String>
-  <s:String x:Key="LblPrepareExposure" xml:space="default">Belichtung wird vorbereitet</s:String>
-  <s:String x:Key="LblPrepareImage" xml:space="default">Bereite Bild vor</s:String>
-  <s:String x:Key="LblPreparingDarkFlatSequence" xml:space="default">Bereite Dark Flat Sequenz vor</s:String>
-  <s:String x:Key="LblPreSequenceChecklist" xml:space="default">Die folgenden potentiellen Probleme wurden in der Sequenz gefunden:</s:String>
-  <s:String x:Key="LblPreSequenceChecklistHeader" xml:space="default">Pre-Sequenzcheckliste</s:String>
-  <s:String x:Key="LblPressure" xml:space="default">Druck</s:String>
-  <s:String x:Key="LblPrimary" xml:space="default">Primär</s:String>
-  <s:String x:Key="LblProfiles" xml:space="default">Profile</s:String>
-  <s:String x:Key="LblProgress" xml:space="default">Fortschritt</s:String>
-  <s:String x:Key="LblPx" xml:space="default">px</s:String>
-  <s:String x:Key="LblRA" xml:space="default">RA</s:String>
-  <s:String x:Key="LblRACorrections" xml:space="default">RA Korrekturen</s:String>
-  <s:String x:Key="LblRadius" xml:space="default">Radius</s:String>
-  <s:String x:Key="LblRAError" xml:space="default">RA Fehler</s:String>
-  <s:String x:Key="LblRainRate" xml:space="default">Niederschlagsrate</s:String>
-  <s:String x:Key="LblRAPixError" xml:space="default">RA Pix Fehler</s:String>
-  <s:String x:Key="LblRate" xml:space="default">Rate</s:String>
-  <s:String x:Key="LblRawConverter" xml:space="default">Raw Konvertierer</s:String>
-  <s:String x:Key="LblRawConverterTooltip" xml:space="default">Gibt an welches Tool zur Raw konvertierung genutzt werden soll</s:String>
-  <s:String x:Key="LblReadNoise" xml:space="default">Ausleserauschen in e</s:String>
-  <s:String x:Key="LblReadoutForNormalImages" xml:space="default">Auslesemodus für Sequenzen</s:String>
-  <s:String x:Key="LblReadoutForNormalImagesToolTip" xml:space="default">Dieser Auslesemodus wird für LIGHT, BIAS, DARK, FLAT und DARKFLAT Bilder in Sequenzen verwendet</s:String>
-  <s:String x:Key="LblReadoutForSnapImages" xml:space="default">Auslesemodus für Snapshots</s:String>
-  <s:String x:Key="LblReadoutForSnapImagesToolTip" xml:space="default">Dieser Auslesemodus wird für Plate Solving, zur Ausrichtung und Autofokus verwendet</s:String>
-  <s:String x:Key="LblRecenter" xml:space="default">Zentrieren</s:String>
-  <s:String x:Key="LblRecenterAfterFlip" xml:space="default">Zentrieren nach Flip</s:String>
-  <s:String x:Key="LblRecenterImage" xml:space="default">Bild neu Zentrieren</s:String>
-  <s:String x:Key="LblReconnectAll" xml:space="default">Alle Geräte neu verbinden?</s:String>
-  <s:String x:Key="LblReconnectCamera" xml:space="default">Kamera bitte neu verbinden!</s:String>
-  <s:String x:Key="LblReconnectFilterwheel" xml:space="default">Filterrad bitte neu verbinden!</s:String>
-  <s:String x:Key="LblReconnectFocuser" xml:space="default">Okularauszug bitte neu verbinden!</s:String>
-  <s:String x:Key="LblReconnectTelescope" xml:space="default">Teleskop bitte neu verbinden!</s:String>
-  <s:String x:Key="LblReferenceDate" xml:space="default">Referenzdatum</s:String>
-  <s:String x:Key="LblRegions" xml:space="default">Regionen</s:String>
-  <s:String x:Key="LblRelease" xml:space="default">Veröffentlicht</s:String>
-  <s:String x:Key="LblRemaining" xml:space="default">Verbleibend</s:String>
-  <s:String x:Key="LblRemainingNo" xml:space="default"># verbleibend</s:String>
-  <s:String x:Key="LblRemoveProfileCaption" xml:space="default">Profil entfernen?</s:String>
-  <s:String x:Key="LblRemoveProfileText" xml:space="default">Soll das Profil mit Namen: {0} und Id: {1} entfernt werden?</s:String>
-  <s:String x:Key="LblRepeatUntil" xml:space="default">Wiederholen bis</s:String>
-  <s:String x:Key="LblReplaceSequenceTarget" xml:space="default">Als Sequenzziel ersetzen</s:String>
-  <s:String x:Key="LblRescanDevices" xml:space="default">Geräte erneut suchen</s:String>
-  <s:String x:Key="LblResetAndContinue" xml:space="default">Zurücksetzen und Fortfahren</s:String>
-  <s:String x:Key="LblResetDockLayout" xml:space="default">Layout zurücksetzen</s:String>
-  <s:String x:Key="LblResetDockLayoutConfirmation" xml:space="default">Soll das Layout im Imaging Fenster zurückgesetzt werden?</s:String>
-  <s:String x:Key="LblReslewToTarget" xml:space="default">Erneut zum Ziel schwenken</s:String>
-  <s:String x:Key="LblResumeAutoguider" xml:space="default">Autoguider fortsetzen</s:String>
-  <s:String x:Key="LblResumeGuiding" xml:space="default">Guiding wiederaufnehmen</s:String>
-  <s:String x:Key="LblResumeSettleTime" xml:space="default">Ruhezeit nach Wiederaufnahme</s:String>
-  <s:String x:Key="LblResumeTracking" xml:space="default">Nachführung wiederaufnehmen</s:String>
-  <s:String x:Key="LblResuming" xml:space="default">Wiederaufnehmen</s:String>
-  <s:String x:Key="LblRightAscension" xml:space="default">Rektaszension</s:String>
-  <s:String x:Key="LblRotation" xml:space="default">Rotation</s:String>
-  <s:String x:Key="LblRotationRequired" xml:space="default">Kamera Rotation benötigt</s:String>
-  <s:String x:Key="LblRotationTolerance" xml:space="default">Rotationstoleranz</s:String>
-  <s:String x:Key="LblRotator" xml:space="default">Rotator</s:String>
-  <s:String x:Key="LblRotatorConnected" xml:space="default">Rotator verbunden</s:String>
-  <s:String x:Key="LblRotatorConnectionLost" xml:space="default">Verbindung zum Rotator verloren! Bitte Rotator erneut verbinden!</s:String>
-  <s:String x:Key="LblSave" xml:space="default">Speichern</s:String>
-  <s:String x:Key="LblSaveBacklashQuestion" xml:space="default">Sollen die Backlash Messwerte des Okularauszug gespeichert werden?</s:String>
-  <s:String x:Key="LblSaveImageAs" xml:space="default">Bild speichrn unter</s:String>
-  <s:String x:Key="LblSaveImageAsDSLRNote" xml:space="default">Bei DSLRs wird die Bilddateiformat Einstellung ignoriert. Stattdessen werden RAW Dateien gespeichert!</s:String>
-  <s:String x:Key="LblSaveSelectedProfileAndDontAskAgain" xml:space="default">Gewähltes Profil speichern und nicht nochmal fragen</s:String>
-  <s:String x:Key="LblSaveSequence" xml:space="default">Sequenz speichern</s:String>
-  <s:String x:Key="LblSaveSequenceToolTip" xml:space="default">Speichere Sequenz als XML Datei</s:String>
-  <s:String x:Key="LblScopeSettleTimeAfterFlip" xml:space="default">Teleskop Ruhezeit nach Flip (Sekunden)</s:String>
-  <s:String x:Key="LblSearch" xml:space="default">Suche</s:String>
-  <s:String x:Key="LblSearchRadius" xml:space="default">Suchradius</s:String>
-  <s:String x:Key="LblSecondary" xml:space="default">Sekundär</s:String>
-  <s:String x:Key="LblSecondaryBackground" xml:space="default">Sekundärer Hintergrund</s:String>
-  <s:String x:Key="LblSelectGuidestar" xml:space="default">Neuer Leitstern wird ausgewählt</s:String>
-  <s:String x:Key="LblSelectNewGuideStar" xml:space="default">Selektiere neuen Leitstern</s:String>
-  <s:String x:Key="LblSelectProfileInUseWarning" xml:space="default">Profil kann nicht ausgewählt werden. Es wird bereits von einer anderen N.I.N.A. Instanz verwendet!</s:String>
-  <s:String x:Key="LblSensorName" xml:space="default">Sensor Name</s:String>
-  <s:String x:Key="LblSensorType" xml:space="default">Sensor Typ</s:String>
-  <s:String x:Key="LblSequence" xml:space="default">Sequenz</s:String>
-  <s:String x:Key="LblSequenceDelay" xml:space="default">Delay start (seconds)</s:String>
-  <s:String x:Key="LblSequenceDelayStatus" xml:space="default">Sequenz startet in {0} Sekunden</s:String>
-  <s:String x:Key="LblSequenceMode" xml:space="default">Sequenzmodus</s:String>
-  <s:String x:Key="LblSequenceModeRotate" xml:space="default">Durchrotieren</s:String>
-  <s:String x:Key="LblSequenceModeStandard" xml:space="default">Eine nach der anderen</s:String>
-  <s:String x:Key="LblSequenceTemplate" xml:space="default">Sequenzvorlage</s:String>
-  <s:String x:Key="LblSequenceTemplateTooltip" xml:space="preserve">Pfad zu einer vorher exportierten Sequenz, die als Vorlage dienen soll.
+    <s:String x:Key="LblPhd2SynchronizedServiceStarted" xml:space="default">Synchronisierter PHD2 Service gestartet</s:String>
+    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0} ({1}")</s:String>
+    <s:String x:Key="LblPixels" xml:space="default">Pixel</s:String>
+    <s:String x:Key="LblPixelScale" xml:space="default">Pixel Maßstab</s:String>
+    <s:String x:Key="LblPixelSize" xml:space="default">Pixelgröße</s:String>
+    <s:String x:Key="LblPixelSizeX" xml:space="default">Pixel Größe X</s:String>
+    <s:String x:Key="LblPixelSizeY" xml:space="default">Pixel Größe Y</s:String>
+    <s:String x:Key="LblPlanetarium" xml:space="default">Planetarium</s:String>
+    <s:String x:Key="LblPlanetariumCoordsError" xml:space="default">Konnte nicht die Koordinaten von {0} erhalten</s:String>
+    <s:String x:Key="LblPlanetariumCoordsOk" xml:space="default">Koordinaten von {0} erhalten</s:String>
+    <s:String x:Key="LblPlanetariumPrefs" xml:space="default">Planetarium Einstellungen</s:String>
+    <s:String x:Key="LblPlanetariumTooltip" xml:space="default">Koordinaten von der Planetariumsoftware erhalten</s:String>
+    <s:String x:Key="LblPlatesolve2" xml:space="default">Platesolve2</s:String>
+    <s:String x:Key="LblPlatesolve2Directory" xml:space="default">Platesolve2 Ort</s:String>
+    <s:String x:Key="LblPlatesolve2NoCoordinates" xml:space="default">Keine Koordinaten verfügbar. Platesolve2 benötigt Koordinaten zum platesolven!</s:String>
+    <s:String x:Key="LblPlatesolve2NotFound" xml:space="default">Platesolve2 exe wurde nicht gefunden werden</s:String>
+    <s:String x:Key="LblPlateSolvedPolarAlignment" xml:space="default">Polarausrichtung mit Hilfe von Platesolving</s:String>
+    <s:String x:Key="LblPlateSolveEnding" xml:space="default">Platesolve hat die maximale Anzahl Versuche erreicht oder ein Meridian Flip ist notwendig</s:String>
+    <s:String x:Key="LblPlatesolveFailed" xml:space="default">Platesolve fehlgeschlagen</s:String>
+    <s:String x:Key="LblPlateSolveFailedDelay" xml:space="default">Verzögerung zwischen Versuchen</s:String>
+    <s:String x:Key="LblPlateSolveFailedDelayTooltip" xml:space="default">Verzögerung zwischen zwei Platesolve Versuchen in Minuten</s:String>
+    <s:String x:Key="LblPlateSolveImage" xml:space="default">Aktuelles Bild platesolven</s:String>
+    <s:String x:Key="LblPlateSolveNbOfAttempts" xml:space="default">Anzahl Versuche</s:String>
+    <s:String x:Key="LblPlateSolveNbOfAttemptsTooltip" xml:space="default">Wie viele Versuche ein wiederholtes Platesolve unternehmen soll bevor es als fehlgeschlagen angesehen wird</s:String>
+    <s:String x:Key="LblPlatesolveNoCoordinates" xml:space="default">Keine Referenzkoordinaten verfügbar</s:String>
+    <s:String x:Key="LblPlateSolveNoFocalLength" xml:space="default">Platesolve abgebrochen. Die effektive Brennweite des Teleskops muss in den Optionen &gt; Equipment angegeben werden</s:String>
+    <s:String x:Key="LblPlatesolveProvidedBy" xml:space="default">Platesolve service zur Verfügung gestellt von</s:String>
+    <s:String x:Key="LblPlateSolver" xml:space="default">Plate Solver</s:String>
+    <s:String x:Key="LblPlateSolveReattemptDelay" xml:space="default">Warte auf den nächsten Platesolve Versuch: {0}</s:String>
+    <s:String x:Key="LblPlateSolveSettings" xml:space="default">Plate Solver Settings</s:String>
+    <s:String x:Key="LblPlateSolving" xml:space="default">Plate Solving</s:String>
+    <s:String x:Key="LblPleaseChangeToFilter" xml:space="default">Bitte zu Filter {0} wechseln</s:String>
+    <s:String x:Key="LblPleaseRotate" xml:space="default">Bitte um {0} Grad drehen</s:String>
+    <s:String x:Key="LblPolarAlignment" xml:space="default">Polarausrichtung</s:String>
+    <s:String x:Key="LblPort" xml:space="default">Port</s:String>
+    <s:String x:Key="LblPosition" xml:space="default">Position</s:String>
+    <s:String x:Key="LblPreferredPlanetarium" xml:space="default">Bevorzugte Planetarium Software</s:String>
+    <s:String x:Key="LblPrepareExposure" xml:space="default">Belichtung wird vorbereitet</s:String>
+    <s:String x:Key="LblPrepareImage" xml:space="default">Bereite Bild vor</s:String>
+    <s:String x:Key="LblPreparingDarkFlatSequence" xml:space="default">Bereite Dark Flat Sequenz vor</s:String>
+    <s:String x:Key="LblPreSequenceChecklist" xml:space="default">Die folgenden potentiellen Probleme wurden in der Sequenz gefunden:</s:String>
+    <s:String x:Key="LblPreSequenceChecklistHeader" xml:space="default">Pre-Sequenzcheckliste</s:String>
+    <s:String x:Key="LblPressure" xml:space="default">Druck</s:String>
+    <s:String x:Key="LblPrimary" xml:space="default">Primär</s:String>
+    <s:String x:Key="LblProfiles" xml:space="default">Profile</s:String>
+    <s:String x:Key="LblProgress" xml:space="default">Fortschritt</s:String>
+    <s:String x:Key="LblPx" xml:space="default">px</s:String>
+    <s:String x:Key="LblRA" xml:space="default">RA</s:String>
+    <s:String x:Key="LblRACorrections" xml:space="default">RA Korrekturen</s:String>
+    <s:String x:Key="LblRadius" xml:space="default">Radius</s:String>
+    <s:String x:Key="LblRAError" xml:space="default">RA Fehler</s:String>
+    <s:String x:Key="LblRainRate" xml:space="default">Niederschlagsrate</s:String>
+    <s:String x:Key="LblRAPixError" xml:space="default">RA Pix Fehler</s:String>
+    <s:String x:Key="LblRate" xml:space="default">Rate</s:String>
+    <s:String x:Key="LblRawConverter" xml:space="default">Raw Konvertierer</s:String>
+    <s:String x:Key="LblRawConverterTooltip" xml:space="default">Gibt an welches Tool zur Raw konvertierung genutzt werden soll</s:String>
+    <s:String x:Key="LblReadNoise" xml:space="default">Ausleserauschen in e</s:String>
+    <s:String x:Key="LblReadoutForNormalImages" xml:space="default">Auslesemodus für Sequenzen</s:String>
+    <s:String x:Key="LblReadoutForNormalImagesToolTip" xml:space="default">Dieser Auslesemodus wird für LIGHT, BIAS, DARK, FLAT und DARKFLAT Bilder in Sequenzen verwendet</s:String>
+    <s:String x:Key="LblReadoutForSnapImages" xml:space="default">Auslesemodus für Snapshots</s:String>
+    <s:String x:Key="LblReadoutForSnapImagesToolTip" xml:space="default">Dieser Auslesemodus wird für Plate Solving, zur Ausrichtung und Autofokus verwendet</s:String>
+    <s:String x:Key="LblRecenter" xml:space="default">Zentrieren</s:String>
+    <s:String x:Key="LblRecenterAfterFlip" xml:space="default">Zentrieren nach Flip</s:String>
+    <s:String x:Key="LblRecenterImage" xml:space="default">Bild neu Zentrieren</s:String>
+    <s:String x:Key="LblReconnectAll" xml:space="default">Alle Geräte neu verbinden?</s:String>
+    <s:String x:Key="LblReconnectCamera" xml:space="default">Kamera bitte neu verbinden!</s:String>
+    <s:String x:Key="LblReconnectFilterwheel" xml:space="default">Filterrad bitte neu verbinden!</s:String>
+    <s:String x:Key="LblReconnectFocuser" xml:space="default">Okularauszug bitte neu verbinden!</s:String>
+    <s:String x:Key="LblReconnectTelescope" xml:space="default">Teleskop bitte neu verbinden!</s:String>
+    <s:String x:Key="LblReferenceDate" xml:space="default">Referenzdatum</s:String>
+    <s:String x:Key="LblRegions" xml:space="default">Regionen</s:String>
+    <s:String x:Key="LblRelease" xml:space="default">Veröffentlicht</s:String>
+    <s:String x:Key="LblRemaining" xml:space="default">Verbleibend</s:String>
+    <s:String x:Key="LblRemainingNo" xml:space="default"># verbleibend</s:String>
+    <s:String x:Key="LblRemoveProfileCaption" xml:space="default">Profil entfernen?</s:String>
+    <s:String x:Key="LblRemoveProfileText" xml:space="default">Soll das Profil mit Namen: {0} und Id: {1} entfernt werden?</s:String>
+    <s:String x:Key="LblRepeatUntil" xml:space="default">Wiederholen bis</s:String>
+    <s:String x:Key="LblReplaceSequenceTarget" xml:space="default">Als Sequenzziel ersetzen</s:String>
+    <s:String x:Key="LblRescanDevices" xml:space="default">Geräte erneut suchen</s:String>
+    <s:String x:Key="LblResetAndContinue" xml:space="default">Zurücksetzen und Fortfahren</s:String>
+    <s:String x:Key="LblResetDockLayout" xml:space="default">Layout zurücksetzen</s:String>
+    <s:String x:Key="LblResetDockLayoutConfirmation" xml:space="default">Soll das Layout im Imaging Fenster zurückgesetzt werden?</s:String>
+    <s:String x:Key="LblReslewToTarget" xml:space="default">Erneut zum Ziel schwenken</s:String>
+    <s:String x:Key="LblResumeAutoguider" xml:space="default">Autoguider fortsetzen</s:String>
+    <s:String x:Key="LblResumeGuiding" xml:space="default">Guiding wiederaufnehmen</s:String>
+    <s:String x:Key="LblResumeSettleTime" xml:space="default">Ruhezeit nach Wiederaufnahme</s:String>
+    <s:String x:Key="LblResumeTracking" xml:space="default">Nachführung wiederaufnehmen</s:String>
+    <s:String x:Key="LblResuming" xml:space="default">Wiederaufnehmen</s:String>
+    <s:String x:Key="LblRightAscension" xml:space="default">Rektaszension</s:String>
+    <s:String x:Key="LblRotation" xml:space="default">Rotation</s:String>
+    <s:String x:Key="LblRotationRequired" xml:space="default">Kamera Rotation benötigt</s:String>
+    <s:String x:Key="LblRotationTolerance" xml:space="default">Rotationstoleranz</s:String>
+    <s:String x:Key="LblRotator" xml:space="default">Rotator</s:String>
+    <s:String x:Key="LblRotatorConnected" xml:space="default">Rotator verbunden</s:String>
+    <s:String x:Key="LblRotatorConnectionLost" xml:space="default">Verbindung zum Rotator verloren! Bitte Rotator erneut verbinden!</s:String>
+    <s:String x:Key="LblSave" xml:space="default">Speichern</s:String>
+    <s:String x:Key="LblSaveBacklashQuestion" xml:space="default">Sollen die Backlash Messwerte des Okularauszug gespeichert werden?</s:String>
+    <s:String x:Key="LblSaveImageAs" xml:space="default">Bild speichrn unter</s:String>
+    <s:String x:Key="LblSaveImageAsDSLRNote" xml:space="default">Bei DSLRs wird die Bilddateiformat Einstellung ignoriert. Stattdessen werden RAW Dateien gespeichert!</s:String>
+    <s:String x:Key="LblSaveSelectedProfileAndDontAskAgain" xml:space="default">Gewähltes Profil speichern und nicht nochmal fragen</s:String>
+    <s:String x:Key="LblSaveSequence" xml:space="default">Sequenz speichern</s:String>
+    <s:String x:Key="LblSaveSequenceToolTip" xml:space="default">Speichere Sequenz als XML Datei</s:String>
+    <s:String x:Key="LblScopeSettleTimeAfterFlip" xml:space="default">Teleskop Ruhezeit nach Flip (Sekunden)</s:String>
+    <s:String x:Key="LblSearch" xml:space="default">Suche</s:String>
+    <s:String x:Key="LblSearchRadius" xml:space="default">Suchradius</s:String>
+    <s:String x:Key="LblSecondary" xml:space="default">Sekundär</s:String>
+    <s:String x:Key="LblSecondaryBackground" xml:space="default">Sekundärer Hintergrund</s:String>
+    <s:String x:Key="LblSelectGuidestar" xml:space="default">Neuer Leitstern wird ausgewählt</s:String>
+    <s:String x:Key="LblSelectNewGuideStar" xml:space="default">Selektiere neuen Leitstern</s:String>
+    <s:String x:Key="LblSelectProfileInUseWarning" xml:space="default">Profil kann nicht ausgewählt werden. Es wird bereits von einer anderen N.I.N.A. Instanz verwendet!</s:String>
+    <s:String x:Key="LblSensorName" xml:space="default">Sensor Name</s:String>
+    <s:String x:Key="LblSensorType" xml:space="default">Sensor Typ</s:String>
+    <s:String x:Key="LblSequence" xml:space="default">Sequenz</s:String>
+    <s:String x:Key="LblSequenceDelay" xml:space="default">Delay start (seconds)</s:String>
+    <s:String x:Key="LblSequenceDelayStatus" xml:space="default">Sequenz startet in {0} Sekunden</s:String>
+    <s:String x:Key="LblSequenceMode" xml:space="default">Sequenzmodus</s:String>
+    <s:String x:Key="LblSequenceModeRotate" xml:space="default">Durchrotieren</s:String>
+    <s:String x:Key="LblSequenceModeStandard" xml:space="default">Eine nach der anderen</s:String>
+    <s:String x:Key="LblSequenceTemplate" xml:space="default">Sequenzvorlage</s:String>
+    <s:String x:Key="LblSequenceTemplateTooltip" xml:space="preserve">Pfad zu einer vorher exportierten Sequenz, die als Vorlage dienen soll.
 Diese Vorlage wird beim Starten der Applikation geladen, statt der Standard Sequenz.</s:String>
     <s:String x:Key="LblSerialPort" xml:space="default">Serieller Port</s:String>
     <s:String x:Key="LblSerialRelay" xml:space="default">Serielles Relay</s:String>
