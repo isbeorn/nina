@@ -86,7 +86,7 @@ namespace NINALocaleManager {
                 elem.Add(xmlEntry);
             }
 
-            using (var writer = XmlWriter.Create(filePath, new XmlWriterSettings { OmitXmlDeclaration = true, Indent = true })) {
+            using (var writer = XmlWriter.Create(filePath, new XmlWriterSettings { OmitXmlDeclaration = true, Indent = true, IndentChars = "    " })) {
                 elem.Save(writer);
             }
         }
