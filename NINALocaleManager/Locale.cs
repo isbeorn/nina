@@ -32,9 +32,7 @@ using System.Xml;
 using System.Xml.Linq;
 
 namespace NINALocaleManager {
-
     internal class Locale {
-
         public Locale(string filePath) {
             Entries = new ObservableCollection<LocaleEntry>();
 
