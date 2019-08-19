@@ -141,7 +141,7 @@ able to compensate for ambient temperature variations</s:String>
   <s:String x:Key="LblCamInfo" xml:space="default">Camera Info</s:String>
   <s:String x:Key="LblCamSettings" xml:space="default">Camera Settings</s:String>
   <s:String x:Key="LblCancel" xml:space="default">Cancel</s:String>
-  <s:String x:Key="LblCanonErrorOccurred" xml:space="default">A Canon error occored: {0}</s:String>
+  <s:String x:Key="LblCanonErrorOccurred" xml:space="default">A Canon error occurred: {0}</s:String>
   <s:String x:Key="LblCaptureImageAndPlatesolve" xml:space="default">Capture Image and Platesolve</s:String>
   <s:String x:Key="LblCdC" xml:space="default">Cartes du Ciel</s:String>
   <s:String x:Key="LblCenterDec" xml:space="default">Center Dec</s:String>
@@ -681,6 +681,7 @@ Calculated HFR: {2}
   <s:String x:Key="LblPlateSolveNbOfAttempts" xml:space="default">Number of Attempts</s:String>
   <s:String x:Key="LblPlateSolveNbOfAttemptsTooltip" xml:space="default">How many times a mid-sequence platesolve operation will attempt until considered failed</s:String>
   <s:String x:Key="LblPlatesolveNoCoordinates" xml:space="default">No reference coordinates available</s:String>
+  <s:String x:Key="LblPlateSolveNoFocalLength" xml:space="default">Plate solve aborted. The telescope's effective focal length must be specified under Options &gt; Equipment</s:String>
   <s:String x:Key="LblPlatesolveProvidedBy" xml:space="default">Platesolve service provided by</s:String>
   <s:String x:Key="LblPlateSolver" xml:space="default">Plate Solver</s:String>
   <s:String x:Key="LblPlateSolveReattemptDelay" xml:space="default">Waiting for next plate solve attempt: {0}</s:String>

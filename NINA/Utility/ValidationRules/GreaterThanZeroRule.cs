@@ -1,8 +1,6 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
-
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
     N.I.N.A. is free software: you can redistribute it and/or modify
@@ -19,17 +17,31 @@
     along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+ * Copyright 2019 Dale Ghent <daleg@elemental.org>
+ */
+
 #endregion "copyright"
 
-namespace NINA.Profile {
+using System.Globalization;
+using System.Windows.Controls;
 
-    public interface ITelescopeSettings : ISettings {
-        string Name { get; set; }
-        double FocalLength { get; set; }
-        double FocalRatio { get; set; }
-        string Id { get; set; }
-        int SettleTime { get; set; }
-        string SnapPortStart { get; set; }
-        string SnapPortStop { get; set; }
+namespace NINA.Utility.ValidationRules {
+
+    public class GreaterThanZeroRule : ValidationRule {
+
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo) {
+            double dbl;
+
+            if (double.TryParse(value.ToString(), out dbl)) {
+                if (dbl <= 0) {
+                    return new ValidationResult(false, "Value must be greater than 0");
+                } else {
+                    return new ValidationResult(true, null);
+                }
+            } else {
+                return new ValidationResult(false, "Invalid value");
+            }
+        }
     }
 }

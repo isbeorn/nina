@@ -55,6 +55,7 @@
     <converters:DoubleToBooleanConverter x:Key="DoubleToBooleanConverter" />
     <converters:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBooleanToVisibilityCollapsedConverter" />
     <converters:NaNToVisibilityConverter x:Key="NaNToVisibilityConverter" />
+    <converters:NaNToEmptyTextConverter x:Key="NaNToEmptyTextConverter" />
     <converters:WeatherTemperatureConverter x:Key="WeatherTemperatureConverter" />
     <converters:WeatherPressureConverter x:Key="WeatherPressureConverter" />
     <converters:WeatherVelocityConverter x:Key="WeatherVelocityConverter" />
