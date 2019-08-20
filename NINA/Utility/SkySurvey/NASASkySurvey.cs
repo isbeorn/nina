@@ -21,6 +21,8 @@
 
 #endregion "copyright"
 
+using Accord.Imaging;
+using Accord.Statistics.Visualizations;
 using NINA.Utility.Astrometry;
 using System;
 using System.Threading;
@@ -46,6 +48,15 @@ namespace NINA.Utility.SkySurvey {
            );
             var image = await request.Request(ct, progress);
             image.Freeze();
+
+            using (var bmp = NINA.Utility.ImageAnalysis.ImageUtility.BitmapFromSource(image, System.Drawing.Imaging.PixelFormat.Format8bppIndexed)) {
+                bmp.Palette = ImageAnalysis.ImageUtility.GetGrayScalePalette();
+                ImageStatistics stats = new ImageStatistics(bmp);
+                Histogram gray = stats.GrayWithoutBlack;
+                new Accord.Imaging.Filters.BrightnessCorrection(Math.Min(115 - gray.Median, 0)).ApplyInPlace(bmp);
+                new Accord.Imaging.Filters.ContrastCorrection((int)Math.Round(115 - gray.StdDev * 2)).ApplyInPlace(bmp);
+                image = ImageAnalysis.ImageUtility.ConvertBitmap(bmp, System.Windows.Media.PixelFormats.Gray8);
+            }
 
             return new SkySurveyImage() {
                 Image = image,
