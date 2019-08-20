@@ -424,44 +424,70 @@ namespace NINA.ViewModel {
         }
 
         /// <summary>
+        /// Validates general prerequisites that need to be set up to use the plate solvers
+        /// </summary>
+        private void ValidatePrerequisites() {
+            double focalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength;
+
+            // Check to make sure user has supplied the telescope's effective focal length (in mm)
+            if (double.IsNaN(focalLength) || focalLength <= 0) {
+                throw new Exception(Locale.Loc.Instance["LblPlateSolveNoFocalLength"]);
+            }
+        }
+
+        /// <summary>
         /// Creates an instance of IPlatesolver, reads the image into memory and calls solve logic of platesolver
         /// </summary>
         /// <param name="progress">   </param>
         /// <param name="canceltoken"></param>
         /// <returns>true: success; false: fail</returns>
         public async Task<PlateSolveResult> Solve(BitmapSource source, IProgress<ApplicationStatus> progress, CancellationToken canceltoken, bool silent = false, Coordinates coordinates = null) {
-            if (PlateSolveTarget != null) {
-                coordinates = PlateSolveTarget;
-            } else {
-                coordinates = coordinates ?? TelescopeInfo.Coordinates;
-            }
+            try {
+                ValidatePrerequisites();
 
-            PlateSolveResult result = new PlateSolveResult() { Success = false };
-            string failedMessage = Locale.Loc.Instance["LblPlatesolveFailed"];
-            string failedTitleMessage = Locale.Loc.Instance["LblUseBlindSolveFailover"];
-            if (coordinates != null) {
-                result = await Solve(source, coordinates, progress, canceltoken);
-            } else {
-                failedMessage = Locale.Loc.Instance["LblPlatesolveNoCoordinates"];
-                failedTitleMessage = Locale.Loc.Instance["LblUseBlindSolveNoCoordinatesRollover"];
-            }
-
-            if (!result?.Success == true) {
-                MessageBoxResult dialog = MessageBoxResult.Yes;
-                if (!silent) {
-                    dialog = MyMessageBox.MyMessageBox.Show(failedTitleMessage, failedMessage, MessageBoxButton.YesNo, MessageBoxResult.Yes);
+                if (PlateSolveTarget != null) {
+                    coordinates = PlateSolveTarget;
+                } else {
+                    coordinates = coordinates ?? TelescopeInfo.Coordinates;
                 }
-                if (dialog == MessageBoxResult.Yes) {
-                    result = await BlindSolve(source, progress, canceltoken);
-                    if (!result?.Success == true) {
-                        Notification.ShowError(Locale.Loc.Instance["LblPlatesolveFailed"]);
+
+                PlateSolveResult result = new PlateSolveResult() { Success = false };
+                string failedMessage = Locale.Loc.Instance["LblPlatesolveFailed"];
+                string failedTitleMessage = Locale.Loc.Instance["LblUseBlindSolveFailover"];
+
+                /*
+                 * Attempt a plate solve only if both the mount coordinates and optical focal length are available.
+                 * If either one of those parameters are not specified, Success remains false and we then will fail the attempt
+                 * completely (in the case of no focal length), or in the case of no mount coordinates, prompt the user to attempt a blind solve.
+                 */
+                if (coordinates != null) {
+                    result = await Solve(source, coordinates, progress, canceltoken);
+                } else {
+                    failedMessage = Locale.Loc.Instance["LblPlatesolveNoCoordinates"];
+                    failedTitleMessage = Locale.Loc.Instance["LblUseBlindSolveNoCoordinatesRollover"];
+                }
+
+                if (!result?.Success == true) {
+                    MessageBoxResult dialog = MessageBoxResult.Yes;
+                    if (!silent) {
+                        dialog = MyMessageBox.MyMessageBox.Show(failedTitleMessage, failedMessage, MessageBoxButton.YesNo, MessageBoxResult.Yes);
+                    }
+                    if (dialog == MessageBoxResult.Yes) {
+                        result = await BlindSolve(source, progress, canceltoken);
+                        if (!result?.Success == true) {
+                            Notification.ShowError(Locale.Loc.Instance["LblPlatesolveFailed"]);
+                        }
                     }
                 }
-            }
 
-            PlateSolveResult = result;
-            progress.Report(new ApplicationStatus() { Status = string.Empty });
-            return result;
+                PlateSolveResult = result;
+                progress.Report(new ApplicationStatus() { Status = string.Empty });
+                return result;
+            } catch (OperationCanceledException) {
+            } catch (Exception ex) {
+                Notification.ShowError(ex.Message);
+            }
+            return null;
         }
 
         /// <summary>

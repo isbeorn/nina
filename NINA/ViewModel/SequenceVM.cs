@@ -885,7 +885,7 @@ namespace NINA.ViewModel {
                 if (flipTargetCoordinates.RA == 0 && flipTargetCoordinates.Dec == 0) {
                     target = telescopeInfo.Coordinates;
                 }
-                await new MeridianFlipVM(profileService, cameraMediator, telescopeMediator, guiderMediator, imagingMediator, applicationStatusMediator).MeridianFlip(target, TimeSpan.FromSeconds(telescopeInfo.TimeToMeridianFlip));
+                await new MeridianFlipVM(profileService, cameraMediator, telescopeMediator, guiderMediator, imagingMediator, applicationStatusMediator).MeridianFlip(target, TimeSpan.FromHours(telescopeInfo.TimeToMeridianFlip));
             }
             progress.Report(new ApplicationStatus() { Status = string.Empty });
         }

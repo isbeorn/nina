@@ -651,7 +651,7 @@ namespace NINA.Model.MyCamera {
             ValidateModeForExposure(exposureTime);
 
             /* Start exposure */
-            CheckAndThrowError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_Completely_NonAF));
+            SendStartExposureCmd();
 
             if ((IsManualMode() && exposureTime > 30.0) || (IsBulbMode() && exposureTime >= 1.0)) {
                 /*Stop Exposure after exposure time */
@@ -664,6 +664,16 @@ namespace NINA.Model.MyCamera {
                 /*Immediately release shutter button when having a set exposure*/
                 StopExposure();
             }
+        }
+
+        private void SendStartExposureCmd() {
+            uint error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_Completely_NonAF);
+            // Older Canon cameras, such as Xti Rebel 300D, don't support the PressShutterButton command. If this fails,
+            // fall back to the basic TakePicture command.
+            if (error > 0) {
+                error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_TakePicture, 0);
+            }
+            CheckAndThrowError(error);
         }
 
         private bool SetExposureTime(double exposureTime) {
