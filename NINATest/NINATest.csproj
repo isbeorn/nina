@@ -129,6 +129,7 @@
     <Compile Include="GuideStepsHistoryTest.cs" />
     <Compile Include="ImageDataTest.cs" />
     <Compile Include="ImageMetaDataTest.cs" />
+    <Compile Include="MeridianFlipVMTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RMSTest.cs" />
     <Compile Include="SequenceVMTest.cs" />
