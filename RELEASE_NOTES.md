@@ -13,6 +13,7 @@
 - The autofocus routine has been changed so that it doesn't attempt to measure the focus twice for the same point
 - Added Spanish Translation
 - The focuser temperature compensation feature is now turned off before an auto-focus session, and turned back on afterwards
+- The NASA Sky Survey images now are automatically adjusted for brightness and contrast, depending on each image characteristic
 
 # Version 1.9
 
