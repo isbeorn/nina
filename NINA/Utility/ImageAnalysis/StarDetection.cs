@@ -166,10 +166,12 @@ namespace NINA.Utility.ImageAnalysis {
                     double centerY = this.Position.Y;
 
                     foreach (PixelData data in this.pixelData) {
-                        data.value = (ushort)Math.Round(data.value - SurroundingMean);
-                        if (data.value < 0) {
-                            data.value = 0;
+                        double value = Math.Round(data.value - SurroundingMean);
+                        if (value < 0) {
+                            value = 0;
                         }
+                        data.value = (ushort)Math.Round(value);
+
                         allSum += data.value;
                         if (InsideCircle(data.PosX, data.PosY, this.Position.X, this.Position.Y, outerRadius)) {
                             sum += data.value;
