@@ -44,6 +44,7 @@ namespace NINA.Profile {
             autoFocusExposureTime = 6;
             autoFocusDisableGuiding = true;
             focuserSettleTime = 0;
+            autoFocusMethod = AFMethodEnum.STARHFR;
             autoFocusTotalNumberOfAttempts = 1;
             autoFocusNumberOfFramesPerPoint = 1;
             autoFocusInnerCropRatio = 1;
@@ -53,6 +54,7 @@ namespace NINA.Profile {
             backlashOut = 0;
             autoFocusBinning = 1;
             autoFocusCurveFitting = AFCurveFittingEnum.TRENDLINES;
+            contrastDetectionMethod = ContrastDetectionMethodEnum.Statistics;
         }
 
         private string id;
@@ -115,16 +117,46 @@ namespace NINA.Profile {
             }
         }
 
-        private int autoFocusExposureTime;
+        private double autoFocusExposureTime;
 
         [DataMember]
-        public int AutoFocusExposureTime {
+        public double AutoFocusExposureTime {
             get {
                 return autoFocusExposureTime;
             }
             set {
                 if (autoFocusExposureTime != value) {
                     autoFocusExposureTime = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private AFMethodEnum autoFocusMethod;
+
+        [DataMember]
+        public AFMethodEnum AutoFocusMethod {
+            get {
+                return autoFocusMethod;
+            }
+            set {
+                if (autoFocusMethod != value) {
+                    autoFocusMethod = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private ContrastDetectionMethodEnum contrastDetectionMethod;
+
+        [DataMember]
+        public ContrastDetectionMethodEnum ContrastDetectionMethod {
+            get {
+                return contrastDetectionMethod;
+            }
+            set {
+                if (contrastDetectionMethod != value) {
+                    contrastDetectionMethod = value;
                     RaisePropertyChanged();
                 }
             }

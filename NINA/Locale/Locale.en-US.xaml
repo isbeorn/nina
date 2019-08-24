@@ -9,7 +9,9 @@
     <s:String x:Key="LblActiveSequenceDetails" xml:space="default">Active Sequence Details</s:String>
     <s:String x:Key="LblAddSequenceTarget" xml:space="default">Add as Sequence Target</s:String>
     <s:String x:Key="LblAdvancedSettings" xml:space="default">Advanced Settings</s:String>
+    <s:String x:Key="LblAFContrastDetection" xml:space="default">Contrast Detection (Experimental)</s:String>
     <s:String x:Key="LblAFOnButFocuserNotConnected" xml:space="default">Auto-Focus is enabled, yet focuser is not connected</s:String>
+    <s:String x:Key="LblAFStarHFR" xml:space="default">Star HFR</s:String>
     <s:String x:Key="LblAfter" xml:space="default">After</s:String>
     <s:String x:Key="LblAFUseBrightestStars" xml:space="default">Use brightest n stars</s:String>
     <s:String x:Key="LblAFUseBrightestStarsTooltip" xml:space="default">Limit AF to brightest stars. 0 means no limit.</s:String>
@@ -69,6 +71,12 @@ a centered subframe of the total sensor (if supported by camera). If unsupported
 by the camera, stars near the edge will be ignored during star detection. If used in combination
 with a lower than 1 Outer Crop Ratio, a rectangular sliver of the image (between the inner rectangle and the
 outer rectangle) will be used for autofocus.</s:String>
+    <s:String x:Key="LblAutoFocusMethod" xml:space="default">AF Method</s:String>
+    <s:String x:Key="LblAutoFocusMethodTooltip" xml:space="preserve">When Star HFR is selected, NINA will detect stars in the FOV,
+compute their HFR across multiple focus points, and find the minimum HFR.
+The Contrast Detection method uses image processing techniques to estimate contrast
+across multiple focus points, and finds the highest contrast. This method works on
+terrestrial objects or solar system objects as well, but can be sensitive to noise.</s:String>
     <s:String x:Key="LblAutoFocusNewWorseThanOriginal" xml:space="default">New focus point HFR {0} is significantly worse than original HFR {1}</s:String>
     <s:String x:Key="LblAutoFocusNotEnoughtSpreadedPoints" xml:space="default">Not enough HFR difference for set of focuspoints. Either the step size is too low or the stars are too much out of focus.</s:String>
     <s:String x:Key="LblAutoFocusNrOfExposures" xml:space="default"># exposures</s:String>
@@ -257,6 +265,7 @@ able to compensate for ambient temperature variations</s:String>
     <s:String x:Key="LblConstellation_VOL" xml:space="default">Volans</s:String>
     <s:String x:Key="LblConstellation_VUL" xml:space="default">Vulpecula</s:String>
     <s:String x:Key="LblContinue" xml:space="default">Continue</s:String>
+    <s:String x:Key="LblContrastMethod" xml:space="default">Contrast Detect Method</s:String>
     <s:String x:Key="LblCoolCamBtnTooltip" xml:space="preserve">Cool Camera to the given target temperature.
 When duration is set, the application will slowly decrease the temperature during the timeframe until the target temperature is reached.</s:String>
     <s:String x:Key="LblCoolerOn" xml:space="default">Cooler</s:String>
@@ -494,6 +503,7 @@ Calculated HFR: {2}
     <s:String x:Key="LblJ2000" xml:space="default">J2000</s:String>
     <s:String x:Key="LblJNOW" xml:space="default">JNOW</s:String>
     <s:String x:Key="LblLanguage" xml:space="default">Language</s:String>
+    <s:String x:Key="LblLaplace" xml:space="default">Laplace</s:String>
     <s:String x:Key="LblLatitude" xml:space="default">Latitude</s:String>
     <s:String x:Key="LblLayout" xml:space="default">Layout</s:String>
     <s:String x:Key="LblLblBlackClippingTooltip" xml:space="default">Black clipping factor in sigma units from the median</s:String>
@@ -810,6 +820,7 @@ This template will be used on startup to initialize the sequence instead of the 
     <s:String x:Key="LblSlewWhenTargetCoordsUnset" xml:space="default">At least one target with slew enabled has no target coordinates set</s:String>
     <s:String x:Key="LblSnapPortStart" xml:space="default">Snap Port Start Command</s:String>
     <s:String x:Key="LblSnapPortStop" xml:space="default">Snap Port Stop Command</s:String>
+    <s:String x:Key="LblSobel" xml:space="default">Sobel</s:String>
     <s:String x:Key="LblSolving" xml:space="default">Solving...</s:String>
     <s:String x:Key="LblSource" xml:space="default">Source</s:String>
     <s:String x:Key="LblSouthern" xml:space="default">Southern</s:String>

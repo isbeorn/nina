@@ -23,6 +23,8 @@
     xmlns:converters="clr-namespace:NINA.Utility.Converters">
 
     <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+    <converters:AutoFocusContrastDetectionToCollapsedVisibilityConverter x:Key="AutoFocusContrastDetectionToCollapsedVisibilityConverter" />
+    <converters:AutoFocusHFRToCollapsedVisibilityConverter x:Key="AutoFocusHFRToCollapsedVisibilityConverter" />
     <converters:BooleanToVisibilityHiddenConverter x:Key="BooleanToVisibilityHiddenConverter" />
     <converters:BooleanToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
     <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />

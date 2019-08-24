@@ -97,6 +97,9 @@
                 <oxy:FunctionAnnotation
                     Equation="{Binding HyperbolicFitting}"
                     Color="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}" />
+                <oxy:FunctionAnnotation
+                    Equation="{Binding GaussianFitting}"
+                    Color="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}" />
                 <oxy:PointAnnotation
                     X="{Binding FinalFocusPoint.X}"
                     Y="{Binding FinalFocusPoint.Y}"
@@ -112,6 +115,12 @@
                 <oxy:PointAnnotation
                     X="{Binding HyperbolicMinimum.X}"
                     Y="{Binding HyperbolicMinimum.Y}"
+                    Stroke="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}"
+                    Fill="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}"
+                    Shape="Circle" />
+                <oxy:PointAnnotation
+                    X="{Binding GaussianMaximum.X}"
+                    Y="{Binding GaussianMaximum.Y}"
                     Stroke="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}"
                     Fill="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}"
                     Shape="Circle" />

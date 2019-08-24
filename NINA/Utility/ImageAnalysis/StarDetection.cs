@@ -24,6 +24,7 @@
 using Accord.Imaging;
 using Accord.Imaging.Filters;
 using Accord.Math.Geometry;
+using Accord.Statistics.Visualizations;
 using NINA.Model;
 using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
@@ -132,6 +133,9 @@ namespace NINA.Utility.ImageAnalysis {
         public bool UseROI { get; set; } = false;
         public double OuterCropRatio { get; set; }
         public double HFRStdDev { get; private set; }
+        public double AverageContrast { get; private set; }
+        public double ContrastStdev { get; private set; }
+        public ContrastDetectionMethodEnum ContrastDetectionMethod { get; set; }
 
         private class Star {
             public double radius;
@@ -267,6 +271,131 @@ namespace NINA.Utility.ImageAnalysis {
                 progress?.Report(new ApplicationStatus() { Status = string.Empty });
             }
             return;
+        }
+
+        public async Task MeasureContrastAsync(IProgress<ApplicationStatus> progress, CancellationToken token) {
+            _token = token;
+            await Task.Run(() => MeasureContrast(progress));
+        }
+
+        public void MeasureContrast(IProgress<ApplicationStatus> progress) {
+            try {
+                using (MyStopWatch.Measure()) {
+                    Stopwatch overall = Stopwatch.StartNew();
+                    progress?.Report(new ApplicationStatus() { Status = "Preparing image for contrast measurement" });
+
+                    _bitmapToAnalyze = ImageUtility.Convert16BppTo8Bpp(_originalBitmapSource);
+
+                    _token.ThrowIfCancellationRequested();
+
+                    //Crop if there is ROI
+
+                    if (UseROI && InnerCropRatio < 1) {
+                        Rectangle cropRectangle = GetCropRectangle(InnerCropRatio);
+                        _bitmapToAnalyze = new Crop(cropRectangle).Apply(_bitmapToAnalyze);
+                    }
+
+                    if (_noiseReduction == NoiseReductionEnum.Median) {
+                        new Median().ApplyInPlace(_bitmapToAnalyze);
+                    }
+
+                    //Make sure resizing is independent of Star Sensitivity
+                    _resizefactor = (double)_maxWidth / _bitmapToAnalyze.Width;
+                    _inverseResizefactor = 1.0 / _resizefactor;
+
+                    /* Resize to speed up manipulation */
+                    ResizeBitmapToAnalyze();
+
+                    progress?.Report(new ApplicationStatus() { Status = "Measuring Contrast" });
+
+                    _token.ThrowIfCancellationRequested();
+
+                    if (ContrastDetectionMethod == ContrastDetectionMethodEnum.Laplace) { 
+                        if (_noiseReduction == NoiseReductionEnum.None || _noiseReduction == NoiseReductionEnum.Median) {
+                            int[,] kernel = new int[7, 7];
+                            kernel = LaplacianOfGaussianKernel(7, 1.0);
+                            new Convolution(kernel).ApplyInPlace(_bitmapToAnalyze);
+                        } else if (_noiseReduction == NoiseReductionEnum.Normal) {
+                            int[,] kernel = new int[9, 9];
+                            kernel = LaplacianOfGaussianKernel(9, 1.4);
+                            new Convolution(kernel).ApplyInPlace(_bitmapToAnalyze);
+                        } else if (_noiseReduction == NoiseReductionEnum.High) {
+                            int[,] kernel = new int[11, 11];
+                            kernel = LaplacianOfGaussianKernel(11, 1.8);
+                            new Convolution(kernel).ApplyInPlace(_bitmapToAnalyze);
+                        } else {
+                            int[,] kernel = new int[13, 13];
+                            kernel = LaplacianOfGaussianKernel(13, 2.2);
+                            new Convolution(kernel).ApplyInPlace(_bitmapToAnalyze);
+                        }
+                        //Get mean and standard dev
+                        Accord.Imaging.ImageStatistics stats = new Accord.Imaging.ImageStatistics(_bitmapToAnalyze);
+                        AverageContrast = stats.GrayWithoutBlack.Mean;
+                        ContrastStdev = 0.01; //Stdev of convoluted image is not a measure of error - using same figure for all
+                    } else if (ContrastDetectionMethod == ContrastDetectionMethodEnum.Sobel) {
+                        if(_noiseReduction == NoiseReductionEnum.None || _noiseReduction == NoiseReductionEnum.Median) {
+                            //Nothing to do
+                        } else if (_noiseReduction == NoiseReductionEnum.Normal) {
+                            _bitmapToAnalyze = new FastGaussianBlur(_bitmapToAnalyze).Process(1);
+                        } else if (_noiseReduction == NoiseReductionEnum.High) {
+                            _bitmapToAnalyze = new FastGaussianBlur(_bitmapToAnalyze).Process(2);
+                        } else {
+                            _bitmapToAnalyze = new FastGaussianBlur(_bitmapToAnalyze).Process(3);
+                        }
+                        int[,] kernel = {
+                            {-1, -2, 0, 2, 1},
+                            {-2, -4, 0, 4, 2},
+                            {0, 0, 0, 0, 0},
+                            {2, 4, 0, -4, -2},
+                            {1, 2, 0, -2, -1}
+                        };
+                        new Convolution(kernel).ApplyInPlace(_bitmapToAnalyze);
+                        //Get mean and standard dev
+                        Accord.Imaging.ImageStatistics stats = new Accord.Imaging.ImageStatistics(_bitmapToAnalyze);
+                        AverageContrast = stats.GrayWithoutBlack.Mean;
+                        ContrastStdev = 0.01; //Stdev of convoluted image is not a measure of error - using same figure for all
+                    }
+
+                    _token.ThrowIfCancellationRequested();
+
+                    _bitmapToAnalyze.Dispose();
+                    overall.Stop();
+                    Debug.Print("Overall contrast detection: " + overall.Elapsed);
+                    overall = null;
+                }
+            } catch (OperationCanceledException) {
+            } finally {
+                progress?.Report(new ApplicationStatus() { Status = string.Empty });
+            }
+            return;
+        }
+
+        private Rectangle GetCropRectangle(double cropRatio) {
+            int xcoord = (int)Math.Floor((_bitmapToAnalyze.Width - _bitmapToAnalyze.Width * cropRatio) / 2d);
+            int ycoord = (int)Math.Floor((_bitmapToAnalyze.Height - _bitmapToAnalyze.Height * cropRatio) / 2d);
+            int width = (int)Math.Floor(_bitmapToAnalyze.Width * cropRatio);
+            int height = (int)Math.Floor(_bitmapToAnalyze.Height * cropRatio);
+            return new Rectangle(xcoord, ycoord, width, height);
+        } 
+
+        private double LaplacianOfGaussianFunction(double x, double y, double sigma) {
+            double result = -1 * 1 / (Math.PI * Math.Pow(sigma, 4)) * (1 - ((x * x + y * y) / (2 * sigma * sigma))) * Math.Exp(-1 * (x * x + y * y) / (2 * sigma * sigma)) * 600;
+            return result;
+        }
+
+        private int[,] LaplacianOfGaussianKernel(int size, double sigma) {
+            int[,] LoGKernel = new int[size, size];       
+            int halfsize = size / 2;
+            int sumKernel = 0;
+            for (int x = -halfsize; x < halfsize + 1; x++) {
+                for (int y = -halfsize; y < halfsize + 1; y++) {
+                    int value = (int)Math.Round(LaplacianOfGaussianFunction(x, y, sigma));
+                    LoGKernel[x + halfsize, y + halfsize] = value;
+                    sumKernel += value;
+                }
+            }
+            LoGKernel[halfsize, halfsize] = LoGKernel[halfsize, halfsize] - sumKernel;
+            return LoGKernel;
         }
 
         private bool InROI(Blob blob) {
