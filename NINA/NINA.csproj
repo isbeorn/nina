@@ -398,7 +398,9 @@
     <Compile Include="PlateSolving\PlateSolveResult.cs" />
     <Compile Include="Utility\Astrometry\TopocentricCoordinates.cs" />
     <Compile Include="Utility\CameraSDKs\FLISDK\FLIFilterWheels.cs" />
+    <Compile Include="Utility\Converters\AutoFocusHFRToCollapsedVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\NaNToEmptyTextConverter.cs" />
+    <Compile Include="Utility\Converters\AutoFocusContrastDetectionToCollapsedVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\NaNToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\WeatherBrightnessConverter.cs" />
     <Compile Include="Utility\Converters\WeatherPressureConverter.cs" />
@@ -408,7 +410,9 @@
     <Compile Include="Utility\CameraSDKs\FLISDK\FLICameras.cs" />
     <Compile Include="Utility\CameraSDKs\FLISDK\FLICameraSDK.cs" />
     <Compile Include="Utility\Enum\AFCurveFittingEnum.cs" />
+    <Compile Include="Utility\Enum\AFMethodEnum.cs" />
     <Compile Include="Utility\Enum\AltitudeSite.cs" />
+    <Compile Include="Utility\Enum\ContrastDetectionMethodEnum.cs" />
     <Compile Include="Utility\Enum\NoiseReductionEnum.cs" />
     <Compile Include="Utility\Enum\PlanetariumEnum.cs" />
     <Compile Include="Profile\Interfaces\IPlanetariumSettings.cs" />

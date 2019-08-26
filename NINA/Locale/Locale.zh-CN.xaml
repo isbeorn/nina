@@ -9,7 +9,9 @@
     <s:String x:Key="LblActiveSequenceDetails" xml:space="default">活动序列详情</s:String>
     <s:String x:Key="LblAddSequenceTarget" xml:space="default">添加到序列目标</s:String>
     <s:String x:Key="LblAdvancedSettings" xml:space="default">高级设置</s:String>
+    <s:String x:Key="LblAFContrastDetection" xml:space="default">Contrast Detection (Experimental)</s:String>
     <s:String x:Key="LblAFOnButFocuserNotConnected" xml:space="default">启用自动对焦，但没有连接调焦器</s:String>
+    <s:String x:Key="LblAFStarHFR" xml:space="default">Star HFR</s:String>
     <s:String x:Key="LblAfter" xml:space="default">After</s:String>
     <s:String x:Key="LblAFUseBrightestStars" xml:space="default">使用最亮的n颗星星</s:String>
     <s:String x:Key="LblAFUseBrightestStarsTooltip" xml:space="default">限制使用最亮的星点自动对焦。0表示无限制。</s:String>
@@ -69,6 +71,12 @@
 如果相机不支持，则在星点检测期间，边缘附近的星点将被忽略。
 如果与小于1的外部裁剪比例结合使用，图像的矩形条（在内部矩形和外部矩形之间）
 将用于自动对焦。</s:String>
+    <s:String x:Key="LblAutoFocusMethod" xml:space="default">AF Method</s:String>
+    <s:String x:Key="LblAutoFocusMethodTooltip" xml:space="preserve">When Star HFR is selected, NINA will detect stars in the FOV,
+compute their HFR across multiple focus points, and find the minimum HFR.
+The Contrast Detection method uses image processing techniques to estimate contrast
+across multiple focus points, and finds the highest contrast. This method works on
+terrestrial objects or solar system objects as well, but can be sensitive to noise.</s:String>
     <s:String x:Key="LblAutoFocusNewWorseThanOriginal" xml:space="default">新焦点HFR {0} HFR比原来差很多 {1}</s:String>
     <s:String x:Key="LblAutoFocusNotEnoughtSpreadedPoints" xml:space="default">焦点集的HFR差异不足。 步长太小或星星太远没有聚焦。</s:String>
     <s:String x:Key="LblAutoFocusNrOfExposures" xml:space="default"># 曝光</s:String>
@@ -257,6 +265,7 @@ Type: {1}
     <s:String x:Key="LblConstellation_VOL" xml:space="default">飞鱼座</s:String>
     <s:String x:Key="LblConstellation_VUL" xml:space="default">狐狸座</s:String>
     <s:String x:Key="LblContinue" xml:space="default">继续</s:String>
+    <s:String x:Key="LblContrastMethod" xml:space="default">Contrast Detect Method</s:String>
     <s:String x:Key="LblCoolCamBtnTooltip" xml:space="preserve">将相机制冷到设定的目标温度。
 设置持续时间后，应用程序将在时间范围内缓慢降低温度，直至达到目标温度。</s:String>
     <s:String x:Key="LblCoolerOn" xml:space="default">制冷器</s:String>
@@ -494,6 +503,7 @@ Type: {1}
     <s:String x:Key="LblJ2000" xml:space="default">J2000</s:String>
     <s:String x:Key="LblJNOW" xml:space="default">JNOW</s:String>
     <s:String x:Key="LblLanguage" xml:space="default">语言</s:String>
+    <s:String x:Key="LblLaplace" xml:space="default">Laplace</s:String>
     <s:String x:Key="LblLatitude" xml:space="default">纬度</s:String>
     <s:String x:Key="LblLayout" xml:space="default">布局</s:String>
     <s:String x:Key="LblLblBlackClippingTooltip" xml:space="default">以Sigma为单位表示的黑色区域剪裁的中位数</s:String>
@@ -809,6 +819,7 @@ Type: {1}
     <s:String x:Key="LblSlewWhenTargetCoordsUnset" xml:space="default">至少一个启用了自动指向的目标没有设置目标坐标</s:String>
     <s:String x:Key="LblSnapPortStart" xml:space="default">快速端口启动命令</s:String>
     <s:String x:Key="LblSnapPortStop" xml:space="default">快速端口停止命令</s:String>
+    <s:String x:Key="LblSobel" xml:space="default">Sobel</s:String>
     <s:String x:Key="LblSolving" xml:space="default">Solving...</s:String>
     <s:String x:Key="LblSource" xml:space="default">来源</s:String>
     <s:String x:Key="LblSouthern" xml:space="default">南半球</s:String>

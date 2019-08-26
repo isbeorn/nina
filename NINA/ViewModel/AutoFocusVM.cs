@@ -49,6 +49,7 @@ using System.Windows.Input;
 using NINA.Utility.ImageAnalysis;
 using NINA.Model.ImageData;
 using Accord.Statistics.Models.Regression.Fitting;
+using NINA.Utility.Enum;
 
 namespace NINA.ViewModel {
 
@@ -124,6 +125,8 @@ namespace NINA.ViewModel {
         private IGuiderMediator guiderMediator;
         private IApplicationStatusMediator applicationStatusMediator;
         private List<Accord.Point> brightestStarPositions = new List<Accord.Point>();
+        public double AverageContrast { get; private set; }
+        public double ContrastStdev { get; private set; }
 
         public AsyncObservableCollection<ScatterErrorPoint> FocusPoints {
             get {
@@ -146,6 +149,7 @@ namespace NINA.ViewModel {
         }
 
         private ScatterErrorPoint _minimum;
+        private ScatterErrorPoint _maximum;
 
         private ApplicationStatus _status;
 
@@ -246,6 +250,28 @@ namespace NINA.ViewModel {
             }
         }
 
+        private Func<double, double> _gaussianFitting;
+        public Func<double, double> GaussianFitting {
+            get {
+                return _gaussianFitting;
+            }
+            set {
+                _gaussianFitting = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private DataPoint _gaussianMaximum;
+        public DataPoint GaussianMaximum {
+            get {
+                return _gaussianMaximum;
+            }
+            set {
+                _gaussianMaximum = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private DataPoint _finalFocusPoint;
 
         public DataPoint FinalFocusPoint {
@@ -284,17 +310,17 @@ namespace NINA.ViewModel {
             for (int i = 0; i < nrOfSteps; i++) {
                 token.ThrowIfCancellationRequested();
 
-                HFRAndError measurement = await GetAverageMeasurement(filter, profileService.ActiveProfile.FocuserSettings.AutoFocusNumberOfFramesPerPoint, token, progress);
+                MeasureAndError measurement = await GetAverageMeasurement(filter, profileService.ActiveProfile.FocuserSettings.AutoFocusNumberOfFramesPerPoint, token, progress);
 
-                //If star HFR is 0, we didn't detect any stars, and want this point to be ignored by the fitting as much as possible. Setting a very high Stdev will do the trick.
-                if (measurement.HFR == 0) {
+                //If star Measurement is 0, we didn't detect any stars or shapes, and want this point to be ignored by the fitting as much as possible. Setting a very high Stdev will do the trick.
+                if (measurement.Measure == 0) {
                     measurement.Stdev = 1000;
                 }
 
                 token.ThrowIfCancellationRequested();
 
-                FocusPoints.AddSorted(new ScatterErrorPoint(_focusPosition, measurement.HFR, 0, Math.Max(0.001, measurement.Stdev)), comparer);
-                PlotFocusPoints.AddSorted(new DataPoint(_focusPosition, measurement.HFR), plotComparer);
+                FocusPoints.AddSorted(new ScatterErrorPoint(_focusPosition, measurement.Measure, 0, Math.Max(0.001, measurement.Stdev)), comparer);
+                PlotFocusPoints.AddSorted(new DataPoint(_focusPosition, measurement.Measure), plotComparer);
                 if (i < nrOfSteps - 1) {
                     Logger.Trace("Moving focuser to next autofocus position");
                     _focusPosition = await focuserMediator.MoveFocuserRelative(-stepSize);
@@ -302,8 +328,12 @@ namespace NINA.ViewModel {
 
                 token.ThrowIfCancellationRequested();
                 CalculateTrends();
-                if (FocusPoints.Count() >= 3 && (profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.PARABOLIC || profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.TRENDPARABOLIC)) { CalculateQuadraticFitting(); }
-                if (FocusPoints.Count() >= 3 && (profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.HYPERBOLIC || profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.TRENDHYPERBOLIC)) { CalculateHyperbolicFitting(); }
+                if (profileService.ActiveProfile.FocuserSettings.AutoFocusMethod == AFMethodEnum.STARHFR) { 
+                    if (FocusPoints.Count() >= 3 && (profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.PARABOLIC || profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.TRENDPARABOLIC)) { CalculateQuadraticFitting(); }
+                    if (FocusPoints.Count() >= 3 && (profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.HYPERBOLIC || profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.TRENDHYPERBOLIC)) { CalculateHyperbolicFitting(); }
+                } else if (FocusPoints.Count() >= 3) {
+                    CalculateGaussianFitting();
+                }
             }
         }
 
@@ -317,7 +347,13 @@ namespace NINA.ViewModel {
             seq.EnableSubSample = _setSubSample;
             seq.Binning = new BinningMode(profileService.ActiveProfile.FocuserSettings.AutoFocusBinning, profileService.ActiveProfile.FocuserSettings.AutoFocusBinning);
 
-            var oldAutoStretch = imagingMediator.SetAutoStretch(true);
+            bool oldAutoStretch;
+            //If using contrast based statistics, no need to stretch
+            if (profileService.ActiveProfile.FocuserSettings.AutoFocusMethod == AFMethodEnum.CONTRASTDETECTION && profileService.ActiveProfile.FocuserSettings.ContrastDetectionMethod == ContrastDetectionMethodEnum.Statistics) {
+                oldAutoStretch = imagingMediator.SetAutoStretch(false);
+            } else {
+                oldAutoStretch = imagingMediator.SetAutoStretch(true);
+            }
             var oldDetectStars = imagingMediator.SetDetectStars(false);
             IImageData image;
             try {
@@ -335,8 +371,14 @@ namespace NINA.ViewModel {
             return image;
         }
 
-        private async Task<HFRAndError> EvaluateExposure(IImageData image, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        private async Task<MeasureAndError> EvaluateExposure(IImageData image, CancellationToken token, IProgress<ApplicationStatus> progress) {
             Logger.Trace("Evaluating Exposure");
+
+            //Very simple to directly provide result if we use statistics based contrast detection
+            if (profileService.ActiveProfile.FocuserSettings.AutoFocusMethod == AFMethodEnum.CONTRASTDETECTION && profileService.ActiveProfile.FocuserSettings.ContrastDetectionMethod == ContrastDetectionMethodEnum.Statistics) {
+                return new MeasureAndError() { Measure = 100 * image.Statistics.StDev / image.Statistics.Mean, Stdev = 0.01 };
+            }
+
             System.Windows.Media.PixelFormat pixelFormat;
 
             if (image.Statistics.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage) {
@@ -352,38 +394,53 @@ namespace NINA.ViewModel {
                 analysis.OuterCropRatio = profileService.ActiveProfile.FocuserSettings.AutoFocusOuterCropRatio;
             }
 
-            //Let's set the brightest star list - if it's the first exposure, it's going to be empty
-            analysis.BrightestStarPositions = brightestStarPositions;
-            analysis.NumberOfAFStars = profileService.ActiveProfile.FocuserSettings.AutoFocusUseBrightestStars;
-            await analysis.DetectAsync(progress, token);
+            if (profileService.ActiveProfile.FocuserSettings.AutoFocusMethod == AFMethodEnum.STARHFR) {
 
-            //If current star list is empty, we're doing the first AF point, let's get the brightest star lists from the Star Detector instance
-            if (brightestStarPositions.Count() == 0) {
-                brightestStarPositions = analysis.BrightestStarPositions;
+                //Let's set the brightest star list - if it's the first exposure, it's going to be empty
+                analysis.BrightestStarPositions = brightestStarPositions;
+                analysis.NumberOfAFStars = profileService.ActiveProfile.FocuserSettings.AutoFocusUseBrightestStars;
+                await analysis.DetectAsync(progress, token);
+
+                //If current star list is empty, we're doing the first AF point, let's get the brightest star lists from the Star Detector instance
+                if (brightestStarPositions.Count() == 0) {
+                    brightestStarPositions = analysis.BrightestStarPositions;
+                }
+
+                if (profileService.ActiveProfile.ImageSettings.AnnotateImage) {
+                    imagingMediator.SetImage(analysis.GetAnnotatedImage());
+                }
+
+                Logger.Debug(string.Format("Current Focus: Position: {0}, HRF: {1}", _focusPosition, analysis.AverageHFR));
+
+                return new MeasureAndError() { Measure = analysis.AverageHFR, Stdev = analysis.HFRStdDev };
+            } else {            
+                analysis.ContrastDetectionMethod = profileService.ActiveProfile.FocuserSettings.ContrastDetectionMethod;
+                await analysis.MeasureContrastAsync(progress, token);
+
+                if (profileService.ActiveProfile.ImageSettings.AnnotateImage) {
+                    imagingMediator.SetImage(analysis.GetAnnotatedImage());
+                }
+
+                MeasureAndError ContrastMeasurement = new MeasureAndError() { Measure = analysis.AverageContrast, Stdev = analysis.ContrastStdev };
+                return ContrastMeasurement;
             }
-
-            if (profileService.ActiveProfile.ImageSettings.AnnotateImage) {
-                imagingMediator.SetImage(analysis.GetAnnotatedImage());
-            }
-
-            Logger.Debug(string.Format("Current Focus: Position: {0}, HFR: {1}", _focusPosition, analysis.AverageHFR));
-
-            return new HFRAndError() { HFR = analysis.AverageHFR, Stdev = analysis.HFRStdDev };
         }
 
         private async Task<bool> ValidateCalculatedFocusPosition(DataPoint focusPoint, FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress, double initialHFR) {
             _focusPosition = await focuserMediator.MoveFocuser((int)focusPoint.X);
 
-            double hfr = (await GetAverageMeasurement(filter, profileService.ActiveProfile.FocuserSettings.AutoFocusNumberOfFramesPerPoint, token, progress)).HFR;
+            if (profileService.ActiveProfile.FocuserSettings.AutoFocusMethod == AFMethodEnum.STARHFR) {
+                double hfr = (await GetAverageMeasurement(filter, profileService.ActiveProfile.FocuserSettings.AutoFocusNumberOfFramesPerPoint, token, progress)).Measure;
 
-            if (hfr > (focusPoint.Y * 1.25)) {
-                Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFocusPointValidationFailed"], focusPoint.X, focusPoint.Y, hfr));
-            }
+                if (hfr > (focusPoint.Y * 1.25)) {
+                    Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFocusPointValidationFailed"], focusPoint.X, focusPoint.Y, hfr));
+                }
 
-            if (hfr > (initialHFR * 1.15)) {
-                Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblAutoFocusNewWorseThanOriginal"], hfr, initialHFR));
-                Logger.Warning(string.Format("New focus point HFR {0} is significantly worse than original HFR {1}", hfr, initialHFR));
-                return false;
+                if (hfr > (initialHFR * 1.15)) {
+                    Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblAutoFocusNewWorseThanOriginal"], hfr, initialHFR));
+                    Logger.Warning(string.Format("New focus point HFR {0} is significantly worse than original HFR {1}", hfr, initialHFR));
+                    return false;
+                }
             }
             return true;
         }
@@ -402,14 +459,14 @@ namespace NINA.ViewModel {
         /// <param name="a">Hyperbola parameter a, lowest HFR value at focus position</param>
         /// <param name="b">Hyperbola parameter b, defining the asymptotes, y = +-x*a/b</param>
         /// <returns></returns>
-        private double HfrCalc(double position, double perfectFocusPosition, double a, double b) {
+        private double HyperbolicFittingHfrCalc(double position, double perfectFocusPosition, double a, double b) {
             double x = perfectFocusPosition - position;
             double t = MathHelper.HArcsin(x / b); //calculate t-position in hyperbola
             return a * MathHelper.HCos(t); //convert t-position to y/hfd value
         }
 
         private double ScaledErrorHyperbola(double perfectFocusPosition, double a, double b) {
-            return Math.Sqrt(FocusPoints.Sum((dp) => Math.Pow((HfrCalc(dp.X, perfectFocusPosition, a, b) - dp.Y) / dp.ErrorY, 2)));
+            return Math.Sqrt(FocusPoints.Sum((dp) => Math.Pow((HyperbolicFittingHfrCalc(dp.X, perfectFocusPosition, a, b) - dp.Y) / dp.ErrorY, 2)));
         }
 
         /// <summary>
@@ -481,6 +538,39 @@ namespace NINA.ViewModel {
             HyperbolicMinimum = new DataPoint((int)Math.Round(p), a);
         }
 
+        private void CalculateGaussianFitting() {
+            double[][] inputs = Accord.Math.Matrix.ToJagged(FocusPoints.ToList().ConvertAll((dp) => dp.X).ToArray());
+            double[] outputs = FocusPoints.ToList().ConvertAll((dp) => dp.Y).ToArray();
+
+            ScatterErrorPoint lowestPoint = FocusPoints.Where((dp) => dp.Y >= 0.1).Aggregate((l, r) => l.Y < r.Y ? l : r); // Get lowest non-zero datapoint
+            ScatterErrorPoint highestPoint = FocusPoints.Aggregate((l, r) => l.Y > r.Y ? l : r); // Get highest datapoint
+            double highestPosition = highestPoint.X;
+            double highestContrast = highestPoint.Y;
+            double lowestPosition = lowestPoint.X;
+            double lowestContrast = lowestPoint.Y;
+            double sigma = Accord.Statistics.Measures.StandardDeviation(FocusPoints.ToList().ConvertAll((dp) => dp.X).ToArray());
+
+            var nls = new NonlinearLeastSquares() {
+                NumberOfParameters = 4,
+                StartValues = new[] { highestPosition, sigma, highestContrast, lowestContrast },
+                Function = (w, x) => w[2] * Math.Exp(-1 * (x[0] - w[0]) * (x[0] - w[0]) / (2 * w[1] * w[1])) + w[3],
+                Gradient = (w, x, r) => {
+                    r[0] = w[2] * (x[0] - w[0]) * Math.Exp(-1 * (x[0] - w[0]) * (x[0] - w[0]) / (2 * w[1] * w[1])) / (w[1] * w[1]);
+                    r[1] = w[2] * (x[0] - w[0]) * (x[0] - w[0]) * Math.Exp(-1 * (x[0] - w[0]) * (x[0] - w[0]) / (2 * w[1] * w[1])) / (w[1] * w[1] * w[1]);
+                    r[2] = Math.Exp(-1 * (x[0] - w[0]) * (x[0] - w[0]) / (2 * w[1] * w[1]));
+                    r[3] = 1;
+                },
+                Algorithm = new Accord.Math.Optimization.LevenbergMarquardt() {
+                    MaxIterations = 30,
+                    Tolerance = 0
+                }
+            };
+
+            var regression = nls.Learn(inputs, outputs);
+            GaussianFitting = (x) => regression.Coefficients[2] * Math.Exp(-1 * (x - regression.Coefficients[0]) * (x - regression.Coefficients[0]) / (2 * regression.Coefficients[1] * regression.Coefficients[1])) + regression.Coefficients[3];
+            GaussianMaximum = new DataPoint((int)Math.Round(regression.Coefficients[0]), regression.Coefficients[2] + regression.Coefficients[3]);
+        }
+
         private void CalculateQuadraticFitting() {
             var fitting = new PolynomialLeastSquares() { Degree = 2 };
             PolynomialRegression poly = fitting.Learn(FocusPoints.Select((dp) => dp.X).ToArray(), FocusPoints.Select((dp) => dp.Y).ToArray(), FocusPoints.Select((dp) => 1 / (dp.ErrorY * dp.ErrorY)).ToArray());
@@ -491,27 +581,35 @@ namespace NINA.ViewModel {
         }
 
         private void CalculateTrends() {
-            //Get the minimum based on HFR and Error, rather than just HFR. This ensures 0 HFR is never used, and low HFR / High error numbers are also ignored
-            _minimum = FocusPoints.Aggregate((l, r) => l.Y + l.ErrorY < r.Y + r.ErrorY ? l : r);
-            IEnumerable<ScatterErrorPoint> leftTrendPoints = FocusPoints.Where((x) => x.X < _minimum.X && x.Y > (_minimum.Y + 0.1));
-            IEnumerable<ScatterErrorPoint> rightTrendPoints = FocusPoints.Where((x) => x.X > _minimum.X && x.Y > (_minimum.Y + 0.1));
-            LeftTrend = new TrendLine(leftTrendPoints);
-            RightTrend = new TrendLine(rightTrendPoints);
+            if (profileService.ActiveProfile.FocuserSettings.AutoFocusMethod == AFMethodEnum.STARHFR) {
+                //Get the minimum based on HFR and Error, rather than just HFR. This ensures 0 HFR is never used, and low HFR / High error numbers are also ignored
+                _minimum = FocusPoints.Aggregate((l, r) => l.Y + l.ErrorY < r.Y + r.ErrorY ? l : r);
+                IEnumerable<ScatterErrorPoint> leftTrendPoints = FocusPoints.Where((x) => x.X < _minimum.X && x.Y > (_minimum.Y + 0.1));
+                IEnumerable<ScatterErrorPoint> rightTrendPoints = FocusPoints.Where((x) => x.X > _minimum.X && x.Y > (_minimum.Y + 0.1));
+                LeftTrend = new TrendLine(leftTrendPoints);
+                RightTrend = new TrendLine(rightTrendPoints);
+            } else {
+                _maximum = FocusPoints.Aggregate((l, r) => l.Y - l.ErrorY > r.Y - r.ErrorY ? l : r);
+                IEnumerable<ScatterErrorPoint> leftTrendPoints = FocusPoints.Where((x) => x.X < _maximum.X && x.Y < (_maximum.Y - 0.01));
+                IEnumerable<ScatterErrorPoint> rightTrendPoints = FocusPoints.Where((x) => x.X > _maximum.X && x.Y < (_maximum.Y - 0.01));
+                LeftTrend = new TrendLine(leftTrendPoints);
+                RightTrend = new TrendLine(rightTrendPoints);
+            }
         }
 
-        private async Task<HFRAndError> GetAverageMeasurement(FilterInfo filter, int exposuresPerFocusPoint, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        private async Task<MeasureAndError> GetAverageMeasurement(FilterInfo filter, int exposuresPerFocusPoint, CancellationToken token, IProgress<ApplicationStatus> progress) {
             //Average HFR  of multiple exposures (if configured this way)
-            double sumHfr = 0;
+            double sumMeasure = 0;
             double sumVariances = 0;
             for (int i = 0; i < exposuresPerFocusPoint; i++) {
                 var image = await TakeExposure(filter, token, progress);
                 var partialMeasurement = await EvaluateExposure(image, token, progress);
-                sumHfr = sumHfr + partialMeasurement.HFR;
+                sumMeasure = sumMeasure + partialMeasurement.Measure;
                 sumVariances = sumVariances + partialMeasurement.Stdev * partialMeasurement.Stdev;
                 token.ThrowIfCancellationRequested();
             }
 
-            return new HFRAndError() { HFR = sumHfr / exposuresPerFocusPoint, Stdev = Math.Sqrt(sumVariances / exposuresPerFocusPoint) };
+            return new MeasureAndError() { Measure = sumMeasure / exposuresPerFocusPoint, Stdev = Math.Sqrt(sumVariances / exposuresPerFocusPoint) };
         }
 
         public enum Direction {
@@ -535,9 +633,14 @@ namespace NINA.ViewModel {
             int oldBacklashOut = profileService.ActiveProfile.FocuserSettings.BacklashOut;
             int backlashIN = 0;
             int backlashOUT = 0;
+            //Save previous Autofocus method
+            AFMethodEnum oldMethod = profileService.ActiveProfile.FocuserSettings.AutoFocusMethod;
+
             try {
                 //set previous backlash values to zero, so current backlash settings do not impair measurement
                 profileService.ActiveProfile.FocuserSettings.BacklashIn = profileService.ActiveProfile.FocuserSettings.BacklashOut = 0;
+                //Set method to STARHFR
+                profileService.ActiveProfile.FocuserSettings.AutoFocusMethod = AFMethodEnum.STARHFR;
                 await this.guiderMediator.StopGuiding(token);
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStartingINBacklashMeasurement"] });
                 backlashIN = await MeasureBacklash(filter, Direction.IN, token, progress);
@@ -564,6 +667,7 @@ namespace NINA.ViewModel {
             } finally {
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocusRestoringOriginalPosition"] });
                 _focusPosition = await focuserMediator.MoveFocuser(initialPosition);
+                profileService.ActiveProfile.FocuserSettings.AutoFocusMethod = oldMethod;
             }
             return true;
         }
@@ -579,7 +683,7 @@ namespace NINA.ViewModel {
             _focusPosition = await focuserMediator.MoveFocuserRelative((int)Math.Ceiling(offset * stepSize * 2d * (int)direction));
             token.ThrowIfCancellationRequested();
             //get HFR at this point
-            double hfr0 = (await GetAverageMeasurement(filter, 3, token, progress)).HFR;
+            double hfr0 = (await GetAverageMeasurement(filter, 3, token, progress)).Measure;
             token.ThrowIfCancellationRequested();
             FocusPoints.AddSorted(new ScatterErrorPoint(_focusPosition, hfr0, 0, 0), comparer);
 
@@ -590,7 +694,7 @@ namespace NINA.ViewModel {
                 _focusPosition = await focuserMediator.MoveFocuserRelative((int)Math.Round(stepSize * (int)direction * -1d));
                 token.ThrowIfCancellationRequested();
                 //get HFR at this point
-                hfr1 = (await GetAverageMeasurement(filter, 3, token, progress)).HFR;
+                hfr1 = (await GetAverageMeasurement(filter, 3, token, progress)).Measure;
                 token.ThrowIfCancellationRequested();
                 FocusPoints.AddSorted(new ScatterErrorPoint(_focusPosition, hfr1, 0, 0), comparer);
                 counter++;
@@ -600,7 +704,7 @@ namespace NINA.ViewModel {
             _focusPosition = await focuserMediator.MoveFocuserRelative((int)Math.Round(stepSize * (int)direction * -1d));
             token.ThrowIfCancellationRequested();
             //get HFR at this point
-            double hfr2 = (await GetAverageMeasurement(filter, 3, token, progress)).HFR;
+            double hfr2 = (await GetAverageMeasurement(filter, 3, token, progress)).Measure;
             token.ThrowIfCancellationRequested();
             FocusPoints.AddSorted(new ScatterErrorPoint(_focusPosition, hfr2, 0, 0), comparer);
 
@@ -662,9 +766,12 @@ namespace NINA.ViewModel {
                     await this.guiderMediator.StopGuiding(token);
                 }
 
-                //Get initial position information, as average of multiple exposures, if configured this way
-                initialHFR = (await GetAverageMeasurement(filter, profileService.ActiveProfile.FocuserSettings.AutoFocusNumberOfFramesPerPoint, token, progress)).HFR;
                 initialFocusPosition = focuserInfo.Position;
+
+                if (profileService.ActiveProfile.FocuserSettings.AutoFocusMethod == AFMethodEnum.STARHFR) {
+                    //Get initial position information, as average of multiple exposures, if configured this way
+                    initialHFR = (await GetAverageMeasurement(filter, profileService.ActiveProfile.FocuserSettings.AutoFocusNumberOfFramesPerPoint, token, progress)).Measure;
+                }
 
                 bool reattempt;
                 do {
@@ -720,28 +827,34 @@ namespace NINA.ViewModel {
                     //Get Trendline Intersection
                     TrendLineIntersection = LeftTrend.Intersect(RightTrend);
 
-                    if (profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.TRENDLINES) {
-                        FinalFocusPoint = TrendLineIntersection;
-                    }
+                    if (profileService.ActiveProfile.FocuserSettings.AutoFocusMethod == AFMethodEnum.STARHFR) { 
 
-                    if (profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.HYPERBOLIC) {
-                        CalculateHyperbolicFitting();
-                        FinalFocusPoint = HyperbolicMinimum;
-                    }
+                        if (profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.TRENDLINES) {
+                            FinalFocusPoint = TrendLineIntersection;
+                        }
 
-                    if (profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.PARABOLIC) {
-                        CalculateQuadraticFitting();
-                        FinalFocusPoint = QuadraticMinimum;
-                    }
+                        if (profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.HYPERBOLIC) {
+                            CalculateHyperbolicFitting();
+                            FinalFocusPoint = HyperbolicMinimum;
+                        }
 
-                    if (profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.TRENDPARABOLIC) {
-                        CalculateQuadraticFitting();
-                        FinalFocusPoint = new DataPoint(Math.Round((TrendLineIntersection.X + QuadraticMinimum.X) / 2), (TrendLineIntersection.Y + QuadraticMinimum.Y) / 2);
-                    }
+                        if (profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.PARABOLIC) {
+                            CalculateQuadraticFitting();
+                            FinalFocusPoint = QuadraticMinimum;
+                        }
 
-                    if (profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.TRENDHYPERBOLIC) {
-                        CalculateHyperbolicFitting();
-                        FinalFocusPoint = new DataPoint(Math.Round((TrendLineIntersection.X + HyperbolicMinimum.X) / 2), (TrendLineIntersection.Y + HyperbolicMinimum.Y) / 2);
+                        if (profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.TRENDPARABOLIC) {
+                            CalculateQuadraticFitting();
+                            FinalFocusPoint = new DataPoint(Math.Round((TrendLineIntersection.X + QuadraticMinimum.X) / 2), (TrendLineIntersection.Y + QuadraticMinimum.Y) / 2);
+                        }
+
+                        if (profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.TRENDHYPERBOLIC) {
+                            CalculateHyperbolicFitting();
+                            FinalFocusPoint = new DataPoint(Math.Round((TrendLineIntersection.X + HyperbolicMinimum.X) / 2), (TrendLineIntersection.Y + HyperbolicMinimum.Y) / 2);
+                        }
+                    } else {
+                        CalculateGaussianFitting();
+                        FinalFocusPoint = GaussianMaximum;
                     }
 
                     LastAutoFocusPoint = new AutoFocusPoint { Focuspoint = FinalFocusPoint, Temperature = focuserInfo.Temperature, Timestamp = DateTime.Now };
@@ -915,8 +1028,8 @@ namespace NINA.ViewModel {
         }
     }
 
-    public struct HFRAndError {
-        public double HFR { get; set; }
+    public struct MeasureAndError {
+        public double Measure { get; set; }
         public double Stdev { get; set; }
     }
 

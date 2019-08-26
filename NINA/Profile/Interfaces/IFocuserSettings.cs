@@ -26,7 +26,7 @@ using NINA.Utility.Enum;
 namespace NINA.Profile {
 
     public interface IFocuserSettings : ISettings {
-        int AutoFocusExposureTime { get; set; }
+        double AutoFocusExposureTime { get; set; }
         int AutoFocusInitialOffsetSteps { get; set; }
         int AutoFocusStepSize { get; set; }
         string Id { get; set; }
@@ -42,5 +42,7 @@ namespace NINA.Profile {
         int BacklashOut { get; set; }
         short AutoFocusBinning { get; set; }
         AFCurveFittingEnum AutoFocusCurveFitting { get; set; }
+        AFMethodEnum AutoFocusMethod { get; set; }
+        ContrastDetectionMethodEnum ContrastDetectionMethod { get; set; }
     }
 }

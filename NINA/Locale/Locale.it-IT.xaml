@@ -9,7 +9,9 @@
     <s:String x:Key="LblActiveSequenceDetails" xml:space="default">Dettagli Sequenze Attive</s:String>
     <s:String x:Key="LblAddSequenceTarget" xml:space="default">Affiungi come target di sequenza</s:String>
     <s:String x:Key="LblAdvancedSettings" xml:space="default">Impostazioni Avanzate</s:String>
+    <s:String x:Key="LblAFContrastDetection" xml:space="default">Determinazione Contrasto (Sperimentale)</s:String>
     <s:String x:Key="LblAFOnButFocuserNotConnected" xml:space="default">L'auto-focs è abilitato, ma il focuser non è connesso</s:String>
+    <s:String x:Key="LblAFStarHFR" xml:space="default">HFR Stelle</s:String>
     <s:String x:Key="LblAfter" xml:space="default">Dopo</s:String>
     <s:String x:Key="LblAFUseBrightestStars" xml:space="default">Usa le n stelle più luminose</s:String>
     <s:String x:Key="LblAFUseBrightestStarsTooltip" xml:space="default">Limita AF alle stelle più luminose. 0 equivale a "nessun limite"</s:String>
@@ -69,6 +71,13 @@ soltanto una parte centrale del sensore (se supportato dalla camera). Qualora qu
 stelle nei pressi dei bordi verranno ignorate durante il rilevamento delle stelle. Se usato in combinazione con una Crop Ratio Esterna
 inferiore ad uno, una fetta rettangolare dell'immagine (tra il rettangolo interno e quello esterno) sarà usata per l'autofocus.
   </s:String>
+    <s:String x:Key="LblAutoFocusMethod" xml:space="default">Metodo AF</s:String>
+    <s:String x:Key="LblAutoFocusMethodTooltip" xml:space="preserve">Quando HFR Stelle è selezionato, NINA troverà le stelle nel FOV,
+calcolerà il loro HFR su vari punti di fuoco, e troverà l'HFR minimo.
+Il metodo di determinazione contrasto impiega tecniche di elaborazione
+delle  immagini per stimare il contrasto su molteplici puunti di fuoco e
+trova il contrasto piu' elevato. Questo metodo funziona su oggetti terrestri ed
+altrettanto su oggetti del sistema solare, ma potrbbe essere sensibile al rumore.</s:String>
     <s:String x:Key="LblAutoFocusNewWorseThanOriginal" xml:space="default">Il nuovo HFR {0} del punto di fuoco è considerabilmente peggiore dell' HFR originale {1}</s:String>
     <s:String x:Key="LblAutoFocusNotEnoughtSpreadedPoints" xml:space="default">Insufficiente differenza HFR per impostare i punti di focus. O la dimensione dello step Comando avvio porta snap del telescopio troppo bassa o le stelle sono troppo sfuocate.</s:String>
     <s:String x:Key="LblAutoFocusNrOfExposures" xml:space="default"># esposizioni</s:String>
@@ -257,6 +266,7 @@ in grado di compensare le variazioni della temperatura ambiente</s:String>
     <s:String x:Key="LblConstellation_VOL" xml:space="default">Volans</s:String>
     <s:String x:Key="LblConstellation_VUL" xml:space="default">Vulpecula</s:String>
     <s:String x:Key="LblContinue" xml:space="default">Continua</s:String>
+    <s:String x:Key="LblContrastMethod" xml:space="default">Contrasto Metodo</s:String>
     <s:String x:Key="LblCoolCamBtnTooltip" xml:space="preserve">Raffreddare la Camera alla temperatura impostata.
 Quando la durata è impostata, l'applicazione diminuirà lentamente la temperatura fintanto che la temperatura desiderata viene non raggiunta.</s:String>
     <s:String x:Key="LblCoolerOn" xml:space="default">Cooler</s:String>
@@ -494,6 +504,7 @@ HFR Calcolato: {2}
     <s:String x:Key="LblJ2000" xml:space="default">J2000</s:String>
     <s:String x:Key="LblJNOW" xml:space="default">JNOW</s:String>
     <s:String x:Key="LblLanguage" xml:space="default">Lingua</s:String>
+    <s:String x:Key="LblLaplace" xml:space="default">Laplace</s:String>
     <s:String x:Key="LblLatitude" xml:space="default">Latitudine</s:String>
     <s:String x:Key="LblLayout" xml:space="default">Layout</s:String>
     <s:String x:Key="LblLblBlackClippingTooltip" xml:space="default">Fattore black clipping in unità sigma per il mediano</s:String>
@@ -810,6 +821,7 @@ Questo tempalte sarà usato all'avvio per inizializzare la sequenza invece di qu
     <s:String x:Key="LblSlewWhenTargetCoordsUnset" xml:space="default">Almeno un target con slew abilitato non ha le coordinate impostate</s:String>
     <s:String x:Key="LblSnapPortStart" xml:space="default">Comando avvio porta snap del telescopio</s:String>
     <s:String x:Key="LblSnapPortStop" xml:space="default">Comando stop porta snap del telescopio</s:String>
+    <s:String x:Key="LblSobel" xml:space="default">Sobel</s:String>
     <s:String x:Key="LblSolving" xml:space="default">Solving...</s:String>
     <s:String x:Key="LblSource" xml:space="default">Sorgente</s:String>
     <s:String x:Key="LblSouthern" xml:space="default">Meridionale</s:String>

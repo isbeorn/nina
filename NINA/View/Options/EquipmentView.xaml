@@ -661,6 +661,36 @@
                             <UniformGrid Columns="2">
                                 <UniformGrid Margin="0,5,0,0" Columns="2">
                                     <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblAutoFocusMethod}">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblAutoFocusMethodTooltip}" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <ComboBox
+                                        Name="cbAFMeasurementMethod"
+                                        ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:AFMethodEnum}}}"
+                                        SelectedItem="{Binding AutoFocusMethod}" />
+                                </UniformGrid>
+                                <UniformGrid
+                                    Margin="0,5,0,0"
+                                    Columns="2"
+                                    Visibility="{Binding ActiveProfile.FocuserSettings.AutoFocusMethod, Source={StaticResource AppVM}, Converter={StaticResource AutoFocusHFRToCollapsedVisibilityConverter}}">
+                                    <TextBlock
+                                    MinWidth="200"
+                                    MinHeight="20"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblContrastMethod}">
+                                    </TextBlock>
+                                    <ComboBox
+                                        Name="cbAContrastDetectionMethod"
+                                        ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:ContrastDetectionMethodEnum}}}"
+                                        SelectedItem="{Binding ContrastDetectionMethod}" />
+                                </UniformGrid>
+                                <UniformGrid Margin="0,5,0,0" Columns="2">
+                                    <TextBlock
                                         MinWidth="200"
                                         MinHeight="20"
                                         VerticalAlignment="Center"
@@ -675,7 +705,10 @@
                                         HorizontalAlignment="Left"
                                         IsChecked="{Binding AutoFocusDisableGuiding}" />
                                 </UniformGrid>
-                                <UniformGrid Margin="0,5,0,0" Columns="2">
+                                <UniformGrid
+                                    Margin="0,5,0,0"
+                                    Columns="2"
+                                    Visibility="{Binding ActiveProfile.FocuserSettings.AutoFocusMethod, Source={StaticResource AppVM}, Converter={StaticResource AutoFocusContrastDetectionToCollapsedVisibilityConverter}}">
                                     <TextBlock
                                         MinWidth="200"
                                         MinHeight="20"
@@ -706,7 +739,10 @@
                                         </TextBox.Text>
                                     </TextBox>
                                 </UniformGrid>
-                                <UniformGrid Margin="0,5,0,0" Columns="2">
+                                <UniformGrid 
+                                    Margin="0,5,0,0"
+                                    Columns="2"
+                                    Visibility="{Binding ActiveProfile.FocuserSettings.AutoFocusMethod, Source={StaticResource AppVM}, Converter={StaticResource AutoFocusContrastDetectionToCollapsedVisibilityConverter}}">
                                     <TextBlock
                                         MinWidth="200"
                                         MinHeight="20"
@@ -746,7 +782,10 @@
                                         </TextBox.Text>
                                     </TextBox>
                                 </UniformGrid>
-                                <UniformGrid Margin="0,5,0,0" Columns="2">
+                                <UniformGrid
+                                    Margin="0,5,0,0"
+                                    Columns="2"
+                                    Visibility="{Binding ActiveProfile.FocuserSettings.AutoFocusMethod, Source={StaticResource AppVM}, Converter={StaticResource AutoFocusContrastDetectionToCollapsedVisibilityConverter}}">
                                     <TextBlock
                                         MinWidth="200"
                                         MinHeight="20"
@@ -793,7 +832,10 @@
                                         </TextBox.Text>
                                     </TextBox>
                                 </UniformGrid>
-                                <UniformGrid Margin="0,5,0,0" Columns="2">
+                                <UniformGrid
+                                    Margin="0,5,0,0"
+                                    Columns="2"
+                                    Visibility="{Binding ActiveProfile.FocuserSettings.AutoFocusMethod, Source={StaticResource AppVM}, Converter={StaticResource AutoFocusContrastDetectionToCollapsedVisibilityConverter}}">
                                     <TextBlock
                                         MinWidth="200"
                                         MinHeight="20"

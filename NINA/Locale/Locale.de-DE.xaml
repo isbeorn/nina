@@ -9,7 +9,9 @@
     <s:String x:Key="LblActiveSequenceDetails" xml:space="default">Aktive Sequenz Details</s:String>
     <s:String x:Key="LblAddSequenceTarget" xml:space="default">Als Sequenzziel hinzufügen</s:String>
     <s:String x:Key="LblAdvancedSettings" xml:space="default">Erweiterte Einstellungen</s:String>
+    <s:String x:Key="LblAFContrastDetection" xml:space="default">Kontrasterkennung (Experimentell)</s:String>
     <s:String x:Key="LblAFOnButFocuserNotConnected" xml:space="default">Autofokus ist aktiviert, jedoch ist kein Okularauszug verbunden</s:String>
+    <s:String x:Key="LblAFStarHFR" xml:space="default">Stern HFR</s:String>
     <s:String x:Key="LblAfter" xml:space="default">Nach</s:String>
     <s:String x:Key="LblAFUseBrightestStars" xml:space="default">Nutze hellste n Sterne</s:String>
     <s:String x:Key="LblAFUseBrightestStarsTooltip" xml:space="default">Limitiere AF auf hellste Sterne. 0 bedeutet kein Limit</s:String>
@@ -69,6 +71,12 @@ ein zentriertes Teilbild des gesamten Sensors nutzen (sofern von der Kamera unte
 Falls nicht von der Kamera unterstützt, werden die Sterne in der nähe des Randes ignoriert.
 Bei einer Kombination des äußeren und inneren Crop Faktors wird ein rechteckiger Teilbereich
 zwischen äußerem Rand und dem inneren Bereich für den Autofokus benutzt.</s:String>
+    <s:String x:Key="LblAutoFocusMethod" xml:space="default">AF Methode</s:String>
+    <s:String x:Key="LblAutoFocusMethodTooltip" xml:space="preserve">Wenn Stern HFR ausgewählt ist, wird NINA Sterne im aktuellen Bildbereich erkennen, deren
+HFR durch mehrere Fokuspunkte berechnen und den minimalen HFR wert ermitteln.
+Kontrasterkennung nutzt Bildbearbeitungstechniken um den Kontrast durch mehrere
+Fokuspunkte zu schätzen und findet den höchsten Kontrast. Diese Methode funktioniert
+auch für Erdobjekte sowie Objekte des Sonnensystems, kann aber empfindlich gegenüber Bildrauschen sein.</s:String>
     <s:String x:Key="LblAutoFocusNewWorseThanOriginal" xml:space="default">Neuer Fokuspunkt HFR {0} erheblich schlechter als der ursprüngliche HFR {1}</s:String>
     <s:String x:Key="LblAutoFocusNotEnoughtSpreadedPoints" xml:space="default">Die HFR Werte der Fokuspunkte liegen zu dicht beieinander. Entweder ist der Okularauszug zu weit außerhalb des Fokuses oder die Schrittgröße ist zu klein eingestellt.</s:String>
     <s:String x:Key="LblAutoFocusNrOfExposures" xml:space="default"># Bildern</s:String>
@@ -257,6 +265,7 @@ die Umgebungstemperaturvariationen nicht ausgleichen können</s:String>
     <s:String x:Key="LblConstellation_VOL" xml:space="default">Fliegender Fisch</s:String>
     <s:String x:Key="LblConstellation_VUL" xml:space="default">Fuchs</s:String>
     <s:String x:Key="LblContinue" xml:space="default">Fortfahren</s:String>
+    <s:String x:Key="LblContrastMethod" xml:space="default">Kontrasterkennung Methode</s:String>
     <s:String x:Key="LblCoolCamBtnTooltip" xml:space="preserve">Kühlt Kamera bis zur Zieltemperatur.
 Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegebenen Zeitraum, bis die Zieltemperatur erreicht ist.</s:String>
     <s:String x:Key="LblCoolerOn" xml:space="default">Kühler</s:String>
@@ -494,6 +503,7 @@ Berechneter HFR: {2}
     <s:String x:Key="LblJ2000" xml:space="default">J2000</s:String>
     <s:String x:Key="LblJNOW" xml:space="default">JNOW</s:String>
     <s:String x:Key="LblLanguage" xml:space="default">Sprache</s:String>
+    <s:String x:Key="LblLaplace" xml:space="default">Laplace</s:String>
     <s:String x:Key="LblLatitude" xml:space="default">Breitengrad</s:String>
     <s:String x:Key="LblLayout" xml:space="default">Layout</s:String>
     <s:String x:Key="LblLblBlackClippingTooltip" xml:space="default">Schwarzpunktfaktor in Sigma Einheiten vom Median</s:String>
@@ -810,6 +820,7 @@ Diese Vorlage wird beim Starten der Applikation geladen, statt der Standard Sequ
     <s:String x:Key="LblSlewWhenTargetCoordsUnset" xml:space="default">Mindestens ein Ziel, bei dem Schwenken aktiv ist, hat keine Koordinaten gesetzt</s:String>
     <s:String x:Key="LblSnapPortStart" xml:space="default">Snap Port Start Kommando</s:String>
     <s:String x:Key="LblSnapPortStop" xml:space="default">Snap Port Stop Kommando</s:String>
+    <s:String x:Key="LblSobel" xml:space="default">Sobel</s:String>
     <s:String x:Key="LblSolving" xml:space="default">Solving...</s:String>
     <s:String x:Key="LblSource" xml:space="default">Quelle</s:String>
     <s:String x:Key="LblSouthern" xml:space="default">Südlich</s:String>
