@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 
 namespace NINA.Database.Schema {
 
-    internal class BrightStars {
+    public class BrightStars {
 
         [Key]
         public string name { get; set; }

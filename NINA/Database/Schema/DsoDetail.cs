@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 
 namespace NINA.Database.Schema {
 
-    internal class DsoDetail {
+    public class DsoDetail {
 
         [Key]
         public string id { get; set; }
