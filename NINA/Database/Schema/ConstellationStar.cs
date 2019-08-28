@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 
 namespace NINA.Database.Schema {
 
-    internal class ConstellationStar {
+    public class ConstellationStar {
 
         [Key]
         public int id { get; set; }
