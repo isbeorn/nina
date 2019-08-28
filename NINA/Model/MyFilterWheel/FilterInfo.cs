@@ -38,6 +38,7 @@ namespace NINA.Model.MyFilterWheel {
         private int _focusOffset;
         private short _position;
         private double _autoFocusExposureTime;
+        private bool _autoFocusFilter;
         private FlatWizardFilterSettings _flatWizardFilterSettings;
 
         [DataMember(Name = nameof(_name))]
@@ -84,6 +85,18 @@ namespace NINA.Model.MyFilterWheel {
 
             set {
                 _autoFocusExposureTime = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        [DataMember(Name = nameof(_autoFocusFilter))]
+        public bool AutoFocusFilter {
+            get {
+                return _autoFocusFilter;
+            }
+
+            set {
+                _autoFocusFilter = value;
                 RaisePropertyChanged();
             }
         }

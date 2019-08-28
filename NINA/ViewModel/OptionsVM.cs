@@ -65,6 +65,7 @@ namespace NINA.ViewModel {
             OpenSkySurveyCacheDirectoryDiagCommand = new RelayCommand(OpenSkySurveyCacheDirectoryDiag);
             ImportFiltersCommand = new RelayCommand(ImportFilters);
             AddFilterCommand = new RelayCommand(AddFilter);
+            SetAutoFocusFilterCommand = new RelayCommand(SetAutoFocusFilter);
             RemoveFilterCommand = new RelayCommand(RemoveFilter);
             AddProfileCommand = new RelayCommand(AddProfile);
             CloneProfileCommand = new RelayCommand(CloneProfile, (object o) => { return SelectedProfile != null; });
@@ -269,6 +270,18 @@ namespace NINA.ViewModel {
             SelectedFilter = filter;
         }
 
+        private void SetAutoFocusFilter(object obj) {
+            if (SelectedFilter != null) {
+                foreach (FilterInfo filter in ActiveProfile.FilterWheelSettings.FilterWheelFilters) {
+                    if (filter != SelectedFilter) { 
+                        filter.AutoFocusFilter = false;
+                    } else {
+                        SelectedFilter.AutoFocusFilter = !SelectedFilter.AutoFocusFilter;
+                    }
+                }
+            }
+        }
+
         private void ImportFilters(object obj) {
             var filters = filterWheelMediator.GetAllFilters();
             if (filters?.Count > 0) {
@@ -431,6 +444,7 @@ namespace NINA.ViewModel {
         public ICommand ImportFiltersCommand { get; private set; }
 
         public ICommand AddFilterCommand { get; private set; }
+        public ICommand SetAutoFocusFilterCommand { get; private set; }
 
         public ICommand RemoveFilterCommand { get; private set; }
 

@@ -440,6 +440,26 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
+                            <DataGridTemplateColumn
+                                Width="*"
+                                CanUserSort="False"
+                                Header="{ns:Loc LblAutoFocusFilter}"
+                                Visibility="{Binding ActiveProfile.FocuserSettings.UseFilterWheelOffsets, Source={StaticResource AppVM}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox
+                                            Width="20"
+                                            Height="20"
+                                            Margin="5,0,0,0"
+                                            HorizontalAlignment="Center"
+                                            BorderBrush="Transparent"
+                                            IsChecked="{Binding AutoFocusFilter, FallbackValue=False, Mode=OneWay}"
+                                            IsEnabled="False"
+                                            Style="{StaticResource CheckmarkCheckbox}"
+                                            Visibility="{Binding AutoFocusFilter, Converter={StaticResource VisibilityConverter}}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                     <Grid Grid.Row="1" DataContext="{Binding DataContext, ElementName=UC}">
@@ -469,7 +489,21 @@
                                     Fill="{StaticResource ButtonForegroundBrush}"
                                     Stretch="Uniform" />
                             </Button>
+                            <Button
+                            Grid.Column="2"
+                            Width="200"
+                            Margin="5"
+                            Command="{Binding SetAutoFocusFilterCommand}"
+                            Visibility="{Binding ActiveProfile.FocuserSettings.UseFilterWheelOffsets, Source={StaticResource AppVM}, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                <Button.Content>
+                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblSetAutoFocusFilter}" />
+                                </Button.Content>
+                                <Button.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblSetAutoFocusFilterTooltip}" />
+                                </Button.ToolTip>
+                            </Button>
                         </StackPanel>
+
                         <Button
                             Grid.Column="1"
                             Width="300"

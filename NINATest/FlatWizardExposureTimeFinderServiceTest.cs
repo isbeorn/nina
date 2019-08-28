@@ -54,7 +54,7 @@ namespace NINATest {
             _sut.AddDataPoint(3, 30);
 
             var result = _sut.GetNextExposureTime(1, wrapper);
-            result.Should().Be(12.8);
+            result.Should().BeApproximately(12.8, 0.000000001);
         }
 
         [Test]

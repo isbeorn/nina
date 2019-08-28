@@ -436,7 +436,7 @@ namespace NINA.ViewModel {
                     Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFocusPointValidationFailed"], focusPoint.X, focusPoint.Y, hfr));
                 }
 
-                if (hfr > (initialHFR * 1.15)) {
+                if (hfr > (initialHFR * 1.15) || hfr == 0) {
                     Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblAutoFocusNewWorseThanOriginal"], hfr, initialHFR));
                     Logger.Warning(string.Format("New focus point HFR {0} is significantly worse than original HFR {1}", hfr, initialHFR));
                     return false;
@@ -733,12 +733,16 @@ namespace NINA.ViewModel {
             HyperbolicMinimum = new DataPoint(0, 0);
             FinalFocusPoint = new DataPoint(0, 0);
             int numberOfAttempts = 0;
-            int initialFocusPosition;
+            int initialFocusPosition = focuserInfo.Position;
             double initialHFR = 0;
+            //Remember imaging filter, and get autofocus filter, if any
+            FilterInfo imagingFilter = filter;
+            FilterInfo defaultFocusFilter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Where(f => f.AutoFocusFilter == true).FirstOrDefault();
 
             System.Drawing.Rectangle oldSubSample = new System.Drawing.Rectangle();
 
             if (profileService.ActiveProfile.FocuserSettings.AutoFocusInnerCropRatio < 1 && profileService.ActiveProfile.FocuserSettings.AutoFocusOuterCropRatio == 1 && cameraInfo.CanSubSample) {
+                Logger.Debug("Setting camera subsample");
                 oldSubSample = new System.Drawing.Rectangle(cameraInfo.SubSampleX, cameraInfo.SubSampleY, cameraInfo.SubSampleWidth, cameraInfo.SubSampleHeight);
                 int subSampleWidth = (int)Math.Round(cameraInfo.XSize * profileService.ActiveProfile.FocuserSettings.AutoFocusInnerCropRatio);
                 int subSampleHeight = (int)Math.Round(cameraInfo.YSize * profileService.ActiveProfile.FocuserSettings.AutoFocusInnerCropRatio);
@@ -782,6 +786,16 @@ namespace NINA.ViewModel {
                     var offset = offsetSteps;
 
                     var nrOfSteps = offsetSteps + 1;
+
+                    //Set the filter to the autofocus filter if necessary, and move to it so autofocus X indexing works properly when invoking GetFocusPoints()
+                    if (defaultFocusFilter != null && profileService.ActiveProfile.FocuserSettings.UseFilterWheelOffsets) {
+                        try {
+                            filter = await filterWheelMediator.ChangeFilter(defaultFocusFilter);
+                        } catch (Exception e) {
+                            Logger.Error(e.Message);
+                            Notification.ShowWarning(e.Message);
+                        }
+                    }
 
                     await GetFocusPoints(filter, nrOfSteps, progress, token, offset);
 
@@ -858,6 +872,11 @@ namespace NINA.ViewModel {
                     }
 
                     LastAutoFocusPoint = new AutoFocusPoint { Focuspoint = FinalFocusPoint, Temperature = focuserInfo.Temperature, Timestamp = DateTime.Now };
+                    
+                    //Set the filter to the autofocus filter if necessary, but do not move to it yet (otherwise filter offset will be ignored in final validation). This will be done as part of the capture in ValidateCalculatedFocusPosition
+                    if (defaultFocusFilter != null && profileService.ActiveProfile.FocuserSettings.UseFilterWheelOffsets) {
+                        filter = imagingFilter;
+                    }
 
                     bool goodAutoFocus = await ValidateCalculatedFocusPosition(FinalFocusPoint, filter, token, progress, initialHFR);
 
@@ -887,10 +906,18 @@ namespace NINA.ViewModel {
                         }
                     }
                 } while (reattempt);
+
                 //_focusPosition = await Mediator.Instance.RequestAsync(new MoveFocuserMessage() { Position = (int)p.X, Absolute = true, Token = token });
             } catch (OperationCanceledException) {
                 FocusPoints.Clear();
                 PlotFocusPoints.Clear();
+                //Get back to original filter, if necessary
+                try {
+                    await filterWheelMediator.ChangeFilter(imagingFilter);
+                } catch (Exception e) {
+                    Logger.Error(e.Message);
+                    Notification.ShowError(e.Message);
+                }
             } catch (Exception ex) {
                 Notification.ShowError(ex.Message);
                 Logger.Error(ex);

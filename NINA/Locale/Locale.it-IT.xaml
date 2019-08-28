@@ -64,6 +64,7 @@ Vuoi che l'applicazione provi a risolvere quell'errore? (Può portare a comporta
     <s:String x:Key="LblAutoFocusAfterTemperatureChangeAmount" xml:space="default">Valore Temperatura</s:String>
     <s:String x:Key="LblAutoFocusExposureTime" xml:space="default">Tempo di esposizione Auto Focus</s:String>
     <s:String x:Key="LblAutoFocusExposureTimeTooltip" xml:space="default">Tempo di Esposizione usato per l-auto-focs qaundo non è impostato alcun tempo specifico per il filtro o se il tempo specifico per il filtro è zero</s:String>
+    <s:String x:Key="LblAutoFocusFilter" xml:space="default">Filtro Auto Focus</s:String>
     <s:String x:Key="LblAutoFocusGearNotConnected" xml:space="default">Impossibile iniziare Auto Focus. Camera o Focuser non connessi!</s:String>
     <s:String x:Key="LblAutoFocusInnerCropRatio" xml:space="default">AF Crop Ratio Interna</s:String>
     <s:String x:Key="LblAutoFocusInnerCropRatioTooltip" xml:space="preserve">Se impostato ad un valore inferiore ad uno, il rilevamento delle stelle durante l'autofocus userà
@@ -91,6 +92,8 @@ altrettanto su oggetti del sistema solare, ma potrbbe essere sensibile al rumore
     <s:String x:Key="LblAutoFocusReattempting" xml:space="default">Riprovando Autofocus</s:String>
     <s:String x:Key="LblAutoFocusRestoringOriginalPosition" xml:space="default">Ripristinando posizione di fuoco iniziale</s:String>
     <s:String x:Key="LblAutoFocusSetTime" xml:space="default">Tempo</s:String>
+    <s:String x:Key="LblAutoFocusSwitchingBackToFilter" xml:space="default">Tornando al filtro originale</s:String>
+    <s:String x:Key="LblAutoFocusSwitchingToDefaultFilter" xml:space="default">Passaggio al filtro Auto Focus</s:String>
     <s:String x:Key="LblAutoMeridianFlip" xml:space="default">Flip Meridiano Automatico</s:String>
     <s:String x:Key="LblAutoStretchFactor" xml:space="default">Fattore di Autostretch</s:String>
     <s:String x:Key="LblAutoStretchFactorTooltip" xml:space="default">Il fattore per l'algoritmo di autostretch che è usato per visualizzare una immagine ed identificare le stelle. Deve essere un valore compreso tra 0 ed 11.Un valore di 0.2 dovrebbe funzionare nella amggior parte dei casi.</s:String>
@@ -718,7 +721,7 @@ HFR Calcolato: {2}
     <s:String x:Key="LblRACorrections" xml:space="default">Correzioni RA</s:String>
     <s:String x:Key="LblRadius" xml:space="default">Raggio</s:String>
     <s:String x:Key="LblRAError" xml:space="default">Errore RA</s:String>
-    <s:String x:Key="LblRainRate" xml:space="default"></s:String>
+    <s:String x:Key="LblRainRate" xml:space="default">Rain Rate</s:String>
     <s:String x:Key="LblRAPixError" xml:space="default">Errore RA Pix</s:String>
     <s:String x:Key="LblRate" xml:space="default">Rate</s:String>
     <s:String x:Key="LblRawConverter" xml:space="default">Raw converter</s:String>
@@ -791,6 +794,8 @@ Questo tempalte sarà usato all'avvio per inizializzare la sequenza invece di qu
     <s:String x:Key="LblSerialPort" xml:space="default">Porta Seriale</s:String>
     <s:String x:Key="LblSerialRelay" xml:space="default">Relay Seriale</s:String>
     <s:String x:Key="LblSetAsSequenceTarget" xml:space="default">Imposta come sequenza target</s:String>
+    <s:String x:Key="LblSetAutoFocusFilter" xml:space="default">Imposta come filtro Auto Focus</s:String>
+    <s:String x:Key="LblSetAutoFocusFilterTooltip" xml:space="default">Se impostato, l'auto-focus userà sempre il filtro selezionato, usando gli offsets della filter wheel</s:String>
     <s:String x:Key="LblSetForFramingAssistant" xml:space="default">Set per framing assistant</s:String>
     <s:String x:Key="LblSetNewValue" xml:space="default">Imposta un nuovo valore</s:String>
     <s:String x:Key="LblSettings" xml:space="default">Settaggi</s:String>

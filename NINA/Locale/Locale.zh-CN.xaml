@@ -64,6 +64,7 @@
     <s:String x:Key="LblAutoFocusAfterTemperatureChangeAmount" xml:space="default">温度变化</s:String>
     <s:String x:Key="LblAutoFocusExposureTime" xml:space="default">自动对焦曝光时间</s:String>
     <s:String x:Key="LblAutoFocusExposureTimeTooltip" xml:space="default">当没有特定滤镜曝光设置或设置为0时，自动对焦采用的曝光时间</s:String>
+    <s:String x:Key="LblAutoFocusFilter" xml:space="default">Auto Focus Filter</s:String>
     <s:String x:Key="LblAutoFocusGearNotConnected" xml:space="default">无法启动自动对焦。 相机或调焦器未连接！</s:String>
     <s:String x:Key="LblAutoFocusInnerCropRatio" xml:space="default">自动对焦向内裁剪比例</s:String>
     <s:String x:Key="LblAutoFocusInnerCropRatioTooltip" xml:space="preserve">如果设置为小于1的值，自动对焦期间的星点检测将仅使用
@@ -90,6 +91,8 @@ terrestrial objects or solar system objects as well, but can be sensitive to noi
     <s:String x:Key="LblAutoFocusReattempting" xml:space="default">重新尝试自动对焦</s:String>
     <s:String x:Key="LblAutoFocusRestoringOriginalPosition" xml:space="default">恢复原始焦点位置</s:String>
     <s:String x:Key="LblAutoFocusSetTime" xml:space="default">时间</s:String>
+    <s:String x:Key="LblAutoFocusSwitchingBackToFilter" xml:space="default">Switching back to original filter</s:String>
+    <s:String x:Key="LblAutoFocusSwitchingToDefaultFilter" xml:space="default">Switching to Auto Focus filter</s:String>
     <s:String x:Key="LblAutoMeridianFlip" xml:space="default">自动中天翻转</s:String>
     <s:String x:Key="LblAutoStretchFactor" xml:space="default">自动拉伸系数</s:String>
     <s:String x:Key="LblAutoStretchFactorTooltip" xml:space="default">用于显示图像和检测恒星的自动拉伸算法的系数。必须是0到1之间的值。在大多数情况下，0.2可以正常工作。</s:String>
@@ -789,6 +792,8 @@ Type: {1}
     <s:String x:Key="LblSerialPort" xml:space="default">串行端口</s:String>
     <s:String x:Key="LblSerialRelay" xml:space="default">串行继电器</s:String>
     <s:String x:Key="LblSetAsSequenceTarget" xml:space="default">设置为序列目标</s:String>
+    <s:String x:Key="LblSetAutoFocusFilter" xml:space="default">Set as Auto-Focus Filter</s:String>
+    <s:String x:Key="LblSetAutoFocusFilterTooltip" xml:space="default">If set, auto-focus will always use the selected filter, using filter wheel offsets</s:String>
     <s:String x:Key="LblSetForFramingAssistant" xml:space="default">从构图助手设置</s:String>
     <s:String x:Key="LblSetNewValue" xml:space="default">设置新值</s:String>
     <s:String x:Key="LblSettings" xml:space="default">设置</s:String>
