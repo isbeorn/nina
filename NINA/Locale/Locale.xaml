@@ -64,6 +64,7 @@ Should the Application try to recover from the error? (Can lead to unexpected be
     <s:String x:Key="LblAutoFocusAfterTemperatureChangeAmount" xml:space="default">Temperature amount</s:String>
     <s:String x:Key="LblAutoFocusExposureTime" xml:space="default">Auto Focus Exposure Time</s:String>
     <s:String x:Key="LblAutoFocusExposureTimeTooltip" xml:space="default">Exposure Time used for auto focus when no filter specific time is set or the filter specific time is zero</s:String>
+    <s:String x:Key="LblAutoFocusFilter" xml:space="default">Auto Focus Filter</s:String>
     <s:String x:Key="LblAutoFocusGearNotConnected" xml:space="default">Cannot start Auto Focus. Camera or Focuser is not connected!</s:String>
     <s:String x:Key="LblAutoFocusInnerCropRatio" xml:space="default">AF Inner Crop Ratio</s:String>
     <s:String x:Key="LblAutoFocusInnerCropRatioTooltip" xml:space="preserve">If set to a value less than one, star detection during autofocus will only use
@@ -90,6 +91,8 @@ terrestrial objects or solar system objects as well, but can be sensitive to noi
     <s:String x:Key="LblAutoFocusReattempting" xml:space="default">Reattempting Autofocus</s:String>
     <s:String x:Key="LblAutoFocusRestoringOriginalPosition" xml:space="default">Restoring original focus position</s:String>
     <s:String x:Key="LblAutoFocusSetTime" xml:space="default">Time</s:String>
+    <s:String x:Key="LblAutoFocusSwitchingBackToFilter" xml:space="default">Switching back to original filter</s:String>
+    <s:String x:Key="LblAutoFocusSwitchingToDefaultFilter" xml:space="default">Switching to Auto Focus filter</s:String>
     <s:String x:Key="LblAutoMeridianFlip" xml:space="default">Auto Meridian Flip</s:String>
     <s:String x:Key="LblAutoStretchFactor" xml:space="default">Autostretch factor</s:String>
     <s:String x:Key="LblAutoStretchFactorTooltip" xml:space="default">The factor for the autostretch algorithm that is used to display an image and detect stars. Must be a value between 0 and 1. A value of 0.2 should work most of the time.</s:String>
@@ -790,6 +793,8 @@ This template will be used on startup to initialize the sequence instead of the 
     <s:String x:Key="LblSerialPort" xml:space="default">Serial Port</s:String>
     <s:String x:Key="LblSerialRelay" xml:space="default">Serial Relay</s:String>
     <s:String x:Key="LblSetAsSequenceTarget" xml:space="default">Set as sequence target</s:String>
+    <s:String x:Key="LblSetAutoFocusFilter" xml:space="default">Set as Auto Focus Filter</s:String>
+    <s:String x:Key="LblSetAutoFocusFilterTooltip" xml:space="default">If set, auto-focus will always use the selected filter, using filter wheel offsets</s:String>
     <s:String x:Key="LblSetForFramingAssistant" xml:space="default">Set for framing assistant</s:String>
     <s:String x:Key="LblSetNewValue" xml:space="default">Set new value</s:String>
     <s:String x:Key="LblSettings" xml:space="default">Settings</s:String>

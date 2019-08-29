@@ -32,7 +32,7 @@ using System.Linq;
 
 namespace NINA.Database {
 
-    internal class NINADbContext : DbContext {
+    public class NINADbContext : DbContext {
         public IDbSet<EarthRotationParameters> EarthRotationParameterSet { get; set; }
         public IDbSet<BrightStars> BrightStarsSet { get; set; }
         public IDbSet<DsoDetail> DsoDetailSet { get; set; }
@@ -64,11 +64,7 @@ namespace NINA.Database {
         private class CreateOrMigrateDatabaseInitializer<TContext> : CreateDatabaseIfNotExists<TContext>, IDatabaseInitializer<TContext> where TContext : DbContext {
 
             void IDatabaseInitializer<TContext>.InitializeDatabase(TContext context) {
-                base.InitializeDatabase(context);
-
-                if (context.Database.Exists()) {
-                    Migrate(context);
-                }
+                Migrate(context);
 
                 context.Database.SqlQuery<int>("PRAGMA foreign_keys = ON");
             }

@@ -64,6 +64,7 @@ Debe la aplicacion tratar de recuperarse del error? (Puede llegar a resultados i
     <s:String x:Key="LblAutoFocusAfterTemperatureChangeAmount" xml:space="default">Valor de Temperatura</s:String>
     <s:String x:Key="LblAutoFocusExposureTime" xml:space="default">Tiempo Exposicion Auto Enfoque</s:String>
     <s:String x:Key="LblAutoFocusExposureTimeTooltip" xml:space="default">Tiempo de exposicion usado para auto enfoque cuando no hay seleccionado un tiempo especifico de filtro o el tiempo especifico de filtro es cero</s:String>
+    <s:String x:Key="LblAutoFocusFilter" xml:space="default">Filtro para Auto Enfoque</s:String>
     <s:String x:Key="LblAutoFocusGearNotConnected" xml:space="default">No puede iniciar Aunto Enfoque. La camara o el enfocador no estan conectados!</s:String>
     <s:String x:Key="LblAutoFocusInnerCropRatio" xml:space="default">Porporcion recorte de AE interno</s:String>
     <s:String x:Key="LblAutoFocusInnerCropRatioTooltip" xml:space="preserve">Si un valor menor de 1 es colocado, la deteccion de estrellas durante el autofoco sera solamente usando
@@ -90,6 +91,8 @@ terrestrial objects or solar system objects as well, but can be sensitive to noi
     <s:String x:Key="LblAutoFocusReattempting" xml:space="default">Reintentando Auto Enfoque</s:String>
     <s:String x:Key="LblAutoFocusRestoringOriginalPosition" xml:space="default">Restaurando posicion de Enfoque original</s:String>
     <s:String x:Key="LblAutoFocusSetTime" xml:space="default">Tiempo</s:String>
+    <s:String x:Key="LblAutoFocusSwitchingBackToFilter" xml:space="default">Cambiando a filtro original</s:String>
+    <s:String x:Key="LblAutoFocusSwitchingToDefaultFilter" xml:space="default">Cambiando a filtro de auto enfoque</s:String>
     <s:String x:Key="LblAutoMeridianFlip" xml:space="default">Cambio Automatico de Meridiano</s:String>
     <s:String x:Key="LblAutoStretchFactor" xml:space="default">Factor de Auto Estirado</s:String>
     <s:String x:Key="LblAutoStretchFactorTooltip" xml:space="default">El factor para el algoritmo de auto estirado que es usado para desplegar una imagen y detectar estrellas. debe de ser un valor entre 0 y 1.  Un valor de 0.2 pudiera funcionar en la majoria de los casos</s:String>
@@ -789,6 +792,8 @@ Esta plantilla sera usada al inicio para inicializar la secuencia en vez de la u
     <s:String x:Key="LblSerialPort" xml:space="default">Puerto Serial</s:String>
     <s:String x:Key="LblSerialRelay" xml:space="default">Serial Relay</s:String>
     <s:String x:Key="LblSetAsSequenceTarget" xml:space="default">Colocar como objetivo de secuencia</s:String>
+    <s:String x:Key="LblSetAutoFocusFilter" xml:space="default">Activa como filtro para Auto Enfoque</s:String>
+    <s:String x:Key="LblSetAutoFocusFilterTooltip" xml:space="default">Si se activa, el auto enfoque siempre usara el filtro seleccionado, usando la compensacion de la rueda de filtros</s:String>
     <s:String x:Key="LblSetForFramingAssistant" xml:space="default">Enviar al Asistente de Encuadre</s:String>
     <s:String x:Key="LblSetNewValue" xml:space="default">Colocar nuevo Valor</s:String>
     <s:String x:Key="LblSettings" xml:space="default">Ajustes</s:String>

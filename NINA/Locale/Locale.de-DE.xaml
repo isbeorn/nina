@@ -64,6 +64,7 @@ Soll die Anwendung versuchen sich von dem Fehler zu erholen? (Kann zu unerwartet
     <s:String x:Key="LblAutoFocusAfterTemperatureChangeAmount" xml:space="default">Temperaturbetrag</s:String>
     <s:String x:Key="LblAutoFocusExposureTime" xml:space="default">Autofokus Belichtungszeit</s:String>
     <s:String x:Key="LblAutoFocusExposureTimeTooltip" xml:space="default">Belichtungszeit, die für Autofokus genutzt werden soll, falls kein Filter genutzt wird oder der Filterspezifische Wert null ist.</s:String>
+    <s:String x:Key="LblAutoFocusFilter" xml:space="default">Autofokus Filter</s:String>
     <s:String x:Key="LblAutoFocusGearNotConnected" xml:space="default">Autofokus kann nicht gestartet werden. Kamera oder Motorfokus ist nicht verbunden!</s:String>
     <s:String x:Key="LblAutoFocusInnerCropRatio" xml:space="default">AF inneres Crop Verhältnis</s:String>
     <s:String x:Key="LblAutoFocusInnerCropRatioTooltip" xml:space="preserve">Bei einem Wert kleiner eins wird die Sternerkennung während des Autofokuses
@@ -90,6 +91,8 @@ auch für Erdobjekte sowie Objekte des Sonnensystems, kann aber empfindlich gege
     <s:String x:Key="LblAutoFocusReattempting" xml:space="default">Wiederhole Autofocus</s:String>
     <s:String x:Key="LblAutoFocusRestoringOriginalPosition" xml:space="default">Stelle ursprüngliche Fokusposition wieder her</s:String>
     <s:String x:Key="LblAutoFocusSetTime" xml:space="default">Zeit</s:String>
+    <s:String x:Key="LblAutoFocusSwitchingBackToFilter" xml:space="default">Wechsle zurück zu ursprünglichem Filter</s:String>
+    <s:String x:Key="LblAutoFocusSwitchingToDefaultFilter" xml:space="default">Wechsle zu Auto Focus Filter</s:String>
     <s:String x:Key="LblAutoMeridianFlip" xml:space="default">Auto Meridian Flip</s:String>
     <s:String x:Key="LblAutoStretchFactor" xml:space="default">Autostretch Faktor</s:String>
     <s:String x:Key="LblAutoStretchFactorTooltip" xml:space="default">Faktor für den Autostretch Algorithmus. Wird zum anzeigen der Bilder, sowie zur Sternenerkennung genutzt. Muss ein Wert zwischen 0 und 1 sein. Ein Wert von 0,2 sollte für die meisten Fälle ausreichen.</s:String>
@@ -790,6 +793,7 @@ Diese Vorlage wird beim Starten der Applikation geladen, statt der Standard Sequ
     <s:String x:Key="LblSerialPort" xml:space="default">Serieller Port</s:String>
     <s:String x:Key="LblSerialRelay" xml:space="default">Serielles Relay</s:String>
     <s:String x:Key="LblSetAsSequenceTarget" xml:space="default">Als Sequenzziel setzen</s:String>
+    <s:String x:Key="LblSetAutoFocusFilter" xml:space="default">Als Auto Focus Filter setzen</s:String>
     <s:String x:Key="LblSetForFramingAssistant" xml:space="default">Für Bildausrichtungsassistent setzen</s:String>
     <s:String x:Key="LblSetNewValue" xml:space="default">Neuen Wert einstellen</s:String>
     <s:String x:Key="LblSettings" xml:space="default">Einstellungen</s:String>

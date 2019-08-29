@@ -26,7 +26,7 @@ using System.Data.Entity.ModelConfiguration;
 
 namespace NINA.Database.Schema {
 
-    internal class EarthRotationParameters {
+    public class EarthRotationParameters {
 
         [Key]
         public int date { get; set; }
