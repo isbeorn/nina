@@ -8,6 +8,7 @@
     <h1 id="version-1.10">Version 1.10</h1>
 <h2 id="improvements">Improvements</h2>
 <ul>
+<li>Plate solvers will now receive unstretched FITS images to solve the image for a faster and even better solve result</li>
 <li>The autofocus crop ratio has been changed to Inner Crop Ratio, and an additional Outer Crop Ratio has been added. This lets users define centered ROI, or a centered &quot;square doughnut&quot; which will be used by star detection, thus avoiding stars in the center and at the edges of the FO</li>
 <li>HFR calculation is now computed using the mean background surrounding the star, rather than the image mean</li>
 <li>HFR calculation has been enhanced to provide more accurate results, especially for imaging systems with central obstructions</li>
@@ -22,6 +23,9 @@
 <li>Added ability to keep guiding during autofocus</li>
 <li>The autofocus routine has been changed so that it doesn't attempt to measure the focus twice for the same point</li>
 <li>Added Spanish Translation</li>
+<li>The focuser temperature compensation feature is now turned off before an auto-focus session, and turned back on afterwards</li>
+<li>The NASA Sky Survey images now are automatically adjusted for brightness and contrast, depending on each image characteristic</li>
+<li>An autofocus filter can now be set if &quot;Use filter offsets&quot; is set to true. When defined, the autofocus routine will use the autofocus filter instead of the current imaging filter. Initial baseline HFR, and final HFR (used to determine whether the autofocus run was successful) will still use the main imaging filter.</li>
 </ul>
 <h1 id="version-1.9">Version 1.9</h1>
 <h2 id="features">Features</h2>
