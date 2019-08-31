@@ -26,25 +26,20 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using NINA.Model;
-using NINA.Utility;
 using NINA.Utility.Astrometry;
-using NINA.Utility.Extensions;
-using NINA.Utility.Notification;
 
 namespace NINA.PlateSolving {
 
     internal class ASTAPSolver : CLISolver {
-        private static string imageFilePath = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "astap_tmp.jpg");
-        private static string outputFilePath = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "astap_tmp.ini");
 
-        public ASTAPSolver(string executableLocation) : base(executableLocation, imageFilePath, outputFilePath) {
+        public ASTAPSolver(string executableLocation)
+            : base(executableLocation) {
         }
 
-        protected override PlateSolveResult ReadResult(PlateSolveParameter parameter) {
+        protected override PlateSolveResult ReadResult(
+            string outputFilePath,
+            PlateSolveParameter parameter,
+            PlateSolveImageProperties imageProperties) {
             var result = new PlateSolveResult() { Success = false };
             if (File.Exists(outputFilePath)) {
                 var dict = File.ReadLines(outputFilePath)
@@ -62,37 +57,34 @@ namespace NINA.PlateSolving {
                             Coordinates.RAType.Degrees
                         );
                         result.Orientation = double.Parse(dict["CROTA2"], CultureInfo.InvariantCulture);
-                        result.Pixscale = parameter.ArcSecPerPixel;
+                        result.Pixscale = imageProperties.ArcSecPerPixel;
                     }
                 }
             }
             return result;
         }
 
-        public override async Task<PlateSolveResult> SolveAsync(PlateSolveParameter parameter, IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var result = new PlateSolveResult() { Success = false };
-            try {
-                result = await this.Solve(parameter, progress, ct);
-            } catch (FileNotFoundException ex) {
-                Logger.Error(ex);
-                Notification.ShowError(Locale.Loc.Instance["LblASTAPNotFound"] + Environment.NewLine + executableLocation);
-            }
-            return result;
+        protected override string GetLocalizedPlateSolverName() {
+            return Locale.Loc.Instance["LblASTAPNotFound"];
         }
 
         /// <summary>
-        /// Creates the arguments to launche ASTAP process
+        /// Creates the arguments to launch ASTAP process
         /// </summary>
         /// <returns></returns>
         /// <remarks>http://www.hnsky.org/astap.htm#astap_command_line</remarks>
-        protected override string GetArguments(PlateSolveParameter parameter) {
+        protected override string GetArguments(
+            string imageFilePath,
+            string outputFilePath,
+            PlateSolveParameter parameter,
+            PlateSolveImageProperties imageProperties) {
             var args = new List<string>();
 
             //File location to solve
             args.Add($"-f \"{imageFilePath}\"");
 
             //Field height of image
-            var fov = Math.Round(parameter.FoVH, 6);
+            var fov = Math.Round(imageProperties.FoVH, 6);
             args.Add($"-fov {fov.ToString(CultureInfo.InvariantCulture)}");
 
             //Downsample factor
@@ -118,6 +110,10 @@ namespace NINA.PlateSolving {
             }
 
             return string.Join(" ", args);
+        }
+
+        protected override string GetOutputPath(string imageFilePath) {
+            return Path.Combine(Path.GetDirectoryName(imageFilePath), Path.GetFileNameWithoutExtension(imageFilePath)) + ".ini";
         }
     }
 }

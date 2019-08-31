@@ -1,11 +1,9 @@
 ﻿using NINA.Utility;
-using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
 using NINA.Utility.ImageAnalysis;
 using NINA.Utility.RawConverter;
 using nom.tam.fits;
 using System;
-using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,7 +40,7 @@ namespace NINA.Model.ImageData {
             var width = source.PixelWidth;
             var height = source.PixelHeight;
             var pixels = await Task.Run(() => ArrayFromSource(source));
-            return new ImageData(pixels, width, height, 16, false);
+            return new ImageData(pixels, width, height, source.Format.BitsPerPixel, false);
         }
 
         private static ushort[] ArrayFromSource(BitmapSource source) {

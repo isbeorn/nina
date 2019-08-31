@@ -21,29 +21,26 @@
 
 #endregion "copyright"
 
-using NINA.Model;
-using NINA.Utility;
 using NINA.Utility.Astrometry;
-using NINA.Utility.Notification;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace NINA.PlateSolving {
 
     internal class LocalPlateSolver : CLISolver {
-        private static string imageFilePath = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "astrometry_tmp.jpg");
-        private static string outputFilePath = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "astrometry_tmp.wcs");
         private string bashLocation;
 
-        public LocalPlateSolver(string cygwinRoot) : base("cmd.exe", imageFilePath, outputFilePath) {
+        public LocalPlateSolver(string cygwinRoot)
+            : base("cmd.exe") {
             this.bashLocation = Path.GetFullPath(Path.Combine(cygwinRoot, "bin", "bash.exe"));
         }
 
-        protected override string GetArguments(PlateSolveParameter parameter) {
+        protected override string GetArguments(
+            string imageFilePath,
+            string outputFilePath,
+            PlateSolveParameter parameter,
+            PlateSolveImageProperties imageProperties) {
             List<string> options = new List<string>();
 
             options.Add("--overwrite");
@@ -58,8 +55,8 @@ namespace NINA.PlateSolving {
             options.Add("--no-plots");
             options.Add("--resort");
             options.Add($"--downsample {parameter.DownSampleFactor}");
-            var lowArcSecPerPix = parameter.ArcSecPerPixel - 0.2;
-            var highArcSecPerPix = parameter.ArcSecPerPixel + 0.2;
+            var lowArcSecPerPix = imageProperties.ArcSecPerPixel - 0.2;
+            var highArcSecPerPix = imageProperties.ArcSecPerPixel + 0.2;
             options.Add("--scale-units arcsecperpix");
             options.Add(string.Format("-L {0}", lowArcSecPerPix.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
             options.Add(string.Format("-H {0}", highArcSecPerPix.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
@@ -73,7 +70,7 @@ namespace NINA.PlateSolving {
             return string.Format("/C \"\"{0}\" --login -c '/usr/bin/solve-field {1} \"{2}\"'\"", bashLocation, string.Join(" ", options), imageFilePath.Replace("\\", "/"));
         }
 
-        protected override PlateSolveResult ReadResult(PlateSolveParameter parameter) {
+        protected override PlateSolveResult ReadResult(string outputFilePath, PlateSolveParameter parameter, PlateSolveImageProperties imageProperties) {
             var result = new PlateSolveResult() { Success = false };
             if (File.Exists(outputFilePath)) {
                 var startInfo = new System.Diagnostics.ProcessStartInfo();
@@ -118,15 +115,12 @@ namespace NINA.PlateSolving {
             return result;
         }
 
-        public override async Task<PlateSolveResult> SolveAsync(PlateSolveParameter parameter, IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var result = new PlateSolveResult() { Success = false };
-            try {
-                result = await this.Solve(parameter, progress, ct);
-            } catch (FileNotFoundException ex) {
-                Logger.Error(ex);
-                Notification.ShowError(Locale.Loc.Instance["LblCygwinBashNotFound"] + Environment.NewLine + executableLocation);
-            }
-            return result;
+        protected override string GetLocalizedPlateSolverName() {
+            return Locale.Loc.Instance["LblCygwinBashNotFound"];
+        }
+
+        protected override string GetOutputPath(string imageFilePath) {
+            return Path.Combine(Path.GetDirectoryName(imageFilePath), Path.GetFileNameWithoutExtension(imageFilePath)) + ".wcs";
         }
     }
 }

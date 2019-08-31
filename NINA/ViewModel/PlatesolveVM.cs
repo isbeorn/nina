@@ -27,10 +27,8 @@ using NINA.Model.MyTelescope;
 using NINA.PlateSolving;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
-using NINA.Utility.Enum;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
-using NINA.Utility.WindowService;
 using NINA.Profile;
 using System;
 using System.ComponentModel;
@@ -42,6 +40,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using NINA.Model.ImageData;
 
 namespace NINA.ViewModel {
 
@@ -281,18 +280,12 @@ namespace NINA.ViewModel {
         /// <param name="binning">    </param>
         /// <returns></returns>
         public async Task<PlateSolveResult> SolveWithCapture(CaptureSequence seq, IProgress<ApplicationStatus> progress, CancellationToken canceltoken, bool silent = false) {
-            var oldAutoStretch = imagingMediator.SetAutoStretch(true);
-            var oldDetectStars = imagingMediator.SetDetectStars(false);
-
-            var data = await imagingMediator.CaptureAndPrepareImage(seq, canceltoken, progress);
-            Image = data.Image;
-
-            imagingMediator.SetAutoStretch(oldAutoStretch);
-            imagingMediator.SetDetectStars(oldDetectStars);
+            var imageData = await imagingMediator.CaptureImage(seq, canceltoken, progress);
+            Image = imageData.Image;
 
             canceltoken.ThrowIfCancellationRequested();
 
-            var success = await Solve(Image, progress, canceltoken, silent);
+            var success = await Solve(imageData, progress, canceltoken, silent);
             Image = null;
             return success;
         }
@@ -438,10 +431,20 @@ namespace NINA.ViewModel {
         /// <summary>
         /// Creates an instance of IPlatesolver, reads the image into memory and calls solve logic of platesolver
         /// </summary>
-        /// <param name="progress">   </param>
+        /// <param name="source"></param>
+        /// <param name="progress"></param>
         /// <param name="canceltoken"></param>
         /// <returns>true: success; false: fail</returns>
-        public async Task<PlateSolveResult> Solve(BitmapSource source, IProgress<ApplicationStatus> progress, CancellationToken canceltoken, bool silent = false, Coordinates coordinates = null) {
+        public Task<PlateSolveResult> Solve(IImageData source, IProgress<ApplicationStatus> progress, CancellationToken canceltoken, bool silent = false, Coordinates coordinates = null) {
+            return ValidateAndSolve(source, progress, canceltoken, silent, coordinates);
+        }
+
+        public async Task<PlateSolveResult> SolveBitmap(BitmapSource source, IProgress<ApplicationStatus> progress, CancellationToken canceltoken, bool silent = false, Coordinates coordinates = null) {
+            var imageDataSource = await ImageData.FromBitmapSource(source);
+            return await ValidateAndSolve(imageDataSource, progress, canceltoken, silent, coordinates);
+        }
+
+        private async Task<PlateSolveResult> ValidateAndSolve(IImageData source, IProgress<ApplicationStatus> progress, CancellationToken canceltoken, bool silent, Coordinates coordinates) {
             try {
                 ValidatePrerequisites();
 
@@ -461,7 +464,7 @@ namespace NINA.ViewModel {
                  * completely (in the case of no focal length), or in the case of no mount coordinates, prompt the user to attempt a blind solve.
                  */
                 if (coordinates != null) {
-                    result = await Solve(source, coordinates, progress, canceltoken);
+                    result = await SolveImpl(source, coordinates, progress, canceltoken);
                 } else {
                     failedMessage = Locale.Loc.Instance["LblPlatesolveNoCoordinates"];
                     failedTitleMessage = Locale.Loc.Instance["LblUseBlindSolveNoCoordinatesRollover"];
@@ -473,7 +476,7 @@ namespace NINA.ViewModel {
                         dialog = MyMessageBox.MyMessageBox.Show(failedTitleMessage, failedMessage, MessageBoxButton.YesNo, MessageBoxResult.Yes);
                     }
                     if (dialog == MessageBoxResult.Yes) {
-                        result = await BlindSolve(source, progress, canceltoken);
+                        result = await BlindSolveImpl(source, progress, canceltoken, silent: silent);
                         if (!result?.Success == true) {
                             Notification.ShowError(Locale.Loc.Instance["LblPlatesolveFailed"]);
                         }
@@ -491,77 +494,63 @@ namespace NINA.ViewModel {
         }
 
         /// <summary>
-        /// Creates an instance of IPlatesolver, reads the image into memory and calls solve logic of platesolver
+        /// Performs a PlateSolve using raw ImageData, which the solver may prepare and render as it requires
         /// </summary>
-        /// <param name="progress">   </param>
+        /// <param name="source"></param>
+        /// <param name="progress"></param>
         /// <param name="canceltoken"></param>
-        /// <returns>true: success; false: fail</returns>
-        public async Task<PlateSolveResult> BlindSolve(BitmapSource source, IProgress<ApplicationStatus> progress, CancellationToken canceltoken, bool silent = false, bool blind = false) {
-            var solver = GetBlindSolver();
-
-            var image = BitmapFrame.Create(source);
-            using (var ms = new MemoryStream()) {
-                var encoder = new JpegBitmapEncoder() { QualityLevel = 100 };
-                encoder.Frames.Add(image);
-                encoder.Save(ms);
-                ms.Seek(0, SeekOrigin.Begin);
-
-                var binning = 1;
-                if (CameraInfo.BinX > 1) {
-                    binning = CameraInfo.BinX;
-                }
-
-                var parameter = new PlateSolveParameter() {
-                    FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
-                    PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize * binning,
-                    DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
-                    MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
-                    ImageWidth = source.PixelWidth,
-                    ImageHeight = source.PixelHeight,
-                    Image = ms
-                };
-
-                Logger.Trace($"Blind solving with parameters: {Environment.NewLine + parameter.ToString()}");
-
-                var result = await solver.SolveAsync(parameter, progress, canceltoken);
-                progress.Report(new ApplicationStatus() { Status = string.Empty });
-                return result;
-            }
+        public Task<PlateSolveResult> BlindSolve(IImageData source, IProgress<ApplicationStatus> progress, CancellationToken cancelToken, bool silent = false) {
+            return BlindSolveImpl(source, progress, cancelToken, silent: silent);
         }
 
-        private async Task<PlateSolveResult> Solve(BitmapSource source, Coordinates coordinates, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
-            var solver = GetPlateSolver();
-            var image = BitmapFrame.Create(source);
-            using (var ms = new MemoryStream()) {
-                var encoder = new JpegBitmapEncoder() { QualityLevel = 100 };
-                encoder.Frames.Add(image);
-                encoder.Save(ms);
-                ms.Seek(0, SeekOrigin.Begin);
+        public async Task<PlateSolveResult> BlindSolveBitmap(BitmapSource source, IProgress<ApplicationStatus> progress, CancellationToken cancelToken, bool silent = false) {
+            var imageDataSource = await ImageData.FromBitmapSource(source);
+            return await BlindSolveImpl(imageDataSource, progress, cancelToken, silent: silent);
+        }
 
-                var binning = 1;
-                if (CameraInfo.BinX > 1) {
-                    binning = CameraInfo.BinX;
-                }
-
-                var parameter = new PlateSolveParameter() {
-                    FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
-                    PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize * binning,
-                    SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
-                    Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
-                    DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
-                    MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
-                    Coordinates = coordinates,
-                    ImageWidth = source.PixelWidth,
-                    ImageHeight = source.PixelHeight,
-                    Image = ms
-                };
-
-                Logger.Trace($"Solving with parameters: {Environment.NewLine + parameter.ToString()}");
-
-                var result = await solver.SolveAsync(parameter, progress, canceltoken);
-                progress.Report(new ApplicationStatus() { Status = string.Empty });
-                return result;
+        private async Task<PlateSolveResult> BlindSolveImpl(IImageData source, IProgress<ApplicationStatus> progress, CancellationToken cancelToken, bool silent) {
+            var solver = GetBlindSolver();
+            var binning = 1;
+            if (CameraInfo.BinX > 1) {
+                binning = CameraInfo.BinX;
             }
+
+            var parameter = new PlateSolveParameter() {
+                FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
+                PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize * binning,
+                DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
+                MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects
+            };
+
+            Logger.Trace($"Blind solving with parameters: {Environment.NewLine + parameter.ToString()}");
+
+            var result = await solver.SolveAsync(source, parameter, progress, cancelToken);
+            progress.Report(new ApplicationStatus() { Status = string.Empty });
+            return result;
+        }
+
+        private async Task<PlateSolveResult> SolveImpl(IImageData source, Coordinates coordinates, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
+            var solver = GetPlateSolver();
+            var binning = 1;
+            if (CameraInfo.BinX > 1) {
+                binning = CameraInfo.BinX;
+            }
+
+            var parameter = new PlateSolveParameter() {
+                FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
+                PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize * binning,
+                SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
+                Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
+                DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
+                MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
+                Coordinates = coordinates
+            };
+
+            Logger.Trace($"Solving with parameters: {Environment.NewLine + parameter.ToString()}");
+
+            var result = await solver.SolveAsync(source, parameter, progress, canceltoken);
+            progress.Report(new ApplicationStatus() { Status = string.Empty });
+            return result;
         }
 
         private CancellationTokenSource _solveCancelToken;

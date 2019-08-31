@@ -367,6 +367,8 @@
     <Compile Include="Model\MyWeatherData\AscomObservingConditions.cs" />
     <Compile Include="Model\MyWeatherData\OpenWeatherMap.cs" />
     <Compile Include="Model\MyWeatherData\WeatherDataInfo.cs" />
+    <Compile Include="PlateSolving\BaseSolver.cs" />
+    <Compile Include="PlateSolving\PlateSolveImageProperties.cs" />
     <Compile Include="Profile\Interfaces\IWeatherDataSettings.cs" />
     <Compile Include="Profile\ProfileInfo.cs" />
     <Compile Include="Profile\WeatherDataSettings.cs" />

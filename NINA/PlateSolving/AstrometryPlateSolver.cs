@@ -23,6 +23,7 @@
 
 using Newtonsoft.Json.Linq;
 using NINA.Model;
+using NINA.Model.ImageData;
 using NINA.Utility.Http;
 using System;
 using System.Collections.Specialized;
@@ -33,7 +34,7 @@ using System.Windows.Media.Imaging;
 
 namespace NINA.PlateSolving {
 
-    internal class AstrometryPlateSolver : IPlateSolver {
+    internal class AstrometryPlateSolver : BaseSolver {
         private const string AUTHURL = "/api/login/";
         private const string UPLOADURL = "/api/upload";
         private const string SUBMISSIONURL = "/api/submissions/{0}";
@@ -62,7 +63,7 @@ namespace NINA.PlateSolving {
             return o;
         }
 
-        private async Task<JObject> SubmitImage(Stream ms, string session, CancellationToken canceltoken) {
+        private async Task<JObject> SubmitImageStream(Stream ms, string session, CancellationToken canceltoken) {
             NameValueCollection nvc = new NameValueCollection();
             nvc.Add("request-json", "{\"publicly_visible\": \"n\", \"allow_modifications\": \"d\", \"session\": \"" + session + "\", \"allow_commercial_use\": \"d\"}");
             var request = new HttpUploadFile(_domain + UPLOADURL, ms, "file", "image/jpeg", nvc);
@@ -101,19 +102,33 @@ namespace NINA.PlateSolving {
             return request.Request(canceltoken);
         }
 
-        public async Task<PlateSolveResult> SolveAsync(PlateSolveParameter parameter, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
+        private async Task<JObject> SubmitImage(string session, IImageData source, CancellationToken cancelToken) {
+            string filePath = null;
+            try {
+                filePath = await source.SaveToDisk(WORKING_DIRECTORY, Path.GetRandomFileName(), Utility.Enum.FileTypeEnum.FITS, cancelToken);
+                using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read)) {
+                    return await SubmitImageStream(fs, session, cancelToken);
+                }
+            } finally {
+                if (filePath != null && File.Exists(filePath)) {
+                    File.Delete(filePath);
+                }
+            }
+        }
+
+        protected override async Task<PlateSolveResult> SolveAsyncImpl(IImageData source, PlateSolveParameter parameter, PlateSolveImageProperties imageProperties, IProgress<ApplicationStatus> progress, CancellationToken cancelToken) {
             PlateSolveResult result = new PlateSolveResult();
 
             try {
                 progress.Report(new ApplicationStatus() { Status = "Authenticating..." });
-                JObject authentication = await Authenticate(canceltoken);
+                JObject authentication = await Authenticate(cancelToken);
                 var status = authentication.GetValue("status");
                 string session = string.Empty;
                 if (status?.ToString() == "success") {
                     session = authentication.GetValue("session").ToString();
 
                     progress.Report(new ApplicationStatus() { Status = "Uploading Image..." });
-                    JObject imagesubmission = await SubmitImage(parameter.Image, session, canceltoken);
+                    JObject imagesubmission = await SubmitImage(session, source, cancelToken);
 
                     string subid = string.Empty;
                     string jobid = string.Empty;
@@ -122,9 +137,9 @@ namespace NINA.PlateSolving {
 
                         progress.Report(new ApplicationStatus() { Status = "Waiting for plate solve to start ..." });
                         while (true) {
-                            canceltoken.ThrowIfCancellationRequested();
+                            cancelToken.ThrowIfCancellationRequested();
 
-                            JObject submissionstatus = await GetSubmissionStatus(subid, canceltoken);
+                            JObject submissionstatus = await GetSubmissionStatus(subid, cancelToken);
 
                             JArray jobids;
                             jobids = (JArray)submissionstatus.GetValue("jobs");
@@ -141,8 +156,8 @@ namespace NINA.PlateSolving {
                             string jobstatus = string.Empty;
                             progress.Report(new ApplicationStatus() { Status = "Solving ..." });
                             while (true) {
-                                canceltoken.ThrowIfCancellationRequested();
-                                JObject ojobstatus = await GetJobStatus(jobid, canceltoken);
+                                cancelToken.ThrowIfCancellationRequested();
+                                JObject ojobstatus = await GetJobStatus(jobid, cancelToken);
                                 jobstatus = ojobstatus.GetValue("status").ToString();
 
                                 if ((jobstatus == "failure") || (jobstatus == "success")) {
@@ -153,7 +168,7 @@ namespace NINA.PlateSolving {
 
                             if (jobstatus == "success") {
                                 progress.Report(new ApplicationStatus() { Status = "Getting plate solve result ..." });
-                                JObject job = await GetJobInfo(jobid, canceltoken);
+                                JObject job = await GetJobInfo(jobid, cancelToken);
                                 JobResult jobinfo = job.ToObject<JobResult>();
 
                                 result.Orientation = jobinfo.calibration.orientation;

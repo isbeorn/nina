@@ -654,9 +654,9 @@ namespace NINA.ViewModel.FramingAssistant {
             using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
                 PlateSolveResult psResult;
                 if (diagResult == MessageBoxResult.Yes) {
-                    psResult = await solver.Solve(skySurveyImage.Image, _statusUpdate, _loadImageSource.Token, false, DSO.Coordinates);
+                    psResult = await solver.SolveBitmap(skySurveyImage.Image, _statusUpdate, _loadImageSource.Token, false, DSO.Coordinates);
                 } else {
-                    psResult = await solver.BlindSolve(skySurveyImage.Image, _statusUpdate, _loadImageSource.Token);
+                    psResult = await solver.BlindSolveBitmap(skySurveyImage.Image, _statusUpdate, _loadImageSource.Token);
                 }
 
                 if (psResult.Success) {

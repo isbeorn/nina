@@ -21,17 +21,23 @@
 
 #endregion "copyright"
 
-using NINA.Model;
-using NINA.Model.ImageData;
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
+using NINA.Model;
+using NINA.Model.ImageData;
 
 namespace NINA.PlateSolving {
 
-    internal interface IPlateSolver {
+    internal abstract class BaseSolver : IPlateSolver {
+        protected static string WORKING_DIRECTORY = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "PlateSolver");
 
-        Task<PlateSolveResult> SolveAsync(IImageData source, PlateSolveParameter parameter, IProgress<ApplicationStatus> progress, CancellationToken canceltoken);
+        public async Task<PlateSolveResult> SolveAsync(IImageData source, PlateSolveParameter parameter, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
+            var imageProperties = PlateSolveImageProperties.Create(parameter, source);
+            return await SolveAsyncImpl(source, parameter, imageProperties, progress, canceltoken);
+        }
+
+        protected abstract Task<PlateSolveResult> SolveAsyncImpl(IImageData source, PlateSolveParameter parameter, PlateSolveImageProperties imageProperties, IProgress<ApplicationStatus> progress, CancellationToken canceltoken);
     }
 }
