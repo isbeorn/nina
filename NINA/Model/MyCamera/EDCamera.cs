@@ -152,7 +152,10 @@ namespace NINA.Model.MyCamera {
 
         public bool CanShowLiveView {
             get {
-                return true;
+                if (Connected) {
+                    return (uint)EDSDK.EDS_ERR.OK == EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_Evf_OutputDevice, 0, out uint dummy);
+                }
+                return false;
             }
         }
 
@@ -412,6 +415,7 @@ namespace NINA.Model.MyCamera {
         private bool Initialize() {
             ValidateMode();
             GetISOSpeeds();
+            GetShutterSpeeds();
             SetRawFormat();
             SetSaveLocation();
             SubscribeEvents();
@@ -651,27 +655,34 @@ namespace NINA.Model.MyCamera {
             ValidateModeForExposure(exposureTime);
 
             /* Start exposure */
-            SendStartExposureCmd();
+            bool useBulb = (IsManualMode() && exposureTime > 30.0) || (IsBulbMode() && exposureTime >= 1.0);
+            SendStartExposureCmd(useBulb);
 
-            if ((IsManualMode() && exposureTime > 30.0) || (IsBulbMode() && exposureTime >= 1.0)) {
+            if (useBulb) {
                 /*Stop Exposure after exposure time */
                 Task.Run(async () => {
                     await Utility.Utility.Wait(TimeSpan.FromSeconds(exposureTime));
 
-                    StopExposure();
+                    SendStopExposureCmd(true);
                 });
             } else {
                 /*Immediately release shutter button when having a set exposure*/
-                StopExposure();
+                SendStopExposureCmd(false);
             }
         }
 
-        private void SendStartExposureCmd() {
-            uint error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_Completely_NonAF);
-            // Older Canon cameras, such as Xti Rebel 300D, don't support the PressShutterButton command. If this fails,
-            // fall back to the basic TakePicture command.
-            if (error > 0) {
-                error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_TakePicture, 0);
+        private void SendStartExposureCmd(bool useBulb) {
+            uint error;
+            if (useBulb) {
+                error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_BulbStart, 0);
+            } else {
+                error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_Completely_NonAF);
+
+                // Older Canon cameras, such as Xti Rebel 300D, don't support the PressShutterButton command. If this fails,
+                // fall back to the basic TakePicture command.
+                if (error > 0) {
+                    error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_TakePicture, 0);
+                }
             }
             CheckAndThrowError(error);
         }
@@ -725,7 +736,19 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StopExposure() {
-            CheckAndThrowError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF));
+            SendStopExposureCmd(false);
+        }
+
+        private void SendStopExposureCmd(bool useBulb) {
+            uint error = (uint)EDSDK.EDS_ERR.OK;
+            if (useBulb) {
+                error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_BulbEnd, 0);
+            }
+
+            if (!useBulb || (error != (uint)EDSDK.EDS_ERR.OK)) {
+                error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF);
+            }
+            CheckAndThrowError(error);
         }
 
         private uint SetProperty(uint property, object value) {
