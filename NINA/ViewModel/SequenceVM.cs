@@ -634,8 +634,7 @@ namespace NINA.ViewModel {
                     csl.IsRunning = true;
 
                     CaptureSequence seq;
-                    var actualFilter = filterWheelInfo?.SelectedFilter;
-                    short prevFilterPosition = actualFilter?.Position ?? -1;
+                    short prevFilterPosition = filterWheelInfo?.SelectedFilter?.Position ?? -1;
                     var lastAutoFocusTime = DateTime.UtcNow;
                     var lastAutoFocusTemperature = focuserInfo?.Temperature ?? double.NaN;
                     var exposureCount = 0;
@@ -687,6 +686,7 @@ namespace NINA.ViewModel {
 
                         /* 3) Change Filter */
                         if (seq.FilterType != null) {
+                            prevFilterPosition = filterWheelInfo?.SelectedFilter?.Position ?? -1;
                             await filterWheelMediator.ChangeFilter(seq.FilterType, ct, progress);
                         }
 
@@ -706,6 +706,7 @@ namespace NINA.ViewModel {
 
                         /* 5b) Change Filter if next sequence item has a different filter set */
                         if (seq.NextSequence != null && seq.NextSequence != seq) {
+                            prevFilterPosition = filterWheelInfo?.SelectedFilter?.Position ?? -1;
                             filterChangeTask = filterWheelMediator.ChangeFilter(seq.NextSequence.FilterType, ct, progress);
                         }
 
@@ -753,9 +754,6 @@ namespace NINA.ViewModel {
                             csl.IsRunning = true;
                             IsRunning = true;
                         }
-
-                        actualFilter = filterWheelInfo?.SelectedFilter;
-                        prevFilterPosition = actualFilter?.Position ?? -1;
                     }
                     if (saveTask != null && !saveTask.IsCompleted) {
                         progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForImageSaving"] });
