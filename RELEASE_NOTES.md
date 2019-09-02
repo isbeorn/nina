@@ -2,7 +2,7 @@
 
 ## Improvements
 - Plate solvers will now receive unstretched FITS images to solve the image for a faster and even better solve result
-- The autofocus crop ratio has been changed to Inner Crop Ratio, and an additional Outer Crop Ratio has been added. This lets users define centered ROI, or a centered "square doughnut" which will be used by star detection, thus avoiding stars in the center and at the edges of the FO
+- The autofocus crop ratio has been changed to Inner Crop Ratio, and an additional Outer Crop Ratio has been added. This lets users define centered ROI, or a centered "square doughnut" which will be used by star detection, thus avoiding stars in the center and at the edges of the FOV
 - HFR calculation is now computed using the mean background surrounding the star, rather than the image mean
 - HFR calculation has been enhanced to provide more accurate results, especially for imaging systems with central obstructions
 - Autofocus trend lines are now using a weighted fit based on HFR standard dev in each image rather than an unweighted fit. This provides much better slopes and final focus point.
@@ -16,6 +16,7 @@
 - The focuser temperature compensation feature is now turned off before an auto-focus session, and turned back on afterwards
 - The NASA Sky Survey images now are automatically adjusted for brightness and contrast, depending on each image characteristic
 - An autofocus filter can now be set if "Use filter offsets" is set to true. When defined, the autofocus routine will use the autofocus filter instead of the current imaging filter. Initial baseline HFR, and final HFR (used to determine whether the autofocus run was successful) will still use the main imaging filter.
+- A contrast detection autofocus routine has been added. Instead of analyzing stars to determine point of best focus, the routine analyzes overall contrast of the image with various contrast detection methods. A Gaussian fit is then performed on the obtained focus points - this process can use shorter exposure times than star HFR and produce results faster
 
 # Version 1.9
 
