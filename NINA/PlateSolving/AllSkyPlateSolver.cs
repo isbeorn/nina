@@ -27,9 +27,7 @@ using System.IO;
 using System.Text;
 
 namespace NINA.PlateSolving {
-
     internal class AllSkyPlateSolver : CLISolver {
-
         public AllSkyPlateSolver(string executableLocation)
             : base(executableLocation) {
         }

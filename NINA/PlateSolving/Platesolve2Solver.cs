@@ -26,9 +26,7 @@ using System.Globalization;
 using System.IO;
 
 namespace NINA.PlateSolving {
-
     internal class Platesolve2Solver : CLISolver {
-
         public Platesolve2Solver(string executableLocation)
             : base(executableLocation) {
             this.executableLocation = executableLocation;

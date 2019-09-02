@@ -29,9 +29,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace NINA.PlateSolving {
-
     internal interface IPlateSolver {
-
         Task<PlateSolveResult> SolveAsync(IImageData source, PlateSolveParameter parameter, IProgress<ApplicationStatus> progress, CancellationToken canceltoken);
     }
 }

@@ -27,7 +27,6 @@ using System.Globalization;
 using System.IO;
 
 namespace NINA.PlateSolving {
-
     internal class LocalPlateSolver : CLISolver {
         private string bashLocation;
 
