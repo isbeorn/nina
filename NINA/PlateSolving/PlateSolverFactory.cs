@@ -25,6 +25,7 @@ using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
 using NINA.Utility.Notification;
 using NINA.Profile;
+using NINA.Utility.Mediator.Interfaces;
 
 namespace NINA.PlateSolving {
 
@@ -34,7 +35,7 @@ namespace NINA.PlateSolving {
         /// <summary>
         /// Creates an instance of a Platesolver depending on the solver
         /// </summary>
-        /// <param name="profileService"></param>
+        /// <param name="plateSolveSettings"></param>
         /// <param name="solver"> Plate Solver that should be used</param>
         /// <returns></returns>
         private static IPlateSolver GetPlateSolver(IPlateSolveSettings plateSolveSettings, PlateSolverEnum solver) {

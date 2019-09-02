@@ -342,7 +342,7 @@ namespace NINA.ViewModel {
                     solver.Image = Image;
                     var service = WindowServiceFactory.Create();
                     service.Show(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
-                    await solver.Solve(Image, _progress, _plateSolveToken.Token);
+                    await solver.SolveBitmap(Image, _progress, _plateSolveToken.Token);
                 }
                 return true;
             } else {

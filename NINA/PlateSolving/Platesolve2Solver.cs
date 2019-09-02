@@ -21,23 +21,16 @@
 
 #endregion "copyright"
 
-using NINA.Model;
-using NINA.Utility;
 using NINA.Utility.Astrometry;
-using NINA.Utility.Notification;
-using System;
 using System.Globalization;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace NINA.PlateSolving {
 
     internal class Platesolve2Solver : CLISolver {
-        private static string imageFilePath = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "ps2_tmp.jpg");
-        private static string outputFilePath = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "ps2_tmp.apm");
 
-        public Platesolve2Solver(string executableLocation) : base(executableLocation, imageFilePath, outputFilePath) {
+        public Platesolve2Solver(string executableLocation)
+            : base(executableLocation) {
             this.executableLocation = executableLocation;
         }
 
@@ -45,12 +38,16 @@ namespace NINA.PlateSolving {
         /// Gets start arguments for Platesolve2 out of RA,Dec, ArcDegWidth, ArcDegHeight and ImageFilePath
         /// </summary>
         /// <returns></returns>
-        protected override string GetArguments(PlateSolveParameter parameter) {
+        protected override string GetArguments(
+            string imageFilePath,
+            string outputFilePath,
+            PlateSolveParameter parameter,
+            PlateSolveImageProperties imageProperties) {
             var args = new string[] {
                     Astrometry.ToRadians(parameter.Coordinates.RADegrees).ToString(CultureInfo.InvariantCulture),
                     Astrometry.ToRadians(parameter.Coordinates.Dec).ToString(CultureInfo.InvariantCulture),
-                    Astrometry.ToRadians(parameter.FoVW).ToString(CultureInfo.InvariantCulture),
-                    Astrometry.ToRadians(parameter.FoVH).ToString(CultureInfo.InvariantCulture),
+                    Astrometry.ToRadians(imageProperties.FoVW).ToString(CultureInfo.InvariantCulture),
+                    Astrometry.ToRadians(imageProperties.FoVH).ToString(CultureInfo.InvariantCulture),
                     parameter.Regions.ToString(),
                     imageFilePath,
                     "0"
@@ -64,7 +61,10 @@ namespace NINA.PlateSolving {
         /// 2. row: Scale,Orientation,?,?,Stars
         /// </summary>
         /// <returns>PlateSolveResult</returns>
-        protected override PlateSolveResult ReadResult(PlateSolveParameter parameter) {
+        protected override PlateSolveResult ReadResult(
+            string outputFilePath,
+            PlateSolveParameter parameter,
+            PlateSolveImageProperties imageProperties) {
             PlateSolveResult result = new PlateSolveResult() { Success = false };
             if (File.Exists(outputFilePath)) {
                 using (var s = new StreamReader(outputFilePath)) {
@@ -125,15 +125,12 @@ namespace NINA.PlateSolving {
             return result;
         }
 
-        public override async Task<PlateSolveResult> SolveAsync(PlateSolveParameter parameter, IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var result = new PlateSolveResult() { Success = false };
-            try {
-                result = await this.Solve(parameter, progress, ct);
-            } catch (FileNotFoundException ex) {
-                Logger.Error(ex);
-                Notification.ShowError(Locale.Loc.Instance["LblPlatesolve2NotFound"] + Environment.NewLine + executableLocation);
-            }
-            return result;
+        protected override string GetLocalizedPlateSolverName() {
+            return Locale.Loc.Instance["LblPlatesolve2NotFound"];
+        }
+
+        protected override string GetOutputPath(string imageFilePath) {
+            return Path.Combine(Path.GetDirectoryName(imageFilePath), Path.GetFileNameWithoutExtension(imageFilePath)) + ".apm";
         }
     }
 }

@@ -1,6 +1,7 @@
 # Version 1.10
 
 ## Improvements
+- Plate solvers will now receive unstretched FITS images to solve the image for a faster and even better solve result
 - The autofocus crop ratio has been changed to Inner Crop Ratio, and an additional Outer Crop Ratio has been added. This lets users define centered ROI, or a centered "square doughnut" which will be used by star detection, thus avoiding stars in the center and at the edges of the FO
 - HFR calculation is now computed using the mean background surrounding the star, rather than the image mean
 - HFR calculation has been enhanced to provide more accurate results, especially for imaging systems with central obstructions

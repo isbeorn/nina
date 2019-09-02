@@ -21,37 +21,27 @@
 
 #endregion "copyright"
 
-using NINA.Model;
-using NINA.Utility;
 using NINA.Utility.Astrometry;
-using NINA.Utility.Notification;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace NINA.PlateSolving {
 
     internal class AllSkyPlateSolver : CLISolver {
-        private static string imageFilePath = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "asps_tmp.jpg").Replace("\\", "/");
-        private static string outputFilePath = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "aspsresult.txt");
 
-        public AllSkyPlateSolver(string executableLocation) : base(executableLocation, imageFilePath, outputFilePath) {
+        public AllSkyPlateSolver(string executableLocation)
+            : base(executableLocation) {
         }
 
-        public override async Task<PlateSolveResult> SolveAsync(PlateSolveParameter parameter, IProgress<ApplicationStatus> progress, CancellationToken ct) {
-            var result = new PlateSolveResult() { Success = false };
-            try {
-                result = await this.Solve(parameter, progress, ct);
-            } catch (FileNotFoundException) {
-                Notification.ShowError(Locale.Loc.Instance["LblASPSNotFound"] + Environment.NewLine + executableLocation);
-            }
-            return result;
+        protected override string GetLocalizedPlateSolverName() {
+            return Locale.Loc.Instance["LblASPSNotFound"];
         }
 
-        protected override PlateSolveResult ReadResult(PlateSolveParameter parameter) {
+        protected override PlateSolveResult ReadResult(
+            string outputFilePath,
+            PlateSolveParameter parameter,
+            PlateSolveImageProperties imageProperties) {
             var result = new PlateSolveResult() { Success = false };
             if (File.Exists(outputFilePath)) {
                 string[] lines = File.ReadAllLines(outputFilePath, Encoding.UTF8);
@@ -77,11 +67,16 @@ namespace NINA.PlateSolving {
             return result;
         }
 
-        protected override string GetArguments(PlateSolveParameter parameter) {
+        protected override string GetArguments(
+            string imageFilePath,
+            string outputFilePath,
+            PlateSolveParameter parameter,
+            PlateSolveImageProperties imageProperties) {
             var args = new List<string>();
 
+            var imageFilePathArg = imageFilePath.Replace("\\", "/");
             //FileName
-            args.Add($"\"{imageFilePath}\"");
+            args.Add($"\"{imageFilePathArg}\"");
 
             //OutFile
             args.Add($"\"{outputFilePath}\"");
@@ -107,6 +102,10 @@ namespace NINA.PlateSolving {
             args.Add(parameter.SearchRadius.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));
 
             return $"/solvefile {string.Join(" ", args)}";
+        }
+
+        protected override string GetOutputPath(string imageFilePath) {
+            return Path.Combine(Path.GetDirectoryName(imageFilePath), Path.GetFileNameWithoutExtension(imageFilePath)) + ".txt";
         }
     }
 }
