@@ -47,7 +47,7 @@ namespace NINA.Profile {
             offset = 0.0;
             fullWellCapacity = 20000;
             downloadToDataRatio = 9;
-            rawConverter = RawConverterEnum.DCRAW;
+            rawConverter = RawConverterEnum.FREEIMAGE;
             minFlatExposureTime = 0.2;
             maxFlatExposureTime = 20;
             fileCameraFolder = string.Empty;
