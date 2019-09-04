@@ -30,8 +30,11 @@ using NINA.Utility.Astrometry;
 using NINA.Utility.Notification;
 
 namespace NINA.PlateSolving {
+
     internal class ASTAPSolver : CLISolver {
+
         internal class ASTAPValidationFailedException : Exception {
+
             internal ASTAPValidationFailedException(string reason) : base($"ASTAP validation failed: {reason}") {
             }
         }
@@ -121,7 +124,7 @@ namespace NINA.PlateSolving {
 
         protected override void EnsureSolverValid() {
             string astapPath = Path.GetDirectoryName(this.executableLocation);
-            string[] g17Files = Directory.GetFiles(astapPath, "g172_*");
+            string[] g17Files = Directory.GetFiles(astapPath, "g17_*");
             if (g17Files.Length == 0) {
                 throw new ASTAPValidationFailedException($"g17 database not found in {astapPath}");
             }
