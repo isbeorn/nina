@@ -21,16 +21,15 @@
 
 #endregion "copyright"
 
-using NINA.Model;
-using NINA.Model.ImageData;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+namespace NINA.Utility.Mediator {
 
-namespace NINA.PlateSolving {
+    public class PrepareImageParameters {
+        public bool? AutoStretch { get; private set; }
+        public bool? DetectStars { get; private set; }
 
-    internal interface IPlateSolver {
-
-        Task<PlateSolveResult> SolveAsync(IImageData source, PlateSolveParameter parameter, IProgress<ApplicationStatus> progress, CancellationToken canceltoken);
+        public PrepareImageParameters(bool? autoStretch = null, bool? detectStars = null) {
+            this.AutoStretch = autoStretch;
+            this.DetectStars = detectStars;
+        }
     }
 }

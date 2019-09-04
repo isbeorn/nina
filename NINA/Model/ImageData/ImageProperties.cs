@@ -21,16 +21,20 @@
 
 #endregion "copyright"
 
-using NINA.Model;
-using NINA.Model.ImageData;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+namespace NINA.Model.ImageData {
 
-namespace NINA.PlateSolving {
+    public class ImageProperties {
 
-    internal interface IPlateSolver {
+        public ImageProperties(int width, int height, int bitDepth, bool isBayered) {
+            this.Width = width;
+            this.Height = height;
+            this.IsBayered = isBayered;
+            this.BitDepth = bitDepth;
+        }
 
-        Task<PlateSolveResult> SolveAsync(IImageData source, PlateSolveParameter parameter, IProgress<ApplicationStatus> progress, CancellationToken canceltoken);
+        public int Width { get; private set; }
+        public int Height { get; private set; }
+        public int BitDepth { get; private set; }
+        public bool IsBayered { get; private set; }
     }
 }

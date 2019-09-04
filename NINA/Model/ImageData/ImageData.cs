@@ -1,4 +1,27 @@
-﻿using NINA.Utility;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using NINA.Utility;
 using NINA.Utility.Enum;
 using NINA.Utility.ImageAnalysis;
 using NINA.Utility.RawConverter;
@@ -14,19 +37,29 @@ namespace NINA.Model.ImageData {
 
     public class ImageData : IImageData {
 
-        public ImageData(ushort[] input, int width, int height, int bitDepth, bool isBayered) {
+        public ImageData(ushort[] input, int width, int height, int bitDepth, bool isBayered)
+            : this(input: input, width: width, height: height, bitDepth: bitDepth, isBayered: isBayered, metaData: new ImageMetaData()) {
+        }
+
+        public ImageData(ushort[] input, int width, int height, int bitDepth, bool isBayered, ImageMetaData metaData) {
             var array = new ImageArray();
             array.FlatArray = input;
             this.Data = array;
-            this.Statistics = new ImageStatistics(width, height, bitDepth, isBayered);
-            this.MetaData = new ImageMetaData();
+            this.MetaData = metaData;
+            this.Properties = new ImageProperties(width: width, height: height, bitDepth: bitDepth, isBayered: isBayered);
+            this.StarDetectionAnalysis = new StarDetectionAnalysis();
+            this.Statistics = new Nito.AsyncEx.AsyncLazy<IImageStatistics>(async () => await Task.Run(() => ImageStatistics.Create(this)));
         }
 
-        public BitmapSource Image { get; private set; }
         public IImageArray Data { get; private set; }
-        public LRGBArrays DebayeredData { get; private set; }
-        public IImageStatistics Statistics { get; set; }
-        public ImageMetaData MetaData { get; set; }
+
+        public ImageProperties Properties { get; private set; }
+
+        public ImageMetaData MetaData { get; private set; }
+
+        public Nito.AsyncEx.AsyncLazy<IImageStatistics> Statistics { get; private set; }
+
+        public IStarDetectionAnalysis StarDetectionAnalysis { get; private set; }
 
         public static async Task<ImageData> Create(Array input, int bitDepth, bool isBayered) {
             if (input.Rank > 2) { throw new NotSupportedException(); }
@@ -58,42 +91,12 @@ namespace NINA.Model.ImageData {
             }
         }
 
-        public Task CalculateStatistics() {
-            return Statistics.Calculate(this.Data.FlatArray);
+        public IRenderedImage RenderImage() {
+            return RenderedImage.Create(source: this.RenderBitmapSource(), rawImageData: this);
         }
 
-        public void RenderImage() {
-            Image = ImageUtility.CreateSourceFromArray(this.Data, this.Statistics, System.Windows.Media.PixelFormats.Gray16);
-        }
-
-        public void Debayer(bool saveColorChannels = false, bool saveLumChannel = false) {
-            var debayeredImage = ImageUtility.Debayer(this.Image, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale, saveColorChannels, saveLumChannel);
-            this.Image = debayeredImage.ImageSource;
-            this.DebayeredData = debayeredImage.Data;
-        }
-
-        public async Task Stretch(double factor, double blackClipping, bool unlinked) {
-            if (this.Statistics.IsBayered && unlinked) {
-                this.Image = await ImageUtility.StretchUnlinked(this, factor, blackClipping);
-            } else {
-                this.Image = await ImageUtility.Stretch(this, factor, blackClipping);
-            }
-            if (DebayeredData != null) {
-                //RGB arrays no longer needed - Dispose of them
-                DebayeredData.Red = DebayeredData.Green = DebayeredData.Blue = null;
-            }
-        }
-
-        public async Task DetectStars(bool annotate, StarSensitivityEnum sensitivity, NoiseReductionEnum noiseReduction, CancellationToken ct = default(CancellationToken), IProgress<ApplicationStatus> progress = default(Progress<ApplicationStatus>)) {
-            var analysis = new StarDetection(this, this.Image.Format, sensitivity, noiseReduction);
-            await analysis.DetectAsync(progress, ct);
-
-            if (annotate) {
-                this.Image = analysis.GetAnnotatedImage();
-            }
-
-            Statistics.HFR = analysis.AverageHFR;
-            Statistics.DetectedStars = analysis.DetectedStars;
+        public BitmapSource RenderBitmapSource() {
+            return ImageUtility.CreateSourceFromArray(this.Data, this.Properties, PixelFormats.Gray16);
         }
 
         #region "Save"
@@ -104,11 +107,11 @@ namespace NINA.Model.ImageData {
         /// <param name="fileType"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public async Task<string> PrepareSave(string filePath, FileTypeEnum fileType, CancellationToken token = default) {
+        public async Task<string> PrepareSave(string filePath, FileTypeEnum fileType, CancellationToken cancelToken = default) {
             var actualPath = string.Empty;
             try {
                 using (MyStopWatch.Measure()) {
-                    actualPath = await SaveToDiskAsync(filePath, fileType, token);
+                    actualPath = await SaveToDiskAsync(filePath, fileType, cancelToken);
                 }
             } catch (OperationCanceledException ex) {
                 throw ex;
@@ -151,48 +154,48 @@ namespace NINA.Model.ImageData {
 
         private ImagePatterns GetImagePatterns() {
             var p = new ImagePatterns();
-            p.Set(ImagePatternKeys.Filter, MetaData.FilterWheel.Filter);
-            p.Set(ImagePatternKeys.ExposureTime, MetaData.Image.ExposureTime);
+            var metadata = this.MetaData;
+            p.Set(ImagePatternKeys.Filter, metadata.FilterWheel.Filter);
+            p.Set(ImagePatternKeys.ExposureTime, metadata.Image.ExposureTime);
             p.Set(ImagePatternKeys.ApplicationStartDate, Utility.Utility.ApplicationStartDate.ToString("yyyy-MM-dd"));
-            p.Set(ImagePatternKeys.Date, MetaData.Image.ExposureStart.ToString("yyyy-MM-dd"));
-            p.Set(ImagePatternKeys.Time, MetaData.Image.ExposureStart.ToString("HH-mm-ss"));
-            p.Set(ImagePatternKeys.DateTime, MetaData.Image.ExposureStart.ToString("yyyy-MM-dd_HH-mm-ss"));
-            p.Set(ImagePatternKeys.FrameNr, MetaData.Image.ExposureNumber);
-            p.Set(ImagePatternKeys.ImageType, MetaData.Image.ImageType);
+            p.Set(ImagePatternKeys.Date, metadata.Image.ExposureStart.ToString("yyyy-MM-dd"));
+            p.Set(ImagePatternKeys.Time, metadata.Image.ExposureStart.ToString("HH-mm-ss"));
+            p.Set(ImagePatternKeys.DateTime, metadata.Image.ExposureStart.ToString("yyyy-MM-dd_HH-mm-ss"));
+            p.Set(ImagePatternKeys.FrameNr, metadata.Image.ExposureNumber);
+            p.Set(ImagePatternKeys.ImageType, metadata.Image.ImageType);
+            p.Set(ImagePatternKeys.TargetName, metadata.Target.Name);
 
-            p.Set(ImagePatternKeys.TargetName, MetaData.Target.Name);
-
-            if (MetaData.Image.RecordedRMS != null) {
-                p.Set(ImagePatternKeys.RMS, MetaData.Image.RecordedRMS.Total);
-                p.Set(ImagePatternKeys.RMSArcSec, MetaData.Image.RecordedRMS.Total * MetaData.Image.RecordedRMS.Scale);
+            if (metadata.Image.RecordedRMS != null) {
+                p.Set(ImagePatternKeys.RMS, metadata.Image.RecordedRMS.Total);
+                p.Set(ImagePatternKeys.RMSArcSec, metadata.Image.RecordedRMS.Total * metadata.Image.RecordedRMS.Scale);
             }
 
-            if (!double.IsNaN(MetaData.Focuser.Position)) {
-                p.Set(ImagePatternKeys.FocuserPosition, MetaData.Focuser.Position);
+            if (!double.IsNaN(metadata.Focuser.Position)) {
+                p.Set(ImagePatternKeys.FocuserPosition, metadata.Focuser.Position);
             }
 
-            if (!double.IsNaN(MetaData.Focuser.Temperature)) {
-                p.Set(ImagePatternKeys.FocuserTemp, MetaData.Focuser.Temperature);
+            if (!double.IsNaN(metadata.Focuser.Temperature)) {
+                p.Set(ImagePatternKeys.FocuserTemp, metadata.Focuser.Temperature);
             }
 
-            if (MetaData.Camera.Binning == string.Empty) {
+            if (metadata.Camera.Binning == string.Empty) {
                 p.Set(ImagePatternKeys.Binning, "1x1");
             } else {
-                p.Set(ImagePatternKeys.Binning, MetaData.Camera.Binning);
+                p.Set(ImagePatternKeys.Binning, metadata.Camera.Binning);
             }
 
-            if (!double.IsNaN(MetaData.Camera.Temperature)) {
-                p.Set(ImagePatternKeys.SensorTemp, MetaData.Camera.Temperature);
+            if (!double.IsNaN(metadata.Camera.Temperature)) {
+                p.Set(ImagePatternKeys.SensorTemp, metadata.Camera.Temperature);
             }
-            if (!double.IsNaN(MetaData.Camera.Gain)) {
-                p.Set(ImagePatternKeys.Gain, MetaData.Camera.Gain);
+            if (!double.IsNaN(metadata.Camera.Gain)) {
+                p.Set(ImagePatternKeys.Gain, metadata.Camera.Gain);
             }
-            if (!double.IsNaN(MetaData.Camera.Offset)) {
-                p.Set(ImagePatternKeys.Offset, MetaData.Camera.Offset);
+            if (!double.IsNaN(metadata.Camera.Offset)) {
+                p.Set(ImagePatternKeys.Offset, metadata.Camera.Offset);
             }
 
-            if (!double.IsNaN(Statistics.HFR)) {
-                p.Set(ImagePatternKeys.HFR, Statistics.HFR);
+            if (!double.IsNaN(this.StarDetectionAnalysis.HFR)) {
+                p.Set(ImagePatternKeys.HFR, this.StarDetectionAnalysis.HFR);
             }
             return p;
         }
@@ -214,7 +217,7 @@ namespace NINA.Model.ImageData {
             return actualPath;
         }
 
-        private Task<string> SaveToDiskAsync(string path, FileTypeEnum fileType, CancellationToken token) {
+        private Task<string> SaveToDiskAsync(string path, FileTypeEnum fileType, CancellationToken cancelToken) {
             return Task.Run(() => {
                 var completefilename = Path.Combine(path, Guid.NewGuid().ToString());
                 if (this.Data.RAWData != null) {
@@ -236,26 +239,25 @@ namespace NINA.Model.ImageData {
                     }
                 }
                 return completefilename;
-            }, token);
+            }, cancelToken);
         }
 
         private string SaveRAW(string path) {
             Directory.CreateDirectory(Path.GetDirectoryName(path));
-            var uniquePath = Utility.Utility.GetUniqueFilePath(path + "." + Data.RAWType);
-            File.WriteAllBytes(uniquePath, Data.RAWData);
+            var data = this.Data;
+            var uniquePath = Utility.Utility.GetUniqueFilePath(path + "." + data.RAWType);
+            File.WriteAllBytes(uniquePath, data.RAWData);
             return uniquePath;
         }
 
         private string SaveTiff(string path, TiffCompressOption c) {
-            BitmapSource bmpSource = ImageUtility.CreateSourceFromArray(Data, Statistics, System.Windows.Media.PixelFormats.Gray16);
-
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             var uniquePath = Utility.Utility.GetUniqueFilePath(path + ".tif");
 
             using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
                 TiffBitmapEncoder encoder = new TiffBitmapEncoder();
                 encoder.Compression = c;
-                encoder.Frames.Add(BitmapFrame.Create(bmpSource));
+                encoder.Frames.Add(BitmapFrame.Create(this.RenderBitmapSource()));
                 encoder.Save(fs);
             }
             return uniquePath;
@@ -263,12 +265,12 @@ namespace NINA.Model.ImageData {
 
         private string SaveFits(string path) {
             FITS f = new FITS(
-                Data.FlatArray,
-                Statistics.Width,
-                Statistics.Height
+                this.Data.FlatArray,
+                this.Properties.Width,
+                this.Properties.Height
             );
 
-            f.PopulateHeaderCards(MetaData);
+            f.PopulateHeaderCards(this.MetaData);
 
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             var uniquePath = Utility.Utility.GetUniqueFilePath(path + ".fits");
@@ -283,13 +285,13 @@ namespace NINA.Model.ImageData {
         private string SaveXisf(string path) {
             var header = new XISFHeader();
 
-            header.AddImageMetaData(Statistics, MetaData.Image.ImageType);
+            header.AddImageMetaData(this.Properties, this.MetaData.Image.ImageType);
 
-            header.Populate(MetaData);
+            header.Populate(this.MetaData);
 
             XISF img = new XISF(header);
 
-            img.AddAttachedImage(Data.FlatArray);
+            img.AddAttachedImage(this.Data.FlatArray);
 
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             var uniquePath = Utility.Utility.GetUniqueFilePath(path + ".xisf");
@@ -373,9 +375,7 @@ namespace NINA.Model.ImageData {
                         pixels[i++] = (ushort)(val + short.MaxValue);
                     }
                 }
-                var data = await Task.FromResult<IImageData>(new ImageData(pixels, width, height, bitDepth, isBayered));
-                await data.CalculateStatistics();
-                return data;
+                return await Task.FromResult<IImageData>(new ImageData(pixels, width, height, bitDepth, isBayered));
             });
         }
 
@@ -386,7 +386,6 @@ namespace NINA.Model.ImageData {
                     var converter = RawConverter.CreateInstance(rawConverter);
                     var data = await converter.Convert(ms, bitDepth, ct);
                     data.Data.RAWType = Path.GetExtension(path).ToLower().Substring(1);
-                    await data.CalculateStatistics();
                     return data;
                 }
             }
@@ -403,9 +402,7 @@ namespace NINA.Model.ImageData {
             int arraySize = stride * bmp.PixelHeight;
             ushort[] pixels = new ushort[bmp.PixelWidth * bmp.PixelHeight];
             bmp.CopyPixels(pixels, stride, 0);
-            var data = new ImageData(pixels, bmp.PixelWidth, bmp.PixelHeight, 16, isBayered);
-            await data.CalculateStatistics();
-            return data;
+            return new ImageData(pixels, bmp.PixelWidth, bmp.PixelHeight, 16, isBayered);
         }
 
         #endregion "Load"

@@ -36,15 +36,15 @@ namespace NINA.ViewModel {
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["HFRHistorySVG"];
 
             _nextStatHistoryId = 1;
-            ImgStatHistory = new AsyncObservableLimitedSizedStack<IImageStatistics>(100);
+            ImgStatHistory = new AsyncObservableLimitedSizedStack<AllImageStatistics>(100);
 
             PlotClearCommand = new RelayCommand((object o) => PlotClear());
         }
 
         private int _nextStatHistoryId;
-        private AsyncObservableLimitedSizedStack<IImageStatistics> _imgStatHistory;
+        private AsyncObservableLimitedSizedStack<AllImageStatistics> _imgStatHistory;
 
-        public AsyncObservableLimitedSizedStack<IImageStatistics> ImgStatHistory {
+        public AsyncObservableLimitedSizedStack<AllImageStatistics> ImgStatHistory {
             get {
                 return _imgStatHistory;
             }
@@ -54,11 +54,11 @@ namespace NINA.ViewModel {
             }
         }
 
-        public void Add(IImageStatistics stats) {
-            if (stats?.DetectedStars > 0 && stats.Id == 0) {
-                stats.Id = _nextStatHistoryId;
-                _nextStatHistoryId++;
-                this.ImgStatHistory.Add(stats);
+        public void Add(AllImageStatistics stats) {
+            if (stats?.StarDetectionAnalysis?.DetectedStars > 0) {
+                if (!this.ImgStatHistory.Contains(stats)) {
+                    this.ImgStatHistory.Add(stats);
+                }
             }
         }
 

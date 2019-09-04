@@ -29,6 +29,7 @@ using NINA.Model;
 using NINA.Model.ImageData;
 
 namespace NINA.PlateSolving {
+
     internal abstract class BaseSolver : IPlateSolver {
         protected static string WORKING_DIRECTORY = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "PlateSolver");
 

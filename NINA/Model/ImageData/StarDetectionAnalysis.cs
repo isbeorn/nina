@@ -21,16 +21,35 @@
 
 #endregion "copyright"
 
-using NINA.Model;
-using NINA.Model.ImageData;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using NINA.Utility;
 
-namespace NINA.PlateSolving {
+namespace NINA.Model.ImageData {
 
-    internal interface IPlateSolver {
+    public class StarDetectionAnalysis : BaseINPC, IStarDetectionAnalysis {
+        private double _hfr = double.NaN;
+        private int _detectedStars;
 
-        Task<PlateSolveResult> SolveAsync(IImageData source, PlateSolveParameter parameter, IProgress<ApplicationStatus> progress, CancellationToken canceltoken);
+        public double HFR {
+            get {
+                return this._hfr;
+            }
+            set {
+                this._hfr = value;
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public int DetectedStars {
+            get {
+                return this._detectedStars;
+            }
+            set {
+                this._detectedStars = value;
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public StarDetectionAnalysis() {
+        }
     }
 }

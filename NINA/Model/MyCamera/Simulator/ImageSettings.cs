@@ -52,9 +52,9 @@ namespace NINA.Model.MyCamera.Simulator {
             }
         }
 
-        private IImageData _image;
+        private IRenderedImage _image;
 
-        public IImageData Image {
+        public IRenderedImage Image {
             get => _image;
             set {
                 lock (lockObj) {

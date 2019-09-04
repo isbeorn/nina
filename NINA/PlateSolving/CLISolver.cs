@@ -32,6 +32,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.PlateSolving {
+
     internal abstract class CLISolver : BaseSolver {
         protected string executableLocation;
 

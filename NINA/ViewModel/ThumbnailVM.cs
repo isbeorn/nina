@@ -21,13 +21,11 @@
 
 #endregion "copyright"
 
-using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Profile;
-using NINA.Utility.RawConverter;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -36,6 +34,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using NINA.Model.ImageData;
+using NINA.Utility.Mediator;
 
 namespace NINA.ViewModel {
 
@@ -44,7 +43,7 @@ namespace NINA.ViewModel {
         public ThumbnailVM(IProfileService profileService, IImagingMediator imagingMediator) : base(profileService) {
             Title = "LblImageHistory";
             CanClose = false;
-            ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["HistorySVG"];
+            ImageGeometry = (GeometryGroup)System.Windows.Application.Current.Resources["HistorySVG"];
 
             this.imagingMediator = imagingMediator;
 
@@ -77,7 +76,6 @@ namespace NINA.ViewModel {
                         Mean = msg.Mean,
                         HFR = msg.HFR,
                         Filter = msg.Filter,
-                        StatisticsId = msg.StatisticsId,
                         IsBayered = msg.IsBayered
                     };
                     Thumbnails.Add(thumbnail);
@@ -128,7 +126,7 @@ namespace NINA.ViewModel {
         private async Task<bool> SelectImage(Thumbnail thumbnail) {
             var iarr = await thumbnail.LoadOriginalImage(profileService);
             if (iarr != null) {
-                await imagingMediator.PrepareImage(iarr, new System.Threading.CancellationToken());
+                await imagingMediator.PrepareImage(iarr, new PrepareImageParameters(), new System.Threading.CancellationToken());
                 return true;
             } else {
                 return false;
@@ -160,9 +158,8 @@ namespace NINA.ViewModel {
             try {
                 if (File.Exists(ImagePath.LocalPath)) {
                     iarr = await ImageData.FromFile(ImagePath.LocalPath, (int)profileService.ActiveProfile.CameraSettings.BitDepth, IsBayered, profileService.ActiveProfile.CameraSettings.RawConverter);
-                    iarr.Statistics.Id = StatisticsId;
                 } else {
-                    Notification.ShowError("File does not exist");
+                    Notification.ShowError($"File ${ImagePath.LocalPath} does not exist");
                 }
             } catch (Exception ex) {
                 Logger.Error(ex);
@@ -189,7 +186,5 @@ namespace NINA.ViewModel {
         public string Filter { get; set; }
 
         public double Duration { get; set; }
-
-        public int StatisticsId { get; set; }
     }
 }

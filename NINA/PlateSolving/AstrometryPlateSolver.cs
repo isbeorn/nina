@@ -34,6 +34,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace NINA.PlateSolving {
+
     internal class AstrometryPlateSolver : BaseSolver {
         private const string AUTHURL = "/api/login/";
         private const string UPLOADURL = "/api/upload";
@@ -133,7 +134,11 @@ namespace NINA.PlateSolving {
             }
         }
 
-        private async Task<string> SubmitImageJob(IProgress<ApplicationStatus> progress, IImageData source, string session, CancellationToken cancelToken) {
+        private async Task<string> SubmitImageJob(
+            IProgress<ApplicationStatus> progress,
+            IImageData source,
+            string session,
+            CancellationToken cancelToken) {
             JObject imageSubmission = await SubmitImage(session, source, cancelToken);
             var imageSubmissionStatus = imageSubmission.GetValue("status")?.ToString();
             if (imageSubmissionStatus != "success") {

@@ -63,7 +63,7 @@
                     Color2="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
                     DataFieldX="X"
                     DataFieldY="Y"
-                    ItemsSource="{Binding Histogram}"
+                    ItemsSource="{Binding ImageStatistics.Result.Histogram, IsAsync=True}"
                     Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
             </oxy:Plot.Series>
         </oxy:Plot>

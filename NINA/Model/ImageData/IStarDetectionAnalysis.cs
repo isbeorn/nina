@@ -21,16 +21,12 @@
 
 #endregion "copyright"
 
-using NINA.Model;
-using NINA.Model.ImageData;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using System.ComponentModel;
 
-namespace NINA.PlateSolving {
+namespace NINA.Model.ImageData {
 
-    internal interface IPlateSolver {
-
-        Task<PlateSolveResult> SolveAsync(IImageData source, PlateSolveParameter parameter, IProgress<ApplicationStatus> progress, CancellationToken canceltoken);
+    public interface IStarDetectionAnalysis : INotifyPropertyChanged {
+        double HFR { get; set; }
+        int DetectedStars { get; set; }
     }
 }

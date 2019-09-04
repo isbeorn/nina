@@ -42,6 +42,7 @@ using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
 using NINA.Model.MyRotator;
 using NINA.Model.MyWeatherData;
+using NINA.Utility.Mediator;
 
 namespace NINA.ViewModel {
 
@@ -150,7 +151,7 @@ namespace NINA.ViewModel {
                 await Task.Run(async () => {
                     var liveViewEnumerable = cameraMediator.LiveView(_liveViewCts.Token);
                     await liveViewEnumerable.ForEachAsync(async iarr => {
-                        await ImageControl.PrepareImage(iarr, _liveViewCts.Token);
+                        await ImageControl.PrepareImage(iarr, new PrepareImageParameters(), _liveViewCts.Token);
                     });
                 });
             } catch (OperationCanceledException) {
@@ -296,7 +297,11 @@ namespace NINA.ViewModel {
         //Instantiate a Singleton of the Semaphore with a value of 1. This means that only 1 thread can be granted access at a time.
         private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
-        public async Task<IImageData> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        public async Task<IRenderedImage> CaptureAndPrepareImage(
+            CaptureSequence sequence,
+            PrepareImageParameters parameters,
+            CancellationToken token,
+            IProgress<ApplicationStatus> progress) {
             var iarr = await CaptureImage(sequence, token, string.Empty);
             if (iarr != null) {
                 return await _imageProcessingTask;
@@ -361,7 +366,7 @@ namespace NINA.ViewModel {
                                 await _imageProcessingTask;
                             }
 
-                            _imageProcessingTask = PrepareImage(data, token);
+                            _imageProcessingTask = PrepareImage(data, new PrepareImageParameters(), token);
                         }
                     } catch (System.OperationCanceledException ex) {
                         cameraMediator.AbortExposure();
@@ -406,7 +411,7 @@ namespace NINA.ViewModel {
             data.MetaData.FilterWheel.Filter = sequence.FilterType?.Name ?? data.MetaData.FilterWheel.Filter;
         }
 
-        private Task<IImageData> _imageProcessingTask;
+        private Task<IRenderedImage> _imageProcessingTask;
 
         private Model.MyFilterWheel.FilterInfo _snapFilter;
 
@@ -469,25 +474,25 @@ namespace NINA.ViewModel {
                     seq.EnableSubSample = SnapSubSample;
                     seq.Gain = SnapGain;
 
-                    var data = await CaptureAndPrepareImage(seq, _captureImageToken.Token, progress);
+                    var renderedImage = await CaptureAndPrepareImage(seq, new PrepareImageParameters(), _captureImageToken.Token, progress);
                     if (SnapSave) {
-                        var path = await data.SaveToDisk(
+                        var path = await renderedImage.RawImageData.SaveToDisk(
                             profileService.ActiveProfile.ImageFileSettings.FilePath,
                             profileService.ActiveProfile.ImageFileSettings.FilePattern,
                             profileService.ActiveProfile.ImageFileSettings.FileType,
                             _captureImageToken.Token
                         );
+                        var imageStatistics = await renderedImage.RawImageData.Statistics.Task;
                         imagingMediator.OnImageSaved(
                             new ImageSavedEventArgs() {
                                 PathToImage = new Uri(path),
-                                Image = data.Image,
+                                Image = renderedImage.Image,
                                 FileType = profileService.ActiveProfile.ImageFileSettings.FileType,
-                                Mean = data.Statistics.Mean,
-                                HFR = data.Statistics.HFR,
-                                Duration = data.MetaData.Image.ExposureTime,
-                                IsBayered = data.Statistics.IsBayered,
-                                Filter = data.MetaData.FilterWheel.Filter,
-                                StatisticsId = data.Statistics.Id
+                                Mean = imageStatistics.Mean,
+                                HFR = renderedImage.RawImageData.StarDetectionAnalysis.HFR,
+                                Duration = renderedImage.RawImageData.MetaData.Image.ExposureTime,
+                                IsBayered = renderedImage.RawImageData.Properties.IsBayered,
+                                Filter = renderedImage.RawImageData.MetaData.FilterWheel.Filter
                             }
                         );
                     }
@@ -533,33 +538,21 @@ namespace NINA.ViewModel {
             this.weatherDataInfo = deviceInfo;
         }
 
-        public bool SetDetectStars(bool value) {
-            var oldval = ImageControl.DetectStars;
-            ImageControl.DetectStars = value;
-            return oldval;
-        }
-
-        public bool SetAutoStretch(bool value) {
-            var oldval = ImageControl.AutoStretch;
-            ImageControl.AutoStretch = value;
-            return oldval;
-        }
-
-        public Task<IImageData> PrepareImage(IImageData data, CancellationToken token) {
+        public Task<IRenderedImage> PrepareImage(
+            IImageData data,
+            PrepareImageParameters parameters,
+            CancellationToken cancelToken) {
             _imageProcessingTask = Task.Run(async () => {
-                Task<IImageData> process = ImageControl.PrepareImage(data, token);
-
-                var processedData = await process;
-
-                ImgStatisticsVM.Add(data.Statistics, data.MetaData.Image.ExposureTime);
+                var processedData = await ImageControl.PrepareImage(data, parameters, cancelToken);
+                await ImgStatisticsVM.UpdateStatistics(data);
                 return processedData;
-            }, token);
+            }, cancelToken);
             return _imageProcessingTask;
         }
 
         public void DestroyImage() {
             ImageControl.Image = null;
-            ImageControl.ImgArr = null;
+            ImageControl.RenderedImage = null;
         }
 
         public void Dispose() {

@@ -41,8 +41,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using NINA.Model.ImageData;
+using NINA.Utility.Mediator;
 
 namespace NINA.ViewModel {
+
     internal class PlatesolveVM : DockableVM, ICameraConsumer, ITelescopeConsumer {
         public const string ASTROMETRYNETURL = "http://nova.astrometry.net";
 
@@ -279,12 +281,12 @@ namespace NINA.ViewModel {
         /// <param name="binning">    </param>
         /// <returns></returns>
         public async Task<PlateSolveResult> SolveWithCapture(CaptureSequence seq, IProgress<ApplicationStatus> progress, CancellationToken canceltoken, bool silent = false) {
-            var imageData = await imagingMediator.CaptureImage(seq, canceltoken, progress);
-            Image = imageData.Image;
+            var renderedImage = await imagingMediator.CaptureAndPrepareImage(seq, new PrepareImageParameters(), canceltoken, progress);
+            Image = renderedImage.Image;
 
             canceltoken.ThrowIfCancellationRequested();
 
-            var success = await Solve(imageData, progress, canceltoken, silent);
+            var success = await Solve(renderedImage.RawImageData, progress, canceltoken, silent);
             Image = null;
             return success;
         }
@@ -438,11 +440,6 @@ namespace NINA.ViewModel {
             return ValidateAndSolve(source, progress, canceltoken, silent, coordinates);
         }
 
-        public async Task<PlateSolveResult> SolveBitmap(BitmapSource source, IProgress<ApplicationStatus> progress, CancellationToken canceltoken, bool silent = false, Coordinates coordinates = null) {
-            var imageDataSource = await ImageData.FromBitmapSource(source);
-            return await ValidateAndSolve(imageDataSource, progress, canceltoken, silent, coordinates);
-        }
-
         private async Task<PlateSolveResult> ValidateAndSolve(IImageData source, IProgress<ApplicationStatus> progress, CancellationToken canceltoken, bool silent, Coordinates coordinates) {
             try {
                 ValidatePrerequisites();
@@ -500,11 +497,6 @@ namespace NINA.ViewModel {
         /// <param name="canceltoken"></param>
         public Task<PlateSolveResult> BlindSolve(IImageData source, IProgress<ApplicationStatus> progress, CancellationToken cancelToken, bool silent = false) {
             return BlindSolveImpl(source, progress, cancelToken, silent: silent);
-        }
-
-        public async Task<PlateSolveResult> BlindSolveBitmap(BitmapSource source, IProgress<ApplicationStatus> progress, CancellationToken cancelToken, bool silent = false) {
-            var imageDataSource = await ImageData.FromBitmapSource(source);
-            return await BlindSolveImpl(imageDataSource, progress, cancelToken, silent: silent);
         }
 
         private async Task<PlateSolveResult> BlindSolveImpl(IImageData source, IProgress<ApplicationStatus> progress, CancellationToken cancelToken, bool silent) {

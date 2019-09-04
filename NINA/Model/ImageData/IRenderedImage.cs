@@ -21,16 +21,30 @@
 
 #endregion "copyright"
 
-using NINA.Model;
-using NINA.Model.ImageData;
+using NINA.Utility.Enum;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
-namespace NINA.PlateSolving {
+namespace NINA.Model.ImageData {
 
-    internal interface IPlateSolver {
+    public interface IRenderedImage {
+        IImageData RawImageData { get; }
 
-        Task<PlateSolveResult> SolveAsync(IImageData source, PlateSolveParameter parameter, IProgress<ApplicationStatus> progress, CancellationToken canceltoken);
+        BitmapSource Image { get; }
+
+        IDebayeredImage Debayer(bool saveColorChannels = false, bool saveLumChannel = false);
+
+        IRenderedImage ReRender();
+
+        Task<IRenderedImage> Stretch(double factor, double blackClipping, bool unlinked);
+
+        Task<IRenderedImage> DetectStars(
+            bool annotateImage,
+            StarSensitivityEnum sensitivity,
+            NoiseReductionEnum noiseReduction,
+            CancellationToken cancelToken = default,
+            IProgress<ApplicationStatus> progress = default(Progress<ApplicationStatus>));
     }
 }

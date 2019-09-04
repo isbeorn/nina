@@ -48,7 +48,7 @@
                                 Width="70"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Text="{Binding Width, StringFormat=\{0:#0\}}" />
+                                Text="{Binding ImageProperties.Width, StringFormat=\{0:#0\}}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
@@ -59,7 +59,7 @@
                                 Width="70"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Text="{Binding Height, StringFormat=\{0:#\}}" />
+                                Text="{Binding ImageProperties.Height, StringFormat=\{0:#\}}" />
                         </StackPanel>
                     </UniformGrid>
                     <UniformGrid Columns="2">
@@ -72,7 +72,7 @@
                                 Width="70"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Text="{Binding Mean, StringFormat=\{0:0.00\}}" />
+                                Text="{Binding ImageStatistics.Result.Mean, IsAsync=True, StringFormat=\{0:0.00\}}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
@@ -83,7 +83,7 @@
                                 Width="70"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Text="{Binding StDev, StringFormat=\{0:0.00\}}" />
+                                Text="{Binding ImageStatistics.Result.StDev, IsAsync=True, StringFormat=\{0:0.00\}}" />
                         </StackPanel>
                     </UniformGrid>
 
@@ -97,7 +97,7 @@
                                 Width="70"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Text="{Binding Median, StringFormat=\{0:0.00\}}" />
+                                Text="{Binding ImageStatistics.Result.Median, IsAsync=True, StringFormat=\{0:0.00\}}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
@@ -108,7 +108,7 @@
                                 Width="70"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Text="{Binding MedianAbsoluteDeviation, StringFormat=\{0:0.00\}}" />
+                                Text="{Binding ImageStatistics.Result.MedianAbsoluteDeviation, IsAsync=True, StringFormat=\{0:0.00\}}" />
                         </StackPanel>
                     </UniformGrid>
                     <UniformGrid Columns="2">
@@ -126,7 +126,7 @@
                                 <TextBlock
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Text="{Binding MinOccurrences}" />
+                                    Text="{Binding ImageStatistics.Result.MinOccurrences, IsAsync=True}" />
                                 <TextBlock Text="x)" />
                             </StackPanel>
                         </StackPanel>
@@ -144,7 +144,7 @@
                                 <TextBlock
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Text="{Binding MaxOccurrences}" />
+                                    Text="{Binding ImageStatistics.Result.MaxOccurrences, IsAsync=True}" />
                                 <TextBlock Text="x)" />
                             </StackPanel>
                         </StackPanel>
@@ -159,7 +159,7 @@
                                 Width="70"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Text="{Binding DetectedStars, StringFormat=\{0:#\}}" />
+                                Text="{Binding StarDetectionAnalysis.DetectedStars, StringFormat=\{0:#\}}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
@@ -170,7 +170,7 @@
                                 Width="70"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Text="{Binding HFR, StringFormat=\{0:0.00\}}" />
+                                Text="{Binding StarDetectionAnalysis.HFR, StringFormat=\{0:0.00\}}" />
                         </StackPanel>
                     </UniformGrid>
                     <StackPanel Orientation="Horizontal">
@@ -182,7 +182,7 @@
                             Width="70"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Text="{Binding BitDepth}" />
+                            Text="{Binding ImageProperties.BitDepth}" />
                     </StackPanel>
                 </StackPanel>
                 <Expander

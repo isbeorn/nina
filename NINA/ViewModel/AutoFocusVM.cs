@@ -50,12 +50,14 @@ using NINA.Utility.ImageAnalysis;
 using NINA.Model.ImageData;
 using Accord.Statistics.Models.Regression.Fitting;
 using NINA.Utility.Enum;
+using NINA.Utility.Mediator;
 
 namespace NINA.ViewModel {
 
     internal class AutoFocusVM : DockableVM, ICameraConsumer, IFocuserConsumer, IFilterWheelConsumer {
 
-        public AutoFocusVM(IProfileService profileService,
+        public AutoFocusVM(
+            IProfileService profileService,
             IFocuserMediator focuserMediator,
             IGuiderMediator guiderMediator,
             IImagingMediator imagingMediator,
@@ -251,6 +253,7 @@ namespace NINA.ViewModel {
         }
 
         private Func<double, double> _gaussianFitting;
+
         public Func<double, double> GaussianFitting {
             get {
                 return _gaussianFitting;
@@ -262,6 +265,7 @@ namespace NINA.ViewModel {
         }
 
         private DataPoint _gaussianMaximum;
+
         public DataPoint GaussianMaximum {
             get {
                 return _gaussianMaximum;
@@ -328,7 +332,7 @@ namespace NINA.ViewModel {
 
                 token.ThrowIfCancellationRequested();
                 CalculateTrends();
-                if (profileService.ActiveProfile.FocuserSettings.AutoFocusMethod == AFMethodEnum.STARHFR) { 
+                if (profileService.ActiveProfile.FocuserSettings.AutoFocusMethod == AFMethodEnum.STARHFR) {
                     if (FocusPoints.Count() >= 3 && (profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.PARABOLIC || profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.TRENDPARABOLIC)) { CalculateQuadraticFitting(); }
                     if (FocusPoints.Count() >= 3 && (profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.HYPERBOLIC || profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.TRENDHYPERBOLIC)) { CalculateHyperbolicFitting(); }
                 } else if (FocusPoints.Count() >= 3) {
@@ -337,7 +341,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task<IImageData> TakeExposure(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        private async Task<IRenderedImage> TakeExposure(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
             Logger.Trace("Starting Exposure for autofocus");
             double expTime = profileService.ActiveProfile.FocuserSettings.AutoFocusExposureTime;
             if (filter != null && filter.AutoFocusExposureTime > 0) {
@@ -347,41 +351,44 @@ namespace NINA.ViewModel {
             seq.EnableSubSample = _setSubSample;
             seq.Binning = new BinningMode(profileService.ActiveProfile.FocuserSettings.AutoFocusBinning, profileService.ActiveProfile.FocuserSettings.AutoFocusBinning);
 
-            bool oldAutoStretch;
+            bool autoStretch = true;
             //If using contrast based statistics, no need to stretch
             if (profileService.ActiveProfile.FocuserSettings.AutoFocusMethod == AFMethodEnum.CONTRASTDETECTION && profileService.ActiveProfile.FocuserSettings.ContrastDetectionMethod == ContrastDetectionMethodEnum.Statistics) {
-                oldAutoStretch = imagingMediator.SetAutoStretch(false);
-            } else {
-                oldAutoStretch = imagingMediator.SetAutoStretch(true);
+                autoStretch = false;
             }
-            var oldDetectStars = imagingMediator.SetDetectStars(false);
-            IImageData image;
+            var prepareParameters = new PrepareImageParameters(autoStretch: autoStretch, detectStars: false);
+            IRenderedImage image;
             try {
-                image = await imagingMediator.CaptureAndPrepareImage(seq, token, progress);
+                image = await imagingMediator.CaptureAndPrepareImage(seq, prepareParameters, token, progress);
             } catch (Exception e) {
+                if (!_setSubSample) {
+                    throw e;
+                }
+
                 Logger.Warning("Camera error, trying without subsample");
                 Logger.Warning(e.Message);
                 _setSubSample = false;
                 seq.EnableSubSample = _setSubSample;
-                image = await imagingMediator.CaptureAndPrepareImage(seq, token, progress);
+                image = await imagingMediator.CaptureAndPrepareImage(seq, prepareParameters, token, progress);
             }
-            imagingMediator.SetAutoStretch(oldAutoStretch);
-            imagingMediator.SetDetectStars(oldDetectStars);
 
             return image;
         }
 
-        private async Task<MeasureAndError> EvaluateExposure(IImageData image, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        private async Task<MeasureAndError> EvaluateExposure(IRenderedImage image, CancellationToken token, IProgress<ApplicationStatus> progress) {
             Logger.Trace("Evaluating Exposure");
+
+            var imageProperties = image.RawImageData.Properties;
+            var imageStatistics = await image.RawImageData.Statistics.Task;
 
             //Very simple to directly provide result if we use statistics based contrast detection
             if (profileService.ActiveProfile.FocuserSettings.AutoFocusMethod == AFMethodEnum.CONTRASTDETECTION && profileService.ActiveProfile.FocuserSettings.ContrastDetectionMethod == ContrastDetectionMethodEnum.Statistics) {
-                return new MeasureAndError() { Measure = 100 * image.Statistics.StDev / image.Statistics.Mean, Stdev = 0.01 };
+                return new MeasureAndError() { Measure = 100 * imageStatistics.StDev / imageStatistics.Mean, Stdev = 0.01 };
             }
 
             System.Windows.Media.PixelFormat pixelFormat;
 
-            if (image.Statistics.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage) {
+            if (imageProperties.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage) {
                 pixelFormat = System.Windows.Media.PixelFormats.Rgb48;
             } else {
                 pixelFormat = System.Windows.Media.PixelFormats.Gray16;
@@ -395,7 +402,6 @@ namespace NINA.ViewModel {
             }
 
             if (profileService.ActiveProfile.FocuserSettings.AutoFocusMethod == AFMethodEnum.STARHFR) {
-
                 //Let's set the brightest star list - if it's the first exposure, it's going to be empty
                 analysis.BrightestStarPositions = brightestStarPositions;
                 analysis.NumberOfAFStars = profileService.ActiveProfile.FocuserSettings.AutoFocusUseBrightestStars;
@@ -413,7 +419,7 @@ namespace NINA.ViewModel {
                 Logger.Debug(string.Format("Current Focus: Position: {0}, HRF: {1}", _focusPosition, analysis.AverageHFR));
 
                 return new MeasureAndError() { Measure = analysis.AverageHFR, Stdev = analysis.HFRStdDev };
-            } else {            
+            } else {
                 analysis.ContrastDetectionMethod = profileService.ActiveProfile.FocuserSettings.ContrastDetectionMethod;
                 await analysis.MeasureContrastAsync(progress, token);
 
@@ -841,8 +847,7 @@ namespace NINA.ViewModel {
                     //Get Trendline Intersection
                     TrendLineIntersection = LeftTrend.Intersect(RightTrend);
 
-                    if (profileService.ActiveProfile.FocuserSettings.AutoFocusMethod == AFMethodEnum.STARHFR) { 
-
+                    if (profileService.ActiveProfile.FocuserSettings.AutoFocusMethod == AFMethodEnum.STARHFR) {
                         if (profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.TRENDLINES) {
                             FinalFocusPoint = TrendLineIntersection;
                         }
@@ -872,7 +877,7 @@ namespace NINA.ViewModel {
                     }
 
                     LastAutoFocusPoint = new AutoFocusPoint { Focuspoint = FinalFocusPoint, Temperature = focuserInfo.Temperature, Timestamp = DateTime.Now };
-                    
+
                     //Set the filter to the autofocus filter if necessary, but do not move to it yet (otherwise filter offset will be ignored in final validation). This will be done as part of the capture in ValidateCalculatedFocusPosition
                     if (defaultFocusFilter != null && profileService.ActiveProfile.FocuserSettings.UseFilterWheelOffsets) {
                         filter = imagingFilter;
@@ -936,7 +941,7 @@ namespace NINA.ViewModel {
                 if (focuserInfo.TempCompAvailable && tempComp) {
                     focuserMediator.ToggleTempComp(true);
                 }
-                
+
                 brightestStarPositions.Clear();
                 await this.guiderMediator.StartGuiding(token);
                 progress.Report(new ApplicationStatus() { Status = string.Empty });

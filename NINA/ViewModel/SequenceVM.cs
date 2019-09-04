@@ -52,6 +52,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
 using NINA.Model.ImageData;
+using NINA.Utility.Mediator;
 
 namespace NINA.ViewModel {
 
@@ -720,7 +721,7 @@ namespace NINA.ViewModel {
                             AddMetaData(data, csl, seq, exposureStart, rms);
 
                             /* 8b) Process ImageData for display */
-                            imageProcessingTask = imagingMediator.PrepareImage(data, ct);
+                            imageProcessingTask = imagingMediator.PrepareImage(data, new PrepareImageParameters(), ct);
                             progress.Report(new ApplicationStatus() { Status = " " });
 
                             /* 7) Wait for previous item's parallel actions 8a, 8b to finish */
@@ -797,26 +798,28 @@ namespace NINA.ViewModel {
 
         private Task Save(IImageData data, Task imageProcessingTask, CancellationToken ct) {
             return Task.Run(async () => {
+                var imageStatisticsTask = data.Statistics.Task;
+                var renderedImage = data.RenderImage();
                 var tempPath = await data.PrepareSave(profileService.ActiveProfile.ImageFileSettings.FilePath, profileService.ActiveProfile.ImageFileSettings.FileType, ct);
                 await imageProcessingTask;
 
                 var path = data.FinalizeSave(tempPath, profileService.ActiveProfile.ImageFileSettings.FilePattern);
+                var imageStatistics = await imageStatisticsTask;
 
                 imagingMediator.OnImageSaved(
                         new ImageSavedEventArgs() {
                             PathToImage = new Uri(path),
-                            Image = data.Image,
+                            Image = renderedImage.Image,
                             FileType = profileService.ActiveProfile.ImageFileSettings.FileType,
-                            Mean = data.Statistics.Mean,
-                            HFR = data.Statistics.HFR,
+                            Mean = imageStatistics.Mean,
+                            HFR = data.StarDetectionAnalysis.HFR,
                             Duration = data.MetaData.Image.ExposureTime,
-                            IsBayered = data.Statistics.IsBayered,
-                            Filter = data.MetaData.FilterWheel.Filter,
-                            StatisticsId = data.Statistics.Id
+                            IsBayered = data.Properties.IsBayered,
+                            Filter = data.MetaData.FilterWheel.Filter
                         }
                 );
 
-                ImgHistoryVM.Add(data.Statistics);
+                ImgHistoryVM.Add(await AllImageStatistics.Create(data));
             });
         }
 
@@ -852,7 +855,11 @@ namespace NINA.ViewModel {
                 return true;
             }
 
-            if (csl.AutoFocusAfterHFRChange && AfHfrIndex < imgHistoryVM.ImgStatHistory.Count() && imgHistoryVM.ImgStatHistory.Last().HFR > imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).HFR * (1 + csl.AutoFocusAfterHFRChangeAmount / 100) && imgHistoryVM.ImgStatHistory.Last().HFR != 0 && imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).HFR != 0) {
+            if (csl.AutoFocusAfterHFRChange
+                && AfHfrIndex < imgHistoryVM.ImgStatHistory.Count()
+                && imgHistoryVM.ImgStatHistory.Last().StarDetectionAnalysis.HFR > (imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).StarDetectionAnalysis.HFR * (1 + csl.AutoFocusAfterHFRChangeAmount / 100))
+                && imgHistoryVM.ImgStatHistory.Last().StarDetectionAnalysis.HFR != 0
+                && imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).StarDetectionAnalysis.HFR != 0) {
                 /* Trigger autofocus after HFR change */
                 AfHfrIndex = imgHistoryVM.ImgStatHistory.Count();
                 return true;

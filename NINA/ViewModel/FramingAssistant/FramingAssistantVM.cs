@@ -43,6 +43,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using System.Xml.Linq;
+using NINA.Model.ImageData;
 
 namespace NINA.ViewModel.FramingAssistant {
 
@@ -653,10 +654,11 @@ namespace NINA.ViewModel.FramingAssistant {
             var diagResult = MyMessageBox.MyMessageBox.Show(string.Format(Locale.Loc.Instance["LblBlindSolveAttemptForFraming"], DSO.Coordinates.RAString, DSO.Coordinates.DecString), Locale.Loc.Instance["LblNoCoordinates"], MessageBoxButton.YesNo, MessageBoxResult.Yes);
             using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
                 PlateSolveResult psResult;
+                var renderedImage = await RenderedImage.FromBitmapSource(source: skySurveyImage.Image);
                 if (diagResult == MessageBoxResult.Yes) {
-                    psResult = await solver.SolveBitmap(skySurveyImage.Image, _statusUpdate, _loadImageSource.Token, false, DSO.Coordinates);
+                    psResult = await solver.Solve(renderedImage.RawImageData, _statusUpdate, _loadImageSource.Token, false, DSO.Coordinates);
                 } else {
-                    psResult = await solver.BlindSolveBitmap(skySurveyImage.Image, _statusUpdate, _loadImageSource.Token);
+                    psResult = await solver.BlindSolve(renderedImage.RawImageData, _statusUpdate, _loadImageSource.Token);
                 }
 
                 if (psResult.Success) {

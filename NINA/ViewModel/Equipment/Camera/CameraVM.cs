@@ -726,7 +726,6 @@ namespace NINA.ViewModel.Equipment.Camera {
                     output.MetaData.FromProfile(this.profileService.ActiveProfile);
                     output.MetaData.FromCameraInfo(this.CameraInfo);
                     output.MetaData.Image.ExposureTime = this.exposureTime;
-                    await output.CalculateStatistics();
                 }
                 return output;
             } else {

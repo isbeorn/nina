@@ -1,14 +1,31 @@
-﻿using Accord.Imaging;
-using Microsoft.Win32.SafeHandles;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using Accord.Imaging;
 using NINA.Model.ImageData;
-using NINA.Model.MyCamera;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -18,7 +35,11 @@ namespace NINA.Utility.ImageAnalysis {
 
     internal class ImageUtility {
 
-        public static ColorRemappingGeneral GetColorRemappingFilter(IImageStatistics statistics, double targetHistogramMeanPct, double shadowsClipping, System.Windows.Media.PixelFormat pf) {
+        public static ColorRemappingGeneral GetColorRemappingFilter(
+            IImageStatistics statistics,
+            double targetHistogramMeanPct,
+            double shadowsClipping,
+            System.Windows.Media.PixelFormat pf) {
             ushort[] map = GetStretchMap(statistics, targetHistogramMeanPct, shadowsClipping);
 
             if (pf == PixelFormats.Gray16) {
@@ -32,7 +53,13 @@ namespace NINA.Utility.ImageAnalysis {
             }
         }
 
-        public static ColorRemappingGeneral GetColorRemappingFilterUnlinked(IImageStatistics redStatistics, IImageStatistics greenStatistics, IImageStatistics blueStatistics, double targetHistogramMeanPct, double shadowsClipping, System.Windows.Media.PixelFormat pf) {
+        public static ColorRemappingGeneral GetColorRemappingFilterUnlinked(
+            IImageStatistics redStatistics,
+            IImageStatistics greenStatistics,
+            IImageStatistics blueStatistics,
+            double targetHistogramMeanPct,
+            double shadowsClipping,
+            System.Windows.Media.PixelFormat pf) {
             ushort[] mapRed = GetStretchMap(redStatistics, targetHistogramMeanPct, shadowsClipping);
             ushort[] mapGreen = GetStretchMap(greenStatistics, targetHistogramMeanPct, shadowsClipping);
             ushort[] mapBlue = GetStretchMap(blueStatistics, targetHistogramMeanPct, shadowsClipping);
@@ -149,12 +176,12 @@ namespace NINA.Utility.ImageAnalysis {
             return s;
         }
 
-        public static BitmapSource CreateSourceFromArray(IImageArray arr, IImageStatistics statistics, System.Windows.Media.PixelFormat pf) {
+        public static BitmapSource CreateSourceFromArray(IImageArray arr, ImageProperties props, System.Windows.Media.PixelFormat pf) {
             //int stride = C.CameraYSize * ((Convert.ToString(C.MaxADU, 2)).Length + 7) / 8;
-            int stride = (statistics.Width * pf.BitsPerPixel + 7) / 8;
+            int stride = (props.Width * pf.BitsPerPixel + 7) / 8;
             double dpi = 96;
 
-            BitmapSource source = BitmapSource.Create(statistics.Width, statistics.Height, dpi, dpi, pf, null, arr.FlatArray, stride);
+            BitmapSource source = BitmapSource.Create(props.Width, props.Height, dpi, dpi, pf, null, arr.FlatArray, stride);
             source.Freeze();
             return source;
         }
@@ -198,39 +225,47 @@ namespace NINA.Utility.ImageAnalysis {
             }
         }
 
-        public static Task<BitmapSource> Stretch(ImageData data, double factor, double blackClipping) {
-            return Task.Run(() => {
-                if (data.Image.Format == System.Windows.Media.PixelFormats.Gray16) {
-                    using (var img = ImageUtility.BitmapFromSource(data.Image, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale)) {
-                        return Stretch(data.Statistics, img, data.Image.Format, factor, blackClipping);
-                    }
-                } else if (data.Image.Format == System.Windows.Media.PixelFormats.Rgb48) {
-                    using (var img = ImageUtility.BitmapFromSource(data.Image, System.Drawing.Imaging.PixelFormat.Format48bppRgb)) {
-                        return Stretch(data.Statistics, img, data.Image.Format, factor, blackClipping);
-                    }
-                } else {
-                    throw new NotSupportedException();
-                }
-            });
-        }
-
-        public static Task<BitmapSource> StretchUnlinked(ImageData data, double factor, double blackClipping) {
+        public static Task<BitmapSource> Stretch(IRenderedImage image, double factor, double blackClipping) {
             return Task.Run(async () => {
-                if (data.Image.Format != System.Windows.Media.PixelFormats.Rgb48) {
+                var imageStatistics = await image.RawImageData.Statistics.Task;
+                if (image.Image.Format == PixelFormats.Gray16) {
+                    using (var bmp = ImageUtility.BitmapFromSource(image.Image, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale)) {
+                        return Stretch(imageStatistics, bmp, image.Image.Format, factor, blackClipping);
+                    }
+                } else if (image.Image.Format == PixelFormats.Rgb48) {
+                    using (var bmp = ImageUtility.BitmapFromSource(image.Image, System.Drawing.Imaging.PixelFormat.Format48bppRgb)) {
+                        return Stretch(imageStatistics, bmp, image.Image.Format, factor, blackClipping);
+                    }
+                } else {
+                    throw new NotSupportedException();
+                }
+            });
+        }
+
+        public static Task<BitmapSource> StretchUnlinked(IDebayeredImage data, double factor, double blackClipping) {
+            return Task.Run(async () => {
+                if (data.Image.Format != PixelFormats.Rgb48) {
                     throw new NotSupportedException();
                 } else {
-                    var r = new Model.ImageData.ImageStatistics(data.Image.PixelWidth, data.Image.PixelHeight, data.Statistics.BitDepth, false);
-                    var g = new Model.ImageData.ImageStatistics(data.Image.PixelWidth, data.Image.PixelHeight, data.Statistics.BitDepth, false);
-                    var b = new Model.ImageData.ImageStatistics(data.Image.PixelWidth, data.Image.PixelHeight, data.Statistics.BitDepth, false);
-                    await Task.WhenAll(r.Calculate(data.DebayeredData.Red), g.Calculate(data.DebayeredData.Green), b.Calculate(data.DebayeredData.Blue));
+                    var asyncR = Task.Run(() => Model.ImageData.ImageStatistics.Create(data.RawImageData.Properties, data.DebayeredData.Red));
+                    var asyncG = Task.Run(() => Model.ImageData.ImageStatistics.Create(data.RawImageData.Properties, data.DebayeredData.Green));
+                    var asyncB = Task.Run(() => Model.ImageData.ImageStatistics.Create(data.RawImageData.Properties, data.DebayeredData.Blue));
+                    await Task.WhenAll(asyncR, asyncG, asyncB);
                     using (var img = ImageUtility.BitmapFromSource(data.Image, System.Drawing.Imaging.PixelFormat.Format48bppRgb)) {
-                        return StretchUnlinked(r, g, b, img, data.Image.Format, factor, blackClipping);
+                        return StretchUnlinked(asyncR.Result, asyncG.Result, asyncB.Result, img, data.Image.Format, factor, blackClipping);
                     }
                 }
             });
         }
 
-        public static BitmapSource StretchUnlinked(IImageStatistics redStatistics, IImageStatistics greenStatistics, IImageStatistics blueStatistics, System.Drawing.Bitmap img, System.Windows.Media.PixelFormat pf, double factor, double blackClipping) {
+        public static BitmapSource StretchUnlinked(
+            IImageStatistics redStatistics,
+            IImageStatistics greenStatistics,
+            IImageStatistics blueStatistics,
+            Bitmap img,
+            System.Windows.Media.PixelFormat pf,
+            double factor,
+            double blackClipping) {
             using (MyStopWatch.Measure()) {
                 var filter = ImageUtility.GetColorRemappingFilterUnlinked(redStatistics, greenStatistics, blueStatistics, factor, blackClipping, pf);
                 filter.ApplyInPlace(img);
@@ -241,7 +276,7 @@ namespace NINA.Utility.ImageAnalysis {
             }
         }
 
-        public static BitmapSource Stretch(IImageStatistics statistics, System.Drawing.Bitmap img, System.Windows.Media.PixelFormat pf, double factor, double blackClipping) {
+        public static BitmapSource Stretch(IImageStatistics statistics, Bitmap img, System.Windows.Media.PixelFormat pf, double factor, double blackClipping) {
             using (MyStopWatch.Measure()) {
                 var filter = ImageUtility.GetColorRemappingFilter(statistics, factor, blackClipping, pf);
                 filter.ApplyInPlace(img);

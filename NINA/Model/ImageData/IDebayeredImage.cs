@@ -21,16 +21,9 @@
 
 #endregion "copyright"
 
-using NINA.Model;
-using NINA.Model.ImageData;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+namespace NINA.Model.ImageData {
 
-namespace NINA.PlateSolving {
-
-    internal interface IPlateSolver {
-
-        Task<PlateSolveResult> SolveAsync(IImageData source, PlateSolveParameter parameter, IProgress<ApplicationStatus> progress, CancellationToken canceltoken);
+    public interface IDebayeredImage : IRenderedImage {
+        LRGBArrays DebayeredData { get; }
     }
 }

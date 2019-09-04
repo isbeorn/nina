@@ -50,24 +50,32 @@ namespace NINA.Utility.ImageAnalysis {
         private static System.Drawing.FontFamily FONTFAMILY = new System.Drawing.FontFamily("Arial");
         private static Font FONT = new Font(FONTFAMILY, 32, System.Drawing.FontStyle.Regular, GraphicsUnit.Pixel);
 
-        public StarDetection(IImageData imageData, StarSensitivityEnum sensitivity, NoiseReductionEnum noiseReduction) {
+        public StarDetection(IRenderedImage renderedImage, StarSensitivityEnum sensitivity, NoiseReductionEnum noiseReduction) {
+            var imageData = renderedImage.RawImageData;
+            imageProperties = imageData.Properties;
+
+            // TODO: StarDetection should probably be more of a static function that returns a result type than a stateful object with awaitable methods
+            //       Checking the type of rendered image is a hack until then
+            _iarr = imageData.Data;
             //If image was debayered, use debayered array for star HFR and local maximum identification
-            if (imageData.Statistics.IsBayered && imageData.DebayeredData != null && imageData.DebayeredData.Lum != null && imageData.DebayeredData.Lum.Length > 0) {
-                _iarr = new ImageArray() { FlatArray = imageData.DebayeredData.Lum };
-            } else {
-                _iarr = imageData.Data;
+            if (imageProperties.IsBayered && (renderedImage is IDebayeredImage)) {
+                var debayeredImage = (IDebayeredImage)renderedImage;
+                var debayeredData = debayeredImage.DebayeredData;
+                if (debayeredData != null && debayeredData.Lum != null && debayeredData.Lum.Length > 0) {
+                    _iarr = new ImageArray() { FlatArray = debayeredData.Lum };
+                }
             }
-            statistics = imageData.Statistics;
-            _originalBitmapSource = imageData.Image;
+
+            _originalBitmapSource = renderedImage.Image;
             _sensitivity = sensitivity;
             _noiseReduction = noiseReduction;
 
             _resizefactor = 1.0;
-            if (imageData.Statistics.Width > _maxWidth) {
+            if (imageProperties.Width > _maxWidth) {
                 if (_sensitivity == StarSensitivityEnum.Highest) {
-                    _resizefactor = Math.Max(0.625, (double)_maxWidth / imageData.Statistics.Width);
+                    _resizefactor = Math.Max(0.625, (double)_maxWidth / imageProperties.Width);
                 } else {
-                    _resizefactor = (double)_maxWidth / imageData.Statistics.Width;
+                    _resizefactor = (double)_maxWidth / imageProperties.Width;
                 }
             }
             _inverseResizefactor = 1.0 / _resizefactor;
@@ -81,8 +89,9 @@ namespace NINA.Utility.ImageAnalysis {
             _maxStarSize = (int)Math.Ceiling(150 * _resizefactor);
         }
 
-        public StarDetection(IImageData imageData, System.Windows.Media.PixelFormat pf, StarSensitivityEnum sensitivity, NoiseReductionEnum noiseReduction) : this(imageData, sensitivity, noiseReduction) {
-            if (pf == System.Windows.Media.PixelFormats.Rgb48) {
+        public StarDetection(IRenderedImage renderedImage, System.Windows.Media.PixelFormat pf, StarSensitivityEnum sensitivity, NoiseReductionEnum noiseReduction)
+            : this(renderedImage, sensitivity, noiseReduction) {
+            if (pf == PixelFormats.Rgb48) {
                 using (var source = ImageUtility.BitmapFromSource(_originalBitmapSource, System.Drawing.Imaging.PixelFormat.Format48bppRgb)) {
                     using (var img = new Grayscale(0.2125, 0.7154, 0.0721).Apply(source)) {
                         _originalBitmapSource = ImageUtility.ConvertBitmap(img, System.Windows.Media.PixelFormats.Gray16);
@@ -98,7 +107,7 @@ namespace NINA.Utility.ImageAnalysis {
         private double _resizefactor;
         private double _inverseResizefactor;
         private IImageArray _iarr;
-        private IImageStatistics statistics;
+        private ImageProperties imageProperties;
         private BitmapSource _originalBitmapSource;
         private BlobCounter _blobCounter;
         private Bitmap _bitmapToAnalyze;
@@ -312,7 +321,7 @@ namespace NINA.Utility.ImageAnalysis {
 
                     _token.ThrowIfCancellationRequested();
 
-                    if (ContrastDetectionMethod == ContrastDetectionMethodEnum.Laplace) { 
+                    if (ContrastDetectionMethod == ContrastDetectionMethodEnum.Laplace) {
                         if (_noiseReduction == NoiseReductionEnum.None || _noiseReduction == NoiseReductionEnum.Median) {
                             int[,] kernel = new int[7, 7];
                             kernel = LaplacianOfGaussianKernel(7, 1.0);
@@ -335,7 +344,7 @@ namespace NINA.Utility.ImageAnalysis {
                         AverageContrast = stats.GrayWithoutBlack.Mean;
                         ContrastStdev = 0.01; //Stdev of convoluted image is not a measure of error - using same figure for all
                     } else if (ContrastDetectionMethod == ContrastDetectionMethodEnum.Sobel) {
-                        if(_noiseReduction == NoiseReductionEnum.None || _noiseReduction == NoiseReductionEnum.Median) {
+                        if (_noiseReduction == NoiseReductionEnum.None || _noiseReduction == NoiseReductionEnum.Median) {
                             //Nothing to do
                         } else if (_noiseReduction == NoiseReductionEnum.Normal) {
                             _bitmapToAnalyze = new FastGaussianBlur(_bitmapToAnalyze).Process(1);
@@ -378,7 +387,7 @@ namespace NINA.Utility.ImageAnalysis {
             int width = (int)Math.Floor(_bitmapToAnalyze.Width * cropRatio);
             int height = (int)Math.Floor(_bitmapToAnalyze.Height * cropRatio);
             return new Rectangle(xcoord, ycoord, width, height);
-        } 
+        }
 
         private double LaplacianOfGaussianFunction(double x, double y, double sigma) {
             double result = -1 * 1 / (Math.PI * Math.Pow(sigma, 4)) * (1 - ((x * x + y * y) / (2 * sigma * sigma))) * Math.Exp(-1 * (x * x + y * y) / (2 * sigma * sigma)) * 600;
@@ -386,7 +395,7 @@ namespace NINA.Utility.ImageAnalysis {
         }
 
         private int[,] LaplacianOfGaussianKernel(int size, double sigma) {
-            int[,] LoGKernel = new int[size, size];       
+            int[,] LoGKernel = new int[size, size];
             int halfsize = size / 2;
             int sumKernel = 0;
             for (int x = -halfsize; x < halfsize + 1; x++) {
@@ -450,9 +459,9 @@ namespace NINA.Utility.ImageAnalysis {
                 int largeRectXPos = Math.Max(rect.X - rect.Width, 0);
                 int largeRectYPos = Math.Max(rect.Y - rect.Height, 0);
                 int largeRectWidth = rect.Width * 3;
-                if (largeRectXPos + largeRectWidth > statistics.Width) { largeRectWidth = statistics.Width - largeRectXPos; }
+                if (largeRectXPos + largeRectWidth > imageProperties.Width) { largeRectWidth = imageProperties.Width - largeRectXPos; }
                 int largeRectHeight = rect.Height * 3;
-                if (largeRectYPos + largeRectHeight > statistics.Height) { largeRectHeight = statistics.Height - largeRectYPos; }
+                if (largeRectYPos + largeRectHeight > imageProperties.Height) { largeRectHeight = imageProperties.Height - largeRectYPos; }
                 var largeRect = new Rectangle(largeRectXPos, largeRectYPos, largeRectWidth, largeRectHeight);
 
                 //Star is circle
@@ -477,7 +486,7 @@ namespace NINA.Utility.ImageAnalysis {
 
                 for (int x = largeRect.X; x < largeRect.X + largeRect.Width; x++) {
                     for (int y = largeRect.Y; y < largeRect.Y + largeRect.Height; y++) {
-                        var pixelValue = _iarr.FlatArray[x + (statistics.Width * y)];
+                        var pixelValue = _iarr.FlatArray[x + (imageProperties.Width * y)];
                         if (x >= s.Rectangle.X && x < s.Rectangle.X + s.Rectangle.Width && y >= s.Rectangle.Y && y < s.Rectangle.Y + s.Rectangle.Height) { //We're in the small rectangle directly surrounding the star
                             if (s.InsideCircle(x, y, s.Position.X, s.Position.Y, s.radius)) { // We're in the inner sanctum of the star
                                 starPixelSum += pixelValue;
@@ -577,9 +586,9 @@ namespace NINA.Utility.ImageAnalysis {
                         }
 
                         if (UseROI) {
-                            graphics.DrawRectangle(RECTPEN, (float)(1 - InnerCropRatio) * statistics.Width / 2, (float)(1 - InnerCropRatio) * statistics.Height / 2, (float)InnerCropRatio * statistics.Width, (float)InnerCropRatio * statistics.Height);
+                            graphics.DrawRectangle(RECTPEN, (float)(1 - InnerCropRatio) * imageProperties.Width / 2, (float)(1 - InnerCropRatio) * imageProperties.Height / 2, (float)InnerCropRatio * imageProperties.Width, (float)InnerCropRatio * imageProperties.Height);
                             if (OuterCropRatio < 1) {
-                                graphics.DrawRectangle(RECTPEN, (float)(1 - OuterCropRatio) * statistics.Width / 2, (float)(1 - OuterCropRatio) * statistics.Height / 2, (float)OuterCropRatio * statistics.Width, (float)OuterCropRatio * statistics.Height);
+                                graphics.DrawRectangle(RECTPEN, (float)(1 - OuterCropRatio) * imageProperties.Width / 2, (float)(1 - OuterCropRatio) * imageProperties.Height / 2, (float)OuterCropRatio * imageProperties.Width, (float)OuterCropRatio * imageProperties.Height);
                             }
                         }
 

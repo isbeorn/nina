@@ -2,6 +2,7 @@
 using NINA.Utility.Astrometry;
 
 namespace NINA.PlateSolving {
+
     internal class PlateSolveImageProperties {
         public double FocalLength { get; private set; }
         public double PixelSize { get; private set; }
@@ -30,8 +31,8 @@ namespace NINA.PlateSolving {
             return new PlateSolveImageProperties() {
                 FocalLength = parameter.FocalLength,
                 PixelSize = parameter.PixelSize,
-                ImageWidth = source.Statistics.Width,
-                ImageHeight = source.Statistics.Height
+                ImageWidth = source.Properties.Width,
+                ImageHeight = source.Properties.Height
             };
         }
     }

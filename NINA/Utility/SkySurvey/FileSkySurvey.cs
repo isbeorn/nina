@@ -46,19 +46,16 @@ namespace NINA.Utility.SkySurvey {
 
             if (dialog.ShowDialog() == true) {
                 var arr = await ImageData.FromFile(dialog.FileName, 16, false, Enum.RawConverterEnum.DCRAW, ct);
-                arr.RenderImage();
-                await arr.Stretch(0.2, -2.8, false);
+                var renderedImage = arr.RenderImage();
+                renderedImage = await renderedImage.Stretch(factor: 0.2, blackClipping: -2.8, unlinked: false);
 
-                if (arr.Image == null) {
-                    return null;
-                }
-
+                // TODO: Try and extract properties from image if available
                 return new SkySurveyImage() {
                     Name = Path.GetFileNameWithoutExtension(dialog.FileName),
                     Coordinates = null,
                     FoVHeight = double.NaN,
                     FoVWidth = double.NaN,
-                    Image = arr.Image,
+                    Image = renderedImage.Image,
                     Rotation = double.NaN,
                     Source = nameof(FileSkySurvey)
                 };
