@@ -50,7 +50,7 @@ namespace NINA.Model.ImageData {
             bool saveLumChannel = false) {
             var debayeredImage = ImageUtility.Debayer(imageData.Image, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale, saveColorChannels, saveLumChannel);
             return new DebayeredImage(
-                image: imageData.Image,
+                image: debayeredImage.ImageSource,
                 rawImageData: imageData.RawImageData,
                 debayeredData: debayeredImage.Data,
                 saveColorChannels: saveColorChannels,
