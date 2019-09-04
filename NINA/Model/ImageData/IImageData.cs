@@ -43,7 +43,7 @@ namespace NINA.Model.ImageData {
 
         BitmapSource RenderBitmapSource();
 
-        Task<string> SaveToDisk(string path, string pattern, FileTypeEnum fileType, CancellationToken cancelToken = default);
+        Task<string> SaveToDisk(string path, string pattern, FileTypeEnum fileType, CancellationToken cancelToken = default, bool forceFileType = false);
 
         Task<string> PrepareSave(string path, FileTypeEnum fileType, CancellationToken cancelToken = default);
 

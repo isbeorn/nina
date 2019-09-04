@@ -86,7 +86,7 @@ namespace NINA.PlateSolving {
         }
 
         protected async Task<string> PrepareAndSaveImage(IImageData source, CancellationToken cancelToken) {
-            return await source.SaveToDisk(WORKING_DIRECTORY, Path.GetRandomFileName(), Utility.Enum.FileTypeEnum.FITS, cancelToken);
+            return await source.SaveToDisk(WORKING_DIRECTORY, Path.GetRandomFileName(), Utility.Enum.FileTypeEnum.FITS, cancelToken, forceFileType: true);
         }
 
         protected abstract string GetOutputPath(string imageFilePath);

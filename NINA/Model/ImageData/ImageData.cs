@@ -200,11 +200,11 @@ namespace NINA.Model.ImageData {
             return p;
         }
 
-        public async Task<string> SaveToDisk(string path, string pattern, FileTypeEnum fileType, CancellationToken token) {
+        public async Task<string> SaveToDisk(string path, string pattern, FileTypeEnum fileType, CancellationToken token, bool forceFileType = false) {
             var actualPath = string.Empty;
             try {
                 using (MyStopWatch.Measure()) {
-                    var tempPath = await SaveToDiskAsync(path, fileType, token);
+                    var tempPath = await SaveToDiskAsync(path, fileType, token, forceFileType);
                     actualPath = FinalizeSave(tempPath, pattern);
                 }
             } catch (OperationCanceledException ex) {
@@ -217,10 +217,10 @@ namespace NINA.Model.ImageData {
             return actualPath;
         }
 
-        private Task<string> SaveToDiskAsync(string path, FileTypeEnum fileType, CancellationToken cancelToken) {
+        private Task<string> SaveToDiskAsync(string path, FileTypeEnum fileType, CancellationToken cancelToken, bool forceFileType = false) {
             return Task.Run(() => {
                 var completefilename = Path.Combine(path, Guid.NewGuid().ToString());
-                if (this.Data.RAWData != null) {
+                if (!forceFileType && this.Data.RAWData != null) {
                     completefilename = SaveRAW(completefilename);
                     fileType = FileTypeEnum.RAW;
                 } else {
