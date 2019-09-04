@@ -25,6 +25,7 @@ using Newtonsoft.Json.Linq;
 using NINA.Model;
 using NINA.Model.ImageData;
 using NINA.Utility.Http;
+using NINA.Utility.Notification;
 using System;
 using System.Collections.Specialized;
 using System.IO;
@@ -33,7 +34,6 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace NINA.PlateSolving {
-
     internal class AstrometryPlateSolver : BaseSolver {
         private const string AUTHURL = "/api/login/";
         private const string UPLOADURL = "/api/upload";
@@ -44,6 +44,24 @@ namespace NINA.PlateSolving {
 
         private string _domain;
         private string _apikey;
+
+        internal class AstrometryAuthenticationFailedException : Exception {
+
+            internal AstrometryAuthenticationFailedException(string status) : base($"Authentication failed with status: {status}") {
+            }
+        }
+
+        internal class AstrometrySubmissionFailedException : Exception {
+
+            internal AstrometrySubmissionFailedException(string status) : base($"Submission failed with status: {status}") {
+            }
+        }
+
+        internal class AstrometryJobFailedException : Exception {
+
+            internal AstrometryJobFailedException(string status) : base($"Job failed with status: {status}") {
+            }
+        }
 
         public AstrometryPlateSolver(string domain, string apikey) {
             this._domain = domain;
@@ -57,10 +75,7 @@ namespace NINA.PlateSolving {
             string body = "request-json=" + json;
             var request = new HttpPostRequest(_domain + AUTHURL, body, "application/x-www-form-urlencoded");
             response = await request.Request(canceltoken);
-
-            JObject o = JObject.Parse(response);
-
-            return o;
+            return JObject.Parse(response);
         }
 
         private async Task<JObject> SubmitImageStream(Stream ms, string session, CancellationToken canceltoken) {
@@ -68,38 +83,40 @@ namespace NINA.PlateSolving {
             nvc.Add("request-json", "{\"publicly_visible\": \"n\", \"allow_modifications\": \"d\", \"session\": \"" + session + "\", \"allow_commercial_use\": \"d\"}");
             var request = new HttpUploadFile(_domain + UPLOADURL, ms, "file", "image/jpeg", nvc);
             string response = await request.Request(canceltoken);
-            JObject o = JObject.Parse(response);
-
-            return o;
+            return JObject.Parse(response);
         }
 
         private async Task<JObject> GetSubmissionStatus(string subid, CancellationToken canceltoken) {
             var request = new HttpGetRequest(_domain + SUBMISSIONURL, subid);
             string response = await request.Request(canceltoken);
-            JObject o = JObject.Parse(response);
-
-            return o;
+            return JObject.Parse(response);
         }
 
         private async Task<JObject> GetJobStatus(string jobid, CancellationToken canceltoken) {
             var request = new HttpGetRequest(_domain + JOBSTATUSURL, jobid);
             string response = await request.Request(canceltoken);
-            JObject o = JObject.Parse(response);
-
-            return o;
+            return JObject.Parse(response);
         }
 
         private async Task<JObject> GetJobInfo(string jobid, CancellationToken canceltoken) {
             var request = new HttpGetRequest(_domain + JOBINFOURL, jobid);
             string response = await request.Request(canceltoken);
-            JObject o = JObject.Parse(response);
-
-            return o;
+            return JObject.Parse(response);
         }
 
         private Task<BitmapSource> GetJobImage(string jobid, CancellationToken canceltoken) {
             var request = new HttpDownloadImageRequest(_domain + ANNOTATEDIMAGEURL, jobid);
             return request.Request(canceltoken);
+        }
+
+        private async Task<string> GetAuthenticationToken(CancellationToken cancelToken) {
+            JObject authentication = await Authenticate(cancelToken);
+            var status = authentication.GetValue("status");
+            if (status?.ToString() == "success") {
+                return authentication.GetValue("session").ToString();
+            } else {
+                throw new AstrometryAuthenticationFailedException(status?.ToString());
+            }
         }
 
         private async Task<JObject> SubmitImage(string session, IImageData source, CancellationToken cancelToken) {
@@ -116,89 +133,88 @@ namespace NINA.PlateSolving {
             }
         }
 
-        protected override async Task<PlateSolveResult> SolveAsyncImpl(IImageData source, PlateSolveParameter parameter, PlateSolveImageProperties imageProperties, IProgress<ApplicationStatus> progress, CancellationToken cancelToken) {
+        private async Task<string> SubmitImageJob(IProgress<ApplicationStatus> progress, IImageData source, string session, CancellationToken cancelToken) {
+            JObject imageSubmission = await SubmitImage(session, source, cancelToken);
+            var imageSubmissionStatus = imageSubmission.GetValue("status")?.ToString();
+            if (imageSubmissionStatus != "success") {
+                throw new AstrometrySubmissionFailedException(imageSubmissionStatus);
+            }
+
+            string subid = imageSubmission.GetValue("subid").ToString();
+            progress.Report(new ApplicationStatus() { Status = "Waiting for plate solve to start ..." });
+            while (true) {
+                cancelToken.ThrowIfCancellationRequested();
+                JObject submissionStatus = await GetSubmissionStatus(subid, cancelToken);
+
+                JArray jobids;
+                jobids = (JArray)submissionStatus.GetValue("jobs");
+                if (jobids.Count > 0) {
+                    string jobid = jobids.First.ToString();
+                    if (jobid?.Length > 0) {
+                        return jobid;
+                    }
+                }
+                await Task.Delay(1000);
+            };
+        }
+
+        private async Task<JobResult> GetJobResult(string jobId, CancellationToken cancelToken) {
+            while (true) {
+                cancelToken.ThrowIfCancellationRequested();
+                JObject ojobstatus = await GetJobStatus(jobId, cancelToken);
+                string jobStatus = ojobstatus.GetValue("status").ToString();
+                if (jobStatus == "success") {
+                    break;
+                } else if (jobStatus != "solving") {
+                    throw new AstrometryJobFailedException(jobStatus);
+                }
+                await Task.Delay(1000);
+            };
+
+            JObject job = await GetJobInfo(jobId, cancelToken);
+            return job.ToObject<JobResult>();
+        }
+
+        protected override async Task<PlateSolveResult> SolveAsyncImpl(
+            IImageData source,
+            PlateSolveParameter parameter,
+            PlateSolveImageProperties imageProperties,
+            IProgress<ApplicationStatus> progress,
+            CancellationToken cancelToken) {
             PlateSolveResult result = new PlateSolveResult();
 
             try {
                 progress.Report(new ApplicationStatus() { Status = "Authenticating..." });
-                JObject authentication = await Authenticate(cancelToken);
-                var status = authentication.GetValue("status");
-                string session = string.Empty;
-                if (status?.ToString() == "success") {
-                    session = authentication.GetValue("session").ToString();
+                var session = await GetAuthenticationToken(cancelToken);
 
-                    progress.Report(new ApplicationStatus() { Status = "Uploading Image..." });
-                    JObject imagesubmission = await SubmitImage(session, source, cancelToken);
+                progress.Report(new ApplicationStatus() { Status = "Uploading Image..." });
+                var jobId = await SubmitImageJob(progress, source, session, cancelToken);
 
-                    string subid = string.Empty;
-                    string jobid = string.Empty;
-                    if (imagesubmission.GetValue("status")?.ToString() == "success") {
-                        subid = imagesubmission.GetValue("subid").ToString();
-
-                        progress.Report(new ApplicationStatus() { Status = "Waiting for plate solve to start ..." });
-                        while (true) {
-                            cancelToken.ThrowIfCancellationRequested();
-
-                            JObject submissionstatus = await GetSubmissionStatus(subid, cancelToken);
-
-                            JArray jobids;
-                            jobids = (JArray)submissionstatus.GetValue("jobs");
-                            if (jobids.Count > 0) {
-                                jobid = jobids.First.ToString();
-                                if (jobid != "") {
-                                    break;
-                                }
-                            }
-                            await Task.Delay(1000);
-                        };
-
-                        if (!string.IsNullOrWhiteSpace(jobid)) {
-                            string jobstatus = string.Empty;
-                            progress.Report(new ApplicationStatus() { Status = "Solving ..." });
-                            while (true) {
-                                cancelToken.ThrowIfCancellationRequested();
-                                JObject ojobstatus = await GetJobStatus(jobid, cancelToken);
-                                jobstatus = ojobstatus.GetValue("status").ToString();
-
-                                if ((jobstatus == "failure") || (jobstatus == "success")) {
-                                    break;
-                                }
-                                await Task.Delay(1000);
-                            };
-
-                            if (jobstatus == "success") {
-                                progress.Report(new ApplicationStatus() { Status = "Getting plate solve result ..." });
-                                JObject job = await GetJobInfo(jobid, cancelToken);
-                                JobResult jobinfo = job.ToObject<JobResult>();
-
-                                result.Orientation = jobinfo.calibration.orientation;
-                                result.Pixscale = jobinfo.calibration.pixscale;
-                                result.Coordinates = new Utility.Astrometry.Coordinates(jobinfo.calibration.ra, jobinfo.calibration.dec, Utility.Astrometry.Epoch.J2000, Utility.Astrometry.Coordinates.RAType.Degrees);
-                                result.Radius = jobinfo.calibration.radius;
-
-                                progress.Report(new ApplicationStatus() { Status = "Solved" });
-                            } else {
-                                result.Success = false;
-                                progress.Report(new ApplicationStatus() { Status = "Plate solve failed" });
-                            }
-                        } else {
-                            result.Success = false;
-                            progress.Report(new ApplicationStatus() { Status = "Failed to get job result" });
-                        }
-                    } else {
-                        result.Success = false;
-                        progress.Report(new ApplicationStatus() { Status = "Failed to get submission" });
-                    }
-                } else {
-                    result.Success = false;
-                    progress.Report(new ApplicationStatus() { Status = "Authorization failed ..." });
-                }
-            } catch (System.OperationCanceledException) {
+                progress.Report(new ApplicationStatus() { Status = "Getting job result..." });
+                JobResult jobinfo = await GetJobResult(jobId, cancelToken);
+                result.Orientation = jobinfo.calibration.orientation;
+                result.Pixscale = jobinfo.calibration.pixscale;
+                result.Coordinates = new Utility.Astrometry.Coordinates(jobinfo.calibration.ra, jobinfo.calibration.dec, Utility.Astrometry.Epoch.J2000, Utility.Astrometry.Coordinates.RAType.Degrees);
+                result.Radius = jobinfo.calibration.radius;
+            } catch (OperationCanceledException) {
                 result.Success = false;
-            } finally {
-                progress.Report(new ApplicationStatus() { Status = string.Empty });
+            } catch (Exception ex) {
+                result.Success = false;
+                Notification.ShowError($"Error plate solving with astrometry.net. {ex.Message}");
+            }
+
+            if (result.Success) {
+                progress.Report(new ApplicationStatus() { Status = "Solved" });
+            } else {
+                progress.Report(new ApplicationStatus() { Status = "Solve failed" });
             }
             return result;
+        }
+
+        protected override void EnsureSolverValid() {
+            if (_apikey == "") {
+                throw new ArgumentException("astrometry.net API key not set");
+            }
         }
     }
 

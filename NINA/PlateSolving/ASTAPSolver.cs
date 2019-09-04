@@ -27,10 +27,14 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Notification;
 
 namespace NINA.PlateSolving {
-
     internal class ASTAPSolver : CLISolver {
+        internal class ASTAPValidationFailedException : Exception {
+            internal ASTAPValidationFailedException(string reason) : base($"ASTAP validation failed: {reason}") {
+            }
+        }
 
         public ASTAPSolver(string executableLocation)
             : base(executableLocation) {
@@ -41,26 +45,29 @@ namespace NINA.PlateSolving {
             PlateSolveParameter parameter,
             PlateSolveImageProperties imageProperties) {
             var result = new PlateSolveResult() { Success = false };
-            if (File.Exists(outputFilePath)) {
-                var dict = File.ReadLines(outputFilePath)
-                   .Where(line => !string.IsNullOrWhiteSpace(line))
-                   .Select(line => line.Split(new char[] { '=' }, 2, 0))
-                   .ToDictionary(parts => parts[0], parts => parts[1]);
-                if (dict.ContainsKey("PLTSOLVD")) {
-                    result.Success = dict["PLTSOLVD"] == "T" ? true : false;
-
-                    if (result.Success) {
-                        result.Coordinates = new Coordinates(
-                            double.Parse(dict["CRVAL1"], CultureInfo.InvariantCulture),
-                            double.Parse(dict["CRVAL2"], CultureInfo.InvariantCulture),
-                            Epoch.J2000,
-                            Coordinates.RAType.Degrees
-                        );
-                        result.Orientation = double.Parse(dict["CROTA2"], CultureInfo.InvariantCulture);
-                        result.Pixscale = imageProperties.ArcSecPerPixel;
-                    }
-                }
+            if (!File.Exists(outputFilePath)) {
+                Notification.ShowError("Plate solve failed. No output file found.");
+                return result;
             }
+
+            var dict = File.ReadLines(outputFilePath)
+                .Where(line => !string.IsNullOrWhiteSpace(line))
+                .Select(line => line.Split(new char[] { '=' }, 2, 0))
+                .ToDictionary(parts => parts[0], parts => parts[1]);
+            if (!dict.ContainsKey("PLTSOLVD") || dict["PLTSOLVD"] != "T") {
+                Notification.ShowError("Plate solve failed.");
+                return result;
+            }
+
+            result.Success = true;
+            result.Coordinates = new Coordinates(
+                double.Parse(dict["CRVAL1"], CultureInfo.InvariantCulture),
+                double.Parse(dict["CRVAL2"], CultureInfo.InvariantCulture),
+                Epoch.J2000,
+                Coordinates.RAType.Degrees
+            );
+            result.Orientation = double.Parse(dict["CROTA2"], CultureInfo.InvariantCulture);
+            result.Pixscale = imageProperties.ArcSecPerPixel;
             return result;
         }
 
@@ -110,6 +117,14 @@ namespace NINA.PlateSolving {
             }
 
             return string.Join(" ", args);
+        }
+
+        protected override void EnsureSolverValid() {
+            string astapPath = Path.GetDirectoryName(this.executableLocation);
+            string[] g17Files = Directory.GetFiles(astapPath, "g172_*");
+            if (g17Files.Length == 0) {
+                throw new ASTAPValidationFailedException($"g17 database not found in {astapPath}");
+            }
         }
 
         protected override string GetOutputPath(string imageFilePath) {

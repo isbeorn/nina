@@ -32,7 +32,6 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.PlateSolving {
-
     internal abstract class CLISolver : BaseSolver {
         protected string executableLocation;
 
@@ -93,7 +92,7 @@ namespace NINA.PlateSolving {
 
         protected async Task StartCLI(string imageFilePath, string outputFilePath, PlateSolveParameter parameter, PlateSolveImageProperties imageProperties, IProgress<ApplicationStatus> progress, CancellationToken ct) {
             if (executableLocation != "cmd.exe" && !File.Exists(executableLocation)) {
-                throw new FileNotFoundException();
+                throw new FileNotFoundException("Executable not found", executableLocation);
             }
 
             System.Diagnostics.Process process = new System.Diagnostics.Process();

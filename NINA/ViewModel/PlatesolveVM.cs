@@ -43,7 +43,6 @@ using System.Windows.Threading;
 using NINA.Model.ImageData;
 
 namespace NINA.ViewModel {
-
     internal class PlatesolveVM : DockableVM, ICameraConsumer, ITelescopeConsumer {
         public const string ASTROMETRYNETURL = "http://nova.astrometry.net";
 
