@@ -544,7 +544,7 @@ namespace NINA.ViewModel {
             PrepareImageParameters parameters,
             CancellationToken cancelToken) {
             var detectStars = parameters.DetectStars.HasValue ? parameters.DetectStars.Value : DetectStars;
-            var autoStretch = detectStars || parameters.AutoStretch.HasValue ? parameters.AutoStretch.Value : AutoStretch;
+            var autoStretch = detectStars || (parameters.AutoStretch.HasValue ? parameters.AutoStretch.Value : AutoStretch);
             var processedImage = renderedImage.ReRender();
             if (autoStretch) {
                 _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStretchImage"] });
