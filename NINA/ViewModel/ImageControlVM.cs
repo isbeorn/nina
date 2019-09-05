@@ -536,7 +536,7 @@ namespace NINA.ViewModel {
             if (ShowBahtinovAnalyzer) {
                 AnalyzeBahtinov();
             }
-            return renderedImage;
+            return processedImage;
         }
 
         private async Task<IRenderedImage> ProcessImage(
@@ -544,7 +544,7 @@ namespace NINA.ViewModel {
             PrepareImageParameters parameters,
             CancellationToken cancelToken) {
             var autoStretch = parameters.AutoStretch.HasValue ? parameters.AutoStretch.Value : AutoStretch;
-            var detectStars = autoStretch || (parameters.DetectStars.HasValue ? parameters.DetectStars.Value : DetectStars);
+            var detectStars = autoStretch && (parameters.DetectStars.HasValue ? parameters.DetectStars.Value : DetectStars);
             var processedImage = renderedImage.ReRender();
             if (autoStretch) {
                 _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStretchImage"] });

@@ -302,7 +302,7 @@ namespace NINA.ViewModel {
             PrepareImageParameters parameters,
             CancellationToken token,
             IProgress<ApplicationStatus> progress) {
-            var iarr = await CaptureImage(sequence, token, string.Empty);
+            var iarr = await CaptureImage(sequence, parameters, token, string.Empty);
             if (iarr != null) {
                 return await _imageProcessingTask;
             } else {
@@ -311,11 +311,12 @@ namespace NINA.ViewModel {
         }
 
         public Task<IImageData> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            return CaptureImage(sequence, token, string.Empty, true);
+            return CaptureImage(sequence, new PrepareImageParameters(), token, string.Empty, true);
         }
 
         private Task<IImageData> CaptureImage(
                 CaptureSequence sequence,
+                PrepareImageParameters parameters,
                 CancellationToken token,
                 string targetName = "",
                 bool skipProcessing = false
@@ -366,7 +367,7 @@ namespace NINA.ViewModel {
                                 await _imageProcessingTask;
                             }
 
-                            _imageProcessingTask = PrepareImage(data, new PrepareImageParameters(), token);
+                            _imageProcessingTask = PrepareImage(data, parameters, token);
                         }
                     } catch (System.OperationCanceledException ex) {
                         cameraMediator.AbortExposure();

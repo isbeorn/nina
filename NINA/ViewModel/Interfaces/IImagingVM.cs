@@ -39,7 +39,10 @@ namespace NINA.ViewModel.Interfaces {
 
         void SetImage(BitmapSource img);
 
-        Task<IImageData> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress);
+        Task<IImageData> CaptureImage(
+            CaptureSequence sequence,
+            CancellationToken token,
+            IProgress<ApplicationStatus> progress);
 
         Task<IRenderedImage> CaptureAndPrepareImage(
             CaptureSequence sequence,

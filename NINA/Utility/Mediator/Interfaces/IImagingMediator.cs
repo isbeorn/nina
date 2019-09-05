@@ -34,7 +34,10 @@ namespace NINA.Utility.Mediator.Interfaces {
 
     internal interface IImagingMediator : IMediator<IImagingVM> {
 
-        Task<IImageData> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress);
+        Task<IImageData> CaptureImage(
+            CaptureSequence sequence,
+            CancellationToken token,
+            IProgress<ApplicationStatus> progress);
 
         Task<IRenderedImage> CaptureAndPrepareImage(
             CaptureSequence sequence,
