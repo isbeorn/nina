@@ -23,7 +23,7 @@
 
 using NINA.Model;
 using NINA.Model.ImageData;
-using NINA.Model.MyCamera;
+using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using System;
 using System.Threading;
@@ -33,21 +33,26 @@ using System.Windows.Media.Imaging;
 namespace NINA.ViewModel.Interfaces {
 
     public interface IImagingVM : ICameraConsumer, ITelescopeConsumer, IFilterWheelConsumer, IFocuserConsumer, IRotatorConsumer, IWeatherDataConsumer {
-
-        bool SetDetectStars(bool value);
-
-        bool SetAutoStretch(bool value);
-
         bool IsLooping { get; set; }
 
         void DestroyImage();
 
         void SetImage(BitmapSource img);
 
-        Task<IImageData> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress);
+        Task<IImageData> CaptureImage(
+            CaptureSequence sequence,
+            CancellationToken token,
+            IProgress<ApplicationStatus> progress);
 
-        Task<IImageData> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress);
+        Task<IRenderedImage> CaptureAndPrepareImage(
+            CaptureSequence sequence,
+            PrepareImageParameters parameters,
+            CancellationToken token,
+            IProgress<ApplicationStatus> progress);
 
-        Task<IImageData> PrepareImage(IImageData data, CancellationToken token);
+        Task<IRenderedImage> PrepareImage(
+            IImageData data,
+            PrepareImageParameters parameters,
+            CancellationToken token);
     }
 }

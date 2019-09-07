@@ -21,32 +21,20 @@
 
 #endregion "copyright"
 
-using NINA.Utility.Enum;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
-
 namespace NINA.Model.ImageData {
 
-    public interface IImageData {
-        IImageArray Data { get; }
+    public class ImageProperties {
 
-        ImageProperties Properties { get; }
+        public ImageProperties(int width, int height, int bitDepth, bool isBayered) {
+            this.Width = width;
+            this.Height = height;
+            this.IsBayered = isBayered;
+            this.BitDepth = bitDepth;
+        }
 
-        Nito.AsyncEx.AsyncLazy<IImageStatistics> Statistics { get; }
-
-        IStarDetectionAnalysis StarDetectionAnalysis { get; }
-
-        ImageMetaData MetaData { get; }
-
-        IRenderedImage RenderImage();
-
-        BitmapSource RenderBitmapSource();
-
-        Task<string> SaveToDisk(string path, string pattern, FileTypeEnum fileType, CancellationToken cancelToken = default, bool forceFileType = false);
-
-        Task<string> PrepareSave(string path, FileTypeEnum fileType, CancellationToken cancelToken = default);
-
-        string FinalizeSave(string file, string pattern);
+        public int Width { get; private set; }
+        public int Height { get; private set; }
+        public int BitDepth { get; private set; }
+        public bool IsBayered { get; private set; }
     }
 }

@@ -140,13 +140,13 @@ namespace NINA.Model.MyCamera.Simulator {
 
         public int CameraXSize {
             get {
-                return Settings.ImageSettings.Image?.Statistics?.Width ?? Settings.RandomSettings.ImageWidth;
+                return Settings.ImageSettings.Image?.RawImageData?.Properties?.Width ?? Settings.RandomSettings.ImageWidth;
             }
         }
 
         public int CameraYSize {
             get {
-                return Settings.ImageSettings.Image?.Statistics?.Height ?? Settings.RandomSettings.ImageHeight;
+                return Settings.ImageSettings.Image?.RawImageData?.Properties?.Height ?? Settings.RandomSettings.ImageHeight;
             }
         }
 
@@ -480,7 +480,7 @@ namespace NINA.Model.MyCamera.Simulator {
 
                 case CameraType.IMAGE:
                     if (Settings.ImageSettings.Image != null) {
-                        return Settings.ImageSettings.Image;
+                        return Settings.ImageSettings.Image.RawImageData;
                     }
 
                     if (Settings.ImageSettings.RAWImageStream != null) {
@@ -506,7 +506,7 @@ namespace NINA.Model.MyCamera.Simulator {
                     var image = await survey.GetImage(string.Empty, coordinates, Astrometry.DegreeToArcmin(1), Settings.SkySurveySettings.WidthAndHeight, Settings.SkySurveySettings.WidthAndHeight, token, default);
                     var data = await ImageData.ImageData.FromBitmapSource(image.Image);
 
-                    var arcsecPerPix = data.Statistics.Width / Astrometry.ArcminToArcsec(image.FoVWidth);
+                    var arcsecPerPix = data.Properties.Width / Astrometry.ArcminToArcsec(image.FoVWidth);
                     // Assume a fixed pixel Size of 3
                     var pixelSize = 3;
                     var factor = Astrometry.DegreeToArcsec(Astrometry.ToDegree(1)) / 1000d;
@@ -573,7 +573,8 @@ namespace NINA.Model.MyCamera.Simulator {
             dialog.DefaultExt = ".tiff";
 
             if (dialog.ShowDialog() == true) {
-                Settings.ImageSettings.Image = await ImageData.ImageData.FromFile(dialog.FileName, BitDepth, Settings.ImageSettings.IsBayered, profileService.ActiveProfile.CameraSettings.RawConverter);
+                var rawData = await ImageData.ImageData.FromFile(dialog.FileName, BitDepth, Settings.ImageSettings.IsBayered, profileService.ActiveProfile.CameraSettings.RawConverter);
+                Settings.ImageSettings.Image = rawData.RenderImage();
                 return true;
             }
             return false;

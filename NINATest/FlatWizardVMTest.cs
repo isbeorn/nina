@@ -80,8 +80,6 @@ namespace NINATest {
 
             // assert
             sut.ImagingVM.Should().NotBeNull();
-            imagingVMMock.Verify(m => m.SetAutoStretch(false), Times.Once);
-            imagingVMMock.Verify(m => m.SetDetectStars(false), Times.Once);
 
             sut.StartFlatSequenceCommand.Should().NotBeNull();
             sut.CancelFlatExposureSequenceCommand.Should().NotBeNull();

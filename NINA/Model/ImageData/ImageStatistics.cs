@@ -23,35 +23,20 @@
 
 using NINA.Utility;
 using System;
-using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace NINA.Model.ImageData {
 
     public class ImageStatistics : BaseINPC, IImageStatistics {
+        public static ImageStatistics EmptyImageStatistics = new ImageStatistics();
+
         public const int HISTOGRAMRESOLUTION = 100;
 
-        /// <summary>
-        /// Create new instance of ImageStatistics
-        /// Calculate() has to be called to yield all statistics.
-        /// </summary>
-        /// <param name="width">width of one row</param>
-        /// <param name="height">height of one column</param>
-        /// <param name="bitDepth">bit depth of a pixel</param>
-        /// <param name="isBayered">Flag to indicate if the image is bayer matrix encoded</param>
-        /// <param name="resolution">Target histogram resolution</param>
-        public ImageStatistics(int width, int height, int bitDepth, bool isBayered) {
-            this.Width = width;
-            this.Height = height;
-            this.IsBayered = isBayered;
-            this.BitDepth = bitDepth;
+        private ImageStatistics() {
         }
 
-        public int Id { get; set; }
-        public int Width { get; private set; }
-        public int Height { get; private set; }
-        public int BitDepth { get; private set; }
         public double StDev { get; private set; }
         public double Mean { get; private set; }
         public double Median { get; private set; }
@@ -60,45 +45,13 @@ namespace NINA.Model.ImageData {
         public long MaxOccurrences { get; private set; }
         public int Min { get; private set; }
         public long MinOccurrences { get; private set; }
-        public bool IsBayered { get; private set; }
-        public List<OxyPlot.DataPoint> Histogram { get; private set; }
+        public ImmutableList<OxyPlot.DataPoint> Histogram { get; private set; }
 
-        private int detectedStars;
-
-        public int DetectedStars {
-            get {
-                return detectedStars;
-            }
-
-            set {
-                detectedStars = value;
-                RaisePropertyChanged();
-            }
+        public static IImageStatistics Create(IImageData imageData) {
+            return Create(imageData.Properties, imageData.Data.FlatArray);
         }
 
-        private double hFR;
-
-        public double HFR {
-            get {
-                return hFR;
-            }
-
-            set {
-                hFR = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        /// <summary>
-        /// Calculate statistics out of image array.
-        /// </summary>
-        /// <param name="array">one dimensional image array</param>
-        /// <returns></returns>
-        public Task Calculate(ushort[] array) {
-            return Task.Run(() => CalculateInternal(array));
-        }
-
-        private void CalculateInternal(ushort[] array) {
+        public static IImageStatistics Create(ImageProperties imageProperties, ushort[] array) {
             using (MyStopWatch.Measure()) {
                 long sum = 0;
                 long squareSum = 0;
@@ -111,14 +64,14 @@ namespace NINA.Model.ImageData {
                 long minOccurrences = 0;
 
                 /* Array mapping: pixel value -> total number of occurrences of that pixel value */
-                int[] histogram = new int[ushort.MaxValue + 1];
+                int[] pixelValueCounts = new int[ushort.MaxValue + 1];
                 for (var i = 0; i < array.Length; i++) {
                     ushort val = array[i];
 
                     sum += val;
                     squareSum += (long)val * val;
 
-                    histogram[val]++;
+                    pixelValueCounts[val]++;
 
                     min = Math.Min(min, val);
                     if (min != oldmin) {
@@ -151,7 +104,7 @@ namespace NINA.Model.ImageData {
 
                 /* Determine median out of histogram array */
                 for (ushort i = 0; i < ushort.MaxValue; i++) {
-                    occurrences += histogram[i];
+                    occurrences += pixelValueCounts[i];
                     if (occurrences > medianlength) {
                         median1 = i;
                         median2 = i;
@@ -159,7 +112,7 @@ namespace NINA.Model.ImageData {
                     } else if (occurrences == medianlength) {
                         median1 = i;
                         for (int j = i + 1; j <= ushort.MaxValue; j++) {
-                            if (histogram[j] > 0) {
+                            if (pixelValueCounts[j] > 0) {
                                 median2 = j;
                                 break;
                             }
@@ -182,9 +135,9 @@ namespace NINA.Model.ImageData {
                 var idxUp = median2;
                 while (true) {
                     if (idxDown >= 0 && idxDown != idxUp) {
-                        occurrences += histogram[idxDown] + histogram[idxUp];
+                        occurrences += pixelValueCounts[idxDown] + pixelValueCounts[idxUp];
                     } else {
-                        occurrences += histogram[idxUp];
+                        occurrences += pixelValueCounts[idxUp];
                     }
 
                     if (occurrences > medianlength) {
@@ -199,23 +152,27 @@ namespace NINA.Model.ImageData {
                     }
                 }
 
-                this.Max = max;
-                this.MaxOccurrences = maxOccurrences;
-                this.Min = min;
-                this.MinOccurrences = minOccurrences;
-                this.StDev = stdev;
-                this.Mean = mean;
-                this.Median = median;
-                this.MedianAbsoluteDeviation = medianAbsoluteDeviation;
-                var maxPossibleValue = (ushort)((1 << BitDepth) - 1);
+                var maxPossibleValue = (ushort)((1 << imageProperties.BitDepth) - 1);
                 var factor = (double)HISTOGRAMRESOLUTION / maxPossibleValue;
-                this.Histogram = histogram
+                var histogram = pixelValueCounts
                     .Select((value, index) => new { Index = index, Value = value })
                     .GroupBy(
                         x => Math.Floor((double)Math.Min(maxPossibleValue, x.Index) * factor),
                         x => x.Value)
                     .Select(g => new OxyPlot.DataPoint(g.Key, g.Sum()))
-                    .OrderBy(item => item.X).ToList();
+                    .OrderBy(item => item.X).ToImmutableList();
+
+                var statistics = new ImageStatistics();
+                statistics.StDev = stdev;
+                statistics.Mean = mean;
+                statistics.Median = median;
+                statistics.MedianAbsoluteDeviation = medianAbsoluteDeviation;
+                statistics.Max = max;
+                statistics.MaxOccurrences = maxOccurrences;
+                statistics.Min = min;
+                statistics.MinOccurrences = minOccurrences;
+                statistics.Histogram = histogram;
+                return statistics;
             }
         }
     }

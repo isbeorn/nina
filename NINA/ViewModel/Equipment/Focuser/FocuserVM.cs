@@ -314,7 +314,11 @@ namespace NINA.ViewModel.Equipment.Focuser {
 
         public int Position {
             get {
-                return Focuser.Position - _focuserOffset;
+                if (Focuser != null) {
+                    return Focuser.Position - _focuserOffset;
+                } else {
+                    return 0;
+                }
             }
         }
 

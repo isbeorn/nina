@@ -22,9 +22,9 @@
 #endregion "copyright"
 
 using NINA.Model.ImageData;
-using NINA.Model.MyCamera;
 using NINA.Profile;
 using System;
+using System.Threading.Tasks;
 
 namespace NINA.ViewModel {
 
@@ -37,7 +37,7 @@ namespace NINA.ViewModel {
 
         private double _recommendedExposureTime;
 
-        private IImageStatistics _statistics;
+        private AllImageStatistics _statistics;
 
         public ImageStatisticsVM(IProfileService profileService) : base(profileService) {
             Title = "LblStatistics";
@@ -96,7 +96,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public IImageStatistics Statistics {
+        public AllImageStatistics Statistics {
             get {
                 return _statistics;
             }
@@ -108,9 +108,9 @@ namespace NINA.ViewModel {
 
         private double ConvertToOutputBitDepth(double input) {
             if (Statistics != null) {
-                if (Statistics.IsBayered && profileService.ActiveProfile.CameraSettings.RawConverter == Utility.Enum.RawConverterEnum.DCRAW
-                    || !Statistics.IsBayered) {
-                    return input * (Math.Pow(2, 16) / Math.Pow(2, Statistics.BitDepth));
+                if ((Statistics.ImageProperties.IsBayered && profileService.ActiveProfile.CameraSettings.RawConverter == Utility.Enum.RawConverterEnum.DCRAW)
+                    || !Statistics.ImageProperties.IsBayered) {
+                    return input * (Math.Pow(2, 16) / Math.Pow(2, Statistics.ImageProperties.BitDepth));
                 }
 
                 return input;
@@ -128,19 +128,26 @@ namespace NINA.ViewModel {
         private double _squaredReadNoise {
             get {
                 if (Statistics != null) {
-                    return ConvertToOutputBitDepth(Math.Pow(profileService.ActiveProfile.CameraSettings.ReadNoise / (profileService.ActiveProfile.CameraSettings.FullWellCapacity / Math.Pow(2, Statistics.BitDepth)), 2));
+                    return ConvertToOutputBitDepth(Math.Pow(profileService.ActiveProfile.CameraSettings.ReadNoise / (profileService.ActiveProfile.CameraSettings.FullWellCapacity / Math.Pow(2, Statistics.ImageProperties.BitDepth)), 2));
                 } else {
                     return 0;
                 }
             }
         }
 
-        public void Add(IImageStatistics stats, double exposureTime) {
-            Statistics = stats;
-
+        public async Task UpdateStatistics(IImageData imageData) {
+            var exposureTime = imageData.MetaData.Image.ExposureTime;
+            var statistics = await AllImageStatistics.Create(imageData);
+            statistics.PropertyChanged += Child_PropertyChanged;
+            Statistics = statistics;
             if (exposureTime > 0) {
-                CalculateRecommendedExposureTime(stats.Mean, exposureTime);
+                var imageStatistics = await imageData.Statistics.Task;
+                CalculateRecommendedExposureTime(imageStatistics.Mean, exposureTime);
             }
+        }
+
+        private void Child_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            this.ChildChanged(sender, e);
         }
 
         private void CalculateRecommendedExposureTime(double mean, double exposureTime) {

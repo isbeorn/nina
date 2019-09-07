@@ -23,9 +23,7 @@
 
 using NINA.Model;
 using NINA.Model.ImageData;
-using NINA.Model.MyCamera;
 using NINA.Utility.Enum;
-using NINA.ViewModel;
 using NINA.ViewModel.Interfaces;
 using System;
 using System.Threading;
@@ -36,15 +34,21 @@ namespace NINA.Utility.Mediator.Interfaces {
 
     internal interface IImagingMediator : IMediator<IImagingVM> {
 
-        bool SetDetectStars(bool value);
+        Task<IImageData> CaptureImage(
+            CaptureSequence sequence,
+            CancellationToken token,
+            IProgress<ApplicationStatus> progress);
 
-        bool SetAutoStretch(bool value);
+        Task<IRenderedImage> CaptureAndPrepareImage(
+            CaptureSequence sequence,
+            PrepareImageParameters parameters,
+            CancellationToken token,
+            IProgress<ApplicationStatus> progress);
 
-        Task<IImageData> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress);
-
-        Task<IImageData> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress);
-
-        Task<IImageData> PrepareImage(IImageData iarr, CancellationToken token);
+        Task<IRenderedImage> PrepareImage(
+            IImageData iarr,
+            PrepareImageParameters parameters,
+            CancellationToken token);
 
         void DestroyImage();
 
@@ -66,6 +70,5 @@ namespace NINA.Utility.Mediator.Interfaces {
         public bool IsBayered { get; internal set; }
         public double Duration { get; internal set; }
         public string Filter { get; internal set; }
-        public int StatisticsId { get; internal set; }
     }
 }

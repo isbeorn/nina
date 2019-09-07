@@ -34,10 +34,19 @@ namespace NINA.PlateSolving {
         protected static string WORKING_DIRECTORY = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "PlateSolver");
 
         public async Task<PlateSolveResult> SolveAsync(IImageData source, PlateSolveParameter parameter, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
+            EnsureSolverValid();
             var imageProperties = PlateSolveImageProperties.Create(parameter, source);
             return await SolveAsyncImpl(source, parameter, imageProperties, progress, canceltoken);
         }
 
-        protected abstract Task<PlateSolveResult> SolveAsyncImpl(IImageData source, PlateSolveParameter parameter, PlateSolveImageProperties imageProperties, IProgress<ApplicationStatus> progress, CancellationToken canceltoken);
+        protected abstract Task<PlateSolveResult> SolveAsyncImpl(
+            IImageData source,
+            PlateSolveParameter parameter,
+            PlateSolveImageProperties imageProperties,
+            IProgress<ApplicationStatus> progress,
+            CancellationToken canceltoken);
+
+        protected virtual void EnsureSolverValid() {
+        }
     }
 }

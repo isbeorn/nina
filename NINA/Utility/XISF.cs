@@ -94,8 +94,6 @@ namespace NINA.Utility {
                     imageData = new ImageData(img, width, height, bitDepth, isBayered);
                 }
 
-                await imageData.CalculateStatistics();
-                imageData.RenderImage();
                 return imageData;
             }
         }
@@ -484,13 +482,13 @@ namespace NINA.Utility {
         /// Adds the image metadata to the header
         /// Image data has to be added at a later point to the xisf body
         /// </summary>
-        /// <param name="arr"></param>
+        /// <param name="imageProperties"></param>
         /// <param name="imageType"></param>
-        public void AddImageMetaData(IImageStatistics statistics, string imageType) {
+        public void AddImageMetaData(ImageProperties imageProperties, string imageType) {
             if (imageType == "SNAPSHOT") { imageType = "LIGHT"; }
 
             var image = new XElement("Image",
-                    new XAttribute("geometry", statistics.Width + ":" + statistics.Height + ":" + "1"),
+                    new XAttribute("geometry", imageProperties.Width + ":" + imageProperties.Height + ":" + "1"),
                     new XAttribute("sampleFormat", "UInt16"),
                     new XAttribute("imageType", imageType),
                     new XAttribute("colorSpace", "Gray")
@@ -508,9 +506,7 @@ namespace NINA.Utility {
         /// <param name="arr"></param>
         /// <param name="imageType"></param>
         public void AddEmbeddedImage(IImageData imageData, string imageType) {
-            if (Image == null) {
-                AddImageMetaData(imageData.Statistics, imageType);
-            }
+            AddImageMetaData(imageData.Properties, imageType);
             Image.Add(new XAttribute("location", "embedded"));
 
             byte[] result = new byte[imageData.Data.FlatArray.Length * sizeof(ushort)];

@@ -23,12 +23,11 @@
 
 using NINA.Locale;
 using NINA.Model.ImageData;
-using NINA.Model.MyCamera;
 using NINA.Utility.WindowService;
-using OxyPlot;
 using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NINA.ViewModel.FlatWizard {
 
@@ -43,9 +42,14 @@ namespace NINA.ViewModel.FlatWizard {
             dataPoints = new List<ScatterErrorPoint>();
         }
 
-        public async System.Threading.Tasks.Task<FlatWizardUserPromptVMResponse> EvaluateUserPromptResultAsync(IImageData imageData, double exposureTime, string message, FlatWizardFilterSettingsWrapper wrapper) {
-            var flatsWizardUserPrompt = new FlatWizardUserPromptVM(message,
-                                                    imageData.Statistics.Mean, CameraBitDepthToAdu(wrapper.BitDepth), wrapper, exposureTime);
+        public async Task<FlatWizardUserPromptVMResponse> EvaluateUserPromptResultAsync(IImageData imageData, double exposureTime, string message, FlatWizardFilterSettingsWrapper wrapper) {
+            var imageStatistics = await imageData.Statistics.Task;
+            var flatsWizardUserPrompt = new FlatWizardUserPromptVM(
+                message,
+                imageStatistics.Mean,
+                CameraBitDepthToAdu(wrapper.BitDepth),
+                wrapper,
+                exposureTime);
             await WindowService.ShowDialog(flatsWizardUserPrompt, Locale["LblFlatUserPromptFailure"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
 
             if (flatsWizardUserPrompt.Reset) {
@@ -64,11 +68,12 @@ namespace NINA.ViewModel.FlatWizard {
             return (wrapper.Settings.HistogramMeanTarget * CameraBitDepthToAdu(wrapper.BitDepth) - trendLine.Offset) / trendLine.Slope;
         }
 
-        public FlatWizardExposureAduState GetFlatExposureState(IImageData imageData, double exposureTime, FlatWizardFilterSettingsWrapper wrapper) {
+        public async Task<FlatWizardExposureAduState> GetFlatExposureState(IImageData imageData, double exposureTime, FlatWizardFilterSettingsWrapper wrapper) {
             var histogramMeanAdu = HistogramMeanAndCameraBitDepthToAdu(wrapper.Settings.HistogramMeanTarget, wrapper.BitDepth);
             var histogramToleranceUpperBound = GetUpperToleranceAduFromAdu(histogramMeanAdu, wrapper.Settings.HistogramTolerance);
             var histogramToleranceLowerBound = GetLowerToleranceAduFromAdu(histogramMeanAdu, wrapper.Settings.HistogramTolerance);
-            var currentMean = imageData.Statistics.Mean;
+            var imageStatistics = await imageData.Statistics.Task;
+            var currentMean = imageStatistics.Mean;
 
             if (histogramToleranceLowerBound <= currentMean && histogramToleranceUpperBound >= currentMean) {
                 return FlatWizardExposureAduState.ExposureFinished;

@@ -112,8 +112,8 @@ namespace NINATest {
             ImageData result = await ImageData.Create(arr, 16, false);
 
             //Assert
-            Assert.AreEqual(expX, result.Statistics.Width);
-            Assert.AreEqual(expY, result.Statistics.Height);
+            Assert.AreEqual(expX, result.Properties.Width);
+            Assert.AreEqual(expY, result.Properties.Height);
             CollectionAssert.AreEqual(expFlatArr, result.Data.FlatArray);
         }
 
@@ -132,8 +132,8 @@ namespace NINATest {
             ImageData result = new ImageData(arr, width, height, 16, false);
 
             //Assert
-            Assert.AreEqual(expX, result.Statistics.Width);
-            Assert.AreEqual(expY, result.Statistics.Height);
+            Assert.AreEqual(expX, result.Properties.Width);
+            Assert.AreEqual(expY, result.Properties.Height);
             CollectionAssert.AreEqual(expFlatArr, result.Data.FlatArray);
         }
 
@@ -179,11 +179,11 @@ namespace NINATest {
 
             //Act
             ImageData result = await ImageData.Create(arr, 16, false);
-            await result.CalculateStatistics();
+            var resultStatistics = await result.Statistics.Task;
 
             //Assert
-            Assert.AreEqual(stdev, result.Statistics.StDev);
-            Assert.AreEqual(mean, result.Statistics.Mean);
+            Assert.AreEqual(stdev, resultStatistics.StDev);
+            Assert.AreEqual(mean, resultStatistics.Mean);
         }
 
         [Test]
@@ -217,11 +217,11 @@ namespace NINATest {
 
             //Act
             ImageData result = await ImageData.Create(arr, 16, false);
-            await result.CalculateStatistics();
+            var resultStatistics = await result.Statistics.Task;
 
             //Assert
-            Assert.AreEqual(stdev, result.Statistics.StDev);
-            Assert.AreEqual(mean, result.Statistics.Mean);
+            Assert.AreEqual(stdev, resultStatistics.StDev);
+            Assert.AreEqual(mean, resultStatistics.Mean);
         }
 
         [Test]
@@ -239,11 +239,11 @@ namespace NINATest {
 
             //Act
             ImageData result = await ImageData.Create(arr, 16, false);
-            await result.CalculateStatistics();
+            var resultStatistics = await result.Statistics.Task;
 
             //Assert
-            Assert.AreEqual(stdev, result.Statistics.StDev, 0.000001);
-            Assert.AreEqual(mean, result.Statistics.Mean);
+            Assert.AreEqual(stdev, resultStatistics.StDev, 0.000001);
+            Assert.AreEqual(mean, resultStatistics.Mean);
         }
 
         [Test]
@@ -261,10 +261,10 @@ namespace NINATest {
             var imgData = new ImageData(arr, width, height, bitDepth, isBayered);
 
             //Assert
-            Assert.AreEqual(width, imgData.Statistics.Width);
-            Assert.AreEqual(height, imgData.Statistics.Height);
-            Assert.AreEqual(bitDepth, imgData.Statistics.BitDepth);
-            Assert.AreEqual(isBayered, imgData.Statistics.IsBayered);
+            Assert.AreEqual(width, imgData.Properties.Width);
+            Assert.AreEqual(height, imgData.Properties.Height);
+            Assert.AreEqual(bitDepth, imgData.Properties.BitDepth);
+            Assert.AreEqual(isBayered, imgData.Properties.IsBayered);
         }
 
         [Test]
@@ -284,10 +284,10 @@ namespace NINATest {
             var imgData = await ImageData.Create(arr, bitDepth, isBayered);
 
             //Assert
-            Assert.AreEqual(width, imgData.Statistics.Width);
-            Assert.AreEqual(height, imgData.Statistics.Height);
-            Assert.AreEqual(bitDepth, imgData.Statistics.BitDepth);
-            Assert.AreEqual(isBayered, imgData.Statistics.IsBayered);
+            Assert.AreEqual(width, imgData.Properties.Width);
+            Assert.AreEqual(height, imgData.Properties.Height);
+            Assert.AreEqual(bitDepth, imgData.Properties.BitDepth);
+            Assert.AreEqual(isBayered, imgData.Properties.IsBayered);
         }
 
         [Test]
@@ -318,13 +318,13 @@ namespace NINATest {
 
             //Act
             var result = await ImageData.Create(arr, 16, false);
-            await result.CalculateStatistics();
+            var resultStatistics = await result.Statistics.Task;
 
             //Assert
-            Assert.AreEqual(5, result.Statistics.Min);
-            Assert.AreEqual(2, result.Statistics.MinOccurrences);
-            Assert.AreEqual(80, result.Statistics.Max);
-            Assert.AreEqual(3, result.Statistics.MaxOccurrences);
+            Assert.AreEqual(5, resultStatistics.Min);
+            Assert.AreEqual(2, resultStatistics.MinOccurrences);
+            Assert.AreEqual(80, resultStatistics.Max);
+            Assert.AreEqual(3, resultStatistics.MaxOccurrences);
         }
 
         [Test]
@@ -335,11 +335,11 @@ namespace NINATest {
         [TestCase(new ushort[] { 10, 10, 10, 10, 10, 10, 10, 10, 15, 20, 20, 20, 20, 20, 50, 50, 50, 50 }, 10, 17.5, 7.5)]
         [TestCase(new ushort[] { 0, 0, 65535, 65535 }, 16, 32767.5, 32767.5)]
         public async Task MedianTest(ushort[] arr, int bitDepth, double expectedMedian, double expectedMAD) {
-            var result = new ImageData(arr, arr.Length / 2, arr.Length / 2, bitDepth, false);
-            await result.CalculateStatistics();
+            var result = new ImageData(arr, arr.Length / 2, 2, bitDepth, false);
+            var resultStatistics = await result.Statistics.Task;
 
-            Assert.AreEqual(expectedMedian, result.Statistics.Median);
-            Assert.AreEqual(expectedMAD, result.Statistics.MedianAbsoluteDeviation);
+            Assert.AreEqual(expectedMedian, resultStatistics.Median);
+            Assert.AreEqual(expectedMAD, resultStatistics.MedianAbsoluteDeviation);
         }
 
         [Test]
@@ -392,8 +392,7 @@ namespace NINATest {
                 $"#$$FOCUSERPOSITION$$" +
                 $"#$$APPLICATIONSTARTDATE$$";
 
-            var sut = new ImageData(data, 3, 3, 16, false);
-            sut.MetaData = MetaData;
+            var sut = new ImageData(data, 3, 3, 16, false, MetaData);
             var file = await sut.SaveToDisk(folder, pattern, fileType, default);
             System.IO.File.Delete(file);
 
@@ -443,8 +442,7 @@ namespace NINATest {
                 $"#$$FOCUSERPOSITION$$" +
                 $"#$$APPLICATIONSTARTDATE$$";
 
-            var sut = new ImageData(data, 3, 3, 16, false);
-            sut.MetaData = MetaData;
+            var sut = new ImageData(data, 3, 3, 16, false, MetaData);
             var file = await sut.PrepareSave(folder, fileType, default);
             file = sut.FinalizeSave(file, pattern);
             System.IO.File.Delete(file);

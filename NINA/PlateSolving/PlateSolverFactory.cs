@@ -28,7 +28,6 @@ using NINA.Profile;
 using NINA.Utility.Mediator.Interfaces;
 
 namespace NINA.PlateSolving {
-
     internal static class PlateSolverFactory {
         public const string ASTROMETRYNETURL = "http://nova.astrometry.net";
 

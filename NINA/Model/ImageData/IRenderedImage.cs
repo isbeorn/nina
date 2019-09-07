@@ -22,31 +22,29 @@
 #endregion "copyright"
 
 using NINA.Utility.Enum;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace NINA.Model.ImageData {
 
-    public interface IImageData {
-        IImageArray Data { get; }
+    public interface IRenderedImage {
+        IImageData RawImageData { get; }
 
-        ImageProperties Properties { get; }
+        BitmapSource Image { get; }
 
-        Nito.AsyncEx.AsyncLazy<IImageStatistics> Statistics { get; }
+        IDebayeredImage Debayer(bool saveColorChannels = false, bool saveLumChannel = false);
 
-        IStarDetectionAnalysis StarDetectionAnalysis { get; }
+        IRenderedImage ReRender();
 
-        ImageMetaData MetaData { get; }
+        Task<IRenderedImage> Stretch(double factor, double blackClipping, bool unlinked);
 
-        IRenderedImage RenderImage();
-
-        BitmapSource RenderBitmapSource();
-
-        Task<string> SaveToDisk(string path, string pattern, FileTypeEnum fileType, CancellationToken cancelToken = default, bool forceFileType = false);
-
-        Task<string> PrepareSave(string path, FileTypeEnum fileType, CancellationToken cancelToken = default);
-
-        string FinalizeSave(string file, string pattern);
+        Task<IRenderedImage> DetectStars(
+            bool annotateImage,
+            StarSensitivityEnum sensitivity,
+            NoiseReductionEnum noiseReduction,
+            CancellationToken cancelToken = default,
+            IProgress<ApplicationStatus> progress = default(Progress<ApplicationStatus>));
     }
 }

@@ -54,6 +54,7 @@ using NINA.Utility;
 using NINA.Model.ImageData;
 using System.Collections.Async;
 using Moq;
+using NINA.Utility.Mediator;
 
 namespace NINATest {
 
@@ -994,7 +995,7 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
-        Task<IImageData> IImagingMediator.CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        public Task<IRenderedImage> CaptureAndPrepareImage(CaptureSequence sequence, PrepareImageParameters parameters, CancellationToken token, IProgress<ApplicationStatus> progress) {
             throw new NotImplementedException();
         }
 
@@ -1002,7 +1003,7 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
-        public Task<IImageData> PrepareImage(IImageData iarr, CancellationToken token) {
+        public Task<IRenderedImage> PrepareImage(IImageData iarr, PrepareImageParameters parameters, CancellationToken token) {
             throw new NotImplementedException();
         }
 

@@ -31,8 +31,8 @@ namespace NINA.PlateSolving {
             return new PlateSolveImageProperties() {
                 FocalLength = parameter.FocalLength,
                 PixelSize = parameter.PixelSize,
-                ImageWidth = source.Statistics.Width,
-                ImageHeight = source.Statistics.Height
+                ImageWidth = source.Properties.Width,
+                ImageHeight = source.Properties.Height
             };
         }
     }

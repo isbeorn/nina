@@ -44,26 +44,23 @@ namespace NINA.Utility.Mediator {
             this.handler = handler;
         }
 
-        public bool SetDetectStars(bool value) {
-            return handler.SetDetectStars(value);
-        }
-
-        public bool SetAutoStretch(bool value) {
-            return handler.SetAutoStretch(value);
-        }
-
-        public Task<IImageData> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            return handler.CaptureAndPrepareImage(sequence, token, progress);
+        public Task<IRenderedImage> CaptureAndPrepareImage(
+            CaptureSequence sequence,
+            PrepareImageParameters parameters,
+            CancellationToken token,
+            IProgress<ApplicationStatus> progress) {
+            return handler.CaptureAndPrepareImage(sequence, parameters, token, progress);
         }
 
         public Task<IImageData> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
             return handler.CaptureImage(sequence, token, progress);
         }
 
-        public Task<IImageData> PrepareImage(
-                IImageData data,
-                CancellationToken token) {
-            return handler.PrepareImage(data, token);
+        public Task<IRenderedImage> PrepareImage(
+            IImageData data,
+            PrepareImageParameters parameters,
+            CancellationToken token) {
+            return handler.PrepareImage(data, parameters, token);
         }
 
         public event EventHandler<ImageSavedEventArgs> ImageSaved;

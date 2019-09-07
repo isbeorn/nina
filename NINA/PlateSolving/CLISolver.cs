@@ -86,14 +86,14 @@ namespace NINA.PlateSolving {
         }
 
         protected async Task<string> PrepareAndSaveImage(IImageData source, CancellationToken cancelToken) {
-            return await source.SaveToDisk(WORKING_DIRECTORY, Path.GetRandomFileName(), Utility.Enum.FileTypeEnum.FITS, cancelToken);
+            return await source.SaveToDisk(WORKING_DIRECTORY, Path.GetRandomFileName(), Utility.Enum.FileTypeEnum.FITS, cancelToken, forceFileType: true);
         }
 
         protected abstract string GetOutputPath(string imageFilePath);
 
         protected async Task StartCLI(string imageFilePath, string outputFilePath, PlateSolveParameter parameter, PlateSolveImageProperties imageProperties, IProgress<ApplicationStatus> progress, CancellationToken ct) {
             if (executableLocation != "cmd.exe" && !File.Exists(executableLocation)) {
-                throw new FileNotFoundException();
+                throw new FileNotFoundException("Executable not found", executableLocation);
             }
 
             System.Diagnostics.Process process = new System.Diagnostics.Process();

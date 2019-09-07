@@ -35,6 +35,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
+using NINA.Utility.Mediator;
 
 namespace NINA.ViewModel {
 
@@ -405,17 +406,12 @@ namespace NINA.ViewModel {
                 cancelDARVSlewToken?.Dispose();
                 cancelDARVSlewToken = new CancellationTokenSource();
                 try {
-                    var oldAutoStretch = imagingMediator.SetAutoStretch(true);
-                    var oldDetectStars = imagingMediator.SetDetectStars(false);
-
                     var seq = new CaptureSequence(DARVSlewDuration + 5, CaptureSequence.ImageTypes.SNAPSHOT, SnapFilter, SnapBin, 1);
-                    var capture = imagingMediator.CaptureAndPrepareImage(seq, cancelDARVSlewToken.Token, cameraprogress);
+                    var prepareParameters = new PrepareImageParameters(autoStretch: true, detectStars: false);
+                    var capture = imagingMediator.CaptureAndPrepareImage(seq, prepareParameters, cancelDARVSlewToken.Token, cameraprogress);
                     var slew = DarvTelescopeSlew(slewprogress, cancelDARVSlewToken.Token);
 
                     await Task.WhenAll(capture, slew);
-
-                    imagingMediator.SetAutoStretch(oldAutoStretch);
-                    imagingMediator.SetDetectStars(oldDetectStars);
                 } catch (OperationCanceledException) {
                 }
             } else {

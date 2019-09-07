@@ -3,13 +3,10 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using FluentAssertions;
 using Moq;
 using NINA.Model.ImageData;
-using System.IO;
 using System.Globalization;
 using NINA.Utility.Astrometry;
 
@@ -40,9 +37,7 @@ namespace NINATest {
 
         [Test]
         public void XISFAddAttachedImageTest() {
-            var stats = new Mock<IImageStatistics>();
-            stats.SetupGet(x => x.Width).Returns(3);
-            stats.SetupGet(x => x.Height).Returns(3);
+            var props = new ImageProperties(width: 3, height: 3, bitDepth: 16, isBayered: false);
             var imageType = "LIGHT";
             var data = new ushort[] {
                 1,1,1,
@@ -52,7 +47,7 @@ namespace NINATest {
             var length = data.Length * sizeof(ushort);
 
             var header = new XISFHeader();
-            header.AddImageMetaData(stats.Object, imageType);
+            header.AddImageMetaData(props, imageType);
             var sut = new XISF(header);
             sut.AddAttachedImage(data);
 
@@ -98,13 +93,11 @@ namespace NINATest {
 
         [Test]
         public void XISFHeaderAddImageMetaDataTest() {
-            var stats = new Mock<IImageStatistics>();
-            stats.SetupGet(x => x.Width).Returns(200);
-            stats.SetupGet(x => x.Height).Returns(100);
+            var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false);
             var imageType = "TestType";
 
             var sut = new XISFHeader();
-            sut.AddImageMetaData(stats.Object, imageType);
+            sut.AddImageMetaData(props, imageType);
 
             sut.Image.Should().HaveAttribute("geometry", "200:100:1")
                 .And.HaveAttribute("sampleFormat", "UInt16")
@@ -119,13 +112,11 @@ namespace NINATest {
 
         [Test]
         public void XISFHeaderAddImageMetaDataSNAPTest() {
-            var stats = new Mock<IImageStatistics>();
-            stats.SetupGet(x => x.Width).Returns(200);
-            stats.SetupGet(x => x.Height).Returns(100);
+            var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false);
             var imageType = "SNAPSHOT";
 
             var sut = new XISFHeader();
-            sut.AddImageMetaData(stats.Object, imageType);
+            sut.AddImageMetaData(props, imageType);
 
             sut.Image.Should().HaveAttribute("geometry", "200:100:1")
                 .And.HaveAttribute("sampleFormat", "UInt16")
@@ -216,9 +207,7 @@ namespace NINATest {
 
         [Test]
         public void XISFHeaderAddImagePropertyNoFITSTest() {
-            var stats = new Mock<IImageStatistics>();
-            stats.SetupGet(x => x.Width).Returns(200);
-            stats.SetupGet(x => x.Height).Returns(100);
+            var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false);
             var imageType = "TestType";
 
             var id = "TestId";
@@ -227,7 +216,7 @@ namespace NINATest {
             var comment = "TestComment";
 
             var sut = new XISFHeader();
-            sut.AddImageMetaData(stats.Object, imageType);
+            sut.AddImageMetaData(props, imageType);
             sut.AddImageProperty(new string[] { id, type }, value, comment, true);
 
             sut.Image.Elements("Property").First(x => x.Attribute("id").Value == id)
@@ -240,9 +229,7 @@ namespace NINATest {
 
         [Test]
         public void XISFHeaderAddImagePropertyNoAutoFITSTest() {
-            var stats = new Mock<IImageStatistics>();
-            stats.SetupGet(x => x.Width).Returns(200);
-            stats.SetupGet(x => x.Height).Returns(100);
+            var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false);
             var imageType = "TestType";
 
             var id = "TestId";
@@ -252,7 +239,7 @@ namespace NINATest {
             var comment = "TestComment";
 
             var sut = new XISFHeader();
-            sut.AddImageMetaData(stats.Object, imageType);
+            sut.AddImageMetaData(props, imageType);
             sut.AddImageProperty(new string[] { id, type, name }, value, comment, false);
 
             sut.Image.Elements("Property").First(x => x.Attribute("id").Value == id)
@@ -265,9 +252,7 @@ namespace NINATest {
 
         [Test]
         public void XISFHeaderAddImagePropertyAutoFITSTest() {
-            var stats = new Mock<IImageStatistics>();
-            stats.SetupGet(x => x.Width).Returns(200);
-            stats.SetupGet(x => x.Height).Returns(100);
+            var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false);
             var imageType = "TestType";
 
             var id = "TestId";
@@ -277,7 +262,7 @@ namespace NINATest {
             var comment = "TestComment";
 
             var sut = new XISFHeader();
-            sut.AddImageMetaData(stats.Object, imageType);
+            sut.AddImageMetaData(props, imageType);
             sut.AddImageProperty(new string[] { id, type, name }, value, comment);
 
             sut.Image.Elements("Property").First(x => x.Attribute("id").Value == id)
@@ -303,9 +288,7 @@ namespace NINATest {
 
         [Test]
         public void XISFHeaderAddImageFITSKeywordTest() {
-            var stats = new Mock<IImageStatistics>();
-            stats.SetupGet(x => x.Width).Returns(200);
-            stats.SetupGet(x => x.Height).Returns(100);
+            var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false);
             var imageType = "TestType";
 
             var name = "FITSName";
@@ -313,7 +296,7 @@ namespace NINATest {
             var comment = "TestComment";
 
             var sut = new XISFHeader();
-            sut.AddImageMetaData(stats.Object, imageType);
+            sut.AddImageMetaData(props, imageType);
             sut.AddImageFITSKeyword(name, value, comment);
 
             sut.Image.Elements("FITSKeyword").First(x => x.Attribute("name").Value == name)
@@ -323,15 +306,13 @@ namespace NINATest {
 
         [Test]
         public void XISFHeaderAddEmbeddedImageTest() {
-            var stats = new Mock<IImageStatistics>();
-            stats.SetupGet(x => x.Width).Returns(200);
-            stats.SetupGet(x => x.Height).Returns(100);
+            var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false);
 
             var array = new Mock<IImageArray>();
             array.SetupGet(x => x.FlatArray).Returns(new ushort[] { 1, 1, 1, 1, 3, 3, 5, 6, 1 });
 
             var data = new Mock<IImageData>();
-            data.SetupGet(x => x.Statistics).Returns(stats.Object);
+            data.SetupGet(x => x.Properties).Returns(props);
             data.SetupGet(x => x.Data).Returns(array.Object);
 
             var imageType = "TestType";
@@ -368,7 +349,7 @@ namespace NINATest {
 
             //Act
             var sut = new XISFHeader();
-            sut.AddImageMetaData(new ImageStatistics(2, 2, 16, false), "LIGHT");
+            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false), "LIGHT");
             sut.Populate(metaData);
 
             //Assert
@@ -421,7 +402,7 @@ namespace NINATest {
 
             //Act
             var sut = new XISFHeader();
-            sut.AddImageMetaData(new ImageStatistics(2, 2, 16, false), metaData.Image.ImageType);
+            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false), metaData.Image.ImageType);
             sut.Populate(metaData);
 
             //Assert
@@ -488,7 +469,7 @@ namespace NINATest {
 
             //Act
             var sut = new XISFHeader();
-            sut.AddImageMetaData(new ImageStatistics(2, 2, 16, false), metaData.Image.ImageType);
+            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false), metaData.Image.ImageType);
             sut.Populate(metaData);
 
             //Assert
@@ -537,7 +518,7 @@ namespace NINATest {
 
             //Act
             var sut = new XISFHeader();
-            sut.AddImageMetaData(new ImageStatistics(2, 2, 16, false), metaData.Image.ImageType);
+            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false), metaData.Image.ImageType);
             sut.Populate(metaData);
 
             //Assert
@@ -591,7 +572,7 @@ namespace NINATest {
 
             //Act
             var sut = new XISFHeader();
-            sut.AddImageMetaData(new ImageStatistics(2, 2, 16, false), metaData.Image.ImageType);
+            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false), metaData.Image.ImageType);
             sut.Populate(metaData);
 
             //Assert
@@ -636,7 +617,7 @@ namespace NINATest {
 
             //Act
             var sut = new XISFHeader();
-            sut.AddImageMetaData(new ImageStatistics(2, 2, 16, false), metaData.Image.ImageType);
+            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false), metaData.Image.ImageType);
             sut.Populate(metaData);
 
             //Assert
@@ -684,7 +665,7 @@ namespace NINATest {
 
             //Act
             var sut = new XISFHeader();
-            sut.AddImageMetaData(new ImageStatistics(2, 2, 16, false), metaData.Image.ImageType);
+            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false), metaData.Image.ImageType);
             sut.Populate(metaData);
 
             //Assert
@@ -736,7 +717,7 @@ namespace NINATest {
 
             //Act
             var sut = new XISFHeader();
-            sut.AddImageMetaData(new ImageStatistics(2, 2, 16, false), metaData.Image.ImageType);
+            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false), metaData.Image.ImageType);
             sut.Populate(metaData);
 
             //Assert
@@ -782,7 +763,7 @@ namespace NINATest {
 
             //Act
             var sut = new XISFHeader();
-            sut.AddImageMetaData(new ImageStatistics(2, 2, 16, false), metaData.Image.ImageType);
+            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false), metaData.Image.ImageType);
             sut.Populate(metaData);
 
             //Assert
@@ -836,7 +817,7 @@ namespace NINATest {
             };
 
             var sut = new XISFHeader();
-            sut.AddImageMetaData(new ImageStatistics(2, 2, 16, false), metaData.Image.ImageType);
+            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false), metaData.Image.ImageType);
             sut.Populate(metaData);
 
             foreach (var property in expectedProperties) {

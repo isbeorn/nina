@@ -26,23 +26,13 @@
 
 using NINA.Model;
 using NINA.Model.MyCamera;
-using NINA.Model.MyFilterWheel;
-using NINA.Model.MyFocuser;
-using NINA.Model.MyRotator;
-using NINA.Model.MyTelescope;
 using NINA.Utility;
-using NINA.Utility.Astrometry;
 using NINA.Utility.Behaviors;
-using NINA.Utility.Enum;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Profile;
 using NINA.Utility.WindowService;
 using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -50,6 +40,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using NINA.Utility.ImageAnalysis;
 using NINA.Model.ImageData;
+using NINA.Utility.Mediator;
 
 namespace NINA.ViewModel {
 
@@ -74,7 +65,7 @@ namespace NINA.ViewModel {
 
             _progress = new Progress<ApplicationStatus>(p => Status = p);
 
-            PrepareImageCommand = new AsyncCommand<bool>(() => PrepareImageHelper());
+            PrepareImageCommand = new AsyncCommand<bool>(() => ProcessImageHelper());
             PlateSolveImageCommand = new AsyncCommand<bool>(() => PlateSolveImage(), (object o) => Image != null);
             CancelPlateSolveImageCommand = new RelayCommand(CancelPlateSolveImage);
             DragStartCommand = new RelayCommand(BahtinovDragStart);
@@ -331,18 +322,14 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> PlateSolveImage() {
-            if (Image != null) {
+            if (this.RenderedImage != null) {
                 _plateSolveToken?.Dispose();
                 _plateSolveToken = new CancellationTokenSource();
-                if (!AutoStretch) {
-                    AutoStretch = true;
-                }
-                await PrepareImageHelper();
                 using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
-                    solver.Image = Image;
+                    solver.Image = this.RenderedImage.Image;
                     var service = WindowServiceFactory.Create();
-                    service.Show(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
-                    await solver.SolveBitmap(Image, _progress, _plateSolveToken.Token);
+                    service.Show(solver, this.Title + " - " + solver.Title, ResizeMode.CanResize, WindowStyle.ToolWindow);
+                    await solver.Solve(this.RenderedImage.RawImageData, _progress, _plateSolveToken.Token);
                 }
                 return true;
             } else {
@@ -358,14 +345,14 @@ namespace NINA.ViewModel {
 
         private CancellationTokenSource _plateSolveToken;
 
-        private IImageData _imgArr;
+        private IRenderedImage _renderedImage;
 
-        public IImageData ImgArr {
+        public IRenderedImage RenderedImage {
             get {
-                return _imgArr;
+                return _renderedImage;
             }
             set {
-                _imgArr = value;
+                _renderedImage = value;
                 RaisePropertyChanged();
             }
         }
@@ -416,7 +403,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task<bool> PrepareImageHelper() {
+        private async Task<bool> ProcessImageHelper() {
             _prepImageCancellationSource?.Cancel();
             try {
                 _prepImageTask?.Wait(_prepImageCancellationSource.Token);
@@ -424,7 +411,7 @@ namespace NINA.ViewModel {
             }
             _prepImageCancellationSource?.Dispose();
             _prepImageCancellationSource = new CancellationTokenSource();
-            _prepImageTask = PrepareImage(ImgArr, _prepImageCancellationSource.Token);
+            _prepImageTask = ProcessAndUpdateImage(RenderedImage, new PrepareImageParameters(), _prepImageCancellationSource.Token);
             await _prepImageTask;
             return true;
         }
@@ -508,48 +495,75 @@ namespace NINA.ViewModel {
         private IImagingMediator imagingMediator;
         private IApplicationStatusMediator applicationStatusMediator;
 
-        public async Task<IImageData> PrepareImage(
-                IImageData data,
-                CancellationToken token) {
-            await ss.WaitAsync(token);
+        public async Task<IRenderedImage> PrepareImage(
+            IImageData data,
+            PrepareImageParameters parameters,
+            CancellationToken cancelToken) {
+            await ss.WaitAsync(cancelToken);
 
             try {
-                if (data != null) {
-                    _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPrepareImage"] });
-
-                    data.RenderImage();
-
-                    if (data.Statistics.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage) {
-                        _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDebayeringImage"] });
-                        data.Debayer(profileService.ActiveProfile.ImageSettings.UnlinkedStretch, (profileService.ActiveProfile.ImageSettings.DebayeredHFR && DetectStars));
-                    }
-
-                    if (AutoStretch) {
-                        _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStretchImage"] });
-                        if (data.Statistics.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage && profileService.ActiveProfile.ImageSettings.UnlinkedStretch) {
-                            await data.Stretch(profileService.ActiveProfile.ImageSettings.AutoStretchFactor, profileService.ActiveProfile.ImageSettings.BlackClipping, true);
-                        } else {
-                            await data.Stretch(profileService.ActiveProfile.ImageSettings.AutoStretchFactor, profileService.ActiveProfile.ImageSettings.BlackClipping, false);
-                        }
-                    }
-
-                    if (DetectStars) {
-                        await data.DetectStars(profileService.ActiveProfile.ImageSettings.AnnotateImage, profileService.ActiveProfile.ImageSettings.StarSensitivity, profileService.ActiveProfile.ImageSettings.NoiseReduction, token);
-                    }
-
-                    ImgArr = data;
-                    Image = data.Image;
-                    GC.Collect();
-
-                    if (ShowBahtinovAnalyzer) {
-                        AnalyzeBahtinov();
-                    }
+                if (data == null) {
+                    return null;
                 }
+
+                _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPrepareImage"] });
+
+                var renderedImage = data.RenderImage();
+                if (data.Properties.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage) {
+                    _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDebayeringImage"] });
+                    var unlinkedStretch = profileService.ActiveProfile.ImageSettings.UnlinkedStretch;
+                    var starDetection = profileService.ActiveProfile.ImageSettings.DebayeredHFR && DetectStars;
+                    renderedImage = renderedImage.Debayer(saveColorChannels: unlinkedStretch, saveLumChannel: starDetection);
+                }
+
+                return await ProcessAndUpdateImage(renderedImage, parameters, cancelToken);
             } finally {
                 _progress.Report(new ApplicationStatus() { Status = string.Empty });
                 ss.Release();
             }
-            return data;
+        }
+
+        private async Task<IRenderedImage> ProcessAndUpdateImage(
+            IRenderedImage renderedImage,
+            PrepareImageParameters parameters,
+            CancellationToken cancelToken) {
+            var processedImage = await ProcessImage(renderedImage, parameters, cancelToken);
+
+            this.RenderedImage = renderedImage;
+            this.Image = processedImage.Image;
+            GC.Collect();
+
+            if (ShowBahtinovAnalyzer) {
+                AnalyzeBahtinov();
+            }
+            return processedImage;
+        }
+
+        private async Task<IRenderedImage> ProcessImage(
+            IRenderedImage renderedImage,
+            PrepareImageParameters parameters,
+            CancellationToken cancelToken) {
+            var detectStars = parameters.DetectStars.HasValue ? parameters.DetectStars.Value : DetectStars;
+            var autoStretch = detectStars || (parameters.AutoStretch.HasValue ? parameters.AutoStretch.Value : AutoStretch);
+            var processedImage = renderedImage.ReRender();
+            if (autoStretch) {
+                _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStretchImage"] });
+                var unlinkedStretch = renderedImage.RawImageData.Properties.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage && profileService.ActiveProfile.ImageSettings.UnlinkedStretch;
+                processedImage = await processedImage.Stretch(
+                    factor: profileService.ActiveProfile.ImageSettings.AutoStretchFactor,
+                    blackClipping: profileService.ActiveProfile.ImageSettings.BlackClipping,
+                    unlinked: unlinkedStretch);
+            }
+
+            if (detectStars) {
+                processedImage = await processedImage.DetectStars(
+                    annotateImage: profileService.ActiveProfile.ImageSettings.AnnotateImage,
+                    sensitivity: profileService.ActiveProfile.ImageSettings.StarSensitivity,
+                    noiseReduction: profileService.ActiveProfile.ImageSettings.NoiseReduction,
+                    cancelToken: cancelToken);
+            }
+            _progress.Report(new ApplicationStatus() { Status = "" });
+            return processedImage;
         }
 
         public void UpdateDeviceInfo(CameraInfo cameraInfo) {

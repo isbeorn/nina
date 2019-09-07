@@ -340,11 +340,20 @@
     <Compile Include="EquipmentChooser\EquipmentChooser.xaml.cs">
       <DependentUpon>EquipmentChooser.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Model\ImageData\AllImageStatistics.cs" />
+    <Compile Include="Model\ImageData\ImageProperties.cs" />
     <Compile Include="Model\ImageData\IImageData.cs" />
+    <Compile Include="Model\ImageData\IImageStatistics.cs" />
     <Compile Include="Model\ImageData\ImageData.cs" />
     <Compile Include="Model\ImageData\DebayeredImageData.cs" />
     <Compile Include="Model\ImageData\ImageMetaData.cs" />
+    <Compile Include="Model\ImageData\IDebayeredImage.cs" />
+    <Compile Include="Model\ImageData\IRenderedImage.cs" />
+    <Compile Include="Model\ImageData\IStarDetectionAnalysis.cs" />
     <Compile Include="Model\ImageData\LRGBArrays.cs" />
+    <Compile Include="Model\ImageData\DebayeredImage.cs" />
+    <Compile Include="Model\ImageData\RenderedImage.cs" />
+    <Compile Include="Model\ImageData\StarDetectionAnalysis.cs" />
     <Compile Include="Model\MyCamera\FileCamera.cs" />
     <Compile Include="Model\MyCamera\FLICamera.cs" />
     <Compile Include="Model\MyCamera\Simulator\ImageSettings.cs" />
@@ -437,6 +446,7 @@
     <Compile Include="Utility\Mediator\Interfaces\ISwitchMediator.cs" />
     <Compile Include="Utility\Mediator\Interfaces\IWeatherDataConsumer.cs" />
     <Compile Include="Utility\Mediator\Interfaces\IWeatherDataMediator.cs" />
+    <Compile Include="Utility\Mediator\PrepareImageParameters.cs" />
     <Compile Include="Utility\Mediator\WeatherDataMediator.cs" />
     <Compile Include="Utility\Mediator\SwitchMediator.cs" />
     <Compile Include="Utility\ProjectVersion.cs" />
@@ -482,7 +492,6 @@
     <Compile Include="Model\MyCamera\CameraInfo.cs" />
     <Compile Include="Model\MyCamera\EDCamera.cs" />
     <Compile Include="Model\ImageData\IImageArray.cs" />
-    <Compile Include="Model\ImageData\IImageStatistics.cs" />
     <Compile Include="Model\ImageData\ImageArray.cs" />
     <Compile Include="Model\ImageData\ImageStatistics.cs" />
     <Compile Include="Model\MyCamera\NikonCamera.cs" />
