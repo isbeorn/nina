@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 
 namespace NINA.Database.Schema {
 
-    internal class CatalogueNr {
+    public class CatalogueNr {
         public virtual DsoDetail DsoDetail { get; set; }
 
         [ForeignKey("DsoDetail")]

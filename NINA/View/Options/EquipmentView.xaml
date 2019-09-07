@@ -520,9 +520,9 @@
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center">
                                 <TextBox.Text>
-                                    <Binding Path="FocalLength" UpdateSourceTrigger="LostFocus">
+                                    <Binding Path="FocalLength" UpdateSourceTrigger="LostFocus" Converter="{StaticResource NaNToEmptyTextConverter}">
                                         <Binding.ValidationRules>
-                                            <rules:GreaterZeroRule />
+                                            <rules:GreaterThanZeroRule />
                                         </Binding.ValidationRules>
                                     </Binding>
                                 </TextBox.Text>
@@ -544,9 +544,9 @@
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center">
                                 <TextBox.Text>
-                                    <Binding Path="FocalRatio" UpdateSourceTrigger="LostFocus">
+                                    <Binding Path="FocalRatio" UpdateSourceTrigger="LostFocus" Converter="{StaticResource NaNToEmptyTextConverter}">
                                         <Binding.ValidationRules>
-                                            <rules:GreaterZeroRule />
+                                            <rules:GreaterThanZeroRule />
                                         </Binding.ValidationRules>
                                     </Binding>
                                 </TextBox.Text>

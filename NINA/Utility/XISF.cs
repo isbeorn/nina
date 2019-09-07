@@ -262,7 +262,7 @@ namespace NINA.Utility {
             if (!string.IsNullOrWhiteSpace(metaData.Telescope.Name)) {
                 this.AddImageProperty(XISFImageProperty.Instrument.Telescope.Name, metaData.Telescope.Name.ToString(CultureInfo.InvariantCulture), "Name of telescope");
             }
-            if (!double.IsNaN(metaData.Telescope.FocalLength)) {
+            if (!double.IsNaN(metaData.Telescope.FocalLength) && metaData.Telescope.FocalLength > 0) {
                 this.AddImageProperty(XISFImageProperty.Instrument.Telescope.FocalLength, metaData.Telescope.FocalLength.ToString(CultureInfo.InvariantCulture), "[mm] Focal length");
 
                 if (!double.IsNaN(metaData.Telescope.FocalRatio) && metaData.Telescope.FocalRatio > 0) {

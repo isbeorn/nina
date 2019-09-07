@@ -35,7 +35,7 @@ namespace NINA.Utility.SkySurvey {
             int height, CancellationToken ct, IProgress<int> progress) {
             var arcSecPerPixel = 0.5;
             fieldOfView = Math.Round(fieldOfView, 2);
-            var pixels = Math.Min(Astrometry.Astrometry.ArcminToArcsec(fieldOfView) * arcSecPerPixel, 5000);
+            var pixels = Math.Ceiling(Math.Min(Astrometry.Astrometry.ArcminToArcsec(fieldOfView) * arcSecPerPixel, 5000));
 
             var request = new Http.HttpDownloadImageRequest(
                Url,

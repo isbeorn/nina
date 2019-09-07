@@ -552,9 +552,9 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
-        private int _focalLength;
+        private double _focalLength;
 
-        public int FocalLength {
+        public double FocalLength {
             get {
                 return _focalLength;
             }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace NINA.PlateSolving {
 
     internal class PlateSolveParameter {
-        public int FocalLength { get; set; }
+        public double FocalLength { get; set; }
         public double PixelSize { get; set; }
         public double ImageWidth { get; set; }
         public double ImageHeight { get; set; }

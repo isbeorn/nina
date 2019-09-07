@@ -248,9 +248,15 @@ namespace NINA.ViewModel {
         }
 
         public static bool ShouldFlip(IProfileService profileService, double exposureTime, TelescopeInfo telescopeInfo) {
+            var tolerance = TimeSpan.FromMinutes(1);
+            var remainingExposureTime = TimeSpan.FromHours(telescopeInfo.TimeToMeridianFlip) - tolerance;
+            if (profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian != 0) {
+                remainingExposureTime = remainingExposureTime - TimeSpan.FromMinutes(profileService.ActiveProfile.MeridianFlipSettings.MinutesAfterMeridian) - TimeSpan.FromMinutes(profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian);
+            }
+
             if (profileService.ActiveProfile.MeridianFlipSettings.Enabled && !profileService.ActiveProfile.MeridianFlipSettings.UseSideOfPier) {
                 if (telescopeInfo.Connected == true) {
-                    if ((telescopeInfo.TimeToMeridianFlip - (profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian / 60)) < (exposureTime / 60 / 60)) {
+                    if (remainingExposureTime < TimeSpan.FromSeconds(exposureTime)) {
                         return true;
                     }
                 }
@@ -263,7 +269,7 @@ namespace NINA.ViewModel {
                 }
 
                 if (telescopeInfo.Connected == true && pierside != PierSide.pierEast) {
-                    if ((telescopeInfo.TimeToMeridianFlip - (profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian / 60)) < (exposureTime / 60 / 60)) {
+                    if (remainingExposureTime < TimeSpan.FromSeconds(exposureTime)) {
                         return true;
                     }
                 }

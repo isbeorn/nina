@@ -37,9 +37,9 @@ namespace NINA.Profile {
 
         protected override void SetDefaultValues() {
             id = "No_Device";
-            name = "Generic Telescope";
-            focalLength = 800;
-            focalRatio = 7.0;
+            name = string.Empty;
+            focalLength = double.NaN;
+            focalRatio = double.NaN;
             snapPortStart = ":SNAP1,1#";
             snapPortStop = "SNAP1,0#";
             settleTime = 5;
@@ -75,10 +75,10 @@ namespace NINA.Profile {
             }
         }
 
-        private int focalLength;
+        private double focalLength;
 
         [DataMember]
-        public int FocalLength {
+        public double FocalLength {
             get {
                 return focalLength;
             }

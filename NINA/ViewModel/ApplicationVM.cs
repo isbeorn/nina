@@ -149,7 +149,7 @@ namespace NINA.ViewModel {
         }
 
         private void OpenManual(object o) {
-            System.Diagnostics.Process.Start("https://nighttime-imaging.eu/docs/documentation/");
+            System.Diagnostics.Process.Start("https://nighttime-imaging.eu/docs/master/site/");
         }
 
         public void InitAvalonDockLayout() {

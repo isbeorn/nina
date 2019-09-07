@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 
 namespace NINA.Database.Schema {
 
-    internal class ConstellationBoundaries {
+    public class ConstellationBoundaries {
         public string constellation { get; set; }
 
         public double position { get; set; }
