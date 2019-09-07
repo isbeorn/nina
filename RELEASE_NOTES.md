@@ -128,6 +128,7 @@
 - Focuser Temperature is now available as an image file name token (`$$FOCUSERTEMP$$`)
 - Added a clear button on HFR History graph. The button will be displayed when hovering the control.
 - A new button is added in the options to directly open the log destination folder
+- Added option to adjust USBLimit for Altair and Touptek cameras. This can prevent potential black preview screen issues. More details on this topic described at altair: https://altaircameras.com/black_preview_screen/
 
 ## Special Thanks
 The N.I.N.A. team would like to sincerely thank:
