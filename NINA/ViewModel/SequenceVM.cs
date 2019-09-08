@@ -457,7 +457,9 @@ namespace NINA.ViewModel {
 
         private async Task AutoFocusOnStart(CaptureSequenceList csl, CancellationToken ct, IProgress<ApplicationStatus> progress) {
             if (csl.AutoFocusOnStart) {
-                await StopGuiding(ct, progress);
+                if (profileService.ActiveProfile.FocuserSettings.AutoFocusDisableGuiding) {
+                    await StopGuiding(ct, progress);
+                }
                 var item = csl.GetNextSequenceItem(csl.ActiveSequence);
                 await AutoFocus(item.FilterType, ct, progress);
             }

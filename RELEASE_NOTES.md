@@ -19,6 +19,9 @@
 - An autofocus filter can now be set if "Use filter offsets" is set to true. When defined, the autofocus routine will use the autofocus filter instead of the current imaging filter. Initial baseline HFR, and final HFR (used to determine whether the autofocus run was successful) will still use the main imaging filter.
 - A contrast detection autofocus routine has been added. Instead of analyzing stars to determine point of best focus, the routine analyzes overall contrast of the image with various contrast detection methods. A Gaussian fit is then performed on the obtained focus points - this process can use shorter exposure times than star HFR and produce results faster
 
+## Bug fixes
+- Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false
+
 # Version 1.9
 
 ## Features
