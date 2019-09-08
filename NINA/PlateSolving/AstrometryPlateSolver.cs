@@ -170,7 +170,7 @@ namespace NINA.PlateSolving {
                 string jobStatus = ojobstatus.GetValue("status").ToString();
                 if (jobStatus == "success") {
                     break;
-                } else if (jobStatus != "solving") {
+                } else if (jobStatus == "failure") {
                     throw new AstrometryJobFailedException(jobStatus);
                 }
                 await Task.Delay(1000);
