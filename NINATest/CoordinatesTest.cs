@@ -27,7 +27,6 @@ using NUnit.Framework;
 using System.Windows;
 
 namespace NINATest {
-
     [TestFixture]
     public class CoordinatesTest {
         private static double ANGLE_TOLERANCE = 0.000000000001;
