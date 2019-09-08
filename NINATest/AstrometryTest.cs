@@ -618,5 +618,34 @@ namespace NINATest {
 
             Assert.AreEqual(expected, modulus, MODULUS_TOLERANCE);
         }
+
+        [Test]
+        [TestCase(182, 360, 182)]
+        [TestCase(365, 360, 5)]
+        [TestCase(-20, 360, 340)]
+        [TestCase(832, 360, 112)]
+        [TestCase(832, 360.5f, 111)]
+        [TestCase(-380, 360, 340)]
+        [TestCase(-10, -360, -10)]
+        [TestCase(3, 7, 3)]
+        [TestCase(3, -7, -4)]
+        [TestCase(-3, 7, 4)]
+        [TestCase(-3, -7, -3)]
+        [TestCase(7, 3, 1)]
+        [TestCase(7, -3, -2)]
+        [TestCase(-7, 3, 2)]
+        [TestCase(-7, -3, -1)]
+        [TestCase(10.2f, 10, 0.2f)]
+        [TestCase(10.2f, 10.5f, 10.2f)]
+        [TestCase(double.MaxValue, double.MaxValue, 0)]
+        [TestCase(150, double.MaxValue, 150)]
+        [TestCase(double.MaxValue, 10, 8)]
+        [TestCase(12.55f, 10.32f, 2.23f)]
+        [TestCase(122.55f, 10.32f, 9.03f)]
+        public void GetEuclidianModulus(double x, double y, double expected) {
+            var modulus = Astrometry.EuclidianModulus(x, y);
+
+            Assert.AreEqual(expected, modulus, MODULUS_TOLERANCE);
+        }
     }
 }
