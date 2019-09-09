@@ -858,9 +858,9 @@ namespace NINA.ViewModel {
 
             if (csl.AutoFocusAfterHFRChange
                 && AfHfrIndex < imgHistoryVM.ImgStatHistory.Count()
-                && imgHistoryVM.ImgStatHistory.Last().StarDetectionAnalysis.HFR > (imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).StarDetectionAnalysis.HFR * (1 + csl.AutoFocusAfterHFRChangeAmount / 100))
-                && imgHistoryVM.ImgStatHistory.Last().StarDetectionAnalysis.HFR != 0
-                && imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).StarDetectionAnalysis.HFR != 0) {
+                && imgHistoryVM.ImgStatHistory.Last().HFR > (imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).HFR * (1 + csl.AutoFocusAfterHFRChangeAmount / 100))
+                && imgHistoryVM.ImgStatHistory.Last().HFR != 0
+                && imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).HFR != 0) {
                 /* Trigger autofocus after HFR change */
                 AfHfrIndex = imgHistoryVM.ImgStatHistory.Count();
                 return true;
