@@ -92,6 +92,7 @@
 ### Flat Wizard
 - Progress bars have been added for remaining filters and exposures
 - A new Slew to Zenith button has been added for easier flats. This includes an option for east or west pier side, depending on which side of pier the mount should approach zenith from.
+- A new option to pause between filters has been added. This is to allow the user the chance to set lightbox settings 
 
 ### Interface
 - Imaging tab - Equipment specific views will only show the "Connected" flag when the device is not connected to save space

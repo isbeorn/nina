@@ -65,6 +65,7 @@ namespace NINA.ViewModel.FlatWizard {
         private int mode;
         private FlatWizardFilterSettingsWrapper singleFlatWizardFilterSettings;
         private ApplicationStatus status;
+        bool pauseBetweenFilters;
 
         public FlatWizardVM(IProfileService profileService,
                             IImagingVM imagingVM,
@@ -345,6 +346,16 @@ namespace NINA.ViewModel.FlatWizard {
             }
         }
 
+        public bool PauseBetweenFilters
+        {
+            get => pauseBetweenFilters;
+            set
+            {
+                pauseBetweenFilters = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private void CancelFindExposureTime(object obj) {
             flatSequenceCts?.Cancel();
         }
@@ -469,6 +480,16 @@ namespace NINA.ViewModel.FlatWizard {
                 foreach (var filterSettings in filters) {
                     filterCount++;
                     var filterName = filterSettings?.Filter?.Name ?? string.Empty;
+
+                    if (PauseBetweenFilters)
+                    {
+                        var dialogResult = MyMessageBox.MyMessageBox.Show(
+                            string.Format(Locale["LblPrepFlatFilterMsgBox"], filterName),
+                            Locale["LblFlatWizard"], MessageBoxButton.OKCancel, MessageBoxResult.OK);
+                        if (dialogResult == MessageBoxResult.Cancel)
+                            throw new OperationCanceledException();
+                    }
+
                     progress.Report(new ApplicationStatus() {
                         Status2 = $"{Locale["LblFilter"]} {filterName}",
                         Progress2 = filterCount,

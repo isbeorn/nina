@@ -278,6 +278,8 @@ Cuando una duracion es colocada, la aplicacin lentamente disminuye la temperatur
     <s:String x:Key="LblCounterclockwise" xml:space="default">Contra Reloj</s:String>
     <s:String x:Key="LblCoverScopeMsgBox" xml:space="default">Cubre tu telescopio ahora y presiona OK para comenzar a tomar los dark flats.</s:String>
     <s:String x:Key="LblCoverScopeMsgBoxTitle" xml:space="default">Cubre tu telescopio ahora</s:String>
+    <s:String x:Key="LblPrepFlatFilterMsgBox">Flats for filter: {0}</s:String>
+    <s:String x:Key="LblPauseBetweenFilters">Pause between filters</s:String>
     <s:String x:Key="LblCurrentDownloadToDataRatio" xml:space="default">Proporcion Descarga: Data Actual</s:String>
     <s:String x:Key="LblCurrentMean" xml:space="default">Media Actual</s:String>
     <s:String x:Key="LblCurrentPosition" xml:space="default">Posicion Actual</s:String>

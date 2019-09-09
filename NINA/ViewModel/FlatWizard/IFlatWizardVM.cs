@@ -32,5 +32,6 @@ namespace NINA.ViewModel.FlatWizard {
         FlatWizardFilterSettingsWrapper SingleFlatWizardFilterSettings { get; set; }
         IAsyncCommand StartFlatSequenceCommand { get; }
         ApplicationStatus Status { get; set; }
+        bool PauseBetweenFilters { get; set; }
     }
 }

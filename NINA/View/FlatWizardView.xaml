@@ -289,6 +289,21 @@
                                         </Style>
                                     </ListView.ItemContainerStyle>
                                 </ListView>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="4*" />
+                                        <ColumnDefinition Width="1*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblPauseBetweenFilters}"
+                                        TextWrapping="WrapWithOverflow" />
+                                    <CheckBox
+                                        Grid.Column="1"
+                                        VerticalAlignment="Center"
+                                        IsChecked="{Binding PauseBetweenFilters, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </Grid>
                                 <Grid Height="35" Margin="0,5,0,0">
                                     <ninactrl:AsyncProcessButton
                                         ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"

@@ -278,6 +278,8 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblCounterclockwise" xml:space="default">Counterclockwise</s:String>
     <s:String x:Key="LblCoverScopeMsgBox" xml:space="default">Cover your scope now and press OK to start taking the dark flats.</s:String>
     <s:String x:Key="LblCoverScopeMsgBoxTitle" xml:space="default">Cover your scope now</s:String>
+    <s:String x:Key="LblPrepFlatFilterMsgBox" xml:space="default">Flats for filter: {0}</s:String>
+    <s:String x:Key="LblPauseBetweenFilters" xml:space="default">Pause between filters</s:String>
     <s:String x:Key="LblCurrentDownloadToDataRatio" xml:space="default">Current Download:Data ratio</s:String>
     <s:String x:Key="LblCurrentMean" xml:space="default">Current Mean</s:String>
     <s:String x:Key="LblCurrentPosition" xml:space="default">Current Position</s:String>

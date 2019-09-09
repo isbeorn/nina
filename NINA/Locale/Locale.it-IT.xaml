@@ -279,6 +279,8 @@ Quando la durata è impostata, l'applicazione diminuirà lentamente la temperatu
     <s:String x:Key="LblCounterclockwise" xml:space="default">Antiorario</s:String>
     <s:String x:Key="LblCoverScopeMsgBox" xml:space="default">Copri il telescopio e premi OK per iniziare a catturare i flat scuri.</s:String>
     <s:String x:Key="LblCoverScopeMsgBoxTitle" xml:space="default">Copri il telescopio ora</s:String>
+    <s:String x:Key="LblPrepFlatFilterMsgBox">Flats for filter: {0}</s:String>
+    <s:String x:Key="LblPauseBetweenFilters">Pause between filters</s:String>
     <s:String x:Key="LblCurrentDownloadToDataRatio" xml:space="default">Rapporto Download:Data attuale</s:String>
     <s:String x:Key="LblCurrentMean" xml:space="default">Media corrente</s:String>
     <s:String x:Key="LblCurrentPosition" xml:space="default">Posizione Corrente</s:String>
