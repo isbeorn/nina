@@ -278,6 +278,8 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblCounterclockwise" xml:space="default">Linksdrehend</s:String>
     <s:String x:Key="LblCoverScopeMsgBox" xml:space="default">Decken Sie ihr Teleskop nun ab und drücken Sie OK um mit der Aufnahme der Dark Flats fortzufahren</s:String>
     <s:String x:Key="LblCoverScopeMsgBoxTitle" xml:space="default">Decken Sie ihr Teleskop ab</s:String>
+    <s:String x:Key="LblPrepFlatFilterMsgBox">Flats für filter: {0}</s:String>
+    <s:String x:Key="LblPauseBetweenFilters">Zwischen filter pausieren</s:String>
     <s:String x:Key="LblCurrentDownloadToDataRatio" xml:space="default">Aktuelles Download:Data Verhältnis</s:String>
     <s:String x:Key="LblCurrentMean" xml:space="default">Aktueller Mittelwert</s:String>
     <s:String x:Key="LblCurrentPosition" xml:space="default">Startposition</s:String>

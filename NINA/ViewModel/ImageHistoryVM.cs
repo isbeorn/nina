@@ -26,6 +26,7 @@ using NINA.Utility;
 using NINA.Profile;
 using NINA.Model.ImageData;
 using System.Windows.Input;
+using System.Threading;
 
 namespace NINA.ViewModel {
 
@@ -36,15 +37,15 @@ namespace NINA.ViewModel {
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["HFRHistorySVG"];
 
             _nextStatHistoryId = 1;
-            ImgStatHistory = new AsyncObservableLimitedSizedStack<AllImageStatistics>(100);
+            ImgStatHistory = new AsyncObservableLimitedSizedStack<ImageHistoryPoint>(100);
 
             PlotClearCommand = new RelayCommand((object o) => PlotClear());
         }
 
         private int _nextStatHistoryId;
-        private AsyncObservableLimitedSizedStack<AllImageStatistics> _imgStatHistory;
+        private AsyncObservableLimitedSizedStack<ImageHistoryPoint> _imgStatHistory;
 
-        public AsyncObservableLimitedSizedStack<AllImageStatistics> ImgStatHistory {
+        public AsyncObservableLimitedSizedStack<ImageHistoryPoint> ImgStatHistory {
             get {
                 return _imgStatHistory;
             }
@@ -55,10 +56,8 @@ namespace NINA.ViewModel {
         }
 
         public void Add(AllImageStatistics stats) {
-            if (stats?.StarDetectionAnalysis?.DetectedStars > 0) {
-                if (!this.ImgStatHistory.Contains(stats)) {
-                    this.ImgStatHistory.Add(stats);
-                }
+            if (stats != null && stats.StarDetectionAnalysis != null) {
+                ImgStatHistory.Add(new ImageHistoryPoint(Interlocked.Increment(ref _nextStatHistoryId), stats.StarDetectionAnalysis));
             }
         }
 
@@ -67,5 +66,18 @@ namespace NINA.ViewModel {
         }
 
         public ICommand PlotClearCommand { get; private set; }
+
+        public class ImageHistoryPoint {
+
+            public ImageHistoryPoint(int id, IStarDetectionAnalysis starDetectionAnalysis) {
+                Id = id;
+                HFR = starDetectionAnalysis.HFR;
+                DetectedStars = starDetectionAnalysis.DetectedStars;
+            }
+
+            public int Id { get; private set; }
+            public int DetectedStars { get; private set; }
+            public double HFR { get; private set; }
+        }
     }
 }

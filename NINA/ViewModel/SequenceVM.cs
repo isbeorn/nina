@@ -457,7 +457,9 @@ namespace NINA.ViewModel {
 
         private async Task AutoFocusOnStart(CaptureSequenceList csl, CancellationToken ct, IProgress<ApplicationStatus> progress) {
             if (csl.AutoFocusOnStart) {
-                await StopGuiding(ct, progress);
+                if (profileService.ActiveProfile.FocuserSettings.AutoFocusDisableGuiding) {
+                    await StopGuiding(ct, progress);
+                }
                 var item = csl.GetNextSequenceItem(csl.ActiveSequence);
                 await AutoFocus(item.FilterType, ct, progress);
             }
@@ -645,7 +647,7 @@ namespace NINA.ViewModel {
                     Task saveTask = null;
                     Task ditherTask = null;
                     Task filterChangeTask = null;
-                    Task imageProcessingTask = null;
+                    Task<IRenderedImage> imageProcessingTask = null;
                     while ((seq = csl.Next()) != null) {
                         exposureCount++;
 
@@ -796,12 +798,11 @@ namespace NINA.ViewModel {
             data.MetaData.FilterWheel.Filter = sequence.FilterType?.Name ?? data.MetaData.FilterWheel.Filter;
         }
 
-        private Task Save(IImageData data, Task imageProcessingTask, CancellationToken ct) {
+        private Task Save(IImageData data, Task<IRenderedImage> imageProcessingTask, CancellationToken ct) {
             return Task.Run(async () => {
                 var imageStatisticsTask = data.Statistics.Task;
-                var renderedImage = data.RenderImage();
                 var tempPath = await data.PrepareSave(profileService.ActiveProfile.ImageFileSettings.FilePath, profileService.ActiveProfile.ImageFileSettings.FileType, ct);
-                await imageProcessingTask;
+                var renderedImage = await imageProcessingTask;
 
                 var path = data.FinalizeSave(tempPath, profileService.ActiveProfile.ImageFileSettings.FilePattern);
                 var imageStatistics = await imageStatisticsTask;
@@ -857,9 +858,9 @@ namespace NINA.ViewModel {
 
             if (csl.AutoFocusAfterHFRChange
                 && AfHfrIndex < imgHistoryVM.ImgStatHistory.Count()
-                && imgHistoryVM.ImgStatHistory.Last().StarDetectionAnalysis.HFR > (imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).StarDetectionAnalysis.HFR * (1 + csl.AutoFocusAfterHFRChangeAmount / 100))
-                && imgHistoryVM.ImgStatHistory.Last().StarDetectionAnalysis.HFR != 0
-                && imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).StarDetectionAnalysis.HFR != 0) {
+                && imgHistoryVM.ImgStatHistory.Last().HFR > (imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).HFR * (1 + csl.AutoFocusAfterHFRChangeAmount / 100))
+                && imgHistoryVM.ImgStatHistory.Last().HFR != 0
+                && imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).HFR != 0) {
                 /* Trigger autofocus after HFR change */
                 AfHfrIndex = imgHistoryVM.ImgStatHistory.Count();
                 return true;

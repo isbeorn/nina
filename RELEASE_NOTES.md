@@ -19,6 +19,9 @@
 - An autofocus filter can now be set if "Use filter offsets" is set to true. When defined, the autofocus routine will use the autofocus filter instead of the current imaging filter. Initial baseline HFR, and final HFR (used to determine whether the autofocus run was successful) will still use the main imaging filter.
 - A contrast detection autofocus routine has been added. Instead of analyzing stars to determine point of best focus, the routine analyzes overall contrast of the image with various contrast detection methods. A Gaussian fit is then performed on the obtained focus points - this process can use shorter exposure times than star HFR and produce results faster
 
+## Bug fixes
+- Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false
+
 # Version 1.9
 
 ## Features
@@ -89,6 +92,7 @@
 ### Flat Wizard
 - Progress bars have been added for remaining filters and exposures
 - A new Slew to Zenith button has been added for easier flats. This includes an option for east or west pier side, depending on which side of pier the mount should approach zenith from.
+- A new option to pause between filters has been added. This is to allow the user the chance to set lightbox settings 
 
 ### Interface
 - Imaging tab - Equipment specific views will only show the "Connected" flag when the device is not connected to save space
@@ -136,6 +140,7 @@
 - Fixed issues in the subsampling logic for ASCOM, ZWO, and QHY cameras - the origin coordinates are now properly set, and take binning into account
 - Fixed a race condition that caused HFR to not be computed for frames right before autofocus in some instances
 - Fixed an issue for Nikon SDK that looked into the wrong folder for the external md3 files.
+- Fixed a bug where Platesolve Orientation was displayed as negative and also throwed of the rotation centering when using rotators.
 
 ## Improvements
 - When EOS Utility is running in the background, the x64 N.I.N.A. client will scan for this app and prevent a crash due to the EOS utility being open. Instead a notification will show up to close the EOS Utility.
@@ -149,6 +154,7 @@
 - Focuser Temperature is now available as an image file name token (`$$FOCUSERTEMP$$`)
 - Added a clear button on HFR History graph. The button will be displayed when hovering the control.
 - A new button is added in the options to directly open the log destination folder
+- Added option to adjust USBLimit for Altair and Touptek cameras. This can prevent potential black preview screen issues. More details on this topic described at altair: https://altaircameras.com/black_preview_screen/
 
 ## Special Thanks
 The N.I.N.A. team would like to sincerely thank:

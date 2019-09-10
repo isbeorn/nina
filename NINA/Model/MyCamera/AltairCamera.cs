@@ -318,9 +318,26 @@ namespace NINA.Model.MyCamera {
 
         public int USBLimit {
             get {
-                return -1;
+                camera.get_Speed(out var speed);
+                return speed;
             }
             set {
+                if (value >= USBLimitMin && value <= USBLimitMax) {
+                    camera.put_Speed((ushort)value);
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public int USBLimitMin {
+            get {
+                return 0;
+            }
+        }
+
+        public int USBLimitMax {
+            get {
+                return (int)camera.MaxSpeed;
             }
         }
 
@@ -338,7 +355,7 @@ namespace NINA.Model.MyCamera {
 
         public bool CanSetUSBLimit {
             get {
-                return false;
+                return true;
             }
         }
 

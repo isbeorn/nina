@@ -278,6 +278,8 @@ Type: {1}
     <s:String x:Key="LblCounterclockwise" xml:space="default">逆时针</s:String>
     <s:String x:Key="LblCoverScopeMsgBox" xml:space="default">现在盖上你的望远镜，按“确定”开始拍摄暗场。</s:String>
     <s:String x:Key="LblCoverScopeMsgBoxTitle" xml:space="default">现在盖上你的望远镜</s:String>
+    <s:String x:Key="LblPrepFlatFilterMsgBox">Flats for filter: {0}</s:String>
+    <s:String x:Key="LblPauseBetweenFilters">Pause between filters</s:String>
     <s:String x:Key="LblCurrentDownloadToDataRatio" xml:space="default">当前下载:数据速率</s:String>
     <s:String x:Key="LblCurrentMean" xml:space="default">当前平均值</s:String>
     <s:String x:Key="LblCurrentPosition" xml:space="default">当前位置</s:String>
