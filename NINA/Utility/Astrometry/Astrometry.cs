@@ -97,8 +97,12 @@ namespace NINA.Utility.Astrometry {
         }
 
         public static float EuclidianModulus(float x, float y) {
+            return (float)EuclidianModulus((double)x, (double)y);
+        }
+
+        public static double EuclidianModulus(double x, double y) {
             if (y > 0) {
-                float r = x % y;
+                double r = x % y;
                 if (r < 0) {
                     return r + y;
                 } else {
@@ -107,9 +111,10 @@ namespace NINA.Utility.Astrometry {
             } else if (y < 0) {
                 return -1 * EuclidianModulus(-1 * x, -1 * y);
             } else {
-                return float.NaN;
+                return double.NaN;
             }
         }
+
         public static double GetLocalSiderealTimeNow(double longitude) {
             return GetLocalSiderealTime(DateTime.Now, longitude);
         }
@@ -120,7 +125,7 @@ namespace NINA.Utility.Astrometry {
         }
 
         public static double MathMod(double a, double b) {
-            return (Math.Abs(a * b) + a) % b;
+            return EuclidianModulus(a, b);
         }
 
         /// <summary>
@@ -354,7 +359,7 @@ namespace NINA.Utility.Astrometry {
         /// <returns></returns>
         public static string DegreesToFitsDMS(double deg) {
             if (deg >= 0) {
-                return String.Concat("+",DegreesToDMS(deg).Replace("°", "").Replace("'", "").Replace("\"", ""));
+                return String.Concat("+", DegreesToDMS(deg).Replace("°", "").Replace("'", "").Replace("\"", ""));
             } else {
                 return DegreesToDMS(deg).Replace("°", "").Replace("'", "").Replace("\"", "");
             }

@@ -35,7 +35,14 @@ namespace NINA.PlateSolving {
 
         public DateTime SolveTime { get; private set; }
 
-        public double Orientation { get; set; }
+        private double _orientation;
+
+        public double Orientation {
+            get => _orientation;
+            set {
+                _orientation = Astrometry.EuclidianModulus(value, 360);
+            }
+        }
 
         public double Pixscale { get; set; }
 

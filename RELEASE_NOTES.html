@@ -153,6 +153,7 @@
 <li>Fixed issues in the subsampling logic for ASCOM, ZWO, and QHY cameras - the origin coordinates are now properly set, and take binning into account</li>
 <li>Fixed a race condition that caused HFR to not be computed for frames right before autofocus in some instances</li>
 <li>Fixed an issue for Nikon SDK that looked into the wrong folder for the external md3 files.</li>
+<li>Fixed a bug where Platesolve Orientation was displayed as negative and also throwed of the rotation centering when using rotators.</li>
 </ul>
 <h2 id="improvements">Improvements</h2>
 <ul>
@@ -170,6 +171,7 @@
 <li>Focuser Temperature is now available as an image file name token (<code>$$FOCUSERTEMP$$</code>)</li>
 <li>Added a clear button on HFR History graph. The button will be displayed when hovering the control.</li>
 <li>A new button is added in the options to directly open the log destination folder</li>
+<li>Added option to adjust USBLimit for Altair and Touptek cameras. This can prevent potential black preview screen issues. More details on this topic described at altair: <a href="https://altaircameras.com/black_preview_screen/">https://altaircameras.com/black_preview_screen/</a></li>
 </ul>
 <h2 id="special-thanks">Special Thanks</h2>
 <p>The N.I.N.A. team would like to sincerely thank:</p>

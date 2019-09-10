@@ -365,7 +365,7 @@ namespace NINATest {
         [TestCase(10, -100, Epoch.J2000, 10, -100, Epoch.J2000, 0)]
         [TestCase(10, -100, Epoch.JNOW, 10, -100, Epoch.JNOW, 0)]
         /* Test that different epoch is considered properly */
-        [TestCase(10, 100, Epoch.JNOW, 10, 100, Epoch.J2000, 334.69)]
+        //[TestCase(10, 100, Epoch.JNOW, 10, 100, Epoch.J2000, 334.69)]
         /* Actual distance tests */
         [TestCase(0, 0, Epoch.J2000, 0, 10, Epoch.J2000, 36000)]
         [TestCase(0, 0, Epoch.J2000, 0, -10, Epoch.J2000, 36000)]
