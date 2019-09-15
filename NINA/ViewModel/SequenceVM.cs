@@ -824,7 +824,7 @@ namespace NINA.ViewModel {
                         }
                 );
 
-                ImgHistoryVM.Add(await AllImageStatistics.Create(data));
+                ImgHistoryVM.Add(data.StarDetectionAnalysis);
             });
         }
 
@@ -861,12 +861,12 @@ namespace NINA.ViewModel {
             }
 
             if (csl.AutoFocusAfterHFRChange
-                && AfHfrIndex < imgHistoryVM.ImgStatHistory.Count()
-                && imgHistoryVM.ImgStatHistory.Last().HFR > (imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).HFR * (1 + csl.AutoFocusAfterHFRChangeAmount / 100))
-                && imgHistoryVM.ImgStatHistory.Last().HFR != 0
-                && imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).HFR != 0) {
+                && AfHfrIndex < imgHistoryVM.ImageHistory.Count()
+                && imgHistoryVM.ImageHistory.Last().HFR > (imgHistoryVM.ImageHistory.ElementAt(AfHfrIndex).HFR * (1 + csl.AutoFocusAfterHFRChangeAmount / 100))
+                && imgHistoryVM.ImageHistory.Last().HFR != 0
+                && imgHistoryVM.ImageHistory.ElementAt(AfHfrIndex).HFR != 0) {
                 /* Trigger autofocus after HFR change */
-                AfHfrIndex = imgHistoryVM.ImgStatHistory.Count();
+                AfHfrIndex = imgHistoryVM.ImageHistory.Count();
                 return true;
             }
 
