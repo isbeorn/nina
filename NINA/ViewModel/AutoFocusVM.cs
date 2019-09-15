@@ -276,7 +276,7 @@ namespace NINA.ViewModel {
                 Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFocusPointValidationFailed"], focusPoint.X, focusPoint.Y, hfr));
             }
 
-            if (hfr > (initialHFR * 1.15)) {
+            if (initialHFR != 0 && hfr > (initialHFR * 1.15)) {
                 Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblAutoFocusNewWorseThanOriginal"], hfr, initialHFR));
                 Logger.Warning(string.Format("New focus point HFR {0} is significantly worse than original HFR {1}", hfr, initialHFR));
                 return false;
