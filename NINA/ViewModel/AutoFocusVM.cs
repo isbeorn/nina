@@ -314,6 +314,7 @@ namespace NINA.ViewModel {
         public async Task<bool> StartBacklashMeasurement(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
             Logger.Trace("Starting Backlash Measurement");
             int initialPosition = focuserInfo.Position;
+            int newInitialPosition = initialPosition;
             LeftTrend = null;
             RightTrend = null;
 
@@ -333,7 +334,11 @@ namespace NINA.ViewModel {
                 await this.guiderMediator.StopGuiding(token);
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStartingINBacklashMeasurement"] });
                 backlashIN = await MeasureBacklash(filter, Direction.IN, token, progress);
-                _focusPosition = await focuserMediator.MoveFocuser(initialPosition);
+
+                //Getting back to initial position, including measured backlash
+                newInitialPosition = initialPosition - backlashIN;
+                _focusPosition = await focuserMediator.MoveFocuser(newInitialPosition);
+
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStartingOUTBacklashMeasurement"] });
                 backlashOUT = await MeasureBacklash(filter, Direction.OUT, token, progress);
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocusRestoringOriginalPosition"] });
@@ -354,7 +359,7 @@ namespace NINA.ViewModel {
                 Notification.ShowError(Locale.Loc.Instance["LblBacklashMeasurementException"]);
             } finally {
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocusRestoringOriginalPosition"] });
-                _focusPosition = await focuserMediator.MoveFocuser(initialPosition);
+                _focusPosition = await focuserMediator.MoveFocuser(newInitialPosition);
             }
             return true;
         }
