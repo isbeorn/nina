@@ -516,8 +516,8 @@ namespace NINA.Model.MyCamera {
             Connected = false;
         }
 
-        public Task<IImageData> DownloadExposure(CancellationToken token) {
-            return Task<IImageData>.Run(async () => {
+        public Task<IExposureData> DownloadExposure(CancellationToken token) {
+            return Task.Run<IExposureData>(async () => {
                 var memoryStreamHandle = IntPtr.Zero;
                 var imageDataPointer = IntPtr.Zero;
                 try {
@@ -552,12 +552,13 @@ namespace NINA.Model.MyCamera {
 
                         token.ThrowIfCancellationRequested();
 
-                        using (var memoryStream = new System.IO.MemoryStream(rawImageData)) {
-                            var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
-                            var iarr = await converter.Convert(memoryStream, BitDepth, token);
-                            iarr.Data.RAWType = "cr2";
-                            return iarr;
-                        }
+                        var rawConverter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
+                        return new RAWExposureData(
+                            rawConverter: rawConverter,
+                            rawBytes: rawImageData,
+                            rawType: "cr2",
+                            bitDepth: this.BitDepth,
+                            metaData: new ImageMetaData());
                     }
                 } finally {
                     /* Memory cleanup */
@@ -846,8 +847,8 @@ namespace NINA.Model.MyCamera {
             LiveViewEnabled = false;
         }
 
-        public Task<IImageData> DownloadLiveView(CancellationToken token) {
-            return Task.Run(async () => {
+        public Task<IExposureData> DownloadLiveView(CancellationToken token) {
+            return Task.Run<IExposureData>(async () => {
                 IntPtr stream = IntPtr.Zero;
                 IntPtr imageRef = IntPtr.Zero;
                 IntPtr pointer = IntPtr.Zero;
@@ -885,9 +886,13 @@ namespace NINA.Model.MyCamera {
 
                         ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
                         bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
-
-                        IImageData data = new ImageData.ImageData(outArray, bitmap.PixelWidth, bitmap.PixelHeight, BitDepth, false);
-                        return data;
+                        return new ImageArrayExposureData(
+                            input: outArray,
+                            width: bitmap.PixelWidth,
+                            height: bitmap.PixelHeight,
+                            bitDepth: 16,
+                            isBayered: false,
+                            metaData: new ImageMetaData());
                     }
                 } finally {
                     /* Memory cleanup */

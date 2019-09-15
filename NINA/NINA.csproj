@@ -354,8 +354,10 @@
     <Compile Include="Model\ImageData\DebayeredImage.cs" />
     <Compile Include="Model\ImageData\RenderedImage.cs" />
     <Compile Include="Model\ImageData\StarDetectionAnalysis.cs" />
+    <Compile Include="Model\MyCamera\ExposureData.cs" />
     <Compile Include="Model\MyCamera\FileCamera.cs" />
     <Compile Include="Model\MyCamera\FLICamera.cs" />
+    <Compile Include="Model\MyCamera\IExposureData.cs" />
     <Compile Include="Model\MyCamera\Simulator\ImageSettings.cs" />
     <Compile Include="Model\MyCamera\Simulator\RandomSettings.cs" />
     <Compile Include="Model\MyCamera\Simulator\Settings.cs" />

@@ -670,8 +670,8 @@ namespace NINA.Model.MyCamera {
             LibFLI.FLIClose(CameraH);
         }
 
-        public Task<IImageData> DownloadExposure(CancellationToken ct) {
-            return Task.Run(() => {
+        public Task<IExposureData> DownloadExposure(CancellationToken ct) {
+            return Task.Run<IExposureData>(() => {
                 int width;
                 int height;
                 int rowSize;
@@ -713,11 +713,17 @@ namespace NINA.Model.MyCamera {
                 rowData = imgData = null;
                 Marshal.FreeHGlobal(buff);
 
-                return Task.FromResult<IImageData>(new ImageData.ImageData(arr, width, height, BitDepth, SensorType != SensorType.Monochrome));
+                return new ImageArrayExposureData(
+                    input: arr,
+                    width: width,
+                    height: height,
+                    bitDepth: this.BitDepth,
+                    isBayered: this.SensorType != SensorType.Monochrome,
+                    metaData: new ImageMetaData());
             }, ct);
         }
 
-        public Task<IImageData> DownloadLiveView(CancellationToken ct) {
+        public Task<IExposureData> DownloadLiveView(CancellationToken ct) {
             throw new NotImplementedException();
         }
 

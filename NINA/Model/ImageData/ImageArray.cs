@@ -21,34 +21,32 @@
 
 #endregion "copyright"
 
-using NINA.Utility;
-using NINA.Utility.Enum;
-using NINA.Utility.Notification;
-using NINA.Utility.RawConverter;
-using nom.tam.fits;
-using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
-
 namespace NINA.Model.ImageData {
 
     public class ImageArray : IImageArray {
 
-        public ImageArray() {
+        private ImageArray() {
         }
 
-        public ushort[] FlatArray { get; set; }
+        public ImageArray(ushort[] flatArray) : this(flatArray, null, null) {
+        }
+
+        public ImageArray(ushort[] flatArray, byte[] rawData, string rawType) {
+            this.FlatArray = flatArray;
+            this.RAWData = rawData;
+            this.RAWType = rawType;
+        }
+
+        public ushort[] FlatArray { get; private set; }
 
         /// <summary>
         /// Contains RAW DSLR Data if available
         /// </summary>
-        public byte[] RAWData { get; set; }
+        public byte[] RAWData { get; private set; }
 
         /// <summary>
         /// Contains the type of DSLR data (e.g. cr2)
         /// </summary>
-        public string RAWType { get; set; }
+        public string RAWType { get; private set; }
     }
 }

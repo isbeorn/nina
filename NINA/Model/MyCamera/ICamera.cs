@@ -91,12 +91,12 @@ namespace NINA.Model.MyCamera {
 
         void StartLiveView();
 
-        Task<IImageData> DownloadLiveView(CancellationToken token);
+        Task<IExposureData> DownloadLiveView(CancellationToken token);
 
         void StopLiveView();
 
         void AbortExposure();
 
-        Task<IImageData> DownloadExposure(CancellationToken token);
+        Task<IExposureData> DownloadExposure(CancellationToken token);
     }
 }

@@ -35,8 +35,10 @@ namespace NINA.Utility {
 
     public class AsyncObservableLimitedSizedStack<T> : ObservableLimitedSizedStack<T>, INotifyCollectionChanged, IEnumerable {
 
-        private SynchronizationContext _synchronizationContext = new DispatcherSynchronizationContext(
-                    Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher);
+        private static SynchronizationContext _synchronizationContext =
+            Application.Current?.Dispatcher != null
+            ? new DispatcherSynchronizationContext(Application.Current.Dispatcher)
+            : null;
 
         public AsyncObservableLimitedSizedStack(int maxSize) : base(maxSize) {
         }
@@ -45,6 +47,7 @@ namespace NINA.Utility {
         }
 
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {
+            if (_synchronizationContext == null) { return; }
             if (SynchronizationContext.Current == _synchronizationContext) {
                 // Execute the CollectionChanged event on the current thread
                 RaiseCollectionChanged(e);
@@ -60,6 +63,7 @@ namespace NINA.Utility {
         }
 
         protected override void OnPropertyChanged(PropertyChangedEventArgs e) {
+            if (_synchronizationContext == null) { return; }
             if (SynchronizationContext.Current == _synchronizationContext) {
                 // Execute the PropertyChanged event on the current thread
                 RaisePropertyChanged(e);

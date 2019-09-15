@@ -110,8 +110,8 @@ namespace NINA.Model.MyCamera {
             LiveViewEnabled = false;
         }
 
-        public Task<IImageData> DownloadLiveView(CancellationToken token) {
-            return Task.Run(() => {
+        public Task<IExposureData> DownloadLiveView(CancellationToken token) {
+            return Task.Run<IExposureData>(() => {
                 byte[] buffer = _camera.GetLiveViewImage().JpegBuffer;
                 using (var memStream = new MemoryStream(buffer)) {
                     memStream.Position = 0;
@@ -127,9 +127,13 @@ namespace NINA.Model.MyCamera {
                     ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
                     bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
 
-                    IImageData iarr = new ImageData.ImageData(outArray, bitmap.PixelWidth, bitmap.PixelHeight, BitDepth, false);
-
-                    return iarr;
+                    return new ImageArrayExposureData(
+                            input: outArray,
+                            width: bitmap.PixelWidth,
+                            height: bitmap.PixelHeight,
+                            bitDepth: 16,
+                            isBayered: false,
+                            metaData: new ImageMetaData());
                 }
             });
         }
@@ -663,17 +667,26 @@ namespace NINA.Model.MyCamera {
             serialPortInteraction = null;
         }
 
-        public async Task<IImageData> DownloadExposure(CancellationToken token) {
+        public async Task<IExposureData> DownloadExposure(CancellationToken token) {
             Logger.Debug("Waiting for download of exposure");
             await _downloadExposure.Task;
             Logger.Debug("Downloading of exposure complete. Converting image to internal array");
 
-            var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
-            var iarr = await converter.Convert(_memoryStream, BitDepth, token);
-            iarr.Data.RAWType = "nef";
-            _memoryStream.Dispose();
-            _memoryStream = null;
-            return iarr;
+            try {
+                var rawImageData = _memoryStream.ToArray();
+                var rawConverter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
+                return new RAWExposureData(
+                    rawConverter: rawConverter,
+                    rawBytes: rawImageData,
+                    rawType: "nef",
+                    bitDepth: this.BitDepth,
+                    metaData: new ImageMetaData());
+            } finally {
+                if (_memoryStream != null) {
+                    _memoryStream.Dispose();
+                    _memoryStream = null;
+                }
+            }
         }
 
         public void SetBinning(short x, short y) {

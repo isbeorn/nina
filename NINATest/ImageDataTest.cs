@@ -109,7 +109,7 @@ namespace NINATest {
             ushort[] expFlatArr = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000 };
 
             //Act
-            ImageData result = await ImageData.Create(arr, 16, false);
+            IImageData result = await new Flipped2DExposureData(arr, 16, false, new ImageMetaData()).ToImageData();
 
             //Assert
             Assert.AreEqual(expX, result.Properties.Width);
@@ -129,7 +129,7 @@ namespace NINATest {
             ushort[] expFlatArr = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000 };
 
             //Act
-            ImageData result = new ImageData(arr, width, height, 16, false);
+            ImageData result = new ImageData(arr, width, height, 16, false, new ImageMetaData());
 
             //Assert
             Assert.AreEqual(expX, result.Properties.Width);
@@ -143,7 +143,7 @@ namespace NINATest {
                 //Arrange
                 var arr = new Int32[5, 5, 5];
                 //Act
-                ImageData result = await ImageData.Create(arr, 16, false);
+                IImageData result = await new Flipped2DExposureData(arr, 16, false, new ImageMetaData()).ToImageData();
             }
             );
         }
@@ -178,7 +178,7 @@ namespace NINATest {
             double mean = 4116;
 
             //Act
-            ImageData result = await ImageData.Create(arr, 16, false);
+            IImageData result = await new Flipped2DExposureData(arr, 16, false, new ImageMetaData()).ToImageData();
             var resultStatistics = await result.Statistics.Task;
 
             //Assert
@@ -216,7 +216,7 @@ namespace NINATest {
             double mean = 32767.5;
 
             //Act
-            ImageData result = await ImageData.Create(arr, 16, false);
+            IImageData result = await new Flipped2DExposureData(arr, 16, false, new ImageMetaData()).ToImageData();
             var resultStatistics = await result.Statistics.Task;
 
             //Assert
@@ -238,7 +238,7 @@ namespace NINATest {
             }
 
             //Act
-            ImageData result = await ImageData.Create(arr, 16, false);
+            IImageData result = await new Flipped2DExposureData(arr, 16, false, new ImageMetaData()).ToImageData();
             var resultStatistics = await result.Statistics.Task;
 
             //Assert
@@ -258,7 +258,7 @@ namespace NINATest {
             }
 
             //Act
-            var imgData = new ImageData(arr, width, height, bitDepth, isBayered);
+            var imgData = await new ImageArrayExposureData(arr, width, height, bitDepth, isBayered, new ImageMetaData()).ToImageData();
 
             //Assert
             Assert.AreEqual(width, imgData.Properties.Width);
@@ -281,7 +281,7 @@ namespace NINATest {
             }
 
             //Act
-            var imgData = await ImageData.Create(arr, bitDepth, isBayered);
+            var imgData = await new Flipped2DExposureData(arr, bitDepth, isBayered, new ImageMetaData()).ToImageData();
 
             //Assert
             Assert.AreEqual(width, imgData.Properties.Width);
@@ -317,7 +317,7 @@ namespace NINATest {
             arr[3, 4] = 5;
 
             //Act
-            var result = await ImageData.Create(arr, 16, false);
+            var result = await new Flipped2DExposureData(arr, 16, false, new ImageMetaData()).ToImageData();
             var resultStatistics = await result.Statistics.Task;
 
             //Assert
@@ -335,7 +335,7 @@ namespace NINATest {
         [TestCase(new ushort[] { 10, 10, 10, 10, 10, 10, 10, 10, 15, 20, 20, 20, 20, 20, 50, 50, 50, 50 }, 10, 17.5, 7.5)]
         [TestCase(new ushort[] { 0, 0, 65535, 65535 }, 16, 32767.5, 32767.5)]
         public async Task MedianTest(ushort[] arr, int bitDepth, double expectedMedian, double expectedMAD) {
-            var result = new ImageData(arr, arr.Length / 2, 2, bitDepth, false);
+            var result = await new ImageArrayExposureData(arr, arr.Length / 2, 2, bitDepth, false, new ImageMetaData()).ToImageData();
             var resultStatistics = await result.Statistics.Task;
 
             Assert.AreEqual(expectedMedian, resultStatistics.Median);
@@ -357,7 +357,7 @@ namespace NINATest {
             var folder = TestContext.CurrentContext.TestDirectory;
             var pattern = "TestFile";
 
-            var sut = new ImageData(data, 3, 3, 16, false);
+            var sut = await new ImageArrayExposureData(data, 3, 3, 16, false, new ImageMetaData()).ToImageData();
 
             var file = await sut.SaveToDisk(folder, pattern, fileType, default);
 

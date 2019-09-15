@@ -203,22 +203,22 @@ namespace NINA.Model.MyTelescope {
         private bool canPark;
 
         public bool CanPark {
-            get {  return canPark; }
-            set {  canPark = value; RaisePropertyChanged(); }
+            get { return canPark; }
+            set { canPark = value; RaisePropertyChanged(); }
         }
 
         private bool canSetPark;
 
         public bool CanSetPark {
-            get {  return canSetPark; }
-            set {  canSetPark = value; RaisePropertyChanged(); }
+            get { return canSetPark; }
+            set { canSetPark = value; RaisePropertyChanged(); }
         }
 
         private bool canSetTracking;
 
         public bool CanSetTracking {
-            get {  return canSetTracking; }
-            set {  canSetTracking = value; RaisePropertyChanged(); }
+            get { return canSetTracking; }
+            set { canSetTracking = value; RaisePropertyChanged(); }
         }
     }
 }

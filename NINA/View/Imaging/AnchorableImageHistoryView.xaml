@@ -112,14 +112,14 @@
                         Title="{ns:Loc LblHFR}"
                         DataFieldX="Id"
                         DataFieldY="HFR"
-                        ItemsSource="{Binding ImgStatHistory}"
+                        ItemsSource="{Binding LimitedImageHistoryStack}"
                         MarkerFill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                         MarkerType="Circle" />
                     <oxy:LineSeries
                         Title="{ns:Loc LblNrStars}"
                         DataFieldX="Id"
                         DataFieldY="DetectedStars"
-                        ItemsSource="{Binding ImgStatHistory}"
+                        ItemsSource="{Binding LimitedImageHistoryStack}"
                         MarkerFill="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
                         MarkerType="Circle"
                         YAxisKey="Secondary" />

@@ -466,9 +466,9 @@ namespace NINA.Model.MyCamera {
             RaisePropertyChanged(nameof(Connected));
         }
 
-        public async Task<IImageData> DownloadExposure(CancellationToken token) {
+        public async Task<IExposureData> DownloadExposure(CancellationToken token) {
             using (MyStopWatch.Measure("ATIK Download")) {
-                return await Task.Run<IImageData>(async () => {
+                return await Task.Run<IExposureData>(async () => {
                     try {
                         do {
                             await Task.Delay(100, token);
@@ -512,7 +512,7 @@ namespace NINA.Model.MyCamera {
             throw new NotImplementedException();
         }
 
-        public Task<IImageData> DownloadLiveView(CancellationToken token) {
+        public Task<IExposureData> DownloadLiveView(CancellationToken token) {
             throw new NotImplementedException();
         }
 

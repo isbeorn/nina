@@ -3,7 +3,6 @@ using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator.Interfaces;
-using NINA.Utility.RawConverter;
 using NINA.Utility.WindowService;
 using System;
 using System.Collections;
@@ -11,12 +10,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 
 namespace NINA.Model.MyCamera {
 
@@ -493,7 +490,7 @@ namespace NINA.Model.MyCamera {
             Connected = false;
         }
 
-        public async Task<IImageData> DownloadExposure(CancellationToken token) {
+        public async Task<IExposureData> DownloadExposure(CancellationToken token) {
             try {
                 while (fileQueue.Count == 0) {
                     CameraState = "Waiting for file";
@@ -506,7 +503,7 @@ namespace NINA.Model.MyCamera {
                         tries++;
                         try {
                             var image = await ImageData.ImageData.FromFile(path, BitDepth, IsBayered, profileService.ActiveProfile.CameraSettings.RawConverter, token);
-                            return image;
+                            return new CachedExposureData(image);
                         } catch (Exception ex) {
                             if (tries > 3) {
                                 throw ex;
@@ -664,7 +661,7 @@ namespace NINA.Model.MyCamera {
         public void StartLiveView() {
         }
 
-        public Task<IImageData> DownloadLiveView(CancellationToken token) {
+        public Task<IExposureData> DownloadLiveView(CancellationToken token) {
             return null;
         }
 

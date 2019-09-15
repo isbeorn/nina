@@ -624,16 +624,17 @@ namespace NINA.ViewModel.FlatWizard {
             CancellationToken ct, PauseToken pt) {
             Task saveTask = null;
             while (sequence.ProgressExposureCount < sequence.TotalExposureCount) {
-                var data = await ImagingVM.CaptureImage(sequence, ct, progress);
+                var exposureData = await ImagingVM.CaptureImage(sequence, ct, progress);
+                var imageData = await exposureData.ToImageData();
                 var prepareParameters = new PrepareImageParameters(autoStretch: false, detectStars: false);
-                var prepareTask = ImagingVM.PrepareImage(data, prepareParameters, ct);
+                var prepareTask = ImagingVM.PrepareImage(imageData, prepareParameters, ct);
 
                 if (saveTask != null && !saveTask.IsCompleted) {
                     progress.Report(new ApplicationStatus() { Status = Locale["LblWaitForImageSaving"] });
                     await saveTask;
                 }
 
-                saveTask = data.SaveToDisk(
+                saveTask = imageData.SaveToDisk(
                     profileService.ActiveProfile.ImageFileSettings.FilePath,
                     profileService.ActiveProfile.ImageFileSettings.FilePattern,
                     profileService.ActiveProfile.ImageFileSettings.FileType,

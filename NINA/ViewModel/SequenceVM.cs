@@ -55,9 +55,7 @@ using NINA.Model.ImageData;
 using NINA.Utility.Mediator;
 
 namespace NINA.ViewModel {
-
     internal class SequenceVM : DockableVM, ITelescopeConsumer, IFocuserConsumer, IFilterWheelConsumer, IRotatorConsumer, IGuiderConsumer, ICameraConsumer, IWeatherDataConsumer {
-
         public SequenceVM(
                 IProfileService profileService,
                 ICameraMediator cameraMediator,
@@ -720,7 +718,7 @@ namespace NINA.ViewModel {
                         ct.ThrowIfCancellationRequested();
 
                         if (data != null) {
-                            AddMetaData(data, csl, seq, exposureStart, rms);
+                            AddMetaData(data.MetaData, csl, seq, exposureStart, rms);
 
                             /* 8b) Process ImageData for display */
                             imageProcessingTask = imagingMediator.PrepareImage(data, new PrepareImageParameters(), ct);
@@ -733,7 +731,7 @@ namespace NINA.ViewModel {
                             }
 
                             /* 8a) Save ImageData */
-                            saveTask = Save(data, imageProcessingTask, ct);
+                            saveTask = Save(imageProcessingTask, ct);
 
                             seqDuration.Stop();
 
@@ -777,40 +775,46 @@ namespace NINA.ViewModel {
             });
         }
 
-        private void AddMetaData(IImageData data, CaptureSequenceList csl, CaptureSequence sequence, DateTime start, RMS rms) {
-            data.MetaData.Image.ExposureStart = start;
-            data.MetaData.Image.Binning = sequence.Binning.Name;
-            data.MetaData.Image.ExposureNumber = sequence.ProgressExposureCount;
-            data.MetaData.Image.ExposureTime = sequence.ExposureTime;
-            data.MetaData.Image.ImageType = sequence.ImageType;
-            data.MetaData.Image.RecordedRMS = rms;
-            data.MetaData.Target.Name = csl.TargetName;
-            data.MetaData.Target.Coordinates = csl.Coordinates;
+        private void AddMetaData(
+            ImageMetaData metaData,
+            CaptureSequenceList csl,
+            CaptureSequence sequence,
+            DateTime start,
+            RMS rms) {
+            metaData.Image.ExposureStart = start;
+            metaData.Image.Binning = sequence.Binning.Name;
+            metaData.Image.ExposureNumber = sequence.ProgressExposureCount;
+            metaData.Image.ExposureTime = sequence.ExposureTime;
+            metaData.Image.ImageType = sequence.ImageType;
+            metaData.Image.RecordedRMS = rms;
+            metaData.Target.Name = csl.TargetName;
+            metaData.Target.Coordinates = csl.Coordinates;
 
             // Fill all available info from profile
-            data.MetaData.FromProfile(profileService.ActiveProfile);
-            data.MetaData.FromTelescopeInfo(telescopeInfo);
-            data.MetaData.FromFilterWheelInfo(filterWheelInfo);
-            data.MetaData.FromRotatorInfo(rotatorInfo);
-            data.MetaData.FromFocuserInfo(focuserInfo);
-            data.MetaData.FromWeatherDataInfo(weatherDataInfo);
+            metaData.FromProfile(profileService.ActiveProfile);
+            metaData.FromTelescopeInfo(telescopeInfo);
+            metaData.FromFilterWheelInfo(filterWheelInfo);
+            metaData.FromRotatorInfo(rotatorInfo);
+            metaData.FromFocuserInfo(focuserInfo);
+            metaData.FromWeatherDataInfo(weatherDataInfo);
 
-            data.MetaData.FilterWheel.Filter = sequence.FilterType?.Name ?? data.MetaData.FilterWheel.Filter;
+            metaData.FilterWheel.Filter = sequence.FilterType?.Name ?? metaData.FilterWheel.Filter;
         }
 
-        private Task Save(IImageData data, Task<IRenderedImage> imageProcessingTask, CancellationToken ct) {
+        private Task Save(Task<IRenderedImage> imageProcessingTask, CancellationToken ct) {
             return Task.Run(async () => {
-                var imageStatisticsTask = data.Statistics.Task;
+                var processedImage = await imageProcessingTask;
+                var data = processedImage.RawImageData;
                 var tempPath = await data.PrepareSave(profileService.ActiveProfile.ImageFileSettings.FilePath, profileService.ActiveProfile.ImageFileSettings.FileType, ct);
                 var renderedImage = await imageProcessingTask;
 
                 var path = data.FinalizeSave(tempPath, profileService.ActiveProfile.ImageFileSettings.FilePattern);
-                var imageStatistics = await imageStatisticsTask;
+                var imageStatistics = await data.Statistics.Task;
 
                 imagingMediator.OnImageSaved(
                         new ImageSavedEventArgs() {
                             PathToImage = new Uri(path),
-                            Image = renderedImage.Image,
+                            Image = processedImage.Image,
                             FileType = profileService.ActiveProfile.ImageFileSettings.FileType,
                             Mean = imageStatistics.Mean,
                             HFR = data.StarDetectionAnalysis.HFR,
@@ -820,7 +824,7 @@ namespace NINA.ViewModel {
                         }
                 );
 
-                ImgHistoryVM.Add(await AllImageStatistics.Create(data));
+                ImgHistoryVM.Add(data.StarDetectionAnalysis);
             });
         }
 
@@ -857,12 +861,12 @@ namespace NINA.ViewModel {
             }
 
             if (csl.AutoFocusAfterHFRChange
-                && AfHfrIndex < imgHistoryVM.ImgStatHistory.Count()
-                && imgHistoryVM.ImgStatHistory.Last().HFR > (imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).HFR * (1 + csl.AutoFocusAfterHFRChangeAmount / 100))
-                && imgHistoryVM.ImgStatHistory.Last().HFR != 0
-                && imgHistoryVM.ImgStatHistory.ElementAt(AfHfrIndex).HFR != 0) {
+                && AfHfrIndex < imgHistoryVM.ImageHistory.Count()
+                && imgHistoryVM.ImageHistory.Last().HFR > (imgHistoryVM.ImageHistory.ElementAt(AfHfrIndex).HFR * (1 + csl.AutoFocusAfterHFRChangeAmount / 100))
+                && imgHistoryVM.ImageHistory.Last().HFR != 0
+                && imgHistoryVM.ImageHistory.ElementAt(AfHfrIndex).HFR != 0) {
                 /* Trigger autofocus after HFR change */
-                AfHfrIndex = imgHistoryVM.ImgStatHistory.Count();
+                AfHfrIndex = imgHistoryVM.ImageHistory.Count();
                 return true;
             }
 
