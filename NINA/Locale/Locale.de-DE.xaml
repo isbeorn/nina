@@ -931,6 +931,8 @@ Das Rechteck über einen Stern mit Bahtinov Beugungsmuster bewegen. NINA versuch
     <s:String x:Key="LblTooltipResetSequence" xml:space="default">Fortschritt des ausgewählten Sequenzeintrags zurücksetzen</s:String>
     <s:String x:Key="LblTooltipResetTarget" xml:space="default">Fortschritt aller Sequenzeinträge des Ziels zurücksetzen</s:String>
     <s:String x:Key="LblTooltipStartSequence" xml:space="default">Startet die Sequenzen</s:String>
+    <s:String x:Key="LblTooltipPromoteSequenceRow" xml:space="default">Move selected row up sequence list</s:String>
+    <s:String x:Key="LblTooltipDemoteSequenceRow" xml:space="default">Move selected row down sequence list</s:String>
     <s:String x:Key="LblToolTipSubSample" xml:space="preserve">Teilbild
 Das Rechteck über einen Teil des Bildes bewegen das Sie fotografieren wollen und aktivieren Sie Teilbild im Imaging Fenster. Ihre Kamera wird nur den selektierten Bereich herunterladen.
     </s:String>

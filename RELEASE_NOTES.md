@@ -88,6 +88,7 @@
 - The sequence start button is unavailable if an imaging loop is in progress in the imaging tab
 - If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips
 - It is now possible to set the Offset in addition to the Gain within each sequence item
+- Added buttons to move sequence row up and down the list 
 
 ### Flat Wizard
 - Progress bars have been added for remaining filters and exposures

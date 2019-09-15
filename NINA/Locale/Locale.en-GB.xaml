@@ -932,6 +932,8 @@ Drag the rectangle over a star with the bahtinov spikes. NINA will try to detect
     <s:String x:Key="LblTooltipResetSequence" xml:space="default">Reset progress of selected row in sequence list</s:String>
     <s:String x:Key="LblTooltipResetTarget" xml:space="default">Reset progress of all sequence items in target</s:String>
     <s:String x:Key="LblTooltipStartSequence" xml:space="default">Starts sequences</s:String>
+    <s:String x:Key="LblTooltipPromoteSequenceRow" xml:space="default">Move selected row up sequence list</s:String>
+    <s:String x:Key="LblTooltipDemoteSequenceRow" xml:space="default">Move selected row down sequence list</s:String>
     <s:String x:Key="LblToolTipSubSample" xml:space="preserve">SubSampling Frame
 Drag the rectangle over the part of the frame you want to subsample and enable subsampling in snap. Your camera will only download the selected area.</s:String>
     <s:String x:Key="LblTooltipTakeExposure" xml:space="default">Starts Exposure</s:String>
