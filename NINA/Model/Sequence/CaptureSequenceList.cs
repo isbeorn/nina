@@ -75,6 +75,15 @@ namespace NINA.Model {
             }
         }
 
+        public void AddAt(int idx, CaptureSequence s)
+        {
+            Items.Insert(idx, s);
+            if (Items.Count(i => i.Enabled) == 1)
+            {
+                ActiveSequence = Items.First(i => i.Enabled);
+            }
+        }
+
         public void RemoveAt(int idx) {
             if (Items.Count > idx) {
                 if (Items[idx] == ActiveSequence) {

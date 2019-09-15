@@ -931,6 +931,8 @@ Type: {1}
     <s:String x:Key="LblTooltipResetSequence" xml:space="default">重置序列列表中所选行的进度</s:String>
     <s:String x:Key="LblTooltipResetTarget" xml:space="default">重置目标中所有序列项的进度</s:String>
     <s:String x:Key="LblTooltipStartSequence" xml:space="default">开始序列拍摄</s:String>
+    <s:String x:Key="LblTooltipPromoteSequenceRow" xml:space="default">Move selected row up sequence list</s:String>
+    <s:String x:Key="LblTooltipDemoteSequenceRow" xml:space="default">Move selected row down sequence list</s:String>
     <s:String x:Key="LblToolTipSubSample" xml:space="preserve">子采样（区域读取）
 将矩形拖到要进行子采样的区域，然后在“捕捉”中启用子采样。您的相机将只下载所选区域。</s:String>
     <s:String x:Key="LblTooltipTakeExposure" xml:space="default">开始曝光</s:String>

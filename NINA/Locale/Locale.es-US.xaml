@@ -931,6 +931,8 @@ Mueve el rectangulo sobre una estrella con los picos bahtinov. NINA tratara de d
     <s:String x:Key="LblTooltipResetSequence" xml:space="default">Reinicia el progreso de la linea seleccionada en la lista de secuencia</s:String>
     <s:String x:Key="LblTooltipResetTarget" xml:space="default">Reinicia el progreso de todas las secuencias en un objetivo</s:String>
     <s:String x:Key="LblTooltipStartSequence" xml:space="default">Inicia secuencias</s:String>
+    <s:String x:Key="LblTooltipPromoteSequenceRow" xml:space="default">Move selected row up sequence list</s:String>
+    <s:String x:Key="LblTooltipDemoteSequenceRow" xml:space="default">Move selected row down sequence list</s:String>
     <s:String x:Key="LblToolTipSubSample" xml:space="preserve">Encuadre de SubSampling
 Mueve el rectangulo sobre la parte del Encuadre que quieres hacer subsampling. Tu camara solo descargara el area seleccionada</s:String>
     <s:String x:Key="LblTooltipTakeExposure" xml:space="default">Iniciar Exposicion</s:String>

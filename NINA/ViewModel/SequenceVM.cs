@@ -104,6 +104,8 @@ namespace NINA.ViewModel {
             RemoveTargetCommand = new RelayCommand(RemoveTarget, (object o) => this.Targets.Count > 1);
             ResetTargetCommand = new RelayCommand(ResetTarget, ResetTargetEnabled);
             RemoveSequenceRowCommand = new RelayCommand(RemoveSequenceRow);
+            PromoteSequenceRowCommand = new RelayCommand(PromoteSequenceRow);
+            DemoteSequenceRowCommand = new RelayCommand(DemoteSequenceRow);
             ResetSequenceRowCommand = new RelayCommand(ResetSequenceRow, ResetSequenceRowEnabled);
             StartSequenceCommand = new AsyncCommand<bool>(() => StartSequencing(new Progress<ApplicationStatus>(p => Status = p)), (object o) => !imagingMediator.IsLooping);
             SaveSequenceCommand = new RelayCommand(SaveSequence);
@@ -1308,6 +1310,9 @@ namespace NINA.ViewModel {
         public ICommand RemoveTargetCommand { get; private set; }
         public ICommand ResetTargetCommand { get; private set; }
         public ICommand RemoveSequenceRowCommand { get; private set; }
+        public ICommand PromoteSequenceRowCommand { get; private set; }
+        public ICommand DemoteSequenceRowCommand { get; private set; }
+
         public ICommand ResetSequenceRowCommand { get; private set; }
 
         public IAsyncCommand StartSequenceCommand { get; private set; }
@@ -1317,6 +1322,29 @@ namespace NINA.ViewModel {
         public ICommand ResumeSequenceCommand { get; private set; }
         public ICommand LoadSequenceCommand { get; private set; }
         public ICommand SaveSequenceCommand { get; private set; }
+
+        private void PromoteSequenceRow(object obj)
+        {
+            var idx = SelectedSequenceRowIdx;
+            if (idx > 0)
+            {
+                CaptureSequence seq = Sequence.Items[idx];
+                Sequence.RemoveAt(idx);
+                Sequence.AddAt(idx - 1, seq);
+                SelectedSequenceRowIdx = idx - 1;
+            }
+        }
+        private void DemoteSequenceRow(object obj)
+        {
+            var idx = SelectedSequenceRowIdx;
+            if (idx < Sequence.Count - 1)
+            {
+                CaptureSequence seq = Sequence.Items[idx];
+                Sequence.RemoveAt(idx);
+                Sequence.AddAt(idx + 1, seq);
+                SelectedSequenceRowIdx = idx + 1;
+            }
+        }
 
         public void UpdateDeviceInfo(GuiderInfo deviceInfo) {
             if (guiderMediator.IsUsingSynchronizedGuider != IsUsingSynchronizedGuider) {

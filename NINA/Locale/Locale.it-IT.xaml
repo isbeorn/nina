@@ -933,6 +933,8 @@ Trascina il rettangolo su una stella con le linee di bahtinov. NINA cercherà le
     <s:String x:Key="LblTooltipResetSequence" xml:space="default">Resetta progresso della riga selezionata nella lista sequenze</s:String>
     <s:String x:Key="LblTooltipResetTarget" xml:space="default">Resetta progresso di tutte le sequenze in target</s:String>
     <s:String x:Key="LblTooltipStartSequence" xml:space="default">Avvia le sequenze</s:String>
+    <s:String x:Key="LblTooltipPromoteSequenceRow" xml:space="default">Move selected row up sequence list</s:String>
+    <s:String x:Key="LblTooltipDemoteSequenceRow" xml:space="default">Move selected row down sequence list</s:String>
     <s:String x:Key="LblToolTipSubSample" xml:space="preserve">SubSampling Fotogramma
 Trascina il rettangolo  sulla parte del fotogramma che vuoi estrarre ed abilita il subsampling in snap. La tua camera scaricherà solamente l'area selezionata.</s:String>
     <s:String x:Key="LblTooltipTakeExposure" xml:space="default">Inizia Esposizione</s:String>
