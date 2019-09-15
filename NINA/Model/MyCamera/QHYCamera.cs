@@ -757,8 +757,8 @@ namespace NINA.Model.MyCamera {
             LibQHYCCD.N_CloseQHYCCD(CameraP);
         }
 
-        public Task<IImageData> DownloadExposure(CancellationToken ct) {
-            return Task.Run(() => {
+        public Task<IExposureData> DownloadExposure(CancellationToken ct) {
+            return Task.Run<IExposureData>(() => {
                 uint width = 0;
                 uint height = 0;
                 uint bpp = 0;
@@ -803,11 +803,17 @@ namespace NINA.Model.MyCamera {
 
                 CameraState = LibQHYCCD.QHYCCD_CAMERA_STATE.IDLE.ToString();
 
-                return Task.FromResult<IImageData>(new ImageData.ImageData(arr, (int)width, (int)height, (int)bpp, SensorType != SensorType.Monochrome));
+                return new ImageArrayExposureData(
+                    input: arr,
+                    width: (int)width,
+                    height: (int)height,
+                    bitDepth: this.BitDepth,
+                    isBayered: this.SensorType != SensorType.Monochrome,
+                    metaData: new ImageMetaData());
             }, ct);
         }
 
-        public Task<IImageData> DownloadLiveView(CancellationToken ct) {
+        public Task<IExposureData> DownloadLiveView(CancellationToken ct) {
             throw new NotImplementedException();
         }
 

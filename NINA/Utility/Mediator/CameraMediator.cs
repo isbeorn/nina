@@ -22,11 +22,9 @@
 #endregion "copyright"
 
 using NINA.Model;
-using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.ViewModel.Equipment.Camera;
-using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Async;
 using System.Threading;
@@ -41,11 +39,11 @@ namespace NINA.Utility.Mediator {
             return handler.Capture(sequence, token, progress);
         }
 
-        public IAsyncEnumerable<IImageData> LiveView(CancellationToken token) {
+        public IAsyncEnumerable<IExposureData> LiveView(CancellationToken token) {
             return handler.LiveView(token);
         }
 
-        public Task<IImageData> Download(CancellationToken token) {
+        public Task<IExposureData> Download(CancellationToken token) {
             return handler.Download(token);
         }
 

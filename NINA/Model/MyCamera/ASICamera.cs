@@ -416,8 +416,8 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public async Task<IImageData> DownloadExposure(CancellationToken token) {
-            return await Task.Run<IImageData>(async () => {
+        public async Task<IExposureData> DownloadExposure(CancellationToken token) {
+            return await Task.Run<IExposureData>(async () => {
                 try {
                     var status = ExposureStatus;
                     while (status == ASICameraDll.ASI_EXPOSURE_STATUS.ASI_EXP_WORKING) {
@@ -439,7 +439,13 @@ namespace NINA.Model.MyCamera {
                     var arr = cameraDataToManaged.GetData();
                     Marshal.FreeHGlobal(pointer);
 
-                    return new ImageData.ImageData(arr, width, height, BitDepth, SensorType != SensorType.Monochrome);
+                    return new ImageArrayExposureData(
+                        input: arr,
+                        width: width,
+                        height: height,
+                        bitDepth: this.BitDepth,
+                        isBayered: this.SensorType != SensorType.Monochrome,
+                        metaData: new ImageMetaData());
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {
                     Logger.Error(ex);
@@ -695,8 +701,8 @@ namespace NINA.Model.MyCamera {
             ASICameraDll.StartVideoCapture(_cameraId);
         }
 
-        public Task<IImageData> DownloadLiveView(CancellationToken token) {
-            return Task.Run(() => {
+        public Task<IExposureData> DownloadLiveView(CancellationToken token) {
+            return Task.Run<IExposureData>(() => {
                 var width = CaptureAreaInfo.Size.Width;
                 var height = CaptureAreaInfo.Size.Height;
 
@@ -712,7 +718,13 @@ namespace NINA.Model.MyCamera {
                 var arr = cameraDataToManaged.GetData();
                 Marshal.FreeHGlobal(pointer);
 
-                return Task.FromResult<IImageData>(new ImageData.ImageData(arr, width, height, BitDepth, SensorType != SensorType.Monochrome));
+                return new ImageArrayExposureData(
+                    input: arr,
+                    width: width,
+                    height: height,
+                    bitDepth: this.BitDepth,
+                    isBayered: this.SensorType != SensorType.Monochrome,
+                    metaData: new ImageMetaData());
             });
         }
 

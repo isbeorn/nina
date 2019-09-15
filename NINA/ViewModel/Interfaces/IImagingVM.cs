@@ -23,6 +23,7 @@
 
 using NINA.Model;
 using NINA.Model.ImageData;
+using NINA.Model.MyCamera;
 using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using System;
@@ -39,7 +40,7 @@ namespace NINA.ViewModel.Interfaces {
 
         void SetImage(BitmapSource img);
 
-        Task<IImageData> CaptureImage(
+        Task<IExposureData> CaptureImage(
             CaptureSequence sequence,
             CancellationToken token,
             IProgress<ApplicationStatus> progress);
@@ -52,6 +53,11 @@ namespace NINA.ViewModel.Interfaces {
 
         Task<IRenderedImage> PrepareImage(
             IImageData data,
+            PrepareImageParameters parameters,
+            CancellationToken token);
+
+        Task<IRenderedImage> PrepareImage(
+            IExposureData data,
             PrepareImageParameters parameters,
             CancellationToken token);
     }

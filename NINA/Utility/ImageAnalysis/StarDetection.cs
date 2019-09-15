@@ -62,7 +62,7 @@ namespace NINA.Utility.ImageAnalysis {
                 var debayeredImage = (IDebayeredImage)renderedImage;
                 var debayeredData = debayeredImage.DebayeredData;
                 if (debayeredData != null && debayeredData.Lum != null && debayeredData.Lum.Length > 0) {
-                    _iarr = new ImageArray() { FlatArray = debayeredData.Lum };
+                    _iarr = new ImageArray(debayeredData.Lum);
                 }
             }
 

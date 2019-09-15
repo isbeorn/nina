@@ -25,7 +25,6 @@ using NINA.Model;
 using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using NINA.Utility.Mediator.Interfaces;
-using NINA.ViewModel;
 using NINA.ViewModel.Interfaces;
 using System;
 using System.Threading;
@@ -52,12 +51,19 @@ namespace NINA.Utility.Mediator {
             return handler.CaptureAndPrepareImage(sequence, parameters, token, progress);
         }
 
-        public Task<IImageData> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        public Task<IExposureData> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
             return handler.CaptureImage(sequence, token, progress);
         }
 
         public Task<IRenderedImage> PrepareImage(
             IImageData data,
+            PrepareImageParameters parameters,
+            CancellationToken token) {
+            return handler.PrepareImage(data, parameters, token);
+        }
+
+        public Task<IRenderedImage> PrepareImage(
+            IExposureData data,
             PrepareImageParameters parameters,
             CancellationToken token) {
             return handler.PrepareImage(data, parameters, token);

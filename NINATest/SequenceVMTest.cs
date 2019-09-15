@@ -633,11 +633,11 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
-        public Task<IImageData> Download(CancellationToken token) {
+        public Task<IExposureData> Download(CancellationToken token) {
             throw new NotImplementedException();
         }
 
-        public System.Collections.Async.IAsyncEnumerable<IImageData> LiveView(CancellationToken token) {
+        public System.Collections.Async.IAsyncEnumerable<IExposureData> LiveView(CancellationToken token) {
             throw new NotImplementedException();
         }
 
@@ -1003,6 +1003,10 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
+        public Task<IRenderedImage> PrepareImage(IExposureData iarr, PrepareImageParameters parameters, CancellationToken token) {
+            throw new NotImplementedException();
+        }
+
         public Task<IRenderedImage> PrepareImage(IImageData iarr, PrepareImageParameters parameters, CancellationToken token) {
             throw new NotImplementedException();
         }
@@ -1037,7 +1041,7 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
-        public Task<IImageData> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        public Task<IExposureData> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
             throw new NotImplementedException();
         }
     }

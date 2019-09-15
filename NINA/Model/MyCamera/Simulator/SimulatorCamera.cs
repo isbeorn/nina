@@ -32,13 +32,10 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 using NINA.Model.ImageData;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Model.MyTelescope;
-using System.ComponentModel;
 using NINA.Utility.SkySurvey;
-using System.Windows.Media;
 using NINA.Utility.Astrometry;
 
 namespace NINA.Model.MyCamera.Simulator {
@@ -454,7 +451,7 @@ namespace NINA.Model.MyCamera.Simulator {
             Connected = false;
         }
 
-        public async Task<IImageData> DownloadExposure(CancellationToken token) {
+        public async Task<IExposureData> DownloadExposure(CancellationToken token) {
             switch (Settings.Type) {
                 case CameraType.RANDOM:
                     int width, height, mean, stdev;
@@ -476,20 +473,29 @@ namespace NINA.Model.MyCamera.Simulator {
                         input[i] = (ushort)randNormal;
                     }
 
-                    return new ImageData.ImageData(input, width, height, BitDepth, false);
+                    return new ImageArrayExposureData(
+                        input: input,
+                        width: width,
+                        height: height,
+                        bitDepth: this.BitDepth,
+                        isBayered: false,
+                        metaData: new ImageMetaData());
 
                 case CameraType.IMAGE:
                     if (Settings.ImageSettings.Image != null) {
-                        return Settings.ImageSettings.Image.RawImageData;
+                        return new CachedExposureData(Settings.ImageSettings.Image.RawImageData);
                     }
 
                     if (Settings.ImageSettings.RAWImageStream != null) {
-                        var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
-                        var iarr = await converter.Convert(Settings.ImageSettings.RAWImageStream, BitDepth, token);
+                        byte[] rawBytes = Settings.ImageSettings.RAWImageStream.ToArray();
                         Settings.ImageSettings.RAWImageStream.Position = 0;
-                        iarr.Data.RAWType = Settings.ImageSettings.RawType;
-
-                        return iarr;
+                        var rawConverter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
+                        return new RAWExposureData(
+                            rawConverter: rawConverter,
+                            rawBytes: rawBytes,
+                            rawType: Settings.ImageSettings.RawType,
+                            bitDepth: this.BitDepth,
+                            metaData: new ImageMetaData());
                     }
                     throw new Exception("No Image source set in Simulator!");
 
@@ -504,9 +510,9 @@ namespace NINA.Model.MyCamera.Simulator {
                     var coordinates = new Coordinates(Angle.ByDegree(initial.RADegrees + Astrometry.ArcsecToDegree(Settings.SkySurveySettings.RAError)), Angle.ByDegree(initial.Dec + Astrometry.ArcsecToDegree(Settings.SkySurveySettings.DecError)), Epoch.J2000);
 
                     var image = await survey.GetImage(string.Empty, coordinates, Astrometry.DegreeToArcmin(1), Settings.SkySurveySettings.WidthAndHeight, Settings.SkySurveySettings.WidthAndHeight, token, default);
-                    var data = await ImageData.ImageData.FromBitmapSource(image.Image);
+                    var data = await ImageArrayExposureData.FromBitmapSource(image.Image);
 
-                    var arcsecPerPix = data.Properties.Width / Astrometry.ArcminToArcsec(image.FoVWidth);
+                    var arcsecPerPix = image.Image.PixelWidth / Astrometry.ArcminToArcsec(image.FoVWidth);
                     // Assume a fixed pixel Size of 3
                     var pixelSize = 3;
                     var factor = Astrometry.DegreeToArcsec(Astrometry.ToDegree(1)) / 1000d;
@@ -600,7 +606,7 @@ namespace NINA.Model.MyCamera.Simulator {
             LiveViewEnabled = true;
         }
 
-        public Task<IImageData> DownloadLiveView(CancellationToken token) {
+        public Task<IExposureData> DownloadLiveView(CancellationToken token) {
             return DownloadExposure(token);
         }
 

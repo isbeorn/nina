@@ -614,15 +614,15 @@ namespace NINA.Model.MyCamera {
             camera = null;
         }
 
-        public async Task<IImageData> DownloadExposure(CancellationToken token) {
+        public async Task<IExposureData> DownloadExposure(CancellationToken token) {
             await downloadExposure.Task;
-            return imageData;
+            return this.exposureData;
         }
 
-        public async Task<IImageData> DownloadLiveView(CancellationToken token) {
+        public async Task<IExposureData> DownloadLiveView(CancellationToken token) {
             await downloadLiveExposure.Task;
             downloadLiveExposure = new TaskCompletionSource<object>();
-            return imageData;
+            return this.exposureData;
         }
 
         public void SetBinning(short x, short y) {
@@ -670,7 +670,13 @@ namespace NINA.Model.MyCamera {
                 var cameraDataToManaged = new CameraDataToManaged(pData, width, height, BitDepth);
                 var arr = cameraDataToManaged.GetData();
 
-                imageData = new ImageData.ImageData(arr, width, height, BitDepth, SensorType != SensorType.Monochrome);
+                this.exposureData = new ImageArrayExposureData(
+                    input: arr,
+                    width: width,
+                    height: height,
+                    bitDepth: this.BitDepth,
+                    isBayered: this.SensorType != SensorType.Monochrome,
+                    metaData: new ImageMetaData());
                 if (LiveViewEnabled) {
                     downloadLiveExposure?.TrySetResult(true);
                 } else {
@@ -681,7 +687,7 @@ namespace NINA.Model.MyCamera {
 
         private TaskCompletionSource<object> downloadExposure;
         private TaskCompletionSource<object> downloadLiveExposure;
-        private IImageData imageData;
+        private IExposureData exposureData;
         private int bitDepth;
 
         public int BitDepth {

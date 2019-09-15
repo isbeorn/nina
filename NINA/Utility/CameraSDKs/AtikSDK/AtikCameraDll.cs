@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace NINA.Utility.AtikSDK {
 
@@ -88,7 +87,7 @@ namespace NINA.Utility.AtikSDK {
             return ArtemisCameraState(camera);
         }
 
-        public static IImageData DownloadExposure(IntPtr camera, int bitDepth, bool isBayered) {
+        public static IExposureData DownloadExposure(IntPtr camera, int bitDepth, bool isBayered) {
             CheckError(ArtemisGetImageData(camera, out var x, out var y, out var w, out var h, out var binX, out var binY), MethodBase.GetCurrentMethod(), camera);
 
             var ptr = ArtemisImageBuffer(camera);
@@ -96,7 +95,13 @@ namespace NINA.Utility.AtikSDK {
             var cameraDataToManaged = new CameraDataToManaged(ptr, w, h, bitDepth);
             var arr = cameraDataToManaged.GetData();
 
-            return new ImageData(arr, w, h, bitDepth, isBayered);
+            return new ImageArrayExposureData(
+                    input: arr,
+                    width: w,
+                    height: h,
+                    bitDepth: bitDepth,
+                    isBayered: isBayered,
+                    metaData: new ImageMetaData());
         }
 
         private static void CopyToUShort(IntPtr source, ushort[] destination, int startIndex, int length) {

@@ -148,11 +148,10 @@ namespace NINA.ViewModel {
             _liveViewCts?.Dispose();
             _liveViewCts = new CancellationTokenSource();
             try {
-                await Task.Run(async () => {
-                    var liveViewEnumerable = cameraMediator.LiveView(_liveViewCts.Token);
-                    await liveViewEnumerable.ForEachAsync(async iarr => {
-                        await ImageControl.PrepareImage(iarr, new PrepareImageParameters(), _liveViewCts.Token);
-                    });
+                var liveViewEnumerable = cameraMediator.LiveView(_liveViewCts.Token);
+                await liveViewEnumerable.ForEachAsync(async exposureData => {
+                    var imageData = await exposureData.ToImageData(_liveViewCts.Token);
+                    await ImageControl.PrepareImage(imageData, new PrepareImageParameters(), _liveViewCts.Token);
                 });
             } catch (OperationCanceledException) {
             } finally {
@@ -289,7 +288,7 @@ namespace NINA.ViewModel {
             else await cameraMediator.Capture(seq, token, progress);
         }
 
-        private Task<IImageData> Download(CancellationToken token, IProgress<ApplicationStatus> progress) {
+        private Task<IExposureData> Download(CancellationToken token, IProgress<ApplicationStatus> progress) {
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDownloading"] });
             return cameraMediator.Download(token);
         }
@@ -310,11 +309,11 @@ namespace NINA.ViewModel {
             }
         }
 
-        public Task<IImageData> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        public Task<IExposureData> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
             return CaptureImage(sequence, new PrepareImageParameters(), token, string.Empty, true);
         }
 
-        private Task<IImageData> CaptureImage(
+        private Task<IExposureData> CaptureImage(
                 CaptureSequence sequence,
                 PrepareImageParameters parameters,
                 CancellationToken token,
@@ -323,7 +322,7 @@ namespace NINA.ViewModel {
                 ) {
             return Task.Run(async () => {
                 try {
-                    IImageData data = null;
+                    IExposureData data = null;
                     //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released
                     progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitingForCamera"] });
                     await semaphoreSlim.WaitAsync(token);
@@ -358,7 +357,7 @@ namespace NINA.ViewModel {
                             return null;
                         }
 
-                        AddMetaData(data, sequence, exposureStart, rms, targetName);
+                        AddMetaData(data.MetaData, sequence, exposureStart, rms, targetName);
 
                         if (!skipProcessing) {
                             //Wait for previous prepare image task to complete
@@ -392,24 +391,29 @@ namespace NINA.ViewModel {
             });
         }
 
-        private void AddMetaData(IImageData data, CaptureSequence sequence, DateTime start, RMS rms, string targetName) {
-            data.MetaData.Image.ExposureStart = start;
-            data.MetaData.Image.Binning = sequence.Binning.Name;
-            data.MetaData.Image.ExposureNumber = sequence.ProgressExposureCount;
-            data.MetaData.Image.ExposureTime = sequence.ExposureTime;
-            data.MetaData.Image.ImageType = sequence.ImageType;
-            data.MetaData.Image.RecordedRMS = rms;
-            data.MetaData.Target.Name = targetName;
+        private void AddMetaData(
+            ImageMetaData metaData,
+            CaptureSequence sequence,
+            DateTime start,
+            RMS rms,
+            string targetName) {
+            metaData.Image.ExposureStart = start;
+            metaData.Image.Binning = sequence.Binning.Name;
+            metaData.Image.ExposureNumber = sequence.ProgressExposureCount;
+            metaData.Image.ExposureTime = sequence.ExposureTime;
+            metaData.Image.ImageType = sequence.ImageType;
+            metaData.Image.RecordedRMS = rms;
+            metaData.Target.Name = targetName;
 
             // Fill all available info from profile
-            data.MetaData.FromProfile(profileService.ActiveProfile);
-            data.MetaData.FromTelescopeInfo(telescopeInfo);
-            data.MetaData.FromFilterWheelInfo(filterWheelInfo);
-            data.MetaData.FromRotatorInfo(rotatorInfo);
-            data.MetaData.FromFocuserInfo(focuserInfo);
-            data.MetaData.FromWeatherDataInfo(weatherDataInfo);
+            metaData.FromProfile(profileService.ActiveProfile);
+            metaData.FromTelescopeInfo(telescopeInfo);
+            metaData.FromFilterWheelInfo(filterWheelInfo);
+            metaData.FromRotatorInfo(rotatorInfo);
+            metaData.FromFocuserInfo(focuserInfo);
+            metaData.FromWeatherDataInfo(weatherDataInfo);
 
-            data.MetaData.FilterWheel.Filter = sequence.FilterType?.Name ?? data.MetaData.FilterWheel.Filter;
+            metaData.FilterWheel.Filter = sequence.FilterType?.Name ?? metaData.FilterWheel.Filter;
         }
 
         private Task<IRenderedImage> _imageProcessingTask;
@@ -537,6 +541,19 @@ namespace NINA.ViewModel {
 
         public void UpdateDeviceInfo(WeatherDataInfo deviceInfo) {
             this.weatherDataInfo = deviceInfo;
+        }
+
+        public Task<IRenderedImage> PrepareImage(
+            IExposureData data,
+            PrepareImageParameters parameters,
+            CancellationToken cancelToken) {
+            _imageProcessingTask = Task.Run(async () => {
+                var imageData = await data.ToImageData();
+                var processedData = await ImageControl.PrepareImage(imageData, parameters, cancelToken);
+                await ImgStatisticsVM.UpdateStatistics(imageData);
+                return processedData;
+            }, cancelToken);
+            return _imageProcessingTask;
         }
 
         public Task<IRenderedImage> PrepareImage(

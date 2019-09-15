@@ -37,14 +37,18 @@ namespace NINA.Model.ImageData {
 
     public class ImageData : IImageData {
 
-        public ImageData(ushort[] input, int width, int height, int bitDepth, bool isBayered)
-            : this(input: input, width: width, height: height, bitDepth: bitDepth, isBayered: isBayered, metaData: new ImageMetaData()) {
+        public ImageData(ushort[] input, int width, int height, int bitDepth, bool isBayered, ImageMetaData metaData)
+            : this(
+                  imageArray: new ImageArray(flatArray: input),
+                  width: width,
+                  height: height,
+                  bitDepth: bitDepth,
+                  isBayered: isBayered,
+                  metaData: metaData) {
         }
 
-        public ImageData(ushort[] input, int width, int height, int bitDepth, bool isBayered, ImageMetaData metaData) {
-            var array = new ImageArray();
-            array.FlatArray = input;
-            this.Data = array;
+        public ImageData(IImageArray imageArray, int width, int height, int bitDepth, bool isBayered, ImageMetaData metaData) {
+            this.Data = imageArray;
             this.MetaData = metaData;
             this.Properties = new ImageProperties(width: width, height: height, bitDepth: bitDepth, isBayered: isBayered);
             this.StarDetectionAnalysis = new StarDetectionAnalysis();
@@ -60,36 +64,6 @@ namespace NINA.Model.ImageData {
         public Nito.AsyncEx.AsyncLazy<IImageStatistics> Statistics { get; private set; }
 
         public IStarDetectionAnalysis StarDetectionAnalysis { get; private set; }
-
-        public static async Task<ImageData> Create(Array input, int bitDepth, bool isBayered) {
-            if (input.Rank > 2) { throw new NotSupportedException(); }
-            int width = input.GetLength(0);
-            int height = input.GetLength(1);
-            var flatArray = await Task.Run(() => FlipAndConvert2d(input));
-            return new ImageData(flatArray, width, height, bitDepth, isBayered);
-        }
-
-        public static async Task<IImageData> FromBitmapSource(BitmapSource source) {
-            var width = source.PixelWidth;
-            var height = source.PixelHeight;
-            var pixels = await Task.Run(() => ArrayFromSource(source));
-            return new ImageData(pixels, width, height, source.Format.BitsPerPixel, false);
-        }
-
-        private static ushort[] ArrayFromSource(BitmapSource source) {
-            if (source.Format == PixelFormats.Gray16) {
-                return ArrayFrom16BitSource(source);
-            } else if (source.Format == PixelFormats.Gray8 || source.Format == PixelFormats.Indexed8) {
-                return ArrayFrom8BitSource(source);
-            } else if (source.Format == PixelFormats.Bgr24 || source.Format == PixelFormats.Bgr32 || source.Format == PixelFormats.Pbgra32) {
-                WriteableBitmap convertedSource = new WriteableBitmap(
-                   (BitmapSource)(new FormatConvertedBitmap(source, PixelFormats.Gray8, null, 0))
-                );
-                return ArrayFrom8BitSource(convertedSource);
-            } else {
-                throw new FormatException(string.Format("Pixelformat {0} not supported", source.Format));
-            }
-        }
 
         public IRenderedImage RenderImage() {
             return RenderedImage.Create(source: this.RenderBitmapSource(), rawImageData: this);
@@ -375,7 +349,8 @@ namespace NINA.Model.ImageData {
                         pixels[i++] = (ushort)(val + short.MaxValue);
                     }
                 }
-                return await Task.FromResult<IImageData>(new ImageData(pixels, width, height, bitDepth, isBayered));
+                // TODO: Add parser for ImageMetaData
+                return await Task.FromResult<IImageData>(new ImageData(pixels, width, height, bitDepth, isBayered, new ImageMetaData()));
             });
         }
 
@@ -384,8 +359,8 @@ namespace NINA.Model.ImageData {
                 using (var ms = new System.IO.MemoryStream()) {
                     fs.CopyTo(ms);
                     var converter = RawConverter.CreateInstance(rawConverter);
-                    var data = await converter.Convert(ms, bitDepth, ct);
-                    data.Data.RAWType = Path.GetExtension(path).ToLower().Substring(1);
+                    var rawType = Path.GetExtension(path).ToLower().Substring(1);
+                    var data = await converter.Convert(s: ms, bitDepth: bitDepth, rawType: rawType, metaData: new ImageMetaData(), token: ct);
                     return data;
                 }
             }
@@ -402,60 +377,9 @@ namespace NINA.Model.ImageData {
             int arraySize = stride * bmp.PixelHeight;
             ushort[] pixels = new ushort[bmp.PixelWidth * bmp.PixelHeight];
             bmp.CopyPixels(pixels, stride, 0);
-            return new ImageData(pixels, bmp.PixelWidth, bmp.PixelHeight, 16, isBayered);
+            return new ImageData(pixels, bmp.PixelWidth, bmp.PixelHeight, 16, isBayered, new ImageMetaData());
         }
 
         #endregion "Load"
-
-        private static ushort[] FlipAndConvert2d(Array input) {
-            using (MyStopWatch.Measure("FlipAndConvert2d")) {
-                Int32[,] arr = (Int32[,])input;
-                int width = arr.GetLength(0);
-                int height = arr.GetLength(1);
-
-                int length = width * height;
-                ushort[] flatArray = new ushort[length];
-                ushort value;
-
-                unsafe {
-                    fixed (Int32* ptr = arr) {
-                        int idx = 0, row = 0;
-                        for (int i = 0; i < length; i++) {
-                            value = (ushort)ptr[i];
-
-                            idx = ((i % height) * width) + row;
-                            if ((i % (height)) == (height - 1)) row++;
-
-                            ushort b = value;
-                            flatArray[idx] = b;
-                        }
-                    }
-                }
-                return flatArray;
-            }
-        }
-
-        private static ushort[] ArrayFrom8BitSource(BitmapSource source) {
-            int stride = (source.PixelWidth * source.Format.BitsPerPixel + 7) / 8;
-            int arraySize = stride * source.PixelHeight;
-            byte[] pixels = new byte[arraySize];
-            source.CopyPixels(pixels, stride, 0);
-
-            ushort[] array = new ushort[pixels.Length];
-            for (int i = 0; i < array.Length; i++) {
-                array[i] = (ushort)(pixels[i] * (ushort.MaxValue / (double)byte.MaxValue));
-            }
-
-            return array;
-        }
-
-        private static ushort[] ArrayFrom16BitSource(BitmapSource source) {
-            int stride = (source.PixelWidth * source.Format.BitsPerPixel + 7) / 8;
-            int arraySize = stride * source.PixelHeight;
-            ushort[] pixels = new ushort[arraySize];
-            source.CopyPixels(pixels, stride, 0);
-
-            return pixels;
-        }
     }
 }

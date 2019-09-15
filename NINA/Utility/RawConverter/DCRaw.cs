@@ -41,7 +41,12 @@ namespace NINA.Utility.RawConverter {
         private static string DCRAWLOCATION = @"Utility\DCRaw\dcraw.exe";
         public static string FILEPREFIX = "dcraw_tmp";
 
-        public async Task<IImageData> Convert(MemoryStream s, int bitDepth, CancellationToken token) {
+        public async Task<IImageData> Convert(
+            MemoryStream s,
+            int bitDepth,
+            string rawType,
+            ImageMetaData metaData,
+            CancellationToken token = default) {
             return await Task.Run(async () => {
                 using (MyStopWatch.Measure()) {
                     var fileextension = ".raw";
@@ -98,8 +103,14 @@ namespace NINA.Utility.RawConverter {
                                 //Due to the settings of dcraw decoding the values will be stretched to 16 bits
                                 bitDepth = 16;
 
-                                data = new ImageData(pixels, (int)bmp.PixelWidth, (int)bmp.PixelHeight, bitDepth, true);
-                                data.Data.RAWData = s.ToArray();
+                                var imageArray = new ImageArray(flatArray: pixels, rawData: s.ToArray(), rawType: rawType);
+                                data = new ImageData(
+                                    imageArray: imageArray,
+                                    width: (int)bmp.PixelWidth,
+                                    height: (int)bmp.PixelHeight,
+                                    bitDepth: bitDepth,
+                                    isBayered: true,
+                                    metaData: metaData);
                             } else {
                                 Logger.Error("File not found: " + outputFile);
                                 throw new Exception("Error occured during DCRaw conversion." + Environment.NewLine + sb.ToString());

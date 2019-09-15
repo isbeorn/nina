@@ -35,6 +35,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using NINA.Model.ImageData;
 using NINA.Utility.Mediator;
+using NINA.Model.MyCamera;
 
 namespace NINA.ViewModel {
 
@@ -153,11 +154,9 @@ namespace NINA.ViewModel {
         }
 
         public async Task<IImageData> LoadOriginalImage(IProfileService profileService) {
-            IImageData iarr = null;
-
             try {
                 if (File.Exists(ImagePath.LocalPath)) {
-                    iarr = await ImageData.FromFile(ImagePath.LocalPath, (int)profileService.ActiveProfile.CameraSettings.BitDepth, IsBayered, profileService.ActiveProfile.CameraSettings.RawConverter);
+                    return await ImageData.FromFile(ImagePath.LocalPath, (int)profileService.ActiveProfile.CameraSettings.BitDepth, IsBayered, profileService.ActiveProfile.CameraSettings.RawConverter);
                 } else {
                     Notification.ShowError($"File ${ImagePath.LocalPath} does not exist");
                 }
@@ -166,7 +165,7 @@ namespace NINA.ViewModel {
                 Notification.ShowError(ex.Message);
             }
 
-            return iarr;
+            return null;
         }
 
         public BitmapSource ThumbnailImage { get; set; }

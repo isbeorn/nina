@@ -1030,7 +1030,7 @@ namespace NINA.Model.MyCamera {
             _camera = null;
         }
 
-        public async Task<IImageData> DownloadExposure(CancellationToken token) {
+        public async Task<IExposureData> DownloadExposure(CancellationToken token) {
             using (MyStopWatch.Measure("ASCOM Download")) {
                 return await Task.Run(async () => {
                     try {
@@ -1041,7 +1041,11 @@ namespace NINA.Model.MyCamera {
                             }
                         }
 
-                        return await ImageData.ImageData.Create((Int32[,])ImageArray, BitDepth, SensorType != SensorType.Monochrome);
+                        return new Flipped2DExposureData(
+                            flipped2DArray: (Int32[,])this.ImageArray,
+                            bitDepth: this.BitDepth,
+                            isBayered: this.SensorType != SensorType.Monochrome,
+                            metaData: new ImageMetaData());
                     } catch (OperationCanceledException) {
                     } catch (Exception ex) {
                         Notification.ShowError(ex.Message);
@@ -1208,7 +1212,7 @@ namespace NINA.Model.MyCamera {
             throw new System.NotImplementedException();
         }
 
-        public Task<IImageData> DownloadLiveView(CancellationToken token) {
+        public Task<IExposureData> DownloadLiveView(CancellationToken token) {
             throw new System.NotImplementedException();
         }
 

@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using NINA.Model.MyCamera;
 using NINA.Utility.Enum;
 using NINA.Utility.ImageAnalysis;
 using System;
@@ -41,7 +42,8 @@ namespace NINA.Model.ImageData {
         }
 
         public static async Task<IRenderedImage> FromBitmapSource(BitmapSource source, bool calculateStatistics = false) {
-            var rawImageData = await ImageData.FromBitmapSource(source);
+            var exposureData = await ImageArrayExposureData.FromBitmapSource(source);
+            var rawImageData = await exposureData.ToImageData();
             return Create(source: source, rawImageData: rawImageData, calculateStatistics: calculateStatistics);
         }
 

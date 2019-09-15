@@ -23,6 +23,7 @@
 
 using NINA.Model;
 using NINA.Model.ImageData;
+using NINA.Model.MyCamera;
 using NINA.Utility.Enum;
 using NINA.ViewModel.Interfaces;
 using System;
@@ -34,7 +35,7 @@ namespace NINA.Utility.Mediator.Interfaces {
 
     internal interface IImagingMediator : IMediator<IImagingVM> {
 
-        Task<IImageData> CaptureImage(
+        Task<IExposureData> CaptureImage(
             CaptureSequence sequence,
             CancellationToken token,
             IProgress<ApplicationStatus> progress);
@@ -46,7 +47,12 @@ namespace NINA.Utility.Mediator.Interfaces {
             IProgress<ApplicationStatus> progress);
 
         Task<IRenderedImage> PrepareImage(
-            IImageData iarr,
+            IImageData imageData,
+            PrepareImageParameters parameters,
+            CancellationToken token);
+
+        Task<IRenderedImage> PrepareImage(
+            IExposureData imageData,
             PrepareImageParameters parameters,
             CancellationToken token);
 

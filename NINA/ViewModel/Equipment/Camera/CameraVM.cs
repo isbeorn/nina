@@ -27,7 +27,6 @@ using NINA.Utility;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Profile;
-using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Async;
 using System.Collections.Generic;
@@ -35,7 +34,6 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using NINA.Model.ImageData;
 
 namespace NINA.ViewModel.Equipment.Camera {
 
@@ -587,8 +585,8 @@ namespace NINA.ViewModel.Equipment.Camera {
             });
         }
 
-        public IAsyncEnumerable<IImageData> LiveView(CancellationToken ct) {
-            return new AsyncEnumerable<IImageData>(async yield => {
+        public IAsyncEnumerable<IExposureData> LiveView(CancellationToken ct) {
+            return new AsyncEnumerable<IExposureData>(async yield => {
                 if (CameraInfo.Connected && _cam.CanShowLiveView) {
                     try {
                         _cam.StartLiveView();
@@ -712,7 +710,7 @@ namespace NINA.ViewModel.Equipment.Camera {
             }
         }
 
-        public async Task<IImageData> Download(CancellationToken token) {
+        public async Task<IExposureData> Download(CancellationToken token) {
             CameraInfo.IsExposing = false;
             CameraInfo.ExposureEndTime = DateTime.Now;
             BroadcastCameraInfo();
