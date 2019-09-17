@@ -477,6 +477,9 @@ namespace QHYCCD {
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDEffectiveArea", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint GetQHYCCDEffectiveArea(IntPtr handle, ref uint startx, ref uint starty, ref uint sizex, ref uint sizey);
 
+        [DllImport(DLLNAME, EntryPoint = "GetQHYCCDExposureRemaining", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public unsafe static extern uint GetQHYCCDExposureRemaining(IntPtr handle);
+
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDFWVersion", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint GetQHYCCDFWVersion(IntPtr handle, byte* verBuf);
 
@@ -646,9 +649,19 @@ namespace QHYCCD {
             public double CoolerTargetTemp;
 
             /// <summary>
-            /// Curren camera bin mode
+            /// Current camera bin mode
             /// </summary>
             public short CurBin;
+
+            /// <summary>
+            /// The currently active sensor array infomation
+            /// </summary>
+            public QHYCCD_SENSOR_AREA CurImage;
+
+            /// <summary>
+            /// The sensor's claimed Effective Area
+            /// </summary>
+            public QHYCCD_SENSOR_AREA EffectiveArea;
 
             /// <summary>
             /// Maximum shutter speed
@@ -711,6 +724,11 @@ namespace QHYCCD {
             /// Sensor offset can be set?
             /// </summary>
             public bool HasOffset;
+
+            /// <summary>
+            /// Sensor has an overscan area?
+            /// </summary>
+            public bool HasOverscan;
 
             /// <summary>
             /// Camera has mechanical shutter?
@@ -803,6 +821,32 @@ namespace QHYCCD {
             /// </summary>
             public double USBStep;
         };
+
+        /// <summary>
+        /// Information about the sensor's resolution
+        /// </summary>
+        public struct QHYCCD_SENSOR_AREA {
+
+            /// <summary>
+            /// Origin pixel X
+            /// </summary>
+            public uint StartX;
+
+            /// <summary>
+            /// Origin pixel Y
+            /// </summary>
+            public uint StartY;
+
+            /// <summary>
+            /// Array size in pixels (X axis)
+            /// </summary>
+            public uint SizeX;
+
+            /// <summary>
+            /// Array size in pixels (Y axis)
+            /// </summary>
+            public uint SizeY;
+        }
 
         public class QHYCameraException : Exception {
 
