@@ -796,7 +796,7 @@ namespace NINA.ViewModel {
                     //Set the filter to the autofocus filter if necessary, and move to it so autofocus X indexing works properly when invoking GetFocusPoints()
                     if (defaultFocusFilter != null && profileService.ActiveProfile.FocuserSettings.UseFilterWheelOffsets) {
                         try {
-                            filter = await filterWheelMediator.ChangeFilter(defaultFocusFilter);
+                            filter = await filterWheelMediator.ChangeFilter(defaultFocusFilter, token, progress);
                         } catch (Exception e) {
                             Logger.Error(e.Message);
                             Notification.ShowWarning(e.Message);
