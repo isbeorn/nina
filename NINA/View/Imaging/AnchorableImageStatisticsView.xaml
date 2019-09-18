@@ -121,7 +121,7 @@
                                 <TextBlock
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Text="{Binding Min}" />
+                                    Text="{Binding ImageStatistics.Result.Min}" />
                                 <TextBlock Text=" (" />
                                 <TextBlock
                                     HorizontalAlignment="Center"
@@ -139,7 +139,7 @@
                                 <TextBlock
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Text="{Binding Max}" />
+                                    Text="{Binding ImageStatistics.Result.Max}" />
                                 <TextBlock Text=" (" />
                                 <TextBlock
                                     HorizontalAlignment="Center"
