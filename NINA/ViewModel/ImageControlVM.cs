@@ -196,7 +196,7 @@ namespace NINA.ViewModel {
         private void AnalyzeBahtinov() {
             /* Get Pixels */
             var crop = new CroppedBitmap(Image, new Int32Rect((int)BahtinovRectangle.X, (int)BahtinovRectangle.Y, (int)BahtinovRectangle.Width, (int)BahtinovRectangle.Height));
-            BahtinovImage = new BahtinovAnalysis(crop, profileService.ActiveProfile.ColorSchemaSettings.BackgroundColor).GrabBahtinov();
+            BahtinovImage = new BahtinovAnalysis(crop, profileService.ActiveProfile.ColorSchemaSettings.ColorSchema.BackgroundColor).GrabBahtinov();
         }
 
         private void SubSampleDragStart(object obj) {
