@@ -17,33 +17,33 @@
     along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <SolidColorBrush x:Key="PrimaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.PrimaryColor}" />
-    <SolidColorBrush x:Key="SecondaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.SecondaryColor}" />
-    <SolidColorBrush x:Key="BorderBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.BorderColor}" />
-    <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.ButtonBackgroundColor}" />
-    <SolidColorBrush x:Key="ButtonBackgroundSelectedBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.ButtonBackgroundSelectedColor}" />
-    <SolidColorBrush x:Key="ButtonForegroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.ButtonForegroundColor}" />
-    <SolidColorBrush x:Key="ButtonForegroundDisabledBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.ButtonForegroundDisabledColor}" />
-    <SolidColorBrush x:Key="BackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.BackgroundColor}" />
-    <SolidColorBrush x:Key="NotificationWarningBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.NotificationWarningColor}" />
-    <SolidColorBrush x:Key="NotificationErrorBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.NotificationErrorColor}" />
-    <SolidColorBrush x:Key="NotificationWarningTextBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.NotificationWarningTextColor}" />
-    <SolidColorBrush x:Key="NotificationErrorTextBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.NotificationErrorTextColor}" />
-    <SolidColorBrush x:Key="SecondaryBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.SecondaryBackgroundColor}" />
-    <SolidColorBrush x:Key="TertiaryBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.TertiaryBackgroundColor}" />
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.PrimaryColor}" />
+    <SolidColorBrush x:Key="SecondaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.SecondaryColor}" />
+    <SolidColorBrush x:Key="BorderBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.BorderColor}" />
+    <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.ButtonBackgroundColor}" />
+    <SolidColorBrush x:Key="ButtonBackgroundSelectedBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.ButtonBackgroundSelectedColor}" />
+    <SolidColorBrush x:Key="ButtonForegroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.ButtonForegroundColor}" />
+    <SolidColorBrush x:Key="ButtonForegroundDisabledBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.ButtonForegroundDisabledColor}" />
+    <SolidColorBrush x:Key="BackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.BackgroundColor}" />
+    <SolidColorBrush x:Key="NotificationWarningBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.NotificationWarningColor}" />
+    <SolidColorBrush x:Key="NotificationErrorBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.NotificationErrorColor}" />
+    <SolidColorBrush x:Key="NotificationWarningTextBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.NotificationWarningTextColor}" />
+    <SolidColorBrush x:Key="NotificationErrorTextBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.NotificationErrorTextColor}" />
+    <SolidColorBrush x:Key="SecondaryBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.SecondaryBackgroundColor}" />
+    <SolidColorBrush x:Key="TertiaryBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.ColorSchema.TertiaryBackgroundColor}" />
 
-    <SolidColorBrush x:Key="AltPrimaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltPrimaryColor}" />
-    <SolidColorBrush x:Key="AltSecondaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltSecondaryColor}" />
-    <SolidColorBrush x:Key="AltBorderBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltBorderColor}" />
-    <SolidColorBrush x:Key="AltButtonBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltButtonBackgroundColor}" />
-    <SolidColorBrush x:Key="AltButtonBackgroundSelectedBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltButtonBackgroundSelectedColor}" />
-    <SolidColorBrush x:Key="AltButtonForegroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltButtonForegroundColor}" />
-    <SolidColorBrush x:Key="AltButtonForegroundDisabledBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltButtonForegroundDisabledColor}" />
-    <SolidColorBrush x:Key="AltBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltBackgroundColor}" />
-    <SolidColorBrush x:Key="AltNotificationWarningBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltNotificationWarningColor}" />
-    <SolidColorBrush x:Key="AltNotificationErrorBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltNotificationErrorColor}" />
-    <SolidColorBrush x:Key="AltNotificationWarningTextBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltNotificationWarningTextColor}" />
-    <SolidColorBrush x:Key="AltNotificationErrorTextBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltNotificationErrorTextColor}" />
-    <SolidColorBrush x:Key="AltSecondaryBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltSecondaryBackgroundColor}" />
-    <SolidColorBrush x:Key="AltTertiaryBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=OptionsVM.AltTertiaryBackgroundColor}" />
+    <SolidColorBrush x:Key="AltPrimaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.PrimaryColor}" />
+    <SolidColorBrush x:Key="AltSecondaryBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.SecondaryColor}" />
+    <SolidColorBrush x:Key="AltBorderBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.BorderColor}" />
+    <SolidColorBrush x:Key="AltButtonBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.ButtonBackgroundColor}" />
+    <SolidColorBrush x:Key="AltButtonBackgroundSelectedBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.ButtonBackgroundSelectedColor}" />
+    <SolidColorBrush x:Key="AltButtonForegroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.ButtonForegroundColor}" />
+    <SolidColorBrush x:Key="AltButtonForegroundDisabledBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.ButtonForegroundDisabledColor}" />
+    <SolidColorBrush x:Key="AltBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.BackgroundColor}" />
+    <SolidColorBrush x:Key="AltNotificationWarningBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.NotificationWarningColor}" />
+    <SolidColorBrush x:Key="AltNotificationErrorBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.NotificationErrorColor}" />
+    <SolidColorBrush x:Key="AltNotificationWarningTextBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.NotificationWarningTextColor}" />
+    <SolidColorBrush x:Key="AltNotificationErrorTextBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.NotificationErrorTextColor}" />
+    <SolidColorBrush x:Key="AltSecondaryBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.SecondaryBackgroundColor}" />
+    <SolidColorBrush x:Key="AltTertiaryBackgroundBrush" Color="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.ColorSchemaSettings.AltColorSchema.TertiaryBackgroundColor}" />
 </ResourceDictionary>

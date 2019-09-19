@@ -53,9 +53,7 @@ using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
 
 namespace NINA.ViewModel {
-
     internal class AutoFocusVM : DockableVM, ICameraConsumer, IFocuserConsumer, IFilterWheelConsumer {
-
         public AutoFocusVM(
             IProfileService profileService,
             IFocuserMediator focuserMediator,
@@ -442,11 +440,10 @@ namespace NINA.ViewModel {
                     Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFocusPointValidationFailed"], focusPoint.X, focusPoint.Y, hfr));
                 }
 
-                if (hfr > (initialHFR * 1.15) || hfr == 0) {
-                    Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblAutoFocusNewWorseThanOriginal"], hfr, initialHFR));
-                    Logger.Warning(string.Format("New focus point HFR {0} is significantly worse than original HFR {1}", hfr, initialHFR));
-                    return false;
-                }
+            if (initialHFR != 0 && hfr > (initialHFR * 1.15)) {
+                Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblAutoFocusNewWorseThanOriginal"], hfr, initialHFR));
+                Logger.Warning(string.Format("New focus point HFR {0} is significantly worse than original HFR {1}", hfr, initialHFR));
+                return false;
             }
             return true;
         }
@@ -626,6 +623,7 @@ namespace NINA.ViewModel {
         public async Task<bool> StartBacklashMeasurement(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
             Logger.Trace("Starting Backlash Measurement");
             int initialPosition = focuserInfo.Position;
+            int newInitialPosition = initialPosition;
             LeftTrend = null;
             RightTrend = null;
 
@@ -650,7 +648,11 @@ namespace NINA.ViewModel {
                 await this.guiderMediator.StopGuiding(token);
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStartingINBacklashMeasurement"] });
                 backlashIN = await MeasureBacklash(filter, Direction.IN, token, progress);
-                _focusPosition = await focuserMediator.MoveFocuser(initialPosition);
+
+                //Getting back to initial position, including measured backlash
+                newInitialPosition = initialPosition - backlashIN;
+                _focusPosition = await focuserMediator.MoveFocuser(newInitialPosition);
+
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStartingOUTBacklashMeasurement"] });
                 backlashOUT = await MeasureBacklash(filter, Direction.OUT, token, progress);
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocusRestoringOriginalPosition"] });
@@ -996,7 +998,6 @@ namespace NINA.ViewModel {
     }
 
     public static class MathHelper {
-
         // Hyperbolic Sine
         public static double HSin(double x) {
             return (Math.Exp(x) - Math.Exp(-x)) / 2;
@@ -1035,7 +1036,6 @@ namespace NINA.ViewModel {
     }
 
     public class FocusPointComparer : IComparer<ScatterErrorPoint> {
-
         public int Compare(ScatterErrorPoint x, ScatterErrorPoint y) {
             if (x.X < y.X) {
                 return -1;
@@ -1048,7 +1048,6 @@ namespace NINA.ViewModel {
     }
 
     public class PlotPointComparer : IComparer<DataPoint> {
-
         public int Compare(DataPoint x, DataPoint y) {
             if (x.X < y.X) {
                 return -1;
@@ -1066,7 +1065,6 @@ namespace NINA.ViewModel {
     }
 
     public class TrendLine {
-
         public TrendLine(IEnumerable<ScatterErrorPoint> l) {
             DataPoints = l;
 

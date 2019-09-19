@@ -145,6 +145,9 @@
 - Fixed a race condition that caused HFR to not be computed for frames right before autofocus in some instances
 - Fixed an issue for Nikon SDK that looked into the wrong folder for the external md3 files.
 - Fixed a bug where Platesolve Orientation was displayed as negative and also throwed of the rotation centering when using rotators.
+- Fixed a bug in Autofocus routine that could wrongly declare an autofocus run a failure if the starting point couldn't detect any stars
+- Fixed custom color schema not saving properly and resetting to default when reloading the application
+- The backlash measurement routine has been fixed so that the focuser is properly recentered before the backlashOUT measurement procedure
 
 ## Improvements
 - When EOS Utility is running in the background, the x64 N.I.N.A. client will scan for this app and prevent a crash due to the EOS utility being open. Instead a notification will show up to close the EOS Utility.
