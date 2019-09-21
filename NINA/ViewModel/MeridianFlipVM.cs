@@ -248,29 +248,31 @@ namespace NINA.ViewModel {
         }
 
         public static bool ShouldFlip(IProfileService profileService, double exposureTime, TelescopeInfo telescopeInfo) {
-            var tolerance = TimeSpan.FromMinutes(1);
-            var remainingExposureTime = TimeSpan.FromHours(telescopeInfo.TimeToMeridianFlip) - tolerance;
-            if (profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian != 0) {
-                remainingExposureTime = remainingExposureTime - TimeSpan.FromMinutes(profileService.ActiveProfile.MeridianFlipSettings.MinutesAfterMeridian) - TimeSpan.FromMinutes(profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian);
-            }
+            if (telescopeInfo.Connected && !double.IsNaN(telescopeInfo.TimeToMeridianFlip)) {
+                var tolerance = TimeSpan.FromMinutes(1);
+                var remainingExposureTime = TimeSpan.FromHours(telescopeInfo.TimeToMeridianFlip) - tolerance;
+                if (profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian != 0) {
+                    remainingExposureTime = remainingExposureTime - TimeSpan.FromMinutes(profileService.ActiveProfile.MeridianFlipSettings.MinutesAfterMeridian) - TimeSpan.FromMinutes(profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian);
+                }
 
-            if (profileService.ActiveProfile.MeridianFlipSettings.Enabled && !profileService.ActiveProfile.MeridianFlipSettings.UseSideOfPier) {
-                if (telescopeInfo.Connected == true) {
-                    if (remainingExposureTime < TimeSpan.FromSeconds(exposureTime)) {
-                        return true;
+                if (profileService.ActiveProfile.MeridianFlipSettings.Enabled && !profileService.ActiveProfile.MeridianFlipSettings.UseSideOfPier) {
+                    if (telescopeInfo.Connected == true) {
+                        if (remainingExposureTime < TimeSpan.FromSeconds(exposureTime)) {
+                            return true;
+                        }
                     }
-                }
-            } else if (profileService.ActiveProfile.MeridianFlipSettings.Enabled && profileService.ActiveProfile.MeridianFlipSettings.UseSideOfPier) {
-                var pierside = telescopeInfo.SideOfPier;
+                } else if (profileService.ActiveProfile.MeridianFlipSettings.Enabled && profileService.ActiveProfile.MeridianFlipSettings.UseSideOfPier) {
+                    var pierside = telescopeInfo.SideOfPier;
 
-                // Logging if reported side of pier is East, as users may be wondering why Meridian Flip didn't occur
-                if (pierside == PierSide.pierEast) {
-                    Logger.Trace("Meridian Flip - Telescope reports East Side of Pier, Automated Flip will not be performed.");
-                }
+                    // Logging if reported side of pier is East, as users may be wondering why Meridian Flip didn't occur
+                    if (pierside == PierSide.pierEast) {
+                        Logger.Trace("Meridian Flip - Telescope reports East Side of Pier, Automated Flip will not be performed.");
+                    }
 
-                if (telescopeInfo.Connected == true && pierside != PierSide.pierEast) {
-                    if (remainingExposureTime < TimeSpan.FromSeconds(exposureTime)) {
-                        return true;
+                    if (telescopeInfo.Connected == true && pierside != PierSide.pierEast) {
+                        if (remainingExposureTime < TimeSpan.FromSeconds(exposureTime)) {
+                            return true;
+                        }
                     }
                 }
             }
