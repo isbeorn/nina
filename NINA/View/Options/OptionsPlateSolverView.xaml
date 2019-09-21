@@ -770,7 +770,7 @@
                                                 <Binding.ValidationRules>
                                                     <rules:DoubleRangeRule>
                                                         <rules:DoubleRangeRule.ValidRange>
-                                                            <rules:DoubleRangeChecker Maximum="4" Minimum="1" />
+                                                            <rules:DoubleRangeChecker Maximum="4" Minimum="0" />
                                                         </rules:DoubleRangeRule.ValidRange>
                                                     </rules:DoubleRangeRule>
                                                 </Binding.ValidationRules>

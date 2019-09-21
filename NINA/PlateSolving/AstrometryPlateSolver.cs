@@ -216,7 +216,7 @@ namespace NINA.PlateSolving {
             return result;
         }
 
-        protected override void EnsureSolverValid() {
+        protected override void EnsureSolverValid(PlateSolveParameter parameter) {
             if (_apikey == "") {
                 throw new ArgumentException("astrometry.net API key not set");
             }

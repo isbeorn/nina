@@ -23,6 +23,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -122,7 +123,21 @@ namespace NINA.PlateSolving {
             return string.Join(" ", args);
         }
 
-        protected override void EnsureSolverValid() {
+        protected override void EnsureSolverValid(PlateSolveParameter parameter) {
+            if (string.IsNullOrWhiteSpace(this.executableLocation)) {
+                throw new ASTAPValidationFailedException($"ASTAP executable location missing! Please enter the location in the platesolver options!");
+            }
+            if (!File.Exists(this.executableLocation)) {
+                throw new ASTAPValidationFailedException($"ASTAP executable not found at {this.executableLocation}");
+            }
+            var astapVersionInfo = FileVersionInfo.GetVersionInfo(this.executableLocation);
+            if (astapVersionInfo.FileVersion == null) {
+                // Version below 0.9.1.0
+                // Only allows downsample in the range of 1 to 4
+                if (parameter.DownSampleFactor == 0) {
+                    throw new ASTAPValidationFailedException($"ASTAP version below 0.9.1.0 does not allow auto downsample factor value of 0! Please update your ASTAP version!");
+                }
+            }
             string astapPath = Path.GetDirectoryName(this.executableLocation);
             string[] g17Files = Directory.GetFiles(astapPath, "g17_*");
             if (g17Files.Length == 0) {
