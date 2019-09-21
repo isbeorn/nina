@@ -47,5 +47,6 @@ namespace NINA.Profile {
         double FLIFloodDuration { get; set; }
         uint FLIFlushCount { get; set; }
         BinningMode FLIFloodBin { get; set; }
+        bool BitScaling { get; set; }
     }
 }

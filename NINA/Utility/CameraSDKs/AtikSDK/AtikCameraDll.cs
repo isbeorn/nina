@@ -92,7 +92,7 @@ namespace NINA.Utility.AtikSDK {
 
             var ptr = ArtemisImageBuffer(camera);
 
-            var cameraDataToManaged = new CameraDataToManaged(ptr, w, h, bitDepth);
+            var cameraDataToManaged = new CameraDataToManaged(ptr, w, h, bitDepth, bitScaling: false);
             var arr = cameraDataToManaged.GetData();
 
             return new ImageArrayExposureData(

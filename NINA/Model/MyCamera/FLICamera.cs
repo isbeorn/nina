@@ -707,7 +707,7 @@ namespace NINA.Model.MyCamera {
                 buff = Marshal.AllocHGlobal(imgSize);
                 Marshal.Copy(imgData, 0, buff, imgSize);
 
-                var cameraDataToManaged = new CameraDataToManaged(buff, width, height, BitDepth);
+                var cameraDataToManaged = new CameraDataToManaged(buff, width, height, BitDepth, bitScaling: false);
                 var arr = cameraDataToManaged.GetData();
 
                 rowData = imgData = null;

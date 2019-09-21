@@ -819,7 +819,7 @@ namespace NINA.Model.MyCamera {
                  */
                 IntPtr buf = Marshal.AllocHGlobal(ImgData.Length);
                 Marshal.Copy(ImgData, 0, buf, ImgData.Length);
-                var cameraDataToManaged = new CameraDataToManaged(buf, (int)width, (int)height, (int)bpp);
+                var cameraDataToManaged = new CameraDataToManaged(buf, (int)width, (int)height, (int)bpp, bitScaling: false);
                 var arr = cameraDataToManaged.GetData();
                 ImgData = null;
                 Marshal.FreeHGlobal(buf);

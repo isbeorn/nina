@@ -1,4 +1,7 @@
-﻿<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:s="clr-namespace:System;assembly=mscorlib">
     <s:String x:Key="LblAbbrEast" xml:space="default">东</s:String>
     <s:String x:Key="LblAbbrNorth" xml:space="default">北</s:String>
     <s:String x:Key="LblAbbrSouth" xml:space="default">南</s:String>
@@ -36,7 +39,7 @@
     <s:String x:Key="LblApparentMagnitude" xml:space="default">视星等</s:String>
     <s:String x:Key="LblApparentSize" xml:space="default">视尺寸</s:String>
     <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">应用程序遇到未处理的异常，很可能必须关闭。
-该错误已记录到 "%localappdata%\NINA\Logs".
+该错误已记录到 &quot;%localappdata%\NINA\Logs&quot;.
 应用程序是否应该尝试从错误中恢复？ （可能导致意外行为）</s:String>
     <s:String x:Key="LblApplicationStartDateDescription" xml:space="default">格式为的开始日期 YYYY-MM-DD</s:String>
     <s:String x:Key="LblArcmin" xml:space="default">角分</s:String>
@@ -278,8 +281,6 @@ Type: {1}
     <s:String x:Key="LblCounterclockwise" xml:space="default">逆时针</s:String>
     <s:String x:Key="LblCoverScopeMsgBox" xml:space="default">现在盖上你的望远镜，按“确定”开始拍摄暗场。</s:String>
     <s:String x:Key="LblCoverScopeMsgBoxTitle" xml:space="default">现在盖上你的望远镜</s:String>
-    <s:String x:Key="LblPrepFlatFilterMsgBox">Flats for filter: {0}</s:String>
-    <s:String x:Key="LblPauseBetweenFilters">Pause between filters</s:String>
     <s:String x:Key="LblCurrentDownloadToDataRatio" xml:space="default">当前下载:数据速率</s:String>
     <s:String x:Key="LblCurrentMean" xml:space="default">当前平均值</s:String>
     <s:String x:Key="LblCurrentPosition" xml:space="default">当前位置</s:String>
@@ -349,6 +350,8 @@ Type: {1}
     <s:String x:Key="LblDusk" xml:space="default">黄昏</s:String>
     <s:String x:Key="LblEast" xml:space="default">东方</s:String>
     <s:String x:Key="LblEDCameraNotInManualMode" xml:space="default">相机未设置为手动或B门模式！ 请在连接前将其设置为手动或B门模式</s:String>
+    <s:String x:Key="LblEnableBitScaling" xml:space="default">Enable bit scaling</s:String>
+    <s:String x:Key="LblEnableBitScalingTooltip" xml:space="default">Save 10/12/14 bit images with scaling to 16 bits. (Only relevant for Altair and ToupTek cameras)</s:String>
     <s:String x:Key="LblEnabled" xml:space="default">启用</s:String>
     <s:String x:Key="LblEndOfSequenceDecision" xml:space="default">运行序列选项结束？</s:String>
     <s:String x:Key="LblEndOfSequenceOptions" xml:space="default">序列结束选项</s:String>
@@ -648,16 +651,17 @@ Type: {1}
     <s:String x:Key="LblParkMountAtSequenceEnd" xml:space="default">序列结束时停放</s:String>
     <s:String x:Key="LblPassMeridian" xml:space="default">Pass Meridian</s:String>
     <s:String x:Key="LblPatternName" xml:space="default">模式名称</s:String>
+    <s:String x:Key="LblPauseBetweenFilters" xml:space="default">Pause between filters</s:String>
     <s:String x:Key="LblPaused" xml:space="default">已暂停</s:String>
     <s:String x:Key="LblPauseTimeBeforeMeridian" xml:space="default">中天前暂停(分钟)</s:String>
     <s:String x:Key="LblPercentShort" xml:space="default">%</s:String>
-    <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0} ({1}")</s:String>
+    <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0} ({1}&quot;)</s:String>
     <s:String x:Key="LblPhd2FailedEquipmentConnection" xml:space="default">PHD2无法连接到设备</s:String>
     <s:String x:Key="LblPHD2HistorySize" xml:space="default">PHD2 历史尺寸</s:String>
     <s:String x:Key="LblPHD2MinimalHistorySize" xml:space="default">PHD2 历史尺寸 (图像)</s:String>
     <s:String x:Key="LblPHD2Path" xml:space="default">PHD2路径</s:String>
     <s:String x:Key="LblPhd2PathNotFound" xml:space="default">无法启动PHD2。未找到路径</s:String>
-    <s:String x:Key="LblPHD2RARMS" xml:space="default">RA: {0} ({1}")</s:String>
+    <s:String x:Key="LblPHD2RARMS" xml:space="default">RA: {0} ({1}&quot;)</s:String>
     <s:String x:Key="LblPhd2ServerConnectionLost" xml:space="default">PHD2服务器连接丢失!</s:String>
     <s:String x:Key="LblPHD2ServerPort" xml:space="default">PHD2服务器端口</s:String>
     <s:String x:Key="LblPHD2ServerUrl" xml:space="default">PHD2服务器Url</s:String>
@@ -672,7 +676,7 @@ Type: {1}
         已连接到客户端: {0}
     </s:String>
     <s:String x:Key="LblPhd2SynchronizedServiceStarted" xml:space="default">同步PHD2服务启动</s:String>
-    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0} ({1}")</s:String>
+    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0} ({1}&quot;)</s:String>
     <s:String x:Key="LblPixels" xml:space="default">像素</s:String>
     <s:String x:Key="LblPixelScale" xml:space="default">像素比例</s:String>
     <s:String x:Key="LblPixelSize" xml:space="default">像素大小</s:String>
@@ -710,6 +714,7 @@ Type: {1}
     <s:String x:Key="LblPrepareExposure" xml:space="default">准备曝光</s:String>
     <s:String x:Key="LblPrepareImage" xml:space="default">准备采集图像</s:String>
     <s:String x:Key="LblPreparingDarkFlatSequence" xml:space="default">准备暗平场序列</s:String>
+    <s:String x:Key="LblPrepFlatFilterMsgBox" xml:space="default">Flats for filter: {0}</s:String>
     <s:String x:Key="LblPreSequenceChecklist" xml:space="default">您的序列中发现了以下潜在问题：</s:String>
     <s:String x:Key="LblPreSequenceChecklistHeader" xml:space="default">预排序检查表</s:String>
     <s:String x:Key="LblPressure" xml:space="default">Pressure</s:String>
@@ -924,15 +929,15 @@ Type: {1}
     <s:String x:Key="LblTooltipBahtinovAnalyzer" xml:space="preserve">鱼骨板分析
 将矩形拖到具有鱼骨板星芒的星点上。NINA将尝试检测峰值并显示误差。</s:String>
     <s:String x:Key="LblTooltipCrossHair" xml:space="default">打开/关闭十字准线</s:String>
+    <s:String x:Key="LblTooltipDemoteSequenceRow" xml:space="default">Move selected row down sequence list</s:String>
     <s:String x:Key="LblTooltipDetectStars" xml:space="default">打开/关闭自动星点检测和分析（Half-Flus-Radius）</s:String>
     <s:String x:Key="LblToolTipLiveView" xml:space="default">实时预览</s:String>
     <s:String x:Key="LblTooltipLoop" xml:space="default">启用/禁用循环曝光</s:String>
+    <s:String x:Key="LblTooltipPromoteSequenceRow" xml:space="default">Move selected row up sequence list</s:String>
     <s:String x:Key="LblTooltipRemoveSequence" xml:space="default">从序列列表中删除所选行</s:String>
     <s:String x:Key="LblTooltipResetSequence" xml:space="default">重置序列列表中所选行的进度</s:String>
     <s:String x:Key="LblTooltipResetTarget" xml:space="default">重置目标中所有序列项的进度</s:String>
     <s:String x:Key="LblTooltipStartSequence" xml:space="default">开始序列拍摄</s:String>
-    <s:String x:Key="LblTooltipPromoteSequenceRow" xml:space="default">Move selected row up sequence list</s:String>
-    <s:String x:Key="LblTooltipDemoteSequenceRow" xml:space="default">Move selected row down sequence list</s:String>
     <s:String x:Key="LblToolTipSubSample" xml:space="preserve">子采样（区域读取）
 将矩形拖到要进行子采样的区域，然后在“捕捉”中启用子采样。您的相机将只下载所选区域。</s:String>
     <s:String x:Key="LblTooltipTakeExposure" xml:space="default">开始曝光</s:String>

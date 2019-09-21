@@ -51,6 +51,7 @@ namespace NINA.Profile {
             minFlatExposureTime = 0.2;
             maxFlatExposureTime = 20;
             fileCameraFolder = string.Empty;
+            bitScaling = false;
 
             fliEnableFloodFlush = false;
             fliFloodDuration = 1;
@@ -317,6 +318,19 @@ namespace NINA.Profile {
             set {
                 if (fliEnableSnapshotFloodFlush != value) {
                     fliEnableSnapshotFloodFlush = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool bitScaling;
+
+        [DataMember]
+        public bool BitScaling {
+            get => bitScaling;
+            set {
+                if (bitScaling != value) {
+                    bitScaling = value;
                     RaisePropertyChanged();
                 }
             }

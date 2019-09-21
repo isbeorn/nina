@@ -668,13 +668,15 @@ namespace NINA.Model.MyCamera {
                 int width = (int)info.width;
                 int height = (int)info.height;
 
-                var cameraDataToManaged = new CameraDataToManaged(pData, width, height, BitDepth);
+                var scaling = this.profileService.ActiveProfile.CameraSettings.BitScaling;
+                var cameraDataToManaged = new CameraDataToManaged(pData, width, height, BitDepth, bitScaling: scaling);
                 var arr = cameraDataToManaged.GetData();
+
                 this.exposureData = new ImageArrayExposureData(
                     input: arr,
                     width: width,
                     height: height,
-                    bitDepth: this.BitDepth,
+                    bitDepth: scaling ? 16 : this.BitDepth,
                     isBayered: this.SensorType != SensorType.Monochrome,
                     metaData: new ImageMetaData());
                 if (LiveViewEnabled) {

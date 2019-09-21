@@ -1,4 +1,7 @@
-﻿<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:s="clr-namespace:System;assembly=mscorlib">
     <s:String x:Key="LblAbbrEast" xml:space="default">E</s:String>
     <s:String x:Key="LblAbbrNorth" xml:space="default">N</s:String>
     <s:String x:Key="LblAbbrSouth" xml:space="default">S</s:String>
@@ -36,7 +39,7 @@ Using those two points the actual altitude error will be calculated and displaye
     <s:String x:Key="LblApparentMagnitude" xml:space="default">Apparent Magnitude</s:String>
     <s:String x:Key="LblApparentSize" xml:space="default">Apparent Size</s:String>
     <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">The Application ran into an unhandled exception and most likely has to shut down.
-The error has been logged to "%localappdata%\NINA\Logs".
+The error has been logged to &quot;%localappdata%\NINA\Logs&quot;.
 Should the Application try to recover from the error? (Can lead to unexpected behavior)</s:String>
     <s:String x:Key="LblApplicationStartDateDescription" xml:space="default">Application start date with format YYYY-MM-DD</s:String>
     <s:String x:Key="LblArcmin" xml:space="default">arcmin</s:String>
@@ -278,8 +281,6 @@ When duration is set, the application will slowly decrease the temperature durin
     <s:String x:Key="LblCounterclockwise" xml:space="default">Counterclockwise</s:String>
     <s:String x:Key="LblCoverScopeMsgBox" xml:space="default">Cover your scope now and press OK to start taking the dark flats.</s:String>
     <s:String x:Key="LblCoverScopeMsgBoxTitle" xml:space="default">Cover your scope now</s:String>
-    <s:String x:Key="LblPrepFlatFilterMsgBox" xml:space="default">Flats for filter: {0}</s:String>
-    <s:String x:Key="LblPauseBetweenFilters" xml:space="default">Pause between filters</s:String>
     <s:String x:Key="LblCurrentDownloadToDataRatio" xml:space="default">Current Download:Data ratio</s:String>
     <s:String x:Key="LblCurrentMean" xml:space="default">Current Mean</s:String>
     <s:String x:Key="LblCurrentPosition" xml:space="default">Current Position</s:String>
@@ -349,6 +350,8 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
     <s:String x:Key="LblDusk" xml:space="default">Dusk</s:String>
     <s:String x:Key="LblEast" xml:space="default">East</s:String>
     <s:String x:Key="LblEDCameraNotInManualMode" xml:space="default">Camera is not set to manual or bulb mode! Please set it to manual or bulb mode before connecting</s:String>
+    <s:String x:Key="LblEnableBitScaling" xml:space="default">Enable bit scaling</s:String>
+    <s:String x:Key="LblEnableBitScalingTooltip" xml:space="default">Save 10/12/14 bit images with scaling to 16 bits. (Only relevant for Altair and ToupTek cameras)</s:String>
     <s:String x:Key="LblEnabled" xml:space="default">Enabled</s:String>
     <s:String x:Key="LblEndOfSequenceDecision" xml:space="default">Run end of sequence options?</s:String>
     <s:String x:Key="LblEndOfSequenceOptions" xml:space="default">End of Sequence Options</s:String>
@@ -648,16 +651,17 @@ Calculated HFR: {2}
     <s:String x:Key="LblParkMountAtSequenceEnd" xml:space="default">Park mount when sequence ends</s:String>
     <s:String x:Key="LblPassMeridian" xml:space="default">Pass Meridian</s:String>
     <s:String x:Key="LblPatternName" xml:space="default">Pattern Name</s:String>
+    <s:String x:Key="LblPauseBetweenFilters" xml:space="default">Pause between filters</s:String>
     <s:String x:Key="LblPaused" xml:space="default">Paused</s:String>
     <s:String x:Key="LblPauseTimeBeforeMeridian" xml:space="default">Pause before Meridian (minutes)</s:String>
     <s:String x:Key="LblPercentShort" xml:space="default">%</s:String>
-    <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0}({1}")</s:String>
+    <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0}({1}&quot;)</s:String>
     <s:String x:Key="LblPhd2FailedEquipmentConnection" xml:space="default">PHD2 wasn't able to connect to the equipment</s:String>
     <s:String x:Key="LblPHD2HistorySize" xml:space="default">PHD2 History Size</s:String>
     <s:String x:Key="LblPHD2MinimalHistorySize" xml:space="default">PHD2 History Size (Imaging)</s:String>
     <s:String x:Key="LblPHD2Path" xml:space="default">PHD2 path</s:String>
     <s:String x:Key="LblPhd2PathNotFound" xml:space="default">Could not start PHD2. Path not found</s:String>
-    <s:String x:Key="LblPHD2RARMS" xml:space="default">RA: {0} ({1}")</s:String>
+    <s:String x:Key="LblPHD2RARMS" xml:space="default">RA: {0} ({1}&quot;)</s:String>
     <s:String x:Key="LblPhd2ServerConnectionLost" xml:space="default">PHD2 Server Connection lost!</s:String>
     <s:String x:Key="LblPHD2ServerPort" xml:space="default">PHD2 Server Port</s:String>
     <s:String x:Key="LblPHD2ServerUrl" xml:space="default">PHD2 Server Url</s:String>
@@ -672,7 +676,7 @@ Calculated HFR: {2}
         Connected clients: {0}
     </s:String>
     <s:String x:Key="LblPhd2SynchronizedServiceStarted" xml:space="default">Synchronized PHD2 service started</s:String>
-    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0}({1}")</s:String>
+    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0}({1}&quot;)</s:String>
     <s:String x:Key="LblPixels" xml:space="default">Pixels</s:String>
     <s:String x:Key="LblPixelScale" xml:space="default">Pixel Scale</s:String>
     <s:String x:Key="LblPixelSize" xml:space="default">Pixel Size</s:String>
@@ -711,6 +715,7 @@ Calculated HFR: {2}
     <s:String x:Key="LblPrepareExposure" xml:space="default">Prepare Exposure</s:String>
     <s:String x:Key="LblPrepareImage" xml:space="default">Preparing image</s:String>
     <s:String x:Key="LblPreparingDarkFlatSequence" xml:space="default">Preparing Dark Flat Sequence</s:String>
+    <s:String x:Key="LblPrepFlatFilterMsgBox" xml:space="default">Flats for filter: {0}</s:String>
     <s:String x:Key="LblPreSequenceChecklist" xml:space="default">The following potential issues have been found with your sequence:</s:String>
     <s:String x:Key="LblPreSequenceChecklistHeader" xml:space="default">Pre-Sequence Checklist</s:String>
     <s:String x:Key="LblPressure" xml:space="default">Pressure</s:String>
@@ -925,15 +930,15 @@ Should the values be synced?</s:String>
     <s:String x:Key="LblTooltipBahtinovAnalyzer" xml:space="preserve">Bahtinov Analyzer
 Drag the rectangle over a star with the bahtinov spikes. NINA will try to detect the spikes and show the error.</s:String>
     <s:String x:Key="LblTooltipCrossHair" xml:space="default">Toggles crosshair on/off</s:String>
+    <s:String x:Key="LblTooltipDemoteSequenceRow" xml:space="default">Move selected row down sequence list</s:String>
     <s:String x:Key="LblTooltipDetectStars" xml:space="default">Toggles automatic star detection and analysis (Half-Flus-Radius) on/off</s:String>
     <s:String x:Key="LblToolTipLiveView" xml:space="default">Live View</s:String>
     <s:String x:Key="LblTooltipLoop" xml:space="default">Enables/disables looping exposures</s:String>
+    <s:String x:Key="LblTooltipPromoteSequenceRow" xml:space="default">Move selected row up sequence list</s:String>
     <s:String x:Key="LblTooltipRemoveSequence" xml:space="default">Remove selected row from sequence list</s:String>
     <s:String x:Key="LblTooltipResetSequence" xml:space="default">Reset progress of selected row in sequence list</s:String>
     <s:String x:Key="LblTooltipResetTarget" xml:space="default">Reset progress of all sequence items in target</s:String>
     <s:String x:Key="LblTooltipStartSequence" xml:space="default">Starts sequences</s:String>
-    <s:String x:Key="LblTooltipPromoteSequenceRow" xml:space="default">Move selected row up sequence list</s:String>
-    <s:String x:Key="LblTooltipDemoteSequenceRow" xml:space="default">Move selected row down sequence list</s:String>
     <s:String x:Key="LblToolTipSubSample" xml:space="preserve">SubSampling Frame
 Drag the rectangle over the part of the frame you want to subsample and enable subsampling in snap. Your camera will only download the selected area.</s:String>
     <s:String x:Key="LblTooltipTakeExposure" xml:space="default">Starts Exposure</s:String>

@@ -1,4 +1,7 @@
-﻿<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:s="clr-namespace:System;assembly=mscorlib">
     <s:String x:Key="LblAbbrEast" xml:space="default">O</s:String>
     <s:String x:Key="LblAbbrNorth" xml:space="default">N</s:String>
     <s:String x:Key="LblAbbrSouth" xml:space="default">S</s:String>
@@ -36,7 +39,7 @@ Anhand der zwei Punkte wird dann der Höhenfehler errechnet und angezeigt</s:Str
     <s:String x:Key="LblApparentMagnitude" xml:space="default">Scheinbare Helligkeit</s:String>
     <s:String x:Key="LblApparentSize" xml:space="default">Scheinbare Größe</s:String>
     <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">Die Anwendung lief in einen unbehandelten Fehler und muss möglicherweise beendet werden.
-Der Fehler wurde in "%localappdata%\NINA\Logs" aufgezeichnet.
+Der Fehler wurde in &quot;%localappdata%\NINA\Logs&quot; aufgezeichnet.
 Soll die Anwendung versuchen sich von dem Fehler zu erholen? (Kann zu unerwartetem Verhalten führen)</s:String>
     <s:String x:Key="LblApplicationStartDateDescription" xml:space="default">Applikationsstartdatum mit Format YYYY-MM-DD</s:String>
     <s:String x:Key="LblArcmin" xml:space="default">Winkelminuten</s:String>
@@ -278,8 +281,6 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
     <s:String x:Key="LblCounterclockwise" xml:space="default">Linksdrehend</s:String>
     <s:String x:Key="LblCoverScopeMsgBox" xml:space="default">Decken Sie ihr Teleskop nun ab und drücken Sie OK um mit der Aufnahme der Dark Flats fortzufahren</s:String>
     <s:String x:Key="LblCoverScopeMsgBoxTitle" xml:space="default">Decken Sie ihr Teleskop ab</s:String>
-    <s:String x:Key="LblPrepFlatFilterMsgBox">Flats für filter: {0}</s:String>
-    <s:String x:Key="LblPauseBetweenFilters">Zwischen filter pausieren</s:String>
     <s:String x:Key="LblCurrentDownloadToDataRatio" xml:space="default">Aktuelles Download:Data Verhältnis</s:String>
     <s:String x:Key="LblCurrentMean" xml:space="default">Aktueller Mittelwert</s:String>
     <s:String x:Key="LblCurrentPosition" xml:space="default">Startposition</s:String>
@@ -349,6 +350,8 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
     <s:String x:Key="LblDusk" xml:space="default">Abenddämmerung</s:String>
     <s:String x:Key="LblEast" xml:space="default">Ost</s:String>
     <s:String x:Key="LblEDCameraNotInManualMode" xml:space="default">Kamera ist nicht im manuellen oder im bulb Modus! Bitte die Kamera auf den manuellen oder den bulb Modus umstellen</s:String>
+    <s:String x:Key="LblEnableBitScaling" xml:space="default">Bit Skalierung aktivieren</s:String>
+    <s:String x:Key="LblEnableBitScalingTooltip" xml:space="default">Speichere 10/12/14 bit Bilder mit einer Skalierung zu 16 Bits. (Nur relevant für Altair und ToupTek Kameras)</s:String>
     <s:String x:Key="LblEnabled" xml:space="default">Aktiv</s:String>
     <s:String x:Key="LblEndOfSequenceDecision" xml:space="default">Run end of sequence options?</s:String>
     <s:String x:Key="LblEndOfSequenceOptions" xml:space="default">End of Sequence Options</s:String>
@@ -648,16 +651,17 @@ Berechneter HFR: {2}
     <s:String x:Key="LblParkMountAtSequenceEnd" xml:space="default">Park mount when sequence ends</s:String>
     <s:String x:Key="LblPassMeridian" xml:space="default">Meridian passieren</s:String>
     <s:String x:Key="LblPatternName" xml:space="default">Vorlagenname</s:String>
+    <s:String x:Key="LblPauseBetweenFilters" xml:space="default">Zwischen filter pausieren</s:String>
     <s:String x:Key="LblPaused" xml:space="default">Pausiert</s:String>
     <s:String x:Key="LblPauseTimeBeforeMeridian" xml:space="default">Vor Meridian pausieren (Minuten)</s:String>
     <s:String x:Key="LblPercentShort" xml:space="default">%</s:String>
-    <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0} ({1}")</s:String>
+    <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0} ({1}&quot;)</s:String>
     <s:String x:Key="LblPhd2FailedEquipmentConnection" xml:space="default">PHD2 konnte nicht zur Ausrüstung verbinden</s:String>
     <s:String x:Key="LblPHD2HistorySize" xml:space="default">PHD2 Historieneinträge</s:String>
     <s:String x:Key="LblPHD2MinimalHistorySize" xml:space="default">PHD2 Historieneinträge (Imaging)</s:String>
     <s:String x:Key="LblPHD2Path" xml:space="default">Pfad zu PHD2</s:String>
     <s:String x:Key="LblPhd2PathNotFound" xml:space="default">Konnte PHD2 nicht starten. Der Pfad wurde nicht gefunden</s:String>
-    <s:String x:Key="LblPHD2RARMS" xml:space="default">RA: {0} ({1}")</s:String>
+    <s:String x:Key="LblPHD2RARMS" xml:space="default">RA: {0} ({1}&quot;)</s:String>
     <s:String x:Key="LblPhd2ServerConnectionLost" xml:space="default">PHD2 Server Verbindung verloren!</s:String>
     <s:String x:Key="LblPHD2ServerPort" xml:space="default">PHD2 Server Port</s:String>
     <s:String x:Key="LblPHD2ServerUrl" xml:space="default">PHD2 Server Url</s:String>
@@ -672,7 +676,7 @@ Berechneter HFR: {2}
         Verbundene Clients: {0}
     </s:String>
     <s:String x:Key="LblPhd2SynchronizedServiceStarted" xml:space="default">Synchronisierter PHD2 Service gestartet</s:String>
-    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0} ({1}")</s:String>
+    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0} ({1}&quot;)</s:String>
     <s:String x:Key="LblPixels" xml:space="default">Pixel</s:String>
     <s:String x:Key="LblPixelScale" xml:space="default">Pixel Maßstab</s:String>
     <s:String x:Key="LblPixelSize" xml:space="default">Pixelgröße</s:String>
@@ -711,6 +715,7 @@ Berechneter HFR: {2}
     <s:String x:Key="LblPrepareExposure" xml:space="default">Belichtung wird vorbereitet</s:String>
     <s:String x:Key="LblPrepareImage" xml:space="default">Bereite Bild vor</s:String>
     <s:String x:Key="LblPreparingDarkFlatSequence" xml:space="default">Bereite Dark Flat Sequenz vor</s:String>
+    <s:String x:Key="LblPrepFlatFilterMsgBox" xml:space="default">Flats für filter: {0}</s:String>
     <s:String x:Key="LblPreSequenceChecklist" xml:space="default">Die folgenden potentiellen Probleme wurden in der Sequenz gefunden:</s:String>
     <s:String x:Key="LblPreSequenceChecklistHeader" xml:space="default">Pre-Sequenzcheckliste</s:String>
     <s:String x:Key="LblPressure" xml:space="default">Druck</s:String>
@@ -924,15 +929,15 @@ Sollen die Werte synchronisiert werden?</s:String>
     <s:String x:Key="LblTooltipBahtinovAnalyzer" xml:space="preserve">Bahtinov Analyzer
 Das Rechteck über einen Stern mit Bahtinov Beugungsmuster bewegen. NINA versucht die Beugung zu erkennen und stellt den Fehler dar.</s:String>
     <s:String x:Key="LblTooltipCrossHair" xml:space="default">Schaltet Fadenkreuz an/aus</s:String>
+    <s:String x:Key="LblTooltipDemoteSequenceRow" xml:space="default">Move selected row down sequence list</s:String>
     <s:String x:Key="LblTooltipDetectStars" xml:space="default">Schaltet automatisches Erkennen und Auswerten (Half-Flus-Radius) von Sternen an/aus</s:String>
     <s:String x:Key="LblToolTipLiveView" xml:space="default">Live Vorschau</s:String>
     <s:String x:Key="LblTooltipLoop" xml:space="default">Schaltet wiederholenden Aufnahmemodus an/aus</s:String>
+    <s:String x:Key="LblTooltipPromoteSequenceRow" xml:space="default">Move selected row up sequence list</s:String>
     <s:String x:Key="LblTooltipRemoveSequence" xml:space="default">Entfernt selektierte Reihe aus der Liste der Sequenzen</s:String>
     <s:String x:Key="LblTooltipResetSequence" xml:space="default">Fortschritt des ausgewählten Sequenzeintrags zurücksetzen</s:String>
     <s:String x:Key="LblTooltipResetTarget" xml:space="default">Fortschritt aller Sequenzeinträge des Ziels zurücksetzen</s:String>
     <s:String x:Key="LblTooltipStartSequence" xml:space="default">Startet die Sequenzen</s:String>
-    <s:String x:Key="LblTooltipPromoteSequenceRow" xml:space="default">Move selected row up sequence list</s:String>
-    <s:String x:Key="LblTooltipDemoteSequenceRow" xml:space="default">Move selected row down sequence list</s:String>
     <s:String x:Key="LblToolTipSubSample" xml:space="preserve">Teilbild
 Das Rechteck über einen Teil des Bildes bewegen das Sie fotografieren wollen und aktivieren Sie Teilbild im Imaging Fenster. Ihre Kamera wird nur den selektierten Bereich herunterladen.
     </s:String>

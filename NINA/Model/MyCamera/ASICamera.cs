@@ -435,7 +435,7 @@ namespace NINA.Model.MyCamera {
                         throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
                     }
 
-                    var cameraDataToManaged = new CameraDataToManaged(pointer, width, height, 16);
+                    var cameraDataToManaged = new CameraDataToManaged(pointer, width, height, 16, bitScaling: false);
                     var arr = cameraDataToManaged.GetData();
                     Marshal.FreeHGlobal(pointer);
 
@@ -714,7 +714,7 @@ namespace NINA.Model.MyCamera {
                     throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
                 }
 
-                var cameraDataToManaged = new CameraDataToManaged(pointer, width, height, 16);
+                var cameraDataToManaged = new CameraDataToManaged(pointer, width, height, 16, false);
                 var arr = cameraDataToManaged.GetData();
                 Marshal.FreeHGlobal(pointer);
 
