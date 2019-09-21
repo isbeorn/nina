@@ -1,6 +1,7 @@
 # Version 1.10
 
 ## Improvements
+- Added a bit scaling options for Altair and ToupTek cameras to bit shift the raw data to 16 bits to be compatible with other capture software
 - FreeImage library upgrade to 3.18
 - Plate solvers will now receive unstretched FITS images to solve the image for a faster and even better solve result
 - The autofocus crop ratio has been changed to Inner Crop Ratio, and an additional Outer Crop Ratio has been added. This lets users define centered ROI, or a centered "square doughnut" which will be used by star detection, thus avoiding stars in the center and at the edges of the FOV

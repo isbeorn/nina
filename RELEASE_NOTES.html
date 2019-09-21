@@ -8,6 +8,7 @@
     <h1 id="version-1.10">Version 1.10</h1>
 <h2 id="improvements">Improvements</h2>
 <ul>
+<li>Added a bit scaling options for Altair and ToupTek cameras to bit shift the raw data to 16 bits to be compatible with other capture software</li>
 <li>FreeImage library upgrade to 3.18</li>
 <li>Plate solvers will now receive unstretched FITS images to solve the image for a faster and even better solve result</li>
 <li>The autofocus crop ratio has been changed to Inner Crop Ratio, and an additional Outer Crop Ratio has been added. This lets users define centered ROI, or a centered &quot;square doughnut&quot; which will be used by star detection, thus avoiding stars in the center and at the edges of the FOV</li>
@@ -28,6 +29,13 @@
 <li>The NASA Sky Survey images now are automatically adjusted for brightness and contrast, depending on each image characteristic</li>
 <li>An autofocus filter can now be set if &quot;Use filter offsets&quot; is set to true. When defined, the autofocus routine will use the autofocus filter instead of the current imaging filter. Initial baseline HFR, and final HFR (used to determine whether the autofocus run was successful) will still use the main imaging filter.</li>
 <li>A contrast detection autofocus routine has been added. Instead of analyzing stars to determine point of best focus, the routine analyzes overall contrast of the image with various contrast detection methods. A Gaussian fit is then performed on the obtained focus points - this process can use shorter exposure times than star HFR and produce results faster</li>
+<li>QHY native driver now retrieves only the non-overscan area of the sensor</li>
+</ul>
+<h2 id="bug-fixes">Bug fixes</h2>
+<ul>
+<li>Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false</li>
+<li>QHY native driver will wait the full amount of time required before downloading an image from the camera</li>
+<li>QHY native driver now has a more reliable way to determine sensor bitness with CCD models</li>
 </ul>
 <h1 id="version-1.9">Version 1.9</h1>
 <h2 id="features">Features</h2>
@@ -112,11 +120,13 @@
 <li>The sequence start button is unavailable if an imaging loop is in progress in the imaging tab</li>
 <li>If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips</li>
 <li>It is now possible to set the Offset in addition to the Gain within each sequence item</li>
+<li>Added buttons to move sequence row up and down the list</li>
 </ul>
 <h3 id="flat-wizard">Flat Wizard</h3>
 <ul>
 <li>Progress bars have been added for remaining filters and exposures</li>
 <li>A new Slew to Zenith button has been added for easier flats. This includes an option for east or west pier side, depending on which side of pier the mount should approach zenith from.</li>
+<li>A new option to pause between filters has been added. This is to allow the user the chance to set lightbox settings</li>
 </ul>
 <h3 id="interface">Interface</h3>
 <ul>
