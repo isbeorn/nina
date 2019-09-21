@@ -160,6 +160,8 @@ namespace NINA.Utility.Notification {
             IsNeverEnding = isNeverEnding;
         }
 
+        public DateTime DateTime { get; private set; } = DateTime.Now;
+
         public bool IsNeverEnding { get; }
 
         private Geometry _symbol;
