@@ -27,11 +27,9 @@ using System;
 using System.Runtime.Serialization;
 
 namespace NINA.Profile {
-
     [Serializable()]
     [DataContract]
     public class CameraSettings : Settings, ICameraSettings {
-
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
             SetDefaultValues();
@@ -57,6 +55,9 @@ namespace NINA.Profile {
             fliFloodDuration = 1;
             fliFlushCount = 2;
             fliEnableSnapshotFloodFlush = false;
+
+            toupTekImageMode = ToupCamImageMode.PUSH;
+            altairImageMode = ToupCamImageMode.PUSH;
         }
 
         private string id;
@@ -318,6 +319,32 @@ namespace NINA.Profile {
             set {
                 if (fliEnableSnapshotFloodFlush != value) {
                     fliEnableSnapshotFloodFlush = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private ToupCamImageMode toupTekImageMode;
+
+        [DataMember]
+        public ToupCamImageMode ToupTekImageMode {
+            get => toupTekImageMode;
+            set {
+                if (toupTekImageMode != value) {
+                    toupTekImageMode = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private ToupCamImageMode altairImageMode;
+
+        [DataMember]
+        public ToupCamImageMode AltairImageMode {
+            get => altairImageMode;
+            set {
+                if (altairImageMode != value) {
+                    altairImageMode = value;
                     RaisePropertyChanged();
                 }
             }

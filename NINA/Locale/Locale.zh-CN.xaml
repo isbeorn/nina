@@ -1,7 +1,4 @@
-﻿<ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:s="clr-namespace:System;assembly=mscorlib">
+﻿<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
     <s:String x:Key="LblAbbrEast" xml:space="default">东</s:String>
     <s:String x:Key="LblAbbrNorth" xml:space="default">北</s:String>
     <s:String x:Key="LblAbbrSouth" xml:space="default">南</s:String>
@@ -18,6 +15,7 @@
     <s:String x:Key="LblAfter" xml:space="default">After</s:String>
     <s:String x:Key="LblAFUseBrightestStars" xml:space="default">使用最亮的n颗星星</s:String>
     <s:String x:Key="LblAFUseBrightestStarsTooltip" xml:space="default">限制使用最亮的星点自动对焦。0表示无限制。</s:String>
+    <s:String x:Key="LblAltairCameraSetup" xml:space="default">Altair Camera Setup</s:String>
     <s:String x:Key="LblAlternativeUIColorSchema" xml:space="default">替代UI颜色方案</s:String>
     <s:String x:Key="LblAltitude" xml:space="default">高度</s:String>
     <s:String x:Key="LblAltitudeErrorMeasurement" xml:space="default">测量高度误差</s:String>
@@ -39,7 +37,7 @@
     <s:String x:Key="LblApparentMagnitude" xml:space="default">视星等</s:String>
     <s:String x:Key="LblApparentSize" xml:space="default">视尺寸</s:String>
     <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">应用程序遇到未处理的异常，很可能必须关闭。
-该错误已记录到 &quot;%localappdata%\NINA\Logs&quot;.
+该错误已记录到 "%localappdata%\NINA\Logs".
 应用程序是否应该尝试从错误中恢复？ （可能导致意外行为）</s:String>
     <s:String x:Key="LblApplicationStartDateDescription" xml:space="default">格式为的开始日期 YYYY-MM-DD</s:String>
     <s:String x:Key="LblArcmin" xml:space="default">角分</s:String>
@@ -563,6 +561,7 @@ Type: {1}
     <s:String x:Key="LblMinOptimalADU" xml:space="default">最低ADU</s:String>
     <s:String x:Key="LblMinutesAfterMeridian" xml:space="default">过中天几分钟后翻转</s:String>
     <s:String x:Key="LblMinutesShort" xml:space="default">分钟</s:String>
+    <s:String x:Key="LblMode" xml:space="default">Mode</s:String>
     <s:String x:Key="LblMoonRise" xml:space="default">月出</s:String>
     <s:String x:Key="LblMoonSet" xml:space="default">月落</s:String>
     <s:String x:Key="LblMove" xml:space="default">移动</s:String>
@@ -655,13 +654,13 @@ Type: {1}
     <s:String x:Key="LblPaused" xml:space="default">已暂停</s:String>
     <s:String x:Key="LblPauseTimeBeforeMeridian" xml:space="default">中天前暂停(分钟)</s:String>
     <s:String x:Key="LblPercentShort" xml:space="default">%</s:String>
-    <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0} ({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0} ({1}")</s:String>
     <s:String x:Key="LblPhd2FailedEquipmentConnection" xml:space="default">PHD2无法连接到设备</s:String>
     <s:String x:Key="LblPHD2HistorySize" xml:space="default">PHD2 历史尺寸</s:String>
     <s:String x:Key="LblPHD2MinimalHistorySize" xml:space="default">PHD2 历史尺寸 (图像)</s:String>
     <s:String x:Key="LblPHD2Path" xml:space="default">PHD2路径</s:String>
     <s:String x:Key="LblPhd2PathNotFound" xml:space="default">无法启动PHD2。未找到路径</s:String>
-    <s:String x:Key="LblPHD2RARMS" xml:space="default">RA: {0} ({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2RARMS" xml:space="default">RA: {0} ({1}")</s:String>
     <s:String x:Key="LblPhd2ServerConnectionLost" xml:space="default">PHD2服务器连接丢失!</s:String>
     <s:String x:Key="LblPHD2ServerPort" xml:space="default">PHD2服务器端口</s:String>
     <s:String x:Key="LblPHD2ServerUrl" xml:space="default">PHD2服务器Url</s:String>
@@ -676,7 +675,7 @@ Type: {1}
         已连接到客户端: {0}
     </s:String>
     <s:String x:Key="LblPhd2SynchronizedServiceStarted" xml:space="default">同步PHD2服务启动</s:String>
-    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0} ({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0} ({1}")</s:String>
     <s:String x:Key="LblPixels" xml:space="default">像素</s:String>
     <s:String x:Key="LblPixelScale" xml:space="default">像素比例</s:String>
     <s:String x:Key="LblPixelSize" xml:space="default">像素大小</s:String>
@@ -700,6 +699,7 @@ Type: {1}
     <s:String x:Key="LblPlateSolveNbOfAttempts" xml:space="default">尝试次数</s:String>
     <s:String x:Key="LblPlateSolveNbOfAttemptsTooltip" xml:space="default">序列拍摄中，将尝试解析多少次，直到认为失败为止</s:String>
     <s:String x:Key="LblPlatesolveNoCoordinates" xml:space="default">没有可用的参考坐标</s:String>
+    <s:String x:Key="LblPlateSolveNoFocalLength" xml:space="default">Plate solve aborted. The telescope's effective focal length must be specified under Options &gt; Equipment</s:String>
     <s:String x:Key="LblPlatesolveProvidedBy" xml:space="default">解析服务提供：</s:String>
     <s:String x:Key="LblPlateSolver" xml:space="default">解析</s:String>
     <s:String x:Key="LblPlateSolveReattemptDelay" xml:space="default">等待下一次解析尝试: {0}</s:String>
@@ -721,6 +721,8 @@ Type: {1}
     <s:String x:Key="LblPrimary" xml:space="default">主要</s:String>
     <s:String x:Key="LblProfiles" xml:space="default">配置文件</s:String>
     <s:String x:Key="LblProgress" xml:space="default">进度</s:String>
+    <s:String x:Key="LblPull" xml:space="default">Pull</s:String>
+    <s:String x:Key="LblPush" xml:space="default">Push</s:String>
     <s:String x:Key="LblPx" xml:space="default">px</s:String>
     <s:String x:Key="LblRA" xml:space="default">RA</s:String>
     <s:String x:Key="LblRACorrections" xml:space="default">RA修正</s:String>
@@ -942,6 +944,7 @@ Type: {1}
 将矩形拖到要进行子采样的区域，然后在“捕捉”中启用子采样。您的相机将只下载所选区域。</s:String>
     <s:String x:Key="LblTooltipTakeExposure" xml:space="default">开始曝光</s:String>
     <s:String x:Key="LblTotalNo" xml:space="default">拍摄张数#</s:String>
+    <s:String x:Key="LblToupTekCameraSetup" xml:space="default">ToupTek Camera Setup</s:String>
     <s:String x:Key="LblTrace" xml:space="default">跟踪</s:String>
     <s:String x:Key="LblTracking" xml:space="default">追踪</s:String>
     <s:String x:Key="LblTransitNorth" xml:space="default">转向北天</s:String>

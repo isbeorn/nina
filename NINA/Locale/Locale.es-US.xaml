@@ -1,7 +1,4 @@
-﻿<ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:s="clr-namespace:System;assembly=mscorlib">
+﻿<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
     <s:String x:Key="LblAbbrEast" xml:space="default">E</s:String>
     <s:String x:Key="LblAbbrNorth" xml:space="default">N</s:String>
     <s:String x:Key="LblAbbrSouth" xml:space="default">S</s:String>
@@ -18,6 +15,7 @@
     <s:String x:Key="LblAfter" xml:space="default">Despues</s:String>
     <s:String x:Key="LblAFUseBrightestStars" xml:space="default">Usar n Estrellas brillantes</s:String>
     <s:String x:Key="LblAFUseBrightestStarsTooltip" xml:space="default">Limitar AF a las estrellas mas brillantes. 0 significa sin limite</s:String>
+    <s:String x:Key="LblAltairCameraSetup" xml:space="default">Configuracion Camara Altair</s:String>
     <s:String x:Key="LblAlternativeUIColorSchema" xml:space="default">Color de Interface Alternativo</s:String>
     <s:String x:Key="LblAltitude" xml:space="default">Altitud</s:String>
     <s:String x:Key="LblAltitudeErrorMeasurement" xml:space="default">Medir Error de Altitud</s:String>
@@ -39,7 +37,7 @@ Usando esos dos puntos el error de altitud actual sera calculado y desplegado</s
     <s:String x:Key="LblApparentMagnitude" xml:space="default">Magnitud Aparente</s:String>
     <s:String x:Key="LblApparentSize" xml:space="default">Tamaño Aparente</s:String>
     <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">La Aplicacion se encontro una excepcion sin manejar y seguramente fue cerrada
-El error ha sido registrado &quot;%localappdata%\NINA\Logs&quot;.
+El error ha sido registrado "%localappdata%\NINA\Logs".
 Debe la aplicacion tratar de recuperarse del error? (Puede llegar a resultados inexperados)</s:String>
     <s:String x:Key="LblApplicationStartDateDescription" xml:space="default">Fecha de Inicio de aplicacion con formato YYYY-MM-DD</s:String>
     <s:String x:Key="LblArcmin" xml:space="default">arcmin</s:String>
@@ -563,6 +561,7 @@ Calculado HFR: {2}
     <s:String x:Key="LblMinOptimalADU" xml:space="default">ADU Minimo</s:String>
     <s:String x:Key="LblMinutesAfterMeridian" xml:space="default">Minutos despues del Meridiano</s:String>
     <s:String x:Key="LblMinutesShort" xml:space="default">min</s:String>
+    <s:String x:Key="LblMode" xml:space="default">Modo</s:String>
     <s:String x:Key="LblMoonRise" xml:space="default">Salida lunar</s:String>
     <s:String x:Key="LblMoonSet" xml:space="default">Puesta Lunar</s:String>
     <s:String x:Key="LblMove" xml:space="default">Mover</s:String>
@@ -655,13 +654,13 @@ Calculado HFR: {2}
     <s:String x:Key="LblPaused" xml:space="default">Pausado</s:String>
     <s:String x:Key="LblPauseTimeBeforeMeridian" xml:space="default">Pausar anter del Meridiano (minutos)</s:String>
     <s:String x:Key="LblPercentShort" xml:space="default">%</s:String>
-    <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0} ({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0} ({1}")</s:String>
     <s:String x:Key="LblPhd2FailedEquipmentConnection" xml:space="default">PHD2 no pudo conectar al equipamiento</s:String>
     <s:String x:Key="LblPHD2HistorySize" xml:space="default">PHD2 Tamaño Historial</s:String>
     <s:String x:Key="LblPHD2MinimalHistorySize" xml:space="default">PHD2 Tamaño de la Historia (Captura)</s:String>
     <s:String x:Key="LblPHD2Path" xml:space="default">PHD2 Ruta</s:String>
     <s:String x:Key="LblPhd2PathNotFound" xml:space="default">No se Pudo Iniciar PHD2. Ruta no encontrada</s:String>
-    <s:String x:Key="LblPHD2RARMS" xml:space="default">RA: {0} ({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2RARMS" xml:space="default">RA: {0} ({1}")</s:String>
     <s:String x:Key="LblPhd2ServerConnectionLost" xml:space="default">Coneccion Perdida con Servidor PHD2</s:String>
     <s:String x:Key="LblPHD2ServerPort" xml:space="default">PHD2 Puerto del Servidor</s:String>
     <s:String x:Key="LblPHD2ServerUrl" xml:space="default">PHD2 Url Servidor</s:String>
@@ -676,7 +675,7 @@ Calculado HFR: {2}
         Clientes conectados: {0}
     </s:String>
     <s:String x:Key="LblPhd2SynchronizedServiceStarted" xml:space="default">Servicio PHD2 Sincronizado iniciado</s:String>
-    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0} ({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0} ({1}")</s:String>
     <s:String x:Key="LblPixels" xml:space="default">Pixeles</s:String>
     <s:String x:Key="LblPixelScale" xml:space="default">Escala de Pixel</s:String>
     <s:String x:Key="LblPixelSize" xml:space="default">Tamaño Pixel</s:String>
@@ -700,6 +699,7 @@ Calculado HFR: {2}
     <s:String x:Key="LblPlateSolveNbOfAttempts" xml:space="default">Numero de Intentos</s:String>
     <s:String x:Key="LblPlateSolveNbOfAttemptsTooltip" xml:space="default">Cuantas veces una operacion deresolucion de campo a mitad de secuencia sera intentada hasta ser considerada fallida</s:String>
     <s:String x:Key="LblPlatesolveNoCoordinates" xml:space="default">No hay ccordenadas de referencia disponible</s:String>
+    <s:String x:Key="LblPlateSolveNoFocalLength" xml:space="default">Plate solve aborted. The telescope's effective focal length must be specified under Options &gt; Equipment</s:String>
     <s:String x:Key="LblPlatesolveProvidedBy" xml:space="default">Servicio de resolucion de campo provisto por</s:String>
     <s:String x:Key="LblPlateSolver" xml:space="default">Solucionador de campo</s:String>
     <s:String x:Key="LblPlateSolveReattemptDelay" xml:space="default">Esperando por el proximo intento de resolucion de campo: {0}</s:String>
@@ -721,6 +721,8 @@ Calculado HFR: {2}
     <s:String x:Key="LblPrimary" xml:space="default">Primario</s:String>
     <s:String x:Key="LblProfiles" xml:space="default">Perfiles</s:String>
     <s:String x:Key="LblProgress" xml:space="default">Progreso</s:String>
+    <s:String x:Key="LblPull" xml:space="default">Pull</s:String>
+    <s:String x:Key="LblPush" xml:space="default">Push</s:String>
     <s:String x:Key="LblPx" xml:space="default">px</s:String>
     <s:String x:Key="LblRA" xml:space="default">AR</s:String>
     <s:String x:Key="LblRACorrections" xml:space="default">AR Correciones</s:String>
@@ -942,6 +944,7 @@ Mueve el rectangulo sobre una estrella con los picos bahtinov. NINA tratara de d
 Mueve el rectangulo sobre la parte del Encuadre que quieres hacer subsampling. Tu camara solo descargara el area seleccionada</s:String>
     <s:String x:Key="LblTooltipTakeExposure" xml:space="default">Iniciar Exposicion</s:String>
     <s:String x:Key="LblTotalNo" xml:space="default">Total #</s:String>
+    <s:String x:Key="LblToupTekCameraSetup" xml:space="default">Configuracion Camara ToupTek</s:String>
     <s:String x:Key="LblTrace" xml:space="default">Trazar</s:String>
     <s:String x:Key="LblTracking" xml:space="default">Seguimiento</s:String>
     <s:String x:Key="LblTransitNorth" xml:space="default">Transito Norte</s:String>

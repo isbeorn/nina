@@ -1,7 +1,4 @@
-﻿<ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:s="clr-namespace:System;assembly=mscorlib">
+﻿<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
     <s:String x:Key="LblAbbrEast" xml:space="default">E</s:String>
     <s:String x:Key="LblAbbrNorth" xml:space="default">N</s:String>
     <s:String x:Key="LblAbbrSouth" xml:space="default">S</s:String>
@@ -17,7 +14,8 @@
     <s:String x:Key="LblAFStarHFR" xml:space="default">HFR Stelle</s:String>
     <s:String x:Key="LblAfter" xml:space="default">Dopo</s:String>
     <s:String x:Key="LblAFUseBrightestStars" xml:space="default">Usa le n stelle più luminose</s:String>
-    <s:String x:Key="LblAFUseBrightestStarsTooltip" xml:space="default">Limita AF alle stelle più luminose. 0 equivale a &quot;nessun limite&quot;</s:String>
+    <s:String x:Key="LblAFUseBrightestStarsTooltip" xml:space="default">Limita AF alle stelle più luminose. 0 equivale a "nessun limite"</s:String>
+    <s:String x:Key="LblAltairCameraSetup" xml:space="default">Setup Altair Camera</s:String>
     <s:String x:Key="LblAlternativeUIColorSchema" xml:space="default">Schema Colori UI Alternativo</s:String>
     <s:String x:Key="LblAltitude" xml:space="default">Altitudine</s:String>
     <s:String x:Key="LblAltitudeErrorMeasurement" xml:space="default">Misura Error Altitudine</s:String>
@@ -39,7 +37,7 @@ Usando questi due punti l'errore attuale di altitudine verra' calcolato e mostra
     <s:String x:Key="LblApparentMagnitude" xml:space="default">Magnitudine Apparente</s:String>
     <s:String x:Key="LblApparentSize" xml:space="default">Dimensione Apparente</s:String>
     <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">L'applicazione è incappata in una exception non gestita e probabilmente deve chiudersi.
-L'errore è stato scritto in &quot;%localappdata%\NINA\Logs&quot;.
+L'errore è stato scritto in "%localappdata%\NINA\Logs".
 Vuoi che l'applicazione provi a risolvere quell'errore? (Può portare a comportamenti inattesi)</s:String>
     <s:String x:Key="LblApplicationStartDateDescription" xml:space="default">Data avvio applicazione con formato YYYY-MM-DD</s:String>
     <s:String x:Key="LblArcmin" xml:space="default">arcmin</s:String>
@@ -564,6 +562,7 @@ HFR Calcolato: {2}
     <s:String x:Key="LblMinOptimalADU" xml:space="default">ADU Minimo</s:String>
     <s:String x:Key="LblMinutesAfterMeridian" xml:space="default">Minuti dopo il Meridiano</s:String>
     <s:String x:Key="LblMinutesShort" xml:space="default">min</s:String>
+    <s:String x:Key="LblMode" xml:space="default">Modo</s:String>
     <s:String x:Key="LblMoonRise" xml:space="default">Levata Luna</s:String>
     <s:String x:Key="LblMoonSet" xml:space="default">tramonto Luna</s:String>
     <s:String x:Key="LblMove" xml:space="default">Muovi</s:String>
@@ -656,13 +655,13 @@ HFR Calcolato: {2}
     <s:String x:Key="LblPaused" xml:space="default">In Pausa</s:String>
     <s:String x:Key="LblPauseTimeBeforeMeridian" xml:space="default">Pausa prima del meridiano (minuti)</s:String>
     <s:String x:Key="LblPercentShort" xml:space="default">%</s:String>
-    <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0} ({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0} ({1}")</s:String>
     <s:String x:Key="LblPhd2FailedEquipmentConnection" xml:space="default">PHD2 è riuscito a collegarsi all'equipaggiamento</s:String>
     <s:String x:Key="LblPHD2HistorySize" xml:space="default">Dimensione Storia PHD2</s:String>
     <s:String x:Key="LblPHD2MinimalHistorySize" xml:space="default">Dimensione Storia  PHD2 (Imaging)</s:String>
     <s:String x:Key="LblPHD2Path" xml:space="default">Percorso PHD2</s:String>
     <s:String x:Key="LblPhd2PathNotFound" xml:space="default">Impossibile avviare PHD2. Percorso non trovato</s:String>
-    <s:String x:Key="LblPHD2RARMS" xml:space="default">RA: {0} ({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2RARMS" xml:space="default">RA: {0} ({1}")</s:String>
     <s:String x:Key="LblPhd2ServerConnectionLost" xml:space="default">Connessione al Server PHD2 persa!</s:String>
     <s:String x:Key="LblPHD2ServerPort" xml:space="default">Porta Server PHD2</s:String>
     <s:String x:Key="LblPHD2ServerUrl" xml:space="default">Url Server PHD2</s:String>
@@ -677,7 +676,7 @@ HFR Calcolato: {2}
         clients connessi: {0}
     </s:String>
     <s:String x:Key="LblPhd2SynchronizedServiceStarted" xml:space="default">Servizio sincronizzato PHD2 avviato</s:String>
-    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0} ({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0} ({1}")</s:String>
     <s:String x:Key="LblPixels" xml:space="default">Pixels</s:String>
     <s:String x:Key="LblPixelScale" xml:space="default">Scala Pixel</s:String>
     <s:String x:Key="LblPixelSize" xml:space="default">Dimension Pixel</s:String>
@@ -723,6 +722,8 @@ HFR Calcolato: {2}
     <s:String x:Key="LblPrimary" xml:space="default">Primario</s:String>
     <s:String x:Key="LblProfiles" xml:space="default">Profili</s:String>
     <s:String x:Key="LblProgress" xml:space="default">Progresso</s:String>
+    <s:String x:Key="LblPull" xml:space="default">Pull</s:String>
+    <s:String x:Key="LblPush" xml:space="default">Push</s:String>
     <s:String x:Key="LblPx" xml:space="default">px</s:String>
     <s:String x:Key="LblRA" xml:space="default">RA</s:String>
     <s:String x:Key="LblRACorrections" xml:space="default">Correzioni RA</s:String>
@@ -845,7 +846,7 @@ Questo tempalte sarà usato all'avvio per inizializzare la sequenza invece di qu
 Prima di proseguire, si prega di assicurarsi che il sistema sia a fuoco o vicino ad una buona focalizzazione.</s:String>
     <s:String x:Key="LblStartBacklashQuestion" xml:space="default">Start Backlash Measurement?</s:String>
     <s:String x:Key="LblStartGuiding" xml:space="default">Inizia la guida</s:String>
-    <s:String x:Key="LblStartGuidingButGuiderNotConnected" xml:space="default">&quot;Inizia guida&quot; è abilitato, tuttavia il guider non è connesso</s:String>
+    <s:String x:Key="LblStartGuidingButGuiderNotConnected" xml:space="default">"Inizia guida" è abilitato, tuttavia il guider non è connesso</s:String>
     <s:String x:Key="LblStartGuidingFailed" xml:space="default">Avvio guida fallito</s:String>
     <s:String x:Key="LblStartingINBacklashMeasurement" xml:space="default">Inizio misura Backlash IN</s:String>
     <s:String x:Key="LblStartingOUTBacklashMeasurement" xml:space="default">Inizio misura Backlash OUT</s:String>
@@ -944,6 +945,7 @@ Trascina il rettangolo su una stella con le linee di bahtinov. NINA cercherà le
 Trascina il rettangolo  sulla parte del fotogramma che vuoi estrarre ed abilita il subsampling in snap. La tua camera scaricherà solamente l'area selezionata.</s:String>
     <s:String x:Key="LblTooltipTakeExposure" xml:space="default">Inizia Esposizione</s:String>
     <s:String x:Key="LblTotalNo" xml:space="default">Totali #</s:String>
+    <s:String x:Key="LblToupTekCameraSetup" xml:space="default">Setup ToupTek Camera</s:String>
     <s:String x:Key="LblTrace" xml:space="default">Trace</s:String>
     <s:String x:Key="LblTracking" xml:space="default">Tracking</s:String>
     <s:String x:Key="LblTransitNorth" xml:space="default">Transit Nord</s:String>

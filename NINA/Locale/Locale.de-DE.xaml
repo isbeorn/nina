@@ -1,7 +1,4 @@
-﻿<ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:s="clr-namespace:System;assembly=mscorlib">
+﻿<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
     <s:String x:Key="LblAbbrEast" xml:space="default">O</s:String>
     <s:String x:Key="LblAbbrNorth" xml:space="default">N</s:String>
     <s:String x:Key="LblAbbrSouth" xml:space="default">S</s:String>
@@ -18,6 +15,7 @@
     <s:String x:Key="LblAfter" xml:space="default">Nach</s:String>
     <s:String x:Key="LblAFUseBrightestStars" xml:space="default">Nutze hellste n Sterne</s:String>
     <s:String x:Key="LblAFUseBrightestStarsTooltip" xml:space="default">Limitiere AF auf hellste Sterne. 0 bedeutet kein Limit</s:String>
+    <s:String x:Key="LblAltairCameraSetup" xml:space="default">Altair Kamerasetup</s:String>
     <s:String x:Key="LblAlternativeUIColorSchema" xml:space="default">Alternatives UI Farbschema</s:String>
     <s:String x:Key="LblAltitude" xml:space="default">Höhe</s:String>
     <s:String x:Key="LblAltitudeErrorMeasurement" xml:space="default">Messe Höhenfehler</s:String>
@@ -39,7 +37,7 @@ Anhand der zwei Punkte wird dann der Höhenfehler errechnet und angezeigt</s:Str
     <s:String x:Key="LblApparentMagnitude" xml:space="default">Scheinbare Helligkeit</s:String>
     <s:String x:Key="LblApparentSize" xml:space="default">Scheinbare Größe</s:String>
     <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">Die Anwendung lief in einen unbehandelten Fehler und muss möglicherweise beendet werden.
-Der Fehler wurde in &quot;%localappdata%\NINA\Logs&quot; aufgezeichnet.
+Der Fehler wurde in "%localappdata%\NINA\Logs" aufgezeichnet.
 Soll die Anwendung versuchen sich von dem Fehler zu erholen? (Kann zu unerwartetem Verhalten führen)</s:String>
     <s:String x:Key="LblApplicationStartDateDescription" xml:space="default">Applikationsstartdatum mit Format YYYY-MM-DD</s:String>
     <s:String x:Key="LblArcmin" xml:space="default">Winkelminuten</s:String>
@@ -563,6 +561,7 @@ Berechneter HFR: {2}
     <s:String x:Key="LblMinOptimalADU" xml:space="default">Minimum ADU</s:String>
     <s:String x:Key="LblMinutesAfterMeridian" xml:space="default">Minuten nach Meridian</s:String>
     <s:String x:Key="LblMinutesShort" xml:space="default">min</s:String>
+    <s:String x:Key="LblMode" xml:space="default">Modus</s:String>
     <s:String x:Key="LblMoonRise" xml:space="default">Mondaufgang</s:String>
     <s:String x:Key="LblMoonSet" xml:space="default">Monduntergang</s:String>
     <s:String x:Key="LblMove" xml:space="default">Bewegen</s:String>
@@ -655,13 +654,13 @@ Berechneter HFR: {2}
     <s:String x:Key="LblPaused" xml:space="default">Pausiert</s:String>
     <s:String x:Key="LblPauseTimeBeforeMeridian" xml:space="default">Vor Meridian pausieren (Minuten)</s:String>
     <s:String x:Key="LblPercentShort" xml:space="default">%</s:String>
-    <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0} ({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0} ({1}")</s:String>
     <s:String x:Key="LblPhd2FailedEquipmentConnection" xml:space="default">PHD2 konnte nicht zur Ausrüstung verbinden</s:String>
     <s:String x:Key="LblPHD2HistorySize" xml:space="default">PHD2 Historieneinträge</s:String>
     <s:String x:Key="LblPHD2MinimalHistorySize" xml:space="default">PHD2 Historieneinträge (Imaging)</s:String>
     <s:String x:Key="LblPHD2Path" xml:space="default">Pfad zu PHD2</s:String>
     <s:String x:Key="LblPhd2PathNotFound" xml:space="default">Konnte PHD2 nicht starten. Der Pfad wurde nicht gefunden</s:String>
-    <s:String x:Key="LblPHD2RARMS" xml:space="default">RA: {0} ({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2RARMS" xml:space="default">RA: {0} ({1}")</s:String>
     <s:String x:Key="LblPhd2ServerConnectionLost" xml:space="default">PHD2 Server Verbindung verloren!</s:String>
     <s:String x:Key="LblPHD2ServerPort" xml:space="default">PHD2 Server Port</s:String>
     <s:String x:Key="LblPHD2ServerUrl" xml:space="default">PHD2 Server Url</s:String>
@@ -676,7 +675,7 @@ Berechneter HFR: {2}
         Verbundene Clients: {0}
     </s:String>
     <s:String x:Key="LblPhd2SynchronizedServiceStarted" xml:space="default">Synchronisierter PHD2 Service gestartet</s:String>
-    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0} ({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0} ({1}")</s:String>
     <s:String x:Key="LblPixels" xml:space="default">Pixel</s:String>
     <s:String x:Key="LblPixelScale" xml:space="default">Pixel Maßstab</s:String>
     <s:String x:Key="LblPixelSize" xml:space="default">Pixelgröße</s:String>
@@ -722,6 +721,8 @@ Berechneter HFR: {2}
     <s:String x:Key="LblPrimary" xml:space="default">Primär</s:String>
     <s:String x:Key="LblProfiles" xml:space="default">Profile</s:String>
     <s:String x:Key="LblProgress" xml:space="default">Fortschritt</s:String>
+    <s:String x:Key="LblPull" xml:space="default">Pull</s:String>
+    <s:String x:Key="LblPush" xml:space="default">Push</s:String>
     <s:String x:Key="LblPx" xml:space="default">px</s:String>
     <s:String x:Key="LblRA" xml:space="default">RA</s:String>
     <s:String x:Key="LblRACorrections" xml:space="default">RA Korrekturen</s:String>
@@ -801,6 +802,7 @@ Diese Vorlage wird beim Starten der Applikation geladen, statt der Standard Sequ
     <s:String x:Key="LblSerialRelay" xml:space="default">Serielles Relay</s:String>
     <s:String x:Key="LblSetAsSequenceTarget" xml:space="default">Als Sequenzziel setzen</s:String>
     <s:String x:Key="LblSetAutoFocusFilter" xml:space="default">Als Auto Focus Filter setzen</s:String>
+    <s:String x:Key="LblSetAutoFocusFilterTooltip" xml:space="default">Wenn aktiv wird Autofokus immer den ausgewählten Filter nutzen unter Berücksichtigung der Filter Offsets</s:String>
     <s:String x:Key="LblSetForFramingAssistant" xml:space="default">Für Bildausrichtungsassistent setzen</s:String>
     <s:String x:Key="LblSetNewValue" xml:space="default">Neuen Wert einstellen</s:String>
     <s:String x:Key="LblSettings" xml:space="default">Einstellungen</s:String>
@@ -943,6 +945,7 @@ Das Rechteck über einen Teil des Bildes bewegen das Sie fotografieren wollen un
     </s:String>
     <s:String x:Key="LblTooltipTakeExposure" xml:space="default">Startet Aufnahme</s:String>
     <s:String x:Key="LblTotalNo" xml:space="default">Total #</s:String>
+    <s:String x:Key="LblToupTekCameraSetup" xml:space="default">ToupTek Kamerasetup</s:String>
     <s:String x:Key="LblTrace" xml:space="default">Trace</s:String>
     <s:String x:Key="LblTracking" xml:space="default">Nachführung</s:String>
     <s:String x:Key="LblTransitNorth" xml:space="default">Transit Nord</s:String>

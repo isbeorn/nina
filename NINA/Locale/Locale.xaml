@@ -1,7 +1,4 @@
-﻿<ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:s="clr-namespace:System;assembly=mscorlib">
+﻿<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
     <s:String x:Key="LblAbbrEast" xml:space="default">E</s:String>
     <s:String x:Key="LblAbbrNorth" xml:space="default">N</s:String>
     <s:String x:Key="LblAbbrSouth" xml:space="default">S</s:String>
@@ -18,6 +15,7 @@
     <s:String x:Key="LblAfter" xml:space="default">After</s:String>
     <s:String x:Key="LblAFUseBrightestStars" xml:space="default">Use brightest n stars</s:String>
     <s:String x:Key="LblAFUseBrightestStarsTooltip" xml:space="default">Limit AF to brightest stars. 0 means no limit.</s:String>
+    <s:String x:Key="LblAltairCameraSetup" xml:space="default">Altair Camera Setup</s:String>
     <s:String x:Key="LblAlternativeUIColorSchema" xml:space="default">Alternative UI Color Schema</s:String>
     <s:String x:Key="LblAltitude" xml:space="default">Altitude</s:String>
     <s:String x:Key="LblAltitudeErrorMeasurement" xml:space="default">Measure Altitude Error</s:String>
@@ -39,7 +37,7 @@ Using those two points the actual altitude error will be calculated and displaye
     <s:String x:Key="LblApparentMagnitude" xml:space="default">Apparent Magnitude</s:String>
     <s:String x:Key="LblApparentSize" xml:space="default">Apparent Size</s:String>
     <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">The Application ran into an unhandled exception and most likely has to shut down.
-The error has been logged to &quot;%localappdata%\NINA\Logs&quot;.
+The error has been logged to "%localappdata%\NINA\Logs".
 Should the Application try to recover from the error? (Can lead to unexpected behavior)</s:String>
     <s:String x:Key="LblApplicationStartDateDescription" xml:space="default">Application start date with format YYYY-MM-DD</s:String>
     <s:String x:Key="LblArcmin" xml:space="default">arcmin</s:String>
@@ -563,6 +561,7 @@ Calculated HFR: {2}
     <s:String x:Key="LblMinOptimalADU" xml:space="default">Minimal ADU</s:String>
     <s:String x:Key="LblMinutesAfterMeridian" xml:space="default">Minutes after Meridian</s:String>
     <s:String x:Key="LblMinutesShort" xml:space="default">min</s:String>
+    <s:String x:Key="LblMode" xml:space="default">Mode</s:String>
     <s:String x:Key="LblMoonRise" xml:space="default">Moonrise</s:String>
     <s:String x:Key="LblMoonSet" xml:space="default">Moonset</s:String>
     <s:String x:Key="LblMove" xml:space="default">Move</s:String>
@@ -655,13 +654,13 @@ Calculated HFR: {2}
     <s:String x:Key="LblPaused" xml:space="default">Paused</s:String>
     <s:String x:Key="LblPauseTimeBeforeMeridian" xml:space="default">Pause before Meridian (minutes)</s:String>
     <s:String x:Key="LblPercentShort" xml:space="default">%</s:String>
-    <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0}({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0}({1}")</s:String>
     <s:String x:Key="LblPhd2FailedEquipmentConnection" xml:space="default">PHD2 wasn't able to connect to the equipment</s:String>
     <s:String x:Key="LblPHD2HistorySize" xml:space="default">PHD2 History Size</s:String>
     <s:String x:Key="LblPHD2MinimalHistorySize" xml:space="default">PHD2 History Size (Imaging)</s:String>
     <s:String x:Key="LblPHD2Path" xml:space="default">PHD2 path</s:String>
     <s:String x:Key="LblPhd2PathNotFound" xml:space="default">Could not start PHD2. Path not found</s:String>
-    <s:String x:Key="LblPHD2RARMS" xml:space="default">RA: {0} ({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2RARMS" xml:space="default">RA: {0} ({1}")</s:String>
     <s:String x:Key="LblPhd2ServerConnectionLost" xml:space="default">PHD2 Server Connection lost!</s:String>
     <s:String x:Key="LblPHD2ServerPort" xml:space="default">PHD2 Server Port</s:String>
     <s:String x:Key="LblPHD2ServerUrl" xml:space="default">PHD2 Server Url</s:String>
@@ -676,7 +675,7 @@ Calculated HFR: {2}
         Connected clients: {0}
     </s:String>
     <s:String x:Key="LblPhd2SynchronizedServiceStarted" xml:space="default">Synchronized PHD2 service started</s:String>
-    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0}({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0}({1}")</s:String>
     <s:String x:Key="LblPixels" xml:space="default">Pixels</s:String>
     <s:String x:Key="LblPixelScale" xml:space="default">Pixel Scale</s:String>
     <s:String x:Key="LblPixelSize" xml:space="default">Pixel Size</s:String>
@@ -722,6 +721,8 @@ Calculated HFR: {2}
     <s:String x:Key="LblPrimary" xml:space="default">Primary</s:String>
     <s:String x:Key="LblProfiles" xml:space="default">Profiles</s:String>
     <s:String x:Key="LblProgress" xml:space="default">Progress</s:String>
+    <s:String x:Key="LblPull" xml:space="default">Pull</s:String>
+    <s:String x:Key="LblPush" xml:space="default">Push</s:String>
     <s:String x:Key="LblPx" xml:space="default">px</s:String>
     <s:String x:Key="LblRA" xml:space="default">RA</s:String>
     <s:String x:Key="LblRACorrections" xml:space="default">RA Corrections</s:String>
@@ -943,6 +944,7 @@ Drag the rectangle over a star with the bahtinov spikes. NINA will try to detect
 Drag the rectangle over the part of the frame you want to subsample and enable subsampling in snap. Your camera will only download the selected area.</s:String>
     <s:String x:Key="LblTooltipTakeExposure" xml:space="default">Starts Exposure</s:String>
     <s:String x:Key="LblTotalNo" xml:space="default">Total #</s:String>
+    <s:String x:Key="LblToupTekCameraSetup" xml:space="default">ToupTek Camera Setup</s:String>
     <s:String x:Key="LblTrace" xml:space="default">Trace</s:String>
     <s:String x:Key="LblTracking" xml:space="default">Tracking</s:String>
     <s:String x:Key="LblTransitNorth" xml:space="default">Transit North</s:String>
