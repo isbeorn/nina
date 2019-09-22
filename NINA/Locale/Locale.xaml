@@ -13,6 +13,7 @@
     <s:String x:Key="LblAfter" xml:space="default">After</s:String>
     <s:String x:Key="LblAFUseBrightestStars" xml:space="default">Use brightest n stars</s:String>
     <s:String x:Key="LblAFUseBrightestStarsTooltip" xml:space="default">Limit AF to brightest stars. 0 means no limit.</s:String>
+    <s:String x:Key="LblAltairCameraSetup" xml:space="default">Altair Camera Setup</s:String>
     <s:String x:Key="LblAlternativeUIColorSchema" xml:space="default">Alternative UI Color Schema</s:String>
     <s:String x:Key="LblAltitude" xml:space="default">Altitude</s:String>
     <s:String x:Key="LblAltitudeErrorMeasurement" xml:space="default">Measure Altitude Error</s:String>
@@ -538,6 +539,7 @@ Calculated HFR: {2}
     <s:String x:Key="LblMinOptimalADU" xml:space="default">Minimal ADU</s:String>
     <s:String x:Key="LblMinutesAfterMeridian" xml:space="default">Minutes after Meridian</s:String>
     <s:String x:Key="LblMinutesShort" xml:space="default">min</s:String>
+    <s:String x:Key="LblMode" xml:space="default">Mode</s:String>
     <s:String x:Key="LblMoonRise" xml:space="default">Moonrise</s:String>
     <s:String x:Key="LblMoonSet" xml:space="default">Moonset</s:String>
     <s:String x:Key="LblMove" xml:space="default">Move</s:String>
@@ -694,6 +696,8 @@ Calculated HFR: {2}
     <s:String x:Key="LblPrimary" xml:space="default">Primary</s:String>
     <s:String x:Key="LblProfiles" xml:space="default">Profiles</s:String>
     <s:String x:Key="LblProgress" xml:space="default">Progress</s:String>
+    <s:String x:Key="LblPull" xml:space="default">Pull</s:String>
+    <s:String x:Key="LblPush" xml:space="default">Push</s:String>
     <s:String x:Key="LblPx" xml:space="default">px</s:String>
     <s:String x:Key="LblRA" xml:space="default">RA</s:String>
     <s:String x:Key="LblRACorrections" xml:space="default">RA Corrections</s:String>
@@ -910,6 +914,7 @@ Drag the rectangle over a star with the bahtinov spikes. NINA will try to detect
 Drag the rectangle over the part of the frame you want to subsample and enable subsampling in snap. Your camera will only download the selected area.</s:String>
     <s:String x:Key="LblTooltipTakeExposure" xml:space="default">Starts Exposure</s:String>
     <s:String x:Key="LblTotalNo" xml:space="default">Total #</s:String>
+    <s:String x:Key="LblToupTekCameraSetup" xml:space="default">ToupTek Camera Setup</s:String>
     <s:String x:Key="LblTrace" xml:space="default">Trace</s:String>
     <s:String x:Key="LblTracking" xml:space="default">Tracking</s:String>
     <s:String x:Key="LblTransitNorth" xml:space="default">Transit North</s:String>

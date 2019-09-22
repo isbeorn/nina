@@ -79,6 +79,14 @@
         <equip:FLICameraSetupView />
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type camera:ToupTekCamera}">
+        <equip:ToupCamSetupView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type camera:AltairCamera}">
+        <equip:ToupCamSetupView />
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type switch:Eagle}">
         <switchview:EagleSetupView />
     </DataTemplate>

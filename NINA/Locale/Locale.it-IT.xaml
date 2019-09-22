@@ -13,6 +13,7 @@
     <s:String x:Key="LblAfter" xml:space="default">Dopo</s:String>
     <s:String x:Key="LblAFUseBrightestStars" xml:space="default">Usa le n stelle più luminose</s:String>
     <s:String x:Key="LblAFUseBrightestStarsTooltip" xml:space="default">Limita AF alle stelle più luminose. 0 equivale a "nessun limite"</s:String>
+    <s:String x:Key="LblAltairCameraSetup" xml:space="default">Setup Altair Camera</s:String>
     <s:String x:Key="LblAlternativeUIColorSchema" xml:space="default">Schema Colori UI Alternativo</s:String>
     <s:String x:Key="LblAltitude" xml:space="default">Altitudine</s:String>
     <s:String x:Key="LblAltitudeErrorMeasurement" xml:space="default">Misura Error Altitudine</s:String>
@@ -538,6 +539,7 @@ HFR Calcolato: {2}
     <s:String x:Key="LblMinOptimalADU" xml:space="default">ADU Minimo</s:String>
     <s:String x:Key="LblMinutesAfterMeridian" xml:space="default">Minuti dopo il Meridiano</s:String>
     <s:String x:Key="LblMinutesShort" xml:space="default">min</s:String>
+    <s:String x:Key="LblMode" xml:space="default">Modo</s:String>
     <s:String x:Key="LblMoonRise" xml:space="default">Levata Luna</s:String>
     <s:String x:Key="LblMoonSet" xml:space="default">tramonto Luna</s:String>
     <s:String x:Key="LblMove" xml:space="default">Muovi</s:String>
@@ -694,6 +696,8 @@ HFR Calcolato: {2}
     <s:String x:Key="LblPrimary" xml:space="default">Primario</s:String>
     <s:String x:Key="LblProfiles" xml:space="default">Profili</s:String>
     <s:String x:Key="LblProgress" xml:space="default">Progresso</s:String>
+    <s:String x:Key="LblPull" xml:space="default">Pull</s:String>
+    <s:String x:Key="LblPush" xml:space="default">Push</s:String>
     <s:String x:Key="LblPx" xml:space="default">px</s:String>
     <s:String x:Key="LblRA" xml:space="default">RA</s:String>
     <s:String x:Key="LblRACorrections" xml:space="default">Correzioni RA</s:String>
@@ -910,6 +914,7 @@ Trascina il rettangolo su una stella con le linee di bahtinov. NINA cercherà le
 Trascina il rettangolo  sulla parte del fotogramma che vuoi estrarre ed abilita il subsampling in snap. La tua camera scaricherà solamente l'area selezionata.</s:String>
     <s:String x:Key="LblTooltipTakeExposure" xml:space="default">Inizia Esposizione</s:String>
     <s:String x:Key="LblTotalNo" xml:space="default">Totali #</s:String>
+    <s:String x:Key="LblToupTekCameraSetup" xml:space="default">Setup ToupTek Camera</s:String>
     <s:String x:Key="LblTrace" xml:space="default">Trace</s:String>
     <s:String x:Key="LblTracking" xml:space="default">Tracking</s:String>
     <s:String x:Key="LblTransitNorth" xml:space="default">Transit Nord</s:String>

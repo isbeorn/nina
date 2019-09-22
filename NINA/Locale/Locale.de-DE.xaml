@@ -13,6 +13,7 @@
     <s:String x:Key="LblAfter" xml:space="default">Nach</s:String>
     <s:String x:Key="LblAFUseBrightestStars" xml:space="default">Nutze hellste n Sterne</s:String>
     <s:String x:Key="LblAFUseBrightestStarsTooltip" xml:space="default">Limitiere AF auf hellste Sterne. 0 bedeutet kein Limit</s:String>
+    <s:String x:Key="LblAltairCameraSetup" xml:space="default">Altair Kamerasetup</s:String>
     <s:String x:Key="LblAlternativeUIColorSchema" xml:space="default">Alternatives UI Farbschema</s:String>
     <s:String x:Key="LblAltitude" xml:space="default">Höhe</s:String>
     <s:String x:Key="LblAltitudeErrorMeasurement" xml:space="default">Messe Höhenfehler</s:String>
@@ -538,6 +539,7 @@ Berechneter HFR: {2}
     <s:String x:Key="LblMinOptimalADU" xml:space="default">Minimum ADU</s:String>
     <s:String x:Key="LblMinutesAfterMeridian" xml:space="default">Minuten nach Meridian</s:String>
     <s:String x:Key="LblMinutesShort" xml:space="default">min</s:String>
+    <s:String x:Key="LblMode" xml:space="default">Modus</s:String>
     <s:String x:Key="LblMoonRise" xml:space="default">Mondaufgang</s:String>
     <s:String x:Key="LblMoonSet" xml:space="default">Monduntergang</s:String>
     <s:String x:Key="LblMove" xml:space="default">Bewegen</s:String>
@@ -694,6 +696,8 @@ Berechneter HFR: {2}
     <s:String x:Key="LblPrimary" xml:space="default">Primär</s:String>
     <s:String x:Key="LblProfiles" xml:space="default">Profile</s:String>
     <s:String x:Key="LblProgress" xml:space="default">Fortschritt</s:String>
+    <s:String x:Key="LblPull" xml:space="default">Pull</s:String>
+    <s:String x:Key="LblPush" xml:space="default">Push</s:String>
     <s:String x:Key="LblPx" xml:space="default">px</s:String>
     <s:String x:Key="LblRA" xml:space="default">RA</s:String>
     <s:String x:Key="LblRACorrections" xml:space="default">RA Korrekturen</s:String>
@@ -911,6 +915,7 @@ Das Rechteck über einen Teil des Bildes bewegen das Sie fotografieren wollen un
     </s:String>
     <s:String x:Key="LblTooltipTakeExposure" xml:space="default">Startet Aufnahme</s:String>
     <s:String x:Key="LblTotalNo" xml:space="default">Total #</s:String>
+    <s:String x:Key="LblToupTekCameraSetup" xml:space="default">ToupTek Kamerasetup</s:String>
     <s:String x:Key="LblTrace" xml:space="default">Trace</s:String>
     <s:String x:Key="LblTracking" xml:space="default">Nachführung</s:String>
     <s:String x:Key="LblTransitNorth" xml:space="default">Transit Nord</s:String>

@@ -42,10 +42,14 @@ namespace NINA.Profile {
         string FileCameraFolder { get; set; }
         bool FileCameraUseBulbMode { get; set; }
         bool FileCameraIsBayered { get; set; }
+
         bool FLIEnableFloodFlush { get; set; }
         bool FLIEnableSnapshotFloodFlush { get; set; }
         double FLIFloodDuration { get; set; }
         uint FLIFlushCount { get; set; }
         BinningMode FLIFloodBin { get; set; }
+
+        ToupCamImageMode ToupTekImageMode { get; set; }
+        ToupCamImageMode AltairImageMode { get; set; }
     }
 }
