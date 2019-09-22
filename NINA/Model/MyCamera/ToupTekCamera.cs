@@ -35,7 +35,6 @@ using System.Runtime.InteropServices;
 using NINA.Utility.WindowService;
 
 namespace NINA.Model.MyCamera {
-
     internal class ToupTekCamera : BaseINPC, ICamera {
         private ToupCam.eFLAG flags;
         private ToupCam camera;

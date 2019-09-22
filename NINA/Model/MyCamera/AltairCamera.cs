@@ -35,7 +35,6 @@ using System.Runtime.InteropServices;
 using NINA.Utility.WindowService;
 
 namespace NINA.Model.MyCamera {
-
     internal class AltairCamera : BaseINPC, ICamera {
         private AltairCam.eFLAG flags;
         private AltairCam camera;
