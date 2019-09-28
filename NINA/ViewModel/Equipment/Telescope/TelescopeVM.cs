@@ -54,7 +54,7 @@ namespace NINA.ViewModel.Equipment.Telescope {
             ParkCommand = new AsyncCommand<bool>(ParkTelescope);
             UnparkCommand = new RelayCommand(UnparkTelescope);
             SlewToCoordinatesCommand = new RelayCommand(SlewToCoordinates);
-            RefreshTelescopeListCommand = new RelayCommand(RefreshTelescopeList);
+            RefreshTelescopeListCommand = new RelayCommand(RefreshTelescopeList, o => !(Telescope?.Connected == true));
 
             MoveCommand = new RelayCommand(Move);
             StopMoveCommand = new RelayCommand(StopMove);

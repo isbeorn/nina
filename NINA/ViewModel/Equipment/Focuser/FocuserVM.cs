@@ -49,7 +49,7 @@ namespace NINA.ViewModel.Equipment.Focuser {
             ChooseFocuserCommand = new AsyncCommand<bool>(() => ChooseFocuser());
             CancelChooseFocuserCommand = new RelayCommand(CancelChooseFocuser);
             DisconnectCommand = new RelayCommand(DisconnectDiag);
-            RefreshFocuserListCommand = new RelayCommand(RefreshFocuserList);
+            RefreshFocuserListCommand = new RelayCommand(RefreshFocuserList, o => !(Focuser?.Connected == true));
             MoveFocuserInSmallCommand = new AsyncCommand<int>(() => MoveFocuserRelative((int)Math.Round(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize / -2d)), (p) => FocuserInfo.Connected);
             MoveFocuserInLargeCommand = new AsyncCommand<int>(() => MoveFocuserRelative(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize * -5), (p) => FocuserInfo.Connected);
             MoveFocuserOutSmallCommand = new AsyncCommand<int>(() => MoveFocuserRelative((int)Math.Round(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize / 2d)), (p) => FocuserInfo.Connected);

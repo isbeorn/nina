@@ -54,7 +54,7 @@ namespace NINA.ViewModel.Equipment.Switch {
             ConnectCommand = new AsyncCommand<bool>(Connect);
             DisconnectCommand = new RelayCommand((object o) => Disconnect());
             CancelConnectCommand = new RelayCommand((object o) => CancelConnect());
-            RefreshDevicesCommand = new RelayCommand((object o) => RefreshDevices());
+            RefreshDevicesCommand = new RelayCommand((object o) => RefreshDevices(), o => !(SwitchHub?.Connected == true));
 
             updateTimer = new DeviceUpdateTimer(
                  GetSwitchValues,

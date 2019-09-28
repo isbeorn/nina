@@ -57,7 +57,7 @@ namespace NINA.ViewModel.Equipment.Camera {
             DisconnectCommand = new RelayCommand(DisconnectDiag);
             CoolCamCommand = new AsyncCommand<bool>(() => StartCoolCamera(new Progress<double>(p => CoolingProgress = p)));
             CancelCoolCamCommand = new RelayCommand(CancelCoolCamera);
-            RefreshCameraListCommand = new RelayCommand(RefreshCameraList);
+            RefreshCameraListCommand = new RelayCommand(RefreshCameraList, o => !(Cam?.Connected == true));
 
             CoolingRunning = false;
             WarmingRunning = false;
