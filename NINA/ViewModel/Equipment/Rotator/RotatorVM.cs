@@ -49,7 +49,7 @@ namespace NINA.ViewModel.Equipment.Rotator {
             ConnectCommand = new AsyncCommand<bool>(() => Connect());
             CancelConnectCommand = new RelayCommand(CancelConnectRotator);
             DisconnectCommand = new RelayCommand(DisconnectDiag);
-            RefreshRotatorListCommand = new RelayCommand(RefreshRotatorList);
+            RefreshRotatorListCommand = new RelayCommand(RefreshRotatorList, o => !(rotator?.Connected == true));
             MoveCommand = new AsyncCommand<float>(() => Move(TargetPosition), (p) => RotatorInfo.Connected);
             HaltCommand = new RelayCommand(Halt);
 

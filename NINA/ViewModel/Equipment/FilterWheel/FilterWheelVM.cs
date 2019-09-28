@@ -52,7 +52,7 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
             ChooseFWCommand = new AsyncCommand<bool>(() => ChooseFW());
             CancelChooseFWCommand = new RelayCommand(CancelChooseFW);
             DisconnectCommand = new RelayCommand(DisconnectFW);
-            RefreshFWListCommand = new RelayCommand(RefreshFWList);
+            RefreshFWListCommand = new RelayCommand(RefreshFWList, o => !(FW?.Connected == true));
             ChangeFilterCommand = new AsyncCommand<bool>(async () => {
                 _changeFilterCancellationSource?.Dispose();
                 _changeFilterCancellationSource = new CancellationTokenSource();

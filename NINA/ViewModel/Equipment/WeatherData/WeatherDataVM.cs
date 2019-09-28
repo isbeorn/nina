@@ -50,7 +50,7 @@ namespace NINA.ViewModel.Equipment.WeatherData {
             ChooseWeatherDataCommand = new AsyncCommand<bool>(() => ChooseWeatherData());
             CancelChooseWeatherDataCommand = new RelayCommand(CancelChooseWeatherData);
             DisconnectCommand = new RelayCommand(DisconnectDiag);
-            RefreshWeatherDataListCommand = new RelayCommand(RefreshWeatherDataList);
+            RefreshWeatherDataListCommand = new RelayCommand(RefreshWeatherDataList, o => !(WeatherData?.Connected == true));
 
             updateTimer = new DeviceUpdateTimer(
                 GetWeatherDataValues,
