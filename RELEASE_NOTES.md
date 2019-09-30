@@ -1,5 +1,10 @@
 # Version 1.10
 
+## Features
+
+### Hardware
+ - QHY filter wheels that are integrated (A-series cameras) or are connected to the camera using the 4-pin cable (CFW1/2/3 filter wheels) are now natively supported. This allows the native QHY camera driver to be used with these cameras and configurations.
+
 ## Improvements
 - Added a bit scaling options for Altair and ToupTek cameras to bit shift the raw data to 16 bits to be compatible with other capture software
 - FreeImage library upgrade to 3.18
@@ -19,12 +24,13 @@
 - The NASA Sky Survey images now are automatically adjusted for brightness and contrast, depending on each image characteristic
 - An autofocus filter can now be set if "Use filter offsets" is set to true. When defined, the autofocus routine will use the autofocus filter instead of the current imaging filter. Initial baseline HFR, and final HFR (used to determine whether the autofocus run was successful) will still use the main imaging filter.
 - A contrast detection autofocus routine has been added. Instead of analyzing stars to determine point of best focus, the routine analyzes overall contrast of the image with various contrast detection methods. A Gaussian fit is then performed on the obtained focus points - this process can use shorter exposure times than star HFR and produce results faster
-- QHY native driver now retrieves only the non-overscan area of the sensor
+- QHY native camera driver now retrieves only the non-overscan area of the sensor
+- QHY native camera driver now supports selecting readout modes with QHY600 class cameras
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false
-- QHY native driver will wait the full amount of time required before downloading an image from the camera
-- QHY native driver now has a more reliable way to determine sensor bitness with CCD models
+- QHY native camera driver will wait the full amount of time required before downloading an image from the camera
+- QHY native camera driver now has a more reliable way to determine sensor bitness with CCD models
 
 # Version 1.9
 

@@ -383,7 +383,44 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public ICollection ReadoutModes => new List<string> { "Default" };
+        public short ReadoutMode {
+            get {
+                uint mode = 0;
+                uint rv;
+
+                if (Connected) {
+                    if ((rv = LibQHYCCD.GetQHYCCDReadMode(CameraP, ref mode)) != LibQHYCCD.QHYCCD_SUCCESS) {
+                        Logger.Error($"QHYCCD: GetQHYCCDReadMode() failed. Returned {rv}");
+
+                        return -1;
+                    }
+
+                    Logger.Debug($"QHYCCD: Current readout mode: {mode} ({ReadoutModes.Cast<string>().ToArray()[mode]})");
+
+                    return (short)mode;
+                } else {
+                    return -1;
+                }
+            }
+            set {
+                uint rv;
+
+                if (Connected && (value != ReadoutMode)) {
+                    string modeName = ReadoutModes.Cast<string>().ToArray()[value];
+                    Logger.Debug($"QHYCCD: ReadoutMode: Setting readout mode to {value} ({modeName})");
+
+                    if ((rv = LibQHYCCD.SetQHYCCDReadMode(CameraP, (uint)value)) != LibQHYCCD.QHYCCD_SUCCESS) {
+                        Logger.Error($"QHYCCD: SetQHYCCDReadMode() failed. Returned {rv}");
+                    }
+                }
+            }
+        }
+
+        public ICollection ReadoutModes {
+            get => Info.ReadoutModes;
+            set => Info.ReadoutModes = (List<string>)value;
+        }
+
         public string SensorName => string.Empty;
 
         public SensorType SensorType {
@@ -545,7 +582,10 @@ namespace NINA.Model.MyCamera {
             return Task<bool>.Run(() => {
                 var success = false;
                 double min = 0, max = 0, step = 0;
+                List<string> modeList = new List<string>();
                 StringBuilder cameraID = new StringBuilder(LibQHYCCD.QHYCCD_ID_LEN);
+                StringBuilder modeName = new StringBuilder(0);
+                uint num_modes = 0;
 
                 try {
                     Logger.Info(string.Format("QHYCCD: Connecting to {0}", Info.Id));
@@ -602,6 +642,31 @@ namespace NINA.Model.MyCamera {
                     } else {
                         Info.IsColorCam = false;
                     }
+
+                    /*
+                     * See if this camera has any readout modes and build a list of their names if so
+                     */
+                    _ = LibQHYCCD.GetQHYCCDNumberOfReadModes(CameraP, ref num_modes);
+                    Logger.Debug($"QHYCCD: Camera has {num_modes} readout mode(s)");
+
+                    /*
+                     * Every camera always has 1 readout mode. We are only interested in ones that have more than that
+                     *
+                     * There is also a special case for the QHY42PRO: different readout modes on this camera will have
+                     * different image dimensions. Until we can properly support that camera, we will skip readout mode
+                     * support for it.
+                     */
+                    if (num_modes > 1 && Info.Model.ToString() != "QHY42PRO") {
+                        for (uint i = 0; i < num_modes; i++) {
+                            _ = LibQHYCCD.GetQHYCCDReadModeName(CameraP, i, modeName);
+                            Logger.Debug($"QHYCCD: Found readout mode \"{modeName.ToString()}\"");
+                            modeList.Add(modeName.ToString());
+                        }
+                    } else {
+                        modeList.Add("Default");
+                    }
+
+                    ReadoutModes = modeList;
 
                     /*
                      * Get our min and max shutter speed (exposure times)
@@ -851,10 +916,13 @@ namespace NINA.Model.MyCamera {
         public void StartExposure(CaptureSequence sequence) {
             uint rv;
             uint startx, starty, sizex, sizey;
+            bool isSnap;
 
             /*
              * Setup camera with the desired exposure setttings
              */
+
+            isSnap = sequence.ImageType == CaptureSequence.ImageTypes.SNAPSHOT;
 
             /* ROI coordinates and resolution */
             if (EnableSubSample == true) {
@@ -889,6 +957,9 @@ namespace NINA.Model.MyCamera {
                 CameraState = LibQHYCCD.QHYCCD_CAMERA_STATE.ERROR.ToString();
                 return;
             }
+
+            /* Exposure readout mode */
+            ReadoutMode = isSnap ? ReadoutModeForSnapImages : ReadoutModeForNormalImages;
 
             /*
              * Initiate the exposure

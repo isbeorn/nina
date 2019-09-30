@@ -364,6 +364,7 @@
     <Compile Include="Model\MyCamera\Simulator\SkySurveySettings.cs" />
     <Compile Include="Model\MyCamera\Simulator\CameraType.cs" />
     <Compile Include="Model\MyCamera\ToupCamImageMode.cs" />
+    <Compile Include="Model\MyFilterWheel\QHYFilterWheel.cs" />
     <Compile Include="Model\MyFilterWheel\FLIFilterWheel.cs" />
     <Compile Include="Model\MyGuider\DirectGuider.cs" />
     <Compile Include="Model\MyGuider\ISynchronizedPHD2GuiderService.cs" />
@@ -412,6 +413,7 @@
     <Compile Include="PlateSolving\PlateSolveResult.cs" />
     <Compile Include="Utility\Astrometry\TopocentricCoordinates.cs" />
     <Compile Include="Utility\CameraSDKs\FLISDK\FLIFilterWheels.cs" />
+    <Compile Include="Utility\CameraSDKs\QHYSDK\QHYFilterWheels.cs" />
     <Compile Include="Utility\Converters\AutoFocusHFRToCollapsedVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\NaNToEmptyTextConverter.cs" />
     <Compile Include="Utility\Converters\AutoFocusContrastDetectionToCollapsedVisibilityConverter.cs" />
