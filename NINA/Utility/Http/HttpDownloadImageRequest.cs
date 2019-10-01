@@ -22,6 +22,7 @@
 #endregion "copyright"
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Threading;
@@ -43,7 +44,7 @@ namespace NINA.Utility.Http {
 
             var formattedUrl = Url;
             if (Parameters != null) {
-                formattedUrl = string.Format(Url, Parameters);
+                formattedUrl = string.Format(CultureInfo.InvariantCulture, Url, Parameters);
             }
 
             using (var client = new WebClient()) {
