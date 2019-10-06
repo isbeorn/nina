@@ -341,7 +341,6 @@
     <Compile Include="Model\ImageData\LRGBArrays.cs" />
     <Compile Include="Model\MyCamera\FileCamera.cs" />
     <Compile Include="Model\MyCamera\FLICamera.cs" />
-    <Compile Include="Model\MyCamera\ToupCamImageMode.cs" />
     <Compile Include="Model\MyFilterWheel\FLIFilterWheel.cs" />
     <Compile Include="Model\MyGuider\DirectGuider.cs" />
     <Compile Include="Model\MyGuider\ISynchronizedPHD2GuiderService.cs" />
@@ -438,9 +437,6 @@
     <Compile Include="ViewModel\Equipment\WeatherData\WeatherDataVM.cs" />
     <Compile Include="View\Equipment\Camera\FLICameraSetupView.xaml.cs">
       <DependentUpon>FLICameraSetupView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Equipment\Camera\ToupCamSetupView.xaml.cs">
-      <DependentUpon>ToupCamSetupView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Equipment\Switch\EagleSetupView.xaml.cs">
       <DependentUpon>EagleSetupView.xaml</DependentUpon>
@@ -1160,10 +1156,6 @@
     <Page Include="View\Equipment\Camera\FLICameraSetupView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Equipment\Camera\ToupCamSetupView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Equipment\WeatherData\WeatherDataView.xaml">
       <SubType>Designer</SubType>
