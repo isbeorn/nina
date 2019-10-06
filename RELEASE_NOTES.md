@@ -31,6 +31,7 @@
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false
 - QHY native camera driver will wait the full amount of time required before downloading an image from the camera
 - QHY native camera driver now has a more reliable way to determine sensor bitness with CCD models
+- The font size of panel IDs in Framing Assistant has been increased to a legible level
 
 # Version 1.9
 
