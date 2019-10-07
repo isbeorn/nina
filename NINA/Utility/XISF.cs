@@ -69,6 +69,8 @@ namespace NINA.Utility {
                 var geometry = imageTag.Attribute("geometry").Value.Split(':');
                 int width = Int32.Parse(geometry[0]);
                 int height = Int32.Parse(geometry[1]);
+                var metadata = new ImageMetaData();
+                metadata.FromXISF(imageTag);
 
                 //Seems to be no attribute to identify the bit depth. Assume 16.
                 var bitDepth = 16;
@@ -84,16 +86,14 @@ namespace NINA.Utility {
                     ushort[] img = new ushort[raw.Length / 2];
                     Buffer.BlockCopy(raw, 0, img, 0, raw.Length);
 
-                    // TODO: Add parser for ImageMetaData
-                    imageData = new ImageData(img, width, height, bitDepth, isBayered, new ImageMetaData());
+                    imageData = new ImageData(img, width, height, bitDepth, isBayered, metadata);
                 } else {
                     var base64Img = xml.Element("Image").Element("Data").Value;
                     byte[] encodedImg = Convert.FromBase64String(base64Img);
                     ushort[] img = new ushort[(int)Math.Ceiling(encodedImg.Length / 2.0)];
                     Buffer.BlockCopy(encodedImg, 0, img, 0, encodedImg.Length);
 
-                    // TODO: Add parser for ImageMetaData
-                    imageData = new ImageData(img, width, height, bitDepth, isBayered, new ImageMetaData());
+                    imageData = new ImageData(img, width, height, bitDepth, isBayered, metadata);
                 }
 
                 return imageData;

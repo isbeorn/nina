@@ -468,6 +468,7 @@
     <Compile Include="ViewModel\Equipment\WeatherData\IWeatherDataVM.cs" />
     <Compile Include="ViewModel\Equipment\WeatherData\WeatherDataChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\WeatherData\WeatherDataVM.cs" />
+    <Compile Include="ViewModel\PlateSolver\PlateSolverMissingParamsPromptVM.cs" />
     <Compile Include="View\Equipment\Camera\FLICameraSetupView.xaml.cs">
       <DependentUpon>FLICameraSetupView.xaml</DependentUpon>
     </Compile>
@@ -968,6 +969,9 @@
     <Compile Include="View\Equipment\Guider\GuiderView.xaml.cs">
       <DependentUpon>GuiderView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\PlateSolverMissingParamsPromptView.xaml.cs">
+      <DependentUpon>PlateSolverMissingParamsPromptView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\PlateSolveView.xaml.cs">
       <DependentUpon>PlateSolveView.xaml</DependentUpon>
     </Compile>
@@ -1405,6 +1409,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Equipment\Guider\GuiderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\PlateSolverMissingParamsPromptView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

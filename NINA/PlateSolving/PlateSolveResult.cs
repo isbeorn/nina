@@ -44,7 +44,7 @@ namespace NINA.PlateSolving {
             }
         }
 
-        public double Pixscale { get; set; }
+        public double? Pixscale { get; set; }
 
         public double Radius { get; set; }
 

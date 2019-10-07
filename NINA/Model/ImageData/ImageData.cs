@@ -27,6 +27,7 @@ using NINA.Utility.ImageAnalysis;
 using NINA.Utility.RawConverter;
 using nom.tam.fits;
 using System;
+using System.Collections;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -349,8 +350,9 @@ namespace NINA.Model.ImageData {
                         pixels[i++] = (ushort)(val + short.MaxValue);
                     }
                 }
-                // TODO: Add parser for ImageMetaData
-                return await Task.FromResult<IImageData>(new ImageData(pixels, width, height, bitDepth, isBayered, new ImageMetaData()));
+                var metadata = new ImageMetaData();
+                metadata.FromFITS(hdu);
+                return await Task.FromResult<IImageData>(new ImageData(pixels, width, height, bitDepth, isBayered, metadata));
             });
         }
 

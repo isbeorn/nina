@@ -5,8 +5,12 @@ using NINA.Model.MyRotator;
 using NINA.Model.MyTelescope;
 using NINA.Model.MyWeatherData;
 using NINA.Profile;
+using NINA.Utility;
 using NINA.Utility.Astrometry;
+using nom.tam.fits;
 using System;
+using System.Collections.Generic;
+using System.Xml.Linq;
 
 namespace NINA.Model.ImageData {
 
@@ -105,6 +109,111 @@ namespace NINA.Model.ImageData {
                 WeatherData.WindGust = info.WindGust;
                 WeatherData.WindSpeed = info.WindSpeed;
             }
+        }
+
+        public void FromFITS(ImageHDU fitsImage) {
+            // This method currently only prioritizes getting headers that would be useful for Framing
+            // It also focuses on NINA-specific headers rather than handling other possible variants
+            // TODO: Expand this for more completeness
+            var header = fitsImage.Header;
+            if (header.ContainsKey("XPIXSZ")) {
+                Camera.PixelSize = header.GetDoubleValue("XPIXSZ");
+            }
+            if (header.ContainsKey("RA") && header.ContainsKey("DEC")) {
+                var ra = header.GetDoubleValue("RA");
+                var dec = header.GetDoubleValue("DEC");
+                // Assume J2000 since that is the typical default. Regardless, this should be close enough
+                // to help with solving
+                Telescope.Coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees);
+            }
+            if (header.ContainsKey("OBJCTRA") && header.ContainsKey("OBJCTDEC")) {
+                var ra = header.GetDoubleValue("OBJCTRA");
+                var dec = header.GetDoubleValue("OBJCTDEC");
+                Target.Coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees);
+            }
+            if (header.ContainsKey("FOCALLEN")) {
+                Telescope.FocalLength = header.GetDoubleValue("FOCALLEN");
+            }
+            if (header.ContainsKey("FOCRATIO")) {
+                Telescope.FocalRatio = header.GetDoubleValue("FOCRATIO");
+            }
+            if (header.ContainsKey("ROTATOR")) {
+                Rotator.Position = header.GetDoubleValue("ROTATOR");
+            }
+        }
+
+        public void FromXISF(XElement xisfImage) {
+            IEnumerable<XElement> properties = xisfImage.Elements("Property");
+            IEnumerable<XElement> fitsKeywords = xisfImage.Elements("FITSKeyword");
+            var raDegrees = GetDoubleXisfProperty(properties, XISFImageProperty.Observation.Center.RA[0]);
+            var decDegrees = GetDoubleXisfProperty(properties, XISFImageProperty.Observation.Center.Dec[0]);
+            var objectRaDegrees = GetDoubleXisfProperty(properties, XISFImageProperty.Observation.Object.RA[0]);
+            var objectDecDegrees = GetDoubleXisfProperty(properties, XISFImageProperty.Observation.Object.Dec[0]);
+            var focalLength = GetDoubleXisfProperty(properties, XISFImageProperty.Instrument.Telescope.FocalLength[0]);
+            var pixelSize = GetDoubleXisfProperty(properties, XISFImageProperty.Instrument.Sensor.XPixelSize[0]);
+            var rotatorAng = GetDoubleXisfFITSKeyword(fitsKeywords, "ROTATOR");
+            var focalRatio = GetDoubleXisfFITSKeyword(fitsKeywords, "FOCRATIO");
+            if (raDegrees.HasValue && decDegrees.HasValue) {
+                Telescope.Coordinates = new Coordinates(raDegrees.Value, decDegrees.Value, Epoch.J2000, Coordinates.RAType.Degrees);
+            }
+            if (objectRaDegrees.HasValue && objectDecDegrees.HasValue) {
+                Target.Coordinates = new Coordinates(objectRaDegrees.Value, objectDecDegrees.Value, Epoch.J2000, Coordinates.RAType.Degrees);
+            }
+            if (focalLength.HasValue) {
+                Telescope.FocalLength = focalLength.Value;
+            }
+            if (focalRatio.HasValue) {
+                Telescope.FocalRatio = focalRatio.Value;
+            }
+            if (pixelSize.HasValue) {
+                Camera.PixelSize = pixelSize.Value;
+            }
+            if (rotatorAng.HasValue) {
+                Rotator.Position = rotatorAng.Value;
+            }
+        }
+
+        private static double? GetDoubleXisfProperty(IEnumerable<XElement> properties, string id) {
+            var propertyString = GetXisfProperty(properties, id);
+            if (double.TryParse(propertyString, out double parsedProperty)) {
+                return parsedProperty;
+            }
+            return null;
+        }
+
+        private static string GetXisfProperty(IEnumerable<XElement> properties, string id) {
+            foreach (XElement property in properties) {
+                var idProperty = property.Attribute("id");
+                if (idProperty != null && id.Equals(idProperty.Value)) {
+                    var valueProperty = property.Attribute("value");
+                    if (valueProperty != null) {
+                        return valueProperty.Value;
+                    }
+                    return property.Value;
+                }
+            }
+            return null;
+        }
+
+        private static double? GetDoubleXisfFITSKeyword(IEnumerable<XElement> fitsKeywords, string name) {
+            var propertyString = GetXisfFITSKeyword(fitsKeywords, name);
+            if (double.TryParse(propertyString, out double parsedProperty)) {
+                return parsedProperty;
+            }
+            return null;
+        }
+
+        private static string GetXisfFITSKeyword(IEnumerable<XElement> fitsKeywords, string name) {
+            foreach (XElement keyword in fitsKeywords) {
+                var nameProperty = keyword.Attribute("name");
+                if (nameProperty != null && name.Equals(nameProperty.Value)) {
+                    var valueProperty = keyword.Attribute("value");
+                    if (valueProperty != null) {
+                        return valueProperty.Value;
+                    }
+                }
+            }
+            return null;
         }
     }
 
