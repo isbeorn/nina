@@ -24,7 +24,6 @@
 using NINA.Model;
 using NINA.Model.ImageData;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,12 +31,6 @@ namespace NINA.PlateSolving {
 
     internal interface IPlateSolver {
 
-        Task<PlateSolveResult> SolveAsync(
-            IImageData source,
-            PlateSolveParameter parameter,
-            IProgress<ApplicationStatus> progress,
-            CancellationToken canceltoken);
-
-        IReadOnlyCollection<string> GetMissingProperties(PlateSolveParameter parameter);
+        Task<PlateSolveResult> SolveAsync(IImageData source, PlateSolveParameter parameter, IProgress<ApplicationStatus> progress, CancellationToken canceltoken);
     }
 }
