@@ -48,8 +48,6 @@ namespace NINA.Profile {
         uint FLIFlushCount { get; set; }
         BinningMode FLIFloodBin { get; set; }
 
-        ToupCamImageMode ToupTekImageMode { get; set; }
-        ToupCamImageMode AltairImageMode { get; set; }
         bool BitScaling { get; set; }
     }
 }

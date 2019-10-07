@@ -443,7 +443,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public bool HasSetupDialog => Connected ? false : true;
+        public bool HasSetupDialog => false;
 
         private string id;
 
@@ -526,22 +526,12 @@ namespace NINA.Model.MyCamera {
             BinY = 1;
         }
 
-        public ToupCamImageMode Mode {
-            get => profileService.ActiveProfile.CameraSettings.ToupTekImageMode;
-            set {
-                profileService.ActiveProfile.CameraSettings.ToupTekImageMode = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public Task<bool> Connect(CancellationToken ct) {
             return Task<bool>.Run(() => {
                 var success = false;
                 try {
                     downloadExposure?.TrySetCanceled();
-                    downloadLiveExposure?.TrySetCanceled();
                     downloadExposure = null;
-                    downloadLiveExposure = null;
 
                     camera = new ToupCam();
                     camera.Open(this.Id);
@@ -591,14 +581,8 @@ namespace NINA.Model.MyCamera {
                         throw new Exception("ToupTekCamera - Could not set Trigger manual mode");
                     }
 
-                    if (profileService.ActiveProfile.CameraSettings.ToupTekImageMode == ToupCamImageMode.PULL) {
-                        if (!camera.StartPullModeWithCallback(new ToupCam.DelegateEventCallback(OnEventCallback))) {
-                            throw new Exception("ToupTekCamera - Could not start pull mode");
-                        }
-                    } else if (profileService.ActiveProfile.CameraSettings.ToupTekImageMode == ToupCamImageMode.PUSH) {
-                        if (!camera.StartPushModeV2(new ToupCam.DelegateDataCallbackV2(OnImageCallback))) {
-                            throw new Exception("ToupTekCamera - Could not start push mode");
-                        }
+                    if (!camera.StartPullModeWithCallback(new ToupCam.DelegateEventCallback(OnEventCallback))) {
+                        throw new Exception("ToupTekCamera - Could not start pull mode");
                     }
 
                     if (!camera.get_RawFormat(out var fourCC, out var bitDepth)) {
@@ -625,13 +609,17 @@ namespace NINA.Model.MyCamera {
         }
 
         private void OnEventCallback(ToupCam.eEVENT nEvent) {
+            Logger.Trace($"ToupTekCamera - OnEventCallback {nEvent}");
             switch (nEvent) {
                 case ToupCam.eEVENT.EVENT_IMAGE: // Live View Image
-                    PullImage();
+                    Logger.Trace($"ToupTekCamera - Setting DownloadExposure Result on Task {downloadExposure.Task.Id}");
+                    var success = downloadExposure?.TrySetResult(true);
+                    Logger.Trace($"ToupTekCamera - DownloadExposure Result on Task {downloadExposure.Task.Id} set successfully: {success}");
                     break;
 
                 case ToupCam.eEVENT.EVENT_STILLIMAGE: // Still Image
                     Logger.Warning("ToupTekCamera - Still image event received, but not expected to get one!");
+                    downloadExposure?.TrySetResult(true);
                     break;
 
                 case ToupCam.eEVENT.EVENT_TIMEOUT:
@@ -651,12 +639,12 @@ namespace NINA.Model.MyCamera {
                 case ToupCam.eEVENT.EVENT_DISCONNECTED:
                     Logger.Warning("ToupTekCamera - Camera disconnected! Maybe USB connection was interrupted.");
                     Notification.ShowError("Camera disconnected! Maybe USB connection was interrupted.");
-                    Disconnect();
+                    OnEventDisconnected();
                     break;
             }
         }
 
-        private void PullImage() {
+        private IExposureData PullImage() {
             /* peek the width and height */
             camera.get_Option(ToupCam.eOPTION.OPTION_BINNING, out var binning);
             var width = CameraXSize / binning;
@@ -667,7 +655,7 @@ namespace NINA.Model.MyCamera {
 
             if (!camera.PullImageV2(pointer, BitDepth, out var info)) {
                 Logger.Error("ToupTekCamera - Failed to pull image");
-                downloadExposure.TrySetResult(null);
+                return null;
             }
             var scaling = this.profileService.ActiveProfile.CameraSettings.BitScaling;
             var cameraDataToManaged = new CameraDataToManaged(pointer, width, height, BitDepth, bitScaling: scaling);
@@ -679,11 +667,8 @@ namespace NINA.Model.MyCamera {
                     bitDepth: scaling ? 16 : this.BitDepth,
                     isBayered: this.SensorType != SensorType.Monochrome,
                     metaData: new ImageMetaData());
-            if (LiveViewEnabled) {
-                downloadLiveExposure.TrySetResult(imageData);
-            } else {
-                downloadExposure?.TrySetResult(imageData);
-            }
+            Marshal.FreeHGlobal(pointer);
+            return imageData;
         }
 
         public void Disconnect() {
@@ -695,17 +680,17 @@ namespace NINA.Model.MyCamera {
 
         public async Task<IExposureData> DownloadExposure(CancellationToken token) {
             using (token.Register(() => downloadExposure.TrySetCanceled())) {
-                var imageData = await downloadExposure.Task;
-                return imageData;
+                using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15))) {
+                    using (cts.Token.Register(() => { Logger.Error("ToupTekCamera - No Image Callback Event received"); downloadExposure.TrySetResult(true); })) {
+                        var imageReady = await downloadExposure.Task;
+                        return PullImage();
+                    }
+                }
             }
         }
 
-        public async Task<IExposureData> DownloadLiveView(CancellationToken token) {
-            using (token.Register(() => downloadLiveExposure.TrySetCanceled())) {
-                var imageData = await downloadLiveExposure.Task;
-                downloadLiveExposure = new TaskCompletionSource<IExposureData>();
-                return imageData;
-            }
+        public Task<IExposureData> DownloadLiveView(CancellationToken token) {
+            return DownloadExposure(token);
         }
 
         public void SetBinning(short x, short y) {
@@ -714,22 +699,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        private IWindowService windowService;
-
-        public IWindowService WindowService {
-            get {
-                if (windowService == null) {
-                    windowService = new WindowService();
-                }
-                return windowService;
-            }
-            set {
-                windowService = value;
-            }
-        }
-
         public void SetupDialog() {
-            WindowService.ShowDialog(this, Locale.Loc.Instance["LblToupTekCameraSetup"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.SingleBorderWindow);
         }
 
         /// <summary>
@@ -752,7 +722,8 @@ namespace NINA.Model.MyCamera {
 
         public void StartExposure(CaptureSequence sequence) {
             downloadExposure?.TrySetCanceled();
-            downloadExposure = new TaskCompletionSource<IExposureData>();
+            downloadExposure = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            Logger.Trace($"ToupTekCamera - created new downloadExposure Task with Id {downloadExposure.Task.Id}");
 
             SetExposureTime(sequence.ExposureTime);
 
@@ -761,32 +732,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        private void OnImageCallback(IntPtr pData, ref ToupCam.FrameInfoV2 info, bool bSnap) {
-            if ((LiveViewEnabled && downloadLiveExposure?.Task.IsCompleted != true) || (!LiveViewEnabled && downloadExposure?.Task.IsCompleted != true)) {
-                int width = (int)info.width;
-                int height = (int)info.height;
-
-                var scaling = this.profileService.ActiveProfile.CameraSettings.BitScaling;
-                var cameraDataToManaged = new CameraDataToManaged(pData, width, height, BitDepth, bitScaling: scaling);
-                var arr = cameraDataToManaged.GetData();
-
-                var imageData = new ImageArrayExposureData(
-                    input: arr,
-                    width: width,
-                    height: height,
-                    bitDepth: scaling ? 16 : this.BitDepth,
-                    isBayered: this.SensorType != SensorType.Monochrome,
-                    metaData: new ImageMetaData());
-                if (LiveViewEnabled) {
-                    downloadLiveExposure?.TrySetResult(imageData);
-                } else {
-                    downloadExposure?.TrySetResult(imageData);
-                }
-            }
-        }
-
-        private TaskCompletionSource<IExposureData> downloadExposure;
-        private TaskCompletionSource<IExposureData> downloadLiveExposure;
+        private TaskCompletionSource<bool> downloadExposure;
         private int bitDepth;
 
         public int BitDepth {
@@ -808,8 +754,8 @@ namespace NINA.Model.MyCamera {
             if (!camera.put_Option(ToupCam.eOPTION.OPTION_TRIGGER, 0)) {
                 throw new Exception("ToupTekCamera - Could not set Trigger video mode");
             }
-            downloadLiveExposure?.TrySetCanceled();
-            downloadLiveExposure = new TaskCompletionSource<IExposureData>();
+            downloadExposure?.TrySetCanceled();
+            downloadExposure = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
             LiveViewEnabled = true;
         }
 
@@ -820,7 +766,7 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StopLiveView() {
-            downloadLiveExposure.Task.ContinueWith((Task<IExposureData> o) => {
+            downloadExposure.Task.ContinueWith((Task<bool> o) => {
                 if (!camera.put_Option(ToupCam.eOPTION.OPTION_TRIGGER, 1)) {
                     Disconnect();
                     throw new Exception("ToupTekCamera - Could not set Trigger manual mode. Reconnect Camera!");
