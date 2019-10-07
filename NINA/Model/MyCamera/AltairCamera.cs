@@ -637,7 +637,7 @@ namespace NINA.Model.MyCamera {
                     break;
 
                 case AltairCam.eEVENT.EVENT_DISCONNECTED:
-                    Logger.Warning("ToupTekCamera - Camera disconnected! Maybe USB connection was interrupted.");
+                    Logger.Warning("AltairCamera - Camera disconnected! Maybe USB connection was interrupted.");
                     Notification.ShowError("Camera disconnected! Maybe USB connection was interrupted.");
                     OnEventDisconnected();
                     break;

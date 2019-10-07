@@ -716,8 +716,8 @@ namespace NINA.Model.MyCamera {
 
         public void StartExposure(CaptureSequence sequence) {
             downloadExposure?.TrySetCanceled();
-            downloadExposure = new TaskCompletionSource<bool>();
-            Logger.Trace($"AltairCamera - created new downloadExposure Task with Id {downloadExposure.Task.Id}");
+            downloadExposure = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            Logger.Trace($"ToupTekCamera - created new downloadExposure Task with Id {downloadExposure.Task.Id}");
 
             SetExposureTime(sequence.ExposureTime);
 
@@ -749,7 +749,7 @@ namespace NINA.Model.MyCamera {
                 throw new Exception("ToupTekCamera - Could not set Trigger video mode");
             }
             downloadExposure?.TrySetCanceled();
-            downloadExposure = new TaskCompletionSource<bool>();
+            downloadExposure = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
             LiveViewEnabled = true;
         }
 
