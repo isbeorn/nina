@@ -63,25 +63,27 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
                 Logger.Error(ex);
             }
 
-            /*
-             * QHY - Integrated or 4-pin connected filter wheels only
-             */
-            try {
-                Logger.Trace("Adding QHY integrated/4-pin filter wheels");
-                List<string> fwheels = QHYFilterWheels.GetFilterWheels();
+            if (NINA.Properties.Settings.Default.EnableQHY) {
+                /*
+                 * QHY - Integrated or 4-pin connected filter wheels only
+                 */
+                try {
+                    Logger.Trace("Adding QHY integrated/4-pin filter wheels");
+                    List<string> fwheels = QHYFilterWheels.GetFilterWheels();
 
-                if (fwheels.Count > 0) {
-                    foreach (var entry in fwheels) {
-                        var fwheel = new QHYFilterWheel(entry, profileService);
+                    if (fwheels.Count > 0) {
+                        foreach (var entry in fwheels) {
+                            var fwheel = new QHYFilterWheel(entry, profileService);
 
-                        if (!string.IsNullOrEmpty(fwheel.Name)) {
-                            Logger.Debug($"Adding QHY Filter Wheel {fwheel.Id} (as {fwheel.Name})");
-                            Devices.Add(fwheel);
+                            if (!string.IsNullOrEmpty(fwheel.Name)) {
+                                Logger.Debug($"Adding QHY Filter Wheel {fwheel.Id} (as {fwheel.Name})");
+                                Devices.Add(fwheel);
+                            }
                         }
                     }
+                } catch (Exception ex) {
+                    Logger.Error(ex);
                 }
-            } catch (Exception ex) {
-                Logger.Error(ex);
             }
 
             /*

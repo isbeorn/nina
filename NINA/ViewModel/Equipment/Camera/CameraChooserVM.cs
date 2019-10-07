@@ -106,22 +106,24 @@ namespace NINA.ViewModel.Equipment.Camera {
                 Logger.Error(ex);
             }
 
-            /* QHYCCD */
-            try {
-                Logger.Trace("Adding QHYCCD Cameras");
-                uint numCameras = QHYCameras.Count;
+            if (NINA.Properties.Settings.Default.EnableQHY) {
+                /* QHYCCD */
+                try {
+                    Logger.Trace("Adding QHYCCD Cameras");
+                    uint numCameras = QHYCameras.Count;
 
-                if (numCameras > 0) {
-                    for (uint i = 0; i < numCameras; i++) {
-                        var cam = QHYCameras.GetCamera(i, profileService);
-                        if (!string.IsNullOrEmpty(cam.Name)) {
-                            Logger.Debug($"Adding QHY camera {i}: {cam.Id} (as {cam.Name})");
-                            Devices.Add(cam);
+                    if (numCameras > 0) {
+                        for (uint i = 0; i < numCameras; i++) {
+                            var cam = QHYCameras.GetCamera(i, profileService);
+                            if (!string.IsNullOrEmpty(cam.Name)) {
+                                Logger.Debug($"Adding QHY camera {i}: {cam.Id} (as {cam.Name})");
+                                Devices.Add(cam);
+                            }
                         }
                     }
+                } catch (Exception ex) {
+                    Logger.Error(ex);
                 }
-            } catch (Exception ex) {
-                Logger.Error(ex);
             }
 
             /* ToupTek */
