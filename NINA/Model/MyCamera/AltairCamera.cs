@@ -35,6 +35,7 @@ using System.Runtime.InteropServices;
 using NINA.Utility.WindowService;
 
 namespace NINA.Model.MyCamera {
+
     internal class AltairCamera : BaseINPC, ICamera {
         private AltairCam.eFLAG flags;
         private AltairCam camera;
@@ -688,7 +689,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public Task<IImageData> DownloadLiveView(CancellationToken token) {
+        public Task<IExposureData> DownloadLiveView(CancellationToken token) {
             return DownloadExposure(token);
         }
 
