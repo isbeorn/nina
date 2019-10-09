@@ -1,14 +1,5 @@
 # Version 1.10
 
-```
-Attention QHY Users: 
-The latest SDK has some memory issues for users without a QHY camera connected to a pc.
-Therefore the QHY SDK has to be manually enabled in 
-    Options->Application Settings->Enable QHY SDK 
-until this is fixed by QHY.
-This problem does not occur when a QHY camera is connected to a pc.
-```
-
 ## Features
 
 ### Hardware

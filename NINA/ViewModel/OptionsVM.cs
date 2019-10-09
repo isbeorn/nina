@@ -208,7 +208,7 @@ namespace NINA.ViewModel {
         private void SetAutoFocusFilter(object obj) {
             if (SelectedFilter != null) {
                 foreach (FilterInfo filter in ActiveProfile.FilterWheelSettings.FilterWheelFilters) {
-                    if (filter != SelectedFilter) {
+                    if (filter != SelectedFilter) { 
                         filter.AutoFocusFilter = false;
                     } else {
                         SelectedFilter.AutoFocusFilter = !SelectedFilter.AutoFocusFilter;
@@ -478,22 +478,6 @@ namespace NINA.ViewModel {
             }
             set {
                 NINA.Properties.Settings.Default.AutoUpdateSource = (int)value;
-                NINA.Properties.Settings.Default.Save();
-                RaisePropertyChanged();
-            }
-        }
-
-        /// <summary>
-        /// QHY SDK Version 0.6.0.1 contains a severe memory leak when no QHY camera is connected to a PC.
-        /// Therefore the DLL has to be loaded only when the user enables it until this is fixed.
-        /// This flag can be removed again once resolved.
-        /// </summary>
-        public bool EnableQHY {
-            get {
-                return NINA.Properties.Settings.Default.EnableQHY;
-            }
-            set {
-                NINA.Properties.Settings.Default.EnableQHY = value;
                 NINA.Properties.Settings.Default.Save();
                 RaisePropertyChanged();
             }
