@@ -434,19 +434,6 @@ namespace QHYCCD {
             }
         }
 
-        public unsafe static uint C_GetQHYCCDFWVersion(IntPtr handle, byte[] verBuf) {
-            fixed (byte* pverBuf = verBuf)
-                return GetQHYCCDFWVersion(handle, pverBuf);
-        }
-
-        public unsafe static uint C_GetQHYCCDSingleFrame(IntPtr handle, ref uint w, ref uint h, ref uint bpp, ref uint channels, byte[] rawArray) {
-            uint ret;
-            fixed (byte* prawArray = rawArray)
-                ret = GetQHYCCDSingleFrame(handle, ref w, ref h, ref bpp, ref channels, prawArray);
-
-            return ret;
-        }
-
         [DllImport(DLLNAME, EntryPoint = "CancelQHYCCDExposing", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint CancelQHYCCDExposing(IntPtr handle);
 
@@ -487,7 +474,7 @@ namespace QHYCCD {
         public unsafe static extern uint GetQHYCCDExposureRemaining(IntPtr handle);
 
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDFWVersion", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public unsafe static extern uint GetQHYCCDFWVersion(IntPtr handle, byte* verBuf);
+        public unsafe static extern uint GetQHYCCDFWVersion(IntPtr handle, [Out] byte[] verBuf);
 
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDId", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint GetQHYCCDId(uint index, StringBuilder id);
@@ -519,8 +506,11 @@ namespace QHYCCD {
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDSDKVersion", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint GetQHYCCDSDKVersion(ref uint year, ref uint month, ref uint day, ref uint subday);
 
+        // These two methods are identical on the C side, they just have different pointer types (they're ABI compatible).
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDSingleFrame", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public unsafe static extern uint GetQHYCCDSingleFrame(IntPtr handle, ref uint w, ref uint h, ref uint bpp, ref uint channels, byte* rawArray);
+        public unsafe static extern uint GetQHYCCDSingleFrame(IntPtr handle, ref uint w, ref uint h, ref uint bpp, ref uint channels, [Out] byte[] rawArray);
+        [DllImport(DLLNAME, EntryPoint = "GetQHYCCDSingleFrame", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public unsafe static extern uint GetQHYCCDSingleFrame(IntPtr handle, ref uint w, ref uint h, ref uint bpp, ref uint channels, [Out] ushort[] rawArray);
 
         public static string GetSDKFormattedVersion() {
             uint year = 0, month = 0, day = 0, subday = 0;

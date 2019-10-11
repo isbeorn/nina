@@ -837,7 +837,6 @@ namespace NINA.Model.MyCamera {
                 uint height = 0;
                 uint bpp = 0;
                 uint channels = 0;
-                byte[] ImgData;
                 uint rv;
 
                 Logger.Debug("QHYCCD: Downloading exposure...");
@@ -854,11 +853,6 @@ namespace NINA.Model.MyCamera {
                 Logger.Debug(string.Format("QHYCCD: Image size will be {0} bytes", size));
 
                 /*
-                 * Size the image data byte array for the image
-                 */
-                ImgData = new byte[size];
-
-                /*
                  * Check to see if the exposure is completed.
                  * If the remaining time is 100ms or less, the exposure is completed.
                  */
@@ -868,31 +862,38 @@ namespace NINA.Model.MyCamera {
                     await Task.Delay((int)rv, ct);
                 }
 
+                bool is16bit = Info.Bpp > 8;
+
+                /*
+                 * Size the image data byte array for the image
+                 */
+                uint numPixels = is16bit ? size / 2U : size;
+                ushort[] ImgData = new ushort[numPixels];
+
                 /*
                  * Download the image from the camera
                  */
                 CameraState = LibQHYCCD.QHYCCD_CAMERA_STATE.DOWNLOADING.ToString();
-                if ((rv = LibQHYCCD.C_GetQHYCCDSingleFrame(CameraP, ref width, ref height, ref bpp, ref channels, ImgData)) != LibQHYCCD.QHYCCD_SUCCESS) {
+                if (is16bit) {
+                    rv = LibQHYCCD.GetQHYCCDSingleFrame(CameraP, ref width, ref height, ref bpp, ref channels, ImgData);
+                } else {
+                    byte[] ImgDataBytes = new byte[numPixels];
+                    rv = LibQHYCCD.GetQHYCCDSingleFrame(CameraP, ref width, ref height, ref bpp, ref channels, ImgDataBytes);
+                    for (int i = 0; i < ImgDataBytes.Length; i++) {
+                        ImgData[i] = ImgDataBytes[i];
+                    }
+                }
+                if (rv != LibQHYCCD.QHYCCD_SUCCESS) {
                     Logger.Warning(string.Format("QHYCCD: Failed to download image from camera! rv = {0}", rv));
                     throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
                 }
 
                 Logger.Debug($"QHYCCD: Downloaded image: {width}x{height}, {bpp} bpp, {channels} channels");
 
-                /*
-                 * Copy the image byte array to an allocated buffer
-                 */
-                IntPtr buf = Marshal.AllocHGlobal(ImgData.Length);
-                Marshal.Copy(ImgData, 0, buf, ImgData.Length);
-                var cameraDataToManaged = new CameraDataToManaged(buf, (int)width, (int)height, (int)bpp, bitScaling: false);
-                var arr = cameraDataToManaged.GetData();
-                ImgData = null;
-                Marshal.FreeHGlobal(buf);
-
                 CameraState = LibQHYCCD.QHYCCD_CAMERA_STATE.IDLE.ToString();
 
                 return new ImageArrayExposureData(
-                    input: arr,
+                    input: ImgData,
                     width: (int)width,
                     height: (int)height,
                     bitDepth: this.BitDepth,
