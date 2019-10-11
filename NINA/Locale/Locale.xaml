@@ -1,4 +1,7 @@
-﻿<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:s="clr-namespace:System;assembly=mscorlib">
     <s:String x:Key="LblAbbrEast" xml:space="default">E</s:String>
     <s:String x:Key="LblAbbrNorth" xml:space="default">N</s:String>
     <s:String x:Key="LblAbbrSouth" xml:space="default">S</s:String>
@@ -37,7 +40,7 @@ Using those two points the actual altitude error will be calculated and displaye
     <s:String x:Key="LblApparentMagnitude" xml:space="default">Apparent Magnitude</s:String>
     <s:String x:Key="LblApparentSize" xml:space="default">Apparent Size</s:String>
     <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">The Application ran into an unhandled exception and most likely has to shut down.
-The error has been logged to "%localappdata%\NINA\Logs".
+The error has been logged to &quot;%localappdata%\NINA\Logs&quot;.
 Should the Application try to recover from the error? (Can lead to unexpected behavior)</s:String>
     <s:String x:Key="LblApplicationStartDateDescription" xml:space="default">Application start date with format YYYY-MM-DD</s:String>
     <s:String x:Key="LblArcmin" xml:space="default">arcmin</s:String>
@@ -294,6 +297,7 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
     <s:String x:Key="LblDataProvidedBy" xml:space="default">Initial set of DSO Data provided by</s:String>
     <s:String x:Key="LblDataToDownloadRatio" xml:space="default">Download to Data ratio</s:String>
     <s:String x:Key="LblDateFormatDescription" xml:space="default">Date with format YYYY-MM-DD</s:String>
+    <s:String x:Key="LblDateFormatDescription2" xml:space="default">Date shifted back by 12 hours with format YYYY-MM-DD</s:String>
     <s:String x:Key="LblDateTimeFormatDescription" xml:space="default">Date with format YYYY-MM-DD_HH-mm-ss</s:String>
     <s:String x:Key="LblDawn" xml:space="default">Dawn</s:String>
     <s:String x:Key="LblDCRaw" xml:space="default">DCRaw</s:String>
@@ -654,13 +658,13 @@ Calculated HFR: {2}
     <s:String x:Key="LblPaused" xml:space="default">Paused</s:String>
     <s:String x:Key="LblPauseTimeBeforeMeridian" xml:space="default">Pause before Meridian (minutes)</s:String>
     <s:String x:Key="LblPercentShort" xml:space="default">%</s:String>
-    <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0}({1}")</s:String>
+    <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0}({1}&quot;)</s:String>
     <s:String x:Key="LblPhd2FailedEquipmentConnection" xml:space="default">PHD2 wasn't able to connect to the equipment</s:String>
     <s:String x:Key="LblPHD2HistorySize" xml:space="default">PHD2 History Size</s:String>
     <s:String x:Key="LblPHD2MinimalHistorySize" xml:space="default">PHD2 History Size (Imaging)</s:String>
     <s:String x:Key="LblPHD2Path" xml:space="default">PHD2 path</s:String>
     <s:String x:Key="LblPhd2PathNotFound" xml:space="default">Could not start PHD2. Path not found</s:String>
-    <s:String x:Key="LblPHD2RARMS" xml:space="default">RA: {0} ({1}")</s:String>
+    <s:String x:Key="LblPHD2RARMS" xml:space="default">RA: {0} ({1}&quot;)</s:String>
     <s:String x:Key="LblPhd2ServerConnectionLost" xml:space="default">PHD2 Server Connection lost!</s:String>
     <s:String x:Key="LblPHD2ServerPort" xml:space="default">PHD2 Server Port</s:String>
     <s:String x:Key="LblPHD2ServerUrl" xml:space="default">PHD2 Server Url</s:String>
@@ -675,7 +679,7 @@ Calculated HFR: {2}
         Connected clients: {0}
     </s:String>
     <s:String x:Key="LblPhd2SynchronizedServiceStarted" xml:space="default">Synchronized PHD2 service started</s:String>
-    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0}({1}")</s:String>
+    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0}({1}&quot;)</s:String>
     <s:String x:Key="LblPixels" xml:space="default">Pixels</s:String>
     <s:String x:Key="LblPixelScale" xml:space="default">Pixel Scale</s:String>
     <s:String x:Key="LblPixelSize" xml:space="default">Pixel Size</s:String>

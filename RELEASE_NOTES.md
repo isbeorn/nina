@@ -35,6 +35,7 @@ This problem does not occur when a QHY camera is connected to a pc.
 - A contrast detection autofocus routine has been added. Instead of analyzing stars to determine point of best focus, the routine analyzes overall contrast of the image with various contrast detection methods. A Gaussian fit is then performed on the obtained focus points - this process can use shorter exposure times than star HFR and produce results faster
 - QHY native camera driver now retrieves only the non-overscan area of the sensor
 - QHY native camera driver now supports selecting readout modes with QHY600 class cameras
+- Added a $$DATEMINUS12$$ placeholder to the file save pattern that shifts the current date 12 hours into the past. This allows for all images of a night to be saved into the same date folder.
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false

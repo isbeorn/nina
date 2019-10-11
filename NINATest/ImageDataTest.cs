@@ -31,7 +31,6 @@ using System;
 using System.Threading.Tasks;
 
 namespace NINATest {
-
     [TestFixture]
     public class ImageDataTest {
         private ImageMetaData MetaData;
@@ -357,7 +356,8 @@ namespace NINATest {
             var folder = TestContext.CurrentContext.TestDirectory;
             var pattern = "TestFile";
 
-            var sut = await new ImageArrayExposureData(data, 3, 3, 16, false, new ImageMetaData()).ToImageData();
+            //var sut = await new ImageArrayExposureData(data, 3, 3, 16, false, new ImageMetaData()).ToImageData();
+            var sut = new ImageData(data, 3, 3, 16, false, MetaData);
 
             var file = await sut.SaveToDisk(folder, pattern, fileType, default);
 
@@ -377,6 +377,7 @@ namespace NINATest {
             var folder = TestContext.CurrentContext.TestDirectory;
             var pattern = $"$$FILTER$$" +
                 $"#$$DATE$$" +
+                $"#$$DATEMINUS12$$" +
                 $"#$$DATETIME$$" +
                 $"#$$TIME$$" +
                 $"#$$FRAMENR$$" +
@@ -398,6 +399,7 @@ namespace NINATest {
 
             var expectedPattern = $"{MetaData.FilterWheel.Filter}" +
                 $"#{MetaData.Image.ExposureStart.ToString("yyyy-MM-dd")}" +
+                $"#{MetaData.Image.ExposureStart.AddHours(-12).ToString("yyyy-MM-dd")}" +
                 $"#{MetaData.Image.ExposureStart.ToString("yyyy-MM-dd_HH-mm-ss")}" +
                 $"#{MetaData.Image.ExposureStart.ToString("HH-mm-ss")}" +
                 $"#{MetaData.Image.ExposureNumber}" +
@@ -427,6 +429,7 @@ namespace NINATest {
             var folder = TestContext.CurrentContext.TestDirectory;
             var pattern = $"$$FILTER$$" +
                 $"#$$DATE$$" +
+                $"#$$DATEMINUS12$$" +
                 $"#$$DATETIME$$" +
                 $"#$$TIME$$" +
                 $"#$$FRAMENR$$" +
@@ -449,6 +452,7 @@ namespace NINATest {
 
             var expectedPattern = $"{MetaData.FilterWheel.Filter}" +
                 $"#{MetaData.Image.ExposureStart.ToString("yyyy-MM-dd")}" +
+                $"#{MetaData.Image.ExposureStart.AddHours(-12).ToString("yyyy-MM-dd")}" +
                 $"#{MetaData.Image.ExposureStart.ToString("yyyy-MM-dd_HH-mm-ss")}" +
                 $"#{MetaData.Image.ExposureStart.ToString("HH-mm-ss")}" +
                 $"#{MetaData.Image.ExposureNumber}" +

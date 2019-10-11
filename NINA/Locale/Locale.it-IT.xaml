@@ -295,6 +295,7 @@ Quando le linee non sono allineate significa che c'è un errore di allineamento 
     <s:String x:Key="LblDataProvidedBy" xml:space="default">Set iniziale di dati DSO fornito da:</s:String>
     <s:String x:Key="LblDataToDownloadRatio" xml:space="default">Rapporto Download Dati</s:String>
     <s:String x:Key="LblDateFormatDescription" xml:space="default">Date con formato YYYY-MM-DD</s:String>
+    <s:String x:Key="LblDateFormatDescription2" xml:space="default">Date shifted back by 12 hours with format YYYY-MM-DD</s:String>
     <s:String x:Key="LblDateTimeFormatDescription" xml:space="default">Date con formato YYYY-MM-DD_HH-mm-ss</s:String>
     <s:String x:Key="LblDawn" xml:space="default">Alba</s:String>
     <s:String x:Key="LblDCRaw" xml:space="default">DCRaw</s:String>

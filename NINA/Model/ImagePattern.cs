@@ -50,6 +50,9 @@ namespace NINA.Model {
             p = new ImagePattern(ImagePatternKeys.Date, Locale.Loc.Instance["LblDateFormatDescription"]);
             patterns.Add(p.Key, p);
 
+            p = new ImagePattern(ImagePatternKeys.DateMinus12, Locale.Loc.Instance["LblDateFormatDescription2"]);
+            patterns.Add(p.Key, p);
+
             p = new ImagePattern(ImagePatternKeys.DateTime, Locale.Loc.Instance["LblDateTimeFormatDescription"]);
             patterns.Add(p.Key, p);
 
@@ -136,6 +139,7 @@ namespace NINA.Model {
 
             p.Set(ImagePatternKeys.Filter, "L");
             p.Set(ImagePatternKeys.Date, "2016-01-01");
+            p.Set(ImagePatternKeys.DateMinus12, "2015-12-31");
             p.Set(ImagePatternKeys.DateTime, "2016-01-01_12-00-00");
             p.Set(ImagePatternKeys.Time, "12-00-00");
             p.Set(ImagePatternKeys.FrameNr, "0001");
@@ -163,6 +167,7 @@ namespace NINA.Model {
 
         public static readonly string Filter = "$$FILTER$$";
         public static readonly string Date = "$$DATE$$";
+        public static readonly string DateMinus12 = "$$DATEMINUS12$$";
         public static readonly string DateTime = "$$DATETIME$$";
         public static readonly string Time = "$$TIME$$";
         public static readonly string FrameNr = "$$FRAMENR$$";
