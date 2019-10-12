@@ -1706,47 +1706,85 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-      echo "Copy Altair DLLs"
-      xcopy "$(ProjectDir)External\x64\Altair" "$(TargetDir)\External\x64\Altair" /h/i/c/k/e/r/y
-      xcopy "$(ProjectDir)External\x86\Altair" "$(TargetDir)\External\x86\Altair" /h/i/c/k/e/r/y
+    <PostBuildEvent>if exist "$(ProjectDir)External\x64\Altair" (
+    echo "Copy Altair x64 DLLs"
+    xcopy "$(ProjectDir)External\x64\Altair" "$(TargetDir)\External\x64\Altair" /h/i/c/k/e/r/y
+)
+if exist "$(ProjectDir)External\x86\Altair" (
+    echo "Copy Altair x86 DLLs"
+    xcopy "$(ProjectDir)External\x86\Altair" "$(TargetDir)\External\x86\Altair" /h/i/c/k/e/r/y
+)
 
-      echo "Copy ASI DLLs"
-      xcopy "$(ProjectDir)External\x64\ASI" "$(TargetDir)\External\x64\ASI" /h/i/c/k/e/r/y
-      xcopy "$(ProjectDir)External\x86\ASI" "$(TargetDir)\External\x86\ASI" /h/i/c/k/e/r/y
+if exist "$(ProjectDir)External\x64\ASI" (
+    echo "Copy ASI x64 DLLs"
+    xcopy "$(ProjectDir)External\x64\ASI" "$(TargetDir)\External\x64\ASI" /h/i/c/k/e/r/y
+)
+if exist "$(ProjectDir)External\x86\ASI" (
+    echo "Copy ASI x86 DLLs"
+    xcopy "$(ProjectDir)External\x86\ASI" "$(TargetDir)\External\x86\ASI" /h/i/c/k/e/r/y
+)
 
-      echo "Copy Atik DLLs"
-      xcopy "$(ProjectDir)External\x64\Atik" "$(TargetDir)\External\x64\Atik" /h/i/c/k/e/r/y
-      xcopy "$(ProjectDir)External\x86\Atik" "$(TargetDir)\External\x86\Atik" /h/i/c/k/e/r/y
+if exist "$(ProjectDir)External\x64\Atik" (
+    echo "Copy Atik x64 DLLs"
+    xcopy "$(ProjectDir)External\x64\Atik" "$(TargetDir)\External\x64\Atik" /h/i/c/k/e/r/y
+)
+if exist "$(ProjectDir)External\x86\Atik" (
+    echo "Copy Atik x86 DLLs"
+    xcopy "$(ProjectDir)External\x86\Atik" "$(TargetDir)\External\x86\Atik" /h/i/c/k/e/r/y
+)
 
-      echo "Copy Canon DLLs"
-      xcopy "$(ProjectDir)External\x64\Canon" "$(TargetDir)\External\x64\Canon" /h/i/c/k/e/r/y
-      xcopy "$(ProjectDir)External\x86\Canon" "$(TargetDir)\External\x86\Canon" /h/i/c/k/e/r/y
+if exist "$(ProjectDir)External\x64\Canon" (
+    echo "Copy Canon x64 DLLs"
+    xcopy "$(ProjectDir)External\x64\Canon" "$(TargetDir)\External\x64\Canon" /h/i/c/k/e/r/y
+)
+if exist "$(ProjectDir)External\x86\Canon" (
+    echo "Copy Canon x86 DLLs"
+    xcopy "$(ProjectDir)External\x86\Canon" "$(TargetDir)\External\x86\Canon" /h/i/c/k/e/r/y
+)
 
-      echo "Copy Nikon DLLs"
-      xcopy "$(ProjectDir)External\x64\Nikon" "$(TargetDir)\External\x64\Nikon" /h/i/c/k/e/r/y
-      xcopy "$(ProjectDir)External\x86\Nikon" "$(TargetDir)\External\x86\Nikon" /h/i/c/k/e/r/y
+if exist "$(ProjectDir)External\x64\Nikon" (
+    echo "Copy Nikon x64 DLLs"
+    xcopy "$(ProjectDir)External\x64\Nikon" "$(TargetDir)\External\x64\Nikon" /h/i/c/k/e/r/y
+)
+if exist "$(ProjectDir)External\x86\Nikon" (
+    echo "Copy Nikon x86 DLLs"
+    xcopy "$(ProjectDir)External\x86\Nikon" "$(TargetDir)\External\x86\Nikon" /h/i/c/k/e/r/y
+)
 
-      echo "Copy ToupTek DLLs"
-      xcopy "$(ProjectDir)External\x64\ToupTek" "$(TargetDir)\External\x64\ToupTek" /h/i/c/k/e/r/y
-      xcopy "$(ProjectDir)External\x86\ToupTek" "$(TargetDir)\External\x86\ToupTek" /h/i/c/k/e/r/y
+if exist "$(ProjectDir)External\x64\ToupTek" (
+    echo "Copy ToupTek x64 DLLs"
+    xcopy "$(ProjectDir)External\x64\ToupTek" "$(TargetDir)\External\x64\ToupTek" /h/i/c/k/e/r/y
+)
+if exist "$(ProjectDir)External\x86\ToupTek" (
+    echo "Copy ToupTek x86 DLLs"
+    xcopy "$(ProjectDir)External\x86\ToupTek" "$(TargetDir)\External\x86\ToupTek" /h/i/c/k/e/r/y
+)
 
-      echo "Copy QHYCCD DLLs"
-      xcopy "$(ProjectDir)External\x64\QHYCCD" "$(TargetDir)\External\x64\QHYCCD" /h/i/c/k/e/r/y
-      xcopy "$(ProjectDir)External\x86\QHYCCD" "$(TargetDir)\External\x86\QHYCCD" /h/i/c/k/e/r/y
+if exist "$(ProjectDir)External\x64\QHYCCD" (
+    echo "Copy QHYCCD x64 DLLs"
+    xcopy "$(ProjectDir)External\x64\QHYCCD" "$(TargetDir)\External\x64\QHYCCD" /h/i/c/k/e/r/y
+)
+if exist "$(ProjectDir)External\x86\QHYCCD" (
+    echo "Copy QHYCCD x86 DLLs"
+    xcopy "$(ProjectDir)External\x86\QHYCCD" "$(TargetDir)\External\x86\QHYCCD" /h/i/c/k/e/r/y
+)
 
-      echo "Copy FLI DLLs"
-      xcopy "$(ProjectDir)External\x64\FLI" "$(TargetDir)\External\x64\FLI" /h/i/c/k/e/r/y
-      xcopy "$(ProjectDir)External\x86\FLI" "$(TargetDir)\External\x86\FLI" /h/i/c/k/e/r/y
+if exist "$(ProjectDir)External\x64\FLI" (
+    echo "Copy FLI x64 DLLs"
+    xcopy "$(ProjectDir)External\x64\FLI" "$(TargetDir)\External\x64\FLI" /h/i/c/k/e/r/y
+)
+if exist "$(ProjectDir)External\x86\FLI" (
+    echo "Copy FLI x86 DLLs"
+    xcopy "$(ProjectDir)External\x86\FLI" "$(TargetDir)\External\x86\FLI" /h/i/c/k/e/r/y
+)
 
-      if $(Platform) == x86 (
-      if exist "$(DevEnvDir)..\..\VC\Auxiliary\Build\vcvars32.bat" (
-      echo "Making x86 large address aware"
-      call "$(DevEnvDir)..\..\VC\Auxiliary\Build\vcvars32.bat"
-      editbin /largeaddressaware "$(TargetPath)"
-      )
-      )
-    </PostBuildEvent>
+if $(Platform) == x86 (
+    if exist "$(DevEnvDir)..\..\VC\Auxiliary\Build\vcvars32.bat" (
+        echo "Making x86 large address aware"
+        call "$(DevEnvDir)..\..\VC\Auxiliary\Build\vcvars32.bat"
+        editbin /largeaddressaware "$(TargetPath)"
+    )
+)</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
