@@ -402,7 +402,7 @@ namespace NINATest {
                 $"#{MetaData.Image.ExposureStart.AddHours(-12).ToString("yyyy-MM-dd")}" +
                 $"#{MetaData.Image.ExposureStart.ToString("yyyy-MM-dd_HH-mm-ss")}" +
                 $"#{MetaData.Image.ExposureStart.ToString("HH-mm-ss")}" +
-                $"#{MetaData.Image.ExposureNumber}" +
+                $"#{MetaData.Image.ExposureNumber.ToString("0000")}" +
                 $"#{MetaData.Image.ImageType}" +
                 $"#{MetaData.Camera.Binning}" +
                 $"#{string.Format("{0:0.00}", MetaData.Camera.Temperature)}" +
@@ -455,7 +455,7 @@ namespace NINATest {
                 $"#{MetaData.Image.ExposureStart.AddHours(-12).ToString("yyyy-MM-dd")}" +
                 $"#{MetaData.Image.ExposureStart.ToString("yyyy-MM-dd_HH-mm-ss")}" +
                 $"#{MetaData.Image.ExposureStart.ToString("HH-mm-ss")}" +
-                $"#{MetaData.Image.ExposureNumber}" +
+                $"#{MetaData.Image.ExposureNumber.ToString("0000")}" +
                 $"#{MetaData.Image.ImageType}" +
                 $"#{MetaData.Camera.Binning}" +
                 $"#{string.Format("{0:0.00}", MetaData.Camera.Temperature)}" +

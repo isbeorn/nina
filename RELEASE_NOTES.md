@@ -42,6 +42,7 @@ This problem does not occur when a QHY camera is connected to a pc.
 - QHY native camera driver will wait the full amount of time required before downloading an image from the camera
 - QHY native camera driver now has a more reliable way to determine sensor bitness with CCD models
 - The font size of panel IDs in Framing Assistant has been increased to a legible level
+- The $$FRAMENR$$ placeholder is now saving the number as 4 digits
 
 # Version 1.9
 
