@@ -22,7 +22,9 @@
 #endregion "copyright"
 
 using NINA.Model;
+using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
+using NINA.ViewModel.Equipment.Camera;
 using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Async;
@@ -36,9 +38,9 @@ namespace NINA.Utility.Mediator.Interfaces {
         Task Capture(CaptureSequence sequence, CancellationToken token,
             IProgress<ApplicationStatus> progress);
 
-        IAsyncEnumerable<ImageArray> LiveView(CancellationToken token);
+        IAsyncEnumerable<IImageData> LiveView(CancellationToken token);
 
-        Task<ImageArray> Download(CancellationToken token, bool calculateStatistics);
+        Task<IImageData> Download(CancellationToken token);
 
         void AbortExposure();
 
@@ -49,5 +51,11 @@ namespace NINA.Utility.Mediator.Interfaces {
         void SetSubSample(bool subSample);
 
         void SetSubSampleArea(int x, int y, int width, int height);
+
+        bool AtTargetTemp { get; }
+
+        double TargetTemp { get; }
+
+        Task<bool> StartChangeCameraTemp(IProgress<double> progress, double temperature, TimeSpan duration, bool turnOffCooler, CancellationToken cancelWarmCameraToken);
     }
 }

@@ -24,6 +24,7 @@
 using NINA.Model.MyTelescope;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator.Interfaces;
+using NINA.ViewModel.Equipment.Telescope;
 using NINA.ViewModel.Interfaces;
 using System.Threading.Tasks;
 
@@ -35,11 +36,19 @@ namespace NINA.Utility.Mediator {
             handler.MoveAxis(axis, rate);
         }
 
+        public void PulseGuide(GuideDirections direction, int duration) {
+            handler.PulseGuide(direction, duration);
+        }
+
         public bool Sync(double ra, double dec) {
             return handler.Sync(ra, dec);
         }
 
         public Task<bool> SlewToCoordinatesAsync(Coordinates coords) {
+            return handler.SlewToCoordinatesAsync(coords);
+        }
+
+        public Task<bool> SlewToCoordinatesAsync(TopocentricCoordinates coords) {
             return handler.SlewToCoordinatesAsync(coords);
         }
 
@@ -53,6 +62,10 @@ namespace NINA.Utility.Mediator {
 
         public bool SendToSnapPort(bool start) {
             return handler.SendToSnapPort(start);
+        }
+
+        public Task<bool> ParkTelescope() {
+            return handler.ParkTelescope();
         }
     }
 }

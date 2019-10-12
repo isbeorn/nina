@@ -25,7 +25,7 @@ using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using NINA.ViewModel;
 using System;
 using System.Collections.ObjectModel;
@@ -69,38 +69,38 @@ namespace NINA.EquipmentChooser {
         }
 
         private void GetFilterWheels() {
-            var ascomDevices = new ASCOM.Utilities.Profile();
-
-            foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("FilterWheel")) {
-                try {
-                    AscomFilterWheel cam = new AscomFilterWheel(device.Key, device.Value);
-                    Devices.Add(cam);
-                } catch (Exception) {
-                    //only add filter wheels which are supported. e.g. x86 drivers will not work in x64
+            using (var ascomDevices = new ASCOM.Utilities.Profile()) {
+                foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("FilterWheel")) {
+                    try {
+                        AscomFilterWheel cam = new AscomFilterWheel(device.Key, device.Value);
+                        Devices.Add(cam);
+                    } catch (Exception) {
+                        //only add filter wheels which are supported. e.g. x86 drivers will not work in x64
+                    }
                 }
-            }
 
-            if (Devices.Count > 0) {
-                var selected = (from device in Devices where device.Id == profileService.ActiveProfile.FilterWheelSettings.Id select device).First();
-                SelectedDevice = selected;
+                if (Devices.Count > 0) {
+                    var selected = (from device in Devices where device.Id == profileService.ActiveProfile.FilterWheelSettings.Id select device).First();
+                    SelectedDevice = selected;
+                }
             }
         }
 
         private void GetTelescopes() {
-            var ascomDevices = new ASCOM.Utilities.Profile();
-
-            foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Telescope")) {
-                try {
-                    AscomTelescope cam = new AscomTelescope(device.Key, device.Value, profileService);
-                    Devices.Add(cam);
-                } catch (Exception) {
-                    //only add telescopes which are supported. e.g. x86 drivers will not work in x64
+            using (var ascomDevices = new ASCOM.Utilities.Profile()) {
+                foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Telescope")) {
+                    try {
+                        AscomTelescope cam = new AscomTelescope(device.Key, device.Value, profileService);
+                        Devices.Add(cam);
+                    } catch (Exception) {
+                        //only add telescopes which are supported. e.g. x86 drivers will not work in x64
+                    }
                 }
-            }
 
-            if (Devices.Count > 0) {
-                var selected = (from device in Devices where device.Id == profileService.ActiveProfile.TelescopeSettings.Id select device).First();
-                SelectedDevice = selected;
+                if (Devices.Count > 0) {
+                    var selected = (from device in Devices where device.Id == profileService.ActiveProfile.TelescopeSettings.Id select device).First();
+                    SelectedDevice = selected;
+                }
             }
         }
 
@@ -154,24 +154,22 @@ namespace NINA.EquipmentChooser {
         }
 
         private void GetCameras() {
-            var ascomDevices = new ASCOM.Utilities.Profile();
-
+            using (var ascomDevices = new ASCOM.Utilities.Profile()) {
+                foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Camera")) {
+                    try {
+                        AscomCamera cam = new AscomCamera(device.Key, "ASCOM --- " + device.Value, profileService);
+                        Devices.Add(cam);
+                    } catch (Exception) {
+                        //only add cameras which are supported. e.g. x86 drivers will not work in x64
+                    }
+                }
+            }
             for (int i = 0; i < ASICameras.Count; i++) {
                 var cam = ASICameras.GetCamera(i, profileService);
                 if (!string.IsNullOrEmpty(cam.Name)) {
                     Devices.Add(cam);
                 }
             }
-
-            foreach (ASCOM.Utilities.KeyValuePair device in ascomDevices.RegisteredDevices("Camera")) {
-                try {
-                    AscomCamera cam = new AscomCamera(device.Key, "ASCOM --- " + device.Value, profileService);
-                    Devices.Add(cam);
-                } catch (Exception) {
-                    //only add cameras which are supported. e.g. x86 drivers will not work in x64
-                }
-            }
-
             /*IntPtr cameraList;
             uint err = EDSDK.EdsGetCameraList(out cameraList);
             if (err == EDSDK.EDS_ERR_OK) {

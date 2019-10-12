@@ -21,10 +21,12 @@
 
 #endregion "copyright"
 
+using NINA.Database;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINACustomControlLibrary;
 using Nito.AsyncEx;
+using Nito.Mvvm;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,15 +35,14 @@ namespace NINA.ViewModel {
 
     internal class DeepSkyObjectSearchVM : BaseINPC {
 
-        public DeepSkyObjectSearchVM(string databaseLocation) : base() {
-            this.databaseLocation = databaseLocation;
+        public DeepSkyObjectSearchVM() : base() {
         }
 
         private CancellationTokenSource targetSearchCts;
 
-        private INotifyTaskCompletion<List<IAutoCompleteItem>> targetSearchResult;
+        private NotifyTask<List<IAutoCompleteItem>> targetSearchResult;
 
-        public INotifyTaskCompletion<List<IAutoCompleteItem>> TargetSearchResult {
+        public NotifyTask<List<IAutoCompleteItem>> TargetSearchResult {
             get {
                 return targetSearchResult;
             }
@@ -66,7 +67,8 @@ namespace NINA.ViewModel {
                         targetSearchCts?.Cancel();
                         targetSearchCts?.Dispose();
                         targetSearchCts = new CancellationTokenSource();
-                        TargetSearchResult = NotifyTaskCompletion.Create(SearchDSOs(TargetName, targetSearchCts.Token));
+
+                        TargetSearchResult = NotifyTask.Create(SearchDSOs(TargetName, targetSearchCts.Token));
                     } else {
                         ShowPopup = false;
                     }
@@ -112,7 +114,6 @@ namespace NINA.ViewModel {
         }
 
         private bool showPopup;
-        private string databaseLocation;
 
         public bool ShowPopup {
             get {
@@ -134,7 +135,7 @@ namespace NINA.ViewModel {
 
         private Task<List<IAutoCompleteItem>> SearchDSOs(string searchString, CancellationToken ct) {
             return Task.Run(async () => {
-                var db = new DatabaseInteraction(databaseLocation);
+                var db = new DatabaseInteraction();
                 var searchParams = new DatabaseInteraction.DeepSkyObjectSearchParams();
                 searchParams.ObjectName = searchString;
                 searchParams.Limit = Limit;

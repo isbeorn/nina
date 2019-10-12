@@ -25,7 +25,7 @@ using NINA.Model;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Mediator.Interfaces;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using OxyPlot;
 using OxyPlot.Axes;
 using System;
@@ -36,6 +36,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using NINA.Database;
 
 namespace NINA.ViewModel {
 
@@ -119,11 +120,9 @@ namespace NINA.ViewModel {
             get {
                 if (_nightDuration == null) {
                     var twilight = TwilightRiseAndSet;
-                    if (twilight != null) {
+                    if (twilight != null && twilight.Rise.HasValue && twilight.Set.HasValue) {
                         var rise = twilight.Rise;
                         var set = twilight.Set;
-
-                        if (rise.HasValue) rise = rise.Value.AddDays(1);
 
                         _nightDuration = new AsyncObservableCollection<DataPoint>() {
                         new DataPoint(DateTimeAxis.ToDouble(rise), 90),
@@ -143,19 +142,16 @@ namespace NINA.ViewModel {
                 if (_twilightDuration == null) {
                     var twilight = SunRiseAndSet;
                     var night = TwilightRiseAndSet;
-                    if (twilight != null) {
+                    if (twilight != null && twilight.Rise.HasValue && twilight.Set.HasValue) {
                         var twilightRise = twilight.Rise;
                         var twilightSet = twilight.Set;
                         var rise = night.Rise;
                         var set = night.Set;
 
-                        if (twilightRise.HasValue) twilightRise = twilightRise.Value.AddDays(1);
-                        if (rise.HasValue) rise = rise.Value.AddDays(1);
-
                         _twilightDuration = new AsyncObservableCollection<DataPoint>();
                         _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(twilightSet), 90));
 
-                        if (night != null) {
+                        if (night != null && night.Rise.HasValue && night.Set.HasValue) {
                             _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(set), 90));
                             _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(set), 0));
                             _twilightDuration.Add(new DataPoint(DateTimeAxis.ToDouble(rise), 0));
@@ -283,7 +279,7 @@ namespace NINA.ViewModel {
             return await Task.Run(async () => {
                 try {
                     SearchResult = null;
-                    var db = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
+                    var db = new DatabaseInteraction();
                     var types = ObjectTypes.Where((x) => x.Selected).Select((x) => x.Name).ToList();
 
                     var searchParams = new DatabaseInteraction.DeepSkyObjectSearchParams();
@@ -412,12 +408,12 @@ namespace NINA.ViewModel {
         }
 
         private void InitializeConstellationFilters() {
-            var l = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation).GetConstellations(new System.Threading.CancellationToken());
+            var l = new DatabaseInteraction().GetConstellations(new System.Threading.CancellationToken());
             Constellations = new AsyncObservableCollection<string>(l.Result);
         }
 
         private void InitializeObjectTypeFilters() {
-            var task = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation).GetObjectTypes(new System.Threading.CancellationToken());
+            var task = new DatabaseInteraction().GetObjectTypes(new System.Threading.CancellationToken());
             var list = task.Result?.OrderBy(x => x).ToList();
             ObjectTypes = new AsyncObservableCollection<DSOObjectType>();
             foreach (var type in list) {
@@ -480,16 +476,16 @@ namespace NINA.ViewModel {
         private double? _selectedDecThrough;
         private AsyncObservableCollection<string> _brightnessFrom;
         private AsyncObservableCollection<string> _brightnessThrough;
-        private string _selectedBrightnessFrom;
-        private string _selectedBrightnessThrough;
+        private double? _selectedBrightnessFrom;
+        private double? _selectedBrightnessThrough;
         private AsyncObservableCollection<KeyValuePair<string, string>> _sizesFrom;
         private AsyncObservableCollection<KeyValuePair<string, string>> _sizesThrough;
-        private string _selectedSizeFrom;
-        private string _selectedSizeThrough;
+        private double? _selectedSizeFrom;
+        private double? _selectedSizeThrough;
         private AsyncObservableCollection<string> _magnitudesFrom;
         private AsyncObservableCollection<string> _magnitudesThrough;
-        private string _selectedMagnitudeFrom;
-        private string _selectedMagnitudeThrough;
+        private double? _selectedMagnitudeFrom;
+        private double? _selectedMagnitudeThrough;
         private PagedList<DeepSkyObject> _searchResult;
         private AsyncObservableCollection<DateTime> _altitudeTimesFrom;
         private AsyncObservableCollection<DateTime> _altitudeTimesThrough;
@@ -712,7 +708,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public string SelectedBrightnessFrom {
+        public double? SelectedBrightnessFrom {
             get {
                 return _selectedBrightnessFrom;
             }
@@ -723,7 +719,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public string SelectedBrightnessThrough {
+        public double? SelectedBrightnessThrough {
             get {
                 return _selectedBrightnessThrough;
             }
@@ -756,7 +752,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public string SelectedSizeFrom {
+        public double? SelectedSizeFrom {
             get {
                 return _selectedSizeFrom;
             }
@@ -767,7 +763,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public string SelectedSizeThrough {
+        public double? SelectedSizeThrough {
             get {
                 return _selectedSizeThrough;
             }
@@ -800,7 +796,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public string SelectedMagnitudeFrom {
+        public double? SelectedMagnitudeFrom {
             get {
                 return _selectedMagnitudeFrom;
             }
@@ -811,7 +807,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        public string SelectedMagnitudeThrough {
+        public double? SelectedMagnitudeThrough {
             get {
                 return _selectedMagnitudeThrough;
             }

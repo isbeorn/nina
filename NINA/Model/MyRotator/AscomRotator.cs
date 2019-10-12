@@ -39,6 +39,8 @@ namespace NINA.Model.MyRotator {
 
         private Rotator rotator;
 
+        public string Category { get; } = "ASCOM";
+
         public bool IsMoving {
             get {
                 if (Connected) {

@@ -1,6 +1,4 @@
 ﻿<!--
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
-
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
     N.I.N.A. is free software: you can redistribute it and/or modify
@@ -14,7 +12,11 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/
+
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright 2019 Dale Ghent <daleg@elemental.org>
+-->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -50,4 +52,13 @@
     <converters:CollectionContainsMoreThanOneItemToVisibilityConverter x:Key="CollectionContainsMoreThanOneItemToVisibilityConverter" />
     <converters:MultiToListConverter x:Key="MultiToListConverter" />
     <converters:SubtractHalfConverter x:Key="SubtractHalfConverter" />
+    <converters:DoubleToBooleanConverter x:Key="DoubleToBooleanConverter" />
+    <converters:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBooleanToVisibilityCollapsedConverter" />
+    <converters:NaNToVisibilityConverter x:Key="NaNToVisibilityConverter" />
+    <converters:NaNToEmptyTextConverter x:Key="NaNToEmptyTextConverter" />
+    <converters:WeatherTemperatureConverter x:Key="WeatherTemperatureConverter" />
+    <converters:WeatherPressureConverter x:Key="WeatherPressureConverter" />
+    <converters:WeatherVelocityConverter x:Key="WeatherVelocityConverter" />
+    <converters:WeatherRainRateConverter x:Key="WeatherRainRateConverter" />
+    <converters:WeatherBrightnessConverter x:Key="WeatherBrightnessConverter" />
 </ResourceDictionary>

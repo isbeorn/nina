@@ -21,7 +21,7 @@
 
 #endregion "copyright"
 
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 using System.Threading.Tasks;
 using System.Windows;

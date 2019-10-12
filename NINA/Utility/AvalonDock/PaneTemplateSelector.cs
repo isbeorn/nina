@@ -22,6 +22,14 @@
 #endregion "copyright"
 
 using NINA.ViewModel;
+using NINA.ViewModel.Equipment.Camera;
+using NINA.ViewModel.Equipment.FilterWheel;
+using NINA.ViewModel.Equipment.Focuser;
+using NINA.ViewModel.Equipment.Guider;
+using NINA.ViewModel.Equipment.Rotator;
+using NINA.ViewModel.Equipment.Switch;
+using NINA.ViewModel.Equipment.Telescope;
+using NINA.ViewModel.Equipment.WeatherData;
 using System.Windows;
 using System.Windows.Controls;
 using Xceed.Wpf.AvalonDock.Layout;
@@ -66,6 +74,8 @@ namespace NINA.Utility.AvalonDock {
         public DataTemplate ThumbnailTemplate { get; set; }
 
         public DataTemplate FocusTargetsTemplate { get; set; }
+
+        public DataTemplate SwitchTemplate { get; set; }
 
         public override System.Windows.DataTemplate SelectTemplate(object item, System.Windows.DependencyObject container) {
             var itemAsLayoutContent = item as LayoutContent;
@@ -136,6 +146,10 @@ namespace NINA.Utility.AvalonDock {
 
             if (item is FocusTargetsVM) {
                 return FocusTargetsTemplate;
+            }
+
+            if (item is SwitchVM) {
+                return SwitchTemplate;
             }
 
             return base.SelectTemplate(item, container);

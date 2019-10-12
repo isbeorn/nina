@@ -22,7 +22,7 @@
 #endregion "copyright"
 
 using NINA.Utility;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 using System.Windows.Input;
 using System.Windows.Media;

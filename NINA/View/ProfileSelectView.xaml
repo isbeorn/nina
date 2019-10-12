@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.ProfileSelectView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -26,7 +25,6 @@
     xmlns:ns="clr-namespace:NINA.Locale"
     xmlns:ut="clr-namespace:NINA.Utility"
     Width="500"
-
     d:DesignHeight="120"
     d:DesignWidth="300"
     Background="{StaticResource BackgroundBrush}"
@@ -46,36 +44,72 @@
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
-        <ComboBox ItemsSource="{Binding Profiles}" DisplayMemberPath="Name" SelectedItem="{Binding ActiveProfile}"
-                  Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" />
-        <TextBlock Text="{ns:Loc LblCamera}"
-                  Grid.Row="1" Grid.Column="0" />
-        <TextBlock Text="{Binding Camera}"
-                  Grid.Row="1" Grid.Column="1" />
-        <TextBlock Text="{ns:Loc LblFilterWheel}"
-                  Grid.Row="2" Grid.Column="0" />
-        <TextBlock Text="{Binding FilterWheel}"
-                  Grid.Row="2" Grid.Column="1" />
-        <TextBlock Text="{ns:Loc LblFocuser}"
-                  Grid.Row="3" Grid.Column="0" />
-        <TextBlock Text="{Binding Focuser}"
-                  Grid.Row="3" Grid.Column="1" />
-        <TextBlock Text="{ns:Loc LblTelescope}"
-                  Grid.Row="4" Grid.Column="0" />
-        <TextBlock Text="{Binding Telescope}"
-                  Grid.Row="4" Grid.Column="1" />
-        <TextBlock Text="{ns:Loc LblFocalLength}"
-                  Grid.Row="5" Grid.Column="0" />
-        <TextBlock Text="{Binding FocalLength}"
-                  Grid.Row="5" Grid.Column="1" />
-        <CheckBox IsChecked="{Binding UseSavedProfile}"
-                  Grid.Row="6" Grid.Column="0"
-                  Margin="5 0 5 0" />
-        <TextBlock Text="{ns:Loc LblSaveSelectedProfileAndDontAskAgain}"
-                   Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" />
-        <Button Content="{ns:Loc LblLoadProfile}"
-                Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2"
-                Command="{Binding LoadProfile}" ut:ButtonHelper.DialogResult="True"
-                Margin="0 5 0 0" />
+        <ComboBox
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            DisplayMemberPath="Name"
+            ItemsSource="{Binding Profiles}"
+            SelectedItem="{Binding SelectedProfileMeta}" />
+        <TextBlock
+            Grid.Row="1"
+            Grid.Column="0"
+            Text="{ns:Loc LblCamera}" />
+        <TextBlock
+            Grid.Row="1"
+            Grid.Column="1"
+            Text="{Binding Camera}" />
+        <TextBlock
+            Grid.Row="2"
+            Grid.Column="0"
+            Text="{ns:Loc LblFilterWheel}" />
+        <TextBlock
+            Grid.Row="2"
+            Grid.Column="1"
+            Text="{Binding FilterWheel}" />
+        <TextBlock
+            Grid.Row="3"
+            Grid.Column="0"
+            Text="{ns:Loc LblFocuser}" />
+        <TextBlock
+            Grid.Row="3"
+            Grid.Column="1"
+            Text="{Binding Focuser}" />
+        <TextBlock
+            Grid.Row="4"
+            Grid.Column="0"
+            Text="{ns:Loc LblTelescope}" />
+        <TextBlock
+            Grid.Row="4"
+            Grid.Column="1"
+            Text="{Binding Telescope}" />
+        <TextBlock
+            Grid.Row="5"
+            Grid.Column="0"
+            Text="{ns:Loc LblFocalLength}" />
+        <TextBlock
+            Grid.Row="5"
+            Grid.Column="1"
+            Text="{Binding FocalLength}" />
+        <CheckBox
+            Grid.Row="6"
+            Grid.Column="0"
+            Margin="5,0,5,0"
+            IsChecked="{Binding UseSavedProfile}" />
+        <TextBlock
+            Grid.Row="6"
+            Grid.Column="1"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Text="{ns:Loc LblSaveSelectedProfileAndDontAskAgain}" />
+        <Button
+            Grid.Row="7"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Margin="0,5,0,0"
+            ut:ButtonHelper.DialogResult="True"
+            Command="{Binding LoadProfile}">
+            <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblLoadProfile}" />
+        </Button>
     </Grid>
 </UserControl>

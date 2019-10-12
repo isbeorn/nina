@@ -25,7 +25,7 @@ using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.Mediator;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -142,7 +142,7 @@ namespace NINA.ViewModel {
             do {
                 _captureImageToken?.Dispose();
                 _captureImageToken = new CancellationTokenSource();
-                var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
+                var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAPSHOT, SnapFilter, SnapBin, 1);
 
                 await imagingMediator.CaptureAndPrepareImage(seq, _captureImageToken.Token, progress);
 

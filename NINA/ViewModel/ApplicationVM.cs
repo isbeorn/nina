@@ -1,8 +1,6 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
-
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
     N.I.N.A. is free software: you can redistribute it and/or modify
@@ -19,17 +17,29 @@
     along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+ * Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+ * Copyright 2019 Dale Ghent <daleg@elemental.org>
+ */
+
 #endregion "copyright"
 
 using NINA.Utility;
 using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
+using NINA.ViewModel.Equipment.Camera;
+using NINA.ViewModel.Equipment.FilterWheel;
+using NINA.ViewModel.Equipment.Focuser;
+using NINA.ViewModel.Equipment.Guider;
+using NINA.ViewModel.Equipment.Rotator;
+using NINA.ViewModel.Equipment.Telescope;
+using NINA.ViewModel.Equipment.Switch;
+using NINA.ViewModel.Equipment.WeatherData;
 using NINA.ViewModel.FlatWizard;
 using NINA.ViewModel.FramingAssistant;
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -42,6 +52,12 @@ namespace NINA.ViewModel {
         }
 
         public ApplicationVM(IProfileService profileService) : base(profileService) {
+            if (NINA.Properties.Settings.Default.UpdateSettings) {
+                NINA.Properties.Settings.Default.Upgrade();
+                NINA.Properties.Settings.Default.UpdateSettings = false;
+                NINA.Properties.Settings.Default.Save();
+            }
+
             Logger.SetLogLevel(profileService.ActiveProfile.ApplicationSettings.LogLevel);
             cameraMediator = new CameraMediator();
             telescopeMediator = new TelescopeMediator();
@@ -51,6 +67,10 @@ namespace NINA.ViewModel {
             guiderMediator = new GuiderMediator();
             imagingMediator = new ImagingMediator();
             applicationStatusMediator = new ApplicationStatusMediator();
+            switchMediator = new SwitchMediator();
+            weatherDataMediator = new WeatherDataMediator();
+
+            SwitchVM = new SwitchVM(profileService, applicationStatusMediator, switchMediator);
 
             ExitCommand = new RelayCommand(ExitApplication);
             ClosingCommand = new RelayCommand(ClosingApplication);
@@ -69,7 +89,8 @@ namespace NINA.ViewModel {
                         var focuser = focuserMediator.Connect();
                         var rotator = rotatorMediator.Connect();
                         var guider = guiderMediator.Connect();
-                        await Task.WhenAll(cam, fw, telescope, focuser, rotator, guider);
+                        var weather = weatherDataMediator.Connect();
+                        await Task.WhenAll(cam, fw, telescope, focuser, rotator, guider, weather);
                         return true;
                     });
                 } else {
@@ -86,6 +107,18 @@ namespace NINA.ViewModel {
             InitAvalonDockLayout();
 
             OptionsVM.PropertyChanged += OptionsVM_PropertyChanged;
+
+            profileService.ProfileChanged += ProfileService_ProfileChanged;
+        }
+
+        public IProfile ActiveProfile {
+            get {
+                return profileService.ActiveProfile;
+            }
+        }
+
+        private void ProfileService_ProfileChanged(object sender, EventArgs e) {
+            RaisePropertyChanged(nameof(ActiveProfile));
         }
 
         private async void OptionsVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
@@ -102,9 +135,11 @@ namespace NINA.ViewModel {
         private IGuiderMediator guiderMediator;
         private IImagingMediator imagingMediator;
         private IApplicationStatusMediator applicationStatusMediator;
+        private SwitchMediator switchMediator;
+        private IWeatherDataMediator weatherDataMediator;
 
         private void LoadProfile(object obj) {
-            if (profileService.Profiles.ProfileList.Count > 1) {
+            if (profileService.Profiles.Count > 1) {
                 new ProfileSelectVM(profileService).SelectProfile();
             }
         }
@@ -114,7 +149,7 @@ namespace NINA.ViewModel {
         }
 
         private void OpenManual(object o) {
-            System.Diagnostics.Process.Start("https://nighttime-imaging.eu/docs/documentation/");
+            System.Diagnostics.Process.Start("https://nighttime-imaging.eu/docs/master/site/");
         }
 
         public void InitAvalonDockLayout() {
@@ -125,11 +160,13 @@ namespace NINA.ViewModel {
             DockManagerVM.Anchorables.Add(RotatorVM);
             DockManagerVM.Anchorables.Add(TelescopeVM);
             DockManagerVM.Anchorables.Add(GuiderVM);
+            DockManagerVM.Anchorables.Add(SwitchVM);
+            DockManagerVM.Anchorables.Add(WeatherDataVM);
 
             DockManagerVM.Anchorables.Add(ImagingVM);
             DockManagerVM.Anchorables.Add(SeqVM);
-            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgStatisticsVM);
-            DockManagerVM.Anchorables.Add(ImagingVM.ImageControl.ImgHistoryVM);
+            DockManagerVM.Anchorables.Add(ImagingVM.ImgStatisticsVM);
+            DockManagerVM.Anchorables.Add(SeqVM.ImgHistoryVM);
 
             DockManagerVM.Anchorables.Add(ThumbnailVM);
             DockManagerVM.Anchorables.Add(WeatherDataVM);
@@ -146,12 +183,13 @@ namespace NINA.ViewModel {
             DockManagerVM.AnchorableInfoPanels.Add(TelescopeVM);
             DockManagerVM.AnchorableInfoPanels.Add(GuiderVM);
             DockManagerVM.AnchorableInfoPanels.Add(SeqVM);
-            DockManagerVM.AnchorableInfoPanels.Add(ImagingVM.ImageControl.ImgStatisticsVM);
-            DockManagerVM.AnchorableInfoPanels.Add(ImagingVM.ImageControl.ImgHistoryVM);
+            DockManagerVM.AnchorableInfoPanels.Add(SwitchVM);
+            DockManagerVM.AnchorableInfoPanels.Add(WeatherDataVM);
+            DockManagerVM.AnchorableInfoPanels.Add(ImagingVM.ImgStatisticsVM);
+            DockManagerVM.AnchorableInfoPanels.Add(SeqVM.ImgHistoryVM);
 
             DockManagerVM.AnchorableTools.Add(ImagingVM);
             DockManagerVM.AnchorableTools.Add(ThumbnailVM);
-            DockManagerVM.AnchorableTools.Add(WeatherDataVM);
             DockManagerVM.AnchorableTools.Add(PlatesolveVM);
             DockManagerVM.AnchorableTools.Add(PolarAlignVM);
             DockManagerVM.AnchorableTools.Add(AutoFocusVM);
@@ -267,6 +305,12 @@ namespace NINA.ViewModel {
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
+
+            try {
+                weatherDataMediator.Disconnect();
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
         }
 
         private DockManagerVM _dockManagerVM;
@@ -313,6 +357,8 @@ namespace NINA.ViewModel {
                 RaisePropertyChanged();
             }
         }
+
+        public SwitchVM SwitchVM { get; private set; }
 
         private FilterWheelVM _filterWheelVM;
 
@@ -364,7 +410,7 @@ namespace NINA.ViewModel {
         public WeatherDataVM WeatherDataVM {
             get {
                 if (_weatherDataVM == null) {
-                    _weatherDataVM = new WeatherDataVM(profileService);
+                    _weatherDataVM = new WeatherDataVM(profileService, weatherDataMediator, applicationStatusMediator);
                 }
                 return _weatherDataVM;
             }
@@ -380,8 +426,10 @@ namespace NINA.ViewModel {
             get {
                 if (_flatWizardVM == null) {
                     _flatWizardVM = new FlatWizardVM(profileService,
-                        new ImagingVM(profileService, new ImagingMediator(), cameraMediator, telescopeMediator, filterWheelMediator, focuserMediator, rotatorMediator, guiderMediator, applicationStatusMediator),
+                        new ImagingVM(profileService, new ImagingMediator(), cameraMediator, telescopeMediator, filterWheelMediator, focuserMediator, rotatorMediator, guiderMediator, weatherDataMediator, applicationStatusMediator),
                         cameraMediator,
+                        filterWheelMediator,
+                        telescopeMediator,
                         new ApplicationResourceDictionary(),
                         applicationStatusMediator);
                 }
@@ -398,7 +446,7 @@ namespace NINA.ViewModel {
         public SequenceVM SeqVM {
             get {
                 if (_seqVM == null) {
-                    _seqVM = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
+                    _seqVM = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
                 }
                 return _seqVM;
             }
@@ -413,7 +461,7 @@ namespace NINA.ViewModel {
         public ImagingVM ImagingVM {
             get {
                 if (_imagingVM == null) {
-                    _imagingVM = new ImagingVM(profileService, imagingMediator, cameraMediator, telescopeMediator, filterWheelMediator, focuserMediator, rotatorMediator, guiderMediator, applicationStatusMediator);
+                    _imagingVM = new ImagingVM(profileService, imagingMediator, cameraMediator, telescopeMediator, filterWheelMediator, focuserMediator, rotatorMediator, guiderMediator, weatherDataMediator, applicationStatusMediator);
                 }
                 return _imagingVM;
             }
@@ -474,7 +522,7 @@ namespace NINA.ViewModel {
             get {
                 if (_guiderVM == null) {
                     _guiderVM = new
-                        GuiderVM(profileService, guiderMediator, cameraMediator, applicationStatusMediator);
+                        GuiderVM(profileService, guiderMediator, cameraMediator, applicationStatusMediator, telescopeMediator);
                 }
                 return _guiderVM;
             }
@@ -567,10 +615,7 @@ namespace NINA.ViewModel {
     }
 
     public enum ApplicationTab {
-        CAMERA,
-        FWANDFOCUSER,
-        TELESCOPE,
-        GUIDER,
+        EQUIPMENT,
         SKYATLAS,
         FRAMINGASSISTANT,
         FLATWIZARD,

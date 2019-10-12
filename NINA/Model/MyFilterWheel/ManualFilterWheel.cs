@@ -22,7 +22,7 @@
 #endregion "copyright"
 
 using NINA.Utility;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 using System.Collections;
 using System.Linq;
@@ -45,6 +45,8 @@ namespace NINA.Model.MyFilterWheel {
 
         private bool connected;
         private IProfileService profileService;
+
+        public string Category { get; } = "N.I.N.A.";
 
         public bool Connected {
             get {

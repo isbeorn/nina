@@ -21,8 +21,9 @@
 
 #endregion "copyright"
 
+using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 
 namespace NINA.ViewModel {
@@ -134,11 +135,11 @@ namespace NINA.ViewModel {
             }
         }
 
-        public void Add(IImageStatistics stats) {
+        public void Add(IImageStatistics stats, double exposureTime) {
             Statistics = stats;
 
-            if (stats.ExposureTime > 0) {
-                CalculateRecommendedExposureTime(stats.Mean, stats.ExposureTime);
+            if (exposureTime > 0) {
+                CalculateRecommendedExposureTime(stats.Mean, exposureTime);
             }
         }
 

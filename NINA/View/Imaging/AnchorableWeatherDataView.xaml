@@ -1,0 +1,243 @@
+﻿<!--
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/
+
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright 2019 Dale Ghent <daleg@elemental.org>-->
+<UserControl
+    x:Class="NINA.View.AnchorableWeatherDataView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ns="clr-namespace:NINA.Locale"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Vertical">
+                <Border
+                    Margin="0,5,0,0"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0"
+                    Visibility="{Binding WeatherDataInfo.Connected, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
+                    <UniformGrid VerticalAlignment="Center" Columns="2">
+                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblConnected}" />
+                        <CheckBox
+                            Width="20"
+                            Height="20"
+                            Margin="5,0,0,0"
+                            HorizontalAlignment="Left"
+                            BorderBrush="Transparent"
+                            IsChecked="{Binding WeatherDataInfo.Connected, FallbackValue=False, Mode=OneWay}"
+                            IsEnabled="False"
+                            Style="{StaticResource CheckmarkCheckbox}" />
+                    </UniformGrid>
+                </Border>
+                <Border
+                    Margin="0,5,0,0"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0" />
+                <Border
+                    Margin="0,5,0,0"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0"
+                    Visibility="{Binding WeatherDataInfo.Temperature, Converter={StaticResource NaNToVisibilityConverter}, FallbackValue=Collapsed}">
+                    <UniformGrid VerticalAlignment="Center" Columns="2">
+                        <TextBlock Text="{ns:Loc LblTemperature}" />
+                        <TextBlock Margin="5,0,0,0">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource WeatherTemperatureConverter}">
+                                    <Binding Path="WeatherDataInfo.Temperature" />
+                                    <Binding Path="WeatherDataVM.ActiveProfile.WeatherDataSettings.DisplayFahrenheit" Source="{StaticResource AppVM}" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </UniformGrid>
+                </Border>
+                <Border
+                    Margin="0,5,0,0"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0"
+                    Visibility="{Binding WeatherDataInfo.Humidity, Converter={StaticResource NaNToVisibilityConverter}, FallbackValue=Collapsed}">
+                    <UniformGrid VerticalAlignment="Center" Columns="2">
+                        <TextBlock Text="{ns:Loc LblHumidity}" />
+                        <TextBlock Margin="5,0,0,0" Text="{Binding WeatherDataInfo.Humidity, StringFormat=\{0:0.00\}%}" />
+                    </UniformGrid>
+                </Border>
+                <Border
+                    Margin="0,5,0,0"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0"
+                    Visibility="{Binding WeatherDataInfo.DewPoint, Converter={StaticResource NaNToVisibilityConverter}, FallbackValue=Collapsed}">
+                    <UniformGrid VerticalAlignment="Center" Columns="2">
+                        <TextBlock Text="{ns:Loc LblDewpoint}" />
+                        <TextBlock Margin="5,0,0,0">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource WeatherTemperatureConverter}" NotifyOnSourceUpdated="True">
+                                    <Binding Path="WeatherDataInfo.DewPoint" />
+                                    <Binding Path="WeatherDataVM.ActiveProfile.WeatherDataSettings.DisplayFahrenheit" Source="{StaticResource AppVM}" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </UniformGrid>
+                </Border>
+                <Border
+                    Margin="0,5,0,0"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0"
+                    Visibility="{Binding WeatherDataInfo.Pressure, Converter={StaticResource NaNToVisibilityConverter}, FallbackValue=Collapsed}">
+                    <UniformGrid VerticalAlignment="Center" Columns="2">
+                        <TextBlock Text="{ns:Loc LblPressure}" />
+                        <TextBlock Margin="5,0,0,0">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource WeatherPressureConverter}">
+                                    <Binding Path="WeatherDataInfo.Pressure" />
+                                    <Binding Path="WeatherDataVM.ActiveProfile.WeatherDataSettings.DisplayImperial" Source="{StaticResource AppVM}" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </UniformGrid>
+                </Border>
+                <Border
+                    Margin="0,5,0,0"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0"
+                    Visibility="{Binding WeatherDataInfo.WindSpeed, Converter={StaticResource NaNToVisibilityConverter}, FallbackValue=Collapsed}">
+                    <UniformGrid VerticalAlignment="Center" Columns="2">
+                        <TextBlock Text="{ns:Loc LblWindSpeed}" />
+                        <TextBlock Margin="5,0,0,0">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource WeatherVelocityConverter}">
+                                    <Binding Path="WeatherDataInfo.WindSpeed" />
+                                    <Binding Path="WeatherDataVM.ActiveProfile.WeatherDataSettings.DisplayImperial" Source="{StaticResource AppVM}" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </UniformGrid>
+                </Border>
+                <Border
+                    Margin="0,5,0,0"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0"
+                    Visibility="{Binding WeatherDataInfo.WindDirection, Converter={StaticResource NaNToVisibilityConverter}, FallbackValue=Collapsed}">
+                    <UniformGrid VerticalAlignment="Center" Columns="2">
+                        <TextBlock Text="{ns:Loc LblWindDirection}" />
+                        <TextBlock Margin="5,0,0,0" Text="{Binding WeatherDataInfo.WindDirection, StringFormat=\{0:0.00°\}}" />
+                    </UniformGrid>
+                </Border>
+                <Border
+                    Margin="0,5,0,0"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0"
+                    Visibility="{Binding WeatherDataInfo.WindGust, Converter={StaticResource NaNToVisibilityConverter}, FallbackValue=Collapsed}">
+                    <UniformGrid VerticalAlignment="Center" Columns="2">
+                        <TextBlock Text="{ns:Loc LblWindGust}" />
+                        <TextBlock Margin="5,0,0,0">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource WeatherVelocityConverter}">
+                                    <Binding Path="WeatherDataInfo.WindGust" />
+                                    <Binding Path="WeatherDataVM.ActiveProfile.WeatherDataSettings.DisplayImperial" Source="{StaticResource AppVM}" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </UniformGrid>
+                </Border>
+                <Border
+                    Margin="0,5,0,0"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0"
+                    Visibility="{Binding WeatherDataInfo.CloudCover, Converter={StaticResource NaNToVisibilityConverter}, FallbackValue=Collapsed}">
+                    <UniformGrid VerticalAlignment="Center" Columns="2">
+                        <TextBlock Text="{ns:Loc LblCloudCover}" />
+                        <TextBlock Margin="5,0,0,0" Text="{Binding WeatherDataInfo.CloudCover, StringFormat=\{0:0.00\}%}" />
+                    </UniformGrid>
+                </Border>
+                <Border
+                    Margin="0,5,0,0"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0"
+                    Visibility="{Binding WeatherDataInfo.RainRate, Converter={StaticResource NaNToVisibilityConverter}, FallbackValue=Collapsed}">
+                    <UniformGrid VerticalAlignment="Center" Columns="2">
+                        <TextBlock Text="{ns:Loc LblRainRate}" />
+                        <TextBlock Margin="5,0,0,0">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource WeatherRainRateConverter}">
+                                    <Binding Path="WeatherDataInfo.RainRate" />
+                                    <Binding Path="WeatherDataVM.ActiveProfile.WeatherDataSettings.DisplayImperial" Source="{StaticResource AppVM}" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </UniformGrid>
+                </Border>
+                <Border
+                    Margin="0,5,0,0"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0"
+                    Visibility="{Binding WeatherDataInfo.SkyBrightness, Converter={StaticResource NaNToVisibilityConverter}, FallbackValue=Collapsed}">
+                    <UniformGrid VerticalAlignment="Center" Columns="2">
+                        <TextBlock Text="{ns:Loc LblSkyBrightness}" />
+                        <TextBlock Margin="5,0,0,0">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource WeatherBrightnessConverter}">
+                                    <Binding Path="WeatherDataInfo.SkyBrightness" />
+                                    <Binding Path="WeatherDataVM.ActiveProfile.WeatherDataSettings.DisplayImperial" Source="{StaticResource AppVM}" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </UniformGrid>
+                </Border>
+                <Border
+                    Margin="0,5,0,0"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0"
+                    Visibility="{Binding WeatherDataInfo.SkyQuality, Converter={StaticResource NaNToVisibilityConverter}, FallbackValue=Collapsed}">
+                    <UniformGrid VerticalAlignment="Center" Columns="2">
+                        <TextBlock Text="{ns:Loc LblSkyQuality}" />
+                        <TextBlock Margin="5,0,0,0" Text="{Binding WeatherDataInfo.SkyQuality, StringFormat=\{0:0.00\} Mag/arcsec²}" />
+                    </UniformGrid>
+                </Border>
+                <Border
+                    Margin="0,5,0,0"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0"
+                    Visibility="{Binding WeatherDataInfo.SkyTemperature, Converter={StaticResource NaNToVisibilityConverter}, FallbackValue=Collapsed}">
+                    <UniformGrid VerticalAlignment="Center" Columns="2">
+                        <TextBlock Text="{ns:Loc LblSkyTemperature}" />
+                        <TextBlock Margin="5,0,0,0">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource WeatherTemperatureConverter}">
+                                    <Binding Path="WeatherDataInfo.SkyTemperature" />
+                                    <Binding Path="WeatherDataVM.ActiveProfile.WeatherDataSettings.DisplayFahrenheit" Source="{StaticResource AppVM}" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </UniformGrid>
+                </Border>
+                <Border
+                    Margin="0,5,0,0"
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0"
+                    Visibility="{Binding WeatherDataInfo.StarFWHM, Converter={StaticResource NaNToVisibilityConverter}, FallbackValue=Collapsed}">
+                    <UniformGrid VerticalAlignment="Center" Columns="2">
+                        <TextBlock Text="{ns:Loc LblStarFWHM}" />
+                        <TextBlock Margin="5,0,0,0" Text="{Binding WeatherDataInfo.StarFWHM, StringFormat=\{0:0.00\}}" />
+                    </UniformGrid>
+                </Border>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -23,17 +23,17 @@
 
 using NINA.Model;
 using NINA.Model.MyCamera;
+using NINA.Model.MyPlanetarium;
 using NINA.PlateSolving;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Behaviors;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using NINA.Utility.SkySurvey;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -55,10 +55,9 @@ namespace NINA.ViewModel.FramingAssistant {
             this.imagingMediator = imagingMediator;
             this.applicationStatusMediator = applicationStatusMediator;
 
-            Cache = new CacheSkySurvey(profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory);
             Opacity = 0.2;
 
-            SkyMapAnnotator = new SkyMapAnnotator(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation, telescopeMediator);
+            SkyMapAnnotator = new SkyMapAnnotator(telescopeMediator);
 
             var defaultCoordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Degrees);
             DSO = new DeepSkyObject(string.Empty, defaultCoordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
@@ -77,11 +76,13 @@ namespace NINA.ViewModel.FramingAssistant {
             DragStartCommand = new RelayCommand(DragStart);
             DragStopCommand = new RelayCommand(DragStop);
             DragMoveCommand = new RelayCommand(DragMove);
-            ClearCacheCommand = new RelayCommand(ClearCache);
+            ClearCacheCommand = new RelayCommand(ClearCache, (object o) => Cache != null);
             RefreshSkyMapAnnotationCommand = new RelayCommand((object o) => SkyMapAnnotator.UpdateSkyMap(), (object o) => SkyMapAnnotator.Initialized);
             MouseWheelCommand = new RelayCommand(MouseWheel);
 
-            DeepSkyObjectSearchVM = new DeepSkyObjectSearchVM(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
+            CoordsFromPlanetariumCommand = new AsyncCommand<bool>(() => Task.Run(CoordsFromPlanetarium));
+
+            DeepSkyObjectSearchVM = new DeepSkyObjectSearchVM();
             DeepSkyObjectSearchVM.PropertyChanged += DeepSkyObjectSearchVM_PropertyChanged;
 
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(async (object parameter) => {
@@ -118,8 +119,6 @@ namespace NINA.ViewModel.FramingAssistant {
                 return await telescopeMediator.SlewToCoordinatesAsync(Rectangle.Coordinates);
             }, (object o) => Rectangle?.Coordinates != null);
 
-            _selectedImageCacheInfo = (XElement)ImageCacheInfo.FirstNode;
-
             var appSettings = profileService.ActiveProfile.ApplicationSettings;
             appSettings.PropertyChanged += ApplicationSettings_PropertyChanged;
 
@@ -149,6 +148,22 @@ namespace NINA.ViewModel.FramingAssistant {
             profileService.LocationChanged += (object sender, EventArgs e) => {
                 DSO = new DeepSkyObject(DSO.Name, DSO.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
             };
+
+            InitializeCache();
+        }
+
+        private void InitializeCache() {
+            try {
+                Cache = new CacheSkySurvey(profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory);
+                ImageCacheInfo = Cache.Cache;
+                _selectedImageCacheInfo = (XElement)ImageCacheInfo?.FirstNode ?? null;
+                RaisePropertyChanged(nameof(ImageCacheInfo));
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                Cache = null;
+                ImageCacheInfo = null;
+            }
+            RaisePropertyChanged(nameof(ImageCacheInfo));
         }
 
         private void MouseWheel(object obj) {
@@ -185,8 +200,7 @@ namespace NINA.ViewModel.FramingAssistant {
         public DeepSkyObjectSearchVM DeepSkyObjectSearchVM { get; private set; }
 
         private void ApplicationSettings_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            Cache = new CacheSkySurvey(profileService.ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory);
-            RaisePropertyChanged(nameof(ImageCacheInfo));
+            InitializeCache();
         }
 
         private double opacity;
@@ -214,10 +228,12 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         private void ClearCache(object obj) {
-            var diagResult = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblClearCache"] + "?", "", MessageBoxButton.YesNo, MessageBoxResult.No);
-            if (diagResult == MessageBoxResult.Yes) {
-                Cache.Clear();
-                RaisePropertyChanged(nameof(ImageCacheInfo));
+            if (Cache != null) {
+                var diagResult = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblClearCache"] + "?", "", MessageBoxButton.YesNo, MessageBoxResult.No);
+                if (diagResult == MessageBoxResult.Yes) {
+                    Cache.Clear();
+                    RaisePropertyChanged(nameof(ImageCacheInfo));
+                }
             }
         }
 
@@ -248,6 +264,9 @@ namespace NINA.ViewModel.FramingAssistant {
             }
 
             RaiseCoordinatesChanged();
+            while (boundWidth == 0) {
+                await Task.Delay(50);
+            }
             await LoadImageCommand.ExecuteAsync(null);
             return true;
         }
@@ -452,12 +471,12 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
-        private ObservableCollection<FramingRectangle> cameraRectangles;
+        private AsyncObservableCollection<FramingRectangle> cameraRectangles;
 
-        public ObservableCollection<FramingRectangle> CameraRectangles {
+        public AsyncObservableCollection<FramingRectangle> CameraRectangles {
             get {
                 if (cameraRectangles == null) {
-                    cameraRectangles = new ObservableCollection<FramingRectangle>();
+                    cameraRectangles = new AsyncObservableCollection<FramingRectangle>();
                 }
                 return cameraRectangles;
             }
@@ -533,9 +552,9 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
-        private int _focalLength;
+        private double _focalLength;
 
-        public int FocalLength {
+        public double FocalLength {
             get {
                 return _focalLength;
             }
@@ -582,9 +601,14 @@ namespace NINA.ViewModel.FramingAssistant {
                 _loadImageSource?.Dispose();
                 _loadImageSource = new CancellationTokenSource();
                 try {
-                    SkySurveyImage skySurveyImage;
+                    SkySurveyImage skySurveyImage = null;
                     if (FramingAssistantSource == SkySurveySource.CACHE) {
-                        skySurveyImage = await Cache.GetImage(Guid.Parse(SelectedImageCacheInfo.Attribute("Id").Value));
+                        if (Cache == null) {
+                            throw new Exception("Cache unavailable. Check log file for errors");
+                        }
+                        if (SelectedImageCacheInfo != null) {
+                            skySurveyImage = await Cache.GetImage(Guid.Parse(SelectedImageCacheInfo.Attribute("Id").Value));
+                        }
                     } else {
                         var skySurvey = SkySurveyFactory.Create(FramingAssistantSource);
 
@@ -605,7 +629,7 @@ namespace NINA.ViewModel.FramingAssistant {
 
                         var dynamicFoV = true;
 
-                        if (FramingAssistantSource != SkySurveySource.SKYATLAS) {
+                        if (Cache != null && FramingAssistantSource != SkySurveySource.SKYATLAS) {
                             SelectedImageCacheInfo = Cache.SaveImageToCache(skySurveyImage);
                             RaisePropertyChanged(nameof(ImageCacheInfo));
                             dynamicFoV = false;
@@ -627,32 +651,33 @@ namespace NINA.ViewModel.FramingAssistant {
 
         private async Task<SkySurveyImage> PlateSolveSkySurvey(SkySurveyImage skySurveyImage) {
             var diagResult = MyMessageBox.MyMessageBox.Show(string.Format(Locale.Loc.Instance["LblBlindSolveAttemptForFraming"], DSO.Coordinates.RAString, DSO.Coordinates.DecString), Locale.Loc.Instance["LblNoCoordinates"], MessageBoxButton.YesNo, MessageBoxResult.Yes);
-            var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
-            PlateSolveResult psResult;
-            if (diagResult == MessageBoxResult.Yes) {
-                psResult = await solver.Solve(skySurveyImage.Image, _statusUpdate, _loadImageSource.Token, false, DSO.Coordinates);
-            } else {
-                psResult = await solver.BlindSolve(skySurveyImage.Image, _statusUpdate, _loadImageSource.Token);
-            }
-
-            if (psResult.Success) {
-                var rotation = psResult.Orientation;
-                if (rotation < 0) {
-                    rotation += 360;
-                } else if (rotation >= 360) {
-                    rotation -= 360;
+            using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
+                PlateSolveResult psResult;
+                if (diagResult == MessageBoxResult.Yes) {
+                    psResult = await solver.Solve(skySurveyImage.Image, _statusUpdate, _loadImageSource.Token, false, DSO.Coordinates);
+                } else {
+                    psResult = await solver.BlindSolve(skySurveyImage.Image, _statusUpdate, _loadImageSource.Token);
                 }
-                skySurveyImage.Coordinates = psResult.Coordinates;
-                skySurveyImage.FoVWidth = Astrometry.ArcsecToArcmin(psResult.Pixscale * skySurveyImage.Image.PixelWidth);
-                skySurveyImage.FoVHeight = Astrometry.ArcsecToArcmin(psResult.Pixscale * skySurveyImage.Image.PixelHeight);
-                skySurveyImage.Rotation = rotation;
-            } else {
-                throw new Exception("Platesolve failed to retrieve coordinates for image");
+
+                if (psResult.Success) {
+                    var rotation = psResult.Orientation;
+                    if (rotation < 0) {
+                        rotation += 360;
+                    } else if (rotation >= 360) {
+                        rotation -= 360;
+                    }
+                    skySurveyImage.Coordinates = psResult.Coordinates;
+                    skySurveyImage.FoVWidth = Astrometry.ArcsecToArcmin(psResult.Pixscale * skySurveyImage.Image.PixelWidth);
+                    skySurveyImage.FoVHeight = Astrometry.ArcsecToArcmin(psResult.Pixscale * skySurveyImage.Image.PixelHeight);
+                    skySurveyImage.Rotation = rotation;
+                } else {
+                    throw new Exception("Platesolve failed to retrieve coordinates for image");
+                }
             }
             return skySurveyImage;
         }
 
-        public XElement ImageCacheInfo => Cache.Cache;
+        public XElement ImageCacheInfo { get; set; }
 
         private CacheSkySurvey Cache { get; set; }
 
@@ -681,7 +706,7 @@ namespace NINA.ViewModel.FramingAssistant {
             if (parameter != null) {
                 var previousRotation = Rectangle?.Rotation ?? 0;
                 Rectangle = null;
-                Rotation = parameter.Rotation;
+                Rotation = previousRotation;
                 CameraRectangles.Clear();
 
                 var centerCoordinates = parameter.CenterCoordinates;
@@ -736,7 +761,7 @@ namespace NINA.ViewModel.FramingAssistant {
                             var panelDeltaX = panelCenter.X - center.X;
                             var panelDeltaY = panelCenter.Y - center.Y;
 
-                            var panelRotation = parameter.Rotation;
+                            var panelRotation = previousRotation;
                             var panelCenterCoordinates = centerCoordinates.Shift(panelDeltaX, panelDeltaY, panelRotation, imageArcsecWidth, imageArcsecHeight);
                             var rect = new FramingRectangle(parameter.Rotation) {
                                 Id = id++,
@@ -744,7 +769,7 @@ namespace NINA.ViewModel.FramingAssistant {
                                 Height = panelHeight,
                                 X = panelX,
                                 Y = panelY,
-                                Rotation = previousRotation,
+                                Rotation = panelRotation,
                                 Coordinates = panelCenterCoordinates
                             };
                             CameraRectangles.Add(rect);
@@ -817,6 +842,21 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
+        private async Task<bool> CoordsFromPlanetarium() {
+            IPlanetarium s = PlanetariumFactory.GetPlanetarium(profileService);
+            DeepSkyObject resp = await s.GetTarget();
+            if (resp != null) {
+                await SetCoordinates(resp);
+                Notification.ShowSuccess(String.Format(Locale.Loc.Instance["LblPlanetariumCoordsOk"], s.Name));
+            } else Notification.ShowError(String.Format(Locale.Loc.Instance["LblPlanetariumCoordsError"], s.Name));
+            return (resp != null);
+        }
+
+        public void Dispose() {
+            this.cameraMediator.RemoveConsumer(this);
+        }
+
+        public ICommand CoordsFromPlanetariumCommand { get; set; }
         public ICommand DragStartCommand { get; private set; }
         public ICommand DragStopCommand { get; private set; }
         public ICommand DragMoveCommand { get; private set; }

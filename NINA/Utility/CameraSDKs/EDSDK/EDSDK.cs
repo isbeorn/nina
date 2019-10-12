@@ -10,9 +10,31 @@ namespace EDSDKLib {
 
         static EDSDK() {
             DllLoader.LoadDll(Path.Combine("Canon", "EDSDK.dll"));
+        }
 
-            uint err;
-            err = EDSDK.EdsInitializeSDK();
+        private static object lockObj = new object();
+        private static bool initialized;
+
+        public static void Initialize() {
+            lock (lockObj) {
+                if (!initialized) {
+                    if (!DllLoader.IsX86()) {
+                        //When EOS Utility by Canon is open in the background the EDSDK.EdsInitializeSDK throws an uncatchable AccessViolation Exception
+                        //Therefore the system processes are scanned for this program and if found the initialization is prevented
+                        var eosUtil = System.Diagnostics.Process.GetProcessesByName("EOS Utility");
+                        if (eosUtil.Length > 0) {
+                            throw new Exception("Cannot initialize Canon SDK. EOS Utiltiy is preventing the DLL to load. Please close EOS Utility first to be able to connect to your Canon Camera!");
+                        }
+                    }
+
+                    var err = EDSDK.EdsInitializeSDK();
+                    if (err > 0) {
+                        throw new Exception($"Canon EdsInitializeSDK failed with code {err}");
+                    } else {
+                        initialized = true;
+                    }
+                }
+            }
         }
 
         #region Callback Functions

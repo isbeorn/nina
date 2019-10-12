@@ -11,6 +11,8 @@ namespace NINA.Utility.SkySurvey {
 
         public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, int width,
             int height, CancellationToken ct, IProgress<int> progress) {
+            width = Math.Max(1, width);
+            height = Math.Max(1, height);
             byte[] arr = new byte[width * height];
             for (int i = 0; i < arr.Length; i++) {
                 arr[i] = 30;

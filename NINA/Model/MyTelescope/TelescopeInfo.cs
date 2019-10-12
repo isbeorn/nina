@@ -146,6 +146,18 @@ namespace NINA.Model.MyTelescope {
             }
         }
 
+        private PierSide sideOfPier;
+
+        public PierSide SideOfPier {
+            get {
+                return sideOfPier;
+            }
+            set {
+                sideOfPier = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private string altitudeString;
 
         public string AltitudeString {
@@ -186,6 +198,27 @@ namespace NINA.Model.MyTelescope {
         public bool Tracking {
             get { return tracking; }
             set { tracking = value; RaisePropertyChanged(); }
+        }
+
+        private bool canPark;
+
+        public bool CanPark {
+            get {  return canPark; }
+            set {  canPark = value; RaisePropertyChanged(); }
+        }
+
+        private bool canSetPark;
+
+        public bool CanSetPark {
+            get {  return canSetPark; }
+            set {  canSetPark = value; RaisePropertyChanged(); }
+        }
+
+        private bool canSetTracking;
+
+        public bool CanSetTracking {
+            get {  return canSetTracking; }
+            set {  canSetTracking = value; RaisePropertyChanged(); }
         }
     }
 }

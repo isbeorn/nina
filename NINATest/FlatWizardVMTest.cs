@@ -5,7 +5,7 @@ using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Utility.Mediator.Interfaces;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using NINA.ViewModel.FlatWizard;
 using NINA.ViewModel.Interfaces;
 using NUnit.Framework;
@@ -23,6 +23,8 @@ namespace NINATest {
         private Mock<IProfileService> profileServiceMock = new Mock<IProfileService>();
         private Mock<IImagingVM> imagingVMMock = new Mock<IImagingVM>();
         private Mock<ICameraMediator> cameraMediatorMock = new Mock<ICameraMediator>();
+        private Mock<ITelescopeMediator> telescopeMediatorMock = new Mock<ITelescopeMediator>();
+        private Mock<IFilterWheelMediator> filterWheelMediatorMock = new Mock<IFilterWheelMediator>();
         private Mock<IApplicationStatusMediator> applicationStatusMediatorMock = new Mock<IApplicationStatusMediator>();
         private Mock<IFlatWizardExposureTimeFinderService> exposureServiceMock = new Mock<IFlatWizardExposureTimeFinderService>();
         private Mock<ILoc> localeMock = new Mock<ILoc>();
@@ -48,6 +50,7 @@ namespace NINATest {
             profileServiceMock = new Mock<IProfileService>();
             imagingVMMock = new Mock<IImagingVM>();
             cameraMediatorMock = new Mock<ICameraMediator>();
+            telescopeMediatorMock = new Mock<ITelescopeMediator>();
             applicationStatusMediatorMock = new Mock<IApplicationStatusMediator>();
             exposureServiceMock = new Mock<IFlatWizardExposureTimeFinderService>();
             localeMock = new Mock<ILoc>();
@@ -69,7 +72,7 @@ namespace NINATest {
             // act
 
             sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
-                cameraMediatorMock.Object, resourceDictionaryMock.Object,
+                cameraMediatorMock.Object, filterWheelMediatorMock.Object, telescopeMediatorMock.Object, resourceDictionaryMock.Object,
                 applicationStatusMediatorMock.Object) {
                 FlatWizardExposureTimeFinderService = exposureServiceMock.Object,
                 Locale = localeMock.Object,
@@ -112,7 +115,7 @@ namespace NINATest {
                 });
             // setup
             sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
-                cameraMediatorMock.Object, resourceDictionaryMock.Object,
+                cameraMediatorMock.Object, filterWheelMediatorMock.Object, telescopeMediatorMock.Object, resourceDictionaryMock.Object,
                 applicationStatusMediatorMock.Object) {
                 FlatWizardExposureTimeFinderService = exposureServiceMock.Object,
                 Locale = localeMock.Object,
@@ -136,18 +139,18 @@ namespace NINATest {
         [Test]
         public void UpdateFilterWheelSettings_WhenCalled_UpdateFiltersListAndKeepSelectedFilter() {
             // setup
-            var filters = new List<FilterInfo>() { new FilterInfo("Filter", 0, 0), new FilterInfo("Filter2", 0, 0) };
+            var filters = new ObserveAllCollection<FilterInfo>() { new FilterInfo("Filter", 0, 0), new FilterInfo("Filter2", 0, 0) };
             filterWheelSettingsMock.SetupGet(m => m.FilterWheelFilters)
-                .Returns(new ObserveAllCollection<FilterInfo>(filters));
+                .Returns(filters);
 
             sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
-                cameraMediatorMock.Object, resourceDictionaryMock.Object,
+                cameraMediatorMock.Object, filterWheelMediatorMock.Object, telescopeMediatorMock.Object, resourceDictionaryMock.Object,
                 applicationStatusMediatorMock.Object) {
                 FlatWizardExposureTimeFinderService = exposureServiceMock.Object,
                 Locale = localeMock.Object,
             };
 
-            var selectedFilter = filters[1];
+            var selectedFilter = filters[0];
             sut.SelectedFilter = selectedFilter;
 
             CameraInfo cameraInfo = new CameraInfo {
@@ -160,12 +163,9 @@ namespace NINATest {
             sut.SelectedFilter.Should().BeEquivalentTo(selectedFilter);
 
             // remove one filter
-            filters = new List<FilterInfo>() { new FilterInfo("Filter2", 0, 0) };
-            filterWheelSettingsMock.SetupGet(m => m.FilterWheelFilters)
-                .Returns(new ObserveAllCollection<FilterInfo>(filters));
+            filters.RemoveAt(1);
 
-            // act by firing the propertychanged event and also update the camera info on existing filters
-            filterWheelSettingsMock.Raise(f => f.PropertyChanged += null, new PropertyChangedEventArgs(""));
+            // update the camera info on existing filters
             sut.UpdateDeviceInfo(cameraInfo);
 
             // assert cameraInfo on all filters and unused filters are removed
@@ -174,69 +174,13 @@ namespace NINATest {
             sut.SelectedFilter.Should().BeEquivalentTo(selectedFilter);
 
             // add another filter
-            filters = new List<FilterInfo>() { new FilterInfo("Filter2", 0, 0), new FilterInfo("Filter3", 0, 0) };
-            filterWheelSettingsMock.SetupGet(m => m.FilterWheelFilters)
-                .Returns(new ObserveAllCollection<FilterInfo>(filters));
-
-            // act by firing propertychanged again
-            filterWheelSettingsMock.Raise(f => f.PropertyChanged += null, new PropertyChangedEventArgs(""));
+            filters.Add(new FilterInfo("Filter2", 0, 0));
+            filters.Add(new FilterInfo("Filter3", 0, 0));
 
             // assert cameraInfo still on all filters even on the ones that were added
             sut.Filters.Select(f => f.Filter).Should().BeEquivalentTo(filters);
             sut.Filters.Select(f => f.BitDepth).Should().AllBeEquivalentTo(cameraInfo.BitDepth);
             sut.SelectedFilter.Should().BeEquivalentTo(selectedFilter);
-        }
-
-        [Test]
-        [TestCase(10, 0.5, 30, 10, 1, 10, 0.5, 30, 10, 1, 0, 0, 0, 0, 0)]
-        [TestCase(10, 0.5, 30, 10, 1, 20, 0.5, 30, 10, 1, 1, 0, 0, 0, 0)]
-        [TestCase(10, 0.5, 30, 10, 1, 10, 0.6, 30, 10, 1, 0, 1, 0, 0, 0)]
-        [TestCase(10, 0.5, 30, 10, 1, 10, 0.5, 31, 10, 1, 0, 0, 1, 0, 0)]
-        [TestCase(10, 0.5, 30, 10, 1, 10, 0.5, 30, 11, 1, 0, 0, 0, 1, 0)]
-        [TestCase(10, 0.5, 30, 10, 1, 10, 0.5, 30, 10, 2, 0, 0, 0, 0, 1)]
-        public async Task UpdateSingleFlatWizardFilterSettings_WhenUpdateOccurs_UpdateNecessaryFieldsInProfileService(
-            double histMeanTarget, double histTolerance, double maxFlatExposureTime, double minFlatExposureTime, double stepSize,
-            double newHistMeanTarget, double newHistTolerance, double newMaxFlatExposureTime, double newMinFlatExposureTime, double newStepSize,
-            int histMeanCallCount, int histTolCallCount, int maxFlatCallCount, int minFlatCallCount, int stepCallCount) {
-            sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
-                cameraMediatorMock.Object, resourceDictionaryMock.Object,
-                applicationStatusMediatorMock.Object) {
-                FlatWizardExposureTimeFinderService = exposureServiceMock.Object,
-                Locale = localeMock.Object,
-            };
-
-            flatWizardSettingsMock.SetupGet(m => m.HistogramMeanTarget).Returns(() => histMeanTarget);
-            flatWizardSettingsMock.SetupGet(m => m.HistogramTolerance).Returns(() => histTolerance);
-            flatWizardSettingsMock.SetupGet(m => m.StepSize).Returns(() => stepSize);
-            cameraSettingsMock.SetupGet(m => m.MinFlatExposureTime).Returns(() => minFlatExposureTime);
-            cameraSettingsMock.SetupGet(m => m.MaxFlatExposureTime).Returns(() => maxFlatExposureTime);
-
-            flatWizardSettingsMock.SetupSet(m => m.HistogramMeanTarget = It.IsAny<double>())
-                .Callback<double>(x => histMeanTarget = x);
-            flatWizardSettingsMock.SetupSet(m => m.HistogramTolerance = It.IsAny<double>())
-                .Callback<double>(x => histTolerance = x);
-            flatWizardSettingsMock.SetupSet(m => m.StepSize = It.IsAny<double>())
-                .Callback<double>(x => stepSize = x);
-            cameraSettingsMock.SetupSet(m => m.MinFlatExposureTime = It.IsAny<double>())
-                .Callback<double>(x => minFlatExposureTime = x);
-            cameraSettingsMock.SetupSet(m => m.MaxFlatExposureTime = It.IsAny<double>())
-                .Callback<double>(x => maxFlatExposureTime = x);
-
-            sut.SingleFlatWizardFilterSettings.Settings.HistogramMeanTarget = newHistMeanTarget;
-            sut.SingleFlatWizardFilterSettings.Settings.HistogramTolerance = newHistTolerance;
-            sut.SingleFlatWizardFilterSettings.Settings.StepSize = newStepSize;
-            sut.SingleFlatWizardFilterSettings.Settings.MinFlatExposureTime = newMinFlatExposureTime;
-            sut.SingleFlatWizardFilterSettings.Settings.MaxFlatExposureTime = newMaxFlatExposureTime;
-
-            // delay because DelayedPropertyChanged
-            await Task.Delay(1000);
-
-            // multiply call count by 5 because it's called 5 times for each property, but it would be called only once when it's set
-            flatWizardSettingsMock.VerifySet(m => m.HistogramMeanTarget = newHistMeanTarget, Times.Exactly(histMeanCallCount));
-            flatWizardSettingsMock.VerifySet(m => m.HistogramTolerance = newHistTolerance, Times.Exactly(histTolCallCount));
-            flatWizardSettingsMock.VerifySet(m => m.StepSize = newStepSize, Times.Exactly(stepCallCount));
-            cameraSettingsMock.VerifySet(m => m.MaxFlatExposureTime = newMaxFlatExposureTime, Times.Exactly(maxFlatCallCount));
-            cameraSettingsMock.VerifySet(m => m.MinFlatExposureTime = newMinFlatExposureTime, Times.Exactly(minFlatCallCount));
         }
     }
 }

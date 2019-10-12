@@ -23,6 +23,7 @@
 
 using NINA.Model;
 using NINA.Model.MyGuider;
+using NINA.ViewModel.Equipment.Guider;
 using NINA.ViewModel.Interfaces;
 using System;
 using System.Threading;

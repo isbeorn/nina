@@ -24,6 +24,7 @@
 using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Globalization;
@@ -34,6 +35,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
+using NINA;
 
 namespace StarDataImport {
 
@@ -44,6 +46,10 @@ namespace StarDataImport {
 
             public DatabaseInteraction() {
                 _connection = new SQLiteConnection(_connectionString);
+            }
+
+            public DatabaseInteraction(string connection) {
+                _connection = new SQLiteConnection(connection);
             }
 
             private SQLiteConnection _connection;
@@ -86,8 +92,14 @@ namespace StarDataImport {
         }
 
         private static void Main(string[] args) {
+            UpdateEarthRotationParameters();
+
+            //ImportLongTermEarthOrientationDataParameters();
+
+            //ImportFromRapidDataAndPredictionEarthOrientationParameters();
+
             //UpdateDSONamesFromLocalStore(@"D:\Projects\StarDataXML\");
-            UpdateDSODetailsFromLocalStore(@"D:\Projects\StarDataXML\");
+            //UpdateDSODetailsFromLocalStore(@"D:\Projects\StarDataXML\");
 
             //DownloadAndStoreSoapStarData();
             //GenerateStarDatabase();
@@ -95,6 +107,166 @@ namespace StarDataImport {
             //UpdateBrightStars();
             //GenerateDatabase();
             //UpdateStarData();
+        }
+
+        public async static Task UpdateEarthRotationParameters() {
+            var path = Environment.ExpandEnvironmentVariables(@"%localappdata%\nina\NINA.sqlite");
+            var connectionString = string.Format(@"Data Source={0};foreign keys=true;", path);
+            var db = new DatabaseInteraction(connectionString);
+
+            double availableDataTimeStamp = double.MinValue;
+            using (var context = new NINA.Database.NINADbContext(connectionString)) {
+                availableDataTimeStamp = (await context.EarthRotationParameterSet.Where(x => x.lod > 0).OrderByDescending(x => x.date).FirstAsync()).date;
+            }
+
+            var webClient = new WebClient();
+            webClient.Headers.Add("User-Agent", "N.I.N.A. Data Import");
+            webClient.Headers.Add("Accept", "*/*");
+            webClient.Headers.Add("Cache-Control", "no-cache");
+            webClient.Headers.Add("Host", "datacenter.iers.org");
+            webClient.Headers.Add("accept-encoding", "gzip,deflate");
+
+            var data = webClient.DownloadString("https://datacenter.iers.org/data/csv/finals2000A.daily.csv");
+
+            List<string> queries = new List<string>();
+
+            using (var reader = new System.IO.StringReader(data)) {
+                string headerLine = reader.ReadLine();
+                string line;
+                while ((line = reader.ReadLine()) != null) {
+                    var columns = line.Split(';');
+
+                    //When column 5 is empty there is no prediction available
+                    if (!string.IsNullOrWhiteSpace(columns[5])) {
+                        int year = int.Parse(columns[1]);
+                        int month = int.Parse(columns[2]);
+                        int day = int.Parse(columns[3]);
+
+                        var date = new DateTime(year, month, day, 0, 0, 0, DateTimeKind.Utc);
+                        var unixTimestamp = (int)(date.ToUniversalTime().Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+
+                        if (unixTimestamp >= availableDataTimeStamp) {
+                            double mjd = double.Parse(columns[0], CultureInfo.InvariantCulture);
+
+                            double x = double.Parse(columns[5], CultureInfo.InvariantCulture);
+                            double y = double.Parse(columns[7], CultureInfo.InvariantCulture);
+
+                            double ut1_utc = double.Parse(columns[10], CultureInfo.InvariantCulture);
+
+                            double LOD = 0.0;
+                            if (!string.IsNullOrWhiteSpace(columns[12])) {
+                                LOD = double.Parse(columns[12], CultureInfo.InvariantCulture);
+                            }
+
+                            double dX = 0.0;
+                            double dY = 0.0;
+                            if (!string.IsNullOrWhiteSpace(columns[19])) {
+                                dX = double.Parse(columns[19], CultureInfo.InvariantCulture) / 1000d;
+                                dY = double.Parse(columns[21], CultureInfo.InvariantCulture) / 1000d;
+                            }
+
+                            //(date,modifiedjuliandate,x,y,ut1_utc,lod,dx,dy)
+                            queries.Add($"({unixTimestamp.ToString(CultureInfo.InvariantCulture)},{mjd.ToString(CultureInfo.InvariantCulture)},{x.ToString(CultureInfo.InvariantCulture)},{y.ToString(CultureInfo.InvariantCulture)},{ut1_utc.ToString(CultureInfo.InvariantCulture)},{LOD.ToString(CultureInfo.InvariantCulture)},{dX.ToString(CultureInfo.InvariantCulture)},{dY.ToString(CultureInfo.InvariantCulture)})");
+                        }
+                    }
+                }
+            }
+            var importQuery = $"INSERT OR REPLACE INTO `earthrotationparameters` (date,modifiedjuliandate,x,y,ut1_utc,lod,dx,dy) VALUES {string.Join($",{Environment.NewLine}", queries)}";
+        }
+
+        public static void ImportFromRapidDataAndPredictionEarthOrientationParameters() {
+            var connectionString = string.Format(@"Data Source={0};foreign keys=true;", @"D:\Projects\nina\NINA\Database\NINA.sqlite");
+            var db = new DatabaseInteraction(connectionString);
+
+            var lines = File.ReadAllLines(@"finals2000A.data.csv");
+
+            var queries = new List<string>();
+
+            for (int i = 1; i < lines.Length; i++) {
+                var line = lines[i];
+                var columns = line.Split(';');
+
+                //When column 5 is empty there is no prediction available
+                if (!string.IsNullOrWhiteSpace(columns[5])) {
+                    int year = int.Parse(columns[1]);
+                    int month = int.Parse(columns[2]);
+                    int day = int.Parse(columns[3]);
+
+                    var date = new DateTime(year, month, day, 0, 0, 0, DateTimeKind.Utc);
+                    var unixTimestamp = (int)(date.ToUniversalTime().Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+
+                    double mjd = double.Parse(columns[0], CultureInfo.InvariantCulture);
+
+                    double x = double.Parse(columns[5], CultureInfo.InvariantCulture);
+                    double y = double.Parse(columns[7], CultureInfo.InvariantCulture);
+
+                    double ut1_utc = double.Parse(columns[10], CultureInfo.InvariantCulture);
+
+                    double LOD = 0.0;
+                    if (!string.IsNullOrWhiteSpace(columns[12])) {
+                        LOD = double.Parse(columns[12], CultureInfo.InvariantCulture);
+                    }
+
+                    double dX = 0.0;
+                    double dY = 0.0;
+                    if (!string.IsNullOrWhiteSpace(columns[19])) {
+                        dX = double.Parse(columns[19], CultureInfo.InvariantCulture) / 1000d;
+                        dY = double.Parse(columns[21], CultureInfo.InvariantCulture) / 1000d;
+                    }
+
+                    queries.Add($"INSERT OR REPLACE INTO earthrotationparameters (date, modifiedjuliandate, x, y, ut1_utc, lod, dx, dy) VALUES ({unixTimestamp},{mjd.ToString(CultureInfo.InvariantCulture)},{x.ToString(CultureInfo.InvariantCulture)},{y.ToString(CultureInfo.InvariantCulture)},{ut1_utc.ToString(CultureInfo.InvariantCulture)},{LOD.ToString(CultureInfo.InvariantCulture)},{dX.ToString(CultureInfo.InvariantCulture)},{dY.ToString(CultureInfo.InvariantCulture)});");
+                }
+            }
+            db.BulkInsert(queries);
+        }
+
+        public static void ImportLongTermEarthOrientationDataParameters() {
+            var connectionString = string.Format(@"Data Source={0};foreign keys=true;", @"D:\Projects\nina\NINA\Database\NINA.sqlite");
+            var db = new DatabaseInteraction(connectionString);
+            db.GenericQuery("DROP TABLE IF EXISTS earthrotationparameters");
+
+            db.GenericQuery(@"CREATE TABLE IF NOT EXISTS earthrotationparameters (
+                date INT,
+                modifiedjuliandate REAL,
+                x REAL,
+                y REAL,
+                ut1_utc REAL,
+                lod REAL,
+                dx REAL,
+                dy REAL,
+                PRIMARY KEY (date)
+            );");
+
+            var lines = File.ReadAllLines(@"224_EOP_C04_14.62-NOW.IAU2000A224.txt");
+
+            var queries = new List<string>();
+
+            for (int i = 14; i < lines.Length; i++) {
+                var line = lines[i];
+                var columns = line.Split(' ').Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
+
+                int year = int.Parse(columns[0]);
+                int month = int.Parse(columns[1]);
+                int day = int.Parse(columns[2]);
+
+                var date = new DateTime(year, month, day, 0, 0, 0, DateTimeKind.Utc);
+                var unixTimestamp = (int)(date.ToUniversalTime().Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+
+                double mjd = double.Parse(columns[3], CultureInfo.InvariantCulture);
+
+                double x = double.Parse(columns[4], CultureInfo.InvariantCulture);
+                double y = double.Parse(columns[5], CultureInfo.InvariantCulture);
+
+                double ut1_utc = double.Parse(columns[6], CultureInfo.InvariantCulture);
+
+                double LOD = double.Parse(columns[7], CultureInfo.InvariantCulture);
+
+                double dX = double.Parse(columns[8], CultureInfo.InvariantCulture);
+                double dY = double.Parse(columns[9], CultureInfo.InvariantCulture);
+
+                queries.Add($"INSERT INTO earthrotationparameters (date, modifiedjuliandate, x, y, ut1_utc, lod, dx, dy) VALUES ({unixTimestamp},{mjd.ToString(CultureInfo.InvariantCulture)},{x.ToString(CultureInfo.InvariantCulture)},{y.ToString(CultureInfo.InvariantCulture)},{ut1_utc.ToString(CultureInfo.InvariantCulture)},{LOD.ToString(CultureInfo.InvariantCulture)},{dX.ToString(CultureInfo.InvariantCulture)},{dY.ToString(CultureInfo.InvariantCulture)});");
+            }
+            db.BulkInsert(queries);
         }
 
         public static void UpdateDSODetailsFromLocalStore(string filepath) {

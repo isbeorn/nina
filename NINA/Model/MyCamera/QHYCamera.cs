@@ -25,7 +25,7 @@
 
 using NINA.Utility;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using QHYCCD;
 using System;
 using System.Collections;
@@ -35,6 +35,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using NINA.Model.ImageData;
 
 namespace NINA.Model.MyCamera {
 
@@ -72,8 +73,10 @@ namespace NINA.Model.MyCamera {
             Info.Index = cameraIdx;
             Info.Id = cameraId;
 
-            Logger.Debug(string.Format("QHCCD: Found camera {0}", Info.Id));
+            Logger.Debug(string.Format("QHYCCD: Found camera {0}", Info.Id));
         }
+
+        public string Category { get; } = "QHYCCD";
 
         private List<int> SupportedBinFactors {
             get {
@@ -253,6 +256,7 @@ namespace NINA.Model.MyCamera {
         public string DriverVersion => LibQHYCCD.GetSDKFormattedVersion();
         public bool EnableSubSample { get; set; }
         public double ExposureMax => Info.ExpMax / 1e6;
+        public double ElectronsPerADU => double.NaN;
 
         /// <summary>
         // We store the camera's exposure times in microseconds
@@ -401,7 +405,11 @@ namespace NINA.Model.MyCamera {
 
         public double TemperatureSetPoint {
             get {
-                return Info.CoolerTargetTemp;
+                if (Connected && CanSetTemperature) {
+                    return Info.CoolerTargetTemp;
+                } else {
+                    return double.NaN;
+                }
             }
             set {
                 if (Connected && CanSetTemperature) {
@@ -464,8 +472,7 @@ namespace NINA.Model.MyCamera {
                     /* sleep 2 seconds (cancelable) */
                     await Task.Delay(LibQHYCCD.QHYCCD_COOLER_DELAY, ct);
                 }
-            }
-            catch (OperationCanceledException) {
+            } catch (OperationCanceledException) {
                 Logger.Debug("QHYCCD: CoolerWorker task cancelled");
             }
         }
@@ -477,7 +484,7 @@ namespace NINA.Model.MyCamera {
                 Logger.Debug(string.Format("QHYCCD: Got Control {0} = {1}", type, rv));
                 return rv;
             } else {
-                Logger.Error(string.Format("QHYCCD: Failed to Get value for control {0}", type), null);
+                Logger.Error(string.Format("QHYCCD: Failed to Get value for control {0}", type));
                 return LibQHYCCD.QHYCCD_ERROR;
             }
         }
@@ -718,8 +725,7 @@ namespace NINA.Model.MyCamera {
 
                     RaisePropertyChanged(nameof(Connected));
                     RaiseAllPropertiesChanged();
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                 }
@@ -751,55 +757,57 @@ namespace NINA.Model.MyCamera {
             LibQHYCCD.N_CloseQHYCCD(CameraP);
         }
 
-        public Task<ImageArray> DownloadExposure(CancellationToken ct, bool calculateStatistics) {
-            uint width = 0;
-            uint height = 0;
-            uint bpp = 0;
-            uint channels = 0;
-            byte[] ImgData;
-            uint rv;
+        public Task<IImageData> DownloadExposure(CancellationToken ct) {
+            return Task.Run(() => {
+                uint width = 0;
+                uint height = 0;
+                uint bpp = 0;
+                uint channels = 0;
+                byte[] ImgData;
+                uint rv;
 
-            /*
-             * Ask the SDK how big the exposure will be
-             */
-            uint size = LibQHYCCD.GetQHYCCDMemLength(CameraP);
+                /*
+                 * Ask the SDK how big the exposure will be
+                 */
+                uint size = LibQHYCCD.GetQHYCCDMemLength(CameraP);
 
-            if (size == 0) {
-                Logger.Warning("QHYCCD: SDK reported a 0-length image buffer!");
-                throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
-            }
-            Logger.Debug(string.Format("QHYCCD: Image size will be {0} bytes", size));
+                if (size == 0) {
+                    Logger.Warning("QHYCCD: SDK reported a 0-length image buffer!");
+                    throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
+                }
+                Logger.Debug(string.Format("QHYCCD: Image size will be {0} bytes", size));
 
-            /*
-             * Size the image data byte array for the image
-             */
-            ImgData = new byte[size];
+                /*
+                 * Size the image data byte array for the image
+                 */
+                ImgData = new byte[size];
 
-            /*
-             * Download the image from the camera
-             */
-            CameraState = LibQHYCCD.QHYCCD_CAMERA_STATE.DOWNLOADING.ToString();
-            if ((rv = LibQHYCCD.C_GetQHYCCDSingleFrame(CameraP, ref width, ref height, ref bpp, ref channels, ImgData)) != LibQHYCCD.QHYCCD_SUCCESS) {
-                Logger.Warning(string.Format("QHYCCD: Failed to download image from camera! rv = {0}", rv));
-                throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
-            }
+                /*
+                 * Download the image from the camera
+                 */
+                CameraState = LibQHYCCD.QHYCCD_CAMERA_STATE.DOWNLOADING.ToString();
+                if ((rv = LibQHYCCD.C_GetQHYCCDSingleFrame(CameraP, ref width, ref height, ref bpp, ref channels, ImgData)) != LibQHYCCD.QHYCCD_SUCCESS) {
+                    Logger.Warning(string.Format("QHYCCD: Failed to download image from camera! rv = {0}", rv));
+                    throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
+                }
 
-            /*
-             * Copy the image byte array to an allocated buffer
-             */
-            IntPtr buf = Marshal.AllocHGlobal(ImgData.Length);
-            Marshal.Copy(ImgData, 0, buf, ImgData.Length);
-            var cameraDataToManaged = new CameraDataToManaged(buf, (int)width, (int)height, (int)bpp);
-            var arr = cameraDataToManaged.GetData();
-            ImgData = null;
-            Marshal.FreeHGlobal(buf);
+                /*
+                 * Copy the image byte array to an allocated buffer
+                 */
+                IntPtr buf = Marshal.AllocHGlobal(ImgData.Length);
+                Marshal.Copy(ImgData, 0, buf, ImgData.Length);
+                var cameraDataToManaged = new CameraDataToManaged(buf, (int)width, (int)height, (int)bpp);
+                var arr = cameraDataToManaged.GetData();
+                ImgData = null;
+                Marshal.FreeHGlobal(buf);
 
-            CameraState = LibQHYCCD.QHYCCD_CAMERA_STATE.IDLE.ToString();
+                CameraState = LibQHYCCD.QHYCCD_CAMERA_STATE.IDLE.ToString();
 
-            return ImageArray.CreateInstance(arr, (int)width, (int)height, (int)bpp, SensorType != SensorType.Monochrome, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                return Task.FromResult<IImageData>(new ImageData.ImageData(arr, (int)width, (int)height, (int)bpp, SensorType != SensorType.Monochrome));
+            }, ct);
         }
 
-        public Task<ImageArray> DownloadLiveView(CancellationToken ct) {
+        public Task<IImageData> DownloadLiveView(CancellationToken ct) {
             throw new NotImplementedException();
         }
 
@@ -818,7 +826,7 @@ namespace NINA.Model.MyCamera {
 
             /* ROI coordinates and resolution */
             if (EnableSubSample) {
-                rv = LibQHYCCD.SetQHYCCDResolution(CameraP, (uint)SubSampleX, (uint)SubSampleY, (uint)SubSampleWidth / (uint)BinX, (uint)SubSampleHeight / (uint)BinY);
+                rv = LibQHYCCD.SetQHYCCDResolution(CameraP, (uint)SubSampleX / (uint)BinX, (uint)SubSampleY / (uint)BinY, (uint)SubSampleWidth / (uint)BinX, (uint)SubSampleHeight / (uint)BinY);
             } else {
                 rv = LibQHYCCD.SetQHYCCDResolution(CameraP, 0, 0, Info.ImageX / (uint)BinX, Info.ImageY / (uint)BinY);
             }

@@ -23,7 +23,7 @@
 
 namespace NINA.Model.MyFilterWheel {
 
-    internal class FilterWheelInfo : DeviceInfo {
+    public class FilterWheelInfo : DeviceInfo {
         private bool isMoving;
 
         public bool IsMoving {

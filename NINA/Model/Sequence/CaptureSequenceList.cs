@@ -88,6 +88,18 @@ namespace NINA.Model {
             }
         }
 
+        public void ResetAt(int idx) {
+            Items[idx].ProgressExposureCount = 0;
+        }
+
+        public bool ResetActiveSequence() {
+            if (Items.Count > 0) {
+                ActiveSequence = Items[0];
+                return true;
+            }
+            return false;
+        }
+
         public void Save(string path) {
             try {
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(CaptureSequenceList));
@@ -575,6 +587,32 @@ namespace NINA.Model {
             }
             set {
                 _autoFocusAfterTemperatureChangeAmount = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _autoFocusAfterHFRChange = false;
+
+        [XmlAttribute(nameof(AutoFocusAfterHFRChange))]
+        public bool AutoFocusAfterHFRChange {
+            get {
+                return _autoFocusAfterHFRChange;
+            }
+            set {
+                _autoFocusAfterHFRChange = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _autoFocusAfterHFRChangeAmount = 10;
+
+        [XmlAttribute(nameof(AutoFocusAfterHFRChangeAmount))]
+        public double AutoFocusAfterHFRChangeAmount {
+            get {
+                return _autoFocusAfterHFRChangeAmount;
+            }
+            set {
+                _autoFocusAfterHFRChangeAmount = value;
                 RaisePropertyChanged();
             }
         }

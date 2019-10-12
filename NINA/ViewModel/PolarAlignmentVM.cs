@@ -26,9 +26,10 @@ using NINA.Model.MyCamera;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Enum;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -407,7 +408,7 @@ namespace NINA.ViewModel {
                     var oldAutoStretch = imagingMediator.SetAutoStretch(true);
                     var oldDetectStars = imagingMediator.SetDetectStars(false);
 
-                    var seq = new CaptureSequence(DARVSlewDuration + 5, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
+                    var seq = new CaptureSequence(DARVSlewDuration + 5, CaptureSequence.ImageTypes.SNAPSHOT, SnapFilter, SnapBin, 1);
                     var capture = imagingMediator.CaptureAndPrepareImage(seq, cancelDARVSlewToken.Token, cameraprogress);
                     var slew = DarvTelescopeSlew(slewprogress, cancelDARVSlewToken.Token);
 
@@ -560,12 +561,12 @@ namespace NINA.ViewModel {
 
                 progress.Report(new ApplicationStatus() { Status = "Solving image..." });
 
-                var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
+                var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAPSHOT, SnapFilter, SnapBin, 1);
                 seq.Gain = SnapGain;
 
-                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
-                PlateSolveResult = await solver.SolveWithCapture(seq, progress, canceltoken);
-
+                using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
+                    PlateSolveResult = await solver.SolveWithCapture(seq, progress, canceltoken);
+                }
                 canceltoken.ThrowIfCancellationRequested();
 
                 PlateSolving.PlateSolveResult startSolveResult = PlateSolveResult;
@@ -589,12 +590,12 @@ namespace NINA.ViewModel {
 
                 canceltoken.ThrowIfCancellationRequested();
 
-                seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAP, SnapFilter, SnapBin, 1);
+                seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAPSHOT, SnapFilter, SnapBin, 1);
                 seq.Gain = SnapGain;
 
-                solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
-                PlateSolveResult = await solver.SolveWithCapture(seq, progress, canceltoken);
-
+                using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
+                    PlateSolveResult = await solver.SolveWithCapture(seq, progress, canceltoken);
+                }
                 canceltoken.ThrowIfCancellationRequested();
 
                 PlateSolving.PlateSolveResult targetSolveResult = PlateSolveResult;
@@ -658,6 +659,11 @@ namespace NINA.ViewModel {
 
         public void UpdateDeviceInfo(TelescopeInfo telescopeInfo) {
             this.TelescopeInfo = telescopeInfo;
+        }
+
+        public void Dispose() {
+            this.cameraMediator.RemoveConsumer(this);
+            this.telescopeMediator.RemoveConsumer(this);
         }
     }
 }

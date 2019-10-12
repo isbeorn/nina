@@ -93,7 +93,7 @@ namespace NINA.Utility {
                 return _rotation;
             }
             set {
-                _rotation = value;
+                _rotation = Astrometry.Astrometry.MathMod(value, 360);
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(DisplayedRotation));
             }

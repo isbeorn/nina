@@ -85,7 +85,6 @@ namespace NINA.Utility {
                 lock (lockObj) {
                     using (StreamWriter writer = new StreamWriter(LOGFILEPATH, true)) {
                         writer.WriteLine(string.Format(msg, msgParams));
-                        writer.Close();
                     }
                 }
             } catch (Exception ex) {
@@ -109,6 +108,13 @@ namespace NINA.Utility {
         }
 
         public static void Error(
+                Exception ex,
+                [CallerMemberName] string memberName = "",
+                [CallerFilePath] string sourceFilePath = "") {
+            Error(ex?.Message ?? string.Empty, ex?.StackTrace ?? string.Empty, memberName, sourceFilePath);
+        }
+
+        public static void Error(
                 string customMsg,
                 Exception ex,
                 [CallerMemberName] string memberName = "",
@@ -116,11 +122,12 @@ namespace NINA.Utility {
             Error(customMsg + ex?.Message ?? string.Empty, ex?.StackTrace ?? string.Empty, memberName, sourceFilePath);
         }
 
-        public static void Error(
-                Exception ex,
+        public static void Error(string message,
                 [CallerMemberName] string memberName = "",
                 [CallerFilePath] string sourceFilePath = "") {
-            Error(ex.Message.Replace("{", "{{").Replace("}", "}}"), ex.StackTrace, memberName, sourceFilePath);
+            if (LogLevel >= 0) {
+                Append(EnrichLogMessage(LogLevelEnum.ERROR, message, memberName, sourceFilePath));
+            }
         }
 
         public static void Info(string message,

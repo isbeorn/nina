@@ -25,6 +25,6 @@ using NINA.Model.MyFilterWheel;
 
 namespace NINA.Utility.Mediator.Interfaces {
 
-    internal interface IFilterWheelConsumer : IDeviceConsumer<FilterWheelInfo> {
+    public interface IFilterWheelConsumer : IDeviceConsumer<FilterWheelInfo> {
     }
 }

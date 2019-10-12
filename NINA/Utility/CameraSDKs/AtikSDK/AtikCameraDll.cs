@@ -1,4 +1,5 @@
-﻿using NINA.Model.MyCamera;
+﻿using NINA.Model.ImageData;
+using NINA.Model.MyCamera;
 using System;
 using System.IO;
 using System.Linq;
@@ -87,7 +88,7 @@ namespace NINA.Utility.AtikSDK {
             return ArtemisCameraState(camera);
         }
 
-        public static async Task<ImageArray> DownloadExposure(IntPtr camera, int bitDepth, bool isBayered, bool calculateStatistics, int histogramResolution) {
+        public static IImageData DownloadExposure(IntPtr camera, int bitDepth, bool isBayered) {
             CheckError(ArtemisGetImageData(camera, out var x, out var y, out var w, out var h, out var binX, out var binY), MethodBase.GetCurrentMethod(), camera);
 
             var ptr = ArtemisImageBuffer(camera);
@@ -95,7 +96,7 @@ namespace NINA.Utility.AtikSDK {
             var cameraDataToManaged = new CameraDataToManaged(ptr, w, h, bitDepth);
             var arr = cameraDataToManaged.GetData();
 
-            return await ImageArray.CreateInstance(arr, w, h, bitDepth, isBayered, calculateStatistics, histogramResolution);
+            return new ImageData(arr, w, h, bitDepth, isBayered);
         }
 
         private static void CopyToUShort(IntPtr source, ushort[] destination, int startIndex, int length) {

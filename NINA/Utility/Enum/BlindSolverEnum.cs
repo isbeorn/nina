@@ -35,6 +35,9 @@ namespace NINA.Utility.Enum {
         LOCAL,
 
         [Description("LblASPS")]
-        ASPS
+        ASPS,
+
+        [Description("LblASTAPShort")]
+        ASTAP
     }
 }

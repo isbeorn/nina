@@ -30,16 +30,15 @@ namespace NINA.Utility.Notification {
     /// Interaction logic for CustomDisplayPart.xaml
     /// </summary>
     public partial class CustomDisplayPart : NotificationDisplayPart {
-        private CustomNotification _customNotification;
 
         public CustomDisplayPart(CustomNotification customNotification) {
-            _customNotification = customNotification;
+            Notification = customNotification;
             DataContext = customNotification; // this allows to bind ui with data in notification
             InitializeComponent();
         }
 
         private void OnClose(object sender, RoutedEventArgs e) {
-            _customNotification.Close();
+            Notification.Close();
         }
     }
 }

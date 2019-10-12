@@ -25,7 +25,7 @@
 
 using NINA.Model.MyCamera;
 using NINA.Utility;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 
 namespace QHYCCD {

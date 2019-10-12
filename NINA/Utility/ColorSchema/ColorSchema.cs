@@ -48,17 +48,18 @@ namespace NINA.Utility {
                 try {
                     var schemasxml = XElement.Load(schemafile);
 
-                    System.IO.StringReader reader = new System.IO.StringReader(schemasxml.ToString());
-                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(ColorSchemas));
+                    using (var reader = new System.IO.StringReader(schemasxml.ToString())) {
+                        XmlSerializer xmlSerializer = new XmlSerializer(typeof(ColorSchemas));
 
-                    schemas = (ColorSchemas)xmlSerializer.Deserialize(reader);
+                        schemas = (ColorSchemas)xmlSerializer.Deserialize(reader);
+                    }
                 } catch (Exception e) {
                     schemas = new ColorSchemas();
                     Logger.Error("Could not load color schema xml", e);
                 }
             } else {
                 schemas = new ColorSchemas();
-                Logger.Error("Color schema xml not found!", null);
+                Logger.Error("Color schema xml not found!");
             }
 
             return schemas;
@@ -108,7 +109,21 @@ namespace NINA.Utility {
     [Serializable()]
     [XmlRoot(ElementName = "ColorSchema")]
     [DataContract]
-    public class ColorSchema {
+    public class ColorSchema : BaseINPC {
+        private Color primaryColor;
+        private Color secondaryColor;
+        private Color notificationErrorTextColor;
+        private Color notificationWarningTextColor;
+        private Color notificationErrorColor;
+        private Color notificationWarningColor;
+        private Color buttonForegroundDisabledColor;
+        private Color buttonForegroundColor;
+        private Color buttonBackgroundSelectedColor;
+        private Color buttonBackgroundColor;
+        private Color tertiaryBackgroundColor;
+        private Color secondaryBackgroundColor;
+        private Color backgroundColor;
+        private Color borderColor;
 
         [XmlAttribute(nameof(Name))]
         [DataMember]
@@ -116,59 +131,205 @@ namespace NINA.Utility {
 
         [XmlElement(Type = typeof(XmlColor))]
         [DataMember]
-        public Color PrimaryColor { get; set; }
+        public Color PrimaryColor {
+            get {
+                return primaryColor;
+            }
+            set {
+                if (primaryColor != value) {
+                    primaryColor = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         [XmlElement(Type = typeof(XmlColor))]
         [DataMember]
-        public Color SecondaryColor { get; set; }
+        public Color SecondaryColor {
+            get {
+                return secondaryColor;
+            }
+            set {
+                if (secondaryColor != value) {
+                    secondaryColor = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         [XmlElement(Type = typeof(XmlColor))]
         [DataMember]
-        public Color BorderColor { get; set; }
+        public Color BorderColor {
+            get {
+                return borderColor;
+            }
+            set {
+                if (borderColor != value) {
+                    borderColor = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         [XmlElement(Type = typeof(XmlColor))]
         [DataMember]
-        public Color BackgroundColor { get; set; }
+        public Color BackgroundColor {
+            get {
+                return backgroundColor;
+            }
+            set {
+                if (backgroundColor != value) {
+                    backgroundColor = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         [XmlElement(Type = typeof(XmlColor))]
         [DataMember]
-        public Color SecondaryBackgroundColor { get; set; }
+        public Color SecondaryBackgroundColor {
+            get {
+                return secondaryBackgroundColor;
+            }
+            set {
+                if (secondaryBackgroundColor != value) {
+                    secondaryBackgroundColor = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         [XmlElement(Type = typeof(XmlColor))]
         [DataMember]
-        public Color TertiaryBackgroundColor { get; set; }
+        public Color TertiaryBackgroundColor {
+            get {
+                return tertiaryBackgroundColor;
+            }
+            set {
+                if (tertiaryBackgroundColor != value) {
+                    tertiaryBackgroundColor = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         [XmlElement(Type = typeof(XmlColor))]
         [DataMember]
-        public Color ButtonBackgroundColor { get; set; }
+        public Color ButtonBackgroundColor {
+            get {
+                return buttonBackgroundColor;
+            }
+            set {
+                if (buttonBackgroundColor != value) {
+                    buttonBackgroundColor = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         [XmlElement(Type = typeof(XmlColor))]
         [DataMember]
-        public Color ButtonBackgroundSelectedColor { get; set; }
+        public Color ButtonBackgroundSelectedColor {
+            get {
+                return buttonBackgroundSelectedColor;
+            }
+            set {
+                if (buttonBackgroundSelectedColor != value) {
+                    buttonBackgroundSelectedColor = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         [XmlElement(Type = typeof(XmlColor))]
         [DataMember]
-        public Color ButtonForegroundColor { get; set; }
+        public Color ButtonForegroundColor {
+            get {
+                return buttonForegroundColor;
+            }
+            set {
+                if (buttonForegroundColor != value) {
+                    buttonForegroundColor = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         [XmlElement(Type = typeof(XmlColor))]
         [DataMember]
-        public Color ButtonForegroundDisabledColor { get; set; }
+        public Color ButtonForegroundDisabledColor {
+            get {
+                return buttonForegroundDisabledColor;
+            }
+            set {
+                if (buttonForegroundDisabledColor != value) {
+                    buttonForegroundDisabledColor = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         [XmlElement(Type = typeof(XmlColor))]
         [DataMember]
-        public Color NotificationWarningColor { get; set; }
+        public Color NotificationWarningColor {
+            get {
+                return notificationWarningColor;
+            }
+            set {
+                if (notificationWarningColor != value) {
+                    notificationWarningColor = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         [XmlElement(Type = typeof(XmlColor))]
         [DataMember]
-        public Color NotificationErrorColor { get; set; }
+        public Color NotificationErrorColor {
+            get {
+                return notificationErrorColor;
+            }
+            set {
+                if (notificationErrorColor != value) {
+                    notificationErrorColor = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         [XmlElement(Type = typeof(XmlColor))]
         [DataMember]
-        public Color NotificationWarningTextColor { get; set; }
+        public Color NotificationWarningTextColor {
+            get {
+                return notificationWarningTextColor;
+            }
+            set {
+                if (notificationWarningTextColor != value) {
+                    notificationWarningTextColor = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
 
         [XmlElement(Type = typeof(XmlColor))]
         [DataMember]
-        public Color NotificationErrorTextColor { get; set; }
+        public Color NotificationErrorTextColor {
+            get {
+                return notificationErrorTextColor;
+            }
+            set {
+                if (notificationErrorTextColor != value) {
+                    notificationErrorTextColor = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [XmlIgnore]
+        [IgnoreDataMember]
+        public bool IsEditable {
+            get => Name == "Custom" || Name == "Alternative Custom";
+        }
 
         public ColorSchema() {
         }

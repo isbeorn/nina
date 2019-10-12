@@ -42,16 +42,22 @@ namespace NINA.Model.MyTelescope {
         double TimeToMeridianFlip { get; }
         string TimeToMeridianFlipString { get; }
         double MovingRate { get; set; }
+        PierSide SideOfPier { get; }
+        bool CanSetTracking { get; }
         bool Tracking { get; set; }
         double SiteLatitude { get; set; }
         double SiteLongitude { get; set; }
         double SiteElevation { get; }
         bool CanSetSiteLatLong { get; }
         bool AtPark { get; }
+        bool CanPark { get; }
+        bool CanSetPark { get; }
 
         bool MeridianFlip(Coordinates targetCoordinates);
 
         void MoveAxis(TelescopeAxes axis, double rate);
+
+        void PulseGuide(GuideDirections direction, int duration);
 
         void Park();
 

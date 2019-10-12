@@ -22,14 +22,17 @@
 #endregion "copyright"
 
 using Altair;
+using NINA.Model.ImageData;
 using NINA.Utility;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
+using NINA.Utility.WindowService;
 
 namespace NINA.Model.MyCamera {
 
@@ -50,6 +53,8 @@ namespace NINA.Model.MyCamera {
 
         private IProfileService profileService;
 
+        public string Category { get; } = "Altair";
+
         public bool HasShutter {
             get {
                 return false;
@@ -69,7 +74,7 @@ namespace NINA.Model.MyCamera {
                     camera.get_Option(AltairCam.eOPTION.OPTION_TECTARGET, out var target);
                     return target / 10.0;
                 } else {
-                    return double.MinValue;
+                    return double.NaN;
                 }
             }
             set {
@@ -132,6 +137,8 @@ namespace NINA.Model.MyCamera {
                 return max / 1000000.0;
             }
         }
+
+        public double ElectronsPerADU => double.NaN;
 
         public short MaxBinX { get; private set; }
 
@@ -313,9 +320,26 @@ namespace NINA.Model.MyCamera {
 
         public int USBLimit {
             get {
-                return -1;
+                camera.get_Speed(out var speed);
+                return speed;
             }
             set {
+                if (value >= USBLimitMin && value <= USBLimitMax) {
+                    camera.put_Speed((ushort)value);
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public int USBLimitMin {
+            get {
+                return 0;
+            }
+        }
+
+        public int USBLimitMax {
+            get {
+                return (int)camera.MaxSpeed;
             }
         }
 
@@ -333,7 +357,7 @@ namespace NINA.Model.MyCamera {
 
         public bool CanSetUSBLimit {
             get {
-                return false;
+                return true;
             }
         }
 
@@ -420,11 +444,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public bool HasSetupDialog {
-            get {
-                return false;
-            }
-        }
+        public bool HasSetupDialog => false;
 
         private string id;
 
@@ -463,6 +483,7 @@ namespace NINA.Model.MyCamera {
                 }
 
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(HasSetupDialog));
             }
         }
 
@@ -510,9 +531,11 @@ namespace NINA.Model.MyCamera {
             return Task<bool>.Run(() => {
                 var success = false;
                 try {
+                    downloadExposure?.TrySetCanceled();
+                    downloadExposure = null;
+
                     camera = new AltairCam();
                     camera.Open(this.Id);
-
                     success = true;
 
                     /* Use maximum bit depth */
@@ -558,8 +581,8 @@ namespace NINA.Model.MyCamera {
                         throw new Exception("AltairCamera - Could not set Trigger manual mode");
                     }
 
-                    if (!camera.StartPushModeV2(new AltairCam.DelegateDataCallbackV2(OnImageCallback))) {
-                        throw new Exception("AltairCamera - Could not start push mode");
+                    if (!camera.StartPullModeWithCallback(new AltairCam.DelegateEventCallback(OnEventCallback))) {
+                        throw new Exception("AltairCamera - Could not start pull mode");
                     }
 
                     if (!camera.get_RawFormat(out var fourCC, out var bitDepth)) {
@@ -585,6 +608,62 @@ namespace NINA.Model.MyCamera {
             });
         }
 
+        private void OnEventCallback(AltairCam.eEVENT nEvent) {
+            Logger.Trace($"AltairCamera - OnEventCallback {nEvent}");
+            switch (nEvent) {
+                case AltairCam.eEVENT.EVENT_IMAGE: // Live View Image
+                    Logger.Trace($"AltairCamera - Setting DownloadExposure Result on Task {downloadExposure.Task.Id}");
+                    var success = downloadExposure?.TrySetResult(true);
+                    Logger.Trace($"AltairCamera - DownloadExposure Result on Task {downloadExposure.Task.Id} set successfully: {success}");
+                    break;
+
+                case AltairCam.eEVENT.EVENT_STILLIMAGE: // Still Image
+                    Logger.Warning("AltairCamera - Still image event received, but not expected to get one!");
+                    downloadExposure?.TrySetResult(true);
+                    break;
+
+                case AltairCam.eEVENT.EVENT_TIMEOUT:
+                    Logger.Error("AltairCamera - Timout event occurred!");
+                    break;
+
+                case AltairCam.eEVENT.EVENT_TRIGGERFAIL:
+                    Logger.Error("AltairCamera - Trigger Fail event received!");
+                    break;
+
+                case AltairCam.eEVENT.EVENT_ERROR: // Error
+                    Logger.Error("AltairCamera - Camera reported a generic error!");
+                    Notification.ShowError("Camera reported a generic error and needs to be reconnected!");
+                    Disconnect();
+                    break;
+
+                case AltairCam.eEVENT.EVENT_DISCONNECTED:
+                    Logger.Warning("AltairCamera - Camera disconnected! Maybe USB connection was interrupted.");
+                    Notification.ShowError("Camera disconnected! Maybe USB connection was interrupted.");
+                    OnEventDisconnected();
+                    break;
+            }
+        }
+
+        private IImageData PullImage() {
+            /* peek the width and height */
+            camera.get_Option(AltairCam.eOPTION.OPTION_BINNING, out var binning);
+            var width = CameraXSize / binning;
+            var height = CameraYSize / binning;
+
+            var size = width * height * 2;
+            var pointer = Marshal.AllocHGlobal(size);
+
+            if (!camera.PullImageV2(pointer, BitDepth, out var info)) {
+                Logger.Error("AltairCamera - Failed to pull image");
+                return null;
+            }
+            var cameraDataToManaged = new CameraDataToManaged(pointer, width, height, BitDepth);
+            var arr = cameraDataToManaged.GetData();
+            var imageData = new ImageData.ImageData(arr, width, height, BitDepth, SensorType != SensorType.Monochrome);
+            Marshal.FreeHGlobal(pointer);
+            return imageData;
+        }
+
         public void Disconnect() {
             coolerPowerReadoutCts?.Cancel();
             Connected = false;
@@ -592,17 +671,19 @@ namespace NINA.Model.MyCamera {
             camera = null;
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
-            calculateStatisticsOnDownload = calculateStatistics;
-            await downloadExposure.Task;
-            return await imageTask;
+        public async Task<IImageData> DownloadExposure(CancellationToken token) {
+            using (token.Register(() => downloadExposure.TrySetCanceled())) {
+                using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15))) {
+                    using (cts.Token.Register(() => { Logger.Error("AltairCamera - No Image Callback Event received"); downloadExposure.TrySetResult(true); })) {
+                        var imageReady = await downloadExposure.Task;
+                        return PullImage();
+                    }
+                }
+            }
         }
 
-        public async Task<ImageArray> DownloadLiveView(CancellationToken token) {
-            await downloadLiveExposure.Task;
-            var arr = await imageTask;
-            downloadLiveExposure = new TaskCompletionSource<object>();
-            return arr;
+        public Task<IImageData> DownloadLiveView(CancellationToken token) {
+            return DownloadExposure(token);
         }
 
         public void SetBinning(short x, short y) {
@@ -633,7 +714,9 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StartExposure(CaptureSequence sequence) {
-            downloadExposure = new TaskCompletionSource<object>();
+            downloadExposure?.TrySetCanceled();
+            downloadExposure = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            Logger.Trace($"AltairCamera - created new downloadExposure Task with Id {downloadExposure.Task.Id}");
 
             SetExposureTime(sequence.ExposureTime);
 
@@ -642,28 +725,8 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        private void OnImageCallback(IntPtr pData, ref AltairCam.FrameInfoV2 info, bool bSnap) {
-            if ((LiveViewEnabled && downloadLiveExposure?.Task.IsCompleted != true) || (!LiveViewEnabled && downloadExposure?.Task.IsCompleted != true)) {
-                int width = (int)info.width;
-                int height = (int)info.height;
-
-                var cameraDataToManaged = new CameraDataToManaged(pData, width, height, BitDepth);
-                var arr = cameraDataToManaged.GetData();
-
-                imageTask = ImageArray.CreateInstance(arr, width, height, BitDepth, SensorType != SensorType.Monochrome, calculateStatisticsOnDownload, profileService.ActiveProfile.ImageSettings.HistogramResolution);
-                if (LiveViewEnabled) {
-                    downloadLiveExposure?.TrySetResult(true);
-                } else {
-                    downloadExposure?.TrySetResult(true);
-                }
-            }
-        }
-
-        private TaskCompletionSource<object> downloadExposure;
-        private TaskCompletionSource<object> downloadLiveExposure;
-        private Task<ImageArray> imageTask;
+        private TaskCompletionSource<bool> downloadExposure;
         private int bitDepth;
-        private bool calculateStatisticsOnDownload;
 
         public int BitDepth {
             get {
@@ -684,7 +747,8 @@ namespace NINA.Model.MyCamera {
             if (!camera.put_Option(AltairCam.eOPTION.OPTION_TRIGGER, 0)) {
                 throw new Exception("AltairCamera - Could not set Trigger video mode");
             }
-            downloadLiveExposure = new TaskCompletionSource<object>();
+            downloadExposure?.TrySetCanceled();
+            downloadExposure = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
             LiveViewEnabled = true;
         }
 
@@ -695,7 +759,7 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StopLiveView() {
-            downloadLiveExposure.Task.ContinueWith((Task<object> o) => {
+            downloadExposure.Task.ContinueWith((Task<bool> o) => {
                 if (!camera.put_Option(AltairCam.eOPTION.OPTION_TRIGGER, 1)) {
                     Disconnect();
                     throw new Exception("AltairCamera - Could not set Trigger manual mode. Reconnect Camera!");
@@ -703,5 +767,7 @@ namespace NINA.Model.MyCamera {
                 LiveViewEnabled = false;
             });
         }
+
+        public int USBLimitStep { get => 1; }
     }
 }

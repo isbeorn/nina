@@ -24,7 +24,6 @@
     xmlns:enum="clr-namespace:NINA.Utility.Enum"
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:model="clr-namespace:NINA.Model"
     xmlns:ns="clr-namespace:NINA.Locale"
     xmlns:options="clr-namespace:NINA.View.Options"
     xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
@@ -34,160 +33,145 @@
     d:DesignWidth="300"
     Background="{StaticResource BackgroundBrush}"
     mc:Ignorable="d">
-    <TabControl TabStripPlacement="Top">
+    <TabControl x:Name="UC" TabStripPlacement="Top">
         <TabItem>
             <TabItem.Header>
                 <TextBlock Style="{StaticResource TabItemTextBox}" Text="{ns:Loc LblGeneral}" />
             </TabItem.Header>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="2*" />
-                    <RowDefinition Height="2*" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
 
-                <GroupBox Header="{ns:Loc LblProfiles}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition Height="45" />
-                        </Grid.RowDefinitions>
+                    <GroupBox Header="{ns:Loc LblProfiles}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition Height="45" />
+                            </Grid.RowDefinitions>
 
-                        <DataGrid
-                            AutoGenerateColumns="False"
-                            CanUserAddRows="False"
-                            HeadersVisibility="Column"
-                            HorizontalScrollBarVisibility="Disabled"
-                            ItemsSource="{Binding Profiles}"
-                            SelectedItem="{Binding SelectedProfile}"
-                            SelectionMode="Single"
-                            VerticalScrollBarVisibility="Auto">
-                            <DataGrid.Columns>
-                                <DataGridTemplateColumn
-                                    Width="*"
-                                    CanUserSort="False"
-                                    Header="{ns:Loc LblActive}">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <CheckBox
-                                                Width="20"
-                                                Height="20"
-                                                HorizontalAlignment="Center"
-                                                IsChecked="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}"
-                                                IsEnabled="False"
-                                                Style="{StaticResource BorderlessCheckmarkAndEmptyCheckbox}" />
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTemplateColumn
-                                    Width="3*"
-                                    CanUserSort="False"
-                                    Header="{ns:Loc LblName}">
-                                    <DataGridTemplateColumn.CellEditingTemplate>
-                                        <DataTemplate>
-                                            <TextBox
-                                                Margin="5,0,5,0"
-                                                VerticalAlignment="Center"
-                                                Text="{Binding Name}"
-                                                TextAlignment="Center" />
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellEditingTemplate>
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock
-                                                Margin="5,0,5,0"
-                                                VerticalAlignment="Center"
-                                                Text="{Binding Name}"
-                                                TextAlignment="Center" />
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTemplateColumn
-                                    Width="3*"
-                                    CanUserSort="False"
-                                    Header="{ns:Loc LblId}">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock
-                                                Margin="5,0,5,0"
-                                                VerticalAlignment="Center"
-                                                Text="{Binding Id}"
-                                                TextAlignment="Center" />
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                            </DataGrid.Columns>
-                        </DataGrid>
-
-                        <!--<ListView ItemsSource="{Binding Profiles}" SelectedItem="{Binding SelectedProfile}">
-                            <ListView.View>
-                                <GridView>
-                                    <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="{ns:Loc LblName}" />
-                                    <GridViewColumn DisplayMemberBinding="{Binding Id}" Header="{ns:Loc LblId}" />
-                                    <GridViewColumn DisplayMemberBinding="{Binding IsActive}" Header="{ns:Loc LblActive}" />
-                                </GridView>
-                            </ListView.View>
-                        </ListView>-->
-                        <StackPanel Grid.Row="1" Orientation="Horizontal">
-                            <Button
-                                Width="40"
-                                Margin="0,5,0,5"
-                                Command="{Binding AddProfileCommand}">
-                                <Path
-                                    Margin="5"
-                                    Data="{StaticResource AddSVG}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                    Stretch="Uniform" />
-                            </Button>
-                            <Button
-                                Width="40"
-                                Margin="1,5,0,5"
-                                Command="{Binding CloneProfileCommand}">
-                                <Path
-                                    Margin="5"
-                                    Data="{StaticResource CopySVG}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                    Stretch="Uniform" />
-                            </Button>
-                            <Button
-                                Width="40"
-                                Margin="1,5,0,5"
-                                Command="{Binding RemoveProfileCommand}">
-                                <Path
-                                    Margin="5"
-                                    Data="{StaticResource SubstractSVG}"
-                                    Fill="{StaticResource ButtonForegroundBrush}"
-                                    Stretch="Uniform" />
-                            </Button>
-                            <Button
-                                Grid.Column="1"
-                                Width="100"
-                                Margin="1,5,0,5"
-                                Command="{Binding SelectProfileCommand}">
-                                <Button.Content>
-                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblLoadProfile}" />
-                                </Button.Content>
-                                <Button.IsEnabled>
-                                    <MultiBinding Converter="{StaticResource InverseMultiBooleanANDConverter}" FallbackValue="True">
-                                        <Binding Path="CameraVM.CameraInfo.Connected" Source="{StaticResource AppVM}" />
-                                        <Binding Path="FilterWheelVM.FilterWheelInfo.Connected" Source="{StaticResource AppVM}" />
-                                        <Binding Path="FocuserVM.FocuserInfo.Connected" Source="{StaticResource AppVM}" />
-                                        <Binding Path="RotatorVM.RotatorInfo.Connected" Source="{StaticResource AppVM}" />
-                                        <Binding Path="TelescopeVM.TelescopeInfo.Connected" Source="{StaticResource AppVM}" />
-                                        <Binding Path="GuiderVM.Guider.Connected" Source="{StaticResource AppVM}" />
-                                    </MultiBinding>
-                                </Button.IsEnabled>
-                            </Button>
-                        </StackPanel>
-                    </Grid>
-                </GroupBox>
-                <GroupBox Grid.Column="1" Header="{ns:Loc LblGeneral}">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ListView
+                                MaxHeight="180"
+                                ItemsSource="{Binding Profiles}"
+                                SelectedItem="{Binding SelectedProfile}">
+                                <ListView.ItemContainerStyle>
+                                    <Style BasedOn="{StaticResource ListViewItemStyle}" TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="{ns:Loc LblActive}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <CheckBox
+                                                        Width="20"
+                                                        Height="20"
+                                                        HorizontalAlignment="Center"
+                                                        IsChecked="{Binding IsActive, UpdateSourceTrigger=PropertyChanged}"
+                                                        IsEnabled="False"
+                                                        Style="{StaticResource BorderlessCheckmarkAndEmptyCheckbox}" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="200" Header="{ns:Loc LblName}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Text="{Binding Name}" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="{ns:Loc LblId}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Text="{Binding Id}" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                <Button
+                                    Width="40"
+                                    Margin="0,5,0,5"
+                                    Command="{Binding AddProfileCommand}">
+                                    <Path
+                                        Margin="5"
+                                        Data="{StaticResource AddSVG}"
+                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                        Stretch="Uniform" />
+                                </Button>
+                                <Button
+                                    Width="40"
+                                    Margin="1,5,0,5"
+                                    Command="{Binding CloneProfileCommand}">
+                                    <Path
+                                        Margin="5"
+                                        Data="{StaticResource CopySVG}"
+                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                        Stretch="Uniform" />
+                                </Button>
+                                <Button
+                                    Width="40"
+                                    Margin="1,5,0,5"
+                                    Command="{Binding RemoveProfileCommand}">
+                                    <Path
+                                        Margin="5"
+                                        Data="{StaticResource SubstractSVG}"
+                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                        Stretch="Uniform" />
+                                </Button>
+                                <Button
+                                    Grid.Column="1"
+                                    Width="100"
+                                    Margin="1,5,0,5"
+                                    Command="{Binding SelectProfileCommand}">
+                                    <Button.Content>
+                                        <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblLoadProfile}" />
+                                    </Button.Content>
+                                    <Button.IsEnabled>
+                                        <MultiBinding Converter="{StaticResource InverseMultiBooleanANDConverter}" FallbackValue="True">
+                                            <Binding Path="CameraVM.CameraInfo.Connected" Source="{StaticResource AppVM}" />
+                                            <Binding Path="FilterWheelVM.FilterWheelInfo.Connected" Source="{StaticResource AppVM}" />
+                                            <Binding Path="FocuserVM.FocuserInfo.Connected" Source="{StaticResource AppVM}" />
+                                            <Binding Path="RotatorVM.RotatorInfo.Connected" Source="{StaticResource AppVM}" />
+                                            <Binding Path="TelescopeVM.TelescopeInfo.Connected" Source="{StaticResource AppVM}" />
+                                            <Binding Path="GuiderVM.Guider.Connected" Source="{StaticResource AppVM}" />
+                                        </MultiBinding>
+                                    </Button.IsEnabled>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Grid.Column="1" Header="{ns:Loc LblGeneral}">
                         <StackPanel>
+                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="140"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblName}" />
+                                <TextBox
+                                    MinWidth="120"
+                                    Margin="10,0,0,0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding ActiveProfile.Name}" />
+                            </StackPanel>
                             <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                                 <TextBlock
                                     Width="140"
@@ -226,7 +210,7 @@
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center">
                                     <TextBox.Text>
-                                        <Binding Path="SkyAtlasImageRepository" UpdateSourceTrigger="LostFocus">
+                                        <Binding Path="ActiveProfile.ApplicationSettings.SkyAtlasImageRepository" UpdateSourceTrigger="LostFocus">
                                             <Binding.ValidationRules>
                                                 <rules:DirectoryExistsRule />
                                             </Binding.ValidationRules>
@@ -265,7 +249,7 @@
                                     VerticalAlignment="Center"
                                     VerticalContentAlignment="Center">
                                     <TextBox.Text>
-                                        <Binding Path="SkySurveyCacheDirectory" UpdateSourceTrigger="LostFocus">
+                                        <Binding Path="ActiveProfile.ApplicationSettings.SkySurveyCacheDirectory" UpdateSourceTrigger="LostFocus">
                                             <Binding.ValidationRules>
                                                 <rules:DirectoryExistsRule />
                                             </Binding.ValidationRules>
@@ -298,6 +282,19 @@
                                     Margin="10,0,0,0"
                                     ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:LogLevelEnum}}}"
                                     SelectedItem="{Binding LogLevel}" />
+                                <Button
+                                    Width="30"
+                                    Height="30"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding OpenLogFolderCommand}">
+                                    <Path
+                                        Margin="5"
+                                        Data="{StaticResource PreviewSVG}"
+                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                        Stretch="Uniform" />
+                                </Button>
                             </StackPanel>
 
                             <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
@@ -311,7 +308,7 @@
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center">
                                     <TextBox.Text>
-                                        <Binding Path="DevicePollingInterval" UpdateSourceTrigger="LostFocus">
+                                        <Binding Path="ActiveProfile.ApplicationSettings.DevicePollingInterval" UpdateSourceTrigger="LostFocus">
                                             <Binding.ValidationRules>
                                                 <rules:GreaterZeroRule />
                                             </Binding.ValidationRules>
@@ -320,10 +317,11 @@
                                 </TextBox>
                             </StackPanel>
                         </StackPanel>
-                    </ScrollViewer>
-                </GroupBox>
-                <GroupBox Grid.Row="1" Header="{ns:Loc LblCurrentUIColorSchema}">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    </GroupBox>
+                    <GroupBox
+                        Grid.Row="1"
+                        DataContext="{Binding ActiveProfile.ColorSchemaSettings}"
+                        Header="{ns:Loc LblCurrentUIColorSchema}">
                         <UniformGrid Columns="2">
                             <StackPanel Orientation="Vertical">
 
@@ -335,10 +333,9 @@
                                     DisplayMemberPath="Name"
                                     DockPanel.Dock="Left"
                                     ItemsSource="{Binding ColorSchemas.Items}"
-                                    SelectedValue="{Binding ColorSchemaName}"
-                                    SelectedValuePath="Name" />
+                                    SelectedItem="{Binding ColorSchema}" />
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -347,9 +344,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding PrimaryColor}" />
+                                        SelectedColor="{Binding ColorSchema.PrimaryColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -358,9 +355,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding BorderColor}" />
+                                        SelectedColor="{Binding ColorSchema.BorderColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -369,9 +366,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding SecondaryBackgroundColor}" />
+                                        SelectedColor="{Binding ColorSchema.SecondaryBackgroundColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -380,10 +377,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding ButtonBackgroundColor}" />
+                                        SelectedColor="{Binding ColorSchema.ButtonBackgroundColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -392,10 +389,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding ButtonForegroundColor}" />
+                                        SelectedColor="{Binding ColorSchema.ButtonForegroundColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -404,10 +401,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding NotificationWarningColor}" />
+                                        SelectedColor="{Binding ColorSchema.NotificationWarningColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -416,7 +413,7 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding NotificationWarningTextColor}" />
+                                        SelectedColor="{Binding ColorSchema.NotificationWarningTextColor}" />
                                 </StackPanel>
                             </StackPanel>
                             <StackPanel Orientation="Vertical">
@@ -425,7 +422,7 @@
                                     Height="30"
                                     Margin="5,5,0,0"
                                     HorizontalAlignment="Left"
-                                    Command="{Binding CopyToCustomSchemaCommand}"
+                                    Command="{Binding Source={StaticResource AppVM}, Path=OptionsVM.CopyToCustomSchemaCommand}"
                                     DockPanel.Dock="Right">
                                     <Path
                                         Margin="5"
@@ -433,7 +430,7 @@
                                         Fill="{StaticResource ButtonForegroundBrush}"
                                         Stretch="Uniform" />
                                 </Button>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -442,9 +439,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding SecondaryColor}" />
+                                        SelectedColor="{Binding ColorSchema.SecondaryColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -453,9 +450,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding BackgroundColor}" />
+                                        SelectedColor="{Binding ColorSchema.BackgroundColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -464,9 +461,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding TertiaryBackgroundColor}" />
+                                        SelectedColor="{Binding ColorSchema.TertiaryBackgroundColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -475,10 +472,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding ButtonBackgroundSelectedColor}" />
+                                        SelectedColor="{Binding ColorSchema.ButtonBackgroundSelectedColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -487,10 +484,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding ButtonForegroundDisabledColor}" />
+                                        SelectedColor="{Binding ColorSchema.ButtonForegroundDisabledColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -499,10 +496,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding NotificationErrorColor}" />
+                                        SelectedColor="{Binding ColorSchema.NotificationErrorColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -511,17 +508,16 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding NotificationErrorTextColor}" />
+                                        SelectedColor="{Binding ColorSchema.NotificationErrorTextColor}" />
                                 </StackPanel>
                             </StackPanel>
                         </UniformGrid>
-                    </ScrollViewer>
-                </GroupBox>
-                <GroupBox
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Header="{ns:Loc LblAlternativeUIColorSchema}">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    </GroupBox>
+                    <GroupBox
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        DataContext="{Binding ActiveProfile.ColorSchemaSettings}"
+                        Header="{ns:Loc LblAlternativeUIColorSchema}">
                         <UniformGrid Columns="2">
                             <StackPanel Orientation="Vertical">
                                 <ComboBox
@@ -529,9 +525,8 @@
                                     Margin="0,5,0,0"
                                     DisplayMemberPath="Name"
                                     ItemsSource="{Binding ColorSchemas.Items}"
-                                    SelectedValue="{Binding AlternativeColorSchemaName}"
-                                    SelectedValuePath="Name" />
-                                <StackPanel Orientation="Horizontal">
+                                    SelectedItem="{Binding AltColorSchema}" />
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -540,9 +535,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltPrimaryColor}" />
+                                        SelectedColor="{Binding AltColorSchema.PrimaryColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -551,9 +546,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltBorderColor}" />
+                                        SelectedColor="{Binding AltColorSchema.BorderColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -562,9 +557,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltSecondaryBackgroundColor}" />
+                                        SelectedColor="{Binding AltColorSchema.SecondaryBackgroundColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -573,10 +568,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltButtonBackgroundColor}" />
+                                        SelectedColor="{Binding AltColorSchema.ButtonBackgroundColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -585,10 +580,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltButtonForegroundColor}" />
+                                        SelectedColor="{Binding AltColorSchema.ButtonForegroundColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -597,10 +592,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltNotificationWarningColor}" />
+                                        SelectedColor="{Binding AltColorSchema.NotificationWarningColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -609,7 +604,7 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltNotificationWarningTextColor}" />
+                                        SelectedColor="{Binding AltColorSchema.NotificationWarningTextColor}" />
                                 </StackPanel>
                             </StackPanel>
                             <StackPanel Orientation="Vertical">
@@ -618,14 +613,14 @@
                                     Height="30"
                                     Margin="5,5,0,0"
                                     HorizontalAlignment="Left"
-                                    Command="{Binding CopyToAlternativeCustomSchemaCommand}">
+                                    Command="{Binding Source={StaticResource AppVM}, Path=OptionsVM.CopyToAlternativeCustomSchemaCommand}">
                                     <Path
                                         Margin="5"
                                         Data="{StaticResource CopySVG}"
                                         Fill="{StaticResource ButtonForegroundBrush}"
                                         Stretch="Uniform" />
                                 </Button>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -634,9 +629,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltSecondaryColor}" />
+                                        SelectedColor="{Binding AltColorSchema.SecondaryColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -645,9 +640,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltBackgroundColor}" />
+                                        SelectedColor="{Binding AltColorSchema.BackgroundColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -656,9 +651,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltTertiaryBackgroundColor}" />
+                                        SelectedColor="{Binding AltColorSchema.TertiaryBackgroundColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -667,10 +662,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltButtonBackgroundSelectedColor}" />
+                                        SelectedColor="{Binding AltColorSchema.ButtonBackgroundSelectedColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -679,10 +674,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltButtonForegroundDisabledColor}" />
+                                        SelectedColor="{Binding AltColorSchema.ButtonForegroundDisabledColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -691,10 +686,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltNotificationErrorColor}" />
+                                        SelectedColor="{Binding AltColorSchema.NotificationErrorColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -703,14 +698,12 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltNotificationErrorTextColor}" />
+                                        SelectedColor="{Binding AltColorSchema.NotificationErrorTextColor}" />
                                 </StackPanel>
                             </StackPanel>
                         </UniformGrid>
-                    </ScrollViewer>
-                </GroupBox>
-                <GroupBox Grid.Row="2" Header="{ns:Loc LblAstrometry}">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    </GroupBox>
+                    <GroupBox Grid.Row="2" Header="{ns:Loc LblAstrometry}">
                         <StackPanel Margin="0,5,0,0">
                             <UniformGrid Columns="2">
                                 <StackPanel Orientation="Horizontal">
@@ -722,7 +715,7 @@
                                         Name="epochcombo"
                                         Margin="10,0,0,0"
                                         ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:Epoch}}}"
-                                        SelectedItem="{Binding EpochType}" />
+                                        SelectedItem="{Binding ActiveProfile.AstrometrySettings.EpochType}" />
                                 </StackPanel>
 
                                 <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
@@ -733,7 +726,7 @@
                                     <ComboBox
                                         Margin="10,0,0,0"
                                         ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:Hemisphere}}}"
-                                        SelectedItem="{Binding HemisphereType}" />
+                                        SelectedItem="{Binding ActiveProfile.AstrometrySettings.HemisphereType}" />
                                 </StackPanel>
                             </UniformGrid>
 
@@ -762,70 +755,67 @@
                                         VerticalAlignment="Center"
                                         Text="{Binding Longitude}" />
                                 </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button
+                                        Width="40"
+                                        Height="30"
+                                        Margin="5"
+                                        HorizontalAlignment="Center"
+                                        Command="{Binding SiteFromGPSCommand}">
+                                        <Button.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblGPSTooltip}" />
+                                        </Button.ToolTip>
+                                        <Path
+                                            Margin="5"
+                                            Data="{StaticResource GPSSVG}"
+                                            Fill="{StaticResource ButtonForegroundBrush}"
+                                            Stretch="Uniform" />
+                                    </Button>
+                                    <Button
+                                        Width="40"
+                                        Height="30"
+                                        Margin="5"
+                                        HorizontalAlignment="Center"
+                                        Command="{Binding SiteFromPlanetariumCommand}">
+                                        <Button.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblPlanetariumTooltip}" />
+                                        </Button.ToolTip>
+                                        <Path
+                                            Margin="5"
+                                            Data="{StaticResource GetCoordsSVG}"
+                                            Fill="{StaticResource ButtonForegroundBrush}"
+                                            Stretch="Uniform" />
+                                    </Button>
+                                </StackPanel>
                             </UniformGrid>
                         </StackPanel>
-                    </ScrollViewer>
-                </GroupBox>
-                <GroupBox
-                    Grid.Row="2"
-                    Grid.Column="1"
-                    Header="{ns:Loc LblWeatherData}">
-
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel Margin="0,5,0,0">
-                            <ComboBox
-                                Name="weatherdatacombo"
-                                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:WeatherDataEnum}}}"
-                                SelectedItem="{Binding WeatherDataType}" />
-                            <UniformGrid Margin="0,5,0,0" Columns="2">
-                                <TextBlock Text="{ns:Loc LblURL}" />
-                                <TextBox HorizontalAlignment="Stretch" Text="{Binding OpenWeatherMapUrl}" />
-                            </UniformGrid>
-                            <UniformGrid Margin="0,5,0,0" Columns="2">
-                                <TextBlock Text="{ns:Loc LblAPIKey}" />
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBox
-                                        HorizontalAlignment="Stretch"
-                                        DockPanel.Dock="Left"
-                                        Text="{Binding OpenWeatherMapAPIKey}" />
-                                    <TextBlock
-                                        Grid.Column="1"
-                                        Width="Auto"
-                                        VerticalAlignment="Center"
-                                        DockPanel.Dock="Right"
-                                        Text="">
-                                        <Hyperlink Command="{Binding OpenWebRequestCommand}" CommandParameter="https://home.openweathermap.org/api_keys">
-                                            <Run Text="?" />
-                                        </Hyperlink>
-                                    </TextBlock>
-                                </Grid>
-                            </UniformGrid>
-                        </StackPanel>
-                    </ScrollViewer>
-                </GroupBox>
-            </Grid>
+                    </GroupBox>
+                </Grid>
+            </ScrollViewer>
         </TabItem>
         <TabItem>
             <TabItem.Header>
                 <TextBlock Style="{StaticResource TabItemTextBox}" Text="{ns:Loc LblEquipment}" />
             </TabItem.Header>
-            <options:EquipmentView />
+            <options:EquipmentView DataContext="{Binding}" />
         </TabItem>
         <TabItem>
             <TabItem.Header>
                 <TextBlock Style="{StaticResource TabItemTextBox}" Text="{ns:Loc LblImaging}" />
             </TabItem.Header>
-            <local:OptionsImagingView />
+            <local:OptionsImagingView DataContext="{Binding}" />
         </TabItem>
         <TabItem>
             <TabItem.Header>
                 <TextBlock Style="{StaticResource TabItemTextBox}" Text="{ns:Loc LblPlateSolving}" />
             </TabItem.Header>
-            <local:OptionsPlateSolverView />
+            <local:OptionsPlateSolverView DataContext="{Binding}" />
+        </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <TextBlock Style="{StaticResource TabItemTextBox}" Text="{ns:Loc LblPlanetarium}" />
+            </TabItem.Header>
+            <local:OptionsPlanetariumView DataContext="{Binding}" />
         </TabItem>
     </TabControl>
 </UserControl>

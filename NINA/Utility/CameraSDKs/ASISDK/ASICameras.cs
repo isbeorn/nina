@@ -1,11 +1,10 @@
 ﻿using NINA.Model.MyCamera;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 
 namespace ZWOptical.ASISDK {
 
     public static class ASICameras {
-        private static readonly ASICamera[] _cameras = new ASICamera[16];
 
         public static int Count {
             get { return ASICameraDll.GetNumOfConnectedCameras(); }
@@ -15,7 +14,7 @@ namespace ZWOptical.ASISDK {
             if (cameraId >= Count || cameraId < 0)
                 throw new IndexOutOfRangeException();
 
-            return _cameras[cameraId] ?? (_cameras[cameraId] = new ASICamera(cameraId, profileService));
+            return new ASICamera(cameraId, profileService);
         }
     }
 }

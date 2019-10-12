@@ -1,8 +1,6 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
-
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
     N.I.N.A. is free software: you can redistribute it and/or modify
@@ -19,6 +17,11 @@
     along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+ * Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+ * Copyright 2019 Dale Ghent <daleg@elemental.org>
+ */
+
 #endregion "copyright"
 
 using NINA.Model;
@@ -33,7 +36,7 @@ using NINA.Utility.Behaviors;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using NINA.Utility.WindowService;
 using System;
 using System.Diagnostics;
@@ -45,12 +48,14 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using NINA.Utility.ImageAnalysis;
+using NINA.Model.ImageData;
 
 namespace NINA.ViewModel {
 
-    internal class ImageControlVM : DockableVM, ICameraConsumer, ITelescopeConsumer, IFilterWheelConsumer, IFocuserConsumer, IRotatorConsumer {
+    internal class ImageControlVM : DockableVM, ICameraConsumer {
 
-        public ImageControlVM(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator, IFilterWheelMediator filterWheelMediator, IFocuserMediator focuserMediator, IRotatorMediator rotatorMediator, IImagingMediator imagingMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+        public ImageControlVM(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator, IImagingMediator imagingMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblImage";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PictureSVG"];
 
@@ -58,21 +63,10 @@ namespace NINA.ViewModel {
             this.cameraMediator.RegisterConsumer(this);
 
             this.telescopeMediator = telescopeMediator;
-            this.telescopeMediator = telescopeMediator;
-            this.telescopeMediator.RegisterConsumer(this);
-
-            this.filterWheelMediator = filterWheelMediator;
-            this.filterWheelMediator.RegisterConsumer(this);
-
-            this.focuserMediator = focuserMediator;
-            this.focuserMediator.RegisterConsumer(this);
-
-            this.rotatorMediator = rotatorMediator;
-            this.rotatorMediator.RegisterConsumer(this);
 
             this.imagingMediator = imagingMediator;
             this.applicationStatusMediator = applicationStatusMediator;
-            AutoStretch = false;
+            AutoStretch = true;
             DetectStars = false;
             ShowCrossHair = false;
             ShowBahtinovAnalyzer = false;
@@ -202,7 +196,7 @@ namespace NINA.ViewModel {
         private void AnalyzeBahtinov() {
             /* Get Pixels */
             var crop = new CroppedBitmap(Image, new Int32Rect((int)BahtinovRectangle.X, (int)BahtinovRectangle.Y, (int)BahtinovRectangle.Width, (int)BahtinovRectangle.Height));
-            BahtinovImage = new BahtinovAnalysis(crop, profileService.ActiveProfile.ColorSchemaSettings.BackgroundColor).GrabBahtinov();
+            BahtinovImage = new BahtinovAnalysis(crop, profileService.ActiveProfile.ColorSchemaSettings.ColorSchema.BackgroundColor).GrabBahtinov();
         }
 
         private void SubSampleDragStart(object obj) {
@@ -344,11 +338,12 @@ namespace NINA.ViewModel {
                     AutoStretch = true;
                 }
                 await PrepareImageHelper();
-                var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
-                solver.Image = Image;
-                var service = WindowServiceFactory.Create();
-                service.Show(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
-                await solver.Solve(Image, _progress, _plateSolveToken.Token);
+                using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
+                    solver.Image = Image;
+                    var service = WindowServiceFactory.Create();
+                    service.Show(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
+                    await solver.Solve(Image, _progress, _plateSolveToken.Token);
+                }
                 return true;
             } else {
                 return false;
@@ -363,44 +358,14 @@ namespace NINA.ViewModel {
 
         private CancellationTokenSource _plateSolveToken;
 
-        private ImageArray _imgArr;
+        private IImageData _imgArr;
 
-        public ImageArray ImgArr {
+        public IImageData ImgArr {
             get {
                 return _imgArr;
             }
             set {
                 _imgArr = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ImageHistoryVM _imgHistoryVM;
-
-        public ImageHistoryVM ImgHistoryVM {
-            get {
-                if (_imgHistoryVM == null) {
-                    _imgHistoryVM = new ImageHistoryVM(profileService);
-                }
-                return _imgHistoryVM;
-            }
-            set {
-                _imgHistoryVM = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private ImageStatisticsVM _imgStatisticsVM;
-
-        public ImageStatisticsVM ImgStatisticsVM {
-            get {
-                if (_imgStatisticsVM == null) {
-                    _imgStatisticsVM = new ImageStatisticsVM(profileService);
-                }
-                return _imgStatisticsVM;
-            }
-            set {
-                _imgStatisticsVM = value;
                 RaisePropertyChanged();
             }
         }
@@ -540,558 +505,59 @@ namespace NINA.ViewModel {
         private ICameraMediator cameraMediator;
         private CameraInfo cameraInfo = DeviceInfo.CreateDefaultInstance<CameraInfo>();
         private ITelescopeMediator telescopeMediator;
-        private TelescopeInfo telescopeInfo = DeviceInfo.CreateDefaultInstance<TelescopeInfo>();
-        private IFilterWheelMediator filterWheelMediator;
-        private IFocuserMediator focuserMediator;
-        private IRotatorMediator rotatorMediator;
         private IImagingMediator imagingMediator;
         private IApplicationStatusMediator applicationStatusMediator;
-        private FilterWheelInfo filterWheelInfo = DeviceInfo.CreateDefaultInstance<FilterWheelInfo>();
-        private FocuserInfo focuserInfo = DeviceInfo.CreateDefaultInstance<FocuserInfo>();
-        private RotatorInfo rotatorInfo = DeviceInfo.CreateDefaultInstance<RotatorInfo>();
 
-        public async Task<BitmapSource> PrepareImage(
-                ImageArray iarr,
-                CancellationToken token,
-                bool saveImage = false,
-                ImageParameters parameters = null,
-                bool addToStatistics = true,
-                bool addToHistory = true) {
-            BitmapSource source = null;
-
+        public async Task<IImageData> PrepareImage(
+                IImageData data,
+                CancellationToken token) {
             await ss.WaitAsync(token);
 
             try {
-                if (iarr != null) {
+                if (data != null) {
                     _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPrepareImage"] });
-                    source = ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
+
+                    data.RenderImage();
+
+                    if (data.Statistics.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage) {
+                        _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDebayeringImage"] });
+                        data.Debayer(profileService.ActiveProfile.ImageSettings.UnlinkedStretch, (profileService.ActiveProfile.ImageSettings.DebayeredHFR && DetectStars));
+                    }
 
                     if (AutoStretch) {
                         _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStretchImage"] });
-                        source = await StretchAsync(iarr, source, profileService.ActiveProfile.ImageSettings.AutoStretchFactor, profileService.ActiveProfile.ImageSettings.BlackClipping);
+                        if (data.Statistics.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage && profileService.ActiveProfile.ImageSettings.UnlinkedStretch) {
+                            await data.Stretch(profileService.ActiveProfile.ImageSettings.AutoStretchFactor, profileService.ActiveProfile.ImageSettings.BlackClipping, true);
+                        } else {
+                            await data.Stretch(profileService.ActiveProfile.ImageSettings.AutoStretchFactor, profileService.ActiveProfile.ImageSettings.BlackClipping, false);
+                        }
                     }
 
                     if (DetectStars) {
-                        var analysis = new ImageAnalysis(source, iarr);
-                        await analysis.DetectStarsAsync(_progress, token);
-
-                        if (profileService.ActiveProfile.ImageSettings.AnnotateImage) {
-                            source = analysis.GetAnnotatedImage();
-                        }
-
-                        iarr.Statistics.HFR = analysis.AverageHFR;
-                        iarr.Statistics.DetectedStars = analysis.DetectedStars;
+                        await data.DetectStars(profileService.ActiveProfile.ImageSettings.AnnotateImage, profileService.ActiveProfile.ImageSettings.StarSensitivity, profileService.ActiveProfile.ImageSettings.NoiseReduction, token);
                     }
 
-                    source = ImageAnalysis.Convert16BppTo8BppSource(source);
-
-                    if (iarr.Statistics.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage) {
-                        _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDebayeringImage"] });
-                        source = ImageAnalysis.Debayer(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale);
-                    }
-
-                    if (parameters != null) {
-                        iarr.Statistics.ExposureTime = parameters.ExposureTime;
-                    }
-
-                    ImgArr = iarr;
-                    Image = source;
+                    ImgArr = data;
+                    Image = data.Image;
                     GC.Collect();
-                    if (addToStatistics)
-                        ImgStatisticsVM.Add(ImgArr.Statistics);
-                    if (addToHistory)
-                        ImgHistoryVM.Add(iarr.Statistics);
 
                     if (ShowBahtinovAnalyzer) {
                         AnalyzeBahtinov();
-                    }
-
-                    if (saveImage) {
-                        await SaveToDisk(parameters, token);
                     }
                 }
             } finally {
                 _progress.Report(new ApplicationStatus() { Status = string.Empty });
                 ss.Release();
             }
-            return source;
-        }
-
-        public static async Task<BitmapSource> StretchAsync(ImageArray iarr, BitmapSource source, double factor, double blackClipping) {
-            return await Task<BitmapSource>.Run(() => Stretch(iarr.Statistics, source, System.Windows.Media.PixelFormats.Gray16, factor, blackClipping));
-        }
-
-        public static async Task<BitmapSource> StretchAsync(IImageStatistics statistics, BitmapSource source, double factor, double blackClipping) {
-            return await Task<BitmapSource>.Run(() => Stretch(statistics, source, System.Windows.Media.PixelFormats.Gray16, factor, blackClipping));
-        }
-
-        public static BitmapSource Stretch(IImageStatistics statistics, BitmapSource source, System.Windows.Media.PixelFormat pf, double factor, double blackClipping) {
-            using (var img = ImageAnalysis.BitmapFromSource(source)) {
-                return Stretch(statistics, img, pf, factor, blackClipping);
-            }
-        }
-
-        public static BitmapSource Stretch(IImageStatistics statistics, System.Drawing.Bitmap img, System.Windows.Media.PixelFormat pf, double factor, double blackClipping) {
-            using (MyStopWatch.Measure()) {
-                var filter = ImageAnalysis.GetColorRemappingFilter(statistics, factor, blackClipping);
-                filter.ApplyInPlace(img);
-
-                var source = ImageAnalysis.ConvertBitmap(img, pf);
-                source.Freeze();
-                return source;
-            }
-        }
-
-        public async Task<bool> SaveToDisk(ImageParameters parameters, CancellationToken token) {
-            var filter = parameters.FilterName;
-            var framenr = parameters.ExposureNumber;
-            var success = false;
-            try {
-                using (MyStopWatch.Measure()) {
-                    success = await SaveToDiskAsync(parameters, token);
-                }
-            } catch (OperationCanceledException ex) {
-                throw new OperationCanceledException(ex.Message);
-            } catch (Exception ex) {
-                Notification.ShowError(ex.Message);
-                Logger.Error(ex);
-            } finally {
-                _progress.Report(new ApplicationStatus() { Status = string.Empty });
-            }
-            return success;
-        }
-
-        private async Task<bool> SaveToDiskAsync(ImageParameters parameters, CancellationToken token) {
-            _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblSave"] });
-            await Task.Run(() => {
-                ImagePatterns p = new ImagePatterns();
-
-                p.Set(ImagePatternKeys.Filter, parameters.FilterName);
-                p.Set(ImagePatternKeys.ExposureTime, parameters.ExposureTime);
-                p.Set(ImagePatternKeys.ApplicationStartDate, Utility.Utility.ApplicationStartDate.ToString("yyyy-MM-dd"));
-                p.Set(ImagePatternKeys.Date, parameters.ExposureStart.ToString("yyyy-MM-dd"));
-                p.Set(ImagePatternKeys.Time, parameters.ExposureStart.ToString("HH-mm-ss"));
-                p.Set(ImagePatternKeys.DateTime, parameters.ExposureStart.ToString("yyyy-MM-dd_HH-mm-ss"));
-                p.Set(ImagePatternKeys.FrameNr, parameters.ExposureNumber);
-                p.Set(ImagePatternKeys.ImageType, parameters.ImageType);
-
-                if (focuserInfo.Connected) {
-                    p.Set(ImagePatternKeys.FocuserPosition, focuserInfo.Position);
-                }
-
-                if (parameters.Binning == string.Empty) {
-                    p.Set(ImagePatternKeys.Binning, "1x1");
-                } else {
-                    p.Set(ImagePatternKeys.Binning, parameters.Binning);
-                }
-
-                p.Set(ImagePatternKeys.SensorTemp, cameraInfo.Temperature);
-                p.Set(ImagePatternKeys.TargetName, parameters.TargetName);
-                p.Set(ImagePatternKeys.Gain, cameraInfo.Gain);
-                p.Set(ImagePatternKeys.Offset, cameraInfo.Offset);
-                p.Set(ImagePatternKeys.RMS, parameters.RecordedRMS.Total);
-                p.Set(ImagePatternKeys.RMSArcSec, parameters.RecordedRMS.Total * parameters.RecordedRMS.Scale);
-
-                string path = Path.GetFullPath(profileService.ActiveProfile.ImageFileSettings.FilePath);
-                string filename = p.GetImageFileString(profileService.ActiveProfile.ImageFileSettings.FilePattern);
-                string completefilename = Path.Combine(path, filename);
-
-                Stopwatch sw = Stopwatch.StartNew();
-                var fileType = profileService.ActiveProfile.ImageFileSettings.FileType;
-                if (ImgArr.RAWData != null) {
-                    completefilename = SaveRAW(completefilename);
-                    fileType = FileTypeEnum.RAW;
-                } else {
-                    if (profileService.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.FITS) {
-                        if (parameters.ImageType == "SNAP") parameters.ImageType = "LIGHT";
-                        completefilename = SaveFits(completefilename, parameters);
-                    } else if (profileService.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.TIFF) {
-                        completefilename = SaveTiff(completefilename, TiffCompressOption.None);
-                    } else if (profileService.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.TIFF_ZIP) {
-                        completefilename = SaveTiff(completefilename, TiffCompressOption.Zip);
-                    } else if (profileService.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.TIFF_LZW) {
-                        completefilename = SaveTiff(completefilename, TiffCompressOption.Lzw);
-                    } else if (profileService.ActiveProfile.ImageFileSettings.FileType == FileTypeEnum.XISF) {
-                        if (parameters.ImageType == "SNAP") parameters.ImageType = "LIGHT";
-                        completefilename = SaveXisf(completefilename, parameters);
-                    } else {
-                        completefilename = SaveTiff(completefilename, TiffCompressOption.None);
-                    }
-                }
-
-                imagingMediator.OnImageSaved(
-                    new ImageSavedEventArgs() {
-                        PathToImage = new Uri(completefilename),
-                        Image = Image,
-                        FileType = fileType,
-                        Mean = ImgArr.Statistics.Mean,
-                        HFR = ImgArr.Statistics.HFR,
-                        Duration = parameters.ExposureTime,
-                        IsBayered = ImgArr.Statistics.IsBayered,
-                        Filter = parameters.FilterName,
-                        StatisticsId = ImgArr.Statistics.Id
-                    }
-                );
-
-                sw.Stop();
-                Debug.Print("Time to save: " + sw.Elapsed);
-                sw = null;
-            });
-
-            token.ThrowIfCancellationRequested();
-            return true;
-        }
-
-        private byte[] GetEncodedFitsHeaderInternal(string keyword, string value, string comment) {
-            /* Specification: http://archive.stsci.edu/fits/fits_standard/node29.html#SECTION00912100000000000000 */
-            Encoding ascii = Encoding.GetEncoding("iso-8859-1"); /* Extended ascii */
-            var header = keyword.ToUpper().PadRight(8) + "=" + value.PadLeft(21) + " / " + comment.PadRight(47);
-            return ascii.GetBytes(header);
-        }
-
-        private byte[] GetEncodedFitsHeader(string keyword, string value, string comment) {
-            return GetEncodedFitsHeaderInternal(keyword, "'" + value + "'", comment);
-        }
-
-        private byte[] GetEncodedFitsHeader(string keyword, int value, string comment) {
-            return GetEncodedFitsHeaderInternal(keyword, value.ToString(CultureInfo.InvariantCulture), comment);
-        }
-
-        private byte[] GetEncodedFitsHeader(string keyword, double value, string comment) {
-            return GetEncodedFitsHeaderInternal(keyword, value.ToString(CultureInfo.InvariantCulture), comment);
-        }
-
-        private byte[] GetEncodedFitsHeader(string keyword, bool value, string comment) {
-            return GetEncodedFitsHeaderInternal(keyword, value ? "T" : "F", comment);
-        }
-
-        private string SaveRAW(string path) {
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-            var uniquePath = Utility.Utility.GetUniqueFilePath(path + "." + ImgArr.RAWType);
-            File.WriteAllBytes(uniquePath, ImgArr.RAWData);
-            return uniquePath;
-        }
-
-        private string SaveFits(string path, ImageParameters parameters) {
-            try {
-                FITS f = new FITS(
-                    this.ImgArr.FlatArray,
-                    this.ImgArr.Statistics.Width,
-                    this.ImgArr.Statistics.Height,
-                    parameters.ImageType,
-                    parameters.ExposureTime
-                );
-
-                f.AddHeaderCard("FOCALLEN", profileService.ActiveProfile.TelescopeSettings.FocalLength, "");
-                f.AddHeaderCard("XPIXSZ", profileService.ActiveProfile.CameraSettings.PixelSize, "");
-                f.AddHeaderCard("YPIXSZ", profileService.ActiveProfile.CameraSettings.PixelSize, "");
-                f.AddHeaderCard("SITELAT", profileService.ActiveProfile.AstrometrySettings.Latitude, "Observation site latitude");
-                f.AddHeaderCard("SITELONG", profileService.ActiveProfile.AstrometrySettings.Longitude, "Observation site longitude");
-
-                if (filterWheelInfo.Connected) {
-                    if (!string.IsNullOrEmpty(filterWheelInfo.Name) && !string.IsNullOrWhiteSpace(filterWheelInfo.Name)) {
-                        /* fits4win */
-                        f.AddHeaderCard("FWHEEL", filterWheelInfo.Name, "");
-
-                        if (!string.IsNullOrEmpty(parameters.FilterName)) {
-                            f.AddHeaderCard("FILTER", parameters.FilterName, "");
-                        }
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(cameraInfo.Name)) {
-                    f.AddHeaderCard("INSTRUME", cameraInfo.Name, "");
-                }
-
-                if (cameraInfo.BinX > 0) {
-                    f.AddHeaderCard("XBINNING", cameraInfo.BinX, "");
-                }
-                if (cameraInfo.BinY > 0) {
-                    f.AddHeaderCard("YBINNING", cameraInfo.BinY, "");
-                }
-                f.AddHeaderCard("EGAIN", cameraInfo.Gain, "");
-
-                if (cameraInfo.Offset >= 0) {
-                    /* SharpCap */
-                    f.AddHeaderCard("OFFSET", cameraInfo.Offset, "");
-                }
-
-                if (!string.IsNullOrEmpty(parameters.TargetName) || !string.IsNullOrWhiteSpace(parameters.TargetName)) {
-                    f.AddHeaderCard("OBJECT", parameters.TargetName, "Name of the object of interest");
-                }
-
-                if (telescopeInfo.Connected) {
-                    f.AddHeaderCard("RA", Astrometry.HoursToDegrees(telescopeInfo.RightAscension), "[deg] Telescope pointing RA");
-                    f.AddHeaderCard("DEC", telescopeInfo.Declination, "[deg] Telescope pointing DEC");
-                    f.AddHeaderCard("OBJCTRA", Astrometry.HoursToFitsHMS(telescopeInfo.RightAscension), "");
-                    f.AddHeaderCard("OBJCTDEC", Astrometry.DegreesToFitsDMS(telescopeInfo.Declination), "");
-                }
-
-                if (!double.IsNaN(cameraInfo.Temperature)) {
-                    f.AddHeaderCard("CCD-TEMP", cameraInfo.Temperature, "");
-                }
-
-                if (focuserInfo.Connected) {
-                    if (!string.IsNullOrEmpty(focuserInfo.Name) && !string.IsNullOrWhiteSpace(focuserInfo.Name)) {
-                        /* fits4win, SGP */
-                        f.AddHeaderCard("FOCNAME", focuserInfo.Name, "");
-                    }
-
-                    if (focuserInfo.Position != -1) {
-                        /* fits4win, SGP */
-                        f.AddHeaderCard("FOCPOS", focuserInfo.Position, "steps");
-
-                        /* MaximDL, several observatories */
-                        f.AddHeaderCard("FOCUSPOS", focuserInfo.Position, "steps");
-                    }
-
-                    if (!double.IsNaN(focuserInfo.StepSize)) {
-                        /* MaximDL */
-                        f.AddHeaderCard("FOCUSSZ", focuserInfo.StepSize, "microns");
-                    }
-
-                    if (!double.IsNaN(focuserInfo.Temperature)) {
-                        /* fits4win, SGP */
-                        f.AddHeaderCard("FOCTEMP", focuserInfo.Temperature, "celcius");
-
-                        /* MaximDL, several observatories */
-                        f.AddHeaderCard("FOCUSTEM", focuserInfo.Temperature, "celcius");
-                    }
-                }
-
-                if (rotatorInfo.Connected) {
-                    if (!string.IsNullOrEmpty(focuserInfo.Name) && !string.IsNullOrWhiteSpace(focuserInfo.Name)) {
-                        /* NINA */
-                        f.AddHeaderCard("ROTNAME", rotatorInfo.Name, "");
-                    }
-
-                    if (!float.IsNaN(rotatorInfo.Position)) {
-                        /* fits4win */
-                        f.AddHeaderCard("ROTATOR", rotatorInfo.Position, "degrees");
-
-                        /* MaximDL, several observatories */
-                        f.AddHeaderCard("ROTATANG", rotatorInfo.Position, "degrees");
-                    }
-
-                    if (!float.IsNaN(rotatorInfo.StepSize)) {
-                        /* NINA */
-                        f.AddHeaderCard("ROTSTPSZ", rotatorInfo.StepSize, "degrees");
-                    }
-                }
-
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
-                var uniquePath = Utility.Utility.GetUniqueFilePath(path + ".fits");
-
-                using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
-                    f.Write(fs);
-                }
-
-                return uniquePath;
-            } catch (Exception ex) {
-                Logger.Error(ex);
-                Notification.ShowError(Locale.Loc.Instance["LblImageFileError"] + Environment.NewLine + ex.Message);
-                return string.Empty;
-            }
-        }
-
-        private string SaveTiff(String path, TiffCompressOption c) {
-            try {
-                BitmapSource bmpSource = ImageAnalysis.CreateSourceFromArray(ImgArr, System.Windows.Media.PixelFormats.Gray16);
-
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
-                var uniquePath = Utility.Utility.GetUniqueFilePath(path + ".tif");
-
-                using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
-                    TiffBitmapEncoder encoder = new TiffBitmapEncoder();
-                    encoder.Compression = c;
-                    encoder.Frames.Add(BitmapFrame.Create(bmpSource));
-                    encoder.Save(fs);
-                }
-                return uniquePath;
-            } catch (Exception ex) {
-                Logger.Error(ex);
-                Notification.ShowError(Locale.Loc.Instance["LblImageFileError"] + Environment.NewLine + ex.Message);
-                return string.Empty;
-            }
-        }
-
-        private string SaveXisf(String path, ImageParameters parameters) {
-            try {
-                var header = new XISFHeader();
-
-                header.AddImageMetaData(ImgArr, parameters.ImageType);
-
-                header.AddImageProperty(XISFImageProperty.Observation.Time.Start, DateTime.UtcNow.ToString("s", System.Globalization.CultureInfo.InvariantCulture));
-                header.AddImageProperty(XISFImageProperty.Observation.Location.Latitude, profileService.ActiveProfile.AstrometrySettings.Latitude.ToString(CultureInfo.InvariantCulture), "Observation site latitude");
-                header.AddImageProperty(XISFImageProperty.Observation.Location.Latitude, profileService.ActiveProfile.AstrometrySettings.Latitude.ToString(CultureInfo.InvariantCulture), "Observation site longitude");
-                header.AddImageProperty(XISFImageProperty.Observation.Location.Longitude, profileService.ActiveProfile.AstrometrySettings.Longitude.ToString(CultureInfo.InvariantCulture));
-                header.AddImageProperty(XISFImageProperty.Instrument.Telescope.FocalLength, profileService.ActiveProfile.TelescopeSettings.FocalLength.ToString(CultureInfo.InvariantCulture));
-                header.AddImageProperty(XISFImageProperty.Instrument.Sensor.XPixelSize, profileService.ActiveProfile.CameraSettings.PixelSize.ToString(CultureInfo.InvariantCulture));
-                header.AddImageProperty(XISFImageProperty.Instrument.Sensor.YPixelSize, profileService.ActiveProfile.CameraSettings.PixelSize.ToString(CultureInfo.InvariantCulture));
-
-                if (!string.IsNullOrEmpty(parameters.TargetName) || !string.IsNullOrWhiteSpace(parameters.TargetName)) {
-                    header.AddImageProperty(XISFImageProperty.Observation.Object.Name, parameters.TargetName, "Name of the object of interest");
-                }
-
-                if (telescopeInfo.Connected) {
-                    header.AddImageProperty(XISFImageProperty.Instrument.Telescope.Name, telescopeInfo.Name);
-
-                    /* Location */
-                    header.AddImageProperty(XISFImageProperty.Observation.Location.Elevation, telescopeInfo.SiteElevation.ToString(CultureInfo.InvariantCulture));
-                    /* convert to degrees */
-                    var RA = Astrometry.HoursToDegrees(telescopeInfo.RightAscension);
-                    header.AddImageProperty(XISFImageProperty.Observation.Center.RA, RA.ToString(CultureInfo.InvariantCulture), string.Empty, false);
-                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.RA[2], Astrometry.HoursToFitsHMS(telescopeInfo.RightAscension));
-                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.RA[3], RA.ToString(CultureInfo.InvariantCulture), "[deg] Telescope pointing RA");
-
-                    header.AddImageProperty(XISFImageProperty.Observation.Center.Dec, telescopeInfo.Declination.ToString(CultureInfo.InvariantCulture), string.Empty, false);
-                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.Dec[2], Astrometry.DegreesToFitsDMS(telescopeInfo.Declination));
-                    header.AddImageFITSKeyword(XISFImageProperty.Observation.Center.Dec[3], telescopeInfo.Declination.ToString(CultureInfo.InvariantCulture), "[deg] Telescope pointing DEC");
-                }
-
-                header.AddImageProperty(XISFImageProperty.Instrument.Camera.Name, cameraInfo.Name);
-
-                if (cameraInfo.Gain > 0) {
-                    header.AddImageProperty(XISFImageProperty.Instrument.Camera.Gain, cameraInfo.Gain.ToString(CultureInfo.InvariantCulture));
-                }
-
-                if (cameraInfo.Offset >= 0) {
-                    /* SharpCap */
-                    header.AddImageFITSKeyword("OFFSET", cameraInfo.Offset.ToString(CultureInfo.InvariantCulture), "");
-                }
-
-                if (cameraInfo.BinX > 0) {
-                    header.AddImageProperty(XISFImageProperty.Instrument.Camera.XBinning, cameraInfo.BinX.ToString(CultureInfo.InvariantCulture));
-                }
-                if (cameraInfo.BinY > 0) {
-                    header.AddImageProperty(XISFImageProperty.Instrument.Camera.YBinning, cameraInfo.BinY.ToString(CultureInfo.InvariantCulture));
-                }
-
-                var temp = cameraInfo.Temperature;
-                if (!double.IsNaN(temp)) {
-                    header.AddImageProperty(XISFImageProperty.Instrument.Sensor.Temperature, temp.ToString(CultureInfo.InvariantCulture));
-                }
-
-                if (focuserInfo.Connected) {
-                    if (!string.IsNullOrEmpty(focuserInfo.Name) && !string.IsNullOrWhiteSpace(focuserInfo.Name)) {
-                        /* fits4win, SGP */
-                        header.AddImageFITSKeyword("FOCNAME", focuserInfo.Name, "");
-                    }
-
-                    /*
-                     * XISF 1.0 defines Instrument:Focuser:Position as the only focuser-related image property.
-                     * This image property is: "(Float32) Estimated position of the focuser in millimeters, measured with respect to a device-dependent origin."
-                     * This unit is different from FOCUSPOS FITSKeyword, so we must do two separate actions: calculate distance from origin in millimeters and insert
-                     * that as the XISF Instrument:Focuser:Position property, and then insert the separate FOCUSPOS FITSKeyword (measured in steps).
-                     */
-                    if (focuserInfo.Position != -1) {
-                        if (!double.IsNaN(focuserInfo.StepSize)) {
-                            /* steps * step size (microns) converted to millimeters, single-precision float */
-                            float focusDistance = (focuserInfo.Position * (float)focuserInfo.StepSize) / 1000;
-                            header.AddImageProperty(XISFImageProperty.Instrument.Focuser.Position, focusDistance.ToString(CultureInfo.InvariantCulture));
-                        }
-
-                        /* fits4win, SGP */
-                        header.AddImageFITSKeyword("FOCPOS", focuserInfo.Position.ToString(CultureInfo.InvariantCulture), "steps");
-
-                        /* MaximDL, several observatories */
-                        header.AddImageFITSKeyword("FOCUSPOS", focuserInfo.Position.ToString(CultureInfo.InvariantCulture), "steps");
-                    }
-
-                    if (!double.IsNaN(focuserInfo.StepSize)) {
-                        /* MaximDL */
-                        header.AddImageFITSKeyword("FOCUSSZ", focuserInfo.StepSize.ToString(CultureInfo.InvariantCulture), "microns");
-                    }
-
-                    if (!double.IsNaN(focuserInfo.Temperature)) {
-                        /* fits4win, SGP */
-                        header.AddImageFITSKeyword("FOCTEMP", focuserInfo.Temperature.ToString(CultureInfo.InvariantCulture), "celcius");
-
-                        /* MaximDL, several observatories */
-                        header.AddImageFITSKeyword("FOCUSTEM", focuserInfo.Temperature.ToString(CultureInfo.InvariantCulture), "celcius");
-                    }
-                }
-
-                if (rotatorInfo.Connected) {
-                    if (!string.IsNullOrEmpty(focuserInfo.Name) && !string.IsNullOrWhiteSpace(focuserInfo.Name)) {
-                        /* NINA */
-                        header.AddImageFITSKeyword("ROTNAME", rotatorInfo.Name, "");
-                    }
-
-                    if (!float.IsNaN(rotatorInfo.Position)) {
-                        /* fits4win */
-                        header.AddImageFITSKeyword("ROTATOR", rotatorInfo.Position.ToString(CultureInfo.InvariantCulture), "degrees");
-
-                        /* MaximDL, several observatories */
-                        header.AddImageFITSKeyword("ROTATANG", rotatorInfo.Position.ToString(CultureInfo.InvariantCulture), "degrees");
-                    }
-
-                    if (!float.IsNaN(rotatorInfo.StepSize)) {
-                        /* NINA */
-                        header.AddImageFITSKeyword("ROTSTPSZ", rotatorInfo.StepSize.ToString(CultureInfo.InvariantCulture), "degrees");
-                    }
-                }
-
-                if (filterWheelInfo.Connected) {
-                    if (!string.IsNullOrEmpty(filterWheelInfo.Name) && !string.IsNullOrWhiteSpace(filterWheelInfo.Name)) {
-                        /* fits4win */
-                        header.AddImageFITSKeyword("FWHEEL", filterWheelInfo.Name, "");
-
-                        if (!string.IsNullOrEmpty(parameters.FilterName)) {
-                            header.AddImageProperty(XISFImageProperty.Instrument.Filter.Name, parameters.FilterName);
-                        }
-                    }
-                }
-
-                header.AddImageProperty(XISFImageProperty.Instrument.ExposureTime, parameters.ExposureTime.ToString(System.Globalization.CultureInfo.InvariantCulture));
-
-                XISF img = new XISF(header);
-
-                img.AddAttachedImage(ImgArr, parameters.ImageType);
-
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
-                var uniquePath = Utility.Utility.GetUniqueFilePath(path + ".xisf");
-
-                using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
-                    img.Save(fs);
-                }
-                return uniquePath;
-            } catch (Exception ex) {
-                Logger.Error(ex);
-                Notification.ShowError(Locale.Loc.Instance["LblImageFileError"] + Environment.NewLine + ex.Message);
-                return string.Empty;
-            }
+            return data;
         }
 
         public void UpdateDeviceInfo(CameraInfo cameraInfo) {
             this.cameraInfo = cameraInfo;
         }
 
-        public void UpdateDeviceInfo(TelescopeInfo telescopeInfo) {
-            this.telescopeInfo = telescopeInfo;
+        public void Dispose() {
+            this.cameraMediator.RemoveConsumer(this);
         }
-
-        public void UpdateDeviceInfo(FilterWheelInfo deviceInfo) {
-            this.filterWheelInfo = deviceInfo;
-        }
-
-        public void UpdateDeviceInfo(FocuserInfo deviceInfo) {
-            this.focuserInfo = deviceInfo;
-        }
-
-        public void UpdateDeviceInfo(RotatorInfo deviceInfo) {
-            this.rotatorInfo = deviceInfo;
-        }
-    }
-
-    public class ImageParameters {
-        public DateTime ExposureStart { get; internal set; }
-        public string FilterName { get; internal set; }
-        public int ExposureNumber { get; internal set; }
-        public string ImageType { get; internal set; }
-        public string Binning { get; internal set; }
-        public double ExposureTime { get; internal set; }
-        public string TargetName { get; internal set; }
-        public RMS RecordedRMS { get; internal set; }
     }
 }

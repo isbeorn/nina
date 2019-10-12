@@ -37,31 +37,25 @@
     <Icon Id="Logo_Nina.ico" SourceFile="Logo_Nina.ico" />
     <Property Id="ARPPRODUCTICON" Value="Logo_Nina.ico" />
 
-    <WixVariable Id="WixUIBannerBmp" Value="Images\WixUIBannerBmp.bmp" />
-    <WixVariable Id="WixUIDialogBmp" Value="Images\WixUIDialogBmp.bmp" />
-
-    <WixVariable Id="WixUILicenseRtf" Value="$(var.NINA.ProjectDir)\license.rtf" />
-
-    <UIRef Id="WixUI_InstallDir" />
-    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
-
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate EmbedCab="yes" />
 
     <Feature Id="ProductFeature" Title="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Level="1">
       <ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="InstallLocationRegistry" />
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="ApplicationShortcutDesktop" />
       <ComponentRef Id="NinaAppDataFolderComponent" />
       <ComponentRef Id="FramingAssistantCacheFolderComponent" />
       <ComponentRef Id="LogsFolderComponent" />
-
-      <ComponentGroupRef Id="Database" />
+      <ComponentRef Id="CrashDumpFolderComponent" />
+      <ComponentRef Id="CrashDumpRegistry" />
       <!--<ComponentGroupRef Id="Documentation_images_files" />
       <ComponentGroupRef Id="Documentation_files" />-->
       <ComponentGroupRef Id="External_x64_ASI_files" />
       <ComponentGroupRef Id="External_x64_Atik_files" />
       <ComponentGroupRef Id="External_x64_QHY_files" />
+      <ComponentGroupRef Id="External_x64_FLI_files" />
       <ComponentGroupRef Id="External_x64_FreeImage_files" />
       <ComponentGroupRef Id="External_x64_Nikon_Type0001_files" />
       <ComponentGroupRef Id="External_x64_Nikon_Type0002_files" />
@@ -89,6 +83,7 @@
       <ComponentGroupRef Id="External_x86_Atik_files" />
       <ComponentGroupRef Id="External_x86_QHY_files" />
       <ComponentGroupRef Id="External_x86_Canon_files" />
+      <ComponentGroupRef Id="External_x86_FLI_files" />
       <ComponentGroupRef Id="External_x86_FreeImage_files" />
       <ComponentGroupRef Id="External_x86_Nikon_Type0001_files" />
       <ComponentGroupRef Id="External_x86_Nikon_Type0002_files" />
@@ -126,6 +121,8 @@
       <ComponentGroupRef Id="External_x86_SOFA_files" />
       <ComponentGroupRef Id="External_x64_SOFA_files" />
       <ComponentGroupRef Id="External_JPLEPH_files" />
+      <ComponentGroupRef Id="Database_Initial_files" />
+      <ComponentGroupRef Id="Database_Migration_files" />
     </Feature>
   </Product>
 
@@ -133,15 +130,27 @@
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="$(var.PlatformProgramFilesFolder)">
         <Directory Id="INSTALLFOLDER" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy">
-          <!--<Directory Id="Documentation" Name="Documentation">
-            <Directory Id="Documentation_images" Name="images" />
-          </Directory>-->
+          <Component Win64="$(var.Win64)" Id="CrashDumpRegistry" Guid="FBD97166-8D65-4B4E-99AF-09A4AD98B64E">
+            <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\Windows Error Reporting\LocalDumps\NINA.exe" Action="createAndRemoveOnUninstall">
+              <!-- Folder where the dump file should be written to -->
+              <RegistryValue Type="expandable" Name="DumpFolder" Value="%localappdata%\nina\CrashDump" />
+              <!-- Create only a max of 1 dump file -->
+              <RegistryValue Type="integer" Name="DumpCount" Value="1" />
+              <!-- Full Dump = 2-->
+              <RegistryValue Type="integer" Name="DumpType" Value="2" />
+            </RegistryKey>
+          </Component>
+
+          <Component Win64="$(var.Win64)" Id="InstallLocationRegistry" Guid="5D12CAB2-64FB-4643-AA65-7FA32596CD1E">
+            <RegistryValue Root="HKLM" Key="SOFTWARE\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="InstallFolder" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
+          </Component>
           <Directory Id="External" Name="External">
             <Directory Id="External_x64" Name="x64">
               <Directory Id="External_x64_ASI" Name="ASI" />
               <Directory Id="External_x64_Atik" Name="Atik" />
               <Directory Id="External_x64_QHY" Name="QHYCCD" />
               <Directory Id="External_x64_Canon" Name="Canon" />
+              <Directory Id="External_x64_FLI" Name="FLI" />
               <Directory Id="External_x64_FreeImage" Name="FreeImage" />
               <Directory Id="External_x64_Nikon" Name="Nikon">
                 <Directory Id="External_x64_Nikon_Type0001" Name="Type0001" />
@@ -202,6 +211,7 @@
               <Directory Id="External_x86_Canon" Name="Canon" />
               <Directory Id="External_x86_Atik" Name="Atik" />
               <Directory Id="External_x86_QHY" Name="QHYCCD" />
+              <Directory Id="External_x86_FLI" Name="FLI" />
               <Directory Id="External_x86_ASI" Name="ASI" />
               <Directory Id="External_x86_SQLite" Name="SQLite" />
               <Directory Id="External_x86_Altair" Name="Altair" />
@@ -214,6 +224,10 @@
             <Directory Id="Utility_DCRaw" Name="DCRaw" />
             <Directory Id="Utility_ColorSchema" Name="ColorSchema" />
           </Directory>
+          <Directory Id="Database" Name="Database">
+            <Directory Id="Database_Initial" Name="Initial" />
+            <Directory Id="Database_Migration" Name="Migration" />
+          </Directory>
         </Directory>
       </Directory>
       <Directory Id="ProgramMenuFolder">
@@ -224,20 +238,27 @@
         <Directory Id="NinaAppDataFolder" Name="NINA">
           <Component Win64="$(var.Win64)" Id="NinaAppDataFolderComponent" Guid="0004E14E-8B9D-4F52-8D2A-3E7DC2B28EC2">
             <RemoveFolder Id="NinaAppDataFolderRemove" Directory="NinaAppDataFolder" On="uninstall" />
-            <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+            <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="InstallFolder" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
           </Component>
           <Directory Id="LogsFolder" Name="Logs">
             <Component Win64="$(var.Win64)" Id="LogsFolderComponent" Guid="5FE211B5-C7A1-4A31-87CD-F4352E771A50">
               <CreateFolder Directory="LogsFolder" />
               <RemoveFolder Id="LogsFolderRemove" Directory="LogsFolder" On="uninstall" />
-              <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+              <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="InstallFolder" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
             </Component>
           </Directory>
           <Directory Id="FramingAssistantCacheFolder" Name="FramingAssistantCache">
             <Component Win64="$(var.Win64)" Id="FramingAssistantCacheFolderComponent" Guid="55D46CF1-5758-4913-86DA-19285F41C2C9">
               <CreateFolder Directory="FramingAssistantCacheFolder" />
               <RemoveFolder Id="FramingAssistantCacheFolderRemove" Directory="FramingAssistantCacheFolder" On="uninstall" />
-              <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+              <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="InstallFolder" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
+            </Component>
+          </Directory>
+          <Directory Id="CrashDumpFolder" Name="CrashDump">
+            <Component Win64="$(var.Win64)" Id="CrashDumpFolderComponent" Guid="76764150-E6A4-4637-BFB4-574B78515CE6">
+              <CreateFolder Directory="CrashDumpFolder" />
+              <RemoveFolder Id="CrashDumpFolderRemove" Directory="CrashDumpFolder" On="uninstall" />
+              <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="InstallFolder" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
             </Component>
           </Directory>
         </Directory>
@@ -250,26 +271,16 @@
       <Component Win64="$(var.Win64)" Id="ApplicationShortcut" Guid="833331A1-AC4F-4BAE-8090-C27F1CE3F48E">
         <Shortcut Id="ApplicationStartMenuShortcut" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Description="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Target="[INSTALLFOLDER]NINA.exe" WorkingDirectory="INSTALLFOLDER" />
         <RemoveFolder Id="RemoveApplicationProgramsFolder" Directory="ApplicationProgramsFolder" On="uninstall" />
-        <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+        <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="InstallFolder" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
       </Component>
     </DirectoryRef>
     <DirectoryRef Id="DesktopFolder">
       <Component Win64="$(var.Win64)" Id="ApplicationShortcutDesktop" Guid="EA352AD0-8C7C-4956-ABC0-DDB32178C71A">
         <Shortcut Id="ApplicationDesktopShortcut" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Description="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Target="[INSTALLFOLDER]NINA.exe" WorkingDirectory="INSTALLFOLDER" />
         <RemoveFolder Id="RemoveDesktopFolder" Directory="DesktopFolder" On="uninstall" />
-        <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+        <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="InstallFolder" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
       </Component>
     </DirectoryRef>
-  </Fragment>
-
-  <Fragment>
-    <ComponentGroup Id="Database" Directory="NinaAppDataFolder">
-      <Component Win64="$(var.Win64)" Id="NINA.sqlite" Guid="59C5D8EB-EECB-4CA7-B7E6-739371DC0679">
-        <File Id="NINA.sqlite" Name="NINA.sqlite" Source="$(var.SolutionDir)NINA\Database\NINA.sqlite" />
-        <RemoveFile Id="NINA.sqlite" Name="NINA.sqlite" Directory="NinaAppDataFolder" On="uninstall" />
-        <RegistryValue Root="HKCU" Key="Software\N.I.N.A. - Nighttime Imaging 'N' Astronomy" Name="installed" Type="integer" Value="1" KeyPath="yes" />
-      </Component>
-    </ComponentGroup>
   </Fragment>
 
   <Fragment>
@@ -321,15 +332,6 @@
       <Component Win64="$(var.Win64)" Id="Newtonsoft.Json.dll" Guid="d5f1d68a-daa3-46fe-af3a-db698064bb12">
         <File Id="Newtonsoft.Json.dll" Name="Newtonsoft.Json.dll" Source="$(var.NINA_TargetDir)Newtonsoft.Json.dll" />
       </Component>
-      <Component Win64="$(var.Win64)" Id="Nito.AsyncEx.Concurrent.dll" Guid="9bbeb87e-2996-49e6-9705-60b525876a1b">
-        <File Id="Nito.AsyncEx.Concurrent.dll" Name="Nito.AsyncEx.Concurrent.dll" Source="$(var.NINA_TargetDir)Nito.AsyncEx.Concurrent.dll" />
-      </Component>
-      <Component Win64="$(var.Win64)" Id="Nito.AsyncEx.dll" Guid="29a41e20-2489-444b-972b-43f52fab8b2f">
-        <File Id="Nito.AsyncEx.dll" Name="Nito.AsyncEx.dll" Source="$(var.NINA_TargetDir)Nito.AsyncEx.dll" />
-      </Component>
-      <Component Win64="$(var.Win64)" Id="Nito.AsyncEx.Enlightenment.dll" Guid="2986bb8f-59af-4b6c-85d4-f77fc993d4fb">
-        <File Id="Nito.AsyncEx.Enlightenment.dll" Name="Nito.AsyncEx.Enlightenment.dll" Source="$(var.NINA_TargetDir)Nito.AsyncEx.Enlightenment.dll" />
-      </Component>
       <Component Win64="$(var.Win64)" Id="OxyPlot.Wpf.dll" Guid="0da70938-063f-489f-a562-ec3c949f8484">
         <File Id="OxyPlot.Wpf.dll" Name="OxyPlot.Wpf.dll" Source="$(var.NINA_TargetDir)OxyPlot.Wpf.dll" />
       </Component>
@@ -380,6 +382,39 @@
       </Component>
       <Component Win64="$(var.Win64)" Id="AsyncEnumerable.dll" Guid="8dd0fdbc-bacd-4fdf-a83d-0e0e4b7dc56f">
         <File Id="AsyncEnumerable.dll" Name="AsyncEnumerable.dll" Source="$(var.NINA_TargetDir)AsyncEnumerable.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="NmeaParser.dll" Guid="e45c807d-d193-4e13-825b-2f5b9ea92b63">
+        <File Id="NmeaParser.dll" Name="NmeaParser.dll" Source="$(var.NINA_TargetDir)NmeaParser.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="Nito.Collections.Deque.dll" Guid="ac93f123-4673-4016-8b4b-7a7e3390ec56">
+        <File Id="Nito.Collections.Deque.dll" Name="Nito.Collections.Deque.dll" Source="$(var.NINA_TargetDir)Nito.Collections.Deque.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="Nito.Mvvm.Async.dll" Guid="4e0e05c8-e441-49b9-9174-f87e16bed772">
+        <File Id="Nito.Mvvm.Async.dll" Name="Nito.Mvvm.Async.dll" Source="$(var.NINA_TargetDir)Nito.Mvvm.Async.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="Nito.AsyncEx.Coordination.dll" Guid="889df583-c3f3-4eb3-91ed-c1c81701b3d8">
+        <File Id="Nito.AsyncEx.Coordination.dll" Name="Nito.AsyncEx.Coordination.dll" Source="$(var.NINA_TargetDir)Nito.AsyncEx.Coordination.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="Nito.AsyncEx.Tasks.dll" Guid="a78ed08a-b271-4809-aeac-4a9acb3cdf75">
+        <File Id="Nito.AsyncEx.Tasks.dll" Name="Nito.AsyncEx.Tasks.dll" Source="$(var.NINA_TargetDir)Nito.AsyncEx.Tasks.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="System.Collections.Immutable.dll" Guid="0fbd3c23-916a-485a-8c4d-d3df8bb3f15e">
+        <File Id="System.Collections.Immutable.dll" Name="System.Collections.Immutable.dll" Source="$(var.NINA_TargetDir)System.Collections.Immutable.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="Nito.Disposables.dll" Guid="ae91aa58-7ac0-49a1-8eb8-87e3bb2d70a9">
+        <File Id="Nito.Disposables.dll" Name="Nito.Disposables.dll" Source="$(var.NINA_TargetDir)Nito.Disposables.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="Nito.Mvvm.Core.dll" Guid="8d518177-e613-47f9-a11e-b89508c26fc9">
+        <File Id="Nito.Mvvm.Core.dll" Name="Nito.Mvvm.Core.dll" Source="$(var.NINA_TargetDir)Nito.Mvvm.Core.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="Nito.AsyncEx.Context.dll" Guid="592aa107-1b13-41ae-a569-5fd49bda174e">
+        <File Id="Nito.AsyncEx.Context.dll" Name="Nito.AsyncEx.Context.dll" Source="$(var.NINA_TargetDir)Nito.AsyncEx.Context.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="NJsonSchema.dll" Guid="9bb5bcda-30df-4aec-b520-efb9fa96ca2d">
+        <File Id="NJsonSchema.dll" Name="NJsonSchema.dll" Source="$(var.NINA_TargetDir)NJsonSchema.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="Namotion.Reflection.dll" Guid="e280d86e-104f-49ea-9c32-b98e532d648d">
+        <File Id="Namotion.Reflection.dll" Name="Namotion.Reflection.dll" Source="$(var.NINA_TargetDir)Namotion.Reflection.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
@@ -608,6 +643,14 @@
       </Component>
       <Component Win64="$(var.Win64)" Id="External_x64_QHY_tbb.dll" Guid="8E94E826-4666-46D5-B955-321C32ABCE14">
         <File Id="External_x64_QHY_tbb.dll" Name="tbb.dll" Source="$(var.NINA_ProjectDir)External\x64\QHYCCD\tbb.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="External_x64_FLI_files" Directory="External_x64_FLI">
+      <Component Win64="$(var.Win64)" Id="External_x64_FLI_libfli.dll" Guid="15B366B5-F0CD-45C4-A515-351A83271D5B">
+        <File Id="External_x64_FLI_libfli.dll" Name="libfli.dll" Source="$(var.NINA_ProjectDir)External\x64\FLI\libfli.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
@@ -897,6 +940,14 @@
       </Component>
       <Component Win64="$(var.Win64)" Id="External_x86_QHY_tbb.dll" Guid="8ACD316D-8318-48A2-AC3D-14AA56132D53">
         <File Id="External_x86_QHY_tbb.dll" Name="tbb.dll" Source="$(var.NINA_ProjectDir)External\x86\QHYCCD\tbb.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="External_x86_FLI_files" Directory="External_x86_FLI">
+      <Component Win64="$(var.Win64)" Id="External_x86_FLI_libfli.dll" Guid="6BA4A62F-6E93-4437-A500-9104B33B980A">
+        <File Id="External_x86_FLI_libfli.dll" Name="libfli.dll" Source="$(var.NINA_ProjectDir)External\x86\FLI\libfli.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
@@ -1280,6 +1331,23 @@
     <ComponentGroup Id="External_x64_SOFA_files" Directory="External_x64_SOFA">
       <Component Win64="$(var.Win64)" Id="External_x64_SOFA_SOFAlib.dll" Guid="7e84f09e-ef65-4075-93f9-34a61f47a2af">
         <File Id="External_x64_SOFA_SOFAlib.dll" Name="SOFAlib.dll" Source="$(var.NINA_TargetDir)External\x64\SOFA\SOFAlib.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="Database_Initial_files" Directory="Database_Initial">
+      <Component Win64="$(var.Win64)" Id="Database_Initial_initial_data.sql" Guid="eac6318b-a3a6-4faf-93a4-e393a978f8d2">
+        <File Id="Database_Initial_initial_data.sql" Name="initial_data.sql" Source="$(var.NINA_TargetDir)Database\Initial\initial_data.sql" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="Database_Initial_initial_schema.sql" Guid="45a87858-1713-4e88-ad91-8daa2e732b1b">
+        <File Id="Database_Initial_initial_schema.sql" Name="initial_schema.sql" Source="$(var.NINA_TargetDir)Database\Initial\initial_schema.sql" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="Database_Migration_files" Directory="Database_Migration">
+      <Component Win64="$(var.Win64)" Id="Database_Migration_1.sql" Guid="9d6f78f7-1a32-4230-b611-925d274e9dc7">
+        <File Id="Database_Migration_1.sql" Name="1.sql" Source="$(var.NINA_TargetDir)Database\Migration\1.sql" />
       </Component>
     </ComponentGroup>
   </Fragment>

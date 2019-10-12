@@ -22,7 +22,7 @@
 #endregion "copyright"
 
 using NINA.Utility;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using NINA.Utility.WindowService;
 using System;
 using System.Threading;
@@ -42,6 +42,8 @@ namespace NINA.Model.MyRotator {
             RaisePropertyChanged(nameof(Name));
             RaisePropertyChanged(nameof(Description));
         }
+
+        public string Category { get; } = "N.I.N.A.";
 
         public bool IsMoving { get; set; }
 

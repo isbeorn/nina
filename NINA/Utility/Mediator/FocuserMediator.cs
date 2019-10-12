@@ -23,6 +23,7 @@
 
 using NINA.Model.MyFocuser;
 using NINA.Utility.Mediator.Interfaces;
+using NINA.ViewModel.Equipment.Focuser;
 using NINA.ViewModel.Interfaces;
 using System.Threading.Tasks;
 

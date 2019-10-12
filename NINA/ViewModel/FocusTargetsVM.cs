@@ -2,13 +2,15 @@
 using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Mediator.Interfaces;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
+using NINA.Database;
+using Nito.AsyncEx;
 
 namespace NINA.ViewModel {
 
@@ -22,12 +24,16 @@ namespace NINA.ViewModel {
             Title = "LblManualFocusTargets";
             ImageGeometry = (System.Windows.Media.GeometryGroup)resourceDictionary["FocusTargetsSVG"];
 
+            this.telescopeMediator = telescopeMediator;
             telescopeMediator.RegisterConsumer(this);
 
-            new Task(LoadFocusTargets).Start();
+            AsyncContext.Run(LoadFocusTargets);
 
             updateTimer = new Timer(TimeSpan.FromMinutes(1).TotalMilliseconds) { AutoReset = true };
             updateTimer.Elapsed += (sender, args) => CalculateVisibleStars();
+            if (IsVisible) {
+                updateTimer.Start();
+            }
 
             SlewToCoordinatesCommand = new AsyncCommand<bool>(async () => await telescopeMediator.SlewToCoordinatesAsync(SelectedFocusTarget.Coordinates));
         }
@@ -57,13 +63,18 @@ namespace NINA.ViewModel {
         }
 
         private List<FocusTarget> allFocusTargets = new List<FocusTarget>();
+        private ITelescopeMediator telescopeMediator;
 
         public IAsyncCommand SlewToCoordinatesCommand { get; }
 
-        private async void LoadFocusTargets() {
-            var db = new DatabaseInteraction(profileService.ActiveProfile.ApplicationSettings.DatabaseLocation);
-            allFocusTargets = new List<FocusTarget>(await db.GetBrightStars());
-            CalculateVisibleStars();
+        private async Task LoadFocusTargets() {
+            try {
+                var db = new DatabaseInteraction();
+                allFocusTargets = await db.GetBrightStars();
+                CalculateVisibleStars();
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
         }
 
         private void CalculateVisibleStars() {
@@ -92,6 +103,10 @@ namespace NINA.ViewModel {
             } else {
                 updateTimer.Stop();
             }
+        }
+
+        public void Dispose() {
+            telescopeMediator.RemoveConsumer(this);
         }
     }
 }

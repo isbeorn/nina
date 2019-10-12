@@ -1,8 +1,6 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
-
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
     N.I.N.A. is free software: you can redistribute it and/or modify
@@ -19,10 +17,16 @@
     along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+ * Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+ * Copyright 2019 Dale Ghent <daleg@elemental.org>
+ */
+
 #endregion "copyright"
 
-using NINA.Model.MyCamera;
+using NINA.Model.ImageData;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,10 +47,10 @@ namespace NINA.Utility {
         /// The header xml + padding will consist of a muliple of bytes from this size
         /// </summary>
         public int PaddedBlockSize {
-            get => 1024;
+            get => 4096;
         }
 
-        public static async Task<ImageArray> LoadImageArrayFromFile(Uri filePath, bool isBayered, int histogramResolution) {
+        public static async Task<ImageData> Load(Uri filePath, bool isBayered) {
             using (FileStream fs = new FileStream(filePath.LocalPath, FileMode.Open)) {
                 //Skip to the header length info starting at byte 9
                 fs.Seek(8, SeekOrigin.Current);
@@ -68,6 +72,7 @@ namespace NINA.Utility {
 
                 //Seems to be no attribute to identify the bit depth. Assume 16.
                 var bitDepth = 16;
+                ImageData imageData = null;
                 if (imageTag.Attribute("location").Value.StartsWith("attachment")) {
                     var location = imageTag.Attribute("location").Value.Split(':');
                     var start = int.Parse(location[1]);
@@ -79,19 +84,25 @@ namespace NINA.Utility {
                     ushort[] img = new ushort[raw.Length / 2];
                     Buffer.BlockCopy(raw, 0, img, 0, raw.Length);
 
-                    return await ImageArray.CreateInstance(img, width, height, bitDepth, isBayered, true, histogramResolution);
+                    imageData = new ImageData(img, width, height, bitDepth, isBayered);
                 } else {
                     var base64Img = xml.Element("Image").Element("Data").Value;
                     byte[] encodedImg = Convert.FromBase64String(base64Img);
                     ushort[] img = new ushort[(int)Math.Ceiling(encodedImg.Length / 2.0)];
                     Buffer.BlockCopy(encodedImg, 0, img, 0, encodedImg.Length);
 
-                    return await ImageArray.CreateInstance(img, width, height, bitDepth, isBayered, true, histogramResolution);
+                    imageData = new ImageData(img, width, height, bitDepth, isBayered);
                 }
+
+                await imageData.CalculateStatistics();
+                imageData.RenderImage();
+                return imageData;
             }
         }
 
-        public void AddAttachedImage(ImageArray arr, string imageType) {
+        public void AddAttachedImage(ushort[] data) {
+            if (this.Header.Image == null) { throw new InvalidOperationException("No Image Header Information available for attaching image. Add Image Header first!"); }
+
             var headerLengthBytes = 4;
             var reservedBytes = 4;
             var attachmentInfoMaxBytes = 100;   //Assume max 100 bytes for the attachment:{start}:{length} attribute. Should be more than enough
@@ -100,9 +111,9 @@ namespace NINA.Utility {
             var dataBlockStart = currentHeaderSize + (PaddedBlockSize - currentHeaderSize % PaddedBlockSize);
 
             //Add Attached data location info to header
-            Header.Image.Add(new XAttribute("location", $"attachment:{dataBlockStart}:{arr.FlatArray.Length * sizeof(ushort)}"));
+            Header.Image.Add(new XAttribute("location", $"attachment:{dataBlockStart}:{data.Length * sizeof(ushort)}"));
 
-            Data = new XISFData(arr.FlatArray);
+            Data = new XISFData(data);
         }
 
         private byte[] xisfSignature = new byte[] { 88, 73, 83, 70, 48, 49, 48, 48 };
@@ -161,7 +172,6 @@ namespace NINA.Utility {
 
         private XNamespace xmlns = XNamespace.Get("http://www.pixinsight.com/xisf");
         private XNamespace xsi = XNamespace.Get("http://www.w3.org/2001/XMLSchema-instance");
-        private XNamespace propertyns = "XISF";
 
         /* Create Header with embedded Image */
 
@@ -190,6 +200,214 @@ namespace NINA.Utility {
             get {
                 return Encoding.UTF8.GetByteCount(Content.ToString());
             }
+        }
+
+        public void Populate(ImageMetaData metaData) {
+            if (metaData.Image.ExposureStart > DateTime.MinValue) {
+                this.AddImageProperty(XISFImageProperty.Observation.Time.Start, metaData.Image.ExposureStart.ToUniversalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ss.fff", CultureInfo.InvariantCulture), "Time of observation (UTC)");
+                this.AddImageFITSKeyword("DATE-LOC", metaData.Image.ExposureStart.ToLocalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ss.fff", CultureInfo.InvariantCulture), "Time of observation (local)");
+            }
+
+            if (!double.IsNaN(metaData.Image.ExposureTime)) {
+                this.AddImageProperty(XISFImageProperty.Instrument.ExposureTime, metaData.Image.ExposureTime.ToString(System.Globalization.CultureInfo.InvariantCulture), "[s] Exposure duration");
+            }
+
+            /* Camera */
+            if (!string.IsNullOrWhiteSpace(metaData.Camera.Name)) {
+                this.AddImageProperty(XISFImageProperty.Instrument.Camera.Name, metaData.Camera.Name, "Imaging instrument name");
+            }
+            if (!double.IsNaN(metaData.Camera.Gain) && metaData.Camera.Gain >= 0) {
+                this.AddImageFITSKeyword("GAIN", metaData.Camera.Gain.ToString(CultureInfo.InvariantCulture), "Sensor gain");
+            }
+
+            if (!double.IsNaN(metaData.Camera.Offset) && metaData.Camera.Offset >= 0) {
+                this.AddImageFITSKeyword("OFFSET", metaData.Camera.Offset.ToString(CultureInfo.InvariantCulture), "Sensor gain offset");
+            }
+
+            if (!double.IsNaN(metaData.Camera.ElectronsPerADU)) {
+                this.AddImageProperty(XISFImageProperty.Instrument.Camera.Gain, metaData.Camera.ElectronsPerADU.ToString(CultureInfo.InvariantCulture), "[e-/ADU] Electrons per A/D unit");
+            }
+
+            if (metaData.Camera.BinX > 0) {
+                this.AddImageProperty(XISFImageProperty.Instrument.Camera.XBinning, metaData.Camera.BinX.ToString(CultureInfo.InvariantCulture), "X axis binning factor");
+            }
+            if (metaData.Camera.BinY > 0) {
+                this.AddImageProperty(XISFImageProperty.Instrument.Camera.YBinning, metaData.Camera.BinY.ToString(CultureInfo.InvariantCulture), "Y axis binning factor");
+            }
+
+            if (!double.IsNaN(metaData.Camera.SetPoint)) {
+                this.AddImageFITSKeyword("SET-TEMP", metaData.Camera.SetPoint.ToString(CultureInfo.InvariantCulture), "[degC] CCD temperature setpoint");
+            }
+
+            if (!double.IsNaN(metaData.Camera.Temperature)) {
+                this.AddImageProperty(XISFImageProperty.Instrument.Sensor.Temperature, metaData.Camera.Temperature.ToString(CultureInfo.InvariantCulture), "[degC] CCD temperature");
+            }
+            if (!double.IsNaN(metaData.Camera.PixelSize)) {
+                this.AddImageProperty(XISFImageProperty.Instrument.Sensor.XPixelSize, metaData.Camera.PixelSize.ToString(CultureInfo.InvariantCulture), "[um] Pixel X axis size");
+                this.AddImageProperty(XISFImageProperty.Instrument.Sensor.YPixelSize, metaData.Camera.PixelSize.ToString(CultureInfo.InvariantCulture), "[um] Pixel Y axis size");
+            }
+
+            /* Observer */
+            if (!double.IsNaN(metaData.Observer.Elevation)) {
+                this.AddImageProperty(XISFImageProperty.Observation.Location.Elevation, metaData.Observer.Elevation.ToString(CultureInfo.InvariantCulture), "[m] Observation site elevation");
+            }
+            if (!double.IsNaN(metaData.Observer.Elevation)) {
+                this.AddImageProperty(XISFImageProperty.Observation.Location.Latitude, metaData.Observer.Latitude.ToString(CultureInfo.InvariantCulture), "[deg] Observation site latitude");
+            }
+            if (!double.IsNaN(metaData.Observer.Elevation)) {
+                this.AddImageProperty(XISFImageProperty.Observation.Location.Longitude, metaData.Observer.Longitude.ToString(CultureInfo.InvariantCulture), "[deg] Observation site longitude");
+            }
+
+            /* Telescope */
+            if (!string.IsNullOrWhiteSpace(metaData.Telescope.Name)) {
+                this.AddImageProperty(XISFImageProperty.Instrument.Telescope.Name, metaData.Telescope.Name.ToString(CultureInfo.InvariantCulture), "Name of telescope");
+            }
+            if (!double.IsNaN(metaData.Telescope.FocalLength) && metaData.Telescope.FocalLength > 0) {
+                this.AddImageProperty(XISFImageProperty.Instrument.Telescope.FocalLength, metaData.Telescope.FocalLength.ToString(CultureInfo.InvariantCulture), "[mm] Focal length");
+
+                if (!double.IsNaN(metaData.Telescope.FocalRatio) && metaData.Telescope.FocalRatio > 0) {
+                    var apterture = metaData.Telescope.FocalLength / metaData.Telescope.FocalRatio;
+                    this.AddImageProperty(XISFImageProperty.Instrument.Telescope.Aperture, apterture.ToString(CultureInfo.InvariantCulture), "[mm] Aperture", false);
+                    this.AddImageFITSKeyword("FOCRATIO", metaData.Telescope.FocalRatio.ToString(CultureInfo.InvariantCulture), "Focal ratio");
+                }
+            }
+
+            if (metaData.Telescope.Coordinates != null) {
+                this.AddImageProperty(XISFImageProperty.Observation.Center.RA, metaData.Telescope.Coordinates.RADegrees.ToString(CultureInfo.InvariantCulture), "[deg] RA of telescope");
+                this.AddImageProperty(XISFImageProperty.Observation.Center.Dec, metaData.Telescope.Coordinates.Dec.ToString(CultureInfo.InvariantCulture), "[deg] Declination of telescope");
+            }
+
+            /* Target */
+            if (!string.IsNullOrWhiteSpace(metaData.Target.Name)) {
+                this.AddImageProperty(XISFImageProperty.Observation.Object.Name, metaData.Target.Name, "Name of the object of interest");
+            }
+
+            if (metaData.Target.Coordinates != null) {
+                this.AddImageProperty(XISFImageProperty.Observation.Object.RA, metaData.Target.Coordinates.RADegrees.ToString(CultureInfo.InvariantCulture), "[deg] RA of imaged object", false);
+                this.AddImageFITSKeyword(XISFImageProperty.Observation.Object.RA[2], Astrometry.Astrometry.HoursToFitsHMS(metaData.Target.Coordinates.RA), "[H M S] RA of imaged object");
+                this.AddImageProperty(XISFImageProperty.Observation.Object.Dec, metaData.Target.Coordinates.Dec.ToString(CultureInfo.InvariantCulture), "[deg] Declination of imaged object", false);
+                this.AddImageFITSKeyword(XISFImageProperty.Observation.Object.Dec[2], Astrometry.Astrometry.DegreesToFitsDMS(metaData.Target.Coordinates.Dec), "[D M S] Declination of imaged object");
+            }
+
+            /* Focuser */
+            if (!string.IsNullOrWhiteSpace(metaData.Focuser.Name)) {
+                /* fits4win, SGP */
+                this.AddImageFITSKeyword("FOCNAME", metaData.Focuser.Name, "Focusing equipment name");
+            }
+
+            /*
+             * XISF 1.0 defines Instrument:Focuser:Position as the only focuser-related image property.
+             * This image property is: "(Float32) Estimated position of the focuser in millimetres, measured with respect to a device-dependent origin."
+             * This unit is different from FOCUSPOS FITSKeyword, so we must do two separate actions: calculate distance from origin in millimetres and insert
+             * that as the XISF Instrument:Focuser:Position property, and then insert the separate FOCUSPOS FITSKeyword (measured in steps).
+             */
+            if (!double.IsNaN(metaData.Focuser.Position)) {
+                if (!double.IsNaN(metaData.Focuser.StepSize)) {
+                    /* steps * step size (microns) converted to millimetres, single-precision float */
+                    float focusDistance = (float)((metaData.Focuser.Position * metaData.Focuser.StepSize) / 1000.0);
+                    this.AddImageProperty(XISFImageProperty.Instrument.Focuser.Position, focusDistance.ToString(CultureInfo.InvariantCulture));
+                }
+
+                /* fits4win, SGP */
+                this.AddImageFITSKeyword("FOCPOS", metaData.Focuser.Position.ToString(CultureInfo.InvariantCulture), "[step] Focuser position");
+
+                /* MaximDL, several observatories */
+                this.AddImageFITSKeyword("FOCUSPOS", metaData.Focuser.Position.ToString(CultureInfo.InvariantCulture), "[step] Focuser position");
+            }
+
+            if (!double.IsNaN(metaData.Focuser.StepSize)) {
+                /* MaximDL */
+                this.AddImageFITSKeyword("FOCUSSZ", metaData.Focuser.StepSize.ToString(CultureInfo.InvariantCulture), "[um] Focuser step size");
+            }
+
+            if (!double.IsNaN(metaData.Focuser.Temperature)) {
+                /* fits4win, SGP */
+                this.AddImageFITSKeyword("FOCTEMP", metaData.Focuser.Temperature.ToString(CultureInfo.InvariantCulture), "[degC] Focuser temperature");
+
+                /* MaximDL, several observatories */
+                this.AddImageFITSKeyword("FOCUSTEM", metaData.Focuser.Temperature.ToString(CultureInfo.InvariantCulture), "[degC] Focuser temperature");
+            }
+
+            /* Rotator */
+            if (!string.IsNullOrWhiteSpace(metaData.Rotator.Name)) {
+                /* NINA */
+                this.AddImageFITSKeyword("ROTNAME", metaData.Rotator.Name, "Rotator equipment name");
+            }
+
+            if (!double.IsNaN(metaData.Rotator.Position)) {
+                /* fits4win */
+                this.AddImageFITSKeyword("ROTATOR", metaData.Rotator.Position.ToString(CultureInfo.InvariantCulture), "[deg] Rotator angle");
+
+                /* MaximDL, several observatories */
+                this.AddImageFITSKeyword("ROTATANG", metaData.Rotator.Position.ToString(CultureInfo.InvariantCulture), "[deg] Rotator angle");
+            }
+
+            if (!double.IsNaN(metaData.Rotator.StepSize)) {
+                /* NINA */
+                this.AddImageFITSKeyword("ROTSTPSZ", metaData.Rotator.StepSize.ToString(CultureInfo.InvariantCulture), "[deg] Rotator step size");
+            }
+
+            if (!string.IsNullOrWhiteSpace(metaData.FilterWheel.Name)) {
+                /* fits4win */
+                this.AddImageFITSKeyword("FWHEEL", metaData.FilterWheel.Name, "Filter Wheel name");
+            }
+
+            if (!string.IsNullOrWhiteSpace(metaData.FilterWheel.Filter)) {
+                /* fits4win */
+                this.AddImageProperty(XISFImageProperty.Instrument.Filter.Name, metaData.FilterWheel.Filter, "Active filter name");
+            }
+
+            /* Weather Data */
+            if (!double.IsNaN(metaData.WeatherData.CloudCover)) {
+                this.AddImageFITSKeyword("CLOUDCVR", metaData.WeatherData.CloudCover.ToString(CultureInfo.InvariantCulture), "[percent] Cloud cover");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.DewPoint)) {
+                this.AddImageFITSKeyword("DEWPOINT", metaData.WeatherData.DewPoint.ToString(CultureInfo.InvariantCulture), "[degC] Dew point");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.Humidity)) {
+                this.AddImageProperty(XISFImageProperty.Observation.Meteorology.RelativeHumidity, metaData.WeatherData.Humidity.ToString(CultureInfo.InvariantCulture), "[percent] Relative humidity");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.Pressure)) {
+                this.AddImageProperty(XISFImageProperty.Observation.Meteorology.AtmosphericPressure, metaData.WeatherData.Pressure.ToString(CultureInfo.InvariantCulture), "[hPa] Air pressure");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.SkyBrightness)) {
+                this.AddImageFITSKeyword("SKYBRGHT", metaData.WeatherData.SkyBrightness.ToString(CultureInfo.InvariantCulture), "[lux] Sky brightness");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.SkyQuality)) {
+                /* fits4win */
+                this.AddImageFITSKeyword("MPSAS", metaData.WeatherData.SkyQuality.ToString(CultureInfo.InvariantCulture), "[mags/arcsec^2] Sky quality");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.SkyTemperature)) {
+                this.AddImageFITSKeyword("SKYTEMP", metaData.WeatherData.SkyTemperature.ToString(CultureInfo.InvariantCulture), "[degC] Sky temperature");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.StarFWHM)) {
+                this.AddImageFITSKeyword("STARFWHM", metaData.WeatherData.StarFWHM.ToString(CultureInfo.InvariantCulture), "Star FWHM");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.Temperature)) {
+                this.AddImageProperty(XISFImageProperty.Observation.Meteorology.AmbientTemperature, metaData.WeatherData.Temperature.ToString(CultureInfo.InvariantCulture), "[degC] Ambient air temperature");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.WindDirection)) {
+                this.AddImageProperty(XISFImageProperty.Observation.Meteorology.WindDirection, metaData.WeatherData.WindDirection.ToString(CultureInfo.InvariantCulture), "[deg] Wind direction: 0=N, 180=S, 90=E, 270=W");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.WindGust)) {
+                this.AddImageProperty(XISFImageProperty.Observation.Meteorology.WindGust, (metaData.WeatherData.WindGust * 3.6).ToString(CultureInfo.InvariantCulture), "[kph] Wind gust");
+            }
+
+            if (!double.IsNaN(metaData.WeatherData.WindSpeed)) {
+                this.AddImageProperty(XISFImageProperty.Observation.Meteorology.WindSpeed, (metaData.WeatherData.WindSpeed * 3.6).ToString(CultureInfo.InvariantCulture), "[kph] Wind speed");
+            }
+
+            this.AddImageFITSKeyword("SWCREATE", string.Format("N.I.N.A. {0} ({1})", Utility.Version, DllLoader.IsX86() ? "x86" : "x64"), "Software that created this file");
         }
 
         /// <summary>
@@ -222,6 +440,7 @@ namespace NINA.Utility {
         /// <param name="comment">    optional comment</param>
         /// <param name="autoaddfits">default: true; if fitskey available automatically add FITSHeader</param>
         public void AddImageProperty(string[] property, string value, string comment = "", bool autoaddfits = true) {
+            if (Image == null) { throw new InvalidOperationException("No Image component available to add property!"); }
             AddProperty(Image, property, value, comment);
             if (property.Length > 2 && autoaddfits) {
                 AddImageFITSKeyword(property[2], value, comment);
@@ -229,6 +448,7 @@ namespace NINA.Utility {
         }
 
         public void AddImageFITSKeyword(string name, string value, string comment = "") {
+            if (Image == null) { throw new InvalidOperationException("No Image component available to add FITS Keyword!"); }
             Image.Add(new XElement("FITSKeyword",
                         new XAttribute("name", name),
                         new XAttribute("value", value),
@@ -266,9 +486,11 @@ namespace NINA.Utility {
         /// </summary>
         /// <param name="arr"></param>
         /// <param name="imageType"></param>
-        public void AddImageMetaData(ImageArray arr, string imageType) {
+        public void AddImageMetaData(IImageStatistics statistics, string imageType) {
+            if (imageType == "SNAPSHOT") { imageType = "LIGHT"; }
+
             var image = new XElement("Image",
-                    new XAttribute("geometry", arr.Statistics.Width + ":" + arr.Statistics.Height + ":" + "1"),
+                    new XAttribute("geometry", statistics.Width + ":" + statistics.Height + ":" + "1"),
                     new XAttribute("sampleFormat", "UInt16"),
                     new XAttribute("imageType", imageType),
                     new XAttribute("colorSpace", "Gray")
@@ -276,8 +498,7 @@ namespace NINA.Utility {
 
             Image = image;
             Xisf.Add(image);
-
-            AddImageFITSKeyword("IMAGETYP", imageType);
+            AddImageFITSKeyword("IMAGETYP", imageType, "Type of exposure");
         }
 
         /// <summary>
@@ -286,14 +507,14 @@ namespace NINA.Utility {
         /// </summary>
         /// <param name="arr"></param>
         /// <param name="imageType"></param>
-        public void AddEmbeddedImage(ImageArray arr, string imageType) {
+        public void AddEmbeddedImage(IImageData imageData, string imageType) {
             if (Image == null) {
-                AddImageMetaData(arr, imageType);
+                AddImageMetaData(imageData.Statistics, imageType);
             }
             Image.Add(new XAttribute("location", "embedded"));
 
-            byte[] result = new byte[arr.FlatArray.Length * sizeof(ushort)];
-            Buffer.BlockCopy(arr.FlatArray, 0, result, 0, result.Length);
+            byte[] result = new byte[imageData.Data.FlatArray.Length * sizeof(ushort)];
+            Buffer.BlockCopy(imageData.Data.FlatArray, 0, result, 0, result.Length);
 
             var base64 = Convert.ToBase64String(result);
 
@@ -350,14 +571,13 @@ namespace NINA.Utility {
 
         public static class Observation {
             public static readonly string Namespace = "Observation:";
-
             public static readonly string[] CelestialReferenceSystem = { Namespace + nameof(CelestialReferenceSystem), "String" };
             public static readonly string[] BibliographicReferences = { Namespace + nameof(BibliographicReferences), "String" };
 
             public static class Center {
                 public static readonly string Namespace = Observation.Namespace + "Center:";
-                public static readonly string[] Dec = { Namespace + nameof(Dec), "Float64", "OBJCTDEC", "DEC" };
-                public static readonly string[] RA = { Namespace + nameof(RA), "Float64", "OBJCTRA", "RA" };
+                public static readonly string[] Dec = { Namespace + nameof(Dec), "Float64", "DEC" };
+                public static readonly string[] RA = { Namespace + nameof(RA), "Float64", "RA" };
                 public static readonly string[] X = { Namespace + nameof(X), "Float64" };
                 public static readonly string[] Y = { Namespace + nameof(Y), "Float64" };
             }
@@ -368,7 +588,7 @@ namespace NINA.Utility {
 
             public static class Location {
                 public static readonly string Namespace = Observation.Namespace + "Location:";
-                public static readonly string[] Elevation = { Namespace + nameof(Elevation), "Float64" };
+                public static readonly string[] Elevation = { Namespace + nameof(Elevation), "Float64", "SITEELEV" };
                 public static readonly string[] Latitude = { Namespace + nameof(Latitude), "Float64", "SITELAT" };
                 public static readonly string[] Longitude = { Namespace + nameof(Longitude), "Float64", "SITELONG" };
                 public static readonly string[] Name = { Namespace + nameof(Name), "String" };
@@ -376,18 +596,18 @@ namespace NINA.Utility {
 
             public static class Meteorology {
                 public static readonly string Namespace = Observation.Namespace + "Meteorology:";
-                public static readonly string[] AmbientTemperature = { Namespace + nameof(AmbientTemperature), "Float32" };
-                public static readonly string[] AtmosphericPressure = { Namespace + nameof(AtmosphericPressure), "Float32" };
-                public static readonly string[] RelativeHumidity = { Namespace + nameof(RelativeHumidity), "Float32" };
-                public static readonly string[] WindDirection = { Namespace + nameof(WindDirection), "Float32" };
-                public static readonly string[] WindGust = { Namespace + nameof(WindGust), "Float32" };
-                public static readonly string[] WindSpeed = { Namespace + nameof(WindSpeed), "Float32" };
+                public static readonly string[] AmbientTemperature = { Namespace + nameof(AmbientTemperature), "Float32", "AMBTEMP" };
+                public static readonly string[] AtmosphericPressure = { Namespace + nameof(AtmosphericPressure), "Float32", "PRESSURE" };
+                public static readonly string[] RelativeHumidity = { Namespace + nameof(RelativeHumidity), "Float32", "HUMIDITY" };
+                public static readonly string[] WindDirection = { Namespace + nameof(WindDirection), "Float32", "WINDDIR" };
+                public static readonly string[] WindGust = { Namespace + nameof(WindGust), "Float32", "WINDGUST" };
+                public static readonly string[] WindSpeed = { Namespace + nameof(WindSpeed), "Float32", "WINDSPD" };
             }
 
             public static class Object {
                 public static readonly string Namespace = Observation.Namespace + "Object:";
-                public static readonly string[] Dec = { Namespace + nameof(Dec), "Float64" };
-                public static readonly string[] RA = { Namespace + nameof(RA), "Float64" };
+                public static readonly string[] Dec = { Namespace + nameof(Dec), "Float64", "OBJCTDEC" };
+                public static readonly string[] RA = { Namespace + nameof(RA), "Float64", "OBJCTRA" };
                 public static readonly string[] Name = { Namespace + nameof(Name), "String", "OBJECT" };
             }
 
@@ -439,7 +659,7 @@ namespace NINA.Utility {
                 public static readonly string[] Aperture = { Namespace + nameof(Aperture), "Float32" };
                 public static readonly string[] CollectingArea = { Namespace + nameof(CollectingArea), "Float32" };
                 public static readonly string[] FocalLength = { Namespace + nameof(FocalLength), "Float32", "FOCALLEN" };
-                public static readonly string[] Name = { Namespace + nameof(Name), "String" };
+                public static readonly string[] Name = { Namespace + nameof(Name), "String", "TELESCOP" };
             }
         }
 

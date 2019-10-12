@@ -22,7 +22,7 @@
 #endregion "copyright"
 
 using NINA.Utility;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using NINA.Utility.RawConverter;
 using NINA.Utility.WindowService;
 using System;
@@ -33,6 +33,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using NINA.Model.ImageData;
 
 namespace NINA.Model.MyCamera {
 
@@ -51,6 +52,8 @@ namespace NINA.Model.MyCamera {
         }
 
         private object lockObj = new object();
+
+        public string Category { get; } = "N.I.N.A.";
 
         public bool HasShutter {
             get {
@@ -95,13 +98,13 @@ namespace NINA.Model.MyCamera {
 
         public string Description {
             get {
-                return "NINA_SIM_Simulator";
+                return "A basic simulator to generate random noise for a specific median or load in an image that will be displayed on capture";
             }
         }
 
         public string DriverInfo {
             get {
-                return "NINA_SIM_DriverInfo";
+                return string.Empty;
             }
         }
 
@@ -113,7 +116,7 @@ namespace NINA.Model.MyCamera {
 
         public string SensorName {
             get {
-                return "NINA_SIM_Sensor";
+                return "Simulated Sensor";
             }
         }
 
@@ -146,6 +149,8 @@ namespace NINA.Model.MyCamera {
                 return double.MaxValue;
             }
         }
+
+        public double ElectronsPerADU => double.NaN;
 
         public short MaxBinX {
             get {
@@ -194,7 +199,7 @@ namespace NINA.Model.MyCamera {
 
         public string CameraState {
             get {
-                return "NINA_SIM_State";
+                return "TestState";
             }
         }
 
@@ -219,6 +224,18 @@ namespace NINA.Model.MyCamera {
         public bool CanSetOffset {
             get {
                 return false;
+            }
+        }
+
+        public int OffsetMin {
+            get {
+                return 0;
+            }
+        }
+
+        public int OffsetMax {
+            get {
+                return 0;
             }
         }
 
@@ -281,13 +298,13 @@ namespace NINA.Model.MyCamera {
 
         public string Id {
             get {
-                return "NINA_SIM_Id";
+                return "4C0BBF74-0D95-41F6-AAD8-D6D58668CF2C";
             }
         }
 
         public string Name {
             get {
-                return "NINA_SIM";
+                return "N.I.N.A. Simulator Camera";
             }
         }
 
@@ -328,45 +345,13 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public int SubSampleX {
-            get {
-                throw new NotImplementedException();
-            }
+        public int SubSampleX { get; set; }
+        
+        public int SubSampleY { get; set; }
 
-            set {
-                throw new NotImplementedException();
-            }
-        }
+        public int SubSampleWidth { get; set; }
 
-        public int SubSampleY {
-            get {
-                throw new NotImplementedException();
-            }
-
-            set {
-                throw new NotImplementedException();
-            }
-        }
-
-        public int SubSampleWidth {
-            get {
-                throw new NotImplementedException();
-            }
-
-            set {
-                throw new NotImplementedException();
-            }
-        }
-
-        public int SubSampleHeight {
-            get {
-                throw new NotImplementedException();
-            }
-
-            set {
-                throw new NotImplementedException();
-            }
-        }
+        public int SubSampleHeight { get; set; }
 
         public bool CanShowLiveView {
             get {
@@ -455,7 +440,7 @@ namespace NINA.Model.MyCamera {
             Connected = false;
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
+        public async Task<IImageData> DownloadExposure(CancellationToken token) {
             int width, height, mean, stdev;
             if (Image != null) {
                 return Image;
@@ -463,8 +448,9 @@ namespace NINA.Model.MyCamera {
 
             if (RAWImageStream != null) {
                 var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
-                var iarr = await converter.ConvertToImageArray(RAWImageStream, BitDepth, profileService.ActiveProfile.ImageSettings.HistogramResolution, true, token);
+                var iarr = await converter.Convert(RAWImageStream, BitDepth, token);
                 RAWImageStream.Position = 0;
+                iarr.Data.RAWType = rawType;
 
                 return iarr;
             }
@@ -488,7 +474,7 @@ namespace NINA.Model.MyCamera {
                 input[i] = (ushort)randNormal;
             }
 
-            return await ImageArray.CreateInstance(input, width, height, BitDepth, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+            return new ImageData.ImageData(input, width, height, BitDepth, false);
         }
 
         private int randomImageWidth;
@@ -570,6 +556,7 @@ namespace NINA.Model.MyCamera {
             dialog.DefaultExt = ".cr2";
 
             if (dialog.ShowDialog() == true) {
+                rawType = Path.GetExtension(dialog.FileName).TrimStart('.').ToLower();
                 await Task.Run(() => {
                     using (var fileStream = File.OpenRead(dialog.FileName)) {
                         var memStream = new MemoryStream();
@@ -590,46 +577,10 @@ namespace NINA.Model.MyCamera {
             dialog.DefaultExt = ".tiff";
 
             if (dialog.ShowDialog() == true) {
-                BitmapDecoder decoder = null;
-                switch (Path.GetExtension(dialog.FileName).ToLower()) {
-                    case ".gif":
-                        decoder = new GifBitmapDecoder(new Uri(dialog.FileName), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                        break;
-
-                    case ".tif":
-                    case ".tiff":
-                        decoder = new TiffBitmapDecoder(new Uri(dialog.FileName), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                        break;
-
-                    case ".jpg":
-                    case ".jpeg":
-                        decoder = new JpegBitmapDecoder(new Uri(dialog.FileName), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                        break;
-
-                    case ".png":
-                        decoder = new PngBitmapDecoder(new Uri(dialog.FileName), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                        break;
-                }
-                if (decoder != null) {
-                    Image = await LoadFromFile(decoder);
-                    return true;
-                }
+                Image = await ImageData.ImageData.FromFile(dialog.FileName, BitDepth, IsBayered, profileService.ActiveProfile.CameraSettings.RawConverter);
+                return true;
             }
             return false;
-        }
-
-        private Task<ImageArray> LoadFromFile(BitmapDecoder decoder) {
-            var bmp = new FormatConvertedBitmap();
-            bmp.BeginInit();
-            bmp.Source = decoder.Frames[0];
-            bmp.DestinationFormat = System.Windows.Media.PixelFormats.Gray16;
-            bmp.EndInit();
-
-            int stride = (bmp.PixelWidth * bmp.Format.BitsPerPixel + 7) / 8;
-            int arraySize = stride * bmp.PixelHeight;
-            ushort[] pixels = new ushort[(int)(bmp.Width * bmp.Height)];
-            bmp.CopyPixels(pixels, stride, 0);
-            return ImageArray.CreateInstance(pixels, (int)bmp.Width, (int)bmp.Height, 16, false, true, profileService.ActiveProfile.ImageSettings.HistogramResolution);
         }
 
         public IAsyncCommand LoadImageCommand { get; private set; }
@@ -637,9 +588,9 @@ namespace NINA.Model.MyCamera {
         public IAsyncCommand LoadRAWImageCommand { get; private set; }
         public ICommand UnloadRAWImageCommand { get; private set; }
 
-        private ImageArray _image;
+        private IImageData _image;
 
-        public ImageArray Image {
+        public IImageData Image {
             get => _image;
             set {
                 lock (lockObj) {
@@ -651,6 +602,17 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private bool isBayered;
+
+        public bool IsBayered {
+            get => isBayered;
+            set {
+                isBayered = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string rawType = "cr2";
         private MemoryStream rawImageStream = null;
 
         public MemoryStream RAWImageStream {
@@ -674,8 +636,8 @@ namespace NINA.Model.MyCamera {
             LiveViewEnabled = true;
         }
 
-        public Task<ImageArray> DownloadLiveView(CancellationToken token) {
-            return DownloadExposure(token, true);
+        public Task<IImageData> DownloadLiveView(CancellationToken token) {
+            return DownloadExposure(token);
         }
 
         public void StopLiveView() {

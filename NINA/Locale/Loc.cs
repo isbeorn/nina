@@ -34,24 +34,26 @@ namespace NINA.Locale {
         }
 
         public void ReloadLocale(string culture) {
-            try {
+            using (MyStopWatch.Measure()) {
                 try {
-                    _locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale." + culture + ".xaml", UriKind.Relative) };
-                } catch (System.IO.IOException) {
-                    // Fallback to default locale if setting is invalid
-                    _locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale.xaml", UriKind.Relative) };
-                }
+                    try {
+                        _locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale." + culture + ".xaml", UriKind.Relative) };
+                    } catch (System.IO.IOException) {
+                        // Fallback to default locale if setting is invalid
+                        _locale = new ResourceDictionary { Source = new Uri(@"\Locale\Locale.xaml", UriKind.Relative) };
+                    }
 #if DEBUG
-                var tmp = new ResourceDictionary();
-                foreach (System.Collections.DictionaryEntry l in _locale) {
-                    tmp.Add(l.Key, "##" + l.Value + "##");
-                }
-                _locale = tmp;
+                    var tmp = new ResourceDictionary();
+                    foreach (System.Collections.DictionaryEntry l in _locale) {
+                        tmp.Add(l.Key, "##" + l.Value + "##");
+                    }
+                    _locale = tmp;
 #endif
-            } catch (Exception ex) {
-                Logger.Error(ex);
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                }
+                RaiseAllPropertiesChanged();
             }
-            RaiseAllPropertiesChanged();
         }
 
         private static readonly Lazy<Loc> lazy =
@@ -63,6 +65,9 @@ namespace NINA.Locale {
 
         public string this[string key] {
             get {
+                if (key == null) {
+                    return string.Empty;
+                }
                 return _locale?[key]?.ToString() ?? "MISSING LABEL " + key;
             }
         }

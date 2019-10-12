@@ -22,6 +22,7 @@
 #endregion "copyright"
 
 using NINA.Model;
+using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using NINA.Utility.Enum;
 using NINA.ViewModel;
@@ -39,19 +40,21 @@ namespace NINA.Utility.Mediator.Interfaces {
 
         bool SetAutoStretch(bool value);
 
-        Task<BitmapSource> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress);
+        Task<IImageData> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress);
 
-        Task<bool> CaptureAndSaveImage(CaptureSequence seq, bool bsave, CancellationToken ct, IProgress<ApplicationStatus> progress, string targetname = "");
+        Task<IImageData> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress);
 
-        Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, bool bCalculateStatistics = true, string targetname = "");
-
-        Task<BitmapSource> PrepareImage(ImageArray iarr, CancellationToken token, bool bSave = false, ImageParameters parameters = null);
+        Task<IImageData> PrepareImage(IImageData iarr, CancellationToken token);
 
         void DestroyImage();
+
+        bool IsLooping { get; }
 
         event EventHandler<ImageSavedEventArgs> ImageSaved;
 
         void OnImageSaved(ImageSavedEventArgs e);
+
+        void SetImage(BitmapSource img);
     }
 
     public class ImageSavedEventArgs : EventArgs {

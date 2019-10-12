@@ -26,7 +26,7 @@ using NINA.Utility;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using NINA.Utility.RawConverter;
 using System;
 using System.Collections;
@@ -37,6 +37,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using NINA.Model.ImageData;
 
 namespace NINA.Model.MyCamera {
 
@@ -49,6 +50,8 @@ namespace NINA.Model.MyCamera {
             Name = "Nikon";
             _nikonManagers = new List<NikonManager>();
         }
+
+        public string Category { get; } = "Nikon";
 
         private ITelescopeMediator telescopeMediator;
         private IProfileService profileService;
@@ -107,28 +110,28 @@ namespace NINA.Model.MyCamera {
             LiveViewEnabled = false;
         }
 
-        public async Task<ImageArray> DownloadLiveView(CancellationToken token) {
-            byte[] buffer = _camera.GetLiveViewImage().JpegBuffer;
-            var memStream = new MemoryStream(buffer);
-            memStream.Position = 0;
+        public Task<IImageData> DownloadLiveView(CancellationToken token) {
+            return Task.Run(() => {
+                byte[] buffer = _camera.GetLiveViewImage().JpegBuffer;
+                using (var memStream = new MemoryStream(buffer)) {
+                    memStream.Position = 0;
 
-            JpegBitmapDecoder decoder = new JpegBitmapDecoder(memStream, BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.OnLoad);
+                    JpegBitmapDecoder decoder = new JpegBitmapDecoder(memStream, BitmapCreateOptions.IgnoreColorProfile, BitmapCacheOption.OnLoad);
 
-            FormatConvertedBitmap bitmap = new FormatConvertedBitmap();
-            bitmap.BeginInit();
-            bitmap.Source = decoder.Frames[0];
-            bitmap.DestinationFormat = System.Windows.Media.PixelFormats.Gray16;
-            bitmap.EndInit();
+                    FormatConvertedBitmap bitmap = new FormatConvertedBitmap();
+                    bitmap.BeginInit();
+                    bitmap.Source = decoder.Frames[0];
+                    bitmap.DestinationFormat = System.Windows.Media.PixelFormats.Gray16;
+                    bitmap.EndInit();
 
-            ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
-            bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
+                    ushort[] outArray = new ushort[bitmap.PixelWidth * bitmap.PixelHeight];
+                    bitmap.CopyPixels(outArray, 2 * bitmap.PixelWidth, 0);
 
-            var iarr = await ImageArray.CreateInstance(outArray, bitmap.PixelWidth, bitmap.PixelHeight, BitDepth, false, false, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                    IImageData iarr = new ImageData.ImageData(outArray, bitmap.PixelWidth, bitmap.PixelHeight, BitDepth, false);
 
-            memStream.Close();
-            memStream.Dispose();
-
-            return iarr;
+                    return iarr;
+                }
+            });
         }
 
         private void CleanupUnusedManagers(NikonManager activeManager) {
@@ -160,6 +163,13 @@ namespace NINA.Model.MyCamera {
 
             GetShutterSpeeds();
             GetCapabilities();
+
+            /* Setting SaveMedia when supported, to save images via SDRAM and not to the internal memory card */
+            if (Capabilities.ContainsKey(eNkMAIDCapability.kNkMAIDCapability_SaveMedia) && Capabilities[eNkMAIDCapability.kNkMAIDCapability_SaveMedia].CanSet()) {
+                _camera.SetUnsigned(eNkMAIDCapability.kNkMAIDCapability_SaveMedia, (uint)eNkMAIDSaveMedia.kNkMAIDSaveMedia_SDRAM);
+            } else {
+                Logger.Trace("Setting SaveMedia Capability not available. This has to be set manually or is not supported by this model.");
+            }
         }
 
         private void GetCapabilities() {
@@ -218,7 +228,7 @@ namespace NINA.Model.MyCamera {
                 }
             }
             if (!bulbFound) {
-                Logger.Error("No Bulb speed found!", null);
+                Logger.Error("No Bulb speed found!");
                 throw new NikonException("Failed to find the 'Bulb' exposure mode");
             }
         }
@@ -371,6 +381,8 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public double ElectronsPerADU => double.NaN;
+
         public short MaxBinX {
             get {
                 return 1;
@@ -460,6 +472,18 @@ namespace NINA.Model.MyCamera {
         public bool CanSetOffset {
             get {
                 return false;
+            }
+        }
+
+        public int OffsetMin {
+            get {
+                return 0;
+            }
+        }
+
+        public int OffsetMax {
+            get {
+                return 0;
             }
         }
 
@@ -639,14 +663,14 @@ namespace NINA.Model.MyCamera {
             serialPortInteraction = null;
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
+        public async Task<IImageData> DownloadExposure(CancellationToken token) {
             Logger.Debug("Waiting for download of exposure");
             await _downloadExposure.Task;
             Logger.Debug("Downloading of exposure complete. Converting image to internal array");
 
             var converter = RawConverter.CreateInstance(profileService.ActiveProfile.CameraSettings.RawConverter);
-            var iarr = await converter.ConvertToImageArray(_memoryStream, BitDepth, profileService.ActiveProfile.ImageSettings.HistogramResolution, calculateStatistics, token);
-            iarr.RAWType = "nef";
+            var iarr = await converter.Convert(_memoryStream, BitDepth, token);
+            iarr.Data.RAWType = "nef";
             _memoryStream.Dispose();
             _memoryStream = null;
             return iarr;
@@ -846,12 +870,14 @@ namespace NINA.Model.MyCamera {
                     serialPortInteraction = null;
                     _nikonManagers.Clear();
 
-                    string folder = "x64";
+                    string architecture = "x64";
                     if (DllLoader.IsX86()) {
-                        folder = "x86";
+                        architecture = "x86";
                     }
 
-                    foreach (string file in Directory.GetFiles(string.Format("External/{0}/Nikon", folder), "*.md3", SearchOption.AllDirectories)) {
+                    var md3Folder = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "External", architecture, "Nikon");
+
+                    foreach (string file in Directory.GetFiles(md3Folder, "*.md3", SearchOption.AllDirectories)) {
                         NikonManager mgr = new NikonManager(file);
                         mgr.DeviceAdded += Mgr_DeviceAdded;
                         _nikonManagers.Add(mgr);
@@ -871,6 +897,7 @@ namespace NINA.Model.MyCamera {
                 } finally {
                     CleanupUnusedManagers(_activeNikonManager);
                 }
+
                 return connected;
             });
         }

@@ -55,6 +55,8 @@ namespace NINA {
         }
 
         protected override void OnStartup(StartupEventArgs e) {
+            ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(Int32.MaxValue));
+
             EventManager.RegisterClassHandler(typeof(TextBox),
                 TextBox.GotFocusEvent,
                 new RoutedEventHandler(TextBox_GotFocus));

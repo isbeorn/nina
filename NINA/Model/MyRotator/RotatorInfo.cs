@@ -23,7 +23,7 @@
 
 namespace NINA.Model.MyRotator {
 
-    internal class RotatorInfo : DeviceInfo {
+    public class RotatorInfo : DeviceInfo {
         private float position;
 
         public float Position {

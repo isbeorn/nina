@@ -22,6 +22,7 @@
 #endregion "copyright"
 
 using NINA.Locale;
+using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using NINA.Utility.WindowService;
 using OxyPlot;
@@ -41,9 +42,9 @@ namespace NINA.ViewModel.FlatWizard {
             dataPoints = new List<DataPoint>();
         }
 
-        public async System.Threading.Tasks.Task<FlatWizardUserPromptVMResponse> EvaluateUserPromptResultAsync(IImageArray imageArray, double exposureTime, string message, FlatWizardFilterSettingsWrapper wrapper) {
+        public async System.Threading.Tasks.Task<FlatWizardUserPromptVMResponse> EvaluateUserPromptResultAsync(IImageData imageData, double exposureTime, string message, FlatWizardFilterSettingsWrapper wrapper) {
             var flatsWizardUserPrompt = new FlatWizardUserPromptVM(message,
-                                                    imageArray.Statistics.Mean, CameraBitDepthToAdu(wrapper.BitDepth), wrapper, exposureTime);
+                                                    imageData.Statistics.Mean, CameraBitDepthToAdu(wrapper.BitDepth), wrapper, exposureTime);
             await WindowService.ShowDialog(flatsWizardUserPrompt, Locale["LblFlatUserPromptFailure"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
 
             if (flatsWizardUserPrompt.Reset) {
@@ -62,11 +63,11 @@ namespace NINA.ViewModel.FlatWizard {
             return (wrapper.Settings.HistogramMeanTarget * CameraBitDepthToAdu(wrapper.BitDepth) - trendLine.Offset) / trendLine.Slope;
         }
 
-        public FlatWizardExposureAduState GetFlatExposureState(IImageArray imageArray, double exposureTime, FlatWizardFilterSettingsWrapper wrapper) {
+        public FlatWizardExposureAduState GetFlatExposureState(IImageData imageData, double exposureTime, FlatWizardFilterSettingsWrapper wrapper) {
             var histogramMeanAdu = HistogramMeanAndCameraBitDepthToAdu(wrapper.Settings.HistogramMeanTarget, wrapper.BitDepth);
             var histogramToleranceUpperBound = GetUpperToleranceAduFromAdu(histogramMeanAdu, wrapper.Settings.HistogramTolerance);
             var histogramToleranceLowerBound = GetLowerToleranceAduFromAdu(histogramMeanAdu, wrapper.Settings.HistogramTolerance);
-            var currentMean = imageArray.Statistics.Mean;
+            var currentMean = imageData.Statistics.Mean;
 
             if (histogramToleranceLowerBound <= currentMean && histogramToleranceUpperBound >= currentMean) {
                 return FlatWizardExposureAduState.ExposureFinished;

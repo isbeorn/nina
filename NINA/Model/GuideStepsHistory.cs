@@ -41,6 +41,8 @@ namespace NINA.Model {
             MaxDurationY = 1;
         }
 
+        private readonly object lockObj = new object();
+
         private RMS rMS;
 
         public RMS RMS {
@@ -128,22 +130,24 @@ namespace NINA.Model {
         }
 
         private void RebuildGuideScaleList() {
-            if (overallGuideSteps.Count > 0) {
-                var collection = new LinkedList<IGuideStep>();
-                var startIndex = overallGuideSteps.Count - historySize;
-                if (startIndex < 0) startIndex = 0;
-                RMS.Clear();
-                for (int i = startIndex; i < overallGuideSteps.Count; i++) {
-                    var p = overallGuideSteps.ElementAt(i);
-                    RMS.AddDataPoint(p.RADistanceRaw, p.DecDistanceRaw);
-                    if (Scale == GuiderScaleEnum.ARCSECONDS) {
-                        p = ConvertStepToArcSec(p);
+            lock (lockObj) {
+                if (overallGuideSteps.Count > 0) {
+                    var collection = new LinkedList<IGuideStep>();
+                    var startIndex = overallGuideSteps.Count - historySize;
+                    if (startIndex < 0) startIndex = 0;
+                    RMS.Clear();
+                    for (int i = startIndex; i < overallGuideSteps.Count; i++) {
+                        var p = overallGuideSteps.ElementAt(i);
+                        RMS.AddDataPoint(p.RADistanceRaw, p.DECDistanceRaw);
+                        if (Scale == GuiderScaleEnum.ARCSECONDS) {
+                            p = ConvertStepToArcSec(p);
+                        }
+                        collection.AddLast(p);
                     }
-                    collection.AddLast(p);
-                }
 
-                GuideSteps = new AsyncObservableLimitedSizedStack<IGuideStep>(historySize, collection);
-                CalculateMaximumDurationY();
+                    GuideSteps = new AsyncObservableLimitedSizedStack<IGuideStep>(historySize, collection);
+                    CalculateMaximumDurationY();
+                }
             }
         }
 
@@ -181,37 +185,41 @@ namespace NINA.Model {
             var newStep = step.Clone();
             // only displayed values are changed, not the raw ones
             newStep.RADistanceRawDisplay = newStep.RADistanceRaw * PixelScale;
-            newStep.DecDistanceRawDisplay = newStep.DecDistanceRaw * PixelScale;
+            newStep.DECDistanceRawDisplay = newStep.DECDistanceRaw * PixelScale;
             newStep.RADistanceGuideDisplay = newStep.RADistanceGuide * PixelScale;
-            newStep.DecDistanceGuideDisplay = newStep.DecDistanceGuide * PixelScale;
+            newStep.DecDistanceGuideDisplay = newStep.DECDistanceGuide * PixelScale;
             return newStep;
         }
 
         public void Clear() {
-            overallGuideSteps.Clear();
-            GuideSteps.Clear();
-            RMS.Clear();
-            MaxDurationY = 1;
+            lock (lockObj) {
+                overallGuideSteps.Clear();
+                GuideSteps.Clear();
+                RMS.Clear();
+                MaxDurationY = 1;
+            }
         }
 
         public void AddGuideStep(IGuideStep step) {
-            overallGuideSteps.AddLast(step);
+            lock (lockObj) {
+                overallGuideSteps.AddLast(step);
 
-            if (GuideSteps.Count == HistorySize) {
-                var elementIdx = overallGuideSteps.Count - HistorySize;
-                if (elementIdx >= 0) {
-                    var stepToRemove = overallGuideSteps.ElementAt(elementIdx);
-                    RMS.RemoveDataPoint(stepToRemove.RADistanceRaw, stepToRemove.DecDistanceRaw);
+                if (GuideSteps.Count == HistorySize) {
+                    var elementIdx = overallGuideSteps.Count - HistorySize;
+                    if (elementIdx >= 0) {
+                        var stepToRemove = overallGuideSteps.ElementAt(elementIdx);
+                        RMS.RemoveDataPoint(stepToRemove.RADistanceRaw, stepToRemove.DECDistanceRaw);
+                    }
                 }
-            }
 
-            RMS.AddDataPoint(step.RADistanceRaw, step.DecDistanceRaw);
+                RMS.AddDataPoint(step.RADistanceRaw, step.DECDistanceRaw);
 
-            if (Scale == GuiderScaleEnum.ARCSECONDS) {
-                step = ConvertStepToArcSec(step);
+                if (Scale == GuiderScaleEnum.ARCSECONDS) {
+                    step = ConvertStepToArcSec(step);
+                }
+                GuideSteps.Add(step);
+                CalculateMaximumDurationY();
             }
-            GuideSteps.Add(step);
-            CalculateMaximumDurationY();
         }
     }
 }

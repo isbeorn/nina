@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using NINA.Model.ImageData;
 using NINA.Utility;
 using System.Collections;
 using System.Threading;
@@ -65,12 +66,15 @@ namespace NINA.Model.MyCamera {
         int Offset { get; set; }
         int USBLimit { get; set; }
         bool CanSetOffset { get; }
+        int OffsetMin { get; }
+        int OffsetMax { get; }
         bool CanSetUSBLimit { get; }
         bool CanGetGain { get; }
         bool CanSetGain { get; }
         short GainMax { get; }
         short GainMin { get; }
         short Gain { get; set; }
+        double ElectronsPerADU { get; }
         ICollection ReadoutModes { get; }
         short ReadoutModeForSnapImages { get; set; }
         short ReadoutModeForNormalImages { get; set; }
@@ -87,12 +91,12 @@ namespace NINA.Model.MyCamera {
 
         void StartLiveView();
 
-        Task<ImageArray> DownloadLiveView(CancellationToken token);
+        Task<IImageData> DownloadLiveView(CancellationToken token);
 
         void StopLiveView();
 
         void AbortExposure();
 
-        Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics);
+        Task<IImageData> DownloadExposure(CancellationToken token);
     }
 }

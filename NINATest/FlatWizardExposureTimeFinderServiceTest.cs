@@ -10,17 +10,20 @@ using NINA.Model.MyFilterWheel;
 using System.Windows.Input;
 using NINA.Locale;
 using System.Windows.Threading;
+using NINA.Model.ImageData;
 
 namespace NINATest {
 
     [TestFixture]
     public class FlatWizardExposureTimeFinderServiceTest {
         private FlatWizardExposureTimeFinderService _sut;
-        private Mock<IWindowService> windowServiceMock = new Mock<IWindowService>();
-        private Mock<ILoc> localeMock = new Mock<ILoc>();
+        private Mock<IWindowService> windowServiceMock;
+        private Mock<ILoc> localeMock;
 
-        [OneTimeSetUp]
+        [SetUp]
         public void Init() {
+            windowServiceMock = new Mock<IWindowService>();
+            localeMock = new Mock<ILoc>();
             _sut = new FlatWizardExposureTimeFinderService();
             _sut.WindowService = windowServiceMock.Object;
             localeMock.Setup(m => m[It.IsAny<string>()]).Returns("");
@@ -88,12 +91,13 @@ namespace NINATest {
 
             var test = new Mock<IFlatWizardExposureTimeFinderService>();
 
+            var dataMock = new Mock<IImageData>();
             var arrMock = new Mock<IImageArray>();
             var statMock = new Mock<IImageStatistics>();
             statMock.Setup(m => m.Mean).Returns(mean);
-            arrMock.Setup(m => m.Statistics).Returns(statMock.Object);
+            dataMock.Setup(m => m.Statistics).Returns(statMock.Object);
 
-            var result = _sut.GetFlatExposureState(arrMock.Object, 10, wrapper);
+            var result = _sut.GetFlatExposureState(dataMock.Object, 10, wrapper);
             result.Should().Be(state);
         }
 
@@ -115,12 +119,13 @@ namespace NINATest {
                     f.Reset = false;
                 });
 
+            var dataMock = new Mock<IImageData>();
             var arrMock = new Mock<IImageArray>();
             var statMock = new Mock<IImageStatistics>();
             statMock.Setup(m => m.Mean).Returns(500);
-            arrMock.Setup(m => m.Statistics).Returns(statMock.Object);
+            dataMock.Setup(m => m.Statistics).Returns(statMock.Object);
 
-            var result = await _sut.EvaluateUserPromptResultAsync(arrMock.Object, 10, "", wrapper);
+            var result = await _sut.EvaluateUserPromptResultAsync(dataMock.Object, 10, "", wrapper);
 
             result.Continue.Should().BeTrue();
             result.NextExposureTime.Should().Be(10);
@@ -145,12 +150,13 @@ namespace NINATest {
                     f.Reset = true;
                 });
 
+            var dataMock = new Mock<IImageData>();
             var arrMock = new Mock<IImageArray>();
             var statMock = new Mock<IImageStatistics>();
             statMock.Setup(m => m.Mean).Returns(500);
-            arrMock.Setup(m => m.Statistics).Returns(statMock.Object);
+            dataMock.Setup(m => m.Statistics).Returns(statMock.Object);
 
-            var result = await _sut.EvaluateUserPromptResultAsync(arrMock.Object, 5, "", wrapper);
+            var result = await _sut.EvaluateUserPromptResultAsync(dataMock.Object, 5, "", wrapper);
 
             result.Continue.Should().BeTrue();
             result.NextExposureTime.Should().Be(10);
@@ -175,12 +181,13 @@ namespace NINATest {
                     f.Reset = true;
                 });
 
+            var dataMock = new Mock<IImageData>();
             var arrMock = new Mock<IImageArray>();
             var statMock = new Mock<IImageStatistics>();
             statMock.Setup(m => m.Mean).Returns(500);
-            arrMock.Setup(m => m.Statistics).Returns(statMock.Object);
+            dataMock.Setup(m => m.Statistics).Returns(statMock.Object);
 
-            var result = await _sut.EvaluateUserPromptResultAsync(arrMock.Object, 5, "", wrapper);
+            var result = await _sut.EvaluateUserPromptResultAsync(dataMock.Object, 5, "", wrapper);
 
             result.Continue.Should().BeFalse();
             result.NextExposureTime.Should().Be(10);

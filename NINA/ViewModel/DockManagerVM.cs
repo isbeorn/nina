@@ -22,10 +22,11 @@
 #endregion "copyright"
 
 using NINA.Utility;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace NINA.ViewModel {
@@ -34,6 +35,22 @@ namespace NINA.ViewModel {
 
         public DockManagerVM(IProfileService profileService/*IEnumerable<DockableVM> dockWindowViewModels*/) : base(profileService) {
             LoadAvalonDockLayoutCommand = new RelayCommand(LoadAvalonDockLayout);
+            ResetDockLayoutCommand = new RelayCommand(ResetDockLayout, (object o) => _dockmanager != null);
+        }
+
+        private void ResetDockLayout(object arg) {
+            if (MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblResetDockLayoutConfirmation"], Locale.Loc.Instance["LblResetDockLayout"], System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
+                _dockloaded = false;
+
+                var serializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
+                serializer.LayoutSerializationCallback += (s, args) => {
+                    var d = (DockableVM)args.Content;
+                    d.IsVisible = true;
+                    args.Content = d;
+                };
+
+                LoadDefaultLayout(serializer);
+            }
         }
 
         private ObservableCollection<DockableVM> _anchorables;
@@ -96,6 +113,7 @@ namespace NINA.ViewModel {
                 if (System.IO.File.Exists(Utility.AvalonDock.LayoutInitializer.LAYOUTFILEPATH)) {
                     try {
                         serializer.Deserialize(Utility.AvalonDock.LayoutInitializer.LAYOUTFILEPATH);
+                        _dockloaded = true;
                     } catch (Exception ex) {
                         Logger.Error("Failed to load AvalonDock Layout. Loading default Layout!", ex);
                         using (var stream = new StringReader(Properties.Resources.avalondock)) {
@@ -103,10 +121,14 @@ namespace NINA.ViewModel {
                         }
                     }
                 } else {
-                    using (var stream = new StringReader(Properties.Resources.avalondock)) {
-                        serializer.Deserialize(stream);
-                    }
+                    LoadDefaultLayout(serializer);
                 }
+            }
+        }
+
+        private void LoadDefaultLayout(Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer serializer) {
+            using (var stream = new StringReader(Properties.Resources.avalondock)) {
+                serializer.Deserialize(stream);
                 _dockloaded = true;
             }
         }
@@ -117,5 +139,6 @@ namespace NINA.ViewModel {
         }
 
         public ICommand LoadAvalonDockLayoutCommand { get; private set; }
+        public ICommand ResetDockLayoutCommand { get; }
     }
 }

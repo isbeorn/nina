@@ -27,6 +27,13 @@ using System.Collections.Generic;
 namespace NINA.Model.MyCamera {
 
     public class CameraInfo : DeviceInfo {
+        private bool canSetTemperature;
+
+        public bool CanSetTemperature {
+            get { return canSetTemperature; }
+            set { canSetTemperature = value; RaisePropertyChanged(); }
+        }
+
         private bool hasShutter;
 
         public bool HasShutter {
@@ -46,6 +53,13 @@ namespace NINA.Model.MyCamera {
         public short Gain {
             get { return gain; }
             set { gain = value; RaisePropertyChanged(); }
+        }
+
+        private double electronsPerADU;
+
+        public double ElectronsPerADU {
+            get { return electronsPerADU; }
+            set { electronsPerADU = value; RaisePropertyChanged(); }
         }
 
         private short binxX;
@@ -164,6 +178,34 @@ namespace NINA.Model.MyCamera {
         public bool CanSubSample {
             get { return canSubSample; }
             set { canSubSample = value; RaisePropertyChanged(); }
+        }
+
+        private int subSampleX;
+
+        public int SubSampleX {
+            get { return subSampleX; }
+            set { subSampleX = value; RaisePropertyChanged(); }
+        }
+
+        private int subSampleY;
+
+        public int SubSampleY {
+            get { return subSampleY; }
+            set { subSampleY = value; RaisePropertyChanged(); }
+        }
+
+        private int subSampleWidth;
+
+        public int SubSampleWidth {
+            get { return subSampleWidth; }
+            set { subSampleWidth = value; RaisePropertyChanged(); }
+        }
+
+        private int subSampleHeight;
+
+        public int SubSampleHeight {
+            get { return subSampleHeight; }
+            set { subSampleHeight = value; RaisePropertyChanged(); }
         }
 
         private double temperatureSetPoint;

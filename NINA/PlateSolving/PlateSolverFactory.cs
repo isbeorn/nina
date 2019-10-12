@@ -24,7 +24,7 @@
 using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
 
 namespace NINA.PlateSolving {
 
@@ -34,65 +34,43 @@ namespace NINA.PlateSolving {
         /// <summary>
         /// Creates an instance of a Platesolver depending on the solver
         /// </summary>
+        /// <param name="profileService"></param>
         /// <param name="solver"> Plate Solver that should be used</param>
-        /// <param name="binning">Camera binning</param>
-        /// <param name="width">  Width of the image</param>
-        /// <param name="height"> Height of the image</param>
-        /// <param name="coords"> Expected Coordinates of the image center</param>
         /// <returns></returns>
-        public static IPlateSolver CreateInstance(IProfileService profileService, PlateSolverEnum solver, int binning, double width, double height, Coordinates coords = null) {
-            IPlateSolver Platesolver = null;
+        private static IPlateSolver GetPlateSolver(IPlateSolveSettings plateSolveSettings, PlateSolverEnum solver) {
+            switch (solver) {
+                case PlateSolverEnum.ASTROMETRY_NET:
+                    return new AstrometryPlateSolver(ASTROMETRYNETURL, plateSolveSettings.AstrometryAPIKey);
 
-            if (solver == PlateSolverEnum.ASTROMETRY_NET) {
-                Platesolver = new AstrometryPlateSolver(ASTROMETRYNETURL, profileService.ActiveProfile.PlateSolveSettings.AstrometryAPIKey);
-            } else if (solver == PlateSolverEnum.LOCAL) {
-                if (profileService.ActiveProfile.PlateSolveSettings.SearchRadius > 0 && coords != null) {
-                    Platesolver = new LocalPlateSolver(
-                        profileService.ActiveProfile.TelescopeSettings.FocalLength,
-                        profileService.ActiveProfile.CameraSettings.PixelSize * binning,
-                        profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
-                        coords,
-                        profileService.ActiveProfile.PlateSolveSettings.CygwinLocation
-                    );
-                } else {
-                    Platesolver = new LocalPlateSolver(
-                        profileService.ActiveProfile.TelescopeSettings.FocalLength,
-                        profileService.ActiveProfile.CameraSettings.PixelSize * binning,
-                        profileService.ActiveProfile.PlateSolveSettings.CygwinLocation
-                    );
-                }
-            } else if (solver == PlateSolverEnum.PLATESOLVE2) {
-                if (coords == null) {
-                    Notification.ShowWarning(Locale.Loc.Instance["LblPlatesolve2NoCoordinates"]);
-                }
-                Platesolver = new Platesolve2Solver(
-                    profileService.ActiveProfile.TelescopeSettings.FocalLength,
-                    profileService.ActiveProfile.CameraSettings.PixelSize * binning,
-                    width,
-                    height,
-                    profileService.ActiveProfile.PlateSolveSettings.Regions,
-                    coords,
-                    profileService.ActiveProfile.PlateSolveSettings.PS2Location
-                );
-            } else if (solver == PlateSolverEnum.ASPS) {
-                if (profileService.ActiveProfile.PlateSolveSettings.SearchRadius > 0 && coords != null) {
-                    Platesolver = new AllSkyPlateSolver(
-                        profileService.ActiveProfile.TelescopeSettings.FocalLength,
-                        profileService.ActiveProfile.CameraSettings.PixelSize * binning,
-                        profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
-                        coords,
-                        profileService.ActiveProfile.PlateSolveSettings.AspsLocation
-                    );
-                } else {
-                    Platesolver = new AllSkyPlateSolver(
-                        profileService.ActiveProfile.TelescopeSettings.FocalLength,
-                        profileService.ActiveProfile.CameraSettings.PixelSize * binning,
-                        profileService.ActiveProfile.PlateSolveSettings.AspsLocation
-                    );
-                }
+                case PlateSolverEnum.LOCAL:
+                    return new LocalPlateSolver(plateSolveSettings.CygwinLocation);
+
+                case PlateSolverEnum.PLATESOLVE2:
+                    return new Platesolve2Solver(plateSolveSettings.PS2Location);
+
+                case PlateSolverEnum.ASPS:
+                    return new AllSkyPlateSolver(plateSolveSettings.AspsLocation);
+
+                default:
+                    return new ASTAPSolver(plateSolveSettings.ASTAPLocation);
+            }
+        }
+
+        public static IPlateSolver GetPlateSolver(IPlateSolveSettings plateSolveSettings) {
+            return GetPlateSolver(plateSolveSettings, plateSolveSettings.PlateSolverType);
+        }
+
+        public static IPlateSolver GetBlindSolver(IPlateSolveSettings plateSolveSettings) {
+            var type = PlateSolverEnum.ASTAP;
+            if (plateSolveSettings.BlindSolverType == BlindSolverEnum.LOCAL) {
+                type = PlateSolverEnum.LOCAL;
+            } else if (plateSolveSettings.BlindSolverType == BlindSolverEnum.ASPS) {
+                type = PlateSolverEnum.ASPS;
+            } else if (plateSolveSettings.BlindSolverType == BlindSolverEnum.ASTROMETRY_NET) {
+                type = PlateSolverEnum.ASTROMETRY_NET;
             }
 
-            return Platesolver;
+            return GetPlateSolver(plateSolveSettings, type);
         }
     }
 }

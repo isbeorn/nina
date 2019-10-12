@@ -1,0 +1,287 @@
+﻿<!--
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
+<UserControl
+    x:Class="NINA.View.AnchorablePlateSolveView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:NINA.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Locale"
+    xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
+    xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <CollectionViewSource x:Key="GridItems" Source="{Binding PlateSolveResultList}">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription Direction="Descending" PropertyName="SolveTime" />
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+    </UserControl.Resources>
+    <ScrollViewer
+        x:Name="grid"
+        HorizontalScrollBarVisibility="Auto"
+        VerticalScrollBarVisibility="Auto">
+        <Grid IsEnabled="{Binding CameraInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
+            <Grid IsEnabled="{Binding CameraInfo.Connected}">
+                <StackPanel Orientation="Vertical">
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock Text="{ns:Loc LblCenterRA}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.RA, StringFormat=\{0:0.000\}}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock Text="{ns:Loc LblCenterRAhms}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.RAString}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock Text="{ns:Loc LblCenterDec}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.Dec, StringFormat=\{0:0.000\}}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock Text="{ns:Loc LblCenterDecdms}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.DecString}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock Text="{ns:Loc LblRadius}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Radius, StringFormat=\{0:0.000 deg\}}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock Text="{ns:Loc LblPixelScale}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Pixscale, StringFormat=\{0:0.00 arcsec/pixel\}}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock Text="{ns:Loc LblOrientation}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Orientation, StringFormat=\{0:0.00\}}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock Text="{ns:Loc LblEpoch}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.Coordinates.Epoch}" />
+                        </UniformGrid>
+                    </Border>
+
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0" />
+
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSync}" />
+                            <CheckBox
+                                Width="75"
+                                Height="25"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding SyncScope}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblReslewToTarget}" />
+                            <CheckBox
+                                Width="75"
+                                Height="25"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding SlewToTarget}" />
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        MinHeight="60"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0">
+                        <UniformGrid Rows="2">
+                            <UniformGrid Columns="2">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblRepeatUntil}" />
+                                <CheckBox
+                                    Width="75"
+                                    Height="25"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    IsChecked="{Binding Repeat}" />
+                            </UniformGrid>
+                            <UniformGrid Columns="2" IsEnabled="{Binding Repeat}">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblErrorLT}" />
+                                <UniformGrid Columns="2">
+                                    <TextBox
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Center">
+                                        <TextBox.Text>
+                                            <Binding Mode="TwoWay" Path="RepeatThreshold">
+                                                <Binding.ValidationRules>
+                                                    <rules:GreaterZeroRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblArcmin}" />
+                                </UniformGrid>
+                            </UniformGrid>
+                        </UniformGrid>
+                    </Border>
+
+                    <local:CameraControlView
+                        MyBinningModes="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes}"
+                        MyCanGetGain="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.CanGetGain}"
+                        MyCanSetGain="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.CanSetGain}"
+                        MyExposureDuration="{Binding SnapExposureDuration, Mode=TwoWay}"
+                        MyFilters="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}"
+                        MyGains="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Gains}"
+                        MyMaxGain="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMax}"
+                        MyMinGain="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMin}"
+                        MyOrientation="Vertical"
+                        MySelectedBinningMode="{Binding SnapBin, Mode=TwoWay}"
+                        MySelectedFilter="{Binding SnapFilter, Mode=TwoWay}"
+                        MySelectedGain="{Binding SnapGain, Mode=TwoWay}" />
+
+                    <ninactrl:CancellableButton
+                        Height="25"
+                        Margin="10,10,10,0"
+                        ButtonImage="{StaticResource PlaySVG}"
+                        CancelButtonImage="{StaticResource CancelSVG}"
+                        CancelCommand="{Binding CancelSolveCommand}"
+                        Command="{Binding SolveCommand}"
+                        IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.LiveViewEnabled, FallbackValue=False, Converter={StaticResource InverseBooleanConverter}}"
+                        ToolTip="{ns:Loc LblCaptureImageAndPlatesolve}" />
+
+                    <DataGrid
+                        Width="{Binding ElementName=grid, Path=ActualWidth}"
+                        Margin="0,10,0,0"
+                        AutoGenerateColumns="False"
+                        CanUserAddRows="False"
+                        HorizontalScrollBarVisibility="Hidden"
+                        ItemsSource="{Binding Source={StaticResource GridItems}}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding SolveTime, StringFormat=\{0:HH:mm:ss\}}"
+                                Header="{ns:Loc LblTime}"
+                                IsReadOnly="True"
+                                SortDirection="Ascending" />
+                            <DataGridTemplateColumn
+                                Width="*"
+                                Header="{ns:Loc LblSuccess}"
+                                IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox
+                                            Width="15"
+                                            Height="15"
+                                            HorizontalAlignment="Center"
+                                            BorderBrush="Transparent"
+                                            IsChecked="{Binding Success, FallbackValue=False, Mode=OneWay}"
+                                            Style="{StaticResource CheckmarkCheckbox}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Coordinates.RAString}"
+                                Header="{ns:Loc LblRA}"
+                                IsReadOnly="True" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Coordinates.DecString}"
+                                Header="{ns:Loc LblDec}"
+                                IsReadOnly="True" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Separation.Distance}"
+                                Header="{ns:Loc LblErrorDistance}"
+                                IsReadOnly="True" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding RaErrorString}"
+                                Header="{ns:Loc LblRAError}"
+                                IsReadOnly="True" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding DecErrorString}"
+                                Header="{ns:Loc LblDecError}"
+                                IsReadOnly="True" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding RaPixError, StringFormat=\{0:0.00\}}"
+                                Header="{ns:Loc LblRAPixError}"
+                                IsReadOnly="True" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding DecPixError, StringFormat=\{0:0.00\}}"
+                                Header="{ns:Loc LblDecPixError}"
+                                IsReadOnly="True" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Orientation, StringFormat=\{0:0.00\}}"
+                                Header="{ns:Loc LblOrientation}"
+                                IsReadOnly="True" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

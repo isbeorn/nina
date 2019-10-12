@@ -24,13 +24,14 @@
 using NINA.Utility;
 using NINA.Utility.AtikSDK;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using NINA.Model.ImageData;
 
 namespace NINA.Model.MyCamera {
 
@@ -44,6 +45,8 @@ namespace NINA.Model.MyCamera {
 
         private int _cameraId;
         private IntPtr _cameraP;
+
+        public string Category { get; } = "Atik";
 
         private AtikCameraDll.ArtemisPropertiesStruct _info;
 
@@ -219,6 +222,8 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public double ElectronsPerADU => double.NaN;
+
         public short MaxBinX {
             get {
                 AtikCameraDll.GetMaxBinning(_cameraP, out var x, out var y);
@@ -284,6 +289,18 @@ namespace NINA.Model.MyCamera {
         public bool CanSetOffset {
             get {
                 return false;
+            }
+        }
+
+        public int OffsetMin {
+            get {
+                return 0;
+            }
+        }
+
+        public int OffsetMax {
+            get {
+                return 0;
             }
         }
 
@@ -449,15 +466,15 @@ namespace NINA.Model.MyCamera {
             RaisePropertyChanged(nameof(Connected));
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
+        public async Task<IImageData> DownloadExposure(CancellationToken token) {
             using (MyStopWatch.Measure("ATIK Download")) {
-                return await Task.Run<ImageArray>(async () => {
+                return await Task.Run<IImageData>(async () => {
                     try {
                         do {
                             await Task.Delay(100, token);
                         } while (!AtikCameraDll.ImageReady(_cameraP));
 
-                        return await AtikCameraDll.DownloadExposure(_cameraP, BitDepth, SensorType != SensorType.Monochrome, calculateStatistics, profileService.ActiveProfile.ImageSettings.HistogramResolution);
+                        return AtikCameraDll.DownloadExposure(_cameraP, BitDepth, SensorType != SensorType.Monochrome);
                     } catch (OperationCanceledException) {
                     } catch (Exception ex) {
                         Logger.Error(ex);
@@ -495,7 +512,7 @@ namespace NINA.Model.MyCamera {
             throw new NotImplementedException();
         }
 
-        public Task<ImageArray> DownloadLiveView(CancellationToken token) {
+        public Task<IImageData> DownloadLiveView(CancellationToken token) {
             throw new NotImplementedException();
         }
 

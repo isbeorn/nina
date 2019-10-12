@@ -3,7 +3,7 @@ using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 using System.ServiceModel;
 using System.Threading;
@@ -23,12 +23,13 @@ namespace NINA.Model.MyGuider {
         private CancellationTokenSource disconnectTokenSource;
         private DateTime exposureEndTime;
         private ISynchronizedPHD2GuiderService guiderService;
-        private IGuideStep guideStep;
         private double lastDownloadTime;
         private double nextExposureLength;
         private double pixelScale;
         private TaskCompletionSource<bool> startServiceTcs;
         private string state;
+
+        public event EventHandler<IGuideStep> GuideEvent;
 
         public SynchronizedPHD2Guider(IProfileService profileService, ICameraMediator cameraMediator) {
             this.profileService = profileService;
@@ -43,17 +44,6 @@ namespace NINA.Model.MyGuider {
             set {
                 connected = value;
                 RaisePropertyChanged();
-            }
-        }
-
-        /// <inheritdoc />
-        public IGuideStep GuideStep {
-            get => guideStep;
-            set {
-                if (value != null) {
-                    guideStep = value;
-                    RaisePropertyChanged();
-                }
             }
         }
 
@@ -105,7 +95,9 @@ namespace NINA.Model.MyGuider {
                         var guideInfos = await guiderService.GetGuideInfo(profileService.ActiveProfile.Id);
 
                         State = guideInfos.State;
-                        GuideStep = guideInfos.GuideStep;
+                        if (guideInfos.GuideStep != null) {
+                            GuideEvent?.Invoke(this, guideInfos.GuideStep);
+                        }
 
                         await Task.Delay(TimeSpan.FromMilliseconds(1000), ct);
                         ct.ThrowIfCancellationRequested();
@@ -273,6 +265,10 @@ namespace NINA.Model.MyGuider {
                     // catch everything, handling is done in the loop of the client
                 }
             }
+        }
+
+        public void Dispose() {
+            cameraMediator.RemoveConsumer(this);
         }
     }
 }

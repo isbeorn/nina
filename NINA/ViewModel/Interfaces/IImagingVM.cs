@@ -22,7 +22,9 @@
 #endregion "copyright"
 
 using NINA.Model;
+using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
+using NINA.Utility.Mediator.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,26 +32,22 @@ using System.Windows.Media.Imaging;
 
 namespace NINA.ViewModel.Interfaces {
 
-    public interface IImagingVM {
+    public interface IImagingVM : ICameraConsumer, ITelescopeConsumer, IFilterWheelConsumer, IFocuserConsumer, IRotatorConsumer, IWeatherDataConsumer {
 
         bool SetDetectStars(bool value);
 
         bool SetAutoStretch(bool value);
 
+        bool IsLooping { get; set; }
+
         void DestroyImage();
 
-        Task<BitmapSource> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress);
+        void SetImage(BitmapSource img);
 
-        Task<bool> CaptureAndSaveImage(CaptureSequence seq, bool bsave, CancellationToken ct, IProgress<ApplicationStatus> progress, string targetname = "");
+        Task<IImageData> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress);
 
-        Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, bool calculateStatistics = true, string targetname = "");
+        Task<IImageData> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress);
 
-        Task<ImageArray> CaptureImageWithoutHistoryAndThumbnail(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool calculateStatistics = true);
-
-        Task<ImageArray> CaptureImageWithoutProcessingAndSaveAsync(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress);
-
-        Task<BitmapSource> CaptureImageWithoutProcessingAndSaveSync(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress);
-
-        Task<BitmapSource> PrepareImage(ImageArray iarr, CancellationToken token, bool bSave = false, ImageParameters parameters = null);
+        Task<IImageData> PrepareImage(IImageData data, CancellationToken token);
     }
 }

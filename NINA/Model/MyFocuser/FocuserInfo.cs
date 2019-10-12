@@ -23,7 +23,7 @@
 
 namespace NINA.Model.MyFocuser {
 
-    internal class FocuserInfo : DeviceInfo {
+    public class FocuserInfo : DeviceInfo {
         private int position;
 
         public int Position {
@@ -50,6 +50,13 @@ namespace NINA.Model.MyFocuser {
         public bool IsMoving {
             get { return isMoving; }
             set { isMoving = value; RaisePropertyChanged(); }
+        }
+
+        private bool isSettling;
+
+        public bool IsSettling {
+            get { return isSettling; }
+            set { isSettling = value; RaisePropertyChanged(); }
         }
 
         private bool tempComp;

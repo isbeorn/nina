@@ -21,6 +21,8 @@
 
 #endregion "copyright"
 
+using NINA.Database;
+using Nito.AsyncEx;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -31,6 +33,9 @@ namespace NINA.Utility.Astrometry {
     public class Astrometry {
         private static double DegreeToRadiansFactor = Math.PI / 180d;
         private static double RadiansToDegreeFactor = 180d / Math.PI;
+        private static double RadianstoHourFactor = 12d / Math.PI;
+        private static double DaysToSecondsFactor = 60d * 60d * 24d;
+        private static double SecondsToDaysFactor = 1.0 / (60d * 60d * 24d);
 
         /// <summary>
         /// Convert degree to radians
@@ -48,6 +53,15 @@ namespace NINA.Utility.Astrometry {
         /// <returns></returns>
         public static double ToDegree(double angle) {
             return angle * RadiansToDegreeFactor;
+        }
+
+        /// <summary>
+        /// Convert radians to hour
+        /// </summary>
+        /// <param name="radian"></param>
+        /// <returns></returns>
+        public static double RadianToHour(double radian) {
+            return radian * RadianstoHourFactor;
         }
 
         public static double DegreeToArcmin(double degree) {
@@ -82,36 +96,98 @@ namespace NINA.Utility.Astrometry {
             return deg / 15d;
         }
 
+        public static float EuclidianModulus(float x, float y) {
+            return (float)EuclidianModulus((double)x, (double)y);
+        }
+
+        public static double EuclidianModulus(double x, double y) {
+            if (y > 0) {
+                double r = x % y;
+                if (r < 0) {
+                    return r + y;
+                } else {
+                    return r;
+                }
+            } else if (y < 0) {
+                return -1 * EuclidianModulus(-1 * x, -1 * y);
+            } else {
+                return double.NaN;
+            }
+        }
+
         public static double GetLocalSiderealTimeNow(double longitude) {
             return GetLocalSiderealTime(DateTime.Now, longitude);
         }
 
         public static double GetJulianDate(DateTime date) {
             var utcdate = date.ToUniversalTime();
-            return NOVAS.JulianDate((short)utcdate.Year, (short)utcdate.Month, (short)utcdate.Day, utcdate.Hour + utcdate.Minute / 60.0 + utcdate.Second / 60.0 / 60.0);
+            return NOVAS.JulianDate((short)utcdate.Year, (short)utcdate.Month, (short)utcdate.Day, utcdate.Hour + utcdate.Minute / 60.0 + utcdate.Second / 60.0 / 60.0 + utcdate.Millisecond / 60.0 / 60.0 / 1000.0);
         }
 
         public static double MathMod(double a, double b) {
-            return (Math.Abs(a * b) + a) % b;
+            return EuclidianModulus(a, b);
         }
 
         /// <summary>
         /// Calculates the value of DeltaT using SOFA
         /// Published DeltaT information: https://www.usno.navy.mil/USNO/earth-orientation/eo-products/long-term
+        /// Formula: deltaT = 32.184 + (TAI - UTC) - (UT1 - UTC) https://de.wikipedia.org/wiki/Delta_T
         /// </summary>
         /// <param name="date">Date to retrieve DeltaT for</param>
         /// <returns>DeltaT at given date</returns>
         public static double DeltaT(DateTime date) {
             var utcDate = date.ToUniversalTime();
-            double utc1 = 0, utc2 = 0, tai1 = 0, tai2 = 0, tt1 = 0, tt2 = 0;
+            double utc1 = 0, utc2 = 0, tai1 = 0, tai2 = 0;
             SOFA.Dtf2d("UTC", utcDate.Year, utcDate.Month, utcDate.Day, utcDate.Hour, utcDate.Minute, (double)utcDate.Second + (double)utcDate.Millisecond / 1000.0, ref utc1, ref utc2);
             SOFA.UtcTai(utc1, utc2, ref tai1, ref tai2);
-            SOFA.TaiTt(tai1, tai2, ref tt1, ref tt2);
 
             var utc = utc1 + utc2;
-            var tt = tt1 + tt2;
-            var deltaT = Math.Abs(utc - tt) * 60 * 60 * 24;
+            var tai = tai1 + tai2;
+            var deltaT = 32.184 + DaysToSeconds((tai - utc)) - DeltaUT(utcDate);
             return deltaT;
+        }
+
+        private static double DeltaUTToday = 0.0;
+        private static double DeltaUTYesterday = 0.0;
+
+        /// <summary>
+        /// Retrieve UT1 - UTC approximation to adjust DeltaT
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns>UT1 - UTC in seconds</returns>
+        /// <remarks>https://www.iers.org/IERS/EN/DataProducts/EarthOrientationData/eop.html</remarks>
+        public static double DeltaUT(DateTime date) {
+            if (date.Date == DateTime.UtcNow.Date) {
+                if (DeltaUTToday != 0) {
+                    return DeltaUTToday;
+                }
+            }
+
+            if (date.Date == DateTime.UtcNow.Date - TimeSpan.FromDays(1)) {
+                if (DeltaUTYesterday != 0) {
+                    return DeltaUTYesterday;
+                }
+            }
+
+            var utcDate = date.ToUniversalTime();
+
+            var db = new DatabaseInteraction();
+            var deltaUT = 0d;
+            try {
+                deltaUT = AsyncContext.Run(() => db.GetUT1_UTC(utcDate, default));
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
+            if (date.Date == DateTime.UtcNow.Date) {
+                DeltaUTToday = deltaUT;
+            }
+
+            if (date.Date == DateTime.UtcNow.Date - TimeSpan.FromDays(1)) {
+                DeltaUTYesterday = deltaUT;
+            }
+
+            return deltaUT;
         }
 
         /// <summary>
@@ -144,6 +220,11 @@ namespace NINA.Utility.Astrometry {
             var hourAngle = siderealTime - rightAscension;
             if (hourAngle.Hours < 0) { hourAngle = Angle.ByHours(hourAngle.Hours + 24); }
             return hourAngle;
+        }
+
+        public static Angle GetRightAscensionFromHourAngle(Angle hourAngle, Angle siderealTime) {
+            var ra = siderealTime - hourAngle;
+            return ra;
         }
 
         /*
@@ -277,8 +358,11 @@ namespace NINA.Utility.Astrometry {
         /// <param name="deg"></param>
         /// <returns></returns>
         public static string DegreesToFitsDMS(double deg) {
-            return DegreesToDMS(deg).Replace("°", "").Replace("'", "").Replace("\"", "");
-            ;
+            if (deg >= 0) {
+                return String.Concat("+", DegreesToDMS(deg).Replace("°", "").Replace("'", "").Replace("\"", ""));
+            } else {
+                return DegreesToDMS(deg).Replace("°", "").Replace("'", "").Replace("\"", "");
+            }
         }
 
         /// <summary>
@@ -429,7 +513,11 @@ namespace NINA.Utility.Astrometry {
         }
 
         public static double SecondsToDays(double seconds) {
-            return seconds * (1.0 / (60.0 * 60.0 * 24.0));
+            return seconds * SecondsToDaysFactor;
+        }
+
+        public static double DaysToSeconds(double days) {
+            return days * DaysToSecondsFactor;
         }
 
         public static MoonPhase GetMoonPhase(DateTime date) {
@@ -547,15 +635,5 @@ namespace NINA.Utility.Astrometry {
 
         [Description("LblAzimuth")]
         AZIMUTH
-    }
-
-    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
-    public enum AltitudeSite {
-
-        [Description("LblEast")]
-        EAST,
-
-        [Description("LblWest")]
-        WEST
     }
 }

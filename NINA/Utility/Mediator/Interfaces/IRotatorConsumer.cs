@@ -25,6 +25,6 @@ using NINA.Model.MyRotator;
 
 namespace NINA.Utility.Mediator.Interfaces {
 
-    internal interface IRotatorConsumer : IDeviceConsumer<RotatorInfo> {
+    public interface IRotatorConsumer : IDeviceConsumer<RotatorInfo> {
     }
 }

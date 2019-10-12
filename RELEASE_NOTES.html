@@ -1,26 +1,215 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>Version 1.8 Hotfix 1</title>
+    <title>Version 1.9</title>
 </head>
 <body>
 
-    <h1 id="version-1.8-hotfix-1">Version 1.8 Hotfix 1</h1>
+    <h1 id="version-1.9">Version 1.9</h1>
+<h2 id="features">Features</h2>
+<h3 id="camera-control">Camera Control</h3>
+<ul>
+<li>Native support for Finger Lakes Instrumentation ProLine/MicroLine cameras and color filter wheels</li>
+</ul>
+<h3 id="switch-hubs">Switch Hubs</h3>
+<ul>
+<li>A new equipment type &quot;Switch&quot; has been added which can connect to an AscomSwitch or to a PrimaLuceLab EAGLE PC</li>
+</ul>
+<h3 id="dither-without-guiding">Dither without guiding</h3>
+<ul>
+<li>A new Direct Guider has been added, which doesn't require a guide camera. It can only perform random dithers. It connects directly to the telescope, and will if required perform a dither via a Pulse Guide of a user-provided duration in a random direction.</li>
+<li>Enhanced direct guider will accept decimal durations (e.g. 0.5s), and perform random angle selection in a way that minimizes target deviation from center, even after many dither operations.</li>
+</ul>
+<h3 id="plate-solving">Plate Solving</h3>
+<ul>
+<li>Added interface for ASTAP, the Astrometric STAcking Program, astrometric solver and FITS viewer as a plate solver</li>
+<li>Mid-sequence plate solve operations (when slewing to target, or after Meridian Flip) have been enhanced to have the following behavior:
+<ul>
+<li>If plate solve fails, it automatically falls back to blind failover</li>
+<li>If blind failover also fails, plate solve can be set to await a certain time period (by default 10 minutes) before trying again, up to a certain number of attempts (user-defined)</li>
+<li>If all attempts fail, or Meridian is getting close, plate solve will be considered failed, but sequence will continue as usual</li>
+</ul>
+</li>
+<li>Added options to adjust downsample factor and maximum number of considered stars for ASTAP and local astrometry.net solvers</li>
+</ul>
+<h3 id="gps-assisted-location">GPS Assisted Location</h3>
+<ul>
+<li>Added a NMEA GPS interface to retrieve the current location</li>
+</ul>
+<h3 id="interfacing-with-planetarium-programs">Interfacing with planetarium programs</h3>
+<ul>
+<li>NINA can interface with Cartes du Ciel, HNSKY, Stellarium, and TheSkyX through their repsective TCP services to import the selected object for use in the Sequence Editor and Framing Assistant, as well as setting the observing location to match that which is set in those programs</li>
+</ul>
+<h3 id="manual-camera">Manual Camera</h3>
+<ul>
+<li>Inside the camera selection there is a new entry for &quot;Manual Camera&quot;.</li>
+<li>This simulated camera will enable the use of cameras which lack an SDK, while still using the whole N.I.N.A. workflow.</li>
+<li>It will watch a specified folder for newly created files. These files will be stored inside an internal queue.</li>
+<li>Each time the application wants to download an exposure from the camera, the first item of this file queue is resolved and loaded into N.I.N.A.</li>
+<li>Additionally a manual Bulb Mode trigger can be activated, so it will use the selected Bulb Mode in Settings-&gt;Equipment-&gt;Camera on Exposure Start.</li>
+<li>When this trigger is deactivated the application will just skip the Start Exposure and wait for another file to roll into the specified folder</li>
+</ul>
+<h3 id="weather-data-sources">Weather data sources</h3>
+<ul>
+<li>The existing OpenWeatherMap implementation has been replaced with a full weather data interface.</li>
+<li>The new interface allows devices with ASCOM ObservingConditions class drivers to supply N.I.N.A. with weather data and other conditions.</li>
+<li>Native OpenWeatherMap functionality is maintained, and any configured OWM API key is retained and utilized by the new native OWM client.</li>
+<li>Weather data sources are now configured under the Equipment section.</li>
+<li>Any available weather data types (air temperature, pressure, wind speed, etc.) are inserted into images as FITS keywords and/or XISF image properties.</li>
+</ul>
+<h3 id="focusing">Focusing</h3>
+<ul>
+<li>Quick focuser movement buttons have been added (fine/coarse move IN/OUT) to the focuser views</li>
+<li>A new focuser settle time parameter has been added, in case the focuser shifts the image when moving (SCT, lens belt focusing, etc.). This should help with auto-focus in particular.</li>
+<li>Focuser backlash (in and out) can now be specified. The backlash will be applied to focuser movements whenever the focuser reverses directions.</li>
+<li>A new Measure Backlash tool has been added in the Auto-Focus view in the imaging tab. When launched, NINA will automatically measure focuser backlash IN and OUT.</li>
+<li>Sequence Auto-Focus can now be triggered if measured HFR of any frame is X% worse than the first frame taken after the previous auto-focus routine.</li>
+<li>More resilient autofocus:
+<ul>
+<li>Ability to automatically reattempt autofocus from scratch several times in case it failed</li>
+<li>Automatically go back to original focus position if obtained HFR is significantly worse than original</li>
+<li>Ability to take multiple autofocus exposures per focus point and average their HFR. This leads to smoother autofocus curves.</li>
+<li>A crop ratio has been added to the autofocus, letting users autofocus only on the center of the frame</li>
+<li>Autofocus can now be set to use only the top brightest stars, so the same stars are used throughout the autofocus routine. This will work best on sparse star fields, and for stable, well-aligned equipment (e.g. so stars don't move between auto-focus exposures)</li>
+<li>Ability to use binning for autofocus</li>
+</ul>
+</li>
+</ul>
+<h3 id="sequencing">Sequencing</h3>
+<ul>
+<li>End of Sequence Options are now available, which include:
+<ul>
+<li>Parking the telescope - This will stop the guiding, and invoke the mount Park method if available, otherwise the mount will slew to near the celestial pole (on the same side of Meridian it last was) and stop tracking. <strong>Before using this in production, test out the feature at the telescope, with your finger on the power switch. This is to avoid any crash into the pier for mounts that do not have limits.</strong></li>
+<li>Warming the camera - the camera will be slowly cooled, with the cooler eventually turned off</li>
+</ul>
+</li>
+<li>A pre-sequence check is now triggered, and will notify end users of a variety of potential issues (camera not cooled yet, guider not connected, telescope not connected but slew enabled, etc.) at sequence start</li>
+<li>It is now possible to reset the progress of a sequence item, or of a whole sequence target. If an item that occurred prior to the active sequence item is reset, stopping and starting the sequence will get back to it, but pausing/playing will keep going from the current item.</li>
+<li>The sequence start button is unavailable if an imaging loop is in progress in the imaging tab</li>
+<li>If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips</li>
+<li>It is now possible to set the Offset in addition to the Gain within each sequence item</li>
+</ul>
+<h3 id="flat-wizard">Flat Wizard</h3>
+<ul>
+<li>Progress bars have been added for remaining filters and exposures</li>
+<li>A new Slew to Zenith button has been added for easier flats. This includes an option for east or west pier side, depending on which side of pier the mount should approach zenith from.</li>
+</ul>
+<h3 id="interface">Interface</h3>
+<ul>
+<li>Imaging tab - Equipment specific views will only show the &quot;Connected&quot; flag when the device is not connected to save space</li>
+<li>Added a layout reset button to the imaging tab to restore the default dock layout.</li>
+<li>Equipment chooser dropdowns are now grouped by driver categories to easily distinguish between for example ASCOM drivers and other vendor drivers</li>
+</ul>
+<h3 id="file-handling">File Handling</h3>
+<ul>
+<li>All FITS keywords now have descriptive comments with units of measurement noted if applicable</li>
+<li>FITS keyword <code>DATE-OBS</code> now has millisecond resolution, eg: <code>2019-03-24T04:04:55.045</code></li>
+<li>Additional FITS keywords are now added to images if their associated data is available:
+<ul>
+<li><code>DATE-LOC</code>: Date and time of exposure adjusted for local time</li>
+<li><code>FOCRATIO</code>: Focal ratio of the telescope, user-configurable under Options-&gt;Equipment-&gt;Telescope</li>
+<li><code>SET-TEMP</code>: The configured CCD cooling setpoint</li>
+<li><code>SITEELEV</code>: Elevation of the observing site, in meters</li>
+<li><code>SWCREATE</code>: Contains <code>N.I.N.A. &lt;version&gt; &lt;architecture&gt;</code></li>
+<li><code>TELESCOP</code>: Telescope name if provided under Options-&gt;Equipment-&gt;Telescope. Falls back to ASCOM mount driver name</li>
+</ul>
+</li>
+</ul>
+<h3 id="osc-camera-handling">OSC Camera Handling</h3>
+<ul>
+<li>Debayering is now applied prior to plate-solving or auto-focus star detection</li>
+<li>An Unlinked Stretch option has been added. When enabled, color channels will be stretched separately, helping hide the sky background. This results in more visible celestial objects, and helps enhance both autofocus and platesolving reliablity, especially in light polluted areas. Processing time is however increased.</li>
+<li>A Debayered HFR option has been added. When enabled, the HFR computation will be made on the Debayered image rather than the Bayered array, providing better Auto-focus results</li>
+</ul>
+<h3 id="star-detection-sensitivity">Star Detection Sensitivity</h3>
+<ul>
+<li>Star Detection has been enhanced to detect more stars more accurately, while avoiding picking up noise by checking that the star is a local maximum and has sufficient bright pixels</li>
+<li>In addition, a new Star Sensitivity Parameter is available in the Imaging options. It has three settings:
+<ul>
+<li>Normal: use standard NINA star detection</li>
+<li>High: More sensitive method, with little to no performance impact. Typically picks up 1.5x - 2.5x more stars than Normal</li>
+<li>Highest: Most sensitive method, with some performance impact. Typically picks up 1.5x - 2.5x more stars than High</li>
+</ul>
+</li>
+<li>The higher the detection level, the more likely lumps of noise are liable to be picked up (despite rejection parameters to avoid that)</li>
+<li>A noise reduction parameter has been added for better star detection in fairly noisy images, which can be important if using High or Highest star sensitivity levels, although the Normal sensitivity level will also benefit from it. Several settings are available:
+<ul>
+<li>None: no noise reduction on full size image done before star detection</li>
+<li>Median: a Median filter is applied to the full size image before star detection. This is good if the sensor has many hot pixels, but time consuming</li>
+<li>Normal: a standard fast Gaussian filter is applied to the full size image before star detection. This is good for smoothing out the thermal and bias noise of the sensor</li>
+<li>High: a strong fast Gaussian filter is applied to the full size image before star detection. This is for fairly noisy images, but can make star detection more difficult</li>
+<li>Highest: a very strong fast Gaussian filter is applied to the full size image before star detection. This is for noisy images, although star detection may suffer</li>
+</ul>
+</li>
+</ul>
+<h2 id="bugfixes">Bugfixes</h2>
+<ul>
+<li>Fixed when FramingAssistant was not opened before and a DSO was selected from the SkyAtlas as Framing Source an error could occur</li>
+<li>Fixed scrolling through Framing Assistant Offline Sky Map while cursor was inside Rectangle ignored zooming</li>
+<li>Fixed Alitude charts displaying wrong Twilight/Night predictions for some scenarios</li>
+<li>Manual focus target list was not updating in some scenarios. Now it will always update. The interval for updates is one minute.</li>
+<li>Fixed an issue in FramingAssistant when reloading the image and having multiple panels selected, that the orientation was not considered properly resulting in wrong coordinates</li>
+<li>Fixed an issue in the Telescope Equipment tab that could potentially slew to the wrong Declination if the declination angle was negative</li>
+<li>Fixed issues in the subsampling logic for ASCOM, ZWO, and QHY cameras - the origin coordinates are now properly set, and take binning into account</li>
+<li>Fixed a race condition that caused HFR to not be computed for frames right before autofocus in some instances</li>
+<li>Fixed an issue for Nikon SDK that looked into the wrong folder for the external md3 files.</li>
+<li>Fixed a bug where Platesolve Orientation was displayed as negative and also throwed of the rotation centering when using rotators.</li>
+<li>Fixed a bug in Autofocus routine that could wrongly declare an autofocus run a failure if the starting point couldn't detect any stars</li>
+<li>Fixed custom color schema not saving properly and resetting to default when reloading the application</li>
+<li>The backlash measurement routine has been fixed so that the focuser is properly recentered before the backlashOUT measurement procedure</li>
+<li>Some Sky Surveys did not work in some locales due to decimal pointer settings</li>
+</ul>
+<h2 id="improvements">Improvements</h2>
+<ul>
+<li>When EOS Utility is running in the background, the x64 N.I.N.A. client will scan for this app and prevent a crash due to the EOS utility being open. Instead a notification will show up to close the EOS Utility.</li>
+<li>N.I.N.A. SQLite Database will be created on demand and migrated to new versions on application startup instead of just being overwritten by the installer.</li>
+<li>Setup Installer can be run in fewer clicks and is also capable of launching the application after successful installation.</li>
+<li>Image History Graph will only contain statistics from sequence items</li>
+<li>Further increased parallelism during sequencing.
+<ul>
+<li>After capture during image download: Parallel dither and change filter (if required)</li>
+<li>After download: Parallel image saving and processing to display the image</li>
+</ul>
+</li>
+<li>Image HFR is now available as an image file name token (<code>$$HFR$$</code>)</li>
+<li>Focuser Temperature is now available as an image file name token (<code>$$FOCUSERTEMP$$</code>)</li>
+<li>Added a clear button on HFR History graph. The button will be displayed when hovering the control.</li>
+<li>A new button is added in the options to directly open the log destination folder</li>
+<li>Added option to adjust USBLimit for Altair and Touptek cameras. This can prevent potential black preview screen issues. More details on this topic described at altair: <a href="https://altaircameras.com/black_preview_screen/">https://altaircameras.com/black_preview_screen/</a></li>
+</ul>
+<h2 id="special-thanks">Special Thanks</h2>
+<p>The N.I.N.A. team would like to sincerely thank:</p>
+<ul>
+<li>The staff at <a href="https://cloudbreakoptics.com/">Cloud Break Optics</a> and <a href="http://flicamera.com/">Finger Lakes Instrumentation</a> for arranging a ProLine PL09000 and CFW1-5 to assist in integrating native FLI camera and filter wheel support.</li>
+<li>Filippo Bradaschia from <a href="https://www.primalucelab.com/">PrimaLuceLab</a> for providing an EAGLE unit to implement direct interfacing with the EAGLE Manager</li>
+</ul>
+<h2 id="included-camera-sdk-versions">Included Camera SDK Versions:</h2>
+<ul>
+<li>Altair: 39.15529.2019.906</li>
+<li>Atik: 8.7.3.5</li>
+<li>Canon: 3.8.20.0</li>
+<li>FLI: 1.104.0.0</li>
+<li>Nikon: 1.3.0.3001</li>
+<li>QHY: 0.5.1.0</li>
+<li>ToupTek: 30.13342.2018.1121</li>
+<li>ZWO: 1.14.7.15</li>
+</ul>
+<h1 id="version-1.8-hotfix-1">Version 1.8 Hotfix 1</h1>
 <ul>
 <li>Prevent an unnecessary profile saving on application start</li>
 <li>Profiles where always saved after a sequence exposure, which slows down the image saving process. During sequence capture the profile saving is disabled now.</li>
 </ul>
 <h1 id="version-1.8">Version 1.8</h1>
-<h2 id="features">Features</h2>
+<h2 id="features-1">Features</h2>
 <h3 id="sequence">Sequence</h3>
 <ul>
 <li>Enable/Disable sequence entries</li>
 </ul>
-<h3 id="plate-solving">Plate Solving</h3>
+<h3 id="plate-solving-1">Plate Solving</h3>
 <ul>
 <li>Added interface for All Sky Platesolver</li>
 </ul>
-<h3 id="camera-control">Camera Control</h3>
+<h3 id="camera-control-1">Camera Control</h3>
 <ul>
 <li>Altair native driver support</li>
 <li>ToupTek native driver support</li>
@@ -32,7 +221,7 @@
 <ul>
 <li>Add SkyAtlas image source which allows for framing based on offline SkyAtlas data</li>
 </ul>
-<h3 id="flat-wizard">Flat Wizard</h3>
+<h3 id="flat-wizard-1">Flat Wizard</h3>
 <ul>
 <li>Supports you taking flats</li>
 </ul>
@@ -60,7 +249,7 @@ the background itself will be moved like in an orrery</li>
 <li>Previously the auto update was always just looking for released versions. Now multiple sources (Release, Beta and Nightly) can be selected and the auto updater updates to the respective version accordingls.</li>
 <li>Additionally the changelog for the new version will now be displayed prior to updating, too.</li>
 </ul>
-<h2 id="bugfixes">Bugfixes</h2>
+<h2 id="bugfixes-1">Bugfixes</h2>
 <ul>
 <li>Corrected Max Binning level for ASI Cameras</li>
 <li>Focuser move command fixed where lots of move commands where sent by accident</li>
@@ -78,7 +267,7 @@ the background itself will be moved like in an orrery</li>
 <li>Fixed Platesolve result reporting wrong Dec Error.</li>
 <li>Platesolve recenter now considers proper angular distance calculation instead of relying just on Right Ascension.</li>
 </ul>
-<h2 id="improvements">Improvements</h2>
+<h2 id="improvements-1">Improvements</h2>
 <ul>
 <li>Clear button for PHD2 Graph</li>
 <li>Hide camera cooler controls when not available for current camera model</li>
@@ -138,7 +327,7 @@ the background itself will be moved like in an orrery</li>
 </ul>
 </li>
 </ul>
-<h2 id="special-thanks">Special Thanks</h2>
+<h2 id="special-thanks-1">Special Thanks</h2>
 <p>The N.I.N.A. team would like to thank</p>
 <ul>
 <li>Nick Smith from <a href="https://www.altairastro.com/">Altair Astro</a> for providing a GPCAM2 290C to integrate Altair SDK</li>
@@ -149,7 +338,7 @@ the background itself will be moved like in an orrery</li>
 Thank you for your support!</p>
 <hr />
 <h1 id="version-1.7">Version 1.7</h1>
-<h2 id="features-1">Features</h2>
+<h2 id="features-2">Features</h2>
 <h3 id="framing-assistant-1">Framing Assistant</h3>
 <ul>
 <li>Mosaic planning for framing assistant</li>
@@ -182,12 +371,12 @@ Thank you for your support!</p>
 <li>Latitude and Longitude can now be synced from application to telescope and vica versa (when supported).</li>
 <li>Serial Relay (via USB) interaction for Nikon Bulb</li>
 </ul>
-<h2 id="bugfixes-1">Bugfixes</h2>
+<h2 id="bugfixes-2">Bugfixes</h2>
 <ul>
 <li>Fixed Canon issue that a second exposure is accidentally triggered, causing the camera to be stuck</li>
 <li>Fixed memory leak when using Free Image RAW Converter</li>
 </ul>
-<h2 id="improvements-1">Improvements</h2>
+<h2 id="improvements-2">Improvements</h2>
 <ul>
 <li>Guider is also connected when pushing &quot;Connect All&quot;</li>
 <li>Changed FilterWheel UI for switching filters</li>

@@ -182,4 +182,27 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style x:Key="BorderlessOnOffCheckbox" TargetType="{x:Type CheckBox}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type CheckBox}">
+                    <Grid>
+                        <Path
+                            x:Name="PART_CheckedSymbol"
+                            Margin="2"
+                            Data="{StaticResource PowerSVG}"
+                            Fill="{StaticResource PrimaryBrush}"
+                            Stretch="Uniform"
+                            Visibility="Visible" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="PART_CheckedSymbol" Property="Opacity" Value="0.2" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

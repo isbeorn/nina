@@ -182,7 +182,7 @@ namespace NINA.Model.MyGuider {
 
             return new GuideInfo() {
                 State = ((PHD2Guider)guiderInstance).AppState?.State,
-                GuideStep = (PHD2Guider.PhdEventGuideStep)guiderInstance.GuideStep
+                GuideStep = (PHD2Guider.PhdEventGuideStep)guideStep
             };
         }
 
@@ -193,12 +193,21 @@ namespace NINA.Model.MyGuider {
             ConnectedClients = new List<SynchronizedClientInfo>();
             PHD2Connected = await guiderInstance.Connect();
             if (PHD2Connected) {
-                ((PHD2Guider)guiderInstance).PHD2ConnectionLost += (sender, args) => PHD2Connected = false;
-                Notification.ShowSuccess(Locale["LblPhd2SynchronizedServiceStarted"]);
+                try {
+                    guiderInstance.GuideEvent += GuiderInstance_GuideEvent;
+                    ((PHD2Guider)guiderInstance).PHD2ConnectionLost += (sender, args) => PHD2Connected = false;
+                    Notification.ShowSuccess(Locale["LblPhd2SynchronizedServiceStarted"]);
+                } catch (InvalidCastException) { }
             }
 
             initializeTaskCompletionSource.TrySetResult(PHD2Connected);
             return PHD2Connected;
+        }
+
+        private IGuideStep guideStep;
+
+        private void GuiderInstance_GuideEvent(object sender, IGuideStep e) {
+            guideStep = e;
         }
 
         /// <inheritdoc />

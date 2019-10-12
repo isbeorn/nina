@@ -29,7 +29,7 @@ namespace NINA.Utility.Astrometry {
     public abstract class RiseAndSetEvent {
 
         public RiseAndSetEvent(DateTime date, double latitude, double longitude) {
-            this.Date = new DateTime(date.Year, date.Month, date.Day, 0, 0, 0);
+            this.Date = date;
             this.Latitude = latitude;
             this.Longitude = longitude;
         }

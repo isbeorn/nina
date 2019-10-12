@@ -1,7 +1,9 @@
-﻿using NINA.Model;
+﻿using NINA.Database;
+using NINA.Model;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.ImageAnalysis;
 using NINA.Utility.Mediator.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -23,15 +25,15 @@ namespace NINA.ViewModel.FramingAssistant {
     internal class SkyMapAnnotator : BaseINPC, ITelescopeConsumer {
         private readonly DatabaseInteraction dbInstance;
         public ViewportFoV ViewportFoV { get; private set; }
-        private List<Constellation> dbConstellations;
+        private List<Model.Constellation> dbConstellations;
         private Dictionary<string, DeepSkyObject> dbDSOs;
         private Bitmap img;
         private Graphics g;
         private ITelescopeMediator telescopeMediator;
 
-        public SkyMapAnnotator(string databaseLocation, ITelescopeMediator mediator) {
+        public SkyMapAnnotator(ITelescopeMediator mediator) {
             this.telescopeMediator = mediator;
-            dbInstance = new DatabaseInteraction(databaseLocation);
+            dbInstance = new DatabaseInteraction();
             DSOInViewport = new List<FramingDSO>();
             ConstellationsInViewport = new List<FramingConstellation>();
             FrameLineMatrix = new FrameLineMatrix2();
@@ -341,7 +343,7 @@ namespace NINA.ViewModel.FramingAssistant {
                     DrawTelescope();
                 }
 
-                var source = ImageAnalysis.ConvertBitmap(img, PixelFormats.Bgra32);
+                var source = ImageUtility.ConvertBitmap(img, PixelFormats.Bgra32);
                 source.Freeze();
                 SkyMapOverlay = source;
             }
@@ -386,6 +388,10 @@ namespace NINA.ViewModel.FramingAssistant {
             } else {
                 telescopeConnected = false;
             }
+        }
+
+        public void Dispose() {
+            telescopeMediator.RemoveConsumer(this);
         }
     }
 }

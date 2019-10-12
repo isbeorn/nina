@@ -62,7 +62,7 @@ namespace NINA.PlateSolving {
             return o;
         }
 
-        private async Task<JObject> SubmitImage(MemoryStream ms, string session, CancellationToken canceltoken) {
+        private async Task<JObject> SubmitImage(Stream ms, string session, CancellationToken canceltoken) {
             NameValueCollection nvc = new NameValueCollection();
             nvc.Add("request-json", "{\"publicly_visible\": \"n\", \"allow_modifications\": \"d\", \"session\": \"" + session + "\", \"allow_commercial_use\": \"d\"}");
             var request = new HttpUploadFile(_domain + UPLOADURL, ms, "file", "image/jpeg", nvc);
@@ -101,7 +101,7 @@ namespace NINA.PlateSolving {
             return request.Request(canceltoken);
         }
 
-        public async Task<PlateSolveResult> SolveAsync(MemoryStream image, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
+        public async Task<PlateSolveResult> SolveAsync(PlateSolveParameter parameter, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
             PlateSolveResult result = new PlateSolveResult();
 
             try {
@@ -113,7 +113,7 @@ namespace NINA.PlateSolving {
                     session = authentication.GetValue("session").ToString();
 
                     progress.Report(new ApplicationStatus() { Status = "Uploading Image..." });
-                    JObject imagesubmission = await SubmitImage(image, session, canceltoken);
+                    JObject imagesubmission = await SubmitImage(parameter.Image, session, canceltoken);
 
                     string subid = string.Empty;
                     string jobid = string.Empty;

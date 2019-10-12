@@ -45,6 +45,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Prefer32Bit>false</Prefer32Bit>
     <LangVersion>default</LangVersion>
+    <CodeAnalysisRuleSet>NINA.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -57,6 +58,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Prefer32Bit>false</Prefer32Bit>
     <LangVersion>default</LangVersion>
+    <CodeAnalysisRuleSet>NINA.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Logo_Nina.ico</ApplicationIcon>
@@ -87,7 +89,7 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <LangVersion>default</LangVersion>
   </PropertyGroup>
@@ -96,11 +98,12 @@
     <DefineConstants>TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
     <LangVersion>default</LangVersion>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -110,7 +113,7 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>NINA.ruleset</CodeAnalysisRuleSet>
     <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
@@ -118,11 +121,12 @@
     <DefineConstants>TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>NINA.ruleset</CodeAnalysisRuleSet>
     <LangVersion>default</LangVersion>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>NINA.App</StartupObject>
@@ -138,51 +142,40 @@
       <HintPath>..\packages\AForge.Math.2.2.5\lib\AForge.Math.dll</HintPath>
     </Reference>
     <Reference Include="ASCOM.Astrometry, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
-      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Astrometry.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\packages\ASCOM.Platform.6.4.2\lib\net40\ASCOM.Astrometry.dll</HintPath>
     </Reference>
     <Reference Include="ASCOM.Attributes, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
-      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Attributes.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\packages\ASCOM.Platform.6.4.2\lib\net40\ASCOM.Attributes.dll</HintPath>
     </Reference>
     <Reference Include="ASCOM.Cache, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
-      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Cache.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\packages\ASCOM.Platform.6.4.2\lib\net40\ASCOM.Cache.dll</HintPath>
     </Reference>
     <Reference Include="ASCOM.Controls, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
-      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Controls.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\packages\ASCOM.Platform.6.4.2\lib\net40\ASCOM.Controls.dll</HintPath>
     </Reference>
     <Reference Include="ASCOM.DeviceInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
-      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.DeviceInterfaces.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\packages\ASCOM.Platform.6.4.2\lib\net40\ASCOM.DeviceInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="ASCOM.DriverAccess, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
-      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.DriverAccess.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\packages\ASCOM.Platform.6.4.2\lib\net40\ASCOM.DriverAccess.dll</HintPath>
     </Reference>
     <Reference Include="ASCOM.Exceptions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
-      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Exceptions.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\packages\ASCOM.Platform.6.4.2\lib\net40\ASCOM.Exceptions.dll</HintPath>
     </Reference>
     <Reference Include="ASCOM.Internal.Extensions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
-      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Internal.Extensions.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\packages\ASCOM.Platform.6.4.2\lib\net40\ASCOM.Internal.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="ASCOM.SettingsProvider, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
-      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.SettingsProvider.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\packages\ASCOM.Platform.6.4.2\lib\net40\ASCOM.SettingsProvider.dll</HintPath>
     </Reference>
     <Reference Include="ASCOM.Utilities, Version=6.0.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
-      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Utilities.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\packages\ASCOM.Platform.6.4.2\lib\net40\ASCOM.Utilities.dll</HintPath>
     </Reference>
     <Reference Include="ASCOM.Utilities.Video, Version=6.1.0.0, Culture=neutral, PublicKeyToken=565de7938946fba7, processorArchitecture=MSIL">
-      <HintPath>..\packages\ASCOM.Platform.6.4.0\lib\net47\ASCOM.Utilities.Video.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\packages\ASCOM.Platform.6.4.2\lib\net40\ASCOM.Utilities.Video.dll</HintPath>
     </Reference>
-    <Reference Include="AsyncEnumerable, Version=2.2.1.0, Culture=neutral, PublicKeyToken=0426b068161bd1d1, processorArchitecture=MSIL">
-      <HintPath>..\packages\AsyncEnumerator.2.2.1\lib\net45\AsyncEnumerable.dll</HintPath>
+    <Reference Include="AsyncEnumerable, Version=2.2.2.0, Culture=neutral, PublicKeyToken=0426b068161bd1d1, processorArchitecture=MSIL">
+      <HintPath>..\packages\AsyncEnumerator.2.2.2\lib\net45\AsyncEnumerable.dll</HintPath>
     </Reference>
     <Reference Include="CSharpFITS_v1.1, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CSharpFITS.1.1\lib\Net20\CSharpFITS_v1.1.dll</HintPath>
@@ -206,17 +199,47 @@
     <Reference Include="Microsoft.Threading.Tasks.Extensions.Desktop, Version=1.0.168.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.Desktop.dll</HintPath>
     </Reference>
+    <Reference Include="Namotion.Reflection, Version=1.0.6.0, Culture=neutral, PublicKeyToken=c2f9c3bdfae56102, processorArchitecture=MSIL">
+      <HintPath>..\packages\Namotion.Reflection.1.0.6\lib\net45\Namotion.Reflection.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Nito.AsyncEx, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Nito.AsyncEx.4.0.1\lib\net45\Nito.AsyncEx.dll</HintPath>
+    <Reference Include="Nito.AsyncEx.Context, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.AsyncEx.Context.5.0.0\lib\netstandard2.0\Nito.AsyncEx.Context.dll</HintPath>
     </Reference>
-    <Reference Include="Nito.AsyncEx.Concurrent, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Nito.AsyncEx.4.0.1\lib\net45\Nito.AsyncEx.Concurrent.dll</HintPath>
+    <Reference Include="Nito.AsyncEx.Coordination, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.AsyncEx.Coordination.5.0.0\lib\netstandard2.0\Nito.AsyncEx.Coordination.dll</HintPath>
     </Reference>
-    <Reference Include="Nito.AsyncEx.Enlightenment, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Nito.AsyncEx.4.0.1\lib\net45\Nito.AsyncEx.Enlightenment.dll</HintPath>
+    <Reference Include="Nito.AsyncEx.Interop.WaitHandles, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.AsyncEx.Interop.WaitHandles.5.0.0\lib\netstandard2.0\Nito.AsyncEx.Interop.WaitHandles.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.AsyncEx.Oop, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.AsyncEx.Oop.5.0.0\lib\netstandard2.0\Nito.AsyncEx.Oop.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.AsyncEx.Tasks, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.AsyncEx.Tasks.5.0.0\lib\netstandard2.0\Nito.AsyncEx.Tasks.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.Cancellation, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.Cancellation.1.0.5\lib\netstandard2.0\Nito.Cancellation.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.Collections.Deque, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.Collections.Deque.1.0.4\lib\netstandard2.0\Nito.Collections.Deque.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.Disposables, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.Disposables.2.0.1\lib\net461\Nito.Disposables.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.Mvvm.Async, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.Mvvm.Async.1.0.0-pre-03\lib\netstandard2.0\Nito.Mvvm.Async.dll</HintPath>
+    </Reference>
+    <Reference Include="Nito.Mvvm.Core, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.Mvvm.Core.1.2.2\lib\netstandard2.0\Nito.Mvvm.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="NJsonSchema, Version=10.0.22.0, Culture=neutral, PublicKeyToken=c2f9c3bdfae56102, processorArchitecture=MSIL">
+      <HintPath>..\packages\NJsonSchema.10.0.22\lib\net45\NJsonSchema.dll</HintPath>
+    </Reference>
+    <Reference Include="NmeaParser, Version=1.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpGIS.NmeaParser.1.10.0\lib\net451\NmeaParser.dll</HintPath>
     </Reference>
     <Reference Include="OxyPlot, Version=1.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
       <HintPath>..\packages\OxyPlot.Core.1.0.0\lib\net45\OxyPlot.dll</HintPath>
@@ -225,17 +248,20 @@
       <HintPath>..\packages\OxyPlot.Wpf.1.0.0\lib\net45\OxyPlot.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.SQLite, Version=1.0.109.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Data.SQLite.Core.1.0.109.2\lib\net46\System.Data.SQLite.dll</HintPath>
+    <Reference Include="System.Data.SQLite, Version=1.0.111.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Core.1.0.111.0\lib\net46\System.Data.SQLite.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.SQLite.EF6, Version=1.0.109.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.109.0\lib\net46\System.Data.SQLite.EF6.dll</HintPath>
+    <Reference Include="System.Data.SQLite.EF6, Version=1.0.111.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.111.0\lib\net46\System.Data.SQLite.EF6.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.SQLite.Linq, Version=1.0.109.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.109.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
+    <Reference Include="System.Data.SQLite.Linq, Version=1.0.111.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.111.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
@@ -259,11 +285,11 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="ToastNotifications, Version=2.5.0.0, Culture=neutral, PublicKeyToken=e89d9d7314a7c797, processorArchitecture=MSIL">
-      <HintPath>..\packages\ToastNotifications.2.5.0\lib\net40\ToastNotifications.dll</HintPath>
+    <Reference Include="ToastNotifications, Version=2.5.1.0, Culture=neutral, PublicKeyToken=e89d9d7314a7c797, processorArchitecture=MSIL">
+      <HintPath>..\packages\ToastNotifications.2.5.1\lib\net40\ToastNotifications.dll</HintPath>
     </Reference>
-    <Reference Include="ToastNotifications.Messages, Version=2.5.0.0, Culture=neutral, PublicKeyToken=e89d9d7314a7c797, processorArchitecture=MSIL">
-      <HintPath>..\packages\ToastNotifications.Messages.2.5.0\lib\net40\ToastNotifications.Messages.dll</HintPath>
+    <Reference Include="ToastNotifications.Messages, Version=2.5.1.0, Culture=neutral, PublicKeyToken=e89d9d7314a7c797, processorArchitecture=MSIL">
+      <HintPath>..\packages\ToastNotifications.Messages.2.5.1\lib\net40\ToastNotifications.Messages.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -296,17 +322,128 @@
       <DependentUpon>AstrometryIndexDownloader.xaml</DependentUpon>
     </Compile>
     <Compile Include="AstrometryIndexDownloader\AstrometryIndexDownloaderVM.cs" />
+    <Compile Include="Database\Schema\BrightStars.cs" />
+    <Compile Include="Database\Schema\CatalogueNr.cs" />
+    <Compile Include="Database\Schema\Constellation.cs" />
+    <Compile Include="Database\Schema\ConstellationBoundaries.cs" />
+    <Compile Include="Database\Schema\ConstellationStar.cs" />
+    <Compile Include="Database\Schema\DsoDetail.cs" />
+    <Compile Include="Database\Schema\EarthRotationParameters.cs" />
+    <Compile Include="Database\NINADbContext.cs" />
+    <Compile Include="Database\Schema\VisualDescription.cs" />
     <Compile Include="EquipmentChooser\EquipmentChooser.xaml.cs">
       <DependentUpon>EquipmentChooser.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Model\ImageData\IImageData.cs" />
+    <Compile Include="Model\ImageData\ImageData.cs" />
+    <Compile Include="Model\ImageData\DebayeredImageData.cs" />
+    <Compile Include="Model\ImageData\ImageMetaData.cs" />
+    <Compile Include="Model\ImageData\LRGBArrays.cs" />
+    <Compile Include="Model\MyCamera\FileCamera.cs" />
+    <Compile Include="Model\MyCamera\FLICamera.cs" />
+    <Compile Include="Model\MyFilterWheel\FLIFilterWheel.cs" />
+    <Compile Include="Model\MyGuider\DirectGuider.cs" />
     <Compile Include="Model\MyGuider\ISynchronizedPHD2GuiderService.cs" />
     <Compile Include="Model\MyGuider\SynchronizedPHD2Guider.cs" />
     <Compile Include="Model\MyGuider\SynchronizedPHD2GuiderService.cs" />
+    <Compile Include="Model\MyPlanetarium\CartesDuCiel.cs" />
+    <Compile Include="Model\MyPlanetarium\Coords.cs" />
+    <Compile Include="Model\MyPlanetarium\PlanetariumFactory.cs" />
+    <Compile Include="Model\MyPlanetarium\HNSKY.cs" />
+    <Compile Include="Model\MyPlanetarium\TheSkyX.cs" />
+    <Compile Include="Model\MySwitch\Ascom\AscomV1Switch.cs" />
+    <Compile Include="Model\MySwitch\Ascom\AscomWritableV1Switch.cs" />
+    <Compile Include="Model\MyWeatherData\AscomObservingConditions.cs" />
+    <Compile Include="Model\MyWeatherData\OpenWeatherMap.cs" />
+    <Compile Include="Model\MyWeatherData\WeatherDataInfo.cs" />
+    <Compile Include="Profile\Interfaces\IWeatherDataSettings.cs" />
+    <Compile Include="Profile\ProfileInfo.cs" />
+    <Compile Include="Profile\WeatherDataSettings.cs" />
+    <Compile Include="Utility\Api\ApiParameters.cs" />
+    <Compile Include="Model\MyPlanetarium\IPlanetarium.cs" />
+    <Compile Include="Utility\Api\RawTcp.cs" />
+    <Compile Include="Utility\Api\ITcpIpApi.cs" />
+    <Compile Include="Model\MyPlanetarium\Stellarium.cs" />
+    <Compile Include="Utility\Api\JSONApi.cs" />
+    <Compile Include="Model\MySwitch\Ascom\AscomSwitch.cs" />
+    <Compile Include="Model\MySwitch\Ascom\AscomSwitchHub.cs" />
+    <Compile Include="Model\MySwitch\Ascom\AscomWritableSwitch.cs" />
+    <Compile Include="Model\MySwitch\Eagle\Eagle.cs" />
+    <Compile Include="Model\MySwitch\Eagle\Eagle12VPower.cs" />
+    <Compile Include="Model\MySwitch\Eagle\EagleInputPower.cs" />
+    <Compile Include="Model\MySwitch\Eagle\EagleSwitch.cs" />
+    <Compile Include="Model\MySwitch\Eagle\EagleUSBSwitch.cs" />
+    <Compile Include="Model\MySwitch\Eagle\EagleVariablePower.cs" />
+    <Compile Include="Model\MySwitch\Eagle\EagleWritableSwitch.cs" />
+    <Compile Include="Model\MySwitch\ISwitch.cs" />
+    <Compile Include="Model\MySwitch\ISwitchHub.cs" />
+    <Compile Include="Model\MySwitch\SwitchInfo.cs" />
+    <Compile Include="Model\MyTelescope\GuideDirections.cs" />
+    <Compile Include="Model\MyTelescope\PierSide.cs" />
+    <Compile Include="Model\MyGPS\NMEAGps.cs" />
+    <Compile Include="PlateSolving\ASTAPSolver.cs" />
+    <Compile Include="PlateSolving\CLISolver.cs" />
+    <Compile Include="PlateSolving\PlateSolveParameter.cs" />
     <Compile Include="PlateSolving\PlateSolveResult.cs" />
+    <Compile Include="Utility\Astrometry\TopocentricCoordinates.cs" />
+    <Compile Include="Utility\CameraSDKs\FLISDK\FLIFilterWheels.cs" />
+    <Compile Include="Utility\Converters\NaNToEmptyTextConverter.cs" />
+    <Compile Include="Utility\Converters\NaNToVisibilityConverter.cs" />
+    <Compile Include="Utility\Converters\WeatherBrightnessConverter.cs" />
+    <Compile Include="Utility\Converters\WeatherPressureConverter.cs" />
+    <Compile Include="Utility\Converters\WeatherRainRateConverter.cs" />
+    <Compile Include="Utility\Converters\WeatherTemperatureConverter.cs" />
+    <Compile Include="Utility\Converters\WeatherVelocityConverter.cs" />
+    <Compile Include="Utility\CameraSDKs\FLISDK\FLICameras.cs" />
+    <Compile Include="Utility\CameraSDKs\FLISDK\FLICameraSDK.cs" />
+    <Compile Include="Utility\Enum\AltitudeSite.cs" />
+    <Compile Include="Utility\Enum\NoiseReductionEnum.cs" />
+    <Compile Include="Utility\Enum\PlanetariumEnum.cs" />
+    <Compile Include="Profile\Interfaces\IPlanetariumSettings.cs" />
+    <Compile Include="Profile\PlanetariumSettings.cs" />
+    <Compile Include="Utility\Converters\DoubleToBooleanConverter.cs" />
+    <Compile Include="Utility\Converters\InverseBooleanToVisibilityCollapsedConverter.cs" />
+    <Compile Include="Profile\Interfaces\ISwitchSettings.cs" />
+    <Compile Include="Profile\SwitchSettings.cs" />
+    <Compile Include="Utility\Enum\StarSensitivityEnum.cs" />
+    <Compile Include="Utility\Exceptions\CameraDownloadFailedException.cs" />
+    <Compile Include="Utility\Extensions\IOrderedQueryableExtension.cs" />
+    <Compile Include="Utility\ImageAnalysis\BahtinovAnalysis.cs" />
+    <Compile Include="Utility\ImageAnalysis\BahtinovImage.cs" />
+    <Compile Include="Utility\ImageAnalysis\BayerFilter16bpp.cs" />
+    <Compile Include="Utility\ImageAnalysis\ColorRemappingGeneral.cs" />
+    <Compile Include="Utility\ImageAnalysis\FastGaussianBlur.cs" />
+    <Compile Include="Utility\ImageAnalysis\ImageUtility.cs" />
+    <Compile Include="Utility\ImageAnalysis\NoBlurCannyEdgeDetector.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\ISwitchConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\ISwitchMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IWeatherDataConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IWeatherDataMediator.cs" />
+    <Compile Include="Utility\Mediator\WeatherDataMediator.cs" />
+    <Compile Include="Utility\Mediator\SwitchMediator.cs" />
     <Compile Include="Utility\ProjectVersion.cs" />
     <Compile Include="Utility\Behaviors\BrowserBehavior.cs" />
     <Compile Include="Utility\Enum\AutoUpdateSourceEnum.cs" />
-    <Compile Include="ViewModel\GuiderChooserVM.cs" />
+    <Compile Include="Utility\ValidationRules\GreaterThanZeroRule.cs" />
+    <Compile Include="Utility\ValidationRules\StrictGreaterZeroRule.cs" />
+    <Compile Include="ViewModel\Equipment\Camera\CameraChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\FilterWheel\FilterWheelChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\Focuser\FocuserChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\Rotator\RotatorChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\Telescope\TelescopeChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\Guider\GuiderChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\WeatherData\IWeatherDataVM.cs" />
+    <Compile Include="ViewModel\Equipment\WeatherData\WeatherDataChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\WeatherData\WeatherDataVM.cs" />
+    <Compile Include="View\Equipment\Camera\FLICameraSetupView.xaml.cs">
+      <DependentUpon>FLICameraSetupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Switch\EagleSetupView.xaml.cs">
+      <DependentUpon>EagleSetupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Switch\SwitchHubTemplateSelector.cs" />
+    <Compile Include="ViewModel\Equipment\Switch\SwitchChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\Switch\SwitchVM.cs" />
     <Compile Include="Locale\ILoc.cs" />
     <Compile Include="Locale\Loc.cs" />
     <Compile Include="Model\ApplicationStatus.cs" />
@@ -326,10 +463,10 @@
     <Compile Include="Model\MyCamera\CameraDataToManaged.cs" />
     <Compile Include="Model\MyCamera\CameraInfo.cs" />
     <Compile Include="Model\MyCamera\EDCamera.cs" />
-    <Compile Include="Model\MyCamera\IImageArray.cs" />
-    <Compile Include="Model\MyCamera\IImageStatistics.cs" />
-    <Compile Include="Model\MyCamera\ImageArray.cs" />
-    <Compile Include="Model\MyCamera\ImageStatistics.cs" />
+    <Compile Include="Model\ImageData\IImageArray.cs" />
+    <Compile Include="Model\ImageData\IImageStatistics.cs" />
+    <Compile Include="Model\ImageData\ImageArray.cs" />
+    <Compile Include="Model\ImageData\ImageStatistics.cs" />
     <Compile Include="Model\MyCamera\NikonCamera.cs" />
     <Compile Include="Model\MyCamera\SimulatorCamera.cs" />
     <Compile Include="Model\MyFilterWheel\FilterInfo.cs" />
@@ -373,7 +510,6 @@
     <Compile Include="Model\MyWeatherData\IWeatherData.cs" />
     <Compile Include="Model\MyCamera\AscomCamera.cs" />
     <Compile Include="Model\MyCamera\ASICamera.cs" />
-    <Compile Include="Model\MyWeatherData\OpenWeatherMapData.cs" />
     <Compile Include="Model\Sequence\CaptureSequenceList.cs" />
     <Compile Include="Model\Sequence\SequenceMode.cs" />
     <Compile Include="MyMessageBox\MyMessageBox.cs" />
@@ -434,7 +570,7 @@
     <Compile Include="Utility\Converters\PercentageConverter.cs" />
     <Compile Include="Utility\Converters\SetAlphaToColorConverter.cs" />
     <Compile Include="Utility\Converters\ValueToLocaleConverter.cs" />
-    <Compile Include="Utility\DatabaseInteraction.cs" />
+    <Compile Include="Database\DatabaseInteraction.cs" />
     <Compile Include="Utility\DeviceUpdateTimer.cs" />
     <Compile Include="Utility\Enum\RawConverterEnum.cs" />
     <Compile Include="Utility\Http\HttpDownloadFileRequest.cs" />
@@ -469,31 +605,30 @@
     <Compile Include="Utility\Mediator\Interfaces\ITelescopeMediator.cs" />
     <Compile Include="Utility\Mediator\RotatorMediator.cs" />
     <Compile Include="Utility\Mediator\TelescopeMediator.cs" />
-    <Compile Include="Utility\Profile\FlatWizardSettings.cs" />
+    <Compile Include="Profile\FlatWizardSettings.cs" />
     <Compile Include="Utility\NOVAS.cs" />
-    <Compile Include="Utility\Profile\IApplicationSettings.cs" />
-    <Compile Include="Utility\Profile\IAstrometrySettings.cs" />
-    <Compile Include="Utility\Profile\ICameraSettings.cs" />
-    <Compile Include="Utility\Profile\IColorSchemaSettings.cs" />
-    <Compile Include="Utility\Profile\IFilterWheelSettings.cs" />
-    <Compile Include="Utility\Profile\IFlatWizardSettings.cs" />
-    <Compile Include="Utility\Profile\IFocuserSettings.cs" />
-    <Compile Include="Utility\Profile\IFramingAssistantSettings.cs" />
-    <Compile Include="Utility\Profile\IGuiderSettings.cs" />
-    <Compile Include="Utility\Profile\IImageFileSettings.cs" />
-    <Compile Include="Utility\Profile\IImageSettings.cs" />
-    <Compile Include="Utility\Profile\IMeridianFlipSettings.cs" />
-    <Compile Include="Utility\Profile\IPlateSolveSettings.cs" />
-    <Compile Include="Utility\Profile\IPolarAlignmentSettings.cs" />
-    <Compile Include="Utility\Profile\IProfile.cs" />
-    <Compile Include="Utility\Profile\IProfileService.cs" />
-    <Compile Include="Utility\Profile\IRotatorSettings.cs" />
-    <Compile Include="Utility\Profile\ISequenceSettings.cs" />
-    <Compile Include="Utility\Profile\ISettings.cs" />
-    <Compile Include="Utility\Profile\ITelescopeSettings.cs" />
-    <Compile Include="Utility\Profile\IWeatherDataSettings.cs" />
-    <Compile Include="Utility\Profile\RotatorSettings.cs" />
-    <Compile Include="Utility\Profile\Settings.cs" />
+    <Compile Include="Profile\Interfaces\IApplicationSettings.cs" />
+    <Compile Include="Profile\Interfaces\IAstrometrySettings.cs" />
+    <Compile Include="Profile\Interfaces\ICameraSettings.cs" />
+    <Compile Include="Profile\Interfaces\IColorSchemaSettings.cs" />
+    <Compile Include="Profile\Interfaces\IFilterWheelSettings.cs" />
+    <Compile Include="Profile\Interfaces\IFlatWizardSettings.cs" />
+    <Compile Include="Profile\Interfaces\IFocuserSettings.cs" />
+    <Compile Include="Profile\Interfaces\IFramingAssistantSettings.cs" />
+    <Compile Include="Profile\Interfaces\IGuiderSettings.cs" />
+    <Compile Include="Profile\Interfaces\IImageFileSettings.cs" />
+    <Compile Include="Profile\Interfaces\IImageSettings.cs" />
+    <Compile Include="Profile\Interfaces\IMeridianFlipSettings.cs" />
+    <Compile Include="Profile\Interfaces\IPlateSolveSettings.cs" />
+    <Compile Include="Profile\Interfaces\IPolarAlignmentSettings.cs" />
+    <Compile Include="Profile\Interfaces\IProfile.cs" />
+    <Compile Include="Profile\Interfaces\IProfileService.cs" />
+    <Compile Include="Profile\Interfaces\IRotatorSettings.cs" />
+    <Compile Include="Profile\Interfaces\ISequenceSettings.cs" />
+    <Compile Include="Profile\Interfaces\ISettings.cs" />
+    <Compile Include="Profile\Interfaces\ITelescopeSettings.cs" />
+    <Compile Include="Profile\RotatorSettings.cs" />
+    <Compile Include="Profile\Settings.cs" />
     <Compile Include="Utility\RawConverter\DCRaw.cs" />
     <Compile Include="Utility\DialogCloser.cs" />
     <Compile Include="EquipmentChooser\EquipmentChooserVM.cs" />
@@ -506,7 +641,6 @@
     <Compile Include="Utility\Enum\GuiderScaleEnum.cs" />
     <Compile Include="Utility\Enum\LogLevelEnum.cs" />
     <Compile Include="Utility\Enum\PlateSolverEnum.cs" />
-    <Compile Include="Utility\Enum\WeatherDataEnum.cs" />
     <Compile Include="Utility\Exceptions\CameraConnectionLostException.cs" />
     <Compile Include="Utility\FITS.cs" />
     <Compile Include="Utility\MyStopWatch.cs" />
@@ -516,25 +650,24 @@
     <Compile Include="Utility\ObservableLimitedSizeStack.cs" />
     <Compile Include="Utility\ObservableRectangle.cs" />
     <Compile Include="Utility\ObserveAllCollection.cs" />
-    <Compile Include="Utility\Profile\ApplicationSettings.cs" />
-    <Compile Include="Utility\Profile\AstrometrySettings.cs" />
-    <Compile Include="Utility\Profile\CameraSettings.cs" />
-    <Compile Include="Utility\Profile\ColorSchemaSettings.cs" />
-    <Compile Include="Utility\Profile\FilterWheelSettings.cs" />
-    <Compile Include="Utility\Profile\FocuserSettings.cs" />
-    <Compile Include="Utility\Profile\FramingAssistantSettings.cs" />
-    <Compile Include="Utility\Profile\GuiderSettings.cs" />
-    <Compile Include="Utility\Profile\ImageFileSettings.cs" />
-    <Compile Include="Utility\Profile\ImageSettings.cs" />
-    <Compile Include="Utility\Profile\MeridianFlipSettings.cs" />
-    <Compile Include="Utility\Profile\PlateSolveSettings.cs" />
-    <Compile Include="Utility\Profile\PolarAlignmentSettings.cs" />
-    <Compile Include="Utility\Profile\Profile.cs" />
-    <Compile Include="Utility\Profile\ProfileService.cs" />
-    <Compile Include="Utility\Profile\Profiles.cs" />
-    <Compile Include="Utility\Profile\SequenceSettings.cs" />
-    <Compile Include="Utility\Profile\TelescopeSettings.cs" />
-    <Compile Include="Utility\Profile\WeatherDataSettings.cs" />
+    <Compile Include="Profile\ApplicationSettings.cs" />
+    <Compile Include="Profile\AstrometrySettings.cs" />
+    <Compile Include="Profile\CameraSettings.cs" />
+    <Compile Include="Profile\ColorSchemaSettings.cs" />
+    <Compile Include="Profile\FilterWheelSettings.cs" />
+    <Compile Include="Profile\FocuserSettings.cs" />
+    <Compile Include="Profile\FramingAssistantSettings.cs" />
+    <Compile Include="Profile\GuiderSettings.cs" />
+    <Compile Include="Profile\ImageFileSettings.cs" />
+    <Compile Include="Profile\ImageSettings.cs" />
+    <Compile Include="Profile\MeridianFlipSettings.cs" />
+    <Compile Include="Profile\PlateSolveSettings.cs" />
+    <Compile Include="Profile\PolarAlignmentSettings.cs" />
+    <Compile Include="Profile\Profile.cs" />
+    <Compile Include="Profile\ProfileService.cs" />
+    <Compile Include="Profile\Profiles.cs" />
+    <Compile Include="Profile\SequenceSettings.cs" />
+    <Compile Include="Profile\TelescopeSettings.cs" />
     <Compile Include="Utility\RawConverter\FreeImageConverter.cs" />
     <Compile Include="Utility\RawConverter\IRawConverter.cs" />
     <Compile Include="Utility\SerialRelayInteraction.cs" />
@@ -572,7 +705,7 @@
     <Compile Include="ViewModel\FlatWizard\FlatWizardVM.cs" />
     <Compile Include="ViewModel\FlatWizard\IFlatWizardExposureTimeFinderService.cs" />
     <Compile Include="ViewModel\FlatWizard\IFlatWizardVM.cs" />
-    <Compile Include="ViewModel\FocuserVM.cs" />
+    <Compile Include="ViewModel\Equipment\Focuser\FocuserVM.cs" />
     <Compile Include="ViewModel\FramingAssistant\FrameLineMatrix2.cs" />
     <Compile Include="ViewModel\FramingAssistant\FramingConstellationBoundary.cs" />
     <Compile Include="ViewModel\FramingAssistant\SkyMapAnnotator.cs" />
@@ -582,10 +715,10 @@
     <Compile Include="ViewModel\FramingAssistant\FramingDSO.cs" />
     <Compile Include="ViewModel\FramingAssistant\FramingRectangle.cs" />
     <Compile Include="ViewModel\Interfaces\IApplicationStatusVM.cs" />
-    <Compile Include="ViewModel\Interfaces\ICameraVM.cs" />
-    <Compile Include="ViewModel\Interfaces\IDeviceVM.cs" />
-    <Compile Include="ViewModel\Interfaces\IFilterWheelVM.cs" />
-    <Compile Include="ViewModel\Interfaces\IFocuserVM.cs" />
+    <Compile Include="ViewModel\Equipment\Camera\ICameraVM.cs" />
+    <Compile Include="ViewModel\Equipment\IDeviceVM.cs" />
+    <Compile Include="ViewModel\Equipment\FilterWheel\IFilterWheelVM.cs" />
+    <Compile Include="ViewModel\Equipment\Focuser\IFocuserVM.cs" />
     <Compile Include="ViewModel\ImageControlVM.cs" />
     <Compile Include="Model\MyCamera\BinningMode.cs" />
     <Compile Include="Model\MyCamera\ICamera.cs" />
@@ -602,7 +735,7 @@
     <Compile Include="Utility\AsyncObservableCollection.cs" />
     <Compile Include="Utility\BaseINPC.cs" />
     <Compile Include="Utility\EnumBindingSourceExtension.cs" />
-    <Compile Include="Utility\ImageAnalysis.cs" />
+    <Compile Include="Utility\ImageAnalysis\StarDetection.cs" />
     <Compile Include="Utility\ImageArray\ImageArray.cs" />
     <Compile Include="Utility\Logger.cs" />
     <Compile Include="Utility\TabControlEx.cs" />
@@ -613,82 +746,91 @@
     <Compile Include="Utility\Utility.cs" />
     <Compile Include="Utility\ValidationRules.cs" />
     <Compile Include="ViewModel\BaseVM.cs" />
-    <Compile Include="ViewModel\FilterWheelVM.cs" />
+    <Compile Include="ViewModel\Equipment\FilterWheel\FilterWheelVM.cs" />
     <Compile Include="ViewModel\FrameFocusVM.cs" />
     <Compile Include="ViewModel\ImageHistoryVM.cs" />
     <Compile Include="ViewModel\ImageStatisticsVM.cs" />
     <Compile Include="ViewModel\ImagingVM.cs" />
-    <Compile Include="ViewModel\Interfaces\IGuiderChooserVM.cs" />
-    <Compile Include="ViewModel\Interfaces\IGuiderVM.cs" />
+    <Compile Include="ViewModel\Equipment\Guider\IGuiderChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\Guider\IGuiderVM.cs" />
     <Compile Include="ViewModel\Interfaces\IImagingVM.cs" />
-    <Compile Include="ViewModel\Interfaces\IRotatorVM.cs" />
-    <Compile Include="ViewModel\Interfaces\ITelescopeVM.cs" />
+    <Compile Include="ViewModel\Equipment\Rotator\IRotatorVM.cs" />
+    <Compile Include="ViewModel\Equipment\Telescope\ITelescopeVM.cs" />
+    <Compile Include="ViewModel\Equipment\Switch\ISwitchVM.cs" />
     <Compile Include="ViewModel\MeridianFlipVM.cs" />
     <Compile Include="ViewModel\OptionsVM.cs" />
-    <Compile Include="ViewModel\GuiderVM.cs" />
+    <Compile Include="ViewModel\Equipment\Guider\GuiderVM.cs" />
     <Compile Include="ViewModel\PlatesolveVM.cs" />
     <Compile Include="ViewModel\FramingAssistant\FrameLine.cs" />
     <Compile Include="ViewModel\PolarAlignmentVM.cs" />
     <Compile Include="ViewModel\ProfileSelectVM.cs" />
     <Compile Include="Model\RMS.cs" />
-    <Compile Include="ViewModel\RotatorVM.cs" />
+    <Compile Include="ViewModel\Equipment\Rotator\RotatorVM.cs" />
     <Compile Include="ViewModel\SequenceVM.cs" />
     <Compile Include="ViewModel\SkyAtlasVM.cs" />
     <Compile Include="ViewModel\TelescopeLatLongSyncVM.cs" />
-    <Compile Include="ViewModel\TelescopeVM.cs" />
+    <Compile Include="ViewModel\Equipment\Telescope\TelescopeVM.cs" />
     <Compile Include="ViewModel\ThumbnailVM.cs" />
     <Compile Include="ViewModel\VersionCheckVM.cs" />
     <Compile Include="ViewModel\FramingAssistant\ViewportFoV.cs" />
-    <Compile Include="ViewModel\WeatherDataVM.cs" />
     <Compile Include="View\AberrationInspectorView.xaml.cs">
       <DependentUpon>AberrationInspectorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\AltitudeChart.xaml.cs">
       <DependentUpon>AltitudeChart.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableAutoFocusView.xaml.cs">
+    <Compile Include="View\Equipment\Camera\FileCameraSetupView.xaml.cs">
+      <DependentUpon>FileCameraSetupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\WeatherData\WeatherDataView.xaml.cs">
+      <DependentUpon>WeatherDataView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Imaging\AnchorableAutoFocusView.xaml.cs">
       <DependentUpon>AnchorableAutoFocusView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableFocusTargetsView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableFocusTargetsView.xaml.cs">
       <DependentUpon>AnchorableFocusTargetsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableCameraControlView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableCameraControlView.xaml.cs">
       <DependentUpon>AnchorableCameraControlView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableCameraView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableCameraView.xaml.cs">
       <DependentUpon>AnchorableCameraView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableFilterWheelView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableFilterWheelView.xaml.cs">
       <DependentUpon>AnchorableFilterWheelView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableFocuserView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableFocuserView.xaml.cs">
       <DependentUpon>AnchorableFocuserView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableImageHistoryView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableImageHistoryView.xaml.cs">
       <DependentUpon>AnchorableImageHistoryView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableImageStatisticsView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableImageStatisticsView.xaml.cs">
       <DependentUpon>AnchorableImageStatisticsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableGuiderView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableGuiderView.xaml.cs">
       <DependentUpon>AnchorableGuiderView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorablePlateSolveView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorablePlateSolveView.xaml.cs">
       <DependentUpon>AnchorablePlateSolveView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorablePolarAlignmentView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorablePolarAlignmentView.xaml.cs">
       <DependentUpon>AnchorablePolarAlignmentView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableRotatorView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableRotatorView.xaml.cs">
       <DependentUpon>AnchorableRotatorView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableSequenceView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableSequenceView.xaml.cs">
       <DependentUpon>AnchorableSequenceView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableTelescopeView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableSwitchHubView.xaml.cs">
+      <DependentUpon>AnchorableSwitchHubView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Imaging\AnchorableTelescopeView.xaml.cs">
       <DependentUpon>AnchorableTelescopeView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\AnchorableWeatherDataView.xaml.cs">
+    <Compile Include="View\Imaging\AnchorableWeatherDataView.xaml.cs">
       <DependentUpon>AnchorableWeatherDataView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ApplicationMenu.xaml.cs">
@@ -700,13 +842,29 @@
     <Compile Include="View\CameraControlView.xaml.cs">
       <DependentUpon>CameraControlView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\CameraCoolingChartsView.xaml.cs">
+    <Compile Include="View\Equipment\Camera\CameraCoolingChartsView.xaml.cs">
       <DependentUpon>CameraCoolingChartsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\CameraView.xaml.cs">
+    <Compile Include="View\Equipment\Camera\CameraView.xaml.cs">
       <DependentUpon>CameraView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\FilterWheelView.xaml.cs">
+    <Compile Include="View\Equipment\Connector.xaml.cs">
+      <DependentUpon>Connector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Switch\Eagle.xaml.cs">
+      <DependentUpon>Eagle.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Switch\Generic.xaml.cs">
+      <DependentUpon>Generic.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Switch\SwitchHubView.xaml.cs">
+      <DependentUpon>SwitchHubView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Switch\SwitchTemplateSelector.cs" />
+    <Compile Include="View\Equipment\TabPage.xaml.cs">
+      <DependentUpon>TabPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\FilterWheel\FilterWheelView.xaml.cs">
       <DependentUpon>FilterWheelView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\FlatWizardFilterSettingsWrapperView.xaml.cs">
@@ -718,7 +876,7 @@
     <Compile Include="View\FlatWizardView.xaml.cs">
       <DependentUpon>FlatWizardView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\FocuserView.xaml.cs">
+    <Compile Include="View\Equipment\Focuser\FocuserView.xaml.cs">
       <DependentUpon>FocuserView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\FrameFocusView.xaml.cs">
@@ -742,7 +900,7 @@
     <Compile Include="View\ImageView.xaml.cs">
       <DependentUpon>ImageView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\ImagingView.xaml.cs">
+    <Compile Include="View\Imaging\ImagingView.xaml.cs">
       <DependentUpon>ImagingView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ManualRotatorView.xaml.cs">
@@ -757,19 +915,22 @@
     <Compile Include="View\Options\OptionsImagingView.xaml.cs">
       <DependentUpon>OptionsImagingView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Options\OptionsPlanetariumView.xaml.cs">
+      <DependentUpon>OptionsPlanetariumView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Options\OptionsPlateSolverView.xaml.cs">
       <DependentUpon>OptionsPlateSolverView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Options\OptionsView.xaml.cs">
       <DependentUpon>OptionsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\OverView.xaml.cs">
+    <Compile Include="View\Imaging\OverView.xaml.cs">
       <DependentUpon>OverView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\GuiderGraph.xaml.cs">
+    <Compile Include="View\Equipment\Guider\GuiderGraph.xaml.cs">
       <DependentUpon>GuiderGraph.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\GuiderView.xaml.cs">
+    <Compile Include="View\Equipment\Guider\GuiderView.xaml.cs">
       <DependentUpon>GuiderView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\PlateSolveView.xaml.cs">
@@ -781,7 +942,7 @@
     <Compile Include="View\PolarScopeView.xaml.cs">
       <DependentUpon>PolarScopeView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\RotatorView.xaml.cs">
+    <Compile Include="View\Equipment\Rotator\RotatorView.xaml.cs">
       <DependentUpon>RotatorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SequenceView.xaml.cs">
@@ -796,10 +957,10 @@
     <Compile Include="View\SkyMapOverlayView.xaml.cs">
       <DependentUpon>SkyMapOverlayView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\TelescopeLatLongSyncView.xaml.cs">
+    <Compile Include="View\Equipment\Telescope\TelescopeLatLongSyncView.xaml.cs">
       <DependentUpon>TelescopeLatLongSyncView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\TelescopeView.xaml.cs">
+    <Compile Include="View\Equipment\Telescope\TelescopeView.xaml.cs">
       <DependentUpon>TelescopeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ThumbnailListView.xaml.cs">
@@ -820,12 +981,16 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Locale\Locale.en-GB.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Locale\Locale.en-US.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Locale\Locale.it-IT.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -836,7 +1001,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ViewModel\ApplicationVM.cs" />
-    <Compile Include="ViewModel\CameraVM.cs" />
+    <Compile Include="ViewModel\Equipment\Camera\CameraVM.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -984,63 +1149,79 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableAutoFocusView.xaml">
+    <Page Include="View\Equipment\Camera\FileCameraSetupView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableFocusTargetsView.xaml">
+    <Page Include="View\Equipment\Camera\FLICameraSetupView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Equipment\WeatherData\WeatherDataView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableCameraControlView.xaml">
+    <Page Include="View\Imaging\AnchorableAutoFocusView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableCameraView.xaml">
+    <Page Include="View\Imaging\AnchorableFocusTargetsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableFilterWheelView.xaml">
+    <Page Include="View\Imaging\AnchorableCameraControlView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableFocuserView.xaml">
+    <Page Include="View\Imaging\AnchorableCameraView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableImageHistoryView.xaml">
+    <Page Include="View\Imaging\AnchorableFilterWheelView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableImageStatisticsView.xaml">
+    <Page Include="View\Imaging\AnchorableFocuserView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableGuiderView.xaml">
+    <Page Include="View\Imaging\AnchorableImageHistoryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorablePlateSolveView.xaml">
+    <Page Include="View\Imaging\AnchorableImageStatisticsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorablePolarAlignmentView.xaml">
+    <Page Include="View\Imaging\AnchorableGuiderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableRotatorView.xaml">
+    <Page Include="View\Imaging\AnchorablePlateSolveView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableSequenceView.xaml">
+    <Page Include="View\Imaging\AnchorablePolarAlignmentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableTelescopeView.xaml">
+    <Page Include="View\Imaging\AnchorableRotatorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\AnchorableWeatherDataView.xaml">
+    <Page Include="View\Imaging\AnchorableSequenceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Imaging\AnchorableSwitchHubView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Imaging\AnchorableTelescopeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Imaging\AnchorableWeatherDataView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1056,15 +1237,39 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\CameraCoolingChartsView.xaml">
+    <Page Include="View\Equipment\Camera\CameraCoolingChartsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\CameraView.xaml">
+    <Page Include="View\Equipment\Camera\CameraView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\FilterWheelView.xaml">
+    <Page Include="View\Equipment\Connector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\Switch\Eagle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\Switch\EagleSetupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\Switch\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\Switch\SwitchHubView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\TabPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\FilterWheel\FilterWheelView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1080,7 +1285,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\FocuserView.xaml">
+    <Page Include="View\Equipment\Focuser\FocuserView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1112,7 +1317,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\ImagingView.xaml">
+    <Page Include="View\Imaging\ImagingView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1132,6 +1337,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\Options\OptionsPlanetariumView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\Options\OptionsPlateSolverView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1140,15 +1349,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\OverView.xaml">
+    <Page Include="View\Imaging\OverView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\GuiderGraph.xaml">
+    <Page Include="View\Equipment\Guider\GuiderGraph.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\GuiderView.xaml">
+    <Page Include="View\Equipment\Guider\GuiderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1164,7 +1373,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\RotatorView.xaml">
+    <Page Include="View\Equipment\Rotator\RotatorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1184,11 +1393,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\TelescopeLatLongSyncView.xaml">
+    <Page Include="View\Equipment\Telescope\TelescopeLatLongSyncView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\TelescopeView.xaml">
+    <Page Include="View\Equipment\Telescope\TelescopeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1214,6 +1423,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="BootstrapAscomProfileStore.ps1" />
     <None Include="Documentation\images\nina-logo.png" />
     <None Include="Documentation\images\panel-autofocus.png" />
     <None Include="Documentation\images\panel-camera.png" />
@@ -1281,6 +1491,19 @@
       <DependentUpon>table-of-contents.md</DependentUpon>
     </None>
     <Resource Include="Resources\astrometry.net.png" />
+    <Content Include="Database\Initial\initial_data.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Database\Initial\initial_schema.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Database\Migration\1.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Database\Migration\2.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\FLI\libfli.dll" />
     <Content Include="External\x64\FreeImage\FreeImage.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1293,6 +1516,7 @@
     <Content Include="External\x64\SQLite\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="External\x86\FLI\libfli.dll" />
     <Content Include="External\x86\FreeImage\FreeImage.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1314,7 +1538,6 @@
     <Content Include="Utility\DCRaw\dcraw.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Database\NINA.sqlite" />
     <None Include="Documentation\NINA.md" />
     <None Include="Documentation\table-of-contents.md" />
     <Content Include="External\x64\NOVAS\cio_ra.bin">
@@ -1326,8 +1549,8 @@
     <Content Include="External\x86\NOVAS\cio_ra.bin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="NINA.ruleset" />
     <None Include="packages.config" />
-    <None Include="ReadMe.md" />
     <None Include="Resources\avalondock.config" />
     <SplashScreen Include="Resources\ninasplash.png" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -1444,33 +1667,47 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>echo "Copy Altair DLLs"
-xcopy "$(ProjectDir)External\x64\Altair" "$(TargetDir)\External\x64\Altair" /h/i/c/k/e/r/y
-xcopy "$(ProjectDir)External\x86\Altair" "$(TargetDir)\External\x86\Altair" /h/i/c/k/e/r/y
+    <PostBuildEvent>
+      echo "Copy Altair DLLs"
+      xcopy "$(ProjectDir)External\x64\Altair" "$(TargetDir)\External\x64\Altair" /h/i/c/k/e/r/y
+      xcopy "$(ProjectDir)External\x86\Altair" "$(TargetDir)\External\x86\Altair" /h/i/c/k/e/r/y
 
-echo "Copy ASI DLLs"
-xcopy "$(ProjectDir)External\x64\ASI" "$(TargetDir)\External\x64\ASI" /h/i/c/k/e/r/y
-xcopy "$(ProjectDir)External\x86\ASI" "$(TargetDir)\External\x86\ASI" /h/i/c/k/e/r/y
+      echo "Copy ASI DLLs"
+      xcopy "$(ProjectDir)External\x64\ASI" "$(TargetDir)\External\x64\ASI" /h/i/c/k/e/r/y
+      xcopy "$(ProjectDir)External\x86\ASI" "$(TargetDir)\External\x86\ASI" /h/i/c/k/e/r/y
 
-echo "Copy Atik DLLs"
-xcopy "$(ProjectDir)External\x64\Atik" "$(TargetDir)\External\x64\Atik" /h/i/c/k/e/r/y
-xcopy "$(ProjectDir)External\x86\Atik" "$(TargetDir)\External\x86\Atik" /h/i/c/k/e/r/y
+      echo "Copy Atik DLLs"
+      xcopy "$(ProjectDir)External\x64\Atik" "$(TargetDir)\External\x64\Atik" /h/i/c/k/e/r/y
+      xcopy "$(ProjectDir)External\x86\Atik" "$(TargetDir)\External\x86\Atik" /h/i/c/k/e/r/y
 
-echo "Copy Canon DLLs"
-xcopy "$(ProjectDir)External\x64\Canon" "$(TargetDir)\External\x64\Canon" /h/i/c/k/e/r/y
-xcopy "$(ProjectDir)External\x86\Canon" "$(TargetDir)\External\x86\Canon" /h/i/c/k/e/r/y
+      echo "Copy Canon DLLs"
+      xcopy "$(ProjectDir)External\x64\Canon" "$(TargetDir)\External\x64\Canon" /h/i/c/k/e/r/y
+      xcopy "$(ProjectDir)External\x86\Canon" "$(TargetDir)\External\x86\Canon" /h/i/c/k/e/r/y
 
-echo "Copy Nikon DLLs"
-xcopy "$(ProjectDir)External\x64\Nikon" "$(TargetDir)\External\x64\Nikon" /h/i/c/k/e/r/y
-xcopy "$(ProjectDir)External\x86\Nikon" "$(TargetDir)\External\x86\Nikon" /h/i/c/k/e/r/y
+      echo "Copy Nikon DLLs"
+      xcopy "$(ProjectDir)External\x64\Nikon" "$(TargetDir)\External\x64\Nikon" /h/i/c/k/e/r/y
+      xcopy "$(ProjectDir)External\x86\Nikon" "$(TargetDir)\External\x86\Nikon" /h/i/c/k/e/r/y
 
-echo "Copy ToupTek DLLs"
-xcopy "$(ProjectDir)External\x64\ToupTek" "$(TargetDir)\External\x64\ToupTek" /h/i/c/k/e/r/y
-xcopy "$(ProjectDir)External\x86\ToupTek" "$(TargetDir)\External\x86\ToupTek" /h/i/c/k/e/r/y
+      echo "Copy ToupTek DLLs"
+      xcopy "$(ProjectDir)External\x64\ToupTek" "$(TargetDir)\External\x64\ToupTek" /h/i/c/k/e/r/y
+      xcopy "$(ProjectDir)External\x86\ToupTek" "$(TargetDir)\External\x86\ToupTek" /h/i/c/k/e/r/y
 
-echo "Copy QHYCCD DLLs"
-xcopy "$(ProjectDir)External\x64\QHYCCD" "$(TargetDir)\External\x64\QHYCCD" /h/i/c/k/e/r/y
-xcopy "$(ProjectDir)External\x86\QHYCCD" "$(TargetDir)\External\x86\QHYCCD" /h/i/c/k/e/r/y</PostBuildEvent>
+      echo "Copy QHYCCD DLLs"
+      xcopy "$(ProjectDir)External\x64\QHYCCD" "$(TargetDir)\External\x64\QHYCCD" /h/i/c/k/e/r/y
+      xcopy "$(ProjectDir)External\x86\QHYCCD" "$(TargetDir)\External\x86\QHYCCD" /h/i/c/k/e/r/y
+
+      echo "Copy FLI DLLs"
+      xcopy "$(ProjectDir)External\x64\FLI" "$(TargetDir)\External\x64\FLI" /h/i/c/k/e/r/y
+      xcopy "$(ProjectDir)External\x86\FLI" "$(TargetDir)\External\x86\FLI" /h/i/c/k/e/r/y
+
+      if $(Platform) == x86 (
+      if exist "$(DevEnvDir)..\..\VC\Auxiliary\Build\vcvars32.bat" (
+      echo "Making x86 large address aware"
+      call "$(DevEnvDir)..\..\VC\Auxiliary\Build\vcvars32.bat"
+      editbin /largeaddressaware "$(TargetPath)"
+      )
+      )
+    </PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -1478,12 +1715,12 @@ xcopy "$(ProjectDir)External\x86\QHYCCD" "$(TargetDir)\External\x86\QHYCCD" /h/i
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
-    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets'))" />
     <Error Condition="!Exists('..\packages\VVVV.FreeImage.3.15.1.1\build\net40\VVVV.FreeImage.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\VVVV.FreeImage.3.15.1.1\build\net40\VVVV.FreeImage.targets'))" />
+    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.111.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.111.0\build\net46\System.Data.SQLite.Core.targets'))" />
   </Target>
-  <Import Project="..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets')" />
   <Import Project="..\packages\VVVV.FreeImage.3.15.1.1\build\net40\VVVV.FreeImage.targets" Condition="Exists('..\packages\VVVV.FreeImage.3.15.1.1\build\net40\VVVV.FreeImage.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <Import Project="..\packages\System.Data.SQLite.Core.1.0.111.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.111.0\build\net46\System.Data.SQLite.Core.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

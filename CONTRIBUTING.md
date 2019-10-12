@@ -46,6 +46,11 @@ For reporting bugs please use the following guideline to describe the problem:
 
 Also attach your log file of that session (if applicable), which can be found inside %localappdata%\NINA\Logs
 
+# Contributing documentation
+
+* Documentation is maintained separately in a different [repository](https://bitbucket.org/Isbeorn/nina.docs/src)
+* For a detailed guide on how to contribute to the documentation go to [N.I.N.A.'s documentation contributing guide](https://bitbucket.org/Isbeorn/nina.docs/src/develop/CONTRIBUTING.md)
+
 # Contributing code
 
 ## Quick Start
@@ -106,6 +111,20 @@ Release Candidate: 1.8.0.3001   (Displayed as "1.8 RC1")
 Beta: 1.8.0.2004                (Displayed as "1.8 BETA4")  
 Develop: 1.8.0.1022             (Displayed as "1.8 NIGHTLY #022")  
 
+## Database enhancements
+
+N.I.N.A. uses an SQLite database to store various data. The database is located inside %LOCALAPPDATA%\NINA\NINA.sqlite. 
+This database will be automatically created by the EntityFramework based on the files inside <SolutionDir>\NINA\Database\Initial and <SolutionDir>\NINA\Database\Migration
+* Files inside "Initial" folder will be called when the database needs to be created from scratch.
+	* Do not alter these files! Changes here won't get applied for an existing database (e.g. from a previous version)
+	* In case additions have to be made to the database, add a new migration file as described below
+* Files inside migration will be called depending on the current version that is returned via "PRAGMA user_version" of the existing database
+	* The migration is kept simple and follows a naming convention. The migration .sql file matches the version it should migrate to. (Files are named like "1.sql", "2.sql" etc.)
+	* This requires that the same user_version is set as the file name specifies inside the file (e.g. "1.sql" must contain a "PRAGMA user_version = 1;" statement)
+	* Only those files where the version is greater than the current database user_version will be executed
+* During migration the foreign key constraints are deactivated, for easier data manipulation. Be cautious to not corrupt data that way!
+* After a migration a VACUUM will be performed
+
 ## Setting up the developer environment
 
 * Install Visual Studio Community 2017 or better
@@ -117,12 +136,32 @@ Develop: 1.8.0.1022             (Displayed as "1.8 NIGHTLY #022")
 	* Atik SDK: SDK is available at https://www.atik-cameras.com/downloads/
 	* ToupTek SDK: SDK is available at http://www.touptek.com/upload/download/toupcamsdk.zip
 	* QHYCCD SDK: Instructions for integrating the QHYCCD SDK can be found in `NINA\Utility\CameraSDKs\QHYCCD\README.md`
+	* FLI SDK: Instructions for integrating the FLI SDK can be found in `NINA\Utility\CameraSDKs\FLI\README.md`
     * Due to licensing of those files, they must not be put into a public repository
 * Recommended Visual Studio Extensions:
     * [CodeMaid](http://www.codemaid.net/): A code cleanup Utility
     * [XAML Styler](https://github.com/Xavalon/XamlStyler/) A XAML style formatter
     * [MarkdownEditor](https://github.com/madskristensen/MarkdownEditor) To edit Markdown and auto generate HTML files
 * (Optional) To be able to build the setup projects you need to install [WiX](http://wixtoolset.org/) and their [Visual Studio plugin](https://marketplace.visualstudio.com/items?itemName=RobMensching.WixToolsetVisualStudio2017Extension)
+
+## Automated Unit Tests (AUT)
+
+* The project is using the [NUnit unit-testing framework](https://nunit.org/) to write and run AUTs
+* Additionally to write easy to read assertions [Fluent Assertions](https://fluentassertions.com/) are used
+  * These might seem verbose at first, but they really help reading and understanding the assertions
+* For detailed information about how to use these frameworks please go to their respective homepages
+
+## Running AUTs in Visual Studio
+
+* First double check that your processor architecture for AUTs is set to x64
+  * Test -> Test Settings -> Processor Architecture for AnyCPU Projects -> x64
+  * You also might need to uncheck and re-check "Keep Test Execution Engine Running" for this setting change to become active
+* Prior to running the tests, the project configuration should be set to [Debug][x64]
+* Activate the test explorer
+  * Test -> Windows -> Test Explorer
+* Inside the test explorer you will see all detected AUTs (after building the project)
+* To run all AUTs simply click on "Run All"
+* You can also run and/or debug single AUTs by right clicking inside the respective method and selecting "Run Test" or "Debug Test"
 
 ## Pull Requests
 

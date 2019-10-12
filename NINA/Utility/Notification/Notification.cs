@@ -140,23 +140,20 @@ namespace NINA.Utility.Notification {
 
         public override NotificationDisplayPart DisplayPart => _displayPart ?? (_displayPart = new CustomDisplayPart(this));
 
-        public CustomNotification(string message, bool isNeverEnding = false) {
-            Message = message;
+        public CustomNotification(string message, bool isNeverEnding = false) : base(message, new MessageOptions()) {
             Color = (Brush)System.Windows.Application.Current.Resources["ButtonBackgroundBrush"];
             ForegroundColor = (Brush)System.Windows.Application.Current.Resources["ButtonForegroundBrush"];
             IsNeverEnding = isNeverEnding;
         }
 
-        public CustomNotification(string message, Geometry symbol, bool isNeverEnding = false) {
-            Message = message;
+        public CustomNotification(string message, Geometry symbol, bool isNeverEnding = false) : base(message, new MessageOptions()) {
             Symbol = symbol;
             Color = (Brush)System.Windows.Application.Current.Resources["ButtonBackgroundBrush"];
             ForegroundColor = (Brush)System.Windows.Application.Current.Resources["ButtonForegroundBrush"];
             IsNeverEnding = isNeverEnding;
         }
 
-        public CustomNotification(string message, Geometry symbol, Brush color, Brush foregroundColor, bool isNeverEnding = false) {
-            Message = message;
+        public CustomNotification(string message, Geometry symbol, Brush color, Brush foregroundColor, bool isNeverEnding = false) : base(message, new MessageOptions()) {
             Symbol = symbol;
             Color = color;
             ForegroundColor = foregroundColor;
@@ -164,18 +161,6 @@ namespace NINA.Utility.Notification {
         }
 
         public bool IsNeverEnding { get; }
-
-        private string _message;
-
-        public string Message {
-            get {
-                return _message;
-            }
-            set {
-                _message = value;
-                RaisePropertyChanged();
-            }
-        }
 
         private Geometry _symbol;
 
@@ -338,14 +323,6 @@ namespace NINA.Utility.Notification {
                     CloseNotification(item.Notification);
                 }
                 return;
-            }
-
-            var notificationsToRemove2 = _notifications
-                .Where(x => x.Value.Notification.DisplayPart.GetMessage() == msg)
-                .Select(x => x.Value)
-                .ToList();
-            foreach (var item in notificationsToRemove2) {
-                CloseNotification(item.Notification);
             }
         }
 

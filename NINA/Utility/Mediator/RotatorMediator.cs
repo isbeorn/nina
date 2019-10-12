@@ -23,6 +23,7 @@
 
 using NINA.Model.MyRotator;
 using NINA.Utility.Mediator.Interfaces;
+using NINA.ViewModel.Equipment.Rotator;
 using NINA.ViewModel.Interfaces;
 using System.Threading.Tasks;
 

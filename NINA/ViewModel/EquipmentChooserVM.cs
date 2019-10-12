@@ -22,7 +22,7 @@
 #endregion "copyright"
 
 using NINA.Utility;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 using System.Linq;
 using System.Windows.Input;
@@ -31,10 +31,9 @@ namespace NINA.ViewModel {
 
     internal abstract class EquipmentChooserVM : BaseVM {
 
-        public EquipmentChooserVM(Type equipmentType, IProfileService profileService) : base(profileService) {
+        public EquipmentChooserVM(IProfileService profileService) : base(profileService) {
             this.profileService = profileService;
             SetupDialogCommand = new RelayCommand(OpenSetupDialog);
-            GetEquipment();
         }
 
         private AsyncObservableCollection<Model.IDevice> _devices;

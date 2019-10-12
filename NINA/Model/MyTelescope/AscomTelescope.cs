@@ -27,7 +27,7 @@ using ASCOM.DriverAccess;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 using System.Collections;
 using System.Threading;
@@ -44,6 +44,8 @@ namespace NINA.Model.MyTelescope {
         }
 
         private IProfileService profileService;
+
+        public string Category { get; } = "ASCOM";
 
         private void init() {
             _canGetAlignmentMode = true;
@@ -430,7 +432,7 @@ namespace NINA.Model.MyTelescope {
                 PierSide val = PierSide.pierUnknown;
                 try {
                     if (Connected && _canGetSideOfPier) {
-                        val = _telescope.SideOfPier;
+                        val = (PierSide)_telescope.SideOfPier;
                     }
                 } catch (PropertyNotImplementedException) {
                     _canGetSideOfPier = false;
@@ -440,7 +442,7 @@ namespace NINA.Model.MyTelescope {
             set {
                 try {
                     if (Connected && CanSetPierSide) {
-                        _telescope.SideOfPier = value;
+                        _telescope.SideOfPier = (ASCOM.DeviceInterface.PierSide)value;
                         RaisePropertyChanged();
                     }
                 } catch (PropertyNotImplementedException ex) {
@@ -1001,6 +1003,26 @@ namespace NINA.Model.MyTelescope {
                     }
                 } else {
                     Notification.ShowWarning(Locale.Loc.Instance["LblTelescopeCannotSlew"]);
+                }
+            } else {
+                Notification.ShowWarning(Locale.Loc.Instance["LblTelescopeNotConnected"]);
+            }
+        }
+
+        public void PulseGuide(GuideDirections direction, int duration) {
+            if (Connected) {
+                if (CanPulseGuide) {
+                    if (!AtPark) {
+                        try {
+                            _telescope.PulseGuide((ASCOM.DeviceInterface.GuideDirections)direction, duration);
+                        } catch (Exception e) {
+                            Notification.ShowError(e.Message);
+                        }
+                    } else {
+                        Notification.ShowWarning(Locale.Loc.Instance["LblTelescopeParkedWarn"]);
+                    }
+                } else {
+                    Notification.ShowWarning(Locale.Loc.Instance["LblTelescopeCannotPulseGuide"]);
                 }
             } else {
                 Notification.ShowWarning(Locale.Loc.Instance["LblTelescopeNotConnected"]);

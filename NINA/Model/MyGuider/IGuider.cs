@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,9 +32,9 @@ namespace NINA.Model.MyGuider {
         bool Connected { get; }
         double PixelScale { get; set; }
         string State { get; }
-        IGuideStep GuideStep { get; }
-
         string Name { get; }
+
+        event EventHandler<IGuideStep> GuideEvent;
 
         Task<bool> Connect();
 
@@ -70,17 +71,17 @@ namespace NINA.Model.MyGuider {
         double Dx { get; }
         double Dy { get; }
         double RADistanceRaw { get; set; }
-        double DecDistanceRaw { get; set; }
+        double DECDistanceRaw { get; set; }
         double RADistanceGuide { get; set; }
-        double DecDistanceGuide { get; set; }
+        double DECDistanceGuide { get; set; }
         double RADistanceRawDisplay { get; set; }
-        double DecDistanceRawDisplay { get; set; }
+        double DECDistanceRawDisplay { get; set; }
         double RADistanceGuideDisplay { get; set; }
         double DecDistanceGuideDisplay { get; set; }
         double RADuration { get; }
         string RADirection { get; }
         double DECDuration { get; }
-        string DecDirection { get; }
+        string DECDirection { get; }
         double StarMass { get; }
         double SNR { get; }
         double AvgDist { get; }

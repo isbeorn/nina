@@ -26,7 +26,7 @@ using ASCOM.DeviceInterface;
 using ASCOM.DriverAccess;
 using NINA.Utility;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -34,6 +34,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using NINA.Model.ImageData;
 
 namespace NINA.Model.MyCamera {
 
@@ -47,6 +48,8 @@ namespace NINA.Model.MyCamera {
 
         private string _id;
         private IProfileService profileService;
+
+        public string Category { get; } = "ASCOM";
 
         public string Id {
             get {
@@ -425,11 +428,18 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private bool canReadElectronsPerADU = true;
+
         public double ElectronsPerADU {
             get {
-                double val = -1;
-                if (Connected) {
-                    val = _camera.ElectronsPerADU;
+                double val = double.NaN;
+                if (canReadElectronsPerADU && Connected) {
+                    try {
+                        val = _camera.ElectronsPerADU;
+                    } catch (Exception) {
+                        val = double.NaN;
+                        canReadElectronsPerADU = false;
+                    }
                 }
                 return val;
             }
@@ -933,7 +943,7 @@ namespace NINA.Model.MyCamera {
 
         public double TemperatureSetPoint {
             get {
-                double val = double.MinValue;
+                double val = double.NaN;
                 if (Connected && CanSetTemperature) {
                     val = _camera.SetCCDTemperature;
                 }
@@ -1020,7 +1030,7 @@ namespace NINA.Model.MyCamera {
             _camera = null;
         }
 
-        public async Task<ImageArray> DownloadExposure(CancellationToken token, bool calculateStatistics) {
+        public async Task<IImageData> DownloadExposure(CancellationToken token) {
             using (MyStopWatch.Measure("ASCOM Download")) {
                 return await Task.Run(async () => {
                     try {
@@ -1031,13 +1041,10 @@ namespace NINA.Model.MyCamera {
                             }
                         }
 
-                        if (SensorType != SensorType.Color) {
-                            return await MyCamera.ImageArray.CreateInstance((Int32[,])ImageArray, BitDepth, SensorType != SensorType.Monochrome, calculateStatistics, profileService.ActiveProfile.ImageSettings.HistogramResolution);
-                        } else {
-                            return await MyCamera.ImageArray.CreateInstance((Int32[,,])ImageArray, BitDepth, false, calculateStatistics, profileService.ActiveProfile.ImageSettings.HistogramResolution);
-                        }
+                        return await ImageData.ImageData.Create((Int32[,])ImageArray, BitDepth, SensorType != SensorType.Monochrome);
                     } catch (OperationCanceledException) {
                     } catch (Exception ex) {
+                        Notification.ShowError(ex.Message);
                         Logger.Error(ex);
                     }
                     return null;
@@ -1047,8 +1054,8 @@ namespace NINA.Model.MyCamera {
 
         public void StartExposure(CaptureSequence sequence) {
             if (EnableSubSample) {
-                StartX = SubSampleX;
-                StartY = SubSampleY;
+                StartX = SubSampleX / BinX;
+                StartY = SubSampleY / BinY;
                 NumX = SubSampleWidth / BinX;
                 NumY = SubSampleHeight / BinY;
             } else {
@@ -1058,7 +1065,7 @@ namespace NINA.Model.MyCamera {
                 NumY = CameraYSize / BinY;
             }
 
-            bool isSnap = sequence.ImageType == CaptureSequence.ImageTypes.SNAP;
+            bool isSnap = sequence.ImageType == CaptureSequence.ImageTypes.SNAPSHOT;
 
             if (CanFastReadout) {
                 _camera.FastReadout = isSnap ? readoutModeForSnapImages != 0 : readoutModeForNormalImages != 0;
@@ -1119,6 +1126,18 @@ namespace NINA.Model.MyCamera {
         public bool CanSetOffset {
             get {
                 return false;
+            }
+        }
+
+        public int OffsetMin {
+            get {
+                return 0;
+            }
+        }
+
+        public int OffsetMax {
+            get {
+                return 0;
             }
         }
 
@@ -1189,7 +1208,7 @@ namespace NINA.Model.MyCamera {
             throw new System.NotImplementedException();
         }
 
-        public Task<ImageArray> DownloadLiveView(CancellationToken token) {
+        public Task<IImageData> DownloadLiveView(CancellationToken token) {
             throw new System.NotImplementedException();
         }
 

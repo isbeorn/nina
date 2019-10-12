@@ -28,7 +28,7 @@ using NINA.Model.MyFocuser;
 using NINA.Utility;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using OxyPlot;
 using System;
 using System.Collections.Generic;
@@ -36,6 +36,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using NINA.Utility.ImageAnalysis;
+using NINA.Model.ImageData;
 
 namespace NINA.ViewModel {
 
@@ -78,24 +80,29 @@ namespace NINA.ViewModel {
             this.applicationStatusMediator = applicationStatusMediator;
 
             FocusPoints = new AsyncObservableCollection<DataPoint>();
+            
 
             StartAutoFocusCommand = new AsyncCommand<bool>(
                 () =>
                     Task.Run(
-
                         async () => {
-                            _autoFocusCancelToken?.Dispose();
-                            _autoFocusCancelToken = new CancellationTokenSource();
-                            FilterInfo filter = null;
-                            if (this.filterInfo?.SelectedFilter != null) {
-                                filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Where(x => x.Position == this.filterInfo.SelectedFilter.Position).FirstOrDefault();
-                            }
-                            return await StartAutoFocus(filter, _autoFocusCancelToken.Token, new Progress<ApplicationStatus>(p => Status = p));
+                            return await StartAutoFocus(CommandInitializization(), _autoFocusCancelToken.Token, new Progress<ApplicationStatus>(p => Status = p));
                         }
                     ),
                 (p) => { return focuserInfo?.Connected == true && cameraInfo?.Connected == true; }
             );
             CancelAutoFocusCommand = new RelayCommand(CancelAutoFocus);
+
+            StartBacklashMeasurementCommand = new AsyncCommand<bool>(
+                () =>
+                    Task.Run(
+                        async () => {
+                            return await StartBacklashMeasurement(CommandInitializization(),_autoFocusCancelToken.Token, new Progress<ApplicationStatus>(p => Status = p));
+                        }
+                    ),
+                (p) => { return focuserInfo?.Connected == true && cameraInfo?.Connected == true; }
+            );
+            CancelBacklashMeasurementCommand = new RelayCommand(CancelAutoFocus);
         }
 
         private CancellationTokenSource _autoFocusCancelToken;
@@ -104,6 +111,7 @@ namespace NINA.ViewModel {
         private IImagingMediator imagingMediator;
         private IGuiderMediator guiderMediator;
         private IApplicationStatusMediator applicationStatusMediator;
+        private List<AForge.Point> brightestStarPositions = new List<AForge.Point>();
 
         public AsyncObservableCollection<DataPoint> FocusPoints {
             get {
@@ -158,20 +166,30 @@ namespace NINA.ViewModel {
 
         private int _focusPosition;
 
+        private FilterInfo CommandInitializization() {
+            _autoFocusCancelToken?.Dispose();
+            _autoFocusCancelToken = new CancellationTokenSource();
+            FilterInfo filter = null;
+            if (this.filterInfo?.SelectedFilter != null) {
+                filter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Where(x => x.Position == this.filterInfo.SelectedFilter.Position).FirstOrDefault();
+            }
+            return filter;
+        }
+
         private async Task GetFocusPoints(FilterInfo filter, int nrOfSteps, IProgress<ApplicationStatus> progress, CancellationToken token, int offset = 0) {
             var stepSize = profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize;
+
             if (offset != 0) {
                 //Move to initial position
                 _focusPosition = await focuserMediator.MoveFocuserRelative(offset * stepSize);
             }
 
             var comparer = new FocusPointComparer();
+
             for (int i = 0; i < nrOfSteps; i++) {
                 token.ThrowIfCancellationRequested();
 
-                var iarr = await TakeExposure(filter, token, progress);
-
-                var hfr = await EvaluateExposure(iarr, token, progress);
+                double hfr = await GetAverageHFR(filter, profileService.ActiveProfile.FocuserSettings.AutoFocusNumberOfFramesPerPoint, token, progress);
 
                 token.ThrowIfCancellationRequested();
 
@@ -186,39 +204,84 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task<ImageArray> TakeExposure(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        private async Task<IImageData> TakeExposure(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
             Logger.Trace("Starting Exposure for autofocus");
             double expTime = profileService.ActiveProfile.FocuserSettings.AutoFocusExposureTime;
             if (filter != null && filter.AutoFocusExposureTime > 0) {
                 expTime = filter.AutoFocusExposureTime;
             }
-            var seq = new CaptureSequence(expTime, CaptureSequence.ImageTypes.SNAP, filter, null, 1);
+            var seq = new CaptureSequence(expTime, CaptureSequence.ImageTypes.SNAPSHOT, filter, null, 1);
+            seq.EnableSubSample = _setSubSample;
+            seq.Binning = new BinningMode(profileService.ActiveProfile.FocuserSettings.AutoFocusBinning, profileService.ActiveProfile.FocuserSettings.AutoFocusBinning);
 
-            return await imagingMediator.CaptureImage(seq, token, progress);
+            var oldAutoStretch = imagingMediator.SetAutoStretch(true);
+            var oldDetectStars = imagingMediator.SetDetectStars(false);
+            IImageData image;
+            try { 
+                image = await imagingMediator.CaptureAndPrepareImage(seq, token, progress);
+            } catch (Exception e) {
+                Logger.Warning("Camera error, trying without subsample");
+                Logger.Warning(e.Message);
+                _setSubSample = false;
+                seq.EnableSubSample = _setSubSample;
+                image = await imagingMediator.CaptureAndPrepareImage(seq, token, progress);
+            }
+            imagingMediator.SetAutoStretch(oldAutoStretch);
+            imagingMediator.SetDetectStars(oldDetectStars);
+
+            return image;
         }
 
-        private async Task<double> EvaluateExposure(ImageArray iarr, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            Logger.Trace("Evaluating Expsoure");
-            var source = ImageAnalysis.CreateSourceFromArray(iarr, System.Windows.Media.PixelFormats.Gray16);
-            source = await ImageControlVM.StretchAsync(iarr, source, profileService.ActiveProfile.ImageSettings.AutoStretchFactor, profileService.ActiveProfile.ImageSettings.BlackClipping);
-            var analysis = new ImageAnalysis(source, iarr);
-            await analysis.DetectStarsAsync(progress, token);
+        private async Task<double> EvaluateExposure(IImageData image, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            Logger.Trace("Evaluating Exposure");
+            System.Windows.Media.PixelFormat pixelFormat;
+
+            if (image.Statistics.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage) {
+                pixelFormat = System.Windows.Media.PixelFormats.Rgb48;
+            } else {
+                pixelFormat = System.Windows.Media.PixelFormats.Gray16;
+            }
+
+            var analysis = new StarDetection(image, pixelFormat, profileService.ActiveProfile.ImageSettings.StarSensitivity, profileService.ActiveProfile.ImageSettings.NoiseReduction);
+            if (profileService.ActiveProfile.FocuserSettings.AutoFocusCropRatio < 1 && !_setSubSample) {
+                analysis.IgnoreImageEdges = true;
+                analysis.CropRatio = profileService.ActiveProfile.FocuserSettings.AutoFocusCropRatio;
+            }
+
+            //Let's set the brightest star list - if it's the first exposure, it's going to be empty
+            analysis.BrightestStarPositions = brightestStarPositions;
+            analysis.NumberOfAFStars = profileService.ActiveProfile.FocuserSettings.AutoFocusUseBrightestStars;
+            await analysis.DetectAsync(progress, token);
+
+            //If current star list is empty, we're doing the first AF point, let's get the brightest star lists from the Star Detector instance
+            if (brightestStarPositions.Count() == 0) {
+                brightestStarPositions = analysis.BrightestStarPositions;
+            }
+
+            if (profileService.ActiveProfile.ImageSettings.AnnotateImage) {
+                imagingMediator.SetImage(analysis.GetAnnotatedImage());
+            }
 
             Logger.Debug(string.Format("Current Focus: Position: {0}, HRF: {1}", _focusPosition, analysis.AverageHFR));
 
             return analysis.AverageHFR;
         }
 
-        private async Task ValidateCalculatedFocusPosition(DataPoint focusPoint, FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        private async Task<bool> ValidateCalculatedFocusPosition(DataPoint focusPoint, FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress, double initialHFR) {
             _focusPosition = await focuserMediator.MoveFocuser((int)focusPoint.X);
 
-            var iarr = await TakeExposure(filter, token, progress);
-
-            var hfr = await EvaluateExposure(iarr, token, progress);
+            double hfr = await GetAverageHFR(filter, profileService.ActiveProfile.FocuserSettings.AutoFocusNumberOfFramesPerPoint, token, progress);
 
             if (hfr > (focusPoint.Y * 1.25)) {
                 Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFocusPointValidationFailed"], focusPoint.X, focusPoint.Y, hfr));
             }
+
+            if (initialHFR != 0 && hfr > (initialHFR * 1.15)) {
+                Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblAutoFocusNewWorseThanOriginal"], hfr, initialHFR));
+                Logger.Warning(string.Format("New focus point HFR {0} is significantly worse than original HFR {1}", hfr, initialHFR));
+                return false;
+            }
+            return true;
         }
 
         private void CalculateTrends() {
@@ -229,68 +292,240 @@ namespace NINA.ViewModel {
             RightTrend = new TrendLine(rightTrendPoints);
         }
 
+        private async Task<double> GetAverageHFR(FilterInfo filter, int exposuresPerFocusPoint, CancellationToken token, IProgress<ApplicationStatus> progress) {
+
+            //Average HFR  of multiple exposures (if configured this way)
+            double sumHfr = 0;
+            for (int i = 0; i < exposuresPerFocusPoint; i++) {
+                var image = await TakeExposure(filter, token, progress);
+                var partialHfr = await EvaluateExposure(image, token, progress);
+                sumHfr = sumHfr + partialHfr;
+                token.ThrowIfCancellationRequested();
+            }
+
+            return sumHfr / exposuresPerFocusPoint;
+        }
+
+        public enum Direction {
+            IN = 1,
+            OUT = -1
+        }
+
+        public async Task<bool> StartBacklashMeasurement(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            Logger.Trace("Starting Backlash Measurement");
+            int initialPosition = focuserInfo.Position;
+            int newInitialPosition = initialPosition;
+            LeftTrend = null;
+            RightTrend = null;
+
+            var startBacklashDiag = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblStartBacklashMeasurementConfirmation"], Locale.Loc.Instance["LblStartBacklashQuestion"], System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
+            if (startBacklashDiag == System.Windows.MessageBoxResult.Cancel) {
+                return false;
+            }
+            
+            //Save previous backlash values
+            int oldBacklashIn = profileService.ActiveProfile.FocuserSettings.BacklashIn;
+            int oldBacklashOut = profileService.ActiveProfile.FocuserSettings.BacklashOut;
+            int backlashIN = 0;
+            int backlashOUT = 0;
+            try {
+                //set previous backlash values to zero, so current backlash settings do not impair measurement
+                profileService.ActiveProfile.FocuserSettings.BacklashIn = profileService.ActiveProfile.FocuserSettings.BacklashOut = 0;
+                await this.guiderMediator.StopGuiding(token);
+                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStartingINBacklashMeasurement"] });
+                backlashIN = await MeasureBacklash(filter, Direction.IN, token, progress);
+
+                //Getting back to initial position, including measured backlash
+                newInitialPosition = initialPosition - backlashIN;
+                _focusPosition = await focuserMediator.MoveFocuser(newInitialPosition);
+
+                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStartingOUTBacklashMeasurement"] });
+                backlashOUT = await MeasureBacklash(filter, Direction.OUT, token, progress);
+                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocusRestoringOriginalPosition"] });
+                var saveBacklashDiag = MyMessageBox.MyMessageBox.Show(String.Format(Locale.Loc.Instance["LblBacklashMeasurements"], backlashIN, backlashOUT), Locale.Loc.Instance["LblSaveBacklashQuestion"], System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
+                if (saveBacklashDiag == System.Windows.MessageBoxResult.OK) {
+                    //Set new backlash values
+                    profileService.ActiveProfile.FocuserSettings.BacklashIn = backlashIN;
+                    profileService.ActiveProfile.FocuserSettings.BacklashOut = backlashOUT;
+                } else {
+                    //Set back old backlash values
+                    profileService.ActiveProfile.FocuserSettings.BacklashIn = oldBacklashIn;
+                    profileService.ActiveProfile.FocuserSettings.BacklashOut = oldBacklashOut;
+                }
+            } catch(OperationCanceledException) {
+                FocusPoints.Clear();
+            } catch(Exception e) {
+                Logger.Warning(e.Message);
+                Notification.ShowError(Locale.Loc.Instance["LblBacklashMeasurementException"]);
+            } finally {
+                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocusRestoringOriginalPosition"] });
+                _focusPosition = await focuserMediator.MoveFocuser(newInitialPosition);
+            }
+            return true;
+        }
+
+        public async Task<int> MeasureBacklash(FilterInfo filter, Direction direction, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            FocusPoints.Clear();
+            int stepSize = profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize;
+            int offset = profileService.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps;
+            int backlash = 0;
+            var comparer = new FocusPointComparer();
+            //initial move far in or out of focus
+            _focusPosition = await focuserMediator.MoveFocuserRelative((int)Math.Ceiling(offset * stepSize * 2d * (int)direction));
+            token.ThrowIfCancellationRequested();
+            //get HFR at this point
+            double hfr0 = await GetAverageHFR(filter, 3, token, progress);
+            token.ThrowIfCancellationRequested();
+            FocusPoints.AddSorted(new DataPoint(_focusPosition, hfr0), comparer);
+
+            int counter = 0;
+            double hfr1 = 0;
+            do { 
+                //Move back one step
+                _focusPosition = await focuserMediator.MoveFocuserRelative((int)Math.Round(stepSize * (int)direction * -1d));
+                token.ThrowIfCancellationRequested();
+                //get HFR at this point
+                hfr1 = await GetAverageHFR(filter, 3, token, progress);
+                token.ThrowIfCancellationRequested();
+                FocusPoints.AddSorted(new DataPoint(_focusPosition, hfr1), comparer);
+                counter++;
+            } while (Math.Abs((hfr0 - hfr1)/hfr1) < 0.03 && counter < 3); //Slope is almost zero, backlash not cleared yet
+
+            //Move back one more step
+            _focusPosition = await focuserMediator.MoveFocuserRelative((int)Math.Round(stepSize * (int)direction * -1d));
+            token.ThrowIfCancellationRequested();
+            //get HFR at this point
+            double hfr2 = await GetAverageHFR(filter, 3, token, progress);
+            token.ThrowIfCancellationRequested();
+            FocusPoints.AddSorted(new DataPoint(_focusPosition, hfr2), comparer);
+
+            //This far from focus, hfr0, hfr1, and hfr2 should be on a line, let's get the slopes
+            double measuredSlope = Math.Abs((hfr0 - hfr1) / (stepSize * counter));
+            double idealSlope = Math.Abs((hfr1 - hfr2) / stepSize);
+
+
+            if (hfr1 != hfr2 && measuredSlope < idealSlope) {
+                backlash = (int)Math.Round((1 - measuredSlope / idealSlope) * stepSize * counter);
+            }
+
+            return backlash;
+        }
+
         public async Task<bool> StartAutoFocus(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
             Logger.Trace("Starting Autofocus");
             FocusPoints.Clear();
             LeftTrend = null;
             RightTrend = null;
             _minimum = new DataPoint(0, 0);
+            int numberOfAttempts = 0;
+            int initialFocusPosition;
+            double initialHFR = 0;
+
+            System.Drawing.Rectangle oldSubSample = new System.Drawing.Rectangle(); 
+
+            if (profileService.ActiveProfile.FocuserSettings.AutoFocusCropRatio < 1 && cameraInfo.CanSubSample) {
+                oldSubSample = new System.Drawing.Rectangle(cameraInfo.SubSampleX, cameraInfo.SubSampleY, cameraInfo.SubSampleWidth, cameraInfo.SubSampleHeight);
+                int subSampleWidth = (int)Math.Round(cameraInfo.XSize * profileService.ActiveProfile.FocuserSettings.AutoFocusCropRatio);
+                int subSampleHeight = (int)Math.Round(cameraInfo.YSize * profileService.ActiveProfile.FocuserSettings.AutoFocusCropRatio);
+                int subSampleX = (int)Math.Round((cameraInfo.XSize - subSampleWidth) / 2.0d);
+                int subSampleY = (int)Math.Round((cameraInfo.YSize - subSampleHeight) / 2.0d);
+                try { 
+                    cameraMediator.SetSubSampleArea(subSampleX, subSampleY, subSampleWidth, subSampleHeight);
+                } catch (Exception e) {
+                    Logger.Warning("Could not set subsample of rectangle X = "+ subSampleX+", Y = "+ subSampleY+", Width = "+subSampleWidth+", Height = "+subSampleHeight);
+                    Logger.Warning(e.Message);
+                    _setSubSample = false;
+                }
+                _setSubSample = true;
+            }
+
             try {
                 await this.guiderMediator.StopGuiding(token);
 
-                var offsetSteps = profileService.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps;
-                var offset = offsetSteps;
+                //Get initial position information, as average of multiple exposures, if configured this way
+                initialHFR = await GetAverageHFR(filter, profileService.ActiveProfile.FocuserSettings.AutoFocusNumberOfFramesPerPoint, token, progress);
+                initialFocusPosition = focuserInfo.Position;
 
-                var nrOfSteps = offsetSteps + 1;
-
-                await GetFocusPoints(filter, nrOfSteps, progress, token, offset);
-
-                var laststeps = offset;
-
-                int leftcount = LeftTrend.DataPoints.Count(), rightcount = RightTrend.DataPoints.Count();
-                //When datapoints are not sufficient analyze and take more
+                bool reattempt;
                 do {
-                    if (leftcount == 0 && rightcount == 0) {
-                        Notification.ShowWarning(Locale.Loc.Instance["LblAutoFocusNotEnoughtSpreadedPoints"]);
-                        progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocusNotEnoughtSpreadedPoints"] });
-                        return false;
-                    }
+                    reattempt = false;
+                    numberOfAttempts = numberOfAttempts + 1;
 
-                    var remainingSteps = Math.Min(Math.Abs(leftcount - rightcount), offsetSteps);
-                    if (leftcount == rightcount && leftcount < offsetSteps) {
-                        remainingSteps = offsetSteps - leftcount;
-                    }
+                    var offsetSteps = profileService.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps;
+                    var offset = offsetSteps;
 
-                    if ((LeftTrend.DataPoints.Count() < offsetSteps && leftcount < rightcount)
-                            || (leftcount == rightcount && remainingSteps > 0)) {
-                        Logger.Trace("More datapoints needed to the left of the minimum");
-                        //More points needed to the left
-                        laststeps += remainingSteps;
-                        await GetFocusPoints(filter, remainingSteps, progress, token, -1);
-                    } else if (RightTrend.DataPoints.Count() < offsetSteps && leftcount > rightcount) {
-                        Logger.Trace("More datapoints needed to the right of the minimum");
-                        //More points needed to the right
-                        offset = laststeps + remainingSteps;  //todo
-                        laststeps = remainingSteps - 1;
-                        await GetFocusPoints(filter, remainingSteps, progress, token, offset);
-                    }
+                    var nrOfSteps = offsetSteps + 1;
 
-                    leftcount = LeftTrend.DataPoints.Count();
-                    rightcount = RightTrend.DataPoints.Count();
+                    await GetFocusPoints(filter, nrOfSteps, progress, token, offset);
+
+                    var laststeps = offset;
+
+                    int leftcount = LeftTrend.DataPoints.Count(), rightcount = RightTrend.DataPoints.Count();
+                    //When datapoints are not sufficient analyze and take more
+                    do {
+                        if (leftcount == 0 && rightcount == 0) {
+                            Notification.ShowWarning(Locale.Loc.Instance["LblAutoFocusNotEnoughtSpreadedPoints"]);
+                            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocusNotEnoughtSpreadedPoints"] });
+                            //Reattempting in this situation is very likely meaningless - just move back to initial focus position and call it a day
+                            await focuserMediator.MoveFocuser(initialFocusPosition);
+                            return false;
+                        }
+
+                        var remainingSteps = Math.Min(Math.Abs(leftcount - rightcount), offsetSteps);
+                        if (leftcount == rightcount && leftcount < offsetSteps) {
+                            remainingSteps = offsetSteps - leftcount;
+                        }
+
+                        if ((LeftTrend.DataPoints.Count() < offsetSteps && leftcount < rightcount)
+                                || (leftcount == rightcount && remainingSteps > 0)) {
+                            Logger.Trace("More datapoints needed to the left of the minimum");
+                            //More points needed to the left
+                            laststeps += remainingSteps;
+                            await GetFocusPoints(filter, remainingSteps, progress, token, -1);
+                        } else if (RightTrend.DataPoints.Count() < offsetSteps && leftcount > rightcount) {
+                            Logger.Trace("More datapoints needed to the right of the minimum");
+                            //More points needed to the right
+                            offset = laststeps + remainingSteps;  //todo
+                            laststeps = remainingSteps - 1;
+                            await GetFocusPoints(filter, remainingSteps, progress, token, offset);
+                        }
+
+                        leftcount = LeftTrend.DataPoints.Count();
+                        rightcount = RightTrend.DataPoints.Count();
+
+                        token.ThrowIfCancellationRequested();
+                    } while (rightcount < offsetSteps || leftcount < offsetSteps);
 
                     token.ThrowIfCancellationRequested();
-                } while (rightcount < offsetSteps || leftcount < offsetSteps);
 
-                token.ThrowIfCancellationRequested();
+                    //Get Trendline Intersection
+                    var p = LeftTrend.Intersect(RightTrend);
 
-                //Get Trendline Intersection
-                var p = LeftTrend.Intersect(RightTrend);
+                    LastAutoFocusPoint = new AutoFocusPoint { Focuspoint = p, Temperature = focuserInfo.Temperature, Timestamp = DateTime.Now };
 
-                LastAutoFocusPoint = new AutoFocusPoint { Focuspoint = p, Temperature = focuserInfo.Temperature, Timestamp = DateTime.Now };
+                    //Todo when data is too noisy for trend lines find something else
 
-                //Todo when data is too noisy for trend lines find something else
+                    bool goodAutoFocus = await ValidateCalculatedFocusPosition(p, filter, token, progress, initialHFR);
 
-                await ValidateCalculatedFocusPosition(p, filter, token, progress);
+                    if (!goodAutoFocus) {
+                        if (numberOfAttempts < profileService.ActiveProfile.FocuserSettings.AutoFocusTotalNumberOfAttempts) {
+                            Notification.ShowWarning(Locale.Loc.Instance["LblAutoFocusReattempting"]);
+                            await focuserMediator.MoveFocuser(initialFocusPosition);
+                            Logger.Warning("Potentially bad auto-focus. Reattempting.");
+                            FocusPoints.Clear();
+                            LeftTrend = null;
+                            RightTrend = null;
+                            _minimum = new DataPoint(0, 0);
+                            reattempt = true;
+                        } else {
+                            Notification.ShowWarning(Locale.Loc.Instance["LblAutoFocusRestoringOriginalPosition"]);
+                            Logger.Warning("Potentially bad auto-focus. Restoring original focus position.");
+                            reattempt = false;
+                            await focuserMediator.MoveFocuser(initialFocusPosition);
+                            return false;
+                        }
+                    }
+                } while (reattempt);
                 //_focusPosition = await Mediator.Instance.RequestAsync(new MoveFocuserMessage() { Position = (int)p.X, Absolute = true, Token = token });
             } catch (OperationCanceledException) {
                 FocusPoints.Clear();
@@ -298,10 +533,20 @@ namespace NINA.ViewModel {
                 Notification.ShowError(ex.Message);
                 Logger.Error(ex);
             } finally {
+                //Restore original sub-sample rectangle, if appropriate
+                if (_setSubSample && oldSubSample.X >= 0 && oldSubSample.Y >= 0 && oldSubSample.Width > 0 && oldSubSample.Height > 0) {
+                    try { 
+                        cameraMediator.SetSubSampleArea((int)oldSubSample.X, (int)oldSubSample.Y, (int)oldSubSample.Width, (int)oldSubSample.Height);
+                    } catch(Exception e) {
+                        Logger.Warning("Could not set back old sub sample area");
+                        Logger.Warning(e.Message);
+                        Notification.ShowError(e.Message);
+                    }
+                }
+                brightestStarPositions.Clear();
                 await this.guiderMediator.StartGuiding(token);
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
-
             return true;
         }
 
@@ -311,6 +556,7 @@ namespace NINA.ViewModel {
         private IFocuserMediator focuserMediator;
         private IFilterWheelMediator filterWheelMediator;
         private FilterWheelInfo filterInfo;
+        private bool _setSubSample = false;
 
         public AutoFocusPoint LastAutoFocusPoint {
             get {
@@ -338,8 +584,16 @@ namespace NINA.ViewModel {
             this.filterInfo = deviceInfo;
         }
 
+        public void Dispose() {
+            this.cameraMediator?.RemoveConsumer(this);
+            this.filterWheelMediator?.RemoveConsumer(this);
+            this.focuserMediator?.RemoveConsumer(this);
+        }
+
         public ICommand StartAutoFocusCommand { get; private set; }
         public ICommand CancelAutoFocusCommand { get; private set; }
+        public ICommand StartBacklashMeasurementCommand { get; private set; }
+        public ICommand CancelBacklashMeasurementCommand { get; private set; }
     }
 
     public class AutoFocusPoint {

@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using NINA.Utility.Extensions;
 using System;
@@ -40,7 +41,7 @@ namespace NINA.Utility.RawConverter {
         private static string DCRAWLOCATION = @"Utility\DCRaw\dcraw.exe";
         public static string FILEPREFIX = "dcraw_tmp";
 
-        public async Task<ImageArray> ConvertToImageArray(MemoryStream s, int bitDepth, int histogramResolution, bool calculateStatistics, CancellationToken token) {
+        public async Task<IImageData> Convert(MemoryStream s, int bitDepth, CancellationToken token) {
             return await Task.Run(async () => {
                 using (MyStopWatch.Measure()) {
                     var fileextension = ".raw";
@@ -50,7 +51,7 @@ namespace NINA.Utility.RawConverter {
                         s.WriteTo(filestream);
                     }
 
-                    ImageArray iarr = null;
+                    ImageData data = null;
                     var outputFile = Path.Combine(Utility.APPLICATIONTEMPPATH, FILEPREFIX + ".tiff");
                     try {
                         System.Diagnostics.Process process;
@@ -97,10 +98,10 @@ namespace NINA.Utility.RawConverter {
                                 //Due to the settings of dcraw decoding the values will be stretched to 16 bits
                                 bitDepth = 16;
 
-                                iarr = await ImageArray.CreateInstance(pixels, (int)bmp.PixelWidth, (int)bmp.PixelHeight, bitDepth, true, calculateStatistics, histogramResolution);
-                                iarr.RAWData = s.ToArray();
+                                data = new ImageData(pixels, (int)bmp.PixelWidth, (int)bmp.PixelHeight, bitDepth, true);
+                                data.Data.RAWData = s.ToArray();
                             } else {
-                                Logger.Error("File not found: " + outputFile, null);
+                                Logger.Error("File not found: " + outputFile);
                                 throw new Exception("Error occured during DCRaw conversion." + Environment.NewLine + sb.ToString());
                             }
                         }
@@ -115,7 +116,7 @@ namespace NINA.Utility.RawConverter {
                             File.Delete(outputFile);
                         }
                     }
-                    return iarr;
+                    return data;
                 }
             });
         }

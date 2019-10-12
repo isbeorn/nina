@@ -336,6 +336,455 @@ namespace NINA.Utility {
             return SOFA_Taitt(tai1, tai2, ref tt1, ref tt2);
         }
 
+        /// <summary>
+        /// Horizon to equatorial coordinates: transform azimuth and altitude
+        /// to hour angle and declination.
+        ///
+        /// Given:
+        /// az double azimuth
+        /// el double altitude (informally, elevation)
+        /// phi double site latitude
+        ///
+        /// Returned:
+        /// ha double hour angle (local)
+        /// dec double declination
+        ///
+        /// Notes:
+        ///
+        /// 1) All the arguments are angles in radians.
+        ///
+        /// 2) The sign convention for azimuth is north zero, east +pi/2.
+        ///
+        /// 3) HA is returned in the range +/−pi. Declination is returned in
+        /// the range +/−pi/2.
+        ///
+        /// 4) The latitude phi is pi/2 minus the angle between the Earth’s
+        /// rotation axis and the adopted zenith. In many applications it
+        /// will be sufficient to use the published geodetic latitude of the
+        /// site. In very precise (sub−arcsecond) applications, phi can be
+        /// corrected for polar motion.
+        ///
+        /// 5) The azimuth az must be with respect to the rotational north pole,
+        /// as opposed to the ITRS pole, and an azimuth with respect to north
+        /// on a map of the Earth’s surface will need to be adjusted for
+        /// polar motion if sub−arcsecond accuracy is required.
+        ///
+        /// 6) Should the user wish to work with respect to the astronomical
+        /// zenith rather than the geodetic zenith, phi will need to be
+        /// adjusted for deflection of the vertical (often tens of
+        /// arcseconds), and the zero point of ha will also be affected.
+        ///
+        /// 7) The transformation is the same as Ve = Ry(phi−pi/2)*Rz(pi)*Vh,
+        /// where Ve and Vh are lefthanded unit vectors in the (ha,dec) and
+        /// (az,el) systems respectively and Rz and Ry are rotations about
+        /// first the z−axis and then the y−axis. (n.b. Rz(pi) simply
+        /// reverses the signs of the x and y components.) For efficiency,
+        /// the algorithm is written out rather than calling other utility
+        /// functions. For applications that require even greater
+        /// efficiency, additional savings are possible if constant terms
+        /// such as functions of latitude are computed once and for all.
+        ///
+        /// 8) Again for efficiency, no range checking of arguments is carried
+        /// out.
+        /// </summary>
+        /// <param name="azimuth">azimuth</param>
+        /// <param name="altitude">altitude</param>
+        /// <param name="latitude">site latitude</param>
+        /// <param name="hourAngle">hour angle (local)</param>
+        /// <param name="declination">declination</param>
+        /// <returns></returns>
+        public static short Ae2hd(double azimuth, double altitude, double latitude, ref double hourAngle, ref double declination) {
+            return SOFA_Ae2hd(azimuth, altitude, latitude, ref hourAngle, ref declination);
+        }
+
+        /// <summary>
+        /// Equatorial to horizon coordinates: transform hour angle and
+        /// declination to azimuth and altitude.
+        ///
+        /// This function is part of the International Astronomical Union’s
+        /// SOFA (Standards of Fundamental Astronomy) software collection.
+        ///
+        /// Status: support function.
+        ///
+        /// Given:
+        /// ha double hour angle (local)
+        /// dec double declination
+        /// phi double site latitude
+        ///
+        /// Returned:
+        /// *az double azimuth
+        /// *el double altitude (informally, elevation)
+        ///
+        /// Notes:
+        ///
+        /// 1) All the arguments are angles in radians.
+        ///
+        /// 2) Azimuth is returned in the range 0−2pi; north is zero, and east
+        /// is +pi/2. Altitude is returned in the range +/− pi/2.
+        ///
+        /// 3) The latitude phi is pi/2 minus the angle between the Earth’s
+        /// rotation axis and the adopted zenith. In many applications it
+        /// will be sufficient to use the published geodetic latitude of the
+        /// site. In very precise (sub−arcsecond) applications, phi can be
+        /// corrected for polar motion.
+        ///
+        /// 4) The returned azimuth az is with respect to the rotational north
+        /// pole, as opposed to the ITRS pole, and for sub−arcsecond
+        /// accuracy will need to be adjusted for polar motion if it is to
+        /// be with respect to north on a map of the Earth’s surface.
+        ///
+        /// 5) Should the user wish to work with respect to the astronomical
+        /// zenith rather than the geodetic zenith, phi will need to be
+        /// adjusted for deflection of the vertical (often tens of
+        /// arcseconds), and the zero point of the hour angle ha will also
+        /// be affected.
+        ///
+        /// 6) The transformation is the same as Vh = Rz(pi)*Ry(pi/2−phi)*Ve,
+        /// where Vh and Ve are lefthanded unit vectors in the (az,el) and
+        /// (ha,dec) systems respectively and Ry and Rz are rotations about
+        /// first the y−axis and then the z−axis. (n.b. Rz(pi) simply
+        /// reverses the signs of the x and y components.) For efficiency,
+        /// the algorithm is written out rather than calling other utility
+        /// functions. For applications that require even greater
+        /// efficiency, additional savings are possible if constant terms
+        /// such as functions of latitude are computed once and for all.
+        ///
+        /// 7) Again for efficiency, no range checking of arguments is carried
+        /// out.
+        /// </summary>
+        /// <param name="hourAngle">hour angle (local)</param>
+        /// <param name="declination">declination</param>
+        /// <param name="latitude">site latitude</param>
+        /// <param name="azimuth">azimuth</param>
+        /// <param name="altitude">altitude</param>
+        /// <returns></returns>
+        public static short Hd2ae(double hourAngle, double declination, double latitude, ref double azimuth, ref double altitude) {
+            return SOFA_Hd2ae(hourAngle, declination, latitude, ref azimuth, ref altitude);
+        }
+
+        /// <summary>
+        /// ICRS RA,Dec to observed place. The caller supplies UTC, site
+        /// coordinates, ambient air conditions and observing wavelength.
+        ///
+        /// SOFA models are used for the Earth ephemeris, bias−precession−
+        /// nutation, Earth orientation and refraction.
+        ///
+        /// This function is part of the International Astronomical Union’s
+        /// SOFA (Standards of Fundamental Astronomy) software collection.
+        ///
+        /// Status: support function.
+        ///
+        /// Given:
+        /// rc,dc double ICRS right ascension at J2000.0 (radians, Note 1)
+        /// pr double RA proper motion (radians/year; Note 2)
+        /// pd double Dec proper motion (radians/year)
+        /// px double parallax (arcsec)
+        /// rv double radial velocity (km/s, +ve if receding)
+        /// utc1 double UTC as a 2−part...
+        /// utc2 double ...quasi Julian Date (Notes 3−4)
+        /// dut1 double UT1−UTC (seconds, Note 5)
+        /// elong double longitude (radians, east +ve, Note 6)
+        /// phi double latitude (geodetic, radians, Note 6)
+        /// hm double height above ellipsoid (m, geodetic, Notes 6,8)
+        /// xp,yp double polar motion coordinates (radians, Note 7)
+        /// phpa double pressure at the observer (hPa = mB, Note 8)
+        /// tc double ambient temperature at the observer (deg C)
+        /// rh double relative humidity at the observer (range 0−1)
+        /// wl double wavelength (micrometers, Note 9)
+        ///
+        /// Returned:
+        /// aob double* observed azimuth (radians: N=0,E=90)
+        /// zob double* observed zenith distance (radians)
+        /// hob double* observed hour angle (radians)
+        /// dob double* observed declination (radians)
+        /// rob double* observed right ascension (CIO−based, radians)
+        /// eo double* equation of the origins (ERA−GST)
+        ///
+        /// Returned (function value):
+        /// int status: +1 = dubious year (Note 4)
+        /// 0 = OK
+        /// −1 = unacceptable date
+        ///
+        /// Notes:
+        ///
+        /// 1) Star data for an epoch other than J2000.0 (for example from the
+        /// Hipparcos catalog, which has an epoch of J1991.25) will require
+        /// a preliminary call to iauPmsafe before use.
+        ///
+        /// 2) The proper motion in RA is dRA/dt rather than cos(Dec)*dRA/dt.
+        ///
+        /// 3) utc1+utc2 is quasi Julian Date (see Note 2), apportioned in any
+        /// convenient way between the two arguments, for example where utc1
+        /// is the Julian Day Number and utc2 is the fraction of a day.
+        ///
+        /// However, JD cannot unambiguously represent UTC during a leap
+        /// second unless special measures are taken. The convention in the
+        /// present function is that the JD day represents UTC days whether
+        /// the length is 86399, 86400 or 86401 SI seconds.
+        ///
+        /// Applications should use the function iauDtf2d to convert from
+        /// calendar date and time of day into 2−part quasi Julian Date, as
+        /// it implements the leap−second−ambiguity convention just
+        /// described.
+        ///
+        /// 4) The warning status "dubious year" flags UTCs that predate the
+        /// introduction of the time scale or that are too far in the
+        /// future to be trusted. See iauDat for further details.
+        ///
+        /// 5) UT1−UTC is tabulated in IERS bulletins. It increases by exactly
+        /// one second at the end of each positive UTC leap second,
+        /// introduced in order to keep UT1−UTC within +/− 0.9s. n.b. This
+        /// practice is under review, and in the future UT1−UTC may grow
+        /// essentially without limit.
+        ///
+        /// 6) The geographical coordinates are with respect to the WGS84
+        /// reference ellipsoid. TAKE CARE WITH THE LONGITUDE SIGN: the
+        /// longitude required by the present function is east−positive
+        /// (i.e. right−handed), in accordance with geographical convention.
+        ///
+        /// 7) The polar motion xp,yp can be obtained from IERS bulletins. The
+        /// values are the coordinates (in radians) of the Celestial
+        /// Intermediate Pole with respect to the International Terrestrial
+        /// Reference System (see IERS Conventions 2003), measured along the
+        /// meridians 0 and 90 deg west respectively. For many
+        /// applications, xp and yp can be set to zero.
+        ///
+        /// 8) If hm, the height above the ellipsoid of the observing station
+        /// in meters, is not known but phpa, the pressure in hPa (=mB),
+        /// is available, an adequate estimate of hm can be obtained from
+        /// the expression
+        ///
+        /// hm = −29.3 * tsl * log ( phpa / 1013.25 );
+        ///
+        /// where tsl is the approximate sea−level air temperature in K
+        /// (See Astrophysical Quantities, C.W.Allen, 3rd edition, section
+        /// 52). Similarly, if the pressure phpa is not known, it can be
+        /// estimated from the height of the observing station, hm, as
+        /// follows:
+        ///
+        /// phpa = 1013.25 * exp ( −hm / ( 29.3 * tsl ) );
+        ///
+        /// Note, however, that the refraction is nearly proportional to
+        /// the pressure and that an accurate phpa value is important for
+        /// precise work.
+        ///
+        /// 9) The argument wl specifies the observing wavelength in
+        /// micrometers. The transition from optical to radio is assumed to
+        /// occur at 100 micrometers (about 3000 GHz).
+        ///
+        /// 10) The accuracy of the result is limited by the corrections for
+        /// refraction, which use a simple A*tan(z) + B*tan^3(z) model.
+        /// Providing the meteorological parameters are known accurately and
+        /// there are no gross local effects, the predicted observed
+        /// coordinates should be within 0.05 arcsec (optical) or 1 arcsec
+        /// (radio) for a zenith distance of less than 70 degrees, better
+        /// than 30 arcsec (optical or radio) at 85 degrees and better
+        /// than 20 arcmin (optical) or 30 arcmin (radio) at the horizon.
+        ///
+        /// Without refraction, the complementary functions iauAtco13 and
+        /// iauAtoc13 are self−consistent to better than 1 microarcsecond
+        /// all over the celestial sphere. With refraction included,
+        /// consistency falls off at high zenith distances, but is still
+        /// better than 0.05 arcsec at 85 degrees.
+        ///
+        /// 11) "Observed" Az,ZD means the position that would be seen by a
+        /// perfect geodetically aligned theodolite. (Zenith distance is
+        /// used rather than altitude in order to reflect the fact that no
+        /// allowance is made for depression of the horizon.) This is
+        /// related to the observed HA,Dec via the standard rotation, using
+        /// the geodetic latitude (corrected for polar motion), while the
+        /// observed HA and RA are related simply through the Earth rotation
+        /// angle and the site longitude. "Observed" RA,Dec or HA,Dec thus
+        /// means the position that would be seen by a perfect equatorial
+        /// with its polar axis aligned to the Earth’s axis of rotation.
+        ///
+        /// 12) It is advisable to take great care with units, as even unlikely
+        /// values of the input parameters are accepted and processed in
+        /// accordance with the models used.
+        /// </summary>
+        /// <param name="rc">right ascension (J2000) in radians</param>
+        /// <param name="dc">declination (J2000) in radians</param>
+        /// <param name="pr">right ascension proper motion (radians/year; Note 2)</param>
+        /// <param name="pd">declination proper motion (radians/year)</param>
+        /// <param name="px">parallax (arcsec)</param>
+        /// <param name="rv">radial velocity (km/s, +ve if receding)</param>
+        /// <param name="utc1">UTC as a 2−part quasi Julian Date (Notes 3−4)</param>
+        /// <param name="utc2">UTC as a 2−part quasi Julian Date (Notes 3−4)</param>
+        /// <param name="dut1">UT1−UTC (seconds, Note 5)</param>
+        /// <param name="elong">longitude (radians, east +ve, Note 6)</param>
+        /// <param name="phi">latitude (geodetic, radians, Note 6)</param>
+        /// <param name="hm">height above ellipsoid (m, geodetic, Notes 6, 8)</param>
+        /// <param name="xp">polar motion coordinate x (radians, note 7)</param>
+        /// <param name="yp">polar motion coordinate y (radians, note 7)</param>
+        /// <param name="phpa">pressure at the observer (hPa = mB, Note 8)</param>
+        /// <param name="tc">ambient temperature at the observer (deg C)</param>
+        /// <param name="rh">relative humidity at the observer (deg C)</param>
+        /// <param name="wl">wavelength (micrometers, Note 9)</param>
+        /// <param name="aob">retunred observed azimuth (radians: N=0,E=90)</param>
+        /// <param name="zob">retunred observed zenith distance</param>
+        /// <param name="hob">returned observed hour angle (radians)</param>
+        /// <param name="dob">returned observed declination (radians)</param>
+        /// <param name="rob">returned observed right ascension (CIO−based, radians)</param>
+        /// <param name="eo">returned equation of the origins (ERA−GST)</param>
+        /// <returns></returns>
+        public static short CelestialToTopocentric(double rc, double dc, double pr, double pd, double px, double rv, double utc1, double utc2, double dut1, double elong, double phi, double hm, double xp, double yp, double phpa, double tc, double rh, double wl, ref double aob, ref double zob, ref double hob, ref double dob, ref double rob, ref double eo) {
+            return SOFA_Atco13(rc, dc, pr, pd, px, rv, utc1, utc2, dut1, elong, phi, hm, xp, yp, phpa, tc, rh, wl, ref aob, ref zob, ref hob, ref dob, ref rob, ref eo);
+        }
+
+        /// <summary>
+        /// Observed place at a groundbased site to to ICRS astrometric RA,Dec.
+        /// The caller supplies UTC, site coordinates, ambient air conditions
+        /// and observing wavelength.
+        ///
+        /// This function is part of the International Astronomical Union’s
+        /// SOFA (Standards of Fundamental Astronomy) software collection.
+        ///
+        /// Status: support function.
+        ///
+        /// Given:
+        /// type char[] type of coordinates − "R", "H" or "A" (Notes 1,2)
+        /// ob1 double observed Az, HA or RA (radians; Az is N=0,E=90)
+        /// ob2 double observed ZD or Dec (radians)
+        /// utc1 double UTC as a 2−part...
+        /// utc2 double ...quasi Julian Date (Notes 3,4)
+        /// dut1 double UT1−UTC (seconds, Note 5)
+        /// elong double longitude (radians, east +ve, Note 6)
+        /// phi double geodetic latitude (radians, Note 6)
+        /// hm double height above ellipsoid (m, geodetic Notes 6,8)
+        /// xp,yp double polar motion coordinates (radians, Note 7)
+        /// phpa double pressure at the observer (hPa = mB, Note 8)
+        /// tc double ambient temperature at the observer (deg C)
+        /// rh double relative humidity at the observer (range 0−1)
+        /// wl double wavelength (micrometers, Note 9)
+        ///
+        /// Returned:
+        /// rc,dc double ICRS astrometric RA,Dec (radians)
+        ///
+        /// Returned (function value):
+        /// int status: +1 = dubious year (Note 4)
+        /// 0 = OK
+        /// −1 = unacceptable date
+        ///
+        /// Notes:
+        ///
+        /// 1) "Observed" Az,ZD means the position that would be seen by a
+        /// perfect geodetically aligned theodolite. (Zenith distance is
+        /// used rather than altitude in order to reflect the fact that no
+        /// allowance is made for depression of the horizon.) This is
+        /// related to the observed HA,Dec via the standard rotation, using
+        /// the geodetic latitude (corrected for polar motion), while the
+        /// observed HA and RA are related simply through the Earth rotation
+        /// angle and the site longitude. "Observed" RA,Dec or HA,Dec thus
+        /// means the position that would be seen by a perfect equatorial
+        /// with its polar axis aligned to the Earth’s axis of rotation.
+        ///
+        /// 2) Only the first character of the type argument is significant.
+        /// "R" or "r" indicates that ob1 and ob2 are the observed right
+        /// ascension and declination; "H" or "h" indicates that they are
+        /// hour angle (west +ve) and declination; anything else ("A" or
+        /// "a" is recommended) indicates that ob1 and ob2 are azimuth
+        /// (north zero, east 90 deg) and zenith distance.
+        ///
+        /// 3) utc1+utc2 is quasi Julian Date (see Note 2), apportioned in any
+        /// convenient way between the two arguments, for example where utc1
+        /// is the Julian Day Number and utc2 is the fraction of a day.
+        ///
+        /// However, JD cannot unambiguously represent UTC during a leap
+        /// second unless special measures are taken. The convention in the
+        /// present function is that the JD day represents UTC days whether
+        /// the length is 86399, 86400 or 86401 SI seconds.
+        ///
+        /// Applications should use the function iauDtf2d to convert from
+        /// calendar date and time of day into 2−part quasi Julian Date, as
+        /// it implements the leap−second−ambiguity convention just
+        /// described.
+        ///
+        /// 4) The warning status "dubious year" flags UTCs that predate the
+        /// introduction of the time scale or that are too far in the
+        /// future to be trusted. See iauDat for further details.
+        ///
+        /// 5) UT1−UTC is tabulated in IERS bulletins. It increases by exactly
+        /// one second at the end of each positive UTC leap second,
+        /// introduced in order to keep UT1−UTC within +/− 0.9s. n.b. This
+        /// practice is under review, and in the future UT1−UTC may grow
+        /// essentially without limit.
+        ///
+        /// 6) The geographical coordinates are with respect to the WGS84
+        /// reference ellipsoid. TAKE CARE WITH THE LONGITUDE SIGN: the
+        /// longitude required by the present function is east−positive
+        /// (i.e. right−handed), in accordance with geographical convention.
+        ///
+        /// 7) The polar motion xp,yp can be obtained from IERS bulletins. The
+        /// values are the coordinates (in radians) of the Celestial
+        /// Intermediate Pole with respect to the International Terrestrial
+        /// Reference System (see IERS Conventions 2003), measured along the
+        /// meridians 0 and 90 deg west respectively. For many
+        /// applications, xp and yp can be set to zero.
+        ///
+        /// 8) If hm, the height above the ellipsoid of the observing station
+        /// in meters, is not known but phpa, the pressure in hPa (=mB), is
+        /// available, an adequate estimate of hm can be obtained from the
+        /// expression
+        ///
+        /// hm = −29.3 * tsl * log ( phpa / 1013.25 );
+        ///
+        /// where tsl is the approximate sea−level air temperature in K
+        /// (See Astrophysical Quantities, C.W.Allen, 3rd edition, section
+        /// 52). Similarly, if the pressure phpa is not known, it can be
+        /// estimated from the height of the observing station, hm, as
+        /// follows:
+        ///
+        /// phpa = 1013.25 * exp ( −hm / ( 29.3 * tsl ) );
+        ///
+        /// Note, however, that the refraction is nearly proportional to
+        /// the pressure and that an accurate phpa value is important for
+        /// precise work.
+        ///
+        /// 9) The argument wl specifies the observing wavelength in
+        /// micrometers. The transition from optical to radio is assumed to
+        /// occur at 100 micrometers (about 3000 GHz).
+        ///
+        /// 10) The accuracy of the result is limited by the corrections for
+        /// refraction, which use a simple A*tan(z) + B*tan^3(z) model.
+        /// Providing the meteorological parameters are known accurately and
+        /// there are no gross local effects, the predicted astrometric
+        /// coordinates should be within 0.05 arcsec (optical) or 1 arcsec
+        /// (radio) for a zenith distance of less than 70 degrees, better
+        /// than 30 arcsec (optical or radio) at 85 degrees and better
+        /// than 20 arcmin (optical) or 30 arcmin (radio) at the horizon.
+        ///
+        /// Without refraction, the complementary functions iauAtco13 and
+        /// iauAtoc13 are self−consistent to better than 1 microarcsecond
+        /// all over the celestial sphere. With refraction included,
+        /// consistency falls off at high zenith distances, but is still
+        /// better than 0.05 arcsec at 85 degrees.
+        ///
+        /// 11) It is advisable to take great care with units, as even unlikely
+        /// values of the input parameters are accepted and processed in
+        /// accordance with the models used.
+        /// </summary>
+        /// <param name="type">type of coordinates − "R", "H" or "A" (Notes 1,2)</param>
+        /// <param name="ob1">observed Az, HA or RA (radians; Az is N=0,E=90)</param>
+        /// <param name="ob2">observed ZD or Dec (radians)</param>
+        /// <param name="utc1">UTC as a 2−part quasi Julian Date (Notes 3−4)</param>
+        /// <param name="utc2">UTC as a 2−part quasi Julian Date (Notes 3−4)</param>
+        /// <param name="dut1">UT1−UTC (seconds, Note 5)</param>
+        /// <param name="elong">longitude (radians, east +ve, Note 6)</param>
+        /// <param name="phi">latitude (radians, Note 6)</param>
+        /// <param name="hm">height above ellipsoid (m, geodetic Notes 6,8)</param>
+        /// <param name="xp">polar motion coordinates (radians, Note 7)</param>
+        /// <param name="yp">polar motion coordinates (radians, Note 7)</param>
+        /// <param name="phpa">pressure at the observer (hPa = mB, Note 8)</param>
+        /// <param name="tc">ambient temperature at the observer (deg C)</param>
+        /// <param name="rh">relative humidity at the observer (range 0−1)</param>
+        /// <param name="wl">wavelength (micrometers, Note 9)</param>
+        /// <param name="rc">ICRS astrometric RA (radians)</param>
+        /// <param name="dc">ICRS astrometric Dec (radians)</param>
+        /// <returns></returns>
+        public static short TopocentricToCelestial(string type, double ob1, double ob2, double utc1, double utc2, double dut1, double elong, double phi, double hm, double xp, double yp, double phpa, double tc, double rh, double wl, ref double rc, ref double dc) {
+            return SOFA_Atoc13(type, ob1, ob2, utc1, utc2, dut1, elong, phi, hm, xp, yp, phpa, tc, rh, wl, ref rc, ref dc);
+        }
+
         #endregion "Public Methods"
 
         #region "External DLL calls"
@@ -360,6 +809,18 @@ namespace NINA.Utility {
 
         [DllImport(DLLNAME, EntryPoint = "iauTaitt", CallingConvention = CallingConvention.Cdecl)]
         private static extern short SOFA_Taitt(double tai1, double tai2, ref double tt1, ref double tt2);
+
+        [DllImport(DLLNAME, EntryPoint = "iauAe2hd", CallingConvention = CallingConvention.Cdecl)]
+        private static extern short SOFA_Ae2hd(double az, double el, double phi, ref double ha, ref double dec);
+
+        [DllImport(DLLNAME, EntryPoint = "iauHd2ae", CallingConvention = CallingConvention.Cdecl)]
+        private static extern short SOFA_Hd2ae(double ha, double dec, double phi, ref double az, ref double el);
+
+        [DllImport(DLLNAME, EntryPoint = "iauAtco13", CallingConvention = CallingConvention.Cdecl)]
+        private static extern short SOFA_Atco13(double rc, double dc, double pr, double pd, double px, double rv, double utc1, double utc2, double dut1, double elong, double phi, double hm, double xp, double yp, double phpa, double tc, double rh, double wl, ref double aob, ref double zob, ref double hob, ref double dob, ref double rob, ref double eo);
+
+        [DllImport(DLLNAME, EntryPoint = "iauAtoc13", CallingConvention = CallingConvention.Cdecl)]
+        private static extern short SOFA_Atoc13(string type, double ob1, double ob2, double utc1, double utc2, double dut1, double elong, double phi, double hm, double xp, double yp, double phpa, double tc, double rh, double wl, ref double rc, ref double dc);
 
         #endregion "External DLL calls"
     }

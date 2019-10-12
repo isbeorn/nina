@@ -28,11 +28,19 @@ using NINA.Model.MyFocuser;
 using NINA.Model.MyGuider;
 using NINA.Model.MyRotator;
 using NINA.Model.MyTelescope;
+using NINA.Model.MyWeatherData;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator.Interfaces;
-using NINA.Utility.Profile;
+using NINA.Profile;
 using NINA.ViewModel;
+using NINA.ViewModel.Equipment.Camera;
+using NINA.ViewModel.Equipment.FilterWheel;
+using NINA.ViewModel.Equipment.Focuser;
+using NINA.ViewModel.Equipment.Guider;
+using NINA.ViewModel.Equipment.Rotator;
+using NINA.ViewModel.Equipment.Telescope;
+using NINA.ViewModel.Equipment.WeatherData;
 using NINA.ViewModel.Interfaces;
 using NUnit.Framework;
 using System;
@@ -42,6 +50,10 @@ using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using NINA.Utility;
+using NINA.Model.ImageData;
+using System.Collections.Async;
+using Moq;
 
 namespace NINATest {
 
@@ -56,6 +68,7 @@ namespace NINATest {
         private SequenceFilterWheelMediator filterWheelMediator;
         private SequenceGuiderMediator guiderMediator;
         private SequenceRotatorMediator rotatorMediator;
+        private SequenceWeatherDataMediator weatherDataMediator;
         private SequenceImagingMediator imagingMediator;
         private SequenceApplicationStatusMediator applicationStatusMediator;
 
@@ -71,6 +84,7 @@ namespace NINATest {
             filterWheelMediator = new SequenceFilterWheelMediator();
             guiderMediator = new SequenceGuiderMediator();
             rotatorMediator = new SequenceRotatorMediator();
+            weatherDataMediator = new SequenceWeatherDataMediator();
             imagingMediator = new SequenceImagingMediator();
             applicationStatusMediator = new SequenceApplicationStatusMediator();
         }
@@ -81,18 +95,19 @@ namespace NINATest {
 
         [Test]
         public void Sequence_ConsumerRegistered() {
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
 
             Assert.AreEqual(vm, telescopeMediator.Consumer);
             Assert.AreEqual(vm, focuserMediator.Consumer);
             Assert.AreEqual(vm, filterWheelMediator.Consumer);
             Assert.AreEqual(vm, rotatorMediator.Consumer);
+            Assert.AreEqual(vm, weatherDataMediator.Consumer);
             Assert.AreEqual(vm, guiderMediator.Consumer);
         }
 
         [Test]
         public async Task ProcessSequence_Default() {
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
 
             //Act
             await vm.StartSequenceCommand.ExecuteAsync(null);
@@ -113,7 +128,7 @@ namespace NINATest {
 
         [Test]
         public async Task ProcessSequence_StartOptions_DontSlewToTargetTest() {
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
             var l = CreateDummySequenceList();
             l.SlewToTarget = false;
             vm.Sequence = l;
@@ -127,7 +142,10 @@ namespace NINATest {
 
         [Test]
         public async Task ProcessSequence_StartOptions_CoordinatesSlewTest() {
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
+            var telescope = new Mock<ITelescopeVM>();
+            telescope.Setup(x => x.GetDeviceInfo()).Returns(new TelescopeInfo() { Connected = true });
+            telescopeMediator.RegisterHandler(telescope.Object);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
             var l = CreateDummySequenceList();
             l.CenterTarget = true;
             var coordinates = new Coordinates(10, 10, Epoch.J2000, Coordinates.RAType.Degrees);
@@ -266,7 +284,10 @@ namespace NINATest {
 
         [Test]
         public async Task ProcessSequence_StartOptions_StartGuidingTest() {
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
+            var guider = new Mock<IGuiderVM>();
+            guider.Setup(x => x.GetDeviceInfo()).Returns(new GuiderInfo() { Connected = true });
+            guiderMediator.RegisterHandler(guider.Object);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
             var l = CreateDummySequenceList();
             l.StartGuiding = true;
             vm.Sequence = l;
@@ -280,7 +301,7 @@ namespace NINATest {
 
         [Test]
         public async Task ProcessSequence_StartOptions_DontStartGuidingTest() {
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
             var l = CreateDummySequenceList();
             l.StartGuiding = false;
             vm.Sequence = l;
@@ -295,7 +316,7 @@ namespace NINATest {
         [Test]
         public void ProcessSequence_AddSequenceCommand() {
             //Arrange
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
 
             //Act
             vm.AddSequenceRowCommand.Execute(null);
@@ -308,7 +329,7 @@ namespace NINATest {
         [Test]
         public void ProcessSequence_OnEmptySequence_AddSequenceCommand() {
             //Arrange
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
             vm.Sequence = new CaptureSequenceList();
 
             //Act
@@ -322,7 +343,7 @@ namespace NINATest {
         [Test]
         public void ProcessSequence_RemoveSequenceCommand() {
             //Arrange
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
 
             //Act
             vm.RemoveSequenceRowCommand.Execute(null);
@@ -335,7 +356,7 @@ namespace NINATest {
         [Test]
         public void ProcessSequence_OnEmptySequence_RemoveSequenceCommand() {
             //Arrange
-            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, imagingMediator, applicationStatusMediator);
+            var vm = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
 
             //Act
             vm.RemoveSequenceRowCommand.Execute(null);
@@ -351,6 +372,10 @@ namespace NINATest {
         public TimeSpan EstimatedDownloadTime { get; set; }
 
         public string TemplatePath { get; set; }
+
+        public bool ParkMountAtSequenceEnd { get; set; }
+
+        public bool WarmCamAtSequenceEnd { get; set; }
 
         public long TimeSpanInTicks { get; set; }
 
@@ -529,9 +554,49 @@ namespace NINATest {
         public IRotatorSettings RotatorSettings { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public IFlatWizardSettings FlatWizardSettings { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
+        public ISwitchSettings SwitchSettings {
+            get {
+                throw new NotImplementedException();
+            }
+
+            set {
+                throw new NotImplementedException();
+            }
+        }
+
+        public IPlanetariumSettings PlanetariumSettings {
+            get {
+                throw new NotImplementedException();
+            }
+
+            set {
+                throw new NotImplementedException();
+            }
+        }
+
+        public string Location {
+            get {
+                throw new NotImplementedException();
+            }
+        }
+
+        public DateTime LastUsed {
+            get {
+                throw new NotImplementedException();
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public void Dispose() {
+            throw new NotImplementedException();
+        }
+
         public void MatchFilterSettingsWithFilterList() {
+            throw new NotImplementedException();
+        }
+
+        public void Save() {
             throw new NotImplementedException();
         }
     }
@@ -546,9 +611,25 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
+        public Task<bool> StartWarmCamera(IProgress<double> progress, double temperature, TimeSpan duration, bool turnOffCooler, CancellationTokenSource cancelWarmCameraSource) {
+            throw new NotImplementedException();
+        }
+
         public Task Capture(CaptureSequence sequence, CancellationToken token,
             IProgress<ApplicationStatus> progress) {
             throw new NotImplementedException();
+        }
+
+        public bool AtTargetTemp {
+            get {
+                return false;
+            }
+        }
+
+        public double TargetTemp {
+            get {
+                return 0;
+            }
         }
 
         public Task<bool> Connect() {
@@ -559,16 +640,16 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
-        public Task<ImageArray> Download(CancellationToken token) {
+        public Task<IImageData> Download(CancellationToken token) {
             throw new NotImplementedException();
         }
 
-        public System.Collections.Async.IAsyncEnumerable<ImageArray> LiveView(CancellationToken token) {
+        public System.Collections.Async.IAsyncEnumerable<IImageData> LiveView(CancellationToken token) {
             throw new NotImplementedException();
         }
 
         public void RegisterConsumer(ICameraConsumer consumer) {
-            throw new NotImplementedException();
+            this.Consumer = consumer;
         }
 
         public void RegisterHandler(ICameraVM handler) {
@@ -597,7 +678,7 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
-        public Task<ImageArray> Download(CancellationToken token, bool calculateStatistics) {
+        public Task<bool> StartChangeCameraTemp(IProgress<double> progress, double temperature, TimeSpan duration, bool turnOffCooler, CancellationToken cancelWarmCameraToken) {
             throw new NotImplementedException();
         }
     }
@@ -605,7 +686,7 @@ namespace NINATest {
     internal class SequenceTelescopeMediator : ITelescopeMediator {
 
         public void Broadcast(TelescopeInfo deviceInfo) {
-            throw new NotImplementedException();
+            Consumer.UpdateDeviceInfo(deviceInfo);
         }
 
         public Task<bool> Connect() {
@@ -624,17 +705,25 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
+        public void PulseGuide(GuideDirections direction, int duration) {
+            throw new NotImplementedException();
+        }
+
         public ITelescopeConsumer Consumer;
 
         public void RegisterConsumer(ITelescopeConsumer consumer) {
             this.Consumer = consumer;
+            if (Handler != null) {
+                Broadcast(Handler.GetDeviceInfo());
+            }
         }
 
         public void RegisterHandler(ITelescopeVM handler) {
-            throw new NotImplementedException();
+            this.Handler = handler;
         }
 
         public void RemoveConsumer(ITelescopeConsumer consumer) {
+            throw new NotImplementedException();
             throw new NotImplementedException();
         }
 
@@ -653,7 +742,37 @@ namespace NINATest {
             return true;
         }
 
+        public bool CanSetTracking {
+            get {
+                return false;
+            }
+        }
+
+        public bool Tracking { get; set; }
+
+        public bool CanPark {
+            get {
+                return false;
+            }
+        }
+
+        public bool CanSetPark {
+            get {
+                return false;
+            }
+        }
+
+        public ITelescopeVM Handler { get; private set; }
+
+        public Task<bool> ParkTelescope() {
+            throw new NotImplementedException();
+        }
+
         public bool Sync(double ra, double dec) {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> SlewToCoordinatesAsync(TopocentricCoordinates coords) {
             throw new NotImplementedException();
         }
     }
@@ -769,13 +888,9 @@ namespace NINATest {
         }
     }
 
-    internal class SequenceGuiderMediator : IGuiderMediator {
+    internal class SequenceWeatherDataMediator : IWeatherDataMediator {
 
-        public Task<bool> AutoSelectGuideStar(CancellationToken token) {
-            throw new NotImplementedException();
-        }
-
-        public void Broadcast(GuiderInfo deviceInfo) {
+        public void Broadcast(WeatherDataInfo deviceInfo) {
             throw new NotImplementedException();
         }
 
@@ -787,7 +902,42 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
+        public IWeatherDataConsumer Consumer;
+
+        public void RegisterConsumer(IWeatherDataConsumer consumer) {
+            this.Consumer = consumer;
+        }
+
+        public void RegisterHandler(IWeatherDataVM handler) {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveConsumer(IWeatherDataConsumer consumer) {
+            throw new NotImplementedException();
+        }
+    }
+
+    internal class SequenceGuiderMediator : IGuiderMediator {
+
+        public Task<bool> AutoSelectGuideStar(CancellationToken token) {
+            throw new NotImplementedException();
+        }
+
+        public void Broadcast(GuiderInfo deviceInfo) {
+            Consumer.UpdateDeviceInfo(deviceInfo);
+        }
+
+        public Task<bool> Connect() {
+            throw new NotImplementedException();
+        }
+
+        public void Disconnect() {
+            throw new NotImplementedException();
+        }
+
         public bool IsUsingSynchronizedGuider => false;
+
+        public IGuiderVM Handler { get; private set; }
 
         public Task<bool> Dither(CancellationToken token) {
             throw new NotImplementedException();
@@ -801,10 +951,13 @@ namespace NINATest {
 
         public void RegisterConsumer(IGuiderConsumer consumer) {
             this.Consumer = consumer;
+            if (Handler != null) {
+                Broadcast(Handler.GetDeviceInfo());
+            }
         }
 
         public void RegisterHandler(IGuiderVM handler) {
-            throw new NotImplementedException();
+            this.Handler = handler;
         }
 
         public void RemoveConsumer(IGuiderConsumer consumer) {
@@ -841,7 +994,11 @@ namespace NINATest {
 
         public event EventHandler<ImageSavedEventArgs> ImageSaved;
 
-        public Task<System.Windows.Media.Imaging.BitmapSource> CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        public void SetImage(BitmapSource img) {
+            throw new NotImplementedException();
+        }
+
+        Task<IImageData> IImagingMediator.CaptureAndPrepareImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
             throw new NotImplementedException();
         }
 
@@ -849,11 +1006,7 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
-        public Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, string targetname = "") {
-            throw new NotImplementedException();
-        }
-
-        public Task<ImageArray> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress, bool bSave = false, bool bCalculateStatistics = true, string targetname = "") {
+        public Task<IImageData> PrepareImage(IImageData iarr, CancellationToken token) {
             throw new NotImplementedException();
         }
 
@@ -861,11 +1014,13 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
-        public void OnImageSaved(ImageSavedEventArgs e) {
-            throw new NotImplementedException();
+        public bool IsLooping {
+            get {
+                return false;
+            }
         }
 
-        public Task<BitmapSource> PrepareImage(ImageArray iarr, CancellationToken token, bool bSave = false, ImageParameters parameters = null) {
+        public void OnImageSaved(ImageSavedEventArgs e) {
             throw new NotImplementedException();
         }
 
@@ -878,6 +1033,14 @@ namespace NINATest {
         }
 
         public bool SetDetectStars(bool value) {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> CaptureAndSaveImage(CaptureSequence seq, CancellationToken ct, IProgress<ApplicationStatus> progress, string targetname = "") {
+            throw new NotImplementedException();
+        }
+
+        public Task<IImageData> CaptureImage(CaptureSequence sequence, CancellationToken token, IProgress<ApplicationStatus> progress) {
             throw new NotImplementedException();
         }
     }
@@ -901,6 +1064,12 @@ namespace NINATest {
         }
 
         public IProfile ActiveProfile { get; set; }
+
+        AsyncObservableCollection<ProfileMeta> IProfileService.Profiles {
+            get {
+                throw new NotImplementedException();
+            }
+        }
 
         public event EventHandler LocaleChanged;
 
@@ -932,6 +1101,10 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
+        public bool Clone(ProfileMeta profileInfos) {
+            throw new NotImplementedException();
+        }
+
         public void PauseSave() {
         }
 
@@ -939,10 +1112,18 @@ namespace NINATest {
             throw new NotImplementedException();
         }
 
+        public bool RemoveProfile(ProfileMeta profileInfo) {
+            throw new NotImplementedException();
+        }
+
         public void ResumeSave() {
         }
 
         public void SelectProfile(Guid guid) {
+            throw new NotImplementedException();
+        }
+
+        public bool SelectProfile(ProfileMeta profileInfo) {
             throw new NotImplementedException();
         }
     }
