@@ -185,6 +185,17 @@ This problem does not occur when a QHY camera is connected to a pc.
 ## Special Thanks
 The N.I.N.A. team would like to sincerely thank:
 - The staff at [Cloud Break Optics](https://cloudbreakoptics.com/) and [Finger Lakes Instrumentation](http://flicamera.com/) for arranging a ProLine PL09000 and CFW1-5 to assist in integrating native FLI camera and filter wheel support.
+- Filippo Bradaschia from [PrimaLuceLab](https://www.primalucelab.com/) for providing an EAGLE unit to implement direct interfacing with the EAGLE Manager
+
+## Included Camera SDK Versions:
+- Altair: 39.15529.2019.906
+- Atik: 8.7.3.5
+- Canon: 3.8.20.0
+- FLI: 1.104.0.0
+- Nikon: 1.3.0.3001
+- QHY: 0.5.1.0
+- ToupTek: 30.13342.2018.1121
+- ZWO: 1.14.7.15
 
 # Version 1.8 Hotfix 1
 
