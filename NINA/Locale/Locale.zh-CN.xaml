@@ -294,6 +294,7 @@ Type: {1}
     <s:String x:Key="LblDataProvidedBy" xml:space="default">由提供的初始DSO数据集:</s:String>
     <s:String x:Key="LblDataToDownloadRatio" xml:space="default">下载数据速率</s:String>
     <s:String x:Key="LblDateFormatDescription" xml:space="default">日期格式 YYYY-MM-DD</s:String>
+    <s:String x:Key="LblDateFormatDescription2" xml:space="default">Date shifted back by 12 hours with format YYYY-MM-DD</s:String>
     <s:String x:Key="LblDateTimeFormatDescription" xml:space="default">日期格式 YYYY-MM-DD_HH-mm-ss</s:String>
     <s:String x:Key="LblDawn" xml:space="default">黎明</s:String>
     <s:String x:Key="LblDCRaw" xml:space="default">DCRaw</s:String>

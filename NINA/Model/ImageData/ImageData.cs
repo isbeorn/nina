@@ -133,6 +133,7 @@ namespace NINA.Model.ImageData {
             p.Set(ImagePatternKeys.ExposureTime, metadata.Image.ExposureTime);
             p.Set(ImagePatternKeys.ApplicationStartDate, Utility.Utility.ApplicationStartDate.ToString("yyyy-MM-dd"));
             p.Set(ImagePatternKeys.Date, metadata.Image.ExposureStart.ToString("yyyy-MM-dd"));
+            p.Set(ImagePatternKeys.DateMinus12, metadata.Image.ExposureStart.AddHours(-12).ToString("yyyy-MM-dd"));
             p.Set(ImagePatternKeys.Time, metadata.Image.ExposureStart.ToString("HH-mm-ss"));
             p.Set(ImagePatternKeys.DateTime, metadata.Image.ExposureStart.ToString("yyyy-MM-dd_HH-mm-ss"));
             p.Set(ImagePatternKeys.FrameNr, metadata.Image.ExposureNumber);

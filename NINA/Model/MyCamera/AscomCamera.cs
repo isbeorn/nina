@@ -1090,7 +1090,7 @@ namespace NINA.Model.MyCamera {
         public void StopExposure() {
             if (CanStopExposure) {
                 try {
-                    StopExposure();
+                    _camera.StopExposure();
                 } catch (Exception e) {
                     Notification.ShowError(e.Message);
                 }

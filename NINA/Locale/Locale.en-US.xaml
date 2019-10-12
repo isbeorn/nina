@@ -294,6 +294,7 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
     <s:String x:Key="LblDataProvidedBy" xml:space="default">Initial set of DSO Data provided by:</s:String>
     <s:String x:Key="LblDataToDownloadRatio" xml:space="default">Download to Data ratio</s:String>
     <s:String x:Key="LblDateFormatDescription" xml:space="default">Date with format YYYY-MM-DD</s:String>
+    <s:String x:Key="LblDateFormatDescription2" xml:space="default">Date shifted back by 12 hours with format YYYY-MM-DD</s:String>
     <s:String x:Key="LblDateTimeFormatDescription" xml:space="default">Date with format YYYY-MM-DD_HH-mm-ss</s:String>
     <s:String x:Key="LblDawn" xml:space="default">Dawn</s:String>
     <s:String x:Key="LblDCRaw" xml:space="default">DCRaw</s:String>
