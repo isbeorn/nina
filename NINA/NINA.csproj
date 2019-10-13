@@ -1463,72 +1463,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Include="BootstrapAscomProfileStore.ps1" />
-    <None Include="Documentation\images\nina-logo.png" />
-    <None Include="Documentation\images\panel-autofocus.png" />
-    <None Include="Documentation\images\panel-camera.png" />
-    <None Include="Documentation\images\panel-customization_1.png" />
-    <None Include="Documentation\images\panel-customization_2.png" />
-    <None Include="Documentation\images\panel-customization_3.png" />
-    <None Include="Documentation\images\panel-customization_4.png" />
-    <None Include="Documentation\images\panel-filterwheel.png" />
-    <None Include="Documentation\images\panel-focuser.png" />
-    <None Include="Documentation\images\panel-guiding.png" />
-    <None Include="Documentation\images\panel-hfrhistory.png" />
-    <None Include="Documentation\images\panel-image.png" />
-    <None Include="Documentation\images\panel-imagehistory.png" />
-    <None Include="Documentation\images\panel-imaging.png" />
-    <None Include="Documentation\images\panel-platesolving.png" />
-    <None Include="Documentation\images\panel-polaralignment.png" />
-    <None Include="Documentation\images\panel-sequence-running.png" />
-    <None Include="Documentation\images\panel-sequence.png" />
-    <None Include="Documentation\images\panel-statistics.png" />
-    <None Include="Documentation\images\panel-telescope.png" />
-    <None Include="Documentation\images\panel-weather.png" />
-    <None Include="Documentation\images\quickstart-camera.png" />
-    <None Include="Documentation\images\quickstart-defocusedstarfield.png" />
-    <None Include="Documentation\images\quickstart-disablepanels.png" />
-    <None Include="Documentation\images\quickstart-focusedstarfield.png" />
-    <None Include="Documentation\images\quickstart-focusing.png" />
-    <None Include="Documentation\images\quickstart-imaging.png" />
-    <None Include="Documentation\images\quickstart-running-sequence.png" />
-    <None Include="Documentation\images\quickstart-sequence.png" />
-    <None Include="Documentation\images\quickstart-settings-equipment.png" />
-    <None Include="Documentation\images\quickstart-settings-imaging.png" />
-    <None Include="Documentation\images\quickstart-telescope.png" />
-    <None Include="Documentation\images\quickstart-ui-overview.png" />
-    <None Include="Documentation\images\tab-camera.png" />
-    <None Include="Documentation\images\tab-filterwheelfocuser.png" />
-    <None Include="Documentation\images\tab-framingassistant.png" />
-    <None Include="Documentation\images\tab-imaging.png" />
-    <None Include="Documentation\images\tab-objectbrowser.png" />
-    <None Include="Documentation\images\tab-phd2.png" />
-    <None Include="Documentation\images\tab-sequencing.png" />
-    <None Include="Documentation\images\tab-settings-equipment.png" />
-    <None Include="Documentation\images\tab-settings-general.png" />
-    <None Include="Documentation\images\tab-settings-imaging.png" />
-    <None Include="Documentation\images\tab-settings-platesolving-astrometry.png" />
-    <None Include="Documentation\images\tab-settings-platesolving-localplatesolver-indexfiles.png" />
-    <None Include="Documentation\images\tab-settings-platesolving-localplatesolver.png" />
-    <None Include="Documentation\images\tab-settings-platesolving-platesolve2.png" />
-    <None Include="Documentation\images\tab-telescope.png" />
-    <None Include="Documentation\images\panel-image-bahtinov.png" />
-    <None Include="Documentation\images\panel-image-subsampling.png" />
-    <None Include="Documentation\images\usage-autoflip-settings.png" />
-    <None Include="Documentation\images\usage-bulbshutter-mountsnapport.png" />
-    <None Include="Documentation\images\usage-bulbshutter-serial.png" />
-    <None Include="Documentation\images\usage-bulbshutter-settings.png" />
-    <None Include="Documentation\images\usage-bulbshutter-snapport.png" />
-    <None Include="Documentation\images\usage-dithering-sequence.png" />
-    <None Include="Documentation\images\usage-dithering-settings-phd2.png" />
-    <None Include="Documentation\images\usage-objectbrowser-object.png" />
-    <None Include="Documentation\md-template.html" />
-    <None Include="Documentation\modest.css" />
-    <None Include="Documentation\NINA.html">
-      <DependentUpon>NINA.md</DependentUpon>
-    </None>
-    <None Include="Documentation\table-of-contents.html">
-      <DependentUpon>table-of-contents.md</DependentUpon>
-    </None>
     <Resource Include="Resources\astrometry.net.png" />
     <Content Include="Database\Initial\initial_data.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1580,8 +1514,6 @@
     <Content Include="Utility\DCRaw\dcraw.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Documentation\NINA.md" />
-    <None Include="Documentation\table-of-contents.md" />
     <Content Include="External\x64\NOVAS\cio_ra.bin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
