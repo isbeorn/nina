@@ -7,4 +7,4 @@
  ('Alherem',161.69241,-49.420257,2.72,'Simbad'),
  ('Alphaulka',340.66809,-45.113361,2.11,'Simbad');
  
-  PRAGMA user_version = 3
+  PRAGMA user_version = 3;
