@@ -34,9 +34,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace NINA.Model.ImageData {
-
     public class ImageData : IImageData {
-
         public ImageData(ushort[] input, int width, int height, int bitDepth, bool isBayered, ImageMetaData metaData)
             : this(
                   imageArray: new ImageArray(flatArray: input),
@@ -136,7 +134,7 @@ namespace NINA.Model.ImageData {
             p.Set(ImagePatternKeys.DateMinus12, metadata.Image.ExposureStart.AddHours(-12).ToString("yyyy-MM-dd"));
             p.Set(ImagePatternKeys.Time, metadata.Image.ExposureStart.ToString("HH-mm-ss"));
             p.Set(ImagePatternKeys.DateTime, metadata.Image.ExposureStart.ToString("yyyy-MM-dd_HH-mm-ss"));
-            p.Set(ImagePatternKeys.FrameNr, metadata.Image.ExposureNumber);
+            p.Set(ImagePatternKeys.FrameNr, metadata.Image.ExposureNumber.ToString("0000"));
             p.Set(ImagePatternKeys.ImageType, metadata.Image.ImageType);
             p.Set(ImagePatternKeys.TargetName, metadata.Target.Name);
 
