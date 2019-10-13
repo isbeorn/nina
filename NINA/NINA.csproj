@@ -365,6 +365,8 @@
     <Compile Include="Model\MyCamera\Simulator\CameraType.cs" />
     <Compile Include="Model\MyFilterWheel\QHYFilterWheel.cs" />
     <Compile Include="Model\MyFilterWheel\FLIFilterWheel.cs" />
+    <Compile Include="Model\MyFlatDevice\AlnitakFlipFlatDevice.cs" />
+    <Compile Include="Model\MyFlatDevice\IFlatDevice.cs" />
     <Compile Include="Model\MyGuider\DirectGuider.cs" />
     <Compile Include="Model\MyGuider\ISynchronizedPHD2GuiderService.cs" />
     <Compile Include="Model\MyGuider\SynchronizedPHD2Guider.cs" />
@@ -439,6 +441,7 @@
     <Compile Include="Utility\Enum\StarSensitivityEnum.cs" />
     <Compile Include="Utility\Exceptions\CameraDownloadFailedException.cs" />
     <Compile Include="Utility\Extensions\IOrderedQueryableExtension.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\AlnitakAstrosystemsSDK\AlnitakAstrosystemsSDK.cs" />
     <Compile Include="Utility\ImageAnalysis\BahtinovAnalysis.cs" />
     <Compile Include="Utility\ImageAnalysis\BahtinovImage.cs" />
     <Compile Include="Utility\ImageAnalysis\BayerFilter16bpp.cs" />
