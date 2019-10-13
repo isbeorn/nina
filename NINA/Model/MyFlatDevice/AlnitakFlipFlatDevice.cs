@@ -43,7 +43,6 @@ namespace NINA.Model.MyFlatDevice {
 
         public async Task<bool> Connect(CancellationToken token) {
             return await Task.Run(() => {
-                Connected = LIBAlnitak.Ping();
                 return Connected;
             });
         }
