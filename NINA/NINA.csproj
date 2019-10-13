@@ -1542,6 +1542,9 @@
     <Content Include="Database\Migration\2.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Database\Migration\3.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="External\x64\FLI\libfli.dll" />
     <Content Include="External\x64\FreeImage\FreeImage.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
