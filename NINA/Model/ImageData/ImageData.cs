@@ -131,7 +131,13 @@ namespace NINA.Model.ImageData {
             p.Set(ImagePatternKeys.ExposureTime, metadata.Image.ExposureTime);
             p.Set(ImagePatternKeys.ApplicationStartDate, Utility.Utility.ApplicationStartDate.ToString("yyyy-MM-dd"));
             p.Set(ImagePatternKeys.Date, metadata.Image.ExposureStart.ToString("yyyy-MM-dd"));
-            p.Set(ImagePatternKeys.DateMinus12, metadata.Image.ExposureStart.AddHours(-12).ToString("yyyy-MM-dd"));
+
+            // ExposureStart is initialized to DateTime.MinValue, and we cannot subtract time from that. Only evaluate
+            // the $$DATEMINUS12$$ pattern if the time is at least 12 hours on from DateTime.MinValue.
+            if (metadata.Image.ExposureStart > DateTime.MinValue.AddHours(12)) {
+                p.Set(ImagePatternKeys.DateMinus12, metadata.Image.ExposureStart.AddHours(-12).ToString("yyyy-MM-dd"));
+            }
+
             p.Set(ImagePatternKeys.Time, metadata.Image.ExposureStart.ToString("HH-mm-ss"));
             p.Set(ImagePatternKeys.DateTime, metadata.Image.ExposureStart.ToString("yyyy-MM-dd_HH-mm-ss"));
             p.Set(ImagePatternKeys.FrameNr, metadata.Image.ExposureNumber.ToString("0000"));
