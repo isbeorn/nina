@@ -181,7 +181,7 @@
     <Compile Include="RMSTest.cs" />
     <Compile Include="SequenceVMTest.cs" />
     <Compile Include="SynchronizedPHD2GuiderServiceTest.cs" />
-    <Compile Include="LIBAlnitakTest.cs" />
+    <Compile Include="AlnitakFlatDeviceTest.cs" />
     <Compile Include="XISFTest.cs" />
   </ItemGroup>
   <ItemGroup>

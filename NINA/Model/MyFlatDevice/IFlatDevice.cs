@@ -1,11 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyFlatDevice {
 
-    internal interface IFlatDevice : IDevice {
+    public interface IFlatDevice : IDevice {
+        CoverState CoverState { get; }
+        int MaxBrightness { get; }
+
+        int MinBrightness { get; }
+
+        Task<bool> Open(CancellationToken ct);
+
+        Task<bool> Close(CancellationToken ct);
+
+        bool LightOn { get; set; }
+
+        int Brightness { get; set; }
     }
+
+    public enum CoverState { UNKNOWN, NotOpenClosed, Closed, Open };
 }
