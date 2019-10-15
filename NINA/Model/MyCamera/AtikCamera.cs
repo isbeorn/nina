@@ -431,7 +431,7 @@ namespace NINA.Model.MyCamera {
         }
 
         public void AbortExposure() {
-            AtikCameraDll.StopExposure(_cameraP);
+            AtikCameraDll.AbortExposure(_cameraP);
         }
 
         public async Task<bool> Connect(CancellationToken token) {

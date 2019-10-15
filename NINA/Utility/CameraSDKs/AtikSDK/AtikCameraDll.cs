@@ -10,10 +10,16 @@ using System.Text;
 namespace NINA.Utility.AtikSDK {
 
     internal class AtikCameraDll {
-        private const string DLLNAME = "ArtemisHSC.dll";
+        private const string DLLNAME = "AtikCameras.dll";
 
         static AtikCameraDll() {
             DllLoader.LoadDll(Path.Combine("Atik", DLLNAME));
+        }
+
+        public static int GetDevicesCount() {
+            int x = ArtemisDeviceCount();
+            Logger.Trace($"Number of Atik Cameras: {x}");
+            return x;
         }
 
         public static int RefreshDevicesCount() {
@@ -21,11 +27,21 @@ namespace NINA.Utility.AtikSDK {
         }
 
         public static IntPtr Connect(int id) {
-            IntPtr cameraP = ArtemisConnect(id);
-            if (cameraP == IntPtr.Zero) {
-                throw new AtikCameraException("Unable to connect to camera", MethodBase.GetCurrentMethod(), new object[] { id });
+            Logger.Trace($"Trying to connect to Atik camera {id}");
+            ArtemisRefreshDevicesCount();
+            if (ArtemisDeviceIsPresent(id) && ArtemisDeviceIsCamera(id)) {
+                IntPtr cameraP = ArtemisConnect(id);
+                if (cameraP == IntPtr.Zero) {
+                    Logger.Trace("Connection failed, retrying as wildcard");
+                    cameraP = ArtemisConnect(-1);
+                }
+                if (cameraP == IntPtr.Zero) {
+                    throw new AtikCameraException("Unable to connect to camera", MethodBase.GetCurrentMethod(), new object[] { id });
+                }
+                Logger.Trace($"Connected as {cameraP}");
+                return cameraP;
             }
-            return cameraP;
+            return IntPtr.Zero;
         }
 
         public static bool Disconnect(IntPtr camera) {
@@ -119,6 +135,12 @@ namespace NINA.Utility.AtikSDK {
             }
         }
 
+        public static void AbortExposure(IntPtr camera) {
+            if (camera != null && camera != IntPtr.Zero) {
+                CheckError(ArtemisAbortExposure(camera), MethodBase.GetCurrentMethod(), camera);
+            }
+        }
+
         public static void SetBinning(IntPtr camera, int x, int y) {
             CheckError(ArtemisBin(camera, x, y), MethodBase.GetCurrentMethod(), camera);
         }
@@ -164,10 +186,21 @@ namespace NINA.Utility.AtikSDK {
         }
 
         public static ArtemisPropertiesStruct GetCameraProperties(int cameraId) {
+            // This is only ever called during initial creation of the AtikCamera object
+            // Sleep for five seconds to allow the Atik DLL to be loaded before continuing
+            Logger.Trace("Sleeping for five seconds to allow Atik DLL to load");
+            System.Threading.Thread.Sleep(5000);
             var handle = Connect(cameraId);
             ArtemisColourProperties(handle, out ArtemisColourType type, out int x, out int y, out int px, out int py);
             ArtemisPropertiesStruct outstruct = new ArtemisPropertiesStruct();
             CheckError(ArtemisProperties(handle, ref outstruct), MethodBase.GetCurrentMethod(), cameraId);
+            // Debayering doesn't seem to handle uneven rows or columns
+            if ((outstruct.nPixelsX % 1) == 0) {
+                outstruct.nPixelsX = outstruct.nPixelsX - 1;
+            }
+            if ((outstruct.nPixelsY % 1) == 0) {
+                outstruct.nPixelsY = outstruct.nPixelsY - 1;
+            }
             Disconnect(handle);
             return outstruct;
         }
@@ -175,6 +208,13 @@ namespace NINA.Utility.AtikSDK {
         public static ArtemisPropertiesStruct GetCameraProperties(IntPtr camera) {
             ArtemisPropertiesStruct outstruct = new ArtemisPropertiesStruct();
             CheckError(ArtemisProperties(camera, ref outstruct), MethodBase.GetCurrentMethod(), camera);
+            // Debayering doesn't seem to handle uneven rows or columns
+            if ((outstruct.nPixelsX % 1) == 0) {
+                outstruct.nPixelsX = outstruct.nPixelsX - 1;
+            }
+            if ((outstruct.nPixelsY % 1) == 0) {
+                outstruct.nPixelsY = outstruct.nPixelsY - 1;
+            }
             return outstruct;
         }
 
@@ -209,6 +249,18 @@ namespace NINA.Utility.AtikSDK {
         /// </summary>
         [DllImport(DLLNAME, EntryPoint = "ArtemisDeviceIsPresent", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool ArtemisDeviceIsPresent(int iDevice);
+
+        /// <summary>
+        /// Returns a bool to indicate whether the given device is present.
+        /// </summary>
+        [DllImport(DLLNAME, EntryPoint = "ArtemisDevicePresent", CallingConvention = CallingConvention.Cdecl)]
+        private static extern bool ArtemisDevicePresent(int iDevice);
+
+        /// <summary>
+        /// Returns a bool to indicate whether the given device is present.
+        /// </summary>
+        [DllImport(DLLNAME, EntryPoint = "ArtemisDeviceInUse", CallingConvention = CallingConvention.Cdecl)]
+        private static extern bool ArtemisDeviceInUse(int iDevice);
 
         /// <summary>
         /// Sets the supplied ‘pName’ variable to the name of the given device. Return true if
@@ -256,6 +308,15 @@ namespace NINA.Utility.AtikSDK {
         /// call this function when the application is closing, it is no longer necessary as the DLL
         /// itself will remove all connections when shutting down.
         /// </summary>
+        [DllImport(DLLNAME, EntryPoint = "ArtemisShutdown", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        private static extern bool ArtemisShutdown();
+
+        /// <summary>
+        /// This method is used to release all the cameras when done. It will allow other
+        /// applications to connect to the camera as listed above. Although it used to be best to
+        /// call this function when the application is closing, it is no longer necessary as the DLL
+        /// itself will remove all connections when shutting down.
+        /// </summary>
         [DllImport(DLLNAME, EntryPoint = "ArtemisDisconnectAll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         private static extern bool ArtemisDisconnectAll(int iDevice);
 
@@ -272,8 +333,17 @@ namespace NINA.Utility.AtikSDK {
         /// Therefore, the purpose of this method is to tell the user that the cameras have changed
         /// and that it’s worth checking to make sure their camera(s) are still connected.
         /// </summary>
-        [DllImport("ArtemisHSC.dll", EntryPoint = "ArtemisRefreshDevicesCount", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        [DllImport(DLLNAME, EntryPoint = "ArtemisRefreshDevicesCount", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         private static extern int ArtemisRefreshDevicesCount();
+
+        /// <summary>
+        /// The refresh devices count tells you how many times the camera list has changed on the
+        /// service. The camera list changes every time a USB device is connected or removed.
+        /// Therefore, the purpose of this method is to tell the user that the cameras have changed
+        /// and that it’s worth checking to make sure their camera(s) are still connected.
+        /// </summary>
+        [DllImport(DLLNAME, EntryPoint = "ArtemisDeviceCount", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        private static extern int ArtemisDeviceCount();
 
         /// <summary>
         /// Used to check that a device is a camera before connecting to it. The only alternative is
@@ -323,6 +393,12 @@ namespace NINA.Utility.AtikSDK {
         /// </summary>
         [DllImport(DLLNAME, EntryPoint = "ArtemisStopExposure", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         private static extern ArtemisErrorCode ArtemisStopExposure(IntPtr camera);
+
+        /// <summary>
+        /// Used to cancel the current exposure.
+        /// </summary>
+        [DllImport(DLLNAME, EntryPoint = "ArtemisAbortExposure", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        private static extern ArtemisErrorCode ArtemisAbortExposure(IntPtr camera);
 
         /// <summary>
         /// Let’s you know when the image is ready. The value is set to ‘false’ when ‘Start Exposure’

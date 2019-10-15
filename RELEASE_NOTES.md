@@ -15,6 +15,7 @@ This problem does not occur when a QHY camera is connected to a pc.
  - QHY filter wheels that are integrated (A-series cameras) or are connected to the camera using the 4-pin cable (CFW1/2/3 filter wheels) are now natively supported. This allows the native QHY camera driver to be used with these cameras and configurations.
 
 ## Improvements
+- Upgraded Atik driver to use latest Atik SDK and drivers
 - Added a bit scaling options for Altair and ToupTek cameras to bit shift the raw data to 16 bits to be compatible with other capture software
 - FreeImage library upgrade to 3.18
 - Plate solvers will now receive unstretched FITS images to solve the image for a faster and even better solve result
