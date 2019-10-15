@@ -661,7 +661,7 @@ namespace NINA.ViewModel.FramingAssistant {
                     psResult = await solver.BlindSolve(renderedImage.RawImageData, _statusUpdate, _loadImageSource.Token);
                 }
 
-                if (psResult.Success) {
+                if (psResult?.Success == true) {
                     var rotation = psResult.Orientation;
                     if (rotation < 0) {
                         rotation += 360;
