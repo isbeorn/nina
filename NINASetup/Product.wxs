@@ -630,14 +630,14 @@
 
   <Fragment>
     <ComponentGroup Id="External_x64_Atik_files" Directory="External_x64_Atik">
-      <Component Win64="$(var.Win64)" Id="External_x64_Atik_ArtemisHSC.dll" Guid="ad0723dd-7496-4ab2-aab7-a816f3248015">
-        <File Id="External_x64_Atik_ArtemisHSC.dll" Name="ArtemisHSC.dll" Source="$(var.NINA_ProjectDir)External\x64\Atik\ArtemisHSC.dll" />
-      </Component>
-      <Component Win64="$(var.Win64)" Id="External_x64_Atik_ArtemisHscDefn.dll" Guid="0462e9b5-fe59-42d1-9b5a-5a542b36c527">
-        <File Id="External_x64_Atik_ArtemisHscDefn.dll" Name="ArtemisHscDefn.dll" Source="$(var.NINA_ProjectDir)External\x64\Atik\ArtemisHscDefn.dll" />
+      <Component Win64="$(var.Win64)" Id="External_x64_AtikCameras.dll" Guid="356CD54E-74D0-4E97-9403-F78A2BE8D8E0">
+        <File Id="External_x64_Atik_AtikCameras.dll" Name="AtikCameras.dll" Source="$(var.NINA_ProjectDir)External\x64\Atik\AtikCameras.dll" />
       </Component>
       <Component Win64="$(var.Win64)" Id="External_x64_Atik_Atik.Core.dll" Guid="455c64c7-04c6-474b-8b72-fa407be89d6d">
         <File Id="External_x64_Atik_Atik.Core.dll" Name="Atik.Core.dll" Source="$(var.NINA_ProjectDir)External\x64\Atik\Atik.Core.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="External_x64_FlyCapture2_v140.dll" Guid="452A92A5-DE18-45A9-AE6A-36D097E314AD">
+        <File Id="External_x64_Atik_FlyCapture2_v140.dll" Name="FlyCapture2_v140.dll" Source="$(var.NINA_ProjectDir)External\x64\Atik\FlyCapture2_v140.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
@@ -924,11 +924,11 @@
 
   <Fragment>
     <ComponentGroup Id="External_x86_Atik_files" Directory="External_x86_Atik">
-      <Component Win64="$(var.Win64)" Id="External_x86_Atik_ArtemisHSC.dll" Guid="1fdc0fe1-445f-4735-a0ac-c38c119f061f">
-        <File Id="External_x86_Atik_ArtemisHSC.dll" Name="ArtemisHSC.dll" Source="$(var.NINA_ProjectDir)External\x86\Atik\ArtemisHSC.dll" />
+      <Component Win64="$(var.Win64)" Id="External_x86_Atik_AtikCameras.dll" Guid="67625E64-FCF6-4721-B95F-5388362DF27C">
+        <File Id="External_x86_Atik_AtikCameras.dll" Name="AtikCameras.dll" Source="$(var.NINA_ProjectDir)External\x86\Atik\AtikCameras.dll" />
       </Component>
-      <Component Win64="$(var.Win64)" Id="External_x86_Atik_ArtemisHscDefn.dll" Guid="ac3287e9-b2b0-4d0f-bcd5-4ff26cafd5a1">
-        <File Id="External_x86_Atik_ArtemisHscDefn.dll" Name="ArtemisHscDefn.dll" Source="$(var.NINA_ProjectDir)External\x86\Atik\ArtemisHscDefn.dll" />
+      <Component Win64="$(var.Win64)" Id="External_x86_Atik_FlyCapture2_v140.dll" Guid="5C4BF259-A863-4E31-9A75-12BFA8ACA9DF">
+        <File Id="External_x86_Atik_FlyCapture2_v140.dll" Name="FlyCapture2_v140.dll" Source="$(var.NINA_ProjectDir)External\x86\Atik\FlyCapture2_v140.dll" />
       </Component>
       <Component Win64="$(var.Win64)" Id="External_x86_Atik_Atik.Core.dll" Guid="ead8ba47-fb43-4e0d-977a-2ed91d9d0ef9">
         <File Id="External_x86_Atik_Atik.Core.dll" Name="Atik.Core.dll" Source="$(var.NINA_ProjectDir)External\x86\Atik\Atik.Core.dll" />
