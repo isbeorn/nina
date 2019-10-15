@@ -8,22 +8,32 @@ using System.Threading.Tasks;
 namespace NINA.Model.MyFlatDevice {
 
     public class AlnitakFlatDevice : BaseINPC, IFlatDevice {
-        private readonly SerialPort _serialPort;
+        private ISerialPort _serialPort;
 
-        private class Commands {
+        private class Command {
             public const string Ping = ">POOO\r";
             public const string Open = ">OOOO\r";
             public const string Close = ">COOO\r";
             public const string LightOn = ">LOOO\r";
             public const string LightOff = ">DOOO\r";
-            public const string SetBrightness = ">BOOO\r";
+            public const string SetBrightness = ">B{0}\r";
             public const string GetBrightness = ">JOOO\r";
             public const string State = ">SOOO\r";
             public const string Version = ">VOOO\r";
+
+            public const char PingReturn = 'P';
+            public const char OpenReturn = 'O';
+            public const char CloseReturn = 'C';
+            public const char LightOnReturn = 'L';
+            public const char LightOffReturn = 'D';
+            public const char SetBrightnessReturn = 'B';
+            public const char GetBrightnessReturn = 'J';
+            public const char StateReturn = 'S';
+            public const char VersionReturn = 'V';
         };
 
         public AlnitakFlatDevice(string portName) {
-            _serialPort = new SerialPort {
+            _serialPort = new SerialPortWrapper {
                 PortName = portName,
                 BaudRate = 9600,
                 Parity = Parity.None,
@@ -36,11 +46,17 @@ namespace NINA.Model.MyFlatDevice {
             };
         }
 
+        public ISerialPort SerialPort {
+            set {
+                _serialPort = value;
+            }
+        }
+
         public CoverState CoverState {
             get {
                 if (Connected) {
-                    string response = SendCommand(Commands.State);
-                    if (IsValidResponse(response, Commands.State[1])) {
+                    string response = SendCommand(Command.State);
+                    if (IsValidResponse(response, Command.StateReturn)) {
                         switch (response[6]) {
                             case '0':
                                 return CoverState.NotOpenClosed;
@@ -67,8 +83,8 @@ namespace NINA.Model.MyFlatDevice {
         public bool LightOn {
             get {
                 if (Connected) {
-                    string response = SendCommand(Commands.State);
-                    if (IsValidResponse(response, Commands.State[1])) {
+                    string response = SendCommand(Command.State);
+                    if (IsValidResponse(response, Command.StateReturn)) {
                         switch (response[5]) {
                             case '1':
                                 return true;
@@ -84,8 +100,14 @@ namespace NINA.Model.MyFlatDevice {
                 if (Connected) {
                     string response;
                     if (value) {
-                        response = SendCommand(Commands.LightOn);
-                        if (!IsValidResponse(response, Commands.LightOn[1])) {
+                        response = SendCommand(Command.LightOn);
+                        if (!IsValidResponse(response, Command.LightOnReturn)) {
+                            Logger.Error($"Invalid response from flat device on port {_serialPort.PortName}. Command was: LOOO Response was: {response}.");
+                            Notification.ShowError(Locale.Loc.Instance["LblInvalidResponseFlatDevice"]);
+                        }
+                    } else {
+                        response = SendCommand(Command.LightOff);
+                        if (!IsValidResponse(response, Command.LightOffReturn)) {
                             Logger.Error($"Invalid response from flat device on port {_serialPort.PortName}. Command was: LOOO Response was: {response}.");
                             Notification.ShowError(Locale.Loc.Instance["LblInvalidResponseFlatDevice"]);
                         }
@@ -99,8 +121,8 @@ namespace NINA.Model.MyFlatDevice {
             get {
                 int result = 0;
                 if (Connected) {
-                    string response = SendCommand(Commands.GetBrightness);
-                    if (IsValidResponse(response, Commands.GetBrightness[1])) {
+                    string response = SendCommand(Command.GetBrightness);
+                    if (IsValidResponse(response, Command.GetBrightnessReturn)) {
                         result = Int32.Parse(response.Substring(4, 3));
                     }
                 }
@@ -109,8 +131,8 @@ namespace NINA.Model.MyFlatDevice {
             set {
                 if (Connected) {
                     if (value < MinBrightness || value > MaxBrightness) { return; }
-                    string response = SendCommand($">B{value.ToString("000")}\r");
-                    if (!IsValidResponse(response, Commands.SetBrightness[1])) {
+                    string response = SendCommand(Command.SetBrightness.Replace("{0}", value.ToString("000")));
+                    if (!IsValidResponse(response, Command.SetBrightnessReturn)) {
                         Logger.Error($"Invalid response from flat device on port {_serialPort.PortName}. Command was: B{value} Response was: {response}.");
                         Notification.ShowError(Locale.Loc.Instance["LblInvalidResponseFlatDevice"]);
                     }
@@ -177,17 +199,21 @@ namespace NINA.Model.MyFlatDevice {
 
         public async Task<bool> Close(CancellationToken ct) {
             return await Task<bool>.Run(() => {
-                string response = SendCommand(Commands.Close);
-                //wait here?
-                return IsValidResponse(response, Commands.Close[2]);
+                string response = SendCommand(Command.Close);
+                if (IsValidResponse(response, Command.CloseReturn)) {
+                    while (IsMotorRunning()) {
+                        Thread.Sleep(300);
+                    }
+                }
+                return CoverState == CoverState.Closed;
             });
         }
 
         public async Task<bool> Connect(CancellationToken token) {
             return await Task<bool>.Run(() => {
                 Connected = true;
-                string response = SendCommand(Commands.Ping);
-                if (IsValidResponse(response, Commands.Ping[1])) {
+                string response = SendCommand(Command.Ping);
+                if (IsValidResponse(response, Command.PingReturn)) {
                     _description = GetDescription(response);
                 }
                 RaiseAllPropertiesChanged();
@@ -201,9 +227,13 @@ namespace NINA.Model.MyFlatDevice {
 
         public async Task<bool> Open(CancellationToken ct) {
             return await Task<bool>.Run(() => {
-                string response = SendCommand(Commands.Open);
-                //wait here?
-                return IsValidResponse(response, Commands.Open[1]);
+                string response = SendCommand(Command.Open);
+                if (IsValidResponse(response, Command.OpenReturn)) {
+                    while (IsMotorRunning()) {
+                        Thread.Sleep(300);
+                    }
+                }
+                return CoverState == CoverState.Open;
             });
         }
 
@@ -315,6 +345,67 @@ namespace NINA.Model.MyFlatDevice {
                     break;
             }
             return result;
+        }
+
+        private bool IsMotorRunning() {
+            string response = SendCommand(Command.State);
+            if (IsValidResponse(response, Command.StateReturn)) {
+                switch (response[4]) {
+                    case '1':
+                        return true;
+
+                    default:
+                        return false;
+                }
+            }
+            return false;
+        }
+    }
+
+    //below is for testing purposes only
+    public interface ISerialPort {
+        string PortName { get; set; }
+
+        void Write(string value);
+
+        string ReadLine();
+
+        void Open();
+
+        void Close();
+    }
+
+    public class SerialPortWrapper : ISerialPort {
+        private SerialPort _serialPort;
+
+        public SerialPortWrapper() {
+            _serialPort = new SerialPort();
+        }
+
+        public string PortName { get { return _serialPort.PortName; } set { _serialPort.PortName = value; } }
+        public int BaudRate { get { return _serialPort.BaudRate; } set { _serialPort.BaudRate = value; } }
+        public Parity Parity { get { return _serialPort.Parity; } set { _serialPort.Parity = value; } }
+        public int DataBits { get { return _serialPort.DataBits; } set { _serialPort.DataBits = value; } }
+        public StopBits StopBits { get { return _serialPort.StopBits; } set { _serialPort.StopBits = value; } }
+        public Handshake Handshake { get { return _serialPort.Handshake; } set { _serialPort.Handshake = value; } }
+        public string NewLine { get { return _serialPort.NewLine; } set { _serialPort.NewLine = value; } }
+        public int ReadTimeout { get { return _serialPort.ReadTimeout; } set { _serialPort.ReadTimeout = value; } }
+        public int WriteTimeout { get { return _serialPort.WriteTimeout; } set { _serialPort.WriteTimeout = value; } }
+
+        public void Close() {
+            _serialPort.Close();
+        }
+
+        public void Open() {
+            _serialPort.Open();
+        }
+
+        public string ReadLine() {
+            return _serialPort.ReadLine();
+        }
+
+        public void Write(string value) {
+            _serialPort.Write(value);
         }
     }
 }
