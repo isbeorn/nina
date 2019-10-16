@@ -316,20 +316,6 @@
                                     </TextBox.Text>
                                 </TextBox>
                             </StackPanel>
-
-                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                                <TextBlock
-                                    Width="140"
-                                    VerticalAlignment="Center"
-                                    Text="Enable QHY SDK" />
-                                <CheckBox
-                                    MinWidth="120"
-                                    Margin="10,0,0,0"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Center"
-                                    VerticalContentAlignment="Center"
-                                    IsChecked="{Binding EnableQHY}" />
-                            </StackPanel>
                         </StackPanel>
                     </GroupBox>
                     <GroupBox
