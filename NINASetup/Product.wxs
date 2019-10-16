@@ -639,6 +639,9 @@
       <Component Win64="$(var.Win64)" Id="External_x64_FlyCapture2_v140.dll" Guid="452A92A5-DE18-45A9-AE6A-36D097E314AD">
         <File Id="External_x64_Atik_FlyCapture2_v140.dll" Name="FlyCapture2_v140.dll" Source="$(var.NINA_ProjectDir)External\x64\Atik\FlyCapture2_v140.dll" />
       </Component>
+      <Component Win64="$(var.Win64)" Id="External_x64_libiomp5md.dll" Guid="144B0E1E-E43A-414A-BE8A-91585B86C101">
+        <File Id="External_x64_Atik_libiomp5md.dll" Name="libiomp5md.dll" Source="$(var.NINA_ProjectDir)External\x64\Atik\libiomp5md.dll" />
+      </Component>
     </ComponentGroup>
   </Fragment>
 
@@ -935,6 +938,9 @@
       </Component>
       <Component Win64="$(var.Win64)" Id="External_x86_Atik_libusb_1.0.dll" Guid="BEBAFF26-2134-4CA2-9283-10A970A9C99D">
         <File Id="External_x86_Atik_libusb_1.0.dll" Name="libusb-1.0.dll" Source="$(var.NINA_ProjectDir)External\x86\Atik\libusb-1.0.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="External_x86_libiomp5md.dll" Guid="9151F103-3A44-4E47-A699-18BEF0B379C4">
+        <File Id="External_x86_Atik_libiomp5md.dll" Name="libiomp5md.dll" Source="$(var.NINA_ProjectDir)External\x86\Atik\libiomp5md.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
