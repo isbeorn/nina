@@ -29,6 +29,8 @@
 - QHY native camera driver now supports selecting readout modes with QHY600 class cameras
 - Added a $$DATEMINUS12$$ placeholder to the file save pattern that shifts the current date 12 hours into the past. This allows for all images of a night to be saved into the same date folder.
 - Added more manual focus targets for certain regions of the southern hemisphere sky.
+- Can now configure a custom Astrometry.net API URL
+- Improved status and logging for Astrometry.net plate solve jobs
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false

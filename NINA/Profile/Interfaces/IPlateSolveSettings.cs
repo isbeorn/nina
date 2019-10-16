@@ -27,6 +27,7 @@ using NINA.Utility.Enum;
 namespace NINA.Profile {
 
     public interface IPlateSolveSettings : ISettings {
+        string AstrometryURL { get; set; }
         string AstrometryAPIKey { get; set; }
         BlindSolverEnum BlindSolverType { get; set; }
         string CygwinLocation { get; set; }

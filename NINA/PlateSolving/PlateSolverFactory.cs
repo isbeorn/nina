@@ -21,15 +21,12 @@
 
 #endregion "copyright"
 
-using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
-using NINA.Utility.Notification;
 using NINA.Profile;
-using NINA.Utility.Mediator.Interfaces;
 
 namespace NINA.PlateSolving {
+
     internal static class PlateSolverFactory {
-        public const string ASTROMETRYNETURL = "http://nova.astrometry.net";
 
         /// <summary>
         /// Creates an instance of a Platesolver depending on the solver
@@ -40,7 +37,7 @@ namespace NINA.PlateSolving {
         private static IPlateSolver GetPlateSolver(IPlateSolveSettings plateSolveSettings, PlateSolverEnum solver) {
             switch (solver) {
                 case PlateSolverEnum.ASTROMETRY_NET:
-                    return new AstrometryPlateSolver(ASTROMETRYNETURL, plateSolveSettings.AstrometryAPIKey);
+                    return new AstrometryPlateSolver(plateSolveSettings.AstrometryURL, plateSolveSettings.AstrometryAPIKey);
 
                 case PlateSolverEnum.LOCAL:
                     return new LocalPlateSolver(plateSolveSettings.CygwinLocation);

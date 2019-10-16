@@ -32,7 +32,6 @@ using NINA.Utility.Notification;
 using NINA.Profile;
 using System;
 using System.ComponentModel;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -46,7 +45,6 @@ using NINA.Utility.Mediator;
 namespace NINA.ViewModel {
 
     internal class PlatesolveVM : DockableVM, ICameraConsumer, ITelescopeConsumer {
-        public const string ASTROMETRYNETURL = "http://nova.astrometry.net";
 
         public PlatesolveVM(
                 IProfileService profileService,
