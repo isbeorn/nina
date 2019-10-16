@@ -186,34 +186,24 @@ namespace NINA.Utility.AtikSDK {
         }
 
         public static ArtemisPropertiesStruct GetCameraProperties(int cameraId) {
-            // This is only ever called during initial creation of the AtikCamera object
-            // Sleep for five seconds to allow the Atik DLL to be loaded before continuing
-            Logger.Trace("Sleeping for five seconds to allow Atik DLL to load");
-            System.Threading.Thread.Sleep(5000);
             var handle = Connect(cameraId);
-            ArtemisColourProperties(handle, out ArtemisColourType type, out int x, out int y, out int px, out int py);
-            ArtemisPropertiesStruct outstruct = new ArtemisPropertiesStruct();
-            CheckError(ArtemisProperties(handle, ref outstruct), MethodBase.GetCurrentMethod(), cameraId);
-            // Debayering doesn't seem to handle uneven rows or columns
-            if ((outstruct.nPixelsX % 1) == 0) {
-                outstruct.nPixelsX = outstruct.nPixelsX - 1;
-            }
-            if ((outstruct.nPixelsY % 1) == 0) {
-                outstruct.nPixelsY = outstruct.nPixelsY - 1;
-            }
+            ArtemisPropertiesStruct outstruct = GetCameraProperties(handle);
             Disconnect(handle);
             return outstruct;
         }
 
         public static ArtemisPropertiesStruct GetCameraProperties(IntPtr camera) {
+            SensorType type = GetColorInformation(camera);
             ArtemisPropertiesStruct outstruct = new ArtemisPropertiesStruct();
             CheckError(ArtemisProperties(camera, ref outstruct), MethodBase.GetCurrentMethod(), camera);
-            // Debayering doesn't seem to handle uneven rows or columns
-            if ((outstruct.nPixelsX % 1) == 0) {
-                outstruct.nPixelsX = outstruct.nPixelsX - 1;
-            }
-            if ((outstruct.nPixelsY % 1) == 0) {
-                outstruct.nPixelsY = outstruct.nPixelsY - 1;
+            if (type == SensorType.RGGB) {
+                // Debayering doesn't seem to handle uneven rows or columns
+                if ((outstruct.nPixelsX % 1) == 0) {
+                    outstruct.nPixelsX = outstruct.nPixelsX - 1;
+                }
+                if ((outstruct.nPixelsY % 1) == 0) {
+                    outstruct.nPixelsY = outstruct.nPixelsY - 1;
+                }
             }
             return outstruct;
         }
