@@ -214,6 +214,16 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
+        private int fontSize;
+
+        public int FontSize {
+            get => fontSize;
+            set {
+                fontSize = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private ISkySurveyFactory skySurveyFactory;
 
         public ISkySurveyFactory SkySurveyFactory {
@@ -787,6 +797,8 @@ namespace NINA.ViewModel.FramingAssistant {
                     Rotation = previousRotation,
                     Coordinates = centerCoordinates
                 };
+
+                FontSize = (int)(height * 0.2);
             }
         }
 

@@ -641,7 +641,7 @@
                                                 <TextBlock
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center"
-                                                    FontSize="100px"
+                                                    FontSize="{Binding Path=FramingAssistantVM.FontSize, Source={StaticResource AppVM}}"
                                                     FontStretch="ExtraExpanded"
                                                     Text="{Binding Id}" />
                                                 <Grid.Margin>
