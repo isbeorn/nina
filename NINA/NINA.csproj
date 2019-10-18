@@ -394,7 +394,7 @@
     <Compile Include="Model\MyCamera\Simulator\CameraType.cs" />
     <Compile Include="Model\MyFilterWheel\QHYFilterWheel.cs" />
     <Compile Include="Model\MyFilterWheel\FLIFilterWheel.cs" />
-    <Compile Include="Model\MyFlatDevice\AlnitakDevices.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakDevices.cs" />
     <Compile Include="Model\MyFlatDevice\AlnitakFlatDevice.cs" />
     <Compile Include="Model\MyFlatDevice\FlatDeviceInfo.cs" />
     <Compile Include="Model\MyFlatDevice\IFlatDevice.cs" />
@@ -414,6 +414,8 @@
     <Compile Include="Model\MyWeatherData\WeatherDataInfo.cs" />
     <Compile Include="PlateSolving\BaseSolver.cs" />
     <Compile Include="PlateSolving\PlateSolveImageProperties.cs" />
+    <Compile Include="Profile\FlatDeviceSettings.cs" />
+    <Compile Include="Profile\Interfaces\IFlatDeviceSettings.cs" />
     <Compile Include="Profile\Interfaces\IWeatherDataSettings.cs" />
     <Compile Include="Profile\ProfileInfo.cs" />
     <Compile Include="Profile\WeatherDataSettings.cs" />
