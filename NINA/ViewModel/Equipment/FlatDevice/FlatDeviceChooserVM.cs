@@ -5,6 +5,7 @@ using NINA.Model;
 using NINA.Model.MyFlatDevice;
 using NINA.Profile;
 using NINA.Utility;
+using NINA.Utility.FlatDeviceSDKs.AlnitakSDK;
 
 namespace NINA.ViewModel.Equipment.FlatDevice
 {
