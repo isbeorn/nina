@@ -58,14 +58,14 @@ namespace NINA.Model.MyFlatDevice
             get {
                 if (!Connected)
                 {
-                    return CoverState.UNKNOWN;
+                    return CoverState.Unknown;
                 }
                 var response = SendCommand(Command.State);
                 if (!IsValidResponse(response, Command.StateReturn))
                 {
                     Logger.Error($"Invalid response from flat device on port {_serialPort.PortName}. Command was: {Command.State} Response was: {response}.");
                     Notification.ShowError(Locale.Loc.Instance["LblInvalidResponseFlatDevice"]);
-                    return CoverState.UNKNOWN;
+                    return CoverState.Unknown;
                 }
                 switch (response[6])
                 {
@@ -79,7 +79,7 @@ namespace NINA.Model.MyFlatDevice
                         return CoverState.Open;
 
                     default:
-                        return CoverState.UNKNOWN;
+                        return CoverState.Unknown;
                 }
             }
         }

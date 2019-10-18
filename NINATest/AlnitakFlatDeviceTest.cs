@@ -39,8 +39,8 @@ namespace NINATest
         [TestCase(CoverState.NotOpenClosed, "*S99000")]
         [TestCase(CoverState.Closed, "*S99001")]
         [TestCase(CoverState.Open, "*S99002")]
-        [TestCase(CoverState.UNKNOWN, "*S99003")]
-        [TestCase(CoverState.UNKNOWN, "garbage")]
+        [TestCase(CoverState.Unknown, "*S99003")]
+        [TestCase(CoverState.Unknown, "garbage")]
         public void TestCoverStatus(CoverState coverState, string deviceResponse)
         {
             mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
