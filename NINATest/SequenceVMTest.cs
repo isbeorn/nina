@@ -21,7 +21,9 @@
 
 #endregion "copyright"
 
+using Moq;
 using NINA.Model;
+using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFocuser;
@@ -29,10 +31,12 @@ using NINA.Model.MyGuider;
 using NINA.Model.MyRotator;
 using NINA.Model.MyTelescope;
 using NINA.Model.MyWeatherData;
+using NINA.Profile;
+using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
+using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
-using NINA.Profile;
 using NINA.ViewModel;
 using NINA.ViewModel.Equipment.Camera;
 using NINA.ViewModel.Equipment.FilterWheel;
@@ -50,11 +54,6 @@ using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using NINA.Utility;
-using NINA.Model.ImageData;
-using System.Collections.Async;
-using Moq;
-using NINA.Utility.Mediator;
 
 namespace NINATest {
 
@@ -578,6 +577,8 @@ namespace NINATest {
                 throw new NotImplementedException();
             }
         }
+
+        public IFlatDeviceSettings FlatDeviceSettings { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
