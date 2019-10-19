@@ -26,6 +26,8 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             ConnectCommand = new AsyncCommand<bool>(() => Connect());
             CancelConnectCommand = new RelayCommand(CancelConnectFlatDevice);
             DisconnectCommand = new RelayCommand(DisconnectFlatDeviceDialog);
+            OpenCoverCommand = new AsyncCommand<bool>(() => OpenCover());
+            CloseCoverCommand = new AsyncCommand<bool>(() => CloseCover());
             RefreshFlatDeviceListCommand =
                 new RelayCommand(RefreshFlatDeviceList, o => _flatDevice?.Connected != true);
 
@@ -42,11 +44,11 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             _flatDeviceMediator.Broadcast(GetDeviceInfo());
         }
 
-        private readonly SemaphoreSlim ss = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim ssConnect = new SemaphoreSlim(1, 1);
         private CancellationTokenSource _connectFlatDeviceCts;
 
         public async Task<bool> Connect() {
-            await ss.WaitAsync();
+            await ssConnect.WaitAsync();
             try {
                 Disconnect();
                 _updateTimer?.Stop();
@@ -79,7 +81,8 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                                 DriverInfo = flatDevice.DriverInfo,
                                 DriverVersion = flatDevice.DriverVersion,
                                 LightOn = flatDevice.LightOn,
-                                Name = flatDevice.Name
+                                Name = flatDevice.Name,
+                                SupportsOpenClose = flatDevice.SupportsOpenClose
                             };
 
                             Notification.ShowSuccess(Locale.Loc.Instance["LblFlatDeviceConnected"]);
@@ -106,7 +109,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                     return false;
                 }
             } finally {
-                ss.Release();
+                ssConnect.Release();
                 _applicationStatusMediator.StatusUpdate(
                     new ApplicationStatus {
                         Source = Title,
@@ -133,6 +136,38 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                 "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (dialog == System.Windows.MessageBoxResult.OK) {
                 Disconnect();
+            }
+        }
+
+        private readonly SemaphoreSlim ssOpen = new SemaphoreSlim(1, 1);
+
+        public async Task<bool> OpenCover() {
+            await ssOpen.WaitAsync();
+            try {
+                var flatDevice = (IFlatDevice)FlatDeviceChooserVM.SelectedDevice;
+                if (!flatDevice.SupportsOpenClose) return false;
+                return await flatDevice.Open(new CancellationToken());
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                return false;
+            } finally {
+                ssOpen.Release();
+            }
+        }
+
+        private readonly SemaphoreSlim ssClose = new SemaphoreSlim(1, 1);
+
+        public async Task<bool> CloseCover() {
+            await ssClose.WaitAsync();
+            try {
+                var flatDevice = (IFlatDevice)FlatDeviceChooserVM.SelectedDevice;
+                if (!flatDevice.SupportsOpenClose) return false;
+                return await flatDevice.Close(new CancellationToken());
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                return false;
+            } finally {
+                ssClose.Release();
             }
         }
 
@@ -188,9 +223,11 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             return flatDeviceValues;
         }
 
-        public ICommand RefreshFlatDeviceListCommand { get; private set; }
-        public IAsyncCommand ConnectCommand { get; private set; }
-        public RelayCommand CancelConnectCommand { get; private set; }
-        public RelayCommand DisconnectCommand { get; private set; }
+        public ICommand RefreshFlatDeviceListCommand { get; }
+        public IAsyncCommand ConnectCommand { get; }
+        public RelayCommand CancelConnectCommand { get; }
+        public RelayCommand DisconnectCommand { get; }
+        public IAsyncCommand OpenCoverCommand { get; }
+        public IAsyncCommand CloseCoverCommand { get; }
     }
 }

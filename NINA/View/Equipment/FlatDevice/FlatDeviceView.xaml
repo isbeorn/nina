@@ -128,6 +128,41 @@
                         </UniformGrid>
                     </UniformGrid>
                 </Border>
+                <Border
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0"
+                    IsEnabled="{Binding FlatDeviceInfo.SupportsOpenClose}">
+                    <UniformGrid Columns="2">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc CoverState}" />
+                            <StackPanel Orientation="Horizontal">
+                                <Grid IsEnabled="{Binding FlatDeviceInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
+                                    <ninactrl:AsyncProcessButton
+                                        Width="50"
+                                        Height="25"
+                                        Margin="5"
+                                        HorizontalAlignment="Left"
+                                        ButtonText="{ns:Loc LblOpenFlatDevice}"
+                                        Command="{Binding OpenCoverCommand}"
+                                        ToolTip="{ns:Loc LblOpenFlatDeviceToolTip}" />
+                                </Grid>
+                                <Grid IsEnabled="{Binding FlatDeviceInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
+                                    <ninactrl:AsyncProcessButton
+                                        Width="50"
+                                        Height="25"
+                                        Margin="5"
+                                        HorizontalAlignment="Left"
+                                        ButtonText="{ns:Loc LblCloseFlatDevice}"
+                                        Command="{Binding CloseCoverCommand}"
+                                        ToolTip="{ns:Loc LblCloseFlatDeviceToolTip}" />
+                                </Grid>
+                            </StackPanel>
+                        </UniformGrid>
+                    </UniformGrid>
+                </Border>
             </StackPanel>
         </Grid>
     </GroupBox>

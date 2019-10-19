@@ -1,26 +1,35 @@
-﻿namespace NINA.Model.MyFlatDevice
-{
-    internal class FlatDeviceInfo : DeviceInfo
-    {
-        private CoverState coverState;
+﻿namespace NINA.Model.MyFlatDevice {
+
+    internal class FlatDeviceInfo : DeviceInfo {
+        private CoverState _coverState;
 
         public CoverState CoverState {
-            get => coverState;
-            set { coverState = value; RaisePropertyChanged(); }
+            get => _coverState;
+            set { _coverState = value; RaisePropertyChanged(); }
         }
 
-        private bool lightOn;
+        private bool _lightOn;
 
         public bool LightOn {
-            get => lightOn;
-            set { lightOn = value; RaisePropertyChanged(); }
+            get => _lightOn;
+            set { _lightOn = value; RaisePropertyChanged(); }
         }
 
-        private int brightness;
+        private int _brightness;
 
         public int Brightness {
-            get => brightness;
-            set { brightness = value; RaisePropertyChanged(); }
+            get => _brightness;
+            set { _brightness = value; RaisePropertyChanged(); }
+        }
+
+        private bool _supportsOpenClose;
+
+        public bool SupportsOpenClose {
+            get => _supportsOpenClose;
+            set {
+                _supportsOpenClose = value;
+                RaisePropertyChanged();
+            }
         }
     }
 }
