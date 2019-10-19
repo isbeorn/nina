@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using NINA.Model.MyFlatDevice;
 
-namespace NINA.ViewModel.Equipment.FlatDevice
-{
-    class IFlatDeviceVM
-    {
+namespace NINA.ViewModel.Equipment.FlatDevice {
+
+    internal interface IFlatDeviceVM : IDeviceVM<FlatDeviceInfo> {
     }
 }
