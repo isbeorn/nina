@@ -22,17 +22,16 @@
 #endregion "copyright"
 
 using NINA.Model.ImageData;
-using NINA.Model.MyCamera;
 using NINA.Utility.Astrometry;
-using NINA.Utility.ImageAnalysis;
 using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 
 namespace NINA.Utility.SkySurvey {
+
     internal class FileSkySurvey : ISkySurvey {
+
         public async Task<SkySurveyImage> GetImage(string name, Coordinates coordinates, double fieldOfView, int width,
             int height, CancellationToken ct, IProgress<int> progress) {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
@@ -47,14 +46,17 @@ namespace NINA.Utility.SkySurvey {
                 var renderedImage = arr.RenderImage();
                 renderedImage = await renderedImage.Stretch(factor: 0.2, blackClipping: -2.8, unlinked: false);
 
-                // TODO: Try and extract properties from image if available
+                var pixelSize = arr.MetaData.Camera.PixelSize;
+                var focalLength = arr.MetaData.Telescope.FocalLength;
+                var arcSecPerPixel = Astrometry.Astrometry.ArcsecPerPixel(pixelSize, focalLength);
+
                 return new SkySurveyImage() {
                     Name = Path.GetFileNameWithoutExtension(dialog.FileName),
-                    Coordinates = null,
-                    FoVHeight = double.NaN,
-                    FoVWidth = double.NaN,
+                    Coordinates = arr.MetaData.Target?.Coordinates,
+                    FoVHeight = arcSecPerPixel * arr.Properties.Width,
+                    FoVWidth = arcSecPerPixel * arr.Properties.Height,
                     Image = renderedImage.Image,
-                    Rotation = double.NaN,
+                    Rotation = arr.MetaData.Rotator?.Position ?? double.NaN,
                     Source = nameof(FileSkySurvey)
                 };
             } else {

@@ -21,14 +21,25 @@
 
 #endregion "copyright"
 
+using NINA.Model.ImageData;
+using NINA.Profile;
 using NINA.Utility.Astrometry;
 using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Reflection;
 
 namespace NINA.PlateSolving {
 
-    internal class PlateSolveParameter {
-        public double FocalLength { get; set; }
-        public double PixelSize { get; set; }
+    public class PlateSolveParameter {
+
+        private static IImmutableDictionary<string, string> _missingPropertyLabels = new Dictionary<string, string> {
+            { nameof(FocalLength), "LblFocalLength" },
+            { nameof(PixelSize), "LblPixelSize" }
+        }.ToImmutableDictionary();
+
+        public double? FocalLength { get; set; }
+        public double? PixelSize { get; set; }
         public double SearchRadius { get; set; }
         public double Regions { get; set; }
         public int DownSampleFactor { get; set; }
@@ -44,6 +55,50 @@ namespace NINA.PlateSolving {
                 $"DownSampleFactor: {DownSampleFactor}" + Environment.NewLine +
                 $"MaxObjects: {MaxObjects}" + Environment.NewLine +
                 $"{formatCoordinates}";
+        }
+
+        public static PlateSolveParameter FromImageData(
+            IImageData source,
+            IProfileService profileService,
+            Coordinates coordinates = null) {
+            var metadata = source.MetaData;
+            var parameter = new PlateSolveParameter() {
+                SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
+                Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
+                DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
+                MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
+                Coordinates = coordinates
+            };
+            if (!double.IsNaN(metadata.Camera.PixelSize)) {
+                parameter.PixelSize = metadata.Camera.PixelSize;
+            }
+            if (!double.IsNaN(metadata.Telescope.FocalLength)) {
+                parameter.FocalLength = metadata.Telescope.FocalLength;
+            }
+            return parameter;
+        }
+
+        public static string GetLabelForOptionalProperty(string name) {
+            if (!_missingPropertyLabels.TryGetValue(name, out string value)) {
+                throw new ArgumentException(
+                    $"{name} is not an optional property. Valid values are: {string.Join(",", _missingPropertyLabels.Keys)}");
+            }
+            return value;
+        }
+
+        public PlateSolveParameter Clone() {
+            return (PlateSolveParameter)this.MemberwiseClone();
+        }
+
+        public void Update(IReadOnlyDictionary<string, double?> propertyValues) {
+            foreach (var kvp in propertyValues) {
+                PropertyInfo prop = this.GetType().GetProperty(kvp.Key, BindingFlags.Public | BindingFlags.Instance);
+                if (prop == null) {
+                    throw new ArgumentException(
+                        $"{kvp.Key} is not a valid PlateSolveParaemter property");
+                }
+                prop.SetValue(this, kvp.Value);
+            }
         }
     }
 }

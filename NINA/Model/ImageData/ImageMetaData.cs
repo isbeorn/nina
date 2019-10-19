@@ -5,8 +5,12 @@ using NINA.Model.MyRotator;
 using NINA.Model.MyTelescope;
 using NINA.Model.MyWeatherData;
 using NINA.Profile;
+using NINA.Utility;
 using NINA.Utility.Astrometry;
+using nom.tam.fits;
 using System;
+using System.Collections.Generic;
+using System.Xml.Linq;
 
 namespace NINA.Model.ImageData {
 
@@ -104,6 +108,37 @@ namespace NINA.Model.ImageData {
                 WeatherData.WindDirection = info.WindDirection;
                 WeatherData.WindGust = info.WindGust;
                 WeatherData.WindSpeed = info.WindSpeed;
+            }
+        }
+
+        public void FromFITS(ImageHDU fitsImage) {
+            // This method currently only prioritizes getting headers that would be useful for Framing
+            // It also focuses on NINA-specific headers rather than handling other possible variants
+            // TODO: Expand this for more completeness
+            var header = fitsImage.Header;
+            if (header.ContainsKey("XPIXSZ")) {
+                Camera.PixelSize = header.GetDoubleValue("XPIXSZ");
+            }
+            if (header.ContainsKey("RA") && header.ContainsKey("DEC")) {
+                var ra = header.GetDoubleValue("RA");
+                var dec = header.GetDoubleValue("DEC");
+                // Assume J2000 since that is the typical default. Regardless, this should be close enough
+                // to help with solving
+                Telescope.Coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees);
+            }
+            if (header.ContainsKey("OBJCTRA") && header.ContainsKey("OBJCTDEC")) {
+                var ra = Astrometry.HMSToDegrees(header.GetStringValue("OBJCTRA"));
+                var dec = Astrometry.DMSToDegrees(header.GetStringValue("OBJCTDEC"));
+                Target.Coordinates = new Coordinates(ra, dec, Epoch.J2000, Coordinates.RAType.Degrees);
+            }
+            if (header.ContainsKey("FOCALLEN")) {
+                Telescope.FocalLength = header.GetDoubleValue("FOCALLEN");
+            }
+            if (header.ContainsKey("FOCRATIO")) {
+                Telescope.FocalRatio = header.GetDoubleValue("FOCRATIO");
+            }
+            if (header.ContainsKey("ROTATOR")) {
+                Rotator.Position = header.GetDoubleValue("ROTATOR");
             }
         }
     }

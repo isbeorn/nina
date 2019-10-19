@@ -27,7 +27,9 @@ using System.IO;
 using System.Text;
 
 namespace NINA.PlateSolving {
+
     internal class AllSkyPlateSolver : CLISolver {
+
         public AllSkyPlateSolver(string executableLocation)
             : base(executableLocation) {
         }
@@ -80,10 +82,10 @@ namespace NINA.PlateSolving {
             args.Add($"\"{outputFilePath}\"");
 
             //FocalLength
-            args.Add(parameter.FocalLength.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));
+            args.Add(parameter.FocalLength.Value.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));
 
             //PixelSize
-            args.Add(parameter.PixelSize.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));
+            args.Add(parameter.PixelSize.Value.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture));
 
             if (parameter.Coordinates != null) {
                 //CurrentRA

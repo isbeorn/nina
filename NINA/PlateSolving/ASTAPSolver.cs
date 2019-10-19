@@ -95,7 +95,7 @@ namespace NINA.PlateSolving {
             args.Add($"-f \"{imageFilePath}\"");
 
             //Field height of image
-            var fov = Math.Round(imageProperties.FoVH, 6);
+            var fov = Math.Round(imageProperties.FoVH.Value, 6);
             args.Add($"-fov {fov.ToString(CultureInfo.InvariantCulture)}");
 
             //Downsample factor

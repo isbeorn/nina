@@ -22,6 +22,8 @@
 #endregion "copyright"
 
 using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,6 +36,7 @@ namespace NINA.PlateSolving {
         protected static string WORKING_DIRECTORY = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "PlateSolver");
 
         public async Task<PlateSolveResult> SolveAsync(IImageData source, PlateSolveParameter parameter, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
+            EnsureAllPropertiesPresent(parameter);
             EnsureSolverValid(parameter);
             var imageProperties = PlateSolveImageProperties.Create(parameter, source);
             return await SolveAsyncImpl(source, parameter, imageProperties, progress, canceltoken);
@@ -46,7 +49,19 @@ namespace NINA.PlateSolving {
             IProgress<ApplicationStatus> progress,
             CancellationToken canceltoken);
 
+        private void EnsureAllPropertiesPresent(PlateSolveParameter parameter) {
+            var missingProperties = this.GetMissingProperties(parameter);
+            if (missingProperties.Count > 0) {
+                var errorMessage = String.Format(Locale.Loc.Instance["LblPlateSolveMissingProperties"], string.Join(", ", missingProperties));
+                throw new Exception(errorMessage);
+            }
+        }
+
         protected virtual void EnsureSolverValid(PlateSolveParameter parameter) {
+        }
+
+        public virtual IReadOnlyCollection<string> GetMissingProperties(PlateSolveParameter parameter) {
+            return ImmutableList<string>.Empty;
         }
     }
 }

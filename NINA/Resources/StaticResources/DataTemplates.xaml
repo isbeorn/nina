@@ -21,6 +21,7 @@
     xmlns:camera="clr-namespace:NINA.Model.MyCamera"
     xmlns:equip="clr-namespace:NINA.View.Equipment"
     xmlns:fw="clr-namespace:NINA.ViewModel.FlatWizard"
+    xmlns:ps="clr-namespace:NINA.ViewModel.PlateSolver"
     xmlns:local="clr-namespace:NINA.Resources.StaticResources"
     xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Locale"
@@ -66,6 +67,10 @@
 
     <DataTemplate DataType="{x:Type fw:FlatWizardFilterSettingsWrapper}">
         <view:FlatWizardFilterSettingsWrapperView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type ps:PlateSolverMissingParamsPromptVM}">
+        <view:PlateSolverMissingParamsPromptView />
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type simulator:SimulatorCamera}">

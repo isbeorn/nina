@@ -25,8 +25,9 @@ using NINA.Model;
 using NINA.Model.ImageData;
 using NINA.Utility;
 using NINA.Utility.Extensions;
-using NINA.Utility.Mediator.Interfaces;
 using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -118,6 +119,17 @@ namespace NINA.PlateSolving {
             Logger.Debug($"Starting process '{executableLocation}' with args '{startInfo.Arguments}'");
             process.Start();
             await process.WaitForExitAsync(ct);
+        }
+
+        public override IReadOnlyCollection<string> GetMissingProperties(PlateSolveParameter parameter) {
+            var missingPropertiesBuilder = ImmutableList.CreateBuilder<string>();
+            if (parameter.FocalLength == null) {
+                missingPropertiesBuilder.Add(nameof(parameter.FocalLength));
+            }
+            if (parameter.PixelSize == null) {
+                missingPropertiesBuilder.Add(nameof(parameter.PixelSize));
+            }
+            return missingPropertiesBuilder.ToImmutable();
         }
     }
 }
