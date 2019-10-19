@@ -27,7 +27,9 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
                     var command = new PingCommand();
                     Logger.Debug($"AlnitakFlatDevice: command : {command}");
                     serialPort.Write(command.CommandString);
-                    var response = new PingResponse(serialPort.ReadLine());
+                    var response = new PingResponse {
+                        DeviceResponse = serialPort.ReadLine()
+                    };
                     Logger.Debug($"AlnitakFlatDevice: response : {response}");
                     if (!response.IsValid) {
                         continue;
@@ -115,21 +117,25 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public string Name { get; private set; }
         public bool IsValid { get; protected set; }
 
-        protected Response(string response) {
+        public virtual string DeviceResponse {
+            set {
+                if (value == null || value.Length != 7) {
+                    IsValid = false;
+                    return;
+                }
+                if (value[0] != '*') {
+                    IsValid = false;
+                    return;
+                }
+
+                if (!ParseDeviceId(value)) {
+                    IsValid = false;
+                }
+            }
+        }
+
+        protected Response() {
             IsValid = true;
-            if (response == null || response.Length != 7) {
-                IsValid = false;
-                return;
-            }
-
-            if (response[0] != '*') {
-                IsValid = false;
-                return;
-            }
-
-            if (!ParseDeviceId(response)) {
-                IsValid = false;
-            }
         }
 
         private bool ParseDeviceId(string response) {
@@ -171,45 +177,60 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
 
     public class PingResponse : Response {
 
-        public PingResponse(string response) : base(response) {
-            if (response[1] != 'P' || !IsOoo(response)) {
-                IsValid = false;
+        public override string DeviceResponse {
+            set {
+                base.DeviceResponse = value;
+                if (value[1] != 'P' || !IsOoo(value)) {
+                    IsValid = false;
+                }
             }
         }
     }
 
     public class OpenResponse : Response {
 
-        public OpenResponse(string response) : base(response) {
-            if (response[1] != 'O' || !IsOoo(response)) {
-                IsValid = false;
+        public override string DeviceResponse {
+            set {
+                base.DeviceResponse = value;
+                if (value[1] != 'O' || !IsOoo(value)) {
+                    IsValid = false;
+                }
             }
         }
     }
 
     public class CloseResponse : Response {
 
-        public CloseResponse(string response) : base(response) {
-            if (response[1] != 'C' || !IsOoo(response)) {
-                IsValid = false;
+        public override string DeviceResponse {
+            set {
+                base.DeviceResponse = value;
+                if (value[1] != 'C' || !IsOoo(value)) {
+                    IsValid = false;
+                }
             }
         }
     }
 
     public class LightOnResponse : Response {
 
-        public LightOnResponse(string response) : base(response) {
-            if (response[1] != 'L' || !IsOoo(response)) {
-                IsValid = false;
+        public override string DeviceResponse {
+            set {
+                base.DeviceResponse = value;
+                if (value[1] != 'L' || !IsOoo(value)) {
+                    IsValid = false;
+                }
             }
         }
     }
 
     public class LightOffResponse : Response {
 
-        public LightOffResponse(string response) : base(response) {
-            if (response[1] != 'D' || !IsOoo(response)) {
-                IsValid = false;
+        public override string DeviceResponse {
+            set {
+                base.DeviceResponse = value;
+                if (value[1] != 'D' || !IsOoo(value)) {
+                    IsValid = false;
+                }
             }
         }
     }
@@ -217,9 +238,12 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
     public abstract class BrightnessResponse : Response {
         public int Brightness { get; protected set; }
 
-        protected BrightnessResponse(string response) : base(response) {
-            if (!ParseBrightness(response)) {
-                IsValid = false;
+        public override string DeviceResponse {
+            set {
+                base.DeviceResponse = value;
+                if (!ParseBrightness(value)) {
+                    IsValid = false;
+                }
             }
         }
 
@@ -241,18 +265,24 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
 
     public class SetBrightnessResponse : BrightnessResponse {
 
-        public SetBrightnessResponse(string response) : base(response) {
-            if (response[1] != 'B') {
-                IsValid = false;
+        public override string DeviceResponse {
+            set {
+                base.DeviceResponse = value;
+                if (value[1] != 'B') {
+                    IsValid = false;
+                }
             }
         }
     }
 
     public class GetBrightnessResponse : BrightnessResponse {
 
-        public GetBrightnessResponse(string response) : base(response) {
-            if (response[1] != 'J') {
-                IsValid = false;
+        public override string DeviceResponse {
+            set {
+                base.DeviceResponse = value;
+                if (value[1] != 'J') {
+                    IsValid = false;
+                }
             }
         }
     }
@@ -262,9 +292,12 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public bool LightOn { get; private set; }
         public CoverState CoverState { get; private set; }
 
-        public StateResponse(string response) : base(response) {
-            if (response[1] != 'S' || !ParseState(response)) {
-                IsValid = false;
+        public override string DeviceResponse {
+            set {
+                base.DeviceResponse = value;
+                if (value[1] != 'S' || !ParseState(value)) {
+                    IsValid = false;
+                }
             }
         }
 
@@ -323,9 +356,12 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
     public class FirmwareVersionResponse : Response {
         public int FirmwareVersion { get; private set; }
 
-        public FirmwareVersionResponse(string response) : base(response) {
-            if (response[1] != 'V' || !ParseFirmwareVersion(response)) {
-                IsValid = false;
+        public override string DeviceResponse {
+            set {
+                base.DeviceResponse = value;
+                if (value[1] != 'V' || !ParseFirmwareVersion(value)) {
+                    IsValid = false;
+                }
             }
         }
 

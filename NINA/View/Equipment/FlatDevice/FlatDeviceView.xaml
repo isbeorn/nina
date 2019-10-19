@@ -35,5 +35,100 @@
                     SetupCommand="{Binding FlatDeviceChooserVM.SetupDialogCommand}" />
             </Grid>
         </GroupBox.Header>
+        <Grid>
+            <StackPanel>
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                    <UniformGrid Columns="2">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock Text="{ns:Loc LblName}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                Text="{Binding FlatDeviceInfo.Name}"
+                                TextWrapping="WrapWithOverflow" />
+                        </UniformGrid>
+                    </UniformGrid>
+                </Border>
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                    <UniformGrid Columns="2">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock Text="{ns:Loc LblDescription}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                Text="{Binding FlatDeviceInfo.Description}"
+                                TextWrapping="WrapWithOverflow" />
+                        </UniformGrid>
+                    </UniformGrid>
+                </Border>
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                    <UniformGrid Columns="2">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock Text="{ns:Loc LblDriverInfo}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                Text="{Binding FlatDeviceInfo.DriverInfo}"
+                                TextWrapping="WrapWithOverflow" />
+                        </UniformGrid>
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock Text="{ns:Loc LblDriverVersion}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding FlatDeviceInfo.DriverVersion}" />
+                        </UniformGrid>
+                    </UniformGrid>
+                </Border>
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                    <UniformGrid Columns="2">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock Text="{ns:Loc LblCoverState}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                Text="{Binding FlatDeviceInfo.CoverState}"
+                                TextWrapping="WrapWithOverflow" />
+                        </UniformGrid>
+                    </UniformGrid>
+                </Border>
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                    <UniformGrid Columns="2">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock Text="{ns:Loc LblLightOn}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                Text="{Binding FlatDeviceInfo.LightOn}"
+                                TextWrapping="WrapWithOverflow" />
+                        </UniformGrid>
+                    </UniformGrid>
+                </Border>
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                    <UniformGrid Columns="2">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock Text="{ns:Loc LblBrightness}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                Text="{Binding FlatDeviceInfo.Brightness}"
+                                TextWrapping="WrapWithOverflow" />
+                        </UniformGrid>
+                    </UniformGrid>
+                </Border>
+            </StackPanel>
+        </Grid>
     </GroupBox>
 </UserControl>
