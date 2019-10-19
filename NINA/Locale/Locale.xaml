@@ -700,7 +700,6 @@ Calculated HFR: {2}
     <s:String x:Key="LblPlateSolveFailedDelay" xml:space="default">Delay between attempts</s:String>
     <s:String x:Key="LblPlateSolveFailedDelayTooltip" xml:space="default">Delay, in minutes, between two plate solve attempts</s:String>
     <s:String x:Key="LblPlateSolveImage" xml:space="default">Plate solve current image</s:String>
-    <s:String x:Key="LblPlateSolveMissingProperties" xml:space="default">PlateSolve missing required properties: {0}</s:String>
     <s:String x:Key="LblPlateSolveNbOfAttempts" xml:space="default">Number of Attempts</s:String>
     <s:String x:Key="LblPlateSolveNbOfAttemptsTooltip" xml:space="default">How many times a mid-sequence platesolve operation will attempt until considered failed</s:String>
     <s:String x:Key="LblPlatesolveNoCoordinates" xml:space="default">No reference coordinates available</s:String>
@@ -708,7 +707,6 @@ Calculated HFR: {2}
     <s:String x:Key="LblPlatesolveProvidedBy" xml:space="default">Platesolve service provided by</s:String>
     <s:String x:Key="LblPlateSolver" xml:space="default">Plate Solver</s:String>
     <s:String x:Key="LblPlateSolveReattemptDelay" xml:space="default">Waiting for next plate solve attempt: {0}</s:String>
-    <s:String x:Key="LblPlateSolveSetMissingProperties" xml:space="default">Set missing plate solve properties</s:String>
     <s:String x:Key="LblPlateSolveSettings" xml:space="default">Plate Solver Settings</s:String>
     <s:String x:Key="LblPlateSolving" xml:space="default">Plate Solving</s:String>
     <s:String x:Key="LblPleaseChangeToFilter" xml:space="default">Please change to filter {0}</s:String>

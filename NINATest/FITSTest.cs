@@ -2,7 +2,6 @@
 using NINA.Model.ImageData;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
-using nom.tam.fits;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -511,52 +510,6 @@ namespace NINATest {
             sut.PopulateHeaderCards(metaData);
 
             sut.HeaderCards.Should().NotContain(notExpectedCard, "Negative Gain values are not allowed");
-        }
-
-        [Test]
-        public void ParseMetadataForPlatesolving() {
-            var sourceMetaData = new ImageMetaData();
-
-            var pixelSize = 2.0d;
-            var ra = 10.0d;
-            var dec = 12.0d;
-            var objectRa = 110.0d;
-            var objectDec = 112.0d;
-            var focalLen = 13.1d;
-            var focalRatio = 7.0d;
-            var rotation = 31.1d;
-            sourceMetaData.Telescope.Coordinates = new Coordinates(Angle.ByDegree(ra), Angle.ByDegree(dec), Epoch.J2000);
-            sourceMetaData.Target.Coordinates = new Coordinates(Angle.ByDegree(objectRa), Angle.ByDegree(objectDec), Epoch.J2000);
-            sourceMetaData.Camera.PixelSize = pixelSize;
-            sourceMetaData.Telescope.FocalLength = focalLen;
-            sourceMetaData.Telescope.FocalRatio = focalRatio;
-            sourceMetaData.Telescope.Name = "DummyName";
-            sourceMetaData.Rotator.Position = rotation;
-
-            var sut = new FITS(new ushort[] { 1, 2 }, 1, 1);
-            sut.PopulateHeaderCards(sourceMetaData);
-
-            ImageHDU hdu;
-            using (var s = new MemoryStream()) {
-                sut.Write(s);
-                s.Seek(0, SeekOrigin.Begin);
-                var fits = new Fits(s);
-                hdu = (ImageHDU)fits.ReadHDU();
-            }
-
-            var loadedMetaData = new ImageMetaData();
-            loadedMetaData.FromFITS(hdu);
-
-            loadedMetaData.Camera.PixelSize.Should().Be(pixelSize);
-            loadedMetaData.Telescope.Coordinates.RADegrees.Should().Be(ra);
-            loadedMetaData.Telescope.Coordinates.Dec.Should().Be(dec);
-            loadedMetaData.Target.Coordinates.RADegrees.Should().Be(objectRa);
-            loadedMetaData.Target.Coordinates.Dec.Should().Be(objectDec);
-            loadedMetaData.Telescope.FocalLength.Should().Be(focalLen);
-            loadedMetaData.Telescope.FocalRatio.Should().Be(focalRatio);
-            loadedMetaData.Rotator.Position.Should().Be(rotation);
-            // Even though this is set in sourceMetaData, we don't read it at this time
-            loadedMetaData.Telescope.Name.Should().Be("");
         }
     }
 }

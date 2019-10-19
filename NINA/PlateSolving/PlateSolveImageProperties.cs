@@ -4,35 +4,26 @@ using NINA.Utility.Astrometry;
 namespace NINA.PlateSolving {
 
     internal class PlateSolveImageProperties {
-        public double? FocalLength { get; private set; }
-        public double? PixelSize { get; private set; }
+        public double FocalLength { get; private set; }
+        public double PixelSize { get; private set; }
         public double ImageWidth { get; private set; }
         public double ImageHeight { get; private set; }
 
-        public double? ArcSecPerPixel {
+        public double ArcSecPerPixel {
             get {
-                if (!PixelSize.HasValue || !FocalLength.HasValue) {
-                    return null;
-                }
-                return Astrometry.ArcsecPerPixel(PixelSize.Value, FocalLength.Value);
+                return Astrometry.ArcsecPerPixel(PixelSize, FocalLength);
             }
         }
 
-        public double? FoVH {
+        public double FoVH {
             get {
-                if (!ArcSecPerPixel.HasValue) {
-                    return null;
-                }
-                return Astrometry.ArcminToDegree(Astrometry.FieldOfView(ArcSecPerPixel.Value, ImageHeight));
+                return Astrometry.ArcminToDegree(Astrometry.FieldOfView(ArcSecPerPixel, ImageHeight));
             }
         }
 
-        public double? FoVW {
+        public double FoVW {
             get {
-                if (!ArcSecPerPixel.HasValue) {
-                    return null;
-                }
-                return Astrometry.ArcminToDegree(Astrometry.FieldOfView(ArcSecPerPixel.Value, ImageWidth));
+                return Astrometry.ArcminToDegree(Astrometry.FieldOfView(ArcSecPerPixel, ImageWidth));
             }
         }
 

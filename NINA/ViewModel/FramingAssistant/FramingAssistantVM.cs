@@ -676,10 +676,8 @@ namespace NINA.ViewModel.FramingAssistant {
                         rotation -= 360;
                     }
                     skySurveyImage.Coordinates = psResult.Coordinates;
-                    if (psResult.Pixscale.HasValue) {
-                        skySurveyImage.FoVWidth = Astrometry.ArcsecToArcmin(psResult.Pixscale.Value * skySurveyImage.Image.PixelWidth);
-                        skySurveyImage.FoVHeight = Astrometry.ArcsecToArcmin(psResult.Pixscale.Value * skySurveyImage.Image.PixelHeight);
-                    }
+                    skySurveyImage.FoVWidth = Astrometry.ArcsecToArcmin(psResult.Pixscale * skySurveyImage.Image.PixelWidth);
+                    skySurveyImage.FoVHeight = Astrometry.ArcsecToArcmin(psResult.Pixscale * skySurveyImage.Image.PixelHeight);
                     skySurveyImage.Rotation = rotation;
                 } else {
                     throw new Exception("Platesolve failed to retrieve coordinates for image");

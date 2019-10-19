@@ -25,9 +25,7 @@
 #endregion "copyright"
 
 using NINA.Model.ImageData;
-using NINA.Utility.Astrometry;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -71,7 +69,6 @@ namespace NINA.Utility {
                 var geometry = imageTag.Attribute("geometry").Value.Split(':');
                 int width = Int32.Parse(geometry[0]);
                 int height = Int32.Parse(geometry[1]);
-                var metadata = XISFHeader.ToImageMetaData(imageTag);
 
                 //Seems to be no attribute to identify the bit depth. Assume 16.
                 var bitDepth = 16;
@@ -87,14 +84,16 @@ namespace NINA.Utility {
                     ushort[] img = new ushort[raw.Length / 2];
                     Buffer.BlockCopy(raw, 0, img, 0, raw.Length);
 
-                    imageData = new ImageData(img, width, height, bitDepth, isBayered, metadata);
+                    // TODO: Add parser for ImageMetaData
+                    imageData = new ImageData(img, width, height, bitDepth, isBayered, new ImageMetaData());
                 } else {
                     var base64Img = xml.Element("Image").Element("Data").Value;
                     byte[] encodedImg = Convert.FromBase64String(base64Img);
                     ushort[] img = new ushort[(int)Math.Ceiling(encodedImg.Length / 2.0)];
                     Buffer.BlockCopy(encodedImg, 0, img, 0, encodedImg.Length);
 
-                    imageData = new ImageData(img, width, height, bitDepth, isBayered, metadata);
+                    // TODO: Add parser for ImageMetaData
+                    imageData = new ImageData(img, width, height, bitDepth, isBayered, new ImageMetaData());
                 }
 
                 return imageData;
@@ -526,82 +525,6 @@ namespace NINA.Utility {
             using (System.Xml.XmlWriter sw = System.Xml.XmlWriter.Create(s, new System.Xml.XmlWriterSettings { OmitXmlDeclaration = true, Indent = true, Encoding = Encoding.UTF8 })) {
                 Content.Save(sw);
             }
-        }
-
-        public static ImageMetaData ToImageMetaData(XElement xisfImage) {
-            var imageMetaData = new ImageMetaData();
-            IEnumerable<XElement> properties = xisfImage.Elements("Property");
-            IEnumerable<XElement> fitsKeywords = xisfImage.Elements("FITSKeyword");
-            var raDegrees = GetDoubleXisfProperty(properties, XISFImageProperty.Observation.Center.RA[0]);
-            var decDegrees = GetDoubleXisfProperty(properties, XISFImageProperty.Observation.Center.Dec[0]);
-            var objectRaDegrees = GetDoubleXisfProperty(properties, XISFImageProperty.Observation.Object.RA[0]);
-            var objectDecDegrees = GetDoubleXisfProperty(properties, XISFImageProperty.Observation.Object.Dec[0]);
-            var focalLength = GetDoubleXisfProperty(properties, XISFImageProperty.Instrument.Telescope.FocalLength[0]);
-            var pixelSize = GetDoubleXisfProperty(properties, XISFImageProperty.Instrument.Sensor.XPixelSize[0]);
-            var rotatorAng = GetDoubleXisfFITSKeyword(fitsKeywords, "ROTATOR");
-            var focalRatio = GetDoubleXisfFITSKeyword(fitsKeywords, "FOCRATIO");
-            if (raDegrees.HasValue && decDegrees.HasValue) {
-                imageMetaData.Telescope.Coordinates = new Coordinates(raDegrees.Value, decDegrees.Value, Epoch.J2000, Coordinates.RAType.Degrees);
-            }
-            if (objectRaDegrees.HasValue && objectDecDegrees.HasValue) {
-                imageMetaData.Target.Coordinates = new Coordinates(objectRaDegrees.Value, objectDecDegrees.Value, Epoch.J2000, Coordinates.RAType.Degrees);
-            }
-            if (focalLength.HasValue) {
-                imageMetaData.Telescope.FocalLength = focalLength.Value;
-            }
-            if (focalRatio.HasValue) {
-                imageMetaData.Telescope.FocalRatio = focalRatio.Value;
-            }
-            if (pixelSize.HasValue) {
-                imageMetaData.Camera.PixelSize = pixelSize.Value;
-            }
-            if (rotatorAng.HasValue) {
-                imageMetaData.Rotator.Position = rotatorAng.Value;
-            }
-            return imageMetaData;
-        }
-
-        private static double? GetDoubleXisfProperty(IEnumerable<XElement> properties, string id) {
-            var propertyString = GetXisfProperty(properties, id);
-            if (double.TryParse(propertyString, out double parsedProperty)) {
-                return parsedProperty;
-            }
-            return null;
-        }
-
-        private static string GetXisfProperty(IEnumerable<XElement> properties, string id) {
-            foreach (XElement property in properties) {
-                var idProperty = property.Attribute("id");
-                if (idProperty != null && id.Equals(idProperty.Value)) {
-                    var valueProperty = property.Attribute("value");
-                    if (valueProperty != null) {
-                        return valueProperty.Value;
-                    }
-                    return property.Value;
-                }
-            }
-            return null;
-        }
-
-        private static double? GetDoubleXisfFITSKeyword(IEnumerable<XElement> fitsKeywords, string name) {
-            var propertyString = GetXisfFITSKeyword(fitsKeywords, name);
-            if (double.TryParse(propertyString, out double parsedProperty)) {
-                return parsedProperty;
-            }
-            return null;
-        }
-
-        private static string GetXisfFITSKeyword(IEnumerable<XElement> fitsKeywords, string name) {
-            foreach (XElement keyword in fitsKeywords) {
-                var nameProperty = keyword.Attribute("name");
-                if (nameProperty != null && name.Equals(nameProperty.Value)) {
-                    var valueProperty = keyword.Attribute("value");
-                    if (valueProperty != null) {
-                        return valueProperty.Value;
-                    }
-                }
-            }
-            return null;
         }
     }
 

@@ -697,7 +697,6 @@ Calculado HFR: {2}
     <s:String x:Key="LblPlateSolveFailedDelay" xml:space="default">Retrazo entre intentos</s:String>
     <s:String x:Key="LblPlateSolveFailedDelayTooltip" xml:space="default">Retrazo, en minutos, entre dos intentos de resolucion de campo</s:String>
     <s:String x:Key="LblPlateSolveImage" xml:space="default">Resolver Campo a la imagen actual</s:String>
-    <s:String x:Key="LblPlateSolveMissingProperties" xml:space="default">PlateSolve missing required properties: {0}</s:String>
     <s:String x:Key="LblPlateSolveNbOfAttempts" xml:space="default">Numero de Intentos</s:String>
     <s:String x:Key="LblPlateSolveNbOfAttemptsTooltip" xml:space="default">Cuantas veces una operacion deresolucion de campo a mitad de secuencia sera intentada hasta ser considerada fallida</s:String>
     <s:String x:Key="LblPlatesolveNoCoordinates" xml:space="default">No hay ccordenadas de referencia disponible</s:String>
@@ -705,7 +704,6 @@ Calculado HFR: {2}
     <s:String x:Key="LblPlatesolveProvidedBy" xml:space="default">Servicio de resolucion de campo provisto por</s:String>
     <s:String x:Key="LblPlateSolver" xml:space="default">Solucionador de campo</s:String>
     <s:String x:Key="LblPlateSolveReattemptDelay" xml:space="default">Esperando por el proximo intento de resolucion de campo: {0}</s:String>
-    <s:String x:Key="LblPlateSolveSetMissingProperties" xml:space="default">Set missing plate solve properties</s:String>
     <s:String x:Key="LblPlateSolveSettings" xml:space="default">Ajustes de Solucionador</s:String>
     <s:String x:Key="LblPlateSolving" xml:space="default">Astrometria</s:String>
     <s:String x:Key="LblPleaseChangeToFilter" xml:space="default">Por favor cambiar filtro a {0}</s:String>

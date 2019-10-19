@@ -27,7 +27,6 @@ using System.Globalization;
 using System.IO;
 
 namespace NINA.PlateSolving {
-
     internal class LocalPlateSolver : CLISolver {
         private string bashLocation;
 
@@ -58,8 +57,8 @@ namespace NINA.PlateSolving {
             var lowArcSecPerPix = imageProperties.ArcSecPerPixel - 0.2;
             var highArcSecPerPix = imageProperties.ArcSecPerPixel + 0.2;
             options.Add("--scale-units arcsecperpix");
-            options.Add(string.Format("-L {0}", lowArcSecPerPix.Value.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
-            options.Add(string.Format("-H {0}", highArcSecPerPix.Value.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
+            options.Add(string.Format("-L {0}", lowArcSecPerPix.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
+            options.Add(string.Format("-H {0}", highArcSecPerPix.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)));
 
             if (parameter.SearchRadius > 0 && parameter.Coordinates != null) {
                 options.Add($"--ra {parameter.Coordinates.RADegrees.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}");
