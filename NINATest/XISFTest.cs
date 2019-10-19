@@ -842,6 +842,43 @@ namespace NINATest {
             }
         }
 
+        [Test]
+        public void ParseMetadataForPlatesolving() {
+            var sourceMetaData = new ImageMetaData();
+            var pixelSize = 2.0d;
+            var ra = 10.0d;
+            var dec = 12.0d;
+            var objectRa = 110.0d;
+            var objectDec = 112.0d;
+            var focalLen = 13.1d;
+            var focalRatio = 7.0d;
+            var rotation = 31.1d;
+            sourceMetaData.Telescope.Coordinates = new Coordinates(Angle.ByDegree(ra), Angle.ByDegree(dec), Epoch.J2000);
+            sourceMetaData.Target.Coordinates = new Coordinates(Angle.ByDegree(objectRa), Angle.ByDegree(objectDec), Epoch.J2000);
+            sourceMetaData.Camera.PixelSize = pixelSize;
+            sourceMetaData.Telescope.FocalLength = focalLen;
+            sourceMetaData.Telescope.FocalRatio = focalRatio;
+            sourceMetaData.Telescope.Name = "DummyName";
+            sourceMetaData.Rotator.Position = rotation;
+
+            var sut = new XISFHeader();
+            sut.AddImageMetaData(new ImageProperties(2, 2, 16, false), sourceMetaData.Image.ImageType);
+            sut.Populate(sourceMetaData);
+
+            var loadedMetaData = XISFHeader.ToImageMetaData(sut.Image);
+
+            loadedMetaData.Camera.PixelSize.Should().Be(pixelSize);
+            loadedMetaData.Telescope.Coordinates.RADegrees.Should().Be(ra);
+            loadedMetaData.Telescope.Coordinates.Dec.Should().Be(dec);
+            loadedMetaData.Target.Coordinates.RADegrees.Should().Be(objectRa);
+            loadedMetaData.Target.Coordinates.Dec.Should().Be(objectDec);
+            loadedMetaData.Telescope.FocalLength.Should().Be(focalLen);
+            loadedMetaData.Telescope.FocalRatio.Should().Be(focalRatio);
+            loadedMetaData.Rotator.Position.Should().Be(rotation);
+            // Even though this is set in sourceMetaData, we don't read it at this time
+            loadedMetaData.Telescope.Name.Should().Be("");
+        }
+
         #endregion "XISFHeader"
     }
 }

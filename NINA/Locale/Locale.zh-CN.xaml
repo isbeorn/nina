@@ -697,6 +697,7 @@ Type: {1}
     <s:String x:Key="LblPlateSolveFailedDelay" xml:space="default">解析之间的延迟</s:String>
     <s:String x:Key="LblPlateSolveFailedDelayTooltip" xml:space="default">两次尝试解析之间的延迟（分钟）</s:String>
     <s:String x:Key="LblPlateSolveImage" xml:space="default">解析当前图像</s:String>
+    <s:String x:Key="LblPlateSolveMissingProperties" xml:space="default">PlateSolve missing required properties: {0}</s:String>
     <s:String x:Key="LblPlateSolveNbOfAttempts" xml:space="default">尝试次数</s:String>
     <s:String x:Key="LblPlateSolveNbOfAttemptsTooltip" xml:space="default">序列拍摄中，将尝试解析多少次，直到认为失败为止</s:String>
     <s:String x:Key="LblPlatesolveNoCoordinates" xml:space="default">没有可用的参考坐标</s:String>
@@ -704,6 +705,7 @@ Type: {1}
     <s:String x:Key="LblPlatesolveProvidedBy" xml:space="default">解析服务提供：</s:String>
     <s:String x:Key="LblPlateSolver" xml:space="default">解析</s:String>
     <s:String x:Key="LblPlateSolveReattemptDelay" xml:space="default">等待下一次解析尝试: {0}</s:String>
+    <s:String x:Key="LblPlateSolveSetMissingProperties" xml:space="default">Set missing plate solve properties</s:String>
     <s:String x:Key="LblPlateSolveSettings" xml:space="default">解析设置</s:String>
     <s:String x:Key="LblPlateSolving" xml:space="default">解析</s:String>
     <s:String x:Key="LblPleaseChangeToFilter" xml:space="default">请更换滤镜 {0}</s:String>

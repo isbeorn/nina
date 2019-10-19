@@ -51,7 +51,7 @@ namespace NINA.ViewModel.FlatWizard {
                 wrapper,
                 exposureTime);
             await WindowService.ShowDialog(flatsWizardUserPrompt, Locale["LblFlatUserPromptFailure"], System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.ToolWindow);
-
+            
             if (flatsWizardUserPrompt.Reset) {
                 ClearDataPoints();
             }
