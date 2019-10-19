@@ -27,16 +27,12 @@ namespace NINATest {
         }
 
         [Test]
-        public async Task TestConnect() {
-            Assert.That(await _sut.Connect(new System.Threading.CancellationToken()), Is.True);
-        }
-
-        [Test]
         [TestCase(CoverState.NotOpenClosed, "*S99000")]
         [TestCase(CoverState.Closed, "*S99001")]
         [TestCase(CoverState.Open, "*S99002")]
         [TestCase(CoverState.Unknown, "*S99003")]
         [TestCase(CoverState.Unknown, "garbage")]
+        [TestCase(CoverState.Unknown, null)]
         public void TestCoverStatus(CoverState coverState, string deviceResponse) {
             mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
             Assert.That(_sut.CoverState, Is.EqualTo(coverState));
@@ -57,6 +53,7 @@ namespace NINATest {
         [TestCase(255, "*J99255")]
         [TestCase(99, "*J99099")]
         [TestCase(0, "garbage")]
+        [TestCase(0, null)]
         public void TestGetBrightness(int brightness, string deviceResponse) {
             mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
             Assert.That(_sut.Brightness, Is.EqualTo(brightness));
@@ -78,25 +75,21 @@ namespace NINATest {
         }
 
         [Test]
-        [TestCase("Flat-Man_XL on port COM3. Firmware version: 123", "*V10123")]
-        [TestCase("Flat-Man_L on port COM3. Firmware version: 123", "*V15123")]
-        [TestCase("Flat-Man on port COM3. Firmware version: 123", "*V19123")]
-        [TestCase("Flip-Mask/Remote Dust Cover on port COM3. Firmware version: 123", "*V98123")]
-        [TestCase("Flip-Flat on port COM3. Firmware version: 123", "*V99123")]
-        // [TestCase("Unknown device on port COM3. Firmware version: 123", "garbage")] won't reach this code path because only valid responses from device get evaluated
-        public async Task TestDescription(string description, string deviceResponse) {
-            mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
-            Assert.That(await _sut.Connect(new System.Threading.CancellationToken()), Is.True);
-            Assert.That(_sut.Description, Is.EqualTo(description));
-        }
-
-        [Test]
         public async Task TestOpen() {
             mockSerialPort.SetupSequence(m => m.ReadLine()).Returns("*O99OOO")
                 .Returns("*S99100") //motor running
                 .Returns("*S99002") //motor stopped
                 .Returns("*S99002"); //cover is open
             Assert.That(await _sut.Open(new System.Threading.CancellationToken()), Is.True);
+        }
+
+        [Test]
+        public async Task TestOpenInvalidResponse() {
+            mockSerialPort.SetupSequence(m => m.ReadLine()).Returns("")
+                .Returns("*S99100") //motor running
+                .Returns("*S99002") //motor stopped
+                .Returns("*S99002"); //cover is open
+            Assert.That(await _sut.Open(new System.Threading.CancellationToken()), Is.False);
         }
 
         [Test]
@@ -109,16 +102,37 @@ namespace NINATest {
         }
 
         [Test]
-        [TestCase(">LOOO\r", true)]
-        [TestCase(">DOOO\r", false)]
-        public void TestLightOn(string command, bool on) {
+        public async Task TestCloseInvalidResponse() {
+            mockSerialPort.SetupSequence(m => m.ReadLine()).Returns("")
+                .Returns("*S99100") //motor running
+                .Returns("*S99001") //motor stopped
+                .Returns("*S99001"); //cover is closed
+            Assert.That(await _sut.Close(new System.Threading.CancellationToken()), Is.False);
+        }
+
+        [Test]
+        [TestCase(">LOOO\r", "*L99OOO", true)]
+        [TestCase(">LOOO\r", null, true)]
+        [TestCase(">DOOO\r", "*L99OOO", false)]
+        [TestCase(">DOOO\r", null, false)]
+        public void TestSetLightOn(string command, string response, bool on) {
             string actual = null;
-            mockSerialPort.Setup(m => m.ReadLine()).Returns("*L99OOO");
+            mockSerialPort.Setup(m => m.ReadLine()).Returns(response);
             mockSerialPort.Setup(m => m.Write(It.IsAny<string>())).Callback((string arg) => {
                 actual = arg;
             });
-            _sut.LightOn = true;
-            Assert.That(actual, Is.EqualTo(">LOOO\r"));
+            _sut.LightOn = on;
+            Assert.That(actual, Is.EqualTo(command));
+        }
+
+        [Test]
+        [TestCase("*S99010", true)]
+        [TestCase("*J99000", false)]
+        [TestCase("garbage", false)]
+        [TestCase(null, false)]
+        public void TestGetLightOn(string response, bool on) {
+            mockSerialPort.Setup(m => m.ReadLine()).Returns(response);
+            Assert.That(_sut.LightOn, Is.EqualTo(on));
         }
 
         [Test]

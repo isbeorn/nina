@@ -180,7 +180,7 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (value[1] != 'P' || !IsOoo(value)) {
+                if (IsValid && (value[1] != 'P' || !IsOoo(value))) {
                     IsValid = false;
                 }
             }
@@ -192,7 +192,7 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (value[1] != 'O' || !IsOoo(value)) {
+                if (IsValid && (value[1] != 'O' || !IsOoo(value))) {
                     IsValid = false;
                 }
             }
@@ -204,7 +204,7 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (value[1] != 'C' || !IsOoo(value)) {
+                if (IsValid && (value[1] != 'C' || !IsOoo(value))) {
                     IsValid = false;
                 }
             }
@@ -216,7 +216,7 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (value[1] != 'L' || !IsOoo(value)) {
+                if (IsValid && (value[1] != 'L' || !IsOoo(value))) {
                     IsValid = false;
                 }
             }
@@ -228,7 +228,7 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (value[1] != 'D' || !IsOoo(value)) {
+                if (IsValid && (value[1] != 'D' || !IsOoo(value))) {
                     IsValid = false;
                 }
             }
@@ -241,7 +241,7 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (!ParseBrightness(value)) {
+                if (IsValid && !ParseBrightness(value)) {
                     IsValid = false;
                 }
             }
@@ -268,7 +268,7 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (value[1] != 'B') {
+                if (IsValid && value[1] != 'B') {
                     IsValid = false;
                 }
             }
@@ -280,7 +280,7 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (value[1] != 'J') {
+                if (IsValid && value[1] != 'J') {
                     IsValid = false;
                 }
             }
@@ -295,7 +295,7 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (value[1] != 'S' || !ParseState(value)) {
+                if (IsValid && (value[1] != 'S' || !ParseState(value))) {
                     IsValid = false;
                 }
             }
@@ -359,7 +359,7 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (value[1] != 'V' || !ParseFirmwareVersion(value)) {
+                if (IsValid && (value[1] != 'V' || !ParseFirmwareVersion(value))) {
                     IsValid = false;
                 }
             }

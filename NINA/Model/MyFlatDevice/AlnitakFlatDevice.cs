@@ -204,7 +204,7 @@ namespace NINA.Model.MyFlatDevice {
                 }
 
                 Name = response.Name;
-                _description = $"{response.Name} on port {_serialPort.PortName}. Firmware version: {response.FirmwareVersion}";
+                Description = $"{response.Name} on port {_serialPort.PortName}. Firmware version: {response.FirmwareVersion}";
 
                 RaiseAllPropertiesChanged();
                 return Connected;
