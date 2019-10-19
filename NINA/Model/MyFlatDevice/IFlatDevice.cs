@@ -1,10 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace NINA.Model.MyFlatDevice
-{
-    public interface IFlatDevice : IDevice
-    {
+namespace NINA.Model.MyFlatDevice {
+
+    public interface IFlatDevice : IDevice {
         CoverState CoverState { get; }
         int MaxBrightness { get; }
 
@@ -17,6 +16,7 @@ namespace NINA.Model.MyFlatDevice
         bool LightOn { get; set; }
 
         int Brightness { get; set; }
+        bool SupportsOpenClose { get; }
     }
 
     public enum CoverState { Unknown, NotOpenClosed, Closed, Open };

@@ -116,6 +116,7 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
     public abstract class Response {
         public string Name { get; private set; }
         public bool IsValid { get; protected set; }
+        public bool DeviceSupportsOpenClose { get; protected set; }
 
         public virtual string DeviceResponse {
             set {
@@ -143,26 +144,32 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
                 switch (int.Parse(response.Substring(2, 2))) {
                     case 10:
                         Name = "Flat-Man_XL";
+                        DeviceSupportsOpenClose = false;
                         return true;
 
                     case 15:
                         Name = "Flat-Man_L";
+                        DeviceSupportsOpenClose = false;
                         return true;
 
                     case 19:
                         Name = "Flat-Man";
+                        DeviceSupportsOpenClose = false;
                         return true;
 
                     case 98:
                         Name = "Flip-Mask/Remote Dust Cover";
+                        DeviceSupportsOpenClose = true;
                         return true;
 
                     case 99:
                         Name = "Flip-Flat";
+                        DeviceSupportsOpenClose = true;
                         return true;
 
                     default:
                         Name = "Unknown device";
+                        DeviceSupportsOpenClose = false;
                         return false;
                 }
             } catch (Exception) {
