@@ -39,6 +39,7 @@
 - QHY native camera driver now has a more reliable way to determine sensor bitness with CCD models
 - The font size of panel IDs in Framing Assistant has been increased to a legible level
 - The $$FRAMENR$$ placeholder is now saving the number as 4 digits
+- Framing - Rectangle panel number is now scaled based on rectangle size.
 
 # Version 1.9
 
