@@ -1416,6 +1416,12 @@
       <Component Win64="$(var.Win64)" Id="Database_Migration_1.sql" Guid="9d6f78f7-1a32-4230-b611-925d274e9dc7">
         <File Id="Database_Migration_1.sql" Name="1.sql" Source="$(var.NINA_TargetDir)Database\Migration\1.sql" />
       </Component>
+      <Component Id="Database_Migration_2.sql" Guid="1c6fd751-d889-46e8-ae30-73f16642155f">
+        <File Id="Database_Migration_2.sql" Name="2.sql" Source="$(var.NINA_TargetDir)Database\Migration\2.sql" />
+      </Component>
+      <Component Id="Database_Migration_3.sql" Guid="1ec7f760-b158-4ac2-a5c7-df74adbe3587">
+        <File Id="Database_Migration_3.sql" Name="3.sql" Source="$(var.NINA_TargetDir)Database\Migration\3.sql" />
+      </Component>
     </ComponentGroup>
   </Fragment>
 </Wix>
