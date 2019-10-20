@@ -1608,6 +1608,8 @@
     <Folder Include="External\x64\Nikon\Type0020\" />
     <Folder Include="External\x64\Nikon\Type0021\" />
     <Folder Include="External\x64\Nikon\Type0022\" />
+    <Folder Include="External\x64\Nikon\Type0023\" />
+    <Folder Include="External\x64\Nikon\Type0024\" />
     <Folder Include="External\x64\QHYCCD\" />
     <Folder Include="External\x64\ToupTek\" />
     <Folder Include="External\x86\Altair\" />
@@ -1636,6 +1638,8 @@
     <Folder Include="External\x86\Nikon\Type0020\" />
     <Folder Include="External\x86\Nikon\Type0021\" />
     <Folder Include="External\x86\Nikon\Type0022\" />
+    <Folder Include="External\x86\Nikon\Type0023\" />
+    <Folder Include="External\x86\Nikon\Type0024\" />
     <Folder Include="External\x86\QHYCCD\" />
     <Folder Include="External\x86\ToupTek\" />
   </ItemGroup>
