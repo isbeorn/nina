@@ -179,6 +179,8 @@
                 <Directory Id="External_x64_Nikon_Type0005" Name="Type0005" />
                 <Directory Id="External_x64_Nikon_Type0004" Name="Type0004" />
                 <Directory Id="External_x64_Nikon_Type0003" Name="Type0003" />
+                <Directory Id="External_x64_Nikon_Type0023" Name="Type0023" />
+                <Directory Id="External_x64_Nikon_Type0024" Name="Type0024" />
               </Directory>
               <Directory Id="External_x64_SQLite" Name="SQLite" />
               <Directory Id="External_x64_Altair" Name="Altair" />
@@ -210,6 +212,8 @@
                 <Directory Id="External_x86_Nikon_Type0003" Name="Type0003" />
                 <Directory Id="External_x86_Nikon_Type0002" Name="Type0002" />
                 <Directory Id="External_x86_Nikon_Type0001" Name="Type0001" />
+                <Directory Id="External_x86_Nikon_Type0023" Name="Type0023" />
+                <Directory Id="External_x86_Nikon_Type0024" Name="Type0024" />
               </Directory>
               <Directory Id="External_x86_FreeImage" Name="FreeImage" />
               <Directory Id="External_x86_Canon" Name="Canon" />
