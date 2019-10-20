@@ -13,6 +13,7 @@
 </ul>
 <h2 id="improvements">Improvements</h2>
 <ul>
+<li>Upgraded Atik driver to use latest Atik SDK and drivers</li>
 <li>Added a bit scaling options for Altair and ToupTek cameras to bit shift the raw data to 16 bits to be compatible with other capture software</li>
 <li>FreeImage library upgrade to 3.18</li>
 <li>Plate solvers will now receive unstretched FITS images to solve the image for a faster and even better solve result</li>
@@ -37,6 +38,10 @@
 <li>QHY native camera driver now retrieves only the non-overscan area of the sensor</li>
 <li>QHY native camera driver now supports selecting readout modes with QHY600 class cameras</li>
 <li>Added a <span class="math">DATEMINUS12</span> placeholder to the file save pattern that shifts the current date 12 hours into the past. This allows for all images of a night to be saved into the same date folder.</li>
+<li>Added more manual focus targets for certain regions of the southern hemisphere sky.</li>
+<li>Can now configure a custom Astrometry.net API URL</li>
+<li>Improved status and logging for Astrometry.net plate solve jobs</li>
+<li>Updated Nikon SDK to latest available version (2019-10-20)</li>
 </ul>
 <h2 id="bug-fixes">Bug fixes</h2>
 <ul>
@@ -434,5 +439,7 @@ Thank you for your support!</p>
 <li>Major code refactorings for better maintainability</li>
 <li>Lots and lots of minor bugfixes and improvements</li>
 </ul>
+
+
 </body>
 </html>

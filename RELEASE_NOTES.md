@@ -31,6 +31,7 @@
 - Added more manual focus targets for certain regions of the southern hemisphere sky.
 - Can now configure a custom Astrometry.net API URL
 - Improved status and logging for Astrometry.net plate solve jobs
+- Updated Nikon SDK to latest available version (2019-10-20)
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false
