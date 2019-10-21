@@ -30,6 +30,8 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             CloseCoverCommand = new AsyncCommand<bool>(() => CloseCover());
             RefreshFlatDeviceListCommand =
                 new RelayCommand(RefreshFlatDeviceList, o => _flatDevice?.Connected != true);
+            SetBrightnessCommand = new RelayCommand(SetBrightness);
+            ToggleLightCommand = new RelayCommand(ToggleLight);
 
             _updateTimer = new DeviceUpdateTimer(
                 GetFlatDeviceValues,
@@ -42,6 +44,19 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
 
         private void BroadcastFlatDeviceInfo() {
             _flatDeviceMediator.Broadcast(GetDeviceInfo());
+        }
+
+        private int _brightness;
+
+        public int Brightness {
+            get => _brightness;
+
+            set { _brightness = value; RaisePropertyChanged(); }
+        }
+
+        private void SetBrightness(object o) {
+            if (_flatDevice == null || !_flatDevice.Connected) return;
+            _flatDevice.Brightness = Brightness;
         }
 
         private readonly SemaphoreSlim ssConnect = new SemaphoreSlim(1, 1);
@@ -74,6 +89,8 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                         if (connected) {
                             _flatDevice = flatDevice;
                             FlatDeviceInfo = new FlatDeviceInfo {
+                                MinBrightness = flatDevice.MinBrightness,
+                                MaxBrightness = flatDevice.MaxBrightness,
                                 Brightness = flatDevice.Brightness,
                                 Connected = flatDevice.Connected,
                                 CoverState = flatDevice.CoverState,
@@ -84,6 +101,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                                 Name = flatDevice.Name,
                                 SupportsOpenClose = flatDevice.SupportsOpenClose
                             };
+                            this.Brightness = flatDevice.Brightness;
 
                             Notification.ShowSuccess(Locale.Loc.Instance["LblFlatDeviceConnected"]);
 
@@ -145,6 +163,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             await ssOpen.WaitAsync();
             try {
                 var flatDevice = (IFlatDevice)FlatDeviceChooserVM.SelectedDevice;
+                if (flatDevice == null || flatDevice.Connected == false) return false;
                 if (!flatDevice.SupportsOpenClose) return false;
                 return await flatDevice.Open(new CancellationToken());
             } catch (Exception ex) {
@@ -161,6 +180,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             await ssClose.WaitAsync();
             try {
                 var flatDevice = (IFlatDevice)FlatDeviceChooserVM.SelectedDevice;
+                if (flatDevice == null || flatDevice.Connected == false) return false;
                 if (!flatDevice.SupportsOpenClose) return false;
                 return await flatDevice.Close(new CancellationToken());
             } catch (Exception ex) {
@@ -212,6 +232,13 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             _flatDeviceInfo.CoverState = (CoverState)(o ?? CoverState.Unknown);
             flatDeviceValues.TryGetValue(nameof(FlatDeviceInfo.Brightness), out o);
             _flatDeviceInfo.Brightness = (int)(o ?? 0);
+            flatDeviceValues.TryGetValue(nameof(FlatDeviceInfo.MinBrightness), out o);
+            _flatDeviceInfo.MinBrightness = (int)(o ?? 0);
+            flatDeviceValues.TryGetValue(nameof(FlatDeviceInfo.MaxBrightness), out o);
+            _flatDeviceInfo.MaxBrightness = (int)(o ?? 0);
+            flatDeviceValues.TryGetValue(nameof(FlatDeviceInfo.LightOn), out o);
+            _flatDeviceInfo.LightOn = (bool)(o ?? false);
+
             BroadcastFlatDeviceInfo();
         }
 
@@ -220,7 +247,15 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             flatDeviceValues.Add(nameof(FlatDeviceInfo.Connected), _flatDevice?.Connected ?? false);
             flatDeviceValues.Add(nameof(FlatDeviceInfo.CoverState), _flatDevice?.CoverState ?? CoverState.Unknown);
             flatDeviceValues.Add(nameof(FlatDeviceInfo.Brightness), _flatDevice?.Brightness ?? 0);
+            flatDeviceValues.Add(nameof(FlatDeviceInfo.MinBrightness), _flatDevice?.MinBrightness ?? 0);
+            flatDeviceValues.Add(nameof(FlatDeviceInfo.MaxBrightness), _flatDevice?.MaxBrightness ?? 0);
+            flatDeviceValues.Add(nameof(FlatDeviceInfo.LightOn), _flatDevice?.LightOn ?? false);
             return flatDeviceValues;
+        }
+
+        private void ToggleLight(object o) {
+            if (_flatDevice == null || _flatDevice.Connected == false) return;
+            _flatDevice.LightOn = (bool)o;
         }
 
         public ICommand RefreshFlatDeviceListCommand { get; }
@@ -229,5 +264,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
         public RelayCommand DisconnectCommand { get; }
         public IAsyncCommand OpenCoverCommand { get; }
         public IAsyncCommand CloseCoverCommand { get; }
+        public RelayCommand ToggleLightCommand { get; }
+        public RelayCommand SetBrightnessCommand { get; }
     }
 }

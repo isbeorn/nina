@@ -43,9 +43,10 @@
                             Margin="0,6,0,6"
                             VerticalAlignment="Center"
                             Columns="2">
-                            <TextBlock Text="{ns:Loc LblName}" />
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblName}" />
                             <TextBlock
                                 Margin="5,0,0,0"
+                                VerticalAlignment="Center"
                                 Text="{Binding FlatDeviceInfo.Name}"
                                 TextWrapping="WrapWithOverflow" />
                         </UniformGrid>
@@ -60,6 +61,7 @@
                             <TextBlock Text="{ns:Loc LblDescription}" />
                             <TextBlock
                                 Margin="5,0,0,0"
+                                VerticalAlignment="Center"
                                 Text="{Binding FlatDeviceInfo.Description}"
                                 TextWrapping="WrapWithOverflow" />
                         </UniformGrid>
@@ -71,9 +73,10 @@
                             Margin="0,6,0,6"
                             VerticalAlignment="Center"
                             Columns="2">
-                            <TextBlock Text="{ns:Loc LblDriverInfo}" />
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDriverInfo}" />
                             <TextBlock
                                 Margin="5,0,0,0"
+                                VerticalAlignment="Center"
                                 Text="{Binding FlatDeviceInfo.DriverInfo}"
                                 TextWrapping="WrapWithOverflow" />
                         </UniformGrid>
@@ -81,8 +84,32 @@
                             Margin="0,6,0,6"
                             VerticalAlignment="Center"
                             Columns="2">
-                            <TextBlock Text="{ns:Loc LblDriverVersion}" />
-                            <TextBlock Margin="5,0,0,0" Text="{Binding FlatDeviceInfo.DriverVersion}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblDriverVersion}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding FlatDeviceInfo.DriverVersion}" />
+                        </UniformGrid>
+                    </UniformGrid>
+                </Border>
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                    <UniformGrid VerticalAlignment="Center" Columns="2">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblLightOn}" />
+                            <CheckBox
+                                Width="120"
+                                Height="25"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                Command="{Binding ToggleLightCommand}"
+                                CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
+                                IsChecked="{Binding FlatDeviceInfo.LightOn}" />
                         </UniformGrid>
                     </UniformGrid>
                 </Border>
@@ -92,39 +119,33 @@
                             Margin="0,6,0,6"
                             VerticalAlignment="Center"
                             Columns="2">
-                            <TextBlock Text="{ns:Loc LblCoverState}" />
-                            <TextBlock
-                                Margin="5,0,0,0"
-                                Text="{Binding FlatDeviceInfo.CoverState}"
-                                TextWrapping="WrapWithOverflow" />
-                        </UniformGrid>
-                    </UniformGrid>
-                </Border>
-                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
-                    <UniformGrid Columns="2">
-                        <UniformGrid
-                            Margin="0,6,0,6"
-                            VerticalAlignment="Center"
-                            Columns="2">
-                            <TextBlock Text="{ns:Loc LblLightOn}" />
-                            <TextBlock
-                                Margin="5,0,0,0"
-                                Text="{Binding FlatDeviceInfo.LightOn}"
-                                TextWrapping="WrapWithOverflow" />
-                        </UniformGrid>
-                    </UniformGrid>
-                </Border>
-                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
-                    <UniformGrid Columns="2">
-                        <UniformGrid
-                            Margin="0,6,0,6"
-                            VerticalAlignment="Center"
-                            Columns="2">
-                            <TextBlock Text="{ns:Loc LblBrightness}" />
-                            <TextBlock
-                                Margin="5,0,0,0"
-                                Text="{Binding FlatDeviceInfo.Brightness}"
-                                TextWrapping="WrapWithOverflow" />
+                            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                <TextBlock Text="{ns:Loc LblBrightness}" />
+                                <TextBlock Text=" " />
+                                <TextBlock Text="{ns:Loc LblMin}" />
+                                <TextBlock Text=": " />
+                                <TextBlock Text="{Binding FlatDeviceInfo.MinBrightness}" />
+                                <TextBlock Text="{ns:Loc LblMax}" />
+                                <TextBlock Text=": " />
+                                <TextBlock Text="{Binding FlatDeviceInfo.MaxBrightness}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox
+                                    Height="25"
+                                    MinWidth="55"
+                                    Margin="5,0,0,0"
+                                    Text="{Binding Brightness}" />
+                                <Grid IsEnabled="{Binding FlatDeviceInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
+                                    <ninactrl:AsyncProcessButton
+                                        Width="60"
+                                        Height="25"
+                                        Margin="5"
+                                        HorizontalAlignment="Left"
+                                        ButtonText="{ns:Loc LblSetBrightness}"
+                                        Command="{Binding SetBrightnessCommand}"
+                                        ToolTip="{ns:Loc LblSetBrightnessToolTip}" />
+                                </Grid>
+                            </StackPanel>
                         </UniformGrid>
                     </UniformGrid>
                 </Border>
@@ -141,9 +162,9 @@
                             <StackPanel Orientation="Horizontal">
                                 <Grid IsEnabled="{Binding FlatDeviceInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
                                     <ninactrl:AsyncProcessButton
-                                        Width="50"
+                                        Width="55"
                                         Height="25"
-                                        Margin="5"
+                                        Margin="5,0,0,0"
                                         HorizontalAlignment="Left"
                                         ButtonText="{ns:Loc LblOpenFlatDevice}"
                                         Command="{Binding OpenCoverCommand}"
@@ -151,14 +172,22 @@
                                 </Grid>
                                 <Grid IsEnabled="{Binding FlatDeviceInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
                                     <ninactrl:AsyncProcessButton
-                                        Width="50"
+                                        Width="60"
                                         Height="25"
-                                        Margin="5"
+                                        Margin="5,0,0,0"
                                         HorizontalAlignment="Left"
                                         ButtonText="{ns:Loc LblCloseFlatDevice}"
                                         Command="{Binding CloseCoverCommand}"
                                         ToolTip="{ns:Loc LblCloseFlatDeviceToolTip}" />
                                 </Grid>
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblCurrently}" />
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding FlatDeviceInfo.CoverState}" />
                             </StackPanel>
                         </UniformGrid>
                     </UniformGrid>
