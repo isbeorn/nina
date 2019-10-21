@@ -49,6 +49,7 @@ namespace NINA.Model.MyFlatDevice {
                 if (response.Result.IsValid) return response.Result.CoverState;
                 Logger.Error($"Invalid response from flat device on port {_serialPort.PortName}. " +
                              $"Command was: {command} Response was: {response.Result}.");
+                Notification.ShowError(Locale.Loc.Instance["LblFlatDeviceInvalidResponse"]);
                 return CoverState.Unknown;
             }
         }
@@ -78,6 +79,7 @@ namespace NINA.Model.MyFlatDevice {
                 if (!response.Result.IsValid) {
                     Logger.Error($"Invalid response from flat device on port {_serialPort.PortName}. " +
                                  $"Command was: {command} Response was: {response.Result}.");
+                    Notification.ShowError(Locale.Loc.Instance["LblFlatDeviceInvalidResponse"]);
                     return false;
                 }
 
@@ -91,6 +93,7 @@ namespace NINA.Model.MyFlatDevice {
                         if (!response.Result.IsValid) {
                             Logger.Error($"Invalid response from flat device on port {_serialPort.PortName}. " +
                                          $"Command was: {command} Response was: {response.Result}.");
+                            Notification.ShowError(Locale.Loc.Instance["LblFlatDeviceInvalidResponse"]);
                         }
                     } else {
                         var command = new LightOffCommand();
@@ -98,6 +101,7 @@ namespace NINA.Model.MyFlatDevice {
                         if (!response.Result.IsValid) {
                             Logger.Error($"Invalid response from flat device on port {_serialPort.PortName}. " +
                                          $"Command was: {command} Response was: {response.Result}.");
+                            Notification.ShowError(Locale.Loc.Instance["LblFlatDeviceInvalidResponse"]);
                         }
                     }
                 }
@@ -116,7 +120,7 @@ namespace NINA.Model.MyFlatDevice {
                 if (!response.Result.IsValid) {
                     Logger.Error($"Invalid response from flat device on port {_serialPort.PortName}. " +
                                  $"Command was: {command} Response was: {response.Result}.");
-                    Notification.ShowError(Locale.Loc.Instance["LblInvalidResponseFlatDevice"]);
+                    Notification.ShowError(Locale.Loc.Instance["LblFlatDeviceInvalidResponse"]);
                 } else {
                     result = response.Result.Brightness;
                 }
@@ -130,7 +134,7 @@ namespace NINA.Model.MyFlatDevice {
                     if (!response.Result.IsValid) {
                         Logger.Error($"Invalid response from flat device on port {_serialPort.PortName}. " +
                                      $"Command was: {command} Response was: {response.Result}.");
-                        Notification.ShowError(Locale.Loc.Instance["LblInvalidResponseFlatDevice"]);
+                        Notification.ShowError(Locale.Loc.Instance["LblFlatDeviceInvalidResponse"]);
                     }
                 }
                 RaisePropertyChanged();
@@ -192,7 +196,7 @@ namespace NINA.Model.MyFlatDevice {
                 if (!response.Result.IsValid) {
                     Logger.Error($"Invalid response from flat device on port {_serialPort.PortName}. " +
                                  $"Command was: {command} Response was: {response.Result}.");
-                    Notification.ShowError(Locale.Loc.Instance["LblInvalidResponseFlatDevice"]);
+                    Notification.ShowError(Locale.Loc.Instance["LblFlatDeviceInvalidResponse"]);
                     return false;
                 }
                 while (IsMotorRunning()) {
@@ -210,7 +214,7 @@ namespace NINA.Model.MyFlatDevice {
                 if (!response.Result.IsValid) {
                     Logger.Error($"Invalid response from flat device on port {_serialPort.PortName}. " +
                                  $"Command was: {command} Response was: {response.Result}.");
-                    Notification.ShowError(Locale.Loc.Instance["LblInvalidResponseFlatDevice"]);
+                    Notification.ShowError(Locale.Loc.Instance["LblFlatDeviceInvalidResponse"]);
                     Connected = false;
                     return Connected;
                 }
@@ -235,7 +239,7 @@ namespace NINA.Model.MyFlatDevice {
                 if (!response.Result.IsValid) {
                     Logger.Error($"Invalid response from flat device on port {_serialPort.PortName}. " +
                                  $"Command was: {command} Response was: {response.Result}.");
-                    Notification.ShowError(Locale.Loc.Instance["LblInvalidResponseFlatDevice"]);
+                    Notification.ShowError(Locale.Loc.Instance["LblFlatDeviceInvalidResponse"]);
                     return false;
                 }
                 while (IsMotorRunning()) {
