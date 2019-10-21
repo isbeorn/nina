@@ -24,11 +24,13 @@
 using Newtonsoft.Json.Linq;
 using NINA.Model;
 using NINA.Model.ImageData;
+using NINA.Utility;
 using NINA.Utility.Http;
 using NINA.Utility.Notification;
 using System;
 using System.Collections.Specialized;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -43,29 +45,37 @@ namespace NINA.PlateSolving {
         private const string JOBINFOURL = "/api/jobs/{0}/info/";
         private const string ANNOTATEDIMAGEURL = "/annotated_display/{0}";
 
-        private string _domain;
+        private string _apiurl;
         private string _apikey;
 
-        internal class AstrometryAuthenticationFailedException : Exception {
+        [Serializable()]
+        internal class AstrometryNetFailedException : Exception {
 
-            internal AstrometryAuthenticationFailedException(string status) : base($"Authentication failed with status: {status}") {
+            internal AstrometryNetFailedException(string type, JObject response) : base(CreateErrorMessage(type, response)) {
+            }
+
+            private static string CreateErrorMessage(string type, JObject response) {
+                string message;
+                string status = response.GetValue("status").ToString();
+
+                // Failed solve jobs die with "failure". Failed jobs are normal and not neccessarily an error condition.
+                if (status == "failure") {
+                    message = $"{type} failed to solve";
+                    Logger.Info($"Plate Solving: Astrometry.net: {message}");
+                } else if (status == "error") {
+                    message = response.GetValue("errormessage").ToString();
+                    Logger.Error($"Plate Solving: Astrometry.net: {type} failed. Server response: {message}");
+                } else {
+                    message = "Unspecified error";
+                    Logger.Error($"Plate Solving: Astrometry.net: {type} failed. {message}");
+                }
+
+                return message;
             }
         }
 
-        internal class AstrometrySubmissionFailedException : Exception {
-
-            internal AstrometrySubmissionFailedException(string status) : base($"Submission failed with status: {status}") {
-            }
-        }
-
-        internal class AstrometryJobFailedException : Exception {
-
-            internal AstrometryJobFailedException(string status) : base($"Job failed with status: {status}") {
-            }
-        }
-
-        public AstrometryPlateSolver(string domain, string apikey) {
-            this._domain = domain;
+        public AstrometryPlateSolver(string apiurl, string apikey) {
+            this._apiurl = apiurl;
             this._apikey = apikey;
         }
 
@@ -74,7 +84,7 @@ namespace NINA.PlateSolving {
             string json = "{\"apikey\":\"" + _apikey + "\"}";
             json = HttpRequest.EncodeUrl(json);
             string body = "request-json=" + json;
-            var request = new HttpPostRequest(_domain + AUTHURL, body, "application/x-www-form-urlencoded");
+            var request = new HttpPostRequest(_apiurl + AUTHURL, body, "application/x-www-form-urlencoded");
             response = await request.Request(canceltoken);
             return JObject.Parse(response);
         }
@@ -82,31 +92,31 @@ namespace NINA.PlateSolving {
         private async Task<JObject> SubmitImageStream(Stream ms, string session, CancellationToken canceltoken) {
             NameValueCollection nvc = new NameValueCollection();
             nvc.Add("request-json", "{\"publicly_visible\": \"n\", \"allow_modifications\": \"d\", \"session\": \"" + session + "\", \"allow_commercial_use\": \"d\"}");
-            var request = new HttpUploadFile(_domain + UPLOADURL, ms, "file", "image/jpeg", nvc);
+            var request = new HttpUploadFile(_apiurl + UPLOADURL, ms, "file", "image/jpeg", nvc);
             string response = await request.Request(canceltoken);
             return JObject.Parse(response);
         }
 
         private async Task<JObject> GetSubmissionStatus(string subid, CancellationToken canceltoken) {
-            var request = new HttpGetRequest(_domain + SUBMISSIONURL, subid);
+            var request = new HttpGetRequest(_apiurl + SUBMISSIONURL, subid);
             string response = await request.Request(canceltoken);
             return JObject.Parse(response);
         }
 
         private async Task<JObject> GetJobStatus(string jobid, CancellationToken canceltoken) {
-            var request = new HttpGetRequest(_domain + JOBSTATUSURL, jobid);
+            var request = new HttpGetRequest(_apiurl + JOBSTATUSURL, jobid);
             string response = await request.Request(canceltoken);
             return JObject.Parse(response);
         }
 
         private async Task<JObject> GetJobInfo(string jobid, CancellationToken canceltoken) {
-            var request = new HttpGetRequest(_domain + JOBINFOURL, jobid);
+            var request = new HttpGetRequest(_apiurl + JOBINFOURL, jobid);
             string response = await request.Request(canceltoken);
             return JObject.Parse(response);
         }
 
         private Task<BitmapSource> GetJobImage(string jobid, CancellationToken canceltoken) {
-            var request = new HttpDownloadImageRequest(_domain + ANNOTATEDIMAGEURL, jobid);
+            var request = new HttpDownloadImageRequest(_apiurl + ANNOTATEDIMAGEURL, jobid);
             return request.Request(canceltoken);
         }
 
@@ -116,7 +126,7 @@ namespace NINA.PlateSolving {
             if (status?.ToString() == "success") {
                 return authentication.GetValue("session").ToString();
             } else {
-                throw new AstrometryAuthenticationFailedException(status?.ToString());
+                throw new AstrometryNetFailedException("Authentication", authentication);
             }
         }
 
@@ -140,13 +150,16 @@ namespace NINA.PlateSolving {
             string session,
             CancellationToken cancelToken) {
             JObject imageSubmission = await SubmitImage(session, source, cancelToken);
-            var imageSubmissionStatus = imageSubmission.GetValue("status")?.ToString();
+            string imageSubmissionStatus = imageSubmission.GetValue("status")?.ToString();
+            string subid = imageSubmission.GetValue("subid").ToString();
+
             if (imageSubmissionStatus != "success") {
-                throw new AstrometrySubmissionFailedException(imageSubmissionStatus);
+                throw new AstrometryNetFailedException($"Job submission {subid}", imageSubmission);
             }
 
-            string subid = imageSubmission.GetValue("subid").ToString();
-            progress.Report(new ApplicationStatus() { Status = "Waiting for plate solve to start ..." });
+            Logger.Info($"Plate Solving: Astrometry.net: Submission {subid} created for solving.");
+            progress.Report(new ApplicationStatus() { Status = $"Waiting for Astrometry.net to solve submission {subid}..." });
+
             while (true) {
                 cancelToken.ThrowIfCancellationRequested();
                 JObject submissionStatus = await GetSubmissionStatus(subid, cancelToken);
@@ -169,14 +182,18 @@ namespace NINA.PlateSolving {
                 JObject ojobstatus = await GetJobStatus(jobId, cancelToken);
                 string jobStatus = ojobstatus.GetValue("status").ToString();
                 if (jobStatus == "success") {
+                    Logger.Info($"Plate Solving: Astrometry.net: Job {jobId} completed successfully.");
                     break;
                 } else if (jobStatus == "failure") {
-                    throw new AstrometryJobFailedException(jobStatus);
+                    throw new AstrometryNetFailedException($"Job {jobId}", ojobstatus);
                 }
+
                 await Task.Delay(1000);
             };
 
             JObject job = await GetJobInfo(jobId, cancelToken);
+            Logger.Info($"Plate Solving: Astrometry.net: Job {jobId} successfully retrieved.");
+
             return job.ToObject<JobResult>();
         }
 
@@ -189,13 +206,13 @@ namespace NINA.PlateSolving {
             PlateSolveResult result = new PlateSolveResult();
 
             try {
-                progress.Report(new ApplicationStatus() { Status = "Authenticating..." });
+                progress.Report(new ApplicationStatus() { Status = "Authenticating to Astrometery.net..." });
                 var session = await GetAuthenticationToken(cancelToken);
 
-                progress.Report(new ApplicationStatus() { Status = "Uploading Image..." });
+                progress.Report(new ApplicationStatus() { Status = "Uploading image to Astrometry.net..." });
                 var jobId = await SubmitImageJob(progress, source, session, cancelToken);
 
-                progress.Report(new ApplicationStatus() { Status = "Getting job result..." });
+                progress.Report(new ApplicationStatus() { Status = $"Getting result for Astrometry.net job {jobId}..." });
                 JobResult jobinfo = await GetJobResult(jobId, cancelToken);
                 result.Orientation = jobinfo.calibration.orientation;
                 result.Pixscale = jobinfo.calibration.pixscale;
@@ -205,7 +222,7 @@ namespace NINA.PlateSolving {
                 result.Success = false;
             } catch (Exception ex) {
                 result.Success = false;
-                Notification.ShowError($"Error plate solving with astrometry.net. {ex.Message}");
+                Notification.ShowError($"Error plate solving with Astrometry.net. {ex.Message}");
             }
 
             if (result.Success) {
@@ -217,8 +234,17 @@ namespace NINA.PlateSolving {
         }
 
         protected override void EnsureSolverValid(PlateSolveParameter parameter) {
-            if (_apikey == "") {
-                throw new ArgumentException("astrometry.net API key not set");
+            if (string.IsNullOrWhiteSpace(_apikey)) {
+                throw new ArgumentException("Astrometry.net API key is not configured");
+            }
+
+            if (string.IsNullOrWhiteSpace(_apiurl)) {
+                throw new ArgumentException("Astrometry.net API URL is not configured");
+            }
+
+            // Trailing spaces on the API key text sometimes sneak in if it has been copy and pasted
+            if (Regex.IsMatch(_apikey, @"\s")) {
+                throw new ArgumentException("Astrometry.net API key contains an invalid space character");
             }
         }
     }

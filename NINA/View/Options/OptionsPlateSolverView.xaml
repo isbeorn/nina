@@ -282,6 +282,19 @@
                                     </Hyperlink>
                                 </TextBlock>
                             </StackPanel>
+                            <StackPanel Margin="0,6,0,6" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="130"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblURL}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    MinWidth="200"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding AstrometryURL}" />
+                            </StackPanel>
+
                             <StackPanel MaxHeight="150" Margin="0,6,0,6">
                                 <TextBlock Text="{ns:Loc LblPlatesolveProvidedBy}" />
                                 <TextBlock MaxHeight="73" HorizontalAlignment="Left">

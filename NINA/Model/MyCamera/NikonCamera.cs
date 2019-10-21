@@ -710,7 +710,7 @@ namespace NINA.Model.MyCamera {
                     SetCameraShutterSpeed(speed.Key);
 
                     Logger.Debug("Start capture");
-                    _camera.Capture();
+                    Task.Run(() => _camera.Capture());
                 } else {
                     if (profileService.ActiveProfile.CameraSettings.BulbMode == CameraBulbModeEnum.TELESCOPESNAPPORT) {
                         Logger.Debug("Use Telescope Snap Port");

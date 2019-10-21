@@ -31,6 +31,7 @@ using System;
 using System.Threading.Tasks;
 
 namespace NINATest {
+
     [TestFixture]
     public class ImageDataTest {
         private ImageMetaData MetaData;
@@ -416,6 +417,42 @@ namespace NINATest {
                 $"#{Utility.ApplicationStartDate.ToString("yyyy-MM-dd")}";
 
             System.IO.Path.GetFileName(file).Should().Be($"{expectedPattern}.{fileType.ToString().ToLower()}");
+        }
+
+        [Test]
+        public async Task SaveToDiskPatternEmptyMetaDataTest() {
+            var fileType = NINA.Utility.Enum.FileTypeEnum.TIFF_LZW;
+            var data = new ushort[] {
+                3,1,1,
+                3,4,5,
+                3,2,3
+            };
+            var folder = TestContext.CurrentContext.TestDirectory;
+            var pattern = $"$$FILTER$$" +
+                $"#$$DATE$$" +
+                $"#$$DATEMINUS12$$" +
+                $"#$$DATETIME$$" +
+                $"#$$TIME$$" +
+                $"#$$FRAMENR$$" +
+                $"#$$IMAGETYPE$$" +
+                $"#$$BINNING$$" +
+                $"#$$SENSORTEMP$$" +
+                $"#$$EXPOSURETIME$$" +
+                $"#$$TARGETNAME$$" +
+                $"#$$GAIN$$" +
+                $"#$$OFFSET$$" +
+                $"#$$RMS$$" +
+                $"#$$RMSARCSEC$$" +
+                $"#$$FOCUSERPOSITION$$" +
+                $"#$$APPLICATIONSTARTDATE$$";
+
+            var sut = new ImageData(data, 3, 3, 16, false, new ImageMetaData());
+            var file = await sut.SaveToDisk(folder, pattern, fileType, default);
+            System.IO.File.Delete(file);
+
+            var expectedPattern = $"#0001-01-01##0001-01-01_00-00-00#00-00-00#-0001##1x1#########{Utility.ApplicationStartDate.ToString("yyyy-MM-dd")}.tif";
+
+            System.IO.Path.GetFileName(file).Should().Be($"{expectedPattern}");
         }
 
         [Test]

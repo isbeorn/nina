@@ -1,20 +1,12 @@
 # Version 1.10
 
-```
-Attention QHY Users: 
-The latest SDK has some memory issues for users without a QHY camera connected to a pc.
-Therefore the QHY SDK has to be manually enabled in 
-    Options->Application Settings->Enable QHY SDK 
-until this is fixed by QHY.
-This problem does not occur when a QHY camera is connected to a pc.
-```
-
 ## Features
 
 ### Hardware
  - QHY filter wheels that are integrated (A-series cameras) or are connected to the camera using the 4-pin cable (CFW1/2/3 filter wheels) are now natively supported. This allows the native QHY camera driver to be used with these cameras and configurations.
 
 ## Improvements
+- Upgraded Atik driver to use latest Atik SDK and drivers
 - Added a bit scaling options for Altair and ToupTek cameras to bit shift the raw data to 16 bits to be compatible with other capture software
 - FreeImage library upgrade to 3.18
 - Plate solvers will now receive unstretched FITS images to solve the image for a faster and even better solve result
@@ -36,6 +28,10 @@ This problem does not occur when a QHY camera is connected to a pc.
 - QHY native camera driver now retrieves only the non-overscan area of the sensor
 - QHY native camera driver now supports selecting readout modes with QHY600 class cameras
 - Added a $$DATEMINUS12$$ placeholder to the file save pattern that shifts the current date 12 hours into the past. This allows for all images of a night to be saved into the same date folder.
+- Added more manual focus targets for certain regions of the southern hemisphere sky.
+- Can now configure a custom Astrometry.net API URL
+- Improved status and logging for Astrometry.net plate solve jobs
+- Updated Nikon SDK to latest available version (2019-10-20)
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false
@@ -43,6 +39,7 @@ This problem does not occur when a QHY camera is connected to a pc.
 - QHY native camera driver now has a more reliable way to determine sensor bitness with CCD models
 - The font size of panel IDs in Framing Assistant has been increased to a legible level
 - The $$FRAMENR$$ placeholder is now saving the number as 4 digits
+- Framing - Rectangle panel number is now scaled based on rectangle size.
 
 # Version 1.9
 

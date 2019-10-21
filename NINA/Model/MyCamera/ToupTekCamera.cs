@@ -31,10 +31,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using ToupTek;
 using NINA.Model.ImageData;
-using System.Runtime.InteropServices;
-using NINA.Utility.WindowService;
 
 namespace NINA.Model.MyCamera {
+
     internal class ToupTekCamera : BaseINPC, ICamera {
         private ToupCam.eFLAG flags;
         private ToupCam camera;
@@ -650,24 +649,30 @@ namespace NINA.Model.MyCamera {
             var width = CameraXSize / binning;
             var height = CameraYSize / binning;
 
-            var size = width * height * 2;
-            var pointer = Marshal.AllocHGlobal(size);
+            var size = width * height;
+            var data = new ushort[size];
 
-            if (!camera.PullImageV2(pointer, BitDepth, out var info)) {
+            if (!camera.PullImageV2(data, BitDepth, out var info)) {
                 Logger.Error("ToupTekCamera - Failed to pull image");
                 return null;
             }
-            var scaling = this.profileService.ActiveProfile.CameraSettings.BitScaling;
-            var cameraDataToManaged = new CameraDataToManaged(pointer, width, height, BitDepth, bitScaling: scaling);
-            var arr = cameraDataToManaged.GetData();
+
+            var bitScaling = this.profileService.ActiveProfile.CameraSettings.BitScaling;
+            if (bitScaling) {
+                var shift = 16 - BitDepth;
+                for (var i = 0; i < data.Length; i++) {
+                    data[i] = (ushort)(data[i] << shift);
+                }
+            }
+
             var imageData = new ImageArrayExposureData(
-                    input: arr,
+                    input: data,
                     width: width,
                     height: height,
-                    bitDepth: scaling ? 16 : this.BitDepth,
+                    bitDepth: bitScaling ? 16 : this.BitDepth,
                     isBayered: this.SensorType != SensorType.Monochrome,
                     metaData: new ImageMetaData());
-            Marshal.FreeHGlobal(pointer);
+
             return imageData;
         }
 

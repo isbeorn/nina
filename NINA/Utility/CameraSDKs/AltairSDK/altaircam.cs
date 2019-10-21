@@ -459,7 +459,7 @@ namespace Altair {
         private static extern int Altaircam_StartPushMode(SafeCamHandle h, PALTAIRCAM_DATA_CALLBACK pDataCallback, IntPtr pCallbackCtx);
 
         [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
-        private static extern int Altaircam_PullImageV2(SafeCamHandle h, IntPtr pImageData, int bits, out FrameInfoV2 pInfo);
+        private static extern int Altaircam_PullImageV2(SafeCamHandle h, [Out] ushort[] pImageData, int bits, out FrameInfoV2 pInfo);
 
         [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
         private static extern int Altaircam_PullStillImageV2(SafeCamHandle h, IntPtr pImageData, int bits, out FrameInfoV2 pInfo);
@@ -1480,7 +1480,7 @@ namespace Altair {
             return (Altaircam_PullImage(_handle, pImageData, bits, out pnWidth, out pnHeight) >= 0);
         }
 
-        public bool PullImageV2(IntPtr pImageData, int bits, out FrameInfoV2 pInfo) {
+        public bool PullImageV2(ushort[] pImageData, int bits, out FrameInfoV2 pInfo) {
             if (_handle == null || _handle.IsInvalid || _handle.IsClosed) {
                 pInfo.width = pInfo.height = pInfo.flag = pInfo.seq = 0;
                 pInfo.timestamp = 0;

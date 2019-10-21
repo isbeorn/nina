@@ -214,6 +214,16 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
+        private int fontSize;
+
+        public int FontSize {
+            get => fontSize;
+            set {
+                fontSize = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private ISkySurveyFactory skySurveyFactory;
 
         public ISkySurveyFactory SkySurveyFactory {
@@ -628,16 +638,13 @@ namespace NINA.ViewModel.FramingAssistant {
                             ImageParameter = skySurveyImage;
                         }));
 
-                        var dynamicFoV = true;
-
                         if (Cache != null && FramingAssistantSource != SkySurveySource.SKYATLAS) {
                             SelectedImageCacheInfo = Cache.SaveImageToCache(skySurveyImage);
                             RaisePropertyChanged(nameof(ImageCacheInfo));
-                            dynamicFoV = false;
                         }
 
                         await SkyMapAnnotator.Initialize(skySurveyImage.Coordinates, Astrometry.ArcminToDegree(skySurveyImage.FoVHeight), ImageParameter.Image.PixelWidth, ImageParameter.Image.PixelHeight, ImageParameter.Rotation, _loadImageSource.Token);
-                        SkyMapAnnotator.DynamicFoV = dynamicFoV;
+                        SkyMapAnnotator.DynamicFoV = FramingAssistantSource == SkySurveySource.SKYATLAS;
 
                         CalculateRectangle(SkyMapAnnotator.ViewportFoV);
                     }
@@ -661,7 +668,7 @@ namespace NINA.ViewModel.FramingAssistant {
                     psResult = await solver.BlindSolve(renderedImage.RawImageData, _statusUpdate, _loadImageSource.Token);
                 }
 
-                if (psResult.Success) {
+                if (psResult?.Success == true) {
                     var rotation = psResult.Orientation;
                     if (rotation < 0) {
                         rotation += 360;
@@ -787,6 +794,8 @@ namespace NINA.ViewModel.FramingAssistant {
                     Rotation = previousRotation,
                     Coordinates = centerCoordinates
                 };
+
+                FontSize = (int)(height * 0.2);
             }
         }
 

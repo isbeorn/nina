@@ -76,9 +76,10 @@ namespace NINA.ViewModel.Equipment.Camera {
             /* Atik */
             try {
                 Logger.Trace("Adding Atik Cameras");
-                var atikDevices = AtikCameraDll.RefreshDevicesCount();
-                for (int i = 0; i < atikDevices; i++) {
-                    if (AtikCameraDll.ArtemisDeviceIsCamera(i)) {
+                var atikDevices = AtikCameraDll.GetDevicesCount();
+                Logger.Trace($"Cameras found: {atikDevices}");
+                if (atikDevices > 0) {
+                    for (int i = 0; i < atikDevices; i++) {
                         var cam = new AtikCamera(i, profileService);
                         Devices.Add(cam);
                     }
@@ -106,24 +107,22 @@ namespace NINA.ViewModel.Equipment.Camera {
                 Logger.Error(ex);
             }
 
-            if (NINA.Properties.Settings.Default.EnableQHY) {
-                /* QHYCCD */
-                try {
-                    Logger.Trace("Adding QHYCCD Cameras");
-                    uint numCameras = QHYCameras.Count;
+            /* QHYCCD */
+            try {
+                Logger.Trace("Adding QHYCCD Cameras");
+                uint numCameras = QHYCameras.Count;
 
-                    if (numCameras > 0) {
-                        for (uint i = 0; i < numCameras; i++) {
-                            var cam = QHYCameras.GetCamera(i, profileService);
-                            if (!string.IsNullOrEmpty(cam.Name)) {
-                                Logger.Debug($"Adding QHY camera {i}: {cam.Id} (as {cam.Name})");
-                                Devices.Add(cam);
-                            }
+                if (numCameras > 0) {
+                    for (uint i = 0; i < numCameras; i++) {
+                        var cam = QHYCameras.GetCamera(i, profileService);
+                        if (!string.IsNullOrEmpty(cam.Name)) {
+                            Logger.Debug($"Adding QHY camera {i}: {cam.Id} (as {cam.Name})");
+                            Devices.Add(cam);
                         }
                     }
-                } catch (Exception ex) {
-                    Logger.Error(ex);
                 }
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
 
             /* ToupTek */

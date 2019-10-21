@@ -26,6 +26,7 @@ using NINA.Utility.Enum;
 using System;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 
 namespace NINA.Profile {
 
@@ -41,6 +42,7 @@ namespace NINA.Profile {
 
         protected override void SetDefaultValues() {
             blindSolverType = BlindSolverEnum.ASTROMETRY_NET;
+            astrometryURL = "http://nova.astrometry.net";
             astrometryAPIKey = string.Empty;
             cygwinLocation = string.Empty;
             searchRadius = 30;
@@ -95,6 +97,24 @@ namespace NINA.Profile {
             }
         }
 
+        private string astrometryURL;
+
+        [DataMember]
+        public string AstrometryURL {
+            get {
+                return astrometryURL;
+            }
+            set {
+                // Clear out any whitespace characters in the URL
+                string url = Regex.Replace(value, @"\s", string.Empty);
+
+                if (astrometryURL != url) {
+                    astrometryURL = url;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         private string astrometryAPIKey;
 
         [DataMember]
@@ -103,8 +123,13 @@ namespace NINA.Profile {
                 return astrometryAPIKey;
             }
             set {
-                if (astrometryAPIKey != value) {
-                    astrometryAPIKey = value;
+                // Whitespace characters are not valid characaters in an Astrometry.net API key.
+                // Help the user by removing any that might be present. Copy and pasting from the astrometry.net API page
+                // can sometimes insert a space at the end of the API key string, and it's not very obvious.
+                string key = Regex.Replace(value, @"\s", string.Empty);
+
+                if (astrometryAPIKey != key) {
+                    astrometryAPIKey = key;
                     RaisePropertyChanged();
                 }
             }
@@ -223,8 +248,7 @@ namespace NINA.Profile {
                 return numberOfAttempts;
             }
             set {
-                if (numberOfAttempts != value)
-                {
+                if (numberOfAttempts != value) {
                     numberOfAttempts = value;
                     RaisePropertyChanged();
                 }
@@ -239,8 +263,7 @@ namespace NINA.Profile {
                 return reattemptDelay;
             }
             set {
-                if (reattemptDelay != value)
-                {
+                if (reattemptDelay != value) {
                     reattemptDelay = value;
                     RaisePropertyChanged();
                 }
