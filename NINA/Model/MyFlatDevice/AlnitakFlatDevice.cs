@@ -252,7 +252,7 @@ namespace NINA.Model.MyFlatDevice {
 
         private async Task<T> SendCommand<T>(Command command) where T : Response, new() {
             var result = string.Empty;
-            await ssSendCommand.WaitAsync();
+            ssSendCommand.Wait();
             try {
                 _serialPort.Open();
                 Logger.Debug($"AlnitakFlatDevice: command : {command}");

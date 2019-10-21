@@ -31,5 +31,19 @@
                 RaisePropertyChanged();
             }
         }
+
+        private int _minBrightness;
+
+        public int MinBrightness {
+            get => _minBrightness;
+            set { _minBrightness = value; RaisePropertyChanged(); }
+        }
+
+        private int _maxBrightness;
+
+        public int MaxBrightness {
+            get => _maxBrightness;
+            set { _maxBrightness = value; RaisePropertyChanged(); }
+        }
     }
 }
