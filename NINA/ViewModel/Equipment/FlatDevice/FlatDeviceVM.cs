@@ -150,7 +150,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
         }
 
         private void DisconnectFlatDeviceDialog(object obj) {
-            var dialog = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblDisconnectFlatDeviceQuestion"],
+            var dialog = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblFlatDeviceDisconnectQuestion"],
                 "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (dialog == System.Windows.MessageBoxResult.OK) {
                 Disconnect();

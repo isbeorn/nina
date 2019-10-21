@@ -395,6 +395,18 @@ When this trigger is deactivated the application will just skip the Start Exposu
     <s:String x:Key="LblFlatCalculatedExposureTime" xml:space="default">Calculated Target Exposure Time</s:String>
     <s:String x:Key="LblFlatCalculatedHistogramMean" xml:space="default">Calculated Target Histogram Mean</s:String>
     <s:String x:Key="LblFlatCount" xml:space="default">Flats to take</s:String>
+    <s:String x:Key="LblFlatDeviceBrightness" xml:space="default">Brightness</s:String>
+    <s:String x:Key="LblFlatDevice" xml:space="default">Flat Panel</s:String>
+    <s:String x:Key="LblFlatDeviceClose" xml:space="default">Close</s:String>
+    <s:String x:Key="LblFlatDeviceConnected" xml:space="default">Flat panel connected.</s:String>
+    <s:String x:Key="LblFlatDeviceCoverCurrently" xml:space="default">Currently</s:String>
+    <s:String x:Key="LblFlatDeviceCover" xml:space="default">Cover</s:String>
+    <s:String x:Key="LblFlatDeviceDisconnectQuestion" xml:space="default">Do you want to disconnect the flat panel?</s:String>
+    <s:String x:Key="LblFlatDeviceInvalidResponse" xml:space="default">Invalid response from flat panel.</s:String>
+    <s:String x:Key="LblFlatDeviceLight" xml:space="default">Flat panel light</s:String>
+    <s:String x:Key="LblFlatDeviceNoDevice" xml:space="default">No Flat Panel</s:String>
+    <s:String x:Key="LblFlatDeviceOpen" xml:space="default">Open</s:String>
+    <s:String x:Key="LblFlatDeviceSetBrightness" xml:space="default">Set</s:String>
     <s:String x:Key="LblFlatExposureCalcContinue" xml:space="default">Mean ADU was {0}, starting Exposure Time calculation at {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcFinished" xml:space="default">Mean ADU is {0} target Exposure Time is {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcStart" xml:space="default">Starting Exposure Time calculation at {0}</s:String>
