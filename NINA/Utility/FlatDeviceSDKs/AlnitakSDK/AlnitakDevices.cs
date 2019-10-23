@@ -177,7 +177,7 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
             }
         }
 
-        protected bool IsOoo(string response) {
+        protected bool EndsInOOO(string response) {
             return response.Substring(4, 3).Equals("OOO");
         }
     }
@@ -187,7 +187,7 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (IsValid && (value[1] != 'P' || !IsOoo(value))) {
+                if (IsValid && (value[1] != 'P' || !EndsInOOO(value))) {
                     IsValid = false;
                 }
             }
@@ -199,7 +199,7 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (IsValid && (value[1] != 'O' || !IsOoo(value))) {
+                if (IsValid && (value[1] != 'O' || !EndsInOOO(value))) {
                     IsValid = false;
                 }
             }
@@ -211,7 +211,7 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (IsValid && (value[1] != 'C' || !IsOoo(value))) {
+                if (IsValid && (value[1] != 'C' || !EndsInOOO(value))) {
                     IsValid = false;
                 }
             }
@@ -223,7 +223,7 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (IsValid && (value[1] != 'L' || !IsOoo(value))) {
+                if (IsValid && (value[1] != 'L' || !EndsInOOO(value))) {
                     IsValid = false;
                 }
             }
@@ -235,7 +235,7 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (IsValid && (value[1] != 'D' || !IsOoo(value))) {
+                if (IsValid && (value[1] != 'D' || !EndsInOOO(value))) {
                     IsValid = false;
                 }
             }
