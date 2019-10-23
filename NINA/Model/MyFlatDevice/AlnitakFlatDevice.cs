@@ -264,7 +264,9 @@ namespace NINA.Model.MyFlatDevice {
                 result = _serialPort.ReadLine();
                 Logger.Debug($"AlnitakFlatDevice: response : {result}");
             } catch (TimeoutException) {
-                Logger.Debug($"AlnitakFlatDevice: timed out for port : {_serialPort.PortName}");
+                Logger.Error($"AlnitakFlatDevice: timed out for port : {_serialPort.PortName}");
+            } catch (Exception ex) {
+                Logger.Error($"AlnitakFlatDevice: Unexpected exception : {ex}");
             } finally {
                 _serialPort.Close();
                 ssSendCommand.Release();
