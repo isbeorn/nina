@@ -33,9 +33,12 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
                     if (!response.IsValid) {
                         continue;
                     }
+
                     result.Add($"{response.Name};{serialPort.PortName}");
                 } catch (TimeoutException) {
                     Logger.Debug($"AlnitakFlatDevice: timed out for port : {serialPort.PortName}");
+                } catch (Exception ex) {
+                    Logger.Debug($"AlnitakFlatDevice: Unexpected exception : {ex}");
                 } finally {
                     serialPort.Close();
                 }
