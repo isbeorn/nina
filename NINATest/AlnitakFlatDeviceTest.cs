@@ -27,7 +27,7 @@ namespace NINATest {
         }
 
         [Test]
-        [TestCase(CoverState.NotOpenClosed, "*S99000")]
+        [TestCase(CoverState.NeitherOpenNorClosed, "*S99000")]
         [TestCase(CoverState.Closed, "*S99001")]
         [TestCase(CoverState.Open, "*S99002")]
         [TestCase(CoverState.Unknown, "*S99003")]

@@ -19,5 +19,5 @@ namespace NINA.Model.MyFlatDevice {
         bool SupportsOpenClose { get; }
     }
 
-    public enum CoverState { Unknown, NotOpenClosed, Closed, Open };
+    public enum CoverState { Unknown, NeitherOpenNorClosed, Closed, Open };
 }

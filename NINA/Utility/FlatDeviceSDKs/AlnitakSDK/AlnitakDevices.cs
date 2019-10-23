@@ -337,7 +337,7 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
 
             switch (response[6]) {
                 case '0':
-                    CoverState = CoverState.NotOpenClosed;
+                    CoverState = CoverState.NeitherOpenNorClosed;
                     break;
 
                 case '1':
