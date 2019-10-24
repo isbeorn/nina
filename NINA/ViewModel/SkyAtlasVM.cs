@@ -408,8 +408,10 @@ namespace NINA.ViewModel {
         }
 
         private void InitializeConstellationFilters() {
-            var l = new DatabaseInteraction().GetConstellations(new System.Threading.CancellationToken());
-            Constellations = new AsyncObservableCollection<string>(l.Result);
+            var dbResult = new DatabaseInteraction().GetConstellations(new System.Threading.CancellationToken());
+            var list = new AsyncObservableCollection<string>(dbResult.Result);
+            list.Insert(0, string.Empty);
+            Constellations = list;
         }
 
         private void InitializeObjectTypeFilters() {
