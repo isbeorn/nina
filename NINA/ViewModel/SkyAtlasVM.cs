@@ -46,10 +46,11 @@ namespace NINA.ViewModel {
             // Not required to register to the mediator, as we don't need updates
             this.telescopeMediator = telescopeMediator;
 
-            SelectedDate = DateTime.Now;
+            ResetFilters(null);
 
             SearchCommand = new AsyncCommand<bool>(() => Search());
             CancelSearchCommand = new RelayCommand(CancelSearch);
+            ResetFiltersCommand = new RelayCommand(ResetFilters);
             SetSequenceCoordinatesCommand = new AsyncCommand<bool>(() => SetSequenceCoordinates());
             SlewToCoordinatesCommand = new AsyncCommand<bool>(async () => {
                 return await telescopeMediator.SlewToCoordinatesAsync(SearchResult.SelectedItem.Coordinates);
@@ -69,6 +70,42 @@ namespace NINA.ViewModel {
             profileService.LocaleChanged += (object sender, EventArgs e) => {
                 InitializeFilters();
             };
+        }
+
+        private void ResetFilters(object obj) {
+            SelectedDate = DateTime.Now;
+
+            SearchObjectName = string.Empty;
+
+            foreach (var objecttype in ObjectTypes) {
+                objecttype.Selected = false;
+            }
+
+            SelectedAltitudeTimeFrom = DateTime.MinValue;
+            SelectedAltitudeTimeThrough = DateTime.MaxValue;
+            SelectedMinimumAltitudeDegrees = 0;
+
+            SelectedBrightnessFrom = null;
+            SelectedBrightnessThrough = null;
+
+            SelectedConstellation = string.Empty;
+
+            SelectedDecFrom = null;
+            SelectedDecThrough = null;
+
+            SelectedMagnitudeFrom = null;
+            SelectedMagnitudeThrough = null;
+
+            SelectedMinimumAltitudeDegrees = 0;
+
+            SelectedRAFrom = null;
+            SelectedRAThrough = null;
+
+            SelectedSizeFrom = null;
+            SelectedSizeThrough = null;
+
+            OrderByField = SkyAtlasOrderByFieldsEnum.SIZEMAX;
+            OrderByDirection = SkyAtlasOrderByDirectionEnum.DESC;
         }
 
         private void ResetRiseAndSetTimes() {
@@ -352,9 +389,6 @@ namespace NINA.ViewModel {
             AltitudeTimesFrom = new AsyncObservableCollection<DateTime>();
             AltitudeTimesThrough = new AsyncObservableCollection<DateTime>();
             MinimumAltitudeDegrees = new AsyncObservableCollection<KeyValuePair<double, string>>();
-            SelectedAltitudeTimeFrom = DateTime.MinValue;
-            SelectedAltitudeTimeThrough = DateTime.MaxValue;
-            SelectedMinimumAltitudeDegrees = 0;
 
             var d = GetReferenceDate(SelectedDate);
 
@@ -417,7 +451,6 @@ namespace NINA.ViewModel {
         private void InitializeObjectTypeFilters() {
             var task = new DatabaseInteraction().GetObjectTypes(new System.Threading.CancellationToken());
             var list = task.Result?.OrderBy(x => x).ToList();
-            ObjectTypes = new AsyncObservableCollection<DSOObjectType>();
             foreach (var type in list) {
                 ObjectTypes.Add(new DSOObjectType(type));
             }
@@ -446,11 +479,6 @@ namespace NINA.ViewModel {
             RAThrough.Add(new KeyValuePair<double?, string>(null, string.Empty));
             DecFrom.Add(new KeyValuePair<double?, string>(null, string.Empty));
             DecThrough.Add(new KeyValuePair<double?, string>(null, string.Empty));
-
-            SelectedRAFrom = null;
-            SelectedRAThrough = null;
-            SelectedDecFrom = null;
-            SelectedDecThrough = null;
 
             for (int i = 0; i < 25; i++) {
                 Astrometry.HoursToDegrees(i);
@@ -569,6 +597,9 @@ namespace NINA.ViewModel {
 
         public AsyncObservableCollection<DSOObjectType> ObjectTypes {
             get {
+                if (_objectTypes == null) {
+                    _objectTypes = new AsyncObservableCollection<DSOObjectType>();
+                }
                 return _objectTypes;
             }
 
@@ -820,6 +851,7 @@ namespace NINA.ViewModel {
             }
         }
 
+        public ICommand ResetFiltersCommand { get; private set; }
         public ICommand SearchCommand { get; private set; }
 
         public ICommand CancelSearchCommand { get; private set; }

@@ -33,6 +33,7 @@
 - Improved status and logging for Astrometry.net plate solve jobs
 - Updated Nikon SDK to latest available version (2019-10-20)
 - Zooming at high magnification inside the image control will not smear the pixels anymore but show sharp pixel edges instead
+- Added a reset button to sky atlas to reset all filters
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false
@@ -42,6 +43,7 @@
 - The $$FRAMENR$$ placeholder is now saving the number as 4 digits
 - Framing - Rectangle panel number is now scaled based on rectangle size.
 - When loading an image from a file into framing the rectangle was not calculated correctly
+- Added an empty entry for Constellation Filter in Sky Atlas to unselect it
 
 # Version 1.9
 
