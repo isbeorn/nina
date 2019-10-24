@@ -32,6 +32,7 @@
 - Can now configure a custom Astrometry.net API URL
 - Improved status and logging for Astrometry.net plate solve jobs
 - Updated Nikon SDK to latest available version (2019-10-20)
+- Zooming at high magnification inside the image control will not smear the pixels anymore but show sharp pixel edges instead
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false
