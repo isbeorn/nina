@@ -190,6 +190,7 @@ namespace NINA.Model.MyFlatDevice {
         public string DriverVersion => "1.0";
 
         public async Task<bool> Close(CancellationToken ct) {
+            if (!Connected) return await Task.Run(() => false, ct);
             return await Task.Run(() => {
                 var command = new CloseCommand();
                 var response = SendCommand<CloseResponse>(command);
@@ -233,6 +234,7 @@ namespace NINA.Model.MyFlatDevice {
         }
 
         public async Task<bool> Open(CancellationToken ct) {
+            if (!Connected) return await Task.Run(() => false, ct);
             return await Task.Run(() => {
                 var command = new OpenCommand();
                 var response = SendCommand<OpenResponse>(command);

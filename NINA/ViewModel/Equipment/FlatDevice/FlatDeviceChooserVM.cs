@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using NINA.Model;
+﻿using NINA.Model;
 using NINA.Model.MyFlatDevice;
 using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.FlatDeviceSDKs.AlnitakSDK;
+using System;
+using System.Linq;
 
 namespace NINA.ViewModel.Equipment.FlatDevice {
 
@@ -21,7 +20,8 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
 
             try {
                 Logger.Trace("Adding Alnitak Flat Devices");
-                List<string> alnitakList = AlnitakDevices.GetDevices();
+                Devices.Add(new AlnitakFlipFlatSimulator());
+                var alnitakList = AlnitakDevices.GetDevices();
 
                 if (alnitakList.Count > 0) {
                     foreach (var device in alnitakList.Select(entry => new AlnitakFlatDevice(entry, profileService))

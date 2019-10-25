@@ -15,19 +15,19 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
     internal class FlatDeviceVM : DockableVM, IFlatDeviceVM {
         private IFlatDevice _flatDevice;
         private FlatDeviceChooserVM _flatDeviceChooserVm;
-        private IApplicationStatusMediator _applicationStatusMediator;
-        private IFlatDeviceMediator _flatDeviceMediator;
-        private DeviceUpdateTimer _updateTimer;
+        private readonly IApplicationStatusMediator _applicationStatusMediator;
+        private readonly IFlatDeviceMediator _flatDeviceMediator;
+        private readonly DeviceUpdateTimer _updateTimer;
 
         public FlatDeviceVM(IProfileService profileService, IFlatDeviceMediator flatDeviceMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             _applicationStatusMediator = applicationStatusMediator;
             _flatDeviceMediator = flatDeviceMediator;
 
-            ConnectCommand = new AsyncCommand<bool>(() => Connect());
+            ConnectCommand = new AsyncCommand<bool>(Connect);
             CancelConnectCommand = new RelayCommand(CancelConnectFlatDevice);
             DisconnectCommand = new RelayCommand(DisconnectFlatDeviceDialog);
-            OpenCoverCommand = new AsyncCommand<bool>(() => OpenCover());
-            CloseCoverCommand = new AsyncCommand<bool>(() => CloseCover());
+            OpenCoverCommand = new AsyncCommand<bool>(OpenCover);
+            CloseCoverCommand = new AsyncCommand<bool>(CloseCover);
             RefreshFlatDeviceListCommand =
                 new RelayCommand(RefreshFlatDeviceList, o => _flatDevice?.Connected != true);
             SetBrightnessCommand = new RelayCommand(SetBrightness);
