@@ -2,6 +2,6 @@
 
 namespace NINA.Utility.Mediator.Interfaces {
 
-    internal interface IFlatDeviceConsumer : IDeviceConsumer<FlatDeviceInfo> {
+    public interface IFlatDeviceConsumer : IDeviceConsumer<FlatDeviceInfo> {
     }
 }

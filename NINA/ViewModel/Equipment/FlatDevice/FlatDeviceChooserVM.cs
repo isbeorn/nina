@@ -5,10 +5,17 @@ using NINA.Utility;
 using NINA.Utility.FlatDeviceSDKs.AlnitakSDK;
 using System;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace NINA.ViewModel.Equipment.FlatDevice {
 
-    internal class FlatDeviceChooserVM : EquipmentChooserVM {
+    public interface IFlatDeviceChooserVM {
+        IDevice SelectedDevice { get; set; }
+
+        void GetEquipment();
+    }
+
+    internal class FlatDeviceChooserVM : EquipmentChooserVM, IFlatDeviceChooserVM {
 
         public FlatDeviceChooserVM(IProfileService profileService) : base(profileService) {
         }

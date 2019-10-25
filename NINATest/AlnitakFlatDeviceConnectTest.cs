@@ -12,7 +12,7 @@ namespace NINATest {
         private Mock<ISerialPort> mockSerialPort;
 
         [SetUp]
-        public void InitAsync() {
+        public void Init() {
             _sut = new AlnitakFlatDevice("COM3");
             mockSerialPort = new Mock<ISerialPort>();
             _sut.SerialPort = mockSerialPort.Object;

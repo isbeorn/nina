@@ -183,6 +183,7 @@
     <Compile Include="SynchronizedPHD2GuiderServiceTest.cs" />
     <Compile Include="AlnitakFlatDeviceTest.cs" />
     <Compile Include="AlnitakFlatDeviceConnectTest.cs" />
+    <Compile Include="FlatDeviceVMTest.cs" />
     <Compile Include="XISFTest.cs" />
   </ItemGroup>
   <ItemGroup>

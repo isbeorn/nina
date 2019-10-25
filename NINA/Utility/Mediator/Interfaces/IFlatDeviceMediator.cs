@@ -3,6 +3,6 @@ using NINA.ViewModel.Equipment.FlatDevice;
 
 namespace NINA.Utility.Mediator.Interfaces {
 
-    internal interface IFlatDeviceMediator : IDeviceMediator<IFlatDeviceVM, IFlatDeviceConsumer, FlatDeviceInfo> {
+    public interface IFlatDeviceMediator : IDeviceMediator<IFlatDeviceVM, IFlatDeviceConsumer, FlatDeviceInfo> {
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace NINA.Model.MyFlatDevice {
 
-    internal class FlatDeviceInfo : DeviceInfo {
+    public class FlatDeviceInfo : DeviceInfo {
         private CoverState _coverState;
 
         public CoverState CoverState {

@@ -14,7 +14,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
 
     internal class FlatDeviceVM : DockableVM, IFlatDeviceVM {
         private IFlatDevice _flatDevice;
-        private FlatDeviceChooserVM _flatDeviceChooserVm;
+        private IFlatDeviceChooserVM _flatDeviceChooserVm;
         private readonly IApplicationStatusMediator _applicationStatusMediator;
         private readonly IFlatDeviceMediator _flatDeviceMediator;
         private readonly DeviceUpdateTimer _updateTimer;
@@ -32,6 +32,9 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                 new RelayCommand(RefreshFlatDeviceList, o => _flatDevice?.Connected != true);
             SetBrightnessCommand = new RelayCommand(SetBrightness);
             ToggleLightCommand = new RelayCommand(ToggleLight);
+
+            _flatDeviceChooserVm = new FlatDeviceChooserVM(profileService);
+            _flatDeviceChooserVm.GetEquipment();
 
             _updateTimer = new DeviceUpdateTimer(
                 GetFlatDeviceValues,
@@ -105,9 +108,11 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
 
                             Notification.ShowSuccess(Locale.Loc.Instance["LblFlatDeviceConnected"]);
 
-                            _updateTimer.Interval =
-                                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
-                            _updateTimer.Start();
+                            if (_updateTimer != null) {
+                                _updateTimer.Interval =
+                                    profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
+                                _updateTimer.Start();
+                            }
 
                             profileService.ActiveProfile.FlatDeviceSettings.Id = flatDevice.Id;
                             return true;
@@ -213,14 +218,8 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             FlatDeviceChooserVM.GetEquipment();
         }
 
-        public FlatDeviceChooserVM FlatDeviceChooserVM {
-            get {
-                if (_flatDeviceChooserVm != null) return _flatDeviceChooserVm;
-                _flatDeviceChooserVm = new FlatDeviceChooserVM(profileService);
-                _flatDeviceChooserVm.GetEquipment();
-
-                return _flatDeviceChooserVm;
-            }
+        public IFlatDeviceChooserVM FlatDeviceChooserVM {
+            get => _flatDeviceChooserVm;
             set => _flatDeviceChooserVm = value;
         }
 

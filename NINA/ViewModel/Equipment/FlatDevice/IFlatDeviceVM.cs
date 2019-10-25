@@ -2,6 +2,6 @@
 
 namespace NINA.ViewModel.Equipment.FlatDevice {
 
-    internal interface IFlatDeviceVM : IDeviceVM<FlatDeviceInfo> {
+    public interface IFlatDeviceVM : IDeviceVM<FlatDeviceInfo> {
     }
 }
