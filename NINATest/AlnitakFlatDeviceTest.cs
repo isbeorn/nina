@@ -23,7 +23,7 @@ namespace NINATest {
         [TearDown]
         public void Dispose() {
             _sut.Disconnect();
-            Assert.AreEqual(false, _sut.Connected);
+            Assert.That(_sut.Connected, Is.False);
         }
 
         [Test]
@@ -33,7 +33,17 @@ namespace NINATest {
         [TestCase(CoverState.Unknown, "*S99003")]
         [TestCase(CoverState.Unknown, "garbage")]
         [TestCase(CoverState.Unknown, null)]
-        public void TestCoverStatus(CoverState coverState, string deviceResponse) {
+        public void TestCoverState(CoverState coverState, string deviceResponse) {
+            mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
+            Assert.That(_sut.CoverState, Is.EqualTo(coverState));
+        }
+
+        [Test]
+        [TestCase(CoverState.Unknown, "*S99000")]
+        [TestCase(CoverState.Unknown, "garbage")]
+        [TestCase(CoverState.Unknown, null)]
+        public void TestCoverStateDisconnected(CoverState coverState, string deviceResponse) {
+            _sut.Disconnect();
             mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
             Assert.That(_sut.CoverState, Is.EqualTo(coverState));
         }
@@ -60,16 +70,48 @@ namespace NINATest {
         }
 
         [Test]
+        [TestCase(0, "*J99000")]
+        [TestCase(0, "*J99255")]
+        [TestCase(0, "*J99099")]
+        [TestCase(0, "garbage")]
+        [TestCase(0, null)]
+        public void TestGetBrightnessDisconnected(int brightness, string deviceResponse) {
+            _sut.Disconnect();
+            mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
+            Assert.That(_sut.Brightness, Is.EqualTo(brightness));
+        }
+
+        [Test]
         [TestCase(0, ">B000\r")]
         [TestCase(255, ">B255\r")]
         [TestCase(99, ">B099\r")]
         [TestCase(50, ">B050\r")]
+        [TestCase(-1, null)]
+        [TestCase(256, null)]
         public void TestSetBrightness(int brightness, string command) {
             string actual = null;
             mockSerialPort.Setup(m => m.Write(It.IsAny<string>())).Callback((string arg) => {
                 actual = arg;
             });
 
+            _sut.Brightness = brightness;
+            Assert.That(actual, Is.EqualTo(command));
+        }
+
+        [Test]
+        [TestCase(0, null)]
+        [TestCase(255, null)]
+        [TestCase(99, null)]
+        [TestCase(50, null)]
+        [TestCase(-1, null)]
+        [TestCase(256, null)]
+        public void TestSetBrightnessDisconnected(int brightness, string command) {
+            string actual = null;
+            mockSerialPort.Setup(m => m.Write(It.IsAny<string>())).Callback((string arg) => {
+                actual = arg;
+            });
+
+            _sut.Disconnect();
             _sut.Brightness = brightness;
             Assert.That(actual, Is.EqualTo(command));
         }
@@ -131,6 +173,14 @@ namespace NINATest {
         [TestCase("garbage", false)]
         [TestCase(null, false)]
         public void TestGetLightOn(string response, bool on) {
+            mockSerialPort.Setup(m => m.ReadLine()).Returns(response);
+            Assert.That(_sut.LightOn, Is.EqualTo(on));
+        }
+
+        [Test]
+        [TestCase("*S99010", false)]
+        public void TestGetLightOnDisconnected(string response, bool on) {
+            _sut.Disconnect();
             mockSerialPort.Setup(m => m.ReadLine()).Returns(response);
             Assert.That(_sut.LightOn, Is.EqualTo(on));
         }

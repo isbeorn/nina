@@ -2,6 +2,7 @@
 using NINA.Model.MyFlatDevice;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using NINA.Profile;
 
 namespace NINATest {
 
@@ -11,7 +12,7 @@ namespace NINATest {
         private Mock<ISerialPort> mockSerialPort;
 
         [SetUp]
-        public async Task InitAsync() {
+        public void InitAsync() {
             _sut = new AlnitakFlatDevice("COM3");
             mockSerialPort = new Mock<ISerialPort>();
             _sut.SerialPort = mockSerialPort.Object;
@@ -21,7 +22,7 @@ namespace NINATest {
         [TearDown]
         public void Dispose() {
             _sut.Disconnect();
-            Assert.AreEqual(false, _sut.Connected);
+            Assert.That(_sut.Connected, Is.False);
         }
 
         [Test]
@@ -40,10 +41,15 @@ namespace NINATest {
         [TestCase(null, "*V99OOO", false)]
         [TestCase(null, null, false)]
         public async Task TestDescription(string description, string deviceResponse, bool connected) {
-            _sut.Disconnect();
             mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
             Assert.That(await _sut.Connect(new System.Threading.CancellationToken()), Is.EqualTo(connected));
             Assert.That(_sut.Description, Is.EqualTo(description));
+        }
+
+        [Test]
+        public void TestConstructor() {
+            _sut = new AlnitakFlatDevice("Alnitak;COM3", new Mock<IProfileService>().Object);
+            Assert.That(_sut.Name, Is.EqualTo("Alnitak"));
         }
     }
 }
