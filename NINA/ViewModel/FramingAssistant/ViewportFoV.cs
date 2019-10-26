@@ -43,13 +43,14 @@ namespace NINA.ViewModel.FramingAssistant {
             OriginalWidth = width;
             OriginalHeight = height;
 
-            // I don't know why you need to use -Rotation-90 but this is what works
-            (Width, Height) = GetBoundingBoxOfRotatedRectangle(-Rotation - 90, width, height);
+            Width = width;
+            Height = height;
 
-            (OriginalHFoV, OriginalVFoV) = GetBoundingBoxOfRotatedRectangle(-Rotation - 90, (width / height) * vFoVDegrees, vFoVDegrees);
+            OriginalVFoV = vFoVDegrees;
+            OriginalHFoV = (vFoVDegrees / height) * width;
 
-            ArcSecWidth = Astrometry.DegreeToArcsec(OriginalHFoV) / Width;
-            ArcSecHeight = Astrometry.DegreeToArcsec(OriginalVFoV) / Height;
+            ArcSecWidth = Astrometry.DegreeToArcsec(OriginalHFoV) / OriginalWidth;
+            ArcSecHeight = Astrometry.DegreeToArcsec(OriginalVFoV) / OriginalHeight;
 
             CenterCoordinates = centerCoordinates;
 

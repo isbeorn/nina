@@ -150,6 +150,12 @@ namespace NINA.View {
         }
 
         private void Zoom(double val) {
+            if (val <= 1) {
+                PART_Image.SetValue(System.Windows.Media.RenderOptions.BitmapScalingModeProperty, System.Windows.Media.BitmapScalingMode.HighQuality);
+            } else {
+                PART_Image.SetValue(System.Windows.Media.RenderOptions.BitmapScalingModeProperty, System.Windows.Media.BitmapScalingMode.NearestNeighbor);
+            }
+
             RecalculateScalingFactors();
             if (val < fittingScale) {
                 val = fittingScale;
