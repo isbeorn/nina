@@ -86,8 +86,8 @@ namespace NINATest {
         [TestCase(255, ">B255\r")]
         [TestCase(99, ">B099\r")]
         [TestCase(50, ">B050\r")]
-        [TestCase(-1, null)]
-        [TestCase(256, null)]
+        [TestCase(-1, ">B000\r")]
+        [TestCase(256, ">B255\r")]
         public void TestSetBrightness(int brightness, string command) {
             string actual = null;
             mockSerialPort.Setup(m => m.Write(It.IsAny<string>())).Callback((string arg) => {
