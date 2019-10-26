@@ -365,6 +365,11 @@
     <Compile Include="Model\MyCamera\Simulator\CameraType.cs" />
     <Compile Include="Model\MyFilterWheel\QHYFilterWheel.cs" />
     <Compile Include="Model\MyFilterWheel\FLIFilterWheel.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakCommands.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakDevices.cs" />
+    <Compile Include="Model\MyFlatDevice\AlnitakFlatDevice.cs" />
+    <Compile Include="Model\MyFlatDevice\FlatDeviceInfo.cs" />
+    <Compile Include="Model\MyFlatDevice\IFlatDevice.cs" />
     <Compile Include="Model\MyGuider\DirectGuider.cs" />
     <Compile Include="Model\MyGuider\ISynchronizedPHD2GuiderService.cs" />
     <Compile Include="Model\MyGuider\SynchronizedPHD2Guider.cs" />
@@ -381,6 +386,8 @@
     <Compile Include="Model\MyWeatherData\WeatherDataInfo.cs" />
     <Compile Include="PlateSolving\BaseSolver.cs" />
     <Compile Include="PlateSolving\PlateSolveImageProperties.cs" />
+    <Compile Include="Profile\FlatDeviceSettings.cs" />
+    <Compile Include="Profile\Interfaces\IFlatDeviceSettings.cs" />
     <Compile Include="Profile\Interfaces\IWeatherDataSettings.cs" />
     <Compile Include="Profile\ProfileInfo.cs" />
     <Compile Include="Profile\WeatherDataSettings.cs" />
@@ -424,6 +431,7 @@
     <Compile Include="Utility\Converters\WeatherVelocityConverter.cs" />
     <Compile Include="Utility\CameraSDKs\FLISDK\FLICameras.cs" />
     <Compile Include="Utility\CameraSDKs\FLISDK\FLICameraSDK.cs" />
+    <Compile Include="Utility\Converters\ZeroToVisibilityConverter.cs" />
     <Compile Include="Utility\Enum\AFCurveFittingEnum.cs" />
     <Compile Include="Utility\Enum\AFMethodEnum.cs" />
     <Compile Include="Utility\Enum\AltitudeSite.cs" />
@@ -439,6 +447,8 @@
     <Compile Include="Utility\Enum\StarSensitivityEnum.cs" />
     <Compile Include="Utility\Exceptions\CameraDownloadFailedException.cs" />
     <Compile Include="Utility\Extensions\IOrderedQueryableExtension.cs" />
+    <Compile Include="Model\MyFlatDevice\AlnitakFlipFlatSimulator.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakResponses.cs" />
     <Compile Include="Utility\ImageAnalysis\BahtinovAnalysis.cs" />
     <Compile Include="Utility\ImageAnalysis\BahtinovImage.cs" />
     <Compile Include="Utility\ImageAnalysis\BayerFilter16bpp.cs" />
@@ -446,6 +456,9 @@
     <Compile Include="Utility\ImageAnalysis\FastGaussianBlur.cs" />
     <Compile Include="Utility\ImageAnalysis\ImageUtility.cs" />
     <Compile Include="Utility\ImageAnalysis\NoBlurCannyEdgeDetector.cs" />
+    <Compile Include="Utility\Mediator\FlatDeviceMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IFlatDeviceConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IFlatDeviceMediator.cs" />
     <Compile Include="Utility\Mediator\Interfaces\ISwitchConsumer.cs" />
     <Compile Include="Utility\Mediator\Interfaces\ISwitchMediator.cs" />
     <Compile Include="Utility\Mediator\Interfaces\IWeatherDataConsumer.cs" />
@@ -460,6 +473,9 @@
     <Compile Include="Utility\ValidationRules\StrictGreaterZeroRule.cs" />
     <Compile Include="ViewModel\Equipment\Camera\CameraChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\FilterWheel\FilterWheelChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\FlatDevice\FlatDeviceChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\FlatDevice\FlatDeviceVM.cs" />
+    <Compile Include="ViewModel\Equipment\FlatDevice\IFlatDeviceVM.cs" />
     <Compile Include="ViewModel\Equipment\Focuser\FocuserChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\Rotator\RotatorChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\Telescope\TelescopeChooserVM.cs" />
@@ -469,6 +485,9 @@
     <Compile Include="ViewModel\Equipment\WeatherData\WeatherDataVM.cs" />
     <Compile Include="View\Equipment\Camera\FLICameraSetupView.xaml.cs">
       <DependentUpon>FLICameraSetupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\FlatDevice\FlatDeviceView.xaml.cs">
+      <DependentUpon>FlatDeviceView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Equipment\Switch\EagleSetupView.xaml.cs">
       <DependentUpon>EagleSetupView.xaml</DependentUpon>
@@ -1195,6 +1214,10 @@
     <Page Include="View\Equipment\Camera\FLICameraSetupView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Equipment\FlatDevice\FlatDeviceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Equipment\WeatherData\WeatherDataView.xaml">
       <SubType>Designer</SubType>

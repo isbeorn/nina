@@ -31,6 +31,7 @@ using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.ViewModel.Equipment.Camera;
 using NINA.ViewModel.Equipment.FilterWheel;
+using NINA.ViewModel.Equipment.FlatDevice;
 using NINA.ViewModel.Equipment.Focuser;
 using NINA.ViewModel.Equipment.Guider;
 using NINA.ViewModel.Equipment.Rotator;
@@ -64,6 +65,7 @@ namespace NINA.ViewModel {
             focuserMediator = new FocuserMediator();
             filterWheelMediator = new FilterWheelMediator();
             rotatorMediator = new RotatorMediator();
+            flatDeviceMediator = new FlatDeviceMediator();
             guiderMediator = new GuiderMediator();
             imagingMediator = new ImagingMediator();
             applicationStatusMediator = new ApplicationStatusMediator();
@@ -88,10 +90,11 @@ namespace NINA.ViewModel {
                         var telescope = telescopeMediator.Connect();
                         var focuser = focuserMediator.Connect();
                         var rotator = rotatorMediator.Connect();
+                        var flatdevice = flatDeviceMediator.Connect();
                         var guider = guiderMediator.Connect();
                         var weather = weatherDataMediator.Connect();
                         var swtch = switchMediator.Connect();
-                        await Task.WhenAll(cam, fw, telescope, focuser, rotator, guider, weather, swtch);
+                        await Task.WhenAll(cam, fw, telescope, focuser, rotator, flatdevice, guider, weather, swtch);
                         return true;
                     });
                 } else {
@@ -133,6 +136,7 @@ namespace NINA.ViewModel {
         private IFocuserMediator focuserMediator;
         private IFilterWheelMediator filterWheelMediator;
         private RotatorMediator rotatorMediator;
+        private IFlatDeviceMediator flatDeviceMediator;
         private IGuiderMediator guiderMediator;
         private IImagingMediator imagingMediator;
         private IApplicationStatusMediator applicationStatusMediator;
@@ -302,6 +306,12 @@ namespace NINA.ViewModel {
             }
 
             try {
+                flatDeviceMediator.Disconnect();
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
+            try {
                 guiderMediator.Disconnect();
             } catch (Exception ex) {
                 Logger.Error(ex);
@@ -402,6 +412,16 @@ namespace NINA.ViewModel {
             }
             set {
                 rotatorVM = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private FlatDeviceVM _flatDeviceVm;
+
+        public FlatDeviceVM FlatDeviceVM {
+            get => _flatDeviceVm ?? (_flatDeviceVm = new FlatDeviceVM(profileService, flatDeviceMediator, applicationStatusMediator));
+            set {
+                _flatDeviceVm = value;
                 RaisePropertyChanged();
             }
         }

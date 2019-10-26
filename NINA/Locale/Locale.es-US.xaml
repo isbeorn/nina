@@ -392,6 +392,18 @@ Cuando el disparador se desactive la aplicacion solo obviara la exposicion inici
     <s:String x:Key="LblFlatCalculatedExposureTime" xml:space="default">Tiempo de exposicion de Objetivo Calculado</s:String>
     <s:String x:Key="LblFlatCalculatedHistogramMean" xml:space="default">Promedio de Histograma de Objetivo Calculado</s:String>
     <s:String x:Key="LblFlatCount" xml:space="default">Flats a Capturar</s:String>
+    <s:String x:Key="LblFlatDevice" xml:space="default">Flat Panel</s:String>
+    <s:String x:Key="LblFlatDeviceBrightness" xml:space="default">Brightness</s:String>
+    <s:String x:Key="LblFlatDeviceClose" xml:space="default">Close</s:String>
+    <s:String x:Key="LblFlatDeviceConnected" xml:space="default">Flat panel connected.</s:String>
+    <s:String x:Key="LblFlatDeviceCover" xml:space="default">Cover</s:String>
+    <s:String x:Key="LblFlatDeviceCoverCurrently" xml:space="default">Currently</s:String>
+    <s:String x:Key="LblFlatDeviceDisconnectQuestion" xml:space="default">Do you want to disconnect the flat panel?</s:String>
+    <s:String x:Key="LblFlatDeviceInvalidResponse" xml:space="default">Invalid response from flat panel.</s:String>
+    <s:String x:Key="LblFlatDeviceLight" xml:space="default">Flat panel light</s:String>
+    <s:String x:Key="LblFlatDeviceNoDevice" xml:space="default">No Flat Panel</s:String>
+    <s:String x:Key="LblFlatDeviceOpen" xml:space="default">Open</s:String>
+    <s:String x:Key="LblFlatDeviceSetBrightness" xml:space="default">Set</s:String>
     <s:String x:Key="LblFlatExposureCalcContinue" xml:space="default">El ADU promedio fue {0}, iniciando calculo de tiempo de exposicion en {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcFinished" xml:space="default">El ADU Promedio es {0} Tiempo de exposicion de objetivo es {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcStart" xml:space="default">Iniciando Calculo de Tiempo de exposicion en {0}</s:String>

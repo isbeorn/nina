@@ -92,7 +92,8 @@ namespace NINA.ViewModel.FramingAssistant {
 
                 var deepSkyObjects = new List<DeepSkyObject>();
                 foreach (var rect in CameraRectangles) {
-                    var dso = new DeepSkyObject(DSO?.Name + string.Format(" {0} ", Locale.Loc.Instance["LblPanel"]) + rect.Id, rect.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
+                    var name = rect.Id > 0 ? DSO?.Name + string.Format(" {0} ", Locale.Loc.Instance["LblPanel"]) + rect.Id : DSO?.Name;
+                    var dso = new DeepSkyObject(name, rect.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
                     dso.Rotation = Rectangle.DisplayedRotation;
                     deepSkyObjects.Add(dso);
                 }
@@ -613,18 +614,25 @@ namespace NINA.ViewModel.FramingAssistant {
                 _loadImageSource = new CancellationTokenSource();
                 try {
                     SkySurveyImage skySurveyImage = null;
-                    if (FramingAssistantSource == SkySurveySource.CACHE) {
-                        if (Cache == null) {
-                            throw new Exception("Cache unavailable. Check log file for errors");
-                        }
-                        if (SelectedImageCacheInfo != null) {
-                            skySurveyImage = await Cache.GetImage(Guid.Parse(SelectedImageCacheInfo.Attribute("Id").Value));
-                        }
-                    } else {
-                        var skySurvey = SkySurveyFactory.Create(FramingAssistantSource);
 
-                        skySurveyImage = await skySurvey.GetImage(DSO?.Name, DSO?.Coordinates,
-                            Astrometry.DegreeToArcmin(FieldOfView), boundWidth, boundHeight, _loadImageSource.Token, _progress);
+                    if (Cache != null && DSO != null) {
+                        skySurveyImage = await Cache.GetImage(FramingAssistantSource.GetCacheSourceString(), DSO.Coordinates.RA, DSO.Coordinates.Dec, DSO.Rotation, Astrometry.DegreeToArcmin(FieldOfView));
+                    }
+
+                    if (skySurveyImage == null) {
+                        if (FramingAssistantSource == SkySurveySource.CACHE) {
+                            if (Cache == null) {
+                                throw new Exception("Cache unavailable. Check log file for errors");
+                            }
+                            if (SelectedImageCacheInfo != null) {
+                                skySurveyImage = await Cache.GetImage(Guid.Parse(SelectedImageCacheInfo.Attribute("Id").Value));
+                            }
+                        } else {
+                            var skySurvey = SkySurveyFactory.Create(FramingAssistantSource);
+
+                            skySurveyImage = await skySurvey.GetImage(DSO?.Name, DSO?.Coordinates,
+                                Astrometry.DegreeToArcmin(FieldOfView), boundWidth, boundHeight, _loadImageSource.Token, _progress);
+                        }
                     }
 
                     if (skySurveyImage != null) {
@@ -795,7 +803,7 @@ namespace NINA.ViewModel.FramingAssistant {
                     Coordinates = centerCoordinates
                 };
 
-                FontSize = (int)(height * 0.2);
+                FontSize = (int)((height / verticalPanels) * 0.1);
             }
         }
 
