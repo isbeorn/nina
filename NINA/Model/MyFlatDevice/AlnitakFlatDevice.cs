@@ -128,7 +128,13 @@ namespace NINA.Model.MyFlatDevice {
             }
             set {
                 if (Connected) {
-                    if (value < MinBrightness || value > MaxBrightness) { return; }
+                    if (value < MinBrightness) {
+                        value = MinBrightness;
+                    }
+
+                    if (value > MaxBrightness) {
+                        value = MaxBrightness;
+                    }
                     var command = new SetBrightnessCommand(value);
                     var response = SendCommand<SetBrightnessResponse>(command);
                     if (!response.IsValid) {

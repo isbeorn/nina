@@ -71,7 +71,9 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                 Disconnect();
                 _updateTimer?.Stop();
 
-                if (FlatDeviceChooserVM.SelectedDevice.Id == "No_Device") {
+                var device = FlatDeviceChooserVM.SelectedDevice;
+                if (device == null) return false;
+                if (device.Id == "No_Device") {
                     profileService.ActiveProfile.FlatDeviceSettings.Id = FlatDeviceChooserVM.SelectedDevice.Id;
                     return false;
                 }
@@ -82,53 +84,49 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                         Status = Locale.Loc.Instance["LblConnecting"]
                     }
                 );
-                var flatDevice = (IFlatDevice)FlatDeviceChooserVM.SelectedDevice;
+                var flatDevice = (IFlatDevice)device;
                 _connectFlatDeviceCts?.Dispose();
                 _connectFlatDeviceCts = new CancellationTokenSource();
-                if (flatDevice != null) {
-                    try {
-                        var connected = await flatDevice.Connect(_connectFlatDeviceCts.Token);
-                        _connectFlatDeviceCts.Token.ThrowIfCancellationRequested();
-                        if (connected) {
-                            _flatDevice = flatDevice;
-                            FlatDeviceInfo = new FlatDeviceInfo {
-                                MinBrightness = flatDevice.MinBrightness,
-                                MaxBrightness = flatDevice.MaxBrightness,
-                                Brightness = flatDevice.Brightness,
-                                Connected = flatDevice.Connected,
-                                CoverState = flatDevice.CoverState,
-                                Description = flatDevice.Description,
-                                DriverInfo = flatDevice.DriverInfo,
-                                DriverVersion = flatDevice.DriverVersion,
-                                LightOn = flatDevice.LightOn,
-                                Name = flatDevice.Name,
-                                SupportsOpenClose = flatDevice.SupportsOpenClose
-                            };
-                            this.Brightness = flatDevice.Brightness;
+                try {
+                    var connected = await flatDevice.Connect(_connectFlatDeviceCts.Token);
+                    _connectFlatDeviceCts.Token.ThrowIfCancellationRequested();
+                    if (connected) {
+                        _flatDevice = flatDevice;
+                        FlatDeviceInfo = new FlatDeviceInfo {
+                            MinBrightness = flatDevice.MinBrightness,
+                            MaxBrightness = flatDevice.MaxBrightness,
+                            Brightness = flatDevice.Brightness,
+                            Connected = flatDevice.Connected,
+                            CoverState = flatDevice.CoverState,
+                            Description = flatDevice.Description,
+                            DriverInfo = flatDevice.DriverInfo,
+                            DriverVersion = flatDevice.DriverVersion,
+                            LightOn = flatDevice.LightOn,
+                            Name = flatDevice.Name,
+                            SupportsOpenClose = flatDevice.SupportsOpenClose
+                        };
+                        this.Brightness = flatDevice.Brightness;
 
-                            Notification.ShowSuccess(Locale.Loc.Instance["LblFlatDeviceConnected"]);
+                        Notification.ShowSuccess(Locale.Loc.Instance["LblFlatDeviceConnected"]);
 
-                            if (_updateTimer != null) {
-                                _updateTimer.Interval =
-                                    profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
-                                _updateTimer.Start();
-                            }
-
-                            profileService.ActiveProfile.FlatDeviceSettings.Id = flatDevice.Id;
-                            return true;
-                        } else {
-                            FlatDeviceInfo.Connected = false;
-                            _flatDevice = null;
-                            return false;
-                        }
-                    } catch (OperationCanceledException) {
-                        if (FlatDeviceInfo.Connected) {
-                            Disconnect();
+                        if (_updateTimer != null) {
+                            _updateTimer.Interval =
+                                profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval;
+                            _updateTimer.Start();
                         }
 
+                        profileService.ActiveProfile.FlatDeviceSettings.Id = flatDevice.Id;
+                        return true;
+                    } else {
+                        FlatDeviceInfo.Connected = false;
+                        _flatDevice = null;
                         return false;
                     }
-                } else {
+                } catch (OperationCanceledException) {
+                    if (FlatDeviceInfo.Connected) {
+                        Disconnect();
+                    }
+
                     return false;
                 }
             } finally {
@@ -167,8 +165,10 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
         public async Task<bool> OpenCover() {
             await ssOpen.WaitAsync();
             try {
-                var flatDevice = (IFlatDevice)FlatDeviceChooserVM.SelectedDevice;
-                if (flatDevice == null || flatDevice.Connected == false) return false;
+                var device = FlatDeviceChooserVM.SelectedDevice;
+                if (device == null || device.Id == "No_Device") return false;
+                var flatDevice = (IFlatDevice)device;
+                if (flatDevice.Connected == false) return false;
                 if (!flatDevice.SupportsOpenClose) return false;
                 return await flatDevice.Open(new CancellationToken());
             } catch (Exception ex) {
@@ -184,8 +184,10 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
         public async Task<bool> CloseCover() {
             await ssClose.WaitAsync();
             try {
-                var flatDevice = (IFlatDevice)FlatDeviceChooserVM.SelectedDevice;
-                if (flatDevice == null || flatDevice.Connected == false) return false;
+                var device = FlatDeviceChooserVM.SelectedDevice;
+                if (device == null || device.Id == "No_Device") return false;
+                var flatDevice = (IFlatDevice)device;
+                if (flatDevice.Connected == false) return false;
                 if (!flatDevice.SupportsOpenClose) return false;
                 return await flatDevice.Close(new CancellationToken());
             } catch (Exception ex) {
