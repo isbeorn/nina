@@ -4,6 +4,7 @@
 
 ### Hardware
  - QHY filter wheels that are integrated (A-series cameras) or are connected to the camera using the 4-pin cable (CFW1/2/3 filter wheels) are now natively supported. This allows the native QHY camera driver to be used with these cameras and configurations.
+ - Alnitak Flip Flap Panel support to connect and control the panel inside the application
 
 ## Improvements
 - Upgraded Atik driver to use latest Atik SDK and drivers
