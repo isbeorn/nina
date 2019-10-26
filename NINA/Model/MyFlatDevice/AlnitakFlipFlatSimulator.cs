@@ -84,7 +84,12 @@ namespace NINA.Model.MyFlatDevice {
             get => !Connected ? 0 : _brightness;
             set {
                 if (Connected) {
-                    if (value < MinBrightness || value > MaxBrightness) { return; }
+                    if (value < MinBrightness) {
+                        value = MinBrightness;
+                    }
+                    if (value > MaxBrightness) {
+                        value = MaxBrightness;
+                    }
                     _brightness = value;
                 }
                 RaisePropertyChanged();
