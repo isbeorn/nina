@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using System.Threading;
+using Moq;
 using NINA.Model.MyFlatDevice;
 using NUnit.Framework;
 using System.Threading.Tasks;
@@ -28,7 +29,7 @@ namespace NINATest {
         [Test]
         public async Task TestConnect() {
             mockSerialPort.Setup(m => m.ReadLine()).Returns("*V99124");
-            Assert.That(await _sut.Connect(new System.Threading.CancellationToken()), Is.True);
+            Assert.That(await _sut.Connect(new CancellationToken()), Is.True);
         }
 
         [Test]
@@ -42,7 +43,7 @@ namespace NINATest {
         [TestCase(null, null, false)]
         public async Task TestDescription(string description, string deviceResponse, bool connected) {
             mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
-            Assert.That(await _sut.Connect(new System.Threading.CancellationToken()), Is.EqualTo(connected));
+            Assert.That(await _sut.Connect(new CancellationToken()), Is.EqualTo(connected));
             Assert.That(_sut.Description, Is.EqualTo(description));
         }
 
@@ -50,6 +51,16 @@ namespace NINATest {
         public void TestConstructor() {
             _sut = new AlnitakFlatDevice("Alnitak;COM3", new Mock<IProfileService>().Object);
             Assert.That(_sut.Name, Is.EqualTo("Alnitak"));
+        }
+
+        [Test]
+        public async Task TestOpenNotConnected() {
+            Assert.That(await _sut.Open(new CancellationToken()), Is.False);
+        }
+
+        [Test]
+        public async Task TestCloseNotConnected() {
+            Assert.That(await _sut.Close(new CancellationToken()), Is.False);
         }
     }
 }
