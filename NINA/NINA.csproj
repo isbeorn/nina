@@ -431,6 +431,7 @@
     <Compile Include="Utility\Converters\WeatherVelocityConverter.cs" />
     <Compile Include="Utility\CameraSDKs\FLISDK\FLICameras.cs" />
     <Compile Include="Utility\CameraSDKs\FLISDK\FLICameraSDK.cs" />
+    <Compile Include="Utility\Converters\ZeroToVisibilityConverter.cs" />
     <Compile Include="Utility\Enum\AFCurveFittingEnum.cs" />
     <Compile Include="Utility\Enum\AFMethodEnum.cs" />
     <Compile Include="Utility\Enum\AltitudeSite.cs" />

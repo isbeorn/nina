@@ -82,4 +82,35 @@ namespace NINA.Utility.SkySurvey {
         [Description("LblCache")]
         CACHE,
     }
+
+    public static class SkySurveySourceExtension {
+
+        public static string GetCacheSourceString(this SkySurveySource source) {
+            switch (source) {
+                case SkySurveySource.NASA:
+                    return typeof(NASASkySurvey).Name;
+
+                case SkySurveySource.SKYSERVER:
+                    return typeof(SkyServerSkySurvey).Name;
+
+                case SkySurveySource.STSCI:
+                    return typeof(StsciSkySurvey).Name;
+
+                case SkySurveySource.ESO:
+                    return typeof(ESOSkySurvey).Name;
+
+                case SkySurveySource.SKYATLAS:
+                    return typeof(SkyAtlasSkySurvey).Name;
+
+                case SkySurveySource.FILE:
+                    return typeof(FileSkySurvey).Name;
+
+                case SkySurveySource.CACHE:
+                    return typeof(CacheSkySurvey).Name;
+
+                default:
+                    return string.Empty;
+            }
+        }
+    }
 }

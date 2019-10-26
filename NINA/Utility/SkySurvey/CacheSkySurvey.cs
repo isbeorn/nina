@@ -149,6 +149,35 @@ namespace NINA.Utility.SkySurvey {
 
         public object CulutureInfo { get; private set; }
 
+        /// <summary>
+        /// Restores an image from cache based on given parameter
+        /// </summary>
+        /// <param name="source">The selected source</param>
+        /// <param name="ra">Right Ascension</param>
+        /// <param name="dec">Declination</param>
+        /// <param name="rotation">Rotation of image</param>
+        /// <param name="fov">Field of View in Arcminutes</param>
+        /// <returns></returns>
+        public Task<SkySurveyImage> GetImage(string source, double ra, double dec, double rotation, double fov) {
+            return Task.Run(() => {
+                var element =
+                    Cache
+                    .Elements("Image")
+                    .Where(x => x.Attribute("Source").Value == source)
+                    .Where(x => x.Attribute("RA").Value == ra.ToString("R", CultureInfo.InvariantCulture))
+                    .Where(x => x.Attribute("Dec").Value == dec.ToString("R", CultureInfo.InvariantCulture))
+                    .Where(x => x.Attribute("Rotation").Value == rotation.ToString(CultureInfo.InvariantCulture))
+                    .Where(x => x.Attribute("FoVW").Value == fov.ToString("R", CultureInfo.InvariantCulture))
+                    .FirstOrDefault();
+
+                if (element != null) {
+                    return Load(element);
+                }
+
+                return null;
+            });
+        }
+
         public Task<SkySurveyImage> GetImage(Guid id) {
             return Task.Run(() => {
                 var element =
