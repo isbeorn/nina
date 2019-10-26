@@ -392,6 +392,18 @@ Ist dieser Auslöser deaktiviert, wird dieser Schritt übersprungen.</s:String>
     <s:String x:Key="LblFlatCalculatedExposureTime" xml:space="default">Berechnete Flat Belichtsungszeit</s:String>
     <s:String x:Key="LblFlatCalculatedHistogramMean" xml:space="default">Berechneter Histogrammzielwert</s:String>
     <s:String x:Key="LblFlatCount" xml:space="default">Anzahl Flats</s:String>
+    <s:String x:Key="LblFlatDevice" xml:space="default">Flatfield Gerät</s:String>
+    <s:String x:Key="LblFlatDeviceBrightness" xml:space="default">Helligkeit</s:String>
+    <s:String x:Key="LblFlatDeviceClose" xml:space="default">Schließen</s:String>
+    <s:String x:Key="LblFlatDeviceConnected" xml:space="default">Flatfield Gerät verbunden.</s:String>
+    <s:String x:Key="LblFlatDeviceCover" xml:space="default">Cover</s:String>
+    <s:String x:Key="LblFlatDeviceCoverCurrently" xml:space="default">Derzeit</s:String>
+    <s:String x:Key="LblFlatDeviceDisconnectQuestion" xml:space="default">Wollen Sie das Flatfield Gerät abtrennen?</s:String>
+    <s:String x:Key="LblFlatDeviceInvalidResponse" xml:space="default">Ungültige Antwort from Flatfield Gerät.</s:String>
+    <s:String x:Key="LblFlatDeviceLight" xml:space="default">Flatfield Gerät Licht</s:String>
+    <s:String x:Key="LblFlatDeviceNoDevice" xml:space="default">Kein Flatfield Gerät</s:String>
+    <s:String x:Key="LblFlatDeviceOpen" xml:space="default">Öffnen</s:String>
+    <s:String x:Key="LblFlatDeviceSetBrightness" xml:space="default">Setzen</s:String>
     <s:String x:Key="LblFlatExposureCalcContinue" xml:space="default">Mittelwert ADU war {0}, beginne Belichtungszeitkalkulation bei {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcFinished" xml:space="default">Mittelwert ADU ist {0}, Zielbelichtungszeit ist {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcStart" xml:space="default">Beginne Belichtungszeitkalkulation bei {0}</s:String>

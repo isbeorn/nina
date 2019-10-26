@@ -47,6 +47,7 @@ namespace NINA.Profile {
         IPlateSolveSettings PlateSolveSettings { get; set; }
         IPolarAlignmentSettings PolarAlignmentSettings { get; set; }
         IRotatorSettings RotatorSettings { get; set; }
+        IFlatDeviceSettings FlatDeviceSettings { get; set; }
         ISequenceSettings SequenceSettings { get; set; }
         ISwitchSettings SwitchSettings { get; set; }
         ITelescopeSettings TelescopeSettings { get; set; }
