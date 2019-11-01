@@ -486,6 +486,9 @@
     <Compile Include="View\Equipment\Camera\FLICameraSetupView.xaml.cs">
       <DependentUpon>FLICameraSetupView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Equipment\FlatDevice\AlnitakSetupView.xaml.cs">
+      <DependentUpon>AlnitakSetupView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Equipment\FlatDevice\FlatDeviceView.xaml.cs">
       <DependentUpon>FlatDeviceView.xaml</DependentUpon>
     </Compile>
@@ -1215,6 +1218,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\Equipment\FlatDevice\AlnitakSetupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Equipment\FlatDevice\FlatDeviceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1553,6 +1560,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="AstrophotographyBuddy_TemporaryKey.pfx" />
     <Content Include="LICENSE.txt">

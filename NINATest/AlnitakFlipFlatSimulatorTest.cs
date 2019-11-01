@@ -3,16 +3,19 @@ using Moq;
 using NINA.Model.MyFlatDevice;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using NINA.Profile;
 
 namespace NINATest {
 
     [TestFixture]
-    public class AlnitakFliFlatSimulatorTest {
+    public class AlnitakFlipFlatSimulatorTest {
         private AlnitakFlipFlatSimulator _sut;
+        private Mock<IProfileService> _mockProfileService;
 
         [SetUp]
         public void Init() {
-            _sut = new AlnitakFlipFlatSimulator();
+            _mockProfileService = new Mock<IProfileService>();
+            _sut = new AlnitakFlipFlatSimulator(_mockProfileService.Object);
         }
 
         [TearDown]

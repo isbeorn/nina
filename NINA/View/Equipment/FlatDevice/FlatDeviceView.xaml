@@ -29,7 +29,7 @@
                     Connected="{Binding FlatDeviceInfo.Connected}"
                     Devices="{Binding FlatDeviceChooserVM.Devices}"
                     DisconnectCommand="{Binding DisconnectCommand}"
-                    HasSetupDialog="{Binding FlatDeviceCooserVM.SelectedDevice.HasSetupDialog}"
+                    HasSetupDialog="{Binding FlatDeviceChooserVM.SelectedDevice.HasSetupDialog}"
                     RefreshCommand="{Binding RefreshFlatDeviceListCommand}"
                     SelectedDevice="{Binding FlatDeviceChooserVM.SelectedDevice, Mode=TwoWay}"
                     SetupCommand="{Binding FlatDeviceChooserVM.SetupDialogCommand}" />

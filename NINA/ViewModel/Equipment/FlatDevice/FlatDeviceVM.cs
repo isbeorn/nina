@@ -14,7 +14,6 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
 
     internal class FlatDeviceVM : DockableVM, IFlatDeviceVM {
         private IFlatDevice _flatDevice;
-        private IFlatDeviceChooserVM _flatDeviceChooserVm;
         private readonly IApplicationStatusMediator _applicationStatusMediator;
         private readonly IFlatDeviceMediator _flatDeviceMediator;
         private readonly DeviceUpdateTimer _updateTimer;
@@ -33,8 +32,8 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             SetBrightnessCommand = new RelayCommand(SetBrightness);
             ToggleLightCommand = new RelayCommand(ToggleLight);
 
-            _flatDeviceChooserVm = new FlatDeviceChooserVM(profileService);
-            _flatDeviceChooserVm.GetEquipment();
+            FlatDeviceChooserVM = new FlatDeviceChooserVM(profileService);
+            FlatDeviceChooserVM.GetEquipment();
 
             _updateTimer = new DeviceUpdateTimer(
                 GetFlatDeviceValues,
@@ -220,10 +219,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             FlatDeviceChooserVM.GetEquipment();
         }
 
-        public IFlatDeviceChooserVM FlatDeviceChooserVM {
-            get => _flatDeviceChooserVm;
-            set => _flatDeviceChooserVm = value;
-        }
+        public IFlatDeviceChooserVM FlatDeviceChooserVM { get; set; }
 
         private void UpdateFlatDeviceValues(Dictionary<string, object> flatDeviceValues) {
             object o = null;
@@ -244,13 +240,15 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
         }
 
         private Dictionary<string, object> GetFlatDeviceValues() {
-            var flatDeviceValues = new Dictionary<string, object>();
-            flatDeviceValues.Add(nameof(FlatDeviceInfo.Connected), _flatDevice?.Connected ?? false);
-            flatDeviceValues.Add(nameof(FlatDeviceInfo.CoverState), _flatDevice?.CoverState ?? CoverState.Unknown);
-            flatDeviceValues.Add(nameof(FlatDeviceInfo.Brightness), _flatDevice?.Brightness ?? 0);
-            flatDeviceValues.Add(nameof(FlatDeviceInfo.MinBrightness), _flatDevice?.MinBrightness ?? 0);
-            flatDeviceValues.Add(nameof(FlatDeviceInfo.MaxBrightness), _flatDevice?.MaxBrightness ?? 0);
-            flatDeviceValues.Add(nameof(FlatDeviceInfo.LightOn), _flatDevice?.LightOn ?? false);
+            var flatDeviceValues = new Dictionary<string, object>
+            {
+                {nameof(FlatDeviceInfo.Connected), _flatDevice?.Connected ?? false},
+                {nameof(FlatDeviceInfo.CoverState), _flatDevice?.CoverState ?? CoverState.Unknown},
+                {nameof(FlatDeviceInfo.Brightness), _flatDevice?.Brightness ?? 0},
+                {nameof(FlatDeviceInfo.MinBrightness), _flatDevice?.MinBrightness ?? 0},
+                {nameof(FlatDeviceInfo.MaxBrightness), _flatDevice?.MaxBrightness ?? 0},
+                {nameof(FlatDeviceInfo.LightOn), _flatDevice?.LightOn ?? false}
+            };
             return flatDeviceValues;
         }
 

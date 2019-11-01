@@ -10,14 +10,17 @@ namespace NINATest {
     [TestFixture]
     public class AlnitakFlatDeviceConnectTest {
         private AlnitakFlatDevice _sut;
-        private Mock<ISerialPort> mockSerialPort;
+        private Mock<ISerialPort> _mockSerialPort;
+        private Mock<IProfileService> _mockProfileService;
 
         [SetUp]
         public void Init() {
-            _sut = new AlnitakFlatDevice("COM3");
-            mockSerialPort = new Mock<ISerialPort>();
-            _sut.SerialPort = mockSerialPort.Object;
-            mockSerialPort.SetupProperty(m => m.PortName, "COM3");
+            _mockProfileService = new Mock<IProfileService>();
+            _mockProfileService.SetupProperty(m => m.ActiveProfile.FlatDeviceSettings.PortName, "");
+            _sut = new AlnitakFlatDevice("Alnitak;COM3", _mockProfileService.Object);
+            _mockSerialPort = new Mock<ISerialPort>();
+            _sut.SerialPort = _mockSerialPort.Object;
+            _mockSerialPort.SetupProperty(m => m.PortName, "COM3");
         }
 
         [TearDown]
@@ -28,7 +31,7 @@ namespace NINATest {
 
         [Test]
         public async Task TestConnect() {
-            mockSerialPort.Setup(m => m.ReadLine()).Returns("*V99124");
+            _mockSerialPort.Setup(m => m.ReadLine()).Returns("*V99124");
             Assert.That(await _sut.Connect(new CancellationToken()), Is.True);
         }
 
@@ -42,14 +45,16 @@ namespace NINATest {
         [TestCase(null, "*V99OOO", false)]
         [TestCase(null, null, false)]
         public async Task TestDescription(string description, string deviceResponse, bool connected) {
-            mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
+            _mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
             Assert.That(await _sut.Connect(new CancellationToken()), Is.EqualTo(connected));
             Assert.That(_sut.Description, Is.EqualTo(description));
         }
 
         [Test]
         public void TestConstructor() {
-            _sut = new AlnitakFlatDevice("Alnitak;COM3", new Mock<IProfileService>().Object);
+            _mockProfileService = new Mock<IProfileService>();
+            _mockProfileService.SetupProperty(m => m.ActiveProfile.FlatDeviceSettings.PortName, "");
+            _sut = new AlnitakFlatDevice("Alnitak;COM3", _mockProfileService.Object);
             Assert.That(_sut.Name, Is.EqualTo("Alnitak"));
         }
 

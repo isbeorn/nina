@@ -184,7 +184,7 @@
     <Compile Include="AlnitakFlatDeviceTest.cs" />
     <Compile Include="AlnitakFlatDeviceConnectTest.cs" />
     <Compile Include="FlatDeviceVMTest.cs" />
-    <Compile Include="AlnitakFliFlatSimulatorTest.cs" />
+    <Compile Include="AlnitakFlipFlatSimulatorTest.cs" />
     <Compile Include="XISFTest.cs" />
   </ItemGroup>
   <ItemGroup>
