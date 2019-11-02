@@ -34,7 +34,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace NINA.Model.ImageData {
+
     public class ImageData : IImageData {
+
         public ImageData(ushort[] input, int width, int height, int bitDepth, bool isBayered, ImageMetaData metaData)
             : this(
                   imageArray: new ImageArray(flatArray: input),
@@ -332,6 +334,7 @@ namespace NINA.Model.ImageData {
                 case ".raw":
                 case ".pef":
                 case ".dng":
+                case ".arw":
                     return await RawToImageArray(path, bitDepth, rawConverter, ct);
 
                 default:

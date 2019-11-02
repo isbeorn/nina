@@ -470,7 +470,7 @@ namespace NINA.Model.MyCamera {
         private void AddQueueItem(string path) {
             lock (lockObj) {
                 var fileExt = Path.GetExtension(path).ToLower();
-                if (Regex.IsMatch(fileExt, @"\.tiff|\.tif|\.png|\.gif|\.jpg|\.jpeg|\.png|\.cr2|\.nef|\.raw|\.raf|\.xisf|\.fit|\.fits|\.pef|\.dng")) {
+                if (Regex.IsMatch(fileExt, @"\.tiff|\.tif|\.png|\.gif|\.jpg|\.jpeg|\.png|\.cr2|\.nef|\.raw|\.raf|\.xisf|\.fit|\.fits|\.pef|\.dng|\.arw")) {
                     Logger.Trace($"Added file to Queue at {path}");
                     fileQueue.Enqueue(path);
                 } else {
