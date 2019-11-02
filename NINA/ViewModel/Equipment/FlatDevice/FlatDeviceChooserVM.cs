@@ -27,7 +27,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
 
             try {
                 Logger.Trace("Adding Alnitak Flat Devices");
-                Devices.Add(new AlnitakFlipFlatSimulator());
+                Devices.Add(new AlnitakFlipFlatSimulator(profileService));
                 var alnitakList = AlnitakDevices.GetDevices();
 
                 if (alnitakList.Count > 0) {

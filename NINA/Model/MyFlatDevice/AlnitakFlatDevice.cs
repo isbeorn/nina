@@ -6,19 +6,19 @@ using System;
 using System.IO.Ports;
 using System.Threading;
 using System.Threading.Tasks;
+using NINA.Utility.WindowService;
 
 namespace NINA.Model.MyFlatDevice {
 
     public class AlnitakFlatDevice : BaseINPC, IFlatDevice {
         private ISerialPort _serialPort;
+        private readonly IProfileService _profileService;
 
         public AlnitakFlatDevice(string name, IProfileService profileService) {
+            _profileService = profileService;
             Name = name.Split(';')[0];
-            SetupSerialPort(name.Split(';')[1]);
-        }
-
-        public AlnitakFlatDevice(string portName) {
-            SetupSerialPort(portName);
+            PortName = name.Split(';')[1];
+            SetupSerialPort(PortName);
         }
 
         private void SetupSerialPort(string portName) {
@@ -128,7 +128,13 @@ namespace NINA.Model.MyFlatDevice {
             }
             set {
                 if (Connected) {
-                    if (value < MinBrightness || value > MaxBrightness) { return; }
+                    if (value < MinBrightness) {
+                        value = MinBrightness;
+                    }
+
+                    if (value > MaxBrightness) {
+                        value = MaxBrightness;
+                    }
                     var command = new SetBrightnessCommand(value);
                     var response = SendCommand<SetBrightnessResponse>(command);
                     if (!response.IsValid) {
@@ -141,7 +147,16 @@ namespace NINA.Model.MyFlatDevice {
             }
         }
 
-        public bool HasSetupDialog => false;
+        public string PortName {
+            get => _profileService.ActiveProfile.FlatDeviceSettings.PortName;
+            set {
+                _profileService.ActiveProfile.FlatDeviceSettings.PortName = value;
+                SetupSerialPort(value);
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool HasSetupDialog => true;
 
         private string _id;
 
@@ -233,6 +248,8 @@ namespace NINA.Model.MyFlatDevice {
             Connected = false;
         }
 
+        public IWindowService WindowService { get; set; } = new WindowService();
+
         public async Task<bool> Open(CancellationToken ct) {
             if (!Connected) return await Task.Run(() => false, ct);
             return await Task.Run(() => {
@@ -252,6 +269,7 @@ namespace NINA.Model.MyFlatDevice {
         }
 
         public void SetupDialog() {
+            WindowService.ShowDialog(this, "Alnitak Flat Panel Setup", System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.SingleBorderWindow);
         }
 
         private readonly SemaphoreSlim ssSendCommand = new SemaphoreSlim(1, 1);
