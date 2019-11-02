@@ -29,7 +29,7 @@
                     Connected="{Binding FlatDeviceInfo.Connected}"
                     Devices="{Binding FlatDeviceChooserVM.Devices}"
                     DisconnectCommand="{Binding DisconnectCommand}"
-                    HasSetupDialog="{Binding FlatDeviceCooserVM.SelectedDevice.HasSetupDialog}"
+                    HasSetupDialog="{Binding FlatDeviceChooserVM.SelectedDevice.HasSetupDialog}"
                     RefreshCommand="{Binding RefreshFlatDeviceListCommand}"
                     SelectedDevice="{Binding FlatDeviceChooserVM.SelectedDevice, Mode=TwoWay}"
                     SetupCommand="{Binding FlatDeviceChooserVM.SetupDialogCommand}" />
@@ -95,7 +95,10 @@
                         </UniformGrid>
                     </UniformGrid>
                 </Border>
-                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                <Border
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0"
+                    IsEnabled="{Binding FlatDeviceInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
                     <UniformGrid VerticalAlignment="Center" Columns="2">
                         <UniformGrid
                             Margin="0,6,0,6"
@@ -113,13 +116,19 @@
                         </UniformGrid>
                     </UniformGrid>
                 </Border>
-                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                <Border
+                    BorderBrush="{StaticResource BorderBrush}"
+                    BorderThickness="0"
+                    IsEnabled="{Binding FlatDeviceInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
                     <UniformGrid Columns="2">
                         <UniformGrid
                             Margin="0,6,0,6"
                             VerticalAlignment="Center"
                             Columns="2">
-                            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                            <StackPanel
+                                VerticalAlignment="Center"
+                                IsEnabled="{Binding FlatDeviceInfo.Connected}"
+                                Orientation="Horizontal">
                                 <TextBlock Text="{ns:Loc LblFlatDeviceBrightness}" />
                                 <TextBlock Text=" " />
                                 <TextBlock Text="{ns:Loc LblMin}" />
@@ -129,20 +138,31 @@
                                 <TextBlock Text=": " />
                                 <TextBlock Text="{Binding FlatDeviceInfo.MaxBrightness}" />
                             </StackPanel>
+                            <Slider
+                                x:Name="BrightnessSlider"
+                                IsEnabled="{Binding FlatDeviceInfo.Connected}"
+                                Maximum="{Binding FlatDeviceInfo.MaxBrightness}"
+                                Minimum="{Binding FlatDeviceInfo.MinBrightness}"
+                                Value="{Binding Brightness}" />
+                        </UniformGrid>
+                        <UniformGrid>
                             <StackPanel Orientation="Horizontal">
                                 <TextBox
                                     Height="25"
                                     MinWidth="55"
                                     Margin="5,0,0,0"
-                                    Text="{Binding Brightness}" />
-                                <Grid IsEnabled="{Binding FlatDeviceInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
+                                    IsEnabled="{Binding FlatDeviceInfo.Connected}"
+                                    Text="{Binding ElementName=BrightnessSlider, Path=Value}" />
+
+                                <Grid>
                                     <ninactrl:AsyncProcessButton
                                         Width="60"
                                         Height="25"
                                         Margin="5"
                                         HorizontalAlignment="Left"
                                         ButtonText="{ns:Loc LblFlatDeviceSetBrightness}"
-                                        Command="{Binding SetBrightnessCommand}" />
+                                        Command="{Binding SetBrightnessCommand}"
+                                        IsEnabled="{Binding FlatDeviceInfo.Connected}" />
                                 </Grid>
                             </StackPanel>
                         </UniformGrid>
@@ -177,15 +197,20 @@
                                         ButtonText="{ns:Loc LblFlatDeviceClose}"
                                         Command="{Binding CloseCoverCommand}" />
                                 </Grid>
-                                <TextBlock
-                                    Margin="5,0,0,0"
-                                    VerticalAlignment="Center"
-                                    Text="{ns:Loc LblFlatDeviceCoverCurrently}" />
-                                <TextBlock
-                                    Margin="5,0,0,0"
-                                    VerticalAlignment="Center"
-                                    Text="{Binding FlatDeviceInfo.CoverState}" />
                             </StackPanel>
+                        </UniformGrid>
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblFlatDeviceCoverCurrently}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding FlatDeviceInfo.CoverState}" />
                         </UniformGrid>
                     </UniformGrid>
                 </Border>

@@ -2,21 +2,25 @@
 using NINA.Model.MyFlatDevice;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using NINA.Profile;
 
 namespace NINATest {
 
     [TestFixture]
     public class AlnitakFlatDeviceTest {
         private AlnitakFlatDevice _sut;
-        private Mock<ISerialPort> mockSerialPort;
+        private Mock<ISerialPort> _mockSerialPort;
+        private Mock<IProfileService> _mockProfileService;
 
         [SetUp]
         public async Task InitAsync() {
-            _sut = new AlnitakFlatDevice("COM3");
-            mockSerialPort = new Mock<ISerialPort>();
-            _sut.SerialPort = mockSerialPort.Object;
-            mockSerialPort.SetupProperty(m => m.PortName, "COM3");
-            mockSerialPort.Setup(m => m.ReadLine()).Returns("*V99124");
+            _mockProfileService = new Mock<IProfileService>();
+            _mockProfileService.SetupProperty(m => m.ActiveProfile.FlatDeviceSettings.PortName, "");
+            _sut = new AlnitakFlatDevice("Alnitak;COM3", _mockProfileService.Object);
+            _mockSerialPort = new Mock<ISerialPort>();
+            _sut.SerialPort = _mockSerialPort.Object;
+            _mockSerialPort.SetupProperty(m => m.PortName, "COM3");
+            _mockSerialPort.Setup(m => m.ReadLine()).Returns("*V99124");
             Assert.That(await _sut.Connect(new System.Threading.CancellationToken()), Is.True);
         }
 
@@ -34,7 +38,7 @@ namespace NINATest {
         [TestCase(CoverState.Unknown, "garbage")]
         [TestCase(CoverState.Unknown, null)]
         public void TestCoverState(CoverState coverState, string deviceResponse) {
-            mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
+            _mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
             Assert.That(_sut.CoverState, Is.EqualTo(coverState));
         }
 
@@ -44,7 +48,7 @@ namespace NINATest {
         [TestCase(CoverState.Unknown, null)]
         public void TestCoverStateDisconnected(CoverState coverState, string deviceResponse) {
             _sut.Disconnect();
-            mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
+            _mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
             Assert.That(_sut.CoverState, Is.EqualTo(coverState));
         }
 
@@ -65,7 +69,7 @@ namespace NINATest {
         [TestCase(0, "garbage")]
         [TestCase(0, null)]
         public void TestGetBrightness(int brightness, string deviceResponse) {
-            mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
+            _mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
             Assert.That(_sut.Brightness, Is.EqualTo(brightness));
         }
 
@@ -77,7 +81,7 @@ namespace NINATest {
         [TestCase(0, null)]
         public void TestGetBrightnessDisconnected(int brightness, string deviceResponse) {
             _sut.Disconnect();
-            mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
+            _mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
             Assert.That(_sut.Brightness, Is.EqualTo(brightness));
         }
 
@@ -86,11 +90,11 @@ namespace NINATest {
         [TestCase(255, ">B255\r")]
         [TestCase(99, ">B099\r")]
         [TestCase(50, ">B050\r")]
-        [TestCase(-1, null)]
-        [TestCase(256, null)]
+        [TestCase(-1, ">B000\r")]
+        [TestCase(256, ">B255\r")]
         public void TestSetBrightness(int brightness, string command) {
             string actual = null;
-            mockSerialPort.Setup(m => m.Write(It.IsAny<string>())).Callback((string arg) => {
+            _mockSerialPort.Setup(m => m.Write(It.IsAny<string>())).Callback((string arg) => {
                 actual = arg;
             });
 
@@ -107,7 +111,7 @@ namespace NINATest {
         [TestCase(256, null)]
         public void TestSetBrightnessDisconnected(int brightness, string command) {
             string actual = null;
-            mockSerialPort.Setup(m => m.Write(It.IsAny<string>())).Callback((string arg) => {
+            _mockSerialPort.Setup(m => m.Write(It.IsAny<string>())).Callback((string arg) => {
                 actual = arg;
             });
 
@@ -118,7 +122,7 @@ namespace NINATest {
 
         [Test]
         public async Task TestOpen() {
-            mockSerialPort.SetupSequence(m => m.ReadLine()).Returns("*O99OOO")
+            _mockSerialPort.SetupSequence(m => m.ReadLine()).Returns("*O99OOO")
                 .Returns("*S99100") //motor running
                 .Returns("*S99002") //motor stopped
                 .Returns("*S99002"); //cover is open
@@ -127,7 +131,7 @@ namespace NINATest {
 
         [Test]
         public async Task TestOpenInvalidResponse() {
-            mockSerialPort.SetupSequence(m => m.ReadLine()).Returns("")
+            _mockSerialPort.SetupSequence(m => m.ReadLine()).Returns("")
                 .Returns("*S99100") //motor running
                 .Returns("*S99002") //motor stopped
                 .Returns("*S99002"); //cover is open
@@ -136,7 +140,7 @@ namespace NINATest {
 
         [Test]
         public async Task TestClose() {
-            mockSerialPort.SetupSequence(m => m.ReadLine()).Returns("*C99OOO")
+            _mockSerialPort.SetupSequence(m => m.ReadLine()).Returns("*C99OOO")
                 .Returns("*S99100") //motor running
                 .Returns("*S99001") //motor stopped
                 .Returns("*S99001"); //cover is closed
@@ -145,7 +149,7 @@ namespace NINATest {
 
         [Test]
         public async Task TestCloseInvalidResponse() {
-            mockSerialPort.SetupSequence(m => m.ReadLine()).Returns("")
+            _mockSerialPort.SetupSequence(m => m.ReadLine()).Returns("")
                 .Returns("*S99100") //motor running
                 .Returns("*S99001") //motor stopped
                 .Returns("*S99001"); //cover is closed
@@ -159,8 +163,8 @@ namespace NINATest {
         [TestCase(">DOOO\r", null, false)]
         public void TestSetLightOn(string command, string response, bool on) {
             string actual = null;
-            mockSerialPort.Setup(m => m.ReadLine()).Returns(response);
-            mockSerialPort.Setup(m => m.Write(It.IsAny<string>())).Callback((string arg) => {
+            _mockSerialPort.Setup(m => m.ReadLine()).Returns(response);
+            _mockSerialPort.Setup(m => m.Write(It.IsAny<string>())).Callback((string arg) => {
                 actual = arg;
             });
             _sut.LightOn = on;
@@ -173,7 +177,7 @@ namespace NINATest {
         [TestCase("garbage", false)]
         [TestCase(null, false)]
         public void TestGetLightOn(string response, bool on) {
-            mockSerialPort.Setup(m => m.ReadLine()).Returns(response);
+            _mockSerialPort.Setup(m => m.ReadLine()).Returns(response);
             Assert.That(_sut.LightOn, Is.EqualTo(on));
         }
 
@@ -181,7 +185,7 @@ namespace NINATest {
         [TestCase("*S99010", false)]
         public void TestGetLightOnDisconnected(string response, bool on) {
             _sut.Disconnect();
-            mockSerialPort.Setup(m => m.ReadLine()).Returns(response);
+            _mockSerialPort.Setup(m => m.ReadLine()).Returns(response);
             Assert.That(_sut.LightOn, Is.EqualTo(on));
         }
 
