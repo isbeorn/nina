@@ -45,6 +45,7 @@
 - Framing - Rectangle panel number is now scaled based on rectangle size.
 - When loading an image from a file into framing the rectangle was not calculated correctly
 - Added an empty entry for Constellation Filter in Sky Atlas to unselect it
+- Image File Pattern Values will now remove leading and trailing white spaces to prevent invalid file path
 
 # Version 1.9
 
