@@ -100,8 +100,8 @@ namespace NINA.Model {
         }
 
         public bool Set(string key, string value) {
-            if (patterns.ContainsKey(key)) {
-                patterns[key].Value = value;
+            if (patterns.ContainsKey(key) && value != null) {
+                patterns[key].Value = value.Trim();
                 return true;
             }
 
