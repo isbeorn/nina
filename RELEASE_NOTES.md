@@ -46,6 +46,7 @@
 - When loading an image from a file into framing the rectangle was not calculated correctly
 - Added an empty entry for Constellation Filter in Sky Atlas to unselect it
 - Image File Pattern Values will now remove leading and trailing white spaces to prevent invalid file path
+- In case illegal characters for a filename are inside some file patterns, they will now get replaced to still being able to save
 
 # Version 1.9
 
