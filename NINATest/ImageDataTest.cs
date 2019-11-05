@@ -28,6 +28,7 @@ using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NUnit.Framework;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace NINATest {
@@ -36,7 +37,7 @@ namespace NINATest {
     public class ImageDataTest {
         private ImageMetaData MetaData;
 
-        [OneTimeSetUp]
+        [SetUp]
         public void Setup() {
             MetaData = new ImageMetaData() {
                 Image = {
@@ -498,6 +499,62 @@ namespace NINATest {
                 $"#{string.Format("{0:0.00}", MetaData.Camera.Temperature)}" +
                 $"#{string.Format("{0:0.00}", MetaData.Image.ExposureTime)}" +
                 $"#{MetaData.Target.Name}" +
+                $"#{string.Format("{0:0.00}", MetaData.Camera.Gain)}" +
+                $"#{string.Format("{0:0.00}", MetaData.Camera.Offset)}" +
+                $"#{string.Format("{0:0.00}", MetaData.Image.RecordedRMS.Total)}" +
+                $"#{string.Format("{0:0.00}", MetaData.Image.RecordedRMS.Total * MetaData.Image.RecordedRMS.Scale)}" +
+                $"#{string.Format("{0:0.00}", MetaData.Focuser.Position)}" +
+                $"#{Utility.ApplicationStartDate.ToString("yyyy-MM-dd")}";
+
+            System.IO.Path.GetFileName(file).Should().Be($"{expectedPattern}.{fileType.ToString().ToLower()}");
+        }
+
+        [Test]
+        public async Task PrepareFinalize_IllegalCharacters_SavePatternMetaDataTest() {
+            var fileType = NINA.Utility.Enum.FileTypeEnum.XISF;
+            var data = new ushort[] {
+                3,1,1,
+                3,4,5,
+                3,2,3
+            };
+            var folder = TestContext.CurrentContext.TestDirectory;
+            var pattern = $"$$FILTER$$" +
+                $"#$$DATE$$" +
+                $"#$$DATEMINUS12$$" +
+                $"#$$DATETIME$$" +
+                $"#$$TIME$$" +
+                $"#$$FRAMENR$$" +
+                $"#$$IMAGETYPE$$" +
+                $"#$$BINNING$$" +
+                $"#$$SENSORTEMP$$" +
+                $"#$$EXPOSURETIME$$" +
+                $"#$$TARGETNAME$$" +
+                $"#$$GAIN$$" +
+                $"#$$OFFSET$$" +
+                $"#$$RMS$$" +
+                $"#$$RMSARCSEC$$" +
+                $"#$$FOCUSERPOSITION$$" +
+                $"#$$APPLICATIONSTARTDATE$$";
+
+            var invalidChars = Path.GetInvalidPathChars();
+            MetaData.Target.Name = string.Join("", invalidChars);
+
+            var sut = new ImageData(data, 3, 3, 16, false, MetaData);
+            var file = await sut.PrepareSave(folder, fileType, default);
+            file = sut.FinalizeSave(file, pattern);
+            System.IO.File.Delete(file);
+
+            var expectedPattern = $"{MetaData.FilterWheel.Filter}" +
+                $"#{MetaData.Image.ExposureStart.ToString("yyyy-MM-dd")}" +
+                $"#{MetaData.Image.ExposureStart.AddHours(-12).ToString("yyyy-MM-dd")}" +
+                $"#{MetaData.Image.ExposureStart.ToString("yyyy-MM-dd_HH-mm-ss")}" +
+                $"#{MetaData.Image.ExposureStart.ToString("HH-mm-ss")}" +
+                $"#{MetaData.Image.ExposureNumber.ToString("0000")}" +
+                $"#{MetaData.Image.ImageType}" +
+                $"#{MetaData.Camera.Binning}" +
+                $"#{string.Format("{0:0.00}", MetaData.Camera.Temperature)}" +
+                $"#{string.Format("{0:0.00}", MetaData.Image.ExposureTime)}" +
+                $"#{new string('_', invalidChars.Length)}" +
                 $"#{string.Format("{0:0.00}", MetaData.Camera.Gain)}" +
                 $"#{string.Format("{0:0.00}", MetaData.Camera.Offset)}" +
                 $"#{string.Format("{0:0.00}", MetaData.Image.RecordedRMS.Total)}" +
