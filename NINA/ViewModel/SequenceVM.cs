@@ -55,7 +55,9 @@ using NINA.Model.ImageData;
 using NINA.Utility.Mediator;
 
 namespace NINA.ViewModel {
+
     internal class SequenceVM : DockableVM, ITelescopeConsumer, IFocuserConsumer, IFilterWheelConsumer, IRotatorConsumer, IGuiderConsumer, ICameraConsumer, IWeatherDataConsumer {
+
         public SequenceVM(
                 IProfileService profileService,
                 ICameraMediator cameraMediator,
@@ -400,6 +402,16 @@ namespace NINA.ViewModel {
                         orientation = (float)plateSolveResult.Orientation;
 
                         position = (float)((float)csl.DSO.Rotation - orientation);
+
+                        var movement = Astrometry.EuclidianModulus((float)csl.DSO.Rotation - orientation, 180);
+                        var movement2 = movement - 180;
+
+                        if (movement < Math.Abs(movement2)) {
+                            position = movement;
+                        } else {
+                            position = movement2;
+                        }
+
                         if (Math.Abs(position) > profileService.ActiveProfile.PlateSolveSettings.RotationTolerance) {
                             await rotatorMediator.MoveRelative(position);
                         }
@@ -1323,22 +1335,19 @@ namespace NINA.ViewModel {
         public ICommand LoadSequenceCommand { get; private set; }
         public ICommand SaveSequenceCommand { get; private set; }
 
-        private void PromoteSequenceRow(object obj)
-        {
+        private void PromoteSequenceRow(object obj) {
             var idx = SelectedSequenceRowIdx;
-            if (idx > 0)
-            {
+            if (idx > 0) {
                 CaptureSequence seq = Sequence.Items[idx];
                 Sequence.RemoveAt(idx);
                 Sequence.AddAt(idx - 1, seq);
                 SelectedSequenceRowIdx = idx - 1;
             }
         }
-        private void DemoteSequenceRow(object obj)
-        {
+
+        private void DemoteSequenceRow(object obj) {
             var idx = SelectedSequenceRowIdx;
-            if (idx < Sequence.Count - 1)
-            {
+            if (idx < Sequence.Count - 1) {
                 CaptureSequence seq = Sequence.Items[idx];
                 Sequence.RemoveAt(idx);
                 Sequence.AddAt(idx + 1, seq);

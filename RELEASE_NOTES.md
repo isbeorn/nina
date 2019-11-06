@@ -35,6 +35,7 @@
 - Updated Nikon SDK to latest available version (2019-10-20)
 - Zooming at high magnification inside the image control will not smear the pixels anymore but show sharp pixel edges instead
 - Added a reset button to sky atlas to reset all filters
+- Rotator for sequence centering will now rotate to nearest orientation even if image is upside down. This is not relevant for framing after a star alignment anyways.
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false
