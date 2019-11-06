@@ -130,48 +130,52 @@
                                 IsEnabled="{Binding FlatDeviceInfo.Connected}"
                                 Orientation="Horizontal">
                                 <TextBlock Text="{ns:Loc LblFlatDeviceBrightness}" />
-                                <TextBlock Text=" " />
-                                <TextBlock Text="{ns:Loc LblMin}" />
-                                <TextBlock Text=": " />
-                                <TextBlock Text="{Binding FlatDeviceInfo.MinBrightness}" />
-                                <TextBlock Text="{ns:Loc LblMax}" />
-                                <TextBlock Text=": " />
-                                <TextBlock Text="{Binding FlatDeviceInfo.MaxBrightness}" />
                             </StackPanel>
-                            <Slider
-                                x:Name="BrightnessSlider"
-                                IsEnabled="{Binding FlatDeviceInfo.Connected}"
-                                Maximum="{Binding FlatDeviceInfo.MaxBrightness}"
-                                Minimum="{Binding FlatDeviceInfo.MinBrightness}"
-                                Value="{Binding Brightness}" />
-                        </UniformGrid>
-                        <UniformGrid>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBox
-                                    Height="25"
-                                    MinWidth="55"
-                                    Margin="5,0,0,0"
+                            <Grid VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="4*" />
+                                    <ColumnDefinition Width="0.5*" />
+                                    <ColumnDefinition Width="15px" />
+                                    <ColumnDefinition Width="1.2*" />
+                                </Grid.ColumnDefinitions>
+                                <Slider
+                                    Grid.Row="0"
+                                    Grid.Column="0"
                                     IsEnabled="{Binding FlatDeviceInfo.Connected}"
-                                    Text="{Binding ElementName=BrightnessSlider, Path=Value}" />
-
-                                <Grid>
-                                    <ninactrl:AsyncProcessButton
-                                        Width="60"
-                                        Height="25"
-                                        Margin="5"
-                                        HorizontalAlignment="Left"
-                                        ButtonText="{ns:Loc LblFlatDeviceSetBrightness}"
-                                        Command="{Binding SetBrightnessCommand}"
-                                        IsEnabled="{Binding FlatDeviceInfo.Connected}" />
-                                </Grid>
-                            </StackPanel>
+                                    IsSnapToTickEnabled="True"
+                                    Maximum="1"
+                                    Minimum="0"
+                                    TickFrequency=".05"
+                                    Value="{Binding Brightness, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBox
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Height="25"
+                                    MinWidth="35"
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    IsEnabled="{Binding FlatDeviceInfo.Connected}"
+                                    Text="{Binding Brightness, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource PercentageConverter}}" />
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Text="%" />
+                                <ninactrl:AsyncProcessButton
+                                    Grid.Column="3"
+                                    Margin="5"
+                                    ButtonText="{ns:Loc LblFlatDeviceSetBrightness}"
+                                    Command="{Binding SetBrightnessCommand}"
+                                    IsEnabled="{Binding FlatDeviceInfo.Connected}" />
+                            </Grid>
                         </UniformGrid>
                     </UniformGrid>
                 </Border>
                 <Border
                     BorderBrush="{StaticResource BorderBrush}"
                     BorderThickness="0"
-                    IsEnabled="{Binding FlatDeviceInfo.SupportsOpenClose}">
+                    Visibility="{Binding FlatDeviceInfo.SupportsOpenClose, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                     <UniformGrid Columns="2">
                         <UniformGrid
                             Margin="0,6,0,6"

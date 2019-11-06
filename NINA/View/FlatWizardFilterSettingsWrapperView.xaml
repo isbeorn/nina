@@ -224,5 +224,55 @@
                     Text="%" />
             </Grid>
         </Border>
+        <Border
+            Margin="0,0,0,5"
+            BorderBrush="{StaticResource BorderBrush}"
+            BorderThickness="0,0,0,1"
+            Visibility="{Binding Source={StaticResource AppVM}, Path=FlatDeviceVM.FlatDeviceInfo.Connected, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+            <Grid VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="15px" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Text="{ns:Loc LblFlatDevice}"
+                    TextWrapping="WrapWithOverflow" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Text="{ns:Loc LblFlatDeviceBrightness}"
+                    TextWrapping="WrapWithOverflow" />
+                <TextBox
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    Text="{Binding Settings.FlatDeviceBrightness, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource PercentageConverter}}" />
+                <Slider
+                    x:Name="FlatDeviceBrightnessSlider"
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="4"
+                    IsSnapToTickEnabled="True"
+                    Maximum="1"
+                    Minimum="0"
+                    TickFrequency=".05"
+                    Value="{Binding Settings.FlatDeviceBrightness, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="3"
+                    HorizontalAlignment="Right"
+                    Text="%" />
+            </Grid>
+        </Border>
     </StackPanel>
 </UserControl>

@@ -48,13 +48,15 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             _flatDeviceMediator.Broadcast(GetDeviceInfo());
         }
 
-        private int _brightness;
+        private double _brightness;
 
-        public int Brightness {
+        public double Brightness {
             get => _brightness;
 
             set { _brightness = value; RaisePropertyChanged(); }
         }
+
+        public bool LightOn { get; set; }
 
         private void SetBrightness(object o) {
             if (_flatDevice == null || !_flatDevice.Connected) return;
@@ -228,7 +230,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             flatDeviceValues.TryGetValue(nameof(FlatDeviceInfo.CoverState), out o);
             _flatDeviceInfo.CoverState = (CoverState)(o ?? CoverState.Unknown);
             flatDeviceValues.TryGetValue(nameof(FlatDeviceInfo.Brightness), out o);
-            _flatDeviceInfo.Brightness = (int)(o ?? 0);
+            _flatDeviceInfo.Brightness = (double)(o ?? 0);
             flatDeviceValues.TryGetValue(nameof(FlatDeviceInfo.MinBrightness), out o);
             _flatDeviceInfo.MinBrightness = (int)(o ?? 0);
             flatDeviceValues.TryGetValue(nameof(FlatDeviceInfo.MaxBrightness), out o);

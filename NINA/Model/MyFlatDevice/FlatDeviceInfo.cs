@@ -15,9 +15,9 @@
             set { _lightOn = value; RaisePropertyChanged(); }
         }
 
-        private int _brightness;
+        private double _brightness;
 
-        public int Brightness {
+        public double Brightness {
             get => _brightness;
             set { _brightness = value; RaisePropertyChanged(); }
         }

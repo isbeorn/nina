@@ -109,9 +109,9 @@ namespace NINA.Model.MyFlatDevice {
             }
         }
 
-        public int Brightness {
+        public double Brightness {
             get {
-                var result = 0;
+                var result = 0.0;
                 if (!Connected) {
                     return result;
                 }
@@ -124,18 +124,18 @@ namespace NINA.Model.MyFlatDevice {
                 } else {
                     result = response.Brightness;
                 }
-                return result;
+                return result / (MaxBrightness - MinBrightness);
             }
             set {
                 if (Connected) {
-                    if (value < MinBrightness) {
+                    if (value < 0) {
                         value = MinBrightness;
                     }
 
-                    if (value > MaxBrightness) {
+                    if (value > 1) {
                         value = MaxBrightness;
                     }
-                    var command = new SetBrightnessCommand(value);
+                    var command = new SetBrightnessCommand(value * (MaxBrightness - MinBrightness) + MinBrightness);
                     var response = SendCommand<SetBrightnessResponse>(command);
                     if (!response.IsValid) {
                         Logger.Error($"Invalid response from flat device on port {_serialPort.PortName}. " +

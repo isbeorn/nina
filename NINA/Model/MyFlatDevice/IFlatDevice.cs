@@ -16,7 +16,7 @@ namespace NINA.Model.MyFlatDevice {
 
         bool LightOn { get; set; }
 
-        int Brightness { get; set; }
+        double Brightness { get; set; }
 
         string PortName { get; set; }
 

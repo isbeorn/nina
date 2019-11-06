@@ -451,6 +451,8 @@ namespace NINA.ViewModel {
                         cameraMediator,
                         filterWheelMediator,
                         telescopeMediator,
+                        FlatDeviceVM,
+                        flatDeviceMediator,
                         new ApplicationResourceDictionary(),
                         applicationStatusMediator);
                 }

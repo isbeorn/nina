@@ -43,8 +43,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using NINA.Model.ImageData;
+using NINA.Model.MyFlatDevice;
 using NINA.Utility.Notification;
 using NINA.Utility.Mediator;
+using NINA.ViewModel.Equipment.FlatDevice;
 
 namespace NINA.ViewModel.FlatWizard {
 
@@ -65,13 +67,18 @@ namespace NINA.ViewModel.FlatWizard {
         private int mode;
         private FlatWizardFilterSettingsWrapper singleFlatWizardFilterSettings;
         private ApplicationStatus status;
-        bool pauseBetweenFilters;
+        private bool pauseBetweenFilters;
+        private IFlatDeviceVM _flatDeviceVM;
+        private IFlatDeviceMediator _flatDeviceMediator;
+        private FlatDeviceInfo _flatDeviceInfo;
 
         public FlatWizardVM(IProfileService profileService,
                             IImagingVM imagingVM,
                             ICameraMediator cameraMediator,
                             IFilterWheelMediator filterWheelMediator,
                             ITelescopeMediator telescopeMediator,
+                            IFlatDeviceVM flatDeviceVM,
+                            IFlatDeviceMediator flatDeviceMediator,
                             IApplicationResourceDictionary resourceDictionary,
                             IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblFlatWizard";
@@ -131,6 +138,11 @@ namespace NINA.ViewModel.FlatWizard {
             filterWheelMediator.RegisterConsumer(this);
             this.telescopeMediator = telescopeMediator;
             this.telescopeMediator.RegisterConsumer(this);
+
+            // register the flat panel mediator and VM
+            _flatDeviceVM = flatDeviceVM;
+            _flatDeviceMediator = flatDeviceMediator;
+            _flatDeviceMediator.RegisterConsumer(this);
         }
 
         public void Dispose() {
@@ -346,11 +358,9 @@ namespace NINA.ViewModel.FlatWizard {
             }
         }
 
-        public bool PauseBetweenFilters
-        {
+        public bool PauseBetweenFilters {
             get => pauseBetweenFilters;
-            set
-            {
+            set {
                 pauseBetweenFilters = value;
                 RaisePropertyChanged();
             }
@@ -363,6 +373,15 @@ namespace NINA.ViewModel.FlatWizard {
         private async Task<bool> StartFindingExposureTimeSequence(IProgress<ApplicationStatus> progress, CancellationToken ct, PauseToken pt, FlatWizardFilterSettingsWrapper wrapper) {
             var exposureTime = wrapper.Settings.MinFlatExposureTime;
             IRenderedImage renderedImage = null;
+
+            if (_flatDeviceInfo.Connected) {
+                if (_flatDeviceInfo.SupportsOpenClose) {
+                    await _flatDeviceVM.CloseCover();
+                }
+
+                _flatDeviceVM.Brightness = wrapper.Settings.FlatDeviceBrightness;
+                _flatDeviceVM.LightOn = true;
+            }
 
             progress.Report(new ApplicationStatus { Status = string.Format(Locale["LblFlatExposureCalcStart"], wrapper.Settings.MinFlatExposureTime), Source = Title });
 
@@ -481,8 +500,7 @@ namespace NINA.ViewModel.FlatWizard {
                     filterCount++;
                     var filterName = filterSettings?.Filter?.Name ?? string.Empty;
 
-                    if (PauseBetweenFilters)
-                    {
+                    if (PauseBetweenFilters) {
                         var dialogResult = MyMessageBox.MyMessageBox.Show(
                             string.Format(Locale["LblPrepFlatFilterMsgBox"], filterName),
                             Locale["LblFlatWizard"], MessageBoxButton.OKCancel, MessageBoxResult.OK);
@@ -746,6 +764,10 @@ namespace NINA.ViewModel.FlatWizard {
 
         public void UpdateDeviceInfo(TelescopeInfo deviceInfo) {
             this.telescopeInfo = deviceInfo;
+        }
+
+        public void UpdateDeviceInfo(FlatDeviceInfo deviceInfo) {
+            this._flatDeviceInfo = deviceInfo;
         }
     }
 }
