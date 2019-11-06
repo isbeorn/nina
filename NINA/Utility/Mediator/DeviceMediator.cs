@@ -67,14 +67,14 @@ namespace NINA.Utility.Mediator {
         /// </summary>
         /// <returns></returns>
         public Task<bool> Connect() {
-            return handler.Connect();
+            return handler?.Connect();
         }
 
         /// <summary>
         /// Disconnect the device
         /// </summary>
         public void Disconnect() {
-            handler.Disconnect();
+            handler?.Disconnect();
         }
 
         /// <summary>

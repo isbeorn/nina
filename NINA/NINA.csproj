@@ -366,6 +366,7 @@
     <Compile Include="Model\MyFilterWheel\FlatDeviceExposureTimeSettings.cs" />
     <Compile Include="Model\MyFilterWheel\QHYFilterWheel.cs" />
     <Compile Include="Model\MyFilterWheel\FLIFilterWheel.cs" />
+    <Compile Include="Utility\DeferredContent.cs" />
     <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakCommands.cs" />
     <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakDevices.cs" />
     <Compile Include="Model\MyFlatDevice\AlnitakFlatDevice.cs" />

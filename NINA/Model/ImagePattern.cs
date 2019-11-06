@@ -100,8 +100,8 @@ namespace NINA.Model {
         }
 
         public bool Set(string key, string value) {
-            if (patterns.ContainsKey(key)) {
-                patterns[key].Value = value;
+            if (patterns.ContainsKey(key) && value != null) {
+                patterns[key].Value = value.Trim();
                 return true;
             }
 
@@ -130,8 +130,23 @@ namespace NINA.Model {
             foreach (ImagePattern p in patterns.Values) {
                 s = s.Replace(p.Key, p.Value);
             }
-            s = Path.Combine(s.Split(Utility.Utility.PATHSEPARATORS, StringSplitOptions.RemoveEmptyEntries));
-            return s;
+            var path = s.Split(Utility.Utility.PATHSEPARATORS, StringSplitOptions.RemoveEmptyEntries);
+
+            var imageFileString = string.Empty;
+            for (int i = 0; i < path.Length; i++) {
+                imageFileString = Path.Combine(imageFileString, ReplaceInvalidChars(path[i]));
+            }
+
+            return imageFileString;
+        }
+
+        /// <summary>
+        /// Replace invalid characters from filename
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        private string ReplaceInvalidChars(string filename) {
+            return string.Join("_", filename.Split(Path.GetInvalidFileNameChars()));
         }
 
         internal static ImagePatterns CreateExample() {

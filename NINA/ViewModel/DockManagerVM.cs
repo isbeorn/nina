@@ -40,16 +40,18 @@ namespace NINA.ViewModel {
 
         private void ResetDockLayout(object arg) {
             if (MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblResetDockLayoutConfirmation"], Locale.Loc.Instance["LblResetDockLayout"], System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxResult.No) == System.Windows.MessageBoxResult.Yes) {
-                _dockloaded = false;
+                lock (lockObj) {
+                    _dockloaded = false;
 
-                var serializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
-                serializer.LayoutSerializationCallback += (s, args) => {
-                    var d = (DockableVM)args.Content;
-                    d.IsVisible = true;
-                    args.Content = d;
-                };
+                    var serializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
+                    serializer.LayoutSerializationCallback += (s, args) => {
+                        var d = (DockableVM)args.Content;
+                        d.IsVisible = true;
+                        args.Content = d;
+                    };
 
-                LoadDefaultLayout(serializer);
+                    LoadDefaultLayout(serializer);
+                }
             }
         }
 
@@ -100,42 +102,51 @@ namespace NINA.ViewModel {
 
         private Xceed.Wpf.AvalonDock.DockingManager _dockmanager;
         private bool _dockloaded = false;
+        private object lockObj = new object();
 
         public void LoadAvalonDockLayout(object o) {
-            if (!_dockloaded) {
-                _dockmanager = (Xceed.Wpf.AvalonDock.DockingManager)o;
+            lock (lockObj) {
+                if (!_dockloaded) {
+                    _dockmanager = (Xceed.Wpf.AvalonDock.DockingManager)o;
 
-                var serializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
-                serializer.LayoutSerializationCallback += (s, args) => {
-                    args.Content = args.Content;
-                };
+                    var serializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
+                    serializer.LayoutSerializationCallback += (s, args) => {
+                        args.Content = args.Content;
+                    };
 
-                if (System.IO.File.Exists(Utility.AvalonDock.LayoutInitializer.LAYOUTFILEPATH)) {
-                    try {
-                        serializer.Deserialize(Utility.AvalonDock.LayoutInitializer.LAYOUTFILEPATH);
-                        _dockloaded = true;
-                    } catch (Exception ex) {
-                        Logger.Error("Failed to load AvalonDock Layout. Loading default Layout!", ex);
-                        using (var stream = new StringReader(Properties.Resources.avalondock)) {
-                            serializer.Deserialize(stream);
+                    if (System.IO.File.Exists(Utility.AvalonDock.LayoutInitializer.LAYOUTFILEPATH)) {
+                        try {
+                            serializer.Deserialize(Utility.AvalonDock.LayoutInitializer.LAYOUTFILEPATH);
+                            _dockloaded = true;
+                        } catch (Exception ex) {
+                            Logger.Error("Failed to load AvalonDock Layout. Loading default Layout!", ex);
+                            using (var stream = new StringReader(Properties.Resources.avalondock)) {
+                                serializer.Deserialize(stream);
+                            }
                         }
+                    } else {
+                        LoadDefaultLayout(serializer);
                     }
-                } else {
-                    LoadDefaultLayout(serializer);
                 }
             }
         }
 
         private void LoadDefaultLayout(Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer serializer) {
-            using (var stream = new StringReader(Properties.Resources.avalondock)) {
-                serializer.Deserialize(stream);
-                _dockloaded = true;
+            lock (lockObj) {
+                using (var stream = new StringReader(Properties.Resources.avalondock)) {
+                    serializer.Deserialize(stream);
+                    _dockloaded = true;
+                }
             }
         }
 
         public void SaveAvalonDockLayout() {
-            var serializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
-            serializer.Serialize(Utility.AvalonDock.LayoutInitializer.LAYOUTFILEPATH);
+            lock (lockObj) {
+                if (_dockloaded) {
+                    var serializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(_dockmanager);
+                    serializer.Serialize(Utility.AvalonDock.LayoutInitializer.LAYOUTFILEPATH);
+                }
+            }
         }
 
         public ICommand LoadAvalonDockLayoutCommand { get; private set; }

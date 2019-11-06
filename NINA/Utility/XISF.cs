@@ -29,6 +29,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -191,7 +192,7 @@ namespace NINA.Utility {
             Xisf.Add(MetaData);
 
             Content = new XDocument(
-                new XDeclaration("1.0", "UTF-8", null),
+            new XDeclaration("1.0", "UTF-8", null),
                 Xisf
             );
         }
@@ -451,7 +452,7 @@ namespace NINA.Utility {
             if (Image == null) { throw new InvalidOperationException("No Image component available to add FITS Keyword!"); }
             Image.Add(new XElement("FITSKeyword",
                         new XAttribute("name", name),
-                        new XAttribute("value", value),
+                        new XAttribute("value", RemoveInvalidXMLChars(value)),
                         new XAttribute("comment", comment)));
         }
 
@@ -462,22 +463,36 @@ namespace NINA.Utility {
             var id = property[0];
             var type = property[1];
             XElement xelem;
+
             if (type == "String") {
                 xelem = new XElement("Property",
                     new XAttribute("id", id),
                     new XAttribute("type", type),
                     new XAttribute("comment", comment),
-                    value
+                    RemoveInvalidXMLChars(value)
                 );
             } else {
                 xelem = new XElement("Property",
                     new XAttribute("id", id),
                     new XAttribute("type", type),
                     new XAttribute("comment", comment),
-                    new XAttribute("value", value)
+                    new XAttribute("value", RemoveInvalidXMLChars(value))
                 );
             }
             elem.Add(xelem);
+        }
+
+        // filters control characters but allows only properly-formed surrogate sequences
+        private static Regex _invalidXMLChars = new Regex(
+            @"(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\uFEFF\uFFFE\uFFFF]",
+            RegexOptions.Compiled);
+
+        /// <summary>
+        /// removes any unusual unicode characters that can't be encoded into XML
+        /// </summary>
+        public static string RemoveInvalidXMLChars(string text) {
+            if (string.IsNullOrEmpty(text)) return "";
+            return _invalidXMLChars.Replace(text, "�");
         }
 
         /// <summary>
