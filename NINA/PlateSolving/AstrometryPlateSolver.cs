@@ -214,7 +214,11 @@ namespace NINA.PlateSolving {
 
                 progress.Report(new ApplicationStatus() { Status = $"Getting result for Astrometry.net job {jobId}..." });
                 JobResult jobinfo = await GetJobResult(jobId, cancelToken);
+
                 result.Orientation = jobinfo.calibration.orientation;
+                /* The orientation is mirrored on the x-axis */
+                result.Orientation = 180 - result.Orientation + 360;
+
                 result.Pixscale = jobinfo.calibration.pixscale;
                 result.Coordinates = new Utility.Astrometry.Coordinates(jobinfo.calibration.ra, jobinfo.calibration.dec, Utility.Astrometry.Epoch.J2000, Utility.Astrometry.Coordinates.RAType.Degrees);
                 result.Radius = jobinfo.calibration.radius;

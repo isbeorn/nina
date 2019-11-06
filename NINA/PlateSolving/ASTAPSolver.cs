@@ -71,6 +71,8 @@ namespace NINA.PlateSolving {
                 Coordinates.RAType.Degrees
             );
             result.Orientation = double.Parse(dict["CROTA2"], CultureInfo.InvariantCulture);
+            /* Due to the way N.I.N.A. writes FITS files, the orientation is mirrored on the x-axis */
+            result.Orientation = 180 - result.Orientation + 360;
             result.Pixscale = imageProperties.ArcSecPerPixel;
             return result;
         }

@@ -51,6 +51,7 @@ namespace NINA.Utility.Http {
             HttpWebRequest wr = (HttpWebRequest)WebRequest.Create(Url);
             wr.ContentType = "multipart/form-data; boundary=" + boundary;
             wr.Method = "POST";
+            wr.Timeout = (int)TimeSpan.FromSeconds(300).TotalMilliseconds;
             //wr.KeepAlive = true;
             //wr.Credentials = System.Net.CredentialCache.DefaultCredentials;
 
