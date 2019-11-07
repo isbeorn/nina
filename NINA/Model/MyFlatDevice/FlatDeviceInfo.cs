@@ -8,6 +8,8 @@
             set { _coverState = value; RaisePropertyChanged(); }
         }
 
+        public string LocalizedCoverState => Locale.Loc.Instance[$"LblFlatDevice{_coverState}"];
+
         private bool _lightOn;
 
         public bool LightOn {

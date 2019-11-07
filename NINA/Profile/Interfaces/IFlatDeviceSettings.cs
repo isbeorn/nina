@@ -4,5 +4,6 @@
         string Id { get; set; }
         string Name { get; set; }
         string PortName { get; set; }
+        bool AutoDetectAlnitakDevices { get; set; }
     }
 }

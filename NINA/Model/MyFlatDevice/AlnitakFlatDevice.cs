@@ -3,7 +3,9 @@ using NINA.Utility;
 using NINA.Utility.FlatDeviceSDKs.AlnitakSDK;
 using NINA.Utility.Notification;
 using System;
+using System.Collections.Generic;
 using System.IO.Ports;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Utility.WindowService;
@@ -14,25 +16,8 @@ namespace NINA.Model.MyFlatDevice {
         private ISerialPort _serialPort;
         private readonly IProfileService _profileService;
 
-        public AlnitakFlatDevice(string name, IProfileService profileService) {
+        public AlnitakFlatDevice(IProfileService profileService) {
             _profileService = profileService;
-            Name = name.Split(';')[0];
-            PortName = name.Split(';')[1];
-            SetupSerialPort(PortName);
-        }
-
-        private void SetupSerialPort(string portName) {
-            _serialPort = new SerialPortWrapper {
-                PortName = portName,
-                BaudRate = 9600,
-                Parity = Parity.None,
-                DataBits = 8,
-                StopBits = StopBits.One,
-                Handshake = Handshake.None,
-                NewLine = "\n",
-                ReadTimeout = 500,
-                WriteTimeout = 500
-            };
         }
 
         public ISerialPort SerialPort {
@@ -147,11 +132,23 @@ namespace NINA.Model.MyFlatDevice {
             }
         }
 
+        public string[] PortNames => System.IO.Ports.SerialPort.GetPortNames().OrderBy(s => s).ToArray();
+
         public string PortName {
             get => _profileService.ActiveProfile.FlatDeviceSettings.PortName;
             set {
                 _profileService.ActiveProfile.FlatDeviceSettings.PortName = value;
-                SetupSerialPort(value);
+                _serialPort = new SerialPortWrapper {
+                    PortName = value,
+                    BaudRate = 9600,
+                    Parity = Parity.None,
+                    DataBits = 8,
+                    StopBits = StopBits.One,
+                    Handshake = Handshake.None,
+                    NewLine = "\n",
+                    ReadTimeout = 500,
+                    WriteTimeout = 500
+                };
                 RaisePropertyChanged();
             }
         }
@@ -168,15 +165,7 @@ namespace NINA.Model.MyFlatDevice {
             }
         }
 
-        private string _name;
-
-        public string Name {
-            get => _name;
-            set {
-                _name = value;
-                RaisePropertyChanged();
-            }
-        }
+        public string Name => $"{Locale.Loc.Instance["LblAlnitakFlatPanel"]}";
 
         public string Category => "Alnitak Astrosystems";
 
@@ -235,7 +224,6 @@ namespace NINA.Model.MyFlatDevice {
                     return Connected;
                 }
 
-                Name = response.Name;
                 SupportsOpenClose = response.DeviceSupportsOpenClose;
                 Description = $"{response.Name} on port {_serialPort.PortName}. Firmware version: {response.FirmwareVersion}";
 

@@ -48,5 +48,18 @@ namespace NINA.Profile {
                 RaisePropertyChanged();
             }
         }
+
+        private bool _autoDetectAlnitakDevices;
+
+        public bool AutoDetectAlnitakDevices
+        {
+            get => _autoDetectAlnitakDevices;
+            set
+            {
+                if (_autoDetectAlnitakDevices== value) return;
+                _autoDetectAlnitakDevices = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 }

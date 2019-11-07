@@ -16,7 +16,7 @@ namespace NINATest {
         public async Task InitAsync() {
             _mockProfileService = new Mock<IProfileService>();
             _mockProfileService.SetupProperty(m => m.ActiveProfile.FlatDeviceSettings.PortName, "");
-            _sut = new AlnitakFlatDevice("Alnitak;COM3", _mockProfileService.Object);
+            _sut = new AlnitakFlatDevice(_mockProfileService.Object);
             _mockSerialPort = new Mock<ISerialPort>();
             _sut.SerialPort = _mockSerialPort.Object;
             _mockSerialPort.SetupProperty(m => m.PortName, "COM3");

@@ -25,6 +25,7 @@ namespace NINA.Model.MyFlatDevice {
         public string Description => $"{Name} on port {PortName}. Firmware version: 200";
         public string DriverInfo => "Simulates an Alnitak FlipFlat.";
         public string DriverVersion => "1.0";
+        public string[] PortNames => System.IO.Ports.SerialPort.GetPortNames();
 
         public Task<bool> Connect(CancellationToken token) {
             Connected = true;

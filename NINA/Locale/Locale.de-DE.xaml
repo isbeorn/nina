@@ -15,6 +15,7 @@
     <s:String x:Key="LblAfter" xml:space="default">Nach</s:String>
     <s:String x:Key="LblAFUseBrightestStars" xml:space="default">Nutze hellste n Sterne</s:String>
     <s:String x:Key="LblAFUseBrightestStarsTooltip" xml:space="default">Limitiere AF auf hellste Sterne. 0 bedeutet kein Limit</s:String>
+    <s:String x:Key="LblAlnitakFlatPanel" xml:space="default">Alnitak Flatfieldgenerator</s:String>
     <s:String x:Key="LblAltairCameraSetup" xml:space="default">Altair Kamerasetup</s:String>
     <s:String x:Key="LblAlternativeUIColorSchema" xml:space="default">Alternatives UI Farbschema</s:String>
     <s:String x:Key="LblAltitude" xml:space="default">Höhe</s:String>
@@ -394,16 +395,21 @@ Ist dieser Auslöser deaktiviert, wird dieser Schritt übersprungen.</s:String>
     <s:String x:Key="LblFlatCount" xml:space="default">Anzahl Flats</s:String>
     <s:String x:Key="LblFlatDevice" xml:space="default">Flatfield Gerät</s:String>
     <s:String x:Key="LblFlatDeviceBrightness" xml:space="default">Helligkeit</s:String>
+    <s:String x:Key="LblFlatDeviceChooseSerialPort" xml:space="default">Serielle Schnittstelle wählen</s:String>
     <s:String x:Key="LblFlatDeviceClose" xml:space="default">Schließen</s:String>
+    <s:String x:Key="LblFlatDeviceClosed" xml:space="default">Geschlossen</s:String>
     <s:String x:Key="LblFlatDeviceConnected" xml:space="default">Flatfield Gerät verbunden.</s:String>
     <s:String x:Key="LblFlatDeviceCover" xml:space="default">Cover</s:String>
     <s:String x:Key="LblFlatDeviceCoverCurrently" xml:space="default">Derzeit</s:String>
     <s:String x:Key="LblFlatDeviceDisconnectQuestion" xml:space="default">Wollen Sie das Flatfield Gerät abtrennen?</s:String>
     <s:String x:Key="LblFlatDeviceInvalidResponse" xml:space="default">Ungültige Antwort from Flatfield Gerät.</s:String>
     <s:String x:Key="LblFlatDeviceLight" xml:space="default">Flatfield Gerät Licht</s:String>
+    <s:String x:Key="LblFlatDeviceManuallySelectSerialPort" xml:space="default">Serielle Schnittstelle manuell wählen</s:String>
+    <s:String x:Key="LblFlatDeviceNeitherOpenNorClosed" xml:space="default">Weder offen noch geschlossen</s:String>
     <s:String x:Key="LblFlatDeviceNoDevice" xml:space="default">Kein Flatfield Gerät</s:String>
     <s:String x:Key="LblFlatDeviceOpen" xml:space="default">Öffnen</s:String>
     <s:String x:Key="LblFlatDeviceSetBrightness" xml:space="default">Setzen</s:String>
+    <s:String x:Key="LblFlatDeviceUnknown" xml:space="default">Unbekannt</s:String>
     <s:String x:Key="LblFlatExposureCalcContinue" xml:space="default">Mittelwert ADU war {0}, beginne Belichtungszeitkalkulation bei {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcFinished" xml:space="default">Mittelwert ADU ist {0}, Zielbelichtungszeit ist {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcStart" xml:space="default">Beginne Belichtungszeitkalkulation bei {0}</s:String>

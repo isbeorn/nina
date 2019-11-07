@@ -8,8 +8,11 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public bool IsValid { get; protected set; }
         public bool DeviceSupportsOpenClose { get; protected set; }
 
+        private string _deviceResponse;
+
         public virtual string DeviceResponse {
             set {
+                _deviceResponse = value;
                 if (value == null || value.Length != 7) {
                     IsValid = false;
                     return;
@@ -69,6 +72,10 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
 
         protected bool EndsInOOO(string response) {
             return response.Substring(4, 3).Equals("OOO");
+        }
+
+        public override string ToString() {
+            return this.GetType().Name + $" : {_deviceResponse}";
         }
     }
 
