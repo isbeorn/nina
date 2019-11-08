@@ -9,14 +9,7 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
 
     public static class AlnitakDevices {
 
-        public static string GetDevice(bool detectSerialPort) {
-            /* automatic serial port detection only works for the Alnitak flat panel connected to the COM
-               port with the lowest number. Should be completely sufficient and avoids cluttering the app.
-             */
-            if (!detectSerialPort) {
-                return $"{Locale.Loc.Instance["LblAlnitakFlatPanel"]};COM99";
-            }
-
+        public static string DetectSerialPort() {
             foreach (var portName in SerialPort.GetPortNames().OrderBy(s => s)) {
                 using (SerialPort serialPort = new SerialPort {
                     PortName = portName,
@@ -42,7 +35,7 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
                             continue;
                         }
 
-                        return $"{Locale.Loc.Instance["LblAlnitakFlatPanel"]};{serialPort.PortName}";
+                        return serialPort.PortName;
                     } catch (TimeoutException) {
                         Logger.Debug($"AlnitakFlatDevice: timed out for port : {serialPort.PortName}");
                     } catch (Exception ex) {

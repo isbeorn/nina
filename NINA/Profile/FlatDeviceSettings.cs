@@ -51,17 +51,5 @@ namespace NINA.Profile {
                 RaisePropertyChanged();
             }
         }
-
-        private bool _manuallySelectSerialPort;
-
-        [DataMember]
-        public bool ManuallySelectSerialPort {
-            get => _manuallySelectSerialPort;
-            set {
-                if (_manuallySelectSerialPort == value) return;
-                _manuallySelectSerialPort = value;
-                RaisePropertyChanged();
-            }
-        }
     }
 }

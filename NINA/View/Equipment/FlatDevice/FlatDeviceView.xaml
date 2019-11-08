@@ -38,7 +38,7 @@
         <Grid>
             <StackPanel>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
-                    <UniformGrid Columns="2" IsEnabled="{Binding FlatDeviceInfo.Connected}">
+                    <UniformGrid Columns="2">
                         <UniformGrid
                             Margin="0,6,0,6"
                             VerticalAlignment="Center"
@@ -53,7 +53,7 @@
                     </UniformGrid>
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
-                    <UniformGrid Columns="2" IsEnabled="{Binding FlatDeviceInfo.Connected}">
+                    <UniformGrid Columns="2">
                         <UniformGrid
                             Margin="0,6,0,6"
                             VerticalAlignment="Center"
@@ -68,7 +68,7 @@
                     </UniformGrid>
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
-                    <UniformGrid Columns="2" IsEnabled="{Binding FlatDeviceInfo.Connected}">
+                    <UniformGrid Columns="2">
                         <UniformGrid
                             Margin="0,6,0,6"
                             VerticalAlignment="Center"
@@ -99,7 +99,6 @@
                     <UniformGrid VerticalAlignment="Center" Columns="2">
                         <UniformGrid
                             Margin="0,6,0,6"
-                            VerticalAlignment="Center"
                             Columns="2"
                             IsEnabled="{Binding FlatDeviceInfo.Connected}">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatDeviceLight}" />
@@ -108,9 +107,11 @@
                                 Height="25"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
                                 Command="{Binding ToggleLightCommand}"
                                 CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
-                                IsChecked="{Binding FlatDeviceInfo.LightOn}" />
+                                IsChecked="{Binding FlatDeviceInfo.LightOn}"
+                                IsEnabled="{Binding FlatDeviceInfo.Connected}" />
                         </UniformGrid>
                     </UniformGrid>
                 </Border>
@@ -119,13 +120,9 @@
                         <UniformGrid
                             Margin="0,6,0,6"
                             VerticalAlignment="Center"
-                            Columns="2">
-                            <StackPanel
-                                VerticalAlignment="Center"
-                                IsEnabled="{Binding FlatDeviceInfo.Connected}"
-                                Orientation="Horizontal">
-                                <TextBlock Text="{ns:Loc LblFlatDeviceBrightness}" />
-                            </StackPanel>
+                            Columns="2"
+                            IsEnabled="{Binding FlatDeviceInfo.Connected}">
+                            <TextBlock Text="{ns:Loc LblFlatDeviceBrightness}" />
                             <Grid VerticalAlignment="Center">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="4*" />
