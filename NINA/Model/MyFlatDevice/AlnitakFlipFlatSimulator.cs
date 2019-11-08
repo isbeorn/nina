@@ -1,6 +1,5 @@
 ﻿using NINA.Profile;
 using NINA.Utility;
-using NINA.Utility.WindowService;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,7 +13,7 @@ namespace NINA.Model.MyFlatDevice {
             CoverState = CoverState.NeitherOpenNorClosed;
         }
 
-        public bool HasSetupDialog => true;
+        public bool HasSetupDialog => false;
 
         public string Id => "flip_flat_simulator";
         public string Name => "Flip-Flat Simulator";
@@ -25,7 +24,6 @@ namespace NINA.Model.MyFlatDevice {
         public string Description => $"{Name} on port {PortName}. Firmware version: 200";
         public string DriverInfo => "Simulates an Alnitak FlipFlat.";
         public string DriverVersion => "1.0";
-        public string[] PortNames => System.IO.Ports.SerialPort.GetPortNames();
 
         public Task<bool> Connect(CancellationToken token) {
             Connected = true;
@@ -37,13 +35,21 @@ namespace NINA.Model.MyFlatDevice {
             Connected = false;
         }
 
-        public IWindowService WindowService { get; set; } = new WindowService();
-
         public void SetupDialog() {
-            WindowService.ShowDialog(this, "Alnitak Flat Panel Setup", System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.SingleBorderWindow);
         }
 
-        public CoverState CoverState { get; private set; }
+        private CoverState _coverState;
+
+        public CoverState CoverState {
+            get => _coverState;
+            private set {
+                _coverState = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(LocalizedCoverState));
+            }
+        }
+
+        public string LocalizedCoverState => Locale.Loc.Instance[$"LblFlatDevice{_coverState}"];
 
         public int MaxBrightness => 255;
         public int MinBrightness => 0;
@@ -106,10 +112,8 @@ namespace NINA.Model.MyFlatDevice {
         }
 
         public string PortName {
-            get => _profileService.ActiveProfile.FlatDeviceSettings.PortName;
+            get => "NO_PORT";
             set {
-                _profileService.ActiveProfile.FlatDeviceSettings.PortName = value;
-                RaisePropertyChanged();
             }
         }
 

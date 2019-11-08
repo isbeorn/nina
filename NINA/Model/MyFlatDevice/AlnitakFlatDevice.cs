@@ -18,6 +18,10 @@ namespace NINA.Model.MyFlatDevice {
 
         public AlnitakFlatDevice(IProfileService profileService) {
             _profileService = profileService;
+            if (profileService.ActiveProfile.FlatDeviceSettings.ManuallySelectSerialPort &&
+               !string.IsNullOrEmpty(profileService.ActiveProfile.FlatDeviceSettings.PortName)) {
+                PortName = profileService.ActiveProfile.FlatDeviceSettings.PortName;
+            }
         }
 
         public ISerialPort SerialPort {
@@ -153,17 +157,9 @@ namespace NINA.Model.MyFlatDevice {
             }
         }
 
-        public bool HasSetupDialog => true;
+        public bool HasSetupDialog => !Connected;
 
-        private string _id;
-
-        public string Id {
-            get => _id;
-            set {
-                _id = value;
-                RaisePropertyChanged();
-            }
-        }
+        public string Id => "817b60ab-6775-41bd-97b5-3857cc676e51";
 
         public string Name => $"{Locale.Loc.Instance["LblAlnitakFlatPanel"]}";
 
@@ -176,6 +172,7 @@ namespace NINA.Model.MyFlatDevice {
             private set {
                 _connected = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(HasSetupDialog));
             }
         }
 

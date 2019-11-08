@@ -38,7 +38,7 @@
         <Grid>
             <StackPanel>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
-                    <UniformGrid Columns="2">
+                    <UniformGrid Columns="2" IsEnabled="{Binding FlatDeviceInfo.Connected}">
                         <UniformGrid
                             Margin="0,6,0,6"
                             VerticalAlignment="Center"
@@ -53,7 +53,7 @@
                     </UniformGrid>
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
-                    <UniformGrid Columns="2">
+                    <UniformGrid Columns="2" IsEnabled="{Binding FlatDeviceInfo.Connected}">
                         <UniformGrid
                             Margin="0,6,0,6"
                             VerticalAlignment="Center"
@@ -68,7 +68,7 @@
                     </UniformGrid>
                 </Border>
                 <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
-                    <UniformGrid Columns="2">
+                    <UniformGrid Columns="2" IsEnabled="{Binding FlatDeviceInfo.Connected}">
                         <UniformGrid
                             Margin="0,6,0,6"
                             VerticalAlignment="Center"
@@ -95,15 +95,13 @@
                         </UniformGrid>
                     </UniformGrid>
                 </Border>
-                <Border
-                    BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="0"
-                    IsEnabled="{Binding FlatDeviceInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                     <UniformGrid VerticalAlignment="Center" Columns="2">
                         <UniformGrid
                             Margin="0,6,0,6"
                             VerticalAlignment="Center"
-                            Columns="2">
+                            Columns="2"
+                            IsEnabled="{Binding FlatDeviceInfo.Connected}">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatDeviceLight}" />
                             <CheckBox
                                 Width="120"
@@ -116,10 +114,7 @@
                         </UniformGrid>
                     </UniformGrid>
                 </Border>
-                <Border
-                    BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="0"
-                    IsEnabled="{Binding FlatDeviceInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
+                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                     <UniformGrid Columns="2">
                         <UniformGrid
                             Margin="0,6,0,6"
