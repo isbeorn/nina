@@ -404,7 +404,6 @@ Ist dieser Auslöser deaktiviert, wird dieser Schritt übersprungen.</s:String>
     <s:String x:Key="LblFlatDeviceDisconnectQuestion" xml:space="default">Wollen Sie das Flatfield Gerät abtrennen?</s:String>
     <s:String x:Key="LblFlatDeviceInvalidResponse" xml:space="default">Ungültige Antwort from Flatfield Gerät.</s:String>
     <s:String x:Key="LblFlatDeviceLight" xml:space="default">Flatfield Gerät Licht</s:String>
-    <s:String x:Key="LblFlatDeviceManuallySelectSerialPort" xml:space="default">Serielle Schnittstelle manuell wählen</s:String>
     <s:String x:Key="LblFlatDeviceNeitherOpenNorClosed" xml:space="default">Weder offen noch geschlossen</s:String>
     <s:String x:Key="LblFlatDeviceNoDevice" xml:space="default">Kein Flatfield Gerät</s:String>
     <s:String x:Key="LblFlatDeviceOpen" xml:space="default">Öffnen</s:String>

@@ -404,7 +404,6 @@ When this trigger is deactivated the application will just skip the Start Exposu
     <s:String x:Key="LblFlatDeviceDisconnectQuestion" xml:space="default">Do you want to disconnect the flat panel?</s:String>
     <s:String x:Key="LblFlatDeviceInvalidResponse" xml:space="default">Invalid response from flat panel.</s:String>
     <s:String x:Key="LblFlatDeviceLight" xml:space="default">Flat panel light</s:String>
-    <s:String x:Key="LblFlatDeviceManuallySelectSerialPort" xml:space="default">Manually Select Serial Port</s:String>
     <s:String x:Key="LblFlatDeviceNeitherOpenNorClosed" xml:space="default">Neither open nor closed</s:String>
     <s:String x:Key="LblFlatDeviceNoDevice" xml:space="default">No Flat Panel</s:String>
     <s:String x:Key="LblFlatDeviceOpen" xml:space="default">Open</s:String>

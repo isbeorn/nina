@@ -70,7 +70,7 @@ namespace NINA.ViewModel.FlatWizard {
         private bool pauseBetweenFilters;
         private IFlatDeviceVM _flatDeviceVM;
         private IFlatDeviceMediator _flatDeviceMediator;
-        private FlatDeviceInfo _flatDeviceInfo;
+        private FlatDeviceInfo _flatDevice;
 
         public FlatWizardVM(IProfileService profileService,
                             IImagingVM imagingVM,
@@ -374,13 +374,9 @@ namespace NINA.ViewModel.FlatWizard {
             var exposureTime = wrapper.Settings.MinFlatExposureTime;
             IRenderedImage renderedImage = null;
 
-            if (_flatDeviceInfo.Connected) {
-                if (_flatDeviceInfo.SupportsOpenClose) {
-                    await _flatDeviceVM.CloseCover();
-                }
-
-                _flatDeviceVM.Brightness = wrapper.Settings.FlatDeviceBrightness;
-                _flatDeviceVM.LightOn = true;
+            if (_flatDevice != null && _flatDevice.Connected) {
+                _flatDeviceVM.Brightness = 1.0;
+                _flatDeviceVM.SetBrightnessCommand.Execute(null);
             }
 
             progress.Report(new ApplicationStatus { Status = string.Format(Locale["LblFlatExposureCalcStart"], wrapper.Settings.MinFlatExposureTime), Source = Title });
@@ -448,14 +444,29 @@ namespace NINA.ViewModel.FlatWizard {
                         break;
 
                     case FlatWizardExposureAduState.ExposureAduAboveMean:
-                        exposureTime = FlatWizardExposureTimeFinderService.GetNextExposureTime(exposureTime, wrapper);
-
-                        var result = await FlatWizardExposureTimeFinderService.EvaluateUserPromptResultAsync(renderedImage.RawImageData, exposureTime, Locale["LblFlatUserPromptFlatTooBright"], wrapper);
-
-                        if (!result.Continue) {
-                            flatSequenceCts.Cancel();
+                        if (_flatDevice != null && _flatDevice.Connected && _flatDeviceVM.Brightness >= 0.05) {
+                            _flatDeviceVM.Brightness /= 2.0;
+                            _flatDeviceVM.SetBrightnessCommand.Execute(null);
+                            exposureTime = wrapper.Settings.MinFlatExposureTime;
+                            FlatWizardExposureTimeFinderService.ClearDataPoints();
                         } else {
-                            exposureTime = result.NextExposureTime;
+                            exposureTime =
+                                FlatWizardExposureTimeFinderService.GetNextExposureTime(exposureTime, wrapper);
+
+                            var result = await FlatWizardExposureTimeFinderService.EvaluateUserPromptResultAsync(
+                                renderedImage.RawImageData, exposureTime, Locale["LblFlatUserPromptFlatTooBright"],
+                                wrapper);
+
+                            if (!result.Continue) {
+                                flatSequenceCts.Cancel();
+                            } else {
+                                if (_flatDevice != null && _flatDevice.Connected) {
+                                    _flatDeviceVM.Brightness = 1.0;
+                                    _flatDeviceVM.SetBrightnessCommand.Execute(null);
+                                }
+
+                                exposureTime = result.NextExposureTime;
+                            }
                         }
 
                         break;
@@ -495,6 +506,10 @@ namespace NINA.ViewModel.FlatWizard {
                     ProgressType2 = ApplicationStatus.StatusProgressType.ValueOfMaxValue,
                     Source = Title
                 });
+
+                if (_flatDevice != null && _flatDevice.Connected && _flatDevice.SupportsOpenClose) await _flatDeviceVM.CloseCover();
+                if (_flatDevice != null && _flatDevice.Connected) _flatDeviceVM.ToggleLightCommand.Execute((object)true);
+
                 var totalFilterCount = filters.Count();
                 foreach (var filterSettings in filters) {
                     filterCount++;
@@ -525,6 +540,7 @@ namespace NINA.ViewModel.FlatWizard {
                 return false;
             } finally {
                 Cleanup(progress);
+                if (_flatDevice != null && _flatDevice.Connected) _flatDeviceVM.ToggleLightCommand.Execute((object)false);
             }
 
             return true;
@@ -545,7 +561,6 @@ namespace NINA.ViewModel.FlatWizard {
                     ProgressType3 = ApplicationStatus.StatusProgressType.ValueOfMaxValue,
                     Source = Title
                 });
-
                 await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, filterSettings);
                 filterToExposureTime.Add(filterSettings, CalculatedExposureTime);
                 for (var i = 0; i < FlatCount; i++) {
@@ -767,7 +782,7 @@ namespace NINA.ViewModel.FlatWizard {
         }
 
         public void UpdateDeviceInfo(FlatDeviceInfo deviceInfo) {
-            this._flatDeviceInfo = deviceInfo;
+            this._flatDevice = deviceInfo;
         }
     }
 }

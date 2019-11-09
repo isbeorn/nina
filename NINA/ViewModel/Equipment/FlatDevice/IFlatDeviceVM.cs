@@ -1,5 +1,6 @@
 ﻿using NINA.Model.MyFlatDevice;
 using System.Threading.Tasks;
+using NINA.Utility;
 
 namespace NINA.ViewModel.Equipment.FlatDevice {
 
@@ -12,5 +13,8 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
         double Brightness { get; set; }
         bool LightOn { get; set; }
         FlatDeviceInfo FlatDeviceInfo { get; set; }
+
+        RelayCommand ToggleLightCommand { get; }
+        RelayCommand SetBrightnessCommand { get; }
     }
 }
