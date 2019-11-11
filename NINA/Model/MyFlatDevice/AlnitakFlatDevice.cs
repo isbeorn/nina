@@ -117,11 +117,11 @@ namespace NINA.Model.MyFlatDevice {
             set {
                 if (Connected) {
                     if (value < 0) {
-                        value = MinBrightness;
+                        value = 0;
                     }
 
                     if (value > 1) {
-                        value = MaxBrightness;
+                        value = 1;
                     }
                     var command = new SetBrightnessCommand(value * (MaxBrightness - MinBrightness) + MinBrightness);
                     var response = SendCommand<SetBrightnessResponse>(command);
@@ -245,7 +245,7 @@ namespace NINA.Model.MyFlatDevice {
 
         public void Disconnect() {
             Connected = false;
-            _serialPort.Dispose();
+            _serialPort?.Dispose();
             _serialPort = null;
         }
 

@@ -55,7 +55,7 @@ namespace NINATest {
             _mockProfileService = new Mock<IProfileService>();
             _mockProfileService.SetupProperty(m => m.ActiveProfile.FlatDeviceSettings.PortName, "");
             _sut = new AlnitakFlatDevice(_mockProfileService.Object);
-            Assert.That(_sut.Name, Is.EqualTo("Alnitak"));
+            Assert.That(_sut.Id, Is.EqualTo("817b60ab-6775-41bd-97b5-3857cc676e51"));
         }
 
         [Test]

@@ -100,10 +100,10 @@ namespace NINA.Model.MyFlatDevice {
             set {
                 if (Connected) {
                     if (value < 0) {
-                        value = MinBrightness;
+                        value = 0;
                     }
                     if (value > 1) {
-                        value = MaxBrightness;
+                        value = 1;
                     }
                     _brightness = value;
                 }

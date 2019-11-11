@@ -507,8 +507,8 @@ namespace NINA.ViewModel.FlatWizard {
                     Source = Title
                 });
 
-                if (_flatDevice != null && _flatDevice.Connected && _flatDevice.SupportsOpenClose) await _flatDeviceVM.CloseCover();
-                if (_flatDevice != null && _flatDevice.Connected) _flatDeviceVM.ToggleLightCommand.Execute((object)true);
+                if (_flatDevice != null && _flatDevice.Connected && _flatDevice.SupportsOpenClose) { await _flatDeviceVM.CloseCover(); }
+                if (_flatDevice != null && _flatDevice.Connected) { _flatDeviceVM.ToggleLightCommand.Execute((object)true); }
 
                 var totalFilterCount = filters.Count();
                 foreach (var filterSettings in filters) {
@@ -540,7 +540,7 @@ namespace NINA.ViewModel.FlatWizard {
                 return false;
             } finally {
                 Cleanup(progress);
-                if (_flatDevice != null && _flatDevice.Connected) _flatDeviceVM.ToggleLightCommand.Execute((object)false);
+                if (_flatDevice != null && _flatDevice.Connected) { _flatDeviceVM.ToggleLightCommand.Execute((object)false); }
             }
 
             return true;
@@ -590,6 +590,7 @@ namespace NINA.ViewModel.FlatWizard {
         private async Task TakeDarkFlats(IProgress<ApplicationStatus> progress, PauseToken pt) {
             if (filterToExposureTime.Count > 0 && DarkFlatCount > 0) {
                 progress.Report(new ApplicationStatus() { Status = Locale["LblPreparingDarkFlatSequence"], Source = Title });
+                if (_flatDevice != null && _flatDevice.Connected && _flatDevice.SupportsOpenClose) { await _flatDeviceVM.OpenCover(); }
                 var dialogResult = MyMessageBox.MyMessageBox.Show(
                     Locale["LblCoverScopeMsgBox"],
                     Locale["LblCoverScopeMsgBoxTitle"], MessageBoxButton.OKCancel, MessageBoxResult.OK);
