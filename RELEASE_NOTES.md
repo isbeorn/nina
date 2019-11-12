@@ -49,6 +49,16 @@
 - Image File Pattern Values will now remove leading and trailing white spaces to prevent invalid file path
 - In case illegal characters for a filename are inside some file patterns, they will now get replaced to still being able to save
 
+## Included Camera SDK Versions:
+- Altair: 39.15529.2019.906
+- Atik: 1.2.0.7
+- Canon: 3.8.20.6400
+- FLI: 1.104.0.0
+- Nikon: 1.3.1.3001
+- QHY: 0.6.0.4
+- ToupTek: 30.13342.2018.1121
+- ZWO: 1.14.11.8
+
 # Version 1.9
 
 ## Features
