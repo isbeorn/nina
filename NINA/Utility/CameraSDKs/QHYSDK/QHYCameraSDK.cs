@@ -434,6 +434,9 @@ namespace QHYCCD {
             }
         }
 
+        [DllImport(DLLNAME, EntryPoint = "BeginQHYCCDLive", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public unsafe static extern uint BeginQHYCCDLive(IntPtr handle);
+
         [DllImport(DLLNAME, EntryPoint = "CancelQHYCCDExposing", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint CancelQHYCCDExposing(IntPtr handle);
 
@@ -478,6 +481,9 @@ namespace QHYCCD {
 
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDId", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint GetQHYCCDId(uint index, StringBuilder id);
+
+        [DllImport(DLLNAME, EntryPoint = "GetQHYCCDLiveFrame", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public unsafe static extern uint GetQHYCCDLiveFrame(IntPtr handle, ref uint w, ref uint h, ref uint bpp, ref uint channels, [Out] byte[] rawArray);
 
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDMemLength", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint GetQHYCCDMemLength(IntPtr handle);
@@ -568,6 +574,9 @@ namespace QHYCCD {
 
         [DllImport(DLLNAME, EntryPoint = "ReleaseQHYCCDResource", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint ReleaseQHYCCDResource();
+
+        [DllImport(DLLNAME, EntryPoint = "StopQHYCCDLive", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public unsafe static extern uint StopQHYCCDLive(IntPtr handle);
 
         [DllImport(DLLNAME, EntryPoint = "ScanQHYCCD", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint ScanQHYCCD();
