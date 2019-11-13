@@ -202,10 +202,8 @@ namespace NINA.ViewModel {
             this.Targets.Add(GetTemplate());
         }
 
-        private void PromoteTarget(object obj)
-        {
-            if (Sequence != null)
-            {
+        private void PromoteTarget(object obj) {
+            if (Sequence != null) {
                 // Promoting a target moves it earlier in the sequence so the UI moves it to the left
                 int activeTargetIndex = Targets.IndexOf(Sequence);
                 if (activeTargetIndex > 0)
@@ -213,19 +211,16 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void DemoteTarget(object obj)
-        {
-            if (Sequence != null)
-            {
+        private void DemoteTarget(object obj) {
+            if (Sequence != null) {
                 // Demoting a target moves it later in the sequence so the UI moves it to the right
                 int activeTargetIndex = Targets.IndexOf(Sequence);
-                if ((activeTargetIndex < Targets.Count - 1) && (activeTargetIndex>-1))
+                if ((activeTargetIndex < Targets.Count - 1) && (activeTargetIndex > -1))
                     Targets.Move(activeTargetIndex, activeTargetIndex + 1);
             }
         }
 
-        private void SaveTargetSet(object obj)
-        {
+        private void SaveTargetSet(object obj) {
             Microsoft.Win32.SaveFileDialog dialog = new Microsoft.Win32.SaveFileDialog();
             dialog.InitialDirectory = ""; // if PR #319 is accepted, we can use profileService.ActiveProfile.SequenceSettings.DefaultSequenceFolder;
             dialog.Title = Locale.Loc.Instance["LblSaveTargetSet"];
@@ -234,14 +229,12 @@ namespace NINA.ViewModel {
             dialog.Filter = "N.I.N.A target set files|*." + dialog.DefaultExt;
             dialog.OverwritePrompt = true;
 
-            if (dialog.ShowDialog().Value)
-            {
+            if (dialog.ShowDialog().Value) {
                 CaptureSequenceList.SaveSequenceSet(Targets, dialog.FileName);
             }
         }
 
-        private void LoadTargetSet(object obj)
-        {
+        private void LoadTargetSet(object obj) {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
             dialog.Multiselect = false;
             dialog.Title = Locale.Loc.Instance["LblLoadTargetSet"];
@@ -250,24 +243,23 @@ namespace NINA.ViewModel {
             dialog.DefaultExt = "ninaTargetSet";
             dialog.Filter = "N.I.N.A target set files|*." + dialog.DefaultExt;
 
-            if (dialog.ShowDialog() == true)
-            {
-                using (var s = new FileStream(dialog.FileName, FileMode.Open))
-                {
+            if (dialog.ShowDialog() == true) {
+                using (var s = new FileStream(dialog.FileName, FileMode.Open)) {
                     Targets = new AsyncObservableCollection<CaptureSequenceList>(CaptureSequenceList.LoadSequenceSet(
                         s,
                         profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters,
                         profileService.ActiveProfile.AstrometrySettings.Latitude,
                         profileService.ActiveProfile.AstrometrySettings.Longitude
                     ));
-                    foreach (var l in Targets)
+                    foreach (var l in Targets) {
                         AdjustCaptureSequenceListForSynchronization(l);
+                    }
+                    Sequence = Targets.FirstOrDefault();
                 }
             }
         }
 
-        private void LoadSequence(object obj)
-        {
+        private void LoadSequence(object obj) {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
             dialog.Multiselect = true;
             dialog.Title = Locale.Loc.Instance["LblLoadSequence"];
@@ -275,12 +267,9 @@ namespace NINA.ViewModel {
             dialog.DefaultExt = ".xml";
             dialog.Filter = "XML documents|*.xml";
 
-            if (dialog.ShowDialog() == true)
-            {
-                foreach (var fileName in dialog.FileNames)
-                {
-                    using (var s = new FileStream(fileName, FileMode.Open))
-                    {
+            if (dialog.ShowDialog() == true) {
+                foreach (var fileName in dialog.FileNames) {
+                    using (var s = new FileStream(fileName, FileMode.Open)) {
                         var l = CaptureSequenceList.Load(
                             s,
                             profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters,
@@ -1412,13 +1401,10 @@ namespace NINA.ViewModel {
         public ICommand SaveTargetSetCommand { get; private set; }
         public ICommand LoadTargetSetCommand { get; private set; }
 
-        private void PromoteSequenceRow(object obj)
-        {
-            if (Sequence != null)
-            {
+        private void PromoteSequenceRow(object obj) {
+            if (Sequence != null) {
                 var idx = SelectedSequenceRowIdx;
-                if (idx > 0)
-                {
+                if (idx > 0) {
                     CaptureSequence seq = Sequence.Items[idx];
                     Sequence.RemoveAt(idx);
                     Sequence.AddAt(idx - 1, seq);
@@ -1426,13 +1412,11 @@ namespace NINA.ViewModel {
                 }
             }
         }
-        private void DemoteSequenceRow(object obj)
-        {
-            if (Sequence != null)
-            {
+
+        private void DemoteSequenceRow(object obj) {
+            if (Sequence != null) {
                 var idx = SelectedSequenceRowIdx;
-                if ((idx < Sequence.Count - 1) && (idx>-1))
-                {
+                if ((idx < Sequence.Count - 1) && (idx > -1)) {
                     CaptureSequence seq = Sequence.Items[idx];
                     Sequence.RemoveAt(idx);
                     Sequence.AddAt(idx + 1, seq);
