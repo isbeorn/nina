@@ -28,16 +28,12 @@ namespace NINA.Profile {
     public interface IPlanetariumSettings : ISettings {
         string StellariumHost { get; set; }
         int StellariumPort { get; set; }
-        int StellariumTimeout { get; set; }
         string CdCHost { get; set; }
         int CdCPort { get; set; }
-        int CdCTimeout { get; set; }
         string TSXHost { get; set; }
         int TSXPort { get; set; }
-        int TSXTimeout { get; set; }
         string HNSKYHost { get; set; }
         int HNSKYPort { get; set; }
-        int HNSKYTimeout { get; set; }
         PlanetariumEnum PreferredPlanetarium { get; set; }
     }
 }

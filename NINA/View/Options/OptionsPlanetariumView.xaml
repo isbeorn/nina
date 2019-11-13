@@ -25,8 +25,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ns="clr-namespace:NINA.Locale"
     xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
-    xmlns:util="clr-namespace:NINA.Utility"
     xmlns:sys="clr-namespace:System"
+    xmlns:util="clr-namespace:NINA.Utility"
     Name="UC"
     d:DesignHeight="300"
     d:DesignWidth="300"
@@ -41,7 +41,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <GroupBox Header="{ns:Loc LblPlanetariumPrefs}" Grid.Row="0">
+        <GroupBox Grid.Row="0" Header="{ns:Loc LblPlanetariumPrefs}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -51,9 +51,7 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                    <TextBlock
-                        VerticalAlignment="Center"
-                        Text="{ns:Loc LblPreferredPlanetarium}" />
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblPreferredPlanetarium}" />
                     <ComboBox
                         MinWidth="150"
                         Margin="10,0,0,0"
@@ -63,7 +61,7 @@
             </Grid>
         </GroupBox>
 
-        <GroupBox Header="{ns:Loc LblStellarium}" Grid.Row="1">
+        <GroupBox Grid.Row="1" Header="{ns:Loc LblStellarium}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -79,23 +77,21 @@
                         Width="140"
                         VerticalAlignment="Center"
                         Text="{ns:Loc LblHost}" />
-                    <TextBox
-                        MinWidth="200"
-                        Height="25">
+                    <TextBox Height="25" MinWidth="200">
                         <TextBox.Text>
-                            <Binding Mode="TwoWay" Path="StellariumHost">
-                            </Binding>
+                            <Binding Mode="TwoWay" Path="StellariumHost" />
                         </TextBox.Text>
                     </TextBox>
                 </StackPanel>
-                <StackPanel Margin="0,5,0,0" Orientation="Horizontal" Grid.Column="1">
+                <StackPanel
+                    Grid.Column="1"
+                    Margin="0,5,0,0"
+                    Orientation="Horizontal">
                     <TextBlock
                         Width="140"
                         VerticalAlignment="Center"
                         Text="{ns:Loc LblPort}" />
-                    <TextBox
-                        MinWidth="150"
-                        Height="25">
+                    <TextBox Height="25" MinWidth="150">
                         <TextBox.Text>
                             <Binding Mode="TwoWay" Path="StellariumPort">
                                 <Binding.ValidationRules>
@@ -105,36 +101,18 @@
                         </TextBox.Text>
                     </TextBox>
                 </StackPanel>
-                <StackPanel Margin="0,5,0,0" Orientation="Horizontal" Grid.Column="2">
-                    <TextBlock
-                        Width="140"
-                        VerticalAlignment="Center"
-                        Text="{ns:Loc LblTimeout}" />
-                    <TextBox
-                        MinWidth="100"
-                        Height="25">
-                        <TextBox.Text>
-                            <Binding Mode="TwoWay" Path="StellariumTimeout">
-                                <Binding.ValidationRules>
-                                    <rules:GreaterZeroRule />
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
-                    <TextBlock
-                        Width="20"
-                        VerticalAlignment="Center"
-                        Text="ms" />
-                </StackPanel>
-                <StackPanel Margin="0,5,0,0" Orientation="Horizontal" Grid.Row="1"  Grid.Column="1" Grid.ColumnSpan="2">
-                    <TextBlock
-                        VerticalAlignment="Center"
-                        Text="{ns:Loc LblStellariumUseNotice}" />
+                <StackPanel
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="2"
+                    Margin="0,5,0,0"
+                    Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblStellariumUseNotice}" />
                 </StackPanel>
             </Grid>
         </GroupBox>
 
-        <GroupBox Header="{ns:Loc LblCdC}" Grid.Row="2">
+        <GroupBox Grid.Row="2" Header="{ns:Loc LblCdC}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -150,23 +128,21 @@
                         Width="140"
                         VerticalAlignment="Center"
                         Text="{ns:Loc LblHost}" />
-                    <TextBox
-                        MinWidth="200"
-                        Height="25">
+                    <TextBox Height="25" MinWidth="200">
                         <TextBox.Text>
-                            <Binding Mode="TwoWay" Path="CdCHost">
-                            </Binding>
+                            <Binding Mode="TwoWay" Path="CdCHost" />
                         </TextBox.Text>
                     </TextBox>
                 </StackPanel>
-                <StackPanel Margin="0,5,0,0" Orientation="Horizontal" Grid.Column="1">
+                <StackPanel
+                    Grid.Column="1"
+                    Margin="0,5,0,0"
+                    Orientation="Horizontal">
                     <TextBlock
                         Width="140"
                         VerticalAlignment="Center"
                         Text="{ns:Loc LblPort}" />
-                    <TextBox
-                        MinWidth="150"
-                        Height="25">
+                    <TextBox Height="25" MinWidth="150">
                         <TextBox.Text>
                             <Binding Mode="TwoWay" Path="CdCPort">
                                 <Binding.ValidationRules>
@@ -176,31 +152,10 @@
                         </TextBox.Text>
                     </TextBox>
                 </StackPanel>
-                <StackPanel Margin="0,5,0,0" Orientation="Horizontal" Grid.Column="2">
-                    <TextBlock
-                        Width="140"
-                        VerticalAlignment="Center"
-                        Text="{ns:Loc LblTimeout}" />
-                    <TextBox
-                        MinWidth="100"
-                        Height="25">
-                        <TextBox.Text>
-                            <Binding Mode="TwoWay" Path="CdCTimeout">
-                                <Binding.ValidationRules>
-                                    <rules:GreaterZeroRule />
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
-                    <TextBlock
-                        Width="20"
-                        VerticalAlignment="Center"
-                        Text="ms" />
-                </StackPanel>
             </Grid>
         </GroupBox>
 
-        <GroupBox Header="{ns:Loc LblTheSkyX}" Grid.Row="3">
+        <GroupBox Grid.Row="3" Header="{ns:Loc LblTheSkyX}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -216,23 +171,21 @@
                         Width="140"
                         VerticalAlignment="Center"
                         Text="{ns:Loc LblHost}" />
-                    <TextBox
-                        MinWidth="200"
-                        Height="25">
+                    <TextBox Height="25" MinWidth="200">
                         <TextBox.Text>
-                            <Binding Mode="TwoWay" Path="TSXHost">
-                            </Binding>
+                            <Binding Mode="TwoWay" Path="TSXHost" />
                         </TextBox.Text>
                     </TextBox>
                 </StackPanel>
-                <StackPanel Margin="0,5,0,0" Orientation="Horizontal" Grid.Column="1">
+                <StackPanel
+                    Grid.Column="1"
+                    Margin="0,5,0,0"
+                    Orientation="Horizontal">
                     <TextBlock
                         Width="140"
                         VerticalAlignment="Center"
                         Text="{ns:Loc LblPort}" />
-                    <TextBox
-                        MinWidth="150"
-                        Height="25">
+                    <TextBox Height="25" MinWidth="150">
                         <TextBox.Text>
                             <Binding Mode="TwoWay" Path="TSXPort">
                                 <Binding.ValidationRules>
@@ -242,31 +195,10 @@
                         </TextBox.Text>
                     </TextBox>
                 </StackPanel>
-                <StackPanel Margin="0,5,0,0" Orientation="Horizontal" Grid.Column="2">
-                    <TextBlock
-                        Width="140"
-                        VerticalAlignment="Center"
-                        Text="{ns:Loc LblTimeout}" />
-                    <TextBox
-                        MinWidth="100"
-                        Height="25">
-                        <TextBox.Text>
-                            <Binding Mode="TwoWay" Path="TSXTimeout">
-                                <Binding.ValidationRules>
-                                    <rules:GreaterZeroRule />
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
-                    <TextBlock
-                        Width="20"
-                        VerticalAlignment="Center"
-                        Text="ms" />
-                </StackPanel>
             </Grid>
         </GroupBox>
 
-        <GroupBox Header="{ns:Loc LblHNSKY}" Grid.Row="4">
+        <GroupBox Grid.Row="4" Header="{ns:Loc LblHNSKY}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -282,23 +214,21 @@
                         Width="140"
                         VerticalAlignment="Center"
                         Text="{ns:Loc LblHost}" />
-                    <TextBox
-                        MinWidth="200"
-                        Height="25">
+                    <TextBox Height="25" MinWidth="200">
                         <TextBox.Text>
-                            <Binding Mode="TwoWay" Path="HNSKYHost">
-                            </Binding>
+                            <Binding Mode="TwoWay" Path="HNSKYHost" />
                         </TextBox.Text>
                     </TextBox>
                 </StackPanel>
-                <StackPanel Margin="0,5,0,0" Orientation="Horizontal" Grid.Column="1">
+                <StackPanel
+                    Grid.Column="1"
+                    Margin="0,5,0,0"
+                    Orientation="Horizontal">
                     <TextBlock
                         Width="140"
                         VerticalAlignment="Center"
                         Text="{ns:Loc LblPort}" />
-                    <TextBox
-                        MinWidth="150"
-                        Height="25">
+                    <TextBox Height="25" MinWidth="150">
                         <TextBox.Text>
                             <Binding Mode="TwoWay" Path="HNSKYPort">
                                 <Binding.ValidationRules>
@@ -307,27 +237,6 @@
                             </Binding>
                         </TextBox.Text>
                     </TextBox>
-                </StackPanel>
-                <StackPanel Margin="0,5,0,0" Orientation="Horizontal" Grid.Column="2">
-                    <TextBlock
-                        Width="140"
-                        VerticalAlignment="Center"
-                        Text="{ns:Loc LblTimeout}" />
-                    <TextBox
-                        MinWidth="100"
-                        Height="25">
-                        <TextBox.Text>
-                            <Binding Mode="TwoWay" Path="HNSKYTimeout">
-                                <Binding.ValidationRules>
-                                    <rules:GreaterZeroRule />
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
-                    <TextBlock
-                        Width="20"
-                        VerticalAlignment="Center"
-                        Text="ms" />
                 </StackPanel>
             </Grid>
         </GroupBox>
