@@ -1024,4 +1024,11 @@ Mueve el rectangulo sobre la parte del Encuadre que quieres hacer subsampling. T
     <s:String x:Key="LblZoomIn" xml:space="default">Acercar por 25%</s:String>
     <s:String x:Key="LblZoomOut" xml:space="default">Alejar por 25%</s:String>
     <s:String x:Key="LblZoomStretch" xml:space="default">Ajusta Imagen al area</s:String>
+    <s:String x:Key="LblLoadTargetSet" xml:space="default">Load target set</s:String>
+    <s:String x:Key="LblSaveTargetSet" xml:space="default">Save target set</s:String>
+    <s:String x:Key="LblTooltipPromoteTarget" xml:space="default">Move target left</s:String>
+    <s:String x:Key="LblTooltipDemoteTarget" xml:space="default">Move target right</s:String>
+    <s:String x:Key="LblTooltipTargetSaveSet" xml:space="default">Save current targets as a set</s:String>
+    <s:String x:Key="LblTooltipTargetLoadSet" xml:space="default">Load set of targets from a file</s:String>
+    <s:String x:Key="LblLoadSequenceSetFailed" xml:space="default">Failed to load target set</s:String>
 </ResourceDictionary>

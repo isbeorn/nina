@@ -27,6 +27,7 @@ using NINA.Utility.Notification;
 using NINA.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -124,36 +125,85 @@ namespace NINA.Model {
 
         public static CaptureSequenceList Load(Stream stream, ICollection<MyFilterWheel.FilterInfo> filters, double latitude, double longitude) {
             CaptureSequenceList l = null;
-            try {
+            try
+            {
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(CaptureSequenceList));
 
                 l = (CaptureSequenceList)xmlSerializer.Deserialize(stream);
-                foreach (CaptureSequence s in l) {
-                    if (s.FilterType != null) {
-                        //first try to match by name; otherwise match by position.
-                        var filter = filters.Where((f) => f.Name == s.FilterType.Name).FirstOrDefault();
-                        if (filter == null) {
-                            filter = filters.Where((f) => f.Position == s.FilterType.Position).FirstOrDefault();
-                            if (filter == null) {
-                                Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFilterNotFoundForPosition"], (s.FilterType.Position + 1)));
-                            }
-                        }
-                        s.FilterType = filter;
-                    }
-                }
-                if (l.ActiveSequence == null && l.Count > 0) {
-                    l.ActiveSequence = l.Items.SkipWhile(x => x.TotalExposureCount - x.ProgressExposureCount == 0).FirstOrDefault();
-                }
-                l.DSO?.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), latitude, longitude);
-            } catch (Exception ex) {
+                AdjustSequenceToMatchCurrentProfile(filters, latitude, longitude, l);
+            }
+            catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.ShowError(Locale.Loc.Instance["LblLoadSequenceFailed"] + Environment.NewLine + ex.Message);
             }
             return l;
         }
 
+        private static void AdjustSequenceToMatchCurrentProfile(ICollection<MyFilterWheel.FilterInfo> filters, double latitude, double longitude, CaptureSequenceList l)
+        {
+            foreach (CaptureSequence s in l)
+            {
+                if (s.FilterType != null)
+                {
+                    //first try to match by name; otherwise match by position.
+                    var filter = filters.Where((f) => f.Name == s.FilterType.Name).FirstOrDefault();
+                    if (filter == null)
+                    {
+                        filter = filters.Where((f) => f.Position == s.FilterType.Position).FirstOrDefault();
+                        if (filter == null)
+                        {
+                            Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFilterNotFoundForPosition"], (s.FilterType.Position + 1)));
+                        }
+                    }
+                    s.FilterType = filter;
+                }
+            }
+            if (l.ActiveSequence == null && l.Count > 0)
+            {
+                l.ActiveSequence = l.Items.SkipWhile(x => x.TotalExposureCount - x.ProgressExposureCount == 0).FirstOrDefault();
+            }
+            l.DSO?.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), latitude, longitude);
+        }
+
         public CaptureSequenceList(CaptureSequence seq) : this() {
             Add(seq);
+        }
+
+        public static void SaveSequenceSet(Collection<CaptureSequenceList> sequenceSet, string path)
+        {
+            try
+            {
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(Collection<CaptureSequenceList>));
+
+                using (StreamWriter writer = new StreamWriter(path))
+                {
+                    xmlSerializer.Serialize(writer, sequenceSet);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                Notification.ShowError(ex.Message);
+            }
+        }
+
+        public static List<CaptureSequenceList> LoadSequenceSet(Stream stream, ICollection<MyFilterWheel.FilterInfo> filters, double latitude, double longitude)
+        {
+            List<CaptureSequenceList> c = null;
+            try
+            {
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<CaptureSequenceList>));
+
+                c = (List<CaptureSequenceList>)xmlSerializer.Deserialize(stream);
+                foreach (var l in c)
+                    AdjustSequenceToMatchCurrentProfile(filters, latitude, longitude, l);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                Notification.ShowError(Locale.Loc.Instance["LblLoadSequenceSetFailed"] + Environment.NewLine + ex.Message);
+            }
+            return c;
         }
 
         public void SetSequenceTarget(DeepSkyObject dso) {
