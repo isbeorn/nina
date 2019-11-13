@@ -266,6 +266,9 @@ namespace NINA.ViewModel {
                     return;
                 }
             }
+
+            Utility.AtikSDK.AtikCameraDll.Shutdown();
+
             Application.Current.Shutdown();
         }
 
