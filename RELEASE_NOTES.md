@@ -37,6 +37,7 @@
 - Added a reset button to sky atlas to reset all filters
 - Rotator for sequence centering will now rotate to nearest orientation even if image is upside down. This is not relevant for framing after a star alignment anyways.
 - Reworked Planetarium interfacing to be more robust
+- Take current view center from Stellarium when no target is selected during coordinate import
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false

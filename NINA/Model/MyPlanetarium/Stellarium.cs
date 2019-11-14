@@ -70,13 +70,44 @@ namespace NINA.Model.MyPlanetarium {
             return null;
         }
 
+        private async Task<DeepSkyObject> GetView() {
+            string route = "/api/main/view";
+
+            var request = new HttpGetRequest(this.baseUrl + route);
+            try {
+                var response = await request.Request(new CancellationToken());
+                if (response == string.Empty) return null; ;
+
+                /* The api returns arrays in an invalid json array format so we need to remove the quotes first */
+                response = response.Replace("\"[", "[").Replace("]\"", "]");
+
+                var jobj = JObject.Parse(response);
+                var status = jobj.ToObject<StellariumView>();
+
+                var x = Angle.ByRadians(status.J2000[0]);
+                var y = Angle.ByRadians(status.J2000[1]);
+                var z = Angle.ByRadians(status.J2000[2]);
+
+                var dec = z.Asin();
+                var ra = Angle.Atan2(y, x);
+
+                var coordinates = new Coordinates(ra, dec, Epoch.J2000);
+                var dso = new DeepSkyObject(string.Empty, coordinates, string.Empty);
+
+                return dso;
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+            return null;
+        }
+
         public async Task<DeepSkyObject> GetTarget() {
             string route = "/api/objects/info?format=json";
 
             var request = new HttpGetRequest(this.baseUrl + route);
             try {
                 var response = await request.Request(new CancellationToken());
-                if (response == string.Empty) return null;
+                if (response == string.Empty) return await GetView();
 
                 var jobj = JObject.Parse(response);
                 var status = jobj.ToObject<StellariumObject>();
@@ -91,6 +122,18 @@ namespace NINA.Model.MyPlanetarium {
                 Logger.Error(ex);
             }
             return null;
+        }
+
+        private class StellariumView {
+
+            [JsonProperty(PropertyName = "altAz")]
+            public double[] AltAz;
+
+            [JsonProperty(PropertyName = "j2000")]
+            public double[] J2000;
+
+            [JsonProperty(PropertyName = "jNow")]
+            public double[] JNOW;
         }
 
         private class StellariumObject {

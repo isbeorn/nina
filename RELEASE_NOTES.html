@@ -47,6 +47,7 @@
 <li>Added a reset button to sky atlas to reset all filters</li>
 <li>Rotator for sequence centering will now rotate to nearest orientation even if image is upside down. This is not relevant for framing after a star alignment anyways.</li>
 <li>Reworked Planetarium interfacing to be more robust</li>
+<li>Take current view center from Stellarium when no target is selected during coordinate import</li>
 </ul>
 <h2 id="bug-fixes">Bug fixes</h2>
 <ul>
@@ -156,6 +157,16 @@
 <li>If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips</li>
 <li>It is now possible to set the Offset in addition to the Gain within each sequence item</li>
 <li>Added buttons to move sequence row up and down the list</li>
+<li>File handling now changed so that:
+<ul>
+<li>the default folder for sequences is set under Options -&gt; Imaging</li>
+<li>a 'modified' status is maintained for each target</li>
+<li>targets can be loaded from any xml file</li>
+<li>targets can be saved back to the file it was loaded from</li>
+<li>a 'Save as' option is added to save to a new file</li>
+<li>a warning is issued if a target is closed without saving when it has been modified.  This also applies when the application is closed.</li>
+</ul>
+</li>
 <li>Controls to change order of targets in a multi-target sequence</li>
 <li>Ability to save and load 'target sets' (a set of targets in a certain sequence)</li>
 </ul>
