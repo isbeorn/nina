@@ -416,6 +416,37 @@
                             <TextBlock
                                 Grid.Column="0"
                                 VerticalAlignment="Center"
+                                Text="{ns:Loc LblDefaultSequenceFolder}" />
+                            <TextBox
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Text="{Binding DefaultSequenceFolder}" />
+                            <Button
+                                Grid.Column="2"
+                                Width="30"
+                                Height="30"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Command="{Binding DataContext.OpenSequenceFolderDiagCommand, ElementName=UC}">
+                                <Path
+                                    Margin="4,17,4,4"
+                                    Data="{StaticResource DotsSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform" />
+                                <Button.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblDefaultSequenceFolderTooltip}" />
+                                </Button.ToolTip>
+                            </Button>
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="200" />
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="50" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
                                 Text="{ns:Loc LblSequenceTemplate}" />
                             <TextBox
                                 Grid.Column="1"

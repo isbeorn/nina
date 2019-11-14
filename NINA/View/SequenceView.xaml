@@ -52,7 +52,8 @@
                 ItemsSource="{Binding Targets}"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                SelectedItem="{Binding Sequence}">
+                SelectedItem="{Binding Sequence}"
+                >
                 <ListView.Resources>
                     <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
                         <Setter Property="Visibility" Value="Collapsed" />
@@ -97,7 +98,7 @@
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 Foreground="{StaticResource ButtonForegroundBrush}"
-                                                Text="{Binding TargetName}" />
+                                                Text="{Binding TargetNameWithModifiedIndicator}" />
                                             <Button
                                                 x:Name="PART_Close"
                                                 Grid.Column="2"
@@ -1285,7 +1286,7 @@
                     Width="40"
                     Margin="1,0,0,0"
                     Command="{Binding SaveSequenceCommand}"
-                    IsEnabled="{Binding Sequence, Converter={StaticResource InverseNullToBooleanConverter}}">
+                    IsEnabled="{Binding SequenceSaveable}">
                     <Button.ToolTip>
                         <ToolTip ToolTipService.ShowOnDisabled="True">
                             <TextBlock Text="{ns:Loc LblSaveSequenceToolTip}" />
@@ -1294,6 +1295,23 @@
                     <Path
                         Margin="5"
                         Data="{StaticResource SaveSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                </Button>
+
+                <Button
+                    Width="40"
+                    Margin="1,0,0,0"
+                    Command="{Binding SaveAsSequenceCommand}"
+                    IsEnabled="{Binding Sequence, Converter={StaticResource InverseNullToBooleanConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblSaveAsSequenceToolTip}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource SaveAsSVG}"
                         Fill="{StaticResource ButtonForegroundBrush}"
                         Stretch="Uniform" />
                 </Button>

@@ -127,6 +127,13 @@
 - If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips
 - It is now possible to set the Offset in addition to the Gain within each sequence item
 - Added buttons to move sequence row up and down the list 
+- File handling now changed so that:
+  - the default folder for sequences is set under Options -> Imaging
+  - a 'modified' status is maintained for each target
+  - targets can be loaded from any xml file
+  - targets can be saved back to the file it was loaded from
+  - a 'Save as' option is added to save to a new file
+  - a warning is issued if a target is closed without saving when it has been modified.  This also applies when the application is closed.
 - Controls to change order of targets in a multi-target sequence
 - Ability to save and load 'target sets' (a set of targets in a certain sequence)
 

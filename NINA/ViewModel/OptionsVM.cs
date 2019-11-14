@@ -53,6 +53,7 @@ namespace NINA.ViewModel {
             PreviewFileCommand = new RelayCommand(PreviewFile);
             OpenImageFileDiagCommand = new RelayCommand(OpenImageFileDiag);
             OpenSequenceTemplateDiagCommand = new RelayCommand(OpenSequenceTemplateDiag);
+            OpenSequenceFolderDiagCommand = new RelayCommand(OpenSequenceFolderDiag);
             OpenCygwinFileDiagCommand = new RelayCommand(OpenCygwinFileDiag);
             OpenPS2FileDiagCommand = new RelayCommand(OpenPS2FileDiag);
             OpenPHD2DiagCommand = new RelayCommand(OpenPHD2FileDiag);
@@ -275,6 +276,18 @@ namespace NINA.ViewModel {
             }
         }
 
+        private void OpenSequenceFolderDiag(object o) {
+            using (var diag = new System.Windows.Forms.FolderBrowserDialog())
+            {
+                diag.SelectedPath = ActiveProfile.SequenceSettings.DefaultSequenceFolder;
+                System.Windows.Forms.DialogResult result = diag.ShowDialog();
+                if (result == System.Windows.Forms.DialogResult.OK)
+                {
+                    ActiveProfile.SequenceSettings.DefaultSequenceFolder = diag.SelectedPath + "\\";
+                }
+            }
+        }
+
         private void OpenCygwinFileDiag(object o) {
             using (var dialog = new System.Windows.Forms.FolderBrowserDialog()) {
                 dialog.SelectedPath = profileService.ActiveProfile.PlateSolveSettings.CygwinLocation;
@@ -366,6 +379,7 @@ namespace NINA.ViewModel {
         public ICommand OpenImageFileDiagCommand { get; private set; }
 
         public ICommand OpenSequenceTemplateDiagCommand { get; private set; }
+        public ICommand OpenSequenceFolderDiagCommand { get; private set; }
 
         public ICommand OpenWebRequestCommand { get; private set; }
 

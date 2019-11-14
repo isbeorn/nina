@@ -111,6 +111,7 @@ namespace NINA.ViewModel {
             ResetSequenceRowCommand = new RelayCommand(ResetSequenceRow, ResetSequenceRowEnabled);
             StartSequenceCommand = new AsyncCommand<bool>(() => StartSequencing(new Progress<ApplicationStatus>(p => Status = p)), (object o) => !imagingMediator.IsLooping);
             SaveSequenceCommand = new RelayCommand(SaveSequence);
+            SaveAsSequenceCommand = new RelayCommand(SaveAsSequence);
             LoadSequenceCommand = new RelayCommand(LoadSequence);
             CancelSequenceCommand = new RelayCommand(CancelSequence);
             PauseSequenceCommand = new RelayCommand(PauseSequence, (object o) => !_pauseTokenSource?.IsPaused == true);
@@ -135,6 +136,14 @@ namespace NINA.ViewModel {
             };
 
             autoUpdateTimer.Start();
+
+            PropertyChanged += SequenceVM_PropertyChanged;
+        }
+
+        private void SequenceVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Sequence))
+                ActiveSequenceChanged();
         }
 
         private ImageHistoryVM imgHistoryVM;
@@ -170,6 +179,18 @@ namespace NINA.ViewModel {
         private void RemoveTarget(object obj) {
             if (this.Targets.Count > 1) {
                 var l = (CaptureSequenceList)obj;
+
+                if (l.HasChanged)
+                {
+                    if (MyMessageBox.MyMessageBox.Show(
+                        string.Format(Locale.Loc.Instance["LblChangedSequenceWarning"], l.TargetName),
+                        Locale.Loc.Instance["LblChangedSequenceWarningTitle"], System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel) != System.Windows.MessageBoxResult.OK)
+                    {
+                        return;
+                    }
+                }
+
+
                 var switchTab = false;
                 if (Object.Equals(l, Sequence)) {
                     switchTab = true;
@@ -200,6 +221,7 @@ namespace NINA.ViewModel {
 
         private void AddTarget(object obj) {
             this.Targets.Add(GetTemplate());
+            Sequence = Targets.Last();
         }
 
         private void PromoteTarget(object obj) {
@@ -222,7 +244,7 @@ namespace NINA.ViewModel {
 
         private void SaveTargetSet(object obj) {
             Microsoft.Win32.SaveFileDialog dialog = new Microsoft.Win32.SaveFileDialog();
-            dialog.InitialDirectory = ""; // if PR #319 is accepted, we can use profileService.ActiveProfile.SequenceSettings.DefaultSequenceFolder;
+            dialog.InitialDirectory = profileService.ActiveProfile.SequenceSettings.DefaultSequenceFolder;
             dialog.Title = Locale.Loc.Instance["LblSaveTargetSet"];
             dialog.FileName = "";
             dialog.DefaultExt = "ninaTargetSet";
@@ -238,7 +260,7 @@ namespace NINA.ViewModel {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
             dialog.Multiselect = false;
             dialog.Title = Locale.Loc.Instance["LblLoadTargetSet"];
-            dialog.InitialDirectory = ""; // if PR #319 is accepted, we can use profileService.ActiveProfile.SequenceSettings.DefaultSequenceFolder;
+            dialog.InitialDirectory = profileService.ActiveProfile.SequenceSettings.DefaultSequenceFolder;
             dialog.FileName = "";
             dialog.DefaultExt = "ninaTargetSet";
             dialog.Filter = "N.I.N.A target set files|*." + dialog.DefaultExt;
@@ -260,6 +282,7 @@ namespace NINA.ViewModel {
         }
 
         private void LoadSequence(object obj) {
+            // LoadSequence loads .xml files indivually - user may select any number of files from same folder
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
             dialog.Multiselect = true;
             dialog.Title = Locale.Loc.Instance["LblLoadSequence"];
@@ -268,17 +291,18 @@ namespace NINA.ViewModel {
             dialog.Filter = "XML documents|*.xml";
 
             if (dialog.ShowDialog() == true) {
-                foreach (var fileName in dialog.FileNames) {
-                    using (var s = new FileStream(fileName, FileMode.Open)) {
-                        var l = CaptureSequenceList.Load(
-                            s,
-                            profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters,
-                            profileService.ActiveProfile.AstrometrySettings.Latitude,
-                            profileService.ActiveProfile.AstrometrySettings.Longitude
-                        );
-                        AdjustCaptureSequenceListForSynchronization(l);
-                        this.Targets.Add(l);
-                    }
+                foreach (var fileName in dialog.FileNames)
+                {
+                    var l = CaptureSequenceList.Load(fileName,
+                        profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters,
+                        profileService.ActiveProfile.AstrometrySettings.Latitude,
+                        profileService.ActiveProfile.AstrometrySettings.Longitude
+                    );
+                    AdjustCaptureSequenceListForSynchronization(l);
+                    this.Targets.Add(l);
+
+                    // set the last one loaded as the current sequence
+                    Sequence = l;
                 }
             }
         }
@@ -293,18 +317,48 @@ namespace NINA.ViewModel {
             }
         }
 
-        private void SaveSequence(object obj) {
-            using (var dialog = new System.Windows.Forms.FolderBrowserDialog()) {
-                dialog.Description = Locale.Loc.Instance["LblSaveSequence"];
+        public bool OKtoExit()
+        {
+            if (Targets.Any(t => t.HasChanged))
+                if (MyMessageBox.MyMessageBox.Show(
+                    string.Format(Locale.Loc.Instance["LblChangedSequenceWarning"],
+                        Targets.Where(t => t.HasChanged)
+                                .Aggregate("", (list, t) => list + ", " + t.TargetName)
+                                .TrimStart(new char[] { ',', ' ' })),
+                    Locale.Loc.Instance["LblChangedSequenceWarningTitle"], System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel) != System.Windows.MessageBoxResult.OK)
+                    return false;
 
-                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                    var path = dialog.SelectedPath;
+            return true;
+        }
 
-                    foreach (var target in Targets) {
-                        var filePath = Utility.Utility.GetUniqueFilePath(Path.Combine(path, target.TargetName + ".xml"));
-                        target.Save(filePath);
-                    }
-                }
+        private void SaveSequence(object obj)
+        {
+            // SaveSequence now saves only the active sequence
+            if (!Sequence.HasFileName)
+            {
+                SaveAsSequence(obj);
+            }
+            else
+            {
+                Sequence.Save(Sequence.SequenceFileName);
+            }
+        }
+
+        private void SaveAsSequence(object obj)
+        {
+            Microsoft.Win32.SaveFileDialog dialog = new Microsoft.Win32.SaveFileDialog();
+            dialog.InitialDirectory = profileService.ActiveProfile.SequenceSettings.DefaultSequenceFolder;
+            dialog.Title = Locale.Loc.Instance["LblSaveAsSequence"];
+            dialog.FileName = Sequence.TargetName;
+            dialog.DefaultExt = ".xml";
+            dialog.Filter = "XML documents|*.xml";
+            dialog.OverwritePrompt = true;
+
+            if (dialog.ShowDialog().Value)
+            {
+                Sequence.SequenceFileName = dialog.FileName;
+
+                Sequence.Save(Sequence.SequenceFileName);
             }
         }
 
@@ -1155,17 +1209,17 @@ namespace NINA.ViewModel {
 
         private CaptureSequenceList GetTemplate() {
             CaptureSequenceList csl = null;
-            if (File.Exists(profileService.ActiveProfile.SequenceSettings.TemplatePath)) {
-                using (var s = new FileStream(profileService.ActiveProfile.SequenceSettings.TemplatePath, FileMode.Open)) {
-                    csl = CaptureSequenceList.Load(
-                        s,
-                        profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters,
-                        profileService.ActiveProfile.AstrometrySettings.Latitude,
-                        profileService.ActiveProfile.AstrometrySettings.Longitude
-                    );
-                    AdjustCaptureSequenceListForSynchronization(csl);
-                }
-            } else {
+            if (File.Exists(profileService.ActiveProfile.SequenceSettings.TemplatePath))
+            {
+                csl = CaptureSequenceList.Load(profileService.ActiveProfile.SequenceSettings.TemplatePath,
+                    profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters,
+                    profileService.ActiveProfile.AstrometrySettings.Latitude,
+                    profileService.ActiveProfile.AstrometrySettings.Longitude
+                );
+                AdjustCaptureSequenceListForSynchronization(csl);
+            }
+            else
+            {
                 var seq = new CaptureSequence();
                 csl = new CaptureSequenceList(seq) { TargetName = "Target" };
                 csl.DSO?.SetDateAndPosition(
@@ -1175,6 +1229,8 @@ namespace NINA.ViewModel {
                 );
                 AdjustCaptureSequenceListForSynchronization(csl);
             }
+
+            csl.MarkAsUnchanged();
             return csl;
         }
 
@@ -1210,6 +1266,15 @@ namespace NINA.ViewModel {
                     DeepSkyObjectSearchVM.TargetName = Sequence.TargetName;
                 }
             }
+            if (e.PropertyName == nameof(CaptureSequenceList.HasChanged))
+            {
+                RaisePropertyChanged(nameof(SequenceSaveable));
+                RaisePropertyChanged(nameof(SequenceModified));
+            }
+            if (e.PropertyName == nameof(CaptureSequenceList.HasFileName))
+            {
+                RaisePropertyChanged(nameof(HasSequenceFileName));
+            }
         }
 
         private int _selectedSequenceIdx;
@@ -1244,6 +1309,9 @@ namespace NINA.ViewModel {
 
         private int AfHfrIndex = 0;
 
+        public bool SequenceModified { get { return (Sequence != null) && (Sequence.HasChanged); }}
+        public bool HasSequenceFileName { get { return (Sequence != null) && (Sequence.HasFileName); } }
+        public bool SequenceSaveable { get { return SequenceModified && HasSequenceFileName; } }
         public ObservableCollection<string> ImageTypes {
             get {
                 if (_imageTypes == null) {
@@ -1395,6 +1463,7 @@ namespace NINA.ViewModel {
         public ICommand ResumeSequenceCommand { get; private set; }
         public ICommand LoadSequenceCommand { get; private set; }
         public ICommand SaveSequenceCommand { get; private set; }
+        public ICommand SaveAsSequenceCommand { get; private set; }
 
         public ICommand PromoteTargetCommand { get; private set; }
         public ICommand DemoteTargetCommand { get; private set; }
@@ -1433,6 +1502,14 @@ namespace NINA.ViewModel {
                 }
             }
             this.guiderInfo = deviceInfo;
+        }
+
+        internal void ActiveSequenceChanged()
+        {
+            // refresh properties that depend on Sequence
+            RaisePropertyChanged(nameof(SequenceModified));
+            RaisePropertyChanged(nameof(HasSequenceFileName));
+            RaisePropertyChanged(nameof(SequenceSaveable));
         }
 
         public void Dispose() {

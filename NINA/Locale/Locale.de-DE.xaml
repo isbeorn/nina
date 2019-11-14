@@ -1023,6 +1023,14 @@ Lichtverschmutzten Gebieten. Berechnungszeit ist jedoch erhöht.</s:String>
     <s:String x:Key="LblZoomIn" xml:space="default">25% hineinzoomen</s:String>
     <s:String x:Key="LblZoomOut" xml:space="default">25% herauszoomen</s:String>
     <s:String x:Key="LblZoomStretch" xml:space="default">Passe Bildgröße an Fläche an</s:String>
+    <s:String x:Key="LblSaveAsSequence" xml:space="default">Save Sequence as new file</s:String>
+    <s:String x:Key="LblSaveAsSequenceToolTip" xml:space="default">Save Sequence as new xml file</s:String>
+    <s:String x:Key="LblDefaultSequenceFolder" xml:space="default">Default folder for sequence files</s:String>
+    <s:String x:Key="LblDefaultSequenceFolderTooltip" xml:space="default">Sequences will be loaded from and saved to the folder specified here</s:String>
+    <s:String x:Key="LblChangedSequenceWarningTitle" xml:space="default">Closing modified sequence</s:String>
+    <s:String x:Key="LblChangedSequenceWarning" xml:space="preserve">The sequence for the target(s) '{0}' have been modified since it was last saved (or has not been saved yet).
+        
+Do you want to close the sequence and lose the changes anyway?</s:String>
     <s:String x:Key="LblLoadTargetSet" xml:space="default">Load target set</s:String>
     <s:String x:Key="LblSaveTargetSet" xml:space="default">Save target set</s:String>
     <s:String x:Key="LblTooltipPromoteTarget" xml:space="default">Move target left</s:String>

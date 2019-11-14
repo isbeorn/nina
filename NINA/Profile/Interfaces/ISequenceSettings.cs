@@ -31,5 +31,6 @@ namespace NINA.Profile {
         long TimeSpanInTicks { get; set; }
         bool ParkMountAtSequenceEnd { get; set; }
         bool WarmCamAtSequenceEnd {  get; set; }
+        string DefaultSequenceFolder { get; set; }
     }
 }
