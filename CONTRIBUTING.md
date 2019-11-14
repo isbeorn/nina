@@ -128,7 +128,8 @@ This database will be automatically created by the EntityFramework based on the 
 ## Setting up the developer environment
 
 * Install Visual Studio Community 2017 or better
-* External dependencies are automatically installed via nuget (except Camera vendor DLLs)
+* Install [ASCOM](https://ascom-standards.org/Downloads/Index.htm)
+* Other external dependencies are automatically installed via nuget (except Camera vendor DLLs)
 * External Camera Vendor SDK DLLs have to be manually put inside the project to \NINA\External\ &lt;x64 and x32&gt;\
     * To get Canon and Nikon DLLs you have to register as a developer for canon and nikon separately on their websites
 	* Altair SDK: reach out to AltairAstro. They can provide you with their sdk. Contact details at https://cameras.altairastro.com/
