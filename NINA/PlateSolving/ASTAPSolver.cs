@@ -21,14 +21,14 @@
 
 #endregion "copyright"
 
+using NINA.Utility.Astrometry;
+using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using NINA.Utility.Astrometry;
-using NINA.Utility.Notification;
 
 namespace NINA.PlateSolving {
 
@@ -50,7 +50,7 @@ namespace NINA.PlateSolving {
             PlateSolveImageProperties imageProperties) {
             var result = new PlateSolveResult() { Success = false };
             if (!File.Exists(outputFilePath)) {
-                Notification.ShowError("Plate solve failed. No output file found.");
+                Notification.ShowError("ASTAP - Plate solve failed. No output file found.");
                 return result;
             }
 
@@ -58,9 +58,17 @@ namespace NINA.PlateSolving {
                 .Where(line => !string.IsNullOrWhiteSpace(line))
                 .Select(line => line.Split(new char[] { '=' }, 2, 0))
                 .ToDictionary(parts => parts[0], parts => parts[1]);
+
+            dict.TryGetValue("WARNING", out var warning);
+
             if (!dict.ContainsKey("PLTSOLVD") || dict["PLTSOLVD"] != "T") {
-                Notification.ShowError("Plate solve failed.");
+                dict.TryGetValue("ERROR", out var error);
+                Notification.ShowError($"ASTAP - Plate solve failed.{Environment.NewLine}{warning}{Environment.NewLine}{error}");
                 return result;
+            }
+
+            if (!string.IsNullOrWhiteSpace(warning)) {
+                Notification.ShowWarning($"ASTAP - {warning}");
             }
 
             result.Success = true;
