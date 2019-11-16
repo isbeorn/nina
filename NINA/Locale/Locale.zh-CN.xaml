@@ -306,7 +306,7 @@
     <s:String x:Key="LblDebayeredHFRTooltip" xml:space="default">使用转色图像进行 HFR 计算。更精确，但更耗资源。</s:String>
     <s:String x:Key="LblDebayerImage" xml:space="default">图像转色</s:String>
     <s:String x:Key="LblDebayerImageTooltip" xml:space="default">使用转色图像预览（不会影响原始文件）</s:String>
-    <s:String x:Key="LblDebayeringImage" xml:space="default">正在转色</s:String>
+    <s:String x:Key="LblDebayeringImage" xml:space="default">转色中</s:String>
     <s:String x:Key="LblDebug" xml:space="default">调试</s:String>
     <s:String x:Key="LblDec" xml:space="default">赤纬</s:String>
     <s:String x:Key="LblDecCorrections" xml:space="default">赤纬修正</s:String>
@@ -522,8 +522,8 @@
     <s:String x:Key="LblInvalidModeBulb" xml:space="default">曝光时间模式（B门）无效 &lt;1s</s:String>
     <s:String x:Key="LblInvalidModeManual" xml:space="default">曝光时间模式（M）无效 &gt;30s</s:String>
     <s:String x:Key="LblIsBayered" xml:space="default">可以转色</s:String>
-    <s:String x:Key="LblIsMoving" xml:space="default">正在移动</s:String>
-    <s:String x:Key="LblIsSettling" xml:space="default">正在稳定</s:String>
+    <s:String x:Key="LblIsMoving" xml:space="default">移动中</s:String>
+    <s:String x:Key="LblIsSettling" xml:space="default">稳定中</s:String>
     <s:String x:Key="LblItemsPerPage" xml:space="default">每页显示</s:String>
     <s:String x:Key="LblJ2000" xml:space="default">J2000</s:String>
     <s:String x:Key="LblJNOW" xml:space="default">JNOW</s:String>
