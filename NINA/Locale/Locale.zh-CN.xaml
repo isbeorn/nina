@@ -162,6 +162,10 @@
     <s:String x:Key="LblCenterRAhms" xml:space="default">中心赤经 hms</s:String>
     <s:String x:Key="LblCenterTarget" xml:space="default">目标居中</s:String>
     <s:String x:Key="LblChange" xml:space="default">修改</s:String>
+    <s:String x:Key="LblChangedSequenceWarning" xml:space="preserve">The sequence for the target(s) '{0}' have been modified since it was last saved (or has not been saved yet).
+        
+Do you want to close the sequence and lose the changes anyway?</s:String>
+    <s:String x:Key="LblChangedSequenceWarningTitle" xml:space="default">Closing modified sequence</s:String>
     <s:String x:Key="LblChangeToBulbMode" xml:space="default">请将模式转盘更改为B门模式</s:String>
     <s:String x:Key="LblChangeToManualMode" xml:space="default">请将模式转盘更改为M模式</s:String>
     <s:String x:Key="LblCheckMeridianFlip" xml:space="default">检查中天翻转</s:String>
@@ -310,6 +314,8 @@
     <s:String x:Key="LblDeclination" xml:space="default">赤纬</s:String>
     <s:String x:Key="LblDecPixError" xml:space="default">赤纬像素误差</s:String>
     <s:String x:Key="LblDefaultAutoFocusExposureTime" xml:space="default">默认曝光时间</s:String>
+    <s:String x:Key="LblDefaultSequenceFolder" xml:space="default">Default folder for sequence files</s:String>
+    <s:String x:Key="LblDefaultSequenceFolderTooltip" xml:space="default">Sequences will be loaded from and saved to the folder specified here</s:String>
     <s:String x:Key="LblDegree" xml:space="default">度</s:String>
     <s:String x:Key="LblDegreeShort" xml:space="default">°</s:String>
     <s:String x:Key="LblDeleteProfileInUseWarning" xml:space="default">无法删除个人资料。 它正被另一个 N.I.N.A 实例使用。</s:String>
@@ -533,7 +539,9 @@
     <s:String x:Key="LblLoadProfileInUseWarning" xml:space="default">无法加载个人资料。它正被另一个 N.I.N.A. 使用！</s:String>
     <s:String x:Key="LblLoadSequence" xml:space="default">加载序列</s:String>
     <s:String x:Key="LblLoadSequenceFailed" xml:space="default">加载序列失败</s:String>
+    <s:String x:Key="LblLoadSequenceSetFailed" xml:space="default">Failed to load target set</s:String>
     <s:String x:Key="LblLoadSequenceToolTip" xml:space="default">从xml文件加载序列</s:String>
+    <s:String x:Key="LblLoadTargetSet" xml:space="default">Load target set</s:String>
     <s:String x:Key="LblLocalPlatesolver" xml:space="default">本地解析</s:String>
     <s:String x:Key="LblLocation" xml:space="default">位置</s:String>
     <s:String x:Key="LblLogLevel" xml:space="default">日志等级</s:String>
@@ -786,12 +794,15 @@
     <s:String x:Key="LblRotatorConnected" xml:space="default">旋转器连接</s:String>
     <s:String x:Key="LblRotatorConnectionLost" xml:space="default">旋转器连接丢失!请重新连接旋转!</s:String>
     <s:String x:Key="LblSave" xml:space="default">保存</s:String>
+    <s:String x:Key="LblSaveAsSequence" xml:space="default">Save Sequence as new file</s:String>
+    <s:String x:Key="LblSaveAsSequenceToolTip" xml:space="default">Save Sequence as new xml file</s:String>
     <s:String x:Key="LblSaveBacklashQuestion" xml:space="default">保存电调回差数据？</s:String>
     <s:String x:Key="LblSaveImageAs" xml:space="default">图像另存为</s:String>
     <s:String x:Key="LblSaveImageAsDSLRNote" xml:space="default">对于 DSLR，忽略图像文件格式设置。将保存原始格式！</s:String>
     <s:String x:Key="LblSaveSelectedProfileAndDontAskAgain" xml:space="default">保存选定的配置文件，下次不再询问</s:String>
     <s:String x:Key="LblSaveSequence" xml:space="default">保存序列</s:String>
     <s:String x:Key="LblSaveSequenceToolTip" xml:space="default">将序列保存为 XML 文件</s:String>
+    <s:String x:Key="LblSaveTargetSet" xml:space="default">Save target set</s:String>
     <s:String x:Key="LblScopeSettleTimeAfterFlip" xml:space="default">翻转后稳定时间(秒)</s:String>
     <s:String x:Key="LblSearch" xml:space="default">搜索</s:String>
     <s:String x:Key="LblSearchRadius" xml:space="default">搜索半径</s:String>
@@ -945,10 +956,12 @@
 将矩形拖到有鱼骨板星芒的星点上。NINA将尝试检测峰值并显示误差。</s:String>
     <s:String x:Key="LblTooltipCrossHair" xml:space="default">打开/关闭十字准线</s:String>
     <s:String x:Key="LblTooltipDemoteSequenceRow" xml:space="default">将所选行向下移动</s:String>
+    <s:String x:Key="LblTooltipDemoteTarget" xml:space="default">Move target right</s:String>
     <s:String x:Key="LblTooltipDetectStars" xml:space="default">自动星点检测分析开关（HFR）</s:String>
     <s:String x:Key="LblToolTipLiveView" xml:space="default">实时预览</s:String>
     <s:String x:Key="LblTooltipLoop" xml:space="default">循环拍摄开关</s:String>
     <s:String x:Key="LblTooltipPromoteSequenceRow" xml:space="default">将所选行向上移动</s:String>
+    <s:String x:Key="LblTooltipPromoteTarget" xml:space="default">Move target left</s:String>
     <s:String x:Key="LblTooltipRemoveSequence" xml:space="default">从序列列表中删除所选行</s:String>
     <s:String x:Key="LblTooltipResetSequence" xml:space="default">重置序列列表中所选行的进度</s:String>
     <s:String x:Key="LblTooltipResetTarget" xml:space="default">重置当前所有序列项的进度</s:String>
@@ -956,6 +969,8 @@
     <s:String x:Key="LblToolTipSubSample" xml:space="preserve">子采样（区域读取）
 将矩形拖到要进行子采样的区域，然后在“捕捉”中启用子采样。您的相机将只下载所选区域。</s:String>
     <s:String x:Key="LblTooltipTakeExposure" xml:space="default">开始曝光</s:String>
+    <s:String x:Key="LblTooltipTargetLoadSet" xml:space="default">Load set of targets from a file</s:String>
+    <s:String x:Key="LblTooltipTargetSaveSet" xml:space="default">Save current targets as a set</s:String>
     <s:String x:Key="LblTotalNo" xml:space="default">拍摄张数</s:String>
     <s:String x:Key="LblToupTekCameraSetup" xml:space="default">ToupTek 相机设置</s:String>
     <s:String x:Key="LblTrace" xml:space="default">跟踪</s:String>
@@ -1024,19 +1039,4 @@
     <s:String x:Key="LblZoomIn" xml:space="default">放大25%</s:String>
     <s:String x:Key="LblZoomOut" xml:space="default">缩小25%</s:String>
     <s:String x:Key="LblZoomStretch" xml:space="default">图像与区域匹配</s:String>
-    <s:String x:Key="LblSaveAsSequence" xml:space="default">Save Sequence as new file</s:String>
-    <s:String x:Key="LblSaveAsSequenceToolTip" xml:space="default">Save Sequence as new xml file</s:String>
-    <s:String x:Key="LblDefaultSequenceFolder" xml:space="default">Default folder for sequence files</s:String>
-    <s:String x:Key="LblDefaultSequenceFolderTooltip" xml:space="default">Sequences will be loaded from and saved to the folder specified here</s:String>
-    <s:String x:Key="LblChangedSequenceWarningTitle" xml:space="default">Closing modified sequence</s:String>
-    <s:String x:Key="LblChangedSequenceWarning" xml:space="preserve">The sequence for the target(s) '{0}' have been modified since it was last saved (or has not been saved yet).
-        
-Do you want to close the sequence and lose the changes anyway?</s:String>
-    <s:String x:Key="LblLoadTargetSet" xml:space="default">Load target set</s:String>
-    <s:String x:Key="LblSaveTargetSet" xml:space="default">Save target set</s:String>
-    <s:String x:Key="LblTooltipPromoteTarget" xml:space="default">Move target left</s:String>
-    <s:String x:Key="LblTooltipDemoteTarget" xml:space="default">Move target right</s:String>
-    <s:String x:Key="LblTooltipTargetSaveSet" xml:space="default">Save current targets as a set</s:String>
-    <s:String x:Key="LblTooltipTargetLoadSet" xml:space="default">Load set of targets from a file</s:String>
-    <s:String x:Key="LblLoadSequenceSetFailed" xml:space="default">Failed to load target set</s:String>
 </ResourceDictionary>

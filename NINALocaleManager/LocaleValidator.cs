@@ -50,7 +50,7 @@ namespace NINALocaleManager {
                 if (detectedKeys.Count() > 0) {
                     missingKeys[locale.Name] = new List<FixLocale>();
                     foreach (var key in detectedKeys) {
-                        missingKeys[locale.Name].Add(new FixLocale() { Key = key, Value = string.Empty });
+                        missingKeys[locale.Name].Add(new FixLocale() { Key = key, Value = locales.FirstOrDefault(x => x.Name == "Locale")?.Entries.FirstOrDefault(x => x.Key == key).Value ?? string.Empty });
                     }
                 }
             }

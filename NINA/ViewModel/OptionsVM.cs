@@ -209,7 +209,7 @@ namespace NINA.ViewModel {
         private void SetAutoFocusFilter(object obj) {
             if (SelectedFilter != null) {
                 foreach (FilterInfo filter in ActiveProfile.FilterWheelSettings.FilterWheelFilters) {
-                    if (filter != SelectedFilter) { 
+                    if (filter != SelectedFilter) {
                         filter.AutoFocusFilter = false;
                     } else {
                         SelectedFilter.AutoFocusFilter = !SelectedFilter.AutoFocusFilter;
@@ -277,12 +277,10 @@ namespace NINA.ViewModel {
         }
 
         private void OpenSequenceFolderDiag(object o) {
-            using (var diag = new System.Windows.Forms.FolderBrowserDialog())
-            {
+            using (var diag = new System.Windows.Forms.FolderBrowserDialog()) {
                 diag.SelectedPath = ActiveProfile.SequenceSettings.DefaultSequenceFolder;
                 System.Windows.Forms.DialogResult result = diag.ShowDialog();
-                if (result == System.Windows.Forms.DialogResult.OK)
-                {
+                if (result == System.Windows.Forms.DialogResult.OK) {
                     ActiveProfile.SequenceSettings.DefaultSequenceFolder = diag.SelectedPath + "\\";
                 }
             }
@@ -418,7 +416,8 @@ namespace NINA.ViewModel {
             new CultureInfo("de-DE"),
             new CultureInfo("it-IT"),
             new CultureInfo("es-US"),
-            new CultureInfo("zh-CN")
+            new CultureInfo("zh-CN"),
+            new CultureInfo("zh-TW")
         };
 
         public ObservableCollection<CultureInfo> AvailableLanguages {

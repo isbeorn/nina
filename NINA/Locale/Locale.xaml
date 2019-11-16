@@ -162,6 +162,10 @@ able to compensate for ambient temperature variations</s:String>
     <s:String x:Key="LblCenterRAhms" xml:space="default">Center RA hms</s:String>
     <s:String x:Key="LblCenterTarget" xml:space="default">Center target</s:String>
     <s:String x:Key="LblChange" xml:space="default">Change</s:String>
+    <s:String x:Key="LblChangedSequenceWarning" xml:space="preserve">The sequence for the target(s) '{0}' have been modified since it was last saved (or has not been saved yet).
+        
+Do you want to close the sequence and lose the changes anyway?</s:String>
+    <s:String x:Key="LblChangedSequenceWarningTitle" xml:space="default">Closing modified sequence</s:String>
     <s:String x:Key="LblChangeToBulbMode" xml:space="default">Please change the mode dial to bulb mode</s:String>
     <s:String x:Key="LblChangeToManualMode" xml:space="default">Please change the mode dial to manual mode</s:String>
     <s:String x:Key="LblCheckMeridianFlip" xml:space="default">Check Meridian Flip</s:String>
@@ -310,6 +314,8 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
     <s:String x:Key="LblDeclination" xml:space="default">Declination</s:String>
     <s:String x:Key="LblDecPixError" xml:space="default">Dec Pix Error</s:String>
     <s:String x:Key="LblDefaultAutoFocusExposureTime" xml:space="default">Default Auto Focus Exposure Time</s:String>
+    <s:String x:Key="LblDefaultSequenceFolder" xml:space="default">Default folder for sequence files</s:String>
+    <s:String x:Key="LblDefaultSequenceFolderTooltip" xml:space="default">Sequences will be loaded from and saved to the folder specified here</s:String>
     <s:String x:Key="LblDegree" xml:space="default">degree</s:String>
     <s:String x:Key="LblDegreeShort" xml:space="default">°</s:String>
     <s:String x:Key="LblDeleteProfileInUseWarning" xml:space="default">Cannot delete profile. It is already in use by another N.I.N.A. instance!</s:String>
@@ -533,7 +539,9 @@ Calculated HFR: {2}
     <s:String x:Key="LblLoadProfileInUseWarning" xml:space="default">Cannot load profile. It is already in use by another N.I.N.A. instance!</s:String>
     <s:String x:Key="LblLoadSequence" xml:space="default">Load Sequence</s:String>
     <s:String x:Key="LblLoadSequenceFailed" xml:space="default">Load sequence failed</s:String>
+    <s:String x:Key="LblLoadSequenceSetFailed" xml:space="default">Failed to load target set</s:String>
     <s:String x:Key="LblLoadSequenceToolTip" xml:space="default">Load Sequence from xml file</s:String>
+    <s:String x:Key="LblLoadTargetSet" xml:space="default">Load target set</s:String>
     <s:String x:Key="LblLocalPlatesolver" xml:space="default">Local Platesolver</s:String>
     <s:String x:Key="LblLocation" xml:space="default">Location</s:String>
     <s:String x:Key="LblLogLevel" xml:space="default">Log Level</s:String>
@@ -786,12 +794,15 @@ Calculated HFR: {2}
     <s:String x:Key="LblRotatorConnected" xml:space="default">Rotator Connected</s:String>
     <s:String x:Key="LblRotatorConnectionLost" xml:space="default">Rotator connection lost! Please reconnect rotator!</s:String>
     <s:String x:Key="LblSave" xml:space="default">Save</s:String>
+    <s:String x:Key="LblSaveAsSequence" xml:space="default">Save Sequence as new file</s:String>
+    <s:String x:Key="LblSaveAsSequenceToolTip" xml:space="default">Save Sequence as new xml file</s:String>
     <s:String x:Key="LblSaveBacklashQuestion" xml:space="default">Save Focuser Backlash Measurements?</s:String>
     <s:String x:Key="LblSaveImageAs" xml:space="default">Save Image as</s:String>
     <s:String x:Key="LblSaveImageAsDSLRNote" xml:space="default">For DSLRs the image file format setting is ignored. RAW format will be saved instead!</s:String>
     <s:String x:Key="LblSaveSelectedProfileAndDontAskAgain" xml:space="default">Save selected profile and don't ask again next time</s:String>
     <s:String x:Key="LblSaveSequence" xml:space="default">Save Sequence</s:String>
     <s:String x:Key="LblSaveSequenceToolTip" xml:space="default">Save Sequence as xml file</s:String>
+    <s:String x:Key="LblSaveTargetSet" xml:space="default">Save target set</s:String>
     <s:String x:Key="LblScopeSettleTimeAfterFlip" xml:space="default">Scope settle time after flip (seconds)</s:String>
     <s:String x:Key="LblSearch" xml:space="default">Search</s:String>
     <s:String x:Key="LblSearchRadius" xml:space="default">Search Radius</s:String>
@@ -945,10 +956,12 @@ Should the values be synced?</s:String>
 Drag the rectangle over a star with the bahtinov spikes. NINA will try to detect the spikes and show the error.</s:String>
     <s:String x:Key="LblTooltipCrossHair" xml:space="default">Toggles crosshair on/off</s:String>
     <s:String x:Key="LblTooltipDemoteSequenceRow" xml:space="default">Move selected row down sequence list</s:String>
+    <s:String x:Key="LblTooltipDemoteTarget" xml:space="default">Move target right</s:String>
     <s:String x:Key="LblTooltipDetectStars" xml:space="default">Toggles automatic star detection and analysis (Half-Flus-Radius) on/off</s:String>
     <s:String x:Key="LblToolTipLiveView" xml:space="default">Live View</s:String>
     <s:String x:Key="LblTooltipLoop" xml:space="default">Enables/disables looping exposures</s:String>
     <s:String x:Key="LblTooltipPromoteSequenceRow" xml:space="default">Move selected row up sequence list</s:String>
+    <s:String x:Key="LblTooltipPromoteTarget" xml:space="default">Move target left</s:String>
     <s:String x:Key="LblTooltipRemoveSequence" xml:space="default">Remove selected row from sequence list</s:String>
     <s:String x:Key="LblTooltipResetSequence" xml:space="default">Reset progress of selected row in sequence list</s:String>
     <s:String x:Key="LblTooltipResetTarget" xml:space="default">Reset progress of all sequence items in target</s:String>
@@ -956,6 +969,8 @@ Drag the rectangle over a star with the bahtinov spikes. NINA will try to detect
     <s:String x:Key="LblToolTipSubSample" xml:space="preserve">SubSampling Frame
 Drag the rectangle over the part of the frame you want to subsample and enable subsampling in snap. Your camera will only download the selected area.</s:String>
     <s:String x:Key="LblTooltipTakeExposure" xml:space="default">Starts Exposure</s:String>
+    <s:String x:Key="LblTooltipTargetLoadSet" xml:space="default">Load set of targets from a file</s:String>
+    <s:String x:Key="LblTooltipTargetSaveSet" xml:space="default">Save current targets as a set</s:String>
     <s:String x:Key="LblTotalNo" xml:space="default">Total #</s:String>
     <s:String x:Key="LblToupTekCameraSetup" xml:space="default">ToupTek Camera Setup</s:String>
     <s:String x:Key="LblTrace" xml:space="default">Trace</s:String>
@@ -1024,20 +1039,4 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
     <s:String x:Key="LblZoomIn" xml:space="default">Zoom in by 25%</s:String>
     <s:String x:Key="LblZoomOut" xml:space="default">Zoom out by 25%</s:String>
     <s:String x:Key="LblZoomStretch" xml:space="default">Fit Image to Area</s:String>
-    <s:String x:Key="LblSaveAsSequence" xml:space="default">Save Sequence as new file</s:String>
-    <s:String x:Key="LblSaveAsSequenceToolTip" xml:space="default">Save Sequence as new xml file</s:String>
-    <s:String x:Key="LblDefaultSequenceFolder" xml:space="default">Default folder for sequence files</s:String>
-    <s:String x:Key="LblDefaultSequenceFolderTooltip" xml:space="default">Sequences will be loaded from and saved to the folder specified here</s:String>
-    <s:String x:Key="LblChangedSequenceWarningTitle" xml:space="default">Closing modified sequence</s:String>
-    <s:String x:Key="LblChangedSequenceWarning" xml:space="preserve">The sequence for the target(s) '{0}' have been modified since it was last saved (or has not been saved yet).
-        
-Do you want to close the sequence and lose the changes anyway?</s:String>
-    <s:String x:Key="LblLoadTargetSet" xml:space="default">Load target set</s:String>
-    <s:String x:Key="LblSaveTargetSet" xml:space="default">Save target set</s:String>
-    <s:String x:Key="LblTooltipPromoteTarget" xml:space="default">Move target left</s:String>
-    <s:String x:Key="LblTooltipDemoteTarget" xml:space="default">Move target right</s:String>
-    <s:String x:Key="LblTooltipTargetSaveSet" xml:space="default">Save current targets as a set</s:String>
-    <s:String x:Key="LblTooltipTargetLoadSet" xml:space="default">Load set of targets from a file</s:String>
-    <s:String x:Key="LblLoadSequenceSetFailed" xml:space="default">Failed to load target set</s:String>
-
 </ResourceDictionary>
