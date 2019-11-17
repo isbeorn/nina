@@ -115,6 +115,9 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                         }
 
                         profileService.ActiveProfile.FlatDeviceSettings.Id = flatDevice.Id;
+
+                        Logger.Info($"Successfully connected Flatdevice. Id: {flatDevice.Id} Name: {flatDevice.Name} Driver Version: {flatDevice.DriverVersion}");
+
                         return true;
                     } else {
                         FlatDeviceInfo.Connected = false;
@@ -149,6 +152,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             _flatDevice = null;
             FlatDeviceInfo = DeviceInfo.CreateDefaultInstance<FlatDeviceInfo>();
             BroadcastFlatDeviceInfo();
+            Logger.Info("Disconnected Flat Device");
         }
 
         private void DisconnectFlatDeviceDialog(object obj) {

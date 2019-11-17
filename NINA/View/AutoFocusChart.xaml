@@ -24,6 +24,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ns="clr-namespace:NINA.Locale"
     xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
@@ -70,66 +71,198 @@
                 <oxy:ScatterErrorSeries
                     DataFieldX="FocusPosition"
                     DataFieldY="HFR"
+                    ErrorBarColor="{Binding Path=Color, Source={StaticResource NotificationErrorBrush}}"
+                    ErrorBarStopWidth="2"
+                    ErrorBarStrokeThickness="2"
                     ItemsSource="{Binding FocusPoints}"
                     MarkerFill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
-                    MarkerType="Circle"
-                    ErrorBarColor="{Binding Path=Color, Source={StaticResource NotificationErrorBrush}}"
-                    ErrorBarStrokeThickness="2"
-                    ErrorBarStopWidth="2"/>
+                    MarkerType="Circle" />
                 <oxy:LineSeries
                     DataFieldX="FocusPosition"
                     DataFieldY="HFR"
                     ItemsSource="{Binding PlotFocusPoints}"
-                    Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"/>
+                    Color="{Binding Path=Color, Source={StaticResource SecondaryBrush}}" />
             </oxy:Plot.Series>
             <oxy:Plot.Annotations>
-                <oxy:LineAnnotation
-                    Intercept="{Binding LeftTrend.Offset}"
-                    Slope="{Binding LeftTrend.Slope}"
-                    Color="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}" />
-                <oxy:LineAnnotation
-                    Intercept="{Binding RightTrend.Offset}"
-                    Slope="{Binding RightTrend.Slope}"
-                    Color="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}" />
-                <oxy:FunctionAnnotation
-                    Equation="{Binding QuadraticFitting}"
-                    Color="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}" />
-                <oxy:FunctionAnnotation
-                    Equation="{Binding HyperbolicFitting}"
-                    Color="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}" />
-                <oxy:FunctionAnnotation
-                    Equation="{Binding GaussianFitting}"
-                    Color="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}" />
+                <oxy:LineAnnotation Intercept="{Binding LeftTrend.Offset}" Slope="{Binding LeftTrend.Slope}">
+                    <oxy:LineAnnotation.Color>
+                        <MultiBinding Converter="{StaticResource AFFittingToVisibilityConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>Trendline</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusMethod" Source="{StaticResource AppVM}" />
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusCurveFitting" Source="{StaticResource AppVM}" />
+                        </MultiBinding>
+                    </oxy:LineAnnotation.Color>
+                </oxy:LineAnnotation>
+                <oxy:LineAnnotation Intercept="{Binding RightTrend.Offset}" Slope="{Binding RightTrend.Slope}">
+                    <oxy:LineAnnotation.Color>
+                        <MultiBinding Converter="{StaticResource AFFittingToVisibilityConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>Trendline</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusMethod" Source="{StaticResource AppVM}" />
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusCurveFitting" Source="{StaticResource AppVM}" />
+                        </MultiBinding>
+                    </oxy:LineAnnotation.Color>
+                </oxy:LineAnnotation>
+                <oxy:FunctionAnnotation Equation="{Binding QuadraticFitting}">
+                    <oxy:FunctionAnnotation.Color>
+                        <MultiBinding Converter="{StaticResource AFFittingToVisibilityConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>QuadraticFitting</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusMethod" Source="{StaticResource AppVM}" />
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusCurveFitting" Source="{StaticResource AppVM}" />
+                        </MultiBinding>
+                    </oxy:FunctionAnnotation.Color>
+                </oxy:FunctionAnnotation>
+                <oxy:FunctionAnnotation Equation="{Binding HyperbolicFitting}">
+                    <oxy:FunctionAnnotation.Color>
+                        <MultiBinding Converter="{StaticResource AFFittingToVisibilityConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>HyperbolicFitting</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusMethod" Source="{StaticResource AppVM}" />
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusCurveFitting" Source="{StaticResource AppVM}" />
+                        </MultiBinding>
+                    </oxy:FunctionAnnotation.Color>
+                </oxy:FunctionAnnotation>
+                <oxy:FunctionAnnotation Equation="{Binding GaussianFitting}">
+                    <oxy:FunctionAnnotation.Color>
+                        <MultiBinding Converter="{StaticResource AFFittingToVisibilityConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>GaussianFitting</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusMethod" Source="{StaticResource AppVM}" />
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusCurveFitting" Source="{StaticResource AppVM}" />
+                        </MultiBinding>
+                    </oxy:FunctionAnnotation.Color>
+                </oxy:FunctionAnnotation>
                 <oxy:PointAnnotation
-                    X="{Binding FinalFocusPoint.X}"
-                    Y="{Binding FinalFocusPoint.Y}"
-                    Stroke="{Binding Path=Color, Source={StaticResource NotificationErrorBrush}}"
                     Fill="{Binding Path=Color, Source={StaticResource NotificationErrorBrush}}"
-                    Shape="Diamond"/>
+                    Shape="Diamond"
+                    Stroke="{Binding Path=Color, Source={StaticResource NotificationErrorBrush}}"
+                    X="{Binding FinalFocusPoint.X}"
+                    Y="{Binding FinalFocusPoint.Y}" />
                 <oxy:PointAnnotation
+                    Shape="Circle"
                     X="{Binding QuadraticMinimum.X}"
-                    Y="{Binding QuadraticMinimum.Y}"
-                    Stroke="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}"
-                    Fill="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}"
-                    Shape="Circle" />
+                    Y="{Binding QuadraticMinimum.Y}">
+                    <oxy:PointAnnotation.Fill>
+                        <MultiBinding Converter="{StaticResource AFFittingToVisibilityConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>QuadraticFitting</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusMethod" Source="{StaticResource AppVM}" />
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusCurveFitting" Source="{StaticResource AppVM}" />
+                        </MultiBinding>
+                    </oxy:PointAnnotation.Fill>
+                    <oxy:PointAnnotation.Stroke>
+                        <MultiBinding Converter="{StaticResource AFFittingToVisibilityConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>QuadraticFitting</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusMethod" Source="{StaticResource AppVM}" />
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusCurveFitting" Source="{StaticResource AppVM}" />
+                        </MultiBinding>
+                    </oxy:PointAnnotation.Stroke>
+                </oxy:PointAnnotation>
                 <oxy:PointAnnotation
+                    Shape="Circle"
                     X="{Binding HyperbolicMinimum.X}"
-                    Y="{Binding HyperbolicMinimum.Y}"
-                    Stroke="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}"
-                    Fill="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}"
-                    Shape="Circle" />
+                    Y="{Binding HyperbolicMinimum.Y}">
+                    <oxy:PointAnnotation.Fill>
+                        <MultiBinding Converter="{StaticResource AFFittingToVisibilityConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>HyperbolicFitting</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusMethod" Source="{StaticResource AppVM}" />
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusCurveFitting" Source="{StaticResource AppVM}" />
+                        </MultiBinding>
+                    </oxy:PointAnnotation.Fill>
+                    <oxy:PointAnnotation.Stroke>
+                        <MultiBinding Converter="{StaticResource AFFittingToVisibilityConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>HyperbolicFitting</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusMethod" Source="{StaticResource AppVM}" />
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusCurveFitting" Source="{StaticResource AppVM}" />
+                        </MultiBinding>
+                    </oxy:PointAnnotation.Stroke>
+                </oxy:PointAnnotation>
                 <oxy:PointAnnotation
+                    Shape="Circle"
                     X="{Binding GaussianMaximum.X}"
-                    Y="{Binding GaussianMaximum.Y}"
-                    Stroke="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}"
-                    Fill="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}"
-                    Shape="Circle" />
+                    Y="{Binding GaussianMaximum.Y}">
+                    <oxy:PointAnnotation.Fill>
+                        <MultiBinding Converter="{StaticResource AFFittingToVisibilityConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>GaussianFitting</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusMethod" Source="{StaticResource AppVM}" />
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusCurveFitting" Source="{StaticResource AppVM}" />
+                        </MultiBinding>
+                    </oxy:PointAnnotation.Fill>
+                    <oxy:PointAnnotation.Stroke>
+                        <MultiBinding Converter="{StaticResource AFFittingToVisibilityConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>GaussianFitting</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusMethod" Source="{StaticResource AppVM}" />
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusCurveFitting" Source="{StaticResource AppVM}" />
+                        </MultiBinding>
+                    </oxy:PointAnnotation.Stroke>
+                </oxy:PointAnnotation>
                 <oxy:PointAnnotation
+                    Shape="Circle"
                     X="{Binding TrendLineIntersection.X}"
-                    Y="{Binding TrendLineIntersection.Y}"
-                    Stroke="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}"
-                    Fill="{Binding Path=Color, Source={StaticResource ButtonBackgroundBrush}}"
-                    Shape="Circle" />
+                    Y="{Binding TrendLineIntersection.Y}">
+                    <oxy:PointAnnotation.Fill>
+                        <MultiBinding Converter="{StaticResource AFFittingToVisibilityConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>Trendline</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusMethod" Source="{StaticResource AppVM}" />
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusCurveFitting" Source="{StaticResource AppVM}" />
+                        </MultiBinding>
+                    </oxy:PointAnnotation.Fill>
+                    <oxy:PointAnnotation.Stroke>
+                        <MultiBinding Converter="{StaticResource AFFittingToVisibilityConverter}">
+                            <Binding>
+                                <Binding.Source>
+                                    <s:String>Trendline</s:String>
+                                </Binding.Source>
+                            </Binding>
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusMethod" Source="{StaticResource AppVM}" />
+                            <Binding Path="ActiveProfile.FocuserSettings.AutoFocusCurveFitting" Source="{StaticResource AppVM}" />
+                        </MultiBinding>
+                    </oxy:PointAnnotation.Stroke>
+                </oxy:PointAnnotation>
             </oxy:Plot.Annotations>
         </oxy:Plot>
         <StackPanel

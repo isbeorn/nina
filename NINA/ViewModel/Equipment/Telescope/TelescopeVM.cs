@@ -257,6 +257,9 @@ namespace NINA.ViewModel.Equipment.Telescope {
 
                             Notification.ShowSuccess(Locale.Loc.Instance["LblTelescopeConnected"]);
                             profileService.ActiveProfile.TelescopeSettings.Id = Telescope.Id;
+
+                            Logger.Info($"Successfully connected Telescope. Id: {telescope.Id} Name: {telescope.Name} Driver Version: {telescope.DriverVersion}");
+
                             return true;
                         } else {
                             Telescope = null;
@@ -400,6 +403,7 @@ namespace NINA.ViewModel.Equipment.Telescope {
         }
 
         public void Disconnect() {
+            if (Telescope != null) { Logger.Info("Disconnected Telescope"); }
             updateTimer?.Stop();
             Telescope?.Disconnect();
             Telescope = null;

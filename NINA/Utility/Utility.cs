@@ -104,5 +104,22 @@ namespace NINA.Utility {
             } while (elapsed < t);
             return elapsed;
         }
+
+        public static void DirectoryCleanup(string directory, TimeSpan deleteFromNow) {
+            try {
+                foreach (var file in Directory.GetFiles(directory)) {
+                    FileInfo fi = new FileInfo(file);
+                    if (fi.LastWriteTime < DateTime.Now.Add(deleteFromNow)) {
+                        try {
+                            fi.Delete();
+                        } catch (Exception ex) {
+                            Logger.Error(ex);
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+        }
     }
 }

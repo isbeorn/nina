@@ -41,6 +41,9 @@
 - Rotator for sequence centering will now rotate to nearest orientation even if image is upside down. This is not relevant for framing after a star alignment anyways.
 - Reworked Planetarium interfacing to be more robust
 - Take current view center from Stellarium when no target is selected during coordinate import
+- Logs older than 30 days are automatically cleaned up at application start
+- Autofocus will now only show the selected fitting method 
+- After running an autofocus run a new json file will be written to %localappdata%\nina\autofocus containing all datapoints to retrace what was measured at a later point in time
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false

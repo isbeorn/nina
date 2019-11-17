@@ -224,6 +224,8 @@ namespace NINA.ViewModel.Equipment.Switch {
                             RaisePropertyChanged(nameof(WritableSwitches));
                             BroadcastSwitchInfo();
 
+                            Logger.Info($"Successfully connected Switch. Id: {switchHub.Id} Name: {switchHub.Name} Driver Version: {switchHub.DriverVersion}");
+
                             return true;
                         } else {
                             Notification.ShowError($"Unable to connect to {SwitchChooserVM.SelectedDevice.Name}");
@@ -257,6 +259,7 @@ namespace NINA.ViewModel.Equipment.Switch {
                 SwitchHub = null;
                 SwitchInfo = DeviceInfo.CreateDefaultInstance<SwitchInfo>();
                 BroadcastSwitchInfo();
+                Logger.Info("Disconnected Switch");
             }
         }
 

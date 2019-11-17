@@ -119,6 +119,9 @@ namespace NINA.ViewModel.Equipment.WeatherData {
                             updateTimer.Start();
 
                             profileService.ActiveProfile.WeatherDataSettings.Id = WeatherData.Id;
+
+                            Logger.Info($"Successfully connected Weather Device. Id: {weatherdev.Id} Name: {weatherdev.Name} Driver Version: {weatherdev.DriverVersion}");
+
                             return true;
                         } else {
                             WeatherDataInfo.Connected = false;
@@ -261,6 +264,7 @@ namespace NINA.ViewModel.Equipment.WeatherData {
         }
 
         public void Disconnect() {
+            if (WeatherData != null) { Logger.Info("Disconnected Weather Device"); }
             updateTimer?.Stop();
             WeatherData?.Disconnect();
             WeatherData = null;

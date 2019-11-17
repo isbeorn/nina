@@ -234,6 +234,9 @@ namespace NINA.ViewModel.Equipment.Rotator {
 
                             TargetPosition = rotator.Position;
                             profileService.ActiveProfile.RotatorSettings.Id = rotator.Id;
+
+                            Logger.Info($"Successfully connected Rotator. Id: {rotator.Id} Name: {rotator.Name} Driver Version: {rotator.DriverVersion}");
+
                             return true;
                         } else {
                             RotatorInfo.Connected = false;
@@ -269,6 +272,7 @@ namespace NINA.ViewModel.Equipment.Rotator {
                 rotator = null;
                 RotatorInfo = DeviceInfo.CreateDefaultInstance<RotatorInfo>();
                 BroadcastRotatorInfo();
+                Logger.Info("Disconnected Rotator");
             }
         }
 
