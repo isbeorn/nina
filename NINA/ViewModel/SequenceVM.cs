@@ -1332,7 +1332,8 @@ namespace NINA.ViewModel {
         }
 
         public void AddSequenceRow(object o) {
-            Sequence.Add(new CaptureSequence());
+            CaptureSequence newSeq = Sequence.Items.Any() ? Sequence.Items.Last().Clone() : new CaptureSequence();
+            Sequence.Add(newSeq);
             SelectedSequenceRowIdx = Sequence.Count - 1;
             AdjustCaptureSequenceListForSynchronization(Sequence);
         }

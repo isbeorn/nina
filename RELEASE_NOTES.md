@@ -7,6 +7,7 @@
  - Alnitak Flip Flap Panel support to connect and control the panel inside the application
 
 ## Improvements
+- New rows added to a sequence will now default to the values from the previous row
 - Upgraded Atik driver to use latest Atik SDK and drivers
 - Added a bit scaling options for Altair and ToupTek cameras to bit shift the raw data to 16 bits to be compatible with other capture software
 - FreeImage library upgrade to 3.18
