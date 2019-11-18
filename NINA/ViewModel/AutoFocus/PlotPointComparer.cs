@@ -17,23 +17,32 @@
 
     You should have received a copy of the GNU General Public License
     along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+
+    Hyperbolic fitting based on CCDCiel source, also under GPL3
+    Copyright (C) 2018 Patrick Chevalley & Han Kleijn (author)
+
+    http://www.ap-i.net
+    h@ap-i.net
+
+    http://www.hnsky.org
 */
 
 #endregion "copyright"
 
-using NINA.Utility.Enum;
+using OxyPlot;
+using System.Collections.Generic;
 
-namespace NINA.Profile {
+namespace NINA.ViewModel {
+    public class PlotPointComparer : IComparer<DataPoint> {
 
-    public interface IPlanetariumSettings : ISettings {
-        string StellariumHost { get; set; }
-        int StellariumPort { get; set; }
-        string CdCHost { get; set; }
-        int CdCPort { get; set; }
-        string TSXHost { get; set; }
-        int TSXPort { get; set; }
-        string HNSKYHost { get; set; }
-        int HNSKYPort { get; set; }
-        PlanetariumEnum PreferredPlanetarium { get; set; }
+        public int Compare(DataPoint x, DataPoint y) {
+            if (x.X < y.X) {
+                return -1;
+            } else if (x.X > y.X) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
     }
 }

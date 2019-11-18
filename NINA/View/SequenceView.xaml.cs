@@ -33,5 +33,6 @@ namespace NINA.View {
         public SequenceView() {
             InitializeComponent();
         }
+
     }
 }

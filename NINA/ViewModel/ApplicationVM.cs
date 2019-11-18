@@ -260,12 +260,17 @@ namespace NINA.ViewModel {
 
         private void ExitApplication(object obj) {
             DockManagerVM.SaveAvalonDockLayout();
+            if (SeqVM?.OKtoExit() == false)
+                return;
             if (CameraVM?.Cam?.Connected == true) {
                 var diag = MyMessageBox.MyMessageBox.Show("Camera still connected. Exit anyway?", "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
                 if (diag != MessageBoxResult.OK) {
                     return;
                 }
             }
+
+            Utility.AtikSDK.AtikCameraDll.Shutdown();
+
             Application.Current.Shutdown();
         }
 

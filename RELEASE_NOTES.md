@@ -7,6 +7,7 @@
  - Alnitak Flip Flap Panel support to connect and control the panel inside the application
 
 ## Improvements
+- New rows added to a sequence will now default to the values from the previous row
 - Upgraded Atik driver to use latest Atik SDK and drivers
 - Added a bit scaling options for Altair and ToupTek cameras to bit shift the raw data to 16 bits to be compatible with other capture software
 - FreeImage library upgrade to 3.18
@@ -22,6 +23,8 @@
 - Added ability to keep guiding during autofocus
 - The autofocus routine has been changed so that it doesn't attempt to measure the focus twice for the same point
 - Added Spanish Translation
+- Added Chinese Simplified Translation
+- Added Chinese Traditional Translation
 - The focuser temperature compensation feature is now turned off before an auto-focus session, and turned back on afterwards
 - The NASA Sky Survey images now are automatically adjusted for brightness and contrast, depending on each image characteristic
 - An autofocus filter can now be set if "Use filter offsets" is set to true. When defined, the autofocus routine will use the autofocus filter instead of the current imaging filter. Initial baseline HFR, and final HFR (used to determine whether the autofocus run was successful) will still use the main imaging filter.
@@ -35,6 +38,12 @@
 - Updated Nikon SDK to latest available version (2019-10-20)
 - Zooming at high magnification inside the image control will not smear the pixels anymore but show sharp pixel edges instead
 - Added a reset button to sky atlas to reset all filters
+- Rotator for sequence centering will now rotate to nearest orientation even if image is upside down. This is not relevant for framing after a star alignment anyways.
+- Reworked Planetarium interfacing to be more robust
+- Take current view center from Stellarium when no target is selected during coordinate import
+- Logs older than 30 days are automatically cleaned up at application start
+- Autofocus will now only show the selected fitting method 
+- After running an autofocus run a new json file will be written to %localappdata%\nina\autofocus containing all datapoints to retrace what was measured at a later point in time
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false
@@ -47,6 +56,16 @@
 - Added an empty entry for Constellation Filter in Sky Atlas to unselect it
 - Image File Pattern Values will now remove leading and trailing white spaces to prevent invalid file path
 - In case illegal characters for a filename are inside some file patterns, they will now get replaced to still being able to save
+
+## Included Camera SDK Versions:
+- Altair: 39.15529.2019.906
+- Atik: 1.3.0.4
+- Canon: 3.8.20.6400
+- FLI: 1.104.0.0
+- Nikon: 1.3.1.3001
+- QHY: 0.6.0.4
+- ToupTek: 30.13342.2018.1121
+- ZWO: 1.14.11.8
 
 # Version 1.9
 
@@ -115,6 +134,15 @@
 - If telescope is capable of reporting SideOfPier there will now be a new option to consider this for calculating the need for meridian flips
 - It is now possible to set the Offset in addition to the Gain within each sequence item
 - Added buttons to move sequence row up and down the list 
+- File handling now changed so that:
+  - the default folder for sequences is set under Options -> Imaging
+  - a 'modified' status is maintained for each target
+  - targets can be loaded from any xml file
+  - targets can be saved back to the file it was loaded from
+  - a 'Save as' option is added to save to a new file
+  - a warning is issued if a target is closed without saving when it has been modified.  This also applies when the application is closed.
+- Controls to change order of targets in a multi-target sequence
+- Ability to save and load 'target sets' (a set of targets in a certain sequence)
 
 ### Flat Wizard
 - Progress bars have been added for remaining filters and exposures

@@ -103,6 +103,10 @@ namespace NINA.Utility.AtikSDK {
             return ArtemisCameraState(camera);
         }
 
+        public static bool Shutdown() {
+            return ArtemisShutdown();
+        }
+
         public static IExposureData DownloadExposure(IntPtr camera, int bitDepth, bool isBayered) {
             CheckError(ArtemisGetImageData(camera, out var x, out var y, out var w, out var h, out var binX, out var binY), MethodBase.GetCurrentMethod(), camera);
 

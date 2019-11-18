@@ -123,6 +123,30 @@ namespace NINATest {
         [TestCase(Math.PI)]
         [TestCase(2 * Math.PI)]
         [TestCase(1)]
+        [TestCase(-Math.PI)]
+        [TestCase(-2 * Math.PI)]
+        [TestCase(-1)]
+        public void AbsTest(double inputRadians) {
+            var angle = Angle.ByRadians(inputRadians).Abs();
+
+            var rad = Math.Abs(inputRadians);
+            var expectedDegree = Astrometry.ToDegree(rad);
+            var expectedArcmin = Astrometry.DegreeToArcmin(expectedDegree);
+            var expectedArcsec = Astrometry.DegreeToArcsec(expectedDegree);
+            var expectedHours = Astrometry.DegreesToHours(expectedDegree);
+
+            Assert.AreEqual(expectedHours, angle.Hours, TOLERANCE);
+            Assert.AreEqual(rad, angle.Radians, TOLERANCE);
+            Assert.AreEqual(expectedDegree, angle.Degree, TOLERANCE);
+            Assert.AreEqual(expectedArcmin, angle.ArcMinutes, TOLERANCE);
+            Assert.AreEqual(expectedArcsec, angle.ArcSeconds, TOLERANCE);
+        }
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(Math.PI)]
+        [TestCase(2 * Math.PI)]
+        [TestCase(1)]
         public void AsinTest(double inputRadians) {
             var angle = Angle.ByRadians(inputRadians).Asin();
 

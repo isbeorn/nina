@@ -609,6 +609,9 @@ namespace NINA.Model.MyCamera {
                         val = _camera.GainMax;
                     } catch (PropertyNotImplementedException) {
                         _canGetGainMinMax = false;
+                    } catch (ASCOM.InvalidOperationException)
+                    {
+                        _canGetGainMinMax = false;
                     }
                 }
                 return val;
@@ -622,6 +625,9 @@ namespace NINA.Model.MyCamera {
                     try {
                         val = _camera.GainMin;
                     } catch (PropertyNotImplementedException) {
+                        _canGetGainMinMax = false;
+                    } catch (ASCOM.InvalidOperationException)
+                    {
                         _canGetGainMinMax = false;
                     }
                 }

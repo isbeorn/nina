@@ -51,10 +51,24 @@ using NINA.Model.ImageData;
 using Accord.Statistics.Models.Regression.Fitting;
 using NINA.Utility.Enum;
 using NINA.Utility.Mediator;
+using System.Text;
+using NINA.ViewModel.AutoFocus;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace NINA.ViewModel {
 
     internal class AutoFocusVM : DockableVM, ICameraConsumer, IFocuserConsumer, IFilterWheelConsumer {
+        private static readonly string ReportDirectory = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "AutoFocus");
+
+        static AutoFocusVM() {
+            if (!Directory.Exists(ReportDirectory)) {
+                Directory.CreateDirectory(ReportDirectory);
+            } else {
+                Utility.Utility.DirectoryCleanup(ReportDirectory, TimeSpan.FromDays(-30));
+            }
+        }
 
         public AutoFocusVM(
             IProfileService profileService,
@@ -577,6 +591,11 @@ namespace NINA.ViewModel {
             GaussianMaximum = new DataPoint((int)Math.Round(regression.Coefficients[0]), regression.Coefficients[2] + regression.Coefficients[3]);
         }
 
+        private void CalculateTrendLineIntersection() {
+            //Get Trendline Intersection
+            TrendLineIntersection = LeftTrend.Intersect(RightTrend);
+        }
+
         private void CalculateQuadraticFitting() {
             var fitting = new PolynomialLeastSquares() { Degree = 2 };
             PolynomialRegression poly = fitting.Learn(FocusPoints.Select((dp) => dp.X).ToArray(), FocusPoints.Select((dp) => dp.Y).ToArray(), FocusPoints.Select((dp) => 1 / (dp.ErrorY * dp.ErrorY)).ToArray());
@@ -849,37 +868,9 @@ namespace NINA.ViewModel {
 
                     token.ThrowIfCancellationRequested();
 
-                    //Get Trendline Intersection
-                    TrendLineIntersection = LeftTrend.Intersect(RightTrend);
+                    FinalFocusPoint = DetermineFinalFocusPoint();
 
-                    if (profileService.ActiveProfile.FocuserSettings.AutoFocusMethod == AFMethodEnum.STARHFR) {
-                        if (profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.TRENDLINES) {
-                            FinalFocusPoint = TrendLineIntersection;
-                        }
-
-                        if (profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.HYPERBOLIC) {
-                            CalculateHyperbolicFitting();
-                            FinalFocusPoint = HyperbolicMinimum;
-                        }
-
-                        if (profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.PARABOLIC) {
-                            CalculateQuadraticFitting();
-                            FinalFocusPoint = QuadraticMinimum;
-                        }
-
-                        if (profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.TRENDPARABOLIC) {
-                            CalculateQuadraticFitting();
-                            FinalFocusPoint = new DataPoint(Math.Round((TrendLineIntersection.X + QuadraticMinimum.X) / 2), (TrendLineIntersection.Y + QuadraticMinimum.Y) / 2);
-                        }
-
-                        if (profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting == Utility.Enum.AFCurveFittingEnum.TRENDHYPERBOLIC) {
-                            CalculateHyperbolicFitting();
-                            FinalFocusPoint = new DataPoint(Math.Round((TrendLineIntersection.X + HyperbolicMinimum.X) / 2), (TrendLineIntersection.Y + HyperbolicMinimum.Y) / 2);
-                        }
-                    } else {
-                        CalculateGaussianFitting();
-                        FinalFocusPoint = GaussianMaximum;
-                    }
+                    GenerateReport(initialFocusPosition, initialHFR);
 
                     LastAutoFocusPoint = new AutoFocusPoint { Focuspoint = FinalFocusPoint, Temperature = focuserInfo.Temperature, Timestamp = DateTime.Now };
 
@@ -954,6 +945,85 @@ namespace NINA.ViewModel {
             return true;
         }
 
+        private DataPoint DetermineFinalFocusPoint() {
+            using (MyStopWatch.Measure()) {
+                var method = profileService.ActiveProfile.FocuserSettings.AutoFocusMethod;
+
+                CalculateTrendLineIntersection();
+                CalculateHyperbolicFitting();
+                CalculateQuadraticFitting();
+                CalculateGaussianFitting();
+
+                if (method == AFMethodEnum.STARHFR) {
+                    var fitting = profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting;
+                    if (fitting == Utility.Enum.AFCurveFittingEnum.TRENDLINES) {
+                        return TrendLineIntersection;
+                    }
+
+                    if (fitting == Utility.Enum.AFCurveFittingEnum.HYPERBOLIC) {
+                        return HyperbolicMinimum;
+                    }
+
+                    if (fitting == Utility.Enum.AFCurveFittingEnum.PARABOLIC) {
+                        return QuadraticMinimum;
+                    }
+
+                    if (fitting == Utility.Enum.AFCurveFittingEnum.TRENDPARABOLIC) {
+                        return new DataPoint(Math.Round((TrendLineIntersection.X + QuadraticMinimum.X) / 2), (TrendLineIntersection.Y + QuadraticMinimum.Y) / 2);
+                    }
+
+                    if (fitting == Utility.Enum.AFCurveFittingEnum.TRENDHYPERBOLIC) {
+                        return new DataPoint(Math.Round((TrendLineIntersection.X + HyperbolicMinimum.X) / 2), (TrendLineIntersection.Y + HyperbolicMinimum.Y) / 2);
+                    }
+
+                    Logger.Error($"Invalid AutoFocus Fitting {fitting} for method {method}");
+                    return new DataPoint();
+                } else {
+                    return GaussianMaximum;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Generates a JSON report into %localappdata%\NINA\AutoFocus for the complete autofocus run containing all the measurements
+        /// </summary>
+        /// <param name="initialFocusPosition"></param>
+        /// <param name="initialHFR"></param>
+        private void GenerateReport(double initialFocusPosition, double initialHFR) {
+            try {
+                var method = profileService.ActiveProfile.FocuserSettings.AutoFocusMethod;
+
+                var report = new AutoFocusReport() {
+                    Timestamp = DateTime.Now,
+                    InitialFocusPoint = new FocusPoint() {
+                        Position = initialFocusPosition,
+                        Value = initialHFR
+                    },
+                    CalculatedFocusPoint = new FocusPoint() {
+                        Position = FinalFocusPoint.X,
+                        Value = FinalFocusPoint.Y
+                    },
+                    PreviousFocusPoint = new FocusPoint() {
+                        Position = LastAutoFocusPoint?.Focuspoint.X ?? double.NaN,
+                        Value = LastAutoFocusPoint?.Focuspoint.Y ?? double.NaN
+                    },
+                    Method = method.ToString(),
+                    Fitting = method == AFMethodEnum.STARHFR ? profileService.ActiveProfile.FocuserSettings.AutoFocusCurveFitting.ToString() : "GAUSSIAN",
+                    MeasurePoints = FocusPoints.Select(x => new FocusPoint() { Position = x.X, Value = x.Y, Error = x.ErrorY }),
+                    Intersections = new Intersections() {
+                        TrendLineIntersection = new FocusPoint() { Position = TrendLineIntersection.X, Value = TrendLineIntersection.Y },
+                        GaussianMaximum = new FocusPoint() { Position = GaussianMaximum.X, Value = GaussianMaximum.Y },
+                        HyperbolicMinimum = new FocusPoint() { Position = HyperbolicMinimum.X, Value = HyperbolicMinimum.Y },
+                        QuadraticMinimum = new FocusPoint() { Position = QuadraticMinimum.X, Value = QuadraticMinimum.Y }
+                    }
+                };
+
+                File.WriteAllText(Path.Combine(ReportDirectory, DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss") + ".json"), JsonConvert.SerializeObject(report));
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+        }
+
         private AutoFocusPoint _lastAutoFocusPoint;
         private CameraInfo cameraInfo = DeviceInfo.CreateDefaultInstance<CameraInfo>();
         private FocuserInfo focuserInfo = DeviceInfo.CreateDefaultInstance<FocuserInfo>();
@@ -998,114 +1068,5 @@ namespace NINA.ViewModel {
         public ICommand CancelAutoFocusCommand { get; private set; }
         public ICommand StartBacklashMeasurementCommand { get; private set; }
         public ICommand CancelBacklashMeasurementCommand { get; private set; }
-    }
-
-    public static class MathHelper {
-
-        // Hyperbolic Sine
-        public static double HSin(double x) {
-            return (Math.Exp(x) - Math.Exp(-x)) / 2;
-        }
-
-        // Hyperbolic Cosine
-        public static double HCos(double x) {
-            return (Math.Exp(x) + Math.Exp(-x)) / 2;
-        }
-
-        // Hyperbolic Tangent
-        public static double HTan(double x) {
-            return (Math.Exp(x) - Math.Exp(-x)) / (Math.Exp(x) + Math.Exp(-x));
-        }
-
-        // Inverse Hyperbolic Sine
-        public static double HArcsin(double x) {
-            return Math.Log(x + Math.Sqrt(x * x + 1));
-        }
-
-        // Inverse Hyperbolic Cosine
-        public static double HArccos(double x) {
-            return Math.Log(x + Math.Sqrt(x * x - 1));
-        }
-
-        // Inverse Hyperbolic Tangent
-        public static double HArctan(double x) {
-            return Math.Log((1 + x) / (1 - x)) / 2;
-        }
-    }
-
-    public class AutoFocusPoint {
-        public DataPoint Focuspoint { get; set; }
-        public DateTime Timestamp { get; set; }
-        public double Temperature { get; set; }
-    }
-
-    public class FocusPointComparer : IComparer<ScatterErrorPoint> {
-
-        public int Compare(ScatterErrorPoint x, ScatterErrorPoint y) {
-            if (x.X < y.X) {
-                return -1;
-            } else if (x.X > y.X) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-    }
-
-    public class PlotPointComparer : IComparer<DataPoint> {
-
-        public int Compare(DataPoint x, DataPoint y) {
-            if (x.X < y.X) {
-                return -1;
-            } else if (x.X > y.X) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-    }
-
-    public struct MeasureAndError {
-        public double Measure { get; set; }
-        public double Stdev { get; set; }
-    }
-
-    public class TrendLine {
-
-        public TrendLine(IEnumerable<ScatterErrorPoint> l) {
-            DataPoints = l;
-
-            if (DataPoints.Count() > 1) {
-                double[] inputs = DataPoints.Select((dp) => dp.X).ToArray();
-                double[] outputs = DataPoints.Select((dp) => dp.Y).ToArray();
-                double[] weights = DataPoints.Select((dp) => 1 / (dp.ErrorY * dp.ErrorY)).ToArray();
-
-                OrdinaryLeastSquares ols = new OrdinaryLeastSquares();
-                SimpleLinearRegression regression = ols.Learn(inputs, outputs, weights);
-
-                Slope = regression.Slope;
-                Offset = regression.Intercept;
-            }
-        }
-
-        public double Slope { get; set; }
-        public double Offset { get; set; }
-
-        public IEnumerable<ScatterErrorPoint> DataPoints { get; set; }
-
-        public double GetY(double x) {
-            return Slope * x + Offset;
-        }
-
-        public DataPoint Intersect(TrendLine line) {
-            if (this.Slope == line.Slope) {
-                //Lines are parallel
-                return new DataPoint(0, 0);
-            }
-            var x = (line.Offset - this.Offset) / (this.Slope - line.Slope);
-            var y = this.Slope * x + this.Offset;
-
-            return new DataPoint((int)Math.Round(x), y);
-        }
     }
 }

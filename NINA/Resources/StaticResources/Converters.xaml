@@ -63,4 +63,5 @@
     <converters:WeatherRainRateConverter x:Key="WeatherRainRateConverter" />
     <converters:WeatherBrightnessConverter x:Key="WeatherBrightnessConverter" />
     <converters:ZeroToVisibilityConverter x:Key="ZeroToVisibilityConverter" />
+    <converters:AFFittingToVisibilityConverter x:Key="AFFittingToVisibilityConverter" />
 </ResourceDictionary>

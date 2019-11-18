@@ -17,21 +17,32 @@
 
     You should have received a copy of the GNU General Public License
     along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+
+    Hyperbolic fitting based on CCDCiel source, also under GPL3
+    Copyright (C) 2018 Patrick Chevalley & Han Kleijn (author)
+
+    http://www.ap-i.net
+    h@ap-i.net
+
+    http://www.hnsky.org
 */
 
 #endregion "copyright"
 
-using System.Windows.Controls;
+using OxyPlot.Series;
+using System.Collections.Generic;
 
-namespace NINA.View {
+namespace NINA.ViewModel {
+    public class FocusPointComparer : IComparer<ScatterErrorPoint> {
 
-    /// <summary>
-    /// Interaction logic for OptionsPlateSolverView.xaml
-    /// </summary>
-    public partial class OptionsPlanetariumView : UserControl {
-
-        public OptionsPlanetariumView() {
-            InitializeComponent();
+        public int Compare(ScatterErrorPoint x, ScatterErrorPoint y) {
+            if (x.X < y.X) {
+                return -1;
+            } else if (x.X > y.X) {
+                return 1;
+            } else {
+                return 0;
+            }
         }
     }
 }

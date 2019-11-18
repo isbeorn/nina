@@ -52,7 +52,8 @@
                 ItemsSource="{Binding Targets}"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                SelectedItem="{Binding Sequence}">
+                SelectedItem="{Binding Sequence}"
+                >
                 <ListView.Resources>
                     <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
                         <Setter Property="Visibility" Value="Collapsed" />
@@ -97,7 +98,7 @@
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 Foreground="{StaticResource ButtonForegroundBrush}"
-                                                Text="{Binding TargetName}" />
+                                                Text="{Binding TargetNameWithModifiedIndicator}" />
                                             <Button
                                                 x:Name="PART_Close"
                                                 Grid.Column="2"
@@ -159,22 +160,88 @@
                     <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}" />
                 </ListView.View>
             </ListView>
-            <Button
+            <StackPanel Orientation="Horizontal" Grid.Column="1">
+                <Button
                 Grid.Column="1"
+                Width="35"
+                Command="{Binding PromoteTargetCommand}"
+                IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblTooltipPromoteTarget}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                    Margin="5"
+                    Data="{StaticResource ArrowLeftSVG}"
+                    Fill="{StaticResource ButtonForegroundBrush}"
+                    Stretch="Uniform" />
+                </Button>
+                <Button
+                Grid.Column="2"
+                Width="35"
+                Command="{Binding DemoteTargetCommand}"
+                IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblTooltipDemoteTarget}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                    Margin="5"
+                    Data="{StaticResource ArrowRightSVG}"
+                    Fill="{StaticResource ButtonForegroundBrush}"
+                    Stretch="Uniform" />
+                </Button>
+                <Button
+                Grid.Column="3"
+                Width="35"
+                Command="{Binding SaveTargetSetCommand}"
+                IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblTooltipTargetSaveSet}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                    Margin="5"
+                    Data="{StaticResource SaveSVG}"
+                    Fill="{StaticResource ButtonForegroundBrush}"
+                    Stretch="Uniform" />
+                </Button>
+                <Button
+                Grid.Column="4"
+                Width="35"
+                Command="{Binding LoadTargetSetCommand}"
+                IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblTooltipTargetLoadSet}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                    Margin="5"
+                    Data="{StaticResource LoadSVG}"
+                    Fill="{StaticResource ButtonForegroundBrush}"
+                    Stretch="Uniform" />
+                </Button>
+                <Button
+                Grid.Column="5"
                 Width="35"
                 Command="{Binding AddTargetCommand}"
                 IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
-                <Button.ToolTip>
-                    <ToolTip ToolTipService.ShowOnDisabled="True">
-                        <TextBlock Text="{ns:Loc LblTooltipAddTarget}" />
-                    </ToolTip>
-                </Button.ToolTip>
-                <Path
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblTooltipAddTarget}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
                     Margin="5"
                     Data="{StaticResource AddSVG}"
                     Fill="{StaticResource ButtonForegroundBrush}"
                     Stretch="Uniform" />
-            </Button>
+                </Button>
+            </StackPanel>
         </Grid>
         <UniformGrid
             Grid.Row="1"
@@ -1219,7 +1286,7 @@
                     Width="40"
                     Margin="1,0,0,0"
                     Command="{Binding SaveSequenceCommand}"
-                    IsEnabled="{Binding Sequence, Converter={StaticResource InverseNullToBooleanConverter}}">
+                    IsEnabled="{Binding SequenceSaveable}">
                     <Button.ToolTip>
                         <ToolTip ToolTipService.ShowOnDisabled="True">
                             <TextBlock Text="{ns:Loc LblSaveSequenceToolTip}" />
@@ -1228,6 +1295,23 @@
                     <Path
                         Margin="5"
                         Data="{StaticResource SaveSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                </Button>
+
+                <Button
+                    Width="40"
+                    Margin="1,0,0,0"
+                    Command="{Binding SaveAsSequenceCommand}"
+                    IsEnabled="{Binding Sequence, Converter={StaticResource InverseNullToBooleanConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblSaveAsSequenceToolTip}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource SaveAsSVG}"
                         Fill="{StaticResource ButtonForegroundBrush}"
                         Stretch="Uniform" />
                 </Button>

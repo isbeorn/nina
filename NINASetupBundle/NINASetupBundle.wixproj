@@ -73,9 +73,6 @@
   <Target Name="EnsureWixToolsetInstalled" Condition=" '$(WixTargetsImported)' != 'true' ">
     <Error Text="The WiX Toolset v3.11 (or newer) build tools must be installed to build this project. To download the WiX Toolset, see http://wixtoolset.org/releases/" />
   </Target>
-  <PropertyGroup>
-    <PreBuildEvent>%25LOCALAPPDATA%25\Pandoc\pandoc.exe $(SolutionDir)RELEASE_NOTES.md -f markdown -t rtf -s -o $(SolutionDir)RELEASE_NOTES.rtf</PreBuildEvent>
-  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DefineConstants>Debug</DefineConstants>
     <OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
@@ -93,6 +90,9 @@ copy "$(SolutionDir)NINA\bin\$(Platform)\$(ConfigurationName)\NINA.pdb" "$(Targe
 
 echo "Copy NINACustomControlLibrary.pdb to setup output"
 copy "$(SolutionDir)NINA\bin\$(Platform)\$(ConfigurationName)\NINACustomControlLibrary.pdb" "$(TargetDir)NINACustomControlLibrary.pdb" /Y</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>%25LOCALAPPDATA%25\Pandoc\pandoc.exe "$(SolutionDir)RELEASE_NOTES.md" -f markdown -t rtf -s -o "$(SolutionDir)RELEASE_NOTES.rtf"</PreBuildEvent>
   </PropertyGroup>
   <!--
 	To modify your build process, add your task inside one of the targets below and uncomment it.

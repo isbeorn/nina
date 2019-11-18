@@ -412,6 +412,8 @@ namespace NINA.ViewModel.Equipment.Camera {
                                 TargetTemp = Cam.TemperatureSetPoint;
                             }
 
+                            Logger.Info($"Successfully connected Camera. Id: {Cam.Id} Name: {Cam.Name} Driver Version: {Cam.DriverVersion}");
+
                             return true;
                         } else {
                             this.Cam = null;
@@ -566,6 +568,7 @@ namespace NINA.ViewModel.Equipment.Camera {
         }
 
         public void Disconnect() {
+            if (Cam != null) { Logger.Info("Disconnected Camera"); }
             updateTimer?.Stop();
             _cancelCoolCameraSource?.Cancel();
             CoolingRunning = false;

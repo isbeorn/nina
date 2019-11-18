@@ -223,6 +223,9 @@ namespace NINA.ViewModel.Equipment.Focuser {
 
                             TargetPosition = this.Position;
                             profileService.ActiveProfile.FocuserSettings.Id = Focuser.Id;
+
+                            Logger.Info($"Successfully connected Focuser. Id: {Focuser.Id} Name: {Focuser.Name} Driver Version: {Focuser.DriverVersion}");
+
                             return true;
                         } else {
                             FocuserInfo.Connected = false;
@@ -336,6 +339,7 @@ namespace NINA.ViewModel.Equipment.Focuser {
             FocuserInfo = DeviceInfo.CreateDefaultInstance<FocuserInfo>();
             BroadcastFocuserInfo();
             RaisePropertyChanged(nameof(Focuser));
+            Logger.Info("Disconnected Focuser");
         }
 
         public void RefreshFocuserList(object obj) {

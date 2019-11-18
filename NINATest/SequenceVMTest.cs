@@ -381,6 +381,7 @@ namespace NINATest {
         public bool WarmCamAtSequenceEnd { get; set; }
 
         public long TimeSpanInTicks { get; set; }
+        public string DefaultSequenceFolder { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
     }

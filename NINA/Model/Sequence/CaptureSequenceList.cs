@@ -27,6 +27,7 @@ using NINA.Utility.Notification;
 using NINA.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -43,6 +44,8 @@ namespace NINA.Model {
             Mode = SequenceMode.STANDARD;
             Coordinates = new Coordinates(0, 0, Epoch.J2000, Coordinates.RAType.Hours);
             AltitudeVisible = false;
+            HasChanged = false;
+            PropertyChanged += CaptureSequenceList_PropertyChanged;
         }
 
         private AsyncObservableCollection<CaptureSequence> _items = new AsyncObservableCollection<CaptureSequence>();
@@ -73,6 +76,17 @@ namespace NINA.Model {
             if (Items.Count(i => i.Enabled) == 1) {
                 ActiveSequence = Items.First(i => i.Enabled);
             }
+            HasChanged = true;
+            s.PropertyChanged += Sequence_Item_PropertyChanged;
+        }
+
+        private void Sequence_Item_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (sender.GetType().GetProperty(e.PropertyName).GetCustomAttributes(false).Any(a => a is XmlIgnoreAttribute))
+                return;
+
+            if (e.PropertyName!=nameof(CaptureSequence.ProgressExposureCount))
+                HasChanged = true;
         }
 
         public void AddAt(int idx, CaptureSequence s)
@@ -93,7 +107,9 @@ namespace NINA.Model {
                         ActiveSequence = Items[idx + 1];
                     }
                 }
+                Items[idx].PropertyChanged -= Sequence_Item_PropertyChanged;
                 Items.RemoveAt(idx);
+                HasChanged = true;
             }
         }
 
@@ -116,44 +132,119 @@ namespace NINA.Model {
                 using (StreamWriter writer = new StreamWriter(path)) {
                     xmlSerializer.Serialize(writer, this);
                 }
+                HasChanged = false;
             } catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.ShowError(ex.Message);
             }
         }
 
-        public static CaptureSequenceList Load(Stream stream, ICollection<MyFilterWheel.FilterInfo> filters, double latitude, double longitude) {
+        public static CaptureSequenceList Load(string fileName, ICollection<MyFilterWheel.FilterInfo> filters, double latitude, double longitude)
+        {
+            using (var s = new FileStream(fileName, FileMode.Open))
+            {
+                return Load(s, fileName, filters, latitude, longitude);
+            }
+        }
+        public static CaptureSequenceList Load(Stream stream, string fileName, ICollection<MyFilterWheel.FilterInfo> filters, double latitude, double longitude)
+        {
             CaptureSequenceList l = null;
-            try {
+            try
+            {
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(CaptureSequenceList));
 
                 l = (CaptureSequenceList)xmlSerializer.Deserialize(stream);
-                foreach (CaptureSequence s in l) {
-                    if (s.FilterType != null) {
-                        //first try to match by name; otherwise match by position.
-                        var filter = filters.Where((f) => f.Name == s.FilterType.Name).FirstOrDefault();
-                        if (filter == null) {
-                            filter = filters.Where((f) => f.Position == s.FilterType.Position).FirstOrDefault();
-                            if (filter == null) {
-                                Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFilterNotFoundForPosition"], (s.FilterType.Position + 1)));
-                            }
-                        }
-                        s.FilterType = filter;
-                    }
-                }
-                if (l.ActiveSequence == null && l.Count > 0) {
-                    l.ActiveSequence = l.Items.SkipWhile(x => x.TotalExposureCount - x.ProgressExposureCount == 0).FirstOrDefault();
-                }
-                l.DSO?.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), latitude, longitude);
-            } catch (Exception ex) {
+                AdjustSequenceToMatchCurrentProfile(filters, latitude, longitude, l);
+            }
+            catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.ShowError(Locale.Loc.Instance["LblLoadSequenceFailed"] + Environment.NewLine + ex.Message);
             }
             return l;
         }
 
+        private static void AdjustSequenceToMatchCurrentProfile(ICollection<MyFilterWheel.FilterInfo> filters, double latitude, double longitude, CaptureSequenceList l)
+        {
+            foreach (CaptureSequence s in l)
+            {
+                if (s.FilterType != null)
+                {
+                    //first try to match by name; otherwise match by position.
+                    var filter = filters.Where((f) => f.Name == s.FilterType.Name).FirstOrDefault();
+                    if (filter == null)
+                    {
+                        filter = filters.Where((f) => f.Position == s.FilterType.Position).FirstOrDefault();
+                        if (filter == null)
+                        {
+                            Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFilterNotFoundForPosition"], (s.FilterType.Position + 1)));
+                        }
+                    }
+                    s.FilterType = filter;
+                }
+            }
+            if (l.ActiveSequence == null && l.Count > 0)
+            {
+                l.ActiveSequence = l.Items.SkipWhile(x => x.TotalExposureCount - x.ProgressExposureCount == 0).FirstOrDefault();
+            }
+            l.DSO?.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), latitude, longitude);
+        }
+
+        public static void SaveSequenceSet(Collection<CaptureSequenceList> sequenceSet, string path)
+        {
+            try
+            {
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(Collection<CaptureSequenceList>));
+
+                using (StreamWriter writer = new StreamWriter(path))
+                {
+                    xmlSerializer.Serialize(writer, sequenceSet);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                Notification.ShowError(ex.Message);
+            }
+        }
+
+        public static List<CaptureSequenceList> LoadSequenceSet(Stream stream, ICollection<MyFilterWheel.FilterInfo> filters, double latitude, double longitude)
+        {
+            List<CaptureSequenceList> c = null;
+            try
+            {
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<CaptureSequenceList>));
+
+                c = (List<CaptureSequenceList>)xmlSerializer.Deserialize(stream);
+                foreach (var l in c)
+                    AdjustSequenceToMatchCurrentProfile(filters, latitude, longitude, l);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                Notification.ShowError(Locale.Loc.Instance["LblLoadSequenceSetFailed"] + Environment.NewLine + ex.Message);
+            }
+            return c;
+        }
+        private void PlumbInSequencePropertyChangedEvents()
+        {
+            foreach (var s in Items)
+                s.PropertyChanged += Sequence_Item_PropertyChanged;
+        }
+
         public CaptureSequenceList(CaptureSequence seq) : this() {
             Add(seq);
+            HasChanged = false;
+        }
+
+        private void CaptureSequenceList_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            // see if we need to worry our pretty heads about this property
+            if (GetType().GetProperty(e.PropertyName).GetCustomAttributes(false).Any(a => a is XmlIgnoreAttribute))
+                return;
+
+            if ((e.PropertyName!=nameof(HasChanged)) && (e.PropertyName!=nameof(TargetNameWithModifiedIndicator))
+                && (e.PropertyName!=nameof(ActiveSequenceIndex)))
+                HasChanged = true;
         }
 
         public void SetSequenceTarget(DeepSkyObject dso) {
@@ -161,6 +252,7 @@ namespace NINA.Model {
             Coordinates = dso.Coordinates;
             Rotation = dso.Rotation;
             this.DSO = dso;
+            HasChanged = true;
         }
 
         private string _targetName;
@@ -173,7 +265,14 @@ namespace NINA.Model {
             set {
                 _targetName = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(TargetNameWithModifiedIndicator));
             }
+        }
+
+        [XmlIgnore]
+        public string TargetNameWithModifiedIndicator
+        {
+            get { return _targetName + (HasChanged ? " *" : ""); }
         }
 
         private SequenceMode _mode;
@@ -637,6 +736,45 @@ namespace NINA.Model {
                 _altitudeVisisble = value;
                 RaisePropertyChanged();
             }
+        }
+
+        private string sequenceFileName;
+
+        [XmlIgnore]
+        public string SequenceFileName
+        {
+            get
+            {
+                return sequenceFileName;
+            }
+            set
+            {
+                sequenceFileName = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool HasFileName
+        {
+            get { return !string.IsNullOrWhiteSpace(sequenceFileName); }
+        }
+
+        private bool hasChanged;
+        [XmlIgnore]
+        public bool HasChanged
+        {
+            get { return hasChanged; }
+            private set
+            {
+                hasChanged = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(TargetNameWithModifiedIndicator));
+            }
+        }
+
+        public void MarkAsUnchanged()
+        {
+            HasChanged = false;
         }
     }
 }

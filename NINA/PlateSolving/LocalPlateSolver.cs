@@ -27,6 +27,7 @@ using System.Globalization;
 using System.IO;
 
 namespace NINA.PlateSolving {
+
     internal class LocalPlateSolver : CLISolver {
         private string bashLocation;
 
@@ -102,6 +103,8 @@ namespace NINA.PlateSolving {
                     }
                     if (wcsinfo.ContainsKey("orientation_center")) {
                         result.Orientation = double.Parse(wcsinfo["orientation_center"], CultureInfo.InvariantCulture);
+                        /* Due to the way N.I.N.A. writes FITS files, the orientation is mirrored on the x-axis */
+                        result.Orientation = 180 - result.Orientation + 360;
                     }
                     if (wcsinfo.ContainsKey("pixscale")) {
                         result.Pixscale = double.Parse(wcsinfo["pixscale"], CultureInfo.InvariantCulture);

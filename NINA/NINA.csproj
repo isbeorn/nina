@@ -366,6 +366,7 @@
     <Compile Include="Model\MyFilterWheel\FlatDeviceExposureTimeSettings.cs" />
     <Compile Include="Model\MyFilterWheel\QHYFilterWheel.cs" />
     <Compile Include="Model\MyFilterWheel\FLIFilterWheel.cs" />
+    <Compile Include="Utility\Converters\AFFittingToVisibilityConverter.cs" />
     <Compile Include="Utility\DeferredContent.cs" />
     <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakCommands.cs" />
     <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakDevices.cs" />
@@ -393,12 +394,8 @@
     <Compile Include="Profile\Interfaces\IWeatherDataSettings.cs" />
     <Compile Include="Profile\ProfileInfo.cs" />
     <Compile Include="Profile\WeatherDataSettings.cs" />
-    <Compile Include="Utility\Api\ApiParameters.cs" />
     <Compile Include="Model\MyPlanetarium\IPlanetarium.cs" />
-    <Compile Include="Utility\Api\RawTcp.cs" />
-    <Compile Include="Utility\Api\ITcpIpApi.cs" />
     <Compile Include="Model\MyPlanetarium\Stellarium.cs" />
-    <Compile Include="Utility\Api\JSONApi.cs" />
     <Compile Include="Model\MySwitch\Ascom\AscomSwitch.cs" />
     <Compile Include="Model\MySwitch\Ascom\AscomSwitchHub.cs" />
     <Compile Include="Model\MySwitch\Ascom\AscomWritableSwitch.cs" />
@@ -473,6 +470,13 @@
     <Compile Include="Utility\Enum\AutoUpdateSourceEnum.cs" />
     <Compile Include="Utility\ValidationRules\GreaterThanZeroRule.cs" />
     <Compile Include="Utility\ValidationRules\StrictGreaterZeroRule.cs" />
+    <Compile Include="ViewModel\AutoFocus\AutoFocusPoint.cs" />
+    <Compile Include="ViewModel\AutoFocus\AutoFocusReport.cs" />
+    <Compile Include="ViewModel\AutoFocus\FocusPointComparer.cs" />
+    <Compile Include="ViewModel\AutoFocus\MathHelper.cs" />
+    <Compile Include="ViewModel\AutoFocus\MeasureAndError.cs" />
+    <Compile Include="ViewModel\AutoFocus\PlotPointComparer.cs" />
+    <Compile Include="ViewModel\AutoFocus\TrendLine.cs" />
     <Compile Include="ViewModel\Equipment\Camera\CameraChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\FilterWheel\FilterWheelChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\FlatDevice\FlatDeviceChooserVM.cs" />
@@ -752,7 +756,7 @@
     <Compile Include="Utility\XISF.cs" />
     <Compile Include="ViewModel\AberrationInspectorVM.cs" />
     <Compile Include="ViewModel\ApplicationStatusVM.cs" />
-    <Compile Include="ViewModel\AutoFocusVM.cs" />
+    <Compile Include="ViewModel\AutoFocus\AutoFocusVM.cs" />
     <Compile Include="ViewModel\DockableVM.cs" />
     <Compile Include="ViewModel\DockManagerVM.cs" />
     <Compile Include="ViewModel\EquipmentChooserVM.cs" />
@@ -970,9 +974,6 @@
     <Compile Include="View\Options\OptionsImagingView.xaml.cs">
       <DependentUpon>OptionsImagingView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Options\OptionsPlanetariumView.xaml.cs">
-      <DependentUpon>OptionsPlanetariumView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\Options\OptionsPlateSolverView.xaml.cs">
       <DependentUpon>OptionsPlateSolverView.xaml</DependentUpon>
     </Compile>
@@ -1054,6 +1055,10 @@
     <Page Include="Locale\Locale.zh-CN.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Locale\Locale.zh-TW.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -1407,10 +1412,6 @@
     <Page Include="View\Options\OptionsImagingView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\Options\OptionsPlanetariumView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Options\OptionsPlateSolverView.xaml">
       <SubType>Designer</SubType>

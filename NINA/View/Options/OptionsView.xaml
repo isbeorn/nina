@@ -811,11 +811,5 @@
             </TabItem.Header>
             <local:OptionsPlateSolverView DataContext="{Binding}" />
         </TabItem>
-        <TabItem>
-            <TabItem.Header>
-                <TextBlock Style="{StaticResource TabItemTextBox}" Text="{ns:Loc LblPlanetarium}" />
-            </TabItem.Header>
-            <local:OptionsPlanetariumView DataContext="{Binding}" />
-        </TabItem>
     </TabControl>
 </UserControl>

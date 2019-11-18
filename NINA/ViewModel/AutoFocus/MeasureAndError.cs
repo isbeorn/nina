@@ -17,21 +17,22 @@
 
     You should have received a copy of the GNU General Public License
     along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+
+    Hyperbolic fitting based on CCDCiel source, also under GPL3
+    Copyright (C) 2018 Patrick Chevalley & Han Kleijn (author)
+
+    http://www.ap-i.net
+    h@ap-i.net
+
+    http://www.hnsky.org
 */
 
 #endregion "copyright"
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace NINA.Utility.Api {
-    interface ITcpIpApi {
-        string BaseAddress { get; set; }
-        int Port { get; set; }
-        int Timeout { get; set; }
-        string Protocol { get; set; }
-        string RootPath { get; set; }
+
+namespace NINA.ViewModel {
+    public struct MeasureAndError {
+        public double Measure { get; set; }
+        public double Stdev { get; set; }
     }
 }

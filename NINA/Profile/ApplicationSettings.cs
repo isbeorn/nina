@@ -40,7 +40,7 @@ namespace NINA.Profile {
 
         protected override void SetDefaultValues() {
             language = new CultureInfo("en-GB");
-            logLevel = LogLevelEnum.ERROR;
+            logLevel = LogLevelEnum.INFO;
             devicePollingInterval = 2;
             skyAtlasImageRepository = string.Empty;
             skySurveyCacheDirectory = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "FramingAssistantCache");

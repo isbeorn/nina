@@ -44,6 +44,15 @@ namespace NINA.Model {
             Enabled = true;
         }
 
+        public CaptureSequence Clone() {
+            CaptureSequence clone = new CaptureSequence(ExposureTime, ImageType, FilterType, Binning, TotalExposureCount);
+            clone.Gain = Gain;
+            clone.Dither = Dither;
+            clone.DitherAmount = DitherAmount;
+            clone.Offset = Offset;
+            return clone;
+        }
+
         private double _exposureTime;
         private string _imageType;
         private MyFilterWheel.FilterInfo _filterType;

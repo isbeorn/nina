@@ -37,16 +37,12 @@ namespace NINA.Profile {
         }
 
         protected override void SetDefaultValues() {
-            stellariumTimeout = 500;
             stellariumPort = 8090;
             stellariumHost = "localhost";
-            cdCTimeout = 300;
             cdCPort = 3292;
             cdCHost = "localhost";
-            tsxTimeout = 300;
             tsxPort = 3040;
             tsxHost = "localhost";
-            hnskyTimeout = 300;
             hnskyPort = 7700;
             hnskyHost = "localhost";
             preferredPlanetarium = PlanetariumEnum.CDC;
@@ -82,21 +78,6 @@ namespace NINA.Profile {
             }
         }
 
-        private int stellariumTimeout;
-
-        [DataMember]
-        public int StellariumTimeout {
-            get {
-                return stellariumTimeout;
-            }
-            set {
-                if (stellariumTimeout != value) {
-                    stellariumTimeout = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
         private string cdCHost;
 
         [DataMember]
@@ -122,21 +103,6 @@ namespace NINA.Profile {
             set {
                 if (cdCPort != value) {
                     cdCPort = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private int cdCTimeout;
-
-        [DataMember]
-        public int CdCTimeout {
-            get {
-                return cdCTimeout;
-            }
-            set {
-                if (cdCTimeout != value) {
-                    cdCTimeout = value;
                     RaisePropertyChanged();
                 }
             }
@@ -172,21 +138,6 @@ namespace NINA.Profile {
             }
         }
 
-        private int tsxTimeout;
-
-        [DataMember]
-        public int TSXTimeout {
-            get {
-                return tsxTimeout;
-            }
-            set {
-                if (tsxTimeout != value) {
-                    tsxTimeout = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
         private string hnskyHost;
 
         [DataMember]
@@ -212,21 +163,6 @@ namespace NINA.Profile {
             set {
                 if (hnskyPort != value) {
                     hnskyPort = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private int hnskyTimeout;
-
-        [DataMember]
-        public int HNSKYTimeout {
-            get {
-                return hnskyTimeout;
-            }
-            set {
-                if (hnskyTimeout != value) {
-                    hnskyTimeout = value;
                     RaisePropertyChanged();
                 }
             }

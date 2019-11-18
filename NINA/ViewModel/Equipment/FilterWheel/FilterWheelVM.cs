@@ -206,6 +206,8 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
 
                             BroadcastFilterWheelInfo();
 
+                            Logger.Info($"Successfully connected Filter Wheel. Id: {FW.Id} Name: {FW.Name} Driver Version: {FW.DriverVersion}");
+
                             return true;
                         } else {
                             this.FW = null;
@@ -250,6 +252,7 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
                 FilterWheelInfo = DeviceInfo.CreateDefaultInstance<FilterWheelInfo>();
                 RaisePropertyChanged(nameof(FW));
                 BroadcastFilterWheelInfo();
+                Logger.Info("Disconnected Filter Wheel");
             }
         }
 

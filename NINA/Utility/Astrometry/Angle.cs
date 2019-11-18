@@ -78,6 +78,10 @@ namespace NINA.Utility.Astrometry {
             return Angle.ByRadians(Math.Atan(this.Radians));
         }
 
+        public Angle Abs() {
+            return Angle.ByRadians(Math.Abs(this.Radians));
+        }
+
         public Angle Atan2(Angle angle) {
             return Angle.ByRadians(Math.Atan2(angle.Radians, this.Radians));
         }
