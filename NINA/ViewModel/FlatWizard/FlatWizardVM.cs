@@ -151,6 +151,7 @@ namespace NINA.ViewModel.FlatWizard {
             this.cameraMediator.RemoveConsumer(this);
             this.filterWheelMediator.RemoveConsumer(this);
             this.telescopeMediator.RemoveConsumer(this);
+            this._flatDeviceMediator.RemoveConsumer(this);
         }
 
         private AltitudeSite altitudeSite;

@@ -22,8 +22,10 @@
 #endregion "copyright"
 
 using NINA.Model;
+using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
+using NINA.Model.MyFlatDevice;
 using NINA.Model.MyFocuser;
 using NINA.Model.MyGuider;
 using NINA.Model.MyPlanetarium;
@@ -31,13 +33,14 @@ using NINA.Model.MyRotator;
 using NINA.Model.MyTelescope;
 using NINA.Model.MyWeatherData;
 using NINA.PlateSolving;
+using NINA.Profile;
 using NINA.Utility;
+using NINA.Utility.Astrometry;
 using NINA.Utility.Exceptions;
+using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
-using NINA.Profile;
 using NINA.Utility.WindowService;
-using NINA.Utility.Astrometry;
 using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
@@ -45,17 +48,17 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Security.AccessControl;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
-using NINA.Model.ImageData;
-using NINA.Utility.Mediator;
 
 namespace NINA.ViewModel {
-    internal class SequenceVM : DockableVM, ITelescopeConsumer, IFocuserConsumer, IFilterWheelConsumer, IRotatorConsumer, IGuiderConsumer, ICameraConsumer, IWeatherDataConsumer {
+
+    internal class SequenceVM : DockableVM, ITelescopeConsumer, IFocuserConsumer, IFilterWheelConsumer, IRotatorConsumer, IFlatDeviceConsumer, IGuiderConsumer, ICameraConsumer, IWeatherDataConsumer {
+
         public SequenceVM(
                 IProfileService profileService,
                 ICameraMediator cameraMediator,
@@ -64,6 +67,7 @@ namespace NINA.ViewModel {
                 IFilterWheelMediator filterWheelMediator,
                 IGuiderMediator guiderMediator,
                 IRotatorMediator rotatorMediator,
+                IFlatDeviceMediator flatDeviceMediator,
                 IWeatherDataMediator weatherDataMediator,
                 IImagingMediator imagingMediator,
                 IApplicationStatusMediator applicationStatusMediator
@@ -79,6 +83,9 @@ namespace NINA.ViewModel {
 
             this.rotatorMediator = rotatorMediator;
             this.rotatorMediator.RegisterConsumer(this);
+
+            this._flatDeviceMediator = flatDeviceMediator;
+            this._flatDeviceMediator.RegisterConsumer(this);
 
             this.guiderMediator = guiderMediator;
             this.guiderMediator.RegisterConsumer(this);
@@ -968,6 +975,11 @@ namespace NINA.ViewModel {
                 displayMessage = true;
             }
 
+            if (_flatDevice != null && _flatDevice.Connected && _flatDevice.SupportsOpenClose && _flatDevice.CoverState != CoverState.Open) {
+                messageStringBuilder.AppendLine(Locale.Loc.Instance["LblFlatDeviceConnectedButCoverNotOpen"]);
+                displayMessage = true;
+            }
+
             messageStringBuilder.AppendLine();
             messageStringBuilder.Append(Locale.Loc.Instance["LblStartSequenceAnyway"]);
 
@@ -1165,6 +1177,8 @@ namespace NINA.ViewModel {
         private CameraInfo cameraInfo = DeviceInfo.CreateDefaultInstance<CameraInfo>();
         private IRotatorMediator rotatorMediator;
         private RotatorInfo rotatorInfo;
+        private IFlatDeviceMediator _flatDeviceMediator;
+        private FlatDeviceInfo _flatDevice;
         private IWeatherDataMediator weatherDataMediator;
         private WeatherDataInfo weatherDataInfo;
         private GuiderInfo guiderInfo = DeviceInfo.CreateDefaultInstance<GuiderInfo>();
@@ -1323,22 +1337,19 @@ namespace NINA.ViewModel {
         public ICommand LoadSequenceCommand { get; private set; }
         public ICommand SaveSequenceCommand { get; private set; }
 
-        private void PromoteSequenceRow(object obj)
-        {
+        private void PromoteSequenceRow(object obj) {
             var idx = SelectedSequenceRowIdx;
-            if (idx > 0)
-            {
+            if (idx > 0) {
                 CaptureSequence seq = Sequence.Items[idx];
                 Sequence.RemoveAt(idx);
                 Sequence.AddAt(idx - 1, seq);
                 SelectedSequenceRowIdx = idx - 1;
             }
         }
-        private void DemoteSequenceRow(object obj)
-        {
+
+        private void DemoteSequenceRow(object obj) {
             var idx = SelectedSequenceRowIdx;
-            if (idx < Sequence.Count - 1)
-            {
+            if (idx < Sequence.Count - 1) {
                 CaptureSequence seq = Sequence.Items[idx];
                 Sequence.RemoveAt(idx);
                 Sequence.AddAt(idx + 1, seq);
@@ -1356,11 +1367,16 @@ namespace NINA.ViewModel {
             this.guiderInfo = deviceInfo;
         }
 
+        public void UpdateDeviceInfo(FlatDeviceInfo deviceInfo) {
+            this._flatDevice = deviceInfo;
+        }
+
         public void Dispose() {
             this.telescopeMediator.RemoveConsumer(this);
             this.filterWheelMediator.RemoveConsumer(this);
             this.focuserMediator.RemoveConsumer(this);
             this.rotatorMediator.RemoveConsumer(this);
+            this._flatDeviceMediator.RemoveConsumer(this);
             this.guiderMediator.RemoveConsumer(this);
             this.cameraMediator.RemoveConsumer(this);
             this.weatherDataMediator.RemoveConsumer(this);

@@ -181,7 +181,7 @@
                                         Height="25"
                                         Margin="5,0,0,0"
                                         HorizontalAlignment="Left"
-                                        ButtonText="{ns:Loc LblFlatDeviceOpen}"
+                                        ButtonText="{ns:Loc LblFlatDeviceOpenButton}"
                                         Command="{Binding OpenCoverCommand}" />
                                 </Grid>
                                 <Grid IsEnabled="{Binding FlatDeviceInfo, Converter={StaticResource InverseNullToBooleanConverter}}">

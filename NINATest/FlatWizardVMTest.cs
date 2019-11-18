@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using Moq;
 using NINA.Locale;
 using NINA.Model.MyCamera;
@@ -13,6 +14,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using NINA.Model.MyFlatDevice;
 using NINA.ViewModel.Equipment.FlatDevice;
 
 namespace NINATest {
@@ -35,16 +37,21 @@ namespace NINATest {
         private Mock<ICameraSettings> cameraSettingsMock = new Mock<ICameraSettings>();
         private Mock<IFilterWheelSettings> filterWheelSettingsMock = new Mock<IFilterWheelSettings>();
         private Mock<IFlatDeviceMediator> _flatDeviceMediatorMock = new Mock<IFlatDeviceMediator>();
-        private Mock<IFlatDeviceVM> _flatDeviceVMMock = new Mock<IFlatDeviceVM>();
+        private Mock<IFlatDeviceVM> _flatDeviceVMMock;
 
         [OneTimeSetUp]
-        public void Init() {
+        public void InitOnce() {
             profileServiceMock.SetupGet(m => m.ActiveProfile).Returns(profileMock.Object);
             profileMock.SetupGet(m => m.FlatWizardSettings).Returns(flatWizardSettingsMock.Object);
             profileMock.SetupGet(m => m.CameraSettings).Returns(cameraSettingsMock.Object);
             profileMock.SetupGet(m => m.FilterWheelSettings).Returns(filterWheelSettingsMock.Object);
             filterWheelSettingsMock.SetupGet(m => m.FilterWheelFilters)
                 .Returns(new ObserveAllCollection<FilterInfo>());
+        }
+
+        [SetUp]
+        public void Init() {
+            _flatDeviceVMMock = new Mock<IFlatDeviceVM>();
         }
 
         [Test]
@@ -107,6 +114,7 @@ namespace NINATest {
             filterWheelSettingsMock.Verify(m => m.FilterWheelFilters, Times.AtMost(2));
 
             cameraMediatorMock.Verify(m => m.RegisterConsumer(sut), Times.Once);
+            _flatDeviceMediatorMock.Verify(m => m.RegisterConsumer(sut), Times.Once);
 
             sut.Filters.Select(f => f.Filter).Should().BeEquivalentTo(filters);
         }
@@ -188,6 +196,74 @@ namespace NINATest {
             sut.Filters.Select(f => f.Filter).Should().BeEquivalentTo(filters);
             sut.Filters.Select(f => f.BitDepth).Should().AllBeEquivalentTo(cameraInfo.BitDepth);
             sut.SelectedFilter.Should().BeEquivalentTo(selectedFilter);
+        }
+
+        [Test]
+        public void UpdateFlatDeviceSettingsAndCheckFlatMagicWithNullFlatDevice() {
+            sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
+                cameraMediatorMock.Object, filterWheelMediatorMock.Object, telescopeMediatorMock.Object,
+                _flatDeviceVMMock.Object, _flatDeviceMediatorMock.Object, resourceDictionaryMock.Object,
+                applicationStatusMediatorMock.Object) {
+                FlatWizardExposureTimeFinderService = exposureServiceMock.Object,
+                Locale = localeMock.Object,
+            };
+
+            sut.StartFlatSequenceCommand.Execute(new object());
+            _flatDeviceVMMock.Verify(m => m.CloseCover(), Times.Never);
+            _flatDeviceVMMock.Verify(m => m.OpenCover(), Times.Never);
+        }
+
+        private FlatDeviceInfo GetDefaultFlatDeviceInfo() {
+            return new FlatDeviceInfo() {
+                Brightness = 1.0,
+                Connected = true,
+                CoverState = CoverState.Open,
+                Description = "Some description",
+                DriverInfo = "Some driverInfo",
+                LightOn = false,
+                DriverVersion = "200",
+                MaxBrightness = 255,
+                MinBrightness = 0,
+                Name = "Some name"
+            };
+        }
+
+        [Test]
+        public void UpdateFlatDeviceSettingsAndCheckFlatMagicWithFlatDevice() {
+            var flatDevice = GetDefaultFlatDeviceInfo();
+            sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
+                cameraMediatorMock.Object, filterWheelMediatorMock.Object, telescopeMediatorMock.Object,
+                _flatDeviceVMMock.Object, _flatDeviceMediatorMock.Object, resourceDictionaryMock.Object,
+                applicationStatusMediatorMock.Object) {
+                FlatWizardExposureTimeFinderService = exposureServiceMock.Object,
+                Locale = localeMock.Object,
+            };
+
+            flatDevice.Connected = true;
+            flatDevice.SupportsOpenClose = true;
+            sut.UpdateDeviceInfo(flatDevice);
+            sut.StartFlatSequenceCommand.Execute(new object());
+            _flatDeviceVMMock.Verify(m => m.CloseCover(), Times.Once);
+            _flatDeviceVMMock.Verify(m => m.OpenCover(), Times.Never);
+        }
+
+        [Test]
+        public void UpdateFlatDeviceSettingsAndCheckFlatMagicWithFlatDeviceThatDoesNotOpenClose() {
+            var flatDevice = GetDefaultFlatDeviceInfo();
+            sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
+                cameraMediatorMock.Object, filterWheelMediatorMock.Object, telescopeMediatorMock.Object,
+                _flatDeviceVMMock.Object, _flatDeviceMediatorMock.Object, resourceDictionaryMock.Object,
+                applicationStatusMediatorMock.Object) {
+                FlatWizardExposureTimeFinderService = exposureServiceMock.Object,
+                Locale = localeMock.Object,
+            };
+
+            flatDevice.Connected = true;
+            flatDevice.SupportsOpenClose = false;
+            sut.UpdateDeviceInfo(flatDevice);
+            sut.StartFlatSequenceCommand.Execute(new object());
+            _flatDeviceVMMock.Verify(m => m.CloseCover(), Times.Never);
+            _flatDeviceVMMock.Verify(m => m.OpenCover(), Times.Never);
         }
     }
 }
