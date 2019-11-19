@@ -14,7 +14,8 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
         bool LightOn { get; set; }
         FlatDeviceInfo FlatDeviceInfo { get; set; }
 
-        RelayCommand ToggleLightCommand { get; }
-        RelayCommand SetBrightnessCommand { get; }
+        void ToggleLight(object o);
+
+        void SetBrightness(object o);
     }
 }

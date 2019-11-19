@@ -377,7 +377,7 @@ namespace NINA.ViewModel.FlatWizard {
 
             if (_flatDevice != null && _flatDevice.Connected) {
                 _flatDeviceVM.Brightness = 1.0;
-                _flatDeviceVM.SetBrightnessCommand.Execute(null);
+                _flatDeviceVM.SetBrightness(null);
             }
 
             progress.Report(new ApplicationStatus { Status = string.Format(Locale["LblFlatExposureCalcStart"], wrapper.Settings.MinFlatExposureTime), Source = Title });
@@ -447,7 +447,7 @@ namespace NINA.ViewModel.FlatWizard {
                     case FlatWizardExposureAduState.ExposureAduAboveMean:
                         if (_flatDevice != null && _flatDevice.Connected && _flatDeviceVM.Brightness >= 0.05) {
                             _flatDeviceVM.Brightness /= 2.0;
-                            _flatDeviceVM.SetBrightnessCommand.Execute(null);
+                            _flatDeviceVM.SetBrightness(null);
                             exposureTime = wrapper.Settings.MinFlatExposureTime;
                             FlatWizardExposureTimeFinderService.ClearDataPoints();
                         } else {
@@ -463,7 +463,7 @@ namespace NINA.ViewModel.FlatWizard {
                             } else {
                                 if (_flatDevice != null && _flatDevice.Connected) {
                                     _flatDeviceVM.Brightness = 1.0;
-                                    _flatDeviceVM.SetBrightnessCommand.Execute(null);
+                                    _flatDeviceVM.SetBrightness(null);
                                 }
 
                                 exposureTime = result.NextExposureTime;
@@ -509,7 +509,7 @@ namespace NINA.ViewModel.FlatWizard {
                 });
 
                 if (_flatDevice != null && _flatDevice.Connected && _flatDevice.SupportsOpenClose) { await _flatDeviceVM.CloseCover(); }
-                if (_flatDevice != null && _flatDevice.Connected) { _flatDeviceVM.ToggleLightCommand.Execute((object)true); }
+                if (_flatDevice != null && _flatDevice.Connected) { _flatDeviceVM.ToggleLight((object)true); }
 
                 var totalFilterCount = filters.Count();
                 foreach (var filterSettings in filters) {
@@ -541,7 +541,7 @@ namespace NINA.ViewModel.FlatWizard {
                 return false;
             } finally {
                 Cleanup(progress);
-                if (_flatDevice != null && _flatDevice.Connected) { _flatDeviceVM.ToggleLightCommand.Execute((object)false); }
+                if (_flatDevice != null && _flatDevice.Connected) { _flatDeviceVM.ToggleLight((object)false); }
             }
 
             return true;
