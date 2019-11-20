@@ -16,7 +16,7 @@ namespace NINATest {
         public async Task InitAsync() {
             _mockProfileService = new Mock<IProfileService>();
             _mockProfileService.SetupProperty(m => m.ActiveProfile.FlatDeviceSettings.PortName, "");
-            _sut = new AlnitakFlatDevice("Alnitak;COM3", _mockProfileService.Object);
+            _sut = new AlnitakFlatDevice(_mockProfileService.Object);
             _mockSerialPort = new Mock<ISerialPort>();
             _sut.SerialPort = _mockSerialPort.Object;
             _mockSerialPort.SetupProperty(m => m.PortName, "COM3");
@@ -63,12 +63,12 @@ namespace NINATest {
         }
 
         [Test]
-        [TestCase(0, "*J99000")]
-        [TestCase(255, "*J99255")]
-        [TestCase(99, "*J99099")]
-        [TestCase(0, "garbage")]
-        [TestCase(0, null)]
-        public void TestGetBrightness(int brightness, string deviceResponse) {
+        [TestCase(0.0, "*J99000")]
+        [TestCase(1.0, "*J99255")]
+        [TestCase(0.5, "*J99128")]
+        [TestCase(0.0, "garbage")]
+        [TestCase(0.0, null)]
+        public void TestGetBrightness(double brightness, string deviceResponse) {
             _mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
             Assert.That(_sut.Brightness, Is.EqualTo(brightness));
         }
@@ -79,20 +79,19 @@ namespace NINATest {
         [TestCase(0, "*J99099")]
         [TestCase(0, "garbage")]
         [TestCase(0, null)]
-        public void TestGetBrightnessDisconnected(int brightness, string deviceResponse) {
+        public void TestGetBrightnessDisconnected(double brightness, string deviceResponse) {
             _sut.Disconnect();
             _mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
             Assert.That(_sut.Brightness, Is.EqualTo(brightness));
         }
 
         [Test]
-        [TestCase(0, ">B000\r")]
-        [TestCase(255, ">B255\r")]
-        [TestCase(99, ">B099\r")]
-        [TestCase(50, ">B050\r")]
-        [TestCase(-1, ">B000\r")]
-        [TestCase(256, ">B255\r")]
-        public void TestSetBrightness(int brightness, string command) {
+        [TestCase(0.0, ">B000\r")]
+        [TestCase(1.0, ">B255\r")]
+        [TestCase(0.5, ">B128\r")]
+        [TestCase(-1.0, ">B000\r")]
+        [TestCase(2.0, ">B255\r")]
+        public void TestSetBrightness(double brightness, string command) {
             string actual = null;
             _mockSerialPort.Setup(m => m.Write(It.IsAny<string>())).Callback((string arg) => {
                 actual = arg;

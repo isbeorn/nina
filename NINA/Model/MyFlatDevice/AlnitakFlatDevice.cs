@@ -3,7 +3,10 @@ using NINA.Utility;
 using NINA.Utility.FlatDeviceSDKs.AlnitakSDK;
 using NINA.Utility.Notification;
 using System;
+using System.CodeDom;
+using System.Collections.Generic;
 using System.IO.Ports;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Utility.WindowService;
@@ -13,26 +16,11 @@ namespace NINA.Model.MyFlatDevice {
     public class AlnitakFlatDevice : BaseINPC, IFlatDevice {
         private ISerialPort _serialPort;
         private readonly IProfileService _profileService;
+        private const string AUTO = "AUTO";
 
-        public AlnitakFlatDevice(string name, IProfileService profileService) {
+        public AlnitakFlatDevice(IProfileService profileService) {
             _profileService = profileService;
-            Name = name.Split(';')[0];
-            PortName = name.Split(';')[1];
-            SetupSerialPort(PortName);
-        }
-
-        private void SetupSerialPort(string portName) {
-            _serialPort = new SerialPortWrapper {
-                PortName = portName,
-                BaudRate = 9600,
-                Parity = Parity.None,
-                DataBits = 8,
-                StopBits = StopBits.One,
-                Handshake = Handshake.None,
-                NewLine = "\n",
-                ReadTimeout = 500,
-                WriteTimeout = 500
-            };
+            PortName = profileService.ActiveProfile.FlatDeviceSettings.PortName;
         }
 
         public ISerialPort SerialPort {
@@ -109,9 +97,9 @@ namespace NINA.Model.MyFlatDevice {
             }
         }
 
-        public int Brightness {
+        public double Brightness {
             get {
-                var result = 0;
+                var result = 0.0;
                 if (!Connected) {
                     return result;
                 }
@@ -124,18 +112,18 @@ namespace NINA.Model.MyFlatDevice {
                 } else {
                     result = response.Brightness;
                 }
-                return result;
+                return Math.Round(result / (MaxBrightness - MinBrightness), 2);
             }
             set {
                 if (Connected) {
-                    if (value < MinBrightness) {
-                        value = MinBrightness;
+                    if (value < 0) {
+                        value = 0;
                     }
 
-                    if (value > MaxBrightness) {
-                        value = MaxBrightness;
+                    if (value > 1) {
+                        value = 1;
                     }
-                    var command = new SetBrightnessCommand(value);
+                    var command = new SetBrightnessCommand(value * (MaxBrightness - MinBrightness) + MinBrightness);
                     var response = SendCommand<SetBrightnessResponse>(command);
                     if (!response.IsValid) {
                         Logger.Error($"Invalid response from flat device on port {_serialPort.PortName}. " +
@@ -147,36 +135,27 @@ namespace NINA.Model.MyFlatDevice {
             }
         }
 
+        public string[] PortNames {
+            get {
+                var result = new List<string> { AUTO };
+                result.AddRange(System.IO.Ports.SerialPort.GetPortNames().OrderBy(s => s));
+                return result.ToArray();
+            }
+        }
+
         public string PortName {
             get => _profileService.ActiveProfile.FlatDeviceSettings.PortName;
             set {
                 _profileService.ActiveProfile.FlatDeviceSettings.PortName = value;
-                SetupSerialPort(value);
                 RaisePropertyChanged();
             }
         }
 
-        public bool HasSetupDialog => true;
+        public bool HasSetupDialog => !Connected;
 
-        private string _id;
+        public string Id => "817b60ab-6775-41bd-97b5-3857cc676e51";
 
-        public string Id {
-            get => _id;
-            set {
-                _id = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private string _name;
-
-        public string Name {
-            get => _name;
-            set {
-                _name = value;
-                RaisePropertyChanged();
-            }
-        }
+        public string Name => $"{Locale.Loc.Instance["LblAlnitakFlatPanel"]}";
 
         public string Category => "Alnitak Astrosystems";
 
@@ -187,6 +166,7 @@ namespace NINA.Model.MyFlatDevice {
             private set {
                 _connected = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(HasSetupDialog));
             }
         }
 
@@ -202,7 +182,7 @@ namespace NINA.Model.MyFlatDevice {
 
         public string DriverInfo => "Serial Driver written by Igor von Nyssen.";
 
-        public string DriverVersion => "1.0";
+        public string DriverVersion => "1.1";
 
         public async Task<bool> Close(CancellationToken ct) {
             if (!Connected) return await Task.Run(() => false, ct);
@@ -223,6 +203,7 @@ namespace NINA.Model.MyFlatDevice {
         }
 
         public async Task<bool> Connect(CancellationToken ct) {
+            if (_serialPort == null && !SetupSerialPort()) return false;
             return await Task.Run(() => {
                 Connected = true;
                 var command = new FirmwareVersionCommand();
@@ -232,10 +213,11 @@ namespace NINA.Model.MyFlatDevice {
                                  $"Command was: {command} Response was: {response}.");
                     Notification.ShowError(Locale.Loc.Instance["LblFlatDeviceInvalidResponse"]);
                     Connected = false;
+                    _serialPort.Dispose();
+                    _serialPort = null;
                     return Connected;
                 }
 
-                Name = response.Name;
                 SupportsOpenClose = response.DeviceSupportsOpenClose;
                 Description = $"{response.Name} on port {_serialPort.PortName}. Firmware version: {response.FirmwareVersion}";
 
@@ -244,8 +226,27 @@ namespace NINA.Model.MyFlatDevice {
             }, ct);
         }
 
+        private bool SetupSerialPort() {
+            var portName = PortName == AUTO ? AlnitakDevices.DetectSerialPort() : PortName;
+            if (string.IsNullOrEmpty(portName)) return false;
+            _serialPort = new SerialPortWrapper {
+                PortName = portName,
+                BaudRate = 9600,
+                Parity = Parity.None,
+                DataBits = 8,
+                StopBits = StopBits.One,
+                Handshake = Handshake.None,
+                NewLine = "\n",
+                ReadTimeout = 500,
+                WriteTimeout = 500
+            };
+            return true;
+        }
+
         public void Disconnect() {
             Connected = false;
+            _serialPort?.Dispose();
+            _serialPort = null;
         }
 
         public IWindowService WindowService { get; set; } = new WindowService();
@@ -311,6 +312,8 @@ namespace NINA.Model.MyFlatDevice {
         void Open();
 
         void Close();
+
+        void Dispose();
     }
 
     public class SerialPortWrapper : ISerialPort {
@@ -331,6 +334,8 @@ namespace NINA.Model.MyFlatDevice {
         public int WriteTimeout { get => _serialPort.WriteTimeout; set => _serialPort.WriteTimeout = value; }
 
         public void Close() => _serialPort.Close();
+
+        public void Dispose() => _serialPort.Dispose();
 
         public void Open() => _serialPort.Open();
 

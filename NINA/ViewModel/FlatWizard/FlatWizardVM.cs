@@ -43,8 +43,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using NINA.Model.ImageData;
+using NINA.Model.MyFlatDevice;
 using NINA.Utility.Notification;
 using NINA.Utility.Mediator;
+using NINA.ViewModel.Equipment.FlatDevice;
 
 namespace NINA.ViewModel.FlatWizard {
 
@@ -65,13 +67,18 @@ namespace NINA.ViewModel.FlatWizard {
         private int mode;
         private FlatWizardFilterSettingsWrapper singleFlatWizardFilterSettings;
         private ApplicationStatus status;
-        bool pauseBetweenFilters;
+        private bool pauseBetweenFilters;
+        private IFlatDeviceVM _flatDeviceVM;
+        private IFlatDeviceMediator _flatDeviceMediator;
+        private FlatDeviceInfo _flatDevice;
 
         public FlatWizardVM(IProfileService profileService,
                             IImagingVM imagingVM,
                             ICameraMediator cameraMediator,
                             IFilterWheelMediator filterWheelMediator,
                             ITelescopeMediator telescopeMediator,
+                            IFlatDeviceVM flatDeviceVM,
+                            IFlatDeviceMediator flatDeviceMediator,
                             IApplicationResourceDictionary resourceDictionary,
                             IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblFlatWizard";
@@ -131,6 +138,11 @@ namespace NINA.ViewModel.FlatWizard {
             filterWheelMediator.RegisterConsumer(this);
             this.telescopeMediator = telescopeMediator;
             this.telescopeMediator.RegisterConsumer(this);
+
+            // register the flat panel mediator and VM
+            _flatDeviceVM = flatDeviceVM;
+            _flatDeviceMediator = flatDeviceMediator;
+            _flatDeviceMediator.RegisterConsumer(this);
         }
 
         public void Dispose() {
@@ -139,6 +151,7 @@ namespace NINA.ViewModel.FlatWizard {
             this.cameraMediator.RemoveConsumer(this);
             this.filterWheelMediator.RemoveConsumer(this);
             this.telescopeMediator.RemoveConsumer(this);
+            this._flatDeviceMediator.RemoveConsumer(this);
         }
 
         private AltitudeSite altitudeSite;
@@ -346,11 +359,9 @@ namespace NINA.ViewModel.FlatWizard {
             }
         }
 
-        public bool PauseBetweenFilters
-        {
+        public bool PauseBetweenFilters {
             get => pauseBetweenFilters;
-            set
-            {
+            set {
                 pauseBetweenFilters = value;
                 RaisePropertyChanged();
             }
@@ -363,6 +374,11 @@ namespace NINA.ViewModel.FlatWizard {
         private async Task<bool> StartFindingExposureTimeSequence(IProgress<ApplicationStatus> progress, CancellationToken ct, PauseToken pt, FlatWizardFilterSettingsWrapper wrapper) {
             var exposureTime = wrapper.Settings.MinFlatExposureTime;
             IRenderedImage renderedImage = null;
+
+            if (_flatDevice != null && _flatDevice.Connected) {
+                _flatDeviceVM.Brightness = 1.0;
+                _flatDeviceVM.SetBrightness(null);
+            }
 
             progress.Report(new ApplicationStatus { Status = string.Format(Locale["LblFlatExposureCalcStart"], wrapper.Settings.MinFlatExposureTime), Source = Title });
 
@@ -429,14 +445,29 @@ namespace NINA.ViewModel.FlatWizard {
                         break;
 
                     case FlatWizardExposureAduState.ExposureAduAboveMean:
-                        exposureTime = FlatWizardExposureTimeFinderService.GetNextExposureTime(exposureTime, wrapper);
-
-                        var result = await FlatWizardExposureTimeFinderService.EvaluateUserPromptResultAsync(renderedImage.RawImageData, exposureTime, Locale["LblFlatUserPromptFlatTooBright"], wrapper);
-
-                        if (!result.Continue) {
-                            flatSequenceCts.Cancel();
+                        if (_flatDevice != null && _flatDevice.Connected && _flatDeviceVM.Brightness >= 0.05) {
+                            _flatDeviceVM.Brightness /= 2.0;
+                            _flatDeviceVM.SetBrightness(null);
+                            exposureTime = wrapper.Settings.MinFlatExposureTime;
+                            FlatWizardExposureTimeFinderService.ClearDataPoints();
                         } else {
-                            exposureTime = result.NextExposureTime;
+                            exposureTime =
+                                FlatWizardExposureTimeFinderService.GetNextExposureTime(exposureTime, wrapper);
+
+                            var result = await FlatWizardExposureTimeFinderService.EvaluateUserPromptResultAsync(
+                                renderedImage.RawImageData, exposureTime, Locale["LblFlatUserPromptFlatTooBright"],
+                                wrapper);
+
+                            if (!result.Continue) {
+                                flatSequenceCts.Cancel();
+                            } else {
+                                if (_flatDevice != null && _flatDevice.Connected) {
+                                    _flatDeviceVM.Brightness = 1.0;
+                                    _flatDeviceVM.SetBrightness(null);
+                                }
+
+                                exposureTime = result.NextExposureTime;
+                            }
                         }
 
                         break;
@@ -476,13 +507,16 @@ namespace NINA.ViewModel.FlatWizard {
                     ProgressType2 = ApplicationStatus.StatusProgressType.ValueOfMaxValue,
                     Source = Title
                 });
+
+                if (_flatDevice != null && _flatDevice.Connected && _flatDevice.SupportsOpenClose) { await _flatDeviceVM.CloseCover(); }
+                if (_flatDevice != null && _flatDevice.Connected) { _flatDeviceVM.ToggleLight((object)true); }
+
                 var totalFilterCount = filters.Count();
                 foreach (var filterSettings in filters) {
                     filterCount++;
                     var filterName = filterSettings?.Filter?.Name ?? string.Empty;
 
-                    if (PauseBetweenFilters)
-                    {
+                    if (PauseBetweenFilters) {
                         var dialogResult = MyMessageBox.MyMessageBox.Show(
                             string.Format(Locale["LblPrepFlatFilterMsgBox"], filterName),
                             Locale["LblFlatWizard"], MessageBoxButton.OKCancel, MessageBoxResult.OK);
@@ -507,6 +541,7 @@ namespace NINA.ViewModel.FlatWizard {
                 return false;
             } finally {
                 Cleanup(progress);
+                if (_flatDevice != null && _flatDevice.Connected) { _flatDeviceVM.ToggleLight((object)false); }
             }
 
             return true;
@@ -527,7 +562,6 @@ namespace NINA.ViewModel.FlatWizard {
                     ProgressType3 = ApplicationStatus.StatusProgressType.ValueOfMaxValue,
                     Source = Title
                 });
-
                 await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, filterSettings);
                 filterToExposureTime.Add(filterSettings, CalculatedExposureTime);
                 for (var i = 0; i < FlatCount; i++) {
@@ -557,6 +591,7 @@ namespace NINA.ViewModel.FlatWizard {
         private async Task TakeDarkFlats(IProgress<ApplicationStatus> progress, PauseToken pt) {
             if (filterToExposureTime.Count > 0 && DarkFlatCount > 0) {
                 progress.Report(new ApplicationStatus() { Status = Locale["LblPreparingDarkFlatSequence"], Source = Title });
+                if (_flatDevice != null && _flatDevice.Connected && _flatDevice.SupportsOpenClose) { await _flatDeviceVM.OpenCover(); }
                 var dialogResult = MyMessageBox.MyMessageBox.Show(
                     Locale["LblCoverScopeMsgBox"],
                     Locale["LblCoverScopeMsgBoxTitle"], MessageBoxButton.OKCancel, MessageBoxResult.OK);
@@ -746,6 +781,10 @@ namespace NINA.ViewModel.FlatWizard {
 
         public void UpdateDeviceInfo(TelescopeInfo deviceInfo) {
             this.telescopeInfo = deviceInfo;
+        }
+
+        public void UpdateDeviceInfo(FlatDeviceInfo deviceInfo) {
+            this._flatDevice = deviceInfo;
         }
     }
 }

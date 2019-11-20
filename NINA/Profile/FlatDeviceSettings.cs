@@ -18,6 +18,7 @@ namespace NINA.Profile {
 
         private string _id;
 
+        [DataMember]
         public string Id {
             get => _id;
             set {
@@ -29,6 +30,7 @@ namespace NINA.Profile {
 
         private string _name;
 
+        [DataMember]
         public string Name {
             get => _name;
             set {
@@ -40,6 +42,7 @@ namespace NINA.Profile {
 
         private string _portName;
 
+        [DataMember]
         public string PortName {
             get => _portName;
             set {

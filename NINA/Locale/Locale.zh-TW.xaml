@@ -15,6 +15,7 @@
     <s:String x:Key="LblAfter" xml:space="default">經過</s:String>
     <s:String x:Key="LblAFUseBrightestStars" xml:space="default">使用亮星的數量</s:String>
     <s:String x:Key="LblAFUseBrightestStarsTooltip" xml:space="default">限制自動對焦使用亮星的數量。0 表示無限制。</s:String>
+    <s:String x:Key="LblAlnitakFlatPanel" xml:space="default">Alnitak Flat Panel</s:String>
     <s:String x:Key="LblAltairCameraSetup" xml:space="default">Altair 相機設置</s:String>
     <s:String x:Key="LblAlternativeUIColorSchema" xml:space="default">替換UI顏色方案</s:String>
     <s:String x:Key="LblAltitude" xml:space="default">地平高度</s:String>
@@ -400,16 +401,22 @@
     <s:String x:Key="LblFlatCount" xml:space="default">平場拍攝張數</s:String>
     <s:String x:Key="LblFlatDevice" xml:space="default">平場板</s:String>
     <s:String x:Key="LblFlatDeviceBrightness" xml:space="default">亮度</s:String>
+    <s:String x:Key="LblFlatDeviceChooseSerialPort" xml:space="default">Choose serial port</s:String>
     <s:String x:Key="LblFlatDeviceClose" xml:space="default">關閉</s:String>
+    <s:String x:Key="LblFlatDeviceClosed" xml:space="default">Closed</s:String>
     <s:String x:Key="LblFlatDeviceConnected" xml:space="default">平場板已連接</s:String>
+    <s:String x:Key="LblFlatDeviceConnectedButCoverNotOpen" xml:space="default">A flat panel is connected but the cover is not open.</s:String>
     <s:String x:Key="LblFlatDeviceCover" xml:space="default">電動蓋</s:String>
     <s:String x:Key="LblFlatDeviceCoverCurrently" xml:space="default">當前</s:String>
     <s:String x:Key="LblFlatDeviceDisconnectQuestion" xml:space="default">你想斷開平場板連結嗎？</s:String>
     <s:String x:Key="LblFlatDeviceInvalidResponse" xml:space="default">平場板無法連結</s:String>
     <s:String x:Key="LblFlatDeviceLight" xml:space="default">平場板光源</s:String>
+    <s:String x:Key="LblFlatDeviceNeitherOpenNorClosed" xml:space="default">Neither open nor closed</s:String>
     <s:String x:Key="LblFlatDeviceNoDevice" xml:space="default">無平場板</s:String>
     <s:String x:Key="LblFlatDeviceOpen" xml:space="default">打開</s:String>
+    <s:String x:Key="LblFlatDeviceOpenButton" xml:space="default">Open</s:String>
     <s:String x:Key="LblFlatDeviceSetBrightness" xml:space="default">設定</s:String>
+    <s:String x:Key="LblFlatDeviceUnknown" xml:space="default">Unknown</s:String>
     <s:String x:Key="LblFlatExposureCalcContinue" xml:space="default">平均ADU是 {0}，開始曝光時間計算 {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcFinished" xml:space="default">平均ADU是 {0} 目標曝光時間是 {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcStart" xml:space="default">開始曝光時間計算 {0}</s:String>

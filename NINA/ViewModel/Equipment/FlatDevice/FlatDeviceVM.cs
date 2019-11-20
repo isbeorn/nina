@@ -48,15 +48,17 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             _flatDeviceMediator.Broadcast(GetDeviceInfo());
         }
 
-        private int _brightness;
+        private double _brightness;
 
-        public int Brightness {
+        public double Brightness {
             get => _brightness;
 
             set { _brightness = value; RaisePropertyChanged(); }
         }
 
-        private void SetBrightness(object o) {
+        public bool LightOn { get; set; }
+
+        public void SetBrightness(object o) {
             if (_flatDevice == null || !_flatDevice.Connected) return;
             _flatDevice.Brightness = Brightness;
         }
@@ -232,7 +234,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             flatDeviceValues.TryGetValue(nameof(FlatDeviceInfo.CoverState), out o);
             _flatDeviceInfo.CoverState = (CoverState)(o ?? CoverState.Unknown);
             flatDeviceValues.TryGetValue(nameof(FlatDeviceInfo.Brightness), out o);
-            _flatDeviceInfo.Brightness = (int)(o ?? 0);
+            _flatDeviceInfo.Brightness = (double)(o ?? 0.0);
             flatDeviceValues.TryGetValue(nameof(FlatDeviceInfo.MinBrightness), out o);
             _flatDeviceInfo.MinBrightness = (int)(o ?? 0);
             flatDeviceValues.TryGetValue(nameof(FlatDeviceInfo.MaxBrightness), out o);
@@ -248,7 +250,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             {
                 {nameof(FlatDeviceInfo.Connected), _flatDevice?.Connected ?? false},
                 {nameof(FlatDeviceInfo.CoverState), _flatDevice?.CoverState ?? CoverState.Unknown},
-                {nameof(FlatDeviceInfo.Brightness), _flatDevice?.Brightness ?? 0},
+                {nameof(FlatDeviceInfo.Brightness), _flatDevice?.Brightness ?? 0.0},
                 {nameof(FlatDeviceInfo.MinBrightness), _flatDevice?.MinBrightness ?? 0},
                 {nameof(FlatDeviceInfo.MaxBrightness), _flatDevice?.MaxBrightness ?? 0},
                 {nameof(FlatDeviceInfo.LightOn), _flatDevice?.LightOn ?? false}
@@ -256,7 +258,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             return flatDeviceValues;
         }
 
-        private void ToggleLight(object o) {
+        public void ToggleLight(object o) {
             if (_flatDevice == null || _flatDevice.Connected == false) return;
             _flatDevice.LightOn = (bool)o;
         }

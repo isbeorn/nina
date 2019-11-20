@@ -85,10 +85,6 @@
         <switchview:EagleSetupView />
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type flatdevice:AlnitakFlipFlatSimulator}">
-        <equip:AlnitakSetupView />
-    </DataTemplate>
-
     <DataTemplate DataType="{x:Type flatdevice:AlnitakFlatDevice}">
         <equip:AlnitakSetupView />
     </DataTemplate>

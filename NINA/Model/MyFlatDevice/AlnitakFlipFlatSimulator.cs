@@ -1,6 +1,5 @@
 ﻿using NINA.Profile;
 using NINA.Utility;
-using NINA.Utility.WindowService;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,7 +13,7 @@ namespace NINA.Model.MyFlatDevice {
             CoverState = CoverState.NeitherOpenNorClosed;
         }
 
-        public bool HasSetupDialog => true;
+        public bool HasSetupDialog => false;
 
         public string Id => "flip_flat_simulator";
         public string Name => "Flip-Flat Simulator";
@@ -36,13 +35,21 @@ namespace NINA.Model.MyFlatDevice {
             Connected = false;
         }
 
-        public IWindowService WindowService { get; set; } = new WindowService();
-
         public void SetupDialog() {
-            WindowService.ShowDialog(this, "Alnitak Flat Panel Setup", System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.SingleBorderWindow);
         }
 
-        public CoverState CoverState { get; private set; }
+        private CoverState _coverState;
+
+        public CoverState CoverState {
+            get => _coverState;
+            private set {
+                _coverState = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(LocalizedCoverState));
+            }
+        }
+
+        public string LocalizedCoverState => Locale.Loc.Instance[$"LblFlatDevice{_coverState}"];
 
         public int MaxBrightness => 255;
         public int MinBrightness => 0;
@@ -86,17 +93,17 @@ namespace NINA.Model.MyFlatDevice {
             }
         }
 
-        private int _brightness;
+        private double _brightness;
 
-        public int Brightness {
+        public double Brightness {
             get => !Connected ? 0 : _brightness;
             set {
                 if (Connected) {
-                    if (value < MinBrightness) {
-                        value = MinBrightness;
+                    if (value < 0) {
+                        value = 0;
                     }
-                    if (value > MaxBrightness) {
-                        value = MaxBrightness;
+                    if (value > 1) {
+                        value = 1;
                     }
                     _brightness = value;
                 }
@@ -105,10 +112,8 @@ namespace NINA.Model.MyFlatDevice {
         }
 
         public string PortName {
-            get => _profileService.ActiveProfile.FlatDeviceSettings.PortName;
+            get => "NO_PORT";
             set {
-                _profileService.ActiveProfile.FlatDeviceSettings.PortName = value;
-                RaisePropertyChanged();
             }
         }
 

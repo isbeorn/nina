@@ -17,7 +17,7 @@ namespace NINATest {
         public void Init() {
             _mockProfileService = new Mock<IProfileService>();
             _mockProfileService.SetupProperty(m => m.ActiveProfile.FlatDeviceSettings.PortName, "");
-            _sut = new AlnitakFlatDevice("Alnitak;COM3", _mockProfileService.Object);
+            _sut = new AlnitakFlatDevice(_mockProfileService.Object);
             _mockSerialPort = new Mock<ISerialPort>();
             _sut.SerialPort = _mockSerialPort.Object;
             _mockSerialPort.SetupProperty(m => m.PortName, "COM3");
@@ -54,8 +54,8 @@ namespace NINATest {
         public void TestConstructor() {
             _mockProfileService = new Mock<IProfileService>();
             _mockProfileService.SetupProperty(m => m.ActiveProfile.FlatDeviceSettings.PortName, "");
-            _sut = new AlnitakFlatDevice("Alnitak;COM3", _mockProfileService.Object);
-            Assert.That(_sut.Name, Is.EqualTo("Alnitak"));
+            _sut = new AlnitakFlatDevice(_mockProfileService.Object);
+            Assert.That(_sut.Id, Is.EqualTo("817b60ab-6775-41bd-97b5-3857cc676e51"));
         }
 
         [Test]

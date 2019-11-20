@@ -25,22 +25,9 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
 
             Devices.Add(new DummyDevice(Locale.Loc.Instance["LblFlatDeviceNoDevice"]));
 
-            try {
-                Logger.Trace("Adding Alnitak Flat Devices");
-                Devices.Add(new AlnitakFlipFlatSimulator(profileService));
-                var alnitakList = AlnitakDevices.GetDevices();
-
-                if (alnitakList.Count > 0) {
-                    foreach (var device in alnitakList.Select(entry => new AlnitakFlatDevice(entry, profileService))
-                        .Where(device => !string.IsNullOrEmpty(device.Name))) {
-                        Logger.Debug($"Adding Alnitak flat device {device.Id} (as {device.Name})");
-                        Devices.Add(device);
-                    }
-                }
-            } catch (Exception ex) {
-                Logger.Error(ex);
-            }
-
+            Logger.Trace("Adding Alnitak Flat Devices");
+            Devices.Add(new AlnitakFlipFlatSimulator(profileService));
+            Devices.Add(new AlnitakFlatDevice(profileService));
             DetermineSelectedDevice(profileService.ActiveProfile.FlatDeviceSettings.Id);
         }
     }

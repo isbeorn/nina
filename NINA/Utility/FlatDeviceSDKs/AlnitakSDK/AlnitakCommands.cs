@@ -41,7 +41,7 @@
 
     public class SetBrightnessCommand : Command {
 
-        public SetBrightnessCommand(int brightness) {
+        public SetBrightnessCommand(double brightness) {
             CommandString = $">B{brightness:000}\r";
         }
     }

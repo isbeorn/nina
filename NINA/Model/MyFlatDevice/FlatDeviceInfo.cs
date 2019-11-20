@@ -5,8 +5,14 @@
 
         public CoverState CoverState {
             get => _coverState;
-            set { _coverState = value; RaisePropertyChanged(); }
+            set {
+                _coverState = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(LocalizedCoverState));
+            }
         }
+
+        public string LocalizedCoverState => Locale.Loc.Instance[$"LblFlatDevice{_coverState}"];
 
         private bool _lightOn;
 
@@ -15,9 +21,9 @@
             set { _lightOn = value; RaisePropertyChanged(); }
         }
 
-        private int _brightness;
+        private double _brightness;
 
-        public int Brightness {
+        public double Brightness {
             get => _brightness;
             set { _brightness = value; RaisePropertyChanged(); }
         }

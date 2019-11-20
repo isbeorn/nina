@@ -10,7 +10,6 @@ namespace NINA.View.Equipment {
 
         public AlnitakSetupView() {
             InitializeComponent();
-            SerialPorts.ItemsSource = SerialPort.GetPortNames();
         }
     }
 }
