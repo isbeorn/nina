@@ -1,4 +1,5 @@
-﻿using NINA.Utility;
+﻿using NINA.Profile;
+using NINA.Utility;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +9,15 @@ using System.Threading.Tasks;
 namespace NINA.Model.MyGuider {
 
     public class DummyGuider : BaseINPC, IGuider {
-        public string Name => "Dummy";
+        private IProfileService profileService;
+
+        public DummyGuider(IProfileService profileService) {
+            this.profileService = profileService;
+        }
+
+        public string Name => Locale.Loc.Instance["LblNoGuider"];
+
+        public string Id => "No_Guider";
 
         private bool _connected;
 
@@ -23,10 +32,12 @@ namespace NINA.Model.MyGuider {
         }
 
         public double PixelScale { get; set; }
-        public string State => "Being a dummy";
+        public string State => string.Empty;
 
         public async Task<bool> Connect() {
-            Connected = true;
+            profileService.ActiveProfile.GuiderSettings.GuiderName = Id;
+
+            Connected = false;
 
             return Connected;
         }

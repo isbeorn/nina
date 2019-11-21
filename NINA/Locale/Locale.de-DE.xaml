@@ -608,6 +608,7 @@ Berechneter HFR: {2}
     <s:String x:Key="LblNoCoordinatesForSync" xml:space="default">Keine Koordinaten verfügbar zum Synchronisieren des Teleskops</s:String>
     <s:String x:Key="LblNoFilterwheel" xml:space="default">Kein Filterrad</s:String>
     <s:String x:Key="LblNoFocuser" xml:space="default">Kein Okularauszug</s:String>
+    <s:String x:Key="LblNoGuider" xml:space="default">Kein Guider</s:String>
     <s:String x:Key="LblNoImage" xml:space="default">Kein Bild vorhanden</s:String>
     <s:String x:Key="LblNoiseReduction" xml:space="default">Rauschunterdrückung</s:String>
     <s:String x:Key="LblNoiseReductionTooltip" xml:space="default">Anwenden von Rauschunterdrückung vor der Sternerkennung. Dies kann bei verrauschten Bildern und kurzen Belichtungszeiten helfen.</s:String>

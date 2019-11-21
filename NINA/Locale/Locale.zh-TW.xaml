@@ -608,6 +608,7 @@
     <s:String x:Key="LblNoCoordinatesForSync" xml:space="default">沒有可用於同步赤道儀的座標</s:String>
     <s:String x:Key="LblNoFilterwheel" xml:space="default">沒有濾鏡輪</s:String>
     <s:String x:Key="LblNoFocuser" xml:space="default">沒有電調</s:String>
+    <s:String x:Key="LblNoGuider" xml:space="default">No Guider</s:String>
     <s:String x:Key="LblNoImage" xml:space="default">沒有圖像</s:String>
     <s:String x:Key="LblNoiseReduction" xml:space="default">降噪</s:String>
     <s:String x:Key="LblNoiseReductionTooltip" xml:space="default">在檢測之前應用降噪。 這可能有助於處理嘈雜的圖像和短時間曝光。</s:String>

@@ -608,6 +608,7 @@ Calculado HFR: {2}
     <s:String x:Key="LblNoCoordinatesForSync" xml:space="default">sin coordenadas disponibles para sincronizar el telescopio a</s:String>
     <s:String x:Key="LblNoFilterwheel" xml:space="default">Sin Rueda de Filtro</s:String>
     <s:String x:Key="LblNoFocuser" xml:space="default">Sin Enfocador</s:String>
+    <s:String x:Key="LblNoGuider" xml:space="default">Sin Guiado</s:String>
     <s:String x:Key="LblNoImage" xml:space="default">No hay Imagen Disponible</s:String>
     <s:String x:Key="LblNoiseReduction" xml:space="default">Reduccion de Ruido</s:String>
     <s:String x:Key="LblNoiseReductionTooltip" xml:space="default">Reduccion de Ruido aplicado antes de la deteccion de estrellas. Esto puede ayudar con imagenes ruidosas y de corta exposicion</s:String>
