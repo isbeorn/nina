@@ -259,7 +259,6 @@ namespace NINA.ViewModel {
         }
 
         private void ExitApplication(object obj) {
-            DockManagerVM.SaveAvalonDockLayout();
             if (SeqVM?.OKtoExit() == false)
                 return;
             if (CameraVM?.Cam?.Connected == true) {
@@ -269,14 +268,20 @@ namespace NINA.ViewModel {
                 }
             }
 
-            Utility.AtikSDK.AtikCameraDll.Shutdown();
-
             Application.Current.Shutdown();
         }
 
         private void ClosingApplication(object o) {
-            Notification.Dispose();
+            try {
+                DockManagerVM.SaveAvalonDockLayout();
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
             DisconnectEquipment();
+
+            Notification.Dispose();
+            Utility.AtikSDK.AtikCameraDll.Shutdown();
         }
 
         public void DisconnectEquipment() {
