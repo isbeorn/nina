@@ -608,6 +608,7 @@ Calculated HFR: {2}
     <s:String x:Key="LblNoCoordinatesForSync" xml:space="default">No coordinates available to sync telescope to</s:String>
     <s:String x:Key="LblNoFilterwheel" xml:space="default">No Filterwheel</s:String>
     <s:String x:Key="LblNoFocuser" xml:space="default">No Focuser</s:String>
+    <s:String x:Key="LblNoGuider" xml:space="default">No Guider</s:String>
     <s:String x:Key="LblNoImage" xml:space="default">No Image available</s:String>
     <s:String x:Key="LblNoiseReduction" xml:space="default">Noise Reduction</s:String>
     <s:String x:Key="LblNoiseReductionTooltip" xml:space="default">Noise Reduction applied prior to star detection. This may help with noisy images and short exposures.</s:String>

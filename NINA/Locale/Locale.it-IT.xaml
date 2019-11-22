@@ -165,7 +165,7 @@ in grado di compensare le variazioni della temperatura ambiente</s:String>
     <s:String x:Key="LblCenterTarget" xml:space="default">Centra sul target</s:String>
     <s:String x:Key="LblChange" xml:space="default">Cambia</s:String>
     <s:String x:Key="LblChangedSequenceWarning" xml:space="preserve">The sequence for the target(s) '{0}' have been modified since it was last saved (or has not been saved yet).
-        
+
 Do you want to close the sequence and lose the changes anyway?</s:String>
     <s:String x:Key="LblChangedSequenceWarningTitle" xml:space="default">Closing modified sequence</s:String>
     <s:String x:Key="LblChangeToBulbMode" xml:space="default">Pregasi impostare la modalità su bulb</s:String>
@@ -609,6 +609,7 @@ HFR Calcolato: {2}
     <s:String x:Key="LblNoCoordinatesForSync" xml:space="default">Nessuna coordinata disponibile per sincronizzare il telescopio</s:String>
     <s:String x:Key="LblNoFilterwheel" xml:space="default">Nessuna Filterwheel</s:String>
     <s:String x:Key="LblNoFocuser" xml:space="default">Nessun Focuser</s:String>
+    <s:String x:Key="LblNoGuider" xml:space="default">Nessuna Guida</s:String>
     <s:String x:Key="LblNoImage" xml:space="default">Nessuna Imamgine disponibile</s:String>
     <s:String x:Key="LblNoiseReduction" xml:space="default">Riduzione Rumore</s:String>
     <s:String x:Key="LblNoiseReductionTooltip" xml:space="default">Riduzione rumore applicata  prima della star detection. Questo potrebbe aiutare con immagini con molto rumore o corte esposizioni.</s:String>

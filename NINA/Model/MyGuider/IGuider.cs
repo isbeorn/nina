@@ -33,6 +33,7 @@ namespace NINA.Model.MyGuider {
         double PixelScale { get; set; }
         string State { get; }
         string Name { get; }
+        string Id { get; }
 
         event EventHandler<IGuideStep> GuideEvent;
 

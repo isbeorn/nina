@@ -6,7 +6,6 @@ using NINA.Model.MyTelescope;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace NINA.Model.MyGuider {
 
@@ -21,6 +20,8 @@ namespace NINA.Model.MyGuider {
         }
 
         public string Name => "Direct Guider";
+
+        public string Id => "Direct_Guider";
 
         private TelescopeInfo telescopeInfo = DeviceInfo.CreateDefaultInstance<TelescopeInfo>();
 

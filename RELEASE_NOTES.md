@@ -44,6 +44,7 @@
 - Logs older than 30 days are automatically cleaned up at application start
 - Autofocus will now only show the selected fitting method 
 - After running an autofocus run a new json file will be written to %localappdata%\nina\autofocus containing all datapoints to retrace what was measured at a later point in time
+- Reintroduce a "No Guider" option under Equipment -> Guiding so that unguided setups do not suffer through unwanted PHD2 executions or unnecessary errors when the "Connect All Devices" button is pressed.
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false

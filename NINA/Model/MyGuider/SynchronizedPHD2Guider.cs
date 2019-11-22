@@ -51,6 +51,9 @@ namespace NINA.Model.MyGuider {
         public string Name => Locale["LblSynchronizedPHD2Guider"];
 
         /// <inheritdoc />
+        public string Id => "PHD2_Synchronized";
+
+        /// <inheritdoc />
         public double PixelScale {
             get => pixelScale;
             set {

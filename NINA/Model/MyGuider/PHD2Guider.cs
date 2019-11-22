@@ -55,6 +55,8 @@ namespace NINA.Model.MyGuider {
 
         public string Name => "PHD2";
 
+        public string Id => "PHD2_Single";
+
         public PhdEventVersion Version {
             get {
                 return _version;
