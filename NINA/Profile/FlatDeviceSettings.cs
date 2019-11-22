@@ -51,5 +51,28 @@ namespace NINA.Profile {
                 RaisePropertyChanged();
             }
         }
+
+        private bool _closeAtSequenceEnd;
+
+        public bool CloseAtSequenceEnd {
+            get => _closeAtSequenceEnd;
+            set {
+                if (_closeAtSequenceEnd == value) return;
+                _closeAtSequenceEnd = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _openForDarkFlats;
+
+        [DataMember]
+        public bool OpenForDarkFlats {
+            get => _openForDarkFlats;
+            set {
+                if (_openForDarkFlats == value) return;
+                _openForDarkFlats = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 }
