@@ -14,6 +14,7 @@
 </ul>
 <h2 id="improvements">Improvements</h2>
 <ul>
+<li>New rows added to a sequence will now default to the values from the previous row</li>
 <li>Upgraded Atik driver to use latest Atik SDK and drivers</li>
 <li>Added a bit scaling options for Altair and ToupTek cameras to bit shift the raw data to 16 bits to be compatible with other capture software</li>
 <li>FreeImage library upgrade to 3.18</li>
@@ -53,6 +54,7 @@
 <li>Logs older than 30 days are automatically cleaned up at application start</li>
 <li>Autofocus will now only show the selected fitting method</li>
 <li>After running an autofocus run a new json file will be written to %localappdata%\nina\autofocus containing all datapoints to retrace what was measured at a later point in time</li>
+<li>Reintroduce a &quot;No Guider&quot; option under Equipment -&gt; Guiding so that unguided setups do not suffer through unwanted PHD2 executions or unnecessary errors when the &quot;Connect All Devices&quot; button is pressed.</li>
 </ul>
 <h2 id="bug-fixes">Bug fixes</h2>
 <ul>
