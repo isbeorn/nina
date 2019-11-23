@@ -1,7 +1,4 @@
-﻿<ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:s="clr-namespace:System;assembly=mscorlib">
+﻿<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
     <s:String x:Key="LblAbbrEast" xml:space="default">东</s:String>
     <s:String x:Key="LblAbbrNorth" xml:space="default">北</s:String>
     <s:String x:Key="LblAbbrSouth" xml:space="default">南</s:String>
@@ -41,7 +38,7 @@
     <s:String x:Key="LblApparentMagnitude" xml:space="default">视星等</s:String>
     <s:String x:Key="LblApparentSize" xml:space="default">视尺寸</s:String>
     <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">应用程序遇到无法处理的异常，很有可能必须关闭。
-该错误已记录到 &quot;%localappdata%\NINA\Logs&quot;.
+该错误已记录到 "%localappdata%\NINA\Logs".
 是否尝试从应用程序错误中恢复？ （可能导致意外发生）</s:String>
     <s:String x:Key="LblApplicationStartDateDescription" xml:space="default">开始日期的格式为 YYYY-MM-DD</s:String>
     <s:String x:Key="LblArcmin" xml:space="default">角分</s:String>
@@ -419,8 +416,8 @@
     <s:String x:Key="LblFlatDeviceNeitherOpenNorClosed" xml:space="default">运行中</s:String>
     <s:String x:Key="LblFlatDeviceNoDevice" xml:space="default">无平场板</s:String>
     <s:String x:Key="LblFlatDeviceOpen" xml:space="default">打开</s:String>
-    <s:String x:Key="LblFlatDeviceOpenForDarkFlats" xml:space="default">Open cover for dark flats</s:String>
     <s:String x:Key="LblFlatDeviceOpenButton" xml:space="default">打开</s:String>
+    <s:String x:Key="LblFlatDeviceOpenForDarkFlats" xml:space="default">Open cover for dark flats</s:String>
     <s:String x:Key="LblFlatDeviceSetBrightness" xml:space="default">设定</s:String>
     <s:String x:Key="LblFlatDeviceUnknown" xml:space="default">未知</s:String>
     <s:String x:Key="LblFlatExposureCalcContinue" xml:space="default">平均ADU是 {0}，开始曝光时间计算 {1}</s:String>
@@ -689,13 +686,13 @@
     <s:String x:Key="LblPaused" xml:space="default">已暂停</s:String>
     <s:String x:Key="LblPauseTimeBeforeMeridian" xml:space="default">中天前暂停(分钟)</s:String>
     <s:String x:Key="LblPercentShort" xml:space="default">%</s:String>
-    <s:String x:Key="LblPHD2DecRMS" xml:space="default">赤纬: {0} ({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2DecRMS" xml:space="default">赤纬: {0} ({1}")</s:String>
     <s:String x:Key="LblPhd2FailedEquipmentConnection" xml:space="default">PHD2 无法连接到设备</s:String>
     <s:String x:Key="LblPHD2HistorySize" xml:space="default">PHD2 历史尺寸</s:String>
     <s:String x:Key="LblPHD2MinimalHistorySize" xml:space="default">PHD2 历史尺寸 (图像)</s:String>
     <s:String x:Key="LblPHD2Path" xml:space="default">PHD2 路径</s:String>
     <s:String x:Key="LblPhd2PathNotFound" xml:space="default">无法启动PHD2。路径设置无效</s:String>
-    <s:String x:Key="LblPHD2RARMS" xml:space="default">赤经: {0} ({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2RARMS" xml:space="default">赤经: {0} ({1}")</s:String>
     <s:String x:Key="LblPhd2ServerConnectionLost" xml:space="default">PHD2 服务器连接丢失!</s:String>
     <s:String x:Key="LblPHD2ServerPort" xml:space="default">PHD2 服务器端口</s:String>
     <s:String x:Key="LblPHD2ServerUrl" xml:space="default">PHD2 服务器地址</s:String>
@@ -710,7 +707,7 @@
         已连接的客户端: {0}
     </s:String>
     <s:String x:Key="LblPhd2SynchronizedServiceStarted" xml:space="default">同步 PHD2 服务启动</s:String>
-    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">总: {0} ({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">总: {0} ({1}")</s:String>
     <s:String x:Key="LblPixels" xml:space="default">像素</s:String>
     <s:String x:Key="LblPixelScale" xml:space="default">像素比例</s:String>
     <s:String x:Key="LblPixelSize" xml:space="default">像素大小</s:String>
