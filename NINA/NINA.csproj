@@ -1056,6 +1056,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Locale\Locale.zh-HK.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Locale\Locale.zh-TW.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

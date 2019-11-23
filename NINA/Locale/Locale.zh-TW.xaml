@@ -418,7 +418,6 @@
     <s:String x:Key="LblFlatDeviceSetBrightness" xml:space="default">設定</s:String>
     <s:String x:Key="LblFlatDeviceUnknown" xml:space="default">未知</s:String>
     <s:String x:Key="LblFlatExposureCalcContinue" xml:space="default">平均ADU是 {0}，開始曝光時間計算 {1}</s:String>
-    <s:String x:Key="LblFlatExposureCalcContinue" xml:space="default">平均ADU是 {0}, 開始曝光時間計算 {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcFinished" xml:space="default">平均ADU是 {0} 目標曝光時間是 {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcStart" xml:space="default">開始曝光時間計算 {0}</s:String>
     <s:String x:Key="LblFlatHistogramMeanTarget" xml:space="default">長條圖平均目標</s:String>
