@@ -417,6 +417,7 @@ namespace NINA.ViewModel {
             new CultureInfo("it-IT"),
             new CultureInfo("es-US"),
             new CultureInfo("zh-CN"),
+            new CultureInfo("zh-HK"),
             new CultureInfo("zh-TW")
         };
 

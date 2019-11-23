@@ -1,4 +1,7 @@
-﻿<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:s="clr-namespace:System;assembly=mscorlib">
     <s:String x:Key="LblAbbrEast" xml:space="default">東</s:String>
     <s:String x:Key="LblAbbrNorth" xml:space="default">北</s:String>
     <s:String x:Key="LblAbbrSouth" xml:space="default">南</s:String>
@@ -15,7 +18,7 @@
     <s:String x:Key="LblAfter" xml:space="default">經過</s:String>
     <s:String x:Key="LblAFUseBrightestStars" xml:space="default">使用亮星的數量</s:String>
     <s:String x:Key="LblAFUseBrightestStarsTooltip" xml:space="default">限制自動對焦使用亮星的數量。0 表示無限制。</s:String>
-    <s:String x:Key="LblAlnitakFlatPanel" xml:space="default">Alnitak Flat Panel</s:String>
+    <s:String x:Key="LblAlnitakFlatPanel" xml:space="default">Alnitak 平場板</s:String>
     <s:String x:Key="LblAltairCameraSetup" xml:space="default">Altair 相機設置</s:String>
     <s:String x:Key="LblAlternativeUIColorSchema" xml:space="default">替換UI顏色方案</s:String>
     <s:String x:Key="LblAltitude" xml:space="default">地平高度</s:String>
@@ -38,7 +41,7 @@
     <s:String x:Key="LblApparentMagnitude" xml:space="default">視星等</s:String>
     <s:String x:Key="LblApparentSize" xml:space="default">視尺寸</s:String>
     <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">應用程式遇到無法處理的異常，很有可能必須關閉。
-該錯誤已記錄到 "%localappdata%\NINA\Logs".
+該錯誤已記錄到 &quot;%localappdata%\NINA\Logs&quot;.
 是否嘗試從應用程式錯誤中恢復？ （可能導致意外發生）</s:String>
     <s:String x:Key="LblApplicationStartDateDescription" xml:space="default">開始日期的格式為 YYYY-MM-DD</s:String>
     <s:String x:Key="LblArcmin" xml:space="default">角分</s:String>
@@ -52,7 +55,7 @@
     <s:String x:Key="LblASPSNotFound" xml:space="default">ASPS 程式未找到</s:String>
     <s:String x:Key="LblASTAP" xml:space="default">ASTAP，自動解析、預處理、Fit 流覽器</s:String>
     <s:String x:Key="LblASTAPDirectory" xml:space="default">ASTAP 位置</s:String>
-    <s:String x:Key="LblASTAPMinimumVersionNote" xml:space="default">注意：需要ASTAP 0.9.192或更高版本。如果版本較低，請使用 Platesolve2 作為替代品。</s:String>
+    <s:String x:Key="LblASTAPMinimumVersionNote" xml:space="default">注意：需要ASTAP 0.9.192 或更高版本。如果版本較低，請使用 Platesolve2 作為替代品。</s:String>
     <s:String x:Key="LblASTAPNotFound" xml:space="default">ASTAP 程式未找到</s:String>
     <s:String x:Key="LblASTAPShort" xml:space="default">ASTAP</s:String>
     <s:String x:Key="LblAstrometry" xml:space="default">經緯度設置</s:String>
@@ -401,25 +404,25 @@
     <s:String x:Key="LblFlatCount" xml:space="default">平場拍攝張數</s:String>
     <s:String x:Key="LblFlatDevice" xml:space="default">平場板</s:String>
     <s:String x:Key="LblFlatDeviceBrightness" xml:space="default">亮度</s:String>
-    <s:String x:Key="LblFlatDeviceChooseSerialPort" xml:space="default">Choose serial port</s:String>
+    <s:String x:Key="LblFlatDeviceChooseSerialPort" xml:space="default">選擇串口</s:String>
     <s:String x:Key="LblFlatDeviceClose" xml:space="default">關閉</s:String>
     <s:String x:Key="LblFlatDeviceCloseAtSequenceEnd" xml:space="default">Close cover at end of sequence</s:String>
-    <s:String x:Key="LblFlatDeviceClosed" xml:space="default">Closed</s:String>
+    <s:String x:Key="LblFlatDeviceClosed" xml:space="default">已關閉</s:String>
     <s:String x:Key="LblFlatDeviceConnected" xml:space="default">平場板已連接</s:String>
-    <s:String x:Key="LblFlatDeviceConnectedButCoverNotOpen" xml:space="default">A flat panel is connected but the cover is not open.</s:String>
+    <s:String x:Key="LblFlatDeviceConnectedButCoverNotOpen" xml:space="default">平場板已連接，但是蓋子未打開</s:String>
     <s:String x:Key="LblFlatDeviceCover" xml:space="default">電動蓋</s:String>
     <s:String x:Key="LblFlatDeviceCoverCurrently" xml:space="default">當前</s:String>
     <s:String x:Key="LblFlatDeviceDisconnectQuestion" xml:space="default">你想斷開平場板連結嗎？</s:String>
     <s:String x:Key="LblFlatDeviceFlatPanelSettings" xml:space="default">Flat Panel Settings</s:String>
     <s:String x:Key="LblFlatDeviceInvalidResponse" xml:space="default">平場板無法連結</s:String>
     <s:String x:Key="LblFlatDeviceLight" xml:space="default">平場板光源</s:String>
-    <s:String x:Key="LblFlatDeviceNeitherOpenNorClosed" xml:space="default">Neither open nor closed</s:String>
+    <s:String x:Key="LblFlatDeviceNeitherOpenNorClosed" xml:space="default">運行中</s:String>
     <s:String x:Key="LblFlatDeviceNoDevice" xml:space="default">無平場板</s:String>
     <s:String x:Key="LblFlatDeviceOpen" xml:space="default">打開</s:String>
-    <s:String x:Key="LblFlatDeviceOpenButton" xml:space="default">Open</s:String>
     <s:String x:Key="LblFlatDeviceOpenForDarkFlats" xml:space="default">Open cover for dark flats</s:String>
+    <s:String x:Key="LblFlatDeviceOpenButton" xml:space="default">打開</s:String>
     <s:String x:Key="LblFlatDeviceSetBrightness" xml:space="default">設定</s:String>
-    <s:String x:Key="LblFlatDeviceUnknown" xml:space="default">Unknown</s:String>
+    <s:String x:Key="LblFlatDeviceUnknown" xml:space="default">未知</s:String>
     <s:String x:Key="LblFlatExposureCalcContinue" xml:space="default">平均ADU是 {0}，開始曝光時間計算 {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcFinished" xml:space="default">平均ADU是 {0} 目標曝光時間是 {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcStart" xml:space="default">開始曝光時間計算 {0}</s:String>
@@ -470,7 +473,7 @@
     <s:String x:Key="LblFolderToWatch" xml:space="default">監測資料夾</s:String>
     <s:String x:Key="LblFrameNFocus" xml:space="default">幀數 &amp; 對焦</s:String>
     <s:String x:Key="LblFrameNrDescription" xml:space="default">此格式的第N張 ####</s:String>
-    <s:String x:Key="LblFraming" xml:space="default">構圖</s:String>
+    <s:String x:Key="LblFraming" xml:space="default">構圖助手</s:String>
     <s:String x:Key="LblFramingAssistant" xml:space="default">構圖助手</s:String>
     <s:String x:Key="LblFreeImage" xml:space="default">自由拍攝</s:String>
     <s:String x:Key="LblFrom" xml:space="default">從</s:String>
@@ -611,7 +614,7 @@
     <s:String x:Key="LblNoCoordinatesForSync" xml:space="default">沒有可用於同步赤道儀的座標</s:String>
     <s:String x:Key="LblNoFilterwheel" xml:space="default">沒有濾鏡輪</s:String>
     <s:String x:Key="LblNoFocuser" xml:space="default">沒有電調</s:String>
-    <s:String x:Key="LblNoGuider" xml:space="default">No Guider</s:String>
+    <s:String x:Key="LblNoGuider" xml:space="default">沒有導星</s:String>
     <s:String x:Key="LblNoImage" xml:space="default">沒有圖像</s:String>
     <s:String x:Key="LblNoiseReduction" xml:space="default">降噪</s:String>
     <s:String x:Key="LblNoiseReductionTooltip" xml:space="default">在檢測之前應用降噪。 這可能有助於處理嘈雜的圖像和短時間曝光。</s:String>
@@ -686,13 +689,13 @@
     <s:String x:Key="LblPaused" xml:space="default">已暫停</s:String>
     <s:String x:Key="LblPauseTimeBeforeMeridian" xml:space="default">中天前暫停(分鐘)</s:String>
     <s:String x:Key="LblPercentShort" xml:space="default">%</s:String>
-    <s:String x:Key="LblPHD2DecRMS" xml:space="default">赤緯: {0} ({1}")</s:String>
+    <s:String x:Key="LblPHD2DecRMS" xml:space="default">赤緯: {0} ({1}&quot;)</s:String>
     <s:String x:Key="LblPhd2FailedEquipmentConnection" xml:space="default">PHD2 無法連接到設備</s:String>
     <s:String x:Key="LblPHD2HistorySize" xml:space="default">PHD2 歷史尺寸</s:String>
     <s:String x:Key="LblPHD2MinimalHistorySize" xml:space="default">PHD2 歷史尺寸 (圖像)</s:String>
     <s:String x:Key="LblPHD2Path" xml:space="default">PHD2 路徑</s:String>
     <s:String x:Key="LblPhd2PathNotFound" xml:space="default">無法啟動PHD2。路徑設置無效</s:String>
-    <s:String x:Key="LblPHD2RARMS" xml:space="default">赤經: {0} ({1}")</s:String>
+    <s:String x:Key="LblPHD2RARMS" xml:space="default">赤經: {0} ({1}&quot;)</s:String>
     <s:String x:Key="LblPhd2ServerConnectionLost" xml:space="default">PHD2 伺服器連接丟失!</s:String>
     <s:String x:Key="LblPHD2ServerPort" xml:space="default">PHD2 伺服器埠</s:String>
     <s:String x:Key="LblPHD2ServerUrl" xml:space="default">PHD2 伺服器地址</s:String>
@@ -707,7 +710,7 @@
         已連接的用戶端: {0}
     </s:String>
     <s:String x:Key="LblPhd2SynchronizedServiceStarted" xml:space="default">同步 PHD2 服務啟動</s:String>
-    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">總: {0} ({1}")</s:String>
+    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">總: {0} ({1}&quot;)</s:String>
     <s:String x:Key="LblPixels" xml:space="default">圖元</s:String>
     <s:String x:Key="LblPixelScale" xml:space="default">圖元比例</s:String>
     <s:String x:Key="LblPixelSize" xml:space="default">圖元大小</s:String>

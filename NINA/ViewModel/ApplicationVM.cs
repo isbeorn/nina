@@ -281,7 +281,10 @@ namespace NINA.ViewModel {
             DisconnectEquipment();
 
             Notification.Dispose();
-            Utility.AtikSDK.AtikCameraDll.Shutdown();
+
+            try {
+                Utility.AtikSDK.AtikCameraDll.Shutdown();
+            } catch (Exception) { }
         }
 
         public void DisconnectEquipment() {
