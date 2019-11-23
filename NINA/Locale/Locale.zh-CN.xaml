@@ -15,7 +15,7 @@
     <s:String x:Key="LblAfter" xml:space="default">经过</s:String>
     <s:String x:Key="LblAFUseBrightestStars" xml:space="default">使用亮星的数量</s:String>
     <s:String x:Key="LblAFUseBrightestStarsTooltip" xml:space="default">限制自动对焦使用亮星的数量。0 表示无限制。</s:String>
-    <s:String x:Key="LblAlnitakFlatPanel" xml:space="default">Alnitak Flat Panel</s:String>
+    <s:String x:Key="LblAlnitakFlatPanel" xml:space="default">Alnitak 平场板</s:String>
     <s:String x:Key="LblAltairCameraSetup" xml:space="default">Altair 相机设置</s:String>
     <s:String x:Key="LblAlternativeUIColorSchema" xml:space="default">替换UI颜色方案</s:String>
     <s:String x:Key="LblAltitude" xml:space="default">地平高度</s:String>
@@ -52,7 +52,7 @@
     <s:String x:Key="LblASPSNotFound" xml:space="default">ASPS 程序未找到</s:String>
     <s:String x:Key="LblASTAP" xml:space="default">ASTAP，自动解析、预处理、Fit 浏览器</s:String>
     <s:String x:Key="LblASTAPDirectory" xml:space="default">ASTAP 位置</s:String>
-    <s:String x:Key="LblASTAPMinimumVersionNote" xml:space="default">注意：需要ASTAP 0.9.192或更高版本。如果版本较低，请使用 Platesolve2 作为替代品。</s:String>
+    <s:String x:Key="LblASTAPMinimumVersionNote" xml:space="default">注意：需要ASTAP 0.9.192 或更高版本。如果版本较低，请使用 Platesolve2 作为替代品。</s:String>
     <s:String x:Key="LblASTAPNotFound" xml:space="default">ASTAP 程序未找到</s:String>
     <s:String x:Key="LblASTAPShort" xml:space="default">ASTAP</s:String>
     <s:String x:Key="LblAstrometry" xml:space="default">经纬度设置</s:String>
@@ -401,22 +401,22 @@
     <s:String x:Key="LblFlatCount" xml:space="default">平场拍摄张数</s:String>
     <s:String x:Key="LblFlatDevice" xml:space="default">平场板</s:String>
     <s:String x:Key="LblFlatDeviceBrightness" xml:space="default">亮度</s:String>
-    <s:String x:Key="LblFlatDeviceChooseSerialPort" xml:space="default">Choose serial port</s:String>
+    <s:String x:Key="LblFlatDeviceChooseSerialPort" xml:space="default">选择串口</s:String>
     <s:String x:Key="LblFlatDeviceClose" xml:space="default">关闭</s:String>
-    <s:String x:Key="LblFlatDeviceClosed" xml:space="default">Closed</s:String>
+    <s:String x:Key="LblFlatDeviceClosed" xml:space="default">已关闭</s:String>
     <s:String x:Key="LblFlatDeviceConnected" xml:space="default">平场板已连接</s:String>
-    <s:String x:Key="LblFlatDeviceConnectedButCoverNotOpen" xml:space="default">A flat panel is connected but the cover is not open.</s:String>
+    <s:String x:Key="LblFlatDeviceConnectedButCoverNotOpen" xml:space="default">平场板已连接，但是盖子未打开</s:String>
     <s:String x:Key="LblFlatDeviceCover" xml:space="default">电动盖</s:String>
     <s:String x:Key="LblFlatDeviceCoverCurrently" xml:space="default">当前</s:String>
     <s:String x:Key="LblFlatDeviceDisconnectQuestion" xml:space="default">你想断开平场板链接吗？</s:String>
     <s:String x:Key="LblFlatDeviceInvalidResponse" xml:space="default">平场板无法链接</s:String>
     <s:String x:Key="LblFlatDeviceLight" xml:space="default">平场板光源</s:String>
-    <s:String x:Key="LblFlatDeviceNeitherOpenNorClosed" xml:space="default">Neither open nor closed</s:String>
+    <s:String x:Key="LblFlatDeviceNeitherOpenNorClosed" xml:space="default">运行中</s:String>
     <s:String x:Key="LblFlatDeviceNoDevice" xml:space="default">无平场板</s:String>
     <s:String x:Key="LblFlatDeviceOpen" xml:space="default">打开</s:String>
-    <s:String x:Key="LblFlatDeviceOpenButton" xml:space="default">Open</s:String>
+    <s:String x:Key="LblFlatDeviceOpenButton" xml:space="default">打开</s:String>
     <s:String x:Key="LblFlatDeviceSetBrightness" xml:space="default">设定</s:String>
-    <s:String x:Key="LblFlatDeviceUnknown" xml:space="default">Unknown</s:String>
+    <s:String x:Key="LblFlatDeviceUnknown" xml:space="default">未知</s:String>
     <s:String x:Key="LblFlatExposureCalcContinue" xml:space="default">平均ADU是 {0}，开始曝光时间计算 {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcContinue" xml:space="default">平均ADU是 {0}, 开始曝光时间计算 {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcFinished" xml:space="default">平均ADU是 {0} 目标曝光时间是 {1}</s:String>
@@ -468,7 +468,7 @@
     <s:String x:Key="LblFolderToWatch" xml:space="default">监测文件夹</s:String>
     <s:String x:Key="LblFrameNFocus" xml:space="default">帧数 &amp; 对焦</s:String>
     <s:String x:Key="LblFrameNrDescription" xml:space="default">此格式的第N张 ####</s:String>
-    <s:String x:Key="LblFraming" xml:space="default">构图</s:String>
+    <s:String x:Key="LblFraming" xml:space="default">构图助手</s:String>
     <s:String x:Key="LblFramingAssistant" xml:space="default">构图助手</s:String>
     <s:String x:Key="LblFreeImage" xml:space="default">自由拍摄</s:String>
     <s:String x:Key="LblFrom" xml:space="default">从</s:String>
@@ -609,7 +609,7 @@
     <s:String x:Key="LblNoCoordinatesForSync" xml:space="default">没有可用于同步赤道仪的坐标</s:String>
     <s:String x:Key="LblNoFilterwheel" xml:space="default">没有滤镜轮</s:String>
     <s:String x:Key="LblNoFocuser" xml:space="default">没有电调</s:String>
-    <s:String x:Key="LblNoGuider" xml:space="default">No Guider</s:String>
+    <s:String x:Key="LblNoGuider" xml:space="default">没有导星</s:String>
     <s:String x:Key="LblNoImage" xml:space="default">没有图像</s:String>
     <s:String x:Key="LblNoiseReduction" xml:space="default">降噪</s:String>
     <s:String x:Key="LblNoiseReductionTooltip" xml:space="default">在检测之前应用降噪。 这可能有助于处理嘈杂的图像和短时间曝光。</s:String>

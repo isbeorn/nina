@@ -1,0 +1,1051 @@
+﻿<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+<s:string x:key="Lblabbreast" xml:space="default">東</s:string>
+<s:String x:Key="LblAbbrNorth" xml:space="default">北</s:String>
+<s:String x:Key="LblAbbrSouth" xml:space="default">南</s:String>
+<s:String x:Key="LblAbbrWest" xml:space="default">西</s:String>
+<s:string x:key="Lblaberrationinspector" xml:space="default">好似差檢測</s:string>
+<s:String x:Key="LblActive" xml:space="default">使用</s:String>
+<s:string x:key="Lblactivefilter" xml:space="default">使用濾鏡輪</s:string>
+<s:string x:key="Lblactivesequencedetails" xml:space="default">活動序列詳情</s:string>
+<s:string x:key="Lbladdsequencetarget" xml:space="default">添加到序列目標</s:string>
+<s:string x:key="Lbladvancedsettings" xml:space="default">高級設置</s:string>
+<s:string x:key="Lblafcontrastdetection" xml:space="default">反差對焦 (實驗性)</s:string>
+<s:string x:key="Lblafonbutfocusernotconnected" xml:space="default">啟用自動對焦, 但冇連接電調</s:string>
+<s:string x:key="Lblafstarhfr" xml:space="default">星啲 HFR</s:string>
+<s:string x:key="Lblafter" xml:space="default">經過</s:string>
+<s:string x:key="Lblafusebrighteststars" xml:space="default">使用光星嘅數量</s:string>
+<s:string x:key="Lblafusebrighteststarstooltip" xml:space="default">制自動對焦使用光星嘅數量。 0表示無限制。</s:String>
+<s:string x:key="Lblalnitakflatpanel" xml:space="default">alnitak 平場板</s:string>
+<s:string x:key="Lblaltaircamerasetup" xml:space="default">altair 相機設置</s:string>
+<s:string x:key="Lblalternativeuicolorschema" xml:space="default">替換 ui 顏色方案</s:string>
+<s:String x:Key="LblAltitude" xml:space="default">地平高度</s:String>
+<s:string x:key="Lblaltitudeerrormeasurement" xml:space="default">測量地平高度誤差</s:string>
+<s:string x:key="Lblaltitudemeasurement" xml:space="default">地平高度測量</s:string>
+<s:string x:key="Lblaltitudemeasurementbuttontooltip" xml:space="preserve">通過三個步驟測量地平高度誤差。
+1. 在當前位置為實際坐標獲取圖像與解析
+2. 在赤經軸旋轉赤道儀0.5度
+3. 在新位置影番張圖像, 並將其解為實際位置
+將會使用兩個點計數同顯示實際的地平高度誤差</s:string>
+<s:string x:key="Lblaltitudemeasurementdescription" xml:space="default">赤道儀指向到東或西, 赤緯0°身同地平線。</s:String>
+<s:string x:key="Lblaltitudemeasurementside" xml:space="default">高度測量方向</s:string>
+<s:string x:key="Lblannotateconstellationboundaries" xml:space="default">顯示星座邊界</s:string>
+<s:string x:key="Lblannotateconstellations" xml:space="default">顯示同註釋星座</s:string>
+<s:string x:key="Lblannotatedso" xml:space="default">標註深空天體</s:string>
+<s:string x:key="Lblannotategrid" xml:space="default">標註網格</s:string>
+<s:string x:key="Lblannotateimage" xml:space="default">標註圖像</s:string>
+<s:string x:key="Lblannotateimagetooltip" xml:space="default">如果選中並應用了圖像的星點檢測, 則會使用搵到嘅星點及其各自 HFR 既值對圖像進行標註</s:string>
+<s:string x:key="Lblapikey" xml:space="default">API 密鑰</s:string>
+<s:string x:key="Lblapparentmagnitude" xml:space="default">視星等</s:string>
+<s:string x:key="Lblapparentsize" xml:space="default">視尺寸</s:string>
+<s:string x:key="Lblapplicationinbreakmode" xml:space="preserve">應用程序遇到無法處理的異常, 好有可能必須關閉。
+該錯誤已記錄到 "%localappdata%\nina\logs".
+是否嘗試由應用程序錯誤中恢復? (可能導致意外發生)</s:string>
+<s:string x:key="Lblapplicationstartdatedescription" xml:space="default">開始日期的格式為 yyyy-mm-dd</s:string>
+<s:String x:Key="LblArcmin" xml:space="default">角分</s:String>
+<s:String x:Key="LblArcsec" xml:space="default">角秒</s:String>
+<s:String x:Key="LblAscending" xml:space="default">升序</s:String>
+<s:string x:key="Lblascominteropdriverexception" xml:space="default">發生 ascom 驅動程序操作異常。 好可能係由於安裝的驅動程序唔匹配造成的當前安裝 {0},n.i.n.a. 出現 {1}. 請將驅動程序安裝為 {1}</s:string>
+<s:string x:key="Lblasiimagedownloaderror" xml:space="default">由相機下載圖像數據時出錯!</s:String>
+<s:string x:key="Lblasionly16bitmono" xml:space="default">目前只支持16位單色傳感器</s:string>
+<s:String x:Key="LblASPS" xml:space="default">全天空解析 (ASPS)</s:String>
+<s:string x:key="Lblaspsdirectory" xml:space="default">ASPS 位</s:string>
+<s:String x:Key="LblASPSNotFound" xml:space="default">ASPS 程序未搵到</s:String>
+<s:string x:key="Lblastap" xml:space="default">ASTAP, 自動解析、預処理、fit 瀏覽器</s:string>
+<s:string x:key="Lblastapdirectory" xml:space="default">ASTAP 位</s:string>
+<s:string x:key="Lblastapminimumversionnote" xml:space="default">注意: 要 ASTAP 0.9.192 或更貴版本。如果版本較低, 請使用 platesolve2 作為替代品。</s:String>
+<s:String x:Key="LblASTAPNotFound" xml:space="default">ASTAP 程序未搵到</s:String>
+<s:String x:Key="LblASTAPShort" xml:space="default">ASTAP</s:String>
+<s:string x:key="Lblastrometry" xml:space="default">經緯度設置</s:string>
+<s:String x:Key="LblAstrometryNet" xml:space="default">Astrometry.Net</s:String>
+<s:string x:key="Lblautofocus" xml:space="default">自動對焦</s:string>
+<s:string x:key="Lblautofocusafterhfrchange" xml:space="default">HFR 改變之後</s:string>
+<s:String x:Key="LblAutoFocusAfterHFRChangeAmount" xml:space="default">HFR 容差</s:String>
+<s:string x:key="Lblautofocusaftersetexposures" xml:space="default">拍攝一定張數之後</s:string>
+<s:string x:key="Lblautofocusaftersettime" xml:space="default">經過特定時間後</s:string>
+<s:string x:key="Lblautofocusaftertemperaturechange" xml:space="default">溫度變化之後</s:string>
+<s:string x:key="Lblautofocusaftertemperaturechangeamount" xml:space="default">溫度變化</s:string>
+<s:string x:key="Lblautofocusexposuretime" xml:space="default">自動對焦曝光時間</s:string>
+<s:string x:key="Lblautofocusexposuretimetooltip" xml:space="default">當冇特定濾鏡曝光設置或設置為 0时, 自動對焦採用嘅曝光時間</s:string>
+<s:string x:key="Lblautofocusfilter" xml:space="default">濾鏡自動對焦</s:string>
+<s:string x:key="Lblautofocusgearnotconnected" xml:space="default">無法啟動自動對焦。 相機或電調未連接!</s:String>
+<s:string x:key="Lblautofocusinnercropratio" xml:space="default">自動對焦中心裁剪比例</s:string>
+<s:string x:key="Lblautofocusinnercropratiotooltip" xml:space="preserve">如果設置為小於1的值, 自動對焦期間的星點檢測將僅使用
+總傳感器的中心子區域 (如果相機支持)。
+如果相機唔支持, 則喺星啲檢測時, 邊緣附近嘅星點將被忽略。
+如果同小於1的外部裁剪比例結合使用, 圖像的矩形區域 (在內部矩形和外部矩形之間)
+將用於自動對焦。</s:String>
+<s:string x:key="Lblautofocusmethod" xml:space="default">自動對焦方式</s:string>
+<s:string x:key="Lblautofocusmethodtooltip" xml:space="preserve">做星啲 HFR 畀選擇時, NINA 就喺視場中檢測星點,
+透過数个對焦點計算佢哋嘅 HFR 並找到最小嘅 HFR
+反差對焦模式是透過圖像算法嚟偵測多個對焦點嘅
+對比度, 以搵到最好嘅對比度。 呢個方法主要被用于
+地面目標或者行星目標, 且對噪啲好敏感。</s:String>
+<s:string x:key="Lblautofocusnewworsethanoriginal" xml:space="default">新焦點 HFR {0} HFR 過原來 {1} 差好多</s:string>
+<s:string x:key="Lblautofocusnotenoughtspreadedpoints" xml:space="default">採集嘅 HFR 差異不足。 電調步長設置太細或離焦點太遠冇聚焦。</s:String>
+<s:string x:key="Lblautofocusnrofexposures" xml:space="default">張數</s:string>
+<s:string x:key="Lblautofocusnumberofattempts" xml:space="default">自動對焦嘗試次數</s:string>
+<s:string x:key="Lblautofocusnumberofattemptstooltip" xml:space="default">若自動對焦得到嘅 HFR 比原結果更差時, 進行重試嘅次數, 直到得到成功的結果或者爆煲後返回原焦點位。</s:String>
+<s:string x:key="Lblautofocusnumberofframesperpoint" xml:space="default">對焦點拍攝張數</s:string>
+<s:string x:key="Lblautofocusnumberofframesperpointtooltip" xml:space="default">個個自動對焦拍攝的堂數。 如果大於一張, 將同一個焦點多張 HFR 取平均值。</s:String>
+<s:string x:key="Lblautofocusonfilterchange" xml:space="default">更換濾鏡時</s:string>
+<s:string x:key="Lblautofocusonstart" xml:space="default">開始後立即運行</s:string>
+<s:string x:key="Lblautofocusoutercropratio" xml:space="default">自動對焦向外剪裁比例</s:string>
+<s:string x:key="Lblautofocusreattempting" xml:space="default">嘗試番自動對焦</s:string>
+<s:string x:key="Lblautofocusrestoringoriginalposition" xml:space="default">恢復原焦點位置</s:string>
+<s:string x:key="Lblautofocussettime" xml:space="default">時間</s:string>
+<s:string x:key="Lblautofocusswitchingbacktofilter" xml:space="default">切換回原來的濾鏡</s:string>
+<s:string x:key="Lblautofocusswitchingtodefaultfilter" xml:space="default">切換到自動對焦濾鏡</s:string>
+<s:string x:key="Lblautomeridianflip" xml:space="default">自動中天翻轉</s:string>
+<s:string x:key="Lblautostretchfactor" xml:space="default">自動拉伸係數</s:string>
+<s:string x:key="Lblautostretchfactortooltip" xml:space="default">用於顯示圖像和檢測恆星嘅自動拉伸算法的係數。 一定係0到1之間的值。 基本上推薦使用0.2。</s:String>
+<s:string x:key="Lblautoupdatesource" xml:space="default">自動更新版本</s:string>
+<s:String x:Key="LblAzimuth" xml:space="default">方位角</s:String>
+<s:string x:key="Lblazimutherrormeasurement" xml:space="default">測量方位角誤差</s:string>
+<s:string x:key="Lblazimuthmeasurement" xml:space="default">方位角測量</s:string>
+<s:string x:key="Lblazimuthmeasurementbuttontooltip" xml:space="preserve">通過三個步驟測量方位角誤差。
+1. 獲取當前位置嘅實際坐標的圖像與解析
+2. 在赤經軸旋轉赤道儀0.5度
+3. 係新位置先拍攝一張圖像, 解析為實際位置
+通過兩個點來計算和顯示實際方位角誤差</s:string>
+<s:string x:key="Lblazimuthmeasurementdescription" xml:space="default">赤道儀指向南方赤緯0°近中天位</s:string>
+<s:string x:key="Lblbackground" xml:space="default">背景</s:string>
+<s:string x:key="Lblbacklashmeasurementexception" xml:space="default">測量回差時候發生異常, 回爭值可能有誤。</s:String>
+<s:string x:key="Lblbacklashmeasurements" xml:space="default">將保存以下電調嘅回爭值。 IN: {0}, OUT: {1}</s:String>
+<s:string x:key="Lblbeta" xml:space="default">測試版</s:string>
+<s:string x:key="Lblbiasmean" xml:space="default">偏置平均值 (本地)</s:string>
+<s:string x:key="Lblbinning" xml:space="default">合併像素</s:string>
+<s:string x:key="Lblbinningdescription" xml:space="default">像素合併, 多個像素合併為一個</s:string>
+<s:String x:Key="LblBitDepth" xml:space="default">位深度</s:String>
+<s:String x:Key="LblBitDepthADU" xml:space="default">ADU 中嘅位深度</s:String>
+<s:string x:key="Lblblackclipping" xml:space="default">黑區剪裁</s:string>
+<s:string x:key="Lblblindsolveattemptforframing" xml:space="preserve">圖像需先進行解析之後先可以用于構圖.
+要使用參考坐標啊?
+赤經: {0}
+赤緯: {1}</s:string>
+<s:String x:Key="LblBlindSolver" xml:space="default">盲解析</s:String>
+<s:string x:key="Lblborder" xml:space="default">邊界</s:string>
+<s:string x:key="Lblbulbmode" xml:space="default">b 門模式</s:string>
+<s:string x:key="Lblbulbserialport" xml:space="default">b 門串行端口</s:string>
+<s:string x:key="Lblbuttonbackground" xml:space="default">制背景</s:string>
+<s:string x:key="Lblbuttonforeground" xml:space="default">制前景</s:string>
+<s:string x:key="Lblbuttonforegrounddisabled" xml:space="default">已禁用制前景</s:string>
+<s:string x:key="Lblbuttonhighlight" xml:space="default">制高亮</s:string>
+<s:string x:key="Lblcache" xml:space="default">廵天圖庫本地緩存</s:string>
+<s:string x:key="Lblcam" xml:space="default">相機</s:string>
+<s:string x:key="Lblcamera" xml:space="default">相機</s:string>
+<s:string x:key="Lblcamerabattery" xml:space="default">相機電池</s:string>
+<s:string x:key="Lblcamerabusy" xml:space="default">相機正忙</s:string>
+<s:string x:key="Lblcameraconnected" xml:space="default">相機已連接</s:string>
+<s:string x:key="Lblcameraconnectionlost" xml:space="default">相機連接賴! 請重新連接相機!</s:String>
+<s:string x:key="Lblcameracoolernotenabled" xml:space="default">相機有製冷, 但它沒有被開啟</s:string>
+<s:string x:key="Lblcameradownloadfailed" xml:space="preserve">圖下載失敗。
+曝光時間: {0}s
+模式: {1}
+增益: {2}
+濾鏡: {3}</s:string>
+<s:string x:key="Lblcamerahighpower" xml:space="preserve">相機製冷運行中, 功率 {0}%, 可能冇
+法補償環境溫度的變化。</s:String>
+<s:string x:key="Lblcameranotattargettemp" xml:space="default">當前相機溫度 {0}°c 目標溫度 {1}°c</s:string>
+<s:string x:key="Lblcameraoptions" xml:space="default">相機選項</s:string>
+<s:string x:key="Lblcameraparameter" xml:space="default">相機參數</s:string>
+<s:string x:key="Lblcamerastate" xml:space="default">相機狀態</s:string>
+<s:string x:key="Lblcameraxsize" xml:space="default">相機寬度</s:string>
+<s:string x:key="Lblcameraysize" xml:space="default">相機高度</s:string>
+<s:string x:key="Lblcaminfo" xml:space="default">相機信息</s:string>
+<s:string x:key="Lblcamsettings" xml:space="default">相機設置</s:string>
+<s:String x:Key="LblCancel" xml:space="default">取消</s:String>
+<s:string x:key="Lblcanonerroroccurred" xml:space="default">佳能相機出現錯誤: {0}</s:string>
+<s:string x:key="Lblcaptureimageandplatesolve" xml:space="default">採集圖像並解析</s:string>
+<s:String x:Key="LblCdC" xml:space="default">Cartes du Ciel</s:String>
+<s:string x:key="Lblcenterdec" xml:space="default">中心赤緯</s:string>
+<s:string x:key="Lblcenterdecdms" xml:space="default">中心赤緯 dms</s:string>
+<s:string x:key="Lblcenterra" xml:space="default">中心赤經</s:string>
+<s:string x:key="Lblcenterrahms" xml:space="default">中心赤經 hms</s:string>
+<s:string x:key="Lblcentertarget" xml:space="default">目標居中</s:string>
+<s:string x:key="Lblchange" xml:space="default">修改</s:string>
+<s:string x:key="Lblchangedsequencewarning" xml:space="preserve">目標 {0} 的序列係一個從未保存的序列, 或者設置與上次保存時不同。
+
+你希望直接關閉本序列麼?</s:String>
+<s:string x:key="Lblchangedsequencewarningtitle" xml:space="default">關閉已修改的序列</s:string>
+<s:string x:key="Lblchangetobulbmode" xml:space="default">請將模式轉盤更改為 B 門模式</s:string>
+<s:string x:key="Lblchangetomanualmode" xml:space="default">請將模式轉盤更改為 m 模式</s:string>
+<s:string x:key="Lblcheckmeridianflip" xml:space="default">檢查中天翻轉</s:string>
+<s:string x:key="Lblchecksumerror" xml:space="default">校验同與預期值唔匹配, 下載的文件可能已損壞!</s:string>
+<s:string x:key="Lblchiptemp" xml:space="default">芯片溫度</s:string>
+<s:string x:key="Lblchiptempshort" xml:space="default">溫度</s:string>
+<s:string x:key="Lblchooseprofile" xml:space="default">揀配置文件</s:string>
+<s:String x:Key="LblClear" xml:space="default">清除</s:String>
+<s:string x:key="Lblclearcache" xml:space="default">清除緩存</s:string>
+<s:string x:key="Lblclockwise" xml:space="default">順時針</s:string>
+<s:string x:key="Lblcloudcover" xml:space="default">雲量</s:string>
+<s:string x:key="Lblcolorsensornotsupported" xml:space="default">暫不支持彩色傳感器</s:string>
+<s:string x:key="Lblconnect" xml:space="default">連接</s:string>
+<s:string x:key="Lblconnected" xml:space="default">已連接</s:string>
+<s:string x:key="Lblconnecting" xml:space="default">連接中</s:string>
+<s:String x:Key="LblConstellation" xml:space="default">星座</s:String>
+<s:string x:key="Lblconstellation_and" xml:space="default">仙女座</s:string>
+<s:string x:key="Lblconstellation_ant" xml:space="default">唧筩座</s:string>
+<s:string x:key="Lblconstellation_aps" xml:space="default">天燕座</s:string>
+<s:string x:key="Lblconstellation_aql" xml:space="default">天鷹座</s:string>
+<s:string x:key="Lblconstellation_aqr" xml:space="default">寶瓶座</s:string>
+<s:string x:key="Lblconstellation_ara" xml:space="default">天壇座</s:string>
+<s:String x:Key="LblConstellation_ARI" xml:space="default">白羊座</s:String>
+<s:string x:key="Lblconstellation_aur" xml:space="default">御夫座</s:string>
+<s:string x:key="Lblconstellation_boo" xml:space="default">牧夫座</s:string>
+<s:string x:key="Lblconstellation_cae" xml:space="default">雕具座</s:string>
+<s:String x:Key="LblConstellation_CAM" xml:space="default">鹿豹座</s:String>
+<s:string x:key="Lblconstellation_cap" xml:space="default">魔蠍座</s:string>
+<s:string x:key="Lblconstellation_car" xml:space="default">船底座</s:string>
+<s:string x:key="Lblconstellation_cas" xml:space="default">僊後座</s:string>
+<s:string x:key="Lblconstellation_cen" xml:space="default">半人馬座</s:string>
+<s:string x:key="Lblconstellation_cep" xml:space="default">仙王座</s:string>
+<s:string x:key="Lblconstellation_cet" xml:space="default">鯨魚座</s:string>
+<s:String x:Key="LblConstellation_CHA" xml:space="default">堰蜓座</s:String>
+<s:string x:key="Lblconstellation_cir" xml:space="default">圓規座</s:string>
+<s:String x:Key="LblConstellation_CMA" xml:space="default">大犬座</s:String>
+<s:String x:Key="LblConstellation_CMI" xml:space="default">小犬座</s:String>
+<s:string x:key="Lblconstellation_cnc" xml:space="default">巨蟹座</s:string>
+<s:string x:key="Lblconstellation_col" xml:space="default">天鴿座</s:string>
+<s:string x:key="Lblconstellation_com" xml:space="default">後發座</s:string>
+<s:String x:Key="LblConstellation_CRA" xml:space="default">南冕座</s:String>
+<s:String x:Key="LblConstellation_CRB" xml:space="default">北冕座</s:String>
+<s:string x:key="Lblconstellation_crt" xml:space="default">巨爵座</s:string>
+<s:String x:Key="LblConstellation_CRU" xml:space="default">南十字座</s:String>
+<s:string x:key="Lblconstellation_crv" xml:space="default">烏鴉座</s:string>
+<s:string x:key="Lblconstellation_cvn" xml:space="default">獵犬座</s:string>
+<s:string x:key="Lblconstellation_cyg" xml:space="default">天鵝座</s:string>
+<s:String x:Key="LblConstellation_DEL" xml:space="default">海豚座</s:String>
+<s:string x:key="Lblconstellation_dor" xml:space="default">劍魚座</s:string>
+<s:string x:key="Lblconstellation_dra" xml:space="default">天龍座</s:string>
+<s:string x:key="Lblconstellation_equ" xml:space="default">馬仔座</s:string>
+<s:String x:Key="LblConstellation_ERI" xml:space="default">波江座</s:String>
+<s:string x:key="Lblconstellation_for" xml:space="default">天爐座</s:string>
+<s:string x:key="Lblconstellation_gem" xml:space="default">雙子座</s:string>
+<s:string x:key="Lblconstellation_gru" xml:space="default">天鶴座</s:string>
+<s:string x:key="Lblconstellation_her" xml:space="default">武仙座</s:string>
+<s:string x:key="Lblconstellation_hor" xml:space="default">時鐘座</s:string>
+<s:string x:key="Lblconstellation_hya" xml:space="default">長蛇座</s:string>
+<s:String x:Key="LblConstellation_HYI" xml:space="default">水蛇座</s:String>
+<s:String x:Key="LblConstellation_IND" xml:space="default">印第安座</s:String>
+<s:String x:Key="LblConstellation_LAC" xml:space="default">蝎虎座</s:String>
+<s:string x:key="Lblconstellation_leo" xml:space="default">獅子座</s:string>
+<s:string x:key="Lblconstellation_lep" xml:space="default">天兔座</s:string>
+<s:String x:Key="LblConstellation_LIB" xml:space="default">天秤座</s:String>
+<s:string x:key="Lblconstellation_lmi" xml:space="default">小獅座</s:string>
+<s:String x:Key="LblConstellation_LUP" xml:space="default">豺狼座</s:String>
+<s:string x:key="Lblconstellation_lyn" xml:space="default">天貓座</s:string>
+<s:string x:key="Lblconstellation_lyr" xml:space="default">天琴座</s:string>
+<s:String x:Key="LblConstellation_MEN" xml:space="default">山案座</s:String>
+<s:string x:key="Lblconstellation_mic" xml:space="default">顯微鏡座</s:string>
+<s:string x:key="Lblconstellation_mon" xml:space="default">麒麟座</s:string>
+<s:string x:key="Lblconstellation_mus" xml:space="default">蒼蠅座</s:string>
+<s:String x:Key="LblConstellation_NOR" xml:space="default">矩尺座</s:String>
+<s:string x:key="Lblconstellation_oct" xml:space="default">南極座</s:string>
+<s:string x:key="Lblconstellation_oph" xml:space="default">蛇夫座</s:string>
+<s:string x:key="Lblconstellation_ori" xml:space="default">獵戶座</s:string>
+<s:String x:Key="LblConstellation_PAV" xml:space="default">孔雀座</s:String>
+<s:string x:key="Lblconstellation_peg" xml:space="default">飛馬座</s:string>
+<s:string x:key="Lblconstellation_per" xml:space="default">英仙座</s:string>
+<s:string x:key="Lblconstellation_phe" xml:space="default">鳳凰座</s:string>
+<s:string x:key="Lblconstellation_pic" xml:space="default">繪架座</s:string>
+<s:string x:key="Lblconstellation_psa" xml:space="default">南魚座</s:string>
+<s:string x:key="Lblconstellation_psc" xml:space="default">雙魚座</s:string>
+<s:string x:key="Lblconstellation_pup" xml:space="default">船尾座</s:string>
+<s:String x:Key="LblConstellation_PYX" xml:space="default">羅盤座</s:String>
+<s:string x:key="Lblconstellation_ret" xml:space="default">網罟座</s:string>
+<s:String x:Key="LblConstellation_SCL" xml:space="default">玉夫座</s:String>
+<s:string x:key="Lblconstellation_sco" xml:space="default">天蠍座</s:string>
+<s:String x:Key="LblConstellation_SCT" xml:space="default">盾牌座</s:String>
+<s:string x:key="Lblconstellation_ser" xml:space="default">巨蛇座</s:string>
+<s:string x:key="Lblconstellation_ser1" xml:space="default">巨蛇頭</s:string>
+<s:string x:key="Lblconstellation_ser2" xml:space="default">巨蛇尾</s:string>
+<s:string x:key="Lblconstellation_sex" xml:space="default">六分儀座</s:string>
+<s:String x:Key="LblConstellation_SGE" xml:space="default">天箭座</s:String>
+<s:string x:key="Lblconstellation_sgr" xml:space="default">人馬座</s:string>
+<s:String x:Key="LblConstellation_TAU" xml:space="default">金牛座</s:String>
+<s:string x:key="Lblconstellation_tel" xml:space="default">望遠鏡座</s:string>
+<s:String x:Key="LblConstellation_TRA" xml:space="default">南三角座</s:String>
+<s:String x:Key="LblConstellation_TRI" xml:space="default">三角座</s:String>
+<s:string x:key="Lblconstellation_tuc" xml:space="default">杜鵑座</s:string>
+<s:String x:Key="LblConstellation_UMA" xml:space="default">大熊座</s:String>
+<s:String x:Key="LblConstellation_UMI" xml:space="default">小熊座</s:String>
+<s:string x:key="Lblconstellation_vel" xml:space="default">船帆座</s:string>
+<s:String x:Key="LblConstellation_VIR" xml:space="default">室女座</s:String>
+<s:string x:key="Lblconstellation_vol" xml:space="default">飛魚座</s:string>
+<s:string x:key="Lblconstellation_vul" xml:space="default">狐狸座</s:string>
+<s:string x:key="Lblcontinue" xml:space="default">繼續</s:string>
+<s:string x:key="Lblcontrastmethod" xml:space="default">反差對焦模式</s:string>
+<s:string x:key="Lblcoolcambtntooltip" xml:space="preserve">將相機製冷到設定的目標溫度。
+設置持續時間之後, 應用程序就喺該周期內緩慢降低温度防止結露, 直至達到目標溫度。</s:String>
+<s:string x:key="Lblcooleron" xml:space="default">製冷開啟</s:string>
+<s:string x:key="Lblcoolerpower" xml:space="default">製冷功率</s:string>
+<s:string x:key="Lblcooling" xml:space="default">製冷中</s:string>
+<s:string x:key="Lblcoordinates" xml:space="default">坐標</s:string>
+<s:string x:key="Lblcounterclockwise" xml:space="default">逆時針</s:string>
+<s:string x:key="Lblcoverscopemsgbox" xml:space="default">而家起埋你望遠鏡鏡頭蓋, 按 "確定" 開始拍攝暗场。</s:String>
+<s:string x:key="Lblcoverscopemsgboxtitle" xml:space="default">而家起埋你望遠鏡鏡頭蓋</s:string>
+<s:string x:key="Lblcurrentdownloadtodataratio" xml:space="default">當前下載: 數據速率</s:string>
+<s:string x:key="Lblcurrentmean" xml:space="default">當前平均值</s:string>
+<s:string x:key="Lblcurrentposition" xml:space="default">當前位置</s:string>
+<s:string x:key="Lblcurrentuicolorschema" xml:space="default">當前的 ui 顏色方案</s:string>
+<s:string x:key="Lblcurvefittingmethod" xml:space="default">自動對焦曲線擬合</s:string>
+<s:string x:key="Lblcygwinbashnotfound" xml:space="default">未發現 cygwin 控制台</s:string>
+<s:string x:key="Lblcygwindirectory" xml:space="default">cygwin 目錄</s:string>
+<s:string x:key="Lbldarkflatcount" xml:space="default">黑平場拍攝張數</s:string>
+<s:string x:key="Lbldarvslew" xml:space="default">極軸漂迻法移動</s:string>
+<s:string x:key="Lbldarvslewbuttontooltip" xml:space="preserve">將喺赤道儀緩慢移動中進行一次曝光
+當線條冇對齊時, 會出現一些極軸對齊錯誤。</s:String>
+<s:string x:key="Lbldarvslewdescription" xml:space="default">指定極軸漂迻法程序的持續時間。 赤道儀將在赤經軸上沿一個方向旋轉一半嘅行程, 然後向反方向旋轉。 如果冇極軸校準錯誤, 它會顯示為一條直線。 否則將會係 v 字形。 對於方位角誤差測量, 指向範圍會接近中天, 否則會向東或向西。</s:String>
+<s:string x:key="Lbldataprovidedby" xml:space="default">深空天體數據來自:</s:string>
+<s:string x:key="Lbldatatodownloadratio" xml:space="default">下載速率</s:string>
+<s:String x:Key="LblDateFormatDescription" xml:space="default">日期格式 YYYY-MM-DD</s:String>
+<s:string x:key="Lbldateformatdescription2" xml:space="default">中午12時變更日期 yyyy-mm-dd</s:string>
+<s:String x:Key="LblDateTimeFormatDescription" xml:space="default">日期格式 YYYY-MM-DD_HH-mm-ss</s:String>
+<s:String x:Key="LblDawn" xml:space="default">黎明</s:String>
+<s:String x:Key="LblDCRaw" xml:space="default">DCRaw</s:String>
+<s:string x:key="Lbldebayeredhfr" xml:space="default">轉色後 HFR</s:string>
+<s:string x:key="Lbldebayeredhfrtooltip" xml:space="default">使用轉色圖像進行 HFR 計算。 更精確, 但更耗資源。</s:String>
+<s:string x:key="Lbldebayerimage" xml:space="default">圖像轉色</s:string>
+<s:string x:key="Lbldebayerimagetooltip" xml:space="default">使用轉色圖像預覽 (唔會影響原始文件)</s:string>
+<s:string x:key="Lbldebayeringimage" xml:space="default">轉色中</s:string>
+<s:string x:key="Lbldebug" xml:space="default">調試</s:string>
+<s:string x:key="Lbldec" xml:space="default">赤緯</s:string>
+<s:string x:key="Lbldeccorrections" xml:space="default">赤緯修正</s:string>
+<s:string x:key="Lbldecerror" xml:space="default">赤緯誤差</s:string>
+<s:string x:key="Lbldeclination" xml:space="default">赤緯</s:string>
+<s:string x:key="Lbldecpixerror" xml:space="default">赤緯像素誤差</s:string>
+<s:string x:key="Lbldefaultautofocusexposuretime" xml:space="default">默認曝光時間</s:string>
+<s:string x:key="Lbldefaultsequencefolder" xml:space="default">序列文件默認保存目錄</s:string>
+<s:string x:key="Lbldefaultsequencefoldertooltip" xml:space="default">默認加载序列和保存序列的文件夾</s:string>
+<s:String x:Key="LblDegree" xml:space="default">度</s:String>
+<s:String x:Key="LblDegreeShort" xml:space="default">°</s:String>
+<s:string x:key="Lbldeleteprofileinusewarning" xml:space="default">無法刪除個人資料。 佢正被另一個 n.i.n.a 實例使用。</s:String>
+<s:String x:Key="LblDescending" xml:space="default">降序</s:String>
+<s:String x:Key="LblDescription" xml:space="default">描述</s:String>
+<s:string x:key="Lbldetails" xml:space="default">細節</s:string>
+<s:string x:key="Lbldetectedstars" xml:space="default">檢測到的星點</s:string>
+<s:string x:key="Lbldevicepollinginterval" xml:space="default">設備檢測隔</s:string>
+<s:string x:key="Lbldewheater" xml:space="default">防結露加熱</s:string>
+<s:string x:key="Lbldewheatershort" xml:space="default">加熱</s:string>
+<s:String x:Key="LblDewpoint" xml:space="default">露點</s:String>
+<s:string x:key="Lbldigitalskysurvey" xml:space="default">digital 廵天圖庫 (在線)</s:string>
+<s:string x:key="Lbldirectguideduration" xml:space="default">直接導星持續時間</s:string>
+<s:string x:key="Lbldirectguiderconnectionfail" xml:space="default">直接導星無法連接赤道儀</s:string>
+<s:string x:key="Lbldirectguidertelescopedisconnect" xml:space="default">赤道儀已斷開連接。 直接導星將斷開連接。 抖動不再有效!</s:String>
+<s:string x:key="Lbldirectorynotfound" xml:space="default">圖像保存目錄未搵到!</s:String>
+<s:string x:key="Lbldirectorynotwritable" xml:space="default">圖像保存目錄冇寫入權限!</s:String>
+<s:string x:key="Lbldisableafguiding" xml:space="default">對焦時停止導星</s:string>
+<s:string x:key="Lbldisableafguidingtooltip" xml:space="default">自動對焦期間暫停導星</s:string>
+<s:string x:key="Lbldisconnect" xml:space="default">斷開</s:string>
+<s:string x:key="Lbldisconnectall" xml:space="default">斷開所有設備?</s:String>
+<s:string x:key="Lbldistance" xml:space="default">隔</s:string>
+<s:string x:key="Lbldither" xml:space="default">抖動</s:string>
+<s:string x:key="Lbldithereverynoframe" xml:space="default">抖動隔幀數</s:string>
+<s:string x:key="Lblditheronbutguidernotconnected" xml:space="default">抖動已啟用, 但未連接導星工具</s:string>
+<s:string x:key="Lblditherpixels" xml:space="default">phd2 抖動像素</s:string>
+<s:string x:key="Lblditherraonly" xml:space="default">僅抖動赤經</s:string>
+<s:string x:key="Lbldownload" xml:space="default">下載</s:string>
+<s:string x:key="Lbldownloadimage" xml:space="default">下載圖像</s:string>
+<s:string x:key="Lbldownloadimagetooltip" xml:space="default">由 nasa 廵天圖庫 (在線) 下載對應坐標的圖像</s:string>
+<s:string x:key="Lbldownloading" xml:space="default">下載中</s:string>
+<s:string x:key="Lbldownloadmoreindexfiles" xml:space="default">下載更多索引文件</s:string>
+<s:string x:key="Lbldownsamplefactor" xml:space="default">降低採樣係數</s:string>
+<s:string x:key="Lbldriverinfo" xml:space="default">驅動信息</s:string>
+<s:string x:key="Lbldriverversion" xml:space="default">驅動版本</s:string>
+<s:string x:key="Lblduration" xml:space="default">持續時間</s:string>
+<s:string x:key="Lbldusk" xml:space="default">黃昏</s:string>
+<s:string x:key="Lbleast" xml:space="default">東面</s:string>
+<s:string x:key="Lbledcameranotinmanualmode" xml:space="default">相機未設置為 m 或 B 門模式! 請連接前將其設置為 m 緊或 B 門模式</s:string>
+<s:string x:key="Lblenablebitscaling" xml:space="default">開啟位擴增</s:string>
+<s:string x:key="Lblenablebitscalingtooltip" xml:space="default">將10/12/14 位存儲為16位. (只支持 altair 同 touptek 相機)</s:string>
+<s:string x:key="Lblenabled" xml:space="default">已啟用</s:string>
+<s:string x:key="Lblendofsequencedecision" xml:space="default">確定停止運行本序列?</s:String>
+<s:string x:key="Lblendofsequenceoptions" xml:space="default">序列完選項</s:string>
+<s:string x:key="Lblendofsequenceparktelescope" xml:space="default">赤道儀還零</s:string>
+<s:string x:key="Lblendofsequencewarmcamera" xml:space="default">相機回溫</s:string>
+<s:string x:key="Lblepoch" xml:space="default">坐標係</s:string>
+<s:string x:key="Lblequipment" xml:space="default">設備</s:string>
+<s:string x:key="Lblerror" xml:space="default">錯誤</s:string>
+<s:string x:key="Lblerrordistance" xml:space="default">誤差距離</s:string>
+<s:string x:key="Lblerrorlt" xml:space="default">誤差 &lt;</s:string>
+<s:string x:key="Lblesoskysurvey" xml:space="default">eso 廵天圖庫 (在線)</s:string>
+<s:string x:key="Lblestimateddownloadtime" xml:space="default">預下載時間</s:string>
+<s:string x:key="Lblestimatedexposuretime" xml:space="default">預曝光時間</s:string>
+<s:string x:key="Lbleta" xml:space="default">預計完成時間</s:string>
+<s:String x:Key="LblExposing" xml:space="default">曝光中</s:String>
+<s:string x:key="Lblexposurecalculator" xml:space="default">最佳曝光計數機</s:string>
+<s:String x:Key="LblExposures" xml:space="default">曝光</s:String>
+<s:string x:key="Lblexposuretime" xml:space="default">曝光時間</s:string>
+<s:string x:key="Lblexposuretimedescription" xml:space="default">曝光時間 (秒)</s:string>
+<s:string x:key="Lblfieldofview" xml:space="default">視場</s:string>
+<s:string x:key="Lblfile" xml:space="default">本地拍攝圖像</s:string>
+<s:string x:key="Lblfilecameradescription" xml:space="preserve">呢個模擬相機將使用缺少 sdk 的相機, 同時仍然使用成個 n.i.n.a. 流程。
+此模擬攝像機將為新創建的文件監視指定既文件夾。 呢啲文件就儲埋喺內部隊列中。
+每次應用程序想由相機下載曝光時, 該文件隊列的第一項被解析併加载到 n.i.n.a.
+此外, 可以激活手動 B 門模式觸發器, 因此它將使用設置中所選 B 門模式-&gt; 設備-> 曝光啟動時嘅相機。
+當取消激活此觸發器時, 應用程序就飛 "開始曝光" 並等待另一個文件碌到指定的文件夾中</s:string>
+<s:String x:Key="LblFileExample" xml:space="default">示例文件名</s:String>
+<s:string x:key="Lblfilesettings" xml:space="default">文件設置</s:string>
+<s:string x:key="Lblfilter" xml:space="default">濾鏡</s:string>
+<s:string x:key="Lblfilterchangerequired" xml:space="default">需要更換濾鏡</s:string>
+<s:string x:key="Lblfiltername" xml:space="default">濾鏡名稱</s:string>
+<s:string x:key="Lblfilternamedescription" xml:space="default">濾鏡名稱</s:string>
+<s:string x:key="Lblfilternotfoundforposition" xml:space="default">{0} 位置未揾到滤镜, 請重新查看設置中嘅濾鏡對應於你嘅濾鏡輪嘅位置!</s:String>
+<s:string x:key="Lblfiltersetbutfilterwheelnotconnected" xml:space="default">一個或多個序列項有濾鏡設置, 但濾鏡輪未連接!</s:String>
+<s:string x:key="Lblfilterwheel" xml:space="default">濾鏡輪</s:string>
+<s:string x:key="Lblfilterwheelconnected" xml:space="default">濾鏡輪連接</s:string>
+<s:string x:key="Lblfilterwheelconnectionlost" xml:space="default">濾鏡輪連接賴! 請連接番!</s:String>
+<s:String x:Key="LblFits" xml:space="default">FITS</s:String>
+<s:string x:key="Lblflatcalculatedexposuretime" xml:space="default">計算目標曝光時間</s:string>
+<s:string x:key="Lblflatcalculatedhistogrammean" xml:space="default">計算目標直方圖平均值</s:string>
+<s:string x:key="Lblflatcount" xml:space="default">平場拍攝張數</s:string>
+<s:string x:key="Lblflatdevice" xml:space="default">平場板</s:string>
+<s:String x:Key="LblFlatDeviceBrightness" xml:space="default">亮度</s:String>
+<s:string x:key="Lblflatdevicechooseserialport" xml:space="default">揀串口</s:string>
+<s:string x:key="Lblflatdeviceclose" xml:space="default">關閉</s:string>
+<s:string x:key="Lblflatdeviceclosed" xml:space="default">已關閉</s:string>
+<s:string x:key="Lblflatdeviceconnected" xml:space="default">平場板已連接</s:string>
+<s:string x:key="Lblflatdeviceconnectedbutcovernotopen" xml:space="default">平場板已連接, 但係蓋未打開</s:string>
+<s:string x:key="Lblflatdevicecover" xml:space="default">電動起</s:string>
+<s:string x:key="Lblflatdevicecovercurrently" xml:space="default">當前</s:string>
+<s:string x:key="Lblflatdevicedisconnectquestion" xml:space="default">你想斷開平場板連結嗎?</s:String>
+<s:string x:key="Lblflatdeviceinvalidresponse" xml:space="default">平場板無法連結</s:string>
+<s:string x:key="Lblflatdevicelight" xml:space="default">平場板光源</s:string>
+<s:string x:key="Lblflatdeviceneitheropennorclosed" xml:space="default">運行中</s:string>
+<s:string x:key="Lblflatdevicenodevice" xml:space="default">冇平場板</s:string>
+<s:string x:key="Lblflatdeviceopen" xml:space="default">打開</s:string>
+<s:string x:key="Lblflatdeviceopenbutton" xml:space="default">打開</s:string>
+<s:string x:key="Lblflatdevicesetbrightness" xml:space="default">設定</s:string>
+<s:String x:Key="LblFlatDeviceUnknown" xml:space="default">未知</s:String>
+<s:string x:key="Lblflatexposurecalccontinue" xml:space="default">平均 adu 係 {0}, 開始曝光時間計算 {1}</s:string>
+<s:string x:key="Lblflatexposurecalccontinue" xml:space="default">平均 adu 係 {0}, 開始曝光時間計算 {1}</s:string>
+<s:string x:key="Lblflatexposurecalcfinished" xml:space="default">平均 adu 係 {0} 目標曝光時間係 {1}</s:string>
+<s:string x:key="Lblflatexposurecalcstart" xml:space="default">開始曝光時間計算 {0}</s:string>
+<s:string x:key="Lblflathistogrammeantarget" xml:space="default">直方圖平均目標</s:string>
+<s:String x:Key="LblFlatHistogramTolerance" xml:space="default">平均值容差</s:String>
+<s:string x:key="Lblflatmaxexposuretime" xml:space="default">平場最長曝光</s:string>
+<s:string x:key="Lblflatminexposuretime" xml:space="default">平場最短曝光</s:string>
+<s:string x:key="Lblflatsequencecancelled" xml:space="default">平場順序取消, 無法肯定平場曝光時間</s:string>
+<s:string x:key="Lblflatstepsize" xml:space="default">平場曝光步長</s:string>
+<s:string x:key="Lblflatusercurrentexposurecalculation" xml:space="default">當前曝光計算</s:string>
+<s:string x:key="Lblflatuserflatsettings" xml:space="default">平場嚮導設置</s:string>
+<s:string x:key="Lblflatuserpromptcancel" xml:space="default">取消平場嚮導</s:string>
+<s:string x:key="Lblflatuserpromptfailure" xml:space="default">無法獲得適當嘅平場曝光</s:string>
+<s:string x:key="Lblflatuserpromptflattoobright" xml:space="default">你平場太光, 調暗光源, 較公差, 目標平均值或最小曝光時間</s:string>
+<s:string x:key="Lblflatuserpromptflattoodim" xml:space="default">你平場太暗, 調光光源, 較公差, 目標平均值或者最大曝光時間</s:string>
+<s:string x:key="Lblflatwizard" xml:space="default">平場助手</s:string>
+<s:string x:key="Lblflatwizardcapture" xml:space="default">平場助手曝光</s:string>
+<s:string x:key="Lblflicamerasetup" xml:space="default">fli 相機設置</s:string>
+<s:string x:key="Lblflifloodbin" xml:space="default">曝光像素合併</s:string>
+<s:string x:key="Lblflifloodduration" xml:space="default">曝光時長</s:string>
+<s:string x:key="Lblfliflushcount" xml:space="default">預曝光刷新次數</s:string>
+<s:string x:key="Lblflip" xml:space="default">翻轉</s:string>
+<s:string x:key="Lblflippingscope" xml:space="default">翻轉赤道儀</s:string>
+<s:string x:key="Lblfliprerbimitigation" xml:space="default">rbi 合成</s:string>
+<s:string x:key="Lblflisnapshotflood" xml:space="default">快照傳輸</s:string>
+<s:String x:Key="LblFocalLength" xml:space="default">焦距</s:String>
+<s:String x:Key="LblFocalRatio" xml:space="default">焦過</s:String>
+<s:string x:key="Lblfocuser" xml:space="default">電調</s:string>
+<s:string x:key="Lblfocuserautofocusinitialoffsetsteps" xml:space="default">自動對焦初始偏移步數</s:string>
+<s:string x:key="Lblfocuserautofocusinitialoffsetstepstooltip" xml:space="default">開始自動對焦時, 電調就移出的初始步數。</s:String>
+<s:string x:key="Lblfocuserautofocusstepsize" xml:space="default">自對焦步長</s:string>
+<s:string x:key="Lblfocuserautofocusstepsizetooltip" xml:space="default">個個自動對焦點相隔的步長。 步長應小於臨界焦點的容差值</s:string>
+<s:string x:key="Lblfocuserbacklash" xml:space="default">回差 in/out</s:string>
+<s:string x:key="Lblfocuserbacklashtooltip" xml:space="default">電調緊每一步 in/out 方向嘅回差</s:string>
+<s:string x:key="Lblfocuserconnected" xml:space="default">電調連接</s:string>
+<s:string x:key="Lblfocuserconnectionlost" xml:space="default">電調連接賴! 請重新連接!</s:string>
+<s:string x:key="Lblfocuserpositiondescription" xml:space="default">當前電調位置</s:string>
+<s:string x:key="Lblfocusersettletime" xml:space="default">穩定時間</s:string>
+<s:string x:key="Lblfocusersettletimetooltip" xml:space="default">如果因為電調嘅移動導致焦點偏移, 請在此處以秒為單位設置穩定時間。</s:String>
+<s:string x:key="Lblfocusertempdescription" xml:space="default">電調溫度</s:string>
+<s:string x:key="Lblfocuserusefilterwheeloffsets" xml:space="default">使用濾鏡焦點偏移</s:string>
+<s:string x:key="Lblfocuserusefilterwheeloffsetstooltip" xml:space="default">當由一個濾鏡切換到另一個濾鏡時, 電調會改變它相對于為該濾鏡指定的偏移量</s:string>
+<s:string x:key="Lblfocusoffset" xml:space="default">焦點偏移</s:string>
+<s:string x:key="Lblfocuspointvalidationfailed" xml:space="preserve">計數位風頭躉嘅 HFR {0} 與實際 HFR 相差超過 25%
+實際 HFR: {1}
+計算嘅 HFR: {2}
+</s:String>
+<s:string x:key="Lblfoldertowatch" xml:space="default">監測文件夾</s:string>
+<s:string x:key="Lblframenfocus" xml:space="default">幀數 &amp; 對焦</s:string>
+<s:string x:key="Lblframenrdescription" xml:space="default">此格式嘅第 n 張 ####</s:string>
+<s:string x:key="Lblframing" xml:space="default">構圖助手</s:string>
+<s:string x:key="Lblframingassistant" xml:space="default">構圖助手</s:string>
+<s:string x:key="Lblfreeimage" xml:space="default">自由拍攝</s:string>
+<s:string x:key="Lblfrom" xml:space="default">由</s:string>
+<s:string x:key="Lblfullwellcapacity" xml:space="default">成井電荷 (e)</s:string>
+<s:String x:Key="LblGain" xml:space="default">增益</s:String>
+<s:string x:key="Lblgaindescription" xml:space="default">相機增益</s:string>
+<s:String x:Key="LblGeneral" xml:space="default">通用</s:String>
+<s:string x:key="Lblgpsconnected" xml:space="default">gps 已經喺端口上連接</s:string>
+<s:string x:key="Lblgpsconnectfail" xml:space="default">無法連接到端口上嘅 gps</s:string>
+<s:string x:key="Lblgpslocationset" xml:space="default">由 gps 設置位置</s:string>
+<s:string x:key="Lblgpsnofix" xml:space="default">gps 無定位</s:string>
+<s:string x:key="Lblgpsnotfound" xml:space="default">未檢測到 gps 糢塊</s:string>
+<s:string x:key="Lblgpstooltip" xml:space="default">使用 nmea gps 導入位置</s:string>
+<s:string x:key="Lblguider" xml:space="default">導星</s:string>
+<s:string x:key="Lblguiderconnected" xml:space="default">導星已連接</s:string>
+<s:string x:key="Lblguiderditherbutnotconnected" xml:space="default">導星抖動已啟用, 但應用程序未連接到導星相機</s:string>
+<s:string x:key="Lblguidernoresume" xml:space="default">導星程序沒有在指定時間內恢復通信, 序列將繼續拍攝, 但請手動確認導星已經進行緊</s:string>
+<s:string x:key="Lblguidernosettledone" xml:space="default">導星沒有在指定時間內返回穩定完成消息, 飛。</s:String>
+<s:string x:key="Lblguiderresumefailed" xml:space="default">導星恢復炒</s:string>
+<s:string x:key="Lblguidersettings" xml:space="default">導星設置</s:string>
+<s:string x:key="Lblguiderstatus" xml:space="default">導星狀態</s:string>
+<s:string x:key="Lblguidingrmsarcsecdescription" xml:space="default">導星 rms, 單位為角秒</s:string>
+<s:string x:key="Lblguidingrmsdescription" xml:space="default">導星的均方根誤差 (像素)</s:string>
+<s:String x:Key="LblHalt" xml:space="default">停止</s:String>
+<s:String x:Key="LblHeight" xml:space="default">高度</s:String>
+<s:String x:Key="LblHemisphere" xml:space="default">半球</s:String>
+<s:String x:Key="LblHFR" xml:space="default">HFR</s:String>
+<s:string x:key="Lblhfrhistory" xml:space="default">HFR 歷史</s:string>
+<s:string x:key="Lblhfrpatterndescription" xml:space="default">計算圖像嘅 HFR (必須啟用 HFR 檢測)</s:string>
+<s:String x:Key="LblHigh" xml:space="default">高</s:String>
+<s:String x:Key="LblHighest" xml:space="default">最高</s:String>
+<s:string x:key="Lblhistogram" xml:space="default">直方圖</s:string>
+<s:string x:key="Lblhistogramresolution" xml:space="default">直方圖分辨率</s:string>
+<s:string x:key="Lblhistogramresolutiontooltip" xml:space="default">指定應用於直方圖的數據點的數目</s:string>
+<s:string x:key="Lblhistory" xml:space="default">歷史</s:string>
+<s:String x:Key="LblHNSKY" xml:space="default">HNSKY</s:String>
+<s:string x:key="Lblhorizontalpanels" xml:space="default">水平張數</s:string>
+<s:string x:key="Lblhost" xml:space="default">地址</s:string>
+<s:string x:key="Lblhour" xml:space="default">小時</s:string>
+<s:string x:key="Lblhumidity" xml:space="default">濕度</s:string>
+<s:string x:key="Lblhyperbolic" xml:space="default">雙曲線</s:string>
+<s:String x:Key="LblId" xml:space="default">ID</s:String>
+<s:string x:key="Lblillumination" xml:space="default">光照</s:string>
+<s:string x:key="Lblimage" xml:space="default">拍攝</s:string>
+<s:string x:key="Lblimagearea" xml:space="default">圖區</s:string>
+<s:string x:key="Lblimagefileerror" xml:space="default">圖錯誤</s:string>
+<s:string x:key="Lblimagefilepath" xml:space="default">圖路徑</s:string>
+<s:string x:key="Lblimagefilepattern" xml:space="default">圖格式</s:string>
+<s:string x:key="Lblimagehistory" xml:space="default">圖歷史</s:string>
+<s:string x:key="Lblimageoptions" xml:space="default">圖選項</s:string>
+<s:string x:key="Lblimagesource" xml:space="default">圖片來源</s:string>
+<s:string x:key="Lblimagetypedescription" xml:space="default">光場, 平場, 暗场, 偏置場, 快照</s:string>
+<s:string x:key="Lblimaging" xml:space="default">主控台</s:string>
+<s:string x:key="Lblimportfromfilterwheel" xml:space="default">由濾鏡輪設置導入濾鏡</s:string>
+<s:String x:Key="LblIndexFile" xml:space="default">索引文件</s:String>
+<s:String x:Key="LblInfo" xml:space="default">信息</s:String>
+<s:string x:key="Lblinitiateplatesolve" xml:space="default">啟動解析</s:string>
+<s:string x:key="Lblinvalidmode" xml:space="default">無效嘅模式</s:string>
+<s:string x:key="Lblinvalidmodebulb" xml:space="default">曝光時間模式 (B 門) 無效 &lt;1s</s:string>
+<s:string x:key="Lblinvalidmodemanual" xml:space="default">曝光時間模式 (m) 無效 &gt;30s</s:string>
+<s:string x:key="Lblisbayered" xml:space="default">可以轉色</s:string>
+<s:string x:key="Lblismoving" xml:space="default">移動中</s:string>
+<s:string x:key="Lblissettling" xml:space="default">穩定中</s:string>
+<s:string x:key="Lblitemsperpage" xml:space="default">每頁顯示</s:string>
+<s:String x:Key="LblJ2000" xml:space="default">J2000</s:String>
+<s:String x:Key="LblJNOW" xml:space="default">JNOW</s:String>
+<s:string x:key="Lbllanguage" xml:space="default">語言</s:string>
+<s:String x:Key="LblLaplace" xml:space="default">Laplace</s:String>
+<s:string x:key="Lbllatitude" xml:space="default">緯度</s:string>
+<s:string x:key="Lbllayout" xml:space="default">布局</s:string>
+<s:string x:key="Lbllblblackclippingtooltip" xml:space="default">以 sigma 為單位表示嘅黑色區域剪裁的中位數</s:string>
+<s:string x:key="Lblloadimage" xml:space="default">加载圖</s:string>
+<s:string x:key="Lblloadimagefromfile" xml:space="default">由文件加载圖</s:string>
+<s:string x:key="Lblloadimagefromfiletooltip" xml:space="default">由文件下載圖片並使用盲解析肯定坐標</s:string>
+<s:string x:key="Lblloadprofile" xml:space="default">加载配置文件</s:string>
+<s:string x:key="Lblloadprofileinusewarning" xml:space="default">無法加载個人資料。 佢正被另一個 n.i.n.a. 使用!</s:String>
+<s:String x:Key="LblLoadSequence" xml:space="default">加载序列</s:String>
+<s:string x:key="Lblloadsequencefailed" xml:space="default">加载序列炒</s:string>
+<s:string x:key="Lblloadsequencesetfailed" xml:space="default">加载目標設置炒</s:string>
+<s:string x:key="Lblloadsequencetooltip" xml:space="default">從 xml 文件加载序列</s:string>
+<s:string x:key="Lblloadtargetset" xml:space="default">加载目標設置</s:string>
+<s:String x:Key="LblLocalPlatesolver" xml:space="default">本地解析</s:String>
+<s:string x:key="Lbllocation" xml:space="default">位置</s:string>
+<s:string x:key="Lblloglevel" xml:space="default">日誌等級</s:string>
+<s:String x:Key="LblLongitude" xml:space="default">經度</s:String>
+<s:string x:key="Lblloop" xml:space="default">循環拍攝</s:string>
+<s:String x:Key="LblMAD" xml:space="default">MAD</s:String>
+<s:String x:Key="LblMagnitude" xml:space="default">星等</s:String>
+<s:string x:key="Lblmanualcontrol" xml:space="default">手動控制</s:string>
+<s:string x:key="Lblmanualcoordinates" xml:space="default">指定坐標 (j2000)</s:string>
+<s:string x:key="Lblmanualfilterwheel" xml:space="default">手動濾鏡輪</s:string>
+<s:string x:key="Lblmanualfilterwheeldescription" xml:space="default">導入濾鏡輪設置中嘅滤镜。 當需要更換濾鏡時, 就彈出通知以手動更改滤镜。</s:String>
+<s:string x:key="Lblmanualfocustargets" xml:space="default">手動對焦目標</s:string>
+<s:string x:key="Lblmanualnotfound" xml:space="default">手動裝置未搵到</s:string>
+<s:string x:key="Lblmanualrotator" xml:space="default">手動旋轉器</s:string>
+<s:string x:key="Lblmanualrotatordescription" xml:space="default">請求旋轉時, 就彈出通知以手動旋轉</s:string>
+<s:String x:Key="LblMax" xml:space="default">最大</s:String>
+<s:string x:key="Lblmaxbinx" xml:space="default">x 最大合併像素</s:string>
+<s:string x:key="Lblmaxbiny" xml:space="default">y 最大合併像素</s:string>
+<s:string x:key="Lblmaxexptime" xml:space="default">最長曝光時間</s:string>
+<s:string x:key="Lblmaximumexposuretime" xml:space="default">推薦最長曝光</s:string>
+<s:String x:Key="LblMaxIncrement" xml:space="default">最大增量</s:String>
+<s:string x:key="Lblmaxobjects" xml:space="default">最大對象</s:string>
+<s:String x:Key="LblMaxOptimalADU" xml:space="default">最大 ADU</s:String>
+<s:string x:key="Lblmaxstep" xml:space="default">最大步長</s:string>
+<s:String x:Key="LblMean" xml:space="default">均值</s:String>
+<s:string x:key="Lblmeasurefocuserbacklash" xml:space="default">測量電調回差</s:string>
+<s:String x:Key="LblMedian" xml:space="default">中值</s:String>
+<s:string x:key="Lblmeridianflipfailed" xml:space="default">中天翻轉炒</s:string>
+<s:string x:key="Lblmeridianflipinit" xml:space="default">開始中天翻轉</s:string>
+<s:string x:key="Lblmeridianin" xml:space="default">到達中天</s:string>
+<s:string x:key="Lblmeridianoffset" xml:space="default">中天位置偏移</s:string>
+<s:String x:Key="LblMin" xml:space="default">最小</s:String>
+<s:string x:key="Lblminduration" xml:space="default">持續分鐘數</s:string>
+<s:string x:key="Lblminexptime" xml:space="default">最小曝光時間</s:string>
+<s:String x:Key="LblMinimumAltitude" xml:space="default">最低高度</s:String>
+<s:string x:key="Lblminimumexposuretime" xml:space="default">最小建議時間</s:string>
+<s:string x:key="Lblminimumsettletime" xml:space="default">最小穩定時間</s:string>
+<s:String x:Key="LblMinOptimalADU" xml:space="default">最低 ADU</s:String>
+<s:string x:key="Lblminutesaftermeridian" xml:space="default">過中天幾分鐘後翻轉</s:string>
+<s:string x:key="Lblminutesshort" xml:space="default">分鐘</s:string>
+<s:string x:key="Lblmode" xml:space="default">模式</s:string>
+<s:string x:key="Lblmoonrise" xml:space="default">月出</s:string>
+<s:String x:Key="LblMoonSet" xml:space="default">月落</s:String>
+<s:string x:key="Lblmove" xml:space="default">移動</s:string>
+<s:string x:key="Lblname" xml:space="default">名稱</s:string>
+<s:string x:key="Lblnasaskysurvey" xml:space="default">nasa 廵天圖庫 (在線)</s:string>
+<s:String x:Key="LblNative" xml:space="default">本地</s:String>
+<s:String x:Key="LblNewUpdateAvailable" xml:space="default">新版本 ({0})! 點擊進行更新</s:string>
+<s:String x:Key="LblNightly" xml:space="default">先行版</s:String>
+<s:string x:key="Lblnikonnotfound" xml:space="default">冇搵到尼康相機</s:string>
+<s:String x:Key="LblNINA" xml:space="default">NINA</s:String>
+<s:string x:key="Lblninatotelescope" xml:space="default">係 NINA 導入經緯度</s:string>
+<s:String x:Key="LblNo" xml:space="default">否</s:String>
+<s:string x:key="Lblnocamera" xml:space="default">冇相機</s:string>
+<s:string x:key="Lblnocameraconnected" xml:space="default">冇相機連接</s:string>
+<s:string x:key="Lblnocoordinates" xml:space="default">冇可用的坐標</s:string>
+<s:string x:key="Lblnocoordinatesforsync" xml:space="default">冇得可用於同步赤道儀的坐標</s:string>
+<s:string x:key="Lblnofilterwheel" xml:space="default">冇濾鏡輪</s:string>
+<s:string x:key="Lblnofocuser" xml:space="default">冇電調</s:string>
+<s:string x:key="Lblnoguider" xml:space="default">冇導星</s:string>
+<s:string x:key="Lblnoimage" xml:space="default">冇圖像</s:string>
+<s:string x:key="Lblnoisereduction" xml:space="default">降噪</s:string>
+<s:string x:key="Lblnoisereductiontooltip" xml:space="default">喺檢測之前應用降噪。 可能有助於處理嘈雜的圖像和短時間曝光。</s:String>
+<s:string x:key="Lblnone" xml:space="default">冇</s:string>
+<s:String x:Key="LblNormal" xml:space="default">正常</s:String>
+<s:string x:key="Lblnorotator" xml:space="default">冇旋轉器 (電子 caa)</s:string>
+<s:string x:key="Lblnorthern" xml:space="default">北半球</s:string>
+<s:string x:key="Lblnoswitch" xml:space="default">冇開關</s:string>
+<s:string x:key="Lblnotelescope" xml:space="default">冇赤道儀</s:string>
+<s:string x:key="Lblnotificationerror" xml:space="default">錯誤</s:string>
+<s:string x:key="Lblnotificationerrortext" xml:space="default">錯誤內容</s:string>
+<s:String x:Key="LblNotificationWarning" xml:space="default">警告</s:String>
+<s:string x:key="Lblnotificationwarningtext" xml:space="default">警告內容</s:string>
+<s:string x:key="Lblnow" xml:space="default">而家</s:string>
+<s:String x:Key="LblNrStars" xml:space="default">星點數</s:String>
+<s:string x:key="Lblobjectnamehint" xml:space="default">輸入目標名 (如 m31)</s:string>
+<s:string x:key="Lblobjecttype" xml:space="default">目標類型</s:string>
+<s:string x:key="Lblobjecttype_1star" xml:space="default">單星</s:string>
+<s:string x:key="Lblobjecttype_2star" xml:space="default">雙星系統</s:string>
+<s:string x:key="Lblobjecttype_3star" xml:space="default">三星系統</s:string>
+<s:string x:key="Lblobjecttype_4star" xml:space="default">四星系統</s:string>
+<s:string x:key="Lblobjecttype_8star" xml:space="default">八星系統</s:string>
+<s:string x:key="Lblobjecttype_aster" xml:space="default">光星群</s:string>
+<s:string x:key="Lblobjecttype_brtnb" xml:space="default">亮星雲</s:string>
+<s:string x:key="Lblobjecttype_cl+nb" xml:space="default">星雲團</s:string>
+<s:string x:key="Lblobjecttype_drknb" xml:space="default">暗星雲</s:string>
+<s:string x:key="Lblobjecttype_g+c+n" xml:space="default">星系群和星雲團</s:string>
+<s:string x:key="Lblobjecttype_galcl" xml:space="default">星系群</s:string>
+<s:string x:key="Lblobjecttype_galxy" xml:space="default">星系</s:string>
+<s:string x:key="Lblobjecttype_glocl" xml:space="default">球状星團</s:string>
+<s:string x:key="Lblobjecttype_gx+dn" xml:space="default">星系中發射星雲</s:string>
+<s:string x:key="Lblobjecttype_gx+gc" xml:space="default">星系中嘅球状星團</s:string>
+<s:string x:key="Lblobjecttype_lmccn" xml:space="default">大麦哲伦星雲星雲既團</s:string>
+<s:string x:key="Lblobjecttype_lmcdn" xml:space="default">大麦哲伦星雲的發射星雲</s:string>
+<s:string x:key="Lblobjecttype_lmcgc" xml:space="default">大麦哲伦星雲嘅球状星團</s:string>
+<s:string x:key="Lblobjecttype_lmcoc" xml:space="default">大麦哲伦星雲的開放星團</s:string>
+<s:string x:key="Lblobjecttype_nonex" xml:space="default">唔可見目標</s:string>
+<s:string x:key="Lblobjecttype_opncl" xml:space="default">疏散星團</s:string>
+<s:string x:key="Lblobjecttype_plnnb" xml:space="default">行星狀星雲</s:string>
+<s:string x:key="Lblobjecttype_quasr" xml:space="default">類星躰</s:string>
+<s:string x:key="Lblobjecttype_smccn" xml:space="default">小麦哲伦星雲星雲既團</s:string>
+<s:string x:key="Lblobjecttype_smcdn" xml:space="default">小麦哲伦星雲的發射星雲</s:string>
+<s:string x:key="Lblobjecttype_smcgc" xml:space="default">小麦哲伦星雲嘅球状星團</s:string>
+<s:string x:key="Lblobjecttype_smcoc" xml:space="default">小麦哲伦星雲的開放星團</s:string>
+<s:string x:key="Lblobjecttype_snrem" xml:space="default">超新星遺蹟</s:string>
+<s:String x:Key="LblOf" xml:space="default">嘅</s:String>
+<s:string x:key="Lbloff" xml:space="default">關閉</s:string>
+<s:string x:key="Lbloffset" xml:space="default">偏移</s:string>
+<s:string x:key="Lbloffsetdescription" xml:space="default">相機的偏移值</s:string>
+<s:String x:Key="LblOK" xml:space="default">OK</s:String>
+<s:string x:key="Lblon" xml:space="default">打開</s:string>
+<s:string x:key="Lblonetoone" xml:space="default">將圖像縮放為1:1</s:string>
+<s:String x:Key="LblOpacity" xml:space="default">唔透明度</s:String>
+<s:string x:key="Lblopenmanual" xml:space="default">打開手冊</s:string>
+<s:string x:key="Lblopenweathermapapikey" xml:space="default">OpenWeatherMap API 密鑰</s:string>
+<s:string x:key="Lblopenweathermapclientdescription" xml:space="default">使用 OpenWeatherMap 的氣象 API, 氣象數據每 10 分鐘更新一次。</s:String>
+<s:string x:key="Lblopenweathermapclientinfo" xml:space="default">NINA OWM API 客戶耑</s:string>
+<s:string x:key="Lbloptimalexposuretime" xml:space="default">最佳曝光時間</s:string>
+<s:string x:key="Lbloptions" xml:space="default">選項</s:string>
+<s:String x:Key="LblOrderBy" xml:space="default">排序方式</s:String>
+<s:string x:key="Lblorientation" xml:space="default">位置</s:string>
+<s:string x:key="Lbloverlappercentage" xml:space="default">重疊百分比</s:string>
+<s:string x:key="Lblpanel" xml:space="default">面板</s:string>
+<s:string x:key="Lblparabolic" xml:space="default">拋物綫</s:string>
+<s:string x:key="Lblpark" xml:space="default">還零</s:string>
+<s:string x:key="Lblparkenabledbuttelescopecannotpark" xml:space="default">赤道儀設置為序列結束時還緊零停放, 但它無法這樣做</s:string>
+<s:string x:key="Lblparkenabledbuttelescopenotconnected" xml:space="default">赤道儀設置為序列結束時還緊零停放, 但未連接</s:string>
+<s:string x:key="Lblparkmountatsequenceend" xml:space="default">序列結束時還零停放</s:string>
+<s:string x:key="Lblpassmeridian" xml:space="default">過中天</s:string>
+<s:string x:key="Lblpatternname" xml:space="default">格式名稱</s:string>
+<s:string x:key="Lblpausebetweenfilters" xml:space="default">更換濾鏡時暫停</s:string>
+<s:string x:key="Lblpaused" xml:space="default">已暫停</s:string>
+<s:string x:key="Lblpausetimebeforemeridian" xml:space="default">中天前暫停 (分鐘)</s:string>
+<s:String x:Key="LblPercentShort" xml:space="default">%</s:String>
+<s:string x:key="Lblphd2decrms" xml:space="default">赤緯: {0} ({1} ")</s:string>
+<s:string x:key="Lblphd2failedequipmentconnection" xml:space="default">phd2 無法連接到設備</s:string>
+<s:string x:key="Lblphd2historysize" xml:space="default">phd2 歷史尺寸</s:string>
+<s:string x:key="Lblphd2minimalhistorysize" xml:space="default">phd2 歷史尺寸 (圖像)</s:string>
+<s:string x:key="Lblphd2path" xml:space="default">phd2 路徑</s:string>
+<s:string x:key="Lblphd2pathnotfound" xml:space="default">無法啟動 phd2。 路徑設置無效</s:string>
+<s:string x:key="Lblphd2rarms" xml:space="default">赤經: {0} ({1} ")</s:string>
+<s:string x:key="Lblphd2serverconnectionlost" xml:space="default">phd2 服務器連接賴!</s:string>
+<s:string x:key="Lblphd2serverport" xml:space="default">phd2 服務器端口</s:string>
+<s:string x:key="Lblphd2serverurl" xml:space="default">phd2 服務器地址</s:string>
+<s:string x:key="Lblphd2settings" xml:space="default">phd2 設置</s:string>
+<s:string x:key="Lblphd2startprocesserror" xml:space="default">無法啟動 phd2。 查看日誌以了解詳細信息。</s:String>
+<s:String x:Key="LblPhd2SynchronizedServiceClientConnected" xml:space="default">
+客戶耑連接到同步 phd2 服務。
+已連接的客戶耑: {0}
+</s:String>
+<s:String x:Key="LblPhd2SynchronizedServiceClientDisconnected" xml:space="default">
+客戶耑斷開同步 phd2 服務。
+已連接的客戶耑: {0}
+</s:String>
+<s:string x:key="Lblphd2synchronizedservicestarted" xml:space="default">同步 phd2 服務啟動</s:string>
+<s:string x:key="Lblphd2totalrms" xml:space="default">總: {0} ({1} ")</s:string>
+<s:String x:Key="LblPixels" xml:space="default">像素</s:String>
+<s:String x:Key="LblPixelScale" xml:space="default">像素比例</s:String>
+<s:String x:Key="LblPixelSize" xml:space="default">像素大小</s:String>
+<s:String x:Key="LblPixelSizeX" xml:space="default">X 像素大小</s:String>
+<s:String x:Key="LblPixelSizeY" xml:space="default">Y 像素大小</s:String>
+<s:string x:key="Lblplanetarium" xml:space="default">第三方星圖</s:string>
+<s:string x:key="Lblplanetariumcoordserror" xml:space="default">無法獲取坐標 {0}</s:string>
+<s:string x:key="Lblplanetariumcoordsok" xml:space="default">坐標來源 {0}</s:string>
+<s:string x:key="Lblplanetariumprefs" xml:space="default">星圖偏好設置</s:string>
+<s:string x:key="Lblplanetariumtooltip" xml:space="default">由星圖軟件獲取坐標</s:string>
+<s:String x:Key="LblPlatesolve2" xml:space="default">PlateSolve2</s:String>
+<s:string x:key="Lblplatesolve2directory" xml:space="default">platesolve2 路徑</s:string>
+<s:string x:key="Lblplatesolve2nocoordinates" xml:space="default">冇可用的坐標。 platesolve2 需要坐標來解析!</s:String>
+<s:String x:Key="LblPlatesolve2NotFound" xml:space="default">未搵到 PlateSolve2</s:String>
+<s:string x:key="Lblplatesolvedpolaralignment" xml:space="default">解析極軸較</s:string>
+<s:string x:key="Lblplatesolveending" xml:space="default">已嘗試最大解析次數, 或需要中天翻轉。</s:String>
+<s:string x:key="Lblplatesolvefailed" xml:space="default">解析失敗</s:string>
+<s:string x:key="Lblplatesolvefaileddelay" xml:space="default">解析失敗隔</s:string>
+<s:string x:key="Lblplatesolvefaileddelaytooltip" xml:space="default">兩次解析失敗的嘗試隔 (分鐘)</s:string>
+<s:string x:key="Lblplatesolveimage" xml:space="default">解析當前圖像</s:string>
+<s:string x:key="Lblplatesolvenbofattempts" xml:space="default">嘗試次數</s:string>
+<s:string x:key="Lblplatesolvenbofattemptstooltip" xml:space="default">序列拍攝中, 將嘗試解析幾多次, 直到認為爆煲為止</s:string>
+<s:string x:key="Lblplatesolvenocoordinates" xml:space="default">冇可用的參考坐標</s:string>
+<s:string x:key="Lblplatesolvenofocallength" xml:space="default">解析被終止. 望遠鏡的有效焦距一定係: 選項 &gt; 設備中進行設置</s:string>
+<s:string x:key="Lblplatesolveprovidedby" xml:space="default">解析服務提供:</s:string>
+<s:String x:Key="LblPlateSolver" xml:space="default">解析</s:String>
+<s:string x:key="Lblplatesolvereattemptdelay" xml:space="default">等待下一次解析嘗試: {0}</s:string>
+<s:string x:key="Lblplatesolvesettings" xml:space="default">解析設置</s:string>
+<s:String x:Key="LblPlateSolving" xml:space="default">解析</s:String>
+<s:string x:key="Lblpleasechangetofilter" xml:space="default">請更換濾鏡 {0}</s:string>
+<s:string x:key="Lblpleaserotate" xml:space="default">請旋轉 {0} 度</s:string>
+<s:string x:key="Lblpolaralignment" xml:space="default">極軸校準</s:string>
+<s:String x:Key="LblPort" xml:space="default">端口</s:String>
+<s:string x:key="Lblposition" xml:space="default">方向</s:string>
+<s:string x:key="Lblpreferredplanetarium" xml:space="default">使用星圖軟件</s:string>
+<s:string x:key="Lblprepareexposure" xml:space="default">帶曝光</s:string>
+<s:string x:key="Lblprepareimage" xml:space="default">準備拍攝</s:string>
+<s:string x:key="Lblpreparingdarkflatsequence" xml:space="default">帶暗平場序列</s:string>
+<s:string x:key="Lblprepflatfiltermsgbox" xml:space="default">平場拍攝濾鏡: {0}</s:string>
+<s:string x:key="Lblpresequencechecklist" xml:space="default">你嘅序列中發現了以下潛在問題:</s:string>
+<s:string x:key="Lblpresequencechecklistheader" xml:space="default">拍攝前檢查表</s:string>
+<s:string x:key="Lblpressure" xml:space="default">氣壓</s:string>
+<s:String x:Key="LblPrimary" xml:space="default">主要</s:String>
+<s:string x:key="Lblprofiles" xml:space="default">配置文件</s:string>
+<s:string x:key="Lblprogress" xml:space="default">進度</s:string>
+<s:String x:Key="LblPull" xml:space="default">拉</s:String>
+<s:String x:Key="LblPush" xml:space="default">推</s:String>
+<s:String x:Key="LblPx" xml:space="default">像素</s:String>
+<s:string x:key="Lblra" xml:space="default">赤經</s:string>
+<s:string x:key="Lblracorrections" xml:space="default">赤經修正</s:string>
+<s:string x:key="Lblradius" xml:space="default">半徑</s:string>
+<s:string x:key="Lblraerror" xml:space="default">赤經誤差</s:string>
+<s:String x:Key="LblRainRate" xml:space="default">降水率</s:String>
+<s:string x:key="Lblrapixerror" xml:space="default">赤經像素誤差</s:string>
+<s:String x:Key="LblRate" xml:space="default">速率</s:String>
+<s:string x:key="Lblrawconverter" xml:space="default">raw 格式轉換器</s:string>
+<s:string x:key="Lblrawconvertertooltip" xml:space="default">指定應該使用哪個工具進行 dslr raw 轉換</s:string>
+<s:string x:key="Lblreadnoise" xml:space="default">讀出譟聲 (e)</s:string>
+<s:string x:key="Lblreadoutfornormalimages" xml:space="default">序列的讀出模式</s:string>
+<s:string x:key="Lblreadoutfornormalimagestooltip" xml:space="default">相機嘅呢種讀出模式將用于序列中嘅光場, 偏置, 暗场, 平場同暗平場。</s:String>
+<s:string x:key="Lblreadoutforsnapimages" xml:space="default">快照的讀取模式</s:string>
+<s:string x:key="Lblreadoutforsnapimagestooltip" xml:space="default">相機嘅呢種讀數模式將用于解析, 取景同自動對焦</s:string>
+<s:String x:Key="LblRecenter" xml:space="default">居中番</s:String>
+<s:string x:key="Lblrecenterafterflip" xml:space="default">翻轉後居中番</s:string>
+<s:string x:key="Lblrecenterimage" xml:space="default">居中圖像番</s:string>
+<s:string x:key="Lblreconnectall" xml:space="default">重新連接所有設備?</s:string>
+<s:string x:key="Lblreconnectcamera" xml:space="default">請重新連接相機!</s:string>
+<s:string x:key="Lblreconnectfilterwheel" xml:space="default">請重新連接濾鏡輪!</s:String>
+<s:string x:key="Lblreconnectfocuser" xml:space="default">請連接電調番!</s:String>
+<s:string x:key="Lblreconnecttelescope" xml:space="default">請重新連接赤道儀!</s:String>
+<s:string x:key="Lblreferencedate" xml:space="default">揀日期</s:string>
+<s:string x:key="Lblregions" xml:space="default">區域</s:string>
+<s:String x:Key="LblRelease" xml:space="default">正式</s:String>
+<s:string x:key="Lblremaining" xml:space="default">剩餘</s:string>
+<s:string x:key="Lblremainingno" xml:space="default">剩餘數</s:string>
+<s:string x:key="Lblremoveprofilecaption" xml:space="default">刪除配置文件</s:string>
+<s:string x:key="Lblremoveprofiletext" xml:space="default">需要刪除配置文件名稱: {0} 同 id: {1}?</s:String>
+<s:string x:key="Lblrepeatuntil" xml:space="default">重複直到</s:string>
+<s:string x:key="Lblreplacesequencetarget" xml:space="default">替換到序列目標</s:string>
+<s:string x:key="Lblrescandevices" xml:space="default">重新掃描設備</s:string>
+<s:string x:key="Lblresetandcontinue" xml:space="default">重置並繼續</s:string>
+<s:string x:key="Lblresetdocklayout" xml:space="default">重置 ui 佈局</s:string>
+<s:string x:key="Lblresetdocklayoutconfirmation" xml:space="default">係咪重置 ui 佈局?</s:String>
+<s:String x:Key="LblReslewToTarget" xml:space="default">居中番</s:String>
+<s:string x:key="Lblresumeautoguider" xml:space="default">恢復自動導星</s:string>
+<s:string x:key="Lblresumeguiding" xml:space="default">恢復導星</s:string>
+<s:string x:key="Lblresumesettletime" xml:space="default">恢復後的停頓時間</s:string>
+<s:string x:key="Lblresumetracking" xml:space="default">恢復吊住</s:string>
+<s:string x:key="Lblresuming" xml:space="default">重新開始緊</s:string>
+<s:string x:key="Lblrightascension" xml:space="default">赤經</s:string>
+<s:string x:key="Lblrotation" xml:space="default">旋轉</s:string>
+<s:string x:key="Lblrotationrequired" xml:space="default">需要旋轉相機</s:string>
+<s:string x:key="Lblrotationtolerance" xml:space="default">旋轉容差</s:string>
+<s:string x:key="Lblrotator" xml:space="default">旋轉器</s:string>
+<s:string x:key="Lblrotatorconnected" xml:space="default">旋轉器連接</s:string>
+<s:string x:key="Lblrotatorconnectionlost" xml:space="default">旋轉器連接賴! 請重新連接旋轉!</s:string>
+<s:String x:Key="LblSave" xml:space="default">keep</s:String>
+<s:string x:key="Lblsaveassequence" xml:space="default">將序列保存為新文件</s:string>
+<s:string x:key="Lblsaveassequencetooltip" xml:space="default">將序列保存為新 xml 文件</s:string>
+<s:string x:key="Lblsavebacklashquestion" xml:space="default">保存電調回差數據?</s:String>
+<s:string x:key="Lblsaveimageas" xml:space="default">圖像另存為</s:string>
+<s:string x:key="Lblsaveimageasdslrnote" xml:space="default">對於 dslr, 忽略圖像文件格式設置。 將保存原始格式!</s:String>
+<s:string x:key="Lblsaveselectedprofileanddontaskagain" xml:space="default">保存選定的配置文件, 下次唔再詢問</s:string>
+<s:String x:Key="LblSaveSequence" xml:space="default">保存序列</s:String>
+<s:string x:key="Lblsavesequencetooltip" xml:space="default">將序列保存為 xml 文件</s:string>
+<s:string x:key="Lblsavetargetset" xml:space="default">保存目標設置</s:string>
+<s:string x:key="Lblscopesettletimeafterflip" xml:space="default">翻轉後穩定時間 (秒)</s:string>
+<s:string x:key="Lblsearch" xml:space="default">搜索</s:string>
+<s:string x:key="Lblsearchradius" xml:space="default">搜索半徑</s:string>
+<s:String x:Key="LblSecondary" xml:space="default">次要</s:String>
+<s:string x:key="Lblsecondarybackground" xml:space="default">次要背景</s:string>
+<s:string x:key="Lblselectguidestar" xml:space="default">揀被導星</s:string>
+<s:string x:key="Lblselectnewguidestar" xml:space="default">揀新畀導星</s:string>
+<s:string x:key="Lblselectprofileinusewarning" xml:space="default">無法選擇所選配置文件。 佢正被另一個 n.i.n.a. 實例使用!</s:String>
+<s:string x:key="Lblsensorname" xml:space="default">傳感器名稱</s:string>
+<s:string x:key="Lblsensortype" xml:space="default">傳感器類型</s:string>
+<s:String x:Key="LblSequence" xml:space="default">序列</s:String>
+<s:string x:key="Lblsequencedelay" xml:space="default">延時開始 (秒)</s:string>
+<s:string x:key="Lblsequencedelaystatus" xml:space="default">{0} 秒之後開始序列</s:string>
+<s:string x:key="Lblsequencemode" xml:space="default">序列模式</s:string>
+<s:string x:key="Lblsequencemoderotate" xml:space="default">循環拍攝</s:string>
+<s:string x:key="Lblsequencemodestandard" xml:space="default">順序拍攝</s:string>
+<s:string x:key="Lblsequencetemplate" xml:space="default">序列糢闆</s:string>
+<s:string x:key="Lblsequencetemplatetooltip" xml:space="preserve">指定以前導出的序列文件嘅路徑作為糢闆。
+啟動時將使用此糢闆初始化序列, 而唔係默認序列。</s:String>
+<s:String x:Key="LblSerialPort" xml:space="default">串口</s:String>
+<s:string x:key="Lblserialrelay" xml:space="default">串口中繼</s:string>
+<s:string x:key="Lblsetassequencetarget" xml:space="default">設置為序列目標</s:string>
+<s:string x:key="Lblsetautofocusfilter" xml:space="default">設置為自動對焦濾鏡</s:string>
+<s:string x:key="Lblsetautofocusfiltertooltip" xml:space="default">如果設置此項, 自動對焦就一直使用此滤镜, 並使用濾鏡偏移值</s:string>
+<s:string x:key="Lblsetforframingassistant" xml:space="default">到構圖助手設置</s:string>
+<s:string x:key="Lblsetnewvalue" xml:space="default">設置新值</s:string>
+<s:string x:key="Lblsettings" xml:space="default">設置</s:string>
+<s:string x:key="Lblsettle" xml:space="default">穩定</s:string>
+<s:string x:key="Lblsettlepixeltolerance" xml:space="default">phd2 設置像素容差值</s:string>
+<s:string x:key="Lblsettletimeafterslew" xml:space="default">移動之後穩定時間 (秒)</s:string>
+<s:string x:key="Lblsettletimeout" xml:space="default">phd2 穩定超時</s:string>
+<s:string x:key="Lblsiderealtime" xml:space="default">恆星時</s:string>
+<s:string x:key="Lblsiteelevation" xml:space="default">拍攝海拔</s:string>
+<s:string x:key="Lblsitefromgps" xml:space="default">讀取 gps</s:string>
+<s:string x:key="Lblsitelatitude" xml:space="default">拍攝緯度</s:string>
+<s:string x:key="Lblsitelongitude" xml:space="default">拍攝經度</s:string>
+<s:String x:Key="LblSize" xml:space="default">大小</s:String>
+<s:string x:key="Lblskyatlas" xml:space="default">星圖</s:string>
+<s:string x:key="Lblskyatlasimagedirectory" xml:space="default">skyatlas 離線星圖路徑</s:string>
+<s:string x:key="Lblskyatlasskysurvey" xml:space="default">skyatlas (本地星圖)</s:string>
+<s:String x:Key="LblSkyBrightness" xml:space="default">天空亮度</s:String>
+<s:string x:key="Lblskyquality" xml:space="default">天空質素</s:string>
+<s:string x:key="Lblskyserverskysurvey" xml:space="default">skyserver 廵天圖庫 (在線)</s:string>
+<s:string x:key="Lblskysurveycachedirectory" xml:space="default">在線廵天圖庫緩存目錄</s:string>
+<s:string x:key="Lblskytemperature" xml:space="default">天空溫度</s:string>
+<s:string x:key="Lblslew" xml:space="default">指向</s:string>
+<s:string x:key="Lblslewduration" xml:space="default">移動持續時間</s:string>
+<s:string x:key="Lblslewenabledbuttelescopenotconnected" xml:space="default">指向到目標已啟用, 但赤道儀冇連接</s:string>
+<s:string x:key="Lblslewratedegsec" xml:space="default">指向速率 (度每秒)</s:string>
+<s:string x:key="Lblslewtotarget" xml:space="default">指向到目標</s:string>
+<s:string x:key="Lblslewtozenith" xml:space="default">指向到天頂</s:string>
+<s:string x:key="Lblslewwhentargetcoordsunset" xml:space="default">有目標啟用了自動指向, 但冇設置坐標</s:string>
+<s:string x:key="Lblsnapportstart" xml:space="default">快速端口啟動</s:string>
+<s:String x:Key="LblSnapPortStop" xml:space="default">快速端口停止</s:String>
+<s:String x:Key="LblSobel" xml:space="default">Sobel</s:String>
+<s:String x:Key="LblSolving" xml:space="default">解析中...</s:String>
+<s:string x:key="Lblsource" xml:space="default">來源</s:string>
+<s:string x:key="Lblsouthern" xml:space="default">南半球</s:string>
+<s:string x:key="Lblstarfwhm" xml:space="default">星啲 fwhm</s:string>
+<s:string x:key="Lblstarsensitivity" xml:space="default">亮星靈敏度</s:string>
+<s:string x:key="Lblstarsensitivitytooltip" xml:space="default">確定星檢算法的靈敏度。 較高的設置可能會錯誤地檢測到噪音, 並可能耗時更耐</s:string>
+<s:string x:key="Lblstartautofocus" xml:space="default">開始自動對焦</s:string>
+<s:string x:key="Lblstartbacklashmeasurementconfirmation" xml:space="preserve">而家開始測量回差。
+在繼續之前, 請確認您的系統當前位於或接近正確的焦點。</s:String>
+<s:string x:key="Lblstartbacklashquestion" xml:space="default">開始回差測量?</s:String>
+<s:string x:key="Lblstartguiding" xml:space="default">自動打開導星</s:string>
+<s:string x:key="Lblstartguidingbutguidernotconnected" xml:space="default">已啟動導星, 但導星程序未連接</s:string>
+<s:string x:key="Lblstartguidingfailed" xml:space="default">啟動導星炒</s:string>
+<s:string x:key="Lblstartinginbacklashmeasurement" xml:space="default">啟動回差測量上</s:string>
+<s:string x:key="Lblstartingoutbacklashmeasurement" xml:space="default">啟動 out 回差測量</s:string>
+<s:string x:key="Lblstartsequenceanyway" xml:space="default">仍然要開始序列?</s:string>
+<s:string x:key="Lblstate" xml:space="default">狀態</s:string>
+<s:string x:key="Lblstatistics" xml:space="default">統計</s:string>
+<s:string x:key="Lblstdev" xml:space="default">標準差</s:string>
+<s:string x:key="Lblstellarium" xml:space="default">虛擬天文館</s:string>
+<s:string x:key="Lblstellariumuse" xml:space="default">使用虛擬天文館</s:string>
+<s:string x:key="Lblstellariumusenotice" xml:space="default">為咗使用虛擬天文館, 你需要在上面指定嘅主機同端口上安裝並激活遠程插件</s:string>
+<s:String x:Key="LblStop" xml:space="default">停止</s:String>
+<s:string x:key="Lblstopautoguider" xml:space="default">停止自動導星</s:string>
+<s:string x:key="Lblstopguiding" xml:space="default">停止導星</s:string>
+<s:string x:key="Lblstoptracking" xml:space="default">停止跟蹤</s:string>
+<s:string x:key="Lblstretchimage" xml:space="default">圖像拉伸</s:string>
+<s:string x:key="Lblstsciskysurvey" xml:space="default">stsci 廵天圖庫 (在線)</s:string>
+<s:string x:key="Lblsubsample" xml:space="default">啟用子採樣 (部分圖像區域採集)</s:string>
+<s:String x:Key="LblSuccess" xml:space="default">成功</s:String>
+<s:String x:Key="LblSunRise" xml:space="default">日出</s:String>
+<s:String x:Key="LblSunSet" xml:space="default">日落</s:String>
+<s:string x:key="Lblsurfacebrightness" xml:space="default">表面亮度</s:string>
+<s:string x:key="Lblswitch" xml:space="default">開關</s:string>
+<s:string x:key="Lblswitchconnected" xml:space="default">電掣已連接</s:string>
+<s:string x:key="Lblswitchconnectionlost" xml:space="default">開關連接賴!</s:String>
+<s:string x:key="Lblswitchingfilter" xml:space="default">切換濾鏡</s:string>
+<s:string x:key="Lblsync" xml:space="default">同步</s:string>
+<s:string x:key="Lblsyncfailed" xml:space="default">赤道儀同步炒</s:string>
+<s:string x:key="Lblsynchronizedphd2guider" xml:space="default">同步 phd2 (實驗性)</s:string>
+<s:String x:Key="LblSynchronizedPHD2ServiceClientAlreadyExists" xml:space="default">
+此配置文件已經連接到同步 phd2 嚮導。
+你無法以相同的配置文件兩次連接, 請選擇其他 NINA 配置文件。
+</s:String>
+<s:string x:key="Lblsynchronizedphd2servicecrashed" xml:space="default">同步 phd2 服務崩潰, 將以此同步數據重啟 phd2 導星服務</s:string>
+<s:string x:key="Lblsynclatlong" xml:space="default">同步經緯度</s:string>
+<s:string x:key="Lblsynclatlongtext" xml:space="preserve">望遠鏡的緯度經度不同於同 NINA 嘅數值。
+數值需要同步架咩?</s:String>
+<s:string x:key="Lbltarget" xml:space="default">目標坐標 (j2000)</s:string>
+<s:string x:key="Lbltargetdec" xml:space="default">目標赤緯</s:string>
+<s:String x:Key="LblTargetHeightDegrees" xml:space="default">最低高度 (度)</s:String>
+<s:string x:key="Lbltargetname" xml:space="default">目標名稱</s:string>
+<s:string x:key="Lbltargetnamedescription" xml:space="default">目標名稱 (如有)</s:string>
+<s:string x:key="Lbltargetposition" xml:space="default">目標位置</s:string>
+<s:string x:key="Lbltargetra" xml:space="default">目標赤經</s:string>
+<s:string x:key="Lbltargets" xml:space="default">目標</s:string>
+<s:string x:key="Lbltargettemp" xml:space="default">目標溫度</s:string>
+<s:string x:key="Lbltargettempshort" xml:space="default">目標</s:string>
+<s:string x:key="Lbltargetwidthdegrees" xml:space="default">最小寬度 (度)</s:string>
+<s:string x:key="Lbltelescope" xml:space="default">赤道儀</s:string>
+<s:string x:key="Lbltelescopecannotpulseguide" xml:space="default">赤道儀無法脈衝導星</s:string>
+<s:string x:key="Lbltelescopecannotslew" xml:space="default">赤道儀無法指向目標</s:string>
+<s:string x:key="Lbltelescopeconnected" xml:space="default">赤道儀已連接</s:string>
+<s:string x:key="Lbltelescopeconnectionlost" xml:space="default">赤道儀連接賴! 請重新連接赤道儀!</s:String>
+<s:string x:key="Lbltelescopecontrol" xml:space="default">赤道儀控制</s:string>
+<s:string x:key="Lbltelescopename" xml:space="default">赤道儀名稱</s:string>
+<s:string x:key="Lbltelescopenotconnected" xml:space="default">赤道儀未連接</s:string>
+<s:string x:key="Lbltelescopenotconnectedforcommand" xml:space="default">赤道儀未連接無法發送命令</s:string>
+<s:string x:key="Lbltelescopenottrackingforsync" xml:space="default">赤道儀未開啟跟蹤。 同步僅在跟蹤時可用!</s:String>
+<s:string x:key="Lbltelescopeparkedwarn" xml:space="default">赤道儀已歸零停放。 停放時唔可以指向到目標</s:string>
+<s:string x:key="Lbltelescopesnapport" xml:space="default">赤道儀快門線</s:string>
+<s:string x:key="Lbltelescopesynced" xml:space="default">由赤道儀同步坐標</s:string>
+<s:string x:key="Lbltelescopetonina" xml:space="default">由赤道儀同步到 NINA</s:string>
+<s:string x:key="Lbltempcomp" xml:space="default">溫度補償</s:string>
+<s:string x:key="Lbltempcontrol" xml:space="default">温度控制</s:string>
+<s:string x:key="Lbltemperature" xml:space="default">溫度</s:string>
+<s:string x:key="Lbltemperaturecompensation" xml:space="default">溫度補償</s:string>
+<s:string x:key="Lbltemperaturedescription" xml:space="default">相機嘅溫度</s:string>
+<s:string x:key="Lbltertiarybackground" xml:space="default">第三背景</s:string>
+<s:String x:Key="LblTheSkyX" xml:space="default">TheSkyX</s:String>
+<s:String x:Key="LblThrough" xml:space="default">到</s:String>
+<s:String x:Key="LblTiff" xml:space="default">TIFF</s:String>
+<s:string x:key="Lbltifflzw" xml:space="default">tiff (lzw 壓縮)</s:string>
+<s:string x:key="Lbltiffzip" xml:space="default">tiff (zip 壓縮)</s:string>
+<s:string x:key="Lbltime" xml:space="default">時間</s:string>
+<s:string x:key="Lbltimeformatdescription" xml:space="default">時間格式 hh-mm-ss</s:string>
+<s:string x:key="Lbltimeout" xml:space="default">超時</s:string>
+<s:string x:key="Lbltimeouttosetswitchvalue" xml:space="default">掣設置超時值 {0} 開關 [id: {1}, 名稱: {2}], 當前值 {3}</s:string>
+<s:string x:key="Lbltimezone" xml:space="default">時區</s:string>
+<s:String x:Key="LblTo" xml:space="default">到</s:String>
+<s:String x:Key="LblTools" xml:space="default">工具</s:String>
+<s:String x:Key="LblTooltipAddSequence" xml:space="default">喺序列中新增一行</s:String>
+<s:string x:key="Lbltooltipaddtarget" xml:space="default">新增空目標序列</s:string>
+<s:string x:key="Lbltooltipautostretch" xml:space="default">自動拉伸圖像掣 (僅顯示用)</s:string>
+<s:string x:key="Lbltooltipbahtinovanalyzer" xml:space="preserve">魚骨板對焦助手
+將矩形拖到有魚骨板星芒嘅星點上。 NINA 就嘗試檢測峰值並顯示誤差。</s:String>
+<s:string x:key="Lbltooltipcrosshair" xml:space="default">打開/關閉十字準線</s:string>
+<s:string x:key="Lbltooltipdemotesequencerow" xml:space="default">將所選得向下移動</s:string>
+<s:string x:key="Lbltooltipdemotetarget" xml:space="default">延後目標</s:string>
+<s:string x:key="Lbltooltipdetectstars" xml:space="default">自動星啲分析掣 (HFR)</s:string>
+<s:string x:key="Lbltooltipliveview" xml:space="default">實時預覽</s:string>
+<s:string x:key="Lbltooltiploop" xml:space="default">循環拍攝掣</s:string>
+<s:string x:key="Lbltooltippromotesequencerow" xml:space="default">將所選得向上移動</s:string>
+<s:string x:key="Lbltooltippromotetarget" xml:space="default">提前目標</s:string>
+<s:string x:key="Lbltooltipremovesequence" xml:space="default">由序列列表中刪除所選得</s:string>
+<s:string x:key="Lbltooltipresetsequence" xml:space="default">重置序列列表中所選行嘅進度</s:string>
+<s:string x:key="Lbltooltipresettarget" xml:space="default">重置當前所有序列項嘅進度</s:string>
+<s:string x:key="Lbltooltipstartsequence" xml:space="default">開始序列拍攝</s:string>
+<s:string x:key="Lbltooltipsubsample" xml:space="preserve">子採樣 (區域讀取)
+將矩形拖埋要進行子採樣的區域, 然後在 "捕捉" 中啟用子採樣。 你部相機就只下載所選區域。</s:String>
+<s:string x:key="Lbltooltiptakeexposure" xml:space="default">開始曝光</s:string>
+<s:string x:key="Lbltooltiptargetloadset" xml:space="default">從文件中讀取目標設置</s:string>
+<s:string x:key="Lbltooltiptargetsaveset" xml:space="default">將當前目標設置 keep</s:string>
+<s:string x:key="Lbltotalno" xml:space="default">拍攝張數</s:string>
+<s:string x:key="Lbltouptekcamerasetup" xml:space="default">touptek 相機設置</s:string>
+<s:string x:key="Lbltrace" xml:space="default">吊住</s:string>
+<s:string x:key="Lbltracking" xml:space="default">追蹤</s:string>
+<s:string x:key="Lbltransitnorth" xml:space="default">轉向北天</s:string>
+<s:string x:key="Lbltransitsouth" xml:space="default">轉向南日</s:string>
+<s:string x:key="Lbltrendhyperbolic" xml:space="default">趨勢線和雙曲線</s:string>
+<s:string x:key="Lbltrendlines" xml:space="default">趨勢線</s:string>
+<s:string x:key="Lbltrendparabolic" xml:space="default">趨勢線同拋物線</s:string>
+<s:string x:key="Lbltype" xml:space="default">類型</s:string>
+<s:string x:key="Lblunabletoconnectcamera" xml:space="default">無法連接相機</s:string>
+<s:string x:key="Lblunabletosetexposuretime" xml:space="default">無法設置曝光時間</s:string>
+<s:string x:key="Lblunabletosetiso" xml:space="default">無法設置 iso</s:string>
+<s:string x:key="Lblunabletostartexposure" xml:space="default">無法啟動相機曝光</s:string>
+<s:string x:key="Lblunabletosync" xml:space="default">無法同步。 赤道儀冇連接</s:string>
+<s:string x:key="Lblunexpectederror" xml:space="default">發生未知錯誤</s:string>
+<s:string x:key="Lblunhandledexception" xml:space="default">發生未處理嘅異常</s:string>
+<s:string x:key="Lblunlinkedstretch" xml:space="default">非同步拉伸</s:string>
+<s:String x:Key="LblUnlinkedStretchTooltip" xml:space="preserve">
+啟用後, 顏色通道將分別拉伸, 有助於優化
+天空背景, 增強自動對焦同解析可靠性, 尤其是
+在輕度光污染地區。 但係呢個設置會延長處理時間。
+</s:String>
+<s:string x:key="Lblunpark" xml:space="default">啟動</s:string>
+<s:String x:Key="LblUpdate" xml:space="default">更新</s:String>
+<s:String x:Key="LblUpdating" xml:space="default">更新中</s:String>
+<s:string x:key="Lblurl" xml:space="default">地址</s:string>
+<s:string x:key="Lblusblimit" xml:space="default">usb 限制</s:string>
+<s:string x:key="Lbluseblindsolvefailover" xml:space="default">解析失敗。 將嘗試進行盲解析</s:string>
+<s:string x:key="Lbluseblindsolvenocoordinatesrollover" xml:space="default">冇可用的參考坐標。 要使用盲解析呀?</s:string>
+<s:string x:key="Lblusebuldmode" xml:space="default">使用 B 門模式</s:string>
+<s:string x:key="Lblusesideofpier" xml:space="default">使用赤道儀方位</s:string>
+<s:string x:key="Lblusesnapport" xml:space="default">使用赤道儀快門線</s:string>
+<s:string x:key="Lblverticalpanels" xml:space="default">垂直張數</s:string>
+<s:string x:key="Lblwaitfordither" xml:space="default">等待抖動完成</s:string>
+<s:string x:key="Lblwaitforimageprocessing" xml:space="default">等待上張圖完成處理</s:string>
+<s:string x:key="Lblwaitforimagesaving" xml:space="default">等待圖 keep</s:string>
+<s:string x:key="Lblwaitfortemperaturestep" xml:space="default">等待相機達到低個溫度</s:string>
+<s:string x:key="Lblwaitingforcamera" xml:space="default">等待相機</s:string>
+<s:string x:key="Lblwarmcamatsequenceend" xml:space="default">序列結束時升溫相機</s:string>
+<s:string x:key="Lblwarmenabledbutcameracannotwarm" xml:space="default">相機設置為序列緊完場時升溫, 但操作失敗。</s:String>
+<s:string x:key="Lblwarming" xml:space="default">升溫</s:string>
+<s:String x:Key="LblWarning" xml:space="default">警告</s:String>
+<s:string x:key="Lblweather" xml:space="default">氣象</s:string>
+<s:string x:key="Lblweatherascomconnectfailed" xml:space="default">無法連接到 ascom observingconditions 驅動程序:</s:string>
+<s:string x:key="Lblweatherconnected" xml:space="default">氣象數據源已連接</s:string>
+<s:string x:key="Lblweatherconnectionlost" xml:space="default">氣象數據源連接失敗</s:string>
+<s:string x:key="Lblweatherdisconnect" xml:space="default">氣象數據源已斷開連接</s:string>
+<s:string x:key="Lblweatherdisplayfahrenheit" xml:space="default">華氏溫度</s:string>
+<s:string x:key="Lblweatherdisplayfahrenheittooltip" xml:space="default">以華氏溫度顯示溫度</s:string>
+<s:string x:key="Lblweatherdisplayimperial" xml:space="default">英制單位</s:string>
+<s:string x:key="Lblweatherdisplayimperialtooltip" xml:space="default">以英制單位顯示非溫度氣象數據</s:string>
+<s:string x:key="Lblweathernosource" xml:space="default">無氣象數據源</s:string>
+<s:string x:key="Lblweatherreconnect" xml:space="default">氣象數據源連接賴! 錯誤消息:</s:string>
+<s:string x:key="Lblwelcome" xml:space="default">歡迎來到 n.i.n.a.!</s:String>
+<s:string x:key="Lblwest" xml:space="default">西面</s:string>
+<s:string x:key="Lblwidth" xml:space="default">寬度</s:string>
+<s:string x:key="Lblwinddirection" xml:space="default">風向</s:string>
+<s:String x:Key="LblWindGust" xml:space="default">陣風</s:String>
+<s:string x:key="Lblwindspeed" xml:space="default">風速</s:string>
+<s:string x:key="Lblxaxisscale" xml:space="default">x 軸範圍</s:string>
+<s:String x:Key="LblXisf" xml:space="default">XISF</s:String>
+<s:string x:key="Lblyaxisscale" xml:space="default">y 軸範圍</s:string>
+<s:string x:key="Lblyaxisunits" xml:space="default">y 軸單位</s:string>
+<s:String x:Key="LblYes" xml:space="default">系</s:String>
+<s:String x:Key="LblZoomIn" xml:space="default">放大25%</s:String>
+<s:string x:key="Lblzoomout" xml:space="default">縮小25%</s:string>
+<s:string x:key="Lblzoomstretch" xml:space="default">圖像與區域匹配</s:string>
+</ResourceDictionary>
