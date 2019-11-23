@@ -403,18 +403,21 @@
     <s:String x:Key="LblFlatDeviceBrightness" xml:space="default">亮度</s:String>
     <s:String x:Key="LblFlatDeviceChooseSerialPort" xml:space="default">Choose serial port</s:String>
     <s:String x:Key="LblFlatDeviceClose" xml:space="default">关闭</s:String>
+    <s:String x:Key="LblFlatDeviceCloseAtSequenceEnd" xml:space="default">Close cover at end of sequence</s:String>
     <s:String x:Key="LblFlatDeviceClosed" xml:space="default">Closed</s:String>
     <s:String x:Key="LblFlatDeviceConnected" xml:space="default">平场板已连接</s:String>
     <s:String x:Key="LblFlatDeviceConnectedButCoverNotOpen" xml:space="default">A flat panel is connected but the cover is not open.</s:String>
     <s:String x:Key="LblFlatDeviceCover" xml:space="default">电动盖</s:String>
     <s:String x:Key="LblFlatDeviceCoverCurrently" xml:space="default">当前</s:String>
     <s:String x:Key="LblFlatDeviceDisconnectQuestion" xml:space="default">你想断开平场板链接吗？</s:String>
+    <s:String x:Key="LblFlatDeviceFlatPanelSettings" xml:space="default">Flat Panel Settings</s:String>
     <s:String x:Key="LblFlatDeviceInvalidResponse" xml:space="default">平场板无法链接</s:String>
     <s:String x:Key="LblFlatDeviceLight" xml:space="default">平场板光源</s:String>
     <s:String x:Key="LblFlatDeviceNeitherOpenNorClosed" xml:space="default">Neither open nor closed</s:String>
     <s:String x:Key="LblFlatDeviceNoDevice" xml:space="default">无平场板</s:String>
     <s:String x:Key="LblFlatDeviceOpen" xml:space="default">打开</s:String>
     <s:String x:Key="LblFlatDeviceOpenButton" xml:space="default">Open</s:String>
+    <s:String x:Key="LblFlatDeviceOpenForDarkFlats" xml:space="default">Open cover for dark flats</s:String>
     <s:String x:Key="LblFlatDeviceSetBrightness" xml:space="default">设定</s:String>
     <s:String x:Key="LblFlatDeviceUnknown" xml:space="default">Unknown</s:String>
     <s:String x:Key="LblFlatExposureCalcContinue" xml:space="default">平均ADU是 {0}，开始曝光时间计算 {1}</s:String>

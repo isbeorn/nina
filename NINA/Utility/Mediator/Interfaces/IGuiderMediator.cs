@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 
 namespace NINA.Utility.Mediator.Interfaces {
 
-    internal interface IGuiderMediator : IDeviceMediator<IGuiderVM, IGuiderConsumer, GuiderInfo> {
+    public interface IGuiderMediator : IDeviceMediator<IGuiderVM, IGuiderConsumer, GuiderInfo> {
         bool IsUsingSynchronizedGuider { get; }
 
         Task<bool> Dither(CancellationToken token);

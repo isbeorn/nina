@@ -54,6 +54,7 @@ namespace NINA.Profile {
 
         private bool _closeAtSequenceEnd;
 
+        [DataMember]
         public bool CloseAtSequenceEnd {
             get => _closeAtSequenceEnd;
             set {

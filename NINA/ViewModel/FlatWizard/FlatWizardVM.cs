@@ -591,7 +591,7 @@ namespace NINA.ViewModel.FlatWizard {
         private async Task TakeDarkFlats(IProgress<ApplicationStatus> progress, PauseToken pt) {
             if (filterToExposureTime.Count > 0 && DarkFlatCount > 0) {
                 progress.Report(new ApplicationStatus() { Status = Locale["LblPreparingDarkFlatSequence"], Source = Title });
-                if (_flatDevice != null && _flatDevice.Connected && _flatDevice.SupportsOpenClose) { await _flatDeviceVM.OpenCover(); }
+                if (_flatDevice != null && _flatDevice.Connected && _flatDevice.SupportsOpenClose && profileService.ActiveProfile.FlatDeviceSettings.OpenForDarkFlats) { await _flatDeviceVM.OpenCover(); }
                 var dialogResult = MyMessageBox.MyMessageBox.Show(
                     Locale["LblCoverScopeMsgBox"],
                     Locale["LblCoverScopeMsgBoxTitle"], MessageBoxButton.OKCancel, MessageBoxResult.OK);

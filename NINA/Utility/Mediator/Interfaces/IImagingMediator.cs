@@ -33,7 +33,7 @@ using System.Windows.Media.Imaging;
 
 namespace NINA.Utility.Mediator.Interfaces {
 
-    internal interface IImagingMediator : IMediator<IImagingVM> {
+    public interface IImagingMediator : IMediator<IImagingVM> {
 
         Task<IExposureData> CaptureImage(
             CaptureSequence sequence,

@@ -477,12 +477,9 @@ namespace NINA.ViewModel {
         private SequenceVM _seqVM;
 
         public SequenceVM SeqVM {
-            get {
-                if (_seqVM == null) {
-                    _seqVM = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, flatDeviceMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
-                }
-                return _seqVM;
-            }
+            get => _seqVM ?? (_seqVM = new SequenceVM(profileService, cameraMediator, telescopeMediator,
+                    focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, flatDeviceMediator,
+                    weatherDataMediator, imagingMediator, applicationStatusMediator, FlatDeviceVM));
             set {
                 _seqVM = value;
                 RaisePropertyChanged();
