@@ -241,141 +241,144 @@ namespace NINA.Database {
             string imageRepository,
             DeepSkyObjectSearchParams searchParams,
             CancellationToken token) {
-            if (searchParams == null) { throw new ArgumentNullException(nameof(searchParams)); }
+            using (MyStopWatch.Measure()) {
+                if (searchParams == null) { throw new ArgumentNullException(nameof(searchParams)); }
 
-            var dsos = new List<DeepSkyObject>();
-            try {
-                using (var context = new NINADbContext(connectionString)) {
-                    var query = from dso in context.DsoDetailSet
-                                select new {
-                                    dso.id,
-                                    dso.ra,
-                                    dso.dec,
-                                    dso.dsotype,
-                                    dso.magnitude,
-                                    dso.sizemin,
-                                    dso.sizemax,
-                                    dso.constellation,
-                                    dso.surfacebrightness
-                                };
+                var dsos = new List<DeepSkyObject>();
+                try {
+                    using (var context = new NINADbContext(connectionString)) {
+                        var query = from dso in context.DsoDetailSet
+                                    select new {
+                                        dso.id,
+                                        dso.ra,
+                                        dso.dec,
+                                        dso.dsotype,
+                                        dso.magnitude,
+                                        dso.sizemin,
+                                        dso.sizemax,
+                                        dso.constellation,
+                                        dso.surfacebrightness
+                                    };
 
-                    if (!string.IsNullOrEmpty(searchParams.Constellation)) {
-                        query = query.Where(x => x.constellation == searchParams.Constellation);
-                    }
-
-                    if (searchParams.RightAscension.From != null) {
-                        query = query.Where(x => x.ra >= searchParams.RightAscension.From);
-                    }
-
-                    if (searchParams.RightAscension.Thru != null) {
-                        query = query.Where(x => x.ra <= searchParams.RightAscension.Thru);
-                    }
-
-                    if (searchParams.Declination.From != null) {
-                        query = query.Where(x => x.dec >= searchParams.Declination.From);
-                    }
-
-                    if (searchParams.Declination.Thru != null) {
-                        query = query.Where(x => x.dec <= searchParams.Declination.Thru);
-                    }
-
-                    if (searchParams.Size.From.HasValue) {
-                        query = query.Where(x => x.sizemin >= searchParams.Size.From);
-                    }
-
-                    if (searchParams.Size.Thru.HasValue) {
-                        query = query.Where(x => x.sizemax <= searchParams.Size.Thru);
-                    }
-
-                    if (searchParams.Brightness.From.HasValue) {
-                        query = query.Where(x => x.surfacebrightness >= searchParams.Brightness.From);
-                    }
-
-                    if (searchParams.Brightness.Thru.HasValue) {
-                        query = query.Where(x => x.surfacebrightness <= searchParams.Brightness.Thru);
-                    }
-
-                    if (searchParams.Magnitude.From.HasValue) {
-                        query = query.Where(x => x.magnitude >= searchParams.Magnitude.From);
-                    }
-
-                    if (searchParams.Magnitude.Thru.HasValue) {
-                        query = query.Where(x => x.magnitude <= searchParams.Magnitude.Thru);
-                    }
-
-                    if (searchParams.DsoTypes?.Count > 0) {
-                        query = query.Where(x => searchParams.DsoTypes.Contains(x.dsotype));
-                    }
-
-                    if (!string.IsNullOrEmpty(searchParams.ObjectName)) {
-                        var name = searchParams.ObjectName.ToLower();
-                        var ids = await context.CatalogueNrSet.Where(x => x.dsodetailid.ToLower().Contains(name) || (x.catalogue + x.designation).ToLower().Contains(name) || (x.catalogue + " " + x.designation).ToLower().Contains(name)).Select(x => x.dsodetailid).Distinct().ToListAsync(token);
-                        query = query.Where(x => ids.Contains(x.id));
-                    }
-
-                    if (searchParams.SearchOrder.Direction == "ASC") {
-                        query = query.OrderBy(searchParams.SearchOrder.Field);
-                    } else {
-                        query = query.OrderByDescending(searchParams.SearchOrder.Field);
-                    }
-
-                    if (searchParams.Limit != null) {
-                        query = query.Take(searchParams.Limit.Value);
-                    }
-
-                    var dsosTask = query.ToListAsync(token);
-
-                    var catalogueTask = (from q in query
-                                         join cat in context.CatalogueNrSet on q.id equals cat.dsodetailid
-                                         select new { cat.dsodetailid, designation = cat.catalogue == "NAME" ? cat.designation : cat.catalogue + " " + cat.designation })
-                                         .GroupBy(x => x.dsodetailid)
-                                         .ToDictionaryAsync(x => x.Key, x => x.ToList(), token);
-
-                    await Task.WhenAll(dsosTask, catalogueTask);
-
-                    var dsoResult = dsosTask.Result;
-                    var catalogueResult = catalogueTask.Result;
-
-                    foreach (var row in dsoResult) {
-                        var id = row.id;
-                        var coords = new Coordinates(row.ra, row.dec, Epoch.J2000, Coordinates.RAType.Degrees);
-                        var dso = new DeepSkyObject(row.id, coords, imageRepository);
-
-                        dso.DSOType = row.dsotype;
-
-                        if (row.magnitude.HasValue) {
-                            dso.Magnitude = (double?)row.magnitude;
+                        if (!string.IsNullOrEmpty(searchParams.Constellation)) {
+                            query = query.Where(x => x.constellation == searchParams.Constellation);
                         }
 
-                        if (row.sizemax.HasValue) {
-                            dso.Size = (double?)row.sizemax;
+                        if (searchParams.RightAscension.From != null) {
+                            query = query.Where(x => x.ra >= searchParams.RightAscension.From);
                         }
 
-                        dso.AlsoKnownAs = catalogueResult[row.id].Select(x => x.designation).ToList();
-
-                        var longestName = dso.AlsoKnownAs.Aggregate("", (max, cur) => max.Length > cur.Length ? max : cur);
-                        dso.Name = longestName;
-
-                        if (!string.IsNullOrEmpty(row.constellation)) {
-                            dso.Constellation = row.constellation;
+                        if (searchParams.RightAscension.Thru != null) {
+                            query = query.Where(x => x.ra <= searchParams.RightAscension.Thru);
                         }
 
-                        if (row.surfacebrightness.HasValue) {
-                            dso.SurfaceBrightness = (double?)row.surfacebrightness;
+                        if (searchParams.Declination.From != null) {
+                            query = query.Where(x => x.dec >= searchParams.Declination.From);
                         }
 
-                        dsos.Add(dso);
+                        if (searchParams.Declination.Thru != null) {
+                            query = query.Where(x => x.dec <= searchParams.Declination.Thru);
+                        }
+
+                        if (searchParams.Size.From.HasValue) {
+                            query = query.Where(x => x.sizemin >= searchParams.Size.From);
+                        }
+
+                        if (searchParams.Size.Thru.HasValue) {
+                            query = query.Where(x => x.sizemax <= searchParams.Size.Thru);
+                        }
+
+                        if (searchParams.Brightness.From.HasValue) {
+                            query = query.Where(x => x.surfacebrightness >= searchParams.Brightness.From);
+                        }
+
+                        if (searchParams.Brightness.Thru.HasValue) {
+                            query = query.Where(x => x.surfacebrightness <= searchParams.Brightness.Thru);
+                        }
+
+                        if (searchParams.Magnitude.From.HasValue) {
+                            query = query.Where(x => x.magnitude >= searchParams.Magnitude.From);
+                        }
+
+                        if (searchParams.Magnitude.Thru.HasValue) {
+                            query = query.Where(x => x.magnitude <= searchParams.Magnitude.Thru);
+                        }
+
+                        if (searchParams.DsoTypes?.Count > 0) {
+                            query = query.Where(x => searchParams.DsoTypes.Contains(x.dsotype));
+                        }
+
+                        if (!string.IsNullOrEmpty(searchParams.ObjectName)) {
+                            var name = searchParams.ObjectName.ToLower();
+                            var idQuery = context.CatalogueNrSet.Where(x => x.dsodetailid.ToLower().Contains(name) || (x.catalogue + x.designation).ToLower().Contains(name) || (x.catalogue + " " + x.designation).ToLower().Contains(name)).Select(x => x.dsodetailid).Distinct();
+
+                            query = query.Join(idQuery, dsoDetail => dsoDetail.id, e => e, (dsoDetail, id) => dsoDetail);
+                        }
+
+                        if (searchParams.SearchOrder.Direction == "ASC") {
+                            query = query.OrderBy(searchParams.SearchOrder.Field);
+                        } else {
+                            query = query.OrderByDescending(searchParams.SearchOrder.Field);
+                        }
+
+                        if (searchParams.Limit != null) {
+                            query = query.Take(searchParams.Limit.Value);
+                        }
+
+                        var dsosTask = query.ToListAsync(token);
+
+                        var catalogueTask = (from q in query
+                                             join cat in context.CatalogueNrSet on q.id equals cat.dsodetailid
+                                             select new { cat.dsodetailid, designation = cat.catalogue == "NAME" ? cat.designation : cat.catalogue + " " + cat.designation })
+                                             .GroupBy(x => x.dsodetailid)
+                                             .ToDictionaryAsync(x => x.Key, x => x.ToList(), token);
+
+                        await Task.WhenAll(dsosTask, catalogueTask);
+
+                        var dsoResult = dsosTask.Result;
+                        var catalogueResult = catalogueTask.Result;
+
+                        foreach (var row in dsoResult) {
+                            var id = row.id;
+                            var coords = new Coordinates(row.ra, row.dec, Epoch.J2000, Coordinates.RAType.Degrees);
+                            var dso = new DeepSkyObject(row.id, coords, imageRepository);
+
+                            dso.DSOType = row.dsotype;
+
+                            if (row.magnitude.HasValue) {
+                                dso.Magnitude = (double?)row.magnitude;
+                            }
+
+                            if (row.sizemax.HasValue) {
+                                dso.Size = (double?)row.sizemax;
+                            }
+
+                            dso.AlsoKnownAs = catalogueResult[row.id].Select(x => x.designation).ToList();
+
+                            var longestName = dso.AlsoKnownAs.Aggregate("", (max, cur) => max.Length > cur.Length ? max : cur);
+                            dso.Name = longestName;
+
+                            if (!string.IsNullOrEmpty(row.constellation)) {
+                                dso.Constellation = row.constellation;
+                            }
+
+                            if (row.surfacebrightness.HasValue) {
+                                dso.SurfaceBrightness = (double?)row.surfacebrightness;
+                            }
+
+                            dsos.Add(dso);
+                        }
+                    }
+                } catch (OperationCanceledException) {
+                } catch (Exception ex) {
+                    if (!ex.Message.Contains("Execution was aborted by the user")) {
+                        Logger.Error(ex);
+                        Notification.ShowError(ex.Message);
                     }
                 }
-            } catch (OperationCanceledException) {
-            } catch (Exception ex) {
-                if (!ex.Message.Contains("Execution was aborted by the user")) {
-                    Logger.Error(ex);
-                    Notification.ShowError(ex.Message);
-                }
+
+                return dsos;
             }
-
-            return dsos;
         }
     }
 }
