@@ -42,7 +42,6 @@ namespace NINATest {
         private Mock<ICameraSettings> cameraSettingsMock;
         private Mock<IFilterWheelSettings> filterWheelSettingsMock;
         private Mock<IFlatDeviceMediator> _flatDeviceMediatorMock;
-        private Mock<IFlatDeviceVM> _flatDeviceVMMock;
         private SimulatorCamera _camera;
         private IRenderedImage _image;
         private FlatDeviceInfo _flatDevice;
@@ -51,7 +50,6 @@ namespace NINATest {
         public void Init() {
             filterWheelMediatorMock = new Mock<IFilterWheelMediator>();
             profileServiceMock = new Mock<IProfileService>();
-            _flatDeviceVMMock = new Mock<IFlatDeviceVM>();
             imagingVMMock = new Mock<IImagingVM>();
             cameraMediatorMock = new Mock<ICameraMediator>();
             telescopeMediatorMock = new Mock<ITelescopeMediator>();
@@ -112,7 +110,7 @@ namespace NINATest {
 
             sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
                 cameraMediatorMock.Object, filterWheelMediatorMock.Object, telescopeMediatorMock.Object,
-                _flatDeviceVMMock.Object, _flatDeviceMediatorMock.Object, resourceDictionaryMock.Object,
+                _flatDeviceMediatorMock.Object, resourceDictionaryMock.Object,
                 applicationStatusMediatorMock.Object) {
                 FlatWizardExposureTimeFinderService = exposureServiceMock.Object,
                 Locale = localeMock.Object,
@@ -155,9 +153,8 @@ namespace NINATest {
             // setup
             sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
                 cameraMediatorMock.Object, filterWheelMediatorMock.Object,
-                telescopeMediatorMock.Object, _flatDeviceVMMock.Object,
-                _flatDeviceMediatorMock.Object, resourceDictionaryMock.Object,
-                applicationStatusMediatorMock.Object) {
+                telescopeMediatorMock.Object, _flatDeviceMediatorMock.Object,
+                resourceDictionaryMock.Object, applicationStatusMediatorMock.Object) {
                 FlatWizardExposureTimeFinderService = exposureServiceMock.Object,
                 Locale = localeMock.Object,
             };
@@ -186,7 +183,7 @@ namespace NINATest {
 
             sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
                 cameraMediatorMock.Object, filterWheelMediatorMock.Object, telescopeMediatorMock.Object,
-                _flatDeviceVMMock.Object, _flatDeviceMediatorMock.Object, resourceDictionaryMock.Object,
+                _flatDeviceMediatorMock.Object, resourceDictionaryMock.Object,
                 applicationStatusMediatorMock.Object) {
                 FlatWizardExposureTimeFinderService = exposureServiceMock.Object,
                 Locale = localeMock.Object,
@@ -229,22 +226,22 @@ namespace NINATest {
         public void UpdateFlatDeviceSettingsAndCheckFlatMagicWithNullFlatDevice() {
             sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
                 cameraMediatorMock.Object, filterWheelMediatorMock.Object, telescopeMediatorMock.Object,
-                _flatDeviceVMMock.Object, _flatDeviceMediatorMock.Object, resourceDictionaryMock.Object,
+                _flatDeviceMediatorMock.Object, resourceDictionaryMock.Object,
                 applicationStatusMediatorMock.Object) {
                 FlatWizardExposureTimeFinderService = exposureServiceMock.Object,
                 Locale = localeMock.Object,
             };
 
             sut.StartFlatSequenceCommand.Execute(new object());
-            _flatDeviceVMMock.Verify(m => m.CloseCover(), Times.Never);
-            _flatDeviceVMMock.Verify(m => m.OpenCover(), Times.Never);
+            _flatDeviceMediatorMock.Verify(m => m.CloseCover(), Times.Never);
+            _flatDeviceMediatorMock.Verify(m => m.OpenCover(), Times.Never);
         }
 
         [Test]
         public async Task UpdateFlatDeviceSettingsAndCheckFlatMagicWithFlatDeviceNoDarkFlats() {
             sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
                 cameraMediatorMock.Object, filterWheelMediatorMock.Object, telescopeMediatorMock.Object,
-                _flatDeviceVMMock.Object, _flatDeviceMediatorMock.Object, resourceDictionaryMock.Object,
+                _flatDeviceMediatorMock.Object, resourceDictionaryMock.Object,
                 applicationStatusMediatorMock.Object) {
                 FlatWizardExposureTimeFinderService = exposureServiceMock.Object,
                 Locale = localeMock.Object,
@@ -254,19 +251,18 @@ namespace NINATest {
             _flatDevice.SupportsOpenClose = true;
             sut.UpdateDeviceInfo(_flatDevice);
             await sut.StartFlatSequenceCommand.ExecuteAsync(new object());
-            _flatDeviceVMMock.Verify(m => m.CloseCover(), Times.Once);
-            _flatDeviceVMMock.Verify(m => m.ToggleLight((object)true), Times.Once);
-            _flatDeviceVMMock.VerifySet(m => m.Brightness = 1.0);
-            _flatDeviceVMMock.Verify(m => m.SetBrightness(It.IsAny<object>()), Times.Once);
-            _flatDeviceVMMock.Verify(m => m.ToggleLight((object)false), Times.Once);
-            _flatDeviceVMMock.Verify(m => m.OpenCover(), Times.Never);
+            _flatDeviceMediatorMock.Verify(m => m.CloseCover(), Times.Once);
+            _flatDeviceMediatorMock.Verify(m => m.ToggleLight((object)true), Times.Once);
+            _flatDeviceMediatorMock.Verify(m => m.SetBrightness(1.0), Times.Once);
+            _flatDeviceMediatorMock.Verify(m => m.ToggleLight((object)false), Times.Once);
+            _flatDeviceMediatorMock.Verify(m => m.OpenCover(), Times.Never);
         }
 
         [Test]
         public async Task UpdateFlatDeviceSettingsAndCheckFlatMagicWithFlatDeviceWithDarkFlatsCoverOpen() {
             sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
                 cameraMediatorMock.Object, filterWheelMediatorMock.Object, telescopeMediatorMock.Object,
-                _flatDeviceVMMock.Object, _flatDeviceMediatorMock.Object, resourceDictionaryMock.Object,
+                _flatDeviceMediatorMock.Object, resourceDictionaryMock.Object,
                 applicationStatusMediatorMock.Object) {
                 FlatWizardExposureTimeFinderService = exposureServiceMock.Object,
                 Locale = localeMock.Object,
@@ -278,19 +274,18 @@ namespace NINATest {
             sut.UpdateDeviceInfo(_flatDevice);
             profileServiceMock.SetupProperty(m => m.ActiveProfile.FlatDeviceSettings.OpenForDarkFlats, true);
             await sut.StartFlatSequenceCommand.ExecuteAsync(new object());
-            _flatDeviceVMMock.Verify(m => m.CloseCover(), Times.Once);
-            _flatDeviceVMMock.Verify(m => m.ToggleLight((object)true), Times.Once);
-            _flatDeviceVMMock.VerifySet(m => m.Brightness = 1.0);
-            _flatDeviceVMMock.Verify(m => m.SetBrightness(It.IsAny<object>()), Times.Once);
-            _flatDeviceVMMock.Verify(m => m.ToggleLight((object)false), Times.Once);
-            _flatDeviceVMMock.Verify(m => m.OpenCover(), Times.Once);
+            _flatDeviceMediatorMock.Verify(m => m.CloseCover(), Times.Once);
+            _flatDeviceMediatorMock.Verify(m => m.ToggleLight((object)true), Times.Once);
+            _flatDeviceMediatorMock.Verify(m => m.SetBrightness(1.0), Times.Once);
+            _flatDeviceMediatorMock.Verify(m => m.ToggleLight((object)false), Times.Exactly(2));
+            _flatDeviceMediatorMock.Verify(m => m.OpenCover(), Times.Once);
         }
 
         [Test]
         public async Task UpdateFlatDeviceSettingsAndCheckFlatMagicWithFlatDeviceWithDarkFlatsCoverClosed() {
             sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
                 cameraMediatorMock.Object, filterWheelMediatorMock.Object, telescopeMediatorMock.Object,
-                _flatDeviceVMMock.Object, _flatDeviceMediatorMock.Object, resourceDictionaryMock.Object,
+                _flatDeviceMediatorMock.Object, resourceDictionaryMock.Object,
                 applicationStatusMediatorMock.Object) {
                 FlatWizardExposureTimeFinderService = exposureServiceMock.Object,
                 Locale = localeMock.Object,
@@ -302,19 +297,18 @@ namespace NINATest {
             sut.UpdateDeviceInfo(_flatDevice);
             profileServiceMock.SetupProperty(m => m.ActiveProfile.FlatDeviceSettings.OpenForDarkFlats, false);
             await sut.StartFlatSequenceCommand.ExecuteAsync(new object());
-            _flatDeviceVMMock.Verify(m => m.CloseCover(), Times.Once);
-            _flatDeviceVMMock.Verify(m => m.ToggleLight((object)true), Times.Once);
-            _flatDeviceVMMock.VerifySet(m => m.Brightness = 1.0);
-            _flatDeviceVMMock.Verify(m => m.SetBrightness(It.IsAny<object>()), Times.Once);
-            _flatDeviceVMMock.Verify(m => m.ToggleLight((object)false), Times.Once);
-            _flatDeviceVMMock.Verify(m => m.OpenCover(), Times.Never);
+            _flatDeviceMediatorMock.Verify(m => m.CloseCover(), Times.Once);
+            _flatDeviceMediatorMock.Verify(m => m.ToggleLight((object)true), Times.Once);
+            _flatDeviceMediatorMock.Verify(m => m.SetBrightness(1.0), Times.Once);
+            _flatDeviceMediatorMock.Verify(m => m.ToggleLight((object)false), Times.Exactly(2));
+            _flatDeviceMediatorMock.Verify(m => m.OpenCover(), Times.Never);
         }
 
         [Test]
         public async Task UpdateFlatDeviceSettingsAndCheckFlatMagicWithFlatDeviceThatDoesNotOpenCloseAsync() {
             sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
                 cameraMediatorMock.Object, filterWheelMediatorMock.Object, telescopeMediatorMock.Object,
-                _flatDeviceVMMock.Object, _flatDeviceMediatorMock.Object, resourceDictionaryMock.Object,
+                _flatDeviceMediatorMock.Object, resourceDictionaryMock.Object,
                 applicationStatusMediatorMock.Object) {
                 FlatWizardExposureTimeFinderService = exposureServiceMock.Object,
                 Locale = localeMock.Object,
@@ -324,12 +318,11 @@ namespace NINATest {
             _flatDevice.SupportsOpenClose = false;
             sut.UpdateDeviceInfo(_flatDevice);
             await sut.StartFlatSequenceCommand.ExecuteAsync(new object());
-            _flatDeviceVMMock.Verify(m => m.CloseCover(), Times.Never);
-            _flatDeviceVMMock.Verify(m => m.ToggleLight((object)true), Times.Once);
-            _flatDeviceVMMock.VerifySet(m => m.Brightness = 1.0);
-            _flatDeviceVMMock.Verify(m => m.SetBrightness(It.IsAny<object>()), Times.Once);
-            _flatDeviceVMMock.Verify(m => m.ToggleLight((object)false), Times.Once);
-            _flatDeviceVMMock.Verify(m => m.OpenCover(), Times.Never);
+            _flatDeviceMediatorMock.Verify(m => m.CloseCover(), Times.Never);
+            _flatDeviceMediatorMock.Verify(m => m.ToggleLight((object)true), Times.Once);
+            _flatDeviceMediatorMock.Verify(m => m.SetBrightness(1.0), Times.Once);
+            _flatDeviceMediatorMock.Verify(m => m.ToggleLight((object)false), Times.Once);
+            _flatDeviceMediatorMock.Verify(m => m.OpenCover(), Times.Never);
         }
     }
 }

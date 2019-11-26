@@ -68,7 +68,6 @@ namespace NINA.ViewModel.FlatWizard {
         private FlatWizardFilterSettingsWrapper singleFlatWizardFilterSettings;
         private ApplicationStatus status;
         private bool pauseBetweenFilters;
-        private IFlatDeviceVM _flatDeviceVM;
         private IFlatDeviceMediator _flatDeviceMediator;
         private FlatDeviceInfo _flatDevice;
 
@@ -77,7 +76,6 @@ namespace NINA.ViewModel.FlatWizard {
                             ICameraMediator cameraMediator,
                             IFilterWheelMediator filterWheelMediator,
                             ITelescopeMediator telescopeMediator,
-                            IFlatDeviceVM flatDeviceVM,
                             IFlatDeviceMediator flatDeviceMediator,
                             IApplicationResourceDictionary resourceDictionary,
                             IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
@@ -139,8 +137,7 @@ namespace NINA.ViewModel.FlatWizard {
             this.telescopeMediator = telescopeMediator;
             this.telescopeMediator.RegisterConsumer(this);
 
-            // register the flat panel mediator and VM
-            _flatDeviceVM = flatDeviceVM;
+            // register the flat panel mediator
             _flatDeviceMediator = flatDeviceMediator;
             _flatDeviceMediator.RegisterConsumer(this);
         }
@@ -376,8 +373,7 @@ namespace NINA.ViewModel.FlatWizard {
             IRenderedImage renderedImage = null;
 
             if (_flatDevice != null && _flatDevice.Connected) {
-                _flatDeviceVM.Brightness = 1.0;
-                _flatDeviceVM.SetBrightness(null);
+                _flatDeviceMediator.SetBrightness(1.0);
             }
 
             progress.Report(new ApplicationStatus { Status = string.Format(Locale["LblFlatExposureCalcStart"], wrapper.Settings.MinFlatExposureTime), Source = Title });
@@ -445,9 +441,8 @@ namespace NINA.ViewModel.FlatWizard {
                         break;
 
                     case FlatWizardExposureAduState.ExposureAduAboveMean:
-                        if (_flatDevice != null && _flatDevice.Connected && _flatDeviceVM.Brightness >= 0.05) {
-                            _flatDeviceVM.Brightness /= 2.0;
-                            _flatDeviceVM.SetBrightness(null);
+                        if (_flatDevice != null && _flatDevice.Connected && _flatDevice.Brightness >= 0.05) {
+                            _flatDeviceMediator.SetBrightness(_flatDevice.Brightness / 2.0);
                             exposureTime = wrapper.Settings.MinFlatExposureTime;
                             FlatWizardExposureTimeFinderService.ClearDataPoints();
                         } else {
@@ -462,8 +457,7 @@ namespace NINA.ViewModel.FlatWizard {
                                 flatSequenceCts.Cancel();
                             } else {
                                 if (_flatDevice != null && _flatDevice.Connected) {
-                                    _flatDeviceVM.Brightness = 1.0;
-                                    _flatDeviceVM.SetBrightness(null);
+                                    _flatDeviceMediator.SetBrightness(1.0);
                                 }
 
                                 exposureTime = result.NextExposureTime;
@@ -508,8 +502,8 @@ namespace NINA.ViewModel.FlatWizard {
                     Source = Title
                 });
 
-                if (_flatDevice != null && _flatDevice.Connected && _flatDevice.SupportsOpenClose) { await _flatDeviceVM.CloseCover(); }
-                if (_flatDevice != null && _flatDevice.Connected) { _flatDeviceVM.ToggleLight((object)true); }
+                if (_flatDevice != null && _flatDevice.Connected && _flatDevice.SupportsOpenClose) { await _flatDeviceMediator.CloseCover(); }
+                if (_flatDevice != null && _flatDevice.Connected) { _flatDeviceMediator.ToggleLight((object)true); }
 
                 var totalFilterCount = filters.Count();
                 foreach (var filterSettings in filters) {
@@ -541,7 +535,7 @@ namespace NINA.ViewModel.FlatWizard {
                 return false;
             } finally {
                 Cleanup(progress);
-                if (_flatDevice != null && _flatDevice.Connected) { _flatDeviceVM.ToggleLight((object)false); }
+                if (_flatDevice != null && _flatDevice.Connected) { _flatDeviceMediator.ToggleLight((object)false); }
             }
 
             return true;
@@ -591,7 +585,8 @@ namespace NINA.ViewModel.FlatWizard {
         private async Task TakeDarkFlats(IProgress<ApplicationStatus> progress, PauseToken pt) {
             if (filterToExposureTime.Count > 0 && DarkFlatCount > 0) {
                 progress.Report(new ApplicationStatus() { Status = Locale["LblPreparingDarkFlatSequence"], Source = Title });
-                if (_flatDevice != null && _flatDevice.Connected && _flatDevice.SupportsOpenClose && profileService.ActiveProfile.FlatDeviceSettings.OpenForDarkFlats) { await _flatDeviceVM.OpenCover(); }
+                if (_flatDevice != null && _flatDevice.Connected) { _flatDeviceMediator.ToggleLight(false); }
+                if (_flatDevice != null && _flatDevice.Connected && _flatDevice.SupportsOpenClose && profileService.ActiveProfile.FlatDeviceSettings.OpenForDarkFlats) { await _flatDeviceMediator.OpenCover(); }
                 var dialogResult = MyMessageBox.MyMessageBox.Show(
                     Locale["LblCoverScopeMsgBox"],
                     Locale["LblCoverScopeMsgBoxTitle"], MessageBoxButton.OKCancel, MessageBoxResult.OK);

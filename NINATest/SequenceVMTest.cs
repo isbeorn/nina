@@ -52,7 +52,6 @@ namespace NINATest {
         private Mock<IImagingMediator> imagingMediatorMock;
         private Mock<IApplicationStatusMediator> applicationStatusMediatorMock;
         private Mock<IFlatDeviceMediator> _flatDeviceMediatorMock;
-        private Mock<IFlatDeviceVM> _flatDeviceVMMock;
         private FlatDeviceInfo _flatDevice;
         private CaptureSequenceList _dummyList;
         private SequenceVM _sut;
@@ -73,7 +72,6 @@ namespace NINATest {
             guiderMediatorMock = new Mock<IGuiderMediator>();
             rotatorMediatorMock = new Mock<IRotatorMediator>();
             _flatDeviceMediatorMock = new Mock<IFlatDeviceMediator>();
-            _flatDeviceVMMock = new Mock<IFlatDeviceVM>();
             weatherDataMediatorMock = new Mock<IWeatherDataMediator>();
             imagingMediatorMock = new Mock<IImagingMediator>();
             applicationStatusMediatorMock = new Mock<IApplicationStatusMediator>();
@@ -99,7 +97,7 @@ namespace NINATest {
 
             _sut = new SequenceVM(profileServiceMock.Object, cameraMediatorMock.Object, telescopeMediatorMock.Object, focuserMediatorMock.Object,
                 filterWheelMediatorMock.Object, guiderMediatorMock.Object, rotatorMediatorMock.Object, _flatDeviceMediatorMock.Object,
-                weatherDataMediatorMock.Object, imagingMediatorMock.Object, applicationStatusMediatorMock.Object, _flatDeviceVMMock.Object);
+                weatherDataMediatorMock.Object, imagingMediatorMock.Object, applicationStatusMediatorMock.Object);
         }
 
         [TearDown]
@@ -128,7 +126,7 @@ namespace NINATest {
             Assert.That(_sut.SelectedSequenceRowIdx, Is.EqualTo(0));
             Assert.That(_sut.IsPaused, Is.False);
             Assert.That(_sut.Sequence.IsRunning, Is.False);
-            _flatDeviceVMMock.Verify(m => m.CloseCover(), Times.Once);
+            _flatDeviceMediatorMock.Verify(m => m.CloseCover(), Times.Once);
         }
 
         [Test]

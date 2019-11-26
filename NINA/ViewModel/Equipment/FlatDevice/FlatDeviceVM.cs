@@ -21,6 +21,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
         public FlatDeviceVM(IProfileService profileService, IFlatDeviceMediator flatDeviceMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             _applicationStatusMediator = applicationStatusMediator;
             _flatDeviceMediator = flatDeviceMediator;
+            _flatDeviceMediator.RegisterHandler(this);
 
             ConnectCommand = new AsyncCommand<bool>(Connect);
             CancelConnectCommand = new RelayCommand(CancelConnectFlatDevice);

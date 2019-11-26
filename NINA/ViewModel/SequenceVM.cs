@@ -71,11 +71,8 @@ namespace NINA.ViewModel {
                 IFlatDeviceMediator flatDeviceMediator,
                 IWeatherDataMediator weatherDataMediator,
                 IImagingMediator imagingMediator,
-                IApplicationStatusMediator applicationStatusMediator,
-                IFlatDeviceVM flatDeviceVM
+                IApplicationStatusMediator applicationStatusMediator
         ) : base(profileService) {
-            _flatDeviceVM = flatDeviceVM;
-
             this.telescopeMediator = telescopeMediator;
             this.telescopeMediator.RegisterConsumer(this);
 
@@ -154,7 +151,6 @@ namespace NINA.ViewModel {
                 ActiveSequenceChanged();
         }
 
-        private IFlatDeviceVM _flatDeviceVM;
         private ImageHistoryVM imgHistoryVM;
 
         public ImageHistoryVM ImgHistoryVM {
@@ -671,7 +667,7 @@ namespace NINA.ViewModel {
                 autoUpdateTimer.Start();
                 if (_flatDevice != null && _flatDevice.Connected && _flatDevice.SupportsOpenClose &&
                     profileService.ActiveProfile.FlatDeviceSettings.CloseAtSequenceEnd) {
-                    await _flatDeviceVM.CloseCover();
+                    await _flatDeviceMediator.CloseCover();
                 }
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }

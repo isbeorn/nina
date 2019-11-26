@@ -399,22 +399,22 @@ Ist dieser Auslöser deaktiviert, wird dieser Schritt übersprungen.</s:String>
     <s:String x:Key="LblFlatCalculatedExposureTime" xml:space="default">Berechnete Flat Belichtsungszeit</s:String>
     <s:String x:Key="LblFlatCalculatedHistogramMean" xml:space="default">Berechneter Histogrammzielwert</s:String>
     <s:String x:Key="LblFlatCount" xml:space="default">Anzahl Flats</s:String>
-    <s:String x:Key="LblFlatDevice" xml:space="default">Flatfieldenerator</s:String>
+    <s:String x:Key="LblFlatDevice" xml:space="default">Flatfieldgenerator</s:String>
     <s:String x:Key="LblFlatDeviceBrightness" xml:space="default">Helligkeit</s:String>
     <s:String x:Key="LblFlatDeviceChooseSerialPort" xml:space="default">Serielle Schnittstelle wählen</s:String>
     <s:String x:Key="LblFlatDeviceClose" xml:space="default">Schließen</s:String>
     <s:String x:Key="LblFlatDeviceCloseAtSequenceEnd" xml:space="default">Am Ende der Sequenz Deckel schließen</s:String>
     <s:String x:Key="LblFlatDeviceClosed" xml:space="default">Geschlossen</s:String>
-    <s:String x:Key="LblFlatDeviceConnected" xml:space="default">Flatfieldenerator verbunden.</s:String>
-    <s:String x:Key="LblFlatDeviceConnectedButCoverNotOpen" xml:space="default">Ein Flatfieldenerator ist verbunden, aber nicht geöffnet.</s:String>
+    <s:String x:Key="LblFlatDeviceConnected" xml:space="default">Flatfieldgenerator verbunden.</s:String>
+    <s:String x:Key="LblFlatDeviceConnectedButCoverNotOpen" xml:space="default">Ein Flatfieldgenerator ist verbunden, aber nicht geöffnet.</s:String>
     <s:String x:Key="LblFlatDeviceCover" xml:space="default">Deckel</s:String>
     <s:String x:Key="LblFlatDeviceCoverCurrently" xml:space="default">Derzeit</s:String>
-    <s:String x:Key="LblFlatDeviceDisconnectQuestion" xml:space="default">Wollen Sie den Flatfieldenerator trennen?</s:String>
-    <s:String x:Key="LblFlatDeviceFlatPanelSettings" xml:space="default">Flatfieldenerator Einstellungen</s:String>
-    <s:String x:Key="LblFlatDeviceInvalidResponse" xml:space="default">Ungültige Antwort from Flatfieldenerator.</s:String>
-    <s:String x:Key="LblFlatDeviceLight" xml:space="default">Flatfieldenerator Licht</s:String>
+    <s:String x:Key="LblFlatDeviceDisconnectQuestion" xml:space="default">Wollen Sie den Flatfieldgenerator trennen?</s:String>
+    <s:String x:Key="LblFlatDeviceFlatPanelSettings" xml:space="default">Flatfieldgenerator Einstellungen</s:String>
+    <s:String x:Key="LblFlatDeviceInvalidResponse" xml:space="default">Ungültige Antwort from Flatfieldgenerator.</s:String>
+    <s:String x:Key="LblFlatDeviceLight" xml:space="default">Flatfieldgenerator Licht</s:String>
     <s:String x:Key="LblFlatDeviceNeitherOpenNorClosed" xml:space="default">Weder offen noch geschlossen</s:String>
-    <s:String x:Key="LblFlatDeviceNoDevice" xml:space="default">Kein Flatfieldenerator</s:String>
+    <s:String x:Key="LblFlatDeviceNoDevice" xml:space="default">Kein Flatfieldgenerator</s:String>
     <s:String x:Key="LblFlatDeviceOpen" xml:space="default">Offen</s:String>
     <s:String x:Key="LblFlatDeviceOpenButton" xml:space="default">Öffnen</s:String>
     <s:String x:Key="LblFlatDeviceOpenForDarkFlats" xml:space="default">Für Dark Flats Deckel öffnen</s:String>
