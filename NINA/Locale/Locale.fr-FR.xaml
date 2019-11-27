@@ -18,6 +18,7 @@
     <s:String x:Key="LblAfter" xml:space="default">Suite</s:String>
     <s:String x:Key="LblAFUseBrightestStars" xml:space="default">Utiliser n étoiles brillantes</s:String>
     <s:String x:Key="LblAFUseBrightestStarsTooltip" xml:space="default">Limiter la FA aux étoiles brillantes. 0 signifiant aucune limite.</s:String>
+    <s:String x:Key="LblAlnitakFlatPanel" xml:space="default">Alnitak Flat Panel</s:String>
     <s:String x:Key="LblAltairCameraSetup" xml:space="default">Configuration d'une caméra Altair</s:String>
     <s:String x:Key="LblAlternativeUIColorSchema" xml:space="default">Schéma de Couleurs disponibles à l'IU</s:String>
     <s:String x:Key="LblAltitude" xml:space="default">Altitude</s:String>
@@ -403,16 +404,22 @@ Lorsque ce déclencheur est désactivé, l'application ignorera simplement le d�
     <s:String x:Key="LblFlatCount" xml:space="default">PLU à prendre</s:String>
     <s:String x:Key="LblFlatDevice" xml:space="default">Écran à PLU</s:String>
     <s:String x:Key="LblFlatDeviceBrightness" xml:space="default">Luminosité</s:String>
+    <s:String x:Key="LblFlatDeviceChooseSerialPort" xml:space="default">Choose serial port</s:String>
     <s:String x:Key="LblFlatDeviceClose" xml:space="default">Fermer</s:String>
+    <s:String x:Key="LblFlatDeviceClosed" xml:space="default">Closed</s:String>
     <s:String x:Key="LblFlatDeviceConnected" xml:space="default">Écran à PLU connecté.</s:String>
+    <s:String x:Key="LblFlatDeviceConnectedButCoverNotOpen" xml:space="default">A flat panel is connected but the cover is not open.</s:String>
     <s:String x:Key="LblFlatDeviceCover" xml:space="default">Obturateur</s:String>
     <s:String x:Key="LblFlatDeviceCoverCurrently" xml:space="default">Actuellement</s:String>
     <s:String x:Key="LblFlatDeviceDisconnectQuestion" xml:space="default">Voulez-vous déconnecter l'écran à PLU?</s:String>
     <s:String x:Key="LblFlatDeviceInvalidResponse" xml:space="default">Réponse invalide de l'écran à PLU.</s:String>
     <s:String x:Key="LblFlatDeviceLight" xml:space="default">Écran à PLU</s:String>
+    <s:String x:Key="LblFlatDeviceNeitherOpenNorClosed" xml:space="default">Neither open nor closed</s:String>
     <s:String x:Key="LblFlatDeviceNoDevice" xml:space="default">Aucun écran à PLU</s:String>
     <s:String x:Key="LblFlatDeviceOpen" xml:space="default">Ouvrir</s:String>
+    <s:String x:Key="LblFlatDeviceOpenButton" xml:space="default">Open</s:String>
     <s:String x:Key="LblFlatDeviceSetBrightness" xml:space="default">Ajuster</s:String>
+    <s:String x:Key="LblFlatDeviceUnknown" xml:space="default">Unknown</s:String>
     <s:String x:Key="LblFlatExposureCalcContinue" xml:space="default">L'ADU moyenne était {0}, le calcul du temps d'exposition à {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcFinished" xml:space="default">L'ADU moyenne est {0}. Le temps d'exposition cible est {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcStart" xml:space="default">Calcul du temps d'exposition initial à {0}</s:String>
@@ -604,6 +611,7 @@ HFR calculé: {2}</s:String>
     <s:String x:Key="LblNoCoordinatesForSync" xml:space="default">Aucune coordonnée de disponible pour synchroniser la position du télescope</s:String>
     <s:String x:Key="LblNoFilterwheel" xml:space="default">Aucune roue à filtres</s:String>
     <s:String x:Key="LblNoFocuser" xml:space="default">Aucune focalisation</s:String>
+    <s:String x:Key="LblNoGuider" xml:space="default">No Guider</s:String>
     <s:String x:Key="LblNoImage" xml:space="default">Aucune image disponible</s:String>
     <s:String x:Key="LblNoiseReduction" xml:space="default">Réduction de bruit</s:String>
     <s:String x:Key="LblNoiseReductionTooltip" xml:space="default">Réduction du bruit appliquée avant la détection d'étoile. Cela peut aider avec des images bruitées et des expositions courtes.</s:String>

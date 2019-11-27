@@ -1048,6 +1048,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Locale\Locale.fr-FR.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Locale\Locale.it-IT.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
