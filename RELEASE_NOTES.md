@@ -32,6 +32,7 @@
 - A contrast detection autofocus routine has been added. Instead of analyzing stars to determine point of best focus, the routine analyzes overall contrast of the image with various contrast detection methods. A Gaussian fit is then performed on the obtained focus points - this process can use shorter exposure times than star HFR and produce results faster
 - QHY native camera driver now retrieves only the non-overscan area of the sensor
 - QHY native camera driver now supports selecting readout modes with QHY600 class cameras
+- QHY native camera driver now optimizes image file size based on the actual image dimensions used, resulting in generally smaller image file sizes
 - Added a $$DATEMINUS12$$ placeholder to the file save pattern that shifts the current date 12 hours into the past. This allows for all images of a night to be saved into the same date folder.
 - Added more manual focus targets for certain regions of the southern hemisphere sky.
 - Can now configure a custom Astrometry.net API URL

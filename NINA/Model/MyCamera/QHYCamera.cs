@@ -74,7 +74,7 @@ namespace NINA.Model.MyCamera {
             Info.Index = cameraIdx;
             Info.Id = cameraId;
 
-            Logger.Debug(string.Format("QHYCCD: Found camera {0}", Info.Id));
+            Logger.Debug($"QHYCCD: Found camera {Info.Id}");
         }
 
         public string Category { get; } = "QHYCCD";
@@ -123,7 +123,7 @@ namespace NINA.Model.MyCamera {
                 if (LibQHYCCD.SetQHYCCDBinMode(CameraP, (uint)value, (uint)value) == LibQHYCCD.QHYCCD_SUCCESS) {
                     Info.CurBin = value;
                 } else {
-                    Logger.Warning(string.Format("QHYCCD: Failed to set BIN mode {0}x{1}", value, value));
+                    Logger.Warning($"QHYCCD: Failed to set BIN mode {value}x{value}");
                 }
             }
         }
@@ -243,7 +243,7 @@ namespace NINA.Model.MyCamera {
 
         public double CoolerPower {
             get {
-                double rv = Double.NaN;
+                double rv = double.NaN;
 
                 if (Connected && CanSetTemperature) {
                     if ((rv = GetControlValue(LibQHYCCD.CONTROL_ID.CONTROL_CURPWM)) != LibQHYCCD.QHYCCD_ERROR) {
@@ -447,7 +447,7 @@ namespace NINA.Model.MyCamera {
 
         public double Temperature {
             get {
-                double rv = Double.NaN;
+                double rv = double.NaN;
 
                 if (Connected && Info.HasChipTemp) {
                     if ((rv = GetControlValue(LibQHYCCD.CONTROL_ID.CONTROL_CURTEMP)) != LibQHYCCD.QHYCCD_ERROR)
@@ -468,7 +468,7 @@ namespace NINA.Model.MyCamera {
             }
             set {
                 if (Connected && CanSetTemperature) {
-                    Logger.Debug(string.Format("QHYCCD: Cooler target temperature set to {0}", value));
+                    Logger.Debug($"QHYCCD: Cooler target temperature set to {value}");
                     Info.CoolerTargetTemp = value;
                     RaisePropertyChanged();
                 }
@@ -515,7 +515,7 @@ namespace NINA.Model.MyCamera {
                 Logger.Debug("QHYCCD: CoolerWorker task started");
                 while (true) {
                     if (Info.CoolerOn) {
-                        Logger.Debug(string.Format("QHYCCD: CoolerWorker setting camera target temp to {0}", Info.CoolerTargetTemp));
+                        Logger.Debug($"QHYCCD: CoolerWorker setting camera target temp to {Info.CoolerTargetTemp}");
                         LibQHYCCD.ControlQHYCCDTemp(CameraP, Info.CoolerTargetTemp);
                     } else if (previous == true) {
                         Logger.Debug("QHYCCD: CoolerWorker turning off TEC due user request");
@@ -536,10 +536,10 @@ namespace NINA.Model.MyCamera {
             double rv;
 
             if ((rv = LibQHYCCD.GetQHYCCDParam(CameraP, type)) != LibQHYCCD.QHYCCD_ERROR) {
-                Logger.Debug(string.Format("QHYCCD: Got Control {0} = {1}", type, rv));
+                Logger.Debug($"QHYCCD: Got Control {type} = {rv}");
                 return rv;
             } else {
-                Logger.Error(string.Format("QHYCCD: Failed to Get value for control {0}", type));
+                Logger.Error($"QHYCCD: Failed to Get value for control {type}");
                 return LibQHYCCD.QHYCCD_ERROR;
             }
         }
@@ -561,20 +561,20 @@ namespace NINA.Model.MyCamera {
 
         private bool IsQHYControl(LibQHYCCD.CONTROL_ID type) {
             if (LibQHYCCD.IsQHYCCDControlAvailable(CameraP, type) == LibQHYCCD.QHYCCD_SUCCESS) {
-                Logger.Debug(string.Format("QHYCCD: Control {0} exists", type));
+                Logger.Debug($"QHYCCD: Control {type} exists");
                 return true;
             } else {
-                Logger.Debug(string.Format("QHYCCD: Control Value {0} is not available", type));
+                Logger.Debug($"QHYCCD: Control Value {type} is not available");
                 return false;
             }
         }
 
         private bool SetControlValue(LibQHYCCD.CONTROL_ID type, double value) {
             if (LibQHYCCD.SetQHYCCDParam(CameraP, type, value) == LibQHYCCD.QHYCCD_SUCCESS) {
-                Logger.Debug(string.Format("QHYCCD: Setting Control {0} to {1}", type, value));
+                Logger.Debug($"QHYCCD: Setting Control {type} to {value}");
                 return true;
             } else {
-                Logger.Warning(string.Format("QHYCCD: Failed to Set Control {0} with value {1}", type, value));
+                Logger.Warning($"QHYCCD: Failed to Set Control {type} with value {value}");
                 return false;
             }
         }
@@ -596,7 +596,7 @@ namespace NINA.Model.MyCamera {
             uint num_modes = 0;
 
             try {
-                Logger.Info(string.Format("QHYCCD: Connecting to {0}", Info.Id));
+                Logger.Info($"QHYCCD: Connecting to {Info.Id}");
 
                 /*
                  * Get our selected camera's ID from the SDK
@@ -653,7 +653,7 @@ namespace NINA.Model.MyCamera {
                      * If so, do not debayer the image data
                      */
                     if (IsColorCam() == true) {
-                        Logger.Info(string.Format("QHYCCD: Color camera detected (pattern = {0}). Setting debayering to off", Info.BayerPattern.ToString()));
+                        Logger.Info($"QHYCCD: Color camera detected (pattern = {Info.BayerPattern.ToString()}). Setting debayering to off");
                         _ = LibQHYCCD.SetQHYCCDDebayerOnOff(CameraP, false);
                         Info.IsColorCam = true;
                     } else {
@@ -695,8 +695,7 @@ namespace NINA.Model.MyCamera {
                     Info.ExpMin = min;
                     Info.ExpMax = max;
                     Info.ExpStep = step;
-                    Logger.Debug(string.Format("QHYCCD: ExpMin={0}, ExpMax={1}, ExpStep={2}",
-                        Info.ExpMin, Info.ExpMax, Info.ExpStep));
+                    Logger.Debug($"QHYCCD: ExpMin={Info.ExpMin}, ExpMax={Info.ExpMax}, ExpStep={Info.ExpStep}");
 
                     /*
                      * Get our min and max gain
@@ -707,8 +706,7 @@ namespace NINA.Model.MyCamera {
                     Info.GainMin = (short)min;
                     Info.GainMax = (short)max;
                     Info.GainStep = step;
-                    Logger.Debug(string.Format("QHYCCD: GainMin={0}, GainMax={1}, GainStep={2}",
-                        Info.GainMin, Info.GainMax, Info.GainStep));
+                    Logger.Debug($"QHYCCD: GainMin={Info.GainMin}, GainMax={Info.GainMax}, GainStep={Info.GainStep}");
 
                     /*
                      * Check for gain setting bugs
@@ -732,8 +730,7 @@ namespace NINA.Model.MyCamera {
                     Info.OffMin = (int)min;
                     Info.OffMax = (int)max;
                     Info.OffStep = step;
-                    Logger.Debug(string.Format("QHYCCD: OffMin={0}, OffMax={1}, OffStep={2}",
-                        Info.OffMin, Info.OffMax, Info.OffStep));
+                    Logger.Debug($"QHYCCD: OffMin={Info.OffMin}, OffMax={Info.OffMax}, OffStep={Info.OffStep}");
 
                     QuirkInflatedOffset();
 
@@ -751,8 +748,7 @@ namespace NINA.Model.MyCamera {
                         Info.CoolerPwmMin = min;
                         Info.CoolerPwmMax = max;
                         Info.CoolerPwmStep = step;
-                        Logger.Debug(string.Format("QHYCCD: CoolerPwmMin={0}, CoolerPwmMax={1}, CoolerPwmStep={2}",
-                            Info.CoolerPwmMin, Info.CoolerPwmMax, Info.CoolerPwmStep));
+                        Logger.Debug($"QHYCCD: CoolerPwmMin={Info.CoolerPwmMin}, CoolerPwmMax={Info.CoolerPwmMax}, CoolerPwmStep={Info.CoolerPwmStep}");
 
                         /*
                          * Initialize cooler's target temperature to 0C
@@ -803,8 +799,7 @@ namespace NINA.Model.MyCamera {
                     Info.USBMin = min;
                     Info.USBMax = max;
                     Info.USBStep = step;
-                    Logger.Debug(string.Format("QHYCCD: USBMin={0}, USBMax={1}, USBStep={2}",
-                        Info.USBMin, Info.USBMax, Info.USBStep));
+                    Logger.Debug($"QHYCCD: USBMin={Info.USBMin}, USBMax={Info.USBMax}, USBStep={Info.USBStep}");
 
                     if (QuirkNoUSBTraffic())
                         Info.HasUSBTraffic = false;
@@ -850,7 +845,7 @@ namespace NINA.Model.MyCamera {
                 Connected = false;
             }
 
-            Logger.Info(string.Format("QHYCCD: Closing camera {0}", Info.Id));
+            Logger.Info($"QHYCCD: Closing camera {Info.Id}");
             LibQHYCCD.N_CloseQHYCCD(CameraP);
         }
 
@@ -863,17 +858,6 @@ namespace NINA.Model.MyCamera {
                 uint rv;
 
                 Logger.Debug("QHYCCD: Downloading exposure...");
-
-                /*
-                 * Ask the SDK how big the exposure will be
-                 */
-                uint size = LibQHYCCD.GetQHYCCDMemLength(CameraP);
-
-                if (size == 0) {
-                    Logger.Warning("QHYCCD: SDK reported a 0-length image buffer!");
-                    throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
-                }
-                Logger.Debug(string.Format("QHYCCD: Image size will be {0} bytes", size));
 
                 /*
                  * Check to see if the exposure is completed.
@@ -890,7 +874,7 @@ namespace NINA.Model.MyCamera {
                 /*
                  * Size the image data byte array for the image
                  */
-                uint numPixels = is16bit ? size / 2U : size;
+                uint numPixels = is16bit ? ImageSize / 2U : ImageSize;
                 ushort[] ImgData = new ushort[numPixels];
 
                 /*
@@ -907,7 +891,7 @@ namespace NINA.Model.MyCamera {
                     }
                 }
                 if (rv != LibQHYCCD.QHYCCD_SUCCESS) {
-                    Logger.Warning(string.Format("QHYCCD: Failed to download image from camera! rv = {0}", rv));
+                    Logger.Warning($"QHYCCD: Failed to download image from camera! rv = {rv }");
                     throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
                 }
 
@@ -944,7 +928,7 @@ namespace NINA.Model.MyCamera {
                     Logger.Warning("QHYCCD: SDK reported a 0-length image buffer!");
                     throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
                 }
-                Logger.Debug(string.Format("QHYCCD: Image size will be {0} bytes", size));
+                Logger.Debug($"QHYCCD: Image size will be {size} bytes");
 
                 /*
                  * Size the image data byte array for the image
@@ -958,12 +942,11 @@ namespace NINA.Model.MyCamera {
                         // GetQHYCCDLiveFrame returns -1 when the data isn't available yet, requiring looping.
                         continue;
                     } else if (rv != LibQHYCCD.QHYCCD_SUCCESS) {
-                        Logger.Warning(string.Format("QHYCCD: Failed to download image from camera! rv = {0}", rv));
+                        Logger.Warning($"QHYCCD: Failed to download image from camera! rv = {rv}");
                         throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
                     }
                     break;
                 }
-
 
                 Logger.Debug($"QHYCCD: Downloaded image: {width}x{height}, {bpp} bpp, {channels} channels");
 
@@ -1044,6 +1027,13 @@ namespace NINA.Model.MyCamera {
 
             /* Exposure readout mode */
             ReadoutMode = isSnap ? ReadoutModeForSnapImages : ReadoutModeForNormalImages;
+
+            /*
+             * Calculate exposure array size, with overflow protection.
+             * Strictly speaking, we should also multiply by the number of image channels (aka planes)
+             * but since we do no debayer anything here in the driver, that number will always be 1 (monochrome).
+             */
+            ImageSize = (uint)((sizex * sizey * BitDepth) + (8 - 1)) / 8;
 
             /*
              * Initiate the exposure
@@ -1134,6 +1124,14 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private uint ImageSize {
+            get => Info.ImageSize;
+            set {
+                Logger.Debug($"QHYCCD: Setting ImageSize to {value} bytes");
+                Info.ImageSize = value;
+            }
+        }
+
         #region "Quirks"
 
         ///<summary>
@@ -1198,7 +1196,7 @@ namespace NINA.Model.MyCamera {
             gotOffset = GetControlValue(LibQHYCCD.CONTROL_ID.CONTROL_OFFSET) - wantOffset;
 
             if (gotOffset != 0) {
-                Logger.Debug(string.Format("QHYCCD_QUIRK: This camera inflates its Offset by {0}", gotOffset));
+                Logger.Debug($"QHYCCD_QUIRK: This camera inflates its Offset by {gotOffset}");
                 Info.InflatedOff = (int)gotOffset;
             } else {
                 Info.InflatedOff = 0;
