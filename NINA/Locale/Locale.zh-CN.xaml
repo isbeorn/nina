@@ -359,6 +359,7 @@
     <s:String x:Key="LblEnableBitScaling" xml:space="default">开启位扩增</s:String>
     <s:String x:Key="LblEnableBitScalingTooltip" xml:space="default">将 10/12/14 位存储为 16 位. (只支持 Altair 和 ToupTek 相机)</s:String>
     <s:String x:Key="LblEnabled" xml:space="default">已启用</s:String>
+    <s:String x:Key="LblEndOfSequenceCloseFlatDeviceCover" xml:space="default">Close flat panel cover</s:String>
     <s:String x:Key="LblEndOfSequenceDecision" xml:space="default">确定停止运行本序列？</s:String>
     <s:String x:Key="LblEndOfSequenceOptions" xml:space="default">序列结束选项</s:String>
     <s:String x:Key="LblEndOfSequenceParkTelescope" xml:space="default">赤道仪归零</s:String>

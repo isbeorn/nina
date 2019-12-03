@@ -359,6 +359,7 @@ cuando las lineas no estan alineadas hay algun error de alineacion polar</s:Stri
     <s:String x:Key="LblEnableBitScaling" xml:space="default">Habilita Escalado de bit</s:String>
     <s:String x:Key="LblEnableBitScalingTooltip" xml:space="default">Graba imágenes a 10/12/14 bit con escalado a 16bits. (Solo relevante para camaras Altair y Touptek)</s:String>
     <s:String x:Key="LblEnabled" xml:space="default">Habilitado</s:String>
+    <s:String x:Key="LblEndOfSequenceCloseFlatDeviceCover" xml:space="default">Close flat panel cover</s:String>
     <s:String x:Key="LblEndOfSequenceDecision" xml:space="default">Ejecuta Opciones de final de secuencia?</s:String>
     <s:String x:Key="LblEndOfSequenceOptions" xml:space="default">Opciones de Final de Secuencia</s:String>
     <s:String x:Key="LblEndOfSequenceParkTelescope" xml:space="default">Aparcar Telescopio</s:String>

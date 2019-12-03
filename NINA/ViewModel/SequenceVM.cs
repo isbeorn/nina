@@ -54,7 +54,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
-using NINA.ViewModel.Equipment.FlatDevice;
 
 namespace NINA.ViewModel {
 
@@ -665,10 +664,6 @@ namespace NINA.ViewModel {
                 IsPaused = false;
                 IsRunning = false;
                 autoUpdateTimer.Start();
-                if (_flatDevice != null && _flatDevice.Connected && _flatDevice.SupportsOpenClose &&
-                    profileService.ActiveProfile.FlatDeviceSettings.CloseAtSequenceEnd) {
-                    await _flatDeviceMediator.CloseCover();
-                }
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
             return true;
@@ -1401,6 +1396,7 @@ namespace NINA.ViewModel {
         private async Task<bool> RunEndOfSequenceOptions(IProgress<ApplicationStatus> progress) {
             bool parkTelescope = false;
             bool warmCamera = false;
+            bool closeFlatDeviceCover = false;
             StringBuilder message = new StringBuilder();
 
             message.AppendLine(Locale.Loc.Instance["LblEndOfSequenceDecision"]).AppendLine();
@@ -1419,12 +1415,19 @@ namespace NINA.ViewModel {
                 }
             }
 
-            if (warmCamera || parkTelescope) {
+            if (profileService.ActiveProfile.FlatDeviceSettings.CloseAtSequenceEnd &&
+                _flatDevice != null && _flatDevice.Connected && _flatDevice.SupportsOpenClose) {
+                closeFlatDeviceCover = true;
+                message.AppendLine(Locale.Loc.Instance["LblEndOfSequenceCloseFlatDeviceCover"]);
+            }
+
+            if (warmCamera || parkTelescope || closeFlatDeviceCover) {
                 if (_canceltoken.Token.IsCancellationRequested) { // Sequence was manually cancelled - ask before proceeding with end of sequence options
                     var diag = MyMessageBox.MyMessageBox.Show(message.ToString(), Locale.Loc.Instance["LblEndOfSequenceOptions"], System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
                     if (diag != System.Windows.MessageBoxResult.OK) {
                         parkTelescope = false;
                         warmCamera = false;
+                        closeFlatDeviceCover = false;
                     } else {
                         // Need to reinitialize the cancellation token, as it is set to cancelation requested since sequence was manually cancelled.
                         _canceltoken?.Dispose();
@@ -1442,6 +1445,10 @@ namespace NINA.ViewModel {
                     IProgress<double> warmProgress = new Progress<double>();
                     await cameraMediator.StartChangeCameraTemp(warmProgress, 10, TimeSpan.FromMinutes(10), true, _canceltoken.Token);
                     Logger.Trace("Camera has been warmed");
+                }
+                if (closeFlatDeviceCover) {
+                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblEndOfSequenceCloseFlatDeviceCover"] });
+                    await _flatDeviceMediator.CloseCover();
                 }
             }
             return true;

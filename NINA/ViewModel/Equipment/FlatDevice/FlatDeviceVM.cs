@@ -59,6 +59,11 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
 
         public bool LightOn { get; set; }
 
+        public void SetBrightness(double value) {
+            Brightness = value;
+            SetBrightness(null);
+        }
+
         public void SetBrightness(object o) {
             if (_flatDevice == null || !_flatDevice.Connected) return;
             _flatDevice.Brightness = Brightness;

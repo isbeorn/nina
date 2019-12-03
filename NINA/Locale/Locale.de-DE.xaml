@@ -359,6 +359,7 @@ when the lines are not aligned there is some Polar Alignment error</s:String>
     <s:String x:Key="LblEnableBitScaling" xml:space="default">Bit Skalierung aktivieren</s:String>
     <s:String x:Key="LblEnableBitScalingTooltip" xml:space="default">Speichere 10/12/14 bit Bilder mit einer Skalierung zu 16 Bits. (Nur relevant für Altair und ToupTek Kameras)</s:String>
     <s:String x:Key="LblEnabled" xml:space="default">Aktiv</s:String>
+    <s:String x:Key="LblEndOfSequenceCloseFlatDeviceCover" xml:space="default">Flatfieldgenerator Deckel schließen</s:String>
     <s:String x:Key="LblEndOfSequenceDecision" xml:space="default">Run end of sequence options?</s:String>
     <s:String x:Key="LblEndOfSequenceOptions" xml:space="default">End of Sequence Options</s:String>
     <s:String x:Key="LblEndOfSequenceParkTelescope" xml:space="default">Park Telescope</s:String>

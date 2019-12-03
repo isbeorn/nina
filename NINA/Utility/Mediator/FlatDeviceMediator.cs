@@ -8,8 +8,7 @@ namespace NINA.Utility.Mediator {
     internal class FlatDeviceMediator : DeviceMediator<IFlatDeviceVM, IFlatDeviceConsumer, FlatDeviceInfo>, IFlatDeviceMediator {
 
         public void SetBrightness(double brightness) {
-            handler.Brightness = brightness;
-            handler.SetBrightness(null);
+            handler.SetBrightness(brightness);
         }
 
         public Task CloseCover() {
