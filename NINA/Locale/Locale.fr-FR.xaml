@@ -1,7 +1,4 @@
-﻿<ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:s="clr-namespace:System;assembly=mscorlib">
+﻿<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
     <s:String x:Key="LblAbbrEast" xml:space="default">E</s:String>
     <s:String x:Key="LblAbbrNorth" xml:space="default">N</s:String>
     <s:String x:Key="LblAbbrSouth" xml:space="default">S</s:String>
@@ -41,7 +38,7 @@ L'erreur en Altitude sera calculée et affichée à partir de ces deux positions
     <s:String x:Key="LblApparentMagnitude" xml:space="default">Magnitude Apparente</s:String>
     <s:String x:Key="LblApparentSize" xml:space="default">Dimension Apparente</s:String>
     <s:String x:Key="LblApplicationInBreakMode" xml:space="preserve">L'application a rencontré une exception non gérée et devra être fermée.
-L'erreur a été enregistrée dans &quot;%localappdata%\NINA\Logs&quot;.
+L'erreur a été enregistrée dans "%localappdata%\NINA\Logs".
 L'application doit-elle tenter de redémarrer? (Peut conduire à un comportement inattendu)</s:String>
     <s:String x:Key="LblApplicationStartDateDescription" xml:space="default">Date de démarrage de l'application au format AAAA-MM-JJ</s:String>
     <s:String x:Key="LblArcmin" xml:space="default">arcmin</s:String>
@@ -78,7 +75,7 @@ par la caméra, les étoiles proches du bord seront ignorées lors de la détect
 avec un ratio de recadrage extérieur inférieur à 1, un fenêtrage rectangulaire (compris entre le rectangle intérieur et le
 rectangle extérieur) sera utilisé pour la focalisation automatique.</s:String>
     <s:String x:Key="LblAutoFocusMethod" xml:space="default">Stratégie FA</s:String>
-    <s:String x:Key="LblAutoFocusMethodTooltip" xml:space="preserve">Lorsque &quot;HFR des Étoiles&quot; est sélectionné, NINA détecte les étoiles dans le champ de vision,
+    <s:String x:Key="LblAutoFocusMethodTooltip" xml:space="preserve">Lorsque "HFR des Étoiles" est sélectionné, NINA détecte les étoiles dans le champ de vision,
 calcule leur HFR sur plusieurs points de focalisation et trouve le HFR minimum.
 La méthode de détection de contraste utilise des techniques de traitement d'image pour estimer le contraste
 sur plusieurs points de focalisation et trouve le contraste le plus élevé. Cette méthode fonctionne sur
@@ -170,8 +167,8 @@ ne pas être en mesure de compenser pour les variations de températures ambiant
 
 Voulez-vous toujours la fermer et perdre tous les changements?</s:String>
     <s:String x:Key="LblChangedSequenceWarningTitle" xml:space="default">Fermeture de la séquence modifiée</s:String>
-    <s:String x:Key="LblChangeToBulbMode" xml:space="default">SVP changez le mode pour &quot;Bulb&quot;</s:String>
-    <s:String x:Key="LblChangeToManualMode" xml:space="default">SVP changez le mode pour &quot;mode manuel&quot;</s:String>
+    <s:String x:Key="LblChangeToBulbMode" xml:space="default">SVP changez le mode pour "Bulb"</s:String>
+    <s:String x:Key="LblChangeToManualMode" xml:space="default">SVP changez le mode pour "mode manuel"</s:String>
     <s:String x:Key="LblCheckMeridianFlip" xml:space="default">Vérification du Retournement au Méridien</s:String>
     <s:String x:Key="LblChecksumError" xml:space="default">Le checksum ne correspond pas à la valeur attendue. Le fichier téléchargé est peut-être corrompu!</s:String>
     <s:String x:Key="LblChipTemp" xml:space="default">Température du Capteur</s:String>
@@ -298,7 +295,7 @@ Lorsqu'une durée est appliquée, la température baissera à un taux relatif en
     <s:String x:Key="LblDARVSlew" xml:space="default">D.A.R.V. pointage</s:String>
     <s:String x:Key="LblDARVSlewButtonTooltip" xml:space="preserve">Ceci va lancer une exposition pendant un déplacement du télescope dans une direction suivi d'un retour.
 si les traces d'étoiles ne sont pas alignées, c'est qu'il y a une erreur d'alignement polaire de la monture.</s:String>
-    <s:String x:Key="LblDARVSlewDescription" xml:space="default">Spécifie la durée de la procédure  D.A.R.V. . Le télescope va pointer la moitier du temps dans une direction et va revenir à son point de départ. Lorsque l'alignement polaire de la monture est bonne, seules des lignes droites laissées par les étoiles apparaîtront.  Autrement des patterns en forme de &quot;V&quot; seront plutôt visibles. Pour la mesure des erreurs en azimuth, le télescope pointera près du méridien, autrement à l'est ou à ouest.</s:String>
+    <s:String x:Key="LblDARVSlewDescription" xml:space="default">Spécifie la durée de la procédure  D.A.R.V. . Le télescope va pointer la moitier du temps dans une direction et va revenir à son point de départ. Lorsque l'alignement polaire de la monture est bonne, seules des lignes droites laissées par les étoiles apparaîtront.  Autrement des patterns en forme de "V" seront plutôt visibles. Pour la mesure des erreurs en azimuth, le télescope pointera près du méridien, autrement à l'est ou à ouest.</s:String>
     <s:String x:Key="LblDataProvidedBy" xml:space="default">Set de données intiales du DSO fournie par</s:String>
     <s:String x:Key="LblDataToDownloadRatio" xml:space="default">Rapport (TTransfert)/(TAcquis.)</s:String>
     <s:String x:Key="LblDateFormatDescription" xml:space="default">Date au format AAAA-MM-JJ</s:String>
@@ -358,10 +355,11 @@ si les traces d'étoiles ne sont pas alignées, c'est qu'il y a une erreur d'ali
     <s:String x:Key="LblDuration" xml:space="default">Durée</s:String>
     <s:String x:Key="LblDusk" xml:space="default">Crépuscule</s:String>
     <s:String x:Key="LblEast" xml:space="default">Est</s:String>
-    <s:String x:Key="LblEDCameraNotInManualMode" xml:space="default">La caméra n'est pas réglée en mode manuel ou en mode &quot;Bulb&quot;! Veuillez le régler en mode manuel ou &quot;Bulb&quot; avant de vous connecter</s:String>
+    <s:String x:Key="LblEDCameraNotInManualMode" xml:space="default">La caméra n'est pas réglée en mode manuel ou en mode "Bulb"! Veuillez le régler en mode manuel ou "Bulb" avant de vous connecter</s:String>
     <s:String x:Key="LblEnableBitScaling" xml:space="default">Activer la mise à l'échelle Bits</s:String>
     <s:String x:Key="LblEnableBitScalingTooltip" xml:space="default">Enregistrez des images 10/12/14 bits avec une mise à l’échelle sur 16 bits. (Uniquement pertinent pour les caméras Altair et ToupTek)</s:String>
     <s:String x:Key="LblEnabled" xml:space="default">Activé</s:String>
+    <s:String x:Key="LblEndOfSequenceCloseFlatDeviceCover" xml:space="default">Close flat panel cover</s:String>
     <s:String x:Key="LblEndOfSequenceDecision" xml:space="default">Exécuter les options de fin de séquence?</s:String>
     <s:String x:Key="LblEndOfSequenceOptions" xml:space="default">Options de Fin de Séquence</s:String>
     <s:String x:Key="LblEndOfSequenceParkTelescope" xml:space="default">Park Télescope</s:String>
@@ -406,18 +404,21 @@ Lorsque ce déclencheur est désactivé, l'application ignorera simplement le d�
     <s:String x:Key="LblFlatDeviceBrightness" xml:space="default">Luminosité</s:String>
     <s:String x:Key="LblFlatDeviceChooseSerialPort" xml:space="default">Choose serial port</s:String>
     <s:String x:Key="LblFlatDeviceClose" xml:space="default">Fermer</s:String>
+    <s:String x:Key="LblFlatDeviceCloseAtSequenceEnd" xml:space="default">Close cover at end of sequence</s:String>
     <s:String x:Key="LblFlatDeviceClosed" xml:space="default">Closed</s:String>
     <s:String x:Key="LblFlatDeviceConnected" xml:space="default">Écran à PLU connecté.</s:String>
     <s:String x:Key="LblFlatDeviceConnectedButCoverNotOpen" xml:space="default">A flat panel is connected but the cover is not open.</s:String>
     <s:String x:Key="LblFlatDeviceCover" xml:space="default">Obturateur</s:String>
     <s:String x:Key="LblFlatDeviceCoverCurrently" xml:space="default">Actuellement</s:String>
     <s:String x:Key="LblFlatDeviceDisconnectQuestion" xml:space="default">Voulez-vous déconnecter l'écran à PLU?</s:String>
+    <s:String x:Key="LblFlatDeviceFlatPanelSettings" xml:space="default">Flat Panel Settings</s:String>
     <s:String x:Key="LblFlatDeviceInvalidResponse" xml:space="default">Réponse invalide de l'écran à PLU.</s:String>
     <s:String x:Key="LblFlatDeviceLight" xml:space="default">Écran à PLU</s:String>
     <s:String x:Key="LblFlatDeviceNeitherOpenNorClosed" xml:space="default">Neither open nor closed</s:String>
     <s:String x:Key="LblFlatDeviceNoDevice" xml:space="default">Aucun écran à PLU</s:String>
     <s:String x:Key="LblFlatDeviceOpen" xml:space="default">Ouvrir</s:String>
     <s:String x:Key="LblFlatDeviceOpenButton" xml:space="default">Open</s:String>
+    <s:String x:Key="LblFlatDeviceOpenForDarkFlats" xml:space="default">Open cover for dark flats</s:String>
     <s:String x:Key="LblFlatDeviceSetBrightness" xml:space="default">Ajuster</s:String>
     <s:String x:Key="LblFlatDeviceUnknown" xml:space="default">Unknown</s:String>
     <s:String x:Key="LblFlatExposureCalcContinue" xml:space="default">L'ADU moyenne était {0}, le calcul du temps d'exposition à {1}</s:String>
@@ -451,7 +452,7 @@ Lorsque ce déclencheur est désactivé, l'application ignorera simplement le d�
     <s:String x:Key="LblFocuserAutoFocusInitialOffsetSteps" xml:space="default">Décalage Initial</s:String>
     <s:String x:Key="LblFocuserAutoFocusInitialOffsetStepsTooltip" xml:space="default">Nombre de pas FA Initial à appliquer à la focalisation pour définir la position de démarrage au processus de Focalisation Auto.</s:String>
     <s:String x:Key="LblFocuserAutoFocusStepSize" xml:space="default">Définition Pas FA</s:String>
-    <s:String x:Key="LblFocuserAutoFocusStepSizeTooltip" xml:space="default">Le nombre de pas &quot;moteur&quot; utilisé pour passer à une nouvelle position en focalisation automatique. Un saut (Pas FA) devrait permettre de discriminer le passage d'une position hors focus intérieur de celle extérieur</s:String>
+    <s:String x:Key="LblFocuserAutoFocusStepSizeTooltip" xml:space="default">Le nombre de pas "moteur" utilisé pour passer à une nouvelle position en focalisation automatique. Un saut (Pas FA) devrait permettre de discriminer le passage d'une position hors focus intérieur de celle extérieur</s:String>
     <s:String x:Key="LblFocuserBacklash" xml:space="default">Jeu IN/OUT</s:String>
     <s:String x:Key="LblFocuserBacklashTooltip" xml:space="default">Backlash de la focalisation vers l'intérieur et vers l'extérieur, en pas FA</s:String>
     <s:String x:Key="LblFocuserConnected" xml:space="default">Focalisation connectée</s:String>
@@ -474,7 +475,7 @@ HFR calculé: {2}</s:String>
     <s:String x:Key="LblFramingAssistant" xml:space="default">Assistant de Cadrage</s:String>
     <s:String x:Key="LblFreeImage" xml:space="default">FreeImage</s:String>
     <s:String x:Key="LblFrom" xml:space="default">De</s:String>
-    <s:String x:Key="LblFullWellCapacity" xml:space="default">Puits de Potentiel en &quot;é&quot;</s:String>
+    <s:String x:Key="LblFullWellCapacity" xml:space="default">Puits de Potentiel en "é"</s:String>
     <s:String x:Key="LblGain" xml:space="default">Gain</s:String>
     <s:String x:Key="LblGainDescription" xml:space="default">Gain Caméra</s:String>
     <s:String x:Key="LblGeneral" xml:space="default">Général</s:String>
@@ -488,7 +489,7 @@ HFR calculé: {2}</s:String>
     <s:String x:Key="LblGuiderConnected" xml:space="default">Autoguideur Connecté</s:String>
     <s:String x:Key="LblGuiderDitherButNotConnected" xml:space="default">Le guidage avec Dither est activé mais aucun autoguideur n'est connecté</s:String>
     <s:String x:Key="LblGuiderNoResume" xml:space="default">L'autoguideur n'a pas envoyé le message de reprise à temps. La séquence reprendra, mais assurez-vous que l'autoguideur guide à nouveau!</s:String>
-    <s:String x:Key="LblGuiderNoSettleDone" xml:space="default">L'autoguideur n'a pas envoyé le message &quot;SettleDone&quot; à temps. Saut de cette étape.</s:String>
+    <s:String x:Key="LblGuiderNoSettleDone" xml:space="default">L'autoguideur n'a pas envoyé le message "SettleDone" à temps. Saut de cette étape.</s:String>
     <s:String x:Key="LblGuiderResumeFailed" xml:space="default">Reprise du guidage a échoué</s:String>
     <s:String x:Key="LblGuiderSettings" xml:space="default">Configuration Guidage</s:String>
     <s:String x:Key="LblGuiderStatus" xml:space="default">État Guidage</s:String>
@@ -686,13 +687,13 @@ HFR calculé: {2}</s:String>
     <s:String x:Key="LblPaused" xml:space="default">En Pause</s:String>
     <s:String x:Key="LblPauseTimeBeforeMeridian" xml:space="default">Pause avant le Méridien (minutes)</s:String>
     <s:String x:Key="LblPercentShort" xml:space="default">%</s:String>
-    <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0}({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2DecRMS" xml:space="default">Dec: {0}({1}")</s:String>
     <s:String x:Key="LblPhd2FailedEquipmentConnection" xml:space="default">PHD2 n'a pas pu se connecter à l'équipement</s:String>
     <s:String x:Key="LblPHD2HistorySize" xml:space="default">Grosseur Historique PHD2</s:String>
     <s:String x:Key="LblPHD2MinimalHistorySize" xml:space="default">Grosseur minimale Historique PHD2</s:String>
     <s:String x:Key="LblPHD2Path" xml:space="default">Emplacement PHD2</s:String>
     <s:String x:Key="LblPhd2PathNotFound" xml:space="default">Impossible de démarrer PHD2. Chemin introuvable</s:String>
-    <s:String x:Key="LblPHD2RARMS" xml:space="default">RA: {0} ({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2RARMS" xml:space="default">RA: {0} ({1}")</s:String>
     <s:String x:Key="LblPhd2ServerConnectionLost" xml:space="default">onnexion au serveur PHD2 perdue!</s:String>
     <s:String x:Key="LblPHD2ServerPort" xml:space="default">Port Serveur PHD2</s:String>
     <s:String x:Key="LblPHD2ServerUrl" xml:space="default">Url Serveur PHD2</s:String>
@@ -707,7 +708,7 @@ HFR calculé: {2}</s:String>
         Clients connectés: {0}
     </s:String>
     <s:String x:Key="LblPhd2SynchronizedServiceStarted" xml:space="default">Service de synchronisation à PHD2 démarré</s:String>
-    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0}({1}&quot;)</s:String>
+    <s:String x:Key="LblPHD2TotalRMS" xml:space="default">Tot: {0}({1}")</s:String>
     <s:String x:Key="LblPixels" xml:space="default">Pixels</s:String>
     <s:String x:Key="LblPixelScale" xml:space="default">Échelle Pixel</s:String>
     <s:String x:Key="LblPixelSize" xml:space="default">Grosseur Pixel</s:String>
@@ -765,7 +766,7 @@ HFR calculé: {2}</s:String>
     <s:String x:Key="LblRate" xml:space="default">Taux</s:String>
     <s:String x:Key="LblRawConverter" xml:space="default">Conversion Raw</s:String>
     <s:String x:Key="LblRawConverterTooltip" xml:space="default">Spécifie quel outil doit être utilisé pour la conversion de fichier brut DSLR</s:String>
-    <s:String x:Key="LblReadNoise" xml:space="default">Bruit Lecture &quot;é&quot;</s:String>
+    <s:String x:Key="LblReadNoise" xml:space="default">Bruit Lecture "é"</s:String>
     <s:String x:Key="LblReadoutForNormalImages" xml:space="default">Mode de lecture pour les séquences</s:String>
     <s:String x:Key="LblReadoutForNormalImagesToolTip" xml:space="default">Ce mode de lecture de votre caméra sera utilisé pour les images LIGHT, BIAS, DARK, FLAT et DARKFLAT dans les séquences.</s:String>
     <s:String x:Key="LblReadoutForSnapImages" xml:space="default">Mode de lecture pour les instantanés</s:String>
@@ -866,8 +867,8 @@ Ce modèle sera utilisé au démarrage pour initialiser la séquence au lieu de 
     <s:String x:Key="LblSlewToTarget" xml:space="default">Pointer la Cible</s:String>
     <s:String x:Key="LblSlewToZenith" xml:space="default">Pointer au Zénith</s:String>
     <s:String x:Key="LblSlewWhenTargetCoordsUnset" xml:space="default">Au moins une cible pour laquelle l'option de pontage est activée n'a pas de coordonnées</s:String>
-    <s:String x:Key="LblSnapPortStart" xml:space="default">Commande de démarrage du port &quot;snap&quot;</s:String>
-    <s:String x:Key="LblSnapPortStop" xml:space="default">ommande d'arrêt du port &quot;snap&quot;</s:String>
+    <s:String x:Key="LblSnapPortStart" xml:space="default">Commande de démarrage du port "snap"</s:String>
+    <s:String x:Key="LblSnapPortStop" xml:space="default">ommande d'arrêt du port "snap"</s:String>
     <s:String x:Key="LblSobel" xml:space="default">Sobel</s:String>
     <s:String x:Key="LblSolving" xml:space="default">Résolution...</s:String>
     <s:String x:Key="LblSource" xml:space="default">Source</s:String>
