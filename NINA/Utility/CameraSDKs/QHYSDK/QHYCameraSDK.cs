@@ -515,6 +515,7 @@ namespace QHYCCD {
         // These two methods are identical on the C side, they just have different pointer types (they're ABI compatible).
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDSingleFrame", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint GetQHYCCDSingleFrame(IntPtr handle, ref uint w, ref uint h, ref uint bpp, ref uint channels, [Out] byte[] rawArray);
+
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDSingleFrame", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint GetQHYCCDSingleFrame(IntPtr handle, ref uint w, ref uint h, ref uint bpp, ref uint channels, [Out] ushort[] rawArray);
 
@@ -761,6 +762,11 @@ namespace QHYCCD {
             /// The camera's model name, including unique identifier
             /// </summary>
             public StringBuilder Id;
+
+            /// <summary>
+            /// Image array size (bytes)
+            /// </summary>
+            public uint ImageSize;
 
             /// <summary>
             /// Maximum image width (pixels)

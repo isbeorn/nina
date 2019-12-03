@@ -25,12 +25,14 @@
 - Added Spanish Translation
 - Added Chinese Simplified Translation
 - Added Chinese Traditional Translation
+- Added French Translation
 - The focuser temperature compensation feature is now turned off before an auto-focus session, and turned back on afterwards
 - The NASA Sky Survey images now are automatically adjusted for brightness and contrast, depending on each image characteristic
 - An autofocus filter can now be set if "Use filter offsets" is set to true. When defined, the autofocus routine will use the autofocus filter instead of the current imaging filter. Initial baseline HFR, and final HFR (used to determine whether the autofocus run was successful) will still use the main imaging filter.
 - A contrast detection autofocus routine has been added. Instead of analyzing stars to determine point of best focus, the routine analyzes overall contrast of the image with various contrast detection methods. A Gaussian fit is then performed on the obtained focus points - this process can use shorter exposure times than star HFR and produce results faster
 - QHY native camera driver now retrieves only the non-overscan area of the sensor
 - QHY native camera driver now supports selecting readout modes with QHY600 class cameras
+- QHY native camera driver now optimizes image file size based on the actual image dimensions used, resulting in generally smaller image file sizes
 - Added a $$DATEMINUS12$$ placeholder to the file save pattern that shifts the current date 12 hours into the past. This allows for all images of a night to be saved into the same date folder.
 - Added more manual focus targets for certain regions of the southern hemisphere sky.
 - Can now configure a custom Astrometry.net API URL
