@@ -372,7 +372,7 @@ namespace NINA.Utility {
 
         public FITSHeaderCard(string key, DateTime value, string comment) {
             this.Key = key;
-            this.Value = value.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fff", System.Globalization.CultureInfo.InvariantCulture);
+            this.Value = @"'" + value.ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture) + @"'";
             if (comment.Length > 45) {
                 comment = comment.Substring(0, 45);
             }

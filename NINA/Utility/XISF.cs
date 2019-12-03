@@ -205,12 +205,12 @@ namespace NINA.Utility {
 
         public void Populate(ImageMetaData metaData) {
             if (metaData.Image.ExposureStart > DateTime.MinValue) {
-                this.AddImageProperty(XISFImageProperty.Observation.Time.Start, metaData.Image.ExposureStart.ToUniversalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ss.fff", CultureInfo.InvariantCulture), "Time of observation (UTC)");
-                this.AddImageFITSKeyword("DATE-LOC", metaData.Image.ExposureStart.ToLocalTime().ToString("yyyy-MM-ddTHH\\:mm\\:ss.fff", CultureInfo.InvariantCulture), "Time of observation (local)");
+                this.AddImageProperty(XISFImageProperty.Observation.Time.Start, @"'" + metaData.Image.ExposureStart.ToUniversalTime().ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture) + @"'", "Time of observation (UTC)");
+                this.AddImageFITSKeyword("DATE-LOC", @"'" + metaData.Image.ExposureStart.ToLocalTime().ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture) + @"'", "Time of observation (local)");
             }
 
             if (!double.IsNaN(metaData.Image.ExposureTime)) {
-                this.AddImageProperty(XISFImageProperty.Instrument.ExposureTime, metaData.Image.ExposureTime.ToString(System.Globalization.CultureInfo.InvariantCulture), "[s] Exposure duration");
+                this.AddImageProperty(XISFImageProperty.Instrument.ExposureTime, metaData.Image.ExposureTime.ToString(CultureInfo.InvariantCulture), "[s] Exposure duration");
             }
 
             /* Camera */
