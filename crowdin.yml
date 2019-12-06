@@ -1,3 +1,4 @@
 files:
   - source: /NINA/Locale/Locale.xaml
     translation: /NINA/Locale/Locale.%locale%.xaml
+    translate_attributes: false
