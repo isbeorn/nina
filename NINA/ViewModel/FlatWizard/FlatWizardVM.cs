@@ -432,6 +432,11 @@ namespace NINA.ViewModel.FlatWizard {
                     case FlatWizardExposureAduState.ExposureFinished:
                         CalculatedHistogramMean = imageStatistics.Mean;
                         CalculatedExposureTime = exposureTime;
+                        if (_flatDevice != null && _flatDevice.Connected) {
+                            profileService.ActiveProfile.FlatDeviceSettings.AddBrightnessInfo((name: wrapper.Filter.Name, binning: BinningMode, Gain),
+                                (time: exposureTime, _flatDevice.Brightness));
+                        }
+
                         progress.Report(new ApplicationStatus { Status = string.Format(Locale["LblFlatExposureCalcFinished"], Math.Round(CalculatedHistogramMean, 2), CalculatedExposureTime), Source = Title });
                         break;
 

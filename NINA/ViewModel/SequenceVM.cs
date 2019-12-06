@@ -52,6 +52,7 @@ using System.Security.AccessControl;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -817,6 +818,11 @@ namespace NINA.ViewModel {
                         /* Start RMS Recording */
                         var rmsHandle = this.guiderMediator.StartRMSRecording();
 
+                        /* 3.5 Flat device handling */
+                        if (_flatDevice != null && _flatDevice.Connected) {
+                            await HandleFlatDevice(seq);
+                        }
+
                         /* 4) Capture */
                         var exposureStart = DateTime.Now;
                         await cameraMediator.Capture(seq, ct, progress);
@@ -897,12 +903,62 @@ namespace NINA.ViewModel {
             });
         }
 
+        private async Task HandleFlatDevice(CaptureSequence seq) {
+            switch (seq.ImageType) {
+                case CaptureSequence.ImageTypes.FLAT:
+                    if (_flatDevice.CoverState != CoverState.Closed) {
+                        await _flatDeviceMediator.CloseCover();
+                    }
+
+                    if (profileService.ActiveProfile.FlatDeviceSettings.UseWizardTrainedValues) {
+                        var settings = profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo((seq.FilterType.Name, seq.Binning, seq.Gain));
+                        if (settings != null) {
+                            _flatDeviceMediator.SetBrightness((double)settings?.brightness);
+                            seq.ExposureTime = (double)settings?.time;
+                        }
+                    }
+
+                    if (!_flatDevice.LightOn) {
+                        _flatDeviceMediator.ToggleLight(true);
+                    }
+
+                    break;
+
+                case CaptureSequence.ImageTypes.DARKFLAT:
+                    if (_flatDevice.LightOn) {
+                        _flatDeviceMediator.ToggleLight(false);
+                    }
+
+                    if (profileService.ActiveProfile.FlatDeviceSettings.OpenForDarkFlats) {
+                        if (_flatDevice.CoverState != CoverState.Open) {
+                            await _flatDeviceMediator.OpenCover();
+                            MyMessageBox.MyMessageBox.Show(
+                            Locale.Loc.Instance["LblCoverScopeMsgBox"],
+                            Locale.Loc.Instance["LblCoverScopeMsgBoxTitle"], MessageBoxButton.OKCancel,
+                            MessageBoxResult.OK);
+                        }
+                    } else {
+                        if (_flatDevice.CoverState != CoverState.Closed) {
+                            await _flatDeviceMediator.CloseCover();
+                        }
+                    }
+
+                    break;
+
+                default:
+                    if (_flatDevice.CoverState != CoverState.Open) {
+                        await _flatDeviceMediator.OpenCover();
+                    }
+                    break;
+            }
+        }
+
         private void AddMetaData(
-            ImageMetaData metaData,
-            CaptureSequenceList csl,
-            CaptureSequence sequence,
-            DateTime start,
-            RMS rms) {
+                ImageMetaData metaData,
+                CaptureSequenceList csl,
+                CaptureSequence sequence,
+                DateTime start,
+                RMS rms) {
             metaData.Image.ExposureStart = start;
             metaData.Image.Binning = sequence.Binning.Name;
             metaData.Image.ExposureNumber = sequence.ProgressExposureCount;
@@ -1085,11 +1141,6 @@ namespace NINA.ViewModel {
 
             if (!cameraInfo.CanSetTemperature && profileService.ActiveProfile.SequenceSettings.WarmCamAtSequenceEnd) {
                 messageStringBuilder.AppendLine(Locale.Loc.Instance["LblWarmEnabledButCameraCannotWarm"]);
-                displayMessage = true;
-            }
-
-            if (_flatDevice != null && _flatDevice.Connected && _flatDevice.SupportsOpenClose && _flatDevice.CoverState != CoverState.Open) {
-                messageStringBuilder.AppendLine(Locale.Loc.Instance["LblFlatDeviceConnectedButCoverNotOpen"]);
                 displayMessage = true;
             }
 
@@ -1415,10 +1466,13 @@ namespace NINA.ViewModel {
                 }
             }
 
-            if (profileService.ActiveProfile.FlatDeviceSettings.CloseAtSequenceEnd &&
-                _flatDevice != null && _flatDevice.Connected && _flatDevice.SupportsOpenClose) {
-                closeFlatDeviceCover = true;
-                message.AppendLine(Locale.Loc.Instance["LblEndOfSequenceCloseFlatDeviceCover"]);
+            if (_flatDevice != null && _flatDevice.Connected) {
+                _flatDeviceMediator.ToggleLight(false);
+
+                if (profileService.ActiveProfile.FlatDeviceSettings.CloseAtSequenceEnd && _flatDevice.SupportsOpenClose) {
+                    closeFlatDeviceCover = true;
+                    message.AppendLine(Locale.Loc.Instance["LblEndOfSequenceCloseFlatDeviceCover"]);
+                }
             }
 
             if (warmCamera || parkTelescope || closeFlatDeviceCover) {

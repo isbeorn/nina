@@ -23,7 +23,6 @@
 
 using NINA.Utility;
 using System;
-using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 
 namespace NINA.Model.MyFilterWheel {
@@ -40,8 +39,6 @@ namespace NINA.Model.MyFilterWheel {
         private double minFlatExposureTime;
 
         private double stepSize;
-
-        private double _flatDeviceBrightness;
 
         public FlatWizardFilterSettings() {
             HistogramMeanTarget = 0.5;
@@ -96,15 +93,6 @@ namespace NINA.Model.MyFilterWheel {
             get => stepSize;
             set {
                 stepSize = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        [DataMember]
-        public double FlatDeviceBrightness {
-            get => _flatDeviceBrightness;
-            set {
-                _flatDeviceBrightness = value;
                 RaisePropertyChanged();
             }
         }

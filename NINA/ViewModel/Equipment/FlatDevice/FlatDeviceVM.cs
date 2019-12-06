@@ -6,20 +6,28 @@ using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using NINA.Model.MyCamera;
+using NINA.Model.MyFilterWheel;
 
 namespace NINA.ViewModel.Equipment.FlatDevice {
 
-    internal class FlatDeviceVM : DockableVM, IFlatDeviceVM {
+    internal class FlatDeviceVM : DockableVM, IFlatDeviceVM, IFilterWheelConsumer {
         private IFlatDevice _flatDevice;
         private readonly IApplicationStatusMediator _applicationStatusMediator;
+        private readonly IFilterWheelMediator _filterWheelMediator;
         private readonly IFlatDeviceMediator _flatDeviceMediator;
         private readonly DeviceUpdateTimer _updateTimer;
+        private FilterWheelInfo _filterWheelInfo;
 
-        public FlatDeviceVM(IProfileService profileService, IFlatDeviceMediator flatDeviceMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+        public FlatDeviceVM(IProfileService profileService, IFlatDeviceMediator flatDeviceMediator, IApplicationStatusMediator applicationStatusMediator, IFilterWheelMediator filterWheelMediator) : base(profileService) {
             _applicationStatusMediator = applicationStatusMediator;
+            _filterWheelMediator = filterWheelMediator;
+            _filterWheelMediator.RegisterConsumer(this);
             _flatDeviceMediator = flatDeviceMediator;
             _flatDeviceMediator.RegisterHandler(this);
 
@@ -269,6 +277,53 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             _flatDevice.LightOn = (bool)o;
         }
 
+        public class WizardValues {
+            public string FilterName { get; set; }
+            public Dictionary<string, bool> OneByOne { get; set; }
+            public Dictionary<string, bool> TwoByTwo { get; set; }
+
+            public Dictionary<string, bool> ThreeByThree { get; set; }
+            public Dictionary<string, bool> FourByFour { get; set; }
+        }
+
+        public void UpdateDeviceInfo(FilterWheelInfo info) {
+            _filterWheelInfo = info;
+            RaisePropertyChanged(nameof(WizardTrainedValues));
+        }
+
+        public DataTable WizardTrainedValues {
+            get {
+                var result = new DataTable();
+
+                if (_filterWheelInfo == null || _filterWheelMediator.GetAllFilters() == null) return result;
+
+                var binningModes = new List<BinningMode>();
+                var gains = new List<short>();
+                result.Columns.Add("Binning\nGain", typeof(string));
+                binningModes.AddRange(profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoBinnings());
+                gains.AddRange(profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoGains());
+
+                var keys = new List<(BinningMode binning, short gain)>();
+                foreach (var binningMode in binningModes.Distinct().OrderBy(mode => mode.Name)) {
+                    foreach (var gain in gains.Distinct().OrderBy(s => s)) {
+                        result.Columns.Add($"{binningMode}\n{gain}", typeof(string));
+                        keys.Add((binningMode, gain));
+                    }
+                }
+
+                foreach (var filter in _filterWheelMediator.GetAllFilters()) {
+                    var row = new List<object> { filter.Name };
+                    row.AddRange(keys.Select(
+                        key => profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(
+                            (name: filter.Name, key.binning, key.gain))).Select(
+                        info => info != null ? info?.time.ToString("##0.00") : "-"));
+                    result.Rows.Add(row.ToArray());
+                }
+
+                return result;
+            }
+        }
+
         public ICommand RefreshFlatDeviceListCommand { get; }
         public IAsyncCommand ConnectCommand { get; }
         public RelayCommand CancelConnectCommand { get; }
@@ -277,5 +332,9 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
         public IAsyncCommand CloseCoverCommand { get; }
         public RelayCommand ToggleLightCommand { get; }
         public RelayCommand SetBrightnessCommand { get; }
+
+        public void Dispose() {
+            throw new NotImplementedException();
+        }
     }
 }
