@@ -266,12 +266,22 @@
 
                             <TextBlock Text="{ns:Loc LblFlatDeviceUseWizardTrainedValues}" />
 
-                            <CheckBox
-                                Width="120"
-                                Height="25"
-                                Margin="5,0,0,0"
-                                HorizontalAlignment="Left"
-                                IsChecked="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.FlatDeviceSettings.UseWizardTrainedValues, Mode=TwoWay}" />
+                            <DockPanel>
+                                <CheckBox
+                                    Width="120"
+                                    Height="25"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    IsChecked="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.FlatDeviceSettings.UseWizardTrainedValues, Mode=TwoWay}" />
+                                <ninactrl:AsyncProcessButton
+                                    Width="120"
+                                    Height="25"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Right"
+                                    ButtonText="{ns:Loc LblFlatDeviceClearValues}"
+                                    Command="{Binding ClearValuesCommand}"
+                                    IsEnabled="{Binding FlatDeviceInfo.Connected}" />
+                            </DockPanel>
                         </UniformGrid>
                     </Border>
                 </StackPanel>
@@ -289,9 +299,8 @@
                     Margin="0,10,0,0"
                     VerticalAlignment="Center"
                     FontSize="20"
-                    Text="Trained Filter Times" />
+                    Text="{ns:Loc LblFlatDeviceTrainedFilterTimes}" />
             </GroupBox.Header>
-
             <DataGrid
                 AutoGenerateColumns="True"
                 CanUserAddRows="False"

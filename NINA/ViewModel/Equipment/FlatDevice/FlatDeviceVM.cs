@@ -40,6 +40,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                 new RelayCommand(RefreshFlatDeviceList, o => _flatDevice?.Connected != true);
             SetBrightnessCommand = new RelayCommand(SetBrightness);
             ToggleLightCommand = new RelayCommand(ToggleLight);
+            ClearValuesCommand = new RelayCommand(ClearWizardTrainedValues);
 
             FlatDeviceChooserVM = new FlatDeviceChooserVM(profileService);
             FlatDeviceChooserVM.GetEquipment();
@@ -316,12 +317,17 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                     row.AddRange(keys.Select(
                         key => profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(
                             (name: filter.Name, key.binning, key.gain))).Select(
-                        info => info != null ? info?.time.ToString("##0.00") : "-"));
+                        info => info != null ? $"{info?.time,3:0.0}s @ {info?.brightness,3:P0}" : "-"));
                     result.Rows.Add(row.ToArray());
                 }
 
                 return result;
             }
+        }
+
+        private void ClearWizardTrainedValues(object o) {
+            profileService.ActiveProfile.FlatDeviceSettings.ClearBrightnessInfo();
+            RaisePropertyChanged(nameof(WizardTrainedValues));
         }
 
         public ICommand RefreshFlatDeviceListCommand { get; }
@@ -332,9 +338,10 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
         public IAsyncCommand CloseCoverCommand { get; }
         public RelayCommand ToggleLightCommand { get; }
         public RelayCommand SetBrightnessCommand { get; }
+        public RelayCommand ClearValuesCommand { get; }
 
         public void Dispose() {
-            throw new NotImplementedException();
+            _filterWheelMediator.RemoveConsumer(this);
         }
     }
 }

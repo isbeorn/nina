@@ -24,5 +24,7 @@ namespace NINA.Profile {
         IEnumerable<BinningMode> GetBrightnessInfoBinnings();
 
         IEnumerable<short> GetBrightnessInfoGains();
+
+        void ClearBrightnessInfo();
     }
 }

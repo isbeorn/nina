@@ -139,5 +139,10 @@ namespace NINA.Profile {
 
             return result.Distinct();
         }
+
+        public void ClearBrightnessInfo() {
+            FilterSettings =
+                new Dictionary<(string name, BinningMode binning, short gain), (double time, double brightness)>();
+        }
     }
 }
