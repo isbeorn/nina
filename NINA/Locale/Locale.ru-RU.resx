@@ -133,55 +133,55 @@
     <value>Aberration Inspector</value>
   </data>
   <data name="LblActive" xml:space="preserve">
-    <value>Active</value>
+    <value>Активный</value>
   </data>
   <data name="LblActiveFilter" xml:space="preserve">
-    <value>Active filter</value>
+    <value>Активный фильтр</value>
   </data>
   <data name="LblActiveSequenceDetails" xml:space="preserve">
-    <value>Active Sequence Details</value>
+    <value>Детали активной серии</value>
   </data>
   <data name="LblAddSequenceTarget" xml:space="preserve">
-    <value>Add as Sequence Target</value>
+    <value>Добавьте объект серии</value>
   </data>
   <data name="LblAdvancedSettings" xml:space="preserve">
-    <value>Advanced Settings</value>
+    <value>Доп. настройки</value>
   </data>
   <data name="LblAFContrastDetection" xml:space="preserve">
-    <value>Contrast Detection (Experimental)</value>
+    <value>Детектор контраста (эксп.)</value>
   </data>
   <data name="LblAFOnButFocuserNotConnected" xml:space="preserve">
-    <value>Auto-Focus is enabled, yet focuser is not connected</value>
+    <value>Автофокусировка включена, фокусер не подключен</value>
   </data>
   <data name="LblAFStarHFR" xml:space="preserve">
-    <value>Star HFR</value>
+    <value>HFR звезды</value>
   </data>
   <data name="LblAfter" xml:space="preserve">
-    <value>After</value>
+    <value>После</value>
   </data>
   <data name="LblAFUseBrightestStars" xml:space="preserve">
-    <value>Use brightest n stars</value>
+    <value>Использовать n ярчайших звезд</value>
   </data>
   <data name="LblAFUseBrightestStarsTooltip" xml:space="preserve">
-    <value>Limit AF to brightest stars. 0 means no limit.</value>
+    <value>Автофокус по ярчайшим звездам. 0 - без ограничений.</value>
   </data>
   <data name="LblAlnitakFlatPanel" xml:space="preserve">
-    <value>Alnitak Flat Panel</value>
+    <value>Флетбокс Альнитак</value>
   </data>
   <data name="LblAltairCameraSetup" xml:space="preserve">
-    <value>Altair Camera Setup</value>
+    <value>Настройка камер Altair</value>
   </data>
   <data name="LblAlternativeUIColorSchema" xml:space="preserve">
-    <value>Alternative UI Color Schema</value>
+    <value>Альтернативная цветовая схема</value>
   </data>
   <data name="LblAltitude" xml:space="preserve">
-    <value>Altitude</value>
+    <value>Высота</value>
   </data>
   <data name="LblAltitudeErrorMeasurement" xml:space="preserve">
-    <value>Measure Altitude Error</value>
+    <value>Измерение ошибки высоты</value>
   </data>
   <data name="LblAltitudeMeasurement" xml:space="preserve">
-    <value>Altitude Measurement</value>
+    <value>Измерение высоты</value>
   </data>
   <data name="LblAltitudeMeasurementButtonTooltip" xml:space="preserve">
     <value>Measures Altitude Error by three steps.
@@ -206,16 +206,16 @@ Using those two points the actual altitude error will be calculated and displaye
     <value>Annotate Deep Sky Objects</value>
   </data>
   <data name="LblAnnotateGrid" xml:space="preserve">
-    <value>Display Grid</value>
+    <value>Показать сетку</value>
   </data>
   <data name="LblAnnotateImage" xml:space="preserve">
-    <value>Annotate Image</value>
+    <value>Подпись к изображению</value>
   </data>
   <data name="LblAnnotateImageTooltip" xml:space="preserve">
     <value>If checked and a star detection for an image is applied, the image will be annotated with the found stars and their respective HFR value</value>
   </data>
   <data name="LblAPIKey" xml:space="preserve">
-    <value>API Key</value>
+    <value>Ключ API</value>
   </data>
   <data name="LblApparentMagnitude" xml:space="preserve">
     <value>Apparent Magnitude</value>
@@ -369,7 +369,7 @@ terrestrial objects or solar system objects as well, but can be sensitive to noi
     <value>Restoring original focus position</value>
   </data>
   <data name="LblAutoFocusSetTime" xml:space="preserve">
-    <value>Time</value>
+    <value>Время</value>
   </data>
   <data name="LblAutoFocusSwitchingBackToFilter" xml:space="preserve">
     <value>Switching back to original filter</value>
@@ -390,7 +390,7 @@ terrestrial objects or solar system objects as well, but can be sensitive to noi
     <value>Auto Update Source</value>
   </data>
   <data name="LblAzimuth" xml:space="preserve">
-    <value>Azimuth</value>
+    <value>Азимут</value>
   </data>
   <data name="LblAzimuthErrorMeasurement" xml:space="preserve">
     <value>Measure Azimuth Error</value>
@@ -409,7 +409,7 @@ Using those two points the actual azimuth error will be calculated and displayed
     <value>Point Telescope South near declination 0 and near meridian</value>
   </data>
   <data name="LblBackground" xml:space="preserve">
-    <value>Background</value>
+    <value>Фон</value>
   </data>
   <data name="LblBacklashMeasurementException" xml:space="preserve">
     <value>An exception occurred while measuring backlash. Backlash values may be wrong.</value>
@@ -421,13 +421,13 @@ Using those two points the actual azimuth error will be calculated and displayed
     <value>Beta</value>
   </data>
   <data name="LblBiasMean" xml:space="preserve">
-    <value>BIAS mean value (in 16bit)</value>
+    <value>Среднее значение bias (в 16бит)</value>
   </data>
   <data name="LblBinning" xml:space="preserve">
-    <value>Binning</value>
+    <value>Биннинг</value>
   </data>
   <data name="LblBinningDescription" xml:space="preserve">
-    <value>Camera binning</value>
+    <value>Биннинг камеры</value>
   </data>
   <data name="LblBitDepth" xml:space="preserve">
     <value>Bit Depth</value>
@@ -475,22 +475,22 @@ Dec: {1}</value>
     <value>Cam</value>
   </data>
   <data name="LblCamera" xml:space="preserve">
-    <value>Camera</value>
+    <value>Камера</value>
   </data>
   <data name="LblCameraBattery" xml:space="preserve">
-    <value>Camera Battery</value>
+    <value>Батарея камеры</value>
   </data>
   <data name="LblCameraBusy" xml:space="preserve">
-    <value>Camera is busy</value>
+    <value>Камера занята</value>
   </data>
   <data name="LblCameraConnected" xml:space="preserve">
-    <value>Camera connected</value>
+    <value>Камера подключена</value>
   </data>
   <data name="LblCameraConnectionLost" xml:space="preserve">
-    <value>Camera connection lost! Please reconnect camera!</value>
+    <value>Соединение с камерой потеряно! Подключите камеру!</value>
   </data>
   <data name="LblCameraCoolerNotEnabled" xml:space="preserve">
-    <value>Camera has cooler, yet it is not enabled</value>
+    <value>Камера имеет охлаждение, но оно ещё не включено</value>
   </data>
   <data name="LblCameraDownloadFailed" xml:space="preserve">
     <value>Camera download failed.

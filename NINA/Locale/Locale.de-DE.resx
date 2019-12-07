@@ -1129,7 +1129,7 @@ wenn die Linien nicht ausgerichtet sind, gibt es einen Polarausrichtungsfehler</
     <value>Kamera ist nicht im manuellen oder im bulb Modus! Bitte die Kamera auf den manuellen oder den bulb Modus umstellen</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
-    <value>Bit Skalierung aktivieren</value>
+    <value>Bitskalierung aktivieren</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
     <value>Speichere 10/12/14 bit Bilder mit einer Skalierung zu 16 Bits. (Nur relevant für Altair und ToupTek Kameras)</value>
@@ -1180,7 +1180,7 @@ wenn die Linien nicht ausgerichtet sind, gibt es einen Polarausrichtungsfehler</
     <value>Belichten</value>
   </data>
   <data name="LblExposureCalculator" xml:space="preserve">
-    <value>Optimale Belichtungszeit Rechner</value>
+    <value>Optimaler Belichtungszeitrechner</value>
   </data>
   <data name="LblExposures" xml:space="preserve">
     <value>Bildern</value>
