@@ -118,34 +118,34 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="LblAbbrEast" xml:space="preserve">
-    <value>Wsch</value>
+    <value>E</value>
   </data>
   <data name="LblAbbrNorth" xml:space="preserve">
-    <value>Pn</value>
+    <value>N</value>
   </data>
   <data name="LblAbbrSouth" xml:space="preserve">
-    <value>Pd</value>
+    <value>S</value>
   </data>
   <data name="LblAbbrWest" xml:space="preserve">
-    <value>Zach</value>
+    <value>W</value>
   </data>
   <data name="LblAberrationInspector" xml:space="preserve">
     <value>Aberration Inspector</value>
   </data>
   <data name="LblActive" xml:space="preserve">
-    <value>Aktywne</value>
+    <value>Active</value>
   </data>
   <data name="LblActiveFilter" xml:space="preserve">
-    <value>Aktywny filtr</value>
+    <value>Active filter</value>
   </data>
   <data name="LblActiveSequenceDetails" xml:space="preserve">
     <value>Active Sequence Details</value>
   </data>
   <data name="LblAddSequenceTarget" xml:space="preserve">
-    <value>Dodaj jako cel sekwencji</value>
+    <value>Add as Sequence Target</value>
   </data>
   <data name="LblAdvancedSettings" xml:space="preserve">
-    <value>Ustawienia zaawansowane</value>
+    <value>Advanced Settings</value>
   </data>
   <data name="LblAFContrastDetection" xml:space="preserve">
     <value>Contrast Detection (Experimental)</value>
@@ -157,19 +157,19 @@
     <value>Star HFR</value>
   </data>
   <data name="LblAfter" xml:space="preserve">
-    <value>Po</value>
+    <value>After</value>
   </data>
   <data name="LblAFUseBrightestStars" xml:space="preserve">
     <value>Use brightest n stars</value>
   </data>
   <data name="LblAFUseBrightestStarsTooltip" xml:space="preserve">
-    <value>Ogranicz AF do najjaśniejszych gwiazd. 0 oznacza brak limitu.</value>
+    <value>Limit AF to brightest stars. 0 means no limit.</value>
   </data>
   <data name="LblAlnitakFlatPanel" xml:space="preserve">
     <value>Alnitak Flat Panel</value>
   </data>
   <data name="LblAltairCameraSetup" xml:space="preserve">
-    <value>Ustawienia aparatu Altair</value>
+    <value>Altair Camera Setup</value>
   </data>
   <data name="LblAlternativeUIColorSchema" xml:space="preserve">
     <value>Alternative UI Color Schema</value>
@@ -1156,7 +1156,7 @@ when the lines are not aligned there is some Polar Alignment error</value>
     <value>Equipment</value>
   </data>
   <data name="LblError" xml:space="preserve">
-    <value>Błąd</value>
+    <value>Error</value>
   </data>
   <data name="LblErrorDistance" xml:space="preserve">
     <value>Error Distance</value>
