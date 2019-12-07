@@ -133,7 +133,7 @@
     <value>Aberration Inspector</value>
   </data>
   <data name="LblActive" xml:space="preserve">
-    <value>Active</value>
+    <value>Активный</value>
   </data>
   <data name="LblActiveFilter" xml:space="preserve">
     <value>Active filter</value>
