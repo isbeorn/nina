@@ -127,6 +127,18 @@
       <ComponentGroupRef Id="External_JPLEPH_files" />
       <ComponentGroupRef Id="Database_Initial_files" />
       <ComponentGroupRef Id="Database_Migration_files" />
+      <ComponentGroupRef Id="ru_RU_files" />
+      <ComponentGroupRef Id="zh_TW_files" />
+      <ComponentGroupRef Id="zh_HK_files" />
+      <ComponentGroupRef Id="zh_CN_files" />
+      <ComponentGroupRef Id="pl_PL_files" />
+      <ComponentGroupRef Id="it_IT_files" />
+      <ComponentGroupRef Id="fr_FR_files" />
+      <ComponentGroupRef Id="es_ES_files" />
+      <ComponentGroupRef Id="en_US_files" />
+      <ComponentGroupRef Id="en_GB_files" />
+      <ComponentGroupRef Id="de_DE_files" />
+      <ComponentGroupRef Id="nl_NL_files" />
     </Feature>
   </Product>
 
@@ -236,6 +248,18 @@
             <Directory Id="Database_Initial" Name="Initial" />
             <Directory Id="Database_Migration" Name="Migration" />
           </Directory>
+          <Directory Id="zh_CN" Name="zh-CN" />
+          <Directory Id="zh_HK" Name="zh-HK" />
+          <Directory Id="zh_TW" Name="zh-TW" />
+          <Directory Id="ru_RU" Name="ru-RU" />
+          <Directory Id="pl_PL" Name="pl-PL" />
+          <Directory Id="nl_NL" Name="nl-NL" />
+          <Directory Id="it_IT" Name="it-IT" />
+          <Directory Id="fr_FR" Name="fr-FR" />
+          <Directory Id="es_ES" Name="es-ES" />
+          <Directory Id="en_US" Name="en-US" />
+          <Directory Id="en_GB" Name="en-GB" />
+          <Directory Id="de_DE" Name="de-DE" />
         </Directory>
       </Directory>
       <Directory Id="ProgramMenuFolder">
@@ -1421,6 +1445,90 @@
       </Component>
       <Component Id="Database_Migration_3.sql" Guid="1ec7f760-b158-4ac2-a5c7-df74adbe3587">
         <File Id="Database_Migration_3.sql" Name="3.sql" Source="$(var.NINA_TargetDir)Database\Migration\3.sql" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="ru_RU_files" Directory="ru_RU">
+      <Component Id="ru_RU_NINA.resources.dll" Guid="f6c9bc0a-4e00-4cdc-b8bb-b1c91eb079d7">
+        <File Id="ru_RU_NINA.resources.dll" Name="NINA.resources.dll" Source="$(var.NINA_TargetDir)ru-RU\NINA.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="zh_TW_files" Directory="zh_TW">
+      <Component Id="zh_TW_NINA.resources.dll" Guid="730122b4-0f53-41fd-babc-1d49fb48a6ba">
+        <File Id="zh_TW_NINA.resources.dll" Name="NINA.resources.dll" Source="$(var.NINA_TargetDir)zh-TW\NINA.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="zh_HK_files" Directory="zh_HK">
+      <Component Id="zh_HK_NINA.resources.dll" Guid="aa3b935c-8a17-482d-baa6-80260bb803d1">
+        <File Id="zh_HK_NINA.resources.dll" Name="NINA.resources.dll" Source="$(var.NINA_TargetDir)zh-HK\NINA.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="zh_CN_files" Directory="zh_CN">
+      <Component Id="zh_CN_NINA.resources.dll" Guid="3b35377e-7003-43c1-830b-3346497bf388">
+        <File Id="zh_CN_NINA.resources.dll" Name="NINA.resources.dll" Source="$(var.NINA_TargetDir)zh-CN\NINA.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="pl_PL_files" Directory="pl_PL">
+      <Component Id="pl_PL_NINA.resources.dll" Guid="816e5841-baab-41bd-ae1b-b35bbdeedc8b">
+        <File Id="pl_PL_NINA.resources.dll" Name="NINA.resources.dll" Source="$(var.NINA_TargetDir)pl-PL\NINA.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="it_IT_files" Directory="it_IT">
+      <Component Id="it_IT_NINA.resources.dll" Guid="8dcc952f-e1a5-4d5e-b088-82d13fb7db86">
+        <File Id="it_IT_NINA.resources.dll" Name="NINA.resources.dll" Source="$(var.NINA_TargetDir)it-IT\NINA.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="fr_FR_files" Directory="fr_FR">
+      <Component Id="fr_FR_NINA.resources.dll" Guid="4421c11d-e054-4c08-872b-96075622e0e6">
+        <File Id="fr_FR_NINA.resources.dll" Name="NINA.resources.dll" Source="$(var.NINA_TargetDir)fr-FR\NINA.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="es_ES_files" Directory="es_ES">
+      <Component Id="es_ES_NINA.resources.dll" Guid="a2c4c079-a342-4a74-bccd-23b87e7e44ee">
+        <File Id="es_ES_NINA.resources.dll" Name="NINA.resources.dll" Source="$(var.NINA_TargetDir)es-ES\NINA.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="en_US_files" Directory="en_US">
+      <Component Id="en_US_NINA.resources.dll" Guid="7e48612a-d740-43af-a2ee-253987f1e1d8">
+        <File Id="en_US_NINA.resources.dll" Name="NINA.resources.dll" Source="$(var.NINA_TargetDir)en-US\NINA.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="en_GB_files" Directory="en_GB">
+      <Component Id="en_GB_NINA.resources.dll" Guid="a095c4da-24bb-41ae-8e6f-9016213936ac">
+        <File Id="en_GB_NINA.resources.dll" Name="NINA.resources.dll" Source="$(var.NINA_TargetDir)en-GB\NINA.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="de_DE_files" Directory="de_DE">
+      <Component Id="de_DE_NINA.resources.dll" Guid="c9c728a6-7704-41e4-a983-6e58e17dfd23">
+        <File Id="de_DE_NINA.resources.dll" Name="NINA.resources.dll" Source="$(var.NINA_TargetDir)de-DE\NINA.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="nl_NL_files" Directory="nl_NL">
+      <Component Id="nl_NL_NINA.resources.dll" Guid="04200f04-e7c9-4735-b679-36baaccd0432">
+        <File Id="nl_NL_NINA.resources.dll" Name="NINA.resources.dll" Source="$(var.NINA_TargetDir)nl-NL\NINA.resources.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
