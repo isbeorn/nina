@@ -164,6 +164,18 @@ This database will be automatically created by the EntityFramework based on the 
 * To run all AUTs simply click on "Run All"
 * You can also run and/or debug single AUTs by right clicking inside the respective method and selecting "Run Test" or "Debug Test"
 
+## Localization
+
+* All strings that are displayed inside the User Interface should be localized using the Locale Manager
+  * In Code Behind: Locale.Loc.Instance["[Label key]"]
+  * In XAML: 
+    * Import namespace: xmlns:ns="clr-namespace:NINA.Locale"
+    * Use via binding like Text="{ns:Loc [Label key]}"
+* To introduce a new label you just need to add the new key and value into "NINA/Locale/Locale.resx" file. The other localized files will be managed by an external integration automatically.
+* All translations are managed by an external page  at [Crowdin](https://nina.crowdin.com) and automatically integrated into the repository
+  * For more information on how to contribute to the localization refer to our documentation in the contributing section
+
+
 ## Pull Requests
 
 * Before making large changes, that will change existing patterns or disrupt ongoing features, please first discuss this via an issue or in discord, before starting to work on the changes! This way we can make sure, that it is the proper time for this change.  
