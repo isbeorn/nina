@@ -6,6 +6,10 @@
  - QHY filter wheels that are integrated (A-series cameras) or are connected to the camera using the 4-pin cable (CFW1/2/3 filter wheels) are now natively supported. This allows the native QHY camera driver to be used with these cameras and configurations.
  - Alnitak Flip Flap Panel support to connect and control the panel inside the application
 
+## Localization
+- To be able to support many languages N.I.N.A. is now available on Crowdin. This powerful online translation management tool will allow users to easily contribute to the localization.
+- For more details visit https://nina.crowdin.com/ and feel free to participate in the ongoing effort to provide multiple languages for N.I.N.A.!
+
 ## Improvements
 - New rows added to a sequence will now default to the values from the previous row
 - Upgraded Atik driver to use latest Atik SDK and drivers
@@ -22,10 +26,6 @@
 	- Comnbination of parabolic or hyperbolic fitting with trend lines (average of fitting minimum and trend line intersection is then used)
 - Added ability to keep guiding during autofocus
 - The autofocus routine has been changed so that it doesn't attempt to measure the focus twice for the same point
-- Added Spanish Translation
-- Added Chinese Simplified Translation
-- Added Chinese Traditional Translation
-- Added French Translation
 - The focuser temperature compensation feature is now turned off before an auto-focus session, and turned back on afterwards
 - The NASA Sky Survey images now are automatically adjusted for brightness and contrast, depending on each image characteristic
 - An autofocus filter can now be set if "Use filter offsets" is set to true. When defined, the autofocus routine will use the autofocus filter instead of the current imaging filter. Initial baseline HFR, and final HFR (used to determine whether the autofocus run was successful) will still use the main imaging filter.
