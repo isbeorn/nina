@@ -139,7 +139,7 @@
     <value>Aktiver Filter</value>
   </data>
   <data name="LblActiveSequenceDetails" xml:space="preserve">
-    <value>Aktive Sequenz Details</value>
+    <value>Details der aktiven Sequenz</value>
   </data>
   <data name="LblAddSequenceTarget" xml:space="preserve">
     <value>Als Sequenzziel hinzufügen</value>
@@ -160,10 +160,10 @@
     <value>Nach</value>
   </data>
   <data name="LblAFUseBrightestStars" xml:space="preserve">
-    <value>Nutze hellste n Sterne</value>
+    <value>Hellste n Sterne verwenden</value>
   </data>
   <data name="LblAFUseBrightestStarsTooltip" xml:space="preserve">
-    <value>Limitiere AF auf hellste Sterne. 0 bedeutet kein Limit</value>
+    <value>Begrenze AF auf die hellsten Sterne. 0 bedeutet kein Limit.</value>
   </data>
   <data name="LblAlnitakFlatPanel" xml:space="preserve">
     <value>Alnitak Flatfieldgenerator</value>
@@ -172,7 +172,7 @@
     <value>Altair Kamerasetup</value>
   </data>
   <data name="LblAlternativeUIColorSchema" xml:space="preserve">
-    <value>Alternatives UI Farbschema</value>
+    <value>Alternatives UI-Farbschema</value>
   </data>
   <data name="LblAltitude" xml:space="preserve">
     <value>Höhe</value>
@@ -200,22 +200,22 @@ Anhand der zwei Punkte wird dann der Höhenfehler errechnet und angezeigt</value
     <value>Konstellationsgrenzen anzeigen</value>
   </data>
   <data name="LblAnnotateConstellations" xml:space="preserve">
-    <value>Konstellationen anzeigen und beschriften</value>
+    <value>Konstellationen anzeigen und kommentieren</value>
   </data>
   <data name="LblAnnotateDSO" xml:space="preserve">
-    <value>Deep Sky Objekte beschriften</value>
+    <value>Deep Sky Objekte kommentieren</value>
   </data>
   <data name="LblAnnotateGrid" xml:space="preserve">
-    <value>Rastergitter anzeigen</value>
+    <value>Raster anzeigen</value>
   </data>
   <data name="LblAnnotateImage" xml:space="preserve">
     <value>Bildbeschriftung</value>
   </data>
   <data name="LblAnnotateImageTooltip" xml:space="preserve">
-    <value>Wenn aktiviert und eine Sternenerkennung initiiert wird, wird das Bild mit den gefundenen Sternen und deren HFR Werten beschriftet</value>
+    <value>Wenn aktiviert und eine Sternerkennung für ein Bild angewendet wird, wird das Bild mit den gefundenen Sternen und ihrem jeweiligen HFR-Wert kommentiert</value>
   </data>
   <data name="LblAPIKey" xml:space="preserve">
-    <value>API Schlüssel</value>
+    <value>API-Schlüssel</value>
   </data>
   <data name="LblApparentMagnitude" xml:space="preserve">
     <value>Scheinbare Helligkeit</value>
@@ -224,12 +224,12 @@ Anhand der zwei Punkte wird dann der Höhenfehler errechnet und angezeigt</value
     <value>Scheinbare Größe</value>
   </data>
   <data name="LblApplicationInBreakMode" xml:space="preserve">
-    <value>Die Anwendung lief in einen unbehandelten Fehler und muss möglicherweise beendet werden.
-Der Fehler wurde in "%localappdata%\NINA\Logs" aufgezeichnet.
-Soll die Anwendung versuchen sich von dem Fehler zu erholen? (Kann zu unerwartetem Verhalten führen)</value>
+    <value>Die Anwendung lief in eine unbehandelte Ausnahme und muss höchstwahrscheinlich geschlossen werden.
+Der Fehler wurde unter "%localappdata%\NINA\Logs" protokolliert.
+Soll die Anwendung versuchen, den Fehler zu beheben? (kann zu unerwartetem Verhalten führen)</value>
   </data>
   <data name="LblApplicationStartDateDescription" xml:space="preserve">
-    <value>Applikationsstartdatum mit Format YYYY-MM-DD</value>
+    <value>Startdatum der Anwendung im Format JJJJ-MM-TT</value>
   </data>
   <data name="LblArcmin" xml:space="preserve">
     <value>Winkelminuten</value>
@@ -244,7 +244,7 @@ Soll die Anwendung versuchen sich von dem Fehler zu erholen? (Kann zu unerwartet
     <value>Eine ASCOM Treiber Interop Ausnahme ist aufgetreten. Dies passiert wahrscheinlich durch einen Unterschied zwischen dem Treiber, der als {0} installiert wurde und N.I.N.A. als {1}. Bitte den Treiber als {1} installieren.</value>
   </data>
   <data name="LblASIImageDownloadError" xml:space="preserve">
-    <value>Fehler beim Erhalten der Bilddaten!</value>
+    <value>Fehler beim Abrufen der Bilddaten von der Kamera!</value>
   </data>
   <data name="LblASIOnly16BitMono" xml:space="preserve">
     <value>Derzeit werden nur 16 bit Monochrome Sensoren unterstützt</value>
@@ -259,13 +259,13 @@ Soll die Anwendung versuchen sich von dem Fehler zu erholen? (Kann zu unerwartet
     <value>ASPS exe wurde nicht gefunden</value>
   </data>
   <data name="LblASTAP" xml:space="preserve">
-    <value>ASTAP, das Astrometic STAcking Program, astrometrischer Solver und FITS Betrachter</value>
+    <value>ASTAP, the Astrometric STAcking Program, astrometric solver and FITS viewer</value>
   </data>
   <data name="LblASTAPDirectory" xml:space="preserve">
     <value>ASTAP Ort</value>
   </data>
   <data name="LblASTAPMinimumVersionNote" xml:space="preserve">
-    <value>Notiz: Benötigt minimum Version 0.9.192 von ASTAP. Für niedrigere Versionen, bitte als Platesolve2 nutzen.</value>
+    <value>Hinweis: Benötigt eine ASTAP Version von 0.9.192 oder höher. Bei niedrigeren Versionen verwenden Sie bitte ASTAP als wäre es Platesolve2.</value>
   </data>
   <data name="LblASTAPNotFound" xml:space="preserve">
     <value>ASTAP exe wurde nicht gefunden</value>
@@ -289,7 +289,7 @@ Soll die Anwendung versuchen sich von dem Fehler zu erholen? (Kann zu unerwartet
     <value>HFR Betrag</value>
   </data>
   <data name="LblAutoFocusAfterSetExposures" xml:space="preserve">
-    <value>Nach # Bildern</value>
+    <value>Nach # Belichtungen</value>
   </data>
   <data name="LblAutoFocusAfterSetTime" xml:space="preserve">
     <value>Nach verstrichener Zeit</value>
@@ -304,13 +304,13 @@ Soll die Anwendung versuchen sich von dem Fehler zu erholen? (Kann zu unerwartet
     <value>Autofokus Belichtungszeit</value>
   </data>
   <data name="LblAutoFocusExposureTimeTooltip" xml:space="preserve">
-    <value>Belichtungszeit, die für Autofokus genutzt werden soll, falls kein Filter genutzt wird oder der Filterspezifische Wert null ist.</value>
+    <value>Belichtungszeit für Autofokus, wenn keine filterspezifische Zeit gesetzt wird oder die filterspezifische Zeit Null ist</value>
   </data>
   <data name="LblAutoFocusFilter" xml:space="preserve">
     <value>Autofokus Filter</value>
   </data>
   <data name="LblAutoFocusGearNotConnected" xml:space="preserve">
-    <value>Autofokus kann nicht gestartet werden. Kamera oder Motorfokus ist nicht verbunden!</value>
+    <value>Auto-Fokus kann nicht gestartet werden. Kamera oder Motorfokus ist nicht verbunden!</value>
   </data>
   <data name="LblAutoFocusInnerCropRatio" xml:space="preserve">
     <value>AF inneres Crop Verhältnis</value>
@@ -955,13 +955,13 @@ wenn die Linien nicht ausgerichtet sind, gibt es einen Polarausrichtungsfehler</
     <value>Download zu Data Verhältnis</value>
   </data>
   <data name="LblDateFormatDescription" xml:space="preserve">
-    <value>Datum mit Format YYYY-MM-DD</value>
+    <value>Datum mit Format JJJJ-MM-TT</value>
   </data>
   <data name="LblDateFormatDescription2" xml:space="preserve">
-    <value>Datum 12 Stunden vor der aktuellen Zeit mit Format YYYY-MM-DD</value>
+    <value>Datum 12 Stunden vor der aktuellen Zeit mit Format JJJJ-MM-TT</value>
   </data>
   <data name="LblDateTimeFormatDescription" xml:space="preserve">
-    <value>Datum mit Format YYYY-MM-DD_HH-mm-ss</value>
+    <value>Datum mit Format JJJJ-MM-TT_HH-mm-ss</value>
   </data>
   <data name="LblDawn" xml:space="preserve">
     <value>Morgendämmerung</value>
