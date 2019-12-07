@@ -5,8 +5,12 @@ using NINA.Utility.Mediator.Interfaces;
 using NINA.ViewModel.Equipment.FlatDevice;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using NINA.Locale;
+using NINA.Model.MyCamera;
+using NINA.Model.MyFilterWheel;
 
 namespace NINATest {
 
@@ -166,6 +170,41 @@ namespace NINATest {
             .Callback((CancellationToken ct) => throw new OperationCanceledException());
             _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
             Assert.That(await _sut.Connect(), Is.False);
+        }
+
+        [Test]
+        public void TestWizardTrainedValuesWithoutFilters() {
+            var result = _sut.WizardTrainedValues;
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Columns.Count, Is.EqualTo(1));
+            Assert.That(result.Rows.Count, Is.EqualTo(1));
+            Assert.That(result.Rows[0][0], Is.EqualTo(Loc.Instance["LblNoFilterwheel"]));
+        }
+
+        [Test]
+        public void TestWizardTrainedValuesWithFilters() {
+            (double time, double brightness) returnValue = (0.5, 0.7);
+            short gainValue = 30;
+            const string filterName = "Blue";
+
+            _mockProfileService
+                .Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(
+                    It.IsAny<(string name, BinningMode binning, short gain)>())).Returns(returnValue);
+            _mockProfileService
+                .Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoBinnings())
+                .Returns(new List<BinningMode> { new BinningMode(1, 1) });
+            _mockProfileService
+                .Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoGains())
+                .Returns(new List<short> { gainValue });
+            _mockFilterWheelMediator.Setup(m => m.GetAllFilters())
+                .Returns(new List<FilterInfo>() { new FilterInfo() { Name = filterName } });
+
+            var result = _sut.WizardTrainedValues;
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Columns.Count, Is.EqualTo(2));
+            Assert.That(result.Rows.Count, Is.EqualTo(1));
+            Assert.That(result.Rows[0][0], Is.EqualTo(filterName));
+            Assert.That(result.Rows[0][1], Is.EqualTo($"{returnValue.time,3:0.0}s @ {returnValue.brightness,3:P0}"));
         }
     }
 }
