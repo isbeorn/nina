@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using NINA.Locale;
 using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
 
@@ -22,7 +23,6 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
         private readonly IFilterWheelMediator _filterWheelMediator;
         private readonly IFlatDeviceMediator _flatDeviceMediator;
         private readonly DeviceUpdateTimer _updateTimer;
-        private FilterWheelInfo _filterWheelInfo;
 
         public FlatDeviceVM(IProfileService profileService, IFlatDeviceMediator flatDeviceMediator, IApplicationStatusMediator applicationStatusMediator, IFilterWheelMediator filterWheelMediator) : base(profileService) {
             _applicationStatusMediator = applicationStatusMediator;
@@ -97,7 +97,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                 _applicationStatusMediator.StatusUpdate(
                     new ApplicationStatus() {
                         Source = Title,
-                        Status = Locale.Loc.Instance["LblConnecting"]
+                        Status = Loc.Instance["LblConnecting"]
                     }
                 );
                 var flatDevice = (IFlatDevice)device;
@@ -123,7 +123,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                         };
                         this.Brightness = flatDevice.Brightness;
 
-                        Notification.ShowSuccess(Locale.Loc.Instance["LblFlatDeviceConnected"]);
+                        Notification.ShowSuccess(Loc.Instance["LblFlatDeviceConnected"]);
 
                         if (_updateTimer != null) {
                             _updateTimer.Interval =
@@ -173,7 +173,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
         }
 
         private void DisconnectFlatDeviceDialog(object obj) {
-            var dialog = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblFlatDeviceDisconnectQuestion"],
+            var dialog = MyMessageBox.MyMessageBox.Show(Loc.Instance["LblFlatDeviceDisconnectQuestion"],
                 "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (dialog == System.Windows.MessageBoxResult.OK) {
                 Disconnect();
@@ -256,7 +256,10 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             _flatDeviceInfo.MaxBrightness = (int)(o ?? 0);
             flatDeviceValues.TryGetValue(nameof(FlatDeviceInfo.LightOn), out o);
             _flatDeviceInfo.LightOn = (bool)(o ?? false);
+            flatDeviceValues.TryGetValue(nameof(FlatDeviceInfo.SupportsOpenClose), out o);
+            _flatDeviceInfo.SupportsOpenClose = (bool)(o ?? false);
 
+            RaisePropertyChanged(nameof(WizardTrainedValues));
             BroadcastFlatDeviceInfo();
         }
 
@@ -268,7 +271,8 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                 {nameof(FlatDeviceInfo.Brightness), _flatDevice?.Brightness ?? 0.0},
                 {nameof(FlatDeviceInfo.MinBrightness), _flatDevice?.MinBrightness ?? 0},
                 {nameof(FlatDeviceInfo.MaxBrightness), _flatDevice?.MaxBrightness ?? 0},
-                {nameof(FlatDeviceInfo.LightOn), _flatDevice?.LightOn ?? false}
+                {nameof(FlatDeviceInfo.LightOn), _flatDevice?.LightOn ?? false},
+                {nameof(FlatDeviceInfo.SupportsOpenClose), _flatDevice?.SupportsOpenClose ?? false}
             };
             return flatDeviceValues;
         }
@@ -278,17 +282,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             _flatDevice.LightOn = (bool)o;
         }
 
-        public class WizardValues {
-            public string FilterName { get; set; }
-            public Dictionary<string, bool> OneByOne { get; set; }
-            public Dictionary<string, bool> TwoByTwo { get; set; }
-
-            public Dictionary<string, bool> ThreeByThree { get; set; }
-            public Dictionary<string, bool> FourByFour { get; set; }
-        }
-
         public void UpdateDeviceInfo(FilterWheelInfo info) {
-            _filterWheelInfo = info;
             RaisePropertyChanged(nameof(WizardTrainedValues));
         }
 
@@ -296,11 +290,11 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             get {
                 var result = new DataTable();
 
-                if (_filterWheelInfo == null || _filterWheelMediator.GetAllFilters() == null) return result;
+                var filters = _filterWheelMediator.GetAllFilters() ?? new List<FilterInfo> { new FilterInfo() };
 
                 var binningModes = new List<BinningMode>();
                 var gains = new List<short>();
-                result.Columns.Add("Binning\nGain", typeof(string));
+                result.Columns.Add($"{Loc.Instance["LblBinning"]}\n{Loc.Instance["LblGain"]}", typeof(string));
                 binningModes.AddRange(profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoBinnings());
                 gains.AddRange(profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoGains());
 
@@ -312,8 +306,8 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                     }
                 }
 
-                foreach (var filter in _filterWheelMediator.GetAllFilters()) {
-                    var row = new List<object> { filter.Name };
+                foreach (var filter in filters) {
+                    var row = new List<object> { filter.Name ?? Loc.Instance["LblNoFilterwheel"] };
                     row.AddRange(keys.Select(
                         key => profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(
                             (name: filter.Name, key.binning, key.gain))).Select(

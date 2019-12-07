@@ -10,6 +10,10 @@ namespace NINA.Profile {
     [DataContract]
     internal class FlatDeviceSettings : Settings, IFlatDeviceSettings {
 
+        public FlatDeviceSettings() {
+            FilterSettings = new Dictionary<(string name, BinningMode binning, short gain), (double time, double brightness)>();
+        }
+
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
             SetDefaultValues();

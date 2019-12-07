@@ -433,7 +433,7 @@ namespace NINA.ViewModel.FlatWizard {
                         CalculatedHistogramMean = imageStatistics.Mean;
                         CalculatedExposureTime = exposureTime;
                         if (_flatDevice != null && _flatDevice.Connected) {
-                            profileService.ActiveProfile.FlatDeviceSettings.AddBrightnessInfo((name: wrapper.Filter.Name, binning: BinningMode, Gain),
+                            profileService.ActiveProfile.FlatDeviceSettings.AddBrightnessInfo((name: wrapper.Filter?.Name, binning: BinningMode, Gain),
                                 (time: exposureTime, _flatDevice.Brightness));
                         }
 
