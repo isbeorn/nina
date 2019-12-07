@@ -54,8 +54,9 @@ namespace NINA.ViewModel {
                 IApplicationStatusMediator applicationStatusMediator
         ) : base(profileService) {
             Title = "LblPlateSolving";
-            SyncScope = false;
-            SlewToTarget = false;
+            SyncScope = profileService.ActiveProfile.PlateSolveSettings.Sync;
+            SlewToTarget = profileService.ActiveProfile.PlateSolveSettings.SlewToTarget;
+            Repeat = profileService.ActiveProfile.PlateSolveSettings.Repeat;
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PlatesolveSVG"];
 
             this.cameraMediator = cameraMediator;
@@ -70,7 +71,6 @@ namespace NINA.ViewModel {
 
             SnapExposureDuration = profileService.ActiveProfile.PlateSolveSettings.ExposureTime;
             SnapFilter = profileService.ActiveProfile.PlateSolveSettings.Filter;
-            Repeat = false;
             RepeatThreshold = profileService.ActiveProfile.PlateSolveSettings.Threshold;
 
             profileService.ProfileChanged += (object sender, EventArgs e) => {
@@ -95,48 +95,42 @@ namespace NINA.ViewModel {
             }
         }
 
-        private bool _syncScope;
-
         public bool SyncScope {
             get {
-                return _syncScope;
+                return profileService.ActiveProfile.PlateSolveSettings.Sync;
             }
             set {
-                _syncScope = value;
-                if (!_syncScope && SlewToTarget) {
+                profileService.ActiveProfile.PlateSolveSettings.Sync = value;
+                if (!profileService.ActiveProfile.PlateSolveSettings.Sync && SlewToTarget) {
                     SlewToTarget = false;
                 }
                 RaisePropertyChanged();
             }
         }
 
-        private bool _slewToTarget;
-
         public bool SlewToTarget {
             get {
-                return _slewToTarget;
+                return profileService.ActiveProfile.PlateSolveSettings.SlewToTarget;
             }
             set {
-                _slewToTarget = value;
-                if (_slewToTarget && !SyncScope) {
+                profileService.ActiveProfile.PlateSolveSettings.SlewToTarget = value;
+                if (profileService.ActiveProfile.PlateSolveSettings.SlewToTarget && !SyncScope) {
                     SyncScope = true;
                 }
-                if (!_slewToTarget && Repeat) {
+                if (!profileService.ActiveProfile.PlateSolveSettings.SlewToTarget && Repeat) {
                     Repeat = false;
                 }
                 RaisePropertyChanged();
             }
         }
 
-        private bool _repeat;
-
         public bool Repeat {
             get {
-                return _repeat;
+                return profileService.ActiveProfile.PlateSolveSettings.Repeat;
             }
             set {
-                _repeat = value;
-                if (_repeat && !SlewToTarget) {
+                profileService.ActiveProfile.PlateSolveSettings.Repeat = value;
+                if (profileService.ActiveProfile.PlateSolveSettings.Repeat && !SlewToTarget) {
                     SlewToTarget = true;
                 }
                 RaisePropertyChanged();

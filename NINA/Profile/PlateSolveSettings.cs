@@ -344,5 +344,50 @@ namespace NINA.Profile {
                 }
             }
         }
+
+        private bool sync;
+
+        [DataMember]
+        public bool Sync {
+            get {
+                return sync;
+            }
+            set {
+                if (sync != value) {
+                    sync = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool slewToTarget;
+
+        [DataMember]
+        public bool SlewToTarget {
+            get {
+                return slewToTarget;
+            }
+            set {
+                if (slewToTarget != value) {
+                    slewToTarget = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool repeat;
+
+        [DataMember]
+        public bool Repeat {
+            get {
+                return repeat;
+            }
+            set {
+                if (repeat != value) {
+                    repeat = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
     }
 }
