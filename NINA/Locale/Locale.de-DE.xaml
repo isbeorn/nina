@@ -403,6 +403,7 @@ Ist dieser Auslöser deaktiviert, wird dieser Schritt übersprungen.</s:String>
     <s:String x:Key="LblFlatDevice" xml:space="default">Flatfieldgenerator</s:String>
     <s:String x:Key="LblFlatDeviceBrightness" xml:space="default">Helligkeit</s:String>
     <s:String x:Key="LblFlatDeviceChooseSerialPort" xml:space="default">Serielle Schnittstelle wählen</s:String>
+    <s:String x:Key="LblFlatDeviceClearValues" xml:space="default">Werte löschen</s:String>
     <s:String x:Key="LblFlatDeviceClose" xml:space="default">Schließen</s:String>
     <s:String x:Key="LblFlatDeviceCloseAtSequenceEnd" xml:space="default">Am Ende der Sequenz Deckel schließen</s:String>
     <s:String x:Key="LblFlatDeviceClosed" xml:space="default">Geschlossen</s:String>
@@ -421,6 +422,7 @@ Ist dieser Auslöser deaktiviert, wird dieser Schritt übersprungen.</s:String>
     <s:String x:Key="LblFlatDeviceOpenForDarkFlats" xml:space="default">Für Dark Flats Deckel öffnen</s:String>
     <s:String x:Key="LblFlatDeviceSetBrightness" xml:space="default">Setzen</s:String>
     <s:String x:Key="LblFlatDeviceUnknown" xml:space="default">Unbekannt</s:String>
+    <s:String x:Key="LblFlatDeviceUseWizardTrainedValues" xml:space="default">Belichtungszeiten vom Flatwizard benutzen</s:String>
     <s:String x:Key="LblFlatExposureCalcContinue" xml:space="default">Mittelwert ADU war {0}, beginne Belichtungszeitkalkulation bei {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcFinished" xml:space="default">Mittelwert ADU ist {0}, Zielbelichtungszeit ist {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcStart" xml:space="default">Beginne Belichtungszeitkalkulation bei {0}</s:String>
@@ -988,6 +990,7 @@ Das Rechteck über einen Teil des Bildes bewegen das Sie fotografieren wollen un
     <s:String x:Key="LblToupTekCameraSetup" xml:space="default">ToupTek Kamerasetup</s:String>
     <s:String x:Key="LblTrace" xml:space="default">Trace</s:String>
     <s:String x:Key="LblTracking" xml:space="default">Nachführung</s:String>
+    <s:String x:Key="LblFlatDeviceTrainedFilterTimes" xml:space="default">Flatwizard Belichtungszeiten</s:String>
     <s:String x:Key="LblTransitNorth" xml:space="default">Transit Nord</s:String>
     <s:String x:Key="LblTransitSouth" xml:space="default">Transit Süd</s:String>
     <s:String x:Key="LblTrendHyperbolic" xml:space="default">Trends und Hyperbolisch</s:String>

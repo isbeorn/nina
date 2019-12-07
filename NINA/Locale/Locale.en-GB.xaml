@@ -164,7 +164,7 @@ able to compensate for ambient temperature variations</s:String>
     <s:String x:Key="LblCenterTarget" xml:space="default">Center target</s:String>
     <s:String x:Key="LblChange" xml:space="default">Change</s:String>
     <s:String x:Key="LblChangedSequenceWarning" xml:space="preserve">The sequence for the target(s) '{0}' have been modified since it was last saved (or has not been saved yet).
-        
+
 Do you want to close the sequence and lose the changes anyway?</s:String>
     <s:String x:Key="LblChangedSequenceWarningTitle" xml:space="default">Closing modified sequence</s:String>
     <s:String x:Key="LblChangeToBulbMode" xml:space="default">Please change the mode dial to bulb mode</s:String>
@@ -403,8 +403,9 @@ When this trigger is deactivated the application will just skip the Start Exposu
     <s:String x:Key="LblFlatDevice" xml:space="default">Flat Panel</s:String>
     <s:String x:Key="LblFlatDeviceBrightness" xml:space="default">Brightness</s:String>
     <s:String x:Key="LblFlatDeviceChooseSerialPort" xml:space="default">Choose serial port</s:String>
+    <s:String x:Key="LblFlatDeviceClearValues" xml:space="default">Clear Values</s:String>
     <s:String x:Key="LblFlatDeviceClose" xml:space="default">Close</s:String>
-    <s:String x:Key="LblFlatDeviceCloseAtSequenceEnd" xml:space="default">Close cover at end of sequence</s:String>
+    <s:String x:Key="LblFlatDeviceCloseAtSequenceEnd" xml:space="default">Close cover when sequence ends</s:String>
     <s:String x:Key="LblFlatDeviceClosed" xml:space="default">Closed</s:String>
     <s:String x:Key="LblFlatDeviceConnected" xml:space="default">Flat panel connected.</s:String>
     <s:String x:Key="LblFlatDeviceConnectedButCoverNotOpen" xml:space="default">A flat panel is connected but the cover is not open.</s:String>
@@ -421,6 +422,7 @@ When this trigger is deactivated the application will just skip the Start Exposu
     <s:String x:Key="LblFlatDeviceOpenForDarkFlats" xml:space="default">Open cover for dark flats</s:String>
     <s:String x:Key="LblFlatDeviceSetBrightness" xml:space="default">Set</s:String>
     <s:String x:Key="LblFlatDeviceUnknown" xml:space="default">Unknown</s:String>
+    <s:String x:Key="LblFlatDeviceUseWizardTrainedValues" xml:space="default">Use exposure times trained with flat wizard</s:String>
     <s:String x:Key="LblFlatExposureCalcContinue" xml:space="default">Mean ADU was {0}, starting Exposure Time calculation at {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcFinished" xml:space="default">Mean ADU is {0} target Exposure Time is {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcStart" xml:space="default">Starting Exposure Time calculation at {0}</s:String>
@@ -987,6 +989,7 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
     <s:String x:Key="LblToupTekCameraSetup" xml:space="default">ToupTek Camera Setup</s:String>
     <s:String x:Key="LblTrace" xml:space="default">Trace</s:String>
     <s:String x:Key="LblTracking" xml:space="default">Tracking</s:String>
+    <s:String x:Key="LblFlatDeviceTrainedFilterTimes" xml:space="default">Flat Wizard Trained Exposure Times</s:String>
     <s:String x:Key="LblTransitNorth" xml:space="default">Transit North</s:String>
     <s:String x:Key="LblTransitSouth" xml:space="default">Transit South</s:String>
     <s:String x:Key="LblTrendHyperbolic" xml:space="default">Trends and Hyperbolic</s:String>

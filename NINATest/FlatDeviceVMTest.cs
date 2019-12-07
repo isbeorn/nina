@@ -18,6 +18,7 @@ namespace NINATest {
         private Mock<IApplicationStatusMediator> _mockApplicationStatusMediator;
         private Mock<IFlatDevice> _mockFlatDevice;
         private Mock<IFlatDeviceChooserVM> _mockFlatDeviceChooserVM;
+        private Mock<IFilterWheelMediator> _mockFilterWheelMediator;
 
         [SetUp]
         public void Init() {
@@ -25,11 +26,12 @@ namespace NINATest {
             _mockProfileService.Setup(m => m.ActiveProfile.ApplicationSettings.DevicePollingInterval).Returns(200);
             _mockProfileService.Setup(m => m.ActiveProfile.FlatDeviceSettings.Id).Returns("mockDevice");
             _mockFlatDeviceMediator = new Mock<IFlatDeviceMediator>();
+            _mockFilterWheelMediator = new Mock<IFilterWheelMediator>();
             _mockApplicationStatusMediator = new Mock<IApplicationStatusMediator>();
             _mockFlatDevice = new Mock<IFlatDevice>();
             _mockFlatDeviceChooserVM = new Mock<IFlatDeviceChooserVM>();
             _sut = new FlatDeviceVM(_mockProfileService.Object, _mockFlatDeviceMediator.Object,
-                _mockApplicationStatusMediator.Object);
+                _mockApplicationStatusMediator.Object, _mockFilterWheelMediator.Object);
         }
 
         [Test]

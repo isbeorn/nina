@@ -229,7 +229,7 @@
                             Margin="0,6,0,6"
                             VerticalAlignment="Top"
                             Columns="2"
-                            Visibility="{Binding FlatDeviceInfo.Connected, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                            Visibility="{Binding FlatDeviceInfo.SupportsOpenClose, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                             <TextBlock Text="{ns:Loc LblFlatDeviceOpenForDarkFlats}" />
                             <CheckBox
                                 Width="120"
@@ -245,7 +245,7 @@
                             Margin="0,6,0,6"
                             VerticalAlignment="Top"
                             Columns="2"
-                            Visibility="{Binding FlatDeviceInfo.Connected, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                            Visibility="{Binding FlatDeviceInfo.SupportsOpenClose, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                             <TextBlock Text="{ns:Loc LblFlatDeviceCloseAtSequenceEnd}" />
                             <CheckBox
                                 Width="120"
@@ -266,7 +266,7 @@
 
                             <TextBlock Text="{ns:Loc LblFlatDeviceUseWizardTrainedValues}" />
 
-                            <DockPanel>
+                            <StackPanel Orientation="Horizontal">
                                 <CheckBox
                                     Width="120"
                                     Height="25"
@@ -274,14 +274,13 @@
                                     HorizontalAlignment="Left"
                                     IsChecked="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.FlatDeviceSettings.UseWizardTrainedValues, Mode=TwoWay}" />
                                 <ninactrl:AsyncProcessButton
-                                    Width="120"
                                     Height="25"
-                                    Margin="5,0,0,0"
+                                    Margin="100,0,0,0"
                                     HorizontalAlignment="Right"
                                     ButtonText="{ns:Loc LblFlatDeviceClearValues}"
                                     Command="{Binding ClearValuesCommand}"
                                     IsEnabled="{Binding FlatDeviceInfo.Connected}" />
-                            </DockPanel>
+                            </StackPanel>
                         </UniformGrid>
                     </Border>
                 </StackPanel>

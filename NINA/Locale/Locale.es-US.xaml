@@ -164,7 +164,7 @@ Compensar con las variaciones de temperatura ambiente</s:String>
     <s:String x:Key="LblCenterTarget" xml:space="default">Centra Objetivo</s:String>
     <s:String x:Key="LblChange" xml:space="default">Cambiar</s:String>
     <s:String x:Key="LblChangedSequenceWarning" xml:space="preserve">The sequence for the target(s) '{0}' have been modified since it was last saved (or has not been saved yet).
-        
+
 Do you want to close the sequence and lose the changes anyway?</s:String>
     <s:String x:Key="LblChangedSequenceWarningTitle" xml:space="default">Closing modified sequence</s:String>
     <s:String x:Key="LblChangeToBulbMode" xml:space="default">Por favor cambia el modo de la Camara a BULB</s:String>
@@ -403,8 +403,9 @@ Cuando el disparador se desactive la aplicacion solo obviara la exposicion inici
     <s:String x:Key="LblFlatDevice" xml:space="default">Flat Panel</s:String>
     <s:String x:Key="LblFlatDeviceBrightness" xml:space="default">Brightness</s:String>
     <s:String x:Key="LblFlatDeviceChooseSerialPort" xml:space="default">Choose serial port</s:String>
+    <s:String x:Key="LblFlatDeviceClearValues" xml:space="default">Clear Values</s:String>
     <s:String x:Key="LblFlatDeviceClose" xml:space="default">Close</s:String>
-    <s:String x:Key="LblFlatDeviceCloseAtSequenceEnd" xml:space="default">Close cover at end of sequence</s:String>
+    <s:String x:Key="LblFlatDeviceCloseAtSequenceEnd" xml:space="default">Close cover when sequence ends</s:String>
     <s:String x:Key="LblFlatDeviceClosed" xml:space="default">Closed</s:String>
     <s:String x:Key="LblFlatDeviceConnected" xml:space="default">Flat panel connected.</s:String>
     <s:String x:Key="LblFlatDeviceConnectedButCoverNotOpen" xml:space="default">A flat panel is connected but the cover is not open.</s:String>
@@ -421,6 +422,7 @@ Cuando el disparador se desactive la aplicacion solo obviara la exposicion inici
     <s:String x:Key="LblFlatDeviceOpenForDarkFlats" xml:space="default">Open cover for dark flats</s:String>
     <s:String x:Key="LblFlatDeviceSetBrightness" xml:space="default">Set</s:String>
     <s:String x:Key="LblFlatDeviceUnknown" xml:space="default">Unknown</s:String>
+    <s:String x:Key="LblFlatDeviceUseWizardTrainedValues" xml:space="default">Use exposure times trained with flat wizard</s:String>
     <s:String x:Key="LblFlatExposureCalcContinue" xml:space="default">El ADU promedio fue {0}, iniciando calculo de tiempo de exposicion en {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcFinished" xml:space="default">El ADU Promedio es {0} Tiempo de exposicion de objetivo es {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcStart" xml:space="default">Iniciando Calculo de Tiempo de exposicion en {0}</s:String>
@@ -987,6 +989,7 @@ Mueve el rectangulo sobre la parte del Encuadre que quieres hacer subsampling. T
     <s:String x:Key="LblToupTekCameraSetup" xml:space="default">Configuracion Camara ToupTek</s:String>
     <s:String x:Key="LblTrace" xml:space="default">Trazar</s:String>
     <s:String x:Key="LblTracking" xml:space="default">Seguimiento</s:String>
+    <s:String x:Key="LblFlatDeviceTrainedFilterTimes" xml:space="default">Flat Wizard Trained Exposure Times</s:String>
     <s:String x:Key="LblTransitNorth" xml:space="default">Transito Norte</s:String>
     <s:String x:Key="LblTransitSouth" xml:space="default">Transito Sur</s:String>
     <s:String x:Key="LblTrendHyperbolic" xml:space="default">Tendencia e Hiperbole</s:String>

@@ -403,8 +403,9 @@
     <s:String x:Key="LblFlatDevice" xml:space="default">平場板</s:String>
     <s:String x:Key="LblFlatDeviceBrightness" xml:space="default">亮度</s:String>
     <s:String x:Key="LblFlatDeviceChooseSerialPort" xml:space="default">選擇串口</s:String>
+    <s:String x:Key="LblFlatDeviceClearValues" xml:space="default">Clear Values</s:String>
     <s:String x:Key="LblFlatDeviceClose" xml:space="default">關閉</s:String>
-    <s:String x:Key="LblFlatDeviceCloseAtSequenceEnd" xml:space="default">Close cover at end of sequence</s:String>
+    <s:String x:Key="LblFlatDeviceCloseAtSequenceEnd" xml:space="default">Close cover when sequence ends</s:String>
     <s:String x:Key="LblFlatDeviceClosed" xml:space="default">已關閉</s:String>
     <s:String x:Key="LblFlatDeviceConnected" xml:space="default">平場板已連接</s:String>
     <s:String x:Key="LblFlatDeviceConnectedButCoverNotOpen" xml:space="default">平場板已連接，但是蓋子未打開</s:String>
@@ -421,6 +422,7 @@
     <s:String x:Key="LblFlatDeviceOpenForDarkFlats" xml:space="default">Open cover for dark flats</s:String>
     <s:String x:Key="LblFlatDeviceSetBrightness" xml:space="default">設定</s:String>
     <s:String x:Key="LblFlatDeviceUnknown" xml:space="default">未知</s:String>
+    <s:String x:Key="LblFlatDeviceUseWizardTrainedValues" xml:space="default">Use exposure times trained with flat wizard</s:String>
     <s:String x:Key="LblFlatExposureCalcContinue" xml:space="default">平均ADU是 {0}，開始曝光時間計算 {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcFinished" xml:space="default">平均ADU是 {0} 目標曝光時間是 {1}</s:String>
     <s:String x:Key="LblFlatExposureCalcStart" xml:space="default">開始曝光時間計算 {0}</s:String>
@@ -987,6 +989,7 @@
     <s:String x:Key="LblToupTekCameraSetup" xml:space="default">ToupTek 相機設置</s:String>
     <s:String x:Key="LblTrace" xml:space="default">跟蹤</s:String>
     <s:String x:Key="LblTracking" xml:space="default">追蹤</s:String>
+    <s:String x:Key="LblFlatDeviceTrainedFilterTimes" xml:space="default">Flat Wizard Trained Exposure Times</s:String>
     <s:String x:Key="LblTransitNorth" xml:space="default">轉向北天</s:String>
     <s:String x:Key="LblTransitSouth" xml:space="default">轉向南天</s:String>
     <s:String x:Key="LblTrendHyperbolic" xml:space="default">趨勢線和雙曲線</s:String>
