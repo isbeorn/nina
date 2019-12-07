@@ -48,5 +48,52 @@ namespace NINATest {
             Assert.That(_sut.GetBrightnessInfoGains().Count(), Is.EqualTo(1));
             Assert.That(_sut.GetBrightnessInfoGains().Contains(gain), Is.True);
         }
+
+        [Test]
+        public void TestUpdateBrightnessInfo() {
+            //setup
+            (string name, BinningMode binning, short gain) key = ("red", new BinningMode(1, 1), 30);
+            var value = (0.5, 0.75);
+            _sut.AddBrightnessInfo(key, value);
+            Assert.That(_sut.GetBrightnessInfo(key), Is.EqualTo(value));
+            Assert.That(_sut.GetBrightnessInfoBinnings().Count(), Is.EqualTo(1));
+            Assert.That(_sut.GetBrightnessInfoBinnings().Contains(new BinningMode(1, 1)), Is.True);
+            Assert.That(_sut.GetBrightnessInfoGains().Count(), Is.EqualTo(1));
+            Assert.That(_sut.GetBrightnessInfoGains().Contains((short)30), Is.True);
+
+            //test
+            value = (0.25, 0.6);
+            _sut.AddBrightnessInfo(key, value);
+
+            //Assert
+            Assert.That(_sut.GetBrightnessInfo(key), Is.EqualTo(value));
+            Assert.That(_sut.GetBrightnessInfoBinnings().Count(), Is.EqualTo(1));
+            Assert.That(_sut.GetBrightnessInfoBinnings().Contains(new BinningMode(1, 1)), Is.True);
+            Assert.That(_sut.GetBrightnessInfoGains().Count(), Is.EqualTo(1));
+            Assert.That(_sut.GetBrightnessInfoGains().Contains((short)30), Is.True);
+        }
+
+        [Test]
+        public void TestClearBrightnessInfo() {
+            //setup
+            (string name, BinningMode binning, short gain) key = ("red", new BinningMode(1, 1), 30);
+            var value = (0.5, 0.75);
+            _sut.AddBrightnessInfo(key, value);
+            Assert.That(_sut.GetBrightnessInfo(key), Is.EqualTo(value));
+            Assert.That(_sut.GetBrightnessInfoBinnings().Count(), Is.EqualTo(1));
+            Assert.That(_sut.GetBrightnessInfoBinnings().Contains(new BinningMode(1, 1)), Is.True);
+            Assert.That(_sut.GetBrightnessInfoGains().Count(), Is.EqualTo(1));
+            Assert.That(_sut.GetBrightnessInfoGains().Contains((short)30), Is.True);
+
+            //test
+            _sut.ClearBrightnessInfo();
+
+            //Assert
+            Assert.That(_sut.GetBrightnessInfo(key), Is.Null);
+            Assert.That(_sut.GetBrightnessInfoBinnings().Count(), Is.EqualTo(0));
+            Assert.That(_sut.GetBrightnessInfoBinnings().Contains(new BinningMode(1, 1)), Is.False);
+            Assert.That(_sut.GetBrightnessInfoGains().Count(), Is.EqualTo(0));
+            Assert.That(_sut.GetBrightnessInfoGains().Contains((short)30), Is.False);
+        }
     }
 }
