@@ -16,6 +16,8 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
 
         void ToggleLight(object o);
 
+        void SetBrightness(double value);
+
         void SetBrightness(object o);
     }
 }

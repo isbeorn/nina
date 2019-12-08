@@ -25,6 +25,6 @@ using NINA.Model.MyGuider;
 
 namespace NINA.Utility.Mediator.Interfaces {
 
-    internal interface IGuiderConsumer : IDeviceConsumer<GuiderInfo> {
+    public interface IGuiderConsumer : IDeviceConsumer<GuiderInfo> {
     }
 }

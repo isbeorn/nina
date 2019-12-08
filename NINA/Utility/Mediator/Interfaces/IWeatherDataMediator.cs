@@ -28,6 +28,6 @@ using NINA.ViewModel.Equipment.WeatherData;
 
 namespace NINA.Utility.Mediator.Interfaces {
 
-    internal interface IWeatherDataMediator : IDeviceMediator<IWeatherDataVM, IWeatherDataConsumer, WeatherDataInfo> {
+    public interface IWeatherDataMediator : IDeviceMediator<IWeatherDataVM, IWeatherDataConsumer, WeatherDataInfo> {
     }
 }

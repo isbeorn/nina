@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace NINA.Utility.Mediator.Interfaces {
 
-    internal interface IRotatorMediator : IDeviceMediator<IRotatorVM, IRotatorConsumer, RotatorInfo> {
+    public interface IRotatorMediator : IDeviceMediator<IRotatorVM, IRotatorConsumer, RotatorInfo> {
 
         Task<float> Move(float position);
 

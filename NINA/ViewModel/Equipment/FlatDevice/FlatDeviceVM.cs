@@ -21,6 +21,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
         public FlatDeviceVM(IProfileService profileService, IFlatDeviceMediator flatDeviceMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             _applicationStatusMediator = applicationStatusMediator;
             _flatDeviceMediator = flatDeviceMediator;
+            _flatDeviceMediator.RegisterHandler(this);
 
             ConnectCommand = new AsyncCommand<bool>(Connect);
             CancelConnectCommand = new RelayCommand(CancelConnectFlatDevice);
@@ -57,6 +58,11 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
         }
 
         public bool LightOn { get; set; }
+
+        public void SetBrightness(double value) {
+            Brightness = value;
+            SetBrightness(null);
+        }
 
         public void SetBrightness(object o) {
             if (_flatDevice == null || !_flatDevice.Connected) return;

@@ -180,7 +180,7 @@ namespace NINA.Model.MyFlatDevice {
             }
         }
 
-        public string DriverInfo => "Serial Driver written by Igor von Nyssen.";
+        public string DriverInfo => "Serial Driver based on Alnitak Generic Commands Rev 44 6/12/2017.";
 
         public string DriverVersion => "1.1";
 

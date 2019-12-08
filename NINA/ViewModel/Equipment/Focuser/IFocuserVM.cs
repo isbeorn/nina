@@ -26,7 +26,8 @@ using System.Threading.Tasks;
 
 namespace NINA.ViewModel.Equipment.Focuser {
 
-    internal interface IFocuserVM : IDeviceVM<FocuserInfo> {
+    public interface IFocuserVM : IDeviceVM<FocuserInfo> {
+
         void ToggleTempComp(bool tempComp);
 
         Task<int> MoveFocuser(int position);

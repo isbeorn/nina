@@ -3244,7 +3244,7 @@ namespace NINA.Locale {
         ///   Looks up a localized string similar to This simulated camera will enable the use of cameras which lack an SDK, while still using the whole N.I.N.A. workflow.
         ///This simulated camera will watch the specified folder for newly created files. These files will be stored inside an internal queue.
         ///Each time the application wants to download an exposure from the camera, the first item of this file queue is resolved and loaded into N.I.N.A.
-        ///Additionally a manual Bulb Mode trigger can be activated, so it will use the selected Bulb Mode in Settings-&gt;Equipmen [rest of string was truncated]&quot;;.
+        ///Additionally a manual Bulb Mode trigger can be activated, so it will use the selected Bulb Mode in Settings-&gt;Equip [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string LblFileCameraDescription {
             get {
@@ -3424,6 +3424,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Close cover when sequence ends.
+        /// </summary>
+        internal static string LblFlatDeviceCloseAtSequenceEnd {
+            get {
+                return ResourceManager.GetString("LblFlatDeviceCloseAtSequenceEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Closed.
         /// </summary>
         internal static string LblFlatDeviceClosed {
@@ -3478,6 +3487,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flat Panel Settings.
+        /// </summary>
+        internal static string LblFlatDeviceFlatPanelSettings {
+            get {
+                return ResourceManager.GetString("LblFlatDeviceFlatPanelSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid response from flat panel..
         /// </summary>
         internal static string LblFlatDeviceInvalidResponse {
@@ -3528,6 +3546,15 @@ namespace NINA.Locale {
         internal static string LblFlatDeviceOpenButton {
             get {
                 return ResourceManager.GetString("LblFlatDeviceOpenButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open cover for dark flats.
+        /// </summary>
+        internal static string LblFlatDeviceOpenForDarkFlats {
+            get {
+                return ResourceManager.GetString("LblFlatDeviceOpenForDarkFlats", resourceCulture);
             }
         }
         

@@ -457,20 +457,17 @@ namespace NINA.ViewModel {
         private FlatWizardVM _flatWizardVM;
 
         public FlatWizardVM FlatWizardVM {
-            get {
-                if (_flatWizardVM == null) {
-                    _flatWizardVM = new FlatWizardVM(profileService,
-                        new ImagingVM(profileService, new ImagingMediator(), cameraMediator, telescopeMediator, filterWheelMediator, focuserMediator, rotatorMediator, guiderMediator, weatherDataMediator, applicationStatusMediator),
-                        cameraMediator,
-                        filterWheelMediator,
-                        telescopeMediator,
-                        FlatDeviceVM,
-                        flatDeviceMediator,
-                        new ApplicationResourceDictionary(),
-                        applicationStatusMediator);
-                }
-                return _flatWizardVM;
-            }
+            get =>
+                _flatWizardVM ?? (_flatWizardVM = new FlatWizardVM(profileService,
+                    new ImagingVM(profileService, new ImagingMediator(), cameraMediator, telescopeMediator,
+                        filterWheelMediator, focuserMediator, rotatorMediator, guiderMediator,
+                        weatherDataMediator, applicationStatusMediator),
+                    cameraMediator,
+                    filterWheelMediator,
+                    telescopeMediator,
+                    flatDeviceMediator,
+                    new ApplicationResourceDictionary(),
+                    applicationStatusMediator));
             set {
                 _flatWizardVM = value;
                 RaisePropertyChanged();
@@ -480,12 +477,9 @@ namespace NINA.ViewModel {
         private SequenceVM _seqVM;
 
         public SequenceVM SeqVM {
-            get {
-                if (_seqVM == null) {
-                    _seqVM = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, flatDeviceMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
-                }
-                return _seqVM;
-            }
+            get => _seqVM ?? (_seqVM = new SequenceVM(profileService, cameraMediator, telescopeMediator,
+                    focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, flatDeviceMediator,
+                    weatherDataMediator, imagingMediator, applicationStatusMediator));
             set {
                 _seqVM = value;
                 RaisePropertyChanged();
