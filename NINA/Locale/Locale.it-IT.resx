@@ -166,7 +166,7 @@
     <value>Limita fuoco automatico alle stelle più luminose. 0 equivale a "nessun limite".</value>
   </data>
   <data name="LblAlnitakFlatPanel" xml:space="preserve">
-    <value>Alnitak Flat Panel</value>
+    <value>Pannello per flats Alnitak</value>
   </data>
   <data name="LblAltairCameraSetup" xml:space="preserve">
     <value>Impostazioni fotocamera Altair</value>
@@ -476,7 +476,7 @@ Dec: {1}</value>
     <value>Camera</value>
   </data>
   <data name="LblCamera" xml:space="preserve">
-    <value>Camera</value>
+    <value>Fotocamera</value>
   </data>
   <data name="LblCameraBattery" xml:space="preserve">
     <value>Batteria Camera</value>
@@ -537,7 +537,7 @@ Filtro: {3}</value>
     <value>Cattura immagine e lancia risoluzione astrometrica</value>
   </data>
   <data name="LblCdC" xml:space="preserve">
-    <value>Cartes du Ciel</value>
+    <value>Carte du Ciel</value>
   </data>
   <data name="LblCenterDec" xml:space="preserve">
     <value>Centra Dec</value>
@@ -617,19 +617,19 @@ Do you want to close the sequence and lose the changes anyway?</value>
     <value>Andromeda</value>
   </data>
   <data name="LblConstellation_ANT" xml:space="preserve">
-    <value>Antlia</value>
+    <value>Macchina Pneumatica</value>
   </data>
   <data name="LblConstellation_APS" xml:space="preserve">
-    <value>Apus</value>
+    <value>Uccello del Paradiso</value>
   </data>
   <data name="LblConstellation_AQL" xml:space="preserve">
     <value>Aquila</value>
   </data>
   <data name="LblConstellation_AQR" xml:space="preserve">
-    <value>Aquarius</value>
+    <value>Acquario</value>
   </data>
   <data name="LblConstellation_ARA" xml:space="preserve">
-    <value>Ara</value>
+    <value>Altare</value>
   </data>
   <data name="LblConstellation_ARI" xml:space="preserve">
     <value>Ariete</value>
@@ -638,52 +638,52 @@ Do you want to close the sequence and lose the changes anyway?</value>
     <value>Auriga</value>
   </data>
   <data name="LblConstellation_BOO" xml:space="preserve">
-    <value>Bootes</value>
+    <value>Boote</value>
   </data>
   <data name="LblConstellation_CAE" xml:space="preserve">
-    <value>Caelum</value>
+    <value>Bulino</value>
   </data>
   <data name="LblConstellation_CAM" xml:space="preserve">
-    <value>Camelopardalis</value>
+    <value>Giraffa</value>
   </data>
   <data name="LblConstellation_CAP" xml:space="preserve">
     <value>Capricorno</value>
   </data>
   <data name="LblConstellation_CAR" xml:space="preserve">
-    <value>Carina</value>
+    <value>Carena</value>
   </data>
   <data name="LblConstellation_CAS" xml:space="preserve">
-    <value>Cassiopeia</value>
+    <value>Cassiopea</value>
   </data>
   <data name="LblConstellation_CEN" xml:space="preserve">
     <value>Centauro</value>
   </data>
   <data name="LblConstellation_CEP" xml:space="preserve">
-    <value>Cepheus</value>
+    <value>Cefeo</value>
   </data>
   <data name="LblConstellation_CET" xml:space="preserve">
-    <value>Cetus</value>
+    <value>Balena</value>
   </data>
   <data name="LblConstellation_CHA" xml:space="preserve">
     <value>Camaleonte</value>
   </data>
   <data name="LblConstellation_CIR" xml:space="preserve">
-    <value>Circinus</value>
+    <value>Compasso</value>
   </data>
   <data name="LblConstellation_CMA" xml:space="preserve">
-    <value>Canis major</value>
+    <value>Cane maggiore</value>
   </data>
   <data name="LblConstellation_CMI" xml:space="preserve">
-    <value>Canis minor</value>
+    <value>Cane minore</value>
   </data>
   <data name="LblConstellation_CNC" xml:space="preserve">
     <value>Cancro</value>
   </data>
   <data name="LblConstellation_COL" xml:space="preserve">
-    <value>Columba</value>
+    <value>Colomba</value>
   </data>
   <data name="LblConstellation_COM" xml:space="preserve">
-    <value>Coma berenices</value>
+    <value>Coma berenice</value>
   </data>
   <data name="LblConstellation_CRA" xml:space="preserve">
     <value>Corona australe</value>
@@ -701,7 +701,7 @@ Do you want to close the sequence and lose the changes anyway?</value>
     <value>Corvo</value>
   </data>
   <data name="LblConstellation_CVN" xml:space="preserve">
-    <value>Canes venatici</value>
+    <value>Cani venatici</value>
   </data>
   <data name="LblConstellation_CYG" xml:space="preserve">
     <value>Cigno</value>
@@ -713,40 +713,40 @@ Do you want to close the sequence and lose the changes anyway?</value>
     <value>Dorado</value>
   </data>
   <data name="LblConstellation_DRA" xml:space="preserve">
-    <value>Draco</value>
+    <value>Dragone</value>
   </data>
   <data name="LblConstellation_EQU" xml:space="preserve">
-    <value>Equuleus</value>
+    <value>Cavallino</value>
   </data>
   <data name="LblConstellation_ERI" xml:space="preserve">
-    <value>Eridanus</value>
+    <value>Eridano</value>
   </data>
   <data name="LblConstellation_FOR" xml:space="preserve">
-    <value>Fornax</value>
+    <value>Fornace</value>
   </data>
   <data name="LblConstellation_GEM" xml:space="preserve">
-    <value>Gemini</value>
+    <value>Gemelli</value>
   </data>
   <data name="LblConstellation_GRU" xml:space="preserve">
-    <value>Grus</value>
+    <value>Gru</value>
   </data>
   <data name="LblConstellation_HER" xml:space="preserve">
-    <value>Hercules</value>
+    <value>Ercole</value>
   </data>
   <data name="LblConstellation_HOR" xml:space="preserve">
-    <value>Horologium</value>
+    <value>Orologio</value>
   </data>
   <data name="LblConstellation_HYA" xml:space="preserve">
-    <value>Hydra</value>
+    <value>Idra</value>
   </data>
   <data name="LblConstellation_HYI" xml:space="preserve">
-    <value>Hydrus</value>
+    <value>Idra Maschio</value>
   </data>
   <data name="LblConstellation_IND" xml:space="preserve">
-    <value>Indus</value>
+    <value>Indiano</value>
   </data>
   <data name="LblConstellation_LAC" xml:space="preserve">
-    <value>Lacerta</value>
+    <value>Lucertola</value>
   </data>
   <data name="LblConstellation_LEO" xml:space="preserve">
     <value>Leone</value>
@@ -755,19 +755,19 @@ Do you want to close the sequence and lose the changes anyway?</value>
     <value>Lepre</value>
   </data>
   <data name="LblConstellation_LIB" xml:space="preserve">
-    <value>Libra</value>
+    <value>Bilancia</value>
   </data>
   <data name="LblConstellation_LMI" xml:space="preserve">
     <value>Leone minore</value>
   </data>
   <data name="LblConstellation_LUP" xml:space="preserve">
-    <value>Lupus</value>
+    <value>Lupo</value>
   </data>
   <data name="LblConstellation_LYN" xml:space="preserve">
     <value>Lince</value>
   </data>
   <data name="LblConstellation_LYR" xml:space="preserve">
-    <value>Lyra</value>
+    <value>Lira</value>
   </data>
   <data name="LblConstellation_MEN" xml:space="preserve">
     <value>Mensa</value>
@@ -776,25 +776,25 @@ Do you want to close the sequence and lose the changes anyway?</value>
     <value>Microscopio</value>
   </data>
   <data name="LblConstellation_MON" xml:space="preserve">
-    <value>Monoceros</value>
+    <value>Monocero</value>
   </data>
   <data name="LblConstellation_MUS" xml:space="preserve">
-    <value>Musca</value>
+    <value>Mosca</value>
   </data>
   <data name="LblConstellation_NOR" xml:space="preserve">
-    <value>Norma</value>
+    <value>Regolo</value>
   </data>
   <data name="LblConstellation_OCT" xml:space="preserve">
-    <value>Octans</value>
+    <value>Ottanti</value>
   </data>
   <data name="LblConstellation_OPH" xml:space="preserve">
-    <value>Ophiuchus</value>
+    <value>Opiuchi</value>
   </data>
   <data name="LblConstellation_ORI" xml:space="preserve">
     <value>Orione</value>
   </data>
   <data name="LblConstellation_PAV" xml:space="preserve">
-    <value>Pavo</value>
+    <value>Pavone</value>
   </data>
   <data name="LblConstellation_PEG" xml:space="preserve">
     <value>Pegaso</value>
@@ -806,46 +806,46 @@ Do you want to close the sequence and lose the changes anyway?</value>
     <value>Fenice</value>
   </data>
   <data name="LblConstellation_PIC" xml:space="preserve">
-    <value>Pictor</value>
+    <value>Pittore</value>
   </data>
   <data name="LblConstellation_PSA" xml:space="preserve">
-    <value>Pisces austrinus</value>
+    <value>Pesce Australe</value>
   </data>
   <data name="LblConstellation_PSC" xml:space="preserve">
     <value>Pesci</value>
   </data>
   <data name="LblConstellation_PUP" xml:space="preserve">
-    <value>Puppis</value>
+    <value>Poppa</value>
   </data>
   <data name="LblConstellation_PYX" xml:space="preserve">
-    <value>Pyxis</value>
+    <value>Bussola</value>
   </data>
   <data name="LblConstellation_RET" xml:space="preserve">
     <value>Reticolo</value>
   </data>
   <data name="LblConstellation_SCL" xml:space="preserve">
-    <value>Sculptor</value>
+    <value>Scultore</value>
   </data>
   <data name="LblConstellation_SCO" xml:space="preserve">
     <value>Scorpione</value>
   </data>
   <data name="LblConstellation_SCT" xml:space="preserve">
-    <value>Scutum</value>
+    <value>Scudo</value>
   </data>
   <data name="LblConstellation_SER" xml:space="preserve">
     <value>Serpente</value>
   </data>
   <data name="LblConstellation_SER1" xml:space="preserve">
-    <value>Serpens caput</value>
+    <value>Serpente</value>
   </data>
   <data name="LblConstellation_SER2" xml:space="preserve">
-    <value>Serpens cauda</value>
+    <value>Serpente</value>
   </data>
   <data name="LblConstellation_SEX" xml:space="preserve">
     <value>Sestante</value>
   </data>
   <data name="LblConstellation_SGE" xml:space="preserve">
-    <value>Sagitta</value>
+    <value>Sagittario</value>
   </data>
   <data name="LblConstellation_SGR" xml:space="preserve">
     <value>Sagittario</value>
@@ -863,7 +863,7 @@ Do you want to close the sequence and lose the changes anyway?</value>
     <value>Triangolo</value>
   </data>
   <data name="LblConstellation_TUC" xml:space="preserve">
-    <value>Tucana</value>
+    <value>Tucano</value>
   </data>
   <data name="LblConstellation_UMA" xml:space="preserve">
     <value>Orsa Maggiore</value>
@@ -878,10 +878,10 @@ Do you want to close the sequence and lose the changes anyway?</value>
     <value>Vergine</value>
   </data>
   <data name="LblConstellation_VOL" xml:space="preserve">
-    <value>Volans</value>
+    <value>Pesce Volante</value>
   </data>
   <data name="LblConstellation_VUL" xml:space="preserve">
-    <value>Vulpecula</value>
+    <value>Volpetta</value>
   </data>
   <data name="LblContinue" xml:space="preserve">
     <value>Continua</value>
@@ -894,7 +894,7 @@ Do you want to close the sequence and lose the changes anyway?</value>
 Quando la durata è impostata, l'applicazione diminuirà lentamente la temperatura fintanto che la temperatura desiderata viene non raggiunta.</value>
   </data>
   <data name="LblCoolerOn" xml:space="preserve">
-    <value>Cooler</value>
+    <value>Raffreddamento</value>
   </data>
   <data name="LblCoolerPower" xml:space="preserve">
     <value>Potenza Cooler</value>
@@ -1250,7 +1250,7 @@ Quando il trigger è disattivato, l'applicazione si limita ad ignorare l'inizio 
     <value>Flats da prendere</value>
   </data>
   <data name="LblFlatDevice" xml:space="preserve">
-    <value>Flat Panel</value>
+    <value>Pannello per flats</value>
   </data>
   <data name="LblFlatDeviceBrightness" xml:space="preserve">
     <value>Luminosità</value>
@@ -1298,10 +1298,10 @@ Quando il trigger è disattivato, l'applicazione si limita ad ignorare l'inizio 
     <value>Aperto</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
-    <value>Set</value>
+    <value>Insieme</value>
   </data>
   <data name="LblFlatDeviceUnknown" xml:space="preserve">
-    <value>Unknown</value>
+    <value>Sconosciuto</value>
   </data>
   <data name="LblFlatExposureCalcContinue" xml:space="preserve">
     <value>ADU media era {0}, inizio calcolo tempo esposizione a {1}</value>
@@ -1349,10 +1349,10 @@ Quando il trigger è disattivato, l'applicazione si limita ad ignorare l'inizio 
     <value>I tuoi files sono troppo scuri, aumenta la luce, aggiusta la tolleranza, prova il tempo di esposizione medio o massimo</value>
   </data>
   <data name="LblFlatWizard" xml:space="preserve">
-    <value>Flat Wizard</value>
+    <value>Procedura guidata per flats</value>
   </data>
   <data name="LblFlatWizardCapture" xml:space="preserve">
-    <value>Flat Wizard Capture</value>
+    <value>Assistente di cattura Flat</value>
   </data>
   <data name="LblFLICameraSetup" xml:space="preserve">
     <value>Setup FLI Camera</value>
@@ -1385,7 +1385,7 @@ Quando il trigger è disattivato, l'applicazione si limita ad ignorare l'inizio 
     <value>Ratio Focale</value>
   </data>
   <data name="LblFocuser" xml:space="preserve">
-    <value>Focuser</value>
+    <value>Focheggiatore</value>
   </data>
   <data name="LblFocuserAutoFocusInitialOffsetSteps" xml:space="preserve">
     <value>Steps di offset Iniziali Auto Focus</value>
@@ -1400,10 +1400,10 @@ Quando il trigger è disattivato, l'applicazione si limita ad ignorare l'inizio 
     <value>La dimensione dello step di focus impiegata nell'auto-focus. Uno step dovrebbe essere inferiore alla tolelranza del punto critico di fuoco</value>
   </data>
   <data name="LblFocuserBacklash" xml:space="preserve">
-    <value>Backlash IN/OUT</value>
+    <value>Contraccolpo DENTRO/FUORI</value>
   </data>
   <data name="LblFocuserBacklashTooltip" xml:space="preserve">
-    <value>Inwards and outwards focuser backlash, in focuser steps</value>
+    <value>Contraccolpo interno ed esterno del focheggiatore, in passi del focheggiatore</value>
   </data>
   <data name="LblFocuserConnected" xml:space="preserve">
     <value>Focuser connesso</value>
@@ -1442,16 +1442,16 @@ HFR Calcolato: {2}
     <value>Folder da controllare</value>
   </data>
   <data name="LblFrameNFocus" xml:space="preserve">
-    <value>Frame &amp; Focus</value>
+    <value>Inquadratura e Fuoco</value>
   </data>
   <data name="LblFrameNrDescription" xml:space="preserve">
     <value># del fotogramma con formato ####</value>
   </data>
   <data name="LblFraming" xml:space="preserve">
-    <value>Framing</value>
+    <value>Inquadratura</value>
   </data>
   <data name="LblFramingAssistant" xml:space="preserve">
-    <value>Framing Assistant</value>
+    <value>Assistente per l'inquadratura</value>
   </data>
   <data name="LblFreeImage" xml:space="preserve">
     <value>FreeImage</value>
@@ -1490,7 +1490,7 @@ HFR Calcolato: {2}
     <value>Importa coordinate del luogo da GPS NMEA</value>
   </data>
   <data name="LblGuider" xml:space="preserve">
-    <value>Guider</value>
+    <value>Guida</value>
   </data>
   <data name="LblGuiderConnected" xml:space="preserve">
     <value>Guider Connesso</value>
@@ -1574,7 +1574,7 @@ HFR Calcolato: {2}
     <value>Iperbolico</value>
   </data>
   <data name="LblId" xml:space="preserve">
-    <value>Id</value>
+    <value>Identificativo</value>
   </data>
   <data name="LblIllumination" xml:space="preserve">
     <value>Illuminazione</value>
@@ -1607,7 +1607,7 @@ HFR Calcolato: {2}
     <value>Light, Flat, Dark, Bias, Snapshot</value>
   </data>
   <data name="LblImaging" xml:space="preserve">
-    <value>Imaging</value>
+    <value>Acquisizione Immagini</value>
   </data>
   <data name="LblImportFromFilterWheel" xml:space="preserve">
     <value>Importa Filtri dalla Filterwheel</value>
@@ -1616,7 +1616,7 @@ HFR Calcolato: {2}
     <value>File Indice</value>
   </data>
   <data name="LblInfo" xml:space="preserve">
-    <value>Info</value>
+    <value>Informazioni</value>
   </data>
   <data name="LblInitiatePlatesolve" xml:space="preserve">
     <value>Inizia Platesolve</value>
@@ -1685,13 +1685,13 @@ HFR Calcolato: {2}
     <value>Caricamento sequenza fallito</value>
   </data>
   <data name="LblLoadSequenceSetFailed" xml:space="preserve">
-    <value>Failed to load target set</value>
+    <value>Impossibile caricare l'insieme di obiettivi</value>
   </data>
   <data name="LblLoadSequenceToolTip" xml:space="preserve">
     <value>Carica Sequenza da file xml</value>
   </data>
   <data name="LblLoadTargetSet" xml:space="preserve">
-    <value>Load target set</value>
+    <value>Carica insieme di obiettivi</value>
   </data>
   <data name="LblLocalPlatesolver" xml:space="preserve">
     <value>Platesolver Locale</value>
@@ -1739,7 +1739,7 @@ HFR Calcolato: {2}
     <value>Quando una rotazione è necessaria apparirà una notifica per ruotare manualmente</value>
   </data>
   <data name="LblMax" xml:space="preserve">
-    <value>Max</value>
+    <value>Massimo</value>
   </data>
   <data name="LblMaxBinX" xml:space="preserve">
     <value>Binning X Massimo</value>
@@ -1787,7 +1787,7 @@ HFR Calcolato: {2}
     <value>Offset Meridiano</value>
   </data>
   <data name="LblMin" xml:space="preserve">
-    <value>Min</value>
+    <value>Minimo</value>
   </data>
   <data name="LblMinDuration" xml:space="preserve">
     <value>Durata minima</value>
@@ -1850,7 +1850,7 @@ HFR Calcolato: {2}
     <value>Da NINA al telescopio</value>
   </data>
   <data name="LblNo" xml:space="preserve">
-    <value>No</value>
+    <value>N°</value>
   </data>
   <data name="LblNoCamera" xml:space="preserve">
     <value>Nessuna Camera</value>
@@ -2114,7 +2114,7 @@ HFR Calcolato: {2}
     <value>Impossibile avviare PHD2. Percorso non trovato</value>
   </data>
   <data name="LblPHD2RARMS" xml:space="preserve">
-    <value>RA: {0} ({1}")</value>
+    <value>AR: {0} ({1}")</value>
   </data>
   <data name="LblPhd2ServerConnectionLost" xml:space="preserve">
     <value>Connessione al Server PHD2 persa!</value>
@@ -2264,7 +2264,7 @@ HFR Calcolato: {2}
     <value>Preparazione Sequenza Flat Scuri</value>
   </data>
   <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
-    <value>Flats for filter: {0}</value>
+    <value>Flats per filtro: {0}</value>
   </data>
   <data name="LblPreSequenceChecklist" xml:space="preserve">
     <value>I seguenti possibili problemi sono stati individuati con la tua sequenza:</value>
@@ -2786,7 +2786,7 @@ Si vogliono sincronizzare i valori?</value>
     <value>Target RA</value>
   </data>
   <data name="LblTargets" xml:space="preserve">
-    <value>Targets</value>
+    <value>Obiettivi</value>
   </data>
   <data name="LblTargetTemp" xml:space="preserve">
     <value>Temperatura Desiderata</value>
@@ -2867,10 +2867,10 @@ Si vogliono sincronizzare i valori?</value>
     <value>TIFF</value>
   </data>
   <data name="LblTiffLzw" xml:space="preserve">
-    <value>TIFF (lzw-compressed)</value>
+    <value>TIFF (lzw-compresso)</value>
   </data>
   <data name="LblTiffZip" xml:space="preserve">
-    <value>TIFF (zip-compressed)</value>
+    <value>TIFF (compresso-zip)</value>
   </data>
   <data name="LblTime" xml:space="preserve">
     <value>Tempo</value>
@@ -2879,13 +2879,13 @@ Si vogliono sincronizzare i valori?</value>
     <value>Tempo con formato HH-mm-ss</value>
   </data>
   <data name="LblTimeout" xml:space="preserve">
-    <value>Timeout</value>
+    <value>Scadenza</value>
   </data>
   <data name="LblTimeoutToSetSwitchValue" xml:space="preserve">
     <value>Timeout per impostare il switch valore {0} per il switch [Id: {1}, Nome: {2}]. Il valore corrente è {3}.</value>
   </data>
   <data name="LblTimeZone" xml:space="preserve">
-    <value>Time Zone</value>
+    <value>Fuso Orario</value>
   </data>
   <data name="LblTo" xml:space="preserve">
     <value>A</value>
@@ -2910,25 +2910,25 @@ Trascina il rettangolo su una stella con le linee di bahtinov. NINA cercherà le
     <value>Abilita/Disabilita Mirino</value>
   </data>
   <data name="LblTooltipDemoteSequenceRow" xml:space="preserve">
-    <value>Move selected row down sequence list</value>
+    <value>Sposta la riga selezionata verso il basso della sequenza</value>
   </data>
   <data name="LblTooltipDemoteTarget" xml:space="preserve">
-    <value>Move target right</value>
+    <value>Sposta l'obiettivo a destra</value>
   </data>
   <data name="LblTooltipDetectStars" xml:space="preserve">
     <value>Abilita (on/off) Rilevamento ed analisi automatici delle stelle (Metà del raggio del focus)</value>
   </data>
   <data name="LblToolTipLiveView" xml:space="preserve">
-    <value>Live View</value>
+    <value>Vista Live</value>
   </data>
   <data name="LblTooltipLoop" xml:space="preserve">
     <value>Abilita/Disabilita Ciclo Esposizioni</value>
   </data>
   <data name="LblTooltipPromoteSequenceRow" xml:space="preserve">
-    <value>Move selected row up sequence list</value>
+    <value>Sposta la riga selezionata verso l'alto della sequenza</value>
   </data>
   <data name="LblTooltipPromoteTarget" xml:space="preserve">
-    <value>Move target left</value>
+    <value>Muovi obiettivo a sinistea</value>
   </data>
   <data name="LblTooltipRemoveSequence" xml:space="preserve">
     <value>Rimuovi la riga selezionata dalla lista delle sequenze</value>
@@ -2950,10 +2950,10 @@ Trascina il rettangolo  sulla parte del fotogramma che vuoi estrarre ed abilita 
     <value>Inizia Esposizione</value>
   </data>
   <data name="LblTooltipTargetLoadSet" xml:space="preserve">
-    <value>Load set of targets from a file</value>
+    <value>Carica un insieme di obiettivi da un file</value>
   </data>
   <data name="LblTooltipTargetSaveSet" xml:space="preserve">
-    <value>Save current targets as a set</value>
+    <value>Salva gli obiettivi correnti come un insieme</value>
   </data>
   <data name="LblTotalNo" xml:space="preserve">
     <value>Totali #</value>
@@ -2962,10 +2962,10 @@ Trascina il rettangolo  sulla parte del fotogramma che vuoi estrarre ed abilita 
     <value>Setup ToupTek Camera</value>
   </data>
   <data name="LblTrace" xml:space="preserve">
-    <value>Trace</value>
+    <value>Traccia</value>
   </data>
   <data name="LblTracking" xml:space="preserve">
-    <value>Tracking</value>
+    <value>Tracciamento</value>
   </data>
   <data name="LblTransitNorth" xml:space="preserve">
     <value>Transit Nord</value>
@@ -3007,7 +3007,7 @@ Trascina il rettangolo  sulla parte del fotogramma che vuoi estrarre ed abilita 
     <value>Exception non gestita</value>
   </data>
   <data name="LblUnlinkedStretch" xml:space="preserve">
-    <value>Unlinked Stretch</value>
+    <value>Stretch scollegato</value>
   </data>
   <data name="LblUnlinkedStretchTooltip" xml:space="preserve">
     <value>Quando abilitato, i canali colore saranno allungati separatamente, aiutando a nascondere lo sfondo
@@ -3015,7 +3015,7 @@ del cielo e migliorando l'autofocus e l'affidabilità del platesolving, particol
 aree ad alto inquinamento luminoso. Il tempo di processo sarà  tuttavia aumentato.</value>
   </data>
   <data name="LblUnpark" xml:space="preserve">
-    <value>Unpark</value>
+    <value>Sparcheggia</value>
   </data>
   <data name="LblUpdate" xml:space="preserve">
     <value>Aggiorna</value>
@@ -3054,7 +3054,7 @@ aree ad alto inquinamento luminoso. Il tempo di processo sarà  tuttavia aumenta
     <value>In attesa che l'immagine precedente finisca di essere processata</value>
   </data>
   <data name="LblWaitForImageSaving" xml:space="preserve">
-    <value>Waiting for image saving</value>
+    <value>In attesa del salvataggio immagine</value>
   </data>
   <data name="LblWaitForTemperatureStep" xml:space="preserve">
     <value>In attesa che al camera raggiunga il prossimo step di temperatura</value>
@@ -3096,7 +3096,7 @@ aree ad alto inquinamento luminoso. Il tempo di processo sarà  tuttavia aumenta
     <value>Visualizza temperature in Fahrenheit</value>
   </data>
   <data name="LblWeatherDisplayImperial" xml:space="preserve">
-    <value>Imperial Units</value>
+    <value>Unità imperiali</value>
   </data>
   <data name="LblWeatherDisplayImperialTooltip" xml:space="preserve">
     <value>Mostra dati meteo non relativi a temperature in Imperial units</value>
@@ -3120,7 +3120,7 @@ aree ad alto inquinamento luminoso. Il tempo di processo sarà  tuttavia aumenta
     <value>Direzione Vento</value>
   </data>
   <data name="LblWindGust" xml:space="preserve">
-    <value>Wind Gust</value>
+    <value>Raffiche di vento</value>
   </data>
   <data name="LblWindSpeed" xml:space="preserve">
     <value>Vel. Vento</value>
@@ -3135,7 +3135,7 @@ aree ad alto inquinamento luminoso. Il tempo di processo sarà  tuttavia aumenta
     <value>Scala Asse-Y</value>
   </data>
   <data name="LblYAxisUnits" xml:space="preserve">
-    <value>Y-Axis Units</value>
+    <value>Unità Asse Y</value>
   </data>
   <data name="LblYes" xml:space="preserve">
     <value>Si</value>
