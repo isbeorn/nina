@@ -107,24 +107,6 @@ namespace NINA.ViewModel.Equipment.Guider {
             }
         }
 
-        public async Task<bool> PauseGuiding(CancellationToken token) {
-            if (Guider?.Connected == true) {
-                return await Guider?.Pause(true, token);
-            } else {
-                return false;
-            }
-        }
-
-        public async Task<bool> ResumeGuiding(CancellationToken token) {
-            if (Guider?.Connected == true) {
-                await Guider?.Pause(false, token);
-                await Utility.Utility.Wait(TimeSpan.FromSeconds(profileService.ActiveProfile.GuiderSettings.SettleTime), token);
-                return true;
-            } else {
-                return false;
-            }
-        }
-
         public int HistorySize {
             get {
                 return profileService.ActiveProfile.GuiderSettings.PHD2HistorySize;

@@ -225,14 +225,6 @@ namespace NINA.Model.MyGuider {
         }
 
         /// <inheritdoc />
-        public Task<bool> Pause(bool pause, CancellationToken ct) {
-            return Task.Run(async () => {
-                ct.Register(guiderService.CancelStartPause);
-                return await guiderService.StartPause(pause);
-            }, ct);
-        }
-
-        /// <inheritdoc />
         public Task<bool> StartGuiding(CancellationToken ct) {
             return Task.Run(async () => {
                 ct.Register(guiderService.CancelStartGuiding);

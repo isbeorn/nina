@@ -43,7 +43,7 @@ namespace NINA.Model.MyGuider {
 
         bool Disconnect();
 
-        Task<bool> Pause(bool pause, CancellationToken ct);
+        //Task<bool> Pause(bool pause, CancellationToken ct);
 
         Task<bool> StartGuiding(CancellationToken ct);
 
@@ -68,27 +68,12 @@ namespace NINA.Model.MyGuider {
         double Time { get; }
         double TimeRA { get; }
         double TimeDec { get; }
-        string Mount { get; }
-        double Dx { get; }
-        double Dy { get; }
         double RADistanceRaw { get; set; }
         double DECDistanceRaw { get; set; }
-        double RADistanceGuide { get; set; }
-        double DECDistanceGuide { get; set; }
         double RADistanceRawDisplay { get; set; }
         double DECDistanceRawDisplay { get; set; }
-        double RADistanceGuideDisplay { get; set; }
-        double DecDistanceGuideDisplay { get; set; }
         double RADuration { get; }
-        string RADirection { get; }
         double DECDuration { get; }
-        string DECDirection { get; }
-        double StarMass { get; }
-        double SNR { get; }
-        double AvgDist { get; }
-        bool RALimited { get; }
-        bool DecLimited { get; }
-        double ErrorCode { get; }
 
         IGuideStep Clone();
     }

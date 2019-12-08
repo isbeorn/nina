@@ -479,7 +479,7 @@ namespace NINATest {
 
             var sut = new FITSHeaderCard(key, value, comment);
 
-            var expectedValue = "2012-01-10T01:20:12.111";
+            var expectedValue = "'2012-01-10T01:20:12.111'";
 
             sut.Key.Should().Be(key);
             sut.Value.Should().Be(expectedValue);

@@ -3,8 +3,15 @@
 ## Features
 
 ### Hardware
- - QHY filter wheels that are integrated (A-series cameras) or are connected to the camera using the 4-pin cable (CFW1/2/3 filter wheels) are now natively supported. This allows the native QHY camera driver to be used with these cameras and configurations.
- - Alnitak Flip Flap Panel support to connect and control the panel inside the application
+ - **QHY filter wheels** that are integrated (A-series cameras) or are connected to the camera using the 4-pin cable (CFW1/2/3 filter wheels) are now natively supported. This allows the native QHY camera driver to be used with these cameras and configurations.
+ - **Alnitak Flip Flap Panel** support to connect and control the panel inside the application
+ - **Lacerta MGEN Superguider integration**
+    - Full control of the MGEN by mirroring the controller fully into N.I.N.A.'s User Interface
+    - Automatic power on when connecting
+    - Starting of guiding on sequence start
+    - On start of guiding initiating a calibration and auto select star when required
+    - Display star drift during guiding in a chart (currently only measured in pixels)
+    - Dithering during sequencing
 
 ## Localization
 - To be able to support many languages N.I.N.A. is now available on Crowdin. This powerful online translation management tool will allow users to easily contribute to the localization.
@@ -60,6 +67,13 @@
 - Added an empty entry for Constellation Filter in Sky Atlas to unselect it
 - Image File Pattern Values will now remove leading and trailing white spaces to prevent invalid file path
 - In case illegal characters for a filename are inside some file patterns, they will now get replaced to still being able to save
+
+## Special Thanks
+The N.I.N.A. team would like to sincerely thank:
+- The staff at [Teleskop Austria](https://teleskop-austria.com/) for providing an MGEN Unit as well as a detailed communication protocol document for implementing the MGEN into N.I.N.A. and being able to test it thoroughly.
+
+These items helped a lot during development and testing.  
+Thank you for your support!
 
 ## Included Camera SDK Versions:
 - Altair: 39.15529.2019.906

@@ -23,12 +23,6 @@ namespace NINA.Model.MyGuider {
         void CancelStartGuiding();
 
         /// <summary>
-        /// Cancels the StartPause request.
-        /// </summary>
-        [OperationContract]
-        void CancelStartPause();
-
-        /// <summary>
         /// Cancels the StopGuiding request.
         /// </summary>
         [OperationContract]
@@ -81,14 +75,6 @@ namespace NINA.Model.MyGuider {
         /// <returns></returns>
         [OperationContract]
         Task<bool> StartGuiding();
-
-        /// <summary>
-        /// Forwards the Pause or Resume command to the PHD2 instance and pauses or resumes PHD2. Can be called from multiple instances simultaneously.
-        /// </summary>
-        /// <param name="pause"></param>
-        /// <returns></returns>
-        [OperationContract]
-        Task<bool> StartPause(bool pause);
 
         /// <summary>
         /// Forwards StopGuiding to the PHD2 instance and stops guiding. Can be called from multiple instances simultaneously.

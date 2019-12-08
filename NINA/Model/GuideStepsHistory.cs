@@ -186,8 +186,6 @@ namespace NINA.Model {
             // only displayed values are changed, not the raw ones
             newStep.RADistanceRawDisplay = newStep.RADistanceRaw * PixelScale;
             newStep.DECDistanceRawDisplay = newStep.DECDistanceRaw * PixelScale;
-            newStep.RADistanceGuideDisplay = newStep.RADistanceGuide * PixelScale;
-            newStep.DecDistanceGuideDisplay = newStep.DECDistanceGuide * PixelScale;
             return newStep;
         }
 

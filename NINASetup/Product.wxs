@@ -28,7 +28,7 @@
   <?define NINA_ProjectDir=$(var.NINA.ProjectDir)?>
   <?define NINA_TargetDir=$(var.NINA.TargetDir)?>
   <?define nikoncswrapper_TargetDir=$(var.nikoncswrapper.TargetDir)?>
-  <?define NINACustomControlLibrary_TargetDir=$(var.NINACustomControlLibrary.TargetDir)?>
+  <?define NINACustomControlLibrary_TargetDir=$(var.NINACustomControlLibrary.TargetDir)?><?define NINA.MGEN_TargetDir=$(var.NINA.MGEN.TargetDir)?>
 
   <Product Id="*" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Language="1033" Version="!(bind.fileVersion.NINA.exe)" Manufacturer="N.I.N.A." UpgradeCode="5DC025EA-3D24-4E6B-9F82-79718D70896A">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
@@ -124,6 +124,8 @@
       <ComponentGroupRef Id="External_x86_NOVAS_files" />
       <ComponentGroupRef Id="External_x86_SOFA_files" />
       <ComponentGroupRef Id="External_x64_SOFA_files" />
+      <ComponentGroupRef Id="External_x64_FTDI_files" />
+      <ComponentGroupRef Id="External_x86_FTDI_files" />
       <ComponentGroupRef Id="External_JPLEPH_files" />
       <ComponentGroupRef Id="Database_Initial_files" />
       <ComponentGroupRef Id="Database_Migration_files" />
@@ -199,6 +201,7 @@
               <Directory Id="External_x64_ToupTek" Name="ToupTek" />
               <Directory Id="External_x64_NOVAS" Name="NOVAS" />
               <Directory Id="External_x64_SOFA" Name="SOFA" />
+              <Directory Id="External_x64_FTDI" Name="FTDI" />
             </Directory>
             <Directory Id="External_x86" Name="x86">
               <Directory Id="External_x86_Nikon" Name="Nikon">
@@ -238,6 +241,7 @@
               <Directory Id="External_x86_ToupTek" Name="ToupTek" />
               <Directory Id="External_x86_NOVAS" Name="NOVAS" />
               <Directory Id="External_x86_SOFA" Name="SOFA" />
+              <Directory Id="External_x86_FTDI" Name="FTDI" />
             </Directory>
           </Directory>
           <Directory Id="Utility" Name="Utility">
@@ -456,6 +460,9 @@
       </Component>
       <Component Id="Accord.dll.config" Guid="c7614cb9-9003-4cdc-965b-46c3b76a789a">
         <File Id="Accord.dll.config" Name="Accord.dll.config" Source="$(var.NINA_TargetDir)Accord.dll.config" />
+      </Component>
+      <Component Id="NINA.MGEN.dll" Guid="aff16aed-fbcc-4db3-8ae6-30387f4995e9">
+        <File Id="NINA.MGEN.dll" Name="NINA.MGEN.dll" Source="$(var.NINA.MGEN_TargetDir)NINA.MGEN.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
@@ -1422,6 +1429,20 @@
     <ComponentGroup Id="External_x64_SOFA_files" Directory="External_x64_SOFA">
       <Component Win64="$(var.Win64)" Id="External_x64_SOFA_SOFAlib.dll" Guid="7e84f09e-ef65-4075-93f9-34a61f47a2af">
         <File Id="External_x64_SOFA_SOFAlib.dll" Name="SOFAlib.dll" Source="$(var.NINA_TargetDir)External\x64\SOFA\SOFAlib.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_x64_FTDI_files" Directory="External_x64_FTDI">
+      <Component Win64="$(var.Win64)" Id="External_x64_FTDI_ftd2xx.dll" Guid="CB3DB9E0-CAB0-4FC0-8316-D986C39BEB39">
+        <File Id="External_x64_FTDI_ftd2xx.dll" Name="ftd2xx.dll" Source="$(var.NINA_ProjectDir)External\x64\FTDI\ftd2xx.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_x86_FTDI_files" Directory="External_x86_FTDI">
+      <Component Win64="$(var.Win64)" Id="External_x86_FTDI_ftd2xx.dll" Guid="C479F5E1-2EF7-4763-9277-F646E87A69CA">
+        <File Id="External_x86_FTDI_ftd2xx.dll" Name="ftd2xx.dll" Source="$(var.NINA_ProjectDir)External\x86\FTDI\ftd2xx.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

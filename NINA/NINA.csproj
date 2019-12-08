@@ -440,6 +440,7 @@
     <Compile Include="Model\MyFlatDevice\IFlatDevice.cs" />
     <Compile Include="Model\MyGuider\DirectGuider.cs" />
     <Compile Include="Model\MyGuider\ISynchronizedPHD2GuiderService.cs" />
+    <Compile Include="Model\MyGuider\MGENGuider.cs" />
     <Compile Include="Model\MyGuider\SynchronizedPHD2Guider.cs" />
     <Compile Include="Model\MyGuider\SynchronizedPHD2GuiderService.cs" />
     <Compile Include="Model\MyPlanetarium\CartesDuCiel.cs" />
@@ -559,6 +560,13 @@
     </Compile>
     <Compile Include="View\Equipment\FlatDevice\AlnitakSetupView.xaml.cs">
       <DependentUpon>AlnitakSetupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Guider\DefaultDetailView.xaml.cs">
+      <DependentUpon>DefaultDetailView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Guider\GuiderTemplateSelector.cs" />
+    <Compile Include="View\Equipment\Guider\MGenDetailView.xaml.cs">
+      <DependentUpon>MGenDetailView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Equipment\FlatDevice\FlatDeviceView.xaml.cs">
       <DependentUpon>FlatDeviceView.xaml</DependentUpon>
@@ -1258,6 +1266,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\Equipment\Guider\DefaultDetailView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\Guider\MGenDetailView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Equipment\FlatDevice\AlnitakSetupView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1528,6 +1544,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="..\NINA.sln.licenseheader">
+      <Link>NINA.sln.licenseheader</Link>
+    </None>
     <None Include="BootstrapAscomProfileStore.ps1" />
     <Resource Include="Resources\astrometry.net.png" />
     <Content Include="Database\Initial\initial_data.sql">
@@ -1549,6 +1568,9 @@
     <Content Include="External\x64\FreeImage\FreeImage.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="External\x64\FTDI\ftd2xx.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="External\x64\NOVAS\NOVAS31lib.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1560,6 +1582,9 @@
     </Content>
     <Content Include="External\x86\FLI\libfli.dll" />
     <Content Include="External\x86\FreeImage\FreeImage.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\FTDI\ftd2xx.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\NOVAS\NOVAS31lib.dll">
@@ -1695,6 +1720,10 @@
       <Project>{aade1df5-4c46-4760-b72b-474d90336f5b}</Project>
       <Name>nikoncswrapper</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NINA.MGEN\NINA.MGEN.csproj">
+      <Project>{d897bffd-7777-44f5-9100-1ff0db3b032f}</Project>
+      <Name>NINA.MGEN</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NINACustomControlLibrary\NINACustomControlLibrary.csproj">
       <Project>{39fefc1e-7a69-440d-b38a-5b9469353491}</Project>
       <Name>NINACustomControlLibrary</Name>
@@ -1764,85 +1793,87 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if exist "$(ProjectDir)External\x64\Altair" (
-    echo "Copy Altair x64 DLLs"
-    xcopy "$(ProjectDir)External\x64\Altair" "$(TargetDir)\External\x64\Altair" /h/i/c/k/e/r/y
-)
-if exist "$(ProjectDir)External\x86\Altair" (
-    echo "Copy Altair x86 DLLs"
-    xcopy "$(ProjectDir)External\x86\Altair" "$(TargetDir)\External\x86\Altair" /h/i/c/k/e/r/y
-)
+    <PostBuildEvent>
+      if exist "$(ProjectDir)External\x64\Altair" (
+      echo "Copy Altair x64 DLLs"
+      xcopy "$(ProjectDir)External\x64\Altair" "$(TargetDir)\External\x64\Altair" /h/i/c/k/e/r/y
+      )
+      if exist "$(ProjectDir)External\x86\Altair" (
+      echo "Copy Altair x86 DLLs"
+      xcopy "$(ProjectDir)External\x86\Altair" "$(TargetDir)\External\x86\Altair" /h/i/c/k/e/r/y
+      )
 
-if exist "$(ProjectDir)External\x64\ASI" (
-    echo "Copy ASI x64 DLLs"
-    xcopy "$(ProjectDir)External\x64\ASI" "$(TargetDir)\External\x64\ASI" /h/i/c/k/e/r/y
-)
-if exist "$(ProjectDir)External\x86\ASI" (
-    echo "Copy ASI x86 DLLs"
-    xcopy "$(ProjectDir)External\x86\ASI" "$(TargetDir)\External\x86\ASI" /h/i/c/k/e/r/y
-)
+      if exist "$(ProjectDir)External\x64\ASI" (
+      echo "Copy ASI x64 DLLs"
+      xcopy "$(ProjectDir)External\x64\ASI" "$(TargetDir)\External\x64\ASI" /h/i/c/k/e/r/y
+      )
+      if exist "$(ProjectDir)External\x86\ASI" (
+      echo "Copy ASI x86 DLLs"
+      xcopy "$(ProjectDir)External\x86\ASI" "$(TargetDir)\External\x86\ASI" /h/i/c/k/e/r/y
+      )
 
-if exist "$(ProjectDir)External\x64\Atik" (
-    echo "Copy Atik x64 DLLs"
-    xcopy "$(ProjectDir)External\x64\Atik" "$(TargetDir)\External\x64\Atik" /h/i/c/k/e/r/y
-)
-if exist "$(ProjectDir)External\x86\Atik" (
-    echo "Copy Atik x86 DLLs"
-    xcopy "$(ProjectDir)External\x86\Atik" "$(TargetDir)\External\x86\Atik" /h/i/c/k/e/r/y
-)
+      if exist "$(ProjectDir)External\x64\Atik" (
+      echo "Copy Atik x64 DLLs"
+      xcopy "$(ProjectDir)External\x64\Atik" "$(TargetDir)\External\x64\Atik" /h/i/c/k/e/r/y
+      )
+      if exist "$(ProjectDir)External\x86\Atik" (
+      echo "Copy Atik x86 DLLs"
+      xcopy "$(ProjectDir)External\x86\Atik" "$(TargetDir)\External\x86\Atik" /h/i/c/k/e/r/y
+      )
 
-if exist "$(ProjectDir)External\x64\Canon" (
-    echo "Copy Canon x64 DLLs"
-    xcopy "$(ProjectDir)External\x64\Canon" "$(TargetDir)\External\x64\Canon" /h/i/c/k/e/r/y
-)
-if exist "$(ProjectDir)External\x86\Canon" (
-    echo "Copy Canon x86 DLLs"
-    xcopy "$(ProjectDir)External\x86\Canon" "$(TargetDir)\External\x86\Canon" /h/i/c/k/e/r/y
-)
+      if exist "$(ProjectDir)External\x64\Canon" (
+      echo "Copy Canon x64 DLLs"
+      xcopy "$(ProjectDir)External\x64\Canon" "$(TargetDir)\External\x64\Canon" /h/i/c/k/e/r/y
+      )
+      if exist "$(ProjectDir)External\x86\Canon" (
+      echo "Copy Canon x86 DLLs"
+      xcopy "$(ProjectDir)External\x86\Canon" "$(TargetDir)\External\x86\Canon" /h/i/c/k/e/r/y
+      )
 
-if exist "$(ProjectDir)External\x64\Nikon" (
-    echo "Copy Nikon x64 DLLs"
-    xcopy "$(ProjectDir)External\x64\Nikon" "$(TargetDir)\External\x64\Nikon" /h/i/c/k/e/r/y
-)
-if exist "$(ProjectDir)External\x86\Nikon" (
-    echo "Copy Nikon x86 DLLs"
-    xcopy "$(ProjectDir)External\x86\Nikon" "$(TargetDir)\External\x86\Nikon" /h/i/c/k/e/r/y
-)
+      if exist "$(ProjectDir)External\x64\Nikon" (
+      echo "Copy Nikon x64 DLLs"
+      xcopy "$(ProjectDir)External\x64\Nikon" "$(TargetDir)\External\x64\Nikon" /h/i/c/k/e/r/y
+      )
+      if exist "$(ProjectDir)External\x86\Nikon" (
+      echo "Copy Nikon x86 DLLs"
+      xcopy "$(ProjectDir)External\x86\Nikon" "$(TargetDir)\External\x86\Nikon" /h/i/c/k/e/r/y
+      )
 
-if exist "$(ProjectDir)External\x64\ToupTek" (
-    echo "Copy ToupTek x64 DLLs"
-    xcopy "$(ProjectDir)External\x64\ToupTek" "$(TargetDir)\External\x64\ToupTek" /h/i/c/k/e/r/y
-)
-if exist "$(ProjectDir)External\x86\ToupTek" (
-    echo "Copy ToupTek x86 DLLs"
-    xcopy "$(ProjectDir)External\x86\ToupTek" "$(TargetDir)\External\x86\ToupTek" /h/i/c/k/e/r/y
-)
+      if exist "$(ProjectDir)External\x64\ToupTek" (
+      echo "Copy ToupTek x64 DLLs"
+      xcopy "$(ProjectDir)External\x64\ToupTek" "$(TargetDir)\External\x64\ToupTek" /h/i/c/k/e/r/y
+      )
+      if exist "$(ProjectDir)External\x86\ToupTek" (
+      echo "Copy ToupTek x86 DLLs"
+      xcopy "$(ProjectDir)External\x86\ToupTek" "$(TargetDir)\External\x86\ToupTek" /h/i/c/k/e/r/y
+      )
 
-if exist "$(ProjectDir)External\x64\QHYCCD" (
-    echo "Copy QHYCCD x64 DLLs"
-    xcopy "$(ProjectDir)External\x64\QHYCCD" "$(TargetDir)\External\x64\QHYCCD" /h/i/c/k/e/r/y
-)
-if exist "$(ProjectDir)External\x86\QHYCCD" (
-    echo "Copy QHYCCD x86 DLLs"
-    xcopy "$(ProjectDir)External\x86\QHYCCD" "$(TargetDir)\External\x86\QHYCCD" /h/i/c/k/e/r/y
-)
+      if exist "$(ProjectDir)External\x64\QHYCCD" (
+      echo "Copy QHYCCD x64 DLLs"
+      xcopy "$(ProjectDir)External\x64\QHYCCD" "$(TargetDir)\External\x64\QHYCCD" /h/i/c/k/e/r/y
+      )
+      if exist "$(ProjectDir)External\x86\QHYCCD" (
+      echo "Copy QHYCCD x86 DLLs"
+      xcopy "$(ProjectDir)External\x86\QHYCCD" "$(TargetDir)\External\x86\QHYCCD" /h/i/c/k/e/r/y
+      )
 
-if exist "$(ProjectDir)External\x64\FLI" (
-    echo "Copy FLI x64 DLLs"
-    xcopy "$(ProjectDir)External\x64\FLI" "$(TargetDir)\External\x64\FLI" /h/i/c/k/e/r/y
-)
-if exist "$(ProjectDir)External\x86\FLI" (
-    echo "Copy FLI x86 DLLs"
-    xcopy "$(ProjectDir)External\x86\FLI" "$(TargetDir)\External\x86\FLI" /h/i/c/k/e/r/y
-)
+      if exist "$(ProjectDir)External\x64\FLI" (
+      echo "Copy FLI x64 DLLs"
+      xcopy "$(ProjectDir)External\x64\FLI" "$(TargetDir)\External\x64\FLI" /h/i/c/k/e/r/y
+      )
+      if exist "$(ProjectDir)External\x86\FLI" (
+      echo "Copy FLI x86 DLLs"
+      xcopy "$(ProjectDir)External\x86\FLI" "$(TargetDir)\External\x86\FLI" /h/i/c/k/e/r/y
+      )
 
-if $(Platform) == x86 (
-    if exist "$(DevEnvDir)..\..\VC\Auxiliary\Build\vcvars32.bat" (
-        echo "Making x86 large address aware"
-        call "$(DevEnvDir)..\..\VC\Auxiliary\Build\vcvars32.bat"
-        editbin /largeaddressaware "$(TargetPath)"
-    )
-)</PostBuildEvent>
+      if $(Platform) == x86 (
+      if exist "$(DevEnvDir)..\..\VC\Auxiliary\Build\vcvars32.bat" (
+      echo "Making x86 large address aware"
+      call "$(DevEnvDir)..\..\VC\Auxiliary\Build\vcvars32.bat"
+      editbin /largeaddressaware "$(TargetPath)"
+      )
+      )
+    </PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

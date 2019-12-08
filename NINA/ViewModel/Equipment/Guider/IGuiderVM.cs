@@ -39,10 +39,6 @@ namespace NINA.ViewModel.Equipment.Guider {
 
         Task<bool> StopGuiding(CancellationToken token);
 
-        Task<bool> PauseGuiding(CancellationToken token);
-
-        Task<bool> ResumeGuiding(CancellationToken token);
-
         Task<bool> AutoSelectGuideStar(CancellationToken token);
 
         RMS StopRMSRecording(Guid handle);

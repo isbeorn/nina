@@ -90,7 +90,6 @@ namespace NINA.Model.MyGuider {
     internal class SynchronizedPHD2GuiderService : ISynchronizedPHD2GuiderService {
         private readonly object ditherLock = new object();
         private readonly object startGuidingLock = new object();
-        private readonly object startPauseLock = new object();
         private readonly object stopGuidingLock = new object();
         private CancellationTokenSource ditherCancellationTokenSource;
         private Task<bool> ditherTask;
@@ -98,8 +97,6 @@ namespace NINA.Model.MyGuider {
         private TaskCompletionSource<bool> initializeTaskCompletionSource;
         private CancellationTokenSource startGuidingCancellationTokenSource;
         private Task<bool> startGuidingTask;
-        private CancellationTokenSource startPauseCancellationTokenSource;
-        private Task<bool> startPauseTask;
         private CancellationTokenSource stopGuidingCancellationTokenSource;
         private Task<bool> stopGuidingTask;
         public List<SynchronizedClientInfo> ConnectedClients;
@@ -131,11 +128,6 @@ namespace NINA.Model.MyGuider {
         /// <inheritdoc />
         public void CancelStartGuiding() {
             startGuidingCancellationTokenSource?.Cancel();
-        }
-
-        /// <inheritdoc />
-        public void CancelStartPause() {
-            startPauseCancellationTokenSource?.Cancel();
         }
 
         /// <inheritdoc />
@@ -225,23 +217,6 @@ namespace NINA.Model.MyGuider {
             }
 
             return startGuidingTask;
-        }
-
-        /// <inheritdoc />
-        public Task<bool> StartPause(bool pause) {
-            lock (startPauseLock) {
-                var taskStatus = startPauseTask?.Status;
-                if (taskStatus == TaskStatus.Faulted ||
-                    taskStatus == TaskStatus.Canceled ||
-                    taskStatus == TaskStatus.RanToCompletion ||
-                    startPauseTask == null) {
-                    startPauseCancellationTokenSource?.Dispose();
-                    startPauseCancellationTokenSource = new CancellationTokenSource();
-                    startPauseTask = guiderInstance.Pause(pause, startPauseCancellationTokenSource.Token);
-                }
-            }
-
-            return startPauseTask;
         }
 
         /// <inheritdoc />
