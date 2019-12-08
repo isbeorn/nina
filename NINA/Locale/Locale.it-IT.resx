@@ -1261,6 +1261,9 @@ Quando il trigger è disattivato, l'applicazione si limita ad ignorare l'inizio 
   <data name="LblFlatDeviceClose" xml:space="preserve">
     <value>Chiudi</value>
   </data>
+  <data name="LblFlatDeviceCloseAtSequenceEnd" xml:space="preserve">
+    <value>Close cover when sequence ends</value>
+  </data>
   <data name="LblFlatDeviceClosed" xml:space="preserve">
     <value>Chiuso</value>
   </data>
@@ -1279,6 +1282,9 @@ Quando il trigger è disattivato, l'applicazione si limita ad ignorare l'inizio 
   <data name="LblFlatDeviceDisconnectQuestion" xml:space="preserve">
     <value>Vuoi scollegare il pannello per I flats?</value>
   </data>
+  <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
+    <value>Flat Panel Settings</value>
+  </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
     <value>Risposta non valida dal pannello per I flats.</value>
   </data>
@@ -1296,6 +1302,9 @@ Quando il trigger è disattivato, l'applicazione si limita ad ignorare l'inizio 
   </data>
   <data name="LblFlatDeviceOpenButton" xml:space="preserve">
     <value>Aperto</value>
+  </data>
+  <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
+    <value>Open cover for dark flats</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Insieme</value>

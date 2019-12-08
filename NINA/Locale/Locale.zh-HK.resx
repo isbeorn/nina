@@ -1261,6 +1261,9 @@
   <data name="LblFlatDeviceClose" xml:space="preserve">
     <value>關閉</value>
   </data>
+  <data name="LblFlatDeviceCloseAtSequenceEnd" xml:space="preserve">
+    <value>Close cover when sequence ends</value>
+  </data>
   <data name="LblFlatDeviceClosed" xml:space="preserve">
     <value>已關閉</value>
   </data>
@@ -1279,6 +1282,9 @@
   <data name="LblFlatDeviceDisconnectQuestion" xml:space="preserve">
     <value>你想斷開平場板連結嗎?</value>
   </data>
+  <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
+    <value>Flat Panel Settings</value>
+  </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
     <value>平場板無法連結</value>
   </data>
@@ -1296,6 +1302,9 @@
   </data>
   <data name="LblFlatDeviceOpenButton" xml:space="preserve">
     <value>打開</value>
+  </data>
+  <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
+    <value>Open cover for dark flats</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>設定</value>
