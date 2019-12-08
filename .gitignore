@@ -10,6 +10,7 @@ NINA/External/*/FLI
 
 # User-specific files
 *.rsuser
+*.user
 *.suo
 *.user
 *.userosscache
