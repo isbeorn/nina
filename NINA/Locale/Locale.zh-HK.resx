@@ -1,0 +1,3163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="LblAbbrEast" xml:space="preserve">
+    <value>東</value>
+  </data>
+  <data name="LblAbbrNorth" xml:space="preserve">
+    <value>北</value>
+  </data>
+  <data name="LblAbbrSouth" xml:space="preserve">
+    <value>南</value>
+  </data>
+  <data name="LblAbbrWest" xml:space="preserve">
+    <value>西</value>
+  </data>
+  <data name="LblAberrationInspector" xml:space="preserve">
+    <value>好似差檢測</value>
+  </data>
+  <data name="LblActive" xml:space="preserve">
+    <value>使用</value>
+  </data>
+  <data name="LblActiveFilter" xml:space="preserve">
+    <value>使用濾鏡輪</value>
+  </data>
+  <data name="LblActiveSequenceDetails" xml:space="preserve">
+    <value>活動序列詳情</value>
+  </data>
+  <data name="LblAddSequenceTarget" xml:space="preserve">
+    <value>添加到序列目標</value>
+  </data>
+  <data name="LblAdvancedSettings" xml:space="preserve">
+    <value>高級設置</value>
+  </data>
+  <data name="LblAFContrastDetection" xml:space="preserve">
+    <value>反差對焦 (實驗性)</value>
+  </data>
+  <data name="LblAFOnButFocuserNotConnected" xml:space="preserve">
+    <value>啟用自動對焦, 但冇連接電調</value>
+  </data>
+  <data name="LblAFStarHFR" xml:space="preserve">
+    <value>星啲 HFR</value>
+  </data>
+  <data name="LblAfter" xml:space="preserve">
+    <value>經過</value>
+  </data>
+  <data name="LblAFUseBrightestStars" xml:space="preserve">
+    <value>使用光星嘅數量</value>
+  </data>
+  <data name="LblAFUseBrightestStarsTooltip" xml:space="preserve">
+    <value>制自動對焦使用光星嘅數量。 0表示無限制。</value>
+  </data>
+  <data name="LblAlnitakFlatPanel" xml:space="preserve">
+    <value>alnitak 平場板</value>
+  </data>
+  <data name="LblAltairCameraSetup" xml:space="preserve">
+    <value>altair 相機設置</value>
+  </data>
+  <data name="LblAlternativeUIColorSchema" xml:space="preserve">
+    <value>替換 ui 顏色方案</value>
+  </data>
+  <data name="LblAltitude" xml:space="preserve">
+    <value>地平高度</value>
+  </data>
+  <data name="LblAltitudeErrorMeasurement" xml:space="preserve">
+    <value>測量地平高度誤差</value>
+  </data>
+  <data name="LblAltitudeMeasurement" xml:space="preserve">
+    <value>地平高度測量</value>
+  </data>
+  <data name="LblAltitudeMeasurementButtonTooltip" xml:space="preserve">
+    <value>通過三個步驟測量地平高度誤差。
+1. 在當前位置為實際坐標獲取圖像與解析
+2. 在赤經軸旋轉赤道儀0.5度
+3. 在新位置影番張圖像, 並將其解為實際位置
+將會使用兩個點計數同顯示實際的地平高度誤差</value>
+  </data>
+  <data name="LblAltitudeMeasurementDescription" xml:space="preserve">
+    <value>赤道儀指向到東或西, 赤緯0°身同地平線。</value>
+  </data>
+  <data name="LblAltitudeMeasurementSide" xml:space="preserve">
+    <value>高度測量方向</value>
+  </data>
+  <data name="LblAnnotateConstellationBoundaries" xml:space="preserve">
+    <value>顯示星座邊界</value>
+  </data>
+  <data name="LblAnnotateConstellations" xml:space="preserve">
+    <value>顯示同註釋星座</value>
+  </data>
+  <data name="LblAnnotateDSO" xml:space="preserve">
+    <value>標註深空天體</value>
+  </data>
+  <data name="LblAnnotateGrid" xml:space="preserve">
+    <value>標註網格</value>
+  </data>
+  <data name="LblAnnotateImage" xml:space="preserve">
+    <value>標註圖像</value>
+  </data>
+  <data name="LblAnnotateImageTooltip" xml:space="preserve">
+    <value>如果選中並應用了圖像的星點檢測, 則會使用搵到嘅星點及其各自 HFR 既值對圖像進行標註</value>
+  </data>
+  <data name="LblAPIKey" xml:space="preserve">
+    <value>API 密鑰</value>
+  </data>
+  <data name="LblApparentMagnitude" xml:space="preserve">
+    <value>視星等</value>
+  </data>
+  <data name="LblApparentSize" xml:space="preserve">
+    <value>視尺寸</value>
+  </data>
+  <data name="LblApplicationInBreakMode" xml:space="preserve">
+    <value>應用程序遇到無法處理的異常, 好有可能必須關閉。
+該錯誤已記錄到 "%localappdata%\nina\logs".
+是否嘗試由應用程序錯誤中恢復? (可能導致意外發生)</value>
+  </data>
+  <data name="LblApplicationStartDateDescription" xml:space="preserve">
+    <value>開始日期的格式為 yyyy-mm-dd</value>
+  </data>
+  <data name="LblArcmin" xml:space="preserve">
+    <value>角分</value>
+  </data>
+  <data name="LblArcsec" xml:space="preserve">
+    <value>角秒</value>
+  </data>
+  <data name="LblAscending" xml:space="preserve">
+    <value>升序</value>
+  </data>
+  <data name="LblAscomInterOpDriverException" xml:space="preserve">
+    <value>發生 ascom 驅動程序操作異常。 好可能係由於安裝的驅動程序唔匹配造成的當前安裝 {0},n.i.n.a. 出現 {1}. 請將驅動程序安裝為 {1}</value>
+  </data>
+  <data name="LblASIImageDownloadError" xml:space="preserve">
+    <value>由相機下載圖像數據時出錯!</value>
+  </data>
+  <data name="LblASIOnly16BitMono" xml:space="preserve">
+    <value>目前只支持16位單色傳感器</value>
+  </data>
+  <data name="LblASPS" xml:space="preserve">
+    <value>全天空解析 (ASPS)</value>
+  </data>
+  <data name="LblASPSDirectory" xml:space="preserve">
+    <value>ASPS 位</value>
+  </data>
+  <data name="LblASPSNotFound" xml:space="preserve">
+    <value>ASPS 程序未搵到</value>
+  </data>
+  <data name="LblASTAP" xml:space="preserve">
+    <value>ASTAP, 自動解析、預処理、fit 瀏覽器</value>
+  </data>
+  <data name="LblASTAPDirectory" xml:space="preserve">
+    <value>ASTAP 位</value>
+  </data>
+  <data name="LblASTAPMinimumVersionNote" xml:space="preserve">
+    <value>注意: 要 ASTAP 0.9.192 或更貴版本。如果版本較低, 請使用 platesolve2 作為替代品。</value>
+  </data>
+  <data name="LblASTAPNotFound" xml:space="preserve">
+    <value>ASTAP 程序未搵到</value>
+  </data>
+  <data name="LblASTAPShort" xml:space="preserve">
+    <value>ASTAP</value>
+  </data>
+  <data name="LblAstrometry" xml:space="preserve">
+    <value>經緯度設置</value>
+  </data>
+  <data name="LblAstrometryNet" xml:space="preserve">
+    <value>Astrometry.Net</value>
+  </data>
+  <data name="LblAutoFocus" xml:space="preserve">
+    <value>自動對焦</value>
+  </data>
+  <data name="LblAutoFocusAfterHFRChange" xml:space="preserve">
+    <value>HFR 改變之後</value>
+  </data>
+  <data name="LblAutoFocusAfterHFRChangeAmount" xml:space="preserve">
+    <value>HFR 容差</value>
+  </data>
+  <data name="LblAutoFocusAfterSetExposures" xml:space="preserve">
+    <value>拍攝一定張數之後</value>
+  </data>
+  <data name="LblAutoFocusAfterSetTime" xml:space="preserve">
+    <value>經過特定時間後</value>
+  </data>
+  <data name="LblAutoFocusAfterTemperatureChange" xml:space="preserve">
+    <value>溫度變化之後</value>
+  </data>
+  <data name="LblAutoFocusAfterTemperatureChangeAmount" xml:space="preserve">
+    <value>溫度變化</value>
+  </data>
+  <data name="LblAutoFocusExposureTime" xml:space="preserve">
+    <value>自動對焦曝光時間</value>
+  </data>
+  <data name="LblAutoFocusExposureTimeTooltip" xml:space="preserve">
+    <value>當冇特定濾鏡曝光設置或設置為 0时, 自動對焦採用嘅曝光時間</value>
+  </data>
+  <data name="LblAutoFocusFilter" xml:space="preserve">
+    <value>濾鏡自動對焦</value>
+  </data>
+  <data name="LblAutoFocusGearNotConnected" xml:space="preserve">
+    <value>無法啟動自動對焦。 相機或電調未連接!</value>
+  </data>
+  <data name="LblAutoFocusInnerCropRatio" xml:space="preserve">
+    <value>自動對焦中心裁剪比例</value>
+  </data>
+  <data name="LblAutoFocusInnerCropRatioTooltip" xml:space="preserve">
+    <value>如果設置為小於1的值, 自動對焦期間的星點檢測將僅使用
+總傳感器的中心子區域 (如果相機支持)。
+如果相機唔支持, 則喺星啲檢測時, 邊緣附近嘅星點將被忽略。
+如果同小於1的外部裁剪比例結合使用, 圖像的矩形區域 (在內部矩形和外部矩形之間)
+將用於自動對焦。</value>
+  </data>
+  <data name="LblAutoFocusMethod" xml:space="preserve">
+    <value>自動對焦方式</value>
+  </data>
+  <data name="LblAutoFocusMethodTooltip" xml:space="preserve">
+    <value>做星啲 HFR 畀選擇時, NINA 就喺視場中檢測星點,
+透過数个對焦點計算佢哋嘅 HFR 並找到最小嘅 HFR
+反差對焦模式是透過圖像算法嚟偵測多個對焦點嘅
+對比度, 以搵到最好嘅對比度。 呢個方法主要被用于
+地面目標或者行星目標, 且對噪啲好敏感。</value>
+  </data>
+  <data name="LblAutoFocusNewWorseThanOriginal" xml:space="preserve">
+    <value>新焦點 HFR {0} HFR 過原來 {1} 差好多</value>
+  </data>
+  <data name="LblAutoFocusNotEnoughtSpreadedPoints" xml:space="preserve">
+    <value>採集嘅 HFR 差異不足。 電調步長設置太細或離焦點太遠冇聚焦。</value>
+  </data>
+  <data name="LblAutoFocusNrOfExposures" xml:space="preserve">
+    <value>張數</value>
+  </data>
+  <data name="LblAutoFocusNumberOfAttempts" xml:space="preserve">
+    <value>自動對焦嘗試次數</value>
+  </data>
+  <data name="LblAutoFocusNumberOfAttemptsTooltip" xml:space="preserve">
+    <value>若自動對焦得到嘅 HFR 比原結果更差時, 進行重試嘅次數, 直到得到成功的結果或者爆煲後返回原焦點位。</value>
+  </data>
+  <data name="LblAutoFocusNumberOfFramesPerPoint" xml:space="preserve">
+    <value>對焦點拍攝張數</value>
+  </data>
+  <data name="LblAutoFocusNumberOfFramesPerPointTooltip" xml:space="preserve">
+    <value>個個自動對焦拍攝的堂數。 如果大於一張, 將同一個焦點多張 HFR 取平均值。</value>
+  </data>
+  <data name="LblAutoFocusOnFilterChange" xml:space="preserve">
+    <value>更換濾鏡時</value>
+  </data>
+  <data name="LblAutoFocusOnStart" xml:space="preserve">
+    <value>開始後立即運行</value>
+  </data>
+  <data name="LblAutoFocusOuterCropRatio" xml:space="preserve">
+    <value>自動對焦向外剪裁比例</value>
+  </data>
+  <data name="LblAutoFocusReattempting" xml:space="preserve">
+    <value>嘗試番自動對焦</value>
+  </data>
+  <data name="LblAutoFocusRestoringOriginalPosition" xml:space="preserve">
+    <value>恢復原焦點位置</value>
+  </data>
+  <data name="LblAutoFocusSetTime" xml:space="preserve">
+    <value>時間</value>
+  </data>
+  <data name="LblAutoFocusSwitchingBackToFilter" xml:space="preserve">
+    <value>切換回原來的濾鏡</value>
+  </data>
+  <data name="LblAutoFocusSwitchingToDefaultFilter" xml:space="preserve">
+    <value>切換到自動對焦濾鏡</value>
+  </data>
+  <data name="LblAutoMeridianFlip" xml:space="preserve">
+    <value>自動中天翻轉</value>
+  </data>
+  <data name="LblAutoStretchFactor" xml:space="preserve">
+    <value>自動拉伸係數</value>
+  </data>
+  <data name="LblAutoStretchFactorTooltip" xml:space="preserve">
+    <value>用於顯示圖像和檢測恆星嘅自動拉伸算法的係數。 一定係0到1之間的值。 基本上推薦使用0.2。</value>
+  </data>
+  <data name="LblAutoUpdateSource" xml:space="preserve">
+    <value>自動更新版本</value>
+  </data>
+  <data name="LblAzimuth" xml:space="preserve">
+    <value>方位角</value>
+  </data>
+  <data name="LblAzimuthErrorMeasurement" xml:space="preserve">
+    <value>測量方位角誤差</value>
+  </data>
+  <data name="LblAzimuthMeasurement" xml:space="preserve">
+    <value>方位角測量</value>
+  </data>
+  <data name="LblAzimuthMeasurementButtonTooltip" xml:space="preserve">
+    <value>通過三個步驟測量方位角誤差。
+1. 獲取當前位置嘅實際坐標的圖像與解析
+2. 在赤經軸旋轉赤道儀0.5度
+3. 係新位置先拍攝一張圖像, 解析為實際位置
+通過兩個點來計算和顯示實際方位角誤差</value>
+  </data>
+  <data name="LblAzimuthMeasurementDescription" xml:space="preserve">
+    <value>赤道儀指向南方赤緯0°近中天位</value>
+  </data>
+  <data name="LblBackground" xml:space="preserve">
+    <value>背景</value>
+  </data>
+  <data name="LblBacklashMeasurementException" xml:space="preserve">
+    <value>測量回差時候發生異常, 回爭值可能有誤。</value>
+  </data>
+  <data name="LblBacklashMeasurements" xml:space="preserve">
+    <value>將保存以下電調嘅回爭值。 IN: {0}, OUT: {1}</value>
+  </data>
+  <data name="LblBeta" xml:space="preserve">
+    <value>測試版</value>
+  </data>
+  <data name="LblBiasMean" xml:space="preserve">
+    <value>偏置平均值 (本地)</value>
+  </data>
+  <data name="LblBinning" xml:space="preserve">
+    <value>合併像素</value>
+  </data>
+  <data name="LblBinningDescription" xml:space="preserve">
+    <value>像素合併, 多個像素合併為一個</value>
+  </data>
+  <data name="LblBitDepth" xml:space="preserve">
+    <value>位深度</value>
+  </data>
+  <data name="LblBitDepthADU" xml:space="preserve">
+    <value>ADU 中嘅位深度</value>
+  </data>
+  <data name="LblBlackClipping" xml:space="preserve">
+    <value>黑區剪裁</value>
+  </data>
+  <data name="LblBlindSolveAttemptForFraming" xml:space="preserve">
+    <value>圖像需先進行解析之後先可以用于構圖.
+要使用參考坐標啊?
+赤經: {0}
+赤緯: {1}</value>
+  </data>
+  <data name="LblBlindSolver" xml:space="preserve">
+    <value>盲解析</value>
+  </data>
+  <data name="LblBorder" xml:space="preserve">
+    <value>邊界</value>
+  </data>
+  <data name="LblBulbMode" xml:space="preserve">
+    <value>b 門模式</value>
+  </data>
+  <data name="LblBulbSerialPort" xml:space="preserve">
+    <value>b 門串行端口</value>
+  </data>
+  <data name="LblButtonBackground" xml:space="preserve">
+    <value>制背景</value>
+  </data>
+  <data name="LblButtonForeground" xml:space="preserve">
+    <value>制前景</value>
+  </data>
+  <data name="LblButtonForegroundDisabled" xml:space="preserve">
+    <value>已禁用制前景</value>
+  </data>
+  <data name="LblButtonHighlight" xml:space="preserve">
+    <value>制高亮</value>
+  </data>
+  <data name="LblCache" xml:space="preserve">
+    <value>廵天圖庫本地緩存</value>
+  </data>
+  <data name="LblCam" xml:space="preserve">
+    <value>相機</value>
+  </data>
+  <data name="LblCamera" xml:space="preserve">
+    <value>相機</value>
+  </data>
+  <data name="LblCameraBattery" xml:space="preserve">
+    <value>相機電池</value>
+  </data>
+  <data name="LblCameraBusy" xml:space="preserve">
+    <value>相機正忙</value>
+  </data>
+  <data name="LblCameraConnected" xml:space="preserve">
+    <value>相機已連接</value>
+  </data>
+  <data name="LblCameraConnectionLost" xml:space="preserve">
+    <value>相機連接賴! 請重新連接相機!</value>
+  </data>
+  <data name="LblCameraCoolerNotEnabled" xml:space="preserve">
+    <value>相機有製冷, 但它沒有被開啟</value>
+  </data>
+  <data name="LblCameraDownloadFailed" xml:space="preserve">
+    <value>圖下載失敗。
+曝光時間: {0}s
+模式: {1}
+增益: {2}
+濾鏡: {3}</value>
+  </data>
+  <data name="LblCameraHighPower" xml:space="preserve">
+    <value>相機製冷運行中, 功率 {0}%, 可能冇
+法補償環境溫度的變化。</value>
+  </data>
+  <data name="LblCameraNotAtTargetTemp" xml:space="preserve">
+    <value>當前相機溫度 {0}°c 目標溫度 {1}°c</value>
+  </data>
+  <data name="LblCameraOptions" xml:space="preserve">
+    <value>相機選項</value>
+  </data>
+  <data name="LblCameraParameter" xml:space="preserve">
+    <value>相機參數</value>
+  </data>
+  <data name="LblCameraState" xml:space="preserve">
+    <value>相機狀態</value>
+  </data>
+  <data name="LblCameraXSize" xml:space="preserve">
+    <value>相機寬度</value>
+  </data>
+  <data name="LblCameraYSize" xml:space="preserve">
+    <value>相機高度</value>
+  </data>
+  <data name="LblCamInfo" xml:space="preserve">
+    <value>相機信息</value>
+  </data>
+  <data name="LblCamSettings" xml:space="preserve">
+    <value>相機設置</value>
+  </data>
+  <data name="LblCancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="LblCanonErrorOccurred" xml:space="preserve">
+    <value>佳能相機出現錯誤: {0}</value>
+  </data>
+  <data name="LblCaptureImageAndPlatesolve" xml:space="preserve">
+    <value>採集圖像並解析</value>
+  </data>
+  <data name="LblCdC" xml:space="preserve">
+    <value>Cartes du Ciel</value>
+  </data>
+  <data name="LblCenterDec" xml:space="preserve">
+    <value>中心赤緯</value>
+  </data>
+  <data name="LblCenterDecdms" xml:space="preserve">
+    <value>中心赤緯 dms</value>
+  </data>
+  <data name="LblCenterRA" xml:space="preserve">
+    <value>中心赤經</value>
+  </data>
+  <data name="LblCenterRAhms" xml:space="preserve">
+    <value>中心赤經 hms</value>
+  </data>
+  <data name="LblCenterTarget" xml:space="preserve">
+    <value>目標居中</value>
+  </data>
+  <data name="LblChange" xml:space="preserve">
+    <value>修改</value>
+  </data>
+  <data name="LblChangedSequenceWarning" xml:space="preserve">
+    <value>目標 {0} 的序列係一個從未保存的序列, 或者設置與上次保存時不同。
+
+你希望直接關閉本序列麼?</value>
+  </data>
+  <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
+    <value>關閉已修改的序列</value>
+  </data>
+  <data name="LblChangeToBulbMode" xml:space="preserve">
+    <value>請將模式轉盤更改為 B 門模式</value>
+  </data>
+  <data name="LblChangeToManualMode" xml:space="preserve">
+    <value>請將模式轉盤更改為 m 模式</value>
+  </data>
+  <data name="LblCheckMeridianFlip" xml:space="preserve">
+    <value>檢查中天翻轉</value>
+  </data>
+  <data name="LblChecksumError" xml:space="preserve">
+    <value>校验同與預期值唔匹配, 下載的文件可能已損壞!</value>
+  </data>
+  <data name="LblChipTemp" xml:space="preserve">
+    <value>芯片溫度</value>
+  </data>
+  <data name="LblChipTempShort" xml:space="preserve">
+    <value>溫度</value>
+  </data>
+  <data name="LblChooseProfile" xml:space="preserve">
+    <value>揀配置文件</value>
+  </data>
+  <data name="LblClear" xml:space="preserve">
+    <value>清除</value>
+  </data>
+  <data name="LblClearCache" xml:space="preserve">
+    <value>清除緩存</value>
+  </data>
+  <data name="LblClockwise" xml:space="preserve">
+    <value>順時針</value>
+  </data>
+  <data name="LblCloudCover" xml:space="preserve">
+    <value>雲量</value>
+  </data>
+  <data name="LblColorSensorNotSupported" xml:space="preserve">
+    <value>暫不支持彩色傳感器</value>
+  </data>
+  <data name="LblConnect" xml:space="preserve">
+    <value>連接</value>
+  </data>
+  <data name="LblConnected" xml:space="preserve">
+    <value>已連接</value>
+  </data>
+  <data name="LblConnecting" xml:space="preserve">
+    <value>連接中</value>
+  </data>
+  <data name="LblConstellation" xml:space="preserve">
+    <value>星座</value>
+  </data>
+  <data name="LblConstellation_AND" xml:space="preserve">
+    <value>仙女座</value>
+  </data>
+  <data name="LblConstellation_ANT" xml:space="preserve">
+    <value>唧筩座</value>
+  </data>
+  <data name="LblConstellation_APS" xml:space="preserve">
+    <value>天燕座</value>
+  </data>
+  <data name="LblConstellation_AQL" xml:space="preserve">
+    <value>天鷹座</value>
+  </data>
+  <data name="LblConstellation_AQR" xml:space="preserve">
+    <value>寶瓶座</value>
+  </data>
+  <data name="LblConstellation_ARA" xml:space="preserve">
+    <value>天壇座</value>
+  </data>
+  <data name="LblConstellation_ARI" xml:space="preserve">
+    <value>白羊座</value>
+  </data>
+  <data name="LblConstellation_AUR" xml:space="preserve">
+    <value>御夫座</value>
+  </data>
+  <data name="LblConstellation_BOO" xml:space="preserve">
+    <value>牧夫座</value>
+  </data>
+  <data name="LblConstellation_CAE" xml:space="preserve">
+    <value>雕具座</value>
+  </data>
+  <data name="LblConstellation_CAM" xml:space="preserve">
+    <value>鹿豹座</value>
+  </data>
+  <data name="LblConstellation_CAP" xml:space="preserve">
+    <value>魔蠍座</value>
+  </data>
+  <data name="LblConstellation_CAR" xml:space="preserve">
+    <value>船底座</value>
+  </data>
+  <data name="LblConstellation_CAS" xml:space="preserve">
+    <value>僊後座</value>
+  </data>
+  <data name="LblConstellation_CEN" xml:space="preserve">
+    <value>半人馬座</value>
+  </data>
+  <data name="LblConstellation_CEP" xml:space="preserve">
+    <value>仙王座</value>
+  </data>
+  <data name="LblConstellation_CET" xml:space="preserve">
+    <value>鯨魚座</value>
+  </data>
+  <data name="LblConstellation_CHA" xml:space="preserve">
+    <value>堰蜓座</value>
+  </data>
+  <data name="LblConstellation_CIR" xml:space="preserve">
+    <value>圓規座</value>
+  </data>
+  <data name="LblConstellation_CMA" xml:space="preserve">
+    <value>大犬座</value>
+  </data>
+  <data name="LblConstellation_CMI" xml:space="preserve">
+    <value>小犬座</value>
+  </data>
+  <data name="LblConstellation_CNC" xml:space="preserve">
+    <value>巨蟹座</value>
+  </data>
+  <data name="LblConstellation_COL" xml:space="preserve">
+    <value>天鴿座</value>
+  </data>
+  <data name="LblConstellation_COM" xml:space="preserve">
+    <value>後發座</value>
+  </data>
+  <data name="LblConstellation_CRA" xml:space="preserve">
+    <value>南冕座</value>
+  </data>
+  <data name="LblConstellation_CRB" xml:space="preserve">
+    <value>北冕座</value>
+  </data>
+  <data name="LblConstellation_CRT" xml:space="preserve">
+    <value>巨爵座</value>
+  </data>
+  <data name="LblConstellation_CRU" xml:space="preserve">
+    <value>南十字座</value>
+  </data>
+  <data name="LblConstellation_CRV" xml:space="preserve">
+    <value>烏鴉座</value>
+  </data>
+  <data name="LblConstellation_CVN" xml:space="preserve">
+    <value>獵犬座</value>
+  </data>
+  <data name="LblConstellation_CYG" xml:space="preserve">
+    <value>天鵝座</value>
+  </data>
+  <data name="LblConstellation_DEL" xml:space="preserve">
+    <value>海豚座</value>
+  </data>
+  <data name="LblConstellation_DOR" xml:space="preserve">
+    <value>劍魚座</value>
+  </data>
+  <data name="LblConstellation_DRA" xml:space="preserve">
+    <value>天龍座</value>
+  </data>
+  <data name="LblConstellation_EQU" xml:space="preserve">
+    <value>馬仔座</value>
+  </data>
+  <data name="LblConstellation_ERI" xml:space="preserve">
+    <value>波江座</value>
+  </data>
+  <data name="LblConstellation_FOR" xml:space="preserve">
+    <value>天爐座</value>
+  </data>
+  <data name="LblConstellation_GEM" xml:space="preserve">
+    <value>雙子座</value>
+  </data>
+  <data name="LblConstellation_GRU" xml:space="preserve">
+    <value>天鶴座</value>
+  </data>
+  <data name="LblConstellation_HER" xml:space="preserve">
+    <value>武仙座</value>
+  </data>
+  <data name="LblConstellation_HOR" xml:space="preserve">
+    <value>時鐘座</value>
+  </data>
+  <data name="LblConstellation_HYA" xml:space="preserve">
+    <value>長蛇座</value>
+  </data>
+  <data name="LblConstellation_HYI" xml:space="preserve">
+    <value>水蛇座</value>
+  </data>
+  <data name="LblConstellation_IND" xml:space="preserve">
+    <value>印第安座</value>
+  </data>
+  <data name="LblConstellation_LAC" xml:space="preserve">
+    <value>蝎虎座</value>
+  </data>
+  <data name="LblConstellation_LEO" xml:space="preserve">
+    <value>獅子座</value>
+  </data>
+  <data name="LblConstellation_LEP" xml:space="preserve">
+    <value>天兔座</value>
+  </data>
+  <data name="LblConstellation_LIB" xml:space="preserve">
+    <value>天秤座</value>
+  </data>
+  <data name="LblConstellation_LMI" xml:space="preserve">
+    <value>小獅座</value>
+  </data>
+  <data name="LblConstellation_LUP" xml:space="preserve">
+    <value>豺狼座</value>
+  </data>
+  <data name="LblConstellation_LYN" xml:space="preserve">
+    <value>天貓座</value>
+  </data>
+  <data name="LblConstellation_LYR" xml:space="preserve">
+    <value>天琴座</value>
+  </data>
+  <data name="LblConstellation_MEN" xml:space="preserve">
+    <value>山案座</value>
+  </data>
+  <data name="LblConstellation_MIC" xml:space="preserve">
+    <value>顯微鏡座</value>
+  </data>
+  <data name="LblConstellation_MON" xml:space="preserve">
+    <value>麒麟座</value>
+  </data>
+  <data name="LblConstellation_MUS" xml:space="preserve">
+    <value>蒼蠅座</value>
+  </data>
+  <data name="LblConstellation_NOR" xml:space="preserve">
+    <value>矩尺座</value>
+  </data>
+  <data name="LblConstellation_OCT" xml:space="preserve">
+    <value>南極座</value>
+  </data>
+  <data name="LblConstellation_OPH" xml:space="preserve">
+    <value>蛇夫座</value>
+  </data>
+  <data name="LblConstellation_ORI" xml:space="preserve">
+    <value>獵戶座</value>
+  </data>
+  <data name="LblConstellation_PAV" xml:space="preserve">
+    <value>孔雀座</value>
+  </data>
+  <data name="LblConstellation_PEG" xml:space="preserve">
+    <value>飛馬座</value>
+  </data>
+  <data name="LblConstellation_PER" xml:space="preserve">
+    <value>英仙座</value>
+  </data>
+  <data name="LblConstellation_PHE" xml:space="preserve">
+    <value>鳳凰座</value>
+  </data>
+  <data name="LblConstellation_PIC" xml:space="preserve">
+    <value>繪架座</value>
+  </data>
+  <data name="LblConstellation_PSA" xml:space="preserve">
+    <value>南魚座</value>
+  </data>
+  <data name="LblConstellation_PSC" xml:space="preserve">
+    <value>雙魚座</value>
+  </data>
+  <data name="LblConstellation_PUP" xml:space="preserve">
+    <value>船尾座</value>
+  </data>
+  <data name="LblConstellation_PYX" xml:space="preserve">
+    <value>羅盤座</value>
+  </data>
+  <data name="LblConstellation_RET" xml:space="preserve">
+    <value>網罟座</value>
+  </data>
+  <data name="LblConstellation_SCL" xml:space="preserve">
+    <value>玉夫座</value>
+  </data>
+  <data name="LblConstellation_SCO" xml:space="preserve">
+    <value>天蠍座</value>
+  </data>
+  <data name="LblConstellation_SCT" xml:space="preserve">
+    <value>盾牌座</value>
+  </data>
+  <data name="LblConstellation_SER" xml:space="preserve">
+    <value>巨蛇座</value>
+  </data>
+  <data name="LblConstellation_SER1" xml:space="preserve">
+    <value>巨蛇頭</value>
+  </data>
+  <data name="LblConstellation_SER2" xml:space="preserve">
+    <value>巨蛇尾</value>
+  </data>
+  <data name="LblConstellation_SEX" xml:space="preserve">
+    <value>六分儀座</value>
+  </data>
+  <data name="LblConstellation_SGE" xml:space="preserve">
+    <value>天箭座</value>
+  </data>
+  <data name="LblConstellation_SGR" xml:space="preserve">
+    <value>人馬座</value>
+  </data>
+  <data name="LblConstellation_TAU" xml:space="preserve">
+    <value>金牛座</value>
+  </data>
+  <data name="LblConstellation_TEL" xml:space="preserve">
+    <value>望遠鏡座</value>
+  </data>
+  <data name="LblConstellation_TRA" xml:space="preserve">
+    <value>南三角座</value>
+  </data>
+  <data name="LblConstellation_TRI" xml:space="preserve">
+    <value>三角座</value>
+  </data>
+  <data name="LblConstellation_TUC" xml:space="preserve">
+    <value>杜鵑座</value>
+  </data>
+  <data name="LblConstellation_UMA" xml:space="preserve">
+    <value>大熊座</value>
+  </data>
+  <data name="LblConstellation_UMI" xml:space="preserve">
+    <value>小熊座</value>
+  </data>
+  <data name="LblConstellation_VEL" xml:space="preserve">
+    <value>船帆座</value>
+  </data>
+  <data name="LblConstellation_VIR" xml:space="preserve">
+    <value>室女座</value>
+  </data>
+  <data name="LblConstellation_VOL" xml:space="preserve">
+    <value>飛魚座</value>
+  </data>
+  <data name="LblConstellation_VUL" xml:space="preserve">
+    <value>狐狸座</value>
+  </data>
+  <data name="LblContinue" xml:space="preserve">
+    <value>繼續</value>
+  </data>
+  <data name="LblContrastMethod" xml:space="preserve">
+    <value>反差對焦模式</value>
+  </data>
+  <data name="LblCoolCamBtnTooltip" xml:space="preserve">
+    <value>將相機製冷到設定的目標溫度。
+設置持續時間之後, 應用程序就喺該周期內緩慢降低温度防止結露, 直至達到目標溫度。</value>
+  </data>
+  <data name="LblCoolerOn" xml:space="preserve">
+    <value>製冷開啟</value>
+  </data>
+  <data name="LblCoolerPower" xml:space="preserve">
+    <value>製冷功率</value>
+  </data>
+  <data name="LblCooling" xml:space="preserve">
+    <value>製冷中</value>
+  </data>
+  <data name="LblCoordinates" xml:space="preserve">
+    <value>坐標</value>
+  </data>
+  <data name="LblCounterclockwise" xml:space="preserve">
+    <value>逆時針</value>
+  </data>
+  <data name="LblCoverScopeMsgBox" xml:space="preserve">
+    <value>而家起埋你望遠鏡鏡頭蓋, 按 "確定" 開始拍攝暗场。</value>
+  </data>
+  <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
+    <value>而家起埋你望遠鏡鏡頭蓋</value>
+  </data>
+  <data name="LblCurrentDownloadToDataRatio" xml:space="preserve">
+    <value>當前下載: 數據速率</value>
+  </data>
+  <data name="LblCurrentMean" xml:space="preserve">
+    <value>當前平均值</value>
+  </data>
+  <data name="LblCurrentPosition" xml:space="preserve">
+    <value>當前位置</value>
+  </data>
+  <data name="LblCurrentUIColorSchema" xml:space="preserve">
+    <value>當前的 ui 顏色方案</value>
+  </data>
+  <data name="LblCurveFittingMethod" xml:space="preserve">
+    <value>自動對焦曲線擬合</value>
+  </data>
+  <data name="LblCygwinBashNotFound" xml:space="preserve">
+    <value>未發現 cygwin 控制台</value>
+  </data>
+  <data name="LblCygwinDirectory" xml:space="preserve">
+    <value>cygwin 目錄</value>
+  </data>
+  <data name="LblDarkFlatCount" xml:space="preserve">
+    <value>黑平場拍攝張數</value>
+  </data>
+  <data name="LblDARVSlew" xml:space="preserve">
+    <value>極軸漂迻法移動</value>
+  </data>
+  <data name="LblDARVSlewButtonTooltip" xml:space="preserve">
+    <value>將喺赤道儀緩慢移動中進行一次曝光
+當線條冇對齊時, 會出現一些極軸對齊錯誤。</value>
+  </data>
+  <data name="LblDARVSlewDescription" xml:space="preserve">
+    <value>指定極軸漂迻法程序的持續時間。 赤道儀將在赤經軸上沿一個方向旋轉一半嘅行程, 然後向反方向旋轉。 如果冇極軸校準錯誤, 它會顯示為一條直線。 否則將會係 v 字形。 對於方位角誤差測量, 指向範圍會接近中天, 否則會向東或向西。</value>
+  </data>
+  <data name="LblDataProvidedBy" xml:space="preserve">
+    <value>深空天體數據來自:</value>
+  </data>
+  <data name="LblDataToDownloadRatio" xml:space="preserve">
+    <value>下載速率</value>
+  </data>
+  <data name="LblDateFormatDescription" xml:space="preserve">
+    <value>日期格式 YYYY-MM-DD</value>
+  </data>
+  <data name="LblDateFormatDescription2" xml:space="preserve">
+    <value>中午12時變更日期 yyyy-mm-dd</value>
+  </data>
+  <data name="LblDateTimeFormatDescription" xml:space="preserve">
+    <value>日期格式 YYYY-MM-DD_HH-mm-ss</value>
+  </data>
+  <data name="LblDawn" xml:space="preserve">
+    <value>黎明</value>
+  </data>
+  <data name="LblDCRaw" xml:space="preserve">
+    <value>DCRaw</value>
+  </data>
+  <data name="LblDebayeredHFR" xml:space="preserve">
+    <value>轉色後 HFR</value>
+  </data>
+  <data name="LblDebayeredHFRTooltip" xml:space="preserve">
+    <value>使用轉色圖像進行 HFR 計算。 更精確, 但更耗資源。</value>
+  </data>
+  <data name="LblDebayerImage" xml:space="preserve">
+    <value>圖像轉色</value>
+  </data>
+  <data name="LblDebayerImageTooltip" xml:space="preserve">
+    <value>使用轉色圖像預覽 (唔會影響原始文件)</value>
+  </data>
+  <data name="LblDebayeringImage" xml:space="preserve">
+    <value>轉色中</value>
+  </data>
+  <data name="LblDebug" xml:space="preserve">
+    <value>調試</value>
+  </data>
+  <data name="LblDec" xml:space="preserve">
+    <value>赤緯</value>
+  </data>
+  <data name="LblDecCorrections" xml:space="preserve">
+    <value>赤緯修正</value>
+  </data>
+  <data name="LblDecError" xml:space="preserve">
+    <value>赤緯誤差</value>
+  </data>
+  <data name="LblDeclination" xml:space="preserve">
+    <value>赤緯</value>
+  </data>
+  <data name="LblDecPixError" xml:space="preserve">
+    <value>赤緯像素誤差</value>
+  </data>
+  <data name="LblDefaultAutoFocusExposureTime" xml:space="preserve">
+    <value>默認曝光時間</value>
+  </data>
+  <data name="LblDefaultSequenceFolder" xml:space="preserve">
+    <value>序列文件默認保存目錄</value>
+  </data>
+  <data name="LblDefaultSequenceFolderTooltip" xml:space="preserve">
+    <value>默認加载序列和保存序列的文件夾</value>
+  </data>
+  <data name="LblDegree" xml:space="preserve">
+    <value>度</value>
+  </data>
+  <data name="LblDegreeShort" xml:space="preserve">
+    <value>°</value>
+  </data>
+  <data name="LblDeleteProfileInUseWarning" xml:space="preserve">
+    <value>無法刪除個人資料。 佢正被另一個 n.i.n.a 實例使用。</value>
+  </data>
+  <data name="LblDescending" xml:space="preserve">
+    <value>降序</value>
+  </data>
+  <data name="LblDescription" xml:space="preserve">
+    <value>描述</value>
+  </data>
+  <data name="LblDetails" xml:space="preserve">
+    <value>細節</value>
+  </data>
+  <data name="LblDetectedStars" xml:space="preserve">
+    <value>檢測到的星點</value>
+  </data>
+  <data name="LblDevicePollingInterval" xml:space="preserve">
+    <value>設備檢測隔</value>
+  </data>
+  <data name="LblDewHeater" xml:space="preserve">
+    <value>防結露加熱</value>
+  </data>
+  <data name="LblDewHeaterShort" xml:space="preserve">
+    <value>加熱</value>
+  </data>
+  <data name="LblDewpoint" xml:space="preserve">
+    <value>露點</value>
+  </data>
+  <data name="LblDigitalSkySurvey" xml:space="preserve">
+    <value>digital 廵天圖庫 (在線)</value>
+  </data>
+  <data name="LblDirectGuideDuration" xml:space="preserve">
+    <value>直接導星持續時間</value>
+  </data>
+  <data name="LblDirectGuiderConnectionFail" xml:space="preserve">
+    <value>直接導星無法連接赤道儀</value>
+  </data>
+  <data name="LblDirectGuiderTelescopeDisconnect" xml:space="preserve">
+    <value>赤道儀已斷開連接。 直接導星將斷開連接。 抖動不再有效!</value>
+  </data>
+  <data name="LblDirectoryNotFound" xml:space="preserve">
+    <value>圖像保存目錄未搵到!</value>
+  </data>
+  <data name="LblDirectoryNotWritable" xml:space="preserve">
+    <value>圖像保存目錄冇寫入權限!</value>
+  </data>
+  <data name="LblDisableAFGuiding" xml:space="preserve">
+    <value>對焦時停止導星</value>
+  </data>
+  <data name="LblDisableAFGuidingTooltip" xml:space="preserve">
+    <value>自動對焦期間暫停導星</value>
+  </data>
+  <data name="LblDisconnect" xml:space="preserve">
+    <value>斷開</value>
+  </data>
+  <data name="LblDisconnectAll" xml:space="preserve">
+    <value>斷開所有設備?</value>
+  </data>
+  <data name="LblDistance" xml:space="preserve">
+    <value>隔</value>
+  </data>
+  <data name="LblDither" xml:space="preserve">
+    <value>抖動</value>
+  </data>
+  <data name="LblDitherEveryNoFrame" xml:space="preserve">
+    <value>抖動隔幀數</value>
+  </data>
+  <data name="LblDitherOnButGuiderNotConnected" xml:space="preserve">
+    <value>抖動已啟用, 但未連接導星工具</value>
+  </data>
+  <data name="LblDitherPixels" xml:space="preserve">
+    <value>phd2 抖動像素</value>
+  </data>
+  <data name="LblDitherRAOnly" xml:space="preserve">
+    <value>僅抖動赤經</value>
+  </data>
+  <data name="LblDownload" xml:space="preserve">
+    <value>下載</value>
+  </data>
+  <data name="LblDownloadImage" xml:space="preserve">
+    <value>下載圖像</value>
+  </data>
+  <data name="LblDownloadImageTooltip" xml:space="preserve">
+    <value>由 nasa 廵天圖庫 (在線) 下載對應坐標的圖像</value>
+  </data>
+  <data name="LblDownloading" xml:space="preserve">
+    <value>下載中</value>
+  </data>
+  <data name="LblDownloadMoreIndexFiles" xml:space="preserve">
+    <value>下載更多索引文件</value>
+  </data>
+  <data name="LblDownSampleFactor" xml:space="preserve">
+    <value>降低採樣係數</value>
+  </data>
+  <data name="LblDriverInfo" xml:space="preserve">
+    <value>驅動信息</value>
+  </data>
+  <data name="LblDriverVersion" xml:space="preserve">
+    <value>驅動版本</value>
+  </data>
+  <data name="LblDuration" xml:space="preserve">
+    <value>持續時間</value>
+  </data>
+  <data name="LblDusk" xml:space="preserve">
+    <value>黃昏</value>
+  </data>
+  <data name="LblEast" xml:space="preserve">
+    <value>東面</value>
+  </data>
+  <data name="LblEDCameraNotInManualMode" xml:space="preserve">
+    <value>相機未設置為 m 或 B 門模式! 請連接前將其設置為 m 緊或 B 門模式</value>
+  </data>
+  <data name="LblEnableBitScaling" xml:space="preserve">
+    <value>開啟位擴增</value>
+  </data>
+  <data name="LblEnableBitScalingTooltip" xml:space="preserve">
+    <value>將10/12/14 位存儲為16位. (只支持 altair 同 touptek 相機)</value>
+  </data>
+  <data name="LblEnabled" xml:space="preserve">
+    <value>已啟用</value>
+  </data>
+  <data name="LblEndOfSequenceDecision" xml:space="preserve">
+    <value>確定停止運行本序列?</value>
+  </data>
+  <data name="LblEndOfSequenceOptions" xml:space="preserve">
+    <value>序列完選項</value>
+  </data>
+  <data name="LblEndOfSequenceParkTelescope" xml:space="preserve">
+    <value>赤道儀還零</value>
+  </data>
+  <data name="LblEndOfSequenceWarmCamera" xml:space="preserve">
+    <value>相機回溫</value>
+  </data>
+  <data name="LblEpoch" xml:space="preserve">
+    <value>坐標係</value>
+  </data>
+  <data name="LblEquipment" xml:space="preserve">
+    <value>設備</value>
+  </data>
+  <data name="LblError" xml:space="preserve">
+    <value>錯誤</value>
+  </data>
+  <data name="LblErrorDistance" xml:space="preserve">
+    <value>誤差距離</value>
+  </data>
+  <data name="LblErrorLT" xml:space="preserve">
+    <value>誤差 &lt;</value>
+  </data>
+  <data name="LblEsoSkySurvey" xml:space="preserve">
+    <value>eso 廵天圖庫 (在線)</value>
+  </data>
+  <data name="LblEstimatedDownloadTime" xml:space="preserve">
+    <value>預下載時間</value>
+  </data>
+  <data name="LblEstimatedExposureTime" xml:space="preserve">
+    <value>預曝光時間</value>
+  </data>
+  <data name="LblETA" xml:space="preserve">
+    <value>預計完成時間</value>
+  </data>
+  <data name="LblExposing" xml:space="preserve">
+    <value>曝光中</value>
+  </data>
+  <data name="LblExposureCalculator" xml:space="preserve">
+    <value>最佳曝光計數機</value>
+  </data>
+  <data name="LblExposures" xml:space="preserve">
+    <value>曝光</value>
+  </data>
+  <data name="LblExposureTime" xml:space="preserve">
+    <value>曝光時間</value>
+  </data>
+  <data name="LblExposureTimeDescription" xml:space="preserve">
+    <value>曝光時間 (秒)</value>
+  </data>
+  <data name="LblFieldOfView" xml:space="preserve">
+    <value>視場</value>
+  </data>
+  <data name="LblFile" xml:space="preserve">
+    <value>本地拍攝圖像</value>
+  </data>
+  <data name="LblFileCameraDescription" xml:space="preserve">
+    <value>呢個模擬相機將使用缺少 sdk 的相機, 同時仍然使用成個 n.i.n.a. 流程。
+此模擬攝像機將為新創建的文件監視指定既文件夾。 呢啲文件就儲埋喺內部隊列中。
+每次應用程序想由相機下載曝光時, 該文件隊列的第一項被解析併加载到 n.i.n.a.
+此外, 可以激活手動 B 門模式觸發器, 因此它將使用設置中所選 B 門模式-&gt; 設備-&gt; 曝光啟動時嘅相機。
+當取消激活此觸發器時, 應用程序就飛 "開始曝光" 並等待另一個文件碌到指定的文件夾中</value>
+  </data>
+  <data name="LblFileExample" xml:space="preserve">
+    <value>示例文件名</value>
+  </data>
+  <data name="LblFileSettings" xml:space="preserve">
+    <value>文件設置</value>
+  </data>
+  <data name="LblFilter" xml:space="preserve">
+    <value>濾鏡</value>
+  </data>
+  <data name="LblFilterChangeRequired" xml:space="preserve">
+    <value>需要更換濾鏡</value>
+  </data>
+  <data name="LblFilterName" xml:space="preserve">
+    <value>濾鏡名稱</value>
+  </data>
+  <data name="LblFilternameDescription" xml:space="preserve">
+    <value>濾鏡名稱</value>
+  </data>
+  <data name="LblFilterNotFoundForPosition" xml:space="preserve">
+    <value>{0} 位置未揾到滤镜, 請重新查看設置中嘅濾鏡對應於你嘅濾鏡輪嘅位置!</value>
+  </data>
+  <data name="LblFilterSetButFilterWheelNotConnected" xml:space="preserve">
+    <value>一個或多個序列項有濾鏡設置, 但濾鏡輪未連接!</value>
+  </data>
+  <data name="LblFilterWheel" xml:space="preserve">
+    <value>濾鏡輪</value>
+  </data>
+  <data name="LblFilterwheelConnected" xml:space="preserve">
+    <value>濾鏡輪連接</value>
+  </data>
+  <data name="LblFilterwheelConnectionLost" xml:space="preserve">
+    <value>濾鏡輪連接賴! 請連接番!</value>
+  </data>
+  <data name="LblFits" xml:space="preserve">
+    <value>FITS</value>
+  </data>
+  <data name="LblFlatCalculatedExposureTime" xml:space="preserve">
+    <value>計算目標曝光時間</value>
+  </data>
+  <data name="LblFlatCalculatedHistogramMean" xml:space="preserve">
+    <value>計算目標直方圖平均值</value>
+  </data>
+  <data name="LblFlatCount" xml:space="preserve">
+    <value>平場拍攝張數</value>
+  </data>
+  <data name="LblFlatDevice" xml:space="preserve">
+    <value>平場板</value>
+  </data>
+  <data name="LblFlatDeviceBrightness" xml:space="preserve">
+    <value>亮度</value>
+  </data>
+  <data name="LblFlatDeviceChooseSerialPort" xml:space="preserve">
+    <value>揀串口</value>
+  </data>
+  <data name="LblFlatDeviceClose" xml:space="preserve">
+    <value>關閉</value>
+  </data>
+  <data name="LblFlatDeviceCloseAtSequenceEnd" xml:space="preserve">
+    <value>Close cover when sequence ends</value>
+  </data>
+  <data name="LblFlatDeviceClosed" xml:space="preserve">
+    <value>已關閉</value>
+  </data>
+  <data name="LblFlatDeviceConnected" xml:space="preserve">
+    <value>平場板已連接</value>
+  </data>
+  <data name="LblFlatDeviceConnectedButCoverNotOpen" xml:space="preserve">
+    <value>平場板已連接, 但係蓋未打開</value>
+  </data>
+  <data name="LblFlatDeviceCover" xml:space="preserve">
+    <value>電動起</value>
+  </data>
+  <data name="LblFlatDeviceCoverCurrently" xml:space="preserve">
+    <value>當前</value>
+  </data>
+  <data name="LblFlatDeviceDisconnectQuestion" xml:space="preserve">
+    <value>你想斷開平場板連結嗎?</value>
+  </data>
+  <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
+    <value>Flat Panel Settings</value>
+  </data>
+  <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
+    <value>平場板無法連結</value>
+  </data>
+  <data name="LblFlatDeviceLight" xml:space="preserve">
+    <value>平場板光源</value>
+  </data>
+  <data name="LblFlatDeviceNeitherOpenNorClosed" xml:space="preserve">
+    <value>運行中</value>
+  </data>
+  <data name="LblFlatDeviceNoDevice" xml:space="preserve">
+    <value>冇平場板</value>
+  </data>
+  <data name="LblFlatDeviceOpen" xml:space="preserve">
+    <value>打開</value>
+  </data>
+  <data name="LblFlatDeviceOpenButton" xml:space="preserve">
+    <value>打開</value>
+  </data>
+  <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
+    <value>Open cover for dark flats</value>
+  </data>
+  <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="LblFlatDeviceUnknown" xml:space="preserve">
+    <value>未知</value>
+  </data>
+  <data name="LblFlatExposureCalcContinue" xml:space="preserve">
+    <value>平均 adu 係 {0}, 開始曝光時間計算 {1}</value>
+  </data>
+  <data name="LblFlatExposureCalcFinished" xml:space="preserve">
+    <value>平均 adu 係 {0} 目標曝光時間係 {1}</value>
+  </data>
+  <data name="LblFlatExposureCalcStart" xml:space="preserve">
+    <value>開始曝光時間計算 {0}</value>
+  </data>
+  <data name="LblFlatHistogramMeanTarget" xml:space="preserve">
+    <value>直方圖平均目標</value>
+  </data>
+  <data name="LblFlatHistogramTolerance" xml:space="preserve">
+    <value>平均值容差</value>
+  </data>
+  <data name="LblFlatMaxExposureTime" xml:space="preserve">
+    <value>平場最長曝光</value>
+  </data>
+  <data name="LblFlatMinExposureTime" xml:space="preserve">
+    <value>平場最短曝光</value>
+  </data>
+  <data name="LblFlatSequenceCancelled" xml:space="preserve">
+    <value>平場順序取消, 無法肯定平場曝光時間</value>
+  </data>
+  <data name="LblFlatStepSize" xml:space="preserve">
+    <value>平場曝光步長</value>
+  </data>
+  <data name="LblFlatUserCurrentExposureCalculation" xml:space="preserve">
+    <value>當前曝光計算</value>
+  </data>
+  <data name="LblFlatUserFlatSettings" xml:space="preserve">
+    <value>平場嚮導設置</value>
+  </data>
+  <data name="LblFlatUserPromptCancel" xml:space="preserve">
+    <value>取消平場嚮導</value>
+  </data>
+  <data name="LblFlatUserPromptFailure" xml:space="preserve">
+    <value>無法獲得適當嘅平場曝光</value>
+  </data>
+  <data name="LblFlatUserPromptFlatTooBright" xml:space="preserve">
+    <value>你平場太光, 調暗光源, 較公差, 目標平均值或最小曝光時間</value>
+  </data>
+  <data name="LblFlatUserPromptFlatTooDim" xml:space="preserve">
+    <value>你平場太暗, 調光光源, 較公差, 目標平均值或者最大曝光時間</value>
+  </data>
+  <data name="LblFlatWizard" xml:space="preserve">
+    <value>平場助手</value>
+  </data>
+  <data name="LblFlatWizardCapture" xml:space="preserve">
+    <value>平場助手曝光</value>
+  </data>
+  <data name="LblFLICameraSetup" xml:space="preserve">
+    <value>fli 相機設置</value>
+  </data>
+  <data name="LblFLIFloodBin" xml:space="preserve">
+    <value>曝光像素合併</value>
+  </data>
+  <data name="LblFLIFloodDuration" xml:space="preserve">
+    <value>曝光時長</value>
+  </data>
+  <data name="LblFLIFlushCount" xml:space="preserve">
+    <value>預曝光刷新次數</value>
+  </data>
+  <data name="LblFlip" xml:space="preserve">
+    <value>翻轉</value>
+  </data>
+  <data name="LblFlippingScope" xml:space="preserve">
+    <value>翻轉赤道儀</value>
+  </data>
+  <data name="LblFLIPreRBIMitigation" xml:space="preserve">
+    <value>rbi 合成</value>
+  </data>
+  <data name="LblFLISnapshotFlood" xml:space="preserve">
+    <value>快照傳輸</value>
+  </data>
+  <data name="LblFocalLength" xml:space="preserve">
+    <value>焦距</value>
+  </data>
+  <data name="LblFocalRatio" xml:space="preserve">
+    <value>焦過</value>
+  </data>
+  <data name="LblFocuser" xml:space="preserve">
+    <value>電調</value>
+  </data>
+  <data name="LblFocuserAutoFocusInitialOffsetSteps" xml:space="preserve">
+    <value>自動對焦初始偏移步數</value>
+  </data>
+  <data name="LblFocuserAutoFocusInitialOffsetStepsTooltip" xml:space="preserve">
+    <value>開始自動對焦時, 電調就移出的初始步數。</value>
+  </data>
+  <data name="LblFocuserAutoFocusStepSize" xml:space="preserve">
+    <value>自對焦步長</value>
+  </data>
+  <data name="LblFocuserAutoFocusStepSizeTooltip" xml:space="preserve">
+    <value>個個自動對焦點相隔的步長。 步長應小於臨界焦點的容差值</value>
+  </data>
+  <data name="LblFocuserBacklash" xml:space="preserve">
+    <value>回差 in/out</value>
+  </data>
+  <data name="LblFocuserBacklashTooltip" xml:space="preserve">
+    <value>電調緊每一步 in/out 方向嘅回差</value>
+  </data>
+  <data name="LblFocuserConnected" xml:space="preserve">
+    <value>電調連接</value>
+  </data>
+  <data name="LblFocuserConnectionLost" xml:space="preserve">
+    <value>電調連接賴! 請重新連接!</value>
+  </data>
+  <data name="LblFocuserPositionDescription" xml:space="preserve">
+    <value>當前電調位置</value>
+  </data>
+  <data name="LblFocuserSettleTime" xml:space="preserve">
+    <value>穩定時間</value>
+  </data>
+  <data name="LblFocuserSettleTimeTooltip" xml:space="preserve">
+    <value>如果因為電調嘅移動導致焦點偏移, 請在此處以秒為單位設置穩定時間。</value>
+  </data>
+  <data name="LblFocuserTempDescription" xml:space="preserve">
+    <value>電調溫度</value>
+  </data>
+  <data name="LblFocuserUseFilterWheelOffsets" xml:space="preserve">
+    <value>使用濾鏡焦點偏移</value>
+  </data>
+  <data name="LblFocuserUseFilterWheelOffsetsTooltip" xml:space="preserve">
+    <value>當由一個濾鏡切換到另一個濾鏡時, 電調會改變它相對于為該濾鏡指定的偏移量</value>
+  </data>
+  <data name="LblFocusOffset" xml:space="preserve">
+    <value>焦點偏移</value>
+  </data>
+  <data name="LblFocusPointValidationFailed" xml:space="preserve">
+    <value>計數位風頭躉嘅 HFR {0} 與實際 HFR 相差超過 25%
+實際 HFR: {1}
+計算嘅 HFR: {2}
+</value>
+  </data>
+  <data name="LblFolderToWatch" xml:space="preserve">
+    <value>監測文件夾</value>
+  </data>
+  <data name="LblFrameNFocus" xml:space="preserve">
+    <value>幀數 &amp; 對焦</value>
+  </data>
+  <data name="LblFrameNrDescription" xml:space="preserve">
+    <value>此格式嘅第 n 張 ####</value>
+  </data>
+  <data name="LblFraming" xml:space="preserve">
+    <value>構圖助手</value>
+  </data>
+  <data name="LblFramingAssistant" xml:space="preserve">
+    <value>構圖助手</value>
+  </data>
+  <data name="LblFreeImage" xml:space="preserve">
+    <value>自由拍攝</value>
+  </data>
+  <data name="LblFrom" xml:space="preserve">
+    <value>由</value>
+  </data>
+  <data name="LblFullWellCapacity" xml:space="preserve">
+    <value>成井電荷 (e)</value>
+  </data>
+  <data name="LblGain" xml:space="preserve">
+    <value>增益</value>
+  </data>
+  <data name="LblGainDescription" xml:space="preserve">
+    <value>相機增益</value>
+  </data>
+  <data name="LblGeneral" xml:space="preserve">
+    <value>通用</value>
+  </data>
+  <data name="LblGPSConnected" xml:space="preserve">
+    <value>gps 已經喺端口上連接</value>
+  </data>
+  <data name="LblGPSConnectFail" xml:space="preserve">
+    <value>無法連接到端口上嘅 gps</value>
+  </data>
+  <data name="LblGPSLocationSet" xml:space="preserve">
+    <value>由 gps 設置位置</value>
+  </data>
+  <data name="LblGPSNoFix" xml:space="preserve">
+    <value>gps 無定位</value>
+  </data>
+  <data name="LblGPSNotFound" xml:space="preserve">
+    <value>未檢測到 gps 糢塊</value>
+  </data>
+  <data name="LblGPSTooltip" xml:space="preserve">
+    <value>使用 nmea gps 導入位置</value>
+  </data>
+  <data name="LblGuider" xml:space="preserve">
+    <value>導星</value>
+  </data>
+  <data name="LblGuiderConnected" xml:space="preserve">
+    <value>導星已連接</value>
+  </data>
+  <data name="LblGuiderDitherButNotConnected" xml:space="preserve">
+    <value>導星抖動已啟用, 但應用程序未連接到導星相機</value>
+  </data>
+  <data name="LblGuiderNoResume" xml:space="preserve">
+    <value>導星程序沒有在指定時間內恢復通信, 序列將繼續拍攝, 但請手動確認導星已經進行緊</value>
+  </data>
+  <data name="LblGuiderNoSettleDone" xml:space="preserve">
+    <value>導星沒有在指定時間內返回穩定完成消息, 飛。</value>
+  </data>
+  <data name="LblGuiderResumeFailed" xml:space="preserve">
+    <value>導星恢復炒</value>
+  </data>
+  <data name="LblGuiderSettings" xml:space="preserve">
+    <value>導星設置</value>
+  </data>
+  <data name="LblGuiderStatus" xml:space="preserve">
+    <value>導星狀態</value>
+  </data>
+  <data name="LblGuidingRMSArcSecDescription" xml:space="preserve">
+    <value>導星 rms, 單位為角秒</value>
+  </data>
+  <data name="LblGuidingRMSDescription" xml:space="preserve">
+    <value>導星的均方根誤差 (像素)</value>
+  </data>
+  <data name="LblHalt" xml:space="preserve">
+    <value>停止</value>
+  </data>
+  <data name="LblHeight" xml:space="preserve">
+    <value>高度</value>
+  </data>
+  <data name="LblHemisphere" xml:space="preserve">
+    <value>半球</value>
+  </data>
+  <data name="LblHFR" xml:space="preserve">
+    <value>HFR</value>
+  </data>
+  <data name="LblHFRHistory" xml:space="preserve">
+    <value>HFR 歷史</value>
+  </data>
+  <data name="LblHFRPatternDescription" xml:space="preserve">
+    <value>計算圖像嘅 HFR (必須啟用 HFR 檢測)</value>
+  </data>
+  <data name="LblHigh" xml:space="preserve">
+    <value>高</value>
+  </data>
+  <data name="LblHighest" xml:space="preserve">
+    <value>最高</value>
+  </data>
+  <data name="LblHistogram" xml:space="preserve">
+    <value>直方圖</value>
+  </data>
+  <data name="LblHistogramResolution" xml:space="preserve">
+    <value>直方圖分辨率</value>
+  </data>
+  <data name="LblHistogramResolutionTooltip" xml:space="preserve">
+    <value>指定應用於直方圖的數據點的數目</value>
+  </data>
+  <data name="LblHistory" xml:space="preserve">
+    <value>歷史</value>
+  </data>
+  <data name="LblHNSKY" xml:space="preserve">
+    <value>HNSKY</value>
+  </data>
+  <data name="LblHorizontalPanels" xml:space="preserve">
+    <value>水平張數</value>
+  </data>
+  <data name="LblHost" xml:space="preserve">
+    <value>地址</value>
+  </data>
+  <data name="LblHour" xml:space="preserve">
+    <value>小時</value>
+  </data>
+  <data name="LblHumidity" xml:space="preserve">
+    <value>濕度</value>
+  </data>
+  <data name="LblHyperbolic" xml:space="preserve">
+    <value>雙曲線</value>
+  </data>
+  <data name="LblId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="LblIllumination" xml:space="preserve">
+    <value>光照</value>
+  </data>
+  <data name="LblImage" xml:space="preserve">
+    <value>拍攝</value>
+  </data>
+  <data name="LblImageArea" xml:space="preserve">
+    <value>圖區</value>
+  </data>
+  <data name="LblImageFileError" xml:space="preserve">
+    <value>圖錯誤</value>
+  </data>
+  <data name="LblImageFilePath" xml:space="preserve">
+    <value>圖路徑</value>
+  </data>
+  <data name="LblImageFilePattern" xml:space="preserve">
+    <value>圖格式</value>
+  </data>
+  <data name="LblImageHistory" xml:space="preserve">
+    <value>圖歷史</value>
+  </data>
+  <data name="LblImageOptions" xml:space="preserve">
+    <value>圖選項</value>
+  </data>
+  <data name="LblImageSource" xml:space="preserve">
+    <value>圖片來源</value>
+  </data>
+  <data name="LblImageTypeDescription" xml:space="preserve">
+    <value>光場, 平場, 暗场, 偏置場, 快照</value>
+  </data>
+  <data name="LblImaging" xml:space="preserve">
+    <value>主控台</value>
+  </data>
+  <data name="LblImportFromFilterWheel" xml:space="preserve">
+    <value>由濾鏡輪設置導入濾鏡</value>
+  </data>
+  <data name="LblIndexFile" xml:space="preserve">
+    <value>索引文件</value>
+  </data>
+  <data name="LblInfo" xml:space="preserve">
+    <value>信息</value>
+  </data>
+  <data name="LblInitiatePlatesolve" xml:space="preserve">
+    <value>啟動解析</value>
+  </data>
+  <data name="LblInvalidMode" xml:space="preserve">
+    <value>無效嘅模式</value>
+  </data>
+  <data name="LblInvalidModeBulb" xml:space="preserve">
+    <value>曝光時間模式 (B 門) 無效 &lt;1s</value>
+  </data>
+  <data name="LblInvalidModeManual" xml:space="preserve">
+    <value>曝光時間模式 (m) 無效 &gt;30s</value>
+  </data>
+  <data name="LblIsBayered" xml:space="preserve">
+    <value>可以轉色</value>
+  </data>
+  <data name="LblIsMoving" xml:space="preserve">
+    <value>移動中</value>
+  </data>
+  <data name="LblIsSettling" xml:space="preserve">
+    <value>穩定中</value>
+  </data>
+  <data name="LblItemsPerPage" xml:space="preserve">
+    <value>每頁顯示</value>
+  </data>
+  <data name="LblJ2000" xml:space="preserve">
+    <value>J2000</value>
+  </data>
+  <data name="LblJNOW" xml:space="preserve">
+    <value>JNOW</value>
+  </data>
+  <data name="LblLanguage" xml:space="preserve">
+    <value>語言</value>
+  </data>
+  <data name="LblLaplace" xml:space="preserve">
+    <value>Laplace</value>
+  </data>
+  <data name="LblLatitude" xml:space="preserve">
+    <value>緯度</value>
+  </data>
+  <data name="LblLayout" xml:space="preserve">
+    <value>布局</value>
+  </data>
+  <data name="LblLblBlackClippingTooltip" xml:space="preserve">
+    <value>以 sigma 為單位表示嘅黑色區域剪裁的中位數</value>
+  </data>
+  <data name="LblLoadImage" xml:space="preserve">
+    <value>加载圖</value>
+  </data>
+  <data name="LblLoadImageFromFile" xml:space="preserve">
+    <value>由文件加载圖</value>
+  </data>
+  <data name="LblLoadImageFromFileTooltip" xml:space="preserve">
+    <value>由文件下載圖片並使用盲解析肯定坐標</value>
+  </data>
+  <data name="LblLoadProfile" xml:space="preserve">
+    <value>加载配置文件</value>
+  </data>
+  <data name="LblLoadProfileInUseWarning" xml:space="preserve">
+    <value>無法加载個人資料。 佢正被另一個 n.i.n.a. 使用!</value>
+  </data>
+  <data name="LblLoadSequence" xml:space="preserve">
+    <value>加载序列</value>
+  </data>
+  <data name="LblLoadSequenceFailed" xml:space="preserve">
+    <value>加载序列炒</value>
+  </data>
+  <data name="LblLoadSequenceSetFailed" xml:space="preserve">
+    <value>加载目標設置炒</value>
+  </data>
+  <data name="LblLoadSequenceToolTip" xml:space="preserve">
+    <value>從 xml 文件加载序列</value>
+  </data>
+  <data name="LblLoadTargetSet" xml:space="preserve">
+    <value>加载目標設置</value>
+  </data>
+  <data name="LblLocalPlatesolver" xml:space="preserve">
+    <value>本地解析</value>
+  </data>
+  <data name="LblLocation" xml:space="preserve">
+    <value>位置</value>
+  </data>
+  <data name="LblLogLevel" xml:space="preserve">
+    <value>日誌等級</value>
+  </data>
+  <data name="LblLongitude" xml:space="preserve">
+    <value>經度</value>
+  </data>
+  <data name="LblLoop" xml:space="preserve">
+    <value>循環拍攝</value>
+  </data>
+  <data name="LblMAD" xml:space="preserve">
+    <value>MAD</value>
+  </data>
+  <data name="LblMagnitude" xml:space="preserve">
+    <value>星等</value>
+  </data>
+  <data name="LblManualControl" xml:space="preserve">
+    <value>手動控制</value>
+  </data>
+  <data name="LblManualCoordinates" xml:space="preserve">
+    <value>指定坐標 (j2000)</value>
+  </data>
+  <data name="LblManualFilterWheel" xml:space="preserve">
+    <value>手動濾鏡輪</value>
+  </data>
+  <data name="LblManualFilterWheelDescription" xml:space="preserve">
+    <value>導入濾鏡輪設置中嘅滤镜。 當需要更換濾鏡時, 就彈出通知以手動更改滤镜。</value>
+  </data>
+  <data name="LblManualFocusTargets" xml:space="preserve">
+    <value>手動對焦目標</value>
+  </data>
+  <data name="LblManualNotFound" xml:space="preserve">
+    <value>手動裝置未搵到</value>
+  </data>
+  <data name="LblManualRotator" xml:space="preserve">
+    <value>手動旋轉器</value>
+  </data>
+  <data name="LblManualRotatorDescription" xml:space="preserve">
+    <value>請求旋轉時, 就彈出通知以手動旋轉</value>
+  </data>
+  <data name="LblMax" xml:space="preserve">
+    <value>最大</value>
+  </data>
+  <data name="LblMaxBinX" xml:space="preserve">
+    <value>x 最大合併像素</value>
+  </data>
+  <data name="LblMaxBinY" xml:space="preserve">
+    <value>y 最大合併像素</value>
+  </data>
+  <data name="LblMaxExpTime" xml:space="preserve">
+    <value>最長曝光時間</value>
+  </data>
+  <data name="LblMaximumExposureTime" xml:space="preserve">
+    <value>推薦最長曝光</value>
+  </data>
+  <data name="LblMaxIncrement" xml:space="preserve">
+    <value>最大增量</value>
+  </data>
+  <data name="LblMaxObjects" xml:space="preserve">
+    <value>最大對象</value>
+  </data>
+  <data name="LblMaxOptimalADU" xml:space="preserve">
+    <value>最大 ADU</value>
+  </data>
+  <data name="LblMaxStep" xml:space="preserve">
+    <value>最大步長</value>
+  </data>
+  <data name="LblMean" xml:space="preserve">
+    <value>均值</value>
+  </data>
+  <data name="LblMeasureFocuserBacklash" xml:space="preserve">
+    <value>測量電調回差</value>
+  </data>
+  <data name="LblMedian" xml:space="preserve">
+    <value>中值</value>
+  </data>
+  <data name="LblMeridianFlipFailed" xml:space="preserve">
+    <value>中天翻轉炒</value>
+  </data>
+  <data name="LblMeridianFlipInit" xml:space="preserve">
+    <value>開始中天翻轉</value>
+  </data>
+  <data name="LblMeridianIn" xml:space="preserve">
+    <value>到達中天</value>
+  </data>
+  <data name="LblMeridianOffset" xml:space="preserve">
+    <value>中天位置偏移</value>
+  </data>
+  <data name="LblMin" xml:space="preserve">
+    <value>最小</value>
+  </data>
+  <data name="LblMinDuration" xml:space="preserve">
+    <value>持續分鐘數</value>
+  </data>
+  <data name="LblMinExpTime" xml:space="preserve">
+    <value>最小曝光時間</value>
+  </data>
+  <data name="LblMinimumAltitude" xml:space="preserve">
+    <value>最低高度</value>
+  </data>
+  <data name="LblMinimumExposureTime" xml:space="preserve">
+    <value>最小建議時間</value>
+  </data>
+  <data name="LblMinimumSettleTime" xml:space="preserve">
+    <value>最小穩定時間</value>
+  </data>
+  <data name="LblMinOptimalADU" xml:space="preserve">
+    <value>最低 ADU</value>
+  </data>
+  <data name="LblMinutesAfterMeridian" xml:space="preserve">
+    <value>過中天幾分鐘後翻轉</value>
+  </data>
+  <data name="LblMinutesShort" xml:space="preserve">
+    <value>分鐘</value>
+  </data>
+  <data name="LblMode" xml:space="preserve">
+    <value>模式</value>
+  </data>
+  <data name="LblMoonRise" xml:space="preserve">
+    <value>月出</value>
+  </data>
+  <data name="LblMoonSet" xml:space="preserve">
+    <value>月落</value>
+  </data>
+  <data name="LblMove" xml:space="preserve">
+    <value>移動</value>
+  </data>
+  <data name="LblName" xml:space="preserve">
+    <value>名稱</value>
+  </data>
+  <data name="LblNASASkySurvey" xml:space="preserve">
+    <value>nasa 廵天圖庫 (在線)</value>
+  </data>
+  <data name="LblNative" xml:space="preserve">
+    <value>本地</value>
+  </data>
+  <data name="LblNewUpdateAvailable" xml:space="preserve">
+    <value>新版本 ({0})! 點擊進行更新</value>
+  </data>
+  <data name="LblNightly" xml:space="preserve">
+    <value>先行版</value>
+  </data>
+  <data name="LblNikonNotFound" xml:space="preserve">
+    <value>冇搵到尼康相機</value>
+  </data>
+  <data name="LblNINA" xml:space="preserve">
+    <value>NINA</value>
+  </data>
+  <data name="LblNINAToTelescope" xml:space="preserve">
+    <value>係 NINA 導入經緯度</value>
+  </data>
+  <data name="LblNo" xml:space="preserve">
+    <value>否</value>
+  </data>
+  <data name="LblNoCamera" xml:space="preserve">
+    <value>冇相機</value>
+  </data>
+  <data name="LblNoCameraConnected" xml:space="preserve">
+    <value>冇相機連接</value>
+  </data>
+  <data name="LblNoCoordinates" xml:space="preserve">
+    <value>冇可用的坐標</value>
+  </data>
+  <data name="LblNoCoordinatesForSync" xml:space="preserve">
+    <value>冇得可用於同步赤道儀的坐標</value>
+  </data>
+  <data name="LblNoFilterwheel" xml:space="preserve">
+    <value>冇濾鏡輪</value>
+  </data>
+  <data name="LblNoFocuser" xml:space="preserve">
+    <value>冇電調</value>
+  </data>
+  <data name="LblNoGuider" xml:space="preserve">
+    <value>冇導星</value>
+  </data>
+  <data name="LblNoImage" xml:space="preserve">
+    <value>冇圖像</value>
+  </data>
+  <data name="LblNoiseReduction" xml:space="preserve">
+    <value>降噪</value>
+  </data>
+  <data name="LblNoiseReductionTooltip" xml:space="preserve">
+    <value>喺檢測之前應用降噪。 可能有助於處理嘈雜的圖像和短時間曝光。</value>
+  </data>
+  <data name="LblNone" xml:space="preserve">
+    <value>冇</value>
+  </data>
+  <data name="LblNormal" xml:space="preserve">
+    <value>正常</value>
+  </data>
+  <data name="LblNoRotator" xml:space="preserve">
+    <value>冇旋轉器 (電子 caa)</value>
+  </data>
+  <data name="LblNorthern" xml:space="preserve">
+    <value>北半球</value>
+  </data>
+  <data name="LblNoSwitch" xml:space="preserve">
+    <value>冇開關</value>
+  </data>
+  <data name="LblNoTelescope" xml:space="preserve">
+    <value>冇赤道儀</value>
+  </data>
+  <data name="LblNotificationError" xml:space="preserve">
+    <value>錯誤</value>
+  </data>
+  <data name="LblNotificationErrorText" xml:space="preserve">
+    <value>錯誤內容</value>
+  </data>
+  <data name="LblNotificationWarning" xml:space="preserve">
+    <value>警告</value>
+  </data>
+  <data name="LblNotificationWarningText" xml:space="preserve">
+    <value>警告內容</value>
+  </data>
+  <data name="LblNow" xml:space="preserve">
+    <value>而家</value>
+  </data>
+  <data name="LblNrStars" xml:space="preserve">
+    <value>星點數</value>
+  </data>
+  <data name="LblObjectNameHint" xml:space="preserve">
+    <value>輸入目標名 (如 m31)</value>
+  </data>
+  <data name="LblObjectType" xml:space="preserve">
+    <value>目標類型</value>
+  </data>
+  <data name="LblObjectType_1STAR" xml:space="preserve">
+    <value>單星</value>
+  </data>
+  <data name="LblObjectType_2STAR" xml:space="preserve">
+    <value>雙星系統</value>
+  </data>
+  <data name="LblObjectType_3STAR" xml:space="preserve">
+    <value>三星系統</value>
+  </data>
+  <data name="LblObjectType_4STAR" xml:space="preserve">
+    <value>四星系統</value>
+  </data>
+  <data name="LblObjectType_8STAR" xml:space="preserve">
+    <value>八星系統</value>
+  </data>
+  <data name="LblObjectType_ASTER" xml:space="preserve">
+    <value>光星群</value>
+  </data>
+  <data name="LblObjectType_BRTNB" xml:space="preserve">
+    <value>亮星雲</value>
+  </data>
+  <data name="LblObjectType_CL+NB" xml:space="preserve">
+    <value>星雲團</value>
+  </data>
+  <data name="LblObjectType_DRKNB" xml:space="preserve">
+    <value>暗星雲</value>
+  </data>
+  <data name="LblObjectType_G+C+N" xml:space="preserve">
+    <value>星系群和星雲團</value>
+  </data>
+  <data name="LblObjectType_GALCL" xml:space="preserve">
+    <value>星系群</value>
+  </data>
+  <data name="LblObjectType_GALXY" xml:space="preserve">
+    <value>星系</value>
+  </data>
+  <data name="LblObjectType_GLOCL" xml:space="preserve">
+    <value>球状星團</value>
+  </data>
+  <data name="LblObjectType_GX+DN" xml:space="preserve">
+    <value>星系中發射星雲</value>
+  </data>
+  <data name="LblObjectType_GX+GC" xml:space="preserve">
+    <value>星系中嘅球状星團</value>
+  </data>
+  <data name="LblObjectType_LMCCN" xml:space="preserve">
+    <value>大麦哲伦星雲星雲既團</value>
+  </data>
+  <data name="LblObjectType_LMCDN" xml:space="preserve">
+    <value>大麦哲伦星雲的發射星雲</value>
+  </data>
+  <data name="LblObjectType_LMCGC" xml:space="preserve">
+    <value>大麦哲伦星雲嘅球状星團</value>
+  </data>
+  <data name="LblObjectType_LMCOC" xml:space="preserve">
+    <value>大麦哲伦星雲的開放星團</value>
+  </data>
+  <data name="LblObjectType_NONEX" xml:space="preserve">
+    <value>唔可見目標</value>
+  </data>
+  <data name="LblObjectType_OPNCL" xml:space="preserve">
+    <value>疏散星團</value>
+  </data>
+  <data name="LblObjectType_PLNNB" xml:space="preserve">
+    <value>行星狀星雲</value>
+  </data>
+  <data name="LblObjectType_QUASR" xml:space="preserve">
+    <value>類星躰</value>
+  </data>
+  <data name="LblObjectType_SMCCN" xml:space="preserve">
+    <value>小麦哲伦星雲星雲既團</value>
+  </data>
+  <data name="LblObjectType_SMCDN" xml:space="preserve">
+    <value>小麦哲伦星雲的發射星雲</value>
+  </data>
+  <data name="LblObjectType_SMCGC" xml:space="preserve">
+    <value>小麦哲伦星雲嘅球状星團</value>
+  </data>
+  <data name="LblObjectType_SMCOC" xml:space="preserve">
+    <value>小麦哲伦星雲的開放星團</value>
+  </data>
+  <data name="LblObjectType_SNREM" xml:space="preserve">
+    <value>超新星遺蹟</value>
+  </data>
+  <data name="LblOf" xml:space="preserve">
+    <value>嘅</value>
+  </data>
+  <data name="LblOff" xml:space="preserve">
+    <value>關閉</value>
+  </data>
+  <data name="LblOffset" xml:space="preserve">
+    <value>偏移</value>
+  </data>
+  <data name="LblOffsetDescription" xml:space="preserve">
+    <value>相機的偏移值</value>
+  </data>
+  <data name="LblOK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="LblOn" xml:space="preserve">
+    <value>打開</value>
+  </data>
+  <data name="LblOneToOne" xml:space="preserve">
+    <value>將圖像縮放為1:1</value>
+  </data>
+  <data name="LblOpacity" xml:space="preserve">
+    <value>唔透明度</value>
+  </data>
+  <data name="LblOpenManual" xml:space="preserve">
+    <value>打開手冊</value>
+  </data>
+  <data name="LblOpenWeatherMapAPIKey" xml:space="preserve">
+    <value>OpenWeatherMap API 密鑰</value>
+  </data>
+  <data name="LblOpenWeatherMapClientDescription" xml:space="preserve">
+    <value>使用 OpenWeatherMap 的氣象 API, 氣象數據每 10 分鐘更新一次。</value>
+  </data>
+  <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
+    <value>NINA OWM API 客戶耑</value>
+  </data>
+  <data name="LblOptimalExposureTime" xml:space="preserve">
+    <value>最佳曝光時間</value>
+  </data>
+  <data name="LblOptions" xml:space="preserve">
+    <value>選項</value>
+  </data>
+  <data name="LblOrderBy" xml:space="preserve">
+    <value>排序方式</value>
+  </data>
+  <data name="LblOrientation" xml:space="preserve">
+    <value>位置</value>
+  </data>
+  <data name="LblOverlapPercentage" xml:space="preserve">
+    <value>重疊百分比</value>
+  </data>
+  <data name="LblPanel" xml:space="preserve">
+    <value>面板</value>
+  </data>
+  <data name="LblParabolic" xml:space="preserve">
+    <value>拋物綫</value>
+  </data>
+  <data name="LblPark" xml:space="preserve">
+    <value>還零</value>
+  </data>
+  <data name="LblParkEnabledButTelescopeCannotPark" xml:space="preserve">
+    <value>赤道儀設置為序列結束時還緊零停放, 但它無法這樣做</value>
+  </data>
+  <data name="LblParkEnabledButTelescopeNotConnected" xml:space="preserve">
+    <value>赤道儀設置為序列結束時還緊零停放, 但未連接</value>
+  </data>
+  <data name="LblParkMountAtSequenceEnd" xml:space="preserve">
+    <value>序列結束時還零停放</value>
+  </data>
+  <data name="LblPassMeridian" xml:space="preserve">
+    <value>過中天</value>
+  </data>
+  <data name="LblPatternName" xml:space="preserve">
+    <value>格式名稱</value>
+  </data>
+  <data name="LblPauseBetweenFilters" xml:space="preserve">
+    <value>更換濾鏡時暫停</value>
+  </data>
+  <data name="LblPaused" xml:space="preserve">
+    <value>已暫停</value>
+  </data>
+  <data name="LblPauseTimeBeforeMeridian" xml:space="preserve">
+    <value>中天前暫停 (分鐘)</value>
+  </data>
+  <data name="LblPercentShort" xml:space="preserve">
+    <value>%</value>
+  </data>
+  <data name="LblPHD2DecRMS" xml:space="preserve">
+    <value>赤緯: {0} ({1} ")</value>
+  </data>
+  <data name="LblPhd2FailedEquipmentConnection" xml:space="preserve">
+    <value>phd2 無法連接到設備</value>
+  </data>
+  <data name="LblPHD2HistorySize" xml:space="preserve">
+    <value>phd2 歷史尺寸</value>
+  </data>
+  <data name="LblPHD2MinimalHistorySize" xml:space="preserve">
+    <value>phd2 歷史尺寸 (圖像)</value>
+  </data>
+  <data name="LblPHD2Path" xml:space="preserve">
+    <value>phd2 路徑</value>
+  </data>
+  <data name="LblPhd2PathNotFound" xml:space="preserve">
+    <value>無法啟動 phd2。 路徑設置無效</value>
+  </data>
+  <data name="LblPHD2RARMS" xml:space="preserve">
+    <value>赤經: {0} ({1} ")</value>
+  </data>
+  <data name="LblPhd2ServerConnectionLost" xml:space="preserve">
+    <value>phd2 服務器連接賴!</value>
+  </data>
+  <data name="LblPHD2ServerPort" xml:space="preserve">
+    <value>phd2 服務器端口</value>
+  </data>
+  <data name="LblPHD2ServerUrl" xml:space="preserve">
+    <value>phd2 服務器地址</value>
+  </data>
+  <data name="LblPHD2Settings" xml:space="preserve">
+    <value>phd2 設置</value>
+  </data>
+  <data name="LblPhd2StartProcessError" xml:space="preserve">
+    <value>無法啟動 phd2。 查看日誌以了解詳細信息。</value>
+  </data>
+  <data name="LblPhd2SynchronizedServiceClientConnected" xml:space="preserve">
+    <value>
+        客戶耑連接到同步 phd2 服務。
+        已連接的客戶耑: {0}
+    </value>
+  </data>
+  <data name="LblPhd2SynchronizedServiceClientDisconnected" xml:space="preserve">
+    <value>
+        客戶耑斷開同步 phd2 服務。
+        已連接的客戶耑: {0}
+    </value>
+  </data>
+  <data name="LblPhd2SynchronizedServiceStarted" xml:space="preserve">
+    <value>同步 phd2 服務啟動</value>
+  </data>
+  <data name="LblPHD2TotalRMS" xml:space="preserve">
+    <value>總: {0} ({1} ")</value>
+  </data>
+  <data name="LblPixels" xml:space="preserve">
+    <value>像素</value>
+  </data>
+  <data name="LblPixelScale" xml:space="preserve">
+    <value>像素比例</value>
+  </data>
+  <data name="LblPixelSize" xml:space="preserve">
+    <value>像素大小</value>
+  </data>
+  <data name="LblPixelSizeX" xml:space="preserve">
+    <value>X 像素大小</value>
+  </data>
+  <data name="LblPixelSizeY" xml:space="preserve">
+    <value>Y 像素大小</value>
+  </data>
+  <data name="LblPlanetarium" xml:space="preserve">
+    <value>第三方星圖</value>
+  </data>
+  <data name="LblPlanetariumCoordsError" xml:space="preserve">
+    <value>無法獲取坐標 {0}</value>
+  </data>
+  <data name="LblPlanetariumCoordsOk" xml:space="preserve">
+    <value>坐標來源 {0}</value>
+  </data>
+  <data name="LblPlanetariumPrefs" xml:space="preserve">
+    <value>星圖偏好設置</value>
+  </data>
+  <data name="LblPlanetariumTooltip" xml:space="preserve">
+    <value>由星圖軟件獲取坐標</value>
+  </data>
+  <data name="LblPlatesolve2" xml:space="preserve">
+    <value>PlateSolve2</value>
+  </data>
+  <data name="LblPlatesolve2Directory" xml:space="preserve">
+    <value>platesolve2 路徑</value>
+  </data>
+  <data name="LblPlatesolve2NoCoordinates" xml:space="preserve">
+    <value>冇可用的坐標。 platesolve2 需要坐標來解析!</value>
+  </data>
+  <data name="LblPlatesolve2NotFound" xml:space="preserve">
+    <value>未搵到 PlateSolve2</value>
+  </data>
+  <data name="LblPlateSolvedPolarAlignment" xml:space="preserve">
+    <value>解析極軸較</value>
+  </data>
+  <data name="LblPlateSolveEnding" xml:space="preserve">
+    <value>已嘗試最大解析次數, 或需要中天翻轉。</value>
+  </data>
+  <data name="LblPlatesolveFailed" xml:space="preserve">
+    <value>解析失敗</value>
+  </data>
+  <data name="LblPlateSolveFailedDelay" xml:space="preserve">
+    <value>解析失敗隔</value>
+  </data>
+  <data name="LblPlateSolveFailedDelayTooltip" xml:space="preserve">
+    <value>兩次解析失敗的嘗試隔 (分鐘)</value>
+  </data>
+  <data name="LblPlateSolveImage" xml:space="preserve">
+    <value>解析當前圖像</value>
+  </data>
+  <data name="LblPlateSolveNbOfAttempts" xml:space="preserve">
+    <value>嘗試次數</value>
+  </data>
+  <data name="LblPlateSolveNbOfAttemptsTooltip" xml:space="preserve">
+    <value>序列拍攝中, 將嘗試解析幾多次, 直到認為爆煲為止</value>
+  </data>
+  <data name="LblPlatesolveNoCoordinates" xml:space="preserve">
+    <value>冇可用的參考坐標</value>
+  </data>
+  <data name="LblPlateSolveNoFocalLength" xml:space="preserve">
+    <value>解析被終止. 望遠鏡的有效焦距一定係: 選項 &gt; 設備中進行設置</value>
+  </data>
+  <data name="LblPlatesolveProvidedBy" xml:space="preserve">
+    <value>解析服務提供:</value>
+  </data>
+  <data name="LblPlateSolver" xml:space="preserve">
+    <value>解析</value>
+  </data>
+  <data name="LblPlateSolveReattemptDelay" xml:space="preserve">
+    <value>等待下一次解析嘗試: {0}</value>
+  </data>
+  <data name="LblPlateSolveSettings" xml:space="preserve">
+    <value>解析設置</value>
+  </data>
+  <data name="LblPlateSolving" xml:space="preserve">
+    <value>解析</value>
+  </data>
+  <data name="LblPleaseChangeToFilter" xml:space="preserve">
+    <value>請更換濾鏡 {0}</value>
+  </data>
+  <data name="LblPleaseRotate" xml:space="preserve">
+    <value>請旋轉 {0} 度</value>
+  </data>
+  <data name="LblPolarAlignment" xml:space="preserve">
+    <value>極軸校準</value>
+  </data>
+  <data name="LblPort" xml:space="preserve">
+    <value>端口</value>
+  </data>
+  <data name="LblPosition" xml:space="preserve">
+    <value>方向</value>
+  </data>
+  <data name="LblPreferredPlanetarium" xml:space="preserve">
+    <value>使用星圖軟件</value>
+  </data>
+  <data name="LblPrepareExposure" xml:space="preserve">
+    <value>帶曝光</value>
+  </data>
+  <data name="LblPrepareImage" xml:space="preserve">
+    <value>準備拍攝</value>
+  </data>
+  <data name="LblPreparingDarkFlatSequence" xml:space="preserve">
+    <value>帶暗平場序列</value>
+  </data>
+  <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
+    <value>平場拍攝濾鏡: {0}</value>
+  </data>
+  <data name="LblPreSequenceChecklist" xml:space="preserve">
+    <value>你嘅序列中發現了以下潛在問題:</value>
+  </data>
+  <data name="LblPreSequenceChecklistHeader" xml:space="preserve">
+    <value>拍攝前檢查表</value>
+  </data>
+  <data name="LblPressure" xml:space="preserve">
+    <value>氣壓</value>
+  </data>
+  <data name="LblPrimary" xml:space="preserve">
+    <value>主要</value>
+  </data>
+  <data name="LblProfiles" xml:space="preserve">
+    <value>配置文件</value>
+  </data>
+  <data name="LblProgress" xml:space="preserve">
+    <value>進度</value>
+  </data>
+  <data name="LblPull" xml:space="preserve">
+    <value>拉</value>
+  </data>
+  <data name="LblPush" xml:space="preserve">
+    <value>推</value>
+  </data>
+  <data name="LblPx" xml:space="preserve">
+    <value>像素</value>
+  </data>
+  <data name="LblRA" xml:space="preserve">
+    <value>赤經</value>
+  </data>
+  <data name="LblRACorrections" xml:space="preserve">
+    <value>赤經修正</value>
+  </data>
+  <data name="LblRadius" xml:space="preserve">
+    <value>半徑</value>
+  </data>
+  <data name="LblRAError" xml:space="preserve">
+    <value>赤經誤差</value>
+  </data>
+  <data name="LblRainRate" xml:space="preserve">
+    <value>降水率</value>
+  </data>
+  <data name="LblRAPixError" xml:space="preserve">
+    <value>赤經像素誤差</value>
+  </data>
+  <data name="LblRate" xml:space="preserve">
+    <value>速率</value>
+  </data>
+  <data name="LblRawConverter" xml:space="preserve">
+    <value>raw 格式轉換器</value>
+  </data>
+  <data name="LblRawConverterTooltip" xml:space="preserve">
+    <value>指定應該使用哪個工具進行 dslr raw 轉換</value>
+  </data>
+  <data name="LblReadNoise" xml:space="preserve">
+    <value>讀出譟聲 (e)</value>
+  </data>
+  <data name="LblReadoutForNormalImages" xml:space="preserve">
+    <value>序列的讀出模式</value>
+  </data>
+  <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
+    <value>相機嘅呢種讀出模式將用于序列中嘅光場, 偏置, 暗场, 平場同暗平場。</value>
+  </data>
+  <data name="LblReadoutForSnapImages" xml:space="preserve">
+    <value>快照的讀取模式</value>
+  </data>
+  <data name="LblReadoutForSnapImagesToolTip" xml:space="preserve">
+    <value>相機嘅呢種讀數模式將用于解析, 取景同自動對焦</value>
+  </data>
+  <data name="LblRecenter" xml:space="preserve">
+    <value>居中番</value>
+  </data>
+  <data name="LblRecenterAfterFlip" xml:space="preserve">
+    <value>翻轉後居中番</value>
+  </data>
+  <data name="LblRecenterImage" xml:space="preserve">
+    <value>居中圖像番</value>
+  </data>
+  <data name="LblReconnectAll" xml:space="preserve">
+    <value>重新連接所有設備?</value>
+  </data>
+  <data name="LblReconnectCamera" xml:space="preserve">
+    <value>請重新連接相機!</value>
+  </data>
+  <data name="LblReconnectFilterwheel" xml:space="preserve">
+    <value>請重新連接濾鏡輪!</value>
+  </data>
+  <data name="LblReconnectFocuser" xml:space="preserve">
+    <value>請連接電調番!</value>
+  </data>
+  <data name="LblReconnectTelescope" xml:space="preserve">
+    <value>請重新連接赤道儀!</value>
+  </data>
+  <data name="LblReferenceDate" xml:space="preserve">
+    <value>揀日期</value>
+  </data>
+  <data name="LblRegions" xml:space="preserve">
+    <value>區域</value>
+  </data>
+  <data name="LblRelease" xml:space="preserve">
+    <value>正式</value>
+  </data>
+  <data name="LblRemaining" xml:space="preserve">
+    <value>剩餘</value>
+  </data>
+  <data name="LblRemainingNo" xml:space="preserve">
+    <value>剩餘數</value>
+  </data>
+  <data name="LblRemoveProfileCaption" xml:space="preserve">
+    <value>刪除配置文件</value>
+  </data>
+  <data name="LblRemoveProfileText" xml:space="preserve">
+    <value>需要刪除配置文件名稱: {0} 同 id: {1}?</value>
+  </data>
+  <data name="LblRepeatUntil" xml:space="preserve">
+    <value>重複直到</value>
+  </data>
+  <data name="LblReplaceSequenceTarget" xml:space="preserve">
+    <value>替換到序列目標</value>
+  </data>
+  <data name="LblRescanDevices" xml:space="preserve">
+    <value>重新掃描設備</value>
+  </data>
+  <data name="LblResetAndContinue" xml:space="preserve">
+    <value>重置並繼續</value>
+  </data>
+  <data name="LblResetDockLayout" xml:space="preserve">
+    <value>重置 ui 佈局</value>
+  </data>
+  <data name="LblResetDockLayoutConfirmation" xml:space="preserve">
+    <value>係咪重置 ui 佈局?</value>
+  </data>
+  <data name="LblReslewToTarget" xml:space="preserve">
+    <value>居中番</value>
+  </data>
+  <data name="LblResumeAutoguider" xml:space="preserve">
+    <value>恢復自動導星</value>
+  </data>
+  <data name="LblResumeGuiding" xml:space="preserve">
+    <value>恢復導星</value>
+  </data>
+  <data name="LblResumeSettleTime" xml:space="preserve">
+    <value>恢復後的停頓時間</value>
+  </data>
+  <data name="LblResumeTracking" xml:space="preserve">
+    <value>恢復吊住</value>
+  </data>
+  <data name="LblResuming" xml:space="preserve">
+    <value>重新開始緊</value>
+  </data>
+  <data name="LblRightAscension" xml:space="preserve">
+    <value>赤經</value>
+  </data>
+  <data name="LblRotation" xml:space="preserve">
+    <value>旋轉</value>
+  </data>
+  <data name="LblRotationRequired" xml:space="preserve">
+    <value>需要旋轉相機</value>
+  </data>
+  <data name="LblRotationTolerance" xml:space="preserve">
+    <value>旋轉容差</value>
+  </data>
+  <data name="LblRotator" xml:space="preserve">
+    <value>旋轉器</value>
+  </data>
+  <data name="LblRotatorConnected" xml:space="preserve">
+    <value>旋轉器連接</value>
+  </data>
+  <data name="LblRotatorConnectionLost" xml:space="preserve">
+    <value>旋轉器連接賴! 請重新連接旋轉!</value>
+  </data>
+  <data name="LblSave" xml:space="preserve">
+    <value>keep</value>
+  </data>
+  <data name="LblSaveAsSequence" xml:space="preserve">
+    <value>將序列保存為新文件</value>
+  </data>
+  <data name="LblSaveAsSequenceToolTip" xml:space="preserve">
+    <value>將序列保存為新 xml 文件</value>
+  </data>
+  <data name="LblSaveBacklashQuestion" xml:space="preserve">
+    <value>保存電調回差數據?</value>
+  </data>
+  <data name="LblSaveImageAs" xml:space="preserve">
+    <value>圖像另存為</value>
+  </data>
+  <data name="LblSaveImageAsDSLRNote" xml:space="preserve">
+    <value>對於 dslr, 忽略圖像文件格式設置。 將保存原始格式!</value>
+  </data>
+  <data name="LblSaveSelectedProfileAndDontAskAgain" xml:space="preserve">
+    <value>保存選定的配置文件, 下次唔再詢問</value>
+  </data>
+  <data name="LblSaveSequence" xml:space="preserve">
+    <value>保存序列</value>
+  </data>
+  <data name="LblSaveSequenceToolTip" xml:space="preserve">
+    <value>將序列保存為 xml 文件</value>
+  </data>
+  <data name="LblSaveTargetSet" xml:space="preserve">
+    <value>保存目標設置</value>
+  </data>
+  <data name="LblScopeSettleTimeAfterFlip" xml:space="preserve">
+    <value>翻轉後穩定時間 (秒)</value>
+  </data>
+  <data name="LblSearch" xml:space="preserve">
+    <value>搜索</value>
+  </data>
+  <data name="LblSearchRadius" xml:space="preserve">
+    <value>搜索半徑</value>
+  </data>
+  <data name="LblSecondary" xml:space="preserve">
+    <value>次要</value>
+  </data>
+  <data name="LblSecondaryBackground" xml:space="preserve">
+    <value>次要背景</value>
+  </data>
+  <data name="LblSelectGuidestar" xml:space="preserve">
+    <value>揀被導星</value>
+  </data>
+  <data name="LblSelectNewGuideStar" xml:space="preserve">
+    <value>揀新畀導星</value>
+  </data>
+  <data name="LblSelectProfileInUseWarning" xml:space="preserve">
+    <value>無法選擇所選配置文件。 佢正被另一個 n.i.n.a. 實例使用!</value>
+  </data>
+  <data name="LblSensorName" xml:space="preserve">
+    <value>傳感器名稱</value>
+  </data>
+  <data name="LblSensorType" xml:space="preserve">
+    <value>傳感器類型</value>
+  </data>
+  <data name="LblSequence" xml:space="preserve">
+    <value>序列</value>
+  </data>
+  <data name="LblSequenceDelay" xml:space="preserve">
+    <value>延時開始 (秒)</value>
+  </data>
+  <data name="LblSequenceDelayStatus" xml:space="preserve">
+    <value>{0} 秒之後開始序列</value>
+  </data>
+  <data name="LblSequenceMode" xml:space="preserve">
+    <value>序列模式</value>
+  </data>
+  <data name="LblSequenceModeRotate" xml:space="preserve">
+    <value>循環拍攝</value>
+  </data>
+  <data name="LblSequenceModeStandard" xml:space="preserve">
+    <value>順序拍攝</value>
+  </data>
+  <data name="LblSequenceTemplate" xml:space="preserve">
+    <value>序列糢闆</value>
+  </data>
+  <data name="LblSequenceTemplateTooltip" xml:space="preserve">
+    <value>指定以前導出的序列文件嘅路徑作為糢闆。
+啟動時將使用此糢闆初始化序列, 而唔係默認序列。</value>
+  </data>
+  <data name="LblSerialPort" xml:space="preserve">
+    <value>串口</value>
+  </data>
+  <data name="LblSerialRelay" xml:space="preserve">
+    <value>串口中繼</value>
+  </data>
+  <data name="LblSetAsSequenceTarget" xml:space="preserve">
+    <value>設置為序列目標</value>
+  </data>
+  <data name="LblSetAutoFocusFilter" xml:space="preserve">
+    <value>設置為自動對焦濾鏡</value>
+  </data>
+  <data name="LblSetAutoFocusFilterTooltip" xml:space="preserve">
+    <value>如果設置此項, 自動對焦就一直使用此滤镜, 並使用濾鏡偏移值</value>
+  </data>
+  <data name="LblSetForFramingAssistant" xml:space="preserve">
+    <value>到構圖助手設置</value>
+  </data>
+  <data name="LblSetNewValue" xml:space="preserve">
+    <value>設置新值</value>
+  </data>
+  <data name="LblSettings" xml:space="preserve">
+    <value>設置</value>
+  </data>
+  <data name="LblSettle" xml:space="preserve">
+    <value>穩定</value>
+  </data>
+  <data name="LblSettlePixelTolerance" xml:space="preserve">
+    <value>phd2 設置像素容差值</value>
+  </data>
+  <data name="LblSettleTimeAfterSlew" xml:space="preserve">
+    <value>移動之後穩定時間 (秒)</value>
+  </data>
+  <data name="LblSettleTimeout" xml:space="preserve">
+    <value>phd2 穩定超時</value>
+  </data>
+  <data name="LblSiderealTime" xml:space="preserve">
+    <value>恆星時</value>
+  </data>
+  <data name="LblSiteElevation" xml:space="preserve">
+    <value>拍攝海拔</value>
+  </data>
+  <data name="LblSiteFromGPS" xml:space="preserve">
+    <value>讀取 gps</value>
+  </data>
+  <data name="LblSiteLatitude" xml:space="preserve">
+    <value>拍攝緯度</value>
+  </data>
+  <data name="LblSiteLongitude" xml:space="preserve">
+    <value>拍攝經度</value>
+  </data>
+  <data name="LblSize" xml:space="preserve">
+    <value>大小</value>
+  </data>
+  <data name="LblSkyAtlas" xml:space="preserve">
+    <value>星圖</value>
+  </data>
+  <data name="LblSkyAtlasImageDirectory" xml:space="preserve">
+    <value>skyatlas 離線星圖路徑</value>
+  </data>
+  <data name="LblSkyAtlasSkySurvey" xml:space="preserve">
+    <value>skyatlas (本地星圖)</value>
+  </data>
+  <data name="LblSkyBrightness" xml:space="preserve">
+    <value>天空亮度</value>
+  </data>
+  <data name="LblSkyQuality" xml:space="preserve">
+    <value>天空質素</value>
+  </data>
+  <data name="LblSkyServerSkySurvey" xml:space="preserve">
+    <value>skyserver 廵天圖庫 (在線)</value>
+  </data>
+  <data name="LblSkySurveyCacheDirectory" xml:space="preserve">
+    <value>在線廵天圖庫緩存目錄</value>
+  </data>
+  <data name="LblSkyTemperature" xml:space="preserve">
+    <value>天空溫度</value>
+  </data>
+  <data name="LblSlew" xml:space="preserve">
+    <value>指向</value>
+  </data>
+  <data name="LblSlewDuration" xml:space="preserve">
+    <value>移動持續時間</value>
+  </data>
+  <data name="LblSlewEnabledButTelescopeNotConnected" xml:space="preserve">
+    <value>指向到目標已啟用, 但赤道儀冇連接</value>
+  </data>
+  <data name="LblSlewRateDegSec" xml:space="preserve">
+    <value>指向速率 (度每秒)</value>
+  </data>
+  <data name="LblSlewToTarget" xml:space="preserve">
+    <value>指向到目標</value>
+  </data>
+  <data name="LblSlewToZenith" xml:space="preserve">
+    <value>指向到天頂</value>
+  </data>
+  <data name="LblSlewWhenTargetCoordsUnset" xml:space="preserve">
+    <value>有目標啟用了自動指向, 但冇設置坐標</value>
+  </data>
+  <data name="LblSnapPortStart" xml:space="preserve">
+    <value>快速端口啟動</value>
+  </data>
+  <data name="LblSnapPortStop" xml:space="preserve">
+    <value>快速端口停止</value>
+  </data>
+  <data name="LblSobel" xml:space="preserve">
+    <value>Sobel</value>
+  </data>
+  <data name="LblSolving" xml:space="preserve">
+    <value>解析中...</value>
+  </data>
+  <data name="LblSource" xml:space="preserve">
+    <value>來源</value>
+  </data>
+  <data name="LblSouthern" xml:space="preserve">
+    <value>南半球</value>
+  </data>
+  <data name="LblStarFWHM" xml:space="preserve">
+    <value>星啲 fwhm</value>
+  </data>
+  <data name="LblStarSensitivity" xml:space="preserve">
+    <value>亮星靈敏度</value>
+  </data>
+  <data name="LblStarSensitivityTooltip" xml:space="preserve">
+    <value>確定星檢算法的靈敏度。 較高的設置可能會錯誤地檢測到噪音, 並可能耗時更耐</value>
+  </data>
+  <data name="LblStartAutoFocus" xml:space="preserve">
+    <value>開始自動對焦</value>
+  </data>
+  <data name="LblStartBacklashMeasurementConfirmation" xml:space="preserve">
+    <value>而家開始測量回差。
+在繼續之前, 請確認您的系統當前位於或接近正確的焦點。</value>
+  </data>
+  <data name="LblStartBacklashQuestion" xml:space="preserve">
+    <value>開始回差測量?</value>
+  </data>
+  <data name="LblStartGuiding" xml:space="preserve">
+    <value>自動打開導星</value>
+  </data>
+  <data name="LblStartGuidingButGuiderNotConnected" xml:space="preserve">
+    <value>已啟動導星, 但導星程序未連接</value>
+  </data>
+  <data name="LblStartGuidingFailed" xml:space="preserve">
+    <value>啟動導星炒</value>
+  </data>
+  <data name="LblStartingINBacklashMeasurement" xml:space="preserve">
+    <value>啟動回差測量上</value>
+  </data>
+  <data name="LblStartingOUTBacklashMeasurement" xml:space="preserve">
+    <value>啟動 out 回差測量</value>
+  </data>
+  <data name="LblStartSequenceAnyway" xml:space="preserve">
+    <value>仍然要開始序列?</value>
+  </data>
+  <data name="LblState" xml:space="preserve">
+    <value>狀態</value>
+  </data>
+  <data name="LblStatistics" xml:space="preserve">
+    <value>統計</value>
+  </data>
+  <data name="LblStDev" xml:space="preserve">
+    <value>標準差</value>
+  </data>
+  <data name="LblStellarium" xml:space="preserve">
+    <value>虛擬天文館</value>
+  </data>
+  <data name="LblStellariumUse" xml:space="preserve">
+    <value>使用虛擬天文館</value>
+  </data>
+  <data name="LblStellariumUseNotice" xml:space="preserve">
+    <value>為咗使用虛擬天文館, 你需要在上面指定嘅主機同端口上安裝並激活遠程插件</value>
+  </data>
+  <data name="LblStop" xml:space="preserve">
+    <value>停止</value>
+  </data>
+  <data name="LblStopAutoguider" xml:space="preserve">
+    <value>停止自動導星</value>
+  </data>
+  <data name="LblStopGuiding" xml:space="preserve">
+    <value>停止導星</value>
+  </data>
+  <data name="LblStopTracking" xml:space="preserve">
+    <value>停止跟蹤</value>
+  </data>
+  <data name="LblStretchImage" xml:space="preserve">
+    <value>圖像拉伸</value>
+  </data>
+  <data name="LblStsciSkySurvey" xml:space="preserve">
+    <value>stsci 廵天圖庫 (在線)</value>
+  </data>
+  <data name="LblSubSample" xml:space="preserve">
+    <value>啟用子採樣 (部分圖像區域採集)</value>
+  </data>
+  <data name="LblSuccess" xml:space="preserve">
+    <value>成功</value>
+  </data>
+  <data name="LblSunRise" xml:space="preserve">
+    <value>日出</value>
+  </data>
+  <data name="LblSunSet" xml:space="preserve">
+    <value>日落</value>
+  </data>
+  <data name="LblSurfaceBrightness" xml:space="preserve">
+    <value>表面亮度</value>
+  </data>
+  <data name="LblSwitch" xml:space="preserve">
+    <value>開關</value>
+  </data>
+  <data name="LblSwitchConnected" xml:space="preserve">
+    <value>電掣已連接</value>
+  </data>
+  <data name="LblSwitchConnectionLost" xml:space="preserve">
+    <value>開關連接賴!</value>
+  </data>
+  <data name="LblSwitchingFilter" xml:space="preserve">
+    <value>切換濾鏡</value>
+  </data>
+  <data name="LblSync" xml:space="preserve">
+    <value>同步</value>
+  </data>
+  <data name="LblSyncFailed" xml:space="preserve">
+    <value>赤道儀同步炒</value>
+  </data>
+  <data name="LblSynchronizedPHD2Guider" xml:space="preserve">
+    <value>同步 phd2 (實驗性)</value>
+  </data>
+  <data name="LblSynchronizedPHD2ServiceClientAlreadyExists" xml:space="preserve">
+    <value>
+        此配置文件已經連接到同步 phd2 嚮導。
+        你無法以相同的配置文件兩次連接, 請選擇其他 NINA 配置文件。
+    </value>
+  </data>
+  <data name="LblSynchronizedPHD2ServiceCrashed" xml:space="preserve">
+    <value>同步 phd2 服務崩潰, 將以此同步數據重啟 phd2 導星服務</value>
+  </data>
+  <data name="LblSyncLatLong" xml:space="preserve">
+    <value>同步經緯度</value>
+  </data>
+  <data name="LblSyncLatLongText" xml:space="preserve">
+    <value>望遠鏡的緯度經度不同於同 NINA 嘅數值。
+數值需要同步架咩?</value>
+  </data>
+  <data name="LblTarget" xml:space="preserve">
+    <value>目標坐標 (j2000)</value>
+  </data>
+  <data name="LblTargetDec" xml:space="preserve">
+    <value>目標赤緯</value>
+  </data>
+  <data name="LblTargetHeightDegrees" xml:space="preserve">
+    <value>最低高度 (度)</value>
+  </data>
+  <data name="LblTargetName" xml:space="preserve">
+    <value>目標名稱</value>
+  </data>
+  <data name="LblTargetNameDescription" xml:space="preserve">
+    <value>目標名稱 (如有)</value>
+  </data>
+  <data name="LblTargetPosition" xml:space="preserve">
+    <value>目標位置</value>
+  </data>
+  <data name="LblTargetRA" xml:space="preserve">
+    <value>目標赤經</value>
+  </data>
+  <data name="LblTargets" xml:space="preserve">
+    <value>目標</value>
+  </data>
+  <data name="LblTargetTemp" xml:space="preserve">
+    <value>目標溫度</value>
+  </data>
+  <data name="LblTargetTempShort" xml:space="preserve">
+    <value>目標</value>
+  </data>
+  <data name="LblTargetWidthDegrees" xml:space="preserve">
+    <value>最小寬度 (度)</value>
+  </data>
+  <data name="LblTelescope" xml:space="preserve">
+    <value>赤道儀</value>
+  </data>
+  <data name="LblTelescopeCannotPulseGuide" xml:space="preserve">
+    <value>赤道儀無法脈衝導星</value>
+  </data>
+  <data name="LblTelescopeCannotSlew" xml:space="preserve">
+    <value>赤道儀無法指向目標</value>
+  </data>
+  <data name="LblTelescopeConnected" xml:space="preserve">
+    <value>赤道儀已連接</value>
+  </data>
+  <data name="LblTelescopeConnectionLost" xml:space="preserve">
+    <value>赤道儀連接賴! 請重新連接赤道儀!</value>
+  </data>
+  <data name="LblTelescopeControl" xml:space="preserve">
+    <value>赤道儀控制</value>
+  </data>
+  <data name="LblTelescopeName" xml:space="preserve">
+    <value>赤道儀名稱</value>
+  </data>
+  <data name="LblTelescopeNotConnected" xml:space="preserve">
+    <value>赤道儀未連接</value>
+  </data>
+  <data name="LblTelescopeNotConnectedForCommand" xml:space="preserve">
+    <value>赤道儀未連接無法發送命令</value>
+  </data>
+  <data name="LblTelescopeNotTrackingForSync" xml:space="preserve">
+    <value>赤道儀未開啟跟蹤。 同步僅在跟蹤時可用!</value>
+  </data>
+  <data name="LblTelescopeParkedWarn" xml:space="preserve">
+    <value>赤道儀已歸零停放。 停放時唔可以指向到目標</value>
+  </data>
+  <data name="LblTelescopeSnapPort" xml:space="preserve">
+    <value>赤道儀快門線</value>
+  </data>
+  <data name="LblTelescopeSynced" xml:space="preserve">
+    <value>由赤道儀同步坐標</value>
+  </data>
+  <data name="LblTelescopeToNINA" xml:space="preserve">
+    <value>由赤道儀同步到 NINA</value>
+  </data>
+  <data name="LblTempComp" xml:space="preserve">
+    <value>溫度補償</value>
+  </data>
+  <data name="LblTempControl" xml:space="preserve">
+    <value>温度控制</value>
+  </data>
+  <data name="LblTemperature" xml:space="preserve">
+    <value>溫度</value>
+  </data>
+  <data name="LblTemperatureCompensation" xml:space="preserve">
+    <value>溫度補償</value>
+  </data>
+  <data name="LblTemperatureDescription" xml:space="preserve">
+    <value>相機嘅溫度</value>
+  </data>
+  <data name="LblTertiaryBackground" xml:space="preserve">
+    <value>第三背景</value>
+  </data>
+  <data name="LblTheSkyX" xml:space="preserve">
+    <value>TheSkyX</value>
+  </data>
+  <data name="LblThrough" xml:space="preserve">
+    <value>到</value>
+  </data>
+  <data name="LblTiff" xml:space="preserve">
+    <value>TIFF</value>
+  </data>
+  <data name="LblTiffLzw" xml:space="preserve">
+    <value>tiff (lzw 壓縮)</value>
+  </data>
+  <data name="LblTiffZip" xml:space="preserve">
+    <value>tiff (zip 壓縮)</value>
+  </data>
+  <data name="LblTime" xml:space="preserve">
+    <value>時間</value>
+  </data>
+  <data name="LblTimeFormatDescription" xml:space="preserve">
+    <value>時間格式 hh-mm-ss</value>
+  </data>
+  <data name="LblTimeout" xml:space="preserve">
+    <value>超時</value>
+  </data>
+  <data name="LblTimeoutToSetSwitchValue" xml:space="preserve">
+    <value>掣設置超時值 {0} 開關 [id: {1}, 名稱: {2}], 當前值 {3}</value>
+  </data>
+  <data name="LblTimeZone" xml:space="preserve">
+    <value>時區</value>
+  </data>
+  <data name="LblTo" xml:space="preserve">
+    <value>到</value>
+  </data>
+  <data name="LblTools" xml:space="preserve">
+    <value>工具</value>
+  </data>
+  <data name="LblTooltipAddSequence" xml:space="preserve">
+    <value>喺序列中新增一行</value>
+  </data>
+  <data name="LblTooltipAddTarget" xml:space="preserve">
+    <value>新增空目標序列</value>
+  </data>
+  <data name="LblTooltipAutoStretch" xml:space="preserve">
+    <value>自動拉伸圖像掣 (僅顯示用)</value>
+  </data>
+  <data name="LblTooltipBahtinovAnalyzer" xml:space="preserve">
+    <value>魚骨板對焦助手
+將矩形拖到有魚骨板星芒嘅星點上。 NINA 就嘗試檢測峰值並顯示誤差。</value>
+  </data>
+  <data name="LblTooltipCrossHair" xml:space="preserve">
+    <value>打開/關閉十字準線</value>
+  </data>
+  <data name="LblTooltipDemoteSequenceRow" xml:space="preserve">
+    <value>將所選得向下移動</value>
+  </data>
+  <data name="LblTooltipDemoteTarget" xml:space="preserve">
+    <value>延後目標</value>
+  </data>
+  <data name="LblTooltipDetectStars" xml:space="preserve">
+    <value>自動星啲分析掣 (HFR)</value>
+  </data>
+  <data name="LblToolTipLiveView" xml:space="preserve">
+    <value>實時預覽</value>
+  </data>
+  <data name="LblTooltipLoop" xml:space="preserve">
+    <value>循環拍攝掣</value>
+  </data>
+  <data name="LblTooltipPromoteSequenceRow" xml:space="preserve">
+    <value>將所選得向上移動</value>
+  </data>
+  <data name="LblTooltipPromoteTarget" xml:space="preserve">
+    <value>提前目標</value>
+  </data>
+  <data name="LblTooltipRemoveSequence" xml:space="preserve">
+    <value>由序列列表中刪除所選得</value>
+  </data>
+  <data name="LblTooltipResetSequence" xml:space="preserve">
+    <value>重置序列列表中所選行嘅進度</value>
+  </data>
+  <data name="LblTooltipResetTarget" xml:space="preserve">
+    <value>重置當前所有序列項嘅進度</value>
+  </data>
+  <data name="LblTooltipStartSequence" xml:space="preserve">
+    <value>開始序列拍攝</value>
+  </data>
+  <data name="LblToolTipSubSample" xml:space="preserve">
+    <value>子採樣 (區域讀取)
+將矩形拖埋要進行子採樣的區域, 然後在 "捕捉" 中啟用子採樣。 你部相機就只下載所選區域。</value>
+  </data>
+  <data name="LblTooltipTakeExposure" xml:space="preserve">
+    <value>開始曝光</value>
+  </data>
+  <data name="LblTooltipTargetLoadSet" xml:space="preserve">
+    <value>從文件中讀取目標設置</value>
+  </data>
+  <data name="LblTooltipTargetSaveSet" xml:space="preserve">
+    <value>將當前目標設置 keep</value>
+  </data>
+  <data name="LblTotalNo" xml:space="preserve">
+    <value>拍攝張數</value>
+  </data>
+  <data name="LblToupTekCameraSetup" xml:space="preserve">
+    <value>touptek 相機設置</value>
+  </data>
+  <data name="LblTrace" xml:space="preserve">
+    <value>吊住</value>
+  </data>
+  <data name="LblTracking" xml:space="preserve">
+    <value>追蹤</value>
+  </data>
+  <data name="LblTransitNorth" xml:space="preserve">
+    <value>轉向北天</value>
+  </data>
+  <data name="LblTransitSouth" xml:space="preserve">
+    <value>轉向南日</value>
+  </data>
+  <data name="LblTrendHyperbolic" xml:space="preserve">
+    <value>趨勢線和雙曲線</value>
+  </data>
+  <data name="LblTrendLines" xml:space="preserve">
+    <value>趨勢線</value>
+  </data>
+  <data name="LblTrendParabolic" xml:space="preserve">
+    <value>趨勢線同拋物線</value>
+  </data>
+  <data name="LblType" xml:space="preserve">
+    <value>類型</value>
+  </data>
+  <data name="LblUnableToConnectCamera" xml:space="preserve">
+    <value>無法連接相機</value>
+  </data>
+  <data name="LblUnableToSetExposureTime" xml:space="preserve">
+    <value>無法設置曝光時間</value>
+  </data>
+  <data name="LblUnableToSetISO" xml:space="preserve">
+    <value>無法設置 iso</value>
+  </data>
+  <data name="LblUnableToStartExposure" xml:space="preserve">
+    <value>無法啟動相機曝光</value>
+  </data>
+  <data name="LblUnableToSync" xml:space="preserve">
+    <value>無法同步。 赤道儀冇連接</value>
+  </data>
+  <data name="LblUnexpectedError" xml:space="preserve">
+    <value>發生未知錯誤</value>
+  </data>
+  <data name="LblUnhandledException" xml:space="preserve">
+    <value>發生未處理嘅異常</value>
+  </data>
+  <data name="LblUnlinkedStretch" xml:space="preserve">
+    <value>非同步拉伸</value>
+  </data>
+  <data name="LblUnlinkedStretchTooltip" xml:space="preserve">
+    <value>
+啟用後, 顏色通道將分別拉伸, 有助於優化
+天空背景, 增強自動對焦同解析可靠性, 尤其是
+在輕度光污染地區。 但係呢個設置會延長處理時間。
+</value>
+  </data>
+  <data name="LblUnpark" xml:space="preserve">
+    <value>啟動</value>
+  </data>
+  <data name="LblUpdate" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="LblUpdating" xml:space="preserve">
+    <value>更新中</value>
+  </data>
+  <data name="LblURL" xml:space="preserve">
+    <value>地址</value>
+  </data>
+  <data name="LblUSBLimit" xml:space="preserve">
+    <value>usb 限制</value>
+  </data>
+  <data name="LblUseBlindSolveFailover" xml:space="preserve">
+    <value>解析失敗。 將嘗試進行盲解析</value>
+  </data>
+  <data name="LblUseBlindSolveNoCoordinatesRollover" xml:space="preserve">
+    <value>冇可用的參考坐標。 要使用盲解析呀?</value>
+  </data>
+  <data name="LblUseBuldMode" xml:space="preserve">
+    <value>使用 B 門模式</value>
+  </data>
+  <data name="LblUseSideOfPier" xml:space="preserve">
+    <value>使用赤道儀方位</value>
+  </data>
+  <data name="LblUseSnapPort" xml:space="preserve">
+    <value>使用赤道儀快門線</value>
+  </data>
+  <data name="LblVerticalPanels" xml:space="preserve">
+    <value>垂直張數</value>
+  </data>
+  <data name="LblWaitForDither" xml:space="preserve">
+    <value>等待抖動完成</value>
+  </data>
+  <data name="LblWaitForImageProcessing" xml:space="preserve">
+    <value>等待上張圖完成處理</value>
+  </data>
+  <data name="LblWaitForImageSaving" xml:space="preserve">
+    <value>等待圖 keep</value>
+  </data>
+  <data name="LblWaitForTemperatureStep" xml:space="preserve">
+    <value>等待相機達到低個溫度</value>
+  </data>
+  <data name="LblWaitingForCamera" xml:space="preserve">
+    <value>等待相機</value>
+  </data>
+  <data name="LblWarmCamAtSequenceEnd" xml:space="preserve">
+    <value>序列結束時升溫相機</value>
+  </data>
+  <data name="LblWarmEnabledButCameraCannotWarm" xml:space="preserve">
+    <value>相機設置為序列緊完場時升溫, 但操作失敗。</value>
+  </data>
+  <data name="LblWarming" xml:space="preserve">
+    <value>升溫</value>
+  </data>
+  <data name="LblWarning" xml:space="preserve">
+    <value>警告</value>
+  </data>
+  <data name="LblWeather" xml:space="preserve">
+    <value>氣象</value>
+  </data>
+  <data name="LblWeatherASCOMConnectFailed" xml:space="preserve">
+    <value>無法連接到 ascom observingconditions 驅動程序:</value>
+  </data>
+  <data name="LblWeatherConnected" xml:space="preserve">
+    <value>氣象數據源已連接</value>
+  </data>
+  <data name="LblWeatherConnectionLost" xml:space="preserve">
+    <value>氣象數據源連接失敗</value>
+  </data>
+  <data name="LblWeatherDisconnect" xml:space="preserve">
+    <value>氣象數據源已斷開連接</value>
+  </data>
+  <data name="LblWeatherDisplayFahrenheit" xml:space="preserve">
+    <value>華氏溫度</value>
+  </data>
+  <data name="LblWeatherDisplayFahrenheitTooltip" xml:space="preserve">
+    <value>以華氏溫度顯示溫度</value>
+  </data>
+  <data name="LblWeatherDisplayImperial" xml:space="preserve">
+    <value>英制單位</value>
+  </data>
+  <data name="LblWeatherDisplayImperialTooltip" xml:space="preserve">
+    <value>以英制單位顯示非溫度氣象數據</value>
+  </data>
+  <data name="LblWeatherNoSource" xml:space="preserve">
+    <value>無氣象數據源</value>
+  </data>
+  <data name="LblWeatherReconnect" xml:space="preserve">
+    <value>氣象數據源連接賴! 錯誤消息:</value>
+  </data>
+  <data name="LblWelcome" xml:space="preserve">
+    <value>歡迎來到 n.i.n.a.!</value>
+  </data>
+  <data name="LblWest" xml:space="preserve">
+    <value>西面</value>
+  </data>
+  <data name="LblWidth" xml:space="preserve">
+    <value>寬度</value>
+  </data>
+  <data name="LblWindDirection" xml:space="preserve">
+    <value>風向</value>
+  </data>
+  <data name="LblWindGust" xml:space="preserve">
+    <value>陣風</value>
+  </data>
+  <data name="LblWindSpeed" xml:space="preserve">
+    <value>風速</value>
+  </data>
+  <data name="LblXAxisScale" xml:space="preserve">
+    <value>x 軸範圍</value>
+  </data>
+  <data name="LblXisf" xml:space="preserve">
+    <value>XISF</value>
+  </data>
+  <data name="LblYAxisScale" xml:space="preserve">
+    <value>y 軸範圍</value>
+  </data>
+  <data name="LblYAxisUnits" xml:space="preserve">
+    <value>y 軸單位</value>
+  </data>
+  <data name="LblYes" xml:space="preserve">
+    <value>系</value>
+  </data>
+  <data name="LblZoomIn" xml:space="preserve">
+    <value>放大25%</value>
+  </data>
+  <data name="LblZoomOut" xml:space="preserve">
+    <value>縮小25%</value>
+  </data>
+  <data name="LblZoomStretch" xml:space="preserve">
+    <value>圖像與區域匹配</value>
+  </data>
+</root>

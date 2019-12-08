@@ -9,8 +9,23 @@
 <h2 id="features">Features</h2>
 <h3 id="hardware">Hardware</h3>
 <ul>
-<li>QHY filter wheels that are integrated (A-series cameras) or are connected to the camera using the 4-pin cable (CFW1/2/3 filter wheels) are now natively supported. This allows the native QHY camera driver to be used with these cameras and configurations.</li>
-<li>Alnitak Flip Flap Panel support to connect and control the panel inside the application</li>
+<li><strong>QHY filter wheels</strong> that are integrated (A-series cameras) or are connected to the camera using the 4-pin cable (CFW1/2/3 filter wheels) are now natively supported. This allows the native QHY camera driver to be used with these cameras and configurations.</li>
+<li><strong>Alnitak Flip Flap Panel</strong> support to connect and control the panel inside the application</li>
+<li><strong>Lacerta MGEN Superguider integration</strong>
+<ul>
+<li>Full control of the MGEN by mirroring the controller fully into N.I.N.A.'s User Interface</li>
+<li>Automatic power on when connecting</li>
+<li>Starting of guiding on sequence start</li>
+<li>On start of guiding initiating a calibration and auto select star when required</li>
+<li>Display star drift during guiding in a chart (currently only measured in pixels)</li>
+<li>Dithering during sequencing</li>
+</ul>
+</li>
+</ul>
+<h2 id="localization">Localization</h2>
+<ul>
+<li>To be able to support many languages N.I.N.A. is now available on Crowdin. This powerful online translation management tool will allow users to easily contribute to the localization.</li>
+<li>For more details visit <a href="https://nina.crowdin.com/">https://nina.crowdin.com/</a> and feel free to participate in the ongoing effort to provide multiple languages for N.I.N.A.!</li>
 </ul>
 <h2 id="improvements">Improvements</h2>
 <ul>
@@ -32,16 +47,13 @@
 </li>
 <li>Added ability to keep guiding during autofocus</li>
 <li>The autofocus routine has been changed so that it doesn't attempt to measure the focus twice for the same point</li>
-<li>Added Spanish Translation</li>
-<li>Added Chinese Simplified Translation</li>
-<li>Added Chinese Traditional Translation</li>
-<li>Added French Translation</li>
 <li>The focuser temperature compensation feature is now turned off before an auto-focus session, and turned back on afterwards</li>
 <li>The NASA Sky Survey images now are automatically adjusted for brightness and contrast, depending on each image characteristic</li>
 <li>An autofocus filter can now be set if &quot;Use filter offsets&quot; is set to true. When defined, the autofocus routine will use the autofocus filter instead of the current imaging filter. Initial baseline HFR, and final HFR (used to determine whether the autofocus run was successful) will still use the main imaging filter.</li>
 <li>A contrast detection autofocus routine has been added. Instead of analyzing stars to determine point of best focus, the routine analyzes overall contrast of the image with various contrast detection methods. A Gaussian fit is then performed on the obtained focus points - this process can use shorter exposure times than star HFR and produce results faster</li>
 <li>QHY native camera driver now retrieves only the non-overscan area of the sensor</li>
 <li>QHY native camera driver now supports selecting readout modes with QHY600 class cameras</li>
+<li>QHY native camera driver now optimizes image file size based on the actual image dimensions used, resulting in generally smaller image file sizes</li>
 <li>Added a <span class="math">DATEMINUS12</span> placeholder to the file save pattern that shifts the current date 12 hours into the past. This allows for all images of a night to be saved into the same date folder.</li>
 <li>Added more manual focus targets for certain regions of the southern hemisphere sky.</li>
 <li>Can now configure a custom Astrometry.net API URL</li>
@@ -56,6 +68,7 @@
 <li>Autofocus will now only show the selected fitting method</li>
 <li>After running an autofocus run a new json file will be written to %localappdata%\nina\autofocus containing all datapoints to retrace what was measured at a later point in time</li>
 <li>Reintroduce a &quot;No Guider&quot; option under Equipment -&gt; Guiding so that unguided setups do not suffer through unwanted PHD2 executions or unnecessary errors when the &quot;Connect All Devices&quot; button is pressed.</li>
+<li>Platesolve tab inside Imaging Tab will now retain its settings (Sync, Reslew, Repeat)</li>
 </ul>
 <h2 id="bug-fixes">Bug fixes</h2>
 <ul>
@@ -70,6 +83,13 @@
 <li>Image File Pattern Values will now remove leading and trailing white spaces to prevent invalid file path</li>
 <li>In case illegal characters for a filename are inside some file patterns, they will now get replaced to still being able to save</li>
 </ul>
+<h2 id="special-thanks">Special Thanks</h2>
+<p>The N.I.N.A. team would like to sincerely thank:</p>
+<ul>
+<li>The staff at <a href="https://teleskop-austria.com/">Teleskop Austria</a> for providing an MGEN Unit as well as a detailed communication protocol document for implementing the MGEN into N.I.N.A. and being able to test it thoroughly.</li>
+</ul>
+<p>These items helped a lot during development and testing.<br />
+Thank you for your support!</p>
 <h2 id="included-camera-sdk-versions">Included Camera SDK Versions:</h2>
 <ul>
 <li>Altair: 39.15529.2019.906</li>
@@ -267,7 +287,7 @@
 <li>A new button is added in the options to directly open the log destination folder</li>
 <li>Added option to adjust USBLimit for Altair and Touptek cameras. This can prevent potential black preview screen issues. More details on this topic described at altair: <a href="https://altaircameras.com/black_preview_screen/">https://altaircameras.com/black_preview_screen/</a></li>
 </ul>
-<h2 id="special-thanks">Special Thanks</h2>
+<h2 id="special-thanks-1">Special Thanks</h2>
 <p>The N.I.N.A. team would like to sincerely thank:</p>
 <ul>
 <li>The staff at <a href="https://cloudbreakoptics.com/">Cloud Break Optics</a> and <a href="http://flicamera.com/">Finger Lakes Instrumentation</a> for arranging a ProLine PL09000 and CFW1-5 to assist in integrating native FLI camera and filter wheel support.</li>
@@ -417,7 +437,7 @@ the background itself will be moved like in an orrery</li>
 </ul>
 </li>
 </ul>
-<h2 id="special-thanks-1">Special Thanks</h2>
+<h2 id="special-thanks-2">Special Thanks</h2>
 <p>The N.I.N.A. team would like to thank</p>
 <ul>
 <li>Nick Smith from <a href="https://www.altairastro.com/">Altair Astro</a> for providing a GPCAM2 290C to integrate Altair SDK</li>

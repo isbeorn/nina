@@ -38,6 +38,13 @@ namespace NINA.Profile {
             SetDefaultValues();
         }
 
+        [OnDeserialized]
+        public void OnDeserialized(StreamingContext context) {
+            if (Culture == "es-US") {
+                Culture = "es-ES";
+            }
+        }
+
         protected override void SetDefaultValues() {
             language = new CultureInfo("en-GB");
             logLevel = LogLevelEnum.INFO;

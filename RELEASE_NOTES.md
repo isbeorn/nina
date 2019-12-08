@@ -3,8 +3,19 @@
 ## Features
 
 ### Hardware
- - QHY filter wheels that are integrated (A-series cameras) or are connected to the camera using the 4-pin cable (CFW1/2/3 filter wheels) are now natively supported. This allows the native QHY camera driver to be used with these cameras and configurations.
- - Alnitak Flip Flap Panel support to connect and control the panel inside the application
+ - **QHY filter wheels** that are integrated (A-series cameras) or are connected to the camera using the 4-pin cable (CFW1/2/3 filter wheels) are now natively supported. This allows the native QHY camera driver to be used with these cameras and configurations.
+ - **Alnitak Flip Flap Panel** support to connect and control the panel inside the application
+ - **Lacerta MGEN Superguider integration**
+    - Full control of the MGEN by mirroring the controller fully into N.I.N.A.'s User Interface
+    - Automatic power on when connecting
+    - Starting of guiding on sequence start
+    - On start of guiding initiating a calibration and auto select star when required
+    - Display star drift during guiding in a chart (currently only measured in pixels)
+    - Dithering during sequencing
+
+## Localization
+- To be able to support many languages N.I.N.A. is now available on Crowdin. This powerful online translation management tool will allow users to easily contribute to the localization.
+- For more details visit https://nina.crowdin.com/ and feel free to participate in the ongoing effort to provide multiple languages for N.I.N.A.!
 
 ## Improvements
 - New rows added to a sequence will now default to the values from the previous row
@@ -22,10 +33,6 @@
 	- Comnbination of parabolic or hyperbolic fitting with trend lines (average of fitting minimum and trend line intersection is then used)
 - Added ability to keep guiding during autofocus
 - The autofocus routine has been changed so that it doesn't attempt to measure the focus twice for the same point
-- Added Spanish Translation
-- Added Chinese Simplified Translation
-- Added Chinese Traditional Translation
-- Added French Translation
 - The focuser temperature compensation feature is now turned off before an auto-focus session, and turned back on afterwards
 - The NASA Sky Survey images now are automatically adjusted for brightness and contrast, depending on each image characteristic
 - An autofocus filter can now be set if "Use filter offsets" is set to true. When defined, the autofocus routine will use the autofocus filter instead of the current imaging filter. Initial baseline HFR, and final HFR (used to determine whether the autofocus run was successful) will still use the main imaging filter.
@@ -47,6 +54,7 @@
 - Autofocus will now only show the selected fitting method 
 - After running an autofocus run a new json file will be written to %localappdata%\nina\autofocus containing all datapoints to retrace what was measured at a later point in time
 - Reintroduce a "No Guider" option under Equipment -> Guiding so that unguided setups do not suffer through unwanted PHD2 executions or unnecessary errors when the "Connect All Devices" button is pressed.
+- Platesolve tab inside Imaging Tab will now retain its settings (Sync, Reslew, Repeat)
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false
@@ -59,6 +67,13 @@
 - Added an empty entry for Constellation Filter in Sky Atlas to unselect it
 - Image File Pattern Values will now remove leading and trailing white spaces to prevent invalid file path
 - In case illegal characters for a filename are inside some file patterns, they will now get replaced to still being able to save
+
+## Special Thanks
+The N.I.N.A. team would like to sincerely thank:
+- The staff at [Teleskop Austria](https://teleskop-austria.com/) for providing an MGEN Unit as well as a detailed communication protocol document for implementing the MGEN into N.I.N.A. and being able to test it thoroughly.
+
+These items helped a lot during development and testing.  
+Thank you for your support!
 
 ## Included Camera SDK Versions:
 - Altair: 39.15529.2019.906

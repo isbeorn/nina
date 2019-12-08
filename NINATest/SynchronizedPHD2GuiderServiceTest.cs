@@ -120,21 +120,6 @@ namespace NINATest {
         }
 
         [Test]
-        public async Task StartPause_WhenCalledWithParameter_ShouldCallPauseOnGuideInstanceWithParameter() {
-            // setup
-            CancellationTokenSource cts = new CancellationTokenSource();
-            await sut.Initialize(guider.Object, cts.Token);
-            guider.Setup(m => m.Pause(true, It.IsAny<CancellationToken>())).ReturnsAsync(true);
-
-            // act
-            var result = await sut.StartPause(true);
-
-            // assert
-            result.Should().BeTrue();
-            guider.Verify(m => m.Pause(true, It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        [Test]
         public async Task SynchronizedDither_WhenClientNextExposureTimeIsNegative_ReturnImmediately() {
             // setup
             CancellationTokenSource cts = new CancellationTokenSource();

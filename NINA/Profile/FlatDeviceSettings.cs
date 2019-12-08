@@ -5,11 +5,9 @@ using System.Runtime.Serialization;
 using NINA.Model.MyCamera;
 
 namespace NINA.Profile {
-
     [Serializable()]
     [DataContract]
     internal class FlatDeviceSettings : Settings, IFlatDeviceSettings {
-
         public FlatDeviceSettings() {
             FilterSettings = new Dictionary<(string name, BinningMode binning, short gain), (double time, double brightness)>();
         }

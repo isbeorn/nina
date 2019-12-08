@@ -1,4 +1,3 @@
 files:
-  - source: /NINA/Locale/Locale.xaml
-    translation: /NINA/Locale/Locale.%locale%.xaml
-    translate_attributes: 0
+  - source: /NINA/Locale/Locale.resx
+    translation: /NINA/Locale/Locale.%locale%.resx

@@ -57,9 +57,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace NINA.ViewModel {
-
     internal class SequenceVM : DockableVM, ITelescopeConsumer, IFocuserConsumer, IFilterWheelConsumer, IRotatorConsumer, IFlatDeviceConsumer, IGuiderConsumer, ICameraConsumer, IWeatherDataConsumer {
-
         public SequenceVM(
                 IProfileService profileService,
                 ICameraMediator cameraMediator,

@@ -55,14 +55,6 @@ namespace NINA.Utility.Mediator {
             return handler.StopGuiding(token);
         }
 
-        public Task<bool> ResumeGuiding(CancellationToken token) {
-            return handler.ResumeGuiding(token);
-        }
-
-        public Task<bool> PauseGuiding(CancellationToken token) {
-            return handler.PauseGuiding(token);
-        }
-
         public Task<bool> AutoSelectGuideStar(CancellationToken token) {
             return handler.AutoSelectGuideStar(token);
         }
