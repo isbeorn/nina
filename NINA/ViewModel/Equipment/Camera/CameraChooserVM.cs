@@ -136,6 +136,17 @@ namespace NINA.ViewModel.Equipment.Camera {
                 Logger.Error(ex);
             }
 
+            /* Omegon */
+            try {
+                Logger.Debug("Adding Omegon Cameras");
+                foreach (var instance in Omegon.Omegonprocam.EnumV2()) {
+                    var cam = new OmegonCamera(instance, profileService);
+                    Devices.Add(cam);
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
             /* ASCOM */
             try {
                 foreach (ICamera cam in ASCOMInteraction.GetCameras(profileService)) {

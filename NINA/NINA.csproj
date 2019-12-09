@@ -423,6 +423,7 @@
     <Compile Include="Model\MyCamera\FileCamera.cs" />
     <Compile Include="Model\MyCamera\FLICamera.cs" />
     <Compile Include="Model\MyCamera\IExposureData.cs" />
+    <Compile Include="Model\MyCamera\OmegonCamera.cs" />
     <Compile Include="Model\MyCamera\Simulator\ImageSettings.cs" />
     <Compile Include="Model\MyCamera\Simulator\RandomSettings.cs" />
     <Compile Include="Model\MyCamera\Simulator\Settings.cs" />
@@ -431,6 +432,7 @@
     <Compile Include="Model\MyFilterWheel\FlatDeviceExposureTimeSettings.cs" />
     <Compile Include="Model\MyFilterWheel\QHYFilterWheel.cs" />
     <Compile Include="Model\MyFilterWheel\FLIFilterWheel.cs" />
+    <Compile Include="Utility\CameraSDKs\OmegonSDK\omegonprocam.cs" />
     <Compile Include="Utility\Converters\AFFittingToVisibilityConverter.cs" />
     <Compile Include="Utility\DeferredContent.cs" />
     <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakCommands.cs" />
@@ -1758,6 +1760,7 @@
     <Folder Include="External\x64\Nikon\Type0022\" />
     <Folder Include="External\x64\Nikon\Type0023\" />
     <Folder Include="External\x64\Nikon\Type0024\" />
+    <Folder Include="External\x64\Omegon\" />
     <Folder Include="External\x64\QHYCCD\" />
     <Folder Include="External\x64\ToupTek\" />
     <Folder Include="External\x86\Altair\" />
@@ -1788,6 +1791,7 @@
     <Folder Include="External\x86\Nikon\Type0022\" />
     <Folder Include="External\x86\Nikon\Type0023\" />
     <Folder Include="External\x86\Nikon\Type0024\" />
+    <Folder Include="External\x86\Omegon\" />
     <Folder Include="External\x86\QHYCCD\" />
     <Folder Include="External\x86\ToupTek\" />
   </ItemGroup>
@@ -1848,6 +1852,15 @@
       xcopy "$(ProjectDir)External\x86\ToupTek" "$(TargetDir)\External\x86\ToupTek" /h/i/c/k/e/r/y
       )
 
+      if exist "$(ProjectDir)External\x64\Omegon" (
+      echo "Copy Omegon x64 DLLs"
+      xcopy "$(ProjectDir)External\x64\Omegon" "$(TargetDir)\External\x64\Omegon" /h/i/c/k/e/r/y
+      )
+      if exist "$(ProjectDir)External\x86\Omegon" (
+      echo "Copy Omegon x86 DLLs"
+      xcopy "$(ProjectDir)External\x86\Omegon" "$(TargetDir)\External\x86\Omegon" /h/i/c/k/e/r/y
+      )
+
       if exist "$(ProjectDir)External\x64\QHYCCD" (
       echo "Copy QHYCCD x64 DLLs"
       xcopy "$(ProjectDir)External\x64\QHYCCD" "$(TargetDir)\External\x64\QHYCCD" /h/i/c/k/e/r/y
@@ -1873,7 +1886,7 @@
       editbin /largeaddressaware "$(TargetPath)"
       )
       )
-    </PostBuildEvent>
+</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

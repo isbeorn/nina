@@ -7,6 +7,7 @@ NINA/External/*/Nikon
 NINA/External/*/ToupTek
 NINA/External/*/QHYCCD
 NINA/External/*/FLI
+NINA/External/*/Omegon
 
 # User-specific files
 *.rsuser
