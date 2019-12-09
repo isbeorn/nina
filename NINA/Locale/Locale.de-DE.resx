@@ -169,7 +169,7 @@
     <value>Alnitak Flatfieldgenerator</value>
   </data>
   <data name="LblAltairCameraSetup" xml:space="preserve">
-    <value>Altair Camera Setup</value>
+    <value>Altair Kameraeinrichtung</value>
   </data>
   <data name="LblAlternativeUIColorSchema" xml:space="preserve">
     <value>Alternatives UI-Farbschema</value>
@@ -1592,13 +1592,13 @@ Berechneter HFR: {2}
     <value>Bild</value>
   </data>
   <data name="LblImageArea" xml:space="preserve">
-    <value>Bildregion</value>
+    <value>Bildbereich</value>
   </data>
   <data name="LblImageFileError" xml:space="preserve">
     <value>Bilddateifehler</value>
   </data>
   <data name="LblImageFilePath" xml:space="preserve">
-    <value>Bild Dateipfad</value>
+    <value>Bilddateipfad</value>
   </data>
   <data name="LblImageFilePattern" xml:space="preserve">
     <value>Bild Dateivorlage</value>

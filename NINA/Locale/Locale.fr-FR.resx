@@ -166,7 +166,7 @@
     <value>Limiter la FA aux étoiles brillantes. 0 signifiant aucune limite.</value>
   </data>
   <data name="LblAlnitakFlatPanel" xml:space="preserve">
-    <value>Alnitak Flat Panel</value>
+    <value>Écran à Plu Alnitak</value>
   </data>
   <data name="LblAltairCameraSetup" xml:space="preserve">
     <value>Configuration d'une caméra Altair</value>
@@ -277,7 +277,7 @@ L'application doit-elle tenter de redémarrer? (Peut conduire à un comportement
     <value>Astrométrie</value>
   </data>
   <data name="LblAstrometryNet" xml:space="preserve">
-    <value>Astrometry.Net</value>
+    <value>Astrométrie.Net</value>
   </data>
   <data name="LblAutoFocus" xml:space="preserve">
     <value>Focalisation Auto</value>
@@ -390,7 +390,7 @@ les objets terrestres ou du système solaire également, mais peuvent être sens
     <value>Source pour la MAJ Auto</value>
   </data>
   <data name="LblAzimuth" xml:space="preserve">
-    <value>Azimuth</value>
+    <value>Azimut</value>
   </data>
   <data name="LblAzimuthErrorMeasurement" xml:space="preserve">
     <value>Erreur en Azimuth</value>
@@ -788,7 +788,7 @@ Voulez-vous toujours la fermer et perdre tous les changements?</value>
     <value>Octant</value>
   </data>
   <data name="LblConstellation_OPH" xml:space="preserve">
-    <value>Ophiuchus</value>
+    <value>Ophiouchus</value>
   </data>
   <data name="LblConstellation_ORI" xml:space="preserve">
     <value>Orion</value>
@@ -967,7 +967,7 @@ si les traces d'étoiles ne sont pas alignées, c'est qu'il y a une erreur d'ali
     <value>Aube</value>
   </data>
   <data name="LblDCRaw" xml:space="preserve">
-    <value>DCRaw</value>
+    <value>DCRAW</value>
   </data>
   <data name="LblDebayeredHFR" xml:space="preserve">
     <value>HFR Debayer</value>
@@ -1087,7 +1087,7 @@ si les traces d'étoiles ne sont pas alignées, c'est qu'il y a une erreur d'ali
     <value>Le dither est activé, mais l'autoguidage n'est pas connecté</value>
   </data>
   <data name="LblDitherPixels" xml:space="preserve">
-    <value>PHD2 Dither Pixels</value>
+    <value>Pixels de dither PHD2</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>Dither AD Seulement</value>
@@ -1256,22 +1256,22 @@ Lorsque ce déclencheur est désactivé, l'application ignorera simplement le d�
     <value>Luminosité</value>
   </data>
   <data name="LblFlatDeviceChooseSerialPort" xml:space="preserve">
-    <value>Choose serial port</value>
+    <value>Choisir le port série</value>
   </data>
   <data name="LblFlatDeviceClose" xml:space="preserve">
     <value>Fermer</value>
   </data>
   <data name="LblFlatDeviceCloseAtSequenceEnd" xml:space="preserve">
-    <value>Close cover when sequence ends</value>
+    <value>Couvrir le télescope en fin de séquence</value>
   </data>
   <data name="LblFlatDeviceClosed" xml:space="preserve">
-    <value>Closed</value>
+    <value>Fermé</value>
   </data>
   <data name="LblFlatDeviceConnected" xml:space="preserve">
     <value>Écran à PLU connecté.</value>
   </data>
   <data name="LblFlatDeviceConnectedButCoverNotOpen" xml:space="preserve">
-    <value>A flat panel is connected but the cover is not open.</value>
+    <value>Un écran de plu est branché mais l'obturateur du tube n'est pas ouvert.</value>
   </data>
   <data name="LblFlatDeviceCover" xml:space="preserve">
     <value>Obturateur</value>
@@ -1283,7 +1283,7 @@ Lorsque ce déclencheur est désactivé, l'application ignorera simplement le d�
     <value>Voulez-vous déconnecter l'écran à PLU?</value>
   </data>
   <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
-    <value>Flat Panel Settings</value>
+    <value>Paramètres Écran à Plu</value>
   </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
     <value>Réponse invalide de l'écran à PLU.</value>
@@ -1292,7 +1292,7 @@ Lorsque ce déclencheur est désactivé, l'application ignorera simplement le d�
     <value>Écran à PLU</value>
   </data>
   <data name="LblFlatDeviceNeitherOpenNorClosed" xml:space="preserve">
-    <value>Neither open nor closed</value>
+    <value>Ni ouvert ni fermé</value>
   </data>
   <data name="LblFlatDeviceNoDevice" xml:space="preserve">
     <value>Aucun écran à PLU</value>
@@ -1304,13 +1304,13 @@ Lorsque ce déclencheur est désactivé, l'application ignorera simplement le d�
     <value>Ouvrir</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for dark flats</value>
+    <value>Ouvrir l'obturateur du tube pour les noirs de Plu</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Ajuster</value>
   </data>
   <data name="LblFlatDeviceUnknown" xml:space="preserve">
-    <value>Unknown</value>
+    <value>Inconnu</value>
   </data>
   <data name="LblFlatExposureCalcContinue" xml:space="preserve">
     <value>L'ADU moyenne était {0}, le calcul du temps d'exposition à {1}</value>
@@ -1571,7 +1571,7 @@ HFR calculé: {2}</value>
     <value>Planneaux Horizontaux</value>
   </data>
   <data name="LblHost" xml:space="preserve">
-    <value>Host</value>
+    <value>Hôte</value>
   </data>
   <data name="LblHour" xml:space="preserve">
     <value>Heure</value>
@@ -1610,7 +1610,7 @@ HFR calculé: {2}</value>
     <value>Options Image</value>
   </data>
   <data name="LblImageSource" xml:space="preserve">
-    <value>Image source</value>
+    <value>Source de l'image</value>
   </data>
   <data name="LblImageTypeDescription" xml:space="preserve">
     <value>Lum, PLU, Noires, Bias, Snapshot</value>
@@ -1625,7 +1625,7 @@ HFR calculé: {2}</value>
     <value>Fichier Index</value>
   </data>
   <data name="LblInfo" xml:space="preserve">
-    <value>Info</value>
+    <value>Infos</value>
   </data>
   <data name="LblInitiatePlatesolve" xml:space="preserve">
     <value>Lancer Réduction Astrométrique</value>
@@ -1751,10 +1751,10 @@ HFR calculé: {2}</value>
     <value>Max</value>
   </data>
   <data name="LblMaxBinX" xml:space="preserve">
-    <value>Max Binning X</value>
+    <value>Binning max X</value>
   </data>
   <data name="LblMaxBinY" xml:space="preserve">
-    <value>Max Binning Y</value>
+    <value>Binning max Y</value>
   </data>
   <data name="LblMaxExpTime" xml:space="preserve">
     <value>Temps d'Exposition Max</value>
@@ -1880,7 +1880,7 @@ HFR calculé: {2}</value>
     <value>Aucune focalisation</value>
   </data>
   <data name="LblNoGuider" xml:space="preserve">
-    <value>No Guider</value>
+    <value>Pas du guideur</value>
   </data>
   <data name="LblNoImage" xml:space="preserve">
     <value>Aucune image disponible</value>
@@ -2030,7 +2030,7 @@ HFR calculé: {2}</value>
     <value>Caméra Offset</value>
   </data>
   <data name="LblOK" xml:space="preserve">
-    <value>OK</value>
+    <value>Ok</value>
   </data>
   <data name="LblOn" xml:space="preserve">
     <value>On</value>
@@ -2123,7 +2123,7 @@ HFR calculé: {2}</value>
     <value>Impossible de démarrer PHD2. Chemin introuvable</value>
   </data>
   <data name="LblPHD2RARMS" xml:space="preserve">
-    <value>RA: {0} ({1}")</value>
+    <value>AD : {0} ({1}")</value>
   </data>
   <data name="LblPhd2ServerConnectionLost" xml:space="preserve">
     <value>onnexion au serveur PHD2 perdue!</value>
@@ -2586,7 +2586,7 @@ Ce modèle sera utilisé au démarrage pour initialiser la séquence au lieu de 
     <value>Grosseur</value>
   </data>
   <data name="LblSkyAtlas" xml:space="preserve">
-    <value>Sky Atlas</value>
+    <value>Atlas céleste</value>
   </data>
   <data name="LblSkyAtlasImageDirectory" xml:space="preserve">
     <value>Répert. image du SkyAtlas</value>
@@ -2809,19 +2809,19 @@ Les valeurs doivent-elles être synchronisées?</value>
     <value>Télescope</value>
   </data>
   <data name="LblTelescopeCannotPulseGuide" xml:space="preserve">
-    <value>Telescope cannot Pulse Guide</value>
+    <value>Le télescope n'a pas l'option Pulse Guide</value>
   </data>
   <data name="LblTelescopeCannotSlew" xml:space="preserve">
-    <value>Telescope cannot slew</value>
+    <value>Le télescope ne peut pointer</value>
   </data>
   <data name="LblTelescopeConnected" xml:space="preserve">
-    <value>Telescope connected</value>
+    <value>Téléscope connecté</value>
   </data>
   <data name="LblTelescopeConnectionLost" xml:space="preserve">
-    <value>Telescope connection lost! Please reconnect telescope!</value>
+    <value>Connexion au télescope perdue! Veuillez reconnecter telescope!</value>
   </data>
   <data name="LblTelescopeControl" xml:space="preserve">
-    <value>Telescope Control</value>
+    <value>Contrôle du télescope</value>
   </data>
   <data name="LblTelescopeName" xml:space="preserve">
     <value>Description Télescope</value>
@@ -3003,7 +3003,7 @@ Faites glisser le rectangle sur la partie du cadre que vous souhaitez sous-écha
     <value>Impossible de définir l'ISO</value>
   </data>
   <data name="LblUnableToStartExposure" xml:space="preserve">
-    <value>Unable to start camera exposure</value>
+    <value>Impossible de démarrer l'acquisition</value>
   </data>
   <data name="LblUnableToSync" xml:space="preserve">
     <value>Impossible de synchroniser. Le télescope n'est pas connecté</value>
