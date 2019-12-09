@@ -81,9 +81,9 @@ Thank you for your support!
 - Canon: 3.8.20.6400
 - FLI: 1.104.0.0
 - Nikon: 1.3.1.3001
-- QHY: 0.6.0.4
+- QHY: 0.6.0.5
 - ToupTek: 30.13342.2018.1121
-- ZWO: 1.14.11.8
+- ZWO: 1.14.11.19
 
 # Version 1.9
 
