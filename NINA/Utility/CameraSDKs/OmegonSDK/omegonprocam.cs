@@ -11,6 +11,8 @@ using System.Runtime.ConstrainedExecution;
 
 using System.Collections.Generic;
 using System.Threading;
+using NINA.Utility;
+using System.IO;
 
 /*
     Versin: 39.15325.2019.0810
@@ -27,6 +29,10 @@ using System.Threading;
 namespace Omegon {
 
     public class Omegonprocam : IDisposable {
+
+        static Omegonprocam() {
+            DllLoader.LoadDll(Path.Combine("Omegon", DLLNAME));
+        }
 
         [Flags]
         public enum eFLAG : ulong {
@@ -374,14 +380,14 @@ namespace Omegon {
 
         public class SafeCamHandle : SafeHandleZeroOrMinusOneIsInvalid {
 #if LINUX
-        private const string dll = "libomegonprocam.so";
+        private const string DLLNAME = "libomegonprocam.so";
         private const CallingConvention cc = CallingConvention.Cdecl;
 #else
-            private const string dll = "omegonprocam.dll";
+            private const string DLLNAME = "omegonprocam.dll";
             private const CallingConvention cc = CallingConvention.StdCall;
 #endif
 
-            [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+            [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
             private static extern void Omegonprocam_Close(IntPtr h);
 
             public SafeCamHandle()
@@ -400,14 +406,14 @@ namespace Omegon {
     public class SafeCamHandle : SafeHandle
     {
 #if LINUX
-        private const string dll = "libomegonprocam.so";
+        private const string DLLNAME = "libomegonprocam.so";
         private const CallingConvention cc = CallingConvention.Cdecl;
 #else
-        private const string dll = "omegonprocam.dll";
+        private const string DLLNAME = "omegonprocam.dll";
         private const CallingConvention cc = CallingConvention.StdCall;
 #endif
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern void Omegonprocam_Close(IntPtr h);
 
         public SafeCamHandle()
@@ -429,10 +435,10 @@ namespace Omegon {
 #endif
 
 #if LINUX
-    private const string dll = "libomegonprocam.so";
+    private const string DLLNAME = "omegonprocam.dll";
     private const CallingConvention cc = CallingConvention.Cdecl;
 #else
-        private const string dll = "omegonprocam.dll";
+        private const string DLLNAME = "omegonprocam.dll";
         private const CallingConvention cc = CallingConvention.StdCall;
 #endif
 
@@ -441,7 +447,7 @@ namespace Omegon {
             public int left, top, right, bottom;
         };
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
 #if LINUX
     [return: MarshalAs(UnmanagedType.LPStr)]
 #else
@@ -449,65 +455,65 @@ namespace Omegon {
 #endif
         private static extern string Omegonprocam_Version();
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc), Obsolete("Use Omegonprocam_EnumV2")]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc), Obsolete("Use Omegonprocam_EnumV2")]
         private static extern uint Omegonprocam_Enum(IntPtr ti);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern uint Omegonprocam_EnumV2(IntPtr ti);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern SafeCamHandle Omegonprocam_Open([MarshalAs(UnmanagedType.LPWStr)] string id);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern SafeCamHandle Omegonprocam_OpenByIndex(uint index);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_StartPullModeWithWndMsg(SafeCamHandle h, IntPtr hWnd, uint nMsg);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_StartPullModeWithCallback(SafeCamHandle h, EVENT_CALLBACK pEventCallback, IntPtr pCallbackCtx);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_PullImage(SafeCamHandle h, IntPtr pImageData, int bits, out uint pnWidth, out uint pnHeight);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_PullStillImage(SafeCamHandle h, IntPtr pImageData, int bits, out uint pnWidth, out uint pnHeight);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_PullImageWithRowPitch(SafeCamHandle h, IntPtr pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_PullStillImageWithRowPitch(SafeCamHandle h, IntPtr pImageData, int bits, int rowPitch, out uint pnWidth, out uint pnHeight);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_PullImageV2(SafeCamHandle h, [Out]ushort[] pImageData, int bits, out FrameInfoV2 pInfo);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_PullStillImageV2(SafeCamHandle h, IntPtr pImageData, int bits, out FrameInfoV2 pInfo);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_PullImageWithRowPitchV2(SafeCamHandle h, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_PullStillImageWithRowPitchV2(SafeCamHandle h, IntPtr pImageData, int bits, int rowPitch, out FrameInfoV2 pInfo);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_StartPushModeV3(SafeCamHandle h, DATA_CALLBACK_V3 pDataCallback, IntPtr pDataCallbackCtx, EVENT_CALLBACK pEventCallback, IntPtr pEventCallbackCtx);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_Stop(SafeCamHandle h);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_Pause(SafeCamHandle h, int bPause);
 
         /* for still image snap */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_Snap(SafeCamHandle h, uint nResolutionIndex);
 
         /* multiple still image snap */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_SnapN(SafeCamHandle h, uint nResolutionIndex, uint nNumber);
 
         /*
@@ -517,31 +523,31 @@ namespace Omegon {
                         others:     number of images to be triggered
         */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_Trigger(SafeCamHandle h, ushort nNumber);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_Size(SafeCamHandle h, int nWidth, int nHeight);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_Size(SafeCamHandle h, out int nWidth, out int nHeight);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_eSize(SafeCamHandle h, uint nResolutionIndex);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_eSize(SafeCamHandle h, out uint nResolutionIndex);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern uint Omegonprocam_get_ResolutionNumber(SafeCamHandle h);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern uint Omegonprocam_get_Resolution(SafeCamHandle h, uint nResolutionIndex, out int pWidth, out int pHeight);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern uint Omegonprocam_get_ResolutionRatio(SafeCamHandle h, uint nResolutionIndex, out int pNumerator, out int pDenominator);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern uint Omegonprocam_get_Field(SafeCamHandle h);
 
         /*
@@ -554,42 +560,42 @@ namespace Omegon {
                 MAKEFOURCC('Y', 'Y', 'Y', 'Y')
         */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern uint Omegonprocam_get_RawFormat(SafeCamHandle h, out uint nFourCC, out uint bitdepth);
 
         /*
             set or get the process mode: OMEGONPROCAM_PROCESSMODE_FULL or OMEGONPROCAM_PROCESSMODE_FAST
         */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_ProcessMode(SafeCamHandle h, ePROCESSMODE nProcessMode);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_ProcessMode(SafeCamHandle h, out ePROCESSMODE pnProcessMode);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_RealTime(SafeCamHandle h, int bEnable);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_RealTime(SafeCamHandle h, out int bEnable);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_Flush(SafeCamHandle h);
 
         /* sensor Temperature */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_Temperature(SafeCamHandle h, out short pTemperature);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_Temperature(SafeCamHandle h, short nTemperature);
 
         /* ROI */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_Roi(SafeCamHandle h, out uint pxOffset, out uint pyOffset, out uint pxWidth, out uint pyHeight);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_Roi(SafeCamHandle h, uint xOffset, uint yOffset, uint xWidth, uint yHeight);
 
         /*
@@ -609,121 +615,121 @@ namespace Omegon {
             ------------------------------------------------------------------|
         */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_AutoExpoEnable(SafeCamHandle h, out int bAutoExposure);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_AutoExpoEnable(SafeCamHandle h, int bAutoExposure);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_AutoExpoTarget(SafeCamHandle h, out ushort Target);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_AutoExpoTarget(SafeCamHandle h, ushort Target);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_MaxAutoExpoTimeAGain(SafeCamHandle h, uint maxTime, ushort maxAGain);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern int Omegonprocam_get_MaxAutoExpoTimeAGain(SafeCamHandle h, out uint maxTime, out ushort maxAGain);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_MinAutoExpoTimeAGain(SafeCamHandle h, uint minTime, ushort minAGain);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern int Omegonprocam_get_MinAutoExpoTimeAGain(SafeCamHandle h, out uint minTime, out ushort minAGain);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_ExpoTime(SafeCamHandle h, out uint Time)/* in microseconds */;
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_ExpoTime(SafeCamHandle h, uint Time)/* inmicroseconds */;
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_ExpTimeRange(SafeCamHandle h, out uint nMin, out uint nMax, out uint nDef);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_ExpoAGain(SafeCamHandle h, out ushort AGain);/* percent, such as 300 */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_ExpoAGain(SafeCamHandle h, ushort AGain);/* percent */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_ExpoAGainRange(SafeCamHandle h, out ushort nMin, out ushort nMax, out ushort nDef);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_LevelRange(SafeCamHandle h, [In] ushort[] aLow, [In] ushort[] aHigh);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_LevelRange(SafeCamHandle h, [Out] ushort[] aLow, [Out] ushort[] aHigh);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_Hue(SafeCamHandle h, int Hue);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_Hue(SafeCamHandle h, out int Hue);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_Saturation(SafeCamHandle h, int Saturation);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_Saturation(SafeCamHandle h, out int Saturation);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_Brightness(SafeCamHandle h, int Brightness);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_Brightness(SafeCamHandle h, out int Brightness);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_Contrast(SafeCamHandle h, out int Contrast);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_Contrast(SafeCamHandle h, int Contrast);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_Gamma(SafeCamHandle h, out int Gamma);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_Gamma(SafeCamHandle h, int Gamma);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_Chrome(SafeCamHandle h, out int bChrome);    /* monochromatic mode */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_Chrome(SafeCamHandle h, int bChrome);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_VFlip(SafeCamHandle h, out int bVFlip);  /* vertical flip */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_VFlip(SafeCamHandle h, int bVFlip);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_HFlip(SafeCamHandle h, out int bHFlip);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_HFlip(SafeCamHandle h, int bHFlip);  /* horizontal flip */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_Negative(SafeCamHandle h, out int bNegative);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_Negative(SafeCamHandle h, int bNegative);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_Speed(SafeCamHandle h, ushort nSpeed);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_Speed(SafeCamHandle h, out ushort pSpeed);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern uint Omegonprocam_get_MaxSpeed(SafeCamHandle h);/* get the maximum speed, "Frame Speed Level", speed range = [0, max] */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern uint Omegonprocam_get_MaxBitDepth(SafeCamHandle h);/* get the max bit depth of this camera, such as 8, 10, 12, 14, 16 */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern uint Omegonprocam_get_FanMaxSpeed(SafeCamHandle h);/* get the maximum fan speed, the fan speed range = [0, max], closed interval */
 
         /* power supply:
@@ -732,52 +738,52 @@ namespace Omegon {
                 2 -> DC
         */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_HZ(SafeCamHandle h, int nHZ);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_HZ(SafeCamHandle h, out int nHZ);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_Mode(SafeCamHandle h, int bSkip); /* skip or bin */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_Mode(SafeCamHandle h, out int bSkip);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_TempTint(SafeCamHandle h, int nTemp, int nTint);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_TempTint(SafeCamHandle h, out int nTemp, out int nTint);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_WhiteBalanceGain(SafeCamHandle h, [In] int[] aGain);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_WhiteBalanceGain(SafeCamHandle h, [Out] int[] aGain);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_BlackBalance(SafeCamHandle h, [In] ushort[] aSub);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_BlackBalance(SafeCamHandle h, [Out] ushort[] aSub);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_AWBAuxRect(SafeCamHandle h, ref RECT pAuxRect);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_AWBAuxRect(SafeCamHandle h, out RECT pAuxRect);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_AEAuxRect(SafeCamHandle h, ref RECT pAuxRect);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_AEAuxRect(SafeCamHandle h, out RECT pAuxRect);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_ABBAuxRect(SafeCamHandle h, ref RECT pAuxRect);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_ABBAuxRect(SafeCamHandle h, out RECT pAuxRect);
 
         /*
@@ -785,62 +791,62 @@ namespace Omegon {
             S_OK:       mono mode, such as EXCCD00300KMA and UHCCD01400KMA
         */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_MonoMode(SafeCamHandle h);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern uint Omegonprocam_get_StillResolutionNumber(SafeCamHandle h);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_StillResolution(SafeCamHandle h, uint nResolutionIndex, out int pWidth, out int pHeight);
 
         /*
             get the revision
         */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_Revision(SafeCamHandle h, out ushort pRevision);
 
         /*
             get the serial number which is always 32 chars which is zero-terminated such as "TP110826145730ABCD1234FEDC56787"
         */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_SerialNumber(SafeCamHandle h, IntPtr sn);
 
         /*
             get the camera firmware version, such as: 3.2.1.20140922
         */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_FwVersion(SafeCamHandle h, IntPtr fwver);
 
         /*
             get the camera hardware version, such as: 3.2.1.20140922
         */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_HwVersion(SafeCamHandle h, IntPtr hwver);
 
         /*
             get the FPGA version, such as: 1.3
         */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_FpgaVersion(SafeCamHandle h, IntPtr fpgaver);
 
         /*
             get the production date, such as: 20150327
         */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_ProductionDate(SafeCamHandle h, IntPtr pdate);
 
         /*
             get the sensor pixel size, such as: 2.4um
         */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_PixelSize(SafeCamHandle h, uint nResolutionIndex, out float x, out float y);
 
         /*
@@ -852,112 +858,112 @@ namespace Omegon {
                     -------------------------------------------------------------
         */
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_VignetEnable(SafeCamHandle h, int bEnable);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_VignetEnable(SafeCamHandle h, out int bEnable);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_VignetAmountInt(SafeCamHandle h, int nAmount);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_VignetAmountInt(SafeCamHandle h, out int nAmount);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_VignetMidPointInt(SafeCamHandle h, int nMidPoint);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_VignetMidPointInt(SafeCamHandle h, out int nMidPoint);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_AwbOnePush(SafeCamHandle h, IntPtr fnTTProc, IntPtr pTTCtx);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_AwbInit(SafeCamHandle h, IntPtr fnWBProc, IntPtr pWBCtx);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_LevelRangeAuto(SafeCamHandle h);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_GetHistogram(SafeCamHandle h, HISTOGRAM_CALLBACK fnHistogramProc, IntPtr pHistogramCtx);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_AbbOnePush(SafeCamHandle h, IntPtr fnBBProc, IntPtr pBBCtx);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_LEDState(SafeCamHandle h, ushort iLed, ushort iState, ushort iPeriod);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_write_EEPROM(SafeCamHandle h, uint addr, IntPtr pBuffer, uint nBufferLen);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_read_EEPROM(SafeCamHandle h, uint addr, IntPtr pBuffer, uint nBufferLen);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern int Omegonprocam_write_Pipe(SafeCamHandle h, uint pipeNum, IntPtr pBuffer, uint nBufferLen);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern int Omegonprocam_read_Pipe(SafeCamHandle h, uint pipeNum, IntPtr pBuffer, uint nBufferLen);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern int Omegonprocam_feed_Pipe(SafeCamHandle h, uint pipeNum);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_write_UART(SafeCamHandle h, IntPtr pBuffer, uint nBufferLen);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_read_UART(SafeCamHandle h, IntPtr pBuffer, uint nBufferLen);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_Option(SafeCamHandle h, eOPTION iOption, int iValue);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_Option(SafeCamHandle h, eOPTION iOption, out int iValue);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_Linear(SafeCamHandle h, byte[] v8, ushort[] v16);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_Curve(SafeCamHandle h, byte[] v8, ushort[] v16);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_ColorMatrix(SafeCamHandle h, double[] v);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_put_InitWBGain(SafeCamHandle h, ushort[] v);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_FrameRate(SafeCamHandle h, out uint nFrame, out uint nTime, out uint nTotalFrame);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_FfcOnePush(SafeCamHandle h);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_DfcOnePush(SafeCamHandle h);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern int Omegonprocam_FfcExport(SafeCamHandle h, [MarshalAs(UnmanagedType.LPWStr)] string filepath);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern int Omegonprocam_FfcImport(SafeCamHandle h, [MarshalAs(UnmanagedType.LPWStr)] string filepath);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern int Omegonprocam_DfcExport(SafeCamHandle h, [MarshalAs(UnmanagedType.LPWStr)] string filepath);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern int Omegonprocam_DfcImport(SafeCamHandle h, [MarshalAs(UnmanagedType.LPWStr)] string filepath);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_IoControl(SafeCamHandle h, uint index, eIoControType eType, int outVal, out int inVal);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern int Omegonprocam_get_AfParam(SafeCamHandle h, out AfParam pAfParam);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = cc)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
         private static extern double Omegonprocam_calc_ClarityFactor(IntPtr pImageData, int bits, uint nImgWidth, uint nImgHeight);
 
-        [DllImport(dll, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
         private static extern void Omegonprocam_deBayerV2(uint nBayer, int nW, int nH, IntPtr input, IntPtr output, byte nBitDepth, byte nBitCount);
 
         static public uint MAKEFOURCC(uint a, uint b, uint c, uint d) {
