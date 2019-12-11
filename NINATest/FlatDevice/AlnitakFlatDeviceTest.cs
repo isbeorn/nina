@@ -4,7 +4,7 @@ using NUnit.Framework;
 using System.Threading.Tasks;
 using NINA.Profile;
 
-namespace NINATest {
+namespace NINATest.FlatDevice {
 
     [TestFixture]
     public class AlnitakFlatDeviceTest {

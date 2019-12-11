@@ -3,7 +3,7 @@ using NINA.Model.MyCamera;
 using NINA.Profile;
 using NUnit.Framework;
 
-namespace NINATest {
+namespace NINATest.FlatDevice {
 
     [TestFixture]
     public class FlatDeviceSettingsTest {

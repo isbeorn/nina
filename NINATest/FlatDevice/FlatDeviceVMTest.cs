@@ -1,18 +1,18 @@
-﻿using Moq;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Moq;
+using NINA.Locale;
+using NINA.Model.MyCamera;
+using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFlatDevice;
 using NINA.Profile;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.ViewModel.Equipment.FlatDevice;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using NINA.Locale;
-using NINA.Model.MyCamera;
-using NINA.Model.MyFilterWheel;
 
-namespace NINATest {
+namespace NINATest.FlatDevice {
 
     [TestFixture]
     public class FlatDeviceVMTest {
