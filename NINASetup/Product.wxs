@@ -28,7 +28,8 @@
   <?define NINA_ProjectDir=$(var.NINA.ProjectDir)?>
   <?define NINA_TargetDir=$(var.NINA.TargetDir)?>
   <?define nikoncswrapper_TargetDir=$(var.nikoncswrapper.TargetDir)?>
-  <?define NINACustomControlLibrary_TargetDir=$(var.NINACustomControlLibrary.TargetDir)?><?define NINA.MGEN_TargetDir=$(var.NINA.MGEN.TargetDir)?>
+  <?define NINACustomControlLibrary_TargetDir=$(var.NINACustomControlLibrary.TargetDir)?>
+  <?define NINA.MGEN_TargetDir=$(var.NINA.MGEN.TargetDir)?>
 
   <Product Id="*" Name="N.I.N.A. - Nighttime Imaging 'N' Astronomy" Language="1033" Version="!(bind.fileVersion.NINA.exe)" Manufacturer="N.I.N.A." UpgradeCode="5DC025EA-3D24-4E6B-9F82-79718D70896A">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
@@ -120,6 +121,8 @@
       <ComponentGroupRef Id="External_x64_Altair_files" />
       <ComponentGroupRef Id="External_x64_ToupTek_files" />
       <ComponentGroupRef Id="External_x86_ToupTek_files" />
+      <ComponentGroupRef Id="External_x64_Omegon_files" />
+      <ComponentGroupRef Id="External_x86_Omegon_files" />
       <ComponentGroupRef Id="External_x64_NOVAS_files" />
       <ComponentGroupRef Id="External_x86_NOVAS_files" />
       <ComponentGroupRef Id="External_x86_SOFA_files" />
@@ -199,6 +202,7 @@
               <Directory Id="External_x64_SQLite" Name="SQLite" />
               <Directory Id="External_x64_Altair" Name="Altair" />
               <Directory Id="External_x64_ToupTek" Name="ToupTek" />
+              <Directory Id="External_x64_Omegon" Name="Omegon" />
               <Directory Id="External_x64_NOVAS" Name="NOVAS" />
               <Directory Id="External_x64_SOFA" Name="SOFA" />
               <Directory Id="External_x64_FTDI" Name="FTDI" />
@@ -239,6 +243,7 @@
               <Directory Id="External_x86_SQLite" Name="SQLite" />
               <Directory Id="External_x86_Altair" Name="Altair" />
               <Directory Id="External_x86_ToupTek" Name="ToupTek" />
+              <Directory Id="External_x86_Omegon" Name="Omegon" />
               <Directory Id="External_x86_NOVAS" Name="NOVAS" />
               <Directory Id="External_x86_SOFA" Name="SOFA" />
               <Directory Id="External_x86_FTDI" Name="FTDI" />
@@ -1388,6 +1393,29 @@
       </Component>
       <Component Win64="$(var.Win64)" Id="External_x86_ToupTek_toupcam.dll" Guid="c6eb2a4b-8c5c-4459-9a4b-8d76a1fff868">
         <File Id="External_x86_ToupTek_toupcam.dll" Name="toupcam.dll" Source="$(var.NINA_ProjectDir)External\x86\ToupTek\toupcam.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_x64_Omegon_files" Directory="External_x64_Omegon">
+      <Component Win64="$(var.Win64)" Id="External_x64_Omegon_omegonprocam.lib" Guid="E6169B29-6F2D-47AB-A1E9-33C9717153CA">
+        <File Id="External_x64_Omegon_omegonprocam.lib" Name="omegonprocam.lib" Source="$(var.NINA_ProjectDir)External\x64\Omegon\omegonprocam.lib" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="External_x64_Omegon_omegonprocam.dll" Guid="0D9D447F-3831-4421-8E9B-2513613085BD">
+        <File Id="External_x64_Omegon_omegonprocam.dll" Name="omegonprocam.dll" Source="$(var.NINA_ProjectDir)External\x64\Omegon\omegonprocam.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="External_x86_Omegon_files" Directory="External_x86_Omegon">
+      <Component Win64="$(var.Win64)" Id="External_x86_Omegon_omegonprocam.lib" Guid="972D754F-43C2-4568-8CCB-55DF709550AB">
+        <File Id="External_x86_Omegon_omegonprocam.lib" Name="omegonprocam.lib" Source="$(var.NINA_ProjectDir)External\x86\Omegon\omegonprocam.lib" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="External_x86_Omegon_updatefw.exe" Guid="EB01B554-A472-486F-8C47-A1913D5FD939">
+        <File Id="External_x86_Omegon_updatefw.exe" Name="updatefw.exe" Source="$(var.NINA_ProjectDir)External\x86\Omegon\updatefw.exe" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="External_x86_Omegon_omegonprocam.dll" Guid="3C687E4C-4A78-4082-BEF2-70D2BA00A14F">
+        <File Id="External_x86_Omegon_omegonprocam.dll" Name="omegonprocam.dll" Source="$(var.NINA_ProjectDir)External\x86\Omegon\omegonprocam.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

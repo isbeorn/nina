@@ -169,7 +169,7 @@
     <value>Alnitak Flatfieldgenerator</value>
   </data>
   <data name="LblAltairCameraSetup" xml:space="preserve">
-    <value>Altair Kamerasetup</value>
+    <value>Altair Kameraeinrichtung</value>
   </data>
   <data name="LblAlternativeUIColorSchema" xml:space="preserve">
     <value>Alternatives UI-Farbschema</value>
@@ -1096,7 +1096,7 @@ wenn die Linien nicht ausgerichtet sind, gibt es einen Polarausrichtungsfehler</
     <value>Herunterladen</value>
   </data>
   <data name="LblDownloadImage" xml:space="preserve">
-    <value>Herunterladen des Bildes</value>
+    <value>Bild herunterladen</value>
   </data>
   <data name="LblDownloadImageTooltip" xml:space="preserve">
     <value>Bild von der NASA Sky Survey für die angegebenen Koordinaten herunterladen</value>
@@ -1262,7 +1262,7 @@ Ist dieser Auslöser deaktiviert, wird dieser Schritt übersprungen.</value>
     <value>Schließen</value>
   </data>
   <data name="LblFlatDeviceCloseAtSequenceEnd" xml:space="preserve">
-    <value>Close cover when sequence ends</value>
+    <value>Abdeckung bei Sequenzende schließen</value>
   </data>
   <data name="LblFlatDeviceClosed" xml:space="preserve">
     <value>Geschlossen</value>
@@ -1283,7 +1283,7 @@ Ist dieser Auslöser deaktiviert, wird dieser Schritt übersprungen.</value>
     <value>Wollen Sie das Flatfield Gerät abtrennen?</value>
   </data>
   <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
-    <value>Flat Panel Settings</value>
+    <value>Flat Panel Einstellungen</value>
   </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
     <value>Ungültige Antwort from Flatfield Gerät.</value>
@@ -1304,7 +1304,7 @@ Ist dieser Auslöser deaktiviert, wird dieser Schritt übersprungen.</value>
     <value>Öffnen</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for dark flats</value>
+    <value>Abdeckung für Dark Flats öffnen</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Setzen</value>
@@ -1379,7 +1379,7 @@ Ist dieser Auslöser deaktiviert, wird dieser Schritt übersprungen.</value>
     <value>Flippen</value>
   </data>
   <data name="LblFlippingScope" xml:space="preserve">
-    <value>Teleskop flippen</value>
+    <value>Teleskop drehen</value>
   </data>
   <data name="LblFLIPreRBIMitigation" xml:space="preserve">
     <value>RBI Mitigation</value>
@@ -1541,7 +1541,7 @@ Berechneter HFR: {2}
     <value>HFR</value>
   </data>
   <data name="LblHFRHistory" xml:space="preserve">
-    <value>HRF Historie</value>
+    <value>HFR Verlauf</value>
   </data>
   <data name="LblHFRPatternDescription" xml:space="preserve">
     <value>Berechneter HFR der Aufnahme (HFR Erkennung muss aktiv sein)</value>
@@ -1592,13 +1592,13 @@ Berechneter HFR: {2}
     <value>Bild</value>
   </data>
   <data name="LblImageArea" xml:space="preserve">
-    <value>Bildregion</value>
+    <value>Bildbereich</value>
   </data>
   <data name="LblImageFileError" xml:space="preserve">
     <value>Bilddateifehler</value>
   </data>
   <data name="LblImageFilePath" xml:space="preserve">
-    <value>Bild Dateipfad</value>
+    <value>Bilddateipfad</value>
   </data>
   <data name="LblImageFilePattern" xml:space="preserve">
     <value>Bild Dateivorlage</value>
@@ -2036,7 +2036,7 @@ Berechneter HFR: {2}
     <value>An</value>
   </data>
   <data name="LblOneToOne" xml:space="preserve">
-    <value>Skaliere Bild 1:1</value>
+    <value>Bild auf 1:1 skalieren</value>
   </data>
   <data name="LblOpacity" xml:space="preserve">
     <value>Opazität</value>

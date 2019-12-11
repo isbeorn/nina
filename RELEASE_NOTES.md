@@ -5,6 +5,7 @@
 ### Hardware
  - **QHY filter wheels** that are integrated (A-series cameras) or are connected to the camera using the 4-pin cable (CFW1/2/3 filter wheels) are now natively supported. This allows the native QHY camera driver to be used with these cameras and configurations.
  - **Alnitak Flip Flap Panel** support to connect and control the panel inside the application
+ - **Omegon Pro Cameras** Added SDK for omegon pro cameras (untested)
  - **Lacerta MGEN Superguider integration**
     - Full control of the MGEN by mirroring the controller fully into N.I.N.A.'s User Interface
     - Automatic power on when connecting
@@ -81,9 +82,10 @@ Thank you for your support!
 - Canon: 3.8.20.6400
 - FLI: 1.104.0.0
 - Nikon: 1.3.1.3001
-- QHY: 0.6.0.4
+- Omegon: 39.15325.2019.810
+- QHY: 0.6.0.5
 - ToupTek: 30.13342.2018.1121
-- ZWO: 1.14.11.8
+- ZWO: 1.14.11.19
 
 # Version 1.9
 
