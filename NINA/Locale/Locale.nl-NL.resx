@@ -130,7 +130,7 @@
     <value>W</value>
   </data>
   <data name="LblAberrationInspector" xml:space="preserve">
-    <value>Abberatie Inspectie</value>
+    <value>Controle Aberratie</value>
   </data>
   <data name="LblActive" xml:space="preserve">
     <value>Actief</value>
@@ -203,7 +203,7 @@ Beide coördinaten worden gebruikt om de hoogte fout te berekenen en te tonen</v
     <value>Geef weer en annoteer Sterrenbeelden</value>
   </data>
   <data name="LblAnnotateDSO" xml:space="preserve">
-    <value>Annoteer Deep Sky Objects</value>
+    <value>Annoteer Deep Sky Objecten</value>
   </data>
   <data name="LblAnnotateGrid" xml:space="preserve">
     <value>Raster weergeven</value>
@@ -228,19 +228,19 @@ Beide coördinaten worden gebruikt om de hoogte fout te berekenen en te tonen</v
 Moet het programma proberen te herstellen van de fout? (Dit kan tot onverwacht gedrag leiden)</value>
   </data>
   <data name="LblApplicationStartDateDescription" xml:space="preserve">
-    <value>Programma start datum in JJJJ-MM-DD formaat</value>
+    <value>Programma startdatum in JJJJ-MM-DD formaat</value>
   </data>
   <data name="LblArcmin" xml:space="preserve">
     <value>arc minuut</value>
   </data>
   <data name="LblArcsec" xml:space="preserve">
-    <value>Arc seconde</value>
+    <value>arc seconde</value>
   </data>
   <data name="LblAscending" xml:space="preserve">
     <value>Oplopend</value>
   </data>
   <data name="LblAscomInterOpDriverException" xml:space="preserve">
-    <value>Er is een ASCOM stuurprogramma interop uitzondering voorgevallen. Dit is waarschijnlijk het gevolg van een conflict omdat het stuurprogramma is geïnstalleerd als {1} en N.I.N.A. als {0}. Installeer het stuurprogramma als {1}</value>
+    <value>Er is een ASCOM stuurprogramma uitzondering voorgevallen. Dit is waarschijnlijk het gevolg van een conflict omdat het stuurprogramma is geïnstalleerd als {1} en N.I.N.A. als {0}. Installeer het stuurprogramma als {1}</value>
   </data>
   <data name="LblASIImageDownloadError" xml:space="preserve">
     <value>Fout tijdens het ontvangen van data van de camera!</value>
@@ -491,7 +491,8 @@ Dec: {1}</value>
     <value>Camera download mislukt. Belichtingstijd: {0}s Type: {1} Gain: {2} Filter: {3}</value>
   </data>
   <data name="LblCameraHighPower" xml:space="preserve">
-    <value>Camera koeler draait op {0}% kracht en kan wellicht niet compenseren voor omgevingstemperatuur verschillen</value>
+    <value>Camera koeler draait op {0}% kracht en kan wellicht niet compenseren voor het verschil 
+met de omgevingstemperatuur</value>
   </data>
   <data name="LblCameraNotAtTargetTemp" xml:space="preserve">
     <value>Camera temperatuur is nu {0}°C maar het doel is {1}°C</value>
