@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Moq;
+﻿using Moq;
 using NINA.Locale;
 using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
@@ -11,6 +7,10 @@ using NINA.Profile;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.ViewModel.Equipment.FlatDevice;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NINATest.FlatDevice {
 
@@ -36,6 +36,11 @@ namespace NINATest.FlatDevice {
             _mockFlatDeviceChooserVM = new Mock<IFlatDeviceChooserVM>();
             _sut = new FlatDeviceVM(_mockProfileService.Object, _mockFlatDeviceMediator.Object,
                 _mockApplicationStatusMediator.Object, _mockFilterWheelMediator.Object);
+        }
+
+        [Test]
+        public void TestFilterWheelMediatorRegistered() {
+            _mockFilterWheelMediator.Verify(m => m.RegisterConsumer(_sut), Times.Once);
         }
 
         [Test]
@@ -205,6 +210,63 @@ namespace NINATest.FlatDevice {
             Assert.That(result.Rows.Count, Is.EqualTo(1));
             Assert.That(result.Rows[0][0], Is.EqualTo(filterName));
             Assert.That(result.Rows[0][1], Is.EqualTo($"{returnValue.time,3:0.0}s @ {returnValue.brightness,3:P0}"));
+        }
+
+        [Test]
+        public void TestSetBrightnessNullFlatDevice() {
+            _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, null);
+            _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
+            _sut.SetBrightness(1.0);
+            Assert.That(_sut.Brightness, Is.EqualTo(1.0));
+            _mockFlatDevice.Verify(m => m.Brightness, Times.Never);
+        }
+
+        [Test]
+        public async Task TestSetBrightnessConnectedFlatDeviceAsync() {
+            _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, _mockFlatDevice.Object);
+            _mockFlatDevice.Setup(m => m.Id).Returns("Something");
+            _mockFlatDevice.Setup(m => m.Connected).Returns(true);
+            _mockFlatDevice.Setup(m => m.Connect(It.IsAny<CancellationToken>())).Returns(Task.Run(() => true));
+            _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
+            await _sut.Connect();
+            _sut.SetBrightness(1.0);
+            Assert.That(_sut.Brightness, Is.EqualTo(1.0));
+            _mockFlatDevice.VerifySet(m => m.Brightness = 1.0, Times.Once);
+        }
+
+        [Test]
+        public void TestToggleLightNullFlatDevice() {
+            _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, null);
+            _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
+            _sut.ToggleLight(true);
+            Assert.That(_sut.LightOn, Is.EqualTo(false));
+            _mockFlatDevice.Verify(m => m.LightOn, Times.Never);
+        }
+
+        [Test]
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task TestToggleLightConnected(bool expected) {
+            _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, _mockFlatDevice.Object);
+            _mockFlatDevice.Setup(m => m.Id).Returns("Something");
+            _mockFlatDevice.Setup(m => m.Connected).Returns(true);
+            _mockFlatDevice.Setup(m => m.Connect(It.IsAny<CancellationToken>())).Returns(Task.Run(() => true));
+            _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
+            await _sut.Connect();
+            _sut.ToggleLight(expected);
+            _mockFlatDevice.VerifySet(m => m.LightOn = expected, Times.Once);
+        }
+
+        [Test]
+        public void TestClearWizardTrainedValues() {
+            _sut.ClearValuesCommand.Execute(new object());
+            _mockProfileService.Verify(m => m.ActiveProfile.FlatDeviceSettings.ClearBrightnessInfo(), Times.Once);
+        }
+
+        [Test]
+        public void TestDispose() {
+            _sut.Dispose();
+            _mockFilterWheelMediator.Verify(m => m.RemoveConsumer(_sut), Times.Once);
         }
     }
 }

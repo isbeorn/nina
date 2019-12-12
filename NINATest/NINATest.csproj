@@ -172,6 +172,7 @@
     <Compile Include="FITSTest.cs" />
     <Compile Include="FlatDevice\AlnitakCommandTest.cs" />
     <Compile Include="FlatDevice\AlnitakResponseTest.cs" />
+    <Compile Include="FlatDevice\FlatDeviceInfoTest.cs" />
     <Compile Include="FlatWizardExposureTimeFinderServiceTest.cs" />
     <Compile Include="FlatWizardVMTest.cs" />
     <Compile Include="GuideStepsHistoryTest.cs" />
