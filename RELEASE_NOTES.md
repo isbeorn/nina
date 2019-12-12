@@ -4,7 +4,10 @@
 
 ### Hardware
  - **QHY filter wheels** that are integrated (A-series cameras) or are connected to the camera using the 4-pin cable (CFW1/2/3 filter wheels) are now natively supported. This allows the native QHY camera driver to be used with these cameras and configurations.
- - **Alnitak Flip Flap Panel** support to connect and control the panel inside the application
+ - **Alnitak Flat Device support** 
+    - connect to and control Alnitak flat devices from within the application
+    - flip-flat devices will automatically open and close within a sequence
+    - option to close flip-flats and dust covers at the end of the sequence
  - **Omegon Pro Cameras** Added SDK for omegon pro cameras (untested)
  - **Lacerta MGEN Superguider integration**
     - Full control of the MGEN by mirroring the controller fully into N.I.N.A.'s User Interface
@@ -56,6 +59,7 @@
 - After running an autofocus run a new json file will be written to %localappdata%\nina\autofocus containing all datapoints to retrace what was measured at a later point in time
 - Reintroduce a "No Guider" option under Equipment -> Guiding so that unguided setups do not suffer through unwanted PHD2 executions or unnecessary errors when the "Connect All Devices" button is pressed.
 - Platesolve tab inside Imaging Tab will now retain its settings (Sync, Reslew, Repeat)
+- Added ability to record flat exposure times with the flat wizard, to be used in a sequence later
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false
