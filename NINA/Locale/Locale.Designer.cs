@@ -3061,6 +3061,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Closing flat device cover.
+        /// </summary>
+        internal static string LblEndOfSequenceCloseFlatDeviceCover {
+            get {
+                return ResourceManager.GetString("LblEndOfSequenceCloseFlatDeviceCover", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run end of sequence options?.
         /// </summary>
         internal static string LblEndOfSequenceDecision {

@@ -1137,6 +1137,9 @@ when the lines are not aligned there is some Polar Alignment error</value>
   <data name="LblEnabled" xml:space="preserve">
     <value>Enabled</value>
   </data>
+  <data name="LblEndOfSequenceCloseFlatDeviceCover" xml:space="preserve">
+    <value>Closing flat device cover</value>
+  </data>
   <data name="LblEndOfSequenceDecision" xml:space="preserve">
     <value>Run end of sequence options?</value>
   </data>
