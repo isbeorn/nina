@@ -1258,6 +1258,9 @@ When this trigger is deactivated the application will just skip the Start Exposu
   <data name="LblFlatDeviceChooseSerialPort" xml:space="preserve">
     <value>Choose serial port</value>
   </data>
+  <data name="LblFlatDeviceClearValues" xml:space="preserve">
+    <value>Clear Values</value>
+  </data>
   <data name="LblFlatDeviceClose" xml:space="preserve">
     <value>Close</value>
   </data>
@@ -1309,8 +1312,14 @@ When this trigger is deactivated the application will just skip the Start Exposu
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Set</value>
   </data>
+  <data name="LblFlatDeviceTrainedFilterTimes" xml:space="preserve">
+    <value>Flat Wizard Trained Exposure Times</value>
+  </data>
   <data name="LblFlatDeviceUnknown" xml:space="preserve">
     <value>Unknown</value>
+  </data>
+  <data name="LblFlatDeviceUseWizardTrainedValues" xml:space="preserve">
+    <value>Use exposure times trained with flat wizard</value>
   </data>
   <data name="LblFlatExposureCalcContinue" xml:space="preserve">
     <value>Mean ADU was {0}, starting Exposure Time calculation at {1}</value>

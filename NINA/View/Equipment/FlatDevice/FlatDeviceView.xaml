@@ -90,10 +90,7 @@
                             Margin="0,6,0,6"
                             VerticalAlignment="Center"
                             Columns="2">
-                            <TextBlock
-                                Margin="5,0,0,0"
-                                VerticalAlignment="Center"
-                                Text="{ns:Loc LblDriverVersion}" />
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDriverVersion}" />
                             <TextBlock
                                 Margin="5,0,0,0"
                                 VerticalAlignment="Center"
@@ -156,12 +153,13 @@
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Center"
                                     Text="%" />
-                                <ninactrl:AsyncProcessButton
+                                <Button
                                     Grid.Column="3"
                                     Margin="5"
-                                    ButtonText="{ns:Loc LblFlatDeviceSetBrightness}"
                                     Command="{Binding SetBrightnessCommand}"
-                                    IsEnabled="{Binding FlatDeviceInfo.Connected}" />
+                                    IsEnabled="{Binding FlatDeviceInfo.Connected}">
+                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblFlatDeviceSetBrightness}" />
+                                </Button>
                             </Grid>
                         </UniformGrid>
                     </Border>
@@ -174,24 +172,24 @@
                             VerticalAlignment="Center"
                             Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatDeviceCover}" />
-                            <StackPanel Orientation="Horizontal">
+                            <StackPanel MinHeight="25" Orientation="Horizontal">
                                 <Grid IsEnabled="{Binding FlatDeviceInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
-                                    <ninactrl:AsyncProcessButton
-                                        Width="55"
-                                        Height="25"
+                                    <Button
+                                        MinWidth="80"
                                         Margin="5,0,0,0"
-                                        HorizontalAlignment="Left"
-                                        ButtonText="{ns:Loc LblFlatDeviceOpenButton}"
-                                        Command="{Binding OpenCoverCommand}" />
+                                        HorizontalAlignment="Center"
+                                        Command="{Binding OpenCoverCommand}">
+                                        <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblFlatDeviceOpenButton}" />
+                                    </Button>
                                 </Grid>
                                 <Grid IsEnabled="{Binding FlatDeviceInfo, Converter={StaticResource InverseNullToBooleanConverter}}">
-                                    <ninactrl:AsyncProcessButton
-                                        Width="60"
-                                        Height="25"
+                                    <Button
+                                        MinWidth="80"
                                         Margin="5,0,0,0"
-                                        HorizontalAlignment="Left"
-                                        ButtonText="{ns:Loc LblFlatDeviceClose}"
-                                        Command="{Binding CloseCoverCommand}" />
+                                        HorizontalAlignment="Center"
+                                        Command="{Binding CloseCoverCommand}">
+                                        <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblFlatDeviceClose}" />
+                                    </Button>
                                 </Grid>
                             </StackPanel>
                         </UniformGrid>
@@ -204,10 +202,7 @@
                             Margin="0,6,0,6"
                             VerticalAlignment="Center"
                             Columns="2">
-                            <TextBlock
-                                Margin="5,0,0,0"
-                                VerticalAlignment="Center"
-                                Text="{ns:Loc LblFlatDeviceCoverCurrently}" />
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatDeviceCoverCurrently}" />
                             <TextBlock
                                 Margin="5,0,0,0"
                                 VerticalAlignment="Center"
