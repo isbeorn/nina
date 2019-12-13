@@ -86,8 +86,10 @@ namespace NINA.Model.MyCamera {
         }
 
         public override int GetHashCode() {
+            //see https://en.wikipedia.org/wiki/Hash_function, used when BinningMode is used as a dictionary key for instance
+            const int primeNumber = 397;
             unchecked {
-                return (_x.GetHashCode() * 397) ^ _y.GetHashCode();
+                return (_x.GetHashCode() * primeNumber) ^ _y.GetHashCode();
             }
         }
     }
