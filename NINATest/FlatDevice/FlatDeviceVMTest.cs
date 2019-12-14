@@ -9,6 +9,7 @@ using NINA.ViewModel.Equipment.FlatDevice;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -179,6 +180,7 @@ namespace NINATest.FlatDevice {
 
         [Test]
         public void TestWizardTrainedValuesWithoutFilters() {
+            _mockProfileService.Raise(m => m.ActiveProfile.FlatDeviceSettings.PropertyChanged += null, new PropertyChangedEventArgs("FilterSettings"));
             var result = _sut.WizardTrainedValues;
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Columns.Count, Is.EqualTo(1));
@@ -203,7 +205,7 @@ namespace NINATest.FlatDevice {
                 .Returns(new List<short> { gainValue });
             _mockFilterWheelMediator.Setup(m => m.GetAllFilters())
                 .Returns(new List<FilterInfo>() { new FilterInfo() { Name = filterName } });
-
+            _mockProfileService.Raise(m => m.ActiveProfile.FlatDeviceSettings.PropertyChanged += null, new PropertyChangedEventArgs("FilterSettings"));
             var result = _sut.WizardTrainedValues;
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Columns.Count, Is.EqualTo(2));
