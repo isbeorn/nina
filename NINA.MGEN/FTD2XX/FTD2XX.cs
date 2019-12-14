@@ -119,10 +119,8 @@ namespace FTD2XX_NET {
                         Description = description.Trim(),
                         Type = device
                     };
-
-                    return status;
                 }
-                return FT_STATUS.FT_DEVICE_NOT_FOUND;
+                return status;
             }
         }
 
