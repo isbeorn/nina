@@ -58,10 +58,10 @@ namespace NINA.Model.MyPlanetarium {
 
                 var columns = response.Split('\t');
 
-                if (!Match(columns[0].Replace("OK!", ""), @"(([0-9]{1,2})[h]([0-9]{1,2})[m]?([0-9]{1,2}(?:\.[0-9]+){0,1})?[s])", out var raString)) { return null; }
+                if (!Match(columns[0].Replace("OK!", ""), @"(([0-9]{1,2})([h|:]|[??]{2})([0-9]{1,2})([m|:]|[??]{2})?([0-9]{1,2}(?:\.[0-9]+){0,1})?([s|:]|[??]{2}))", out var raString)) { return null; }
                 var ra = Astrometry.HMSToDegrees(raString);
 
-                if (!Match(columns[1], @"(([0-9]{1,2})[d]([0-9]{1,2})[m]?([0-9]{1,2}(?:\.[0-9]+){0,1})?[s])", out var decString)) { return null; }
+                if (!Match(columns[1], @"(([0-9]{1,2})([d|°|:]|[??]{2})([0-9]{1,2})([m|'|:]|[??]{2})?([0-9]{1,2}(?:\.[0-9]+){0,1})?([s|""|:]|[??]{ 2}))", out var decString)) { return null; }
                 var dec = Astrometry.DMSToDegrees(decString);
 
                 if (!Match(columns.Last(), @"(?<=Equinox:).*", out var equinox)) { return null; }

@@ -113,7 +113,7 @@ namespace NINA.MGEN {
                 throw new Exception("No MGEN device found");
             }
 
-            var device = devices.Where(x => x.Description.ToLower().Contains("m-gen")).FirstOrDefault();
+            var device = devices.FirstOrDefault(x => x?.Description?.ToLower()?.Contains("m-gen") ?? false);
 
             if (device != null) {
                 await Open(device, ct);
