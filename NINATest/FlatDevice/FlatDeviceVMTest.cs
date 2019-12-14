@@ -215,6 +215,40 @@ namespace NINATest.FlatDevice {
         }
 
         [Test]
+        public void TestWizardTrainedValuesMustNotChangeWithNewSelectedFilter() {
+            var info = new FilterWheelInfo { SelectedFilter = new FilterInfo { Name = "Clear" } };
+            _sut.UpdateDeviceInfo(info);
+            var result1 = _sut.WizardTrainedValues;
+
+            Assert.That(result1, Is.Not.Null);
+            Assert.That(result1.Columns.Count, Is.EqualTo(1));
+            Assert.That(result1.Rows.Count, Is.EqualTo(1));
+            Assert.That(result1.Rows[0][0], Is.EqualTo(Loc.Instance["LblNoFilterwheel"]));
+
+            info.SelectedFilter = new FilterInfo { Name = "Red" };
+            _sut.UpdateDeviceInfo(info);
+            var result2 = _sut.WizardTrainedValues;
+            Assert.That(result1, Is.EqualTo(result2));
+        }
+
+        [Test]
+        public void TestWizardTrainedValuesMustChangeWithNewFilterWheel() {
+            var info = new FilterWheelInfo { SelectedFilter = new FilterInfo { Name = "Clear" } };
+            _sut.UpdateDeviceInfo(info);
+            var result1 = _sut.WizardTrainedValues;
+
+            Assert.That(result1, Is.Not.Null);
+            Assert.That(result1.Columns.Count, Is.EqualTo(1));
+            Assert.That(result1.Rows.Count, Is.EqualTo(1));
+            Assert.That(result1.Rows[0][0], Is.EqualTo(Loc.Instance["LblNoFilterwheel"]));
+
+            info = new FilterWheelInfo { SelectedFilter = new FilterInfo { Name = "Clear" } };
+            _sut.UpdateDeviceInfo(info);
+            var result2 = _sut.WizardTrainedValues;
+            Assert.That(result1, Is.Not.EqualTo(result2));
+        }
+
+        [Test]
         public void TestSetBrightnessNullFlatDevice() {
             _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, null);
             _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
