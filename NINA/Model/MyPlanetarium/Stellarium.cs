@@ -23,6 +23,7 @@
 
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Exceptions;
 using NINA.Profile;
 using System;
 using System.Threading.Tasks;
@@ -54,20 +55,22 @@ namespace NINA.Model.MyPlanetarium {
             var request = new HttpGetRequest(this.baseUrl + route);
             try {
                 var response = await request.Request(new CancellationToken());
-                if (response == string.Empty) return null;
+                if (string.IsNullOrEmpty(response)) throw new PlanetariumFailedToConnect();
 
                 var jobj = JObject.Parse(response);
                 var status = jobj.ToObject<StellariumStatus>();
 
-                Coords loc = new Coords();
-                loc.Latitude = status.Location.Latitude;
-                loc.Longitude = status.Location.Longitude;
-                loc.Elevation = status.Location.Altitude;
+                Coords loc = new Coords {
+                    Latitude = status.Location.Latitude,
+                    Longitude = status.Location.Longitude,
+                    Elevation = status.Location.Altitude
+                };
+
                 return loc;
             } catch (Exception ex) {
                 Logger.Error(ex);
+                throw ex;
             }
-            return null;
         }
 
         private async Task<DeepSkyObject> GetView() {
@@ -76,7 +79,7 @@ namespace NINA.Model.MyPlanetarium {
             var request = new HttpGetRequest(this.baseUrl + route);
             try {
                 var response = await request.Request(new CancellationToken());
-                if (response == string.Empty) return null; ;
+                if (string.IsNullOrEmpty(response)) throw new PlanetariumFailedToConnect();
 
                 /* The api returns arrays in an invalid json array format so we need to remove the quotes first */
                 response = response.Replace("\"[", "[").Replace("]\"", "]");
@@ -97,8 +100,8 @@ namespace NINA.Model.MyPlanetarium {
                 return dso;
             } catch (Exception ex) {
                 Logger.Error(ex);
+                throw ex;
             }
-            return null;
         }
 
         public async Task<DeepSkyObject> GetTarget() {
@@ -107,7 +110,7 @@ namespace NINA.Model.MyPlanetarium {
             var request = new HttpGetRequest(this.baseUrl + route);
             try {
                 var response = await request.Request(new CancellationToken());
-                if (response == string.Empty) return await GetView();
+                if (string.IsNullOrEmpty(response)) return await GetView();
 
                 var jobj = JObject.Parse(response);
                 var status = jobj.ToObject<StellariumObject>();
@@ -120,8 +123,8 @@ namespace NINA.Model.MyPlanetarium {
                 return dso;
             } catch (Exception ex) {
                 Logger.Error(ex);
+                throw ex;
             }
-            return null;
         }
 
         private class StellariumView {

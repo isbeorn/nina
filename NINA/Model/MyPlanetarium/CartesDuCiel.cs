@@ -22,6 +22,7 @@
 #endregion "copyright"
 
 using NINA.Utility.Astrometry;
+using NINA.Utility.Exceptions;
 using NINA.Profile;
 using System;
 using System.Threading.Tasks;
@@ -54,17 +55,20 @@ namespace NINA.Model.MyPlanetarium {
             try {
                 var response = await Query("GETSELECTEDOBJECT");
 
-                if (!response.StartsWith("OK!")) { return null; }
+                if (!response.StartsWith("OK!")) { throw new PlanetariumObjectNotSelectedException(); }
 
                 var columns = response.Split('\t');
 
-                if (!Match(columns[0].Replace("OK!", ""), @"(([0-9]{1,2})([h|:]|[?]{2})([0-9]{1,2})([m|:]|[?]{2})?([0-9]{1,2}(?:\.[0-9]+){0,1})?([s|:]|[?]{2}))", out var raString)) { return null; }
+                // An "OK!" response with fewer than 2 columns means that CdC is listening ok but the user has not selected an object.
+                if (columns.Count() < 2) { throw new PlanetariumObjectNotSelectedException(); }
+
+                if (!Match(columns[0].Replace("OK!", ""), @"(([0-9]{1,2})([h|:]|[?]{2})([0-9]{1,2})([m|:]|[?]{2})?([0-9]{1,2}(?:\.[0-9]+){0,1})?([s|:]|[?]{2}))", out var raString)) { throw new PlanetariumObjectNotSelectedException(); }
                 var ra = Astrometry.HMSToDegrees(raString);
 
-                if (!Match(columns[1], @"(([0-9]{1,2})([d|°|:]|[?]{2})([0-9]{1,2})([m|'|:]|[?]{2})?([0-9]{1,2}(?:\.[0-9]+){0,1})?([s|""|:]|[?]{2}))", out var decString)) { return null; }
+                if (!Match(columns[1], @"(([0-9]{1,2})([d|°|:]|[?]{2})([0-9]{1,2})([m|'|:]|[?]{2})?([0-9]{1,2}(?:\.[0-9]+){0,1})?([s|""|:]|[?]{2}))", out var decString)) { throw new PlanetariumObjectNotSelectedException(); }
                 var dec = Astrometry.DMSToDegrees(decString);
 
-                if (!Match(columns.Last(), @"(?<=Equinox:).*", out var equinox)) { return null; }
+                if (!Match(columns.Last(), @"(?<=Equinox:).*", out var equinox)) { throw new PlanetariumObjectNotSelectedException(); }
                 equinox = equinox.Replace("\r", "").Replace("\n", "");
 
                 var coordinates = new Coordinates(Angle.ByDegree(ra), Angle.ByDegree(dec), equinox.ToLower() == "now" ? Epoch.JNOW : Epoch.J2000);
@@ -74,34 +78,33 @@ namespace NINA.Model.MyPlanetarium {
                 return dso;
             } catch (Exception ex) {
                 Logger.Error(ex);
+                throw ex;
             }
-
-            return null;
         }
 
         public async Task<Coords> GetSite() {
             try {
                 var response = await Query("GETOBS");
 
-                if (!response.StartsWith("OK!")) { return null; }
+                if (!response.StartsWith("OK!")) { throw new PlanetariumFailedToGetCoordinates(); }
 
-                if (!Match(response, @"(?<=LAT:)[\+|-]([0-9]{1,2})[:|d]([0-9]{1,2})[:|m]?([0-9]{1,2}(?:\.[0-9]+){0,1})?[:|s]", out var latutideString)) { return null; }
+                if (!Match(response, @"(?<=LAT:)[\+|-]([0-9]{1,2})[:|d]([0-9]{1,2})[:|m]?([0-9]{1,2}(?:\.[0-9]+){0,1})?[:|s]", out var latutideString)) { throw new PlanetariumFailedToGetCoordinates(); }
 
-                if (!Match(response, @"(?<=LON:)[\+|-]([0-9]{1,2})[:|d]([0-9]{1,2})[:|m]?([0-9]{1,2}(?:\.[0-9]+){0,1})?[:|s]", out var longitudeString)) { return null; }
+                if (!Match(response, @"(?<=LON:)[\+|-]([0-9]{1,2})[:|d]([0-9]{1,2})[:|m]?([0-9]{1,2}(?:\.[0-9]+){0,1})?[:|s]", out var longitudeString)) { throw new PlanetariumFailedToGetCoordinates(); }
 
-                if (!Match(response, @"(?<=ALT:)([0-9]{0,5})[m]", out var altitudeString)) { return null; }
+                if (!Match(response, @"(?<=ALT:)([0-9]{0,5})[m]", out var altitudeString)) { throw new PlanetariumFailedToGetCoordinates(); }
 
-                var coords = new Coords();
-                coords.Latitude = Astrometry.DMSToDegrees(latutideString);
-                coords.Longitude = -Astrometry.DMSToDegrees(longitudeString);
-                coords.Elevation = Astrometry.DMSToDegrees(altitudeString);
+                var coords = new Coords {
+                    Latitude = Astrometry.DMSToDegrees(latutideString),
+                    Longitude = -Astrometry.DMSToDegrees(longitudeString),
+                    Elevation = Astrometry.DMSToDegrees(altitudeString)
+                };
 
                 return coords;
             } catch (Exception ex) {
                 Logger.Error(ex);
+                throw ex;
             }
-
-            return null;
         }
 
         private bool Match(string input, string pattern, out string result) {
@@ -117,7 +120,11 @@ namespace NINA.Model.MyPlanetarium {
 
         private async Task<string> Query(string command) {
             using (var client = new TcpClient()) {
-                await Task.Factory.FromAsync((callback, stateObject) => client.BeginConnect(this.address, this.port, callback, stateObject), client.EndConnect, TaskCreationOptions.RunContinuationsAsynchronously);
+                try {
+                    await Task.Factory.FromAsync((callback, stateObject) => client.BeginConnect(this.address, this.port, callback, stateObject), client.EndConnect, TaskCreationOptions.RunContinuationsAsynchronously);
+                } catch (Exception ex) {
+                    throw new PlanetariumFailedToConnect($"{address}:{port}: {ex.ToString()}");
+                }
 
                 byte[] data = Encoding.ASCII.GetBytes($"{command}\r\n");
                 var stream = client.GetStream();

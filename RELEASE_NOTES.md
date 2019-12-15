@@ -56,6 +56,7 @@
 - After running an autofocus run a new json file will be written to %localappdata%\nina\autofocus containing all datapoints to retrace what was measured at a later point in time
 - Reintroduce a "No Guider" option under Equipment -> Guiding so that unguided setups do not suffer through unwanted PHD2 executions or unnecessary errors when the "Connect All Devices" button is pressed.
 - Platesolve tab inside Imaging Tab will now retain its settings (Sync, Reslew, Repeat)
+- Added the option to retreieve the coordinates of the center of the sky chart instead of the selected object when using TheSkyX as the planetarium
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false

@@ -435,6 +435,9 @@
     <Compile Include="Utility\CameraSDKs\OmegonSDK\omegonprocam.cs" />
     <Compile Include="Utility\Converters\AFFittingToVisibilityConverter.cs" />
     <Compile Include="Utility\DeferredContent.cs" />
+    <Compile Include="Utility\Exceptions\PlanetariumFailedToConnect.cs" />
+    <Compile Include="Utility\Exceptions\PlanetariumFailedToGetCoordinates.cs" />
+    <Compile Include="Utility\Exceptions\PlanetariumObjectNotSelectedException.cs" />
     <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakCommands.cs" />
     <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakDevices.cs" />
     <Compile Include="Model\MyFlatDevice\AlnitakFlatDevice.cs" />
