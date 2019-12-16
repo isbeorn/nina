@@ -57,7 +57,9 @@ using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace NINA.ViewModel {
+
     internal class SequenceVM : DockableVM, ITelescopeConsumer, IFocuserConsumer, IFilterWheelConsumer, IRotatorConsumer, IFlatDeviceConsumer, IGuiderConsumer, ICameraConsumer, IWeatherDataConsumer {
+
         public SequenceVM(
                 IProfileService profileService,
                 ICameraMediator cameraMediator,
@@ -732,6 +734,7 @@ namespace NINA.ViewModel {
         /// 1) Wait for previous item's parallel actions 5a, 5b to
         /// 2) Check if Autofocus is requiredfinish
         /// 3) Change Filter
+        /// 3.5) Handle Flat Device
         /// 4) Capture
         /// 5) Parallel Actions after Capture
         ///     5a) Dither
@@ -909,10 +912,10 @@ namespace NINA.ViewModel {
                     }
 
                     if (profileService.ActiveProfile.FlatDeviceSettings.UseWizardTrainedValues) {
-                        var settings = profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo((seq.FilterType.Name, seq.Binning, seq.Gain));
+                        var settings = profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(new FlatDeviceFilterSettingsKey(seq.FilterType.Name, seq.Binning, seq.Gain));
                         if (settings != null) {
-                            _flatDeviceMediator.SetBrightness((double)settings?.brightness);
-                            seq.ExposureTime = (double)settings?.time;
+                            _flatDeviceMediator.SetBrightness(settings.Brightness);
+                            seq.ExposureTime = settings.Time;
                         }
                     }
 
@@ -938,6 +941,13 @@ namespace NINA.ViewModel {
                     } else {
                         if (_flatDevice.CoverState != CoverState.Closed) {
                             await _flatDeviceMediator.CloseCover();
+                        }
+                    }
+
+                    if (profileService.ActiveProfile.FlatDeviceSettings.UseWizardTrainedValues) {
+                        var settings = profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(new FlatDeviceFilterSettingsKey(seq.FilterType.Name, seq.Binning, seq.Gain));
+                        if (settings != null) {
+                            seq.ExposureTime = settings.Time;
                         }
                     }
 

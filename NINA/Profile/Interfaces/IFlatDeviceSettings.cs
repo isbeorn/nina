@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 namespace NINA.Profile {
+
     public interface IFlatDeviceSettings : ISettings {
         string Id { get; set; }
         string Name { get; set; }
@@ -10,15 +11,11 @@ namespace NINA.Profile {
         bool CloseAtSequenceEnd { get; set; }
         bool UseWizardTrainedValues { get; set; }
 
-        Dictionary<(string name, BinningMode binning, short gain),
-            (double time, double brightness)> FilterSettings {
-            get; set;
-        }
+        Dictionary<FlatDeviceFilterSettingsKey, FlatDeviceFilterSettingsValue> FilterSettings { get; set; }
 
-        void AddBrightnessInfo((string name, BinningMode binning, short gain) key,
-            (double time, double brightness) value);
+        void AddBrightnessInfo(FlatDeviceFilterSettingsKey key, FlatDeviceFilterSettingsValue value);
 
-        (double time, double brightness)? GetBrightnessInfo((string name, BinningMode binning, short gain) key);
+        FlatDeviceFilterSettingsValue GetBrightnessInfo(FlatDeviceFilterSettingsKey key);
 
         IEnumerable<BinningMode> GetBrightnessInfoBinnings();
 

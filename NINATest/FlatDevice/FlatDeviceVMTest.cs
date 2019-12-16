@@ -190,13 +190,13 @@ namespace NINATest.FlatDevice {
 
         [Test]
         public void TestWizardTrainedValuesWithFilters() {
-            (double time, double brightness) returnValue = (0.5, 0.7);
+            var returnValue = new FlatDeviceFilterSettingsValue(0.7, 0.5);
             short gainValue = 30;
             const string filterName = "Blue";
 
             _mockProfileService
                 .Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(
-                    It.IsAny<(string name, BinningMode binning, short gain)>())).Returns(returnValue);
+                    It.IsAny<FlatDeviceFilterSettingsKey>())).Returns(returnValue);
             _mockProfileService
                 .Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoBinnings())
                 .Returns(new List<BinningMode> { new BinningMode(1, 1) });
@@ -211,7 +211,7 @@ namespace NINATest.FlatDevice {
             Assert.That(result.Columns.Count, Is.EqualTo(2));
             Assert.That(result.Rows.Count, Is.EqualTo(1));
             Assert.That(result.Rows[0][0], Is.EqualTo(filterName));
-            Assert.That(result.Rows[0][1], Is.EqualTo($"{returnValue.time,3:0.0}s @ {returnValue.brightness,3:P0}"));
+            Assert.That(result.Rows[0][1], Is.EqualTo($"{returnValue.Time,3:0.0}s @ {returnValue.Brightness,3:P0}"));
         }
 
         [Test]

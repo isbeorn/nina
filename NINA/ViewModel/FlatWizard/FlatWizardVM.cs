@@ -406,6 +406,10 @@ namespace NINA.ViewModel.FlatWizard {
                         if (!result.Continue) {
                             flatSequenceCts.Cancel();
                         } else {
+                            if (_flatDevice != null && _flatDevice.Connected) {
+                                _flatDeviceMediator.SetBrightness(1.0);
+                            }
+
                             exposureTime = result.NextExposureTime;
                             progress.Report(new ApplicationStatus() { Status = string.Format(Locale["LblFlatExposureCalcContinue"], Math.Round(stats.Mean), exposureTime), Source = Title });
                         }
@@ -433,8 +437,8 @@ namespace NINA.ViewModel.FlatWizard {
                         CalculatedHistogramMean = imageStatistics.Mean;
                         CalculatedExposureTime = exposureTime;
                         if (_flatDevice != null && _flatDevice.Connected) {
-                            profileService.ActiveProfile.FlatDeviceSettings.AddBrightnessInfo((name: wrapper.Filter?.Name, binning: BinningMode, Gain),
-                                (time: exposureTime, _flatDevice.Brightness));
+                            profileService.ActiveProfile.FlatDeviceSettings.AddBrightnessInfo(new FlatDeviceFilterSettingsKey(wrapper.Filter?.Name, BinningMode, Gain),
+                                new FlatDeviceFilterSettingsValue(_flatDevice.Brightness, exposureTime));
                         }
 
                         progress.Report(new ApplicationStatus { Status = string.Format(Locale["LblFlatExposureCalcFinished"], Math.Round(CalculatedHistogramMean, 2), CalculatedExposureTime), Source = Title });

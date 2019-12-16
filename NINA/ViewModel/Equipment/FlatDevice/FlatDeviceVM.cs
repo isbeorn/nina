@@ -320,8 +320,8 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                 var row = new List<object> { filter.Name ?? Loc.Instance["LblNoFilterwheel"] };
                 row.AddRange(keys.Select(
                     key => profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(
-                        (name: filter.Name, key.binning, key.gain))).Select(
-                    info => info != null ? $"{info?.time,3:0.0}s @ {info?.brightness,3:P0}" : "-"));
+                        new FlatDeviceFilterSettingsKey(filter.Name, key.binning, key.gain))).Select(
+                    info => info != null ? $"{info.Time,3:0.0}s @ {info.Brightness,3:P0}" : "-"));
                 WizardTrainedValues.Rows.Add(row.ToArray());
             }
         }
