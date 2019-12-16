@@ -6205,6 +6205,24 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to connect to {0}. Please ensure that it is running and configured to receive requests.
+        /// </summary>
+        internal static string LblPlanetariumFailedToConnect {
+            get {
+                return ResourceManager.GetString("LblPlanetariumFailedToConnect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no object currently selected in {0}.
+        /// </summary>
+        internal static string LblPlanetariumObjectNotSelected {
+            get {
+                return ResourceManager.GetString("LblPlanetariumObjectNotSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Planetarium Preferences.
         /// </summary>
         internal static string LblPlanetariumPrefs {
@@ -6219,6 +6237,15 @@ namespace NINA.Locale {
         internal static string LblPlanetariumTooltip {
             get {
                 return ResourceManager.GetString("LblPlanetariumTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Coordinates from selected object.
+        /// </summary>
+        internal static string LblPlanetariumUseSelectedObject {
+            get {
+                return ResourceManager.GetString("LblPlanetariumUseSelectedObject", resourceCulture);
             }
         }
         

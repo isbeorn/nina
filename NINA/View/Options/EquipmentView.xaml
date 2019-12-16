@@ -1239,17 +1239,34 @@
                 DataContext="{Binding PlanetariumSettings}"
                 Header="{ns:Loc LblPlanetarium}">
                 <StackPanel Orientation="Vertical">
-                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblPreferredPlanetarium}" />
-                        <ComboBox
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblPreferredPlanetarium}" />
+                            <ComboBox
                             Name="PART_PlanetariumList"
                             MinWidth="150"
                             Margin="10,0,0,0"
+                            Grid.Column="1"
                             ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:PlanetariumEnum}}}"
                             SelectedItem="{Binding PreferredPlanetarium}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Visibility="Visible">
-                        <StackPanel Margin="0,5,0,5" Orientation="Horizontal">
+                        </StackPanel>
+                    </Grid>
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Margin="0,5,0,5" Orientation="Horizontal" Visibility="Visible">
                             <TextBlock
                                 Width="140"
                                 VerticalAlignment="Center"
@@ -1293,6 +1310,7 @@
                         </StackPanel>
                         <StackPanel
                             Grid.Column="1"
+                            Grid.Row="0"
                             Margin="0,5,0,5"
                             Orientation="Horizontal">
                             <TextBlock
@@ -1352,7 +1370,32 @@
                                 </TextBox.Style>
                             </TextBox>
                         </StackPanel>
-                    </StackPanel>
+                        <StackPanel
+                            Grid.Column="0"
+                            Grid.Row="1"
+                            Margin="0,5,0,5"
+                            Orientation="Horizontal">
+                            <StackPanel.Style>
+                                <Style TargetType="{x:Type StackPanel}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=SelectedValue, ElementName=PART_PlanetariumList}" Value="THESKYX">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <TextBlock
+                                MinWidth="185"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblPlanetariumUseSelectedObject}" />
+                            <CheckBox
+                                Width="120"
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding TSXUseSelectedObject}" />
+                        </StackPanel>
+                    </Grid>
                 </StackPanel>
             </GroupBox>
         </Grid>

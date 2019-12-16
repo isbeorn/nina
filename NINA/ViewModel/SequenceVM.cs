@@ -1443,12 +1443,27 @@ namespace NINA.ViewModel {
 
         private async Task<bool> CoordsFromPlanetarium() {
             IPlanetarium s = PlanetariumFactory.GetPlanetarium(profileService);
-            DeepSkyObject resp = await s.GetTarget();
-            if (resp != null) {
-                Sequence.Coordinates = resp.Coordinates;
-                Sequence.TargetName = resp.Name;
-                Notification.ShowSuccess(String.Format(Locale.Loc.Instance["LblPlanetariumCoordsOk"], s.Name));
-            } else Notification.ShowError(String.Format(Locale.Loc.Instance["LblPlanetariumCoordsError"], s.Name));
+            DeepSkyObject resp = null;
+
+            try {
+                resp = await s.GetTarget();
+
+                if (resp != null) {
+                    Sequence.Coordinates = resp.Coordinates;
+                    Sequence.TargetName = resp.Name;
+                    Notification.ShowSuccess(string.Format(Locale.Loc.Instance["LblPlanetariumCoordsOk"], s.Name));
+                }
+            } catch (PlanetariumObjectNotSelectedException) {
+                Logger.Error($"Attempted to get coordinates from {s.Name} when no object was selected");
+                Notification.ShowError(string.Format(Locale.Loc.Instance["LblPlanetariumObjectNotSelected"], s.Name));
+            } catch (PlanetariumFailedToConnect ex) {
+                Logger.Error($"Unable to connect to {s.Name}: {ex}");
+                Notification.ShowError(string.Format(Locale.Loc.Instance["LblPlanetariumFailedToConnect"], s.Name));
+            } catch (Exception ex) {
+                Logger.Error($"Failed to get coordinates from {s.Name}: {ex}");
+                Notification.ShowError(string.Format(Locale.Loc.Instance["LblPlanetariumCoordsError"], s.Name));
+            }
+
             return (resp != null);
         }
 

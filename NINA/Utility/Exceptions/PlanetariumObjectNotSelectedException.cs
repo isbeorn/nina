@@ -1,8 +1,6 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
-
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
     N.I.N.A. is free software: you can redistribute it and/or modify
@@ -19,22 +17,30 @@
     along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+ * Copyright 2019 Dale Ghent <daleg@elemental.org>
+ */
+
 #endregion "copyright"
 
-using NINA.Utility.Enum;
+using System;
+using System.Runtime.Serialization;
 
-namespace NINA.Profile {
+namespace NINA.Utility.Exceptions {
 
-    public interface IPlanetariumSettings : ISettings {
-        string StellariumHost { get; set; }
-        int StellariumPort { get; set; }
-        string CdCHost { get; set; }
-        int CdCPort { get; set; }
-        string TSXHost { get; set; }
-        int TSXPort { get; set; }
-        bool TSXUseSelectedObject { get; set; }
-        string HNSKYHost { get; set; }
-        int HNSKYPort { get; set; }
-        PlanetariumEnum PreferredPlanetarium { get; set; }
+    [Serializable]
+    internal class PlanetariumObjectNotSelectedException : Exception {
+
+        public PlanetariumObjectNotSelectedException() {
+        }
+
+        public PlanetariumObjectNotSelectedException(string message) : base(message) {
+        }
+
+        public PlanetariumObjectNotSelectedException(string message, Exception innerException) : base(message, innerException) {
+        }
+
+        protected PlanetariumObjectNotSelectedException(SerializationInfo info, StreamingContext context) : base(info, context) {
+        }
     }
 }

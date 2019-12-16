@@ -27,6 +27,7 @@ using NINA.Model.MyPlanetarium;
 using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.Enum;
+using NINA.Utility.Exceptions;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using System;
@@ -37,7 +38,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace NINA.ViewModel {
 
@@ -127,13 +127,23 @@ namespace NINA.ViewModel {
 
         private async Task<bool> SiteFromPlanetarium() {
             IPlanetarium s = PlanetariumFactory.GetPlanetarium(profileService);
-            Coords loc = await s.GetSite();
-            if (loc != null) {
-                Latitude = loc.Latitude;
-                Longitude = loc.Longitude;
-                Notification.ShowSuccess(String.Format(Locale.Loc.Instance["LblPlanetariumCoordsOk"], s.Name));
-                // Elevation = loc.Elevation;
-            } else Notification.ShowError(String.Format(Locale.Loc.Instance["LblPlanetariumCoordsError"], s.Name));
+            Coords loc = null;
+
+            try {
+                loc = await s.GetSite();
+
+                if (loc != null) {
+                    Latitude = loc.Latitude;
+                    Longitude = loc.Longitude;
+                    Notification.ShowSuccess(String.Format(Locale.Loc.Instance["LblPlanetariumCoordsOk"], s.Name));
+                }
+            } catch (PlanetariumFailedToConnect ex) {
+                Logger.Error($"Unable to connect to {s.Name}: {ex}");
+                Notification.ShowError(string.Format(Locale.Loc.Instance["LblPlanetariumFailedToConnect"], s.Name));
+            } catch (Exception ex) {
+                Logger.Error($"Failed to get coordinates from {s.Name}: {ex}");
+                Notification.ShowError(string.Format(Locale.Loc.Instance["LblPlanetariumCoordsError"], s.Name));
+            }
 
             return (loc != null);
         }

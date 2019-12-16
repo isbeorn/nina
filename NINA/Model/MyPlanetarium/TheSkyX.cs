@@ -23,23 +23,26 @@
 
 #endregion "copyright"
 
+using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Exceptions;
 using NINA.Profile;
 using System;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Sockets;
-using NINA.Utility;
 
 namespace NINA.Model.MyPlanetarium {
 
     internal class TheSkyX : IPlanetarium {
         private string address;
         private int port;
+        private bool useSelectedObject;
 
         public TheSkyX(IProfileService profileService) {
             this.address = profileService.ActiveProfile.PlanetariumSettings.TSXHost;
             this.port = profileService.ActiveProfile.PlanetariumSettings.TSXPort;
+            this.useSelectedObject = profileService.ActiveProfile.PlanetariumSettings.TSXUseSelectedObject;
         }
 
         public string Name {
@@ -54,62 +57,38 @@ namespace NINA.Model.MyPlanetarium {
         /// <returns></returns>
         public async Task<DeepSkyObject> GetTarget() {
             try {
-                DeepSkyObject ret = null;
-                StringBuilder command = new StringBuilder();
-                string[] coords;
-                string[] radec;
+                string[] raDecName = null;
 
-                /*
-                 * Get J2000 coordinates of currently selected target in TheSkyX
-                 * Object RA is returned in hours, Dec is returned in degrees.
-                 * We use the primary object name provided by TSX.
-                 *
-                 * Special thanks to Kenneth Sturrock for providing examples and advice on
-                 * how to accomplish this with TSX.
-                 */
-                command.AppendFormat(@"/* Java Script */", Environment.NewLine);
-                command.AppendFormat(@"/* Socket Start Packet */", Environment.NewLine);
-                command.AppendFormat(@"var Out = """";", Environment.NewLine);
-                command.AppendFormat(@"var Target56 = 0;", Environment.NewLine);
-                command.AppendFormat(@"var Target57 = 0;", Environment.NewLine);
-                command.AppendFormat(@"var Name0 = """";", Environment.NewLine);
-                command.AppendFormat(@"sky6ObjectInformation.Property(56);", Environment.NewLine);
-                command.AppendFormat(@"Target56 = sky6ObjectInformation.ObjInfoPropOut;", Environment.NewLine);
-                command.AppendFormat(@"sky6ObjectInformation.Property(57);", Environment.NewLine);
-                command.AppendFormat(@"Target57 = sky6ObjectInformation.ObjInfoPropOut;", Environment.NewLine);
-                command.AppendFormat(@"sky6ObjectInformation.Property(0);", Environment.NewLine);
-                command.AppendFormat(@"Name0 = sky6ObjectInformation.ObjInfoPropOut;", Environment.NewLine);
-                command.AppendFormat(@"Out = String(Target56) + "","" + String(Target57) + "","" + String(Name0);", Environment.NewLine);
-                command.AppendFormat(@"/* Socket End Packet */", Environment.NewLine);
+                if (useSelectedObject) {
+                    raDecName = await GetSelectedObject();
 
-                var response = await Query(command.ToString());
-
-                if (response.Contains("|No error. Error = 0")) {
-                    /* split the returned coordinates from the status message */
-                    coords = response.Split('|');
-
-                    /* put the RA, Dec, and object name into an array */
-                    radec = coords[0].Split(',');
-
-                    var newCoordinates = new Coordinates(double.Parse(radec[0], System.Globalization.CultureInfo.InvariantCulture),
-                                                         double.Parse(radec[1], System.Globalization.CultureInfo.InvariantCulture),
-                                                         Epoch.J2000, Coordinates.RAType.Hours);
-
-                    ret = new DeepSkyObject(radec[2], newCoordinates, string.Empty);
+                    // RA and Dec of 0 and an empty string for object name means that there is no object selected in TSX
+                    if (raDecName[0] == "0" && raDecName[1] == "0" && string.IsNullOrEmpty(raDecName[2])) {
+                        throw new PlanetariumObjectNotSelectedException();
+                    }
+                } else {
+                    raDecName = await GetSkyChartCenter();
                 }
 
-                return ret;
+                if (raDecName == null) {
+                    throw new PlanetariumFailedToGetCoordinates();
+                }
+
+                var newCoordinates = new Coordinates(double.Parse(raDecName[0], System.Globalization.CultureInfo.InvariantCulture),
+                                                     double.Parse(raDecName[1], System.Globalization.CultureInfo.InvariantCulture),
+                                                     Epoch.J2000, Coordinates.RAType.Hours);
+
+                return new DeepSkyObject(raDecName[2], newCoordinates, string.Empty);
             } catch (Exception ex) {
                 Logger.Error(ex);
+                throw ex;
             }
-            return null;
         }
 
         public async Task<Coords> GetSite() {
             try {
                 Coords loc = new Coords();
                 StringBuilder command = new StringBuilder();
-                string[] info;
                 string[] coords;
 
                 /*
@@ -131,14 +110,12 @@ namespace NINA.Model.MyPlanetarium {
                 command.AppendFormat(@"Out = String(Lat) + "","" + String(Long) + "","" + String(Elevation);", Environment.NewLine);
                 command.AppendFormat(@"/* Socket End Packet */", Environment.NewLine);
 
-                var response = await Query(command.ToString());
+                string query = await Query(command.ToString());
+                string[] response = query.Split('|');
 
-                if (response.Contains("|No error. Error = 0")) {
-                    /* split the returned coordinates from the status message */
-                    info = response.Split('|');
-
-                    /* put the RA, Dec, and object name into an array */
-                    coords = info[0].Split(',');
+                if (response[1].Equals("No error. Error = 0.")) {
+                    // put the RA, Dec, and elevation into an array
+                    coords = response[0].Split(',');
 
                     /*
                      * East is negative and West is positive in TheSkyX.
@@ -147,17 +124,23 @@ namespace NINA.Model.MyPlanetarium {
                     loc.Latitude = double.Parse(coords[0], System.Globalization.CultureInfo.InvariantCulture);
                     loc.Longitude = double.Parse(coords[1], System.Globalization.CultureInfo.InvariantCulture) * -1;
                     loc.Elevation = double.Parse(coords[2], System.Globalization.CultureInfo.InvariantCulture);
+                } else {
+                    throw new PlanetariumFailedToGetCoordinates();
                 }
                 return loc;
             } catch (Exception ex) {
                 Logger.Error(ex);
+                throw ex;
             }
-            return null;
         }
 
         private async Task<string> Query(string command) {
             using (var client = new TcpClient()) {
-                await Task.Factory.FromAsync((callback, stateObject) => client.BeginConnect(this.address, this.port, callback, stateObject), client.EndConnect, TaskCreationOptions.RunContinuationsAsynchronously);
+                try {
+                    await Task.Factory.FromAsync((callback, stateObject) => client.BeginConnect(this.address, this.port, callback, stateObject), client.EndConnect, TaskCreationOptions.RunContinuationsAsynchronously);
+                } catch (Exception ex) {
+                    throw new PlanetariumFailedToConnect($"{address}:{port}: {ex.ToString()}");
+                }
 
                 byte[] data = Encoding.ASCII.GetBytes($"{command}\r\n");
                 var stream = client.GetStream();
@@ -174,6 +157,84 @@ namespace NINA.Model.MyPlanetarium {
 
                 return response;
             }
+        }
+
+        private async Task<string[]> GetSelectedObject() {
+            StringBuilder command = new StringBuilder();
+            string[] raDecName;
+
+            /*
+             * Get J2000 coordinates of currently selected target in TheSkyX
+             * Object RA is returned in hours, Dec is returned in degrees.
+             * We use the primary object name provided by TSX.
+             *
+             * Special thanks to Kenneth Sturrock for providing examples and advice on
+             * how to accomplish this with TSX.
+             */
+            command.AppendFormat(@"/* Java Script */", Environment.NewLine);
+            command.AppendFormat(@"/* Socket Start Packet */", Environment.NewLine);
+            command.AppendFormat(@"var Out = """";", Environment.NewLine);
+            command.AppendFormat(@"var Target56 = 0;", Environment.NewLine);
+            command.AppendFormat(@"var Target57 = 0;", Environment.NewLine);
+            command.AppendFormat(@"var Name0 = """";", Environment.NewLine);
+            command.AppendFormat(@"sky6ObjectInformation.Property(56);", Environment.NewLine);
+            command.AppendFormat(@"Target56 = sky6ObjectInformation.ObjInfoPropOut;", Environment.NewLine);
+            command.AppendFormat(@"sky6ObjectInformation.Property(57);", Environment.NewLine);
+            command.AppendFormat(@"Target57 = sky6ObjectInformation.ObjInfoPropOut;", Environment.NewLine);
+            command.AppendFormat(@"sky6ObjectInformation.Property(0);", Environment.NewLine);
+            command.AppendFormat(@"Name0 = sky6ObjectInformation.ObjInfoPropOut;", Environment.NewLine);
+            command.AppendFormat(@"Out = String(Target56) + "","" + String(Target57) + "","" + String(Name0);", Environment.NewLine);
+            command.AppendFormat(@"/* Socket End Packet */", Environment.NewLine);
+
+            string query = await Query(command.ToString());
+
+            // split the returned coordinates from the status message
+            string[] response = query.Split('|');
+
+            if (response[1].Equals("No error. Error = 0.")) {
+                // put the RA, Dec, and object name into an array
+                raDecName = response[0].Split(',');
+            } else {
+                throw new PlanetariumFailedToGetCoordinates();
+            }
+
+            return raDecName;
+        }
+
+        private async Task<string[]> GetSkyChartCenter() {
+            StringBuilder command = new StringBuilder();
+            string[] raDecName = new string[3];
+
+            /*
+             * Get J2000 coordinates of the center of the TSX star chart.
+             * There is no way to get an object name, so we set that to an empty string.
+            */
+            command.AppendFormat(@"/* Java Script */", Environment.NewLine);
+            command.AppendFormat(@"/* Socket Start Packet */", Environment.NewLine);
+            command.AppendFormat(@"var Out = """";", Environment.NewLine);
+            command.AppendFormat(@"var chartRA = 0;", Environment.NewLine);
+            command.AppendFormat(@"var chartDec = 0;", Environment.NewLine);
+            command.AppendFormat(@"chartRA = sky6StarChart.RightAscension;", Environment.NewLine);
+            command.AppendFormat(@"chartDec = sky6StarChart.Declination;", Environment.NewLine);
+            command.AppendFormat(@"Out = String(chartRA) + "","" + String(chartDec);", Environment.NewLine);
+            command.AppendFormat(@"/* Socket End Packet */", Environment.NewLine);
+
+            string query = await Query(command.ToString());
+
+            // split the returned coordinates from the status message
+            string[] response = query.Split('|');
+
+            if (response[1].Equals("No error. Error = 0.")) {
+                // put the RA, Dec, and object name into an array
+                string[] raDec = response[0].Split(',');
+                raDecName[0] = raDec[0];
+                raDecName[1] = raDec[1];
+                raDecName[2] = string.Empty;
+            } else {
+                throw new PlanetariumFailedToGetCoordinates();
+            }
+
+            return raDecName;
         }
     }
 }

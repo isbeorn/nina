@@ -148,7 +148,7 @@
     <value>Uitgebreide Instellingen</value>
   </data>
   <data name="LblAFContrastDetection" xml:space="preserve">
-    <value>Contrast Detectie (Expirimenteel)</value>
+    <value>Contrast Detectie (Experimenteel)</value>
   </data>
   <data name="LblAFOnButFocuserNotConnected" xml:space="preserve">
     <value>Auto-Focus staat aan, maar de focuser is niet aangesloten</value>
@@ -491,8 +491,7 @@ Dec: {1}</value>
     <value>Camera download mislukt. Belichtingstijd: {0}s Type: {1} Gain: {2} Filter: {3}</value>
   </data>
   <data name="LblCameraHighPower" xml:space="preserve">
-    <value>Camera koeler draait op {0}% kracht en kan wellicht niet compenseren voor het verschil 
-met de omgevingstemperatuur</value>
+    <value>Camerakoeler draait op {0}% kracht en kan wellicht niet compenseren voor het verschil met de omgevingstemperatuur</value>
   </data>
   <data name="LblCameraNotAtTargetTemp" xml:space="preserve">
     <value>Camera temperatuur is nu {0}°C maar het doel is {1}°C</value>
