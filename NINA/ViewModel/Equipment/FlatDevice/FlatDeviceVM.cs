@@ -19,6 +19,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
 
     internal class FlatDeviceVM : DockableVM, IFlatDeviceVM, IFilterWheelConsumer {
         private IFlatDevice _flatDevice;
+        private IFlatDeviceSettings _flatDeviceSettings;
         private readonly IApplicationStatusMediator _applicationStatusMediator;
         private readonly IFilterWheelMediator _filterWheelMediator;
         private readonly IFlatDeviceMediator _flatDeviceMediator;
@@ -51,10 +52,13 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                 profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
             );
 
-            profileService.ActiveProfile.FlatDeviceSettings.PropertyChanged += SettingsChanged;
+            _flatDeviceSettings = profileService.ActiveProfile.FlatDeviceSettings;
+            _flatDeviceSettings.PropertyChanged += SettingsChanged;
             profileService.ProfileChanged += (object sender, EventArgs e) => {
+                _flatDeviceSettings.PropertyChanged -= SettingsChanged;
                 RefreshFlatDeviceList(null);
-                profileService.ActiveProfile.FlatDeviceSettings.PropertyChanged += SettingsChanged;
+                _flatDeviceSettings = profileService.ActiveProfile.FlatDeviceSettings;
+                _flatDeviceSettings.PropertyChanged += SettingsChanged;
             };
         }
 

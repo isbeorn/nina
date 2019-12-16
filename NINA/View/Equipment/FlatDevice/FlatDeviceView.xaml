@@ -115,6 +115,21 @@
                                 IsEnabled="{Binding FlatDeviceInfo.Connected}" />
                         </UniformGrid>
                     </Border>
+                    <Border
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0"
+                        Visibility="{Binding FlatDeviceInfo.SupportsOpenClose, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatDeviceCoverCurrently}" />
+                            <TextBlock
+                                Margin="5,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding FlatDeviceInfo.LocalizedLightOnState}" />
+                        </UniformGrid>
+                    </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                         <UniformGrid
                             Margin="0,6,0,6"
