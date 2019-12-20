@@ -1262,7 +1262,7 @@
     <value>关闭</value>
   </data>
   <data name="LblFlatDeviceCloseAtSequenceEnd" xml:space="preserve">
-    <value>Close cover when sequence ends</value>
+    <value>序列结束时关闭电动盖</value>
   </data>
   <data name="LblFlatDeviceClosed" xml:space="preserve">
     <value>已关闭</value>
@@ -1283,7 +1283,7 @@
     <value>你想断开平场板链接吗？</value>
   </data>
   <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
-    <value>Flat Panel Settings</value>
+    <value>平场向导设置</value>
   </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
     <value>平场板无法链接</value>
@@ -1304,7 +1304,7 @@
     <value>打开</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for dark flats</value>
+    <value>拍摄暗平场时打开电动盖</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>设定</value>
@@ -2182,11 +2182,20 @@
   <data name="LblPlanetariumCoordsOk" xml:space="preserve">
     <value>坐标来源 {0}</value>
   </data>
+  <data name="LblPlanetariumFailedToConnect" xml:space="preserve">
+    <value>无法连接到 {0}。请确保它正在运行并且已配置为接收请求</value>
+  </data>
+  <data name="LblPlanetariumObjectNotSelected" xml:space="preserve">
+    <value>{0} 没有选择对象</value>
+  </data>
   <data name="LblPlanetariumPrefs" xml:space="preserve">
     <value>星图偏好设置</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
     <value>从星图软件获取坐标</value>
+  </data>
+  <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
+    <value>来自选定目标的坐标</value>
   </data>
   <data name="LblPlatesolve2" xml:space="preserve">
     <value>PlateSolve2</value>
