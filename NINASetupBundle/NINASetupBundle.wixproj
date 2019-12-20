@@ -83,16 +83,19 @@
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup>
+    <PreBuildEvent>%25LOCALAPPDATA%25\Pandoc\pandoc.exe "$(SolutionDir)RELEASE_NOTES.md" -f markdown -t rtf -s -o "$(SolutionDir)RELEASE_NOTES.rtf"</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
     <PostBuildEvent>del $(SolutionDir)RELEASE_NOTES.rtf
 
 echo "Copy NINA.pdb to setup output"
 copy "$(SolutionDir)NINA\bin\$(Platform)\$(ConfigurationName)\NINA.pdb" "$(TargetDir)NINA.pdb" /Y
 
 echo "Copy NINACustomControlLibrary.pdb to setup output"
-copy "$(SolutionDir)NINA\bin\$(Platform)\$(ConfigurationName)\NINACustomControlLibrary.pdb" "$(TargetDir)NINACustomControlLibrary.pdb" /Y</PostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PreBuildEvent>%25LOCALAPPDATA%25\Pandoc\pandoc.exe "$(SolutionDir)RELEASE_NOTES.md" -f markdown -t rtf -s -o "$(SolutionDir)RELEASE_NOTES.rtf"</PreBuildEvent>
+copy "$(SolutionDir)NINA\bin\$(Platform)\$(ConfigurationName)\NINACustomControlLibrary.pdb" "$(TargetDir)NINACustomControlLibrary.pdb" /Y
+
+echo "Copy NINA.MGEN.pdb to setup output"
+copy "$(SolutionDir)NINA\bin\$(Platform)\$(ConfigurationName)\NINA.MGEN.pdb" "$(TargetDir)NINA.MGEN.pdb" /Y</PostBuildEvent>
   </PropertyGroup>
   <!--
 	To modify your build process, add your task inside one of the targets below and uncomment it.
