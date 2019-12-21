@@ -2182,11 +2182,20 @@ Berechneter HFR: {2}
   <data name="LblPlanetariumCoordsOk" xml:space="preserve">
     <value>Koordinaten von {0} erhalten</value>
   </data>
+  <data name="LblPlanetariumFailedToConnect" xml:space="preserve">
+    <value>Keine Verbindung zu {0} möglich. Bitte stellen Sie sicher, dass die Applikation läuft und konfiguriert ist, um Anfragen zu empfangen</value>
+  </data>
+  <data name="LblPlanetariumObjectNotSelected" xml:space="preserve">
+    <value>Derzeit ist kein Objekt in {0} ausgewählt</value>
+  </data>
   <data name="LblPlanetariumPrefs" xml:space="preserve">
     <value>Planetarium Einstellungen</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
     <value>Koordinaten von der Planetariumsoftware erhalten</value>
+  </data>
+  <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
+    <value>Koordinaten des ausgewählten Objekts</value>
   </data>
   <data name="LblPlatesolve2" xml:space="preserve">
     <value>Platesolve2</value>

@@ -2172,11 +2172,20 @@ Verbonden cliënten: {0}
   <data name="LblPlanetariumCoordsOk" xml:space="preserve">
     <value>Coördinaten verworven van {0}</value>
   </data>
+  <data name="LblPlanetariumFailedToConnect" xml:space="preserve">
+    <value>Unable to connect to {0}. Please ensure that it is running and configured to receive requests</value>
+  </data>
+  <data name="LblPlanetariumObjectNotSelected" xml:space="preserve">
+    <value>There is no object currently selected in {0}</value>
+  </data>
   <data name="LblPlanetariumPrefs" xml:space="preserve">
     <value>Voorkeuren planetarium</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
     <value>Haal coördinaten op van de planetarium software</value>
+  </data>
+  <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
+    <value>Coordinates from selected object</value>
   </data>
   <data name="LblPlatesolve2" xml:space="preserve">
     <value>Platesolve2</value>
