@@ -46,7 +46,7 @@ namespace NINA.ViewModel {
 
     internal class ImageControlVM : DockableVM, ICameraConsumer {
 
-        public ImageControlVM(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator, IImagingMediator imagingMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+        public ImageControlVM(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblImage";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PictureSVG"];
 
@@ -54,8 +54,6 @@ namespace NINA.ViewModel {
             this.cameraMediator.RegisterConsumer(this);
 
             this.telescopeMediator = telescopeMediator;
-
-            this.imagingMediator = imagingMediator;
             this.applicationStatusMediator = applicationStatusMediator;
             AutoStretch = true;
             DetectStars = false;
@@ -325,7 +323,7 @@ namespace NINA.ViewModel {
             if (this.RenderedImage != null) {
                 _plateSolveToken?.Dispose();
                 _plateSolveToken = new CancellationTokenSource();
-                using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
+                using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, null, applicationStatusMediator)) {
                     solver.Image = this.RenderedImage.Image;
                     var service = WindowServiceFactory.Create();
                     service.Show(solver, this.Title + " - " + solver.Title, ResizeMode.CanResize, WindowStyle.ToolWindow);
@@ -492,7 +490,6 @@ namespace NINA.ViewModel {
         private ICameraMediator cameraMediator;
         private CameraInfo cameraInfo = DeviceInfo.CreateDefaultInstance<CameraInfo>();
         private ITelescopeMediator telescopeMediator;
-        private IImagingMediator imagingMediator;
         private IApplicationStatusMediator applicationStatusMediator;
 
         public async Task<IRenderedImage> PrepareImage(

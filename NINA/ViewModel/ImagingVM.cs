@@ -94,7 +94,7 @@ namespace NINA.ViewModel {
             StartLiveViewCommand = new AsyncCommand<bool>(StartLiveView);
             StopLiveViewCommand = new RelayCommand(StopLiveView);
 
-            ImageControl = new ImageControlVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
+            ImageControl = new ImageControlVM(profileService, cameraMediator, telescopeMediator, applicationStatusMediator);
         }
 
         private IProgress<ApplicationStatus> progress;
