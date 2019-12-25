@@ -617,7 +617,11 @@ namespace NINA.ViewModel.FramingAssistant {
                     SkySurveyImage skySurveyImage = null;
 
                     if (Cache != null && DSO != null) {
-                        skySurveyImage = await Cache.GetImage(FramingAssistantSource.GetCacheSourceString(), DSO.Coordinates.RA, DSO.Coordinates.Dec, DSO.Rotation, Astrometry.DegreeToArcmin(FieldOfView));
+                        try {
+                            skySurveyImage = await Cache.GetImage(FramingAssistantSource.GetCacheSourceString(), DSO.Coordinates.RA, DSO.Coordinates.Dec, DSO.Rotation, Astrometry.DegreeToArcmin(FieldOfView));
+                        } catch (Exception ex) {
+                            Logger.Error(ex);
+                        }
                     }
 
                     if (skySurveyImage == null) {
