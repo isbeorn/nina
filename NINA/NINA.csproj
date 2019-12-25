@@ -432,6 +432,15 @@
     <Compile Include="Model\MyFilterWheel\FlatDeviceExposureTimeSettings.cs" />
     <Compile Include="Model\MyFilterWheel\QHYFilterWheel.cs" />
     <Compile Include="Model\MyFilterWheel\FLIFilterWheel.cs" />
+    <Compile Include="PlateSolving\CaptureSolverParameter.cs" />
+    <Compile Include="PlateSolving\CenteringSolver.cs" />
+    <Compile Include="PlateSolving\CenterSolveParameter.cs" />
+    <Compile Include="PlateSolving\ICaptureSolver.cs" />
+    <Compile Include="PlateSolving\ICenteringSolver.cs" />
+    <Compile Include="PlateSolving\IImageSolver.cs" />
+    <Compile Include="PlateSolving\ImageSolver.cs" />
+    <Compile Include="PlateSolving\CaptureSolver.cs" />
+    <Compile Include="PlateSolving\PlateSolveProgress.cs" />
     <Compile Include="Utility\CameraSDKs\OmegonSDK\omegonprocam.cs" />
     <Compile Include="Utility\Converters\AFFittingToVisibilityConverter.cs" />
     <Compile Include="Utility\DeferredContent.cs" />
@@ -458,7 +467,7 @@
     <Compile Include="Model\MyWeatherData\AscomObservingConditions.cs" />
     <Compile Include="Model\MyWeatherData\OpenWeatherMap.cs" />
     <Compile Include="Model\MyWeatherData\WeatherDataInfo.cs" />
-    <Compile Include="PlateSolving\BaseSolver.cs" />
+    <Compile Include="PlateSolving\Solvers\BaseSolver.cs" />
     <Compile Include="PlateSolving\PlateSolveImageProperties.cs" />
     <Compile Include="Profile\FlatDeviceSettings.cs" />
     <Compile Include="Profile\Interfaces\IFlatDeviceSettings.cs" />
@@ -483,8 +492,8 @@
     <Compile Include="Model\MyTelescope\GuideDirections.cs" />
     <Compile Include="Model\MyTelescope\PierSide.cs" />
     <Compile Include="Model\MyGPS\NMEAGps.cs" />
-    <Compile Include="PlateSolving\ASTAPSolver.cs" />
-    <Compile Include="PlateSolving\CLISolver.cs" />
+    <Compile Include="PlateSolving\Solvers\ASTAPSolver.cs" />
+    <Compile Include="PlateSolving\Solvers\CLISolver.cs" />
     <Compile Include="PlateSolving\PlateSolveParameter.cs" />
     <Compile Include="PlateSolving\PlateSolveResult.cs" />
     <Compile Include="Utility\Astrometry\TopocentricCoordinates.cs" />
@@ -560,6 +569,8 @@
     <Compile Include="ViewModel\Equipment\WeatherData\IWeatherDataVM.cs" />
     <Compile Include="ViewModel\Equipment\WeatherData\WeatherDataChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\WeatherData\WeatherDataVM.cs" />
+    <Compile Include="ViewModel\Imaging\AnchorablePlateSolverVM.cs" />
+    <Compile Include="ViewModel\PlateSolvingStatusVM.cs" />
     <Compile Include="View\Equipment\Camera\FLICameraSetupView.xaml.cs">
       <DependentUpon>FLICameraSetupView.xaml</DependentUpon>
     </Compile>
@@ -653,8 +664,8 @@
     <Compile Include="MyMessageBox\MyMessageBoxView.xaml.cs">
       <DependentUpon>MyMessageBoxView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PlateSolving\AllSkyPlateSolver.cs" />
-    <Compile Include="PlateSolving\Platesolve2Solver.cs" />
+    <Compile Include="PlateSolving\Solvers\AllSkyPlateSolver.cs" />
+    <Compile Include="PlateSolving\Solvers\Platesolve2Solver.cs" />
     <Compile Include="PlateSolving\PlateSolverFactory.cs" />
     <Compile Include="Utility\ASCOMInteraction.cs" />
     <Compile Include="Utility\Astrometry\RiseAndSet\AstronomicalTwilightRiseAndSet.cs" />
@@ -859,8 +870,8 @@
     <Compile Include="ViewModel\ImageControlVM.cs" />
     <Compile Include="Model\MyCamera\BinningMode.cs" />
     <Compile Include="Model\MyCamera\ICamera.cs" />
-    <Compile Include="PlateSolving\LocalPlateSolver.cs" />
-    <Compile Include="PlateSolving\AstrometryPlateSolver.cs" />
+    <Compile Include="PlateSolving\Solvers\LocalPlateSolver.cs" />
+    <Compile Include="PlateSolving\Solvers\AstrometryPlateSolver.cs" />
     <Compile Include="PlateSolving\IPlateSolver.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -897,7 +908,6 @@
     <Compile Include="ViewModel\MeridianFlipVM.cs" />
     <Compile Include="ViewModel\OptionsVM.cs" />
     <Compile Include="ViewModel\Equipment\Guider\GuiderVM.cs" />
-    <Compile Include="ViewModel\PlatesolveVM.cs" />
     <Compile Include="ViewModel\FramingAssistant\FrameLine.cs" />
     <Compile Include="ViewModel\PolarAlignmentVM.cs" />
     <Compile Include="ViewModel\ProfileSelectVM.cs" />

@@ -26,8 +26,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace NINA.PlateSolving {
+namespace NINA.PlateSolving.Solvers {
+
     internal class AllSkyPlateSolver : CLISolver {
+
         public AllSkyPlateSolver(string executableLocation)
             : base(executableLocation) {
         }

@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 
 namespace NINA.PlateSolving {
 
-    internal interface IPlateSolver {
+    public interface IPlateSolver {
 
         Task<PlateSolveResult> SolveAsync(IImageData source, PlateSolveParameter parameter, IProgress<ApplicationStatus> progress, CancellationToken canceltoken);
     }

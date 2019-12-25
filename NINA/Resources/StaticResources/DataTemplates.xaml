@@ -45,7 +45,7 @@
         <view:AutoFocusChart />
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type vm:PlatesolveVM}">
+    <DataTemplate DataType="{x:Type vm:PlateSolvingStatusVM}">
         <view:PlateSolveView />
     </DataTemplate>
 

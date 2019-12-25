@@ -25,8 +25,10 @@ using NINA.Utility.Astrometry;
 using System.Globalization;
 using System.IO;
 
-namespace NINA.PlateSolving {
+namespace NINA.PlateSolving.Solvers {
+
     internal class Platesolve2Solver : CLISolver {
+
         public Platesolve2Solver(string executableLocation)
             : base(executableLocation) {
             this.executableLocation = executableLocation;

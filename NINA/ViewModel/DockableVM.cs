@@ -67,8 +67,6 @@ namespace NINA.ViewModel {
             }
         }
 
-        private string _contentId;
-
         public string ContentId {
             get {
                 return this.GetType().Name;

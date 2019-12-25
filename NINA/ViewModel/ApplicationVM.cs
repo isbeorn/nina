@@ -40,6 +40,7 @@ using NINA.ViewModel.Equipment.Telescope;
 using NINA.ViewModel.Equipment.WeatherData;
 using NINA.ViewModel.FlatWizard;
 using NINA.ViewModel.FramingAssistant;
+using NINA.ViewModel.Imaging;
 using System;
 using System.Threading.Tasks;
 using System.Windows;
@@ -516,12 +517,12 @@ namespace NINA.ViewModel {
             }
         }
 
-        private PlatesolveVM _platesolveVM;
+        private AnchorablePlateSolverVM _platesolveVM;
 
-        public PlatesolveVM PlatesolveVM {
+        public AnchorablePlateSolverVM PlatesolveVM {
             get {
                 if (_platesolveVM == null) {
-                    _platesolveVM = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
+                    _platesolveVM = new AnchorablePlateSolverVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
                 }
                 return _platesolveVM;
             }
@@ -607,7 +608,7 @@ namespace NINA.ViewModel {
         public FramingAssistantVM FramingAssistantVM {
             get {
                 if (_framingAssistantVM == null) {
-                    _framingAssistantVM = new FramingAssistantVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
+                    _framingAssistantVM = new FramingAssistantVM(profileService, cameraMediator, telescopeMediator, applicationStatusMediator);
                 }
                 return _framingAssistantVM;
             }

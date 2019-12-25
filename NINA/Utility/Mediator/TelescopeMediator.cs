@@ -67,5 +67,13 @@ namespace NINA.Utility.Mediator {
         public Task<bool> ParkTelescope() {
             return handler.ParkTelescope();
         }
+
+        public bool Sync(Coordinates coordinates) {
+            return handler.Sync(coordinates);
+        }
+
+        public Coordinates GetCurrentPosition() {
+            return handler.GetCurrentPosition();
+        }
     }
 }

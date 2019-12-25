@@ -23,6 +23,8 @@
 
 using NINA.Utility.Enum;
 using NINA.Profile;
+using System;
+using NINA.PlateSolving.Solvers;
 
 namespace NINA.PlateSolving {
 
@@ -68,6 +70,10 @@ namespace NINA.PlateSolving {
             }
 
             return GetPlateSolver(plateSolveSettings, type);
+        }
+
+        internal static IPlateSolver GetBlindSolver(object plateSolveSettings) {
+            throw new NotImplementedException();
         }
     }
 }

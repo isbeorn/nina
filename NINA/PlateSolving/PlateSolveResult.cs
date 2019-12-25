@@ -77,5 +77,11 @@ namespace NINA.PlateSolving {
                 return Astrometry.DegreesToDMS(Separation?.Dec.Degree ?? 0);
             }
         }
+
+        public void DetermineSeparation(Coordinates targetCoordinates) {
+            if (targetCoordinates != null) {
+                this.Separation = targetCoordinates - this.Coordinates;
+            }
+        }
     }
 }

@@ -37,6 +37,8 @@ namespace NINA.ViewModel.Equipment.Telescope {
 
         void PulseGuide(GuideDirections direction, int duration);
 
+        bool Sync(Coordinates coordinates);
+
         bool Sync(double ra, double dec);
 
         bool MeridianFlip(Coordinates targetCoordinates);
@@ -45,7 +47,8 @@ namespace NINA.ViewModel.Equipment.Telescope {
 
         bool SendToSnapPort(bool start);
 
-        Task<bool> ParkTelescope();
+        Coordinates GetCurrentPosition();
 
+        Task<bool> ParkTelescope();
     }
 }

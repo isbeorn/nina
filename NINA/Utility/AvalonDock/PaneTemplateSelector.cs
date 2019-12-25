@@ -30,6 +30,7 @@ using NINA.ViewModel.Equipment.Rotator;
 using NINA.ViewModel.Equipment.Switch;
 using NINA.ViewModel.Equipment.Telescope;
 using NINA.ViewModel.Equipment.WeatherData;
+using NINA.ViewModel.Imaging;
 using System.Windows;
 using System.Windows.Controls;
 using Xceed.Wpf.AvalonDock.Layout;
@@ -88,7 +89,7 @@ namespace NINA.Utility.AvalonDock {
                 return TelescopeTemplate;
             }
 
-            if (item is PlatesolveVM) {
+            if (item is AnchorablePlateSolverVM) {
                 return PlatesolveTemplate;
             }
 

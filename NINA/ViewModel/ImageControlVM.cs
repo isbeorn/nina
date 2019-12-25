@@ -41,6 +41,7 @@ using System.Windows.Media.Imaging;
 using NINA.Utility.ImageAnalysis;
 using NINA.Model.ImageData;
 using NINA.Utility.Mediator;
+using NINA.PlateSolving;
 
 namespace NINA.ViewModel {
 
@@ -323,12 +324,31 @@ namespace NINA.ViewModel {
             if (this.RenderedImage != null) {
                 _plateSolveToken?.Dispose();
                 _plateSolveToken = new CancellationTokenSource();
-                using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, null, applicationStatusMediator)) {
-                    solver.Image = this.RenderedImage.Image;
-                    var service = WindowServiceFactory.Create();
-                    service.Show(solver, this.Title + " - " + solver.Title, ResizeMode.CanResize, WindowStyle.ToolWindow);
-                    await solver.Solve(this.RenderedImage.RawImageData, _progress, _plateSolveToken.Token);
-                }
+
+                var plateSolver = PlateSolverFactory.GetPlateSolver(profileService.ActiveProfile.PlateSolveSettings);
+                var blindSolver = PlateSolverFactory.GetBlindSolver(profileService.ActiveProfile.PlateSolveSettings);
+                var parameter = new PlateSolveParameter() {
+                    Binning = cameraInfo?.BinX ?? 1,
+                    Coordinates = telescopeMediator.GetCurrentPosition(),
+                    DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
+                    FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
+                    MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
+                    PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize,
+                    Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
+                    SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
+                };
+
+                var imageSolver = new ImageSolver(plateSolver, blindSolver);
+
+                var service = WindowServiceFactory.Create();
+                var plateSolveStatusVM = new PlateSolvingStatusVM();
+                service.Show(plateSolveStatusVM, this.Title + " - " + plateSolveStatusVM.Title, ResizeMode.CanResize, WindowStyle.ToolWindow);
+
+                var result = await imageSolver.Solve(this.RenderedImage.RawImageData, parameter, _progress, _plateSolveToken.Token);
+
+                result.DetermineSeparation(telescopeMediator.GetCurrentPosition());
+                plateSolveStatusVM.PlateSolveResult = result;
+
                 return true;
             } else {
                 return false;

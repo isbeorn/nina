@@ -30,7 +30,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 
-namespace NINA.PlateSolving {
+namespace NINA.PlateSolving.Solvers {
 
     internal class ASTAPSolver : CLISolver {
 

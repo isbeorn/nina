@@ -109,6 +109,37 @@
                             MinWidth="140"
                             MinHeight="20"
                             VerticalAlignment="Center"
+                            Text="{ns:Loc LblBinning}" />
+                        <TextBox
+                            Width="120"
+                            Height="25"
+                            HorizontalAlignment="Left">
+                            <TextBox.Text>
+                                <Binding Mode="TwoWay" Path="Binning">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterThanZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="140"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblGain}" />
+                        <TextBox
+                            Width="120"
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            Text="{Binding Gain, UpdateSourceTrigger=LostFocus, Converter={StaticResource MinusOneToEmptyStringConverter}}" />
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="140"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
                             Text="{ns:Loc LblErrorLT}" />
                         <TextBox
                             Width="120"

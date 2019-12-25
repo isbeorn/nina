@@ -6340,6 +6340,33 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Telescope not inside tolerance. Repeating....
+        /// </summary>
+        internal static string LblPlateSolveNotInsideToleranceRepeating {
+            get {
+                return ResourceManager.GetString("LblPlateSolveNotInsideToleranceRepeating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Telescope not inside tolerance. Re-slew to target....
+        /// </summary>
+        internal static string LblPlateSolveNotInsideToleranceReslew {
+            get {
+                return ResourceManager.GetString("LblPlateSolveNotInsideToleranceReslew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Telescope not inside tolerance. Syncing scope....
+        /// </summary>
+        internal static string LblPlateSolveNotInsideToleranceSyncing {
+            get {
+                return ResourceManager.GetString("LblPlateSolveNotInsideToleranceSyncing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Platesolve service provided by.
         /// </summary>
         internal static string LblPlatesolveProvidedBy {
@@ -8832,6 +8859,15 @@ namespace NINA.Locale {
         internal static string LblWaitForTemperatureStep {
             get {
                 return ResourceManager.GetString("LblWaitForTemperatureStep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting.
+        /// </summary>
+        internal static string LblWaiting {
+            get {
+                return ResourceManager.GetString("LblWaiting", resourceCulture);
             }
         }
         

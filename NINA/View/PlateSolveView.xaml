@@ -24,10 +24,17 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Locale"
+    xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
-
+    <UserControl.Resources>
+        <CollectionViewSource x:Key="GridItems" Source="{Binding PlateSolveHistory}">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription Direction="Descending" PropertyName="SolveTime" />
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -162,6 +169,78 @@
                     <TextBlock Margin="5,0,0,0" Text="{Binding PlateSolveResult.DecPixError, StringFormat=\{0:0.00\}}" />
                 </UniformGrid>
             </Border>
+
+            <DataGrid
+                Margin="0,10,0,0"
+                AutoGenerateColumns="False"
+                CanUserAddRows="False"
+                HorizontalScrollBarVisibility="Hidden"
+                ItemsSource="{Binding Source={StaticResource GridItems}}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Width="60"
+                        Binding="{Binding SolveTime, StringFormat=\{0:HH:mm:ss\}}"
+                        Header="{ns:Loc LblTime}"
+                        IsReadOnly="True"
+                        SortDirection="Ascending" />
+                    <DataGridTemplateColumn
+                        Width="25"
+                        Header="{ns:Loc LblSuccess}"
+                        IsReadOnly="True">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox
+                                    Width="15"
+                                    Height="15"
+                                    HorizontalAlignment="Center"
+                                    BorderBrush="Transparent"
+                                    IsChecked="{Binding Success, FallbackValue=False, Mode=OneWay}"
+                                    Style="{StaticResource CheckmarkCheckbox}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn
+                        Width="60"
+                        Binding="{Binding Coordinates.RAString}"
+                        Header="{ns:Loc LblRA}"
+                        IsReadOnly="True" />
+                    <DataGridTextColumn
+                        Width="60"
+                        Binding="{Binding Coordinates.DecString}"
+                        Header="{ns:Loc LblDec}"
+                        IsReadOnly="True" />
+                    <DataGridTextColumn
+                        Width="60"
+                        Binding="{Binding Separation.Distance}"
+                        Header="{ns:Loc LblErrorDistance}"
+                        IsReadOnly="True" />
+                    <DataGridTextColumn
+                        Width="60"
+                        Binding="{Binding RaErrorString}"
+                        Header="{ns:Loc LblRAError}"
+                        IsReadOnly="True" />
+                    <DataGridTextColumn
+                        Width="60"
+                        Binding="{Binding DecErrorString}"
+                        Header="{ns:Loc LblDecError}"
+                        IsReadOnly="True" />
+                    <DataGridTextColumn
+                        Width="40"
+                        Binding="{Binding RaPixError, StringFormat=\{0:0.00\}}"
+                        Header="{ns:Loc LblRAPixError}"
+                        IsReadOnly="True" />
+                    <DataGridTextColumn
+                        Width="40"
+                        Binding="{Binding DecPixError, StringFormat=\{0:0.00\}}"
+                        Header="{ns:Loc LblDecPixError}"
+                        IsReadOnly="True" />
+                    <DataGridTextColumn
+                        Width="40"
+                        Binding="{Binding Orientation, StringFormat=\{0:0.00\}}"
+                        Header="{ns:Loc LblOrientation}"
+                        IsReadOnly="True" />
+                </DataGrid.Columns>
+            </DataGrid>
         </StackPanel>
     </Grid>
 </UserControl>

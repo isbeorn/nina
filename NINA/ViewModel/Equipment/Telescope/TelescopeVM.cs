@@ -423,6 +423,11 @@ namespace NINA.ViewModel.Equipment.Telescope {
             }
         }
 
+        public bool Sync(Coordinates coordinates) {
+            var transform = coordinates.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
+            return Sync(transform.RA, transform.Dec);
+        }
+
         public bool Sync(double ra, double dec) {
             if (TelescopeInfo.Connected) {
                 return Telescope.Sync(ra, dec);
@@ -603,6 +608,10 @@ namespace NINA.ViewModel.Equipment.Telescope {
         public Task<bool> SlewToCoordinatesAsync(TopocentricCoordinates coordinates) {
             var transformed = coordinates.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
             return this.SlewToCoordinatesAsync(transformed);
+        }
+
+        public Coordinates GetCurrentPosition() {
+            return Telescope?.Coordinates;
         }
 
         public ICommand SlewToCoordinatesCommand { get; private set; }

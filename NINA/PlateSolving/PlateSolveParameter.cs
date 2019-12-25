@@ -26,9 +26,17 @@ using System;
 
 namespace NINA.PlateSolving {
 
-    internal class PlateSolveParameter {
+    public class PlateSolveParameter {
+        private double pixelSize;
+
         public double FocalLength { get; set; }
-        public double PixelSize { get; set; }
+
+        public double PixelSize {
+            get => Math.Max(Binning, 1) * pixelSize;
+            set => pixelSize = value;
+        }
+
+        public int Binning { get; set; }
         public double SearchRadius { get; set; }
         public double Regions { get; set; }
         public int DownSampleFactor { get; set; }
@@ -44,6 +52,12 @@ namespace NINA.PlateSolving {
                 $"DownSampleFactor: {DownSampleFactor}" + Environment.NewLine +
                 $"MaxObjects: {MaxObjects}" + Environment.NewLine +
                 $"{formatCoordinates}";
+        }
+
+        public PlateSolveParameter Clone() {
+            var clone = (PlateSolveParameter)this.MemberwiseClone();
+            clone.Coordinates = clone.Coordinates?.Transform(clone.Coordinates.Epoch);
+            return clone;
         }
     }
 }

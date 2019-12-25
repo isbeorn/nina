@@ -32,6 +32,8 @@ namespace NINA.Profile {
         BlindSolverEnum BlindSolverType { get; set; }
         string CygwinLocation { get; set; }
         double ExposureTime { get; set; }
+        short Gain { get; set; }
+        short Binning { get; set; }
         FilterInfo Filter { get; set; }
         PlateSolverEnum PlateSolverType { get; set; }
         string PS2Location { get; set; }
@@ -45,8 +47,6 @@ namespace NINA.Profile {
         string ASTAPLocation { get; set; }
         int DownSampleFactor { get; set; }
         int MaxObjects { get; set; }
-        bool Sync { get; set; }
         bool SlewToTarget { get; set; }
-        bool Repeat { get; set; }
     }
 }

@@ -56,6 +56,8 @@ namespace NINA.Profile {
             filter = null;
             downSampleFactor = 2;
             maxObjects = 500;
+            gain = -1;
+            binning = 1;
 
             var defaultASPSLocation = Environment.ExpandEnvironmentVariables(@"%programfiles(x86)%\PlateSolver\PlateSolver.exe");
             aspsLocation =
@@ -345,21 +347,6 @@ namespace NINA.Profile {
             }
         }
 
-        private bool sync;
-
-        [DataMember]
-        public bool Sync {
-            get {
-                return sync;
-            }
-            set {
-                if (sync != value) {
-                    sync = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
         private bool slewToTarget;
 
         [DataMember]
@@ -375,16 +362,31 @@ namespace NINA.Profile {
             }
         }
 
-        private bool repeat;
+        private short binning;
 
         [DataMember]
-        public bool Repeat {
+        public short Binning {
             get {
-                return repeat;
+                return binning;
             }
             set {
-                if (repeat != value) {
-                    repeat = value;
+                if (binning != value) {
+                    binning = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private short gain;
+
+        [DataMember]
+        public short Gain {
+            get {
+                return gain;
+            }
+            set {
+                if (gain != value) {
+                    gain = value;
                     RaisePropertyChanged();
                 }
             }

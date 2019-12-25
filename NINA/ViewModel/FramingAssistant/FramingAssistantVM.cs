@@ -50,11 +50,10 @@ namespace NINA.ViewModel.FramingAssistant {
 
     internal class FramingAssistantVM : BaseVM, ICameraConsumer {
 
-        public FramingAssistantVM(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator, IImagingMediator imagingMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+        public FramingAssistantVM(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             this.cameraMediator = cameraMediator;
             this.cameraMediator.RegisterConsumer(this);
             this.telescopeMediator = telescopeMediator;
-            this.imagingMediator = imagingMediator;
             this.applicationStatusMediator = applicationStatusMediator;
 
             Opacity = 0.2;
@@ -319,7 +318,6 @@ namespace NINA.ViewModel.FramingAssistant {
 
         private ICameraMediator cameraMediator;
         private ITelescopeMediator telescopeMediator;
-        private IImagingMediator imagingMediator;
         private IApplicationStatusMediator applicationStatusMediator;
 
         public int RAHours {
@@ -672,30 +670,44 @@ namespace NINA.ViewModel.FramingAssistant {
 
         private async Task<SkySurveyImage> PlateSolveSkySurvey(SkySurveyImage skySurveyImage) {
             var diagResult = MyMessageBox.MyMessageBox.Show(string.Format(Locale.Loc.Instance["LblBlindSolveAttemptForFraming"], DSO.Coordinates.RAString, DSO.Coordinates.DecString), Locale.Loc.Instance["LblNoCoordinates"], MessageBoxButton.YesNo, MessageBoxResult.Yes);
-            using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
-                PlateSolveResult psResult;
-                var renderedImage = await RenderedImage.FromBitmapSource(source: skySurveyImage.Image);
-                if (diagResult == MessageBoxResult.Yes) {
-                    psResult = await solver.Solve(renderedImage.RawImageData, _statusUpdate, _loadImageSource.Token, false, DSO.Coordinates);
-                } else {
-                    psResult = await solver.BlindSolve(renderedImage.RawImageData, _statusUpdate, _loadImageSource.Token);
-                }
 
-                if (psResult?.Success == true) {
-                    var rotation = psResult.Orientation;
-                    if (rotation < 0) {
-                        rotation += 360;
-                    } else if (rotation >= 360) {
-                        rotation -= 360;
-                    }
-                    skySurveyImage.Coordinates = psResult.Coordinates;
-                    skySurveyImage.FoVWidth = Astrometry.ArcsecToArcmin(psResult.Pixscale * skySurveyImage.Image.PixelWidth);
-                    skySurveyImage.FoVHeight = Astrometry.ArcsecToArcmin(psResult.Pixscale * skySurveyImage.Image.PixelHeight);
-                    skySurveyImage.Rotation = rotation;
-                } else {
-                    throw new Exception("Platesolve failed to retrieve coordinates for image");
-                }
+            var renderedImage = await RenderedImage.FromBitmapSource(source: skySurveyImage.Image);
+            Coordinates coordinates = null;
+            if (diagResult == MessageBoxResult.Yes) {
+                coordinates = DSO.Coordinates;
             }
+            var plateSolver = PlateSolverFactory.GetPlateSolver(profileService.ActiveProfile.PlateSolveSettings);
+            var blindSolver = PlateSolverFactory.GetPlateSolver(profileService.ActiveProfile.PlateSolveSettings);
+
+            var parameter = new PlateSolveParameter() {
+                Binning = 1,
+                Coordinates = coordinates,
+                DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
+                FocalLength = this.FocalLength,
+                MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
+                PixelSize = this.CameraPixelSize,
+                Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
+                SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
+            };
+
+            var imageSolver = new ImageSolver(plateSolver, blindSolver);
+            var psResult = await imageSolver.Solve(renderedImage.RawImageData, parameter, _statusUpdate, _loadImageSource.Token);
+
+            if (psResult?.Success == true) {
+                var rotation = psResult.Orientation;
+                if (rotation < 0) {
+                    rotation += 360;
+                } else if (rotation >= 360) {
+                    rotation -= 360;
+                }
+                skySurveyImage.Coordinates = psResult.Coordinates;
+                skySurveyImage.FoVWidth = Astrometry.ArcsecToArcmin(psResult.Pixscale * skySurveyImage.Image.PixelWidth);
+                skySurveyImage.FoVHeight = Astrometry.ArcsecToArcmin(psResult.Pixscale * skySurveyImage.Image.PixelHeight);
+                skySurveyImage.Rotation = rotation;
+            } else {
+                throw new Exception("Platesolve failed to retrieve coordinates for image");
+            }
+
             return skySurveyImage;
         }
 

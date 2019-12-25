@@ -485,48 +485,65 @@ namespace NINA.ViewModel {
             // Rotate to desired angle
             if (csl.CenterTarget && rotatorInfo?.Connected == true) {
                 await StopGuiding(ct, progress);
-                using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
-                    var solveseq = new CaptureSequence() {
-                        ExposureTime = profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
-                        FilterType = profileService.ActiveProfile.PlateSolveSettings.Filter,
-                        ImageType = CaptureSequence.ImageTypes.SNAPSHOT,
-                        TotalExposureCount = 1
-                    };
-                    var service = WindowServiceFactory.Create();
+                var plateSolver = PlateSolverFactory.GetPlateSolver(profileService.ActiveProfile.PlateSolveSettings);
+                var blindSolver = PlateSolverFactory.GetBlindSolver(profileService.ActiveProfile.PlateSolveSettings);
 
-                    service.Show(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
+                var service = WindowServiceFactory.Create();
+                var plateSolveStatusVM = new PlateSolvingStatusVM();
+                service.Show(plateSolveStatusVM, this.Title + " - " + plateSolveStatusVM.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
 
-                    var orientation = (float)(plateSolveResult?.Orientation ?? 0.0f);
-                    float position = 0.0f;
-                    do {
-                        if (plateSolveResult == null) {
-                            plateSolveResult = await solver.SolveWithCapture(solveseq, progress, _canceltoken.Token, true);
-                        }
+                var orientation = (float)(plateSolveResult?.Orientation ?? 0.0f);
+                float position = 0.0f;
+                do {
+                    if (plateSolveResult == null) {
+                        var seq = new CaptureSequence(
+                            profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
+                            CaptureSequence.ImageTypes.SNAPSHOT,
+                            profileService.ActiveProfile.PlateSolveSettings.Filter,
+                            new Model.MyCamera.BinningMode(profileService.ActiveProfile.PlateSolveSettings.Binning, profileService.ActiveProfile.PlateSolveSettings.Binning),
+                            1
+                        );
+                        seq.Gain = profileService.ActiveProfile.PlateSolveSettings.Gain;
+                        var parameter = new CaptureSolverParameter() {
+                            Attempts = profileService.ActiveProfile.PlateSolveSettings.NumberOfAttempts,
+                            Binning = profileService.ActiveProfile.PlateSolveSettings.Binning,
+                            DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
+                            FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
+                            MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
+                            PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize,
+                            ReattemptDelay = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay),
+                            Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
+                            SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
+                            Coordinates = telescopeMediator.GetCurrentPosition()
+                        };
+                        var solver = new CaptureSolver(plateSolver, blindSolver, imagingMediator);
 
-                        if (!plateSolveResult.Success) {
-                            break;
-                        }
+                        plateSolveResult = await solver.Solve(seq, parameter, plateSolveStatusVM.Progress, progress, _canceltoken.Token);
+                    }
 
-                        orientation = (float)plateSolveResult.Orientation;
+                    if (!plateSolveResult.Success) {
+                        break;
+                    }
 
-                        position = (float)((float)csl.DSO.Rotation - orientation);
+                    orientation = (float)plateSolveResult.Orientation;
 
-                        var movement = Astrometry.EuclidianModulus((float)csl.DSO.Rotation - orientation, 180);
-                        var movement2 = movement - 180;
+                    position = (float)((float)csl.DSO.Rotation - orientation);
 
-                        if (movement < Math.Abs(movement2)) {
-                            position = movement;
-                        } else {
-                            position = movement2;
-                        }
+                    var movement = Astrometry.EuclidianModulus((float)csl.DSO.Rotation - orientation, 180);
+                    var movement2 = movement - 180;
 
-                        if (Math.Abs(position) > profileService.ActiveProfile.PlateSolveSettings.RotationTolerance) {
-                            await rotatorMediator.MoveRelative(position);
-                        }
-                        plateSolveResult = null;
-                    } while (Math.Abs(position) > profileService.ActiveProfile.PlateSolveSettings.RotationTolerance);
-                    service.DelayedClose(TimeSpan.FromSeconds(10));
-                }
+                    if (movement < Math.Abs(movement2)) {
+                        position = movement;
+                    } else {
+                        position = movement2;
+                    }
+
+                    if (Math.Abs(position) > profileService.ActiveProfile.PlateSolveSettings.RotationTolerance) {
+                        await rotatorMediator.MoveRelative(position);
+                    }
+                    plateSolveResult = null;
+                } while (Math.Abs(position) > profileService.ActiveProfile.PlateSolveSettings.RotationTolerance);
+                service.DelayedClose(TimeSpan.FromSeconds(10));
             }
         }
 
@@ -546,22 +563,38 @@ namespace NINA.ViewModel {
             if (csl.CenterTarget) {
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblCenterTarget"] });
 
-                using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
-                    var service = WindowServiceFactory.Create();
-                    service.Show(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
-                    PlatesolveVM.SolveParameters solveParameters = new PlatesolveVM.SolveParameters {
-                        syncScope = true,
-                        slewToTarget = true,
-                        repeat = true,
-                        silent = true,
-                        repeatThreshold = profileService.ActiveProfile.PlateSolveSettings.Threshold,
-                        numberOfAttempts = profileService.ActiveProfile.PlateSolveSettings.NumberOfAttempts,
-                        delayDuration = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay),
-                    };
-                    solver.PlateSolveTarget = GetReferenceCoordinates(csl);
-                    plateSolveResult = await solver.CaptureSolveSyncReslewReattempt(solveParameters, _canceltoken.Token, progress);
-                    service.DelayedClose(TimeSpan.FromSeconds(10));
-                }
+                var service = WindowServiceFactory.Create();
+                var plateSolveStatusVM = new PlateSolvingStatusVM();
+                service.Show(plateSolveStatusVM, this.Title + " - " + plateSolveStatusVM.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
+                var plateSolver = PlateSolverFactory.GetPlateSolver(profileService.ActiveProfile.PlateSolveSettings);
+                var blindSolver = PlateSolverFactory.GetBlindSolver(profileService.ActiveProfile.PlateSolveSettings);
+
+                var seq = new CaptureSequence(
+                    profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
+                    CaptureSequence.ImageTypes.SNAPSHOT,
+                    profileService.ActiveProfile.PlateSolveSettings.Filter,
+                    new Model.MyCamera.BinningMode(profileService.ActiveProfile.PlateSolveSettings.Binning, profileService.ActiveProfile.PlateSolveSettings.Binning),
+                    1
+                );
+                seq.Gain = profileService.ActiveProfile.PlateSolveSettings.Gain;
+
+                var solver = new CenteringSolver(plateSolver, blindSolver, imagingMediator, telescopeMediator);
+                var parameter = new CenterSolveParameter() {
+                    Attempts = profileService.ActiveProfile.PlateSolveSettings.NumberOfAttempts,
+                    Binning = profileService.ActiveProfile.PlateSolveSettings.Binning,
+                    Coordinates = telescopeMediator.GetCurrentPosition(),
+                    DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
+                    FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
+                    MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
+                    PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize,
+                    ReattemptDelay = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay),
+                    Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
+                    SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
+                    Threshold = profileService.ActiveProfile.PlateSolveSettings.Threshold
+                };
+                plateSolveResult = await solver.Center(seq, parameter, plateSolveStatusVM.Progress, progress, _canceltoken.Token);
+
+                service.DelayedClose(TimeSpan.FromSeconds(10));
             }
             return plateSolveResult;
         }
@@ -1017,7 +1050,7 @@ namespace NINA.ViewModel {
                 if (flipTargetCoordinates.RA == 0 && flipTargetCoordinates.Dec == 0) {
                     target = telescopeInfo.Coordinates;
                 }
-                await new MeridianFlipVM(profileService, cameraMediator, telescopeMediator, guiderMediator, imagingMediator, applicationStatusMediator).MeridianFlip(target, TimeSpan.FromHours(telescopeInfo.TimeToMeridianFlip));
+                await new MeridianFlipVM(profileService, telescopeMediator, guiderMediator, imagingMediator, applicationStatusMediator).MeridianFlip(target, TimeSpan.FromHours(telescopeInfo.TimeToMeridianFlip));
             }
             progress.Report(new ApplicationStatus() { Status = string.Empty });
         }

@@ -57,6 +57,10 @@
 - Reintroduce a "No Guider" option under Equipment -> Guiding so that unguided setups do not suffer through unwanted PHD2 executions or unnecessary errors when the "Connect All Devices" button is pressed.
 - Platesolve tab inside Imaging Tab will now retain its settings (Sync, Reslew, Repeat)
 - Added the option to retreieve the coordinates of the center of the sky chart instead of the selected object when using TheSkyX as the planetarium
+- Reworked the platesolving code base completely for a more clean way of oprations. 
+- Introduced Gain and Binning settings to use for automated plate solves
+- Removed "Sync" and "Repeat until" options from Imagine->PlateSolve tool window. These will be always on when "Reslew to target" is enabled
+- Improved automated plate solve pop up window with additonaly information
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false

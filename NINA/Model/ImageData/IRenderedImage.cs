@@ -46,5 +46,7 @@ namespace NINA.Model.ImageData {
             NoiseReductionEnum noiseReduction,
             CancellationToken cancelToken = default,
             IProgress<ApplicationStatus> progress = default(Progress<ApplicationStatus>));
+
+        Task<BitmapSource> GetThumbnail();
     }
 }

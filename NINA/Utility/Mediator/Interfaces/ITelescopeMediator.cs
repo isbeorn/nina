@@ -35,6 +35,8 @@ namespace NINA.Utility.Mediator.Interfaces {
 
         void PulseGuide(GuideDirections direction, int duration);
 
+        bool Sync(Coordinates coordinates);
+
         bool Sync(double ra, double dec);
 
         Task<bool> SlewToCoordinatesAsync(Coordinates coords);
@@ -46,6 +48,8 @@ namespace NINA.Utility.Mediator.Interfaces {
         bool SetTracking(bool tracking);
 
         bool SendToSnapPort(bool start);
+
+        Coordinates GetCurrentPosition();
 
         Task<bool> ParkTelescope();
     }
