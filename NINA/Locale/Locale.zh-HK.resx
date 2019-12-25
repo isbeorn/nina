@@ -2239,6 +2239,15 @@
   <data name="LblPlateSolveNoFocalLength" xml:space="preserve">
     <value>解析被終止. 望遠鏡的有效焦距一定係: 選項 &gt; 設備中進行設置</value>
   </data>
+  <data name="LblPlateSolveNotInsideToleranceRepeating" xml:space="preserve">
+    <value>Telescope not inside tolerance. Repeating...</value>
+  </data>
+  <data name="LblPlateSolveNotInsideToleranceReslew" xml:space="preserve">
+    <value>Telescope not inside tolerance. Re-slew to target...</value>
+  </data>
+  <data name="LblPlateSolveNotInsideToleranceSyncing" xml:space="preserve">
+    <value>Telescope not inside tolerance. Syncing scope...</value>
+  </data>
   <data name="LblPlatesolveProvidedBy" xml:space="preserve">
     <value>解析服務提供:</value>
   </data>
@@ -3078,6 +3087,9 @@
   </data>
   <data name="LblWaitForTemperatureStep" xml:space="preserve">
     <value>等待相機達到低個溫度</value>
+  </data>
+  <data name="LblWaiting" xml:space="preserve">
+    <value>Waiting</value>
   </data>
   <data name="LblWaitingForCamera" xml:space="preserve">
     <value>等待相機</value>

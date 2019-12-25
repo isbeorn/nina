@@ -2239,6 +2239,15 @@ Calculado HFR: {2}
   <data name="LblPlateSolveNoFocalLength" xml:space="preserve">
     <value>Resolución de placas abortada. La longitud focal efectiva del telescopio debe especificarse en Opciones &gt; Equipamiento</value>
   </data>
+  <data name="LblPlateSolveNotInsideToleranceRepeating" xml:space="preserve">
+    <value>Telescope not inside tolerance. Repeating...</value>
+  </data>
+  <data name="LblPlateSolveNotInsideToleranceReslew" xml:space="preserve">
+    <value>Telescope not inside tolerance. Re-slew to target...</value>
+  </data>
+  <data name="LblPlateSolveNotInsideToleranceSyncing" xml:space="preserve">
+    <value>Telescope not inside tolerance. Syncing scope...</value>
+  </data>
   <data name="LblPlatesolveProvidedBy" xml:space="preserve">
     <value>Servicio de resolucion de campo provisto por</value>
   </data>
@@ -3078,6 +3087,9 @@ Mueve el rectangulo sobre la parte del Encuadre que quieres hacer subsampling. T
   </data>
   <data name="LblWaitForTemperatureStep" xml:space="preserve">
     <value>Esperando que la camara alcanze el proximo paso de temperatura</value>
+  </data>
+  <data name="LblWaiting" xml:space="preserve">
+    <value>Waiting</value>
   </data>
   <data name="LblWaitingForCamera" xml:space="preserve">
     <value>Esperando por la Camara</value>

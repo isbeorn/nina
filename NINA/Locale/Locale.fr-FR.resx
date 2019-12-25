@@ -2239,6 +2239,15 @@ HFR calculé: {2}</value>
   <data name="LblPlateSolveNoFocalLength" xml:space="preserve">
     <value>Réduction astrométrique annulée. La distance focale effective du télescope doit être spécifiée sous Options &gt; Équipement</value>
   </data>
+  <data name="LblPlateSolveNotInsideToleranceRepeating" xml:space="preserve">
+    <value>Telescope not inside tolerance. Repeating...</value>
+  </data>
+  <data name="LblPlateSolveNotInsideToleranceReslew" xml:space="preserve">
+    <value>Telescope not inside tolerance. Re-slew to target...</value>
+  </data>
+  <data name="LblPlateSolveNotInsideToleranceSyncing" xml:space="preserve">
+    <value>Telescope not inside tolerance. Syncing scope...</value>
+  </data>
   <data name="LblPlatesolveProvidedBy" xml:space="preserve">
     <value>Réduction astrométrique fourni par</value>
   </data>
@@ -3077,6 +3086,9 @@ Faites glisser le rectangle sur la partie du cadre que vous souhaitez sous-écha
   </data>
   <data name="LblWaitForTemperatureStep" xml:space="preserve">
     <value>En attente de la caméra pour atteindre le prochain niveau de température</value>
+  </data>
+  <data name="LblWaiting" xml:space="preserve">
+    <value>Waiting</value>
   </data>
   <data name="LblWaitingForCamera" xml:space="preserve">
     <value>En attente de la caméra</value>

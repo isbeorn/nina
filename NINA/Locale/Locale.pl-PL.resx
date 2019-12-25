@@ -2239,6 +2239,15 @@ Calculated HFR: {2}
   <data name="LblPlateSolveNoFocalLength" xml:space="preserve">
     <value>Plate solve aborted. The telescope's effective focal length must be specified under Options &gt; Equipment</value>
   </data>
+  <data name="LblPlateSolveNotInsideToleranceRepeating" xml:space="preserve">
+    <value>Telescope not inside tolerance. Repeating...</value>
+  </data>
+  <data name="LblPlateSolveNotInsideToleranceReslew" xml:space="preserve">
+    <value>Telescope not inside tolerance. Re-slew to target...</value>
+  </data>
+  <data name="LblPlateSolveNotInsideToleranceSyncing" xml:space="preserve">
+    <value>Telescope not inside tolerance. Syncing scope...</value>
+  </data>
   <data name="LblPlatesolveProvidedBy" xml:space="preserve">
     <value>Platesolve service provided by</value>
   </data>
@@ -3078,6 +3087,9 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
   </data>
   <data name="LblWaitForTemperatureStep" xml:space="preserve">
     <value>Waiting for camera to reach next temperature step</value>
+  </data>
+  <data name="LblWaiting" xml:space="preserve">
+    <value>Waiting</value>
   </data>
   <data name="LblWaitingForCamera" xml:space="preserve">
     <value>Oczekiwanie na kamerę</value>

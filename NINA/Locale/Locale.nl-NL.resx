@@ -2229,6 +2229,15 @@ Verbonden cliënten: {0}
   <data name="LblPlateSolveNoFocalLength" xml:space="preserve">
     <value>Plate solve afgebroken. De effectieve focale lengte van de telescoop moet worden gespecificeerd onder Opties &gt; Uitrusting</value>
   </data>
+  <data name="LblPlateSolveNotInsideToleranceRepeating" xml:space="preserve">
+    <value>Telescope not inside tolerance. Repeating...</value>
+  </data>
+  <data name="LblPlateSolveNotInsideToleranceReslew" xml:space="preserve">
+    <value>Telescope not inside tolerance. Re-slew to target...</value>
+  </data>
+  <data name="LblPlateSolveNotInsideToleranceSyncing" xml:space="preserve">
+    <value>Telescope not inside tolerance. Syncing scope...</value>
+  </data>
   <data name="LblPlatesolveProvidedBy" xml:space="preserve">
     <value>Platesolve service aangeboden door</value>
   </data>
@@ -3066,6 +3075,9 @@ Sleep de rechthoek over het deel van de opname dat u fotograferen wilt en active
   </data>
   <data name="LblWaitForTemperatureStep" xml:space="preserve">
     <value>Wachten tot de camera de volgende temperatuur doel heeft bereikt</value>
+  </data>
+  <data name="LblWaiting" xml:space="preserve">
+    <value>Waiting</value>
   </data>
   <data name="LblWaitingForCamera" xml:space="preserve">
     <value>Wachten op camera</value>

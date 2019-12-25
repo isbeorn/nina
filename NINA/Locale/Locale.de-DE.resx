@@ -2239,6 +2239,15 @@ Berechneter HFR: {2}
   <data name="LblPlateSolveNoFocalLength" xml:space="preserve">
     <value>Platesolve abgebrochen. Die effektive Brennweite des Teleskops muss in den Optionen &gt; Equipment angegeben werden</value>
   </data>
+  <data name="LblPlateSolveNotInsideToleranceRepeating" xml:space="preserve">
+    <value>Teleskop nicht innerhalb der Toleranz. Wiederhole...</value>
+  </data>
+  <data name="LblPlateSolveNotInsideToleranceReslew" xml:space="preserve">
+    <value>Teleskop nicht innerhalb der Toleranz. Schwenke erneut zum Ziel...</value>
+  </data>
+  <data name="LblPlateSolveNotInsideToleranceSyncing" xml:space="preserve">
+    <value>Teleskop nicht innerhalb der Toleranz. Synchronisiere...</value>
+  </data>
   <data name="LblPlatesolveProvidedBy" xml:space="preserve">
     <value>Platesolve service zur Verfügung gestellt von</value>
   </data>
@@ -3077,6 +3086,9 @@ Lichtverschmutzten Gebieten. Berechnungszeit ist jedoch erhöht.</value>
   </data>
   <data name="LblWaitForTemperatureStep" xml:space="preserve">
     <value>Warte auf Kamera auf Erreichen des nächsten Temperaturschritts</value>
+  </data>
+  <data name="LblWaiting" xml:space="preserve">
+    <value>Warte</value>
   </data>
   <data name="LblWaitingForCamera" xml:space="preserve">
     <value>Warten auf Kamera</value>
