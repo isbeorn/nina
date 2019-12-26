@@ -47,6 +47,7 @@ namespace NINA.Profile {
         string ASTAPLocation { get; set; }
         int DownSampleFactor { get; set; }
         int MaxObjects { get; set; }
+        bool Sync { get; set; }
         bool SlewToTarget { get; set; }
     }
 }

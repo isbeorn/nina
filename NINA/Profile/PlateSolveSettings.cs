@@ -58,6 +58,7 @@ namespace NINA.Profile {
             maxObjects = 500;
             gain = -1;
             binning = 1;
+            sync = false;
 
             var defaultASPSLocation = Environment.ExpandEnvironmentVariables(@"%programfiles(x86)%\PlateSolver\PlateSolver.exe");
             aspsLocation =
@@ -342,6 +343,21 @@ namespace NINA.Profile {
             set {
                 if (maxObjects != value) {
                     maxObjects = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool sync;
+
+        [DataMember]
+        public bool Sync {
+            get {
+                return sync;
+            }
+            set {
+                if (sync != value) {
+                    sync = value;
                     RaisePropertyChanged();
                 }
             }

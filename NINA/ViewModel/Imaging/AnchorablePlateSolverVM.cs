@@ -162,12 +162,25 @@ namespace NINA.ViewModel.Imaging {
             }
         }
 
+        public bool Sync {
+            get {
+                return profileService.ActiveProfile.PlateSolveSettings.Sync;
+            }
+            set {
+                profileService.ActiveProfile.PlateSolveSettings.Sync = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public bool SlewToTarget {
             get {
                 return profileService.ActiveProfile.PlateSolveSettings.SlewToTarget;
             }
             set {
                 profileService.ActiveProfile.PlateSolveSettings.SlewToTarget = value;
+                if (value) {
+                    Sync = true;
+                }
                 RaisePropertyChanged();
             }
         }
@@ -301,7 +314,10 @@ namespace NINA.ViewModel.Imaging {
                     SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
                     Coordinates = telescopeMediator.GetCurrentPosition()
                 };
-                _ = await solver.Solve(seq, parameter, solveProgress, progress, _solveCancelToken.Token);
+                var result = await solver.Solve(seq, parameter, solveProgress, progress, _solveCancelToken.Token);
+                if (Sync) {
+                    telescopeMediator.Sync(result.Coordinates);
+                }
             }
 
             return true;
