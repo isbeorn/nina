@@ -806,7 +806,9 @@ namespace NINA.ViewModel {
 
                         seq.NextSequence = csl.GetNextSequenceItem(seq);
 
-                        await CheckMeridianFlip(referenceCoordinates, seq.ExposureTime, ct, progress);
+                        if (seq.IsLightSequence()) {
+                            await CheckMeridianFlip(referenceCoordinates, seq.ExposureTime, ct, progress);
+                        }
 
                         Stopwatch seqDuration = Stopwatch.StartNew();
 
@@ -826,7 +828,7 @@ namespace NINA.ViewModel {
                         }
 
                         /* 2) Check if Autofocus is requiredfinish */
-                        if (ShouldAutoFocus(csl, seq, exposureCount, prevFilterPosition, lastAutoFocusTime, lastAutoFocusTemperature)) {
+                        if (seq.IsLightSequence() && ShouldAutoFocus(csl, seq, exposureCount, prevFilterPosition, lastAutoFocusTime, lastAutoFocusTemperature)) {
                             //Wait for previous image processing task to be done, so Autofocus doesn't turn off HFR calculation too early
                             if (imageProcessingTask != null && !imageProcessingTask.IsCompleted) {
                                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForImageProcessing"] });
@@ -841,7 +843,7 @@ namespace NINA.ViewModel {
                         }
 
                         /* 3) Change Filter */
-                        if (seq.FilterType != null) {
+                        if (seq.IsLightSequence() && seq.FilterType != null) {
                             prevFilterPosition = filterWheelInfo?.SelectedFilter?.Position ?? -1;
                             await filterWheelMediator.ChangeFilter(seq.FilterType, ct, progress);
                         }
@@ -858,10 +860,12 @@ namespace NINA.ViewModel {
                         var rms = this.guiderMediator.StopRMSRecording(rmsHandle);
 
                         /* 5a) Dither */
-                        ditherTask = ShouldDither(seq, ct, progress);
+                        if (seq.IsLightSequence()) {
+                            ditherTask = ShouldDither(seq, ct, progress);
+                        }
 
                         /* 5b) Change Filter if next sequence item has a different filter set */
-                        if (seq.NextSequence != null && seq.NextSequence != seq) {
+                        if (seq.NextSequence != null && seq.NextSequence.IsLightSequence() && seq.NextSequence != seq) {
                             prevFilterPosition = filterWheelInfo?.SelectedFilter?.Position ?? -1;
                             filterChangeTask = filterWheelMediator.ChangeFilter(seq.NextSequence.FilterType, ct, progress);
                         }

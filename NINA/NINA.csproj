@@ -443,6 +443,7 @@
     <Compile Include="PlateSolving\PlateSolveProgress.cs" />
     <Compile Include="Utility\CameraSDKs\OmegonSDK\omegonprocam.cs" />
     <Compile Include="Utility\Converters\AFFittingToVisibilityConverter.cs" />
+    <Compile Include="Utility\Converters\IsLightImageTypeToVisibilityConverter.cs" />
     <Compile Include="Utility\DeferredContent.cs" />
     <Compile Include="Utility\Exceptions\PlanetariumFailedToConnect.cs" />
     <Compile Include="Utility\Exceptions\PlanetariumFailedToGetCoordinates.cs" />

@@ -53,6 +53,10 @@ namespace NINA.Model {
             return clone;
         }
 
+        public bool IsLightSequence() {
+            return ImageType == CaptureSequence.ImageTypes.SNAPSHOT || ImageType == CaptureSequence.ImageTypes.LIGHT;
+        }
+
         private double _exposureTime;
         private string _imageType;
         private MyFilterWheel.FilterInfo _filterType;
