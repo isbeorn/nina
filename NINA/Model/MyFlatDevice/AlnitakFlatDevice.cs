@@ -1,4 +1,4 @@
-﻿using NINA.Profile;
+﻿﻿using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.FlatDeviceSDKs.AlnitakSDK;
 using NINA.Utility.Notification;
@@ -237,8 +237,8 @@ namespace NINA.Model.MyFlatDevice {
                 StopBits = StopBits.One,
                 Handshake = Handshake.None,
                 NewLine = "\n",
-                ReadTimeout = 500,
-                WriteTimeout = 500
+                ReadTimeout = 5000,
+                WriteTimeout = 5000
             };
             return true;
         }
