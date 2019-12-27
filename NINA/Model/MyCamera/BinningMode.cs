@@ -75,5 +75,22 @@ namespace NINA.Model.MyCamera {
         public override string ToString() {
             return Name;
         }
+
+        public override bool Equals(object obj) {
+            if (obj == null || this.GetType() != obj.GetType()) {
+                return false;
+            }
+
+            var other = (BinningMode)obj;
+            return _x == other._x && _y == other._y;
+        }
+
+        public override int GetHashCode() {
+            //see https://en.wikipedia.org/wiki/Hash_function, used when BinningMode is used as a dictionary key for instance
+            const int primeNumber = 397;
+            unchecked {
+                return (_x.GetHashCode() * primeNumber) ^ _y.GetHashCode();
+            }
+        }
     }
 }

@@ -10,7 +10,13 @@
 <h3 id="hardware">Hardware</h3>
 <ul>
 <li><strong>QHY filter wheels</strong> that are integrated (A-series cameras) or are connected to the camera using the 4-pin cable (CFW1/2/3 filter wheels) are now natively supported. This allows the native QHY camera driver to be used with these cameras and configurations.</li>
-<li><strong>Alnitak Flip Flap Panel</strong> support to connect and control the panel inside the application</li>
+<li><strong>Alnitak Flat Device support</strong>
+<ul>
+<li>connect to and control Alnitak flat devices from within the application</li>
+<li>flip-flat devices will automatically open and close within a sequence</li>
+<li>option to close flip-flats and dust covers at the end of the sequence</li>
+</ul>
+</li>
 <li><strong>Omegon Pro Cameras</strong> Added SDK for omegon pro cameras (untested)</li>
 <li><strong>Lacerta MGEN Superguider integration</strong>
 <ul>
@@ -75,6 +81,7 @@
 <li>Introduced Gain and Binning settings to use for automated plate solves</li>
 <li>Removed &quot;Sync&quot; and &quot;Repeat until&quot; options from Imagine-&gt;PlateSolve tool window. These will be always on when &quot;Reslew to target&quot; is enabled</li>
 <li>Improved automated plate solve pop up window with additonaly information</li>
+<li>Added ability to record flat exposure times with the flat wizard, to be used in a sequence later</li>
 </ul>
 <h2 id="bug-fixes">Bug fixes</h2>
 <ul>
@@ -508,7 +515,5 @@ Thank you for your support!</p>
 <li>Major code refactorings for better maintainability</li>
 <li>Lots and lots of minor bugfixes and improvements</li>
 </ul>
-
-
 </body>
 </html>

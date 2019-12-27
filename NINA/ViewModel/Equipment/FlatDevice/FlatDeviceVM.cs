@@ -6,20 +6,29 @@ using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using NINA.Locale;
+using NINA.Model.MyCamera;
+using NINA.Model.MyFilterWheel;
 
 namespace NINA.ViewModel.Equipment.FlatDevice {
 
-    internal class FlatDeviceVM : DockableVM, IFlatDeviceVM {
+    internal class FlatDeviceVM : DockableVM, IFlatDeviceVM, IFilterWheelConsumer {
         private IFlatDevice _flatDevice;
+        private IFlatDeviceSettings _flatDeviceSettings;
         private readonly IApplicationStatusMediator _applicationStatusMediator;
+        private readonly IFilterWheelMediator _filterWheelMediator;
         private readonly IFlatDeviceMediator _flatDeviceMediator;
         private readonly DeviceUpdateTimer _updateTimer;
 
-        public FlatDeviceVM(IProfileService profileService, IFlatDeviceMediator flatDeviceMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+        public FlatDeviceVM(IProfileService profileService, IFlatDeviceMediator flatDeviceMediator, IApplicationStatusMediator applicationStatusMediator, IFilterWheelMediator filterWheelMediator) : base(profileService) {
             _applicationStatusMediator = applicationStatusMediator;
+            _filterWheelMediator = filterWheelMediator;
+            _filterWheelMediator.RegisterConsumer(this);
             _flatDeviceMediator = flatDeviceMediator;
             _flatDeviceMediator.RegisterHandler(this);
 
@@ -32,6 +41,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                 new RelayCommand(RefreshFlatDeviceList, o => _flatDevice?.Connected != true);
             SetBrightnessCommand = new RelayCommand(SetBrightness);
             ToggleLightCommand = new RelayCommand(ToggleLight);
+            ClearValuesCommand = new RelayCommand(ClearWizardTrainedValues);
 
             FlatDeviceChooserVM = new FlatDeviceChooserVM(profileService);
             FlatDeviceChooserVM.GetEquipment();
@@ -42,7 +52,14 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                 profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval
             );
 
-            profileService.ProfileChanged += (object sender, EventArgs e) => { RefreshFlatDeviceList(null); };
+            _flatDeviceSettings = profileService.ActiveProfile.FlatDeviceSettings;
+            _flatDeviceSettings.PropertyChanged += SettingsChanged;
+            profileService.ProfileChanged += (object sender, EventArgs e) => {
+                _flatDeviceSettings.PropertyChanged -= SettingsChanged;
+                RefreshFlatDeviceList(null);
+                _flatDeviceSettings = profileService.ActiveProfile.FlatDeviceSettings;
+                _flatDeviceSettings.PropertyChanged += SettingsChanged;
+            };
         }
 
         private void BroadcastFlatDeviceInfo() {
@@ -88,7 +105,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                 _applicationStatusMediator.StatusUpdate(
                     new ApplicationStatus() {
                         Source = Title,
-                        Status = Locale.Loc.Instance["LblConnecting"]
+                        Status = Loc.Instance["LblConnecting"]
                     }
                 );
                 var flatDevice = (IFlatDevice)device;
@@ -114,7 +131,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                         };
                         this.Brightness = flatDevice.Brightness;
 
-                        Notification.ShowSuccess(Locale.Loc.Instance["LblFlatDeviceConnected"]);
+                        Notification.ShowSuccess(Loc.Instance["LblFlatDeviceConnected"]);
 
                         if (_updateTimer != null) {
                             _updateTimer.Interval =
@@ -164,7 +181,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
         }
 
         private void DisconnectFlatDeviceDialog(object obj) {
-            var dialog = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblFlatDeviceDisconnectQuestion"],
+            var dialog = MyMessageBox.MyMessageBox.Show(Loc.Instance["LblFlatDeviceDisconnectQuestion"],
                 "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (dialog == System.Windows.MessageBoxResult.OK) {
                 Disconnect();
@@ -210,6 +227,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
         }
 
         private FlatDeviceInfo _flatDeviceInfo;
+        private FilterWheelInfo _filterWheelInfo;
 
         public FlatDeviceInfo FlatDeviceInfo {
             get {
@@ -247,6 +265,8 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             _flatDeviceInfo.MaxBrightness = (int)(o ?? 0);
             flatDeviceValues.TryGetValue(nameof(FlatDeviceInfo.LightOn), out o);
             _flatDeviceInfo.LightOn = (bool)(o ?? false);
+            flatDeviceValues.TryGetValue(nameof(FlatDeviceInfo.SupportsOpenClose), out o);
+            _flatDeviceInfo.SupportsOpenClose = (bool)(o ?? false);
 
             BroadcastFlatDeviceInfo();
         }
@@ -259,7 +279,8 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                 {nameof(FlatDeviceInfo.Brightness), _flatDevice?.Brightness ?? 0.0},
                 {nameof(FlatDeviceInfo.MinBrightness), _flatDevice?.MinBrightness ?? 0},
                 {nameof(FlatDeviceInfo.MaxBrightness), _flatDevice?.MaxBrightness ?? 0},
-                {nameof(FlatDeviceInfo.LightOn), _flatDevice?.LightOn ?? false}
+                {nameof(FlatDeviceInfo.LightOn), _flatDevice?.LightOn ?? false},
+                {nameof(FlatDeviceInfo.SupportsOpenClose), _flatDevice?.SupportsOpenClose ?? false}
             };
             return flatDeviceValues;
         }
@@ -267,6 +288,52 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
         public void ToggleLight(object o) {
             if (_flatDevice == null || _flatDevice.Connected == false) return;
             _flatDevice.LightOn = (bool)o;
+        }
+
+        public void UpdateDeviceInfo(FilterWheelInfo info) {
+            if (_filterWheelInfo == info) return;
+            _filterWheelInfo = info;
+            UpdateWizardTrainedValues();
+            RaisePropertyChanged(nameof(WizardTrainedValues));
+        }
+
+        private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            UpdateWizardTrainedValues();
+            RaisePropertyChanged(nameof(WizardTrainedValues));
+        }
+
+        private void UpdateWizardTrainedValues() {
+            WizardTrainedValues = new DataTable();
+            var filters = _filterWheelMediator.GetAllFilters() ?? new List<FilterInfo> { new FilterInfo() };
+
+            var binningModes = new List<BinningMode>();
+            var gains = new List<short>();
+            WizardTrainedValues.Columns.Add($"{Loc.Instance["LblBinning"]}\n{Loc.Instance["LblGain"]}", typeof(string));
+            binningModes.AddRange(profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoBinnings());
+            gains.AddRange(profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoGains());
+
+            var keys = new List<(BinningMode binning, short gain)>();
+            foreach (var binningMode in binningModes.Distinct().OrderBy(mode => mode.Name)) {
+                foreach (var gain in gains.Distinct().OrderBy(s => s)) {
+                    WizardTrainedValues.Columns.Add($"{binningMode}\n{gain}", typeof(string));
+                    keys.Add((binningMode, gain));
+                }
+            }
+
+            foreach (var filter in filters) {
+                var row = new List<object> { filter.Name ?? Loc.Instance["LblNoFilterwheel"] };
+                row.AddRange(keys.Select(
+                    key => profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(
+                        new FlatDeviceFilterSettingsKey(filter.Name, key.binning, key.gain))).Select(
+                    info => info != null ? $"{info.Time,3:0.0}s @ {info.Brightness,3:P0}" : "-"));
+                WizardTrainedValues.Rows.Add(row.ToArray());
+            }
+        }
+
+        public DataTable WizardTrainedValues { get; private set; }
+
+        private void ClearWizardTrainedValues(object o) {
+            profileService.ActiveProfile.FlatDeviceSettings.ClearBrightnessInfo();
         }
 
         public ICommand RefreshFlatDeviceListCommand { get; }
@@ -277,5 +344,10 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
         public IAsyncCommand CloseCoverCommand { get; }
         public RelayCommand ToggleLightCommand { get; }
         public RelayCommand SetBrightnessCommand { get; }
+        public RelayCommand ClearValuesCommand { get; }
+
+        public void Dispose() {
+            _filterWheelMediator.RemoveConsumer(this);
+        }
     }
 }

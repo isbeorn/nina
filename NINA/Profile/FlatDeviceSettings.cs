@@ -1,4 +1,7 @@
-﻿using System;
+﻿using NINA.Model.MyCamera;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace NINA.Profile {
@@ -7,9 +10,21 @@ namespace NINA.Profile {
     [DataContract]
     internal class FlatDeviceSettings : Settings, IFlatDeviceSettings {
 
+        public FlatDeviceSettings() {
+            FilterSettings = new Dictionary<FlatDeviceFilterSettingsKey, FlatDeviceFilterSettingsValue>();
+        }
+
         [OnDeserializing]
         public void OnDeserializing(StreamingContext context) {
             SetDefaultValues();
+        }
+
+        [OnDeserialized]
+        public void OnDeserialized(StreamingContext context) {
+            if (FilterSettings == null) {
+                FilterSettings =
+                    new Dictionary<FlatDeviceFilterSettingsKey, FlatDeviceFilterSettingsValue>();
+            }
         }
 
         protected override void SetDefaultValues() {
@@ -74,6 +89,125 @@ namespace NINA.Profile {
                 _openForDarkFlats = value;
                 RaisePropertyChanged();
             }
+        }
+
+        private bool _useWizardTrainedValues;
+
+        [DataMember]
+        public bool UseWizardTrainedValues {
+            get => _useWizardTrainedValues;
+            set {
+                if (_useWizardTrainedValues == value) return;
+                _useWizardTrainedValues = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private Dictionary<FlatDeviceFilterSettingsKey, FlatDeviceFilterSettingsValue> _filterSettings;
+
+        [DataMember]
+        public Dictionary<FlatDeviceFilterSettingsKey, FlatDeviceFilterSettingsValue> FilterSettings {
+            get => _filterSettings;
+            set {
+                _filterSettings = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public void AddBrightnessInfo(FlatDeviceFilterSettingsKey key, FlatDeviceFilterSettingsValue value) {
+            if (FilterSettings.ContainsKey(key)) {
+                FilterSettings[key] = value;
+            } else {
+                FilterSettings.Add(key, value);
+            }
+
+            RaisePropertyChanged(nameof(FilterSettings));
+        }
+
+        public FlatDeviceFilterSettingsValue GetBrightnessInfo(FlatDeviceFilterSettingsKey key) {
+            return FilterSettings.ContainsKey(key) ? FilterSettings[key] : null;
+        }
+
+        public IEnumerable<BinningMode> GetBrightnessInfoBinnings() {
+            var result = FilterSettings.Keys.Select(key => key.Binning).ToList();
+
+            return result.Distinct();
+        }
+
+        public IEnumerable<short> GetBrightnessInfoGains() {
+            var result = FilterSettings.Keys.Select(key => key.Gain).ToList();
+
+            return result.Distinct();
+        }
+
+        public void ClearBrightnessInfo() {
+            FilterSettings =
+                new Dictionary<FlatDeviceFilterSettingsKey, FlatDeviceFilterSettingsValue>();
+        }
+    }
+
+    [Serializable()]
+    [DataContract]
+    public class FlatDeviceFilterSettingsKey {
+
+        [DataMember]
+        public string FilterName { get; set; }
+
+        [DataMember]
+        public BinningMode Binning { get; set; }
+
+        [DataMember]
+        public short Gain { get; set; }
+
+        public FlatDeviceFilterSettingsKey(string filterName, BinningMode binning, short gain) {
+            FilterName = filterName;
+            Binning = binning;
+            Gain = gain;
+        }
+
+        public override bool Equals(object obj) {
+            if (obj == null || this.GetType() != obj.GetType()) {
+                return false;
+            }
+
+            var other = (FlatDeviceFilterSettingsKey)obj;
+            switch (Binning) {
+                case null when other.Binning == null:
+                    return FilterName == other.FilterName && Gain == other.Gain;
+
+                case null:
+                    return false;
+
+                default:
+                    return FilterName == other.FilterName && Binning.Equals(other.Binning) && Gain == other.Gain;
+            }
+        }
+
+        public override int GetHashCode() {
+            //see https://en.wikipedia.org/wiki/Hash_function
+            const int primeNumber = 397;
+            unchecked {
+                var hashCode = (FilterName != null ? FilterName.GetHashCode() : 0);
+                hashCode = (hashCode * primeNumber) ^ (Binning != null ? Binning.GetHashCode() : 0);
+                hashCode = (hashCode * primeNumber) ^ Gain.GetHashCode();
+                return hashCode;
+            }
+        }
+    }
+
+    [Serializable()]
+    [DataContract]
+    public class FlatDeviceFilterSettingsValue {
+
+        [DataMember]
+        public double Brightness { get; set; }
+
+        [DataMember]
+        public double Time { get; set; }
+
+        public FlatDeviceFilterSettingsValue(double brightness, double time) {
+            Brightness = brightness;
+            Time = time;
         }
     }
 }

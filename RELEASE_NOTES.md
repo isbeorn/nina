@@ -4,7 +4,10 @@
 
 ### Hardware
  - **QHY filter wheels** that are integrated (A-series cameras) or are connected to the camera using the 4-pin cable (CFW1/2/3 filter wheels) are now natively supported. This allows the native QHY camera driver to be used with these cameras and configurations.
- - **Alnitak Flip Flap Panel** support to connect and control the panel inside the application
+ - **Alnitak Flat Device support** 
+    - connect to and control Alnitak flat devices from within the application
+    - flip-flat devices will automatically open and close within a sequence
+    - option to close flip-flats and dust covers at the end of the sequence
  - **Omegon Pro Cameras** Added SDK for omegon pro cameras (untested)
  - **Lacerta MGEN Superguider integration**
     - Full control of the MGEN by mirroring the controller fully into N.I.N.A.'s User Interface
@@ -61,6 +64,7 @@
 - Introduced Gain and Binning settings to use for automated plate solves
 - Removed "Sync" and "Repeat until" options from Imagine->PlateSolve tool window. These will be always on when "Reslew to target" is enabled
 - Improved automated plate solve pop up window with additonaly information
+- Added ability to record flat exposure times with the flat wizard, to be used in a sequence later
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false

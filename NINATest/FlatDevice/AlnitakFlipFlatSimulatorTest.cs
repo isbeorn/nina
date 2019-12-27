@@ -1,11 +1,11 @@
 ﻿using System.Threading;
+using System.Threading.Tasks;
 using Moq;
 using NINA.Model.MyFlatDevice;
-using NUnit.Framework;
-using System.Threading.Tasks;
 using NINA.Profile;
+using NUnit.Framework;
 
-namespace NINATest {
+namespace NINATest.FlatDevice {
 
     [TestFixture]
     public class AlnitakFlipFlatSimulatorTest {

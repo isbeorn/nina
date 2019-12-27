@@ -170,6 +170,9 @@
     <Compile Include="CaptureSequenceTest.cs" />
     <Compile Include="CoordinatesTest.cs" />
     <Compile Include="FITSTest.cs" />
+    <Compile Include="FlatDevice\AlnitakCommandTest.cs" />
+    <Compile Include="FlatDevice\AlnitakResponseTest.cs" />
+    <Compile Include="FlatDevice\FlatDeviceInfoTest.cs" />
     <Compile Include="FlatWizardExposureTimeFinderServiceTest.cs" />
     <Compile Include="FlatWizardVMTest.cs" />
     <Compile Include="GuideStepsHistoryTest.cs" />
@@ -208,10 +211,11 @@
     <Compile Include="RMSTest.cs" />
     <Compile Include="SequenceVMTest.cs" />
     <Compile Include="SynchronizedPHD2GuiderServiceTest.cs" />
-    <Compile Include="AlnitakFlatDeviceTest.cs" />
-    <Compile Include="AlnitakFlatDeviceConnectTest.cs" />
-    <Compile Include="FlatDeviceVMTest.cs" />
-    <Compile Include="AlnitakFlipFlatSimulatorTest.cs" />
+    <Compile Include="FlatDevice\AlnitakFlatDeviceTest.cs" />
+    <Compile Include="FlatDevice\AlnitakFlatDeviceConnectTest.cs" />
+    <Compile Include="FlatDevice\FlatDeviceVMTest.cs" />
+    <Compile Include="FlatDevice\AlnitakFlipFlatSimulatorTest.cs" />
+    <Compile Include="FlatDevice\FlatDeviceSettingsTest.cs" />
     <Compile Include="XISFTest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -229,6 +233,7 @@
       <Name>NINA</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

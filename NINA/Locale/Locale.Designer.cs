@@ -3061,6 +3061,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Closing flat device cover.
+        /// </summary>
+        internal static string LblEndOfSequenceCloseFlatDeviceCover {
+            get {
+                return ResourceManager.GetString("LblEndOfSequenceCloseFlatDeviceCover", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run end of sequence options?.
         /// </summary>
         internal static string LblEndOfSequenceDecision {
@@ -3415,6 +3424,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear Values.
+        /// </summary>
+        internal static string LblFlatDeviceClearValues {
+            get {
+                return ResourceManager.GetString("LblFlatDeviceClearValues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Close.
         /// </summary>
         internal static string LblFlatDeviceClose {
@@ -3568,11 +3586,29 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Flat Wizard Trained Exposure Times.
+        /// </summary>
+        internal static string LblFlatDeviceTrainedFilterTimes {
+            get {
+                return ResourceManager.GetString("LblFlatDeviceTrainedFilterTimes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown.
         /// </summary>
         internal static string LblFlatDeviceUnknown {
             get {
                 return ResourceManager.GetString("LblFlatDeviceUnknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use exposure times trained with flat wizard.
+        /// </summary>
+        internal static string LblFlatDeviceUseWizardTrainedValues {
+            get {
+                return ResourceManager.GetString("LblFlatDeviceUseWizardTrainedValues", resourceCulture);
             }
         }
         

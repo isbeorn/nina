@@ -13,12 +13,17 @@
         }
 
         public string LocalizedCoverState => Locale.Loc.Instance[$"LblFlatDevice{_coverState}"];
+        public string LocalizedLightOnState => LightOn ? Locale.Loc.Instance["LblOn"] : Locale.Loc.Instance["LblOff"];
 
         private bool _lightOn;
 
         public bool LightOn {
             get => _lightOn;
-            set { _lightOn = value; RaisePropertyChanged(); }
+            set {
+                _lightOn = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(LocalizedLightOnState));
+            }
         }
 
         private double _brightness;
