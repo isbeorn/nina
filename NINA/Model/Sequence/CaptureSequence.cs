@@ -57,6 +57,14 @@ namespace NINA.Model {
             return ImageType == CaptureSequence.ImageTypes.SNAPSHOT || ImageType == CaptureSequence.ImageTypes.LIGHT;
         }
 
+        public bool IsFlatSequence() {
+            return ImageType == CaptureSequence.ImageTypes.FLAT;
+        }
+
+        public bool IsDarkSequence() {
+            return ImageType == CaptureSequence.ImageTypes.DARKFLAT || ImageType == CaptureSequence.ImageTypes.BIAS || ImageType == CaptureSequence.ImageTypes.DARK;
+        }
+
         private double _exposureTime;
         private string _imageType;
         private MyFilterWheel.FilterInfo _filterType;

@@ -16,11 +16,11 @@ namespace NINA.Utility.Converters {
             if (value == null) {
                 return Visibility.Collapsed;
             }
-            var imageType = value as string;
-            if (imageType == CaptureSequence.ImageTypes.SNAPSHOT || imageType == CaptureSequence.ImageTypes.LIGHT) {
-                return Visibility.Visible;
-            } else {
+            var seq = value as CaptureSequence;
+            if (seq.IsDarkSequence()) {
                 return Visibility.Collapsed;
+            } else {
+                return Visibility.Visible;
             }
         }
 

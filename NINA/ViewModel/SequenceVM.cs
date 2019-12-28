@@ -845,7 +845,7 @@ namespace NINA.ViewModel {
                         }
 
                         /* 3) Change Filter */
-                        if (seq.IsLightSequence() && seq.FilterType != null) {
+                        if (!seq.IsDarkSequence() && seq.FilterType != null) {
                             prevFilterPosition = filterWheelInfo?.SelectedFilter?.Position ?? -1;
                             await filterWheelMediator.ChangeFilter(seq.FilterType, ct, progress);
                         }
@@ -872,7 +872,7 @@ namespace NINA.ViewModel {
                         }
 
                         /* 5b) Change Filter if next sequence item has a different filter set */
-                        if (seq.NextSequence != null && seq.NextSequence.IsLightSequence() && seq.NextSequence != seq) {
+                        if (seq.NextSequence != null && !seq.NextSequence.IsDarkSequence() && seq.NextSequence != seq) {
                             prevFilterPosition = filterWheelInfo?.SelectedFilter?.Position ?? -1;
                             filterChangeTask = filterWheelMediator.ChangeFilter(seq.NextSequence.FilterType, ct, progress);
                         }

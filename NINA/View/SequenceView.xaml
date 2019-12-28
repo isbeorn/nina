@@ -978,7 +978,7 @@
                                 ItemsSource="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}"
                                 SelectedItem="{Binding FilterType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 SelectedValuePath="Name"
-                                Visibility="{Binding ImageType, Converter={StaticResource IsLightImageTypeToVisibilityConverter}}" />
+                                Visibility="{Binding Converter={StaticResource IsLightImageTypeToVisibilityConverter}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                     <DataGridTemplateColumn.CellTemplate>
@@ -988,7 +988,7 @@
                                 VerticalAlignment="Center"
                                 Text="{Binding FilterType}"
                                 TextAlignment="Center"
-                                Visibility="{Binding ImageType, Converter={StaticResource IsLightImageTypeToVisibilityConverter}}" />
+                                Visibility="{Binding Converter={StaticResource IsLightImageTypeToVisibilityConverter}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -1027,7 +1027,7 @@
                                 HorizontalAlignment="Center"
                                 IsChecked="{Binding Dither, UpdateSourceTrigger=PropertyChanged}"
                                 IsEnabled="{Binding Source={StaticResource AppVM}, Path=SeqVM.IsUsingSynchronizedGuider, Converter={StaticResource InverseBooleanConverter}}"
-                                Visibility="{Binding ImageType, Converter={StaticResource IsLightImageTypeToVisibilityConverter}}" />
+                                Visibility="{Binding Converter={StaticResource IsLightImageTypeToVisibilityConverter}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -1046,7 +1046,7 @@
                                 MinValue="0"
                                 StepSize="1"
                                 SubstractSVG="{StaticResource SubstractSVG}"
-                                Visibility="{Binding ImageType, Converter={StaticResource IsLightImageTypeToVisibilityConverter}}"
+                                Visibility="{Binding Converter={StaticResource IsLightImageTypeToVisibilityConverter}}"
                                 Value="{Binding DitherAmount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
@@ -1058,7 +1058,7 @@
                                 IsEnabled="{Binding Source={StaticResource AppVM}, Path=SeqVM.IsUsingSynchronizedGuider, Converter={StaticResource InverseBooleanConverter}}"
                                 Text="{Binding DitherAmount}"
                                 TextAlignment="Center"
-                                Visibility="{Binding ImageType, Converter={StaticResource IsLightImageTypeToVisibilityConverter}}" />
+                                Visibility="{Binding Converter={StaticResource IsLightImageTypeToVisibilityConverter}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
