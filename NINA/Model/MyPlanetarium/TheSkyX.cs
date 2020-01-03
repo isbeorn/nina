@@ -18,6 +18,7 @@
 */
 
 /*
+ * Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
  * Copyright 2019 Dale Ghent <daleg@elemental.org>
  */
 

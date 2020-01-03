@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -609,8 +609,7 @@ namespace NINA.Model.MyCamera {
                         val = _camera.GainMax;
                     } catch (PropertyNotImplementedException) {
                         _canGetGainMinMax = false;
-                    } catch (ASCOM.InvalidOperationException)
-                    {
+                    } catch (ASCOM.InvalidOperationException) {
                         _canGetGainMinMax = false;
                     }
                 }
@@ -626,8 +625,7 @@ namespace NINA.Model.MyCamera {
                         val = _camera.GainMin;
                     } catch (PropertyNotImplementedException) {
                         _canGetGainMinMax = false;
-                    } catch (ASCOM.InvalidOperationException)
-                    {
+                    } catch (ASCOM.InvalidOperationException) {
                         _canGetGainMinMax = false;
                     }
                 }

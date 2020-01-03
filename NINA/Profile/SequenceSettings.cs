@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -26,9 +26,11 @@ using System.IO;
 using System.Runtime.Serialization;
 
 namespace NINA.Profile {
+
     [Serializable()]
     [DataContract]
     public class SequenceSettings : Settings, ISequenceSettings {
+
         public SequenceSettings() {
             SetDefaultValues();
         }
@@ -118,21 +120,16 @@ namespace NINA.Profile {
         private string sequenceFolder;
 
         [DataMember]
-        public string DefaultSequenceFolder
-        {
-            get
-            {
+        public string DefaultSequenceFolder {
+            get {
                 return sequenceFolder;
             }
-            set
-            {
-                if (sequenceFolder != value)
-                {
+            set {
+                if (sequenceFolder != value) {
                     sequenceFolder = value;
                     RaisePropertyChanged();
                 }
             }
         }
-
     }
 }

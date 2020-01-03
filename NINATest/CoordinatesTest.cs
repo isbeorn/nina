@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -27,6 +27,7 @@ using NUnit.Framework;
 using System.Windows;
 
 namespace NINATest {
+
     [TestFixture]
     public class CoordinatesTest {
         private static double ANGLE_TOLERANCE = 0.000000000001;

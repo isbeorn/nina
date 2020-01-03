@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -80,20 +80,17 @@ namespace NINA.Model {
             s.PropertyChanged += Sequence_Item_PropertyChanged;
         }
 
-        private void Sequence_Item_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
+        private void Sequence_Item_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (sender.GetType().GetProperty(e.PropertyName).GetCustomAttributes(false).Any(a => a is XmlIgnoreAttribute))
                 return;
 
-            if (e.PropertyName!=nameof(CaptureSequence.ProgressExposureCount))
+            if (e.PropertyName != nameof(CaptureSequence.ProgressExposureCount))
                 HasChanged = true;
         }
 
-        public void AddAt(int idx, CaptureSequence s)
-        {
+        public void AddAt(int idx, CaptureSequence s) {
             Items.Insert(idx, s);
-            if (Items.Count(i => i.Enabled) == 1)
-            {
+            if (Items.Count(i => i.Enabled) == 1) {
                 ActiveSequence = Items.First(i => i.Enabled);
             }
         }
@@ -139,94 +136,75 @@ namespace NINA.Model {
             }
         }
 
-        public static CaptureSequenceList Load(string fileName, ICollection<MyFilterWheel.FilterInfo> filters, double latitude, double longitude)
-        {
-            using (var s = new FileStream(fileName, FileMode.Open))
-            {
+        public static CaptureSequenceList Load(string fileName, ICollection<MyFilterWheel.FilterInfo> filters, double latitude, double longitude) {
+            using (var s = new FileStream(fileName, FileMode.Open)) {
                 return Load(s, fileName, filters, latitude, longitude);
             }
         }
-        public static CaptureSequenceList Load(Stream stream, string fileName, ICollection<MyFilterWheel.FilterInfo> filters, double latitude, double longitude)
-        {
+
+        public static CaptureSequenceList Load(Stream stream, string fileName, ICollection<MyFilterWheel.FilterInfo> filters, double latitude, double longitude) {
             CaptureSequenceList l = null;
-            try
-            {
+            try {
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(CaptureSequenceList));
 
                 l = (CaptureSequenceList)xmlSerializer.Deserialize(stream);
                 AdjustSequenceToMatchCurrentProfile(filters, latitude, longitude, l);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.ShowError(Locale.Loc.Instance["LblLoadSequenceFailed"] + Environment.NewLine + ex.Message);
             }
             return l;
         }
 
-        private static void AdjustSequenceToMatchCurrentProfile(ICollection<MyFilterWheel.FilterInfo> filters, double latitude, double longitude, CaptureSequenceList l)
-        {
-            foreach (CaptureSequence s in l)
-            {
-                if (s.FilterType != null)
-                {
+        private static void AdjustSequenceToMatchCurrentProfile(ICollection<MyFilterWheel.FilterInfo> filters, double latitude, double longitude, CaptureSequenceList l) {
+            foreach (CaptureSequence s in l) {
+                if (s.FilterType != null) {
                     //first try to match by name; otherwise match by position.
                     var filter = filters.Where((f) => f.Name == s.FilterType.Name).FirstOrDefault();
-                    if (filter == null)
-                    {
+                    if (filter == null) {
                         filter = filters.Where((f) => f.Position == s.FilterType.Position).FirstOrDefault();
-                        if (filter == null)
-                        {
+                        if (filter == null) {
                             Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFilterNotFoundForPosition"], (s.FilterType.Position + 1)));
                         }
                     }
                     s.FilterType = filter;
                 }
             }
-            if (l.ActiveSequence == null && l.Count > 0)
-            {
+            if (l.ActiveSequence == null && l.Count > 0) {
                 l.ActiveSequence = l.Items.SkipWhile(x => x.TotalExposureCount - x.ProgressExposureCount == 0).FirstOrDefault();
             }
             l.DSO?.SetDateAndPosition(SkyAtlasVM.GetReferenceDate(DateTime.Now), latitude, longitude);
         }
 
-        public static void SaveSequenceSet(Collection<CaptureSequenceList> sequenceSet, string path)
-        {
-            try
-            {
+        public static void SaveSequenceSet(Collection<CaptureSequenceList> sequenceSet, string path) {
+            try {
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(Collection<CaptureSequenceList>));
 
-                using (StreamWriter writer = new StreamWriter(path))
-                {
+                using (StreamWriter writer = new StreamWriter(path)) {
                     xmlSerializer.Serialize(writer, sequenceSet);
                 }
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.ShowError(ex.Message);
             }
         }
 
-        public static List<CaptureSequenceList> LoadSequenceSet(Stream stream, ICollection<MyFilterWheel.FilterInfo> filters, double latitude, double longitude)
-        {
+        public static List<CaptureSequenceList> LoadSequenceSet(Stream stream, ICollection<MyFilterWheel.FilterInfo> filters, double latitude, double longitude) {
             List<CaptureSequenceList> c = null;
-            try
-            {
+            try {
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<CaptureSequenceList>));
 
                 c = (List<CaptureSequenceList>)xmlSerializer.Deserialize(stream);
                 foreach (var l in c)
                     AdjustSequenceToMatchCurrentProfile(filters, latitude, longitude, l);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.ShowError(Locale.Loc.Instance["LblLoadSequenceSetFailed"] + Environment.NewLine + ex.Message);
             }
             return c;
         }
-        private void PlumbInSequencePropertyChangedEvents()
-        {
+
+        private void PlumbInSequencePropertyChangedEvents() {
             foreach (var s in Items)
                 s.PropertyChanged += Sequence_Item_PropertyChanged;
         }
@@ -236,14 +214,13 @@ namespace NINA.Model {
             HasChanged = false;
         }
 
-        private void CaptureSequenceList_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
+        private void CaptureSequenceList_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             // see if we need to worry our pretty heads about this property
             if (GetType().GetProperty(e.PropertyName).GetCustomAttributes(false).Any(a => a is XmlIgnoreAttribute))
                 return;
 
-            if ((e.PropertyName!=nameof(HasChanged)) && (e.PropertyName!=nameof(TargetNameWithModifiedIndicator))
-                && (e.PropertyName!=nameof(ActiveSequenceIndex)))
+            if ((e.PropertyName != nameof(HasChanged)) && (e.PropertyName != nameof(TargetNameWithModifiedIndicator))
+                && (e.PropertyName != nameof(ActiveSequenceIndex)))
                 HasChanged = true;
         }
 
@@ -270,8 +247,7 @@ namespace NINA.Model {
         }
 
         [XmlIgnore]
-        public string TargetNameWithModifiedIndicator
-        {
+        public string TargetNameWithModifiedIndicator {
             get { return _targetName + (HasChanged ? " *" : ""); }
         }
 
@@ -741,39 +717,33 @@ namespace NINA.Model {
         private string sequenceFileName;
 
         [XmlIgnore]
-        public string SequenceFileName
-        {
-            get
-            {
+        public string SequenceFileName {
+            get {
                 return sequenceFileName;
             }
-            set
-            {
+            set {
                 sequenceFileName = value;
                 RaisePropertyChanged();
             }
         }
 
-        public bool HasFileName
-        {
+        public bool HasFileName {
             get { return !string.IsNullOrWhiteSpace(sequenceFileName); }
         }
 
         private bool hasChanged;
+
         [XmlIgnore]
-        public bool HasChanged
-        {
+        public bool HasChanged {
             get { return hasChanged; }
-            private set
-            {
+            private set {
                 hasChanged = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(TargetNameWithModifiedIndicator));
             }
         }
 
-        public void MarkAsUnchanged()
-        {
+        public void MarkAsUnchanged() {
             HasChanged = false;
         }
     }

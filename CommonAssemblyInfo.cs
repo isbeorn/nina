@@ -4,7 +4,7 @@ using System.Reflection;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyCopyright("Copyright ©  2017 - 2019 Stefan Berg and the N.I.N.A. contributors")]
+[assembly: AssemblyCopyright("Copyright ©  2017 - 2020 Stefan Berg and the N.I.N.A. contributors")]
 [assembly: AssemblyProduct("N.I.N.A. - Nighttime Imaging 'N' Astronomy")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
