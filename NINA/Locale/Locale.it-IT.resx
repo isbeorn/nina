@@ -1137,6 +1137,9 @@ Quando le linee non sono allineate significa che c'è un errore di allineamento 
   <data name="LblEnabled" xml:space="preserve">
     <value>Abilitato</value>
   </data>
+  <data name="LblEndOfSequenceCloseFlatDeviceCover" xml:space="preserve">
+    <value>Closing flat device cover</value>
+  </data>
   <data name="LblEndOfSequenceDecision" xml:space="preserve">
     <value>Eseguire le opzioni di fine sequenza?</value>
   </data>
@@ -1258,6 +1261,9 @@ Quando il trigger è disattivato, l'applicazione si limita ad ignorare l'inizio 
   <data name="LblFlatDeviceChooseSerialPort" xml:space="preserve">
     <value>Scegli porta seriale</value>
   </data>
+  <data name="LblFlatDeviceClearValues" xml:space="preserve">
+    <value>Clear Values</value>
+  </data>
   <data name="LblFlatDeviceClose" xml:space="preserve">
     <value>Chiudi</value>
   </data>
@@ -1309,8 +1315,14 @@ Quando il trigger è disattivato, l'applicazione si limita ad ignorare l'inizio 
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Insieme</value>
   </data>
+  <data name="LblFlatDeviceTrainedFilterTimes" xml:space="preserve">
+    <value>Flat Wizard Trained Exposure Times</value>
+  </data>
   <data name="LblFlatDeviceUnknown" xml:space="preserve">
     <value>Sconosciuto</value>
+  </data>
+  <data name="LblFlatDeviceUseWizardTrainedValues" xml:space="preserve">
+    <value>Use exposure times trained with flat wizard</value>
   </data>
   <data name="LblFlatExposureCalcContinue" xml:space="preserve">
     <value>ADU media era {0}, inizio calcolo tempo esposizione a {1}</value>

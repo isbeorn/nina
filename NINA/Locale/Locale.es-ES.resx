@@ -1137,6 +1137,9 @@ cuando las lineas no estan alineadas hay algun error de alineacion polar</value>
   <data name="LblEnabled" xml:space="preserve">
     <value>Habilitado</value>
   </data>
+  <data name="LblEndOfSequenceCloseFlatDeviceCover" xml:space="preserve">
+    <value>Closing flat device cover</value>
+  </data>
   <data name="LblEndOfSequenceDecision" xml:space="preserve">
     <value>Ejecuta Opciones de final de secuencia?</value>
   </data>
@@ -1258,6 +1261,9 @@ Cuando el disparador se desactive la aplicacion solo obviara la exposicion inici
   <data name="LblFlatDeviceChooseSerialPort" xml:space="preserve">
     <value>Elegir puerto serial</value>
   </data>
+  <data name="LblFlatDeviceClearValues" xml:space="preserve">
+    <value>Clear Values</value>
+  </data>
   <data name="LblFlatDeviceClose" xml:space="preserve">
     <value>Cerrar</value>
   </data>
@@ -1309,8 +1315,14 @@ Cuando el disparador se desactive la aplicacion solo obviara la exposicion inici
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Fijar</value>
   </data>
+  <data name="LblFlatDeviceTrainedFilterTimes" xml:space="preserve">
+    <value>Flat Wizard Trained Exposure Times</value>
+  </data>
   <data name="LblFlatDeviceUnknown" xml:space="preserve">
     <value>Desconocido</value>
+  </data>
+  <data name="LblFlatDeviceUseWizardTrainedValues" xml:space="preserve">
+    <value>Use exposure times trained with flat wizard</value>
   </data>
   <data name="LblFlatExposureCalcContinue" xml:space="preserve">
     <value>El ADU promedio fue {0}, iniciando calculo de tiempo de exposicion en {1}</value>

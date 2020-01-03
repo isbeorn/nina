@@ -148,7 +148,7 @@
     <value>Uitgebreide Instellingen</value>
   </data>
   <data name="LblAFContrastDetection" xml:space="preserve">
-    <value>Contrast detectie (experimenteel)</value>
+    <value>Contrastdetectie (experimenteel)</value>
   </data>
   <data name="LblAFOnButFocuserNotConnected" xml:space="preserve">
     <value>Autofocus staat aan, maar de focuser is niet aangesloten</value>
@@ -160,10 +160,10 @@
     <value>Na</value>
   </data>
   <data name="LblAFUseBrightestStars" xml:space="preserve">
-    <value>Gebruik de felste n sterren</value>
+    <value>Gebruik de helderste n sterren</value>
   </data>
   <data name="LblAFUseBrightestStarsTooltip" xml:space="preserve">
-    <value>AF felle sterren limiet. 0 betekent geen limiet.</value>
+    <value>AF helderste sterren limiet. 0 betekent geen limiet.</value>
   </data>
   <data name="LblAlnitakFlatPanel" xml:space="preserve">
     <value>Alnitak Flat Panel</value>
@@ -1127,6 +1127,9 @@ wanneer de lijnen niet zijn uitgelijnd is er er een of andere polaire uitlijning
   <data name="LblEnabled" xml:space="preserve">
     <value>Ingeschakeld</value>
   </data>
+  <data name="LblEndOfSequenceCloseFlatDeviceCover" xml:space="preserve">
+    <value>Closing flat device cover</value>
+  </data>
   <data name="LblEndOfSequenceDecision" xml:space="preserve">
     <value>Eind van de sequentie opties uitvoeren?</value>
   </data>
@@ -1248,6 +1251,9 @@ Wanneer deze instelling is gedeactiveerd zal de applicatie de Start Belichting o
   <data name="LblFlatDeviceChooseSerialPort" xml:space="preserve">
     <value>Kies seriële poort</value>
   </data>
+  <data name="LblFlatDeviceClearValues" xml:space="preserve">
+    <value>Clear Values</value>
+  </data>
   <data name="LblFlatDeviceClose" xml:space="preserve">
     <value>Sluiten</value>
   </data>
@@ -1299,8 +1305,14 @@ Wanneer deze instelling is gedeactiveerd zal de applicatie de Start Belichting o
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Instellen</value>
   </data>
+  <data name="LblFlatDeviceTrainedFilterTimes" xml:space="preserve">
+    <value>Flat Wizard Trained Exposure Times</value>
+  </data>
   <data name="LblFlatDeviceUnknown" xml:space="preserve">
     <value>Onbekend</value>
+  </data>
+  <data name="LblFlatDeviceUseWizardTrainedValues" xml:space="preserve">
+    <value>Use exposure times trained with flat wizard</value>
   </data>
   <data name="LblFlatExposureCalcContinue" xml:space="preserve">
     <value>ADU gemiddelde was {0}, start de belichtingstijdberekening op {1}</value>

@@ -1137,6 +1137,9 @@ wenn die Linien nicht ausgerichtet sind, gibt es einen Polarausrichtungsfehler</
   <data name="LblEnabled" xml:space="preserve">
     <value>Aktiv</value>
   </data>
+  <data name="LblEndOfSequenceCloseFlatDeviceCover" xml:space="preserve">
+    <value>Schließe Flatfield Geräteabdeckung</value>
+  </data>
   <data name="LblEndOfSequenceDecision" xml:space="preserve">
     <value>Sequenzendoptionen ausführen?</value>
   </data>
@@ -1258,6 +1261,9 @@ Ist dieser Auslöser deaktiviert, wird dieser Schritt übersprungen.</value>
   <data name="LblFlatDeviceChooseSerialPort" xml:space="preserve">
     <value>Serielle Schnittstelle wählen</value>
   </data>
+  <data name="LblFlatDeviceClearValues" xml:space="preserve">
+    <value>Werte löschen</value>
+  </data>
   <data name="LblFlatDeviceClose" xml:space="preserve">
     <value>Schließen</value>
   </data>
@@ -1309,8 +1315,14 @@ Ist dieser Auslöser deaktiviert, wird dieser Schritt übersprungen.</value>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Setzen</value>
   </data>
+  <data name="LblFlatDeviceTrainedFilterTimes" xml:space="preserve">
+    <value>Mit Flat Wizard trainierte Belichtungszeiten</value>
+  </data>
   <data name="LblFlatDeviceUnknown" xml:space="preserve">
     <value>Unbekannt</value>
+  </data>
+  <data name="LblFlatDeviceUseWizardTrainedValues" xml:space="preserve">
+    <value>Mit Flat Wizard trainierte Belichtungszeiten benutzen</value>
   </data>
   <data name="LblFlatExposureCalcContinue" xml:space="preserve">
     <value>Mittelwert ADU war {0}, beginne Belichtungszeitkalkulation bei {1}</value>

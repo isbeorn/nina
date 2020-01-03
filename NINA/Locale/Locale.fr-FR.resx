@@ -151,7 +151,7 @@
     <value>Détection de Contraste (Expérimental)</value>
   </data>
   <data name="LblAFOnButFocuserNotConnected" xml:space="preserve">
-    <value>La focalisation automatique est activée mais aucun dispositif n'est connecté</value>
+    <value>La mise au point automatique est activée alors que le focuser n'est pas connecté</value>
   </data>
   <data name="LblAFStarHFR" xml:space="preserve">
     <value>HFR des Étoiles</value>
@@ -160,10 +160,10 @@
     <value>Suite</value>
   </data>
   <data name="LblAFUseBrightestStars" xml:space="preserve">
-    <value>Utiliser n étoiles brillantes</value>
+    <value>Utiliser n étoiles les plus brillantes</value>
   </data>
   <data name="LblAFUseBrightestStarsTooltip" xml:space="preserve">
-    <value>Limiter la FA aux étoiles brillantes. 0 signifiant aucune limite.</value>
+    <value>Limiter la mise au point aux étoiles les plus brillantes. 0 signifiant aucune limite.</value>
   </data>
   <data name="LblAlnitakFlatPanel" xml:space="preserve">
     <value>Écran à Plu Alnitak</value>
@@ -185,10 +185,10 @@
   </data>
   <data name="LblAltitudeMeasurementButtonTooltip" xml:space="preserve">
     <value>Mesures de l'erreur en Altitude en 3 étapes.
-1. Prise d'une image avec réduction astrométrique pour les coordonnées de la position actuelle.
-2. Pointer le télescope avec déplacement de 0.5 degrée en Ascension Droite.
-3. Prise d'une nouvelle image avec réduction astrométrique à cette nouvelle position.
-L'erreur en Altitude sera calculée et affichée à partir de ces deux positions.</value>
+1. Prise d'une image avec astrométrie pour les coordonnées de la position actuelle.
+2. Pointer le télescope avec déplacement de 0.5 degré en Ascension Droite.
+3. Prise d'une nouvelle image avec astrométrie à cette nouvelle position.
+L'erreur en Altitude sera calculée et affichée à partir de ces deux positions</value>
   </data>
   <data name="LblAltitudeMeasurementDescription" xml:space="preserve">
     <value>Pointer le télescope à l'est ou à l'ouest près de la déclinaison 0 et tout près de l'horizon.</value>
@@ -250,7 +250,7 @@ L'application doit-elle tenter de redémarrer? (Peut conduire à un comportement
     <value>Seuls les capteurs monochromes 16 bits sont actuellement pris en charge</value>
   </data>
   <data name="LblASPS" xml:space="preserve">
-    <value>Réduction Astrométrique pour tout le ciel</value>
+    <value>Astrométrie globale</value>
   </data>
   <data name="LblASPSDirectory" xml:space="preserve">
     <value>Emplacement ASPS</value>
@@ -259,7 +259,7 @@ L'application doit-elle tenter de redémarrer? (Peut conduire à un comportement
     <value>Exécutable ASPS non trouvé</value>
   </data>
   <data name="LblASTAP" xml:space="preserve">
-    <value>ASTAP (Astrometric STAcking Program), réduction astrométrique et affichage des informations FITS</value>
+    <value>ASTAP (Astrometric STAcking Program), astrométrie et affichage des informations FITS</value>
   </data>
   <data name="LblASTAPDirectory" xml:space="preserve">
     <value>Emplacement ASTAP</value>
@@ -304,13 +304,13 @@ L'application doit-elle tenter de redémarrer? (Peut conduire à un comportement
     <value>Temps d'exposition FA</value>
   </data>
   <data name="LblAutoFocusExposureTimeTooltip" xml:space="preserve">
-    <value>Temps d'exposition utilisé pour la focalisation automatique lorsqu'aucune valeur n'a été spécifiée pour un filtre ou que son temps est égale à zéro</value>
+    <value>Temps d'exposition utilisé pour la focalisation automatique alors qu'aucune valeur n'a été spécifiée pour un filtre ou que son temps est égale à zéro</value>
   </data>
   <data name="LblAutoFocusFilter" xml:space="preserve">
     <value>Filtre Focalisation Auto</value>
   </data>
   <data name="LblAutoFocusGearNotConnected" xml:space="preserve">
-    <value>Ne peut démarrer la Focalisation Auto. La caméra ou la focalisation n'est pas connectée.</value>
+    <value>Ne peut démarrer la Focalisation Auto. La caméra ou la focalisation n'est pas connectée!</value>
   </data>
   <data name="LblAutoFocusInnerCropRatio" xml:space="preserve">
     <value>FA Ratio Fenêtrage Intérieur</value>
@@ -348,10 +348,10 @@ les objets terrestres ou du système solaire également, mais peuvent être sens
     <value>Si la focalisation auto échoue parce que le HFR devient pire qu'à la position originale, combien de relances de la focalisation auto doit être fait en vue d'obtenir un succès avant de revenir à la focalisation initiale.</value>
   </data>
   <data name="LblAutoFocusNumberOfFramesPerPoint" xml:space="preserve">
-    <value>Nombre d'aquisitions par point en FA</value>
+    <value>Nombre d'acquisitions par point en FA</value>
   </data>
   <data name="LblAutoFocusNumberOfFramesPerPointTooltip" xml:space="preserve">
-    <value>Combien d'aquisitions doit être prises pour chaque point de focalisation. Au-delà de un, plusieurs aquisitions vont être prises pour chaque position et la moyenne de leur HFR sera utilisée pour déterminer la nouvelle position.</value>
+    <value>Combien d'acquisitions doit être prises pour chaque point de focalisation. Au-delà de un, plusieurs acquisitions vont être prises pour chaque position et la moyenne de leur HFR sera utilisée pour déterminer la nouvelle position.</value>
   </data>
   <data name="LblAutoFocusOnFilterChange" xml:space="preserve">
     <value>Au changement de filtre</value>
@@ -396,14 +396,14 @@ les objets terrestres ou du système solaire également, mais peuvent être sens
     <value>Erreur en Azimuth</value>
   </data>
   <data name="LblAzimuthMeasurement" xml:space="preserve">
-    <value>Mersure de l'Azimuth</value>
+    <value>Mesure de l'Azimuth</value>
   </data>
   <data name="LblAzimuthMeasurementButtonTooltip" xml:space="preserve">
     <value>Mesures de l'erreur en Azimuth en 3 étapes.
-1. Prise d'une image avec réduction astrométrique pour les coordonnées de la position actuelle.
-2. Pointer le télescope avec déplacement de 0.5 degrée en Ascension Droite.
-3. Prise d'une nouvelle image avec réduction astrométrique à cette nouvelle position.
-L'erreur en Azimuth sera calculée et affichée à partir de ces deux positions.</value>
+1. Prise d'une image avec astrométrie pour les coordonnées de la position actuelle.
+2. Pointer le télescope avec déplacement de 0.5 degré en Ascension Droite.
+3. Prise d'une nouvelle image avec astrométrie à cette nouvelle position.
+L'erreur en Azimuth sera calculée et affichée à partir de ces deux positions</value>
   </data>
   <data name="LblAzimuthMeasurementDescription" xml:space="preserve">
     <value>Pointer le télescope au Sud près de la déclinaison 0 et près du méridien.</value>
@@ -415,7 +415,7 @@ L'erreur en Azimuth sera calculée et affichée à partir de ces deux positions.
     <value>Une exception s'est produite durant la mesure du jeu d'engrenage. La valeur estimée du jeu est peut-être mauvaise.</value>
   </data>
   <data name="LblBacklashMeasurements" xml:space="preserve">
-    <value>Les valeurs de jeux de focalisation IN: {0}, OUT: {1}  seront enregistrées</value>
+    <value>Les valeurs de jeux de focalisation IN: {0}, OUT: {1} seront enregistrées</value>
   </data>
   <data name="LblBeta" xml:space="preserve">
     <value>Beta</value>
@@ -552,7 +552,7 @@ ne pas être en mesure de compenser pour les variations de températures ambiant
     <value>Centre AD hms</value>
   </data>
   <data name="LblCenterTarget" xml:space="preserve">
-    <value>Recentrer la cible par réduction astrométrique</value>
+    <value>Recentrer la cible avec astrométrie</value>
   </data>
   <data name="LblChange" xml:space="preserve">
     <value>Changer</value>
@@ -659,7 +659,7 @@ Voulez-vous toujours la fermer et perdre tous les changements?</value>
     <value>Centaure</value>
   </data>
   <data name="LblConstellation_CEP" xml:space="preserve">
-    <value>Cephée</value>
+    <value>Céphée</value>
   </data>
   <data name="LblConstellation_CET" xml:space="preserve">
     <value>Baleine</value>
@@ -946,10 +946,10 @@ Lorsqu'une durée est appliquée, la température baissera à un taux relatif en
 si les traces d'étoiles ne sont pas alignées, c'est qu'il y a une erreur d'alignement polaire de la monture.</value>
   </data>
   <data name="LblDARVSlewDescription" xml:space="preserve">
-    <value>Spécifie la durée de la procédure  D.A.R.V. . Le télescope va pointer la moitier du temps dans une direction et va revenir à son point de départ. Lorsque l'alignement polaire de la monture est bonne, seules des lignes droites laissées par les étoiles apparaîtront.  Autrement des patterns en forme de "V" seront plutôt visibles. Pour la mesure des erreurs en azimuth, le télescope pointera près du méridien, autrement à l'est ou à ouest.</value>
+    <value>Spécifie la durée de la procédure D.A.R.V.. Le télescope va pointer la moitié du temps dans une direction et va revenir à son point de départ. Lorsque l'alignement polaire de la monture est bonne, seules des lignes droites laissées par les étoiles apparaîtront. Autrement des patterns en forme de "V" seront plutôt visibles. Pour la mesure des erreurs en azimuth, le télescope pointera près du méridien, autrement à l'est ou à ouest.</value>
   </data>
   <data name="LblDataProvidedBy" xml:space="preserve">
-    <value>Set de données intiales du DSO fournie par</value>
+    <value>Set de données initiales du DSO fournie par</value>
   </data>
   <data name="LblDataToDownloadRatio" xml:space="preserve">
     <value>Rapport (TTransfert)/(TAcquis.)</value>
@@ -1012,7 +1012,7 @@ si les traces d'étoiles ne sont pas alignées, c'est qu'il y a une erreur d'ali
     <value>Ce répertoire sera utilisé pour charger et enregistrer les séquences</value>
   </data>
   <data name="LblDegree" xml:space="preserve">
-    <value>degrée</value>
+    <value>degré</value>
   </data>
   <data name="LblDegreeShort" xml:space="preserve">
     <value>°</value>
@@ -1054,7 +1054,7 @@ si les traces d'étoiles ne sont pas alignées, c'est qu'il y a une erreur d'ali
     <value>Direct Guider n'a pas pu se connecter au Télescope</value>
   </data>
   <data name="LblDirectGuiderTelescopeDisconnect" xml:space="preserve">
-    <value>Le télescope a été déconnecté. Direct Guider va se déconnecter. Le dither n'est plus oppérationnel!</value>
+    <value>Le télescope a été déconnecté. Direct Guider va se déconnecter. Le dither n'est plus opérationnel!</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
     <value>Répertoire pour enregistrer l'image non trouvée!</value>
@@ -1137,6 +1137,9 @@ si les traces d'étoiles ne sont pas alignées, c'est qu'il y a une erreur d'ali
   <data name="LblEnabled" xml:space="preserve">
     <value>Activé</value>
   </data>
+  <data name="LblEndOfSequenceCloseFlatDeviceCover" xml:space="preserve">
+    <value>Fermeture du bouchon de l'appareil à flat</value>
+  </data>
   <data name="LblEndOfSequenceDecision" xml:space="preserve">
     <value>Exécuter les options de fin de séquence?</value>
   </data>
@@ -1153,7 +1156,7 @@ si les traces d'étoiles ne sont pas alignées, c'est qu'il y a une erreur d'ali
     <value>Époque</value>
   </data>
   <data name="LblEquipment" xml:space="preserve">
-    <value>Équipment</value>
+    <value>Équipement</value>
   </data>
   <data name="LblError" xml:space="preserve">
     <value>Erreur</value>
@@ -1198,11 +1201,11 @@ si les traces d'étoiles ne sont pas alignées, c'est qu'il y a une erreur d'ali
     <value>Fichier</value>
   </data>
   <data name="LblFileCameraDescription" xml:space="preserve">
-    <value>Ce simulateur de caméra permettra d’utiliser des caméras dépourvues de SDK, tout en utilisant la totalité du  flux de travail de N.I.N.A..
+    <value>Ce simulateur de caméra permettra d’utiliser des caméras dépourvues de SDK, tout en utilisant la totalité du flux de travail de N.I.N.A..
 Ce simulateur de caméra surveillera le dossier spécifié pour les fichiers nouvellement créés. Ces fichiers seront stockés dans une file d'attente interne.
 Chaque fois que l'application souhaite télécharger une image depuis l'appareil photo, le premier élément de cette file d'attente est chargé dans N.I.N.A.
 De plus, un déclencheur manuel du mode Bulb peut être activé, de sorte qu'il utilisera le mode Bulb sélectionné dans Paramètres-&gt; Équipement-&gt; Caméra au début de l'exposition.
-Lorsque ce déclencheur est désactivé, l'application ignorera simplement le début de l'exposition et attendra qu'un autre fichier soit transféré dans le dossier spécifié.</value>
+Lorsque ce déclencheur est désactivé, l'application ignorera simplement le début de l'exposition et attendra qu'un autre fichier soit transféré dans le dossier spécifié</value>
   </data>
   <data name="LblFileExample" xml:space="preserve">
     <value>Exemple de nom de fichier</value>
@@ -1258,6 +1261,9 @@ Lorsque ce déclencheur est désactivé, l'application ignorera simplement le d�
   <data name="LblFlatDeviceChooseSerialPort" xml:space="preserve">
     <value>Choisir le port série</value>
   </data>
+  <data name="LblFlatDeviceClearValues" xml:space="preserve">
+    <value>Effacer les valeurs</value>
+  </data>
   <data name="LblFlatDeviceClose" xml:space="preserve">
     <value>Fermer</value>
   </data>
@@ -1309,8 +1315,14 @@ Lorsque ce déclencheur est désactivé, l'application ignorera simplement le d�
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Ajuster</value>
   </data>
+  <data name="LblFlatDeviceTrainedFilterTimes" xml:space="preserve">
+    <value>L'assistant Flat a testé les temps d'exposition</value>
+  </data>
   <data name="LblFlatDeviceUnknown" xml:space="preserve">
     <value>Inconnu</value>
+  </data>
+  <data name="LblFlatDeviceUseWizardTrainedValues" xml:space="preserve">
+    <value>Utiliser les temps d'exposition testés avec l'assistant flat</value>
   </data>
   <data name="LblFlatExposureCalcContinue" xml:space="preserve">
     <value>L'ADU moyenne était {0}, le calcul du temps d'exposition à {1}</value>
@@ -1346,13 +1358,13 @@ Lorsque ce déclencheur est désactivé, l'application ignorera simplement le d�
     <value>Paramètres de l'assistant PLU</value>
   </data>
   <data name="LblFlatUserPromptCancel" xml:space="preserve">
-    <value>Annuler Assitant PLU</value>
+    <value>Annuler Assistant PLU</value>
   </data>
   <data name="LblFlatUserPromptFailure" xml:space="preserve">
-    <value>mpossible d'obtenir une bonne exposition pour les PLU</value>
+    <value>impossible d'obtenir une bonne exposition pour les PLU</value>
   </data>
   <data name="LblFlatUserPromptFlatTooBright" xml:space="preserve">
-    <value>Vos PLU sont trop brillants, dimminuez l'intensité, ajustez la tolérance, la moyenne cible ou la durée d'exposition minimale</value>
+    <value>Vos PLU sont trop brillants, diminuez l'intensité, ajustez la tolérance, la moyenne cible ou la durée d'exposition minimale</value>
   </data>
   <data name="LblFlatUserPromptFlatTooDim" xml:space="preserve">
     <value>Vos PLU sont trop faibles, augmentez l'intensité, ajustez la tolérance, la moyenne cible ou la durée d'exposition maximale</value>
@@ -1568,7 +1580,7 @@ HFR calculé: {2}</value>
     <value>HNSKY</value>
   </data>
   <data name="LblHorizontalPanels" xml:space="preserve">
-    <value>Planneaux Horizontaux</value>
+    <value>Panneaux Horizontaux</value>
   </data>
   <data name="LblHost" xml:space="preserve">
     <value>Hôte</value>
@@ -1628,7 +1640,7 @@ HFR calculé: {2}</value>
     <value>Infos</value>
   </data>
   <data name="LblInitiatePlatesolve" xml:space="preserve">
-    <value>Lancer Réduction Astrométrique</value>
+    <value>Lancer Astrométrie</value>
   </data>
   <data name="LblInvalidMode" xml:space="preserve">
     <value>Mode Invalide</value>
@@ -1679,7 +1691,7 @@ HFR calculé: {2}</value>
     <value>Charger une Image à partir d'un fichier</value>
   </data>
   <data name="LblLoadImageFromFileTooltip" xml:space="preserve">
-    <value>Télécharger une image à partir d'une fichier et utiliser la réduction astrométrique sur tout le ciel pour en déterminer les coordonnées</value>
+    <value>Télécharger une image à partir d'une fichier et utiliser l'astrométrie sur tout le ciel pour en déterminer les coordonnées</value>
   </data>
   <data name="LblLoadProfile" xml:space="preserve">
     <value>Charger Profile</value>
@@ -1928,10 +1940,10 @@ HFR calculé: {2}</value>
     <value>#Étoiles</value>
   </data>
   <data name="LblObjectNameHint" xml:space="preserve">
-    <value>Nom de l'Object (ex. M 31)</value>
+    <value>Nom de l'Objet (ex. M 31)</value>
   </data>
   <data name="LblObjectType" xml:space="preserve">
-    <value>Type d'Object</value>
+    <value>Type d'Objet</value>
   </data>
   <data name="LblObjectType_1STAR" xml:space="preserve">
     <value>1 Étoile</value>
@@ -2126,7 +2138,7 @@ HFR calculé: {2}</value>
     <value>AD : {0} ({1}")</value>
   </data>
   <data name="LblPhd2ServerConnectionLost" xml:space="preserve">
-    <value>onnexion au serveur PHD2 perdue!</value>
+    <value>Connexion au serveur PHD2 perdue!</value>
   </data>
   <data name="LblPHD2ServerPort" xml:space="preserve">
     <value>Port Serveur PHD2</value>
@@ -2138,7 +2150,7 @@ HFR calculé: {2}</value>
     <value>Configuration PHD2</value>
   </data>
   <data name="LblPhd2StartProcessError" xml:space="preserve">
-    <value>mpossible de démarrer PHD2. Consultez les journaux pour plus de détails.</value>
+    <value>Impossible de démarrer PHD2. Consultez les journaux pour plus de détails.</value>
   </data>
   <data name="LblPhd2SynchronizedServiceClientConnected" xml:space="preserve">
     <value>
@@ -2183,10 +2195,10 @@ HFR calculé: {2}</value>
     <value>Coordonnées acquises à partir de {0}</value>
   </data>
   <data name="LblPlanetariumFailedToConnect" xml:space="preserve">
-    <value>Unable to connect to {0}. Please ensure that it is running and configured to receive requests</value>
+    <value>Impossible de se connecter à {0}. Veuillez vous assurer qu'il est allumé et configuré pour recevoir les requêtes</value>
   </data>
   <data name="LblPlanetariumObjectNotSelected" xml:space="preserve">
-    <value>There is no object currently selected in {0}</value>
+    <value>Il n'y a aucun objet actuellement sélectionné dans {0}</value>
   </data>
   <data name="LblPlanetariumPrefs" xml:space="preserve">
     <value>Préférences Planétarium</value>
@@ -2195,7 +2207,7 @@ HFR calculé: {2}</value>
     <value>Obtenir les coordonnées du logiciel du planétarium</value>
   </data>
   <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
-    <value>Coordinates from selected object</value>
+    <value>Coordonnées de l'objet sélectionné</value>
   </data>
   <data name="LblPlatesolve2" xml:space="preserve">
     <value>Platesolve2</value>
@@ -2210,7 +2222,7 @@ HFR calculé: {2}</value>
     <value>Platesolve2 non trouvé</value>
   </data>
   <data name="LblPlateSolvedPolarAlignment" xml:space="preserve">
-    <value>Alignement Polaire par Réduction Astrométrique</value>
+    <value>Alignement Polaire par Astrométrie</value>
   </data>
   <data name="LblPlateSolveEnding" xml:space="preserve">
     <value>La réduction a atteint le nombre maximal de tentatives ou le retournement de la monture est nécessaire.</value>
@@ -2222,46 +2234,46 @@ HFR calculé: {2}</value>
     <value>Délai entre les tentatives</value>
   </data>
   <data name="LblPlateSolveFailedDelayTooltip" xml:space="preserve">
-    <value>Délai en minutes entre deux tentatives de réduction astrométriques</value>
+    <value>Délai en minutes entre deux tentatives de résolutions astrométriques</value>
   </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
-    <value>Réduction Astrométrique sur image courante</value>
+    <value>Astrométrie sur image courante</value>
   </data>
   <data name="LblPlateSolveNbOfAttempts" xml:space="preserve">
     <value>Nombre de Tentatives</value>
   </data>
   <data name="LblPlateSolveNbOfAttemptsTooltip" xml:space="preserve">
-    <value>Combien de fois une réduction astrométrique en mi-séquence sera tentée jusqu'à ce qu'elle soit considérée comme un échec</value>
+    <value>Combien de fois l'astrométrie en mi-séquence sera tentée jusqu'à ce qu'elle soit considérée comme un échec</value>
   </data>
   <data name="LblPlatesolveNoCoordinates" xml:space="preserve">
     <value>Pas de coordonnées de référence disponibles</value>
   </data>
   <data name="LblPlateSolveNoFocalLength" xml:space="preserve">
-    <value>Réduction astrométrique annulée. La distance focale effective du télescope doit être spécifiée sous Options &gt; Équipement</value>
+    <value>Astrométrie annulée. La distance focale effective du télescope doit être spécifiée sous Options &gt; Équipement</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceRepeating" xml:space="preserve">
-    <value>Telescope not inside tolerance. Repeating...</value>
+    <value>Télescope pas à l'intérieur de la tolérance. Répétition...</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceReslew" xml:space="preserve">
-    <value>Telescope not inside tolerance. Re-slew to target...</value>
+    <value>Télescope pas dans les tolérances. Re-déplacement vers la cible...</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceSyncing" xml:space="preserve">
-    <value>Telescope not inside tolerance. Syncing scope...</value>
+    <value>Télescope pas dans les tolérances. En cours de synchronisation...</value>
   </data>
   <data name="LblPlatesolveProvidedBy" xml:space="preserve">
-    <value>Réduction astrométrique fourni par</value>
+    <value>Astrométrie fourni par</value>
   </data>
   <data name="LblPlateSolver" xml:space="preserve">
-    <value>Réduction Astrométrique</value>
+    <value>Astrométrie</value>
   </data>
   <data name="LblPlateSolveReattemptDelay" xml:space="preserve">
-    <value>Délai entre réductions astrométriques: {0}</value>
+    <value>Délai entre résolutions astrométriques: {0}</value>
   </data>
   <data name="LblPlateSolveSettings" xml:space="preserve">
-    <value>Configuration Réduction Astrométrique</value>
+    <value>Configuration Astrométrie</value>
   </data>
   <data name="LblPlateSolving" xml:space="preserve">
-    <value>Réduction Astrométrique</value>
+    <value>Astrométrie</value>
   </data>
   <data name="LblPleaseChangeToFilter" xml:space="preserve">
     <value>SVP changez le filtre {0}</value>
@@ -2279,7 +2291,7 @@ HFR calculé: {2}</value>
     <value>Position</value>
   </data>
   <data name="LblPreferredPlanetarium" xml:space="preserve">
-    <value>Logiciel Planétatium préféré</value>
+    <value>Logiciel Planétarium préféré</value>
   </data>
   <data name="LblPrepareExposure" xml:space="preserve">
     <value>Exposition en préparation</value>
@@ -2360,7 +2372,7 @@ HFR calculé: {2}</value>
     <value>Mode de lecture pour les instantanés</value>
   </data>
   <data name="LblReadoutForSnapImagesToolTip" xml:space="preserve">
-    <value>Ce mode de lecture de votre caméra sera utilisé pour la réduction astrométique, le cadrage et la focalisation auto.</value>
+    <value>Ce mode de lecture de votre caméra sera utilisé pour l'astrométrie, le cadrage et la focalisation auto.</value>
   </data>
   <data name="LblRecenter" xml:space="preserve">
     <value>Recentrer</value>
@@ -2387,7 +2399,7 @@ HFR calculé: {2}</value>
     <value>SVP reconnectez le télescope!</value>
   </data>
   <data name="LblReferenceDate" xml:space="preserve">
-    <value>Date de Réference</value>
+    <value>Date de Référence</value>
   </data>
   <data name="LblRegions" xml:space="preserve">
     <value>Régions</value>
@@ -2477,7 +2489,7 @@ HFR calculé: {2}</value>
     <value>Enregistrer les mesures du jeu du focuseur?</value>
   </data>
   <data name="LblSaveImageAs" xml:space="preserve">
-    <value>Enregister image sous</value>
+    <value>Enregistrer image sous</value>
   </data>
   <data name="LblSaveImageAsDSLRNote" xml:space="preserve">
     <value>Pour les APN, le paramètre de format de fichier image est ignoré. Le format RAW sera enregistré à la place!</value>
@@ -2589,7 +2601,7 @@ Ce modèle sera utilisé au démarrage pour initialiser la séquence au lieu de 
     <value>Heure Sidérale</value>
   </data>
   <data name="LblSiteElevation" xml:space="preserve">
-    <value>Élevation du site</value>
+    <value>Élévation du site</value>
   </data>
   <data name="LblSiteFromGPS" xml:space="preserve">
     <value>Du GPS</value>
@@ -2652,7 +2664,7 @@ Ce modèle sera utilisé au démarrage pour initialiser la séquence au lieu de 
     <value>Commande de démarrage du port "snap"</value>
   </data>
   <data name="LblSnapPortStop" xml:space="preserve">
-    <value>ommande d'arrêt du port "snap"</value>
+    <value>Commande d'arrêt du port "snap"</value>
   </data>
   <data name="LblSobel" xml:space="preserve">
     <value>Sobel</value>
@@ -2673,7 +2685,7 @@ Ce modèle sera utilisé au démarrage pour initialiser la séquence au lieu de 
     <value>Détection Étoile</value>
   </data>
   <data name="LblStarSensitivityTooltip" xml:space="preserve">
-    <value>étermine la sensibilité de l'algorithme de détection d'étoiles. Des réglages plus élevés peuvent détecter par erreur le bruit et prendre plus de temps</value>
+    <value>Détermine la sensibilité de l'algorithme de détection d'étoiles. Des réglages plus élevés peuvent détecter par erreur le bruit et prendre plus de temps</value>
   </data>
   <data name="LblStartAutoFocus" xml:space="preserve">
     <value>Démarrer FA</value>
@@ -2833,7 +2845,7 @@ Les valeurs doivent-elles être synchronisées?</value>
     <value>Le télescope ne peut pointer</value>
   </data>
   <data name="LblTelescopeConnected" xml:space="preserve">
-    <value>Téléscope connecté</value>
+    <value>Télescope connecté</value>
   </data>
   <data name="LblTelescopeConnectionLost" xml:space="preserve">
     <value>Connexion au télescope perdue! Veuillez reconnecter telescope!</value>
@@ -2869,7 +2881,7 @@ Les valeurs doivent-elles être synchronisées?</value>
     <value>Comp T°</value>
   </data>
   <data name="LblTempControl" xml:space="preserve">
-    <value>Controle de la Température</value>
+    <value>Contrôle de la Température</value>
   </data>
   <data name="LblTemperature" xml:space="preserve">
     <value>Température</value>
@@ -3037,9 +3049,7 @@ Faites glisser le rectangle sur la partie du cadre que vous souhaitez sous-écha
   </data>
   <data name="LblUnlinkedStretchTooltip" xml:space="preserve">
     <value>
-        Lorsque cette option est activée, les canaux de couleur sont ajustés avec un stretch séparément, ce qui
-        aide à masquer le fond de ciel et facilite la focalisation automatique et la réduction astrométrique,
-        en particulier pour des zones légèrement polluées. Le temps de traitement est cependant augmenté.
+Lorsque cette option est activée, les canaux de couleur sont ajustés avec un stretch séparément, ce qui aide à masquer le fond de ciel et facilite la focalisation automatique et l'astrométrie, en particulier pour des zones légèrement polluées. Le temps de traitement est cependant augmenté.
     </value>
   </data>
   <data name="LblUnpark" xml:space="preserve">
@@ -3058,7 +3068,7 @@ Faites glisser le rectangle sur la partie du cadre que vous souhaitez sous-écha
     <value>Limite USB</value>
   </data>
   <data name="LblUseBlindSolveFailover" xml:space="preserve">
-    <value>La réduction astrométrique a échoué. Essayer sur tout le ciel?</value>
+    <value>L'astrométrie a échoué. Essayer sur tout le ciel?</value>
   </data>
   <data name="LblUseBlindSolveNoCoordinatesRollover" xml:space="preserve">
     <value>Aucune coordonnée de disponible pour exécuter. Essayer sur tout le ciel?</value>
@@ -3088,7 +3098,7 @@ Faites glisser le rectangle sur la partie du cadre que vous souhaitez sous-écha
     <value>En attente de la caméra pour atteindre le prochain niveau de température</value>
   </data>
   <data name="LblWaiting" xml:space="preserve">
-    <value>Waiting</value>
+    <value>En attente</value>
   </data>
   <data name="LblWaitingForCamera" xml:space="preserve">
     <value>En attente de la caméra</value>

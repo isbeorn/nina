@@ -1137,6 +1137,9 @@
   <data name="LblEnabled" xml:space="preserve">
     <value>已啟用</value>
   </data>
+  <data name="LblEndOfSequenceCloseFlatDeviceCover" xml:space="preserve">
+    <value>Closing flat device cover</value>
+  </data>
   <data name="LblEndOfSequenceDecision" xml:space="preserve">
     <value>確定停止運行本序列？</value>
   </data>
@@ -1258,6 +1261,9 @@
   <data name="LblFlatDeviceChooseSerialPort" xml:space="preserve">
     <value>選擇串口</value>
   </data>
+  <data name="LblFlatDeviceClearValues" xml:space="preserve">
+    <value>Clear Values</value>
+  </data>
   <data name="LblFlatDeviceClose" xml:space="preserve">
     <value>關閉</value>
   </data>
@@ -1309,8 +1315,14 @@
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>設定</value>
   </data>
+  <data name="LblFlatDeviceTrainedFilterTimes" xml:space="preserve">
+    <value>Flat Wizard Trained Exposure Times</value>
+  </data>
   <data name="LblFlatDeviceUnknown" xml:space="preserve">
     <value>未知</value>
+  </data>
+  <data name="LblFlatDeviceUseWizardTrainedValues" xml:space="preserve">
+    <value>Use exposure times trained with flat wizard</value>
   </data>
   <data name="LblFlatExposureCalcContinue" xml:space="preserve">
     <value>平均ADU是 {0}，開始曝光時間計算 {1}</value>
