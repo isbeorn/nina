@@ -184,7 +184,7 @@ namespace NINA.ViewModel.Equipment.Guider {
             }
         }
 
-        public void Disconnect() {
+        public Task Disconnect() {
             if (Guider != null) {
                 Guider.PropertyChanged -= Guider_PropertyChanged;
                 Guider.GuideEvent -= Guider_GuideEvent;
@@ -192,6 +192,7 @@ namespace NINA.ViewModel.Equipment.Guider {
             Guider?.Disconnect();
             GuiderInfo = DeviceInfo.CreateDefaultInstance<GuiderInfo>();
             BroadcastGuiderInfo();
+            return Task.CompletedTask;
         }
 
         private GuiderInfo guiderInfo;
@@ -246,7 +247,7 @@ namespace NINA.ViewModel.Equipment.Guider {
                 applicationStatusMediator.StatusUpdate(new Model.ApplicationStatus() { Status = string.Empty, Source = Title });
                 return true;
             } else {
-                Disconnect();
+                await Disconnect();
                 return false;
             }
         }

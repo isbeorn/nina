@@ -43,7 +43,7 @@ namespace NINA.Utility {
         public IProgress<Dictionary<string, object>> Progress { get; private set; }
         public double Interval { get; set; }
 
-        public async void Stop() {
+        public async Task Stop() {
             cts?.Cancel();
             do {
                 await Task.Delay(100);

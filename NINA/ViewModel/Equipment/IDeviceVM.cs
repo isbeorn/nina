@@ -29,7 +29,7 @@ namespace NINA.ViewModel.Equipment {
 
         Task<bool> Connect();
 
-        void Disconnect();
+        Task Disconnect();
 
         TInfo GetDeviceInfo();
     }

@@ -52,7 +52,7 @@ namespace NINA.ViewModel.Equipment.Switch {
             this.switchMediator.RegisterHandler(this);
 
             ConnectCommand = new AsyncCommand<bool>(Connect);
-            DisconnectCommand = new RelayCommand((object o) => Disconnect());
+            DisconnectCommand = new AsyncCommand<bool>(async () => { await Disconnect(); return true; });
             CancelConnectCommand = new RelayCommand((object o) => CancelConnect());
             RefreshDevicesCommand = new RelayCommand((object o) => RefreshDevices(), o => !(SwitchHub?.Connected == true));
 
@@ -174,8 +174,10 @@ namespace NINA.ViewModel.Equipment.Switch {
         public async Task<bool> Connect() {
             await ss.WaitAsync();
             try {
-                Disconnect();
-                updateTimer?.Stop();
+                await Disconnect();
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
+                }
 
                 if (SwitchChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.SwitchSettings.Id = SwitchChooserVM.SelectedDevice.Id;
@@ -234,7 +236,7 @@ namespace NINA.ViewModel.Equipment.Switch {
                             return false;
                         }
                     } catch (OperationCanceledException) {
-                        if (SwitchInfo.Connected) { Disconnect(); }
+                        if (SwitchInfo.Connected) { await Disconnect(); }
                         return false;
                     }
                 } else {
@@ -251,9 +253,11 @@ namespace NINA.ViewModel.Equipment.Switch {
             }
         }
 
-        public void Disconnect() {
+        public async Task Disconnect() {
             if (SwitchInfo.Connected) {
-                updateTimer?.Stop();
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
+                }
                 SwitchHub?.Disconnect();
                 WritableSwitches.Clear();
                 SwitchHub = null;

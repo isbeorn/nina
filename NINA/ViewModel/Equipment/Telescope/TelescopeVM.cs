@@ -50,7 +50,7 @@ namespace NINA.ViewModel.Equipment.Telescope {
 
             ChooseTelescopeCommand = new AsyncCommand<bool>(() => ChooseTelescope());
             CancelChooseTelescopeCommand = new RelayCommand(CancelChooseTelescope);
-            DisconnectCommand = new RelayCommand(DisconnectTelescope);
+            DisconnectCommand = new AsyncCommand<bool>(() => DisconnectTelescope());
             ParkCommand = new AsyncCommand<bool>(ParkTelescope);
             UnparkCommand = new RelayCommand(UnparkTelescope);
             SlewToCoordinatesCommand = new RelayCommand(SlewToCoordinates);
@@ -181,8 +181,10 @@ namespace NINA.ViewModel.Equipment.Telescope {
         private async Task<bool> ChooseTelescope() {
             await ss.WaitAsync();
             try {
-                Disconnect();
-                updateTimer?.Stop();
+                await Disconnect();
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
+                }
 
                 if (TelescopeChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.TelescopeSettings.Id = TelescopeChooserVM.SelectedDevice.Id;
@@ -266,7 +268,7 @@ namespace NINA.ViewModel.Equipment.Telescope {
                             return false;
                         }
                     } catch (OperationCanceledException) {
-                        if (telescope?.Connected == true) { Disconnect(); }
+                        if (telescope?.Connected == true) { await Disconnect(); }
                         return false;
                     }
                 } else {
@@ -395,16 +397,19 @@ namespace NINA.ViewModel.Equipment.Telescope {
 
         private CancellationTokenSource _cancelChooseTelescopeSource;
 
-        private void DisconnectTelescope(object obj) {
+        private async Task<bool> DisconnectTelescope() {
             var diag = MyMessageBox.MyMessageBox.Show("Disconnect Telescope?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
-                Disconnect();
+                await Disconnect();
             }
+            return true;
         }
 
-        public void Disconnect() {
+        public async Task Disconnect() {
             if (Telescope != null) { Logger.Info("Disconnected Telescope"); }
-            updateTimer?.Stop();
+            if (updateTimer != null) {
+                await updateTimer.Stop();
+            }
             Telescope?.Disconnect();
             Telescope = null;
             TelescopeInfo = DeviceInfo.CreateDefaultInstance<TelescopeInfo>();

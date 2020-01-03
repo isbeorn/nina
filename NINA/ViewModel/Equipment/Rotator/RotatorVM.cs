@@ -48,7 +48,7 @@ namespace NINA.ViewModel.Equipment.Rotator {
 
             ConnectCommand = new AsyncCommand<bool>(() => Connect());
             CancelConnectCommand = new RelayCommand(CancelConnectRotator);
-            DisconnectCommand = new RelayCommand(DisconnectDiag);
+            DisconnectCommand = new AsyncCommand<bool>(() => DisconnectDiag());
             RefreshRotatorListCommand = new RelayCommand(RefreshRotatorList, o => !(rotator?.Connected == true));
             MoveCommand = new AsyncCommand<float>(() => Move(TargetPosition), (p) => RotatorInfo.Connected);
             HaltCommand = new RelayCommand(Halt);
@@ -191,8 +191,10 @@ namespace NINA.ViewModel.Equipment.Rotator {
         public async Task<bool> Connect() {
             await ss.WaitAsync();
             try {
-                Disconnect();
-                updateTimer?.Stop();
+                await Disconnect();
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
+                }
 
                 if (RotatorChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.RotatorSettings.Id = RotatorChooserVM.SelectedDevice.Id;
@@ -244,7 +246,7 @@ namespace NINA.ViewModel.Equipment.Rotator {
                             return false;
                         }
                     } catch (OperationCanceledException) {
-                        if (RotatorInfo.Connected) { Disconnect(); }
+                        if (RotatorInfo.Connected) { await Disconnect(); }
                         return false;
                     }
                 } else {
@@ -265,9 +267,11 @@ namespace NINA.ViewModel.Equipment.Rotator {
             _connectRotatorCts?.Cancel();
         }
 
-        public void Disconnect() {
+        public async Task Disconnect() {
             if (RotatorInfo.Connected) {
-                updateTimer?.Stop();
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
+                }
                 rotator?.Disconnect();
                 rotator = null;
                 RotatorInfo = DeviceInfo.CreateDefaultInstance<RotatorInfo>();
@@ -276,11 +280,12 @@ namespace NINA.ViewModel.Equipment.Rotator {
             }
         }
 
-        private void DisconnectDiag(object obj) {
+        private async Task<bool> DisconnectDiag() {
             var diag = MyMessageBox.MyMessageBox.Show("Disconnect Rotator?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
-                Disconnect();
+                await Disconnect();
             }
+            return true;
         }
 
         private void BroadcastRotatorInfo() {

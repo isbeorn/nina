@@ -48,7 +48,7 @@ namespace NINA.ViewModel.Equipment.Focuser {
 
             ChooseFocuserCommand = new AsyncCommand<bool>(() => ChooseFocuser());
             CancelChooseFocuserCommand = new RelayCommand(CancelChooseFocuser);
-            DisconnectCommand = new RelayCommand(DisconnectDiag);
+            DisconnectCommand = new AsyncCommand<bool>(() => DisconnectDiag());
             RefreshFocuserListCommand = new RelayCommand(RefreshFocuserList, o => !(Focuser?.Connected == true));
             MoveFocuserInSmallCommand = new AsyncCommand<int>(() => MoveFocuserRelative((int)Math.Round(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize / -2d)), (p) => FocuserInfo.Connected);
             MoveFocuserInLargeCommand = new AsyncCommand<int>(() => MoveFocuserRelative(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize * -5), (p) => FocuserInfo.Connected);
@@ -180,8 +180,10 @@ namespace NINA.ViewModel.Equipment.Focuser {
         private async Task<bool> ChooseFocuser() {
             await ss.WaitAsync();
             try {
-                Disconnect();
-                updateTimer?.Stop();
+                await Disconnect();
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
+                }
 
                 if (FocuserChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.FocuserSettings.Id = FocuserChooserVM.SelectedDevice.Id;
@@ -233,7 +235,7 @@ namespace NINA.ViewModel.Equipment.Focuser {
                             return false;
                         }
                     } catch (OperationCanceledException) {
-                        if (FocuserInfo.Connected) { Disconnect(); }
+                        if (FocuserInfo.Connected) { await Disconnect(); }
                         return false;
                     }
                 } else {
@@ -325,15 +327,18 @@ namespace NINA.ViewModel.Equipment.Focuser {
             }
         }
 
-        private void DisconnectDiag(object obj) {
+        private async Task<bool> DisconnectDiag() {
             var diag = MyMessageBox.MyMessageBox.Show("Disconnect Focuser?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
-                Disconnect();
+                await Disconnect();
             }
+            return true;
         }
 
-        public void Disconnect() {
-            updateTimer?.Stop();
+        public async Task Disconnect() {
+            if (updateTimer != null) {
+                await updateTimer.Stop();
+            }
             Focuser?.Disconnect();
             Focuser = null;
             FocuserInfo = DeviceInfo.CreateDefaultInstance<FocuserInfo>();

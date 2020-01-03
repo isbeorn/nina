@@ -34,7 +34,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
 
             ConnectCommand = new AsyncCommand<bool>(Connect);
             CancelConnectCommand = new RelayCommand(CancelConnectFlatDevice);
-            DisconnectCommand = new RelayCommand(DisconnectFlatDeviceDialog);
+            DisconnectCommand = new AsyncCommand<bool>(() => DisconnectFlatDeviceDialog());
             OpenCoverCommand = new AsyncCommand<bool>(OpenCover);
             CloseCoverCommand = new AsyncCommand<bool>(CloseCover);
             RefreshFlatDeviceListCommand =
@@ -92,8 +92,10 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
         public async Task<bool> Connect() {
             await ssConnect.WaitAsync();
             try {
-                Disconnect();
-                _updateTimer?.Stop();
+                await Disconnect();
+                if (_updateTimer != null) {
+                    await _updateTimer.Stop();
+                }
 
                 var device = FlatDeviceChooserVM.SelectedDevice;
                 if (device == null) return false;
@@ -151,7 +153,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                     }
                 } catch (OperationCanceledException) {
                     if (FlatDeviceInfo.Connected) {
-                        Disconnect();
+                        await Disconnect();
                     }
 
                     return false;
@@ -171,8 +173,11 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             _connectFlatDeviceCts?.Cancel();
         }
 
-        public void Disconnect() {
+        public async Task Disconnect() {
             if (!FlatDeviceInfo.Connected) return;
+            if (_updateTimer != null) {
+                await _updateTimer.Stop();
+            }
             _flatDevice?.Disconnect();
             _flatDevice = null;
             FlatDeviceInfo = DeviceInfo.CreateDefaultInstance<FlatDeviceInfo>();
@@ -180,12 +185,13 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             Logger.Info("Disconnected Flat Device");
         }
 
-        private void DisconnectFlatDeviceDialog(object obj) {
+        private async Task<bool> DisconnectFlatDeviceDialog() {
             var dialog = MyMessageBox.MyMessageBox.Show(Loc.Instance["LblFlatDeviceDisconnectQuestion"],
                 "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (dialog == System.Windows.MessageBoxResult.OK) {
-                Disconnect();
+                await Disconnect();
             }
+            return true;
         }
 
         private readonly SemaphoreSlim ssOpen = new SemaphoreSlim(1, 1);
@@ -338,13 +344,13 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
 
         public ICommand RefreshFlatDeviceListCommand { get; }
         public IAsyncCommand ConnectCommand { get; }
-        public RelayCommand CancelConnectCommand { get; }
-        public RelayCommand DisconnectCommand { get; }
+        public ICommand CancelConnectCommand { get; }
+        public IAsyncCommand DisconnectCommand { get; }
         public IAsyncCommand OpenCoverCommand { get; }
         public IAsyncCommand CloseCoverCommand { get; }
-        public RelayCommand ToggleLightCommand { get; }
-        public RelayCommand SetBrightnessCommand { get; }
-        public RelayCommand ClearValuesCommand { get; }
+        public ICommand ToggleLightCommand { get; }
+        public ICommand SetBrightnessCommand { get; }
+        public ICommand ClearValuesCommand { get; }
 
         public void Dispose() {
             _filterWheelMediator.RemoveConsumer(this);

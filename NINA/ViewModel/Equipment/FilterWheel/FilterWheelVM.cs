@@ -51,7 +51,7 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
 
             ChooseFWCommand = new AsyncCommand<bool>(() => ChooseFW());
             CancelChooseFWCommand = new RelayCommand(CancelChooseFW);
-            DisconnectCommand = new RelayCommand(DisconnectFW);
+            DisconnectCommand = new AsyncCommand<bool>(() => DisconnectFW());
             RefreshFWListCommand = new RelayCommand(RefreshFWList, o => !(FW?.Connected == true));
             ChangeFilterCommand = new AsyncCommand<bool>(async () => {
                 _changeFilterCancellationSource?.Dispose();
@@ -113,7 +113,7 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
                     }
                     FilterWheelInfo.SelectedFilter = filter;
                 } else {
-                    Disconnect();
+                    await Disconnect();
                 }
             } finally {
                 BroadcastFilterWheelInfo();
@@ -158,7 +158,7 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
         private async Task<bool> ChooseFW() {
             await ss.WaitAsync();
             try {
-                Disconnect();
+                await Disconnect();
 
                 if (FilterWheelChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.FilterWheelSettings.Id = FilterWheelChooserVM.SelectedDevice.Id;
@@ -214,7 +214,7 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
                             return false;
                         }
                     } catch (OperationCanceledException) {
-                        if (fW?.Connected == true) { Disconnect(); }
+                        if (fW?.Connected == true) { await Disconnect(); }
                         return false;
                     }
                 } else {
@@ -237,14 +237,15 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
 
         private CancellationTokenSource _cancelChooseFilterWheelSource;
 
-        private void DisconnectFW(object obj) {
+        private async Task<bool> DisconnectFW() {
             var diag = MyMessageBox.MyMessageBox.Show("Disconnect Filter Wheel?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
-                Disconnect();
+                await Disconnect();
             }
+            return true;
         }
 
-        public void Disconnect() {
+        public Task Disconnect() {
             if (FW != null) {
                 _changeFilterCancellationSource?.Cancel();
                 FW.Disconnect();
@@ -254,6 +255,7 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
                 BroadcastFilterWheelInfo();
                 Logger.Info("Disconnected Filter Wheel");
             }
+            return Task.CompletedTask;
         }
 
         private FilterWheelChooserVM _filterWheelChooserVM;
