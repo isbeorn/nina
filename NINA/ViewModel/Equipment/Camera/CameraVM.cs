@@ -699,6 +699,7 @@ namespace NINA.ViewModel.Equipment.Camera {
             if (CameraInfo.Connected == true) {
                 Cam.Gain = gain;
                 CameraInfo.Gain = Cam.Gain;
+                CameraInfo.ElectronsPerADU = Cam.ElectronsPerADU;
                 BroadcastCameraInfo();
             }
         }
