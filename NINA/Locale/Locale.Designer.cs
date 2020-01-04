@@ -5542,7 +5542,7 @@ namespace NINA.Locale {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dunkler Nebel.
+        ///   Looks up a localized string similar to Dark Nebula.
         /// </summary>
         internal static string LblObjectType_DRKNB {
             get {
@@ -5560,7 +5560,7 @@ namespace NINA.Locale {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Galaxiencluster.
+        ///   Looks up a localized string similar to Galaxy Cluster.
         /// </summary>
         internal static string LblObjectType_GALCL {
             get {
@@ -5569,7 +5569,7 @@ namespace NINA.Locale {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Galaxie.
+        ///   Looks up a localized string similar to Galaxy.
         /// </summary>
         internal static string LblObjectType_GALXY {
             get {
@@ -5659,7 +5659,7 @@ namespace NINA.Locale {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Planetarischer Nebula.
+        ///   Looks up a localized string similar to Planetary Nebula.
         /// </summary>
         internal static string LblObjectType_PLNNB {
             get {
@@ -5713,7 +5713,7 @@ namespace NINA.Locale {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Supernova Überrest.
+        ///   Looks up a localized string similar to Supernova Remnant.
         /// </summary>
         internal static string LblObjectType_SNREM {
             get {
