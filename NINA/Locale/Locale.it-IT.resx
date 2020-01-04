@@ -2252,13 +2252,13 @@ HFR Calcolato: {2}
     <value>Plate Solve interrotto. La effettiva lunghezza focale del Telescopio deve essere specificata in Opzioni &gt; Equipaggiamento</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceRepeating" xml:space="preserve">
-    <value>Telescope not inside tolerance. Repeating...</value>
+    <value>Telescopio non all'interno della tolleranza. Ripetizione...</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceReslew" xml:space="preserve">
-    <value>Telescope not inside tolerance. Re-slew to target...</value>
+    <value>Telescopio non all'interno della tolleranza. Aggiustamento...</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceSyncing" xml:space="preserve">
-    <value>Telescope not inside tolerance. Syncing scope...</value>
+    <value>Telescopio non all'interno della tolleranza. Sincronizzo telescopio...</value>
   </data>
   <data name="LblPlatesolveProvidedBy" xml:space="preserve">
     <value>Servizio Platesolve fornito da</value>
@@ -3099,7 +3099,7 @@ aree ad alto inquinamento luminoso. Il tempo di processo sarà  tuttavia aumenta
     <value>In attesa che al camera raggiunga il prossimo step di temperatura</value>
   </data>
   <data name="LblWaiting" xml:space="preserve">
-    <value>Waiting</value>
+    <value>Attesa</value>
   </data>
   <data name="LblWaitingForCamera" xml:space="preserve">
     <value>Aspettando la Camera</value>
