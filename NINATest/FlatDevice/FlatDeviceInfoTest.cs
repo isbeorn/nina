@@ -27,20 +27,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using NINA.Locale;
-using NINA.Model.MyCamera;
-using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFlatDevice;
-using NINA.Profile;
-using NINA.Utility.Mediator.Interfaces;
-using NINA.ViewModel.Equipment.FlatDevice;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 
 namespace NINATest.FlatDevice {
-
     [TestFixture]
     internal class FlatDeviceInfoTest {
-
         [Test]
         [TestCase(CoverState.NeitherOpenNorClosed)]
         [TestCase(CoverState.Closed)]

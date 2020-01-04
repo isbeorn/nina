@@ -21,30 +21,38 @@
 
 #endregion "copyright"
 
+using NINA.Model.MyFlatDevice;
 using NINA.Utility.FlatDeviceSDKs.AlnitakSDK;
 using NUnit.Framework;
 using System;
-using NINA.Model.MyFlatDevice;
 
 namespace NINATest.FlatDevice {
-
     [TestFixture]
     public class AlnitakResponseTest {
-
         [Test]
         [TestCase("Ping", "*P99OOO", true)]
         [TestCase("Ping", "*P99000", false)]
         [TestCase("Ping", "P99OOO", false)]
         [TestCase("Ping", "*P33OOO", false)]
         [TestCase("Ping", "*PXXOOO", false)]
+        [TestCase("Ping", null, false)]
+        [TestCase("Ping", "", false)]
         [TestCase("Open", "*O99OOO", true)]
         [TestCase("Open", "*O99000", false)]
+        [TestCase("Open", null, false)]
+        [TestCase("Open", "", false)]
         [TestCase("Close", "*C99OOO", true)]
         [TestCase("Close", "*C99000", false)]
+        [TestCase("Close", null, false)]
+        [TestCase("Close", "", false)]
         [TestCase("LightOn", "*L99OOO", true)]
         [TestCase("LightOn", "*L99000", false)]
+        [TestCase("LightOn", null, false)]
+        [TestCase("LightOn", "", false)]
         [TestCase("LightOff", "*D99OOO", true)]
         [TestCase("LightOff", "*D99000", false)]
+        [TestCase("LightOff", null, false)]
+        [TestCase("LightOff", "", false)]
         public void TestIsValidResponse(string responseName, string response, bool valid) {
             var sut = (Response)Activator.CreateInstance("NINA",
                 $"NINA.Utility.FlatDeviceSDKs.AlnitakSDK.{responseName}Response").Unwrap();
@@ -58,6 +66,8 @@ namespace NINATest.FlatDevice {
         [TestCase("*B99-10", false, 0)]
         [TestCase("*B99999", false, 0)]
         [TestCase("*B99XXX", false, 0)]
+        [TestCase(null, false, 0)]
+        [TestCase("", false, 0)]
         public void TestSetBrightnessResponse(string response, bool valid, int brightness) {
             var sut = new SetBrightnessResponse {
                 DeviceResponse = response
@@ -74,6 +84,8 @@ namespace NINATest.FlatDevice {
         [TestCase("*J99999", false, 0)]
         [TestCase("*J99XXX", false, 0)]
         [TestCase("*B99100", false, 100)]
+        [TestCase(null, false, 0)]
+        [TestCase("", false, 0)]
         public void TestGetBrightnessResponse(string response, bool valid, int brightness) {
             var sut = new GetBrightnessResponse {
                 DeviceResponse = response
@@ -91,6 +103,8 @@ namespace NINATest.FlatDevice {
         [TestCase("*S99004", false, false, CoverState.Unknown, false)]
         [TestCase("*S99020", false, false, CoverState.Unknown, false)]
         [TestCase("*S99200", false, false, CoverState.Unknown, false)]
+        [TestCase(null, false, false, CoverState.Unknown, false)]
+        [TestCase("", false, false, CoverState.Unknown, false)]
         public void TestStateResponse(string response, bool valid, bool motorRunning, CoverState covertState,
             bool lightOn) {
             var sut = new StateResponse {

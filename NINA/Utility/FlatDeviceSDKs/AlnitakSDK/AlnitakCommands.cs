@@ -23,70 +23,44 @@
 
 namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
 
-    public abstract class Command {
-        public string CommandString { get; protected set; }
+    public interface ICommand {
+        string CommandString { get; }
     }
 
-    public class PingCommand : Command {
-
-        public PingCommand() {
-            CommandString = ">POOO\r";
-        }
+    public class PingCommand : ICommand {
+        public string CommandString => ">POOO\r";
     }
 
-    public class OpenCommand : Command {
-
-        public OpenCommand() {
-            CommandString = ">OOOO\r";
-        }
+    public class OpenCommand : ICommand {
+        public string CommandString => ">OOOO\r";
     }
 
-    public class CloseCommand : Command {
-
-        public CloseCommand() {
-            CommandString = ">COOO\r";
-        }
+    public class CloseCommand : ICommand {
+        public string CommandString => ">COOO\r";
     }
 
-    public class LightOnCommand : Command {
-
-        public LightOnCommand() {
-            CommandString = ">LOOO\r";
-        }
+    public class LightOnCommand : ICommand {
+        public string CommandString => ">LOOO\r";
     }
 
-    public class LightOffCommand : Command {
-
-        public LightOffCommand() {
-            CommandString = ">DOOO\r";
-        }
+    public class LightOffCommand : ICommand {
+        public string CommandString => ">DOOO\r";
     }
 
-    public class SetBrightnessCommand : Command {
-
-        public SetBrightnessCommand(double brightness) {
-            CommandString = $">B{brightness:000}\r";
-        }
+    public class SetBrightnessCommand : ICommand {
+        public double Brightness { get; set; }
+        public string CommandString => $">B{Brightness:000}\r";
     }
 
-    public class GetBrightnessCommand : Command {
-
-        public GetBrightnessCommand() {
-            CommandString = ">JOOO\r";
-        }
+    public class GetBrightnessCommand : ICommand {
+        public string CommandString => ">JOOO\r";
     }
 
-    public class StateCommand : Command {
-
-        public StateCommand() {
-            CommandString = ">SOOO\r";
-        }
+    public class StateCommand : ICommand {
+        public string CommandString => ">SOOO\r";
     }
 
-    public class FirmwareVersionCommand : Command {
-
-        public FirmwareVersionCommand() {
-            CommandString = ">VOOO\r";
-        }
+    public class FirmwareVersionCommand : ICommand {
+        public string CommandString => ">VOOO\r";
     }
 }

@@ -38,10 +38,12 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
                 _deviceResponse = value;
                 if (value == null || value.Length != 7) {
                     IsValid = false;
+                    Logger.Debug($"Response must not be null and length must be 7 characters long. Was: {value}");
                     return;
                 }
                 if (value[0] != '*') {
                     IsValid = false;
+                    Logger.Debug($"Response must start with *. Actual value:{value}");
                     return;
                 }
 
@@ -88,13 +90,16 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
                         DeviceSupportsOpenClose = false;
                         return false;
                 }
-            } catch (Exception) {
+            } catch (Exception ex) {
+                Logger.Error(ex);
                 return false;
             }
         }
 
         protected bool EndsInOOO(string response) {
-            return response.Substring(4, 3).Equals("OOO");
+            var result = response.Substring(4, 3).Equals("OOO");
+            if (!result) Logger.Debug($"Response should have ended in OOO. Was {response.Substring(4, 3)}");
+            return result;
         }
 
         public override string ToString() {
@@ -107,9 +112,9 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (IsValid && (value[1] != 'P' || !EndsInOOO(value))) {
-                    IsValid = false;
-                }
+                if (IsValid && value[1] == 'P' && EndsInOOO(value)) return;
+                Logger.Debug($"Second letter of response should have been a P. Actual value:{value}");
+                IsValid = false;
             }
         }
     }
@@ -119,9 +124,9 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (IsValid && (value[1] != 'O' || !EndsInOOO(value))) {
-                    IsValid = false;
-                }
+                if (IsValid && value[1] == 'O' && EndsInOOO(value)) return;
+                Logger.Debug($"Second letter of response should have been an O. Actual value:{value}");
+                IsValid = false;
             }
         }
     }
@@ -131,9 +136,9 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (IsValid && (value[1] != 'C' || !EndsInOOO(value))) {
-                    IsValid = false;
-                }
+                if (IsValid && value[1] == 'C' && EndsInOOO(value)) return;
+                Logger.Debug($"Second letter of response should have been a C. Actual value:{value}");
+                IsValid = false;
             }
         }
     }
@@ -143,9 +148,9 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (IsValid && (value[1] != 'L' || !EndsInOOO(value))) {
-                    IsValid = false;
-                }
+                if (IsValid && value[1] == 'L' && EndsInOOO(value)) return;
+                Logger.Debug($"Second letter of response should have been an L. Actual value:{value}");
+                IsValid = false;
             }
         }
     }
@@ -155,9 +160,9 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (IsValid && (value[1] != 'D' || !EndsInOOO(value))) {
-                    IsValid = false;
-                }
+                if (IsValid && EndsInOOO(value) && value[1] == 'D') return;
+                Logger.Debug($"Second letter of response should have been a D. Actual value:{value}");
+                IsValid = false;
             }
         }
     }
@@ -178,11 +183,13 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
             try {
                 var value = int.Parse(response.Substring(4, 3));
                 if (value < 0 || value > 255) {
+                    Logger.Debug($"Brightness value should have been between 0 and 255. Was {value}");
                     return false;
                 }
 
                 Brightness = value;
-            } catch (Exception) {
+            } catch (Exception ex) {
+                Logger.Error(ex);
                 return false;
             }
 
@@ -195,9 +202,9 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (IsValid && value[1] != 'B') {
-                    IsValid = false;
-                }
+                if (IsValid && value[1] == 'B') return;
+                Logger.Debug($"Second letter of response should have been a B. Actual value:{value}");
+                IsValid = false;
             }
         }
     }
@@ -207,9 +214,9 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (IsValid && value[1] != 'J') {
-                    IsValid = false;
-                }
+                if (IsValid && value[1] == 'J') return;
+                Logger.Debug($"Second letter of response should have been a J. Actual value:{value}");
+                IsValid = false;
             }
         }
     }
@@ -222,9 +229,9 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (IsValid && (value[1] != 'S' || !ParseState(value))) {
-                    IsValid = false;
-                }
+                if (IsValid && value[1] == 'S' && ParseState(value)) return;
+                Logger.Debug($"Second letter of response should have been an S. Actual value:{value}");
+                IsValid = false;
             }
         }
 
@@ -239,6 +246,7 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
                     break;
 
                 default:
+                    Logger.Debug($"Fifth letter of response should have been 0 or 1. Actual value:{response}");
                     return false;
             }
 
@@ -252,6 +260,7 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
                     break;
 
                 default:
+                    Logger.Debug($"Sixth letter of response should have been 0 or 1. Actual value:{response}");
                     return false;
             }
 
@@ -273,6 +282,7 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
                     break;
 
                 default:
+                    Logger.Debug($"Seventh letter of response should have been 0, 1, 2 or 3. Actual value:{response}");
                     return false;
             }
 
@@ -286,9 +296,9 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public override string DeviceResponse {
             set {
                 base.DeviceResponse = value;
-                if (IsValid && (value[1] != 'V' || !ParseFirmwareVersion(value))) {
-                    IsValid = false;
-                }
+                if (IsValid && value[1] == 'V' && ParseFirmwareVersion(value)) return;
+                Logger.Debug($"Second letter of response should have been a V. Actual value:{value}");
+                IsValid = false;
             }
         }
 
@@ -296,7 +306,8 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
             try {
                 FirmwareVersion = int.Parse(response.Substring(4, 3));
                 return true;
-            } catch (Exception) {
+            } catch (Exception ex) {
+                Logger.Error(ex);
                 return false;
             }
         }

@@ -21,25 +21,17 @@
 
 #endregion "copyright"
 
-using NINA.Model.MyFlatDevice;
-using System.Threading.Tasks;
+using NINA.Utility.Extensions;
 
-namespace NINA.ViewModel.Equipment.FlatDevice {
+namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
 
-    public interface IFlatDeviceVM : IDeviceVM<FlatDeviceInfo> {
+    public interface IAlnitakDevice {
+        ISerialPortProvider SerialPortProvider { set; }
 
-        Task<bool> OpenCover();
+        T SendCommand<T>(ICommand command) where T : Response, new();
 
-        Task<bool> CloseCover();
+        bool InitializeSerialPort(string portName);
 
-        double Brightness { get; set; }
-        bool LightOn { get; set; }
-        FlatDeviceInfo FlatDeviceInfo { get; set; }
-
-        void ToggleLight(object o);
-
-        void SetBrightness(double value);
-
-        void SetBrightness(object o);
+        void Dispose();
     }
 }

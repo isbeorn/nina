@@ -447,8 +447,9 @@
     <Compile Include="Utility\Exceptions\PlanetariumFailedToConnect.cs" />
     <Compile Include="Utility\Exceptions\PlanetariumFailedToGetCoordinates.cs" />
     <Compile Include="Utility\Exceptions\PlanetariumObjectNotSelectedException.cs" />
+    <Compile Include="Utility\Extensions\SerialPortWrapper.cs" />
     <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakCommands.cs" />
-    <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakDevices.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakDevice.cs" />
     <Compile Include="Model\MyFlatDevice\AlnitakFlatDevice.cs" />
     <Compile Include="Model\MyFlatDevice\FlatDeviceInfo.cs" />
     <Compile Include="Model\MyFlatDevice\IFlatDevice.cs" />
@@ -528,6 +529,7 @@
     <Compile Include="Utility\Extensions\IOrderedQueryableExtension.cs" />
     <Compile Include="Model\MyFlatDevice\AlnitakFlipFlatSimulator.cs" />
     <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakResponses.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\IAlnitakDevice.cs" />
     <Compile Include="Utility\ImageAnalysis\BahtinovAnalysis.cs" />
     <Compile Include="Utility\ImageAnalysis\BahtinovImage.cs" />
     <Compile Include="Utility\ImageAnalysis\BayerFilter16bpp.cs" />

@@ -28,9 +28,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Utility {
-
     internal class DeviceUpdateTimer {
-
         public DeviceUpdateTimer(Func<Dictionary<string, object>> getValuesFunc, Action<Dictionary<string, object>> updateValuesFunc, double interval) {
             GetValuesFunc = getValuesFunc;
             Interval = interval;
