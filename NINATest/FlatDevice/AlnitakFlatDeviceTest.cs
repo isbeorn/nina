@@ -23,28 +23,33 @@
 
 using Moq;
 using NINA.Model.MyFlatDevice;
-using NUnit.Framework;
-using System.Threading.Tasks;
 using NINA.Profile;
+using NINA.Utility.FlatDeviceSDKs.AlnitakSDK;
+using NUnit.Framework;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NINATest.FlatDevice {
 
     [TestFixture]
     public class AlnitakFlatDeviceTest {
         private AlnitakFlatDevice _sut;
-        private Mock<ISerialPort> _mockSerialPort;
         private Mock<IProfileService> _mockProfileService;
+        private Mock<IAlnitakDevice> _mockSdk;
 
         [SetUp]
         public async Task InitAsync() {
             _mockProfileService = new Mock<IProfileService>();
-            _mockProfileService.SetupProperty(m => m.ActiveProfile.FlatDeviceSettings.PortName, "");
-            _sut = new AlnitakFlatDevice(_mockProfileService.Object);
-            _mockSerialPort = new Mock<ISerialPort>();
-            _sut.SerialPort = _mockSerialPort.Object;
-            _mockSerialPort.SetupProperty(m => m.PortName, "COM3");
-            _mockSerialPort.Setup(m => m.ReadLine()).Returns("*V99124");
-            Assert.That(await _sut.Connect(new System.Threading.CancellationToken()), Is.True);
+            _mockProfileService.SetupProperty(m => m.ActiveProfile.FlatDeviceSettings.PortName, "COM3");
+            _mockSdk = new Mock<IAlnitakDevice>();
+            _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>())).Returns(true);
+            _mockSdk.Setup(m => m.SendCommand<StateResponse>(It.IsAny<StateCommand>()))
+                .Returns(new StateResponse { DeviceResponse = "*S99000" });
+            _mockSdk.Setup(m => m.SendCommand<FirmwareVersionResponse>(It.IsAny<FirmwareVersionCommand>()))
+                .Returns(new FirmwareVersionResponse { DeviceResponse = "*V99124" });
+            _sut = new AlnitakFlatDevice(_mockProfileService.Object) { Sdk = _mockSdk.Object };
+
+            Assert.That(await _sut.Connect(It.IsAny<CancellationToken>()), Is.True);
         }
 
         [TearDown]
@@ -61,7 +66,8 @@ namespace NINATest.FlatDevice {
         [TestCase(CoverState.Unknown, "garbage")]
         [TestCase(CoverState.Unknown, null)]
         public void TestCoverState(CoverState coverState, string deviceResponse) {
-            _mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
+            _mockSdk.Setup(m => m.SendCommand<StateResponse>(It.IsAny<StateCommand>()))
+                .Returns(new StateResponse { DeviceResponse = deviceResponse });
             Assert.That(_sut.CoverState, Is.EqualTo(coverState));
         }
 
@@ -71,7 +77,8 @@ namespace NINATest.FlatDevice {
         [TestCase(CoverState.Unknown, null)]
         public void TestCoverStateDisconnected(CoverState coverState, string deviceResponse) {
             _sut.Disconnect();
-            _mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
+            _mockSdk.Setup(m => m.SendCommand<StateResponse>(It.IsAny<StateCommand>()))
+                .Returns(new StateResponse { DeviceResponse = deviceResponse });
             Assert.That(_sut.CoverState, Is.EqualTo(coverState));
         }
 
@@ -92,7 +99,8 @@ namespace NINATest.FlatDevice {
         [TestCase(0.0, "garbage")]
         [TestCase(0.0, null)]
         public void TestGetBrightness(double brightness, string deviceResponse) {
-            _mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
+            _mockSdk.Setup(m => m.SendCommand<GetBrightnessResponse>(It.IsAny<GetBrightnessCommand>()))
+                .Returns(new GetBrightnessResponse { DeviceResponse = deviceResponse });
             Assert.That(_sut.Brightness, Is.EqualTo(brightness));
         }
 
@@ -104,22 +112,22 @@ namespace NINATest.FlatDevice {
         [TestCase(0, null)]
         public void TestGetBrightnessDisconnected(double brightness, string deviceResponse) {
             _sut.Disconnect();
-            _mockSerialPort.Setup(m => m.ReadLine()).Returns(deviceResponse);
+            _mockSdk.Setup(m => m.SendCommand<GetBrightnessResponse>(It.IsAny<GetBrightnessCommand>()))
+                .Returns(new GetBrightnessResponse { DeviceResponse = deviceResponse });
             Assert.That(_sut.Brightness, Is.EqualTo(brightness));
         }
 
         [Test]
-        [TestCase(0.0, ">B000\r")]
-        [TestCase(1.0, ">B255\r")]
-        [TestCase(0.5, ">B128\r")]
-        [TestCase(-1.0, ">B000\r")]
-        [TestCase(2.0, ">B255\r")]
-        public void TestSetBrightness(double brightness, string command) {
+        [TestCase(0.0, ">B000\r", "*B99000")]
+        [TestCase(1.0, ">B255\r", "*B99255")]
+        [TestCase(0.5, ">B128\r", "*B99128")]
+        [TestCase(-1.0, ">B000\r", "*B99000")]
+        [TestCase(2.0, ">B255\r", "*B99255")]
+        public void TestSetBrightness(double brightness, string command, string response) {
             string actual = null;
-            _mockSerialPort.Setup(m => m.Write(It.IsAny<string>())).Callback((string arg) => {
-                actual = arg;
-            });
-
+            _mockSdk.Setup(m => m.SendCommand<SetBrightnessResponse>(It.IsAny<SetBrightnessCommand>()))
+                .Callback<ICommand>(arg => actual = arg.CommandString)
+                .Returns(new SetBrightnessResponse { DeviceResponse = response });
             _sut.Brightness = brightness;
             Assert.That(actual, Is.EqualTo(command));
         }
@@ -133,9 +141,8 @@ namespace NINATest.FlatDevice {
         [TestCase(256, null)]
         public void TestSetBrightnessDisconnected(int brightness, string command) {
             string actual = null;
-            _mockSerialPort.Setup(m => m.Write(It.IsAny<string>())).Callback((string arg) => {
-                actual = arg;
-            });
+            _mockSdk.Setup(m => m.SendCommand<SetBrightnessResponse>(It.IsAny<SetBrightnessCommand>()))
+                .Callback<ICommand>(arg => actual = arg.CommandString);
 
             _sut.Disconnect();
             _sut.Brightness = brightness;
@@ -144,62 +151,72 @@ namespace NINATest.FlatDevice {
 
         [Test]
         public async Task TestOpen() {
-            _mockSerialPort.SetupSequence(m => m.ReadLine()).Returns("*O99OOO")
-                .Returns("*S99100") //motor running
-                .Returns("*S99002") //motor stopped
-                .Returns("*S99002"); //cover is open
-            Assert.That(await _sut.Open(new System.Threading.CancellationToken()), Is.True);
+            _mockSdk.Setup(m => m.SendCommand<OpenResponse>(It.IsAny<OpenCommand>()))
+                .Returns(new OpenResponse { DeviceResponse = "*O99OOO" });
+            _mockSdk.SetupSequence(m => m.SendCommand<StateResponse>(It.IsAny<StateCommand>()))
+                .Returns(new StateResponse { DeviceResponse = "*S99100" }) //motor running
+                .Returns(new StateResponse { DeviceResponse = "*S99002" }) //motor stopped
+                .Returns(new StateResponse { DeviceResponse = "*S99002" }); //cover is open
+            Assert.That(await _sut.Open(It.IsAny<CancellationToken>()), Is.True);
         }
 
         [Test]
         public async Task TestOpenInvalidResponse() {
-            _mockSerialPort.SetupSequence(m => m.ReadLine()).Returns("")
-                .Returns("*S99100") //motor running
-                .Returns("*S99002") //motor stopped
-                .Returns("*S99002"); //cover is open
-            Assert.That(await _sut.Open(new System.Threading.CancellationToken()), Is.False);
+            _mockSdk.Setup(m => m.SendCommand<OpenResponse>(It.IsAny<OpenCommand>()))
+                .Returns(new OpenResponse { DeviceResponse = "*O99XXX" });
+            Assert.That(await _sut.Open(It.IsAny<CancellationToken>()), Is.False);
         }
 
         [Test]
         public async Task TestClose() {
-            _mockSerialPort.SetupSequence(m => m.ReadLine()).Returns("*C99OOO")
-                .Returns("*S99100") //motor running
-                .Returns("*S99001") //motor stopped
-                .Returns("*S99001"); //cover is closed
-            Assert.That(await _sut.Close(new System.Threading.CancellationToken()), Is.True);
+            _mockSdk.Setup(m => m.SendCommand<CloseResponse>(It.IsAny<CloseCommand>()))
+                .Returns(new CloseResponse { DeviceResponse = "*C99OOO" });
+            _mockSdk.SetupSequence(m => m.SendCommand<StateResponse>(It.IsAny<StateCommand>()))
+                .Returns(new StateResponse { DeviceResponse = "*S99100" }) //motor running
+                .Returns(new StateResponse { DeviceResponse = "*S99001" }) //motor stopped
+                .Returns(new StateResponse { DeviceResponse = "*S99001" }); //cover is closed
+            Assert.That(await _sut.Close(It.IsAny<CancellationToken>()), Is.True);
         }
 
         [Test]
         public async Task TestCloseInvalidResponse() {
-            _mockSerialPort.SetupSequence(m => m.ReadLine()).Returns("")
-                .Returns("*S99100") //motor running
-                .Returns("*S99001") //motor stopped
-                .Returns("*S99001"); //cover is closed
-            Assert.That(await _sut.Close(new System.Threading.CancellationToken()), Is.False);
+            _mockSdk.Setup(m => m.SendCommand<CloseResponse>(It.IsAny<CloseCommand>()))
+                .Returns(new CloseResponse { DeviceResponse = "*C99XXX" });
+            Assert.That(await _sut.Close(It.IsAny<CancellationToken>()), Is.False);
         }
 
         [Test]
-        [TestCase(">LOOO\r", "*L99OOO", true)]
-        [TestCase(">LOOO\r", null, true)]
-        [TestCase(">DOOO\r", "*L99OOO", false)]
-        [TestCase(">DOOO\r", null, false)]
-        public void TestSetLightOn(string command, string response, bool on) {
+        [TestCase(">LOOO\r", "*L99OOO")]
+        [TestCase(">LOOO\r", null)]
+        public void TestSetLightOn(string command, string response) {
             string actual = null;
-            _mockSerialPort.Setup(m => m.ReadLine()).Returns(response);
-            _mockSerialPort.Setup(m => m.Write(It.IsAny<string>())).Callback((string arg) => {
-                actual = arg;
-            });
-            _sut.LightOn = on;
+            _mockSdk.Setup(m => m.SendCommand<LightOnResponse>(It.IsAny<LightOnCommand>()))
+                .Callback<ICommand>(arg => actual = arg.CommandString)
+                .Returns(new LightOnResponse { DeviceResponse = response });
+            _sut.LightOn = true;
+            Assert.That(actual, Is.EqualTo(command));
+        }
+
+        [Test]
+        [TestCase(">DOOO\r", "*L99OOO")]
+        [TestCase(">DOOO\r", null)]
+        public void TestSetLightOff(string command, string response) {
+            string actual = null;
+            _mockSdk.Setup(m => m.SendCommand<LightOffResponse>(It.IsAny<LightOffCommand>()))
+                .Callback<ICommand>(arg => actual = arg.CommandString)
+                .Returns(new LightOffResponse { DeviceResponse = response });
+            _sut.LightOn = false;
             Assert.That(actual, Is.EqualTo(command));
         }
 
         [Test]
         [TestCase("*S99010", true)]
-        [TestCase("*J99000", false)]
+        [TestCase("*S99000", false)]
         [TestCase("garbage", false)]
         [TestCase(null, false)]
         public void TestGetLightOn(string response, bool on) {
-            _mockSerialPort.Setup(m => m.ReadLine()).Returns(response);
+            _mockSdk.Setup(m => m.SendCommand<StateResponse>(It.IsAny<StateCommand>()))
+                .Returns(new StateResponse { DeviceResponse = response });
             Assert.That(_sut.LightOn, Is.EqualTo(on));
         }
 
@@ -207,7 +224,8 @@ namespace NINATest.FlatDevice {
         [TestCase("*S99010", false)]
         public void TestGetLightOnDisconnected(string response, bool on) {
             _sut.Disconnect();
-            _mockSerialPort.Setup(m => m.ReadLine()).Returns(response);
+            _mockSdk.Setup(m => m.SendCommand<StateResponse>(It.IsAny<StateCommand>()))
+                .Returns(new StateResponse { DeviceResponse = response });
             Assert.That(_sut.LightOn, Is.EqualTo(on));
         }
 

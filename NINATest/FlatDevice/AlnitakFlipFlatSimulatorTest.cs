@@ -29,7 +29,6 @@ using NINA.Profile;
 using NUnit.Framework;
 
 namespace NINATest.FlatDevice {
-
     [TestFixture]
     public class AlnitakFlipFlatSimulatorTest {
         private AlnitakFlipFlatSimulator _sut;

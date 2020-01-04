@@ -27,7 +27,6 @@ using NINA.Profile;
 using NUnit.Framework;
 
 namespace NINATest.FlatDevice {
-
     [TestFixture]
     public class FlatDeviceSettingsTest {
         private FlatDeviceSettings _sut;

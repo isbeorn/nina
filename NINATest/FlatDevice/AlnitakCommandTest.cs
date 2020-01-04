@@ -40,14 +40,14 @@ namespace NINATest.FlatDevice {
         [TestCase("State", "SOOO")]
         [TestCase("FirmwareVersion", "VOOO")]
         public void TestCommand(string commandName, string commandString) {
-            var sut = (Command)Activator.CreateInstance("NINA",
+            var sut = (ICommand)Activator.CreateInstance("NINA",
                 $"NINA.Utility.FlatDeviceSDKs.AlnitakSDK.{commandName}Command").Unwrap();
             Assert.That(sut.CommandString, Is.EqualTo($">{commandString}\r"));
         }
 
         [Test]
         public void TestSetBrightnessCommand() {
-            var sut = new SetBrightnessCommand(100.0);
+            var sut = new SetBrightnessCommand() { Brightness = 100.0 };
             Assert.That(sut.CommandString, Is.EqualTo($">B100\r"));
         }
     }
