@@ -211,6 +211,7 @@ namespace NINA.Utility {
 
             if (!double.IsNaN(metaData.Image.ExposureTime)) {
                 this.AddImageProperty(XISFImageProperty.Instrument.ExposureTime, metaData.Image.ExposureTime.ToString(CultureInfo.InvariantCulture), "[s] Exposure duration");
+                this.AddImageFITSKeyword("EXPTIME", metaData.Image.ExposureTime.ToString(CultureInfo.InvariantCulture), "[s] Exposure duration");
             }
 
             /* Camera */

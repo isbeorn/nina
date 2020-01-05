@@ -83,6 +83,7 @@ namespace NINA.Utility {
 
             if (!double.IsNaN(metaData.Image.ExposureTime)) {
                 this.AddHeaderCard("EXPOSURE", metaData.Image.ExposureTime, "[s] Exposure duration");
+                this.AddHeaderCard("EXPTIME", metaData.Image.ExposureTime, "[s] Exposure duration");
             }
 
             if (metaData.Image.ExposureStart > DateTime.MinValue) {
