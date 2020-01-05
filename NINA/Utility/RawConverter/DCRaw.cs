@@ -39,7 +39,6 @@ namespace NINA.Utility.RawConverter {
         }
 
         private static string DCRAWLOCATION = @"Utility\DCRaw\dcraw.exe";
-        public static string FILEPREFIX = "dcraw_tmp";
 
         public async Task<IImageData> Convert(
             MemoryStream s,
@@ -50,14 +49,15 @@ namespace NINA.Utility.RawConverter {
             return await Task.Run(async () => {
                 using (MyStopWatch.Measure()) {
                     var fileextension = ".raw";
-                    var rawfile = Path.Combine(Utility.APPLICATIONTEMPPATH, FILEPREFIX + fileextension);
+                    var filename = Path.GetRandomFileName();
+                    var rawfile = Path.Combine(Utility.APPLICATIONTEMPPATH, filename + fileextension);
 
                     using (var filestream = new System.IO.FileStream(rawfile, System.IO.FileMode.Create)) {
                         s.WriteTo(filestream);
                     }
 
                     ImageData data = null;
-                    var outputFile = Path.Combine(Utility.APPLICATIONTEMPPATH, FILEPREFIX + ".tiff");
+                    var outputFile = Path.Combine(Utility.APPLICATIONTEMPPATH, filename + ".tiff");
                     try {
                         System.Diagnostics.Process process;
                         System.Diagnostics.ProcessStartInfo startInfo;

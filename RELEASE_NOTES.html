@@ -282,6 +282,7 @@ Thank you for your support!</p>
 <li>Fixed custom color schema not saving properly and resetting to default when reloading the application</li>
 <li>The backlash measurement routine has been fixed so that the focuser is properly recentered before the backlashOUT measurement procedure</li>
 <li>Some Sky Surveys did not work in some locales due to decimal pointer settings</li>
+<li>Fixed race condition when using DCRaw when the previous temp image was not finished processed and the new image tried to replace the previous temp image</li>
 </ul>
 <h2 id="improvements-1">Improvements</h2>
 <ul>
@@ -515,5 +516,7 @@ Thank you for your support!</p>
 <li>Major code refactorings for better maintainability</li>
 <li>Lots and lots of minor bugfixes and improvements</li>
 </ul>
+
+
 </body>
 </html>
