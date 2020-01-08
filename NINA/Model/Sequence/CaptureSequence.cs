@@ -156,10 +156,10 @@ namespace NINA.Model {
             }
         }
 
-        private short _gain;
+        private int _gain;
 
         [XmlElement(nameof(Gain))]
-        public short Gain {
+        public int Gain {
             get {
                 return _gain;
             }

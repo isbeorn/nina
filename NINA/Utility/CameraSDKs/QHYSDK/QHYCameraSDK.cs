@@ -705,12 +705,12 @@ namespace QHYCCD {
             /// <summary>
             /// Maximum sensor gain
             /// </summary>
-            public short GainMax;
+            public int GainMax;
 
             /// <summary>
             /// Minimum sensor gain
             /// </summary>
-            public short GainMin;
+            public int GainMin;
 
             /// <summary>
             /// Minimum sensor gain increment

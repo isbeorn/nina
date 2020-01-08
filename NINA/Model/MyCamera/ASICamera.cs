@@ -502,9 +502,9 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public short Gain {
+        public int Gain {
             get {
-                return (short)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN);
+                return GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN);
             }
             set {
                 if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN, value)) {
@@ -513,15 +513,15 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public short GainMax {
+        public int GainMax {
             get {
-                return (short)GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN);
+                return GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN);
             }
         }
 
-        public short GainMin {
+        public int GainMin {
             get {
-                return (short)GetControlMinValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN);
+                return GetControlMinValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN);
             }
         }
 

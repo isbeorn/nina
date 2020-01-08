@@ -445,7 +445,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private short _snapGain = -1;
+        private int _snapGain = -1;
         private ICameraMediator cameraMediator;
         private IImagingMediator imagingMediator;
         private ITelescopeMediator telescopeMediator;
@@ -457,7 +457,7 @@ namespace NINA.ViewModel {
         private RotatorInfo rotatorInfo;
         private WeatherDataInfo weatherDataInfo;
 
-        public short SnapGain {
+        public int SnapGain {
             get {
                 return _snapGain;
             }

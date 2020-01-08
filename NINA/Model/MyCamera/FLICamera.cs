@@ -321,7 +321,7 @@ namespace NINA.Model.MyCamera {
         public double ExposureMax => 1e4;
         public double ExposureMin => 1e-3;
 
-        public short Gain {
+        public int Gain {
             get => -1;
             set {
             }
@@ -344,8 +344,8 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public short GainMax => 0;
-        public short GainMin => 0;
+        public int GainMax => 0;
+        public int GainMin => 0;
         public ArrayList Gains => new ArrayList();
         public bool HasBattery => false;
         public bool HasDewHeater => false;

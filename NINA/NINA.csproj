@@ -440,6 +440,7 @@
     <Compile Include="PlateSolving\ImageSolver.cs" />
     <Compile Include="PlateSolving\CaptureSolver.cs" />
     <Compile Include="PlateSolving\PlateSolveProgress.cs" />
+    <Compile Include="Utility\CameraSDKs\EDSDK\EDSDKLocal.cs" />
     <Compile Include="Utility\CameraSDKs\OmegonSDK\omegonprocam.cs" />
     <Compile Include="Utility\Converters\AFFittingToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\IsLightImageTypeToVisibilityConverter.cs" />
@@ -551,6 +552,7 @@
     <Compile Include="Utility\Behaviors\BrowserBehavior.cs" />
     <Compile Include="Utility\Enum\AutoUpdateSourceEnum.cs" />
     <Compile Include="Utility\ValidationRules\GreaterThanZeroRule.cs" />
+    <Compile Include="Utility\ValidationRules\IntRangeRule.cs" />
     <Compile Include="Utility\ValidationRules\StrictGreaterZeroRule.cs" />
     <Compile Include="ViewModel\AutoFocus\AutoFocusPoint.cs" />
     <Compile Include="ViewModel\AutoFocus\AutoFocusReport.cs" />
@@ -1901,7 +1903,7 @@
       editbin /largeaddressaware "$(TargetPath)"
       )
       )
-</PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

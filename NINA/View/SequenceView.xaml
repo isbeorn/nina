@@ -1085,7 +1085,7 @@
                             <ComboBox SelectedItem="{Binding Gain, Mode=TwoWay, Converter={StaticResource MinusOneToEmptyStringConverter}, UpdateSourceTrigger=LostFocus}">
                                 <ComboBox.ItemsSource>
                                     <CompositeCollection>
-                                        <s:Int16>-1</s:Int16>
+                                        <s:Int32>-1</s:Int32>
                                         <CollectionContainer Collection="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Gains}" />
                                     </CompositeCollection>
                                 </ComboBox.ItemsSource>
@@ -1129,11 +1129,11 @@
                                         Path="Gain"
                                         UpdateSourceTrigger="LostFocus">
                                         <Binding.ValidationRules>
-                                            <util:ShortRangeRule>
-                                                <util:ShortRangeRule.ValidRange>
-                                                    <util:ShortRangeChecker Maximum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMax}" Minimum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMin}" />
-                                                </util:ShortRangeRule.ValidRange>
-                                            </util:ShortRangeRule>
+                                            <rules:IntRangeRule>
+                                                <rules:IntRangeRule.ValidRange>
+                                                    <rules:IntRangeChecker Maximum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMax}" Minimum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMin}" />
+                                                </rules:IntRangeRule.ValidRange>
+                                            </rules:IntRangeRule>
                                         </Binding.ValidationRules>
                                     </Binding>
                                 </TextBox.Text>

@@ -22,17 +22,16 @@
 #endregion "copyright"
 
 using EDSDKLib;
+using FLI;
 using NINA.Model.MyCamera;
+using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.AtikSDK;
 using NINA.Utility.Mediator.Interfaces;
-using NINA.Profile;
-using FLI;
 using QHYCCD;
 using System;
 using System.Collections.Generic;
 using ZWOptical.ASISDK;
-using System.Linq;
 
 namespace NINA.ViewModel.Equipment.Camera {
 
@@ -160,14 +159,14 @@ namespace NINA.ViewModel.Equipment.Camera {
             try {
                 IntPtr cameraList;
                 try {
-                    EDSDK.Initialize();
+                    EDSDKLocal.Initialize();
                 } catch (Exception ex) {
                     Logger.Error(ex);
                     Utility.Notification.Notification.ShowError(ex.Message);
                 }
 
                 uint err = EDSDK.EdsGetCameraList(out cameraList);
-                if (err == (uint)EDSDK.EDS_ERR.OK) {
+                if (err == EDSDK.EDS_ERR_OK) {
                     int count;
                     err = EDSDK.EdsGetChildCount(cameraList, out count);
 

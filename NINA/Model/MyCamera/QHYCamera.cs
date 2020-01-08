@@ -278,7 +278,7 @@ namespace NINA.Model.MyCamera {
         /// </summary>
         public double ExposureMin => Info.ExpMin / 1e6;
 
-        public short Gain {
+        public int Gain {
             get {
                 if (Connected && CanGetGain) {
                     double rv;
@@ -289,7 +289,7 @@ namespace NINA.Model.MyCamera {
                         rv = GetControlValue(LibQHYCCD.CONTROL_ID.CONTROL_GAIN);
                     }
 
-                    return unchecked((short)rv);
+                    return unchecked((int)rv);
                 }
 
                 return 1;
@@ -304,8 +304,8 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public short GainMax => Info.GainMax;
-        public short GainMin => Info.GainMin;
+        public int GainMax => Info.GainMax;
+        public int GainMin => Info.GainMin;
         public ArrayList Gains => new ArrayList();
         public bool HasBattery => false;
         public bool HasDewHeater => false;

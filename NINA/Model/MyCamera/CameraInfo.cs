@@ -48,9 +48,9 @@ namespace NINA.Model.MyCamera {
             set { temperature = value; RaisePropertyChanged(); }
         }
 
-        private short gain;
+        private int gain;
 
-        public short Gain {
+        public int Gain {
             get { return gain; }
             set { gain = value; RaisePropertyChanged(); }
         }

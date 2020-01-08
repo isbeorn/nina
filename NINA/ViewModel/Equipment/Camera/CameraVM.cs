@@ -695,7 +695,7 @@ namespace NINA.ViewModel.Equipment.Camera {
             CameraInfo.ExposureEndTime = DateTime.Now;
         }
 
-        public void SetGain(short gain) {
+        public void SetGain(int gain) {
             if (CameraInfo.Connected == true) {
                 Cam.Gain = gain;
                 CameraInfo.Gain = Cam.Gain;

@@ -21,7 +21,6 @@
 
 #endregion "copyright"
 
-using NINA.Model.ImageData;
 using NINA.Utility;
 using System.Collections;
 using System.Threading;
@@ -71,9 +70,9 @@ namespace NINA.Model.MyCamera {
         bool CanSetUSBLimit { get; }
         bool CanGetGain { get; }
         bool CanSetGain { get; }
-        short GainMax { get; }
-        short GainMin { get; }
-        short Gain { get; set; }
+        int GainMax { get; }
+        int GainMin { get; }
+        int Gain { get; set; }
         double ElectronsPerADU { get; }
         ICollection ReadoutModes { get; }
         short ReadoutModeForSnapImages { get; set; }

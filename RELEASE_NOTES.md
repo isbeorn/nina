@@ -16,6 +16,8 @@
     - On start of guiding initiating a calibration and auto select star when required
     - Display star drift during guiding in a chart (currently only measured in pixels)
     - Dithering during sequencing
+ - **Canon Cameras** Updated support for recently-released Canon DSLR and mirrorless cameras (EOS M6 Mark II, EOS 90D, EOS M200)
+
 
 ## Localization
 - To be able to support many languages N.I.N.A. is now available on Crowdin. This powerful online translation management tool will allow users to easily contribute to the localization.
@@ -77,6 +79,7 @@
 - Added an empty entry for Constellation Filter in Sky Atlas to unselect it
 - Image File Pattern Values will now remove leading and trailing white spaces to prevent invalid file path
 - In case illegal characters for a filename are inside some file patterns, they will now get replaced to still being able to save
+- Canon camera support has been improved and many common errors have been fixed
 
 ## Special Thanks
 The N.I.N.A. team would like to sincerely thank:
@@ -88,7 +91,7 @@ Thank you for your support!
 ## Included Camera SDK Versions:
 - Altair: 39.15529.2019.906
 - Atik: 1.3.0.4
-- Canon: 3.8.20.6400
+- Canon: 13.11.10
 - FLI: 1.104.0.0
 - Nikon: 1.3.1.3001
 - Omegon: 39.15325.2019.810

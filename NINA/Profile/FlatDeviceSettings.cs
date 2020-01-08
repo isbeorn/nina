@@ -157,7 +157,7 @@ namespace NINA.Profile {
             return result.Distinct();
         }
 
-        public IEnumerable<short> GetBrightnessInfoGains() {
+        public IEnumerable<int> GetBrightnessInfoGains() {
             var result = FilterSettings.Keys.Select(key => key.Gain).ToList();
 
             return result.Distinct();
@@ -180,9 +180,9 @@ namespace NINA.Profile {
         public BinningMode Binning { get; set; }
 
         [DataMember]
-        public short Gain { get; set; }
+        public int Gain { get; set; }
 
-        public FlatDeviceFilterSettingsKey(string filterName, BinningMode binning, short gain) {
+        public FlatDeviceFilterSettingsKey(string filterName, BinningMode binning, int gain) {
             FilterName = filterName;
             Binning = binning;
             Gain = gain;

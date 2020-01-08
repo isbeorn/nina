@@ -338,19 +338,19 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public short GainMax {
+        public int GainMax {
             get {
                 return -1;
             }
         }
 
-        public short GainMin {
+        public int GainMin {
             get {
                 return -1;
             }
         }
 
-        public short Gain {
+        public int Gain {
             get {
                 return -1;
             }

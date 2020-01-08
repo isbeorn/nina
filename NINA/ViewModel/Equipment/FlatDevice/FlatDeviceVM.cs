@@ -336,12 +336,12 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             var filters = _filterWheelMediator.GetAllFilters() ?? new List<FilterInfo> { new FilterInfo() };
 
             var binningModes = new List<BinningMode>();
-            var gains = new List<short>();
+            var gains = new List<int>();
             WizardTrainedValues.Columns.Add($"{Loc.Instance["LblBinning"]}\n{Loc.Instance["LblGain"]}", typeof(string));
             binningModes.AddRange(profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoBinnings());
             gains.AddRange(profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoGains());
 
-            var keys = new List<(BinningMode binning, short gain)>();
+            var keys = new List<(BinningMode binning, int gain)>();
             foreach (var binningMode in binningModes.Distinct().OrderBy(mode => mode.Name)) {
                 foreach (var gain in gains.Distinct().OrderBy(s => s)) {
                     WizardTrainedValues.Columns.Add($"{binningMode}\n{gain}", typeof(string));

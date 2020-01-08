@@ -523,7 +523,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public short GainMax {
+        public int GainMax {
             get {
                 if (Gains != null) {
                     return ISOSpeeds.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
@@ -533,7 +533,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public short GainMin {
+        public int GainMin {
             get {
                 if (Gains != null) {
                     return ISOSpeeds.Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
@@ -543,12 +543,12 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public short Gain {
+        public int Gain {
             get {
                 if (Connected) {
                     NikonEnum e = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_Sensitivity);
-                    short iso;
-                    if (short.TryParse(e.Value.ToString(), out iso)) {
+                    int iso;
+                    if (int.TryParse(e.Value.ToString(), out iso)) {
                         return iso;
                     } else {
                         return -1;
@@ -568,7 +568,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        private Dictionary<short, int> ISOSpeeds = new Dictionary<short, int>();
+        private Dictionary<int, int> ISOSpeeds = new Dictionary<int, int>();
 
         private ArrayList _gains;
 
@@ -581,8 +581,8 @@ namespace NINA.Model.MyCamera {
                 if (_gains.Count == 0 && Connected && CanGetGain) {
                     NikonEnum e = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_Sensitivity);
                     for (int i = 0; i < e.Length; i++) {
-                        short iso;
-                        if (short.TryParse(e.GetEnumValueByIndex(i).ToString(), out iso)) {
+                        int iso;
+                        if (int.TryParse(e.GetEnumValueByIndex(i).ToString(), out iso)) {
                             ISOSpeeds.Add(iso, i);
                             _gains.Add(iso);
                         }

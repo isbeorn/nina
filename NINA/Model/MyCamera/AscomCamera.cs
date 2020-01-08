@@ -533,13 +533,13 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public short Gain {
+        public int Gain {
             get {
-                short val = -1;
+                int val = -1;
                 if (Connected && CanGetGain) {
                     try {
                         if (Gains.Count > 0) {
-                            val = (short)Gains[_camera.Gain];
+                            val = (int)Gains[_camera.Gain];
                         } else {
                             val = _camera.Gain;
                         }
@@ -555,7 +555,7 @@ namespace NINA.Model.MyCamera {
                         if (Gains.Count > 0) {
                             _camera.Gain = (short)Gains.IndexOf(value);
                         } else {
-                            _camera.Gain = value;
+                            _camera.Gain = (short)value;
                         }
                     } catch (PropertyNotImplementedException) {
                         CanSetGain = false;
@@ -601,9 +601,9 @@ namespace NINA.Model.MyCamera {
 
         private bool _canGetGainMinMax;
 
-        public short GainMax {
+        public int GainMax {
             get {
-                short val = -1;
+                int val = -1;
                 if (Connected && _canGetGainMinMax) {
                     try {
                         val = _camera.GainMax;
@@ -617,9 +617,9 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public short GainMin {
+        public int GainMin {
             get {
-                short val = -1;
+                int val = -1;
                 if (Connected && _canGetGainMinMax) {
                     try {
                         val = _camera.GainMin;

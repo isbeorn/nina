@@ -371,24 +371,24 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public short GainMax {
+        public int GainMax {
             get {
                 camera.get_ExpoAGainRange(out var min, out var max, out var def);
-                return (short)max;
+                return max;
             }
         }
 
-        public short GainMin {
+        public int GainMin {
             get {
                 camera.get_ExpoAGainRange(out var min, out var max, out var def);
-                return (short)min;
+                return min;
             }
         }
 
-        public short Gain {
+        public int Gain {
             get {
                 camera.get_ExpoAGain(out var gain);
-                return (short)gain;
+                return gain;
             }
 
             set {
