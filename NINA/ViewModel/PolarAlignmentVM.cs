@@ -271,9 +271,9 @@ namespace NINA.ViewModel {
             }
         }
 
-        private short snapGain = -1;
+        private int snapGain = -1;
 
-        public short SnapGain {
+        public int SnapGain {
             get {
                 return snapGain;
             }

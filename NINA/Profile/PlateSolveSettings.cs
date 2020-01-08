@@ -393,10 +393,10 @@ namespace NINA.Profile {
             }
         }
 
-        private short gain;
+        private int gain;
 
         [DataMember]
-        public short Gain {
+        public int Gain {
             get {
                 return gain;
             }

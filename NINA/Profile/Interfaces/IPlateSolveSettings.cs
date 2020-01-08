@@ -32,7 +32,7 @@ namespace NINA.Profile {
         BlindSolverEnum BlindSolverType { get; set; }
         string CygwinLocation { get; set; }
         double ExposureTime { get; set; }
-        short Gain { get; set; }
+        int Gain { get; set; }
         short Binning { get; set; }
         FilterInfo Filter { get; set; }
         PlateSolverEnum PlateSolverType { get; set; }

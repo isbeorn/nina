@@ -50,7 +50,7 @@ namespace NINA.ViewModel.Imaging {
 
         private Model.MyFilterWheel.FilterInfo _snapFilter;
 
-        private short _snapGain = -1;
+        private int _snapGain = -1;
 
         private CancellationTokenSource _solveCancelToken;
 
@@ -218,7 +218,7 @@ namespace NINA.ViewModel.Imaging {
             }
         }
 
-        public short SnapGain {
+        public int SnapGain {
             get {
                 return _snapGain;
             }
