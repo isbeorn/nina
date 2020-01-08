@@ -35,6 +35,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyFlatDevice {
+
     public class AlnitakFlatDevice : BaseINPC, IFlatDevice {
         private readonly IProfileService _profileService;
         private const string AUTO = "AUTO";
@@ -158,8 +159,8 @@ namespace NINA.Model.MyFlatDevice {
 
         public ReadOnlyCollection<string> PortNames {
             get {
-                var result = new List<string> { AUTO };
-                result.AddRange(SerialPort.GetPortNames().OrderBy(s => s));
+                var result = new List<string> { "AUTO" };
+                result.AddRange(Sdk.PortNames);
                 return new ReadOnlyCollection<string>(result);
             }
         }

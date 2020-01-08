@@ -22,11 +22,13 @@
 #endregion "copyright"
 
 using NINA.Utility.Extensions;
+using System.Collections.ObjectModel;
 
 namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
 
     public interface IAlnitakDevice {
         ISerialPortProvider SerialPortProvider { set; }
+        ReadOnlyCollection<string> PortNames { get; }
 
         T SendCommand<T>(ICommand command) where T : Response, new();
 

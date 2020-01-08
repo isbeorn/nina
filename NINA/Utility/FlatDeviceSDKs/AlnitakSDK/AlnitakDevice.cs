@@ -23,6 +23,8 @@
 
 using NINA.Utility.Extensions;
 using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 
 namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
@@ -33,39 +35,20 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         private ISerialPortProvider _serialPortProvider = new SerialPortProvider();
         private ISerialPort _serialPort;
 
+        private const string ALNITAK_QUERY = @"SELECT * FROM Win32_PnPEntity WHERE DeviceID LIKE 'FTDIBUS\\VID_0403+PID_6001+A82%'";
+
         public ISerialPortProvider SerialPortProvider {
             set => _serialPortProvider = value;
         }
 
+        public ReadOnlyCollection<string> PortNames => _serialPortProvider.GetPortNames(ALNITAK_QUERY);
+
         public bool InitializeSerialPort(string aPortName) {
             if (string.IsNullOrEmpty(aPortName)) return false;
-            _serialPort = aPortName == "AUTO" ? DetectSerialPort() : TestPort(_serialPortProvider.GetSerialPort(aPortName));
+            _serialPort = aPortName.Equals("AUTO")
+                ? _serialPortProvider.GetSerialPort(_serialPortProvider.GetPortNames(ALNITAK_QUERY, addDivider: false, addGenericPorts: false).FirstOrDefault())
+                : _serialPortProvider.GetSerialPort(aPortName);
             return _serialPort != null;
-        }
-
-        private ISerialPort DetectSerialPort() {
-            foreach (var portName in _serialPortProvider.GetPortNames()) {
-                using (var port = _serialPortProvider.GetSerialPort(portName)) {
-                    if (TestPort(port) != null) {
-                        return port;
-                    }
-                }
-            }
-            return null;
-        }
-
-        private ISerialPort TestPort(ISerialPort port) {
-            if (PingDevice(port)) return port; //original flat-man and Arduino Uno
-            port.DtrEnable = true; //Arduino Leonardo
-            return PingDevice(port) ? port : null;
-        }
-
-        private bool PingDevice(ISerialPort port) {
-            _serialPort = port;
-            var response = SendCommand<PingResponse>(new PingCommand());
-            if (!response.IsValid) return false;
-            Logger.Debug($"Found {response.Name} on {_serialPort.PortName}.");
-            return true;
         }
 
         private readonly SemaphoreSlim ssSendCommand = new SemaphoreSlim(1, 1);

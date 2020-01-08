@@ -5,6 +5,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO.Ports;
 
 namespace NINATest.FlatDevice {
 
@@ -21,9 +22,11 @@ namespace NINATest.FlatDevice {
             _mockSerialPort.Setup(m => m.ReadLine()).Returns("*P99OOO");
 
             _mockSerialPortProvider = new Mock<ISerialPortProvider>();
-            _mockSerialPortProvider.Setup(m => m.GetSerialPort(It.IsAny<string>()))
+            _mockSerialPortProvider.Setup(m => m.GetSerialPort(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<Parity>(),
+                    It.IsAny<int>(), It.IsAny<StopBits>(), It.IsAny<Handshake>(), It.IsAny<bool>(),
+                    It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(_mockSerialPort.Object);
-            _mockSerialPortProvider.Setup(m => m.GetPortNames())
+            _mockSerialPortProvider.Setup(m => m.GetPortNames(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))
                 .Returns(new ReadOnlyCollection<string>(new List<string> { "COM3" }));
             _sut = AlnitakDevice.Instance;
             _sut.SerialPortProvider = _mockSerialPortProvider.Object;
@@ -38,23 +41,17 @@ namespace NINATest.FlatDevice {
         [TestCase("", false, true)]
         public void TestInitializeSerialPort(string portName, bool expected, bool portsAvailable) {
             if (portsAvailable) {
-                _mockSerialPortProvider.Setup(m => m.GetPortNames())
+                _mockSerialPortProvider.Setup(m => m.GetPortNames(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))
                     .Returns(new ReadOnlyCollection<string>(new List<string> { "COM3" }));
             } else {
-                _mockSerialPortProvider.Setup(m => m.GetPortNames())
+                _mockSerialPortProvider.Setup(m => m.GetPortNames(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))
                     .Returns(new ReadOnlyCollection<string>(new List<string>()));
+                _mockSerialPortProvider.Setup(m => m.GetSerialPort(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<Parity>(),
+                        It.IsAny<int>(), It.IsAny<StopBits>(), It.IsAny<Handshake>(), It.IsAny<bool>(),
+                        It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
+                    .Returns((ISerialPort)null);
             }
             Assert.That(_sut.InitializeSerialPort(portName), Is.EqualTo(expected));
-        }
-
-        [Test]
-        public void TestDtrHandling() {
-            _mockSerialPort.SetupProperty(m => m.DtrEnable);
-            _mockSerialPort.SetupSequence(m => m.ReadLine())
-                .Throws(new TimeoutException())
-                .Returns("*P99OOO");
-            _sut.InitializeSerialPort("COM3");
-            _mockSerialPort.VerifySet(m => m.DtrEnable = true, Times.Once);
         }
 
         [Test]
@@ -69,9 +66,9 @@ namespace NINATest.FlatDevice {
 
             Assert.That(result, Is.TypeOf(typeof(StateResponse)));
             Assert.That(result.IsValid, Is.EqualTo(valid));
-            _mockSerialPort.Verify(m => m.Open(), Times.Exactly(2)); //first call from InitializeSerialPort
+            _mockSerialPort.Verify(m => m.Open(), Times.Once);
             _mockSerialPort.Verify(m => m.Write(command), Times.Once);
-            _mockSerialPort.Verify(m => m.Close(), Times.Exactly(2)); //first call from InitializeSerialPort
+            _mockSerialPort.Verify(m => m.Close(), Times.Once);
         }
 
         [Test]
@@ -85,9 +82,9 @@ namespace NINATest.FlatDevice {
 
             Assert.That(result, Is.TypeOf(typeof(StateResponse)));
             Assert.That(result.IsValid, Is.False);
-            _mockSerialPort.Verify(m => m.Open(), Times.Exactly(2)); //first call from InitializeSerialPort
+            _mockSerialPort.Verify(m => m.Open(), Times.Once);
             _mockSerialPort.Verify(m => m.Write(command), Times.Once);
-            _mockSerialPort.Verify(m => m.Close(), Times.Exactly(2)); //first call from InitializeSerialPort
+            _mockSerialPort.Verify(m => m.Close(), Times.Once);
         }
 
         [Test]
@@ -101,9 +98,9 @@ namespace NINATest.FlatDevice {
 
             Assert.That(result, Is.TypeOf(typeof(StateResponse)));
             Assert.That(result.IsValid, Is.False);
-            _mockSerialPort.Verify(m => m.Open(), Times.Exactly(2)); //first call from InitializeSerialPort
+            _mockSerialPort.Verify(m => m.Open(), Times.Once);
             _mockSerialPort.Verify(m => m.Write(command), Times.Once);
-            _mockSerialPort.Verify(m => m.Close(), Times.Exactly(2)); //first call from InitializeSerialPort
+            _mockSerialPort.Verify(m => m.Close(), Times.Once);
         }
     }
 }
