@@ -2009,7 +2009,7 @@ HFR calculé: {2}</value>
     <value>Amas Ouvert</value>
   </data>
   <data name="LblObjectType_PLNNB" xml:space="preserve">
-    <value>Nébuleuse Planétaire</value>
+    <value>Nébuleuse planétaire</value>
   </data>
   <data name="LblObjectType_QUASR" xml:space="preserve">
     <value>Quasar</value>

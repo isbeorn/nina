@@ -1138,7 +1138,7 @@ cuando las lineas no estan alineadas hay algun error de alineacion polar</value>
     <value>Habilitado</value>
   </data>
   <data name="LblEndOfSequenceCloseFlatDeviceCover" xml:space="preserve">
-    <value>Closing flat device cover</value>
+    <value>Cerrar Cubierta del panel plano</value>
   </data>
   <data name="LblEndOfSequenceDecision" xml:space="preserve">
     <value>Ejecuta Opciones de final de secuencia?</value>
@@ -1262,7 +1262,7 @@ Cuando el disparador se desactive la aplicacion solo obviara la exposicion inici
     <value>Elegir puerto serial</value>
   </data>
   <data name="LblFlatDeviceClearValues" xml:space="preserve">
-    <value>Clear Values</value>
+    <value>Limpiar Valores</value>
   </data>
   <data name="LblFlatDeviceClose" xml:space="preserve">
     <value>Cerrar</value>
@@ -1316,13 +1316,13 @@ Cuando el disparador se desactive la aplicacion solo obviara la exposicion inici
     <value>Fijar</value>
   </data>
   <data name="LblFlatDeviceTrainedFilterTimes" xml:space="preserve">
-    <value>Flat Wizard Trained Exposure Times</value>
+    <value>Entrenamiento Exposición Automática de panel plano</value>
   </data>
   <data name="LblFlatDeviceUnknown" xml:space="preserve">
     <value>Desconocido</value>
   </data>
   <data name="LblFlatDeviceUseWizardTrainedValues" xml:space="preserve">
-    <value>Use exposure times trained with flat wizard</value>
+    <value>Usar tiempos de exposición ajustados con el asistente de panel plano</value>
   </data>
   <data name="LblFlatExposureCalcContinue" xml:space="preserve">
     <value>El ADU promedio fue {0}, iniciando calculo de tiempo de exposicion en {1}</value>
@@ -1379,13 +1379,13 @@ Cuando el disparador se desactive la aplicacion solo obviara la exposicion inici
     <value>Configuracion Camara FLI</value>
   </data>
   <data name="LblFLIFloodBin" xml:space="preserve">
-    <value>Flood Binning</value>
+    <value>Flujo de Binning</value>
   </data>
   <data name="LblFLIFloodDuration" xml:space="preserve">
-    <value>Flood Duration</value>
+    <value>Duración del flujo</value>
   </data>
   <data name="LblFLIFlushCount" xml:space="preserve">
-    <value>Pre-exposure Flush Count</value>
+    <value>Medir tiempo de pre-exposición</value>
   </data>
   <data name="LblFlip" xml:space="preserve">
     <value>Hacer el cambio de meridiano</value>
@@ -1421,7 +1421,7 @@ Cuando el disparador se desactive la aplicacion solo obviara la exposicion inici
     <value>El Tamaño de un paso de enfoque usado para el auto enfoque. Ub paso debiera deser menos que la tolerancia del punto de enfoque critico</value>
   </data>
   <data name="LblFocuserBacklash" xml:space="preserve">
-    <value>Backlash IN/OUT</value>
+    <value>Backlash Dentro/Fuera</value>
   </data>
   <data name="LblFocuserBacklashTooltip" xml:space="preserve">
     <value>Backlash interior y exterior del Enfocador, en pasos de Enfocador</value>
@@ -1976,7 +1976,7 @@ Calculado HFR: {2}
     <value>Cumulo con Nebulosidad en una Galaxia</value>
   </data>
   <data name="LblObjectType_GALCL" xml:space="preserve">
-    <value>Cumulo Galactico</value>
+    <value>Agrupación de Galaxias</value>
   </data>
   <data name="LblObjectType_GALXY" xml:space="preserve">
     <value>Galaxia</value>
@@ -2252,13 +2252,13 @@ Calculado HFR: {2}
     <value>Resolución de placas abortada. La longitud focal efectiva del telescopio debe especificarse en Opciones &gt; Equipamiento</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceRepeating" xml:space="preserve">
-    <value>Telescope not inside tolerance. Repeating...</value>
+    <value>Telescopio fuera de la tolerancia. Repetiendo...</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceReslew" xml:space="preserve">
-    <value>Telescope not inside tolerance. Re-slew to target...</value>
+    <value>Telescopio fuera de la tolerancia. Nueva búsqueda del objetivo...</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceSyncing" xml:space="preserve">
-    <value>Telescope not inside tolerance. Syncing scope...</value>
+    <value>Telescopio fuera de la tolerancia. Sincronizando...</value>
   </data>
   <data name="LblPlatesolveProvidedBy" xml:space="preserve">
     <value>Servicio de resolucion de campo provisto por</value>
@@ -2327,7 +2327,7 @@ Calculado HFR: {2}
     <value>Obtener</value>
   </data>
   <data name="LblPush" xml:space="preserve">
-    <value>Push</value>
+    <value>Empujar</value>
   </data>
   <data name="LblPx" xml:space="preserve">
     <value>px</value>
@@ -2586,7 +2586,7 @@ Esta plantilla sera usada al inicio para inicializar la secuencia en vez de la u
     <value>Ajustes</value>
   </data>
   <data name="LblSettle" xml:space="preserve">
-    <value>Settle</value>
+    <value>Resolver</value>
   </data>
   <data name="LblSettlePixelTolerance" xml:space="preserve">
     <value>Tolerancia PHD2 Settle Pixel</value>
@@ -2661,10 +2661,10 @@ Esta plantilla sera usada al inicio para inicializar la secuencia en vez de la u
     <value>Al menos un objetivo no tiene coordenadas asignadas</value>
   </data>
   <data name="LblSnapPortStart" xml:space="preserve">
-    <value>Snap Port Start Command</value>
+    <value>Inicio de puerto</value>
   </data>
   <data name="LblSnapPortStop" xml:space="preserve">
-    <value>Snap Port Stop Command</value>
+    <value>Parado Puerto</value>
   </data>
   <data name="LblSobel" xml:space="preserve">
     <value>Sobel</value>
@@ -2870,7 +2870,7 @@ Debieran ser sincronizados los valores?</value>
     <value>Telescopio parqueado. No puede Ir a mientras parqueado</value>
   </data>
   <data name="LblTelescopeSnapPort" xml:space="preserve">
-    <value>Telescope Snap Port</value>
+    <value>Ajuste de puerto del telescopio</value>
   </data>
   <data name="LblTelescopeSynced" xml:space="preserve">
     <value>Telescopio sincronizado a las coordenadas</value>
@@ -3083,7 +3083,7 @@ Mueve el rectangulo sobre la parte del Encuadre que quieres hacer subsampling. T
     <value>Usar Telescope Side of Pier</value>
   </data>
   <data name="LblUseSnapPort" xml:space="preserve">
-    <value>Use Telescope Snap Port</value>
+    <value>Usar puerto del telescopio</value>
   </data>
   <data name="LblVerticalPanels" xml:space="preserve">
     <value>Paneles Verticales</value>
@@ -3101,7 +3101,7 @@ Mueve el rectangulo sobre la parte del Encuadre que quieres hacer subsampling. T
     <value>Esperando que la camara alcanze el proximo paso de temperatura</value>
   </data>
   <data name="LblWaiting" xml:space="preserve">
-    <value>Waiting</value>
+    <value>Esperando</value>
   </data>
   <data name="LblWaitingForCamera" xml:space="preserve">
     <value>Esperando por la Camara</value>

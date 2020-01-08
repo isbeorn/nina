@@ -1976,7 +1976,7 @@ Calculated HFR: {2}
     <value>Cluster with Nebulosity in a Galaxy</value>
   </data>
   <data name="LblObjectType_GALCL" xml:space="preserve">
-    <value>Galaxy cluster</value>
+    <value>Galaxy Cluster</value>
   </data>
   <data name="LblObjectType_GALXY" xml:space="preserve">
     <value>Galaxy</value>

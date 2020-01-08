@@ -1970,16 +1970,16 @@ Calculated HFR: {2}
     <value>Cluster with Nebulosity</value>
   </data>
   <data name="LblObjectType_DRKNB" xml:space="preserve">
-    <value>Dunkler Nebel</value>
+    <value>Dark Nebula</value>
   </data>
   <data name="LblObjectType_G+C+N" xml:space="preserve">
     <value>Cluster with Nebulosity in a Galaxy</value>
   </data>
   <data name="LblObjectType_GALCL" xml:space="preserve">
-    <value>Galaxiencluster</value>
+    <value>Galaxy Cluster</value>
   </data>
   <data name="LblObjectType_GALXY" xml:space="preserve">
-    <value>Galaxie</value>
+    <value>Galaxy</value>
   </data>
   <data name="LblObjectType_GLOCL" xml:space="preserve">
     <value>Globular Cluster</value>
@@ -2009,7 +2009,7 @@ Calculated HFR: {2}
     <value>Open Cluster</value>
   </data>
   <data name="LblObjectType_PLNNB" xml:space="preserve">
-    <value>Mgławica planetarna</value>
+    <value>Planetary Nebula</value>
   </data>
   <data name="LblObjectType_QUASR" xml:space="preserve">
     <value>Kwazar</value>
@@ -2027,7 +2027,7 @@ Calculated HFR: {2}
     <value>Open cluster in the SMC</value>
   </data>
   <data name="LblObjectType_SNREM" xml:space="preserve">
-    <value>Supernova Überrest</value>
+    <value>Supernova Remnant</value>
   </data>
   <data name="LblOf" xml:space="preserve">
     <value>Of</value>

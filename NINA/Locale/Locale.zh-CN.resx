@@ -1970,16 +1970,16 @@
     <value>星云团</value>
   </data>
   <data name="LblObjectType_DRKNB" xml:space="preserve">
-    <value>暗星云</value>
+    <value>Dark Nebula</value>
   </data>
   <data name="LblObjectType_G+C+N" xml:space="preserve">
     <value>星系群和星云团</value>
   </data>
   <data name="LblObjectType_GALCL" xml:space="preserve">
-    <value>星系群</value>
+    <value>Galaxy Cluster</value>
   </data>
   <data name="LblObjectType_GALXY" xml:space="preserve">
-    <value>星系</value>
+    <value>Galaxy</value>
   </data>
   <data name="LblObjectType_GLOCL" xml:space="preserve">
     <value>球状星团</value>
@@ -2009,7 +2009,7 @@
     <value>疏散星团</value>
   </data>
   <data name="LblObjectType_PLNNB" xml:space="preserve">
-    <value>行星状星云</value>
+    <value>Planetary Nebula</value>
   </data>
   <data name="LblObjectType_QUASR" xml:space="preserve">
     <value>类星体</value>
@@ -2027,7 +2027,7 @@
     <value>小麦哲伦星云的开放星团</value>
   </data>
   <data name="LblObjectType_SNREM" xml:space="preserve">
-    <value>超新星遗迹</value>
+    <value>Supernova Remnant</value>
   </data>
   <data name="LblOf" xml:space="preserve">
     <value>的</value>
@@ -2252,13 +2252,13 @@
     <value>解析被终止. 望远镜的有效焦距必须在：选项 &gt; 设备 中进行设置</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceRepeating" xml:space="preserve">
-    <value>Telescope not inside tolerance. Repeating...</value>
+    <value>望远镜不在容许范围内。重复...</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceReslew" xml:space="preserve">
-    <value>Telescope not inside tolerance. Re-slew to target...</value>
+    <value>望远镜不在容许范围内。重新回转至目标...</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceSyncing" xml:space="preserve">
-    <value>Telescope not inside tolerance. Syncing scope...</value>
+    <value>望远镜不在容许范围内。同步中...</value>
   </data>
   <data name="LblPlatesolveProvidedBy" xml:space="preserve">
     <value>解析服务提供：</value>

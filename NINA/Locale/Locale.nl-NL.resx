@@ -1128,7 +1128,7 @@ wanneer de lijnen niet zijn uitgelijnd is er er een of andere polaire uitlijning
     <value>Ingeschakeld</value>
   </data>
   <data name="LblEndOfSequenceCloseFlatDeviceCover" xml:space="preserve">
-    <value>Closing flat device cover</value>
+    <value>Sluit deksel van het flat device</value>
   </data>
   <data name="LblEndOfSequenceDecision" xml:space="preserve">
     <value>Eind van de sequentie opties uitvoeren?</value>
@@ -1252,7 +1252,7 @@ Wanneer deze instelling is gedeactiveerd zal de applicatie de Start Belichting o
     <value>Kies seriële poort</value>
   </data>
   <data name="LblFlatDeviceClearValues" xml:space="preserve">
-    <value>Clear Values</value>
+    <value>Wis waardes</value>
   </data>
   <data name="LblFlatDeviceClose" xml:space="preserve">
     <value>Sluiten</value>
@@ -1306,13 +1306,13 @@ Wanneer deze instelling is gedeactiveerd zal de applicatie de Start Belichting o
     <value>Instellen</value>
   </data>
   <data name="LblFlatDeviceTrainedFilterTimes" xml:space="preserve">
-    <value>Flat Wizard Trained Exposure Times</value>
+    <value>Uit flat wizard voortgekomen belichtingstijden</value>
   </data>
   <data name="LblFlatDeviceUnknown" xml:space="preserve">
     <value>Onbekend</value>
   </data>
   <data name="LblFlatDeviceUseWizardTrainedValues" xml:space="preserve">
-    <value>Use exposure times trained with flat wizard</value>
+    <value>Gebruik de belichtingstijden die uit de flat wizard zijn voortgekomen</value>
   </data>
   <data name="LblFlatExposureCalcContinue" xml:space="preserve">
     <value>ADU gemiddelde was {0}, start de belichtingstijdberekening op {1}</value>
@@ -1966,7 +1966,7 @@ berekende HFR: {2}
     <value>Cluster met neveligheid in een Melkwegstelsel</value>
   </data>
   <data name="LblObjectType_GALCL" xml:space="preserve">
-    <value>Cluster van Melkwegstelsels</value>
+    <value>Cluster van melkwegstelsels</value>
   </data>
   <data name="LblObjectType_GALXY" xml:space="preserve">
     <value>Melkwegstelsel</value>
@@ -1999,7 +1999,7 @@ berekende HFR: {2}
     <value>Open sterrenhoop</value>
   </data>
   <data name="LblObjectType_PLNNB" xml:space="preserve">
-    <value>Planetarische nevel</value>
+    <value>Planetare nevel</value>
   </data>
   <data name="LblObjectType_QUASR" xml:space="preserve">
     <value>Quasar</value>
@@ -2242,13 +2242,13 @@ Verbonden cliënten: {0}
     <value>Plate solve afgebroken. De effectieve focale lengte van de telescoop moet worden gespecificeerd onder Opties &gt; Uitrusting</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceRepeating" xml:space="preserve">
-    <value>Telescope not inside tolerance. Repeating...</value>
+    <value>Telescoop niet binnen tolerantie. Herhaal...</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceReslew" xml:space="preserve">
-    <value>Telescope not inside tolerance. Re-slew to target...</value>
+    <value>Telescoop niet binnen tolerantie. Opnieuw naar doel zwenken...</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceSyncing" xml:space="preserve">
-    <value>Telescope not inside tolerance. Syncing scope...</value>
+    <value>Telescoop niet binnen tolerantie. Telscoop wordt gesynchroniseed...</value>
   </data>
   <data name="LblPlatesolveProvidedBy" xml:space="preserve">
     <value>Platesolve service aangeboden door</value>
@@ -3089,7 +3089,7 @@ Sleep de rechthoek over het deel van de opname dat u fotograferen wilt en active
     <value>Wachten tot de camera de volgende temperatuur doel heeft bereikt</value>
   </data>
   <data name="LblWaiting" xml:space="preserve">
-    <value>Waiting</value>
+    <value>Wachten</value>
   </data>
   <data name="LblWaitingForCamera" xml:space="preserve">
     <value>Wachten op camera</value>
