@@ -3271,6 +3271,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File Extension.
+        /// </summary>
+        internal static string LblFileExtension {
+            get {
+                return ResourceManager.GetString("LblFileExtension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File Settings.
         /// </summary>
         internal static string LblFileSettings {

@@ -42,6 +42,7 @@ namespace NINA.Profile {
         string FileCameraFolder { get; set; }
         bool FileCameraUseBulbMode { get; set; }
         bool FileCameraIsBayered { get; set; }
+        string FileCameraExtension { get; set; }
 
         bool FLIEnableFloodFlush { get; set; }
         bool FLIEnableSnapshotFloodFlush { get; set; }

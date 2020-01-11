@@ -335,6 +335,7 @@ namespace NINA.Model.ImageData {
                 case ".pef":
                 case ".dng":
                 case ".arw":
+                case ".orf":
                     return await RawToImageArray(path, bitDepth, rawConverter, ct);
 
                 default:

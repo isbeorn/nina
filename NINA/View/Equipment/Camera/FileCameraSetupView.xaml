@@ -46,6 +46,13 @@
                 </Button>
             </Grid>
             <UniformGrid Margin="0,5,0,0" Columns="2">
+                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFileExtension}" />
+                <ComboBox
+                    DisplayMemberPath="Name"
+                    ItemsSource="{Binding FileExtensions}"
+                    SelectedItem="{Binding SelectedFileExtension}" />
+            </UniformGrid>
+            <UniformGrid Margin="0,5,0,0" Columns="2">
                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblUseBuldMode}" />
                 <CheckBox IsChecked="{Binding UseBulbMode}" />
             </UniformGrid>

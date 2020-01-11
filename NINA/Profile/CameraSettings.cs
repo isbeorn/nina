@@ -232,6 +232,19 @@ namespace NINA.Profile {
             }
         }
 
+        private string fileCameraExtension;
+
+        [DataMember]
+        public string FileCameraExtension {
+            get => fileCameraExtension;
+            set {
+                if (fileCameraExtension != value) {
+                    fileCameraExtension = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         private bool fileCameraUseBulbMode;
 
         [DataMember]

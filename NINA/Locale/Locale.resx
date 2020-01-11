@@ -1210,6 +1210,9 @@ When this trigger is deactivated the application will just skip the Start Exposu
   <data name="LblFileExample" xml:space="preserve">
     <value>Example File Name</value>
   </data>
+  <data name="LblFileExtension" xml:space="preserve">
+    <value>File Extension</value>
+  </data>
   <data name="LblFileSettings" xml:space="preserve">
     <value>File Settings</value>
   </data>

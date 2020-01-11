@@ -47,6 +47,7 @@ namespace NINA.Model.MyCamera {
             this.profileService = profileService;
             this.telescopeMediator = telescopeMediator;
             CameraState = "Idle";
+            SelectedFileExtension = FileExtensions.FirstOrDefault(x => x.Name == profileService.ActiveProfile.CameraSettings.FileCameraExtension) ?? FileExtensions.First();
         }
 
         private void OpenFolderDiag(object obj) {
@@ -185,13 +186,13 @@ namespace NINA.Model.MyCamera {
 
         public double PixelSizeX {
             get {
-                return 3.8;
+                return profileService.ActiveProfile.CameraSettings.PixelSize;
             }
         }
 
         public double PixelSizeY {
             get {
-                return 3.8;
+                return profileService.ActiveProfile.CameraSettings.PixelSize;
             }
         }
 
@@ -465,7 +466,8 @@ namespace NINA.Model.MyCamera {
                 Path = FolderPath,
                 NotifyFilter = NotifyFilters.FileName,
                 Filter = "*.*",
-                EnableRaisingEvents = false
+                EnableRaisingEvents = false,
+                IncludeSubdirectories = false
             };
 
             fileWatcher.Created += FileWatcher_Created;
@@ -490,10 +492,50 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public FileExtension selectedFileExtension;
+
+        public FileExtension SelectedFileExtension {
+            get => selectedFileExtension;
+            set {
+                selectedFileExtension = value;
+                profileService.ActiveProfile.CameraSettings.FileCameraExtension = selectedFileExtension.Name;
+                RaisePropertyChanged();
+            }
+        }
+
+        public ICollection<FileExtension> FileExtensions { get; } = new List<FileExtension>() {
+            new FileExtension ("ALL", @"\.tiff|\.tif|\.png|\.gif|\.jpg|\.jpeg|\.png|\.cr2|\.nef|\.raw|\.raf|\.xisf|\.fit|\.fits|\.pef|\.dng|\.arw|\.orf"),
+            new FileExtension ("CR2", @"\.cr2"),
+            new FileExtension ("NEF", @"\.nef"),
+            new FileExtension ("RAW", @"\.raw"),
+            new FileExtension ("RAF", @"\.raf"),
+            new FileExtension ("PEF", @"\.pef"),
+            new FileExtension ("DNG", @"\.dng"),
+            new FileExtension ("ARW", @"\.arw"),
+            new FileExtension ("ORF", @"\.orf"),
+            new FileExtension ("TIFF", @"\.tiff|\.tif"),
+            new FileExtension ("PNG", @"\.png"),
+            new FileExtension ("JPG", @"\.jpg|\.jpeg"),
+            new FileExtension ("GIF", @"\.gif"),
+            new FileExtension ("XISF", @"\.xisf"),
+            new FileExtension ("FITS", @"\.fit|\.fits"),
+        };
+
+        public class FileExtension {
+
+            public FileExtension(string name, string pattern) {
+                Name = name;
+                Pattern = pattern;
+            }
+
+            public string Name { get; }
+            public string Pattern { get; }
+        }
+
         private void AddQueueItem(string path) {
             lock (lockObj) {
                 var fileExt = Path.GetExtension(path).ToLower();
-                if (Regex.IsMatch(fileExt, @"\.tiff|\.tif|\.png|\.gif|\.jpg|\.jpeg|\.png|\.cr2|\.nef|\.raw|\.raf|\.xisf|\.fit|\.fits|\.pef|\.dng|\.arw")) {
+                if (Regex.IsMatch(fileExt, SelectedFileExtension.Pattern)) {
                     Logger.Trace($"Added file to Queue at {path}");
                     fileQueue.Enqueue(path);
                 } else {
