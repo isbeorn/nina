@@ -152,7 +152,7 @@
                         MinHeight="60"
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0">
-                        <UniformGrid Columns="2" IsEnabled="{Binding Repeat}">
+                        <UniformGrid Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblErrorLT}" />
                             <UniformGrid Columns="2">
                                 <TextBox
