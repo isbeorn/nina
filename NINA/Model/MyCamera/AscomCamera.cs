@@ -244,10 +244,13 @@ namespace NINA.Model.MyCamera {
         public bool CanFastReadout {
             get {
                 if (Connected) {
-                    return _camera.CanFastReadout;
-                } else {
-                    return false;
+                    try {
+                        return _camera.CanFastReadout;
+                    } catch (PropertyNotImplementedException) {
+                        ASCOMInteraction.LogComplianceIssue($"{nameof(CanFastReadout)} GET");
+                    }
                 }
+                return false;
             }
         }
 
@@ -488,13 +491,21 @@ namespace NINA.Model.MyCamera {
             get {
                 bool val = false;
                 if (Connected && CanFastReadout) {
-                    val = _camera.FastReadout;
+                    try {
+                        val = _camera.FastReadout;
+                    } catch (PropertyNotImplementedException) {
+                        ASCOMInteraction.LogComplianceIssue($"{nameof(FastReadout)} GET");
+                    }
                 }
                 return val;
             }
             set {
                 if (Connected && CanFastReadout) {
-                    _camera.FastReadout = value;
+                    try {
+                        _camera.FastReadout = value;
+                    } catch (PropertyNotImplementedException) {
+                        ASCOMInteraction.LogComplianceIssue($"{nameof(FastReadout)} SET");
+                    }
                 }
             }
         }
@@ -545,6 +556,7 @@ namespace NINA.Model.MyCamera {
                         }
                     } catch (PropertyNotImplementedException) {
                         CanGetGain = false;
+                        ASCOMInteraction.LogComplianceIssue($"{nameof(Gain)} GET");
                     }
                 }
                 return val;
@@ -559,6 +571,7 @@ namespace NINA.Model.MyCamera {
                         }
                     } catch (PropertyNotImplementedException) {
                         CanSetGain = false;
+                        ASCOMInteraction.LogComplianceIssue($"{nameof(Gain)} SET");
                     } catch (InvalidValueException ex) {
                         Notification.ShowWarning(ex.Message);
                     } catch (Exception) {
@@ -867,7 +880,12 @@ namespace NINA.Model.MyCamera {
         public short ReadoutMode {
             get {
                 if (Connected) {
-                    return _camera.ReadoutMode;
+                    try {
+                        return _camera.ReadoutMode;
+                    } catch (PropertyNotImplementedException) {
+                        ASCOMInteraction.LogComplianceIssue($"{nameof(ReadoutMode)} GET");
+                    }
+                    return -1;
                 } else {
                     return -1;
                 }
@@ -877,6 +895,8 @@ namespace NINA.Model.MyCamera {
                     _camera.ReadoutMode = value;
                 } catch (InvalidValueException ex) {
                     Notification.ShowError(ex.Message);
+                } catch (PropertyNotImplementedException) {
+                    ASCOMInteraction.LogComplianceIssue($"{nameof(ReadoutMode)} SET");
                 }
             }
         }
@@ -898,6 +918,7 @@ namespace NINA.Model.MyCamera {
                     try {
                         val = _camera.SensorName;
                     } catch (PropertyNotImplementedException) {
+                        ASCOMInteraction.LogComplianceIssue();
                     }
                 }
                 return val;
@@ -1076,9 +1097,9 @@ namespace NINA.Model.MyCamera {
             bool isSnap = sequence.ImageType == CaptureSequence.ImageTypes.SNAPSHOT;
 
             if (CanFastReadout) {
-                _camera.FastReadout = isSnap ? readoutModeForSnapImages != 0 : readoutModeForNormalImages != 0;
+                FastReadout = isSnap ? readoutModeForSnapImages != 0 : readoutModeForNormalImages != 0;
             } else {
-                _camera.ReadoutMode =
+                ReadoutMode =
                     isSnap
                         ? readoutModeForSnapImages
                         : readoutModeForNormalImages;
