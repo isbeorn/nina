@@ -195,8 +195,10 @@ namespace NINA.Model {
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<CaptureSequenceList>));
 
                 c = (List<CaptureSequenceList>)xmlSerializer.Deserialize(stream);
-                foreach (var l in c)
+                foreach (var l in c) {
                     AdjustSequenceToMatchCurrentProfile(filters, latitude, longitude, l);
+                    l.MarkAsUnchanged();
+                }
             } catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.ShowError(Locale.Loc.Instance["LblLoadSequenceSetFailed"] + Environment.NewLine + ex.Message);
@@ -746,5 +748,44 @@ namespace NINA.Model {
         public void MarkAsUnchanged() {
             HasChanged = false;
         }
+
+        private DateTime _estimatedStartTime;
+
+        [XmlIgnore]
+        public DateTime EstimatedStartTime {
+            get {
+                return _estimatedStartTime;
+            }
+            set {
+                _estimatedStartTime = value;
+                RaisePropertyChanged();
+            }
+        }
+        private DateTime _estimatedEndTime;
+
+        [XmlIgnore]
+        public DateTime EstimatedEndTime {
+            get {
+                return _estimatedEndTime;
+            }
+            set {
+                _estimatedEndTime = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private TimeSpan _estimatedDuration;
+
+        [XmlIgnore]
+        public TimeSpan EstimatedDuration {
+            get {
+                return _estimatedDuration;
+            }
+            set {
+                _estimatedDuration = value;
+                RaisePropertyChanged();
+            }
+        }
+
     }
 }

@@ -430,6 +430,7 @@ namespace NINA.ViewModel {
         private void CalculateETA() {
             TimeSpan time = new TimeSpan();
             foreach (var seq in Targets) {
+                seq.EstimatedStartTime = DateTime.Now.AddSeconds(time.TotalSeconds);
                 foreach (CaptureSequence cs in seq) {
                     if (cs.Enabled) {
                         var exposureCount = cs.TotalExposureCount - cs.ProgressExposureCount;
@@ -438,6 +439,8 @@ namespace NINA.ViewModel {
                                                  (cs.ExposureTime + EstimatedDownloadTime.TotalSeconds)));
                     }
                 }
+                seq.EstimatedEndTime = DateTime.Now.AddSeconds(time.TotalSeconds);
+                seq.EstimatedDuration = seq.EstimatedEndTime - seq.EstimatedStartTime;
             }
 
             ETA = DateTime.Now.AddSeconds(time.TotalSeconds);
@@ -465,8 +468,30 @@ namespace NINA.ViewModel {
             private set {
                 _eta = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(SequenceEstimatedStartTime));
+                RaisePropertyChanged(nameof(SequenceEstimatedEndTime));
+                RaisePropertyChanged(nameof(SequenceEstimatedDuration));
             }
         }
+
+        public DateTime SequenceEstimatedStartTime {
+            get {
+                return (Sequence != null) ? Sequence.EstimatedStartTime : DateTime.Now;
+            }
+        }
+
+        public DateTime SequenceEstimatedEndTime {
+            get {
+                return (Sequence != null) ? Sequence.EstimatedEndTime : DateTime.Now;
+            }
+        }
+
+        public TimeSpan SequenceEstimatedDuration {
+            get {
+                return (Sequence != null) ? Sequence.EstimatedDuration : TimeSpan.MinValue;
+            }
+        }
+
 
         private IWindowServiceFactory windowServiceFactory;
 
@@ -1363,6 +1388,12 @@ namespace NINA.ViewModel {
             }
             if (e.PropertyName == nameof(CaptureSequenceList.HasFileName)) {
                 RaisePropertyChanged(nameof(HasSequenceFileName));
+            }
+            if (e.PropertyName == nameof(CaptureSequenceList.EstimatedStartTime)) {
+                RaisePropertyChanged("SequenceEstimatedStartTime");
+            }
+            if (e.PropertyName == nameof(CaptureSequenceList.EstimatedEndTime)) {
+                RaisePropertyChanged("SequenceEstimatedEndTime");
             }
         }
 
