@@ -214,7 +214,7 @@ namespace NINATest.FlatDevice {
         [Test]
         public void TestWizardTrainedValuesWithFilters() {
             var returnValue = new FlatDeviceFilterSettingsValue(0.7, 0.5);
-            short gainValue = 30;
+            int gainValue = 30;
             const string filterName = "Blue";
 
             _mockProfileService
@@ -225,7 +225,7 @@ namespace NINATest.FlatDevice {
                 .Returns(new List<BinningMode> { new BinningMode(1, 1) });
             _mockProfileService
                 .Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoGains())
-                .Returns(new List<short> { gainValue });
+                .Returns(new List<int> { (gainValue) });
             _mockFilterWheelMediator.Setup(m => m.GetAllFilters())
                 .Returns(new List<FilterInfo>() { new FilterInfo() { Name = filterName } });
             _mockProfileService.Raise(m => m.ActiveProfile.FlatDeviceSettings.PropertyChanged += null, new PropertyChangedEventArgs("FilterSettings"));

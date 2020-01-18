@@ -168,19 +168,32 @@ namespace NINA.ViewModel.FlatWizard {
             return telescopeMediator.SlewToCoordinatesAsync(new TopocentricCoordinates(azimuth, Angle.ByDegree(89), latitude, longitude));
         }
 
-        private void UpdateSingleFlatWizardFilterSettings(IProfileService profileService) {
-            if (SingleFlatWizardFilterSettings != null) {
+        private void UpdateSingleFlatWizardFilterSettings(IProfileService profileService)
+        {
+            if (SingleFlatWizardFilterSettings != null)
+            {
                 SingleFlatWizardFilterSettings.Settings.PropertyChanged -= UpdateProfileValues;
             }
 
-            SingleFlatWizardFilterSettings = new FlatWizardFilterSettingsWrapper(null, new FlatWizardFilterSettings {
+            int bitDepth = GetBitDepth(profileService);
+
+            SingleFlatWizardFilterSettings = new FlatWizardFilterSettingsWrapper(null, new FlatWizardFilterSettings
+            {
                 HistogramMeanTarget = profileService.ActiveProfile.FlatWizardSettings.HistogramMeanTarget,
                 HistogramTolerance = profileService.ActiveProfile.FlatWizardSettings.HistogramTolerance,
                 MaxFlatExposureTime = profileService.ActiveProfile.CameraSettings.MaxFlatExposureTime,
                 MinFlatExposureTime = profileService.ActiveProfile.CameraSettings.MinFlatExposureTime,
                 StepSize = profileService.ActiveProfile.FlatWizardSettings.StepSize
-            }, cameraInfo?.BitDepth ?? (int)profileService.ActiveProfile.CameraSettings.BitDepth);
+            }, bitDepth);
             SingleFlatWizardFilterSettings.Settings.PropertyChanged += UpdateProfileValues;
+        }
+
+        private int GetBitDepth(IProfileService profileService)
+        {
+            var bitDepth = cameraInfo?.BitDepth ?? (int)profileService.ActiveProfile.CameraSettings.BitDepth;
+            if (profileService.ActiveProfile.CameraSettings.BitScaling) bitDepth = 16;
+
+            return bitDepth;
         }
 
         private ObserveAllCollection<FilterInfo> watchedFilterList;
@@ -706,7 +719,7 @@ namespace NINA.ViewModel.FlatWizard {
             using (MyStopWatch.Measure()) {
                 var selectedFilter = SelectedFilter;
                 var newList = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters
-                    .Select(s => new FlatWizardFilterSettingsWrapper(s, s.FlatWizardFilterSettings, cameraInfo?.BitDepth ?? (int)profileService.ActiveProfile.CameraSettings.BitDepth)).ToList();
+                    .Select(s => new FlatWizardFilterSettingsWrapper(s, s.FlatWizardFilterSettings, GetBitDepth(profileService))).ToList();
                 var tempList = new FlatWizardFilterSettingsWrapper[Filters.Count];
                 Filters.CopyTo(tempList, 0);
                 foreach (var item in tempList) {
@@ -772,9 +785,9 @@ namespace NINA.ViewModel.FlatWizard {
             CameraConnected = cameraInfo.Connected;
 
             if (prevBitDepth != cameraInfo.BitDepth) {
-                SingleFlatWizardFilterSettings.BitDepth = cameraInfo.BitDepth;
+                SingleFlatWizardFilterSettings.BitDepth = GetBitDepth(profileService);
                 foreach (var filter in Filters) {
-                    filter.BitDepth = cameraInfo.BitDepth;
+                    filter.BitDepth = GetBitDepth(profileService);
                 }
             }
         }

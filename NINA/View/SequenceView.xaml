@@ -28,8 +28,8 @@
     xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
     xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:util="clr-namespace:NINA.Utility"
-    d:DesignHeight="300"
-    d:DesignWidth="300"
+    d:DesignHeight="500"
+    d:DesignWidth="10   00"
     mc:Ignorable="d">
 
     <Grid>
@@ -368,6 +368,44 @@
                                             VerticalAlignment="Center"
                                             Text="{Binding ETA, Mode=OneWay}" />
                                     </Grid>
+                                </UniformGrid>
+                            </UniformGrid>
+                        </Border>
+                        <Border
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="0"
+                            DataContext="{Binding Source={StaticResource AppVM}, Path=SeqVM}">
+                            <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="4">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblCurrentSequenceEstimates}" />
+                                <UniformGrid Margin="0,0,0,0" VerticalAlignment="Center" Columns="2">
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" Text="{ns:Loc LblFrom}" />
+                                    <TextBox
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Stretch"
+                                        IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
+                                        Text="{Binding SequenceEstimatedStartTime, StringFormat=hh:mm:ss, Mode=OneWay}" />
+                                </UniformGrid>
+                                <UniformGrid Margin="0,0,0,0" VerticalAlignment="Center" Columns="2">
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" Text="{ns:Loc LblTo}" />
+                                    <TextBox
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Stretch"
+                                        IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
+                                        Text="{Binding SequenceEstimatedEndTime, StringFormat=hh:mm:ss, Mode=OneWay}" />
+                                </UniformGrid>
+                                <UniformGrid                                     
+                                    Margin="0,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" Text="{ns:Loc LblDuration}" />
+                                    <TextBox
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Stretch"
+                                        IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
+                                        Text="{Binding SequenceEstimatedDuration, Mode=OneWay}" />
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>

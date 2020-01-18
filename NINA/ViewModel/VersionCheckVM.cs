@@ -23,7 +23,6 @@
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Schema;
 using NINA.Utility;
 using NINA.Utility.Enum;
 using NINA.Utility.Http;
@@ -33,6 +32,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
@@ -76,6 +76,11 @@ namespace NINA.ViewModel {
         }
 
         public async Task<bool> CheckUpdate() {
+            if (NetworkInterface.GetIsNetworkAvailable() == false) {
+                Logger.Info("Network is not available. Skipping version check.");
+                return false;
+            }
+
             checkCts?.Dispose();
             checkCts = new CancellationTokenSource();
             try {

@@ -923,6 +923,9 @@ When duration is set, the application will slowly decrease the temperature durin
   <data name="LblCurrentPosition" xml:space="preserve">
     <value>Current Position</value>
   </data>
+  <data name="LblCurrentSequenceEstimates" xml:space="preserve">
+    <value>Estimated time for this target</value>
+  </data>
   <data name="LblCurrentUIColorSchema" xml:space="preserve">
     <value>Current UI Color Schema</value>
   </data>
