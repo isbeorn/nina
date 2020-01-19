@@ -70,6 +70,8 @@ namespace NINA.ViewModel {
             profileService.LocaleChanged += (object sender, EventArgs e) => {
                 InitializeFilters();
             };
+
+            Ticker = new Ticker(TimeSpan.FromSeconds(30));
         }
 
         private void ResetFilters(object obj) {
@@ -116,8 +118,6 @@ namespace NINA.ViewModel {
             TwilightRiseAndSet = null;
             _nightDuration = null;
             _twilightDuration = null;
-            _ticker?.Stop();
-            _ticker = null;
         }
 
         private CancellationTokenSource _searchTokenSource;
@@ -140,16 +140,7 @@ namespace NINA.ViewModel {
             return await vm.FramingAssistantVM.SetCoordinates(SearchResult.SelectedItem);
         }
 
-        private Ticker _ticker;
-
-        public Ticker Ticker {
-            get {
-                if (_ticker == null) {
-                    _ticker = new Ticker(30000);
-                }
-                return _ticker;
-            }
-        }
+        public Ticker Ticker { get; }
 
         private AsyncObservableCollection<DataPoint> _nightDuration;
 

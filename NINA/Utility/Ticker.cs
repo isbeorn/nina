@@ -29,10 +29,10 @@ namespace NINA.Utility {
 
     public class Ticker : BaseINPC {
 
-        public Ticker(double interval) {
+        public Ticker(TimeSpan interval) {
             _timer = new Timer();
-            _timer.Interval = interval; // 1 second updates
-            _timer.Elapsed += timer_Elapsed;
+            _timer.Interval = interval.TotalMilliseconds;
+            _timer.Elapsed += Timer_Elapsed;
             _timer.Start();
         }
 
@@ -50,7 +50,7 @@ namespace NINA.Utility {
             }
         }
 
-        private void timer_Elapsed(object sender, ElapsedEventArgs e) {
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e) {
             RaisePropertyChanged(nameof(Now));
             RaisePropertyChanged(nameof(OxyNow));
         }
