@@ -923,6 +923,9 @@ Lorsqu'une durée est appliquée, la température baissera à un taux relatif en
   <data name="LblCurrentPosition" xml:space="preserve">
     <value>Position Courante</value>
   </data>
+  <data name="LblCurrentSequenceEstimates" xml:space="preserve">
+    <value>Temps estimé pour cette cible</value>
+  </data>
   <data name="LblCurrentUIColorSchema" xml:space="preserve">
     <value>Schéma Courant de Couleurs de l'IU</value>
   </data>
@@ -1209,6 +1212,9 @@ Lorsque ce déclencheur est désactivé, l'application ignorera simplement le d�
   </data>
   <data name="LblFileExample" xml:space="preserve">
     <value>Exemple de nom de fichier</value>
+  </data>
+  <data name="LblFileExtension" xml:space="preserve">
+    <value>Extension de fichier</value>
   </data>
   <data name="LblFileSettings" xml:space="preserve">
     <value>Configuration Fichier</value>

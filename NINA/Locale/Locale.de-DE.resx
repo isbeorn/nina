@@ -923,6 +923,9 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
   <data name="LblCurrentPosition" xml:space="preserve">
     <value>Startposition</value>
   </data>
+  <data name="LblCurrentSequenceEstimates" xml:space="preserve">
+    <value>Geschätzte Zeit für dieses Ziel</value>
+  </data>
   <data name="LblCurrentUIColorSchema" xml:space="preserve">
     <value>Aktuelles UI Farbschema</value>
   </data>
@@ -1209,6 +1212,9 @@ Ist dieser Auslöser deaktiviert, wird dieser Schritt übersprungen.</value>
   </data>
   <data name="LblFileExample" xml:space="preserve">
     <value>Beispiel Dateiname</value>
+  </data>
+  <data name="LblFileExtension" xml:space="preserve">
+    <value>Dateiendung</value>
   </data>
   <data name="LblFileSettings" xml:space="preserve">
     <value>Datei Einstellungen</value>

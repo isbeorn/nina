@@ -913,6 +913,9 @@ Wanneer de duur is ingesteld, zal de applicatie de temperatuur langzaam verlagen
   <data name="LblCurrentPosition" xml:space="preserve">
     <value>Huidige positie</value>
   </data>
+  <data name="LblCurrentSequenceEstimates" xml:space="preserve">
+    <value>Estimated time for this target</value>
+  </data>
   <data name="LblCurrentUIColorSchema" xml:space="preserve">
     <value>Huidig UI kleurenschema</value>
   </data>
@@ -1199,6 +1202,9 @@ Wanneer deze instelling is gedeactiveerd zal de applicatie de Start Belichting o
   </data>
   <data name="LblFileExample" xml:space="preserve">
     <value>Voorbeeld bestandsnaam</value>
+  </data>
+  <data name="LblFileExtension" xml:space="preserve">
+    <value>File Extension</value>
   </data>
   <data name="LblFileSettings" xml:space="preserve">
     <value>Bestandsinstellingen</value>

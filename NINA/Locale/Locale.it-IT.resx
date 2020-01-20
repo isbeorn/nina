@@ -923,6 +923,9 @@ Quando la durata è impostata, l'applicazione diminuirà lentamente la temperatu
   <data name="LblCurrentPosition" xml:space="preserve">
     <value>Posizione Corrente</value>
   </data>
+  <data name="LblCurrentSequenceEstimates" xml:space="preserve">
+    <value>Tempo stimato per questo soggetto</value>
+  </data>
   <data name="LblCurrentUIColorSchema" xml:space="preserve">
     <value>Schema Colori UI Corrente</value>
   </data>
@@ -1209,6 +1212,9 @@ Quando il trigger è disattivato, l'applicazione si limita ad ignorare l'inizio 
   </data>
   <data name="LblFileExample" xml:space="preserve">
     <value>Esempio nome File</value>
+  </data>
+  <data name="LblFileExtension" xml:space="preserve">
+    <value>File Extension</value>
   </data>
   <data name="LblFileSettings" xml:space="preserve">
     <value>Settaggi File</value>

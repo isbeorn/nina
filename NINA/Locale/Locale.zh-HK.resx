@@ -923,6 +923,9 @@
   <data name="LblCurrentPosition" xml:space="preserve">
     <value>當前位置</value>
   </data>
+  <data name="LblCurrentSequenceEstimates" xml:space="preserve">
+    <value>Estimated time for this target</value>
+  </data>
   <data name="LblCurrentUIColorSchema" xml:space="preserve">
     <value>當前的 ui 顏色方案</value>
   </data>
@@ -1209,6 +1212,9 @@
   </data>
   <data name="LblFileExample" xml:space="preserve">
     <value>示例文件名</value>
+  </data>
+  <data name="LblFileExtension" xml:space="preserve">
+    <value>File Extension</value>
   </data>
   <data name="LblFileSettings" xml:space="preserve">
     <value>文件設置</value>

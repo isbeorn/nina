@@ -923,6 +923,9 @@ Cuando una duracion es colocada, la aplicacin lentamente disminuye la temperatur
   <data name="LblCurrentPosition" xml:space="preserve">
     <value>Posicion Actual</value>
   </data>
+  <data name="LblCurrentSequenceEstimates" xml:space="preserve">
+    <value>Estimated time for this target</value>
+  </data>
   <data name="LblCurrentUIColorSchema" xml:space="preserve">
     <value>Color de Interface Actual</value>
   </data>
@@ -1209,6 +1212,9 @@ Cuando el disparador se desactive la aplicacion solo obviara la exposicion inici
   </data>
   <data name="LblFileExample" xml:space="preserve">
     <value>Nombre de Archivo de Ejemplo</value>
+  </data>
+  <data name="LblFileExtension" xml:space="preserve">
+    <value>Extensión de archivo</value>
   </data>
   <data name="LblFileSettings" xml:space="preserve">
     <value>Ajustes de Archivo</value>
@@ -2586,7 +2592,7 @@ Esta plantilla sera usada al inicio para inicializar la secuencia en vez de la u
     <value>Ajustes</value>
   </data>
   <data name="LblSettle" xml:space="preserve">
-    <value>Resolver</value>
+    <value>Establecer</value>
   </data>
   <data name="LblSettlePixelTolerance" xml:space="preserve">
     <value>Tolerancia PHD2 Settle Pixel</value>
