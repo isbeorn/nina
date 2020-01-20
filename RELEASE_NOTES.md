@@ -90,7 +90,7 @@ These items helped a lot during development and testing.
 Thank you for your support!
 
 ## Included Camera SDK Versions:
-- Altair: 39.15529.2019.906
+- Altair: 43.15988.2019.1124
 - Atik: 1.3.0.4
 - Canon: 13.11.10
 - FLI: 1.104.0.0
