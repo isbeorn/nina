@@ -27,8 +27,10 @@ using NUnit.Framework;
 using System;
 
 namespace NINATest.FlatDevice {
+
     [TestFixture]
     public class AlnitakResponseTest {
+
         [Test]
         [TestCase("Ping", "*P99OOO", true)]
         [TestCase("Ping", "*P99000", false)]
@@ -54,7 +56,7 @@ namespace NINATest.FlatDevice {
         [TestCase("LightOff", null, false)]
         [TestCase("LightOff", "", false)]
         public void TestIsValidResponse(string responseName, string response, bool valid) {
-            var sut = (Response)Activator.CreateInstance("NINA",
+            var sut = (AlnitakResponse)Activator.CreateInstance("NINA",
                 $"NINA.Utility.FlatDeviceSDKs.AlnitakSDK.{responseName}Response").Unwrap();
             sut.DeviceResponse = response;
             Assert.That(sut.IsValid, Is.EqualTo(valid));

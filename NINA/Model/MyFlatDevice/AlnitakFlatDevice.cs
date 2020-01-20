@@ -29,8 +29,6 @@ using NINA.Utility.WindowService;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO.Ports;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -228,6 +226,12 @@ namespace NINA.Model.MyFlatDevice {
             if (!Sdk.InitializeSerialPort(PortName)) return false;
             return await Task.Run(() => {
                 Connected = true;
+                var pingResponse = Sdk.SendCommand<PingResponse>(new PingCommand());
+                if (!pingResponse.IsValid) {
+                    Logger.Debug($"First ping command on connect did not work. " +
+                                 $"Response was: {pingResponse}.");
+                }
+
                 var stateResponse = Sdk.SendCommand<StateResponse>(new StateCommand());
                 if (!stateResponse.IsValid) {
                     Logger.Error($"Invalid response from flat device. " +

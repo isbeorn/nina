@@ -21,15 +21,9 @@
 
 #endregion "copyright"
 
-using NINA.Utility.SerialCommunication;
-using System.Collections.ObjectModel;
+namespace NINA.Utility.SerialCommunication {
 
-namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
-
-    public interface IAlnitakDevice : ISerialSdk {
-        ISerialPortProvider SerialPortProvider { set; }
-        ReadOnlyCollection<string> PortNames { get; }
-
-        bool InitializeSerialPort(string portName);
+    public interface ICommand {
+        string CommandString { get; }
     }
 }

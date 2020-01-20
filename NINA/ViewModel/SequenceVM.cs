@@ -1015,6 +1015,27 @@ namespace NINA.ViewModel {
 
                     break;
 
+                case CaptureSequence.ImageTypes.DARK:
+                    if (_flatDevice.LightOn) {
+                        _flatDeviceMediator.ToggleLight(false);
+                    }
+
+                    if (profileService.ActiveProfile.FlatDeviceSettings.OpenForDarkFlats) {
+                        if (_flatDevice.CoverState != CoverState.Open) {
+                            await _flatDeviceMediator.OpenCover();
+                            MyMessageBox.MyMessageBox.Show(
+                                Locale.Loc.Instance["LblCoverScopeMsgBox"],
+                                Locale.Loc.Instance["LblCoverScopeMsgBoxTitle"], MessageBoxButton.OKCancel,
+                                MessageBoxResult.OK);
+                        }
+                    } else {
+                        if (_flatDevice.CoverState != CoverState.Closed) {
+                            await _flatDeviceMediator.CloseCover();
+                        }
+                    }
+
+                    break;
+
                 default:
                     if (_flatDevice.CoverState != CoverState.Open) {
                         await _flatDeviceMediator.OpenCover();

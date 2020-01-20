@@ -21,21 +21,19 @@
 
 #endregion "copyright"
 
-using NINA.Utility.Extensions;
-using System;
+using NINA.Utility.SerialCommunication;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 
 namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
 
-    public class AlnitakDevice : IAlnitakDevice {
+    public class AlnitakDevice : SerialSdk, IAlnitakDevice {
         public static readonly IAlnitakDevice Instance = new AlnitakDevice();
 
         private ISerialPortProvider _serialPortProvider = new SerialPortProvider();
-        private ISerialPort _serialPort;
 
-        private const string ALNITAK_QUERY = @"SELECT * FROM Win32_PnPEntity WHERE DeviceID LIKE 'FTDIBUS\\VID_0403+PID_6001+A82%'";
+        protected override string LogName => "AlnitakFlatDevice";
+        private const string ALNITAK_QUERY = @"SELECT * FROM Win32_PnPEntity WHERE DeviceID LIKE 'FTDIBUS\\VID_0403+PID_6001+A8%'";
 
         public ISerialPortProvider SerialPortProvider {
             set => _serialPortProvider = value;
@@ -45,36 +43,10 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
 
         public bool InitializeSerialPort(string aPortName) {
             if (string.IsNullOrEmpty(aPortName)) return false;
-            _serialPort = aPortName.Equals("AUTO")
+            SerialPort = aPortName.Equals("AUTO")
                 ? _serialPortProvider.GetSerialPort(_serialPortProvider.GetPortNames(ALNITAK_QUERY, addDivider: false, addGenericPorts: false).FirstOrDefault())
                 : _serialPortProvider.GetSerialPort(aPortName);
-            return _serialPort != null;
-        }
-
-        private readonly SemaphoreSlim ssSendCommand = new SemaphoreSlim(1, 1);
-
-        public T SendCommand<T>(ICommand command) where T : Response, new() {
-            var result = string.Empty;
-            ssSendCommand.Wait();
-            try {
-                _serialPort.Open();
-                Logger.Debug($"AlnitakFlatDevice: command : {command}");
-                _serialPort.Write(command.CommandString);
-                result = _serialPort.ReadLine();
-                Logger.Debug($"AlnitakFlatDevice: response : {result}");
-            } catch (TimeoutException ex) {
-                Logger.Error($"AlnitakFlatDevice: timed out for port : {_serialPort.PortName} {ex}");
-            } catch (Exception ex) {
-                Logger.Error($"AlnitakFlatDevice: Unexpected exception : {ex}");
-            } finally {
-                _serialPort?.Close();
-                ssSendCommand.Release();
-            }
-            return new T { DeviceResponse = result };
-        }
-
-        public void Dispose() {
-            _serialPort?.Dispose();
+            return SerialPort != null;
         }
     }
 }

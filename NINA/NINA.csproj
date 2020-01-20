@@ -448,7 +448,15 @@
     <Compile Include="Utility\Exceptions\PlanetariumFailedToConnect.cs" />
     <Compile Include="Utility\Exceptions\PlanetariumFailedToGetCoordinates.cs" />
     <Compile Include="Utility\Exceptions\PlanetariumObjectNotSelectedException.cs" />
-    <Compile Include="Utility\Extensions\SerialPortWrapper.cs" />
+    <Compile Include="Utility\SerialCommunication\ISerialSdk.cs" />
+    <Compile Include="Utility\SerialCommunication\SerialSdk.cs" />
+    <Compile Include="Utility\SerialCommunication\ICommand.cs" />
+    <Compile Include="Utility\SerialCommunication\ISerialPort.cs" />
+    <Compile Include="Utility\SerialCommunication\ISerialPortProvider.cs" />
+    <Compile Include="Utility\SerialCommunication\Response.cs" />
+    <Compile Include="Utility\SerialCommunication\ResponseCache.cs" />
+    <Compile Include="Utility\SerialCommunication\SerialPortProvider.cs" />
+    <Compile Include="Utility\SerialCommunication\SerialPortWrapper.cs" />
     <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakCommands.cs" />
     <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakDevice.cs" />
     <Compile Include="Model\MyFlatDevice\AlnitakFlatDevice.cs" />

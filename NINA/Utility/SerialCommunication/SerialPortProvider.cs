@@ -29,7 +29,7 @@ using System.Linq;
 using System.Management;
 using System.Text.RegularExpressions;
 
-namespace NINA.Utility.Extensions {
+namespace NINA.Utility.SerialCommunication {
 
     public class SerialPortProvider : ISerialPortProvider {
         /**
@@ -102,57 +102,5 @@ namespace NINA.Utility.Extensions {
             }
             return result;
         }
-    }
-
-    public interface ISerialPortProvider {
-
-        ISerialPort GetSerialPort(string portName, int baudRate = 9600, Parity parity = Parity.None, int dataBits = 8,
-            StopBits stopBits = StopBits.One, Handshake handShake = Handshake.None, bool dtrEnable = false,
-            string newLine = "\n", int readTimeout = 500, int writeTimeout = 500);
-
-        ReadOnlyCollection<string> GetPortNames(string deviceQuery = null, bool addDivider = true,
-            bool addGenericPorts = true);
-    }
-
-    public interface ISerialPort : IDisposable {
-        string PortName { get; set; }
-        bool DtrEnable { get; set; }
-
-        void Write(string value);
-
-        string ReadLine();
-
-        void Open();
-
-        void Close();
-    }
-
-    public sealed class SerialPortWrapper : ISerialPort {
-        private readonly SerialPort _serialPort;
-
-        public SerialPortWrapper() {
-            _serialPort = new SerialPort();
-        }
-
-        public string PortName { get => _serialPort.PortName; set => _serialPort.PortName = value; }
-        public int BaudRate { get => _serialPort.BaudRate; set => _serialPort.BaudRate = value; }
-        public Parity Parity { get => _serialPort.Parity; set => _serialPort.Parity = value; }
-        public int DataBits { get => _serialPort.DataBits; set => _serialPort.DataBits = value; }
-        public StopBits StopBits { get => _serialPort.StopBits; set => _serialPort.StopBits = value; }
-        public Handshake Handshake { get => _serialPort.Handshake; set => _serialPort.Handshake = value; }
-        public bool DtrEnable { get => _serialPort.DtrEnable; set => _serialPort.DtrEnable = value; }
-        public string NewLine { get => _serialPort.NewLine; set => _serialPort.NewLine = value; }
-        public int ReadTimeout { get => _serialPort.ReadTimeout; set => _serialPort.ReadTimeout = value; }
-        public int WriteTimeout { get => _serialPort.WriteTimeout; set => _serialPort.WriteTimeout = value; }
-
-        public void Close() => _serialPort.Close();
-
-        public void Dispose() => _serialPort.Dispose();
-
-        public void Open() => _serialPort.Open();
-
-        public string ReadLine() => _serialPort.ReadLine();
-
-        public void Write(string value) => _serialPort.Write(value);
     }
 }

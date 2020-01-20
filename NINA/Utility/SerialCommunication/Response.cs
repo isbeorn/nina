@@ -21,15 +21,33 @@
 
 #endregion "copyright"
 
-using NINA.Utility.SerialCommunication;
-using System.Collections.ObjectModel;
+namespace NINA.Utility.SerialCommunication {
 
-namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
+    public abstract class Response {
+        private string _deviceResponse;
 
-    public interface IAlnitakDevice : ISerialSdk {
-        ISerialPortProvider SerialPortProvider { set; }
-        ReadOnlyCollection<string> PortNames { get; }
+        protected Response() {
+            IsValid = true;
+        }
 
-        bool InitializeSerialPort(string portName);
+        public string DeviceResponse {
+            protected get => _deviceResponse;
+            set {
+                _deviceResponse = value;
+                IsValid = ParseResponse(value);
+            }
+        }
+
+        protected virtual bool ParseResponse(string response) {
+            return !string.IsNullOrEmpty(response);
+        }
+
+        public bool IsValid { get; protected set; }
+
+        public virtual int Ttl => 0;
+
+        public override string ToString() {
+            return GetType().Name + $" : {_deviceResponse}";
+        }
     }
 }

@@ -28,6 +28,7 @@ using NINA.Utility.FlatDeviceSDKs.AlnitakSDK;
 using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
+using NINA.Utility.SerialCommunication;
 
 namespace NINATest.FlatDevice {
 
@@ -43,6 +44,8 @@ namespace NINATest.FlatDevice {
             _mockProfileService.SetupProperty(m => m.ActiveProfile.FlatDeviceSettings.PortName, "COM3");
             _mockSdk = new Mock<IAlnitakDevice>();
             _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>())).Returns(true);
+            _mockSdk.Setup(m => m.SendCommand<PingResponse>(It.IsAny<PingCommand>()))
+                .Returns(new PingResponse { DeviceResponse = "*P99000" });
             _mockSdk.Setup(m => m.SendCommand<StateResponse>(It.IsAny<StateCommand>()))
                 .Returns(new StateResponse { DeviceResponse = "*S99000" });
             _mockSdk.Setup(m => m.SendCommand<FirmwareVersionResponse>(It.IsAny<FirmwareVersionCommand>()))

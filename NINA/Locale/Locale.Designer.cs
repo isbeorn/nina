@@ -3586,7 +3586,7 @@ namespace NINA.Locale {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open cover for dark flats.
+        ///   Looks up a localized string similar to Open cover for darks and dark flats.
         /// </summary>
         internal static string LblFlatDeviceOpenForDarkFlats {
             get {

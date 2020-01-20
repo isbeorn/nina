@@ -24,6 +24,7 @@
 using NINA.Utility.FlatDeviceSDKs.AlnitakSDK;
 using NUnit.Framework;
 using System;
+using NINA.Utility.SerialCommunication;
 
 namespace NINATest.FlatDevice {
 

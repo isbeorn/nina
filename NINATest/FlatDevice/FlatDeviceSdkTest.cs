@@ -1,6 +1,6 @@
 ﻿using Moq;
-using NINA.Utility.Extensions;
 using NINA.Utility.FlatDeviceSDKs.AlnitakSDK;
+using NINA.Utility.SerialCommunication;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -41,16 +41,20 @@ namespace NINATest.FlatDevice {
         [TestCase("", false, true)]
         public void TestInitializeSerialPort(string portName, bool expected, bool portsAvailable) {
             if (portsAvailable) {
-                _mockSerialPortProvider.Setup(m => m.GetPortNames(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))
+                _mockSerialPortProvider
+                    .Setup(m => m.GetPortNames(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))
                     .Returns(new ReadOnlyCollection<string>(new List<string> { "COM3" }));
             } else {
-                _mockSerialPortProvider.Setup(m => m.GetPortNames(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))
+                _mockSerialPortProvider
+                    .Setup(m => m.GetPortNames(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))
                     .Returns(new ReadOnlyCollection<string>(new List<string>()));
-                _mockSerialPortProvider.Setup(m => m.GetSerialPort(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<Parity>(),
+                _mockSerialPortProvider.Setup(m => m.GetSerialPort(It.IsAny<string>(), It.IsAny<int>(),
+                        It.IsAny<Parity>(),
                         It.IsAny<int>(), It.IsAny<StopBits>(), It.IsAny<Handshake>(), It.IsAny<bool>(),
                         It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
                     .Returns((ISerialPort)null);
             }
+
             Assert.That(_sut.InitializeSerialPort(portName), Is.EqualTo(expected));
         }
 
@@ -66,41 +70,6 @@ namespace NINATest.FlatDevice {
 
             Assert.That(result, Is.TypeOf(typeof(StateResponse)));
             Assert.That(result.IsValid, Is.EqualTo(valid));
-            _mockSerialPort.Verify(m => m.Open(), Times.Once);
-            _mockSerialPort.Verify(m => m.Write(command), Times.Once);
-            _mockSerialPort.Verify(m => m.Close(), Times.Once);
-        }
-
-        [Test]
-        public void TestSendCommandTimeOut() {
-            var command = ">SOOO\r";
-            _mockCommand = new Mock<ICommand>();
-            _mockCommand.Setup(m => m.CommandString).Returns(command);
-            _mockSerialPort.Setup(m => m.ReadLine()).Throws(new TimeoutException());
-
-            var result = _sut.SendCommand<StateResponse>(_mockCommand.Object);
-
-            Assert.That(result, Is.TypeOf(typeof(StateResponse)));
-            Assert.That(result.IsValid, Is.False);
-            _mockSerialPort.Verify(m => m.Open(), Times.Once);
-            _mockSerialPort.Verify(m => m.Write(command), Times.Once);
-            _mockSerialPort.Verify(m => m.Close(), Times.Once);
-        }
-
-        [Test]
-        public void TestSendCommandOtherException() {
-            var command = ">SOOO\r";
-            _mockCommand = new Mock<ICommand>();
-            _mockCommand.Setup(m => m.CommandString).Returns(command);
-            _mockSerialPort.Setup(m => m.ReadLine()).Throws(new Exception());
-
-            var result = _sut.SendCommand<StateResponse>(_mockCommand.Object);
-
-            Assert.That(result, Is.TypeOf(typeof(StateResponse)));
-            Assert.That(result.IsValid, Is.False);
-            _mockSerialPort.Verify(m => m.Open(), Times.Once);
-            _mockSerialPort.Verify(m => m.Write(command), Times.Once);
-            _mockSerialPort.Verify(m => m.Close(), Times.Once);
         }
     }
 }

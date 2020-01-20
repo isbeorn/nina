@@ -21,11 +21,9 @@
 
 #endregion "copyright"
 
-namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
+using NINA.Utility.SerialCommunication;
 
-    public interface ICommand {
-        string CommandString { get; }
-    }
+namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
 
     public class PingCommand : ICommand {
         public string CommandString => ">POOO\r";

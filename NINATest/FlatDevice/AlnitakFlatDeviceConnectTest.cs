@@ -28,10 +28,12 @@ using NINA.Model.MyFlatDevice;
 using NINA.Profile;
 using NINA.Utility.FlatDeviceSDKs.AlnitakSDK;
 using NUnit.Framework;
+
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINATest.FlatDevice {
+
     [TestFixture]
     public class AlnitakFlatDeviceConnectTest {
         private AlnitakFlatDevice _sut;
@@ -55,6 +57,8 @@ namespace NINATest.FlatDevice {
         [Test]
         public async Task TestConnect() {
             _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>())).Returns(true);
+            _mockSdk.Setup(m => m.SendCommand<PingResponse>(It.IsAny<PingCommand>()))
+                .Returns(new PingResponse { DeviceResponse = "*P99000" });
             _mockSdk.Setup(m => m.SendCommand<StateResponse>(It.IsAny<StateCommand>()))
                 .Returns(new StateResponse { DeviceResponse = "*S99000" });
             _mockSdk.Setup(m => m.SendCommand<FirmwareVersionResponse>(It.IsAny<FirmwareVersionCommand>()))
@@ -73,6 +77,8 @@ namespace NINATest.FlatDevice {
         [TestCase(null, null, null, false)]
         public async Task TestDescription(string description, string stateResponse, string fwResponse, bool connected) {
             _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>())).Returns(true);
+            _mockSdk.Setup(m => m.SendCommand<PingResponse>(It.IsAny<PingCommand>()))
+                .Returns(new PingResponse { DeviceResponse = "*P99000" });
             _mockSdk.Setup(m => m.SendCommand<StateResponse>(It.IsAny<StateCommand>()))
                 .Returns(new StateResponse { DeviceResponse = stateResponse });
             _mockSdk.Setup(m => m.SendCommand<FirmwareVersionResponse>(It.IsAny<FirmwareVersionCommand>()))
