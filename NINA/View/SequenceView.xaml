@@ -405,7 +405,7 @@
                                         Margin="5,0,0,0"
                                         HorizontalAlignment="Stretch"
                                         IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
-                                        Text="{Binding SequenceEstimatedDuration, Mode=OneWay}" />
+                                        Text="{Binding SequenceEstimatedDuration, StringFormat=hh\\:mm\\:ss, Mode=OneWay}" />
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
