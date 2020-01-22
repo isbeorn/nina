@@ -1316,7 +1316,7 @@
     <value>打开</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>拍摄暗平场时打开电动盖</value>
+    <value>Open cover for darks and dark flats</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>设定</value>

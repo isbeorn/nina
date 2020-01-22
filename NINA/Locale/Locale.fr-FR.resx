@@ -1316,7 +1316,7 @@ Lorsque ce déclencheur est désactivé, l'application ignorera simplement le d�
     <value>Ouvrir</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Ouvrir l'obturateur du tube pour les noirs de Plu</value>
+    <value>Open cover for darks and dark flats</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Ajuster</value>

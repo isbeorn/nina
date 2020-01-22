@@ -1316,7 +1316,7 @@ Cuando el disparador se desactive la aplicacion solo obviara la exposicion inici
     <value>Abrir</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Tapa abierta para dark flats</value>
+    <value>Open cover for darks and dark flats</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Fijar</value>

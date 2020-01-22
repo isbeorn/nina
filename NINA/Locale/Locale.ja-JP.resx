@@ -118,1271 +118,1260 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="LblAbbrEast" xml:space="preserve">
-    <value>E</value>
+    <value>東</value>
   </data>
   <data name="LblAbbrNorth" xml:space="preserve">
-    <value>N</value>
+    <value>北</value>
   </data>
   <data name="LblAbbrSouth" xml:space="preserve">
-    <value>S</value>
+    <value>南</value>
   </data>
   <data name="LblAbbrWest" xml:space="preserve">
-    <value>W</value>
+    <value>西</value>
   </data>
   <data name="LblAberrationInspector" xml:space="preserve">
-    <value>Aberration Inspector</value>
+    <value>収差検査</value>
   </data>
   <data name="LblActive" xml:space="preserve">
-    <value>Active</value>
+    <value>オン</value>
   </data>
   <data name="LblActiveFilter" xml:space="preserve">
-    <value>Active filter</value>
+    <value>使用フィルター</value>
   </data>
   <data name="LblActiveSequenceDetails" xml:space="preserve">
-    <value>Active Sequence Details</value>
+    <value>現行シーケンス詳細</value>
   </data>
   <data name="LblAddSequenceTarget" xml:space="preserve">
-    <value>Add as Sequence Target</value>
+    <value>シーケンス目標として追加</value>
   </data>
   <data name="LblAdvancedSettings" xml:space="preserve">
-    <value>Advanced Settings</value>
+    <value>詳細設定</value>
   </data>
   <data name="LblAFContrastDetection" xml:space="preserve">
-    <value>Contrast Detection (Experimental)</value>
+    <value>コントラスト検知（試験的）</value>
   </data>
   <data name="LblAFOnButFocuserNotConnected" xml:space="preserve">
-    <value>Auto-Focus is enabled, yet focuser is not connected</value>
+    <value>オートフォーカスがオンですが、フォーカサ未接続</value>
   </data>
   <data name="LblAFStarHFR" xml:space="preserve">
-    <value>Star HFR</value>
+    <value>星のHFR</value>
   </data>
   <data name="LblAfter" xml:space="preserve">
-    <value>After</value>
+    <value>後</value>
   </data>
   <data name="LblAFUseBrightestStars" xml:space="preserve">
-    <value>Use brightest n stars</value>
+    <value>一番明るいn個の星を使う</value>
   </data>
   <data name="LblAFUseBrightestStarsTooltip" xml:space="preserve">
-    <value>Limit AF to brightest stars. 0 means no limit.</value>
+    <value>AFを明るい星に制限する。0は無制限。</value>
   </data>
   <data name="LblAlnitakFlatPanel" xml:space="preserve">
-    <value>Alnitak Flat Panel</value>
+    <value>Alnitakフラットパネル</value>
   </data>
   <data name="LblAltairCameraSetup" xml:space="preserve">
-    <value>Altair Camera Setup</value>
+    <value>Altairカメラ設定</value>
   </data>
   <data name="LblAlternativeUIColorSchema" xml:space="preserve">
-    <value>Alternative UI Color Schema</value>
+    <value>ユーザー色設定選択</value>
   </data>
   <data name="LblAltitude" xml:space="preserve">
-    <value>Altitude</value>
+    <value>高度</value>
   </data>
   <data name="LblAltitudeErrorMeasurement" xml:space="preserve">
-    <value>Measure Altitude Error</value>
+    <value>高度エラーを測定</value>
   </data>
   <data name="LblAltitudeMeasurement" xml:space="preserve">
-    <value>Altitude Measurement</value>
+    <value>高度測定</value>
   </data>
   <data name="LblAltitudeMeasurementButtonTooltip" xml:space="preserve">
-    <value>Measures Altitude Error by three steps.
-1. Takes image and platesolves for actual coordinates at current position
-2. Slew telescope using Right Ascension axis by 0.5 degrees
-3. Take another image at the new position, plate solves it for the actual position
-Using those two points the actual altitude error will be calculated and displayed</value>
+    <value>次の３ステップで高度エラーを測定します。
+1.イメージを取得し、現在位置にてプレートソルバーで現在の座標を計算します。
+2. 赤経軸回りに0.5度だけ望遠鏡を回転させます。
+3.この位置で再度イメージを撮像し、プレートソルバーで座標を計算します。
+これら２つの座標より現在の高度エラーを算出し表示します。</value>
   </data>
   <data name="LblAltitudeMeasurementDescription" xml:space="preserve">
-    <value>Point telescope east or west near declination 0 and near horizon.</value>
+    <value>望遠鏡を、東か西の、赤緯０付近で地平線付近に向けて下さい。</value>
   </data>
   <data name="LblAltitudeMeasurementSide" xml:space="preserve">
-    <value>Altitude Measurement side</value>
+    <value>高度測定サイド</value>
   </data>
   <data name="LblAnnotateConstellationBoundaries" xml:space="preserve">
-    <value>Display Constellation Boundaries</value>
+    <value>星座境界線を表示</value>
   </data>
   <data name="LblAnnotateConstellations" xml:space="preserve">
-    <value>Display and annotate Constellations</value>
+    <value>星座を注釈付きで表示</value>
   </data>
   <data name="LblAnnotateDSO" xml:space="preserve">
-    <value>Annotate Deep Sky Objects</value>
+    <value>遠距離天体DSOに注釈を付ける</value>
   </data>
   <data name="LblAnnotateGrid" xml:space="preserve">
-    <value>Display Grid</value>
+    <value>グリッド線を表示</value>
   </data>
   <data name="LblAnnotateImage" xml:space="preserve">
-    <value>Annotate Image</value>
+    <value>画像に注釈をつける</value>
   </data>
   <data name="LblAnnotateImageTooltip" xml:space="preserve">
-    <value>If checked and a star detection for an image is applied, the image will be annotated with the found stars and their respective HFR value</value>
+    <value>ここにチェックを入れて、星検知機能がオンになっていると、画像内で検知された星に注釈が付きそれぞれのHFR値が表示されます。</value>
   </data>
   <data name="LblAPIKey" xml:space="preserve">
-    <value>API Key</value>
+    <value>APIキー</value>
   </data>
   <data name="LblApparentMagnitude" xml:space="preserve">
-    <value>Apparent Magnitude</value>
+    <value>見かけ等級</value>
   </data>
   <data name="LblApparentSize" xml:space="preserve">
-    <value>Apparent Size</value>
+    <value>見かけの大きさ</value>
   </data>
   <data name="LblApplicationInBreakMode" xml:space="preserve">
-    <value>The Application ran into an unhandled exception and most likely has to shut down.
-The error has been logged to "%localappdata%\NINA\Logs".
-Should the Application try to recover from the error? (Can lead to unexpected behavior)</value>
+    <value>アプリケーションは予期せぬ例外に直面しましたので、シャットダウンする必要がありそうです。　エラーのログは"%localappdata%\NINA\Logs"に保存されます。
+アプリケーションに当エラーから回復させますか？（予期せぬ動作をする可能性があります）</value>
   </data>
   <data name="LblApplicationStartDateDescription" xml:space="preserve">
-    <value>Application start date with format YYYY-MM-DD</value>
+    <value>アプリケーション開始日フォーマットYYYY-MM-DD</value>
   </data>
   <data name="LblArcmin" xml:space="preserve">
-    <value>arcmin</value>
+    <value>角度分</value>
   </data>
   <data name="LblArcsec" xml:space="preserve">
-    <value>arcsec</value>
+    <value>角度秒</value>
   </data>
   <data name="LblAscending" xml:space="preserve">
-    <value>Ascending</value>
+    <value>上昇中</value>
   </data>
   <data name="LblAscomInterOpDriverException" xml:space="preserve">
-    <value>An ASCOM driver interop exception occurred. This is most likely caused by a mismatch between the driver being installed as {0} and N.I.N.A. being {1}. Please install the driver as {1}</value>
+    <value>ASCOMドライバーが相互運用の例外に直面しました。恐らく{0}としてインストールされているドライバーと{1}のN.I.N.Aとの間のミスマッチが原因と思われます。ドライバーを{1}としてインストールして下さい。</value>
   </data>
   <data name="LblASIImageDownloadError" xml:space="preserve">
-    <value>Error retrieving image data from camera!</value>
+    <value>カメラから画像データを取得中にエラーが発生しました。</value>
   </data>
   <data name="LblASIOnly16BitMono" xml:space="preserve">
-    <value>Only 16 bit Monochrome sensors currently supported</value>
+    <value>16ビットモノクロセンサー以外は現状サポートされていません。</value>
   </data>
   <data name="LblASPS" xml:space="preserve">
     <value>All Sky Plate Solver</value>
   </data>
   <data name="LblASPSDirectory" xml:space="preserve">
-    <value>ASPS Location</value>
+    <value>ASPS位置</value>
   </data>
   <data name="LblASPSNotFound" xml:space="preserve">
-    <value>ASPS exe not found</value>
+    <value>ASPS exeが見つかりません</value>
   </data>
   <data name="LblASTAP" xml:space="preserve">
-    <value>ASTAP, the Astrometric STAcking Program, astrometric solver and FITS viewer</value>
+    <value>ASTAPとは、天文測定スタッキングプログラム、天文測定ソルバー及びFITSビューアー</value>
   </data>
   <data name="LblASTAPDirectory" xml:space="preserve">
-    <value>ASTAP Location</value>
+    <value>ASTAP位置</value>
   </data>
   <data name="LblASTAPMinimumVersionNote" xml:space="preserve">
-    <value>Note: Requires an ASTAP version of 0.9.192 or above. For lower versions, please use ASTAP as Platesolve2 replacement.</value>
+    <value>注意：ASTAP 0.9.192かそれ以上のバージョンが必要です。以前のバージョンの場合は、ASTAPをPlatesolve2の代用としてお使い下さい。</value>
   </data>
   <data name="LblASTAPNotFound" xml:space="preserve">
-    <value>ASTAP exe not found</value>
+    <value>ASTAP exeが見つかりません。</value>
   </data>
   <data name="LblASTAPShort" xml:space="preserve">
     <value>ASTAP</value>
   </data>
   <data name="LblAstrometry" xml:space="preserve">
-    <value>Astrometry</value>
+    <value>天文測定学</value>
   </data>
   <data name="LblAstrometryNet" xml:space="preserve">
     <value>Astrometry.Net</value>
   </data>
   <data name="LblAutoFocus" xml:space="preserve">
-    <value>Auto Focus</value>
+    <value>オートフォーカス</value>
   </data>
   <data name="LblAutoFocusAfterHFRChange" xml:space="preserve">
-    <value>After HFR increase</value>
+    <value>HFR上昇後</value>
   </data>
   <data name="LblAutoFocusAfterHFRChangeAmount" xml:space="preserve">
-    <value>HFR amount</value>
+    <value>HFR値</value>
   </data>
   <data name="LblAutoFocusAfterSetExposures" xml:space="preserve">
-    <value>After # exposures</value>
+    <value>#枚撮像後</value>
   </data>
   <data name="LblAutoFocusAfterSetTime" xml:space="preserve">
-    <value>After elapsed Time</value>
+    <value>時間経過後</value>
   </data>
   <data name="LblAutoFocusAfterTemperatureChange" xml:space="preserve">
-    <value>After temperature change</value>
+    <value>温度変化後</value>
   </data>
   <data name="LblAutoFocusAfterTemperatureChangeAmount" xml:space="preserve">
-    <value>Temperature amount</value>
+    <value>温度変化</value>
   </data>
   <data name="LblAutoFocusExposureTime" xml:space="preserve">
-    <value>Auto Focus Exposure Time</value>
+    <value>オートフォーカス露出時間</value>
   </data>
   <data name="LblAutoFocusExposureTimeTooltip" xml:space="preserve">
-    <value>Exposure Time used for auto focus when no filter specific time is set or the filter specific time is zero</value>
+    <value>オートフォーカスにおいてフィルター指定の露光時間が指定されていない又はフィルター指定露光時間がゼロと設定されている場合の露光時間</value>
   </data>
   <data name="LblAutoFocusFilter" xml:space="preserve">
-    <value>Auto Focus Filter</value>
+    <value>オートフォーカス時に使用するフィルター</value>
   </data>
   <data name="LblAutoFocusGearNotConnected" xml:space="preserve">
-    <value>Cannot start Auto Focus. Camera or Focuser is not connected!</value>
+    <value>オートフォーカスを開始できません。カメラ又はフォーカサーが接続されていません。</value>
   </data>
   <data name="LblAutoFocusInnerCropRatio" xml:space="preserve">
-    <value>AF Inner Crop Ratio</value>
+    <value>AF内枠クロップ率</value>
   </data>
   <data name="LblAutoFocusInnerCropRatioTooltip" xml:space="preserve">
-    <value>If set to a value less than one, star detection during autofocus will only use
-a centered subframe of the total sensor (if supported by camera). If unsupported
-by the camera, stars near the edge will be ignored during star detection. If used in combination
-with a lower than 1 Outer Crop Ratio, a rectangular sliver of the image (between the inner rectangle and the
-outer rectangle) will be used for autofocus.</value>
+    <value>値を1未満に設定した場合、オートフォーカス時の星像検出でセンサー中心部のサブフレームを使用します（カメラがこれをサポートする場合）。カメラがこれをサポートしていない場合は、星像検出時に端にある星は無視されます。１未満の外側クロップ率と併用すると、画像の長方形の細い幅枠(内枠と外枠の間）を使用してオートフォーカスを実行します。</value>
   </data>
   <data name="LblAutoFocusMethod" xml:space="preserve">
-    <value>AF Method</value>
+    <value>AF方式</value>
   </data>
   <data name="LblAutoFocusMethodTooltip" xml:space="preserve">
-    <value>When Star HFR is selected, NINA will detect stars in the FOV,
-compute their HFR across multiple focus points, and find the minimum HFR.
-The Contrast Detection method uses image processing techniques to estimate contrast
-across multiple focus points, and finds the highest contrast. This method works on
-terrestrial objects or solar system objects as well, but can be sensitive to noise.</value>
+    <value>Star HFRが選択されると、NINAは写野内の星々を検出し、複数の焦点位置にてHFRを算出し、最小おのHFRを見つけます。
+コントラスト検出法では、画像処理技術を使用して複数の焦点位置にてコントラストを評価し最大のコントラストを見つけます。この方法は地上の物体又は太陽系の惑星などに有効ですが、ノイズに対して敏感かもしれません。</value>
   </data>
   <data name="LblAutoFocusNewWorseThanOriginal" xml:space="preserve">
-    <value>New focus point HFR {0} is significantly worse than original HFR {1}</value>
+    <value>新しい焦点位置HFR{0} がオリジナルのHFR{1} よりも大幅に悪いです。</value>
   </data>
   <data name="LblAutoFocusNotEnoughtSpreadedPoints" xml:space="preserve">
-    <value>Not enough HFR difference for set of focuspoints. Either the step size is too low or the stars are too much out of focus.</value>
+    <value>複数に焦点位置で算出したHFR値の差が十分ではありません。ステップ間隔が小さ過ぎるか、又は焦点が外れすぎています。</value>
   </data>
   <data name="LblAutoFocusNrOfExposures" xml:space="preserve">
-    <value># exposures</value>
+    <value>露出#枚</value>
   </data>
   <data name="LblAutoFocusNumberOfAttempts" xml:space="preserve">
-    <value>AF Number of Attempts</value>
+    <value>AF露出回数</value>
   </data>
   <data name="LblAutoFocusNumberOfAttemptsTooltip" xml:space="preserve">
-    <value>If autofocus fails because it got worse HFR than original focus, how many times to reattempt autofocus routine until it is either successful or it moves back to original focus position.</value>
+    <value>元のHFRよりも悪くなったためにオートフォーカスに失敗した場合、再度実行して成功するか又は元の焦点位置に戻すまでオートフォーカスルーチーンを何回実行しますか？</value>
   </data>
   <data name="LblAutoFocusNumberOfFramesPerPoint" xml:space="preserve">
-    <value>AF Number of Frames per Point</value>
+    <value>各焦点位置に対する露出回数</value>
   </data>
   <data name="LblAutoFocusNumberOfFramesPerPointTooltip" xml:space="preserve">
-    <value>How many frames to take for each focus point. If greater than one, multiple frames will be taken for a focus point, and their HFR will be averaged to compute focus point HFR</value>
+    <value>それぞれの焦点位置に対して何回露出するか。1より大きい数値であれば、各焦点位置に対して複数回の露出を行い、それらのHFRの平均値を使用して焦点位置のHFRを算出します。</value>
   </data>
   <data name="LblAutoFocusOnFilterChange" xml:space="preserve">
-    <value>On filter change</value>
+    <value>フィルター変更時</value>
   </data>
   <data name="LblAutoFocusOnStart" xml:space="preserve">
-    <value>On start</value>
+    <value>スタート時</value>
   </data>
   <data name="LblAutoFocusOuterCropRatio" xml:space="preserve">
-    <value>AF Outer Crop Ratio</value>
+    <value>AF外枠クロップ率</value>
   </data>
   <data name="LblAutoFocusReattempting" xml:space="preserve">
-    <value>Reattempting Autofocus</value>
+    <value>オートフォーカス再実行</value>
   </data>
   <data name="LblAutoFocusRestoringOriginalPosition" xml:space="preserve">
-    <value>Restoring original focus position</value>
+    <value>元の焦点位置を回復します。</value>
   </data>
   <data name="LblAutoFocusSetTime" xml:space="preserve">
-    <value>Time</value>
+    <value>時間</value>
   </data>
   <data name="LblAutoFocusSwitchingBackToFilter" xml:space="preserve">
-    <value>Switching back to original filter</value>
+    <value>元のフィルターに変更します。</value>
   </data>
   <data name="LblAutoFocusSwitchingToDefaultFilter" xml:space="preserve">
-    <value>Switching to Auto Focus filter</value>
+    <value>オートフォーカスのフィルターに変更します。</value>
   </data>
   <data name="LblAutoMeridianFlip" xml:space="preserve">
-    <value>Auto Meridian Flip</value>
+    <value>自動子午線越反転</value>
   </data>
   <data name="LblAutoStretchFactor" xml:space="preserve">
-    <value>Autostretch factor</value>
+    <value>自動ストレッチ因数</value>
   </data>
   <data name="LblAutoStretchFactorTooltip" xml:space="preserve">
-    <value>The factor for the autostretch algorithm that is used to display an image and detect stars. Must be a value between 0 and 1. A value of 0.2 should work most of the time.</value>
+    <value>画像を表示し星検出を行うため、自動ストレッチアルゴリズムに使用する因数です。因数は０と１の間でなければなりません。ほとんどの場合は0.2で問題ありません。</value>
   </data>
   <data name="LblAutoUpdateSource" xml:space="preserve">
-    <value>Auto Update Source</value>
+    <value>アプリの自動更新</value>
   </data>
   <data name="LblAzimuth" xml:space="preserve">
-    <value>Azimuth</value>
+    <value>方位角</value>
   </data>
   <data name="LblAzimuthErrorMeasurement" xml:space="preserve">
-    <value>Measure Azimuth Error</value>
+    <value>方位角のエラー測定</value>
   </data>
   <data name="LblAzimuthMeasurement" xml:space="preserve">
-    <value>Azimuth Measurement</value>
+    <value>方位角測定</value>
   </data>
   <data name="LblAzimuthMeasurementButtonTooltip" xml:space="preserve">
-    <value>Measures Azimuth Error by three steps.
-1. Takes image and platesolves for actual coordinates at current position
-2. Slew telescope using Right Ascension axis by 0.5 degrees
-3. Take another image at the new position, plate solves it for the actual position
-Using those two points the actual azimuth error will be calculated and displayed</value>
+    <value>以下の３ステップにて方位角エラーを測定します。
+1. 画像を採取し、プレートソルバーで現在位置の実際の座標を計算します。
+2. 望遠鏡を赤経軸で0.5度回転させます。
+3. 新たな位置で画像を再度取得し、プレートソルバーで新しい現在の座標を計算します。
+これら２つの座標を使って実際の方位角エラーを計算し表示します。</value>
   </data>
   <data name="LblAzimuthMeasurementDescription" xml:space="preserve">
-    <value>Point Telescope South near declination 0 and near meridian</value>
+    <value>望遠鏡を赤緯０及び子午線付近へ向けます。</value>
   </data>
   <data name="LblBackground" xml:space="preserve">
-    <value>Background</value>
+    <value>背景</value>
   </data>
   <data name="LblBacklashMeasurementException" xml:space="preserve">
-    <value>An exception occurred while measuring backlash. Backlash values may be wrong.</value>
+    <value>バックラッシュ算出時に例外が発生しました。バックラッシュ値は間違っている可能性があります。</value>
   </data>
   <data name="LblBacklashMeasurements" xml:space="preserve">
-    <value>The following focuser backlash values will be saved. IN: {0}, OUT: {1}</value>
+    <value>このフォーカサーバックラッシュ値が登録されます。内方向: {0}, 外方向: {1}</value>
   </data>
   <data name="LblBeta" xml:space="preserve">
-    <value>Beta</value>
+    <value>ベータ</value>
   </data>
   <data name="LblBiasMean" xml:space="preserve">
-    <value>BIAS mean value (in 16bit)</value>
+    <value>BIASの平均値(16ビットにて）</value>
   </data>
   <data name="LblBinning" xml:space="preserve">
-    <value>Binning</value>
+    <value>ビニング</value>
   </data>
   <data name="LblBinningDescription" xml:space="preserve">
-    <value>Camera binning</value>
+    <value>カメラビニング</value>
   </data>
   <data name="LblBitDepth" xml:space="preserve">
-    <value>Bit Depth</value>
+    <value>ビット深度</value>
   </data>
   <data name="LblBitDepthADU" xml:space="preserve">
-    <value>Bit Depth in ADU</value>
+    <value>ADUにおけるビット深度</value>
   </data>
   <data name="LblBlackClipping" xml:space="preserve">
     <value>Black clipping</value>
   </data>
   <data name="LblBlindSolveAttemptForFraming" xml:space="preserve">
-    <value>Image has to be solved for framing.
-Should reference coordinates be taken?
-RA: {0}
-Dec: {1}</value>
+    <value>フレーミングには画像をソルバーで位置計算して下さい。
+基準座標を取得しますか？
+赤経RA: {0}
+赤緯DEC: {1}</value>
   </data>
   <data name="LblBlindSolver" xml:space="preserve">
-    <value>Blind Solver</value>
+    <value>ブラインドソルバー</value>
   </data>
   <data name="LblBorder" xml:space="preserve">
-    <value>Border</value>
+    <value>境界線</value>
   </data>
   <data name="LblBulbMode" xml:space="preserve">
-    <value>Bulb Mode</value>
+    <value>バルブモード</value>
   </data>
   <data name="LblBulbSerialPort" xml:space="preserve">
-    <value>Bulb Serial Port</value>
+    <value>バルブシリアルポート</value>
   </data>
   <data name="LblButtonBackground" xml:space="preserve">
-    <value>Button Background</value>
+    <value>ボタン背景</value>
   </data>
   <data name="LblButtonForeground" xml:space="preserve">
-    <value>Button Foreground</value>
+    <value>ボタン前景</value>
   </data>
   <data name="LblButtonForegroundDisabled" xml:space="preserve">
-    <value>Button Foreground Disabled</value>
+    <value>ボタン前景オフ</value>
   </data>
   <data name="LblButtonHighlight" xml:space="preserve">
-    <value>Button Highlight</value>
+    <value>ボタンハイライト</value>
   </data>
   <data name="LblCache" xml:space="preserve">
-    <value>Cache</value>
+    <value>キャッシュ</value>
   </data>
   <data name="LblCam" xml:space="preserve">
-    <value>Cam</value>
+    <value>カム</value>
   </data>
   <data name="LblCamera" xml:space="preserve">
-    <value>Camera</value>
+    <value>カメラ</value>
   </data>
   <data name="LblCameraBattery" xml:space="preserve">
-    <value>Camera Battery</value>
+    <value>カメラバッテリー</value>
   </data>
   <data name="LblCameraBusy" xml:space="preserve">
-    <value>Camera is busy</value>
+    <value>カメラがビジー状態です。</value>
   </data>
   <data name="LblCameraConnected" xml:space="preserve">
-    <value>Camera connected</value>
+    <value>カメラが接続されました。</value>
   </data>
   <data name="LblCameraConnectionLost" xml:space="preserve">
-    <value>Camera connection lost! Please reconnect camera!</value>
+    <value>カメラの接続が切れました。再度接続して下さい。</value>
   </data>
   <data name="LblCameraCoolerNotEnabled" xml:space="preserve">
-    <value>Camera has cooler, yet it is not enabled</value>
+    <value>カメラは冷却仕様ですが、冷却がオフになっています。</value>
   </data>
   <data name="LblCameraDownloadFailed" xml:space="preserve">
-    <value>Camera download failed.
-Exposure time: {0}s
-Type: {1}
-Gain: {2}
-Filter: {3}</value>
+    <value>カメラからのダウンロードに失敗
+露出時間：{0}秒
+タイプ：{1}
+ゲイン：{2}
+フィルター：{3}</value>
   </data>
   <data name="LblCameraHighPower" xml:space="preserve">
-    <value>Camera cooler is running at {0}% power and may not be
-able to compensate for ambient temperature variations</value>
+    <value>カメラは{0}%のパワーで冷却しており、環境温度変化の変動を補正できない可能性があります。</value>
   </data>
   <data name="LblCameraNotAtTargetTemp" xml:space="preserve">
-    <value>Camera is at {0}°C yet target temperature is {1}°C</value>
+    <value>現在のカメラ温度は{0}℃ですが、ターゲット温度は{1}℃です。</value>
   </data>
   <data name="LblCameraOptions" xml:space="preserve">
-    <value>Camera Options</value>
+    <value>カメラオプション</value>
   </data>
   <data name="LblCameraParameter" xml:space="preserve">
-    <value>Camera Parameter</value>
+    <value>カメラパラメーター</value>
   </data>
   <data name="LblCameraState" xml:space="preserve">
-    <value>Camera State</value>
+    <value>カメラステータス</value>
   </data>
   <data name="LblCameraXSize" xml:space="preserve">
-    <value>Camera X Size</value>
+    <value>カメラ X サイズ</value>
   </data>
   <data name="LblCameraYSize" xml:space="preserve">
-    <value>Camera Y Size</value>
+    <value>カメラ Y サイズ</value>
   </data>
   <data name="LblCamInfo" xml:space="preserve">
-    <value>Camera Info</value>
+    <value>カメラ情報</value>
   </data>
   <data name="LblCamSettings" xml:space="preserve">
-    <value>Camera Settings</value>
+    <value>カメラ設定</value>
   </data>
   <data name="LblCancel" xml:space="preserve">
-    <value>Cancel</value>
+    <value>キャンセル</value>
   </data>
   <data name="LblCanonErrorOccurred" xml:space="preserve">
-    <value>A Canon error occored: {0}</value>
+    <value>Canonエラーが発生しました：{0}</value>
   </data>
   <data name="LblCaptureImageAndPlatesolve" xml:space="preserve">
-    <value>Capture Image and Platesolve</value>
+    <value>画像を取得してプレートソルブ処理します。。</value>
   </data>
   <data name="LblCdC" xml:space="preserve">
-    <value>Cartes du Ciel</value>
+    <value>Cartes du Ceil</value>
   </data>
   <data name="LblCenterDec" xml:space="preserve">
-    <value>Center Dec</value>
+    <value>赤経中央</value>
   </data>
   <data name="LblCenterDecdms" xml:space="preserve">
-    <value>Center Dec dms</value>
+    <value>赤経中央dms</value>
   </data>
   <data name="LblCenterRA" xml:space="preserve">
-    <value>Center RA</value>
+    <value>赤経中央</value>
   </data>
   <data name="LblCenterRAhms" xml:space="preserve">
-    <value>Center RA hms</value>
+    <value>赤経中央 hms</value>
   </data>
   <data name="LblCenterTarget" xml:space="preserve">
-    <value>Center target</value>
+    <value>ターゲットをセンタリング</value>
   </data>
   <data name="LblChange" xml:space="preserve">
-    <value>Change</value>
+    <value>変更</value>
   </data>
   <data name="LblChangedSequenceWarning" xml:space="preserve">
-    <value>The sequence for the target(s) '{0}' have been modified since it was last saved (or has not been saved yet).
-        
-Do you want to close the sequence and lose the changes anyway?</value>
+    <value>ターゲット'{0}' のシーケンスは前回の保存後から変更されています（又は保存されていません）
+
+変更を破棄してシーケンスを閉じますか？</value>
   </data>
   <data name="LblChangedSequenceWarningTitle" xml:space="preserve">
-    <value>Closing modified sequence</value>
+    <value>変更されたシーケンスを閉じます。</value>
   </data>
   <data name="LblChangeToBulbMode" xml:space="preserve">
-    <value>Please change the mode dial to bulb mode</value>
+    <value>モードダイヤルをBULBモードに設定してください。</value>
   </data>
   <data name="LblChangeToManualMode" xml:space="preserve">
-    <value>Please change the mode dial to manual mode</value>
+    <value>モードダイヤルをManualモードの設定して下さい。</value>
   </data>
   <data name="LblCheckMeridianFlip" xml:space="preserve">
-    <value>Check Meridian Flip</value>
+    <value>子午線越え反転の確認</value>
   </data>
   <data name="LblChecksumError" xml:space="preserve">
-    <value>Checksum does not match expected value. Downloaded file may be corrupted!</value>
+    <value>チェックサム（データ検査）が期待値とマッチングしませんでした。ダウンロードされたファイルは破損している可能性があります。</value>
   </data>
   <data name="LblChipTemp" xml:space="preserve">
-    <value>Chip Temperature</value>
+    <value>センサー温度</value>
   </data>
   <data name="LblChipTempShort" xml:space="preserve">
-    <value>Chip Temp.</value>
+    <value>センサー温度</value>
   </data>
   <data name="LblChooseProfile" xml:space="preserve">
-    <value>Choose Profile</value>
+    <value>プロファイル選択</value>
   </data>
   <data name="LblClear" xml:space="preserve">
-    <value>Clear</value>
+    <value>クリア</value>
   </data>
   <data name="LblClearCache" xml:space="preserve">
-    <value>Clear Cache</value>
+    <value>キャッシュのクリア</value>
   </data>
   <data name="LblClockwise" xml:space="preserve">
-    <value>Clockwise</value>
+    <value>時計回り</value>
   </data>
   <data name="LblCloudCover" xml:space="preserve">
-    <value>Cloud Cover</value>
+    <value>クラウドカバー</value>
   </data>
   <data name="LblColorSensorNotSupported" xml:space="preserve">
-    <value>Color sensor is not supported yet</value>
+    <value>カラーのセンサーはまだサポートされていません。</value>
   </data>
   <data name="LblConnect" xml:space="preserve">
-    <value>Connect</value>
+    <value>接続</value>
   </data>
   <data name="LblConnected" xml:space="preserve">
-    <value>Connected</value>
+    <value>接続済み</value>
   </data>
   <data name="LblConnecting" xml:space="preserve">
-    <value>Connecting</value>
+    <value>接続中</value>
   </data>
   <data name="LblConstellation" xml:space="preserve">
-    <value>Constellation</value>
+    <value>星座</value>
   </data>
   <data name="LblConstellation_AND" xml:space="preserve">
-    <value>Andromeda</value>
+    <value>アンドロメダ</value>
   </data>
   <data name="LblConstellation_ANT" xml:space="preserve">
-    <value>Antlia</value>
+    <value>ポンプ座</value>
   </data>
   <data name="LblConstellation_APS" xml:space="preserve">
-    <value>Apus</value>
+    <value>風鳥座</value>
   </data>
   <data name="LblConstellation_AQL" xml:space="preserve">
-    <value>Aquila</value>
+    <value>わし座</value>
   </data>
   <data name="LblConstellation_AQR" xml:space="preserve">
-    <value>Aquarius</value>
+    <value>水瓶座</value>
   </data>
   <data name="LblConstellation_ARA" xml:space="preserve">
-    <value>Ara</value>
+    <value>祭壇座</value>
   </data>
   <data name="LblConstellation_ARI" xml:space="preserve">
-    <value>Aries</value>
+    <value>牡羊座</value>
   </data>
   <data name="LblConstellation_AUR" xml:space="preserve">
-    <value>Auriga</value>
+    <value>ぎょしゃ座</value>
   </data>
   <data name="LblConstellation_BOO" xml:space="preserve">
-    <value>Bootes</value>
+    <value>うしかい座</value>
   </data>
   <data name="LblConstellation_CAE" xml:space="preserve">
-    <value>Caelum</value>
+    <value>ちょうこくぐ座</value>
   </data>
   <data name="LblConstellation_CAM" xml:space="preserve">
-    <value>Camelopardalis</value>
+    <value>きりん座</value>
   </data>
   <data name="LblConstellation_CAP" xml:space="preserve">
-    <value>Capricornus</value>
+    <value>やぎ座</value>
   </data>
   <data name="LblConstellation_CAR" xml:space="preserve">
-    <value>Carina</value>
+    <value>りゅうこつ座</value>
   </data>
   <data name="LblConstellation_CAS" xml:space="preserve">
-    <value>Cassiopeia</value>
+    <value>カシオペア座</value>
   </data>
   <data name="LblConstellation_CEN" xml:space="preserve">
-    <value>Centaurus</value>
+    <value>ケンタウルス座</value>
   </data>
   <data name="LblConstellation_CEP" xml:space="preserve">
-    <value>Cepheus</value>
+    <value>ケフェウス座</value>
   </data>
   <data name="LblConstellation_CET" xml:space="preserve">
-    <value>Cetus</value>
+    <value>くじら座</value>
   </data>
   <data name="LblConstellation_CHA" xml:space="preserve">
-    <value>Chamaeleon</value>
+    <value>カメレオン座</value>
   </data>
   <data name="LblConstellation_CIR" xml:space="preserve">
-    <value>Circinus</value>
+    <value>コンパス座</value>
   </data>
   <data name="LblConstellation_CMA" xml:space="preserve">
-    <value>Canis major</value>
+    <value>おおいぬ座</value>
   </data>
   <data name="LblConstellation_CMI" xml:space="preserve">
-    <value>Canis minor</value>
+    <value>こいぬ座</value>
   </data>
   <data name="LblConstellation_CNC" xml:space="preserve">
-    <value>Cancer</value>
+    <value>かに座</value>
   </data>
   <data name="LblConstellation_COL" xml:space="preserve">
-    <value>Columba</value>
+    <value>はと座</value>
   </data>
   <data name="LblConstellation_COM" xml:space="preserve">
-    <value>Coma berenices</value>
+    <value>かみのけ座</value>
   </data>
   <data name="LblConstellation_CRA" xml:space="preserve">
-    <value>Corona australis</value>
+    <value>みなみのかんむり座</value>
   </data>
   <data name="LblConstellation_CRB" xml:space="preserve">
-    <value>Corona borealis</value>
+    <value>かんむり座</value>
   </data>
   <data name="LblConstellation_CRT" xml:space="preserve">
-    <value>Crater</value>
+    <value>コップ座</value>
   </data>
   <data name="LblConstellation_CRU" xml:space="preserve">
-    <value>Crux</value>
+    <value>みなみじゅうじ座</value>
   </data>
   <data name="LblConstellation_CRV" xml:space="preserve">
-    <value>Corvus</value>
+    <value>からす座</value>
   </data>
   <data name="LblConstellation_CVN" xml:space="preserve">
-    <value>Canes venatici</value>
+    <value>りょうけん座</value>
   </data>
   <data name="LblConstellation_CYG" xml:space="preserve">
-    <value>Cygnus</value>
+    <value>はくちょう座</value>
   </data>
   <data name="LblConstellation_DEL" xml:space="preserve">
-    <value>Delphinus</value>
+    <value>いるか座</value>
   </data>
   <data name="LblConstellation_DOR" xml:space="preserve">
-    <value>Dorado</value>
+    <value>かじき座</value>
   </data>
   <data name="LblConstellation_DRA" xml:space="preserve">
-    <value>Draco</value>
+    <value>りゅう座</value>
   </data>
   <data name="LblConstellation_EQU" xml:space="preserve">
-    <value>Equuleus</value>
+    <value>こうま座</value>
   </data>
   <data name="LblConstellation_ERI" xml:space="preserve">
-    <value>Eridanus</value>
+    <value>エリダヌス座</value>
   </data>
   <data name="LblConstellation_FOR" xml:space="preserve">
-    <value>Fornax</value>
+    <value>ろ座</value>
   </data>
   <data name="LblConstellation_GEM" xml:space="preserve">
-    <value>Gemini</value>
+    <value>ふたご座</value>
   </data>
   <data name="LblConstellation_GRU" xml:space="preserve">
-    <value>Grus</value>
+    <value>つる座</value>
   </data>
   <data name="LblConstellation_HER" xml:space="preserve">
-    <value>Hercules</value>
+    <value>ヘルクレス座</value>
   </data>
   <data name="LblConstellation_HOR" xml:space="preserve">
-    <value>Horologium</value>
+    <value>とけい座</value>
   </data>
   <data name="LblConstellation_HYA" xml:space="preserve">
-    <value>Hydra</value>
+    <value>うみへび座</value>
   </data>
   <data name="LblConstellation_HYI" xml:space="preserve">
-    <value>Hydrus</value>
+    <value>みずへび座</value>
   </data>
   <data name="LblConstellation_IND" xml:space="preserve">
-    <value>Indus</value>
+    <value>インディアン座</value>
   </data>
   <data name="LblConstellation_LAC" xml:space="preserve">
-    <value>Lacerta</value>
+    <value>とかげ座</value>
   </data>
   <data name="LblConstellation_LEO" xml:space="preserve">
-    <value>Leo</value>
+    <value>しし座</value>
   </data>
   <data name="LblConstellation_LEP" xml:space="preserve">
-    <value>Lepus</value>
+    <value>うさぎ座</value>
   </data>
   <data name="LblConstellation_LIB" xml:space="preserve">
-    <value>Libra</value>
+    <value>てんびん座</value>
   </data>
   <data name="LblConstellation_LMI" xml:space="preserve">
-    <value>Leo minor</value>
+    <value>こじし座</value>
   </data>
   <data name="LblConstellation_LUP" xml:space="preserve">
-    <value>Lupus</value>
+    <value>おおかみ座</value>
   </data>
   <data name="LblConstellation_LYN" xml:space="preserve">
-    <value>Lynx</value>
+    <value>やまねこ座</value>
   </data>
   <data name="LblConstellation_LYR" xml:space="preserve">
-    <value>Lyra</value>
+    <value>こと座</value>
   </data>
   <data name="LblConstellation_MEN" xml:space="preserve">
-    <value>Mensa</value>
+    <value>テーブルさん座</value>
   </data>
   <data name="LblConstellation_MIC" xml:space="preserve">
-    <value>Microscopium</value>
+    <value>けんびきょう座</value>
   </data>
   <data name="LblConstellation_MON" xml:space="preserve">
-    <value>Monoceros</value>
+    <value>いっかくじゅう座</value>
   </data>
   <data name="LblConstellation_MUS" xml:space="preserve">
-    <value>Musca</value>
+    <value>はえ座</value>
   </data>
   <data name="LblConstellation_NOR" xml:space="preserve">
-    <value>Norma</value>
+    <value>じょうぎ座</value>
   </data>
   <data name="LblConstellation_OCT" xml:space="preserve">
-    <value>Octans</value>
+    <value>八分儀座</value>
   </data>
   <data name="LblConstellation_OPH" xml:space="preserve">
-    <value>Ophiuchus</value>
+    <value>へびつかい座</value>
   </data>
   <data name="LblConstellation_ORI" xml:space="preserve">
-    <value>Orion</value>
+    <value>オリオン座</value>
   </data>
   <data name="LblConstellation_PAV" xml:space="preserve">
-    <value>Pavo</value>
+    <value>くじゃく座</value>
   </data>
   <data name="LblConstellation_PEG" xml:space="preserve">
-    <value>Pegasus</value>
+    <value>ペガスス座</value>
   </data>
   <data name="LblConstellation_PER" xml:space="preserve">
-    <value>Perseus</value>
+    <value>ペルセウス座</value>
   </data>
   <data name="LblConstellation_PHE" xml:space="preserve">
-    <value>Phoenix</value>
+    <value>ほうおう座（鳳凰座)</value>
   </data>
   <data name="LblConstellation_PIC" xml:space="preserve">
-    <value>Pictor</value>
+    <value>がか座（画架座)</value>
   </data>
   <data name="LblConstellation_PSA" xml:space="preserve">
-    <value>Pisces austrinus</value>
+    <value>みなみのうお座</value>
   </data>
   <data name="LblConstellation_PSC" xml:space="preserve">
-    <value>Pisces</value>
+    <value>うお座</value>
   </data>
   <data name="LblConstellation_PUP" xml:space="preserve">
-    <value>Puppis</value>
+    <value>とも座</value>
   </data>
   <data name="LblConstellation_PYX" xml:space="preserve">
-    <value>Pyxis</value>
+    <value>らしんばん座</value>
   </data>
   <data name="LblConstellation_RET" xml:space="preserve">
-    <value>Reticulum</value>
+    <value>レチクル座</value>
   </data>
   <data name="LblConstellation_SCL" xml:space="preserve">
-    <value>Sculptor</value>
+    <value>ちょうこくしつ座</value>
   </data>
   <data name="LblConstellation_SCO" xml:space="preserve">
-    <value>Scorpius</value>
+    <value>さそり座</value>
   </data>
   <data name="LblConstellation_SCT" xml:space="preserve">
-    <value>Scutum</value>
+    <value>たて座</value>
   </data>
   <data name="LblConstellation_SER" xml:space="preserve">
-    <value>Serpens</value>
+    <value>へび座</value>
   </data>
   <data name="LblConstellation_SER1" xml:space="preserve">
-    <value>Serpens caput</value>
+    <value>へび座(頭部)</value>
   </data>
   <data name="LblConstellation_SER2" xml:space="preserve">
-    <value>Serpens cauda</value>
+    <value>へび座 尾部</value>
   </data>
   <data name="LblConstellation_SEX" xml:space="preserve">
-    <value>Sextans</value>
+    <value>六分儀座</value>
   </data>
   <data name="LblConstellation_SGE" xml:space="preserve">
-    <value>Sagitta</value>
+    <value>や座</value>
   </data>
   <data name="LblConstellation_SGR" xml:space="preserve">
-    <value>Sagittarius</value>
+    <value>いて座</value>
   </data>
   <data name="LblConstellation_TAU" xml:space="preserve">
-    <value>Taurus</value>
+    <value>おうし座</value>
   </data>
   <data name="LblConstellation_TEL" xml:space="preserve">
-    <value>Telescopium</value>
+    <value>ぼうえんきょう座</value>
   </data>
   <data name="LblConstellation_TRA" xml:space="preserve">
-    <value>Triangulum australe</value>
+    <value>みなみのさんかく座</value>
   </data>
   <data name="LblConstellation_TRI" xml:space="preserve">
-    <value>Triangulum</value>
+    <value>さんかく座</value>
   </data>
   <data name="LblConstellation_TUC" xml:space="preserve">
-    <value>Tucana</value>
+    <value>きょしちょう座</value>
   </data>
   <data name="LblConstellation_UMA" xml:space="preserve">
-    <value>Ursa major</value>
+    <value>おおぐま座</value>
   </data>
   <data name="LblConstellation_UMI" xml:space="preserve">
-    <value>Ursa minor</value>
+    <value>こぐま座</value>
   </data>
   <data name="LblConstellation_VEL" xml:space="preserve">
-    <value>Vela</value>
+    <value>ほ座</value>
   </data>
   <data name="LblConstellation_VIR" xml:space="preserve">
-    <value>Virgo</value>
+    <value>おとめ座</value>
   </data>
   <data name="LblConstellation_VOL" xml:space="preserve">
-    <value>Volans</value>
+    <value>とびうお座</value>
   </data>
   <data name="LblConstellation_VUL" xml:space="preserve">
-    <value>Vulpecula</value>
+    <value>こぎつね座</value>
   </data>
   <data name="LblContinue" xml:space="preserve">
-    <value>Continue</value>
+    <value>続行</value>
   </data>
   <data name="LblContrastMethod" xml:space="preserve">
-    <value>Contrast Detect Method</value>
+    <value>コントラスト検出法</value>
   </data>
   <data name="LblCoolCamBtnTooltip" xml:space="preserve">
-    <value>Cool Camera to the given target temperature.
-When duration is set, the application will slowly decrease the temperature during the timeframe until the target temperature is reached.</value>
+    <value>カメラを設定された目標温度まで下げます。時間帯が設定された場合は、設定温度に達するまでアプリが設定時間帯の間にゆっくりと冷却していきます。</value>
   </data>
   <data name="LblCoolerOn" xml:space="preserve">
-    <value>Cooler</value>
+    <value>冷却機能</value>
   </data>
   <data name="LblCoolerPower" xml:space="preserve">
-    <value>Cooler Power</value>
+    <value>冷却パワー</value>
   </data>
   <data name="LblCooling" xml:space="preserve">
-    <value>Cooling</value>
+    <value>冷却途中</value>
   </data>
   <data name="LblCoordinates" xml:space="preserve">
-    <value>Coordinates</value>
+    <value>座標</value>
   </data>
   <data name="LblCounterclockwise" xml:space="preserve">
-    <value>Counterclockwise</value>
+    <value>反時計回り</value>
   </data>
   <data name="LblCoverScopeMsgBox" xml:space="preserve">
-    <value>Cover your scope now and press OK to start taking the dark flats.</value>
+    <value>望遠鏡にカバーを付けてOKを押すとダークフラットを撮像開始します。</value>
   </data>
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
-    <value>Cover your scope now</value>
+    <value>望遠鏡にカバーを付けて下さい。</value>
   </data>
   <data name="LblCurrentDownloadToDataRatio" xml:space="preserve">
-    <value>Current Download:Data ratio</value>
+    <value>現在のダウンロード:データレート</value>
   </data>
   <data name="LblCurrentMean" xml:space="preserve">
-    <value>Current Mean</value>
+    <value>現在の平均値</value>
   </data>
   <data name="LblCurrentPosition" xml:space="preserve">
-    <value>Current Position</value>
+    <value>現在のポジション</value>
   </data>
   <data name="LblCurrentSequenceEstimates" xml:space="preserve">
     <value>Estimated time for this target</value>
   </data>
   <data name="LblCurrentUIColorSchema" xml:space="preserve">
-    <value>Current UI Color Schema</value>
+    <value>現在のUI色スキーム</value>
   </data>
   <data name="LblCurveFittingMethod" xml:space="preserve">
-    <value>AF Curve fitting</value>
+    <value>オートフォーカスカーブ設定</value>
   </data>
   <data name="LblCygwinBashNotFound" xml:space="preserve">
-    <value>Cygwin bash not found</value>
+    <value>Cugwin bashが見つかりません。</value>
   </data>
   <data name="LblCygwinDirectory" xml:space="preserve">
-    <value>Cygwin Directory</value>
+    <value>Cygwinディレクトリー</value>
   </data>
   <data name="LblDarkFlatCount" xml:space="preserve">
-    <value>Dark Flats to take</value>
+    <value>フラットダーク撮影</value>
   </data>
   <data name="LblDARVSlew" xml:space="preserve">
-    <value>D.A.R.V. Slew</value>
+    <value>D.A.R.Vダーゲット導入</value>
   </data>
   <data name="LblDARVSlewButtonTooltip" xml:space="preserve">
-    <value>This will take an exposure while slewing the scope slowly to one side and back
-when the lines are not aligned there is some Polar Alignment error</value>
+    <value>望遠鏡をゆっくりと一方や反対方向に振る間に撮像して、線が揃っていない場合は、極軸アラインメントにエラーがあります。</value>
   </data>
   <data name="LblDARVSlewDescription" xml:space="preserve">
-    <value>Specify the duration for the D.A.R.V. procedure. The telescope will slew half the time in one direction on RA axis and then slew back. In case of no Polar Alignment error it will display as a straight line. Otherwise a V shaped line. For Azimuth Error Measurement slew the scope near meridian, otherwise east or west.</value>
+    <value>D.A.R.V.工程の時間を設定して下さい。望遠鏡はその時間の半分の時間で赤経方向の一方へ振り、そして反対方向に戻します。極軸アラインメントにエラーが無ければ、直線を描きます。エラーがあれば、V字線となります。方位角エラーの測定には、望遠鏡を子午線付近、又は東か西に振って下さい。</value>
   </data>
   <data name="LblDataProvidedBy" xml:space="preserve">
-    <value>Initial set of DSO Data provided by</value>
+    <value>DSOデータの初期設定を提供したのは</value>
   </data>
   <data name="LblDataToDownloadRatio" xml:space="preserve">
     <value>Download to Data ratio</value>
   </data>
   <data name="LblDateFormatDescription" xml:space="preserve">
-    <value>Date with format YYYY-MM-DD</value>
+    <value>日付フォーマットYYYY-MM-DD</value>
   </data>
   <data name="LblDateFormatDescription2" xml:space="preserve">
-    <value>Date shifted back by 12 hours with format YYYY-MM-DD</value>
+    <value>12時間前倒し日付フォーマット YYYY-MM-DD</value>
   </data>
   <data name="LblDateTimeFormatDescription" xml:space="preserve">
-    <value>Date with format YYYY-MM-DD_HH-mm-ss</value>
+    <value>日付フォーマットYYYY-MM-DD_HH-mm-ss</value>
   </data>
   <data name="LblDawn" xml:space="preserve">
-    <value>Dawn</value>
+    <value>薄明</value>
   </data>
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
   </data>
   <data name="LblDebayeredHFR" xml:space="preserve">
-    <value>Debayered HFR</value>
+    <value>デベイヤ処理HFR</value>
   </data>
   <data name="LblDebayeredHFRTooltip" xml:space="preserve">
-    <value>Use debayered image to perform HFR computation. More precise, but more resource-intensive.</value>
+    <value>デベイヤ画像を使用してHFR演算を実行します。正確ですが、リソースを多く使用します。</value>
   </data>
   <data name="LblDebayerImage" xml:space="preserve">
-    <value>Debayer Image</value>
+    <value>デベイヤ画像</value>
   </data>
   <data name="LblDebayerImageTooltip" xml:space="preserve">
-    <value>Debayer Image on preview (won't affect saved file)</value>
+    <value>プリビューにデベイヤ画像を表示(保存されたファイルには影響ありません）</value>
   </data>
   <data name="LblDebayeringImage" xml:space="preserve">
-    <value>Debayering image</value>
+    <value>デベイヤ処理中</value>
   </data>
   <data name="LblDebug" xml:space="preserve">
-    <value>Debug</value>
+    <value>デバッグ</value>
   </data>
   <data name="LblDec" xml:space="preserve">
-    <value>Dec</value>
+    <value>赤緯</value>
   </data>
   <data name="LblDecCorrections" xml:space="preserve">
-    <value>Dec Corrections</value>
+    <value>赤緯修正</value>
   </data>
   <data name="LblDecError" xml:space="preserve">
-    <value>Dec Error</value>
+    <value>赤緯エラー</value>
   </data>
   <data name="LblDeclination" xml:space="preserve">
-    <value>Declination</value>
+    <value>赤緯</value>
   </data>
   <data name="LblDecPixError" xml:space="preserve">
-    <value>Dec Pix Error</value>
+    <value>赤緯ピクセルエラー</value>
   </data>
   <data name="LblDefaultAutoFocusExposureTime" xml:space="preserve">
-    <value>Default Auto Focus Exposure Time</value>
+    <value>オートフォーカスのデフォルト露出時間</value>
   </data>
   <data name="LblDefaultSequenceFolder" xml:space="preserve">
-    <value>Default folder for sequence files</value>
+    <value>シーケンスファイル用のデフォルトフォルダー</value>
   </data>
   <data name="LblDefaultSequenceFolderTooltip" xml:space="preserve">
-    <value>Sequences will be loaded from and saved to the folder specified here</value>
+    <value>シーケンスはここで指定されたフォルダーからロードされ保存されます。</value>
   </data>
   <data name="LblDegree" xml:space="preserve">
-    <value>degree</value>
+    <value>度</value>
   </data>
   <data name="LblDegreeShort" xml:space="preserve">
     <value>°</value>
   </data>
   <data name="LblDeleteProfileInUseWarning" xml:space="preserve">
-    <value>Cannot delete profile. It is already in use by another N.I.N.A. instance!</value>
+    <value>プロファイルを消去できません。他のN.I.N.Aセッションが使用中です。</value>
   </data>
   <data name="LblDescending" xml:space="preserve">
-    <value>Descending</value>
+    <value>下降中</value>
   </data>
   <data name="LblDescription" xml:space="preserve">
-    <value>Description</value>
+    <value>概要</value>
   </data>
   <data name="LblDetails" xml:space="preserve">
-    <value>Details</value>
+    <value>詳細</value>
   </data>
   <data name="LblDetectedStars" xml:space="preserve">
-    <value>Detected Stars</value>
+    <value>検出された星</value>
   </data>
   <data name="LblDevicePollingInterval" xml:space="preserve">
-    <value>Device polling interval</value>
+    <value>デバイスのポーリング間隔</value>
   </data>
   <data name="LblDewHeater" xml:space="preserve">
-    <value>Dew Heater</value>
+    <value>結露防止ヒーター</value>
   </data>
   <data name="LblDewHeaterShort" xml:space="preserve">
-    <value>Dew Heater</value>
+    <value>結露防止ヒーター</value>
   </data>
   <data name="LblDewpoint" xml:space="preserve">
-    <value>Dewpoint</value>
+    <value>露点</value>
   </data>
   <data name="LblDigitalSkySurvey" xml:space="preserve">
-    <value>Digital Sky Survey</value>
+    <value>デジタル スカイ サーベイ</value>
   </data>
   <data name="LblDirectGuideDuration" xml:space="preserve">
-    <value>Direct Guide Duration</value>
+    <value>ダイレクトガイド時間</value>
   </data>
   <data name="LblDirectGuiderConnectionFail" xml:space="preserve">
-    <value>Direct Guider could not connect to Telescope</value>
+    <value>ダイレクトガイドが赤道儀に繋がりません。</value>
   </data>
   <data name="LblDirectGuiderTelescopeDisconnect" xml:space="preserve">
-    <value>Telescope has been disconnected. Direct Guider will disconnect. Dithering no longer effective!</value>
+    <value>赤道儀との接続が解除されました。ダイレクトガイドは接続を解除します。デザリングは無効です。</value>
   </data>
   <data name="LblDirectoryNotFound" xml:space="preserve">
-    <value>Directory to save image to not found!</value>
+    <value>画像保存ディレクトリーが見つかりません。</value>
   </data>
   <data name="LblDirectoryNotWritable" xml:space="preserve">
-    <value>Directory to save image to does not have write permissions!</value>
+    <value>画像保存ディレクトリーは書き込み許可を持っていません。</value>
   </data>
   <data name="LblDisableAFGuiding" xml:space="preserve">
-    <value>AF Disable Guiding</value>
+    <value>オートフォーカス中にガイド停止</value>
   </data>
   <data name="LblDisableAFGuidingTooltip" xml:space="preserve">
-    <value>Disable guiding during auto-focus</value>
+    <value>オートフォーカス中にガイド停止</value>
   </data>
   <data name="LblDisconnect" xml:space="preserve">
-    <value>Disconnect</value>
+    <value>接続解除</value>
   </data>
   <data name="LblDisconnectAll" xml:space="preserve">
-    <value>Disconnect all devices?</value>
+    <value>全てのデバイスの接続を切りますか？</value>
   </data>
   <data name="LblDistance" xml:space="preserve">
-    <value>Distance</value>
+    <value>距離</value>
   </data>
   <data name="LblDither" xml:space="preserve">
-    <value>Dither</value>
+    <value>デザ</value>
   </data>
   <data name="LblDitherEveryNoFrame" xml:space="preserve">
-    <value>Dither Every # Frame</value>
+    <value>#枚毎にデザリングする</value>
   </data>
   <data name="LblDitherOnButGuiderNotConnected" xml:space="preserve">
-    <value>Dithering is enabled, yet guider is not connected</value>
+    <value>デザリングがオンになっていますが、ガイドカメラが未接続です。</value>
   </data>
   <data name="LblDitherPixels" xml:space="preserve">
-    <value>PHD2 Dither Pixels</value>
+    <value>PHD2デザリングピクセル</value>
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
-    <value>Dither RA Only</value>
+    <value>赤経のみデザリグ</value>
   </data>
   <data name="LblDownload" xml:space="preserve">
-    <value>Download</value>
+    <value>ダウンロード</value>
   </data>
   <data name="LblDownloadImage" xml:space="preserve">
-    <value>Download Image</value>
+    <value>画像のダウンロード</value>
   </data>
   <data name="LblDownloadImageTooltip" xml:space="preserve">
-    <value>Download Image from the NASA skysurvey for the given coordinates</value>
+    <value>NASA Skysurveyから設定座標に対しる画像をダウンロード</value>
   </data>
   <data name="LblDownloading" xml:space="preserve">
-    <value>Downloading</value>
+    <value>ダウンロード中</value>
   </data>
   <data name="LblDownloadMoreIndexFiles" xml:space="preserve">
-    <value>Download more index files</value>
+    <value>更にインデックスファイルをダウンロード</value>
   </data>
   <data name="LblDownSampleFactor" xml:space="preserve">
-    <value>Downsample factor</value>
+    <value>ダウンサンプル係数</value>
   </data>
   <data name="LblDriverInfo" xml:space="preserve">
-    <value>Driver Info</value>
+    <value>ドライバー情報</value>
   </data>
   <data name="LblDriverVersion" xml:space="preserve">
-    <value>Driver Version</value>
+    <value>ドライバーのバージョン</value>
   </data>
   <data name="LblDuration" xml:space="preserve">
-    <value>Duration</value>
+    <value>継続時間</value>
   </data>
   <data name="LblDusk" xml:space="preserve">
-    <value>Dusk</value>
+    <value>日没</value>
   </data>
   <data name="LblEast" xml:space="preserve">
-    <value>East</value>
+    <value>東</value>
   </data>
   <data name="LblEDCameraNotInManualMode" xml:space="preserve">
-    <value>Camera is not set to manual or bulb mode! Please set it to manual or bulb mode before connecting</value>
+    <value>カメラがManualモード又はBulbモードに設定されていません。Manualモード又はBulbモードに設定してから接続して下さい。</value>
   </data>
   <data name="LblEnableBitScaling" xml:space="preserve">
-    <value>Enable bit scaling</value>
+    <value>ビットスケーリングをオンにする。</value>
   </data>
   <data name="LblEnableBitScalingTooltip" xml:space="preserve">
-    <value>Save 10/12/14 bit images with scaling to 16 bits. (Only relevant for Altair and ToupTek cameras)</value>
+    <value>10/12/14ビットの画像を16ビットのスケールに合わせてセーブする。（AltairとToupTekのカメラのみに関連します）</value>
   </data>
   <data name="LblEnabled" xml:space="preserve">
-    <value>Enabled</value>
+    <value>オン</value>
   </data>
   <data name="LblEndOfSequenceCloseFlatDeviceCover" xml:space="preserve">
-    <value>Closing flat device cover</value>
+    <value>フラット器具のカバーを閉じています。</value>
   </data>
   <data name="LblEndOfSequenceDecision" xml:space="preserve">
-    <value>Run end of sequence options?</value>
+    <value>シーケンス終了オプションを実行しますか？</value>
   </data>
   <data name="LblEndOfSequenceOptions" xml:space="preserve">
-    <value>End of Sequence Options</value>
+    <value>シーケンス終了オプション</value>
   </data>
   <data name="LblEndOfSequenceParkTelescope" xml:space="preserve">
-    <value>Park Telescope</value>
+    <value>望遠鏡をパーク位置に移動</value>
   </data>
   <data name="LblEndOfSequenceWarmCamera" xml:space="preserve">
-    <value>Warm Camera</value>
+    <value>カメラを昇温する</value>
   </data>
   <data name="LblEpoch" xml:space="preserve">
-    <value>Epoch</value>
+    <value>エポック</value>
   </data>
   <data name="LblEquipment" xml:space="preserve">
-    <value>Equipment</value>
+    <value>機材</value>
   </data>
   <data name="LblError" xml:space="preserve">
-    <value>Error</value>
+    <value>エラー</value>
   </data>
   <data name="LblErrorDistance" xml:space="preserve">
-    <value>Error Distance</value>
+    <value>エラー距離</value>
   </data>
   <data name="LblErrorLT" xml:space="preserve">
-    <value>error &lt;</value>
+    <value>エラー&lt;</value>
   </data>
   <data name="LblEsoSkySurvey" xml:space="preserve">
-    <value>ESO Sky Survey</value>
+    <value>ESOスカイサーベイ</value>
   </data>
   <data name="LblEstimatedDownloadTime" xml:space="preserve">
-    <value>Estimated Download Time</value>
+    <value>推定ダウンロード時間</value>
   </data>
   <data name="LblEstimatedExposureTime" xml:space="preserve">
-    <value>Estimated Exposure Time</value>
+    <value>推定露出時間</value>
   </data>
   <data name="LblETA" xml:space="preserve">
-    <value>Estimated Finish Time</value>
+    <value>推定終了時間</value>
   </data>
   <data name="LblExposing" xml:space="preserve">
-    <value>Exposing</value>
+    <value>露出中</value>
   </data>
   <data name="LblExposureCalculator" xml:space="preserve">
-    <value>Optimal Exposure Calculator</value>
+    <value>最適露出時間計算機能</value>
   </data>
   <data name="LblExposures" xml:space="preserve">
-    <value>Exposures</value>
+    <value>露出枚数</value>
   </data>
   <data name="LblExposureTime" xml:space="preserve">
-    <value>Exposure Time</value>
+    <value>露出時間</value>
   </data>
   <data name="LblExposureTimeDescription" xml:space="preserve">
-    <value>Exposure Time in seconds</value>
+    <value>露出時間秒数</value>
   </data>
   <data name="LblFieldOfView" xml:space="preserve">
-    <value>Field Of View</value>
+    <value>写野</value>
   </data>
   <data name="LblFile" xml:space="preserve">
-    <value>File</value>
+    <value>ファイル</value>
   </data>
   <data name="LblFileCameraDescription" xml:space="preserve">
-    <value>This simulated camera will enable the use of cameras which lack an SDK, while still using the whole N.I.N.A. workflow.
-This simulated camera will watch the specified folder for newly created files. These files will be stored inside an internal queue.
-Each time the application wants to download an exposure from the camera, the first item of this file queue is resolved and loaded into N.I.N.A.
-Additionally a manual Bulb Mode trigger can be activated, so it will use the selected Bulb Mode in Settings-&gt;Equipment-&gt;Camera on Exposure Start.
-When this trigger is deactivated the application will just skip the Start Exposure and just wait for another file to roll into the specified folder</value>
+    <value>シミュレートカメラは、N.I.N.A全体のワークフローを使いながらでも、SDKのないカメラの使用を可能にします。
+シミュレートカメラは指定されたフォルダーを監視し、新たに作られたファイルは内部キューに格納されます。
+アプリがカメラから露出画像をダウンロードする際には必ずこのファイルキュー内の最初のアイテムが解像されてN.I.N.Aにロードされます。
+更に、手動Bulbモードトリガーがオンになり、露出開始時にSettings-&gt;Equipment-&gt;Cameraで選択されたBulbモードを使用します。
+このトリガーがオフの場合はアプリが露出開始をスキップし、指定したフォルダに次のファイルが格納されるのを待ちます。</value>
   </data>
   <data name="LblFileExample" xml:space="preserve">
-    <value>Example File Name</value>
+    <value>ファイル名の例</value>
   </data>
   <data name="LblFileExtension" xml:space="preserve">
-    <value>File Extension</value>
+    <value>ファイル拡張子</value>
   </data>
   <data name="LblFileSettings" xml:space="preserve">
-    <value>File Settings</value>
+    <value>ファイル設定</value>
   </data>
   <data name="LblFilter" xml:space="preserve">
-    <value>Filter</value>
+    <value>フィルター</value>
   </data>
   <data name="LblFilterChangeRequired" xml:space="preserve">
-    <value>Filter Change Required</value>
+    <value>フィルター交換が必要です。</value>
   </data>
   <data name="LblFilterName" xml:space="preserve">
-    <value>Filter Name</value>
+    <value>フィルター名</value>
   </data>
   <data name="LblFilternameDescription" xml:space="preserve">
-    <value>Filter Name</value>
+    <value>フィルター名</value>
   </data>
   <data name="LblFilterNotFoundForPosition" xml:space="preserve">
-    <value>No filter found at position {0}. Please re-evaluate the filters inside the setting, that they correspond your filter wheel!</value>
+    <value>位置{0} でフィルターが検出されませんでした。設定内でフィルターを再度確認して、フィルターホイールに対応していることを確認して下さい。</value>
   </data>
   <data name="LblFilterSetButFilterWheelNotConnected" xml:space="preserve">
-    <value>One or more sequence items have a filter set, but filter wheel is not connected</value>
+    <value>シーケンスアイテムの一つか複数がフィルター設定を含んでいますが、フィルターホイールが接続されていません。</value>
   </data>
   <data name="LblFilterWheel" xml:space="preserve">
-    <value>Filterwheel</value>
+    <value>フィルターホイール</value>
   </data>
   <data name="LblFilterwheelConnected" xml:space="preserve">
-    <value>Filterwheel connected</value>
+    <value>フィルターホイール接続済</value>
   </data>
   <data name="LblFilterwheelConnectionLost" xml:space="preserve">
-    <value>Filterwheel connection lost! Please reconnect filterwheel!</value>
+    <value>フィルターホイールの接続が途絶えました！ フィルターホイールを再度接続して下さい。</value>
   </data>
   <data name="LblFits" xml:space="preserve">
     <value>FITS</value>
   </data>
   <data name="LblFlatCalculatedExposureTime" xml:space="preserve">
-    <value>Calculated Target Exposure Time</value>
+    <value>演算されたターゲット露出時間</value>
   </data>
   <data name="LblFlatCalculatedHistogramMean" xml:space="preserve">
-    <value>Calculated Target Histogram Mean</value>
+    <value>演算されたターゲットヒストグラム算術平均</value>
   </data>
   <data name="LblFlatCount" xml:space="preserve">
-    <value>Flats to take</value>
+    <value>フラット画像取得</value>
   </data>
   <data name="LblFlatDevice" xml:space="preserve">
-    <value>Flat Panel</value>
+    <value>フラットパネル</value>
   </data>
   <data name="LblFlatDeviceBrightness" xml:space="preserve">
-    <value>Brightness</value>
+    <value>輝度</value>
   </data>
   <data name="LblFlatDeviceChooseSerialPort" xml:space="preserve">
-    <value>Choose serial port</value>
+    <value>シリアルポートを選択して下さい。</value>
   </data>
   <data name="LblFlatDeviceClearValues" xml:space="preserve">
-    <value>Clear Values</value>
+    <value>数値のクリア</value>
   </data>
   <data name="LblFlatDeviceClose" xml:space="preserve">
-    <value>Close</value>
+    <value>クローズ</value>
   </data>
   <data name="LblFlatDeviceCloseAtSequenceEnd" xml:space="preserve">
-    <value>Close cover when sequence ends</value>
+    <value>シーケンス終了時にカバーを閉じる</value>
   </data>
   <data name="LblFlatDeviceClosed" xml:space="preserve">
-    <value>Closed</value>
+    <value>クローズ済み</value>
   </data>
   <data name="LblFlatDeviceConnected" xml:space="preserve">
-    <value>Flat panel connected.</value>
+    <value>フラットパネルが接続されました。</value>
   </data>
   <data name="LblFlatDeviceConnectedButCoverNotOpen" xml:space="preserve">
-    <value>A flat panel is connected but the cover is not open.</value>
+    <value>フラットパネルが接続されていますが、カバーが閉じられています。</value>
   </data>
   <data name="LblFlatDeviceCover" xml:space="preserve">
-    <value>Cover</value>
+    <value>カバー</value>
   </data>
   <data name="LblFlatDeviceCoverCurrently" xml:space="preserve">
-    <value>Currently</value>
+    <value>現在</value>
   </data>
   <data name="LblFlatDeviceDisconnectQuestion" xml:space="preserve">
-    <value>Do you want to disconnect the flat panel?</value>
+    <value>フラットパネルの接続を解除しますか？</value>
   </data>
   <data name="LblFlatDeviceFlatPanelSettings" xml:space="preserve">
-    <value>Flat Panel Settings</value>
+    <value>フラットパネル設定</value>
   </data>
   <data name="LblFlatDeviceInvalidResponse" xml:space="preserve">
-    <value>Invalid response from flat panel.</value>
+    <value>フラットパネルより無効な応答を得ました。</value>
   </data>
   <data name="LblFlatDeviceLight" xml:space="preserve">
-    <value>Flat panel light</value>
+    <value>フラットパネル光</value>
   </data>
   <data name="LblFlatDeviceNeitherOpenNorClosed" xml:space="preserve">
-    <value>Neither open nor closed</value>
+    <value>開でも閉でもない</value>
   </data>
   <data name="LblFlatDeviceNoDevice" xml:space="preserve">
-    <value>No Flat Panel</value>
+    <value>フラットパネルなし</value>
   </data>
   <data name="LblFlatDeviceOpen" xml:space="preserve">
-    <value>Open</value>
+    <value>開</value>
   </data>
   <data name="LblFlatDeviceOpenButton" xml:space="preserve">
-    <value>Open</value>
+    <value>開</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for dark flats</value>
+    <value>ダーク及びフラットダーク撮影のためカバーを開けて下さい。</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
-    <value>Set</value>
+    <value>設定</value>
   </data>
   <data name="LblFlatDeviceTrainedFilterTimes" xml:space="preserve">
-    <value>Flat Wizard Trained Exposure Times</value>
+    <value>フラットウィザード実績露出時間</value>
   </data>
   <data name="LblFlatDeviceUnknown" xml:space="preserve">
-    <value>Unknown</value>
+    <value>不明</value>
   </data>
   <data name="LblFlatDeviceUseWizardTrainedValues" xml:space="preserve">
-    <value>Use exposure times trained with flat wizard</value>
+    <value>フラットウィザードで登録された露出時間を使用</value>
   </data>
   <data name="LblFlatExposureCalcContinue" xml:space="preserve">
-    <value>Mean ADU was {0}, starting Exposure Time calculation at {1}</value>
+    <value>算術平均ADUは{0}でした。露出時間演算を{1}でスタートしています。</value>
   </data>
   <data name="LblFlatExposureCalcFinished" xml:space="preserve">
-    <value>Mean ADU is {0} target Exposure Time is {1}</value>
+    <value>算術平均ADUは{0}　ターゲット露出時間は{1}です。</value>
   </data>
   <data name="LblFlatExposureCalcStart" xml:space="preserve">
-    <value>Starting Exposure Time calculation at {0}</value>
+    <value>{0}にて露出時間演算を開始しています。</value>
   </data>
   <data name="LblFlatHistogramMeanTarget" xml:space="preserve">
-    <value>Histogram Mean Target</value>
+    <value>ヒストグラム平均ターゲット</value>
   </data>
   <data name="LblFlatHistogramTolerance" xml:space="preserve">
-    <value>Mean Tolerance</value>
+    <value>平均公差</value>
   </data>
   <data name="LblFlatMaxExposureTime" xml:space="preserve">
-    <value>Flat Max Exposure</value>
+    <value>フラット最大露出時間</value>
   </data>
   <data name="LblFlatMinExposureTime" xml:space="preserve">
-    <value>Flat Min Exposure</value>
+    <value>フラット最小露出時間</value>
   </data>
   <data name="LblFlatSequenceCancelled" xml:space="preserve">
-    <value>Flat Sequence Cancelled, could not determine a flat exposure time</value>
+    <value>フラットシーケンスがキャンセルされました。フラット露出時間を決定できませんでした。</value>
   </data>
   <data name="LblFlatStepSize" xml:space="preserve">
-    <value>Flat Step Size</value>
+    <value>フラット ステップサイズ</value>
   </data>
   <data name="LblFlatUserCurrentExposureCalculation" xml:space="preserve">
-    <value>Current Exposure Calculations</value>
+    <value>現在の露出時間演算</value>
   </data>
   <data name="LblFlatUserFlatSettings" xml:space="preserve">
-    <value>Flat Wizard Settings</value>
+    <value>フラットウィザード設定</value>
   </data>
   <data name="LblFlatUserPromptCancel" xml:space="preserve">
-    <value>Cancel Flat Wizard</value>
+    <value>フラットウィザードのキャンセル</value>
   </data>
   <data name="LblFlatUserPromptFailure" xml:space="preserve">
-    <value>Failed to get proper Flat Exposure</value>
+    <value>適切なフラット露出ができませんでした。</value>
   </data>
   <data name="LblFlatUserPromptFlatTooBright" xml:space="preserve">
-    <value>Your flats are too bright, dim the light, adjust the tolerance, target mean or the minimum exposure time</value>
+    <value>取得したフラット画像は明るすぎます。光量を減らすか、公差、ターゲット平均　又は最小露出時間を調整して下さい。</value>
   </data>
   <data name="LblFlatUserPromptFlatTooDim" xml:space="preserve">
-    <value>Your flats are too dim, brighten the light, adjust the tolerance, target mean or the maximum exposure time</value>
+    <value>取得したフラット画像は暗すぎます。光量を増すか、公差、ターゲット平均　又は最大露出時間を調整して下さい。</value>
   </data>
   <data name="LblFlatWizard" xml:space="preserve">
-    <value>Flat Wizard</value>
+    <value>フラットウィザード</value>
   </data>
   <data name="LblFlatWizardCapture" xml:space="preserve">
-    <value>Flat Wizard Capture</value>
+    <value>フラットウィザード画像</value>
   </data>
   <data name="LblFLICameraSetup" xml:space="preserve">
-    <value>FLI Camera Setup</value>
+    <value>FLIカメラ設定</value>
   </data>
   <data name="LblFLIFloodBin" xml:space="preserve">
     <value>Flood Binning</value>
@@ -1394,280 +1383,279 @@ When this trigger is deactivated the application will just skip the Start Exposu
     <value>Pre-exposure Flush Count</value>
   </data>
   <data name="LblFlip" xml:space="preserve">
-    <value>Do the flip</value>
+    <value>フリップを実行して下さい。</value>
   </data>
   <data name="LblFlippingScope" xml:space="preserve">
-    <value>Flipping Scope</value>
+    <value>望遠鏡の旋回中</value>
   </data>
   <data name="LblFLIPreRBIMitigation" xml:space="preserve">
-    <value>RBI Mitigation</value>
+    <value>RBI 移行</value>
   </data>
   <data name="LblFLISnapshotFlood" xml:space="preserve">
     <value>Flood for snapshots</value>
   </data>
   <data name="LblFocalLength" xml:space="preserve">
-    <value>Focal Length</value>
+    <value>焦点距離</value>
   </data>
   <data name="LblFocalRatio" xml:space="preserve">
-    <value>Focal Ratio</value>
+    <value>焦点比</value>
   </data>
   <data name="LblFocuser" xml:space="preserve">
-    <value>Focuser</value>
+    <value>フォーカサー</value>
   </data>
   <data name="LblFocuserAutoFocusInitialOffsetSteps" xml:space="preserve">
-    <value>Auto Focus Initial Offset Steps</value>
+    <value>オートフォーカス初期オフセットステップ</value>
   </data>
   <data name="LblFocuserAutoFocusInitialOffsetStepsTooltip" xml:space="preserve">
-    <value>Initial amount of steps the focuser will move out to begin auto focus procedure.</value>
+    <value>オートフォーカス工程開始前にフォーカサーが外側に移動する初期ステップ数</value>
   </data>
   <data name="LblFocuserAutoFocusStepSize" xml:space="preserve">
-    <value>Auto Focus Step Size</value>
+    <value>オートフォーカス ステップサイズ</value>
   </data>
   <data name="LblFocuserAutoFocusStepSizeTooltip" xml:space="preserve">
-    <value>The size of one focus step used for auto focusing. One step should be less than the critical focus point tolerance</value>
+    <value>フォーカスのワンステップサイズ。ワンステップは焦点公差限界点よりも小さいほうが望ましい。</value>
   </data>
   <data name="LblFocuserBacklash" xml:space="preserve">
-    <value>Backlash IN/OUT</value>
+    <value>バックラッシュ　IN側/OUT側</value>
   </data>
   <data name="LblFocuserBacklashTooltip" xml:space="preserve">
-    <value>Inwards and outwards focuser backlash, in focuser steps</value>
+    <value>フォーカサーステップに於ける、内側及び外側フォーカサーバックラッシュ</value>
   </data>
   <data name="LblFocuserConnected" xml:space="preserve">
-    <value>Focuser connected</value>
+    <value>フォーカサー接続済</value>
   </data>
   <data name="LblFocuserConnectionLost" xml:space="preserve">
-    <value>Focuser connection lost! Please reconnect focuser!</value>
+    <value>フォーカサーの接続が途絶えました。フォーカサーを再度接続して下さい。</value>
   </data>
   <data name="LblFocuserPositionDescription" xml:space="preserve">
-    <value>Current focuser position</value>
+    <value>現在のフォーカサー位置</value>
   </data>
   <data name="LblFocuserSettleTime" xml:space="preserve">
-    <value>Focuser Settle Time</value>
+    <value>フォーカス安定化時間</value>
   </data>
   <data name="LblFocuserSettleTimeTooltip" xml:space="preserve">
-    <value>If the focuser introduces image shift when moving, set a settle time in seconds here.</value>
+    <value>フォーカサーが画像シフトをもたらした場合は、ここで安定化時間を秒数で設定して下さい。</value>
   </data>
   <data name="LblFocuserTempDescription" xml:space="preserve">
-    <value>Focuser Temperature</value>
+    <value>フォーカサー温度</value>
   </data>
   <data name="LblFocuserUseFilterWheelOffsets" xml:space="preserve">
-    <value>Use filterwheel offsets</value>
+    <value>フィルターホイールのオフセット値を使用する。</value>
   </data>
   <data name="LblFocuserUseFilterWheelOffsetsTooltip" xml:space="preserve">
-    <value>When switching from one filter to another the focuser will change it's position relative to the given offset specified for that filter</value>
+    <value>一つのフィルターからもう一つのフィルターに変更する時、そのフィルターに指定されたオフセット値に相対して位置を変更します。</value>
   </data>
   <data name="LblFocusOffset" xml:space="preserve">
-    <value>Focus Offset</value>
+    <value>フォーカス オフセット</value>
   </data>
   <data name="LblFocusPointValidationFailed" xml:space="preserve">
-    <value>Calculated HFR for focus at position {0} differs more than 25% from actual HFR
-Actual HFR : {1}
-Calculated HFR: {2}
-    </value>
+    <value>{0}の位置で演算されたHFR値が、現在のHFR値の25%以上異なります。
+現在のHFR : {1}
+演算されたHFR : {2}    </value>
   </data>
   <data name="LblFolderToWatch" xml:space="preserve">
-    <value>Folder to watch</value>
+    <value>監視フォルダー</value>
   </data>
   <data name="LblFrameNFocus" xml:space="preserve">
-    <value>Frame &amp; Focus</value>
+    <value>フレーム＆フォーカス</value>
   </data>
   <data name="LblFrameNrDescription" xml:space="preserve">
-    <value># of the Frame with format ####</value>
+    <value>フォーマット ####のフレーム#</value>
   </data>
   <data name="LblFraming" xml:space="preserve">
-    <value>Framing</value>
+    <value>フレーミング</value>
   </data>
   <data name="LblFramingAssistant" xml:space="preserve">
-    <value>Framing Assistant</value>
+    <value>フレーミング支援</value>
   </data>
   <data name="LblFreeImage" xml:space="preserve">
     <value>FreeImage</value>
   </data>
   <data name="LblFrom" xml:space="preserve">
-    <value>From</value>
+    <value>から</value>
   </data>
   <data name="LblFullWellCapacity" xml:space="preserve">
-    <value>Full Well Capacity in e</value>
+    <value>飽和容量 e値</value>
   </data>
   <data name="LblGain" xml:space="preserve">
-    <value>Gain</value>
+    <value>ゲイン</value>
   </data>
   <data name="LblGainDescription" xml:space="preserve">
-    <value>Camera Gain</value>
+    <value>カメラゲイン</value>
   </data>
   <data name="LblGeneral" xml:space="preserve">
-    <value>General</value>
+    <value>一般</value>
   </data>
   <data name="LblGPSConnected" xml:space="preserve">
-    <value>GPS connected on port</value>
+    <value>ポートにGPS接続済</value>
   </data>
   <data name="LblGPSConnectFail" xml:space="preserve">
-    <value>Cannot Connect to GPS on port</value>
+    <value>ポートにGPS接続できません。</value>
   </data>
   <data name="LblGPSLocationSet" xml:space="preserve">
-    <value>Location set from GPS</value>
+    <value>GPSより位置情報取得</value>
   </data>
   <data name="LblGPSNoFix" xml:space="preserve">
-    <value>GPS has No Fix</value>
+    <value>GPS測位不能</value>
   </data>
   <data name="LblGPSNotFound" xml:space="preserve">
-    <value>No GPS module detected</value>
+    <value>GPSモジュールが検出されませんでした。</value>
   </data>
   <data name="LblGPSTooltip" xml:space="preserve">
-    <value>Import location using an NMEA GPS device</value>
+    <value>NMEA GPSデバイスから位置情報をインポート</value>
   </data>
   <data name="LblGuider" xml:space="preserve">
-    <value>Guider</value>
+    <value>ガイダー</value>
   </data>
   <data name="LblGuiderConnected" xml:space="preserve">
-    <value>Guider Connected</value>
+    <value>ガイドカメラ接続済</value>
   </data>
   <data name="LblGuiderDitherButNotConnected" xml:space="preserve">
-    <value>Guider Dither is enabled, but application is not connected to Guider</value>
+    <value>ガイドデザリングがオンになっていますが、アプリがガイドカメラと接続されていません。</value>
   </data>
   <data name="LblGuiderNoResume" xml:space="preserve">
-    <value>Guider did not send resume message in time. Sequence will resume, but make sure Guider is guiding again!</value>
+    <value>ガイドカメラが再開メッセージを時間内に送りませんでした。シーケンスは再開しますが、ガイドカメラがガイドを再開しているか確認して下さい。</value>
   </data>
   <data name="LblGuiderNoSettleDone" xml:space="preserve">
-    <value>Guider did not send SettleDone message in time. Skipping.</value>
+    <value>ガイダーが時間内に安定化済みのメッセージを送りませんでした。スキップします。</value>
   </data>
   <data name="LblGuiderResumeFailed" xml:space="preserve">
-    <value>Guider resume failed</value>
+    <value>ガイダー再開失敗</value>
   </data>
   <data name="LblGuiderSettings" xml:space="preserve">
-    <value>Guider Settings</value>
+    <value>ガイダー設定</value>
   </data>
   <data name="LblGuiderStatus" xml:space="preserve">
-    <value>Guider Status</value>
+    <value>ガイダー ステータス</value>
   </data>
   <data name="LblGuidingRMSArcSecDescription" xml:space="preserve">
-    <value>Root mean square error of guiding during exposure in arc seconds</value>
+    <value>露出中ガイドの秒角に於ける平均平方二乗エラー</value>
   </data>
   <data name="LblGuidingRMSDescription" xml:space="preserve">
-    <value>Root mean square error of guiding during exposure in pixels</value>
+    <value>露出中ガイドのピックセルに於ける平均平方二乗エラー</value>
   </data>
   <data name="LblHalt" xml:space="preserve">
-    <value>Halt</value>
+    <value>中断</value>
   </data>
   <data name="LblHeight" xml:space="preserve">
-    <value>Height</value>
+    <value>高度</value>
   </data>
   <data name="LblHemisphere" xml:space="preserve">
-    <value>Hemisphere</value>
+    <value>半球</value>
   </data>
   <data name="LblHFR" xml:space="preserve">
     <value>HFR</value>
   </data>
   <data name="LblHFRHistory" xml:space="preserve">
-    <value>HFR History</value>
+    <value>HFR履歴</value>
   </data>
   <data name="LblHFRPatternDescription" xml:space="preserve">
-    <value>Calculated HFR of image (HFR detection has to be enabled)</value>
+    <value>演算された画像のHFR(HFR検出がオンになっている必要があります）</value>
   </data>
   <data name="LblHigh" xml:space="preserve">
-    <value>High</value>
+    <value>高</value>
   </data>
   <data name="LblHighest" xml:space="preserve">
-    <value>Highest</value>
+    <value>最も高い</value>
   </data>
   <data name="LblHistogram" xml:space="preserve">
-    <value>Histogram</value>
+    <value>ヒストグラム</value>
   </data>
   <data name="LblHistogramResolution" xml:space="preserve">
-    <value>Histogram Resolution</value>
+    <value>ヒストグラム解像度</value>
   </data>
   <data name="LblHistogramResolutionTooltip" xml:space="preserve">
-    <value>Specifies the number of data points that should be used for the histogram</value>
+    <value>ヒストグラム用に使用するデータポイント数を指定する。</value>
   </data>
   <data name="LblHistory" xml:space="preserve">
-    <value>History</value>
+    <value>履歴</value>
   </data>
   <data name="LblHNSKY" xml:space="preserve">
     <value>HNSKY</value>
   </data>
   <data name="LblHorizontalPanels" xml:space="preserve">
-    <value>Horizontal Panels</value>
+    <value>水平パネル</value>
   </data>
   <data name="LblHost" xml:space="preserve">
-    <value>Host</value>
+    <value>ホスト</value>
   </data>
   <data name="LblHour" xml:space="preserve">
-    <value>Hour</value>
+    <value>時</value>
   </data>
   <data name="LblHumidity" xml:space="preserve">
-    <value>Humidity</value>
+    <value>湿度</value>
   </data>
   <data name="LblHyperbolic" xml:space="preserve">
-    <value>Hyperbolic</value>
+    <value>双曲線の</value>
   </data>
   <data name="LblId" xml:space="preserve">
-    <value>Id</value>
+    <value>アイディー</value>
   </data>
   <data name="LblIllumination" xml:space="preserve">
-    <value>Illumination</value>
+    <value>照度</value>
   </data>
   <data name="LblImage" xml:space="preserve">
-    <value>Image</value>
+    <value>画像</value>
   </data>
   <data name="LblImageArea" xml:space="preserve">
-    <value>Image Area</value>
+    <value>画像エリア</value>
   </data>
   <data name="LblImageFileError" xml:space="preserve">
-    <value>Image file error</value>
+    <value>画像ファイルエラー</value>
   </data>
   <data name="LblImageFilePath" xml:space="preserve">
-    <value>Image File Path</value>
+    <value>画像ファイルパス</value>
   </data>
   <data name="LblImageFilePattern" xml:space="preserve">
-    <value>Image File Pattern</value>
+    <value>画像ファイルパターン</value>
   </data>
   <data name="LblImageHistory" xml:space="preserve">
-    <value>Image History</value>
+    <value>画像履歴</value>
   </data>
   <data name="LblImageOptions" xml:space="preserve">
-    <value>Image Options</value>
+    <value>画像オプション</value>
   </data>
   <data name="LblImageSource" xml:space="preserve">
-    <value>Image source</value>
+    <value>画像ソース</value>
   </data>
   <data name="LblImageTypeDescription" xml:space="preserve">
-    <value>Light, Flat, Dark, Bias, Snapshot</value>
+    <value>ライト、フラット、ダーク、バイアス、スナップショット</value>
   </data>
   <data name="LblImaging" xml:space="preserve">
-    <value>Imaging</value>
+    <value>撮像中</value>
   </data>
   <data name="LblImportFromFilterWheel" xml:space="preserve">
-    <value>Import Filters from Filterwheel</value>
+    <value>フィルターホイールからフィルターをインポート</value>
   </data>
   <data name="LblIndexFile" xml:space="preserve">
-    <value>Index File</value>
+    <value>インデックス ファイル</value>
   </data>
   <data name="LblInfo" xml:space="preserve">
-    <value>Info</value>
+    <value>情報</value>
   </data>
   <data name="LblInitiatePlatesolve" xml:space="preserve">
-    <value>Initiate Platesolve</value>
+    <value>プレートソルブを実行</value>
   </data>
   <data name="LblInvalidMode" xml:space="preserve">
-    <value>Invalid mode</value>
+    <value>無効なモード</value>
   </data>
   <data name="LblInvalidModeBulb" xml:space="preserve">
-    <value>Invalid mode (bulb) for Exposure Time &lt;1s</value>
+    <value>露出時間&lt;1sに対して無効なモード(Bulb)</value>
   </data>
   <data name="LblInvalidModeManual" xml:space="preserve">
-    <value>Invalid mode (manual) for Exposure Time &gt;30s</value>
+    <value>露出時間&gt;30sに対して無効なモード(Bulb)</value>
   </data>
   <data name="LblIsBayered" xml:space="preserve">
-    <value>Is Bayered</value>
+    <value>ベイヤー化された</value>
   </data>
   <data name="LblIsMoving" xml:space="preserve">
-    <value>Is Moving</value>
+    <value>移動中</value>
   </data>
   <data name="LblIsSettling" xml:space="preserve">
-    <value>Is Settling</value>
+    <value>安定化中</value>
   </data>
   <data name="LblItemsPerPage" xml:space="preserve">
-    <value>Items per page</value>
+    <value>ページ毎のアイテム</value>
   </data>
   <data name="LblJ2000" xml:space="preserve">
     <value>J2000</value>
@@ -1676,1228 +1664,1226 @@ Calculated HFR: {2}
     <value>JNOW</value>
   </data>
   <data name="LblLanguage" xml:space="preserve">
-    <value>Language</value>
+    <value>言語</value>
   </data>
   <data name="LblLaplace" xml:space="preserve">
-    <value>Laplace</value>
+    <value>ラプラス</value>
   </data>
   <data name="LblLatitude" xml:space="preserve">
-    <value>Latitude</value>
+    <value>緯度</value>
   </data>
   <data name="LblLayout" xml:space="preserve">
-    <value>Layout</value>
+    <value>配置</value>
   </data>
   <data name="LblLblBlackClippingTooltip" xml:space="preserve">
     <value>Black clipping factor in sigma units from the median</value>
   </data>
   <data name="LblLoadImage" xml:space="preserve">
-    <value>Load Image</value>
+    <value>画像の読み込み</value>
   </data>
   <data name="LblLoadImageFromFile" xml:space="preserve">
-    <value>Load Image from File</value>
+    <value>ファイルから画像を読み込み</value>
   </data>
   <data name="LblLoadImageFromFileTooltip" xml:space="preserve">
-    <value>Download Image from file and use the blindsolver to determine coordinates</value>
+    <value>ファイルから画像を読み込んで、ブラインドソルバーを使用して座標を特定する。</value>
   </data>
   <data name="LblLoadProfile" xml:space="preserve">
-    <value>Load Profile</value>
+    <value>プロファイルの読み込み</value>
   </data>
   <data name="LblLoadProfileInUseWarning" xml:space="preserve">
-    <value>Cannot load profile. It is already in use by another N.I.N.A. instance!</value>
+    <value>プロファイルを読み込みできませんでした。他のN.I.N.A.セッションで使用中です。</value>
   </data>
   <data name="LblLoadSequence" xml:space="preserve">
-    <value>Load Sequence</value>
+    <value>シーケンスの読み込み</value>
   </data>
   <data name="LblLoadSequenceFailed" xml:space="preserve">
-    <value>Load sequence failed</value>
+    <value>シーケンス読み込みに失敗しました。</value>
   </data>
   <data name="LblLoadSequenceSetFailed" xml:space="preserve">
-    <value>Failed to load target set</value>
+    <value>ターゲット設定の読み込みに失敗しました。</value>
   </data>
   <data name="LblLoadSequenceToolTip" xml:space="preserve">
-    <value>Load Sequence from xml file</value>
+    <value>xmlファイルからシーケンスを読み込み</value>
   </data>
   <data name="LblLoadTargetSet" xml:space="preserve">
-    <value>Load target set</value>
+    <value>ターゲット設定の飲み込み</value>
   </data>
   <data name="LblLocalPlatesolver" xml:space="preserve">
-    <value>Local Platesolver</value>
+    <value>ローカル　プレートソルバー</value>
   </data>
   <data name="LblLocation" xml:space="preserve">
-    <value>Location</value>
+    <value>位置情報</value>
   </data>
   <data name="LblLogLevel" xml:space="preserve">
-    <value>Log Level</value>
+    <value>ログ レベル</value>
   </data>
   <data name="LblLongitude" xml:space="preserve">
-    <value>Longitude</value>
+    <value>経度</value>
   </data>
   <data name="LblLoop" xml:space="preserve">
-    <value>Loop</value>
+    <value>ループ</value>
   </data>
   <data name="LblMAD" xml:space="preserve">
     <value>MAD</value>
   </data>
   <data name="LblMagnitude" xml:space="preserve">
-    <value>Magnitude</value>
+    <value>等級</value>
   </data>
   <data name="LblManualControl" xml:space="preserve">
-    <value>Manual Control</value>
+    <value>手動制御</value>
   </data>
   <data name="LblManualCoordinates" xml:space="preserve">
-    <value>Manual Coordinates (J2000)</value>
+    <value>手入力座標(J2000)</value>
   </data>
   <data name="LblManualFilterWheel" xml:space="preserve">
-    <value>Manual Filterwheel</value>
+    <value>手動フィルターホイール</value>
   </data>
   <data name="LblManualFilterWheelDescription" xml:space="preserve">
-    <value>Mirrors the filters that are set up inside the options. When a filter change is requested a notification will pop up to manually change the filter.</value>
+    <value>オプションで設定されたフィルターをミラーします。フィルター変更がリクエストされた場合は、ポップアップメッセージが表示されて手動でフィルター交換を促します。</value>
   </data>
   <data name="LblManualFocusTargets" xml:space="preserve">
-    <value>Manual Focus Targets</value>
+    <value>手動フォーカスターゲット</value>
   </data>
   <data name="LblManualNotFound" xml:space="preserve">
-    <value>Manual not found</value>
+    <value>マニュアルが見つかりません。</value>
   </data>
   <data name="LblManualRotator" xml:space="preserve">
-    <value>Manual Rotator</value>
+    <value>手動回転装置</value>
   </data>
   <data name="LblManualRotatorDescription" xml:space="preserve">
-    <value>When rotation is requested a notification will pop up to rotate manually</value>
+    <value>回転がリクエストされると、ポップアップメッセージが表示されて、手動での回転を促します。</value>
   </data>
   <data name="LblMax" xml:space="preserve">
-    <value>Max</value>
+    <value>最大</value>
   </data>
   <data name="LblMaxBinX" xml:space="preserve">
-    <value>Max Binning X</value>
+    <value>最大ビニング X</value>
   </data>
   <data name="LblMaxBinY" xml:space="preserve">
-    <value>Max Binning Y</value>
+    <value>最大ビニング Y</value>
   </data>
   <data name="LblMaxExpTime" xml:space="preserve">
-    <value>Maximum Exposure Time</value>
+    <value>最大露出時間</value>
   </data>
   <data name="LblMaximumExposureTime" xml:space="preserve">
-    <value>Max recommended time</value>
+    <value>最大推奨時間</value>
   </data>
   <data name="LblMaxIncrement" xml:space="preserve">
-    <value>Max Increment</value>
+    <value>最大インクリメント</value>
   </data>
   <data name="LblMaxObjects" xml:space="preserve">
     <value>Maximum objects</value>
   </data>
   <data name="LblMaxOptimalADU" xml:space="preserve">
-    <value>Maximum ADU</value>
+    <value>最大ADU</value>
   </data>
   <data name="LblMaxStep" xml:space="preserve">
-    <value>Max Step</value>
+    <value>最大ステップ</value>
   </data>
   <data name="LblMean" xml:space="preserve">
-    <value>Mean</value>
+    <value>算術平均</value>
   </data>
   <data name="LblMeasureFocuserBacklash" xml:space="preserve">
-    <value>Measure Focuser Backlash</value>
+    <value>フォーカサーバックラッシュの測定</value>
   </data>
   <data name="LblMedian" xml:space="preserve">
-    <value>Median</value>
+    <value>中央値</value>
   </data>
   <data name="LblMeridianFlipFailed" xml:space="preserve">
-    <value>Meridian Flip failed</value>
+    <value>子午線フリップに失敗しました。</value>
   </data>
   <data name="LblMeridianFlipInit" xml:space="preserve">
-    <value>Meridian flip procedure initiated</value>
+    <value>子午線フリップ工程を開始しました。</value>
   </data>
   <data name="LblMeridianIn" xml:space="preserve">
     <value>Meridian in</value>
   </data>
   <data name="LblMeridianOffset" xml:space="preserve">
-    <value>Meridian Offset</value>
+    <value>子午線オフセット</value>
   </data>
   <data name="LblMin" xml:space="preserve">
-    <value>Min</value>
+    <value>最小</value>
   </data>
   <data name="LblMinDuration" xml:space="preserve">
-    <value>Min. Duration</value>
+    <value>最小時間</value>
   </data>
   <data name="LblMinExpTime" xml:space="preserve">
-    <value>Minimum Exposure Time</value>
+    <value>最小露出時間</value>
   </data>
   <data name="LblMinimumAltitude" xml:space="preserve">
-    <value>Minimum Altitude</value>
+    <value>最小高度</value>
   </data>
   <data name="LblMinimumExposureTime" xml:space="preserve">
-    <value>Min recommended time</value>
+    <value>最小推奨時間</value>
   </data>
   <data name="LblMinimumSettleTime" xml:space="preserve">
-    <value>Minimum Settle Time</value>
+    <value>最小安定化時間</value>
   </data>
   <data name="LblMinOptimalADU" xml:space="preserve">
-    <value>Minimal ADU</value>
+    <value>最小ADU</value>
   </data>
   <data name="LblMinutesAfterMeridian" xml:space="preserve">
-    <value>Minutes after Meridian</value>
+    <value>子午線通過後の分数</value>
   </data>
   <data name="LblMinutesShort" xml:space="preserve">
-    <value>min</value>
+    <value>分</value>
   </data>
   <data name="LblMode" xml:space="preserve">
-    <value>Mode</value>
+    <value>モード</value>
   </data>
   <data name="LblMoonRise" xml:space="preserve">
-    <value>Moonrise</value>
+    <value>月出</value>
   </data>
   <data name="LblMoonSet" xml:space="preserve">
-    <value>Moonset</value>
+    <value>月没</value>
   </data>
   <data name="LblMove" xml:space="preserve">
-    <value>Move</value>
+    <value>動き</value>
   </data>
   <data name="LblName" xml:space="preserve">
-    <value>Name</value>
+    <value>名前</value>
   </data>
   <data name="LblNASASkySurvey" xml:space="preserve">
-    <value>NASA Sky Survey</value>
+    <value>NASAスカイサーベイ</value>
   </data>
   <data name="LblNative" xml:space="preserve">
-    <value>Native</value>
+    <value>ネイティブの</value>
   </data>
   <data name="LblNewUpdateAvailable" xml:space="preserve">
-    <value>New update is available ({0})! Do you want to update now?</value>
+    <value>新しいアップデート({0}) があります。今、アップデートしますか？</value>
   </data>
   <data name="LblNightly" xml:space="preserve">
-    <value>Nightly</value>
+    <value>ナイトリー</value>
   </data>
   <data name="LblNikonNotFound" xml:space="preserve">
-    <value>No Nikon camera could be found</value>
+    <value>Nikonのカメラが見つかりません。</value>
   </data>
   <data name="LblNINA" xml:space="preserve">
     <value>NINA</value>
   </data>
   <data name="LblNINAToTelescope" xml:space="preserve">
-    <value>NINA to Telescope</value>
+    <value>NINAから赤道儀へ</value>
   </data>
   <data name="LblNo" xml:space="preserve">
-    <value>No</value>
+    <value>いいえ</value>
   </data>
   <data name="LblNoCamera" xml:space="preserve">
-    <value>No Camera</value>
+    <value>カメラ無し</value>
   </data>
   <data name="LblNoCameraConnected" xml:space="preserve">
-    <value>No camera connected</value>
+    <value>カメラが接続されていません。</value>
   </data>
   <data name="LblNoCoordinates" xml:space="preserve">
-    <value>No coordinates available</value>
+    <value>座標がありません。</value>
   </data>
   <data name="LblNoCoordinatesForSync" xml:space="preserve">
-    <value>No coordinates available to sync telescope to</value>
+    <value>赤道儀を同期する座標がありません。</value>
   </data>
   <data name="LblNoFilterwheel" xml:space="preserve">
-    <value>No Filterwheel</value>
+    <value>フィルターホイール無し</value>
   </data>
   <data name="LblNoFocuser" xml:space="preserve">
-    <value>No Focuser</value>
+    <value>フォーカサー無し</value>
   </data>
   <data name="LblNoGuider" xml:space="preserve">
-    <value>No Guider</value>
+    <value>ガイダー無し</value>
   </data>
   <data name="LblNoImage" xml:space="preserve">
-    <value>No Image available</value>
+    <value>画像なし</value>
   </data>
   <data name="LblNoiseReduction" xml:space="preserve">
-    <value>Noise Reduction</value>
+    <value>ノイズ低減</value>
   </data>
   <data name="LblNoiseReductionTooltip" xml:space="preserve">
-    <value>Noise Reduction applied prior to star detection. This may help with noisy images and short exposures.</value>
+    <value>星検出前にノイズ低減を適用します。短時間露光でノイズの多い画像に対して役立ちます。</value>
   </data>
   <data name="LblNone" xml:space="preserve">
-    <value>None</value>
+    <value>無し</value>
   </data>
   <data name="LblNormal" xml:space="preserve">
-    <value>Normal</value>
+    <value>ノーマル</value>
   </data>
   <data name="LblNoRotator" xml:space="preserve">
-    <value>No Rotator</value>
+    <value>ロテーター無し</value>
   </data>
   <data name="LblNorthern" xml:space="preserve">
-    <value>Northern</value>
+    <value>北</value>
   </data>
   <data name="LblNoSwitch" xml:space="preserve">
-    <value>No Switch</value>
+    <value>スイッチ無し</value>
   </data>
   <data name="LblNoTelescope" xml:space="preserve">
-    <value>No Telescope</value>
+    <value>赤道儀無し</value>
   </data>
   <data name="LblNotificationError" xml:space="preserve">
-    <value>Notification Error</value>
+    <value>通知エラー</value>
   </data>
   <data name="LblNotificationErrorText" xml:space="preserve">
-    <value>Error Text</value>
+    <value>テキスト エラー</value>
   </data>
   <data name="LblNotificationWarning" xml:space="preserve">
-    <value>Notification Warning</value>
+    <value>通知警告</value>
   </data>
   <data name="LblNotificationWarningText" xml:space="preserve">
-    <value>Warning Text</value>
+    <value>警告テキスト</value>
   </data>
   <data name="LblNow" xml:space="preserve">
-    <value>Now</value>
+    <value>今</value>
   </data>
   <data name="LblNrStars" xml:space="preserve">
-    <value>#Stars</value>
+    <value>#星</value>
   </data>
   <data name="LblObjectNameHint" xml:space="preserve">
-    <value>Object name (e.g. M 31)</value>
+    <value>対象名称 (例 M31)</value>
   </data>
   <data name="LblObjectType" xml:space="preserve">
-    <value>Object Type</value>
+    <value>対象タイプ</value>
   </data>
   <data name="LblObjectType_1STAR" xml:space="preserve">
-    <value>1 Stern</value>
+    <value>１星</value>
   </data>
   <data name="LblObjectType_2STAR" xml:space="preserve">
-    <value>2 Sterne</value>
+    <value>２星</value>
   </data>
   <data name="LblObjectType_3STAR" xml:space="preserve">
-    <value>3 Sterne</value>
+    <value>３星</value>
   </data>
   <data name="LblObjectType_4STAR" xml:space="preserve">
-    <value>4 Sterne</value>
+    <value>４星</value>
   </data>
   <data name="LblObjectType_8STAR" xml:space="preserve">
-    <value>8 Sterne</value>
+    <value>8星</value>
   </data>
   <data name="LblObjectType_ASTER" xml:space="preserve">
-    <value>Asterism</value>
+    <value>星群</value>
   </data>
   <data name="LblObjectType_BRTNB" xml:space="preserve">
-    <value>Bright Nebula</value>
+    <value>明るい星雲</value>
   </data>
   <data name="LblObjectType_CL+NB" xml:space="preserve">
-    <value>Cluster with Nebulosity</value>
+    <value>星雲のある星団</value>
   </data>
   <data name="LblObjectType_DRKNB" xml:space="preserve">
-    <value>Dark Nebula</value>
+    <value>暗い星雲</value>
   </data>
   <data name="LblObjectType_G+C+N" xml:space="preserve">
-    <value>Cluster with Nebulosity in a Galaxy</value>
+    <value>銀河内に星雲のある星団</value>
   </data>
   <data name="LblObjectType_GALCL" xml:space="preserve">
-    <value>Galaxy Cluster</value>
+    <value>銀河団</value>
   </data>
   <data name="LblObjectType_GALXY" xml:space="preserve">
-    <value>Galaxy</value>
+    <value>銀河</value>
   </data>
   <data name="LblObjectType_GLOCL" xml:space="preserve">
-    <value>Globular Cluster</value>
+    <value>球状星団</value>
   </data>
   <data name="LblObjectType_GX+DN" xml:space="preserve">
-    <value>Diffuse Nebula in a Galaxy</value>
+    <value>散光星雲</value>
   </data>
   <data name="LblObjectType_GX+GC" xml:space="preserve">
-    <value>Globular Cluster in a Galaxy</value>
+    <value>銀河内球状星団</value>
   </data>
   <data name="LblObjectType_LMCCN" xml:space="preserve">
-    <value>Cluster with Nebulosity in the LMC</value>
+    <value>大マゼラン星雲内の星雲のある星団</value>
   </data>
   <data name="LblObjectType_LMCDN" xml:space="preserve">
-    <value>Diffuse Nebula in the LMC</value>
+    <value>大マゼラン星雲内の散光星雲</value>
   </data>
   <data name="LblObjectType_LMCGC" xml:space="preserve">
-    <value>Globular Cluster in the LMC</value>
+    <value>大マゼラン星雲内の球状星団</value>
   </data>
   <data name="LblObjectType_LMCOC" xml:space="preserve">
-    <value>Open cluster in the LMC</value>
+    <value>大マゼラン星雲内の散開星団</value>
   </data>
   <data name="LblObjectType_NONEX" xml:space="preserve">
-    <value>Nonexistent</value>
+    <value>存在しません</value>
   </data>
   <data name="LblObjectType_OPNCL" xml:space="preserve">
-    <value>Open Cluster</value>
+    <value>散開星団</value>
   </data>
   <data name="LblObjectType_PLNNB" xml:space="preserve">
-    <value>Planetary Nebula</value>
+    <value>惑星状星雲</value>
   </data>
   <data name="LblObjectType_QUASR" xml:space="preserve">
-    <value>Quasar</value>
+    <value>クエイザー</value>
   </data>
   <data name="LblObjectType_SMCCN" xml:space="preserve">
-    <value>Cluster with Nebulosity in the SMC</value>
+    <value>小マゼラン星雲内の星雲のある星団</value>
   </data>
   <data name="LblObjectType_SMCDN" xml:space="preserve">
-    <value>Diffuse Nebula in the SMC</value>
+    <value>小マゼラン星雲内にある散光星雲</value>
   </data>
   <data name="LblObjectType_SMCGC" xml:space="preserve">
-    <value>Globular Cluster in the SMC</value>
+    <value>小マゼラン星雲内にある球状星団</value>
   </data>
   <data name="LblObjectType_SMCOC" xml:space="preserve">
-    <value>Open cluster in the SMC</value>
+    <value>小マゼラン星雲内にある散開星団</value>
   </data>
   <data name="LblObjectType_SNREM" xml:space="preserve">
-    <value>Supernova Remnant</value>
+    <value>超新星残骸</value>
   </data>
   <data name="LblOf" xml:space="preserve">
     <value>Of</value>
   </data>
   <data name="LblOff" xml:space="preserve">
-    <value>Off</value>
+    <value>オフ</value>
   </data>
   <data name="LblOffset" xml:space="preserve">
-    <value>Offset</value>
+    <value>オフセット</value>
   </data>
   <data name="LblOffsetDescription" xml:space="preserve">
-    <value>Camera Offset</value>
+    <value>カメラ オフセット</value>
   </data>
   <data name="LblOK" xml:space="preserve">
-    <value>OK</value>
+    <value>オーケー</value>
   </data>
   <data name="LblOn" xml:space="preserve">
-    <value>On</value>
+    <value>オン</value>
   </data>
   <data name="LblOneToOne" xml:space="preserve">
-    <value>Scale Image to 1:1</value>
+    <value>1:1に画像をスケーリングします。</value>
   </data>
   <data name="LblOpacity" xml:space="preserve">
-    <value>Opacity</value>
+    <value>不透明度</value>
   </data>
   <data name="LblOpenManual" xml:space="preserve">
-    <value>Open Manual</value>
+    <value>マニュアルを開く</value>
   </data>
   <data name="LblOpenWeatherMapAPIKey" xml:space="preserve">
     <value>OpenWeatherMap API Key</value>
   </data>
   <data name="LblOpenWeatherMapClientDescription" xml:space="preserve">
-    <value>Uses OpenWeatherMap's Current Weather API. Weather data is refreshed every 10 minutes.</value>
+    <value>OpenWeatherMapのCurrent Weather APIを使用します。天気データは10分毎に更新されます。</value>
   </data>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
-    <value>NINA internal OpenWeatherMap API client</value>
+    <value>NINA内部OpenWeatherMap APIクライアント</value>
   </data>
   <data name="LblOptimalExposureTime" xml:space="preserve">
-    <value>Optimal exposure time</value>
+    <value>最適露出時間</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
-    <value>Options</value>
+    <value>オプション</value>
   </data>
   <data name="LblOrderBy" xml:space="preserve">
-    <value>Order by</value>
+    <value>並べ替え基準</value>
   </data>
   <data name="LblOrientation" xml:space="preserve">
-    <value>Orientation</value>
+    <value>回転角度</value>
   </data>
   <data name="LblOverlapPercentage" xml:space="preserve">
-    <value>Overlap percentage</value>
+    <value>オーバーラップ率</value>
   </data>
   <data name="LblPanel" xml:space="preserve">
-    <value>Panel</value>
+    <value>パネル</value>
   </data>
   <data name="LblParabolic" xml:space="preserve">
-    <value>Parabolic</value>
+    <value>パラボリック</value>
   </data>
   <data name="LblPark" xml:space="preserve">
-    <value>Park</value>
+    <value>パーク</value>
   </data>
   <data name="LblParkEnabledButTelescopeCannotPark" xml:space="preserve">
-    <value>Telescope is set to park at sequence end, yet it is unable to do so</value>
+    <value>望遠鏡はシーケンス終了時にパーク位置に行くように設定されていますが、実行することができません。</value>
   </data>
   <data name="LblParkEnabledButTelescopeNotConnected" xml:space="preserve">
-    <value>Telescope is set to park at sequence end, yet it is not connected</value>
+    <value>望遠鏡はシーケンス終了時にパーク位置に行くように設定されていますが、接続されていません。</value>
   </data>
   <data name="LblParkMountAtSequenceEnd" xml:space="preserve">
-    <value>Park mount when sequence ends</value>
+    <value>シーケンス終了時に赤道儀をパーク位置にする。</value>
   </data>
   <data name="LblPassMeridian" xml:space="preserve">
-    <value>Pass Meridian</value>
+    <value>子午線跨ぎ</value>
   </data>
   <data name="LblPatternName" xml:space="preserve">
-    <value>Pattern Name</value>
+    <value>パターン名</value>
   </data>
   <data name="LblPauseBetweenFilters" xml:space="preserve">
-    <value>Pause between filters</value>
+    <value>フィルター変更後に一時休止</value>
   </data>
   <data name="LblPaused" xml:space="preserve">
-    <value>Paused</value>
+    <value>一次停止中</value>
   </data>
   <data name="LblPauseTimeBeforeMeridian" xml:space="preserve">
-    <value>Pause before Meridian (minutes)</value>
+    <value>子午線前で一時停止(分)</value>
   </data>
   <data name="LblPercentShort" xml:space="preserve">
-    <value>%</value>
+    <value>パーセント</value>
   </data>
   <data name="LblPHD2DecRMS" xml:space="preserve">
-    <value>Dec: {0}({1}")</value>
+    <value>赤緯:{0}({1}")</value>
   </data>
   <data name="LblPhd2FailedEquipmentConnection" xml:space="preserve">
-    <value>PHD2 wasn't able to connect to the equipment</value>
+    <value>PHD2が装置と接続できませんでした。</value>
   </data>
   <data name="LblPHD2HistorySize" xml:space="preserve">
-    <value>PHD2 History Size</value>
+    <value>PHD2履歴サイズ</value>
   </data>
   <data name="LblPHD2MinimalHistorySize" xml:space="preserve">
-    <value>PHD2 History Size (Imaging)</value>
+    <value>PHD2履歴サイズ(撮像)</value>
   </data>
   <data name="LblPHD2Path" xml:space="preserve">
-    <value>PHD2 path</value>
+    <value>PHD2パス</value>
   </data>
   <data name="LblPhd2PathNotFound" xml:space="preserve">
-    <value>Could not start PHD2. Path not found</value>
+    <value>PHD2を起動できませんでした。パスが見つかりません。</value>
   </data>
   <data name="LblPHD2RARMS" xml:space="preserve">
-    <value>RA: {0} ({1}")</value>
+    <value>赤緯: {0} ({1}")</value>
   </data>
   <data name="LblPhd2ServerConnectionLost" xml:space="preserve">
-    <value>PHD2 Server Connection lost!</value>
+    <value>PHD2サーバーの接続が途絶えました。</value>
   </data>
   <data name="LblPHD2ServerPort" xml:space="preserve">
-    <value>PHD2 Server Port</value>
+    <value>PHD2サーバーポート</value>
   </data>
   <data name="LblPHD2ServerUrl" xml:space="preserve">
-    <value>PHD2 Server Url</value>
+    <value>PHD2サーバーのurl</value>
   </data>
   <data name="LblPHD2Settings" xml:space="preserve">
-    <value>PHD2 Settings</value>
+    <value>PHD2設定</value>
   </data>
   <data name="LblPhd2StartProcessError" xml:space="preserve">
-    <value>Could not start PHD2. Check logs for details.</value>
+    <value>PHD2を開始できませんでした。詳細はログを参照して下さい。</value>
   </data>
   <data name="LblPhd2SynchronizedServiceClientConnected" xml:space="preserve">
     <value>
-        Client connected to synchronized PHD2 service.
-        Connected clients: {0}
+クライアントは同期PHD2サービスに接続されています。
+接続済クライアント: {0}
     </value>
   </data>
   <data name="LblPhd2SynchronizedServiceClientDisconnected" xml:space="preserve">
     <value>
-        Client disconnected to synchronized PHD2 service.
-        Connected clients: {0}
-    </value>
+クライアントは同期PHD2サービスから接続解除されました。
+接続済クライアント: {0}    </value>
   </data>
   <data name="LblPhd2SynchronizedServiceStarted" xml:space="preserve">
-    <value>Synchronized PHD2 service started</value>
+    <value>同期PHD2サービス開始済</value>
   </data>
   <data name="LblPHD2TotalRMS" xml:space="preserve">
-    <value>Tot: {0}({1}")</value>
+    <value>合計:{0}({1}")</value>
   </data>
   <data name="LblPixels" xml:space="preserve">
-    <value>Pixels</value>
+    <value>ピクセル</value>
   </data>
   <data name="LblPixelScale" xml:space="preserve">
-    <value>Pixel Scale</value>
+    <value>ピクセルスケール</value>
   </data>
   <data name="LblPixelSize" xml:space="preserve">
-    <value>Pixel Size</value>
+    <value>ピクセルサイズ</value>
   </data>
   <data name="LblPixelSizeX" xml:space="preserve">
-    <value>Pixel Size X</value>
+    <value>ピクセルサイズ X</value>
   </data>
   <data name="LblPixelSizeY" xml:space="preserve">
-    <value>Pixel Size Y</value>
+    <value>ピクセルサイズ Y</value>
   </data>
   <data name="LblPlanetarium" xml:space="preserve">
-    <value>Planetarium</value>
+    <value>プラネタリウム</value>
   </data>
   <data name="LblPlanetariumCoordsError" xml:space="preserve">
-    <value>Unable to acquire coordinates from {0}</value>
+    <value>{0} から座標を取得できませんでした。</value>
   </data>
   <data name="LblPlanetariumCoordsOk" xml:space="preserve">
-    <value>Coordinates acquired from {0}</value>
+    <value>{0} から座標を取得しました。</value>
   </data>
   <data name="LblPlanetariumFailedToConnect" xml:space="preserve">
-    <value>Unable to connect to {0}. Please ensure that it is running and configured to receive requests</value>
+    <value>{0} に接続できませんでした。実行されており、リクエストを受け取るように設定されていることを確認して下さい。</value>
   </data>
   <data name="LblPlanetariumObjectNotSelected" xml:space="preserve">
-    <value>There is no object currently selected in {0}</value>
+    <value>{0} で現在選択されている対象がありません。</value>
   </data>
   <data name="LblPlanetariumPrefs" xml:space="preserve">
-    <value>Planetarium Preferences</value>
+    <value>プラネタリウムの選択</value>
   </data>
   <data name="LblPlanetariumTooltip" xml:space="preserve">
-    <value>Get coordinates from the Planetarium Software</value>
+    <value>プラネタリウムソフトから座標を取得する</value>
   </data>
   <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
-    <value>Coordinates from selected object</value>
+    <value>選択された対象からの座標</value>
   </data>
   <data name="LblPlatesolve2" xml:space="preserve">
     <value>Platesolve2</value>
   </data>
   <data name="LblPlatesolve2Directory" xml:space="preserve">
-    <value>Platesolve2 Location</value>
+    <value>Platesolve2のフォルダ</value>
   </data>
   <data name="LblPlatesolve2NoCoordinates" xml:space="preserve">
-    <value>No coordinates available. Platesolve2 requires coordinates to solve!</value>
+    <value>座標がありません。Platesolve2が機能するためには座標が必票です。</value>
   </data>
   <data name="LblPlatesolve2NotFound" xml:space="preserve">
-    <value>Platesolve2 exe not found</value>
+    <value>Platesolve2 exeが見つかりません。</value>
   </data>
   <data name="LblPlateSolvedPolarAlignment" xml:space="preserve">
-    <value>Plate Solved Polar Alignment</value>
+    <value>プレートソルブ済み極軸アラインメント</value>
   </data>
   <data name="LblPlateSolveEnding" xml:space="preserve">
-    <value>PlateSolve reached maximum number of attempts, or Meridian Flip necessary.</value>
+    <value>プレートソルブが試行最大回数に達したか、又は子午線フリップが必要です。</value>
   </data>
   <data name="LblPlatesolveFailed" xml:space="preserve">
-    <value>Platesolve failed</value>
+    <value>プレートソルブに失敗しました。</value>
   </data>
   <data name="LblPlateSolveFailedDelay" xml:space="preserve">
-    <value>Delay between attempts</value>
+    <value>実行間遅延</value>
   </data>
   <data name="LblPlateSolveFailedDelayTooltip" xml:space="preserve">
-    <value>Delay, in minutes, between two plate solve attempts</value>
+    <value>プレートソルブ２回間の遅延分</value>
   </data>
   <data name="LblPlateSolveImage" xml:space="preserve">
-    <value>Plate solve current image</value>
+    <value>プレートソルブ現行画像</value>
   </data>
   <data name="LblPlateSolveNbOfAttempts" xml:space="preserve">
-    <value>Number of Attempts</value>
+    <value>実行回数</value>
   </data>
   <data name="LblPlateSolveNbOfAttemptsTooltip" xml:space="preserve">
-    <value>How many times a mid-sequence platesolve operation will attempt until considered failed</value>
+    <value>シーケンス実行中にプレートソルブが何回行われると失敗と考えるか</value>
   </data>
   <data name="LblPlatesolveNoCoordinates" xml:space="preserve">
-    <value>No reference coordinates available</value>
+    <value>参照座標がありません。</value>
   </data>
   <data name="LblPlateSolveNoFocalLength" xml:space="preserve">
-    <value>Plate solve aborted. The telescope's effective focal length must be specified under Options &gt; Equipment</value>
+    <value>プレートソルブが中断されました。望遠鏡の有効焦点距離をオプション&gt; 装置で指定してください。</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceRepeating" xml:space="preserve">
-    <value>Telescope not inside tolerance. Repeating...</value>
+    <value>望遠鏡が公差外です。再度実行します...</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceReslew" xml:space="preserve">
-    <value>Telescope not inside tolerance. Re-slew to target...</value>
+    <value>望遠鏡が公差外です。再度ターゲットに振り向けを実行します...</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceSyncing" xml:space="preserve">
-    <value>Telescope not inside tolerance. Syncing scope...</value>
+    <value>望遠鏡が公差外です。同期します。</value>
   </data>
   <data name="LblPlatesolveProvidedBy" xml:space="preserve">
-    <value>Platesolve service provided by</value>
+    <value>プレートソルブ サービスを提供したのは</value>
   </data>
   <data name="LblPlateSolver" xml:space="preserve">
-    <value>Plate Solver</value>
+    <value>プレートソルバー</value>
   </data>
   <data name="LblPlateSolveReattemptDelay" xml:space="preserve">
-    <value>Waiting for next plate solve attempt: {0}</value>
+    <value>次のプレートソルブ実行まで待機: {0}</value>
   </data>
   <data name="LblPlateSolveSettings" xml:space="preserve">
-    <value>Plate Solver Settings</value>
+    <value>プレートソルブ設定</value>
   </data>
   <data name="LblPlateSolving" xml:space="preserve">
-    <value>Plate Solving</value>
+    <value>プレートソルブ中</value>
   </data>
   <data name="LblPleaseChangeToFilter" xml:space="preserve">
-    <value>Please change to filter {0}</value>
+    <value>フィルター{0} へ変更して下さい。</value>
   </data>
   <data name="LblPleaseRotate" xml:space="preserve">
-    <value>Please rotate by {0} degrees</value>
+    <value>{0} 度だけ回転させて下さい。</value>
   </data>
   <data name="LblPolarAlignment" xml:space="preserve">
-    <value>Polar Alignment</value>
+    <value>極軸合わせ</value>
   </data>
   <data name="LblPort" xml:space="preserve">
-    <value>Port</value>
+    <value>ポート</value>
   </data>
   <data name="LblPosition" xml:space="preserve">
-    <value>Position</value>
+    <value>位置</value>
   </data>
   <data name="LblPreferredPlanetarium" xml:space="preserve">
-    <value>Preferred Planetatium software</value>
+    <value>好きなプラネタリウムソフト</value>
   </data>
   <data name="LblPrepareExposure" xml:space="preserve">
-    <value>Prepare Exposure</value>
+    <value>露出準備</value>
   </data>
   <data name="LblPrepareImage" xml:space="preserve">
-    <value>Preparing image</value>
+    <value>画像の準備中</value>
   </data>
   <data name="LblPreparingDarkFlatSequence" xml:space="preserve">
-    <value>Preparing Dark Flat Sequence</value>
+    <value>フラットダーク撮像シーケンスの準備中</value>
   </data>
   <data name="LblPrepFlatFilterMsgBox" xml:space="preserve">
-    <value>Flats for filter: {0}</value>
+    <value>フィルター:{0} 使用のフラット</value>
   </data>
   <data name="LblPreSequenceChecklist" xml:space="preserve">
-    <value>The following potential issues have been found with your sequence:</value>
+    <value>あなたのシーケンスには次の潜在的な問題が見つかりました。</value>
   </data>
   <data name="LblPreSequenceChecklistHeader" xml:space="preserve">
-    <value>Pre-Sequence Checklist</value>
+    <value>シーケンス事前チェックリスト</value>
   </data>
   <data name="LblPressure" xml:space="preserve">
-    <value>Pressure</value>
+    <value>圧力</value>
   </data>
   <data name="LblPrimary" xml:space="preserve">
-    <value>Primary</value>
+    <value>一次</value>
   </data>
   <data name="LblProfiles" xml:space="preserve">
-    <value>Profiles</value>
+    <value>プロファイル</value>
   </data>
   <data name="LblProgress" xml:space="preserve">
-    <value>Progress</value>
+    <value>進捗</value>
   </data>
   <data name="LblPull" xml:space="preserve">
-    <value>Pull</value>
+    <value>引く</value>
   </data>
   <data name="LblPush" xml:space="preserve">
-    <value>Push</value>
+    <value>押す</value>
   </data>
   <data name="LblPx" xml:space="preserve">
-    <value>px</value>
+    <value>ピクセル</value>
   </data>
   <data name="LblRA" xml:space="preserve">
-    <value>RA</value>
+    <value>赤経</value>
   </data>
   <data name="LblRACorrections" xml:space="preserve">
-    <value>RA Corrections</value>
+    <value>赤経修正</value>
   </data>
   <data name="LblRadius" xml:space="preserve">
-    <value>Radius</value>
+    <value>半径</value>
   </data>
   <data name="LblRAError" xml:space="preserve">
-    <value>RA Error</value>
+    <value>赤経エラー</value>
   </data>
   <data name="LblRainRate" xml:space="preserve">
-    <value>Rain Rate</value>
+    <value>雨天率</value>
   </data>
   <data name="LblRAPixError" xml:space="preserve">
-    <value>RA Pix Error</value>
+    <value>赤経ピクセルエラー</value>
   </data>
   <data name="LblRate" xml:space="preserve">
-    <value>Rate</value>
+    <value>率</value>
   </data>
   <data name="LblRawConverter" xml:space="preserve">
-    <value>Raw converter</value>
+    <value>Rawコンバーター</value>
   </data>
   <data name="LblRawConverterTooltip" xml:space="preserve">
-    <value>Specifies which tool should be used for DSLR raw file conversion</value>
+    <value>DSLRのRawファイル変換に使用するツールを選択</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
-    <value>Read noise in e</value>
+    <value>e値による読み込みノイズ</value>
   </data>
   <data name="LblReadoutForNormalImages" xml:space="preserve">
-    <value>Readout mode for sequences</value>
+    <value>シーケンス用の読み出しモード</value>
   </data>
   <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
-    <value>This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT and DARKFLAT frames in sequences.</value>
+    <value>このカメラ読み出しモードは、シーケンス内のライト、バイアス、ダーク、フラット、及びフラットダークフレームに使用されます。</value>
   </data>
   <data name="LblReadoutForSnapImages" xml:space="preserve">
-    <value>Readout mode for snapshots</value>
+    <value>スナップショット用の読み出しモード</value>
   </data>
   <data name="LblReadoutForSnapImagesToolTip" xml:space="preserve">
-    <value>This readout mode of your camera will be used for plate solving, framing and autofocus</value>
+    <value>このカメラ読み出しモードは、プレートソルブ、フレーミング、及びオートフォーカスに対して使用されます。</value>
   </data>
   <data name="LblRecenter" xml:space="preserve">
-    <value>Recenter</value>
+    <value>再中央化</value>
   </data>
   <data name="LblRecenterAfterFlip" xml:space="preserve">
-    <value>Recenter after Flip</value>
+    <value>フリップ後に再中央化</value>
   </data>
   <data name="LblRecenterImage" xml:space="preserve">
-    <value>Recenter Image</value>
+    <value>画像の再中央化</value>
   </data>
   <data name="LblReconnectAll" xml:space="preserve">
-    <value>Reconnect all devices?</value>
+    <value>全てのデバイスに接続しますか？</value>
   </data>
   <data name="LblReconnectCamera" xml:space="preserve">
-    <value>Please reconnect camera!</value>
+    <value>カメラを再度接続して下さい。</value>
   </data>
   <data name="LblReconnectFilterwheel" xml:space="preserve">
-    <value>Please reconnect filterwheel!</value>
+    <value>フィルターホイールを再度接続して下さい。</value>
   </data>
   <data name="LblReconnectFocuser" xml:space="preserve">
-    <value>Please reconnect focuser!</value>
+    <value>フォーカサーを再度接続して下さい。</value>
   </data>
   <data name="LblReconnectTelescope" xml:space="preserve">
-    <value>Please reconnect telescope!</value>
+    <value>赤道儀を再度接続して下さい。</value>
   </data>
   <data name="LblReferenceDate" xml:space="preserve">
-    <value>Reference Date</value>
+    <value>参照日</value>
   </data>
   <data name="LblRegions" xml:space="preserve">
-    <value>Regions</value>
+    <value>区画</value>
   </data>
   <data name="LblRelease" xml:space="preserve">
-    <value>Release</value>
+    <value>リリース</value>
   </data>
   <data name="LblRemaining" xml:space="preserve">
-    <value>Remaining</value>
+    <value>残</value>
   </data>
   <data name="LblRemainingNo" xml:space="preserve">
-    <value>Remaining #</value>
+    <value>残 #</value>
   </data>
   <data name="LblRemoveProfileCaption" xml:space="preserve">
-    <value>Remove Profile?</value>
+    <value>プロファイルを除去しますか？</value>
   </data>
   <data name="LblRemoveProfileText" xml:space="preserve">
-    <value>Should the Profile with name: {0} and id: {1} be removed?</value>
+    <value>名称: {0} とアイディー: {1} 付きのプロファイルを除去しますか？</value>
   </data>
   <data name="LblRepeatUntil" xml:space="preserve">
-    <value>Repeat until</value>
+    <value>まで繰り返し</value>
   </data>
   <data name="LblReplaceSequenceTarget" xml:space="preserve">
-    <value>Replace as Sequence Target</value>
+    <value>シーケンスターゲットとして置き換える</value>
   </data>
   <data name="LblRescanDevices" xml:space="preserve">
-    <value>Rescan Devices</value>
+    <value>デバイスの再スキャン</value>
   </data>
   <data name="LblResetAndContinue" xml:space="preserve">
-    <value>Reset and Continue</value>
+    <value>リセットして継続</value>
   </data>
   <data name="LblResetDockLayout" xml:space="preserve">
-    <value>Reset layout</value>
+    <value>配置のリセット</value>
   </data>
   <data name="LblResetDockLayoutConfirmation" xml:space="preserve">
-    <value>Should the layout be reset?</value>
+    <value>配置をリセットしますか？</value>
   </data>
   <data name="LblReslewToTarget" xml:space="preserve">
-    <value>Reslew to Target</value>
+    <value>ターゲットへ再移動</value>
   </data>
   <data name="LblResumeAutoguider" xml:space="preserve">
-    <value>Resume Autoguider</value>
+    <value>オートガイダー再開</value>
   </data>
   <data name="LblResumeGuiding" xml:space="preserve">
-    <value>Resume Guiding</value>
+    <value>ガイド再開</value>
   </data>
   <data name="LblResumeSettleTime" xml:space="preserve">
-    <value>Settle Time after resume</value>
+    <value>再開後の安定化時間</value>
   </data>
   <data name="LblResumeTracking" xml:space="preserve">
-    <value>Resume Tracking</value>
+    <value>追尾再開</value>
   </data>
   <data name="LblResuming" xml:space="preserve">
-    <value>Resuming</value>
+    <value>再開中</value>
   </data>
   <data name="LblRightAscension" xml:space="preserve">
-    <value>Right Ascension</value>
+    <value>赤経</value>
   </data>
   <data name="LblRotation" xml:space="preserve">
-    <value>Rotation</value>
+    <value>回転</value>
   </data>
   <data name="LblRotationRequired" xml:space="preserve">
-    <value>Camera Rotation required</value>
+    <value>カメラの回転が必要</value>
   </data>
   <data name="LblRotationTolerance" xml:space="preserve">
-    <value>Rotation Tolerance</value>
+    <value>回転公差</value>
   </data>
   <data name="LblRotator" xml:space="preserve">
-    <value>Rotator</value>
+    <value>回転装置</value>
   </data>
   <data name="LblRotatorConnected" xml:space="preserve">
-    <value>Rotator Connected</value>
+    <value>回転装置接続済み</value>
   </data>
   <data name="LblRotatorConnectionLost" xml:space="preserve">
-    <value>Rotator connection lost! Please reconnect rotator!</value>
+    <value>回転装置の接続が途絶えました。回転装置を再接続して下さい。</value>
   </data>
   <data name="LblSave" xml:space="preserve">
-    <value>Save</value>
+    <value>保存</value>
   </data>
   <data name="LblSaveAsSequence" xml:space="preserve">
-    <value>Save Sequence as new file</value>
+    <value>新しいファイルとしてシーケンスを保存</value>
   </data>
   <data name="LblSaveAsSequenceToolTip" xml:space="preserve">
-    <value>Save Sequence as new xml file</value>
+    <value>新しいxmlファイルとしてシーケンスを保存</value>
   </data>
   <data name="LblSaveBacklashQuestion" xml:space="preserve">
-    <value>Save Focuser Backlash Measurements?</value>
+    <value>フォーカサーのバックラッシュ測定値を保存しますか？</value>
   </data>
   <data name="LblSaveImageAs" xml:space="preserve">
-    <value>Save Image as</value>
+    <value>として画像を保存</value>
   </data>
   <data name="LblSaveImageAsDSLRNote" xml:space="preserve">
-    <value>For DSLRs the image file format setting is ignored. RAW format will be saved instead!</value>
+    <value>一眼レフでは画像ファイルフォーマット設定は無視されます。その代わりにRAWフォーマットが保存されます。</value>
   </data>
   <data name="LblSaveSelectedProfileAndDontAskAgain" xml:space="preserve">
-    <value>Save selected profile and don't ask again next time</value>
+    <value>選択されたプロファイルを保存して、次回は質問しない。</value>
   </data>
   <data name="LblSaveSequence" xml:space="preserve">
-    <value>Save Sequence</value>
+    <value>シーケンスを保存</value>
   </data>
   <data name="LblSaveSequenceToolTip" xml:space="preserve">
-    <value>Save Sequence as xml file</value>
+    <value>Xmlファイルとしてシーケンスを保存</value>
   </data>
   <data name="LblSaveTargetSet" xml:space="preserve">
-    <value>Save target set</value>
+    <value>ターゲット設定を保存</value>
   </data>
   <data name="LblScopeSettleTimeAfterFlip" xml:space="preserve">
-    <value>Scope settle time after flip (seconds)</value>
+    <value>反転後の赤道儀の安定化時間(秒)</value>
   </data>
   <data name="LblSearch" xml:space="preserve">
-    <value>Search</value>
+    <value>検索</value>
   </data>
   <data name="LblSearchRadius" xml:space="preserve">
-    <value>Search Radius</value>
+    <value>検索半径</value>
   </data>
   <data name="LblSecondary" xml:space="preserve">
-    <value>Secondary</value>
+    <value>二次</value>
   </data>
   <data name="LblSecondaryBackground" xml:space="preserve">
-    <value>Secondary Background</value>
+    <value>二次背景</value>
   </data>
   <data name="LblSelectGuidestar" xml:space="preserve">
-    <value>Select new Guidestar</value>
+    <value>新しくガイド星を選択</value>
   </data>
   <data name="LblSelectNewGuideStar" xml:space="preserve">
-    <value>Select new Guidestar</value>
+    <value>新しくガイド星を選択</value>
   </data>
   <data name="LblSelectProfileInUseWarning" xml:space="preserve">
-    <value>Selected profile cannot be chosen. It is already in use by another N.I.N.A. instance!</value>
+    <value>選択されたプロファイルは使用できません。他のN.I.N.A.セッションが使用中です。</value>
   </data>
   <data name="LblSensorName" xml:space="preserve">
-    <value>Sensor Name</value>
+    <value>センサー名称</value>
   </data>
   <data name="LblSensorType" xml:space="preserve">
-    <value>Sensor Type</value>
+    <value>センサー型式</value>
   </data>
   <data name="LblSequence" xml:space="preserve">
-    <value>Sequence</value>
+    <value>シーケンス</value>
   </data>
   <data name="LblSequenceDelay" xml:space="preserve">
-    <value>Delay start (seconds)</value>
+    <value>スタート遅延(秒)</value>
   </data>
   <data name="LblSequenceDelayStatus" xml:space="preserve">
-    <value>Sequence starting in {0} seconds</value>
+    <value>{0} 秒後にシーケンス開始</value>
   </data>
   <data name="LblSequenceMode" xml:space="preserve">
-    <value>Sequence Mode</value>
+    <value>シーケンス モード</value>
   </data>
   <data name="LblSequenceModeRotate" xml:space="preserve">
-    <value>Loop</value>
+    <value>ループ</value>
   </data>
   <data name="LblSequenceModeStandard" xml:space="preserve">
-    <value>One after another</value>
+    <value>次々に</value>
   </data>
   <data name="LblSequenceTemplate" xml:space="preserve">
-    <value>Sequence Template</value>
+    <value>シーケンステンプレート</value>
   </data>
   <data name="LblSequenceTemplateTooltip" xml:space="preserve">
-    <value>Specifies a path to a previously exported sequence file that should be used as a template.
-This template will be used on startup to initialize the sequence instead of the default one.</value>
+    <value>以前エクスポートされたシーケンスファイルのパスを指定し、テンプレートとして使用します。
+このテンプレートは、シーケンスを開始する際に、デフォルトの代わりに使用されます。</value>
   </data>
   <data name="LblSerialPort" xml:space="preserve">
-    <value>Serial Port</value>
+    <value>シリアルポート</value>
   </data>
   <data name="LblSerialRelay" xml:space="preserve">
-    <value>Serial Relay</value>
+    <value>シリアルリレー</value>
   </data>
   <data name="LblSetAsSequenceTarget" xml:space="preserve">
-    <value>Set as sequence target</value>
+    <value>シーケンスの対象として設定</value>
   </data>
   <data name="LblSetAutoFocusFilter" xml:space="preserve">
-    <value>Set as Auto Focus Filter</value>
+    <value>オートフォーカス用のフィルターとして設定</value>
   </data>
   <data name="LblSetAutoFocusFilterTooltip" xml:space="preserve">
-    <value>If set, auto-focus will always use the selected filter, using filter wheel offsets</value>
+    <value>選択されると、フィルターオフセットを用いて常にこの選択されたフィルターでオートフォーカスを行います。</value>
   </data>
   <data name="LblSetForFramingAssistant" xml:space="preserve">
-    <value>Set for framing assistant</value>
+    <value>構図取り支援に設定</value>
   </data>
   <data name="LblSetNewValue" xml:space="preserve">
-    <value>Set new value</value>
+    <value>新しい値を設定</value>
   </data>
   <data name="LblSettings" xml:space="preserve">
-    <value>Settings</value>
+    <value>設定</value>
   </data>
   <data name="LblSettle" xml:space="preserve">
-    <value>Settle</value>
+    <value>安定化</value>
   </data>
   <data name="LblSettlePixelTolerance" xml:space="preserve">
-    <value>PHD2 Settle Pixel Tolerance</value>
+    <value>PHD2の安定化ピクセル公差</value>
   </data>
   <data name="LblSettleTimeAfterSlew" xml:space="preserve">
-    <value>Settle time after slew</value>
+    <value>赤道儀振り向け動作後の安定化時間</value>
   </data>
   <data name="LblSettleTimeout" xml:space="preserve">
-    <value>PHD2 Settle Timeout</value>
+    <value>PHD2安定化タイムアウト</value>
   </data>
   <data name="LblSiderealTime" xml:space="preserve">
-    <value>Sidereal Time</value>
+    <value>恒星時</value>
   </data>
   <data name="LblSiteElevation" xml:space="preserve">
-    <value>Site Elevation</value>
+    <value>撮影地高度</value>
   </data>
   <data name="LblSiteFromGPS" xml:space="preserve">
-    <value>from GPS</value>
+    <value>GPSから</value>
   </data>
   <data name="LblSiteLatitude" xml:space="preserve">
-    <value>Site Latitude</value>
+    <value>撮影地緯度</value>
   </data>
   <data name="LblSiteLongitude" xml:space="preserve">
-    <value>Site Longitude</value>
+    <value>撮影地経度</value>
   </data>
   <data name="LblSize" xml:space="preserve">
-    <value>Size</value>
+    <value>サイズ</value>
   </data>
   <data name="LblSkyAtlas" xml:space="preserve">
-    <value>Sky Atlas</value>
+    <value>スカイ アトラス</value>
   </data>
   <data name="LblSkyAtlasImageDirectory" xml:space="preserve">
-    <value>Sky Atlas Image Directory</value>
+    <value>スカイ アトラス画像ディレクトリー</value>
   </data>
   <data name="LblSkyAtlasSkySurvey" xml:space="preserve">
-    <value>SkyAtlas (Offline Framing)</value>
+    <value>スカイ アトラス(オフラインフレーミング）</value>
   </data>
   <data name="LblSkyBrightness" xml:space="preserve">
-    <value>Sky Brightness</value>
+    <value>空の明るさ</value>
   </data>
   <data name="LblSkyQuality" xml:space="preserve">
-    <value>Sky Quality</value>
+    <value>空の状態</value>
   </data>
   <data name="LblSkyServerSkySurvey" xml:space="preserve">
-    <value>SkyServer Sky Survey</value>
+    <value>SkyServerスカイサーベイ</value>
   </data>
   <data name="LblSkySurveyCacheDirectory" xml:space="preserve">
-    <value>Sky Survey Cache Directory</value>
+    <value>スカイサーベイ キャッシュ ディレクトリー</value>
   </data>
   <data name="LblSkyTemperature" xml:space="preserve">
-    <value>Sky Temperature</value>
+    <value>空温度</value>
   </data>
   <data name="LblSlew" xml:space="preserve">
-    <value>Slew</value>
+    <value>振り向け</value>
   </data>
   <data name="LblSlewDuration" xml:space="preserve">
-    <value>Slew Duration</value>
+    <value>振り向け時間</value>
   </data>
   <data name="LblSlewEnabledButTelescopeNotConnected" xml:space="preserve">
-    <value>Slew to target is enabled, yet telescope is not connected</value>
+    <value>対象への振り向けがオンになっていますが、赤道儀が接続されていません。</value>
   </data>
   <data name="LblSlewRateDegSec" xml:space="preserve">
-    <value>Slew Rate (deg/sec)</value>
+    <value>振り向け移動速度(度/秒)</value>
   </data>
   <data name="LblSlewToTarget" xml:space="preserve">
-    <value>Slew to target</value>
+    <value>対象へ振り向け</value>
   </data>
   <data name="LblSlewToZenith" xml:space="preserve">
-    <value>Slew to zenith</value>
+    <value>天頂へ振り向け</value>
   </data>
   <data name="LblSlewWhenTargetCoordsUnset" xml:space="preserve">
-    <value>At least one target with slew enabled has no target coordinates set</value>
+    <value>一つか複数のターゲットで振り向けがオンになっているものがありますが、ターゲットの座標設定がありません。</value>
   </data>
   <data name="LblSnapPortStart" xml:space="preserve">
-    <value>Snap Port Start Command</value>
+    <value>スナップポート開始コマンド</value>
   </data>
   <data name="LblSnapPortStop" xml:space="preserve">
-    <value>Snap Port Stop Command</value>
+    <value>スナップポート停止コマンド</value>
   </data>
   <data name="LblSobel" xml:space="preserve">
-    <value>Sobel</value>
+    <value>ソーベル</value>
   </data>
   <data name="LblSolving" xml:space="preserve">
-    <value>Solving...</value>
+    <value>ソルブ中...</value>
   </data>
   <data name="LblSource" xml:space="preserve">
-    <value>Source</value>
+    <value>ソース</value>
   </data>
   <data name="LblSouthern" xml:space="preserve">
-    <value>Southern</value>
+    <value>南の</value>
   </data>
   <data name="LblStarFWHM" xml:space="preserve">
-    <value>Star FWHM</value>
+    <value>星のFWHM</value>
   </data>
   <data name="LblStarSensitivity" xml:space="preserve">
-    <value>Star Sensitivity</value>
+    <value>星感度</value>
   </data>
   <data name="LblStarSensitivityTooltip" xml:space="preserve">
-    <value>Determines sensitivity of star detection algorithm. Higher settings may mistakenly detect noise, and may take more time</value>
+    <value>星検出アルゴリズムの感度を決定します。高い設定値にするとノイズを誤検出して処理に時間がかかる可能性があります。</value>
   </data>
   <data name="LblStartAutoFocus" xml:space="preserve">
-    <value>Start Auto Focus</value>
+    <value>オートフォーカス開始</value>
   </data>
   <data name="LblStartBacklashMeasurementConfirmation" xml:space="preserve">
-    <value>Backlash Measurement will start now.
-Before proceeding, please confirm your system is currently at or close to good focus</value>
+    <value>これよりバックラッシュ測定を開始します。
+進む前に、焦点が合っているか近い位置にあることを確認して下さい。</value>
   </data>
   <data name="LblStartBacklashQuestion" xml:space="preserve">
-    <value>Start Backlash Measurement?</value>
+    <value>バックラッシュ測定を開始しますか？</value>
   </data>
   <data name="LblStartGuiding" xml:space="preserve">
-    <value>Start guiding</value>
+    <value>ガイド開始</value>
   </data>
   <data name="LblStartGuidingButGuiderNotConnected" xml:space="preserve">
-    <value>Start Guiding is enabled, yet guider is not connected</value>
+    <value>ガイド開始がオンになっていますが。ガイダーが接続されていません。</value>
   </data>
   <data name="LblStartGuidingFailed" xml:space="preserve">
-    <value>Start guiding failed</value>
+    <value>ガイド開始に失敗しました</value>
   </data>
   <data name="LblStartingINBacklashMeasurement" xml:space="preserve">
-    <value>Starting IN Backlash Measurement</value>
+    <value>IN側のバックラッシュ測定を開始しています。</value>
   </data>
   <data name="LblStartingOUTBacklashMeasurement" xml:space="preserve">
-    <value>Starting OUT Backlash Measurement</value>
+    <value>OUT側のバックラッシュ測定を開始しています。</value>
   </data>
   <data name="LblStartSequenceAnyway" xml:space="preserve">
-    <value>Start Sequence Anyway?</value>
+    <value>関係なく、シーケンスを開始しますか？</value>
   </data>
   <data name="LblState" xml:space="preserve">
-    <value>State</value>
+    <value>状態</value>
   </data>
   <data name="LblStatistics" xml:space="preserve">
-    <value>Statistics</value>
+    <value>統計</value>
   </data>
   <data name="LblStDev" xml:space="preserve">
-    <value>StDev</value>
+    <value>標準偏差</value>
   </data>
   <data name="LblStellarium" xml:space="preserve">
     <value>Stellarium</value>
   </data>
   <data name="LblStellariumUse" xml:space="preserve">
-    <value>Use Stellarium</value>
+    <value>Stellariumを使用</value>
   </data>
   <data name="LblStellariumUseNotice" xml:space="preserve">
-    <value>In order to use Stellarium you need to have the remote plugin installed and active on the Host and Port specified above</value>
+    <value>Stellariumを使用するには、リモートプラグインをホスト側にインストールしてアクティブな状態にし、上でポートを指定して下さい。</value>
   </data>
   <data name="LblStop" xml:space="preserve">
-    <value>Stop</value>
+    <value>停止</value>
   </data>
   <data name="LblStopAutoguider" xml:space="preserve">
-    <value>Pause Autoguider</value>
+    <value>オートガイダー一時停止</value>
   </data>
   <data name="LblStopGuiding" xml:space="preserve">
-    <value>Stop Guiding</value>
+    <value>ガイド停止</value>
   </data>
   <data name="LblStopTracking" xml:space="preserve">
-    <value>Stop Tracking</value>
+    <value>追尾停止</value>
   </data>
   <data name="LblStretchImage" xml:space="preserve">
-    <value>Stretching image</value>
+    <value>画像のストレッチ</value>
   </data>
   <data name="LblStsciSkySurvey" xml:space="preserve">
     <value>Stsci Sky Survey</value>
   </data>
   <data name="LblSubSample" xml:space="preserve">
-    <value>Enable SubSampling</value>
+    <value>サブサンプリングをオンにする</value>
   </data>
   <data name="LblSuccess" xml:space="preserve">
-    <value>Success</value>
+    <value>成功</value>
   </data>
   <data name="LblSunRise" xml:space="preserve">
-    <value>Sunrise</value>
+    <value>日の出</value>
   </data>
   <data name="LblSunSet" xml:space="preserve">
-    <value>Sunset</value>
+    <value>日没</value>
   </data>
   <data name="LblSurfaceBrightness" xml:space="preserve">
-    <value>Surface Brightness</value>
+    <value>表面照度</value>
   </data>
   <data name="LblSwitch" xml:space="preserve">
-    <value>Switch</value>
+    <value>スイッチ</value>
   </data>
   <data name="LblSwitchConnected" xml:space="preserve">
-    <value>Switch connected</value>
+    <value>スイッチが接続済み</value>
   </data>
   <data name="LblSwitchConnectionLost" xml:space="preserve">
-    <value>Switch Connection lost!</value>
+    <value>スイッチ接続が解除されました。</value>
   </data>
   <data name="LblSwitchingFilter" xml:space="preserve">
-    <value>Switching filter</value>
+    <value>フィルターの交換中</value>
   </data>
   <data name="LblSync" xml:space="preserve">
-    <value>Sync</value>
+    <value>同期</value>
   </data>
   <data name="LblSyncFailed" xml:space="preserve">
-    <value>Telescope sync failed</value>
+    <value>赤道儀の同期に失敗</value>
   </data>
   <data name="LblSynchronizedPHD2Guider" xml:space="preserve">
-    <value>Synchronized PHD2 (Experimental)</value>
+    <value>同期PHD2(試験中)</value>
   </data>
   <data name="LblSynchronizedPHD2ServiceClientAlreadyExists" xml:space="preserve">
     <value>
-        This profile is already connected to the Synchronized PHD2 Guider.
-        You cannot connect the same profile twice, please choose a different NINA profile.
+このプロファイルはすでに同期済PHD2ガイダーと接続されています。
+        同じプロファイルを２度接続することはできません。他のNINAプロファイルを選択して下さい。
     </value>
   </data>
   <data name="LblSynchronizedPHD2ServiceCrashed" xml:space="preserve">
-    <value>Synchronized PHD2 Service crashed, restarting this Synchronized PHD2 Guider as Service</value>
+    <value>同期していたPHD2サービスがクラッシュしました。サービスの一環として同期したPHD2ガイダーを再開します。</value>
   </data>
   <data name="LblSyncLatLong" xml:space="preserve">
-    <value>Synchronize Latitude/Longitude</value>
+    <value>緯度/経度を同期する</value>
   </data>
   <data name="LblSyncLatLongText" xml:space="preserve">
-    <value>Telescope's Latitude and Longitude differs from NINA's values.
-Should the values be synced?</value>
+    <value>赤道儀の緯度と経度はNINAの値と異なります。値を同期しますか？</value>
   </data>
   <data name="LblTarget" xml:space="preserve">
-    <value>Target (J2000)</value>
+    <value>対象(J2000)</value>
   </data>
   <data name="LblTargetDec" xml:space="preserve">
-    <value>TargetDec</value>
+    <value>対象赤緯</value>
   </data>
   <data name="LblTargetHeightDegrees" xml:space="preserve">
-    <value>Minimum Height (degree)</value>
+    <value>最低高度(度)</value>
   </data>
   <data name="LblTargetName" xml:space="preserve">
-    <value>Target Name</value>
+    <value>ターゲット名称</value>
   </data>
   <data name="LblTargetNameDescription" xml:space="preserve">
-    <value>Target Name if available</value>
+    <value>可能なターゲットの名称</value>
   </data>
   <data name="LblTargetPosition" xml:space="preserve">
-    <value>Target Position</value>
+    <value>ターゲット位置</value>
   </data>
   <data name="LblTargetRA" xml:space="preserve">
-    <value>TargetRA</value>
+    <value>ターゲット赤経</value>
   </data>
   <data name="LblTargets" xml:space="preserve">
-    <value>Targets</value>
+    <value>ターゲット群</value>
   </data>
   <data name="LblTargetTemp" xml:space="preserve">
-    <value>Target Temperature</value>
+    <value>ターゲット温度</value>
   </data>
   <data name="LblTargetTempShort" xml:space="preserve">
-    <value>Target Temp.</value>
+    <value>ターゲット温度</value>
   </data>
   <data name="LblTargetWidthDegrees" xml:space="preserve">
-    <value>Minimum Width (degree)</value>
+    <value>最小幅(度)</value>
   </data>
   <data name="LblTelescope" xml:space="preserve">
-    <value>Telescope</value>
+    <value>望遠鏡</value>
   </data>
   <data name="LblTelescopeCannotPulseGuide" xml:space="preserve">
-    <value>Telescope cannot Pulse Guide</value>
+    <value>赤道儀がパルスガイドできません。</value>
   </data>
   <data name="LblTelescopeCannotSlew" xml:space="preserve">
-    <value>Telescope cannot slew</value>
+    <value>赤道儀が振り向けを実行できません。</value>
   </data>
   <data name="LblTelescopeConnected" xml:space="preserve">
-    <value>Telescope connected</value>
+    <value>赤道儀接続済み</value>
   </data>
   <data name="LblTelescopeConnectionLost" xml:space="preserve">
-    <value>Telescope connection lost! Please reconnect telescope!</value>
+    <value>赤道儀との接続が中断しました。赤道儀を再度接続して下さい。</value>
   </data>
   <data name="LblTelescopeControl" xml:space="preserve">
-    <value>Telescope Control</value>
+    <value>望遠鏡コントロール</value>
   </data>
   <data name="LblTelescopeName" xml:space="preserve">
-    <value>Telescope Name</value>
+    <value>望遠鏡名称</value>
   </data>
   <data name="LblTelescopeNotConnected" xml:space="preserve">
-    <value>Telescope not connected</value>
+    <value>赤道儀が未接続</value>
   </data>
   <data name="LblTelescopeNotConnectedForCommand" xml:space="preserve">
-    <value>Telescope not connected to send command</value>
+    <value>望遠鏡が未接続のためコマンド送信できません。</value>
   </data>
   <data name="LblTelescopeNotTrackingForSync" xml:space="preserve">
-    <value>Telescope is not tracking. Sync is only available when tracking!</value>
+    <value>赤道儀が追尾していません。同期は追尾時のみ有効です。</value>
   </data>
   <data name="LblTelescopeParkedWarn" xml:space="preserve">
-    <value>Telescope is parked. Cannot slew while parked</value>
+    <value>赤道儀がパーク位置です。パークしている最中は振り向け動作はできません。</value>
   </data>
   <data name="LblTelescopeSnapPort" xml:space="preserve">
-    <value>Telescope Snap Port</value>
+    <value>望遠鏡スナップポート</value>
   </data>
   <data name="LblTelescopeSynced" xml:space="preserve">
-    <value>Telescope synced to coordinates</value>
+    <value>赤道儀が座標に同期済み</value>
   </data>
   <data name="LblTelescopeToNINA" xml:space="preserve">
-    <value>Telescope to NINA</value>
+    <value>望遠鏡からNINAへ</value>
   </data>
   <data name="LblTempComp" xml:space="preserve">
-    <value>Temp Comp</value>
+    <value>温度補正</value>
   </data>
   <data name="LblTempControl" xml:space="preserve">
-    <value>Temperature Control</value>
+    <value>温度制御</value>
   </data>
   <data name="LblTemperature" xml:space="preserve">
-    <value>Temperature</value>
+    <value>温度</value>
   </data>
   <data name="LblTemperatureCompensation" xml:space="preserve">
-    <value>Temperature Compensation</value>
+    <value>温度補正</value>
   </data>
   <data name="LblTemperatureDescription" xml:space="preserve">
-    <value>Camera Temperature</value>
+    <value>カメラ温度</value>
   </data>
   <data name="LblTertiaryBackground" xml:space="preserve">
     <value>Tertiary Background</value>
@@ -2912,105 +2898,105 @@ Should the values be synced?</value>
     <value>TIFF</value>
   </data>
   <data name="LblTiffLzw" xml:space="preserve">
-    <value>TIFF (lzw-compressed)</value>
+    <value>TIFF (lzw圧縮)</value>
   </data>
   <data name="LblTiffZip" xml:space="preserve">
-    <value>TIFF (zip-compressed)</value>
+    <value>TIFF(zip圧縮)</value>
   </data>
   <data name="LblTime" xml:space="preserve">
-    <value>Time</value>
+    <value>時間</value>
   </data>
   <data name="LblTimeFormatDescription" xml:space="preserve">
-    <value>Time with format HH-mm-ss</value>
+    <value>フォーマットHH-mm-ss付き時間</value>
   </data>
   <data name="LblTimeout" xml:space="preserve">
-    <value>Timeout</value>
+    <value>タイムアウト</value>
   </data>
   <data name="LblTimeoutToSetSwitchValue" xml:space="preserve">
     <value>Timeout to set switch value {0} for switch [Id: {1}, Name: {2}]. Current value is {3}.</value>
   </data>
   <data name="LblTimeZone" xml:space="preserve">
-    <value>Time Zone</value>
+    <value>タイムゾーン</value>
   </data>
   <data name="LblTo" xml:space="preserve">
     <value>To</value>
   </data>
   <data name="LblTools" xml:space="preserve">
-    <value>Tools</value>
+    <value>ツール</value>
   </data>
   <data name="LblTooltipAddSequence" xml:space="preserve">
-    <value>Add new row to sequence list</value>
+    <value>シーケンスリストに新たな行を追加</value>
   </data>
   <data name="LblTooltipAddTarget" xml:space="preserve">
-    <value>Add new empty target sequence</value>
+    <value>ターゲット未定の新しいシーケンスを追加</value>
   </data>
   <data name="LblTooltipAutoStretch" xml:space="preserve">
-    <value>Toggles an automatic autostretch to image on/off (display only)</value>
+    <value>画像の自動オートストレッチをトグルスイッチでオン/オフする(表示のみ)</value>
   </data>
   <data name="LblTooltipBahtinovAnalyzer" xml:space="preserve">
-    <value>Bahtinov Analyzer
-Drag the rectangle over a star with the bahtinov spikes. NINA will try to detect the spikes and show the error.</value>
+    <value>バーティノフ分析
+バーティノフマスクの光条線が入った星周辺を四角でドラッグして下さい。NINAが光条線を検知してエラーを示します。</value>
   </data>
   <data name="LblTooltipCrossHair" xml:space="preserve">
-    <value>Toggles crosshair on/off</value>
+    <value>十字線をトグルスイッチでオン/オフする。</value>
   </data>
   <data name="LblTooltipDemoteSequenceRow" xml:space="preserve">
-    <value>Move selected row down sequence list</value>
+    <value>選択された行をシーケンスリストに沿って下に移動する。</value>
   </data>
   <data name="LblTooltipDemoteTarget" xml:space="preserve">
-    <value>Move target right</value>
+    <value>ターゲットを右に移動する。</value>
   </data>
   <data name="LblTooltipDetectStars" xml:space="preserve">
-    <value>Toggles automatic star detection and analysis (Half-Flus-Radius) on/off</value>
+    <value>自動星検知を分析(HFR)をトグルスイッチでオン/オフする。</value>
   </data>
   <data name="LblToolTipLiveView" xml:space="preserve">
-    <value>Live View</value>
+    <value>ライブビュー</value>
   </data>
   <data name="LblTooltipLoop" xml:space="preserve">
-    <value>Enables/disables looping exposures</value>
+    <value>ループ露出をオン/オフする。</value>
   </data>
   <data name="LblTooltipPromoteSequenceRow" xml:space="preserve">
-    <value>Move selected row up sequence list</value>
+    <value>選択された行をシーケンスリストに沿って上に移動する。</value>
   </data>
   <data name="LblTooltipPromoteTarget" xml:space="preserve">
-    <value>Move target left</value>
+    <value>ターゲットを左に移動する。</value>
   </data>
   <data name="LblTooltipRemoveSequence" xml:space="preserve">
-    <value>Remove selected row from sequence list</value>
+    <value>選択された行をシーケンスリストから削除する。</value>
   </data>
   <data name="LblTooltipResetSequence" xml:space="preserve">
-    <value>Reset progress of selected row in sequence list</value>
+    <value>シーケンスリストで選択された行の進捗をリセットする。</value>
   </data>
   <data name="LblTooltipResetTarget" xml:space="preserve">
-    <value>Reset progress of all sequence items in target</value>
+    <value>ターゲット内で全てのシーケンスアイテムの進捗をリセットする。</value>
   </data>
   <data name="LblTooltipStartSequence" xml:space="preserve">
-    <value>Starts sequences</value>
+    <value>シーケンスを開始します。</value>
   </data>
   <data name="LblToolTipSubSample" xml:space="preserve">
-    <value>SubSampling Frame
-Drag the rectangle over the part of the frame you want to subsample and enable subsampling in snap. Your camera will only download the selected area.</value>
+    <value>サブサンプリングフレーム
+フレーム画像上にて長方形をドラッグすると試し撮像でサブサンプリングがオンになります。この選択されたエリアのみカメラからダウンロードされます。</value>
   </data>
   <data name="LblTooltipTakeExposure" xml:space="preserve">
-    <value>Starts Exposure</value>
+    <value>露光開始</value>
   </data>
   <data name="LblTooltipTargetLoadSet" xml:space="preserve">
-    <value>Load set of targets from a file</value>
+    <value>ファイルからターゲット群を読み込む</value>
   </data>
   <data name="LblTooltipTargetSaveSet" xml:space="preserve">
-    <value>Save current targets as a set</value>
+    <value>現在のターゲットをセットとして保存</value>
   </data>
   <data name="LblTotalNo" xml:space="preserve">
-    <value>Total #</value>
+    <value>トータル#</value>
   </data>
   <data name="LblToupTekCameraSetup" xml:space="preserve">
-    <value>ToupTek Camera Setup</value>
+    <value>ToupTekカメラ設定</value>
   </data>
   <data name="LblTrace" xml:space="preserve">
     <value>Trace</value>
   </data>
   <data name="LblTracking" xml:space="preserve">
-    <value>Tracking</value>
+    <value>追尾</value>
   </data>
   <data name="LblTransitNorth" xml:space="preserve">
     <value>Transit North</value>
@@ -3022,179 +3008,178 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
     <value>Trends and Hyperbolic</value>
   </data>
   <data name="LblTrendLines" xml:space="preserve">
-    <value>Trend Lines</value>
+    <value>トレンドライン</value>
   </data>
   <data name="LblTrendParabolic" xml:space="preserve">
     <value>Trends and Parabolic</value>
   </data>
   <data name="LblType" xml:space="preserve">
-    <value>Type</value>
+    <value>タイプ</value>
   </data>
   <data name="LblUnableToConnectCamera" xml:space="preserve">
-    <value>Unable to connect camera</value>
+    <value>カメラと接続できません。</value>
   </data>
   <data name="LblUnableToSetExposureTime" xml:space="preserve">
-    <value>Unable to set exposure time</value>
+    <value>露出時間を設定できません。</value>
   </data>
   <data name="LblUnableToSetISO" xml:space="preserve">
-    <value>Unable to set ISO</value>
+    <value>ISO設定不可</value>
   </data>
   <data name="LblUnableToStartExposure" xml:space="preserve">
-    <value>Unable to start camera exposure</value>
+    <value>カメラ露出を開始できません。</value>
   </data>
   <data name="LblUnableToSync" xml:space="preserve">
-    <value>Unable to sync. Telescope is not connected</value>
+    <value>同期できません。赤道儀が接続されていません。</value>
   </data>
   <data name="LblUnexpectedError" xml:space="preserve">
-    <value>Unexpected error occurred</value>
+    <value>予期せぬエラーが発生しました。</value>
   </data>
   <data name="LblUnhandledException" xml:space="preserve">
-    <value>Unhandled Exception occurred</value>
+    <value>取り扱えない例外が発生しました。</value>
   </data>
   <data name="LblUnlinkedStretch" xml:space="preserve">
-    <value>Unlinked Stretch</value>
+    <value>連結無しストレッチ</value>
   </data>
   <data name="LblUnlinkedStretchTooltip" xml:space="preserve">
     <value>
-        When enabled, color channels will be stretched separately, helping hide the
-        sky background and enhancing autofocus and platesolving reliablity, especially
-        in light polluted areas. Processing time is however increased.
-    </value>
+オンになっている場合、カラーチャンネルは個々にストレッチがかかり、
+        空の背景を隠しやすくなり、オートフォーカスやプレートソルブの信頼度を上げます。
+        これは光害地で特に有効です。しかし、処理時間が長くなります。    </value>
   </data>
   <data name="LblUnpark" xml:space="preserve">
-    <value>Unpark</value>
+    <value>パーク解除</value>
   </data>
   <data name="LblUpdate" xml:space="preserve">
-    <value>Update</value>
+    <value>アップデート</value>
   </data>
   <data name="LblUpdating" xml:space="preserve">
-    <value>Updating</value>
+    <value>アップデート中</value>
   </data>
   <data name="LblURL" xml:space="preserve">
     <value>Url</value>
   </data>
   <data name="LblUSBLimit" xml:space="preserve">
-    <value>USB Limit</value>
+    <value>USB限界</value>
   </data>
   <data name="LblUseBlindSolveFailover" xml:space="preserve">
-    <value>Plate solve failed. Try to solve using Blind Solver?</value>
+    <value>プレートソルブに失敗しました。ブラインド ソルバーで実行してみますか？</value>
   </data>
   <data name="LblUseBlindSolveNoCoordinatesRollover" xml:space="preserve">
-    <value>No reference coordinates available. Should the blind solver be used instead?</value>
+    <value>参考座標が見つかりません。代わりにブラインドソルバーを使用しますか？</value>
   </data>
   <data name="LblUseBuldMode" xml:space="preserve">
-    <value>Use bulb mode</value>
+    <value>バルブモードを使用</value>
   </data>
   <data name="LblUseSideOfPier" xml:space="preserve">
-    <value>Use Telescope Side of Pier</value>
+    <value>望遠鏡の赤道儀サイド</value>
   </data>
   <data name="LblUseSnapPort" xml:space="preserve">
-    <value>Use Telescope Snap Port</value>
+    <value>望遠鏡スナップポート使用</value>
   </data>
   <data name="LblVerticalPanels" xml:space="preserve">
-    <value>Vertical Panels</value>
+    <value>縦構図パネル</value>
   </data>
   <data name="LblWaitForDither" xml:space="preserve">
-    <value>Waiting for dither to finish</value>
+    <value>デザリングの終了待ち</value>
   </data>
   <data name="LblWaitForImageProcessing" xml:space="preserve">
-    <value>Waiting for previous image to finish processing</value>
+    <value>前回の画像の処理が終了するのを待っています。</value>
   </data>
   <data name="LblWaitForImageSaving" xml:space="preserve">
-    <value>Waiting for image saving</value>
+    <value>画像の保存完了待ち</value>
   </data>
   <data name="LblWaitForTemperatureStep" xml:space="preserve">
-    <value>Waiting for camera to reach next temperature step</value>
+    <value>カメラ温度が次のステップ温度に到達するのを待っています。</value>
   </data>
   <data name="LblWaiting" xml:space="preserve">
-    <value>Waiting</value>
+    <value>待ち状態</value>
   </data>
   <data name="LblWaitingForCamera" xml:space="preserve">
-    <value>Waiting for Camera</value>
+    <value>カメラ待ち</value>
   </data>
   <data name="LblWarmCamAtSequenceEnd" xml:space="preserve">
-    <value>Warm camera when sequence ends</value>
+    <value>シーケンス終了時にカメラを昇温する</value>
   </data>
   <data name="LblWarmEnabledButCameraCannotWarm" xml:space="preserve">
-    <value>Camera is set to warm up at end of sequence, yet it is unable to do so</value>
+    <value>シーケンス終了時にカメラを昇温する設定ですが、できません。</value>
   </data>
   <data name="LblWarming" xml:space="preserve">
-    <value>Warming</value>
+    <value>昇温中</value>
   </data>
   <data name="LblWarning" xml:space="preserve">
-    <value>Warning</value>
+    <value>警告</value>
   </data>
   <data name="LblWeather" xml:space="preserve">
-    <value>Weather</value>
+    <value>天気</value>
   </data>
   <data name="LblWeatherASCOMConnectFailed" xml:space="preserve">
-    <value>Unable to connect to ASCOM ObservingConditions driver:</value>
+    <value>ASCOM ObservingConditionsドライバーに接続できません。</value>
   </data>
   <data name="LblWeatherConnected" xml:space="preserve">
-    <value>Weather data source connected</value>
+    <value>天気データソースに接続済み</value>
   </data>
   <data name="LblWeatherConnectionLost" xml:space="preserve">
-    <value>Weather data source connection failed.</value>
+    <value>天気データソースへ接続失敗しました。</value>
   </data>
   <data name="LblWeatherDisconnect" xml:space="preserve">
-    <value>Weather data source disconnected</value>
+    <value>天気データソースの接続が切れました。</value>
   </data>
   <data name="LblWeatherDisplayFahrenheit" xml:space="preserve">
-    <value>Fahrenheit Temperatures</value>
+    <value>華氏温度</value>
   </data>
   <data name="LblWeatherDisplayFahrenheitTooltip" xml:space="preserve">
-    <value>Display temperatures in Fahrenheit</value>
+    <value>華氏にて温度表示</value>
   </data>
   <data name="LblWeatherDisplayImperial" xml:space="preserve">
-    <value>Imperial Units</value>
+    <value>帝国単位</value>
   </data>
   <data name="LblWeatherDisplayImperialTooltip" xml:space="preserve">
-    <value>Display non-temperature weather data in Imperial units</value>
+    <value>非温度天気データを帝国単位にて表示</value>
   </data>
   <data name="LblWeatherNoSource" xml:space="preserve">
-    <value>No Weather Data Source</value>
+    <value>天気データソース無し</value>
   </data>
   <data name="LblWeatherReconnect" xml:space="preserve">
-    <value>Weather data source connection lost! Error message:</value>
+    <value>天気データソースへの接続が切れました。エラーメッセージ:</value>
   </data>
   <data name="LblWelcome" xml:space="preserve">
-    <value>Welcome to Nighttime Imaging 'N' Astronomy!</value>
+    <value>ようこそNighttime Imaging 'N' Astronomyへ</value>
   </data>
   <data name="LblWest" xml:space="preserve">
-    <value>West</value>
+    <value>西</value>
   </data>
   <data name="LblWidth" xml:space="preserve">
-    <value>Width</value>
+    <value>幅</value>
   </data>
   <data name="LblWindDirection" xml:space="preserve">
-    <value>Wind Direction</value>
+    <value>風向き</value>
   </data>
   <data name="LblWindGust" xml:space="preserve">
-    <value>Wind Gust</value>
+    <value>突風</value>
   </data>
   <data name="LblWindSpeed" xml:space="preserve">
-    <value>Wind Speed</value>
+    <value>風速</value>
   </data>
   <data name="LblXAxisScale" xml:space="preserve">
-    <value>X-Axis Scale</value>
+    <value>X軸目盛</value>
   </data>
   <data name="LblXisf" xml:space="preserve">
     <value>XISF</value>
   </data>
   <data name="LblYAxisScale" xml:space="preserve">
-    <value>Y-Axis Scale</value>
+    <value>Y軸目盛</value>
   </data>
   <data name="LblYAxisUnits" xml:space="preserve">
-    <value>Y-Axis Units</value>
+    <value>Y軸単位</value>
   </data>
   <data name="LblYes" xml:space="preserve">
-    <value>Yes</value>
+    <value>はい</value>
   </data>
   <data name="LblZoomIn" xml:space="preserve">
-    <value>Zoom in by 25%</value>
+    <value>25%毎にズームイン</value>
   </data>
   <data name="LblZoomOut" xml:space="preserve">
-    <value>Zoom out by 25%</value>
+    <value>25%毎にズームアウト</value>
   </data>
   <data name="LblZoomStretch" xml:space="preserve">
     <value>Fit Image to Area</value>

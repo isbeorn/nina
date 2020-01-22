@@ -1316,7 +1316,7 @@ Ist dieser Auslöser deaktiviert, wird dieser Schritt übersprungen.</value>
     <value>Öffnen</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Abdeckung für Dark Flats öffnen</value>
+    <value>Open cover for darks and dark flats</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Setzen</value>
