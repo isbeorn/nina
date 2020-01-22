@@ -375,6 +375,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Locale.it-IT.resx</DependentUpon>
     </Compile>
+    <Compile Include="Locale\Locale.ja-JP.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.ja-JP.resx</DependentUpon>
+    </Compile>
     <Compile Include="Locale\Locale.nl-NL.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1668,6 +1673,10 @@
     <EmbeddedResource Include="Locale\Locale.it-IT.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Locale.it-IT.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.ja-JP.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.ja-JP.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Locale\Locale.nl-NL.resx">
       <Generator>ResXFileCodeGenerator</Generator>
