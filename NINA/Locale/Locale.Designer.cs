@@ -5344,6 +5344,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New Position.
+        /// </summary>
+        internal static string LblNewPosition {
+            get {
+                return ResourceManager.GetString("LblNewPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New update is available ({0})! Do you want to update now?.
         /// </summary>
         internal static string LblNewUpdateAvailable {
@@ -5916,6 +5925,15 @@ namespace NINA.Locale {
         internal static string LblOK {
             get {
                 return ResourceManager.GetString("LblOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Old Position.
+        /// </summary>
+        internal static string LblOldPosition {
+            get {
+                return ResourceManager.GetString("LblOldPosition", resourceCulture);
             }
         }
         

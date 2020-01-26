@@ -33,8 +33,10 @@ namespace NINA.Utility {
 
     public class AsyncObservableCollection<T> : ObservableCollection<T> {
 
-        private SynchronizationContext _synchronizationContext = new DispatcherSynchronizationContext(
-                    Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher);
+        private SynchronizationContext _synchronizationContext =
+            Application.Current?.Dispatcher != null
+            ? new DispatcherSynchronizationContext(Application.Current.Dispatcher)
+            : null;
 
         public AsyncObservableCollection() {
         }

@@ -110,7 +110,7 @@ namespace NINA.ViewModel {
             FocusPoints = new AsyncObservableCollection<ScatterErrorPoint>();
             PlotFocusPoints = new AsyncObservableCollection<DataPoint>();
 
-            StartAutoFocusCommand = new AsyncCommand<bool>(
+            StartAutoFocusCommand = new AsyncCommand<AutoFocusReport>(
                 () =>
                     Task.Run(
                         async () => {
@@ -749,7 +749,8 @@ namespace NINA.ViewModel {
             return backlash;
         }
 
-        public async Task<bool> StartAutoFocus(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        public async Task<AutoFocusReport> StartAutoFocus(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            AutoFocusReport report = null;
             Logger.Trace("Starting Autofocus");
             FocusPoints.Clear();
             PlotFocusPoints.Clear();
@@ -839,7 +840,7 @@ namespace NINA.ViewModel {
                             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocusNotEnoughtSpreadedPoints"] });
                             //Reattempting in this situation is very likely meaningless - just move back to initial focus position and call it a day
                             await focuserMediator.MoveFocuser(initialFocusPosition);
-                            return false;
+                            return null;
                         }
 
                         // Let's keep moving in, one step at a time, until we have enough left trend points. Then we can think about moving out to fill in the right trend points
@@ -870,7 +871,7 @@ namespace NINA.ViewModel {
 
                     FinalFocusPoint = DetermineFinalFocusPoint();
 
-                    GenerateReport(initialFocusPosition, initialHFR);
+                    report = GenerateReport(initialFocusPosition, initialHFR);
 
                     LastAutoFocusPoint = new AutoFocusPoint { Focuspoint = FinalFocusPoint, Temperature = focuserInfo.Temperature, Timestamp = DateTime.Now };
 
@@ -903,7 +904,7 @@ namespace NINA.ViewModel {
                             Logger.Warning("Potentially bad auto-focus. Restoring original focus position.");
                             reattempt = false;
                             await focuserMediator.MoveFocuser(initialFocusPosition);
-                            return false;
+                            return null;
                         }
                     }
                 } while (reattempt);
@@ -942,7 +943,7 @@ namespace NINA.ViewModel {
                 await this.guiderMediator.StartGuiding(token);
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
-            return true;
+            return report;
         }
 
         private DataPoint DetermineFinalFocusPoint() {
@@ -989,12 +990,13 @@ namespace NINA.ViewModel {
         /// </summary>
         /// <param name="initialFocusPosition"></param>
         /// <param name="initialHFR"></param>
-        private void GenerateReport(double initialFocusPosition, double initialHFR) {
+        private AutoFocusReport GenerateReport(double initialFocusPosition, double initialHFR) {
             try {
                 var method = profileService.ActiveProfile.FocuserSettings.AutoFocusMethod;
 
                 var report = new AutoFocusReport() {
                     Timestamp = DateTime.Now,
+                    Temperature = focuserInfo.Temperature,
                     InitialFocusPoint = new FocusPoint() {
                         Position = initialFocusPosition,
                         Value = initialHFR
@@ -1019,8 +1021,10 @@ namespace NINA.ViewModel {
                 };
 
                 File.WriteAllText(Path.Combine(ReportDirectory, DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss") + ".json"), JsonConvert.SerializeObject(report));
+                return report;
             } catch (Exception ex) {
                 Logger.Error(ex);
+                return null;
             }
         }
 

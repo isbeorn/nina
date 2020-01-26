@@ -14,19 +14,22 @@ namespace NINA.ViewModel.AutoFocus {
         public DateTime Timestamp { get; set; }
 
         [JsonProperty]
+        public double Temperature { get; set; }
+
+        [JsonProperty]
         public string Method { get; set; }
 
         [JsonProperty]
         public string Fitting { get; set; }
 
         [JsonProperty]
-        public FocusPoint InitialFocusPoint { get; set; }
+        public FocusPoint InitialFocusPoint { get; set; } = new FocusPoint();
 
         [JsonProperty]
-        public FocusPoint CalculatedFocusPoint { get; set; }
+        public FocusPoint CalculatedFocusPoint { get; set; } = new FocusPoint();
 
         [JsonProperty]
-        public FocusPoint PreviousFocusPoint { get; set; }
+        public FocusPoint PreviousFocusPoint { get; set; } = new FocusPoint();
 
         [JsonProperty]
         public IEnumerable<FocusPoint> MeasurePoints { get; set; }

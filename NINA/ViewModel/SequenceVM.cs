@@ -758,12 +758,13 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task AutoFocus(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        private async Task<AutoFocus.AutoFocusReport> AutoFocus(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
             using (var autoFocus = new AutoFocusVM(profileService, cameraMediator, filterWheelMediator, focuserMediator, guiderMediator, imagingMediator, applicationStatusMediator)) {
                 var service = WindowServiceFactory.Create();
                 service.Show(autoFocus, this.Title + " - " + autoFocus.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
-                await autoFocus.StartAutoFocus(filter, token, progress);
+                var report = await autoFocus.StartAutoFocus(filter, token, progress);
                 service.DelayedClose(TimeSpan.FromSeconds(10));
+                return report;
             }
         }
 
@@ -854,7 +855,7 @@ namespace NINA.ViewModel {
                         }
 
                         /* 2) Check if Autofocus is requiredfinish */
-                        if (seq.IsLightSequence() && ShouldAutoFocus(csl, seq, exposureCount, prevFilterPosition, lastAutoFocusTime, lastAutoFocusTemperature)) {
+                        if (seq.IsLightSequence() && ShouldAutoFocus(csl, seq, exposureCount - 1, prevFilterPosition, lastAutoFocusTime, lastAutoFocusTemperature)) {
                             //Wait for previous image processing task to be done, so Autofocus doesn't turn off HFR calculation too early
                             if (imageProcessingTask != null && !imageProcessingTask.IsCompleted) {
                                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForImageProcessing"] });
@@ -862,7 +863,8 @@ namespace NINA.ViewModel {
                             }
 
                             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocus"] });
-                            await AutoFocus(seq.FilterType, _canceltoken.Token, progress);
+                            var report = await AutoFocus(seq.FilterType, _canceltoken.Token, progress);
+                            ImgHistoryVM.AppendAutoFocusPoint(report);
                             lastAutoFocusTime = DateTime.UtcNow;
                             lastAutoFocusTemperature = focuserInfo?.Temperature ?? double.NaN;
                             progress.Report(new ApplicationStatus() { Status = " " });
@@ -1117,7 +1119,11 @@ namespace NINA.ViewModel {
                 return true;
             }
 
-            if (csl.AutoFocusAfterSetExposures && exposureCount % csl.AutoFocusSetExposures == 0) {
+            if (csl.AutoFocusAfterSetExposures
+                && (
+                    (csl.AutoFocusSetExposures == 1)
+                    || (exposureCount > 0 && exposureCount % csl.AutoFocusSetExposures == 0)
+                )) {
                 /* Trigger autofocus after amount of exposures*/
                 return true;
             }

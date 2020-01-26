@@ -1903,6 +1903,10 @@ Calculated HFR: {2}
   <data name="LblNative" xml:space="preserve">
     <value>Native</value>
   </data>
+  <data name="LblNewPosition" xml:space="preserve">
+    <value>New Position</value>
+    <comment>Newly Calulated Autofocus Position</comment>
+  </data>
   <data name="LblNewUpdateAvailable" xml:space="preserve">
     <value>New update is available ({0})! Do you want to update now?</value>
   </data>
@@ -2094,6 +2098,10 @@ Calculated HFR: {2}
   </data>
   <data name="LblOK" xml:space="preserve">
     <value>OK</value>
+  </data>
+  <data name="LblOldPosition" xml:space="preserve">
+    <value>Old Position</value>
+    <comment>Previous Focuser Position</comment>
   </data>
   <data name="LblOn" xml:space="preserve">
     <value>On</value>

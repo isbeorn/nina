@@ -68,15 +68,31 @@ namespace NINATest {
         }
 
         [Test]
-        public void ImageHistory_LimitedStack_Test() {
+        public void ImageHistory_LimitedStack_FullConcurrency_Test() {
             var sut = new ImageHistoryVM(profileServiceMock.Object);
 
             Parallel.For(0, 300, (i) => {
                 sut.Add(new StarDetectionAnalysis() { DetectedStars = i, HFR = i });
+                sut.AppendAutoFocusPoint(new NINA.ViewModel.AutoFocus.AutoFocusReport());
             });
 
             sut.LimitedImageHistoryStack.Count.Should().Be(100);
+            sut.AutoFocusPoints.Select(x => x.Id).Distinct().ToList().Count.Should().BeLessOrEqualTo(100);
             sut.ImageHistory.Count.Should().Be(300);
+        }
+
+        [Test]
+        public void ImageHistory_LimitedStack_Concurrency_Test() {
+            var sut = new ImageHistoryVM(profileServiceMock.Object);
+
+            for (int i = 0; i < 1000; i++) {
+                sut.Add(new StarDetectionAnalysis() { DetectedStars = i, HFR = i });
+                sut.AppendAutoFocusPoint(new NINA.ViewModel.AutoFocus.AutoFocusReport());
+            }
+
+            sut.LimitedImageHistoryStack.Count.Should().Be(100);
+            sut.AutoFocusPoints.Count.Should().Be(100);
+            sut.ImageHistory.Count.Should().Be(1000);
         }
 
         [Test]
@@ -85,11 +101,13 @@ namespace NINATest {
 
             Parallel.For(0, 100, (i) => {
                 sut.Add(new StarDetectionAnalysis() { DetectedStars = i, HFR = i });
+                sut.AppendAutoFocusPoint(new NINA.ViewModel.AutoFocus.AutoFocusReport());
             });
 
             sut.PlotClear();
 
             sut.LimitedImageHistoryStack.Count.Should().Be(0);
+            sut.AutoFocusPoints.Count.Should().Be(0);
             sut.ImageHistory.Count.Should().Be(100);
         }
     }
