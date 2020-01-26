@@ -68,6 +68,8 @@
 - Improved automated plate solve pop up window with additonaly information
 - Added ability to record flat exposure times with the flat wizard, to be used in a sequence later
 - Added estimated target start and end times to sequence view - useful for multi-target sequence sets
+- XISF files may be created with optional compression or shuffled compression of the image data using LZ4, LZ4-HC, or ZLib (deflate) lossless compression algorithms. Decompression of compressed XISF files is also supported
+- XISF files may be created with optional embedded checksums of the image data using SHA1, SHA-256, or SHA-512 hashing algorithms. Checksums are verified when opening a XISF file which has one
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false

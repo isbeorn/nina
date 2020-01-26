@@ -469,6 +469,21 @@
       <Component Id="NINA.MGEN.dll" Guid="aff16aed-fbcc-4db3-8ae6-30387f4995e9">
         <File Id="NINA.MGEN.dll" Name="NINA.MGEN.dll" Source="$(var.NINA.MGEN_TargetDir)NINA.MGEN.dll" />
       </Component>
+      <Component Id="LZ4.dll" Guid="8b76a83a-338b-44cd-9459-c1f479e6945f">
+        <File Id="LZ4.dll" Name="LZ4.dll" Source="$(var.NINA_TargetDir)LZ4.dll" />
+      </Component>
+      <Component Id="Zlib.Portable.dll" Guid="e029186f-d493-4b7e-aee1-e84ba51eaf7a">
+        <File Id="Zlib.Portable.dll" Name="Zlib.Portable.dll" Source="$(var.NINA_TargetDir)Zlib.Portable.dll" />
+      </Component>
+      <Component Id="Zlib.Portable.xml" Guid="5bb512d3-1eed-4214-907a-5e07bc8ae739">
+        <File Id="Zlib.Portable.xml" Name="Zlib.Portable.xml" Source="$(var.NINA_TargetDir)Zlib.Portable.xml" />
+      </Component>
+      <Component Id="SHA3.dll" Guid="029f3b52-4cfc-4008-a413-0dc6cf32bdad">
+        <File Id="SHA3.dll" Name="SHA3.dll" Source="$(var.NINA_TargetDir)SHA3.dll" />
+      </Component>
+      <Component Id="SHA3Managed.dll" Guid="35435550-119d-4bf5-a30e-7f51612d1380">
+        <File Id="SHA3Managed.dll" Name="SHA3Managed.dll" Source="$(var.NINA_TargetDir)SHA3Managed.dll" />
+      </Component>
     </ComponentGroup>
   </Fragment>
   <!--<Fragment>

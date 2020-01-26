@@ -1,8 +1,6 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
-
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
     N.I.N.A. is free software: you can redistribute it and/or modify
@@ -19,8 +17,14 @@
     along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+ * Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
+ * Copyright 2019 Dale Ghent <daleg@elemental.org>
+ */
+
 #endregion "copyright"
 
+using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.Enum;
 using NINA.Utility.ImageAnalysis;
@@ -81,11 +85,11 @@ namespace NINA.Model.ImageData {
         /// <param name="fileType"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public async Task<string> PrepareSave(string filePath, FileTypeEnum fileType, CancellationToken cancelToken = default) {
+        public async Task<string> PrepareSave(FileSaveInfo fileSaveInfo, CancellationToken cancelToken = default) {
             var actualPath = string.Empty;
             try {
                 using (MyStopWatch.Measure()) {
-                    actualPath = await SaveToDiskAsync(filePath, fileType, cancelToken);
+                    actualPath = await SaveToDiskAsync(fileSaveInfo, cancelToken, false);
                 }
             } catch (OperationCanceledException ex) {
                 throw ex;
@@ -181,12 +185,12 @@ namespace NINA.Model.ImageData {
             return p;
         }
 
-        public async Task<string> SaveToDisk(string path, string pattern, FileTypeEnum fileType, CancellationToken token, bool forceFileType = false) {
-            var actualPath = string.Empty;
+        public async Task<string> SaveToDisk(FileSaveInfo fileSaveInfo, CancellationToken token, bool forceFileType = false) {
+            string actualPath = string.Empty;
             try {
                 using (MyStopWatch.Measure()) {
-                    var tempPath = await SaveToDiskAsync(path, fileType, token, forceFileType);
-                    actualPath = FinalizeSave(tempPath, pattern);
+                    string tempPath = await SaveToDiskAsync(fileSaveInfo, token, forceFileType);
+                    actualPath = FinalizeSave(tempPath, fileSaveInfo.FilePattern);
                 }
             } catch (OperationCanceledException ex) {
                 throw ex;
@@ -198,63 +202,78 @@ namespace NINA.Model.ImageData {
             return actualPath;
         }
 
-        private Task<string> SaveToDiskAsync(string path, FileTypeEnum fileType, CancellationToken cancelToken, bool forceFileType = false) {
+        private Task<string> SaveToDiskAsync(FileSaveInfo fileSaveInfo, CancellationToken cancelToken, bool forceFileType = false) {
             return Task.Run(() => {
-                var completefilename = Path.Combine(path, Guid.NewGuid().ToString());
-                if (!forceFileType && this.Data.RAWData != null) {
-                    completefilename = SaveRAW(completefilename);
-                    fileType = FileTypeEnum.RAW;
+                string path = string.Empty;
+                fileSaveInfo.FilePath = Path.Combine(fileSaveInfo.FilePath, Guid.NewGuid().ToString());
+
+                if (!forceFileType && Data.RAWData != null) {
+                    fileSaveInfo.FilePath = SaveRAW(fileSaveInfo.FilePath);
+                    fileSaveInfo.FileType = FileTypeEnum.RAW;
                 } else {
-                    if (fileType == FileTypeEnum.FITS) {
-                        completefilename = SaveFits(completefilename);
-                    } else if (fileType == FileTypeEnum.TIFF) {
-                        completefilename = SaveTiff(completefilename, TiffCompressOption.None);
-                    } else if (fileType == FileTypeEnum.TIFF_ZIP) {
-                        completefilename = SaveTiff(completefilename, TiffCompressOption.Zip);
-                    } else if (fileType == FileTypeEnum.TIFF_LZW) {
-                        completefilename = SaveTiff(completefilename, TiffCompressOption.Lzw);
-                    } else if (fileType == FileTypeEnum.XISF) {
-                        completefilename = SaveXisf(completefilename);
-                    } else {
-                        completefilename = SaveTiff(completefilename, TiffCompressOption.None);
+                    switch (fileSaveInfo.FileType) {
+                        case FileTypeEnum.FITS:
+                            path = SaveFits(fileSaveInfo);
+                            break;
+
+                        case FileTypeEnum.XISF:
+                            path = SaveXisf(fileSaveInfo);
+                            break;
+
+                        case FileTypeEnum.TIFF:
+                        default:
+                            path = SaveTiff(fileSaveInfo);
+                            break;
                     }
                 }
-                return completefilename;
+
+                return path;
             }, cancelToken);
         }
 
         private string SaveRAW(string path) {
             Directory.CreateDirectory(Path.GetDirectoryName(path));
-            var data = this.Data;
-            var uniquePath = Utility.Utility.GetUniqueFilePath(path + "." + data.RAWType);
+            IImageArray data = Data;
+            string uniquePath = Utility.Utility.GetUniqueFilePath(path + "." + data.RAWType);
             File.WriteAllBytes(uniquePath, data.RAWData);
             return uniquePath;
         }
 
-        private string SaveTiff(string path, TiffCompressOption c) {
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-            var uniquePath = Utility.Utility.GetUniqueFilePath(path + ".tif");
+        private string SaveTiff(FileSaveInfo fileSaveInfo) {
+            Directory.CreateDirectory(Path.GetDirectoryName(fileSaveInfo.FilePath));
+            string uniquePath = Utility.Utility.GetUniqueFilePath(fileSaveInfo.FilePath + ".tif");
 
             using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
                 TiffBitmapEncoder encoder = new TiffBitmapEncoder();
-                encoder.Compression = c;
-                encoder.Frames.Add(BitmapFrame.Create(this.RenderBitmapSource()));
+
+                switch (fileSaveInfo.TIFFCompressionType) {
+                    case TIFFCompressionTypeEnum.LZW:
+                        encoder.Compression = TiffCompressOption.Lzw;
+                        break;
+
+                    case TIFFCompressionTypeEnum.ZIP:
+                        encoder.Compression = TiffCompressOption.Zip;
+                        break;
+                }
+
+                encoder.Frames.Add(BitmapFrame.Create(RenderBitmapSource()));
                 encoder.Save(fs);
             }
+
             return uniquePath;
         }
 
-        private string SaveFits(string path) {
+        private string SaveFits(FileSaveInfo fileSaveInfo) {
             FITS f = new FITS(
-                this.Data.FlatArray,
-                this.Properties.Width,
-                this.Properties.Height
+                Data.FlatArray,
+                Properties.Width,
+                Properties.Height
             );
 
-            f.PopulateHeaderCards(this.MetaData);
+            f.PopulateHeaderCards(MetaData);
 
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-            var uniquePath = Utility.Utility.GetUniqueFilePath(path + ".fits");
+            Directory.CreateDirectory(Path.GetDirectoryName(fileSaveInfo.FilePath));
+            string uniquePath = Utility.Utility.GetUniqueFilePath(fileSaveInfo.FilePath + ".fits");
 
             using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
                 f.Write(fs);
@@ -263,19 +282,19 @@ namespace NINA.Model.ImageData {
             return uniquePath;
         }
 
-        private string SaveXisf(string path) {
-            var header = new XISFHeader();
+        private string SaveXisf(FileSaveInfo fileSaveInfo) {
+            XISFHeader header = new XISFHeader();
 
-            header.AddImageMetaData(this.Properties, this.MetaData.Image.ImageType);
+            header.AddImageMetaData(Properties, MetaData.Image.ImageType);
 
-            header.Populate(this.MetaData);
+            header.Populate(MetaData);
 
             XISF img = new XISF(header);
 
-            img.AddAttachedImage(this.Data.FlatArray);
+            img.AddAttachedImage(Data.FlatArray, fileSaveInfo);
 
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-            var uniquePath = Utility.Utility.GetUniqueFilePath(path + ".xisf");
+            Directory.CreateDirectory(Path.GetDirectoryName(fileSaveInfo.FilePath));
+            string uniquePath = Utility.Utility.GetUniqueFilePath(fileSaveInfo.FilePath + ".xisf");
 
             using (FileStream fs = new FileStream(uniquePath, FileMode.Create)) {
                 img.Save(fs);

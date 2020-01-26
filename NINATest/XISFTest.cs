@@ -47,14 +47,21 @@ namespace NINATest {
             var sut = new XISF(header);
 
             sut.Header.Should().Equals(header);
-            sut.PaddedBlockSize.Should().Be(4096);
+            sut.PaddedBlockSize.Should().Be(1024);
         }
 
         [Test]
         public void XISFAddAttachedImageNoImageTest() {
             var header = new XISFHeader();
             var sut = new XISF(header);
-            Action act = () => sut.AddAttachedImage(new ushort[] { });
+
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = string.Empty,
+                FilePattern = "TestFile",
+                FileType = NINA.Utility.Enum.FileTypeEnum.XISF
+            };
+
+            Action act = () => sut.AddAttachedImage(new ushort[] { }, fileSaveInfo);
             act.Should().Throw<InvalidOperationException>().WithMessage("No Image Header Information available for attaching image. Add Image Header first!");
         }
 
@@ -69,14 +76,328 @@ namespace NINATest {
             };
             var length = data.Length * sizeof(ushort);
 
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = string.Empty,
+                FilePattern = "TestFile",
+                FileType = NINA.Utility.Enum.FileTypeEnum.XISF
+            };
+
             var header = new XISFHeader();
             header.AddImageMetaData(props, imageType);
             var sut = new XISF(header);
-            sut.AddAttachedImage(data);
+            sut.AddAttachedImage(data, fileSaveInfo);
 
-            sut.Header.Image.Should().HaveAttribute("location", $"attachment:4096:{length}");
+            sut.Header.Image.Should().HaveAttribute("location", $"attachment:{sut.PaddedBlockSize}:{length}");
 
-            sut.Data.Data.Should().Equal(data);
+            ushort[] outarray = new ushort[sut.Data.Data.Length / 2];
+            Buffer.BlockCopy(sut.Data.Data, 0, outarray, 0, sut.Data.Data.Length);
+            outarray.Should().Equal(data);
+        }
+
+        [Test]
+        public void XISFCompressLZ4Test() {
+            int imgsize = 128;
+            var props = new ImageProperties(width: imgsize, height: imgsize, bitDepth: 16, isBayered: false);
+            var imageType = "LIGHT";
+            ushort[] data = new ushort[imgsize * imgsize];
+            var length = data.Length * sizeof(ushort);
+
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = string.Empty,
+                FilePattern = string.Empty,
+                FileType = NINA.Utility.Enum.FileTypeEnum.XISF,
+                XISFCompressionType = NINA.Utility.Enum.XISFCompressionTypeEnum.LZ4
+            };
+
+            for (ushort i = 0; i < data.Length; i++) {
+                data[i] = ushort.MaxValue;
+            }
+
+            var header = new XISFHeader();
+            header.AddImageMetaData(props, imageType);
+            var sut = new XISF(header);
+            sut.AddAttachedImage(data, fileSaveInfo);
+
+            sut.Header.Image.Should().HaveAttribute("compression", $"lz4:{length}");
+            sut.Header.Image.Should().HaveAttribute("location", $"attachment:{sut.PaddedBlockSize}:{sut.Data.Data.Length}");
+        }
+
+        [Test]
+        public void XISFCompressLZ4ShuffledTest() {
+            int imgsize = 128;
+            var props = new ImageProperties(width: imgsize, height: imgsize, bitDepth: 16, isBayered: false);
+            var imageType = "LIGHT";
+            ushort[] data = new ushort[imgsize * imgsize];
+            var length = data.Length * sizeof(ushort);
+
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = string.Empty,
+                FilePattern = string.Empty,
+                FileType = NINA.Utility.Enum.FileTypeEnum.XISF,
+                XISFCompressionType = NINA.Utility.Enum.XISFCompressionTypeEnum.LZ4,
+                XISFByteShuffling = true
+            };
+
+            for (ushort i = 0; i < data.Length; i++) {
+                data[i] = ushort.MaxValue;
+            }
+
+            var header = new XISFHeader();
+            header.AddImageMetaData(props, imageType);
+            var sut = new XISF(header);
+            sut.AddAttachedImage(data, fileSaveInfo);
+
+            sut.Header.Image.Should().HaveAttribute("compression", $"lz4+sh:{length}:{sizeof(ushort)}");
+            sut.Header.Image.Should().HaveAttribute("location", $"attachment:{sut.PaddedBlockSize}:{sut.Data.Data.Length}");
+        }
+
+        [Test]
+        public void XISFCompressLZ4HCTest() {
+            int imgsize = 128;
+            var props = new ImageProperties(width: imgsize, height: imgsize, bitDepth: 16, isBayered: false);
+            var imageType = "LIGHT";
+            ushort[] data = new ushort[imgsize * imgsize];
+            var length = data.Length * sizeof(ushort);
+
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = string.Empty,
+                FilePattern = string.Empty,
+                FileType = NINA.Utility.Enum.FileTypeEnum.XISF,
+                XISFCompressionType = NINA.Utility.Enum.XISFCompressionTypeEnum.LZ4HC
+            };
+
+            for (ushort i = 0; i < data.Length; i++) {
+                data[i] = ushort.MaxValue;
+            }
+
+            var header = new XISFHeader();
+            header.AddImageMetaData(props, imageType);
+            var sut = new XISF(header);
+            sut.AddAttachedImage(data, fileSaveInfo);
+
+            sut.Header.Image.Should().HaveAttribute("compression", $"lz4hc:{length}");
+            sut.Header.Image.Should().HaveAttribute("location", $"attachment:{sut.PaddedBlockSize}:{sut.Data.Data.Length}");
+        }
+
+        [Test]
+        public void XISFCompressLZ4HCShuffledTest() {
+            int imgsize = 128;
+            var props = new ImageProperties(width: imgsize, height: imgsize, bitDepth: 16, isBayered: false);
+            var imageType = "LIGHT";
+            ushort[] data = new ushort[imgsize * imgsize];
+            var length = data.Length * sizeof(ushort);
+
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = string.Empty,
+                FilePattern = string.Empty,
+                FileType = NINA.Utility.Enum.FileTypeEnum.XISF,
+                XISFCompressionType = NINA.Utility.Enum.XISFCompressionTypeEnum.LZ4HC,
+                XISFByteShuffling = true
+            };
+
+            for (ushort i = 0; i < data.Length; i++) {
+                data[i] = ushort.MaxValue;
+            }
+
+            var header = new XISFHeader();
+            header.AddImageMetaData(props, imageType);
+            var sut = new XISF(header);
+            sut.AddAttachedImage(data, fileSaveInfo);
+
+            sut.Header.Image.Should().HaveAttribute("compression", $"lz4hc+sh:{length}:{sizeof(ushort)}");
+            sut.Header.Image.Should().HaveAttribute("location", $"attachment:{sut.PaddedBlockSize}:{sut.Data.Data.Length}");
+        }
+
+        [Test]
+        public void XISFCompressZLibTest() {
+            int imgsize = 128;
+            var props = new ImageProperties(width: imgsize, height: imgsize, bitDepth: 16, isBayered: false);
+            var imageType = "LIGHT";
+            ushort[] data = new ushort[imgsize * imgsize];
+            var length = data.Length * sizeof(ushort);
+
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = string.Empty,
+                FilePattern = string.Empty,
+                FileType = NINA.Utility.Enum.FileTypeEnum.XISF,
+                XISFCompressionType = NINA.Utility.Enum.XISFCompressionTypeEnum.ZLIB
+            };
+
+            for (ushort i = 0; i < data.Length; i++) {
+                data[i] = ushort.MaxValue;
+            }
+
+            var header = new XISFHeader();
+            header.AddImageMetaData(props, imageType);
+            var sut = new XISF(header);
+            sut.AddAttachedImage(data, fileSaveInfo);
+
+            sut.Header.Image.Should().HaveAttribute("compression", $"zlib:{length}");
+            sut.Header.Image.Should().HaveAttribute("location", $"attachment:{sut.PaddedBlockSize}:{sut.Data.Data.Length}");
+        }
+
+        [Test]
+        public void XISFCompressZLibShuffledTest() {
+            int imgsize = 128;
+            var props = new ImageProperties(width: imgsize, height: imgsize, bitDepth: 16, isBayered: false);
+            var imageType = "LIGHT";
+            ushort[] data = new ushort[imgsize * imgsize];
+            var length = data.Length * sizeof(ushort);
+
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = string.Empty,
+                FilePattern = string.Empty,
+                FileType = NINA.Utility.Enum.FileTypeEnum.XISF,
+                XISFCompressionType = NINA.Utility.Enum.XISFCompressionTypeEnum.ZLIB,
+                XISFByteShuffling = true
+            };
+
+            for (ushort i = 0; i < data.Length; i++) {
+                data[i] = ushort.MaxValue;
+            }
+
+            var header = new XISFHeader();
+            header.AddImageMetaData(props, imageType);
+            var sut = new XISF(header);
+            sut.AddAttachedImage(data, fileSaveInfo);
+
+            sut.Header.Image.Should().HaveAttribute("compression", $"zlib+sh:{length}:{sizeof(ushort)}");
+            sut.Header.Image.Should().HaveAttribute("location", $"attachment:{sut.PaddedBlockSize}:{sut.Data.Data.Length}");
+        }
+
+        [Test]
+        public void XISFChecksumSHA1Test() {
+            int imgsize = 128;
+            var props = new ImageProperties(width: imgsize, height: imgsize, bitDepth: 16, isBayered: false);
+            var imageType = "LIGHT";
+            ushort[] data = new ushort[imgsize * imgsize];
+            string cksum = "ca711c69165e1fa5be72993b9a7870ef6d485249";
+
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = string.Empty,
+                FilePattern = string.Empty,
+                FileType = NINA.Utility.Enum.FileTypeEnum.XISF,
+                XISFChecksumType = NINA.Utility.Enum.XISFChecksumTypeEnum.SHA1
+            };
+
+            for (ushort i = 0; i < data.Length; i++) {
+                data[i] = ushort.MaxValue;
+            }
+
+            var header = new XISFHeader();
+            header.AddImageMetaData(props, imageType);
+            var sut = new XISF(header);
+            sut.AddAttachedImage(data, fileSaveInfo);
+
+            sut.Header.Image.Should().HaveAttribute("checksum", $"sha-1:{cksum}");
+        }
+
+        [Test]
+        public void XISFChecksumSHA256Test() {
+            int imgsize = 128;
+            var props = new ImageProperties(width: imgsize, height: imgsize, bitDepth: 16, isBayered: false);
+            var imageType = "LIGHT";
+            ushort[] data = new ushort[imgsize * imgsize];
+            string cksum = "2d864c0b789a43214eee8524d3182075125e5ca2cd527f3582ec87ffd94076bc";
+
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = string.Empty,
+                FilePattern = string.Empty,
+                FileType = NINA.Utility.Enum.FileTypeEnum.XISF,
+                XISFChecksumType = NINA.Utility.Enum.XISFChecksumTypeEnum.SHA256
+            };
+
+            for (ushort i = 0; i < data.Length; i++) {
+                data[i] = ushort.MaxValue;
+            }
+
+            var header = new XISFHeader();
+            header.AddImageMetaData(props, imageType);
+            var sut = new XISF(header);
+            sut.AddAttachedImage(data, fileSaveInfo);
+
+            sut.Header.Image.Should().HaveAttribute("checksum", $"sha-256:{cksum}");
+        }
+
+        [Test]
+        public void XISFChecksumSHA512Test() {
+            int imgsize = 128;
+            var props = new ImageProperties(width: imgsize, height: imgsize, bitDepth: 16, isBayered: false);
+            var imageType = "LIGHT";
+            ushort[] data = new ushort[imgsize * imgsize];
+            string cksum = "b0dbd95e5dbe70819049ae5f10340a2c29fa630ac3afd6b3cbf97865cea418dbecf718ea6e15a596c7e8a40b9372b85ac82f602092438570247afc418650db0b";
+
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = string.Empty,
+                FilePattern = string.Empty,
+                FileType = NINA.Utility.Enum.FileTypeEnum.XISF,
+                XISFChecksumType = NINA.Utility.Enum.XISFChecksumTypeEnum.SHA512
+            };
+
+            for (ushort i = 0; i < data.Length; i++) {
+                data[i] = ushort.MaxValue;
+            }
+
+            var header = new XISFHeader();
+            header.AddImageMetaData(props, imageType);
+            var sut = new XISF(header);
+            sut.AddAttachedImage(data, fileSaveInfo);
+
+            sut.Header.Image.Should().HaveAttribute("checksum", $"sha-512:{cksum}");
+        }
+
+        [Test]
+        public void XISFChecksumSHA3_256Test() {
+            int imgsize = 128;
+            var props = new ImageProperties(width: imgsize, height: imgsize, bitDepth: 16, isBayered: false);
+            var imageType = "LIGHT";
+            ushort[] data = new ushort[imgsize * imgsize];
+            string cksum = "1454fca9a69b7c15209d52a7474b3b80cfc4b80c5e1720d24c13a24d9d832c0e";
+
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = string.Empty,
+                FilePattern = string.Empty,
+                FileType = NINA.Utility.Enum.FileTypeEnum.XISF,
+                XISFChecksumType = NINA.Utility.Enum.XISFChecksumTypeEnum.SHA3_256
+            };
+
+            for (ushort i = 0; i < data.Length; i++) {
+                data[i] = ushort.MaxValue;
+            }
+
+            var header = new XISFHeader();
+            header.AddImageMetaData(props, imageType);
+            var sut = new XISF(header);
+            sut.AddAttachedImage(data, fileSaveInfo);
+
+            sut.Header.Image.Should().HaveAttribute("checksum", $"sha3-256:{cksum}");
+        }
+
+        [Test]
+        public void XISFChecksumSHA3_512Test() {
+            int imgsize = 128;
+            var props = new ImageProperties(width: imgsize, height: imgsize, bitDepth: 16, isBayered: false);
+            var imageType = "LIGHT";
+            ushort[] data = new ushort[imgsize * imgsize];
+            string cksum = "9934ce6c44048d54302b025f71ddbb44ad49da730600b60821798892c1f51b19a91b0dc9c578ed4baa4b9e7506e966100532f9b70e264aaef6ee76eda074ab57";
+
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = string.Empty,
+                FilePattern = string.Empty,
+                FileType = NINA.Utility.Enum.FileTypeEnum.XISF,
+                XISFChecksumType = NINA.Utility.Enum.XISFChecksumTypeEnum.SHA3_512
+            };
+
+            for (ushort i = 0; i < data.Length; i++) {
+                data[i] = ushort.MaxValue;
+            }
+
+            var header = new XISFHeader();
+            header.AddImageMetaData(props, imageType);
+            var sut = new XISF(header);
+            sut.AddAttachedImage(data, fileSaveInfo);
+
+            sut.Header.Image.Should().HaveAttribute("checksum", $"sha3-512:{cksum}");
         }
 
         #endregion "XISF"
@@ -97,27 +418,28 @@ namespace NINATest {
                 .And.HaveAttribute(XNamespace.Xmlns + "xsi", "http://www.w3.org/2001/XMLSchema-instance")
                 .And.HaveAttribute(xsi + "schemaLocation", "http://www.pixinsight.com/xisf http://pixinsight.com/xisf/xisf-1.0.xsd");
 
-            sut.MetaData.Should().HaveElement("Property")
+            sut.MetaData.Should().HaveElement(ns + "Property")
                 .Which.Should().BeOfType<XElement>();
 
-            sut.MetaData.Elements("Property").First(x => x.Attribute("id").Value == "XISF:CreatorApplication")
+            sut.MetaData.Elements(ns + "Property").First(x => x.Attribute("id").Value == "XISF:CreatorApplication")
                 .Should().HaveAttribute("type", "String")
                 .And.HaveAttribute("comment", "")
                 .And.HaveValue("N.I.N.A. - Nighttime Imaging 'N' Astronomy");
 
-            sut.MetaData.Elements("Property").First(x => x.Attribute("id").Value == "XISF:CreationTime")
+            sut.MetaData.Elements(ns + "Property").First(x => x.Attribute("id").Value == "XISF:CreationTime")
                 .Should().HaveAttribute("type", "TimePoint")
                 .And.HaveAttribute("comment", "");
 
             sut.Image.Should().BeNull();
 
-            sut.ByteCount.Should().Be(481);
+            sut.ByteCount.Should().Be(472);
         }
 
         [Test]
         public void XISFHeaderAddImageMetaDataTest() {
             var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false);
             var imageType = "TestType";
+            XNamespace ns = "http://www.pixinsight.com/xisf";
 
             var sut = new XISFHeader();
             sut.AddImageMetaData(props, imageType);
@@ -127,7 +449,7 @@ namespace NINATest {
                 .And.HaveAttribute("imageType", imageType)
                 .And.HaveAttribute("colorSpace", "Gray")
 
-                .And.HaveElement("FITSKeyword")
+                .And.HaveElement(ns + "FITSKeyword")
                     .Which.Should().HaveAttribute("name", "IMAGETYP")
                     .And.HaveAttribute("value", imageType)
                     .And.HaveAttribute("comment", "Type of exposure");
@@ -137,6 +459,7 @@ namespace NINATest {
         public void XISFHeaderAddImageMetaDataSNAPTest() {
             var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false);
             var imageType = "SNAPSHOT";
+            XNamespace ns = "http://www.pixinsight.com/xisf";
 
             var sut = new XISFHeader();
             sut.AddImageMetaData(props, imageType);
@@ -146,7 +469,7 @@ namespace NINATest {
                 .And.HaveAttribute("imageType", "LIGHT")
                 .And.HaveAttribute("colorSpace", "Gray")
 
-                .And.HaveElement("FITSKeyword")
+                .And.HaveElement(ns + "FITSKeyword")
                     .Which.Should().HaveAttribute("name", "IMAGETYP")
                     .And.HaveAttribute("value", "LIGHT")
                     .And.HaveAttribute("comment", "Type of exposure");
@@ -158,11 +481,12 @@ namespace NINATest {
             var type = "TestType";
             var value = "TestValue";
             var comment = "TestComment";
+            XNamespace ns = "http://www.pixinsight.com/xisf";
 
             var sut = new XISFHeader();
             sut.AddMetaDataProperty(id, type, value, comment);
 
-            sut.MetaData.Elements("Property").First(x => x.Attribute("id").Value == id)
+            sut.MetaData.Elements(ns + "Property").First(x => x.Attribute("id").Value == id)
                 .Should().HaveAttribute("type", type)
                 .And.HaveAttribute("comment", comment)
                 .And.HaveAttribute("value", value);
@@ -174,11 +498,12 @@ namespace NINATest {
             var type = "String";
             var value = "TestValue";
             var comment = "TestComment";
+            XNamespace ns = "http://www.pixinsight.com/xisf";
 
             var sut = new XISFHeader();
             sut.AddMetaDataProperty(id, type, value, comment);
 
-            sut.MetaData.Elements("Property").First(x => x.Attribute("id").Value == id)
+            sut.MetaData.Elements(ns + "Property").First(x => x.Attribute("id").Value == id)
                 .Should().HaveAttribute("type", type)
                 .And.HaveAttribute("comment", comment)
                 .And.HaveValue(value);
@@ -190,11 +515,12 @@ namespace NINATest {
             var type = "TestType";
             var value = "TestValue";
             var comment = "TestComment";
+            XNamespace ns = "http://www.pixinsight.com/xisf";
 
             var sut = new XISFHeader();
             sut.AddMetaDataProperty(new string[] { id, type }, value, comment);
 
-            sut.MetaData.Elements("Property").First(x => x.Attribute("id").Value == id)
+            sut.MetaData.Elements(ns + "Property").First(x => x.Attribute("id").Value == id)
                 .Should().HaveAttribute("type", type)
                 .And.HaveAttribute("comment", comment)
                 .And.HaveAttribute("value", value);
@@ -206,11 +532,12 @@ namespace NINATest {
             var type = "String";
             var value = "TestValue";
             var comment = "TestComment";
+            XNamespace ns = "http://www.pixinsight.com/xisf";
 
             var sut = new XISFHeader();
             sut.AddMetaDataProperty(new string[] { id, type }, value, comment);
 
-            sut.MetaData.Elements("Property").First(x => x.Attribute("id").Value == id)
+            sut.MetaData.Elements(ns + "Property").First(x => x.Attribute("id").Value == id)
                 .Should().HaveAttribute("type", type)
                 .And.HaveAttribute("comment", comment)
                 .And.HaveValue(value);
@@ -232,6 +559,7 @@ namespace NINATest {
         public void XISFHeaderAddImagePropertyNoFITSTest() {
             var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false);
             var imageType = "TestType";
+            XNamespace ns = "http://www.pixinsight.com/xisf";
 
             var id = "TestId";
             var type = "String";
@@ -242,18 +570,19 @@ namespace NINATest {
             sut.AddImageMetaData(props, imageType);
             sut.AddImageProperty(new string[] { id, type }, value, comment, true);
 
-            sut.Image.Elements("Property").First(x => x.Attribute("id").Value == id)
+            sut.Image.Elements(ns + "Property").First(x => x.Attribute("id").Value == id)
                 .Should().HaveAttribute("type", type)
                 .And.HaveAttribute("comment", comment)
                 .And.HaveValue(value);
 
-            sut.Image.Elements("FITSKeyword").Where(x => x.Attribute("name").Value != "IMAGETYP").Should().BeEmpty();
+            sut.Image.Elements(ns + "FITSKeyword").Where(x => x.Attribute("name").Value != "IMAGETYP").Should().BeEmpty();
         }
 
         [Test]
         public void XISFHeaderAddImagePropertyNoAutoFITSTest() {
             var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false);
             var imageType = "TestType";
+            XNamespace ns = "http://www.pixinsight.com/xisf";
 
             var id = "TestId";
             var type = "String";
@@ -265,18 +594,19 @@ namespace NINATest {
             sut.AddImageMetaData(props, imageType);
             sut.AddImageProperty(new string[] { id, type, name }, value, comment, false);
 
-            sut.Image.Elements("Property").First(x => x.Attribute("id").Value == id)
+            sut.Image.Elements(ns + "Property").First(x => x.Attribute("id").Value == id)
                 .Should().HaveAttribute("type", type)
                 .And.HaveAttribute("comment", comment)
                 .And.HaveValue(value);
 
-            sut.Image.Elements("FITSKeyword").Where(x => x.Attribute("name").Value != "IMAGETYP").Should().BeEmpty();
+            sut.Image.Elements(ns + "FITSKeyword").Where(x => x.Attribute("name").Value != "IMAGETYP").Should().BeEmpty();
         }
 
         [Test]
         public void XISFHeaderAddImagePropertyAutoFITSTest() {
             var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false);
             var imageType = "TestType";
+            XNamespace ns = "http://www.pixinsight.com/xisf";
 
             var id = "TestId";
             var type = "String";
@@ -288,12 +618,12 @@ namespace NINATest {
             sut.AddImageMetaData(props, imageType);
             sut.AddImageProperty(new string[] { id, type, name }, value, comment);
 
-            sut.Image.Elements("Property").First(x => x.Attribute("id").Value == id)
+            sut.Image.Elements(ns + "Property").First(x => x.Attribute("id").Value == id)
                 .Should().HaveAttribute("type", type)
                 .And.HaveAttribute("comment", comment)
                 .And.HaveValue(value);
 
-            sut.Image.Elements("FITSKeyword").First(x => x.Attribute("name").Value == name)
+            sut.Image.Elements(ns + "FITSKeyword").First(x => x.Attribute("name").Value == name)
                 .Should().HaveAttribute("value", value)
                 .And.HaveAttribute("comment", comment);
         }
@@ -313,6 +643,7 @@ namespace NINATest {
         public void XISFHeaderAddImageFITSKeywordTest() {
             var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false);
             var imageType = "TestType";
+            XNamespace ns = "http://www.pixinsight.com/xisf";
 
             var name = "FITSName";
             var value = "TestValue";
@@ -322,7 +653,7 @@ namespace NINATest {
             sut.AddImageMetaData(props, imageType);
             sut.AddImageFITSKeyword(name, value, comment);
 
-            sut.Image.Elements("FITSKeyword").First(x => x.Attribute("name").Value == name)
+            sut.Image.Elements(ns + "FITSKeyword").First(x => x.Attribute("name").Value == name)
                 .Should().HaveAttribute("value", value)
                 .And.HaveAttribute("comment", comment);
         }
@@ -340,6 +671,8 @@ namespace NINATest {
 
             var imageType = "TestType";
 
+            XNamespace ns = "http://www.pixinsight.com/xisf";
+
             var sut = new XISFHeader();
             sut.AddEmbeddedImage(data.Object, imageType);
 
@@ -349,11 +682,11 @@ namespace NINATest {
                 .And.HaveAttribute("colorSpace", "Gray")
                 .And.HaveAttribute("location", "embedded")
 
-                .And.HaveElement("Data")
+                .And.HaveElement(ns + "Data")
                     .Which.Should().HaveAttribute("encoding", "base64")
                     .And.HaveValue("AQABAAEAAQADAAMABQAGAAEA");
 
-            sut.Image.Should().HaveElement("FITSKeyword")
+            sut.Image.Should().HaveElement(ns + "FITSKeyword")
                     .Which.Should().HaveAttribute("name", "IMAGETYP")
                     .And.HaveAttribute("value", imageType)
                     .And.HaveAttribute("comment", "Type of exposure");
@@ -363,6 +696,7 @@ namespace NINATest {
         public void XISFDefaultMetaDataPopulated() {
             //Arrange
             var metaData = new ImageMetaData();
+            XNamespace ns = "http://www.pixinsight.com/xisf";
 
             var expectedHeaderCards = new List<FITSHeaderCard>() {
                 new FITSHeaderCard("XBINNING",1, "X axis binning factor"),
@@ -376,27 +710,27 @@ namespace NINATest {
             sut.Populate(metaData);
 
             //Assert
-            sut.Image.Elements("Property").First(x => x.Attribute("id").Value == "Instrument:Camera:XBinning")
+            sut.Image.Elements(ns + "Property").First(x => x.Attribute("id").Value == "Instrument:Camera:XBinning")
                 .Should().HaveAttribute("type", "Int32")
                 .And.HaveAttribute("comment", "X axis binning factor")
                 .And.HaveAttribute("value", "1");
 
-            sut.Image.Elements("FITSKeyword").First(x => x.Attribute("name").Value == "XBINNING")
+            sut.Image.Elements(ns + "FITSKeyword").First(x => x.Attribute("name").Value == "XBINNING")
                 .Should().HaveAttribute("name", "XBINNING")
                 .And.HaveAttribute("value", "1")
                 .And.HaveAttribute("comment", "X axis binning factor");
 
-            sut.Image.Elements("Property").First(x => x.Attribute("id").Value == "Instrument:Camera:YBinning")
+            sut.Image.Elements(ns + "Property").First(x => x.Attribute("id").Value == "Instrument:Camera:YBinning")
                 .Should().HaveAttribute("type", "Int32")
                 .And.HaveAttribute("comment", "Y axis binning factor")
                 .And.HaveAttribute("value", "1");
 
-            sut.Image.Elements("FITSKeyword").First(x => x.Attribute("name").Value == "YBINNING")
+            sut.Image.Elements(ns + "FITSKeyword").First(x => x.Attribute("name").Value == "YBINNING")
                 .Should().HaveAttribute("name", "YBINNING")
                 .And.HaveAttribute("value", "1")
                 .And.HaveAttribute("comment", "Y axis binning factor");
 
-            sut.Image.Elements("FITSKeyword").First(x => x.Attribute("name").Value == "SWCREATE")
+            sut.Image.Elements(ns + "FITSKeyword").First(x => x.Attribute("name").Value == "SWCREATE")
                 .Should().HaveAttribute("name", "SWCREATE")
                 .And.HaveAttribute("value", string.Format("N.I.N.A. {0} ({1})", Utility.Version, DllLoader.IsX86() ? "x86" : "x64"))
                 .And.HaveAttribute("comment", "Software that created this file");
@@ -407,6 +741,7 @@ namespace NINATest {
             //Arrange
             var metaData = new ImageMetaData();
             var now = DateTime.Now;
+            XNamespace ns = "http://www.pixinsight.com/xisf";
             metaData.Image.ImageType = "TEST";
             metaData.Image.ExposureStart = now;
             metaData.Image.ExposureTime = 10.23;
@@ -433,12 +768,12 @@ namespace NINATest {
 
             foreach (var property in expectedProperties) {
                 if (property.Type != "String") {
-                    sut.Image.Elements("Property").First(x => x.Attribute("id").Value == property.Id)
+                    sut.Image.Elements(ns + "Property").First(x => x.Attribute("id").Value == property.Id)
                         .Should().HaveAttribute("type", property.Type)
                         .And.HaveAttribute("comment", property.Comment)
                         .And.HaveAttribute("value", property.Value);
                 } else {
-                    sut.Image.Elements("Property").First(x => x.Attribute("id").Value == property.Id)
+                    sut.Image.Elements(ns + "Property").First(x => x.Attribute("id").Value == property.Id)
                         .Should().HaveAttribute("type", property.Type)
                         .And.HaveAttribute("comment", property.Comment)
                         .And.HaveValue(property.Value);
@@ -446,7 +781,7 @@ namespace NINATest {
             }
 
             foreach (var card in expectedFITSKeywords) {
-                sut.Image.Elements("FITSKeyword").First(x => x.Attribute("name").Value == card.Key)
+                sut.Image.Elements(ns + "FITSKeyword").First(x => x.Attribute("name").Value == card.Key)
                 .Should().HaveAttribute("name", card.Key)
                 .And.HaveAttribute("value", card.Value.Replace("'", "").Trim())
                 .And.HaveAttribute("comment", card.Comment);
@@ -458,6 +793,7 @@ namespace NINATest {
             //Arrange
             var metaData = new ImageMetaData();
             metaData.Camera.Name = "TEST";
+            XNamespace ns = "http://www.pixinsight.com/xisf";
 
             metaData.Camera.BinX = 2;
             metaData.Camera.BinY = 3;
@@ -500,12 +836,12 @@ namespace NINATest {
 
             foreach (var property in expectedProperties) {
                 if (property.Type != "String") {
-                    sut.Image.Elements("Property").First(x => x.Attribute("id").Value == property.Id)
+                    sut.Image.Elements(ns + "Property").First(x => x.Attribute("id").Value == property.Id)
                         .Should().HaveAttribute("type", property.Type)
                         .And.HaveAttribute("comment", property.Comment)
                         .And.HaveAttribute("value", property.Value);
                 } else {
-                    sut.Image.Elements("Property").First(x => x.Attribute("id").Value == property.Id)
+                    sut.Image.Elements(ns + "Property").First(x => x.Attribute("id").Value == property.Id)
                         .Should().HaveAttribute("type", property.Type)
                         .And.HaveAttribute("comment", property.Comment)
                         .And.HaveValue(property.Value);
@@ -513,7 +849,7 @@ namespace NINATest {
             }
 
             foreach (var card in expectedFITSKeywords) {
-                sut.Image.Elements("FITSKeyword").First(x => x.Attribute("name").Value == card.Key)
+                sut.Image.Elements(ns + "FITSKeyword").First(x => x.Attribute("name").Value == card.Key)
                 .Should().HaveAttribute("name", card.Key)
                 .And.HaveAttribute("value", card.Value.Replace("'", "").Trim())
                 .And.HaveAttribute("comment", card.Comment);
@@ -542,6 +878,8 @@ namespace NINATest {
 
             //Act
             var sut = new XISFHeader();
+            XNamespace ns = "http://www.pixinsight.com/xisf";
+
             sut.AddImageMetaData(new ImageProperties(2, 2, 16, false), metaData.Image.ImageType);
             sut.Populate(metaData);
 
@@ -549,12 +887,12 @@ namespace NINATest {
 
             foreach (var property in expectedProperties) {
                 if (property.Type != "String") {
-                    sut.Image.Elements("Property").First(x => x.Attribute("id").Value == property.Id)
+                    sut.Image.Elements(ns + "Property").First(x => x.Attribute("id").Value == property.Id)
                         .Should().HaveAttribute("type", property.Type)
                         .And.HaveAttribute("comment", property.Comment)
                         .And.HaveAttribute("value", property.Value);
                 } else {
-                    sut.Image.Elements("Property").First(x => x.Attribute("id").Value == property.Id)
+                    sut.Image.Elements(ns + "Property").First(x => x.Attribute("id").Value == property.Id)
                         .Should().HaveAttribute("type", property.Type)
                         .And.HaveAttribute("comment", property.Comment)
                         .And.HaveValue(property.Value);
@@ -562,7 +900,7 @@ namespace NINATest {
             }
 
             foreach (var card in expectedFITSKeywords) {
-                sut.Image.Elements("FITSKeyword").First(x => x.Attribute("name").Value == card.Key)
+                sut.Image.Elements(ns + "FITSKeyword").First(x => x.Attribute("name").Value == card.Key)
                 .Should().HaveAttribute("name", card.Key)
                 .And.HaveAttribute("value", card.Value.Replace("'", "").Trim())
                 .And.HaveAttribute("comment", card.Comment);
@@ -596,6 +934,8 @@ namespace NINATest {
 
             //Act
             var sut = new XISFHeader();
+            XNamespace ns = "http://www.pixinsight.com/xisf";
+
             sut.AddImageMetaData(new ImageProperties(2, 2, 16, false), metaData.Image.ImageType);
             sut.Populate(metaData);
 
@@ -603,12 +943,12 @@ namespace NINATest {
 
             foreach (var property in expectedProperties) {
                 if (property.Type != "String") {
-                    sut.Image.Elements("Property").First(x => x.Attribute("id").Value == property.Id)
+                    sut.Image.Elements(ns + "Property").First(x => x.Attribute("id").Value == property.Id)
                         .Should().HaveAttribute("type", property.Type)
                         .And.HaveAttribute("comment", property.Comment)
                         .And.HaveAttribute("value", property.Value);
                 } else {
-                    sut.Image.Elements("Property").First(x => x.Attribute("id").Value == property.Id)
+                    sut.Image.Elements(ns + "Property").First(x => x.Attribute("id").Value == property.Id)
                         .Should().HaveAttribute("type", property.Type)
                         .And.HaveAttribute("comment", property.Comment)
                         .And.HaveValue(property.Value);
@@ -616,7 +956,7 @@ namespace NINATest {
             }
 
             foreach (var card in expectedFITSKeywords) {
-                sut.Image.Elements("FITSKeyword").First(x => x.Attribute("name").Value == card.Key)
+                sut.Image.Elements(ns + "FITSKeyword").First(x => x.Attribute("name").Value == card.Key)
                 .Should().HaveAttribute("name", card.Key)
                 .And.HaveAttribute("value", card.Value.Replace("'", "").Trim())
                 .And.HaveAttribute("comment", card.Comment);
@@ -641,6 +981,8 @@ namespace NINATest {
 
             //Act
             var sut = new XISFHeader();
+            XNamespace ns = "http://www.pixinsight.com/xisf";
+
             sut.AddImageMetaData(new ImageProperties(2, 2, 16, false), metaData.Image.ImageType);
             sut.Populate(metaData);
 
@@ -648,12 +990,12 @@ namespace NINATest {
 
             foreach (var property in expectedProperties) {
                 if (property.Type != "String") {
-                    sut.Image.Elements("Property").First(x => x.Attribute("id").Value == property.Id)
+                    sut.Image.Elements(ns + "Property").First(x => x.Attribute("id").Value == property.Id)
                         .Should().HaveAttribute("type", property.Type)
                         .And.HaveAttribute("comment", property.Comment)
                         .And.HaveAttribute("value", property.Value);
                 } else {
-                    sut.Image.Elements("Property").First(x => x.Attribute("id").Value == property.Id)
+                    sut.Image.Elements(ns + "Property").First(x => x.Attribute("id").Value == property.Id)
                         .Should().HaveAttribute("type", property.Type)
                         .And.HaveAttribute("comment", property.Comment)
                         .And.HaveValue(property.Value);
@@ -661,7 +1003,7 @@ namespace NINATest {
             }
 
             foreach (var card in expectedFITSKeywords) {
-                sut.Image.Elements("FITSKeyword").First(x => x.Attribute("name").Value == card.Key)
+                sut.Image.Elements(ns + "FITSKeyword").First(x => x.Attribute("name").Value == card.Key)
                 .Should().HaveAttribute("name", card.Key)
                 .And.HaveAttribute("value", card.Value.Replace("'", "").Trim())
                 .And.HaveAttribute("comment", card.Comment);
@@ -689,6 +1031,8 @@ namespace NINATest {
 
             //Act
             var sut = new XISFHeader();
+            XNamespace ns = "http://www.pixinsight.com/xisf";
+
             sut.AddImageMetaData(new ImageProperties(2, 2, 16, false), metaData.Image.ImageType);
             sut.Populate(metaData);
 
@@ -696,12 +1040,12 @@ namespace NINATest {
 
             foreach (var property in expectedProperties) {
                 if (property.Type != "String") {
-                    sut.Image.Elements("Property").First(x => x.Attribute("id").Value == property.Id)
+                    sut.Image.Elements(ns + "Property").First(x => x.Attribute("id").Value == property.Id)
                         .Should().HaveAttribute("type", property.Type)
                         .And.HaveAttribute("comment", property.Comment)
                         .And.HaveAttribute("value", property.Value);
                 } else {
-                    sut.Image.Elements("Property").First(x => x.Attribute("id").Value == property.Id)
+                    sut.Image.Elements(ns + "Property").First(x => x.Attribute("id").Value == property.Id)
                         .Should().HaveAttribute("type", property.Type)
                         .And.HaveAttribute("comment", property.Comment)
                         .And.HaveValue(property.Value);
@@ -709,7 +1053,7 @@ namespace NINATest {
             }
 
             foreach (var card in expectedFITSKeywords) {
-                sut.Image.Elements("FITSKeyword").First(x => x.Attribute("name").Value == card.Key)
+                sut.Image.Elements(ns + "FITSKeyword").First(x => x.Attribute("name").Value == card.Key)
                 .Should().HaveAttribute("name", card.Key)
                 .And.HaveAttribute("value", card.Value.Replace("'", "").Trim())
                 .And.HaveAttribute("comment", card.Comment);
@@ -741,6 +1085,8 @@ namespace NINATest {
 
             //Act
             var sut = new XISFHeader();
+            XNamespace ns = "http://www.pixinsight.com/xisf";
+
             sut.AddImageMetaData(new ImageProperties(2, 2, 16, false), metaData.Image.ImageType);
             sut.Populate(metaData);
 
@@ -748,12 +1094,12 @@ namespace NINATest {
 
             foreach (var property in expectedProperties) {
                 if (property.Type != "String") {
-                    sut.Image.Elements("Property").First(x => x.Attribute("id").Value == property.Id)
+                    sut.Image.Elements(ns + "Property").First(x => x.Attribute("id").Value == property.Id)
                         .Should().HaveAttribute("type", property.Type)
                         .And.HaveAttribute("comment", property.Comment)
                         .And.HaveAttribute("value", property.Value);
                 } else {
-                    sut.Image.Elements("Property").First(x => x.Attribute("id").Value == property.Id)
+                    sut.Image.Elements(ns + "Property").First(x => x.Attribute("id").Value == property.Id)
                         .Should().HaveAttribute("type", property.Type)
                         .And.HaveAttribute("comment", property.Comment)
                         .And.HaveValue(property.Value);
@@ -761,7 +1107,7 @@ namespace NINATest {
             }
 
             foreach (var card in expectedFITSKeywords) {
-                sut.Image.Elements("FITSKeyword").First(x => x.Attribute("name").Value == card.Key)
+                sut.Image.Elements(ns + "FITSKeyword").First(x => x.Attribute("name").Value == card.Key)
                 .Should().HaveAttribute("name", card.Key)
                 .And.HaveAttribute("value", card.Value.Replace("'", "").Trim())
                 .And.HaveAttribute("comment", card.Comment);
@@ -787,13 +1133,15 @@ namespace NINATest {
 
             //Act
             var sut = new XISFHeader();
+            XNamespace ns = "http://www.pixinsight.com/xisf";
+
             sut.AddImageMetaData(new ImageProperties(2, 2, 16, false), metaData.Image.ImageType);
             sut.Populate(metaData);
 
             //Assert
 
             foreach (var card in expectedFITSKeywords) {
-                sut.Image.Elements("FITSKeyword").First(x => x.Attribute("name").Value == card.Key)
+                sut.Image.Elements(ns + "FITSKeyword").First(x => x.Attribute("name").Value == card.Key)
                 .Should().HaveAttribute("name", card.Key)
                 .And.HaveAttribute("value", card.Value.Replace("'", "").Trim())
                 .And.HaveAttribute("comment", card.Comment);
@@ -841,17 +1189,19 @@ namespace NINATest {
             };
 
             var sut = new XISFHeader();
+            XNamespace ns = "http://www.pixinsight.com/xisf";
+
             sut.AddImageMetaData(new ImageProperties(2, 2, 16, false), metaData.Image.ImageType);
             sut.Populate(metaData);
 
             foreach (var property in expectedProperties) {
                 if (property.Type != "String") {
-                    sut.Image.Elements("Property").First(x => x.Attribute("id").Value == property.Id)
+                    sut.Image.Elements(ns + "Property").First(x => x.Attribute("id").Value == property.Id)
                         .Should().HaveAttribute("type", property.Type)
                         .And.HaveAttribute("comment", property.Comment)
                         .And.HaveAttribute("value", property.Value);
                 } else {
-                    sut.Image.Elements("Property").First(x => x.Attribute("id").Value == property.Id)
+                    sut.Image.Elements(ns + "Property").First(x => x.Attribute("id").Value == property.Id)
                         .Should().HaveAttribute("type", property.Type)
                         .And.HaveAttribute("comment", property.Comment)
                         .And.HaveValue(property.Value);
@@ -859,7 +1209,7 @@ namespace NINATest {
             }
 
             foreach (var card in expectedFITSKeywords) {
-                sut.Image.Elements("FITSKeyword").First(x => x.Attribute("name").Value == card.Key)
+                sut.Image.Elements(ns + "FITSKeyword").First(x => x.Attribute("name").Value == card.Key)
                 .Should().HaveAttribute("name", card.Key)
                 .And.HaveAttribute("value", card.Value.Replace("'", "").Trim())
                 .And.HaveAttribute("comment", card.Comment);

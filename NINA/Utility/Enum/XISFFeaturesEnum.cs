@@ -1,8 +1,6 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
-
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
     N.I.N.A. is free software: you can redistribute it and/or modify
@@ -19,31 +17,51 @@
     along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+ * Copyright 2019 Dale Ghent <daleg@elemental.org>
+ */
+
 #endregion "copyright"
 
-using System;
 using System.ComponentModel;
 
 namespace NINA.Utility.Enum {
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
-    public enum FileTypeEnum {
+    public enum XISFCompressionTypeEnum {
 
-        [Description("LblTiff")]
-        TIFF,
+        [Description("LblNone")]
+        NONE = 0,
 
-        [Description("LblFits")]
-        FITS,
+        [Description("LblCompressionLZ4")]
+        LZ4,
 
-        [Description("LblXisf")]
-        XISF,
+        [Description("LblCompressionLZ4HC")]
+        LZ4HC,
 
-        [Obsolete]
-        TIFF_ZIP,
+        [Description("LblCompressionZLib")]
+        ZLIB
+    }
 
-        [Obsolete]
-        TIFF_LZW,
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum XISFChecksumTypeEnum {
 
-        RAW
+        [Description("LblNone")]
+        NONE = 0,
+
+        [Description("LblChecksumSHA_1")]
+        SHA1,
+
+        [Description("LblChecksumSHA_256")]
+        SHA256,
+
+        [Description("LblChecksumSHA_512")]
+        SHA512,
+
+        [Description("LblChecksumSHA3_256")]
+        SHA3_256,
+
+        [Description("LblChecksumSHA3_512")]
+        SHA3_512
     }
 }

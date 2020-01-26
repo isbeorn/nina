@@ -492,7 +492,6 @@ namespace NINA.ViewModel {
             }
         }
 
-
         private IWindowServiceFactory windowServiceFactory;
 
         public IWindowServiceFactory WindowServiceFactory {
@@ -922,7 +921,7 @@ namespace NINA.ViewModel {
                             }
 
                             /* 8a) Save ImageData */
-                            saveTask = Save(imageProcessingTask, ct);
+                            saveTask = Save(imageProcessingTask, profileService, ct);
 
                             seqDuration.Stop();
 
@@ -1070,11 +1069,11 @@ namespace NINA.ViewModel {
             metaData.FilterWheel.Filter = sequence.FilterType?.Name ?? metaData.FilterWheel.Filter;
         }
 
-        private Task Save(Task<IRenderedImage> imageProcessingTask, CancellationToken ct) {
+        private Task Save(Task<IRenderedImage> imageProcessingTask, IProfileService profileService, CancellationToken ct) {
             return Task.Run(async () => {
                 var processedImage = await imageProcessingTask;
                 var data = processedImage.RawImageData;
-                var tempPath = await data.PrepareSave(profileService.ActiveProfile.ImageFileSettings.FilePath, profileService.ActiveProfile.ImageFileSettings.FileType, ct);
+                var tempPath = await data.PrepareSave(new FileSaveInfo(profileService), ct);
                 var renderedImage = await imageProcessingTask;
 
                 var path = data.FinalizeSave(tempPath, profileService.ActiveProfile.ImageFileSettings.FilePattern);

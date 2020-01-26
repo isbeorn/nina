@@ -347,36 +347,37 @@ namespace NINATest {
         [TestCase(NINA.Utility.Enum.FileTypeEnum.XISF, ".xisf")]
         [TestCase(NINA.Utility.Enum.FileTypeEnum.FITS, ".fits")]
         [TestCase(NINA.Utility.Enum.FileTypeEnum.TIFF, ".tif")]
-        [TestCase(NINA.Utility.Enum.FileTypeEnum.TIFF_LZW, ".tif")]
-        [TestCase(NINA.Utility.Enum.FileTypeEnum.TIFF_ZIP, ".tif")]
         public async Task SaveToDiskXISFSimpleTest(NINA.Utility.Enum.FileTypeEnum fileType, string extension) {
             var data = new ushort[] {
                 3,1,1,
                 3,4,5,
                 3,2,3
             };
-            var folder = TestContext.CurrentContext.TestDirectory;
-            var pattern = "TestFile";
+
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = TestContext.CurrentContext.TestDirectory,
+                FilePattern = "TestFile",
+                FileType = fileType
+            };
 
             //var sut = await new ImageArrayExposureData(data, 3, 3, 16, false, new ImageMetaData()).ToImageData();
             var sut = new ImageData(data, 3, 3, 16, false, MetaData);
 
-            var file = await sut.SaveToDisk(folder, pattern, fileType, default);
+            var file = await sut.SaveToDisk(fileSaveInfo, default);
 
-            System.IO.File.Exists(file).Should().BeTrue();
-            System.IO.File.Delete(file);
-            System.IO.Path.GetFileName(file).Should().Be($"{pattern}{extension}");
+            File.Exists(file).Should().BeTrue();
+            File.Delete(file);
+            Path.GetFileName(file).Should().Be($"{fileSaveInfo.FilePattern}{extension}");
         }
 
         [Test]
         public async Task SaveToDiskPatternMetaDataTest() {
-            var fileType = NINA.Utility.Enum.FileTypeEnum.XISF;
             var data = new ushort[] {
                 3,1,1,
                 3,4,5,
                 3,2,3
             };
-            var folder = TestContext.CurrentContext.TestDirectory;
+
             var pattern = $"$$FILTER$$" +
                 $"#$$DATE$$" +
                 $"#$$DATEMINUS12$$" +
@@ -395,9 +396,15 @@ namespace NINATest {
                 $"#$$FOCUSERPOSITION$$" +
                 $"#$$APPLICATIONSTARTDATE$$";
 
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = TestContext.CurrentContext.TestDirectory,
+                FilePattern = pattern,
+                FileType = NINA.Utility.Enum.FileTypeEnum.XISF
+            };
+
             var sut = new ImageData(data, 3, 3, 16, false, MetaData);
-            var file = await sut.SaveToDisk(folder, pattern, fileType, default);
-            System.IO.File.Delete(file);
+            var file = await sut.SaveToDisk(fileSaveInfo, default);
+            File.Delete(file);
 
             var expectedPattern = $"{MetaData.FilterWheel.Filter}" +
                 $"#{MetaData.Image.ExposureStart.ToString("yyyy-MM-dd")}" +
@@ -417,18 +424,17 @@ namespace NINATest {
                 $"#{string.Format("{0:0.00}", MetaData.Focuser.Position)}" +
                 $"#{Utility.ApplicationStartDate.ToString("yyyy-MM-dd")}";
 
-            System.IO.Path.GetFileName(file).Should().Be($"{expectedPattern}.{fileType.ToString().ToLower()}");
+            Path.GetFileName(file).Should().Be($"{expectedPattern}.{fileSaveInfo.FileType.ToString().ToLower()}");
         }
 
         [Test]
         public async Task SaveToDiskPatternEmptyMetaDataTest() {
-            var fileType = NINA.Utility.Enum.FileTypeEnum.TIFF_LZW;
             var data = new ushort[] {
                 3,1,1,
                 3,4,5,
                 3,2,3
             };
-            var folder = TestContext.CurrentContext.TestDirectory;
+
             var pattern = $"$$FILTER$$" +
                 $"#$$DATE$$" +
                 $"#$$DATEMINUS12$$" +
@@ -447,24 +453,30 @@ namespace NINATest {
                 $"#$$FOCUSERPOSITION$$" +
                 $"#$$APPLICATIONSTARTDATE$$";
 
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = TestContext.CurrentContext.TestDirectory,
+                FilePattern = pattern,
+                FileType = NINA.Utility.Enum.FileTypeEnum.TIFF,
+                TIFFCompressionType = NINA.Utility.Enum.TIFFCompressionTypeEnum.LZW
+            };
+
             var sut = new ImageData(data, 3, 3, 16, false, new ImageMetaData());
-            var file = await sut.SaveToDisk(folder, pattern, fileType, default);
-            System.IO.File.Delete(file);
+            var file = await sut.SaveToDisk(fileSaveInfo, default);
+            File.Delete(file);
 
             var expectedPattern = $"#0001-01-01##0001-01-01_00-00-00#00-00-00#-0001##1x1#########{Utility.ApplicationStartDate.ToString("yyyy-MM-dd")}.tif";
 
-            System.IO.Path.GetFileName(file).Should().Be($"{expectedPattern}");
+            Path.GetFileName(file).Should().Be($"{expectedPattern}");
         }
 
         [Test]
         public async Task PrepareFinalizeSavePatternMetaDataTest() {
-            var fileType = NINA.Utility.Enum.FileTypeEnum.XISF;
             var data = new ushort[] {
                 3,1,1,
                 3,4,5,
                 3,2,3
             };
-            var folder = TestContext.CurrentContext.TestDirectory;
+
             var pattern = $"$$FILTER$$" +
                 $"#$$DATE$$" +
                 $"#$$DATEMINUS12$$" +
@@ -483,10 +495,16 @@ namespace NINATest {
                 $"#$$FOCUSERPOSITION$$" +
                 $"#$$APPLICATIONSTARTDATE$$";
 
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = TestContext.CurrentContext.TestDirectory,
+                FilePattern = pattern,
+                FileType = NINA.Utility.Enum.FileTypeEnum.XISF
+            };
+
             var sut = new ImageData(data, 3, 3, 16, false, MetaData);
-            var file = await sut.PrepareSave(folder, fileType, default);
+            var file = await sut.PrepareSave(fileSaveInfo, default);
             file = sut.FinalizeSave(file, pattern);
-            System.IO.File.Delete(file);
+            File.Delete(file);
 
             var expectedPattern = $"{MetaData.FilterWheel.Filter}" +
                 $"#{MetaData.Image.ExposureStart.ToString("yyyy-MM-dd")}" +
@@ -506,18 +524,17 @@ namespace NINATest {
                 $"#{string.Format("{0:0.00}", MetaData.Focuser.Position)}" +
                 $"#{Utility.ApplicationStartDate.ToString("yyyy-MM-dd")}";
 
-            System.IO.Path.GetFileName(file).Should().Be($"{expectedPattern}.{fileType.ToString().ToLower()}");
+            Path.GetFileName(file).Should().Be($"{expectedPattern}.{fileSaveInfo.FileType.ToString().ToLower()}");
         }
 
         [Test]
         public async Task PrepareFinalize_IllegalCharacters_SavePatternMetaDataTest() {
-            var fileType = NINA.Utility.Enum.FileTypeEnum.XISF;
             var data = new ushort[] {
                 3,1,1,
                 3,4,5,
                 3,2,3
             };
-            var folder = TestContext.CurrentContext.TestDirectory;
+
             var pattern = $"$$FILTER$$" +
                 $"#$$DATE$$" +
                 $"#$$DATEMINUS12$$" +
@@ -535,14 +552,20 @@ namespace NINATest {
                 $"#$$RMSARCSEC$$" +
                 $"#$$FOCUSERPOSITION$$" +
                 $"#$$APPLICATIONSTARTDATE$$";
+
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = TestContext.CurrentContext.TestDirectory,
+                FilePattern = pattern,
+                FileType = NINA.Utility.Enum.FileTypeEnum.XISF
+            };
 
             var invalidChars = Path.GetInvalidPathChars();
             MetaData.Target.Name = string.Join("", invalidChars);
 
             var sut = new ImageData(data, 3, 3, 16, false, MetaData);
-            var file = await sut.PrepareSave(folder, fileType, default);
+            var file = await sut.PrepareSave(fileSaveInfo, default);
             file = sut.FinalizeSave(file, pattern);
-            System.IO.File.Delete(file);
+            File.Delete(file);
 
             var expectedPattern = $"{MetaData.FilterWheel.Filter}" +
                 $"#{MetaData.Image.ExposureStart.ToString("yyyy-MM-dd")}" +
@@ -562,7 +585,7 @@ namespace NINATest {
                 $"#{string.Format("{0:0.00}", MetaData.Focuser.Position)}" +
                 $"#{Utility.ApplicationStartDate.ToString("yyyy-MM-dd")}";
 
-            System.IO.Path.GetFileName(file).Should().Be($"{expectedPattern}.{fileType.ToString().ToLower()}");
+            Path.GetFileName(file).Should().Be($"{expectedPattern}.{fileSaveInfo.FileType.ToString().ToLower()}");
         }
 
         //[Test]

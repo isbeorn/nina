@@ -481,13 +481,9 @@ namespace NINA.ViewModel {
 
                     var renderedImage = await CaptureAndPrepareImage(seq, new PrepareImageParameters(), _captureImageToken.Token, progress);
                     if (SnapSave) {
-                        var path = await renderedImage.RawImageData.SaveToDisk(
-                            profileService.ActiveProfile.ImageFileSettings.FilePath,
-                            profileService.ActiveProfile.ImageFileSettings.FilePattern,
-                            profileService.ActiveProfile.ImageFileSettings.FileType,
-                            _captureImageToken.Token
-                        );
+                        var path = await renderedImage.RawImageData.SaveToDisk(new FileSaveInfo(profileService), _captureImageToken.Token);
                         var imageStatistics = await renderedImage.RawImageData.Statistics.Task;
+
                         imagingMediator.OnImageSaved(
                             new ImageSavedEventArgs() {
                                 PathToImage = new Uri(path),

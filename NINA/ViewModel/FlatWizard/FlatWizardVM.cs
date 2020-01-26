@@ -168,17 +168,14 @@ namespace NINA.ViewModel.FlatWizard {
             return telescopeMediator.SlewToCoordinatesAsync(new TopocentricCoordinates(azimuth, Angle.ByDegree(89), latitude, longitude));
         }
 
-        private void UpdateSingleFlatWizardFilterSettings(IProfileService profileService)
-        {
-            if (SingleFlatWizardFilterSettings != null)
-            {
+        private void UpdateSingleFlatWizardFilterSettings(IProfileService profileService) {
+            if (SingleFlatWizardFilterSettings != null) {
                 SingleFlatWizardFilterSettings.Settings.PropertyChanged -= UpdateProfileValues;
             }
 
             int bitDepth = GetBitDepth(profileService);
 
-            SingleFlatWizardFilterSettings = new FlatWizardFilterSettingsWrapper(null, new FlatWizardFilterSettings
-            {
+            SingleFlatWizardFilterSettings = new FlatWizardFilterSettingsWrapper(null, new FlatWizardFilterSettings {
                 HistogramMeanTarget = profileService.ActiveProfile.FlatWizardSettings.HistogramMeanTarget,
                 HistogramTolerance = profileService.ActiveProfile.FlatWizardSettings.HistogramTolerance,
                 MaxFlatExposureTime = profileService.ActiveProfile.CameraSettings.MaxFlatExposureTime,
@@ -188,8 +185,7 @@ namespace NINA.ViewModel.FlatWizard {
             SingleFlatWizardFilterSettings.Settings.PropertyChanged += UpdateProfileValues;
         }
 
-        private int GetBitDepth(IProfileService profileService)
-        {
+        private int GetBitDepth(IProfileService profileService) {
             var bitDepth = cameraInfo?.BitDepth ?? (int)profileService.ActiveProfile.CameraSettings.BitDepth;
             if (profileService.ActiveProfile.CameraSettings.BitScaling) bitDepth = 16;
 
@@ -686,13 +682,7 @@ namespace NINA.ViewModel.FlatWizard {
                     await saveTask;
                 }
 
-                saveTask = imageData.SaveToDisk(
-                    profileService.ActiveProfile.ImageFileSettings.FilePath,
-                    profileService.ActiveProfile.ImageFileSettings.FilePattern,
-                    profileService.ActiveProfile.ImageFileSettings.FileType,
-                    ct
-                );
-
+                saveTask = imageData.SaveToDisk(new FileSaveInfo(profileService), ct);
                 await prepareTask;
 
                 sequence.ProgressExposureCount++;

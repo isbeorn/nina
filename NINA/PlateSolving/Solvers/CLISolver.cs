@@ -24,8 +24,8 @@
 using NINA.Model;
 using NINA.Model.ImageData;
 using NINA.Utility;
+using NINA.Utility.Enum;
 using NINA.Utility.Extensions;
-using NINA.Utility.Mediator.Interfaces;
 using System;
 using System.IO;
 using System.Threading;
@@ -86,7 +86,13 @@ namespace NINA.PlateSolving.Solvers {
         }
 
         protected async Task<string> PrepareAndSaveImage(IImageData source, CancellationToken cancelToken) {
-            return await source.SaveToDisk(WORKING_DIRECTORY, Path.GetRandomFileName(), Utility.Enum.FileTypeEnum.FITS, cancelToken, forceFileType: true);
+            FileSaveInfo fileSaveInfo = new FileSaveInfo {
+                FilePath = WORKING_DIRECTORY,
+                FilePattern = Path.GetRandomFileName(),
+                FileType = FileTypeEnum.FITS
+            };
+
+            return await source.SaveToDisk(fileSaveInfo, cancelToken, forceFileType: true);
         }
 
         protected abstract string GetOutputPath(string imageFilePath);

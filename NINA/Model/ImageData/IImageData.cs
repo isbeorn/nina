@@ -21,7 +21,7 @@
 
 #endregion "copyright"
 
-using NINA.Utility.Enum;
+using NINA.Utility;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -43,9 +43,9 @@ namespace NINA.Model.ImageData {
 
         BitmapSource RenderBitmapSource();
 
-        Task<string> SaveToDisk(string path, string pattern, FileTypeEnum fileType, CancellationToken cancelToken = default, bool forceFileType = false);
+        Task<string> SaveToDisk(FileSaveInfo fileSaveInfo, CancellationToken cancelToken = default, bool forceFileType = false);
 
-        Task<string> PrepareSave(string path, FileTypeEnum fileType, CancellationToken cancelToken = default);
+        Task<string> PrepareSave(FileSaveInfo fileSaveInfo, CancellationToken cancelToken = default);
 
         string FinalizeSave(string file, string pattern);
     }

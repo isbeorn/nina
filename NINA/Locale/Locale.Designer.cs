@@ -1072,6 +1072,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Byte Shuffling.
+        /// </summary>
+        internal static string LblByteShuffling {
+            get {
+                return ResourceManager.GetString("LblByteShuffling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cache.
         /// </summary>
         internal static string LblCache {
@@ -1376,11 +1385,65 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Checksum.
+        /// </summary>
+        internal static string LblChecksum {
+            get {
+                return ResourceManager.GetString("LblChecksum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Checksum does not match expected value. Downloaded file may be corrupted!.
         /// </summary>
         internal static string LblChecksumError {
             get {
                 return ResourceManager.GetString("LblChecksumError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SHA-1.
+        /// </summary>
+        internal static string LblChecksumSHA_1 {
+            get {
+                return ResourceManager.GetString("LblChecksumSHA_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SHA-256.
+        /// </summary>
+        internal static string LblChecksumSHA_256 {
+            get {
+                return ResourceManager.GetString("LblChecksumSHA_256", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SHA-512.
+        /// </summary>
+        internal static string LblChecksumSHA_512 {
+            get {
+                return ResourceManager.GetString("LblChecksumSHA_512", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SHA3-256.
+        /// </summary>
+        internal static string LblChecksumSHA3_256 {
+            get {
+                return ResourceManager.GetString("LblChecksumSHA3_256", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SHA3-512.
+        /// </summary>
+        internal static string LblChecksumSHA3_512 {
+            get {
+                return ResourceManager.GetString("LblChecksumSHA3_512", resourceCulture);
             }
         }
         
@@ -1453,6 +1516,60 @@ namespace NINA.Locale {
         internal static string LblColorSensorNotSupported {
             get {
                 return ResourceManager.GetString("LblColorSensorNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compression.
+        /// </summary>
+        internal static string LblCompression {
+            get {
+                return ResourceManager.GetString("LblCompression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LZ4.
+        /// </summary>
+        internal static string LblCompressionLZ4 {
+            get {
+                return ResourceManager.GetString("LblCompressionLZ4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LZ4HC.
+        /// </summary>
+        internal static string LblCompressionLZ4HC {
+            get {
+                return ResourceManager.GetString("LblCompressionLZ4HC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LZW.
+        /// </summary>
+        internal static string LblCompressionLZW {
+            get {
+                return ResourceManager.GetString("LblCompressionLZW", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ZIP.
+        /// </summary>
+        internal static string LblCompressionZIP {
+            get {
+                return ResourceManager.GetString("LblCompressionZIP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ZLib.
+        /// </summary>
+        internal static string LblCompressionZLib {
+            get {
+                return ResourceManager.GetString("LblCompressionZLib", resourceCulture);
             }
         }
         
@@ -3285,6 +3402,15 @@ namespace NINA.Locale {
         internal static string LblFileExtension {
             get {
                 return ResourceManager.GetString("LblFileExtension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File Format Options.
+        /// </summary>
+        internal static string LblFileFormatOptions {
+            get {
+                return ResourceManager.GetString("LblFileFormatOptions", resourceCulture);
             }
         }
         
@@ -5304,6 +5430,15 @@ namespace NINA.Locale {
         internal static string LblNoCoordinatesForSync {
             get {
                 return ResourceManager.GetString("LblNoCoordinatesForSync", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no options for this file format.
+        /// </summary>
+        internal static string LblNoFileFormatOptions {
+            get {
+                return ResourceManager.GetString("LblNoFileFormatOptions", resourceCulture);
             }
         }
         
@@ -8344,24 +8479,6 @@ namespace NINA.Locale {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TIFF (lzw-compressed).
-        /// </summary>
-        internal static string LblTiffLzw {
-            get {
-                return ResourceManager.GetString("LblTiffLzw", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to TIFF (zip-compressed).
-        /// </summary>
-        internal static string LblTiffZip {
-            get {
-                return ResourceManager.GetString("LblTiffZip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Time.
         /// </summary>
         internal static string LblTime {
@@ -9138,6 +9255,60 @@ namespace NINA.Locale {
         internal static string LblXisf {
             get {
                 return ResourceManager.GetString("LblXisf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XISF file checksum did not verify. The image data may be corrupted..
+        /// </summary>
+        internal static string LblXisfBadChecksum {
+            get {
+                return ResourceManager.GetString("LblXisfBadChecksum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not a valid XISF file.
+        /// </summary>
+        internal static string LblXisfInvalidFile {
+            get {
+                return ResourceManager.GetString("LblXisfInvalidFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not get XISF image geometry.
+        /// </summary>
+        internal static string LblXisfInvalidGeometry {
+            get {
+                return ResourceManager.GetString("LblXisfInvalidGeometry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsupported XISF checksum type: {0}.
+        /// </summary>
+        internal static string LblXisfUnsupportedChecksum {
+            get {
+                return ResourceManager.GetString("LblXisfUnsupportedChecksum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsupported XISF compression type: {0}.
+        /// </summary>
+        internal static string LblXisfUnsupportedCompression {
+            get {
+                return ResourceManager.GetString("LblXisfUnsupportedCompression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsupported XISF data format: {0}.
+        /// </summary>
+        internal static string LblXisfUnsupportedFormat {
+            get {
+                return ResourceManager.GetString("LblXisfUnsupportedFormat", resourceCulture);
             }
         }
         

@@ -25,6 +25,7 @@ using Newtonsoft.Json.Linq;
 using NINA.Model;
 using NINA.Model.ImageData;
 using NINA.Utility;
+using NINA.Utility.Enum;
 using NINA.Utility.Http;
 using NINA.Utility.Notification;
 using System;
@@ -133,7 +134,13 @@ namespace NINA.PlateSolving.Solvers {
         private async Task<JObject> SubmitImage(string session, IImageData source, CancellationToken cancelToken) {
             string filePath = null;
             try {
-                filePath = await source.SaveToDisk(WORKING_DIRECTORY, Path.GetRandomFileName(), Utility.Enum.FileTypeEnum.FITS, cancelToken);
+                FileSaveInfo fileSaveInfo = new FileSaveInfo {
+                    FilePath = WORKING_DIRECTORY,
+                    FilePattern = Path.GetRandomFileName(),
+                    FileType = FileTypeEnum.FITS
+                };
+
+                filePath = await source.SaveToDisk(fileSaveInfo, cancelToken);
                 using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read)) {
                     return await SubmitImageStream(fs, session, cancelToken);
                 }

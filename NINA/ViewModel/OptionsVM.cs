@@ -460,12 +460,46 @@ namespace NINA.ViewModel {
             ActiveProfile.ColorSchemaSettings.ToggleSchema();
         }
 
-        public FileTypeEnum[] FileTypes {
-            get {
-                return Enum.GetValues(typeof(FileTypeEnum))
+#pragma warning disable CS0612 // Type or member is obsolete
+
+        public FileTypeEnum[] FileTypes => Enum.GetValues(typeof(FileTypeEnum))
                     .Cast<FileTypeEnum>()
                     .Where(p => p != FileTypeEnum.RAW)
-                    .ToArray<FileTypeEnum>();
+                    .Where(p => p != FileTypeEnum.TIFF_LZW)
+                    .Where(p => p != FileTypeEnum.TIFF_ZIP)
+                    .ToArray();
+
+#pragma warning restore CS0612 // Type or member is obsolete
+
+        public TIFFCompressionTypeEnum[] TIFFCompressionTypes {
+            get {
+                return Enum.GetValues(typeof(TIFFCompressionTypeEnum))
+                    .Cast<TIFFCompressionTypeEnum>()
+                    .ToArray();
+            }
+        }
+
+        public XISFCompressionTypeEnum[] XISFCompressionTypes {
+            get {
+                return Enum.GetValues(typeof(XISFCompressionTypeEnum))
+                    .Cast<XISFCompressionTypeEnum>()
+                    .ToArray();
+            }
+        }
+
+        public XISFChecksumTypeEnum[] XISFChecksumTypes {
+            get {
+                /*
+                 * NOTE: PixInsight does not yet support opening files with SHA3 checksums, despite then
+                 * being defined as part of the XISF 1.0 specification. We will not permit the user to choose
+                 * these as a checksum type until PixInsight also supports them, which is supposed to be in early
+                 * 2020.
+                 */
+                return Enum.GetValues(typeof(XISFChecksumTypeEnum))
+                    .Cast<XISFChecksumTypeEnum>()
+                    .Where(p => p != XISFChecksumTypeEnum.SHA3_256)
+                    .Where(p => p != XISFChecksumTypeEnum.SHA3_512)
+                    .ToArray();
             }
         }
 
