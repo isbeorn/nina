@@ -84,6 +84,9 @@
 <li>Improved automated plate solve pop up window with additonaly information</li>
 <li>Added ability to record flat exposure times with the flat wizard, to be used in a sequence later</li>
 <li>Added estimated target start and end times to sequence view - useful for multi-target sequence sets</li>
+<li>XISF files may be created with optional compression or shuffled compression of the image data using LZ4, LZ4-HC, or ZLib (deflate) lossless compression algorithms. Decompression of compressed XISF files is also supported</li>
+<li>XISF files may be created with optional embedded checksums of the image data using SHA1, SHA-256, or SHA-512 hashing algorithms. Checksums are verified when opening a XISF file which has one</li>
+<li>Image history graph now displays autofocus indicators with details of the previous position and the newly calculated position as well as the focuser temperature at that point in time</li>
 </ul>
 <h2 id="bug-fixes">Bug fixes</h2>
 <ul>
@@ -98,6 +101,7 @@
 <li>Image File Pattern Values will now remove leading and trailing white spaces to prevent invalid file path</li>
 <li>In case illegal characters for a filename are inside some file patterns, they will now get replaced to still being able to save</li>
 <li>Canon camera support has been improved and many common errors have been fixed</li>
+<li>Autofocus after number of exposures now correctly triggers after the expected amount of exposures.</li>
 </ul>
 <h2 id="special-thanks">Special Thanks</h2>
 <p>The N.I.N.A. team would like to sincerely thank:</p>
