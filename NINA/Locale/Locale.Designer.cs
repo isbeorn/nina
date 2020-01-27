@@ -7538,6 +7538,24 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Set As Park.
+        /// </summary>
+        internal static string LblSetPark {
+            get {
+                return ResourceManager.GetString("LblSetPark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sets the park position to be the current position.
+        /// </summary>
+        internal static string LblSetParkToolTip {
+            get {
+                return ResourceManager.GetString("LblSetParkToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
         internal static string LblSettings {

@@ -2641,6 +2641,12 @@ This template will be used on startup to initialize the sequence instead of the 
   <data name="LblSetNewValue" xml:space="preserve">
     <value>Set new value</value>
   </data>
+  <data name="LblSetPark" xml:space="preserve">
+    <value>Set As Park</value>
+  </data>
+  <data name="LblSetParkToolTip" xml:space="preserve">
+    <value>Sets the park position to be the current position</value>
+  </data>
   <data name="LblSettings" xml:space="preserve">
     <value>Settings</value>
   </data>

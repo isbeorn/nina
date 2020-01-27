@@ -329,7 +329,8 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                             <RowDefinition Height="100" />
-                            <RowDefinition Height="*" />
+                            <RowDefinition Height="100" />
+                            <RowDefinition Height="50" />
                         </Grid.RowDefinitions>
                         <StackPanel
                             Grid.Row="0"
@@ -485,6 +486,23 @@
                                 <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblUnpark}" />
                             </Button>
                         </Grid>
+
+                        <Button
+                            Grid.Row="3"
+                            Grid.Column="3"
+                            Width="80"
+                            Height="40"
+                            HorizontalAlignment="Right"
+                            Command="{Binding SetParkPositionCommand}"
+                            IsEnabled="{Binding TelescopeInfo.AtPark, Converter={StaticResource InverseBooleanConverter}}"
+                            Visibility="{Binding TelescopeInfo.CanSetPark, Converter={StaticResource VisibilityConverter}}">
+                            <Button.ToolTip>
+                                <ToolTip ToolTipService.ShowOnDisabled="True">
+                                    <TextBlock Text="{ns:Loc LblSetParkToolTip}" />
+                                </ToolTip>
+                            </Button.ToolTip>
+                            <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblSetPark}" />
+                        </Button>
                     </Grid>
                 </GroupBox>
             </Grid>

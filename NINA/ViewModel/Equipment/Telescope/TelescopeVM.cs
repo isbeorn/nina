@@ -29,7 +29,6 @@ using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Profile;
 using NINA.Utility.WindowService;
-using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -53,6 +52,7 @@ namespace NINA.ViewModel.Equipment.Telescope {
             DisconnectCommand = new AsyncCommand<bool>(() => DisconnectTelescope());
             ParkCommand = new AsyncCommand<bool>(ParkTelescope);
             UnparkCommand = new RelayCommand(UnparkTelescope);
+            SetParkPositionCommand = new AsyncCommand<bool>(SetParkPosition);
             SlewToCoordinatesCommand = new RelayCommand(SlewToCoordinates);
             RefreshTelescopeListCommand = new RelayCommand(RefreshTelescopeList, o => !(Telescope?.Connected == true));
 
@@ -112,6 +112,17 @@ namespace NINA.ViewModel.Equipment.Telescope {
             }
             Logger.Trace("Telescope has been parked");
             return true;
+        }
+
+        public async Task<bool> SetParkPosition() {
+            if (Telescope.CanSetPark && !Telescope.AtPark) {
+                Logger.Trace($"Setting telescope park position to RA={Telescope.RightAscension}, Dec={Telescope.Declination}");
+                await Task.Run(() => { Telescope.Setpark(); });
+
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -630,6 +641,8 @@ namespace NINA.ViewModel.Equipment.Telescope {
         public ICommand StopMoveCommand { get; private set; }
 
         public IAsyncCommand ParkCommand { get; private set; }
+
+        public IAsyncCommand SetParkPositionCommand { get; private set; }
 
         public ICommand UnparkCommand { get; private set; }
 
