@@ -208,8 +208,8 @@ namespace NINA.Model.ImageData {
                 fileSaveInfo.FilePath = Path.Combine(fileSaveInfo.FilePath, Guid.NewGuid().ToString());
 
                 if (!forceFileType && Data.RAWData != null) {
-                    fileSaveInfo.FilePath = SaveRAW(fileSaveInfo.FilePath);
                     fileSaveInfo.FileType = FileTypeEnum.RAW;
+                    path = SaveRAW(fileSaveInfo.FilePath);
                 } else {
                     switch (fileSaveInfo.FileType) {
                         case FileTypeEnum.FITS:
