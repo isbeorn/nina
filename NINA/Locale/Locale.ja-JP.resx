@@ -460,6 +460,9 @@
   <data name="LblButtonHighlight" xml:space="preserve">
     <value>ボタンハイライト</value>
   </data>
+  <data name="LblByteShuffling" xml:space="preserve">
+    <value>Byte Shuffling</value>
+  </data>
   <data name="LblCache" xml:space="preserve">
     <value>キャッシュ</value>
   </data>
@@ -565,8 +568,26 @@
   <data name="LblCheckMeridianFlip" xml:space="preserve">
     <value>子午線越え反転の確認</value>
   </data>
+  <data name="LblChecksum" xml:space="preserve">
+    <value>Checksum</value>
+  </data>
   <data name="LblChecksumError" xml:space="preserve">
     <value>チェックサム（データ検査）が期待値とマッチングしませんでした。ダウンロードされたファイルは破損している可能性があります。</value>
+  </data>
+  <data name="LblChecksumSHA3_256" xml:space="preserve">
+    <value>SHA3-256</value>
+  </data>
+  <data name="LblChecksumSHA3_512" xml:space="preserve">
+    <value>SHA3-512</value>
+  </data>
+  <data name="LblChecksumSHA_1" xml:space="preserve">
+    <value>SHA-1</value>
+  </data>
+  <data name="LblChecksumSHA_256" xml:space="preserve">
+    <value>SHA-256</value>
+  </data>
+  <data name="LblChecksumSHA_512" xml:space="preserve">
+    <value>SHA-512</value>
   </data>
   <data name="LblChipTemp" xml:space="preserve">
     <value>センサー温度</value>
@@ -591,6 +612,24 @@
   </data>
   <data name="LblColorSensorNotSupported" xml:space="preserve">
     <value>カラーのセンサーはまだサポートされていません。</value>
+  </data>
+  <data name="LblCompression" xml:space="preserve">
+    <value>Compression</value>
+  </data>
+  <data name="LblCompressionLZ4" xml:space="preserve">
+    <value>LZ4</value>
+  </data>
+  <data name="LblCompressionLZ4HC" xml:space="preserve">
+    <value>LZ4HC</value>
+  </data>
+  <data name="LblCompressionLZW" xml:space="preserve">
+    <value>LZW</value>
+  </data>
+  <data name="LblCompressionZIP" xml:space="preserve">
+    <value>ZIP</value>
+  </data>
+  <data name="LblCompressionZLib" xml:space="preserve">
+    <value>ZLib</value>
   </data>
   <data name="LblConnect" xml:space="preserve">
     <value>接続</value>
@@ -1204,6 +1243,9 @@
   </data>
   <data name="LblFileExtension" xml:space="preserve">
     <value>ファイル拡張子</value>
+  </data>
+  <data name="LblFileFormatOptions" xml:space="preserve">
+    <value>File Format Options</value>
   </data>
   <data name="LblFileSettings" xml:space="preserve">
     <value>ファイル設定</value>
@@ -1849,6 +1891,10 @@
   <data name="LblNative" xml:space="preserve">
     <value>ネイティブの</value>
   </data>
+  <data name="LblNewPosition" xml:space="preserve">
+    <value>New Position</value>
+    <comment>Newly Calulated Autofocus Position</comment>
+  </data>
   <data name="LblNewUpdateAvailable" xml:space="preserve">
     <value>新しいアップデート({0}) があります。今、アップデートしますか？</value>
   </data>
@@ -1878,6 +1924,9 @@
   </data>
   <data name="LblNoCoordinatesForSync" xml:space="preserve">
     <value>赤道儀を同期する座標がありません。</value>
+  </data>
+  <data name="LblNoFileFormatOptions" xml:space="preserve">
+    <value>There are no options for this file format</value>
   </data>
   <data name="LblNoFilterwheel" xml:space="preserve">
     <value>フィルターホイール無し</value>
@@ -2037,6 +2086,10 @@
   </data>
   <data name="LblOK" xml:space="preserve">
     <value>オーケー</value>
+  </data>
+  <data name="LblOldPosition" xml:space="preserve">
+    <value>Old Position</value>
+    <comment>Previous Focuser Position</comment>
   </data>
   <data name="LblOn" xml:space="preserve">
     <value>オン</value>
@@ -2575,6 +2628,12 @@
   <data name="LblSetNewValue" xml:space="preserve">
     <value>新しい値を設定</value>
   </data>
+  <data name="LblSetPark" xml:space="preserve">
+    <value>Set As Park</value>
+  </data>
+  <data name="LblSetParkToolTip" xml:space="preserve">
+    <value>Sets the park position to be the current position</value>
+  </data>
   <data name="LblSettings" xml:space="preserve">
     <value>設定</value>
   </data>
@@ -2897,12 +2956,6 @@
   <data name="LblTiff" xml:space="preserve">
     <value>TIFF</value>
   </data>
-  <data name="LblTiffLzw" xml:space="preserve">
-    <value>TIFF (lzw圧縮)</value>
-  </data>
-  <data name="LblTiffZip" xml:space="preserve">
-    <value>TIFF(zip圧縮)</value>
-  </data>
   <data name="LblTime" xml:space="preserve">
     <value>時間</value>
   </data>
@@ -3165,6 +3218,24 @@
   </data>
   <data name="LblXisf" xml:space="preserve">
     <value>XISF</value>
+  </data>
+  <data name="LblXisfBadChecksum" xml:space="preserve">
+    <value>XISF file checksum did not verify. The image data may be corrupted.</value>
+  </data>
+  <data name="LblXisfInvalidFile" xml:space="preserve">
+    <value>Not a valid XISF file</value>
+  </data>
+  <data name="LblXisfInvalidGeometry" xml:space="preserve">
+    <value>Could not get XISF image geometry</value>
+  </data>
+  <data name="LblXisfUnsupportedChecksum" xml:space="preserve">
+    <value>Unsupported XISF checksum type: {0}</value>
+  </data>
+  <data name="LblXisfUnsupportedCompression" xml:space="preserve">
+    <value>Unsupported XISF compression type: {0}</value>
+  </data>
+  <data name="LblXisfUnsupportedFormat" xml:space="preserve">
+    <value>Unsupported XISF data format: {0}</value>
   </data>
   <data name="LblYAxisScale" xml:space="preserve">
     <value>Y軸目盛</value>

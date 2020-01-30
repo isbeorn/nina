@@ -468,6 +468,9 @@ Dec: {1}</value>
   <data name="LblButtonHighlight" xml:space="preserve">
     <value>Hervorgehobener Button</value>
   </data>
+  <data name="LblByteShuffling" xml:space="preserve">
+    <value>Byte Shuffling</value>
+  </data>
   <data name="LblCache" xml:space="preserve">
     <value>Zwischenspeicher</value>
   </data>
@@ -574,8 +577,26 @@ Soll die Sequenz dennoch geschlossen werden und die Änderungen verloren gehen?<
   <data name="LblCheckMeridianFlip" xml:space="preserve">
     <value>Checke Meridian Flip</value>
   </data>
+  <data name="LblChecksum" xml:space="preserve">
+    <value>Checksum</value>
+  </data>
   <data name="LblChecksumError" xml:space="preserve">
     <value>Checksumme entspricht nicht dem erwartetem Wert. Die heruntergeladene Datei ist möglicherweise beschädigt!</value>
+  </data>
+  <data name="LblChecksumSHA3_256" xml:space="preserve">
+    <value>SHA3-256</value>
+  </data>
+  <data name="LblChecksumSHA3_512" xml:space="preserve">
+    <value>SHA3-512</value>
+  </data>
+  <data name="LblChecksumSHA_1" xml:space="preserve">
+    <value>SHA-1</value>
+  </data>
+  <data name="LblChecksumSHA_256" xml:space="preserve">
+    <value>SHA-256</value>
+  </data>
+  <data name="LblChecksumSHA_512" xml:space="preserve">
+    <value>SHA-512</value>
   </data>
   <data name="LblChipTemp" xml:space="preserve">
     <value>Chip Temperatur</value>
@@ -600,6 +621,24 @@ Soll die Sequenz dennoch geschlossen werden und die Änderungen verloren gehen?<
   </data>
   <data name="LblColorSensorNotSupported" xml:space="preserve">
     <value>Farbsensor ist derzeit nicht unterstützt</value>
+  </data>
+  <data name="LblCompression" xml:space="preserve">
+    <value>Compression</value>
+  </data>
+  <data name="LblCompressionLZ4" xml:space="preserve">
+    <value>LZ4</value>
+  </data>
+  <data name="LblCompressionLZ4HC" xml:space="preserve">
+    <value>LZ4HC</value>
+  </data>
+  <data name="LblCompressionLZW" xml:space="preserve">
+    <value>LZW</value>
+  </data>
+  <data name="LblCompressionZIP" xml:space="preserve">
+    <value>ZIP</value>
+  </data>
+  <data name="LblCompressionZLib" xml:space="preserve">
+    <value>ZLib</value>
   </data>
   <data name="LblConnect" xml:space="preserve">
     <value>Verbinden</value>
@@ -1215,6 +1254,9 @@ Ist dieser Auslöser deaktiviert, wird dieser Schritt übersprungen.</value>
   </data>
   <data name="LblFileExtension" xml:space="preserve">
     <value>Dateiendung</value>
+  </data>
+  <data name="LblFileFormatOptions" xml:space="preserve">
+    <value>File Format Options</value>
   </data>
   <data name="LblFileSettings" xml:space="preserve">
     <value>Datei Einstellungen</value>
@@ -1861,6 +1903,10 @@ Berechneter HFR: {2}
   <data name="LblNative" xml:space="preserve">
     <value>Nativ</value>
   </data>
+  <data name="LblNewPosition" xml:space="preserve">
+    <value>New Position</value>
+    <comment>Newly Calulated Autofocus Position</comment>
+  </data>
   <data name="LblNewUpdateAvailable" xml:space="preserve">
     <value>Neues Update ist verfügbar ({0})! Jetzt aktualisieren?</value>
   </data>
@@ -1890,6 +1936,9 @@ Berechneter HFR: {2}
   </data>
   <data name="LblNoCoordinatesForSync" xml:space="preserve">
     <value>Keine Koordinaten verfügbar zum Synchronisieren des Teleskops</value>
+  </data>
+  <data name="LblNoFileFormatOptions" xml:space="preserve">
+    <value>There are no options for this file format</value>
   </data>
   <data name="LblNoFilterwheel" xml:space="preserve">
     <value>Kein Filterrad</value>
@@ -2049,6 +2098,10 @@ Berechneter HFR: {2}
   </data>
   <data name="LblOK" xml:space="preserve">
     <value>OK</value>
+  </data>
+  <data name="LblOldPosition" xml:space="preserve">
+    <value>Old Position</value>
+    <comment>Previous Focuser Position</comment>
   </data>
   <data name="LblOn" xml:space="preserve">
     <value>An</value>
@@ -2588,6 +2641,12 @@ Diese Vorlage wird beim Starten der Applikation geladen, statt der Standard Sequ
   <data name="LblSetNewValue" xml:space="preserve">
     <value>Neuen Wert einstellen</value>
   </data>
+  <data name="LblSetPark" xml:space="preserve">
+    <value>Set As Park</value>
+  </data>
+  <data name="LblSetParkToolTip" xml:space="preserve">
+    <value>Sets the park position to be the current position</value>
+  </data>
   <data name="LblSettings" xml:space="preserve">
     <value>Einstellungen</value>
   </data>
@@ -2911,12 +2970,6 @@ Sollen die Werte synchronisiert werden?</value>
   <data name="LblTiff" xml:space="preserve">
     <value>TIFF</value>
   </data>
-  <data name="LblTiffLzw" xml:space="preserve">
-    <value>TIFF (lzw-komprimiert)</value>
-  </data>
-  <data name="LblTiffZip" xml:space="preserve">
-    <value>TIFF (zip-komprimiert)</value>
-  </data>
   <data name="LblTime" xml:space="preserve">
     <value>Zeit</value>
   </data>
@@ -3179,6 +3232,24 @@ Lichtverschmutzten Gebieten. Berechnungszeit ist jedoch erhöht.</value>
   </data>
   <data name="LblXisf" xml:space="preserve">
     <value>XISF</value>
+  </data>
+  <data name="LblXisfBadChecksum" xml:space="preserve">
+    <value>XISF file checksum did not verify. The image data may be corrupted.</value>
+  </data>
+  <data name="LblXisfInvalidFile" xml:space="preserve">
+    <value>Not a valid XISF file</value>
+  </data>
+  <data name="LblXisfInvalidGeometry" xml:space="preserve">
+    <value>Could not get XISF image geometry</value>
+  </data>
+  <data name="LblXisfUnsupportedChecksum" xml:space="preserve">
+    <value>Unsupported XISF checksum type: {0}</value>
+  </data>
+  <data name="LblXisfUnsupportedCompression" xml:space="preserve">
+    <value>Unsupported XISF compression type: {0}</value>
+  </data>
+  <data name="LblXisfUnsupportedFormat" xml:space="preserve">
+    <value>Unsupported XISF data format: {0}</value>
   </data>
   <data name="LblYAxisScale" xml:space="preserve">
     <value>Y-Achse Skala</value>

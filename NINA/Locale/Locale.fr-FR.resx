@@ -212,7 +212,7 @@ L'erreur en Altitude sera calculée et affichée à partir de ces deux positions
     <value>Nom de l'image</value>
   </data>
   <data name="LblAnnotateImageTooltip" xml:space="preserve">
-    <value>Si coché et la détection des étoiles au sein de l'image active, l'image sera annotée avec les informations de HFR pour les étoiles détectées.</value>
+    <value>Si coché et la détection des étoiles au sein de l'image active, l'image sera annotée avec les informations de HFR pour les étoiles détectées</value>
   </data>
   <data name="LblAPIKey" xml:space="preserve">
     <value>Clé API</value>
@@ -468,6 +468,9 @@ Dec: {1}</value>
   <data name="LblButtonHighlight" xml:space="preserve">
     <value>Bouton Surlignement</value>
   </data>
+  <data name="LblByteShuffling" xml:space="preserve">
+    <value>Byte Shuffling</value>
+  </data>
   <data name="LblCache" xml:space="preserve">
     <value>Cache</value>
   </data>
@@ -574,8 +577,26 @@ Voulez-vous toujours la fermer et perdre tous les changements?</value>
   <data name="LblCheckMeridianFlip" xml:space="preserve">
     <value>Vérification du Retournement au Méridien</value>
   </data>
+  <data name="LblChecksum" xml:space="preserve">
+    <value>Somme de contrôle</value>
+  </data>
   <data name="LblChecksumError" xml:space="preserve">
     <value>Le checksum ne correspond pas à la valeur attendue. Le fichier téléchargé est peut-être corrompu!</value>
+  </data>
+  <data name="LblChecksumSHA3_256" xml:space="preserve">
+    <value>SHA3-256</value>
+  </data>
+  <data name="LblChecksumSHA3_512" xml:space="preserve">
+    <value>SHA3-512</value>
+  </data>
+  <data name="LblChecksumSHA_1" xml:space="preserve">
+    <value>SHA-1</value>
+  </data>
+  <data name="LblChecksumSHA_256" xml:space="preserve">
+    <value>SHA-256</value>
+  </data>
+  <data name="LblChecksumSHA_512" xml:space="preserve">
+    <value>SHA-512</value>
   </data>
   <data name="LblChipTemp" xml:space="preserve">
     <value>Température du Capteur</value>
@@ -600,6 +621,24 @@ Voulez-vous toujours la fermer et perdre tous les changements?</value>
   </data>
   <data name="LblColorSensorNotSupported" xml:space="preserve">
     <value>Les senseurs couleurs ne sont pas encore supportés</value>
+  </data>
+  <data name="LblCompression" xml:space="preserve">
+    <value>Compression</value>
+  </data>
+  <data name="LblCompressionLZ4" xml:space="preserve">
+    <value>LZ4</value>
+  </data>
+  <data name="LblCompressionLZ4HC" xml:space="preserve">
+    <value>LZ4HC</value>
+  </data>
+  <data name="LblCompressionLZW" xml:space="preserve">
+    <value>LZW</value>
+  </data>
+  <data name="LblCompressionZIP" xml:space="preserve">
+    <value>ZIP</value>
+  </data>
+  <data name="LblCompressionZLib" xml:space="preserve">
+    <value>ZLib</value>
   </data>
   <data name="LblConnect" xml:space="preserve">
     <value>Connecter</value>
@@ -1216,6 +1255,9 @@ Lorsque ce déclencheur est désactivé, l'application ignorera simplement le d�
   <data name="LblFileExtension" xml:space="preserve">
     <value>Extension de fichier</value>
   </data>
+  <data name="LblFileFormatOptions" xml:space="preserve">
+    <value>Options de Format de Fichier</value>
+  </data>
   <data name="LblFileSettings" xml:space="preserve">
     <value>Configuration Fichier</value>
   </data>
@@ -1316,7 +1358,7 @@ Lorsque ce déclencheur est désactivé, l'application ignorera simplement le d�
     <value>Ouvrir</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for darks and dark flats</value>
+    <value>Ouvrir l'obturateur du tube pour les darks et dark flats</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Ajuster</value>
@@ -1861,6 +1903,10 @@ HFR calculé: {2}</value>
   <data name="LblNative" xml:space="preserve">
     <value>Natif</value>
   </data>
+  <data name="LblNewPosition" xml:space="preserve">
+    <value>Nouvelle position</value>
+    <comment>Newly Calulated Autofocus Position</comment>
+  </data>
   <data name="LblNewUpdateAvailable" xml:space="preserve">
     <value>Une nouvelle mise à jour est disponible ({0})! Voulez-vous mettre à jour maintenant?</value>
   </data>
@@ -1890,6 +1936,9 @@ HFR calculé: {2}</value>
   </data>
   <data name="LblNoCoordinatesForSync" xml:space="preserve">
     <value>Aucune coordonnée de disponible pour synchroniser la position du télescope</value>
+  </data>
+  <data name="LblNoFileFormatOptions" xml:space="preserve">
+    <value>Il n'y a pas d'options pour ce format de fichier</value>
   </data>
   <data name="LblNoFilterwheel" xml:space="preserve">
     <value>Aucune roue à filtres</value>
@@ -2049,6 +2098,10 @@ HFR calculé: {2}</value>
   </data>
   <data name="LblOK" xml:space="preserve">
     <value>Ok</value>
+  </data>
+  <data name="LblOldPosition" xml:space="preserve">
+    <value>Ancienne position</value>
+    <comment>Previous Focuser Position</comment>
   </data>
   <data name="LblOn" xml:space="preserve">
     <value>On</value>
@@ -2588,6 +2641,12 @@ Ce modèle sera utilisé au démarrage pour initialiser la séquence au lieu de 
   <data name="LblSetNewValue" xml:space="preserve">
     <value>Définir nouvelle valeur</value>
   </data>
+  <data name="LblSetPark" xml:space="preserve">
+    <value>Définir comme position de park</value>
+  </data>
+  <data name="LblSetParkToolTip" xml:space="preserve">
+    <value>Définit la position actuelle comme position de park</value>
+  </data>
   <data name="LblSettings" xml:space="preserve">
     <value>Configuration</value>
   </data>
@@ -2910,14 +2969,8 @@ Les valeurs doivent-elles être synchronisées?</value>
   <data name="LblTiff" xml:space="preserve">
     <value>TIFF</value>
   </data>
-  <data name="LblTiffLzw" xml:space="preserve">
-    <value>TIFF (compression lzw)</value>
-  </data>
-  <data name="LblTiffZip" xml:space="preserve">
-    <value>TIFF (compression zip)</value>
-  </data>
   <data name="LblTime" xml:space="preserve">
-    <value>Heure</value>
+    <value>Acquisition (Sec)</value>
   </data>
   <data name="LblTimeFormatDescription" xml:space="preserve">
     <value>Heure au format HH-mm-ss</value>
@@ -3177,6 +3230,24 @@ Lorsque cette option est activée, les canaux de couleur sont ajustés avec un s
   </data>
   <data name="LblXisf" xml:space="preserve">
     <value>XISF</value>
+  </data>
+  <data name="LblXisfBadChecksum" xml:space="preserve">
+    <value>La somme de contrôle du fichier XISF n'a pas été vérifiée. Les données de l'image peuvent être corrompues.</value>
+  </data>
+  <data name="LblXisfInvalidFile" xml:space="preserve">
+    <value>Fichier XISF non valide</value>
+  </data>
+  <data name="LblXisfInvalidGeometry" xml:space="preserve">
+    <value>Impossible d'obtenir la géométrie de l'image XISF</value>
+  </data>
+  <data name="LblXisfUnsupportedChecksum" xml:space="preserve">
+    <value>Type de somme de contrôle XISF non pris en charge : {0}</value>
+  </data>
+  <data name="LblXisfUnsupportedCompression" xml:space="preserve">
+    <value>Type de compression XISF non pris en charge : {0}</value>
+  </data>
+  <data name="LblXisfUnsupportedFormat" xml:space="preserve">
+    <value>Format de données XISF non pris en charge : {0}</value>
   </data>
   <data name="LblYAxisScale" xml:space="preserve">
     <value>Échelle Y</value>
