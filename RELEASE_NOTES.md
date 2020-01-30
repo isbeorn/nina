@@ -71,6 +71,7 @@
 - XISF files may be created with optional compression or shuffled compression of the image data using LZ4, LZ4-HC, or ZLib (deflate) lossless compression algorithms. Decompression of compressed XISF files is also supported
 - XISF files may be created with optional embedded checksums of the image data using SHA1, SHA-256, or SHA-512 hashing algorithms. Checksums are verified when opening a XISF file which has one
 - Image history graph now displays autofocus indicators with details of the previous position and the newly calculated position as well as the focuser temperature at that point in time
+- Added button to Telescope control window to set the current position of the mount to be its park position. This button is available only if the connected mount's ASCOM driver supports this action (CanSetPark = true)
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false
