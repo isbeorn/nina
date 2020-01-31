@@ -381,6 +381,12 @@
                             <view:AnchorableSwitchHubView />
                         </DataTemplate>
                     </util:PaneTemplateSelector.SwitchTemplate>
+
+                    <util:PaneTemplateSelector.ExposureCalculatorTemplate>
+                        <DataTemplate>
+                            <view:AnchorableExposureTimeRecommendationView />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.ExposureCalculatorTemplate>
                 </util:PaneTemplateSelector>
             </dock:DockingManager.LayoutItemTemplateSelector>
 

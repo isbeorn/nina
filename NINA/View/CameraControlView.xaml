@@ -70,6 +70,7 @@
             </Border>
             <Border
                 MinHeight="30"
+                Visibility="{Binding MyBinningModes, Converter={StaticResource NullToVisibilityCollapsedConverter}}"
                 BorderBrush="{StaticResource BorderBrush}"
                 BorderThickness="0">
                 <UniformGrid VerticalAlignment="Center" Columns="2">

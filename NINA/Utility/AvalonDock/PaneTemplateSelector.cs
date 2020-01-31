@@ -77,6 +77,7 @@ namespace NINA.Utility.AvalonDock {
         public DataTemplate FocusTargetsTemplate { get; set; }
 
         public DataTemplate SwitchTemplate { get; set; }
+        public DataTemplate ExposureCalculatorTemplate { get; set; }
 
         public override System.Windows.DataTemplate SelectTemplate(object item, System.Windows.DependencyObject container) {
             var itemAsLayoutContent = item as LayoutContent;
@@ -151,6 +152,10 @@ namespace NINA.Utility.AvalonDock {
 
             if (item is SwitchVM) {
                 return SwitchTemplate;
+            }
+
+            if (item is ExposureCalculatorVM) {
+                return ExposureCalculatorTemplate;
             }
 
             return base.SelectTemplate(item, container);

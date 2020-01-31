@@ -77,50 +77,6 @@
                                 Width="150"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                Text="{ns:Loc LblReadNoise}" />
-                            <TextBox
-                                MinWidth="80"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Center">
-                                <TextBox.Text>
-                                    <Binding Path="ReadNoise" UpdateSourceTrigger="LostFocus">
-                                        <Binding.ValidationRules>
-                                            <rules:GreaterZeroRule />
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox.Text>
-                            </TextBox>
-                        </UniformGrid>
-                        <UniformGrid
-                            Margin="0,6,0,6"
-                            VerticalAlignment="Center"
-                            Columns="2">
-                            <TextBlock
-                                Width="150"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Text="{ns:Loc LblBiasMean}" />
-                            <TextBox
-                                MinWidth="80"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Center">
-                                <TextBox.Text>
-                                    <Binding Path="Offset" UpdateSourceTrigger="LostFocus">
-                                        <Binding.ValidationRules>
-                                            <rules:GreaterZeroRule />
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox.Text>
-                            </TextBox>
-                        </UniformGrid>
-                        <UniformGrid
-                            Margin="0,6,0,6"
-                            VerticalAlignment="Center"
-                            Columns="2">
-                            <TextBlock
-                                Width="150"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
                                 Text="{ns:Loc LblBitDepth}" />
                             <TextBox
                                 MinWidth="80"
@@ -134,50 +90,6 @@
                                                     <util:ShortRangeChecker Maximum="16" Minimum="8" />
                                                 </util:ShortRangeRule.ValidRange>
                                             </util:ShortRangeRule>
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox.Text>
-                            </TextBox>
-                        </UniformGrid>
-                        <UniformGrid
-                            Margin="0,6,0,6"
-                            VerticalAlignment="Center"
-                            Columns="2">
-                            <TextBlock
-                                Width="150"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Text="{ns:Loc LblFullWellCapacity}" />
-                            <TextBox
-                                MinWidth="80"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Center">
-                                <TextBox.Text>
-                                    <Binding Path="FullWellCapacity" UpdateSourceTrigger="LostFocus">
-                                        <Binding.ValidationRules>
-                                            <rules:GreaterZeroRule />
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox.Text>
-                            </TextBox>
-                        </UniformGrid>
-                        <UniformGrid
-                            Margin="0,6,0,6"
-                            VerticalAlignment="Center"
-                            Columns="2">
-                            <TextBlock
-                                Width="150"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Text="{ns:Loc LblDataToDownloadRatio}" />
-                            <TextBox
-                                MinWidth="80"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Center">
-                                <TextBox.Text>
-                                    <Binding Path="DownloadToDataRatio" UpdateSourceTrigger="LostFocus">
-                                        <Binding.ValidationRules>
-                                            <rules:GreaterZeroRule />
                                         </Binding.ValidationRules>
                                     </Binding>
                                 </TextBox.Text>
@@ -1248,12 +1160,12 @@
                         <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblPreferredPlanetarium}" />
                             <ComboBox
-                            Name="PART_PlanetariumList"
-                            MinWidth="150"
-                            Margin="10,0,0,0"
-                            Grid.Column="1"
-                            ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:PlanetariumEnum}}}"
-                            SelectedItem="{Binding PreferredPlanetarium}" />
+                                Name="PART_PlanetariumList"
+                                Grid.Column="1"
+                                MinWidth="150"
+                                Margin="10,0,0,0"
+                                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:PlanetariumEnum}}}"
+                                SelectedItem="{Binding PreferredPlanetarium}" />
                         </StackPanel>
                     </Grid>
                     <Grid Margin="0,5,0,0">
@@ -1266,7 +1178,10 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
-                        <StackPanel Margin="0,5,0,5" Orientation="Horizontal" Visibility="Visible">
+                        <StackPanel
+                            Margin="0,5,0,5"
+                            Orientation="Horizontal"
+                            Visibility="Visible">
                             <TextBlock
                                 Width="140"
                                 VerticalAlignment="Center"
@@ -1309,8 +1224,8 @@
                             </TextBox>
                         </StackPanel>
                         <StackPanel
-                            Grid.Column="1"
                             Grid.Row="0"
+                            Grid.Column="1"
                             Margin="0,5,0,5"
                             Orientation="Horizontal">
                             <TextBlock
@@ -1371,8 +1286,8 @@
                             </TextBox>
                         </StackPanel>
                         <StackPanel
-                            Grid.Column="0"
                             Grid.Row="1"
+                            Grid.Column="0"
                             Margin="0,5,0,5"
                             Orientation="Horizontal">
                             <StackPanel.Style>

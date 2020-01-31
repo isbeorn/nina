@@ -42,11 +42,7 @@ namespace NINA.Profile {
             pixelSize = 3.8;
             bulbMode = CameraBulbModeEnum.NATIVE;
             serialPort = "COM1";
-            readNoise = 0.0;
             bitDepth = 16;
-            offset = 0.0;
-            fullWellCapacity = 20000;
-            downloadToDataRatio = 9;
             rawConverter = RawConverterEnum.FREEIMAGE;
             minFlatExposureTime = 0.2;
             maxFlatExposureTime = 20;
@@ -111,19 +107,6 @@ namespace NINA.Profile {
             }
         }
 
-        private double readNoise;
-
-        [DataMember]
-        public double ReadNoise {
-            get => readNoise;
-            set {
-                if (readNoise != value) {
-                    readNoise = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
         private double bitDepth;
 
         [DataMember]
@@ -132,45 +115,6 @@ namespace NINA.Profile {
             set {
                 if (bitDepth != value) {
                     bitDepth = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private double offset;
-
-        [DataMember]
-        public double Offset {
-            get => offset;
-            set {
-                if (offset != value) {
-                    offset = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private double fullWellCapacity;
-
-        [DataMember]
-        public double FullWellCapacity {
-            get => fullWellCapacity;
-            set {
-                if (fullWellCapacity != value) {
-                    fullWellCapacity = value;
-                    RaisePropertyChanged();
-                }
-            }
-        }
-
-        private double downloadToDataRatio;
-
-        [DataMember]
-        public double DownloadToDataRatio {
-            get => downloadToDataRatio;
-            set {
-                if (downloadToDataRatio != value) {
-                    downloadToDataRatio = value;
                     RaisePropertyChanged();
                 }
             }
