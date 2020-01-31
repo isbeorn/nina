@@ -57,6 +57,7 @@ namespace NINA.Profile {
     [KnownType(typeof(FlatWizardSettings))]
     [KnownType(typeof(PlanetariumSettings))]
     [KnownType(typeof(SwitchSettings))]
+    [KnownType(typeof(ExposureCalculatorSettings))]
     public class Profile : BaseINPC, IProfile {
 
         /// <summary>
@@ -108,6 +109,7 @@ namespace NINA.Profile {
             SwitchSettings = new SwitchSettings();
             TelescopeSettings = new TelescopeSettings();
             WeatherDataSettings = new WeatherDataSettings();
+            ExposureCalculatorSettings = new ExposureCalculatorSettings();
         }
 
         /// <summary>
@@ -135,6 +137,7 @@ namespace NINA.Profile {
             SwitchSettings.PropertyChanged += SettingsChanged;
             TelescopeSettings.PropertyChanged += SettingsChanged;
             WeatherDataSettings.PropertyChanged += SettingsChanged;
+            ExposureCalculatorSettings.PropertyChanged += SettingsChanged;
         }
 
         /// <summary>
@@ -256,6 +259,9 @@ namespace NINA.Profile {
 
         [DataMember]
         public IPlanetariumSettings PlanetariumSettings { get; set; }
+
+        [DataMember]
+        public IExposureCalculatorSettings ExposureCalculatorSettings { get; set; }
 
         /// <summary>
         /// Deep Clone an existing profile, create a new Id and append "Copy" to the name

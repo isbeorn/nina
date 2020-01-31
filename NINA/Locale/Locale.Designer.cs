@@ -2511,15 +2511,6 @@ namespace NINA.Locale {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Current Download:Data ratio.
-        /// </summary>
-        internal static string LblCurrentDownloadToDataRatio {
-            get {
-                return ResourceManager.GetString("LblCurrentDownloadToDataRatio", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Current Mean.
         /// </summary>
         internal static string LblCurrentMean {
@@ -3327,6 +3318,25 @@ namespace NINA.Locale {
         internal static string LblExposureCalculator {
             get {
                 return ResourceManager.GetString("LblExposureCalculator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This tool will suggest recommended exposure times based on the measured Min and Max ADU values of a captured image. Average skyglow will be taken into consideration and will calulate the exposures to swamp the camera read noise by a factor of 3x (Min) and 10x (Max).
+        ///When the button is clicked the application will take one exposure and calculate the recommended times based on the image and the given input values..
+        /// </summary>
+        internal static string LblExposureCalculatorDescription {
+            get {
+                return ResourceManager.GetString("LblExposureCalculatorDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to determine exposure time recommendation. The mean of your current image is less than the specified bias mean. Please take a longer exposure or adjust the incorrect values..
+        /// </summary>
+        internal static string LblExposureCalculatorMeanLessThanOffset {
+            get {
+                return ResourceManager.GetString("LblExposureCalculatorMeanLessThanOffset", resourceCulture);
             }
         }
         
@@ -5997,15 +6007,6 @@ namespace NINA.Locale {
         internal static string LblOpenWeatherMapClientInfo {
             get {
                 return ResourceManager.GetString("LblOpenWeatherMapClientInfo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Optimal exposure time.
-        /// </summary>
-        internal static string LblOptimalExposureTime {
-            get {
-                return ResourceManager.GetString("LblOptimalExposureTime", resourceCulture);
             }
         }
         
@@ -9399,6 +9400,15 @@ namespace NINA.Locale {
         internal static string LblZoomStretch {
             get {
                 return ResourceManager.GetString("LblZoomStretch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string String1 {
+            get {
+                return ResourceManager.GetString("String1", resourceCulture);
             }
         }
     }

@@ -87,6 +87,8 @@
 <li>XISF files may be created with optional compression or shuffled compression of the image data using LZ4, LZ4-HC, or ZLib (deflate) lossless compression algorithms. Decompression of compressed XISF files is also supported</li>
 <li>XISF files may be created with optional embedded checksums of the image data using SHA1, SHA-256, or SHA-512 hashing algorithms. Checksums are verified when opening a XISF file which has one</li>
 <li>Image history graph now displays autofocus indicators with details of the previous position and the newly calculated position as well as the focuser temperature at that point in time</li>
+<li>Added button to Telescope control window to set the current position of the mount to be its park position. This button is available only if the connected mount's ASCOM driver supports this action (CanSetPark = true)</li>
+<li>Optimal Exposure Calculator is moved out of the statistics window into its own tool window for improved user experience</li>
 </ul>
 <h2 id="bug-fixes">Bug fixes</h2>
 <ul>

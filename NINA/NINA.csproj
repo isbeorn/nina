@@ -457,6 +457,8 @@
     <Compile Include="PlateSolving\ImageSolver.cs" />
     <Compile Include="PlateSolving\CaptureSolver.cs" />
     <Compile Include="PlateSolving\PlateSolveProgress.cs" />
+    <Compile Include="Profile\ExposureCalculatorSettings.cs" />
+    <Compile Include="Profile\Interfaces\IExposureCalculatorSettings.cs" />
     <Compile Include="Utility\CameraSDKs\EDSDK\EDSDKLocal.cs" />
     <Compile Include="Utility\CameraSDKs\OmegonSDK\omegonprocam.cs" />
     <Compile Include="Utility\FileSaveInfo.cs" />
@@ -601,6 +603,7 @@
     <Compile Include="ViewModel\Equipment\WeatherData\IWeatherDataVM.cs" />
     <Compile Include="ViewModel\Equipment\WeatherData\WeatherDataChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\WeatherData\WeatherDataVM.cs" />
+    <Compile Include="ViewModel\Imaging\ExposureTimeRecommendationVM.cs" />
     <Compile Include="ViewModel\Imaging\AnchorablePlateSolverVM.cs" />
     <Compile Include="ViewModel\PlateSolvingStatusVM.cs" />
     <Compile Include="View\Equipment\Camera\FLICameraSetupView.xaml.cs">
@@ -965,6 +968,9 @@
     </Compile>
     <Compile Include="View\Imaging\AnchorableAutoFocusView.xaml.cs">
       <DependentUpon>AnchorableAutoFocusView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Imaging\AnchorableExposureCalculatorView.xaml.cs">
+      <DependentUpon>AnchorableExposureCalculatorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Imaging\AnchorableFocusTargetsView.xaml.cs">
       <DependentUpon>AnchorableFocusTargetsView.xaml</DependentUpon>
@@ -1333,6 +1339,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Imaging\AnchorableAutoFocusView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Imaging\AnchorableExposureCalculatorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

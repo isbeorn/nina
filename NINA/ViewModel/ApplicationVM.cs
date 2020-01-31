@@ -180,6 +180,7 @@ namespace NINA.ViewModel {
             DockManagerVM.Anchorables.Add(PolarAlignVM);
             DockManagerVM.Anchorables.Add(AutoFocusVM);
             DockManagerVM.Anchorables.Add(FocusTargetsVM);
+            DockManagerVM.Anchorables.Add(ExposureCalculatorVM);
 
             DockManagerVM.AnchorableInfoPanels.Add(ImagingVM.ImageControl);
             DockManagerVM.AnchorableInfoPanels.Add(CameraVM);
@@ -200,6 +201,7 @@ namespace NINA.ViewModel {
             DockManagerVM.AnchorableTools.Add(PolarAlignVM);
             DockManagerVM.AnchorableTools.Add(AutoFocusVM);
             DockManagerVM.AnchorableTools.Add(FocusTargetsVM);
+            DockManagerVM.AnchorableTools.Add(ExposureCalculatorVM);
         }
 
         public void ChangeTab(ApplicationTab tab) {
@@ -629,6 +631,21 @@ namespace NINA.ViewModel {
             }
             set {
                 _skyAtlasVM = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private ExposureCalculatorVM exposureCalculatorVM;
+
+        public ExposureCalculatorVM ExposureCalculatorVM {
+            get {
+                if (exposureCalculatorVM == null) {
+                    exposureCalculatorVM = new ExposureCalculatorVM(profileService, imagingMediator);
+                }
+                return exposureCalculatorVM;
+            }
+            set {
+                exposureCalculatorVM = value;
                 RaisePropertyChanged();
             }
         }
