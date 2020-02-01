@@ -179,7 +179,16 @@ namespace NINA.Model.ImageData {
     }
 
     public class TargetParameter {
-        public string Name { get; set; } = string.Empty;
+        private string name = string.Empty;
+
+        public string Name {
+            get => name;
+            set {
+                name = value;
+                name = name.Replace("\\", "-").Replace("/", "-");
+            }
+        }
+
         public Coordinates Coordinates { get; set; } = null;
     }
 
