@@ -943,9 +943,6 @@
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>望遠鏡にカバーを付けて下さい。</value>
   </data>
-  <data name="LblCurrentDownloadToDataRatio" xml:space="preserve">
-    <value>現在のダウンロード:データレート</value>
-  </data>
   <data name="LblCurrentMean" xml:space="preserve">
     <value>現在の平均値</value>
   </data>
@@ -1215,6 +1212,13 @@
   </data>
   <data name="LblExposureCalculator" xml:space="preserve">
     <value>最適露出時間計算機能</value>
+  </data>
+  <data name="LblExposureCalculatorDescription" xml:space="preserve">
+    <value>This tool will suggest recommended exposure times based on the measured Min and Max ADU values of a captured image. Average skyglow will be taken into consideration and will calulate the exposures to swamp the camera read noise by a factor of 3x (Min) and 10x (Max).
+When the button is clicked the application will take one exposure and calculate the recommended times based on the image and the given input values.</value>
+  </data>
+  <data name="LblExposureCalculatorMeanLessThanOffset" xml:space="preserve">
+    <value>Unable to determine exposure time recommendation. The mean of your current image is less than the specified bias mean. Please take a longer exposure or adjust the incorrect values.</value>
   </data>
   <data name="LblExposures" xml:space="preserve">
     <value>露出枚数</value>
@@ -2111,9 +2115,6 @@
   </data>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>NINA内部OpenWeatherMap APIクライアント</value>
-  </data>
-  <data name="LblOptimalExposureTime" xml:space="preserve">
-    <value>最適露出時間</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>オプション</value>
@@ -3254,5 +3255,8 @@
   </data>
   <data name="LblZoomStretch" xml:space="preserve">
     <value>Fit Image to Area</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value></value>
   </data>
 </root>

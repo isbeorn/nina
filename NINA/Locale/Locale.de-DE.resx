@@ -953,9 +953,6 @@ Wenn die Dauer gesetzt ist, wird die Temperatur stetig reduziert über den gegeb
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>Decken Sie ihr Teleskop ab</value>
   </data>
-  <data name="LblCurrentDownloadToDataRatio" xml:space="preserve">
-    <value>Aktuelles Download:Data Verhältnis</value>
-  </data>
   <data name="LblCurrentMean" xml:space="preserve">
     <value>Aktueller Mittelwert</value>
   </data>
@@ -1226,6 +1223,13 @@ wenn die Linien nicht ausgerichtet sind, gibt es einen Polarausrichtungsfehler</
   </data>
   <data name="LblExposureCalculator" xml:space="preserve">
     <value>Optimaler Belichtungszeitrechner</value>
+  </data>
+  <data name="LblExposureCalculatorDescription" xml:space="preserve">
+    <value>This tool will suggest recommended exposure times based on the measured Min and Max ADU values of a captured image. Average skyglow will be taken into consideration and will calulate the exposures to swamp the camera read noise by a factor of 3x (Min) and 10x (Max).
+When the button is clicked the application will take one exposure and calculate the recommended times based on the image and the given input values.</value>
+  </data>
+  <data name="LblExposureCalculatorMeanLessThanOffset" xml:space="preserve">
+    <value>Unable to determine exposure time recommendation. The mean of your current image is less than the specified bias mean. Please take a longer exposure or adjust the incorrect values.</value>
   </data>
   <data name="LblExposures" xml:space="preserve">
     <value>Bildern</value>
@@ -2123,9 +2127,6 @@ Berechneter HFR: {2}
   </data>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>N.I.N.A. internal OpenWeatherMap API client</value>
-  </data>
-  <data name="LblOptimalExposureTime" xml:space="preserve">
-    <value>Optimale Belichtungszeit</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>Optionen</value>
@@ -3268,5 +3269,8 @@ Lichtverschmutzten Gebieten. Berechnungszeit ist jedoch erhöht.</value>
   </data>
   <data name="LblZoomStretch" xml:space="preserve">
     <value>Passe Bildgröße an Fläche an</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value></value>
   </data>
 </root>

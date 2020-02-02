@@ -953,9 +953,6 @@ Cuando una duracion es colocada, la aplicacin lentamente disminuye la temperatur
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>Cubre tu telescopio ahora</value>
   </data>
-  <data name="LblCurrentDownloadToDataRatio" xml:space="preserve">
-    <value>Proporcion Descarga: Data Actual</value>
-  </data>
   <data name="LblCurrentMean" xml:space="preserve">
     <value>Media Actual</value>
   </data>
@@ -1226,6 +1223,13 @@ cuando las lineas no estan alineadas hay algun error de alineacion polar</value>
   </data>
   <data name="LblExposureCalculator" xml:space="preserve">
     <value>Calculadora de Exposicion Optima</value>
+  </data>
+  <data name="LblExposureCalculatorDescription" xml:space="preserve">
+    <value>This tool will suggest recommended exposure times based on the measured Min and Max ADU values of a captured image. Average skyglow will be taken into consideration and will calulate the exposures to swamp the camera read noise by a factor of 3x (Min) and 10x (Max).
+When the button is clicked the application will take one exposure and calculate the recommended times based on the image and the given input values.</value>
+  </data>
+  <data name="LblExposureCalculatorMeanLessThanOffset" xml:space="preserve">
+    <value>Unable to determine exposure time recommendation. The mean of your current image is less than the specified bias mean. Please take a longer exposure or adjust the incorrect values.</value>
   </data>
   <data name="LblExposures" xml:space="preserve">
     <value>Exposiciones</value>
@@ -2123,9 +2127,6 @@ Calculado HFR: {2}
   </data>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>Cliente interno NINA para el APO de OpenWeatherMap</value>
-  </data>
-  <data name="LblOptimalExposureTime" xml:space="preserve">
-    <value>Tiempo Optimo de Exposicion</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>Opciones</value>
@@ -3269,5 +3270,8 @@ Mueve el rectangulo sobre la parte del Encuadre que quieres hacer subsampling. T
   </data>
   <data name="LblZoomStretch" xml:space="preserve">
     <value>Ajusta Imagen al area</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value></value>
   </data>
 </root>

@@ -953,9 +953,6 @@
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>而家起埋你望遠鏡鏡頭蓋</value>
   </data>
-  <data name="LblCurrentDownloadToDataRatio" xml:space="preserve">
-    <value>當前下載: 數據速率</value>
-  </data>
   <data name="LblCurrentMean" xml:space="preserve">
     <value>當前平均值</value>
   </data>
@@ -1226,6 +1223,13 @@
   </data>
   <data name="LblExposureCalculator" xml:space="preserve">
     <value>最佳曝光計數機</value>
+  </data>
+  <data name="LblExposureCalculatorDescription" xml:space="preserve">
+    <value>This tool will suggest recommended exposure times based on the measured Min and Max ADU values of a captured image. Average skyglow will be taken into consideration and will calulate the exposures to swamp the camera read noise by a factor of 3x (Min) and 10x (Max).
+When the button is clicked the application will take one exposure and calculate the recommended times based on the image and the given input values.</value>
+  </data>
+  <data name="LblExposureCalculatorMeanLessThanOffset" xml:space="preserve">
+    <value>Unable to determine exposure time recommendation. The mean of your current image is less than the specified bias mean. Please take a longer exposure or adjust the incorrect values.</value>
   </data>
   <data name="LblExposures" xml:space="preserve">
     <value>曝光</value>
@@ -2123,9 +2127,6 @@
   </data>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>NINA OWM API 客戶耑</value>
-  </data>
-  <data name="LblOptimalExposureTime" xml:space="preserve">
-    <value>最佳曝光時間</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>選項</value>
@@ -3269,5 +3270,8 @@
   </data>
   <data name="LblZoomStretch" xml:space="preserve">
     <value>圖像與區域匹配</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value></value>
   </data>
 </root>

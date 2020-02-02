@@ -953,9 +953,6 @@ Lorsqu'une durée est appliquée, la température baissera à un taux relatif en
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>Couvrez votre tube maintenant</value>
   </data>
-  <data name="LblCurrentDownloadToDataRatio" xml:space="preserve">
-    <value>Téléchargement courant: Taux de transfert</value>
-  </data>
   <data name="LblCurrentMean" xml:space="preserve">
     <value>Moyenne Courante</value>
   </data>
@@ -1226,6 +1223,13 @@ si les traces d'étoiles ne sont pas alignées, c'est qu'il y a une erreur d'ali
   </data>
   <data name="LblExposureCalculator" xml:space="preserve">
     <value>Évaluation d'Exposition Optimale</value>
+  </data>
+  <data name="LblExposureCalculatorDescription" xml:space="preserve">
+    <value>This tool will suggest recommended exposure times based on the measured Min and Max ADU values of a captured image. Average skyglow will be taken into consideration and will calulate the exposures to swamp the camera read noise by a factor of 3x (Min) and 10x (Max).
+When the button is clicked the application will take one exposure and calculate the recommended times based on the image and the given input values.</value>
+  </data>
+  <data name="LblExposureCalculatorMeanLessThanOffset" xml:space="preserve">
+    <value>Unable to determine exposure time recommendation. The mean of your current image is less than the specified bias mean. Please take a longer exposure or adjust the incorrect values.</value>
   </data>
   <data name="LblExposures" xml:space="preserve">
     <value>Expositions</value>
@@ -2123,9 +2127,6 @@ HFR calculé: {2}</value>
   </data>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>Client API interne OpenWeatherMap de NINA</value>
-  </data>
-  <data name="LblOptimalExposureTime" xml:space="preserve">
-    <value>Temps d'exposition optimal</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>Options</value>
@@ -3266,5 +3267,8 @@ Lorsque cette option est activée, les canaux de couleur sont ajustés avec un s
   </data>
   <data name="LblZoomStretch" xml:space="preserve">
     <value>Ajuster Image au Cadre</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value></value>
   </data>
 </root>

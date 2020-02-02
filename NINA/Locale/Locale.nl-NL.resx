@@ -464,7 +464,7 @@ Dec: {1}</value>
     <value>Knop accentuering</value>
   </data>
   <data name="LblByteShuffling" xml:space="preserve">
-    <value>Byte Shuffling</value>
+    <value>Byte shuffling</value>
   </data>
   <data name="LblCache" xml:space="preserve">
     <value>Cache</value>
@@ -943,9 +943,6 @@ Wanneer de duur is ingesteld, zal de applicatie de temperatuur langzaam verlagen
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>Dek nu je telescoop af</value>
   </data>
-  <data name="LblCurrentDownloadToDataRatio" xml:space="preserve">
-    <value>Huidige download: dataverhouding</value>
-  </data>
   <data name="LblCurrentMean" xml:space="preserve">
     <value>Huidig gemiddelde</value>
   </data>
@@ -953,7 +950,7 @@ Wanneer de duur is ingesteld, zal de applicatie de temperatuur langzaam verlagen
     <value>Huidige positie</value>
   </data>
   <data name="LblCurrentSequenceEstimates" xml:space="preserve">
-    <value>Estimated time for this target</value>
+    <value>Geschatte tijd voor dit doel</value>
   </data>
   <data name="LblCurrentUIColorSchema" xml:space="preserve">
     <value>Huidig UI kleurenschema</value>
@@ -1217,6 +1214,13 @@ wanneer de lijnen niet zijn uitgelijnd is er er een of andere polaire uitlijning
   <data name="LblExposureCalculator" xml:space="preserve">
     <value>Optimale belichtingstijdberekenaar</value>
   </data>
+  <data name="LblExposureCalculatorDescription" xml:space="preserve">
+    <value>This tool will suggest recommended exposure times based on the measured Min and Max ADU values of a captured image. Average skyglow will be taken into consideration and will calulate the exposures to swamp the camera read noise by a factor of 3x (Min) and 10x (Max).
+When the button is clicked the application will take one exposure and calculate the recommended times based on the image and the given input values.</value>
+  </data>
+  <data name="LblExposureCalculatorMeanLessThanOffset" xml:space="preserve">
+    <value>Unable to determine exposure time recommendation. The mean of your current image is less than the specified bias mean. Please take a longer exposure or adjust the incorrect values.</value>
+  </data>
   <data name="LblExposures" xml:space="preserve">
     <value>Belichtingen</value>
   </data>
@@ -1348,7 +1352,7 @@ Wanneer deze instelling is gedeactiveerd zal de applicatie de Start Belichting o
     <value>Openen</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for darks and dark flats</value>
+    <value>Verwijder deksel voor darks en dark flats</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Instellen</value>
@@ -2113,9 +2117,6 @@ berekende HFR: {2}
   </data>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>NINA interne OpenWeatherMap API client</value>
-  </data>
-  <data name="LblOptimalExposureTime" xml:space="preserve">
-    <value>Optimale belichtingstijd</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>Opties</value>
@@ -3257,5 +3258,8 @@ Sleep de rechthoek over het deel van de opname dat u fotograferen wilt en active
   </data>
   <data name="LblZoomStretch" xml:space="preserve">
     <value>Afbeelding passend maken aan gebied</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value></value>
   </data>
 </root>

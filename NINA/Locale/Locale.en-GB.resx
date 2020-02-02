@@ -953,9 +953,6 @@ When duration is set, the application will slowly decrease the temperature durin
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>Cover your scope now</value>
   </data>
-  <data name="LblCurrentDownloadToDataRatio" xml:space="preserve">
-    <value>Current Download:Data ratio</value>
-  </data>
   <data name="LblCurrentMean" xml:space="preserve">
     <value>Current Mean</value>
   </data>
@@ -1226,6 +1223,13 @@ when the lines are not aligned there is some Polar Alignment error</value>
   </data>
   <data name="LblExposureCalculator" xml:space="preserve">
     <value>Optimal Exposure Calculator</value>
+  </data>
+  <data name="LblExposureCalculatorDescription" xml:space="preserve">
+    <value>This tool will suggest recommended exposure times based on the measured Min and Max ADU values of a captured image. Average skyglow will be taken into consideration and will calulate the exposures to swamp the camera read noise by a factor of 3x (Min) and 10x (Max).
+When the button is clicked the application will take one exposure and calculate the recommended times based on the image and the given input values.</value>
+  </data>
+  <data name="LblExposureCalculatorMeanLessThanOffset" xml:space="preserve">
+    <value>Unable to determine exposure time recommendation. The mean of your current image is less than the specified bias mean. Please take a longer exposure or adjust the incorrect values.</value>
   </data>
   <data name="LblExposures" xml:space="preserve">
     <value>Exposures</value>
@@ -2123,9 +2127,6 @@ Calculated HFR: {2}
   </data>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>NINA internal OpenWeatherMap API client</value>
-  </data>
-  <data name="LblOptimalExposureTime" xml:space="preserve">
-    <value>Optimal exposure time</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>Options</value>
@@ -3267,5 +3268,8 @@ in light polluted areas. Processing time is however increased.</value>
   </data>
   <data name="LblZoomStretch" xml:space="preserve">
     <value>Fit Image to Area</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value></value>
   </data>
 </root>

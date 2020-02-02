@@ -953,9 +953,6 @@ Quando la durata è impostata, l'applicazione diminuirà lentamente la temperatu
   <data name="LblCoverScopeMsgBoxTitle" xml:space="preserve">
     <value>Copri il telescopio ora</value>
   </data>
-  <data name="LblCurrentDownloadToDataRatio" xml:space="preserve">
-    <value>Rapporto Download:Data attuale</value>
-  </data>
   <data name="LblCurrentMean" xml:space="preserve">
     <value>Media corrente</value>
   </data>
@@ -1180,7 +1177,7 @@ Quando le linee non sono allineate significa che c'è un errore di allineamento 
     <value>Abilitato</value>
   </data>
   <data name="LblEndOfSequenceCloseFlatDeviceCover" xml:space="preserve">
-    <value>Closing flat device cover</value>
+    <value>Chiusura copertura generatore di flat</value>
   </data>
   <data name="LblEndOfSequenceDecision" xml:space="preserve">
     <value>Eseguire le opzioni di fine sequenza?</value>
@@ -1227,6 +1224,13 @@ Quando le linee non sono allineate significa che c'è un errore di allineamento 
   <data name="LblExposureCalculator" xml:space="preserve">
     <value>Calcolatore Esposizione Ottimale</value>
   </data>
+  <data name="LblExposureCalculatorDescription" xml:space="preserve">
+    <value>Questo strumento suggerirà tempi di esposizione consigliati in base ai valori misurati di ADU Min e Max dell'immagine. Il bagliore medio del fondo cielo è preso in considerazione per calcolare le esposizioni al fine di sovrastsre il rumore di lettura della telecamera di un fattore di 3 x (Min) e 10 x (Max).
+Quando si fa clic sul pulsante, l'applicazione effettuerà un'esposizione e calcolerà i tempi consigliati in base all'immagine e ai valori di input indicati.</value>
+  </data>
+  <data name="LblExposureCalculatorMeanLessThanOffset" xml:space="preserve">
+    <value>Impossibile determinare il tempo di esposizione raccomandato. La media dell'immagine corrente è inferiore alla media specificata di bias. Esponi più a lungo o regola i valori sbagliati.</value>
+  </data>
   <data name="LblExposures" xml:space="preserve">
     <value>Esposizioni</value>
   </data>
@@ -1253,7 +1257,7 @@ Quando il trigger è disattivato, l'applicazione si limita ad ignorare l'inizio 
     <value>Esempio nome File</value>
   </data>
   <data name="LblFileExtension" xml:space="preserve">
-    <value>File Extension</value>
+    <value>Estensione del file</value>
   </data>
   <data name="LblFileFormatOptions" xml:space="preserve">
     <value>Opzioni formato file</value>
@@ -1310,7 +1314,7 @@ Quando il trigger è disattivato, l'applicazione si limita ad ignorare l'inizio 
     <value>Scegli porta seriale</value>
   </data>
   <data name="LblFlatDeviceClearValues" xml:space="preserve">
-    <value>Clear Values</value>
+    <value>Cancella Valori</value>
   </data>
   <data name="LblFlatDeviceClose" xml:space="preserve">
     <value>Chiudi</value>
@@ -1358,19 +1362,19 @@ Quando il trigger è disattivato, l'applicazione si limita ad ignorare l'inizio 
     <value>Aperto</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for darks and dark flats</value>
+    <value>Apri il coperchio per dark flats</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Insieme</value>
   </data>
   <data name="LblFlatDeviceTrainedFilterTimes" xml:space="preserve">
-    <value>Flat Wizard Trained Exposure Times</value>
+    <value>Tempi di esposizione previsti dal Flat Wizard</value>
   </data>
   <data name="LblFlatDeviceUnknown" xml:space="preserve">
     <value>Sconosciuto</value>
   </data>
   <data name="LblFlatDeviceUseWizardTrainedValues" xml:space="preserve">
-    <value>Use exposure times trained with flat wizard</value>
+    <value>Usa tempi di esposizione addestrati con la procedura guidata per flat</value>
   </data>
   <data name="LblFlatExposureCalcContinue" xml:space="preserve">
     <value>ADU media era {0}, inizio calcolo tempo esposizione a {1}</value>
@@ -2082,7 +2086,7 @@ HFR Calcolato: {2}
     <value>Ammasso Aperto nel SMC</value>
   </data>
   <data name="LblObjectType_SNREM" xml:space="preserve">
-    <value>Supernova Remnant</value>
+    <value>Residuo Supernova</value>
   </data>
   <data name="LblOf" xml:space="preserve">
     <value>Di</value>
@@ -2123,9 +2127,6 @@ HFR Calcolato: {2}
   </data>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
     <value>Client interno NINA per le API OpenWeatherMap</value>
-  </data>
-  <data name="LblOptimalExposureTime" xml:space="preserve">
-    <value>Tempo esposizione ottimale</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>Opzioni</value>
@@ -2254,10 +2255,10 @@ HFR Calcolato: {2}
     <value>Coordinate impostate da {0}</value>
   </data>
   <data name="LblPlanetariumFailedToConnect" xml:space="preserve">
-    <value>Unable to connect to {0}. Please ensure that it is running and configured to receive requests</value>
+    <value>Impossibile connettersi a {0}. Assicurati che sia in esecuzione e configurato per ricevere le richieste</value>
   </data>
   <data name="LblPlanetariumObjectNotSelected" xml:space="preserve">
-    <value>There is no object currently selected in {0}</value>
+    <value>Non c'è nessun oggetto attualmente selezionato in {0}</value>
   </data>
   <data name="LblPlanetariumPrefs" xml:space="preserve">
     <value>Preferenze Planetario</value>
@@ -2266,7 +2267,7 @@ HFR Calcolato: {2}
     <value>Ottieni le coordinate dal software di Planetario</value>
   </data>
   <data name="LblPlanetariumUseSelectedObject" xml:space="preserve">
-    <value>Coordinates from selected object</value>
+    <value>Coordinate dall'oggetto selezionato</value>
   </data>
   <data name="LblPlatesolve2" xml:space="preserve">
     <value>Platesolve2</value>
@@ -2642,10 +2643,10 @@ Questo tempalte sarà usato all'avvio per inizializzare la sequenza invece di qu
     <value>Imposta un nuovo valore</value>
   </data>
   <data name="LblSetPark" xml:space="preserve">
-    <value>Set As Park</value>
+    <value>Imposta come Parcheggio</value>
   </data>
   <data name="LblSetParkToolTip" xml:space="preserve">
-    <value>Sets the park position to be the current position</value>
+    <value>Imposta la posizione parcheggio come posizione corrente</value>
   </data>
   <data name="LblSettings" xml:space="preserve">
     <value>Settaggi</value>
@@ -3267,5 +3268,8 @@ aree ad alto inquinamento luminoso. Il tempo di processo sarà  tuttavia aumenta
   </data>
   <data name="LblZoomStretch" xml:space="preserve">
     <value>Aggiusta l'immagine all'area</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value></value>
   </data>
 </root>
