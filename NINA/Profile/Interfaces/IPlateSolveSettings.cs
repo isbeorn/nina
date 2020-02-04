@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -27,10 +27,13 @@ using NINA.Utility.Enum;
 namespace NINA.Profile {
 
     public interface IPlateSolveSettings : ISettings {
+        string AstrometryURL { get; set; }
         string AstrometryAPIKey { get; set; }
         BlindSolverEnum BlindSolverType { get; set; }
         string CygwinLocation { get; set; }
         double ExposureTime { get; set; }
+        int Gain { get; set; }
+        short Binning { get; set; }
         FilterInfo Filter { get; set; }
         PlateSolverEnum PlateSolverType { get; set; }
         string PS2Location { get; set; }
@@ -44,5 +47,7 @@ namespace NINA.Profile {
         string ASTAPLocation { get; set; }
         int DownSampleFactor { get; set; }
         int MaxObjects { get; set; }
+        bool Sync { get; set; }
+        bool SlewToTarget { get; set; }
     }
 }

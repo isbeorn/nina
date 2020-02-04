@@ -128,7 +128,8 @@ This database will be automatically created by the EntityFramework based on the 
 ## Setting up the developer environment
 
 * Install Visual Studio Community 2017 or better
-* External dependencies are automatically installed via nuget (except Camera vendor DLLs)
+* Install [ASCOM](https://ascom-standards.org/Downloads/Index.htm)
+* Other external dependencies are automatically installed via nuget (except Camera vendor DLLs)
 * External Camera Vendor SDK DLLs have to be manually put inside the project to \NINA\External\ &lt;x64 and x32&gt;\
     * To get Canon and Nikon DLLs you have to register as a developer for canon and nikon separately on their websites
 	* Altair SDK: reach out to AltairAstro. They can provide you with their sdk. Contact details at https://cameras.altairastro.com/
@@ -162,6 +163,18 @@ This database will be automatically created by the EntityFramework based on the 
 * Inside the test explorer you will see all detected AUTs (after building the project)
 * To run all AUTs simply click on "Run All"
 * You can also run and/or debug single AUTs by right clicking inside the respective method and selecting "Run Test" or "Debug Test"
+
+## Localization
+
+* All strings that are displayed inside the User Interface should be localized using the Locale Manager
+  * In Code Behind: Locale.Loc.Instance["[Label key]"]
+  * In XAML: 
+    * Import namespace: xmlns:ns="clr-namespace:NINA.Locale"
+    * Use via binding like Text="{ns:Loc [Label key]}"
+* To introduce a new label you just need to add the new key and value into "NINA/Locale/Locale.resx" file. The other localized files will be managed by an external integration automatically.
+* All translations are managed by an external page  at [Crowdin](https://nina.crowdin.com) and automatically integrated into the repository
+  * For more information on how to contribute to the localization refer to our documentation in the contributing section
+
 
 ## Pull Requests
 

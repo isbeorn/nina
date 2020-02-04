@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -66,6 +66,14 @@ namespace NINA.Utility.Mediator {
 
         public Task<bool> ParkTelescope() {
             return handler.ParkTelescope();
+        }
+
+        public bool Sync(Coordinates coordinates) {
+            return handler.Sync(coordinates);
+        }
+
+        public Coordinates GetCurrentPosition() {
+            return handler.GetCurrentPosition();
         }
     }
 }

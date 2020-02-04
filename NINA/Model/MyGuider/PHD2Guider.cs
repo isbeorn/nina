@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -22,9 +22,9 @@
 #endregion "copyright"
 
 using Newtonsoft.Json.Linq;
+using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.Notification;
-using NINA.Profile;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -54,6 +54,8 @@ namespace NINA.Model.MyGuider {
         private PhdEventVersion _version;
 
         public string Name => "PHD2";
+
+        public string Id => "PHD2_Single";
 
         public PhdEventVersion Version {
             get {
@@ -187,7 +189,8 @@ namespace NINA.Model.MyGuider {
                 }
 
                 var resp = await SendMessage(PHD2EventId.GET_PIXEL_SCALE, PHD2Methods.GET_PIXEL_SCALE);
-                PixelScale = double.Parse(resp.result.ToString().Replace(",", "."), CultureInfo.InvariantCulture);
+                if (resp.result != null)
+                    PixelScale = double.Parse(resp.result.ToString().Replace(",", "."), CultureInfo.InvariantCulture);
 
                 Notification.ShowSuccess(Locale.Loc.Instance["LblGuiderConnected"]);
             } catch (OperationCanceledException) {
@@ -268,7 +271,8 @@ namespace NINA.Model.MyGuider {
 
         public async Task<bool> AutoSelectGuideStar() {
             if (Connected) {
-                if (AppState.State != PhdAppState.LOOPING) {
+                var state = await GetAppState();
+                if (state != PhdAppState.LOOPING) {
                     await SendMessage(PHD2EventId.LOOP, PHD2Methods.LOOP);
                     await Task.Delay(TimeSpan.FromSeconds(5));
                 }
@@ -280,22 +284,35 @@ namespace NINA.Model.MyGuider {
             return false;
         }
 
+        private async Task<string> GetAppState() {
+            var appStateResponse = await SendMessage(PHD2EventId.GET_APP_STATE, PHD2Methods.GET_APP_STATE);
+            return appStateResponse.result.ToString();
+        }
+
+        private Task<bool> WaitForAppState(string targetState, CancellationToken ct) {
+            return Task.Run(async () => {
+                var state = await GetAppState();
+                while (state != targetState) {
+                    await Task.Delay(1000, ct);
+                    state = await GetAppState();
+                }
+                return true;
+            });
+        }
+
         public async Task<bool> StartGuiding(CancellationToken ct) {
             if (Connected) {
-                if (AppState.State == PhdAppState.GUIDING) { return true; }
-                if (!(AppState.State == PhdAppState.CALIBRATING)) {
+                string state = await GetAppState();
+
+                if (state == PhdAppState.GUIDING) { return true; }
+                if (!(state == PhdAppState.CALIBRATING)) {
                     var guideMsg = await SendMessage(PHD2EventId.GUIDE, string.Format(PHD2Methods.GUIDE, false.ToString().ToLower()));
                     if (guideMsg.error != null) {
                         /* Guide start failed */
                         return false;
                     }
                 }
-                return await Task.Run<bool>(async () => {
-                    while (AppState.State != PhdAppState.GUIDING) {
-                        await Task.Delay(1000, ct);
-                    }
-                    return true;
-                });
+                return await WaitForAppState(PhdAppState.GUIDING, ct);
             } else {
                 return false;
             }
@@ -303,18 +320,18 @@ namespace NINA.Model.MyGuider {
 
         public async Task<bool> StopGuiding(CancellationToken token) {
             if (Connected) {
-                var stopCapture = await SendMessage(PHD2EventId.STOP_CAPTURE, PHD2Methods.STOP_CAPTURE);
-                if (stopCapture.error != null) {
-                    /*stop capture failed */
-                    return false;
-                }
-
-                return await Task.Run<bool>(async () => {
-                    while (AppState.State != PhdAppState.STOPPED) {
-                        await Task.Delay(1000, token);
+                string state = await GetAppState();
+                if (state != PhdAppState.STOPPED) {
+                    var stopCapture = await SendMessage(PHD2EventId.STOP_CAPTURE, PHD2Methods.STOP_CAPTURE);
+                    if (stopCapture.error != null) {
+                        /*stop capture failed */
+                        return false;
                     }
+
+                    return await WaitForAppState(PhdAppState.STOPPED, token);
+                } else {
                     return true;
-                });
+                }
             } else {
                 return false;
             }

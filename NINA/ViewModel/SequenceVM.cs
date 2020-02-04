@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -22,8 +22,10 @@
 #endregion "copyright"
 
 using NINA.Model;
+using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
+using NINA.Model.MyFlatDevice;
 using NINA.Model.MyFocuser;
 using NINA.Model.MyGuider;
 using NINA.Model.MyPlanetarium;
@@ -31,13 +33,14 @@ using NINA.Model.MyRotator;
 using NINA.Model.MyTelescope;
 using NINA.Model.MyWeatherData;
 using NINA.PlateSolving;
+using NINA.Profile;
 using NINA.Utility;
+using NINA.Utility.Astrometry;
 using NINA.Utility.Exceptions;
+using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
-using NINA.Profile;
 using NINA.Utility.WindowService;
-using NINA.Utility.Astrometry;
 using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
@@ -45,17 +48,18 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Security.AccessControl;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using NINA.Model.ImageData;
-using NINA.Utility.Mediator;
 
 namespace NINA.ViewModel {
-    internal class SequenceVM : DockableVM, ITelescopeConsumer, IFocuserConsumer, IFilterWheelConsumer, IRotatorConsumer, IGuiderConsumer, ICameraConsumer, IWeatherDataConsumer {
+
+    internal class SequenceVM : DockableVM, ITelescopeConsumer, IFocuserConsumer, IFilterWheelConsumer, IRotatorConsumer, IFlatDeviceConsumer, IGuiderConsumer, ICameraConsumer, IWeatherDataConsumer {
+
         public SequenceVM(
                 IProfileService profileService,
                 ICameraMediator cameraMediator,
@@ -64,6 +68,7 @@ namespace NINA.ViewModel {
                 IFilterWheelMediator filterWheelMediator,
                 IGuiderMediator guiderMediator,
                 IRotatorMediator rotatorMediator,
+                IFlatDeviceMediator flatDeviceMediator,
                 IWeatherDataMediator weatherDataMediator,
                 IImagingMediator imagingMediator,
                 IApplicationStatusMediator applicationStatusMediator
@@ -79,6 +84,9 @@ namespace NINA.ViewModel {
 
             this.rotatorMediator = rotatorMediator;
             this.rotatorMediator.RegisterConsumer(this);
+
+            this._flatDeviceMediator = flatDeviceMediator;
+            this._flatDeviceMediator.RegisterConsumer(this);
 
             this.guiderMediator = guiderMediator;
             this.guiderMediator.RegisterConsumer(this);
@@ -109,10 +117,15 @@ namespace NINA.ViewModel {
             ResetSequenceRowCommand = new RelayCommand(ResetSequenceRow, ResetSequenceRowEnabled);
             StartSequenceCommand = new AsyncCommand<bool>(() => StartSequencing(new Progress<ApplicationStatus>(p => Status = p)), (object o) => !imagingMediator.IsLooping);
             SaveSequenceCommand = new RelayCommand(SaveSequence);
+            SaveAsSequenceCommand = new RelayCommand(SaveAsSequence);
             LoadSequenceCommand = new RelayCommand(LoadSequence);
             CancelSequenceCommand = new RelayCommand(CancelSequence);
             PauseSequenceCommand = new RelayCommand(PauseSequence, (object o) => !_pauseTokenSource?.IsPaused == true);
             ResumeSequenceCommand = new RelayCommand(ResumeSequence);
+            PromoteTargetCommand = new RelayCommand(PromoteTarget);
+            DemoteTargetCommand = new RelayCommand(DemoteTarget);
+            SaveTargetSetCommand = new RelayCommand(SaveTargetSet);
+            LoadTargetSetCommand = new RelayCommand(LoadTargetSet);
             CoordsFromPlanetariumCommand = new AsyncCommand<bool>(() => Task.Run(CoordsFromPlanetarium));
 
             autoUpdateTimer = new DispatcherTimer(DispatcherPriority.Background);
@@ -129,6 +142,13 @@ namespace NINA.ViewModel {
             };
 
             autoUpdateTimer.Start();
+
+            PropertyChanged += SequenceVM_PropertyChanged;
+        }
+
+        private void SequenceVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(Sequence))
+                ActiveSequenceChanged();
         }
 
         private ImageHistoryVM imgHistoryVM;
@@ -164,6 +184,15 @@ namespace NINA.ViewModel {
         private void RemoveTarget(object obj) {
             if (this.Targets.Count > 1) {
                 var l = (CaptureSequenceList)obj;
+
+                if (l.HasChanged) {
+                    if (MyMessageBox.MyMessageBox.Show(
+                        string.Format(Locale.Loc.Instance["LblChangedSequenceWarning"], l.TargetName),
+                        Locale.Loc.Instance["LblChangedSequenceWarningTitle"], System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel) != System.Windows.MessageBoxResult.OK) {
+                        return;
+                    }
+                }
+
                 var switchTab = false;
                 if (Object.Equals(l, Sequence)) {
                     switchTab = true;
@@ -194,9 +223,68 @@ namespace NINA.ViewModel {
 
         private void AddTarget(object obj) {
             this.Targets.Add(GetTemplate());
+            Sequence = Targets.Last();
+        }
+
+        private void PromoteTarget(object obj) {
+            if (Sequence != null) {
+                // Promoting a target moves it earlier in the sequence so the UI moves it to the left
+                int activeTargetIndex = Targets.IndexOf(Sequence);
+                if (activeTargetIndex > 0)
+                    Targets.Move(activeTargetIndex, activeTargetIndex - 1);
+            }
+        }
+
+        private void DemoteTarget(object obj) {
+            if (Sequence != null) {
+                // Demoting a target moves it later in the sequence so the UI moves it to the right
+                int activeTargetIndex = Targets.IndexOf(Sequence);
+                if ((activeTargetIndex < Targets.Count - 1) && (activeTargetIndex > -1))
+                    Targets.Move(activeTargetIndex, activeTargetIndex + 1);
+            }
+        }
+
+        private void SaveTargetSet(object obj) {
+            Microsoft.Win32.SaveFileDialog dialog = new Microsoft.Win32.SaveFileDialog();
+            dialog.InitialDirectory = profileService.ActiveProfile.SequenceSettings.DefaultSequenceFolder;
+            dialog.Title = Locale.Loc.Instance["LblSaveTargetSet"];
+            dialog.FileName = "";
+            dialog.DefaultExt = "ninaTargetSet";
+            dialog.Filter = "N.I.N.A target set files|*." + dialog.DefaultExt;
+            dialog.OverwritePrompt = true;
+
+            if (dialog.ShowDialog().Value) {
+                CaptureSequenceList.SaveSequenceSet(Targets, dialog.FileName);
+            }
+        }
+
+        private void LoadTargetSet(object obj) {
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.Multiselect = false;
+            dialog.Title = Locale.Loc.Instance["LblLoadTargetSet"];
+            dialog.InitialDirectory = profileService.ActiveProfile.SequenceSettings.DefaultSequenceFolder;
+            dialog.FileName = "";
+            dialog.DefaultExt = "ninaTargetSet";
+            dialog.Filter = "N.I.N.A target set files|*." + dialog.DefaultExt;
+
+            if (dialog.ShowDialog() == true) {
+                using (var s = new FileStream(dialog.FileName, FileMode.Open)) {
+                    Targets = new AsyncObservableCollection<CaptureSequenceList>(CaptureSequenceList.LoadSequenceSet(
+                        s,
+                        profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters,
+                        profileService.ActiveProfile.AstrometrySettings.Latitude,
+                        profileService.ActiveProfile.AstrometrySettings.Longitude
+                    ));
+                    foreach (var l in Targets) {
+                        AdjustCaptureSequenceListForSynchronization(l);
+                    }
+                    Sequence = Targets.FirstOrDefault();
+                }
+            }
         }
 
         private void LoadSequence(object obj) {
+            // LoadSequence loads .xml files indivually - user may select any number of files from same folder
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
             dialog.Multiselect = true;
             dialog.Title = Locale.Loc.Instance["LblLoadSequence"];
@@ -206,16 +294,16 @@ namespace NINA.ViewModel {
 
             if (dialog.ShowDialog() == true) {
                 foreach (var fileName in dialog.FileNames) {
-                    using (var s = new FileStream(fileName, FileMode.Open)) {
-                        var l = CaptureSequenceList.Load(
-                            s,
-                            profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters,
-                            profileService.ActiveProfile.AstrometrySettings.Latitude,
-                            profileService.ActiveProfile.AstrometrySettings.Longitude
-                        );
-                        AdjustCaptureSequenceListForSynchronization(l);
-                        this.Targets.Add(l);
-                    }
+                    var l = CaptureSequenceList.Load(fileName,
+                        profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters,
+                        profileService.ActiveProfile.AstrometrySettings.Latitude,
+                        profileService.ActiveProfile.AstrometrySettings.Longitude
+                    );
+                    AdjustCaptureSequenceListForSynchronization(l);
+                    this.Targets.Add(l);
+
+                    // set the last one loaded as the current sequence
+                    Sequence = l;
                 }
             }
         }
@@ -230,18 +318,41 @@ namespace NINA.ViewModel {
             }
         }
 
+        public bool OKtoExit() {
+            if (Targets.Any(t => t.HasChanged))
+                if (MyMessageBox.MyMessageBox.Show(
+                    string.Format(Locale.Loc.Instance["LblChangedSequenceWarning"],
+                        Targets.Where(t => t.HasChanged)
+                                .Aggregate("", (list, t) => list + ", " + t.TargetName)
+                                .TrimStart(new char[] { ',', ' ' })),
+                    Locale.Loc.Instance["LblChangedSequenceWarningTitle"], System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel) != System.Windows.MessageBoxResult.OK)
+                    return false;
+
+            return true;
+        }
+
         private void SaveSequence(object obj) {
-            using (var dialog = new System.Windows.Forms.FolderBrowserDialog()) {
-                dialog.Description = Locale.Loc.Instance["LblSaveSequence"];
+            // SaveSequence now saves only the active sequence
+            if (!Sequence.HasFileName) {
+                SaveAsSequence(obj);
+            } else {
+                Sequence.Save(Sequence.SequenceFileName);
+            }
+        }
 
-                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                    var path = dialog.SelectedPath;
+        private void SaveAsSequence(object obj) {
+            Microsoft.Win32.SaveFileDialog dialog = new Microsoft.Win32.SaveFileDialog();
+            dialog.InitialDirectory = profileService.ActiveProfile.SequenceSettings.DefaultSequenceFolder;
+            dialog.Title = Locale.Loc.Instance["LblSaveAsSequence"];
+            dialog.FileName = Sequence.TargetName;
+            dialog.DefaultExt = ".xml";
+            dialog.Filter = "XML documents|*.xml";
+            dialog.OverwritePrompt = true;
 
-                    foreach (var target in Targets) {
-                        var filePath = Utility.Utility.GetUniqueFilePath(Path.Combine(path, target.TargetName + ".xml"));
-                        target.Save(filePath);
-                    }
-                }
+            if (dialog.ShowDialog().Value) {
+                Sequence.SequenceFileName = dialog.FileName;
+
+                Sequence.Save(Sequence.SequenceFileName);
             }
         }
 
@@ -319,6 +430,7 @@ namespace NINA.ViewModel {
         private void CalculateETA() {
             TimeSpan time = new TimeSpan();
             foreach (var seq in Targets) {
+                seq.EstimatedStartTime = DateTime.Now.AddSeconds(time.TotalSeconds);
                 foreach (CaptureSequence cs in seq) {
                     if (cs.Enabled) {
                         var exposureCount = cs.TotalExposureCount - cs.ProgressExposureCount;
@@ -327,6 +439,8 @@ namespace NINA.ViewModel {
                                                  (cs.ExposureTime + EstimatedDownloadTime.TotalSeconds)));
                     }
                 }
+                seq.EstimatedEndTime = DateTime.Now.AddSeconds(time.TotalSeconds);
+                seq.EstimatedDuration = seq.EstimatedEndTime - seq.EstimatedStartTime;
             }
 
             ETA = DateTime.Now.AddSeconds(time.TotalSeconds);
@@ -354,6 +468,27 @@ namespace NINA.ViewModel {
             private set {
                 _eta = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(SequenceEstimatedStartTime));
+                RaisePropertyChanged(nameof(SequenceEstimatedEndTime));
+                RaisePropertyChanged(nameof(SequenceEstimatedDuration));
+            }
+        }
+
+        public DateTime SequenceEstimatedStartTime {
+            get {
+                return (Sequence != null) ? Sequence.EstimatedStartTime : DateTime.Now;
+            }
+        }
+
+        public DateTime SequenceEstimatedEndTime {
+            get {
+                return (Sequence != null) ? Sequence.EstimatedEndTime : DateTime.Now;
+            }
+        }
+
+        public TimeSpan SequenceEstimatedDuration {
+            get {
+                return (Sequence != null) ? Sequence.EstimatedDuration : TimeSpan.MinValue;
             }
         }
 
@@ -375,38 +510,65 @@ namespace NINA.ViewModel {
             // Rotate to desired angle
             if (csl.CenterTarget && rotatorInfo?.Connected == true) {
                 await StopGuiding(ct, progress);
-                using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
-                    var solveseq = new CaptureSequence() {
-                        ExposureTime = profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
-                        FilterType = profileService.ActiveProfile.PlateSolveSettings.Filter,
-                        ImageType = CaptureSequence.ImageTypes.SNAPSHOT,
-                        TotalExposureCount = 1
-                    };
-                    var service = WindowServiceFactory.Create();
+                var plateSolver = PlateSolverFactory.GetPlateSolver(profileService.ActiveProfile.PlateSolveSettings);
+                var blindSolver = PlateSolverFactory.GetBlindSolver(profileService.ActiveProfile.PlateSolveSettings);
 
-                    service.Show(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
+                var service = WindowServiceFactory.Create();
+                var plateSolveStatusVM = new PlateSolvingStatusVM();
+                service.Show(plateSolveStatusVM, this.Title + " - " + plateSolveStatusVM.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
 
-                    var orientation = (float)(plateSolveResult?.Orientation ?? 0.0f);
-                    float position = 0.0f;
-                    do {
-                        if (plateSolveResult == null) {
-                            plateSolveResult = await solver.SolveWithCapture(solveseq, progress, _canceltoken.Token, true);
-                        }
+                var orientation = (float)(plateSolveResult?.Orientation ?? 0.0f);
+                float position = 0.0f;
+                do {
+                    if (plateSolveResult == null) {
+                        var seq = new CaptureSequence(
+                            profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
+                            CaptureSequence.ImageTypes.SNAPSHOT,
+                            profileService.ActiveProfile.PlateSolveSettings.Filter,
+                            new Model.MyCamera.BinningMode(profileService.ActiveProfile.PlateSolveSettings.Binning, profileService.ActiveProfile.PlateSolveSettings.Binning),
+                            1
+                        );
+                        seq.Gain = profileService.ActiveProfile.PlateSolveSettings.Gain;
+                        var parameter = new CaptureSolverParameter() {
+                            Attempts = profileService.ActiveProfile.PlateSolveSettings.NumberOfAttempts,
+                            Binning = profileService.ActiveProfile.PlateSolveSettings.Binning,
+                            DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
+                            FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
+                            MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
+                            PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize,
+                            ReattemptDelay = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay),
+                            Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
+                            SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
+                            Coordinates = telescopeMediator.GetCurrentPosition()
+                        };
+                        var solver = new CaptureSolver(plateSolver, blindSolver, imagingMediator);
 
-                        if (!plateSolveResult.Success) {
-                            break;
-                        }
+                        plateSolveResult = await solver.Solve(seq, parameter, plateSolveStatusVM.Progress, progress, _canceltoken.Token);
+                    }
 
-                        orientation = (float)plateSolveResult.Orientation;
+                    if (!plateSolveResult.Success) {
+                        break;
+                    }
 
-                        position = (float)((float)csl.DSO.Rotation - orientation);
-                        if (Math.Abs(position) > profileService.ActiveProfile.PlateSolveSettings.RotationTolerance) {
-                            await rotatorMediator.MoveRelative(position);
-                        }
-                        plateSolveResult = null;
-                    } while (Math.Abs(position) > profileService.ActiveProfile.PlateSolveSettings.RotationTolerance);
-                    service.DelayedClose(TimeSpan.FromSeconds(10));
-                }
+                    orientation = (float)plateSolveResult.Orientation;
+
+                    position = (float)((float)csl.DSO.Rotation - orientation);
+
+                    var movement = Astrometry.EuclidianModulus((float)csl.DSO.Rotation - orientation, 180);
+                    var movement2 = movement - 180;
+
+                    if (movement < Math.Abs(movement2)) {
+                        position = movement;
+                    } else {
+                        position = movement2;
+                    }
+
+                    if (Math.Abs(position) > profileService.ActiveProfile.PlateSolveSettings.RotationTolerance) {
+                        await rotatorMediator.MoveRelative(position);
+                    }
+                    plateSolveResult = null;
+                } while (Math.Abs(position) > profileService.ActiveProfile.PlateSolveSettings.RotationTolerance);
+                service.DelayedClose(TimeSpan.FromSeconds(10));
             }
         }
 
@@ -426,22 +588,38 @@ namespace NINA.ViewModel {
             if (csl.CenterTarget) {
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblCenterTarget"] });
 
-                using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
-                    var service = WindowServiceFactory.Create();
-                    service.Show(solver, this.Title + " - " + solver.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
-                    PlatesolveVM.SolveParameters solveParameters = new PlatesolveVM.SolveParameters {
-                        syncScope = true,
-                        slewToTarget = true,
-                        repeat = true,
-                        silent = true,
-                        repeatThreshold = profileService.ActiveProfile.PlateSolveSettings.Threshold,
-                        numberOfAttempts = profileService.ActiveProfile.PlateSolveSettings.NumberOfAttempts,
-                        delayDuration = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay),
-                    };
-                    solver.PlateSolveTarget = GetReferenceCoordinates(csl);
-                    plateSolveResult = await solver.CaptureSolveSyncReslewReattempt(solveParameters, _canceltoken.Token, progress);
-                    service.DelayedClose(TimeSpan.FromSeconds(10));
-                }
+                var service = WindowServiceFactory.Create();
+                var plateSolveStatusVM = new PlateSolvingStatusVM();
+                service.Show(plateSolveStatusVM, this.Title + " - " + plateSolveStatusVM.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
+                var plateSolver = PlateSolverFactory.GetPlateSolver(profileService.ActiveProfile.PlateSolveSettings);
+                var blindSolver = PlateSolverFactory.GetBlindSolver(profileService.ActiveProfile.PlateSolveSettings);
+
+                var seq = new CaptureSequence(
+                    profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
+                    CaptureSequence.ImageTypes.SNAPSHOT,
+                    profileService.ActiveProfile.PlateSolveSettings.Filter,
+                    new Model.MyCamera.BinningMode(profileService.ActiveProfile.PlateSolveSettings.Binning, profileService.ActiveProfile.PlateSolveSettings.Binning),
+                    1
+                );
+                seq.Gain = profileService.ActiveProfile.PlateSolveSettings.Gain;
+
+                var solver = new CenteringSolver(plateSolver, blindSolver, imagingMediator, telescopeMediator);
+                var parameter = new CenterSolveParameter() {
+                    Attempts = profileService.ActiveProfile.PlateSolveSettings.NumberOfAttempts,
+                    Binning = profileService.ActiveProfile.PlateSolveSettings.Binning,
+                    Coordinates = telescopeMediator.GetCurrentPosition(),
+                    DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
+                    FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
+                    MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
+                    PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize,
+                    ReattemptDelay = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay),
+                    Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
+                    SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
+                    Threshold = profileService.ActiveProfile.PlateSolveSettings.Threshold
+                };
+                plateSolveResult = await solver.Center(seq, parameter, plateSolveStatusVM.Progress, progress, _canceltoken.Token);
+
+                service.DelayedClose(TimeSpan.FromSeconds(10));
             }
             return plateSolveResult;
         }
@@ -580,12 +758,13 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task AutoFocus(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            using (var autoFocus = new AutoFocusVM(profileService, focuserMediator, guiderMediator, imagingMediator, applicationStatusMediator)) {
+        private async Task<AutoFocus.AutoFocusReport> AutoFocus(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            using (var autoFocus = new AutoFocusVM(profileService, cameraMediator, filterWheelMediator, focuserMediator, guiderMediator, imagingMediator, applicationStatusMediator)) {
                 var service = WindowServiceFactory.Create();
                 service.Show(autoFocus, this.Title + " - " + autoFocus.Title, System.Windows.ResizeMode.CanResize, System.Windows.WindowStyle.ToolWindow);
-                await autoFocus.StartAutoFocus(filter, token, progress);
+                var report = await autoFocus.StartAutoFocus(filter, token, progress);
                 service.DelayedClose(TimeSpan.FromSeconds(10));
+                return report;
             }
         }
 
@@ -613,6 +792,7 @@ namespace NINA.ViewModel {
         /// 1) Wait for previous item's parallel actions 5a, 5b to
         /// 2) Check if Autofocus is requiredfinish
         /// 3) Change Filter
+        /// 3.5) Handle Flat Device
         /// 4) Capture
         /// 5) Parallel Actions after Capture
         ///     5a) Dither
@@ -653,7 +833,9 @@ namespace NINA.ViewModel {
 
                         seq.NextSequence = csl.GetNextSequenceItem(seq);
 
-                        await CheckMeridianFlip(referenceCoordinates, seq.ExposureTime, ct, progress);
+                        if (seq.IsLightSequence()) {
+                            await CheckMeridianFlip(referenceCoordinates, seq.ExposureTime, ct, progress);
+                        }
 
                         Stopwatch seqDuration = Stopwatch.StartNew();
 
@@ -673,7 +855,7 @@ namespace NINA.ViewModel {
                         }
 
                         /* 2) Check if Autofocus is requiredfinish */
-                        if (ShouldAutoFocus(csl, seq, exposureCount, prevFilterPosition, lastAutoFocusTime, lastAutoFocusTemperature)) {
+                        if (seq.IsLightSequence() && ShouldAutoFocus(csl, seq, exposureCount - 1, prevFilterPosition, lastAutoFocusTime, lastAutoFocusTemperature)) {
                             //Wait for previous image processing task to be done, so Autofocus doesn't turn off HFR calculation too early
                             if (imageProcessingTask != null && !imageProcessingTask.IsCompleted) {
                                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForImageProcessing"] });
@@ -681,14 +863,15 @@ namespace NINA.ViewModel {
                             }
 
                             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocus"] });
-                            await AutoFocus(seq.FilterType, _canceltoken.Token, progress);
+                            var report = await AutoFocus(seq.FilterType, _canceltoken.Token, progress);
+                            ImgHistoryVM.AppendAutoFocusPoint(report);
                             lastAutoFocusTime = DateTime.UtcNow;
                             lastAutoFocusTemperature = focuserInfo?.Temperature ?? double.NaN;
                             progress.Report(new ApplicationStatus() { Status = " " });
                         }
 
                         /* 3) Change Filter */
-                        if (seq.FilterType != null) {
+                        if (!seq.IsDarkSequence() && seq.FilterType != null) {
                             prevFilterPosition = filterWheelInfo?.SelectedFilter?.Position ?? -1;
                             await filterWheelMediator.ChangeFilter(seq.FilterType, ct, progress);
                         }
@@ -696,6 +879,11 @@ namespace NINA.ViewModel {
                         progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblImaging"] });
                         /* Start RMS Recording */
                         var rmsHandle = this.guiderMediator.StartRMSRecording();
+
+                        /* 3.5 Flat device handling */
+                        if (_flatDevice != null && _flatDevice.Connected) {
+                            await HandleFlatDevice(seq);
+                        }
 
                         /* 4) Capture */
                         var exposureStart = DateTime.Now;
@@ -705,10 +893,12 @@ namespace NINA.ViewModel {
                         var rms = this.guiderMediator.StopRMSRecording(rmsHandle);
 
                         /* 5a) Dither */
-                        ditherTask = ShouldDither(seq, ct, progress);
+                        if (seq.IsLightSequence()) {
+                            ditherTask = ShouldDither(seq, ct, progress);
+                        }
 
                         /* 5b) Change Filter if next sequence item has a different filter set */
-                        if (seq.NextSequence != null && seq.NextSequence != seq) {
+                        if (seq.NextSequence != null && !seq.NextSequence.IsDarkSequence() && seq.NextSequence != seq) {
                             prevFilterPosition = filterWheelInfo?.SelectedFilter?.Position ?? -1;
                             filterChangeTask = filterWheelMediator.ChangeFilter(seq.NextSequence.FilterType, ct, progress);
                         }
@@ -733,7 +923,7 @@ namespace NINA.ViewModel {
                             }
 
                             /* 8a) Save ImageData */
-                            saveTask = Save(imageProcessingTask, ct);
+                            saveTask = Save(imageProcessingTask, profileService, ct);
 
                             seqDuration.Stop();
 
@@ -777,12 +967,90 @@ namespace NINA.ViewModel {
             });
         }
 
+        private async Task HandleFlatDevice(CaptureSequence seq) {
+            switch (seq.ImageType) {
+                case CaptureSequence.ImageTypes.FLAT:
+                    if (_flatDevice.CoverState != CoverState.Closed) {
+                        await _flatDeviceMediator.CloseCover();
+                    }
+
+                    if (profileService.ActiveProfile.FlatDeviceSettings.UseWizardTrainedValues) {
+                        var settings = profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(new FlatDeviceFilterSettingsKey(seq.FilterType.Name, seq.Binning, seq.Gain));
+                        if (settings != null) {
+                            _flatDeviceMediator.SetBrightness(settings.Brightness);
+                            seq.ExposureTime = settings.Time;
+                        }
+                    }
+
+                    if (!_flatDevice.LightOn) {
+                        _flatDeviceMediator.ToggleLight(true);
+                    }
+
+                    break;
+
+                case CaptureSequence.ImageTypes.DARKFLAT:
+                    if (_flatDevice.LightOn) {
+                        _flatDeviceMediator.ToggleLight(false);
+                    }
+
+                    if (profileService.ActiveProfile.FlatDeviceSettings.OpenForDarkFlats) {
+                        if (_flatDevice.CoverState != CoverState.Open) {
+                            await _flatDeviceMediator.OpenCover();
+                            MyMessageBox.MyMessageBox.Show(
+                            Locale.Loc.Instance["LblCoverScopeMsgBox"],
+                            Locale.Loc.Instance["LblCoverScopeMsgBoxTitle"], MessageBoxButton.OKCancel,
+                            MessageBoxResult.OK);
+                        }
+                    } else {
+                        if (_flatDevice.CoverState != CoverState.Closed) {
+                            await _flatDeviceMediator.CloseCover();
+                        }
+                    }
+
+                    if (profileService.ActiveProfile.FlatDeviceSettings.UseWizardTrainedValues) {
+                        var settings = profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(new FlatDeviceFilterSettingsKey(seq.FilterType.Name, seq.Binning, seq.Gain));
+                        if (settings != null) {
+                            seq.ExposureTime = settings.Time;
+                        }
+                    }
+
+                    break;
+
+                case CaptureSequence.ImageTypes.DARK:
+                    if (_flatDevice.LightOn) {
+                        _flatDeviceMediator.ToggleLight(false);
+                    }
+
+                    if (profileService.ActiveProfile.FlatDeviceSettings.OpenForDarkFlats) {
+                        if (_flatDevice.CoverState != CoverState.Open) {
+                            await _flatDeviceMediator.OpenCover();
+                            MyMessageBox.MyMessageBox.Show(
+                                Locale.Loc.Instance["LblCoverScopeMsgBox"],
+                                Locale.Loc.Instance["LblCoverScopeMsgBoxTitle"], MessageBoxButton.OKCancel,
+                                MessageBoxResult.OK);
+                        }
+                    } else {
+                        if (_flatDevice.CoverState != CoverState.Closed) {
+                            await _flatDeviceMediator.CloseCover();
+                        }
+                    }
+
+                    break;
+
+                default:
+                    if (_flatDevice.CoverState != CoverState.Open) {
+                        await _flatDeviceMediator.OpenCover();
+                    }
+                    break;
+            }
+        }
+
         private void AddMetaData(
-            ImageMetaData metaData,
-            CaptureSequenceList csl,
-            CaptureSequence sequence,
-            DateTime start,
-            RMS rms) {
+                ImageMetaData metaData,
+                CaptureSequenceList csl,
+                CaptureSequence sequence,
+                DateTime start,
+                RMS rms) {
             metaData.Image.ExposureStart = start;
             metaData.Image.Binning = sequence.Binning.Name;
             metaData.Image.ExposureNumber = sequence.ProgressExposureCount;
@@ -803,11 +1071,11 @@ namespace NINA.ViewModel {
             metaData.FilterWheel.Filter = sequence.FilterType?.Name ?? metaData.FilterWheel.Filter;
         }
 
-        private Task Save(Task<IRenderedImage> imageProcessingTask, CancellationToken ct) {
+        private Task Save(Task<IRenderedImage> imageProcessingTask, IProfileService profileService, CancellationToken ct) {
             return Task.Run(async () => {
                 var processedImage = await imageProcessingTask;
                 var data = processedImage.RawImageData;
-                var tempPath = await data.PrepareSave(profileService.ActiveProfile.ImageFileSettings.FilePath, profileService.ActiveProfile.ImageFileSettings.FileType, ct);
+                var tempPath = await data.PrepareSave(new FileSaveInfo(profileService), ct);
                 var renderedImage = await imageProcessingTask;
 
                 var path = data.FinalizeSave(tempPath, profileService.ActiveProfile.ImageFileSettings.FilePattern);
@@ -851,7 +1119,11 @@ namespace NINA.ViewModel {
                 return true;
             }
 
-            if (csl.AutoFocusAfterSetExposures && exposureCount % csl.AutoFocusSetExposures == 0) {
+            if (csl.AutoFocusAfterSetExposures
+                && (
+                    (csl.AutoFocusSetExposures == 1)
+                    || (exposureCount > 0 && exposureCount % csl.AutoFocusSetExposures == 0)
+                )) {
                 /* Trigger autofocus after amount of exposures*/
                 return true;
             }
@@ -897,7 +1169,7 @@ namespace NINA.ViewModel {
                 if (flipTargetCoordinates.RA == 0 && flipTargetCoordinates.Dec == 0) {
                     target = telescopeInfo.Coordinates;
                 }
-                await new MeridianFlipVM(profileService, cameraMediator, telescopeMediator, guiderMediator, imagingMediator, applicationStatusMediator).MeridianFlip(target, TimeSpan.FromHours(telescopeInfo.TimeToMeridianFlip));
+                await new MeridianFlipVM(profileService, telescopeMediator, guiderMediator, imagingMediator, applicationStatusMediator).MeridianFlip(target, TimeSpan.FromHours(telescopeInfo.TimeToMeridianFlip));
             }
             progress.Report(new ApplicationStatus() { Status = string.Empty });
         }
@@ -1083,15 +1355,12 @@ namespace NINA.ViewModel {
         private CaptureSequenceList GetTemplate() {
             CaptureSequenceList csl = null;
             if (File.Exists(profileService.ActiveProfile.SequenceSettings.TemplatePath)) {
-                using (var s = new FileStream(profileService.ActiveProfile.SequenceSettings.TemplatePath, FileMode.Open)) {
-                    csl = CaptureSequenceList.Load(
-                        s,
-                        profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters,
-                        profileService.ActiveProfile.AstrometrySettings.Latitude,
-                        profileService.ActiveProfile.AstrometrySettings.Longitude
-                    );
-                    AdjustCaptureSequenceListForSynchronization(csl);
-                }
+                csl = CaptureSequenceList.Load(profileService.ActiveProfile.SequenceSettings.TemplatePath,
+                    profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters,
+                    profileService.ActiveProfile.AstrometrySettings.Latitude,
+                    profileService.ActiveProfile.AstrometrySettings.Longitude
+                );
+                AdjustCaptureSequenceListForSynchronization(csl);
             } else {
                 var seq = new CaptureSequence();
                 csl = new CaptureSequenceList(seq) { TargetName = "Target" };
@@ -1102,6 +1371,8 @@ namespace NINA.ViewModel {
                 );
                 AdjustCaptureSequenceListForSynchronization(csl);
             }
+
+            csl.MarkAsUnchanged();
             return csl;
         }
 
@@ -1137,6 +1408,19 @@ namespace NINA.ViewModel {
                     DeepSkyObjectSearchVM.TargetName = Sequence.TargetName;
                 }
             }
+            if (e.PropertyName == nameof(CaptureSequenceList.HasChanged)) {
+                RaisePropertyChanged(nameof(SequenceSaveable));
+                RaisePropertyChanged(nameof(SequenceModified));
+            }
+            if (e.PropertyName == nameof(CaptureSequenceList.HasFileName)) {
+                RaisePropertyChanged(nameof(HasSequenceFileName));
+            }
+            if (e.PropertyName == nameof(CaptureSequenceList.EstimatedStartTime)) {
+                RaisePropertyChanged("SequenceEstimatedStartTime");
+            }
+            if (e.PropertyName == nameof(CaptureSequenceList.EstimatedEndTime)) {
+                RaisePropertyChanged("SequenceEstimatedEndTime");
+            }
         }
 
         private int _selectedSequenceIdx;
@@ -1165,11 +1449,17 @@ namespace NINA.ViewModel {
         private CameraInfo cameraInfo = DeviceInfo.CreateDefaultInstance<CameraInfo>();
         private IRotatorMediator rotatorMediator;
         private RotatorInfo rotatorInfo;
+        private IFlatDeviceMediator _flatDeviceMediator;
+        private FlatDeviceInfo _flatDevice;
         private IWeatherDataMediator weatherDataMediator;
         private WeatherDataInfo weatherDataInfo;
         private GuiderInfo guiderInfo = DeviceInfo.CreateDefaultInstance<GuiderInfo>();
 
         private int AfHfrIndex = 0;
+
+        public bool SequenceModified { get { return (Sequence != null) && (Sequence.HasChanged); } }
+        public bool HasSequenceFileName { get { return (Sequence != null) && (Sequence.HasFileName); } }
+        public bool SequenceSaveable { get { return SequenceModified && HasSequenceFileName; } }
 
         public ObservableCollection<string> ImageTypes {
             get {
@@ -1191,7 +1481,8 @@ namespace NINA.ViewModel {
         }
 
         public void AddSequenceRow(object o) {
-            Sequence.Add(new CaptureSequence());
+            CaptureSequence newSeq = Sequence.Items.Any() ? Sequence.Items.Last().Clone() : new CaptureSequence();
+            Sequence.Add(newSeq);
             SelectedSequenceRowIdx = Sequence.Count - 1;
             AdjustCaptureSequenceListForSynchronization(Sequence);
         }
@@ -1246,18 +1537,34 @@ namespace NINA.ViewModel {
 
         private async Task<bool> CoordsFromPlanetarium() {
             IPlanetarium s = PlanetariumFactory.GetPlanetarium(profileService);
-            DeepSkyObject resp = await s.GetTarget();
-            if (resp != null) {
-                Sequence.Coordinates = resp.Coordinates;
-                Sequence.TargetName = resp.Name;
-                Notification.ShowSuccess(String.Format(Locale.Loc.Instance["LblPlanetariumCoordsOk"], s.Name));
-            } else Notification.ShowError(String.Format(Locale.Loc.Instance["LblPlanetariumCoordsError"], s.Name));
+            DeepSkyObject resp = null;
+
+            try {
+                resp = await s.GetTarget();
+
+                if (resp != null) {
+                    Sequence.Coordinates = resp.Coordinates;
+                    Sequence.TargetName = resp.Name;
+                    Notification.ShowSuccess(string.Format(Locale.Loc.Instance["LblPlanetariumCoordsOk"], s.Name));
+                }
+            } catch (PlanetariumObjectNotSelectedException) {
+                Logger.Error($"Attempted to get coordinates from {s.Name} when no object was selected");
+                Notification.ShowError(string.Format(Locale.Loc.Instance["LblPlanetariumObjectNotSelected"], s.Name));
+            } catch (PlanetariumFailedToConnect ex) {
+                Logger.Error($"Unable to connect to {s.Name}: {ex}");
+                Notification.ShowError(string.Format(Locale.Loc.Instance["LblPlanetariumFailedToConnect"], s.Name));
+            } catch (Exception ex) {
+                Logger.Error($"Failed to get coordinates from {s.Name}: {ex}");
+                Notification.ShowError(string.Format(Locale.Loc.Instance["LblPlanetariumCoordsError"], s.Name));
+            }
+
             return (resp != null);
         }
 
         private async Task<bool> RunEndOfSequenceOptions(IProgress<ApplicationStatus> progress) {
             bool parkTelescope = false;
             bool warmCamera = false;
+            bool closeFlatDeviceCover = false;
             StringBuilder message = new StringBuilder();
 
             message.AppendLine(Locale.Loc.Instance["LblEndOfSequenceDecision"]).AppendLine();
@@ -1276,12 +1583,22 @@ namespace NINA.ViewModel {
                 }
             }
 
-            if (warmCamera || parkTelescope) {
+            if (_flatDevice != null && _flatDevice.Connected) {
+                _flatDeviceMediator.ToggleLight(false);
+
+                if (profileService.ActiveProfile.FlatDeviceSettings.CloseAtSequenceEnd && _flatDevice.SupportsOpenClose) {
+                    closeFlatDeviceCover = true;
+                    message.AppendLine(Locale.Loc.Instance["LblEndOfSequenceCloseFlatDeviceCover"]);
+                }
+            }
+
+            if (warmCamera || parkTelescope || closeFlatDeviceCover) {
                 if (_canceltoken.Token.IsCancellationRequested) { // Sequence was manually cancelled - ask before proceeding with end of sequence options
                     var diag = MyMessageBox.MyMessageBox.Show(message.ToString(), Locale.Loc.Instance["LblEndOfSequenceOptions"], System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
                     if (diag != System.Windows.MessageBoxResult.OK) {
                         parkTelescope = false;
                         warmCamera = false;
+                        closeFlatDeviceCover = false;
                     } else {
                         // Need to reinitialize the cancellation token, as it is set to cancelation requested since sequence was manually cancelled.
                         _canceltoken?.Dispose();
@@ -1299,6 +1616,10 @@ namespace NINA.ViewModel {
                     IProgress<double> warmProgress = new Progress<double>();
                     await cameraMediator.StartChangeCameraTemp(warmProgress, 10, TimeSpan.FromMinutes(10), true, _canceltoken.Token);
                     Logger.Trace("Camera has been warmed");
+                }
+                if (closeFlatDeviceCover) {
+                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblEndOfSequenceCloseFlatDeviceCover"] });
+                    await _flatDeviceMediator.CloseCover();
                 }
             }
             return true;
@@ -1322,27 +1643,34 @@ namespace NINA.ViewModel {
         public ICommand ResumeSequenceCommand { get; private set; }
         public ICommand LoadSequenceCommand { get; private set; }
         public ICommand SaveSequenceCommand { get; private set; }
+        public ICommand SaveAsSequenceCommand { get; private set; }
 
-        private void PromoteSequenceRow(object obj)
-        {
-            var idx = SelectedSequenceRowIdx;
-            if (idx > 0)
-            {
-                CaptureSequence seq = Sequence.Items[idx];
-                Sequence.RemoveAt(idx);
-                Sequence.AddAt(idx - 1, seq);
-                SelectedSequenceRowIdx = idx - 1;
+        public ICommand PromoteTargetCommand { get; private set; }
+        public ICommand DemoteTargetCommand { get; private set; }
+        public ICommand SaveTargetSetCommand { get; private set; }
+        public ICommand LoadTargetSetCommand { get; private set; }
+
+        private void PromoteSequenceRow(object obj) {
+            if (Sequence != null) {
+                var idx = SelectedSequenceRowIdx;
+                if (idx > 0) {
+                    CaptureSequence seq = Sequence.Items[idx];
+                    Sequence.RemoveAt(idx);
+                    Sequence.AddAt(idx - 1, seq);
+                    SelectedSequenceRowIdx = idx - 1;
+                }
             }
         }
-        private void DemoteSequenceRow(object obj)
-        {
-            var idx = SelectedSequenceRowIdx;
-            if (idx < Sequence.Count - 1)
-            {
-                CaptureSequence seq = Sequence.Items[idx];
-                Sequence.RemoveAt(idx);
-                Sequence.AddAt(idx + 1, seq);
-                SelectedSequenceRowIdx = idx + 1;
+
+        private void DemoteSequenceRow(object obj) {
+            if (Sequence != null) {
+                var idx = SelectedSequenceRowIdx;
+                if ((idx < Sequence.Count - 1) && (idx > -1)) {
+                    CaptureSequence seq = Sequence.Items[idx];
+                    Sequence.RemoveAt(idx);
+                    Sequence.AddAt(idx + 1, seq);
+                    SelectedSequenceRowIdx = idx + 1;
+                }
             }
         }
 
@@ -1356,11 +1684,23 @@ namespace NINA.ViewModel {
             this.guiderInfo = deviceInfo;
         }
 
+        internal void ActiveSequenceChanged() {
+            // refresh properties that depend on Sequence
+            RaisePropertyChanged(nameof(SequenceModified));
+            RaisePropertyChanged(nameof(HasSequenceFileName));
+            RaisePropertyChanged(nameof(SequenceSaveable));
+        }
+
+        public void UpdateDeviceInfo(FlatDeviceInfo deviceInfo) {
+            this._flatDevice = deviceInfo;
+        }
+
         public void Dispose() {
             this.telescopeMediator.RemoveConsumer(this);
             this.filterWheelMediator.RemoveConsumer(this);
             this.focuserMediator.RemoveConsumer(this);
             this.rotatorMediator.RemoveConsumer(this);
+            this._flatDeviceMediator.RemoveConsumer(this);
             this.guiderMediator.RemoveConsumer(this);
             this.cameraMediator.RemoveConsumer(this);
             this.weatherDataMediator.RemoveConsumer(this);

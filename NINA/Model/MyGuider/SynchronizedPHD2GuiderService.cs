@@ -1,4 +1,27 @@
-﻿using NINA.Locale;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using NINA.Locale;
 using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;
@@ -90,7 +113,6 @@ namespace NINA.Model.MyGuider {
     internal class SynchronizedPHD2GuiderService : ISynchronizedPHD2GuiderService {
         private readonly object ditherLock = new object();
         private readonly object startGuidingLock = new object();
-        private readonly object startPauseLock = new object();
         private readonly object stopGuidingLock = new object();
         private CancellationTokenSource ditherCancellationTokenSource;
         private Task<bool> ditherTask;
@@ -98,8 +120,6 @@ namespace NINA.Model.MyGuider {
         private TaskCompletionSource<bool> initializeTaskCompletionSource;
         private CancellationTokenSource startGuidingCancellationTokenSource;
         private Task<bool> startGuidingTask;
-        private CancellationTokenSource startPauseCancellationTokenSource;
-        private Task<bool> startPauseTask;
         private CancellationTokenSource stopGuidingCancellationTokenSource;
         private Task<bool> stopGuidingTask;
         public List<SynchronizedClientInfo> ConnectedClients;
@@ -131,11 +151,6 @@ namespace NINA.Model.MyGuider {
         /// <inheritdoc />
         public void CancelStartGuiding() {
             startGuidingCancellationTokenSource?.Cancel();
-        }
-
-        /// <inheritdoc />
-        public void CancelStartPause() {
-            startPauseCancellationTokenSource?.Cancel();
         }
 
         /// <inheritdoc />
@@ -225,23 +240,6 @@ namespace NINA.Model.MyGuider {
             }
 
             return startGuidingTask;
-        }
-
-        /// <inheritdoc />
-        public Task<bool> StartPause(bool pause) {
-            lock (startPauseLock) {
-                var taskStatus = startPauseTask?.Status;
-                if (taskStatus == TaskStatus.Faulted ||
-                    taskStatus == TaskStatus.Canceled ||
-                    taskStatus == TaskStatus.RanToCompletion ||
-                    startPauseTask == null) {
-                    startPauseCancellationTokenSource?.Dispose();
-                    startPauseCancellationTokenSource = new CancellationTokenSource();
-                    startPauseTask = guiderInstance.Pause(pause, startPauseCancellationTokenSource.Token);
-                }
-            }
-
-            return startPauseTask;
         }
 
         /// <inheritdoc />

@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -28,6 +28,7 @@ using NINACustomControlLibrary;
 using Nito.AsyncEx;
 using Nito.Mvvm;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -61,6 +62,7 @@ namespace NINA.ViewModel {
         public string TargetName {
             get => targetName;
             set {
+                ShowPopup = false;
                 targetName = value;
                 if (!SkipSearch) {
                     if (TargetName.Length > 1) {
@@ -68,12 +70,24 @@ namespace NINA.ViewModel {
                         targetSearchCts?.Dispose();
                         targetSearchCts = new CancellationTokenSource();
 
+                        if (TargetSearchResult != null) {
+                            TargetSearchResult.PropertyChanged -= TargetSearchResult_PropertyChanged;
+                        }
                         TargetSearchResult = NotifyTask.Create(SearchDSOs(TargetName, targetSearchCts.Token));
-                    } else {
-                        ShowPopup = false;
+                        TargetSearchResult.PropertyChanged += TargetSearchResult_PropertyChanged;
                     }
                 }
                 RaisePropertyChanged();
+            }
+        }
+
+        private void TargetSearchResult_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(TargetSearchResult.Result)) {
+                if (targetSearchResult.Result.Count > 0) {
+                    ShowPopup = true;
+                } else {
+                    ShowPopup = false;
+                }
             }
         }
 
@@ -135,6 +149,7 @@ namespace NINA.ViewModel {
 
         private Task<List<IAutoCompleteItem>> SearchDSOs(string searchString, CancellationToken ct) {
             return Task.Run(async () => {
+                await Task.Delay(500, ct);
                 var db = new DatabaseInteraction();
                 var searchParams = new DatabaseInteraction.DeepSkyObjectSearchParams();
                 searchParams.ObjectName = searchString;
@@ -143,10 +158,8 @@ namespace NINA.ViewModel {
                 var list = new List<IAutoCompleteItem>();
                 foreach (var item in result) {
                     list.Add(new DSOAutoCompleteItem() { Column1 = item.Name, Column2 = item.Coordinates.RAString, Column3 = item.Coordinates.DecString });
+                    ct.ThrowIfCancellationRequested();
                 }
-
-                ShowPopup = true;
-
                 return list;
             });
         }

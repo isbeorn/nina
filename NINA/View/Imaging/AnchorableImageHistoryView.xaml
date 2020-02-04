@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -72,8 +72,44 @@
                 LegendTextColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                 PlotAreaBackground="{StaticResource BackgroundBrush}"
                 PlotAreaBorderColor="{Binding Path=Color, Source={StaticResource BorderBrush}}">
+                <oxy:Plot.TrackerDefinitions>
+                    <oxy:TrackerDefinition TrackerKey="AutoFocus">
+                        <oxy:TrackerDefinition.TrackerTemplate>
+                            <ControlTemplate>
+                                <oxy:TrackerControl
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1"
+                                    LineExtents="{Binding PlotModel.PlotArea}"
+                                    Position="{Binding Position}">
+                                    <oxy:TrackerControl.Content>
+                                        <StackPanel Orientation="Vertical">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{ns:Loc LblNewPosition}" />
+                                                <TextBlock Text=": " />
+                                                <TextBlock Text="{Binding Item.AutoFocusPoint.NewPosition}" />
+                                            </StackPanel>
+
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{ns:Loc LblOldPosition}" />
+                                                <TextBlock Text=": " />
+                                                <TextBlock Text="{Binding Item.AutoFocusPoint.OldPosition}" />
+                                            </StackPanel>
+
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{ns:Loc LblTemperature}" />
+                                                <TextBlock Text=": " />
+                                                <TextBlock Text="{Binding Item.AutoFocusPoint.Temperature}" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </oxy:TrackerControl.Content>
+                                </oxy:TrackerControl>
+                            </ControlTemplate>
+                        </oxy:TrackerDefinition.TrackerTemplate>
+                    </oxy:TrackerDefinition>
+                </oxy:Plot.TrackerDefinitions>
                 <oxy:Plot.Axes>
                     <oxy:LinearAxis
+                        AbsoluteMinimum="0"
                         AxislineColor="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
                         IsPanEnabled="False"
                         IsZoomEnabled="False"
@@ -81,7 +117,7 @@
                         MajorGridlineStyle="Dash"
                         MajorStep="1"
                         MaximumPadding="0.2"
-                        MaximumRange="10"
+                        MaximumRange="20"
                         MinimumPadding="0.2"
                         MinimumRange="3"
                         Position="Left"
@@ -123,6 +159,16 @@
                         MarkerFill="{Binding Path=Color, Source={StaticResource SecondaryBrush}}"
                         MarkerType="Circle"
                         YAxisKey="Secondary" />
+                    <oxy:LineSeries
+                        Title="{ns:Loc LblAutoFocus}"
+                        DataFieldX="Id"
+                        DataFieldY="Zero"
+                        ItemsSource="{Binding AutoFocusPoints}"
+                        MarkerFill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        MarkerSize="5"
+                        MarkerType="Triangle"
+                        TrackerKey="AutoFocus"
+                        Color="Transparent" />
                 </oxy:Plot.Series>
             </oxy:Plot>
         </Grid>

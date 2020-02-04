@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -28,8 +28,8 @@
     xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
     xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:util="clr-namespace:NINA.Utility"
-    d:DesignHeight="300"
-    d:DesignWidth="300"
+    d:DesignHeight="500"
+    d:DesignWidth="10   00"
     mc:Ignorable="d">
 
     <Grid>
@@ -97,7 +97,7 @@
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 Foreground="{StaticResource ButtonForegroundBrush}"
-                                                Text="{Binding TargetName}" />
+                                                Text="{Binding TargetNameWithModifiedIndicator}" />
                                             <Button
                                                 x:Name="PART_Close"
                                                 Grid.Column="2"
@@ -159,22 +159,88 @@
                     <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}" />
                 </ListView.View>
             </ListView>
-            <Button
-                Grid.Column="1"
-                Width="35"
-                Command="{Binding AddTargetCommand}"
-                IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
-                <Button.ToolTip>
-                    <ToolTip ToolTipService.ShowOnDisabled="True">
-                        <TextBlock Text="{ns:Loc LblTooltipAddTarget}" />
-                    </ToolTip>
-                </Button.ToolTip>
-                <Path
-                    Margin="5"
-                    Data="{StaticResource AddSVG}"
-                    Fill="{StaticResource ButtonForegroundBrush}"
-                    Stretch="Uniform" />
-            </Button>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button
+                    Grid.Column="1"
+                    Width="35"
+                    Command="{Binding PromoteTargetCommand}"
+                    IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblTooltipPromoteTarget}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource ArrowLeftSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                </Button>
+                <Button
+                    Grid.Column="2"
+                    Width="35"
+                    Command="{Binding DemoteTargetCommand}"
+                    IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblTooltipDemoteTarget}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource ArrowRightSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                </Button>
+                <Button
+                    Grid.Column="3"
+                    Width="35"
+                    Command="{Binding SaveTargetSetCommand}"
+                    IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblTooltipTargetSaveSet}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource SaveSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                </Button>
+                <Button
+                    Grid.Column="4"
+                    Width="35"
+                    Command="{Binding LoadTargetSetCommand}"
+                    IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblTooltipTargetLoadSet}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource LoadSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                </Button>
+                <Button
+                    Grid.Column="5"
+                    Width="35"
+                    Command="{Binding AddTargetCommand}"
+                    IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblTooltipAddTarget}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource AddSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                </Button>
+            </StackPanel>
         </Grid>
         <UniformGrid
             Grid.Row="1"
@@ -302,6 +368,44 @@
                                             VerticalAlignment="Center"
                                             Text="{Binding ETA, Mode=OneWay}" />
                                     </Grid>
+                                </UniformGrid>
+                            </UniformGrid>
+                        </Border>
+                        <Border
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="0"
+                            DataContext="{Binding Source={StaticResource AppVM}, Path=SeqVM}">
+                            <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="4">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblCurrentSequenceEstimates}" />
+                                <UniformGrid Margin="0,0,0,0" VerticalAlignment="Center" Columns="2">
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" Text="{ns:Loc LblFrom}" />
+                                    <TextBox
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Stretch"
+                                        IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
+                                        Text="{Binding SequenceEstimatedStartTime, StringFormat=hh:mm:ss, Mode=OneWay}" />
+                                </UniformGrid>
+                                <UniformGrid Margin="0,0,0,0" VerticalAlignment="Center" Columns="2">
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" Text="{ns:Loc LblTo}" />
+                                    <TextBox
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Stretch"
+                                        IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
+                                        Text="{Binding SequenceEstimatedEndTime, StringFormat=hh:mm:ss, Mode=OneWay}" />
+                                </UniformGrid>
+                                <UniformGrid                                     
+                                    Margin="0,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" Text="{ns:Loc LblDuration}" />
+                                    <TextBox
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Stretch"
+                                        IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
+                                        Text="{Binding SequenceEstimatedDuration, StringFormat=hh\\:mm\\:ss, Mode=OneWay}" />
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
@@ -911,7 +1015,8 @@
                                 DisplayMemberPath="Name"
                                 ItemsSource="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}"
                                 SelectedItem="{Binding FilterType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                SelectedValuePath="Name" />
+                                SelectedValuePath="Name"
+                                Visibility="{Binding Converter={StaticResource IsLightImageTypeToVisibilityConverter}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                     <DataGridTemplateColumn.CellTemplate>
@@ -920,7 +1025,8 @@
                                 Margin="5,0,5,0"
                                 VerticalAlignment="Center"
                                 Text="{Binding FilterType}"
-                                TextAlignment="Center" />
+                                TextAlignment="Center"
+                                Visibility="{Binding Converter={StaticResource IsLightImageTypeToVisibilityConverter}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -958,7 +1064,8 @@
                             <CheckBox
                                 HorizontalAlignment="Center"
                                 IsChecked="{Binding Dither, UpdateSourceTrigger=PropertyChanged}"
-                                IsEnabled="{Binding Source={StaticResource AppVM}, Path=SeqVM.IsUsingSynchronizedGuider, Converter={StaticResource InverseBooleanConverter}}" />
+                                IsEnabled="{Binding Source={StaticResource AppVM}, Path=SeqVM.IsUsingSynchronizedGuider, Converter={StaticResource InverseBooleanConverter}}"
+                                Visibility="{Binding Converter={StaticResource IsLightImageTypeToVisibilityConverter}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -977,6 +1084,7 @@
                                 MinValue="0"
                                 StepSize="1"
                                 SubstractSVG="{StaticResource SubstractSVG}"
+                                Visibility="{Binding Converter={StaticResource IsLightImageTypeToVisibilityConverter}}"
                                 Value="{Binding DitherAmount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
@@ -987,7 +1095,8 @@
                                 VerticalAlignment="Center"
                                 IsEnabled="{Binding Source={StaticResource AppVM}, Path=SeqVM.IsUsingSynchronizedGuider, Converter={StaticResource InverseBooleanConverter}}"
                                 Text="{Binding DitherAmount}"
-                                TextAlignment="Center" />
+                                TextAlignment="Center"
+                                Visibility="{Binding Converter={StaticResource IsLightImageTypeToVisibilityConverter}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -1014,7 +1123,7 @@
                             <ComboBox SelectedItem="{Binding Gain, Mode=TwoWay, Converter={StaticResource MinusOneToEmptyStringConverter}, UpdateSourceTrigger=LostFocus}">
                                 <ComboBox.ItemsSource>
                                     <CompositeCollection>
-                                        <s:Int16>-1</s:Int16>
+                                        <s:Int32>-1</s:Int32>
                                         <CollectionContainer Collection="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Gains}" />
                                     </CompositeCollection>
                                 </ComboBox.ItemsSource>
@@ -1058,11 +1167,11 @@
                                         Path="Gain"
                                         UpdateSourceTrigger="LostFocus">
                                         <Binding.ValidationRules>
-                                            <util:ShortRangeRule>
-                                                <util:ShortRangeRule.ValidRange>
-                                                    <util:ShortRangeChecker Maximum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMax}" Minimum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMin}" />
-                                                </util:ShortRangeRule.ValidRange>
-                                            </util:ShortRangeRule>
+                                            <rules:IntRangeRule>
+                                                <rules:IntRangeRule.ValidRange>
+                                                    <rules:IntRangeChecker Maximum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMax}" Minimum="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.GainMin}" />
+                                                </rules:IntRangeRule.ValidRange>
+                                            </rules:IntRangeRule>
                                         </Binding.ValidationRules>
                                     </Binding>
                                 </TextBox.Text>
@@ -1214,12 +1323,12 @@
                         Fill="{StaticResource ButtonForegroundBrush}"
                         Stretch="Uniform" />
                 </Button>
-                
+
                 <Button
                     Width="40"
                     Margin="1,0,0,0"
                     Command="{Binding SaveSequenceCommand}"
-                    IsEnabled="{Binding Sequence, Converter={StaticResource InverseNullToBooleanConverter}}">
+                    IsEnabled="{Binding SequenceSaveable}">
                     <Button.ToolTip>
                         <ToolTip ToolTipService.ShowOnDisabled="True">
                             <TextBlock Text="{ns:Loc LblSaveSequenceToolTip}" />
@@ -1228,6 +1337,23 @@
                     <Path
                         Margin="5"
                         Data="{StaticResource SaveSVG}"
+                        Fill="{StaticResource ButtonForegroundBrush}"
+                        Stretch="Uniform" />
+                </Button>
+
+                <Button
+                    Width="40"
+                    Margin="1,0,0,0"
+                    Command="{Binding SaveAsSequenceCommand}"
+                    IsEnabled="{Binding Sequence, Converter={StaticResource InverseNullToBooleanConverter}}">
+                    <Button.ToolTip>
+                        <ToolTip ToolTipService.ShowOnDisabled="True">
+                            <TextBlock Text="{ns:Loc LblSaveAsSequenceToolTip}" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <Path
+                        Margin="5"
+                        Data="{StaticResource SaveAsSVG}"
                         Fill="{StaticResource ButtonForegroundBrush}"
                         Stretch="Uniform" />
                 </Button>

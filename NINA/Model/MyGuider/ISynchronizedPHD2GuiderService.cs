@@ -1,4 +1,27 @@
-﻿using System;
+﻿#region "copyright"
+
+/*
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    N.I.N.A. is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    N.I.N.A. is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#endregion "copyright"
+
+using System;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Threading;
@@ -21,12 +44,6 @@ namespace NINA.Model.MyGuider {
         /// </summary>
         [OperationContract]
         void CancelStartGuiding();
-
-        /// <summary>
-        /// Cancels the StartPause request.
-        /// </summary>
-        [OperationContract]
-        void CancelStartPause();
 
         /// <summary>
         /// Cancels the StopGuiding request.
@@ -81,14 +98,6 @@ namespace NINA.Model.MyGuider {
         /// <returns></returns>
         [OperationContract]
         Task<bool> StartGuiding();
-
-        /// <summary>
-        /// Forwards the Pause or Resume command to the PHD2 instance and pauses or resumes PHD2. Can be called from multiple instances simultaneously.
-        /// </summary>
-        /// <param name="pause"></param>
-        /// <returns></returns>
-        [OperationContract]
-        Task<bool> StartPause(bool pause);
 
         /// <summary>
         /// Forwards StopGuiding to the PHD2 instance and stops guiding. Can be called from multiple instances simultaneously.

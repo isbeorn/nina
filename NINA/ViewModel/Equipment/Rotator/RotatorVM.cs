@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -48,8 +48,8 @@ namespace NINA.ViewModel.Equipment.Rotator {
 
             ConnectCommand = new AsyncCommand<bool>(() => Connect());
             CancelConnectCommand = new RelayCommand(CancelConnectRotator);
-            DisconnectCommand = new RelayCommand(DisconnectDiag);
-            RefreshRotatorListCommand = new RelayCommand(RefreshRotatorList);
+            DisconnectCommand = new AsyncCommand<bool>(() => DisconnectDiag());
+            RefreshRotatorListCommand = new RelayCommand(RefreshRotatorList, o => !(rotator?.Connected == true));
             MoveCommand = new AsyncCommand<float>(() => Move(TargetPosition), (p) => RotatorInfo.Connected);
             HaltCommand = new RelayCommand(Halt);
 
@@ -191,8 +191,10 @@ namespace NINA.ViewModel.Equipment.Rotator {
         public async Task<bool> Connect() {
             await ss.WaitAsync();
             try {
-                Disconnect();
-                updateTimer?.Stop();
+                await Disconnect();
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
+                }
 
                 if (RotatorChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.RotatorSettings.Id = RotatorChooserVM.SelectedDevice.Id;
@@ -234,6 +236,9 @@ namespace NINA.ViewModel.Equipment.Rotator {
 
                             TargetPosition = rotator.Position;
                             profileService.ActiveProfile.RotatorSettings.Id = rotator.Id;
+
+                            Logger.Info($"Successfully connected Rotator. Id: {rotator.Id} Name: {rotator.Name} Driver Version: {rotator.DriverVersion}");
+
                             return true;
                         } else {
                             RotatorInfo.Connected = false;
@@ -241,7 +246,7 @@ namespace NINA.ViewModel.Equipment.Rotator {
                             return false;
                         }
                     } catch (OperationCanceledException) {
-                        if (RotatorInfo.Connected) { Disconnect(); }
+                        if (RotatorInfo.Connected) { await Disconnect(); }
                         return false;
                     }
                 } else {
@@ -262,21 +267,25 @@ namespace NINA.ViewModel.Equipment.Rotator {
             _connectRotatorCts?.Cancel();
         }
 
-        public void Disconnect() {
+        public async Task Disconnect() {
             if (RotatorInfo.Connected) {
-                updateTimer?.Stop();
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
+                }
                 rotator?.Disconnect();
                 rotator = null;
                 RotatorInfo = DeviceInfo.CreateDefaultInstance<RotatorInfo>();
                 BroadcastRotatorInfo();
+                Logger.Info("Disconnected Rotator");
             }
         }
 
-        private void DisconnectDiag(object obj) {
+        private async Task<bool> DisconnectDiag() {
             var diag = MyMessageBox.MyMessageBox.Show("Disconnect Rotator?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
-                Disconnect();
+                await Disconnect();
             }
+            return true;
         }
 
         private void BroadcastRotatorInfo() {

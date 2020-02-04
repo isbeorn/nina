@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -14,8 +14,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.
--->
+    along with N.I.N.A..  If not, see http://www.gnu.org/licenses/.-->
 <UserControl
     x:Class="NINA.View.ManualRotatorView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -52,7 +51,7 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             FontSize="32"
-                            Text="{Binding Position}" />
+                            Text="{Binding Position, StringFormat=N2}" />
                         <TextBlock FontSize="32" Text="°" />
                     </StackPanel>
                 </Grid>
@@ -67,7 +66,7 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Orientation="Horizontal">
-                        <TextBlock FontSize="32" Text="{Binding AbsTargetPosition}" />
+                        <TextBlock FontSize="32" Text="{Binding AbsTargetPosition, StringFormat=N2}" />
                         <TextBlock FontSize="32" Text="°" />
                     </StackPanel>
                 </Grid>
@@ -98,7 +97,7 @@
                 VerticalAlignment="Center"
                 Orientation="Vertical">
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                    <TextBlock Text="{Binding Rotation}" />
+                    <TextBlock Text="{Binding Rotation, StringFormat=N2}" />
                     <TextBlock Text="°" />
                 </StackPanel>
                 <TextBlock HorizontalAlignment="Center" Text="{Binding Direction}" />

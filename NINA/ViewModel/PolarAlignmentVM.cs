@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -36,6 +36,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
 using NINA.Utility.Mediator;
+using NINA.PlateSolving;
 
 namespace NINA.ViewModel {
 
@@ -270,9 +271,9 @@ namespace NINA.ViewModel {
             }
         }
 
-        private short snapGain = -1;
+        private int snapGain = -1;
 
-        public short SnapGain {
+        public int SnapGain {
             get {
                 return snapGain;
             }
@@ -549,8 +550,23 @@ namespace NINA.ViewModel {
         }
 
         private async Task<double> CalculatePoleError(IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
-            Coordinates startPosition = new Coordinates(TelescopeInfo.RightAscension, TelescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+            var plateSolver = PlateSolverFactory.GetPlateSolver(profileService.ActiveProfile.PlateSolveSettings);
+            var blindSolver = PlateSolverFactory.GetBlindSolver(profileService.ActiveProfile.PlateSolveSettings);
+            var solver = new CaptureSolver(plateSolver, blindSolver, imagingMediator);
+            var parameter = new CaptureSolverParameter() {
+                Attempts = 1,
+                Binning = SnapBin?.X ?? CameraInfo.BinX,
+                DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
+                FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
+                MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
+                PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize,
+                ReattemptDelay = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay),
+                Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
+                SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius
+            };
+
             double poleError = double.NaN;
+            Coordinates startPosition = telescopeMediator.GetCurrentPosition();
             try {
                 double movementdeg = 0.5d;
                 double movement = (movementdeg / 360) * 24;
@@ -560,12 +576,12 @@ namespace NINA.ViewModel {
                 var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAPSHOT, SnapFilter, SnapBin, 1);
                 seq.Gain = SnapGain;
 
-                using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
-                    PlateSolveResult = await solver.SolveWithCapture(seq, progress, canceltoken);
-                }
+                parameter.Coordinates = startPosition;
+                PlateSolveResult = await solver.Solve(seq, parameter, default, progress, canceltoken);
+
                 canceltoken.ThrowIfCancellationRequested();
 
-                PlateSolving.PlateSolveResult startSolveResult = PlateSolveResult;
+                PlateSolveResult startSolveResult = PlateSolveResult;
                 if (!startSolveResult.Success) {
                     return double.NaN;
                 }
@@ -589,12 +605,12 @@ namespace NINA.ViewModel {
                 seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAPSHOT, SnapFilter, SnapBin, 1);
                 seq.Gain = SnapGain;
 
-                using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
-                    PlateSolveResult = await solver.SolveWithCapture(seq, progress, canceltoken);
-                }
+                parameter.Coordinates = telescopeMediator.GetCurrentPosition();
+                PlateSolveResult = await solver.Solve(seq, parameter, default, progress, canceltoken);
+
                 canceltoken.ThrowIfCancellationRequested();
 
-                PlateSolving.PlateSolveResult targetSolveResult = PlateSolveResult;
+                PlateSolveResult targetSolveResult = PlateSolveResult;
                 if (!targetSolveResult.Success) {
                     return double.NaN;
                 }

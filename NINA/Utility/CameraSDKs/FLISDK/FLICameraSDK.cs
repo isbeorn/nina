@@ -267,7 +267,7 @@ namespace FLI {
         public static extern unsafe uint FLIGetCoolerPower(uint dev, ref double power);
 
         [DllImport(DLLNAME, EntryPoint = "FLIGrabRow", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern unsafe uint FLIGrabRow(uint dev, [Out] byte[] buff, int width);
+        public static extern unsafe uint FLIGrabRow(uint dev, [Out] ushort[] buff, int width);
 
         [DllImport(DLLNAME, EntryPoint = "FLIExposeFrame", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern unsafe uint FLIExposeFrame(uint dev);

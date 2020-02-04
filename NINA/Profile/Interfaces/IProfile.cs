@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -47,10 +47,12 @@ namespace NINA.Profile {
         IPlateSolveSettings PlateSolveSettings { get; set; }
         IPolarAlignmentSettings PolarAlignmentSettings { get; set; }
         IRotatorSettings RotatorSettings { get; set; }
+        IFlatDeviceSettings FlatDeviceSettings { get; set; }
         ISequenceSettings SequenceSettings { get; set; }
         ISwitchSettings SwitchSettings { get; set; }
         ITelescopeSettings TelescopeSettings { get; set; }
         IWeatherDataSettings WeatherDataSettings { get; set; }
+        IExposureCalculatorSettings ExposureCalculatorSettings { get; set; }
 
         void Save();
     }

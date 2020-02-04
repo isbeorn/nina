@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -37,6 +37,8 @@ namespace NINA.ViewModel.Equipment.Telescope {
 
         void PulseGuide(GuideDirections direction, int duration);
 
+        bool Sync(Coordinates coordinates);
+
         bool Sync(double ra, double dec);
 
         bool MeridianFlip(Coordinates targetCoordinates);
@@ -45,7 +47,8 @@ namespace NINA.ViewModel.Equipment.Telescope {
 
         bool SendToSnapPort(bool start);
 
-        Task<bool> ParkTelescope();
+        Coordinates GetCurrentPosition();
 
+        Task<bool> ParkTelescope();
     }
 }

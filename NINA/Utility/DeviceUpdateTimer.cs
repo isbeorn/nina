@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -28,9 +28,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Utility {
-
     internal class DeviceUpdateTimer {
-
         public DeviceUpdateTimer(Func<Dictionary<string, object>> getValuesFunc, Action<Dictionary<string, object>> updateValuesFunc, double interval) {
             GetValuesFunc = getValuesFunc;
             Interval = interval;
@@ -43,10 +41,10 @@ namespace NINA.Utility {
         public IProgress<Dictionary<string, object>> Progress { get; private set; }
         public double Interval { get; set; }
 
-        public void Stop() {
+        public async Task Stop() {
             cts?.Cancel();
             do {
-                Task.Delay(100);
+                await Task.Delay(100);
             } while (!task?.IsCompleted == true);
         }
 

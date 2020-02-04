@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -26,6 +26,7 @@ using NINA.Utility.Enum;
 using System;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 
 namespace NINA.Profile {
 
@@ -41,6 +42,7 @@ namespace NINA.Profile {
 
         protected override void SetDefaultValues() {
             blindSolverType = BlindSolverEnum.ASTROMETRY_NET;
+            astrometryURL = "http://nova.astrometry.net";
             astrometryAPIKey = string.Empty;
             cygwinLocation = string.Empty;
             searchRadius = 30;
@@ -54,6 +56,9 @@ namespace NINA.Profile {
             filter = null;
             downSampleFactor = 2;
             maxObjects = 500;
+            gain = -1;
+            binning = 1;
+            sync = false;
 
             var defaultASPSLocation = Environment.ExpandEnvironmentVariables(@"%programfiles(x86)%\PlateSolver\PlateSolver.exe");
             aspsLocation =
@@ -95,6 +100,24 @@ namespace NINA.Profile {
             }
         }
 
+        private string astrometryURL;
+
+        [DataMember]
+        public string AstrometryURL {
+            get {
+                return astrometryURL;
+            }
+            set {
+                // Clear out any whitespace characters in the URL
+                string url = Regex.Replace(value, @"\s", string.Empty);
+
+                if (astrometryURL != url) {
+                    astrometryURL = url;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         private string astrometryAPIKey;
 
         [DataMember]
@@ -103,8 +126,13 @@ namespace NINA.Profile {
                 return astrometryAPIKey;
             }
             set {
-                if (astrometryAPIKey != value) {
-                    astrometryAPIKey = value;
+                // Whitespace characters are not valid characaters in an Astrometry.net API key.
+                // Help the user by removing any that might be present. Copy and pasting from the astrometry.net API page
+                // can sometimes insert a space at the end of the API key string, and it's not very obvious.
+                string key = Regex.Replace(value, @"\s", string.Empty);
+
+                if (astrometryAPIKey != key) {
+                    astrometryAPIKey = key;
                     RaisePropertyChanged();
                 }
             }
@@ -223,8 +251,7 @@ namespace NINA.Profile {
                 return numberOfAttempts;
             }
             set {
-                if (numberOfAttempts != value)
-                {
+                if (numberOfAttempts != value) {
                     numberOfAttempts = value;
                     RaisePropertyChanged();
                 }
@@ -239,8 +266,7 @@ namespace NINA.Profile {
                 return reattemptDelay;
             }
             set {
-                if (reattemptDelay != value)
-                {
+                if (reattemptDelay != value) {
                     reattemptDelay = value;
                     RaisePropertyChanged();
                 }
@@ -317,6 +343,66 @@ namespace NINA.Profile {
             set {
                 if (maxObjects != value) {
                     maxObjects = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool sync;
+
+        [DataMember]
+        public bool Sync {
+            get {
+                return sync;
+            }
+            set {
+                if (sync != value) {
+                    sync = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool slewToTarget;
+
+        [DataMember]
+        public bool SlewToTarget {
+            get {
+                return slewToTarget;
+            }
+            set {
+                if (slewToTarget != value) {
+                    slewToTarget = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private short binning;
+
+        [DataMember]
+        public short Binning {
+            get {
+                return binning;
+            }
+            set {
+                if (binning != value) {
+                    binning = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int gain;
+
+        [DataMember]
+        public int Gain {
+            get {
+                return gain;
+            }
+            set {
+                if (gain != value) {
+                    gain = value;
                     RaisePropertyChanged();
                 }
             }

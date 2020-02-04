@@ -18,27 +18,30 @@
 */
 
 /*
+ * Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
  * Copyright 2019 Dale Ghent <daleg@elemental.org>
  */
 
 #endregion "copyright"
 
 using NINA.Utility;
-using NINA.Utility.Api;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Exceptions;
 using NINA.Profile;
 using System.Threading.Tasks;
+using System.Text;
+using System;
+using System.Net.Sockets;
 
 namespace NINA.Model.MyPlanetarium {
 
-    internal class HNSKY : RawTcp, IPlanetarium {
-        private IProfileService profileService;
+    internal class HNSKY : IPlanetarium {
+        private string address;
+        private int port;
 
         public HNSKY(IProfileService profileService) {
-            this.profileService = profileService;
-            baseAddress = profileService.ActiveProfile.PlanetariumSettings.HNSKYHost;
-            port = profileService.ActiveProfile.PlanetariumSettings.HNSKYPort;
-            timeout = profileService.ActiveProfile.PlanetariumSettings.HNSKYTimeout;
+            this.address = profileService.ActiveProfile.PlanetariumSettings.HNSKYHost;
+            this.port = profileService.ActiveProfile.PlanetariumSettings.HNSKYPort;
         }
 
         public string Name {
@@ -52,21 +55,10 @@ namespace NINA.Model.MyPlanetarium {
         /// </summary>
         /// <returns></returns>
         public async Task<DeepSkyObject> GetTarget() {
-            DeepSkyObject ret = null;
-            string response;
-            string[] objinfo;
+            try {
+                string response = await Query("GET_TARGET");
+                response = response.TrimEnd('\r', '\n');
 
-            /*
-             * Connect to HNSKY
-             */
-            if (!IsConnected) {
-                Connect();
-            }
-
-            response = await SendTextCommand("GET_TARGET");
-            Logger.Debug($"HNSKY: GET_TARGET = {response}");
-
-            if (!response.Contains("?")) {
                 /*
                  * Split the coordinates and object name from the returned message.
                  * GET_TARGET returns 4 fields, space-separated:
@@ -74,17 +66,22 @@ namespace NINA.Model.MyPlanetarium {
                  *
                  * RA and Dec are in radians. Epoch is J2000.
                  */
-                objinfo = response.Split(' ');
+                string[] info = response.Split(' ');
 
-                var newCoordinates = new Coordinates(Astrometry.RadianToHour(double.Parse(objinfo[0], System.Globalization.CultureInfo.InvariantCulture)),
-                                                     Astrometry.ToDegree(double.Parse(objinfo[1], System.Globalization.CultureInfo.InvariantCulture)),
-                                                     Epoch.J2000, Coordinates.RAType.Hours);
+                if (!(info[0].Equals("?") || string.IsNullOrEmpty(info[2]))) {
+                    Coordinates newCoordinates = new Coordinates(Astrometry.RadianToHour(double.Parse(info[0].Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture)),
+                                                         Astrometry.ToDegree(double.Parse(info[1].Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture)),
+                                                         Epoch.J2000, Coordinates.RAType.Hours);
 
-                ret = new DeepSkyObject(objinfo[2], newCoordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
+                    DeepSkyObject dso = new DeepSkyObject(info[2], newCoordinates, string.Empty);
+                    return dso;
+                } else {
+                    throw new PlanetariumObjectNotSelectedException();
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                throw ex;
             }
-
-            Disconnect();
-            return ret;
         }
 
         /// <summary>
@@ -92,22 +89,10 @@ namespace NINA.Model.MyPlanetarium {
         /// </summary>
         /// <returns></returns>
         public async Task<Coords> GetSite() {
-            Coords loc = new Coords();
-            string response;
-            string[] locinfo;
+            try {
+                var response = await Query("GET_LOCATION");
+                response = response.TrimEnd('\r', '\n');
 
-            /*
-             * Connect to HNSKY
-             * HNSKY 4.0.3a and later supports retrieving location information via the GET_LOCATION command.
-             */
-            if (!IsConnected) {
-                Connect();
-            }
-
-            response = await SendTextCommand("GET_LOCATION");
-            Logger.Debug($"HNSKY: GET_LOCATION = {response}");
-
-            if (!response.Contains("?")) {
                 /*
                  * Split the latitude and longitude from the returned message.
                  * GET_LOCATION returns 3 fields, space-separated:
@@ -115,19 +100,52 @@ namespace NINA.Model.MyPlanetarium {
                  *
                  * Latitude and Logitude are in radians.
                  */
-                locinfo = response.Split(' ');
+                var info = response.Split(' ');
 
-                /*
-                 * East is negative and West is positive in HNSKY.
-                 * We must flip longitude's sign here.
-                 */
-                loc.Latitude = Astrometry.ToDegree(double.Parse(locinfo[1], System.Globalization.CultureInfo.InvariantCulture));
-                loc.Longitude = Astrometry.ToDegree(double.Parse(locinfo[0], System.Globalization.CultureInfo.InvariantCulture)) * -1;
-                loc.Elevation = 0;
+                if (!(info[0].Equals("?") || string.IsNullOrEmpty(info[1]))) {
+                    /*
+                     * East is negative and West is positive in HNSKY.
+                     * We must flip longitude's sign here.
+                     */
+                    var loc = new Coords {
+                        Latitude = Astrometry.ToDegree(double.Parse(info[1].Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture)),
+                        Longitude = Astrometry.ToDegree(double.Parse(info[0].Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture)) * -1,
+                        Elevation = 0
+                    };
+
+                    return loc;
+                } else {
+                    throw new PlanetariumFailedToGetCoordinates();
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                throw ex;
             }
+        }
 
-            Disconnect();
-            return loc;
+        private async Task<string> Query(string command) {
+            using (var client = new TcpClient()) {
+                try {
+                    await Task.Factory.FromAsync((callback, stateObject) => client.BeginConnect(this.address, this.port, callback, stateObject), client.EndConnect, TaskCreationOptions.RunContinuationsAsynchronously);
+                } catch (Exception ex) {
+                    throw new PlanetariumFailedToConnect($"{address}:{port}: {ex.ToString()}");
+                }
+
+                byte[] data = Encoding.ASCII.GetBytes($"{command}\r\n");
+                var stream = client.GetStream();
+                stream.Write(data, 0, data.Length);
+
+                byte[] buffer = new byte[2048];
+                var length = stream.Read(buffer, 0, buffer.Length);
+                string response = System.Text.Encoding.ASCII.GetString(buffer, 0, length);
+
+                stream.Close();
+                client.Close();
+
+                Logger.Trace($"{Name} - Received Message {response}");
+
+                return response;
+            }
         }
     }
 }

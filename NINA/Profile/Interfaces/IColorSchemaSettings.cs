@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -27,38 +27,16 @@ using System.Windows.Media;
 namespace NINA.Profile {
 
     public interface IColorSchemaSettings : ISettings {
-        Color AltBackgroundColor { get; set; }
-        Color AltSecondaryBackgroundColor { get; set; }
-        Color AltTertiaryBackgroundColor { get; set; }
-        Color AltBorderColor { get; set; }
-        Color AltButtonBackgroundColor { get; set; }
-        Color AltButtonBackgroundSelectedColor { get; set; }
-        Color AltButtonForegroundColor { get; set; }
-        Color AltButtonForegroundDisabledColor { get; set; }
         ColorSchema AltColorSchema { get; set; }
-        string AltColorSchemaName { get; set; }
-        Color AltNotificationErrorColor { get; set; }
-        Color AltNotificationErrorTextColor { get; set; }
-        Color AltNotificationWarningColor { get; set; }
-        Color AltNotificationWarningTextColor { get; set; }
-        Color AltPrimaryColor { get; set; }
-        Color AltSecondaryColor { get; set; }
-        Color BackgroundColor { get; set; }
-        Color SecondaryBackgroundColor { get; set; }
-        Color TertiaryBackgroundColor { get; set; }
-        Color BorderColor { get; set; }
-        Color ButtonBackgroundColor { get; set; }
-        Color ButtonBackgroundSelectedColor { get; set; }
-        Color ButtonForegroundColor { get; set; }
-        Color ButtonForegroundDisabledColor { get; set; }
+
         ColorSchema ColorSchema { get; set; }
-        string ColorSchemaName { get; set; }
+
         ColorSchemas ColorSchemas { get; set; }
-        Color NotificationErrorColor { get; set; }
-        Color NotificationErrorTextColor { get; set; }
-        Color NotificationWarningColor { get; set; }
-        Color NotificationWarningTextColor { get; set; }
-        Color PrimaryColor { get; set; }
-        Color SecondaryColor { get; set; }
+
+        void ToggleSchema();
+
+        void CopyToCustom();
+
+        void CopyToAltCustom();
     }
 }

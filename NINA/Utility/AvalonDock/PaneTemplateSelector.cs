@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -30,6 +30,7 @@ using NINA.ViewModel.Equipment.Rotator;
 using NINA.ViewModel.Equipment.Switch;
 using NINA.ViewModel.Equipment.Telescope;
 using NINA.ViewModel.Equipment.WeatherData;
+using NINA.ViewModel.Imaging;
 using System.Windows;
 using System.Windows.Controls;
 using Xceed.Wpf.AvalonDock.Layout;
@@ -76,6 +77,7 @@ namespace NINA.Utility.AvalonDock {
         public DataTemplate FocusTargetsTemplate { get; set; }
 
         public DataTemplate SwitchTemplate { get; set; }
+        public DataTemplate ExposureCalculatorTemplate { get; set; }
 
         public override System.Windows.DataTemplate SelectTemplate(object item, System.Windows.DependencyObject container) {
             var itemAsLayoutContent = item as LayoutContent;
@@ -88,7 +90,7 @@ namespace NINA.Utility.AvalonDock {
                 return TelescopeTemplate;
             }
 
-            if (item is PlatesolveVM) {
+            if (item is AnchorablePlateSolverVM) {
                 return PlatesolveTemplate;
             }
 
@@ -150,6 +152,10 @@ namespace NINA.Utility.AvalonDock {
 
             if (item is SwitchVM) {
                 return SwitchTemplate;
+            }
+
+            if (item is ExposureCalculatorVM) {
+                return ExposureCalculatorTemplate;
             }
 
             return base.SelectTemplate(item, container);

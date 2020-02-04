@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -52,10 +52,10 @@ namespace NINA.ViewModel.Equipment.Camera {
 
             ChooseCameraCommand = new AsyncCommand<bool>(ChooseCamera);
             CancelConnectCameraCommand = new RelayCommand(CancelConnectCamera);
-            DisconnectCommand = new RelayCommand(DisconnectDiag);
+            DisconnectCommand = new AsyncCommand<bool>(() => DisconnectDiag());
             CoolCamCommand = new AsyncCommand<bool>(() => StartCoolCamera(new Progress<double>(p => CoolingProgress = p)));
             CancelCoolCamCommand = new RelayCommand(CancelCoolCamera);
-            RefreshCameraListCommand = new RelayCommand(RefreshCameraList);
+            RefreshCameraListCommand = new RelayCommand(RefreshCameraList, o => !(Cam?.Connected == true));
 
             CoolingRunning = false;
             WarmingRunning = false;
@@ -342,8 +342,10 @@ namespace NINA.ViewModel.Equipment.Camera {
         private async Task<bool> ChooseCamera() {
             await ss.WaitAsync();
             try {
-                Disconnect();
-                updateTimer?.Stop();
+                await Disconnect();
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
+                }
 
                 if (CameraChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.CameraSettings.Id = CameraChooserVM.SelectedDevice.Id;
@@ -412,19 +414,21 @@ namespace NINA.ViewModel.Equipment.Camera {
                                 TargetTemp = Cam.TemperatureSetPoint;
                             }
 
+                            Logger.Info($"Successfully connected Camera. Id: {Cam.Id} Name: {Cam.Name} Driver Version: {Cam.DriverVersion}");
+
                             return true;
                         } else {
                             this.Cam = null;
                             return false;
                         }
                     } catch (OperationCanceledException) {
-                        if (CameraInfo.Connected) { Disconnect(); }
+                        if (CameraInfo.Connected) { await Disconnect(); }
                         CameraInfo.Connected = false;
                         return false;
                     } catch (Exception ex) {
                         Notification.ShowError(ex.Message);
                         Logger.Error(ex);
-                        if (CameraInfo.Connected) { Disconnect(); }
+                        if (CameraInfo.Connected) { await Disconnect(); }
                         CameraInfo.Connected = false;
                         return false;
                     }
@@ -558,15 +562,19 @@ namespace NINA.ViewModel.Equipment.Camera {
 
         private CancellationTokenSource _cancelConnectCameraSource;
 
-        private void DisconnectDiag(object o) {
+        private async Task<bool> DisconnectDiag() {
             var diag = MyMessageBox.MyMessageBox.Show("Disconnect Camera?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
-                Disconnect();
+                await Disconnect();
             }
+            return true;
         }
 
-        public void Disconnect() {
-            updateTimer?.Stop();
+        public async Task Disconnect() {
+            if (Cam != null) { Logger.Info("Disconnected Camera"); }
+            if (updateTimer != null) {
+                await updateTimer.Stop();
+            }
             _cancelCoolCameraSource?.Cancel();
             CoolingRunning = false;
             WarmingRunning = false;
@@ -687,10 +695,11 @@ namespace NINA.ViewModel.Equipment.Camera {
             CameraInfo.ExposureEndTime = DateTime.Now;
         }
 
-        public void SetGain(short gain) {
+        public void SetGain(int gain) {
             if (CameraInfo.Connected == true) {
                 Cam.Gain = gain;
                 CameraInfo.Gain = Cam.Gain;
+                CameraInfo.ElectronsPerADU = Cam.ElectronsPerADU;
                 BroadcastCameraInfo();
             }
         }

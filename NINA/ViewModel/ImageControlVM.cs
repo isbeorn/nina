@@ -18,7 +18,7 @@
 */
 
 /*
- * Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+ * Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
  * Copyright 2019 Dale Ghent <daleg@elemental.org>
  */
 
@@ -41,12 +41,13 @@ using System.Windows.Media.Imaging;
 using NINA.Utility.ImageAnalysis;
 using NINA.Model.ImageData;
 using NINA.Utility.Mediator;
+using NINA.PlateSolving;
 
 namespace NINA.ViewModel {
 
     internal class ImageControlVM : DockableVM, ICameraConsumer {
 
-        public ImageControlVM(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator, IImagingMediator imagingMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+        public ImageControlVM(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             Title = "LblImage";
             ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["PictureSVG"];
 
@@ -54,8 +55,6 @@ namespace NINA.ViewModel {
             this.cameraMediator.RegisterConsumer(this);
 
             this.telescopeMediator = telescopeMediator;
-
-            this.imagingMediator = imagingMediator;
             this.applicationStatusMediator = applicationStatusMediator;
             AutoStretch = true;
             DetectStars = false;
@@ -187,7 +186,7 @@ namespace NINA.ViewModel {
         private void AnalyzeBahtinov() {
             /* Get Pixels */
             var crop = new CroppedBitmap(Image, new Int32Rect((int)BahtinovRectangle.X, (int)BahtinovRectangle.Y, (int)BahtinovRectangle.Width, (int)BahtinovRectangle.Height));
-            BahtinovImage = new BahtinovAnalysis(crop, profileService.ActiveProfile.ColorSchemaSettings.BackgroundColor).GrabBahtinov();
+            BahtinovImage = new BahtinovAnalysis(crop, profileService.ActiveProfile.ColorSchemaSettings.ColorSchema.BackgroundColor).GrabBahtinov();
         }
 
         private void SubSampleDragStart(object obj) {
@@ -325,12 +324,31 @@ namespace NINA.ViewModel {
             if (this.RenderedImage != null) {
                 _plateSolveToken?.Dispose();
                 _plateSolveToken = new CancellationTokenSource();
-                using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
-                    solver.Image = this.RenderedImage.Image;
-                    var service = WindowServiceFactory.Create();
-                    service.Show(solver, this.Title + " - " + solver.Title, ResizeMode.CanResize, WindowStyle.ToolWindow);
-                    await solver.Solve(this.RenderedImage.RawImageData, _progress, _plateSolveToken.Token);
-                }
+
+                var plateSolver = PlateSolverFactory.GetPlateSolver(profileService.ActiveProfile.PlateSolveSettings);
+                var blindSolver = PlateSolverFactory.GetBlindSolver(profileService.ActiveProfile.PlateSolveSettings);
+                var parameter = new PlateSolveParameter() {
+                    Binning = cameraInfo?.BinX ?? 1,
+                    Coordinates = telescopeMediator.GetCurrentPosition(),
+                    DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
+                    FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
+                    MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
+                    PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize,
+                    Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
+                    SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
+                };
+
+                var imageSolver = new ImageSolver(plateSolver, blindSolver);
+
+                var service = WindowServiceFactory.Create();
+                var plateSolveStatusVM = new PlateSolvingStatusVM();
+                service.Show(plateSolveStatusVM, this.Title + " - " + plateSolveStatusVM.Title, ResizeMode.CanResize, WindowStyle.ToolWindow);
+
+                var result = await imageSolver.Solve(this.RenderedImage.RawImageData, parameter, _progress, _plateSolveToken.Token);
+
+                result.DetermineSeparation(telescopeMediator.GetCurrentPosition());
+                plateSolveStatusVM.PlateSolveResult = result;
+
                 return true;
             } else {
                 return false;
@@ -492,7 +510,6 @@ namespace NINA.ViewModel {
         private ICameraMediator cameraMediator;
         private CameraInfo cameraInfo = DeviceInfo.CreateDefaultInstance<CameraInfo>();
         private ITelescopeMediator telescopeMediator;
-        private IImagingMediator imagingMediator;
         private IApplicationStatusMediator applicationStatusMediator;
 
         public async Task<IRenderedImage> PrepareImage(

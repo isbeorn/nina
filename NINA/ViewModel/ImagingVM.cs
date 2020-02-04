@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -94,7 +94,7 @@ namespace NINA.ViewModel {
             StartLiveViewCommand = new AsyncCommand<bool>(StartLiveView);
             StopLiveViewCommand = new RelayCommand(StopLiveView);
 
-            ImageControl = new ImageControlVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
+            ImageControl = new ImageControlVM(profileService, cameraMediator, telescopeMediator, applicationStatusMediator);
         }
 
         private IProgress<ApplicationStatus> progress;
@@ -445,7 +445,7 @@ namespace NINA.ViewModel {
             }
         }
 
-        private short _snapGain = -1;
+        private int _snapGain = -1;
         private ICameraMediator cameraMediator;
         private IImagingMediator imagingMediator;
         private ITelescopeMediator telescopeMediator;
@@ -457,7 +457,7 @@ namespace NINA.ViewModel {
         private RotatorInfo rotatorInfo;
         private WeatherDataInfo weatherDataInfo;
 
-        public short SnapGain {
+        public int SnapGain {
             get {
                 return _snapGain;
             }
@@ -481,13 +481,9 @@ namespace NINA.ViewModel {
 
                     var renderedImage = await CaptureAndPrepareImage(seq, new PrepareImageParameters(), _captureImageToken.Token, progress);
                     if (SnapSave) {
-                        var path = await renderedImage.RawImageData.SaveToDisk(
-                            profileService.ActiveProfile.ImageFileSettings.FilePath,
-                            profileService.ActiveProfile.ImageFileSettings.FilePattern,
-                            profileService.ActiveProfile.ImageFileSettings.FileType,
-                            _captureImageToken.Token
-                        );
+                        var path = await renderedImage.RawImageData.SaveToDisk(new FileSaveInfo(profileService), _captureImageToken.Token);
                         var imageStatistics = await renderedImage.RawImageData.Statistics.Task;
+
                         imagingMediator.OnImageSaved(
                             new ImageSavedEventArgs() {
                                 PathToImage = new Uri(path),

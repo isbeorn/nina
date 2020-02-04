@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -107,24 +107,6 @@ namespace NINA.ViewModel.Equipment.Guider {
             }
         }
 
-        public async Task<bool> PauseGuiding(CancellationToken token) {
-            if (Guider?.Connected == true) {
-                return await Guider?.Pause(true, token);
-            } else {
-                return false;
-            }
-        }
-
-        public async Task<bool> ResumeGuiding(CancellationToken token) {
-            if (Guider?.Connected == true) {
-                await Guider?.Pause(false, token);
-                await Utility.Utility.Wait(TimeSpan.FromSeconds(profileService.ActiveProfile.GuiderSettings.SettleTime), token);
-                return true;
-            } else {
-                return false;
-            }
-        }
-
         public int HistorySize {
             get {
                 return profileService.ActiveProfile.GuiderSettings.PHD2HistorySize;
@@ -202,7 +184,7 @@ namespace NINA.ViewModel.Equipment.Guider {
             }
         }
 
-        public void Disconnect() {
+        public Task Disconnect() {
             if (Guider != null) {
                 Guider.PropertyChanged -= Guider_PropertyChanged;
                 Guider.GuideEvent -= Guider_GuideEvent;
@@ -210,6 +192,7 @@ namespace NINA.ViewModel.Equipment.Guider {
             Guider?.Disconnect();
             GuiderInfo = DeviceInfo.CreateDefaultInstance<GuiderInfo>();
             BroadcastGuiderInfo();
+            return Task.CompletedTask;
         }
 
         private GuiderInfo guiderInfo;
@@ -264,7 +247,7 @@ namespace NINA.ViewModel.Equipment.Guider {
                 applicationStatusMediator.StatusUpdate(new Model.ApplicationStatus() { Status = string.Empty, Source = Title });
                 return true;
             } else {
-                Disconnect();
+                await Disconnect();
                 return false;
             }
         }

@@ -18,7 +18,7 @@
 */
 
 /*
- * Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+ * Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
  * Copyright 2019 Dale Ghent <daleg@elemental.org>
  */
 
@@ -31,6 +31,7 @@ using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.ViewModel.Equipment.Camera;
 using NINA.ViewModel.Equipment.FilterWheel;
+using NINA.ViewModel.Equipment.FlatDevice;
 using NINA.ViewModel.Equipment.Focuser;
 using NINA.ViewModel.Equipment.Guider;
 using NINA.ViewModel.Equipment.Rotator;
@@ -39,6 +40,7 @@ using NINA.ViewModel.Equipment.Telescope;
 using NINA.ViewModel.Equipment.WeatherData;
 using NINA.ViewModel.FlatWizard;
 using NINA.ViewModel.FramingAssistant;
+using NINA.ViewModel.Imaging;
 using System;
 using System.Threading.Tasks;
 using System.Windows;
@@ -64,6 +66,7 @@ namespace NINA.ViewModel {
             focuserMediator = new FocuserMediator();
             filterWheelMediator = new FilterWheelMediator();
             rotatorMediator = new RotatorMediator();
+            flatDeviceMediator = new FlatDeviceMediator();
             guiderMediator = new GuiderMediator();
             imagingMediator = new ImagingMediator();
             applicationStatusMediator = new ApplicationStatusMediator();
@@ -88,10 +91,11 @@ namespace NINA.ViewModel {
                         var telescope = telescopeMediator.Connect();
                         var focuser = focuserMediator.Connect();
                         var rotator = rotatorMediator.Connect();
+                        var flatdevice = flatDeviceMediator.Connect();
                         var guider = guiderMediator.Connect();
                         var weather = weatherDataMediator.Connect();
                         var swtch = switchMediator.Connect();
-                        await Task.WhenAll(cam, fw, telescope, focuser, rotator, guider, weather, swtch);
+                        await Task.WhenAll(cam, fw, telescope, focuser, rotator, flatdevice, guider, weather, swtch);
                         return true;
                     });
                 } else {
@@ -133,6 +137,7 @@ namespace NINA.ViewModel {
         private IFocuserMediator focuserMediator;
         private IFilterWheelMediator filterWheelMediator;
         private RotatorMediator rotatorMediator;
+        private IFlatDeviceMediator flatDeviceMediator;
         private IGuiderMediator guiderMediator;
         private IImagingMediator imagingMediator;
         private IApplicationStatusMediator applicationStatusMediator;
@@ -175,6 +180,7 @@ namespace NINA.ViewModel {
             DockManagerVM.Anchorables.Add(PolarAlignVM);
             DockManagerVM.Anchorables.Add(AutoFocusVM);
             DockManagerVM.Anchorables.Add(FocusTargetsVM);
+            DockManagerVM.Anchorables.Add(ExposureCalculatorVM);
 
             DockManagerVM.AnchorableInfoPanels.Add(ImagingVM.ImageControl);
             DockManagerVM.AnchorableInfoPanels.Add(CameraVM);
@@ -195,6 +201,7 @@ namespace NINA.ViewModel {
             DockManagerVM.AnchorableTools.Add(PolarAlignVM);
             DockManagerVM.AnchorableTools.Add(AutoFocusVM);
             DockManagerVM.AnchorableTools.Add(FocusTargetsVM);
+            DockManagerVM.AnchorableTools.Add(ExposureCalculatorVM);
         }
 
         public void ChangeTab(ApplicationTab tab) {
@@ -255,19 +262,32 @@ namespace NINA.ViewModel {
         }
 
         private void ExitApplication(object obj) {
-            DockManagerVM.SaveAvalonDockLayout();
+            if (SeqVM?.OKtoExit() == false)
+                return;
             if (CameraVM?.Cam?.Connected == true) {
                 var diag = MyMessageBox.MyMessageBox.Show("Camera still connected. Exit anyway?", "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
                 if (diag != MessageBoxResult.OK) {
                     return;
                 }
             }
+
             Application.Current.Shutdown();
         }
 
         private void ClosingApplication(object o) {
-            Notification.Dispose();
+            try {
+                DockManagerVM.SaveAvalonDockLayout();
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
             DisconnectEquipment();
+
+            Notification.Dispose();
+
+            try {
+                Utility.AtikSDK.AtikCameraDll.Shutdown();
+            } catch (Exception) { }
         }
 
         public void DisconnectEquipment() {
@@ -297,6 +317,12 @@ namespace NINA.ViewModel {
 
             try {
                 rotatorMediator.Disconnect();
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
+            try {
+                flatDeviceMediator.Disconnect();
             } catch (Exception ex) {
                 Logger.Error(ex);
             }
@@ -406,6 +432,16 @@ namespace NINA.ViewModel {
             }
         }
 
+        private FlatDeviceVM _flatDeviceVm;
+
+        public FlatDeviceVM FlatDeviceVM {
+            get => _flatDeviceVm ?? (_flatDeviceVm = new FlatDeviceVM(profileService, flatDeviceMediator, applicationStatusMediator, filterWheelMediator));
+            set {
+                _flatDeviceVm = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private WeatherDataVM _weatherDataVM;
 
         public WeatherDataVM WeatherDataVM {
@@ -424,18 +460,17 @@ namespace NINA.ViewModel {
         private FlatWizardVM _flatWizardVM;
 
         public FlatWizardVM FlatWizardVM {
-            get {
-                if (_flatWizardVM == null) {
-                    _flatWizardVM = new FlatWizardVM(profileService,
-                        new ImagingVM(profileService, new ImagingMediator(), cameraMediator, telescopeMediator, filterWheelMediator, focuserMediator, rotatorMediator, guiderMediator, weatherDataMediator, applicationStatusMediator),
-                        cameraMediator,
-                        filterWheelMediator,
-                        telescopeMediator,
-                        new ApplicationResourceDictionary(),
-                        applicationStatusMediator);
-                }
-                return _flatWizardVM;
-            }
+            get =>
+                _flatWizardVM ?? (_flatWizardVM = new FlatWizardVM(profileService,
+                    new ImagingVM(profileService, new ImagingMediator(), cameraMediator, telescopeMediator,
+                        filterWheelMediator, focuserMediator, rotatorMediator, guiderMediator,
+                        weatherDataMediator, applicationStatusMediator),
+                    cameraMediator,
+                    filterWheelMediator,
+                    telescopeMediator,
+                    flatDeviceMediator,
+                    new ApplicationResourceDictionary(),
+                    applicationStatusMediator));
             set {
                 _flatWizardVM = value;
                 RaisePropertyChanged();
@@ -445,12 +480,9 @@ namespace NINA.ViewModel {
         private SequenceVM _seqVM;
 
         public SequenceVM SeqVM {
-            get {
-                if (_seqVM == null) {
-                    _seqVM = new SequenceVM(profileService, cameraMediator, telescopeMediator, focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, weatherDataMediator, imagingMediator, applicationStatusMediator);
-                }
-                return _seqVM;
-            }
+            get => _seqVM ?? (_seqVM = new SequenceVM(profileService, cameraMediator, telescopeMediator,
+                    focuserMediator, filterWheelMediator, guiderMediator, rotatorMediator, flatDeviceMediator,
+                    weatherDataMediator, imagingMediator, applicationStatusMediator));
             set {
                 _seqVM = value;
                 RaisePropertyChanged();
@@ -487,12 +519,12 @@ namespace NINA.ViewModel {
             }
         }
 
-        private PlatesolveVM _platesolveVM;
+        private AnchorablePlateSolverVM _platesolveVM;
 
-        public PlatesolveVM PlatesolveVM {
+        public AnchorablePlateSolverVM PlatesolveVM {
             get {
                 if (_platesolveVM == null) {
-                    _platesolveVM = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
+                    _platesolveVM = new AnchorablePlateSolverVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
                 }
                 return _platesolveVM;
             }
@@ -578,7 +610,7 @@ namespace NINA.ViewModel {
         public FramingAssistantVM FramingAssistantVM {
             get {
                 if (_framingAssistantVM == null) {
-                    _framingAssistantVM = new FramingAssistantVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator);
+                    _framingAssistantVM = new FramingAssistantVM(profileService, cameraMediator, telescopeMediator, applicationStatusMediator);
                 }
                 return _framingAssistantVM;
             }
@@ -599,6 +631,21 @@ namespace NINA.ViewModel {
             }
             set {
                 _skyAtlasVM = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private ExposureCalculatorVM exposureCalculatorVM;
+
+        public ExposureCalculatorVM ExposureCalculatorVM {
+            get {
+                if (exposureCalculatorVM == null) {
+                    exposureCalculatorVM = new ExposureCalculatorVM(profileService, imagingMediator);
+                }
+                return exposureCalculatorVM;
+            }
+            set {
+                exposureCalculatorVM = value;
                 RaisePropertyChanged();
             }
         }

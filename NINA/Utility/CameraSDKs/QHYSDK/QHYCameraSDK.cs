@@ -327,7 +327,7 @@ namespace QHYCCD {
             CAM_VIEW_MODE,
 
             /// <summary>
-            /// Get/Set filter wheel slot number
+            /// Get filter wheel slot count
             /// </summary>
             CONTROL_CFWSLOTSNUM,
 
@@ -428,24 +428,14 @@ namespace QHYCCD {
                     break;
 
                 case LibQHYCCD.QHYCCD_ERROR:
-                    throw new QHYCameraException("QHY SDK returned and error stauts", callingMethod, parameters);
+                    throw new QHYCameraException("QHY SDK returned an error status", callingMethod, parameters);
                 default:
                     throw new ArgumentOutOfRangeException("QHY SDK returned an unknown error");
             }
         }
 
-        public unsafe static uint C_GetQHYCCDFWVersion(IntPtr handle, byte[] verBuf) {
-            fixed (byte* pverBuf = verBuf)
-                return GetQHYCCDFWVersion(handle, pverBuf);
-        }
-
-        public unsafe static uint C_GetQHYCCDSingleFrame(IntPtr handle, ref uint w, ref uint h, ref uint bpp, ref uint channels, byte[] rawArray) {
-            uint ret;
-            fixed (byte* prawArray = rawArray)
-                ret = GetQHYCCDSingleFrame(handle, ref w, ref h, ref bpp, ref channels, prawArray);
-
-            return ret;
-        }
+        [DllImport(DLLNAME, EntryPoint = "BeginQHYCCDLive", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public unsafe static extern uint BeginQHYCCDLive(IntPtr handle);
 
         [DllImport(DLLNAME, EntryPoint = "CancelQHYCCDExposing", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint CancelQHYCCDExposing(IntPtr handle);
@@ -468,8 +458,14 @@ namespace QHYCCD {
         [DllImport(DLLNAME, EntryPoint = "ExpQHYCCDSingleFrame", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint ExpQHYCCDSingleFrame(IntPtr handle);
 
+        [DllImport(DLLNAME, EntryPoint = "IsQHYCCDCFWPlugged", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public unsafe static extern uint IsQHYCCDCFWPlugged(IntPtr handle);
+
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDCFWStatus", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public unsafe static extern uint GetQHYCCDCFWStatus(IntPtr handle, StringBuilder cfwStatus);
+        public unsafe static extern uint GetQHYCCDCFWStatus(IntPtr handle, [In, Out] byte[] cfwStatus);
+
+        [DllImport(DLLNAME, EntryPoint = "GetQHYCCDCameraStatus", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public unsafe static extern uint GetQHYCCDCameraStatus(IntPtr handle, [In, Out] byte status);
 
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDChipInfo", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint GetQHYCCDChipInfo(IntPtr handle, ref double chipw, ref double chiph, ref uint imagew, ref uint imageh, ref double pixelw, ref double pixelh, ref uint bpp);
@@ -477,11 +473,17 @@ namespace QHYCCD {
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDEffectiveArea", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint GetQHYCCDEffectiveArea(IntPtr handle, ref uint startx, ref uint starty, ref uint sizex, ref uint sizey);
 
+        [DllImport(DLLNAME, EntryPoint = "GetQHYCCDExposureRemaining", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public unsafe static extern uint GetQHYCCDExposureRemaining(IntPtr handle);
+
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDFWVersion", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public unsafe static extern uint GetQHYCCDFWVersion(IntPtr handle, byte* verBuf);
+        public unsafe static extern uint GetQHYCCDFWVersion(IntPtr handle, [Out] byte[] verBuf);
 
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDId", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint GetQHYCCDId(uint index, StringBuilder id);
+
+        [DllImport(DLLNAME, EntryPoint = "GetQHYCCDLiveFrame", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public unsafe static extern uint GetQHYCCDLiveFrame(IntPtr handle, ref uint w, ref uint h, ref uint bpp, ref uint channels, [Out] byte[] rawArray);
 
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDMemLength", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint GetQHYCCDMemLength(IntPtr handle);
@@ -498,11 +500,24 @@ namespace QHYCCD {
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDParamMinMaxStep", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint GetQHYCCDParamMinMaxStep(IntPtr handle, CONTROL_ID controlid, ref double min, ref double max, ref double step);
 
+        [DllImport(DLLNAME, EntryPoint = "GetQHYCCDNumberOfReadModes", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public unsafe static extern uint GetQHYCCDNumberOfReadModes(IntPtr handle, ref uint num_modes);
+
+        [DllImport(DLLNAME, EntryPoint = "GetQHYCCDReadModeName", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public unsafe static extern uint GetQHYCCDReadModeName(IntPtr handle, uint mode, StringBuilder mode_name);
+
+        [DllImport(DLLNAME, EntryPoint = "GetQHYCCDReadMode", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public unsafe static extern uint GetQHYCCDReadMode(IntPtr handle, ref uint mode);
+
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDSDKVersion", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint GetQHYCCDSDKVersion(ref uint year, ref uint month, ref uint day, ref uint subday);
 
+        // These two methods are identical on the C side, they just have different pointer types (they're ABI compatible).
         [DllImport(DLLNAME, EntryPoint = "GetQHYCCDSingleFrame", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public unsafe static extern uint GetQHYCCDSingleFrame(IntPtr handle, ref uint w, ref uint h, ref uint bpp, ref uint channels, byte* rawArray);
+        public unsafe static extern uint GetQHYCCDSingleFrame(IntPtr handle, ref uint w, ref uint h, ref uint bpp, ref uint channels, [Out] byte[] rawArray);
+
+        [DllImport(DLLNAME, EntryPoint = "GetQHYCCDSingleFrame", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public unsafe static extern uint GetQHYCCDSingleFrame(IntPtr handle, ref uint w, ref uint h, ref uint bpp, ref uint channels, [Out] ushort[] rawArray);
 
         public static string GetSDKFormattedVersion() {
             uint year = 0, month = 0, day = 0, subday = 0;
@@ -561,6 +576,9 @@ namespace QHYCCD {
         [DllImport(DLLNAME, EntryPoint = "ReleaseQHYCCDResource", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint ReleaseQHYCCDResource();
 
+        [DllImport(DLLNAME, EntryPoint = "StopQHYCCDLive", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public unsafe static extern uint StopQHYCCDLive(IntPtr handle);
+
         [DllImport(DLLNAME, EntryPoint = "ScanQHYCCD", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint ScanQHYCCD();
 
@@ -581,6 +599,9 @@ namespace QHYCCD {
 
         [DllImport(DLLNAME, EntryPoint = "SetQHYCCDParam", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint SetQHYCCDParam(IntPtr handle, CONTROL_ID controlid, double value);
+
+        [DllImport(DLLNAME, EntryPoint = "SetQHYCCDReadMode", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public unsafe static extern uint SetQHYCCDReadMode(IntPtr handle, uint mode);
 
         [DllImport(DLLNAME, EntryPoint = "SetQHYCCDResolution", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public unsafe static extern uint SetQHYCCDResolution(IntPtr handle, uint startx, uint starty, uint sizex, uint sizey);
@@ -646,9 +667,19 @@ namespace QHYCCD {
             public double CoolerTargetTemp;
 
             /// <summary>
-            /// Curren camera bin mode
+            /// Current camera bin mode
             /// </summary>
             public short CurBin;
+
+            /// <summary>
+            /// The currently active sensor array infomation
+            /// </summary>
+            public QHYCCD_SENSOR_AREA CurImage;
+
+            /// <summary>
+            /// The sensor's claimed Effective Area
+            /// </summary>
+            public QHYCCD_SENSOR_AREA EffectiveArea;
 
             /// <summary>
             /// Maximum shutter speed
@@ -674,12 +705,12 @@ namespace QHYCCD {
             /// <summary>
             /// Maximum sensor gain
             /// </summary>
-            public short GainMax;
+            public int GainMax;
 
             /// <summary>
             /// Minimum sensor gain
             /// </summary>
-            public short GainMin;
+            public int GainMin;
 
             /// <summary>
             /// Minimum sensor gain increment
@@ -713,6 +744,11 @@ namespace QHYCCD {
             public bool HasOffset;
 
             /// <summary>
+            /// Sensor has an overscan area?
+            /// </summary>
+            public bool HasOverscan;
+
+            /// <summary>
             /// Camera has mechanical shutter?
             /// </summary>
             public bool HasShutter;
@@ -726,6 +762,11 @@ namespace QHYCCD {
             /// The camera's model name, including unique identifier
             /// </summary>
             public StringBuilder Id;
+
+            /// <summary>
+            /// Image array size (bytes)
+            /// </summary>
+            public uint ImageSize;
 
             /// <summary>
             /// Maximum image width (pixels)
@@ -784,6 +825,11 @@ namespace QHYCCD {
             public double PixelY;
 
             /// <summary>
+            /// List of readout mode names
+            /// </summary>
+            public List<string> ReadoutModes;
+
+            /// <summary>
             /// List of support bin modes
             /// </summary>
             public List<int> SupportedBins;
@@ -803,6 +849,58 @@ namespace QHYCCD {
             /// </summary>
             public double USBStep;
         };
+
+        /// <summary>
+        /// Information about the sensor's resolution
+        /// </summary>
+        public struct QHYCCD_SENSOR_AREA {
+
+            /// <summary>
+            /// Origin pixel X
+            /// </summary>
+            public uint StartX;
+
+            /// <summary>
+            /// Origin pixel Y
+            /// </summary>
+            public uint StartY;
+
+            /// <summary>
+            /// Array size in pixels (X axis)
+            /// </summary>
+            public uint SizeX;
+
+            /// <summary>
+            /// Array size in pixels (Y axis)
+            /// </summary>
+            public uint SizeY;
+        }
+
+        /// <summary>
+        /// Structure for keeping filter wheel instance information
+        /// </summary>
+        public struct QHYCCD_FILTER_WHEEL_INFO {
+
+            /// <summary>
+            /// The filter wheel's unique name
+            /// </summary>
+            public StringBuilder Id;
+
+            /// <summary>
+            /// The filter wheel's full name, including camera model name
+            /// </summary>
+            public string Name;
+
+            /// <summary>
+            /// The number of postions the filter wheel has
+            /// </summary>
+            public uint Positions;
+
+            /// <summary>
+            /// The current position the filter wheel is at
+            /// </summary>
+            public short Position;
+        }
 
         public class QHYCameraException : Exception {
 

@@ -18,7 +18,7 @@
 */
 
 /*
- * Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+ * Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
  * Copyright 2019 Dale Ghent <daleg@elemental.org>
  */
 
@@ -34,9 +34,12 @@ using NINA.Model.MyWeatherData;
 using NINA.Profile;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace NINA.Utility {
+
     internal class ASCOMInteraction {
+
         public static List<ICamera> GetCameras(IProfileService profileService) {
             var l = new List<ICamera>();
             using (var ascomDevices = new ASCOM.Utilities.Profile()) {
@@ -146,6 +149,10 @@ namespace NINA.Utility {
             using (var util = new ASCOM.Utilities.Util()) {
                 return $"Version {util.PlatformVersion}";
             }
+        }
+
+        public static void LogComplianceIssue([CallerMemberName]string callerMember = "") {
+            Logger.Error($"ASCOM {callerMember} threw a PropertyNotImplementedException. This is a driver compliance issue and should be fixed by the driver vendor.");
         }
     }
 }

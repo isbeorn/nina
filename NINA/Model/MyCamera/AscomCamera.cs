@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -244,10 +244,13 @@ namespace NINA.Model.MyCamera {
         public bool CanFastReadout {
             get {
                 if (Connected) {
-                    return _camera.CanFastReadout;
-                } else {
-                    return false;
+                    try {
+                        return _camera.CanFastReadout;
+                    } catch (PropertyNotImplementedException) {
+                        ASCOMInteraction.LogComplianceIssue($"{nameof(CanFastReadout)} GET");
+                    }
                 }
+                return false;
             }
         }
 
@@ -488,13 +491,21 @@ namespace NINA.Model.MyCamera {
             get {
                 bool val = false;
                 if (Connected && CanFastReadout) {
-                    val = _camera.FastReadout;
+                    try {
+                        val = _camera.FastReadout;
+                    } catch (PropertyNotImplementedException) {
+                        ASCOMInteraction.LogComplianceIssue($"{nameof(FastReadout)} GET");
+                    }
                 }
                 return val;
             }
             set {
                 if (Connected && CanFastReadout) {
-                    _camera.FastReadout = value;
+                    try {
+                        _camera.FastReadout = value;
+                    } catch (PropertyNotImplementedException) {
+                        ASCOMInteraction.LogComplianceIssue($"{nameof(FastReadout)} SET");
+                    }
                 }
             }
         }
@@ -533,18 +544,19 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public short Gain {
+        public int Gain {
             get {
-                short val = -1;
+                int val = -1;
                 if (Connected && CanGetGain) {
                     try {
                         if (Gains.Count > 0) {
-                            val = (short)Gains[_camera.Gain];
+                            val = (int)Gains[_camera.Gain];
                         } else {
                             val = _camera.Gain;
                         }
                     } catch (PropertyNotImplementedException) {
                         CanGetGain = false;
+                        ASCOMInteraction.LogComplianceIssue($"{nameof(Gain)} GET");
                     }
                 }
                 return val;
@@ -555,10 +567,11 @@ namespace NINA.Model.MyCamera {
                         if (Gains.Count > 0) {
                             _camera.Gain = (short)Gains.IndexOf(value);
                         } else {
-                            _camera.Gain = value;
+                            _camera.Gain = (short)value;
                         }
                     } catch (PropertyNotImplementedException) {
                         CanSetGain = false;
+                        ASCOMInteraction.LogComplianceIssue($"{nameof(Gain)} SET");
                     } catch (InvalidValueException ex) {
                         Notification.ShowWarning(ex.Message);
                     } catch (Exception) {
@@ -601,13 +614,15 @@ namespace NINA.Model.MyCamera {
 
         private bool _canGetGainMinMax;
 
-        public short GainMax {
+        public int GainMax {
             get {
-                short val = -1;
+                int val = -1;
                 if (Connected && _canGetGainMinMax) {
                     try {
                         val = _camera.GainMax;
                     } catch (PropertyNotImplementedException) {
+                        _canGetGainMinMax = false;
+                    } catch (ASCOM.InvalidOperationException) {
                         _canGetGainMinMax = false;
                     }
                 }
@@ -615,13 +630,15 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public short GainMin {
+        public int GainMin {
             get {
-                short val = -1;
+                int val = -1;
                 if (Connected && _canGetGainMinMax) {
                     try {
                         val = _camera.GainMin;
                     } catch (PropertyNotImplementedException) {
+                        _canGetGainMinMax = false;
+                    } catch (ASCOM.InvalidOperationException) {
                         _canGetGainMinMax = false;
                     }
                 }
@@ -863,7 +880,12 @@ namespace NINA.Model.MyCamera {
         public short ReadoutMode {
             get {
                 if (Connected) {
-                    return _camera.ReadoutMode;
+                    try {
+                        return _camera.ReadoutMode;
+                    } catch (PropertyNotImplementedException) {
+                        ASCOMInteraction.LogComplianceIssue($"{nameof(ReadoutMode)} GET");
+                    }
+                    return -1;
                 } else {
                     return -1;
                 }
@@ -873,6 +895,8 @@ namespace NINA.Model.MyCamera {
                     _camera.ReadoutMode = value;
                 } catch (InvalidValueException ex) {
                     Notification.ShowError(ex.Message);
+                } catch (PropertyNotImplementedException) {
+                    ASCOMInteraction.LogComplianceIssue($"{nameof(ReadoutMode)} SET");
                 }
             }
         }
@@ -894,6 +918,7 @@ namespace NINA.Model.MyCamera {
                     try {
                         val = _camera.SensorName;
                     } catch (PropertyNotImplementedException) {
+                        ASCOMInteraction.LogComplianceIssue();
                     }
                 }
                 return val;
@@ -1072,9 +1097,9 @@ namespace NINA.Model.MyCamera {
             bool isSnap = sequence.ImageType == CaptureSequence.ImageTypes.SNAPSHOT;
 
             if (CanFastReadout) {
-                _camera.FastReadout = isSnap ? readoutModeForSnapImages != 0 : readoutModeForNormalImages != 0;
+                FastReadout = isSnap ? readoutModeForSnapImages != 0 : readoutModeForNormalImages != 0;
             } else {
-                _camera.ReadoutMode =
+                ReadoutMode =
                     isSnap
                         ? readoutModeForSnapImages
                         : readoutModeForNormalImages;
@@ -1090,7 +1115,7 @@ namespace NINA.Model.MyCamera {
         public void StopExposure() {
             if (CanStopExposure) {
                 try {
-                    StopExposure();
+                    _camera.StopExposure();
                 } catch (Exception e) {
                     Notification.ShowError(e.Message);
                 }

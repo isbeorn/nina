@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -21,7 +21,6 @@
 
 #endregion "copyright"
 
-using NINA.Model.ImageData;
 using NINA.Utility;
 using System.Collections;
 using System.Threading;
@@ -58,7 +57,7 @@ namespace NINA.Model.MyCamera {
         int SubSampleWidth { get; set; }
         int SubSampleHeight { get; set; }
         bool CanShowLiveView { get; }
-        bool LiveViewEnabled { get; set; }
+        bool LiveViewEnabled { get; }
         bool HasBattery { get; }
         int BatteryLevel { get; }
         int BitDepth { get; }
@@ -71,9 +70,9 @@ namespace NINA.Model.MyCamera {
         bool CanSetUSBLimit { get; }
         bool CanGetGain { get; }
         bool CanSetGain { get; }
-        short GainMax { get; }
-        short GainMin { get; }
-        short Gain { get; set; }
+        int GainMax { get; }
+        int GainMin { get; }
+        int Gain { get; set; }
         double ElectronsPerADU { get; }
         ICollection ReadoutModes { get; }
         short ReadoutModeForSnapImages { get; set; }

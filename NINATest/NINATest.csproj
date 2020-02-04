@@ -170,6 +170,10 @@
     <Compile Include="CaptureSequenceTest.cs" />
     <Compile Include="CoordinatesTest.cs" />
     <Compile Include="FITSTest.cs" />
+    <Compile Include="FlatDevice\AlnitakCommandTest.cs" />
+    <Compile Include="FlatDevice\AlnitakResponseTest.cs" />
+    <Compile Include="FlatDevice\FlatDeviceInfoTest.cs" />
+    <Compile Include="FlatDevice\FlatDeviceSdkTest.cs" />
     <Compile Include="FlatWizardExposureTimeFinderServiceTest.cs" />
     <Compile Include="FlatWizardVMTest.cs" />
     <Compile Include="GuideStepsHistoryTest.cs" />
@@ -177,10 +181,44 @@
     <Compile Include="ImageHistoryVMTest.cs" />
     <Compile Include="ImageMetaDataTest.cs" />
     <Compile Include="MeridianFlipVMTest.cs" />
+    <Compile Include="MGEN\Commands\ButtonCommandTest.cs" />
+    <Compile Include="MGEN\Commands\CancelCalibrationCommandTest.cs" />
+    <Compile Include="MGEN\Commands\CommandTestRunner.cs" />
+    <Compile Include="MGEN\Commands\EnterNormalModeCommandTest.cs" />
+    <Compile Include="MGEN\Commands\FirmwareVersionCommandTest.cs" />
+    <Compile Include="MGEN\Commands\GetDitherStateCommandTest.cs" />
+    <Compile Include="MGEN\Commands\GetImagingParameterCommandTest.cs" />
+    <Compile Include="MGEN\Commands\GetLEDStatesCommandTest.cs" />
+    <Compile Include="MGEN\Commands\GetStarDataCommandTest.cs" />
+    <Compile Include="MGEN\Commands\NoOpCommandTest.cs" />
+    <Compile Include="MGEN\Commands\PowerOffCommandTest.cs" />
+    <Compile Include="MGEN\Commands\QueryCalibrationCommandTest.cs" />
+    <Compile Include="MGEN\Commands\QueryCommandTest.cs" />
+    <Compile Include="MGEN\Commands\QueryDeviceTest.cs" />
+    <Compile Include="MGEN\Commands\ReadDisplayCommandTest.cs" />
+    <Compile Include="MGEN\Commands\SetImagingParameterCommandTest.cs" />
+    <Compile Include="MGEN\Commands\SetNewGuidingPositionCommandTest.cs" />
+    <Compile Include="MGEN\Commands\StartCalibrationCommandTest.cs" />
+    <Compile Include="MGEN\Commands\StartCameraCommandTest.cs" />
+    <Compile Include="MGEN\Commands\StartDitherCommandTest.cs" />
+    <Compile Include="MGEN\Commands\StartGuidingCommandTest.cs" />
+    <Compile Include="MGEN\Commands\StartStarSearchCommandTest.cs" />
+    <Compile Include="MGEN\Commands\StopCameraCommandTest.cs" />
+    <Compile Include="MGEN\Commands\StopGuidingCommandTest.cs" />
+    <Compile Include="PlateSolving\CaptureSolverTest.cs" />
+    <Compile Include="PlateSolving\CenterSolverTest.cs" />
+    <Compile Include="PlateSolving\ImageSolverTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RMSTest.cs" />
     <Compile Include="SequenceVMTest.cs" />
+    <Compile Include="SerialCommunication\SerialSdkTest.cs" />
+    <Compile Include="SerialCommunication\ResponseCacheTest.cs" />
     <Compile Include="SynchronizedPHD2GuiderServiceTest.cs" />
+    <Compile Include="FlatDevice\AlnitakFlatDeviceTest.cs" />
+    <Compile Include="FlatDevice\AlnitakFlatDeviceConnectTest.cs" />
+    <Compile Include="FlatDevice\FlatDeviceVMTest.cs" />
+    <Compile Include="FlatDevice\AlnitakFlipFlatSimulatorTest.cs" />
+    <Compile Include="FlatDevice\FlatDeviceSettingsTest.cs" />
     <Compile Include="XISFTest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -189,11 +227,16 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NINA.MGEN\NINA.MGEN.csproj">
+      <Project>{d897bffd-7777-44f5-9100-1ff0db3b032f}</Project>
+      <Name>NINA.MGEN</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NINA\NINA.csproj">
       <Project>{7dec1b46-9701-4e49-90c1-f4427845669e}</Project>
       <Name>NINA</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

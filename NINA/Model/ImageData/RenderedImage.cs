@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -27,7 +27,10 @@ using NINA.Utility.ImageAnalysis;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace NINA.Model.ImageData {
 
@@ -77,5 +80,17 @@ namespace NINA.Model.ImageData {
             this.RawImageData.StarDetectionAnalysis.DetectedStars = starDetection.DetectedStars;
             return new RenderedImage(image: image, rawImageData: this.RawImageData);
         }
+
+        public async Task<BitmapSource> GetThumbnail() {
+            BitmapSource image = null;
+            await _dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => {
+                var factor = 300 / this.Image.Width;
+                image = new WriteableBitmap(new TransformedBitmap(this.Image, new ScaleTransform(factor, factor)));
+                image.Freeze();
+            }));
+            return image;
+        }
+
+        private static Dispatcher _dispatcher = Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher;
     }
 }

@@ -1,8 +1,6 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
-
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
     N.I.N.A. is free software: you can redistribute it and/or modify
@@ -19,6 +17,11 @@
     along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+ * Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
+ * Copyright 2019 Dale Ghent <daleg@elemental.org>
+ */
+
 #endregion "copyright"
 
 using NINA.Utility.Enum;
@@ -29,5 +32,9 @@ namespace NINA.Profile {
         string FilePath { get; set; }
         string FilePattern { get; set; }
         FileTypeEnum FileType { get; set; }
+        TIFFCompressionTypeEnum TIFFCompressionType { get; set; }
+        XISFCompressionTypeEnum XISFCompressionType { get; set; }
+        XISFChecksumTypeEnum XISFChecksumType { get; set; }
+        bool XISFByteShuffling { get; set; }
     }
 }

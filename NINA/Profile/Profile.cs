@@ -18,7 +18,7 @@
 */
 
 /*
- *  Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+ *  Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
  *  Copyright 2019 Dale Ghent <daleg@elemental.org>
  */
 
@@ -50,12 +50,14 @@ namespace NINA.Profile {
     [KnownType(typeof(PlateSolveSettings))]
     [KnownType(typeof(PolarAlignmentSettings))]
     [KnownType(typeof(RotatorSettings))]
+    [KnownType(typeof(FlatDeviceSettings))]
     [KnownType(typeof(SequenceSettings))]
     [KnownType(typeof(TelescopeSettings))]
     [KnownType(typeof(WeatherDataSettings))]
     [KnownType(typeof(FlatWizardSettings))]
     [KnownType(typeof(PlanetariumSettings))]
     [KnownType(typeof(SwitchSettings))]
+    [KnownType(typeof(ExposureCalculatorSettings))]
     public class Profile : BaseINPC, IProfile {
 
         /// <summary>
@@ -102,10 +104,12 @@ namespace NINA.Profile {
             PlateSolveSettings = new PlateSolveSettings();
             PolarAlignmentSettings = new PolarAlignmentSettings();
             RotatorSettings = new RotatorSettings();
+            FlatDeviceSettings = new FlatDeviceSettings();
             SequenceSettings = new SequenceSettings();
             SwitchSettings = new SwitchSettings();
             TelescopeSettings = new TelescopeSettings();
             WeatherDataSettings = new WeatherDataSettings();
+            ExposureCalculatorSettings = new ExposureCalculatorSettings();
         }
 
         /// <summary>
@@ -128,10 +132,12 @@ namespace NINA.Profile {
             PlateSolveSettings.PropertyChanged += SettingsChanged;
             PolarAlignmentSettings.PropertyChanged += SettingsChanged;
             RotatorSettings.PropertyChanged += SettingsChanged;
+            FlatDeviceSettings.PropertyChanged += SettingsChanged;
             SequenceSettings.PropertyChanged += SettingsChanged;
             SwitchSettings.PropertyChanged += SettingsChanged;
             TelescopeSettings.PropertyChanged += SettingsChanged;
             WeatherDataSettings.PropertyChanged += SettingsChanged;
+            ExposureCalculatorSettings.PropertyChanged += SettingsChanged;
         }
 
         /// <summary>
@@ -234,6 +240,9 @@ namespace NINA.Profile {
         public IRotatorSettings RotatorSettings { get; set; }
 
         [DataMember]
+        public IFlatDeviceSettings FlatDeviceSettings { get; set; }
+
+        [DataMember]
         public ISequenceSettings SequenceSettings { get; set; }
 
         [DataMember]
@@ -250,6 +259,9 @@ namespace NINA.Profile {
 
         [DataMember]
         public IPlanetariumSettings PlanetariumSettings { get; set; }
+
+        [DataMember]
+        public IExposureCalculatorSettings ExposureCalculatorSettings { get; set; }
 
         /// <summary>
         /// Deep Clone an existing profile, create a new Id and append "Copy" to the name

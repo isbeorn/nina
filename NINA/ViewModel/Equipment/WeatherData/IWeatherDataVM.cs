@@ -27,6 +27,6 @@ using NINA.Model.MyWeatherData;
 
 namespace NINA.ViewModel.Equipment.WeatherData {
 
-    internal interface IWeatherDataVM : IDeviceVM<WeatherDataInfo> {
+    public interface IWeatherDataVM : IDeviceVM<WeatherDataInfo> {
     }
 }

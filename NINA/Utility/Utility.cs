@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using NINA.Model;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -96,13 +97,31 @@ namespace NINA.Utility {
             return DateTime.Now.Subtract(now);
         }
 
-        public static async Task<TimeSpan> Wait(TimeSpan t, CancellationToken token = new CancellationToken()) {
+        public static async Task<TimeSpan> Wait(TimeSpan t, CancellationToken token = new CancellationToken(), IProgress<ApplicationStatus> progress = default) {
             TimeSpan elapsed = new TimeSpan(0);
             do {
                 var delta = await Delay(100, token);
                 elapsed += delta;
+                progress?.Report(new ApplicationStatus() { MaxProgress = (int)t.TotalSeconds, Progress = (int)elapsed.TotalSeconds, Status = Locale.Loc.Instance["LblWaiting"], ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue });
             } while (elapsed < t);
             return elapsed;
+        }
+
+        public static void DirectoryCleanup(string directory, TimeSpan deleteFromNow) {
+            try {
+                foreach (var file in Directory.GetFiles(directory)) {
+                    FileInfo fi = new FileInfo(file);
+                    if (fi.LastWriteTime < DateTime.Now.Add(deleteFromNow)) {
+                        try {
+                            fi.Delete();
+                        } catch (Exception ex) {
+                            Logger.Error(ex);
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
         }
     }
 }

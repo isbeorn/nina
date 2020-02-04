@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -26,6 +26,7 @@ using NINA.Model;
 using NINA.Model.MyFilterWheel;
 using NINA.Utility;
 using NINA.Profile;
+using QHYCCD;
 using System;
 using System.Collections.Generic;
 
@@ -45,7 +46,7 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
              * FLI
              */
             try {
-                Logger.Trace("Adding FLI Filter Wheels");
+                Logger.Trace("Adding FLI filter wheels");
                 List<string> fwheels = FLIFilterWheels.GetFilterWheels();
 
                 if (fwheels.Count > 0) {
@@ -54,6 +55,27 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
 
                         if (!string.IsNullOrEmpty(fwheel.Name)) {
                             Logger.Debug($"Adding FLI Filter Wheel {fwheel.Id} (as {fwheel.Name})");
+                            Devices.Add(fwheel);
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+
+            /*
+             * QHY - Integrated or 4-pin connected filter wheels only
+             */
+            try {
+                Logger.Trace("Adding QHY integrated/4-pin filter wheels");
+                List<string> fwheels = QHYFilterWheels.GetFilterWheels();
+
+                if (fwheels.Count > 0) {
+                    foreach (var entry in fwheels) {
+                        var fwheel = new QHYFilterWheel(entry, profileService);
+
+                        if (!string.IsNullOrEmpty(fwheel.Name)) {
+                            Logger.Debug($"Adding QHY Filter Wheel {fwheel.Id} (as {fwheel.Name})");
                             Devices.Add(fwheel);
                         }
                     }

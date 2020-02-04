@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -112,14 +112,26 @@ namespace NINA.Utility.ImageAnalysis {
             var normalizedMAD = NormalizeUShort(statistics.MedianAbsoluteDeviation);
 
             var scaleFactor = 1.4826; // see https://en.wikipedia.org/wiki/Median_absolute_deviation
-            var zero = normalizedMedian + shadowsClipping * normalizedMAD * scaleFactor;
 
-            var mtf = MidtonesTransferFunction(targetHistogramMedianPercent, normalizedMedian - zero);
+            double shadows = 0d;
+            double midtones = 0.5d;
+            double highlights = 1d;
+
+            //Assume the image is inverted or overexposed when median is higher than half of the possible value
+            if (normalizedMedian > 0.5) {
+                shadows = 0d;
+                highlights = normalizedMedian - shadowsClipping * normalizedMAD * scaleFactor;
+                midtones = MidtonesTransferFunction(highlights - normalizedMedian, targetHistogramMedianPercent);
+            } else {
+                shadows = normalizedMedian + shadowsClipping * normalizedMAD * scaleFactor;
+                midtones = MidtonesTransferFunction(targetHistogramMedianPercent, normalizedMedian - shadows);
+                highlights = 1;
+            }
 
             for (int i = 0; i < map.Length; i++) {
                 double value = NormalizeUShort(i);
 
-                map[i] = DenormalizeUShort(MidtonesTransferFunction(mtf, value - zero));
+                map[i] = DenormalizeUShort(MidtonesTransferFunction(midtones, 1 - highlights + value - shadows));
             }
 
             return map;

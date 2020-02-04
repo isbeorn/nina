@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -53,14 +53,6 @@ namespace NINA.Utility.Mediator {
 
         public Task<bool> StopGuiding(CancellationToken token) {
             return handler.StopGuiding(token);
-        }
-
-        public Task<bool> ResumeGuiding(CancellationToken token) {
-            return handler.ResumeGuiding(token);
-        }
-
-        public Task<bool> PauseGuiding(CancellationToken token) {
-            return handler.PauseGuiding(token);
         }
 
         public Task<bool> AutoSelectGuideStar(CancellationToken token) {

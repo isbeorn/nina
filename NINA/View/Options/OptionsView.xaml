@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -318,7 +318,10 @@
                             </StackPanel>
                         </StackPanel>
                     </GroupBox>
-                    <GroupBox Grid.Row="1" Header="{ns:Loc LblCurrentUIColorSchema}">
+                    <GroupBox
+                        Grid.Row="1"
+                        DataContext="{Binding ActiveProfile.ColorSchemaSettings}"
+                        Header="{ns:Loc LblCurrentUIColorSchema}">
                         <UniformGrid Columns="2">
                             <StackPanel Orientation="Vertical">
 
@@ -330,10 +333,9 @@
                                     DisplayMemberPath="Name"
                                     DockPanel.Dock="Left"
                                     ItemsSource="{Binding ColorSchemas.Items}"
-                                    SelectedValue="{Binding ColorSchemaName}"
-                                    SelectedValuePath="Name" />
+                                    SelectedItem="{Binding ColorSchema}" />
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -342,9 +344,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding PrimaryColor}" />
+                                        SelectedColor="{Binding ColorSchema.PrimaryColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -353,9 +355,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding BorderColor}" />
+                                        SelectedColor="{Binding ColorSchema.BorderColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -364,9 +366,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding SecondaryBackgroundColor}" />
+                                        SelectedColor="{Binding ColorSchema.SecondaryBackgroundColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -375,10 +377,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding ButtonBackgroundColor}" />
+                                        SelectedColor="{Binding ColorSchema.ButtonBackgroundColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -387,10 +389,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding ButtonForegroundColor}" />
+                                        SelectedColor="{Binding ColorSchema.ButtonForegroundColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -399,10 +401,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding NotificationWarningColor}" />
+                                        SelectedColor="{Binding ColorSchema.NotificationWarningColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -411,7 +413,7 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding NotificationWarningTextColor}" />
+                                        SelectedColor="{Binding ColorSchema.NotificationWarningTextColor}" />
                                 </StackPanel>
                             </StackPanel>
                             <StackPanel Orientation="Vertical">
@@ -420,7 +422,7 @@
                                     Height="30"
                                     Margin="5,5,0,0"
                                     HorizontalAlignment="Left"
-                                    Command="{Binding CopyToCustomSchemaCommand}"
+                                    Command="{Binding Source={StaticResource AppVM}, Path=OptionsVM.CopyToCustomSchemaCommand}"
                                     DockPanel.Dock="Right">
                                     <Path
                                         Margin="5"
@@ -428,7 +430,7 @@
                                         Fill="{StaticResource ButtonForegroundBrush}"
                                         Stretch="Uniform" />
                                 </Button>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -437,9 +439,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding SecondaryColor}" />
+                                        SelectedColor="{Binding ColorSchema.SecondaryColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -448,9 +450,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding BackgroundColor}" />
+                                        SelectedColor="{Binding ColorSchema.BackgroundColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -459,9 +461,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding TertiaryBackgroundColor}" />
+                                        SelectedColor="{Binding ColorSchema.TertiaryBackgroundColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -470,10 +472,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding ButtonBackgroundSelectedColor}" />
+                                        SelectedColor="{Binding ColorSchema.ButtonBackgroundSelectedColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -482,10 +484,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding ButtonForegroundDisabledColor}" />
+                                        SelectedColor="{Binding ColorSchema.ButtonForegroundDisabledColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -494,10 +496,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding NotificationErrorColor}" />
+                                        SelectedColor="{Binding ColorSchema.NotificationErrorColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding ColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -506,7 +508,7 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding NotificationErrorTextColor}" />
+                                        SelectedColor="{Binding ColorSchema.NotificationErrorTextColor}" />
                                 </StackPanel>
                             </StackPanel>
                         </UniformGrid>
@@ -514,6 +516,7 @@
                     <GroupBox
                         Grid.Row="1"
                         Grid.Column="1"
+                        DataContext="{Binding ActiveProfile.ColorSchemaSettings}"
                         Header="{ns:Loc LblAlternativeUIColorSchema}">
                         <UniformGrid Columns="2">
                             <StackPanel Orientation="Vertical">
@@ -522,9 +525,8 @@
                                     Margin="0,5,0,0"
                                     DisplayMemberPath="Name"
                                     ItemsSource="{Binding ColorSchemas.Items}"
-                                    SelectedValue="{Binding AlternativeColorSchemaName}"
-                                    SelectedValuePath="Name" />
-                                <StackPanel Orientation="Horizontal">
+                                    SelectedItem="{Binding AltColorSchema}" />
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -533,9 +535,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltPrimaryColor}" />
+                                        SelectedColor="{Binding AltColorSchema.PrimaryColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -544,9 +546,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltBorderColor}" />
+                                        SelectedColor="{Binding AltColorSchema.BorderColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -555,9 +557,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltSecondaryBackgroundColor}" />
+                                        SelectedColor="{Binding AltColorSchema.SecondaryBackgroundColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -566,10 +568,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltButtonBackgroundColor}" />
+                                        SelectedColor="{Binding AltColorSchema.ButtonBackgroundColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -578,10 +580,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltButtonForegroundColor}" />
+                                        SelectedColor="{Binding AltColorSchema.ButtonForegroundColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -590,10 +592,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltNotificationWarningColor}" />
+                                        SelectedColor="{Binding AltColorSchema.NotificationWarningColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -602,7 +604,7 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltNotificationWarningTextColor}" />
+                                        SelectedColor="{Binding AltColorSchema.NotificationWarningTextColor}" />
                                 </StackPanel>
                             </StackPanel>
                             <StackPanel Orientation="Vertical">
@@ -611,14 +613,14 @@
                                     Height="30"
                                     Margin="5,5,0,0"
                                     HorizontalAlignment="Left"
-                                    Command="{Binding CopyToAlternativeCustomSchemaCommand}">
+                                    Command="{Binding Source={StaticResource AppVM}, Path=OptionsVM.CopyToAlternativeCustomSchemaCommand}">
                                     <Path
                                         Margin="5"
                                         Data="{StaticResource CopySVG}"
                                         Fill="{StaticResource ButtonForegroundBrush}"
                                         Stretch="Uniform" />
                                 </Button>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -627,9 +629,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltSecondaryColor}" />
+                                        SelectedColor="{Binding AltColorSchema.SecondaryColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -638,9 +640,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltBackgroundColor}" />
+                                        SelectedColor="{Binding AltColorSchema.BackgroundColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -649,9 +651,9 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltTertiaryBackgroundColor}" />
+                                        SelectedColor="{Binding AltColorSchema.TertiaryBackgroundColor}" />
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -660,10 +662,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltButtonBackgroundSelectedColor}" />
+                                        SelectedColor="{Binding AltColorSchema.ButtonBackgroundSelectedColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -672,10 +674,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltButtonForegroundDisabledColor}" />
+                                        SelectedColor="{Binding AltColorSchema.ButtonForegroundDisabledColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -684,10 +686,10 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltNotificationErrorColor}" />
+                                        SelectedColor="{Binding AltColorSchema.NotificationErrorColor}" />
                                 </StackPanel>
 
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel IsEnabled="{Binding AltColorSchema.IsEditable}" Orientation="Horizontal">
                                     <TextBlock
                                         Width="170"
                                         VerticalAlignment="Center"
@@ -696,7 +698,7 @@
                                         Width="80"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Center"
-                                        SelectedColor="{Binding AltNotificationErrorTextColor}" />
+                                        SelectedColor="{Binding AltColorSchema.NotificationErrorTextColor}" />
                                 </StackPanel>
                             </StackPanel>
                         </UniformGrid>
@@ -808,12 +810,6 @@
                 <TextBlock Style="{StaticResource TabItemTextBox}" Text="{ns:Loc LblPlateSolving}" />
             </TabItem.Header>
             <local:OptionsPlateSolverView DataContext="{Binding}" />
-        </TabItem>
-        <TabItem>
-            <TabItem.Header>
-                <TextBlock Style="{StaticResource TabItemTextBox}" Text="{ns:Loc LblPlanetarium}" />
-            </TabItem.Header>
-            <local:OptionsPlanetariumView DataContext="{Binding}" />
         </TabItem>
     </TabControl>
 </UserControl>

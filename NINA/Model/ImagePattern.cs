@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -48,6 +48,9 @@ namespace NINA.Model {
             patterns.Add(p.Key, p);
 
             p = new ImagePattern(ImagePatternKeys.Date, Locale.Loc.Instance["LblDateFormatDescription"]);
+            patterns.Add(p.Key, p);
+
+            p = new ImagePattern(ImagePatternKeys.DateMinus12, Locale.Loc.Instance["LblDateFormatDescription2"]);
             patterns.Add(p.Key, p);
 
             p = new ImagePattern(ImagePatternKeys.DateTime, Locale.Loc.Instance["LblDateTimeFormatDescription"]);
@@ -97,8 +100,8 @@ namespace NINA.Model {
         }
 
         public bool Set(string key, string value) {
-            if (patterns.ContainsKey(key)) {
-                patterns[key].Value = value;
+            if (patterns.ContainsKey(key) && value != null) {
+                patterns[key].Value = value.Trim();
                 return true;
             }
 
@@ -127,8 +130,23 @@ namespace NINA.Model {
             foreach (ImagePattern p in patterns.Values) {
                 s = s.Replace(p.Key, p.Value);
             }
-            s = Path.Combine(s.Split(Utility.Utility.PATHSEPARATORS, StringSplitOptions.RemoveEmptyEntries));
-            return s;
+            var path = s.Split(Utility.Utility.PATHSEPARATORS, StringSplitOptions.RemoveEmptyEntries);
+
+            var imageFileString = string.Empty;
+            for (int i = 0; i < path.Length; i++) {
+                imageFileString = Path.Combine(imageFileString, ReplaceInvalidChars(path[i]));
+            }
+
+            return imageFileString;
+        }
+
+        /// <summary>
+        /// Replace invalid characters from filename
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        private string ReplaceInvalidChars(string filename) {
+            return string.Join("_", filename.Split(Path.GetInvalidFileNameChars()));
         }
 
         internal static ImagePatterns CreateExample() {
@@ -136,6 +154,7 @@ namespace NINA.Model {
 
             p.Set(ImagePatternKeys.Filter, "L");
             p.Set(ImagePatternKeys.Date, "2016-01-01");
+            p.Set(ImagePatternKeys.DateMinus12, "2015-12-31");
             p.Set(ImagePatternKeys.DateTime, "2016-01-01_12-00-00");
             p.Set(ImagePatternKeys.Time, "12-00-00");
             p.Set(ImagePatternKeys.FrameNr, "0001");
@@ -163,6 +182,7 @@ namespace NINA.Model {
 
         public static readonly string Filter = "$$FILTER$$";
         public static readonly string Date = "$$DATE$$";
+        public static readonly string DateMinus12 = "$$DATEMINUS12$$";
         public static readonly string DateTime = "$$DATETIME$$";
         public static readonly string Time = "$$TIME$$";
         public static readonly string FrameNr = "$$FRAMENR$$";

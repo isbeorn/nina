@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -48,9 +48,9 @@ namespace NINA.Model.MyCamera {
             set { temperature = value; RaisePropertyChanged(); }
         }
 
-        private short gain;
+        private int gain;
 
-        public short Gain {
+        public int Gain {
             get { return gain; }
             set { gain = value; RaisePropertyChanged(); }
         }

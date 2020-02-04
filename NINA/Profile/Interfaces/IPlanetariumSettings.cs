@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -28,16 +28,13 @@ namespace NINA.Profile {
     public interface IPlanetariumSettings : ISettings {
         string StellariumHost { get; set; }
         int StellariumPort { get; set; }
-        int StellariumTimeout { get; set; }
         string CdCHost { get; set; }
         int CdCPort { get; set; }
-        int CdCTimeout { get; set; }
         string TSXHost { get; set; }
         int TSXPort { get; set; }
-        int TSXTimeout { get; set; }
+        bool TSXUseSelectedObject { get; set; }
         string HNSKYHost { get; set; }
         int HNSKYPort { get; set; }
-        int HNSKYTimeout { get; set; }
         PlanetariumEnum PreferredPlanetarium { get; set; }
     }
 }

@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -641,7 +641,10 @@
                                                 <TextBlock
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center"
-                                                    Text="{Binding Id}" />
+                                                    FontSize="{Binding Path=FramingAssistantVM.FontSize, Source={StaticResource AppVM}}"
+                                                    FontStretch="ExtraExpanded"
+                                                    Text="{Binding Id}"
+                                                    Visibility="{Binding Id, Converter={StaticResource ZeroToVisibilityConverter}}" />
                                                 <Grid.Margin>
                                                     <MultiBinding Converter="{StaticResource MultiMarginConverter}">
 

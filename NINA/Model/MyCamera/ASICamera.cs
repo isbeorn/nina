@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -428,16 +428,12 @@ namespace NINA.Model.MyCamera {
                     var width = CaptureAreaInfo.Size.Width;
                     var height = CaptureAreaInfo.Size.Height;
 
-                    int size = width * height * 2;
-                    var pointer = Marshal.AllocHGlobal(size);
-                    int buffersize = (width * height * 16 + 7) / 8;
-                    if (!GetExposureData(pointer, buffersize)) {
+                    int size = width * height;
+                    ushort[] arr = new ushort[size];
+                    int buffersize = width * height * 2;
+                    if (!GetExposureData(arr, buffersize)) {
                         throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
                     }
-
-                    var cameraDataToManaged = new CameraDataToManaged(pointer, width, height, 16);
-                    var arr = cameraDataToManaged.GetData();
-                    Marshal.FreeHGlobal(pointer);
 
                     return new ImageArrayExposureData(
                         input: arr,
@@ -455,7 +451,7 @@ namespace NINA.Model.MyCamera {
             });
         }
 
-        private bool GetExposureData(IntPtr buffer, int bufferSize) {
+        private bool GetExposureData(ushort[] buffer, int bufferSize) {
             return ASICameraDll.GetDataAfterExp(_cameraId, buffer, bufferSize);
         }
 
@@ -506,9 +502,9 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public short Gain {
+        public int Gain {
             get {
-                return (short)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN);
+                return GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN);
             }
             set {
                 if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN, value)) {
@@ -517,15 +513,15 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public short GainMax {
+        public int GainMax {
             get {
-                return (short)GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN);
+                return GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN);
             }
         }
 
-        public short GainMin {
+        public int GainMin {
             get {
-                return (short)GetControlMinValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN);
+                return GetControlMinValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN);
             }
         }
 
@@ -706,17 +702,13 @@ namespace NINA.Model.MyCamera {
                 var width = CaptureAreaInfo.Size.Width;
                 var height = CaptureAreaInfo.Size.Height;
 
-                int size = width * height * 2;
+                int size = width * height;
 
-                var pointer = Marshal.AllocHGlobal(size);
-                int buffersize = (width * height * 16 + 7) / 8;
-                if (!GetVideoData(pointer, buffersize)) {
+                ushort[] arr = new ushort[size];
+                int buffersize = width * height * 2;
+                if (!GetVideoData(arr, buffersize)) {
                     throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
                 }
-
-                var cameraDataToManaged = new CameraDataToManaged(pointer, width, height, 16);
-                var arr = cameraDataToManaged.GetData();
-                Marshal.FreeHGlobal(pointer);
 
                 return new ImageArrayExposureData(
                     input: arr,
@@ -728,7 +720,7 @@ namespace NINA.Model.MyCamera {
             });
         }
 
-        private bool GetVideoData(IntPtr buffer, int bufferSize) {
+        private bool GetVideoData(ushort[] buffer, int bufferSize) {
             return ASICameraDll.GetVideoData(_cameraId, buffer, bufferSize, -1);
         }
 

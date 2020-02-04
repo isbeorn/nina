@@ -2,11 +2,9 @@
 using NINA.Utility;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Profile;
-using NINA.ViewModel.Interfaces;
 using System.Linq;
 
 namespace NINA.ViewModel.Equipment.Guider {
-
     public class GuiderChooserVM : BaseVM, IGuiderChooserVM {
         private readonly ICameraMediator cameraMediator;
         private ITelescopeMediator telescopeMediator;
@@ -31,10 +29,11 @@ namespace NINA.ViewModel.Equipment.Guider {
         }
 
         public void GetEquipment() {
+            Guiders.Add(new DummyGuider(profileService));
             Guiders.Add(new PHD2Guider(profileService));
             Guiders.Add(new SynchronizedPHD2Guider(profileService, cameraMediator));
             Guiders.Add(new DirectGuider(profileService, telescopeMediator));
-            //Guiders.Add(new DummyGuider());
+            Guiders.Add(new MGENGuider(profileService));
 
             DetermineSelectedDevice(profileService.ActiveProfile.GuiderSettings.GuiderName);
         }

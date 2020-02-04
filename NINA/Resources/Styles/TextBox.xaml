@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -24,7 +24,7 @@
         </DockPanel>
     </ControlTemplate>
 
-    <Style TargetType="{x:Type TextBox}">
+    <Style x:Key="StandardTextbox" TargetType="{x:Type TextBox}">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
         <Setter Property="CaretBrush" Value="{StaticResource PrimaryBrush}" />
@@ -73,4 +73,5 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    <Style BasedOn="{StaticResource StandardTextbox}" TargetType="{x:Type TextBox}" />
 </ResourceDictionary>

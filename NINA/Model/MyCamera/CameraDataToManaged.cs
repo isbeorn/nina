@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -30,6 +30,7 @@ namespace NINA.Model.MyCamera {
         private IntPtr dataPtr;
         private int width;
         private int height;
+        private int scaling = 0;
 
         private int Size {
             get {
@@ -44,11 +45,15 @@ namespace NINA.Model.MyCamera {
         /// <param name="width">Image dimension width</param>
         /// <param name="height">Image dimension height</param>
         /// <param name="bitDepth">Image data bit depth</param>
-        public CameraDataToManaged(IntPtr dataPtr, int width, int height, int bitDepth) {
+        /// <param name="bitScaling">True: Shift data bits left to scale to 16 bit. False: Pure raw data</param>
+        public CameraDataToManaged(IntPtr dataPtr, int width, int height, int bitDepth, bool bitScaling) {
             this.dataPtr = dataPtr;
             this.width = width;
             this.height = height;
             this.bitDepth = bitDepth;
+            if (bitScaling) {
+                this.scaling = 16 - bitDepth;
+            }
         }
 
         /// <summary>
@@ -81,7 +86,7 @@ namespace NINA.Model.MyCamera {
             unsafe {
                 var sourcePtr = (ushort*)source;
                 for (int i = 0; i < length; ++i) {
-                    destination[i] = *sourcePtr++;
+                    destination[i] = (ushort)((*sourcePtr++) << scaling);
                 }
             }
             return destination;

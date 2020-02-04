@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -22,9 +22,10 @@
 #endregion "copyright"
 
 using EDSDKLib;
+using NINA.Model.ImageData;
+using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.Notification;
-using NINA.Profile;
 using NINA.Utility.RawConverter;
 using System;
 using System.Collections;
@@ -35,7 +36,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using NINA.Model.ImageData;
 
 namespace NINA.Model.MyCamera {
 
@@ -54,56 +54,38 @@ namespace NINA.Model.MyCamera {
 
         private IntPtr _cam;
 
-        public bool HasShutter {
-            get {
-                return true;
-            }
-        }
+        private bool UILocked;
+
+        public bool HasShutter => true;
 
         private bool _connected;
 
         public bool Connected {
-            get {
-                return _connected;
-            }
+            get => _connected;
             set {
                 _connected = value;
                 RaisePropertyChanged();
             }
         }
 
-        public double Temperature {
-            get {
-                return double.NaN;
-            }
-        }
+        public double Temperature => double.NaN;
 
         public double TemperatureSetPoint {
-            get {
-                return double.NaN;
-            }
+            get => double.NaN;
             set {
             }
         }
 
         public short BinX {
-            get {
-                return 1;
-            }
+            get => 1;
             set {
             }
         }
 
-        public bool CanSubSample {
-            get {
-                return false;
-            }
-        }
+        public bool CanSubSample => false;
 
         public short BinY {
-            get {
-                return 1;
-            }
+            get => 1;
             set {
             }
         }
@@ -117,26 +99,16 @@ namespace NINA.Model.MyCamera {
         private string _name;
 
         public string Name {
-            get {
-                return _name;
-            }
+            get => _name;
             set {
                 _name = value;
                 RaisePropertyChanged();
             }
         }
 
-        public string Description {
-            get {
-                return "Canon Camera";
-            }
-        }
+        public string Description => "Canon Camera";
 
-        public string DriverInfo {
-            get {
-                return string.Empty;
-            }
-        }
+        public string DriverInfo => string.Empty;
 
         public string DriverVersion {
             get {
@@ -153,167 +125,79 @@ namespace NINA.Model.MyCamera {
         public bool CanShowLiveView {
             get {
                 if (Connected) {
-                    return (uint)EDSDK.EDS_ERR.OK == EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_Evf_OutputDevice, 0, out uint dummy);
+                    return EDSDK.EDS_ERR_OK == EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_Evf_OutputDevice, 0, out uint dummy);
                 }
                 return false;
             }
         }
 
-        public string SensorName {
-            get {
-                return string.Empty;
-            }
-        }
+        public string SensorName => string.Empty;
 
-        public SensorType SensorType {
-            get {
-                return SensorType.RGGB;
-            }
-        }
+        public SensorType SensorType => SensorType.RGGB;
 
-        public int CameraXSize {
-            get {
-                return -1;
-            }
-        }
+        public int CameraXSize => -1;
 
-        public int CameraYSize {
-            get {
-                return -1;
-            }
-        }
+        public int CameraYSize => -1;
 
-        public double ExposureMin {
-            get {
-                return this.ShutterSpeeds.Aggregate((l, r) => l.Value > r.Value ? l : r).Value;
-            }
-        }
+        public double ExposureMin => this.ShutterSpeeds.Aggregate((l, r) => l.Value > r.Value ? l : r).Value;
 
-        public double ExposureMax {
-            get {
-                return double.PositiveInfinity;
-            }
-        }
+        public double ExposureMax => double.PositiveInfinity;
 
         public double ElectronsPerADU => double.NaN;
 
-        public short MaxBinX {
-            get {
-                return 1;
-            }
-        }
+        public short MaxBinX => 1;
 
-        public short MaxBinY {
-            get {
-                return 1;
-            }
-        }
+        public short MaxBinY => 1;
 
-        public double PixelSizeX {
-            get {
-                return -1;
-            }
-        }
+        public double PixelSizeX => -1;
 
-        public double PixelSizeY {
-            get {
-                return -1;
-            }
-        }
+        public double PixelSizeY => -1;
 
-        public bool CanSetTemperature {
-            get { return false; }
-        }
+        public bool CanSetTemperature => false;
 
         public bool CoolerOn {
-            get { return false; }
+            get => false;
             set { }
         }
 
-        public double CoolerPower {
-            get {
-                return double.NaN;
-            }
-        }
+        public double CoolerPower => double.NaN;
 
-        public bool HasDewHeater {
-            get {
-                return false;
-            }
-        }
+        public bool HasDewHeater => false;
 
         public bool DewHeaterOn {
-            get {
-                return false;
-            }
-            set {
-            }
+            get => false;
+            set { }
         }
 
         private string _cameraState;
 
         public string CameraState {
-            get {
-                return _cameraState;
-            }
+            get => _cameraState;
             set {
                 _cameraState = value;
                 RaisePropertyChanged();
             }
         }
 
-        public bool CanSetOffset {
-            get {
-                return false;
-            }
-        }
+        public bool CanSetOffset => false;
 
-        public int OffsetMin {
-            get {
-                return 0;
-            }
-        }
+        public int OffsetMin => 0;
 
-        public int OffsetMax {
-            get {
-                return 0;
-            }
-        }
+        public int OffsetMax => 0;
 
-        public bool CanSetUSBLimit {
-            get {
-                return false;
-            }
-        }
+        public bool CanSetUSBLimit => false;
 
-        public bool CanGetGain {
-            get {
-                return true;
-            }
-        }
+        public bool CanGetGain => true;
 
-        public bool CanSetGain {
-            get {
-                return true;
-            }
-        }
+        public bool CanSetGain => true;
 
-        public short GainMax {
-            get {
-                return ISOSpeeds.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
-            }
-        }
+        public int GainMax => ISOSpeeds.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
 
-        public short GainMin {
-            get {
-                return ISOSpeeds.Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
-            }
-        }
+        public int GainMin => ISOSpeeds.Aggregate((l, r) => l.Value < r.Value ? l : r).Key;
 
-        public short Gain {
+        public int Gain {
             get {
-                int iso;
-                EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_ISOSpeed, 0, out iso);
+                EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_ISOSpeed, 0, out uint iso);
 
                 var translatediso = ISOSpeeds.Where(x => x.Value == iso).FirstOrDefault().Key;
 
@@ -321,7 +205,7 @@ namespace NINA.Model.MyCamera {
             }
             set {
                 ValidateMode();
-                var iso = ISOSpeeds.Where((x) => x.Key == value).FirstOrDefault().Value;
+                int iso = ISOSpeeds.Where((x) => x.Key == value).FirstOrDefault().Value;
                 if (CheckError(SetProperty(EDSDK.PropID_ISOSpeed, iso))) {
                     Notification.ShowError(Locale.Loc.Instance["LblUnableToSetISO"]);
                 }
@@ -372,20 +256,15 @@ namespace NINA.Model.MyCamera {
                 }
                 return _binningModes;
             }
-            private set {
-            }
+            private set { }
         }
 
-        public bool HasSetupDialog {
-            get { return false; }
-        }
+        public bool HasSetupDialog => false;
 
         private string _id;
 
         public string Id {
-            get {
-                return _id;
-            }
+            get => _id;
             set {
                 _id = value;
                 RaisePropertyChanged();
@@ -397,19 +276,6 @@ namespace NINA.Model.MyCamera {
 
         public void AbortExposure() {
             CheckError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF));
-        }
-
-        [System.Obsolete("Use async Connect")]
-        public bool Connect() {
-            uint err = EDSDK.EdsOpenSession(_cam);
-            if (err != (uint)EDSDK.EDS_ERR.OK) {
-                return false;
-            } else {
-                Connected = true;
-                if (!Initialize()) { Disconnect(); }
-                RaiseAllPropertiesChanged();
-                return true;
-            }
         }
 
         private bool Initialize() {
@@ -436,13 +302,13 @@ namespace NINA.Model.MyCamera {
                 this.DirectoryItem = inRef;
                 downloadExposure?.TrySetResult(true);
             }
-            return (uint)EDSDK.EDS_ERR.OK;
+            return EDSDK.EDS_ERR_OK;
         }
 
         private void SetSaveLocation() {
-            /* 1: memory card; 2: pc; 3: both */
-            if (CheckError(SetProperty(EDSDK.PropID_SaveTo, 2))) {
-                throw new Exception("Unable to set save location to PC");
+            if (CheckError(SetProperty(EDSDK.PropID_SaveTo, (uint)EDSDK.EdsSaveTo.Host))) {
+                Logger.Error("CANON: Unable to set save location to Host");
+                throw new Exception("Unable to set save location to Host");
             }
 
             EDSDK.EdsCapacity capacity = new EDSDK.EdsCapacity();
@@ -464,45 +330,63 @@ namespace NINA.Model.MyCamera {
 
         private void GetShutterSpeeds() {
             ShutterSpeeds.Clear();
+
             EDSDK.EdsGetPropertyDesc(_cam, EDSDK.PropID_Tv, out var shutterSpeedsDesc);
+
             for (int i = 0; i < shutterSpeedsDesc.NumElements; i++) {
                 var elem = shutterSpeedsDesc.PropDesc[i];
-                var item = EDSDK.ShutterSpeeds.FirstOrDefault((x) => x.Key == elem);
+                var item = EDSDKLocal.ShutterSpeeds.FirstOrDefault((x) => x.Key == elem);
                 if (item.Value != 0) {
                     ShutterSpeeds.Add(item.Key, item.Value);
                 } else {
-                    Logger.Warning("Canon - Unknown Shutterspeed with code: " + elem);
+                    Logger.Error("CANON: Unknown shutter speed code: " + elem);
                 }
             }
         }
 
         private bool IsManualMode() {
-            UInt32 mode;
-            EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_AEModeSelect, 0, out mode);
-            bool isManual = (mode == 3);
+            EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_AEMode, 0, out uint mode);
+            bool isManual = (mode == EDSDK.AEMode_Mamual);
             return isManual;
         }
 
         private bool IsBulbMode() {
-            UInt32 mode;
-            EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_AEModeSelect, 0, out mode);
-            bool isBulb = (mode == 4);
-            return isBulb;
+            EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_AEMode, 0, out uint mode);
+            if (mode == EDSDK.AEMode_Bulb) {
+                return true;
+            } else {
+                /*
+                 * Older cameras with Manual on the dial but are set to "BULB" (0x0C) shutter speed
+                 * can be considered to be in Bulb mode as well
+                 */
+                EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_Tv, 0, out uint speed);
+
+                if (mode == EDSDK.AEMode_Mamual && speed == 0x0C) {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
-        private Dictionary<short, int> ISOSpeeds = new Dictionary<short, int>();
+        private Dictionary<int, int> ISOSpeeds = new Dictionary<int, int>();
 
         private void GetISOSpeeds() {
             ISOSpeeds.Clear();
             Gains.Clear();
-            EDSDK.EdsPropertyDesc prop;
-            EDSDK.EdsGetPropertyDesc(_cam, EDSDK.PropID_ISOSpeed, out prop);
 
-            var length = (int)(prop.PropDesc.Length / prop.NumElements);
+            EDSDK.EdsGetPropertyDesc(_cam, EDSDK.PropID_ISOSpeed, out EDSDK.EdsPropertyDesc prop);
+
+            // Avoid a possible divide by zero situation
+            if (prop.NumElements > 0) {
+                var length = (prop.PropDesc.Length / prop.NumElements);
+            } else {
+                Logger.Warning("CANON: Unable to get ISO list from camera");
+            }
 
             for (int i = 0; i < prop.NumElements; i++) {
-                var elem = prop.PropDesc[i];
-                var item = EDSDK.ISOSpeeds.FirstOrDefault((x) => x.Value == elem);
+                int elem = prop.PropDesc[i];
+                var item = EDSDKLocal.ISOSpeeds.FirstOrDefault((x) => x.Value == elem);
                 if (item.Value != 0) {
                     ISOSpeeds.Add(item.Key, item.Value);
                     Gains.Add(item.Key);
@@ -511,8 +395,11 @@ namespace NINA.Model.MyCamera {
         }
 
         public void Disconnect() {
-            CheckError(EDSDK.EdsCloseSession(_cam));
+            if (UILocked == true) {
+                UnLockUI();
+            }
 
+            CheckError(EDSDK.EdsCloseSession(_cam));
             Connected = false;
         }
 
@@ -526,16 +413,16 @@ namespace NINA.Model.MyCamera {
                     }
 
                     using (MyStopWatch.Measure("Canon - Image Download")) {
-                        CheckAndThrowError(EDSDK.EdsGetDirectoryItemInfo(this.DirectoryItem, out var directoryItemInfo));
+                        CheckAndThrowError(EDSDK.EdsGetDirectoryItemInfo(DirectoryItem, out var directoryItemInfo));
 
                         //create a file stream to accept the image
                         CheckAndThrowError(EDSDK.EdsCreateMemoryStream(directoryItemInfo.Size, out memoryStreamHandle));
 
                         //download image
-                        CheckAndThrowError(EDSDK.EdsDownload(this.DirectoryItem, directoryItemInfo.Size, memoryStreamHandle));
+                        CheckAndThrowError(EDSDK.EdsDownload(DirectoryItem, directoryItemInfo.Size, memoryStreamHandle));
 
                         //complete download
-                        CheckAndThrowError(EDSDK.EdsDownloadComplete(this.DirectoryItem));
+                        CheckAndThrowError(EDSDK.EdsDownloadComplete(DirectoryItem));
 
                         token.ThrowIfCancellationRequested();
                     }
@@ -543,12 +430,22 @@ namespace NINA.Model.MyCamera {
                     using (MyStopWatch.Measure("Canon - Creating Image Array")) {
                         //convert to memory stream
                         EDSDK.EdsGetPointer(memoryStreamHandle, out imageDataPointer);
-                        EDSDK.EdsGetLength(memoryStreamHandle, out var length);
+                        EDSDK.EdsGetLength(memoryStreamHandle, out ulong length);
 
                         byte[] rawImageData = new byte[length];
 
                         //Move from unmanaged to managed code.
                         Marshal.Copy(imageDataPointer, rawImageData, 0, rawImageData.Length);
+
+                        //release directory item
+                        if (this.DirectoryItem != IntPtr.Zero) {
+                            CheckAndThrowError(EDSDK.EdsRelease(DirectoryItem));
+                        }
+
+                        //release stream
+                        if (memoryStreamHandle != IntPtr.Zero) {
+                            CheckAndThrowError(EDSDK.EdsRelease(memoryStreamHandle));
+                        }
 
                         token.ThrowIfCancellationRequested();
 
@@ -557,7 +454,7 @@ namespace NINA.Model.MyCamera {
                             rawConverter: rawConverter,
                             rawBytes: rawImageData,
                             rawType: "cr2",
-                            bitDepth: this.BitDepth,
+                            bitDepth: BitDepth,
                             metaData: new ImageMetaData());
                     }
                 } finally {
@@ -567,9 +464,9 @@ namespace NINA.Model.MyCamera {
                         imageDataPointer = IntPtr.Zero;
                     }
 
-                    if (this.DirectoryItem != IntPtr.Zero) {
-                        EDSDK.EdsRelease(this.DirectoryItem);
-                        this.DirectoryItem = IntPtr.Zero;
+                    if (DirectoryItem != IntPtr.Zero) {
+                        EDSDK.EdsRelease(DirectoryItem);
+                        DirectoryItem = IntPtr.Zero;
                     }
 
                     if (memoryStreamHandle != IntPtr.Zero) {
@@ -673,9 +570,21 @@ namespace NINA.Model.MyCamera {
         }
 
         private void SendStartExposureCmd(bool useBulb) {
-            uint error = 1;
+            uint error = EDSDK.EDS_ERR_INTERNAL_ERROR;
+            UILocked = false;
+
             if (useBulb) {
-                error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_BulbStart, 0);
+                if (!LockUI()) {
+                    return;
+                }
+
+                if ((error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_BulbStart, 0)) != EDSDK.EDS_ERR_OK) {
+                    Logger.Error($"CANON: Error initiating bulb exposure: {ErrorCodeToString(error)}");
+
+                    if (UILocked == true) {
+                        UnLockUI();
+                    }
+                }
             }
 
             if (error > 0) {
@@ -683,10 +592,11 @@ namespace NINA.Model.MyCamera {
             }
 
             if (error > 0) {
-                // Older Canon cameras, such as Xti Rebel 300D, don't support the PressShutterButton command. If this fails,
+                // Older Canon cameras, such as Xti Rebel 400D, don't support the PressShutterButton command. If this fails,
                 // fall back to the basic TakePicture command.
                 error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_TakePicture, 0);
             }
+
             CheckAndThrowError(error);
         }
 
@@ -707,26 +617,48 @@ namespace NINA.Model.MyCamera {
             return true;
         }
 
-        public int Offset {
-            get {
-                return -1;
-            }
-            set {
+        private bool LockUI() {
+            uint error;
+
+            if ((error = EDSDK.EdsSendStatusCommand(_cam, EDSDK.CameraState_UILock, 0)) != EDSDK.EDS_ERR_OK) {
+                Logger.Error($"CANON: Error locking the UI: {ErrorCodeToString(error)}");
+                CheckAndThrowError(error);
+                UILocked = false;
+                return false;
+            } else {
+                UILocked = true;
+                return true;
             }
         }
 
+        private bool UnLockUI() {
+            uint error;
+
+            if ((error = EDSDK.EdsSendStatusCommand(_cam, EDSDK.CameraState_UIUnLock, 0)) != EDSDK.EDS_ERR_OK) {
+                Logger.Error($"CANON: Error unlocking the UI: {ErrorCodeToString(error)}");
+                CheckAndThrowError(error);
+
+                return false;
+            } else {
+                UILocked = false;
+                return true;
+            }
+        }
+
+        public int Offset {
+            get => -1;
+            set { }
+        }
+
         public int USBLimit {
-            get {
-                return -1;
-            }
-            set {
-            }
+            get => -1;
+            set { }
         }
 
         public int BatteryLevel {
             get {
                 try {
-                    if (!CheckError(EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_BatteryLevel, 0, out UInt32 batteryLevel))) {
+                    if (!CheckError(EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_BatteryLevel, 0, out uint batteryLevel))) {
                         return (int)batteryLevel;
                     } else {
                         return -1;
@@ -743,57 +675,58 @@ namespace NINA.Model.MyCamera {
         }
 
         private void SendStopExposureCmd(bool useBulb) {
-            uint error = 1;
+            uint error = EDSDK.EDS_ERR_INTERNAL_ERROR;
+
             if (useBulb) {
                 error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_BulbEnd, 0);
+
+                if (UILocked == true) {
+                    UnLockUI();
+                }
             }
 
             if (error > 0) {
                 error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF);
             }
+
             CheckAndThrowError(error);
         }
 
         private uint SetProperty(uint property, object value) {
-            int propsize;
-            EDSDK.EdsDataType proptype;
-            var err = EDSDK.EdsGetPropertySize(_cam, property, 0, out proptype, out propsize);
-            if (err != (uint)EDSDK.EDS_ERR.OK) {
+            var err = EDSDK.EdsGetPropertySize(_cam, property, 0, out EDSDK.EdsDataType proptype, out int propsize);
+            if (err != EDSDK.EDS_ERR_OK) {
                 return err;
             }
             err = EDSDK.EdsSetPropertyData(_cam, property, 0, propsize, value);
             return err;
         }
 
-        private bool CheckError(uint code, [CallerMemberName] string memberName = "") {
-            var err = GetError(code);
-            return CheckError(err, memberName);
-        }
-
-        private bool CheckError(EDSDK.EDS_ERR err, [CallerMemberName] string memberName = "") {
-            if (err == EDSDK.EDS_ERR.OK) {
+        private bool CheckError(uint err, [CallerMemberName] string memberName = "") {
+            if (err == EDSDK.EDS_ERR_OK) {
                 return false;
             } else {
-                Logger.Error(new Exception(string.Format(Locale.Loc.Instance["LblCanonErrorOccurred"], err)), memberName);
+                Logger.Error(new Exception(string.Format(Locale.Loc.Instance["LblCanonErrorOccurred"], ErrorCodeToString(err))), memberName);
                 return true;
             }
         }
 
-        private void CheckAndThrowError(EDSDK.EDS_ERR err, [CallerMemberName] string memberName = "") {
-            if (err != EDSDK.EDS_ERR.OK) {
-                var ex = new Exception(string.Format(Locale.Loc.Instance["LblCanonErrorOccurred"], err));
+        private void CheckAndThrowError(uint err, [CallerMemberName] string memberName = "") {
+            if (err != EDSDK.EDS_ERR_OK) {
+                var ex = new Exception(string.Format(Locale.Loc.Instance["LblCanonErrorOccurred"], ErrorCodeToString(err)));
                 Logger.Error(ex, memberName);
                 throw ex;
             }
         }
 
-        private void CheckAndThrowError(uint code, [CallerMemberName] string memberName = "") {
-            var err = GetError(code);
-            CheckAndThrowError(err, memberName);
-        }
+        private string ErrorCodeToString(uint err) {
+            string errStr;
+            if (EDSDKLocal.ErrorCodes.ContainsKey(err)) {
+                errStr = EDSDKLocal.ErrorCodes[err];
+            } else {
+                errStr = $"Unknown ({err})";
+            }
 
-        private EDSDK.EDS_ERR GetError(uint code) {
-            return (EDSDK.EDS_ERR)code;
+            return errStr;
         }
 
         public async Task<bool> Connect(CancellationToken token) {
@@ -801,12 +734,13 @@ namespace NINA.Model.MyCamera {
                 try {
                     CheckAndThrowError(EDSDK.EdsOpenSession(_cam));
 
-                    Connected = true;
                     if (!Initialize()) {
                         Disconnect();
                         return false;
                     }
+                    Connected = true;
                     RaiseAllPropertiesChanged();
+
                     return true;
                 } catch (Exception ex) {
                     Notification.ShowError(ex.Message);
@@ -818,33 +752,35 @@ namespace NINA.Model.MyCamera {
         private bool _liveViewEnabled;
 
         public bool LiveViewEnabled {
-            get {
-                return _liveViewEnabled;
-            }
+            get => _liveViewEnabled;
             set {
                 _liveViewEnabled = value;
                 RaisePropertyChanged();
             }
         }
 
-        private int bitDepth;
-
-        public int BitDepth {
-            get {
-                return (int)profileService.ActiveProfile.CameraSettings.BitDepth;
-            }
-        }
+        public int BitDepth => (int)profileService.ActiveProfile.CameraSettings.BitDepth;
 
         public bool HasBattery => true;
 
         public void StartLiveView() {
-            SetProperty(EDSDK.PropID_Evf_OutputDevice, (int)EDSDK.EvfOutputDevice_PC);
-            LiveViewEnabled = true;
+            uint err = EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_Evf_OutputDevice, 0, out uint device);
+
+            if (err == EDSDK.EDS_ERR_OK) {
+                device |= EDSDK.EvfOutputDevice_PC;
+                SetProperty(EDSDK.PropID_Evf_OutputDevice, device);
+                LiveViewEnabled = true;
+            }
         }
 
         public void StopLiveView() {
-            SetProperty(EDSDK.PropID_Evf_OutputDevice, (int)EDSDK.EvfOutputDevice_OFF);
-            LiveViewEnabled = false;
+            uint err = EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_Evf_OutputDevice, 0, out uint device);
+
+            if (err == EDSDK.EDS_ERR_OK) {
+                device &= ~EDSDK.EvfOutputDevice_PC;
+                SetProperty(EDSDK.PropID_Evf_OutputDevice, device);
+                LiveViewEnabled = false;
+            }
         }
 
         public Task<IExposureData> DownloadLiveView(CancellationToken token) {
@@ -852,18 +788,20 @@ namespace NINA.Model.MyCamera {
                 IntPtr stream = IntPtr.Zero;
                 IntPtr imageRef = IntPtr.Zero;
                 IntPtr pointer = IntPtr.Zero;
+                ulong bufferSize = 2 * 1024 * 1024;
+
                 try {
-                    CheckAndThrowError(EDSDK.EdsCreateMemoryStream(0, out stream));
+                    CheckAndThrowError(EDSDK.EdsCreateMemoryStream(bufferSize, out stream));
 
                     CheckAndThrowError(EDSDK.EdsCreateEvfImageRef(stream, out imageRef));
 
-                    EDSDK.EDS_ERR err;
+                    uint err;
                     do {
-                        err = GetError(EDSDK.EdsDownloadEvfImage(_cam, imageRef));
-                        if (err == EDSDK.EDS_ERR.OBJECT_NOTREADY) {
+                        err = EDSDK.EdsDownloadEvfImage(_cam, imageRef);
+                        if (err == EDSDK.EDS_ERR_OBJECT_NOTREADY) {
                             await Utility.Utility.Wait(TimeSpan.FromMilliseconds(100), token);
                         }
-                    } while (err == EDSDK.EDS_ERR.OBJECT_NOTREADY);
+                    } while (err == EDSDK.EDS_ERR_OBJECT_NOTREADY);
 
                     CheckAndThrowError(err);
 

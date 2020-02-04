@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -41,10 +41,9 @@ namespace NINA.ViewModel {
 
     internal class MeridianFlipVM : BaseVM {
 
-        public MeridianFlipVM(IProfileService profileService, ICameraMediator cameraMediator, ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator, IImagingMediator imagingMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+        public MeridianFlipVM(IProfileService profileService, ITelescopeMediator telescopeMediator, IGuiderMediator guiderMediator, IImagingMediator imagingMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
             this.telescopeMediator = telescopeMediator;
             this.guiderMediator = guiderMediator;
-            this.cameraMediator = cameraMediator;
             this.imagingMediator = imagingMediator;
             this.applicationStatusMediator = applicationStatusMediator;
 
@@ -66,7 +65,6 @@ namespace NINA.ViewModel {
         private CancellationTokenSource _tokensource;
         private ITelescopeMediator telescopeMediator;
         private IGuiderMediator guiderMediator;
-        private ICameraMediator cameraMediator;
         private IImagingMediator imagingMediator;
         private IApplicationStatusMediator applicationStatusMediator;
 
@@ -202,20 +200,33 @@ namespace NINA.ViewModel {
                 Logger.Trace("Meridian Flip - Recenter after meridian flip");
 
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblInitiatePlatesolve"] });
-                PlateSolveResult plateSolveResult = null;
-                using (var solver = new PlatesolveVM(profileService, cameraMediator, telescopeMediator, imagingMediator, applicationStatusMediator)) {
-                    PlatesolveVM.SolveParameters solveParameters = new PlatesolveVM.SolveParameters {
-                        syncScope = true,
-                        slewToTarget = true,
-                        repeat = true,
-                        silent = true,
-                        repeatThreshold = profileService.ActiveProfile.PlateSolveSettings.Threshold,
-                        numberOfAttempts = profileService.ActiveProfile.PlateSolveSettings.NumberOfAttempts,
-                        delayDuration = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay)
-                    };
-                    solver.PlateSolveTarget = _targetCoordinates;
-                    plateSolveResult = await solver.CaptureSolveSyncReslewReattempt(solveParameters, token, progress);
-                }
+
+                var plateSolver = PlateSolverFactory.GetPlateSolver(profileService.ActiveProfile.PlateSolveSettings);
+                var blindSolver = PlateSolverFactory.GetBlindSolver(profileService.ActiveProfile.PlateSolveSettings);
+                var seq = new CaptureSequence(
+                    profileService.ActiveProfile.PlateSolveSettings.ExposureTime,
+                    CaptureSequence.ImageTypes.SNAPSHOT,
+                    profileService.ActiveProfile.PlateSolveSettings.Filter,
+                    new Model.MyCamera.BinningMode(profileService.ActiveProfile.PlateSolveSettings.Binning, profileService.ActiveProfile.PlateSolveSettings.Binning),
+                    1
+                );
+                seq.Gain = profileService.ActiveProfile.PlateSolveSettings.Gain;
+
+                var solver = new CenteringSolver(plateSolver, blindSolver, imagingMediator, telescopeMediator);
+                var parameter = new CenterSolveParameter() {
+                    Attempts = profileService.ActiveProfile.PlateSolveSettings.NumberOfAttempts,
+                    Binning = profileService.ActiveProfile.PlateSolveSettings.Binning,
+                    Coordinates = _targetCoordinates,
+                    DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
+                    FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
+                    MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
+                    PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize,
+                    ReattemptDelay = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay),
+                    Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
+                    SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
+                    Threshold = profileService.ActiveProfile.PlateSolveSettings.Threshold
+                };
+                _ = await solver.Center(seq, parameter, default, progress, token);
             }
             return true;
         }
@@ -248,29 +259,31 @@ namespace NINA.ViewModel {
         }
 
         public static bool ShouldFlip(IProfileService profileService, double exposureTime, TelescopeInfo telescopeInfo) {
-            var tolerance = TimeSpan.FromMinutes(1);
-            var remainingExposureTime = TimeSpan.FromHours(telescopeInfo.TimeToMeridianFlip) - tolerance;
-            if (profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian != 0) {
-                remainingExposureTime = remainingExposureTime - TimeSpan.FromMinutes(profileService.ActiveProfile.MeridianFlipSettings.MinutesAfterMeridian) - TimeSpan.FromMinutes(profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian);
-            }
+            if (telescopeInfo.Connected && !double.IsNaN(telescopeInfo.TimeToMeridianFlip)) {
+                var tolerance = TimeSpan.FromMinutes(1);
+                var remainingExposureTime = TimeSpan.FromHours(telescopeInfo.TimeToMeridianFlip) - tolerance;
+                if (profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian != 0) {
+                    remainingExposureTime = remainingExposureTime - TimeSpan.FromMinutes(profileService.ActiveProfile.MeridianFlipSettings.MinutesAfterMeridian) - TimeSpan.FromMinutes(profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian);
+                }
 
-            if (profileService.ActiveProfile.MeridianFlipSettings.Enabled && !profileService.ActiveProfile.MeridianFlipSettings.UseSideOfPier) {
-                if (telescopeInfo.Connected == true) {
-                    if (remainingExposureTime < TimeSpan.FromSeconds(exposureTime)) {
-                        return true;
+                if (profileService.ActiveProfile.MeridianFlipSettings.Enabled && !profileService.ActiveProfile.MeridianFlipSettings.UseSideOfPier) {
+                    if (telescopeInfo.Connected == true) {
+                        if (remainingExposureTime < TimeSpan.FromSeconds(exposureTime)) {
+                            return true;
+                        }
                     }
-                }
-            } else if (profileService.ActiveProfile.MeridianFlipSettings.Enabled && profileService.ActiveProfile.MeridianFlipSettings.UseSideOfPier) {
-                var pierside = telescopeInfo.SideOfPier;
+                } else if (profileService.ActiveProfile.MeridianFlipSettings.Enabled && profileService.ActiveProfile.MeridianFlipSettings.UseSideOfPier) {
+                    var pierside = telescopeInfo.SideOfPier;
 
-                // Logging if reported side of pier is East, as users may be wondering why Meridian Flip didn't occur
-                if (pierside == PierSide.pierEast) {
-                    Logger.Trace("Meridian Flip - Telescope reports East Side of Pier, Automated Flip will not be performed.");
-                }
+                    // Logging if reported side of pier is East, as users may be wondering why Meridian Flip didn't occur
+                    if (pierside == PierSide.pierEast) {
+                        Logger.Trace("Meridian Flip - Telescope reports East Side of Pier, Automated Flip will not be performed.");
+                    }
 
-                if (telescopeInfo.Connected == true && pierside != PierSide.pierEast) {
-                    if (remainingExposureTime < TimeSpan.FromSeconds(exposureTime)) {
-                        return true;
+                    if (telescopeInfo.Connected == true && pierside != PierSide.pierEast) {
+                        if (remainingExposureTime < TimeSpan.FromSeconds(exposureTime)) {
+                            return true;
+                        }
                     }
                 }
             }

@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -174,7 +174,19 @@
                         </TabItem.Content>
                     </TabItem>
 
-                    <TabItem>
+                    <TabItem DataContext="{Binding DockManagerVM}">
+                        <TabItem.Style>
+                            <Style TargetType="TabItem" BasedOn="{StaticResource LeftTabItem}">
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Content" Value="{Binding Path=(util:DeferredContent.Content), RelativeSource={RelativeSource Self}}" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="False">
+                                        <Setter Property="Content" Value="{Binding Content, RelativeSource={RelativeSource Self}}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TabItem.Style>
                         <TabItem.Header>
                             <Grid Width="50" Height="50">
                                 <Grid.RowDefinitions>
@@ -192,9 +204,9 @@
                                     Text="{ns:Loc LblImaging}" />
                             </Grid>
                         </TabItem.Header>
-                        <TabItem.Content>
-                            <view:OverView x:Name="Overview" DataContext="{Binding DockManagerVM}" />
-                        </TabItem.Content>
+                        <util:DeferredContent.Content>
+                            <view:OverView x:Name="Overview" />
+                        </util:DeferredContent.Content>
                     </TabItem>
                     <TabItem>
                         <TabItem.Header>

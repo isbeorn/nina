@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -29,7 +29,6 @@ using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Profile;
 using NINA.Utility.WindowService;
-using NINA.ViewModel.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -50,11 +49,12 @@ namespace NINA.ViewModel.Equipment.Telescope {
 
             ChooseTelescopeCommand = new AsyncCommand<bool>(() => ChooseTelescope());
             CancelChooseTelescopeCommand = new RelayCommand(CancelChooseTelescope);
-            DisconnectCommand = new RelayCommand(DisconnectTelescope);
+            DisconnectCommand = new AsyncCommand<bool>(() => DisconnectTelescope());
             ParkCommand = new AsyncCommand<bool>(ParkTelescope);
             UnparkCommand = new RelayCommand(UnparkTelescope);
+            SetParkPositionCommand = new AsyncCommand<bool>(SetParkPosition);
             SlewToCoordinatesCommand = new RelayCommand(SlewToCoordinates);
-            RefreshTelescopeListCommand = new RelayCommand(RefreshTelescopeList);
+            RefreshTelescopeListCommand = new RelayCommand(RefreshTelescopeList, o => !(Telescope?.Connected == true));
 
             MoveCommand = new RelayCommand(Move);
             StopMoveCommand = new RelayCommand(StopMove);
@@ -112,6 +112,17 @@ namespace NINA.ViewModel.Equipment.Telescope {
             }
             Logger.Trace("Telescope has been parked");
             return true;
+        }
+
+        public async Task<bool> SetParkPosition() {
+            if (Telescope.CanSetPark && !Telescope.AtPark) {
+                Logger.Trace($"Setting telescope park position to RA={Telescope.RightAscension}, Dec={Telescope.Declination}");
+                await Task.Run(() => { Telescope.Setpark(); });
+
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -181,8 +192,10 @@ namespace NINA.ViewModel.Equipment.Telescope {
         private async Task<bool> ChooseTelescope() {
             await ss.WaitAsync();
             try {
-                Disconnect();
-                updateTimer?.Stop();
+                await Disconnect();
+                if (updateTimer != null) {
+                    await updateTimer.Stop();
+                }
 
                 if (TelescopeChooserVM.SelectedDevice.Id == "No_Device") {
                     profileService.ActiveProfile.TelescopeSettings.Id = TelescopeChooserVM.SelectedDevice.Id;
@@ -257,13 +270,16 @@ namespace NINA.ViewModel.Equipment.Telescope {
 
                             Notification.ShowSuccess(Locale.Loc.Instance["LblTelescopeConnected"]);
                             profileService.ActiveProfile.TelescopeSettings.Id = Telescope.Id;
+
+                            Logger.Info($"Successfully connected Telescope. Id: {telescope.Id} Name: {telescope.Name} Driver Version: {telescope.DriverVersion}");
+
                             return true;
                         } else {
                             Telescope = null;
                             return false;
                         }
                     } catch (OperationCanceledException) {
-                        if (telescope?.Connected == true) { Disconnect(); }
+                        if (telescope?.Connected == true) { await Disconnect(); }
                         return false;
                     }
                 } else {
@@ -392,15 +408,19 @@ namespace NINA.ViewModel.Equipment.Telescope {
 
         private CancellationTokenSource _cancelChooseTelescopeSource;
 
-        private void DisconnectTelescope(object obj) {
+        private async Task<bool> DisconnectTelescope() {
             var diag = MyMessageBox.MyMessageBox.Show("Disconnect Telescope?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
-                Disconnect();
+                await Disconnect();
             }
+            return true;
         }
 
-        public void Disconnect() {
-            updateTimer?.Stop();
+        public async Task Disconnect() {
+            if (Telescope != null) { Logger.Info("Disconnected Telescope"); }
+            if (updateTimer != null) {
+                await updateTimer.Stop();
+            }
             Telescope?.Disconnect();
             Telescope = null;
             TelescopeInfo = DeviceInfo.CreateDefaultInstance<TelescopeInfo>();
@@ -417,6 +437,11 @@ namespace NINA.ViewModel.Equipment.Telescope {
             if (TelescopeInfo.Connected) {
                 Telescope.PulseGuide(direction, duration);
             }
+        }
+
+        public bool Sync(Coordinates coordinates) {
+            var transform = coordinates.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
+            return Sync(transform.RA, transform.Dec);
         }
 
         public bool Sync(double ra, double dec) {
@@ -601,6 +626,10 @@ namespace NINA.ViewModel.Equipment.Telescope {
             return this.SlewToCoordinatesAsync(transformed);
         }
 
+        public Coordinates GetCurrentPosition() {
+            return Telescope?.Coordinates;
+        }
+
         public ICommand SlewToCoordinatesCommand { get; private set; }
 
         public IAsyncCommand ChooseTelescopeCommand { get; private set; }
@@ -612,6 +641,8 @@ namespace NINA.ViewModel.Equipment.Telescope {
         public ICommand StopMoveCommand { get; private set; }
 
         public IAsyncCommand ParkCommand { get; private set; }
+
+        public IAsyncCommand SetParkPositionCommand { get; private set; }
 
         public ICommand UnparkCommand { get; private set; }
 

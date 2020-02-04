@@ -18,7 +18,7 @@
 */
 
 /*
- * Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+ * Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
  * Copyright 2019 Dale Ghent <daleg@elemental.org>
  */
 
@@ -83,6 +83,7 @@ namespace NINA.Utility {
 
             if (!double.IsNaN(metaData.Image.ExposureTime)) {
                 this.AddHeaderCard("EXPOSURE", metaData.Image.ExposureTime, "[s] Exposure duration");
+                this.AddHeaderCard("EXPTIME", metaData.Image.ExposureTime, "[s] Exposure duration");
             }
 
             if (metaData.Image.ExposureStart > DateTime.MinValue) {
@@ -372,7 +373,7 @@ namespace NINA.Utility {
 
         public FITSHeaderCard(string key, DateTime value, string comment) {
             this.Key = key;
-            this.Value = value.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fff", System.Globalization.CultureInfo.InvariantCulture);
+            this.Value = @"'" + value.ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture) + @"'";
             if (comment.Length > 45) {
                 comment = comment.Substring(0, 45);
             }

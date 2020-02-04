@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -28,6 +28,7 @@ using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NUnit.Framework;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace NINATest {
@@ -36,7 +37,7 @@ namespace NINATest {
     public class ImageDataTest {
         private ImageMetaData MetaData;
 
-        [OneTimeSetUp]
+        [SetUp]
         public void Setup() {
             MetaData = new ImageMetaData() {
                 Image = {
@@ -346,37 +347,40 @@ namespace NINATest {
         [TestCase(NINA.Utility.Enum.FileTypeEnum.XISF, ".xisf")]
         [TestCase(NINA.Utility.Enum.FileTypeEnum.FITS, ".fits")]
         [TestCase(NINA.Utility.Enum.FileTypeEnum.TIFF, ".tif")]
-        [TestCase(NINA.Utility.Enum.FileTypeEnum.TIFF_LZW, ".tif")]
-        [TestCase(NINA.Utility.Enum.FileTypeEnum.TIFF_ZIP, ".tif")]
         public async Task SaveToDiskXISFSimpleTest(NINA.Utility.Enum.FileTypeEnum fileType, string extension) {
             var data = new ushort[] {
                 3,1,1,
                 3,4,5,
                 3,2,3
             };
-            var folder = TestContext.CurrentContext.TestDirectory;
-            var pattern = "TestFile";
 
-            var sut = await new ImageArrayExposureData(data, 3, 3, 16, false, new ImageMetaData()).ToImageData();
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = TestContext.CurrentContext.TestDirectory,
+                FilePattern = "TestFile",
+                FileType = fileType
+            };
 
-            var file = await sut.SaveToDisk(folder, pattern, fileType, default);
+            //var sut = await new ImageArrayExposureData(data, 3, 3, 16, false, new ImageMetaData()).ToImageData();
+            var sut = new ImageData(data, 3, 3, 16, false, MetaData);
 
-            System.IO.File.Exists(file).Should().BeTrue();
-            System.IO.File.Delete(file);
-            System.IO.Path.GetFileName(file).Should().Be($"{pattern}{extension}");
+            var file = await sut.SaveToDisk(fileSaveInfo, default);
+
+            File.Exists(file).Should().BeTrue();
+            File.Delete(file);
+            Path.GetFileName(file).Should().Be($"{fileSaveInfo.FilePattern}{extension}");
         }
 
         [Test]
         public async Task SaveToDiskPatternMetaDataTest() {
-            var fileType = NINA.Utility.Enum.FileTypeEnum.XISF;
             var data = new ushort[] {
                 3,1,1,
                 3,4,5,
                 3,2,3
             };
-            var folder = TestContext.CurrentContext.TestDirectory;
+
             var pattern = $"$$FILTER$$" +
                 $"#$$DATE$$" +
+                $"#$$DATEMINUS12$$" +
                 $"#$$DATETIME$$" +
                 $"#$$TIME$$" +
                 $"#$$FRAMENR$$" +
@@ -392,15 +396,22 @@ namespace NINATest {
                 $"#$$FOCUSERPOSITION$$" +
                 $"#$$APPLICATIONSTARTDATE$$";
 
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = TestContext.CurrentContext.TestDirectory,
+                FilePattern = pattern,
+                FileType = NINA.Utility.Enum.FileTypeEnum.XISF
+            };
+
             var sut = new ImageData(data, 3, 3, 16, false, MetaData);
-            var file = await sut.SaveToDisk(folder, pattern, fileType, default);
-            System.IO.File.Delete(file);
+            var file = await sut.SaveToDisk(fileSaveInfo, default);
+            File.Delete(file);
 
             var expectedPattern = $"{MetaData.FilterWheel.Filter}" +
                 $"#{MetaData.Image.ExposureStart.ToString("yyyy-MM-dd")}" +
+                $"#{MetaData.Image.ExposureStart.AddHours(-12).ToString("yyyy-MM-dd")}" +
                 $"#{MetaData.Image.ExposureStart.ToString("yyyy-MM-dd_HH-mm-ss")}" +
                 $"#{MetaData.Image.ExposureStart.ToString("HH-mm-ss")}" +
-                $"#{MetaData.Image.ExposureNumber}" +
+                $"#{MetaData.Image.ExposureNumber.ToString("0000")}" +
                 $"#{MetaData.Image.ImageType}" +
                 $"#{MetaData.Camera.Binning}" +
                 $"#{string.Format("{0:0.00}", MetaData.Camera.Temperature)}" +
@@ -413,20 +424,62 @@ namespace NINATest {
                 $"#{string.Format("{0:0.00}", MetaData.Focuser.Position)}" +
                 $"#{Utility.ApplicationStartDate.ToString("yyyy-MM-dd")}";
 
-            System.IO.Path.GetFileName(file).Should().Be($"{expectedPattern}.{fileType.ToString().ToLower()}");
+            Path.GetFileName(file).Should().Be($"{expectedPattern}.{fileSaveInfo.FileType.ToString().ToLower()}");
+        }
+
+        [Test]
+        public async Task SaveToDiskPatternEmptyMetaDataTest() {
+            var data = new ushort[] {
+                3,1,1,
+                3,4,5,
+                3,2,3
+            };
+
+            var pattern = $"$$FILTER$$" +
+                $"#$$DATE$$" +
+                $"#$$DATEMINUS12$$" +
+                $"#$$DATETIME$$" +
+                $"#$$TIME$$" +
+                $"#$$FRAMENR$$" +
+                $"#$$IMAGETYPE$$" +
+                $"#$$BINNING$$" +
+                $"#$$SENSORTEMP$$" +
+                $"#$$EXPOSURETIME$$" +
+                $"#$$TARGETNAME$$" +
+                $"#$$GAIN$$" +
+                $"#$$OFFSET$$" +
+                $"#$$RMS$$" +
+                $"#$$RMSARCSEC$$" +
+                $"#$$FOCUSERPOSITION$$" +
+                $"#$$APPLICATIONSTARTDATE$$";
+
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = TestContext.CurrentContext.TestDirectory,
+                FilePattern = pattern,
+                FileType = NINA.Utility.Enum.FileTypeEnum.TIFF,
+                TIFFCompressionType = NINA.Utility.Enum.TIFFCompressionTypeEnum.LZW
+            };
+
+            var sut = new ImageData(data, 3, 3, 16, false, new ImageMetaData());
+            var file = await sut.SaveToDisk(fileSaveInfo, default);
+            File.Delete(file);
+
+            var expectedPattern = $"#0001-01-01##0001-01-01_00-00-00#00-00-00#-0001##1x1#########{Utility.ApplicationStartDate.ToString("yyyy-MM-dd")}.tif";
+
+            Path.GetFileName(file).Should().Be($"{expectedPattern}");
         }
 
         [Test]
         public async Task PrepareFinalizeSavePatternMetaDataTest() {
-            var fileType = NINA.Utility.Enum.FileTypeEnum.XISF;
             var data = new ushort[] {
                 3,1,1,
                 3,4,5,
                 3,2,3
             };
-            var folder = TestContext.CurrentContext.TestDirectory;
+
             var pattern = $"$$FILTER$$" +
                 $"#$$DATE$$" +
+                $"#$$DATEMINUS12$$" +
                 $"#$$DATETIME$$" +
                 $"#$$TIME$$" +
                 $"#$$FRAMENR$$" +
@@ -442,16 +495,23 @@ namespace NINATest {
                 $"#$$FOCUSERPOSITION$$" +
                 $"#$$APPLICATIONSTARTDATE$$";
 
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = TestContext.CurrentContext.TestDirectory,
+                FilePattern = pattern,
+                FileType = NINA.Utility.Enum.FileTypeEnum.XISF
+            };
+
             var sut = new ImageData(data, 3, 3, 16, false, MetaData);
-            var file = await sut.PrepareSave(folder, fileType, default);
+            var file = await sut.PrepareSave(fileSaveInfo, default);
             file = sut.FinalizeSave(file, pattern);
-            System.IO.File.Delete(file);
+            File.Delete(file);
 
             var expectedPattern = $"{MetaData.FilterWheel.Filter}" +
                 $"#{MetaData.Image.ExposureStart.ToString("yyyy-MM-dd")}" +
+                $"#{MetaData.Image.ExposureStart.AddHours(-12).ToString("yyyy-MM-dd")}" +
                 $"#{MetaData.Image.ExposureStart.ToString("yyyy-MM-dd_HH-mm-ss")}" +
                 $"#{MetaData.Image.ExposureStart.ToString("HH-mm-ss")}" +
-                $"#{MetaData.Image.ExposureNumber}" +
+                $"#{MetaData.Image.ExposureNumber.ToString("0000")}" +
                 $"#{MetaData.Image.ImageType}" +
                 $"#{MetaData.Camera.Binning}" +
                 $"#{string.Format("{0:0.00}", MetaData.Camera.Temperature)}" +
@@ -464,7 +524,68 @@ namespace NINATest {
                 $"#{string.Format("{0:0.00}", MetaData.Focuser.Position)}" +
                 $"#{Utility.ApplicationStartDate.ToString("yyyy-MM-dd")}";
 
-            System.IO.Path.GetFileName(file).Should().Be($"{expectedPattern}.{fileType.ToString().ToLower()}");
+            Path.GetFileName(file).Should().Be($"{expectedPattern}.{fileSaveInfo.FileType.ToString().ToLower()}");
+        }
+
+        [Test]
+        public async Task PrepareFinalize_IllegalCharacters_SavePatternMetaDataTest() {
+            var data = new ushort[] {
+                3,1,1,
+                3,4,5,
+                3,2,3
+            };
+
+            var pattern = $"$$FILTER$$" +
+                $"#$$DATE$$" +
+                $"#$$DATEMINUS12$$" +
+                $"#$$DATETIME$$" +
+                $"#$$TIME$$" +
+                $"#$$FRAMENR$$" +
+                $"#$$IMAGETYPE$$" +
+                $"#$$BINNING$$" +
+                $"#$$SENSORTEMP$$" +
+                $"#$$EXPOSURETIME$$" +
+                $"#$$TARGETNAME$$" +
+                $"#$$GAIN$$" +
+                $"#$$OFFSET$$" +
+                $"#$$RMS$$" +
+                $"#$$RMSARCSEC$$" +
+                $"#$$FOCUSERPOSITION$$" +
+                $"#$$APPLICATIONSTARTDATE$$";
+
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = TestContext.CurrentContext.TestDirectory,
+                FilePattern = pattern,
+                FileType = NINA.Utility.Enum.FileTypeEnum.XISF
+            };
+
+            var invalidChars = Path.GetInvalidPathChars();
+            MetaData.Target.Name = string.Join("", invalidChars);
+
+            var sut = new ImageData(data, 3, 3, 16, false, MetaData);
+            var file = await sut.PrepareSave(fileSaveInfo, default);
+            file = sut.FinalizeSave(file, pattern);
+            File.Delete(file);
+
+            var expectedPattern = $"{MetaData.FilterWheel.Filter}" +
+                $"#{MetaData.Image.ExposureStart.ToString("yyyy-MM-dd")}" +
+                $"#{MetaData.Image.ExposureStart.AddHours(-12).ToString("yyyy-MM-dd")}" +
+                $"#{MetaData.Image.ExposureStart.ToString("yyyy-MM-dd_HH-mm-ss")}" +
+                $"#{MetaData.Image.ExposureStart.ToString("HH-mm-ss")}" +
+                $"#{MetaData.Image.ExposureNumber.ToString("0000")}" +
+                $"#{MetaData.Image.ImageType}" +
+                $"#{MetaData.Camera.Binning}" +
+                $"#{string.Format("{0:0.00}", MetaData.Camera.Temperature)}" +
+                $"#{string.Format("{0:0.00}", MetaData.Image.ExposureTime)}" +
+                $"#{new string('_', invalidChars.Length)}" +
+                $"#{string.Format("{0:0.00}", MetaData.Camera.Gain)}" +
+                $"#{string.Format("{0:0.00}", MetaData.Camera.Offset)}" +
+                $"#{string.Format("{0:0.00}", MetaData.Image.RecordedRMS.Total)}" +
+                $"#{string.Format("{0:0.00}", MetaData.Image.RecordedRMS.Total * MetaData.Image.RecordedRMS.Scale)}" +
+                $"#{string.Format("{0:0.00}", MetaData.Focuser.Position)}" +
+                $"#{Utility.ApplicationStartDate.ToString("yyyy-MM-dd")}";
+
+            Path.GetFileName(file).Should().Be($"{expectedPattern}.{fileSaveInfo.FileType.ToString().ToLower()}");
         }
 
         //[Test]

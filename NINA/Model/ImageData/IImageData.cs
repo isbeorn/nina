@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -21,7 +21,7 @@
 
 #endregion "copyright"
 
-using NINA.Utility.Enum;
+using NINA.Utility;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -43,9 +43,9 @@ namespace NINA.Model.ImageData {
 
         BitmapSource RenderBitmapSource();
 
-        Task<string> SaveToDisk(string path, string pattern, FileTypeEnum fileType, CancellationToken cancelToken = default, bool forceFileType = false);
+        Task<string> SaveToDisk(FileSaveInfo fileSaveInfo, CancellationToken cancelToken = default, bool forceFileType = false);
 
-        Task<string> PrepareSave(string path, FileTypeEnum fileType, CancellationToken cancelToken = default);
+        Task<string> PrepareSave(FileSaveInfo fileSaveInfo, CancellationToken cancelToken = default);
 
         string FinalizeSave(string file, string pattern);
     }

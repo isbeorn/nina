@@ -14,9 +14,8 @@
     You should have received a copy of the GNU General Public License
     along with N.I.N.A..  If not, see http://www.gnu.org/licenses/
 
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
-    Copyright 2019 Dale Ghent <daleg@elemental.org>
--->
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright 2019 Dale Ghent <daleg@elemental.org>-->
 <UserControl
     x:Class="NINA.View.Equipment.TabPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -304,6 +303,47 @@
                 <local:SwitchHubView DataContext="{Binding SwitchVM}" />
             </TabItem.Content>
         </TabItem>
+
+        <TabItem>
+            <TabItem.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="10" />
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <Grid Width="50" Height="50">
+                            <Path
+                                Margin="5"
+                                Data="{StaticResource LightBulbSVG}"
+                                Stretch="Uniform"
+                                Style="{StaticResource TabItemPath}" />
+                        </Grid>
+
+                        <Grid Margin="0,0,0,5" Visibility="{Binding FlatDeviceVM.FlatDeviceInfo, Converter={StaticResource NullToVisibilityConverter}}">
+                            <Path
+                                Width="10"
+                                Height="10"
+                                Margin="0,0,0,4"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Data="{StaticResource PowerSVG}"
+                                Stretch="Uniform"
+                                Style="{StaticResource TabItemPath}"
+                                Visibility="{Binding FlatDeviceVM.FlatDeviceInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
+                        </Grid>
+                    </Grid>
+                    <TextBlock
+                        Grid.Row="1"
+                        Style="{StaticResource SideBarTextBlock}"
+                        Text="{ns:Loc LblFlatDevice}" />
+                </Grid>
+            </TabItem.Header>
+            <TabItem.Content>
+                <local:FlatDeviceView DataContext="{Binding FlatDeviceVM}" />
+            </TabItem.Content>
+        </TabItem>
+
         <TabItem>
             <TabItem.Header>
                 <Grid>

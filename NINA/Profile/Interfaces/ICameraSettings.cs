@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -29,23 +29,23 @@ namespace NINA.Profile {
     public interface ICameraSettings : ISettings {
         double BitDepth { get; set; }
         CameraBulbModeEnum BulbMode { get; set; }
-        double DownloadToDataRatio { get; set; }
-        double FullWellCapacity { get; set; }
         string Id { get; set; }
-        double Offset { get; set; }
         double PixelSize { get; set; }
         RawConverterEnum RawConverter { get; set; }
-        double ReadNoise { get; set; }
         string SerialPort { get; set; }
         double MinFlatExposureTime { get; set; }
         double MaxFlatExposureTime { get; set; }
         string FileCameraFolder { get; set; }
         bool FileCameraUseBulbMode { get; set; }
         bool FileCameraIsBayered { get; set; }
+        string FileCameraExtension { get; set; }
+
         bool FLIEnableFloodFlush { get; set; }
         bool FLIEnableSnapshotFloodFlush { get; set; }
         double FLIFloodDuration { get; set; }
         uint FLIFlushCount { get; set; }
         BinningMode FLIFloodBin { get; set; }
+
+        bool BitScaling { get; set; }
     }
 }

@@ -14,9 +14,8 @@
     You should have received a copy of the GNU General Public License
     along with N.I.N.A..  If not, see http://www.gnu.org/licenses/
 
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
-    Copyright 2019 Dale Ghent <daleg@elemental.org>
--->
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright 2019 Dale Ghent <daleg@elemental.org>-->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -63,4 +62,7 @@
     <converters:WeatherVelocityConverter x:Key="WeatherVelocityConverter" />
     <converters:WeatherRainRateConverter x:Key="WeatherRainRateConverter" />
     <converters:WeatherBrightnessConverter x:Key="WeatherBrightnessConverter" />
+    <converters:ZeroToVisibilityConverter x:Key="ZeroToVisibilityConverter" />
+    <converters:AFFittingToVisibilityConverter x:Key="AFFittingToVisibilityConverter" />
+    <converters:IsLightImageTypeToVisibilityConverter x:Key="IsLightImageTypeToVisibilityConverter" />
 </ResourceDictionary>

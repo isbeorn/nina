@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -27,6 +27,7 @@ using NINA.Model.MyPlanetarium;
 using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.Enum;
+using NINA.Utility.Exceptions;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using System;
@@ -37,7 +38,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace NINA.ViewModel {
 
@@ -53,6 +53,7 @@ namespace NINA.ViewModel {
             PreviewFileCommand = new RelayCommand(PreviewFile);
             OpenImageFileDiagCommand = new RelayCommand(OpenImageFileDiag);
             OpenSequenceTemplateDiagCommand = new RelayCommand(OpenSequenceTemplateDiag);
+            OpenSequenceFolderDiagCommand = new RelayCommand(OpenSequenceFolderDiag);
             OpenCygwinFileDiagCommand = new RelayCommand(OpenCygwinFileDiag);
             OpenPS2FileDiagCommand = new RelayCommand(OpenPS2FileDiag);
             OpenPHD2DiagCommand = new RelayCommand(OpenPHD2FileDiag);
@@ -74,8 +75,8 @@ namespace NINA.ViewModel {
                 return SelectedProfile != null;
             });
 
-            CopyToCustomSchemaCommand = new RelayCommand(CopyToCustomSchema, (object o) => AlternativeColorSchemaName != "Custom");
-            CopyToAlternativeCustomSchemaCommand = new RelayCommand(CopyToAlternativeCustomSchema, (object o) => ColorSchemaName != "Alternative Custom");
+            CopyToCustomSchemaCommand = new RelayCommand(CopyToCustomSchema, (object o) => ActiveProfile.ColorSchemaSettings.ColorSchema?.Name != "Custom");
+            CopyToAlternativeCustomSchemaCommand = new RelayCommand(CopyToAlternativeCustomSchema, (object o) => ActiveProfile.ColorSchemaSettings.ColorSchema?.Name != "Alternative Custom");
             SiteFromGPSCommand = new AsyncCommand<bool>(() => Task.Run(SiteFromGPS));
             SiteFromPlanetariumCommand = new AsyncCommand<bool>(() => Task.Run(SiteFromPlanetarium));
             ImagePatterns = ImagePatterns.CreateExample();
@@ -109,26 +110,6 @@ namespace NINA.ViewModel {
 
         public RelayCommand OpenPHD2DiagCommand { get; set; }
 
-        private void CopyToAlternativeCustomSchema(object obj) {
-            var schema = ColorSchemas.Items.Where((x) => x.Name == "Alternative Custom").First();
-
-            schema.PrimaryColor = AltPrimaryColor;
-            schema.SecondaryColor = AltSecondaryColor;
-            schema.BorderColor = AltBorderColor;
-            schema.BackgroundColor = AltBackgroundColor;
-            schema.SecondaryBackgroundColor = AltSecondaryBackgroundColor;
-            schema.TertiaryBackgroundColor = AltTertiaryBackgroundColor;
-            schema.ButtonBackgroundColor = AltButtonBackgroundColor;
-            schema.ButtonBackgroundSelectedColor = AltButtonBackgroundSelectedColor;
-            schema.ButtonForegroundColor = AltButtonForegroundColor;
-            schema.ButtonForegroundDisabledColor = AltButtonForegroundDisabledColor;
-            schema.NotificationWarningColor = AltNotificationWarningColor;
-            schema.NotificationWarningTextColor = AltNotificationWarningTextColor;
-            schema.NotificationErrorColor = AltNotificationErrorColor;
-            schema.NotificationErrorTextColor = AltNotificationErrorTextColor;
-            AlternativeColorSchemaName = schema.Name;
-        }
-
         private async Task<bool> SiteFromGPS() {
             bool loc = false; // if location was acquired
             using (var gps = new Model.MyGPS.NMEAGps(0, profileService)) {
@@ -146,36 +127,33 @@ namespace NINA.ViewModel {
 
         private async Task<bool> SiteFromPlanetarium() {
             IPlanetarium s = PlanetariumFactory.GetPlanetarium(profileService);
-            Coords loc = await s.GetSite();
-            if (loc != null) {
-                Latitude = loc.Latitude;
-                Longitude = loc.Longitude;
-                Notification.ShowSuccess(String.Format(Locale.Loc.Instance["LblPlanetariumCoordsOk"], s.Name));
-                // Elevation = loc.Elevation;
-            } else Notification.ShowError(String.Format(Locale.Loc.Instance["LblPlanetariumCoordsError"], s.Name));
+            Coords loc = null;
+
+            try {
+                loc = await s.GetSite();
+
+                if (loc != null) {
+                    Latitude = loc.Latitude;
+                    Longitude = loc.Longitude;
+                    Notification.ShowSuccess(String.Format(Locale.Loc.Instance["LblPlanetariumCoordsOk"], s.Name));
+                }
+            } catch (PlanetariumFailedToConnect ex) {
+                Logger.Error($"Unable to connect to {s.Name}: {ex}");
+                Notification.ShowError(string.Format(Locale.Loc.Instance["LblPlanetariumFailedToConnect"], s.Name));
+            } catch (Exception ex) {
+                Logger.Error($"Failed to get coordinates from {s.Name}: {ex}");
+                Notification.ShowError(string.Format(Locale.Loc.Instance["LblPlanetariumCoordsError"], s.Name));
+            }
 
             return (loc != null);
         }
 
         private void CopyToCustomSchema(object obj) {
-            var schema = ColorSchemas.Items.Where((x) => x.Name == "Custom").First();
+            ActiveProfile.ColorSchemaSettings.CopyToCustom();
+        }
 
-            schema.PrimaryColor = PrimaryColor;
-            schema.SecondaryColor = SecondaryColor;
-            schema.BorderColor = BorderColor;
-            schema.BackgroundColor = BackgroundColor;
-            schema.SecondaryBackgroundColor = SecondaryBackgroundColor;
-            schema.TertiaryBackgroundColor = TertiaryBackgroundColor;
-            schema.ButtonBackgroundColor = ButtonBackgroundColor;
-            schema.ButtonBackgroundSelectedColor = ButtonBackgroundSelectedColor;
-            schema.ButtonForegroundColor = ButtonForegroundColor;
-            schema.ButtonForegroundDisabledColor = ButtonForegroundDisabledColor;
-            schema.NotificationWarningColor = NotificationWarningColor;
-            schema.NotificationWarningTextColor = NotificationWarningTextColor;
-            schema.NotificationErrorColor = NotificationErrorColor;
-            schema.NotificationErrorTextColor = NotificationErrorTextColor;
-
-            ColorSchemaName = schema.Name;
+        private void CopyToAlternativeCustomSchema(object obj) {
+            ActiveProfile.ColorSchemaSettings.CopyToAltCustom();
         }
 
         private void CloneProfile(object obj) {
@@ -202,38 +180,6 @@ namespace NINA.ViewModel {
             RaisePropertyChanged(nameof(ActiveProfile));
             RaisePropertyChanged(nameof(IndexFiles));
 
-            RaisePropertyChanged(nameof(ColorSchemaName));
-            RaisePropertyChanged(nameof(PrimaryColor));
-            RaisePropertyChanged(nameof(SecondaryColor));
-            RaisePropertyChanged(nameof(BorderColor));
-            RaisePropertyChanged(nameof(BackgroundColor));
-            RaisePropertyChanged(nameof(SecondaryBackgroundColor));
-            RaisePropertyChanged(nameof(TertiaryBackgroundColor));
-            RaisePropertyChanged(nameof(ButtonBackgroundColor));
-            RaisePropertyChanged(nameof(ButtonBackgroundSelectedColor));
-            RaisePropertyChanged(nameof(ButtonForegroundColor));
-            RaisePropertyChanged(nameof(ButtonForegroundDisabledColor));
-            RaisePropertyChanged(nameof(NotificationWarningColor));
-            RaisePropertyChanged(nameof(NotificationErrorColor));
-            RaisePropertyChanged(nameof(NotificationWarningTextColor));
-            RaisePropertyChanged(nameof(NotificationErrorTextColor));
-            RaisePropertyChanged(nameof(AlternativeColorSchemaName));
-            RaisePropertyChanged(nameof(AltPrimaryColor));
-            RaisePropertyChanged(nameof(AltSecondaryColor));
-            RaisePropertyChanged(nameof(AltBorderColor));
-            RaisePropertyChanged(nameof(AltBackgroundColor));
-            RaisePropertyChanged(nameof(AltSecondaryBackgroundColor));
-            RaisePropertyChanged(nameof(AltTertiaryBackgroundColor));
-            RaisePropertyChanged(nameof(AltButtonBackgroundColor));
-            RaisePropertyChanged(nameof(AltButtonBackgroundSelectedColor));
-            RaisePropertyChanged(nameof(AltButtonForegroundColor));
-            RaisePropertyChanged(nameof(AltButtonForegroundDisabledColor));
-            RaisePropertyChanged(nameof(AltNotificationWarningColor));
-            RaisePropertyChanged(nameof(AltNotificationErrorColor));
-            RaisePropertyChanged(nameof(AltNotificationErrorTextColor));
-            RaisePropertyChanged(nameof(AltNotificationWarningTextColor));
-            //RaisePropertyChanged(nameof(ColorSchemas));
-            //RaiseAllPropertiesChanged();
             foreach (System.Reflection.PropertyInfo p in this.GetType().GetProperties()) {
                 if (!p.Name.ToLower().Contains("color")) {
                     RaisePropertyChanged(p.Name);
@@ -273,7 +219,7 @@ namespace NINA.ViewModel {
         private void SetAutoFocusFilter(object obj) {
             if (SelectedFilter != null) {
                 foreach (FilterInfo filter in ActiveProfile.FilterWheelSettings.FilterWheelFilters) {
-                    if (filter != SelectedFilter) { 
+                    if (filter != SelectedFilter) {
                         filter.AutoFocusFilter = false;
                     } else {
                         SelectedFilter.AutoFocusFilter = !SelectedFilter.AutoFocusFilter;
@@ -337,6 +283,16 @@ namespace NINA.ViewModel {
 
             if (dialog.ShowDialog() == true) {
                 ActiveProfile.SequenceSettings.TemplatePath = dialog.FileName;
+            }
+        }
+
+        private void OpenSequenceFolderDiag(object o) {
+            using (var diag = new System.Windows.Forms.FolderBrowserDialog()) {
+                diag.SelectedPath = ActiveProfile.SequenceSettings.DefaultSequenceFolder;
+                System.Windows.Forms.DialogResult result = diag.ShowDialog();
+                if (result == System.Windows.Forms.DialogResult.OK) {
+                    ActiveProfile.SequenceSettings.DefaultSequenceFolder = diag.SelectedPath + "\\";
+                }
             }
         }
 
@@ -431,6 +387,7 @@ namespace NINA.ViewModel {
         public ICommand OpenImageFileDiagCommand { get; private set; }
 
         public ICommand OpenSequenceTemplateDiagCommand { get; private set; }
+        public ICommand OpenSequenceFolderDiagCommand { get; private set; }
 
         public ICommand OpenWebRequestCommand { get; private set; }
 
@@ -468,8 +425,15 @@ namespace NINA.ViewModel {
             new CultureInfo("en-US"),
             new CultureInfo("de-DE"),
             new CultureInfo("it-IT"),
-            new CultureInfo("es-US"),
-            new CultureInfo("zh-CN")
+            new CultureInfo("es-ES"),
+            new CultureInfo("zh-CN"),
+            new CultureInfo("zh-HK"),
+            new CultureInfo("zh-TW"),
+            new CultureInfo("fr-FR"),
+            new CultureInfo("ru-RU"),
+            new CultureInfo("pl-PL"),
+            new CultureInfo("nl-NL"),
+            new CultureInfo("ja-JP")
         };
 
         public ObservableCollection<CultureInfo> AvailableLanguages {
@@ -493,213 +457,49 @@ namespace NINA.ViewModel {
         }
 
         private void ToggleColors(object o) {
-            var tmpSchemaName = ColorSchemaName;
-            var tmpPrimaryColor = PrimaryColor;
-            var tmpSecondaryColor = SecondaryColor;
-            var tmpBorderColor = BorderColor;
-            var tmpBackgroundColor = BackgroundColor;
-            var tmpSecondaryBackgroundColor = SecondaryBackgroundColor;
-            var tmpTertiaryBackgroundColor = TertiaryBackgroundColor;
-            var tmpButtonBackgroundColor = ButtonBackgroundColor;
-            var tmpButtonBackgroundSelectedColor = ButtonBackgroundSelectedColor;
-            var tmpButtonForegroundColor = ButtonForegroundColor;
-            var tmpButtonForegroundDisabledColor = ButtonForegroundDisabledColor;
-            var tmpNotificationWarningColor = NotificationWarningColor;
-            var tmpNotificationWarningTextColor = NotificationWarningTextColor;
-            var tmpNotificationErrorColor = NotificationErrorColor;
-            var tmpNotificationErrorTextColor = NotificationErrorTextColor;
-
-            ColorSchemaName = AlternativeColorSchemaName;
-            PrimaryColor = AltPrimaryColor;
-            SecondaryColor = AltSecondaryColor;
-            BorderColor = AltBorderColor;
-            BackgroundColor = AltBackgroundColor;
-            SecondaryBackgroundColor = AltSecondaryBackgroundColor;
-            TertiaryBackgroundColor = AltTertiaryBackgroundColor;
-            ButtonBackgroundColor = AltButtonBackgroundColor;
-            ButtonBackgroundSelectedColor = AltButtonBackgroundSelectedColor;
-            ButtonForegroundColor = AltButtonForegroundColor;
-            ButtonForegroundDisabledColor = AltButtonForegroundDisabledColor;
-            NotificationWarningColor = AltNotificationWarningColor;
-            NotificationWarningTextColor = AltNotificationWarningTextColor;
-            NotificationErrorColor = AltNotificationErrorColor;
-            NotificationErrorTextColor = AltNotificationErrorTextColor;
-
-            AlternativeColorSchemaName = tmpSchemaName;
-            AltPrimaryColor = tmpPrimaryColor;
-            AltSecondaryColor = tmpSecondaryColor;
-            AltBorderColor = tmpBorderColor;
-            AltBackgroundColor = tmpBackgroundColor;
-            AltSecondaryBackgroundColor = tmpSecondaryBackgroundColor;
-            AltTertiaryBackgroundColor = tmpTertiaryBackgroundColor;
-            AltButtonBackgroundColor = tmpButtonBackgroundColor;
-            AltButtonBackgroundSelectedColor = tmpButtonBackgroundSelectedColor;
-            AltButtonForegroundColor = tmpButtonForegroundColor;
-            AltButtonForegroundDisabledColor = tmpButtonForegroundDisabledColor;
-            AltNotificationWarningColor = tmpNotificationWarningColor;
-            AltNotificationWarningTextColor = tmpNotificationWarningTextColor;
-            AltNotificationErrorColor = tmpNotificationErrorColor;
-            AltNotificationErrorTextColor = tmpNotificationErrorTextColor;
+            ActiveProfile.ColorSchemaSettings.ToggleSchema();
         }
 
-        public string ColorSchemaName {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.ColorSchemaName;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.ColorSchemaName = value;
-                RaisePropertyChanged();
-                RaisePropertyChanged(nameof(PrimaryColor));
-                RaisePropertyChanged(nameof(SecondaryColor));
-                RaisePropertyChanged(nameof(BorderColor));
-                RaisePropertyChanged(nameof(BackgroundColor));
-                RaisePropertyChanged(nameof(SecondaryBackgroundColor));
-                RaisePropertyChanged(nameof(TertiaryBackgroundColor));
-                RaisePropertyChanged(nameof(ButtonBackgroundColor));
-                RaisePropertyChanged(nameof(ButtonBackgroundSelectedColor));
-                RaisePropertyChanged(nameof(ButtonForegroundColor));
-                RaisePropertyChanged(nameof(ButtonForegroundDisabledColor));
-                RaisePropertyChanged(nameof(NotificationWarningColor));
-                RaisePropertyChanged(nameof(NotificationErrorColor));
-                RaisePropertyChanged(nameof(NotificationWarningTextColor));
-                RaisePropertyChanged(nameof(NotificationErrorTextColor));
-            }
-        }
+#pragma warning disable CS0612 // Type or member is obsolete
 
-        public ColorSchemas ColorSchemas {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.ColorSchemas;
-            }
-        }
-
-        public string AlternativeColorSchemaName {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.AltColorSchemaName;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.AltColorSchemaName = value;
-                RaisePropertyChanged();
-                RaisePropertyChanged(nameof(AltPrimaryColor));
-                RaisePropertyChanged(nameof(AltSecondaryColor));
-                RaisePropertyChanged(nameof(AltBorderColor));
-                RaisePropertyChanged(nameof(AltBackgroundColor));
-                RaisePropertyChanged(nameof(AltSecondaryBackgroundColor));
-                RaisePropertyChanged(nameof(AltTertiaryBackgroundColor));
-                RaisePropertyChanged(nameof(AltButtonBackgroundColor));
-                RaisePropertyChanged(nameof(AltButtonBackgroundSelectedColor));
-                RaisePropertyChanged(nameof(AltButtonForegroundColor));
-                RaisePropertyChanged(nameof(AltButtonForegroundDisabledColor));
-                RaisePropertyChanged(nameof(AltNotificationWarningColor));
-                RaisePropertyChanged(nameof(AltNotificationErrorColor));
-            }
-        }
-
-        public Color PrimaryColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.PrimaryColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.PrimaryColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color SecondaryColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.SecondaryColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.SecondaryColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color BorderColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.BorderColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.BorderColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color BackgroundColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.BackgroundColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.BackgroundColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color SecondaryBackgroundColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.SecondaryBackgroundColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.SecondaryBackgroundColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color TertiaryBackgroundColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.TertiaryBackgroundColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.TertiaryBackgroundColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public FileTypeEnum[] FileTypes {
-            get {
-                return Enum.GetValues(typeof(FileTypeEnum))
+        public FileTypeEnum[] FileTypes => Enum.GetValues(typeof(FileTypeEnum))
                     .Cast<FileTypeEnum>()
                     .Where(p => p != FileTypeEnum.RAW)
-                    .ToArray<FileTypeEnum>();
+                    .Where(p => p != FileTypeEnum.TIFF_LZW)
+                    .Where(p => p != FileTypeEnum.TIFF_ZIP)
+                    .ToArray();
+
+#pragma warning restore CS0612 // Type or member is obsolete
+
+        public TIFFCompressionTypeEnum[] TIFFCompressionTypes {
+            get {
+                return Enum.GetValues(typeof(TIFFCompressionTypeEnum))
+                    .Cast<TIFFCompressionTypeEnum>()
+                    .ToArray();
             }
         }
 
-        public Color ButtonBackgroundColor {
+        public XISFCompressionTypeEnum[] XISFCompressionTypes {
             get {
-                return profileService.ActiveProfile.ColorSchemaSettings.ButtonBackgroundColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.ButtonBackgroundColor = value;
-                RaisePropertyChanged();
+                return Enum.GetValues(typeof(XISFCompressionTypeEnum))
+                    .Cast<XISFCompressionTypeEnum>()
+                    .ToArray();
             }
         }
 
-        public Color ButtonBackgroundSelectedColor {
+        public XISFChecksumTypeEnum[] XISFChecksumTypes {
             get {
-                return profileService.ActiveProfile.ColorSchemaSettings.ButtonBackgroundSelectedColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.ButtonBackgroundSelectedColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color ButtonForegroundColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.ButtonForegroundColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.ButtonForegroundColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color ButtonForegroundDisabledColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.ButtonForegroundDisabledColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.ButtonForegroundDisabledColor = value;
-                RaisePropertyChanged();
+                /*
+                 * NOTE: PixInsight does not yet support opening files with SHA3 checksums, despite then
+                 * being defined as part of the XISF 1.0 specification. We will not permit the user to choose
+                 * these as a checksum type until PixInsight also supports them, which is supposed to be in early
+                 * 2020.
+                 */
+                return Enum.GetValues(typeof(XISFChecksumTypeEnum))
+                    .Cast<XISFChecksumTypeEnum>()
+                    .Where(p => p != XISFChecksumTypeEnum.SHA3_256)
+                    .Where(p => p != XISFChecksumTypeEnum.SHA3_512)
+                    .ToArray();
             }
         }
 
@@ -711,106 +511,6 @@ namespace NINA.ViewModel {
             }
             set {
                 _imagePatterns = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color AltPrimaryColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.AltPrimaryColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.AltPrimaryColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color AltSecondaryColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.AltSecondaryColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.AltSecondaryColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color AltBorderColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.AltBorderColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.AltBorderColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color AltBackgroundColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.AltBackgroundColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.AltBackgroundColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color AltSecondaryBackgroundColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.AltSecondaryBackgroundColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.AltSecondaryBackgroundColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color AltTertiaryBackgroundColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.AltTertiaryBackgroundColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.AltTertiaryBackgroundColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color AltButtonBackgroundColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.AltButtonBackgroundColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.AltButtonBackgroundColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color AltButtonBackgroundSelectedColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.AltButtonBackgroundSelectedColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.AltButtonBackgroundSelectedColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color AltButtonForegroundColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.AltButtonForegroundColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.AltButtonForegroundColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color AltButtonForegroundDisabledColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.AltButtonForegroundDisabledColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.AltButtonForegroundDisabledColor = value;
                 RaisePropertyChanged();
             }
         }
@@ -842,86 +542,6 @@ namespace NINA.ViewModel {
             set {
                 NINA.Properties.Settings.Default.AutoUpdateSource = (int)value;
                 NINA.Properties.Settings.Default.Save();
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color NotificationWarningColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.NotificationWarningColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.NotificationWarningColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color NotificationErrorColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.NotificationErrorColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.NotificationErrorColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color NotificationWarningTextColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.NotificationWarningTextColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.NotificationWarningTextColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color NotificationErrorTextColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.NotificationErrorTextColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.NotificationErrorTextColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color AltNotificationWarningColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.AltNotificationWarningColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.AltNotificationWarningColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color AltNotificationErrorColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.AltNotificationErrorColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.AltNotificationErrorColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color AltNotificationWarningTextColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.AltNotificationWarningTextColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.AltNotificationWarningTextColor = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public Color AltNotificationErrorTextColor {
-            get {
-                return profileService.ActiveProfile.ColorSchemaSettings.AltNotificationErrorTextColor;
-            }
-            set {
-                profileService.ActiveProfile.ColorSchemaSettings.AltNotificationErrorTextColor = value;
                 RaisePropertyChanged();
             }
         }

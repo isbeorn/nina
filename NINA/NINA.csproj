@@ -51,7 +51,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>N:\Astrofotografie\AstrophotographyBuddy\</OutputPath>
+    <OutputPath>..\..\..\..\..\..\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -192,6 +192,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="LZ4, Version=1.0.15.93, Culture=neutral, PublicKeyToken=62e1b5ec1eec9bdd, processorArchitecture=MSIL">
+      <HintPath>..\packages\lz4net.1.0.15.93\lib\net4-client\LZ4.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
       <Private>True</Private>
@@ -252,6 +255,12 @@
     </Reference>
     <Reference Include="OxyPlot.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=75e952ba404cdbb0, processorArchitecture=MSIL">
       <HintPath>..\packages\OxyPlot.Wpf.1.0.0\lib\net45\OxyPlot.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="SHA3, Version=0.9.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SHA3.0.9.2\lib\net40\SHA3.dll</HintPath>
+    </Reference>
+    <Reference Include="SHA3Managed, Version=0.9.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SHA3.0.9.2\lib\net40\SHA3Managed.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -315,6 +324,9 @@
     <Reference Include="Xceed.Wpf.Toolkit, Version=3.5.3.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
       <HintPath>..\packages\NINA.WpfToolkit.3.5.3\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
+    <Reference Include="Zlib.Portable, Version=1.11.0.0, Culture=neutral, PublicKeyToken=431cba815f6a8b5b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Zlib.Portable.Signed.1.11.0\lib\portable-net4+sl5+wp8+win8+wpa81+MonoTouch+MonoAndroid\Zlib.Portable.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -340,6 +352,76 @@
     <Compile Include="EquipmentChooser\EquipmentChooser.xaml.cs">
       <DependentUpon>EquipmentChooser.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Locale\Locale.de-DE.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.de-DE.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.en-GB.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.en-GB.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.en-US.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.en-US.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.es-ES.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.es-ES.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.fr-FR.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.fr-FR.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.it-IT.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.it-IT.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.ja-JP.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.ja-JP.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.nl-NL.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.nl-NL.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.pl-PL.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.pl-PL.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.ru-RU.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.ru-RU.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.zh-CN.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.zh-CN.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.zh-HK.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.zh-HK.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.zh-TW.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.zh-TW.resx</DependentUpon>
+    </Compile>
     <Compile Include="Model\ImageData\AllImageStatistics.cs" />
     <Compile Include="Model\ImageData\ImageProperties.cs" />
     <Compile Include="Model\ImageData\IImageData.cs" />
@@ -358,14 +440,53 @@
     <Compile Include="Model\MyCamera\FileCamera.cs" />
     <Compile Include="Model\MyCamera\FLICamera.cs" />
     <Compile Include="Model\MyCamera\IExposureData.cs" />
+    <Compile Include="Model\MyCamera\OmegonCamera.cs" />
     <Compile Include="Model\MyCamera\Simulator\ImageSettings.cs" />
     <Compile Include="Model\MyCamera\Simulator\RandomSettings.cs" />
     <Compile Include="Model\MyCamera\Simulator\Settings.cs" />
     <Compile Include="Model\MyCamera\Simulator\SkySurveySettings.cs" />
     <Compile Include="Model\MyCamera\Simulator\CameraType.cs" />
+    <Compile Include="Model\MyFilterWheel\QHYFilterWheel.cs" />
     <Compile Include="Model\MyFilterWheel\FLIFilterWheel.cs" />
+    <Compile Include="PlateSolving\CaptureSolverParameter.cs" />
+    <Compile Include="PlateSolving\CenteringSolver.cs" />
+    <Compile Include="PlateSolving\CenterSolveParameter.cs" />
+    <Compile Include="PlateSolving\ICaptureSolver.cs" />
+    <Compile Include="PlateSolving\ICenteringSolver.cs" />
+    <Compile Include="PlateSolving\IImageSolver.cs" />
+    <Compile Include="PlateSolving\ImageSolver.cs" />
+    <Compile Include="PlateSolving\CaptureSolver.cs" />
+    <Compile Include="PlateSolving\PlateSolveProgress.cs" />
+    <Compile Include="Profile\ExposureCalculatorSettings.cs" />
+    <Compile Include="Profile\Interfaces\IExposureCalculatorSettings.cs" />
+    <Compile Include="Utility\CameraSDKs\EDSDK\EDSDKLocal.cs" />
+    <Compile Include="Utility\CameraSDKs\OmegonSDK\omegonprocam.cs" />
+    <Compile Include="Utility\FileSaveInfo.cs" />
+    <Compile Include="Utility\Converters\AFFittingToVisibilityConverter.cs" />
+    <Compile Include="Utility\Converters\IsLightImageTypeToVisibilityConverter.cs" />
+    <Compile Include="Utility\DeferredContent.cs" />
+    <Compile Include="Utility\Exceptions\PlanetariumFailedToConnect.cs" />
+    <Compile Include="Utility\Exceptions\PlanetariumFailedToGetCoordinates.cs" />
+    <Compile Include="Utility\Exceptions\PlanetariumObjectNotSelectedException.cs" />
+    <Compile Include="Utility\SerialCommunication\ISerialSdk.cs" />
+    <Compile Include="Utility\SerialCommunication\SerialSdk.cs" />
+    <Compile Include="Utility\SerialCommunication\ICommand.cs" />
+    <Compile Include="Utility\SerialCommunication\ISerialPort.cs" />
+    <Compile Include="Utility\SerialCommunication\ISerialPortProvider.cs" />
+    <Compile Include="Utility\SerialCommunication\Response.cs" />
+    <Compile Include="Utility\SerialCommunication\ResponseCache.cs" />
+    <Compile Include="Utility\SerialCommunication\SerialPortProvider.cs" />
+    <Compile Include="Utility\SerialCommunication\SerialPortWrapper.cs" />
+    <Compile Include="Utility\Enum\TIFFFeaturesEnum.cs" />
+    <Compile Include="Utility\Enum\XISFFeaturesEnum.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakCommands.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakDevice.cs" />
+    <Compile Include="Model\MyFlatDevice\AlnitakFlatDevice.cs" />
+    <Compile Include="Model\MyFlatDevice\FlatDeviceInfo.cs" />
+    <Compile Include="Model\MyFlatDevice\IFlatDevice.cs" />
     <Compile Include="Model\MyGuider\DirectGuider.cs" />
     <Compile Include="Model\MyGuider\ISynchronizedPHD2GuiderService.cs" />
+    <Compile Include="Model\MyGuider\MGENGuider.cs" />
     <Compile Include="Model\MyGuider\SynchronizedPHD2Guider.cs" />
     <Compile Include="Model\MyGuider\SynchronizedPHD2GuiderService.cs" />
     <Compile Include="Model\MyPlanetarium\CartesDuCiel.cs" />
@@ -378,17 +499,15 @@
     <Compile Include="Model\MyWeatherData\AscomObservingConditions.cs" />
     <Compile Include="Model\MyWeatherData\OpenWeatherMap.cs" />
     <Compile Include="Model\MyWeatherData\WeatherDataInfo.cs" />
-    <Compile Include="PlateSolving\BaseSolver.cs" />
+    <Compile Include="PlateSolving\Solvers\BaseSolver.cs" />
     <Compile Include="PlateSolving\PlateSolveImageProperties.cs" />
+    <Compile Include="Profile\FlatDeviceSettings.cs" />
+    <Compile Include="Profile\Interfaces\IFlatDeviceSettings.cs" />
     <Compile Include="Profile\Interfaces\IWeatherDataSettings.cs" />
     <Compile Include="Profile\ProfileInfo.cs" />
     <Compile Include="Profile\WeatherDataSettings.cs" />
-    <Compile Include="Utility\Api\ApiParameters.cs" />
     <Compile Include="Model\MyPlanetarium\IPlanetarium.cs" />
-    <Compile Include="Utility\Api\RawTcp.cs" />
-    <Compile Include="Utility\Api\ITcpIpApi.cs" />
     <Compile Include="Model\MyPlanetarium\Stellarium.cs" />
-    <Compile Include="Utility\Api\JSONApi.cs" />
     <Compile Include="Model\MySwitch\Ascom\AscomSwitch.cs" />
     <Compile Include="Model\MySwitch\Ascom\AscomSwitchHub.cs" />
     <Compile Include="Model\MySwitch\Ascom\AscomWritableSwitch.cs" />
@@ -405,12 +524,13 @@
     <Compile Include="Model\MyTelescope\GuideDirections.cs" />
     <Compile Include="Model\MyTelescope\PierSide.cs" />
     <Compile Include="Model\MyGPS\NMEAGps.cs" />
-    <Compile Include="PlateSolving\ASTAPSolver.cs" />
-    <Compile Include="PlateSolving\CLISolver.cs" />
+    <Compile Include="PlateSolving\Solvers\ASTAPSolver.cs" />
+    <Compile Include="PlateSolving\Solvers\CLISolver.cs" />
     <Compile Include="PlateSolving\PlateSolveParameter.cs" />
     <Compile Include="PlateSolving\PlateSolveResult.cs" />
     <Compile Include="Utility\Astrometry\TopocentricCoordinates.cs" />
     <Compile Include="Utility\CameraSDKs\FLISDK\FLIFilterWheels.cs" />
+    <Compile Include="Utility\CameraSDKs\QHYSDK\QHYFilterWheels.cs" />
     <Compile Include="Utility\Converters\AutoFocusHFRToCollapsedVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\NaNToEmptyTextConverter.cs" />
     <Compile Include="Utility\Converters\AutoFocusContrastDetectionToCollapsedVisibilityConverter.cs" />
@@ -422,6 +542,7 @@
     <Compile Include="Utility\Converters\WeatherVelocityConverter.cs" />
     <Compile Include="Utility\CameraSDKs\FLISDK\FLICameras.cs" />
     <Compile Include="Utility\CameraSDKs\FLISDK\FLICameraSDK.cs" />
+    <Compile Include="Utility\Converters\ZeroToVisibilityConverter.cs" />
     <Compile Include="Utility\Enum\AFCurveFittingEnum.cs" />
     <Compile Include="Utility\Enum\AFMethodEnum.cs" />
     <Compile Include="Utility\Enum\AltitudeSite.cs" />
@@ -437,6 +558,9 @@
     <Compile Include="Utility\Enum\StarSensitivityEnum.cs" />
     <Compile Include="Utility\Exceptions\CameraDownloadFailedException.cs" />
     <Compile Include="Utility\Extensions\IOrderedQueryableExtension.cs" />
+    <Compile Include="Model\MyFlatDevice\AlnitakFlipFlatSimulator.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakResponses.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\IAlnitakDevice.cs" />
     <Compile Include="Utility\ImageAnalysis\BahtinovAnalysis.cs" />
     <Compile Include="Utility\ImageAnalysis\BahtinovImage.cs" />
     <Compile Include="Utility\ImageAnalysis\BayerFilter16bpp.cs" />
@@ -444,6 +568,9 @@
     <Compile Include="Utility\ImageAnalysis\FastGaussianBlur.cs" />
     <Compile Include="Utility\ImageAnalysis\ImageUtility.cs" />
     <Compile Include="Utility\ImageAnalysis\NoBlurCannyEdgeDetector.cs" />
+    <Compile Include="Utility\Mediator\FlatDeviceMediator.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IFlatDeviceConsumer.cs" />
+    <Compile Include="Utility\Mediator\Interfaces\IFlatDeviceMediator.cs" />
     <Compile Include="Utility\Mediator\Interfaces\ISwitchConsumer.cs" />
     <Compile Include="Utility\Mediator\Interfaces\ISwitchMediator.cs" />
     <Compile Include="Utility\Mediator\Interfaces\IWeatherDataConsumer.cs" />
@@ -455,9 +582,20 @@
     <Compile Include="Utility\Behaviors\BrowserBehavior.cs" />
     <Compile Include="Utility\Enum\AutoUpdateSourceEnum.cs" />
     <Compile Include="Utility\ValidationRules\GreaterThanZeroRule.cs" />
+    <Compile Include="Utility\ValidationRules\IntRangeRule.cs" />
     <Compile Include="Utility\ValidationRules\StrictGreaterZeroRule.cs" />
+    <Compile Include="ViewModel\AutoFocus\AutoFocusPoint.cs" />
+    <Compile Include="ViewModel\AutoFocus\AutoFocusReport.cs" />
+    <Compile Include="ViewModel\AutoFocus\FocusPointComparer.cs" />
+    <Compile Include="ViewModel\AutoFocus\MathHelper.cs" />
+    <Compile Include="ViewModel\AutoFocus\MeasureAndError.cs" />
+    <Compile Include="ViewModel\AutoFocus\PlotPointComparer.cs" />
+    <Compile Include="ViewModel\AutoFocus\TrendLine.cs" />
     <Compile Include="ViewModel\Equipment\Camera\CameraChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\FilterWheel\FilterWheelChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\FlatDevice\FlatDeviceChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\FlatDevice\FlatDeviceVM.cs" />
+    <Compile Include="ViewModel\Equipment\FlatDevice\IFlatDeviceVM.cs" />
     <Compile Include="ViewModel\Equipment\Focuser\FocuserChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\Rotator\RotatorChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\Telescope\TelescopeChooserVM.cs" />
@@ -465,8 +603,24 @@
     <Compile Include="ViewModel\Equipment\WeatherData\IWeatherDataVM.cs" />
     <Compile Include="ViewModel\Equipment\WeatherData\WeatherDataChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\WeatherData\WeatherDataVM.cs" />
+    <Compile Include="ViewModel\Imaging\ExposureTimeRecommendationVM.cs" />
+    <Compile Include="ViewModel\Imaging\AnchorablePlateSolverVM.cs" />
+    <Compile Include="ViewModel\PlateSolvingStatusVM.cs" />
     <Compile Include="View\Equipment\Camera\FLICameraSetupView.xaml.cs">
       <DependentUpon>FLICameraSetupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\FlatDevice\AlnitakSetupView.xaml.cs">
+      <DependentUpon>AlnitakSetupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Guider\DefaultDetailView.xaml.cs">
+      <DependentUpon>DefaultDetailView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Guider\GuiderTemplateSelector.cs" />
+    <Compile Include="View\Equipment\Guider\MGenDetailView.xaml.cs">
+      <DependentUpon>MGenDetailView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\FlatDevice\FlatDeviceView.xaml.cs">
+      <DependentUpon>FlatDeviceView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Equipment\Switch\EagleSetupView.xaml.cs">
       <DependentUpon>EagleSetupView.xaml</DependentUpon>
@@ -545,8 +699,8 @@
     <Compile Include="MyMessageBox\MyMessageBoxView.xaml.cs">
       <DependentUpon>MyMessageBoxView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PlateSolving\AllSkyPlateSolver.cs" />
-    <Compile Include="PlateSolving\Platesolve2Solver.cs" />
+    <Compile Include="PlateSolving\Solvers\AllSkyPlateSolver.cs" />
+    <Compile Include="PlateSolving\Solvers\Platesolve2Solver.cs" />
     <Compile Include="PlateSolving\PlateSolverFactory.cs" />
     <Compile Include="Utility\ASCOMInteraction.cs" />
     <Compile Include="Utility\Astrometry\RiseAndSet\AstronomicalTwilightRiseAndSet.cs" />
@@ -726,7 +880,7 @@
     <Compile Include="Utility\XISF.cs" />
     <Compile Include="ViewModel\AberrationInspectorVM.cs" />
     <Compile Include="ViewModel\ApplicationStatusVM.cs" />
-    <Compile Include="ViewModel\AutoFocusVM.cs" />
+    <Compile Include="ViewModel\AutoFocus\AutoFocusVM.cs" />
     <Compile Include="ViewModel\DockableVM.cs" />
     <Compile Include="ViewModel\DockManagerVM.cs" />
     <Compile Include="ViewModel\EquipmentChooserVM.cs" />
@@ -751,8 +905,8 @@
     <Compile Include="ViewModel\ImageControlVM.cs" />
     <Compile Include="Model\MyCamera\BinningMode.cs" />
     <Compile Include="Model\MyCamera\ICamera.cs" />
-    <Compile Include="PlateSolving\LocalPlateSolver.cs" />
-    <Compile Include="PlateSolving\AstrometryPlateSolver.cs" />
+    <Compile Include="PlateSolving\Solvers\LocalPlateSolver.cs" />
+    <Compile Include="PlateSolving\Solvers\AstrometryPlateSolver.cs" />
     <Compile Include="PlateSolving\IPlateSolver.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -765,7 +919,6 @@
     <Compile Include="Utility\BaseINPC.cs" />
     <Compile Include="Utility\EnumBindingSourceExtension.cs" />
     <Compile Include="Utility\ImageAnalysis\StarDetection.cs" />
-    <Compile Include="Utility\ImageArray\ImageArray.cs" />
     <Compile Include="Utility\Logger.cs" />
     <Compile Include="Utility\TabControlEx.cs" />
     <Compile Include="Utility\Notification\Notification.cs" />
@@ -789,7 +942,6 @@
     <Compile Include="ViewModel\MeridianFlipVM.cs" />
     <Compile Include="ViewModel\OptionsVM.cs" />
     <Compile Include="ViewModel\Equipment\Guider\GuiderVM.cs" />
-    <Compile Include="ViewModel\PlatesolveVM.cs" />
     <Compile Include="ViewModel\FramingAssistant\FrameLine.cs" />
     <Compile Include="ViewModel\PolarAlignmentVM.cs" />
     <Compile Include="ViewModel\ProfileSelectVM.cs" />
@@ -816,6 +968,9 @@
     </Compile>
     <Compile Include="View\Imaging\AnchorableAutoFocusView.xaml.cs">
       <DependentUpon>AnchorableAutoFocusView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Imaging\AnchorableExposureCalculatorView.xaml.cs">
+      <DependentUpon>AnchorableExposureCalculatorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Imaging\AnchorableFocusTargetsView.xaml.cs">
       <DependentUpon>AnchorableFocusTargetsView.xaml</DependentUpon>
@@ -944,9 +1099,6 @@
     <Compile Include="View\Options\OptionsImagingView.xaml.cs">
       <DependentUpon>OptionsImagingView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Options\OptionsPlanetariumView.xaml.cs">
-      <DependentUpon>OptionsPlanetariumView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\Options\OptionsPlateSolverView.xaml.cs">
       <DependentUpon>OptionsPlateSolverView.xaml</DependentUpon>
     </Compile>
@@ -1009,26 +1161,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Locale\Locale.en-GB.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Locale\Locale.es-US.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Locale\Locale.en-US.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Locale\Locale.it-IT.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Locale\Locale.zh-CN.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1043,14 +1175,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Locale\Locale.de-DE.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Locale\Locale.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MyMessageBox\MyMessageBoxView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1194,11 +1318,31 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\Equipment\Guider\DefaultDetailView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\Guider\MGenDetailView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\FlatDevice\AlnitakSetupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\FlatDevice\FlatDeviceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Equipment\WeatherData\WeatherDataView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Imaging\AnchorableAutoFocusView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Imaging\AnchorableExposureCalculatorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1374,10 +1518,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Options\OptionsPlanetariumView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="View\Options\OptionsPlateSolverView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1460,73 +1600,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="..\NINA.sln.licenseheader">
+      <Link>NINA.sln.licenseheader</Link>
+    </None>
     <None Include="BootstrapAscomProfileStore.ps1" />
-    <None Include="Documentation\images\nina-logo.png" />
-    <None Include="Documentation\images\panel-autofocus.png" />
-    <None Include="Documentation\images\panel-camera.png" />
-    <None Include="Documentation\images\panel-customization_1.png" />
-    <None Include="Documentation\images\panel-customization_2.png" />
-    <None Include="Documentation\images\panel-customization_3.png" />
-    <None Include="Documentation\images\panel-customization_4.png" />
-    <None Include="Documentation\images\panel-filterwheel.png" />
-    <None Include="Documentation\images\panel-focuser.png" />
-    <None Include="Documentation\images\panel-guiding.png" />
-    <None Include="Documentation\images\panel-hfrhistory.png" />
-    <None Include="Documentation\images\panel-image.png" />
-    <None Include="Documentation\images\panel-imagehistory.png" />
-    <None Include="Documentation\images\panel-imaging.png" />
-    <None Include="Documentation\images\panel-platesolving.png" />
-    <None Include="Documentation\images\panel-polaralignment.png" />
-    <None Include="Documentation\images\panel-sequence-running.png" />
-    <None Include="Documentation\images\panel-sequence.png" />
-    <None Include="Documentation\images\panel-statistics.png" />
-    <None Include="Documentation\images\panel-telescope.png" />
-    <None Include="Documentation\images\panel-weather.png" />
-    <None Include="Documentation\images\quickstart-camera.png" />
-    <None Include="Documentation\images\quickstart-defocusedstarfield.png" />
-    <None Include="Documentation\images\quickstart-disablepanels.png" />
-    <None Include="Documentation\images\quickstart-focusedstarfield.png" />
-    <None Include="Documentation\images\quickstart-focusing.png" />
-    <None Include="Documentation\images\quickstart-imaging.png" />
-    <None Include="Documentation\images\quickstart-running-sequence.png" />
-    <None Include="Documentation\images\quickstart-sequence.png" />
-    <None Include="Documentation\images\quickstart-settings-equipment.png" />
-    <None Include="Documentation\images\quickstart-settings-imaging.png" />
-    <None Include="Documentation\images\quickstart-telescope.png" />
-    <None Include="Documentation\images\quickstart-ui-overview.png" />
-    <None Include="Documentation\images\tab-camera.png" />
-    <None Include="Documentation\images\tab-filterwheelfocuser.png" />
-    <None Include="Documentation\images\tab-framingassistant.png" />
-    <None Include="Documentation\images\tab-imaging.png" />
-    <None Include="Documentation\images\tab-objectbrowser.png" />
-    <None Include="Documentation\images\tab-phd2.png" />
-    <None Include="Documentation\images\tab-sequencing.png" />
-    <None Include="Documentation\images\tab-settings-equipment.png" />
-    <None Include="Documentation\images\tab-settings-general.png" />
-    <None Include="Documentation\images\tab-settings-imaging.png" />
-    <None Include="Documentation\images\tab-settings-platesolving-astrometry.png" />
-    <None Include="Documentation\images\tab-settings-platesolving-localplatesolver-indexfiles.png" />
-    <None Include="Documentation\images\tab-settings-platesolving-localplatesolver.png" />
-    <None Include="Documentation\images\tab-settings-platesolving-platesolve2.png" />
-    <None Include="Documentation\images\tab-telescope.png" />
-    <None Include="Documentation\images\panel-image-bahtinov.png" />
-    <None Include="Documentation\images\panel-image-subsampling.png" />
-    <None Include="Documentation\images\usage-autoflip-settings.png" />
-    <None Include="Documentation\images\usage-bulbshutter-mountsnapport.png" />
-    <None Include="Documentation\images\usage-bulbshutter-serial.png" />
-    <None Include="Documentation\images\usage-bulbshutter-settings.png" />
-    <None Include="Documentation\images\usage-bulbshutter-snapport.png" />
-    <None Include="Documentation\images\usage-dithering-sequence.png" />
-    <None Include="Documentation\images\usage-dithering-settings-phd2.png" />
-    <None Include="Documentation\images\usage-objectbrowser-object.png" />
-    <None Include="Documentation\md-template.html" />
-    <None Include="Documentation\modest.css" />
-    <None Include="Documentation\NINA.html">
-      <DependentUpon>NINA.md</DependentUpon>
-    </None>
-    <None Include="Documentation\table-of-contents.html">
-      <DependentUpon>table-of-contents.md</DependentUpon>
-    </None>
     <Resource Include="Resources\astrometry.net.png" />
     <Content Include="Database\Initial\initial_data.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1540,8 +1617,14 @@
     <Content Include="Database\Migration\2.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Database\Migration\3.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="External\x64\FLI\libfli.dll" />
     <Content Include="External\x64\FreeImage\FreeImage.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\FTDI\ftd2xx.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x64\NOVAS\NOVAS31lib.dll">
@@ -1555,6 +1638,9 @@
     </Content>
     <Content Include="External\x86\FLI\libfli.dll" />
     <Content Include="External\x86\FreeImage\FreeImage.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\FTDI\ftd2xx.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\NOVAS\NOVAS31lib.dll">
@@ -1575,8 +1661,6 @@
     <Content Include="Utility\DCRaw\dcraw.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Documentation\NINA.md" />
-    <None Include="Documentation\table-of-contents.md" />
     <Content Include="External\x64\NOVAS\cio_ra.bin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1590,9 +1674,66 @@
     <None Include="packages.config" />
     <None Include="Resources\avalondock.config" />
     <SplashScreen Include="Resources\ninasplash.png" />
+    <EmbeddedResource Include="Locale\Locale.de-DE.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.de-DE.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.en-GB.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.en-GB.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.en-US.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.en-US.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.es-ES.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.es-ES.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.fr-FR.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.fr-FR.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.it-IT.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.it-IT.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.ja-JP.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.ja-JP.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.nl-NL.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.nl-NL.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.pl-PL.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.pl-PL.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.ru-RU.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.ru-RU.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.zh-CN.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.zh-CN.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.zh-HK.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.zh-HK.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.zh-TW.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.zh-TW.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="AstrophotographyBuddy_TemporaryKey.pfx" />
     <Content Include="LICENSE.txt">
@@ -1639,6 +1780,10 @@
       <Project>{aade1df5-4c46-4760-b72b-474d90336f5b}</Project>
       <Name>nikoncswrapper</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NINA.MGEN\NINA.MGEN.csproj">
+      <Project>{d897bffd-7777-44f5-9100-1ff0db3b032f}</Project>
+      <Name>NINA.MGEN</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NINACustomControlLibrary\NINACustomControlLibrary.csproj">
       <Project>{39fefc1e-7a69-440d-b38a-5b9469353491}</Project>
       <Name>NINACustomControlLibrary</Name>
@@ -1671,6 +1816,9 @@
     <Folder Include="External\x64\Nikon\Type0020\" />
     <Folder Include="External\x64\Nikon\Type0021\" />
     <Folder Include="External\x64\Nikon\Type0022\" />
+    <Folder Include="External\x64\Nikon\Type0023\" />
+    <Folder Include="External\x64\Nikon\Type0024\" />
+    <Folder Include="External\x64\Omegon\" />
     <Folder Include="External\x64\QHYCCD\" />
     <Folder Include="External\x64\ToupTek\" />
     <Folder Include="External\x86\Altair\" />
@@ -1699,43 +1847,95 @@
     <Folder Include="External\x86\Nikon\Type0020\" />
     <Folder Include="External\x86\Nikon\Type0021\" />
     <Folder Include="External\x86\Nikon\Type0022\" />
+    <Folder Include="External\x86\Nikon\Type0023\" />
+    <Folder Include="External\x86\Nikon\Type0024\" />
+    <Folder Include="External\x86\Omegon\" />
     <Folder Include="External\x86\QHYCCD\" />
     <Folder Include="External\x86\ToupTek\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
-      echo "Copy Altair DLLs"
+      if exist "$(ProjectDir)External\x64\Altair" (
+      echo "Copy Altair x64 DLLs"
       xcopy "$(ProjectDir)External\x64\Altair" "$(TargetDir)\External\x64\Altair" /h/i/c/k/e/r/y
+      )
+      if exist "$(ProjectDir)External\x86\Altair" (
+      echo "Copy Altair x86 DLLs"
       xcopy "$(ProjectDir)External\x86\Altair" "$(TargetDir)\External\x86\Altair" /h/i/c/k/e/r/y
+      )
 
-      echo "Copy ASI DLLs"
+      if exist "$(ProjectDir)External\x64\ASI" (
+      echo "Copy ASI x64 DLLs"
       xcopy "$(ProjectDir)External\x64\ASI" "$(TargetDir)\External\x64\ASI" /h/i/c/k/e/r/y
+      )
+      if exist "$(ProjectDir)External\x86\ASI" (
+      echo "Copy ASI x86 DLLs"
       xcopy "$(ProjectDir)External\x86\ASI" "$(TargetDir)\External\x86\ASI" /h/i/c/k/e/r/y
+      )
 
-      echo "Copy Atik DLLs"
+      if exist "$(ProjectDir)External\x64\Atik" (
+      echo "Copy Atik x64 DLLs"
       xcopy "$(ProjectDir)External\x64\Atik" "$(TargetDir)\External\x64\Atik" /h/i/c/k/e/r/y
+      )
+      if exist "$(ProjectDir)External\x86\Atik" (
+      echo "Copy Atik x86 DLLs"
       xcopy "$(ProjectDir)External\x86\Atik" "$(TargetDir)\External\x86\Atik" /h/i/c/k/e/r/y
+      )
 
-      echo "Copy Canon DLLs"
+      if exist "$(ProjectDir)External\x64\Canon" (
+      echo "Copy Canon x64 DLLs"
       xcopy "$(ProjectDir)External\x64\Canon" "$(TargetDir)\External\x64\Canon" /h/i/c/k/e/r/y
+      )
+      if exist "$(ProjectDir)External\x86\Canon" (
+      echo "Copy Canon x86 DLLs"
       xcopy "$(ProjectDir)External\x86\Canon" "$(TargetDir)\External\x86\Canon" /h/i/c/k/e/r/y
+      )
 
-      echo "Copy Nikon DLLs"
+      if exist "$(ProjectDir)External\x64\Nikon" (
+      echo "Copy Nikon x64 DLLs"
       xcopy "$(ProjectDir)External\x64\Nikon" "$(TargetDir)\External\x64\Nikon" /h/i/c/k/e/r/y
+      )
+      if exist "$(ProjectDir)External\x86\Nikon" (
+      echo "Copy Nikon x86 DLLs"
       xcopy "$(ProjectDir)External\x86\Nikon" "$(TargetDir)\External\x86\Nikon" /h/i/c/k/e/r/y
+      )
 
-      echo "Copy ToupTek DLLs"
+      if exist "$(ProjectDir)External\x64\ToupTek" (
+      echo "Copy ToupTek x64 DLLs"
       xcopy "$(ProjectDir)External\x64\ToupTek" "$(TargetDir)\External\x64\ToupTek" /h/i/c/k/e/r/y
+      )
+      if exist "$(ProjectDir)External\x86\ToupTek" (
+      echo "Copy ToupTek x86 DLLs"
       xcopy "$(ProjectDir)External\x86\ToupTek" "$(TargetDir)\External\x86\ToupTek" /h/i/c/k/e/r/y
+      )
 
-      echo "Copy QHYCCD DLLs"
+      if exist "$(ProjectDir)External\x64\Omegon" (
+      echo "Copy Omegon x64 DLLs"
+      xcopy "$(ProjectDir)External\x64\Omegon" "$(TargetDir)\External\x64\Omegon" /h/i/c/k/e/r/y
+      )
+      if exist "$(ProjectDir)External\x86\Omegon" (
+      echo "Copy Omegon x86 DLLs"
+      xcopy "$(ProjectDir)External\x86\Omegon" "$(TargetDir)\External\x86\Omegon" /h/i/c/k/e/r/y
+      )
+
+      if exist "$(ProjectDir)External\x64\QHYCCD" (
+      echo "Copy QHYCCD x64 DLLs"
       xcopy "$(ProjectDir)External\x64\QHYCCD" "$(TargetDir)\External\x64\QHYCCD" /h/i/c/k/e/r/y
+      )
+      if exist "$(ProjectDir)External\x86\QHYCCD" (
+      echo "Copy QHYCCD x86 DLLs"
       xcopy "$(ProjectDir)External\x86\QHYCCD" "$(TargetDir)\External\x86\QHYCCD" /h/i/c/k/e/r/y
+      )
 
-      echo "Copy FLI DLLs"
+      if exist "$(ProjectDir)External\x64\FLI" (
+      echo "Copy FLI x64 DLLs"
       xcopy "$(ProjectDir)External\x64\FLI" "$(TargetDir)\External\x64\FLI" /h/i/c/k/e/r/y
+      )
+      if exist "$(ProjectDir)External\x86\FLI" (
+      echo "Copy FLI x86 DLLs"
       xcopy "$(ProjectDir)External\x86\FLI" "$(TargetDir)\External\x86\FLI" /h/i/c/k/e/r/y
+      )
 
       if $(Platform) == x86 (
       if exist "$(DevEnvDir)..\..\VC\Auxiliary\Build\vcvars32.bat" (

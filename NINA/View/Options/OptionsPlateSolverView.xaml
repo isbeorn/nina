@@ -1,5 +1,5 @@
 ﻿<!--
-    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -103,6 +103,37 @@
                             ItemsSource="{Binding DataContext.ActiveProfile.FilterWheelSettings.FilterWheelFilters, ElementName=UC}"
                             SelectedItem="{Binding Filter, Mode=TwoWay}"
                             SelectedValuePath="Name" />
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="140"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblBinning}" />
+                        <TextBox
+                            Width="120"
+                            Height="25"
+                            HorizontalAlignment="Left">
+                            <TextBox.Text>
+                                <Binding Mode="TwoWay" Path="Binning">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterThanZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            MinWidth="140"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblGain}" />
+                        <TextBox
+                            Width="120"
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            Text="{Binding Gain, UpdateSourceTrigger=LostFocus, Converter={StaticResource MinusOneToEmptyStringConverter}}" />
                     </StackPanel>
                     <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                         <TextBlock
@@ -282,6 +313,19 @@
                                     </Hyperlink>
                                 </TextBlock>
                             </StackPanel>
+                            <StackPanel Margin="0,6,0,6" Orientation="Horizontal">
+                                <TextBlock
+                                    Width="130"
+                                    VerticalAlignment="Center"
+                                    Text="{ns:Loc LblURL}" />
+                                <TextBox
+                                    Grid.Column="1"
+                                    MinWidth="200"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding AstrometryURL}" />
+                            </StackPanel>
+
                             <StackPanel MaxHeight="150" Margin="0,6,0,6">
                                 <TextBlock Text="{ns:Loc LblPlatesolveProvidedBy}" />
                                 <TextBlock MaxHeight="73" HorizontalAlignment="Left">
@@ -770,7 +814,7 @@
                                                 <Binding.ValidationRules>
                                                     <rules:DoubleRangeRule>
                                                         <rules:DoubleRangeRule.ValidRange>
-                                                            <rules:DoubleRangeChecker Maximum="4" Minimum="1" />
+                                                            <rules:DoubleRangeChecker Maximum="4" Minimum="0" />
                                                         </rules:DoubleRangeRule.ValidRange>
                                                     </rules:DoubleRangeRule>
                                                 </Binding.ValidationRules>
