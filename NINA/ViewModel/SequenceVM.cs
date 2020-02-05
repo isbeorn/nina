@@ -1148,8 +1148,9 @@ namespace NINA.ViewModel {
                 
                 //Get current smoothed out HFR
                 double currentHfrTrend = regression.Transform(imgHistoryVM.ImageHistory.Count());
+                double originalHfr = regression.Transform(AfHfrIndex);
 
-                if (currentHfrTrend > (imgHistoryVM.ImageHistory.ElementAt(AfHfrIndex).HFR * (1 + csl.AutoFocusAfterHFRChangeAmount / 100))) {
+                if (currentHfrTrend > (originalHfr * (1 + csl.AutoFocusAfterHFRChangeAmount / 100))) {
                     /* Trigger autofocus after HFR change */
                     AfHfrIndex = imgHistoryVM.ImageHistory.Count();
                     return true;
