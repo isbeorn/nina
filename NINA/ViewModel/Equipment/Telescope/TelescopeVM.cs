@@ -156,6 +156,12 @@ namespace NINA.ViewModel.Equipment.Telescope {
             Telescope.Unpark();
         }
 
+        public void UnparkTelescope() {
+            if(Telescope.Connected && Telescope.CanUnpark && Telescope.AtPark) {
+                Telescope.Unpark();
+            }
+        }
+
         //private DispatcherTimer _updateTelescope;
 
         private ITelescope _telescope;

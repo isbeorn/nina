@@ -3178,6 +3178,9 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
   <data name="LblWarning" xml:space="preserve">
     <value>Warning</value>
   </data>
+  <data name="LblWarnTelescopeParked" xml:space="preserve">
+    <value>The Telescope is parked, and will be automatically unparked if user proceeds with sequence start</value>
+  </data>
   <data name="LblWeather" xml:space="preserve">
     <value>Weather</value>
   </data>
@@ -3270,8 +3273,5 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
   </data>
   <data name="LblZoomStretch" xml:space="preserve">
     <value>Fit Image to Area</value>
-  </data>
-  <data name="String1" xml:space="preserve">
-    <value />
   </data>
 </root>

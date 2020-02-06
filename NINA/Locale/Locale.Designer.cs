@@ -9125,6 +9125,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Telescope is parked, and will be automatically unparked if user proceeds with sequence start.
+        /// </summary>
+        internal static string LblWarnTelescopeParked {
+            get {
+                return ResourceManager.GetString("LblWarnTelescopeParked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Weather.
         /// </summary>
         internal static string LblWeather {
@@ -9400,15 +9409,6 @@ namespace NINA.Locale {
         internal static string LblZoomStretch {
             get {
                 return ResourceManager.GetString("LblZoomStretch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string String1 {
-            get {
-                return ResourceManager.GetString("String1", resourceCulture);
             }
         }
     }
