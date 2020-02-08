@@ -139,8 +139,16 @@ namespace NINATest.PlateSolving {
             telescopeMediatorMock
                 .SetupSequence(x => x.GetCurrentPosition())
                 .Returns(coordinates1)
+                .Returns(testResult.Coordinates)
                 .Returns(coordinates2)
-                .Returns(coordinates3);
+                .Returns(testResult.Coordinates)
+                .Returns(coordinates3)
+                .Returns(testResult.Coordinates);
+            telescopeMediatorMock
+                .SetupSequence(x => x.Sync(It.IsAny<Coordinates>()))
+                .Returns(true)
+                .Returns(true)
+                .Returns(true);
 
             var sut = new CenteringSolver(plateSolverMock.Object, blindSolverMock.Object, null, telescopeMediatorMock.Object);
             sut.CaptureSolver = captureSolverMock.Object;
@@ -151,6 +159,122 @@ namespace NINATest.PlateSolving {
             captureSolverMock.Verify(x => x.Solve(seq, It.IsAny<CaptureSolverParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
             telescopeMediatorMock.Verify(x => x.Sync(It.IsAny<Coordinates>()), Times.Exactly(2));
             telescopeMediatorMock.Verify(x => x.SlewToCoordinatesAsync(It.IsAny<Coordinates>()), Times.Exactly(2));
+        }
+
+        [Test]
+        public async Task Successful_Centering_FailedSyncs_CenteringWithOffset_Test() {
+            var seq = new CaptureSequence();
+            var coordinates1 = new Coordinates(Angle.ByDegree(3), Angle.ByDegree(3), Epoch.JNOW);
+            var coordinates2 = new Coordinates(Angle.ByDegree(4), Angle.ByDegree(3), Epoch.JNOW);
+            var coordinates3 = new Coordinates(Angle.ByDegree(5), Angle.ByDegree(3), Epoch.JNOW);
+            var parameter = new CenterSolveParameter() {
+                Coordinates = coordinates3.Transform(Epoch.JNOW),
+                FocalLength = 700,
+                Threshold = 1
+            };
+            var testResult = new PlateSolveResult() {
+                Success = true,
+                Coordinates = new Coordinates(Angle.ByDegree(5), Angle.ByDegree(3), Epoch.JNOW)
+            };
+
+            captureSolverMock
+                .Setup(x => x.Solve(seq, It.IsAny<CaptureSolverParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(testResult);
+            telescopeMediatorMock
+                .SetupSequence(x => x.GetCurrentPosition())
+                .Returns(coordinates1)
+                .Returns(coordinates1);
+            telescopeMediatorMock
+                .SetupSequence(x => x.Sync(It.IsAny<Coordinates>()))
+                .Returns(false);
+
+            var sut = new CenteringSolver(plateSolverMock.Object, blindSolverMock.Object, null, telescopeMediatorMock.Object);
+            sut.CaptureSolver = captureSolverMock.Object;
+
+            var result = await sut.Center(seq, parameter, default, default, default);
+
+            result.Success.Should().BeTrue();
+            captureSolverMock.Verify(x => x.Solve(seq, It.IsAny<CaptureSolverParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
+            telescopeMediatorMock.Verify(x => x.Sync(It.IsAny<Coordinates>()), Times.Exactly(1));
+            telescopeMediatorMock.Verify(x => x.SlewToCoordinatesAsync(It.IsAny<Coordinates>()), Times.Exactly(1));
+        }
+
+        [Test]
+        public async Task Successful_Centering_SkippedSyncs_CenteringWithOffset_Test() {
+            var seq = new CaptureSequence();
+            var coordinates1 = new Coordinates(Angle.ByDegree(3), Angle.ByDegree(3), Epoch.JNOW);
+            var coordinates2 = new Coordinates(Angle.ByDegree(4), Angle.ByDegree(3), Epoch.JNOW);
+            var coordinates3 = new Coordinates(Angle.ByDegree(5), Angle.ByDegree(3), Epoch.JNOW);
+            var parameter = new CenterSolveParameter() {
+                Coordinates = coordinates3.Transform(Epoch.JNOW),
+                FocalLength = 700,
+                Threshold = 1,
+                NoSync = true
+            };
+            var testResult = new PlateSolveResult() {
+                Success = true,
+                Coordinates = new Coordinates(Angle.ByDegree(5), Angle.ByDegree(3), Epoch.JNOW)
+            };
+
+            captureSolverMock
+                .Setup(x => x.Solve(seq, It.IsAny<CaptureSolverParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(testResult);
+            telescopeMediatorMock
+                .SetupSequence(x => x.GetCurrentPosition())
+                .Returns(coordinates1)
+                .Returns(coordinates1);
+            telescopeMediatorMock
+                .SetupSequence(x => x.Sync(It.IsAny<Coordinates>()))
+                .Returns(false);
+
+            var sut = new CenteringSolver(plateSolverMock.Object, blindSolverMock.Object, null, telescopeMediatorMock.Object);
+            sut.CaptureSolver = captureSolverMock.Object;
+
+            var result = await sut.Center(seq, parameter, default, default, default);
+
+            result.Success.Should().BeTrue();
+            captureSolverMock.Verify(x => x.Solve(seq, It.IsAny<CaptureSolverParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
+            telescopeMediatorMock.Verify(x => x.Sync(It.IsAny<Coordinates>()), Times.Exactly(0));
+            telescopeMediatorMock.Verify(x => x.SlewToCoordinatesAsync(It.IsAny<Coordinates>()), Times.Exactly(1));
+        }
+
+        [Test]
+        public async Task Successful_Centering_SilentlyFailedSyncs_CenteringWithOffset_Test() {
+            var seq = new CaptureSequence();
+            var coordinates1 = new Coordinates(Angle.ByDegree(3), Angle.ByDegree(3), Epoch.JNOW);
+            var coordinates2 = new Coordinates(Angle.ByDegree(4), Angle.ByDegree(3), Epoch.JNOW);
+            var coordinates3 = new Coordinates(Angle.ByDegree(5), Angle.ByDegree(3), Epoch.JNOW);
+            var parameter = new CenterSolveParameter() {
+                Coordinates = coordinates3.Transform(Epoch.JNOW),
+                FocalLength = 700,
+                Threshold = 1
+            };
+            var testResult = new PlateSolveResult() {
+                Success = true,
+                Coordinates = new Coordinates(Angle.ByDegree(5), Angle.ByDegree(3), Epoch.JNOW)
+            };
+
+            captureSolverMock
+                .Setup(x => x.Solve(seq, It.IsAny<CaptureSolverParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(testResult);
+            telescopeMediatorMock
+                .SetupSequence(x => x.GetCurrentPosition())
+                .Returns(coordinates1)
+                .Returns(coordinates1)
+                .Returns(coordinates1);
+            telescopeMediatorMock
+                .SetupSequence(x => x.Sync(It.IsAny<Coordinates>()))
+                .Returns(true);
+
+            var sut = new CenteringSolver(plateSolverMock.Object, blindSolverMock.Object, null, telescopeMediatorMock.Object);
+            sut.CaptureSolver = captureSolverMock.Object;
+
+            var result = await sut.Center(seq, parameter, default, default, default);
+
+            result.Success.Should().BeTrue();
+            captureSolverMock.Verify(x => x.Solve(seq, It.IsAny<CaptureSolverParameter>(), It.IsAny<IProgress<PlateSolveProgress>>(), It.IsAny<IProgress<ApplicationStatus>>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
+            telescopeMediatorMock.Verify(x => x.Sync(It.IsAny<Coordinates>()), Times.Exactly(1));
+            telescopeMediatorMock.Verify(x => x.SlewToCoordinatesAsync(It.IsAny<Coordinates>()), Times.Exactly(1));
         }
     }
 }

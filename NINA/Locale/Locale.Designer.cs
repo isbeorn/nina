@@ -5561,6 +5561,24 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No Sync.
+        /// </summary>
+        internal static string LblNoSync {
+            get {
+                return ResourceManager.GetString("LblNoSync", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When enabled the application will never send a sync command to the telescope. This should only be used when having a good pointing model that should not be altered in any way..
+        /// </summary>
+        internal static string LblNoSyncTooltip {
+            get {
+                return ResourceManager.GetString("LblNoSyncTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No Telescope.
         /// </summary>
         internal static string LblNoTelescope {
@@ -9125,6 +9143,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Telescope is parked, and will be automatically unparked if user proceeds with sequence start.
+        /// </summary>
+        internal static string LblWarnTelescopeParked {
+            get {
+                return ResourceManager.GetString("LblWarnTelescopeParked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Weather.
         /// </summary>
         internal static string LblWeather {
@@ -9400,15 +9427,6 @@ namespace NINA.Locale {
         internal static string LblZoomStretch {
             get {
                 return ResourceManager.GetString("LblZoomStretch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string String1 {
-            get {
-                return ResourceManager.GetString("String1", resourceCulture);
             }
         }
     }

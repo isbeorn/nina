@@ -32,6 +32,8 @@ using Moq;
 using NINA.Model.ImageData;
 using System.Globalization;
 using NINA.Utility.Astrometry;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace NINATest {
 
@@ -92,6 +94,47 @@ namespace NINATest {
             ushort[] outarray = new ushort[sut.Data.Data.Length / 2];
             Buffer.BlockCopy(sut.Data.Data, 0, outarray, 0, sut.Data.Data.Length);
             outarray.Should().Equal(data);
+        }
+
+        [Test]
+        [TestCase("000000000000000000000000", "7168")]
+        [TestCase("00000000000000000000000", "6144")]
+        public async Task XISFAddAttachedImage_Special_Test(string value, string expectedAttachmentLocation) {
+            var props = new ImageProperties(width: 3, height: 3, bitDepth: 16, isBayered: false);
+            var imageType = "LIGHT";
+            var data = new ushort[] {
+                1,1,1,
+                2,3,4,
+                1,1,1
+            };
+            var length = data.Length * sizeof(ushort);
+
+            var fileSaveInfo = new FileSaveInfo {
+                FilePath = string.Empty,
+                FilePattern = "TestFile",
+                FileType = NINA.Utility.Enum.FileTypeEnum.XISF
+            };
+
+            var header = new XISFHeader();
+            header.AddImageMetaData(props, imageType);
+            for (int i = 0; i < 50; i++) {
+                header.AddImageFITSKeyword("test", "00000000000000000000000000000000000000000000000000");
+            }
+            header.AddImageFITSKeyword("t", value);
+            var sut = new XISF(header);
+            sut.AddAttachedImage(data, fileSaveInfo);
+
+            var file = Path.Combine(TestContext.CurrentContext.TestDirectory, "test.xisf");
+
+            using (var s = new System.IO.FileStream(file, System.IO.FileMode.Create)) {
+                sut.Save(s);
+            }
+
+            var x = await XISF.Load(new Uri(file), false);
+
+            sut.Header.Image.Attribute("location").Value.Split(':')[1].Should().Be(expectedAttachmentLocation);
+            x.Data.FlatArray.Should().BeEquivalentTo(data);
+            File.Delete(file);
         }
 
         [Test]
@@ -656,40 +699,6 @@ namespace NINATest {
             sut.Image.Elements(ns + "FITSKeyword").First(x => x.Attribute("name").Value == name)
                 .Should().HaveAttribute("value", value)
                 .And.HaveAttribute("comment", comment);
-        }
-
-        [Test]
-        public void XISFHeaderAddEmbeddedImageTest() {
-            var props = new ImageProperties(width: 200, height: 100, bitDepth: 16, isBayered: false);
-
-            var array = new Mock<IImageArray>();
-            array.SetupGet(x => x.FlatArray).Returns(new ushort[] { 1, 1, 1, 1, 3, 3, 5, 6, 1 });
-
-            var data = new Mock<IImageData>();
-            data.SetupGet(x => x.Properties).Returns(props);
-            data.SetupGet(x => x.Data).Returns(array.Object);
-
-            var imageType = "TestType";
-
-            XNamespace ns = "http://www.pixinsight.com/xisf";
-
-            var sut = new XISFHeader();
-            sut.AddEmbeddedImage(data.Object, imageType);
-
-            sut.Image.Should().HaveAttribute("geometry", "200:100:1")
-                .And.HaveAttribute("sampleFormat", "UInt16")
-                .And.HaveAttribute("imageType", imageType)
-                .And.HaveAttribute("colorSpace", "Gray")
-                .And.HaveAttribute("location", "embedded")
-
-                .And.HaveElement(ns + "Data")
-                    .Which.Should().HaveAttribute("encoding", "base64")
-                    .And.HaveValue("AQABAAEAAQADAAMABQAGAAEA");
-
-            sut.Image.Should().HaveElement(ns + "FITSKeyword")
-                    .Which.Should().HaveAttribute("name", "IMAGETYP")
-                    .And.HaveAttribute("value", imageType)
-                    .And.HaveAttribute("comment", "Type of exposure");
         }
 
         [Test]

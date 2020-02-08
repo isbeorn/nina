@@ -578,7 +578,7 @@ Soll die Sequenz dennoch geschlossen werden und die Änderungen verloren gehen?<
     <value>Checke Meridian Flip</value>
   </data>
   <data name="LblChecksum" xml:space="preserve">
-    <value>Checksum</value>
+    <value>Prüfsumme</value>
   </data>
   <data name="LblChecksumError" xml:space="preserve">
     <value>Checksumme entspricht nicht dem erwartetem Wert. Die heruntergeladene Datei ist möglicherweise beschädigt!</value>
@@ -623,7 +623,7 @@ Soll die Sequenz dennoch geschlossen werden und die Änderungen verloren gehen?<
     <value>Farbsensor ist derzeit nicht unterstützt</value>
   </data>
   <data name="LblCompression" xml:space="preserve">
-    <value>Compression</value>
+    <value>Komprimierung</value>
   </data>
   <data name="LblCompressionLZ4" xml:space="preserve">
     <value>LZ4</value>
@@ -1225,11 +1225,11 @@ wenn die Linien nicht ausgerichtet sind, gibt es einen Polarausrichtungsfehler</
     <value>Optimaler Belichtungszeitrechner</value>
   </data>
   <data name="LblExposureCalculatorDescription" xml:space="preserve">
-    <value>This tool will suggest recommended exposure times based on the measured Min and Max ADU values of a captured image. Average skyglow will be taken into consideration and will calulate the exposures to swamp the camera read noise by a factor of 3x (Min) and 10x (Max).
-When the button is clicked the application will take one exposure and calculate the recommended times based on the image and the given input values.</value>
+    <value>Dieses Tool empfiehlt Belichtungszeiten basierend auf den gemessenen Min und Max ADU Werten eines aufgenommenen Bildes. Das durchschnittliche Himmelsglühen wird dabei berücksichtigt, sodass die Belichtung das Kamera Ausleserauschen mit einem Faktor von 3x (Min) und 10x (Max) überschwemmt.
+Wenn der Button geklickt wird, nimmt die Anwendung eine Belichtung vor und berechnet die empfohlenen Zeiten basierend auf dem Bild und den angegebenen Eingabewerten.</value>
   </data>
   <data name="LblExposureCalculatorMeanLessThanOffset" xml:space="preserve">
-    <value>Unable to determine exposure time recommendation. The mean of your current image is less than the specified bias mean. Please take a longer exposure or adjust the incorrect values.</value>
+    <value>Es konnte keine Empfehlung zur Belichtungszeit ermittelt werden. Der Mittelwert des aktuellen Bildes ist kleiner als dar angegebene Bias Mittelwert. Bitte die falschen Werte korrigieren oder längere Belichtungszeit wählen.</value>
   </data>
   <data name="LblExposures" xml:space="preserve">
     <value>Bildern</value>
@@ -1260,7 +1260,7 @@ Ist dieser Auslöser deaktiviert, wird dieser Schritt übersprungen.</value>
     <value>Dateiendung</value>
   </data>
   <data name="LblFileFormatOptions" xml:space="preserve">
-    <value>File Format Options</value>
+    <value>Datei-Format-Optionen</value>
   </data>
   <data name="LblFileSettings" xml:space="preserve">
     <value>Datei Einstellungen</value>
@@ -1362,7 +1362,7 @@ Ist dieser Auslöser deaktiviert, wird dieser Schritt übersprungen.</value>
     <value>Öffnen</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for darks and dark flats</value>
+    <value>Abdeckung für Dark Flats öffnen</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Setzen</value>
@@ -1908,7 +1908,7 @@ Berechneter HFR: {2}
     <value>Nativ</value>
   </data>
   <data name="LblNewPosition" xml:space="preserve">
-    <value>New Position</value>
+    <value>Neue Position</value>
     <comment>Newly Calulated Autofocus Position</comment>
   </data>
   <data name="LblNewUpdateAvailable" xml:space="preserve">
@@ -1942,7 +1942,7 @@ Berechneter HFR: {2}
     <value>Keine Koordinaten verfügbar zum Synchronisieren des Teleskops</value>
   </data>
   <data name="LblNoFileFormatOptions" xml:space="preserve">
-    <value>There are no options for this file format</value>
+    <value>Es gibt keine Optionen für dieses Dateiformat</value>
   </data>
   <data name="LblNoFilterwheel" xml:space="preserve">
     <value>Kein Filterrad</value>
@@ -1976,6 +1976,12 @@ Berechneter HFR: {2}
   </data>
   <data name="LblNoSwitch" xml:space="preserve">
     <value>Kein Schalter</value>
+  </data>
+  <data name="LblNoSync" xml:space="preserve">
+    <value>No Sync</value>
+  </data>
+  <data name="LblNoSyncTooltip" xml:space="preserve">
+    <value>Wenn aktiviert, wird die Anwendung niemals einen Sync-Befehl an das Teleskop senden. Dies sollte nur verwendet werden, wenn ein gutes Punkte Modell vorhanden ist, das in keiner Weise verändert werden sollte.</value>
   </data>
   <data name="LblNoTelescope" xml:space="preserve">
     <value>Kein Teleskop</value>
@@ -2104,7 +2110,7 @@ Berechneter HFR: {2}
     <value>OK</value>
   </data>
   <data name="LblOldPosition" xml:space="preserve">
-    <value>Old Position</value>
+    <value>Alte Position</value>
     <comment>Previous Focuser Position</comment>
   </data>
   <data name="LblOn" xml:space="preserve">
@@ -2643,10 +2649,10 @@ Diese Vorlage wird beim Starten der Applikation geladen, statt der Standard Sequ
     <value>Neuen Wert einstellen</value>
   </data>
   <data name="LblSetPark" xml:space="preserve">
-    <value>Set As Park</value>
+    <value>Als Park setzen</value>
   </data>
   <data name="LblSetParkToolTip" xml:space="preserve">
-    <value>Sets the park position to be the current position</value>
+    <value>Setzt die aktuelle Position als Parkposition</value>
   </data>
   <data name="LblSettings" xml:space="preserve">
     <value>Einstellungen</value>
@@ -3177,6 +3183,9 @@ Lichtverschmutzten Gebieten. Berechnungszeit ist jedoch erhöht.</value>
   <data name="LblWarning" xml:space="preserve">
     <value>Warnung</value>
   </data>
+  <data name="LblWarnTelescopeParked" xml:space="preserve">
+    <value>Das Teleskop ist geparkt und wird automatisch ausgeparkt, wenn der Benutzer mit dem Start der Sequenz fortfährt</value>
+  </data>
   <data name="LblWeather" xml:space="preserve">
     <value>Wetter</value>
   </data>
@@ -3235,22 +3244,22 @@ Lichtverschmutzten Gebieten. Berechnungszeit ist jedoch erhöht.</value>
     <value>XISF</value>
   </data>
   <data name="LblXisfBadChecksum" xml:space="preserve">
-    <value>XISF file checksum did not verify. The image data may be corrupted.</value>
+    <value>XISF-Datei-Prüfsumme konnte nicht verifiziert werden. Die Bilddaten könnten beschädigt sein.</value>
   </data>
   <data name="LblXisfInvalidFile" xml:space="preserve">
-    <value>Not a valid XISF file</value>
+    <value>Invalide XISF Datei</value>
   </data>
   <data name="LblXisfInvalidGeometry" xml:space="preserve">
-    <value>Could not get XISF image geometry</value>
+    <value>XISF-Bildgeometrie konnte nicht abgerufen werden</value>
   </data>
   <data name="LblXisfUnsupportedChecksum" xml:space="preserve">
-    <value>Unsupported XISF checksum type: {0}</value>
+    <value>Nicht unterstützter XISF-Prüfsummen-Typ: {0}</value>
   </data>
   <data name="LblXisfUnsupportedCompression" xml:space="preserve">
-    <value>Unsupported XISF compression type: {0}</value>
+    <value>Nicht unterstützter XISF-Komprimierungstyp: {0}</value>
   </data>
   <data name="LblXisfUnsupportedFormat" xml:space="preserve">
-    <value>Unsupported XISF data format: {0}</value>
+    <value>Nicht unterstütztes XISF-Datenformat: {0}</value>
   </data>
   <data name="LblYAxisScale" xml:space="preserve">
     <value>Y-Achse Skala</value>
@@ -3269,8 +3278,5 @@ Lichtverschmutzten Gebieten. Berechnungszeit ist jedoch erhöht.</value>
   </data>
   <data name="LblZoomStretch" xml:space="preserve">
     <value>Passe Bildgröße an Fläche an</value>
-  </data>
-  <data name="String1" xml:space="preserve">
-    <value></value>
   </data>
 </root>

@@ -346,7 +346,7 @@ namespace NINA.ViewModel {
 
                 var result = await imageSolver.Solve(this.RenderedImage.RawImageData, parameter, _progress, _plateSolveToken.Token);
 
-                result.DetermineSeparation(telescopeMediator.GetCurrentPosition());
+                result.Separation = result.DetermineSeparation(telescopeMediator.GetCurrentPosition());
                 plateSolveStatusVM.PlateSolveResult = result;
 
                 return true;

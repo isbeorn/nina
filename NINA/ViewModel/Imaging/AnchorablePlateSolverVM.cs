@@ -297,7 +297,8 @@ namespace NINA.ViewModel.Imaging {
                     ReattemptDelay = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay),
                     Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
                     SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
-                    Threshold = RepeatThreshold
+                    Threshold = RepeatThreshold,
+                    NoSync = profileService.ActiveProfile.TelescopeSettings.NoSync
                 };
                 _ = await solver.Center(seq, parameter, solveProgress, progress, _solveCancelToken.Token);
             } else {
@@ -315,7 +316,7 @@ namespace NINA.ViewModel.Imaging {
                     Coordinates = telescopeMediator.GetCurrentPosition()
                 };
                 var result = await solver.Solve(seq, parameter, solveProgress, progress, _solveCancelToken.Token);
-                if (Sync) {
+                if (!profileService.ActiveProfile.TelescopeSettings.NoSync && Sync) {
                     telescopeMediator.Sync(result.Coordinates);
                 }
             }

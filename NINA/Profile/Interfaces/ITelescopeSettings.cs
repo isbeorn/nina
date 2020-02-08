@@ -31,5 +31,6 @@ namespace NINA.Profile {
         int SettleTime { get; set; }
         string SnapPortStart { get; set; }
         string SnapPortStop { get; set; }
+        bool NoSync { get; set; }
     }
 }

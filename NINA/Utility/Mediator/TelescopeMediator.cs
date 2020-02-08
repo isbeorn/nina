@@ -68,6 +68,10 @@ namespace NINA.Utility.Mediator {
             return handler.ParkTelescope();
         }
 
+        public void UnparkTelescope() {
+            handler.UnparkTelescope();
+        }
+
         public bool Sync(Coordinates coordinates) {
             return handler.Sync(coordinates);
         }

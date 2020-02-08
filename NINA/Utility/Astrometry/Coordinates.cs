@@ -484,15 +484,31 @@ namespace NINA.Utility.Astrometry {
                 Bearing = bearing
             };
         }
+
+        public static Coordinates operator +(Coordinates a, Separation b) {
+            return new Coordinates(Angle.ByDegree(a.RADegrees) + b.RA, Angle.ByDegree(a.Dec) + b.Dec, a.Epoch);
+        }
+
+        public static Coordinates operator -(Coordinates a, Separation b) {
+            return new Coordinates(Angle.ByDegree(a.RADegrees) - b.RA, Angle.ByDegree(a.Dec) - b.Dec, a.Epoch);
+        }
+
+        public override string ToString() {
+            return $"RA: {this.RAString}; Dec: {this.DecString}; Epoch: {Epoch}";
+        }
     }
 
     /// <summary>
     /// Separation properties between two coordinates
     /// </summary>
     public class Separation {
-        public Angle RA { get; set; }
-        public Angle Dec { get; set; }
-        public Angle Distance { get; set; }
-        public Angle Bearing { get; set; }
+        public Angle RA { get; set; } = Angle.ByDegree(0);
+        public Angle Dec { get; set; } = Angle.ByDegree(0);
+        public Angle Distance { get; set; } = Angle.ByDegree(0);
+        public Angle Bearing { get; set; } = Angle.ByDegree(0);
+
+        public override string ToString() {
+            return $"RA: {Astrometry.HoursToHMS(RA.Hours)}; Dec: {Astrometry.DegreesToDMS(Dec.Degree)}; Distance: {Distance.Degree}; Bearing: {Bearing.Degree}";
+        }
     }
 }

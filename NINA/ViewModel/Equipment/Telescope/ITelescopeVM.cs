@@ -50,5 +50,7 @@ namespace NINA.ViewModel.Equipment.Telescope {
         Coordinates GetCurrentPosition();
 
         Task<bool> ParkTelescope();
+
+        void UnparkTelescope();
     }
 }

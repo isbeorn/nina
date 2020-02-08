@@ -1967,6 +1967,12 @@ berekende HFR: {2}
   <data name="LblNoSwitch" xml:space="preserve">
     <value>Geen schakelaar</value>
   </data>
+  <data name="LblNoSync" xml:space="preserve">
+    <value>No Sync</value>
+  </data>
+  <data name="LblNoSyncTooltip" xml:space="preserve">
+    <value>When enabled the application will never send a sync command to the telescope. This should only be used when having a good pointing model that should not be altered in any way.</value>
+  </data>
   <data name="LblNoTelescope" xml:space="preserve">
     <value>Geen telescoop</value>
   </data>
@@ -3166,6 +3172,9 @@ Sleep de rechthoek over het deel van de opname dat u fotograferen wilt en active
   <data name="LblWarning" xml:space="preserve">
     <value>Waarschuwing</value>
   </data>
+  <data name="LblWarnTelescopeParked" xml:space="preserve">
+    <value>The Telescope is parked, and will be automatically unparked if user proceeds with sequence start</value>
+  </data>
   <data name="LblWeather" xml:space="preserve">
     <value>Weer</value>
   </data>
@@ -3258,8 +3267,5 @@ Sleep de rechthoek over het deel van de opname dat u fotograferen wilt en active
   </data>
   <data name="LblZoomStretch" xml:space="preserve">
     <value>Afbeelding passend maken aan gebied</value>
-  </data>
-  <data name="String1" xml:space="preserve">
-    <value></value>
   </data>
 </root>
