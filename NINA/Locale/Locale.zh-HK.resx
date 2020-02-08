@@ -1977,6 +1977,12 @@ When the button is clicked the application will take one exposure and calculate 
   <data name="LblNoSwitch" xml:space="preserve">
     <value>冇開關</value>
   </data>
+  <data name="LblNoSync" xml:space="preserve">
+    <value>No Sync</value>
+  </data>
+  <data name="LblNoSyncTooltip" xml:space="preserve">
+    <value>When enabled the application will never send a sync command to the telescope. This should only be used when having a good pointing model that should not be altered in any way.</value>
+  </data>
   <data name="LblNoTelescope" xml:space="preserve">
     <value>冇赤道儀</value>
   </data>
@@ -3178,6 +3184,9 @@ When the button is clicked the application will take one exposure and calculate 
   <data name="LblWarning" xml:space="preserve">
     <value>警告</value>
   </data>
+  <data name="LblWarnTelescopeParked" xml:space="preserve">
+    <value>The Telescope is parked, and will be automatically unparked if user proceeds with sequence start</value>
+  </data>
   <data name="LblWeather" xml:space="preserve">
     <value>氣象</value>
   </data>
@@ -3270,8 +3279,5 @@ When the button is clicked the application will take one exposure and calculate 
   </data>
   <data name="LblZoomStretch" xml:space="preserve">
     <value>圖像與區域匹配</value>
-  </data>
-  <data name="String1" xml:space="preserve">
-    <value></value>
   </data>
 </root>

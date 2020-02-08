@@ -469,7 +469,7 @@ Dec: {1}</value>
     <value>Bouton Surlignement</value>
   </data>
   <data name="LblByteShuffling" xml:space="preserve">
-    <value>Byte Shuffling</value>
+    <value>Réorganisation des octets</value>
   </data>
   <data name="LblCache" xml:space="preserve">
     <value>Cache</value>
@@ -1225,11 +1225,11 @@ si les traces d'étoiles ne sont pas alignées, c'est qu'il y a une erreur d'ali
     <value>Évaluation d'Exposition Optimale</value>
   </data>
   <data name="LblExposureCalculatorDescription" xml:space="preserve">
-    <value>This tool will suggest recommended exposure times based on the measured Min and Max ADU values of a captured image. Average skyglow will be taken into consideration and will calulate the exposures to swamp the camera read noise by a factor of 3x (Min) and 10x (Max).
-When the button is clicked the application will take one exposure and calculate the recommended times based on the image and the given input values.</value>
+    <value>Cet outil proposera des temps d'exposition recommandés en fonction des valeurs ADU Min et Max mesurées sur une image capturée. La luminosité moyenne du ciel sera prise en compte et les expositions seront calculées afin de dépasser le bruit de lecture de la caméra d'un facteur de 3x (Min) et de 10x (Max).
+Après avoir cliqué sur le bouton, l'application prendra une exposition et calculera les temps d'exposition recommandés en fonction de l'image et des valeurs fournies.</value>
   </data>
   <data name="LblExposureCalculatorMeanLessThanOffset" xml:space="preserve">
-    <value>Unable to determine exposure time recommendation. The mean of your current image is less than the specified bias mean. Please take a longer exposure or adjust the incorrect values.</value>
+    <value>Impossible de déterminer le temps d'exposition recommandé. La valeur moyenne de votre image actuelle est inférieure à la moyenne du bias spécifié. Veuillez prendre une exposition plus longue ou ajuster les valeurs incorrectes.</value>
   </data>
   <data name="LblExposures" xml:space="preserve">
     <value>Expositions</value>
@@ -1976,6 +1976,12 @@ HFR calculé: {2}</value>
   </data>
   <data name="LblNoSwitch" xml:space="preserve">
     <value>Aucun Commutateur</value>
+  </data>
+  <data name="LblNoSync" xml:space="preserve">
+    <value>No Sync</value>
+  </data>
+  <data name="LblNoSyncTooltip" xml:space="preserve">
+    <value>When enabled the application will never send a sync command to the telescope. This should only be used when having a good pointing model that should not be altered in any way.</value>
   </data>
   <data name="LblNoTelescope" xml:space="preserve">
     <value>Aucun Télescope</value>
@@ -3175,6 +3181,9 @@ Lorsque cette option est activée, les canaux de couleur sont ajustés avec un s
   <data name="LblWarning" xml:space="preserve">
     <value>Attention</value>
   </data>
+  <data name="LblWarnTelescopeParked" xml:space="preserve">
+    <value>Le téléscope est parké, et sera automatiquement déparké si l'utilisateur procède au démarrage de la séquence</value>
+  </data>
   <data name="LblWeather" xml:space="preserve">
     <value>Météo</value>
   </data>
@@ -3267,8 +3276,5 @@ Lorsque cette option est activée, les canaux de couleur sont ajustés avec un s
   </data>
   <data name="LblZoomStretch" xml:space="preserve">
     <value>Ajuster Image au Cadre</value>
-  </data>
-  <data name="String1" xml:space="preserve">
-    <value></value>
   </data>
 </root>
