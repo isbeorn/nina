@@ -5561,6 +5561,24 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No Sync.
+        /// </summary>
+        internal static string LblNoSync {
+            get {
+                return ResourceManager.GetString("LblNoSync", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When enabled the application will never send a sync command to the telescope. This should only be used when having a good pointing model that should not be altered in any way..
+        /// </summary>
+        internal static string LblNoSyncTooltip {
+            get {
+                return ResourceManager.GetString("LblNoSyncTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No Telescope.
         /// </summary>
         internal static string LblNoTelescope {

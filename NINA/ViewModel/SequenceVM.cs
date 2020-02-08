@@ -615,7 +615,8 @@ namespace NINA.ViewModel {
                     ReattemptDelay = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay),
                     Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
                     SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
-                    Threshold = profileService.ActiveProfile.PlateSolveSettings.Threshold
+                    Threshold = profileService.ActiveProfile.PlateSolveSettings.Threshold,
+                    NoSync = profileService.ActiveProfile.TelescopeSettings.NoSync
                 };
                 plateSolveResult = await solver.Center(seq, parameter, plateSolveStatusVM.Progress, progress, _canceltoken.Token);
 

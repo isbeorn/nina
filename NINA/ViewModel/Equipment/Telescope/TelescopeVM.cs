@@ -451,7 +451,7 @@ namespace NINA.ViewModel.Equipment.Telescope {
         }
 
         public bool Sync(double ra, double dec) {
-            if (TelescopeInfo.Connected) {
+            if (!profileService.ActiveProfile.TelescopeSettings.NoSync && TelescopeInfo.Connected) {
                 return Telescope.Sync(ra, dec);
             } else {
                 return false;

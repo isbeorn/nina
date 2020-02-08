@@ -78,10 +78,11 @@ namespace NINA.PlateSolving {
             }
         }
 
-        public void DetermineSeparation(Coordinates targetCoordinates) {
+        public Separation DetermineSeparation(Coordinates targetCoordinates) {
             if (targetCoordinates != null) {
-                this.Separation = targetCoordinates - this.Coordinates;
+                return targetCoordinates - this.Coordinates;
             }
+            return null;
         }
     }
 }

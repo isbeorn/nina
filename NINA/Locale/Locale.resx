@@ -1977,6 +1977,12 @@ Calculated HFR: {2}
   <data name="LblNoSwitch" xml:space="preserve">
     <value>No Switch</value>
   </data>
+  <data name="LblNoSync" xml:space="preserve">
+    <value>No Sync</value>
+  </data>
+  <data name="LblNoSyncTooltip" xml:space="preserve">
+    <value>When enabled the application will never send a sync command to the telescope. This should only be used when having a good pointing model that should not be altered in any way.</value>
+  </data>
   <data name="LblNoTelescope" xml:space="preserve">
     <value>No Telescope</value>
   </data>

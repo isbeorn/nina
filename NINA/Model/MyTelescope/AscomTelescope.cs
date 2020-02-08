@@ -1119,6 +1119,7 @@ namespace NINA.Model.MyTelescope {
                         _telescope.SyncToCoordinates(ra, dec);
                         success = true;
                     } catch (Exception ex) {
+                        Logger.Error(ex);
                         Notification.ShowError(ex.Message);
                     }
                 } else {
