@@ -487,8 +487,13 @@ namespace NINA.Utility {
             // XISF header XML document
             Header.Save(s);
 
+            var location = Header.Image.Attribute("location");
+            if (location == null) {
+                throw new InvalidDataException("Header Image is missing location information");
+            }
+
             // Pad space between the header and data blocks null bytes
-            long remainingBlockPadding = ((long)Math.Ceiling(s.Position / (double)PaddedBlockSize) * PaddedBlockSize) - s.Position;
+            var remainingBlockPadding = long.Parse(location.Value.Split(':')[1]) - s.Position;
 
             for (int i = 0; i < remainingBlockPadding; i++) {
                 s.WriteByte(0x0);
@@ -855,26 +860,6 @@ namespace NINA.Utility {
             Image = image;
             Xisf.Add(image);
             AddImageFITSKeyword("IMAGETYP", imageType, "Type of exposure");
-        }
-
-        /// <summary>
-        /// Adds the image tage to the Header and embedds the image as base64 inside the header image as a data block
-        /// As this increases the file size and is a lot more computational heavy compared to an attached image, this should be avoided.
-        /// </summary>
-        /// <param name="arr"></param>
-        /// <param name="imageType"></param>
-        public void AddEmbeddedImage(IImageData imageData, string imageType) {
-            AddImageMetaData(imageData.Properties, imageType);
-            Image.Add(new XAttribute("location", "embedded"));
-
-            byte[] result = new byte[imageData.Data.FlatArray.Length * sizeof(ushort)];
-            Buffer.BlockCopy(imageData.Data.FlatArray, 0, result, 0, result.Length);
-
-            string base64 = Convert.ToBase64String(result);
-
-            XElement data = new XElement(xmlns + "Data", new XAttribute("encoding", "base64"), base64);
-
-            Image.Add(data);
         }
 
         public void Save(Stream s) {

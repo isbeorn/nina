@@ -43,6 +43,7 @@ namespace NINA.Profile {
             snapPortStart = ":SNAP1,1#";
             snapPortStop = "SNAP1,0#";
             settleTime = 5;
+            noSync = false;
         }
 
         private string id;
@@ -145,6 +146,21 @@ namespace NINA.Profile {
             set {
                 if (settleTime != value) {
                     settleTime = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool noSync;
+
+        [DataMember]
+        public bool NoSync {
+            get {
+                return noSync;
+            }
+            set {
+                if (noSync != value) {
+                    noSync = value;
                     RaisePropertyChanged();
                 }
             }

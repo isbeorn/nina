@@ -50,6 +50,7 @@ namespace NINA.PlateSolving {
             if (parameter?.Threshold <= 0) { throw new ArgumentException(nameof(CenterSolveParameter.Threshold)); }
             var centered = false;
             PlateSolveResult result;
+            Separation offset = new Separation();
             do {
                 result = await CaptureSolver.Solve(seq, parameter, solveProgress, progress, ct);
 
@@ -58,20 +59,37 @@ namespace NINA.PlateSolving {
                     break;
                 }
 
-                result.DetermineSeparation(telescopeMediator.GetCurrentPosition());
+                var position = telescopeMediator.GetCurrentPosition() - offset;
+                result.Separation = result.DetermineSeparation(position);
 
                 solveProgress?.Report(new PlateSolveProgress() { PlateSolveResult = result });
 
                 if (Math.Abs(result.Separation.Distance.ArcMinutes) > parameter.Threshold) {
                     progress?.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPlateSolveNotInsideToleranceSyncing"] });
-                    if (!telescopeMediator.Sync(result.Coordinates)) {
-                        Logger.Warning("Sync to coordinates failed");
-                        Notification.ShowWarning(Locale.Loc.Instance["LblSyncFailed"]);
+                    if (parameter.NoSync || !telescopeMediator.Sync(result.Coordinates)) {
+                        offset = result.DetermineSeparation(position + offset);
+
+                        Logger.Debug($"Sync failed - calculating offset instead to compensate.  Original: {position.Transform(Epoch.J2000)}; Solved: {result.Coordinates}; Offset: {offset}");
+                        progress?.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPlateSolveSyncViaTargetOffset"] });
+                    } else {
+                        var positionAfterSync = telescopeMediator.GetCurrentPosition().Transform(result.Coordinates.Epoch);
+
+                        if (Astrometry.DegreeToArcsec(Math.Abs(positionAfterSync.RADegrees - result.Coordinates.RADegrees)) > 1
+                            || Astrometry.DegreeToArcsec(Math.Abs(positionAfterSync.Dec - result.Coordinates.Dec)) > 1) {
+                            offset = result.DetermineSeparation(positionAfterSync);
+                            Logger.Debug($"Sync failed silently - calculating offset instead to compensate.  Original: {positionAfterSync.Transform(Epoch.J2000)}; Solved: {result.Coordinates}; Offset: {offset}");
+                        } else {
+                            // Sync worked - reset offset
+                            Logger.Debug("Synced sucessfully");
+                            offset = new Separation();
+                        }
                     }
 
                     Logger.Trace($"Slewing to target after sync. Target coordinates RA: {parameter.Coordinates.RAString} Dec: {parameter.Coordinates.DecString} Epoch: {parameter.Coordinates.Epoch}");
                     progress?.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPlateSolveNotInsideToleranceReslew"] });
-                    await telescopeMediator.SlewToCoordinatesAsync(parameter.Coordinates);
+
+                    await telescopeMediator.SlewToCoordinatesAsync(parameter.Coordinates + offset);
+
                     progress?.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPlateSolveNotInsideToleranceRepeating"] });
                 } else {
                     centered = true;

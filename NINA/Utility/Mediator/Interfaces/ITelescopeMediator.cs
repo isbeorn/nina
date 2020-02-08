@@ -52,5 +52,7 @@ namespace NINA.Utility.Mediator.Interfaces {
         Coordinates GetCurrentPosition();
 
         Task<bool> ParkTelescope();
+
+        void UnparkTelescope();
     }
 }

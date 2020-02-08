@@ -73,6 +73,8 @@
 - Image history graph now displays autofocus indicators with details of the previous position and the newly calculated position as well as the focuser temperature at that point in time
 - Added button to Telescope control window to set the current position of the mount to be its park position. This button is available only if the connected mount's ASCOM driver supports this action (CanSetPark = true)
 - Optimal Exposure Calculator is moved out of the statistics window into its own tool window for improved user experience
+- The pre-sequence checklist has been enhanced to check whether the telescope is parked - if so, and user validates, NINA will unpark the telescope before proceeding
+- A new option is available to prevent sending any sync signal to the mount. The centering logic will then use offset coordinate calculation instead. This new logic will also be called when a sync fails.
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false

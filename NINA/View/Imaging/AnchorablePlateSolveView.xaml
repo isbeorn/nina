@@ -123,7 +123,8 @@
                     <Border
                         Margin="0,5,0,0"
                         BorderBrush="{StaticResource BorderBrush}"
-                        BorderThickness="0">
+                        BorderThickness="0"
+                        Visibility="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.TelescopeSettings.NoSync, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}}">
                         <UniformGrid Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSync}" />
                             <CheckBox

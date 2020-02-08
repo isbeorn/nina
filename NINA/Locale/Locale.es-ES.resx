@@ -1977,6 +1977,12 @@ Calculado HFR: {2}
   <data name="LblNoSwitch" xml:space="preserve">
     <value>Sin interruptor</value>
   </data>
+  <data name="LblNoSync" xml:space="preserve">
+    <value>No Sync</value>
+  </data>
+  <data name="LblNoSyncTooltip" xml:space="preserve">
+    <value>When enabled the application will never send a sync command to the telescope. This should only be used when having a good pointing model that should not be altered in any way.</value>
+  </data>
   <data name="LblNoTelescope" xml:space="preserve">
     <value>Sin Telescopio</value>
   </data>
@@ -3178,6 +3184,9 @@ Mueve el rectangulo sobre la parte del Encuadre que quieres hacer subsampling. T
   <data name="LblWarning" xml:space="preserve">
     <value>Advertencia</value>
   </data>
+  <data name="LblWarnTelescopeParked" xml:space="preserve">
+    <value>The Telescope is parked, and will be automatically unparked if user proceeds with sequence start</value>
+  </data>
   <data name="LblWeather" xml:space="preserve">
     <value>Clima</value>
   </data>
@@ -3270,8 +3279,5 @@ Mueve el rectangulo sobre la parte del Encuadre que quieres hacer subsampling. T
   </data>
   <data name="LblZoomStretch" xml:space="preserve">
     <value>Ajusta Imagen al area</value>
-  </data>
-  <data name="String1" xml:space="preserve">
-    <value></value>
   </data>
 </root>

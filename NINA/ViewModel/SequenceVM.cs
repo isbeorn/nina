@@ -615,7 +615,8 @@ namespace NINA.ViewModel {
                     ReattemptDelay = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay),
                     Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
                     SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
-                    Threshold = profileService.ActiveProfile.PlateSolveSettings.Threshold
+                    Threshold = profileService.ActiveProfile.PlateSolveSettings.Threshold,
+                    NoSync = profileService.ActiveProfile.TelescopeSettings.NoSync
                 };
                 plateSolveResult = await solver.Center(seq, parameter, plateSolveStatusVM.Progress, progress, _canceltoken.Token);
 
@@ -1240,6 +1241,11 @@ namespace NINA.ViewModel {
                 displayMessage = true;
             }
 
+            if (telescopeInfo.Connected && telescopeInfo.AtPark) {
+                messageStringBuilder.AppendLine(Locale.Loc.Instance["LblWarnTelescopeParked"]);
+                displayMessage = true;
+            }
+
             messageStringBuilder.AppendLine();
             messageStringBuilder.Append(Locale.Loc.Instance["LblStartSequenceAnyway"]);
 
@@ -1247,6 +1253,8 @@ namespace NINA.ViewModel {
                 var diag = MyMessageBox.MyMessageBox.Show(messageStringBuilder.ToString(), Locale.Loc.Instance["LblPreSequenceChecklistHeader"], System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
                 if (diag == System.Windows.MessageBoxResult.Cancel) {
                     return false;
+                } else if (telescopeInfo.Connected && telescopeInfo.AtPark) {
+                    telescopeMediator.UnparkTelescope();
                 }
             }
 

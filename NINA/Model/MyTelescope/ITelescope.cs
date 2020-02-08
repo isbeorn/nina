@@ -51,6 +51,7 @@ namespace NINA.Model.MyTelescope {
         bool CanSetSiteLatLong { get; }
         bool AtPark { get; }
         bool CanPark { get; }
+        bool CanUnpark { get; }
         bool CanSetPark { get; }
 
         bool MeridianFlip(Coordinates targetCoordinates);
