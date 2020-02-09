@@ -113,7 +113,7 @@ Thank you for your support!
 - FLI: 1.104.0.0
 - Nikon: 1.3.1.3001
 - Omegon: 39.15325.2019.810
-- QHY: 0.6.0.5
+- QHY: 20.2.3.1
 - ToupTek: 30.13342.2018.1121
 - ZWO: 1.14.11.19
 
