@@ -1166,6 +1166,40 @@
                                 </TextBox.Text>
                             </TextBox>
                         </UniformGrid>
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                MinWidth="200"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblAutoRetryStartGuiding}" 
+                                ToolTip="{ns:Loc LblAutoRetryStartGuidingTooltip}"/>
+                            <CheckBox
+                                Width="120"
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding AutoRetryStartGuiding}" />
+                        </UniformGrid>
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                MinWidth="200"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblAutoRetryStartGuidingTimeoutSeconds}" 
+                                ToolTip="{ns:Loc LblAutoRetryStartGuidingTimeoutTooltip}"/>
+                            <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                <TextBox.Text>
+                                    <Binding Path="AutoRetryStartGuidingTimeoutSeconds" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <rules:GreaterZeroRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox.Text>
+                            </TextBox>
+                        </UniformGrid>
                     </UniformGrid>
                 </StackPanel>
             </GroupBox>

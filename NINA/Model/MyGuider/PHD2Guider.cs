@@ -301,23 +301,55 @@ namespace NINA.Model.MyGuider {
         }
 
         public async Task<bool> StartGuiding(CancellationToken ct) {
-            if (Connected) {
-                string state = await GetAppState();
+            var autoRetry = profileService.ActiveProfile.GuiderSettings.AutoRetryStartGuiding;
+            var retryAfterSeconds = profileService.ActiveProfile.GuiderSettings.AutoRetryStartGuidingTimeoutSeconds * 1000;
 
-                if (state == PhdAppState.GUIDING) { return true; }
-                if (!(state == PhdAppState.CALIBRATING)) {
-                    var guideMsg = await SendMessage(PHD2EventId.GUIDE, string.Format(PHD2Methods.GUIDE, false.ToString().ToLower()));
-                    if (guideMsg.error != null) {
-                        /* Guide start failed */
-                        return false;
-                    }
-                }
-                return await WaitForAppState(PhdAppState.GUIDING, ct);
-            } else {
+            if (!Connected) 
                 return false;
-            }
-        }
 
+            string state = await GetAppState();
+            if (state == PhdAppState.GUIDING) 
+                return true;
+
+            if (state == PhdAppState.CALIBRATING)
+                return await WaitForAppState(PhdAppState.GUIDING, ct);
+
+            async Task<bool> TryStartGuideCommand() {
+                var guideMsg = await SendMessage(
+                    PHD2EventId.GUIDE,
+                    string.Format(PHD2Methods.GUIDE,false.ToString().ToLower()));
+                return guideMsg.error == null;
+            }
+
+            if (!autoRetry)
+            {
+                return await TryStartGuideCommand()
+                    && await WaitForAppState(PhdAppState.GUIDING, ct);
+            }
+
+            while (!ct.IsCancellationRequested){
+                if (!await TryStartGuideCommand())
+                    return false;
+
+                using (var cancelOnTimeoutOrParent = CancellationTokenSource.CreateLinkedTokenSource(ct)){
+                    var timeout = Task.Delay(
+                        retryAfterSeconds,
+                        cancelOnTimeoutOrParent.Token);
+                    var guidingHasBegun = WaitForAppState(
+                        PhdAppState.GUIDING,
+                        cancelOnTimeoutOrParent.Token);
+
+                    if ((await Task.WhenAny(timeout, guidingHasBegun)) == guidingHasBegun){
+                        return await guidingHasBegun;
+                    }
+                    cancelOnTimeoutOrParent.Cancel();
+                    await Task.Delay(100, ct); // 100ms sleep between retries
+                    
+                    await StopGuiding(ct); // used to visual inspect that the guider is in the stopped state before retrying.
+                }
+            }
+            return false;
+        }
         public async Task<bool> StopGuiding(CancellationToken token) {
             if (Connected) {
                 string state = await GetAppState();

@@ -822,6 +822,42 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Start Guiding Auto Retry.
+        /// </summary>
+        internal static string LblAutoRetryStartGuiding {
+            get {
+                return ResourceManager.GetString("LblAutoRetryStartGuiding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start Guiding Auto Retry Timeout (in seconds).
+        /// </summary>
+        internal static string LblAutoRetryStartGuidingTimeoutSeconds {
+            get {
+                return ResourceManager.GetString("LblAutoRetryStartGuidingTimeoutSeconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Timeout in seconds before abandoning a StartGuiding command before attempting to a retry..
+        /// </summary>
+        internal static string LblAutoRetryStartGuidingTimeoutTooltip {
+            get {
+                return ResourceManager.GetString("LblAutoRetryStartGuidingTimeoutTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attempt to recover StartGuiding command if the guider does not report it is guiding after the specified amount of time..
+        /// </summary>
+        internal static string LblAutoRetryStartGuidingTooltip {
+            get {
+                return ResourceManager.GetString("LblAutoRetryStartGuidingTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Autostretch factor.
         /// </summary>
         internal static string LblAutoStretchFactor {

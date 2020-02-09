@@ -2669,6 +2669,18 @@ This template will be used on startup to initialize the sequence instead of the 
   <data name="LblSettleTimeout" xml:space="preserve">
     <value>PHD2 Settle Timeout</value>
   </data>
+  <data name="LblAutoRetryStartGuiding" xml:space="preserve">
+    <value>Guiding Start Retry</value>
+  </data>
+  <data name="LblAutoRetryStartGuidingTimeoutSeconds" xml:space="preserve">
+    <value>Guiding Start Timeout (in seconds)</value>
+  </data>
+  <data name="LblAutoRetryStartGuidingTooltip" xml:space="preserve">
+    <value>Attempt to recover StartGuiding command if the guider does not report it is guiding after the specified amount of time.</value>
+  </data>
+  <data name="LblAutoRetryStartGuidingTimeoutTooltip" xml:space="preserve">
+    <value>Timeout in seconds before abandoning a StartGuiding command before attempting to a retry.</value>
+  </data>
   <data name="LblSiderealTime" xml:space="preserve">
     <value>Sidereal Time</value>
   </data>
