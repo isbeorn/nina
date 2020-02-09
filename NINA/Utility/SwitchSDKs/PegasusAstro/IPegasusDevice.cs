@@ -24,9 +24,9 @@
 using NINA.Utility.SerialCommunication;
 using System.Collections.ObjectModel;
 
-namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
+namespace NINA.Utility.SwitchSDKs.PegasusAstro {
 
-    public interface IAlnitakDevice : ISerialSdk {
+    public interface IPegasusDevice : ISerialSdk {
         ReadOnlyCollection<string> PortNames { get; }
 
         bool InitializeSerialPort(string portName, object client);

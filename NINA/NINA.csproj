@@ -448,6 +448,7 @@
     <Compile Include="Model\MyCamera\Simulator\CameraType.cs" />
     <Compile Include="Model\MyFilterWheel\QHYFilterWheel.cs" />
     <Compile Include="Model\MyFilterWheel\FLIFilterWheel.cs" />
+    <Compile Include="Model\MyWeatherData\UltimatePowerboxV2.cs" />
     <Compile Include="PlateSolving\CaptureSolverParameter.cs" />
     <Compile Include="PlateSolving\CenteringSolver.cs" />
     <Compile Include="PlateSolving\CenterSolveParameter.cs" />
@@ -460,6 +461,11 @@
     <Compile Include="Profile\ExposureCalculatorSettings.cs" />
     <Compile Include="Profile\Interfaces\IExposureCalculatorSettings.cs" />
     <Compile Include="Utility\CameraSDKs\EDSDK\EDSDKLocal.cs" />
+    <Compile Include="Model\MySwitch\PegasusAstro\DataProviderSwitch.cs" />
+    <Compile Include="Model\MySwitch\PegasusAstro\PegasusAstroSwitch.cs" />
+    <Compile Include="Model\MySwitch\PegasusAstro\BinarySwitches.cs" />
+    <Compile Include="Model\MySwitch\PegasusAstro\ContinuousSwitches.cs" />
+    <Compile Include="Model\MySwitch\PegasusAstro\UltimatePowerBoxV2.cs" />
     <Compile Include="Utility\CameraSDKs\OmegonSDK\omegonprocam.cs" />
     <Compile Include="Utility\FileSaveInfo.cs" />
     <Compile Include="Utility\Converters\AFFittingToVisibilityConverter.cs" />
@@ -581,6 +587,10 @@
     <Compile Include="Utility\ProjectVersion.cs" />
     <Compile Include="Utility\Behaviors\BrowserBehavior.cs" />
     <Compile Include="Utility\Enum\AutoUpdateSourceEnum.cs" />
+    <Compile Include="Utility\SwitchSDKs\PegasusAstro\IPegasusDevice.cs" />
+    <Compile Include="Utility\SwitchSDKs\PegasusAstro\PegasusCommands.cs" />
+    <Compile Include="Utility\SwitchSDKs\PegasusAstro\PegasusDevice.cs" />
+    <Compile Include="Utility\SwitchSDKs\PegasusAstro\PegasusResponses.cs" />
     <Compile Include="Utility\ValidationRules\GreaterThanZeroRule.cs" />
     <Compile Include="Utility\ValidationRules\IntRangeRule.cs" />
     <Compile Include="Utility\ValidationRules\StrictGreaterZeroRule.cs" />
@@ -621,6 +631,15 @@
     </Compile>
     <Compile Include="View\Equipment\FlatDevice\FlatDeviceView.xaml.cs">
       <DependentUpon>FlatDeviceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Switch\PegasusAstroUltimatePowerboxV2ChartsView.xaml.cs">
+      <DependentUpon>PegasusAstroUltimatePowerboxV2ChartsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Switch\PegasusAstroUltimatePowerboxV2.xaml.cs">
+      <DependentUpon>PegasusAstroUltimatePowerboxV2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Switch\PegasusAstroUltimatePowerboxV2SetupView.xaml.cs">
+      <DependentUpon>PegasusAstroUltimatePowerboxV2SetupView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Equipment\Switch\EagleSetupView.xaml.cs">
       <DependentUpon>EagleSetupView.xaml</DependentUpon>
@@ -1333,6 +1352,18 @@
     <Page Include="View\Equipment\FlatDevice\FlatDeviceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Equipment\Switch\PegasusAstroUltimatePowerboxV2ChartsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Equipment\Switch\PegasusAstroUltimatePowerboxV2.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Equipment\Switch\PegasusAstroUltimatePowerboxV2SetupView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Equipment\WeatherData\WeatherDataView.xaml">
       <SubType>Designer</SubType>

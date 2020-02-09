@@ -213,6 +213,12 @@
     <Compile Include="SequenceVMTest.cs" />
     <Compile Include="SerialCommunication\SerialSdkTest.cs" />
     <Compile Include="SerialCommunication\ResponseCacheTest.cs" />
+    <Compile Include="Switch\PegasusAstro\BinarySwitchTest.cs" />
+    <Compile Include="Switch\PegasusAstro\ContinuousSwitchTest.cs" />
+    <Compile Include="Switch\PegasusAstro\DataProviderSwitchTest.cs" />
+    <Compile Include="Switch\PegasusAstro\PegasusCommandsTest.cs" />
+    <Compile Include="Switch\PegasusAstro\PegasusDeviceTest.cs" />
+    <Compile Include="Switch\PegasusAstro\PegasusResponsesTest.cs" />
     <Compile Include="SynchronizedPHD2GuiderServiceTest.cs" />
     <Compile Include="FlatDevice\AlnitakFlatDeviceTest.cs" />
     <Compile Include="FlatDevice\AlnitakFlatDeviceConnectTest.cs" />

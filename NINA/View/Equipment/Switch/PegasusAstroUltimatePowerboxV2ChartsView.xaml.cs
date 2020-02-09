@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -21,14 +21,17 @@
 
 #endregion "copyright"
 
-using NINA.Utility.SerialCommunication;
-using System.Collections.ObjectModel;
+using System.Windows.Controls;
 
-namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
+namespace NINA.View.Equipment {
 
-    public interface IAlnitakDevice : ISerialSdk {
-        ReadOnlyCollection<string> PortNames { get; }
+    /// <summary>
+    /// Interaction logic for PegasusAstroUltimatePowerboxV2ChartsView.xaml
+    /// </summary>
+    public partial class PegasusAstroUltimatePowerboxV2ChartsView : UserControl {
 
-        bool InitializeSerialPort(string portName, object client);
+        public PegasusAstroUltimatePowerboxV2ChartsView() {
+            InitializeComponent();
+        }
     }
 }

@@ -17,6 +17,7 @@ namespace NINA.Utility.SerialCommunication {
 
         public void Add(ICommand command, Response response) {
             if (command == null || response == null || response.Ttl == 0) return;
+            if (!response.IsValid) return;
             if (_cache.ContainsKey(command.GetType())) {
                 _cache[command.GetType()] = (response, DateTime.UtcNow.AddMilliseconds(response.Ttl));
             } else {
@@ -26,6 +27,10 @@ namespace NINA.Utility.SerialCommunication {
 
         public Response Get(Type commandType) {
             return HasValidResponse(commandType) ? _cache[commandType].response : null;
+        }
+
+        public void Clear() {
+            _cache.Clear();
         }
     }
 }

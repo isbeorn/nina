@@ -2701,6 +2701,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Days.
+        /// </summary>
+        internal static string LblDays {
+            get {
+                return ResourceManager.GetString("LblDays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DCRaw.
         /// </summary>
         internal static string LblDCRaw {
@@ -4589,6 +4598,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hours.
+        /// </summary>
+        internal static string LblHours {
+            get {
+                return ResourceManager.GetString("LblHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Humidity.
         /// </summary>
         internal static string LblHumidity {
@@ -5305,6 +5323,15 @@ namespace NINA.Locale {
         internal static string LblMinOptimalADU {
             get {
                 return ResourceManager.GetString("LblMinOptimalADU", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minutes.
+        /// </summary>
+        internal static string LblMinutes {
+            get {
+                return ResourceManager.GetString("LblMinutes", resourceCulture);
             }
         }
         
@@ -8999,6 +9026,276 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ampere Hours.
+        /// </summary>
+        internal static string LblUPBV2AmpereHours {
+            get {
+                return ResourceManager.GetString("LblUPBV2AmpereHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic Dew Control.
+        /// </summary>
+        internal static string LblUPBV2AutoDewControl {
+            get {
+                return ResourceManager.GetString("LblUPBV2AutoDewControl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Average Current.
+        /// </summary>
+        internal static string LblUPBV2AverageCurrent {
+            get {
+                return ResourceManager.GetString("LblUPBV2AverageCurrent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current.
+        /// </summary>
+        internal static string LblUPBV2Current {
+            get {
+                return ResourceManager.GetString("LblUPBV2Current", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Device Data.
+        /// </summary>
+        internal static string LblUPBV2DeviceData {
+            get {
+                return ResourceManager.GetString("LblUPBV2DeviceData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dew Heater Port.
+        /// </summary>
+        internal static string LblUPBV2DewHeater {
+            get {
+                return ResourceManager.GetString("LblUPBV2DewHeater", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dew Heaters.
+        /// </summary>
+        internal static string LblUPBV2DewHeaterPorts {
+            get {
+                return ResourceManager.GetString("LblUPBV2DewHeaterPorts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dew Point.
+        /// </summary>
+        internal static string LblUPBV2DewPoint {
+            get {
+                return ResourceManager.GetString("LblUPBV2DewPoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Excess Current.
+        /// </summary>
+        internal static string LblUPBV2ExcessCurrent {
+            get {
+                return ResourceManager.GetString("LblUPBV2ExcessCurrent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input Current.
+        /// </summary>
+        internal static string LblUPBV2InputCurrent {
+            get {
+                return ResourceManager.GetString("LblUPBV2InputCurrent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Power.
+        /// </summary>
+        internal static string LblUPBV2InputPower {
+            get {
+                return ResourceManager.GetString("LblUPBV2InputPower", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input Voltage.
+        /// </summary>
+        internal static string LblUPBV2InputVoltage {
+            get {
+                return ResourceManager.GetString("LblUPBV2InputVoltage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid response from Pegasus Astro Ultimate Powerbox V2..
+        /// </summary>
+        internal static string LblUPBV2InvalidResponse {
+            get {
+                return ResourceManager.GetString("LblUPBV2InvalidResponse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Power Port 1.
+        /// </summary>
+        internal static string LblUPBV2Power1 {
+            get {
+                return ResourceManager.GetString("LblUPBV2Power1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Power Port 2.
+        /// </summary>
+        internal static string LblUPBV2Power2 {
+            get {
+                return ResourceManager.GetString("LblUPBV2Power2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Power Port 3.
+        /// </summary>
+        internal static string LblUPBV2Power3 {
+            get {
+                return ResourceManager.GetString("LblUPBV2Power3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Power Port 4.
+        /// </summary>
+        internal static string LblUPBV2Power4 {
+            get {
+                return ResourceManager.GetString("LblUPBV2Power4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Power.
+        /// </summary>
+        internal static string LblUPBV2PowerPorts {
+            get {
+                return ResourceManager.GetString("LblUPBV2PowerPorts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Relative Humidity.
+        /// </summary>
+        internal static string LblUPBV2RelativeHumidity {
+            get {
+                return ResourceManager.GetString("LblUPBV2RelativeHumidity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Temperature.
+        /// </summary>
+        internal static string LblUPBV2Temperature {
+            get {
+                return ResourceManager.GetString("LblUPBV2Temperature", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Up-Time.
+        /// </summary>
+        internal static string LblUPBV2UpTime {
+            get {
+                return ResourceManager.GetString("LblUPBV2UpTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usb Port 1.
+        /// </summary>
+        internal static string LblUPBV2Usb1 {
+            get {
+                return ResourceManager.GetString("LblUPBV2Usb1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usb Port 2.
+        /// </summary>
+        internal static string LblUPBV2Usb2 {
+            get {
+                return ResourceManager.GetString("LblUPBV2Usb2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usb Port 3.
+        /// </summary>
+        internal static string LblUPBV2Usb3 {
+            get {
+                return ResourceManager.GetString("LblUPBV2Usb3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usb Port 4.
+        /// </summary>
+        internal static string LblUPBV2Usb4 {
+            get {
+                return ResourceManager.GetString("LblUPBV2Usb4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usb Port 5.
+        /// </summary>
+        internal static string LblUPBV2Usb5 {
+            get {
+                return ResourceManager.GetString("LblUPBV2Usb5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usb Port 6.
+        /// </summary>
+        internal static string LblUPBV2Usb6 {
+            get {
+                return ResourceManager.GetString("LblUPBV2Usb6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usb.
+        /// </summary>
+        internal static string LblUPBV2UsbPorts {
+            get {
+                return ResourceManager.GetString("LblUPBV2UsbPorts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable Power Port.
+        /// </summary>
+        internal static string LblUPBV2VariablePower {
+            get {
+                return ResourceManager.GetString("LblUPBV2VariablePower", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Watt Hours.
+        /// </summary>
+        internal static string LblUPBV2WattHours {
+            get {
+                return ResourceManager.GetString("LblUPBV2WattHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update.
         /// </summary>
         internal static string LblUpdate {
@@ -9463,6 +9760,33 @@ namespace NINA.Locale {
         internal static string LblZoomStretch {
             get {
                 return ResourceManager.GetString("LblZoomStretch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input Current (A).
+        /// </summary>
+        internal static string UPBV2InputCurrentChartLabel {
+            get {
+                return ResourceManager.GetString("UPBV2InputCurrentChartLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input Voltage (V).
+        /// </summary>
+        internal static string UPBV2InputVoltageChartLabel {
+            get {
+                return ResourceManager.GetString("UPBV2InputVoltageChartLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string String1 {
+            get {
+                return ResourceManager.GetString("String1", resourceCulture);
             }
         }
     }

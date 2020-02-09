@@ -27,6 +27,7 @@ namespace NINATest.SerialCommunication {
         [Test]
         public void TestAddNewCacheableResponse() {
             _mockResponse.Setup(m => m.Ttl).Returns(50);
+            _mockResponse.Setup(m => m.IsValid).Returns(true);
 
             _sut.Add(_mockCommand.Object, _mockResponse.Object);
             var result = _sut.Get(_mockCommand.Object.GetType());
@@ -37,9 +38,23 @@ namespace NINATest.SerialCommunication {
         }
 
         [Test]
+        public void TestDontCacheInvalidResponse() {
+            _mockResponse.Setup(m => m.Ttl).Returns(50);
+            _mockResponse.Setup(m => m.IsValid).Returns(false);
+
+            _sut.Add(_mockCommand.Object, _mockResponse.Object);
+            var result = _sut.Get(_mockCommand.Object.GetType());
+
+            Assert.That(_sut.HasValidResponse(_mockCommand.Object.GetType()), Is.False);
+            Assert.That(result, Is.Null);
+        }
+
+        [Test]
         public void TestAddOverExistingCacheableResponse() {
             _mockResponse.Setup(m => m.Ttl).Returns(50);
+            _mockResponse.Setup(m => m.IsValid).Returns(true);
             _mockResponse2.Setup(m => m.Ttl).Returns(50);
+            _mockResponse2.Setup(m => m.IsValid).Returns(true);
 
             _sut.Add(_mockCommand.Object, _mockResponse.Object);
             _sut.Add(_mockCommand.Object, _mockResponse2.Object);

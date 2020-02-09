@@ -27,7 +27,6 @@ using NINA.Utility.FlatDeviceSDKs.AlnitakSDK;
 using NINA.Utility.Notification;
 using NINA.Utility.WindowService;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -155,13 +154,7 @@ namespace NINA.Model.MyFlatDevice {
             }
         }
 
-        public ReadOnlyCollection<string> PortNames {
-            get {
-                var result = new List<string> { "AUTO" };
-                result.AddRange(Sdk.PortNames);
-                return new ReadOnlyCollection<string>(result);
-            }
-        }
+        public ReadOnlyCollection<string> PortNames => Sdk?.PortNames;
 
         public string PortName {
             get => _profileService.ActiveProfile.FlatDeviceSettings.PortName;
@@ -223,7 +216,7 @@ namespace NINA.Model.MyFlatDevice {
         }
 
         public async Task<bool> Connect(CancellationToken ct) {
-            if (!Sdk.InitializeSerialPort(PortName)) return false;
+            if (!Sdk.InitializeSerialPort(PortName, this)) return false;
             return await Task.Run(() => {
                 Connected = true;
                 var pingResponse = Sdk.SendCommand<PingResponse>(new PingCommand());
@@ -253,7 +246,7 @@ namespace NINA.Model.MyFlatDevice {
 
         public void Disconnect() {
             Connected = false;
-            Sdk.Dispose();
+            Sdk.Dispose(this);
         }
 
         public IWindowService WindowService { get; set; } = new WindowService();

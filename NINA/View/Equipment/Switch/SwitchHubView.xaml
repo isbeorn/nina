@@ -66,10 +66,14 @@
                 <DataTemplate x:Key="Generic">
                     <switch:Generic />
                 </DataTemplate>
+                <DataTemplate x:Key="UltimatePowerBoxV2">
+                    <switch:PegasusAstroUltimatePowerboxV2 />
+                </DataTemplate>
                 <switch:SwitchHubTemplateSelector
                     x:Key="ContentSelector"
                     Eagle="{StaticResource Generic}"
-                    Generic="{StaticResource Generic}" />
+                    Generic="{StaticResource Generic}"
+                    UltimatePowerBoxV2="{StaticResource UltimatePowerBoxV2}" />
             </Grid.Resources>
             <ContentControl
                 Content="{Binding}"

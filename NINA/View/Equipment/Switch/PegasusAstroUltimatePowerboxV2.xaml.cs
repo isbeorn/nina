@@ -1,7 +1,7 @@
 ﻿#region "copyright"
 
 /*
-    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2019 Stefan Berg <isbeorn86+NINA@googlemail.com>
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -23,32 +23,28 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
-namespace NINA.Profile {
+namespace NINA.View.Equipment.Switch {
 
-    public interface ISwitchSettings : ISettings {
-        string Id { get; set; }
-        string EagleUrl { get; set; }
+    /// <summary>
+    /// Interaction logic for PegasusAstroUltimatePowerboxV2.xaml
+    /// </summary>
+    public partial class PegasusAstroUltimatePowerboxV2 : UserControl {
 
-        #region UltimatePowerboxV2
-
-        string Upbv2PortName { get; set; }
-        string Upbv2PowerName1 { get; set; }
-        string Upbv2PowerName2 { get; set; }
-        string Upbv2PowerName3 { get; set; }
-        string Upbv2PowerName4 { get; set; }
-        string Upbv2PowerName5 { get; set; }
-        string Upbv2UsbName1 { get; set; }
-        string Upbv2UsbName2 { get; set; }
-        string Upbv2UsbName3 { get; set; }
-        string Upbv2UsbName4 { get; set; }
-        string Upbv2UsbName5 { get; set; }
-        string Upbv2UsbName6 { get; set; }
-
-        #endregion UltimatePowerboxV2
+        public PegasusAstroUltimatePowerboxV2() {
+            InitializeComponent();
+        }
     }
 }

@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 
 namespace NINA.Model.MySwitch {
 
-    internal interface ISwitch {
+    public interface ISwitch {
         short Id { get; }
         string Name { get; }
         string Description { get; }
@@ -38,7 +38,7 @@ namespace NINA.Model.MySwitch {
         Task<bool> Poll();
     }
 
-    internal interface IWritableSwitch : ISwitch {
+    public interface IWritableSwitch : ISwitch {
         double Maximum { get; }
         double Minimum { get; }
         double StepSize { get; }

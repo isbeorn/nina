@@ -21,14 +21,13 @@
 
 #endregion "copyright"
 
+using System.Collections.Generic;
 using System.IO.Ports;
 
 namespace NINA.Utility.SerialCommunication {
 
     public sealed class SerialPortWrapper : ISerialPort {
         private readonly SerialPort _serialPort;
-
-        public bool IsDisposed { get; set; }
 
         public SerialPortWrapper() {
             _serialPort = new SerialPort();
@@ -45,25 +44,12 @@ namespace NINA.Utility.SerialCommunication {
         public int ReadTimeout { get => _serialPort.ReadTimeout; set => _serialPort.ReadTimeout = value; }
         public int WriteTimeout { get => _serialPort.WriteTimeout; set => _serialPort.WriteTimeout = value; }
 
-        public void Close() {
-            if (!IsDisposed) _serialPort.Close();
-        }
+        public void Close() => _serialPort.Close();
 
-        public void Dispose() {
-            IsDisposed = true;
-            _serialPort.Dispose();
-        }
+        public void Open() => _serialPort.Open();
 
-        public void Open() {
-            if (!IsDisposed) _serialPort.Open();
-        }
+        public string ReadLine() => _serialPort.ReadLine();
 
-        public string ReadLine() {
-            return IsDisposed ? null : _serialPort.ReadLine();
-        }
-
-        public void Write(string value) {
-            if (!IsDisposed) _serialPort.Write(value);
-        }
+        public void Write(string value) => _serialPort.Write(value);
     }
 }

@@ -55,6 +55,9 @@ namespace NINA.ViewModel.Equipment.Switch {
             /* PrimaLuceLab EAGLE */
             Devices.Add(new Eagle(profileService));
 
+            /* Pegasus Astro Ultimate Powerbox V2 */
+            Devices.Add(new UltimatePowerBoxV2(profileService));
+
             DetermineSelectedDevice(profileService.ActiveProfile.SwitchSettings.Id);
         }
     }

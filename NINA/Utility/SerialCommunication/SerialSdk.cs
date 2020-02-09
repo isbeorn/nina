@@ -22,25 +22,52 @@
 #endregion "copyright"
 
 using System;
+using System.Collections.Generic;
+using System.IO.Ports;
 using System.Threading;
 
 namespace NINA.Utility.SerialCommunication {
 
     public abstract class SerialSdk : ISerialSdk {
+        protected virtual string LogName => "Generic Serial Sdk";
+
         private readonly ResponseCache _cache = new ResponseCache();
         public ISerialPort SerialPort { get; set; }
-        protected virtual string LogName => "Generic Serial Sdk";
-        private readonly SemaphoreSlim ssSendCommand = new SemaphoreSlim(1, 1);
+        public ISerialPortProvider SerialPortProvider { protected get; set; } = new SerialPortProvider();
+
+        private readonly List<object> clients = new List<object>();
+        private readonly SemaphoreSlim ssSerial = new SemaphoreSlim(1, 1);
+
+        public virtual bool InitializeSerialPort(string portName, object client, int baudRate = 9600, Parity parity = Parity.None, int dataBits = 8,
+            StopBits stopBits = StopBits.One, Handshake handShake = Handshake.None, bool dtrEnable = false,
+            string newLine = "\n", int readTimeout = 500, int writeTimeout = 500) {
+            try {
+                ssSerial.Wait();
+                if (string.IsNullOrEmpty(portName)) return false;
+                if (!clients.Contains(client)) { clients.Add(client); }
+                if (SerialPort != null && SerialPort.PortName.Equals(portName)) {
+                    return true;
+                }
+                SerialPort = SerialPortProvider.GetSerialPort(portName, baudRate, parity, dataBits, stopBits, handShake, dtrEnable, newLine, readTimeout, writeTimeout);
+                SerialPort?.Open();
+            } catch (Exception ex) {
+                if (clients.Contains(client)) { clients.Remove(client); }
+                Logger.Error(ex);
+            } finally {
+                ssSerial.Release();
+            }
+            return SerialPort != null;
+        }
 
         public T SendCommand<T>(ICommand command) where T : Response, new() {
             var result = string.Empty;
-            ssSendCommand.Wait();
+            T response;
+            ssSerial.Wait();
             if (_cache.HasValidResponse(command.GetType())) {
-                ssSendCommand.Release();
+                ssSerial.Release();
                 return (T)_cache.Get(command.GetType());
             }
             try {
-                SerialPort.Open();
                 Logger.Debug($"{LogName}: command : {command}");
                 SerialPort.Write(command.CommandString);
                 result = SerialPort.ReadLine();
@@ -50,16 +77,27 @@ namespace NINA.Utility.SerialCommunication {
             } catch (Exception ex) {
                 Logger.Error($"{LogName}: Unexpected exception : {ex}");
             } finally {
-                SerialPort?.Close();
-                ssSendCommand.Release();
+                response = new T { DeviceResponse = result };
+                _cache.Add(command, response);
+                ssSerial.Release();
             }
-            var response = new T { DeviceResponse = result };
-            _cache.Add(command, response);
             return response;
         }
 
-        public void Dispose() {
-            SerialPort?.Dispose();
+        public void Dispose(object client) {
+            try {
+                ssSerial.Wait();
+                if (!clients.Contains(client)) return;
+                clients.Remove(client);
+                if (clients.Count > 0) return;
+                _cache.Clear();
+                SerialPort?.Close();
+                SerialPort = null;
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            } finally {
+                ssSerial.Release();
+            }
         }
     }
 }

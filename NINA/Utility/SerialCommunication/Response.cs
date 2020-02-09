@@ -42,7 +42,7 @@ namespace NINA.Utility.SerialCommunication {
             return !string.IsNullOrEmpty(response);
         }
 
-        public bool IsValid { get; protected set; }
+        public virtual bool IsValid { get; protected set; }
 
         public virtual int Ttl => 0;
 

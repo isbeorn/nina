@@ -26,18 +26,20 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
+namespace NINA.Utility.SwitchSDKs.PegasusAstro {
 
-    public class AlnitakDevice : SerialSdk, IAlnitakDevice {
-        public static readonly IAlnitakDevice Instance = new AlnitakDevice();
+    public class PegasusDevice : SerialSdk, IPegasusDevice {
+        public static readonly IPegasusDevice Instance = new PegasusDevice();
 
-        protected override string LogName => "AlnitakFlatDevice";
-        private const string ALNITAK_QUERY = @"SELECT * FROM Win32_PnPEntity WHERE DeviceID LIKE 'FTDIBUS\\VID_0403+PID_6001+A8%'";
+        protected override string LogName => "Pegasus Astro Sdk";
+
+        private const string UPB_QUERY =
+            "SELECT * FROM Win32_PnPEntity WHERE DeviceID LIKE 'FTDIBUS\\\\VID_0403+PID_6015%UPB%'";
 
         public ReadOnlyCollection<string> PortNames {
             get {
                 var result = new List<string> { "AUTO" };
-                result.AddRange(SerialPortProvider.GetPortNames(ALNITAK_QUERY));
+                result.AddRange(SerialPortProvider.GetPortNames(UPB_QUERY));
                 return new ReadOnlyCollection<string>(result);
             }
         }
@@ -45,8 +47,9 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public bool InitializeSerialPort(string aPortName, object client) {
             if (string.IsNullOrEmpty(aPortName)) return false;
             base.InitializeSerialPort(aPortName.Equals("AUTO")
-                ? SerialPortProvider.GetPortNames(ALNITAK_QUERY, addDivider: false, addGenericPorts: false).FirstOrDefault()
-                : aPortName, client);
+                    ? SerialPortProvider.GetPortNames(UPB_QUERY, addDivider: false, addGenericPorts: false)
+                        .FirstOrDefault()
+                    : aPortName, client, newLine: "\r\n");
             return SerialPort != null;
         }
 

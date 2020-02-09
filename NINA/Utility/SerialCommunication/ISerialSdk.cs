@@ -21,6 +21,8 @@
 
 #endregion "copyright"
 
+using System.IO.Ports;
+
 namespace NINA.Utility.SerialCommunication {
 
     public interface ISerialSdk {
@@ -28,7 +30,12 @@ namespace NINA.Utility.SerialCommunication {
         T SendCommand<T>(ICommand command) where T : Response, new();
 
         ISerialPort SerialPort { get; set; }
+        ISerialPortProvider SerialPortProvider { set; }
 
-        void Dispose();
+        bool InitializeSerialPort(string portName, object client, int baudRate = 9600, Parity parity = Parity.None, int dataBits = 8,
+            StopBits stopBits = StopBits.One, Handshake handShake = Handshake.None, bool dtrEnable = false,
+            string newLine = "\n", int readTimeout = 500, int writeTimeout = 500);
+
+        void Dispose(object client);
     }
 }

@@ -88,4 +88,8 @@
     <DataTemplate DataType="{x:Type flatdevice:AlnitakFlatDevice}">
         <equip:AlnitakSetupView />
     </DataTemplate>
+
+    <DataTemplate DataType="{x:Type switch:UltimatePowerBoxV2}">
+        <equip:PegasusAstroUltimatePowerboxV2SetupView />
+    </DataTemplate>
 </ResourceDictionary>

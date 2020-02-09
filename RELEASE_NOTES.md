@@ -17,6 +17,13 @@
     - Display star drift during guiding in a chart (currently only measured in pixels)
     - Dithering during sequencing
  - **Canon Cameras** Updated support for recently-released Canon DSLR and mirrorless cameras (EOS M6 Mark II, EOS 90D, EOS M200)
+ - **Pegasus Astro Ultimate Powerbox V2 support**
+   - connect and control the Ultimate Powerbox V2 from within the application
+   - monitor input voltage and power consumption
+   - turn power ports and usb ports on and off
+   - set the voltage of the variable power port
+   - control the dew heater ports, including setting the Auto-Dew feature
+   - support for using the powerbox sensors as a weather device
 
 
 ## Localization

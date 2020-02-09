@@ -25,9 +25,8 @@ using System;
 
 namespace NINA.Utility.SerialCommunication {
 
-    public interface ISerialPort : IDisposable {
+    public interface ISerialPort {
         string PortName { get; set; }
-        bool IsDisposed { get; set; }
 
         void Write(string value);
 

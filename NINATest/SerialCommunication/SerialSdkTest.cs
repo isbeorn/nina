@@ -50,9 +50,7 @@ namespace NINATest.SerialCommunication {
             Assert.That(result, Is.TypeOf(typeof(TestResponse)));
             Assert.That(result.IsValid, Is.True);
             Assert.That(result.CheckDeviceResponse(DEVICE_RESPONSE), Is.True);
-            _mockSerialPort.Verify(m => m.Open(), Times.Once);
             _mockSerialPort.Verify(m => m.Write(COMMAND), Times.Once);
-            _mockSerialPort.Verify(m => m.Close(), Times.Once);
         }
 
         [Test]
@@ -63,9 +61,7 @@ namespace NINATest.SerialCommunication {
 
             Assert.That(result, Is.TypeOf(typeof(TestResponse)));
             Assert.That(result.IsValid, Is.False);
-            _mockSerialPort.Verify(m => m.Open(), Times.Once);
             _mockSerialPort.Verify(m => m.Write(COMMAND), Times.Once);
-            _mockSerialPort.Verify(m => m.Close(), Times.Once);
         }
 
         [Test]
@@ -76,9 +72,7 @@ namespace NINATest.SerialCommunication {
 
             Assert.That(result, Is.TypeOf(typeof(TestResponse)));
             Assert.That(result.IsValid, Is.False);
-            _mockSerialPort.Verify(m => m.Open(), Times.Once);
             _mockSerialPort.Verify(m => m.Write(COMMAND), Times.Once);
-            _mockSerialPort.Verify(m => m.Close(), Times.Once);
         }
 
         [Test]
