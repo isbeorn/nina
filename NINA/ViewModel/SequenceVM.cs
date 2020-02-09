@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using Accord.Statistics.Models.Regression.Linear;
 using NINA.Model;
 using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
@@ -1136,13 +1137,25 @@ namespace NINA.ViewModel {
             }
 
             if (csl.AutoFocusAfterHFRChange
-                && AfHfrIndex < imgHistoryVM.ImageHistory.Count()
-                && imgHistoryVM.ImageHistory.Last().HFR > (imgHistoryVM.ImageHistory.ElementAt(AfHfrIndex).HFR * (1 + csl.AutoFocusAfterHFRChangeAmount / 100))
+                && imgHistoryVM.ImageHistory.Count() - AfHfrIndex > 3
                 && imgHistoryVM.ImageHistory.Last().HFR != 0
                 && imgHistoryVM.ImageHistory.ElementAt(AfHfrIndex).HFR != 0) {
-                /* Trigger autofocus after HFR change */
-                AfHfrIndex = imgHistoryVM.ImageHistory.Count();
-                return true;
+                
+                //Perform linear regression on HFR points since last AF run
+                double[] outputs = imgHistoryVM.ImageHistory.Skip(AfHfrIndex).Select(img => img.HFR).ToArray();
+                double[] inputs = Enumerable.Range(AfHfrIndex, imgHistoryVM.ImageHistory.Count() - AfHfrIndex).Select(index => (double)index).ToArray();
+                OrdinaryLeastSquares ols = new OrdinaryLeastSquares();
+                SimpleLinearRegression regression = ols.Learn(inputs, outputs);
+                
+                //Get current smoothed out HFR
+                double currentHfrTrend = regression.Transform(imgHistoryVM.ImageHistory.Count());
+                double originalHfr = regression.Transform(AfHfrIndex);
+
+                if (currentHfrTrend > (originalHfr * (1 + csl.AutoFocusAfterHFRChangeAmount / 100))) {
+                    /* Trigger autofocus after HFR change */
+                    AfHfrIndex = imgHistoryVM.ImageHistory.Count();
+                    return true;
+                }
             }
 
             return false;
