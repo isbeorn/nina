@@ -54,8 +54,6 @@ namespace NINA.Model.MyCamera {
 
         private IntPtr _cam;
 
-        private bool UILocked;
-
         public bool HasShutter => true;
 
         private bool _connected;
@@ -346,14 +344,23 @@ namespace NINA.Model.MyCamera {
 
         private bool IsManualMode() {
             EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_AEMode, 0, out uint mode);
-            bool isManual = (mode == EDSDK.AEMode_Mamual);
-            return isManual;
+
+            if (mode == EDSDK.AEMode_Mamual) {
+                Logger.Debug("CANON: Camera is in MANUAL mode");
+                return true;
+            } else {
+                return false;
+            }
         }
 
         private bool IsBulbMode() {
+            bool isBulb = false;
+
             EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_AEMode, 0, out uint mode);
+
             if (mode == EDSDK.AEMode_Bulb) {
-                return true;
+                Logger.Debug("CANON: Camera is in BULB mode");
+                isBulb = true;
             } else {
                 /*
                  * Older cameras with Manual on the dial but are set to "BULB" (0x0C) shutter speed
@@ -362,11 +369,14 @@ namespace NINA.Model.MyCamera {
                 EDSDK.EdsGetPropertyData(_cam, EDSDK.PropID_Tv, 0, out uint speed);
 
                 if (mode == EDSDK.AEMode_Mamual && speed == 0x0C) {
-                    return true;
+                    Logger.Debug("CANON: Camera is in manual mode but has a BULB speed (0x0C)");
+                    isBulb = IsManualBulb = true;
+                } else {
+                    IsManualBulb = false;
                 }
             }
 
-            return false;
+            return isBulb;
         }
 
         private Dictionary<int, int> ISOSpeeds = new Dictionary<int, int>();
@@ -395,10 +405,6 @@ namespace NINA.Model.MyCamera {
         }
 
         public void Disconnect() {
-            if (UILocked == true) {
-                UnLockUI();
-            }
-
             CheckError(EDSDK.EdsCloseSession(_cam));
             Connected = false;
         }
@@ -557,44 +563,61 @@ namespace NINA.Model.MyCamera {
             SendStartExposureCmd(useBulb);
 
             if (useBulb) {
-                /*Stop Exposure after exposure time */
+                /* Stop Exposure after exposure time */
                 Task.Run(async () => {
                     await Utility.Utility.Wait(TimeSpan.FromSeconds(exposureTime));
 
                     SendStopExposureCmd(true);
                 });
             } else {
-                /*Immediately release shutter button when having a set exposure*/
+                /* Immediately release shutter button when having a set exposure */
                 SendStopExposureCmd(false);
             }
         }
 
         private void SendStartExposureCmd(bool useBulb) {
-            uint error = EDSDK.EDS_ERR_INTERNAL_ERROR;
-            UILocked = false;
+            uint error;
+            const int PsbNonAF = (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_Completely_NonAF;
 
             if (useBulb) {
-                if (!LockUI()) {
-                    return;
-                }
+                /*
+                 * Cameras that feature a Bulb ("B") mode on the mode selection dial use the PressShutterButton command to
+                 * start and stop bulb exposures when in that mode. Cameras that lack a "B" mode on the mode selection dial
+                 * and instead set bulb mode as a shutter speed while in Manual ("M") mode on the dial use BulbStart/BulbEnd.
+                 */
+                if (IsManualBulb) {
+                    Logger.Debug("CANON: Initiating BULB mode exposure (via BulbStart)");
 
-                if ((error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_BulbStart, 0)) != EDSDK.EDS_ERR_OK) {
-                    Logger.Error($"CANON: Error initiating bulb exposure: {ErrorCodeToString(error)}");
+                    if ((error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_BulbStart, 0)) != EDSDK.EDS_ERR_OK) {
+                        Logger.Error($"CANON: Error initiating BULB mode exposure (via BulbStart): {ErrorCodeToString(error)}");
+                    }
+                } else {
+                    Logger.Debug("CANON: Initiating BULB mode exposure (via PressShutterButton)");
 
-                    if (UILocked == true) {
-                        UnLockUI();
+                    if ((error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, PsbNonAF)) != EDSDK.EDS_ERR_OK) {
+                        Logger.Error($"CANON: Error initiating BULB mode exposure (via PressShutterButton): {ErrorCodeToString(error)}");
                     }
                 }
-            }
+            } else {
+                /*
+                 * Manual mode exposure
+                 */
+                Logger.Debug("CANON: Initiating MANUAL mode exposure (via PressShutterButton)");
 
-            if (error > 0) {
-                error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_Completely_NonAF);
-            }
+                if ((error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, PsbNonAF)) != EDSDK.EDS_ERR_OK) {
+                    Logger.Error($"CANON: Error initiating MANUAL mode exposure (via PressShutterButton): {ErrorCodeToString(error)}");
 
-            if (error > 0) {
-                // Older Canon cameras, such as Xti Rebel 400D, don't support the PressShutterButton command. If this fails,
-                // fall back to the basic TakePicture command.
-                error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_TakePicture, 0);
+                    /*
+                     * Older Canon cameras, such as the Rebel XSi (450D), don't support the PressShutterButton command.
+                     * Fall back to the TakePicture command if PressShutterButton failed. There doesn't appear to be a way
+                     * to know of this situation ahead of time.
+                     */
+                    Logger.Debug("CANON: Initiating MANUAL mode exposure (via TakePicture)");
+
+                    if ((error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_TakePicture, 0)) != EDSDK.EDS_ERR_OK) {
+                        Logger.Error($"CANON: Error initiating MANUAL mode exposure (via TakePicture): {ErrorCodeToString(error)}");
+                    }
+                }
             }
 
             CheckAndThrowError(error);
@@ -615,34 +638,6 @@ namespace NINA.Model.MyCamera {
 
             CheckAndThrowError(SetProperty(EDSDK.PropID_Tv, key));
             return true;
-        }
-
-        private bool LockUI() {
-            uint error;
-
-            if ((error = EDSDK.EdsSendStatusCommand(_cam, EDSDK.CameraState_UILock, 0)) != EDSDK.EDS_ERR_OK) {
-                Logger.Error($"CANON: Error locking the UI: {ErrorCodeToString(error)}");
-                CheckAndThrowError(error);
-                UILocked = false;
-                return false;
-            } else {
-                UILocked = true;
-                return true;
-            }
-        }
-
-        private bool UnLockUI() {
-            uint error;
-
-            if ((error = EDSDK.EdsSendStatusCommand(_cam, EDSDK.CameraState_UIUnLock, 0)) != EDSDK.EDS_ERR_OK) {
-                Logger.Error($"CANON: Error unlocking the UI: {ErrorCodeToString(error)}");
-                CheckAndThrowError(error);
-
-                return false;
-            } else {
-                UILocked = false;
-                return true;
-            }
         }
 
         public int Offset {
@@ -675,18 +670,31 @@ namespace NINA.Model.MyCamera {
         }
 
         private void SendStopExposureCmd(bool useBulb) {
-            uint error = EDSDK.EDS_ERR_INTERNAL_ERROR;
+            uint error;
 
             if (useBulb) {
-                error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_BulbEnd, 0);
+                if (IsManualBulb) {
+                    Logger.Debug("CANON: Ending BULB mode exposure (via BulbEnd)");
 
-                if (UILocked == true) {
-                    UnLockUI();
+                    if ((error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_BulbEnd, 0)) != EDSDK.EDS_ERR_OK) {
+                        Logger.Error($"CANON: Error stopping BULB mode exposure (via BulbEnd): {ErrorCodeToString(error)}");
+                    }
+                } else {
+                    Logger.Debug("CANON: Ending BULB exposure (via PressShutterButton)");
+
+                    if ((error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF)) != EDSDK.EDS_ERR_OK) {
+                        Logger.Error($"CANON: Error stopping BULB mode exposure (via PressShutterButton): {ErrorCodeToString(error)}");
+                    }
                 }
-            }
+            } else {
+                /*
+                 * Manual mode exposure
+                 */
+                Logger.Debug("CANON: Ending MANUAL mode exposure (via PressShutterButton)");
 
-            if (error > 0) {
-                error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF);
+                if ((error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF)) != EDSDK.EDS_ERR_OK) {
+                    Logger.Error($"CANON: Error ending MANUAL mode exposure (via PressShutterButton): {ErrorCodeToString(error)}");
+                }
             }
 
             CheckAndThrowError(error);
@@ -758,6 +766,8 @@ namespace NINA.Model.MyCamera {
                 RaisePropertyChanged();
             }
         }
+
+        private bool IsManualBulb { get; set; } = false;
 
         public int BitDepth => (int)profileService.ActiveProfile.CameraSettings.BitDepth;
 
