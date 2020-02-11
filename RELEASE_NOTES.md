@@ -98,6 +98,7 @@
 - In case illegal characters for a filename are inside some file patterns, they will now get replaced to still being able to save
 - Canon camera support has been improved and many common errors have been fixed
 - Autofocus after number of exposures now correctly triggers after the expected amount of exposures.
+- ZWO cameras now properly handle odd bin dimensions (eg; 3x3)
 
 ## Special Thanks
 The N.I.N.A. team would like to sincerely thank:
