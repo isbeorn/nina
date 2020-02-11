@@ -103,6 +103,7 @@
 <li>A new option is available to prevent sending any sync signal to the mount. The centering logic will then use offset coordinate calculation instead. This new logic will also be called when a sync fails.</li>
 <li>The Autofocus after HFR change has been enhanced to not be triggered by a single frame affected by adverse conditions such as wind</li>
 <li>Improved resiliency of StartGuider when PHD2 is unable to detect a guide star when guiding is started due to temporary clouds. An auto retry mechanism has been added to allow PHD2 to try selecting a new guide star after a configurable timeout.</li>
+<li>Added profile name to the title bar</li>
 </ul>
 <h2 id="bug-fixes">Bug fixes</h2>
 <ul>
@@ -118,6 +119,7 @@
 <li>In case illegal characters for a filename are inside some file patterns, they will now get replaced to still being able to save</li>
 <li>Canon camera support has been improved and many common errors have been fixed</li>
 <li>Autofocus after number of exposures now correctly triggers after the expected amount of exposures.</li>
+<li>ZWO cameras now properly handle odd bin dimensions (eg; 3x3)</li>
 </ul>
 <h2 id="special-thanks">Special Thanks</h2>
 <p>The N.I.N.A. team would like to sincerely thank:</p>

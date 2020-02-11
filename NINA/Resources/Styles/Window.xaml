@@ -70,6 +70,16 @@
                                     VerticalAlignment="Center"
                                     Foreground="{StaticResource ButtonForegroundDisabledBrush}"
                                     Text="{Binding Source={StaticResource AppVM}, Path=Version}" />
+                                <TextBlock
+                                    Margin="4,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Text=" - " />
+                                <TextBlock
+                                    Margin="4,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Foreground="{StaticResource ButtonForegroundDisabledBrush}"
+                                    Text="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.Name}" />
                             </StackPanel>
 
                             <StackPanel
