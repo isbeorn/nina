@@ -29,7 +29,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using ZWOptical.ASISDK;
@@ -93,8 +92,32 @@ namespace NINA.Model.MyCamera {
         public bool EnableSubSample { get; set; }
         public int SubSampleX { get; set; }
         public int SubSampleY { get; set; }
-        public int SubSampleWidth { get; set; }
-        public int SubSampleHeight { get; set; }
+
+        private int subSampleWidth = 0;
+
+        public int SubSampleWidth {
+            get {
+                if (subSampleWidth == 0) {
+                    subSampleWidth = Info.MaxWidth;
+                }
+
+                return subSampleWidth;
+            }
+            set => subSampleWidth = value;
+        }
+
+        private int subSampleHeight = 0;
+
+        public int SubSampleHeight {
+            get {
+                if (subSampleHeight == 0) {
+                    subSampleHeight = Info.MaxHeight;
+                }
+
+                return subSampleHeight;
+            }
+            set => subSampleHeight = value;
+        }
 
         public string Name {
             get {
@@ -164,28 +187,20 @@ namespace NINA.Model.MyCamera {
         public short BinX {
             get {
                 return bin;
-                /*return (short)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);*/
             }
             set {
                 bin = value;
                 RaisePropertyChanged();
-                /*if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN, value)) {
-                    RaisePropertyChanged();
-                }*/
             }
         }
 
         public short BinY {
             get {
                 return bin;
-                //return (short)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
             }
             set {
                 bin = value;
                 RaisePropertyChanged();
-                /*if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN, value)) {
-                    RaisePropertyChanged();
-                }*/
             }
         }
 
@@ -456,9 +471,6 @@ namespace NINA.Model.MyCamera {
         }
 
         public void SetBinning(short x, short y) {
-            /*var binningControl = GetControl(ASICameraDll.ASI_CONTROL_TYPE.ASI_HARDWARE_BIN);
-            binningControl.IsAuto = false;
-            binningControl.Value = x;*/
             BinX = x;
             BinY = y;
         }
@@ -474,9 +486,23 @@ namespace NINA.Model.MyCamera {
                                sequence.ImageType == CaptureSequence.ImageTypes.DARKFLAT;
 
             if (EnableSubSample) {
-                this.CaptureAreaInfo = new CaptureAreaInfo(new Point(SubSampleX / BinX, SubSampleY / BinY), new Size(SubSampleWidth / BinX, SubSampleHeight / BinY), BinX, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
+                CaptureAreaInfo = new CaptureAreaInfo(
+                    new Point(SubSampleX / BinX, SubSampleY / BinY),
+                    new Size(SubSampleWidth / BinX - (SubSampleWidth / BinX % 8),
+                             SubSampleHeight / BinY - (SubSampleHeight / BinY % 2)
+                    ),
+                    BinX,
+                    ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16
+                );
             } else {
-                this.CaptureAreaInfo = new CaptureAreaInfo(new Point(0, 0), new Size(this.Resolution.Width / BinX, this.Resolution.Height / BinY), BinX, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
+                CaptureAreaInfo = new CaptureAreaInfo(
+                    new Point(0, 0),
+                    new Size((Resolution.Width / BinX) - (Resolution.Width / BinX % 8),
+                              Resolution.Height / BinY - (Resolution.Height / BinY % 2)
+                    ),
+                    BinX,
+                    ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16
+                );
             }
 
             ASICameraDll.StartExposure(_cameraId, isDarkFrame);
