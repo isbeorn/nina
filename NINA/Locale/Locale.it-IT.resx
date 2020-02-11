@@ -1005,6 +1005,9 @@ Quando le linee non sono allineate significa che c'è un errore di allineamento 
   <data name="LblDawn" xml:space="preserve">
     <value>Alba</value>
   </data>
+  <data name="LblDays" xml:space="preserve">
+    <value>Days</value>
+  </data>
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
   </data>
@@ -1640,6 +1643,9 @@ HFR Calcolato: {2}
   <data name="LblHour" xml:space="preserve">
     <value>Ora</value>
   </data>
+  <data name="LblHours" xml:space="preserve">
+    <value>Hours</value>
+  </data>
   <data name="LblHumidity" xml:space="preserve">
     <value>Umidita'</value>
   </data>
@@ -1880,6 +1886,9 @@ HFR Calcolato: {2}
   <data name="LblMinOptimalADU" xml:space="preserve">
     <value>ADU Minimo</value>
   </data>
+  <data name="LblMinutes" xml:space="preserve">
+    <value>Minutes</value>
+  </data>
   <data name="LblMinutesAfterMeridian" xml:space="preserve">
     <value>Minuti dopo il Meridiano</value>
   </data>
@@ -1978,10 +1987,10 @@ HFR Calcolato: {2}
     <value>Nessuno Switch</value>
   </data>
   <data name="LblNoSync" xml:space="preserve">
-    <value>No Sync</value>
+    <value>Nessuna sincronizzazione</value>
   </data>
   <data name="LblNoSyncTooltip" xml:space="preserve">
-    <value>When enabled the application will never send a sync command to the telescope. This should only be used when having a good pointing model that should not be altered in any way.</value>
+    <value>Se abilitato l'applicazione non invierà mai un comando di sincronizzazione al telescopio. Tale opzione dovrebbe essere utilizzata solo quando si dispone di un buon modello di puntamento che non deve essere modificato in alcun modo.</value>
   </data>
   <data name="LblNoTelescope" xml:space="preserve">
     <value>Nessun Telescopio</value>
@@ -2669,6 +2678,18 @@ Questo tempalte sarà usato all'avvio per inizializzare la sequenza invece di qu
   <data name="LblSettleTimeout" xml:space="preserve">
     <value>Timeout PHD2 Settle</value>
   </data>
+  <data name="LblAutoRetryStartGuiding" xml:space="preserve">
+    <value>Guiding Start Retry</value>
+  </data>
+  <data name="LblAutoRetryStartGuidingTimeoutSeconds" xml:space="preserve">
+    <value>Guiding Start Timeout (in seconds)</value>
+  </data>
+  <data name="LblAutoRetryStartGuidingTooltip" xml:space="preserve">
+    <value>Attempt to recover StartGuiding command if the guider does not report it is guiding after the specified amount of time.</value>
+  </data>
+  <data name="LblAutoRetryStartGuidingTimeoutTooltip" xml:space="preserve">
+    <value>Timeout in seconds before abandoning a StartGuiding command before attempting to a retry.</value>
+  </data>
   <data name="LblSiderealTime" xml:space="preserve">
     <value>Tempo Sidereale</value>
   </data>
@@ -3122,6 +3143,96 @@ aree ad alto inquinamento luminoso. Il tempo di processo sarà  tuttavia aumenta
   <data name="LblUnpark" xml:space="preserve">
     <value>Sparcheggia</value>
   </data>
+  <data name="LblUPBV2AmpereHours" xml:space="preserve">
+    <value>Ampere Hours</value>
+  </data>
+  <data name="LblUPBV2AutoDewControl" xml:space="preserve">
+    <value>Automatic Dew Control</value>
+  </data>
+  <data name="LblUPBV2AverageCurrent" xml:space="preserve">
+    <value>Average Current</value>
+  </data>
+  <data name="LblUPBV2Current" xml:space="preserve">
+    <value>Current</value>
+  </data>
+  <data name="LblUPBV2DeviceData" xml:space="preserve">
+    <value>Device Data</value>
+  </data>
+  <data name="LblUPBV2DewHeater" xml:space="preserve">
+    <value>Dew Heater Port</value>
+  </data>
+  <data name="LblUPBV2DewHeaterPorts" xml:space="preserve">
+    <value>Dew Heaters</value>
+  </data>
+  <data name="LblUPBV2DewPoint" xml:space="preserve">
+    <value>Dew Point</value>
+  </data>
+  <data name="LblUPBV2ExcessCurrent" xml:space="preserve">
+    <value>Excess Current</value>
+  </data>
+  <data name="LblUPBV2InputCurrent" xml:space="preserve">
+    <value>Input Current</value>
+  </data>
+  <data name="LblUPBV2InputPower" xml:space="preserve">
+    <value>Power</value>
+  </data>
+  <data name="LblUPBV2InputVoltage" xml:space="preserve">
+    <value>Input Voltage</value>
+  </data>
+  <data name="LblUPBV2InvalidResponse" xml:space="preserve">
+    <value>Invalid response from Pegasus Astro Ultimate Powerbox V2.</value>
+  </data>
+  <data name="LblUPBV2Power1" xml:space="preserve">
+    <value>Power Port 1</value>
+  </data>
+  <data name="LblUPBV2Power2" xml:space="preserve">
+    <value>Power Port 2</value>
+  </data>
+  <data name="LblUPBV2Power3" xml:space="preserve">
+    <value>Power Port 3</value>
+  </data>
+  <data name="LblUPBV2Power4" xml:space="preserve">
+    <value>Power Port 4</value>
+  </data>
+  <data name="LblUPBV2PowerPorts" xml:space="preserve">
+    <value>Power</value>
+  </data>
+  <data name="LblUPBV2RelativeHumidity" xml:space="preserve">
+    <value>Relative Humidity</value>
+  </data>
+  <data name="LblUPBV2Temperature" xml:space="preserve">
+    <value>Temperature</value>
+  </data>
+  <data name="LblUPBV2UpTime" xml:space="preserve">
+    <value>Up-Time</value>
+  </data>
+  <data name="LblUPBV2Usb1" xml:space="preserve">
+    <value>Usb Port 1</value>
+  </data>
+  <data name="LblUPBV2Usb2" xml:space="preserve">
+    <value>Usb Port 2</value>
+  </data>
+  <data name="LblUPBV2Usb3" xml:space="preserve">
+    <value>Usb Port 3</value>
+  </data>
+  <data name="LblUPBV2Usb4" xml:space="preserve">
+    <value>Usb Port 4</value>
+  </data>
+  <data name="LblUPBV2Usb5" xml:space="preserve">
+    <value>Usb Port 5</value>
+  </data>
+  <data name="LblUPBV2Usb6" xml:space="preserve">
+    <value>Usb Port 6</value>
+  </data>
+  <data name="LblUPBV2UsbPorts" xml:space="preserve">
+    <value>Usb</value>
+  </data>
+  <data name="LblUPBV2VariablePower" xml:space="preserve">
+    <value>Variable Power Port</value>
+  </data>
+  <data name="LblUPBV2WattHours" xml:space="preserve">
+    <value>Watt Hours</value>
+  </data>
   <data name="LblUpdate" xml:space="preserve">
     <value>Aggiorna</value>
   </data>
@@ -3183,7 +3294,7 @@ aree ad alto inquinamento luminoso. Il tempo di processo sarà  tuttavia aumenta
     <value>Attenzione</value>
   </data>
   <data name="LblWarnTelescopeParked" xml:space="preserve">
-    <value>The Telescope is parked, and will be automatically unparked if user proceeds with sequence start</value>
+    <value>Il telescopio è parcheggiato e verrà automaticamente attivato se l'utente procede con l'avvio della sequenza</value>
   </data>
   <data name="LblWeather" xml:space="preserve">
     <value>Meteo</value>
@@ -3277,5 +3388,14 @@ aree ad alto inquinamento luminoso. Il tempo di processo sarà  tuttavia aumenta
   </data>
   <data name="LblZoomStretch" xml:space="preserve">
     <value>Aggiusta l'immagine all'area</value>
+  </data>
+  <data name="UPBV2InputCurrentChartLabel" xml:space="preserve">
+    <value>Input Current (A)</value>
+  </data>
+  <data name="UPBV2InputVoltageChartLabel" xml:space="preserve">
+    <value>Input Voltage (V)</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value></value>
   </data>
 </root>

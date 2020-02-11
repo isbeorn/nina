@@ -1005,6 +1005,9 @@ wenn die Linien nicht ausgerichtet sind, gibt es einen Polarausrichtungsfehler</
   <data name="LblDawn" xml:space="preserve">
     <value>Morgendämmerung</value>
   </data>
+  <data name="LblDays" xml:space="preserve">
+    <value>Days</value>
+  </data>
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
   </data>
@@ -1640,6 +1643,9 @@ Berechneter HFR: {2}
   <data name="LblHour" xml:space="preserve">
     <value>Stunde</value>
   </data>
+  <data name="LblHours" xml:space="preserve">
+    <value>Hours</value>
+  </data>
   <data name="LblHumidity" xml:space="preserve">
     <value>Feuchtigkeit</value>
   </data>
@@ -1879,6 +1885,9 @@ Berechneter HFR: {2}
   </data>
   <data name="LblMinOptimalADU" xml:space="preserve">
     <value>Minimum ADU</value>
+  </data>
+  <data name="LblMinutes" xml:space="preserve">
+    <value>Minutes</value>
   </data>
   <data name="LblMinutesAfterMeridian" xml:space="preserve">
     <value>Minuten nach Meridian</value>
@@ -2669,6 +2678,18 @@ Diese Vorlage wird beim Starten der Applikation geladen, statt der Standard Sequ
   <data name="LblSettleTimeout" xml:space="preserve">
     <value>PHD2 Ruhezeit Time-out</value>
   </data>
+  <data name="LblAutoRetryStartGuiding" xml:space="preserve">
+    <value>Guiding Start Retry</value>
+  </data>
+  <data name="LblAutoRetryStartGuidingTimeoutSeconds" xml:space="preserve">
+    <value>Guiding Start Timeout (in seconds)</value>
+  </data>
+  <data name="LblAutoRetryStartGuidingTooltip" xml:space="preserve">
+    <value>Attempt to recover StartGuiding command if the guider does not report it is guiding after the specified amount of time.</value>
+  </data>
+  <data name="LblAutoRetryStartGuidingTimeoutTooltip" xml:space="preserve">
+    <value>Timeout in seconds before abandoning a StartGuiding command before attempting to a retry.</value>
+  </data>
   <data name="LblSiderealTime" xml:space="preserve">
     <value>Sternzeit</value>
   </data>
@@ -3123,6 +3144,96 @@ Lichtverschmutzten Gebieten. Berechnungszeit ist jedoch erhöht.</value>
   <data name="LblUnpark" xml:space="preserve">
     <value>Ausparken</value>
   </data>
+  <data name="LblUPBV2AmpereHours" xml:space="preserve">
+    <value>Ampere Hours</value>
+  </data>
+  <data name="LblUPBV2AutoDewControl" xml:space="preserve">
+    <value>Automatic Dew Control</value>
+  </data>
+  <data name="LblUPBV2AverageCurrent" xml:space="preserve">
+    <value>Average Current</value>
+  </data>
+  <data name="LblUPBV2Current" xml:space="preserve">
+    <value>Current</value>
+  </data>
+  <data name="LblUPBV2DeviceData" xml:space="preserve">
+    <value>Device Data</value>
+  </data>
+  <data name="LblUPBV2DewHeater" xml:space="preserve">
+    <value>Dew Heater Port</value>
+  </data>
+  <data name="LblUPBV2DewHeaterPorts" xml:space="preserve">
+    <value>Dew Heaters</value>
+  </data>
+  <data name="LblUPBV2DewPoint" xml:space="preserve">
+    <value>Dew Point</value>
+  </data>
+  <data name="LblUPBV2ExcessCurrent" xml:space="preserve">
+    <value>Excess Current</value>
+  </data>
+  <data name="LblUPBV2InputCurrent" xml:space="preserve">
+    <value>Input Current</value>
+  </data>
+  <data name="LblUPBV2InputPower" xml:space="preserve">
+    <value>Power</value>
+  </data>
+  <data name="LblUPBV2InputVoltage" xml:space="preserve">
+    <value>Input Voltage</value>
+  </data>
+  <data name="LblUPBV2InvalidResponse" xml:space="preserve">
+    <value>Invalid response from Pegasus Astro Ultimate Powerbox V2.</value>
+  </data>
+  <data name="LblUPBV2Power1" xml:space="preserve">
+    <value>Power Port 1</value>
+  </data>
+  <data name="LblUPBV2Power2" xml:space="preserve">
+    <value>Power Port 2</value>
+  </data>
+  <data name="LblUPBV2Power3" xml:space="preserve">
+    <value>Power Port 3</value>
+  </data>
+  <data name="LblUPBV2Power4" xml:space="preserve">
+    <value>Power Port 4</value>
+  </data>
+  <data name="LblUPBV2PowerPorts" xml:space="preserve">
+    <value>Power</value>
+  </data>
+  <data name="LblUPBV2RelativeHumidity" xml:space="preserve">
+    <value>Relative Humidity</value>
+  </data>
+  <data name="LblUPBV2Temperature" xml:space="preserve">
+    <value>Temperature</value>
+  </data>
+  <data name="LblUPBV2UpTime" xml:space="preserve">
+    <value>Up-Time</value>
+  </data>
+  <data name="LblUPBV2Usb1" xml:space="preserve">
+    <value>Usb Port 1</value>
+  </data>
+  <data name="LblUPBV2Usb2" xml:space="preserve">
+    <value>Usb Port 2</value>
+  </data>
+  <data name="LblUPBV2Usb3" xml:space="preserve">
+    <value>Usb Port 3</value>
+  </data>
+  <data name="LblUPBV2Usb4" xml:space="preserve">
+    <value>Usb Port 4</value>
+  </data>
+  <data name="LblUPBV2Usb5" xml:space="preserve">
+    <value>Usb Port 5</value>
+  </data>
+  <data name="LblUPBV2Usb6" xml:space="preserve">
+    <value>Usb Port 6</value>
+  </data>
+  <data name="LblUPBV2UsbPorts" xml:space="preserve">
+    <value>Usb</value>
+  </data>
+  <data name="LblUPBV2VariablePower" xml:space="preserve">
+    <value>Variable Power Port</value>
+  </data>
+  <data name="LblUPBV2WattHours" xml:space="preserve">
+    <value>Watt Hours</value>
+  </data>
   <data name="LblUpdate" xml:space="preserve">
     <value>Aktualisieren</value>
   </data>
@@ -3278,5 +3389,14 @@ Lichtverschmutzten Gebieten. Berechnungszeit ist jedoch erhöht.</value>
   </data>
   <data name="LblZoomStretch" xml:space="preserve">
     <value>Passe Bildgröße an Fläche an</value>
+  </data>
+  <data name="UPBV2InputCurrentChartLabel" xml:space="preserve">
+    <value>Input Current (A)</value>
+  </data>
+  <data name="UPBV2InputVoltageChartLabel" xml:space="preserve">
+    <value>Input Voltage (V)</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value></value>
   </data>
 </root>
