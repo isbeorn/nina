@@ -31,7 +31,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -677,6 +676,19 @@ namespace NINA.Model.MyCamera {
                 int height = (int)Info.ExposureHeight;
                 int imgSize = width * height;
                 int rowSize = width * 2;
+                uint timeLeft = 0;
+
+                /*
+                 * Make sure to wait for any residual time to allow the camera to complete the exposure
+                 */
+                if ((rv = LibFLI.FLIGetExposureStatus(CameraH, ref timeLeft)) != LibFLI.FLI_SUCCESS) {
+                    Logger.Error($"FLI: FLIGetExposureStatus() failed. Returned {rv}");
+                }
+
+                if (timeLeft > 0) {
+                    Logger.Debug($"FLI: DownloadExposure() pausing for {timeLeft}ms for exposure completion.");
+                    Thread.Sleep((int)timeLeft);
+                }
 
                 // FLI cameras are always 16bit
                 ushort[] rowData = new ushort[width];
@@ -689,7 +701,6 @@ namespace NINA.Model.MyCamera {
                         Logger.Error($"FLI: FLIGrabRow() failed at row {r + 1}. Returned {rv}");
                     }
 
-                    Logger.Trace($"FLI: Normal exposure, fetched row {r + 1} of {height}");
                     Buffer.BlockCopy(rowData, 0, imgData, r * rowSize, rowSize);
                 }
 
@@ -737,7 +748,6 @@ namespace NINA.Model.MyCamera {
         public void StartExposure(CaptureSequence sequence) {
             bool isSnap;
             bool isDarkFrame;
-            uint timeLeft = 0;
             uint ul_x, ul_y, lr_x, lr_y;
             uint rv;
 
@@ -805,13 +815,6 @@ namespace NINA.Model.MyCamera {
                 Logger.Error($"FLI: FLIExposeFrame() failed. Returned {rv}");
                 return;
             }
-
-            if ((rv = LibFLI.FLIGetExposureStatus(CameraH, ref timeLeft)) != LibFLI.FLI_SUCCESS) {
-                Logger.Error($"FLI: FLIGetExposureStatus() failed. Returned {rv}");
-            }
-
-            Logger.Debug($"FLI: StartExposure() pausing for {timeLeft}ms for exposure completion.");
-            Thread.Sleep((int)timeLeft);
         }
 
         public void StopExposure() {
@@ -882,8 +885,6 @@ namespace NINA.Model.MyCamera {
                 if ((rv = LibFLI.FLIGrabRow(CameraH, rowData, (int)Info.ExposureWidth)) != LibFLI.FLI_SUCCESS) {
                     Logger.Error($"FLI: FLIGrabRow() failed at row {r + 1}. Returned {rv}");
                 }
-
-                Logger.Trace($"FLI: RBI: Flood exposure fetched row {r + 1} of {rows}");
             }
 
             BGFlushStart();
