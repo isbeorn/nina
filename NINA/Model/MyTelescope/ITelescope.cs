@@ -22,6 +22,7 @@
 #endregion "copyright"
 
 using NINA.Utility.Astrometry;
+using System.Threading.Tasks;
 
 namespace NINA.Model.MyTelescope {
 
@@ -54,7 +55,7 @@ namespace NINA.Model.MyTelescope {
         bool CanUnpark { get; }
         bool CanSetPark { get; }
 
-        bool MeridianFlip(Coordinates targetCoordinates);
+        Task<bool> MeridianFlip(Coordinates targetCoordinates);
 
         void MoveAxis(TelescopeAxes axis, double rate);
 

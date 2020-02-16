@@ -950,7 +950,7 @@ namespace NINA.Model.MyTelescope {
             _telescope = null;
         }
 
-        public bool MeridianFlip(Coordinates targetCoordinates) {
+        public async Task<bool> MeridianFlip(Coordinates targetCoordinates) {
             var success = false;
             try {
                 if (!Tracking) {
@@ -961,6 +961,12 @@ namespace NINA.Model.MyTelescope {
                     var pierside = SideOfPier;
                     var flippedside = pierside == PierSide.pierEast ? PierSide.pierWest : PierSide.pierEast;
                     SideOfPier = flippedside;
+
+                    //Check if setting the pier side will result already in a flip
+                    await Utility.Utility.Wait(TimeSpan.FromSeconds(2));
+                    while (Slewing) {
+                        await Utility.Utility.Wait(TimeSpan.FromSeconds(profileService.ActiveProfile.ApplicationSettings.DevicePollingInterval));
+                    }
                 }
 
                 SlewToCoordinates(targetCoordinates.RA, targetCoordinates.Dec);

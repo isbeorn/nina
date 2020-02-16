@@ -101,6 +101,7 @@
 - Autofocus after number of exposures now correctly triggers after the expected amount of exposures.
 - ZWO cameras now properly handle odd bin dimensions (eg; 3x3)
 - Fix FLI cameras sitting idle for the length of the exposure time before actually initiating the exposure
+- Check and wait when using side of pier on meridian flip if the mount does the flip automatically. (for GS Server Driver)
 
 ## Special Thanks
 The N.I.N.A. team would like to sincerely thank:

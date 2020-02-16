@@ -157,7 +157,7 @@ namespace NINA.ViewModel.Equipment.Telescope {
         }
 
         public void UnparkTelescope() {
-            if(Telescope.Connected && Telescope.CanUnpark && Telescope.AtPark) {
+            if (Telescope.Connected && Telescope.CanUnpark && Telescope.AtPark) {
                 Telescope.Unpark();
             }
         }
@@ -602,11 +602,11 @@ namespace NINA.ViewModel.Equipment.Telescope {
             SlewToCoordinates(coords);
         }
 
-        public bool MeridianFlip(Coordinates targetCoordinates) {
+        public Task<bool> MeridianFlip(Coordinates targetCoordinates) {
             if (TelescopeInfo.Connected) {
                 return Telescope.MeridianFlip(targetCoordinates);
             } else {
-                return false;
+                return Task.FromResult(false);
             }
         }
 

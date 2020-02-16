@@ -52,7 +52,7 @@ namespace NINA.Utility.Mediator {
             return handler.SlewToCoordinatesAsync(coords);
         }
 
-        public bool MeridianFlip(Coordinates targetCoordinates) {
+        public Task<bool> MeridianFlip(Coordinates targetCoordinates) {
             return handler.MeridianFlip(targetCoordinates);
         }
 
