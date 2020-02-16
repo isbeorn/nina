@@ -144,6 +144,7 @@
       <ComponentGroupRef Id="en_GB_files" />
       <ComponentGroupRef Id="de_DE_files" />
       <ComponentGroupRef Id="nl_NL_files" />
+      <ComponentGroupRef Id="ja_JP_files" />
     </Feature>
   </Product>
 
@@ -269,6 +270,7 @@
           <Directory Id="en_US" Name="en-US" />
           <Directory Id="en_GB" Name="en-GB" />
           <Directory Id="de_DE" Name="de-DE" />
+          <Directory Id="ja_JP" Name="ja-JP" />
         </Directory>
       </Directory>
       <Directory Id="ProgramMenuFolder">
@@ -1593,6 +1595,13 @@
     <ComponentGroup Id="nl_NL_files" Directory="nl_NL">
       <Component Id="nl_NL_NINA.resources.dll" Guid="04200f04-e7c9-4735-b679-36baaccd0432">
         <File Id="nl_NL_NINA.resources.dll" Name="NINA.resources.dll" Source="$(var.NINA_TargetDir)nl-NL\NINA.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="ja_JP_files" Directory="ja_JP">
+      <Component Id="ja_JP_NINA.resources.dll" Guid="7f234031-9fe2-4292-9707-c7ec0aaac518">
+        <File Id="ja_JP_NINA.resources.dll" Name="NINA.resources.dll" Source="$(var.NINA_TargetDir)ja-JP\NINA.resources.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
