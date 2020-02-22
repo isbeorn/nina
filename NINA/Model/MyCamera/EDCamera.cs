@@ -274,6 +274,7 @@ namespace NINA.Model.MyCamera {
 
         public void AbortExposure() {
             CheckError(EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, (int)EDSDK.EdsShutterButton.CameraCommand_ShutterButton_OFF));
+            CancelDownloadExposure();
         }
 
         private bool Initialize() {
@@ -415,7 +416,7 @@ namespace NINA.Model.MyCamera {
                 var memoryStreamHandle = IntPtr.Zero;
                 var imageDataPointer = IntPtr.Zero;
                 try {
-                    using (token.Register(() => downloadExposure.TrySetCanceled())) {
+                    using (token.Register(() => CancelDownloadExposure())) {
                         await downloadExposure.Task;
                     }
 
@@ -482,6 +483,11 @@ namespace NINA.Model.MyCamera {
                     }
                 }
             });
+        }
+
+        private void CancelDownloadExposure() {
+            EDSDK.EdsDownloadCancel(this.DirectoryItem);
+            downloadExposure.TrySetCanceled();
         }
 
         public void SetBinning(short x, short y) {
