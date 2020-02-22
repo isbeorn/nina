@@ -3042,7 +3042,7 @@ Drag the rectangle over a star with the bahtinov spikes. NINA will try to detect
     <value>Move target right</value>
   </data>
   <data name="LblTooltipDetectStars" xml:space="preserve">
-    <value>Toggles automatic star detection and analysis (Half-Flus-Radius) on/off</value>
+    <value>Toggles automatic star detection and analysis (Half-Flux-Radius) on/off</value>
   </data>
   <data name="LblToolTipLiveView" xml:space="preserve">
     <value>Live View</value>

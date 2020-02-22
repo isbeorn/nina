@@ -613,7 +613,7 @@ Wilt u de serie toch sluiten en de wijzigingen verliezen?</value>
     <value>Kleurensensor wordt nog niet ondersteund</value>
   </data>
   <data name="LblCompression" xml:space="preserve">
-    <value>Compression</value>
+    <value>Compressie</value>
   </data>
   <data name="LblCompressionLZ4" xml:space="preserve">
     <value>LZ4</value>
@@ -625,7 +625,7 @@ Wilt u de serie toch sluiten en de wijzigingen verliezen?</value>
     <value>LZW</value>
   </data>
   <data name="LblCompressionZIP" xml:space="preserve">
-    <value>ZIP</value>
+    <value>Postcode</value>
   </data>
   <data name="LblCompressionZLib" xml:space="preserve">
     <value>ZLib</value>
@@ -996,7 +996,7 @@ wanneer de lijnen niet zijn uitgelijnd is er er een of andere polaire uitlijning
     <value>Dageraad</value>
   </data>
   <data name="LblDays" xml:space="preserve">
-    <value>Days</value>
+    <value>Dagen</value>
   </data>
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
@@ -1218,8 +1218,8 @@ wanneer de lijnen niet zijn uitgelijnd is er er een of andere polaire uitlijning
     <value>Optimale belichtingstijdberekenaar</value>
   </data>
   <data name="LblExposureCalculatorDescription" xml:space="preserve">
-    <value>This tool will suggest recommended exposure times based on the measured Min and Max ADU values of a captured image. Average skyglow will be taken into consideration and will calulate the exposures to swamp the camera read noise by a factor of 3x (Min) and 10x (Max).
-When the button is clicked the application will take one exposure and calculate the recommended times based on the image and the given input values.</value>
+    <value>Dit programma zal aanbevolen belichtingstijden voorstellen op basis van de gemeten minimale em maximale ADU waarden van een opname. Met de gemiddelde skyglow zal rekening worden gehouden en de belichtingstijden zullen worden berekend zodat de ruis van de camera wordt verminderd met een factor 3x (minimum) en 10x (maximum).
+Wanneer op de knop wordt geklikt zal de applicatie één opname maken en de aanbevolen tijden berekenen op basis van de afbeelding en de ingevoerde waarden.</value>
   </data>
   <data name="LblExposureCalculatorMeanLessThanOffset" xml:space="preserve">
     <value>Unable to determine exposure time recommendation. The mean of your current image is less than the specified bias mean. Please take a longer exposure or adjust the incorrect values.</value>
@@ -1253,7 +1253,7 @@ Wanneer deze instelling is gedeactiveerd zal de applicatie de Start Belichting o
     <value>Bestandsextensie</value>
   </data>
   <data name="LblFileFormatOptions" xml:space="preserve">
-    <value>File Format Options</value>
+    <value>Opties bestandsformaat</value>
   </data>
   <data name="LblFileSettings" xml:space="preserve">
     <value>Bestandsinstellingen</value>
@@ -1634,7 +1634,7 @@ berekende HFR: {2}
     <value>Uur</value>
   </data>
   <data name="LblHours" xml:space="preserve">
-    <value>Hours</value>
+    <value>uren</value>
   </data>
   <data name="LblHumidity" xml:space="preserve">
     <value>Luchtvochtigheid</value>
@@ -1877,7 +1877,7 @@ berekende HFR: {2}
     <value>Minimale ADU</value>
   </data>
   <data name="LblMinutes" xml:space="preserve">
-    <value>Minutes</value>
+    <value>minuten</value>
   </data>
   <data name="LblMinutesAfterMeridian" xml:space="preserve">
     <value>Minuten na meridiaan</value>
@@ -1907,7 +1907,7 @@ berekende HFR: {2}
     <value>Oorspronkelijk</value>
   </data>
   <data name="LblNewPosition" xml:space="preserve">
-    <value>New Position</value>
+    <value>Nieuwe positie</value>
     <comment>Newly Calulated Autofocus Position</comment>
   </data>
   <data name="LblNewUpdateAvailable" xml:space="preserve">
@@ -1941,7 +1941,7 @@ berekende HFR: {2}
     <value>Geen coördinaten beschikbaar om telescoop te synchroniseren met</value>
   </data>
   <data name="LblNoFileFormatOptions" xml:space="preserve">
-    <value>There are no options for this file format</value>
+    <value>Er zijn geen opties voor dit bestandsformaat</value>
   </data>
   <data name="LblNoFilterwheel" xml:space="preserve">
     <value>Geen filterwiel</value>
@@ -1977,7 +1977,7 @@ berekende HFR: {2}
     <value>Geen schakelaar</value>
   </data>
   <data name="LblNoSync" xml:space="preserve">
-    <value>No Sync</value>
+    <value>Geen synchronisatie</value>
   </data>
   <data name="LblNoSyncTooltip" xml:space="preserve">
     <value>When enabled the application will never send a sync command to the telescope. This should only be used when having a good pointing model that should not be altered in any way.</value>
@@ -2109,7 +2109,7 @@ berekende HFR: {2}
     <value>OK</value>
   </data>
   <data name="LblOldPosition" xml:space="preserve">
-    <value>Old Position</value>
+    <value>Oude positie</value>
     <comment>Previous Focuser Position</comment>
   </data>
   <data name="LblOn" xml:space="preserve">
@@ -2648,10 +2648,10 @@ Dit sjabloon zal worden gebruikt bij het opstarten om de sequentie te initialise
     <value>Nieuwe waarde instellen</value>
   </data>
   <data name="LblSetPark" xml:space="preserve">
-    <value>Set As Park</value>
+    <value>Als geparkeerd instellen</value>
   </data>
   <data name="LblSetParkToolTip" xml:space="preserve">
-    <value>Sets the park position to be the current position</value>
+    <value>Stelt de parkeerpositie in op de huidige positie</value>
   </data>
   <data name="LblSettings" xml:space="preserve">
     <value>Instellingen</value>
@@ -2669,10 +2669,10 @@ Dit sjabloon zal worden gebruikt bij het opstarten om de sequentie te initialise
     <value>PHD2 rust timeout</value>
   </data>
   <data name="LblAutoRetryStartGuiding" xml:space="preserve">
-    <value>Guiding Start Retry</value>
+    <value>Guidingstart opnieuw proberen</value>
   </data>
   <data name="LblAutoRetryStartGuidingTimeoutSeconds" xml:space="preserve">
-    <value>Guiding Start Timeout (in seconds)</value>
+    <value>Starttime-out voor guiding (in seconden)</value>
   </data>
   <data name="LblAutoRetryStartGuidingTooltip" xml:space="preserve">
     <value>Attempt to recover StartGuiding command if the guider does not report it is guiding after the specified amount of time.</value>
@@ -3152,19 +3152,19 @@ Sleep de rechthoek over het deel van de opname dat u fotograferen wilt en active
     <value>Dew Heater Port</value>
   </data>
   <data name="LblUPBV2DewHeaterPorts" xml:space="preserve">
-    <value>Dew Heaters</value>
+    <value>Dauw verwarmingslinten</value>
   </data>
   <data name="LblUPBV2DewPoint" xml:space="preserve">
-    <value>Dew Point</value>
+    <value>Dauwpunt</value>
   </data>
   <data name="LblUPBV2ExcessCurrent" xml:space="preserve">
-    <value>Excess Current</value>
+    <value>Overstroom</value>
   </data>
   <data name="LblUPBV2InputCurrent" xml:space="preserve">
-    <value>Input Current</value>
+    <value>Invoor stroom</value>
   </data>
   <data name="LblUPBV2InputPower" xml:space="preserve">
-    <value>Power</value>
+    <value>Vermogen</value>
   </data>
   <data name="LblUPBV2InputVoltage" xml:space="preserve">
     <value>Input Voltage</value>
@@ -3197,25 +3197,25 @@ Sleep de rechthoek over het deel van de opname dat u fotograferen wilt en active
     <value>Up-Time</value>
   </data>
   <data name="LblUPBV2Usb1" xml:space="preserve">
-    <value>Usb Port 1</value>
+    <value>USB poort 1</value>
   </data>
   <data name="LblUPBV2Usb2" xml:space="preserve">
-    <value>Usb Port 2</value>
+    <value>USB poort 2</value>
   </data>
   <data name="LblUPBV2Usb3" xml:space="preserve">
-    <value>Usb Port 3</value>
+    <value>Usb poort 3</value>
   </data>
   <data name="LblUPBV2Usb4" xml:space="preserve">
-    <value>Usb Port 4</value>
+    <value>Usb poort 4</value>
   </data>
   <data name="LblUPBV2Usb5" xml:space="preserve">
-    <value>Usb Port 5</value>
+    <value>Usb poort 5</value>
   </data>
   <data name="LblUPBV2Usb6" xml:space="preserve">
-    <value>Usb Port 6</value>
+    <value>Usb poort 6</value>
   </data>
   <data name="LblUPBV2UsbPorts" xml:space="preserve">
-    <value>Usb</value>
+    <value>USB</value>
   </data>
   <data name="LblUPBV2VariablePower" xml:space="preserve">
     <value>Variable Power Port</value>

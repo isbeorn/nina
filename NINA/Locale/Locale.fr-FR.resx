@@ -1006,7 +1006,7 @@ si les traces d'étoiles ne sont pas alignées, c'est qu'il y a une erreur d'ali
     <value>Aube</value>
   </data>
   <data name="LblDays" xml:space="preserve">
-    <value>Days</value>
+    <value>Jours</value>
   </data>
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRAW</value>
@@ -1644,7 +1644,7 @@ HFR calculé: {2}</value>
     <value>Heure</value>
   </data>
   <data name="LblHours" xml:space="preserve">
-    <value>Hours</value>
+    <value>Heures</value>
   </data>
   <data name="LblHumidity" xml:space="preserve">
     <value>Humidité</value>
@@ -1987,10 +1987,10 @@ HFR calculé: {2}</value>
     <value>Aucun Commutateur</value>
   </data>
   <data name="LblNoSync" xml:space="preserve">
-    <value>No Sync</value>
+    <value>Pas de synchronisation</value>
   </data>
   <data name="LblNoSyncTooltip" xml:space="preserve">
-    <value>When enabled the application will never send a sync command to the telescope. This should only be used when having a good pointing model that should not be altered in any way.</value>
+    <value>Lorsque cette option est activée, l'application n'enverra jamais de commande de synchronisation au télescope. Cela ne devrait être utilisé que s'il y a un bon modèle de pointage qui ne devrait en aucun cas être modifié.</value>
   </data>
   <data name="LblNoTelescope" xml:space="preserve">
     <value>Aucun Télescope</value>
@@ -2679,16 +2679,16 @@ Ce modèle sera utilisé au démarrage pour initialiser la séquence au lieu de 
     <value>PHD2 délai limite de stabilisation</value>
   </data>
   <data name="LblAutoRetryStartGuiding" xml:space="preserve">
-    <value>Guiding Start Retry</value>
+    <value>Réessayer de lancer le guidage</value>
   </data>
   <data name="LblAutoRetryStartGuidingTimeoutSeconds" xml:space="preserve">
-    <value>Guiding Start Timeout (in seconds)</value>
+    <value>Temps écoulé pour démarrer le guidage (en secondes)</value>
   </data>
   <data name="LblAutoRetryStartGuidingTooltip" xml:space="preserve">
-    <value>Attempt to recover StartGuiding command if the guider does not report it is guiding after the specified amount of time.</value>
+    <value>Tentative de récupération de la commande StartGuiding si le guidage ne signale pas qu'il est en marche après la durée spécifiée.</value>
   </data>
   <data name="LblAutoRetryStartGuidingTimeoutTooltip" xml:space="preserve">
-    <value>Timeout in seconds before abandoning a StartGuiding command before attempting to a retry.</value>
+    <value>Délai d'attente en secondes avant d'abandonner un suivi en cour qui n'opère pas et d'essayer à nouveau.</value>
   </data>
   <data name="LblSiderealTime" xml:space="preserve">
     <value>Heure Sidérale</value>
@@ -3143,94 +3143,94 @@ Lorsque cette option est activée, les canaux de couleur sont ajustés avec un s
     <value>Déparker</value>
   </data>
   <data name="LblUPBV2AmpereHours" xml:space="preserve">
-    <value>Ampere Hours</value>
+    <value>Ampères heures</value>
   </data>
   <data name="LblUPBV2AutoDewControl" xml:space="preserve">
-    <value>Automatic Dew Control</value>
+    <value>Contrôle automatique de la rosée</value>
   </data>
   <data name="LblUPBV2AverageCurrent" xml:space="preserve">
-    <value>Average Current</value>
+    <value>Courant moyen</value>
   </data>
   <data name="LblUPBV2Current" xml:space="preserve">
-    <value>Current</value>
+    <value>Courant</value>
   </data>
   <data name="LblUPBV2DeviceData" xml:space="preserve">
-    <value>Device Data</value>
+    <value>Donnée de l'appareil</value>
   </data>
   <data name="LblUPBV2DewHeater" xml:space="preserve">
-    <value>Dew Heater Port</value>
+    <value>Port de la résistance chauffante</value>
   </data>
   <data name="LblUPBV2DewHeaterPorts" xml:space="preserve">
-    <value>Dew Heaters</value>
+    <value>Résistances chauffantes</value>
   </data>
   <data name="LblUPBV2DewPoint" xml:space="preserve">
-    <value>Dew Point</value>
+    <value>Point de rosée</value>
   </data>
   <data name="LblUPBV2ExcessCurrent" xml:space="preserve">
-    <value>Excess Current</value>
+    <value>Courant excessif</value>
   </data>
   <data name="LblUPBV2InputCurrent" xml:space="preserve">
-    <value>Input Current</value>
+    <value>Courant d'entrée</value>
   </data>
   <data name="LblUPBV2InputPower" xml:space="preserve">
-    <value>Power</value>
+    <value>Alimentation</value>
   </data>
   <data name="LblUPBV2InputVoltage" xml:space="preserve">
-    <value>Input Voltage</value>
+    <value>Tension d'entrée</value>
   </data>
   <data name="LblUPBV2InvalidResponse" xml:space="preserve">
-    <value>Invalid response from Pegasus Astro Ultimate Powerbox V2.</value>
+    <value>Réponse non valide de Pegasus Astro Ultimate Powerbox V2.</value>
   </data>
   <data name="LblUPBV2Power1" xml:space="preserve">
-    <value>Power Port 1</value>
+    <value>Port d'alimentation 1</value>
   </data>
   <data name="LblUPBV2Power2" xml:space="preserve">
-    <value>Power Port 2</value>
+    <value>Port d'alimentation 2</value>
   </data>
   <data name="LblUPBV2Power3" xml:space="preserve">
-    <value>Power Port 3</value>
+    <value>Port d'alimentation 3</value>
   </data>
   <data name="LblUPBV2Power4" xml:space="preserve">
-    <value>Power Port 4</value>
+    <value>Port d'alimentation 4</value>
   </data>
   <data name="LblUPBV2PowerPorts" xml:space="preserve">
-    <value>Power</value>
+    <value>Alimentation</value>
   </data>
   <data name="LblUPBV2RelativeHumidity" xml:space="preserve">
-    <value>Relative Humidity</value>
+    <value>Humidité relative</value>
   </data>
   <data name="LblUPBV2Temperature" xml:space="preserve">
-    <value>Temperature</value>
+    <value>Température</value>
   </data>
   <data name="LblUPBV2UpTime" xml:space="preserve">
-    <value>Up-Time</value>
+    <value>Durée de fonctionnement</value>
   </data>
   <data name="LblUPBV2Usb1" xml:space="preserve">
-    <value>Usb Port 1</value>
+    <value>Port Usb 1</value>
   </data>
   <data name="LblUPBV2Usb2" xml:space="preserve">
-    <value>Usb Port 2</value>
+    <value>Port Usb 2</value>
   </data>
   <data name="LblUPBV2Usb3" xml:space="preserve">
-    <value>Usb Port 3</value>
+    <value>Port Usb 3</value>
   </data>
   <data name="LblUPBV2Usb4" xml:space="preserve">
-    <value>Usb Port 4</value>
+    <value>Port Usb 4</value>
   </data>
   <data name="LblUPBV2Usb5" xml:space="preserve">
-    <value>Usb Port 5</value>
+    <value>Port Usb 5</value>
   </data>
   <data name="LblUPBV2Usb6" xml:space="preserve">
-    <value>Usb Port 6</value>
+    <value>Port Usb 6</value>
   </data>
   <data name="LblUPBV2UsbPorts" xml:space="preserve">
     <value>Usb</value>
   </data>
   <data name="LblUPBV2VariablePower" xml:space="preserve">
-    <value>Variable Power Port</value>
+    <value>Port d'alimentation variable</value>
   </data>
   <data name="LblUPBV2WattHours" xml:space="preserve">
-    <value>Watt Hours</value>
+    <value>Watts Heures</value>
   </data>
   <data name="LblUpdate" xml:space="preserve">
     <value>MAJ</value>
@@ -3389,10 +3389,10 @@ Lorsque cette option est activée, les canaux de couleur sont ajustés avec un s
     <value>Ajuster Image au Cadre</value>
   </data>
   <data name="UPBV2InputCurrentChartLabel" xml:space="preserve">
-    <value>Input Current (A)</value>
+    <value>Courant d'entrée (A)</value>
   </data>
   <data name="UPBV2InputVoltageChartLabel" xml:space="preserve">
-    <value>Input Voltage (V)</value>
+    <value>Tension d'entrée (V)</value>
   </data>
   <data name="String1" xml:space="preserve">
     <value></value>
