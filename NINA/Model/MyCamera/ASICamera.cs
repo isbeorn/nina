@@ -386,6 +386,7 @@ namespace NINA.Model.MyCamera {
                 RaisePropertyChanged(nameof(Connected));
                 RaiseAllPropertiesChanged();
             } catch (Exception ex) {
+                Logger.Error(ex);
                 Notification.ShowError(ex.Message);
             }
             return success;

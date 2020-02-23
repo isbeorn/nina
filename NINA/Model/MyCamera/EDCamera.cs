@@ -768,6 +768,7 @@ namespace NINA.Model.MyCamera {
 
                     return true;
                 } catch (Exception ex) {
+                    Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                     return false;
                 }

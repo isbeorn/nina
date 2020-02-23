@@ -971,7 +971,8 @@ namespace NINA.Model.MyTelescope {
 
                 SlewToCoordinates(targetCoordinates.RA, targetCoordinates.Dec);
                 success = true;
-            } catch (Exception) {
+            } catch (Exception ex) {
+                Logger.Error(ex);
                 Notification.ShowError(Locale.Loc.Instance["LblMeridianFlipFailed"]);
             }
             return success;
@@ -1002,6 +1003,7 @@ namespace NINA.Model.MyTelescope {
                             }
                             _telescope.MoveAxis(translatedAxis, rate);
                         } catch (Exception e) {
+                            Logger.Error(e);
                             Notification.ShowError(e.Message);
                         }
                     } else {
@@ -1022,6 +1024,7 @@ namespace NINA.Model.MyTelescope {
                         try {
                             _telescope.PulseGuide((ASCOM.DeviceInterface.GuideDirections)direction, duration);
                         } catch (Exception e) {
+                            Logger.Error(e);
                             Notification.ShowError(e.Message);
                         }
                     } else {
@@ -1040,6 +1043,7 @@ namespace NINA.Model.MyTelescope {
                 try {
                     _telescope.Park();
                 } catch (Exception e) {
+                    Logger.Error(e);
                     Notification.ShowError(e.Message);
                 } finally {
                 }
@@ -1051,6 +1055,7 @@ namespace NINA.Model.MyTelescope {
                 try {
                     _telescope.SetPark();
                 } catch (Exception e) {
+                    Logger.Error(e);
                     Notification.ShowError(e.Message);
                 }
             }
@@ -1064,6 +1069,7 @@ namespace NINA.Model.MyTelescope {
                     }
                     _telescope.SlewToCoordinatesAsync(ra, dec);
                 } catch (Exception e) {
+                    Logger.Error(e);
                     Notification.ShowError(e.Message);
                 }
             }
@@ -1077,6 +1083,7 @@ namespace NINA.Model.MyTelescope {
                     }
                     _telescope.SlewToCoordinates(ra, dec);
                 } catch (Exception e) {
+                    Logger.Error(e);
                     Notification.ShowError(e.Message);
                 }
             }
@@ -1087,6 +1094,7 @@ namespace NINA.Model.MyTelescope {
                 try {
                     _telescope.SlewToAltAz(az, alt);
                 } catch (Exception e) {
+                    Logger.Error(e);
                     Notification.ShowError(e.Message);
                 }
             }
@@ -1097,6 +1105,7 @@ namespace NINA.Model.MyTelescope {
                 try {
                     _telescope.SlewToAltAzAsync(az, alt);
                 } catch (Exception e) {
+                    Logger.Error(e);
                     Notification.ShowError(e.Message);
                 }
             }
@@ -1140,6 +1149,7 @@ namespace NINA.Model.MyTelescope {
                 try {
                     _telescope.Unpark();
                 } catch (Exception e) {
+                    Logger.Error(e);
                     Notification.ShowError(e.Message);
                 }
             }
@@ -1174,6 +1184,7 @@ namespace NINA.Model.MyTelescope {
                         hourstomed += 24;
                     }
                 } catch (Exception ex) {
+                    Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                 }
                 return hourstomed;
@@ -1247,6 +1258,7 @@ namespace NINA.Model.MyTelescope {
                         _telescope = null;
                     }
                 } catch (Exception ex) {
+                    Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                 }
             }

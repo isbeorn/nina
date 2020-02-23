@@ -236,6 +236,7 @@ namespace NINA.Model.MyFilterWheel {
                         _filterwheel = null;
                     }
                 } catch (Exception ex) {
+                    Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                 }
             }

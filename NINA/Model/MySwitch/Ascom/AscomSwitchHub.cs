@@ -185,6 +185,7 @@ namespace NINA.Model.MySwitch {
                         ascomSwitchHub = null;
                     }
                 } catch (Exception ex) {
+                    Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                 }
             }
