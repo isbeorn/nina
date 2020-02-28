@@ -342,7 +342,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             gains.AddRange(profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoGains());
 
             var keys = new List<(BinningMode binning, int gain)>();
-            foreach (var binningMode in binningModes.Distinct().OrderBy(mode => mode.Name)) {
+            foreach (var binningMode in binningModes.Distinct().OrderBy(mode => mode?.Name ?? "")) {
                 foreach (var gain in gains.Distinct().OrderBy(s => s)) {
                     WizardTrainedValues.Columns.Add($"{binningMode}\n{gain}", typeof(string));
                     keys.Add((binningMode, gain));

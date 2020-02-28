@@ -43,7 +43,7 @@ namespace NINATest.FlatDevice {
             _mockProfileService = new Mock<IProfileService>();
             _mockProfileService.SetupProperty(m => m.ActiveProfile.FlatDeviceSettings.PortName, "COM3");
             _mockSdk = new Mock<IAlnitakDevice>();
-            _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>(), It.IsAny<object>())).Returns(true);
+            _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>(), It.IsAny<object>())).Returns(Task.FromResult(true));
             _mockSdk.Setup(m => m.SendCommand<PingResponse>(It.IsAny<PingCommand>()))
                 .Returns(new PingResponse { DeviceResponse = "*P99000" });
             _mockSdk.Setup(m => m.SendCommand<StateResponse>(It.IsAny<StateCommand>()))

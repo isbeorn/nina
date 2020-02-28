@@ -21,12 +21,14 @@
 
 #endregion "copyright"
 
-using System;
-
 namespace NINA.Utility.SerialCommunication {
 
     public interface ISerialPort {
         string PortName { get; set; }
+
+        bool DtrEnable { get; set; }
+
+        bool RtsEnable { get; set; }
 
         void Write(string value);
 

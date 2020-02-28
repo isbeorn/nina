@@ -216,7 +216,7 @@ namespace NINA.Model.MyFlatDevice {
         }
 
         public async Task<bool> Connect(CancellationToken ct) {
-            if (!Sdk.InitializeSerialPort(PortName, this)) return false;
+            if (!await Sdk.InitializeSerialPort(PortName, this)) return false;
             return await Task.Run(() => {
                 Connected = true;
                 var pingResponse = Sdk.SendCommand<PingResponse>(new PingCommand());
@@ -231,6 +231,7 @@ namespace NINA.Model.MyFlatDevice {
                                  $"Response was: {stateResponse}.");
                     Notification.ShowError(Locale.Loc.Instance["LblFlatDeviceInvalidResponse"]);
                     Connected = false;
+                    Sdk.Dispose(this);
                     return Connected;
                 }
                 SupportsOpenClose = stateResponse.DeviceSupportsOpenClose;

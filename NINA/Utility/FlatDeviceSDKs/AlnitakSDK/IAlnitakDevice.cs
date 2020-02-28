@@ -23,12 +23,13 @@
 
 using NINA.Utility.SerialCommunication;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
 
     public interface IAlnitakDevice : ISerialSdk {
         ReadOnlyCollection<string> PortNames { get; }
 
-        bool InitializeSerialPort(string portName, object client);
+        Task<bool> InitializeSerialPort(string portName, object client);
     }
 }

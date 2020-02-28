@@ -21,7 +21,6 @@
 
 #endregion "copyright"
 
-using System.Collections.Generic;
 using System.IO.Ports;
 
 namespace NINA.Utility.SerialCommunication {
@@ -40,6 +39,7 @@ namespace NINA.Utility.SerialCommunication {
         public StopBits StopBits { get => _serialPort.StopBits; set => _serialPort.StopBits = value; }
         public Handshake Handshake { get => _serialPort.Handshake; set => _serialPort.Handshake = value; }
         public bool DtrEnable { get => _serialPort.DtrEnable; set => _serialPort.DtrEnable = value; }
+        public bool RtsEnable { get => _serialPort.RtsEnable; set => _serialPort.RtsEnable = value; }
         public string NewLine { get => _serialPort.NewLine; set => _serialPort.NewLine = value; }
         public int ReadTimeout { get => _serialPort.ReadTimeout; set => _serialPort.ReadTimeout = value; }
         public int WriteTimeout { get => _serialPort.WriteTimeout; set => _serialPort.WriteTimeout = value; }
