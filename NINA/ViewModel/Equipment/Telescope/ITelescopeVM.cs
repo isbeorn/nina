@@ -39,8 +39,6 @@ namespace NINA.ViewModel.Equipment.Telescope {
 
         bool Sync(Coordinates coordinates);
 
-        bool Sync(double ra, double dec);
-
         Task<bool> MeridianFlip(Coordinates targetCoordinates);
 
         bool SetTracking(bool tracking);

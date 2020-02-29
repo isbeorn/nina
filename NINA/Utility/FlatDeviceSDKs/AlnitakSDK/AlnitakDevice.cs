@@ -25,6 +25,8 @@ using NINA.Utility.SerialCommunication;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
 
@@ -42,12 +44,15 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
             }
         }
 
-        public bool InitializeSerialPort(string aPortName, object client) {
+        public async Task<bool> InitializeSerialPort(string aPortName, object client) {
             if (string.IsNullOrEmpty(aPortName)) return false;
             base.InitializeSerialPort(aPortName.Equals("AUTO")
                 ? SerialPortProvider.GetPortNames(ALNITAK_QUERY, addDivider: false, addGenericPorts: false).FirstOrDefault()
                 : aPortName, client);
-            return SerialPort != null;
+            if (SerialPort == null) return false;
+            await Task.Delay(2000); //need to wait 2 seconds after port is open before setting RtsEnable or it won't work
+            SerialPort.RtsEnable = false;
+            return true;
         }
 
         public void Dispose() {

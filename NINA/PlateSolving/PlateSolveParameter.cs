@@ -41,10 +41,18 @@ namespace NINA.PlateSolving {
         public double Regions { get; set; }
         public int DownSampleFactor { get; set; }
         public int MaxObjects { get; set; }
-        public Coordinates Coordinates { get; set; }
+        private Coordinates coordinates;
+
+        public Coordinates Coordinates {
+            get => coordinates;
+            set {
+                coordinates = value?.Transform(Epoch.J2000);
+            }
+        }
 
         public override string ToString() {
-            var formatCoordinates = Coordinates != null ? $"Reference Coordinates RA: {Coordinates.RAString} Dec: {Coordinates.DecString} Epoch: {Coordinates.Epoch}" : "";
+            var j2000 = Coordinates?.Transform(Epoch.J2000);
+            var formatCoordinates = j2000 != null ? $"Reference Coordinates RA: {j2000.RAString} Dec: {j2000.DecString} Epoch: {j2000.Epoch}" : "";
             return $"FocalLength: {FocalLength}" + Environment.NewLine +
                 $"PixelSize: {PixelSize}" + Environment.NewLine +
                 $"SearchRadius: {SearchRadius}" + Environment.NewLine +

@@ -447,12 +447,8 @@ namespace NINA.ViewModel.Equipment.Telescope {
 
         public bool Sync(Coordinates coordinates) {
             var transform = coordinates.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
-            return Sync(transform.RA, transform.Dec);
-        }
-
-        public bool Sync(double ra, double dec) {
             if (!profileService.ActiveProfile.TelescopeSettings.NoSync && TelescopeInfo.Connected) {
-                return Telescope.Sync(ra, dec);
+                return Telescope.Sync(coordinates);
             } else {
                 return false;
             }
@@ -578,7 +574,7 @@ namespace NINA.ViewModel.Equipment.Telescope {
             coords = coords.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
             if (Telescope?.Connected == true) {
                 await Task.Run(() => {
-                    Telescope.SlewToCoordinates(coords.RA, coords.Dec);
+                    Telescope.SlewToCoordinates(coords);
                 });
                 await Utility.Utility.Delay(TimeSpan.FromSeconds(profileService.ActiveProfile.TelescopeSettings.SettleTime), new CancellationToken());
                 return true;
@@ -590,7 +586,7 @@ namespace NINA.ViewModel.Equipment.Telescope {
         private void SlewToCoordinates(Coordinates coords) {
             coords = coords.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
             if (Telescope?.Connected == true) {
-                Telescope.SlewToCoordinatesAsync(coords.RA, coords.Dec);
+                Telescope.SlewToCoordinatesAsync(coords);
             }
         }
 
@@ -603,8 +599,9 @@ namespace NINA.ViewModel.Equipment.Telescope {
         }
 
         public Task<bool> MeridianFlip(Coordinates targetCoordinates) {
+            var coords = targetCoordinates.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
             if (TelescopeInfo.Connected) {
-                return Telescope.MeridianFlip(targetCoordinates);
+                return Telescope.MeridianFlip(coords);
             } else {
                 return Task.FromResult(false);
             }

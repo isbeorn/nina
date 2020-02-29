@@ -37,8 +37,6 @@ namespace NINA.Utility.Mediator.Interfaces {
 
         bool Sync(Coordinates coordinates);
 
-        bool Sync(double ra, double dec);
-
         Task<bool> SlewToCoordinatesAsync(Coordinates coords);
 
         Task<bool> SlewToCoordinatesAsync(TopocentricCoordinates coords);

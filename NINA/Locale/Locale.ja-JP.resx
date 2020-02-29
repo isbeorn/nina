@@ -237,7 +237,7 @@
     <value>角度秒</value>
   </data>
   <data name="LblAscending" xml:space="preserve">
-    <value>上昇中</value>
+    <value>上昇</value>
   </data>
   <data name="LblAscomInterOpDriverException" xml:space="preserve">
     <value>ASCOMドライバーが相互運用の例外に直面しました。恐らく{0}としてインストールされているドライバーと{1}のN.I.N.Aとの間のミスマッチが原因と思われます。ドライバーを{1}としてインストールして下さい。</value>
@@ -614,7 +614,7 @@
     <value>カラーのセンサーはまだサポートされていません。</value>
   </data>
   <data name="LblCompression" xml:space="preserve">
-    <value>Compression</value>
+    <value>圧縮</value>
   </data>
   <data name="LblCompressionLZ4" xml:space="preserve">
     <value>LZ4</value>
@@ -950,7 +950,7 @@
     <value>現在のポジション</value>
   </data>
   <data name="LblCurrentSequenceEstimates" xml:space="preserve">
-    <value>Estimated time for this target</value>
+    <value>この対象に要する予測時間</value>
   </data>
   <data name="LblCurrentUIColorSchema" xml:space="preserve">
     <value>現在のUI色スキーム</value>
@@ -980,7 +980,7 @@
     <value>DSOデータの初期設定を提供したのは</value>
   </data>
   <data name="LblDataToDownloadRatio" xml:space="preserve">
-    <value>Download to Data ratio</value>
+    <value>データダウンロードレート</value>
   </data>
   <data name="LblDateFormatDescription" xml:space="preserve">
     <value>日付フォーマットYYYY-MM-DD</value>
@@ -995,7 +995,7 @@
     <value>薄明</value>
   </data>
   <data name="LblDays" xml:space="preserve">
-    <value>Days</value>
+    <value>日</value>
   </data>
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
@@ -1052,7 +1052,7 @@
     <value>プロファイルを消去できません。他のN.I.N.Aセッションが使用中です。</value>
   </data>
   <data name="LblDescending" xml:space="preserve">
-    <value>下降中</value>
+    <value>下降順</value>
   </data>
   <data name="LblDescription" xml:space="preserve">
     <value>概要</value>
@@ -1109,7 +1109,7 @@
     <value>距離</value>
   </data>
   <data name="LblDither" xml:space="preserve">
-    <value>デザ</value>
+    <value>デザリング</value>
   </data>
   <data name="LblDitherEveryNoFrame" xml:space="preserve">
     <value>#枚毎にデザリングする</value>
@@ -1252,7 +1252,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>ファイル拡張子</value>
   </data>
   <data name="LblFileFormatOptions" xml:space="preserve">
-    <value>File Format Options</value>
+    <value>ファイル形式オプション</value>
   </data>
   <data name="LblFileSettings" xml:space="preserve">
     <value>ファイル設定</value>
@@ -1587,7 +1587,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>中断</value>
   </data>
   <data name="LblHeight" xml:space="preserve">
-    <value>高度</value>
+    <value>センサー縦</value>
   </data>
   <data name="LblHemisphere" xml:space="preserve">
     <value>半球</value>
@@ -1623,7 +1623,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>HNSKY</value>
   </data>
   <data name="LblHorizontalPanels" xml:space="preserve">
-    <value>水平パネル</value>
+    <value>水平構図パネル</value>
   </data>
   <data name="LblHost" xml:space="preserve">
     <value>ホスト</value>
@@ -1632,7 +1632,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>時</value>
   </data>
   <data name="LblHours" xml:space="preserve">
-    <value>Hours</value>
+    <value>時間</value>
   </data>
   <data name="LblHumidity" xml:space="preserve">
     <value>湿度</value>
@@ -1773,7 +1773,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>経度</value>
   </data>
   <data name="LblLoop" xml:space="preserve">
-    <value>ループ</value>
+    <value>循環(ループ)</value>
   </data>
   <data name="LblMAD" xml:space="preserve">
     <value>MAD</value>
@@ -1848,7 +1848,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>子午線フリップ工程を開始しました。</value>
   </data>
   <data name="LblMeridianIn" xml:space="preserve">
-    <value>Meridian in</value>
+    <value>南中までの時間</value>
   </data>
   <data name="LblMeridianOffset" xml:space="preserve">
     <value>子午線オフセット</value>
@@ -1875,7 +1875,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>最小ADU</value>
   </data>
   <data name="LblMinutes" xml:space="preserve">
-    <value>Minutes</value>
+    <value>分</value>
   </data>
   <data name="LblMinutesAfterMeridian" xml:space="preserve">
     <value>子午線通過後の分数</value>
@@ -1905,7 +1905,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>ネイティブの</value>
   </data>
   <data name="LblNewPosition" xml:space="preserve">
-    <value>New Position</value>
+    <value>新しい位置</value>
     <comment>Newly Calulated Autofocus Position</comment>
   </data>
   <data name="LblNewUpdateAvailable" xml:space="preserve">
@@ -1939,7 +1939,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>赤道儀を同期する座標がありません。</value>
   </data>
   <data name="LblNoFileFormatOptions" xml:space="preserve">
-    <value>There are no options for this file format</value>
+    <value>このファイルフォーマットにはオプションはありません。</value>
   </data>
   <data name="LblNoFilterwheel" xml:space="preserve">
     <value>フィルターホイール無し</value>
@@ -1966,7 +1966,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>ノーマル</value>
   </data>
   <data name="LblNoRotator" xml:space="preserve">
-    <value>ロテーター無し</value>
+    <value>回転装置無し</value>
   </data>
   <data name="LblNorthern" xml:space="preserve">
     <value>北</value>
@@ -1975,10 +1975,10 @@ When the button is clicked the application will take one exposure and calculate 
     <value>スイッチ無し</value>
   </data>
   <data name="LblNoSync" xml:space="preserve">
-    <value>No Sync</value>
+    <value>同期なし</value>
   </data>
   <data name="LblNoSyncTooltip" xml:space="preserve">
-    <value>When enabled the application will never send a sync command to the telescope. This should only be used when having a good pointing model that should not be altered in any way.</value>
+    <value>これをオンにすると、アプリケーションは同期コマンドを赤道儀へ送りません。確立されたポインティングモデルがあり、それに変更を加えてはならない場合にのみ使用して下さい。</value>
   </data>
   <data name="LblNoTelescope" xml:space="preserve">
     <value>赤道儀無し</value>
@@ -1996,7 +1996,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>警告テキスト</value>
   </data>
   <data name="LblNow" xml:space="preserve">
-    <value>今</value>
+    <value>現在</value>
   </data>
   <data name="LblNrStars" xml:space="preserve">
     <value>#星</value>
@@ -2107,7 +2107,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>オーケー</value>
   </data>
   <data name="LblOldPosition" xml:space="preserve">
-    <value>Old Position</value>
+    <value>以前の位置</value>
     <comment>Previous Focuser Position</comment>
   </data>
   <data name="LblOn" xml:space="preserve">
@@ -2198,7 +2198,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>PHD2を起動できませんでした。パスが見つかりません。</value>
   </data>
   <data name="LblPHD2RARMS" xml:space="preserve">
-    <value>赤緯: {0} ({1}")</value>
+    <value>赤経: {0} ({1}")</value>
   </data>
   <data name="LblPhd2ServerConnectionLost" xml:space="preserve">
     <value>PHD2サーバーの接続が途絶えました。</value>
@@ -2317,7 +2317,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>望遠鏡が公差外です。再度実行します...</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceReslew" xml:space="preserve">
-    <value>望遠鏡が公差外です。再度ターゲットに振り向けを実行します...</value>
+    <value>望遠鏡が公差外です。再度ターゲットの導入を実行します...</value>
   </data>
   <data name="LblPlateSolveNotInsideToleranceSyncing" xml:space="preserve">
     <value>望遠鏡が公差外です。同期します。</value>
@@ -2500,7 +2500,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>配置をリセットしますか？</value>
   </data>
   <data name="LblReslewToTarget" xml:space="preserve">
-    <value>ターゲットへ再移動</value>
+    <value>ターゲットの再導入</value>
   </data>
   <data name="LblResumeAutoguider" xml:space="preserve">
     <value>オートガイダー再開</value>
@@ -2611,10 +2611,10 @@ When the button is clicked the application will take one exposure and calculate 
     <value>シーケンス モード</value>
   </data>
   <data name="LblSequenceModeRotate" xml:space="preserve">
-    <value>ループ</value>
+    <value>循環(ループ)</value>
   </data>
   <data name="LblSequenceModeStandard" xml:space="preserve">
-    <value>次々に</value>
+    <value>順次</value>
   </data>
   <data name="LblSequenceTemplate" xml:space="preserve">
     <value>シーケンステンプレート</value>
@@ -2645,10 +2645,10 @@ When the button is clicked the application will take one exposure and calculate 
     <value>新しい値を設定</value>
   </data>
   <data name="LblSetPark" xml:space="preserve">
-    <value>Set As Park</value>
+    <value>パークとして設定</value>
   </data>
   <data name="LblSetParkToolTip" xml:space="preserve">
-    <value>Sets the park position to be the current position</value>
+    <value>現在の位置をパーク位置として設定</value>
   </data>
   <data name="LblSettings" xml:space="preserve">
     <value>設定</value>
@@ -2660,16 +2660,16 @@ When the button is clicked the application will take one exposure and calculate 
     <value>PHD2の安定化ピクセル公差</value>
   </data>
   <data name="LblSettleTimeAfterSlew" xml:space="preserve">
-    <value>赤道儀振り向け動作後の安定化時間</value>
+    <value>導入動作後の安定化時間</value>
   </data>
   <data name="LblSettleTimeout" xml:space="preserve">
     <value>PHD2安定化タイムアウト</value>
   </data>
   <data name="LblAutoRetryStartGuiding" xml:space="preserve">
-    <value>Guiding Start Retry</value>
+    <value>ガイド開始再試行</value>
   </data>
   <data name="LblAutoRetryStartGuidingTimeoutSeconds" xml:space="preserve">
-    <value>Guiding Start Timeout (in seconds)</value>
+    <value>ガイド開始までの時間(秒)</value>
   </data>
   <data name="LblAutoRetryStartGuidingTooltip" xml:space="preserve">
     <value>Attempt to recover StartGuiding command if the guider does not report it is guiding after the specified amount of time.</value>
@@ -2720,25 +2720,25 @@ When the button is clicked the application will take one exposure and calculate 
     <value>空温度</value>
   </data>
   <data name="LblSlew" xml:space="preserve">
-    <value>振り向け</value>
+    <value>導入</value>
   </data>
   <data name="LblSlewDuration" xml:space="preserve">
-    <value>振り向け時間</value>
+    <value>導入時間</value>
   </data>
   <data name="LblSlewEnabledButTelescopeNotConnected" xml:space="preserve">
-    <value>対象への振り向けがオンになっていますが、赤道儀が接続されていません。</value>
+    <value>対象の導入がオンになっていますが、赤道儀が接続されていません。</value>
   </data>
   <data name="LblSlewRateDegSec" xml:space="preserve">
-    <value>振り向け移動速度(度/秒)</value>
+    <value>導入速度(度/秒)</value>
   </data>
   <data name="LblSlewToTarget" xml:space="preserve">
-    <value>対象へ振り向け</value>
+    <value>対象の導入</value>
   </data>
   <data name="LblSlewToZenith" xml:space="preserve">
-    <value>天頂へ振り向け</value>
+    <value>天頂へ向ける</value>
   </data>
   <data name="LblSlewWhenTargetCoordsUnset" xml:space="preserve">
-    <value>一つか複数のターゲットで振り向けがオンになっているものがありますが、ターゲットの座標設定がありません。</value>
+    <value>一つか複数のターゲットで導入がオンになっているものがありますが、ターゲットの座標設定がありません。</value>
   </data>
   <data name="LblSnapPortStart" xml:space="preserve">
     <value>スナップポート開始コマンド</value>
@@ -2922,7 +2922,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>赤道儀がパルスガイドできません。</value>
   </data>
   <data name="LblTelescopeCannotSlew" xml:space="preserve">
-    <value>赤道儀が振り向けを実行できません。</value>
+    <value>赤道儀が導入動作を実行できません。</value>
   </data>
   <data name="LblTelescopeConnected" xml:space="preserve">
     <value>赤道儀接続済み</value>
@@ -2946,7 +2946,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>赤道儀が追尾していません。同期は追尾時のみ有効です。</value>
   </data>
   <data name="LblTelescopeParkedWarn" xml:space="preserve">
-    <value>赤道儀がパーク位置です。パークしている最中は振り向け動作はできません。</value>
+    <value>赤道儀がパーク位置です。パークしている最中は導入動作はできません。</value>
   </data>
   <data name="LblTelescopeSnapPort" xml:space="preserve">
     <value>望遠鏡スナップポート</value>
@@ -2979,7 +2979,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>TheSkyX</value>
   </data>
   <data name="LblThrough" xml:space="preserve">
-    <value>Through</value>
+    <value>まで</value>
   </data>
   <data name="LblTiff" xml:space="preserve">
     <value>TIFF</value>
@@ -3000,7 +3000,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>タイムゾーン</value>
   </data>
   <data name="LblTo" xml:space="preserve">
-    <value>To</value>
+    <value>まで</value>
   </data>
   <data name="LblTools" xml:space="preserve">
     <value>ツール</value>
@@ -3131,94 +3131,94 @@ When the button is clicked the application will take one exposure and calculate 
     <value>パーク解除</value>
   </data>
   <data name="LblUPBV2AmpereHours" xml:space="preserve">
-    <value>Ampere Hours</value>
+    <value>アンペア時</value>
   </data>
   <data name="LblUPBV2AutoDewControl" xml:space="preserve">
-    <value>Automatic Dew Control</value>
+    <value>自動結露防止制御</value>
   </data>
   <data name="LblUPBV2AverageCurrent" xml:space="preserve">
-    <value>Average Current</value>
+    <value>平均電流</value>
   </data>
   <data name="LblUPBV2Current" xml:space="preserve">
-    <value>Current</value>
+    <value>電流</value>
   </data>
   <data name="LblUPBV2DeviceData" xml:space="preserve">
-    <value>Device Data</value>
+    <value>装置データ</value>
   </data>
   <data name="LblUPBV2DewHeater" xml:space="preserve">
-    <value>Dew Heater Port</value>
+    <value>結露防止ポート</value>
   </data>
   <data name="LblUPBV2DewHeaterPorts" xml:space="preserve">
-    <value>Dew Heaters</value>
+    <value>結露防止ヒーター</value>
   </data>
   <data name="LblUPBV2DewPoint" xml:space="preserve">
-    <value>Dew Point</value>
+    <value>結露点</value>
   </data>
   <data name="LblUPBV2ExcessCurrent" xml:space="preserve">
-    <value>Excess Current</value>
+    <value>過電流</value>
   </data>
   <data name="LblUPBV2InputCurrent" xml:space="preserve">
-    <value>Input Current</value>
+    <value>入力電流</value>
   </data>
   <data name="LblUPBV2InputPower" xml:space="preserve">
-    <value>Power</value>
+    <value>電源</value>
   </data>
   <data name="LblUPBV2InputVoltage" xml:space="preserve">
-    <value>Input Voltage</value>
+    <value>入力電圧</value>
   </data>
   <data name="LblUPBV2InvalidResponse" xml:space="preserve">
-    <value>Invalid response from Pegasus Astro Ultimate Powerbox V2.</value>
+    <value>Pegasus Astroからの不適切な反応</value>
   </data>
   <data name="LblUPBV2Power1" xml:space="preserve">
-    <value>Power Port 1</value>
+    <value>電源ポート１</value>
   </data>
   <data name="LblUPBV2Power2" xml:space="preserve">
-    <value>Power Port 2</value>
+    <value>電源ポート２</value>
   </data>
   <data name="LblUPBV2Power3" xml:space="preserve">
-    <value>Power Port 3</value>
+    <value>電源ポート３</value>
   </data>
   <data name="LblUPBV2Power4" xml:space="preserve">
-    <value>Power Port 4</value>
+    <value>電源ポート４</value>
   </data>
   <data name="LblUPBV2PowerPorts" xml:space="preserve">
-    <value>Power</value>
+    <value>電源</value>
   </data>
   <data name="LblUPBV2RelativeHumidity" xml:space="preserve">
-    <value>Relative Humidity</value>
+    <value>相対湿度</value>
   </data>
   <data name="LblUPBV2Temperature" xml:space="preserve">
-    <value>Temperature</value>
+    <value>温度</value>
   </data>
   <data name="LblUPBV2UpTime" xml:space="preserve">
-    <value>Up-Time</value>
+    <value>アップタイム</value>
   </data>
   <data name="LblUPBV2Usb1" xml:space="preserve">
-    <value>Usb Port 1</value>
+    <value>Usbポート１</value>
   </data>
   <data name="LblUPBV2Usb2" xml:space="preserve">
-    <value>Usb Port 2</value>
+    <value>Usbポート２</value>
   </data>
   <data name="LblUPBV2Usb3" xml:space="preserve">
-    <value>Usb Port 3</value>
+    <value>Usbポート３</value>
   </data>
   <data name="LblUPBV2Usb4" xml:space="preserve">
-    <value>Usb Port 4</value>
+    <value>Usbポート４</value>
   </data>
   <data name="LblUPBV2Usb5" xml:space="preserve">
-    <value>Usb Port 5</value>
+    <value>Usbポート５</value>
   </data>
   <data name="LblUPBV2Usb6" xml:space="preserve">
-    <value>Usb Port 6</value>
+    <value>Usbポート６</value>
   </data>
   <data name="LblUPBV2UsbPorts" xml:space="preserve">
     <value>Usb</value>
   </data>
   <data name="LblUPBV2VariablePower" xml:space="preserve">
-    <value>Variable Power Port</value>
+    <value>可変電源ポート</value>
   </data>
   <data name="LblUPBV2WattHours" xml:space="preserve">
-    <value>Watt Hours</value>
+    <value>ワット時</value>
   </data>
   <data name="LblUpdate" xml:space="preserve">
     <value>アップデート</value>
@@ -3281,7 +3281,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>警告</value>
   </data>
   <data name="LblWarnTelescopeParked" xml:space="preserve">
-    <value>The Telescope is parked, and will be automatically unparked if user proceeds with sequence start</value>
+    <value>望遠鏡はパーク位置にあり、ユーザーがシーケンスを開始すると自動的にパークは解除されます。</value>
   </data>
   <data name="LblWeather" xml:space="preserve">
     <value>天気</value>
@@ -3323,7 +3323,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>西</value>
   </data>
   <data name="LblWidth" xml:space="preserve">
-    <value>幅</value>
+    <value>センサー横画素数</value>
   </data>
   <data name="LblWindDirection" xml:space="preserve">
     <value>風向き</value>
@@ -3341,22 +3341,22 @@ When the button is clicked the application will take one exposure and calculate 
     <value>XISF</value>
   </data>
   <data name="LblXisfBadChecksum" xml:space="preserve">
-    <value>XISF file checksum did not verify. The image data may be corrupted.</value>
+    <value>XISFファイルのチェックサム（検査合計）が合いませんでした。画像データが破損している可能性があります。</value>
   </data>
   <data name="LblXisfInvalidFile" xml:space="preserve">
-    <value>Not a valid XISF file</value>
+    <value>有効なXISFファイルではありません。</value>
   </data>
   <data name="LblXisfInvalidGeometry" xml:space="preserve">
-    <value>Could not get XISF image geometry</value>
+    <value>XISF画像の幾何学形状を得ることができませんでした。</value>
   </data>
   <data name="LblXisfUnsupportedChecksum" xml:space="preserve">
-    <value>Unsupported XISF checksum type: {0}</value>
+    <value>サポート外のXISFチェックサム形式: {0}</value>
   </data>
   <data name="LblXisfUnsupportedCompression" xml:space="preserve">
-    <value>Unsupported XISF compression type: {0}</value>
+    <value>サポート外のXISF圧縮形式: {0}</value>
   </data>
   <data name="LblXisfUnsupportedFormat" xml:space="preserve">
-    <value>Unsupported XISF data format: {0}</value>
+    <value>サポート外のXISFデータ形式: {0}</value>
   </data>
   <data name="LblYAxisScale" xml:space="preserve">
     <value>Y軸目盛</value>
@@ -3374,13 +3374,13 @@ When the button is clicked the application will take one exposure and calculate 
     <value>25%毎にズームアウト</value>
   </data>
   <data name="LblZoomStretch" xml:space="preserve">
-    <value>Fit Image to Area</value>
+    <value>画像をエリアに合わせる</value>
   </data>
   <data name="UPBV2InputCurrentChartLabel" xml:space="preserve">
-    <value>Input Current (A)</value>
+    <value>入力電流(A)</value>
   </data>
   <data name="UPBV2InputVoltageChartLabel" xml:space="preserve">
-    <value>Input Voltage (V)</value>
+    <value>入力電圧 (V)</value>
   </data>
   <data name="String1" xml:space="preserve">
     <value></value>

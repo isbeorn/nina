@@ -40,8 +40,8 @@ namespace NINA.Utility.Mediator {
             handler.PulseGuide(direction, duration);
         }
 
-        public bool Sync(double ra, double dec) {
-            return handler.Sync(ra, dec);
+        public bool Sync(Coordinates coordinates) {
+            return handler.Sync(coordinates);
         }
 
         public Task<bool> SlewToCoordinatesAsync(Coordinates coords) {
@@ -70,10 +70,6 @@ namespace NINA.Utility.Mediator {
 
         public void UnparkTelescope() {
             handler.UnparkTelescope();
-        }
-
-        public bool Sync(Coordinates coordinates) {
-            return handler.Sync(coordinates);
         }
 
         public Coordinates GetCurrentPosition() {

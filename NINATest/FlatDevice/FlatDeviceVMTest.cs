@@ -37,6 +37,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINATest.FlatDevice {
+
     [TestFixture]
     public class FlatDeviceVMTest {
         private FlatDeviceVM _sut;
@@ -268,6 +269,19 @@ namespace NINATest.FlatDevice {
             _sut.UpdateDeviceInfo(info);
             var result2 = _sut.WizardTrainedValues;
             Assert.That(result1, Is.Not.EqualTo(result2));
+        }
+
+        [Test]
+        public void TestWizardTrainedValuesForCamerasWithoutBinning() {
+            _mockProfileService.Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoBinnings()).Returns((IEnumerable<BinningMode>)new List<BinningMode>() { null });
+            var info = new FilterWheelInfo { SelectedFilter = new FilterInfo { Name = "Clear" } };
+            _sut.UpdateDeviceInfo(info);
+            var result1 = _sut.WizardTrainedValues;
+
+            Assert.That(result1, Is.Not.Null);
+            Assert.That(result1.Columns.Count, Is.EqualTo(1));
+            Assert.That(result1.Rows.Count, Is.EqualTo(1));
+            Assert.That(result1.Rows[0][0], Is.EqualTo(Loc.Instance["LblNoFilterwheel"]));
         }
 
         [Test]
