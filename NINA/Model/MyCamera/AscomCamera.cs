@@ -151,6 +151,7 @@ namespace NINA.Model.MyCamera {
                     try {
                         _camera.BinX = value;
                     } catch (InvalidValueException ex) {
+                        Logger.Error(ex);
                         Notification.ShowError(ex.Message);
                     }
                     RaisePropertyChanged();
@@ -171,6 +172,7 @@ namespace NINA.Model.MyCamera {
                     try {
                         _camera.BinY = value;
                     } catch (InvalidValueException ex) {
+                        Logger.Error(ex);
                         Notification.ShowError(ex.Message);
                     }
                     RaisePropertyChanged();
@@ -188,6 +190,7 @@ namespace NINA.Model.MyCamera {
                         state = CameraStates.cameraIdle.ToString();
                     }
                 } catch (NotConnectedException ex) {
+                    Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                     state = CameraStates.cameraError.ToString();
                 }
@@ -335,6 +338,7 @@ namespace NINA.Model.MyCamera {
                     _connected = value;
                     _camera.Connected = value;
                 } catch (Exception ex) {
+                    Logger.Error(ex);
                     Notification.ShowError(Locale.Loc.Instance["LblReconnectCamera"] + Environment.NewLine + ex.Message);
                     _connected = false;
                 }
@@ -894,6 +898,7 @@ namespace NINA.Model.MyCamera {
                 try {
                     _camera.ReadoutMode = value;
                 } catch (InvalidValueException ex) {
+                    Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                 } catch (PropertyNotImplementedException) {
                     ASCOMInteraction.LogComplianceIssue($"{nameof(ReadoutMode)} SET");
@@ -980,6 +985,7 @@ namespace NINA.Model.MyCamera {
                         _camera.SetCCDTemperature = value;
                         RaisePropertyChanged();
                     } catch (InvalidValueException ex) {
+                        Logger.Error(ex);
                         Notification.ShowError(ex.Message);
                     }
                 }
@@ -1041,6 +1047,7 @@ namespace NINA.Model.MyCamera {
                     RaiseAllPropertiesChanged();
                 }
             } catch (ASCOM.DriverAccessCOMException ex) {
+                Logger.Error(ex);
                 Notification.ShowError(ex.Message);
             } catch (Exception ex) {
                 Logger.Error(ex);
@@ -1117,6 +1124,7 @@ namespace NINA.Model.MyCamera {
                 try {
                     _camera.StopExposure();
                 } catch (Exception e) {
+                    Logger.Error(e);
                     Notification.ShowError(e.Message);
                 }
             }
@@ -1127,6 +1135,7 @@ namespace NINA.Model.MyCamera {
                 try {
                     _camera.AbortExposure();
                 } catch (Exception e) {
+                    Logger.Error(e);
                     Notification.ShowError(e.Message);
                 }
             }
@@ -1207,6 +1216,7 @@ namespace NINA.Model.MyCamera {
                         _camera = null;
                     }
                 } catch (Exception ex) {
+                    Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                 }
             }

@@ -48,7 +48,14 @@ namespace NINA.PlateSolving {
 
         public double Radius { get; set; }
 
-        public Coordinates Coordinates { get; set; }
+        private Coordinates coordinates;
+
+        public Coordinates Coordinates {
+            get => coordinates;
+            set {
+                coordinates = value?.Transform(Epoch.J2000);
+            }
+        }
 
         public bool Success { get; set; }
 

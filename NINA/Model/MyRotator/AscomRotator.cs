@@ -191,6 +191,7 @@ namespace NINA.Model.MyRotator {
                         rotator = null;
                     }
                 } catch (Exception ex) {
+                    Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                 }
             }

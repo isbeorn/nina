@@ -290,6 +290,7 @@ namespace NINA.Model.MyFocuser {
                         _focuser = null;
                     }
                 } catch (Exception ex) {
+                    Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                 }
             }

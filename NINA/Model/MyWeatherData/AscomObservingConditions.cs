@@ -85,6 +85,7 @@ namespace NINA.Model.MyWeatherData {
                         _obscond.AveragePeriod = value;
                     }
                 } catch (InvalidValueException ex) {
+                    Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                 }
             }
@@ -350,6 +351,7 @@ namespace NINA.Model.MyWeatherData {
                         _obscond = null;
                     }
                 } catch (Exception ex) {
+                    Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                 }
             }

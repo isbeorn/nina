@@ -304,11 +304,11 @@ namespace NINA.Model.MyGuider {
             var autoRetry = profileService.ActiveProfile.GuiderSettings.AutoRetryStartGuiding;
             var retryAfterSeconds = profileService.ActiveProfile.GuiderSettings.AutoRetryStartGuidingTimeoutSeconds * 1000;
 
-            if (!Connected) 
+            if (!Connected)
                 return false;
 
             string state = await GetAppState();
-            if (state == PhdAppState.GUIDING) 
+            if (state == PhdAppState.GUIDING)
                 return true;
 
             if (state == PhdAppState.CALIBRATING)
@@ -317,21 +317,20 @@ namespace NINA.Model.MyGuider {
             async Task<bool> TryStartGuideCommand() {
                 var guideMsg = await SendMessage(
                     PHD2EventId.GUIDE,
-                    string.Format(PHD2Methods.GUIDE,false.ToString().ToLower()));
+                    string.Format(PHD2Methods.GUIDE, false.ToString().ToLower()));
                 return guideMsg.error == null;
             }
 
-            if (!autoRetry)
-            {
+            if (!autoRetry) {
                 return await TryStartGuideCommand()
                     && await WaitForAppState(PhdAppState.GUIDING, ct);
             }
 
-            while (!ct.IsCancellationRequested){
+            while (!ct.IsCancellationRequested) {
                 if (!await TryStartGuideCommand())
                     return false;
 
-                using (var cancelOnTimeoutOrParent = CancellationTokenSource.CreateLinkedTokenSource(ct)){
+                using (var cancelOnTimeoutOrParent = CancellationTokenSource.CreateLinkedTokenSource(ct)) {
                     var timeout = Task.Delay(
                         retryAfterSeconds,
                         cancelOnTimeoutOrParent.Token);
@@ -339,17 +338,18 @@ namespace NINA.Model.MyGuider {
                         PhdAppState.GUIDING,
                         cancelOnTimeoutOrParent.Token);
 
-                    if ((await Task.WhenAny(timeout, guidingHasBegun)) == guidingHasBegun){
+                    if ((await Task.WhenAny(timeout, guidingHasBegun)) == guidingHasBegun) {
                         return await guidingHasBegun;
                     }
                     cancelOnTimeoutOrParent.Cancel();
                     await Task.Delay(100, ct); // 100ms sleep between retries
-                    
+
                     await StopGuiding(ct); // used to visual inspect that the guider is in the stopped state before retrying.
                 }
             }
             return false;
         }
+
         public async Task<bool> StopGuiding(CancellationToken token) {
             if (Connected) {
                 string state = await GetAppState();
@@ -506,7 +506,8 @@ namespace NINA.Model.MyGuider {
 
                     return true;
                 }
-            } catch (FileNotFoundException) {
+            } catch (FileNotFoundException ex) {
+                Logger.Error(Locale.Loc.Instance["LblPhd2PathNotFound"]);
                 Notification.ShowError(Locale.Loc.Instance["LblPhd2PathNotFound"]);
             } catch (Exception ex) {
                 Logger.Error(ex);

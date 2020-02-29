@@ -65,19 +65,17 @@ namespace NINA.Model.MyTelescope {
 
         void Setpark();
 
-        void SlewToCoordinatesAsync(double ra, double dec);
+        void SlewToCoordinatesAsync(Coordinates coordinates);
 
-        void SlewToCoordinates(double ra, double dec);
+        void SlewToCoordinates(Coordinates coordinates);
 
-        void SlewToAltAz(double az, double alt);
+        void SlewToAltAz(TopocentricCoordinates coordinates);
 
-        void SlewToAltAzAsync(double az, double alt);
+        void SlewToAltAzAsync(TopocentricCoordinates coordinates);
 
         void StopSlew();
 
-        bool Sync(string ra, string dec);
-
-        bool Sync(double ra, double dec);
+        bool Sync(Coordinates coordinates);
 
         void Unpark();
 

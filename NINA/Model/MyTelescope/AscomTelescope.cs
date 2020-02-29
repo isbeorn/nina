@@ -969,9 +969,11 @@ namespace NINA.Model.MyTelescope {
                     }
                 }
 
-                SlewToCoordinates(targetCoordinates.RA, targetCoordinates.Dec);
+                targetCoordinates = targetCoordinates.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
+                SlewToCoordinates(targetCoordinates);
                 success = true;
-            } catch (Exception) {
+            } catch (Exception ex) {
+                Logger.Error(ex);
                 Notification.ShowError(Locale.Loc.Instance["LblMeridianFlipFailed"]);
             }
             return success;
@@ -1002,6 +1004,7 @@ namespace NINA.Model.MyTelescope {
                             }
                             _telescope.MoveAxis(translatedAxis, rate);
                         } catch (Exception e) {
+                            Logger.Error(e);
                             Notification.ShowError(e.Message);
                         }
                     } else {
@@ -1022,6 +1025,7 @@ namespace NINA.Model.MyTelescope {
                         try {
                             _telescope.PulseGuide((ASCOM.DeviceInterface.GuideDirections)direction, duration);
                         } catch (Exception e) {
+                            Logger.Error(e);
                             Notification.ShowError(e.Message);
                         }
                     } else {
@@ -1040,6 +1044,7 @@ namespace NINA.Model.MyTelescope {
                 try {
                     _telescope.Park();
                 } catch (Exception e) {
+                    Logger.Error(e);
                     Notification.ShowError(e.Message);
                 } finally {
                 }
@@ -1051,52 +1056,59 @@ namespace NINA.Model.MyTelescope {
                 try {
                     _telescope.SetPark();
                 } catch (Exception e) {
+                    Logger.Error(e);
                     Notification.ShowError(e.Message);
                 }
             }
         }
 
-        public void SlewToCoordinatesAsync(double ra, double dec) {
+        public void SlewToCoordinatesAsync(Coordinates coordinates) {
             if (Connected && CanSlew && !AtPark) {
                 try {
                     if (!Tracking) {
                         Tracking = true;
                     }
-                    _telescope.SlewToCoordinatesAsync(ra, dec);
+                    coordinates = coordinates.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
+                    _telescope.SlewToCoordinatesAsync(coordinates.RA, coordinates.Dec);
                 } catch (Exception e) {
+                    Logger.Error(e);
                     Notification.ShowError(e.Message);
                 }
             }
         }
 
-        public void SlewToCoordinates(double ra, double dec) {
+        public void SlewToCoordinates(Coordinates coordinates) {
             if (Connected && CanSlew && !AtPark) {
                 try {
                     if (!Tracking) {
                         Tracking = true;
                     }
-                    _telescope.SlewToCoordinates(ra, dec);
+                    coordinates = coordinates.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
+                    _telescope.SlewToCoordinates(coordinates.RA, coordinates.Dec);
                 } catch (Exception e) {
+                    Logger.Error(e);
                     Notification.ShowError(e.Message);
                 }
             }
         }
 
-        public void SlewToAltAz(double az, double alt) {
+        public void SlewToAltAz(TopocentricCoordinates coordinates) {
             if (Connected && CanSlew && !AtPark) {
                 try {
-                    _telescope.SlewToAltAz(az, alt);
+                    _telescope.SlewToAltAz(coordinates.Azimuth.Degree, coordinates.Altitude.Degree);
                 } catch (Exception e) {
+                    Logger.Error(e);
                     Notification.ShowError(e.Message);
                 }
             }
         }
 
-        public void SlewToAltAzAsync(double az, double alt) {
+        public void SlewToAltAzAsync(TopocentricCoordinates coordinates) {
             if (Connected && CanSlew && !AtPark) {
                 try {
-                    _telescope.SlewToAltAzAsync(az, alt);
+                    _telescope.SlewToAltAz(coordinates.Azimuth.Degree, coordinates.Altitude.Degree);
                 } catch (Exception e) {
+                    Logger.Error(e);
                     Notification.ShowError(e.Message);
                 }
             }
@@ -1113,16 +1125,13 @@ namespace NINA.Model.MyTelescope {
 
         private static ASCOM.Utilities.Util AscomUtil { get { return lazyAscomUtil.Value; } }
 
-        public bool Sync(string ra, string dec) {
-            return Sync(AscomUtil.HMSToHours(ra), AscomUtil.DMSToDegrees(dec));
-        }
-
-        public bool Sync(double ra, double dec) {
+        public bool Sync(Coordinates coordinates) {
             bool success = false;
             if (Connected && CanSync) {
                 if (Tracking) {
                     try {
-                        _telescope.SyncToCoordinates(ra, dec);
+                        coordinates = coordinates.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
+                        _telescope.SyncToCoordinates(coordinates.RA, coordinates.Dec);
                         success = true;
                     } catch (Exception ex) {
                         Logger.Error(ex);
@@ -1140,6 +1149,7 @@ namespace NINA.Model.MyTelescope {
                 try {
                     _telescope.Unpark();
                 } catch (Exception e) {
+                    Logger.Error(e);
                     Notification.ShowError(e.Message);
                 }
             }
@@ -1174,6 +1184,7 @@ namespace NINA.Model.MyTelescope {
                         hourstomed += 24;
                     }
                 } catch (Exception ex) {
+                    Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                 }
                 return hourstomed;
@@ -1247,6 +1258,7 @@ namespace NINA.Model.MyTelescope {
                         _telescope = null;
                     }
                 } catch (Exception ex) {
+                    Logger.Error(ex);
                     Notification.ShowError(ex.Message);
                 }
             }
