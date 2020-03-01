@@ -106,7 +106,7 @@ namespace NINA.Utility.AvalonDock {
                 return FilterWheelTemplate;
             }
 
-            if (item is ImagingVM) {
+            if (item is AnchorableSnapshotVM) {
                 return ImagingTemplate;
             }
 

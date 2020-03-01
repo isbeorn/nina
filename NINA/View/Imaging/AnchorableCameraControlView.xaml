@@ -146,7 +146,7 @@
                         <UniformGrid Columns="2">
                             <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblSubSample}" />
                             <CheckBox
-                                Width="75"
+                                Width="120"
                                 Height="25"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Left"
@@ -165,16 +165,18 @@
                         Visibility="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.CanShowLiveView, FallbackValue=Collapsed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                 </StackPanel>
 
-                <ninactrl:CancellableButton
-                    Height="25"
-                    Margin="10,10,10,0"
-                    ButtonImage="{StaticResource CameraSVG}"
-                    CancelButtonImage="{StaticResource CancelSVG}"
-                    CancelCommand="{Binding CancelSnapCommand}"
-                    Command="{Binding SnapCommand}"
-                    IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.LiveViewEnabled, Converter={StaticResource InverseBooleanConverter}}"
-                    ToolTip="{ns:Loc LblTooltipTakeExposure}"
-                    Visibility="{Binding SnapCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
+                <Grid IsEnabled="{Binding Source={StaticResource AppVM}, Path=SeqVM.IsRunning, Converter={StaticResource InverseBooleanConverter}}">
+                    <ninactrl:CancellableButton
+                        Height="25"
+                        Margin="10,10,10,0"
+                        ButtonImage="{StaticResource CameraSVG}"
+                        CancelButtonImage="{StaticResource CancelSVG}"
+                        CancelCommand="{Binding CancelSnapCommand}"
+                        Command="{Binding SnapCommand}"
+                        IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.LiveViewEnabled, Converter={StaticResource InverseBooleanConverter}}"
+                        ToolTip="{ns:Loc LblTooltipTakeExposure}"
+                        Visibility="{Binding SnapCommand, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
+                </Grid>
             </StackPanel>
         </Grid>
     </ScrollViewer>

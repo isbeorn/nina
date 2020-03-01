@@ -376,31 +376,46 @@
                             BorderThickness="0"
                             DataContext="{Binding Source={StaticResource AppVM}, Path=SeqVM}">
                             <UniformGrid
-                                    Margin="0,6,0,6"
-                                    VerticalAlignment="Center"
-                                    Columns="4">
+                                Margin="0,6,0,6"
+                                VerticalAlignment="Center"
+                                Columns="4">
                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblCurrentSequenceEstimates}" />
-                                <UniformGrid Margin="0,0,0,0" VerticalAlignment="Center" Columns="2">
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" Text="{ns:Loc LblFrom}" />
+                                <UniformGrid
+                                    Margin="0,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblFrom}" />
                                     <TextBox
                                         Margin="5,0,0,0"
                                         HorizontalAlignment="Stretch"
                                         IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
                                         Text="{Binding SequenceEstimatedStartTime, StringFormat=hh:mm:ss, Mode=OneWay}" />
                                 </UniformGrid>
-                                <UniformGrid Margin="0,0,0,0" VerticalAlignment="Center" Columns="2">
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" Text="{ns:Loc LblTo}" />
+                                <UniformGrid
+                                    Margin="0,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblTo}" />
                                     <TextBox
                                         Margin="5,0,0,0"
                                         HorizontalAlignment="Stretch"
                                         IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
                                         Text="{Binding SequenceEstimatedEndTime, StringFormat=hh:mm:ss, Mode=OneWay}" />
                                 </UniformGrid>
-                                <UniformGrid                                     
+                                <UniformGrid
                                     Margin="0,0,0,0"
                                     VerticalAlignment="Center"
                                     Columns="2">
-                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" Text="{ns:Loc LblDuration}" />
+                                    <TextBlock
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblDuration}" />
                                     <TextBox
                                         Margin="5,0,0,0"
                                         HorizontalAlignment="Stretch"
@@ -1379,20 +1394,22 @@
                 HorizontalAlignment="Right"
                 DockPanel.Dock="Right"
                 IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.CameraInfo.Connected, FallbackValue=False}">
-                <ninactrl:AsyncProcessButton
-                    ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
-                    ButtonImage="{StaticResource PlaySVG}"
-                    CancelButtonImage="{StaticResource CancelSVG}"
-                    CancelCommand="{Binding CancelSequenceCommand}"
-                    Command="{Binding StartSequenceCommand}"
-                    IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.LiveViewEnabled, FallbackValue=False, Converter={StaticResource InverseBooleanConverter}}"
-                    IsPaused="{Binding IsPaused}"
-                    LoadingImageBrush="{StaticResource PrimaryBrush}"
-                    PauseButtonImage="{StaticResource PauseSVG}"
-                    PauseCommand="{Binding PauseSequenceCommand}"
-                    ResumeButtonImage="{StaticResource PlaySVG}"
-                    ResumeCommand="{Binding ResumeSequenceCommand}"
-                    ToolTip="{ns:Loc LblTooltipStartSequence}" />
+                <Grid IsEnabled="{Binding Source={StaticResource AppVM}, Path=AnchorableSnapshotVM.IsLooping, Converter={StaticResource InverseBooleanConverter}}">
+                    <ninactrl:AsyncProcessButton
+                        ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
+                        ButtonImage="{StaticResource PlaySVG}"
+                        CancelButtonImage="{StaticResource CancelSVG}"
+                        CancelCommand="{Binding CancelSequenceCommand}"
+                        Command="{Binding StartSequenceCommand}"
+                        IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.LiveViewEnabled, FallbackValue=False, Converter={StaticResource InverseBooleanConverter}}"
+                        IsPaused="{Binding IsPaused}"
+                        LoadingImageBrush="{StaticResource PrimaryBrush}"
+                        PauseButtonImage="{StaticResource PauseSVG}"
+                        PauseCommand="{Binding PauseSequenceCommand}"
+                        ResumeButtonImage="{StaticResource PlaySVG}"
+                        ResumeCommand="{Binding ResumeSequenceCommand}"
+                        ToolTip="{ns:Loc LblTooltipStartSequence}" />
+                </Grid>
             </Grid>
         </DockPanel>
     </Grid>

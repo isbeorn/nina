@@ -53,6 +53,7 @@ namespace NINA.Profile {
         ITelescopeSettings TelescopeSettings { get; set; }
         IWeatherDataSettings WeatherDataSettings { get; set; }
         IExposureCalculatorSettings ExposureCalculatorSettings { get; set; }
+        ISnapShotControlSettings SnapShotControlSettings { get; set; }
 
         void Save();
     }

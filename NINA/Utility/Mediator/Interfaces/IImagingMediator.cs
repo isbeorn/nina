@@ -56,9 +56,9 @@ namespace NINA.Utility.Mediator.Interfaces {
             PrepareImageParameters parameters,
             CancellationToken token);
 
-        void DestroyImage();
+        Task<bool> StartLiveView(CancellationToken ct);
 
-        bool IsLooping { get; }
+        void DestroyImage();
 
         event EventHandler<ImageSavedEventArgs> ImageSaved;
 

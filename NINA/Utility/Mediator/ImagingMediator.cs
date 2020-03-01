@@ -79,14 +79,12 @@ namespace NINA.Utility.Mediator {
             handler.DestroyImage();
         }
 
-        public bool IsLooping {
-            get {
-                return handler.IsLooping;
-            }
-        }
-
         public void SetImage(BitmapSource img) {
             handler.SetImage(img);
+        }
+
+        public Task<bool> StartLiveView(CancellationToken ct) {
+            return handler.StartLiveView(ct);
         }
     }
 }

@@ -34,7 +34,6 @@ using System.Windows.Media.Imaging;
 namespace NINA.ViewModel.Interfaces {
 
     public interface IImagingVM : ICameraConsumer, ITelescopeConsumer, IFilterWheelConsumer, IFocuserConsumer, IRotatorConsumer, IWeatherDataConsumer {
-        bool IsLooping { get; set; }
 
         void DestroyImage();
 
@@ -60,5 +59,7 @@ namespace NINA.ViewModel.Interfaces {
             IExposureData data,
             PrepareImageParameters parameters,
             CancellationToken token);
+
+        Task<bool> StartLiveView(CancellationToken ct);
     }
 }
