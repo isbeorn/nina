@@ -903,8 +903,8 @@ namespace NINA.Model.MyCamera {
                     input: ImgData,
                     width: (int)width,
                     height: (int)height,
-                    bitDepth: this.BitDepth,
-                    isBayered: this.SensorType != SensorType.Monochrome,
+                    bitDepth: BitDepth,
+                    isBayered: SensorType != SensorType.Monochrome && (BinX == 1 && BinY == 1),
                     metaData: new ImageMetaData());
             }, ct);
         }
@@ -998,8 +998,8 @@ namespace NINA.Model.MyCamera {
                 sizex = (uint)SubSampleWidth / (uint)BinX;
                 sizey = (uint)SubSampleHeight / (uint)BinY;
             } else {
-                startx = StartPixelX;
-                starty = StartPixelY;
+                startx = StartPixelX / (uint)BinX;
+                starty = StartPixelY / (uint)BinY;
                 sizex = (uint)CameraXSize / (uint)BinX;
                 sizey = (uint)CameraYSize / (uint)BinY;
             }
