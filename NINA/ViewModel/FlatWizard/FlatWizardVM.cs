@@ -576,18 +576,10 @@ namespace NINA.ViewModel.FlatWizard {
                 });
                 await StartFindingExposureTimeSequence(progress, flatSequenceCts.Token, pt, filterSettings);
                 filterToExposureTime.Add(filterSettings, CalculatedExposureTime);
-                for (var i = 0; i < FlatCount; i++) {
-                    progress.Report(new ApplicationStatus() {
-                        Status3 = Locale["LblExposures"],
-                        Progress3 = i,
-                        MaxProgress3 = FlatCount,
-                        ProgressType3 = ApplicationStatus.StatusProgressType.ValueOfMaxValue,
-                        Source = Title
-                    });
 
-                    var captureSequence = new CaptureSequence(CalculatedExposureTime, CaptureSequence.ImageTypes.FLAT, filterSettings.Filter, BinningMode, 1) { Gain = Gain };
-                    await StartCaptureSequence(captureSequence, progress, flatSequenceCts.Token, pt);
-                }
+                var captureSequence = new CaptureSequence(CalculatedExposureTime, CaptureSequence.ImageTypes.FLAT, filterSettings.Filter, BinningMode, FlatCount) { Gain = Gain };
+                await StartCaptureSequence(captureSequence, progress, flatSequenceCts.Token, pt);
+
                 filterSettings.IsChecked = false;
                 CalculatedExposureTime = 0;
                 CalculatedHistogramMean = 0;
@@ -643,17 +635,9 @@ namespace NINA.ViewModel.FlatWizard {
                 ProgressType3 = ApplicationStatus.StatusProgressType.ValueOfMaxValue,
                 Source = Title
             });
-            for (var i = 0; i < DarkFlatCount; i++) {
-                progress.Report(new ApplicationStatus() {
-                    Status3 = Locale["LblExposures"],
-                    Progress3 = i,
-                    MaxProgress3 = DarkFlatCount,
-                    ProgressType3 = ApplicationStatus.StatusProgressType.ValueOfMaxValue,
-                    Source = Title
-                });
-                var captureSequence = new CaptureSequence(exposureTime, CaptureSequence.ImageTypes.DARKFLAT, filter, BinningMode, 1) { Gain = Gain };
-                await StartCaptureSequence(captureSequence, progress, flatSequenceCts.Token, pt);
-            }
+
+            var captureSequence = new CaptureSequence(exposureTime, CaptureSequence.ImageTypes.DARKFLAT, filter, BinningMode, DarkFlatCount) { Gain = Gain };
+            await StartCaptureSequence(captureSequence, progress, flatSequenceCts.Token, pt);
         }
 
         private void Cleanup(IProgress<ApplicationStatus> progress) {
@@ -672,6 +656,14 @@ namespace NINA.ViewModel.FlatWizard {
             CancellationToken ct, PauseToken pt) {
             Task saveTask = null;
             while (sequence.ProgressExposureCount < sequence.TotalExposureCount) {
+                progress.Report(new ApplicationStatus() {
+                    Status3 = Locale["LblExposures"],
+                    Progress3 = sequence.ProgressExposureCount + 1,
+                    MaxProgress3 = sequence.TotalExposureCount,
+                    ProgressType3 = ApplicationStatus.StatusProgressType.ValueOfMaxValue,
+                    Source = Title
+                });
+
                 var exposureData = await ImagingVM.CaptureImage(sequence, ct, progress);
                 var imageData = await exposureData.ToImageData();
                 var prepareParameters = new PrepareImageParameters(autoStretch: false, detectStars: false);
