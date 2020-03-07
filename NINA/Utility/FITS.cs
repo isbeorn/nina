@@ -112,8 +112,10 @@ namespace NINA.Utility {
             }
 
             if (!double.IsNaN(metaData.Camera.PixelSize)) {
-                this.AddHeaderCard("XPIXSZ", metaData.Camera.PixelSize, "[um] Pixel X axis size");
-                this.AddHeaderCard("YPIXSZ", metaData.Camera.PixelSize, "[um] Pixel Y axis size");
+                double pixelX = metaData.Camera.PixelSize * Math.Max(metaData.Camera.BinX, 1);
+                double pixelY = metaData.Camera.PixelSize * Math.Max(metaData.Camera.BinY, 1);
+                this.AddHeaderCard("XPIXSZ", pixelX, "[um] Pixel X axis size");
+                this.AddHeaderCard("YPIXSZ", pixelY, "[um] Pixel Y axis size");
             }
 
             if (!string.IsNullOrEmpty(metaData.Camera.Name)) {

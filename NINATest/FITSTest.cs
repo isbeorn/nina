@@ -163,8 +163,8 @@ namespace NINATest {
                 new FITSHeaderCard("GAIN", metaData.Camera.Gain, "Sensor gain"),
                 new FITSHeaderCard("OFFSET", metaData.Camera.Offset, "Sensor gain offset"),
                 new FITSHeaderCard("EGAIN", metaData.Camera.ElectronsPerADU, "[e-/ADU] Electrons per A/D unit"),
-                new FITSHeaderCard("XPIXSZ", metaData.Camera.PixelSize, "[um] Pixel X axis size"),
-                new FITSHeaderCard("YPIXSZ", metaData.Camera.PixelSize, "[um] Pixel Y axis size"),
+                new FITSHeaderCard("XPIXSZ", metaData.Camera.PixelSize * metaData.Camera.BinX, "[um] Pixel X axis size"),
+                new FITSHeaderCard("YPIXSZ", metaData.Camera.PixelSize * metaData.Camera.BinY, "[um] Pixel Y axis size"),
                 new FITSHeaderCard("SET-TEMP", metaData.Camera.SetPoint, "[degC] CCD temperature setpoint"),
                 new FITSHeaderCard("CCD-TEMP", metaData.Camera.Temperature, "[degC] CCD temperature"),
             };

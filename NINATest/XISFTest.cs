@@ -820,8 +820,8 @@ namespace NINATest {
                 new FITSHeaderCard("GAIN", metaData.Camera.Gain, "Sensor gain"),
                 new FITSHeaderCard("OFFSET", metaData.Camera.Offset, "Sensor gain offset"),
                 new FITSHeaderCard("EGAIN", metaData.Camera.ElectronsPerADU, "[e-/ADU] Electrons per A/D unit"),
-                new FITSHeaderCard("XPIXSZ", metaData.Camera.PixelSize, "[um] Pixel X axis size"),
-                new FITSHeaderCard("YPIXSZ", metaData.Camera.PixelSize, "[um] Pixel Y axis size"),
+                new FITSHeaderCard("XPIXSZ", metaData.Camera.PixelSize * metaData.Camera.BinX, "[um] Pixel X axis size"),
+                new FITSHeaderCard("YPIXSZ", metaData.Camera.PixelSize * metaData.Camera.BinY, "[um] Pixel Y axis size"),
                 new FITSHeaderCard("SET-TEMP", metaData.Camera.SetPoint, "[degC] CCD temperature setpoint"),
                 new FITSHeaderCard("CCD-TEMP", metaData.Camera.Temperature, "[degC] CCD temperature"),
             };
@@ -832,8 +832,8 @@ namespace NINATest {
                 new { Id = "Instrument:Camera:XBinning", Type = "Int32", Value = $"{metaData.Camera.BinX.ToString(CultureInfo.InvariantCulture)}", Comment = "X axis binning factor"},
                 new { Id = "Instrument:Camera:YBinning", Type = "Int32", Value = $"{metaData.Camera.BinY.ToString(CultureInfo.InvariantCulture)}", Comment = "Y axis binning factor"},
                 new { Id = "Instrument:Sensor:Temperature", Type = "Float32", Value = $"{metaData.Camera.Temperature.ToString(CultureInfo.InvariantCulture)}", Comment = "[degC] CCD temperature"},
-                new { Id = "Instrument:Sensor:XPixelSize", Type = "Float32", Value = $"{metaData.Camera.PixelSize.ToString(CultureInfo.InvariantCulture)}", Comment = "[um] Pixel X axis size"},
-                new { Id = "Instrument:Sensor:YPixelSize", Type = "Float32", Value = $"{metaData.Camera.PixelSize.ToString(CultureInfo.InvariantCulture)}", Comment = "[um] Pixel Y axis size"}
+                new { Id = "Instrument:Sensor:XPixelSize", Type = "Float32", Value = $"{(metaData.Camera.PixelSize * metaData.Camera.BinX).ToString(CultureInfo.InvariantCulture)}", Comment = "[um] Pixel X axis size"},
+                new { Id = "Instrument:Sensor:YPixelSize", Type = "Float32", Value = $"{(metaData.Camera.PixelSize* metaData.Camera.BinY).ToString(CultureInfo.InvariantCulture)}", Comment = "[um] Pixel Y axis size"}
             };
 
             //Act

@@ -105,6 +105,7 @@
 - Check and wait when using side of pier on meridian flip if the mount does the flip automatically. (for GS Server Driver)
 - Binned exposures now finish on QHY cameras that have overscan areas
 - Gain and Offset are not saved with decimal places anymore
+- XPIXSZ and YPIXSZ now account correctly for binning when available
 
 ## Special Thanks
 The N.I.N.A. team would like to sincerely thank:
