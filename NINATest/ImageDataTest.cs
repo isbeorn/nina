@@ -417,8 +417,8 @@ namespace NINATest {
                 $"#{string.Format("{0:0.00}", MetaData.Camera.Temperature)}" +
                 $"#{string.Format("{0:0.00}", MetaData.Image.ExposureTime)}" +
                 $"#{MetaData.Target.Name}" +
-                $"#{string.Format("{0:0.00}", MetaData.Camera.Gain)}" +
-                $"#{string.Format("{0:0.00}", MetaData.Camera.Offset)}" +
+                $"#{string.Format("{0:0}", MetaData.Camera.Gain)}" +
+                $"#{string.Format("{0:0}", MetaData.Camera.Offset)}" +
                 $"#{string.Format("{0:0.00}", MetaData.Image.RecordedRMS.Total)}" +
                 $"#{string.Format("{0:0.00}", MetaData.Image.RecordedRMS.Total * MetaData.Image.RecordedRMS.Scale)}" +
                 $"#{string.Format("{0:0.00}", MetaData.Focuser.Position)}" +
@@ -517,8 +517,8 @@ namespace NINATest {
                 $"#{string.Format("{0:0.00}", MetaData.Camera.Temperature)}" +
                 $"#{string.Format("{0:0.00}", MetaData.Image.ExposureTime)}" +
                 $"#{MetaData.Target.Name}" +
-                $"#{string.Format("{0:0.00}", MetaData.Camera.Gain)}" +
-                $"#{string.Format("{0:0.00}", MetaData.Camera.Offset)}" +
+                $"#{string.Format("{0:0}", MetaData.Camera.Gain)}" +
+                $"#{string.Format("{0:0}", MetaData.Camera.Offset)}" +
                 $"#{string.Format("{0:0.00}", MetaData.Image.RecordedRMS.Total)}" +
                 $"#{string.Format("{0:0.00}", MetaData.Image.RecordedRMS.Total * MetaData.Image.RecordedRMS.Scale)}" +
                 $"#{string.Format("{0:0.00}", MetaData.Focuser.Position)}" +
@@ -578,8 +578,8 @@ namespace NINATest {
                 $"#{string.Format("{0:0.00}", MetaData.Camera.Temperature)}" +
                 $"#{string.Format("{0:0.00}", MetaData.Image.ExposureTime)}" +
                 $"#{new string('_', invalidChars.Length)}" +
-                $"#{string.Format("{0:0.00}", MetaData.Camera.Gain)}" +
-                $"#{string.Format("{0:0.00}", MetaData.Camera.Offset)}" +
+                $"#{string.Format("{0:0}", MetaData.Camera.Gain)}" +
+                $"#{string.Format("{0:0}", MetaData.Camera.Offset)}" +
                 $"#{string.Format("{0:0.00}", MetaData.Image.RecordedRMS.Total)}" +
                 $"#{string.Format("{0:0.00}", MetaData.Image.RecordedRMS.Total * MetaData.Image.RecordedRMS.Scale)}" +
                 $"#{string.Format("{0:0.00}", MetaData.Focuser.Position)}" +

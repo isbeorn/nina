@@ -104,6 +104,7 @@
 - Fix FLI cameras sitting idle for the length of the exposure time before actually initiating the exposure
 - Check and wait when using side of pier on meridian flip if the mount does the flip automatically. (for GS Server Driver)
 - Binned exposures now finish on QHY cameras that have overscan areas
+- Gain and Offset are not saved with decimal places anymore
 
 ## Special Thanks
 The N.I.N.A. team would like to sincerely thank:

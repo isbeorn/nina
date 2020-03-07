@@ -172,10 +172,10 @@ namespace NINA.Model.ImageData {
             if (!double.IsNaN(metadata.Camera.Temperature)) {
                 p.Set(ImagePatternKeys.SensorTemp, metadata.Camera.Temperature);
             }
-            if (!double.IsNaN(metadata.Camera.Gain)) {
+            if (metadata.Camera.Gain >= 0) {
                 p.Set(ImagePatternKeys.Gain, metadata.Camera.Gain);
             }
-            if (!double.IsNaN(metadata.Camera.Offset)) {
+            if (metadata.Camera.Offset >= 0) {
                 p.Set(ImagePatternKeys.Offset, metadata.Camera.Offset);
             }
 

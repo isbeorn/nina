@@ -563,11 +563,11 @@ namespace NINA.Utility {
             if (!string.IsNullOrWhiteSpace(metaData.Camera.Name)) {
                 AddImageProperty(XISFImageProperty.Instrument.Camera.Name, metaData.Camera.Name, "Imaging instrument name");
             }
-            if (!double.IsNaN(metaData.Camera.Gain) && metaData.Camera.Gain >= 0) {
+            if (metaData.Camera.Gain >= 0) {
                 AddImageFITSKeyword("GAIN", metaData.Camera.Gain.ToString(CultureInfo.InvariantCulture), "Sensor gain");
             }
 
-            if (!double.IsNaN(metaData.Camera.Offset) && metaData.Camera.Offset >= 0) {
+            if (metaData.Camera.Offset >= 0) {
                 AddImageFITSKeyword("OFFSET", metaData.Camera.Offset.ToString(CultureInfo.InvariantCulture), "Sensor gain offset");
             }
 

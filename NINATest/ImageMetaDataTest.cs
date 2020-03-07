@@ -55,8 +55,8 @@ namespace NINATest {
             Assert.AreEqual(1, sut.Camera.BinY);
             Assert.AreEqual(double.NaN, sut.Camera.PixelSize);
             Assert.AreEqual(double.NaN, sut.Camera.Temperature);
-            Assert.AreEqual(double.NaN, sut.Camera.Gain);
-            Assert.AreEqual(double.NaN, sut.Camera.Offset);
+            Assert.AreEqual(-1, sut.Camera.Gain);
+            Assert.AreEqual(-1, sut.Camera.Offset);
             Assert.AreEqual(double.NaN, sut.Camera.ElectronsPerADU);
             Assert.AreEqual(double.NaN, sut.Camera.SetPoint);
 
@@ -151,8 +151,8 @@ namespace NINATest {
             Assert.AreEqual(1, sut.Camera.BinY);
             Assert.AreEqual(double.NaN, sut.Camera.PixelSize);
             Assert.AreEqual(double.NaN, sut.Camera.Temperature);
-            Assert.AreEqual(double.NaN, sut.Camera.Gain);
-            Assert.AreEqual(double.NaN, sut.Camera.Offset);
+            Assert.AreEqual(-1, sut.Camera.Gain);
+            Assert.AreEqual(-1, sut.Camera.Offset);
             Assert.AreEqual(double.NaN, sut.Camera.ElectronsPerADU);
             Assert.AreEqual(double.NaN, sut.Camera.SetPoint);
         }

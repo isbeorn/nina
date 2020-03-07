@@ -147,8 +147,8 @@ namespace NINA.Model.ImageData {
         public int BinY { get; set; } = 1;
         public double PixelSize { get; set; } = double.NaN;
         public double Temperature { get; set; } = double.NaN;
-        public double Gain { get; set; } = double.NaN;
-        public double Offset { get; set; } = double.NaN;
+        public int Gain { get; set; } = -1;
+        public int Offset { get; set; } = -1;
         public double ElectronsPerADU { get; set; } = double.NaN;
         public double SetPoint { get; set; } = double.NaN;
     }
