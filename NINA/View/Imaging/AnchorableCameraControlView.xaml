@@ -20,6 +20,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:filter="clr-namespace:NINA.Model.MyFilterWheel"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Locale"
@@ -59,9 +60,18 @@
                                 Height="25"
                                 Margin="5,0,0,0"
                                 DisplayMemberPath="Name"
-                                ItemsSource="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}"
-                                SelectedItem="{Binding SnapFilter, Mode=TwoWay}"
-                                SelectedValuePath="Name" />
+                                SelectedItem="{Binding SnapFilter, Mode=TwoWay, Converter={StaticResource FilterWheelFilterConverter}}"
+                                SelectedValuePath="Name">
+                                <ComboBox.Resources>
+                                    <CollectionViewSource x:Key="Filters" Source="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
+                                </ComboBox.Resources>
+                                <ComboBox.ItemsSource>
+                                    <CompositeCollection>
+                                        <filter:NullFilter />
+                                        <CollectionContainer Collection="{Binding Source={StaticResource Filters}}" />
+                                    </CompositeCollection>
+                                </ComboBox.ItemsSource>
+                            </ComboBox>
                         </UniformGrid>
                     </Border>
                     <Border

@@ -446,6 +446,7 @@
     <Compile Include="Model\MyCamera\Simulator\Settings.cs" />
     <Compile Include="Model\MyCamera\Simulator\SkySurveySettings.cs" />
     <Compile Include="Model\MyCamera\Simulator\CameraType.cs" />
+    <Compile Include="Model\MyFilterWheel\NullFilter.cs" />
     <Compile Include="Model\MyFilterWheel\QHYFilterWheel.cs" />
     <Compile Include="Model\MyFilterWheel\FLIFilterWheel.cs" />
     <Compile Include="Model\MyWeatherData\UltimatePowerboxV2.cs" />
@@ -469,6 +470,7 @@
     <Compile Include="Model\MySwitch\PegasusAstro\ContinuousSwitches.cs" />
     <Compile Include="Model\MySwitch\PegasusAstro\UltimatePowerBoxV2.cs" />
     <Compile Include="Utility\CameraSDKs\OmegonSDK\omegonprocam.cs" />
+    <Compile Include="Utility\Converters\FilterWheelFilterConverter.cs" />
     <Compile Include="Utility\FileSaveInfo.cs" />
     <Compile Include="Utility\Converters\AFFittingToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\IsLightImageTypeToVisibilityConverter.cs" />

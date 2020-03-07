@@ -21,10 +21,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:enum="clr-namespace:NINA.Utility.Enum"
+    xmlns:filter="clr-namespace:NINA.Model.MyFilterWheel"
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ns="clr-namespace:NINA.Locale"
     xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:util="clr-namespace:NINA.Utility"
     Name="UC"
     d:DesignHeight="300"
@@ -100,9 +102,15 @@
                         <ComboBox
                             Height="25"
                             DisplayMemberPath="Name"
-                            ItemsSource="{Binding DataContext.ActiveProfile.FilterWheelSettings.FilterWheelFilters, ElementName=UC}"
-                            SelectedItem="{Binding Filter, Mode=TwoWay}"
-                            SelectedValuePath="Name" />
+                            SelectedItem="{Binding Filter, Mode=TwoWay, Converter={StaticResource FilterWheelFilterConverter}}"
+                            SelectedValuePath="Name">
+                            <ComboBox.ItemsSource>
+                                <CompositeCollection>
+                                    <filter:NullFilter />
+                                    <CollectionContainer Collection="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.FilterWheelSettings.FilterWheelFilters}" />
+                                </CompositeCollection>
+                            </ComboBox.ItemsSource>
+                        </ComboBox>
                     </StackPanel>
                     <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                         <TextBlock

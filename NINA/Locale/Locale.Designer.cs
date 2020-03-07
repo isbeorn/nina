@@ -822,7 +822,7 @@ namespace NINA.Locale {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start Guiding Auto Retry.
+        ///   Looks up a localized string similar to Guiding Start Retry.
         /// </summary>
         internal static string LblAutoRetryStartGuiding {
             get {
@@ -831,7 +831,7 @@ namespace NINA.Locale {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start Guiding Auto Retry Timeout (in seconds).
+        ///   Looks up a localized string similar to Guiding Start Timeout (in seconds).
         /// </summary>
         internal static string LblAutoRetryStartGuidingTimeoutSeconds {
             get {
@@ -2543,6 +2543,15 @@ namespace NINA.Locale {
         internal static string LblCoverScopeMsgBoxTitle {
             get {
                 return ResourceManager.GetString("LblCoverScopeMsgBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current.
+        /// </summary>
+        internal static string LblCurrent {
+            get {
+                return ResourceManager.GetString("LblCurrent", resourceCulture);
             }
         }
         
@@ -9764,6 +9773,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string String1 {
+            get {
+                return ResourceManager.GetString("String1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Input Current (A).
         /// </summary>
         internal static string UPBV2InputCurrentChartLabel {
@@ -9778,15 +9796,6 @@ namespace NINA.Locale {
         internal static string UPBV2InputVoltageChartLabel {
             get {
                 return ResourceManager.GetString("UPBV2InputVoltageChartLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string String1 {
-            get {
-                return ResourceManager.GetString("String1", resourceCulture);
             }
         }
     }

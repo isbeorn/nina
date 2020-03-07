@@ -65,4 +65,5 @@
     <converters:ZeroToVisibilityConverter x:Key="ZeroToVisibilityConverter" />
     <converters:AFFittingToVisibilityConverter x:Key="AFFittingToVisibilityConverter" />
     <converters:IsLightImageTypeToVisibilityConverter x:Key="IsLightImageTypeToVisibilityConverter" />
+    <converters:FilterWheelFilterConverter x:Key="FilterWheelFilterConverter" />
 </ResourceDictionary>
