@@ -450,6 +450,7 @@
     <Compile Include="Model\MyFilterWheel\QHYFilterWheel.cs" />
     <Compile Include="Model\MyFilterWheel\FLIFilterWheel.cs" />
     <Compile Include="Model\MyWeatherData\UltimatePowerboxV2.cs" />
+    <Compile Include="Model\MyFlatDevice\PegasusAstroFlatMaster.cs" />
     <Compile Include="PlateSolving\CaptureSolverParameter.cs" />
     <Compile Include="PlateSolving\CenteringSolver.cs" />
     <Compile Include="PlateSolving\CenterSolveParameter.cs" />
@@ -571,6 +572,10 @@
     <Compile Include="Model\MyFlatDevice\AlnitakFlipFlatSimulator.cs" />
     <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\AlnitakResponses.cs" />
     <Compile Include="Utility\FlatDeviceSDKs\AlnitakSDK\IAlnitakDevice.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\PegasusAstroSDK\FlatMasterCommands.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\PegasusAstroSDK\FlatMasterResponses.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\PegasusAstroSDK\IPegasusFlatMaster.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\PegasusAstroSDK\PegasusFlatMaster.cs" />
     <Compile Include="Utility\ImageAnalysis\BahtinovAnalysis.cs" />
     <Compile Include="Utility\ImageAnalysis\BahtinovImage.cs" />
     <Compile Include="Utility\ImageAnalysis\BayerFilter16bpp.cs" />
@@ -623,6 +628,9 @@
     <Compile Include="ViewModel\PlateSolvingStatusVM.cs" />
     <Compile Include="View\Equipment\Camera\FLICameraSetupView.xaml.cs">
       <DependentUpon>FLICameraSetupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\FlatDevice\PegasusAstroFlatMasterSetupView.xaml.cs">
+      <DependentUpon>PegasusAstroFlatMasterSetupView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Equipment\FlatDevice\AlnitakSetupView.xaml.cs">
       <DependentUpon>AlnitakSetupView.xaml</DependentUpon>
@@ -1339,6 +1347,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Equipment\Camera\FLICameraSetupView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Equipment\FlatDevice\PegasusAstroFlatMasterSetupView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

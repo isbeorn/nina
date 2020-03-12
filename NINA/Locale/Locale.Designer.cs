@@ -6236,6 +6236,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to FlatMaster.
+        /// </summary>
+        internal static string LblPegasusFlatMaster {
+            get {
+                return ResourceManager.GetString("LblPegasusFlatMaster", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to %.
         /// </summary>
         internal static string LblPercentShort {

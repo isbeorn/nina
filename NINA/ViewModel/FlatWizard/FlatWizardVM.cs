@@ -23,14 +23,18 @@
 
 using NINA.Locale;
 using NINA.Model;
+using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;
+using NINA.Model.MyFlatDevice;
 using NINA.Model.MyTelescope;
+using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
+using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
-using NINA.Profile;
+using NINA.Utility.Notification;
 using NINA.ViewModel.Interfaces;
 using Nito.AsyncEx;
 using System;
@@ -42,11 +46,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using NINA.Model.ImageData;
-using NINA.Model.MyFlatDevice;
-using NINA.Utility.Notification;
-using NINA.Utility.Mediator;
-using NINA.ViewModel.Equipment.FlatDevice;
 
 namespace NINA.ViewModel.FlatWizard {
 
@@ -380,7 +379,6 @@ namespace NINA.ViewModel.FlatWizard {
         private async Task<bool> StartFindingExposureTimeSequence(IProgress<ApplicationStatus> progress, CancellationToken ct, PauseToken pt, FlatWizardFilterSettingsWrapper wrapper) {
             var exposureTime = wrapper.Settings.MinFlatExposureTime;
             IRenderedImage renderedImage = null;
-
             if (_flatDevice != null && _flatDevice.Connected) {
                 _flatDeviceMediator.SetBrightness(1.0);
             }
@@ -519,9 +517,13 @@ namespace NINA.ViewModel.FlatWizard {
                     ProgressType2 = ApplicationStatus.StatusProgressType.ValueOfMaxValue,
                     Source = Title
                 });
+                if (_flatDevice != null && _flatDevice.Connected && _flatDevice.SupportsOpenClose) {
+                    await _flatDeviceMediator.CloseCover();
+                }
 
-                if (_flatDevice != null && _flatDevice.Connected && _flatDevice.SupportsOpenClose) { await _flatDeviceMediator.CloseCover(); }
-                if (_flatDevice != null && _flatDevice.Connected) { _flatDeviceMediator.ToggleLight((object)true); }
+                if (_flatDevice != null && _flatDevice.Connected) {
+                    _flatDeviceMediator.ToggleLight((object)true);
+                }
 
                 var totalFilterCount = filters.Count();
                 foreach (var filterSettings in filters) {

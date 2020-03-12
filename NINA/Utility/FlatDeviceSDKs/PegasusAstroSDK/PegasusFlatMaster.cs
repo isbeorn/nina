@@ -25,34 +25,31 @@ using NINA.Utility.SerialCommunication;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
+namespace NINA.Utility.FlatDeviceSDKs.PegasusAstroSDK {
 
-    public class AlnitakDevice : SerialSdk, IAlnitakDevice {
-        public static readonly IAlnitakDevice Instance = new AlnitakDevice();
+    public class PegasusFlatMaster : SerialSdk, IPegasusFlatMaster {
+        public static readonly IPegasusFlatMaster Instance = new PegasusFlatMaster();
 
-        protected override string LogName => "AlnitakFlatDevice";
-        private const string ALNITAK_QUERY = @"SELECT * FROM Win32_PnPEntity WHERE DeviceID LIKE 'FTDIBUS\\VID_0403+PID_6001+A8%'";
+        protected override string LogName => "PegasusFlatMaster";
+
+        private const string FLATMASTER_QUERY =
+            @"SELECT * FROM Win32_PnPEntity WHERE DeviceID LIKE 'FTDIBUS\\VID_0403+PID_6015%FM%'";
 
         public ReadOnlyCollection<string> PortNames {
             get {
                 var result = new List<string> { "AUTO" };
-                result.AddRange(SerialPortProvider.GetPortNames(ALNITAK_QUERY));
+                result.AddRange(SerialPortProvider.GetPortNames(FLATMASTER_QUERY));
                 return new ReadOnlyCollection<string>(result);
             }
         }
 
-        public async Task<bool> InitializeSerialPort(string aPortName, object client) {
+        public bool InitializeSerialPort(string aPortName, object client) {
             if (string.IsNullOrEmpty(aPortName)) return false;
             base.InitializeSerialPort(aPortName.Equals("AUTO")
-                ? SerialPortProvider.GetPortNames(ALNITAK_QUERY, addDivider: false, addGenericPorts: false).FirstOrDefault()
+                ? SerialPortProvider.GetPortNames(FLATMASTER_QUERY, addDivider: false, addGenericPorts: false).FirstOrDefault()
                 : aPortName, client);
-            if (SerialPort == null) return false;
-            await Task.Delay(2000); //need to wait 2 seconds after port is open before setting RtsEnable or it won't work
-            SerialPort.RtsEnable = false;
-            return true;
+            return SerialPort != null;
         }
     }
 }

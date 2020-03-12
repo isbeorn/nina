@@ -166,7 +166,8 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
 
                         profileService.ActiveProfile.FlatDeviceSettings.Id = flatDevice.Id;
 
-                        Logger.Info($"Successfully connected Flatdevice. Id: {flatDevice.Id} Name: {flatDevice.Name} Driver Version: {flatDevice.DriverVersion}");
+                        Logger.Info(
+                            $"Successfully connected Flatdevice. Id: {flatDevice.Id} Name: {flatDevice.Name} Driver Version: {flatDevice.DriverVersion}");
 
                         return true;
                     } else {
@@ -179,6 +180,9 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                         await Disconnect();
                     }
 
+                    return false;
+                } catch (Exception ex) {
+                    Logger.Error(ex);
                     return false;
                 }
             } finally {

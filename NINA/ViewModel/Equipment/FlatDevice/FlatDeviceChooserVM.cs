@@ -47,6 +47,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             Logger.Trace("Adding Alnitak Flat Devices");
             Devices.Add(new AlnitakFlipFlatSimulator(profileService));
             Devices.Add(new AlnitakFlatDevice(profileService));
+            Devices.Add(new PegasusAstroFlatMaster(profileService));
             DetermineSelectedDevice(profileService.ActiveProfile.FlatDeviceSettings.Id);
         }
     }

@@ -1,4 +1,6 @@
-﻿using Moq;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Moq;
 using NINA.Utility.FlatDeviceSDKs.AlnitakSDK;
 using NINA.Utility.SerialCommunication;
 using NUnit.Framework;
@@ -72,6 +74,26 @@ namespace NINATest.FlatDevice {
 
             Assert.That(result, Is.TypeOf(typeof(StateResponse)));
             Assert.That(result.IsValid, Is.EqualTo(valid));
+        }
+
+        [Test]
+        public void TestPortNamesPortsAvailable() {
+            _mockSerialPortProvider
+                .Setup(m => m.GetPortNames(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))
+                .Returns(new ReadOnlyCollection<string>(new List<string> { "COM3" }));
+
+            var result = _sut.PortNames;
+            Assert.That(result, Is.EquivalentTo(new ReadOnlyCollection<string>(new List<string> { "AUTO", "COM3" })));
+        }
+
+        [Test]
+        public void TestPortNamesNoPortsAvailable() {
+            _mockSerialPortProvider
+                .Setup(m => m.GetPortNames(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))
+                .Returns(new ReadOnlyCollection<string>(new List<string>()));
+
+            var result = _sut.PortNames;
+            Assert.That(result, Is.EquivalentTo(new ReadOnlyCollection<string>(new List<string> { "AUTO" })));
         }
     }
 }

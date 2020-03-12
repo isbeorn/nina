@@ -2188,6 +2188,9 @@ Calculated HFR: {2}
   <data name="LblPauseTimeBeforeMeridian" xml:space="preserve">
     <value>Pause before Meridian (minutes)</value>
   </data>
+  <data name="LblPegasusFlatMaster" xml:space="preserve">
+    <value>FlatMaster</value>
+  </data>
   <data name="LblPercentShort" xml:space="preserve">
     <value>%</value>
   </data>
