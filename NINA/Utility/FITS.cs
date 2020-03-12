@@ -130,6 +130,10 @@ namespace NINA.Utility {
                 this.AddHeaderCard("CCD-TEMP", metaData.Camera.Temperature, "[degC] CCD temperature");
             }
 
+            if (!string.IsNullOrWhiteSpace(metaData.Camera.ReadoutModeName)) {
+                this.AddHeaderCard("READOUTM", metaData.Camera.ReadoutModeName, "Sensor readout mode");
+            }
+
             /* Telescope */
             if (!string.IsNullOrWhiteSpace(metaData.Telescope.Name)) {
                 this.AddHeaderCard("TELESCOP", metaData.Telescope.Name, "Name of telescope");

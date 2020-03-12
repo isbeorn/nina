@@ -155,6 +155,7 @@ namespace NINATest {
             metaData.Camera.PixelSize = 12;
             metaData.Camera.SetPoint = -5;
             metaData.Camera.Temperature = -4.454;
+            metaData.Camera.ReadoutModeName = "1 Hz";
 
             var expectedHeaderCards = new List<FITSHeaderCard>() {
                 new FITSHeaderCard("INSTRUME", metaData.Camera.Name, "Imaging instrument name"),
@@ -167,6 +168,7 @@ namespace NINATest {
                 new FITSHeaderCard("YPIXSZ", metaData.Camera.PixelSize * metaData.Camera.BinY, "[um] Pixel Y axis size"),
                 new FITSHeaderCard("SET-TEMP", metaData.Camera.SetPoint, "[degC] CCD temperature setpoint"),
                 new FITSHeaderCard("CCD-TEMP", metaData.Camera.Temperature, "[degC] CCD temperature"),
+                new FITSHeaderCard("READOUTM", metaData.Camera.ReadoutModeName, "Sensor readout mode")
             };
 
             var sut = new FITS(new ushort[] { 1, 2 }, 1, 1);

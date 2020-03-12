@@ -86,6 +86,7 @@
 - Improved resiliency of StartGuider when PHD2 is unable to detect a guide star when guiding is started due to temporary clouds. An auto retry mechanism has been added to allow PHD2 to try selecting a new guide star after a configurable timeout.
 - Added profile name to the title bar
 - Camera snapshot control in imaging tab will now save the values for the next session
+- Added `READOUTM` keyword to FITS and XISF files
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false

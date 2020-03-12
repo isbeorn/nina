@@ -225,6 +225,16 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        private short readoutMode;
+
+        public short ReadoutMode {
+            get => readoutMode;
+            set {
+                readoutMode = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private short snapReadoutMode;
 
         public short ReadoutModeForSnapImages {

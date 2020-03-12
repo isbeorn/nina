@@ -222,7 +222,12 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public ICollection ReadoutModes => new List<string> { "Default" };
+        public IEnumerable ReadoutModes => new List<string> { "Default" };
+
+        public short ReadoutMode {
+            get => 0;
+            set { }
+        }
 
         private short _readoutModeForSnapImages;
 

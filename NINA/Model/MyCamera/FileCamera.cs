@@ -426,10 +426,15 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public ICollection ReadoutModes {
+        public IEnumerable ReadoutModes {
             get {
                 return new List<string>() { "Default" };
             }
+        }
+
+        public short ReadoutMode {
+            get => 0;
+            set { }
         }
 
         public short ReadoutModeForSnapImages {

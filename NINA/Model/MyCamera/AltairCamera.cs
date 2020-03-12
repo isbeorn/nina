@@ -29,7 +29,6 @@ using NINA.Utility.Notification;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -400,9 +399,14 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public ICollection ReadoutModes => new List<string> { "Default" };
+        public IEnumerable ReadoutModes => new List<string> { "Default" };
 
-        private short _readoutModeForSnapImages;
+        public short ReadoutMode {
+            get => 0;
+            set { }
+        }
+
+        private short _readoutModeForSnapImages = 0;
 
         public short ReadoutModeForSnapImages {
             get => _readoutModeForSnapImages;
@@ -412,7 +416,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        private short _readoutModeForNormalImages;
+        private short _readoutModeForNormalImages = 0;
 
         public short ReadoutModeForNormalImages {
             get => _readoutModeForNormalImages;

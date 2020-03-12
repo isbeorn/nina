@@ -586,7 +586,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public ICollection ReadoutModes {
+        public IEnumerable ReadoutModes {
             get {
                 if (!CanFastReadout) {
                     return ReadoutModesArrayList;

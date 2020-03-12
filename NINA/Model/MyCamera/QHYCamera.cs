@@ -421,7 +421,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public ICollection ReadoutModes {
+        public IEnumerable ReadoutModes {
             get => Info.ReadoutModes;
             set => Info.ReadoutModes = (List<string>)value;
         }

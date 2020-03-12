@@ -589,11 +589,16 @@ namespace NINA.Utility {
             if (!double.IsNaN(metaData.Camera.Temperature)) {
                 AddImageProperty(XISFImageProperty.Instrument.Sensor.Temperature, metaData.Camera.Temperature.ToString(CultureInfo.InvariantCulture), "[degC] CCD temperature");
             }
+
             if (!double.IsNaN(metaData.Camera.PixelSize)) {
                 double pixelX = metaData.Camera.PixelSize * Math.Max(metaData.Camera.BinX, 1);
                 double pixelY = metaData.Camera.PixelSize * Math.Max(metaData.Camera.BinY, 1);
                 AddImageProperty(XISFImageProperty.Instrument.Sensor.XPixelSize, pixelX.ToString(CultureInfo.InvariantCulture), "[um] Pixel X axis size");
                 AddImageProperty(XISFImageProperty.Instrument.Sensor.YPixelSize, pixelY.ToString(CultureInfo.InvariantCulture), "[um] Pixel Y axis size");
+            }
+
+            if (!string.IsNullOrWhiteSpace(metaData.Camera.ReadoutModeName)) {
+                AddImageFITSKeyword("READOUTM", metaData.Camera.ReadoutModeName.ToString(CultureInfo.InvariantCulture), "Sensor readout mode");
             }
 
             /* Observer */

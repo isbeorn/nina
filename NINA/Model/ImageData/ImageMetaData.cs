@@ -30,6 +30,7 @@ using NINA.Model.MyWeatherData;
 using NINA.Profile;
 using NINA.Utility.Astrometry;
 using System;
+using System.Linq;
 
 namespace NINA.Model.ImageData {
 
@@ -70,6 +71,10 @@ namespace NINA.Model.ImageData {
                 Camera.BinY = info.BinY;
                 Camera.ElectronsPerADU = info.ElectronsPerADU;
                 Camera.PixelSize = info.PixelSize;
+
+                if (info.ReadoutModes.Count() > 1) {
+                    Camera.ReadoutModeName = info.ReadoutModes.ToArray()[info.ReadoutMode];
+                }
             }
         }
 
@@ -151,6 +156,7 @@ namespace NINA.Model.ImageData {
         public int Offset { get; set; } = -1;
         public double ElectronsPerADU { get; set; } = double.NaN;
         public double SetPoint { get; set; } = double.NaN;
+        public string ReadoutModeName { get; set; } = string.Empty;
     }
 
     public class TelescopeParameter {

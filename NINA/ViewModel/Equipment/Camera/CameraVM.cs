@@ -31,6 +31,7 @@ using System;
 using System.Collections.Async;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -395,7 +396,11 @@ namespace NINA.ViewModel.Equipment.Camera {
                                 YSize = Cam.CameraYSize,
                                 Battery = Cam.BatteryLevel,
                                 BitDepth = Cam.BitDepth,
-                                ElectronsPerADU = Cam.ElectronsPerADU
+                                ElectronsPerADU = Cam.ElectronsPerADU,
+                                ReadoutMode = Cam.ReadoutMode,
+                                ReadoutModeForNormalImages = Cam.ReadoutModeForNormalImages,
+                                ReadoutModeForSnapImages = Cam.ReadoutModeForSnapImages,
+                                ReadoutModes = Cam.ReadoutModes.Cast<string>().ToList()
                             };
 
                             Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);
@@ -525,6 +530,9 @@ namespace NINA.ViewModel.Equipment.Camera {
             cameraValues.TryGetValue(nameof(CameraInfo.SubSampleHeight), out o);
             CameraInfo.SubSampleHeight = (int)(o ?? -1);
 
+            cameraValues.TryGetValue(nameof(CameraInfo.ReadoutMode), out o);
+            CameraInfo.ReadoutMode = Convert.ToInt16(o ?? 0);
+
             DateTime x = DateTime.Now;
             CoolerPowerHistory.Add(new KeyValuePair<DateTime, double>(x, CameraInfo.CoolerPower));
             CCDTemperatureHistory.Add(new KeyValuePair<DateTime, double>(x, CameraInfo.Temperature));
@@ -546,6 +554,7 @@ namespace NINA.ViewModel.Equipment.Camera {
             cameraValues.Add(nameof(CameraInfo.SubSampleY), _cam?.SubSampleY ?? -1);
             cameraValues.Add(nameof(CameraInfo.SubSampleWidth), _cam?.SubSampleWidth ?? -1);
             cameraValues.Add(nameof(CameraInfo.SubSampleHeight), _cam?.SubSampleHeight ?? -1);
+            cameraValues.Add(nameof(CameraInfo.ReadoutMode), _cam?.ReadoutMode ?? 0);
 
             if (_cam != null && _cam.CanSetOffset) {
                 cameraValues.Add(nameof(CameraInfo.Offset), _cam?.Offset ?? -1);
