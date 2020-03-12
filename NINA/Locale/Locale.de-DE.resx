@@ -3399,4 +3399,7 @@ Lichtverschmutzten Gebieten. Berechnungszeit ist jedoch erhöht.</value>
   <data name="String1" xml:space="preserve">
     <value></value>
   </data>
+  <data name="LblCurrent" xml:space="preserve">
+    <value>Aktuell</value>
+  </data>
 </root>

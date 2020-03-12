@@ -3400,4 +3400,7 @@ Mueve el rectangulo sobre la parte del Encuadre que quieres hacer subsampling. T
   <data name="String1" xml:space="preserve">
     <value></value>
   </data>
+  <data name="LblCurrent" xml:space="preserve">
+    <value>Current</value>
+  </data>
 </root>

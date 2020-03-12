@@ -3398,4 +3398,7 @@ aree ad alto inquinamento luminoso. Il tempo di processo sarà  tuttavia aumenta
   <data name="String1" xml:space="preserve">
     <value></value>
   </data>
+  <data name="LblCurrent" xml:space="preserve">
+    <value>Current</value>
+  </data>
 </root>

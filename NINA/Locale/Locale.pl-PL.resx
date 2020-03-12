@@ -3400,4 +3400,7 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
   <data name="String1" xml:space="preserve">
     <value></value>
   </data>
+  <data name="LblCurrent" xml:space="preserve">
+    <value>Current</value>
+  </data>
 </root>

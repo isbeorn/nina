@@ -469,7 +469,7 @@
     <value>按钮高亮</value>
   </data>
   <data name="LblByteShuffling" xml:space="preserve">
-    <value>Byte Shuffling</value>
+    <value>字节乱序</value>
   </data>
   <data name="LblCache" xml:space="preserve">
     <value>巡天图库本地缓存</value>
@@ -578,7 +578,7 @@
     <value>检查中天翻转</value>
   </data>
   <data name="LblChecksum" xml:space="preserve">
-    <value>Checksum</value>
+    <value>校验和</value>
   </data>
   <data name="LblChecksumError" xml:space="preserve">
     <value>校验和与预期值不匹配，下载的文件可能已损坏!</value>
@@ -623,7 +623,7 @@
     <value>暂不支持彩色传感器</value>
   </data>
   <data name="LblCompression" xml:space="preserve">
-    <value>Compression</value>
+    <value>压缩</value>
   </data>
   <data name="LblCompressionLZ4" xml:space="preserve">
     <value>LZ4</value>
@@ -960,7 +960,7 @@
     <value>当前位置</value>
   </data>
   <data name="LblCurrentSequenceEstimates" xml:space="preserve">
-    <value>Estimated time for this target</value>
+    <value>此目标的预计时间</value>
   </data>
   <data name="LblCurrentUIColorSchema" xml:space="preserve">
     <value>当前的UI颜色方案</value>
@@ -1006,7 +1006,7 @@
     <value>黎明</value>
   </data>
   <data name="LblDays" xml:space="preserve">
-    <value>Days</value>
+    <value>天数</value>
   </data>
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
@@ -1180,7 +1180,7 @@
     <value>已启用</value>
   </data>
   <data name="LblEndOfSequenceCloseFlatDeviceCover" xml:space="preserve">
-    <value>Closing flat device cover</value>
+    <value>关闭平场设备（镜头盖）</value>
   </data>
   <data name="LblEndOfSequenceDecision" xml:space="preserve">
     <value>确定停止运行本序列？</value>
@@ -1228,11 +1228,11 @@
     <value>最佳曝光计算器</value>
   </data>
   <data name="LblExposureCalculatorDescription" xml:space="preserve">
-    <value>This tool will suggest recommended exposure times based on the measured Min and Max ADU values of a captured image. Average skyglow will be taken into consideration and will calulate the exposures to swamp the camera read noise by a factor of 3x (Min) and 10x (Max).
-When the button is clicked the application will take one exposure and calculate the recommended times based on the image and the given input values.</value>
+    <value>这个工具将根据拍摄所得图像，测量ADU的最小值和最大值，给出建议的曝光时间。 背景天光将被平均计入在内，并将照相机读出噪音的曝光率降低3(最小) 至10倍(最大)。
+当点击按钮时，应用程序将会执行一次曝光，并根据图像和给定的输入值计算建议的时间。</value>
   </data>
   <data name="LblExposureCalculatorMeanLessThanOffset" xml:space="preserve">
-    <value>Unable to determine exposure time recommendation. The mean of your current image is less than the specified bias mean. Please take a longer exposure or adjust the incorrect values.</value>
+    <value>无法确定曝光时间建议。您当前图像的ADU平均值小于指定的偏置帧（Bias）。 请延长曝光时间或调整不正确的值。</value>
   </data>
   <data name="LblExposures" xml:space="preserve">
     <value>曝光</value>
@@ -1260,10 +1260,10 @@ When the button is clicked the application will take one exposure and calculate 
     <value>示例文件名</value>
   </data>
   <data name="LblFileExtension" xml:space="preserve">
-    <value>File Extension</value>
+    <value>文件扩展名</value>
   </data>
   <data name="LblFileFormatOptions" xml:space="preserve">
-    <value>File Format Options</value>
+    <value>文件格式选项</value>
   </data>
   <data name="LblFileSettings" xml:space="preserve">
     <value>文件设置</value>
@@ -1317,7 +1317,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>选择串口</value>
   </data>
   <data name="LblFlatDeviceClearValues" xml:space="preserve">
-    <value>Clear Values</value>
+    <value>清除参数</value>
   </data>
   <data name="LblFlatDeviceClose" xml:space="preserve">
     <value>关闭</value>
@@ -1365,19 +1365,19 @@ When the button is clicked the application will take one exposure and calculate 
     <value>打开</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for darks and dark flats</value>
+    <value>拍摄暗场、暗平场时打开镜头盖</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>设定</value>
   </data>
   <data name="LblFlatDeviceTrainedFilterTimes" xml:space="preserve">
-    <value>Flat Wizard Trained Exposure Times</value>
+    <value>平场助手训练的曝光时间</value>
   </data>
   <data name="LblFlatDeviceUnknown" xml:space="preserve">
     <value>未知</value>
   </data>
   <data name="LblFlatDeviceUseWizardTrainedValues" xml:space="preserve">
-    <value>Use exposure times trained with flat wizard</value>
+    <value>使用平场助手训练的曝光时间</value>
   </data>
   <data name="LblFlatExposureCalcContinue" xml:space="preserve">
     <value>平均ADU是 {0}，开始曝光时间计算 {1}</value>
@@ -1644,7 +1644,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>小时</value>
   </data>
   <data name="LblHours" xml:space="preserve">
-    <value>Hours</value>
+    <value>小时</value>
   </data>
   <data name="LblHumidity" xml:space="preserve">
     <value>湿度</value>
@@ -1887,7 +1887,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>最低 ADU</value>
   </data>
   <data name="LblMinutes" xml:space="preserve">
-    <value>Minutes</value>
+    <value>分钟</value>
   </data>
   <data name="LblMinutesAfterMeridian" xml:space="preserve">
     <value>过中天几分钟后翻转</value>
@@ -1917,7 +1917,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>本地</value>
   </data>
   <data name="LblNewPosition" xml:space="preserve">
-    <value>New Position</value>
+    <value>新的合焦位置</value>
     <comment>Newly Calulated Autofocus Position</comment>
   </data>
   <data name="LblNewUpdateAvailable" xml:space="preserve">
@@ -1951,7 +1951,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>没有可用于同步赤道仪的坐标</value>
   </data>
   <data name="LblNoFileFormatOptions" xml:space="preserve">
-    <value>There are no options for this file format</value>
+    <value>此文件格式无可用选项</value>
   </data>
   <data name="LblNoFilterwheel" xml:space="preserve">
     <value>没有滤镜轮</value>
@@ -1987,10 +1987,10 @@ When the button is clicked the application will take one exposure and calculate 
     <value>没有开关</value>
   </data>
   <data name="LblNoSync" xml:space="preserve">
-    <value>No Sync</value>
+    <value>不同步</value>
   </data>
   <data name="LblNoSyncTooltip" xml:space="preserve">
-    <value>When enabled the application will never send a sync command to the telescope. This should only be used when having a good pointing model that should not be altered in any way.</value>
+    <value>启用后，应用程序将不会向望远镜发送同步命令。 只有在望远镜本身有良好指向模型（或有特殊需求不使用同步命令），并且不需要由软件改变原先设定的时候，才应该使用此方法。</value>
   </data>
   <data name="LblNoTelescope" xml:space="preserve">
     <value>无赤道仪</value>
@@ -2044,16 +2044,16 @@ When the button is clicked the application will take one exposure and calculate 
     <value>星云团</value>
   </data>
   <data name="LblObjectType_DRKNB" xml:space="preserve">
-    <value>Dark Nebula</value>
+    <value>暗星云</value>
   </data>
   <data name="LblObjectType_G+C+N" xml:space="preserve">
     <value>星系群和星云团</value>
   </data>
   <data name="LblObjectType_GALCL" xml:space="preserve">
-    <value>Galaxy Cluster</value>
+    <value>星系群</value>
   </data>
   <data name="LblObjectType_GALXY" xml:space="preserve">
-    <value>Galaxy</value>
+    <value>星系</value>
   </data>
   <data name="LblObjectType_GLOCL" xml:space="preserve">
     <value>球状星团</value>
@@ -2083,7 +2083,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>疏散星团</value>
   </data>
   <data name="LblObjectType_PLNNB" xml:space="preserve">
-    <value>Planetary Nebula</value>
+    <value>行星状星云</value>
   </data>
   <data name="LblObjectType_QUASR" xml:space="preserve">
     <value>类星体</value>
@@ -2101,7 +2101,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>小麦哲伦星云的开放星团</value>
   </data>
   <data name="LblObjectType_SNREM" xml:space="preserve">
-    <value>Supernova Remnant</value>
+    <value>超新星遗迹</value>
   </data>
   <data name="LblOf" xml:space="preserve">
     <value>的</value>
@@ -2119,7 +2119,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>好的</value>
   </data>
   <data name="LblOldPosition" xml:space="preserve">
-    <value>Old Position</value>
+    <value>先前的合焦位置</value>
     <comment>Previous Focuser Position</comment>
   </data>
   <data name="LblOn" xml:space="preserve">
@@ -2658,10 +2658,10 @@ When the button is clicked the application will take one exposure and calculate 
     <value>设置新值</value>
   </data>
   <data name="LblSetPark" xml:space="preserve">
-    <value>Set As Park</value>
+    <value>设置赤道仪停放</value>
   </data>
   <data name="LblSetParkToolTip" xml:space="preserve">
-    <value>Sets the park position to be the current position</value>
+    <value>设置当前位置为赤道仪停放位置</value>
   </data>
   <data name="LblSettings" xml:space="preserve">
     <value>设置</value>
@@ -2679,16 +2679,16 @@ When the button is clicked the application will take one exposure and calculate 
     <value>PHD2 稳定超时</value>
   </data>
   <data name="LblAutoRetryStartGuiding" xml:space="preserve">
-    <value>Guiding Start Retry</value>
+    <value>开始导星重试</value>
   </data>
   <data name="LblAutoRetryStartGuidingTimeoutSeconds" xml:space="preserve">
-    <value>Guiding Start Timeout (in seconds)</value>
+    <value>开始导星的超时 (秒)</value>
   </data>
   <data name="LblAutoRetryStartGuidingTooltip" xml:space="preserve">
-    <value>Attempt to recover StartGuiding command if the guider does not report it is guiding after the specified amount of time.</value>
+    <value>如果导星没有反馈其正在导星，在指定的时间之后尝试重启导星。</value>
   </data>
   <data name="LblAutoRetryStartGuidingTimeoutTooltip" xml:space="preserve">
-    <value>Timeout in seconds before abandoning a StartGuiding command before attempting to a retry.</value>
+    <value>在放弃“开始导星”命令前的重启超时（秒）</value>
   </data>
   <data name="LblSiderealTime" xml:space="preserve">
     <value>恒星时</value>
@@ -3146,94 +3146,94 @@ When the button is clicked the application will take one exposure and calculate 
     <value>启动</value>
   </data>
   <data name="LblUPBV2AmpereHours" xml:space="preserve">
-    <value>Ampere Hours</value>
+    <value>安培时</value>
   </data>
   <data name="LblUPBV2AutoDewControl" xml:space="preserve">
-    <value>Automatic Dew Control</value>
+    <value>自动防露控制</value>
   </data>
   <data name="LblUPBV2AverageCurrent" xml:space="preserve">
-    <value>Average Current</value>
+    <value>平均电流</value>
   </data>
   <data name="LblUPBV2Current" xml:space="preserve">
-    <value>Current</value>
+    <value>电流</value>
   </data>
   <data name="LblUPBV2DeviceData" xml:space="preserve">
-    <value>Device Data</value>
+    <value>设备数据</value>
   </data>
   <data name="LblUPBV2DewHeater" xml:space="preserve">
-    <value>Dew Heater Port</value>
+    <value>防结露端口</value>
   </data>
   <data name="LblUPBV2DewHeaterPorts" xml:space="preserve">
-    <value>Dew Heaters</value>
+    <value>防结露加热器</value>
   </data>
   <data name="LblUPBV2DewPoint" xml:space="preserve">
-    <value>Dew Point</value>
+    <value>露点</value>
   </data>
   <data name="LblUPBV2ExcessCurrent" xml:space="preserve">
-    <value>Excess Current</value>
+    <value>过电流</value>
   </data>
   <data name="LblUPBV2InputCurrent" xml:space="preserve">
-    <value>Input Current</value>
+    <value>输入电流</value>
   </data>
   <data name="LblUPBV2InputPower" xml:space="preserve">
-    <value>Power</value>
+    <value>电源</value>
   </data>
   <data name="LblUPBV2InputVoltage" xml:space="preserve">
-    <value>Input Voltage</value>
+    <value>输入电压</value>
   </data>
   <data name="LblUPBV2InvalidResponse" xml:space="preserve">
-    <value>Invalid response from Pegasus Astro Ultimate Powerbox V2.</value>
+    <value>来自 Pegasus Astro 电源盒子 V2 的响应无效。</value>
   </data>
   <data name="LblUPBV2Power1" xml:space="preserve">
-    <value>Power Port 1</value>
+    <value>电源端口 1</value>
   </data>
   <data name="LblUPBV2Power2" xml:space="preserve">
-    <value>Power Port 2</value>
+    <value>电源端口 2</value>
   </data>
   <data name="LblUPBV2Power3" xml:space="preserve">
-    <value>Power Port 3</value>
+    <value>电源端口 3</value>
   </data>
   <data name="LblUPBV2Power4" xml:space="preserve">
-    <value>Power Port 4</value>
+    <value>电源端口 4</value>
   </data>
   <data name="LblUPBV2PowerPorts" xml:space="preserve">
-    <value>Power</value>
+    <value>电源</value>
   </data>
   <data name="LblUPBV2RelativeHumidity" xml:space="preserve">
-    <value>Relative Humidity</value>
+    <value>相对湿度</value>
   </data>
   <data name="LblUPBV2Temperature" xml:space="preserve">
-    <value>Temperature</value>
+    <value>温度</value>
   </data>
   <data name="LblUPBV2UpTime" xml:space="preserve">
-    <value>Up-Time</value>
+    <value>上传时间</value>
   </data>
   <data name="LblUPBV2Usb1" xml:space="preserve">
-    <value>Usb Port 1</value>
+    <value>Usb 端口 1</value>
   </data>
   <data name="LblUPBV2Usb2" xml:space="preserve">
-    <value>Usb Port 2</value>
+    <value>Usb 端口 1</value>
   </data>
   <data name="LblUPBV2Usb3" xml:space="preserve">
-    <value>Usb Port 3</value>
+    <value>Usb 端口 2</value>
   </data>
   <data name="LblUPBV2Usb4" xml:space="preserve">
-    <value>Usb Port 4</value>
+    <value>Usb 端口 4</value>
   </data>
   <data name="LblUPBV2Usb5" xml:space="preserve">
-    <value>Usb Port 5</value>
+    <value>Usb 端口 5</value>
   </data>
   <data name="LblUPBV2Usb6" xml:space="preserve">
-    <value>Usb Port 6</value>
+    <value>Usb 端口 6</value>
   </data>
   <data name="LblUPBV2UsbPorts" xml:space="preserve">
     <value>Usb</value>
   </data>
   <data name="LblUPBV2VariablePower" xml:space="preserve">
-    <value>Variable Power Port</value>
+    <value>可变电源端口</value>
   </data>
   <data name="LblUPBV2WattHours" xml:space="preserve">
-    <value>Watt Hours</value>
+    <value>瓦时</value>
   </data>
   <data name="LblUpdate" xml:space="preserve">
     <value>更新</value>
@@ -3278,7 +3278,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>等待相机达到下一个温度</value>
   </data>
   <data name="LblWaiting" xml:space="preserve">
-    <value>Waiting</value>
+    <value>等待中...</value>
   </data>
   <data name="LblWaitingForCamera" xml:space="preserve">
     <value>等待相机</value>
@@ -3296,7 +3296,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>警告</value>
   </data>
   <data name="LblWarnTelescopeParked" xml:space="preserve">
-    <value>The Telescope is parked, and will be automatically unparked if user proceeds with sequence start</value>
+    <value>赤道仪已经停放，将在用户执行序列时自动解除停放</value>
   </data>
   <data name="LblWeather" xml:space="preserve">
     <value>气象</value>
@@ -3356,22 +3356,22 @@ When the button is clicked the application will take one exposure and calculate 
     <value>XISF</value>
   </data>
   <data name="LblXisfBadChecksum" xml:space="preserve">
-    <value>XISF file checksum did not verify. The image data may be corrupted.</value>
+    <value>XISF 文件校验和未验证。图像数据可能已损坏。</value>
   </data>
   <data name="LblXisfInvalidFile" xml:space="preserve">
-    <value>Not a valid XISF file</value>
+    <value>XISF文件无效</value>
   </data>
   <data name="LblXisfInvalidGeometry" xml:space="preserve">
-    <value>Could not get XISF image geometry</value>
+    <value>无法获取 XISF 解析坐标</value>
   </data>
   <data name="LblXisfUnsupportedChecksum" xml:space="preserve">
-    <value>Unsupported XISF checksum type: {0}</value>
+    <value>不支持的 XISF 校验和类型： {0}</value>
   </data>
   <data name="LblXisfUnsupportedCompression" xml:space="preserve">
-    <value>Unsupported XISF compression type: {0}</value>
+    <value>不支持的 XISF 压缩类型： {0}</value>
   </data>
   <data name="LblXisfUnsupportedFormat" xml:space="preserve">
-    <value>Unsupported XISF data format: {0}</value>
+    <value>不支持的 XISF 数据格式： {0}</value>
   </data>
   <data name="LblYAxisScale" xml:space="preserve">
     <value>Y轴范围</value>
@@ -3392,12 +3392,15 @@ When the button is clicked the application will take one exposure and calculate 
     <value>图像与区域匹配</value>
   </data>
   <data name="UPBV2InputCurrentChartLabel" xml:space="preserve">
-    <value>Input Current (A)</value>
+    <value>输入电流 (A)</value>
   </data>
   <data name="UPBV2InputVoltageChartLabel" xml:space="preserve">
-    <value>Input Voltage (V)</value>
+    <value>输入电压 (V)</value>
   </data>
   <data name="String1" xml:space="preserve">
     <value></value>
+  </data>
+  <data name="LblCurrent" xml:space="preserve">
+    <value>电流</value>
   </data>
 </root>

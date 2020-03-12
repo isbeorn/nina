@@ -3397,4 +3397,7 @@ Lorsque cette option est activée, les canaux de couleur sont ajustés avec un s
   <data name="String1" xml:space="preserve">
     <value></value>
   </data>
+  <data name="LblCurrent" xml:space="preserve">
+    <value>Courant</value>
+  </data>
 </root>

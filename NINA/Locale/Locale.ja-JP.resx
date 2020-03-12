@@ -428,7 +428,7 @@
     <value>ADUにおけるビット深度</value>
   </data>
   <data name="LblBlackClipping" xml:space="preserve">
-    <value>Black clipping</value>
+    <value>ブラッククリッピング</value>
   </data>
   <data name="LblBlindSolveAttemptForFraming" xml:space="preserve">
     <value>フレーミングには画像をソルバーで位置計算して下さい。
@@ -461,7 +461,7 @@
     <value>ボタンハイライト</value>
   </data>
   <data name="LblByteShuffling" xml:space="preserve">
-    <value>Byte Shuffling</value>
+    <value>バイトシャッフリング</value>
   </data>
   <data name="LblCache" xml:space="preserve">
     <value>キャッシュ</value>
@@ -569,7 +569,7 @@
     <value>子午線越え反転の確認</value>
   </data>
   <data name="LblChecksum" xml:space="preserve">
-    <value>Checksum</value>
+    <value>チェックサム</value>
   </data>
   <data name="LblChecksumError" xml:space="preserve">
     <value>チェックサム（データ検査）が期待値とマッチングしませんでした。ダウンロードされたファイルは破損している可能性があります。</value>
@@ -1217,11 +1217,10 @@
     <value>最適露出時間計算機能</value>
   </data>
   <data name="LblExposureCalculatorDescription" xml:space="preserve">
-    <value>This tool will suggest recommended exposure times based on the measured Min and Max ADU values of a captured image. Average skyglow will be taken into consideration and will calulate the exposures to swamp the camera read noise by a factor of 3x (Min) and 10x (Max).
-When the button is clicked the application will take one exposure and calculate the recommended times based on the image and the given input values.</value>
+    <value>このツールは、撮像された画像から測定されるADU値の最小と最大を基に、推奨される露出時間を提案します。光害の平均を考慮して、(最低) x3倍 (最大) x10倍でカメラの読み込みノイズを埋没させるように露出時間を計算します。ボタンをクリックすると、アプリは１回撮像し、入力値と画像を基に推奨時間を計算します。</value>
   </data>
   <data name="LblExposureCalculatorMeanLessThanOffset" xml:space="preserve">
-    <value>Unable to determine exposure time recommendation. The mean of your current image is less than the specified bias mean. Please take a longer exposure or adjust the incorrect values.</value>
+    <value>露出時間推奨値を決定できません。現在の画像は平均が指定のバイアス平均よりも低くなっています。もっと長い露出で撮像するか、不適切な数値を修正して下さい。</value>
   </data>
   <data name="LblExposures" xml:space="preserve">
     <value>露出枚数</value>
@@ -1423,13 +1422,13 @@ When the button is clicked the application will take one exposure and calculate 
     <value>FLIカメラ設定</value>
   </data>
   <data name="LblFLIFloodBin" xml:space="preserve">
-    <value>Flood Binning</value>
+    <value>フラッドビニング</value>
   </data>
   <data name="LblFLIFloodDuration" xml:space="preserve">
-    <value>Flood Duration</value>
+    <value>フラッド時間</value>
   </data>
   <data name="LblFLIFlushCount" xml:space="preserve">
-    <value>Pre-exposure Flush Count</value>
+    <value>露出前フラッシュカウント</value>
   </data>
   <data name="LblFlip" xml:space="preserve">
     <value>フリップを実行して下さい。</value>
@@ -1441,7 +1440,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>RBI 移行</value>
   </data>
   <data name="LblFLISnapshotFlood" xml:space="preserve">
-    <value>Flood for snapshots</value>
+    <value>スナップショット用フラッド</value>
   </data>
   <data name="LblFocalLength" xml:space="preserve">
     <value>焦点距離</value>
@@ -1728,7 +1727,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>配置</value>
   </data>
   <data name="LblLblBlackClippingTooltip" xml:space="preserve">
-    <value>Black clipping factor in sigma units from the median</value>
+    <value>中央値からのシグマユニットにおけるブラッククリッピングファクター</value>
   </data>
   <data name="LblLoadImage" xml:space="preserve">
     <value>画像の読み込み</value>
@@ -1776,7 +1775,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>循環(ループ)</value>
   </data>
   <data name="LblMAD" xml:space="preserve">
-    <value>MAD</value>
+    <value>平均絶対偏差</value>
   </data>
   <data name="LblMagnitude" xml:space="preserve">
     <value>等級</value>
@@ -1824,7 +1823,7 @@ When the button is clicked the application will take one exposure and calculate 
     <value>最大インクリメント</value>
   </data>
   <data name="LblMaxObjects" xml:space="preserve">
-    <value>Maximum objects</value>
+    <value>最大オブジェクト</value>
   </data>
   <data name="LblMaxOptimalADU" xml:space="preserve">
     <value>最大ADU</value>
@@ -3384,5 +3383,8 @@ When the button is clicked the application will take one exposure and calculate 
   </data>
   <data name="String1" xml:space="preserve">
     <value></value>
+  </data>
+  <data name="LblCurrent" xml:space="preserve">
+    <value>電流</value>
   </data>
 </root>

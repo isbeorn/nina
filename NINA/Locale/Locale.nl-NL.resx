@@ -3388,4 +3388,7 @@ Sleep de rechthoek over het deel van de opname dat u fotograferen wilt en active
   <data name="String1" xml:space="preserve">
     <value></value>
   </data>
+  <data name="LblCurrent" xml:space="preserve">
+    <value>Current</value>
+  </data>
 </root>
