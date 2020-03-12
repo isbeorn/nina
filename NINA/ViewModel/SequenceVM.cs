@@ -1140,13 +1140,12 @@ namespace NINA.ViewModel {
                 && imgHistoryVM.ImageHistory.Count() - AfHfrIndex > 3
                 && imgHistoryVM.ImageHistory.Last().HFR != 0
                 && imgHistoryVM.ImageHistory.ElementAt(AfHfrIndex).HFR != 0) {
-                
                 //Perform linear regression on HFR points since last AF run
                 double[] outputs = imgHistoryVM.ImageHistory.Skip(AfHfrIndex).Select(img => img.HFR).ToArray();
                 double[] inputs = Enumerable.Range(AfHfrIndex, imgHistoryVM.ImageHistory.Count() - AfHfrIndex).Select(index => (double)index).ToArray();
                 OrdinaryLeastSquares ols = new OrdinaryLeastSquares();
                 SimpleLinearRegression regression = ols.Learn(inputs, outputs);
-                
+
                 //Get current smoothed out HFR
                 double currentHfrTrend = regression.Transform(imgHistoryVM.ImageHistory.Count());
                 double originalHfr = regression.Transform(AfHfrIndex);
@@ -1626,6 +1625,10 @@ namespace NINA.ViewModel {
                         _canceltoken = new CancellationTokenSource();
                     }
                 }
+                if (closeFlatDeviceCover) {
+                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblEndOfSequenceCloseFlatDeviceCover"] });
+                    await _flatDeviceMediator.CloseCover();
+                }
                 if (parkTelescope) {
                     progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblEndOfSequenceParkTelescope"] });
                     await this.guiderMediator.StopGuiding(_canceltoken.Token);
@@ -1637,10 +1640,6 @@ namespace NINA.ViewModel {
                     IProgress<double> warmProgress = new Progress<double>();
                     await cameraMediator.StartChangeCameraTemp(warmProgress, 10, TimeSpan.FromMinutes(10), true, _canceltoken.Token);
                     Logger.Trace("Camera has been warmed");
-                }
-                if (closeFlatDeviceCover) {
-                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblEndOfSequenceCloseFlatDeviceCover"] });
-                    await _flatDeviceMediator.CloseCover();
                 }
             }
             return true;
