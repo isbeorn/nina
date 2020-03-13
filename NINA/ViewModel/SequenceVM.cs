@@ -1612,6 +1612,8 @@ namespace NINA.ViewModel {
                 }
             }
 
+            var endOfSequenceTasks = new List<Task>();
+
             if (warmCamera || parkTelescope || closeFlatDeviceCover) {
                 if (_canceltoken.Token.IsCancellationRequested) { // Sequence was manually cancelled - ask before proceeding with end of sequence options
                     var diag = MyMessageBox.MyMessageBox.Show(message.ToString(), Locale.Loc.Instance["LblEndOfSequenceOptions"], System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
@@ -1626,21 +1628,21 @@ namespace NINA.ViewModel {
                     }
                 }
                 if (closeFlatDeviceCover) {
-                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblEndOfSequenceCloseFlatDeviceCover"] });
-                    await _flatDeviceMediator.CloseCover();
+                    Logger.Trace("End of Sequence - Closing flat device cover");
+                    endOfSequenceTasks.Add(_flatDeviceMediator.CloseCover());
                 }
                 if (parkTelescope) {
-                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblEndOfSequenceParkTelescope"] });
-                    await this.guiderMediator.StopGuiding(_canceltoken.Token);
-                    await telescopeMediator.ParkTelescope();
+                    Logger.Trace("End of Sequence - Parking scope");
+                    endOfSequenceTasks.Add(this.guiderMediator.StopGuiding(_canceltoken.Token));
+                    endOfSequenceTasks.Add(telescopeMediator.ParkTelescope());
                 }
                 if (warmCamera) {
-                    progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblEndOfSequenceWarmCamera"] });
-                    Logger.Trace("Starting to warm the camera");
+                    Logger.Trace("End of Sequence - Warming Camera");
                     IProgress<double> warmProgress = new Progress<double>();
-                    await cameraMediator.StartChangeCameraTemp(warmProgress, 10, TimeSpan.FromMinutes(10), true, _canceltoken.Token);
-                    Logger.Trace("Camera has been warmed");
+                    endOfSequenceTasks.Add(cameraMediator.StartChangeCameraTemp(warmProgress, 10, TimeSpan.FromMinutes(10), true, _canceltoken.Token));
                 }
+                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblRunningEndOfSequence"] });
+                await Task.WhenAll(endOfSequenceTasks);
             }
             return true;
         }

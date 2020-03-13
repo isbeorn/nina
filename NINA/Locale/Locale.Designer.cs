@@ -7322,6 +7322,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Running end of sequence options.
+        /// </summary>
+        internal static string LblRunningEndOfSequence {
+            get {
+                return ResourceManager.GetString("LblRunningEndOfSequence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
         internal static string LblSave {

@@ -3406,4 +3406,7 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
   <data name="LblCurrent" xml:space="preserve">
     <value>Current</value>
   </data>
+  <data name="LblRunningEndOfSequence" xml:space="preserve">
+    <value>Running end of sequence options</value>
+  </data>
 </root>
