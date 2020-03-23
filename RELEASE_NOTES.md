@@ -24,6 +24,7 @@
    - set the voltage of the variable power port
    - control the dew heater ports, including setting the Auto-Dew feature
    - support for using the powerbox sensors as a weather device
+   - support for using the stepper motor driver as a focuser
  - **Pegasus Astro Flatmaster Support**
    - connect and control the Pegasus Astro Flatmaster from within the application
 

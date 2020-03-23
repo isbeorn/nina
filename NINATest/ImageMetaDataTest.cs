@@ -32,6 +32,7 @@ using NINA.Profile;
 using NINA.Utility.Astrometry;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 
 namespace NINATest {
 
@@ -169,7 +170,9 @@ namespace NINATest {
                 BinX = 3,
                 BinY = 2,
                 ElectronsPerADU = 2.43,
-                PixelSize = 12
+                PixelSize = 12,
+                ReadoutMode = 1,
+                ReadoutModes = new List<string> { "mode1", "mode2" }
             };
 
             var sut = new ImageMetaData();
@@ -185,6 +188,7 @@ namespace NINATest {
             Assert.AreEqual(10, sut.Camera.Offset);
             Assert.AreEqual(2.43, sut.Camera.ElectronsPerADU);
             Assert.AreEqual(-10, sut.Camera.SetPoint);
+            Assert.That(sut.Camera.ReadoutModeName, Is.EqualTo("mode2"));
         }
 
         [Test]

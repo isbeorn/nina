@@ -73,7 +73,8 @@ namespace NINA.Utility.SerialCommunication {
                 result = SerialPort.ReadLine();
                 Logger.Debug($"{LogName}: response : {result}");
             } catch (TimeoutException ex) {
-                Logger.Error($"{LogName}: timed out for port : {SerialPort.PortName} {ex}");
+                Logger.Error($"{LogName}: timed out for port : {SerialPort.PortName} {ex} \n" +
+                             $"Command was : {command}");
             } catch (Exception ex) {
                 Logger.Error($"{LogName}: Unexpected exception : {ex}");
             } finally {

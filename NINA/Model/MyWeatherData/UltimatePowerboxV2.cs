@@ -38,7 +38,6 @@ namespace NINA.Model.MyWeatherData {
             private set {
                 _connected = value;
                 RaisePropertyChanged();
-                RaisePropertyChanged(nameof(HasSetupDialog));
             }
         }
 
@@ -72,11 +71,12 @@ namespace NINA.Model.MyWeatherData {
 
                     Description =
                         $"Ultimate Powerbox V2 on port {PortName}. Firmware version: {response.FirmwareVersion}";
+                    Connected = true;
                 } catch (Exception ex) {
                     Logger.Error(ex);
+                    Connected = false;
                 }
 
-                Connected = true;
                 RaiseAllPropertiesChanged();
                 return Connected;
             }, token);

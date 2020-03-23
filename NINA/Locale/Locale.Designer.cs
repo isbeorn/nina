@@ -961,6 +961,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Backlash Steps.
+        /// </summary>
+        internal static string LblBackLashSteps {
+            get {
+                return ResourceManager.GetString("LblBackLashSteps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Beta.
         /// </summary>
         internal static string LblBeta {
@@ -7259,6 +7268,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reverse.
+        /// </summary>
+        internal static string LblReverse {
+            get {
+                return ResourceManager.GetString("LblReverse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Right Ascension.
         /// </summary>
         internal static string LblRightAscension {
@@ -7629,11 +7647,29 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Set Current Position.
+        /// </summary>
+        internal static string LblSetCurrentPosition {
+            get {
+                return ResourceManager.GetString("LblSetCurrentPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Set for framing assistant.
         /// </summary>
         internal static string LblSetForFramingAssistant {
             get {
                 return ResourceManager.GetString("LblSetForFramingAssistant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set Maximum Speed.
+        /// </summary>
+        internal static string LblSetMaximumSpeed {
+            get {
+                return ResourceManager.GetString("LblSetMaximumSpeed", resourceCulture);
             }
         }
         
@@ -8112,6 +8148,15 @@ namespace NINA.Locale {
         internal static string LblStellariumUseNotice {
             get {
                 return ResourceManager.GetString("LblStellariumUseNotice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stepper Motor Direction.
+        /// </summary>
+        internal static string LblStepperMotorDirection {
+            get {
+                return ResourceManager.GetString("LblStepperMotorDirection", resourceCulture);
             }
         }
         
@@ -9787,15 +9832,6 @@ namespace NINA.Locale {
         internal static string LblZoomStretch {
             get {
                 return ResourceManager.GetString("LblZoomStretch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string String1 {
-            get {
-                return ResourceManager.GetString("String1", resourceCulture);
             }
         }
         

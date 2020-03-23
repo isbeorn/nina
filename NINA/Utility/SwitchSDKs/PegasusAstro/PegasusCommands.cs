@@ -93,4 +93,45 @@ namespace NINA.Utility.SwitchSDKs.PegasusAstro {
 
         public string CommandString => $"PD:{_newAutoDewStatus}\n";
     }
+
+    public class StepperMotorTemperatureCommand : ICommand {
+        public string CommandString => "ST\n";
+    }
+
+    public class StepperMotorMoveToPositionCommand : ICommand {
+        public int Position { get; set; }
+        public string CommandString => $"SM:{Position}\n";
+    }
+
+    public class StepperMotorHaltCommand : ICommand {
+        public string CommandString => "SH\n";
+    }
+
+    public class StepperMotorDirectionCommand : ICommand {
+        public bool DirectionClockwise { get; set; }
+        public string CommandString => $"SR:{(DirectionClockwise ? 0 : 1)}\n";
+    }
+
+    public class StepperMotorGetCurrentPositionCommand : ICommand {
+        public string CommandString => "SP\n";
+    }
+
+    public class StepperMotorSetCurrentPositionCommand : ICommand {
+        public int Position { get; set; }
+        public string CommandString => $"SC:{Position}\n";
+    }
+
+    public class StepperMotorSetMaximumSpeedCommand : ICommand {
+        public int Speed { get; set; }
+        public string CommandString => $"SS:{Speed}\n";
+    }
+
+    public class StepperMotorIsMovingCommand : ICommand {
+        public string CommandString => "SI\n";
+    }
+
+    public class StepperMotorSetBacklashStepsCommand : ICommand {
+        public int Steps { get; set; }
+        public string CommandString => $"SB:{Steps}\n";
+    }
 }

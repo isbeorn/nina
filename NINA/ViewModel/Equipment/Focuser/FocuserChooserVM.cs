@@ -47,6 +47,8 @@ namespace NINA.ViewModel.Equipment.Focuser {
                 Logger.Error(ex);
             }
 
+            Devices.Add(new UltimatePowerboxV2(profileService));
+
             DetermineSelectedDevice(profileService.ActiveProfile.FocuserSettings.Id);
         }
     }

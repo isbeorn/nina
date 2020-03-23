@@ -364,5 +364,111 @@ namespace NINATest.Switch.PegasusAstro {
             Assert.That(sut.AutoDewStatus[2], Is.EqualTo(heater2));
             Assert.That(sut.ToString().Contains(deviceResponse), Is.True);
         }
+
+        [Test]
+        [TestCase("0", true, 0d)]
+        [TestCase("45.3", true, 45.3)]
+        [TestCase("-43.78", true, -43.78)]
+        [TestCase("XXX", false)]
+        [TestCase("", false)]
+        [TestCase(null, false)]
+        public void TestStepperTemperatureResponse(string deviceResponse, bool valid, double temperature = 0d) {
+            var sut = new StepperMotorTemperatureResponse { DeviceResponse = deviceResponse };
+            Assert.That(sut.IsValid, Is.EqualTo(valid));
+            if (!sut.IsValid) return;
+            Assert.That(sut.Temperature, Is.EqualTo(temperature));
+        }
+
+        [Test]
+        [TestCase("0", true, 0)]
+        [TestCase("4500000", true, 4500000)]
+        [TestCase("-43000000", true, -43000000)]
+        [TestCase("XXX", false)]
+        [TestCase("", false)]
+        [TestCase(null, false)]
+        public void TestStepperGetCurrentPositionResponse(string deviceResponse, bool valid, int position = 0) {
+            var sut = new StepperMotorGetCurrentPositionResponse { DeviceResponse = deviceResponse };
+            Assert.That(sut.IsValid, Is.EqualTo(valid));
+            if (!sut.IsValid) return;
+            Assert.That(sut.Position, Is.EqualTo(position));
+        }
+
+        [Test]
+        [TestCase("SM:0", true, 0)]
+        [TestCase("SM:4500000", true, 4500000)]
+        [TestCase("SM:-43000000", true, -43000000)]
+        [TestCase("XXX", false)]
+        [TestCase("", false)]
+        [TestCase(null, false)]
+        public void TestStepperMoveToPositionResponse(string deviceResponse, bool valid, int position = 0) {
+            var sut = new StepperMotorMoveToPositionResponse { DeviceResponse = deviceResponse };
+            Assert.That(sut.IsValid, Is.EqualTo(valid));
+            if (!sut.IsValid) return;
+            Assert.That(sut.Position, Is.EqualTo(position));
+        }
+
+        [Test]
+        [TestCase("0", true, false)]
+        [TestCase("1", true, true)]
+        [TestCase("XXX", false)]
+        [TestCase("", false)]
+        [TestCase(null, false)]
+        public void TestStepperMotorIsMovingResponse(string deviceResponse, bool valid, bool isMoving = false) {
+            var sut = new StepperMotorIsMovingResponse { DeviceResponse = deviceResponse };
+            Assert.That(sut.IsValid, Is.EqualTo(valid));
+            if (!sut.IsValid) return;
+            Assert.That(sut.IsMoving, Is.EqualTo(isMoving));
+        }
+
+        [Test]
+        [TestCase("SH", true)]
+        [TestCase("XXX", false)]
+        [TestCase("", false)]
+        [TestCase(null, false)]
+        public void TestStepperMotorHaltResponse(string deviceResponse, bool valid) {
+            var sut = new StepperMotorHaltResponse { DeviceResponse = deviceResponse };
+            Assert.That(sut.IsValid, Is.EqualTo(valid));
+        }
+
+        [Test]
+        [TestCase("SR:1", true, false)]
+        [TestCase("SR:0", true, true)]
+        [TestCase("XXX", false)]
+        [TestCase("", false)]
+        [TestCase(null, false)]
+        public void TestStepperMotorDirectionResponse(string deviceResponse, bool valid, bool isClockwise = false) {
+            var sut = new StepperMotorDirectionResponse { DeviceResponse = deviceResponse };
+            Assert.That(sut.IsValid, Is.EqualTo(valid));
+            if (!sut.IsValid) return;
+            Assert.That(sut.DirectionClockwise, Is.EqualTo(isClockwise));
+        }
+
+        [Test]
+        [TestCase("SC:0", true, 0)]
+        [TestCase("SC:4500000", true, 4500000)]
+        [TestCase("SC:-43000000", true, -43000000)]
+        [TestCase("XXX", false)]
+        [TestCase("", false)]
+        [TestCase(null, false)]
+        public void TestStepperMotorSetCurrentPositionResponse(string deviceResponse, bool valid, int position = 0) {
+            var sut = new StepperMotorSetCurrentPositionResponse { DeviceResponse = deviceResponse };
+            Assert.That(sut.IsValid, Is.EqualTo(valid));
+            if (!sut.IsValid) return;
+            Assert.That(sut.Position, Is.EqualTo(position));
+        }
+
+        [Test]
+        [TestCase("SB:0", true, 0)]
+        [TestCase("SB:4500000", true, 4500000)]
+        [TestCase("SB:-43000000", true, -43000000)]
+        [TestCase("XXX", false)]
+        [TestCase("", false)]
+        [TestCase(null, false)]
+        public void TestStepperMotorSetBacklashStepsResponse(string deviceResponse, bool valid, int steps = 0) {
+            var sut = new StepperMotorSetBacklashStepsResponse { DeviceResponse = deviceResponse };
+            Assert.That(sut.IsValid, Is.EqualTo(valid));
+            if (!sut.IsValid) return;
+            Assert.That(sut.Steps, Is.EqualTo(steps));
+        }
     }
 }
