@@ -754,6 +754,9 @@ namespace NINA.ViewModel {
 
                 await StartGuiding(csl, progress);
 
+                //Set index as HFR reference frame
+                AfHfrIndex = imgHistoryVM.ImageHistory.Count();
+
                 return await ProcessSequence(csl, ct, pt, progress);
             } finally {
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
@@ -869,6 +872,7 @@ namespace NINA.ViewModel {
                             ImgHistoryVM.AppendAutoFocusPoint(report);
                             lastAutoFocusTime = DateTime.UtcNow;
                             lastAutoFocusTemperature = focuserInfo?.Temperature ?? double.NaN;
+                            AfHfrIndex = imgHistoryVM.ImageHistory.Count();
                             progress.Report(new ApplicationStatus() { Status = " " });
                         }
 
@@ -1113,11 +1117,13 @@ namespace NINA.ViewModel {
                     && seq.FilterType.Position >= 0
                     && csl.AutoFocusOnFilterChange) {
                 /* Trigger autofocus after filter change */
+                Logger.Debug($"Autofocus after filter change has been triggered, as filter changed from position {previousFilterPosition} to {seq.FilterType.Position}");
                 return true;
             }
 
             if (csl.AutoFocusAfterSetTime && (DateTime.UtcNow - lastAutoFocusTime) > TimeSpan.FromMinutes(csl.AutoFocusSetTime)) {
                 /* Trigger autofocus after a set time */
+                Logger.Debug($"Autofocus after set time has been triggered, as last autofocus occurred at {lastAutoFocusTime.ToString("MM/dd/yyyy HH:mm:ss")} UTC, current time is {DateTime.UtcNow.ToString("MM/dd/yyyy HH:mm:ss")} UTC, and threshold is {TimeSpan.FromMinutes(csl.AutoFocusSetTime)} minutes");
                 return true;
             }
 
@@ -1127,21 +1133,21 @@ namespace NINA.ViewModel {
                     || (exposureCount > 0 && exposureCount % csl.AutoFocusSetExposures == 0)
                 )) {
                 /* Trigger autofocus after amount of exposures*/
+                Logger.Debug($"Autofocus after number of exposures has been triggered, as sequence is at exposure {exposureCount} and autofocus is triggered every {csl.AutoFocusSetExposures} exposures");
                 return true;
             }
 
             if (csl.AutoFocusAfterTemperatureChange && !double.IsNaN(focuserInfo?.Temperature ?? double.NaN)
                 && Math.Abs(lastAutoFocusTemperature - focuserInfo.Temperature) > csl.AutoFocusAfterTemperatureChangeAmount) {
                 /* Trigger autofocus after temperature change*/
+                Logger.Debug($"Autofocus after temperature change has been triggered, as previous recorded temperature was {lastAutoFocusTemperature}, current temperature is {focuserInfo.Temperature}, and threshold is {csl.AutoFocusAfterTemperatureChangeAmount}");
                 return true;
             }
 
             if (csl.AutoFocusAfterHFRChange
-                && imgHistoryVM.ImageHistory.Count() - AfHfrIndex > 3
-                && imgHistoryVM.ImageHistory.Last().HFR != 0
-                && imgHistoryVM.ImageHistory.ElementAt(AfHfrIndex).HFR != 0) {
+                && imgHistoryVM.ImageHistory.Count() - AfHfrIndex > 3) {
                 //Perform linear regression on HFR points since last AF run
-                double[] outputs = imgHistoryVM.ImageHistory.Skip(AfHfrIndex).Select(img => img.HFR).ToArray();
+                double[] outputs = imgHistoryVM.ImageHistory.Skip(AfHfrIndex).Select(img => Double.IsNaN(img.HFR) ? 0 : img.HFR).ToArray();
                 double[] inputs = Enumerable.Range(AfHfrIndex, imgHistoryVM.ImageHistory.Count() - AfHfrIndex).Select(index => (double)index).ToArray();
                 OrdinaryLeastSquares ols = new OrdinaryLeastSquares();
                 SimpleLinearRegression regression = ols.Learn(inputs, outputs);
@@ -1150,9 +1156,11 @@ namespace NINA.ViewModel {
                 double currentHfrTrend = regression.Transform(imgHistoryVM.ImageHistory.Count());
                 double originalHfr = regression.Transform(AfHfrIndex);
 
+                Logger.Debug($"Autofocus condition exrapolated original HFR: {originalHfr} extrapolated current HFR: {currentHfrTrend}");
+
                 if (currentHfrTrend > (originalHfr * (1 + csl.AutoFocusAfterHFRChangeAmount / 100))) {
                     /* Trigger autofocus after HFR change */
-                    AfHfrIndex = imgHistoryVM.ImageHistory.Count();
+                    Logger.Debug($"Autofocus after HFR change has been triggered, as current HFR trend is {100*(currentHfrTrend / originalHfr - 1)}% higher compared to threshold of {csl.AutoFocusAfterHFRChangeAmount}%");
                     return true;
                 }
             }

@@ -109,6 +109,7 @@
 - Binned exposures now finish on QHY cameras that have overscan areas
 - Gain and Offset are not saved with decimal places anymore
 - XPIXSZ and YPIXSZ now account correctly for binning when available
+- Autofocus after HFR change properly resets reference index on sequence start, target change, and autofocus caused by other criteria
 
 ## Special Thanks
 The N.I.N.A. team would like to sincerely thank:
