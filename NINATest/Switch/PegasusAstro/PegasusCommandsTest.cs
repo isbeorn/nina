@@ -23,7 +23,6 @@
 
 using NINA.Utility.SwitchSDKs.PegasusAstro;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 
 namespace NINATest.Switch.PegasusAstro {
 
@@ -141,6 +140,74 @@ namespace NINATest.Switch.PegasusAstro {
             var current = new[] { ch1, ch2, ch3 };
             var sut = new SetAutoDewCommand(current, channel, on);
             Assert.That(sut.CommandString, Is.EqualTo(command));
+        }
+
+        [Test]
+        public void TestStepperMotorTemperatureCommand() {
+            var sut = new StepperMotorTemperatureCommand();
+            Assert.That(sut.CommandString, Is.EqualTo("ST\n"));
+        }
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(int.MinValue)]
+        [TestCase(int.MaxValue)]
+        public void TestStepperMotorMoveToPositionCommand(int position) {
+            var sut = new StepperMotorMoveToPositionCommand { Position = position };
+            Assert.That(sut.CommandString, Is.EqualTo($"SM:{position}\n"));
+        }
+
+        [Test]
+        public void TestStepperMotorHaltCommand() {
+            var sut = new StepperMotorHaltCommand();
+            Assert.That(sut.CommandString, Is.EqualTo("SH\n"));
+        }
+
+        [Test]
+        [TestCase(true, 0)]
+        [TestCase(false, 1)]
+        public void TestStepperMotorDirectionCommandCommand(bool directionClockwise, int expected) {
+            var sut = new StepperMotorDirectionCommand { DirectionClockwise = directionClockwise };
+            Assert.That(sut.CommandString, Is.EqualTo($"SR:{expected}\n"));
+        }
+
+        [Test]
+        public void TestStepperMotorGetCurrentPositionCommand() {
+            var sut = new StepperMotorGetCurrentPositionCommand();
+            Assert.That(sut.CommandString, Is.EqualTo("SP\n"));
+        }
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(int.MinValue)]
+        [TestCase(int.MaxValue)]
+        public void TestStepperMotorSetCurrentPositionCommand(int position) {
+            var sut = new StepperMotorSetCurrentPositionCommand { Position = position };
+            Assert.That(sut.CommandString, Is.EqualTo($"SC:{position}\n"));
+        }
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(int.MinValue)]
+        [TestCase(int.MaxValue)]
+        public void TestStepperMotorSetMaximumSpeedCommand(int speed) {
+            var sut = new StepperMotorSetMaximumSpeedCommand { Speed = speed };
+            Assert.That(sut.CommandString, Is.EqualTo($"SS:{speed}\n"));
+        }
+
+        [Test]
+        public void TestStepperMotorIsMovingCommand() {
+            var sut = new StepperMotorIsMovingCommand();
+            Assert.That(sut.CommandString, Is.EqualTo("SI\n"));
+        }
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(int.MinValue)]
+        [TestCase(int.MaxValue)]
+        public void TestStepperMotorSetBacklashStepsCommand(int steps) {
+            var sut = new StepperMotorSetBacklashStepsCommand { Steps = steps };
+            Assert.That(sut.CommandString, Is.EqualTo($"SB:{steps}\n"));
         }
     }
 }

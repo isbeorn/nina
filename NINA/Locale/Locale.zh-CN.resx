@@ -148,10 +148,10 @@
     <value>高级设置</value>
   </data>
   <data name="LblAFContrastDetection" xml:space="preserve">
-    <value>反差对焦 (实验性)</value>
+    <value>对比度检测 (实验中)</value>
   </data>
   <data name="LblAFOnButFocuserNotConnected" xml:space="preserve">
-    <value>启用自动对焦，但没有连接电调</value>
+    <value>自动对焦已启用，但没有连接电调</value>
   </data>
   <data name="LblAFStarHFR" xml:space="preserve">
     <value>星点 HFR</value>
@@ -191,7 +191,7 @@
 将会使用这两个点计算和显示实际的地平高度误差</value>
   </data>
   <data name="LblAltitudeMeasurementDescription" xml:space="preserve">
-    <value>赤道仪指向到东或西，靠近赤纬 0° 和地平线。</value>
+    <value>将赤道仪指向东或西，靠近赤纬 0° 和地平线。</value>
   </data>
   <data name="LblAltitudeMeasurementSide" xml:space="preserve">
     <value>高度测量方向</value>
@@ -200,19 +200,19 @@
     <value>显示星座边界</value>
   </data>
   <data name="LblAnnotateConstellations" xml:space="preserve">
-    <value>显示和注释星座</value>
+    <value>显示并标注星座</value>
   </data>
   <data name="LblAnnotateDSO" xml:space="preserve">
     <value>标注深空天体</value>
   </data>
   <data name="LblAnnotateGrid" xml:space="preserve">
-    <value>标注网格</value>
+    <value>显示网格</value>
   </data>
   <data name="LblAnnotateImage" xml:space="preserve">
     <value>标注图像</value>
   </data>
   <data name="LblAnnotateImageTooltip" xml:space="preserve">
-    <value>如果选中并应用了图像的星点检测，则将使用找到的星点及其各自的 HFR 值对图像进行标注</value>
+    <value>如果选中并应用了图像的星点检测，将使用找到的星点及其 HFR 值对图像进行标注</value>
   </data>
   <data name="LblAPIKey" xml:space="preserve">
     <value>API 密钥</value>
@@ -274,7 +274,7 @@
     <value>ASTAP</value>
   </data>
   <data name="LblAstrometry" xml:space="preserve">
-    <value>经纬度设置</value>
+    <value>天体测量学</value>
   </data>
   <data name="LblAstrometryNet" xml:space="preserve">
     <value>Astrometry.Net</value>
@@ -283,13 +283,13 @@
     <value>自动对焦</value>
   </data>
   <data name="LblAutoFocusAfterHFRChange" xml:space="preserve">
-    <value>HFR 改变后</value>
+    <value>HFR 增加后</value>
   </data>
   <data name="LblAutoFocusAfterHFRChangeAmount" xml:space="preserve">
-    <value>HFR 容差</value>
+    <value>HFR 数值</value>
   </data>
   <data name="LblAutoFocusAfterSetExposures" xml:space="preserve">
-    <value>拍摄一定张数后</value>
+    <value>拍摄特定张数后</value>
   </data>
   <data name="LblAutoFocusAfterSetTime" xml:space="preserve">
     <value>经过特定时间后</value>
@@ -298,13 +298,13 @@
     <value>温度变化后</value>
   </data>
   <data name="LblAutoFocusAfterTemperatureChangeAmount" xml:space="preserve">
-    <value>温度变化</value>
+    <value>温度值</value>
   </data>
   <data name="LblAutoFocusExposureTime" xml:space="preserve">
     <value>自动对焦曝光时间</value>
   </data>
   <data name="LblAutoFocusExposureTimeTooltip" xml:space="preserve">
-    <value>当没有特定滤镜曝光设置或设置为0时，自动对焦采用的曝光时间</value>
+    <value>当没有滤镜曝光时间设置或设置为0时，自动对焦采用的曝光时间</value>
   </data>
   <data name="LblAutoFocusFilter" xml:space="preserve">
     <value>滤镜自动对焦</value>
@@ -317,8 +317,8 @@
   </data>
   <data name="LblAutoFocusInnerCropRatioTooltip" xml:space="preserve">
     <value>如果设置为小于 1 的值，自动对焦期间的星点检测将仅使用
-总传感器的中心子区域（如果相机支持）。
-如果相机不支持，则在星点检测时，边缘附近的星点将被忽略。
+整个传感器中心的一个子区域（如果相机支持）。
+如果相机不支持，在星点检测时边缘附近的星点将被忽略。
 如果与小于1的外部裁剪比例结合使用，图像的矩形区域（在内部矩形和外部矩形之间）
 将用于自动对焦。</value>
   </data>
@@ -326,17 +326,17 @@
     <value>自动对焦方式</value>
   </data>
   <data name="LblAutoFocusMethodTooltip" xml:space="preserve">
-    <value>当星点 HFR 被选择时，NINA 将在视场中检测星点，
+    <value>当星点 HFR 选定后，NINA 将在视场中检测星点，
 通过数个对焦点计算他们的 HFR 并找到最小的 HFR。
-反差对焦模式是通过图像算法来侦测多个对焦点的
-对比度，以找到最好的对比度。这个方法主要被用于
-地面目标或者行星目标，且对噪点非常敏感。</value>
+反差对焦模式是通过图像算法来估测多个对焦点的
+对比度以找到最高的对比度。这种方法主要被用于
+地面目标或者太阳系内的目标，有时对噪点敏感。</value>
   </data>
   <data name="LblAutoFocusNewWorseThanOriginal" xml:space="preserve">
-    <value>新焦点HFR {0} HFR比原来 {1} 差很多</value>
+    <value>新焦点的HFR {0} 比原来的HFR {1} 差很多</value>
   </data>
   <data name="LblAutoFocusNotEnoughtSpreadedPoints" xml:space="preserve">
-    <value>采集的 HFR 差异不足。电调步长设置太小或离焦点太远没有聚焦。</value>
+    <value>采集的 HFR 差异不足。电调步长设置太小或没有聚焦。</value>
   </data>
   <data name="LblAutoFocusNrOfExposures" xml:space="preserve">
     <value>张数</value>
@@ -1189,7 +1189,7 @@
     <value>序列结束选项</value>
   </data>
   <data name="LblEndOfSequenceParkTelescope" xml:space="preserve">
-    <value>赤道仪归零</value>
+    <value>赤道仪停放</value>
   </data>
   <data name="LblEndOfSequenceWarmCamera" xml:space="preserve">
     <value>相机回温</value>
@@ -1476,10 +1476,10 @@
     <value>每个自动对焦点相隔的步长。步长应小于临界焦点的容差值</value>
   </data>
   <data name="LblFocuserBacklash" xml:space="preserve">
-    <value>回差 IN/OUT</value>
+    <value>回差 向内/向外</value>
   </data>
   <data name="LblFocuserBacklashTooltip" xml:space="preserve">
-    <value>在电调每一步 IN/OUT 方向的回差</value>
+    <value>在电调每一步 向内/向外 方向的回差</value>
   </data>
   <data name="LblFocuserConnected" xml:space="preserve">
     <value>电调连接</value>
@@ -1659,7 +1659,7 @@
     <value>光照</value>
   </data>
   <data name="LblImage" xml:space="preserve">
-    <value>拍摄</value>
+    <value>图像</value>
   </data>
   <data name="LblImageArea" xml:space="preserve">
     <value>图片区</value>
@@ -2187,6 +2187,9 @@
   </data>
   <data name="LblPauseTimeBeforeMeridian" xml:space="preserve">
     <value>中天前暂停(分钟)</value>
+  </data>
+  <data name="LblPegasusFlatMaster" xml:space="preserve">
+    <value>Pegasus平场板</value>
   </data>
   <data name="LblPercentShort" xml:space="preserve">
     <value>%</value>
@@ -2800,10 +2803,10 @@
     <value>启动导星失败</value>
   </data>
   <data name="LblStartingINBacklashMeasurement" xml:space="preserve">
-    <value>启动 IN 回差测量</value>
+    <value>启动 向内 回差测量</value>
   </data>
   <data name="LblStartingOUTBacklashMeasurement" xml:space="preserve">
-    <value>启动 OUT 回差测量</value>
+    <value>启动 向外 回差测量</value>
   </data>
   <data name="LblStartSequenceAnyway" xml:space="preserve">
     <value>仍然要开始序列?</value>
@@ -3397,10 +3400,25 @@
   <data name="UPBV2InputVoltageChartLabel" xml:space="preserve">
     <value>输入电压 (V)</value>
   </data>
-  <data name="String1" xml:space="preserve">
-    <value></value>
+  <data name="LblSetMaximumSpeed" xml:space="preserve">
+    <value>Set Maximum Speed</value>
+  </data>
+  <data name="LblBackLashSteps" xml:space="preserve">
+    <value>Backlash Steps</value>
+  </data>
+  <data name="LblReverse" xml:space="preserve">
+    <value>Reverse</value>
+  </data>
+  <data name="LblSetCurrentPosition" xml:space="preserve">
+    <value>Set Current Position</value>
+  </data>
+  <data name="LblStepperMotorDirection" xml:space="preserve">
+    <value>Stepper Motor Direction</value>
   </data>
   <data name="LblCurrent" xml:space="preserve">
     <value>电流</value>
+  </data>
+  <data name="LblRunningEndOfSequence" xml:space="preserve">
+    <value>正在运行序列结束选项...</value>
   </data>
 </root>

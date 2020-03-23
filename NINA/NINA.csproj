@@ -449,6 +449,7 @@
     <Compile Include="Model\MyFilterWheel\NullFilter.cs" />
     <Compile Include="Model\MyFilterWheel\QHYFilterWheel.cs" />
     <Compile Include="Model\MyFilterWheel\FLIFilterWheel.cs" />
+    <Compile Include="Model\MyFocuser\UltimatePowerboxV2.cs" />
     <Compile Include="Model\MyWeatherData\UltimatePowerboxV2.cs" />
     <Compile Include="Model\MyFlatDevice\PegasusAstroFlatMaster.cs" />
     <Compile Include="PlateSolving\CaptureSolverParameter.cs" />
@@ -634,6 +635,9 @@
     </Compile>
     <Compile Include="View\Equipment\FlatDevice\AlnitakSetupView.xaml.cs">
       <DependentUpon>AlnitakSetupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\Focuser\PegasusAstroUltimatePowerBoxV2StepperMotorSetupView.xaml.cs">
+      <DependentUpon>PegasusAstroUltimatePowerBoxV2StepperMotorSetupView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Equipment\Guider\DefaultDetailView.xaml.cs">
       <DependentUpon>DefaultDetailView.xaml</DependentUpon>
@@ -1354,6 +1358,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\Equipment\Focuser\PegasusAstroUltimatePowerBoxV2StepperMotorSetupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Equipment\Guider\DefaultDetailView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1725,58 +1733,72 @@
     <EmbeddedResource Include="Locale\Locale.de-DE.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Locale.de-DE.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Locale\Locale.en-GB.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Locale.en-GB.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Locale\Locale.en-US.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Locale.en-US.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Locale\Locale.es-ES.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Locale.es-ES.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Locale\Locale.fr-FR.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Locale.fr-FR.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Locale\Locale.it-IT.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Locale.it-IT.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Locale\Locale.ja-JP.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Locale.ja-JP.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Locale\Locale.nl-NL.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Locale.nl-NL.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Locale\Locale.pl-PL.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Locale.pl-PL.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Locale\Locale.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Locale.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Locale\Locale.ru-RU.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Locale.ru-RU.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Locale\Locale.zh-CN.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Locale.zh-CN.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Locale\Locale.zh-HK.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Locale.zh-HK.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Locale\Locale.zh-TW.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Locale.zh-TW.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

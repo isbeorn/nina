@@ -2188,6 +2188,9 @@ Calculated HFR: {2}
   <data name="LblPauseTimeBeforeMeridian" xml:space="preserve">
     <value>Pause before Meridian (minutes)</value>
   </data>
+  <data name="LblPegasusFlatMaster" xml:space="preserve">
+    <value>FlatMaster</value>
+  </data>
   <data name="LblPercentShort" xml:space="preserve">
     <value>%</value>
   </data>
@@ -3397,10 +3400,25 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
   <data name="UPBV2InputVoltageChartLabel" xml:space="preserve">
     <value>Input Voltage (V)</value>
   </data>
-  <data name="String1" xml:space="preserve">
-    <value></value>
+  <data name="LblSetMaximumSpeed" xml:space="preserve">
+    <value>Set Maximum Speed</value>
+  </data>
+  <data name="LblBackLashSteps" xml:space="preserve">
+    <value>Backlash Steps</value>
+  </data>
+  <data name="LblReverse" xml:space="preserve">
+    <value>Reverse</value>
+  </data>
+  <data name="LblSetCurrentPosition" xml:space="preserve">
+    <value>Set Current Position</value>
+  </data>
+  <data name="LblStepperMotorDirection" xml:space="preserve">
+    <value>Stepper Motor Direction</value>
   </data>
   <data name="LblCurrent" xml:space="preserve">
     <value>Current</value>
+  </data>
+  <data name="LblRunningEndOfSequence" xml:space="preserve">
+    <value>Running end of sequence options</value>
   </data>
 </root>

@@ -180,6 +180,7 @@
     <Compile Include="FlatDevice\PegasusResponseTest.cs" />
     <Compile Include="FlatWizardExposureTimeFinderServiceTest.cs" />
     <Compile Include="FlatWizardVMTest.cs" />
+    <Compile Include="Focuser\PegasusAstro\UltimatePowerboxV2Test.cs" />
     <Compile Include="GuideStepsHistoryTest.cs" />
     <Compile Include="ImageDataTest.cs" />
     <Compile Include="ImageHistoryVMTest.cs" />
@@ -229,6 +230,7 @@
     <Compile Include="FlatDevice\FlatDeviceVMTest.cs" />
     <Compile Include="FlatDevice\AlnitakFlipFlatSimulatorTest.cs" />
     <Compile Include="FlatDevice\FlatDeviceSettingsTest.cs" />
+    <Compile Include="WeatherData\PegasusAstro\UltimatePowerboxV2Test.cs" />
     <Compile Include="XISFTest.cs" />
   </ItemGroup>
   <ItemGroup>

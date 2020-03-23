@@ -24,6 +24,7 @@
    - set the voltage of the variable power port
    - control the dew heater ports, including setting the Auto-Dew feature
    - support for using the powerbox sensors as a weather device
+   - support for using the stepper motor driver as a focuser
  - **Pegasus Astro Flatmaster Support**
    - connect and control the Pegasus Astro Flatmaster from within the application
 
@@ -109,6 +110,7 @@
 - Binned exposures now finish on QHY cameras that have overscan areas
 - Gain and Offset are not saved with decimal places anymore
 - XPIXSZ and YPIXSZ now account correctly for binning when available
+- Autofocus after HFR change properly resets reference index on sequence start, target change, and autofocus caused by other criteria
 
 ## Special Thanks
 The N.I.N.A. team would like to sincerely thank:

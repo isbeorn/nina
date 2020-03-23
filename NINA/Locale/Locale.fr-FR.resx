@@ -2188,6 +2188,9 @@ HFR calculé: {2}</value>
   <data name="LblPauseTimeBeforeMeridian" xml:space="preserve">
     <value>Pause avant le Méridien (minutes)</value>
   </data>
+  <data name="LblPegasusFlatMaster" xml:space="preserve">
+    <value>FlatMaster</value>
+  </data>
   <data name="LblPercentShort" xml:space="preserve">
     <value>%</value>
   </data>
@@ -3394,10 +3397,25 @@ Lorsque cette option est activée, les canaux de couleur sont ajustés avec un s
   <data name="UPBV2InputVoltageChartLabel" xml:space="preserve">
     <value>Tension d'entrée (V)</value>
   </data>
-  <data name="String1" xml:space="preserve">
-    <value></value>
+  <data name="LblSetMaximumSpeed" xml:space="preserve">
+    <value>Set Maximum Speed</value>
+  </data>
+  <data name="LblBackLashSteps" xml:space="preserve">
+    <value>Backlash Steps</value>
+  </data>
+  <data name="LblReverse" xml:space="preserve">
+    <value>Reverse</value>
+  </data>
+  <data name="LblSetCurrentPosition" xml:space="preserve">
+    <value>Set Current Position</value>
+  </data>
+  <data name="LblStepperMotorDirection" xml:space="preserve">
+    <value>Stepper Motor Direction</value>
   </data>
   <data name="LblCurrent" xml:space="preserve">
     <value>Courant</value>
+  </data>
+  <data name="LblRunningEndOfSequence" xml:space="preserve">
+    <value>Running end of sequence options</value>
   </data>
 </root>

@@ -288,4 +288,137 @@ namespace NINA.Utility.SwitchSDKs.PegasusAstro {
             }
         }
     }
+
+    public class StepperMotorTemperatureResponse : PegasusUpbv2Response {
+        public double Temperature { get; protected set; }
+
+        protected override bool ParseResponse(string response) {
+            try {
+                Temperature = double.Parse(response);
+                return true;
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                return false;
+            }
+        }
+    }
+
+    public class StepperMotorGetCurrentPositionResponse : PegasusUpbv2Response {
+        public int Position { get; protected set; }
+
+        protected override bool ParseResponse(string response) {
+            try {
+                Position = int.Parse(response);
+                return true;
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                return false;
+            }
+        }
+    }
+
+    public class StepperMotorMoveToPositionResponse : PegasusUpbv2Response {
+        public int Position { get; protected set; }
+
+        protected override bool ParseResponse(string response) {
+            try {
+                if (!response.StartsWith("SM:")) return false;
+                Position = int.Parse(response.Substring(3));
+                return true;
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                return false;
+            }
+        }
+    }
+
+    public class StepperMotorIsMovingResponse : PegasusUpbv2Response {
+        public bool IsMoving { get; protected set; }
+
+        protected override bool ParseResponse(string response) {
+            try {
+                switch (response[0]) {
+                    case '0':
+                        IsMoving = false;
+                        break;
+
+                    case '1':
+                        IsMoving = true;
+                        break;
+
+                    default:
+                        return false;
+                }
+
+                return true;
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                return false;
+            }
+        }
+    }
+
+    public class StepperMotorHaltResponse : PegasusUpbv2Response {
+
+        protected override bool ParseResponse(string response) {
+            try {
+                return response.Equals("SH");
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                return false;
+            }
+        }
+    }
+
+    public class StepperMotorDirectionResponse : PegasusUpbv2Response {
+        public bool DirectionClockwise { get; protected set; }
+
+        protected override bool ParseResponse(string response) {
+            try {
+                if (!response.StartsWith("SR:")) return false;
+                DirectionClockwise = response[3] == '0';
+                return true;
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                return false;
+            }
+        }
+    }
+
+    public class StepperMotorSetCurrentPositionResponse : PegasusUpbv2Response {
+        public int Position { get; protected set; }
+
+        protected override bool ParseResponse(string response) {
+            try {
+                if (!response.StartsWith("SC:")) return false;
+                Position = int.Parse(response.Substring(3));
+                return true;
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                return false;
+            }
+        }
+    }
+
+    public class StepperMotorSetMaximumSpeedResponse : PegasusUpbv2Response {
+
+        protected override bool ParseResponse(string response) {
+            return true;
+        }
+    }
+
+    public class StepperMotorSetBacklashStepsResponse : PegasusUpbv2Response {
+        public int Steps { get; protected set; }
+
+        protected override bool ParseResponse(string response) {
+            try {
+                if (!response.StartsWith("SB:")) return false;
+                Steps = int.Parse(response.Substring(3));
+                return true;
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                return false;
+            }
+        }
+    }
 }
