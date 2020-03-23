@@ -1730,6 +1730,7 @@
     <None Include="packages.config" />
     <None Include="Resources\avalondock.config" />
     <SplashScreen Include="Resources\ninasplash.png" />
+    <EmbeddedResource Include="Locale\Locale.da-DK.resx" />
     <EmbeddedResource Include="Locale\Locale.de-DE.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Locale.de-DE.Designer.cs</LastGenOutput>
