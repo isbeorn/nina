@@ -2175,6 +2175,9 @@
   <data name="LblPauseTimeBeforeMeridian" xml:space="preserve">
     <value>子午線前で一時停止(分)</value>
   </data>
+  <data name="LblPegasusFlatMaster" xml:space="preserve">
+    <value>FlatMaster</value>
+  </data>
   <data name="LblPercentShort" xml:space="preserve">
     <value>パーセント</value>
   </data>
@@ -3381,10 +3384,25 @@
   <data name="UPBV2InputVoltageChartLabel" xml:space="preserve">
     <value>入力電圧 (V)</value>
   </data>
-  <data name="String1" xml:space="preserve">
-    <value></value>
+  <data name="LblSetMaximumSpeed" xml:space="preserve">
+    <value>Set Maximum Speed</value>
+  </data>
+  <data name="LblBackLashSteps" xml:space="preserve">
+    <value>Backlash Steps</value>
+  </data>
+  <data name="LblReverse" xml:space="preserve">
+    <value>Reverse</value>
+  </data>
+  <data name="LblSetCurrentPosition" xml:space="preserve">
+    <value>Set Current Position</value>
+  </data>
+  <data name="LblStepperMotorDirection" xml:space="preserve">
+    <value>Stepper Motor Direction</value>
   </data>
   <data name="LblCurrent" xml:space="preserve">
     <value>電流</value>
+  </data>
+  <data name="LblRunningEndOfSequence" xml:space="preserve">
+    <value>Running end of sequence options</value>
   </data>
 </root>
