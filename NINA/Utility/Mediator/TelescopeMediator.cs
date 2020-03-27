@@ -40,8 +40,8 @@ namespace NINA.Utility.Mediator {
             handler.PulseGuide(direction, duration);
         }
 
-        public bool Sync(Coordinates coordinates) {
-            return handler.Sync(coordinates);
+        public async Task<bool> Sync(Coordinates coordinates) {
+            return await handler.Sync(coordinates);
         }
 
         public Task<bool> SlewToCoordinatesAsync(Coordinates coords) {

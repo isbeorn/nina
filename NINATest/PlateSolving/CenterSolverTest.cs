@@ -146,9 +146,9 @@ namespace NINATest.PlateSolving {
                 .Returns(testResult.Coordinates);
             telescopeMediatorMock
                 .SetupSequence(x => x.Sync(It.IsAny<Coordinates>()))
-                .Returns(true)
-                .Returns(true)
-                .Returns(true);
+                .Returns(Task.FromResult(true))
+                .Returns(Task.FromResult(true))
+                .Returns(Task.FromResult(true));
 
             var sut = new CenteringSolver(plateSolverMock.Object, blindSolverMock.Object, null, telescopeMediatorMock.Object);
             sut.CaptureSolver = captureSolverMock.Object;
@@ -186,7 +186,7 @@ namespace NINATest.PlateSolving {
                 .Returns(coordinates1);
             telescopeMediatorMock
                 .SetupSequence(x => x.Sync(It.IsAny<Coordinates>()))
-                .Returns(false);
+                .Returns(Task.FromResult(false));
 
             var sut = new CenteringSolver(plateSolverMock.Object, blindSolverMock.Object, null, telescopeMediatorMock.Object);
             sut.CaptureSolver = captureSolverMock.Object;
@@ -225,7 +225,7 @@ namespace NINATest.PlateSolving {
                 .Returns(coordinates1);
             telescopeMediatorMock
                 .SetupSequence(x => x.Sync(It.IsAny<Coordinates>()))
-                .Returns(false);
+                .Returns(Task.FromResult(false));
 
             var sut = new CenteringSolver(plateSolverMock.Object, blindSolverMock.Object, null, telescopeMediatorMock.Object);
             sut.CaptureSolver = captureSolverMock.Object;
@@ -264,7 +264,7 @@ namespace NINATest.PlateSolving {
                 .Returns(coordinates1);
             telescopeMediatorMock
                 .SetupSequence(x => x.Sync(It.IsAny<Coordinates>()))
-                .Returns(true);
+                .Returns(Task.FromResult(true));
 
             var sut = new CenteringSolver(plateSolverMock.Object, blindSolverMock.Object, null, telescopeMediatorMock.Object);
             sut.CaptureSolver = captureSolverMock.Object;

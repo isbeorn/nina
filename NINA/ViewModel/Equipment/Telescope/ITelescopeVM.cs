@@ -37,7 +37,7 @@ namespace NINA.ViewModel.Equipment.Telescope {
 
         void PulseGuide(GuideDirections direction, int duration);
 
-        bool Sync(Coordinates coordinates);
+        Task<bool> Sync(Coordinates coordinates);
 
         Task<bool> MeridianFlip(Coordinates targetCoordinates);
 

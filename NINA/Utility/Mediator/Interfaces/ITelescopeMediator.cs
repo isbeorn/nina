@@ -35,7 +35,7 @@ namespace NINA.Utility.Mediator.Interfaces {
 
         void PulseGuide(GuideDirections direction, int duration);
 
-        bool Sync(Coordinates coordinates);
+        Task<bool> Sync(Coordinates coordinates);
 
         Task<bool> SlewToCoordinatesAsync(Coordinates coords);
 
