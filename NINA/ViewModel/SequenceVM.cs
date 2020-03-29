@@ -985,6 +985,9 @@ namespace NINA.ViewModel {
                         if (settings != null) {
                             _flatDeviceMediator.SetBrightness(settings.Brightness);
                             seq.ExposureTime = settings.Time;
+                            Logger.Debug($"Starting flat exposure with filter: {seq.FilterType?.Name}, binning: {seq.Binning}, gain: {seq.Gain}, panel brightness {settings.Brightness} and exposure time: {settings.Time}.");
+                        } else {
+                            Logger.Debug($"No settings found for filter: {seq.FilterType?.Name}, binning: {seq.Binning} and gain: {seq.Gain}.");
                         }
                     }
 
@@ -1017,6 +1020,9 @@ namespace NINA.ViewModel {
                         var settings = profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(new FlatDeviceFilterSettingsKey(seq.FilterType.Name, seq.Binning, seq.Gain));
                         if (settings != null) {
                             seq.ExposureTime = settings.Time;
+                            Logger.Debug($"Starting dark flat exposure with filter: {seq.FilterType.Name}, binning: {seq.Binning}, gain: {seq.Gain} and exposure time: {settings.Time}.");
+                        } else {
+                            Logger.Debug($"No settings found for filter: {seq.FilterType.Name}, binning: {seq.Binning} and gain: {seq.Gain}.");
                         }
                     }
 
@@ -1160,7 +1166,7 @@ namespace NINA.ViewModel {
 
                 if (currentHfrTrend > (originalHfr * (1 + csl.AutoFocusAfterHFRChangeAmount / 100))) {
                     /* Trigger autofocus after HFR change */
-                    Logger.Debug($"Autofocus after HFR change has been triggered, as current HFR trend is {100*(currentHfrTrend / originalHfr - 1)}% higher compared to threshold of {csl.AutoFocusAfterHFRChangeAmount}%");
+                    Logger.Debug($"Autofocus after HFR change has been triggered, as current HFR trend is {100 * (currentHfrTrend / originalHfr - 1)}% higher compared to threshold of {csl.AutoFocusAfterHFRChangeAmount}%");
                     return true;
                 }
             }
