@@ -450,6 +450,8 @@
     <Compile Include="Model\MyFilterWheel\QHYFilterWheel.cs" />
     <Compile Include="Model\MyFilterWheel\FLIFilterWheel.cs" />
     <Compile Include="Model\MyFocuser\UltimatePowerboxV2.cs" />
+    <Compile Include="Model\MyFocuser\AscomFocuserProvider.cs" />
+    <Compile Include="Model\MyFocuser\IAscomFocuserProvider.cs" />
     <Compile Include="Model\MyWeatherData\UltimatePowerboxV2.cs" />
     <Compile Include="Model\MyFlatDevice\PegasusAstroFlatMaster.cs" />
     <Compile Include="PlateSolving\CaptureSolverParameter.cs" />
@@ -473,6 +475,7 @@
     <Compile Include="Model\MySwitch\PegasusAstro\UltimatePowerBoxV2.cs" />
     <Compile Include="Utility\CameraSDKs\OmegonSDK\omegonprocam.cs" />
     <Compile Include="Utility\Converters\FilterWheelFilterConverter.cs" />
+    <Compile Include="Utility\Converters\NaNToVisibilityCollapsedConverter.cs" />
     <Compile Include="Utility\FileSaveInfo.cs" />
     <Compile Include="Utility\Converters\AFFittingToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\IsLightImageTypeToVisibilityConverter.cs" />

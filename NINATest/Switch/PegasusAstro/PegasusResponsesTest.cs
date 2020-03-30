@@ -326,6 +326,7 @@ namespace NINATest.Switch.PegasusAstro {
         [TestCase("0.23:X:640.5:86400", false)]
         [TestCase("0.23:12.4:X:86400", false)]
         [TestCase("0.23:12.4:640.5:X", false)]
+        [TestCase("0.23:12.4", false)]
         [TestCase("", false)]
         [TestCase(null, false)]
         public void TestPowerConsumptionResponse(string deviceResponse, bool valid, double averagePower = 0d,
@@ -433,6 +434,7 @@ namespace NINATest.Switch.PegasusAstro {
         [Test]
         [TestCase("SR:1", true, false)]
         [TestCase("SR:0", true, true)]
+        [TestCase("SR:X", false)]
         [TestCase("XXX", false)]
         [TestCase("", false)]
         [TestCase(null, false)]

@@ -69,7 +69,7 @@ namespace NINA.PlateSolving {
 
                 if (Math.Abs(result.Separation.Distance.ArcMinutes) > parameter.Threshold) {
                     progress?.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblPlateSolveNotInsideToleranceSyncing"] });
-                    if (parameter.NoSync || !telescopeMediator.Sync(result.Coordinates)) {
+                    if (parameter.NoSync || !await telescopeMediator.Sync(result.Coordinates)) {
                         offset = result.DetermineSeparation(position + offset);
 
                         Logger.Debug($"Sync failed - calculating offset instead to compensate.  Original: {position.Transform(result.Coordinates.Epoch)}; Solved: {result.Coordinates}; Offset: {offset}");

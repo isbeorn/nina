@@ -97,6 +97,12 @@ namespace NINA.Model {
 
             p = new ImagePattern(ImagePatternKeys.HFR, Locale.Loc.Instance["LblHFRPatternDescription"]);
             patterns.Add(p.Key, p);
+
+            p = new ImagePattern(ImagePatternKeys.SQM, Locale.Loc.Instance["LblSQMPatternDescription"]);
+            patterns.Add(p.Key, p);
+
+            p = new ImagePattern(ImagePatternKeys.ReadoutMode, Locale.Loc.Instance["LblReadoutModePatternDescription"]);
+            patterns.Add(p.Key, p);
         }
 
         public bool Set(string key, string value) {
@@ -158,7 +164,7 @@ namespace NINA.Model {
             p.Set(ImagePatternKeys.DateTime, "2016-01-01_12-00-00");
             p.Set(ImagePatternKeys.Time, "12-00-00");
             p.Set(ImagePatternKeys.FrameNr, "0001");
-            p.Set(ImagePatternKeys.ImageType, "Light");
+            p.Set(ImagePatternKeys.ImageType, "LIGHT");
             p.Set(ImagePatternKeys.Binning, "1x1");
             p.Set(ImagePatternKeys.SensorTemp, "-15");
             p.Set(ImagePatternKeys.ExposureTime, 10.21234);
@@ -171,6 +177,9 @@ namespace NINA.Model {
             p.Set(ImagePatternKeys.FocuserTemp, "3.94");
             p.Set(ImagePatternKeys.ApplicationStartDate, Utility.Utility.ApplicationStartDate.ToString("yyyy-MM-dd"));
             p.Set(ImagePatternKeys.HFR, 3.25);
+            p.Set(ImagePatternKeys.SQM, 21.83);
+            p.Set(ImagePatternKeys.ReadoutMode, "42 MHz");
+
             return p;
         }
     }
@@ -199,6 +208,8 @@ namespace NINA.Model {
         public static readonly string FocuserTemp = "$$FOCUSERTEMP$$";
         public static readonly string ApplicationStartDate = "$$APPLICATIONSTARTDATE$$";
         public static readonly string HFR = "$$HFR$$";
+        public static readonly string SQM = "$$SQM$$";
+        public static readonly string ReadoutMode = "$$READOUTMODE$$";
     }
 
     public class ImagePattern {

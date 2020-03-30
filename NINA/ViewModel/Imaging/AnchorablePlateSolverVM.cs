@@ -317,7 +317,7 @@ namespace NINA.ViewModel.Imaging {
                 };
                 var result = await solver.Solve(seq, parameter, solveProgress, progress, _solveCancelToken.Token);
                 if (!profileService.ActiveProfile.TelescopeSettings.NoSync && Sync) {
-                    telescopeMediator.Sync(result.Coordinates);
+                    await telescopeMediator.Sync(result.Coordinates);
                 }
             }
 

@@ -24,7 +24,6 @@
 
 #endregion "copyright"
 
-using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.Enum;
 using NINA.Utility.ImageAnalysis;
@@ -172,9 +171,11 @@ namespace NINA.Model.ImageData {
             if (!double.IsNaN(metadata.Camera.Temperature)) {
                 p.Set(ImagePatternKeys.SensorTemp, metadata.Camera.Temperature);
             }
+
             if (metadata.Camera.Gain >= 0) {
                 p.Set(ImagePatternKeys.Gain, metadata.Camera.Gain);
             }
+
             if (metadata.Camera.Offset >= 0) {
                 p.Set(ImagePatternKeys.Offset, metadata.Camera.Offset);
             }
@@ -182,6 +183,15 @@ namespace NINA.Model.ImageData {
             if (!double.IsNaN(this.StarDetectionAnalysis.HFR)) {
                 p.Set(ImagePatternKeys.HFR, this.StarDetectionAnalysis.HFR);
             }
+
+            if (!double.IsNaN(metadata.WeatherData.SkyQuality)) {
+                p.Set(ImagePatternKeys.SQM, metadata.WeatherData.SkyQuality);
+            }
+
+            if (!string.IsNullOrEmpty(metadata.Camera.ReadoutModeName)) {
+                p.Set(ImagePatternKeys.ReadoutMode, metadata.Camera.ReadoutModeName);
+            }
+
             return p;
         }
 

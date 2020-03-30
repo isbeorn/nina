@@ -445,10 +445,12 @@ namespace NINA.ViewModel.Equipment.Telescope {
             }
         }
 
-        public bool Sync(Coordinates coordinates) {
+        public async Task<bool> Sync(Coordinates coordinates) {
             var transform = coordinates.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
             if (!profileService.ActiveProfile.TelescopeSettings.NoSync && TelescopeInfo.Connected) {
-                return Telescope.Sync(coordinates);
+                bool result = Telescope.Sync(transform);
+                await Task.Delay(TimeSpan.FromSeconds(Math.Max(2,profileService.ActiveProfile.TelescopeSettings.SettleTime)));
+                return result;
             } else {
                 return false;
             }

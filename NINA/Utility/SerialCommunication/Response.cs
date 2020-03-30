@@ -21,6 +21,8 @@
 
 #endregion "copyright"
 
+using System.Globalization;
+
 namespace NINA.Utility.SerialCommunication {
 
     public abstract class Response {
@@ -48,6 +50,49 @@ namespace NINA.Utility.SerialCommunication {
 
         public override string ToString() {
             return GetType().Name + $" : {_deviceResponse}";
+        }
+
+        protected static bool ParseBoolFromZeroOne(char c, string fieldName, out bool fieldValue) {
+            switch (c) {
+                case '0':
+                    fieldValue = false;
+                    break;
+
+                case '1':
+                    fieldValue = true;
+                    break;
+
+                default:
+                    Logger.Error($"Could not parse {fieldName} from response: {c}.");
+                    fieldValue = false;
+                    return false;
+            }
+
+            return true;
+        }
+
+        protected static bool ParseDouble(string token, string fieldName, out double fieldValue) {
+            if (double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out fieldValue)) return true;
+            Logger.Error($"Could not parse {fieldName} from response: {token}.");
+            return false;
+        }
+
+        protected static bool ParseShort(string token, string fieldName, out short fieldValue) {
+            if (short.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out fieldValue)) return true;
+            Logger.Error($"Could not parse {fieldName} from response: {token}.");
+            return false;
+        }
+
+        protected static bool ParseInteger(string token, string fieldName, out int fieldValue) {
+            if (int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out fieldValue)) return true;
+            Logger.Error($"Could not parse {fieldName} from response: {token}.");
+            return false;
+        }
+
+        protected static bool ParseLong(string token, string fieldName, out long fieldValue) {
+            if (long.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out fieldValue)) return true;
+            Logger.Error($"Could not parse {fieldName} from response: {token}.");
+            return false;
         }
     }
 }

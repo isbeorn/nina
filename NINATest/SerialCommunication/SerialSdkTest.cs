@@ -2,33 +2,20 @@
 using NINA.Utility.SerialCommunication;
 using NUnit.Framework;
 using System;
-using System.IO;
 
 namespace NINATest.SerialCommunication {
 
     internal class TestSdk : SerialSdk {
     }
 
-    internal class TestResponse : Response {
-
-        public bool CheckDeviceResponse(string response) {
-            return DeviceResponse.Equals(response);
-        }
-    }
-
     internal class TestCacheableResponse : Response {
         public override int Ttl => 50;
-
-        public bool CheckDeviceResponse(string response) {
-            return DeviceResponse.Equals(response);
-        }
     }
 
     [TestFixture]
     public class SerialSdkTest {
         private Mock<ICommand> _mockCommand;
         private Mock<ISerialPort> _mockSerialPort;
-        private Mock<Response> _mockResponse;
         private TestSdk _sut;
         private const string COMMAND = "something";
         private const string DEVICE_RESPONSE = "something else";
@@ -38,7 +25,6 @@ namespace NINATest.SerialCommunication {
         public void Init() {
             _mockCommand = new Mock<ICommand>();
             _mockCommand.Setup(m => m.CommandString).Returns(COMMAND);
-            _mockResponse = new Mock<Response>();
             _mockSerialPort = new Mock<ISerialPort>();
             _sut = new TestSdk { SerialPort = _mockSerialPort.Object };
         }

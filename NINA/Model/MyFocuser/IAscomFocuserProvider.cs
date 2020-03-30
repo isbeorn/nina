@@ -21,34 +21,12 @@
 
 #endregion "copyright"
 
-using NINA.Model.MyTelescope;
-using NINA.Utility.Astrometry;
-using System.Threading.Tasks;
+using ASCOM.DeviceInterface;
 
-namespace NINA.ViewModel.Equipment.Telescope {
+namespace NINA.Model.MyFocuser {
 
-    public interface ITelescopeVM : IDeviceVM<TelescopeInfo> {
+    public interface IAscomFocuserProvider {
 
-        Task<bool> SlewToCoordinatesAsync(Coordinates coords);
-
-        Task<bool> SlewToCoordinatesAsync(TopocentricCoordinates coordinates);
-
-        void MoveAxis(TelescopeAxes axis, double rate);
-
-        void PulseGuide(GuideDirections direction, int duration);
-
-        Task<bool> Sync(Coordinates coordinates);
-
-        Task<bool> MeridianFlip(Coordinates targetCoordinates);
-
-        bool SetTracking(bool tracking);
-
-        bool SendToSnapPort(bool start);
-
-        Coordinates GetCurrentPosition();
-
-        Task<bool> ParkTelescope();
-
-        void UnparkTelescope();
+        IFocuserV3 GetFocuser(string focuserId);
     }
 }

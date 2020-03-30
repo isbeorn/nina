@@ -3421,4 +3421,10 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
   <data name="LblRunningEndOfSequence" xml:space="preserve">
     <value>Running end of sequence options</value>
   </data>
+  <data name="LblSQMPatternDescription" xml:space="preserve">
+    <value>Sky Quality Meter reading</value>
+  </data>
+  <data name="LblReadoutModePatternDescription" xml:space="preserve">
+    <value>Camera Readout Mode</value>
+  </data>
 </root>

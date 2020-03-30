@@ -22,7 +22,7 @@
 #endregion "copyright"
 
 using ASCOM;
-using ASCOM.DriverAccess;
+using ASCOM.DeviceInterface;
 using NINA.Utility;
 using NINA.Utility.Notification;
 using System;
@@ -38,7 +38,8 @@ namespace NINA.Model.MyFocuser {
             Name = name;
         }
 
-        private Focuser _focuser;
+        private IFocuserV3 _focuser;
+        public IAscomFocuserProvider FocuserProvider { get; set; } = new AscomFocuserProvider();
 
         public string Category { get; } = "ASCOM";
 
@@ -282,7 +283,7 @@ namespace NINA.Model.MyFocuser {
                 try {
                     bool dispose = false;
                     if (_focuser == null) {
-                        _focuser = new Focuser(Id);
+                        _focuser = FocuserProvider.GetFocuser(Id);
                     }
                     _focuser.SetupDialog();
                     if (dispose) {
@@ -299,7 +300,7 @@ namespace NINA.Model.MyFocuser {
         public async Task<bool> Connect(CancellationToken token) {
             return await Task<bool>.Run(() => {
                 try {
-                    _focuser = new Focuser(Id);
+                    _focuser = FocuserProvider.GetFocuser(Id);
                     Connected = true;
                     if (Connected) {
                         Initialize();

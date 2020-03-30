@@ -90,6 +90,8 @@
 - Added profile name to the title bar
 - Camera snapshot control in imaging tab will now save the values for the next session
 - Added `READOUTM` keyword to FITS and XISF files
+- Added `$$SQM$$` file name pattern to allow the current reading from an attached sky quality meter to be used in file or folder names
+- Added `$$READOUTMODE$$` file name pattern to enable the a camera's readout mode to be used in file or folder names
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false
@@ -111,6 +113,7 @@
 - Gain and Offset are not saved with decimal places anymore
 - XPIXSZ and YPIXSZ now account correctly for binning when available
 - Autofocus after HFR change properly resets reference index on sequence start, target change, and autofocus caused by other criteria
+- Sequence file names are now saved with valid file name characters. Invalid characters are replaced automatically with a hyphen (-)
 
 ## Special Thanks
 The N.I.N.A. team would like to sincerely thank:

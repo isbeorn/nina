@@ -7025,6 +7025,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Camera Readout Mode.
+        /// </summary>
+        internal static string LblReadoutModePatternDescription {
+            get {
+                return ResourceManager.GetString("LblReadoutModePatternDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Recenter.
         /// </summary>
         internal static string LblRecenter {
@@ -7985,6 +7994,15 @@ namespace NINA.Locale {
         internal static string LblSouthern {
             get {
                 return ResourceManager.GetString("LblSouthern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sky Quality Meter reading.
+        /// </summary>
+        internal static string LblSQMPatternDescription {
+            get {
+                return ResourceManager.GetString("LblSQMPatternDescription", resourceCulture);
             }
         }
         
