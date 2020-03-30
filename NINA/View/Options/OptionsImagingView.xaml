@@ -50,8 +50,8 @@
                     VerticalAlignment="Center"
                     Text="{ns:Loc LblSaveImageAs}" />
                 <ComboBox
-                    Grid.Column="1"
                     Name="cbFileTypes"
+                    Grid.Column="1"
                     ItemsSource="{Binding DataContext.FileTypes, ElementName=UC}"
                     SelectedItem="{Binding FileType}" />
                 <StackPanel
@@ -72,9 +72,7 @@
                     Grid.Column="0"
                     Grid.ColumnSpan="3">
                     <GroupBox.Header>
-                        <TextBlock
-                            Text="{ns:Loc LblFileFormatOptions}"
-                            FontSize="12" />
+                        <TextBlock FontSize="12" Text="{ns:Loc LblFileFormatOptions}" />
                     </GroupBox.Header>
                     <Grid>
                         <StackPanel>
@@ -122,9 +120,9 @@
                                 <TextBlock Text="{ns:Loc LblNoFileFormatOptions}" />
                             </Grid>
                         </StackPanel>
-                        <StackPanel>
-                            <StackPanel.Style>
-                                <Style TargetType="StackPanel">
+                        <UniformGrid Columns="2" Rows="2">
+                            <UniformGrid.Style>
+                                <Style TargetType="UniformGrid">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Path=SelectedValue, ElementName=cbFileTypes}" Value="XISF">
@@ -132,48 +130,47 @@
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </StackPanel.Style>
-                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock
-                                        MinWidth="200"
+                            </UniformGrid.Style>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock
+                                        MinWidth="100"
                                         MinHeight="20"
                                         VerticalAlignment="Center"
                                         Text="{ns:Loc LblCompression}" />
-                                    <ComboBox
+                                <ComboBox
                                         MinWidth="150"
-                                        Margin="0,0,0,0"
+                                        Margin="5,0,0,0"
                                         ItemsSource="{Binding DataContext.XISFCompressionTypes, ElementName=UC}"
                                         SelectedItem="{Binding XISFCompressionType}" />
-                                </StackPanel>
+                            </StackPanel>
 
-                                <StackPanel Margin="20,0,0,0" Orientation="Horizontal">
-                                    <TextBlock
-                                        MinWidth="200"
+                            <StackPanel Margin="20,0,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                        MinWidth="100"
                                         MinHeight="20"
                                         VerticalAlignment="Center"
                                         Text="{ns:Loc LblByteShuffling}" />
-                                    <CheckBox
+                                <CheckBox
                                         Width="120"
                                         Height="25"
+                                        Margin="5,0,0,0"
                                         HorizontalAlignment="Left"
                                         IsChecked="{Binding XISFByteShuffling}" />
-                                </StackPanel>
                             </StackPanel>
 
                             <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                                 <TextBlock
-                                    MinWidth="200"
+                                    MinWidth="100"
                                     MinHeight="20"
                                     VerticalAlignment="Center"
                                     Text="{ns:Loc LblChecksum}" />
                                 <ComboBox
                                     MinWidth="150"
-                                    Margin="0,0,0,0"
+                                    Margin="5,0,0,0"
                                     ItemsSource="{Binding DataContext.XISFChecksumTypes, ElementName=UC}"
                                     SelectedItem="{Binding XISFChecksumType}" />
                             </StackPanel>
-                        </StackPanel>
+                        </UniformGrid>
                     </Grid>
                 </GroupBox>
 
