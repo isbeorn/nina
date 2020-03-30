@@ -175,13 +175,13 @@ namespace NINA.Model.MyCamera.Simulator {
 
         public double PixelSizeX {
             get {
-                return 3.8;
+                return profileService.ActiveProfile.CameraSettings.PixelSize;
             }
         }
 
         public double PixelSizeY {
             get {
-                return 3.8;
+                return profileService.ActiveProfile.CameraSettings.PixelSize;
             }
         }
 
