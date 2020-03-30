@@ -60,10 +60,8 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        private object lockObj = new object();
-        private ConcurrentQueue<string> fileQueue = new ConcurrentQueue<string>();
-        private FileSystemWatcher fileWatcher;
         public ICommand OpenFolderDiagCommand { get; }
+        public FileCameraFolderWatcher folderWatcher;
 
         public string FolderPath {
             get => profileService.ActiveProfile.CameraSettings.FileCameraFolder;
@@ -456,45 +454,13 @@ namespace NINA.Model.MyCamera {
         }
 
         public void AbortExposure() {
+            folderWatcher.Suspend();
         }
 
         public Task<bool> Connect(CancellationToken token) {
-            if (string.IsNullOrWhiteSpace(FolderPath)) {
-                throw new Exception("No Folder for camera to watch was specified!");
-            }
-
-            fileQueue = new ConcurrentQueue<string>();
-
-            if (fileWatcher != null) fileWatcher.Dispose();
-
-            fileWatcher = new FileSystemWatcher() {
-                Path = FolderPath,
-                NotifyFilter = NotifyFilters.FileName,
-                Filter = "*.*",
-                EnableRaisingEvents = false,
-                IncludeSubdirectories = false
-            };
-
-            fileWatcher.Created += FileWatcher_Created;
-            fileWatcher.Renamed += FileWatcher_Renamed;
-
-            fileWatcher.EnableRaisingEvents = true;
-
+            folderWatcher = new FileCameraFolderWatcher(FolderPath, SelectedFileExtension);
             Connected = true;
             return Task.FromResult(true);
-        }
-
-        private void FileWatcher_Renamed(object sender, RenamedEventArgs e) {
-            Logger.Trace($"File renaming detected. New file path {e.FullPath} - old file path {e.OldFullPath}");
-
-            lock (lockObj) {
-                var list = fileQueue.ToList();
-                if (list.Contains(e.OldFullPath)) {
-                    list.Remove(e.OldFullPath);
-                }
-                fileQueue = new ConcurrentQueue<string>(list);
-                AddQueueItem(e.FullPath);
-            }
         }
 
         public FileExtension selectedFileExtension;
@@ -526,63 +492,34 @@ namespace NINA.Model.MyCamera {
             new FileExtension ("FITS", @"\.fit|\.fits"),
         };
 
-        public class FileExtension {
-
-            public FileExtension(string name, string pattern) {
-                Name = name;
-                Pattern = pattern;
-            }
-
-            public string Name { get; }
-            public string Pattern { get; }
-        }
-
-        private void AddQueueItem(string path) {
-            lock (lockObj) {
-                var fileExt = Path.GetExtension(path).ToLower();
-                if (Regex.IsMatch(fileExt, SelectedFileExtension.Pattern)) {
-                    Logger.Trace($"Added file to Queue at {path}");
-                    fileQueue.Enqueue(path);
-                } else {
-                    Logger.Trace($"Invalid file for Queue at {path}");
-                }
-            }
-        }
-
-        private void FileWatcher_Created(object sender, FileSystemEventArgs e) {
-            Logger.Trace($"New file detected at {e.FullPath}");
-            AddQueueItem(e.FullPath);
-        }
-
         public void Disconnect() {
-            fileWatcher.EnableRaisingEvents = false;
-
+            folderWatcher?.Dispose();
             Connected = false;
         }
 
         public async Task<IExposureData> DownloadExposure(CancellationToken token) {
             try {
-                while (fileQueue.Count == 0) {
+                string path;
+                while ((path = folderWatcher.GetNextItem()) == null) {
                     CameraState = "Waiting for file";
                     await Utility.Utility.Wait(TimeSpan.FromSeconds(1), token);
                 }
-                if (fileQueue.TryDequeue(out var path)) {
-                    CameraState = "Loading from file";
-                    var tries = 0;
-                    while (true) {
-                        tries++;
-                        try {
-                            var image = await ImageData.ImageData.FromFile(path, BitDepth, IsBayered, profileService.ActiveProfile.CameraSettings.RawConverter, token);
-                            return new CachedExposureData(image);
-                        } catch (Exception ex) {
-                            if (tries > 3) {
-                                throw ex;
-                            }
-                            await Utility.Utility.Wait(TimeSpan.FromSeconds(1), token);
+
+                folderWatcher.Suspend();
+
+                CameraState = "Loading from file";
+                var tries = 0;
+                while (true) {
+                    tries++;
+                    try {
+                        var image = await ImageData.ImageData.FromFile(path, BitDepth, IsBayered, profileService.ActiveProfile.CameraSettings.RawConverter, token);
+                        return new CachedExposureData(image);
+                    } catch (Exception ex) {
+                        if (tries > 3) {
+                            throw ex;
                         }
+                        await Utility.Utility.Wait(TimeSpan.FromSeconds(1), token);
                     }
-                } else {
-                    throw new Exception($"Unable to load file {path}");
                 }
             } finally {
                 CameraState = "Idle";
@@ -610,7 +547,13 @@ namespace NINA.Model.MyCamera {
         }
 
         public void SetupDialog() {
-            WindowService.ShowDialog(this, "File Camera Setup", System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.SingleBorderWindow);
+            var task = WindowService.ShowDialog(this, "File Camera Setup", System.Windows.ResizeMode.NoResize, System.Windows.WindowStyle.SingleBorderWindow);
+            task.Task.ContinueWith(t => {
+                if (Connected) {
+                    folderWatcher?.Dispose();
+                    folderWatcher = new FileCameraFolderWatcher(FolderPath, SelectedFileExtension);
+                }
+            });
         }
 
         public bool IsBayered {
@@ -630,6 +573,7 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StartExposure(CaptureSequence captureSequence) {
+            folderWatcher.Start();
             if (UseBulbMode) {
                 var exposureTime = captureSequence.ExposureTime;
                 if (profileService.ActiveProfile.CameraSettings.BulbMode == CameraBulbModeEnum.TELESCOPESNAPPORT) {
@@ -651,6 +595,7 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StopExposure() {
+            folderWatcher.Suspend();
         }
 
         private void BulbCapture(double exposureTime, Action capture, Action stopCapture) {
@@ -736,6 +681,99 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StopLiveView() {
+        }
+    }
+
+    public class FileCameraFolderWatcher : IDisposable {
+        private ConcurrentQueue<string> fileQueue = new ConcurrentQueue<string>();
+        private FileSystemWatcher fileWatcher;
+        private string watchedFolder;
+        private FileExtension fileExtension;
+        private object lockObj = new object();
+
+        public string GetNextItem() {
+            if (fileQueue.Count == 0) {
+                return null;
+            }
+            fileQueue.TryDequeue(out var path);
+            return path;
+        }
+
+        public FileCameraFolderWatcher(string folder, FileExtension fileExtension) {
+            if (string.IsNullOrWhiteSpace(folder)) {
+                throw new Exception("No Folder for camera to watch was specified!");
+            }
+            this.fileExtension = fileExtension;
+            watchedFolder = folder;
+            fileQueue = new ConcurrentQueue<string>();
+            fileWatcher = new FileSystemWatcher() {
+                Path = watchedFolder,
+                NotifyFilter = NotifyFilters.FileName,
+                Filter = "*.*",
+                EnableRaisingEvents = false,
+                IncludeSubdirectories = false
+            };
+
+            fileWatcher.Created += FileWatcher_Created;
+            fileWatcher.Renamed += FileWatcher_Renamed;
+        }
+
+        public void Start() {
+            fileQueue = new ConcurrentQueue<string>();
+            fileWatcher.EnableRaisingEvents = true;
+        }
+
+        public void Suspend() {
+            fileWatcher.EnableRaisingEvents = false;
+        }
+
+        private void AddQueueItem(string path) {
+            lock (lockObj) {
+                var fileExt = Path.GetExtension(path).ToLower();
+                if (Regex.IsMatch(fileExt, fileExtension.Pattern)) {
+                    Logger.Trace($"Added file to Queue at {path}");
+                    fileQueue.Enqueue(path);
+                } else {
+                    Logger.Trace($"Invalid file for Queue at {path}");
+                }
+            }
+        }
+
+        private void FileWatcher_Created(object sender, FileSystemEventArgs e) {
+            Logger.Trace($"New file detected at {e.FullPath}");
+            AddQueueItem(e.FullPath);
+        }
+
+        private void FileWatcher_Renamed(object sender, RenamedEventArgs e) {
+            Logger.Trace($"File renaming detected. New file path {e.FullPath} - old file path {e.OldFullPath}");
+
+            lock (lockObj) {
+                var list = fileQueue.ToList();
+                if (list.Contains(e.OldFullPath)) {
+                    list.Remove(e.OldFullPath);
+                }
+                fileQueue = new ConcurrentQueue<string>(list);
+                AddQueueItem(e.FullPath);
+            }
+        }
+
+        public void Dispose() {
+            if (fileWatcher != null) fileWatcher.Dispose();
+        }
+    }
+
+    public class FileExtension {
+
+        public FileExtension(string name, string pattern) {
+            Name = name;
+            Pattern = pattern;
+        }
+
+        public string Name { get; }
+        public string Pattern { get; }
+
+        public override string ToString() {
+            return $"{Name} - {Pattern}";
         }
     }
 }
