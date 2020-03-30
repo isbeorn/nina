@@ -2189,7 +2189,7 @@ Berechneter HFR: {2}
     <value>Vor Meridian pausieren (Minuten)</value>
   </data>
   <data name="LblPegasusFlatMaster" xml:space="preserve">
-    <value>FlatMaster</value>
+    <value>Flat Master</value>
   </data>
   <data name="LblPercentShort" xml:space="preserve">
     <value>%</value>
@@ -3400,24 +3400,36 @@ Lichtverschmutzten Gebieten. Berechnungszeit ist jedoch erhöht.</value>
     <value>Eingangsspannung (V)</value>
   </data>
   <data name="LblSetMaximumSpeed" xml:space="preserve">
-    <value>Set Maximum Speed</value>
+    <value>Maximale Geschwindigkeit festlegen</value>
   </data>
   <data name="LblBackLashSteps" xml:space="preserve">
-    <value>Backlash Steps</value>
+    <value>Backlash Schritte</value>
   </data>
   <data name="LblReverse" xml:space="preserve">
-    <value>Reverse</value>
+    <value>Rückwärts</value>
   </data>
   <data name="LblSetCurrentPosition" xml:space="preserve">
-    <value>Set Current Position</value>
+    <value>Aktuelle Position festlegen</value>
   </data>
   <data name="LblStepperMotorDirection" xml:space="preserve">
-    <value>Stepper Motor Direction</value>
+    <value>Schrittmotorrichtung</value>
   </data>
   <data name="LblCurrent" xml:space="preserve">
     <value>Aktuell</value>
   </data>
   <data name="LblRunningEndOfSequence" xml:space="preserve">
-    <value>Running end of sequence options</value>
+    <value>Sequenzendoptionen werden ausgeführt</value>
+  </data>
+  <data name="LblSQMPatternDescription" xml:space="preserve">
+    <value>Himmelsqualitätsmesswert</value>
+  </data>
+  <data name="LblReadoutModePatternDescription" xml:space="preserve">
+    <value>Kamera Readout Modus</value>
+  </data>
+  <data name="LblSerialPortCannotOpen" xml:space="preserve">
+    <value>Kann seriellen Port {0} nicht öffnen: {1}</value>
+  </data>
+  <data name="LblPointingTolerance" xml:space="preserve">
+    <value>Pointing Toleranz</value>
   </data>
 </root>
