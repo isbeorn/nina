@@ -148,7 +148,7 @@
                             MinWidth="140"
                             MinHeight="20"
                             VerticalAlignment="Center"
-                            Text="{ns:Loc LblErrorLT}" />
+                            Text="{ns:Loc LblPointingTolerance}" />
                         <TextBox
                             Width="120"
                             Height="25"

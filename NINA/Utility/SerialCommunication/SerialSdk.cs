@@ -51,8 +51,11 @@ namespace NINA.Utility.SerialCommunication {
                 SerialPort = SerialPortProvider.GetSerialPort(portName, baudRate, parity, dataBits, stopBits, handShake, dtrEnable, newLine, readTimeout, writeTimeout);
                 SerialPort?.Open();
             } catch (Exception ex) {
-                if (clients.Contains(client)) { clients.Remove(client); }
                 Logger.Error(ex);
+                Notification.Notification.ShowError(string.Format(Locale.Loc.Instance["LblSerialPortCannotOpen"], SerialPort.PortName, ex.GetType().Name));
+
+                if (clients.Contains(client)) { clients.Remove(client); }
+                SerialPort = null;
             } finally {
                 ssSerial.Release();
             }

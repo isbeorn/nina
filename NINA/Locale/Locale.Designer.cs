@@ -6746,6 +6746,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pointing Tolerance.
+        /// </summary>
+        internal static string LblPointingTolerance {
+            get {
+                return ResourceManager.GetString("LblPointingTolerance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Polar Alignment.
         /// </summary>
         internal static string LblPolarAlignment {
@@ -7616,6 +7625,15 @@ namespace NINA.Locale {
         internal static string LblSerialPort {
             get {
                 return ResourceManager.GetString("LblSerialPort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot open serial port {0}: {1}.
+        /// </summary>
+        internal static string LblSerialPortCannotOpen {
+            get {
+                return ResourceManager.GetString("LblSerialPortCannotOpen", resourceCulture);
             }
         }
         

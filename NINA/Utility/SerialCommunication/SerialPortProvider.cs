@@ -34,7 +34,7 @@ namespace NINA.Utility.SerialCommunication {
     public class SerialPortProvider : ISerialPortProvider {
         /**
          * Below are the device IDs that are currently known
-         * Arduino Uno:                        DeviceID = \\DESKTOP - UV2EJQU\root\cimv2: Win32_PnPEntity.DeviceID = "USB\\VID_2341&PID_0043\\55834323633351D0E041" On USB Serial Device(COM11)
+         * Arduino Uno R3:                     DeviceID = \\DESKTOP - UV2EJQU\root\cimv2: Win32_PnPEntity.DeviceID = "USB\\VID_2341&PID_0043\\55834323633351D0E041" On USB Serial Device(COM11)
          * Arduino Leonardo:                   DeviceID = \\DESKTOP - UV2EJQU\root\cimv2: Win32_PnPEntity.DeviceID = "USB\\VID_2341&PID_8036&MI_00\\7&4A255E4&0&0000" On USB Serial Device(COM8)
          * Optec USB/Serial cable:             DeviceID = \\DESKTOP - UV2EJQU\root\cimv2: Win32_PnPEntity.DeviceID = "FTDIBUS\\VID_0403+PID_6001+OP2CGIIAA\\0000" On USB Serial Port(COM4)
          * Flat Fielder:                       DeviceID = \\DESKTOP - UV2EJQU\root\cimv2: Win32_PnPEntity.DeviceID = "FTDIBUS\\VID_0403+PID_6001+A82I5L7VA\\0000" On USB Serial Port(COM3)

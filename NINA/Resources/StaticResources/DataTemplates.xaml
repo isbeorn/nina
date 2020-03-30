@@ -93,11 +93,16 @@
     <DataTemplate DataType="{x:Type switch:UltimatePowerBoxV2}">
         <equip:PegasusAstroUltimatePowerboxV2SetupView />
     </DataTemplate>
+
     <DataTemplate DataType="{x:Type flatdevice:PegasusAstroFlatMaster}">
         <equip:PegasusAstroFlatMasterSetupView />
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type focuser:UltimatePowerboxV2}">
         <equip:PegasusAstroUltimatePowerBoxV2StepperMotorSetupView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type flatdevice:ArteskyFlatBox}">
+        <equip:ArteskyFlatBoxSetupView />
     </DataTemplate>
 </ResourceDictionary>

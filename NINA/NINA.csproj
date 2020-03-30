@@ -452,6 +452,7 @@
     <Compile Include="Model\MyFocuser\UltimatePowerboxV2.cs" />
     <Compile Include="Model\MyFocuser\AscomFocuserProvider.cs" />
     <Compile Include="Model\MyFocuser\IAscomFocuserProvider.cs" />
+    <Compile Include="Model\MyFlatDevice\ArteskyFlatBox.cs" />
     <Compile Include="Model\MyWeatherData\UltimatePowerboxV2.cs" />
     <Compile Include="Model\MyFlatDevice\PegasusAstroFlatMaster.cs" />
     <Compile Include="PlateSolving\CaptureSolverParameter.cs" />
@@ -483,6 +484,10 @@
     <Compile Include="Utility\Exceptions\PlanetariumFailedToConnect.cs" />
     <Compile Include="Utility\Exceptions\PlanetariumFailedToGetCoordinates.cs" />
     <Compile Include="Utility\Exceptions\PlanetariumObjectNotSelectedException.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\Artesky\ArteskyResponses.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\Artesky\ArteskyCommands.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\Artesky\IArteskyFlatBox.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\Artesky\ArteskyDevice.cs" />
     <Compile Include="Utility\SerialCommunication\ISerialSdk.cs" />
     <Compile Include="Utility\SerialCommunication\SerialSdk.cs" />
     <Compile Include="Utility\SerialCommunication\ICommand.cs" />
@@ -632,6 +637,9 @@
     <Compile Include="ViewModel\PlateSolvingStatusVM.cs" />
     <Compile Include="View\Equipment\Camera\FLICameraSetupView.xaml.cs">
       <DependentUpon>FLICameraSetupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Equipment\FlatDevice\ArteskyFlatBoxSetupView.xaml.cs">
+      <DependentUpon>ArteskyFlatBoxSetupView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Equipment\FlatDevice\PegasusAstroFlatMasterSetupView.xaml.cs">
       <DependentUpon>PegasusAstroFlatMasterSetupView.xaml</DependentUpon>
@@ -1357,6 +1365,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\Equipment\FlatDevice\ArteskyFlatBoxSetupView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\Equipment\FlatDevice\PegasusAstroFlatMasterSetupView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -2018,7 +2030,7 @@
       editbin /largeaddressaware "$(TargetPath)"
       )
       )
-    </PostBuildEvent>
+</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -25,9 +25,9 @@
    - control the dew heater ports, including setting the Auto-Dew feature
    - support for using the powerbox sensors as a weather device
    - support for using the stepper motor driver as a focuser
- - **Pegasus Astro Flatmaster Support**
+ - **Pegasus Astro Flatmaster support**
    - connect and control the Pegasus Astro Flatmaster from within the application
-
+ - **Artesky USB Flat Box support**
 
 ## Localization
 - To be able to support many languages N.I.N.A. is now available on Crowdin. This powerful online translation management tool will allow users to easily contribute to the localization.

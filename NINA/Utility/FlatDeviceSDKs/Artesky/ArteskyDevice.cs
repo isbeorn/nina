@@ -27,31 +27,29 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
+namespace NINA.Utility.FlatDeviceSDKs.Artesky {
 
-    public class AlnitakDevice : SerialSdk, IAlnitakDevice {
-        public static readonly IAlnitakDevice Instance = new AlnitakDevice();
+    public class ArteskyUSBFlatBox : SerialSdk, IArteskyFlatBox {
+        public static readonly IArteskyFlatBox Instance = new ArteskyUSBFlatBox();
 
-        protected override string LogName => "AlnitakFlatDevice";
-        private const string ALNITAK_QUERY = @"SELECT * FROM Win32_PnPEntity WHERE DeviceID LIKE 'FTDIBUS\\VID_0403+PID_6001+A8%'";
+        protected override string LogName => "ArteskyFlatBox";
+
+        // Artesky Flat Boxes are implemented using an Arduino Uno R3
+        private const string DEVICE_ID_QUERY = @"SELECT * FROM Win32_PnPEntity WHERE DeviceID LIKE '%VID_2341&PID_0043%'";
 
         public ReadOnlyCollection<string> PortNames {
             get {
                 var result = new List<string> { "AUTO" };
-                result.AddRange(SerialPortProvider.GetPortNames(ALNITAK_QUERY));
+                result.AddRange(SerialPortProvider.GetPortNames(DEVICE_ID_QUERY));
                 return new ReadOnlyCollection<string>(result);
             }
         }
 
         public async Task<bool> InitializeSerialPort(string aPortName, object client) {
             if (string.IsNullOrEmpty(aPortName)) return false;
-            base.InitializeSerialPort(aPortName.Equals("AUTO")
-                ? SerialPortProvider.GetPortNames(ALNITAK_QUERY, addDivider: false, addGenericPorts: false).FirstOrDefault()
-                : aPortName, client);
-            if (SerialPort == null) return false;
-            await Task.Delay(2000); //need to wait 2 seconds after port is open before setting RtsEnable or it won't work
-            SerialPort.RtsEnable = false;
-            return true;
+            return base.InitializeSerialPort(aPortName.Equals("AUTO")
+                ? SerialPortProvider.GetPortNames(DEVICE_ID_QUERY, addDivider: false, addGenericPorts: false).FirstOrDefault()
+                : aPortName, client, newLine: "\r\n", readTimeout: 1500);
         }
     }
 }
