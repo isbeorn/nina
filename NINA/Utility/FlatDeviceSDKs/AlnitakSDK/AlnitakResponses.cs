@@ -22,7 +22,6 @@
 #endregion "copyright"
 
 using NINA.Model.MyFlatDevice;
-using System;
 using NINA.Utility.SerialCommunication;
 
 namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
@@ -46,47 +45,43 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         }
 
         private bool ParseDeviceId(string response) {
-            try {
-                switch (int.Parse(response.Substring(2, 2))) {
-                    case 10:
-                        Name = "Flat-Man_XL";
-                        DeviceSupportsOpenClose = false;
-                        return true;
+            if (!ParseInteger(response.Substring(2, 2), "device id", out var deviceType)) return false;
+            switch (deviceType) {
+                case 10:
+                    Name = "Flat-Man_XL";
+                    DeviceSupportsOpenClose = false;
+                    return true;
 
-                    case 15:
-                        Name = "Flat-Man_L";
-                        DeviceSupportsOpenClose = false;
-                        return true;
+                case 15:
+                    Name = "Flat-Man_L";
+                    DeviceSupportsOpenClose = false;
+                    return true;
 
-                    case 19:
-                        Name = "Flat-Man";
-                        DeviceSupportsOpenClose = false;
-                        return true;
+                case 19:
+                    Name = "Flat-Man";
+                    DeviceSupportsOpenClose = false;
+                    return true;
 
-                    case 98:
-                        Name = "Flip-Mask/Remote Dust Cover";
-                        DeviceSupportsOpenClose = true;
-                        return true;
+                case 98:
+                    Name = "Flip-Mask/Remote Dust Cover";
+                    DeviceSupportsOpenClose = true;
+                    return true;
 
-                    case 99:
-                        Name = "Flip-Flat";
-                        DeviceSupportsOpenClose = true;
-                        return true;
+                case 99:
+                    Name = "Flip-Flat";
+                    DeviceSupportsOpenClose = true;
+                    return true;
 
-                    default:
-                        Name = "Unknown device";
-                        DeviceSupportsOpenClose = false;
-                        return false;
-                }
-            } catch (Exception ex) {
-                Logger.Error(ex);
-                return false;
+                default:
+                    Name = "Unknown device";
+                    DeviceSupportsOpenClose = false;
+                    return false;
             }
         }
 
         protected bool EndsInOOO(string response) {
             var result = response.Substring(4, 3).Equals("OOO");
-            if (!result) Logger.Debug($"Response should have ended in OOO. Was {response.Substring(4, 3)}");
+            if (!result) Logger.Debug($"Response should have ended in OOO. Was {response}");
             return result;
         }
     }
@@ -150,19 +145,13 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         }
 
         protected bool ParseBrightness(string response) {
-            try {
-                var value = int.Parse(response.Substring(4, 3));
-                if (value < 0 || value > 255) {
-                    Logger.Debug($"Brightness value should have been between 0 and 255. Was {value}");
-                    return false;
-                }
-
-                Brightness = value;
-            } catch (Exception ex) {
-                Logger.Error(ex);
+            if (!ParseInteger(response.Substring(4, 3), "brightness", out var brightness)) return false;
+            if (brightness < 0 || brightness > 255) {
+                Logger.Debug($"Brightness value should have been between 0 and 255. Was {brightness}");
                 return false;
             }
 
+            Brightness = brightness;
             return true;
         }
     }
@@ -188,8 +177,13 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
     }
 
     public class StateResponse : AlnitakResponse {
-        public bool MotorRunning { get; private set; }
-        public bool LightOn { get; private set; }
+        private bool _motorRunning;
+        private bool _lightOn;
+
+        public bool MotorRunning => _motorRunning;
+
+        public bool LightOn => _lightOn;
+
         public CoverState CoverState { get; private set; }
 
         protected override bool ParseResponse(string response) {
@@ -200,33 +194,8 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         }
 
         private bool ParseState(string response) {
-            switch (response[4]) {
-                case '0':
-                    MotorRunning = false;
-                    break;
-
-                case '1':
-                    MotorRunning = true;
-                    break;
-
-                default:
-                    Logger.Debug($"Fifth letter of response should have been 0 or 1. Actual value:{response}");
-                    return false;
-            }
-
-            switch (response[5]) {
-                case '0':
-                    LightOn = false;
-                    break;
-
-                case '1':
-                    LightOn = true;
-                    break;
-
-                default:
-                    Logger.Debug($"Sixth letter of response should have been 0 or 1. Actual value:{response}");
-                    return false;
-            }
+            if (!ParseBoolFromZeroOne(response[4], "fifth letter of response", out _motorRunning)) return false;
+            if (!ParseBoolFromZeroOne(response[5], "sixth letter of response", out _lightOn)) return false;
 
             switch (response[6]) {
                 case '0':
@@ -255,23 +224,13 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
     }
 
     public class FirmwareVersionResponse : AlnitakResponse {
-        public int FirmwareVersion { get; private set; }
+        private int _firmwareVersion;
+
+        public int FirmwareVersion => _firmwareVersion;
 
         protected override bool ParseResponse(string response) {
             IsValid &= base.ParseResponse(response);
-            if (IsValid && response[1] == 'V' && ParseFirmwareVersion(response)) return true;
-            Logger.Debug($"Second letter of response should have been a V. Actual value:{response}");
-            return false;
-        }
-
-        private bool ParseFirmwareVersion(string response) {
-            try {
-                FirmwareVersion = int.Parse(response.Substring(4, 3));
-                return true;
-            } catch (Exception ex) {
-                Logger.Error(ex);
-                return false;
-            }
+            return IsValid && response[1] == 'V' && ParseInteger(response.Substring(4, 3), "firmware version", out _firmwareVersion);
         }
     }
 }

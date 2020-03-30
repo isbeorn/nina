@@ -21,7 +21,6 @@
 
 #endregion "copyright"
 
-using System;
 using NINA.Utility.SerialCommunication;
 
 namespace NINA.Utility.FlatDeviceSDKs.PegasusAstroSDK {
@@ -38,18 +37,13 @@ namespace NINA.Utility.FlatDeviceSDKs.PegasusAstroSDK {
     }
 
     public class FirmwareVersionResponse : Response {
-        public double FirmwareVersion { get; set; }
+        private double _firmwareVersion;
+        public double FirmwareVersion => _firmwareVersion;
 
         protected override bool ParseResponse(string response) {
-            try {
-                IsValid &= base.ParseResponse(response);
-                if (!IsValid || !response.StartsWith("V:")) return false;
-                FirmwareVersion = double.Parse(response.Substring(2));
-                return true;
-            } catch (Exception ex) {
-                Logger.Error(ex);
-                return false;
-            }
+            IsValid &= base.ParseResponse(response);
+            if (!IsValid || !response.StartsWith("V:")) return false;
+            return ParseDouble(response.Substring(2), "firmware version", out _firmwareVersion);
         }
     }
 

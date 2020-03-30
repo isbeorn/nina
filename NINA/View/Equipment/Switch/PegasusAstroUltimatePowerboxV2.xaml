@@ -365,23 +365,26 @@
                             </Grid>
                             <Grid Margin="0,5,0,0">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="2*" />
                                 </Grid.ColumnDefinitions>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Vertical">
                                     <TextBlock
                                         VerticalAlignment="Center"
                                         FontStyle="Normal"
-                                        Text="{ns:Loc LblUPBV2AutoDewControl}" />
-                                    <CheckBox
-                                        MinWidth="60"
-                                        Margin="10,5,0,0"
-                                        IsChecked="{Binding AutoDewOnTarget, Mode=TwoWay}" />
+                                        Text="{ns:Loc LblUPBV2AutoDewControl}"
+                                        TextWrapping="Wrap" />
                                 </StackPanel>
                                 <StackPanel
                                     Grid.Column="1"
                                     Margin="0,5,0,0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
                                     Orientation="Horizontal">
+                                    <CheckBox
+                                        MinWidth="60"
+                                        Margin="10,0,0,0"
+                                        IsChecked="{Binding AutoDewOnTarget, Mode=TwoWay}" />
                                     <ninactrl:IntStepperControl
                                         MinWidth="100"
                                         Margin="5,0,0,0"
@@ -442,12 +445,12 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <StackPanel
                     Grid.Row="0"
@@ -456,7 +459,7 @@
                     <TextBlock Text="{ns:Loc LblUPBV2InputVoltage}" />
                     <TextBlock Text=": " />
                     <TextBlock Text="{Binding DataProvider.Voltage}" />
-                    <TextBlock Text="V" />
+                    <TextBlock Margin="0,0,10,0" Text="V" />
                 </StackPanel>
                 <StackPanel
                     Grid.Row="0"
@@ -465,7 +468,7 @@
                     <TextBlock Text="{ns:Loc LblUPBV2InputCurrent}" />
                     <TextBlock Text=": " />
                     <TextBlock Text="{Binding DataProvider.Current}" />
-                    <TextBlock Text="A" />
+                    <TextBlock Margin="0,0,10,0" Text="A" />
                 </StackPanel>
                 <StackPanel
                     Grid.Row="0"
@@ -474,7 +477,7 @@
                     <TextBlock Text="{ns:Loc LblUPBV2InputPower}" />
                     <TextBlock Text=": " />
                     <TextBlock Text="{Binding DataProvider.Power}" />
-                    <TextBlock Text="W" />
+                    <TextBlock Margin="0,0,10,0" Text="W" />
                 </StackPanel>
                 <StackPanel
                     Grid.Row="0"
@@ -483,7 +486,7 @@
                     <TextBlock Text="{ns:Loc LblUPBV2Temperature}" />
                     <TextBlock Text=": " />
                     <TextBlock Text="{Binding DataProvider.Temperature}" />
-                    <TextBlock Text="C" />
+                    <TextBlock Margin="0,0,10,0" Text="C" />
                 </StackPanel>
                 <StackPanel
                     Grid.Row="0"
@@ -492,7 +495,7 @@
                     <TextBlock Text="{ns:Loc LblUPBV2RelativeHumidity}" />
                     <TextBlock Text=": " />
                     <TextBlock Text="{Binding DataProvider.Humidity}" />
-                    <TextBlock Text="%" />
+                    <TextBlock Margin="0,0,10,0" Text="%" />
                 </StackPanel>
                 <StackPanel
                     Grid.Row="0"
@@ -510,7 +513,7 @@
                     <TextBlock Text="{ns:Loc LblUPBV2AverageCurrent}" />
                     <TextBlock Text=": " />
                     <TextBlock Text="{Binding DataProvider.AveragePower}" />
-                    <TextBlock Text="A" />
+                    <TextBlock Margin="0,0,10,0" Text="A" />
                 </StackPanel>
                 <StackPanel
                     Grid.Row="1"
@@ -519,7 +522,7 @@
                     <TextBlock Text="{ns:Loc LblUPBV2AmpereHours}" />
                     <TextBlock Text=": " />
                     <TextBlock Text="{Binding DataProvider.AmpereHours}" />
-                    <TextBlock Text="Ah" />
+                    <TextBlock Margin="0,0,10,0" Text="Ah" />
                 </StackPanel>
                 <StackPanel
                     Grid.Row="1"
@@ -528,7 +531,7 @@
                     <TextBlock Text="{ns:Loc LblUPBV2WattHours}" />
                     <TextBlock Text=": " />
                     <TextBlock Text="{Binding DataProvider.WattHours}" />
-                    <TextBlock Text="Wh" />
+                    <TextBlock Margin="0,0,10,0" Text="Wh" />
                 </StackPanel>
                 <StackPanel
                     Grid.Row="1"

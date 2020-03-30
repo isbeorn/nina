@@ -217,6 +217,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RMSTest.cs" />
     <Compile Include="SequenceVMTest.cs" />
+    <Compile Include="SerialCommunication\ResponseTests.cs" />
     <Compile Include="SerialCommunication\SerialSdkTest.cs" />
     <Compile Include="SerialCommunication\ResponseCacheTest.cs" />
     <Compile Include="Switch\PegasusAstro\BinarySwitchTest.cs" />
