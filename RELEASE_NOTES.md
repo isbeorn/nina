@@ -90,6 +90,8 @@
 - Added profile name to the title bar
 - Camera snapshot control in imaging tab will now save the values for the next session
 - Added `READOUTM` keyword to FITS and XISF files
+- Added `$$SQM$$` file name pattern to allow the current reading from an attached sky quality meter to be used in file or folder names
+- Added `$$READOUTMODE$$` file name pattern to enable the a camera's readout mode to be used in file or folder names
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false
