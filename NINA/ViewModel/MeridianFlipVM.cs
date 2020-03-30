@@ -259,13 +259,22 @@ namespace NINA.ViewModel {
             return true;
         }
 
-        public static bool ShouldFlip(IProfileService profileService, double exposureTime, TelescopeInfo telescopeInfo) {
+        public static TimeSpan GetRemainingTime(IProfileService profileService, TelescopeInfo telescopeInfo) {
             if (telescopeInfo.Connected && !double.IsNaN(telescopeInfo.TimeToMeridianFlip)) {
                 var tolerance = TimeSpan.FromMinutes(1);
                 var remainingExposureTime = TimeSpan.FromHours(telescopeInfo.TimeToMeridianFlip) - tolerance;
                 if (profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian != 0) {
                     remainingExposureTime = remainingExposureTime - TimeSpan.FromMinutes(profileService.ActiveProfile.MeridianFlipSettings.MinutesAfterMeridian) - TimeSpan.FromMinutes(profileService.ActiveProfile.MeridianFlipSettings.PauseTimeBeforeMeridian);
                 }
+                return remainingExposureTime;
+            } else {
+                return TimeSpan.Zero;
+            }
+        }
+
+        public static bool ShouldFlip(IProfileService profileService, double exposureTime, TelescopeInfo telescopeInfo) {
+            if (telescopeInfo.Connected && !double.IsNaN(telescopeInfo.TimeToMeridianFlip)) {
+                var remainingExposureTime = GetRemainingTime(profileService, telescopeInfo);
 
                 if (profileService.ActiveProfile.MeridianFlipSettings.Enabled && !profileService.ActiveProfile.MeridianFlipSettings.UseSideOfPier) {
                     if (telescopeInfo.Connected == true) {

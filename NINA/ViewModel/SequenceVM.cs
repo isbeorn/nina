@@ -1122,6 +1122,18 @@ namespace NINA.ViewModel {
         }
 
         private bool ShouldAutoFocus(CaptureSequenceList csl, CaptureSequence seq, int exposureCount, short previousFilterPosition, DateTime lastAutoFocusTime, double lastAutoFocusTemperature) {
+            TimeSpan estimatedAFTime;
+            if(seq.FilterType != null && seq.FilterType.AutoFocusExposureTime > 0) {
+                estimatedAFTime = TimeSpan.FromSeconds((profileService.ActiveProfile.FocuserSettings.FocuserSettleTime + seq.FilterType.AutoFocusExposureTime) * (profileService.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps + 1) * 4);
+            } else {
+                estimatedAFTime = TimeSpan.FromSeconds((profileService.ActiveProfile.FocuserSettings.FocuserSettleTime + profileService.ActiveProfile.FocuserSettings.AutoFocusExposureTime) * (profileService.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps + 1) * 4);
+            }
+
+            if (profileService.ActiveProfile.MeridianFlipSettings.Enabled && MeridianFlipVM.GetRemainingTime(profileService, telescopeInfo) < estimatedAFTime + TimeSpan.FromSeconds(seq.ExposureTime)) {
+                //Do not run autofocus if there is not enough time to both run and take the next exposure (after which flip will be checked again) before the Meridian Flip
+                return false;
+            }
+            
             if (seq.FilterType != null && seq.FilterType.Position != previousFilterPosition
                     && seq.FilterType.Position >= 0
                     && csl.AutoFocusOnFilterChange) {
