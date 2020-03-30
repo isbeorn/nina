@@ -111,6 +111,7 @@
 - Gain and Offset are not saved with decimal places anymore
 - XPIXSZ and YPIXSZ now account correctly for binning when available
 - Autofocus after HFR change properly resets reference index on sequence start, target change, and autofocus caused by other criteria
+- Sequence file names are now saved with valid file name characters. Invalid characters are replaced automatically with a hyphen (-)
 
 ## Special Thanks
 The N.I.N.A. team would like to sincerely thank:

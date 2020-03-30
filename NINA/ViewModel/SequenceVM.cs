@@ -51,6 +51,7 @@ using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -345,10 +346,12 @@ namespace NINA.ViewModel {
             Microsoft.Win32.SaveFileDialog dialog = new Microsoft.Win32.SaveFileDialog();
             dialog.InitialDirectory = profileService.ActiveProfile.SequenceSettings.DefaultSequenceFolder;
             dialog.Title = Locale.Loc.Instance["LblSaveAsSequence"];
-            dialog.FileName = Sequence.TargetName;
             dialog.DefaultExt = ".xml";
             dialog.Filter = "XML documents|*.xml";
             dialog.OverwritePrompt = true;
+
+            Regex r = new Regex($"[{new string(Path.GetInvalidFileNameChars())}]");
+            dialog.FileName = r.Replace(Sequence.TargetName, "-");
 
             if (dialog.ShowDialog().Value) {
                 Sequence.SequenceFileName = dialog.FileName;
