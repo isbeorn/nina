@@ -447,7 +447,9 @@ namespace NINA.ViewModel {
                 seq.EstimatedDuration = seq.EstimatedEndTime - seq.EstimatedStartTime;
             }
 
-            ETA = DateTime.Now.AddSeconds(time.TotalSeconds);
+            OverallStartTime = DateTime.Now;
+            OverallEndTime = DateTime.Now.AddSeconds(time.TotalSeconds);
+            OverallDuration = OverallEndTime - OverallStartTime;
         }
 
         private List<TimeSpan> _actualDownloadTimes = new List<TimeSpan>();
@@ -463,14 +465,45 @@ namespace NINA.ViewModel {
             }
         }
 
+        private DateTime overallStartTime;
+
+        public DateTime OverallStartTime {
+            get {
+                return overallStartTime;
+            }
+            private set {
+                overallStartTime = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(OverallEndTime));
+                RaisePropertyChanged(nameof(SequenceEstimatedStartTime));
+                RaisePropertyChanged(nameof(SequenceEstimatedEndTime));
+                RaisePropertyChanged(nameof(SequenceEstimatedDuration));
+            }
+        }
+
         private DateTime _eta;
 
-        public DateTime ETA {
+        public DateTime OverallEndTime {
             get {
                 return _eta;
             }
             private set {
                 _eta = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(SequenceEstimatedStartTime));
+                RaisePropertyChanged(nameof(SequenceEstimatedEndTime));
+                RaisePropertyChanged(nameof(SequenceEstimatedDuration));
+            }
+        }
+
+        private TimeSpan overallDuration;
+
+        public TimeSpan OverallDuration {
+            get {
+                return overallDuration;
+            }
+            private set {
+                overallDuration = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(SequenceEstimatedStartTime));
                 RaisePropertyChanged(nameof(SequenceEstimatedEndTime));
@@ -1123,7 +1156,7 @@ namespace NINA.ViewModel {
 
         private bool ShouldAutoFocus(CaptureSequenceList csl, CaptureSequence seq, int exposureCount, short previousFilterPosition, DateTime lastAutoFocusTime, double lastAutoFocusTemperature) {
             TimeSpan estimatedAFTime;
-            if(seq.FilterType != null && seq.FilterType.AutoFocusExposureTime > 0) {
+            if (seq.FilterType != null && seq.FilterType.AutoFocusExposureTime > 0) {
                 estimatedAFTime = TimeSpan.FromSeconds((profileService.ActiveProfile.FocuserSettings.FocuserSettleTime + seq.FilterType.AutoFocusExposureTime) * (profileService.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps + 1) * 4);
             } else {
                 estimatedAFTime = TimeSpan.FromSeconds((profileService.ActiveProfile.FocuserSettings.FocuserSettleTime + profileService.ActiveProfile.FocuserSettings.AutoFocusExposureTime) * (profileService.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps + 1) * 4);
@@ -1133,7 +1166,7 @@ namespace NINA.ViewModel {
                 //Do not run autofocus if there is not enough time to both run and take the next exposure (after which flip will be checked again) before the Meridian Flip
                 return false;
             }
-            
+
             if (seq.FilterType != null && seq.FilterType.Position != previousFilterPosition
                     && seq.FilterType.Position >= 0
                     && csl.AutoFocusOnFilterChange) {

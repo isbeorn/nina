@@ -341,11 +341,11 @@
                             BorderBrush="{StaticResource BorderBrush}"
                             BorderThickness="0"
                             DataContext="{Binding Source={StaticResource AppVM}, Path=SeqVM}">
-                            <UniformGrid Columns="2">
+                            <StackPanel Orientation="Vertical">
                                 <UniformGrid
                                     Margin="0,6,0,6"
                                     VerticalAlignment="Center"
-                                    Columns="2">
+                                    Columns="4">
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblEstimatedDownloadTime}" />
                                     <TextBox
                                         Margin="5,0,0,0"
@@ -353,24 +353,54 @@
                                         IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
                                         Text="{Binding EstimatedDownloadTime}" />
                                 </UniformGrid>
-                                <UniformGrid
-                                    Margin="5,6,0,6"
-                                    VerticalAlignment="Center"
-                                    Columns="2">
+                                <UniformGrid Columns="4">
+
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblETA}" />
-                                    <Grid VerticalAlignment="Center">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition />
-                                            <ColumnDefinition Width="30" />
-                                        </Grid.ColumnDefinitions>
+                                    <UniformGrid
+                                        Margin="0,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Columns="2">
                                         <TextBlock
-                                            Margin="5,0,0,0"
-                                            HorizontalAlignment="Left"
+                                            HorizontalAlignment="Right"
                                             VerticalAlignment="Center"
-                                            Text="{Binding ETA, Mode=OneWay}" />
-                                    </Grid>
+                                            Text="{ns:Loc LblFrom}" />
+                                        <TextBox
+                                            Margin="5,0,0,0"
+                                            HorizontalAlignment="Stretch"
+                                            IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
+                                            Text="{Binding OverallStartTime, Mode=OneWay, StringFormat=HH:mm:ss}" />
+                                    </UniformGrid>
+                                    <UniformGrid
+                                        Margin="0,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Columns="2">
+                                        <TextBlock
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblTo}" />
+
+                                        <TextBox
+                                            Margin="5,0,0,0"
+                                            HorizontalAlignment="Stretch"
+                                            IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
+                                            Text="{Binding OverallEndTime, Mode=OneWay, StringFormat=HH:mm:ss}" />
+                                    </UniformGrid>
+                                    <UniformGrid
+                                        Margin="0,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Columns="2">
+                                        <TextBlock
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            Text="{ns:Loc LblDuration}" />
+                                        <TextBox
+                                            Margin="5,0,0,0"
+                                            HorizontalAlignment="Stretch"
+                                            IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
+                                            Text="{Binding OverallDuration, StringFormat=hh\\:mm\\:ss, Mode=OneWay}" />
+                                    </UniformGrid>
                                 </UniformGrid>
-                            </UniformGrid>
+                            </StackPanel>
                         </Border>
                         <Border
                             BorderBrush="{StaticResource BorderBrush}"
@@ -393,7 +423,7 @@
                                         Margin="5,0,0,0"
                                         HorizontalAlignment="Stretch"
                                         IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
-                                        Text="{Binding SequenceEstimatedStartTime, StringFormat=hh:mm:ss, Mode=OneWay}" />
+                                        Text="{Binding SequenceEstimatedStartTime, StringFormat=HH:mm:ss, Mode=OneWay}" />
                                 </UniformGrid>
                                 <UniformGrid
                                     Margin="0,0,0,0"
@@ -407,7 +437,7 @@
                                         Margin="5,0,0,0"
                                         HorizontalAlignment="Stretch"
                                         IsEnabled="{Binding Sequence.IsRunning, Converter={StaticResource InverseBooleanConverter}}"
-                                        Text="{Binding SequenceEstimatedEndTime, StringFormat=hh:mm:ss, Mode=OneWay}" />
+                                        Text="{Binding SequenceEstimatedEndTime, StringFormat=HH:mm:ss, Mode=OneWay}" />
                                 </UniformGrid>
                                 <UniformGrid
                                     Margin="0,0,0,0"
