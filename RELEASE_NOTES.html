@@ -40,11 +40,12 @@
 <li>support for using the stepper motor driver as a focuser</li>
 </ul>
 </li>
-<li><strong>Pegasus Astro Flatmaster Support</strong>
+<li><strong>Pegasus Astro Flatmaster support</strong>
 <ul>
 <li>connect and control the Pegasus Astro Flatmaster from within the application</li>
 </ul>
 </li>
+<li><strong>Artesky USB Flat Box support</strong></li>
 </ul>
 <h2 id="localization">Localization</h2>
 <ul>
@@ -112,6 +113,10 @@
 <li>Added profile name to the title bar</li>
 <li>Camera snapshot control in imaging tab will now save the values for the next session</li>
 <li>Added <code>READOUTM</code> keyword to FITS and XISF files</li>
+<li>Added <code>$$SQM$$</code> file name pattern to allow the current reading from an attached sky quality meter to be used in file or folder names</li>
+<li>Added <code>$$READOUTMODE$$</code> file name pattern to enable the a camera's readout mode to be used in file or folder names</li>
+<li>Added <code>BAYERPAT</code>, <code>XBAYEROFF</code>, and <code>YBAYEROFF</code> keyword support in FITS and XISF files for color cameras. A menu under Options &gt; Equipment &gt; Camera allows the user to override the driver-specified Bayer pattern with a custom one</li>
+<li>Meridian Flip now has an option to do an auto focus after a flip during sequencing</li>
 </ul>
 <h2 id="bug-fixes">Bug fixes</h2>
 <ul>
@@ -133,6 +138,8 @@
 <li>Binned exposures now finish on QHY cameras that have overscan areas</li>
 <li>Gain and Offset are not saved with decimal places anymore</li>
 <li>XPIXSZ and YPIXSZ now account correctly for binning when available</li>
+<li>Autofocus after HFR change properly resets reference index on sequence start, target change, and autofocus caused by other criteria</li>
+<li>Sequence file names are now saved with valid file name characters. Invalid characters are replaced automatically with a hyphen (-)</li>
 </ul>
 <h2 id="special-thanks">Special Thanks</h2>
 <p>The N.I.N.A. team would like to sincerely thank:</p>
