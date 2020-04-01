@@ -1,14 +1,14 @@
 * text=auto
-
 *.cs text
 *.xaml text
 *.sln text
 *.config text
 *.md text
-
 *.png binary
 *.sqlite binary
 *.dll binary
 *.lib binary
 *.md3 binary
 *.exe binary
+NINA/External/** filter=lfs diff=lfs merge=lfs -text
+NINA/External/**/* filter=lfs diff=lfs merge=lfs -text
