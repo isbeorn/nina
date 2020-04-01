@@ -1074,9 +1074,9 @@ namespace NINA.Model.MyCamera {
                         }
 
                         return new Flipped2DExposureData(
-                            flipped2DArray: (Int32[,])this.ImageArray,
-                            bitDepth: this.BitDepth,
-                            isBayered: this.SensorType != SensorType.Monochrome,
+                            flipped2DArray: (int[,])ImageArray,
+                            bitDepth: BitDepth,
+                            isBayered: SensorType != SensorType.Monochrome,
                             metaData: new ImageMetaData());
                     } catch (OperationCanceledException) {
                     } catch (Exception ex) {

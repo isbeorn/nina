@@ -21,41 +21,38 @@
 
 #endregion "copyright"
 
-namespace NINA.Model.MyCamera {
+using System.ComponentModel;
 
-    public enum SensorType {
-        /*
-         * 0-19: ASCOM definitions
-         */
+namespace NINA.Utility.Enum {
 
-        //     monochrome - no bayer encoding
-        Monochrome = 0,
+    [TypeConverter(typeof(EnumDescriptionTypeConverter))]
+    public enum BayerPatternEnum {
 
-        //     Color image without bayer encoding
-        Color = 1,
+        [Description("LblAuto")]
+        Auto,
 
-        //     RGGB bayer encoding
-        RGGB = 2,
+        [Description("LblBayerPatternRGGB")]
+        RGGB,
 
-        //     CMYG bayer encoding
-        CMYG = 3,
+        [Description("LblBayerPatternBGGR")]
+        BGGR,
 
-        //     CMYG2 bayer encoding
-        CMYG2 = 4,
+        [Description("LblBayerPatternGBRG")]
+        GBRG,
 
-        //     Camera produces Kodak TRUESENSE Bayer LRGB array images
-        LRGB = 5,
+        [Description("LblBayerPatternGRBG")]
+        GRBG,
 
-        /*
-         * 20-26: Non-ASCOM bayer matrix types
-         */
+        [Description("LblBayerPatternGRGB")]
+        GRGB,
 
-        BGGR = 20,
-        GBRG = 21,
-        GRBG = 22,
-        GRGB = 23,
-        GBGR = 24,
-        RGBG = 25,
-        BGRG = 26
+        [Description("LblBayerPatternGBGR")]
+        GBGR,
+
+        [Description("LblBayerPatternRGBG")]
+        RGBG,
+
+        [Description("LblBayerPatternBGRG")]
+        BGRG
     }
 }

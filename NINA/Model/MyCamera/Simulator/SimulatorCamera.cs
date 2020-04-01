@@ -135,6 +135,10 @@ namespace NINA.Model.MyCamera.Simulator {
             }
         }
 
+        public short BayerOffsetX => 0;
+
+        public short BayerOffsetY => 0;
+
         public int CameraXSize {
             get {
                 return Settings.ImageSettings.Image?.RawImageData?.Properties?.Width ?? Settings.RandomSettings.ImageWidth;

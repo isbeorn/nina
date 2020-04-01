@@ -27,6 +27,7 @@
 using Ionic.Zlib;
 using LZ4;
 using NINA.Model.ImageData;
+using NINA.Model.MyCamera;
 using NINA.Utility.Enum;
 using SHA3;
 using System;
@@ -601,6 +602,17 @@ namespace NINA.Utility {
                 AddImageFITSKeyword("READOUTM", metaData.Camera.ReadoutModeName.ToString(CultureInfo.InvariantCulture), "Sensor readout mode");
             }
 
+            if (!string.IsNullOrEmpty(metaData.Camera.BayerPattern) && metaData.Camera.SensorType != SensorType.Monochrome) {
+                AddImageFITSKeyword("BAYERPAT", metaData.Camera.BayerPattern.ToString(CultureInfo.InvariantCulture), "Sensor Bayer pattern");
+                AddImageFITSKeyword("XBAYROFF", metaData.Camera.BayerOffsetX.ToString(CultureInfo.InvariantCulture), "Bayer pattern X axis offset");
+                AddImageFITSKeyword("YBAYROFF", metaData.Camera.BayerOffsetY.ToString(CultureInfo.InvariantCulture), "Bayer pattern Y axis offset");
+
+                /*
+                 * Add XISF ColorFilterArray element. We support only 2x2 bayer patterns for now.
+                 */
+                AddCfaAttribute(metaData.Camera.BayerPattern, 2, 2);
+            }
+
             /* Observer */
             if (!double.IsNaN(metaData.Observer.Elevation)) {
                 AddImageProperty(XISFImageProperty.Observation.Location.Elevation, metaData.Observer.Elevation.ToString(CultureInfo.InvariantCulture), "[m] Observation site elevation");
@@ -833,6 +845,15 @@ namespace NINA.Utility {
                 );
             }
             elem.Add(xelem);
+        }
+
+        public void AddCfaAttribute(string cfaPattern, int cfaWidth, int cfaHeight) {
+            if (Image == null) { throw new InvalidOperationException("No Image component available to add CFA attribute!"); }
+            Image.Add(new XElement(xmlns + "ColorFilterArray",
+                        new XAttribute("pattern", cfaPattern),
+                        new XAttribute("width", cfaWidth),
+                        new XAttribute("height", cfaHeight),
+                        new XAttribute("name", cfaPattern + " Bayer Filter")));
         }
 
         // filters control characters but allows only properly-formed surrogate sequences

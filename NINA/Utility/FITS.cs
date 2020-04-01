@@ -25,6 +25,7 @@
 #endregion "copyright"
 
 using NINA.Model.ImageData;
+using NINA.Model.MyCamera;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -132,6 +133,12 @@ namespace NINA.Utility {
 
             if (!string.IsNullOrWhiteSpace(metaData.Camera.ReadoutModeName)) {
                 this.AddHeaderCard("READOUTM", metaData.Camera.ReadoutModeName, "Sensor readout mode");
+            }
+
+            if (!string.IsNullOrEmpty(metaData.Camera.BayerPattern) && metaData.Camera.SensorType != SensorType.Monochrome) {
+                this.AddHeaderCard("BAYERPAT", metaData.Camera.BayerPattern, "Sensor Bayer pattern");
+                this.AddHeaderCard("XBAYROFF", metaData.Camera.BayerOffsetX, "Bayer pattern X axis offset");
+                this.AddHeaderCard("YBAYROFF", metaData.Camera.BayerOffsetY, "Bayer pattern Y axis offset");
             }
 
             /* Telescope */

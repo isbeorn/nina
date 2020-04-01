@@ -43,6 +43,7 @@ namespace NINA.Profile {
             bulbMode = CameraBulbModeEnum.NATIVE;
             serialPort = "COM1";
             bitDepth = 16;
+            bayerPattern = BayerPatternEnum.Auto;
             rawConverter = RawConverterEnum.FREEIMAGE;
             minFlatExposureTime = 0.2;
             maxFlatExposureTime = 20;
@@ -76,6 +77,19 @@ namespace NINA.Profile {
             set {
                 if (pixelSize != value) {
                     pixelSize = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private BayerPatternEnum bayerPattern;
+
+        [DataMember]
+        public BayerPatternEnum BayerPattern {
+            get => bayerPattern;
+            set {
+                if (bayerPattern != value) {
+                    bayerPattern = value;
                     RaisePropertyChanged();
                 }
             }

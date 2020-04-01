@@ -504,6 +504,9 @@ namespace NINA.Model.MyCamera {
 
         public SensorType SensorType => SensorType.Monochrome;
 
+        public short BayerOffsetX => 0;
+        public short BayerOffsetY => 0;
+
         public int SubSampleHeight { get; set; }
         public int SubSampleWidth { get; set; }
         public int SubSampleX { get; set; }

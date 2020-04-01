@@ -240,6 +240,9 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public short BayerOffsetX { get; set; } = 0;
+        public short BayerOffsetY { get; set; } = 0;
+
         public int CameraXSize {
             get {
                 return Info.MaxWidth;
@@ -451,12 +454,14 @@ namespace NINA.Model.MyCamera {
                         throw new Exception(Locale.Loc.Instance["LblASIImageDownloadError"]);
                     }
 
+                    var metadata = new ImageMetaData();
+
                     return new ImageArrayExposureData(
                         input: arr,
                         width: width,
                         height: height,
-                        bitDepth: this.BitDepth,
-                        isBayered: this.SensorType != SensorType.Monochrome,
+                        bitDepth: BitDepth,
+                        isBayered: SensorType != SensorType.Monochrome,
                         metaData: new ImageMetaData());
                 } catch (OperationCanceledException) {
                 } catch (Exception ex) {

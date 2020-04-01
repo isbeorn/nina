@@ -36,6 +36,8 @@ namespace NINA.Model.MyCamera {
         short BinY { get; set; }
         string SensorName { get; }
         SensorType SensorType { get; }
+        short BayerOffsetX { get; }
+        short BayerOffsetY { get; }
         int CameraXSize { get; }
         int CameraYSize { get; }
         double ExposureMin { get; }

@@ -477,6 +477,7 @@
     <Compile Include="Utility\CameraSDKs\OmegonSDK\omegonprocam.cs" />
     <Compile Include="Utility\Converters\FilterWheelFilterConverter.cs" />
     <Compile Include="Utility\Converters\NaNToVisibilityCollapsedConverter.cs" />
+    <Compile Include="Utility\Enum\BayerPatternEnum.cs" />
     <Compile Include="Utility\FileSaveInfo.cs" />
     <Compile Include="Utility\Converters\AFFittingToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\IsLightImageTypeToVisibilityConverter.cs" />

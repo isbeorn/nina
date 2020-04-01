@@ -294,5 +294,35 @@ namespace NINA.Model.MyCamera {
                 RaisePropertyChanged();
             }
         }
+
+        private SensorType sensorType = SensorType.Monochrome;
+
+        public SensorType SensorType {
+            get => sensorType;
+            set {
+                sensorType = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private short bayerOffsetX = 0;
+
+        public short BayerOffsetX {
+            get => bayerOffsetX;
+            set {
+                bayerOffsetX = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private short bayerOffsetY = 0;
+
+        public short BayerOffsetY {
+            get => bayerOffsetY;
+            set {
+                bayerOffsetY = value;
+                RaisePropertyChanged();
+            }
+        }
     }
 }

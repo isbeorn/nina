@@ -400,7 +400,10 @@ namespace NINA.ViewModel.Equipment.Camera {
                                 ReadoutMode = Cam.ReadoutMode,
                                 ReadoutModeForNormalImages = Cam.ReadoutModeForNormalImages,
                                 ReadoutModeForSnapImages = Cam.ReadoutModeForSnapImages,
-                                ReadoutModes = Cam.ReadoutModes.Cast<string>().ToList()
+                                ReadoutModes = Cam.ReadoutModes.Cast<string>().ToList(),
+                                SensorType = Cam.SensorType,
+                                BayerOffsetX = Cam.BayerOffsetX,
+                                BayerOffsetY = Cam.BayerOffsetY
                             };
 
                             Notification.ShowSuccess(Locale.Loc.Instance["LblCameraConnected"]);

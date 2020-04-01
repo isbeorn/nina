@@ -428,17 +428,7 @@ namespace NINA.Model.MyCamera {
 
         public string SensorName => string.Empty;
 
-        public SensorType SensorType {
-            get {
-                SensorType stype = SensorType.Monochrome;
-
-                if (Connected) {
-                    if (Info.IsColorCam == true)
-                        stype = SensorType.RGGB;
-                }
-                return stype;
-            }
-        }
+        public SensorType SensorType { get; private set; } = SensorType.Monochrome;
 
         public int SubSampleHeight { get; set; }
         public int SubSampleWidth { get; set; }
@@ -544,20 +534,43 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        private bool IsColorCam() {
+        private bool GetSensorType() {
             Info.BayerPattern = (LibQHYCCD.BAYER_ID)LibQHYCCD.IsQHYCCDControlAvailable(CameraP, LibQHYCCD.CONTROL_ID.CAM_COLOR);
 
             switch (Info.BayerPattern) {
                 case LibQHYCCD.BAYER_ID.BAYER_GB:
+                    SensorType = SensorType.GBRG;
+                    BayerOffsetX = 1;
+                    BayerOffsetY = 1;
+                    break;
+
                 case LibQHYCCD.BAYER_ID.BAYER_GR:
+                    SensorType = SensorType.GRBG;
+                    BayerOffsetX = 1;
+                    BayerOffsetY = 0;
+                    break;
+
                 case LibQHYCCD.BAYER_ID.BAYER_BG:
+                    SensorType = SensorType.BGGR;
+                    BayerOffsetX = 0;
+                    BayerOffsetY = 1;
+                    break;
+
                 case LibQHYCCD.BAYER_ID.BAYER_RG:
-                    return true;
+                    SensorType = SensorType.RGGB;
+                    BayerOffsetX = 0;
+                    BayerOffsetY = 0;
+                    break;
 
                 default:
                     return false;
             }
+
+            return true;
         }
+
+        public short BayerOffsetX { get; set; } = 0;
+        public short BayerOffsetY { get; set; } = 0;
 
         private bool IsQHYControl(LibQHYCCD.CONTROL_ID type) {
             if (LibQHYCCD.IsQHYCCDControlAvailable(CameraP, type) == LibQHYCCD.QHYCCD_SUCCESS) {
@@ -652,7 +665,7 @@ namespace NINA.Model.MyCamera {
                      * Is this a color sensor or not?
                      * If so, do not debayer the image data
                      */
-                    if (IsColorCam() == true) {
+                    if (GetSensorType() == true) {
                         Logger.Info($"QHYCCD: Color camera detected (pattern = {Info.BayerPattern.ToString()}). Setting debayering to off");
                         _ = LibQHYCCD.SetQHYCCDDebayerOnOff(CameraP, false);
                         Info.IsColorCam = true;

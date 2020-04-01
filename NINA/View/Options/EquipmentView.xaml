@@ -95,6 +95,25 @@
                                 </TextBox.Text>
                             </TextBox>
                         </UniformGrid>
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock
+                                Width="150"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblBayerPattern}">
+                                <TextBlock.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblBayerPatternTooltip}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                            <ComboBox
+                                MinWidth="150"
+                                Margin="0,0,0,0"
+                                ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:BayerPatternEnum}}}"
+                                SelectedItem="{Binding BayerPattern}" />
+                        </UniformGrid>
                     </UniformGrid>
                     <Border
                         Margin="0,10,0,0"
@@ -1173,8 +1192,8 @@
                             <TextBlock
                                 MinWidth="200"
                                 VerticalAlignment="Center"
-                                Text="{ns:Loc LblAutoRetryStartGuiding}" 
-                                ToolTip="{ns:Loc LblAutoRetryStartGuidingTooltip}"/>
+                                Text="{ns:Loc LblAutoRetryStartGuiding}"
+                                ToolTip="{ns:Loc LblAutoRetryStartGuidingTooltip}" />
                             <CheckBox
                                 Width="120"
                                 Height="25"
@@ -1188,8 +1207,8 @@
                             <TextBlock
                                 MinWidth="200"
                                 VerticalAlignment="Center"
-                                Text="{ns:Loc LblAutoRetryStartGuidingTimeoutSeconds}" 
-                                ToolTip="{ns:Loc LblAutoRetryStartGuidingTimeoutTooltip}"/>
+                                Text="{ns:Loc LblAutoRetryStartGuidingTimeoutSeconds}"
+                                ToolTip="{ns:Loc LblAutoRetryStartGuidingTimeoutTooltip}" />
                             <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Center">
                                 <TextBox.Text>
                                     <Binding Path="AutoRetryStartGuidingTimeoutSeconds" UpdateSourceTrigger="LostFocus">

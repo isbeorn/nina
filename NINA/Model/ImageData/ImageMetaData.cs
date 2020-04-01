@@ -29,6 +29,7 @@ using NINA.Model.MyTelescope;
 using NINA.Model.MyWeatherData;
 using NINA.Profile;
 using NINA.Utility.Astrometry;
+using NINA.Utility.Enum;
 using System;
 using System.Linq;
 
@@ -51,6 +52,7 @@ namespace NINA.Model.ImageData {
         /// <param name="profile"></param>
         public void FromProfile(IProfile profile) {
             Camera.PixelSize = profile.CameraSettings.PixelSize;
+            Camera.BayerPatternSetting = profile.CameraSettings.BayerPattern;
 
             Telescope.Name = profile.TelescopeSettings.Name;
             Telescope.FocalLength = profile.TelescopeSettings.FocalLength;
@@ -74,6 +76,20 @@ namespace NINA.Model.ImageData {
 
                 if (info.ReadoutModes.Count() > 1) {
                     Camera.ReadoutModeName = info.ReadoutModes.ToArray()[info.ReadoutMode];
+                }
+
+                Camera.SensorType = info.SensorType;
+
+                if (Camera.SensorType != SensorType.Monochrome) {
+                    if (Camera.BayerPatternSetting == BayerPatternEnum.Auto) {
+                        Camera.BayerPattern = info.SensorType.ToString().ToUpper();
+                        Camera.BayerOffsetX = info.BayerOffsetX;
+                        Camera.BayerOffsetY = info.BayerOffsetY;
+                    } else {
+                        Camera.BayerPattern = Camera.BayerPatternSetting.ToString().ToUpper();
+                        Camera.BayerOffsetX = 0;
+                        Camera.BayerOffsetY = 0;
+                    }
                 }
             }
         }
@@ -157,6 +173,11 @@ namespace NINA.Model.ImageData {
         public double ElectronsPerADU { get; set; } = double.NaN;
         public double SetPoint { get; set; } = double.NaN;
         public string ReadoutModeName { get; set; } = string.Empty;
+        public BayerPatternEnum BayerPatternSetting = BayerPatternEnum.Auto;
+        public string BayerPattern { get; set; } = string.Empty;
+        public SensorType SensorType { get; set; } = SensorType.Monochrome;
+        public int BayerOffsetX { get; set; } = 0;
+        public int BayerOffsetY { get; set; } = 0;
     }
 
     public class TelescopeParameter {

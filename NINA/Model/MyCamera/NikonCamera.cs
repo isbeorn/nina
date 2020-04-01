@@ -361,6 +361,10 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public short BayerOffsetX => 0;
+
+        public short BayerOffsetY => 0;
+
         public int CameraXSize {
             get {
                 return -1;

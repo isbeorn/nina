@@ -92,6 +92,7 @@
 - Added `READOUTM` keyword to FITS and XISF files
 - Added `$$SQM$$` file name pattern to allow the current reading from an attached sky quality meter to be used in file or folder names
 - Added `$$READOUTMODE$$` file name pattern to enable the a camera's readout mode to be used in file or folder names
+- Added `BAYERPAT`, `XBAYEROFF`, and `YBAYEROFF` keyword support in FITS and XISF files for color cameras. A menu under Options > Equipment > Camera allows the user to override the driver-specified Bayer pattern with a custom one
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false
