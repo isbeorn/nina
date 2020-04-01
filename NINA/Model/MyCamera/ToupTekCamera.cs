@@ -595,16 +595,15 @@ namespace NINA.Model.MyCamera {
 
                     if (!camera.get_RawFormat(out var fourCC, out var bitDepth)) {
                         throw new Exception("ToupTekCamera - Unable to get format information");
+                    } else {
+                        if (camera.MonoMode) {
+                            SensorType = SensorType.Monochrome;
+                        } else {
+                            SensorType = GetSensorType(fourCC);
+                        }
                     }
 
                     this.BitDepth = (int)bitDepth;
-
-                    if (camera.MonoMode) {
-                        SensorType = SensorType.Monochrome;
-                    } else {
-                        /* Todo Determine color matrix */
-                        SensorType = SensorType.RGGB;
-                    }
 
                     Connected = true;
                     RaiseAllPropertiesChanged();
@@ -614,6 +613,17 @@ namespace NINA.Model.MyCamera {
                 }
                 return success;
             });
+        }
+
+        private SensorType GetSensorType(uint fourCC) {
+            var bytes = BitConverter.GetBytes(fourCC);
+            if (!BitConverter.IsLittleEndian) { Array.Reverse(bytes); }
+
+            var sensor = System.Text.Encoding.ASCII.GetString(bytes);
+            if (Enum.TryParse(sensor, true, out SensorType sensorType)) {
+                return sensorType;
+            }
+            return SensorType.RGGB;
         }
 
         private void OnEventCallback(ToupCam.eEVENT nEvent) {
