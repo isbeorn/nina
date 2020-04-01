@@ -30,5 +30,6 @@ namespace NINA.Profile {
         bool Recenter { get; set; }
         int SettleTime { get; set; }
         bool UseSideOfPier { get; set; }
+        bool AutoFocusAfterFlip { get; set; }
     }
 }
