@@ -6,7 +6,7 @@
 *.md text
 *.png binary
 *.sqlite binary
-*.dll binary
+*.dll filter=lfs diff=lfs merge=lfs -text
 *.lib binary
 *.md3 binary
 *.exe binary
