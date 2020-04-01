@@ -59,9 +59,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace NINA.ViewModel {
-
     internal class SequenceVM : DockableVM, ITelescopeConsumer, IFocuserConsumer, IFilterWheelConsumer, IRotatorConsumer, IFlatDeviceConsumer, IGuiderConsumer, ICameraConsumer, IWeatherDataConsumer {
-
         public SequenceVM(
                 IProfileService profileService,
                 ICameraMediator cameraMediator,
@@ -874,8 +872,9 @@ namespace NINA.ViewModel {
 
                         seq.NextSequence = csl.GetNextSequenceItem(seq);
 
+                        bool meridianFlipped = false;
                         if (seq.IsLightSequence()) {
-                            await CheckMeridianFlip(referenceCoordinates, seq.ExposureTime, ct, progress);
+                            meridianFlipped = await CheckMeridianFlip(referenceCoordinates, seq.ExposureTime, ct, progress);
                         }
 
                         Stopwatch seqDuration = Stopwatch.StartNew();
@@ -896,7 +895,7 @@ namespace NINA.ViewModel {
                         }
 
                         /* 2) Check if Autofocus is requiredfinish */
-                        if (seq.IsLightSequence() && ShouldAutoFocus(csl, seq, exposureCount - 1, prevFilterPosition, lastAutoFocusTime, lastAutoFocusTemperature)) {
+                        if (seq.IsLightSequence() && ShouldAutoFocus(csl, seq, exposureCount - 1, prevFilterPosition, lastAutoFocusTime, lastAutoFocusTemperature, meridianFlipped)) {
                             //Wait for previous image processing task to be done, so Autofocus doesn't turn off HFR calculation too early
                             if (imageProcessingTask != null && !imageProcessingTask.IsCompleted) {
                                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForImageProcessing"] });
@@ -1154,7 +1153,7 @@ namespace NINA.ViewModel {
             return false;
         }
 
-        private bool ShouldAutoFocus(CaptureSequenceList csl, CaptureSequence seq, int exposureCount, short previousFilterPosition, DateTime lastAutoFocusTime, double lastAutoFocusTemperature) {
+        private bool ShouldAutoFocus(CaptureSequenceList csl, CaptureSequence seq, int exposureCount, short previousFilterPosition, DateTime lastAutoFocusTime, double lastAutoFocusTemperature, bool meridianFlipped) {
             TimeSpan estimatedAFTime;
             if (seq.FilterType != null && seq.FilterType.AutoFocusExposureTime > 0) {
                 estimatedAFTime = TimeSpan.FromSeconds((profileService.ActiveProfile.FocuserSettings.FocuserSettleTime + seq.FilterType.AutoFocusExposureTime) * (profileService.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps + 1) * 4);
@@ -1165,6 +1164,12 @@ namespace NINA.ViewModel {
             if (profileService.ActiveProfile.MeridianFlipSettings.Enabled && MeridianFlipVM.GetRemainingTime(profileService, telescopeInfo) < estimatedAFTime + TimeSpan.FromSeconds(seq.ExposureTime)) {
                 //Do not run autofocus if there is not enough time to both run and take the next exposure (after which flip will be checked again) before the Meridian Flip
                 return false;
+            }
+
+            if (profileService.ActiveProfile.MeridianFlipSettings.AutoFocusAfterFlip && meridianFlipped) {
+                /* Trigger autofocus after meridian flip */
+                Logger.Debug($"Autofocus after meridian flip has been triggered");
+                return true;
             }
 
             if (seq.FilterType != null && seq.FilterType.Position != previousFilterPosition
@@ -1237,16 +1242,18 @@ namespace NINA.ViewModel {
         /// <param name="tokenSource">cancel token</param>
         /// <param name="progress">   progress reporter</param>
         /// <returns></returns>
-        private async Task CheckMeridianFlip(Coordinates flipTargetCoordinates, double nextExposureTime, CancellationToken token, IProgress<ApplicationStatus> progress) {
+        private async Task<bool> CheckMeridianFlip(Coordinates flipTargetCoordinates, double nextExposureTime, CancellationToken token, IProgress<ApplicationStatus> progress) {
+            bool flipped = false;
             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblCheckMeridianFlip"] });
             if (telescopeInfo != null && MeridianFlipVM.ShouldFlip(profileService, nextExposureTime, telescopeInfo)) {
                 var target = flipTargetCoordinates;
                 if (flipTargetCoordinates.RA == 0 && flipTargetCoordinates.Dec == 0) {
                     target = telescopeInfo.Coordinates;
                 }
-                await new MeridianFlipVM(profileService, telescopeMediator, guiderMediator, imagingMediator, applicationStatusMediator).MeridianFlip(target, TimeSpan.FromHours(telescopeInfo.TimeToMeridianFlip));
+                flipped = await new MeridianFlipVM(profileService, telescopeMediator, guiderMediator, imagingMediator, applicationStatusMediator).MeridianFlip(target, TimeSpan.FromHours(telescopeInfo.TimeToMeridianFlip));
             }
             progress.Report(new ApplicationStatus() { Status = string.Empty });
+            return flipped;
         }
 
         private bool CheckPreconditions() {

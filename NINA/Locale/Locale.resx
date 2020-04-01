@@ -3467,4 +3467,7 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
   <data name="LblPointingTolerance" xml:space="preserve">
     <value>Pointing Tolerance</value>
   </data>
+  <data name="LblAutoFocusAfterFlip" xml:space="preserve">
+    <value>Auto Focus after Flip</value>
+  </data>
 </root>

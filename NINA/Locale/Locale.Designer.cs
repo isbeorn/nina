@@ -553,6 +553,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto Focus after Flip.
+        /// </summary>
+        internal static string LblAutoFocusAfterFlip {
+            get {
+                return ResourceManager.GetString("LblAutoFocusAfterFlip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to After HFR increase.
         /// </summary>
         internal static string LblAutoFocusAfterHFRChange {

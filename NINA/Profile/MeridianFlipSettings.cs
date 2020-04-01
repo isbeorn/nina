@@ -42,6 +42,7 @@ namespace NINA.Profile {
             useSideOfPier = false;
             settleTime = 5;
             pauseTimeBeforeMeridian = 1;
+            autoFocusAfterFlip = false;
         }
 
         private bool enabled;
@@ -135,6 +136,21 @@ namespace NINA.Profile {
             set {
                 if (pauseTimeBeforeMeridian != value) {
                     pauseTimeBeforeMeridian = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool autoFocusAfterFlip;
+
+        [DataMember]
+        public bool AutoFocusAfterFlip {
+            get {
+                return autoFocusAfterFlip;
+            }
+            set {
+                if (autoFocusAfterFlip != value) {
+                    autoFocusAfterFlip = value;
                     RaisePropertyChanged();
                 }
             }
