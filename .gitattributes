@@ -13,3 +13,4 @@
 NINA/External/** filter=lfs diff=lfs merge=lfs -text
 NINA/External/**/* filter=lfs diff=lfs merge=lfs -text
 NINASetupBundle/**/*.exe filter=lfs diff=lfs merge=lfs -text
+NINASetupBundle/*.exe filter=lfs diff=lfs merge=lfs -text
