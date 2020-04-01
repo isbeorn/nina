@@ -654,6 +654,9 @@ namespace NINA.ViewModel.Equipment.Camera {
                 CameraInfo.ExposureEndTime = DateTime.Now.AddSeconds(sequence.ExposureTime);
                 CameraInfo.NextExposureLength = sequence.NextSequence?.ExposureTime ?? -1;
                 BroadcastCameraInfo();
+
+                Logger.Debug($"Starting Exposure - Exposure Time: {exposureTime}s; Gain: {CameraInfo.Gain}; Offset {CameraInfo.Offset}; Binning: {CameraInfo.BinX};");
+
                 Cam.StartExposure(sequence);
 
                 var start = DateTime.Now;

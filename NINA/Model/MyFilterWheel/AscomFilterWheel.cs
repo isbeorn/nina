@@ -178,6 +178,7 @@ namespace NINA.Model.MyFilterWheel {
             set {
                 if (Connected) {
                     try {
+                        Logger.Debug($"ASCOM FW: Moving to position {value}");
                         _filterwheel.Position = value;
                     } catch (ASCOM.DriverAccessCOMException ex) {
                         Notification.ShowWarning(ex.Message);
