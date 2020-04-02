@@ -45,17 +45,36 @@
                     <TextBlock Text="{Binding ElementName=pbSequences, Path=Maximum}" />
                 </StackPanel>
             </Grid>
-            <UniformGrid
-                Margin="5,6,0,6"
-                VerticalAlignment="Center"
-                Columns="2">
-                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblETA}" />
+            <Grid Margin="5,6,0,6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblCurrentSequenceEstimates}" />
                 <TextBlock
+                    Grid.Column="1"
                     Margin="5,0,0,0"
-                    HorizontalAlignment="Left"
+                    HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Text="{Binding ETA, Mode=OneWay}" />
-            </UniformGrid>
+                    Text="{Binding SequenceEstimatedEndTime, StringFormat=HH:mm:ss, Mode=OneWay}" />
+
+                <TextBlock
+                    Grid.Row="1"
+                    VerticalAlignment="Center"
+                    Text="{ns:Loc LblETA}" />
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="5,0,0,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Text="{Binding OverallEndTime, StringFormat=HH:mm:ss, Mode=OneWay}" />
+            </Grid>
 
             <GroupBox Header="{ns:Loc LblActiveSequenceDetails}">
                 <StackPanel DataContext="{Binding Sequence.ActiveSequence}" Orientation="Vertical">
