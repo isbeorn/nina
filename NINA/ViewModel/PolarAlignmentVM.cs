@@ -568,8 +568,7 @@ namespace NINA.ViewModel {
             double poleError = double.NaN;
             Coordinates startPosition = telescopeMediator.GetCurrentPosition();
             try {
-                double movementdeg = 0.5d;
-                double movement = (movementdeg / 360) * 24;
+                double driftAmount = 0.5d;
 
                 progress.Report(new ApplicationStatus() { Status = "Solving image..." });
 
@@ -589,7 +588,7 @@ namespace NINA.ViewModel {
                 Coordinates startSolve = PlateSolveResult.Coordinates;
                 startSolve = startSolve.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
 
-                Coordinates targetPosition = new Coordinates(startPosition.RA - movement, startPosition.Dec, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+                Coordinates targetPosition = new Coordinates(startPosition.RADegrees - driftAmount, startPosition.Dec, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Degrees);
                 progress.Report(new ApplicationStatus() { Status = "Slewing..." });
                 await telescopeMediator.SlewToCoordinatesAsync(targetPosition);
 
@@ -618,19 +617,39 @@ namespace NINA.ViewModel {
                 Coordinates targetSolve = PlateSolveResult.Coordinates;
                 targetSolve = targetSolve.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
 
-                var decError = startSolve.Dec - targetSolve.Dec;
-                // Calculate pole error
-                poleError = 3.81 * 3600.0 * decError / (4 * movementdeg * Math.Cos(Astrometry.ToRadians(startPosition.Dec)));
-                // Convert pole error from arcminutes to degrees
-                poleError = Astrometry.ArcminToDegree(poleError);
+                var decError = Astrometry.DegreeToArcmin(startSolve.Dec - targetSolve.Dec);
+
+                poleError = DetermineDriftAlignError(startPosition.Dec, driftAmount, decError);
             } catch (OperationCanceledException) {
             } finally {
-                //progress.Report("Slewing back to origin...");
                 await telescopeMediator.SlewToCoordinatesAsync(startPosition);
-                //progress.Report("Done");
             }
 
             return poleError;
+        }
+
+        /// <summary>
+        /// Returns the polar alignment error during a drift in arcminutes for the given measurements
+        /// </summary>
+        /// <param name="startDeclination">Starting position of drift alignment in degrees</param>
+        /// <param name="driftRate">drift rate in degrees</param>
+        /// <param name="declinationError">Determined delta between start declination and end declination in degrees</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Hook's equation => δ(err) = (t * cos(δ) * θ(r) / 4) * 60 * 60 ===> δ(err) = 900 * t * cos(δ) * θ(r)
+        /// ==> t = time to drift in minutes
+        /// ==> δ = Declination of drift target
+        /// ==> θ(r) = alignment error in radians
+        /// ==> δ(err) = declination drift in degrees
+        ///
+        /// Solving for alignError = δ(err) / (900 * t * cos(δ)) ==> yields align error in radians
+        /// Express error in arcminutes ==> δ(err) / (900 * t * cos(δ)) * (180/π) * 60
+        ///
+        /// (12 / π) is simplified for (180 * 60) / (900 π) => 12 / π
+        /// Factor 4 is simplified for drift rate in degrees converted to minutes</remarks>
+        /// <see cref="http://celestialwonders.com/articles/polaralignment/PolarAlignmentAccuracy.pdf"/>
+        public double DetermineDriftAlignError(double startDeclination, double driftRate, double declinationError) {
+            return (12d / Math.PI) * Astrometry.DegreeToArcmin(declinationError) / ((driftRate * 4) * Math.Cos(Astrometry.ToRadians(startDeclination)));
         }
 
         public async Task<bool> SlewToMeridianOffset(double meridianOffset, double declination) {
