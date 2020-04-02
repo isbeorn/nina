@@ -647,5 +647,10 @@ namespace NINATest {
 
             Assert.AreEqual(expected, modulus, MODULUS_TOLERANCE);
         }
+
+        [TestCase(35d, 2.5, 20.5, ExpectedResult = 9.56)]
+        public double DeterminePolarAlignmentError(double startDeclination, double driftRate, double declinationError) {
+            return Math.Round(Astrometry.DegreeToArcmin(Astrometry.DetermineDriftAlignError(startDeclination, driftRate, Astrometry.ArcsecToDegree(declinationError))), 2);
+        }
     }
 }

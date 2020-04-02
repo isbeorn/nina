@@ -605,6 +605,30 @@ namespace NINA.Utility.Astrometry {
             var dP = (c * γTRH) / (b - γTRH);
             return dP;
         }
+
+        /// <summary>
+        /// Returns the polar alignment error during a drift in degree for the given measurements
+        /// </summary>
+        /// <param name="startDeclination">Starting position of drift alignment in degrees</param>
+        /// <param name="driftRate">drift rate in degrees</param>
+        /// <param name="declinationError">Determined delta between start declination and end declination in degrees</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Hook's equation => δ(err) = (t * cos(δ) * θ(r) / 4) * 60 * 60 ===> δ(err) = 900 * t * cos(δ) * θ(r)
+        /// ==> t = time to drift in minutes
+        /// ==> δ = Declination of drift target
+        /// ==> θ(r) = alignment error in radians
+        /// ==> δ(err) = declination drift in arcseconds
+        ///
+        /// Solving for alignError = δ(err) / (900 * t * cos(δ)) ==> yields align error in radians
+        /// Express error in arcminutes ==> δ(err) / (900 * t * cos(δ)) * (180/π) * 60
+        ///
+        /// (12 / π) is simplified for (180 * 60) / (900 π) => 12 / π
+        /// Factor 4 is simplified for drift rate in degrees converted to minutes</remarks>
+        /// <see cref="http://celestialwonders.com/articles/polaralignment/PolarAlignmentAccuracy.pdf"/>
+        public static double DetermineDriftAlignError(double startDeclination, double driftRate, double declinationError) {
+            return ArcminToDegree((12d / Math.PI) * DegreeToArcsec(declinationError) / ((driftRate * 4) * Math.Cos(ToRadians(startDeclination))));
+        }
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
