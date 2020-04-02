@@ -21,7 +21,10 @@
 
 #endregion "copyright"
 
+using NINA.Locale;
 using NINA.Model;
+using NINA.Model.MyCamera;
+using NINA.Model.MyFilterWheel;
 using NINA.Model.MyFlatDevice;
 using NINA.Profile;
 using NINA.Utility;
@@ -34,9 +37,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using NINA.Locale;
-using NINA.Model.MyCamera;
-using NINA.Model.MyFilterWheel;
 
 namespace NINA.ViewModel.Equipment.FlatDevice {
 
@@ -100,13 +100,13 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
         public bool LightOn { get; set; }
 
         public void SetBrightness(double value) {
-            Brightness = value;
-            SetBrightness(null);
+            SetBrightness((object)(value * 100d));
         }
 
         public void SetBrightness(object o) {
             if (_flatDevice == null || !_flatDevice.Connected) return;
-            _flatDevice.Brightness = Brightness;
+            if (!double.TryParse(o.ToString(), out var result)) return;
+            _flatDevice.Brightness = result / 100d;
         }
 
         private readonly SemaphoreSlim ssConnect = new SemaphoreSlim(1, 1);

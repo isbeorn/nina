@@ -458,7 +458,7 @@ namespace NINA.ViewModel.FlatWizard {
                         break;
 
                     case FlatWizardExposureAduState.ExposureAduAboveMean:
-                        if (_flatDevice != null && _flatDevice.Connected && _flatDevice.Brightness >= 0.05) {
+                        if (_flatDevice != null && _flatDevice.Connected && _flatDevice.Brightness > 0.01) {
                             _flatDeviceMediator.SetBrightness(_flatDevice.Brightness / 2.0);
                             exposureTime = wrapper.Settings.MinFlatExposureTime;
                             FlatWizardExposureTimeFinderService.ClearDataPoints();

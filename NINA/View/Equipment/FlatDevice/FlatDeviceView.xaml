@@ -152,6 +152,7 @@
                                     TickFrequency=".05"
                                     Value="{Binding Brightness, UpdateSourceTrigger=PropertyChanged}" />
                                 <TextBox
+                                    x:Name="BrightnessInput"
                                     Grid.Row="0"
                                     Grid.Column="1"
                                     Height="25"
@@ -170,10 +171,32 @@
                                     Grid.Column="3"
                                     Margin="5"
                                     Command="{Binding SetBrightnessCommand}"
+                                    CommandParameter="{Binding Text, ElementName=BrightnessInput}"
                                     IsEnabled="{Binding FlatDeviceInfo.Connected}">
                                     <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblFlatDeviceSetBrightness}" />
                                 </Button>
                             </Grid>
+                        </UniformGrid>
+                    </Border>
+                    <Border
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0"
+                        Visibility="{Binding FlatDeviceInfo.SupportsOpenClose, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                        <UniformGrid
+                            Margin="0,6,0,6"
+                            VerticalAlignment="Center"
+                            Columns="2">
+                            <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblFlatDeviceCoverCurrently}" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding FlatDeviceInfo.Brightness, Converter={StaticResource PercentageConverter}}" />
+                                <TextBlock
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Text="%" />
+                            </StackPanel>
                         </UniformGrid>
                     </Border>
                     <Border
