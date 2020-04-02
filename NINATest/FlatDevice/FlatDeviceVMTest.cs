@@ -289,7 +289,7 @@ namespace NINATest.FlatDevice {
             _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, null);
             _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
             _sut.SetBrightness(1.0);
-            Assert.That(_sut.Brightness, Is.EqualTo(1.0));
+            Assert.That(_sut.Brightness, Is.EqualTo(0d));
             _mockFlatDevice.Verify(m => m.Brightness, Times.Never);
         }
 
@@ -302,8 +302,8 @@ namespace NINATest.FlatDevice {
             _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
             await _sut.Connect();
             _sut.SetBrightness(1.0);
-            Assert.That(_sut.Brightness, Is.EqualTo(1.0));
-            _mockFlatDevice.VerifySet(m => m.Brightness = 1.0, Times.Once);
+            Assert.That(_sut.Brightness, Is.EqualTo(0d));
+            _mockFlatDevice.VerifySet(m => m.Brightness = 1d, Times.Once);
         }
 
         [Test]
