@@ -148,7 +148,7 @@
     <value>高级设置</value>
   </data>
   <data name="LblAFContrastDetection" xml:space="preserve">
-    <value>对比度检测 (实验中)</value>
+    <value>反差对焦 (实验性)</value>
   </data>
   <data name="LblAFOnButFocuserNotConnected" xml:space="preserve">
     <value>自动对焦已启用，但没有连接电调</value>
@@ -3401,19 +3401,53 @@
     <value>输入电压 (V)</value>
   </data>
   <data name="LblSetMaximumSpeed" xml:space="preserve">
-    <value>Set Maximum Speed</value>
+    <value>设置最大速度</value>
   </data>
   <data name="LblBackLashSteps" xml:space="preserve">
-    <value>Backlash Steps</value>
+    <value>回差步数</value>
   </data>
   <data name="LblReverse" xml:space="preserve">
-    <value>Reverse</value>
+    <value>反转</value>
   </data>
   <data name="LblSetCurrentPosition" xml:space="preserve">
-    <value>Set Current Position</value>
+    <value>设置当前位置</value>
   </data>
   <data name="LblStepperMotorDirection" xml:space="preserve">
-    <value>Stepper Motor Direction</value>
+    <value>步进电机方向</value>
+  </data>
+  <data name="LblAuto" xml:space="preserve">
+    <value>自动</value>
+  </data>
+  <data name="LblBayerPattern" xml:space="preserve">
+    <value>拜尔阵列</value>
+  </data>
+  <data name="LblBayerPatternBGGR" xml:space="preserve">
+    <value>BGGR</value>
+  </data>
+  <data name="LblBayerPatternBGRG" xml:space="preserve">
+    <value>BGRG</value>
+  </data>
+  <data name="LblBayerPatternGBGR" xml:space="preserve">
+    <value>GBGR</value>
+  </data>
+  <data name="LblBayerPatternGBRG" xml:space="preserve">
+    <value>GBRG</value>
+  </data>
+  <data name="LblBayerPatternGRBG" xml:space="preserve">
+    <value>GRBG</value>
+  </data>
+  <data name="LblBayerPatternGRGB" xml:space="preserve">
+    <value>GRGB</value>
+  </data>
+  <data name="LblBayerPatternRGBG" xml:space="preserve">
+    <value>GRGB</value>
+  </data>
+  <data name="LblBayerPatternRGGB" xml:space="preserve">
+    <value>RGGB</value>
+  </data>
+  <data name="LblBayerPatternTooltip" xml:space="preserve">
+    <value>用于在FITS 或 XISF 图像头中记录相机使用的 BAYERPAT（拜尔阵列）关键字。
+默认设置会自动使用相机驱动程序提供的阵列。不适用于DSLR（单反）相机。</value>
   </data>
   <data name="LblCurrent" xml:space="preserve">
     <value>电流</value>
@@ -3422,15 +3456,18 @@
     <value>正在运行序列结束选项...</value>
   </data>
   <data name="LblSQMPatternDescription" xml:space="preserve">
-    <value>Sky Quality Meter reading</value>
+    <value>SQM（天空质量）读取...</value>
   </data>
   <data name="LblReadoutModePatternDescription" xml:space="preserve">
-    <value>Camera Readout Mode</value>
+    <value>相机读出模式</value>
   </data>
   <data name="LblSerialPortCannotOpen" xml:space="preserve">
-    <value>Cannot open serial port {0}: {1}</value>
+    <value>无法打开串行端口 {0}: {1}</value>
   </data>
   <data name="LblPointingTolerance" xml:space="preserve">
-    <value>Pointing Tolerance</value>
+    <value>指向容错范围</value>
+  </data>
+  <data name="LblAutoFocusAfterFlip" xml:space="preserve">
+    <value>翻转后自动对焦</value>
   </data>
 </root>

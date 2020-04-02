@@ -3414,6 +3414,40 @@ Lichtverschmutzten Gebieten. Berechnungszeit ist jedoch erhöht.</value>
   <data name="LblStepperMotorDirection" xml:space="preserve">
     <value>Schrittmotorrichtung</value>
   </data>
+  <data name="LblAuto" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="LblBayerPattern" xml:space="preserve">
+    <value>Bayer-Matrix</value>
+  </data>
+  <data name="LblBayerPatternBGGR" xml:space="preserve">
+    <value>BGGR</value>
+  </data>
+  <data name="LblBayerPatternBGRG" xml:space="preserve">
+    <value>BGRG</value>
+  </data>
+  <data name="LblBayerPatternGBGR" xml:space="preserve">
+    <value>GBGR</value>
+  </data>
+  <data name="LblBayerPatternGBRG" xml:space="preserve">
+    <value>GBRG</value>
+  </data>
+  <data name="LblBayerPatternGRBG" xml:space="preserve">
+    <value>GRBG</value>
+  </data>
+  <data name="LblBayerPatternGRGB" xml:space="preserve">
+    <value>GRGB</value>
+  </data>
+  <data name="LblBayerPatternRGBG" xml:space="preserve">
+    <value>RGBG</value>
+  </data>
+  <data name="LblBayerPatternRGGB" xml:space="preserve">
+    <value>RGGB</value>
+  </data>
+  <data name="LblBayerPatternTooltip" xml:space="preserve">
+    <value>Das Bayer-Muster, das für das Schlüsselwort BAYERPAT in den FITS- oder XISF-Bild-Headern für mit Farbsensoren generierte Bilder verwendet wird.
+Die Standardeinstellung von Auto verwendet das Muster, dass der Kamera-Treiber möglicherweise angibt. Gilt nicht für DSLR-Kameras.</value>
+  </data>
   <data name="LblCurrent" xml:space="preserve">
     <value>Aktuell</value>
   </data>
@@ -3431,5 +3465,8 @@ Lichtverschmutzten Gebieten. Berechnungszeit ist jedoch erhöht.</value>
   </data>
   <data name="LblPointingTolerance" xml:space="preserve">
     <value>Pointing Toleranz</value>
+  </data>
+  <data name="LblAutoFocusAfterFlip" xml:space="preserve">
+    <value>Autofokus nach Flip</value>
   </data>
 </root>
