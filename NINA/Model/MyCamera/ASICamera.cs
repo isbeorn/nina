@@ -435,6 +435,16 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public async Task WaitUntilExposureIsReady(CancellationToken token) {
+            using (token.Register(() => AbortExposure())) {
+                var status = ExposureStatus;
+                while (status == ASICameraDll.ASI_EXPOSURE_STATUS.ASI_EXP_WORKING) {
+                    await Task.Delay(100, token);
+                    status = ExposureStatus;
+                }
+            }
+        }
+
         public async Task<IExposureData> DownloadExposure(CancellationToken token) {
             return await Task.Run<IExposureData>(async () => {
                 try {

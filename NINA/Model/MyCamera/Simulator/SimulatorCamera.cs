@@ -460,6 +460,12 @@ namespace NINA.Model.MyCamera.Simulator {
             Connected = false;
         }
 
+        public Task WaitUntilExposureIsReady(CancellationToken token) {
+            using (token.Register(() => AbortExposure())) {
+                return Task.CompletedTask;
+            }
+        }
+
         public async Task<IExposureData> DownloadExposure(CancellationToken token) {
             switch (Settings.Type) {
                 case CameraType.RANDOM:

@@ -659,34 +659,43 @@ namespace NINA.ViewModel.Equipment.Camera {
 
                 Cam.StartExposure(sequence);
 
-                var start = DateTime.Now;
-                var elapsed = 0.0d;
-                var exposureSeconds = 0;
-                progress.Report(new ApplicationStatus() {
-                    Status = Locale.Loc.Instance["LblExposing"],
-                    Progress = exposureSeconds,
-                    MaxProgress = (int)exposureTime,
-                    ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
-                });
-                /* Wait for Capture */
-
-                if (exposureTime >= 1) {
-                    await Task.Run(async () => {
-                        do {
-                            var delta = await Utility.Utility.Delay(500, token);
-                            elapsed += delta.TotalSeconds;
-                            exposureSeconds = (int)elapsed;
-                            token.ThrowIfCancellationRequested();
-
+                /* Wait for the camera to report image ready and report progress of exposure in remaining seconds */
+                using (var exposureReadyCts = CancellationTokenSource.CreateLinkedTokenSource(token)) {
+                    using (var progressCountCts = CancellationTokenSource.CreateLinkedTokenSource(exposureReadyCts.Token)) {
+                        if (exposureTime >= 1) {
                             progress.Report(new ApplicationStatus() {
                                 Status = Locale.Loc.Instance["LblExposing"],
-                                Progress = exposureSeconds,
+                                Progress = 0,
                                 MaxProgress = (int)exposureTime,
                                 ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue
                             });
-                        } while ((elapsed < exposureTime) && CameraInfo.Connected == true);
-                    });
+                            /* Report progress of exposure in parallel to waiting for exposure ready event.*/
+                            _ = Utility.Utility.Wait(TimeSpan.FromSeconds(exposureTime), progressCountCts.Token, progress, Locale.Loc.Instance["LblExposing"]);
+                        } else {
+                            progress.Report(new ApplicationStatus() {
+                                Status = Locale.Loc.Instance["LblExposing"]
+                            });
+                        }
+
+                        exposureReadyCts.CancelAfter(TimeSpan.FromSeconds(exposureTime + 15));
+                        try {
+                            await Cam.WaitUntilExposureIsReady(exposureReadyCts.Token);
+                        } catch (OperationCanceledException) {
+                            Console.WriteLine("Parent token cancelled: " + token.IsCancellationRequested);
+                            Console.WriteLine("Child token cancelled: " + exposureReadyCts.Token.IsCancellationRequested);
+                            if (!token.IsCancellationRequested) {
+                                Logger.Error("Camera Timeout - Camera did not set image as ready after exposuretime + 15 seconds");
+                                Notification.ShowError(Locale.Loc.Instance["LblCameraTimeout"]);
+                            }
+                        } finally {
+                            progressCountCts.Cancel();
+                            progress.Report(new ApplicationStatus() {
+                                Status = Locale.Loc.Instance["LblExposureFinished"]
+                            });
+                        }
+                    }
                 }
+
                 token.ThrowIfCancellationRequested();
                 CameraInfo.IsExposing = false;
                 BroadcastCameraInfo();

@@ -94,6 +94,7 @@
 - Added `$$READOUTMODE$$` file name pattern to enable the a camera's readout mode to be used in file or folder names
 - Added `BAYERPAT`, `XBAYEROFF`, and `YBAYEROFF` keyword support in FITS and XISF files for color cameras. A menu under Options > Equipment > Camera allows the user to override the driver-specified Bayer pattern with a custom one
 - Meridian Flip now has an option to do an auto focus after a flip during sequencing
+- When the camera is not giving a ready signal for image download after exposuretime + 15 seconds the exposure will be canceled and skipped
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false

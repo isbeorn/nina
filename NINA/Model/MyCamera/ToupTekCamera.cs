@@ -538,8 +538,8 @@ namespace NINA.Model.MyCamera {
             return Task<bool>.Run(() => {
                 var success = false;
                 try {
-                    downloadExposure?.TrySetCanceled();
-                    downloadExposure = null;
+                    imageReadyTCS?.TrySetCanceled();
+                    imageReadyTCS = null;
 
                     camera = new ToupCam();
                     camera.Open(this.Id);
@@ -630,14 +630,14 @@ namespace NINA.Model.MyCamera {
             Logger.Trace($"ToupTekCamera - OnEventCallback {nEvent}");
             switch (nEvent) {
                 case ToupCam.eEVENT.EVENT_IMAGE: // Live View Image
-                    Logger.Trace($"ToupTekCamera - Setting DownloadExposure Result on Task {downloadExposure.Task.Id}");
-                    var success = downloadExposure?.TrySetResult(true);
-                    Logger.Trace($"ToupTekCamera - DownloadExposure Result on Task {downloadExposure.Task.Id} set successfully: {success}");
+                    Logger.Trace($"ToupTekCamera - Setting DownloadExposure Result on Task {imageReadyTCS.Task.Id}");
+                    var success = imageReadyTCS?.TrySetResult(true);
+                    Logger.Trace($"ToupTekCamera - DownloadExposure Result on Task {imageReadyTCS.Task.Id} set successfully: {success}");
                     break;
 
                 case ToupCam.eEVENT.EVENT_STILLIMAGE: // Still Image
                     Logger.Warning("ToupTekCamera - Still image event received, but not expected to get one!");
-                    downloadExposure?.TrySetResult(true);
+                    imageReadyTCS?.TrySetResult(true);
                     break;
 
                 case ToupCam.eEVENT.EVENT_TIMEOUT:
@@ -702,11 +702,18 @@ namespace NINA.Model.MyCamera {
             camera = null;
         }
 
+        public async Task WaitUntilExposureIsReady(CancellationToken token) {
+            using (token.Register(() => AbortExposure())) {
+                await imageReadyTCS.Task;
+            }
+        }
+
         public async Task<IExposureData> DownloadExposure(CancellationToken token) {
-            using (token.Register(() => downloadExposure.TrySetCanceled())) {
+            if (imageReadyTCS.Task.IsCanceled) { return null; }
+            using (token.Register(() => imageReadyTCS.TrySetCanceled())) {
                 using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15))) {
-                    using (cts.Token.Register(() => { Logger.Error("ToupTekCamera - No Image Callback Event received"); downloadExposure.TrySetResult(true); })) {
-                        var imageReady = await downloadExposure.Task;
+                    using (cts.Token.Register(() => { Logger.Error("ToupTekCamera - No Image Callback Event received"); imageReadyTCS.TrySetResult(true); })) {
+                        var imageReady = await imageReadyTCS.Task;
                         return PullImage();
                     }
                 }
@@ -745,9 +752,9 @@ namespace NINA.Model.MyCamera {
         }
 
         public void StartExposure(CaptureSequence sequence) {
-            downloadExposure?.TrySetCanceled();
-            downloadExposure = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-            Logger.Trace($"ToupTekCamera - created new downloadExposure Task with Id {downloadExposure.Task.Id}");
+            imageReadyTCS?.TrySetCanceled();
+            imageReadyTCS = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            Logger.Trace($"ToupTekCamera - created new downloadExposure Task with Id {imageReadyTCS.Task.Id}");
 
             SetExposureTime(sequence.ExposureTime);
 
@@ -756,7 +763,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        private TaskCompletionSource<bool> downloadExposure;
+        private TaskCompletionSource<bool> imageReadyTCS;
         private int bitDepth;
 
         public int BitDepth {
@@ -778,8 +785,8 @@ namespace NINA.Model.MyCamera {
             if (!camera.put_Option(ToupCam.eOPTION.OPTION_TRIGGER, 0)) {
                 throw new Exception("ToupTekCamera - Could not set Trigger video mode");
             }
-            downloadExposure?.TrySetCanceled();
-            downloadExposure = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            imageReadyTCS?.TrySetCanceled();
+            imageReadyTCS = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
             LiveViewEnabled = true;
         }
 
@@ -787,10 +794,11 @@ namespace NINA.Model.MyCamera {
             if (!camera.Trigger(0)) {
                 Logger.Warning("ToupTekCamera - Could not stop exposure");
             }
+            imageReadyTCS?.TrySetCanceled();
         }
 
         public void StopLiveView() {
-            downloadExposure.Task.ContinueWith((Task<bool> o) => {
+            imageReadyTCS.Task.ContinueWith((Task<bool> o) => {
                 if (!camera.put_Option(ToupCam.eOPTION.OPTION_TRIGGER, 1)) {
                     Disconnect();
                     throw new Exception("ToupTekCamera - Could not set Trigger manual mode. Reconnect Camera!");

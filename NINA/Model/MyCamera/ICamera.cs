@@ -89,6 +89,8 @@ namespace NINA.Model.MyCamera {
 
         void StartExposure(CaptureSequence sequence);
 
+        Task WaitUntilExposureIsReady(CancellationToken token);
+
         void StopExposure();
 
         void StartLiveView();

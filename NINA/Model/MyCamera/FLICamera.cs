@@ -671,8 +671,27 @@ namespace NINA.Model.MyCamera {
             LibFLI.FLIClose(CameraH);
         }
 
+        public async Task WaitUntilExposureIsReady(CancellationToken token) {
+            using (token.Register(() => AbortExposure())) {
+                uint rv;
+                uint timeLeft = 0;
+
+                /*
+                 * Make sure to wait for any residual time to allow the camera to complete the exposure
+                 */
+                if ((rv = LibFLI.FLIGetExposureStatus(CameraH, ref timeLeft)) != LibFLI.FLI_SUCCESS) {
+                    Logger.Error($"FLI: FLIGetExposureStatus() failed. Returned {rv}");
+                }
+
+                if (timeLeft > 0) {
+                    Logger.Debug($"FLI: DownloadExposure() pausing for {timeLeft}ms for exposure completion.");
+                    await Task.Delay((int)timeLeft, token);
+                }
+            }
+        }
+
         public Task<IExposureData> DownloadExposure(CancellationToken ct) {
-            return Task.Run<IExposureData>(() => {
+            return Task.Run<IExposureData>(async () => {
                 uint rv;
 
                 int width = (int)Info.ExposureWidth;
@@ -690,7 +709,7 @@ namespace NINA.Model.MyCamera {
 
                 if (timeLeft > 0) {
                     Logger.Debug($"FLI: DownloadExposure() pausing for {timeLeft}ms for exposure completion.");
-                    Thread.Sleep((int)timeLeft);
+                    await Task.Delay((int)timeLeft, ct);
                 }
 
                 // FLI cameras are always 16bit

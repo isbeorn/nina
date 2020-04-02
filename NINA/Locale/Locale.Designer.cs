@@ -986,7 +986,7 @@ namespace NINA.Locale {
                 return ResourceManager.GetString("LblBackLashSteps", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Bayer Pattern.
         /// </summary>
@@ -1362,6 +1362,15 @@ namespace NINA.Locale {
         internal static string LblCameraState {
             get {
                 return ResourceManager.GetString("LblCameraState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera Timeout - Camera did not set image as ready after exposuretime + 15 seconds.
+        /// </summary>
+        internal static string LblCameraTimeout {
+            get {
+                return ResourceManager.GetString("LblCameraTimeout", resourceCulture);
             }
         }
         
@@ -3509,6 +3518,15 @@ namespace NINA.Locale {
         internal static string LblExposureCalculatorMeanLessThanOffset {
             get {
                 return ResourceManager.GetString("LblExposureCalculatorMeanLessThanOffset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exposure finished.
+        /// </summary>
+        internal static string LblExposureFinished {
+            get {
+                return ResourceManager.GetString("LblExposureFinished", resourceCulture);
             }
         }
         

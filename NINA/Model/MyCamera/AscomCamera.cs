@@ -1062,15 +1062,20 @@ namespace NINA.Model.MyCamera {
             _camera = null;
         }
 
+        public async Task WaitUntilExposureIsReady(CancellationToken token) {
+            using (token.Register(() => AbortExposure())) {
+                while (!ImageReady) {
+                    await Utility.Utility.Wait(TimeSpan.FromMilliseconds(100), token);
+                }
+            }
+        }
+
         public async Task<IExposureData> DownloadExposure(CancellationToken token) {
             using (MyStopWatch.Measure("ASCOM Download")) {
                 return await Task.Run(async () => {
                     try {
-                        using (MyStopWatch.Measure("ASCOM WaitForCamera")) {
-                            while (!ImageReady && Connected) {
-                                //Console.Write(".");
-                                await Utility.Utility.Wait(TimeSpan.FromMilliseconds(100), token);
-                            }
+                        while (!ImageReady) {
+                            await Utility.Utility.Wait(TimeSpan.FromMilliseconds(100), token);
                         }
 
                         return new Flipped2DExposureData(

@@ -475,13 +475,21 @@ namespace NINA.Model.MyCamera {
             RaisePropertyChanged(nameof(Connected));
         }
 
+        public async Task WaitUntilExposureIsReady(CancellationToken token) {
+            using (token.Register(() => AbortExposure())) {
+                while (!AtikCameraDll.ImageReady(_cameraP)) {
+                    await Task.Delay(100, token);
+                }
+            }
+        }
+
         public async Task<IExposureData> DownloadExposure(CancellationToken token) {
             using (MyStopWatch.Measure("ATIK Download")) {
                 return await Task.Run<IExposureData>(async () => {
                     try {
-                        do {
+                        while (!AtikCameraDll.ImageReady(_cameraP)) {
                             await Task.Delay(100, token);
-                        } while (!AtikCameraDll.ImageReady(_cameraP));
+                        }
 
                         return AtikCameraDll.DownloadExposure(_cameraP, BitDepth, SensorType != SensorType.Monochrome);
                     } catch (OperationCanceledException) {

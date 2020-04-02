@@ -247,7 +247,7 @@ namespace NINA.Model.MyCamera {
         private void Camera_ImageReady(NikonDevice sender, NikonImage image) {
             Logger.Debug("Image ready");
             _memoryStream = new MemoryStream(image.Buffer);
-            Logger.Debug("Setting Download Exposure Taks to complete");
+            Logger.Debug("Setting Download Exposure Task to complete");
             _downloadExposure.TrySetResult(null);
         }
 
@@ -676,7 +676,14 @@ namespace NINA.Model.MyCamera {
             serialPortInteraction = null;
         }
 
+        public async Task WaitUntilExposureIsReady(CancellationToken token) {
+            using (token.Register(() => AbortExposure())) {
+                await _downloadExposure.Task;
+            }
+        }
+
         public async Task<IExposureData> DownloadExposure(CancellationToken token) {
+            if (_downloadExposure.Task.IsCanceled) { return null; }
             Logger.Debug("Waiting for download of exposure");
             await _downloadExposure.Task;
             Logger.Debug("Downloading of exposure complete. Converting image to internal array");

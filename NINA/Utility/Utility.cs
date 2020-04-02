@@ -97,12 +97,12 @@ namespace NINA.Utility {
             return DateTime.Now.Subtract(now);
         }
 
-        public static async Task<TimeSpan> Wait(TimeSpan t, CancellationToken token = new CancellationToken(), IProgress<ApplicationStatus> progress = default) {
+        public static async Task<TimeSpan> Wait(TimeSpan t, CancellationToken token = new CancellationToken(), IProgress<ApplicationStatus> progress = default, string status = "") {
             TimeSpan elapsed = new TimeSpan(0);
             do {
                 var delta = await Delay(100, token);
                 elapsed += delta;
-                progress?.Report(new ApplicationStatus() { MaxProgress = (int)t.TotalSeconds, Progress = (int)elapsed.TotalSeconds, Status = Locale.Loc.Instance["LblWaiting"], ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue });
+                progress?.Report(new ApplicationStatus() { MaxProgress = (int)t.TotalSeconds, Progress = (int)elapsed.TotalSeconds, Status = string.IsNullOrWhiteSpace(status) ? Locale.Loc.Instance["LblWaiting"] : status, ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue });
             } while (elapsed < t);
             return elapsed;
         }

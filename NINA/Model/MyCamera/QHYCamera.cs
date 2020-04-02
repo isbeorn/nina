@@ -862,6 +862,15 @@ namespace NINA.Model.MyCamera {
             LibQHYCCD.N_CloseQHYCCD(CameraP);
         }
 
+        public async Task WaitUntilExposureIsReady(CancellationToken token) {
+            using (token.Register(() => AbortExposure())) {
+                /* Wait for exposure to finish */
+                while (LibQHYCCD.GetQHYCCDExposureRemaining(CameraP) > 0) {
+                    await Task.Delay(100, token);
+                }
+            }
+        }
+
         public Task<IExposureData> DownloadExposure(CancellationToken ct) {
             return Task.Run<IExposureData>(async () => {
                 uint width = 0;
@@ -872,14 +881,9 @@ namespace NINA.Model.MyCamera {
 
                 Logger.Debug("QHYCCD: Downloading exposure...");
 
-                /*
-                 * Check to see if the exposure is completed.
-                 * If the remaining time is 100ms or less, the exposure is completed.
-                 */
-                if ((rv = LibQHYCCD.GetQHYCCDExposureRemaining(CameraP)) > 100) {
-                    /* Sleep until the exposure is ready for download */
-                    Logger.Debug($"QHYCCD: Sleeping for {rv}ms to allow the exposure to complete");
-                    await Task.Delay((int)rv, ct);
+                /* Wait for exposure to finish */
+                while (LibQHYCCD.GetQHYCCDExposureRemaining(CameraP) > 0) {
+                    await Task.Delay(100, ct);
                 }
 
                 bool is16bit = Info.Bpp > 8;

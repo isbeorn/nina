@@ -420,8 +420,15 @@ namespace NINA.Model.MyCamera {
             Connected = false;
         }
 
+        public async Task WaitUntilExposureIsReady(CancellationToken token) {
+            using (token.Register(() => AbortExposure())) {
+                await downloadExposure.Task;
+            }
+        }
+
         public Task<IExposureData> DownloadExposure(CancellationToken token) {
             return Task.Run<IExposureData>(async () => {
+                if (downloadExposure.Task.IsCanceled) { return null; }
                 var memoryStreamHandle = IntPtr.Zero;
                 var imageDataPointer = IntPtr.Zero;
                 try {

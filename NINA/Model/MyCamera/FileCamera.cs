@@ -501,6 +501,12 @@ namespace NINA.Model.MyCamera {
             Connected = false;
         }
 
+        public Task WaitUntilExposureIsReady(CancellationToken token) {
+            using (token.Register(() => AbortExposure())) {
+                return Task.CompletedTask;
+            }
+        }
+
         public async Task<IExposureData> DownloadExposure(CancellationToken token) {
             try {
                 string path;
