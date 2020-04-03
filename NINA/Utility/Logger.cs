@@ -166,7 +166,7 @@ namespace NINA.Utility {
 
         private static string EnrichLogMessage(LogLevelEnum level, string message, string memberName, string sourceFilePath) {
             var sb = new StringBuilder();
-            var d = DateTime.Now.ToString("s");
+            var d = DateTime.Now.ToString("yyyy-MM-ddThh:mm:ss.ffff");
             var prefix = string.Format("[{0}] \t [{1}]", d, level.ToString());
 
             sb.AppendLine(string.Format("{0} \t [MemberName] {1}", prefix, memberName));
