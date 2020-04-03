@@ -308,6 +308,8 @@ namespace NINA.Model.MyCamera {
                     }
                 } catch (InvalidValueException) {
                     _hasCCDTemperature = false;
+                } catch (PropertyNotImplementedException) {
+                    _hasCCDTemperature = false;
                 }
                 return val;
             }
