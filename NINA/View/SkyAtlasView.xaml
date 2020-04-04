@@ -374,7 +374,7 @@
                 <StackPanel VerticalAlignment="Center" Orientation="Vertical">
                     <TextBlock Text="{ns:Loc LblDataProvidedBy}" />
                     <TextBlock>
-                        <Hyperlink NavigateUri="http://www.saguaroastro.org/content/downloads.htm" RequestNavigate="Hyperlink_RequestNavigate">
+                        <Hyperlink NavigateUri="https://www.saguaroastro.org/sac-downloads/" RequestNavigate="Hyperlink_RequestNavigate">
                             Saguaro Astronomy Club Database version 8.1
                         </Hyperlink>
                     </TextBlock>
