@@ -3468,4 +3468,10 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
   <data name="LblAutoFocusAfterFlip" xml:space="preserve">
     <value>Auto Focus after Flip</value>
   </data>
+  <data name="LblExposureFinished" xml:space="preserve">
+    <value>Exposure finished</value>
+  </data>
+  <data name="LblCameraTimeout" xml:space="preserve">
+    <value>Camera Timeout - Camera did not set image as ready after exposuretime + 15 seconds</value>
+  </data>
 </root>

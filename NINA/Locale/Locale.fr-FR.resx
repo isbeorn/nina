@@ -3467,4 +3467,10 @@ La valeur par défaut Auto utilise n'importe quel matrice que le pilote de la ca
   <data name="LblAutoFocusAfterFlip" xml:space="preserve">
     <value>Mise au point automatique après le retournement</value>
   </data>
+  <data name="LblExposureFinished" xml:space="preserve">
+    <value>Exposure finished</value>
+  </data>
+  <data name="LblCameraTimeout" xml:space="preserve">
+    <value>Camera Timeout - Camera did not set image as ready after exposuretime + 15 seconds</value>
+  </data>
 </root>
