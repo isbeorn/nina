@@ -562,7 +562,7 @@ namespace NINA.ViewModel {
             CancellationToken cancelToken) {
             var detectStars = parameters.DetectStars.HasValue ? parameters.DetectStars.Value : DetectStars;
             var autoStretch = detectStars || (parameters.AutoStretch.HasValue ? parameters.AutoStretch.Value : AutoStretch);
-            var processedImage = renderedImage.ReRender();
+            var processedImage = renderedImage;
             if (autoStretch) {
                 _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStretchImage"] });
                 var unlinkedStretch = renderedImage.RawImageData.Properties.IsBayered && profileService.ActiveProfile.ImageSettings.DebayerImage && profileService.ActiveProfile.ImageSettings.UnlinkedStretch;
