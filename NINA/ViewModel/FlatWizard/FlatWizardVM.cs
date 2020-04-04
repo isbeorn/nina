@@ -160,11 +160,13 @@ namespace NINA.ViewModel.FlatWizard {
             }
         }
 
-        private Task<bool> SlewToZenith() {
+        private async Task<bool> SlewToZenith() {
             var latitude = Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude);
             var longitude = Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Longitude);
-            var azimuth = AltitudeSite == AltitudeSite.EAST ? Angle.ByDegree(90) : Angle.ByDegree(270);
-            return telescopeMediator.SlewToCoordinatesAsync(new TopocentricCoordinates(azimuth, Angle.ByDegree(89), latitude, longitude));
+            var azimuth = AltitudeSite == AltitudeSite.WEST ? Angle.ByDegree(90) : Angle.ByDegree(270);
+            await telescopeMediator.SlewToCoordinatesAsync(new TopocentricCoordinates(azimuth, Angle.ByDegree(89), latitude, longitude));
+            telescopeMediator.SetTracking(false);
+            return true;
         }
 
         private void UpdateSingleFlatWizardFilterSettings(IProfileService profileService) {
