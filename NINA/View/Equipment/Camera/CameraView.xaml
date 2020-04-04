@@ -467,7 +467,7 @@
                                         Text="{ns:Loc LblTargetTemp}" />
                                     <Slider
                                         Grid.Column="1"
-                                        IsEnabled="{Binding CoolingRunning, Converter={StaticResource InverseBooleanConverter}}"
+                                        IsEnabled="{Binding TempChangeRunning, Converter={StaticResource InverseBooleanConverter}}"
                                         IsSnapToTickEnabled="True"
                                         Maximum="20"
                                         Minimum="-50"
@@ -478,7 +478,7 @@
                                         Grid.Column="2"
                                         VerticalAlignment="Center"
                                         DockPanel.Dock="Right"
-                                        IsEnabled="{Binding CoolingRunning, Converter={StaticResource InverseBooleanConverter}}">
+                                        IsEnabled="{Binding TempChangeRunning, Converter={StaticResource InverseBooleanConverter}}">
                                         <TextBox.Text>
                                             <Binding
                                                 Path="TargetTemp"
@@ -505,7 +505,7 @@
                                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMinDuration}" />
                                     <Slider
                                         Grid.Column="1"
-                                        IsEnabled="{Binding CoolingRunning, Converter={StaticResource InverseBooleanConverter}}"
+                                        IsEnabled="{Binding TempChangeRunning, Converter={StaticResource InverseBooleanConverter}}"
                                         IsSnapToTickEnabled="True"
                                         Maximum="30"
                                         Minimum="0"
@@ -515,7 +515,7 @@
                                     <TextBox
                                         Grid.Column="2"
                                         VerticalAlignment="Center"
-                                        IsEnabled="{Binding CoolingRunning, Converter={StaticResource InverseBooleanConverter}}">
+                                        IsEnabled="{Binding TempChangeRunning, Converter={StaticResource InverseBooleanConverter}}">
                                         <TextBox.Text>
                                             <Binding
                                                 Path="Duration"
@@ -541,15 +541,15 @@
                                     <Grid
                                         Height="40"
                                         Margin="5,0,5,0"
-                                        Visibility="{Binding CoolingRunning, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                        Visibility="{Binding TempChangeRunning, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                                         <ProgressBar
                                             Maximum="1"
                                             Minimum="0"
-                                            Value="{Binding CoolingProgress}" />
+                                            Value="{Binding TemperatureProgress}" />
                                         <TextBlock
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
-                                            Text="{Binding CoolingProgress, StringFormat=\{0:#%\}}" />
+                                            Text="{Binding TemperatureProgress, StringFormat=\{0:#%\}}" />
                                     </Grid>
                                     <ninactrl:CancellableButton
                                         Grid.Column="1"

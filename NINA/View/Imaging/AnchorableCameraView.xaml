@@ -163,7 +163,7 @@
                             <ninactrl:StepperControl
                                 AddSVG="{StaticResource AddSVG}"
                                 ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
-                                IsEnabled="{Binding CoolingRunning, Converter={StaticResource InverseBooleanConverter}}"
+                                IsEnabled="{Binding TempChangeRunning, Converter={StaticResource InverseBooleanConverter}}"
                                 MaxValue="20"
                                 MinValue="-50"
                                 StepSize="0.5"
@@ -181,7 +181,7 @@
                             <ninactrl:StepperControl
                                 AddSVG="{StaticResource AddSVG}"
                                 ButtonForegroundBrush="{StaticResource ButtonForegroundBrush}"
-                                IsEnabled="{Binding CoolingRunning, Converter={StaticResource InverseBooleanConverter}}"
+                                IsEnabled="{Binding TempChangeRunning, Converter={StaticResource InverseBooleanConverter}}"
                                 MinValue="0"
                                 StepSize="0.5"
                                 SubstractSVG="{StaticResource SubstractSVG}"
@@ -197,15 +197,15 @@
                             <Grid
                                 Height="35"
                                 Margin="10"
-                                Visibility="{Binding CoolingRunning, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                Visibility="{Binding TempChangeRunning, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                                 <ProgressBar
                                     Maximum="1"
                                     Minimum="0"
-                                    Value="{Binding CoolingProgress}" />
+                                    Value="{Binding TemperatureProgress}" />
                                 <TextBlock
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Text="{Binding CoolingProgress, StringFormat=\{0:#%\}}" />
+                                    Text="{Binding TemperatureProgress, StringFormat=\{0:#%\}}" />
                             </Grid>
                             <ninactrl:CancellableButton
                                 Height="25"

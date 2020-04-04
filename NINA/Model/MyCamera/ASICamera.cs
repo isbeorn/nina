@@ -158,7 +158,7 @@ namespace NINA.Model.MyCamera {
         public double TemperatureSetPoint {
             get {
                 if (CanSetTemperature) {
-                    return (double)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP);
+                    return GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP);
                 } else {
                     return double.NaN;
                 }
@@ -167,13 +167,11 @@ namespace NINA.Model.MyCamera {
                 if (CanSetTemperature) {
                     //need to be an integer for ASI cameras
                     var nearest = (int)Math.Round(value);
-                    //for temperatures, automatically adjust to max or min accepted values
-                    var maxValue = GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP);
-                    var minValue = GetControlMinValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP);
-                    if (nearest > maxValue) {
-                        nearest = maxValue;
-                    } else if (nearest < minValue) {
-                        nearest = minValue;
+
+                    if (nearest > maxTemperatureSetpoint) {
+                        nearest = maxTemperatureSetpoint;
+                    } else if (nearest < minTemperatureSetpoint) {
+                        nearest = minTemperatureSetpoint;
                     }
                     if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP, nearest)) {
                         RaisePropertyChanged();
@@ -295,16 +293,10 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public bool CanSetTemperature {
-            get {
-                var val = GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_COOLER_ON);
-                if (val > 0) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        }
+        private int minTemperatureSetpoint = 0;
+        private int maxTemperatureSetpoint = 0;
+
+        public bool CanSetTemperature { get; private set; }
 
         public int BitDepth {
             get {
@@ -386,6 +378,8 @@ namespace NINA.Model.MyCamera {
                     return false;
                 }
                 this.CaptureAreaInfo = new CaptureAreaInfo(new Point(0, 0), this.Resolution, 1, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
+
+                Initialize();
                 RaisePropertyChanged(nameof(Connected));
                 RaiseAllPropertiesChanged();
             } catch (Exception ex) {
@@ -711,7 +705,14 @@ namespace NINA.Model.MyCamera {
         }
 
         public void Initialize() {
-            throw new NotImplementedException();
+            //Check if camera can set temperature
+            CanSetTemperature = false;
+            var val = GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_COOLER_ON);
+            if (val > 0) {
+                CanSetTemperature = true;
+                maxTemperatureSetpoint = GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP);
+                minTemperatureSetpoint = GetControlMinValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP);
+            }
         }
 
         public async Task<bool> Connect(CancellationToken token) {
@@ -730,6 +731,7 @@ namespace NINA.Model.MyCamera {
                         return false;
                     }
                     this.CaptureAreaInfo = new CaptureAreaInfo(new Point(0, 0), this.Resolution, 1, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
+                    Initialize();
                     RaisePropertyChanged(nameof(Connected));
                     RaiseAllPropertiesChanged();
                 } catch (Exception ex) {
