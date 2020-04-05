@@ -43,8 +43,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             Devices.Clear();
 
             Devices.Add(new DummyDevice(Locale.Loc.Instance["LblFlatDeviceNoDevice"]));
-
-            Logger.Trace("Adding Alnitak Flat Devices");
+            Devices.Add(new AllProSpikeAFlat(profileService));
             Devices.Add(new AlnitakFlipFlatSimulator(profileService));
             Devices.Add(new AlnitakFlatDevice(profileService));
             Devices.Add(new ArteskyFlatBox(profileService));

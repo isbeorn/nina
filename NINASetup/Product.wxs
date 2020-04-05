@@ -53,6 +53,7 @@
       <ComponentRef Id="CrashDumpRegistry" />
       <!--<ComponentGroupRef Id="Documentation_images_files" />
       <ComponentGroupRef Id="Documentation_files" />-->
+      <ComponentGroupRef Id="External_x64_AllPro_files" />
       <ComponentGroupRef Id="External_x64_ASI_files" />
       <ComponentGroupRef Id="External_x64_Atik_files" />
       <ComponentGroupRef Id="External_x64_QHY_files" />
@@ -82,6 +83,7 @@
       <ComponentGroupRef Id="External_x64_Nikon_Type0022_files" />
       <ComponentGroupRef Id="External_x64_Nikon_Type0023_files" />
       <ComponentGroupRef Id="External_x64_Nikon_Type0024_files" />
+      <ComponentGroupRef Id="External_x86_AllPro_files" />
       <ComponentGroupRef Id="External_x86_ASI_files" />
       <ComponentGroupRef Id="External_x86_Atik_files" />
       <ComponentGroupRef Id="External_x86_QHY_files" />
@@ -169,6 +171,7 @@
           </Component>
           <Directory Id="External" Name="External">
             <Directory Id="External_x64" Name="x64">
+              <Directory Id="External_x64_AllPro" Name="AllPro" />
               <Directory Id="External_x64_ASI" Name="ASI" />
               <Directory Id="External_x64_Atik" Name="Atik" />
               <Directory Id="External_x64_QHY" Name="QHYCCD" />
@@ -236,6 +239,7 @@
                 <Directory Id="External_x86_Nikon_Type0023" Name="Type0023" />
                 <Directory Id="External_x86_Nikon_Type0024" Name="Type0024" />
               </Directory>
+              <Directory Id="External_x86_AllPro" Name="AllPro" />
               <Directory Id="External_x86_FreeImage" Name="FreeImage" />
               <Directory Id="External_x86_Canon" Name="Canon" />
               <Directory Id="External_x86_Atik" Name="Atik" />
@@ -681,6 +685,17 @@
   </Fragment>-->
 
   <Fragment>
+    <ComponentGroup Id="External_x64_AllPro_files" Directory="External_x64_AllPro">
+      <Component Win64="$(var.Win64)" Id="External_x64_AllPro_spikausbd.dll" Guid="F8AA23B3-12D9-4DF7-92A6-E3219F5A5231">
+        <File Id="External_x64_AllPro_spikausbd.dll" Name="spikausbd.dll" Source="$(var.NINA_ProjectDir)External\x64\AllPro\spikausbd.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="External_x64_AllPro_spikahidapi64.dll" Guid="3D485FD0-DBAD-46F7-A000-3E6B0484AA35">
+        <File Id="External_x64_AllPro_spikahidapi64.dll" Name="spikahidapi64.dll" Source="$(var.NINA_ProjectDir)External\x64\AllPro\spikahidapi64.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
     <ComponentGroup Id="External_x64_ASI_files" Directory="External_x64_ASI">
       <Component Win64="$(var.Win64)" Id="External_x64_ASI_ASICamera2.dll" Guid="83d1acb1-81fa-4381-a930-27527f2ead20">
         <File Id="External_x64_ASI_ASICamera2.dll" Name="ASICamera2.dll" Source="$(var.NINA_ProjectDir)External\x64\ASI\ASICamera2.dll" />
@@ -998,6 +1013,17 @@
       </Component>
       <Component Win64="$(var.Win64)" Id="External_x64_Nikon_Type0024_Type0024.md3" Guid="C35CFDCF-0C29-4EAF-BECD-79A855F7E0C5">
         <File Id="External_x64_Nikon_Type0024_Type0024.md3" Name="Type0024.md3" Source="$(var.NINA_ProjectDir)External\x64\Nikon\Type0024\Type0024.md3" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="External_x86_AllPro_files" Directory="External_x86_AllPro">
+      <Component Win64="$(var.Win64)" Id="External_x86_AllPro_spikausbd.dll" Guid="C5D19C7B-7020-4E88-A263-D153DB5515E1">
+        <File Id="External_x86_AllPro_spikausbd.dll" Name="spikausbd.dll" Source="$(var.NINA_ProjectDir)External\x86\AllPro\spikausbd.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="External_x86_AllPro_hidapi.dll" Guid="490CCABA-0FD1-406C-9677-D94272A6289F">
+        <File Id="External_x86_AllPro_hidapi.dll" Name="hidapi.dll" Source="$(var.NINA_ProjectDir)External\x86\AllPro\hidapi.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

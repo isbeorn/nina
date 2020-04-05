@@ -449,6 +449,7 @@
     <Compile Include="Model\MyFilterWheel\NullFilter.cs" />
     <Compile Include="Model\MyFilterWheel\QHYFilterWheel.cs" />
     <Compile Include="Model\MyFilterWheel\FLIFilterWheel.cs" />
+    <Compile Include="Model\MyFlatDevice\AllProSpikeAFlat.cs" />
     <Compile Include="Model\MyFocuser\UltimatePowerboxV2.cs" />
     <Compile Include="Model\MyFocuser\AscomFocuserProvider.cs" />
     <Compile Include="Model\MyFocuser\IAscomFocuserProvider.cs" />
@@ -489,6 +490,7 @@
     <Compile Include="Utility\FlatDeviceSDKs\Artesky\ArteskyCommands.cs" />
     <Compile Include="Utility\FlatDeviceSDKs\Artesky\IArteskyFlatBox.cs" />
     <Compile Include="Utility\FlatDeviceSDKs\Artesky\ArteskyDevice.cs" />
+    <Compile Include="Utility\FlatDeviceSDKs\AllPro\USBD.cs" />
     <Compile Include="Utility\SerialCommunication\ISerialSdk.cs" />
     <Compile Include="Utility\SerialCommunication\SerialSdk.cs" />
     <Compile Include="Utility\SerialCommunication\ICommand.cs" />
@@ -1692,6 +1694,12 @@
     <Content Include="Database\Migration\3.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="External\x64\AllPro\spikahidapi64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\AllPro\spikausbd.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="External\x64\FLI\libfli.dll" />
     <Content Include="External\x64\FreeImage\FreeImage.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1707,6 +1715,12 @@
     </Content>
     <Content Include="External\x64\SQLite\SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\AllPro\hidapi.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\AllPro\spikausbd.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\FLI\libfli.dll" />
     <Content Include="External\x86\FreeImage\FreeImage.dll">
