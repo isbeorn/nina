@@ -169,10 +169,8 @@ namespace NINA.Model.MyCamera {
 
         public bool CanGetGain {
             get {
-                if (Connected) {
-                    if (IsQHYControl(LibQHYCCD.CONTROL_ID.CONTROL_GAIN))
-                        return true;
-                }
+                if (Connected)
+                    return Info.HasGain;
 
                 return false;
             }
@@ -180,10 +178,8 @@ namespace NINA.Model.MyCamera {
 
         public bool CanSetGain {
             get {
-                if (Connected) {
-                    if (IsQHYControl(LibQHYCCD.CONTROL_ID.CONTROL_GAIN))
-                        return true;
-                }
+                if (Connected)
+                    return Info.HasGain;
 
                 return false;
             }
@@ -400,7 +396,7 @@ namespace NINA.Model.MyCamera {
                         return -1;
                     }
 
-                    Logger.Debug($"QHYCCD: Current readout mode: {mode} ({ReadoutModes.Cast<string>().ToArray()[mode]})");
+                    Logger.Trace($"QHYCCD: Current readout mode: {mode} ({ReadoutModes.Cast<string>().ToArray()[mode]})");
 
                     return (short)mode;
                 } else {
@@ -526,7 +522,7 @@ namespace NINA.Model.MyCamera {
             double rv;
 
             if ((rv = LibQHYCCD.GetQHYCCDParam(CameraP, type)) != LibQHYCCD.QHYCCD_ERROR) {
-                Logger.Debug($"QHYCCD: Got Control {type} = {rv}");
+                Logger.Trace($"QHYCCD: Got Control {type} = {rv}");
                 return rv;
             } else {
                 Logger.Error($"QHYCCD: Failed to Get value for control {type}");
@@ -680,22 +676,19 @@ namespace NINA.Model.MyCamera {
                     Logger.Debug($"QHYCCD: Camera has {num_modes} readout mode(s)");
 
                     /*
-                     * Every camera always has 1 readout mode. We are only interested in ones that have more than that
-                     *
-                     * There is also a special case for the QHY42PRO: different readout modes on this camera will have
-                     * different image dimensions. Until we can properly support that camera, we will skip readout mode
-                     * support for it.
+                     * Every camera always has 1 readout mode. We are only interested in getting names for ones that have more than 1
                      */
-                    if (num_modes > 1 && Info.Model.ToString() != "QHY42PRO") {
+                    if (num_modes > 1) {
                         for (uint i = 0; i < num_modes; i++) {
                             _ = LibQHYCCD.GetQHYCCDReadModeName(CameraP, i, modeName);
-                            Logger.Debug($"QHYCCD: Found readout mode \"{modeName.ToString()}\"");
+                            Logger.Debug($"QHYCCD: Found readout mode \"{modeName}\"");
                             modeList.Add(modeName.ToString());
                         }
                     } else {
                         modeList.Add("Default");
                     }
 
+                    Logger.Debug($"QHYCCD: Readout mode names: {string.Join(", ", modeList)}");
                     ReadoutModes = modeList;
 
                     /*
