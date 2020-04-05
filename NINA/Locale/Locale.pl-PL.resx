@@ -165,6 +165,9 @@
   <data name="LblAFUseBrightestStarsTooltip" xml:space="preserve">
     <value>Ogranicz AF do najjaśniejszych gwiazd. 0 oznacza brak limitu.</value>
   </data>
+  <data name="LblAllProSpikeAFlatPanel" xml:space="preserve">
+    <value>AllPro Spike-a-Flat Panel</value>
+  </data>
   <data name="LblAlnitakFlatPanel" xml:space="preserve">
     <value>Panel Alnitak Flat</value>
   </data>

@@ -165,6 +165,9 @@
   <data name="LblAFUseBrightestStarsTooltip" xml:space="preserve">
     <value>限制自動對焦使用亮星的數量。0 表示無限制。</value>
   </data>
+  <data name="LblAllProSpikeAFlatPanel" xml:space="preserve">
+    <value>AllPro Spike-a-Flat Panel</value>
+  </data>
   <data name="LblAlnitakFlatPanel" xml:space="preserve">
     <value>Alnitak 平場板</value>
   </data>
