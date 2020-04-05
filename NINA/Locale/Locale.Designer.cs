@@ -205,6 +205,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AllPro Spike-a-Flat Panel.
+        /// </summary>
+        internal static string LblAllProSpikeAFlatPanel {
+            get {
+                return ResourceManager.GetString("LblAllProSpikeAFlatPanel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Alnitak Flat Panel.
         /// </summary>
         internal static string LblAlnitakFlatPanel {

@@ -3469,4 +3469,10 @@ Die Standardeinstellung von Auto verwendet das Muster, dass der Kamera-Treiber m
   <data name="LblAutoFocusAfterFlip" xml:space="preserve">
     <value>Autofokus nach Flip</value>
   </data>
+  <data name="LblExposureFinished" xml:space="preserve">
+    <value>Exposure finished</value>
+  </data>
+  <data name="LblCameraTimeout" xml:space="preserve">
+    <value>Camera Timeout - Camera did not set image as ready after exposuretime + 15 seconds</value>
+  </data>
 </root>
