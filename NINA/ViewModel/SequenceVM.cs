@@ -59,7 +59,9 @@ using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace NINA.ViewModel {
+
     internal class SequenceVM : DockableVM, ITelescopeConsumer, IFocuserConsumer, IFilterWheelConsumer, IRotatorConsumer, IFlatDeviceConsumer, IGuiderConsumer, ICameraConsumer, IWeatherDataConsumer {
+
         public SequenceVM(
                 IProfileService profileService,
                 ICameraMediator cameraMediator,
@@ -773,6 +775,11 @@ namespace NINA.ViewModel {
 
                 /* delay sequence start by given amount */
                 await DelaySequence(csl, progress);
+
+                //open flip-flat if necessary
+                if (_flatDevice != null && _flatDevice.SupportsOpenClose && _flatDevice.CoverState != CoverState.Open) {
+                    await _flatDeviceMediator.OpenCover();
+                }
 
                 //Slew and center
                 PlateSolveResult plateSolveResult = await SlewToTarget(csl, ct, progress);
