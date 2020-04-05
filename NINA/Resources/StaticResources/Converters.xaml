@@ -67,4 +67,5 @@
     <converters:AFFittingToVisibilityConverter x:Key="AFFittingToVisibilityConverter" />
     <converters:IsLightImageTypeToVisibilityConverter x:Key="IsLightImageTypeToVisibilityConverter" />
     <converters:FilterWheelFilterConverter x:Key="FilterWheelFilterConverter" />
+    <converters:DecDegreeConverter x:Key="DecDegreeConverter" />
 </ResourceDictionary>

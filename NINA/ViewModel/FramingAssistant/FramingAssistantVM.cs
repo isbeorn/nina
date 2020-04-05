@@ -356,12 +356,22 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
+        private bool negativeDec;
+
+        public bool NegativeDec {
+            get => negativeDec;
+            set {
+                negativeDec = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public int DecDegrees {
             get {
                 return (int)Math.Truncate(DSO.Coordinates.Dec);
             }
             set {
-                if (value < 0) {
+                if (NegativeDec) {
                     DSO.Coordinates.Dec = value - DecMinutes / 60.0d - DecSeconds / (60.0d * 60.0d);
                 } else {
                     DSO.Coordinates.Dec = value + DecMinutes / 60.0d + DecSeconds / (60.0d * 60.0d);
@@ -407,6 +417,7 @@ namespace NINA.ViewModel.FramingAssistant {
             RaisePropertyChanged(nameof(DecDegrees));
             RaisePropertyChanged(nameof(DecMinutes));
             RaisePropertyChanged(nameof(DecSeconds));
+            NegativeDec = DSO?.Coordinates?.Dec < 0;
         }
 
         private int _downloadProgressValue;

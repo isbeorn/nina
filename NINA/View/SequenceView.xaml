@@ -865,11 +865,14 @@
                             Margin="5,0,0,0"
                             TextAlignment="Right">
                             <TextBox.Text>
-                                <Binding Path="DecDegrees" UpdateSourceTrigger="LostFocus">
-                                    <Binding.ValidationRules>
-                                        <rules:DegreesRule />
-                                    </Binding.ValidationRules>
-                                </Binding>
+                                <MultiBinding Converter="{StaticResource DecDegreeConverter}" UpdateSourceTrigger="LostFocus">
+                                    <Binding Path="NegativeDec" />
+                                    <Binding Path="DecDegrees">
+                                        <Binding.ValidationRules>
+                                            <rules:DegreesRule />
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </MultiBinding>
                             </TextBox.Text>
                         </TextBox>
                         <TextBlock VerticalAlignment="Center">d</TextBlock>

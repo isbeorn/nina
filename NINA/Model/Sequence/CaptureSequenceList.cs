@@ -393,13 +393,24 @@ namespace NINA.Model {
             }
         }
 
+        [XmlAttribute(nameof(NegativeDec))]
+        private bool negativeDec;
+
+        public bool NegativeDec {
+            get => negativeDec;
+            set {
+                negativeDec = value;
+                RaisePropertyChanged();
+            }
+        }
+
         [XmlAttribute(nameof(DecDegrees))]
         public int DecDegrees {
             get {
                 return (int)Math.Truncate(_coordinates.Dec);
             }
             set {
-                if (value < 0) {
+                if (NegativeDec) {
                     _coordinates.Dec = value - DecMinutes / 60.0d - DecSeconds / (60.0d * 60.0d);
                 } else {
                     _coordinates.Dec = value + DecMinutes / 60.0d + DecSeconds / (60.0d * 60.0d);
@@ -466,6 +477,7 @@ namespace NINA.Model {
             DSO.Name = this.TargetName;
             DSO.Coordinates = Coordinates;
             DSO.Rotation = Rotation;
+            NegativeDec = DSO?.Coordinates?.Dec < 0;
         }
 
         private DeepSkyObject _dso;
@@ -761,6 +773,7 @@ namespace NINA.Model {
                 RaisePropertyChanged();
             }
         }
+
         private DateTime _estimatedEndTime;
 
         [XmlIgnore]
@@ -786,6 +799,5 @@ namespace NINA.Model {
                 RaisePropertyChanged();
             }
         }
-
     }
 }
