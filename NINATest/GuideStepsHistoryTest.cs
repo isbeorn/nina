@@ -39,7 +39,7 @@ namespace NINATest {
         [Test]
         public void GuideStepsHistory_ConstructorTest() {
             var historySize = 100;
-            GuideStepsHistory gsh = new GuideStepsHistory(historySize);
+            GuideStepsHistory gsh = new GuideStepsHistory(historySize, GuiderScaleEnum.PIXELS, 4);
 
             Assert.AreEqual(historySize, gsh.HistorySize);
             Assert.AreEqual(1, gsh.PixelScale);
@@ -54,7 +54,7 @@ namespace NINATest {
         [Test]
         public void GuideStepsHistory_AddPHDDataPointsTest() {
             var historySize = 100;
-            GuideStepsHistory gsh = new GuideStepsHistory(historySize);
+            GuideStepsHistory gsh = new GuideStepsHistory(historySize, GuiderScaleEnum.PIXELS, 4);
 
             IGuideStep step1 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -25,
@@ -92,9 +92,8 @@ namespace NINATest {
             var historySize = 100;
             var scale = 1.59;
 
-            GuideStepsHistory gsh = new GuideStepsHistory(historySize);
+            GuideStepsHistory gsh = new GuideStepsHistory(historySize, GuiderScaleEnum.ARCSECONDS, 4);
             gsh.PixelScale = scale;
-            gsh.Scale = GuiderScaleEnum.ARCSECONDS;
 
             IGuideStep step1 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -25,
@@ -132,9 +131,8 @@ namespace NINATest {
             var historySize = 100;
             var scale = 1.59;
 
-            GuideStepsHistory gsh = new GuideStepsHistory(historySize);
+            GuideStepsHistory gsh = new GuideStepsHistory(historySize, GuiderScaleEnum.ARCSECONDS, 4);
             gsh.PixelScale = scale;
-            gsh.Scale = GuiderScaleEnum.ARCSECONDS;
 
             IGuideStep step1 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -25,
@@ -174,7 +172,7 @@ namespace NINATest {
         [Test]
         public void GuideStepsHistory_HistorySize_AddMoreThanSizeTest() {
             var historySize = 5;
-            GuideStepsHistory gsh = new GuideStepsHistory(historySize);
+            GuideStepsHistory gsh = new GuideStepsHistory(historySize, GuiderScaleEnum.PIXELS, 4);
 
             IGuideStep step1 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -1,
@@ -213,17 +211,22 @@ namespace NINATest {
             gsh.AddGuideStep(step5);
             gsh.AddGuideStep(step6);
 
-            Assert.AreSame(step2, gsh.GuideSteps.ElementAt(0));
-            Assert.AreSame(step3, gsh.GuideSteps.ElementAt(1));
-            Assert.AreSame(step4, gsh.GuideSteps.ElementAt(2));
-            Assert.AreSame(step5, gsh.GuideSteps.ElementAt(3));
-            Assert.AreSame(step6, gsh.GuideSteps.ElementAt(4));
+            Assert.AreEqual(step2.RADistanceRaw, gsh.GuideSteps.ElementAt(0).RADistanceRaw);
+            Assert.AreEqual(step3.RADistanceRaw, gsh.GuideSteps.ElementAt(1).RADistanceRaw);
+            Assert.AreEqual(step4.RADistanceRaw, gsh.GuideSteps.ElementAt(2).RADistanceRaw);
+            Assert.AreEqual(step5.RADistanceRaw, gsh.GuideSteps.ElementAt(3).RADistanceRaw);
+            Assert.AreEqual(step6.RADistanceRaw, gsh.GuideSteps.ElementAt(4).RADistanceRaw);
+            Assert.AreEqual(step2.DECDistanceRaw, gsh.GuideSteps.ElementAt(0).DECDistanceRaw);
+            Assert.AreEqual(step3.DECDistanceRaw, gsh.GuideSteps.ElementAt(1).DECDistanceRaw);
+            Assert.AreEqual(step4.DECDistanceRaw, gsh.GuideSteps.ElementAt(2).DECDistanceRaw);
+            Assert.AreEqual(step5.DECDistanceRaw, gsh.GuideSteps.ElementAt(3).DECDistanceRaw);
+            Assert.AreEqual(step6.DECDistanceRaw, gsh.GuideSteps.ElementAt(4).DECDistanceRaw);
         }
 
         [Test]
         public void GuideStepsHistory_HistorySize_ResizeTest() {
             var historySize = 5;
-            GuideStepsHistory gsh = new GuideStepsHistory(historySize);
+            GuideStepsHistory gsh = new GuideStepsHistory(historySize, GuiderScaleEnum.PIXELS, 4);
 
             IGuideStep step1 = new PHD2Guider.PhdEventGuideStep() {
                 RADistanceRaw = -1,
@@ -264,18 +267,24 @@ namespace NINATest {
 
             gsh.HistorySize = 10;
 
-            Assert.AreSame(step1, gsh.GuideSteps.ElementAt(0));
-            Assert.AreSame(step2, gsh.GuideSteps.ElementAt(1));
-            Assert.AreSame(step3, gsh.GuideSteps.ElementAt(2));
-            Assert.AreSame(step4, gsh.GuideSteps.ElementAt(3));
-            Assert.AreSame(step5, gsh.GuideSteps.ElementAt(4));
-            Assert.AreSame(step6, gsh.GuideSteps.ElementAt(5));
+            Assert.AreEqual(step1.RADistanceRaw, gsh.GuideSteps.ElementAt(0).RADistanceRaw);
+            Assert.AreEqual(step2.RADistanceRaw, gsh.GuideSteps.ElementAt(1).RADistanceRaw);
+            Assert.AreEqual(step3.RADistanceRaw, gsh.GuideSteps.ElementAt(2).RADistanceRaw);
+            Assert.AreEqual(step4.RADistanceRaw, gsh.GuideSteps.ElementAt(3).RADistanceRaw);
+            Assert.AreEqual(step5.RADistanceRaw, gsh.GuideSteps.ElementAt(4).RADistanceRaw);
+            Assert.AreEqual(step6.RADistanceRaw, gsh.GuideSteps.ElementAt(5).RADistanceRaw);
+            Assert.AreEqual(step1.DECDistanceRaw, gsh.GuideSteps.ElementAt(0).DECDistanceRaw);
+            Assert.AreEqual(step2.DECDistanceRaw, gsh.GuideSteps.ElementAt(1).DECDistanceRaw);
+            Assert.AreEqual(step3.DECDistanceRaw, gsh.GuideSteps.ElementAt(2).DECDistanceRaw);
+            Assert.AreEqual(step4.DECDistanceRaw, gsh.GuideSteps.ElementAt(3).DECDistanceRaw);
+            Assert.AreEqual(step5.DECDistanceRaw, gsh.GuideSteps.ElementAt(4).DECDistanceRaw);
+            Assert.AreEqual(step6.DECDistanceRaw, gsh.GuideSteps.ElementAt(5).DECDistanceRaw);
         }
 
         [Test]
         public void GuideStepsHistory_MaxDurationY_CalculateTest() {
             var historySize = 100;
-            GuideStepsHistory gsh = new GuideStepsHistory(historySize);
+            GuideStepsHistory gsh = new GuideStepsHistory(historySize, GuiderScaleEnum.PIXELS, 4);
 
             IGuideStep step1 = new PHD2Guider.PhdEventGuideStep() {
                 RADuration = -1,
@@ -321,7 +330,7 @@ namespace NINATest {
         [Test]
         public void GuideStepsHistory_MaxDurationY_CalculateWhenMoreThanHistoryTest() {
             var historySize = 3;
-            GuideStepsHistory gsh = new GuideStepsHistory(historySize);
+            GuideStepsHistory gsh = new GuideStepsHistory(historySize, GuiderScaleEnum.PIXELS, 4);
 
             IGuideStep step1 = new PHD2Guider.PhdEventGuideStep() {
                 RADuration = -10,
@@ -367,7 +376,7 @@ namespace NINATest {
         [Test]
         public void GuideStepsHistory_MaxDurationY_CalculateWhenResizedTest() {
             var historySize = 3;
-            GuideStepsHistory gsh = new GuideStepsHistory(historySize);
+            GuideStepsHistory gsh = new GuideStepsHistory(historySize, GuiderScaleEnum.PIXELS, 4);
 
             IGuideStep step1 = new PHD2Guider.PhdEventGuideStep() {
                 RADuration = -100,

@@ -50,6 +50,7 @@ namespace NINA.Profile {
             directGuideDuration = 2;
             autoRetryStartGuiding = false;
             autoRetryStartGuidingTimeoutSeconds = 60;
+            maxY = 4;
 
             var defaultPHD2Path = Environment.ExpandEnvironmentVariables(@"%programfiles(x86)%\PHDGuiding2\phd2.exe");
 
@@ -232,14 +233,27 @@ namespace NINA.Profile {
         }
 
         private int autoRetryStartGuidingTimeoutSeconds;
+
         [DataMember]
-        public int AutoRetryStartGuidingTimeoutSeconds
-        {
+        public int AutoRetryStartGuidingTimeoutSeconds {
             get => autoRetryStartGuidingTimeoutSeconds;
             set {
                 if (autoRetryStartGuidingTimeoutSeconds == value) return;
                 autoRetryStartGuidingTimeoutSeconds = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        private double maxY;
+
+        [DataMember]
+        public double MaxY {
+            get => maxY;
+            set {
+                if (maxY != value) {
+                    maxY = value;
+                    RaisePropertyChanged();
+                }
             }
         }
     }

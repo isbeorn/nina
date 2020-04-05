@@ -58,7 +58,7 @@ namespace NINA.ViewModel.Equipment.Guider {
             DisconnectGuiderCommand = new RelayCommand((object o) => Disconnect(), (object o) => Guider?.Connected == true);
             ClearGraphCommand = new RelayCommand((object o) => ResetGraphValues());
 
-            GuideStepsHistory = new GuideStepsHistory(HistorySize);
+            GuideStepsHistory = new GuideStepsHistory(HistorySize, GuiderScale, GuiderMaxY);
         }
 
         public IGuiderChooserVM GuiderChooserVM { get; set; }
@@ -224,6 +224,16 @@ namespace NINA.ViewModel.Equipment.Guider {
             }
         }
 
+        public double GuiderMaxY {
+            get {
+                return profileService.ActiveProfile.GuiderSettings.MaxY;
+            }
+            set {
+                profileService.ActiveProfile.GuiderSettings.MaxY = value;
+                GuideStepsHistory.MaxY = value;
+            }
+        }
+
         public async Task<bool> StartGuiding(CancellationToken token) {
             if (Guider?.Connected == true) {
                 return await Guider.StartGuiding(token);
@@ -242,9 +252,16 @@ namespace NINA.ViewModel.Equipment.Guider {
 
         public async Task<bool> Dither(CancellationToken token) {
             if (Guider?.Connected == true) {
-                applicationStatusMediator.StatusUpdate(new Model.ApplicationStatus() { Status = Locale.Loc.Instance["LblDither"], Source = Title });
-                await Guider?.Dither(token);
-                applicationStatusMediator.StatusUpdate(new Model.ApplicationStatus() { Status = string.Empty, Source = Title });
+                try {
+                    Guider.GuideEvent -= Guider_GuideEvent;
+                    applicationStatusMediator.StatusUpdate(new Model.ApplicationStatus() { Status = Locale.Loc.Instance["LblDither"], Source = Title });
+                    GuideStepsHistory.AddDitherIndicator();
+                    await Guider.Dither(token);
+                } finally {
+                    Guider.GuideEvent += Guider_GuideEvent;
+                    applicationStatusMediator.StatusUpdate(new Model.ApplicationStatus() { Status = string.Empty, Source = Title });
+                }
+
                 return true;
             } else {
                 await Disconnect();

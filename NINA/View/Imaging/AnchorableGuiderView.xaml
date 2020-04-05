@@ -67,7 +67,7 @@
                     Margin="5,0,0,0"
                     DataContext="{Binding GuideStepsHistory}"
                     ItemStringFormat="y: +/-{0}&quot;"
-                    SelectedValue="{Binding MaxY}"
+                    SelectedValue="{Binding Source={StaticResource AppVM}, Path=GuiderVM.GuiderMaxY}"
                     SelectedValuePath="Content">
                     <ComboBoxItem>0.25</ComboBoxItem>
                     <ComboBoxItem>0.5</ComboBoxItem>
@@ -85,7 +85,7 @@
                     Margin="5,0,0,0"
                     DataContext="{Binding GuideStepsHistory}"
                     ItemStringFormat="x: {0}"
-                    SelectedValue="{Binding HistorySize}"
+                    SelectedValue="{Binding Source={StaticResource AppVM}, Path=GuiderVM.HistorySize}"
                     SelectedValuePath="Content">
                     <ComboBoxItem>50</ComboBoxItem>
                     <ComboBoxItem>100</ComboBoxItem>
@@ -101,7 +101,7 @@
                     DataContext="{Binding GuideStepsHistory}"
                     ItemStringFormat="unit: {0}"
                     ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:GuiderScaleEnum}}}"
-                    SelectedItem="{Binding Scale}" />
+                    SelectedItem="{Binding Source={StaticResource AppVM}, Path=GuiderVM.GuiderScale}" />
                 <Button
                     Grid.Column="3"
                     Height="25"
@@ -165,13 +165,15 @@
                         Position="Right" />
                     <oxy:LinearAxis
                         Key="DataAxisX"
+                        AbsoluteMinimum="0"
                         IsAxisVisible="False"
+                        MinimumRange="{Binding HistorySize}"
                         Position="Bottom" />
                 </oxy:Plot.Axes>
                 <oxy:Plot.Series>
                     <oxy:LineSeries
                         Title="{ns:Loc LblRA}"
-                        DataFieldX="Time"
+                        DataFieldX="Id"
                         DataFieldY="RADistanceRawDisplay"
                         ItemsSource="{Binding GuideSteps}"
                         XAxisKey="DataAxisX"
@@ -179,7 +181,7 @@
                         Color="Blue" />
                     <oxy:LineSeries
                         Title="{ns:Loc LblDec}"
-                        DataFieldX="Time"
+                        DataFieldX="Id"
                         DataFieldY="DECDistanceRawDisplay"
                         ItemsSource="{Binding GuideSteps}"
                         XAxisKey="DataAxisX"
@@ -188,7 +190,7 @@
                     <oxy:LinearBarSeries
                         Title="{ns:Loc LblRACorrections}"
                         BarWidth="3"
-                        DataFieldX="TimeRA"
+                        DataFieldX="IdOffsetLeft"
                         DataFieldY="RADuration"
                         FillColor="Transparent"
                         ItemsSource="{Binding GuideSteps}"
@@ -200,7 +202,7 @@
                     <oxy:LinearBarSeries
                         Title="{ns:Loc LblDecCorrections}"
                         BarWidth="3"
-                        DataFieldX="TimeDec"
+                        DataFieldX="IdOffsetRight"
                         DataFieldY="DECDuration"
                         FillColor="Transparent"
                         ItemsSource="{Binding GuideSteps}"
@@ -209,6 +211,17 @@
                         XAxisKey="DataAxisX"
                         YAxisKey="DurationAxis"
                         Color="Red" />
+                    <oxy:LineSeries
+                        Title="{ns:Loc LblDither}"
+                        DataFieldX="Id"
+                        DataFieldY="Dither"
+                        ItemsSource="{Binding GuideSteps}"
+                        MarkerFill="{Binding Path=Color, Source={StaticResource PrimaryBrush}}"
+                        MarkerSize="5"
+                        MarkerType="Triangle"
+                        XAxisKey="DataAxisX"
+                        YAxisKey="TextAxisY"
+                        Color="Transparent" />
                 </oxy:Plot.Series>
                 <oxy:Plot.Annotations>
                     <oxy:LineAnnotation
@@ -217,7 +230,7 @@
                         TextVerticalAlignment="Top"
                         Type="Horizontal"
                         XAxisKey="TextAxisX"
-                        Y="1"
+                        Y="0.99"
                         YAxisKey="TextAxisY"
                         Color="Transparent" />
                     <oxy:LineAnnotation
@@ -226,7 +239,7 @@
                         TextVerticalAlignment="Bottom"
                         Type="Horizontal"
                         XAxisKey="TextAxisX"
-                        Y="0"
+                        Y="0.01"
                         YAxisKey="TextAxisY"
                         Color="Transparent" />
                 </oxy:Plot.Annotations>

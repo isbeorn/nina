@@ -66,12 +66,8 @@ namespace NINA.Model.MyGuider {
     public interface IGuideStep : IGuideEvent {
         double Frame { get; }
         double Time { get; }
-        double TimeRA { get; }
-        double TimeDec { get; }
         double RADistanceRaw { get; set; }
         double DECDistanceRaw { get; set; }
-        double RADistanceRawDisplay { get; set; }
-        double DECDistanceRawDisplay { get; set; }
         double RADuration { get; }
         double DECDuration { get; }
 

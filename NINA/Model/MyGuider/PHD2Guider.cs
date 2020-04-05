@@ -787,26 +787,6 @@ namespace NINA.Model.MyGuider {
             }
 
             [DataMember]
-            public double RADistanceRawDisplay {
-                get {
-                    return raDistanceDisplay;
-                }
-                set {
-                    raDistanceDisplay = value;
-                }
-            }
-
-            [DataMember]
-            public double DECDistanceRawDisplay {
-                get {
-                    return decDistanceDisplay;
-                }
-                set {
-                    decDistanceDisplay = value;
-                }
-            }
-
-            [DataMember]
             public double RADistanceGuideDisplay {
                 get {
                     return raDistanceGuideDisplay;
@@ -851,22 +831,6 @@ namespace NINA.Model.MyGuider {
             }
 
             [DataMember]
-            public double TimeRA {
-                get {
-                    return Time - 0.15;
-                }
-                set { Time = value + 0.15; }
-            }
-
-            [DataMember]
-            public double TimeDec {
-                get {
-                    return Time + 0.15;
-                }
-                set { Time = value - 0.15; }
-            }
-
-            [DataMember]
             public string Mount {
                 get {
                     return mount;
@@ -907,7 +871,6 @@ namespace NINA.Model.MyGuider {
 
                 set {
                     rADistanceRaw = value;
-                    RADistanceRawDisplay = RADistanceRaw;
                 }
             }
 
@@ -919,7 +882,6 @@ namespace NINA.Model.MyGuider {
 
                 set {
                     decDistanceRaw = value;
-                    DECDistanceRawDisplay = DECDistanceRaw;
                 }
             }
 
