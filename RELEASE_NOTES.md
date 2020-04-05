@@ -120,6 +120,7 @@
 - XPIXSZ and YPIXSZ now account correctly for binning when available
 - Autofocus after HFR change properly resets reference index on sequence start, target change, and autofocus caused by other criteria
 - Sequence file names are now saved with valid file name characters. Invalid characters are replaced automatically with a hyphen (-)
+- Framing and Sequence Coordinates now allow for a "-0" to be entered in declination
 
 ## Special Thanks
 The N.I.N.A. team would like to sincerely thank:
