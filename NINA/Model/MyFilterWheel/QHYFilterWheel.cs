@@ -60,7 +60,7 @@ namespace NINA.Model.MyFilterWheel {
                 return;
             }
 
-            Info.Name = string.Format($"{cameraModel.ToString()} {Info.Positions}-Slot Filter Wheel");
+            Info.Name = string.Format($"{cameraModel} {Info.Positions}-Slot Filter Wheel");
 
             LibQHYCCD.N_CloseQHYCCD(FWheelP);
 
@@ -73,9 +73,6 @@ namespace NINA.Model.MyFilterWheel {
 
                 Logger.Debug($"QHYCFW: Connecting to filter wheel {Name}");
                 FWheelP = LibQHYCCD.N_OpenQHYCCD(Info.Id);
-
-                _ = LibQHYCCD.GetQHYCCDCFWStatus(FWheelP, position);
-                Info.Position = Convert.ToInt16(string.Join("", Encoding.ASCII.GetChars(position)));
 
                 Connected = true;
                 return Connected;
@@ -104,11 +101,31 @@ namespace NINA.Model.MyFilterWheel {
 
         public short Position {
             get {
-                Logger.Debug($"QHYCFW: Current postion: {Info.Position}");
-                return Info.Position;
+                uint rv;
+                byte[] status = new byte[1];
+                short position;
+                string statusString;
+
+                if ((rv = LibQHYCCD.GetQHYCCDCFWStatus(FWheelP, status)) != LibQHYCCD.QHYCCD_SUCCESS) {
+                    Logger.Error($"QHYCFW: Failed to get filter wheel position: {rv}");
+                    return -1;
+                }
+
+                statusString = string.Join("", Encoding.ASCII.GetChars(status));
+                Logger.Debug($"QHYCFW: Current position: {statusString}");
+
+                /*
+                 * GetQHYCCDCFWStatus() returns a status of "N" while the filter wheel is in motion. Return -1 in this case per the ASCOM specification
+                 */
+                if (statusString == "N") {
+                    position = -1;
+                } else {
+                    short.TryParse(statusString, out position);
+                }
+
+                return position;
             }
             set {
-                byte[] status = new byte[1];
                 string position = value.ToString("X1");
 
                 Logger.Debug($"QHYCFW: Moving to position {value} (str: {position})");
@@ -118,24 +135,6 @@ namespace NINA.Model.MyFilterWheel {
                     return;
                 }
 
-                /*
-                 * SendOrder2QHYCCDCFW() does not block, so we do not want the Position property set to return too early because
-                 * the filter wheel might still be in motion with NINA under the belief that the selected filter is in place
-                 * and begins the next image exposure.
-                 *
-                 * To address this, we repeatedly check the status of the filter wheel and sleep for 250ms between checks if the current position
-                 * of the filter wheel does not match the selected position (ie, the filter wheel is still in motion.)
-                 */
-                _ = LibQHYCCD.GetQHYCCDCFWStatus(FWheelP, status);
-
-                while (string.Join("", Encoding.ASCII.GetChars(status)) != position) {
-                    Logger.Debug($"QHYCFW: Currently moving from position {Info.Position} to position {value} (str: {position}). Current status: {string.Join("", Encoding.ASCII.GetChars(status))})");
-                    Task.Delay(250);
-
-                    _ = LibQHYCCD.GetQHYCCDCFWStatus(FWheelP, status);
-                }
-
-                Info.Position = value;
                 RaisePropertyChanged();
             }
         }

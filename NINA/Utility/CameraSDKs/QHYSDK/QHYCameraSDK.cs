@@ -895,11 +895,6 @@ namespace QHYCCD {
             /// The number of postions the filter wheel has
             /// </summary>
             public uint Positions;
-
-            /// <summary>
-            /// The current position the filter wheel is at
-            /// </summary>
-            public short Position;
         }
 
         public class QHYCameraException : Exception {
