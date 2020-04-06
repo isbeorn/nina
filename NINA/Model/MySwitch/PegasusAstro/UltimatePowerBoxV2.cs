@@ -39,7 +39,12 @@ namespace NINA.Model.MySwitch {
     public class UltimatePowerBoxV2 : BaseINPC, ISwitchHub, IDisposable {
         private readonly IProfileService _profileService;
         private const string AUTO = "AUTO";
-        public IPegasusDevice Sdk { get; set; } = PegasusDevice.Instance;
+        private IPegasusDevice _sdk;
+
+        public IPegasusDevice Sdk {
+            get => _sdk ?? (Sdk = PegasusDevice.Instance);
+            set => _sdk = value;
+        }
 
         public UltimatePowerBoxV2(IProfileService profileService) {
             _profileService = profileService;

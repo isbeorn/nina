@@ -35,7 +35,12 @@ namespace NINA.Model.MyFlatDevice {
 
     public class ArteskyFlatBox : BaseINPC, IFlatDevice {
         private readonly IProfileService _profileService;
-        public IArteskyFlatBox Sdk { get; set; } = new ArteskyUSBFlatBox();
+        private IArteskyFlatBox _sdk;
+
+        public IArteskyFlatBox Sdk {
+            get => _sdk ?? (_sdk = new ArteskyUSBFlatBox());
+            set => _sdk = value;
+        }
 
         public ArteskyFlatBox(IProfileService profileService) {
             _profileService = profileService;

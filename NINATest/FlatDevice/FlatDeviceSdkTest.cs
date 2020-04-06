@@ -1,17 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using Moq;
+﻿using Moq;
 using NINA.Utility.FlatDeviceSDKs.AlnitakSDK;
 using NINA.Utility.SerialCommunication;
 using NUnit.Framework;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO.Ports;
-using System.Threading.Tasks;
 
 namespace NINATest.FlatDevice {
 
     [TestFixture]
     internal class FlatDeviceSdkTest {
-        private Mock<ICommand> _mockCommand;
         private Mock<ISerialPort> _mockSerialPort;
         private Mock<ISerialPortProvider> _mockSerialPortProvider;
         private IAlnitakDevice _sut;
@@ -56,21 +54,13 @@ namespace NINATest.FlatDevice {
         }
 
         [Test]
-        [TestCase(">SOOO\r", "*S99000", true)]
-        [TestCase(">SOOO\r", null, false)]
-        public void TestSendCommand(string command, string response, bool valid) {
-            _mockSerialPortProvider.Setup(m => m.GetSerialPort(It.IsAny<string>(),
-                It.IsAny<int>(), It.IsAny<Parity>(), It.IsAny<int>(),
-                It.IsAny<StopBits>(), It.IsAny<Handshake>(), It.IsAny<bool>(),
-                It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>())).Returns(_mockSerialPort.Object);
-            _sut.SerialPortProvider = _mockSerialPortProvider.Object;
-            _mockSerialPort.Setup(m => m.ReadLine()).Returns(response);
-            _sut.InitializeSerialPort("COM3", this);
-
-            _mockCommand = new Mock<ICommand>();
-            _mockCommand.Setup(m => m.CommandString).Returns(command);
-
-            var result = _sut.SendCommand<StateResponse>(_mockCommand.Object);
+        [TestCase("*S99000", true)]
+        [TestCase(null, false)]
+        public void TestSendCommand(string response, bool valid) {
+            var mockPort = new Mock<ISerialPort>();
+            mockPort.Setup(m => m.ReadLine()).Returns(response);
+            _sut.SerialPort = mockPort.Object;
+            var result = _sut.SendCommand<StateResponse>(new StateCommand());
 
             Assert.That(result, Is.TypeOf(typeof(StateResponse)));
             Assert.That(result.IsValid, Is.EqualTo(valid));

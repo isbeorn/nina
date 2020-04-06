@@ -33,7 +33,13 @@ namespace NINA.Utility.SerialCommunication {
 
         private readonly ResponseCache _cache = new ResponseCache();
         public ISerialPort SerialPort { get; set; }
-        public ISerialPortProvider SerialPortProvider { protected get; set; } = new SerialPortProvider();
+
+        private ISerialPortProvider _provider;
+
+        public ISerialPortProvider SerialPortProvider {
+            protected get => _provider ?? (_provider = new SerialPortProvider());
+            set => _provider = value;
+        }
 
         private readonly List<object> clients = new List<object>();
         private readonly SemaphoreSlim ssSerial = new SemaphoreSlim(1, 1);
@@ -63,9 +69,9 @@ namespace NINA.Utility.SerialCommunication {
         }
 
         public T SendCommand<T>(ICommand command) where T : Response, new() {
+            ssSerial.Wait();
             var result = string.Empty;
             T response;
-            ssSerial.Wait();
             if (_cache.HasValidResponse(command.GetType())) {
                 ssSerial.Release();
                 return (T)_cache.Get(command.GetType());

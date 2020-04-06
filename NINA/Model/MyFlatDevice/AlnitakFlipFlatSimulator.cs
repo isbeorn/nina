@@ -81,8 +81,6 @@ namespace NINA.Model.MyFlatDevice {
             if (!Connected) await Task.Run(() => false, ct);
             return await Task.Run(() => {
                 _lightOn = false;
-                CoverState = CoverState.NeitherOpenNorClosed;
-                Thread.Sleep(2000);
                 CoverState = CoverState.Open;
                 return true;
             }, ct);
@@ -91,8 +89,6 @@ namespace NINA.Model.MyFlatDevice {
         public async Task<bool> Close(CancellationToken ct) {
             if (!Connected) await Task.Run(() => false, ct);
             return await Task.Run(() => {
-                CoverState = CoverState.NeitherOpenNorClosed;
-                Thread.Sleep(2000);
                 CoverState = CoverState.Closed;
                 return true;
             }, ct);

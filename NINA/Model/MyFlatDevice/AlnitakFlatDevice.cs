@@ -35,8 +35,12 @@ namespace NINA.Model.MyFlatDevice {
 
     public class AlnitakFlatDevice : BaseINPC, IFlatDevice {
         private readonly IProfileService _profileService;
-        private const string AUTO = "AUTO";
-        public IAlnitakDevice Sdk { get; set; } = new AlnitakDevice();
+        private IAlnitakDevice _sdk;
+
+        public IAlnitakDevice Sdk {
+            get => _sdk ?? (_sdk = new AlnitakDevice());
+            set => _sdk = value;
+        }
 
         public AlnitakFlatDevice(IProfileService profileService) {
             _profileService = profileService;

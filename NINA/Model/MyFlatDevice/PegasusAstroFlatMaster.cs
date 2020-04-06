@@ -37,7 +37,12 @@ namespace NINA.Model.MyFlatDevice {
 
     public class PegasusAstroFlatMaster : BaseINPC, IFlatDevice {
         private readonly IProfileService _profileService;
-        public IPegasusFlatMaster Sdk { get; set; } = new PegasusFlatMaster();
+        private IPegasusFlatMaster _sdk;
+
+        public IPegasusFlatMaster Sdk {
+            get => _sdk ?? (_sdk = new PegasusFlatMaster());
+            set => _sdk = value;
+        }
 
         public PegasusAstroFlatMaster(IProfileService profileService) {
             _profileService = profileService;

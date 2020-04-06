@@ -22,6 +22,7 @@
 #endregion "copyright"
 
 using System;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
@@ -58,7 +59,7 @@ namespace NINATest.WeatherData.PegasusAstro {
         }
 
         [Test]
-        [TestCase(true, "1.3", true, "Ultimate Powerbox V2 on port COM3. Firmware version: 1.3")]
+        [TestCase(true, "1.3", true, "Ultimate Powerbox V2 on port COM3. Firmware version: ")]
         [TestCase(false, "1.3", false)]
         [TestCase(false, "XXX")]
         public async Task TestConnectAsync(bool expected, string commandString = "1.3", bool portAvailable = true, string description = null) {
@@ -70,7 +71,8 @@ namespace NINATest.WeatherData.PegasusAstro {
             Assert.That(result, Is.EqualTo(expected));
             Assert.That(sut.Connected, Is.EqualTo(expected));
             if (!expected) return;
-            Assert.That(sut.Description, Is.EqualTo(description));
+            Assert.That(double.TryParse(commandString, NumberStyles.Float, CultureInfo.InvariantCulture, out var version), Is.True);
+            Assert.That(sut.Description, Is.EqualTo($"{description}{version}"));
         }
 
         [Test]

@@ -37,7 +37,12 @@ namespace NINA.Model.MyFocuser {
     public class UltimatePowerboxV2 : BaseINPC, IFocuser, IDisposable {
         private readonly IProfileService _profileService;
         private const string AUTO = "AUTO";
-        public IPegasusDevice Sdk { get; set; } = PegasusDevice.Instance;
+        private IPegasusDevice _sdk;
+
+        public IPegasusDevice Sdk {
+            get => _sdk ?? (Sdk = PegasusDevice.Instance);
+            set => _sdk = value;
+        }
 
         public UltimatePowerboxV2(IProfileService profileService) {
             _profileService = profileService;
