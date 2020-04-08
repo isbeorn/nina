@@ -132,13 +132,8 @@ This database will be automatically created by the EntityFramework based on the 
 * Other external dependencies are automatically installed via nuget (except Camera vendor DLLs)
 * External Camera Vendor SDK DLLs have to be manually put inside the project to \NINA\External\ &lt;x64 and x32&gt;\
     * To get Canon and Nikon DLLs you have to register as a developer for canon and nikon separately on their websites
-	* Altair SDK: reach out to AltairAstro. They can provide you with their sdk. Contact details at https://cameras.altairastro.com/
-	* ASI SDK: SDK is available at https://astronomy-imaging-camera.com/software-drivers section "For Developers"
-	* Atik SDK: SDK is available at https://www.atik-cameras.com/downloads/
-	* ToupTek SDK: SDK is available at http://www.touptek.com/upload/download/toupcamsdk.zip
-	* QHYCCD SDK: Instructions for integrating the QHYCCD SDK can be found in `NINA\Utility\CameraSDKs\QHYCCD\README.md`
-	* FLI SDK: Instructions for integrating the FLI SDK can be found in `NINA\Utility\CameraSDKs\FLI\README.md`
-    * Due to licensing of those files, they must not be put into a public repository
+	* Altair SDK: Join the altair development group at https://groups.google.com/forum/#!forum/altair-development-group
+    * Due to not being publicly available, they must not be put into a public repository
 * Recommended Visual Studio Extensions:
     * [CodeMaid](http://www.codemaid.net/): A code cleanup Utility
     * [XAML Styler](https://github.com/Xavalon/XamlStyler/) A XAML style formatter

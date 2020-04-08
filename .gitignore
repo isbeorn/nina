@@ -1,13 +1,7 @@
 #Exclude external DLL files
 NINA/External/*/Altair
-NINA/External/*/ASI
-NINA/External/*/Atik
 NINA/External/*/Canon
 NINA/External/*/Nikon
-NINA/External/*/ToupTek
-NINA/External/*/QHYCCD
-NINA/External/*/FLI
-NINA/External/*/Omegon
 
 # User-specific files
 *.rsuser

@@ -1967,24 +1967,6 @@
       xcopy "$(ProjectDir)External\x86\Altair" "$(TargetDir)\External\x86\Altair" /h/i/c/k/e/r/y
       )
 
-      if exist "$(ProjectDir)External\x64\ASI" (
-      echo "Copy ASI x64 DLLs"
-      xcopy "$(ProjectDir)External\x64\ASI" "$(TargetDir)\External\x64\ASI" /h/i/c/k/e/r/y
-      )
-      if exist "$(ProjectDir)External\x86\ASI" (
-      echo "Copy ASI x86 DLLs"
-      xcopy "$(ProjectDir)External\x86\ASI" "$(TargetDir)\External\x86\ASI" /h/i/c/k/e/r/y
-      )
-
-      if exist "$(ProjectDir)External\x64\Atik" (
-      echo "Copy Atik x64 DLLs"
-      xcopy "$(ProjectDir)External\x64\Atik" "$(TargetDir)\External\x64\Atik" /h/i/c/k/e/r/y
-      )
-      if exist "$(ProjectDir)External\x86\Atik" (
-      echo "Copy Atik x86 DLLs"
-      xcopy "$(ProjectDir)External\x86\Atik" "$(TargetDir)\External\x86\Atik" /h/i/c/k/e/r/y
-      )
-
       if exist "$(ProjectDir)External\x64\Canon" (
       echo "Copy Canon x64 DLLs"
       xcopy "$(ProjectDir)External\x64\Canon" "$(TargetDir)\External\x64\Canon" /h/i/c/k/e/r/y
@@ -2001,42 +1983,6 @@
       if exist "$(ProjectDir)External\x86\Nikon" (
       echo "Copy Nikon x86 DLLs"
       xcopy "$(ProjectDir)External\x86\Nikon" "$(TargetDir)\External\x86\Nikon" /h/i/c/k/e/r/y
-      )
-
-      if exist "$(ProjectDir)External\x64\ToupTek" (
-      echo "Copy ToupTek x64 DLLs"
-      xcopy "$(ProjectDir)External\x64\ToupTek" "$(TargetDir)\External\x64\ToupTek" /h/i/c/k/e/r/y
-      )
-      if exist "$(ProjectDir)External\x86\ToupTek" (
-      echo "Copy ToupTek x86 DLLs"
-      xcopy "$(ProjectDir)External\x86\ToupTek" "$(TargetDir)\External\x86\ToupTek" /h/i/c/k/e/r/y
-      )
-
-      if exist "$(ProjectDir)External\x64\Omegon" (
-      echo "Copy Omegon x64 DLLs"
-      xcopy "$(ProjectDir)External\x64\Omegon" "$(TargetDir)\External\x64\Omegon" /h/i/c/k/e/r/y
-      )
-      if exist "$(ProjectDir)External\x86\Omegon" (
-      echo "Copy Omegon x86 DLLs"
-      xcopy "$(ProjectDir)External\x86\Omegon" "$(TargetDir)\External\x86\Omegon" /h/i/c/k/e/r/y
-      )
-
-      if exist "$(ProjectDir)External\x64\QHYCCD" (
-      echo "Copy QHYCCD x64 DLLs"
-      xcopy "$(ProjectDir)External\x64\QHYCCD" "$(TargetDir)\External\x64\QHYCCD" /h/i/c/k/e/r/y
-      )
-      if exist "$(ProjectDir)External\x86\QHYCCD" (
-      echo "Copy QHYCCD x86 DLLs"
-      xcopy "$(ProjectDir)External\x86\QHYCCD" "$(TargetDir)\External\x86\QHYCCD" /h/i/c/k/e/r/y
-      )
-
-      if exist "$(ProjectDir)External\x64\FLI" (
-      echo "Copy FLI x64 DLLs"
-      xcopy "$(ProjectDir)External\x64\FLI" "$(TargetDir)\External\x64\FLI" /h/i/c/k/e/r/y
-      )
-      if exist "$(ProjectDir)External\x86\FLI" (
-      echo "Copy FLI x86 DLLs"
-      xcopy "$(ProjectDir)External\x86\FLI" "$(TargetDir)\External\x86\FLI" /h/i/c/k/e/r/y
       )
 
       if $(Platform) == x86 (
