@@ -1701,7 +1701,24 @@
     <Content Include="External\x64\AllPro\spikausbd.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\FLI\libfli.dll" />
+    <Content Include="External\x64\ASI\ASICamera2.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Atik\Atik.Core.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Atik\AtikCameras.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Atik\FlyCapture2_v140.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Atik\libiomp5md.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\FLI\libfli.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="External\x64\FreeImage\FreeImage.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1711,10 +1728,25 @@
     <Content Include="External\x64\NOVAS\NOVAS31lib.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="External\x64\Omegon\omegonprocam.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\QHYCCD\ftd2xx.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\QHYCCD\qhyccd.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\QHYCCD\tbb.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="External\x64\SOFA\SOFAlib.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x64\SQLite\SQLite.Interop.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\ToupTek\toupcam.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\AllPro\hidapi.dll">
@@ -1723,7 +1755,27 @@
     <Content Include="External\x86\AllPro\spikausbd.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x86\FLI\libfli.dll" />
+    <Content Include="External\x86\ASI\ASICamera2.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Atik\Atik.Core.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Atik\AtikCameras.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Atik\FlyCapture2_v140.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Atik\libiomp5md.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Atik\libusb-1.0.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\FLI\libfli.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="External\x86\FreeImage\FreeImage.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1731,6 +1783,18 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\NOVAS\NOVAS31lib.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Omegon\omegonprocam.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\QHYCCD\ftd2xx.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\QHYCCD\qhyccd.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\QHYCCD\tbb.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\SOFA\SOFAlib.dll">
@@ -1742,6 +1806,9 @@
     <Resource Include="Logo_Nina.ico" />
     <Resource Include="Resources\Logo_Nina.png" />
     <Resource Include="Resources\Logo_Nina.ico" />
+    <Content Include="External\x86\ToupTek\toupcam.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Utility\ColorSchema\ColorSchemas.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1755,6 +1822,27 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\x86\NOVAS\cio_ra.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\ToupTek\toupcam.lib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\QHYCCD\qhyccd.exp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\QHYCCD\qhyccd.lib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\Omegon\omegonprocam.lib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x64\ASI\ASICamera2.lib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\Omegon\omegonprocam.lib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\x86\ToupTek\toupcam.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="NINA.ruleset" />
@@ -1893,8 +1981,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="External\x64\Altair\" />
-    <Folder Include="External\x64\ASI\" />
-    <Folder Include="External\x64\Atik\" />
     <Folder Include="External\x64\Canon\" />
     <Folder Include="External\x64\Nikon\Type0001\" />
     <Folder Include="External\x64\Nikon\Type0002\" />
@@ -1920,12 +2006,7 @@
     <Folder Include="External\x64\Nikon\Type0022\" />
     <Folder Include="External\x64\Nikon\Type0023\" />
     <Folder Include="External\x64\Nikon\Type0024\" />
-    <Folder Include="External\x64\Omegon\" />
-    <Folder Include="External\x64\QHYCCD\" />
-    <Folder Include="External\x64\ToupTek\" />
     <Folder Include="External\x86\Altair\" />
-    <Folder Include="External\x86\ASI\" />
-    <Folder Include="External\x86\Atik\" />
     <Folder Include="External\x86\Canon\" />
     <Folder Include="External\x86\Nikon\Type0001\" />
     <Folder Include="External\x86\Nikon\Type0002\" />
@@ -1951,9 +2032,6 @@
     <Folder Include="External\x86\Nikon\Type0022\" />
     <Folder Include="External\x86\Nikon\Type0023\" />
     <Folder Include="External\x86\Nikon\Type0024\" />
-    <Folder Include="External\x86\Omegon\" />
-    <Folder Include="External\x86\QHYCCD\" />
-    <Folder Include="External\x86\ToupTek\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
