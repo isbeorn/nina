@@ -129,15 +129,15 @@ This database will be automatically created by the EntityFramework based on the 
 
 * Install Visual Studio Community 2017 or better
 * Install [ASCOM](https://ascom-standards.org/Downloads/Index.htm)
-* Other external dependencies are automatically installed via nuget (except Camera vendor DLLs)
-* External Camera Vendor SDK DLLs have to be manually put inside the project to \NINA\External\ &lt;x64 and x32&gt;\
-    * To get Canon and Nikon DLLs you have to register as a developer for canon and nikon separately on their websites
-	* Altair SDK: Join the altair development group at https://groups.google.com/forum/#!forum/altair-development-group
-    * Due to not being publicly available, they must not be put into a public repository
 * Recommended Visual Studio Extensions:
     * [CodeMaid](http://www.codemaid.net/): A code cleanup Utility
     * [XAML Styler](https://github.com/Xavalon/XamlStyler/) A XAML style formatter
     * [MarkdownEditor](https://github.com/madskristensen/MarkdownEditor) To edit Markdown and auto generate HTML files
+* Other external dependencies are automatically installed via nuget (except for some camera vendor DLLs)
+* (Optional) External Camera Vendor SDK DLLs have to be manually put inside the project to \NINA\External\ &lt;x64 and x32&gt;\
+    * To get Canon and Nikon DLLs you have to register as a developer for canon and nikon separately on their websites
+	* Altair SDK: Join the altair development group at https://groups.google.com/forum/#!forum/altair-development-group
+    * Due to not being publicly available, they must not be put into a public repository
 * (Optional) To be able to build the setup projects you need to install [WiX](http://wixtoolset.org/) and their [Visual Studio plugin](https://marketplace.visualstudio.com/items?itemName=RobMensching.WixToolsetVisualStudio2017Extension)
 
 ## Automated Unit Tests (AUT)
