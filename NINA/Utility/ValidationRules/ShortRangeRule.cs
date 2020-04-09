@@ -29,12 +29,7 @@ using System.Windows.Controls;
 namespace NINA.Utility.ValidationRules {
 
     public class ShortRangeRule : ValidationRule {
-        private ShortRangeChecker _validRange;
-
-        public ShortRangeChecker ValidRange {
-            get { return _validRange; }
-            set { _validRange = value; }
-        }
+        public ShortRangeChecker ValidRange { get; set; }
 
         public override ValidationResult Validate(object value,
                                                    CultureInfo cultureInfo) {
@@ -42,7 +37,7 @@ namespace NINA.Utility.ValidationRules {
 
             try {
                 if (((string)value).Length > 0) {
-                    parameter = short.Parse((String)value);
+                    parameter = short.Parse(value.ToString(), NumberStyles.Integer, cultureInfo);
                 }
             } catch (Exception e) {
                 return new ValidationResult(false, "Illegal characters or "

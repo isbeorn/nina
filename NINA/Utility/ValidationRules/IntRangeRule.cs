@@ -32,12 +32,7 @@ using System.Windows.Controls;
 namespace NINA.Utility.ValidationRules {
 
     public class IntRangeRule : ValidationRule {
-        private IntRangeChecker _validRange;
-
-        public IntRangeChecker ValidRange {
-            get => _validRange;
-            set => _validRange = value;
-        }
+        public IntRangeChecker ValidRange { get; set; }
 
         public override ValidationResult Validate(object value,
                                                    CultureInfo cultureInfo) {
@@ -45,7 +40,7 @@ namespace NINA.Utility.ValidationRules {
 
             try {
                 if (value.ToString().Length > 0) {
-                    parameter = int.Parse(value.ToString());
+                    parameter = int.Parse(value.ToString(), NumberStyles.Integer, cultureInfo);
                 }
             } catch (Exception e) {
                 return new ValidationResult(false, "Illegal characters or "

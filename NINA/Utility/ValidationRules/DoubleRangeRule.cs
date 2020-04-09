@@ -29,20 +29,15 @@ using System.Windows.Controls;
 namespace NINA.Utility.ValidationRules {
 
     public class DoubleRangeRule : ValidationRule {
-        private DoubleRangeChecker _validRange;
-
-        public DoubleRangeChecker ValidRange {
-            get { return _validRange; }
-            set { _validRange = value; }
-        }
+        public DoubleRangeChecker ValidRange { get; set; }
 
         public override ValidationResult Validate(object value,
                                                    CultureInfo cultureInfo) {
-            Double parameter = 0;
+            double parameter = 0;
 
             try {
                 if (((string)value).Length > 0) {
-                    parameter = Double.Parse((String)value, CultureInfo.InvariantCulture);
+                    parameter = double.Parse(value.ToString(), NumberStyles.Number, cultureInfo);
                 }
             } catch (Exception e) {
                 return new ValidationResult(false, "Illegal characters or "

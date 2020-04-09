@@ -31,9 +31,7 @@ namespace NINA.Utility.ValidationRules {
     public class GreaterThanZeroRule : ValidationRule {
 
         public override ValidationResult Validate(object value, CultureInfo cultureInfo) {
-            double dbl;
-
-            if (double.TryParse(value.ToString(), out dbl)) {
+            if (double.TryParse(value.ToString(), NumberStyles.Number, cultureInfo, out var dbl)) {
                 if (dbl <= 0) {
                     return new ValidationResult(false, "Value must be greater than 0");
                 } else {
