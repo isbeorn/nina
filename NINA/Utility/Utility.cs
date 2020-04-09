@@ -79,11 +79,20 @@ namespace NINA.Utility {
         /// </summary>
         /// <param name="unixTimeStamp">Milliseconds after 1970</param>
         /// <returns>DateTime</returns>
-        public static DateTime UnixTimeStampToDateTime(double unixTimeStamp) {
+        public static DateTime UnixTimeStampToDateTime(long unixTimeStamp) {
             // Unix timestamp is seconds past epoch
             System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
             dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
             return dtDateTime;
+        }
+
+        /// <summary>
+        /// Convert datetime to unix timestamp
+        /// </summary>
+        /// <param name="unixTimeStamp">Milliseconds after 1970</param>
+        /// <returns>DateTime</returns>
+        public static long DateTimeToUnixTimeStamp(DateTime date) {
+            return (int)(date.ToUniversalTime().Subtract(new DateTime(1970, 1, 1))).TotalSeconds; ;
         }
 
         public static async Task<TimeSpan> Delay(int milliseconds, CancellationToken token) {

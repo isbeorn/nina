@@ -52,6 +52,10 @@ namespace NINA.Database {
             connectionString = string.Format(@"Data Source={0};", Environment.ExpandEnvironmentVariables(@"%localappdata%\NINA\NINA.sqlite"));
         }
 
+        public NINADbContext GetContext() {
+            return new NINADbContext(connectionString);
+        }
+
         public async Task<ICollection<string>> GetConstellations(CancellationToken token) {
             try {
                 using (var context = new NINADbContext(connectionString)) {
@@ -83,7 +87,7 @@ namespace NINA.Database {
         }
 
         public async Task<double> GetUT1_UTC(DateTime date, CancellationToken token) {
-            var unixTimestamp = (int)(date.ToUniversalTime().Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            var unixTimestamp = Utility.Utility.DateTimeToUnixTimeStamp(date);
             try {
                 using (var context = new NINADbContext(connectionString)) {
                     var rows = await context.EarthRotationParameterSet.OrderBy(x => Math.Abs(x.date - unixTimestamp)).Take(1).ToListAsync(token);

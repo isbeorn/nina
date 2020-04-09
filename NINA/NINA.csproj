@@ -469,6 +469,7 @@
     <Compile Include="Profile\Interfaces\IExposureCalculatorSettings.cs" />
     <Compile Include="Profile\Interfaces\ISnapShotControlSettings.cs" />
     <Compile Include="Profile\SnapShotControlSettings.cs" />
+    <Compile Include="Utility\Astrometry\EarthRotationParameterUpdater.cs" />
     <Compile Include="Utility\CameraSDKs\EDSDK\EDSDKLocal.cs" />
     <Compile Include="Model\MySwitch\PegasusAstro\DataProviderSwitch.cs" />
     <Compile Include="Model\MySwitch\PegasusAstro\PegasusAstroSwitch.cs" />

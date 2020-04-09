@@ -31,6 +31,11 @@ using System.Text.RegularExpressions;
 namespace NINA.Utility.Astrometry {
 
     public class Astrometry {
+
+        static Astrometry() {
+            _ = new EarthRotationParameterUpdater().Update();
+        }
+
         private static double DegreeToRadiansFactor = Math.PI / 180d;
         private static double RadiansToDegreeFactor = 180d / Math.PI;
         private static double RadianstoHourFactor = 12d / Math.PI;

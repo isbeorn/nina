@@ -29,7 +29,7 @@ namespace NINA.Database.Schema {
     public class EarthRotationParameters {
 
         [Key]
-        public int date { get; set; }
+        public long date { get; set; }
 
         public double modifiedjuliandate { get; set; }
         public double x { get; set; }
