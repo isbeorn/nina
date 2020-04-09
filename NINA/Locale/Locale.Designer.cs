@@ -4860,6 +4860,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pattern Preview.
+        /// </summary>
+        internal static string LblImagePatternPreview {
+            get {
+                return ResourceManager.GetString("LblImagePatternPreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Image source.
         /// </summary>
         internal static string LblImageSource {

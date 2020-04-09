@@ -43,6 +43,7 @@
                     <RowDefinition Height="110" />
                     <RowDefinition Height="40" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <TextBlock
@@ -208,6 +209,7 @@
                     x:Name="ImageFilePatternTextBox"
                     Grid.Row="4"
                     Grid.Column="1"
+                    Grid.ColumnSpan="2"
                     VerticalAlignment="Center"
                     AllowDrop="True"
                     DragEnter="TextBox_DragEnter"
@@ -215,24 +217,25 @@
                     PreviewDragOver="TextBox_PreviewDragOver"
                     Text="{Binding FilePattern}"
                     TextWrapping="Wrap" />
-                <Button
-                    Grid.Row="4"
-                    Grid.Column="2"
-                    Width="30"
-                    Height="30"
-                    HorizontalAlignment="Center"
+
+                <TextBlock
+                    Grid.Row="5"
+                    Grid.Column="0"
                     VerticalAlignment="Center"
-                    Command="{Binding DataContext.PreviewFileCommand, ElementName=UC}">
-                    <Path
-                        Margin="5"
-                        Data="{StaticResource PreviewSVG}"
-                        Fill="{StaticResource ButtonForegroundBrush}"
-                        Stretch="Uniform" />
-                </Button>
+                    Text="{ns:Loc LblImagePatternPreview}" />
+                <TextBox
+                    x:Name="ImagePatternPreviewTextBox"
+                    Grid.Row="5"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="2"
+                    VerticalAlignment="Center"
+                    IsReadOnly="True"
+                    Text="{Binding ElementName=ImageFilePatternTextBox, Path=Text, Converter={StaticResource ImagePatternToTextConverter}}"
+                    TextWrapping="Wrap" />
 
                 <ListView
                     x:Name="ImagePatternList"
-                    Grid.Row="5"
+                    Grid.Row="6"
                     Grid.ColumnSpan="3"
                     Margin="0,5,0,0"
                     ItemsSource="{Binding DataContext.ImagePatterns.Items, ElementName=UC}">

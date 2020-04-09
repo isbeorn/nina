@@ -50,7 +50,6 @@ namespace NINA.ViewModel {
 
             this.filterWheelMediator = filterWheelMediator;
             OpenWebRequestCommand = new RelayCommand(OpenWebRequest);
-            PreviewFileCommand = new RelayCommand(PreviewFile);
             OpenImageFileDiagCommand = new RelayCommand(OpenImageFileDiag);
             OpenSequenceTemplateDiagCommand = new RelayCommand(OpenSequenceTemplateDiag);
             OpenSequenceFolderDiagCommand = new RelayCommand(OpenSequenceFolderDiag);
@@ -391,8 +390,6 @@ namespace NINA.ViewModel {
 
         public ICommand OpenWebRequestCommand { get; private set; }
 
-        public ICommand PreviewFileCommand { get; private set; }
-
         public ICommand ToggleColorsCommand { get; private set; }
 
         public ICommand OpenSkyAtlasImageRepositoryDiagCommand { get; private set; }
@@ -415,10 +412,6 @@ namespace NINA.ViewModel {
         public ICommand SiteFromPlanetariumCommand { get; private set; }
 
         public ICommand SelectProfileCommand { get; private set; }
-
-        private void PreviewFile(object o) {
-            MyMessageBox.MyMessageBox.Show(ImagePatterns.GetImageFileString(profileService.ActiveProfile.ImageFileSettings.FilePattern), Locale.Loc.Instance["LblFileExample"], System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxResult.OK);
-        }
 
         private ObservableCollection<CultureInfo> _availableLanguages = new ObservableCollection<CultureInfo>() {
             new CultureInfo("en-GB"),
