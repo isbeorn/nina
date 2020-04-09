@@ -629,11 +629,12 @@ namespace NINA.Utility {
                 AddImageProperty(XISFImageProperty.Instrument.Telescope.Name, metaData.Telescope.Name.ToString(CultureInfo.InvariantCulture), "Name of telescope");
             }
             if (!double.IsNaN(metaData.Telescope.FocalLength) && metaData.Telescope.FocalLength > 0) {
-                AddImageProperty(XISFImageProperty.Instrument.Telescope.FocalLength, metaData.Telescope.FocalLength.ToString(CultureInfo.InvariantCulture), "[mm] Focal length");
+                AddImageProperty(XISFImageProperty.Instrument.Telescope.FocalLength, (metaData.Telescope.FocalLength / 1e3).ToString(CultureInfo.InvariantCulture), "[m] Focal Length");
+                AddImageFITSKeyword("FOCALLEN", metaData.Telescope.FocalLength.ToString(CultureInfo.InvariantCulture), "[mm] Focal length");
 
                 if (!double.IsNaN(metaData.Telescope.FocalRatio) && metaData.Telescope.FocalRatio > 0) {
-                    double aperture = metaData.Telescope.FocalLength / metaData.Telescope.FocalRatio;
-                    AddImageProperty(XISFImageProperty.Instrument.Telescope.Aperture, aperture.ToString(CultureInfo.InvariantCulture), "[mm] Aperture", false);
+                    double aperture = (metaData.Telescope.FocalLength / metaData.Telescope.FocalRatio) / 1e3;
+                    AddImageProperty(XISFImageProperty.Instrument.Telescope.Aperture, aperture.ToString(CultureInfo.InvariantCulture), "[m] Aperture", false);
                     AddImageFITSKeyword("FOCRATIO", metaData.Telescope.FocalRatio.ToString(CultureInfo.InvariantCulture), "Focal ratio");
                 }
             }
@@ -1223,7 +1224,7 @@ namespace NINA.Utility {
                 public static readonly string Namespace = Instrument.Namespace + "Telescope:";
                 public static readonly string[] Aperture = { Namespace + nameof(Aperture), "Float32" };
                 public static readonly string[] CollectingArea = { Namespace + nameof(CollectingArea), "Float32" };
-                public static readonly string[] FocalLength = { Namespace + nameof(FocalLength), "Float32", "FOCALLEN" };
+                public static readonly string[] FocalLength = { Namespace + nameof(FocalLength), "Float32" };
                 public static readonly string[] Name = { Namespace + nameof(Name), "String", "TELESCOP" };
             }
         }
