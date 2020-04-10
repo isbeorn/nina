@@ -148,7 +148,7 @@
     <value>高级设置</value>
   </data>
   <data name="LblAFContrastDetection" xml:space="preserve">
-    <value>反差对焦 (实验性)</value>
+    <value>对比度检测 (实验中)</value>
   </data>
   <data name="LblAFOnButFocuserNotConnected" xml:space="preserve">
     <value>自动对焦已启用，但没有连接电调</value>
@@ -3478,5 +3478,8 @@
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
     <value>Camera Timeout - Camera did not set image as ready after exposuretime + 15 seconds</value>
+  </data>
+  <data name="LblImagePatternPreview" xml:space="preserve">
+    <value>Pattern Preview</value>
   </data>
 </root>

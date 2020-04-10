@@ -3471,4 +3471,7 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
   <data name="LblCameraTimeout" xml:space="preserve">
     <value>Camera Timeout - Camera did not set image as ready after exposuretime + 15 seconds</value>
   </data>
+  <data name="LblImagePatternPreview" xml:space="preserve">
+    <value>Pattern Preview</value>
+  </data>
 </root>

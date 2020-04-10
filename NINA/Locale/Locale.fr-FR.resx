@@ -3476,4 +3476,7 @@ La valeur par défaut Auto utilise n'importe quel matrice que le pilote de la ca
   <data name="LblCameraTimeout" xml:space="preserve">
     <value>Camera Timeout - Camera did not set image as ready after exposuretime + 15 seconds</value>
   </data>
+  <data name="LblImagePatternPreview" xml:space="preserve">
+    <value>Pattern Preview</value>
+  </data>
 </root>

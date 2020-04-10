@@ -3478,4 +3478,7 @@ Die Standardeinstellung von Auto verwendet das Muster, dass der Kamera-Treiber m
   <data name="LblCameraTimeout" xml:space="preserve">
     <value>Camera Timeout - Camera did not set image as ready after exposuretime + 15 seconds</value>
   </data>
+  <data name="LblImagePatternPreview" xml:space="preserve">
+    <value>Pattern Preview</value>
+  </data>
 </root>

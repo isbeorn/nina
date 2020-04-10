@@ -995,7 +995,7 @@
     <value>日付フォーマットYYYY-MM-DD_HH-mm-ss</value>
   </data>
   <data name="LblDawn" xml:space="preserve">
-    <value>薄明</value>
+    <value>薄明始</value>
   </data>
   <data name="LblDays" xml:space="preserve">
     <value>日</value>
@@ -1154,7 +1154,7 @@
     <value>継続時間</value>
   </data>
   <data name="LblDusk" xml:space="preserve">
-    <value>日没</value>
+    <value>薄明終</value>
   </data>
   <data name="LblEast" xml:space="preserve">
     <value>東</value>
@@ -1172,7 +1172,7 @@
     <value>オン</value>
   </data>
   <data name="LblEndOfSequenceCloseFlatDeviceCover" xml:space="preserve">
-    <value>フラット器具のカバーを閉じています。</value>
+    <value>フラット装置のカバーを閉じています。</value>
   </data>
   <data name="LblEndOfSequenceDecision" xml:space="preserve">
     <value>シーケンス終了オプションを実行しますか？</value>
@@ -1344,7 +1344,7 @@
     <value>フラットパネル光</value>
   </data>
   <data name="LblFlatDeviceNeitherOpenNorClosed" xml:space="preserve">
-    <value>開でも閉でもない</value>
+    <value>開閉途中</value>
   </data>
   <data name="LblFlatDeviceNoDevice" xml:space="preserve">
     <value>フラットパネルなし</value>
@@ -1362,7 +1362,7 @@
     <value>設定</value>
   </data>
   <data name="LblFlatDeviceTrainedFilterTimes" xml:space="preserve">
-    <value>フラットウィザード実績露出時間</value>
+    <value>フラットウィザード算出露出時間</value>
   </data>
   <data name="LblFlatDeviceUnknown" xml:space="preserve">
     <value>不明</value>
@@ -1523,7 +1523,7 @@
     <value>FreeImage</value>
   </data>
   <data name="LblFrom" xml:space="preserve">
-    <value>から</value>
+    <value>開始</value>
   </data>
   <data name="LblFullWellCapacity" xml:space="preserve">
     <value>飽和容量 e値</value>
@@ -1676,7 +1676,7 @@
     <value>ライト、フラット、ダーク、バイアス、スナップショット</value>
   </data>
   <data name="LblImaging" xml:space="preserve">
-    <value>撮像中</value>
+    <value>撮像</value>
   </data>
   <data name="LblImportFromFilterWheel" xml:space="preserve">
     <value>フィルターホイールからフィルターをインポート</value>
@@ -1727,7 +1727,7 @@
     <value>緯度</value>
   </data>
   <data name="LblLayout" xml:space="preserve">
-    <value>配置</value>
+    <value>画面配置</value>
   </data>
   <data name="LblLblBlackClippingTooltip" xml:space="preserve">
     <value>中央値からのシグマユニットにおけるブラッククリッピングファクター</value>
@@ -1895,7 +1895,7 @@
     <value>月没</value>
   </data>
   <data name="LblMove" xml:space="preserve">
-    <value>動き</value>
+    <value>移動</value>
   </data>
   <data name="LblName" xml:space="preserve">
     <value>名前</value>
@@ -2161,7 +2161,7 @@
     <value>望遠鏡はシーケンス終了時にパーク位置に行くように設定されていますが、接続されていません。</value>
   </data>
   <data name="LblParkMountAtSequenceEnd" xml:space="preserve">
-    <value>シーケンス終了時に赤道儀をパーク位置にする。</value>
+    <value>シーケンス終了時に赤道儀をパーク位置にする</value>
   </data>
   <data name="LblPassMeridian" xml:space="preserve">
     <value>子午線跨ぎ</value>
@@ -2340,7 +2340,7 @@
     <value>プレートソルブ設定</value>
   </data>
   <data name="LblPlateSolving" xml:space="preserve">
-    <value>プレートソルブ中</value>
+    <value>プレートソルブ</value>
   </data>
   <data name="LblPleaseChangeToFilter" xml:space="preserve">
     <value>フィルター{0} へ変更して下さい。</value>
@@ -2499,10 +2499,10 @@
     <value>リセットして継続</value>
   </data>
   <data name="LblResetDockLayout" xml:space="preserve">
-    <value>配置のリセット</value>
+    <value>画面配置のリセット</value>
   </data>
   <data name="LblResetDockLayoutConfirmation" xml:space="preserve">
-    <value>配置をリセットしますか？</value>
+    <value>画面配置をリセットしますか？</value>
   </data>
   <data name="LblReslewToTarget" xml:space="preserve">
     <value>ターゲットの再導入</value>
@@ -2556,7 +2556,7 @@
     <value>フォーカサーのバックラッシュ測定値を保存しますか？</value>
   </data>
   <data name="LblSaveImageAs" xml:space="preserve">
-    <value>として画像を保存</value>
+    <value>画像保存形式</value>
   </data>
   <data name="LblSaveImageAsDSLRNote" xml:space="preserve">
     <value>一眼レフでは画像ファイルフォーマット設定は無視されます。その代わりにRAWフォーマットが保存されます。</value>
@@ -2906,7 +2906,7 @@
     <value>ターゲット位置</value>
   </data>
   <data name="LblTargetRA" xml:space="preserve">
-    <value>ターゲット赤経</value>
+    <value>対象赤経</value>
   </data>
   <data name="LblTargets" xml:space="preserve">
     <value>ターゲット群</value>
@@ -3005,7 +3005,7 @@
     <value>タイムゾーン</value>
   </data>
   <data name="LblTo" xml:space="preserve">
-    <value>まで</value>
+    <value>終了</value>
   </data>
   <data name="LblTools" xml:space="preserve">
     <value>ツール</value>
@@ -3462,5 +3462,8 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
     <value>Camera Timeout - Camera did not set image as ready after exposuretime + 15 seconds</value>
+  </data>
+  <data name="LblImagePatternPreview" xml:space="preserve">
+    <value>Pattern Preview</value>
   </data>
 </root>
