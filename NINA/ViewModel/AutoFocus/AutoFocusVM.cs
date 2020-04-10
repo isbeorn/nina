@@ -697,6 +697,7 @@ namespace NINA.ViewModel {
             } finally {
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocusRestoringOriginalPosition"] });
                 _focusPosition = await focuserMediator.MoveFocuser(initialPosition);
+                progress.Report(new ApplicationStatus() { Status = string.Empty });
                 profileService.ActiveProfile.FocuserSettings.AutoFocusMethod = oldMethod;
             }
             return true;
