@@ -486,9 +486,11 @@ namespace NINA.Utility.Astrometry {
             var sunPosition = tuple.Item2;
 
             var diff = HoursToDegrees(moonPosition.RA - sunPosition.RA);
-            var positionAngle = (diff) % 180;
-
-            return positionAngle;
+            if (diff > 180) {
+                return diff - 360;
+            } else {
+                return diff;
+            }
         }
 
         private static double CalculateMoonIllumination(DateTime date) {
