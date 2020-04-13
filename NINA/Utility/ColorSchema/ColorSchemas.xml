@@ -226,4 +226,20 @@
     <SecondaryBackgroundColor Color="#FF10233d" />
     <TertiaryBackgroundColor Color="#FF0f2138" />
   </ColorSchema>
+  <ColorSchema Name="Dark Nebula">
+    <PrimaryColor Color="#FFF5F4FA" />
+    <SecondaryColor Color="#68808080" />
+    <BorderColor Color="#AA3E4146" />
+    <BackgroundColor Color="#E1191A1C" />
+    <ButtonBackgroundColor Color="#FF34373D" />
+    <ButtonBackgroundSelectedColor Color="#FF696C70" />
+    <ButtonForegroundColor Color="#FF6495ED" />
+    <ButtonForegroundDisabledColor Color="#FF848484" />
+    <NotificationWarningColor Color="#FFBA5E07" />
+    <NotificationErrorColor Color="#FF700000" />
+    <NotificationWarningTextColor Color="#FFF0F8FF" />
+    <NotificationErrorTextColor Color="#FFF0F8FF" />
+    <SecondaryBackgroundColor Color="#FF1E2024" />
+    <TertiaryBackgroundColor Color="#FF404144" />
+  </ColorSchema>
 </ColorSchemas>
