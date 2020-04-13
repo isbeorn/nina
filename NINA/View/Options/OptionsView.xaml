@@ -706,18 +706,6 @@
                     <GroupBox Grid.Row="2" Header="{ns:Loc LblAstrometry}">
                         <StackPanel Margin="0,5,0,0">
                             <UniformGrid Columns="2">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock
-                                        Width="100"
-                                        VerticalAlignment="Center"
-                                        Text="{ns:Loc LblEpoch}" />
-                                    <ComboBox
-                                        Name="epochcombo"
-                                        Margin="10,0,0,0"
-                                        ItemsSource="{Binding Source={util:EnumBindingSource {x:Type astrometry:Epoch}}}"
-                                        SelectedItem="{Binding ActiveProfile.AstrometrySettings.EpochType}" />
-                                </StackPanel>
-
                                 <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                                     <TextBlock
                                         Width="100"

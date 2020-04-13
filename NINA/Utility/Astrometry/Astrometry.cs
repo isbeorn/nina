@@ -643,11 +643,17 @@ namespace NINA.Utility.Astrometry {
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]
     public enum Epoch {
 
+        [Description("LblJNOW")]
+        JNOW,
+
+        [Description("LblB1950")]
+        B1950,
+
         [Description("LblJ2000")]
         J2000,
 
-        [Description("LblJNOW")]
-        JNOW
+        [Description("LblJ2050")]
+        J2050
     }
 
     [TypeConverter(typeof(EnumDescriptionTypeConverter))]

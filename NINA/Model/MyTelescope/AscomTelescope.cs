@@ -65,6 +65,7 @@ namespace NINA.Model.MyTelescope {
             _canSetSlewSettleTime = true;
             _canGetTargetRaDec = true;
             _canSetTargetRaDec = true;
+            _hasUnknownEpoch = false;
         }
 
         private string _id;
@@ -361,7 +362,7 @@ namespace NINA.Model.MyTelescope {
 
         public Coordinates Coordinates {
             get {
-                return new Coordinates(RightAscension, Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+                return new Coordinates(RightAscension, Declination, EquatorialSystem, Coordinates.RAType.Hours);
             }
         }
 
@@ -499,13 +500,34 @@ namespace NINA.Model.MyTelescope {
             }
         }
 
-        public EquatorialCoordinateType EquatorialSystem {
+        public Epoch EquatorialSystem {
             get {
-                if (Connected) {
-                    return _telescope.EquatorialSystem;
-                } else {
-                    return EquatorialCoordinateType.equOther;
+                Epoch epoch = Epoch.JNOW;
+
+                if (Connected && _telescope.InterfaceVersion > 1) {
+                    EquatorialCoordinateType mountEqSystem = _telescope.EquatorialSystem;
+
+                    switch (mountEqSystem) {
+                        case EquatorialCoordinateType.equB1950:
+                            epoch = Epoch.B1950;
+                            break;
+
+                        case EquatorialCoordinateType.equJ2000:
+                            epoch = Epoch.J2000;
+                            break;
+
+                        case EquatorialCoordinateType.equJ2050:
+                            epoch = Epoch.J2050;
+                            break;
+
+                        case EquatorialCoordinateType.equOther:
+                            epoch = Epoch.J2000;
+                            HasUnknownEpoch = true;
+                            break;
+                    }
                 }
+
+                return epoch;
             }
         }
 
@@ -950,6 +972,13 @@ namespace NINA.Model.MyTelescope {
             _telescope = null;
         }
 
+        private bool _hasUnknownEpoch;
+
+        public bool HasUnknownEpoch {
+            get => _hasUnknownEpoch;
+            private set { _hasUnknownEpoch = value; RaisePropertyChanged(); }
+        }
+
         public async Task<bool> MeridianFlip(Coordinates targetCoordinates) {
             var success = false;
             try {
@@ -969,7 +998,7 @@ namespace NINA.Model.MyTelescope {
                     }
                 }
 
-                targetCoordinates = targetCoordinates.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
+                targetCoordinates = targetCoordinates.Transform(EquatorialSystem);
                 SlewToCoordinates(targetCoordinates);
                 success = true;
             } catch (Exception ex) {
@@ -1068,7 +1097,7 @@ namespace NINA.Model.MyTelescope {
                     if (!Tracking) {
                         Tracking = true;
                     }
-                    coordinates = coordinates.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
+                    coordinates = coordinates.Transform(EquatorialSystem);
                     _telescope.SlewToCoordinatesAsync(coordinates.RA, coordinates.Dec);
                 } catch (Exception e) {
                     Logger.Error(e);
@@ -1083,7 +1112,7 @@ namespace NINA.Model.MyTelescope {
                     if (!Tracking) {
                         Tracking = true;
                     }
-                    coordinates = coordinates.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
+                    coordinates = coordinates.Transform(EquatorialSystem);
                     _telescope.SlewToCoordinates(coordinates.RA, coordinates.Dec);
                 } catch (Exception e) {
                     Logger.Error(e);
@@ -1130,7 +1159,7 @@ namespace NINA.Model.MyTelescope {
             if (Connected && CanSync) {
                 if (Tracking) {
                     try {
-                        coordinates = coordinates.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
+                        coordinates = coordinates.Transform(EquatorialSystem);
                         _telescope.SyncToCoordinates(coordinates.RA, coordinates.Dec);
                         success = true;
                     } catch (Exception ex) {

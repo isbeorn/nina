@@ -225,6 +225,16 @@ namespace NINA.ViewModel.Equipment.Telescope {
                         if (connected) {
                             Telescope = telescope;
 
+                            if (Telescope.EquatorialSystem == Epoch.B1950 || Telescope.EquatorialSystem == Epoch.J2050) {
+                                Logger.Error($"Mount uses an unsupported equatorial system: {Telescope.EquatorialSystem}");
+                                throw new OperationCanceledException(string.Format(Locale.Loc.Instance["LblUnsupportedEpoch"], Telescope.EquatorialSystem));
+                            }
+
+                            if (Telescope.HasUnknownEpoch) {
+                                Logger.Warning($"Mount reported an Unknown or Other equatorial system. Defaulting to {Telescope.EquatorialSystem}");
+                                Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblUnknownEpochWarning"], Telescope.EquatorialSystem));
+                            }
+
                             if (Telescope.SiteLatitude != profileService.ActiveProfile.AstrometrySettings.Latitude || Telescope.SiteLongitude != profileService.ActiveProfile.AstrometrySettings.Longitude) {
                                 var syncVM = new TelescopeLatLongSyncVM(
                                     Telescope.CanSetSiteLatLong,
@@ -266,7 +276,9 @@ namespace NINA.ViewModel.Equipment.Telescope {
                                 Tracking = Telescope.Tracking,
                                 CanSetTracking = Telescope.CanSetTracking,
                                 CanPark = Telescope.CanPark,
-                                CanSetPark = Telescope.CanSetPark
+                                CanSetPark = Telescope.CanSetPark,
+                                EquatorialSystem = Telescope.EquatorialSystem,
+                                HasUnknownEpoch = Telescope.HasUnknownEpoch
                             };
 
                             BroadcastTelescopeInfo();
@@ -284,8 +296,9 @@ namespace NINA.ViewModel.Equipment.Telescope {
                             Telescope = null;
                             return false;
                         }
-                    } catch (OperationCanceledException) {
+                    } catch (OperationCanceledException ex) {
                         if (telescope?.Connected == true) { await Disconnect(); }
+                        Notification.ShowError(ex.Message);
                         return false;
                     }
                 } else {
@@ -404,6 +417,7 @@ namespace NINA.ViewModel.Equipment.Telescope {
             telescopeValues.Add(nameof(TelescopeInfo.Coordinates), _telescope?.Coordinates ?? null);
             telescopeValues.Add(nameof(TelescopeInfo.TimeToMeridianFlip), _telescope?.TimeToMeridianFlip ?? double.NaN);
             telescopeValues.Add(nameof(TelescopeInfo.SideOfPier), _telescope?.SideOfPier ?? new PierSide());
+            telescopeValues.Add(nameof(TelescopeInfo.EquatorialSystem), _telescope?.EquatorialSystem ?? Epoch.JNOW);
 
             return telescopeValues;
         }
@@ -446,10 +460,10 @@ namespace NINA.ViewModel.Equipment.Telescope {
         }
 
         public async Task<bool> Sync(Coordinates coordinates) {
-            var transform = coordinates.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
+            var transform = coordinates.Transform(TelescopeInfo.EquatorialSystem);
             if (!profileService.ActiveProfile.TelescopeSettings.NoSync && TelescopeInfo.Connected) {
                 bool result = Telescope.Sync(transform);
-                await Task.Delay(TimeSpan.FromSeconds(Math.Max(2,profileService.ActiveProfile.TelescopeSettings.SettleTime)));
+                await Task.Delay(TimeSpan.FromSeconds(Math.Max(2, profileService.ActiveProfile.TelescopeSettings.SettleTime)));
                 return result;
             } else {
                 return false;
@@ -573,7 +587,7 @@ namespace NINA.ViewModel.Equipment.Telescope {
         }
 
         public async Task<bool> SlewToCoordinatesAsync(Coordinates coords) {
-            coords = coords.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
+            coords = coords.Transform(TelescopeInfo.EquatorialSystem);
             if (Telescope?.Connected == true) {
                 await Task.Run(() => {
                     Telescope.SlewToCoordinates(coords);
@@ -586,7 +600,7 @@ namespace NINA.ViewModel.Equipment.Telescope {
         }
 
         private void SlewToCoordinates(Coordinates coords) {
-            coords = coords.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
+            coords = coords.Transform(TelescopeInfo.EquatorialSystem);
             if (Telescope?.Connected == true) {
                 Telescope.SlewToCoordinatesAsync(coords);
             }
@@ -601,7 +615,7 @@ namespace NINA.ViewModel.Equipment.Telescope {
         }
 
         public Task<bool> MeridianFlip(Coordinates targetCoordinates) {
-            var coords = targetCoordinates.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
+            var coords = targetCoordinates.Transform(TelescopeInfo.EquatorialSystem);
             if (TelescopeInfo.Connected) {
                 return Telescope.MeridianFlip(coords);
             } else {
@@ -627,7 +641,7 @@ namespace NINA.ViewModel.Equipment.Telescope {
         }
 
         public Task<bool> SlewToCoordinatesAsync(TopocentricCoordinates coordinates) {
-            var transformed = coordinates.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
+            var transformed = coordinates.Transform(TelescopeInfo.EquatorialSystem);
             return this.SlewToCoordinatesAsync(transformed);
         }
 

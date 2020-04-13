@@ -144,6 +144,13 @@
                                     <TextBlock Text="{ns:Loc LblSiteElevation}" />
                                     <TextBlock Margin="5,0,0,0" Text="{Binding Telescope.SiteElevation}" />
                                 </UniformGrid>
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2">
+                                    <TextBlock Text="{ns:Loc LblEpoch}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding Telescope.EquatorialSystem}" />
+                                </UniformGrid>
                             </UniformGrid>
                         </Border>
                         <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">

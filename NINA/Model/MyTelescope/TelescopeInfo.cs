@@ -22,6 +22,7 @@
 #endregion "copyright"
 
 using NINA.Utility.Astrometry;
+using NINA.Utility.Enum;
 
 namespace NINA.Model.MyTelescope {
 
@@ -219,6 +220,20 @@ namespace NINA.Model.MyTelescope {
         public bool CanSetTracking {
             get { return canSetTracking; }
             set { canSetTracking = value; RaisePropertyChanged(); }
+        }
+
+        private Epoch equatorialSystem;
+
+        public Epoch EquatorialSystem {
+            get { return equatorialSystem; }
+            set { equatorialSystem = value; RaisePropertyChanged(); }
+        }
+
+        private bool hasUnknownEpoch;
+
+        public bool HasUnknownEpoch {
+            get { return hasUnknownEpoch; }
+            set { hasUnknownEpoch = value; RaisePropertyChanged(); }
         }
     }
 }

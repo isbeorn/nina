@@ -54,6 +54,8 @@ namespace NINA.Model.MyTelescope {
         bool CanPark { get; }
         bool CanUnpark { get; }
         bool CanSetPark { get; }
+        Epoch EquatorialSystem { get; }
+        bool HasUnknownEpoch { get; }
 
         Task<bool> MeridianFlip(Coordinates targetCoordinates);
 

@@ -26,7 +26,6 @@ using NINA.Utility.Astrometry;
 namespace NINA.Profile {
 
     public interface IAstrometrySettings : ISettings {
-        Epoch EpochType { get; set; }
         Hemisphere HemisphereType { get; set; }
         double Latitude { get; set; }
         double Longitude { get; set; }

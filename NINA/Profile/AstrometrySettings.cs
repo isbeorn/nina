@@ -37,25 +37,9 @@ namespace NINA.Profile {
         }
 
         protected override void SetDefaultValues() {
-            epochType = Epoch.JNOW;
             hemisphereType = Hemisphere.NORTHERN;
             latitude = 0;
             longitude = 0;
-        }
-
-        private Epoch epochType;
-
-        [DataMember]
-        public Epoch EpochType {
-            get {
-                return epochType;
-            }
-            set {
-                if (epochType != value) {
-                    epochType = value;
-                    RaisePropertyChanged();
-                }
-            }
         }
 
         private Hemisphere hemisphereType;

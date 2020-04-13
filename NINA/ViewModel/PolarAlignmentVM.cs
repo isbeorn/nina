@@ -362,7 +362,7 @@ namespace NINA.ViewModel {
 
         private async Task<bool> DarvTelescopeSlew(IProgress<string> progress, CancellationToken canceltoken) {
             return await Task.Run<bool>(async () => {
-                Coordinates startPosition = new Coordinates(TelescopeInfo.RightAscension, TelescopeInfo.Declination, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Hours);
+                Coordinates startPosition = new Coordinates(TelescopeInfo.RightAscension, TelescopeInfo.Declination, TelescopeInfo.EquatorialSystem, Coordinates.RAType.Hours);
                 try {
                     //wait 5 seconds for camera to have a starting indicator
                     await Task.Delay(TimeSpan.FromSeconds(5), canceltoken);
@@ -586,9 +586,9 @@ namespace NINA.ViewModel {
                 }
 
                 Coordinates startSolve = PlateSolveResult.Coordinates;
-                startSolve = startSolve.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
+                startSolve = startSolve.Transform(TelescopeInfo.EquatorialSystem);
 
-                Coordinates targetPosition = new Coordinates(startPosition.RADegrees - driftAmount, startPosition.Dec, profileService.ActiveProfile.AstrometrySettings.EpochType, Coordinates.RAType.Degrees);
+                Coordinates targetPosition = new Coordinates(startPosition.RADegrees - driftAmount, startPosition.Dec, TelescopeInfo.EquatorialSystem, Coordinates.RAType.Degrees);
                 progress.Report(new ApplicationStatus() { Status = "Slewing..." });
                 await telescopeMediator.SlewToCoordinatesAsync(targetPosition);
 
@@ -615,7 +615,7 @@ namespace NINA.ViewModel {
                 }
 
                 Coordinates targetSolve = PlateSolveResult.Coordinates;
-                targetSolve = targetSolve.Transform(profileService.ActiveProfile.AstrometrySettings.EpochType);
+                targetSolve = targetSolve.Transform(TelescopeInfo.EquatorialSystem);
 
                 var decError = Astrometry.DegreeToArcmin(startSolve.Dec - targetSolve.Dec);
 

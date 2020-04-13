@@ -961,6 +961,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to B1950.
+        /// </summary>
+        internal static string LblB1950 {
+            get {
+                return ResourceManager.GetString("LblB1950", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Background.
         /// </summary>
         internal static string LblBackground {
@@ -5000,6 +5009,15 @@ namespace NINA.Locale {
         internal static string LblJ2000 {
             get {
                 return ResourceManager.GetString("LblJ2000", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to J2050.
+        /// </summary>
+        internal static string LblJ2050 {
+            get {
+                return ResourceManager.GetString("LblJ2050", resourceCulture);
             }
         }
         
@@ -9248,6 +9266,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The mount operates using an unknown equatorial reference system. {0} will be used. Please configure the mount&apos;s driver with a valid epoch..
+        /// </summary>
+        internal static string LblUnknownEpochWarning {
+            get {
+                return ResourceManager.GetString("LblUnknownEpochWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unlinked Stretch.
         /// </summary>
         internal static string LblUnlinkedStretch {
@@ -9275,6 +9302,15 @@ namespace NINA.Locale {
         internal static string LblUnpark {
             get {
                 return ResourceManager.GetString("LblUnpark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The mount operates using the {0} equatorial reference system, which is not supported..
+        /// </summary>
+        internal static string LblUnsupportedEpoch {
+            get {
+                return ResourceManager.GetString("LblUnsupportedEpoch", resourceCulture);
             }
         }
         
