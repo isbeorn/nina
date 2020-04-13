@@ -146,6 +146,7 @@ namespace NINA.ViewModel {
             autoUpdateTimer.Start();
 
             PropertyChanged += SequenceVM_PropertyChanged;
+            EstimatedDownloadTime = profileService.ActiveProfile.SequenceSettings.EstimatedDownloadTime;
         }
 
         private void SequenceVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
@@ -454,12 +455,14 @@ namespace NINA.ViewModel {
 
         private List<TimeSpan> _actualDownloadTimes = new List<TimeSpan>();
 
+        private TimeSpan estimatedDownloadTime = TimeSpan.Zero;
+
         public TimeSpan EstimatedDownloadTime {
             get {
-                return profileService.ActiveProfile.SequenceSettings.EstimatedDownloadTime;
+                return estimatedDownloadTime;
             }
             set {
-                profileService.ActiveProfile.SequenceSettings.EstimatedDownloadTime = value;
+                estimatedDownloadTime = value;
                 RaisePropertyChanged();
                 CalculateETA();
             }
@@ -711,7 +714,6 @@ namespace NINA.ViewModel {
         private async Task<bool> StartSequencing(IProgress<ApplicationStatus> progress) {
             bool canceledAtStart = false;
             try {
-                profileService.PauseSave();
                 _actualDownloadTimes.Clear();
                 _canceltoken?.Dispose();
                 _canceltoken = new CancellationTokenSource();
@@ -756,7 +758,7 @@ namespace NINA.ViewModel {
                 if (!canceledAtStart) {
                     await RunEndOfSequenceOptions(progress);
                 }
-                profileService.ResumeSave();
+                profileService.ActiveProfile.SequenceSettings.EstimatedDownloadTime = EstimatedDownloadTime;
                 IsPaused = false;
                 IsRunning = false;
                 autoUpdateTimer.Start();
