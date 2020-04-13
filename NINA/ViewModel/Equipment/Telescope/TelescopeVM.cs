@@ -417,7 +417,6 @@ namespace NINA.ViewModel.Equipment.Telescope {
             telescopeValues.Add(nameof(TelescopeInfo.Coordinates), _telescope?.Coordinates ?? null);
             telescopeValues.Add(nameof(TelescopeInfo.TimeToMeridianFlip), _telescope?.TimeToMeridianFlip ?? double.NaN);
             telescopeValues.Add(nameof(TelescopeInfo.SideOfPier), _telescope?.SideOfPier ?? new PierSide());
-            telescopeValues.Add(nameof(TelescopeInfo.EquatorialSystem), _telescope?.EquatorialSystem ?? Epoch.JNOW);
 
             return telescopeValues;
         }

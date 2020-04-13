@@ -47,7 +47,7 @@ namespace NINA.Model.MyTelescope {
 
         public string Category { get; } = "ASCOM";
 
-        private void init() {
+        private void Initialize() {
             _canGetAlignmentMode = true;
             _canGetAltitude = true;
             _canGetApertureArea = true;
@@ -500,34 +500,13 @@ namespace NINA.Model.MyTelescope {
             }
         }
 
+        private Epoch equatorialSystem = Epoch.J2000;
+
         public Epoch EquatorialSystem {
-            get {
-                Epoch epoch = Epoch.JNOW;
-
-                if (Connected && _telescope.InterfaceVersion > 1) {
-                    EquatorialCoordinateType mountEqSystem = _telescope.EquatorialSystem;
-
-                    switch (mountEqSystem) {
-                        case EquatorialCoordinateType.equB1950:
-                            epoch = Epoch.B1950;
-                            break;
-
-                        case EquatorialCoordinateType.equJ2000:
-                            epoch = Epoch.J2000;
-                            break;
-
-                        case EquatorialCoordinateType.equJ2050:
-                            epoch = Epoch.J2050;
-                            break;
-
-                        case EquatorialCoordinateType.equOther:
-                            epoch = Epoch.J2000;
-                            HasUnknownEpoch = true;
-                            break;
-                    }
-                }
-
-                return epoch;
+            get => equatorialSystem;
+            private set {
+                equatorialSystem = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -1307,7 +1286,8 @@ namespace NINA.Model.MyTelescope {
                     _telescope = new Telescope(Id);
                     Connected = true;
                     if (Connected) {
-                        init();
+                        Initialize();
+                        EquatorialSystem = DetermineEquatorialSystem();
                         SiteLongitude = SiteLongitude;
                         SiteLatitude = SiteLatitude;
                         RaiseAllPropertiesChanged();
@@ -1322,6 +1302,35 @@ namespace NINA.Model.MyTelescope {
                 }
                 return Connected;
             });
+        }
+
+        private Epoch DetermineEquatorialSystem() {
+            Epoch epoch = Epoch.JNOW;
+
+            if (_telescope.InterfaceVersion > 1) {
+                EquatorialCoordinateType mountEqSystem = _telescope.EquatorialSystem;
+
+                switch (mountEqSystem) {
+                    case EquatorialCoordinateType.equB1950:
+                        epoch = Epoch.B1950;
+                        break;
+
+                    case EquatorialCoordinateType.equJ2000:
+                        epoch = Epoch.J2000;
+                        break;
+
+                    case EquatorialCoordinateType.equJ2050:
+                        epoch = Epoch.J2050;
+                        break;
+
+                    case EquatorialCoordinateType.equOther:
+                        epoch = Epoch.J2000;
+                        HasUnknownEpoch = true;
+                        break;
+                }
+            }
+
+            return epoch;
         }
     }
 }
