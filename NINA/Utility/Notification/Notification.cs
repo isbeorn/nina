@@ -70,7 +70,7 @@ namespace NINA.Utility.Notification {
         }
 
         public static void ShowInformation(string message) {
-            ShowInformation(message, TimeSpan.FromSeconds(3));
+            ShowInformation(message, TimeSpan.FromSeconds(5));
         }
 
         public static void ShowInformation(string message, TimeSpan lifetime) {
@@ -95,7 +95,7 @@ namespace NINA.Utility.Notification {
         }
 
         public static void ShowWarning(string message) {
-            ShowWarning(message, TimeSpan.FromSeconds(3));
+            ShowWarning(message, TimeSpan.FromSeconds(30));
         }
 
         public static void ShowWarning(string message, TimeSpan lifetime) {
