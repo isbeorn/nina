@@ -133,6 +133,7 @@
                                 HorizontalAlignment="Left"
                                 Command="{Binding ToggleCoolerOnCommand}"
                                 CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
+                                IsEnabled="{Binding CameraInfo.CoolerOn}"
                                 IsChecked="{Binding CameraInfo.CoolerOn}" />
                         </UniformGrid>
                     </Border>

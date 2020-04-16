@@ -55,7 +55,7 @@
                             VerticalAlignment="Center"
                             FontSize="20"
                             Text="{ns:Loc LblCamera}" />
-                        <equip:Connector
+                        <local:Connector
                             Grid.Column="1"
                             CancelCommand="{Binding CancelConnectCameraCommand}"
                             ConnectCommand="{Binding ChooseCameraCommand}"
@@ -372,7 +372,8 @@
                                             HorizontalAlignment="Left"
                                             Command="{Binding ToggleCoolerOnCommand}"
                                             CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
-                                            IsChecked="{Binding CameraInfo.CoolerOn}" />
+                                            IsChecked="{Binding CameraInfo.CoolerOn}"
+                                            IsEnabled="{Binding CameraInfo.CoolerOn}" />
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>
@@ -565,7 +566,7 @@
                             </Grid>
                         </StackPanel>
 
-                        <equip:CameraCoolingChartsView
+                        <local:CameraCoolingChartsView
                             Grid.Row="1"
                             Margin="5"
                             DataContext="{Binding}" />
