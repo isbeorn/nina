@@ -139,7 +139,7 @@
     <value>Filtro attivo</value>
   </data>
   <data name="LblActiveSequenceDetails" xml:space="preserve">
-    <value>Dettagli Sequenze Attive</value>
+    <value>Dettagli Sequenza Attive</value>
   </data>
   <data name="LblAddSequenceTarget" xml:space="preserve">
     <value>Aggiungi come target di sequenza</value>
@@ -3478,6 +3478,18 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
     <value>Camera Timeout - Camera did not set image as ready after exposuretime + 15 seconds</value>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
-    <value>Pattern Preview</value>
+    <value>Anteprima del modello</value>
+  </data>
+  <data name="LblB1950" xml:space="preserve">
+    <value>B1950</value>
+  </data>
+  <data name="LblJ2050" xml:space="preserve">
+    <value>J2050</value>
+  </data>
+  <data name="LblUnknownEpochWarning" xml:space="preserve">
+    <value>La montatura opera utilizzando un sistema di riferimento equatoriale sconosciuto. Verrà utilizzato {0}. Si prega di configurare il driver della montatura con un'epoca valida.</value>
+  </data>
+  <data name="LblUnsupportedEpoch" xml:space="preserve">
+    <value>La montatura opera utilizzando il sistema di riferimento equatoriale {0} che non è supportato.</value>
   </data>
 </root>

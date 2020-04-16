@@ -3466,4 +3466,16 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>Pattern Preview</value>
   </data>
+  <data name="LblB1950" xml:space="preserve">
+    <value>B1950</value>
+  </data>
+  <data name="LblJ2050" xml:space="preserve">
+    <value>J2050</value>
+  </data>
+  <data name="LblUnknownEpochWarning" xml:space="preserve">
+    <value>The mount operates using an unknown equatorial reference system. {0} will be used. Please configure the mount's driver with a valid epoch.</value>
+  </data>
+  <data name="LblUnsupportedEpoch" xml:space="preserve">
+    <value>The mount operates using the {0} equatorial reference system, which is not supported.</value>
+  </data>
 </root>
