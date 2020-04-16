@@ -460,6 +460,7 @@ namespace NINA.ViewModel {
             if (CameraInfo?.Connected == true) {
                 cancelMeasureErrorToken?.Dispose();
                 cancelMeasureErrorToken = new CancellationTokenSource();
+                Task moveBackTask = Task.CompletedTask;
                 try {
                     var siderealTime = Astrometry.GetLocalSiderealTimeNow(profileService.ActiveProfile.AstrometrySettings.Longitude);
                     var latitude = Angle.ByDegree(profileService.ActiveProfile.AstrometrySettings.Latitude);
@@ -469,7 +470,10 @@ namespace NINA.ViewModel {
                     var azimuth = Astrometry.GetAzimuth(hourAngle, altitude, latitude, dec);
                     var altitudeSide = azimuth.Degree < 180 ? AltitudeSite.EAST : AltitudeSite.WEST;
 
-                    double poleErr = await CalculatePoleError(progress, cancelMeasureErrorToken.Token);
+                    Coordinates startPosition = telescopeMediator.GetCurrentPosition();
+                    double poleErr = await CalculatePoleError(startPosition, progress, cancelMeasureErrorToken.Token);
+                    moveBackTask = telescopeMediator.SlewToCoordinatesAsync(startPosition);
+
                     string poleErrString = Deg2str(Math.Abs(poleErr), 4);
                     cancelMeasureErrorToken.Token.ThrowIfCancellationRequested();
                     if (double.IsNaN(poleErr)) {
@@ -529,6 +533,8 @@ namespace NINA.ViewModel {
 
                     progress.Report(new ApplicationStatus() { Status = msg });
                 } catch (OperationCanceledException) {
+                } finally {
+                    await moveBackTask;
                 }
 
                 /*  Altitude
@@ -549,7 +555,7 @@ namespace NINA.ViewModel {
             return true;
         }
 
-        private async Task<double> CalculatePoleError(IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
+        private async Task<double> CalculatePoleError(Coordinates startPosition, IProgress<ApplicationStatus> progress, CancellationToken canceltoken) {
             var plateSolver = PlateSolverFactory.GetPlateSolver(profileService.ActiveProfile.PlateSolveSettings);
             var blindSolver = PlateSolverFactory.GetBlindSolver(profileService.ActiveProfile.PlateSolveSettings);
             var solver = new CaptureSolver(plateSolver, blindSolver, imagingMediator);
@@ -566,7 +572,6 @@ namespace NINA.ViewModel {
             };
 
             double poleError = double.NaN;
-            Coordinates startPosition = telescopeMediator.GetCurrentPosition();
             try {
                 double driftAmount = 0.5d;
 
@@ -585,8 +590,7 @@ namespace NINA.ViewModel {
                     return double.NaN;
                 }
 
-                Coordinates startSolve = PlateSolveResult.Coordinates;
-                startSolve = startSolve.Transform(TelescopeInfo.EquatorialSystem);
+                Coordinates startSolve = PlateSolveResult.Coordinates.Transform(Epoch.JNOW);
 
                 Coordinates targetPosition = new Coordinates(startPosition.RADegrees - driftAmount, startPosition.Dec, TelescopeInfo.EquatorialSystem, Coordinates.RAType.Degrees);
                 progress.Report(new ApplicationStatus() { Status = "Slewing..." });
@@ -614,15 +618,12 @@ namespace NINA.ViewModel {
                     return double.NaN;
                 }
 
-                Coordinates targetSolve = PlateSolveResult.Coordinates;
-                targetSolve = targetSolve.Transform(TelescopeInfo.EquatorialSystem);
+                Coordinates targetSolve = PlateSolveResult.Coordinates.Transform(Epoch.JNOW);
 
-                var decError = Astrometry.DegreeToArcmin(startSolve.Dec - targetSolve.Dec);
+                var decError = startSolve.Dec - targetSolve.Dec;
 
-                poleError = Astrometry.DetermineDriftAlignError(startPosition.Dec, driftAmount, decError);
+                poleError = Astrometry.DetermineDriftAlignError(startSolve.Dec, driftAmount, decError);
             } catch (OperationCanceledException) {
-            } finally {
-                await telescopeMediator.SlewToCoordinatesAsync(startPosition);
             }
 
             return poleError;
