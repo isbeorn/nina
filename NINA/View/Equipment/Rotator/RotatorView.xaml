@@ -152,6 +152,7 @@
                                         Height="25"
                                         Margin="5"
                                         HorizontalAlignment="Left"
+                                        HorizontalContentAlignment="Center"
                                         ButtonText="{ns:Loc LblMove}"
                                         CancelButtonImage="{StaticResource CancelSVG}"
                                         CancelCommand="{Binding HaltCommand}"
