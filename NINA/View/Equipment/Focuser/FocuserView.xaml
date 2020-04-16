@@ -177,7 +177,7 @@
                 <Border
                     BorderBrush="{StaticResource BorderBrush}"
                     BorderThickness="0"
-                    IsEnabled="{Binding Focuser.TempCompAvailable}">
+                    IsEnabled="{Binding Focuser.TempCompAvailable, FallbackValue=False}">
                     <UniformGrid Columns="2">
                         <UniformGrid
                             Margin="0,6,0,6"
