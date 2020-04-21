@@ -215,7 +215,7 @@
                     DragEnter="TextBox_DragEnter"
                     Drop="TextBox_Drop"
                     PreviewDragOver="TextBox_PreviewDragOver"
-                    Text="{Binding FilePattern}"
+                    Text="{Binding FilePattern, UpdateSourceTrigger=PropertyChanged}"
                     TextWrapping="Wrap" />
 
                 <TextBlock
