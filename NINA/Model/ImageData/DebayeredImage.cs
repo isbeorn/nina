@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using NINA.Model.MyCamera;
 using NINA.Utility.ImageAnalysis;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -47,8 +48,9 @@ namespace NINA.Model.ImageData {
         public static IDebayeredImage Debayer(
             IRenderedImage imageData,
             bool saveColorChannels = false,
-            bool saveLumChannel = false) {
-            var debayeredImage = ImageUtility.Debayer(imageData.Image, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale, saveColorChannels, saveLumChannel);
+            bool saveLumChannel = false,
+            SensorType bayerPattern = SensorType.RGGB) {
+            var debayeredImage = ImageUtility.Debayer(imageData.Image, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale, saveColorChannels, saveLumChannel, bayerPattern);
             return new DebayeredImage(
                 image: debayeredImage.ImageSource,
                 rawImageData: imageData.RawImageData,

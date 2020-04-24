@@ -99,6 +99,7 @@
 - Guider graph settings are now stored in profile and reloaded when application is started again
 - Guider graph now displays a triangle as indicator when a dither action was happening
 - NINA now uses the equatorial system reported by the mount driver and the setting under Options > General > Astrometry is removed. Mount drivers that report an "other" epoch will cause NINA to default to J2000
+- NINA now displays images from OSCs using their proper bayer pattern instead of assuming RGGB all the time
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false

@@ -230,8 +230,8 @@ namespace NINA.Model.MyCamera {
 
         public SensorType SensorType { get; private set; } = SensorType.Monochrome;
 
-        public short BayerOffsetX { get; private set; } = 0;
-        public short BayerOffsetY { get; private set; } = 0;
+        public short BayerOffsetX { get; } = 0;
+        public short BayerOffsetY { get; } = 0;
 
         public int CameraXSize {
             get {
@@ -740,38 +740,26 @@ namespace NINA.Model.MyCamera {
                 switch (Info.BayerPattern) {
                     case ASICameraDll.ASI_BAYER_PATTERN.ASI_BAYER_GB:
                         SensorType = SensorType.GBRG;
-                        BayerOffsetX = 1;
-                        BayerOffsetY = 1;
                         break;
 
                     case ASICameraDll.ASI_BAYER_PATTERN.ASI_BAYER_GR:
                         SensorType = SensorType.GRBG;
-                        BayerOffsetX = 1;
-                        BayerOffsetY = 0;
                         break;
 
                     case ASICameraDll.ASI_BAYER_PATTERN.ASI_BAYER_BG:
                         SensorType = SensorType.BGGR;
-                        BayerOffsetX = 0;
-                        BayerOffsetY = 1;
                         break;
 
                     case ASICameraDll.ASI_BAYER_PATTERN.ASI_BAYER_RG:
                         SensorType = SensorType.RGGB;
-                        BayerOffsetX = 0;
-                        BayerOffsetY = 0;
                         break;
 
                     default:
                         SensorType = SensorType.Monochrome;
-                        BayerOffsetX = 0;
-                        BayerOffsetY = 0;
                         break;
                 };
             } else {
                 SensorType = SensorType.Monochrome;
-                BayerOffsetX = 0;
-                BayerOffsetY = 0;
             }
         }
 

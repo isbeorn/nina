@@ -29,30 +29,30 @@ namespace NINA.Utility.Enum {
     public enum BayerPatternEnum {
 
         [Description("LblAuto")]
-        Auto,
+        Auto = 0,
 
         [Description("LblBayerPatternRGGB")]
-        RGGB,
+        RGGB = 2,
 
         [Description("LblBayerPatternBGGR")]
-        BGGR,
+        BGGR = 20,
 
         [Description("LblBayerPatternGBRG")]
-        GBRG,
+        GBRG = 21,
 
         [Description("LblBayerPatternGRBG")]
-        GRBG,
+        GRBG = 22,
 
         [Description("LblBayerPatternGRGB")]
-        GRGB,
+        GRGB = 23,
 
         [Description("LblBayerPatternGBGR")]
-        GBGR,
+        GBGR = 24,
 
         [Description("LblBayerPatternRGBG")]
-        RGBG,
+        RGBG = 25,
 
         [Description("LblBayerPatternBGRG")]
-        BGRG
+        BGRG = 26
     }
 }

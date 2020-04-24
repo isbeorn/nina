@@ -9306,6 +9306,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unsupported CFA/Bayer pattern: {0}.
+        /// </summary>
+        internal static string LblUnsupportedCfaPattern {
+            get {
+                return ResourceManager.GetString("LblUnsupportedCfaPattern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The mount operates using the {0} equatorial reference system, which is not supported..
         /// </summary>
         internal static string LblUnsupportedEpoch {

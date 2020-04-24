@@ -28,6 +28,7 @@ using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.Behaviors;
+using NINA.Utility.Enum;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using NINA.Profile;
@@ -530,7 +531,13 @@ namespace NINA.ViewModel {
                     _progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblDebayeringImage"] });
                     var unlinkedStretch = profileService.ActiveProfile.ImageSettings.UnlinkedStretch;
                     var starDetection = profileService.ActiveProfile.ImageSettings.DebayeredHFR && DetectStars;
-                    renderedImage = renderedImage.Debayer(saveColorChannels: unlinkedStretch, saveLumChannel: starDetection);
+
+                    var bayerPattern = cameraInfo.SensorType;
+                    if (profileService.ActiveProfile.CameraSettings.BayerPattern != BayerPatternEnum.Auto) {
+                        bayerPattern = (SensorType)profileService.ActiveProfile.CameraSettings.BayerPattern;
+                    }
+
+                    renderedImage = renderedImage.Debayer(saveColorChannels: unlinkedStretch, saveLumChannel: starDetection, bayerPattern: bayerPattern);
                 }
 
                 return await ProcessAndUpdateImage(renderedImage, parameters, cancelToken);

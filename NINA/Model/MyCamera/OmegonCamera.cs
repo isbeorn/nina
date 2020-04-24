@@ -120,9 +120,9 @@ namespace NINA.Model.MyCamera {
 
         public SensorType SensorType { get; private set; }
 
-        public short BayerOffsetX { get; private set; } = 0;
+        public short BayerOffsetX => 0;
 
-        public short BayerOffsetY { get; private set; } = 0;
+        public short BayerOffsetY => 0;
 
         public int CameraXSize { get; private set; }
 

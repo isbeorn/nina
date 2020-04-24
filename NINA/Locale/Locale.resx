@@ -3494,4 +3494,7 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
   <data name="LblUnsupportedEpoch" xml:space="preserve">
     <value>The mount operates using the {0} equatorial reference system, which is not supported.</value>
   </data>
+  <data name="LblUnsupportedCfaPattern" xml:space="preserve">
+    <value>Unsupported CFA/Bayer pattern: {0}</value>
+  </data>
 </root>

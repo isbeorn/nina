@@ -23,6 +23,7 @@
 
 using Accord.Imaging;
 using NINA.Model.ImageData;
+using NINA.Model.MyCamera;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -198,23 +199,62 @@ namespace NINA.Utility.ImageAnalysis {
             return source;
         }
 
-        public static DebayeredImageData Debayer(BitmapSource source, System.Drawing.Imaging.PixelFormat pf, bool saveColorChannels = false, bool saveLumChannel = false) {
+        public static DebayeredImageData Debayer(BitmapSource source, System.Drawing.Imaging.PixelFormat pf, bool saveColorChannels = false, bool saveLumChannel = false, SensorType bayerPattern = SensorType.RGGB) {
             using (MyStopWatch.Measure()) {
                 if (pf != System.Drawing.Imaging.PixelFormat.Format16bppGrayScale) {
                     throw new NotSupportedException();
                 }
                 using (var bmp = BitmapFromSource(source, System.Drawing.Imaging.PixelFormat.Format16bppGrayScale)) {
-                    return Debayer(bmp, saveColorChannels, saveLumChannel);
+                    return Debayer(bmp, saveColorChannels, saveLumChannel, bayerPattern);
                 }
             }
         }
 
-        public static DebayeredImageData Debayer(Bitmap bmp, bool saveColorChannels = false, bool saveLumChannel = false) {
+        public static DebayeredImageData Debayer(Bitmap bmp, bool saveColorChannels = false, bool saveLumChannel = false, SensorType bayerPattern = SensorType.RGGB) {
             using (MyStopWatch.Measure()) {
                 var filter = new BayerFilter16bpp();
                 filter.SaveColorChannels = saveColorChannels;
                 filter.SaveLumChannel = saveLumChannel;
-                filter.BayerPattern = new int[,] { { RGB.B, RGB.G }, { RGB.G, RGB.R } };
+
+                Logger.Debug($"Debayering pattern {bayerPattern}");
+
+                switch (bayerPattern) {
+                    case SensorType.RGGB:
+                        filter.BayerPattern = new int[,] { { RGB.B, RGB.G }, { RGB.G, RGB.R } };
+                        break;
+
+                    case SensorType.RGBG:
+                        filter.BayerPattern = new int[,] { { RGB.G, RGB.B }, { RGB.G, RGB.R } };
+                        break;
+
+                    case SensorType.GRGB:
+                        filter.BayerPattern = new int[,] { { RGB.B, RGB.G }, { RGB.R, RGB.G } };
+                        break;
+
+                    case SensorType.GRBG:
+                        filter.BayerPattern = new int[,] { { RGB.G, RGB.B }, { RGB.R, RGB.G } };
+                        break;
+
+                    case SensorType.GBGR:
+                        filter.BayerPattern = new int[,] { { RGB.R, RGB.G }, { RGB.B, RGB.G } };
+                        break;
+
+                    case SensorType.GBRG:
+                        filter.BayerPattern = new int[,] { { RGB.G, RGB.R }, { RGB.B, RGB.G } };
+                        break;
+
+                    case SensorType.BGRG:
+                        filter.BayerPattern = new int[,] { { RGB.G, RGB.R }, { RGB.G, RGB.B } };
+                        break;
+
+                    case SensorType.BGGR:
+                        filter.BayerPattern = new int[,] { { RGB.R, RGB.G }, { RGB.G, RGB.B } };
+                        break;
+
+                    default:
+                        throw new InvalidImagePropertiesException(string.Format(Locale.Loc.Instance["LblUnsupportedCfaPattern"], bayerPattern));
+                }
+
                 DebayeredImageData debayered = new DebayeredImageData();
                 debayered.ImageSource = ConvertBitmap(filter.Apply(bmp), PixelFormats.Rgb48);
                 debayered.ImageSource.Freeze();

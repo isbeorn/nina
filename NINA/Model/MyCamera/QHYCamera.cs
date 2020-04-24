@@ -536,26 +536,18 @@ namespace NINA.Model.MyCamera {
             switch (Info.BayerPattern) {
                 case LibQHYCCD.BAYER_ID.BAYER_GB:
                     SensorType = SensorType.GBRG;
-                    BayerOffsetX = 1;
-                    BayerOffsetY = 1;
                     break;
 
                 case LibQHYCCD.BAYER_ID.BAYER_GR:
                     SensorType = SensorType.GRBG;
-                    BayerOffsetX = 1;
-                    BayerOffsetY = 0;
                     break;
 
                 case LibQHYCCD.BAYER_ID.BAYER_BG:
                     SensorType = SensorType.BGGR;
-                    BayerOffsetX = 0;
-                    BayerOffsetY = 1;
                     break;
 
                 case LibQHYCCD.BAYER_ID.BAYER_RG:
                     SensorType = SensorType.RGGB;
-                    BayerOffsetX = 0;
-                    BayerOffsetY = 0;
                     break;
 
                 default:
@@ -565,8 +557,8 @@ namespace NINA.Model.MyCamera {
             return true;
         }
 
-        public short BayerOffsetX { get; set; } = 0;
-        public short BayerOffsetY { get; set; } = 0;
+        public short BayerOffsetX => 0;
+        public short BayerOffsetY => 0;
 
         private bool IsQHYControl(LibQHYCCD.CONTROL_ID type) {
             if (LibQHYCCD.IsQHYCCDControlAvailable(CameraP, type) == LibQHYCCD.QHYCCD_SUCCESS) {

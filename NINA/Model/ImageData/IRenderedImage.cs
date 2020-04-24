@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using NINA.Model.MyCamera;
 using NINA.Utility.Enum;
 using System;
 using System.Threading;
@@ -34,7 +35,7 @@ namespace NINA.Model.ImageData {
 
         BitmapSource Image { get; }
 
-        IDebayeredImage Debayer(bool saveColorChannels = false, bool saveLumChannel = false);
+        IDebayeredImage Debayer(bool saveColorChannels = false, bool saveLumChannel = false, SensorType bayerPattern = SensorType.RGGB);
 
         IRenderedImage ReRender();
 

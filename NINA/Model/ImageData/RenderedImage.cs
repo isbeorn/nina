@@ -58,8 +58,8 @@ namespace NINA.Model.ImageData {
             return new RenderedImage(image: this.RawImageData.RenderBitmapSource(), rawImageData: this.RawImageData);
         }
 
-        public IDebayeredImage Debayer(bool saveColorChannels = false, bool saveLumChannel = false) {
-            return DebayeredImage.Debayer(this, saveColorChannels: saveColorChannels, saveLumChannel: saveLumChannel);
+        public IDebayeredImage Debayer(bool saveColorChannels = false, bool saveLumChannel = false, SensorType bayerPattern = SensorType.RGGB) {
+            return DebayeredImage.Debayer(this, saveColorChannels: saveColorChannels, saveLumChannel: saveLumChannel, bayerPattern: bayerPattern);
         }
 
         public virtual async Task<IRenderedImage> Stretch(double factor, double blackClipping, bool unlinked) {
