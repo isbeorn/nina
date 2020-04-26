@@ -239,6 +239,7 @@ namespace NINA.ViewModel.Imaging {
 
                     var renderedImage = await imagingMediator.CaptureAndPrepareImage(seq, new PrepareImageParameters(), _captureImageToken.Token, progress);
                     if (SnapSave) {
+                        progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblSavingImage"] });
                         var path = await renderedImage.RawImageData.SaveToDisk(new FileSaveInfo(profileService), _captureImageToken.Token);
                         var imageStatistics = await renderedImage.RawImageData.Statistics.Task;
 

@@ -3277,9 +3277,6 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
   <data name="LblWaitForImageProcessing" xml:space="preserve">
     <value>Waiting for previous image to finish processing</value>
   </data>
-  <data name="LblWaitForImageSaving" xml:space="preserve">
-    <value>Waiting for image saving</value>
-  </data>
   <data name="LblWaitForTemperatureStep" xml:space="preserve">
     <value>Waiting for camera to reach next temperature step</value>
   </data>
@@ -3496,5 +3493,8 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
   </data>
   <data name="LblUnsupportedCfaPattern" xml:space="preserve">
     <value>Unsupported CFA/Bayer pattern: {0}</value>
+  </data>
+  <data name="LblSavingImage" xml:space="preserve">
+    <value>Saving image</value>
   </data>
 </root>

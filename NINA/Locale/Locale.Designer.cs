@@ -7620,6 +7620,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Saving image.
+        /// </summary>
+        internal static string LblSavingImage {
+            get {
+                return ResourceManager.GetString("LblSavingImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Scope settle time after flip (seconds).
         /// </summary>
         internal static string LblScopeSettleTimeAfterFlip {
@@ -9698,15 +9707,6 @@ namespace NINA.Locale {
         internal static string LblWaitForImageProcessing {
             get {
                 return ResourceManager.GetString("LblWaitForImageProcessing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Waiting for image saving.
-        /// </summary>
-        internal static string LblWaitForImageSaving {
-            get {
-                return ResourceManager.GetString("LblWaitForImageSaving", resourceCulture);
             }
         }
         

@@ -675,7 +675,7 @@ namespace NINA.ViewModel.FlatWizard {
                 var prepareTask = ImagingVM.PrepareImage(imageData, prepareParameters, ct);
 
                 if (saveTask != null && !saveTask.IsCompleted) {
-                    progress.Report(new ApplicationStatus() { Status = Locale["LblWaitForImageSaving"] });
+                    progress.Report(new ApplicationStatus() { Status = Locale["LblSavingImage"] });
                     await saveTask;
                 }
 
@@ -689,7 +689,7 @@ namespace NINA.ViewModel.FlatWizard {
                 ct.ThrowIfCancellationRequested();
             }
             if (saveTask != null && !saveTask.IsCompleted) {
-                progress.Report(new ApplicationStatus() { Status = Locale["LblWaitForImageSaving"] });
+                progress.Report(new ApplicationStatus() { Status = Locale["LblSavingImage"] });
                 await saveTask;
             }
 

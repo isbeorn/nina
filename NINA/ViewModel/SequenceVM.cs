@@ -968,7 +968,7 @@ namespace NINA.ViewModel {
 
                             /* 7) Wait for previous item's parallel actions 8a, 8b to finish */
                             if (saveTask?.IsCompleted == false) {
-                                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblWaitForImageSaving"] });
+                                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblSavingImage"] });
                                 await saveTask;
                             }
 
