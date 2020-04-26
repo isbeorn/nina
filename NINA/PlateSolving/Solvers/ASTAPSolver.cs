@@ -78,10 +78,23 @@ namespace NINA.PlateSolving.Solvers {
                 Epoch.J2000,
                 Coordinates.RAType.Degrees
             );
+
             result.Orientation = double.Parse(dict["CROTA2"], CultureInfo.InvariantCulture);
+
+            /*
+             * CDELT1 and CDELT2 are obsolete.
+             * To calculate pixel scale, we should add the squares of CD1_2 and CD2_2 and take the square root to get degrees.
+             */
+            if (dict.ContainsKey("CD1_2") && dict.ContainsKey("CD2_2")) {
+                double.TryParse(dict["CD1_2"], NumberStyles.Any, CultureInfo.InvariantCulture, out double cr1y);
+                double.TryParse(dict["CD2_2"], NumberStyles.Any, CultureInfo.InvariantCulture, out double cr2y);
+
+                result.Pixscale = Astrometry.DegreeToArcsec(Math.Sqrt(Math.Pow(cr1y, 2) + Math.Pow(cr2y, 2)));
+            }
+
             /* Due to the way N.I.N.A. writes FITS files, the orientation is mirrored on the x-axis */
             result.Orientation = 180 - result.Orientation + 360;
-            result.Pixscale = imageProperties.ArcSecPerPixel;
+
             return result;
         }
 
