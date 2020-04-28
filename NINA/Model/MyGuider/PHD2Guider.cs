@@ -284,12 +284,21 @@ namespace NINA.Model.MyGuider {
             return false;
         }
 
-        private async Task<string> GetAppState() {
-            var appStateResponse = await SendMessage(PHD2EventId.GET_APP_STATE, PHD2Methods.GET_APP_STATE);
-            return appStateResponse.result.ToString();
+        private async Task<string> GetAppState(
+            int receiveTimeout=0) {
+
+            var appStateResponse = await SendMessage(
+                PHD2EventId.GET_APP_STATE, 
+                PHD2Methods.GET_APP_STATE, 
+                receiveTimeout);
+            return appStateResponse?.result?.ToString();
         }
 
-        private Task<bool> WaitForAppState(string targetState, CancellationToken ct) {
+        private Task<bool> WaitForAppState(
+            string targetState, 
+            CancellationToken ct, 
+            int receiveTimeout=0) {
+
             return Task.Run(async () => {
                 var state = await GetAppState();
                 while (state != targetState) {
@@ -351,52 +360,63 @@ namespace NINA.Model.MyGuider {
         }
 
         public async Task<bool> StopGuiding(CancellationToken token) {
-            if (Connected) {
-                string state = await GetAppState();
-                if (state != PhdAppState.STOPPED) {
-                    var stopCapture = await SendMessage(PHD2EventId.STOP_CAPTURE, PHD2Methods.STOP_CAPTURE);
-                    if (stopCapture.error != null) {
-                        /*stop capture failed */
-                        return false;
-                    }
-
-                    return await WaitForAppState(PhdAppState.STOPPED, token);
-                } else {
+            if (!Connected) {
+                return false;
+            }
+            try {
+                string state = await GetAppState(3000);
+                if (state == PhdAppState.STOPPED)
+                {
                     return true;
                 }
-            } else {
+                var stopCapture = await SendMessage(
+                    PHD2EventId.STOP_CAPTURE, 
+                    PHD2Methods.STOP_CAPTURE, 
+                    10000); // triage: reported deadlock hanging of phd2+nina - 10s timeout
+
+                if (stopCapture == null || stopCapture.error != null) {
+                    /*stop capture failed */
+                    return false;
+                }
+
+
+                return await WaitForAppState(
+                    PhdAppState.STOPPED, 
+                    token,
+                    10000);  // triage: reported deadlock hanging of phd2+nina - 10s timeout
+            }
+            catch (IOException ee) // communication error with phd2
+            {
+                Logger.Error(ee);
                 return false;
             }
         }
 
-        private async Task<PhdMethodResponse> SendMessage(string msgId, string msg) {
+        private async Task<PhdMethodResponse> SendMessage(string msgId, string msg, int receiveTimeout = 0) {
             using (var client = new TcpClient()) {
-                try {
-                    await client.ConnectAsync(profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl, profileService.ActiveProfile.GuiderSettings.PHD2ServerPort);
+                client.ReceiveTimeout = receiveTimeout;
+                await client.ConnectAsync(
+                    profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl, 
+                    profileService.ActiveProfile.GuiderSettings.PHD2ServerPort);
+                var stream = client.GetStream();
+                var data = Encoding.ASCII.GetBytes(msg);
 
-                    var stream = client.GetStream();
-                    var data = System.Text.Encoding.ASCII.GetBytes(msg);
+                await stream.WriteAsync(data, 0, data.Length);
 
-                    await stream.WriteAsync(data, 0, data.Length);
-
-                    using (StreamReader reader = new StreamReader(stream, Encoding.UTF8)) {
-                        string line;
-                        while ((line = reader.ReadLine()) != null) {
-                            JObject o = JObject.Parse(line);
-                            string phdevent = "";
-                            var t = o.GetValue("id");
-                            if (t != null) {
-                                phdevent = t.ToString();
-                            }
-
-                            if (phdevent == msgId) {
-                                var response = o.ToObject<PhdMethodResponse>();
-                                CheckPhdError(response);
-                                return response;
-                            }
-                        }
+                using var reader = new StreamReader(stream, Encoding.UTF8);
+                string line;
+                while ((line = await reader.ReadLineAsync()) != null) {
+                    var o = JObject.Parse(line);
+                    string phdevent = "";
+                    var t = o.GetValue("id");
+                    if (t != null) {
+                        phdevent = t.ToString();
                     }
-                } finally {
+                    if (phdevent == msgId) {
+                        var response = o.ToObject<PhdMethodResponse>();
+                        CheckPhdError(response);
+                        return response;
+                    }
                 }
             }
             return null;
@@ -475,7 +495,7 @@ namespace NINA.Model.MyGuider {
             }
         }
 
-        public static TcpState GetState(TcpClient tcpClient) {
+        private static TcpState GetState(TcpClient tcpClient) {
             var foo = IPGlobalProperties.GetIPGlobalProperties()
               .GetActiveTcpConnections()
               .SingleOrDefault(x => x.LocalEndPoint.Equals(tcpClient.Client.LocalEndPoint));
