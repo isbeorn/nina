@@ -521,11 +521,9 @@ namespace QHYCCD {
 
         public static string GetSDKFormattedVersion() {
             uint year = 0, month = 0, day = 0, subday = 0;
-
             CheckReturn(GetQHYCCDSDKVersion(ref year, ref month, ref day, ref subday), MethodBase.GetCurrentMethod());
 
-            string version = year.ToString() + month.ToString() + day.ToString() + "_" + subday.ToString();
-            return version;
+            return "20" + year.ToString("D2") + month.ToString("D2") + day.ToString("D2") + "_" + subday.ToString();
         }
 
         [DllImport(DLLNAME, EntryPoint = "InitQHYCCD", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
