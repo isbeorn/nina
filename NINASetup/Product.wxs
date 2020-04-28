@@ -1400,9 +1400,6 @@
       <Component Win64="$(var.Win64)" Id="External_x86_Altair_altaircam.lib" Guid="72043754-f8c6-46ef-a277-d79b5723cb1d">
         <File Id="External_x86_Altair_altaircam.lib" Name="altaircam.lib" Source="$(var.NINA_ProjectDir)External\x86\Altair\altaircam.lib" />
       </Component>
-      <Component Win64="$(var.Win64)" Id="External_x86_Altair_updatefw.exe" Guid="e405a95d-f619-410a-b245-3c6f4e00b4de">
-        <File Id="External_x86_Altair_updatefw.exe" Name="updatefw.exe" Source="$(var.NINA_ProjectDir)External\x86\Altair\updatefw.exe" />
-      </Component>
       <Component Win64="$(var.Win64)" Id="External_x86_Altair_altaircam.dll" Guid="5fc243e4-9305-47ca-9033-3c35857b79e6">
         <File Id="External_x86_Altair_altaircam.dll" Name="altaircam.dll" Source="$(var.NINA_ProjectDir)External\x86\Altair\altaircam.dll" />
       </Component>

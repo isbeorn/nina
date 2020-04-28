@@ -132,5 +132,28 @@ namespace NINA.Utility {
                 Logger.Error(ex);
             }
         }
+
+        /// <summary>
+        /// Formats a byte value to a string with the highest logical unit
+        /// </summary>
+        /// <param name="bytes">byte count</param>
+        /// <returns>a string representing the converted byte unit</returns>
+        /// <example>
+        /// 5000 => "4.88 KiB"
+        /// 5000000000 => "4.65 GiB"
+        /// </example>
+        public static string FormatBytes(long bytes) {
+            const int scale = 1024;
+            var orders = new string[] { "TiB", "GiB", "MiB", "KiB", "Bytes" };
+            long max = (long)Math.Pow(scale, orders.Length - 1);
+            foreach (string order in orders) {
+                if (bytes > max) {
+                    return string.Format("{0:##.##} {1}", decimal.Divide(bytes, max), order);
+                }
+
+                max /= scale;
+            }
+            return "0 Bytes";
+        }
     }
 }
