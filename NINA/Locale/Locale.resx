@@ -3497,4 +3497,7 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
   <data name="LblSavingImage" xml:space="preserve">
     <value>Saving image</value>
   </data>
+  <data name="LblLowDiskSpaceForSequence" xml:space="preserve">
+    <value>Available space on drive {0} may be insufficient. The estimated disk space required for the sequence is {1}, but only {2} remains.</value>
+  </data>
 </root>

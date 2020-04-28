@@ -1338,6 +1338,11 @@ namespace NINA.ViewModel {
                 displayMessage = true;
             }
 
+            if (ValidateRemainingDiskSpace(out dynamic info)) {
+                messageStringBuilder.AppendLine(string.Format(Locale.Loc.Instance["LblLowDiskSpaceForSequence"], info.Name, info.EstimatedRequiredFreeSpace, info.AvailableFreeSpace));
+                displayMessage = true;
+            }
+
             messageStringBuilder.AppendLine();
             messageStringBuilder.Append(Locale.Loc.Instance["LblStartSequenceAnyway"]);
 
@@ -1355,6 +1360,22 @@ namespace NINA.ViewModel {
             valid = HasWritePermission(profileService.ActiveProfile.ImageFileSettings.FilePath);
 
             return valid;
+        }
+
+        private bool ValidateRemainingDiskSpace(out object info) {
+            info = null;
+            try {
+                long totalExposures = Targets.Sum(x => x.Items.Sum(y => y.Enabled ? y.TotalExposureCount - y.ProgressExposureCount : 0));
+                int estimatedImageSize = cameraInfo.XSize * cameraInfo.YSize * sizeof(ushort);
+                long estimatedRequiredFreeSpace = totalExposures * estimatedImageSize;
+
+                DriveInfo driveInfo = new DriveInfo(profileService.ActiveProfile.ImageFileSettings.FilePath);
+                info = new { driveInfo.Name, EstimatedRequiredFreeSpace = Utility.Utility.FormatBytes(estimatedRequiredFreeSpace), AvailableFreeSpace = Utility.Utility.FormatBytes(driveInfo.AvailableFreeSpace) };
+                return driveInfo.AvailableFreeSpace < estimatedRequiredFreeSpace;
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            }
+            return true;
         }
 
         public bool HasWritePermission(string dir) {

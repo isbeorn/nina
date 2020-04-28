@@ -84,6 +84,7 @@
 - Added button to Telescope control window to set the current position of the mount to be its park position. This button is available only if the connected mount's ASCOM driver supports this action (CanSetPark = true)
 - Optimal Exposure Calculator is moved out of the statistics window into its own tool window for improved user experience
 - The pre-sequence checklist has been enhanced to check whether the telescope is parked - if so, and user validates, NINA will unpark the telescope before proceeding
+- Added a pre-sequence check if enough disk space is available to store the whole sequence
 - A new option is available to prevent sending any sync signal to the mount. The centering logic will then use offset coordinate calculation instead. This new logic will also be called when a sync fails.
 - The Autofocus after HFR change has been enhanced to not be triggered by a single frame affected by adverse conditions such as wind
 - Improved resiliency of StartGuider when PHD2 is unable to detect a guide star when guiding is started due to temporary clouds. An auto retry mechanism has been added to allow PHD2 to try selecting a new guide star after a configurable timeout.

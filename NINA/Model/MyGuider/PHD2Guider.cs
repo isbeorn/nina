@@ -285,20 +285,18 @@ namespace NINA.Model.MyGuider {
         }
 
         private async Task<string> GetAppState(
-            int receiveTimeout=0) {
-
+            int receiveTimeout = 0) {
             var appStateResponse = await SendMessage(
-                PHD2EventId.GET_APP_STATE, 
-                PHD2Methods.GET_APP_STATE, 
+                PHD2EventId.GET_APP_STATE,
+                PHD2Methods.GET_APP_STATE,
                 receiveTimeout);
             return appStateResponse?.result?.ToString();
         }
 
         private Task<bool> WaitForAppState(
-            string targetState, 
-            CancellationToken ct, 
-            int receiveTimeout=0) {
-
+            string targetState,
+            CancellationToken ct,
+            int receiveTimeout = 0) {
             return Task.Run(async () => {
                 var state = await GetAppState();
                 while (state != targetState) {
@@ -365,13 +363,12 @@ namespace NINA.Model.MyGuider {
             }
             try {
                 string state = await GetAppState(3000);
-                if (state == PhdAppState.STOPPED)
-                {
+                if (state == PhdAppState.STOPPED) {
                     return true;
                 }
                 var stopCapture = await SendMessage(
-                    PHD2EventId.STOP_CAPTURE, 
-                    PHD2Methods.STOP_CAPTURE, 
+                    PHD2EventId.STOP_CAPTURE,
+                    PHD2Methods.STOP_CAPTURE,
                     10000); // triage: reported deadlock hanging of phd2+nina - 10s timeout
 
                 if (stopCapture == null || stopCapture.error != null) {
@@ -379,14 +376,12 @@ namespace NINA.Model.MyGuider {
                     return false;
                 }
 
-
                 return await WaitForAppState(
-                    PhdAppState.STOPPED, 
+                    PhdAppState.STOPPED,
                     token,
                     10000);  // triage: reported deadlock hanging of phd2+nina - 10s timeout
-            }
-            catch (IOException ee) // communication error with phd2
-            {
+            } catch (IOException ee) // communication error with phd2
+              {
                 Logger.Error(ee);
                 return false;
             }
@@ -396,29 +391,31 @@ namespace NINA.Model.MyGuider {
             using (var client = new TcpClient()) {
                 client.ReceiveTimeout = receiveTimeout;
                 await client.ConnectAsync(
-                    profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl, 
+                    profileService.ActiveProfile.GuiderSettings.PHD2ServerUrl,
                     profileService.ActiveProfile.GuiderSettings.PHD2ServerPort);
                 var stream = client.GetStream();
                 var data = Encoding.ASCII.GetBytes(msg);
 
                 await stream.WriteAsync(data, 0, data.Length);
 
-                using var reader = new StreamReader(stream, Encoding.UTF8);
-                string line;
-                while ((line = await reader.ReadLineAsync()) != null) {
-                    var o = JObject.Parse(line);
-                    string phdevent = "";
-                    var t = o.GetValue("id");
-                    if (t != null) {
-                        phdevent = t.ToString();
-                    }
-                    if (phdevent == msgId) {
-                        var response = o.ToObject<PhdMethodResponse>();
-                        CheckPhdError(response);
-                        return response;
+                using (var reader = new StreamReader(stream, Encoding.UTF8)) {
+                    string line;
+                    while ((line = await reader.ReadLineAsync()) != null) {
+                        var o = JObject.Parse(line);
+                        string phdevent = "";
+                        var t = o.GetValue("id");
+                        if (t != null) {
+                            phdevent = t.ToString();
+                        }
+                        if (phdevent == msgId) {
+                            var response = o.ToObject<PhdMethodResponse>();
+                            CheckPhdError(response);
+                            return response;
+                        }
                     }
                 }
             }
+
             return null;
         }
 

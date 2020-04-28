@@ -5211,6 +5211,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Available space on drive {0} may be insufficient. The estimated disk space required for the sequence is {1}, but only {2} remains..
+        /// </summary>
+        internal static string LblLowDiskSpaceForSequence {
+            get {
+                return ResourceManager.GetString("LblLowDiskSpaceForSequence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MAD.
         /// </summary>
         internal static string LblMAD {
