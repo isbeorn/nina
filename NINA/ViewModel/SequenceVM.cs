@@ -711,60 +711,62 @@ namespace NINA.ViewModel {
             }
         }
 
-        private async Task<bool> StartSequencing(IProgress<ApplicationStatus> progress) {
-            bool canceledAtStart = false;
-            try {
-                _actualDownloadTimes.Clear();
-                _canceltoken?.Dispose();
-                _canceltoken = new CancellationTokenSource();
-                _pauseTokenSource = new PauseTokenSource();
-                IsPaused = false;
-                IsRunning = true;
+        private Task<bool> StartSequencing(IProgress<ApplicationStatus> progress) {
+            return Task.Run(async () => {
+                bool canceledAtStart = false;
+                try {
+                    _actualDownloadTimes.Clear();
+                    _canceltoken?.Dispose();
+                    _canceltoken = new CancellationTokenSource();
+                    _pauseTokenSource = new PauseTokenSource();
+                    IsPaused = false;
+                    IsRunning = true;
 
-                /* Validate if preconditions are met */
-                if (!CheckPreconditions()) {
-                    canceledAtStart = true;
-                    return false;
-                }
-
-                if (this.Targets.Count > 0) {
-                    autoUpdateTimer.Stop();
-                    // If sequencing was stopped (vs paused) and started again, reset active sequence of each target to the first one
-                    foreach (CaptureSequenceList csl in this.Targets) {
-                        csl.ResetActiveSequence();
+                    /* Validate if preconditions are met */
+                    if (!CheckPreconditions()) {
+                        canceledAtStart = true;
+                        return false;
                     }
-                    var iterator = 0;
-                    do {
-                        var csl = this.Targets[iterator];
-                        try {
-                            csl.IsFinished = false;
-                            csl.IsRunning = true;
-                            Sequence = csl;
-                            await StartSequence(csl, _canceltoken.Token, _pauseTokenSource.Token, progress);
-                            csl.IsFinished = true;
-                        } finally {
-                            csl.IsRunning = false;
 
-                            //Check if current target was not removed during pause
-                            if (this.Targets.Contains(csl)) {
-                                //Check the current index of current target (for the case that a previous target was removed during pause) and increment by one
-                                iterator = this.Targets.IndexOf(csl) + 1;
-                            }
+                    if (this.Targets.Count > 0) {
+                        autoUpdateTimer.Stop();
+                        // If sequencing was stopped (vs paused) and started again, reset active sequence of each target to the first one
+                        foreach (CaptureSequenceList csl in this.Targets) {
+                            csl.ResetActiveSequence();
                         }
-                    } while (iterator < this.Targets.Count);
+                        var iterator = 0;
+                        do {
+                            var csl = this.Targets[iterator];
+                            try {
+                                csl.IsFinished = false;
+                                csl.IsRunning = true;
+                                Sequence = csl;
+                                await StartSequence(csl, _canceltoken.Token, _pauseTokenSource.Token, progress);
+                                csl.IsFinished = true;
+                            } finally {
+                                csl.IsRunning = false;
+
+                                //Check if current target was not removed during pause
+                                if (this.Targets.Contains(csl)) {
+                                    //Check the current index of current target (for the case that a previous target was removed during pause) and increment by one
+                                    iterator = this.Targets.IndexOf(csl) + 1;
+                                }
+                            }
+                        } while (iterator < this.Targets.Count);
+                    }
+                } catch (OperationCanceledException) {
+                } finally {
+                    if (!canceledAtStart) {
+                        await RunEndOfSequenceOptions(progress);
+                    }
+                    profileService.ActiveProfile.SequenceSettings.EstimatedDownloadTime = EstimatedDownloadTime;
+                    IsPaused = false;
+                    IsRunning = false;
+                    autoUpdateTimer.Start();
+                    progress.Report(new ApplicationStatus() { Status = string.Empty });
                 }
-            } catch (OperationCanceledException) {
-            } finally {
-                if (!canceledAtStart) {
-                    await RunEndOfSequenceOptions(progress);
-                }
-                profileService.ActiveProfile.SequenceSettings.EstimatedDownloadTime = EstimatedDownloadTime;
-                IsPaused = false;
-                IsRunning = false;
-                autoUpdateTimer.Start();
-                progress.Report(new ApplicationStatus() { Status = string.Empty });
-            }
-            return true;
+                return true;
+            });
         }
 
         private async Task<bool> StartSequence(CaptureSequenceList csl, CancellationToken ct, PauseToken pt, IProgress<ApplicationStatus> progress) {
