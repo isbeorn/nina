@@ -231,7 +231,7 @@ namespace NINA.Utility {
                         byte[] outArray = UncompressData(raw, compressionInfo.CompressionType, compressionInfo.UncompressedSize);
 
                         if (compressionInfo.IsShuffled) {
-                            outArray = Unshuffle(outArray, compressionInfo.ItemSize);
+                            outArray = XISFData.Unshuffle(outArray, compressionInfo.ItemSize);
                         }
 
                         img = new ushort[outArray.Length / sizeof(ushort)];
@@ -412,31 +412,13 @@ namespace NINA.Utility {
             return result.ToString();
         }
 
-        private static byte[] Unshuffle(byte[] shuffled, int itemSize) {
-            int size = shuffled.Length;
-            byte[] unshuffled = new byte[size];
-            int numberOfItems = size / itemSize;
-            int s = 0;
-
-            using (MyStopWatch.Measure("XISF Byte Unshuffle")) {
-                for (int j = 0; j < itemSize; ++j) {
-                    int u = 0 + j;
-                    for (int i = 0; i < numberOfItems; ++i, ++s, u += itemSize) {
-                        unshuffled[u] = shuffled[s];
-                    }
-                }
-            }
-
-            return unshuffled;
-        }
-
         public void AddAttachedImage(ushort[] data, FileSaveInfo fileSaveInfo) {
             if (Header.Image == null) { throw new InvalidOperationException("No Image Header Information available for attaching image. Add Image Header first!"); }
 
             // Add Attached data location info to header
             Data = new XISFData(data, fileSaveInfo);
 
-            if (fileSaveInfo.XISFChecksumType != XISFChecksumTypeEnum.NONE) {
+            if (Data.ChecksumType != XISFChecksumTypeEnum.NONE) {
                 Header.Image.Add(new XAttribute("checksum", $"{Data.ChecksumName}:{Data.Checksum}"));
             }
 
@@ -447,10 +429,10 @@ namespace NINA.Utility {
 
             int dataBlockStart = currentHeaderSize + (PaddedBlockSize - currentHeaderSize % PaddedBlockSize);
 
-            if (fileSaveInfo.XISFCompressionType != XISFCompressionTypeEnum.NONE) {
+            if (Data.CompressionType != XISFCompressionTypeEnum.NONE) {
                 Header.Image.Add(new XAttribute("location", $"attachment:{dataBlockStart}:{Data.CompressedSize}"));
 
-                if (fileSaveInfo.XISFByteShuffling == true) {
+                if (Data.ByteShuffling == true) {
                     Header.Image.Add(new XAttribute("compression", $"{Data.CompressionName}:{Data.Size}:{Data.ShuffleItemSize}"));
                 } else {
                     Header.Image.Add(new XAttribute("compression", $"{Data.CompressionName}:{Data.Size}"));
@@ -913,7 +895,7 @@ namespace NINA.Utility {
         /// <summary>
         /// Array compression algorithm
         /// </summary>
-        public XISFCompressionTypeEnum CompressionType { get; }
+        public XISFCompressionTypeEnum CompressionType { get; private set; }
 
         /// <summary>
         /// Array compression algorithm textual name
@@ -999,6 +981,7 @@ namespace NINA.Utility {
                         }
 
                         outArray = LZ4Codec.Encode(byteArray, 0, byteArray.Length);
+
                         break;
 
                     case XISFCompressionTypeEnum.LZ4HC:
@@ -1029,6 +1012,19 @@ namespace NINA.Utility {
                         CompressionName = null;
                         break;
                 }
+            }
+
+            // Revert to the original data array in case the compression is bigger than uncompressed
+            if (outArray.Length > byteArray.Length) {
+                if (ByteShuffling) {
+                    //As the original array is shuffled it needs to be unshuffled again - this scenario should be highly unlikely anyways
+                    outArray = Unshuffle(byteArray, ShuffleItemSize);
+                } else {
+                    outArray = byteArray;
+                }
+                CompressionType = XISFCompressionTypeEnum.NONE;
+
+                Logger.Debug("XISF output array is larger after compression. Image will be prepared uncompressed instead.");
             }
 
             if (CompressionType != XISFCompressionTypeEnum.NONE) {
@@ -1098,7 +1094,7 @@ namespace NINA.Utility {
             return result.ToString();
         }
 
-        private static byte[] Shuffle(byte[] unshuffled, int itemSize) {
+        public static byte[] Shuffle(byte[] unshuffled, int itemSize) {
             int size = unshuffled.Length;
             byte[] shuffled = new byte[size];
             int numberOfItems = size / itemSize;
@@ -1114,6 +1110,24 @@ namespace NINA.Utility {
             }
 
             return shuffled;
+        }
+
+        public static byte[] Unshuffle(byte[] shuffled, int itemSize) {
+            int size = shuffled.Length;
+            byte[] unshuffled = new byte[size];
+            int numberOfItems = size / itemSize;
+            int s = 0;
+
+            using (MyStopWatch.Measure("XISF Byte Unshuffle")) {
+                for (int j = 0; j < itemSize; ++j) {
+                    int u = 0 + j;
+                    for (int i = 0; i < numberOfItems; ++i, ++s, u += itemSize) {
+                        unshuffled[u] = shuffled[s];
+                    }
+                }
+            }
+
+            return unshuffled;
         }
     }
 
