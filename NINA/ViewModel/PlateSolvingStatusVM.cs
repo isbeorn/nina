@@ -50,9 +50,9 @@ namespace NINA.ViewModel {
             }
         }
 
-        private ObservableCollection<PlateSolveResult> plateSolveHistory = new ObservableCollection<PlateSolveResult>();
+        private AsyncObservableCollection<PlateSolveResult> plateSolveHistory = new AsyncObservableCollection<PlateSolveResult>();
 
-        public ObservableCollection<PlateSolveResult> PlateSolveHistory {
+        public AsyncObservableCollection<PlateSolveResult> PlateSolveHistory {
             get => plateSolveHistory;
             private set {
                 plateSolveHistory = value;
