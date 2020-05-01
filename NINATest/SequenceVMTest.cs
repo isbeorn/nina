@@ -148,6 +148,7 @@ namespace NINATest {
             var coordinates = new Coordinates(10, 10, Epoch.J2000, Coordinates.RAType.Degrees);
             _dummyList.Coordinates = coordinates;
 
+            _sut.Targets = new NINA.Utility.AsyncObservableCollection<CaptureSequenceList>() { _dummyList };
             _sut.Sequence = _dummyList;
 
             //Act
@@ -161,6 +162,7 @@ namespace NINATest {
         public async Task ProcessSequence_StartOptions_StartGuidingTest() {
             _sut.UpdateDeviceInfo(new GuiderInfo() { Connected = true });
             _dummyList.StartGuiding = true;
+            _sut.Targets = new NINA.Utility.AsyncObservableCollection<CaptureSequenceList>() { _dummyList };
             _sut.Sequence = _dummyList;
 
             //Act

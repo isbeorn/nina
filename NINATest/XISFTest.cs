@@ -937,8 +937,8 @@ namespace NINATest {
 
             var expectedProperties = new[] {
                 new { Id = "Instrument:Telescope:Name", Type = "String", Value = metaData.Telescope.Name, Comment = "Name of telescope"},
-                new { Id = "Instrument:Telescope:FocalLength", Type = "Float32", Value = metaData.Telescope.FocalLength.ToString(CultureInfo.InvariantCulture), Comment = "[mm] Focal length"},
-                new { Id = "Instrument:Telescope:Aperture", Type = "Float32", Value = (metaData.Telescope.FocalLength / metaData.Telescope.FocalRatio).ToString(CultureInfo.InvariantCulture), Comment = "[mm] Aperture"},
+                new { Id = "Instrument:Telescope:FocalLength", Type = "Float32", Value = (metaData.Telescope.FocalLength / 1000).ToString(CultureInfo.InvariantCulture), Comment = "[m] Focal Length"},
+                new { Id = "Instrument:Telescope:Aperture", Type = "Float32", Value = (metaData.Telescope.FocalLength / metaData.Telescope.FocalRatio / 1000).ToString(CultureInfo.InvariantCulture), Comment = "[m] Aperture"},
                 new { Id = "Observation:Center:RA", Type = "Float64", Value = metaData.Telescope.Coordinates.RADegrees.ToString(CultureInfo.InvariantCulture), Comment = "[deg] RA of telescope"},
                 new { Id = "Observation:Center:Dec", Type = "Float64", Value = metaData.Telescope.Coordinates.Dec.ToString(CultureInfo.InvariantCulture), Comment = "[deg] Declination of telescope"},
             };
