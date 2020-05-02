@@ -101,6 +101,8 @@
 - Guider graph now displays a triangle as indicator when a dither action was happening
 - NINA now uses the equatorial system reported by the mount driver and the setting under Options > General > Astrometry is removed. Mount drivers that report an "other" epoch will cause NINA to default to J2000
 - NINA now displays images from OSCs using their proper bayer pattern instead of assuming RGGB all the time
+- Autofocus will not be performed if it could interfere with the Meridian Flip
+- A short timeout after telescope mount sync operation has been added, as some mounts can take time to report updated coordinates
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false
@@ -124,6 +126,7 @@
 - Autofocus after HFR change properly resets reference index on sequence start, target change, and autofocus caused by other criteria
 - Sequence file names are now saved with valid file name characters. Invalid characters are replaced automatically with a hyphen (-)
 - Framing and Sequence Coordinates now allow for a "-0" to be entered in declination
+- Backlash compensation won't be applied several times if movement is canceled during focuser settle time
 
 ## Special Thanks
 The N.I.N.A. team would like to sincerely thank:

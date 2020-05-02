@@ -102,6 +102,7 @@ namespace NINA.ViewModel.Equipment.Focuser {
             int pos = -1;
             int initialPos = this.Position;
             int backlashCompensation = GetBacklashCompensation(initialPos, position);
+            Logger.Debug($"Backlash compensation is using backlash value of {backlashCompensation}");
             position += backlashCompensation;
             position += _focuserOffset;
             await Task.Run(async () => {
@@ -116,6 +117,15 @@ namespace NINA.ViewModel.Equipment.Focuser {
                         _cancelMove.Token.ThrowIfCancellationRequested();
                         await Focuser.Move(position, _cancelMove.Token);
                     }
+
+                    _lastFocuserDirection = MoveDirection(initialPos, position);
+                    _focuserOffset += backlashCompensation;
+
+                    FocuserInfo.Position = this.Position;
+                    pos = this.Position;
+                    ToggleTempComp(tempComp);
+                    BroadcastFocuserInfo();
+
                     //Wait for focuser to settle
                     if (profileService.ActiveProfile.FocuserSettings.FocuserSettleTime > 0) {
                         FocuserInfo.IsSettling = true;
@@ -127,14 +137,6 @@ namespace NINA.ViewModel.Equipment.Focuser {
                             elapsedSettleTime = elapsedSettleTime.Add(TimeSpan.FromSeconds(1));
                         }
                     }
-
-                    _lastFocuserDirection = MoveDirection(initialPos, position);
-                    _focuserOffset += backlashCompensation;
-
-                    FocuserInfo.Position = this.Position;
-                    pos = this.Position;
-                    ToggleTempComp(tempComp);
-                    BroadcastFocuserInfo();
                 } catch (OperationCanceledException) {
                 } finally {
                     FocuserInfo.IsSettling = false;
@@ -146,8 +148,10 @@ namespace NINA.ViewModel.Equipment.Focuser {
 
         private int GetBacklashCompensation(int oldPos, int newPos) {
             if (newPos > oldPos && _lastFocuserDirection == Direction.IN) {
+                Logger.Debug("Focuser is reversing direction");
                 return profileService.ActiveProfile.FocuserSettings.BacklashOut;
             } else if (newPos < oldPos && _lastFocuserDirection == Direction.OUT) {
+                Logger.Debug("Focuser is reversing direction");
                 return profileService.ActiveProfile.FocuserSettings.BacklashIn * -1;
             } else {
                 return 0;
