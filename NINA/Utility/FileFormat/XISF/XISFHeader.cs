@@ -78,7 +78,15 @@ namespace NINA.Utility.FileFormat.XISF {
         /// <param name="header"></param>
         public XISFHeader(XElement header) : this() {
             MetaData = header.Element(xmlns + "Metadata");
+            if (MetaData == null) {
+                MetaData = header.Elements().FirstOrDefault(x => x.Name?.LocalName == "Metadata");
+            }
+
             Image = header.Element(xmlns + "Image");
+            if (Image == null) {
+                Image = header.Elements().FirstOrDefault(x => x.Name?.LocalName == "Image");
+            }
+
             Xisf.Add(MetaData);
             Xisf.Add(Image);
         }

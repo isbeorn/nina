@@ -85,13 +85,6 @@ namespace NINA.Utility.FileFormat.XISF {
                 string xmlString = Encoding.UTF8.GetString(bytes);
 
                 /*
-                 * Prior versions of NINA erroneously wrote out files with blank namespace definittions in the Image, Metadata, and Propery
-                 * elements. There is no graceful way to deal with this, so we just remove these using a regex.
-                 */
-                string nsFilter = @"xmlns=""""";
-                xmlString = Regex.Replace(xmlString, nsFilter, "");
-
-                /*
                  * Create the header for ease of access
                  */
                 XElement xml = XElement.Parse(xmlString);
