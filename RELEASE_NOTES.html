@@ -46,6 +46,7 @@
 </ul>
 </li>
 <li><strong>Artesky USB Flat Box support</strong></li>
+<li><strong>All-Pro Spike-a-Flat Device Support</strong></li>
 </ul>
 <h2 id="localization">Localization</h2>
 <ul>
@@ -126,6 +127,9 @@
 <li>NINA now displays images from OSCs using their proper bayer pattern instead of assuming RGGB all the time</li>
 <li>XISF and FITS loading will now work for most types of data and not only for 16 bit saved files</li>
 <li>XISF and FITS loading will now extract header data, which will be used for the framing assistant to get a much faster and convenient result</li>
+<li>NINA now persists and restores the following camera settings: USB Limit, Offset, Gain, Binning, Readout Mode, Temperature, and Cooling Duration</li>
+<li>Autofocus will not be performed if it could interfere with the Meridian Flip</li>
+<li>A short timeout after telescope mount sync operation has been added, as some mounts can take time to report updated coordinates</li>
 </ul>
 <h2 id="bug-fixes">Bug fixes</h2>
 <ul>
@@ -150,6 +154,7 @@
 <li>Autofocus after HFR change properly resets reference index on sequence start, target change, and autofocus caused by other criteria</li>
 <li>Sequence file names are now saved with valid file name characters. Invalid characters are replaced automatically with a hyphen (-)</li>
 <li>Framing and Sequence Coordinates now allow for a &quot;-0&quot; to be entered in declination</li>
+<li>Backlash compensation won't be applied several times if movement is canceled during focuser settle time</li>
 </ul>
 <h2 id="special-thanks">Special Thanks</h2>
 <p>The N.I.N.A. team would like to sincerely thank:</p>

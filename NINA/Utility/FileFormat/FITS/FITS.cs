@@ -112,7 +112,12 @@ namespace NINA.Utility.FileFormat.FITS {
                     }
                 }
 
-                var metaData = header.ExtractMetaData();
+                var metaData = new ImageMetaData();
+                try {
+                    metaData = header.ExtractMetaData();
+                } catch (Exception ex) {
+                    Logger.Error(ex.Message);
+                }
                 return new Model.ImageData.ImageData(pixels, width, height, 16, isBayered, metaData);
             });
         }

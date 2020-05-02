@@ -113,11 +113,11 @@ namespace NINA.Utility.FileFormat.FITS {
             }
 
             if (_headerCards.TryGetValue("EXPOSURE", out card)) {
-                metaData.Image.ExposureTime = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.Image.ExposureTime = ParseDouble(card.Value);
             }
 
             if (_headerCards.TryGetValue("EXPTIME", out card)) {
-                metaData.Image.ExposureTime = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.Image.ExposureTime = ParseDouble(card.Value);
             }
 
             if (_headerCards.TryGetValue("DATE-LOC", out card)) {
@@ -146,11 +146,11 @@ namespace NINA.Utility.FileFormat.FITS {
             }
 
             if (_headerCards.TryGetValue("EGAIN", out card)) {
-                metaData.Camera.ElectronsPerADU = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.Camera.ElectronsPerADU = ParseDouble(card.Value);
             }
 
             if (_headerCards.TryGetValue("XPIXSZ", out card)) {
-                metaData.Camera.PixelSize = double.Parse(card.Value, CultureInfo.InvariantCulture) / metaData.Camera.BinX;
+                metaData.Camera.PixelSize = ParseDouble(card.Value) / metaData.Camera.BinX;
             }
 
             if (_headerCards.TryGetValue("INSTRUME", out card)) {
@@ -158,11 +158,11 @@ namespace NINA.Utility.FileFormat.FITS {
             }
 
             if (_headerCards.TryGetValue("SET-TEMP", out card)) {
-                metaData.Camera.SetPoint = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.Camera.SetPoint = ParseDouble(card.Value);
             }
 
             if (_headerCards.TryGetValue("CCD-TEMP", out card)) {
-                metaData.Camera.Temperature = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.Camera.Temperature = ParseDouble(card.Value);
             }
 
             if (_headerCards.TryGetValue("READOUTM", out card)) {
@@ -187,11 +187,11 @@ namespace NINA.Utility.FileFormat.FITS {
             }
 
             if (_headerCards.TryGetValue("FOCALLEN", out card)) {
-                metaData.Telescope.FocalLength = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.Telescope.FocalLength = ParseDouble(card.Value);
             }
 
             if (_headerCards.TryGetValue("FOCRATIO", out card)) {
-                metaData.Telescope.FocalRatio = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.Telescope.FocalRatio = ParseDouble(card.Value);
             }
 
             if (_headerCards.ContainsKey("RA") && _headerCards.ContainsKey("DEC")) {
@@ -202,15 +202,15 @@ namespace NINA.Utility.FileFormat.FITS {
 
             /* Observer */
             if (_headerCards.TryGetValue("SITEELEV", out card)) {
-                metaData.Observer.Elevation = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.Observer.Elevation = ParseDouble(card.Value);
             }
 
             if (_headerCards.TryGetValue("SITELAT", out card)) {
-                metaData.Observer.Latitude = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.Observer.Latitude = ParseDouble(card.Value);
             }
 
             if (_headerCards.TryGetValue("SITELONG", out card)) {
-                metaData.Observer.Longitude = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.Observer.Longitude = ParseDouble(card.Value);
             }
 
             /* Filter Wheel */
@@ -240,23 +240,23 @@ namespace NINA.Utility.FileFormat.FITS {
             }
 
             if (_headerCards.TryGetValue("FOCPOS", out card)) {
-                metaData.Focuser.Position = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.Focuser.Position = ParseDouble(card.Value);
             }
 
             if (_headerCards.TryGetValue("FOCUSPOS", out card)) {
-                metaData.Focuser.Position = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.Focuser.Position = ParseDouble(card.Value);
             }
 
             if (_headerCards.TryGetValue("FOCUSSZ", out card)) {
-                metaData.Focuser.StepSize = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.Focuser.StepSize = ParseDouble(card.Value);
             }
 
             if (_headerCards.TryGetValue("FOCTEMP", out card)) {
-                metaData.Focuser.Temperature = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.Focuser.Temperature = ParseDouble(card.Value);
             }
 
             if (_headerCards.TryGetValue("FOCUSTEM", out card)) {
-                metaData.Focuser.Temperature = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.Focuser.Temperature = ParseDouble(card.Value);
             }
 
             /* Rotator */
@@ -266,57 +266,65 @@ namespace NINA.Utility.FileFormat.FITS {
             }
 
             if (_headerCards.TryGetValue("ROTATOR", out card)) {
-                metaData.Rotator.Position = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.Rotator.Position = ParseDouble(card.Value);
             }
 
             if (_headerCards.TryGetValue("ROTATANG", out card)) {
-                metaData.Rotator.Position = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.Rotator.Position = ParseDouble(card.Value);
             }
 
             if (_headerCards.TryGetValue("ROTSTPSZ", out card)) {
-                metaData.Rotator.StepSize = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.Rotator.StepSize = ParseDouble(card.Value);
             }
 
             /* Weather Data */
 
             if (_headerCards.TryGetValue("CLOUDCVR", out card)) {
-                metaData.WeatherData.CloudCover = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.WeatherData.CloudCover = ParseDouble(card.Value);
             }
             if (_headerCards.TryGetValue("DEWPOINT", out card)) {
-                metaData.WeatherData.DewPoint = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.WeatherData.DewPoint = ParseDouble(card.Value);
             }
             if (_headerCards.TryGetValue("HUMIDITY", out card)) {
-                metaData.WeatherData.Humidity = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.WeatherData.Humidity = ParseDouble(card.Value);
             }
             if (_headerCards.TryGetValue("PRESSURE", out card)) {
-                metaData.WeatherData.Pressure = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.WeatherData.Pressure = ParseDouble(card.Value);
             }
             if (_headerCards.TryGetValue("SKYBRGHT", out card)) {
-                metaData.WeatherData.SkyBrightness = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.WeatherData.SkyBrightness = ParseDouble(card.Value);
             }
             if (_headerCards.TryGetValue("MPSAS", out card)) {
-                metaData.WeatherData.SkyQuality = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.WeatherData.SkyQuality = ParseDouble(card.Value);
             }
             if (_headerCards.TryGetValue("SKYTEMP", out card)) {
-                metaData.WeatherData.SkyTemperature = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.WeatherData.SkyTemperature = ParseDouble(card.Value);
             }
             if (_headerCards.TryGetValue("STARFWHM", out card)) {
-                metaData.WeatherData.StarFWHM = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.WeatherData.StarFWHM = ParseDouble(card.Value);
             }
             if (_headerCards.TryGetValue("AMBTEMP", out card)) {
-                metaData.WeatherData.Temperature = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.WeatherData.Temperature = ParseDouble(card.Value);
             }
             if (_headerCards.TryGetValue("WINDDIR", out card)) {
-                metaData.WeatherData.WindDirection = double.Parse(card.Value, CultureInfo.InvariantCulture);
+                metaData.WeatherData.WindDirection = ParseDouble(card.Value);
             }
             if (_headerCards.TryGetValue("WINDGUST", out card)) {
-                metaData.WeatherData.WindGust = double.Parse(card.Value, CultureInfo.InvariantCulture) / 3.6;
+                metaData.WeatherData.WindGust = ParseDouble(card.Value) / 3.6;
             }
             if (_headerCards.TryGetValue("WINDSPD", out card)) {
-                metaData.WeatherData.WindSpeed = double.Parse(card.Value, CultureInfo.InvariantCulture) / 3.6;
+                metaData.WeatherData.WindSpeed = ParseDouble(card.Value) / 3.6;
             }
 
             return metaData;
+        }
+
+        private double ParseDouble(string value) {
+            if (double.TryParse(value, out var dbl)) {
+                return dbl;
+            } else {
+                return double.NaN;
+            }
         }
 
         /// <summary>

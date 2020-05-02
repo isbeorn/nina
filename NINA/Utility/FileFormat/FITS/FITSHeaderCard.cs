@@ -45,8 +45,10 @@ namespace NINA.Utility.FileFormat.FITS {
             }
             this.Value = $"'{value.Replace(@"'", @"''")}'".PadRight(20);
 
-            if (comment.Length > 45) {
+            if (comment?.Length > 45) {
                 comment = comment.Substring(0, 45);
+            } else {
+                comment = string.Empty;
             }
             this.Comment = comment;
         }
