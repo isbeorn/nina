@@ -30,13 +30,13 @@ namespace NINATest.FlatDevice {
 
         [Test]
         public void TestInitializeSerialPortNullPort() {
-            Assert.That(_sut.InitializeSerialPort(null, this).Result, Is.False);
+            Assert.That(_sut.InitializeSerialPort(null, this, 0).Result, Is.False);
         }
 
         [Test]
         public void TestInitializeSerialPortAlreadyInitialized() {
             _sut.SerialPort = _mockSerialPort.Object;
-            Assert.That(_sut.InitializeSerialPort("COM3", this).Result, Is.True);
+            Assert.That(_sut.InitializeSerialPort("COM3", this, 0).Result, Is.True);
             _mockSerialPortProvider.Verify(m => m.GetSerialPort(It.IsAny<string>(),
                 It.IsAny<int>(), It.IsAny<Parity>(), It.IsAny<int>(),
                 It.IsAny<StopBits>(), It.IsAny<Handshake>(), It.IsAny<bool>(),
@@ -49,7 +49,7 @@ namespace NINATest.FlatDevice {
                 It.IsAny<int>(), It.IsAny<Parity>(), It.IsAny<int>(),
                 It.IsAny<StopBits>(), It.IsAny<Handshake>(), It.IsAny<bool>(),
                 It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>())).Returns(_mockSerialPort.Object);
-            Assert.That(_sut.InitializeSerialPort("COM3", this).Result, Is.True);
+            Assert.That(_sut.InitializeSerialPort("COM3", this, 0).Result, Is.True);
             _mockSerialPort.Verify(m => m.Open(), Times.Once);
         }
 

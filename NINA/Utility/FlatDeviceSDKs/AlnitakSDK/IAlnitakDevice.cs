@@ -30,6 +30,6 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
     public interface IAlnitakDevice : ISerialSdk {
         ReadOnlyCollection<string> PortNames { get; }
 
-        Task<bool> InitializeSerialPort(string portName, object client);
+        Task<bool> InitializeSerialPort(string portName, object client, int rtsDelay = 2000);
     }
 }
