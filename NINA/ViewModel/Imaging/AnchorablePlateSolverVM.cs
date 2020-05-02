@@ -316,6 +316,12 @@ namespace NINA.ViewModel.Imaging {
                     Coordinates = telescopeMediator.GetCurrentPosition()
                 };
                 var result = await solver.Solve(seq, parameter, solveProgress, progress, _solveCancelToken.Token);
+
+                if (telescopeInfo.Connected) {
+                    var position = parameter.Coordinates.Transform(result.Coordinates.Epoch);
+                    result.Separation = result.DetermineSeparation(position);
+                }
+
                 if (!profileService.ActiveProfile.TelescopeSettings.NoSync && Sync) {
                     await telescopeMediator.Sync(result.Coordinates);
                 }
