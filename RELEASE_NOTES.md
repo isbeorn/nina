@@ -28,6 +28,7 @@
  - **Pegasus Astro Flatmaster support**
    - connect and control the Pegasus Astro Flatmaster from within the application
  - **Artesky USB Flat Box support**
+ - **All-Pro Spike-a-Flat Device Support**
 
 ## Localization
 - To be able to support many languages N.I.N.A. is now available on Crowdin. This powerful online translation management tool will allow users to easily contribute to the localization.
@@ -101,6 +102,7 @@
 - Guider graph now displays a triangle as indicator when a dither action was happening
 - NINA now uses the equatorial system reported by the mount driver and the setting under Options > General > Astrometry is removed. Mount drivers that report an "other" epoch will cause NINA to default to J2000
 - NINA now displays images from OSCs using their proper bayer pattern instead of assuming RGGB all the time
+- NINA now persists and restores the following camera settings: USB Limit, Offset, Gain, Binning, Readout Mode, Temperature, and Cooling Duration
 - Autofocus will not be performed if it could interfere with the Meridian Flip
 - A short timeout after telescope mount sync operation has been added, as some mounts can take time to report updated coordinates
 

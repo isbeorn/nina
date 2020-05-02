@@ -441,6 +441,7 @@
     <Compile Include="Model\MyCamera\FLICamera.cs" />
     <Compile Include="Model\MyCamera\IExposureData.cs" />
     <Compile Include="Model\MyCamera\OmegonCamera.cs" />
+    <Compile Include="Model\MyCamera\PersistSettingsCameraDecorator.cs" />
     <Compile Include="Model\MyCamera\Simulator\ImageSettings.cs" />
     <Compile Include="Model\MyCamera\Simulator\RandomSettings.cs" />
     <Compile Include="Model\MyCamera\Simulator\Settings.cs" />

@@ -48,5 +48,16 @@ namespace NINA.Profile {
         BinningMode FLIFloodBin { get; set; }
 
         bool BitScaling { get; set; }
+        double CoolingDuration { get; set; }
+        double? Temperature { get; set; }
+        short? BinningX { get; set; }
+        short? BinningY { get; set; }
+        int? Gain { get; set; }
+        int? Offset { get; set; }
+        int? USBLimit { get; set; }
+        short? ReadoutMode { get; set; }
+        short? ReadoutModeForSnapImages { get; set; }
+        short? ReadoutModeForNormalImages { get; set; }
+
     }
 }

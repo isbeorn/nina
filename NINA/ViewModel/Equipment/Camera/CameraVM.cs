@@ -236,6 +236,7 @@ namespace NINA.ViewModel.Equipment.Camera {
             }
             set {
                 _duration = value;
+                this.profileService.ActiveProfile.CameraSettings.CoolingDuration = value;
                 RaisePropertyChanged();
             }
         }
@@ -274,12 +275,13 @@ namespace NINA.ViewModel.Equipment.Camera {
                     }
                 );
 
-                var cam = (ICamera)CameraChooserVM.SelectedDevice;
+                var cam = new PersistSettingsCameraDecorator(this.profileService, (ICamera)CameraChooserVM.SelectedDevice);
                 _cancelConnectCameraSource?.Dispose();
                 _cancelConnectCameraSource = new CancellationTokenSource();
                 if (cam != null) {
                     try {
                         var connected = await cam.Connect(_cancelConnectCameraSource.Token);
+
                         _cancelConnectCameraSource.Token.ThrowIfCancellationRequested();
                         if (connected) {
                             this.Cam = cam;
@@ -333,6 +335,7 @@ namespace NINA.ViewModel.Equipment.Camera {
                             BroadcastCameraInfo();
 
                             if (Cam.CanSetTemperature) {
+                                Duration = this.profileService.ActiveProfile.CameraSettings.CoolingDuration;
                                 TargetTemp = Cam.TemperatureSetPoint;
                             }
 

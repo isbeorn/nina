@@ -306,5 +306,125 @@ namespace NINA.Profile {
                 }
             }
         }
+
+        private double coolingDuration;
+        [DataMember]
+        public double CoolingDuration {
+            get => coolingDuration;
+            set {
+                if (coolingDuration != value) {
+                    coolingDuration = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private double? temperature;
+        [DataMember]
+        public double? Temperature {
+            get => temperature;
+            set {
+                if (temperature != value) {
+                    temperature = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private short? binningX;
+        [DataMember]
+        public short? BinningX {
+            get => binningX;
+            set {
+                if (binningX != value) {
+                    binningX = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private short? binningY;
+        [DataMember]
+        public short? BinningY {
+            get => binningY;
+            set {
+                if (binningY != value) {
+                    binningY = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int? gain;
+        [DataMember]
+        public int? Gain {
+            get => gain;
+            set {
+                if (gain != value) {
+                    gain = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int? offset;
+        [DataMember]
+        public int? Offset {
+            get => offset;
+            set {
+                if (offset != value) {
+                    offset = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int? usbLimit;
+        [DataMember]
+        public int? USBLimit {
+            get => usbLimit;
+            set {
+                if (usbLimit != value) {
+                    usbLimit = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private short? readoutMode;
+        [DataMember]
+        public short? ReadoutMode {
+            get => readoutMode;
+            set {
+                if (readoutMode != value) {
+                    readoutMode = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private short? readoutModeForSnapImages;
+        [DataMember]
+        public short? ReadoutModeForSnapImages {
+            get => readoutModeForSnapImages;
+            set {
+                if (readoutModeForSnapImages != value) {
+                    readoutModeForSnapImages = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private short? readoutModeForNormalImages;
+        [DataMember]
+        public short? ReadoutModeForNormalImages {
+            get => readoutModeForNormalImages;
+            set {
+                if (readoutModeForNormalImages != value) {
+                    readoutModeForNormalImages = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
     }
 }
