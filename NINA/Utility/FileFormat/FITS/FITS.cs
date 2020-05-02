@@ -104,9 +104,12 @@ namespace NINA.Utility.FileFormat.FITS {
                             if (card.Value == "T") {
                                 header.Add(card.Key, true, card.Comment);
                             } else if (card.Value.Contains(".")) {
-                                header.Add(card.Key, double.Parse(card.Value, CultureInfo.InvariantCulture), card.Comment);
+                                if (double.TryParse(card.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out var value)) {
+                                    header.Add(card.Key, value, card.Comment);
+                                }
                             } else {
-                                header.Add(card.Key, int.Parse(card.Value, CultureInfo.InvariantCulture), card.Comment);
+                                if (int.TryParse(card.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out var value))
+                                    header.Add(card.Key, value, card.Comment);
                             }
                         }
                     }
