@@ -483,6 +483,20 @@
     <Compile Include="Utility\Converters\ImagePatternToTextConverter.cs" />
     <Compile Include="Utility\Converters\NaNToVisibilityCollapsedConverter.cs" />
     <Compile Include="Utility\Enum\BayerPatternEnum.cs" />
+    <Compile Include="Utility\FileFormat\XISF\DataConverter\Float32Converter.cs" />
+    <Compile Include="Utility\FileFormat\XISF\DataConverter\Float64Converter.cs" />
+    <Compile Include="Utility\FileFormat\XISF\DataConverter\IDataConverter.cs" />
+    <Compile Include="Utility\FileFormat\XISF\DataConverter\UInt16Converter.cs" />
+    <Compile Include="Utility\FileFormat\XISF\DataConverter\UInt32Converter.cs" />
+    <Compile Include="Utility\FileFormat\XISF\DataConverter\UInt64Converter.cs" />
+    <Compile Include="Utility\FileFormat\XISF\DataConverter\UInt8Converter.cs" />
+    <Compile Include="Utility\FileFormat\FITS\FITSData.cs" />
+    <Compile Include="Utility\FileFormat\FITS\FITSHeader.cs" />
+    <Compile Include="Utility\FileFormat\FITS\FITSHeaderCard.cs" />
+    <Compile Include="Utility\FileFormat\XISF\XISFData.cs" />
+    <Compile Include="Utility\FileFormat\XISF\XISFHeader.cs" />
+    <Compile Include="Utility\FileFormat\XISF\XISFImageProperty.cs" />
+    <Compile Include="Utility\FileFormat\XISF\XISFMetaDataProperty.cs" />
     <Compile Include="Utility\FileSaveInfo.cs" />
     <Compile Include="Utility\Converters\AFFittingToVisibilityConverter.cs" />
     <Compile Include="Utility\Converters\IsLightImageTypeToVisibilityConverter.cs" />
@@ -879,7 +893,7 @@
     <Compile Include="Utility\Enum\LogLevelEnum.cs" />
     <Compile Include="Utility\Enum\PlateSolverEnum.cs" />
     <Compile Include="Utility\Exceptions\CameraConnectionLostException.cs" />
-    <Compile Include="Utility\FITS.cs" />
+    <Compile Include="Utility\FileFormat\FITS\FITS.cs" />
     <Compile Include="Utility\MyStopWatch.cs" />
     <Compile Include="Utility\Notification\CustomDisplayPart.xaml.cs">
       <DependentUpon>CustomDisplayPart.xaml</DependentUpon>
@@ -931,7 +945,7 @@
     <Compile Include="Utility\WindowService\CustomWindow.cs" />
     <Compile Include="Utility\WindowService\WindowService.cs" />
     <Compile Include="Utility\WindowService\WindowServiceFactory.cs" />
-    <Compile Include="Utility\XISF.cs" />
+    <Compile Include="Utility\FileFormat\XISF\XISF.cs" />
     <Compile Include="ViewModel\AberrationInspectorVM.cs" />
     <Compile Include="ViewModel\ApplicationStatusVM.cs" />
     <Compile Include="ViewModel\AutoFocus\AutoFocusVM.cs" />

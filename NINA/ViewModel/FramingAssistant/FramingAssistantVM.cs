@@ -650,7 +650,7 @@ namespace NINA.ViewModel.FramingAssistant {
                     }
 
                     if (skySurveyImage != null) {
-                        if (skySurveyImage.Coordinates == null) {
+                        if (FramingAssistantSource == SkySurveySource.FILE) {
                             skySurveyImage = await PlateSolveSkySurvey(skySurveyImage);
                         }
 
@@ -680,19 +680,21 @@ namespace NINA.ViewModel.FramingAssistant {
         }
 
         private async Task<SkySurveyImage> PlateSolveSkySurvey(SkySurveyImage skySurveyImage) {
-            var diagResult = MyMessageBox.MyMessageBox.Show(string.Format(Locale.Loc.Instance["LblBlindSolveAttemptForFraming"], DSO.Coordinates.RAString, DSO.Coordinates.DecString), Locale.Loc.Instance["LblNoCoordinates"], MessageBoxButton.YesNo, MessageBoxResult.Yes);
+            var referenceCoordinates = skySurveyImage.Coordinates != null ? skySurveyImage.Coordinates : DSO.Coordinates;
+
+            var diagResult = MyMessageBox.MyMessageBox.Show(string.Format(Locale.Loc.Instance["LblBlindSolveAttemptForFraming"], referenceCoordinates.RAString, referenceCoordinates.DecString), Locale.Loc.Instance["LblNoCoordinates"], MessageBoxButton.YesNo, MessageBoxResult.Yes);
 
             var renderedImage = await RenderedImage.FromBitmapSource(source: skySurveyImage.Image);
-            Coordinates coordinates = null;
-            if (diagResult == MessageBoxResult.Yes) {
-                coordinates = DSO.Coordinates;
+
+            if (diagResult == MessageBoxResult.No) {
+                referenceCoordinates = null;
             }
             var plateSolver = PlateSolverFactory.GetPlateSolver(profileService.ActiveProfile.PlateSolveSettings);
             var blindSolver = PlateSolverFactory.GetPlateSolver(profileService.ActiveProfile.PlateSolveSettings);
 
             var parameter = new PlateSolveParameter() {
                 Binning = 1,
-                Coordinates = coordinates,
+                Coordinates = referenceCoordinates,
                 DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
                 FocalLength = this.FocalLength,
                 MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
@@ -715,6 +717,8 @@ namespace NINA.ViewModel.FramingAssistant {
                 skySurveyImage.FoVWidth = Astrometry.ArcsecToArcmin(psResult.Pixscale * skySurveyImage.Image.PixelWidth);
                 skySurveyImage.FoVHeight = Astrometry.ArcsecToArcmin(psResult.Pixscale * skySurveyImage.Image.PixelHeight);
                 skySurveyImage.Rotation = rotation;
+                this.DSO.Coordinates = psResult.Coordinates;
+                RaiseCoordinatesChanged();
             } else {
                 throw new Exception("Platesolve failed to retrieve coordinates for image");
             }

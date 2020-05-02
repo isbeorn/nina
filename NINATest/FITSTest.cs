@@ -25,6 +25,7 @@ using FluentAssertions;
 using NINA.Model.ImageData;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
+using NINA.Utility.FileFormat.FITS;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -62,11 +63,11 @@ namespace NINATest {
             var sut = new FITS(data, width, height);
 
             //Assert
-            sut.ImageData.Should().BeEquivalentTo(data);
-            sut.HeaderCards.Count.Should().Be(expectedHeaderCards.Count);
+            sut.Data.Data.Should().BeEquivalentTo(data);
+            sut.Header.HeaderCards.Count.Should().Be(expectedHeaderCards.Count);
 
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -86,9 +87,9 @@ namespace NINATest {
             sut.PopulateHeaderCards(metaData);
 
             //Assert
-            sut.HeaderCards.Count.Should().Be(expectedHeaderCards.Count + 7); // 7 is the default header size
+            sut.Header.HeaderCards.Count.Should().Be(expectedHeaderCards.Count + 7); // 7 is the default header size
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -115,7 +116,7 @@ namespace NINATest {
 
             //Assert
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -138,7 +139,7 @@ namespace NINATest {
 
             //Assert
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -175,7 +176,7 @@ namespace NINATest {
             sut.PopulateHeaderCards(metaData);
 
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -200,7 +201,7 @@ namespace NINATest {
             sut.PopulateHeaderCards(metaData);
 
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -222,7 +223,7 @@ namespace NINATest {
             sut.PopulateHeaderCards(metaData);
 
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -242,7 +243,7 @@ namespace NINATest {
             sut.PopulateHeaderCards(metaData);
 
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -263,7 +264,7 @@ namespace NINATest {
             sut.PopulateHeaderCards(metaData);
 
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -289,7 +290,7 @@ namespace NINATest {
             sut.PopulateHeaderCards(metaData);
 
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -312,7 +313,7 @@ namespace NINATest {
             sut.PopulateHeaderCards(metaData);
 
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -352,7 +353,7 @@ namespace NINATest {
             sut.PopulateHeaderCards(metaData);
 
             foreach (var expectedCard in expectedHeaderCards) {
-                sut.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
+                sut.Header.HeaderCards.First(x => x.Key == expectedCard.Key).Should().BeEquivalentTo(expectedCard);
             }
         }
 
@@ -535,7 +536,7 @@ namespace NINATest {
             var sut = new FITS(new ushort[] { 1, 2 }, 1, 1);
             sut.PopulateHeaderCards(metaData);
 
-            sut.HeaderCards.Should().NotContain(notExpectedCard, "Negative Gain values are not allowed");
+            sut.Header.HeaderCards.Should().NotContain(notExpectedCard, "Negative Gain values are not allowed");
         }
     }
 }

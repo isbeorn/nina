@@ -34,9 +34,10 @@ using System.Globalization;
 using NINA.Utility.Astrometry;
 using System.IO;
 using System.Threading.Tasks;
+using NINA.Utility.FileFormat.FITS;
+using NINA.Utility.FileFormat.XISF;
 
 namespace NINATest {
-
     [TestFixture]
     public class XISFTest {
 

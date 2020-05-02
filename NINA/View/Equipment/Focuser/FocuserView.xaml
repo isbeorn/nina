@@ -263,6 +263,7 @@
                                     Margin="5,0,5,0"
                                     HorizontalAlignment="Stretch"
                                     HorizontalContentAlignment="Center"
+                                    ToolTip="{ns:Loc LblWhatIsQuickloadTalkingAbout}"
                                     ButtonText="&lt; "
                                     CancelButtonImage="{StaticResource CancelSVG}"
                                     CancelCommand="{Binding HaltFocuserCommand}"

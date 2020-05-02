@@ -26,9 +26,10 @@
 
 using NINA.Utility;
 using NINA.Utility.Enum;
+using NINA.Utility.FileFormat.FITS;
+using NINA.Utility.FileFormat.XISF;
 using NINA.Utility.ImageAnalysis;
 using NINA.Utility.RawConverter;
-using nom.tam.fits;
 using System;
 using System.IO;
 using System.Threading;
@@ -53,6 +54,7 @@ namespace NINA.Model.ImageData {
         public ImageData(IImageArray imageArray, int width, int height, int bitDepth, bool isBayered, ImageMetaData metaData) {
             this.Data = imageArray;
             this.MetaData = metaData;
+            isBayered = metaData.Camera.BayerPattern != string.Empty ? true : isBayered;
             this.Properties = new ImageProperties(width: width, height: height, bitDepth: bitDepth, isBayered: isBayered);
             this.StarDetectionAnalysis = new StarDetectionAnalysis();
             this.Statistics = new Nito.AsyncEx.AsyncLazy<IImageStatistics>(async () => await Task.Run(() => ImageStatistics.Create(this)));
@@ -326,69 +328,51 @@ namespace NINA.Model.ImageData {
         /// <param name="rawConverter">Which type of raw converter to use, when image is in RAW format</param>
         /// <param name="ct">Token to cancel operation</param>
         /// <returns></returns>
-        public static async Task<IImageData> FromFile(string path, int bitDepth, bool isBayered, RawConverterEnum rawConverter, CancellationToken ct = default(CancellationToken)) {
-            if (!File.Exists(path)) {
-                throw new FileNotFoundException();
-            }
-            BitmapDecoder decoder;
-            switch (Path.GetExtension(path).ToLower()) {
-                case ".gif":
-                    decoder = new GifBitmapDecoder(new Uri(path), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                    return await BitmapToImageArray(decoder, isBayered);
-
-                case ".tif":
-                case ".tiff":
-                    decoder = new TiffBitmapDecoder(new Uri(path), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                    return await BitmapToImageArray(decoder, isBayered);
-
-                case ".jpg":
-                case ".jpeg":
-                    decoder = new JpegBitmapDecoder(new Uri(path), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                    return await BitmapToImageArray(decoder, isBayered);
-
-                case ".png":
-                    decoder = new PngBitmapDecoder(new Uri(path), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
-                    return await BitmapToImageArray(decoder, isBayered);
-
-                case ".xisf":
-                    return await XISF.Load(new Uri(path), isBayered);
-
-                case ".fit":
-                case ".fits":
-                    return await FitsToImageArray(path, bitDepth, isBayered);
-
-                case ".cr2":
-                case ".nef":
-                case ".raf":
-                case ".raw":
-                case ".pef":
-                case ".dng":
-                case ".arw":
-                case ".orf":
-                    return await RawToImageArray(path, bitDepth, rawConverter, ct);
-
-                default:
-                    throw new NotSupportedException();
-            }
-        }
-
-        private static Task<IImageData> FitsToImageArray(string path, int bitDepth, bool isBayered) {
+        public static Task<IImageData> FromFile(string path, int bitDepth, bool isBayered, RawConverterEnum rawConverter, CancellationToken ct = default(CancellationToken)) {
             return Task.Run(async () => {
-                Fits f = new Fits(path);
-                ImageHDU hdu = (ImageHDU)f.ReadHDU();
-                Array[] arr = (Array[])hdu.Data.DataArray;
-
-                var width = hdu.Header.GetIntValue("NAXIS1");
-                var height = hdu.Header.GetIntValue("NAXIS2");
-                ushort[] pixels = new ushort[width * height];
-                var i = 0;
-                foreach (var row in arr) {
-                    foreach (short val in row) {
-                        pixels[i++] = (ushort)(val + short.MaxValue);
-                    }
+                if (!File.Exists(path)) {
+                    throw new FileNotFoundException();
                 }
-                // TODO: Add parser for ImageMetaData
-                return await Task.FromResult<IImageData>(new ImageData(pixels, width, height, bitDepth, isBayered, new ImageMetaData()));
+                BitmapDecoder decoder;
+                switch (Path.GetExtension(path).ToLower()) {
+                    case ".gif":
+                        decoder = new GifBitmapDecoder(new Uri(path), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+                        return await BitmapToImageArray(decoder, isBayered);
+
+                    case ".tif":
+                    case ".tiff":
+                        decoder = new TiffBitmapDecoder(new Uri(path), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+                        return await BitmapToImageArray(decoder, isBayered);
+
+                    case ".jpg":
+                    case ".jpeg":
+                        decoder = new JpegBitmapDecoder(new Uri(path), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+                        return await BitmapToImageArray(decoder, isBayered);
+
+                    case ".png":
+                        decoder = new PngBitmapDecoder(new Uri(path), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+                        return await BitmapToImageArray(decoder, isBayered);
+
+                    case ".xisf":
+                        return await XISF.Load(new Uri(path), isBayered);
+
+                    case ".fit":
+                    case ".fits":
+                        return await FITS.Load(new Uri(path), isBayered);
+
+                    case ".cr2":
+                    case ".nef":
+                    case ".raf":
+                    case ".raw":
+                    case ".pef":
+                    case ".dng":
+                    case ".arw":
+                    case ".orf":
+                        return await RawToImageArray(path, bitDepth, rawConverter, ct);
+
+                    default:
+                        throw new NotSupportedException();
+                }
             });
         }
 

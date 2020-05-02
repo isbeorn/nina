@@ -23,6 +23,8 @@
 
 using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
+using NINA.PlateSolving;
+using NINA.Profile;
 using NINA.Utility.Astrometry;
 using NINA.Utility.ImageAnalysis;
 using System;
@@ -49,12 +51,21 @@ namespace NINA.Utility.SkySurvey {
                 var renderedImage = arr.RenderImage();
                 renderedImage = await renderedImage.Stretch(factor: 0.2, blackClipping: -2.8, unlinked: false);
 
+                var pixelSize = arr.MetaData.Camera.PixelSize;
+                var focalLength = arr.MetaData.Telescope.FocalLength;
+                var arcSecPerPixel = Astrometry.Astrometry.ArcsecPerPixel(pixelSize, focalLength);
+
+                var referenceCoordinates = arr.MetaData.Telescope.Coordinates;
+                if (referenceCoordinates == null) {
+                    referenceCoordinates = arr.MetaData.Target.Coordinates;
+                }
+
                 // TODO: Try and extract properties from image if available
                 return new SkySurveyImage() {
                     Name = Path.GetFileNameWithoutExtension(dialog.FileName),
-                    Coordinates = null,
-                    FoVHeight = double.NaN,
-                    FoVWidth = double.NaN,
+                    Coordinates = referenceCoordinates,
+                    FoVHeight = arcSecPerPixel * arr.Properties.Height,
+                    FoVWidth = arcSecPerPixel * arr.Properties.Width,
                     Image = renderedImage.Image,
                     Rotation = double.NaN,
                     Source = nameof(FileSkySurvey)

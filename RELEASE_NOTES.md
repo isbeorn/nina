@@ -102,6 +102,8 @@
 - Guider graph now displays a triangle as indicator when a dither action was happening
 - NINA now uses the equatorial system reported by the mount driver and the setting under Options > General > Astrometry is removed. Mount drivers that report an "other" epoch will cause NINA to default to J2000
 - NINA now displays images from OSCs using their proper bayer pattern instead of assuming RGGB all the time
+- XISF and FITS loading will now work for most types of data and not only for 16 bit saved files
+- XISF and FITS loading will now extract header data, which will be used for the framing assistant to get a much faster and convenient result
 - NINA now persists and restores the following camera settings: USB Limit, Offset, Gain, Binning, Readout Mode, Temperature, and Cooling Duration
 - Autofocus will not be performed if it could interfere with the Meridian Flip
 - A short timeout after telescope mount sync operation has been added, as some mounts can take time to report updated coordinates
