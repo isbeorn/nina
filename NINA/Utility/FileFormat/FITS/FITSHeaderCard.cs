@@ -40,15 +40,15 @@ namespace NINA.Utility.FileFormat.FITS {
              * A single quote is represented within a string as two successive single quotes
              */
             this.Key = key;
+            if (value == null) { value = string.Empty; }
             if (value.Length > 18) {
                 value = value.Substring(0, 18);
             }
             this.Value = $"'{value.Replace(@"'", @"''")}'".PadRight(20);
 
+            if (comment == null) { comment = string.Empty; }
             if (comment?.Length > 45) {
                 comment = comment.Substring(0, 45);
-            } else {
-                comment = string.Empty;
             }
             this.Comment = comment;
         }

@@ -431,6 +431,19 @@ namespace NINATest {
         }
 
         [Test]
+        public void FITSHeaderCard_NullTest() {
+            var key = "SOME";
+            string value = null;
+            string comment = null;
+
+            var sut = new FITSHeaderCard(key, value, comment);
+
+            sut.Key.Should().Be(key);
+            sut.Value.Should().Be("''                  ");
+            sut.Comment.Should().Be(string.Empty);
+        }
+
+        [Test]
         public void FITSHeaderCardStringTest() {
             var key = "SOME";
             var value = "someone's value";
