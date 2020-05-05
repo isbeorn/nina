@@ -469,6 +469,12 @@
   <data name="LblCache" xml:space="preserve">
     <value>キャッシュ</value>
   </data>
+  <data name="LblCalculateBias" xml:space="preserve">
+    <value>Calculate Bias</value>
+  </data>
+  <data name="LblCalculatedExposureTime" xml:space="preserve">
+    <value>Calculated Exposure Time</value>
+  </data>
   <data name="LblCam" xml:space="preserve">
     <value>カム</value>
   </data>
@@ -532,6 +538,12 @@
   </data>
   <data name="LblCaptureImageAndPlatesolve" xml:space="preserve">
     <value>画像を取得してプレートソルブ処理します。。</value>
+  </data>
+  <data name="LblCaptureImageCovered" xml:space="preserve">
+    <value>Cover Sensor and Capture Image</value>
+  </data>
+  <data name="LblCaptureImageUncovered" xml:space="preserve">
+    <value>Uncover Sensor and Capture Image</value>
   </data>
   <data name="LblCdC" xml:space="preserve">
     <value>Cartes du Ceil</value>
@@ -1096,6 +1108,9 @@
   <data name="LblDirectoryNotWritable" xml:space="preserve">
     <value>画像保存ディレクトリーは書き込み許可を持っていません。</value>
   </data>
+  <data name="LblDisabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
   <data name="LblDisableAFGuiding" xml:space="preserve">
     <value>オートフォーカス中にガイド停止</value>
   </data>
@@ -1220,7 +1235,9 @@
     <value>最適露出時間計算機能</value>
   </data>
   <data name="LblExposureCalculatorDescription" xml:space="preserve">
-    <value>このツールは、撮像された画像から測定されるADU値の最小と最大を基に、推奨される露出時間を提案します。光害の平均を考慮して、(最低) x3倍 (最大) x10倍でカメラの読み込みノイズを埋没させるように露出時間を計算します。ボタンをクリックすると、アプリは１回撮像し、入力値と画像を基に推奨時間を計算します。</value>
+    <value>This tool will suggest a recommended exposure time based on the read noise from your sensor and the average skyglow.
+If you have SharpCap installed and perform a Sensor Analysis, then use the drop down below to retrieve the read noise and full well capacity for the specified gain.
+You can also calculate the bias by clicking the Snapshot button next to Bias Mean.</value>
   </data>
   <data name="LblExposureCalculatorMeanLessThanOffset" xml:space="preserve">
     <value>露出時間推奨値を決定できません。現在の画像は平均が指定のバイアス平均よりも低くなっています。もっと長い露出で撮像するか、不適切な数値を修正して下さい。</value>
@@ -1819,17 +1836,11 @@
   <data name="LblMaxExpTime" xml:space="preserve">
     <value>最大露出時間</value>
   </data>
-  <data name="LblMaximumExposureTime" xml:space="preserve">
-    <value>最大推奨時間</value>
-  </data>
   <data name="LblMaxIncrement" xml:space="preserve">
     <value>最大インクリメント</value>
   </data>
   <data name="LblMaxObjects" xml:space="preserve">
     <value>最大オブジェクト</value>
-  </data>
-  <data name="LblMaxOptimalADU" xml:space="preserve">
-    <value>最大ADU</value>
   </data>
   <data name="LblMaxStep" xml:space="preserve">
     <value>最大ステップ</value>
@@ -1861,20 +1872,17 @@
   <data name="LblMinDuration" xml:space="preserve">
     <value>最小時間</value>
   </data>
+  <data name="LblMinExposureTimeDownloadRatio" xml:space="preserve">
+    <value>Minimum Exposure Time from Download Ratio</value>
+  </data>
   <data name="LblMinExpTime" xml:space="preserve">
     <value>最小露出時間</value>
   </data>
   <data name="LblMinimumAltitude" xml:space="preserve">
     <value>最小高度</value>
   </data>
-  <data name="LblMinimumExposureTime" xml:space="preserve">
-    <value>最小推奨時間</value>
-  </data>
   <data name="LblMinimumSettleTime" xml:space="preserve">
     <value>最小安定化時間</value>
-  </data>
-  <data name="LblMinOptimalADU" xml:space="preserve">
-    <value>最小ADU</value>
   </data>
   <data name="LblMinutes" xml:space="preserve">
     <value>分</value>
@@ -2094,7 +2102,7 @@
     <value>超新星残骸</value>
   </data>
   <data name="LblOf" xml:space="preserve">
-    <value>Of</value>
+    <value>の</value>
   </data>
   <data name="LblOff" xml:space="preserve">
     <value>オフ</value>
@@ -2125,7 +2133,7 @@
     <value>マニュアルを開く</value>
   </data>
   <data name="LblOpenWeatherMapAPIKey" xml:space="preserve">
-    <value>OpenWeatherMap API Key</value>
+    <value>OpenWeatherMap APIキー</value>
   </data>
   <data name="LblOpenWeatherMapClientDescription" xml:space="preserve">
     <value>OpenWeatherMapのCurrent Weather APIを使用します。天気データは10分毎に更新されます。</value>
@@ -2450,6 +2458,9 @@
   <data name="LblRecenterImage" xml:space="preserve">
     <value>画像の再中央化</value>
   </data>
+  <data name="LblRecommendedExposureTime" xml:space="preserve">
+    <value>Recommended Exposure Time</value>
+  </data>
   <data name="LblReconnectAll" xml:space="preserve">
     <value>全てのデバイスに接続しますか？</value>
   </data>
@@ -2597,6 +2608,9 @@
   <data name="LblSelectProfileInUseWarning" xml:space="preserve">
     <value>選択されたプロファイルは使用できません。他のN.I.N.A.セッションが使用中です。</value>
   </data>
+  <data name="LblSensorAnalysisPoorFit" xml:space="preserve">
+    <value>Sensor Analysis is irregular, and may not produce accurate results. Consider re-running it.</value>
+  </data>
   <data name="LblSensorName" xml:space="preserve">
     <value>センサー名称</value>
   </data>
@@ -2681,6 +2695,15 @@
   </data>
   <data name="LblAutoRetryStartGuidingTimeoutTooltip" xml:space="preserve">
     <value>Timeout in seconds before abandoning a StartGuiding command before attempting to a retry.</value>
+  </data>
+  <data name="LblSharpCapSensorAnalysisPath" xml:space="preserve">
+    <value>SharpCap Sensor Analysis folder</value>
+  </data>
+  <data name="LblSharpCapSensorAnalysisLoadedFormat" xml:space="preserve">
+    <value>Loaded {0} sensors</value>
+  </data>
+  <data name="LblSharpCapSensorAnalysisPathTooltip" xml:space="preserve">
+    <value>Folder where SharpCap Sensor Analysis files can be found, if somewhere other than their default location</value>
   </data>
   <data name="LblSiderealTime" xml:space="preserve">
     <value>恒星時</value>
@@ -3088,16 +3111,16 @@
     <value>Transit North</value>
   </data>
   <data name="LblTransitSouth" xml:space="preserve">
-    <value>Transit South</value>
+    <value>子午線南通過</value>
   </data>
   <data name="LblTrendHyperbolic" xml:space="preserve">
-    <value>Trends and Hyperbolic</value>
+    <value>トレンドと双曲線</value>
   </data>
   <data name="LblTrendLines" xml:space="preserve">
     <value>トレンドライン</value>
   </data>
   <data name="LblTrendParabolic" xml:space="preserve">
-    <value>Trends and Parabolic</value>
+    <value>トレンドと放物線</value>
   </data>
   <data name="LblType" xml:space="preserve">
     <value>タイプ</value>
@@ -3246,6 +3269,9 @@
   <data name="LblUseBuldMode" xml:space="preserve">
     <value>バルブモードを使用</value>
   </data>
+  <data name="LblUseSharpCapSensorAnalysis" xml:space="preserve">
+    <value>Use SharpCap Sensor Analysis</value>
+  </data>
   <data name="LblUseSideOfPier" xml:space="preserve">
     <value>望遠鏡の赤道儀サイド</value>
   </data>
@@ -3260,9 +3286,6 @@
   </data>
   <data name="LblWaitForImageProcessing" xml:space="preserve">
     <value>前回の画像の処理が終了するのを待っています。</value>
-  </data>
-  <data name="LblWaitForImageSaving" xml:space="preserve">
-    <value>画像の保存完了待ち</value>
   </data>
   <data name="LblWaitForTemperatureStep" xml:space="preserve">
     <value>カメラ温度が次のステップ温度に到達するのを待っています。</value>
@@ -3464,7 +3487,7 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
     <value>Camera Timeout - Camera did not set image as ready after exposuretime + 15 seconds</value>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
-    <value>Pattern Preview</value>
+    <value>パターンプリビュー</value>
   </data>
   <data name="LblB1950" xml:space="preserve">
     <value>B1950</value>
@@ -3473,9 +3496,47 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
     <value>J2050</value>
   </data>
   <data name="LblUnknownEpochWarning" xml:space="preserve">
-    <value>The mount operates using an unknown equatorial reference system. {0} will be used. Please configure the mount's driver with a valid epoch.</value>
+    <value>マウントが未知の赤道座標システムを使用しています。{0} を使用します。マウントのドライバーを正しいエポックで設定して下さい。</value>
   </data>
   <data name="LblUnsupportedEpoch" xml:space="preserve">
-    <value>The mount operates using the {0} equatorial reference system, which is not supported.</value>
+    <value>マウントが、サポート外の赤道座標システム{0} を使用します。</value>
+  </data>
+  <data name="LblUnsupportedCfaPattern" xml:space="preserve">
+    <value>サポートされていないCFA/ベイヤー配列: {0}</value>
+  </data>
+  <data name="LblSavingImage" xml:space="preserve">
+    <value>画像保存</value>
+  </data>
+  <data name="LblLowDiskSpaceForSequence" xml:space="preserve">
+    <value>Available space on drive {0} may be insufficient. The estimated disk space required for the sequence is {1}, but only {2} remains.</value>
+  </data>
+  <data name="LblNoValidFirmwareVersion" xml:space="preserve">
+    <value>No valid firmware version.</value>
+  </data>
+  <data name="LblAbsolute" xml:space="preserve">
+    <value>Absolute</value>
+    <comment>Focuser Backlash Compensation Method to add an absolute value after a focuser direction change</comment>
+  </data>
+  <data name="LblFocuserBacklashMethod" xml:space="preserve">
+    <value>Backlash Compensation Method</value>
+  </data>
+  <data name="LblFocuserBacklashMethodTooltip" xml:space="preserve">
+    <value>This controls the backlash compensation method used.
+
+Absolute: 
+  When the focuser changes directions, an absolute value will be added to the focuser movement.
+  Backlash IN: when the focuser changes from moving outwards to moving inwards the Backlash IN value will be added
+  Backlash OUT: when the focuser changes from moving inwards to moving outwards the Backlash OUT value will be added
+  
+Overshoot:
+  This method will compensate for Backlash by overshooting the target position by a large amount and then moving the focuser back to the initially requested position.
+  Due to this compensation the last movement of the focuser will always be in the same direction (either always inwards or always outwards)
+  For Backlash IN and OUT only ONE of these two must be set! When setting IN, the amount will be applied on each inward movement, so the final movement will always be outwards. For Backlash OUT, it will be the other way around.
+
+The method can only be changed when the focuser is not connected!</value>
+  </data>
+  <data name="LblOvershoot" xml:space="preserve">
+    <value>Overshoot</value>
+    <comment>Focuser Backlash Compensation Method by overshooting the position and moving back</comment>
   </data>
 </root>

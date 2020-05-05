@@ -478,6 +478,12 @@ Dec: {1}</value>
   <data name="LblCache" xml:space="preserve">
     <value>Memoria</value>
   </data>
+  <data name="LblCalculateBias" xml:space="preserve">
+    <value>Calculate Bias</value>
+  </data>
+  <data name="LblCalculatedExposureTime" xml:space="preserve">
+    <value>Calculated Exposure Time</value>
+  </data>
   <data name="LblCam" xml:space="preserve">
     <value>Camera</value>
   </data>
@@ -541,6 +547,12 @@ Filtro: {3}</value>
   </data>
   <data name="LblCaptureImageAndPlatesolve" xml:space="preserve">
     <value>Cattura immagine e lancia risoluzione astrometrica</value>
+  </data>
+  <data name="LblCaptureImageCovered" xml:space="preserve">
+    <value>Cover Sensor and Capture Image</value>
+  </data>
+  <data name="LblCaptureImageUncovered" xml:space="preserve">
+    <value>Uncover Sensor and Capture Image</value>
   </data>
   <data name="LblCdC" xml:space="preserve">
     <value>Carte du Ciel</value>
@@ -1107,6 +1119,9 @@ Quando le linee non sono allineate significa che c'è un errore di allineamento 
   <data name="LblDirectoryNotWritable" xml:space="preserve">
     <value>La cartella per salvare le imamgini non ha permesso in scrittura!</value>
   </data>
+  <data name="LblDisabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
   <data name="LblDisableAFGuiding" xml:space="preserve">
     <value>Fuoco Automatico disabilita la guida</value>
   </data>
@@ -1231,8 +1246,9 @@ Quando le linee non sono allineate significa che c'è un errore di allineamento 
     <value>Calcolatore Esposizione Ottimale</value>
   </data>
   <data name="LblExposureCalculatorDescription" xml:space="preserve">
-    <value>Questo strumento suggerirà tempi di esposizione consigliati in base ai valori misurati di ADU Min e Max dell'immagine. Il bagliore medio del fondo cielo è preso in considerazione per calcolare le esposizioni al fine di sovrastsre il rumore di lettura della telecamera di un fattore di 3 x (Min) e 10 x (Max).
-Quando si fa clic sul pulsante, l'applicazione effettuerà un'esposizione e calcolerà i tempi consigliati in base all'immagine e ai valori di input indicati.</value>
+    <value>This tool will suggest a recommended exposure time based on the read noise from your sensor and the average skyglow.
+If you have SharpCap installed and perform a Sensor Analysis, then use the drop down below to retrieve the read noise and full well capacity for the specified gain.
+You can also calculate the bias by clicking the Snapshot button next to Bias Mean.</value>
   </data>
   <data name="LblExposureCalculatorMeanLessThanOffset" xml:space="preserve">
     <value>Impossibile determinare il tempo di esposizione raccomandato. La media dell'immagine corrente è inferiore alla media specificata di bias. Esponi più a lungo o regola i valori sbagliati.</value>
@@ -1832,17 +1848,11 @@ HFR Calcolato: {2}
   <data name="LblMaxExpTime" xml:space="preserve">
     <value>Tempo Massimo Di Esposizione</value>
   </data>
-  <data name="LblMaximumExposureTime" xml:space="preserve">
-    <value>Massimo tempo raccomandato</value>
-  </data>
   <data name="LblMaxIncrement" xml:space="preserve">
     <value>Incremento Massimo</value>
   </data>
   <data name="LblMaxObjects" xml:space="preserve">
     <value>Oggetti Massimi</value>
-  </data>
-  <data name="LblMaxOptimalADU" xml:space="preserve">
-    <value>ADU MAssimo</value>
   </data>
   <data name="LblMaxStep" xml:space="preserve">
     <value>Step Massimo</value>
@@ -1874,20 +1884,17 @@ HFR Calcolato: {2}
   <data name="LblMinDuration" xml:space="preserve">
     <value>Durata minima</value>
   </data>
+  <data name="LblMinExposureTimeDownloadRatio" xml:space="preserve">
+    <value>Minimum Exposure Time from Download Ratio</value>
+  </data>
   <data name="LblMinExpTime" xml:space="preserve">
     <value>Tempo Minimo Di Esposizione</value>
   </data>
   <data name="LblMinimumAltitude" xml:space="preserve">
     <value>Altezza minima</value>
   </data>
-  <data name="LblMinimumExposureTime" xml:space="preserve">
-    <value>Minimo tempo raccomandato</value>
-  </data>
   <data name="LblMinimumSettleTime" xml:space="preserve">
     <value>Tempo di settle Minimo</value>
-  </data>
-  <data name="LblMinOptimalADU" xml:space="preserve">
-    <value>ADU Minimo</value>
   </data>
   <data name="LblMinutes" xml:space="preserve">
     <value>Minuti</value>
@@ -2464,6 +2471,9 @@ HFR Calcolato: {2}
   <data name="LblRecenterImage" xml:space="preserve">
     <value>Ri-centra Immagine</value>
   </data>
+  <data name="LblRecommendedExposureTime" xml:space="preserve">
+    <value>Recommended Exposure Time</value>
+  </data>
   <data name="LblReconnectAll" xml:space="preserve">
     <value>Riconnettere tutti i devices?</value>
   </data>
@@ -2611,6 +2621,9 @@ HFR Calcolato: {2}
   <data name="LblSelectProfileInUseWarning" xml:space="preserve">
     <value>Il profilo selezionato non può essere utilizzato. E' già usato da un'altra istanza di  N.I.N.A.!</value>
   </data>
+  <data name="LblSensorAnalysisPoorFit" xml:space="preserve">
+    <value>Sensor Analysis is irregular, and may not produce accurate results. Consider re-running it.</value>
+  </data>
   <data name="LblSensorName" xml:space="preserve">
     <value>Nome Sensore</value>
   </data>
@@ -2695,6 +2708,15 @@ Questo tempalte sarà usato all'avvio per inizializzare la sequenza invece di qu
   </data>
   <data name="LblAutoRetryStartGuidingTimeoutTooltip" xml:space="preserve">
     <value>Tempo in secondi prima di abbandonare un comando StartGuiding prima di provare a guidare nuovamente.</value>
+  </data>
+  <data name="LblSharpCapSensorAnalysisPath" xml:space="preserve">
+    <value>SharpCap Sensor Analysis folder</value>
+  </data>
+  <data name="LblSharpCapSensorAnalysisLoadedFormat" xml:space="preserve">
+    <value>Loaded {0} sensors</value>
+  </data>
+  <data name="LblSharpCapSensorAnalysisPathTooltip" xml:space="preserve">
+    <value>Folder where SharpCap Sensor Analysis files can be found, if somewhere other than their default location</value>
   </data>
   <data name="LblSiderealTime" xml:space="preserve">
     <value>Tempo Sidereale</value>
@@ -3260,6 +3282,9 @@ aree ad alto inquinamento luminoso. Il tempo di processo sarà  tuttavia aumenta
   <data name="LblUseBuldMode" xml:space="preserve">
     <value>Usa modalità bulb</value>
   </data>
+  <data name="LblUseSharpCapSensorAnalysis" xml:space="preserve">
+    <value>Use SharpCap Sensor Analysis</value>
+  </data>
   <data name="LblUseSideOfPier" xml:space="preserve">
     <value>Usa il lato del Pier del Telescopio</value>
   </data>
@@ -3274,9 +3299,6 @@ aree ad alto inquinamento luminoso. Il tempo di processo sarà  tuttavia aumenta
   </data>
   <data name="LblWaitForImageProcessing" xml:space="preserve">
     <value>In attesa che l'immagine precedente finisca di essere processata</value>
-  </data>
-  <data name="LblWaitForImageSaving" xml:space="preserve">
-    <value>In attesa del salvataggio immagine</value>
   </data>
   <data name="LblWaitForTemperatureStep" xml:space="preserve">
     <value>In attesa che al camera raggiunga il prossimo step di temperatura</value>
@@ -3491,5 +3513,43 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
   </data>
   <data name="LblUnsupportedEpoch" xml:space="preserve">
     <value>La montatura opera utilizzando il sistema di riferimento equatoriale {0} che non è supportato.</value>
+  </data>
+  <data name="LblUnsupportedCfaPattern" xml:space="preserve">
+    <value>Unsupported CFA/Bayer pattern: {0}</value>
+  </data>
+  <data name="LblSavingImage" xml:space="preserve">
+    <value>Saving image</value>
+  </data>
+  <data name="LblLowDiskSpaceForSequence" xml:space="preserve">
+    <value>Available space on drive {0} may be insufficient. The estimated disk space required for the sequence is {1}, but only {2} remains.</value>
+  </data>
+  <data name="LblNoValidFirmwareVersion" xml:space="preserve">
+    <value>No valid firmware version.</value>
+  </data>
+  <data name="LblAbsolute" xml:space="preserve">
+    <value>Absolute</value>
+    <comment>Focuser Backlash Compensation Method to add an absolute value after a focuser direction change</comment>
+  </data>
+  <data name="LblFocuserBacklashMethod" xml:space="preserve">
+    <value>Backlash Compensation Method</value>
+  </data>
+  <data name="LblFocuserBacklashMethodTooltip" xml:space="preserve">
+    <value>This controls the backlash compensation method used.
+
+Absolute: 
+  When the focuser changes directions, an absolute value will be added to the focuser movement.
+  Backlash IN: when the focuser changes from moving outwards to moving inwards the Backlash IN value will be added
+  Backlash OUT: when the focuser changes from moving inwards to moving outwards the Backlash OUT value will be added
+  
+Overshoot:
+  This method will compensate for Backlash by overshooting the target position by a large amount and then moving the focuser back to the initially requested position.
+  Due to this compensation the last movement of the focuser will always be in the same direction (either always inwards or always outwards)
+  For Backlash IN and OUT only ONE of these two must be set! When setting IN, the amount will be applied on each inward movement, so the final movement will always be outwards. For Backlash OUT, it will be the other way around.
+
+The method can only be changed when the focuser is not connected!</value>
+  </data>
+  <data name="LblOvershoot" xml:space="preserve">
+    <value>Overshoot</value>
+    <comment>Focuser Backlash Compensation Method by overshooting the position and moving back</comment>
   </data>
 </root>
