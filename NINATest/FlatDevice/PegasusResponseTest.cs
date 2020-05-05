@@ -21,45 +21,53 @@
 
 #endregion "copyright"
 
+using NINA.Utility.FlatDeviceSDKs.PegasusAstroSDK;
 using NINA.Utility.SerialCommunication;
 using NUnit.Framework;
 using System;
-using NINA.Utility.FlatDeviceSDKs.PegasusAstroSDK;
 
 namespace NINATest.FlatDevice {
 
     public class PegasusResponseTest {
 
         [Test]
-        [TestCase("Status", "OK_FM", true)]
-        [TestCase("Status", "ERR", false)]
-        [TestCase("Status", null, false)]
-        [TestCase("Status", "", false)]
-        [TestCase("OnOff", "E:0", true)]
-        [TestCase("OnOff", "E:1", true)]
-        [TestCase("OnOff", "ERR", false)]
-        [TestCase("OnOff", null, false)]
-        [TestCase("OnOff", "", false)]
-        [TestCase("SetBrightness", "L:20", true)]
-        [TestCase("SetBrightness", "ERR", false)]
-        [TestCase("SetBrightness", null, false)]
-        [TestCase("SetBrightness", "", false)]
-        public void TestIsValidResponse(string responseName, string response, bool valid) {
+        [TestCase("Status", "OK_FM")]
+        [TestCase("OnOff", "E:0")]
+        [TestCase("OnOff", "E:1")]
+        [TestCase("SetBrightness", "L:20")]
+        public void TestValidResponse(string responseName, string response) {
             var sut = (Response)Activator.CreateInstance("NINA",
                 $"NINA.Utility.FlatDeviceSDKs.PegasusAstroSDK.{responseName}Response").Unwrap();
             sut.DeviceResponse = response;
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
         }
 
-        [TestCase("V:1.3", true, 1.3)]
-        [TestCase("V:XXX", false)]
-        [TestCase(null, false)]
-        [TestCase("", false)]
-        public void TestFirmwareVersionResponse(string response, bool valid, double firmwareVersion = 0) {
+        [Test]
+        [TestCase("Status", "ERR")]
+        [TestCase("Status", null)]
+        [TestCase("Status", "")]
+        [TestCase("OnOff", "ERR")]
+        [TestCase("OnOff", null)]
+        [TestCase("OnOff", "")]
+        [TestCase("SetBrightness", "ERR")]
+        [TestCase("SetBrightness", null)]
+        [TestCase("SetBrightness", "")]
+        public void TestInvalidResponse(string responseName, string response) {
+            var sut = (Response)Activator.CreateInstance("NINA",
+                $"NINA.Utility.FlatDeviceSDKs.PegasusAstroSDK.{responseName}Response").Unwrap();
+            Assert.That(() => sut.DeviceResponse = response, Throws.TypeOf<InvalidDeviceResponseException>());
+        }
+
+        [TestCase("V:1.3", 1.3)]
+        public void TestValidFirmwareVersionResponse(string response, double firmwareVersion) {
             var sut = new FirmwareVersionResponse { DeviceResponse = response };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.FirmwareVersion, Is.EqualTo(firmwareVersion));
+        }
+
+        [TestCase("V:XXX")]
+        [TestCase(null)]
+        [TestCase("")]
+        public void TestInvalidFirmwareVersionResponse(string response) {
+            Assert.That(() => new FirmwareVersionResponse { DeviceResponse = response }, Throws.TypeOf<InvalidDeviceResponseException>());
         }
     }
 }

@@ -77,7 +77,7 @@ namespace NINA.Model.MyFlatDevice {
         public int MaxBrightness => 255;
         public int MinBrightness => 0;
 
-        public async Task<bool> Open(CancellationToken ct) {
+        public async Task<bool> Open(CancellationToken ct, int delay = 300) {
             if (!Connected) await Task.Run(() => false, ct);
             return await Task.Run(() => {
                 _lightOn = false;
@@ -86,7 +86,7 @@ namespace NINA.Model.MyFlatDevice {
             }, ct);
         }
 
-        public async Task<bool> Close(CancellationToken ct) {
+        public async Task<bool> Close(CancellationToken ct, int delay = 300) {
             if (!Connected) await Task.Run(() => false, ct);
             return await Task.Run(() => {
                 CoverState = CoverState.Closed;

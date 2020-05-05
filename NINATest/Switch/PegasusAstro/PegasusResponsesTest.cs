@@ -22,6 +22,7 @@
 #endregion "copyright"
 
 using System;
+using NINA.Utility.SerialCommunication;
 using NINA.Utility.SwitchSDKs.PegasusAstro;
 using NUnit.Framework;
 
@@ -31,36 +32,29 @@ namespace NINATest.Switch.PegasusAstro {
     public class PegasusResponsesTest {
 
         [Test]
-        [TestCase("1.3", true, 1.3)]
-        [TestCase("ERR", false)]
-        [TestCase("", false)]
-        [TestCase(null, false)]
-        public void TestFirmwareVersionResponse(string deviceResponse, bool valid, double version = 0) {
+        [TestCase("1.3", 1.3)]
+        public void TestValidFirmwareVersionResponse(string deviceResponse, double version) {
             var sut = new FirmwareVersionResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.FirmwareVersion, Is.EqualTo(version));
             Assert.That(sut.ToString().Contains(deviceResponse), Is.True);
         }
 
         [Test]
+        [TestCase("ERR")]
+        [TestCase("")]
+        [TestCase(null)]
+        public void TestInvalidFirmwareVersionResponse(string deviceResponse) {
+            Assert.That(() => new FirmwareVersionResponse { DeviceResponse = deviceResponse }, Throws.TypeOf<InvalidDeviceResponseException>());
+        }
+
+        [Test]
         [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0",
-            true, "UPB", 12.2, 0d, 0, 23.2, 59, 14.7)]
+            "UPB", 12.2, 0d, 0, 23.2, 59, 14.7)]
         [TestCase("UPB:14.2:3.5:50:-23.2:-2:-0.3:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0",
-            true, "UPB", 14.2, 3.5, 50, -23.2, -2, -0.3)]
-        [TestCase("UPB:XXX:3.5:50:-23.2:-2:-0.3:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", false)]
-        [TestCase("UPB:12.2:XXX:50:-23.2:-2:-0.3:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", false)]
-        [TestCase("UPB:12.2:3.5:50.0:-23.2:-2:-0.3:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", false)]
-        [TestCase("UPB:12.2:3.5:50:XXX:-2:-0.3:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", false)]
-        [TestCase("UPB:12.2:3.5:50:23.2:XXX:-0.3:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", false)]
-        [TestCase("UPB:12.2:3.5:50:23.2:59:XXX:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", false)]
-        [TestCase("", false)]
-        [TestCase(null, false)]
-        public void TestStatusResponseDirectProperties(string deviceResponse, bool valid, string deviceName = null, double inputVoltage = 0d,
-            double inputCurrent = 0d, int power = 0, double temperature = 0d, double humidity = 0d, double dewPoint = 0d) {
+            "UPB", 14.2, 3.5, 50, -23.2, -2, -0.3)]
+        public void TestValidStatusResponseDirectProperties(string deviceResponse, string deviceName, double inputVoltage,
+            double inputCurrent, int power, double temperature, double humidity, double dewPoint) {
             var sut = new StatusResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.DeviceName, Is.EqualTo(deviceName));
             Assert.That(sut.DeviceInputVoltage, Is.EqualTo(inputVoltage));
             Assert.That(sut.DeviceCurrentAmpere, Is.EqualTo(inputCurrent));
@@ -72,17 +66,40 @@ namespace NINATest.Switch.PegasusAstro {
         }
 
         [Test]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", true, true, true, true, true)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:0111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", true, false, true, true, true)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1011:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", true, true, false, true, true)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1101:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", true, true, true, false, true)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1110:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", true, true, true, true, false)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:XXX:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", false)]
-        public void TestStatusResponsePowerPortOn(string deviceResponse, bool valid, bool port0 = false, bool port1 = false, bool port2 = false,
-            bool port3 = false) {
+        [TestCase("UPB:XXX:3.5:50:-23.2:-2:-0.3:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0")]
+        [TestCase("UPB:12.2:XXX:50:-23.2:-2:-0.3:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0")]
+        [TestCase("UPB:12.2:3.5:50.0:-23.2:-2:-0.3:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0")]
+        [TestCase("UPB:12.2:3.5:50:XXX:-2:-0.3:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0")]
+        [TestCase("UPB:12.2:3.5:50:23.2:XXX:-0.3:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0")]
+        [TestCase("UPB:12.2:3.5:50:23.2:59:XXX:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0")]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:XXX:111111:0:0:0:0:0:0:0:0:0:0:0000000:0")]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:XXX:0:0:0:0:0:0:0:0:0:0:0000000:0")]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:X:0:0:0:0:0:0:0:0:0:0000000:0")]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:X:0:0:0:0:0:0:0:0:0000000:0")]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:X:0:0:0:0:0:0:0:0000000:0")]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:X:0:0:0:0:0:0:0000000:0")]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:X:0:0:0:0:0:0000000:0")]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:X:0:0:0:0:0000000:0")]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:X:0:0:0:0000000:0")]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:X:0:0:0000000:0")]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:X:0:0000000:0")]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:X:0000000:0")]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:XXX:0")]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:X")]
+        [TestCase("")]
+        [TestCase(null)]
+        public void TestInvalidStatusResponse(string deviceResponse) {
+            Assert.That(() => new StatusResponse { DeviceResponse = deviceResponse }, Throws.TypeOf<InvalidDeviceResponseException>());
+        }
+
+        [Test]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", true, true, true, true)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:0111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", false, true, true, true)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1011:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", true, false, true, true)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1101:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", true, true, false, true)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1110:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", true, true, true, false)]
+        public void TestValidStatusResponsePowerPortOn(string deviceResponse, bool port0, bool port1, bool port2, bool port3) {
             var sut = new StatusResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.PowerPortOn[0], Is.EqualTo(port0));
             Assert.That(sut.PowerPortOn[1], Is.EqualTo(port1));
             Assert.That(sut.PowerPortOn[2], Is.EqualTo(port2));
@@ -90,19 +107,15 @@ namespace NINATest.Switch.PegasusAstro {
         }
 
         [Test]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", true, true, true, true, true, true, true)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:011111:0:0:0:0:0:0:0:0:0:0:0000000:0", true, false, true, true, true, true, true)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:101111:0:0:0:0:0:0:0:0:0:0:0000000:0", true, true, false, true, true, true, true)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:110111:0:0:0:0:0:0:0:0:0:0:0000000:0", true, true, true, false, true, true, true)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111011:0:0:0:0:0:0:0:0:0:0:0000000:0", true, true, true, true, false, true, true)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111101:0:0:0:0:0:0:0:0:0:0:0000000:0", true, true, true, true, true, false, true)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111110:0:0:0:0:0:0:0:0:0:0:0000000:0", true, true, true, true, true, true, false)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:XXX:0:0:0:0:0:0:0:0:0:0:0000000:0", false)]
-        public void TestStatusResponseUsbPortOn(string deviceResponse, bool valid, bool port0 = false, bool port1 = false, bool port2 = false,
-            bool port3 = false, bool port4 = false, bool port5 = false) {
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", true, true, true, true, true, true)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:011111:0:0:0:0:0:0:0:0:0:0:0000000:0", false, true, true, true, true, true)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:101111:0:0:0:0:0:0:0:0:0:0:0000000:0", true, false, true, true, true, true)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:110111:0:0:0:0:0:0:0:0:0:0:0000000:0", true, true, false, true, true, true)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111011:0:0:0:0:0:0:0:0:0:0:0000000:0", true, true, true, false, true, true)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111101:0:0:0:0:0:0:0:0:0:0:0000000:0", true, true, true, true, false, true)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111110:0:0:0:0:0:0:0:0:0:0:0000000:0", true, true, true, true, true, false)]
+        public void TestValidStatusResponseUsbPortOn(string deviceResponse, bool port0, bool port1, bool port2, bool port3, bool port4, bool port5) {
             var sut = new StatusResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.UsbPortOn[0], Is.EqualTo(port0));
             Assert.That(sut.UsbPortOn[1], Is.EqualTo(port1));
             Assert.That(sut.UsbPortOn[2], Is.EqualTo(port2));
@@ -112,33 +125,22 @@ namespace NINATest.Switch.PegasusAstro {
         }
 
         [Test]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:128:255:0:0:0:0:0:0:0:0000000:0", true, 0, 128, 255)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:255:0:128:0:0:0:0:0:0:0:0000000:0", true, 255, 0, 128)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:X:0:0:0:0:0:0:0:0:0:0000000:0", false)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:X:0:0:0:0:0:0:0:0:0000000:0", false)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:X:0:0:0:0:0:0:0:0000000:0", false)]
-        public void TestStatusResponseDewHeaterCycle(string deviceResponse, bool valid, short cycle0 = 0, short cycle1 = 0, short cycle2 = 0) {
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:128:255:0:0:0:0:0:0:0:0000000:0", 0, 128, 255)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:255:0:128:0:0:0:0:0:0:0:0000000:0", 255, 0, 128)]
+        public void TestValidStatusResponseDewHeaterCycle(string deviceResponse, short cycle0, short cycle1, short cycle2) {
             var sut = new StatusResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.DewHeaterDutyCycle[0], Is.EqualTo(cycle0));
             Assert.That(sut.DewHeaterDutyCycle[1], Is.EqualTo(cycle1));
             Assert.That(sut.DewHeaterDutyCycle[2], Is.EqualTo(cycle2));
         }
 
         [Test]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:300:0:0:0:0:0:0:0000000:0", true, 1, 0, 0, 0)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:600:0:0:0:0:0:0000000:0", true, 0, 2, 0, 0)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:900:0:0:0:0:0000000:0", true, 0, 0, 3, 0)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:1200:0:0:0:0000000:0", true, 0, 0, 0, 4)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:X:0:0:0:0:0:0:0000000:0", false)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:X:0:0:0:0:0:0000000:0", false)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:X:0:0:0:0:0000000:0", false)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:X:0:0:0:0000000:0", false)]
-        public void TestStatusResponsePortPowerFlow(string deviceResponse, bool valid, double port0 = 0d, double port1 = 0d, double port2 = 0d, double port3 = 0d) {
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:300:0:0:0:0:0:0:0000000:0", 1, 0, 0, 0)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:600:0:0:0:0:0:0000000:0", 0, 2, 0, 0)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:900:0:0:0:0:0000000:0", 0, 0, 3, 0)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:1200:0:0:0:0000000:0", 0, 0, 0, 4)]
+        public void TestValidStatusResponsePortPowerFlow(string deviceResponse, double port0, double port1, double port2, double port3) {
             var sut = new StatusResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.PortPowerFlow[0], Is.EqualTo(port0));
             Assert.That(sut.PortPowerFlow[1], Is.EqualTo(port1));
             Assert.That(sut.PortPowerFlow[2], Is.EqualTo(port2));
@@ -146,31 +148,23 @@ namespace NINATest.Switch.PegasusAstro {
         }
 
         [Test]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:300:0:0:0000000:0", true, 1, 0, 0)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:600:0:0000000:0", true, 0, 2, 0)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:1200:0000000:0", true, 0, 0, 2)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:X:0:0:0000000:0", false)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:X:0:0000000:0", false)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:X:0000000:0", false)]
-        public void TestStatusResponseDewHeaterPowerFlow(string deviceResponse, bool valid, double port0 = 0d, double port1 = 0d, double port2 = 0d) {
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:300:0:0:0000000:0", 1, 0, 0)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:600:0:0000000:0", 0, 2, 0)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:1200:0000000:0", 0, 0, 2)]
+        public void TestValidStatusResponseDewHeaterPowerFlow(string deviceResponse, double port0, double port1, double port2) {
             var sut = new StatusResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.DewHeaterPowerFlow[0], Is.EqualTo(port0));
             Assert.That(sut.DewHeaterPowerFlow[1], Is.EqualTo(port1));
             Assert.That(sut.DewHeaterPowerFlow[2], Is.EqualTo(port2));
         }
 
         [Test]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:1000000:0", true, true, false, false, false)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0100000:0", true, false, true, false, false)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0010000:0", true, false, false, true, false)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0001000:0", true, false, false, false, true)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:XXX:0", false)]
-        public void TestStatusResponsePortOverCurrent(string deviceResponse, bool valid, bool port0 = false, bool port1 = false, bool port2 = false, bool port3 = false) {
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:1000000:0", true, false, false, false)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0100000:0", false, true, false, false)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0010000:0", false, false, true, false)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0001000:0", false, false, false, true)]
+        public void TestValidStatusResponsePortOverCurrent(string deviceResponse, bool port0, bool port1, bool port2, bool port3) {
             var sut = new StatusResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.PortOverCurrent[0], Is.EqualTo(port0));
             Assert.That(sut.PortOverCurrent[1], Is.EqualTo(port1));
             Assert.That(sut.PortOverCurrent[2], Is.EqualTo(port2));
@@ -178,104 +172,97 @@ namespace NINATest.Switch.PegasusAstro {
         }
 
         [Test]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000100:0", true, true, false, false)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000010:0", true, false, true, false)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000001:0", true, false, false, true)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:XXX:0", false)]
-        public void TestStatusResponseDewHeaterOverCurrent(string deviceResponse, bool valid, bool port0 = false, bool port1 = false, bool port2 = false) {
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000100:0", true, false, false)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000010:0", false, true, false)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000001:0", false, false, true)]
+        public void TestValidStatusResponseDewHeaterOverCurrent(string deviceResponse, bool port0, bool port1, bool port2) {
             var sut = new StatusResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.DewHeaterOverCurrent[0], Is.EqualTo(port0));
             Assert.That(sut.DewHeaterOverCurrent[1], Is.EqualTo(port1));
             Assert.That(sut.DewHeaterOverCurrent[2], Is.EqualTo(port2));
         }
 
         [Test]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", true, false, false, false)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:1", true, true, true, true)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:2", true, true, false, false)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:3", true, false, true, false)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:4", true, false, false, true)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:5", true, true, true, false)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:6", true, true, false, true)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:7", true, false, true, true)]
-        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:X", false)]
-        public void TestStatusResponseAutoDewStatus(string deviceResponse, bool valid, bool port0 = false, bool port1 = false, bool port2 = false) {
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", false, false, false)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:1", true, true, true)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:2", true, false, false)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:3", false, true, false)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:4", false, false, true)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:5", true, true, false)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:6", true, false, true)]
+        [TestCase("UPB:12.2:0.0:0:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:7", false, true, true)]
+        public void TestValidStatusResponseAutoDewStatus(string deviceResponse, bool port0, bool port1, bool port2) {
             var sut = new StatusResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.AutoDewStatus[0], Is.EqualTo(port0));
             Assert.That(sut.AutoDewStatus[1], Is.EqualTo(port1));
             Assert.That(sut.AutoDewStatus[2], Is.EqualTo(port2));
         }
 
         [Test]
-        [TestCase("P1:0", true, 0, false)]
-        [TestCase("P1:1", true, 0, true)]
-        [TestCase("P2:0", true, 1, false)]
-        [TestCase("P2:1", true, 1, true)]
-        [TestCase("P3:0", true, 2, false)]
-        [TestCase("P3:1", true, 2, true)]
-        [TestCase("P4:0", true, 3, false)]
-        [TestCase("P4:1", true, 3, true)]
-        [TestCase("U2:0", false)]
-        [TestCase("PX:1", false)]
-        [TestCase("P111", false)]
-        [TestCase("", false)]
-        [TestCase(null, false)]
-        public void TestSetPowerResponse(string deviceResponse, bool valid, short switchNr = 0, bool on = false) {
+        [TestCase("P1:0", 0, false)]
+        [TestCase("P1:1", 0, true)]
+        [TestCase("P2:0", 1, false)]
+        [TestCase("P2:1", 1, true)]
+        [TestCase("P3:0", 2, false)]
+        [TestCase("P3:1", 2, true)]
+        [TestCase("P4:0", 3, false)]
+        [TestCase("P4:1", 3, true)]
+        public void TestValidSetPowerResponse(string deviceResponse, short switchNr, bool on) {
             var sut = new SetPowerResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.SwitchNumber, Is.EqualTo(switchNr));
             Assert.That(sut.On, Is.EqualTo(on));
             Assert.That(sut.ToString().Contains(deviceResponse), Is.True);
         }
 
         [Test]
-        [TestCase("U1:0", true, 0, false)]
-        [TestCase("U1:1", true, 0, true)]
-        [TestCase("U2:0", true, 1, false)]
-        [TestCase("U2:1", true, 1, true)]
-        [TestCase("U3:0", true, 2, false)]
-        [TestCase("U3:1", true, 2, true)]
-        [TestCase("U4:0", true, 3, false)]
-        [TestCase("U4:1", true, 3, true)]
-        [TestCase("U5:0", true, 4, false)]
-        [TestCase("U5:1", true, 4, true)]
-        [TestCase("U6:0", true, 5, false)]
-        [TestCase("U6:1", true, 5, true)]
-        [TestCase("P2:0", false)]
-        [TestCase("UX:1", false)]
-        [TestCase("U111", false)]
-        [TestCase("", false)]
-        [TestCase(null, false)]
-        public void TestSetUsbPowerResponse(string deviceResponse, bool valid, short switchNr = 0, bool on = false) {
+        [TestCase("U2:0")]
+        [TestCase("PX:1")]
+        [TestCase("P111")]
+        [TestCase("")]
+        [TestCase(null)]
+        public void TestInvalidSetPowerResponse(string deviceResponse) {
+            Assert.That(() => new SetPowerResponse { DeviceResponse = deviceResponse }, Throws.TypeOf<InvalidDeviceResponseException>());
+        }
+
+        [Test]
+        [TestCase("U1:0", 0, false)]
+        [TestCase("U1:1", 0, true)]
+        [TestCase("U2:0", 1, false)]
+        [TestCase("U2:1", 1, true)]
+        [TestCase("U3:0", 2, false)]
+        [TestCase("U3:1", 2, true)]
+        [TestCase("U4:0", 3, false)]
+        [TestCase("U4:1", 3, true)]
+        [TestCase("U5:0", 4, false)]
+        [TestCase("U5:1", 4, true)]
+        [TestCase("U6:0", 5, false)]
+        [TestCase("U6:1", 5, true)]
+        public void TestValidSetUsbPowerResponse(string deviceResponse, short switchNr, bool on) {
             var sut = new SetUsbPowerResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.SwitchNumber, Is.EqualTo(switchNr));
             Assert.That(sut.On, Is.EqualTo(on));
             Assert.That(sut.ToString().Contains(deviceResponse), Is.True);
         }
 
         [Test]
-        [TestCase("PS:1111:8", true, true, true, true, true, 8)]
-        [TestCase("PS:1111:12000", true, true, true, true, true, 0)]
-        [TestCase("PS:0111:8", true, false, true, true, true, 8)]
-        [TestCase("PS:1011:8", true, true, false, true, true, 8)]
-        [TestCase("PS:1101:8", true, true, true, false, true, 8)]
-        [TestCase("PS:1110:8", true, true, true, true, false, 8)]
-        [TestCase("XXX1110:8", false)]
-        [TestCase("PS:X:8", false)]
-        [TestCase("PS:1111:X", false)]
-        [TestCase("", false)]
-        [TestCase(null, false)]
-        public void TestPowerStatusResponse(string deviceResponse, bool valid, bool port0 = false, bool port1 = false, bool port2 = false, bool port3 = false, double voltage = 0) {
+        [TestCase("P2:0")]
+        [TestCase("UX:1")]
+        [TestCase("U111")]
+        [TestCase("")]
+        [TestCase(null)]
+        public void TestInvalidSetUsbPowerResponse(string deviceResponse) {
+            Assert.That(() => new SetUsbPowerResponse { DeviceResponse = deviceResponse }, Throws.TypeOf<InvalidDeviceResponseException>());
+        }
+
+        [Test]
+        [TestCase("PS:1111:8", true, true, true, true, 8)]
+        [TestCase("PS:1111:12000", true, true, true, true, 0)]
+        [TestCase("PS:0111:8", false, true, true, true, 8)]
+        [TestCase("PS:1011:8", true, false, true, true, 8)]
+        [TestCase("PS:1101:8", true, true, false, true, 8)]
+        [TestCase("PS:1110:8", true, true, true, false, 8)]
+        public void TestValidPowerStatusResponse(string deviceResponse, bool port0, bool port1, bool port2, bool port3, double voltage) {
             var sut = new PowerStatusResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.PowerStatusOnBoot[0], Is.EqualTo(port0));
             Assert.That(sut.PowerStatusOnBoot[1], Is.EqualTo(port1));
             Assert.That(sut.PowerStatusOnBoot[2], Is.EqualTo(port2));
@@ -285,55 +272,60 @@ namespace NINATest.Switch.PegasusAstro {
         }
 
         [Test]
-        [TestCase("P8:8", true, 8)]
-        [TestCase("P8:1200", true, 0)]
-        [TestCase("XXX8", false)]
-        [TestCase("P8:X", false)]
-        [TestCase("", false)]
-        [TestCase(null, false)]
-        public void TestSetVariableVoltageResponse(string deviceResponse, bool valid, double voltage = 0d) {
+        [TestCase("XXX1110:8")]
+        [TestCase("PS:X:8")]
+        [TestCase("PS:1111:X")]
+        [TestCase("")]
+        [TestCase(null)]
+        public void TestInvalidPowerStatusResponse(string deviceResponse) {
+            Assert.That(() => new PowerStatusResponse { DeviceResponse = deviceResponse }, Throws.TypeOf<InvalidDeviceResponseException>());
+        }
+
+        [Test]
+        [TestCase("P8:8", 8)]
+        [TestCase("P8:1200", 0)]
+        public void TestValidSetVariableVoltageResponse(string deviceResponse, double voltage) {
             var sut = new SetVariableVoltageResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.VariableVoltage, Is.EqualTo(voltage));
             Assert.That(sut.ToString().Contains(deviceResponse), Is.True);
         }
 
         [Test]
-        [TestCase("P5:000", true, 0, 0)]
-        [TestCase("P5:255", true, 0, 100)]
-        [TestCase("P6:000", true, 1, 0)]
-        [TestCase("P6:255", true, 1, 100)]
-        [TestCase("P7:000", true, 2, 0)]
-        [TestCase("P7:255", true, 2, 100)]
-        [TestCase("PX:000", false)]
-        [TestCase("P5:X", false)]
-        [TestCase("", false)]
-        [TestCase(null, false)]
-        public void TestSetDewHeaterPowerResponse(string deviceResponse, bool valid, short heater = 0,
-            double dutyCycle = 0) {
+        [TestCase("XXX8")]
+        [TestCase("P8:X")]
+        [TestCase("")]
+        [TestCase(null)]
+        public void TestInvalidSetVariableVoltageResponse(string deviceResponse) {
+            Assert.That(() => new SetVariableVoltageResponse { DeviceResponse = deviceResponse }, Throws.TypeOf<InvalidDeviceResponseException>());
+        }
+
+        [Test]
+        [TestCase("P5:000", 0, 0)]
+        [TestCase("P5:255", 0, 100)]
+        [TestCase("P6:000", 1, 0)]
+        [TestCase("P6:255", 1, 100)]
+        [TestCase("P7:000", 2, 0)]
+        [TestCase("P7:255", 2, 100)]
+        public void TestValidSetDewHeaterPowerResponse(string deviceResponse, short heater, double dutyCycle) {
             var sut = new SetDewHeaterPowerResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.DewHeaterNumber, Is.EqualTo(heater));
             Assert.That(sut.DutyCycle, Is.EqualTo(dutyCycle));
             Assert.That(sut.ToString().Contains(deviceResponse), Is.True);
         }
 
         [Test]
-        [TestCase("0.23:12.4:640.5:86400", true, 0.23, 12.4, 640.5, 86400)]
-        [TestCase("X:12.4:640.5:86400", false)]
-        [TestCase("0.23:X:640.5:86400", false)]
-        [TestCase("0.23:12.4:X:86400", false)]
-        [TestCase("0.23:12.4:640.5:X", false)]
-        [TestCase("0.23:12.4", false)]
-        [TestCase("", false)]
-        [TestCase(null, false)]
-        public void TestPowerConsumptionResponse(string deviceResponse, bool valid, double averagePower = 0d,
-            double ampereHours = 0d, double wattHours = 0d, long milliseconds = 0) {
+        [TestCase("PX:000")]
+        [TestCase("P5:X")]
+        [TestCase("")]
+        [TestCase(null)]
+        public void TestInvalidSetDewHeaterPowerResponse(string deviceResponse) {
+            Assert.That(() => new SetDewHeaterPowerResponse { DeviceResponse = deviceResponse }, Throws.TypeOf<InvalidDeviceResponseException>());
+        }
+
+        [Test]
+        [TestCase("0.23:12.4:640.5:86400", 0.23, 12.4, 640.5, 86400)]
+        public void TestValidPowerConsumptionResponse(string deviceResponse, double averagePower, double ampereHours, double wattHours, long milliseconds) {
             var sut = new PowerConsumptionResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.AveragePower, Is.EqualTo(averagePower));
             Assert.That(sut.AmpereHours, Is.EqualTo(ampereHours));
             Assert.That(sut.WattHours, Is.EqualTo(wattHours));
@@ -342,24 +334,29 @@ namespace NINATest.Switch.PegasusAstro {
         }
 
         [Test]
-        [TestCase("PD:0", true, false, false, false)]
-        [TestCase("PD:1", true, true, true, true)]
-        [TestCase("PD:2", true, true, false, false)]
-        [TestCase("PD:3", true, false, true, false)]
-        [TestCase("PD:4", true, false, false, true)]
-        [TestCase("PD:5", true, true, true, false)]
-        [TestCase("PD:6", true, true, false, true)]
-        [TestCase("PD:7", true, false, true, true)]
-        [TestCase("PD:8", true, false, false, false)]
-        [TestCase("XX:7", false)]
-        [TestCase("PD:X", false)]
-        [TestCase("", false)]
-        [TestCase(null, false)]
-        public void TestSetAutoDewResponse(string deviceResponse, bool valid, bool heater0 = false,
-            bool heater1 = false, bool heater2 = false) {
+        [TestCase("X:12.4:640.5:86400")]
+        [TestCase("0.23:X:640.5:86400")]
+        [TestCase("0.23:12.4:X:86400")]
+        [TestCase("0.23:12.4:640.5:X")]
+        [TestCase("0.23:12.4")]
+        [TestCase("")]
+        [TestCase(null)]
+        public void TestInvalidPowerConsumptionResponse(string deviceResponse) {
+            Assert.That(() => new PowerConsumptionResponse { DeviceResponse = deviceResponse }, Throws.TypeOf<InvalidDeviceResponseException>());
+        }
+
+        [Test]
+        [TestCase("PD:0", false, false, false)]
+        [TestCase("PD:1", true, true, true)]
+        [TestCase("PD:2", true, false, false)]
+        [TestCase("PD:3", false, true, false)]
+        [TestCase("PD:4", false, false, true)]
+        [TestCase("PD:5", true, true, false)]
+        [TestCase("PD:6", true, false, true)]
+        [TestCase("PD:7", false, true, true)]
+        [TestCase("PD:8", false, false, false)]
+        public void TestValidSetAutoDewResponse(string deviceResponse, bool heater0, bool heater1, bool heater2) {
             var sut = new SetAutoDewResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.AutoDewStatus[0], Is.EqualTo(heater0));
             Assert.That(sut.AutoDewStatus[1], Is.EqualTo(heater1));
             Assert.That(sut.AutoDewStatus[2], Is.EqualTo(heater2));
@@ -367,110 +364,144 @@ namespace NINATest.Switch.PegasusAstro {
         }
 
         [Test]
-        [TestCase("0", true, 0d)]
-        [TestCase("45.3", true, 45.3)]
-        [TestCase("-43.78", true, -43.78)]
-        [TestCase("XXX", false)]
-        [TestCase("", false)]
-        [TestCase(null, false)]
-        public void TestStepperTemperatureResponse(string deviceResponse, bool valid, double temperature = 0d) {
+        [TestCase("XX:7")]
+        [TestCase("PD:X")]
+        [TestCase("")]
+        [TestCase(null)]
+        public void TestInvalidSetAutoDewResponse(string deviceResponse) {
+            Assert.That(() => new SetAutoDewResponse { DeviceResponse = deviceResponse }, Throws.TypeOf<InvalidDeviceResponseException>());
+        }
+
+        [Test]
+        [TestCase("0", 0d)]
+        [TestCase("45.3", 45.3)]
+        [TestCase("-43.78", -43.78)]
+        public void TestValidStepperTemperatureResponse(string deviceResponse, double temperature) {
             var sut = new StepperMotorTemperatureResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.Temperature, Is.EqualTo(temperature));
         }
 
         [Test]
-        [TestCase("0", true, 0)]
-        [TestCase("4500000", true, 4500000)]
-        [TestCase("-43000000", true, -43000000)]
-        [TestCase("XXX", false)]
-        [TestCase("", false)]
-        [TestCase(null, false)]
-        public void TestStepperGetCurrentPositionResponse(string deviceResponse, bool valid, int position = 0) {
+        [TestCase("XXX")]
+        [TestCase("")]
+        [TestCase(null)]
+        public void TestInvalidStepperTemperatureResponse(string deviceResponse) {
+            Assert.That(() => new StepperMotorTemperatureResponse { DeviceResponse = deviceResponse }, Throws.TypeOf<InvalidDeviceResponseException>());
+        }
+
+        [Test]
+        [TestCase("0", 0)]
+        [TestCase("4500000", 4500000)]
+        [TestCase("-43000000", -43000000)]
+        public void TestValidStepperGetCurrentPositionResponse(string deviceResponse, int position) {
             var sut = new StepperMotorGetCurrentPositionResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.Position, Is.EqualTo(position));
         }
 
         [Test]
-        [TestCase("SM:0", true, 0)]
-        [TestCase("SM:4500000", true, 4500000)]
-        [TestCase("SM:-43000000", true, -43000000)]
-        [TestCase("XXX", false)]
-        [TestCase("", false)]
-        [TestCase(null, false)]
-        public void TestStepperMoveToPositionResponse(string deviceResponse, bool valid, int position = 0) {
+        [TestCase("XXX")]
+        [TestCase("")]
+        [TestCase(null)]
+        public void TestInvalidStepperGetCurrentPositionResponse(string deviceResponse) {
+            Assert.That(() => new StepperMotorGetCurrentPositionResponse { DeviceResponse = deviceResponse }, Throws.TypeOf<InvalidDeviceResponseException>());
+        }
+
+        [Test]
+        [TestCase("SM:0", 0)]
+        [TestCase("SM:4500000", 4500000)]
+        [TestCase("SM:-43000000", -43000000)]
+        public void TestValidStepperMoveToPositionResponse(string deviceResponse, int position) {
             var sut = new StepperMotorMoveToPositionResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.Position, Is.EqualTo(position));
         }
 
         [Test]
-        [TestCase("0", true, false)]
-        [TestCase("1", true, true)]
-        [TestCase("XXX", false)]
-        [TestCase("", false)]
-        [TestCase(null, false)]
-        public void TestStepperMotorIsMovingResponse(string deviceResponse, bool valid, bool isMoving = false) {
+        [TestCase("XXX")]
+        [TestCase("")]
+        [TestCase(null)]
+        public void TestInvalidStepperMoveToPositionResponse(string deviceResponse) {
+            Assert.That(() => new StepperMotorMoveToPositionResponse { DeviceResponse = deviceResponse }, Throws.TypeOf<InvalidDeviceResponseException>());
+        }
+
+        [Test]
+        [TestCase("0", false)]
+        [TestCase("1", true)]
+        public void TestValidStepperMotorIsMovingResponse(string deviceResponse, bool isMoving) {
             var sut = new StepperMotorIsMovingResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.IsMoving, Is.EqualTo(isMoving));
         }
 
         [Test]
-        [TestCase("SH", true)]
-        [TestCase("XXX", false)]
-        [TestCase("", false)]
-        [TestCase(null, false)]
-        public void TestStepperMotorHaltResponse(string deviceResponse, bool valid) {
-            var sut = new StepperMotorHaltResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
+        [TestCase("XXX")]
+        [TestCase("")]
+        [TestCase(null)]
+        public void TestInvalidStepperMotorIsMovingResponse(string deviceResponse) {
+            Assert.That(() => new StepperMotorIsMovingResponse { DeviceResponse = deviceResponse }, Throws.TypeOf<InvalidDeviceResponseException>());
         }
 
         [Test]
-        [TestCase("SR:1", true, false)]
-        [TestCase("SR:0", true, true)]
-        [TestCase("SR:X", false)]
-        [TestCase("XXX", false)]
-        [TestCase("", false)]
-        [TestCase(null, false)]
-        public void TestStepperMotorDirectionResponse(string deviceResponse, bool valid, bool isClockwise = false) {
+        [TestCase("SH")]
+        public void TestValidStepperMotorHaltResponse(string deviceResponse) {
+            _ = new StepperMotorHaltResponse { DeviceResponse = deviceResponse };
+        }
+
+        [Test]
+        [TestCase("XXX")]
+        [TestCase("")]
+        [TestCase(null)]
+        public void TestInvalidStepperMotorHaltResponse(string deviceResponse) {
+            Assert.That(() => new StepperMotorHaltResponse { DeviceResponse = deviceResponse }, Throws.TypeOf<InvalidDeviceResponseException>());
+        }
+
+        [Test]
+        [TestCase("SR:1", false)]
+        [TestCase("SR:0", true)]
+        public void TestValidStepperMotorDirectionResponse(string deviceResponse, bool isClockwise) {
             var sut = new StepperMotorDirectionResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.DirectionClockwise, Is.EqualTo(isClockwise));
         }
 
         [Test]
-        [TestCase("SC:0", true, 0)]
-        [TestCase("SC:4500000", true, 4500000)]
-        [TestCase("SC:-43000000", true, -43000000)]
-        [TestCase("XXX", false)]
-        [TestCase("", false)]
-        [TestCase(null, false)]
-        public void TestStepperMotorSetCurrentPositionResponse(string deviceResponse, bool valid, int position = 0) {
+        [TestCase("SR:X")]
+        [TestCase("XXX")]
+        [TestCase("")]
+        [TestCase(null)]
+        public void TestInvalidStepperMotorDirectionResponse(string deviceResponse) {
+            Assert.That(() => new StepperMotorDirectionResponse { DeviceResponse = deviceResponse }, Throws.TypeOf<InvalidDeviceResponseException>());
+        }
+
+        [Test]
+        [TestCase("SC:0", 0)]
+        [TestCase("SC:4500000", 4500000)]
+        [TestCase("SC:-43000000", -43000000)]
+        public void TestValidStepperMotorSetCurrentPositionResponse(string deviceResponse, int position) {
             var sut = new StepperMotorSetCurrentPositionResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.Position, Is.EqualTo(position));
         }
 
         [Test]
-        [TestCase("SB:0", true, 0)]
-        [TestCase("SB:4500000", true, 4500000)]
-        [TestCase("SB:-43000000", true, -43000000)]
-        [TestCase("XXX", false)]
-        [TestCase("", false)]
-        [TestCase(null, false)]
-        public void TestStepperMotorSetBacklashStepsResponse(string deviceResponse, bool valid, int steps = 0) {
+        [TestCase("XXX")]
+        [TestCase("")]
+        [TestCase(null)]
+        public void TestInvalidStepperMotorSetCurrentPositionResponse(string deviceResponse) {
+            Assert.That(() => new StepperMotorSetCurrentPositionResponse { DeviceResponse = deviceResponse }, Throws.TypeOf<InvalidDeviceResponseException>());
+        }
+
+        [Test]
+        [TestCase("SB:0", 0)]
+        [TestCase("SB:4500000", 4500000)]
+        [TestCase("SB:-43000000", -43000000)]
+        public void TestValidStepperMotorSetBacklashStepsResponse(string deviceResponse, int steps) {
             var sut = new StepperMotorSetBacklashStepsResponse { DeviceResponse = deviceResponse };
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
-            if (!sut.IsValid) return;
             Assert.That(sut.Steps, Is.EqualTo(steps));
+        }
+
+        [Test]
+        [TestCase("XXX")]
+        [TestCase("")]
+        [TestCase(null)]
+        public void TestInvalidStepperMotorSetBacklashStepsResponse(string deviceResponse) {
+            Assert.That(() => new StepperMotorSetBacklashStepsResponse { DeviceResponse = deviceResponse }, Throws.TypeOf<InvalidDeviceResponseException>());
         }
     }
 }

@@ -6,6 +6,7 @@ using NINA.Utility.SwitchSDKs.PegasusAstro;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using NINA.Utility.SerialCommunication;
 
 namespace NINA.Model.MyWeatherData {
 
@@ -17,6 +18,19 @@ namespace NINA.Model.MyWeatherData {
         public UltimatePowerboxV2(IProfileService profileService) {
             _profileService = profileService;
             PortName = profileService?.ActiveProfile?.SwitchSettings?.Upbv2PortName ?? AUTO;
+        }
+
+        private void LogAndNotify(ICommand command, InvalidDeviceResponseException ex) {
+            Logger.Error($"Invalid response from Ultimate Powerbox V2 on port {PortName}. " +
+                         $"Command was: {command} Response was: {ex.Message}.");
+            Notification.ShowError(Loc.Instance["LblUPBV2InvalidResponse"]);
+        }
+
+        private void HandlePortClosed(ICommand command, SerialPortClosedException ex) {
+            Logger.Error($"Serial port was closed. Command was: {command} Exception: {ex.InnerException}.");
+            Notification.ShowError(Loc.Instance["LblUPBV2InvalidResponse"]);
+            Disconnect();
+            RaiseAllPropertiesChanged();
         }
 
         public string PortName {
@@ -57,24 +71,31 @@ namespace NINA.Model.MyWeatherData {
         public async Task<bool> Connect(CancellationToken token) {
             if (!Sdk.InitializeSerialPort(PortName, this)) return false;
             if (Connected) return true;
-            return await Task.Run(() => {
+            return await Task.Run(async () => {
+                var statusCommand = new StatusCommand();
                 try {
-                    var command = new FirmwareVersionCommand();
-                    var response = Sdk.SendCommand<FirmwareVersionResponse>(command);
-                    if (!response.IsValid) {
-                        Logger.Error($"Invalid response from Ultimate Powerbox V2 on port {PortName}. " +
-                                     $"Command was: {command} Response was: {response}.");
-                        Notification.ShowError(Loc.Instance["LblUPBV2InvalidResponse"]);
-                        Connected = false;
-                        return Connected;
-                    }
-
-                    Description =
-                        $"Ultimate Powerbox V2 on port {PortName}. Firmware version: {response.FirmwareVersion}";
+                    _ = await Sdk.SendCommand<StatusResponse>(statusCommand);
                     Connected = true;
-                } catch (Exception ex) {
-                    Logger.Error(ex);
+                    Description = $"Ultimate Powerbox V2 on port {PortName}. Firmware version: ";
+                } catch (InvalidDeviceResponseException ex) {
+                    LogAndNotify(statusCommand, ex);
+                    Sdk.Dispose(this);
                     Connected = false;
+                } catch (SerialPortClosedException ex) {
+                    HandlePortClosed(statusCommand, ex);
+                    Connected = false;
+                }
+                if (!Connected) return false;
+
+                var fwCommand = new FirmwareVersionCommand();
+                try {
+                    var response = await Sdk.SendCommand<FirmwareVersionResponse>(fwCommand);
+                    Description += $"{response.FirmwareVersion}";
+                } catch (InvalidDeviceResponseException ex) {
+                    LogAndNotify(fwCommand, ex);
+                    Description += Loc.Instance["LblNoValidFirmwareVersion"];
+                } catch (SerialPortClosedException ex) {
+                    HandlePortClosed(fwCommand, ex);
                 }
 
                 RaiseAllPropertiesChanged();
@@ -99,34 +120,35 @@ namespace NINA.Model.MyWeatherData {
 
         public double CloudCover => double.NaN;
 
-        private StatusResponse GetStatus() {
-            try {
-                var command = new StatusCommand();
-                var response = Sdk.SendCommand<StatusResponse>(command);
-                if (response.IsValid) return response;
-                Logger.Error($"Invalid response from Ultimate Powerbox V2 on port {PortName}. " +
-                             $"Command was: {command} Response was: {response}.");
-                Notification.ShowError(Loc.Instance["LblUPBV2InvalidResponse"]);
-                return null;
-            } catch (Exception ex) {
-                Logger.Error(ex);
-                return null;
-            }
-        }
-
         public double DewPoint {
             get {
                 if (!Connected) return double.NaN;
-                var status = GetStatus();
-                return status?.DewPoint ?? double.NaN;
+                var command = new StatusCommand();
+                try {
+                    var response = Sdk.SendCommand<StatusResponse>(command).Result;
+                    return response.DewPoint;
+                } catch (InvalidDeviceResponseException ex) {
+                    LogAndNotify(command, ex);
+                } catch (SerialPortClosedException ex) {
+                    HandlePortClosed(command, ex);
+                }
+                return double.NaN;
             }
         }
 
         public double Humidity {
             get {
                 if (!Connected) return double.NaN;
-                var status = GetStatus();
-                return status?.Humidity ?? double.NaN;
+                var command = new StatusCommand();
+                try {
+                    var response = Sdk.SendCommand<StatusResponse>(command).Result;
+                    return response.Humidity;
+                } catch (InvalidDeviceResponseException ex) {
+                    LogAndNotify(command, ex);
+                } catch (SerialPortClosedException ex) {
+                    HandlePortClosed(command, ex);
+                }
+                return double.NaN;
             }
         }
 
@@ -140,8 +162,16 @@ namespace NINA.Model.MyWeatherData {
         public double Temperature {
             get {
                 if (!Connected) return double.NaN;
-                var status = GetStatus();
-                return status?.Temperature ?? double.NaN;
+                var command = new StatusCommand();
+                try {
+                    var response = Sdk.SendCommand<StatusResponse>(command).Result;
+                    return response.Temperature;
+                } catch (InvalidDeviceResponseException ex) {
+                    LogAndNotify(command, ex);
+                } catch (SerialPortClosedException ex) {
+                    HandlePortClosed(command, ex);
+                }
+                return double.NaN;
             }
         }
 

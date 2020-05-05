@@ -40,183 +40,183 @@ namespace NINATest.FlatDevice {
 
     [TestFixture]
     public class FlatDeviceVMTest {
-        private FlatDeviceVM Sut { get; set; }
-        private Mock<IProfileService> MockProfileService { get; set; }
-        private Mock<IFlatDeviceMediator> MockFlatDeviceMediator { get; set; }
-        private Mock<IApplicationStatusMediator> MockApplicationStatusMediator { get; set; }
-        private Mock<IFlatDevice> MockFlatDevice { get; set; }
-        private Mock<IFlatDeviceChooserVM> MockFlatDeviceChooserVM { get; set; }
-        private Mock<IFilterWheelMediator> MockFilterWheelMediator { get; set; }
+        private FlatDeviceVM _sut;
+        private Mock<IProfileService> _mockProfileService;
+        private Mock<IFlatDeviceMediator> _mockFlatDeviceMediator;
+        private Mock<IApplicationStatusMediator> _mockApplicationStatusMediator;
+        private Mock<IFlatDevice> _mockFlatDevice;
+        private Mock<IFlatDeviceChooserVM> _mockFlatDeviceChooserVM;
+        private Mock<IFilterWheelMediator> _mockFilterWheelMediator;
 
         [OneTimeSetUp]
         public void OneTimeSetUp() {
-            MockProfileService = new Mock<IProfileService>();
-            MockFlatDeviceMediator = new Mock<IFlatDeviceMediator>();
-            MockFilterWheelMediator = new Mock<IFilterWheelMediator>();
-            MockApplicationStatusMediator = new Mock<IApplicationStatusMediator>();
-            MockFlatDevice = new Mock<IFlatDevice>();
-            MockFlatDeviceChooserVM = new Mock<IFlatDeviceChooserVM>();
+            _mockProfileService = new Mock<IProfileService>();
+            _mockFlatDeviceMediator = new Mock<IFlatDeviceMediator>();
+            _mockFilterWheelMediator = new Mock<IFilterWheelMediator>();
+            _mockApplicationStatusMediator = new Mock<IApplicationStatusMediator>();
+            _mockFlatDevice = new Mock<IFlatDevice>();
+            _mockFlatDeviceChooserVM = new Mock<IFlatDeviceChooserVM>();
         }
 
         [SetUp]
         public void Init() {
-            MockProfileService.Reset();
-            MockFlatDeviceMediator.Reset();
-            MockFilterWheelMediator.Reset();
-            MockApplicationStatusMediator.Reset();
-            MockFlatDevice.Reset();
-            MockFlatDeviceChooserVM.Reset();
+            _mockProfileService.Reset();
+            _mockFlatDeviceMediator.Reset();
+            _mockFilterWheelMediator.Reset();
+            _mockApplicationStatusMediator.Reset();
+            _mockFlatDevice.Reset();
+            _mockFlatDeviceChooserVM.Reset();
 
-            MockProfileService.Setup(m => m.ActiveProfile.ApplicationSettings.DevicePollingInterval).Returns(200);
-            MockProfileService.Setup(m => m.ActiveProfile.FlatDeviceSettings.Id).Returns("mockDevice");
-            Sut = new FlatDeviceVM(MockProfileService.Object, MockFlatDeviceMediator.Object,
-                MockApplicationStatusMediator.Object, MockFilterWheelMediator.Object);
+            _mockProfileService.Setup(m => m.ActiveProfile.ApplicationSettings.DevicePollingInterval).Returns(200);
+            _mockProfileService.Setup(m => m.ActiveProfile.FlatDeviceSettings.Id).Returns("mockDevice");
+            _sut = new FlatDeviceVM(_mockProfileService.Object, _mockFlatDeviceMediator.Object,
+                _mockApplicationStatusMediator.Object, _mockFilterWheelMediator.Object);
         }
 
         [Test]
         public void TestFilterWheelMediatorRegistered() {
-            MockFilterWheelMediator.Verify(m => m.RegisterConsumer(It.IsAny<FlatDeviceVM>()), Times.Once);
+            _mockFilterWheelMediator.Verify(m => m.RegisterConsumer(It.IsAny<FlatDeviceVM>()), Times.Once);
         }
 
         [Test]
         public async Task TestOpenCoverNullFlatDevice() {
-            MockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, null);
-            Sut.FlatDeviceChooserVM = MockFlatDeviceChooserVM.Object;
-            Assert.That(await Sut.OpenCover(), Is.False);
+            _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, null);
+            _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
+            Assert.That(await _sut.OpenCover(), Is.False);
         }
 
         [Test]
         public async Task TestOpenCoverNotConnectedFlatDevice() {
-            MockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, MockFlatDevice.Object);
-            MockFlatDevice.Setup(m => m.Connected).Returns(false);
-            Sut.FlatDeviceChooserVM = MockFlatDeviceChooserVM.Object;
-            Assert.That(await Sut.OpenCover(), Is.False);
+            _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, _mockFlatDevice.Object);
+            _mockFlatDevice.Setup(m => m.Connected).Returns(false);
+            _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
+            Assert.That(await _sut.OpenCover(), Is.False);
         }
 
         [Test]
         public async Task TestOpenCoverOpenCloseNotSupported() {
-            MockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, MockFlatDevice.Object);
-            MockFlatDevice.Setup(m => m.Connected).Returns(true);
-            MockFlatDevice.Setup(m => m.SupportsOpenClose).Returns(false);
-            Sut.FlatDeviceChooserVM = MockFlatDeviceChooserVM.Object;
-            Assert.That(await Sut.OpenCover(), Is.False);
+            _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, _mockFlatDevice.Object);
+            _mockFlatDevice.Setup(m => m.Connected).Returns(true);
+            _mockFlatDevice.Setup(m => m.SupportsOpenClose).Returns(false);
+            _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
+            Assert.That(await _sut.OpenCover(), Is.False);
         }
 
         [Test]
         [TestCase(true)]
         [TestCase(false)]
         public async Task TestOpenCoverSuccess(bool expected) {
-            MockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, MockFlatDevice.Object);
-            MockFlatDevice.Setup(m => m.Id).Returns("Something");
-            MockFlatDevice.Setup(m => m.Connected).Returns(true);
-            MockFlatDevice.Setup(m => m.SupportsOpenClose).Returns(true);
-            MockFlatDevice.Setup(m => m.Open(It.IsAny<CancellationToken>())).Returns(Task.FromResult(expected));
-            Sut.FlatDeviceChooserVM = MockFlatDeviceChooserVM.Object;
-            Assert.That(await Sut.OpenCover(), Is.EqualTo(expected));
+            _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, _mockFlatDevice.Object);
+            _mockFlatDevice.Setup(m => m.Id).Returns("Something");
+            _mockFlatDevice.Setup(m => m.Connected).Returns(true);
+            _mockFlatDevice.Setup(m => m.SupportsOpenClose).Returns(true);
+            _mockFlatDevice.Setup(m => m.Open(It.IsAny<CancellationToken>(), It.IsAny<int>())).Returns(Task.FromResult(expected));
+            _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
+            Assert.That(await _sut.OpenCover(), Is.EqualTo(expected));
         }
 
         [Test]
         public async Task TestOpenCoverCancelled() {
-            MockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, MockFlatDevice.Object);
-            MockFlatDevice.Setup(m => m.Id).Returns("Something");
-            MockFlatDevice.Setup(m => m.Connected).Returns(true);
-            MockFlatDevice.Setup(m => m.SupportsOpenClose).Returns(true);
-            MockFlatDevice.Setup(m => m.Open(It.IsAny<CancellationToken>()))
-                .Callback((CancellationToken ct) => throw new OperationCanceledException());
-            Sut.FlatDeviceChooserVM = MockFlatDeviceChooserVM.Object;
-            Assert.That(await Sut.OpenCover(), Is.False);
+            _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, _mockFlatDevice.Object);
+            _mockFlatDevice.Setup(m => m.Id).Returns("Something");
+            _mockFlatDevice.Setup(m => m.Connected).Returns(true);
+            _mockFlatDevice.Setup(m => m.SupportsOpenClose).Returns(true);
+            _mockFlatDevice.Setup(m => m.Open(It.IsAny<CancellationToken>(), It.IsAny<int>()))
+                .Callback((CancellationToken ct, int delay) => throw new OperationCanceledException());
+            _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
+            Assert.That(await _sut.OpenCover(), Is.False);
         }
 
         [Test]
         public async Task TestCloseCoverNullFlatDevice() {
-            MockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, null);
-            Sut.FlatDeviceChooserVM = MockFlatDeviceChooserVM.Object;
-            Assert.That(await Sut.CloseCover(), Is.False);
+            _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, null);
+            _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
+            Assert.That(await _sut.CloseCover(), Is.False);
         }
 
         [Test]
         public async Task TestCloseCoverNotConnectedFlatDevice() {
-            MockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, MockFlatDevice.Object);
-            MockFlatDevice.Setup(m => m.Connected).Returns(false);
-            Sut.FlatDeviceChooserVM = MockFlatDeviceChooserVM.Object;
-            Assert.That(await Sut.CloseCover(), Is.False);
+            _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, _mockFlatDevice.Object);
+            _mockFlatDevice.Setup(m => m.Connected).Returns(false);
+            _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
+            Assert.That(await _sut.CloseCover(), Is.False);
         }
 
         [Test]
         public async Task TestCloseCoverOpenCloseNotSupported() {
-            MockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, MockFlatDevice.Object);
-            MockFlatDevice.Setup(m => m.Connected).Returns(true);
-            MockFlatDevice.Setup(m => m.SupportsOpenClose).Returns(false);
-            Sut.FlatDeviceChooserVM = MockFlatDeviceChooserVM.Object;
-            Assert.That(await Sut.CloseCover(), Is.False);
+            _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, _mockFlatDevice.Object);
+            _mockFlatDevice.Setup(m => m.Connected).Returns(true);
+            _mockFlatDevice.Setup(m => m.SupportsOpenClose).Returns(false);
+            _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
+            Assert.That(await _sut.CloseCover(), Is.False);
         }
 
         [Test]
         [TestCase(true)]
         [TestCase(false)]
         public async Task TestCloseCoverSuccess(bool expected) {
-            MockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, MockFlatDevice.Object);
-            MockFlatDevice.Setup(m => m.Id).Returns("Something");
-            MockFlatDevice.Setup(m => m.Connected).Returns(true);
-            MockFlatDevice.Setup(m => m.SupportsOpenClose).Returns(true);
-            MockFlatDevice.Setup(m => m.Close(It.IsAny<CancellationToken>())).Returns(Task.FromResult(expected));
-            Sut.FlatDeviceChooserVM = MockFlatDeviceChooserVM.Object;
-            Assert.That(await Sut.CloseCover(), Is.EqualTo(expected));
+            _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, _mockFlatDevice.Object);
+            _mockFlatDevice.Setup(m => m.Id).Returns("Something");
+            _mockFlatDevice.Setup(m => m.Connected).Returns(true);
+            _mockFlatDevice.Setup(m => m.SupportsOpenClose).Returns(true);
+            _mockFlatDevice.Setup(m => m.Close(It.IsAny<CancellationToken>(), It.IsAny<int>())).Returns(Task.FromResult(expected));
+            _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
+            Assert.That(await _sut.CloseCover(), Is.EqualTo(expected));
         }
 
         [Test]
         public async Task TestCloseCoverCancelled() {
-            MockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, MockFlatDevice.Object);
-            MockFlatDevice.Setup(m => m.Id).Returns("Something");
-            MockFlatDevice.Setup(m => m.Connected).Returns(true);
-            MockFlatDevice.Setup(m => m.SupportsOpenClose).Returns(true);
-            MockFlatDevice.Setup(m => m.Close(It.IsAny<CancellationToken>()))
-                .Callback((CancellationToken ct) => throw new OperationCanceledException());
-            Sut.FlatDeviceChooserVM = MockFlatDeviceChooserVM.Object;
-            Assert.That(await Sut.CloseCover(), Is.False);
+            _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, _mockFlatDevice.Object);
+            _mockFlatDevice.Setup(m => m.Id).Returns("Something");
+            _mockFlatDevice.Setup(m => m.Connected).Returns(true);
+            _mockFlatDevice.Setup(m => m.SupportsOpenClose).Returns(true);
+            _mockFlatDevice.Setup(m => m.Close(It.IsAny<CancellationToken>(), It.IsAny<int>()))
+                .Callback((CancellationToken ct, int delay) => throw new OperationCanceledException());
+            _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
+            Assert.That(await _sut.CloseCover(), Is.False);
         }
 
         [Test]
         public async Task TestConnectNullDevice() {
-            MockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, null);
-            Sut.FlatDeviceChooserVM = MockFlatDeviceChooserVM.Object;
-            Assert.That(await Sut.Connect(), Is.False);
+            _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, null);
+            _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
+            Assert.That(await _sut.Connect(), Is.False);
         }
 
         [Test]
         public async Task TestConnectDummyDevice() {
-            MockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, MockFlatDevice.Object);
-            MockFlatDevice.Setup(m => m.Id).Returns("No_Device");
-            Sut.FlatDeviceChooserVM = MockFlatDeviceChooserVM.Object;
-            Assert.That(await Sut.Connect(), Is.False);
+            _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, _mockFlatDevice.Object);
+            _mockFlatDevice.Setup(m => m.Id).Returns("No_Device");
+            _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
+            Assert.That(await _sut.Connect(), Is.False);
         }
 
         [Test]
         [TestCase(true)]
         [TestCase(false)]
         public async Task TestConnectSuccess(bool expected) {
-            MockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, MockFlatDevice.Object);
-            MockFlatDevice.Setup(m => m.Id).Returns("Something");
-            MockFlatDevice.Setup(m => m.Connect(It.IsAny<CancellationToken>())).Returns(Task.FromResult(expected));
-            Sut.FlatDeviceChooserVM = MockFlatDeviceChooserVM.Object;
-            Assert.That(await Sut.Connect(), Is.EqualTo(expected));
+            _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, _mockFlatDevice.Object);
+            _mockFlatDevice.Setup(m => m.Id).Returns("Something");
+            _mockFlatDevice.Setup(m => m.Connect(It.IsAny<CancellationToken>())).Returns(Task.FromResult(expected));
+            _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
+            Assert.That(await _sut.Connect(), Is.EqualTo(expected));
         }
 
         [Test]
         public async Task TestConnectCancelled() {
-            MockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, MockFlatDevice.Object);
-            MockFlatDevice.Setup(m => m.Id).Returns("Something");
-            MockFlatDevice.Setup(m => m.Connect(It.IsAny<CancellationToken>()))
+            _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, _mockFlatDevice.Object);
+            _mockFlatDevice.Setup(m => m.Id).Returns("Something");
+            _mockFlatDevice.Setup(m => m.Connect(It.IsAny<CancellationToken>()))
                 .Callback((CancellationToken ct) => throw new OperationCanceledException());
-            Sut.FlatDeviceChooserVM = MockFlatDeviceChooserVM.Object;
-            Assert.That(await Sut.Connect(), Is.False);
+            _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
+            Assert.That(await _sut.Connect(), Is.False);
         }
 
         [Test]
         public void TestWizardTrainedValuesWithoutFilters() {
-            MockProfileService.Raise(m => m.ActiveProfile.FlatDeviceSettings.PropertyChanged += null,
+            _mockProfileService.Raise(m => m.ActiveProfile.FlatDeviceSettings.PropertyChanged += null,
                 new PropertyChangedEventArgs("FilterSettings"));
-            var result = Sut.WizardTrainedValues;
+            var result = _sut.WizardTrainedValues;
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Columns.Count, Is.EqualTo(1));
             Assert.That(result.Rows.Count, Is.EqualTo(1));
@@ -226,23 +226,23 @@ namespace NINATest.FlatDevice {
         [Test]
         public void TestWizardTrainedValuesWithFilters() {
             var returnValue = new FlatDeviceFilterSettingsValue(0.7, 0.5);
-            int gainValue = 30;
+            const int gainValue = 30;
             const string filterName = "Blue";
 
-            MockProfileService
+            _mockProfileService
                 .Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(
                     It.IsAny<FlatDeviceFilterSettingsKey>())).Returns(returnValue);
-            MockProfileService
+            _mockProfileService
                 .Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoBinnings())
                 .Returns(new List<BinningMode> { new BinningMode(1, 1) });
-            MockProfileService
+            _mockProfileService
                 .Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoGains())
                 .Returns(new List<int> { gainValue });
-            MockFilterWheelMediator.Setup(m => m.GetAllFilters())
+            _mockFilterWheelMediator.Setup(m => m.GetAllFilters())
                 .Returns(new List<FilterInfo>() { new FilterInfo() { Name = filterName } });
-            MockProfileService.Raise(m => m.ActiveProfile.FlatDeviceSettings.PropertyChanged += null,
+            _mockProfileService.Raise(m => m.ActiveProfile.FlatDeviceSettings.PropertyChanged += null,
                 new PropertyChangedEventArgs("FilterSettings"));
-            var result = Sut.WizardTrainedValues;
+            var result = _sut.WizardTrainedValues;
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Columns.Count, Is.EqualTo(2));
             Assert.That(result.Rows.Count, Is.EqualTo(1));
@@ -254,8 +254,8 @@ namespace NINATest.FlatDevice {
         [Test]
         public void TestWizardTrainedValuesMustNotChangeWithNewSelectedFilter() {
             var info = new FilterWheelInfo { SelectedFilter = new FilterInfo { Name = "Clear" } };
-            Sut.UpdateDeviceInfo(info);
-            var result1 = Sut.WizardTrainedValues;
+            _sut.UpdateDeviceInfo(info);
+            var result1 = _sut.WizardTrainedValues;
 
             Assert.That(result1, Is.Not.Null);
             Assert.That(result1.Columns.Count, Is.EqualTo(1));
@@ -263,16 +263,16 @@ namespace NINATest.FlatDevice {
             Assert.That(result1.Rows[0][0], Is.EqualTo(Loc.Instance["LblNoFilterwheel"]));
 
             info.SelectedFilter = new FilterInfo { Name = "Red" };
-            Sut.UpdateDeviceInfo(info);
-            var result2 = Sut.WizardTrainedValues;
+            _sut.UpdateDeviceInfo(info);
+            var result2 = _sut.WizardTrainedValues;
             Assert.That(result1, Is.EqualTo(result2));
         }
 
         [Test]
         public void TestWizardTrainedValuesMustChangeWithNewFilterWheel() {
             var info = new FilterWheelInfo { SelectedFilter = new FilterInfo { Name = "Clear" } };
-            Sut.UpdateDeviceInfo(info);
-            var result1 = Sut.WizardTrainedValues;
+            _sut.UpdateDeviceInfo(info);
+            var result1 = _sut.WizardTrainedValues;
 
             Assert.That(result1, Is.Not.Null);
             Assert.That(result1.Columns.Count, Is.EqualTo(1));
@@ -280,18 +280,18 @@ namespace NINATest.FlatDevice {
             Assert.That(result1.Rows[0][0], Is.EqualTo(Loc.Instance["LblNoFilterwheel"]));
 
             info = new FilterWheelInfo { SelectedFilter = new FilterInfo { Name = "Clear" } };
-            Sut.UpdateDeviceInfo(info);
-            var result2 = Sut.WizardTrainedValues;
+            _sut.UpdateDeviceInfo(info);
+            var result2 = _sut.WizardTrainedValues;
             Assert.That(result1, Is.Not.EqualTo(result2));
         }
 
         [Test]
         public void TestWizardTrainedValuesForCamerasWithoutBinning() {
-            MockProfileService.Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoBinnings())
+            _mockProfileService.Setup(m => m.ActiveProfile.FlatDeviceSettings.GetBrightnessInfoBinnings())
                 .Returns((IEnumerable<BinningMode>)new List<BinningMode> { null });
             var info = new FilterWheelInfo { SelectedFilter = new FilterInfo { Name = "Clear" } };
-            Sut.UpdateDeviceInfo(info);
-            var result1 = Sut.WizardTrainedValues;
+            _sut.UpdateDeviceInfo(info);
+            var result1 = _sut.WizardTrainedValues;
 
             Assert.That(result1, Is.Not.Null);
             Assert.That(result1.Columns.Count, Is.EqualTo(1));
@@ -301,59 +301,59 @@ namespace NINATest.FlatDevice {
 
         [Test]
         public void TestSetBrightnessNullFlatDevice() {
-            MockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, null);
-            Sut.FlatDeviceChooserVM = MockFlatDeviceChooserVM.Object;
-            Sut.SetBrightness(1.0);
-            Assert.That(Sut.Brightness, Is.EqualTo(0d));
-            MockFlatDevice.Verify(m => m.Brightness, Times.Never);
+            _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, null);
+            _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
+            _sut.SetBrightness(1.0);
+            Assert.That(_sut.Brightness, Is.EqualTo(0d));
+            _mockFlatDevice.Verify(m => m.Brightness, Times.Never);
         }
 
         [Test]
         public async Task TestSetBrightnessConnectedFlatDeviceAsync() {
-            MockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, MockFlatDevice.Object);
-            MockFlatDevice.Setup(m => m.Id).Returns("Something");
-            MockFlatDevice.Setup(m => m.Connected).Returns(true);
-            MockFlatDevice.Setup(m => m.Connect(It.IsAny<CancellationToken>())).Returns(Task.FromResult(true));
-            Sut.FlatDeviceChooserVM = MockFlatDeviceChooserVM.Object;
-            await Sut.Connect();
-            Sut.SetBrightness(1.0);
-            Assert.That(Sut.Brightness, Is.EqualTo(0d));
-            MockFlatDevice.VerifySet(m => m.Brightness = 1d, Times.Once);
+            _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, _mockFlatDevice.Object);
+            _mockFlatDevice.Setup(m => m.Id).Returns("Something");
+            _mockFlatDevice.Setup(m => m.Connected).Returns(true);
+            _mockFlatDevice.Setup(m => m.Connect(It.IsAny<CancellationToken>())).Returns(Task.FromResult(true));
+            _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
+            await _sut.Connect();
+            _sut.SetBrightness(1.0);
+            Assert.That(_sut.Brightness, Is.EqualTo(0d));
+            _mockFlatDevice.VerifySet(m => m.Brightness = 1d, Times.Once);
         }
 
         [Test]
         public void TestToggleLightNullFlatDevice() {
-            MockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, null);
-            Sut.FlatDeviceChooserVM = MockFlatDeviceChooserVM.Object;
-            Sut.ToggleLight(true);
-            Assert.That(Sut.LightOn, Is.EqualTo(false));
-            MockFlatDevice.Verify(m => m.LightOn, Times.Never);
+            _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, null);
+            _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
+            _sut.ToggleLight(true);
+            Assert.That(_sut.LightOn, Is.EqualTo(false));
+            _mockFlatDevice.Verify(m => m.LightOn, Times.Never);
         }
 
         [Test]
         [TestCase(true)]
         [TestCase(false)]
         public async Task TestToggleLightConnected(bool expected) {
-            MockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, MockFlatDevice.Object);
-            MockFlatDevice.Setup(m => m.Id).Returns("Something");
-            MockFlatDevice.Setup(m => m.Connected).Returns(true);
-            MockFlatDevice.Setup(m => m.Connect(It.IsAny<CancellationToken>())).Returns(Task.FromResult(true));
-            Sut.FlatDeviceChooserVM = MockFlatDeviceChooserVM.Object;
-            await Sut.Connect();
-            Sut.ToggleLight(expected);
-            MockFlatDevice.VerifySet(m => m.LightOn = expected, Times.Once);
+            _mockFlatDeviceChooserVM.SetupProperty(m => m.SelectedDevice, _mockFlatDevice.Object);
+            _mockFlatDevice.Setup(m => m.Id).Returns("Something");
+            _mockFlatDevice.Setup(m => m.Connected).Returns(true);
+            _mockFlatDevice.Setup(m => m.Connect(It.IsAny<CancellationToken>())).Returns(Task.FromResult(true));
+            _sut.FlatDeviceChooserVM = _mockFlatDeviceChooserVM.Object;
+            await _sut.Connect();
+            _sut.ToggleLight(expected);
+            _mockFlatDevice.VerifySet(m => m.LightOn = expected, Times.Once);
         }
 
         [Test]
         public void TestClearWizardTrainedValues() {
-            Sut.ClearValuesCommand.Execute(new object());
-            MockProfileService.Verify(m => m.ActiveProfile.FlatDeviceSettings.ClearBrightnessInfo(), Times.Once);
+            _sut.ClearValuesCommand.Execute(new object());
+            _mockProfileService.Verify(m => m.ActiveProfile.FlatDeviceSettings.ClearBrightnessInfo(), Times.Once);
         }
 
         [Test]
         public void TestDispose() {
-            Sut.Dispose();
-            MockFilterWheelMediator.Verify(m => m.RemoveConsumer(It.IsAny<FlatDeviceVM>()), Times.Once);
+            _sut.Dispose();
+            _mockFilterWheelMediator.Verify(m => m.RemoveConsumer(It.IsAny<FlatDeviceVM>()), Times.Once);
         }
     }
 }

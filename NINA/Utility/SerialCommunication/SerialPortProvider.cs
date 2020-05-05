@@ -60,7 +60,8 @@ namespace NINA.Utility.SerialCommunication {
         public ISerialPort GetSerialPort(string portName, int baudRate, Parity parity, int dataBits, StopBits stopBits,
             Handshake handShake, bool dtrEnable, string newLine, int readTimeout, int writeTimeout) {
             if (string.IsNullOrEmpty(portName)) return null;
-            var dtr = dtrEnable || dtrEnableValue[portName];
+            dtrEnableValue.TryGetValue(portName, out var dtrEnableForLeonardo);
+            var dtr = dtrEnable || dtrEnableForLeonardo;
             return new SerialPortWrapper {
                 PortName = portName,
                 BaudRate = baudRate,

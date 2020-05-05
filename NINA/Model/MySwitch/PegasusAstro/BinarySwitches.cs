@@ -22,6 +22,7 @@
 #endregion "copyright"
 
 using NINA.Utility;
+using NINA.Utility.SerialCommunication;
 using NINA.Utility.SwitchSDKs.PegasusAstro;
 using System;
 using System.Threading.Tasks;
@@ -68,28 +69,36 @@ namespace NINA.Model.MySwitch.PegasusAstro {
         }
 
         public override async Task<bool> Poll() {
-            return await Task.Run(() => {
+            return await Task.Run(async () => {
+                var command = new StatusCommand();
                 try {
-                    var response = Sdk.SendCommand<StatusResponse>(new StatusCommand());
+                    var response = await Sdk.SendCommand<StatusResponse>(command);
                     Value = response.PowerPortOn[Id] ? 1d : 0d;
                     CurrentAmps = response.PortPowerFlow[Id];
                     ExcessCurrent = response.PortOverCurrent[Id];
                     return true;
-                } catch (Exception ex) {
-                    Logger.Error(ex);
+                } catch (InvalidDeviceResponseException ex) {
+                    Logger.Error($"Invalid response from Ultimate Powerbox V2. " +
+                                 $"Command was: {command} Response was: {ex.Message}.");
+                    return false;
+                } catch (SerialPortClosedException ex) {
+                    Logger.Error($"Serial port was closed. Command was: {command} Exception: {ex.InnerException}.");
                     return false;
                 }
             });
         }
 
         public override Task SetValue() {
-            return Task.Run(() => {
+            return Task.Run(async () => {
+                var command = new SetPowerCommand { SwitchNumber = (short)(Id + 1), On = Math.Abs(TargetValue - 1d) < Tolerance };
                 try {
                     Logger.Trace($"Trying to set value {TargetValue}, for Power port {Id}");
-                    var command = new SetPowerCommand { SwitchNumber = (short)(Id + 1), On = Math.Abs(TargetValue - 1d) < Tolerance };
-                    Sdk.SendCommand<SetPowerResponse>(command);
-                } catch (Exception ex) {
-                    Logger.Error(ex);
+                    await Sdk.SendCommand<SetPowerResponse>(command);
+                } catch (InvalidDeviceResponseException ex) {
+                    Logger.Error($"Invalid response from Ultimate Powerbox V2. " +
+                                 $"Command was: {command} Response was: {ex.Message}.");
+                } catch (SerialPortClosedException ex) {
+                    Logger.Error($"Serial port was closed. Command was: {command} Exception: {ex.InnerException}.");
                 }
             });
         }
@@ -102,26 +111,34 @@ namespace NINA.Model.MySwitch.PegasusAstro {
         }
 
         public override async Task<bool> Poll() {
-            return await Task.Run(() => {
+            return await Task.Run(async () => {
+                var command = new StatusCommand();
                 try {
-                    var response = Sdk.SendCommand<StatusResponse>(new StatusCommand());
+                    var response = await Sdk.SendCommand<StatusResponse>(command);
                     Value = response.UsbPortOn[Id] ? 1d : 0d;
                     return true;
-                } catch (Exception ex) {
-                    Logger.Error(ex);
+                } catch (InvalidDeviceResponseException ex) {
+                    Logger.Error($"Invalid response from Ultimate Powerbox V2. " +
+                                 $"Command was: {command} Response was: {ex.Message}.");
+                    return false;
+                } catch (SerialPortClosedException ex) {
+                    Logger.Error($"Serial port was closed. Command was: {command} Exception: {ex.InnerException}.");
                     return false;
                 }
             });
         }
 
         public override Task SetValue() {
-            return Task.Run(() => {
+            return Task.Run(async () => {
+                var command = new SetUsbPowerCommand { SwitchNumber = (short)(Id + 1), On = Math.Abs(TargetValue - 1d) < Tolerance };
                 try {
                     Logger.Trace($"Trying to set value {TargetValue}, for Power port {Id}");
-                    var command = new SetUsbPowerCommand { SwitchNumber = (short)(Id + 1), On = Math.Abs(TargetValue - 1d) < Tolerance };
-                    Sdk.SendCommand<SetUsbPowerResponse>(command);
-                } catch (Exception ex) {
-                    Logger.Error(ex);
+                    _ = await Sdk.SendCommand<SetUsbPowerResponse>(command);
+                } catch (InvalidDeviceResponseException ex) {
+                    Logger.Error($"Invalid response from Ultimate Powerbox V2. " +
+                                 $"Command was: {command} Response was: {ex.Message}.");
+                } catch (SerialPortClosedException ex) {
+                    Logger.Error($"Serial port was closed. Command was: {command} Exception: {ex.InnerException}.");
                 }
             });
         }

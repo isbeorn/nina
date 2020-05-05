@@ -27,12 +27,11 @@ namespace NINA.Utility.FlatDeviceSDKs.PegasusAstroSDK {
 
     public class StatusResponse : Response {
 
-        protected override bool ParseResponse(string response) {
-            IsValid &= base.ParseResponse(response);
-            if (IsValid && response.Equals("OK_FM")) return true;
-            IsValid = false;
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (response.Equals("OK_FM")) return;
             Logger.Debug($"Response should have been OK_FM, was:{response}");
-            return false;
+            throw new InvalidDeviceResponseException(response);
         }
     }
 
@@ -40,30 +39,30 @@ namespace NINA.Utility.FlatDeviceSDKs.PegasusAstroSDK {
         private double _firmwareVersion;
         public double FirmwareVersion => _firmwareVersion;
 
-        protected override bool ParseResponse(string response) {
-            IsValid &= base.ParseResponse(response);
-            if (!IsValid || !response.StartsWith("V:")) return false;
-            return ParseDouble(response.Substring(2), "firmware version", out _firmwareVersion);
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (!response.StartsWith("V:")) throw new InvalidDeviceResponseException(response);
+            if (!TryParseDouble(response.Substring(2), "firmware version", out _firmwareVersion)) throw new InvalidDeviceResponseException(response);
         }
     }
 
     public class OnOffResponse : Response {
 
-        protected override bool ParseResponse(string response) {
-            IsValid &= base.ParseResponse(response);
-            if (IsValid && response.StartsWith("E:")) return true;
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (response.StartsWith("E:")) return;
             Logger.Debug($"Response should have been E:{{0|1}}, was:{response}");
-            return false;
+            throw new InvalidDeviceResponseException(response);
         }
     }
 
     public class SetBrightnessResponse : Response {
 
-        protected override bool ParseResponse(string response) {
-            IsValid &= base.ParseResponse(response);
-            if (IsValid && response.StartsWith("L:")) return true;
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (response.StartsWith("L:")) return;
             Logger.Debug($"Response should have been L:nnn, was:{response}");
-            return false;
+            throw new InvalidDeviceResponseException(response);
         }
     }
 }

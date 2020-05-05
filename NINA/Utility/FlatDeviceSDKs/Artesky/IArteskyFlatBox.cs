@@ -23,13 +23,12 @@
 
 using NINA.Utility.SerialCommunication;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 
 namespace NINA.Utility.FlatDeviceSDKs.Artesky {
 
     public interface IArteskyFlatBox : ISerialSdk {
         ReadOnlyCollection<string> PortNames { get; }
 
-        Task<bool> InitializeSerialPort(string portName, object client);
+        bool InitializeSerialPort(string portName, object client);
     }
 }

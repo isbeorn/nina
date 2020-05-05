@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using System;
 using Moq;
 using NINA.Utility.SerialCommunication;
 using NINA.Utility.SwitchSDKs.PegasusAstro;
@@ -28,12 +29,12 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO.Ports;
+using System.Threading.Tasks;
 
 namespace NINATest.Switch.PegasusAstro {
 
     [TestFixture]
     internal class PegasusDeviceTest {
-        private Mock<ICommand> _mockCommand;
         private Mock<ISerialPort> _mockSerialPort;
         private Mock<ISerialPortProvider> _mockSerialPortProvider;
         private IPegasusDevice _sut;
@@ -82,23 +83,6 @@ namespace NINATest.Switch.PegasusAstro {
             }
 
             Assert.That(_sut.InitializeSerialPort(portName, this), Is.EqualTo(expected));
-        }
-
-        [Test]
-        [TestCase("P1:0\n", "P1:0", true)]
-        [TestCase("P1:0\n", null, false)]
-        public void TestSendCommand(string command, string response, bool valid) {
-            //do not use a cache-able response like status response for the test
-            _mockCommand = new Mock<ICommand>();
-            _mockCommand.Setup(m => m.CommandString).Returns(command);
-            _mockSerialPort.Setup(m => m.ReadLine()).Returns(response);
-            _mockSerialPort.Setup(m => m.PortName).Returns("COM3");
-            _sut.InitializeSerialPort("AUTO", this);
-
-            var result = _sut.SendCommand<SetPowerResponse>(_mockCommand.Object);
-
-            Assert.That(result, Is.TypeOf(typeof(SetPowerResponse)));
-            Assert.That(result.IsValid, Is.EqualTo(valid));
         }
 
         [Test]

@@ -28,23 +28,19 @@ namespace NINA.Utility.SerialCommunication {
     public abstract class Response {
         private string _deviceResponse;
 
-        protected Response() {
-            IsValid = true;
-        }
-
         public string DeviceResponse {
             protected get => _deviceResponse;
             set {
                 _deviceResponse = value;
-                IsValid = ParseResponse(value);
+                ParseResponse(value);
             }
         }
 
-        protected virtual bool ParseResponse(string response) {
-            return !string.IsNullOrEmpty(response);
+        protected virtual void ParseResponse(string response) {
+            if (!string.IsNullOrEmpty(response)) return;
+            Logger.Error("response was null or empty");
+            throw new InvalidDeviceResponseException();
         }
-
-        public virtual bool IsValid { get; protected set; }
 
         public virtual int Ttl => 0;
 
@@ -52,7 +48,7 @@ namespace NINA.Utility.SerialCommunication {
             return GetType().Name + $" : {_deviceResponse}";
         }
 
-        protected static bool ParseBoolFromZeroOne(char c, string fieldName, out bool fieldValue) {
+        protected static bool TryParseBoolFromZeroOne(char c, string fieldName, out bool fieldValue) {
             switch (c) {
                 case '0':
                     fieldValue = false;
@@ -71,25 +67,25 @@ namespace NINA.Utility.SerialCommunication {
             return true;
         }
 
-        protected static bool ParseDouble(string token, string fieldName, out double fieldValue) {
+        protected static bool TryParseDouble(string token, string fieldName, out double fieldValue) {
             if (double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out fieldValue)) return true;
             Logger.Error($"Could not parse {fieldName} from response: {token}.");
             return false;
         }
 
-        protected static bool ParseShort(string token, string fieldName, out short fieldValue) {
+        protected static bool TryParseShort(string token, string fieldName, out short fieldValue) {
             if (short.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out fieldValue)) return true;
             Logger.Error($"Could not parse {fieldName} from response: {token}.");
             return false;
         }
 
-        protected static bool ParseInteger(string token, string fieldName, out int fieldValue) {
+        protected static bool TryParseInteger(string token, string fieldName, out int fieldValue) {
             if (int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out fieldValue)) return true;
             Logger.Error($"Could not parse {fieldName} from response: {token}.");
             return false;
         }
 
-        protected static bool ParseLong(string token, string fieldName, out long fieldValue) {
+        protected static bool TryParseLong(string token, string fieldName, out long fieldValue) {
             if (long.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out fieldValue)) return true;
             Logger.Error($"Could not parse {fieldName} from response: {token}.");
             return false;

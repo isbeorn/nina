@@ -21,24 +21,30 @@
 
 #endregion "copyright"
 
-using System;
-using System.Threading.Tasks;
 using Moq;
 using NINA.Locale;
 using NINA.Model.MySwitch.PegasusAstro;
+using NINA.Utility.SerialCommunication;
 using NINA.Utility.SwitchSDKs.PegasusAstro;
 using NUnit.Framework;
+using System;
+using System.Threading.Tasks;
 
 namespace NINATest.Switch.PegasusAstro {
 
     [TestFixture]
     public class DataProviderSwitchTest {
-        private Mock<IPegasusDevice> _mockSdk;
         private DataProviderSwitch _sut;
+        private Mock<IPegasusDevice> _mockSdk;
+
+        [OneTimeSetUp]
+        public void OneTimeSetup() {
+            _mockSdk = new Mock<IPegasusDevice>();
+        }
 
         [SetUp]
         public void Init() {
-            _mockSdk = new Mock<IPegasusDevice>();
+            _mockSdk.Reset();
             _sut = new DataProviderSwitch { Sdk = _mockSdk.Object };
         }
 
@@ -46,10 +52,10 @@ namespace NINATest.Switch.PegasusAstro {
         public async Task TestPoll() {
             var statusResponse = new StatusResponse { DeviceResponse = "UPB:12.2:0.2:2:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0" };
             _mockSdk.Setup(m => m.SendCommand<StatusResponse>(It.IsAny<StatusCommand>()))
-                .Returns(statusResponse);
+                .Returns(Task.FromResult(statusResponse));
             var powerConsumptionResponse = new PowerConsumptionResponse { DeviceResponse = "0.23:123.4:734.6:86400000" };
             _mockSdk.Setup(m => m.SendCommand<PowerConsumptionResponse>(It.IsAny<PowerConsumptionCommand>()))
-                .Returns(powerConsumptionResponse);
+                .Returns(Task.FromResult(powerConsumptionResponse));
             var result = await _sut.Poll();
             Assert.That(result, Is.True);
             Assert.That(_sut.Voltage, Is.EqualTo(12.2));
@@ -63,22 +69,31 @@ namespace NINATest.Switch.PegasusAstro {
             Assert.That(_sut.WattHours, Is.EqualTo(734.6));
             Assert.That(_sut.AmpereHistory.Count, Is.EqualTo(1));
             Assert.That(_sut.VoltageHistory.Count, Is.EqualTo(1));
-            Assert.That(_sut.UpTime, Is.EqualTo($"{powerConsumptionResponse.UpTime.Days} {Loc.Instance["LblDays"]}, " +
-                                                $"{powerConsumptionResponse.UpTime.Hours} {Loc.Instance["LblHours"]}, " +
-                                                $"{powerConsumptionResponse.UpTime.Minutes} {Loc.Instance["LblMinutes"]}"));
+            Assert.That(_sut.UpTime, Is.EqualTo(
+                $"{powerConsumptionResponse.UpTime.Days} {Loc.Instance["LblDays"]}, " +
+                $"{powerConsumptionResponse.UpTime.Hours} {Loc.Instance["LblHours"]}, " +
+                $"{powerConsumptionResponse.UpTime.Minutes} {Loc.Instance["LblMinutes"]}"));
         }
 
         [Test]
-        public async Task TestPollException() {
-            _mockSdk.Setup(m => m.SendCommand<StatusResponse>(It.IsAny<StatusCommand>())).Throws(new Exception());
+        public async Task TestPollInvalidDeviceResponse() {
+            _mockSdk.Setup(m => m.SendCommand<StatusResponse>(It.IsAny<StatusCommand>()))
+                .Throws(new InvalidDeviceResponseException());
+            var result = await _sut.Poll();
+            Assert.That(result, Is.False);
+        }
+
+        [Test]
+        public async Task TestPollSerialPortClosed() {
+            _mockSdk.Setup(m => m.SendCommand<StatusResponse>(It.IsAny<StatusCommand>()))
+                .Throws(new SerialPortClosedException());
             var result = await _sut.Poll();
             Assert.That(result, Is.False);
         }
 
         [Test]
         public void TestSetValue() {
-            async Task TestDelegate() => await _sut.SetValue();
-            Assert.That((Func<Task>)TestDelegate, Throws.TypeOf<NotImplementedException>());
+            Assert.That(async () => await _sut.SetValue(), Throws.TypeOf<NotImplementedException>());
         }
     }
 }

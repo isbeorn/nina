@@ -54,19 +54,6 @@ namespace NINATest.FlatDevice {
         }
 
         [Test]
-        [TestCase("*S99000", true)]
-        [TestCase(null, false)]
-        public void TestSendCommand(string response, bool valid) {
-            var mockPort = new Mock<ISerialPort>();
-            mockPort.Setup(m => m.ReadLine()).Returns(response);
-            _sut.SerialPort = mockPort.Object;
-            var result = _sut.SendCommand<StateResponse>(new StateCommand());
-
-            Assert.That(result, Is.TypeOf(typeof(StateResponse)));
-            Assert.That(result.IsValid, Is.EqualTo(valid));
-        }
-
-        [Test]
         public void TestPortNamesPortsAvailable() {
             _mockSerialPortProvider
                 .Setup(m => m.GetPortNames(It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))

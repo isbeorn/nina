@@ -26,6 +26,7 @@ using NINA.Utility;
 using NINA.Utility.SwitchSDKs.PegasusAstro;
 using System;
 using System.Threading.Tasks;
+using NINA.Utility.SerialCommunication;
 
 namespace NINA.Model.MySwitch.PegasusAstro {
 
@@ -51,26 +52,34 @@ namespace NINA.Model.MySwitch.PegasusAstro {
         }
 
         public override async Task<bool> Poll() {
-            return await Task.Run(() => {
+            return await Task.Run(async () => {
+                var command = new PowerStatusCommand();
                 try {
-                    var response = Sdk.SendCommand<PowerStatusResponse>(new PowerStatusCommand());
+                    var response = await Sdk.SendCommand<PowerStatusResponse>(command);
                     Value = response.VariableVoltage;
                     return true;
-                } catch (Exception ex) {
-                    Logger.Error(ex);
+                } catch (InvalidDeviceResponseException ex) {
+                    Logger.Error($"Invalid response from Ultimate Powerbox V2. " +
+                                 $"Command was: {command} Response was: {ex.Message}.");
+                    return false;
+                } catch (SerialPortClosedException ex) {
+                    Logger.Error($"Serial port was closed. Command was: {command} Exception: {ex.InnerException}.");
                     return false;
                 }
             });
         }
 
         public override Task SetValue() {
-            return Task.Run(() => {
+            return Task.Run(async () => {
+                var command = new SetVariableVoltageCommand { VariableVoltage = TargetValue };
                 try {
                     Logger.Trace($"Trying to set value {TargetValue} for variable power switch");
-                    var command = new SetVariableVoltageCommand { VariableVoltage = TargetValue };
-                    Sdk.SendCommand<SetVariableVoltageResponse>(command);
-                } catch (Exception ex) {
-                    Logger.Error(ex);
+                    _ = await Sdk.SendCommand<SetVariableVoltageResponse>(command);
+                } catch (InvalidDeviceResponseException ex) {
+                    Logger.Error($"Invalid response from Ultimate Powerbox V2. " +
+                                 $"Command was: {command} Response was: {ex.Message}.");
+                } catch (SerialPortClosedException ex) {
+                    Logger.Error($"Serial port was closed. Command was: {command} Exception: {ex.InnerException}.");
                 }
             });
         }
@@ -131,32 +140,41 @@ namespace NINA.Model.MySwitch.PegasusAstro {
         }
 
         public override async Task<bool> Poll() {
-            return await Task.Run(() => {
+            return await Task.Run(async () => {
+                var command = new StatusCommand();
                 try {
-                    var response = Sdk.SendCommand<StatusResponse>(new StatusCommand());
+                    var response = await Sdk.SendCommand<StatusResponse>(command);
                     Value = Math.Round(response.DewHeaterDutyCycle[Id] / 255d * 100d);
                     CurrentAmps = response.DewHeaterPowerFlow[Id];
                     ExcessCurrent = response.DewHeaterOverCurrent[Id];
                     AutoDewOn = response.AutoDewStatus[Id];
                     return true;
-                } catch (Exception ex) {
-                    Logger.Error(ex);
+                } catch (InvalidDeviceResponseException ex) {
+                    Logger.Error($"Invalid response from Ultimate Powerbox V2. " +
+                                 $"Command was: {command} Response was: {ex.Message}.");
+                    return false;
+                } catch (SerialPortClosedException ex) {
+                    Logger.Error($"Serial port was closed. Command was: {command} Exception: {ex.InnerException}.");
                     return false;
                 }
             });
         }
 
         public override Task SetValue() {
-            return Task.Run(() => {
+            return Task.Run(async () => {
+                ICommand command = new SetDewHeaterPowerCommand { DutyCycle = TargetValue, SwitchNumber = Id };
                 try {
                     Logger.Trace($"Trying to set value {TargetValue}, {AutoDewOn} for dew heater {Id}");
-                    var dewCommand = new SetDewHeaterPowerCommand { DutyCycle = TargetValue, SwitchNumber = Id };
-                    Sdk.SendCommand<SetDewHeaterPowerResponse>(dewCommand);
-                    var response = Sdk.SendCommand<StatusResponse>(new StatusCommand());
-                    var autoDewCommand = new SetAutoDewCommand(response.AutoDewStatus, Id, AutoDewOnTarget);
-                    Sdk.SendCommand<SetAutoDewResponse>(autoDewCommand);
-                } catch (Exception ex) {
-                    Logger.Error(ex);
+                    _ = await Sdk.SendCommand<SetDewHeaterPowerResponse>(command);
+                    command = new StatusCommand();
+                    var response = await Sdk.SendCommand<StatusResponse>(command);
+                    command = new SetAutoDewCommand(response.AutoDewStatus, Id, AutoDewOnTarget);
+                    _ = await Sdk.SendCommand<SetAutoDewResponse>(command);
+                } catch (InvalidDeviceResponseException ex) {
+                    Logger.Error($"Invalid response from Ultimate Powerbox V2. " +
+                                 $"Command was: {command} Response was: {ex.Message}.");
+                } catch (SerialPortClosedException ex) {
+                    Logger.Error($"Serial port was closed. Command was: {command} Exception: {ex.InnerException}.");
                 }
             });
         }

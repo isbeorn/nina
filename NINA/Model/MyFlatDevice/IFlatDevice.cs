@@ -33,9 +33,9 @@ namespace NINA.Model.MyFlatDevice {
 
         int MinBrightness { get; }
 
-        Task<bool> Open(CancellationToken ct);
+        Task<bool> Open(CancellationToken ct, int delay = 300);
 
-        Task<bool> Close(CancellationToken ct);
+        Task<bool> Close(CancellationToken ct, int delay = 300);
 
         bool LightOn { get; set; }
 

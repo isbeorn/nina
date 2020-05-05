@@ -509,6 +509,7 @@
     <Compile Include="Utility\FlatDeviceSDKs\Artesky\IArteskyFlatBox.cs" />
     <Compile Include="Utility\FlatDeviceSDKs\Artesky\ArteskyDevice.cs" />
     <Compile Include="Utility\FlatDeviceSDKs\AllPro\USBD.cs" />
+    <Compile Include="Utility\SerialCommunication\Exceptions.cs" />
     <Compile Include="Utility\SerialCommunication\ISerialSdk.cs" />
     <Compile Include="Utility\SerialCommunication\SerialSdk.cs" />
     <Compile Include="Utility\SerialCommunication\ICommand.cs" />

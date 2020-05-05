@@ -96,14 +96,14 @@ namespace NINA.Utility {
         }
 
         public static async Task<TimeSpan> Delay(int milliseconds, CancellationToken token) {
-            var t = new TimeSpan(0, 0, 0, 0, milliseconds);
+            var t = TimeSpan.FromMilliseconds(milliseconds);
             return await Delay(t, token);
         }
 
         public static async Task<TimeSpan> Delay(TimeSpan span, CancellationToken token) {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             await Task.Delay(span, token);
-            return DateTime.Now.Subtract(now);
+            return DateTime.UtcNow.Subtract(now);
         }
 
         public static async Task<TimeSpan> Wait(TimeSpan t, CancellationToken token = new CancellationToken(), IProgress<ApplicationStatus> progress = default, string status = "") {

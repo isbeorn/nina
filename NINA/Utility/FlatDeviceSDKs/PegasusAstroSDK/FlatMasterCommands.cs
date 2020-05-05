@@ -27,20 +27,24 @@ namespace NINA.Utility.FlatDeviceSDKs.PegasusAstroSDK {
 
     public class StatusCommand : ICommand {
         public string CommandString => "#\n";
+        public bool HasResponse => true;
     }
 
     public class FirmwareVersionCommand : ICommand {
         public string CommandString => "V\n";
+        public bool HasResponse => true;
     }
 
     public class OnOffCommand : ICommand {
         public bool On { get; set; }
 
         public string CommandString => $"E:{(On ? 1 : 0)}\n";
+        public bool HasResponse => true;
     }
 
     public class SetBrightnessCommand : ICommand {
         public double Brightness { get; set; }
         public string CommandString => $"L:{Brightness:000}\n";
+        public bool HasResponse => true;
     }
 }

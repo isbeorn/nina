@@ -33,6 +33,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
+using NINA.Utility.SerialCommunication;
 
 namespace NINA.Model.MySwitch {
 
@@ -52,6 +53,19 @@ namespace NINA.Model.MySwitch {
         }
 
         public ReadOnlyCollection<string> PortNames => Sdk?.PortNames;
+
+        private void LogAndNotify(ICommand command, InvalidDeviceResponseException ex) {
+            Logger.Error($"Invalid response from Ultimate Powerbox V2 on port {PortName}. " +
+                         $"Command was: {command} Response was: {ex.Message}.");
+            Notification.ShowError(Loc.Instance["LblUPBV2InvalidResponse"]);
+        }
+
+        private void HandlePortClosed(ICommand command, SerialPortClosedException ex) {
+            Logger.Error($"Serial port was closed. Command was: {command} Exception: {ex.InnerException}.");
+            Notification.ShowError(Loc.Instance["LblUPBV2InvalidResponse"]);
+            Disconnect();
+            RaiseAllPropertiesChanged();
+        }
 
         public string PortName {
             get => _profileService.ActiveProfile.SwitchSettings.Upbv2PortName;
@@ -93,94 +107,102 @@ namespace NINA.Model.MySwitch {
         public async Task<bool> Connect(CancellationToken token) {
             if (!Sdk.InitializeSerialPort(PortName, this)) return false;
             if (Connected) return true;
-            return await Task.Run(() => {
+            return await Task.Run(async () => {
+                var statusCommand = new StatusCommand();
                 try {
-                    var command = new FirmwareVersionCommand();
-                    var response = Sdk.SendCommand<FirmwareVersionResponse>(command);
-                    if (!response.IsValid) {
-                        Logger.Error($"Invalid response from Ultimate Powerbox V2 on port {PortName}. " +
-                                     $"Command was: {command} Response was: {response}.");
-                        Notification.ShowError(Loc.Instance["LblUPBV2InvalidResponse"]);
-                        Connected = false;
-                        return Connected;
-                    }
-
-                    Description =
-                        $"Ultimate Powerbox V2 on port {PortName}. Firmware version: {response.FirmwareVersion}";
-
-                    var powerSwitch = new PegasusAstroPowerSwitch(0) {
-                        Name = _profileService.ActiveProfile.SwitchSettings.Upbv2PowerName1
-                    };
-                    PowerSwitches.Add(powerSwitch);
-                    Switches.Add(powerSwitch);
-                    powerSwitch = new PegasusAstroPowerSwitch(1) {
-                        Name = _profileService.ActiveProfile.SwitchSettings.Upbv2PowerName2
-                    };
-                    PowerSwitches.Add(powerSwitch);
-                    Switches.Add(powerSwitch);
-                    powerSwitch = new PegasusAstroPowerSwitch(2) {
-                        Name = _profileService.ActiveProfile.SwitchSettings.Upbv2PowerName3
-                    };
-                    PowerSwitches.Add(powerSwitch);
-                    Switches.Add(powerSwitch);
-                    powerSwitch = new PegasusAstroPowerSwitch(3) {
-                        Name = _profileService.ActiveProfile.SwitchSettings.Upbv2PowerName4
-                    };
-                    PowerSwitches.Add(powerSwitch);
-                    Switches.Add(powerSwitch);
-
-                    var variablePowerSwitch = new VariablePowerSwitch {
-                        Name = _profileService.ActiveProfile.SwitchSettings.Upbv2PowerName5
-                    };
-                    PowerSwitches.Add(variablePowerSwitch);
-                    Switches.Add(variablePowerSwitch);
-
-                    var usbSwitch = new PegasusAstroUsbSwitch(0) {
-                        Name = _profileService.ActiveProfile.SwitchSettings.Upbv2UsbName1
-                    };
-                    UsbSwitches.Add(usbSwitch);
-                    Switches.Add(usbSwitch);
-                    usbSwitch = new PegasusAstroUsbSwitch(1) {
-                        Name = _profileService.ActiveProfile.SwitchSettings.Upbv2UsbName2
-                    };
-                    UsbSwitches.Add(usbSwitch);
-                    Switches.Add(usbSwitch);
-                    usbSwitch = new PegasusAstroUsbSwitch(2) {
-                        Name = _profileService.ActiveProfile.SwitchSettings.Upbv2UsbName3
-                    };
-                    UsbSwitches.Add(usbSwitch);
-                    Switches.Add(usbSwitch);
-                    usbSwitch = new PegasusAstroUsbSwitch(3) {
-                        Name = _profileService.ActiveProfile.SwitchSettings.Upbv2UsbName4
-                    };
-                    UsbSwitches.Add(usbSwitch);
-                    Switches.Add(usbSwitch);
-                    usbSwitch = new PegasusAstroUsbSwitch(4) {
-                        Name = _profileService.ActiveProfile.SwitchSettings.Upbv2UsbName5
-                    };
-                    UsbSwitches.Add(usbSwitch);
-                    Switches.Add(usbSwitch);
-                    usbSwitch = new PegasusAstroUsbSwitch(5) {
-                        Name = _profileService.ActiveProfile.SwitchSettings.Upbv2UsbName6
-                    };
-                    UsbSwitches.Add(usbSwitch);
-                    Switches.Add(usbSwitch);
-
-                    for (short i = 0; i < 3; i++) {
-                        var dewHeater = new DewHeater(i);
-                        DewHeaters.Add(dewHeater);
-                        Switches.Add(dewHeater);
-                    }
-
-                    DataProvider = new DataProviderSwitch();
-                    Switches.Add(DataProvider);
-
+                    _ = await Sdk.SendCommand<StatusResponse>(statusCommand);
                     Connected = true;
-                    RaiseAllPropertiesChanged();
-                } catch (Exception ex) {
-                    Logger.Error(ex);
+                    Description = $"Ultimate Powerbox V2 on port {PortName}. Firmware version: ";
+                } catch (InvalidDeviceResponseException ex) {
+                    LogAndNotify(statusCommand, ex);
+                    Sdk.Dispose(this);
+                    Connected = false;
+                } catch (SerialPortClosedException ex) {
+                    HandlePortClosed(statusCommand, ex);
+                    Connected = false;
+                }
+                if (!Connected) return false;
+
+                var fwCommand = new FirmwareVersionCommand();
+                try {
+                    var response = await Sdk.SendCommand<FirmwareVersionResponse>(fwCommand);
+                    Description += $"{response.FirmwareVersion}";
+                } catch (InvalidDeviceResponseException ex) {
+                    LogAndNotify(fwCommand, ex);
+                    Description += Loc.Instance["LblNoValidFirmwareVersion"];
+                } catch (SerialPortClosedException ex) {
+                    HandlePortClosed(fwCommand, ex);
                 }
 
+                var powerSwitch = new PegasusAstroPowerSwitch(0) {
+                    Name = _profileService.ActiveProfile.SwitchSettings.Upbv2PowerName1
+                };
+                PowerSwitches.Add(powerSwitch);
+                Switches.Add(powerSwitch);
+                powerSwitch = new PegasusAstroPowerSwitch(1) {
+                    Name = _profileService.ActiveProfile.SwitchSettings.Upbv2PowerName2
+                };
+                PowerSwitches.Add(powerSwitch);
+                Switches.Add(powerSwitch);
+                powerSwitch = new PegasusAstroPowerSwitch(2) {
+                    Name = _profileService.ActiveProfile.SwitchSettings.Upbv2PowerName3
+                };
+                PowerSwitches.Add(powerSwitch);
+                Switches.Add(powerSwitch);
+                powerSwitch = new PegasusAstroPowerSwitch(3) {
+                    Name = _profileService.ActiveProfile.SwitchSettings.Upbv2PowerName4
+                };
+                PowerSwitches.Add(powerSwitch);
+                Switches.Add(powerSwitch);
+
+                var variablePowerSwitch = new VariablePowerSwitch {
+                    Name = _profileService.ActiveProfile.SwitchSettings.Upbv2PowerName5
+                };
+                PowerSwitches.Add(variablePowerSwitch);
+                Switches.Add(variablePowerSwitch);
+
+                var usbSwitch = new PegasusAstroUsbSwitch(0) {
+                    Name = _profileService.ActiveProfile.SwitchSettings.Upbv2UsbName1
+                };
+                UsbSwitches.Add(usbSwitch);
+                Switches.Add(usbSwitch);
+                usbSwitch = new PegasusAstroUsbSwitch(1) {
+                    Name = _profileService.ActiveProfile.SwitchSettings.Upbv2UsbName2
+                };
+                UsbSwitches.Add(usbSwitch);
+                Switches.Add(usbSwitch);
+                usbSwitch = new PegasusAstroUsbSwitch(2) {
+                    Name = _profileService.ActiveProfile.SwitchSettings.Upbv2UsbName3
+                };
+                UsbSwitches.Add(usbSwitch);
+                Switches.Add(usbSwitch);
+                usbSwitch = new PegasusAstroUsbSwitch(3) {
+                    Name = _profileService.ActiveProfile.SwitchSettings.Upbv2UsbName4
+                };
+                UsbSwitches.Add(usbSwitch);
+                Switches.Add(usbSwitch);
+                usbSwitch = new PegasusAstroUsbSwitch(4) {
+                    Name = _profileService.ActiveProfile.SwitchSettings.Upbv2UsbName5
+                };
+                UsbSwitches.Add(usbSwitch);
+                Switches.Add(usbSwitch);
+                usbSwitch = new PegasusAstroUsbSwitch(5) {
+                    Name = _profileService.ActiveProfile.SwitchSettings.Upbv2UsbName6
+                };
+                UsbSwitches.Add(usbSwitch);
+                Switches.Add(usbSwitch);
+
+                for (short i = 0; i < 3; i++) {
+                    var dewHeater = new DewHeater(i);
+                    DewHeaters.Add(dewHeater);
+                    Switches.Add(dewHeater);
+                }
+
+                DataProvider = new DataProviderSwitch();
+                Switches.Add(DataProvider);
+
+                Connected = true;
+                RaiseAllPropertiesChanged();
                 return Connected;
             }, token);
         }

@@ -25,6 +25,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
+using NINA.Locale;
 using NINA.Model.MyFlatDevice;
 using NINA.Profile;
 using NINA.Utility.FlatDeviceSDKs.PegasusAstroSDK;
@@ -55,21 +56,30 @@ namespace NINATest.FlatDevice {
         }
 
         [Test]
-        [TestCase(false, false)]
+        [TestCase(false, false, "OK_FM", "V:1.3", "FlatMaster on port COM3. Firmware version: 1.3")]
         [TestCase(true, true, "OK_FM", "V:1.3", "FlatMaster on port COM3. Firmware version: 1.3")]
-        [TestCase(true, true, "OK_FM", "ERR", "FlatMaster on port COM3. Firmware version: No valid firmware version.")]
-        [TestCase(true, false, "ERR")]
-        [TestCase(true, false, null)]
-        public async Task TestConnect(bool validPort, bool expected, string statusResponse = null, string firmwareResponse = null, string expectedDescription = "") {
+        public async Task TestConnect(bool validPort, bool expected, string statusResponse, string firmwareResponse, string expectedDescription) {
             _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>(), It.IsAny<object>())).Returns(validPort);
             _mockSdk.Setup(m => m.SendCommand<StatusResponse>(It.IsAny<StatusCommand>()))
-                .Returns(new StatusResponse { DeviceResponse = statusResponse });
+                .Returns(Task.FromResult(new StatusResponse { DeviceResponse = statusResponse }));
             _mockSdk.Setup(m => m.SendCommand<FirmwareVersionResponse>(It.IsAny<FirmwareVersionCommand>()))
-                .Returns(new FirmwareVersionResponse { DeviceResponse = firmwareResponse });
+                .Returns(Task.FromResult(new FirmwareVersionResponse { DeviceResponse = firmwareResponse }));
             var result = await _sut.Connect(new CancellationToken());
             Assert.That(result, Is.EqualTo(expected));
             if (!result) return;
             Assert.That(_sut.Description, Is.EqualTo(expectedDescription));
+        }
+
+        [Test]
+        public async Task TestConnectFirmwareResponseInvalid() {
+            _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>(), It.IsAny<object>())).Returns(true);
+            _mockSdk.Setup(m => m.SendCommand<StatusResponse>(It.IsAny<StatusCommand>()))
+                .Returns(Task.FromResult(new StatusResponse { DeviceResponse = "OK_FM" }));
+            _mockSdk.Setup(m => m.SendCommand<FirmwareVersionResponse>(It.IsAny<FirmwareVersionCommand>()))
+                .Throws(new InvalidDeviceResponseException());
+            var result = await _sut.Connect(new CancellationToken());
+            Assert.That(result, Is.True);
+            Assert.That(_sut.Description, Is.EqualTo("FlatMaster on port COM3. Firmware version: " + Loc.Instance["LblNoValidFirmwareVersion"]));
         }
 
         [Test]
@@ -79,55 +89,101 @@ namespace NINATest.FlatDevice {
         }
 
         [Test]
-        [TestCase(true, true, true, "E:1", "E:1\n")]
-        [TestCase(true, false, false, "E:0", "E:0\n")]
-        [TestCase(true, false, false, "XXX", "E:0\n")]
-        [TestCase(false, true, false)]
-        [TestCase(false, false, false)]
-        public async Task TestLightOn(bool connected, bool lightOn, bool expected, string response = null, string expectedCommand = null) {
+        [TestCase(true, true, "E:1", "E:1\n")]
+        [TestCase(false, false, "E:0", "E:0\n")]
+        public async Task TestLightOn(bool lightOn, bool expected, string response, string expectedCommand) {
             string actual = null;
             _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>(), It.IsAny<object>())).Returns(true);
             _mockSdk.Setup(m => m.SendCommand<StatusResponse>(It.IsAny<StatusCommand>()))
-                .Returns(new StatusResponse { DeviceResponse = "OK_FM" });
+                .Returns(Task.FromResult(new StatusResponse { DeviceResponse = "OK_FM" }));
             _mockSdk.Setup(m => m.SendCommand<FirmwareVersionResponse>(It.IsAny<FirmwareVersionCommand>()))
-                .Returns(new FirmwareVersionResponse { DeviceResponse = "V:1.3" });
+                .Returns(Task.FromResult(new FirmwareVersionResponse { DeviceResponse = "V:1.3" }));
             _mockSdk.Setup(m => m.SendCommand<OnOffResponse>(It.IsAny<OnOffCommand>()))
                 .Callback<ICommand>(arg => actual = arg.CommandString)
-                .Returns(new OnOffResponse { DeviceResponse = response });
-            if (connected) await _sut.Connect(new CancellationToken());
+                .Returns(Task.FromResult(new OnOffResponse { DeviceResponse = response }));
+            await _sut.Connect(new CancellationToken());
 
             _sut.LightOn = lightOn;
             var result = _sut.LightOn;
             Assert.That(result, Is.EqualTo(expected));
-            if (!connected) return;
             Assert.That(actual, Is.EqualTo(expectedCommand));
         }
 
         [Test]
-        [TestCase(true, 1d, 1d, "L:020", "L:020\n")]
-        [TestCase(true, 0d, 0d, "L:220", "L:220\n")]
-        [TestCase(true, 1d, 2d, "L:020", "L:020\n")]
-        [TestCase(true, 0d, -2d, "L:220", "L:220\n")]
-        [TestCase(true, 1d, 1d, "XXX", "L:020\n")]
-        public async Task TestBrightness(bool connected, double expected, double brightness, string response, string expectedCommand) {
+        [TestCase(true, false)]
+        [TestCase(false, false)]
+        public void TestLightOnDisconnected(bool lightOn, bool expected) {
+            _sut.LightOn = lightOn;
+            var result = _sut.LightOn;
+            Assert.That(result, Is.EqualTo(expected));
+            _mockSdk.Verify(m => m.SendCommand<OnOffResponse>(It.IsAny<OnOffCommand>()), Times.Never);
+        }
+
+        [Test]
+        [TestCase(true, "E:1\n")]
+        [TestCase(false, "E:0\n")]
+        public async Task TestLightOnInvalidResponse(bool lightOn, string expectedCommand) {
             string actual = null;
             _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>(), It.IsAny<object>())).Returns(true);
             _mockSdk.Setup(m => m.SendCommand<StatusResponse>(It.IsAny<StatusCommand>()))
-                .Returns(new StatusResponse { DeviceResponse = "OK_FM" });
+                .Returns(Task.FromResult(new StatusResponse { DeviceResponse = "OK_FM" }));
             _mockSdk.Setup(m => m.SendCommand<FirmwareVersionResponse>(It.IsAny<FirmwareVersionCommand>()))
-                .Returns(new FirmwareVersionResponse { DeviceResponse = "V:1.3" });
+                .Returns(Task.FromResult(new FirmwareVersionResponse { DeviceResponse = "V:1.3" }));
+            _mockSdk.Setup(m => m.SendCommand<OnOffResponse>(It.IsAny<OnOffCommand>()))
+                .Callback<ICommand>(arg => actual = arg.CommandString)
+                .Throws(new InvalidDeviceResponseException());
+            await _sut.Connect(new CancellationToken());
+
+            _sut.LightOn = lightOn;
+            var result = _sut.LightOn;
+            Assert.That(result, Is.False);
+            Assert.That(actual, Is.EqualTo(expectedCommand));
+        }
+
+        [Test]
+        [TestCase(1d, 1d, "L:020", "L:020\n")]
+        [TestCase(0d, 0d, "L:220", "L:220\n")]
+        [TestCase(1d, 2d, "L:020", "L:020\n")]
+        [TestCase(0d, -2d, "L:220", "L:220\n")]
+        public async Task TestBrightness(double expected, double brightness, string response = null, string expectedCommand = null) {
+            string actual = null;
+            _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>(), It.IsAny<object>())).Returns(true);
+            _mockSdk.Setup(m => m.SendCommand<StatusResponse>(It.IsAny<StatusCommand>()))
+                .Returns(Task.FromResult(new StatusResponse { DeviceResponse = "OK_FM" }));
+            _mockSdk.Setup(m => m.SendCommand<FirmwareVersionResponse>(It.IsAny<FirmwareVersionCommand>()))
+                .Returns(Task.FromResult(new FirmwareVersionResponse { DeviceResponse = "V:1.3" }));
             _mockSdk.Setup(m => m.SendCommand<SetBrightnessResponse>(It.IsAny<SetBrightnessCommand>()))
                 .Callback<ICommand>(arg => actual = arg.CommandString)
-                .Returns(new SetBrightnessResponse { DeviceResponse = response });
-            if (connected) await _sut.Connect(new CancellationToken());
+                .Returns(Task.FromResult(new SetBrightnessResponse { DeviceResponse = response }));
+            await _sut.Connect(new CancellationToken());
 
             _sut.Brightness = brightness;
 
             var result = _sut.Brightness;
 
             Assert.That(result, Is.EqualTo(expected));
-            if (!connected) return;
             Assert.That(actual, Is.EqualTo(expectedCommand));
+        }
+
+        [Test]
+        public async Task TestBrightnessInvalidResponse() {
+            string actual = null;
+            _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>(), It.IsAny<object>())).Returns(true);
+            _mockSdk.Setup(m => m.SendCommand<StatusResponse>(It.IsAny<StatusCommand>()))
+                .Returns(Task.FromResult(new StatusResponse { DeviceResponse = "OK_FM" }));
+            _mockSdk.Setup(m => m.SendCommand<FirmwareVersionResponse>(It.IsAny<FirmwareVersionCommand>()))
+                .Returns(Task.FromResult(new FirmwareVersionResponse { DeviceResponse = "V:1.3" }));
+            _mockSdk.Setup(m => m.SendCommand<SetBrightnessResponse>(It.IsAny<SetBrightnessCommand>()))
+                .Callback<ICommand>(arg => actual = arg.CommandString)
+                .Throws(new InvalidDeviceResponseException());
+            await _sut.Connect(new CancellationToken());
+
+            _sut.Brightness = 1d;
+
+            var result = _sut.Brightness;
+
+            Assert.That(result, Is.EqualTo(1d));
+            Assert.That(actual, Is.EqualTo("L:020\n"));
         }
     }
 }

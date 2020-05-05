@@ -30,7 +30,8 @@ using System.Threading.Tasks;
 using NINA.Locale;
 using NINA.Utility.Notification;
 using NINA.Utility.WindowService;
-using System.Windows.Input;
+using NINA.Utility.SerialCommunication;
+using ICommand = System.Windows.Input.ICommand;
 
 namespace NINA.Model.MyFocuser {
 
@@ -51,6 +52,19 @@ namespace NINA.Model.MyFocuser {
             SetCurrentPositionCommand = new RelayCommand(SetCurrentPosition);
             SetMaximumSpeedCommand = new RelayCommand(SetMaximumSpeed);
             SetBacklashStepsCommand = new RelayCommand(SetBacklashSteps);
+        }
+
+        private void LogAndNotify(Utility.SerialCommunication.ICommand command, InvalidDeviceResponseException ex) {
+            Logger.Error($"Invalid response from Ultimate Powerbox V2 on port {PortName}. " +
+                         $"Command was: {command} Response was: {ex.Message}.");
+            Notification.ShowError(Loc.Instance["LblUPBV2InvalidResponse"]);
+        }
+
+        private void HandlePortClosed(Utility.SerialCommunication.ICommand command, SerialPortClosedException ex) {
+            Logger.Error($"Serial port was closed. Command was: {command} Exception: {ex.InnerException}.");
+            Notification.ShowError(Loc.Instance["LblUPBV2InvalidResponse"]);
+            Disconnect();
+            RaiseAllPropertiesChanged();
         }
 
         public string PortName {
@@ -95,26 +109,32 @@ namespace NINA.Model.MyFocuser {
         public async Task<bool> Connect(CancellationToken token) {
             if (!Sdk.InitializeSerialPort(PortName, this)) return false;
             if (Connected) return true;
-            return await Task.Run(() => {
+            return await Task.Run(async () => {
+                var statusCommand = new StatusCommand();
                 try {
-                    var command = new FirmwareVersionCommand();
-                    var response = Sdk.SendCommand<FirmwareVersionResponse>(command);
-                    if (!response.IsValid) {
-                        Logger.Error($"Invalid response from Ultimate Powerbox V2 on port {PortName}. " +
-                                     $"Command was: {command} Response was: {response}.");
-                        Notification.ShowError(Loc.Instance["LblUPBV2InvalidResponse"]);
-                        Connected = false;
-                        return Connected;
-                    }
-
-                    Description =
-                        $"Ultimate Powerbox V2 on port {PortName}. Firmware version: {response.FirmwareVersion}";
+                    _ = await Sdk.SendCommand<StatusResponse>(statusCommand);
                     Connected = true;
-                } catch (Exception ex) {
-                    Logger.Error(ex);
+                    Description = $"Ultimate Powerbox V2 on port {PortName}. Firmware version: ";
+                } catch (InvalidDeviceResponseException ex) {
+                    LogAndNotify(statusCommand, ex);
+                    Sdk.Dispose(this);
+                    Connected = false;
+                } catch (SerialPortClosedException ex) {
+                    HandlePortClosed(statusCommand, ex);
                     Connected = false;
                 }
+                if (!Connected) return false;
 
+                var fwCommand = new FirmwareVersionCommand();
+                try {
+                    var response = await Sdk.SendCommand<FirmwareVersionResponse>(fwCommand);
+                    Description += $"{response.FirmwareVersion}";
+                } catch (InvalidDeviceResponseException ex) {
+                    LogAndNotify(fwCommand, ex);
+                    Description += Loc.Instance["LblNoValidFirmwareVersion"];
+                } catch (SerialPortClosedException ex) {
+                    HandlePortClosed(fwCommand, ex);
+                }
                 RaiseAllPropertiesChanged();
                 return Connected;
             }, token);
@@ -136,11 +156,14 @@ namespace NINA.Model.MyFocuser {
             get {
                 if (!Connected) return false;
                 var command = new StepperMotorIsMovingCommand();
-                var response = Sdk.SendCommand<StepperMotorIsMovingResponse>(command);
-                if (response.IsValid) return response.IsMoving;
-                Logger.Error($"Invalid response from Ultimate Powerbox V2 on port {PortName}. " +
-                             $"Command was: {command} Response was: {response}.");
-                Notification.ShowError(Loc.Instance["LblUPBV2InvalidResponse"]);
+                try {
+                    var response = Sdk.SendCommand<StepperMotorIsMovingResponse>(command).Result;
+                    return response.IsMoving;
+                } catch (InvalidDeviceResponseException ex) {
+                    LogAndNotify(command, ex);
+                } catch (SerialPortClosedException ex) {
+                    HandlePortClosed(command, ex);
+                }
                 return false;
             }
         }
@@ -152,11 +175,14 @@ namespace NINA.Model.MyFocuser {
             get {
                 if (!Connected) return 0;
                 var command = new StepperMotorGetCurrentPositionCommand();
-                var response = Sdk.SendCommand<StepperMotorGetCurrentPositionResponse>(command);
-                if (response.IsValid) return response.Position;
-                Logger.Error($"Invalid response from Ultimate Powerbox V2 on port {PortName}. " +
-                             $"Command was: {command} Response was: {response}.");
-                Notification.ShowError(Loc.Instance["LblUPBV2InvalidResponse"]);
+                try {
+                    var response = Sdk.SendCommand<StepperMotorGetCurrentPositionResponse>(command).Result;
+                    return response.Position;
+                } catch (InvalidDeviceResponseException ex) {
+                    LogAndNotify(command, ex);
+                } catch (SerialPortClosedException ex) {
+                    HandlePortClosed(command, ex);
+                }
                 return 0;
             }
         }
@@ -169,45 +195,43 @@ namespace NINA.Model.MyFocuser {
             get {
                 if (!Connected) return 0d;
                 var command = new StepperMotorTemperatureCommand();
-                var response = Sdk.SendCommand<StepperMotorTemperatureResponse>(command);
-                if (response.IsValid) return response.Temperature;
-                Logger.Error($"Invalid response from Ultimate Powerbox V2 on port {PortName}. " +
-                             $"Command was: {command} Response was: {response}.");
-                Notification.ShowError(Loc.Instance["LblUPBV2InvalidResponse"]);
+                try {
+                    var response = Sdk.SendCommand<StepperMotorTemperatureResponse>(command).Result;
+                    return response.Temperature;
+                } catch (InvalidDeviceResponseException ex) {
+                    LogAndNotify(command, ex);
+                } catch (SerialPortClosedException ex) {
+                    HandlePortClosed(command, ex);
+                }
                 return 0d;
             }
         }
 
         public Task Move(int position, CancellationToken ct) {
             if (!Connected) return Task.FromResult(false);
-            return Task.Run(() => {
+            return Task.Run(async () => {
+                var command = new StepperMotorMoveToPositionCommand { Position = position };
                 try {
-                    var command = new StepperMotorMoveToPositionCommand { Position = position };
-                    var response = Sdk.SendCommand<StepperMotorMoveToPositionResponse>(command);
-                    if (!response.IsValid) {
-                        Logger.Error($"Invalid response from Ultimate Powerbox V2 on port {PortName}. " +
-                                     $"Command was: {command} Response was: {response}.");
-                        Notification.ShowError(Loc.Instance["LblUPBV2InvalidResponse"]);
-                        return Task.FromResult(false);
-                    }
-                } catch (Exception ex) {
-                    Logger.Error(ex);
+                    _ = await Sdk.SendCommand<StepperMotorMoveToPositionResponse>(command);
+                    return Task.FromResult(true);
+                } catch (InvalidDeviceResponseException ex) {
+                    LogAndNotify(command, ex);
+                } catch (SerialPortClosedException ex) {
+                    HandlePortClosed(command, ex);
                 }
-                return Task.FromResult(true);
+                return Task.FromResult(false);
             }, ct);
         }
 
         public void Halt() {
             if (!Connected) return;
+            var command = new StepperMotorHaltCommand();
             try {
-                var command = new StepperMotorHaltCommand();
-                var response = Sdk.SendCommand<StepperMotorHaltResponse>(command);
-                if (response.IsValid) return;
-                Logger.Error($"Invalid response from Ultimate Powerbox V2 on port {PortName}. " +
-                             $"Command was: {command} Response was: {response}.");
-                Notification.ShowError(Loc.Instance["LblUPBV2InvalidResponse"]);
-            } catch (Exception ex) {
-                Logger.Error(ex);
+                _ = Sdk.SendCommand<StepperMotorHaltResponse>(command).Result;
+            } catch (InvalidDeviceResponseException ex) {
+                LogAndNotify(command, ex);
+            } catch (SerialPortClosedException ex) {
+                HandlePortClosed(command, ex);
             }
         }
 
@@ -224,41 +248,52 @@ namespace NINA.Model.MyFocuser {
         public void SetMotorDirection(object o) {
             if (!Connected) return;
             var command = new StepperMotorDirectionCommand { DirectionClockwise = ((string)o).Equals("clockWise") };
-            var response = Sdk?.SendCommand<StepperMotorDirectionResponse>(command);
-            if (response != null && response.IsValid) return;
-            Logger.Error($"Invalid response from Ultimate Powerbox V2 on port {PortName}. " +
-                         $"Command was: {command} Response was: {response}.");
-            Notification.ShowError(Loc.Instance["LblUPBV2InvalidResponse"]);
+            try {
+                if (Sdk == null) return;
+                _ = Sdk.SendCommand<StepperMotorDirectionResponse>(command).Result;
+            } catch (InvalidDeviceResponseException ex) {
+                LogAndNotify(command, ex);
+            } catch (SerialPortClosedException ex) {
+                HandlePortClosed(command, ex);
+            }
         }
 
         public void SetCurrentPosition(object o) {
             if (!Connected) return;
             var command = new StepperMotorSetCurrentPositionCommand { Position = int.Parse((string)o) };
-            var response = Sdk?.SendCommand<StepperMotorSetCurrentPositionResponse>(command);
-            if (response != null && response.IsValid) return;
-            Logger.Error($"Invalid response from Ultimate Powerbox V2 on port {PortName}. " +
-                         $"Command was: {command} Response was: {response}.");
-            Notification.ShowError(Loc.Instance["LblUPBV2InvalidResponse"]);
+            try {
+                if (Sdk == null) return;
+                _ = Sdk.SendCommand<StepperMotorSetCurrentPositionResponse>(command).Result;
+            } catch (InvalidDeviceResponseException ex) {
+                LogAndNotify(command, ex);
+            } catch (SerialPortClosedException ex) {
+                HandlePortClosed(command, ex);
+            }
         }
 
         public void SetMaximumSpeed(object o) {
             if (!Connected) return;
             var command = new StepperMotorSetMaximumSpeedCommand { Speed = int.Parse((string)o) };
-            var response = Sdk?.SendCommand<StepperMotorSetMaximumSpeedResponse>(command);
-            if (response != null && response.IsValid) return;
-            Logger.Error($"Invalid response from Ultimate Powerbox V2 on port {PortName}. " +
-                         $"Command was: {command} Response was: {response}.");
-            Notification.ShowError(Loc.Instance["LblUPBV2InvalidResponse"]);
+            try {
+                if (Sdk == null) return;
+                _ = Sdk.SendCommand<StepperMotorSetMaximumSpeedResponse>(command).Result;
+            } catch (InvalidDeviceResponseException ex) {
+                LogAndNotify(command, ex);
+            } catch (SerialPortClosedException ex) {
+                HandlePortClosed(command, ex);
+            }
         }
 
         public void SetBacklashSteps(object o) {
             if (!Connected) return;
             var command = new StepperMotorSetBacklashStepsCommand { Steps = int.Parse((string)o) };
-            var response = Sdk?.SendCommand<StepperMotorSetBacklashStepsResponse>(command);
-            if (response != null && response.IsValid) return;
-            Logger.Error($"Invalid response from Ultimate Powerbox V2 on port {PortName}. " +
-                         $"Command was: {command} Response was: {response}.");
-            Notification.ShowError(Loc.Instance["LblUPBV2InvalidResponse"]);
+            try {
+                _ = Sdk?.SendCommand<StepperMotorSetBacklashStepsResponse>(command).Result;
+            } catch (InvalidDeviceResponseException ex) {
+                LogAndNotify(command, ex);
+            } catch (SerialPortClosedException ex) {
+                HandlePortClosed(command, ex);
+            }
         }
     }
 }

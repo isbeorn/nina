@@ -23,8 +23,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Ports;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace NINA.Utility.SerialCommunication {
 
@@ -58,7 +60,7 @@ namespace NINA.Utility.SerialCommunication {
                 SerialPort?.Open();
             } catch (Exception ex) {
                 Logger.Error(ex);
-                Notification.Notification.ShowError(string.Format(Locale.Loc.Instance["LblSerialPortCannotOpen"], SerialPort.PortName, ex.GetType().Name));
+                Notification.Notification.ShowError(string.Format(Locale.Loc.Instance["LblSerialPortCannotOpen"], SerialPort?.PortName, ex.GetType().Name));
 
                 if (clients.Contains(client)) { clients.Remove(client); }
                 SerialPort = null;
@@ -68,30 +70,88 @@ namespace NINA.Utility.SerialCommunication {
             return SerialPort != null;
         }
 
-        public T SendCommand<T>(ICommand command) where T : Response, new() {
-            ssSerial.Wait();
-            var result = string.Empty;
-            T response;
-            if (_cache.HasValidResponse(command.GetType())) {
-                ssSerial.Release();
-                return (T)_cache.Get(command.GetType());
-            }
+        public Task<TResult> SendCommand<TResult>(ICommand command) where TResult : Response, new() {
+            return Task.Run(() => {
+                if (command == null) throw new ArgumentNullException(nameof(command));
+                ssSerial.Wait();
+                TResult response;
+                if (_cache.HasValidResponse(command.GetType())) {
+                    response = (TResult)_cache.Get(command.GetType());
+                    ssSerial.Release();
+                    return response;
+                }
+
+                WriteAndLog(command);
+
+                if (!command.HasResponse) {
+                    ssSerial.Release();
+                    return null;
+                }
+
+                var result = string.Empty;
+                var retries = 2;
+                try {
+                    while (string.IsNullOrEmpty(result) && retries >= 0) {
+                        result = ReadAndLog(command, ref retries);
+                    }
+
+                    response = new TResult { DeviceResponse = result };
+                    _cache.Add(command, response);
+                    return response;
+                } catch (TimeoutException ex) {
+                    Logger.Error($"{LogName}: Giving up and cleaning up buffer.{ex}");
+                    CleanupInBuffer();
+                    throw;
+                } catch (InvalidOperationException ex) {
+                    Logger.Error($"{LogName}: Port is closed. {ex}");
+                    throw new SerialPortClosedException(
+                        $"Serial port {SerialPort?.PortName ?? "null"} was closed when trying to read.", ex);
+                } finally {
+                    ssSerial.Release();
+                }
+            });
+        }
+
+        private void CleanupInBuffer() {
             try {
-                Logger.Debug($"{LogName}: command : {command}");
-                SerialPort.Write(command.CommandString);
-                result = SerialPort.ReadLine();
-                Logger.Debug($"{LogName}: response : {result}");
-            } catch (TimeoutException ex) {
-                Logger.Error($"{LogName}: timed out for port : {SerialPort.PortName} {ex} \n" +
-                             $"Command was : {command}");
+                Logger.Error($"Cleaning up {SerialPort?.BytesToRead.ToString()} from read buffer.");
+                SerialPort?.DiscardInBuffer();
             } catch (Exception ex) {
-                Logger.Error($"{LogName}: Unexpected exception : {ex}");
-            } finally {
-                response = new T { DeviceResponse = result };
-                _cache.Add(command, response);
-                ssSerial.Release();
+                Logger.Error($"{LogName}: Port is in an invalid state. {ex}");
+                throw new SerialPortClosedException($"Serial port {SerialPort?.PortName ?? "null"} was closed when trying to clean up buffer.", ex);
             }
-            return response;
+        }
+
+        private void WriteAndLog(ICommand command) {
+            try {
+                Logger.Trace($"{LogName}: command : {command}");
+                SerialPort?.Write(command.CommandString);
+            } catch (TimeoutException ex) {
+                //Don't throw here, we still need to try and read whatever is on the line in case this actually succeeded
+                Logger.Error($"{LogName}: timed out for port : {SerialPort?.PortName ?? "null"} {ex} \n" +
+                             $"Command was : {command}");
+            } catch (InvalidOperationException ex) {
+                Logger.Error($"{LogName}: Port is closed. {ex}");
+                throw new SerialPortClosedException($"Serial port {SerialPort?.PortName ?? "null"} was closed when trying to write command {command}", ex);
+            } catch (ArgumentNullException ex) {
+                Logger.Error($"{LogName}: {command} was trying to write null to port {SerialPort?.PortName ?? "null"} : {ex}");
+                throw;
+            }
+        }
+
+        private string ReadAndLog(ICommand command, ref int retries) {
+            string result = null;
+            try {
+                result = SerialPort?.ReadLine();
+                Logger.Trace($"{LogName}: response : {result}");
+            } catch (TimeoutException ex) {
+                Logger.Error($"{LogName}: timed out for port : {SerialPort?.PortName ?? "null"} {ex} \n" +
+                             $"Command was : {command}. {retries} retries left");
+                if (retries == 0) throw;
+            } finally {
+                retries--;
+            }
+            return result;
         }
 
         public void Dispose(object client) {
@@ -103,8 +163,9 @@ namespace NINA.Utility.SerialCommunication {
                 _cache.Clear();
                 SerialPort?.Close();
                 SerialPort = null;
-            } catch (Exception ex) {
+            } catch (IOException ex) {
                 Logger.Error(ex);
+                SerialPort = null;
             } finally {
                 ssSerial.Release();
             }

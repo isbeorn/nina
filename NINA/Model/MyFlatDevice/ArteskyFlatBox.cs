@@ -21,10 +21,12 @@
 
 #endregion "copyright"
 
+using NINA.Locale;
 using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.FlatDeviceSDKs.Artesky;
 using NINA.Utility.Notification;
+using NINA.Utility.SerialCommunication;
 using NINA.Utility.WindowService;
 using System;
 using System.Collections.ObjectModel;
@@ -47,6 +49,19 @@ namespace NINA.Model.MyFlatDevice {
             PortName = profileService.ActiveProfile.FlatDeviceSettings.PortName;
         }
 
+        private static void LogAndNotify(ICommand command, InvalidDeviceResponseException ex) {
+            Logger.Error($"Invalid response from flat device. " +
+                         $"Command was: {command} Response was: {ex.Message}.");
+            Notification.ShowError(Locale.Loc.Instance["LblFlatDeviceInvalidResponse"]);
+        }
+
+        private void HandlePortClosed(ICommand command, SerialPortClosedException ex) {
+            Logger.Error($"Serial port was closed. Command was: {command} Exception: {ex.InnerException}.");
+            Notification.ShowError(Locale.Loc.Instance["LblFlatDeviceInvalidResponse"]);
+            Disconnect();
+            RaiseAllPropertiesChanged();
+        }
+
         public CoverState CoverState => CoverState.Unknown;
         public int MinBrightness => 0;
         public int MaxBrightness => 255;
@@ -54,76 +69,65 @@ namespace NINA.Model.MyFlatDevice {
         private bool _lightOn;
 
         public bool LightOn {
-            get {
-                if (Connected) {
-                    return _lightOn;
-                } else {
-                    return false;
-                }
-            }
+            get => Connected && _lightOn;
             set {
-                if (Connected) {
-                    if (value) {
-                        var command = new LightOnCommand();
-                        var response = Sdk.SendCommand<LightOnResponse>(command);
-                        if (!response.IsValid) {
-                            Logger.Error($"Invalid response from flat device. " +
-                                         $"Command was: {command} Response was: {response}");
-                            Notification.ShowError(Locale.Loc.Instance["LblFlatDeviceInvalidResponse"]);
-                        }
-
-                        _lightOn = true;
-                    } else {
-                        var command = new LightOffCommand();
-                        var response = Sdk.SendCommand<LightOffResponse>(command);
-                        if (!response.IsValid) {
-                            Logger.Error($"Invalid response from flat device. " +
-                                         $"Command was: {command} Response was: {response}");
-                            Notification.ShowError(Locale.Loc.Instance["LblFlatDeviceInvalidResponse"]);
-                        }
-
-                        _lightOn = false;
+                if (!Connected) return;
+                if (value) {
+                    var command = new LightOnCommand();
+                    try {
+                        _ = Sdk.SendCommand<LightOnResponse>(command).Result;
+                    } catch (InvalidDeviceResponseException ex) {
+                        LogAndNotify(command, ex);
+                    } catch (SerialPortClosedException ex) {
+                        HandlePortClosed(command, ex);
                     }
 
-                    RaisePropertyChanged();
+                    _lightOn = true;
+                } else {
+                    var command = new LightOffCommand();
+                    try {
+                        _ = Sdk.SendCommand<LightOffResponse>(command).Result;
+                    } catch (InvalidDeviceResponseException ex) {
+                        LogAndNotify(command, ex);
+                    } catch (SerialPortClosedException ex) {
+                        HandlePortClosed(command, ex);
+                    }
+
+                    _lightOn = false;
                 }
+
+                RaisePropertyChanged();
             }
         }
 
         private double _brightness;
 
         public double Brightness {
-            get {
-                if (Connected) {
-                    return _brightness;
-                } else {
-                    return 0d;
-                }
-            }
+            get => Connected ? _brightness : 0d;
             set {
-                if (Connected) {
-                    if (value < 0) {
-                        value = 0;
-                    }
-
-                    if (value > 1) {
-                        value = 1;
-                    }
-
-                    var command = new SetBrightnessCommand {
-                        Brightness = Math.Round(value * (MaxBrightness - MinBrightness) + MinBrightness, 0)
-                    };
-
-                    var response = Sdk.SendCommand<SetBrightnessResponse>(command);
-                    if (!response.IsValid) {
-                        Logger.Error($"Invalid response from flat device. " +
-                                     $"Command was: {command} Response was: {response}");
-                        Notification.ShowError(Locale.Loc.Instance["LblFlatDeviceInvalidResponse"]);
-                    }
-
-                    _brightness = value;
-                    RaisePropertyChanged();
+                if (!Connected) return;
+                if (value < 0) {
+                    value = 0;
                 }
+
+                if (value > 1) {
+                    value = 1;
+                }
+
+                var command = new SetBrightnessCommand {
+                    Brightness = Math.Round(value * (MaxBrightness - MinBrightness) + MinBrightness, 0)
+                };
+
+                try {
+                    _ = Sdk.SendCommand<SetBrightnessResponse>(command).Result;
+                } catch (InvalidDeviceResponseException ex) {
+                    LogAndNotify(command, ex);
+                } catch (SerialPortClosedException ex) {
+                    HandlePortClosed(command, ex);
+                }
+
+                _brightness = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -171,39 +175,50 @@ namespace NINA.Model.MyFlatDevice {
         public string DriverVersion => "1.0";
 
         public async Task<bool> Connect(CancellationToken ct) {
-            if (!await Sdk.InitializeSerialPort(PortName, this)) return false;
+            if (!Sdk.InitializeSerialPort(PortName, this)) return false;
 
-            return await Task.Run(() => {
-                Connected = true;
-
-                var stateResponse = Sdk.SendCommand<StateResponse>(new StateCommand());
-                if (!stateResponse.IsValid) {
-                    Logger.Error($"Invalid response from flat device. " +
-                                 $"Response was: {stateResponse}");
-                    Notification.ShowError(Locale.Loc.Instance["LblFlatDeviceInvalidResponse"]);
-                    Connected = false;
+            return await Task.Run(async () => {
+                var stateCommand = new StateCommand();
+                try {
+                    var stateResponse = await Sdk.SendCommand<StateResponse>(stateCommand);
+                    Connected = true;
+                    _lightOn = stateResponse.LightOn;
+                    Description = $"{Name} on {Sdk.SerialPort?.PortName ?? "null"}. Firmware version: ";
+                } catch (InvalidDeviceResponseException ex) {
+                    LogAndNotify(stateCommand, ex);
                     Sdk.Dispose(this);
-                    return Connected;
-                }
-
-                _lightOn = stateResponse.LightOn;
-
-                var brightResponse = Sdk.SendCommand<GetBrightnessResponse>(new GetBrightnessCommand());
-                if (!brightResponse.IsValid) {
-                    Logger.Error($"Invalid response from flat device. " +
-                                 $"Response was: {brightResponse}");
-                    Notification.ShowError(Locale.Loc.Instance["LblFlatDeviceInvalidResponse"]);
                     Connected = false;
-                    Sdk.Dispose(this);
-                    return Connected;
+                } catch (SerialPortClosedException ex) {
+                    HandlePortClosed(stateCommand, ex);
+                    Connected = false;
                 }
+                if (!Connected) return false;
 
-                _brightness = Math.Round((double)brightResponse.Brightness / (MaxBrightness - MinBrightness), 2);
+                var brightCommand = new GetBrightnessCommand();
+                try {
+                    var brightResponse = await Sdk.SendCommand<GetBrightnessResponse>(brightCommand);
+                    _brightness = Math.Round((double)brightResponse.Brightness / (MaxBrightness - MinBrightness), 2);
+                } catch (InvalidDeviceResponseException ex) {
+                    LogAndNotify(stateCommand, ex);
+                    Sdk.Dispose(this);
+                    Connected = false;
+                } catch (SerialPortClosedException ex) {
+                    HandlePortClosed(stateCommand, ex);
+                    Connected = false;
+                }
+                if (!Connected) return false;
 
-                var fWResponse = Sdk.SendCommand<FirmwareVersionResponse>(new FirmwareVersionCommand());
-                Description = $"{Name} on {Sdk.SerialPort.PortName}. Firmware version: " +
-                              $"{(fWResponse.IsValid ? fWResponse.FirmwareVersion.ToString() : "No valid firmware version.")}";
-
+                var fwCommand = new FirmwareVersionCommand();
+                try {
+                    var fWResponse = await Sdk.SendCommand<FirmwareVersionResponse>(fwCommand);
+                    Description += fWResponse.FirmwareVersion.ToString();
+                } catch (InvalidDeviceResponseException ex) {
+                    LogAndNotify(stateCommand, ex);
+                    Description += Loc.Instance["LblNoValidFirmwareVersion"];
+                } catch (SerialPortClosedException ex) {
+                    HandlePortClosed(stateCommand, ex);
+                    Connected = false;
+                }
                 RaiseAllPropertiesChanged();
                 return Connected;
             }, ct);
@@ -220,11 +235,11 @@ namespace NINA.Model.MyFlatDevice {
 
         public IWindowService WindowService { get; set; } = new WindowService();
 
-        public Task<bool> Open(CancellationToken ct) {
+        public Task<bool> Open(CancellationToken ct, int delay = 300) {
             throw new NotImplementedException();
         }
 
-        public Task<bool> Close(CancellationToken ct) {
+        public Task<bool> Close(CancellationToken ct, int delay = 300) {
             throw new NotImplementedException();
         }
 

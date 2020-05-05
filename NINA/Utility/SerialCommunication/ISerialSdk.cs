@@ -22,12 +22,13 @@
 #endregion "copyright"
 
 using System.IO.Ports;
+using System.Threading.Tasks;
 
 namespace NINA.Utility.SerialCommunication {
 
     public interface ISerialSdk {
 
-        T SendCommand<T>(ICommand command) where T : Response, new();
+        Task<TResult> SendCommand<TResult>(ICommand command) where TResult : Response, new();
 
         ISerialPort SerialPort { get; set; }
         ISerialPortProvider SerialPortProvider { set; }

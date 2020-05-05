@@ -27,6 +27,7 @@ using NINA.Utility.SwitchSDKs.PegasusAstro;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NINA.Utility.SerialCommunication;
 
 namespace NINA.Model.MySwitch.PegasusAstro {
 
@@ -140,9 +141,10 @@ namespace NINA.Model.MySwitch.PegasusAstro {
         }
 
         public override async Task<bool> Poll() {
-            return await Task.Run(() => {
+            return await Task.Run(async () => {
+                var command = new StatusCommand();
                 try {
-                    var statusResponse = Sdk.SendCommand<StatusResponse>(new StatusCommand());
+                    var statusResponse = await Sdk.SendCommand<StatusResponse>(command);
                     VoltageHistory.Add(
                         new KeyValuePair<DateTime, double>(DateTime.Now, statusResponse.DeviceInputVoltage));
                     AmpereHistory.Add(
@@ -157,7 +159,7 @@ namespace NINA.Model.MySwitch.PegasusAstro {
                     Humidity = statusResponse.Humidity;
                     DewPoint = statusResponse.DewPoint;
 
-                    var powerConsumptionResponse = Sdk.SendCommand<PowerConsumptionResponse>(new PowerConsumptionCommand());
+                    var powerConsumptionResponse = await Sdk.SendCommand<PowerConsumptionResponse>(new PowerConsumptionCommand());
                     AveragePower = powerConsumptionResponse.AveragePower;
                     AmpereHours = powerConsumptionResponse.AmpereHours;
                     WattHours = powerConsumptionResponse.WattHours;
@@ -165,8 +167,12 @@ namespace NINA.Model.MySwitch.PegasusAstro {
                              $"{powerConsumptionResponse.UpTime.Hours} {Loc.Instance["LblHours"]}, " +
                              $"{powerConsumptionResponse.UpTime.Minutes} {Loc.Instance["LblMinutes"]}";
                     return true;
-                } catch (Exception ex) {
-                    Logger.Error(ex);
+                } catch (InvalidDeviceResponseException ex) {
+                    Logger.Error($"Invalid response from Ultimate Powerbox V2. " +
+                                 $"Command was: {command} Response was: {ex.Message}.");
+                    return false;
+                } catch (SerialPortClosedException ex) {
+                    Logger.Error($"Serial port was closed. Command was: {command} Exception: {ex.InnerException}.");
                     return false;
                 }
             });

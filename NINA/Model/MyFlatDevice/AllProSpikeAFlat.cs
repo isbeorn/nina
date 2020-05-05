@@ -3,14 +3,12 @@ using NINA.Utility;
 using NINA.Utility.FlatDeviceSDKs.AllPro;
 using NINA.Utility.Notification;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyFlatDevice {
-    class AllProSpikeAFlat : BaseINPC, IFlatDevice {
+
+    internal class AllProSpikeAFlat : BaseINPC, IFlatDevice {
         private readonly IProfileService _profileService;
         private volatile IntPtr _usbdHandle = (IntPtr)0;
         private object _handleLock = new object();
@@ -111,6 +109,7 @@ namespace NINA.Model.MyFlatDevice {
         }
 
         private string _description;
+
         public string Description {
             get => _description;
             set {
@@ -126,7 +125,7 @@ namespace NINA.Model.MyFlatDevice {
         public string DriverVersion {
             get => "Last modified 2015/01/13";
         }
-        
+
         public async Task<bool> Connect(CancellationToken ct) {
             return await Task.Run(() => {
                 lock (this._handleLock) {
@@ -161,11 +160,11 @@ namespace NINA.Model.MyFlatDevice {
             }
         }
 
-        public async Task<bool> Close(CancellationToken ct) {
+        public Task<bool> Close(CancellationToken ct, int delay = 300) {
             throw new NotImplementedException();
         }
 
-        public Task<bool> Open(CancellationToken ct) {
+        public Task<bool> Open(CancellationToken ct, int delay = 300) {
             throw new NotImplementedException();
         }
 

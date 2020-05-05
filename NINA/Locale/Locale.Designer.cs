@@ -5877,6 +5877,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No valid firmware version..
+        /// </summary>
+        internal static string LblNoValidFirmwareVersion {
+            get {
+                return ResourceManager.GetString("LblNoValidFirmwareVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Now.
         /// </summary>
         internal static string LblNow {

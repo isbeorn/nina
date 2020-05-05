@@ -30,149 +30,150 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
         public string Name { get; private set; }
         public bool DeviceSupportsOpenClose { get; protected set; }
 
-        protected override bool ParseResponse(string response) {
-            IsValid &= base.ParseResponse(response);
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
             if (response == null || response.Length != 7) {
                 Logger.Debug($"Response must not be null and length must be 7 characters long. Was: {response}");
-                return false;
+                throw new InvalidDeviceResponseException(response);
             }
+
             if (response[0] != '*') {
                 Logger.Debug($"Response must start with *. Actual value:{response}");
-                return false;
+                throw new InvalidDeviceResponseException(response);
             }
 
-            return ParseDeviceId(response);
+            ParseDeviceId(response);
         }
 
-        private bool ParseDeviceId(string response) {
-            if (!ParseInteger(response.Substring(2, 2), "device id", out var deviceType)) return false;
+        private void ParseDeviceId(string response) {
+            if (!TryParseInteger(response.Substring(2, 2), "device id", out var deviceType))
+                throw new InvalidDeviceResponseException(response);
             switch (deviceType) {
                 case 10:
                     Name = "Flat-Man_XL";
                     DeviceSupportsOpenClose = false;
-                    return true;
+                    break;
 
                 case 15:
                     Name = "Flat-Man_L";
                     DeviceSupportsOpenClose = false;
-                    return true;
+                    break;
 
                 case 19:
                     Name = "Flat-Man";
                     DeviceSupportsOpenClose = false;
-                    return true;
+                    break;
 
                 case 98:
                     Name = "Flip-Mask/Remote Dust Cover";
                     DeviceSupportsOpenClose = true;
-                    return true;
+                    break;
 
                 case 99:
                     Name = "Flip-Flat";
                     DeviceSupportsOpenClose = true;
-                    return true;
+                    break;
 
                 default:
                     Name = "Unknown device";
                     DeviceSupportsOpenClose = false;
-                    return false;
+                    throw new InvalidDeviceResponseException(response);
             }
         }
 
         protected bool EndsInOOO(string response) {
-            var result = response.Substring(4, 3).Equals("OOO");
-            if (!result) Logger.Debug($"Response should have ended in OOO. Was {response}");
-            return result;
+            if (response.Substring(4, 3).Equals("OOO")) return true;
+            Logger.Debug($"Response should have ended in OOO. Was {response}");
+            throw new InvalidDeviceResponseException();
         }
     }
 
     public class PingResponse : AlnitakResponse {
 
-        protected override bool ParseResponse(string response) {
-            IsValid &= base.ParseResponse(response);
-            if (IsValid && response[1] == 'P' && EndsInOOO(response)) return true;
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (response[1] == 'P' && EndsInOOO(response)) return;
             Logger.Debug($"Second letter of response should have been a P. Actual value:{response}");
-            return false;
+            throw new InvalidDeviceResponseException();
         }
     }
 
     public class OpenResponse : AlnitakResponse {
 
-        protected override bool ParseResponse(string response) {
-            IsValid &= base.ParseResponse(response);
-            if (IsValid && response[1] == 'O' && EndsInOOO(response)) return true;
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (response[1] == 'O' && EndsInOOO(response)) return;
             Logger.Debug($"Second letter of response should have been an O. Actual value:{response}");
-            return false;
+            throw new InvalidDeviceResponseException();
         }
     }
 
     public class CloseResponse : AlnitakResponse {
 
-        protected override bool ParseResponse(string response) {
-            IsValid &= base.ParseResponse(response);
-            if (IsValid && response[1] == 'C' && EndsInOOO(response)) return true;
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (response[1] == 'C' && EndsInOOO(response)) return;
             Logger.Debug($"Second letter of response should have been a C. Actual value:{response}");
-            return false;
+            throw new InvalidDeviceResponseException();
         }
     }
 
     public class LightOnResponse : AlnitakResponse {
 
-        protected override bool ParseResponse(string response) {
-            IsValid &= base.ParseResponse(response);
-            if (IsValid && EndsInOOO(response) && response[1] == 'L') return true;
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (EndsInOOO(response) && response[1] == 'L') return;
             Logger.Debug($"Second letter of response should have been an L. Actual value:{response}");
-            return false;
+            throw new InvalidDeviceResponseException();
         }
     }
 
     public class LightOffResponse : AlnitakResponse {
 
-        protected override bool ParseResponse(string response) {
-            IsValid &= base.ParseResponse(response);
-            if (IsValid && EndsInOOO(response) && response[1] == 'D') return true;
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (EndsInOOO(response) && response[1] == 'D') return;
             Logger.Debug($"Second letter of response should have been a D. Actual value:{response}");
-            return false;
+            throw new InvalidDeviceResponseException();
         }
     }
 
     public abstract class BrightnessResponse : AlnitakResponse {
         public int Brightness { get; protected set; }
 
-        protected override bool ParseResponse(string response) {
-            IsValid &= base.ParseResponse(response);
-            return IsValid && ParseBrightness(response);
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            ParseBrightness(response);
         }
 
-        protected bool ParseBrightness(string response) {
-            if (!ParseInteger(response.Substring(4, 3), "brightness", out var brightness)) return false;
+        protected void ParseBrightness(string response) {
+            if (!TryParseInteger(response.Substring(4, 3), "brightness", out var brightness)) throw new InvalidDeviceResponseException();
             if (brightness < 0 || brightness > 255) {
                 Logger.Debug($"Brightness value should have been between 0 and 255. Was {brightness}");
-                return false;
+                throw new InvalidDeviceResponseException();
             }
 
             Brightness = brightness;
-            return true;
         }
     }
 
     public class SetBrightnessResponse : BrightnessResponse {
 
-        protected override bool ParseResponse(string response) {
-            IsValid &= base.ParseResponse(response);
-            if (IsValid && response[1] == 'B') return true;
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (response[1] == 'B') return;
             Logger.Debug($"Second letter of response should have been a B. Actual value:{response}");
-            return false;
+            throw new InvalidDeviceResponseException();
         }
     }
 
     public class GetBrightnessResponse : BrightnessResponse {
 
-        protected override bool ParseResponse(string response) {
-            IsValid &= base.ParseResponse(response);
-            if (IsValid && response[1] == 'J') return true;
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (response[1] == 'J') return;
             Logger.Debug($"Second letter of response should have been a J. Actual value:{response}");
-            return false;
+            throw new InvalidDeviceResponseException();
         }
     }
 
@@ -186,16 +187,16 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
 
         public CoverState CoverState { get; private set; }
 
-        protected override bool ParseResponse(string response) {
-            IsValid &= base.ParseResponse(response);
-            if (IsValid && response[1] == 'S' && ParseState(response)) return true;
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (response[1] == 'S' && ParseState(response)) return;
             Logger.Debug($"Second letter of response should have been an S. Actual value:{response}");
-            return false;
+            throw new InvalidDeviceResponseException();
         }
 
         private bool ParseState(string response) {
-            if (!ParseBoolFromZeroOne(response[4], "fifth letter of response", out _motorRunning)) return false;
-            if (!ParseBoolFromZeroOne(response[5], "sixth letter of response", out _lightOn)) return false;
+            if (!TryParseBoolFromZeroOne(response[4], "fifth letter of response", out _motorRunning)) return false;
+            if (!TryParseBoolFromZeroOne(response[5], "sixth letter of response", out _lightOn)) return false;
 
             switch (response[6]) {
                 case '0':
@@ -228,9 +229,10 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
 
         public int FirmwareVersion => _firmwareVersion;
 
-        protected override bool ParseResponse(string response) {
-            IsValid &= base.ParseResponse(response);
-            return IsValid && response[1] == 'V' && ParseInteger(response.Substring(4, 3), "firmware version", out _firmwareVersion);
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (response[1] == 'V' && TryParseInteger(response.Substring(4, 3), "firmware version", out _firmwareVersion)) return;
+            throw new InvalidDeviceResponseException();
         }
     }
 }

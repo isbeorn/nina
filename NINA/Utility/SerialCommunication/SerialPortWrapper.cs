@@ -43,8 +43,11 @@ namespace NINA.Utility.SerialCommunication {
         public string NewLine { get => _serialPort.NewLine; set => _serialPort.NewLine = value; }
         public int ReadTimeout { get => _serialPort.ReadTimeout; set => _serialPort.ReadTimeout = value; }
         public int WriteTimeout { get => _serialPort.WriteTimeout; set => _serialPort.WriteTimeout = value; }
+        public int BytesToRead => _serialPort.BytesToRead;
 
         public void Close() => _serialPort.Close();
+
+        public void DiscardInBuffer() => _serialPort.DiscardInBuffer();
 
         public void Open() => _serialPort.Open();
 

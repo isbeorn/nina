@@ -29,6 +29,7 @@ namespace NINA.Utility.SerialCommunication {
         bool DtrEnable { get; set; }
 
         bool RtsEnable { get; set; }
+        int BytesToRead { get; }
 
         void Write(string value);
 
@@ -37,5 +38,7 @@ namespace NINA.Utility.SerialCommunication {
         void Open();
 
         void Close();
+
+        void DiscardInBuffer();
     }
 }

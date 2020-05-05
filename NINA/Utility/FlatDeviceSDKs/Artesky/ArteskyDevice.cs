@@ -25,7 +25,6 @@ using NINA.Utility.SerialCommunication;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace NINA.Utility.FlatDeviceSDKs.Artesky {
 
@@ -45,7 +44,7 @@ namespace NINA.Utility.FlatDeviceSDKs.Artesky {
             }
         }
 
-        public async Task<bool> InitializeSerialPort(string aPortName, object client) {
+        public bool InitializeSerialPort(string aPortName, object client) {
             if (string.IsNullOrEmpty(aPortName)) return false;
             return base.InitializeSerialPort(aPortName.Equals("AUTO")
                 ? SerialPortProvider.GetPortNames(DEVICE_ID_QUERY, addDivider: false, addGenericPorts: false).FirstOrDefault()

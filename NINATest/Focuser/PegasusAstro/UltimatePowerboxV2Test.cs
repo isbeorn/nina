@@ -26,6 +26,7 @@ using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
+using NINA.Locale;
 using NINA.Model.MyFocuser;
 using NINA.Profile;
 using NINA.Utility.SerialCommunication;
@@ -48,7 +49,9 @@ namespace NINATest.Focuser.PegasusAstro {
             _sut = new UltimatePowerboxV2(_mockProfileService.Object) { Sdk = _mockSdk.Object };
             _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>(), It.IsAny<object>())).Returns(true);
             _mockSdk.Setup(m => m.SendCommand<FirmwareVersionResponse>(It.IsAny<FirmwareVersionCommand>()))
-                .Returns(new FirmwareVersionResponse { DeviceResponse = "1.3" });
+                .Returns(Task.FromResult(new FirmwareVersionResponse { DeviceResponse = "1.3" }));
+            _mockSdk.Setup(m => m.SendCommand<StatusResponse>(It.IsAny<StatusCommand>()))
+                .Returns(Task.FromResult(new StatusResponse()));
             await _sut.Connect(new CancellationToken());
         }
 
@@ -62,11 +65,10 @@ namespace NINATest.Focuser.PegasusAstro {
         [Test]
         [TestCase(true, "1.3", true, "Ultimate Powerbox V2 on port COM3. Firmware version: ")]
         [TestCase(false, "1.3", false)]
-        [TestCase(false, "XXX")]
         public async Task TestConnectAsync(bool expected, string commandString = "1.3", bool portAvailable = true, string description = null) {
             _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>(), It.IsAny<object>())).Returns(portAvailable);
             _mockSdk.Setup(m => m.SendCommand<FirmwareVersionResponse>(It.IsAny<FirmwareVersionCommand>()))
-                .Returns(new FirmwareVersionResponse { DeviceResponse = commandString });
+                .Returns(Task.FromResult(new FirmwareVersionResponse { DeviceResponse = commandString }));
             var sut = new UltimatePowerboxV2(_mockProfileService.Object) { Sdk = _mockSdk.Object };
             var result = await sut.Connect(new CancellationToken());
             Assert.That(result, Is.EqualTo(expected));
@@ -77,13 +79,15 @@ namespace NINATest.Focuser.PegasusAstro {
         }
 
         [Test]
-        public async Task TestConnectExceptionAsync() {
+        public async Task TestConnectAsyncFirmwareException() {
+            _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>(), It.IsAny<object>())).Returns(true);
             _mockSdk.Setup(m => m.SendCommand<FirmwareVersionResponse>(It.IsAny<FirmwareVersionCommand>()))
-                .Throws(new Exception());
+                .Throws(new InvalidDeviceResponseException());
             var sut = new UltimatePowerboxV2(_mockProfileService.Object) { Sdk = _mockSdk.Object };
             var result = await sut.Connect(new CancellationToken());
-            Assert.That(result, Is.False);
-            Assert.That(sut.Connected, Is.False);
+            Assert.That(result, Is.True);
+            Assert.That(sut.Connected, Is.True);
+            Assert.That(sut.Description, Is.EqualTo("Ultimate Powerbox V2 on port COM3. Firmware version: " + Loc.Instance["LblNoValidFirmwareVersion"]));
         }
 
         [Test]
@@ -96,33 +100,51 @@ namespace NINATest.Focuser.PegasusAstro {
         [Test]
         [TestCase("1", true)]
         [TestCase("0", false)]
-        [TestCase("XXX", false)]
         public void TestIsMoving(string deviceResponse, bool expected) {
             _mockSdk.Setup(m => m.SendCommand<StepperMotorIsMovingResponse>(It.IsAny<StepperMotorIsMovingCommand>()))
-                .Returns(new StepperMotorIsMovingResponse { DeviceResponse = deviceResponse });
+                .Returns(Task.FromResult(new StepperMotorIsMovingResponse { DeviceResponse = deviceResponse }));
             Assert.That(_sut.IsMoving, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void TestIsMovingInvalidResponse() {
+            _mockSdk.Setup(m => m.SendCommand<StepperMotorIsMovingResponse>(It.IsAny<StepperMotorIsMovingCommand>()))
+                .Throws(new InvalidDeviceResponseException());
+            Assert.That(_sut.IsMoving, Is.False);
         }
 
         [Test]
         [TestCase("0", 0)]
         [TestCase("-430000", -430000)]
         [TestCase("4500000", 4500000)]
-        [TestCase("XXX", 0)]
         public void TestPosition(string deviceResponse, int expected) {
             _mockSdk.Setup(m => m.SendCommand<StepperMotorGetCurrentPositionResponse>(It.IsAny<StepperMotorGetCurrentPositionCommand>()))
-                .Returns(new StepperMotorGetCurrentPositionResponse { DeviceResponse = deviceResponse });
+                .Returns(Task.FromResult(new StepperMotorGetCurrentPositionResponse { DeviceResponse = deviceResponse }));
             Assert.That(_sut.Position, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void TestPositionInvalidResponse() {
+            _mockSdk.Setup(m => m.SendCommand<StepperMotorGetCurrentPositionResponse>(It.IsAny<StepperMotorGetCurrentPositionCommand>()))
+                .Throws(new InvalidDeviceResponseException());
+            Assert.That(_sut.Position, Is.EqualTo(0));
         }
 
         [Test]
         [TestCase("0", 0)]
         [TestCase("-43.2", -43.2)]
         [TestCase("45", 45d)]
-        [TestCase("XXX", 0d)]
         public void TestTemperature(string deviceResponse, double expected) {
             _mockSdk.Setup(m => m.SendCommand<StepperMotorTemperatureResponse>(It.IsAny<StepperMotorTemperatureCommand>()))
-                .Returns(new StepperMotorTemperatureResponse { DeviceResponse = deviceResponse });
+                .Returns(Task.FromResult(new StepperMotorTemperatureResponse { DeviceResponse = deviceResponse }));
             Assert.That(_sut.Temperature, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void TestTemperatureInvalidResponse() {
+            _mockSdk.Setup(m => m.SendCommand<StepperMotorTemperatureResponse>(It.IsAny<StepperMotorTemperatureCommand>()))
+                .Throws(new InvalidDeviceResponseException());
+            Assert.That(_sut.Temperature, Is.EqualTo(0d));
         }
 
         [Test]
@@ -133,7 +155,7 @@ namespace NINATest.Focuser.PegasusAstro {
             string command = null;
             _mockSdk.Setup(m => m.SendCommand<StepperMotorMoveToPositionResponse>(It.IsAny<StepperMotorMoveToPositionCommand>()))
                 .Callback<ICommand>(arg => command = arg.CommandString)
-                .Returns(new StepperMotorMoveToPositionResponse { DeviceResponse = $"SM:{position}" });
+                .Returns(Task.FromResult(new StepperMotorMoveToPositionResponse { DeviceResponse = $"SM:{position}" }));
             await _sut.Move(position, new CancellationToken());
             Assert.That(command, Is.EqualTo(expected));
         }
@@ -143,39 +165,27 @@ namespace NINATest.Focuser.PegasusAstro {
             string command = null;
             _mockSdk.Setup(m => m.SendCommand<StepperMotorMoveToPositionResponse>(It.IsAny<StepperMotorMoveToPositionCommand>()))
                 .Callback<ICommand>(arg => command = arg.CommandString)
-                .Returns(new StepperMotorMoveToPositionResponse { DeviceResponse = "XXX" });
+                .Throws(new InvalidDeviceResponseException());
             await _sut.Move(0, new CancellationToken());
             Assert.That(command, Is.EqualTo("SM:0\n"));
         }
 
         [Test]
-        public async Task TestMoveException() {
-            string command = null;
-            _mockSdk.Setup(m => m.SendCommand<StepperMotorMoveToPositionResponse>(It.IsAny<StepperMotorMoveToPositionCommand>()))
-                .Callback<ICommand>(arg => command = arg.CommandString)
-                .Throws(new Exception());
-            await _sut.Move(0, new CancellationToken());
-            Assert.That(command, Is.EqualTo("SM:0\n"));
-        }
-
-        [Test]
-        [TestCase("SH")]
-        [TestCase("XXX")]
-        public void TestHalt(string deviceResponse) {
+        public void TestHalt() {
             string command = null;
             _mockSdk.Setup(m => m.SendCommand<StepperMotorHaltResponse>(It.IsAny<StepperMotorHaltCommand>()))
                 .Callback<ICommand>(arg => command = arg.CommandString)
-                .Returns(new StepperMotorHaltResponse { DeviceResponse = deviceResponse });
+                .Returns(Task.FromResult(new StepperMotorHaltResponse { DeviceResponse = "SH" }));
             _sut.Halt();
             Assert.That(command, Is.EqualTo("SH\n"));
         }
 
         [Test]
-        public void TestHaltException() {
+        public void TestHaltInvalidResponse() {
             string command = null;
             _mockSdk.Setup(m => m.SendCommand<StepperMotorHaltResponse>(It.IsAny<StepperMotorHaltCommand>()))
                 .Callback<ICommand>(arg => command = arg.CommandString)
-                .Throws(new Exception());
+                .Throws(new InvalidDeviceResponseException());
             _sut.Halt();
             Assert.That(command, Is.EqualTo("SH\n"));
         }
@@ -190,28 +200,46 @@ namespace NINATest.Focuser.PegasusAstro {
         [Test]
         [TestCase("clockWise", "SR:0\n", "SR:0")]
         [TestCase("antiClockWise", "SR:1\n", "SR:1")]
-        [TestCase("antiClockWise", "SR:1\n", "XXX")]
         public void TestSetMotorDirection(string direction, string expected, string deviceResponse) {
             string command = null;
             _mockSdk.Setup(m => m.SendCommand<StepperMotorDirectionResponse>(It.IsAny<StepperMotorDirectionCommand>()))
                 .Callback<ICommand>(arg => command = arg.CommandString)
-                .Returns(new StepperMotorDirectionResponse { DeviceResponse = deviceResponse });
+                .Returns(Task.FromResult(new StepperMotorDirectionResponse { DeviceResponse = deviceResponse }));
             _sut.SetMotorDirection(direction);
             Assert.That(command, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void TestSetMotorDirectionInvalidResponse() {
+            string command = null;
+            _mockSdk.Setup(m => m.SendCommand<StepperMotorDirectionResponse>(It.IsAny<StepperMotorDirectionCommand>()))
+                .Callback<ICommand>(arg => command = arg.CommandString)
+                .Throws(new InvalidDeviceResponseException());
+            _sut.SetMotorDirection("antiClockWise");
+            Assert.That(command, Is.EqualTo("SR:1\n"));
         }
 
         [Test]
         [TestCase("0", "SC:0\n", "SC:0")]
         [TestCase("-43000", "SC:-43000\n", "SC:-43000")]
         [TestCase("450000", "SC:450000\n", "SC:450000")]
-        [TestCase("450000", "SC:450000\n", "XXX")]
         public void TestSetCurrentPosition(string position, string expected, string deviceResponse) {
             string command = null;
             _mockSdk.Setup(m => m.SendCommand<StepperMotorSetCurrentPositionResponse>(It.IsAny<StepperMotorSetCurrentPositionCommand>()))
                 .Callback<ICommand>(arg => command = arg.CommandString)
-                .Returns(new StepperMotorSetCurrentPositionResponse { DeviceResponse = deviceResponse });
+                .Returns(Task.FromResult(new StepperMotorSetCurrentPositionResponse { DeviceResponse = deviceResponse }));
             _sut.SetCurrentPosition(position);
             Assert.That(command, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void TestSetCurrentPositionInvalidResponse() {
+            string command = null;
+            _mockSdk.Setup(m => m.SendCommand<StepperMotorSetCurrentPositionResponse>(It.IsAny<StepperMotorSetCurrentPositionCommand>()))
+                .Callback<ICommand>(arg => command = arg.CommandString)
+                .Throws(new InvalidDeviceResponseException());
+            _sut.SetCurrentPosition("450000");
+            Assert.That(command, Is.EqualTo("SC:450000\n"));
         }
 
         [Test]
@@ -222,7 +250,7 @@ namespace NINATest.Focuser.PegasusAstro {
             string command = null;
             _mockSdk.Setup(m => m.SendCommand<StepperMotorSetMaximumSpeedResponse>(It.IsAny<StepperMotorSetMaximumSpeedCommand>()))
                 .Callback<ICommand>(arg => command = arg.CommandString)
-                .Returns(new StepperMotorSetMaximumSpeedResponse());
+                .Returns(Task.FromResult(new StepperMotorSetMaximumSpeedResponse()));
             _sut.SetMaximumSpeed(speed);
             Assert.That(command, Is.EqualTo(expected));
         }
@@ -232,7 +260,7 @@ namespace NINATest.Focuser.PegasusAstro {
             string command = null;
             _mockSdk.Setup(m => m.SendCommand<StepperMotorSetMaximumSpeedResponse>(It.IsAny<StepperMotorSetMaximumSpeedCommand>()))
                 .Callback<ICommand>(arg => command = arg.CommandString)
-                .Returns((StepperMotorSetMaximumSpeedResponse)null);
+                .Returns(Task.FromResult((StepperMotorSetMaximumSpeedResponse)null));
             _sut.SetMaximumSpeed("0");
             Assert.That(command, Is.EqualTo("SS:0\n"));
         }
@@ -241,14 +269,23 @@ namespace NINATest.Focuser.PegasusAstro {
         [TestCase("0", "SB:0\n", "SB:0")]
         [TestCase("-43000", "SB:-43000\n", "SB:-43000")]
         [TestCase("450000", "SB:450000\n", "SB:450000")]
-        [TestCase("450000", "SB:450000\n", "XXX")]
         public void TestSetBacklashSteps(string steps, string expected, string deviceResponse) {
             string command = null;
             _mockSdk.Setup(m => m.SendCommand<StepperMotorSetBacklashStepsResponse>(It.IsAny<StepperMotorSetBacklashStepsCommand>()))
                 .Callback<ICommand>(arg => command = arg.CommandString)
-                .Returns(new StepperMotorSetBacklashStepsResponse { DeviceResponse = deviceResponse });
+                .Returns(Task.FromResult(new StepperMotorSetBacklashStepsResponse { DeviceResponse = deviceResponse }));
             _sut.SetBacklashSteps(steps);
             Assert.That(command, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void TestSetBacklashStepsInvalidResponse() {
+            string command = null;
+            _mockSdk.Setup(m => m.SendCommand<StepperMotorSetBacklashStepsResponse>(It.IsAny<StepperMotorSetBacklashStepsCommand>()))
+                .Callback<ICommand>(arg => command = arg.CommandString)
+                .Throws(new InvalidDeviceResponseException());
+            _sut.SetBacklashSteps("450000");
+            Assert.That(command, Is.EqualTo("SB:450000\n"));
         }
     }
 }

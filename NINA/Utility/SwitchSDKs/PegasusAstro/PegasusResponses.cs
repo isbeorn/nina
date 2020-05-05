@@ -67,8 +67,9 @@ namespace NINA.Utility.SwitchSDKs.PegasusAstro {
 
         public double FirmwareVersion => _firmwareVersion;
 
-        protected override bool ParseResponse(string response) {
-            return ParseDouble(response, "firmware version", out _firmwareVersion);
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (!TryParseDouble(response, "firmware version", out _firmwareVersion)) throw new InvalidDeviceResponseException(response);
         }
     }
 
@@ -103,54 +104,51 @@ namespace NINA.Utility.SwitchSDKs.PegasusAstro {
         public ReadOnlyCollection<bool> DewHeaterOverCurrent { get; protected set; }
         public ReadOnlyCollection<bool> AutoDewStatus { get; protected set; }
 
-        protected override bool ParseResponse(string value) {
-            if (string.IsNullOrEmpty(value)) {
-                Logger.Error("Null or Empty response.");
-                return false;
-            }
+        protected override void ParseResponse(string value) {
+            base.ParseResponse(value);
 
             var tokens = value.Split(':');
             if (tokens.Length != 21) {
                 Logger.Error($"Wrong number of tokens. Should have been 21, was {tokens.Length}");
-                return false;
+                throw new InvalidDeviceResponseException(value);
             }
 
             DeviceName = tokens[0];
-            if (!ParseDouble(tokens[1], "device input voltage", out _deviceInputVoltage)) return false;
-            if (!ParseDouble(tokens[2], "device current ampere", out _deviceCurrentAmpere)) return false;
-            if (!ParseInteger(tokens[3], "device power", out _devicePower)) return false;
-            if (!ParseDouble(tokens[4], "temperature", out _temperature)) return false;
-            if (!ParseDouble(tokens[5], "humidity", out _humidity)) return false;
-            if (!ParseDouble(tokens[6], "dew point", out _dewPoint)) return false;
+            if (!TryParseDouble(tokens[1], "device input voltage", out _deviceInputVoltage)) throw new InvalidDeviceResponseException(value);
+            if (!TryParseDouble(tokens[2], "device current ampere", out _deviceCurrentAmpere)) throw new InvalidDeviceResponseException(value);
+            if (!TryParseInteger(tokens[3], "device power", out _devicePower)) throw new InvalidDeviceResponseException(value);
+            if (!TryParseDouble(tokens[4], "temperature", out _temperature)) throw new InvalidDeviceResponseException(value);
+            if (!TryParseDouble(tokens[5], "humidity", out _humidity)) throw new InvalidDeviceResponseException(value);
+            if (!TryParseDouble(tokens[6], "dew point", out _dewPoint)) throw new InvalidDeviceResponseException(value);
 
             var tempBool = new bool[4];
             for (var i = 0; i < 4; i++) {
-                if (!ParseBoolFromZeroOne(tokens[7][i], "power port status", out tempBool[i])) return false;
+                if (!TryParseBoolFromZeroOne(tokens[7][i], "power port status", out tempBool[i])) throw new InvalidDeviceResponseException(value);
             }
             PowerPortOn = new ReadOnlyCollection<bool>(tempBool);
 
             tempBool = new bool[6];
             for (var i = 0; i < 6; i++) {
-                if (!ParseBoolFromZeroOne(tokens[8][i], "usb port status", out tempBool[i])) return false;
+                if (!TryParseBoolFromZeroOne(tokens[8][i], "usb port status", out tempBool[i])) throw new InvalidDeviceResponseException(value);
             }
             UsbPortOn = new ReadOnlyCollection<bool>(tempBool);
 
             var tempShort = new short[3];
             for (var i = 0; i < 3; i++) {
-                if (!ParseShort(tokens[i + 9], "dew heater cycle", out tempShort[i])) return false;
+                if (!TryParseShort(tokens[i + 9], "dew heater cycle", out tempShort[i])) throw new InvalidDeviceResponseException(value);
             }
             DewHeaterDutyCycle = new ReadOnlyCollection<short>(tempShort);
 
             var tempDouble = new double[4];
             for (var i = 0; i < 4; i++) {
-                if (!ParseDouble(tokens[i + 12], "power port current", out tempDouble[i])) return false;
+                if (!TryParseDouble(tokens[i + 12], "power port current", out tempDouble[i])) throw new InvalidDeviceResponseException(value);
                 tempDouble[i] /= 300d;
             }
             PortPowerFlow = new ReadOnlyCollection<double>(tempDouble);
 
             tempDouble = new double[3];
             for (var i = 0; i < 3; i++) {
-                if (!ParseDouble(tokens[i + 16], "dew heater port current", out tempDouble[i])) return false;
+                if (!TryParseDouble(tokens[i + 16], "dew heater port current", out tempDouble[i])) throw new InvalidDeviceResponseException(value);
                 tempDouble[i] /= 300d;
             }
             tempDouble[2] /= 2d;// different MOSFET, needs to be divided by 600
@@ -159,19 +157,18 @@ namespace NINA.Utility.SwitchSDKs.PegasusAstro {
 
             tempBool = new bool[4];
             for (var i = 0; i < 4; i++) {
-                if (!ParseBoolFromZeroOne(tokens[19][i], "port over current status", out tempBool[i])) return false;
+                if (!TryParseBoolFromZeroOne(tokens[19][i], "port over current status", out tempBool[i])) throw new InvalidDeviceResponseException(value);
             }
             PortOverCurrent = new ReadOnlyCollection<bool>(tempBool);
 
             tempBool = new bool[3];
             for (var i = 0; i < 3; i++) {
-                if (!ParseBoolFromZeroOne(tokens[19][i + 4], "dew heater over current status", out tempBool[i])) return false;
+                if (!TryParseBoolFromZeroOne(tokens[19][i + 4], "dew heater over current status", out tempBool[i])) throw new InvalidDeviceResponseException(value);
             }
             DewHeaterOverCurrent = new ReadOnlyCollection<bool>(tempBool);
 
-            if (!ParseShort(tokens[20], "auto-dew status", out var autoDewStatus)) return false;
+            if (!TryParseShort(tokens[20], "auto-dew status", out var autoDewStatus)) throw new InvalidDeviceResponseException(value);
             AutoDewStatus = ParseAutoDewStatus(autoDewStatus);
-            return true;
         }
     }
 
@@ -182,14 +179,15 @@ namespace NINA.Utility.SwitchSDKs.PegasusAstro {
 
         public short SwitchNumber { get; protected set; }
 
-        protected override bool ParseResponse(string response) {
-            if (string.IsNullOrEmpty(response) || response.Length < 4 || response[0] != 'P' || response[2] != ':') {
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (response.Length < 4 || response[0] != 'P' || response[2] != ':') {
                 Logger.Error($"Could not parse SetPower Response {response}");
-                return false;
+                throw new InvalidDeviceResponseException(response);
             }
-            if (!ParseShort(response[1].ToString(), "switch number", out var switchNumber)) return false;
+            if (!TryParseShort(response[1].ToString(), "switch number", out var switchNumber)) throw new InvalidDeviceResponseException(response);
             SwitchNumber = (short)(switchNumber - 1);
-            return ParseBoolFromZeroOne(response[3], "switch status", out _on);
+            if (!TryParseBoolFromZeroOne(response[3], "switch status", out _on)) throw new InvalidDeviceResponseException(response);
         }
     }
 
@@ -200,14 +198,15 @@ namespace NINA.Utility.SwitchSDKs.PegasusAstro {
 
         public short SwitchNumber { get; protected set; }
 
-        protected override bool ParseResponse(string response) {
-            if (string.IsNullOrEmpty(response) || response.Length < 4 || response[0] != 'U' || response[2] != ':') {
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (response.Length < 4 || response[0] != 'U' || response[2] != ':') {
                 Logger.Error($"Could not parse SetUsbPower Response {response}");
-                return false;
+                throw new InvalidDeviceResponseException(response);
             }
-            if (!ParseShort(response[1].ToString(), "switch number", out var switchNumber)) return false;
+            if (!TryParseShort(response[1].ToString(), "switch number", out var switchNumber)) throw new InvalidDeviceResponseException(response);
             SwitchNumber = (short)(switchNumber - 1);
-            return ParseBoolFromZeroOne(response[3], "switch status", out _on);
+            if (!TryParseBoolFromZeroOne(response[3], "switch status", out _on)) throw new InvalidDeviceResponseException(response);
         }
     }
 
@@ -215,35 +214,35 @@ namespace NINA.Utility.SwitchSDKs.PegasusAstro {
         public double VariableVoltage { get; protected set; }
         public ReadOnlyCollection<bool> PowerStatusOnBoot { get; protected set; }
 
-        protected override bool ParseResponse(string response) {
-            if (string.IsNullOrEmpty(response) || !response.StartsWith("PS:") || response.Length < 9) {
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (!response.StartsWith("PS:") || response.Length < 9) {
                 Logger.Error($"Could not parse PowerStatus Response {response}");
-                return false;
+                throw new InvalidDeviceResponseException(response);
             }
             var temp = new bool[4];
             for (var i = 0; i < 4; i++) {
-                if (!ParseBoolFromZeroOne(response[i + 3], "power status", out temp[i])) return false;
+                if (!TryParseBoolFromZeroOne(response[i + 3], "power status", out temp[i])) throw new InvalidDeviceResponseException(response);
             }
             PowerStatusOnBoot = new ReadOnlyCollection<bool>(temp);
 
-            if (!ParseDouble(response.Substring(8), "variable voltage value", out var voltage)) return false;
+            if (!TryParseDouble(response.Substring(8), "variable voltage value", out var voltage)) throw new InvalidDeviceResponseException(response);
             VariableVoltage = voltage <= 12d ? voltage : 0;
-            return true;
         }
     }
 
     public class SetVariableVoltageResponse : PegasusUpbv2Response {
         public double VariableVoltage { get; protected set; }
 
-        protected override bool ParseResponse(string response) {
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
             if (string.IsNullOrEmpty(response) || !response.StartsWith("P8:") || response.Length < 4) {
                 Logger.Error($"Could not parse SetVariableVoltage Response {response}");
-                return false;
+                throw new InvalidDeviceResponseException(response);
             }
 
-            if (!ParseDouble(response.Substring(3), "variable voltage value", out var voltage)) return false;
+            if (!TryParseDouble(response.Substring(3), "variable voltage value", out var voltage)) throw new InvalidDeviceResponseException(response);
             VariableVoltage = voltage <= 12d ? voltage : 0;
-            return true;
         }
     }
 
@@ -252,18 +251,18 @@ namespace NINA.Utility.SwitchSDKs.PegasusAstro {
 
         public double DutyCycle { get; protected set; }
 
-        protected override bool ParseResponse(string response) {
-            if (string.IsNullOrEmpty(response) || !response.StartsWith("P") || response.Length < 4) {
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (!response.StartsWith("P") || response.Length < 4) {
                 Logger.Error($"Could not parse SetDewHeaterPower Response {response}");
-                return false;
+                throw new InvalidDeviceResponseException(response);
             }
 
-            if (!ParseShort(response[1].ToString(), "dew heater number", out var dewHeaterNumber)) return false;
+            if (!TryParseShort(response[1].ToString(), "dew heater number", out var dewHeaterNumber)) throw new InvalidDeviceResponseException(response);
             DewHeaterNumber = (short)(dewHeaterNumber - 5);
 
-            if (!ParseDouble(response.Substring(3), "dew heater duty cycle", out var dutyCycle)) return false;
+            if (!TryParseDouble(response.Substring(3), "dew heater duty cycle", out var dutyCycle)) throw new InvalidDeviceResponseException(response);
             DutyCycle = dutyCycle / 255d * 100d;
-            return true;
         }
     }
 
@@ -281,39 +280,35 @@ namespace NINA.Utility.SwitchSDKs.PegasusAstro {
 
         public TimeSpan UpTime { get; protected set; }
 
-        protected override bool ParseResponse(string response) {
-            if (string.IsNullOrEmpty(response)) {
-                Logger.Error($"Could not parse PowerConsumption Response {response}");
-                return false;
-            }
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
 
             var tokens = response.Split(':');
             if (tokens.Length < 4) {
                 Logger.Error($"Not enough tokens in PowerConsumption Response {response}. Should have been 4, was: {tokens.Length}");
-                return false;
+                throw new InvalidDeviceResponseException(response);
             }
 
-            if (!ParseDouble(tokens[0], "average power", out _averagePower)) return false;
-            if (!ParseDouble(tokens[1], "ampere hours", out _ampereHours)) return false;
-            if (!ParseDouble(tokens[2], "watt hours", out _wattHours)) return false;
-            if (!ParseLong(tokens[3], "up time", out var upTime)) return false;
+            if (!TryParseDouble(tokens[0], "average power", out _averagePower)) throw new InvalidDeviceResponseException(response);
+            if (!TryParseDouble(tokens[1], "ampere hours", out _ampereHours)) throw new InvalidDeviceResponseException(response);
+            if (!TryParseDouble(tokens[2], "watt hours", out _wattHours)) throw new InvalidDeviceResponseException(response);
+            if (!TryParseLong(tokens[3], "up time", out var upTime)) throw new InvalidDeviceResponseException(response);
 
             UpTime = TimeSpan.FromMilliseconds(upTime);
-            return true;
         }
     }
 
     public class SetAutoDewResponse : PegasusUpbv2Response {
         public ReadOnlyCollection<bool> AutoDewStatus;
 
-        protected override bool ParseResponse(string response) {
-            if (string.IsNullOrEmpty(response) || !response.StartsWith("PD:") || response.Length < 4) {
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (!response.StartsWith("PD:") || response.Length < 4) {
                 Logger.Error($"Could not parse SetAutoDew Response {response}");
-                return false;
+                throw new InvalidDeviceResponseException(response);
             }
-            if (!ParseShort(response.Substring(3), "auto-dew status", out var autoDewStatus)) return false;
+            if (!TryParseShort(response.Substring(3), "auto-dew status", out var autoDewStatus)) throw new InvalidDeviceResponseException(response);
             AutoDewStatus = ParseAutoDewStatus(autoDewStatus);
-            return true;
         }
     }
 
@@ -322,8 +317,9 @@ namespace NINA.Utility.SwitchSDKs.PegasusAstro {
 
         public double Temperature => _temperature;
 
-        protected override bool ParseResponse(string response) {
-            return ParseDouble(response, "stepper motor temperature", out _temperature);
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (!TryParseDouble(response, "stepper motor temperature", out _temperature)) throw new InvalidDeviceResponseException(response);
         }
     }
 
@@ -332,8 +328,9 @@ namespace NINA.Utility.SwitchSDKs.PegasusAstro {
 
         public int Position => _position;
 
-        protected override bool ParseResponse(string response) {
-            return ParseInteger(response, "", out _position);
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (!TryParseInteger(response, "", out _position)) throw new InvalidDeviceResponseException(response);
         }
     }
 
@@ -342,13 +339,14 @@ namespace NINA.Utility.SwitchSDKs.PegasusAstro {
 
         public int Position => _position;
 
-        protected override bool ParseResponse(string response) {
-            if (string.IsNullOrEmpty(response) || !response.StartsWith("SM:") || response.Length < 4) {
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (!response.StartsWith("SM:") || response.Length < 4) {
                 Logger.Error($"Could not parse StepperMotorMoveToPosition Response {response}");
-                return false;
+                throw new InvalidDeviceResponseException(response);
             }
 
-            return ParseInteger(response.Substring(3), "position", out _position);
+            if (!TryParseInteger(response.Substring(3), "position", out _position)) throw new InvalidDeviceResponseException(response);
         }
     }
 
@@ -357,38 +355,31 @@ namespace NINA.Utility.SwitchSDKs.PegasusAstro {
 
         public bool IsMoving => _isMoving;
 
-        protected override bool ParseResponse(string response) {
-            if (string.IsNullOrEmpty(response)) {
-                Logger.Error($"Could not parse StepperMotorIsMoving Response {response}");
-                return false;
-            }
-            return ParseBoolFromZeroOne(response[0], "moving value", out _isMoving);
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (!TryParseBoolFromZeroOne(response[0], "moving value", out _isMoving)) throw new InvalidDeviceResponseException(response);
         }
     }
 
     public class StepperMotorHaltResponse : PegasusUpbv2Response {
 
-        protected override bool ParseResponse(string response) {
-            if (string.IsNullOrEmpty(response)) {
-                Logger.Error($"Could not parse StepperMotorHalt Response {response}");
-                return false;
-            }
-
-            return response.Equals("SH");
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (!response.Equals("SH")) throw new InvalidDeviceResponseException(response);
         }
     }
 
     public class StepperMotorDirectionResponse : PegasusUpbv2Response {
         public bool DirectionClockwise { get; protected set; }
 
-        protected override bool ParseResponse(string response) {
-            if (string.IsNullOrEmpty(response) || !response.StartsWith("SR:") || response.Length < 4) {
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (!response.StartsWith("SR:") || response.Length < 4) {
                 Logger.Error($"Could not parse StepperDirection Response {response}");
-                return false;
+                throw new InvalidDeviceResponseException(response);
             }
-            if (!ParseBoolFromZeroOne(response[3], "motor direction", out var zero)) return false;
+            if (!TryParseBoolFromZeroOne(response[3], "motor direction", out var zero)) throw new InvalidDeviceResponseException(response);
             DirectionClockwise = !zero;
-            return true;
         }
     }
 
@@ -397,19 +388,20 @@ namespace NINA.Utility.SwitchSDKs.PegasusAstro {
 
         public int Position => _position;
 
-        protected override bool ParseResponse(string response) {
-            if (string.IsNullOrEmpty(response) || !response.StartsWith("SC:") || response.Length < 4) {
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (!response.StartsWith("SC:") || response.Length < 4) {
                 Logger.Error($"Could not parse StepperMotorSetCurrentPosition Response {response}");
-                return false;
+                throw new InvalidDeviceResponseException(response);
             }
-            return ParseInteger(response.Substring(3), "position", out _position);
+            if (!TryParseInteger(response.Substring(3), "position", out _position)) throw new InvalidDeviceResponseException(response);
         }
     }
 
     public class StepperMotorSetMaximumSpeedResponse : PegasusUpbv2Response {
 
-        protected override bool ParseResponse(string response) {
-            return true;
+        protected override void ParseResponse(string response) {
+            return;
         }
     }
 
@@ -418,12 +410,13 @@ namespace NINA.Utility.SwitchSDKs.PegasusAstro {
 
         public int Steps => _steps;
 
-        protected override bool ParseResponse(string response) {
-            if (string.IsNullOrEmpty(response) || !response.StartsWith("SB:") || response.Length < 4) {
+        protected override void ParseResponse(string response) {
+            base.ParseResponse(response);
+            if (!response.StartsWith("SB:") || response.Length < 4) {
                 Logger.Error($"Could not parse StepperMotorSetBacklashSteps Response {response}");
-                return false;
+                throw new InvalidDeviceResponseException(response);
             }
-            return ParseInteger(response.Substring(3), "backlash steps", out _steps);
+            if (!TryParseInteger(response.Substring(3), "backlash steps", out _steps)) throw new InvalidDeviceResponseException(response);
         }
     }
 }

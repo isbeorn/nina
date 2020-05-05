@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using NINA.Utility.SerialCommunication;
+﻿using NINA.Utility.SerialCommunication;
 using NUnit.Framework;
 
 namespace NINATest.SerialCommunication {
@@ -7,27 +6,28 @@ namespace NINATest.SerialCommunication {
     internal class TestResponse : Response {
 
         public bool CheckDeviceResponse(string response) {
+            if (DeviceResponse == null) return response == null;
             return DeviceResponse.Equals(response);
         }
 
         public bool GetBoolFromZeroOne(char response, out bool result) {
-            return ParseBoolFromZeroOne(response, "test", out result);
+            return TryParseBoolFromZeroOne(response, "test", out result);
         }
 
         public bool GetDoubleFromResponse(string response, out double result) {
-            return ParseDouble(response, "test", out result);
+            return TryParseDouble(response, "test", out result);
         }
 
         public bool GetShortFromResponse(string response, out short result) {
-            return ParseShort(response, "test", out result);
+            return TryParseShort(response, "test", out result);
         }
 
         public bool GetIntegerFromResponse(string response, out int result) {
-            return ParseInteger(response, "test", out result);
+            return TryParseInteger(response, "test", out result);
         }
 
         public bool GetLongFromResponse(string response, out long result) {
-            return ParseLong(response, "test", out result);
+            return TryParseLong(response, "test", out result);
         }
     }
 

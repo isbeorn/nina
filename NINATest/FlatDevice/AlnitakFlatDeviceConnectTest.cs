@@ -22,9 +22,11 @@
 #endregion "copyright"
 
 using Moq;
+using NINA.Locale;
 using NINA.Model.MyFlatDevice;
 using NINA.Profile;
 using NINA.Utility.FlatDeviceSDKs.AlnitakSDK;
+using NINA.Utility.SerialCommunication;
 using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
@@ -53,13 +55,12 @@ namespace NINATest.FlatDevice {
 
         [Test]
         public async Task TestConnect() {
-            _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<int>())).Returns(Task.FromResult(true));
-            _mockSdk.Setup(m => m.SendCommand<PingResponse>(It.IsAny<PingCommand>()))
-                .Returns(new PingResponse { DeviceResponse = "*P99000" });
+            _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<int>()))
+                .Returns(Task.FromResult(true));
             _mockSdk.Setup(m => m.SendCommand<StateResponse>(It.IsAny<StateCommand>()))
-                .Returns(new StateResponse { DeviceResponse = "*S99000" });
+                .Returns(Task.FromResult(new StateResponse { DeviceResponse = "*S99000" }));
             _mockSdk.Setup(m => m.SendCommand<FirmwareVersionResponse>(It.IsAny<FirmwareVersionCommand>()))
-                .Returns(new FirmwareVersionResponse { DeviceResponse = "*V99124" });
+                .Returns(Task.FromResult(new FirmwareVersionResponse { DeviceResponse = "*V99124" }));
             Assert.That(await _sut.Connect(It.IsAny<CancellationToken>()), Is.True);
         }
 
@@ -69,19 +70,27 @@ namespace NINATest.FlatDevice {
         [TestCase("Flat-Man on port COM3. Firmware version: 123", "*S19000", "*V19123", true)]
         [TestCase("Flip-Mask/Remote Dust Cover on port COM3. Firmware version: 123", "*S98000", "*V98123", true)]
         [TestCase("Flip-Flat on port COM3. Firmware version: 123", "*S99000", "*V99123", true)]
-        [TestCase(null, "garbage", "garbage", false)]
-        [TestCase("Flip-Flat on port COM3. Firmware version: No valid firmware version.", "*S99000", "*V99XXX", true)]
-        [TestCase(null, null, null, false)]
         public async Task TestDescription(string description, string stateResponse, string fwResponse, bool connected) {
-            _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<int>())).Returns(Task.FromResult(true));
-            _mockSdk.Setup(m => m.SendCommand<PingResponse>(It.IsAny<PingCommand>()))
-                .Returns(new PingResponse { DeviceResponse = "*P99000" });
+            _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<int>()))
+                .Returns(Task.FromResult(true));
             _mockSdk.Setup(m => m.SendCommand<StateResponse>(It.IsAny<StateCommand>()))
-                .Returns(new StateResponse { DeviceResponse = stateResponse });
+                .Returns(Task.FromResult(new StateResponse { DeviceResponse = stateResponse }));
             _mockSdk.Setup(m => m.SendCommand<FirmwareVersionResponse>(It.IsAny<FirmwareVersionCommand>()))
-                .Returns(new FirmwareVersionResponse { DeviceResponse = fwResponse });
+                .Returns(Task.FromResult(new FirmwareVersionResponse { DeviceResponse = fwResponse }));
             Assert.That(await _sut.Connect(It.IsAny<CancellationToken>()), Is.EqualTo(connected));
             Assert.That(_sut.Description, Is.EqualTo(description));
+        }
+
+        [Test]
+        public async Task TestDescriptionInvalidFirmwareResponse() {
+            _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<int>()))
+                .Returns(Task.FromResult(true));
+            _mockSdk.Setup(m => m.SendCommand<StateResponse>(It.IsAny<StateCommand>()))
+                .Returns(Task.FromResult(new StateResponse { DeviceResponse = "*S99000" }));
+            _mockSdk.Setup(m => m.SendCommand<FirmwareVersionResponse>(It.IsAny<FirmwareVersionCommand>()))
+                .Throws(new InvalidDeviceResponseException());
+            Assert.That(await _sut.Connect(It.IsAny<CancellationToken>()), Is.True);
+            Assert.That(_sut.Description, Is.EqualTo("Flip-Flat on port COM3. Firmware version: " + Loc.Instance["LblNoValidFirmwareVersion"]));
         }
 
         [Test]

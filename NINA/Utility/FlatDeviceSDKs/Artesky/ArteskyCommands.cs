@@ -27,26 +27,32 @@ namespace NINA.Utility.FlatDeviceSDKs.Artesky {
 
     public class LightOnCommand : ICommand {
         public string CommandString => ">LOOO\r";
+        public bool HasResponse => true;
     }
 
     public class LightOffCommand : ICommand {
         public string CommandString => ">DOOO\r";
+        public bool HasResponse => true;
     }
 
     public class SetBrightnessCommand : ICommand {
         public double Brightness { get; set; }
         public string CommandString => $">B{Brightness:000}\r";
+        public bool HasResponse => true;
     }
 
     public class GetBrightnessCommand : ICommand {
         public string CommandString => ">JOOO\r";
+        public bool HasResponse => true;
     }
 
     public class StateCommand : ICommand {
         public string CommandString => ">SOOO\r";
+        public bool HasResponse => true;
     }
 
     public class FirmwareVersionCommand : ICommand {
         public string CommandString => ">VOOO\r";
+        public bool HasResponse => true;
     }
 }

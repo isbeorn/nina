@@ -23,6 +23,7 @@
 
 using NINA.Model.MyFlatDevice;
 using NINA.Utility.FlatDeviceSDKs.AlnitakSDK;
+using NINA.Utility.SerialCommunication;
 using NUnit.Framework;
 using System;
 
@@ -32,91 +33,102 @@ namespace NINATest.FlatDevice {
     public class AlnitakResponseTest {
 
         [Test]
-        [TestCase("Ping", "*P99OOO", true)]
-        [TestCase("Ping", "*P99000", false)]
-        [TestCase("Ping", "P99OOO", false)]
-        [TestCase("Ping", "*P33OOO", false)]
-        [TestCase("Ping", "*PXXOOO", false)]
-        [TestCase("Ping", null, false)]
-        [TestCase("Ping", "", false)]
-        [TestCase("Open", "*O99OOO", true)]
-        [TestCase("Open", "*O99000", false)]
-        [TestCase("Open", null, false)]
-        [TestCase("Open", "", false)]
-        [TestCase("Close", "*C99OOO", true)]
-        [TestCase("Close", "*C99000", false)]
-        [TestCase("Close", null, false)]
-        [TestCase("Close", "", false)]
-        [TestCase("LightOn", "*L99OOO", true)]
-        [TestCase("LightOn", "*L99000", false)]
-        [TestCase("LightOn", null, false)]
-        [TestCase("LightOn", "", false)]
-        [TestCase("LightOff", "*D99OOO", true)]
-        [TestCase("LightOff", "*D99000", false)]
-        [TestCase("LightOff", null, false)]
-        [TestCase("LightOff", "", false)]
-        public void TestIsValidResponse(string responseName, string response, bool valid) {
+        [TestCase("Ping", "*P99OOO")]
+        [TestCase("Open", "*O99OOO")]
+        [TestCase("Close", "*C99OOO")]
+        [TestCase("LightOn", "*L99OOO")]
+        [TestCase("LightOff", "*D99OOO")]
+        public void TestIsValidResponse(string responseName, string response) {
             var sut = (AlnitakResponse)Activator.CreateInstance("NINA",
                 $"NINA.Utility.FlatDeviceSDKs.AlnitakSDK.{responseName}Response").Unwrap();
             sut.DeviceResponse = response;
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
         }
 
         [Test]
-        [TestCase("*B98100", true, 100)]
-        [TestCase("*B33100", false, 0)]
-        [TestCase("*B99-10", false, 0)]
-        [TestCase("*B99999", false, 0)]
-        [TestCase("*B99XXX", false, 0)]
-        [TestCase(null, false, 0)]
-        [TestCase("", false, 0)]
-        public void TestSetBrightnessResponse(string response, bool valid, int brightness) {
-            var sut = new SetBrightnessResponse {
-                DeviceResponse = response
-            };
+        [TestCase("Ping", "*P99000")]
+        [TestCase("Ping", "P99OOO")]
+        [TestCase("Ping", "*P33OOO")]
+        [TestCase("Ping", "*PXXOOO")]
+        [TestCase("Ping", null)]
+        [TestCase("Ping", "")]
+        [TestCase("Open", "*O99000")]
+        [TestCase("Open", null)]
+        [TestCase("Open", "")]
+        [TestCase("Close", "*C99000")]
+        [TestCase("Close", null)]
+        [TestCase("Close", "")]
+        [TestCase("LightOn", "*L99000")]
+        [TestCase("LightOn", null)]
+        [TestCase("LightOn", "")]
+        [TestCase("LightOff", "*D99000")]
+        [TestCase("LightOff", null)]
+        [TestCase("LightOff", "")]
+        public void TestIsInvalidResponse(string responseName, string response) {
+            var sut = (AlnitakResponse)Activator.CreateInstance("NINA",
+                $"NINA.Utility.FlatDeviceSDKs.AlnitakSDK.{responseName}Response").Unwrap();
+            Assert.That(() => sut.DeviceResponse = response, Throws.TypeOf<InvalidDeviceResponseException>());
+        }
 
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
+        [Test]
+        [TestCase("*B98100", 100)]
+        public void TestValidSetBrightnessResponse(string response, int brightness) {
+            var sut = new SetBrightnessResponse { DeviceResponse = response };
+
             Assert.That(sut.Brightness, Is.EqualTo(brightness));
         }
 
         [Test]
-        [TestCase("*J98100", true, 100)]
-        [TestCase("*J33100", false, 0)]
-        [TestCase("*J99-10", false, 0)]
-        [TestCase("*J99999", false, 0)]
-        [TestCase("*J99XXX", false, 0)]
-        [TestCase("*B99100", false, 100)]
-        [TestCase(null, false, 0)]
-        [TestCase("", false, 0)]
-        public void TestGetBrightnessResponse(string response, bool valid, int brightness) {
-            var sut = new GetBrightnessResponse {
-                DeviceResponse = response
-            };
+        [TestCase("*B33100")]
+        [TestCase("*B99-10")]
+        [TestCase("*B99999")]
+        [TestCase("*B99XXX")]
+        [TestCase(null)]
+        [TestCase("")]
+        public void TestInvalidSetBrightnessResponse(string response) {
+            Assert.That(() => new SetBrightnessResponse { DeviceResponse = response }, Throws.TypeOf<InvalidDeviceResponseException>());
+        }
 
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
+        [Test]
+        [TestCase("*J98100", 100)]
+        public void TestValidGetBrightnessResponse(string response, int brightness) {
+            var sut = new GetBrightnessResponse { DeviceResponse = response };
+
             Assert.That(sut.Brightness, Is.EqualTo(brightness));
         }
 
         [Test]
-        [TestCase("*S99000", true, false, CoverState.NeitherOpenNorClosed, false)]
-        [TestCase("*S99111", true, true, CoverState.Closed, true)]
-        [TestCase("*S99002", true, false, CoverState.Open, false)]
-        [TestCase("*S99003", true, false, CoverState.Unknown, false)]
-        [TestCase("*S99004", false, false, CoverState.Unknown, false)]
-        [TestCase("*S99020", false, false, CoverState.Unknown, false)]
-        [TestCase("*S99200", false, false, CoverState.Unknown, false)]
-        [TestCase(null, false, false, CoverState.Unknown, false)]
-        [TestCase("", false, false, CoverState.Unknown, false)]
-        public void TestStateResponse(string response, bool valid, bool motorRunning, CoverState covertState,
-            bool lightOn) {
-            var sut = new StateResponse {
-                DeviceResponse = response
-            };
+        [TestCase("*J33100")]
+        [TestCase("*J99-10")]
+        [TestCase("*J99999")]
+        [TestCase("*J99XXX")]
+        [TestCase("*B99100")]
+        [TestCase(null)]
+        [TestCase("")]
+        public void TestInvalidGetBrightnessResponse(string response) {
+            Assert.That(() => new GetBrightnessResponse { DeviceResponse = response }, Throws.TypeOf<InvalidDeviceResponseException>());
+        }
 
-            Assert.That(sut.IsValid, Is.EqualTo(valid));
+        [Test]
+        [TestCase("*S99000", false, CoverState.NeitherOpenNorClosed, false)]
+        [TestCase("*S99111", true, CoverState.Closed, true)]
+        [TestCase("*S99002", false, CoverState.Open, false)]
+        [TestCase("*S99003", false, CoverState.Unknown, false)]
+        public void TestValidStateResponse(string response, bool motorRunning, CoverState covertState, bool lightOn) {
+            var sut = new StateResponse { DeviceResponse = response };
+
             Assert.That(sut.MotorRunning, Is.EqualTo(motorRunning));
             Assert.That(sut.CoverState, Is.EqualTo(covertState));
             Assert.That(sut.LightOn, Is.EqualTo(lightOn));
+        }
+
+        [Test]
+        [TestCase("*S99004")]
+        [TestCase("*S99020")]
+        [TestCase("*S99200")]
+        [TestCase(null)]
+        [TestCase("")]
+        public void TestInvalidStateResponse(string response) {
+            Assert.That(() => new StateResponse { DeviceResponse = response }, Throws.TypeOf<InvalidDeviceResponseException>());
         }
     }
 }

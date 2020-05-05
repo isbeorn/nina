@@ -26,8 +26,10 @@ using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
+using NINA.Locale;
 using NINA.Model.MyWeatherData;
 using NINA.Profile;
+using NINA.Utility.SerialCommunication;
 using NINA.Utility.SwitchSDKs.PegasusAstro;
 using NUnit.Framework;
 
@@ -47,7 +49,7 @@ namespace NINATest.WeatherData.PegasusAstro {
             _sut = new UltimatePowerboxV2(_mockProfileService.Object) { Sdk = _mockSdk.Object };
             _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>(), It.IsAny<object>())).Returns(true);
             _mockSdk.Setup(m => m.SendCommand<FirmwareVersionResponse>(It.IsAny<FirmwareVersionCommand>()))
-                .Returns(new FirmwareVersionResponse { DeviceResponse = "1.3" });
+                .Returns(Task.FromResult(new FirmwareVersionResponse { DeviceResponse = "1.3" }));
             await _sut.Connect(new CancellationToken());
         }
 
@@ -61,11 +63,10 @@ namespace NINATest.WeatherData.PegasusAstro {
         [Test]
         [TestCase(true, "1.3", true, "Ultimate Powerbox V2 on port COM3. Firmware version: ")]
         [TestCase(false, "1.3", false)]
-        [TestCase(false, "XXX")]
         public async Task TestConnectAsync(bool expected, string commandString = "1.3", bool portAvailable = true, string description = null) {
             _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>(), It.IsAny<object>())).Returns(portAvailable);
             _mockSdk.Setup(m => m.SendCommand<FirmwareVersionResponse>(It.IsAny<FirmwareVersionCommand>()))
-                .Returns(new FirmwareVersionResponse { DeviceResponse = commandString });
+                .Returns(Task.FromResult(new FirmwareVersionResponse { DeviceResponse = commandString }));
             var sut = new UltimatePowerboxV2(_mockProfileService.Object) { Sdk = _mockSdk.Object };
             var result = await sut.Connect(new CancellationToken());
             Assert.That(result, Is.EqualTo(expected));
@@ -76,9 +77,21 @@ namespace NINATest.WeatherData.PegasusAstro {
         }
 
         [Test]
-        public async Task TestConnectExceptionAsync() {
+        public async Task TestConnectAsyncInvalidFirmwareResponse() {
+            _mockSdk.Setup(m => m.InitializeSerialPort(It.IsAny<string>(), It.IsAny<object>())).Returns(true);
             _mockSdk.Setup(m => m.SendCommand<FirmwareVersionResponse>(It.IsAny<FirmwareVersionCommand>()))
-                .Throws(new Exception());
+                .Throws(new InvalidDeviceResponseException());
+            var sut = new UltimatePowerboxV2(_mockProfileService.Object) { Sdk = _mockSdk.Object };
+            var result = await sut.Connect(new CancellationToken());
+            Assert.That(result, Is.True);
+            Assert.That(sut.Connected, Is.True);
+            Assert.That(sut.Description, Is.EqualTo("Ultimate Powerbox V2 on port COM3. Firmware version: " + Loc.Instance["LblNoValidFirmwareVersion"]));
+        }
+
+        [Test]
+        public async Task TestConnectSerialPortClosed() {
+            _mockSdk.Setup(m => m.SendCommand<FirmwareVersionResponse>(It.IsAny<FirmwareVersionCommand>()))
+                .Throws(new SerialPortClosedException());
             var sut = new UltimatePowerboxV2(_mockProfileService.Object) { Sdk = _mockSdk.Object };
             var result = await sut.Connect(new CancellationToken());
             Assert.That(result, Is.False);
@@ -93,33 +106,51 @@ namespace NINATest.WeatherData.PegasusAstro {
         }
 
         [Test]
-        [TestCase("UPB:12.2:0.2:2:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", 14.7)]
-        [TestCase("XXX", double.NaN)]
-        public void TestDewPoint(string deviceResponse, double expected) {
+        public void TestDewPoint() {
             _mockSdk.Setup(m => m.SendCommand<StatusResponse>(It.IsAny<StatusCommand>()))
-                .Returns(new StatusResponse { DeviceResponse = deviceResponse });
+                .Returns(Task.FromResult(new StatusResponse { DeviceResponse = "UPB:12.2:0.2:2:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0" }));
             var result = _sut.DewPoint;
-            Assert.That(result, Is.EqualTo(expected));
+            Assert.That(result, Is.EqualTo(14.7));
         }
 
         [Test]
-        [TestCase("UPB:12.2:0.2:2:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", 23.2)]
-        [TestCase("XXX", double.NaN)]
-        public void TestDewTemperature(string deviceResponse, double expected) {
+        public void TestDewPointInvalidResponse() {
             _mockSdk.Setup(m => m.SendCommand<StatusResponse>(It.IsAny<StatusCommand>()))
-                .Returns(new StatusResponse { DeviceResponse = deviceResponse });
+                .Throws(new InvalidDeviceResponseException());
+            var result = _sut.DewPoint;
+            Assert.That(result, Is.EqualTo(double.NaN));
+        }
+
+        [Test]
+        public void TestDewTemperature() {
+            _mockSdk.Setup(m => m.SendCommand<StatusResponse>(It.IsAny<StatusCommand>()))
+                .Returns(Task.FromResult(new StatusResponse { DeviceResponse = "UPB:12.2:0.2:2:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0" }));
             var result = _sut.Temperature;
-            Assert.That(result, Is.EqualTo(expected));
+            Assert.That(result, Is.EqualTo(23.2));
         }
 
         [Test]
-        [TestCase("UPB:12.2:0.2:2:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0", 59d)]
-        [TestCase("XXX", double.NaN)]
-        public void TestHumidity(string deviceResponse, double expected) {
+        public void TestDewTemperatureInvalidResponse() {
             _mockSdk.Setup(m => m.SendCommand<StatusResponse>(It.IsAny<StatusCommand>()))
-                .Returns(new StatusResponse { DeviceResponse = deviceResponse });
+                .Throws(new InvalidDeviceResponseException());
+            var result = _sut.Temperature;
+            Assert.That(result, Is.EqualTo(double.NaN));
+        }
+
+        [Test]
+        public void TestHumidity() {
+            _mockSdk.Setup(m => m.SendCommand<StatusResponse>(It.IsAny<StatusCommand>()))
+                .Returns(Task.FromResult(new StatusResponse { DeviceResponse = "UPB:12.2:0.2:2:23.2:59:14.7:1111:111111:0:0:0:0:0:0:0:0:0:0:0000000:0" }));
             var result = _sut.Humidity;
-            Assert.That(result, Is.EqualTo(expected));
+            Assert.That(result, Is.EqualTo(59d));
+        }
+
+        [Test]
+        public void TestHumidityInvalidResponse() {
+            _mockSdk.Setup(m => m.SendCommand<StatusResponse>(It.IsAny<StatusCommand>()))
+                .Throws(new InvalidDeviceResponseException());
+            var result = _sut.Humidity;
+            Assert.That(result, Is.EqualTo(double.NaN));
         }
     }
 }
