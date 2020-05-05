@@ -34,6 +34,7 @@
     <converters:InverseNullToBooleanConverter x:Key="InverseNullToBooleanConverter" />
     <converters:SetAlphaToColorConverter x:Key="SetAlphaToColorConverter" />
     <converters:NullToVisibilityCollapsedConverter x:Key="NullToVisibilityCollapsedConverter" />
+    <converters:CollectionContainsItemsToBooleanConverter x:Key="CollectionContainsItemsToBooleanConverter" />
     <converters:CollectionContainsItemsToVisibilityConverter x:Key="CollectionContainsItemsToVisibilityConverter" />
     <converters:InverseCollectionContainsItemsToVisibilityConverter x:Key="InverseCollectionContainsItemsToVisibilityConverter" />
     <converters:MinusOneToEmptyStringConverter x:Key="MinusOneToEmptyStringConverter" />

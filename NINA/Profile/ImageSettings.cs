@@ -176,5 +176,19 @@ namespace NINA.Profile {
                 }
             }
         }
+
+        private string sharpCapSensorAnalysisFolder;
+        [DataMember]
+        public string SharpCapSensorAnalysisFolder {
+            get {
+                return sharpCapSensorAnalysisFolder;
+            }
+            set {
+                if (sharpCapSensorAnalysisFolder != value) {
+                    sharpCapSensorAnalysisFolder = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
     }
 }

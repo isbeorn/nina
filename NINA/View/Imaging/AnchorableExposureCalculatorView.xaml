@@ -49,6 +49,42 @@
                     VerticalAlignment="Center"
                     Columns="2">
                     <TextBlock
+                        Width="200"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Text="{ns:Loc LblUseSharpCapSensorAnalysis}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="35" />
+                        </Grid.ColumnDefinitions>
+                        <ComboBox
+                            Height="25"
+                            Margin="5,0,0,0"
+                            ItemsSource="{Binding SharpCapSensorNames}"
+                            SelectedItem="{Binding MySharpCapSensor}" 
+                            IsEnabled="{Binding SharpCapSensorNames, Converter={StaticResource CollectionContainsItemsToBooleanConverter}}"/>
+                        <Button
+                            Grid.Column="3"
+                            Width="25"
+                            Height="25"
+                            Margin="1,0,0,0"
+                            Command="{Binding ReloadSensorAnalysisCommand}">
+                            <Grid>
+                                <Path
+                                    Margin="5"
+                                    Data="{StaticResource LoopSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform" />
+                            </Grid>
+                        </Button>
+                    </Grid>
+                </UniformGrid>
+                <UniformGrid
+                    Margin="0,10,0,6"
+                    VerticalAlignment="Center"
+                    Columns="2">
+                    <TextBlock
                         Width="150"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
@@ -56,31 +92,10 @@
                     <TextBox
                         MinWidth="80"
                         HorizontalAlignment="Stretch"
-                        VerticalAlignment="Center">
+                        VerticalAlignment="Center" 
+                        IsEnabled="{Binding IsSharpCapSensorAnalysisEnabled, Converter={StaticResource InverseBooleanConverter}}">
                         <TextBox.Text>
                             <Binding Path="FullWellCapacity" UpdateSourceTrigger="LostFocus">
-                                <Binding.ValidationRules>
-                                    <rules:GreaterZeroRule />
-                                </Binding.ValidationRules>
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
-                </UniformGrid>
-                <UniformGrid
-                    Margin="0,6,0,6"
-                    VerticalAlignment="Center"
-                    Columns="2">
-                    <TextBlock
-                        Width="150"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="{ns:Loc LblBiasMean}" />
-                    <TextBox
-                        MinWidth="80"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Center">
-                        <TextBox.Text>
-                            <Binding Path="BiasMean" UpdateSourceTrigger="LostFocus">
                                 <Binding.ValidationRules>
                                     <rules:GreaterZeroRule />
                                 </Binding.ValidationRules>
@@ -100,7 +115,8 @@
                     <TextBox
                         MinWidth="80"
                         HorizontalAlignment="Stretch"
-                        VerticalAlignment="Center">
+                        VerticalAlignment="Center"
+                        IsEnabled="{Binding IsSharpCapSensorAnalysisEnabled, Converter={StaticResource InverseBooleanConverter}}">
                         <TextBox.Text>
                             <Binding Path="ReadNoise" UpdateSourceTrigger="LostFocus">
                                 <Binding.ValidationRules>
@@ -110,6 +126,49 @@
                         </TextBox.Text>
                     </TextBox>
                 </UniformGrid>
+                <UniformGrid
+                    Margin="0,6,0,6"
+                    VerticalAlignment="Center"
+                    Columns="2">
+                    <TextBlock
+                        HorizontalAlignment="Left"
+                        Width="150"
+                        VerticalAlignment="Center"
+                        Text="{ns:Loc LblBiasMean}" />
+                    <Grid
+                        Margin="0,0,0,0"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <ninactrl:CancellableButton
+                            Grid.Column="0"
+                            HorizontalAlignment="Left"
+                            Height="25"
+                            Width="120"
+                            Margin="10,10,10,0"
+                            CancelCommand="{Binding CancelDetermineBiasCommand}"
+                            Command="{Binding DetermineBiasCommand}"
+                            IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.LiveViewEnabled, FallbackValue=False, Converter={StaticResource InverseBooleanConverter}}"
+                            ToolTip="{ns:Loc LblCaptureImageCovered}"
+                            ButtonText="{ns:Loc LblCalculateBias}"/>
+                        <TextBox
+                            Grid.Column="1"
+                            MinWidth="80"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <TextBox.Text>
+                                <Binding Path="BiasMean" UpdateSourceTrigger="LostFocus">
+                                    <Binding.ValidationRules>
+                                        <rules:GreaterZeroRule />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </Grid>
+                </UniformGrid>
                 <ninactrl:CancellableButton
                     Height="25"
                     Margin="10,10,10,0"
@@ -118,52 +177,20 @@
                     CancelCommand="{Binding CancelDetermineExposureTimeCommand}"
                     Command="{Binding DetermineExposureTimeCommand}"
                     IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.LiveViewEnabled, FallbackValue=False, Converter={StaticResource InverseBooleanConverter}}"
-                    ToolTip="{ns:Loc LblCaptureImageAndPlatesolve}" />
+                    ToolTip="{ns:Loc LblCaptureImageUncovered}" />
 
                 <StackPanel Orientation="Vertical" Visibility="{Binding Statistics, Converter={StaticResource NullToVisibilityCollapsedConverter}}">
                     <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
                         <TextBlock
-                            Width="170"
+                            Width="240"
                             VerticalAlignment="Center"
-                            Text="{ns:Loc LblMinOptimalADU}" />
+                            TextWrapping="Wrap"
+                            Text="{ns:Loc LblRecommendedExposureTime}" />
                         <TextBlock
                             Width="40"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Text="{Binding MinExposureADU, StringFormat=\{0:#0\}, Mode=OneWay}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock
-                            Width="170"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblMinimumExposureTime}" />
-                        <TextBlock
-                            Width="40"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Text="{Binding MinimumRecommendedExposureTime, StringFormat=\{0:#0.00\}, Mode=OneWay}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock
-                            Width="170"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblMaxOptimalADU}" />
-                        <TextBlock
-                            Width="40"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Text="{Binding MaxExposureADU, StringFormat=\{0:#0\}, Mode=OneWay}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock
-                            Width="170"
-                            VerticalAlignment="Center"
-                            Text="{ns:Loc LblMaximumExposureTime}" />
-                        <TextBlock
-                            Width="40"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Text="{Binding MaximumRecommendedExposureTime, StringFormat=\{0:#0.00\}, Mode=OneWay}" />
+                            Text="{Binding RecommendedExposureTime, StringFormat=\{0:#0\}, Mode=OneWay}" />
                     </StackPanel>
                 </StackPanel>
             </StackPanel>

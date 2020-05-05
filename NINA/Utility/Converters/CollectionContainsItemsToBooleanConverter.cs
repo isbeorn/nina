@@ -21,19 +21,29 @@
 
 #endregion "copyright"
 
-using NINA.Utility.Enum;
+using System;
+using System.Collections;
+using System.Windows;
+using System.Windows.Data;
 
-namespace NINA.Profile {
+namespace NINA.Utility.Converters {
 
-    public interface IImageSettings : ISettings {
-        bool AnnotateImage { get; set; }
-        bool DebayerImage { get; set; }
-        bool DebayeredHFR { get; set; }
-        bool UnlinkedStretch { get; set; }
-        double AutoStretchFactor { get; set; }
-        double BlackClipping { get; set; }
-        StarSensitivityEnum StarSensitivity { get; set; }
-        NoiseReductionEnum NoiseReduction { get; set; }
-        string SharpCapSensorAnalysisFolder { get; set; }
+    public class CollectionContainsItemsToBooleanConverter : IValueConverter {
+
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture) {
+            if (targetType != typeof(Boolean))
+                throw new InvalidOperationException("The target must be Boolean");
+            return value != null && ((ICollection)value).Count > 0;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture) {
+            throw new NotSupportedException();
+        }
+
+        #endregion IValueConverter Members
     }
 }

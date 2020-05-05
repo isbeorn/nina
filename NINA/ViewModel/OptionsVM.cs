@@ -37,6 +37,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace NINA.ViewModel {
@@ -51,6 +53,7 @@ namespace NINA.ViewModel {
             this.filterWheelMediator = filterWheelMediator;
             OpenWebRequestCommand = new RelayCommand(OpenWebRequest);
             OpenImageFileDiagCommand = new RelayCommand(OpenImageFileDiag);
+            OpenSharpCapSensorAnalysisFolderDiagCommand = new RelayCommand(OpenSharpCapSensorAnalysisFolderDiag);
             OpenSequenceTemplateDiagCommand = new RelayCommand(OpenSequenceTemplateDiag);
             OpenSequenceFolderDiagCommand = new RelayCommand(OpenSequenceFolderDiag);
             OpenCygwinFileDiagCommand = new RelayCommand(OpenCygwinFileDiag);
@@ -273,6 +276,19 @@ namespace NINA.ViewModel {
             }
         }
 
+        private void OpenSharpCapSensorAnalysisFolderDiag(object o) {
+            using (var diag = new System.Windows.Forms.FolderBrowserDialog()) {
+                diag.SelectedPath = ActiveProfile.ImageSettings.SharpCapSensorAnalysisFolder;
+                System.Windows.Forms.DialogResult result = diag.ShowDialog();
+                if (result == System.Windows.Forms.DialogResult.OK) {
+                    ActiveProfile.ImageSettings.SharpCapSensorAnalysisFolder = diag.SelectedPath + "\\";
+                    var vm = (ApplicationVM)Application.Current.Resources["AppVM"];
+                    var sensorAnalysisData = vm.ExposureCalculatorVM.LoadSensorAnalysisData(ActiveProfile.ImageSettings.SharpCapSensorAnalysisFolder);
+                    Notification.ShowInformation(String.Format(Locale.Loc.Instance["LblSharpCapSensorAnalysisLoadedFormat"], sensorAnalysisData.Count));
+                }
+            }
+        }
+
         private void OpenSequenceTemplateDiag(object o) {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
             dialog.Title = Locale.Loc.Instance["LblSequenceTemplate"];
@@ -384,6 +400,8 @@ namespace NINA.ViewModel {
         public ICommand OpenASTAPFileDiagCommand { get; private set; }
 
         public ICommand OpenImageFileDiagCommand { get; private set; }
+        public ICommand OpenSharpCapSensorAnalysisFolderDiagCommand { get; private set; }
+        public ICommand SensorAnalysisFolderChangedCommand { get; private set; }
 
         public ICommand OpenSequenceTemplateDiagCommand { get; private set; }
         public ICommand OpenSequenceFolderDiagCommand { get; private set; }

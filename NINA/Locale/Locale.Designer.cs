@@ -1262,6 +1262,24 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Calculate Bias.
+        /// </summary>
+        internal static string LblCalculateBias {
+            get {
+                return ResourceManager.GetString("LblCalculateBias", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Calculated Exposure Time.
+        /// </summary>
+        internal static string LblCalculatedExposureTime {
+            get {
+                return ResourceManager.GetString("LblCalculatedExposureTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cam.
         /// </summary>
         internal static string LblCam {
@@ -1452,6 +1470,24 @@ namespace NINA.Locale {
         internal static string LblCaptureImageAndPlatesolve {
             get {
                 return ResourceManager.GetString("LblCaptureImageAndPlatesolve", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cover Sensor and Capture Image.
+        /// </summary>
+        internal static string LblCaptureImageCovered {
+            get {
+                return ResourceManager.GetString("LblCaptureImageCovered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uncover Sensor and Capture Image.
+        /// </summary>
+        internal static string LblCaptureImageUncovered {
+            get {
+                return ResourceManager.GetString("LblCaptureImageUncovered", resourceCulture);
             }
         }
         
@@ -3170,6 +3206,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disabled.
+        /// </summary>
+        internal static string LblDisabled {
+            get {
+                return ResourceManager.GetString("LblDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Disconnect.
         /// </summary>
         internal static string LblDisconnect {
@@ -3521,8 +3566,9 @@ namespace NINA.Locale {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This tool will suggest recommended exposure times based on the measured Min and Max ADU values of a captured image. Average skyglow will be taken into consideration and will calulate the exposures to swamp the camera read noise by a factor of 3x (Min) and 10x (Max).
-        ///When the button is clicked the application will take one exposure and calculate the recommended times based on the image and the given input values..
+        ///   Looks up a localized string similar to This tool will suggest a recommended exposure time based on the read noise from your sensor and the average skyglow.
+        ///If you have SharpCap installed and perform a Sensor Analysis, then use the drop down below to retrieve the read noise and full well capacity for the specified gain.
+        ///You can also calculate the bias by clicking the Snapshot button next to Bias Mean..
         /// </summary>
         internal static string LblExposureCalculatorDescription {
             get {
@@ -5346,15 +5392,6 @@ namespace NINA.Locale {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Max recommended time.
-        /// </summary>
-        internal static string LblMaximumExposureTime {
-            get {
-                return ResourceManager.GetString("LblMaximumExposureTime", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Max Increment.
         /// </summary>
         internal static string LblMaxIncrement {
@@ -5369,15 +5406,6 @@ namespace NINA.Locale {
         internal static string LblMaxObjects {
             get {
                 return ResourceManager.GetString("LblMaxObjects", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Maximum ADU.
-        /// </summary>
-        internal static string LblMaxOptimalADU {
-            get {
-                return ResourceManager.GetString("LblMaxOptimalADU", resourceCulture);
             }
         }
         
@@ -5472,6 +5500,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Minimum Exposure Time from Download Ratio.
+        /// </summary>
+        internal static string LblMinExposureTimeDownloadRatio {
+            get {
+                return ResourceManager.GetString("LblMinExposureTimeDownloadRatio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Minimum Exposure Time.
         /// </summary>
         internal static string LblMinExpTime {
@@ -5490,29 +5527,11 @@ namespace NINA.Locale {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Min recommended time.
-        /// </summary>
-        internal static string LblMinimumExposureTime {
-            get {
-                return ResourceManager.GetString("LblMinimumExposureTime", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Minimum Settle Time.
         /// </summary>
         internal static string LblMinimumSettleTime {
             get {
                 return ResourceManager.GetString("LblMinimumSettleTime", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Minimal ADU.
-        /// </summary>
-        internal static string LblMinOptimalADU {
-            get {
-                return ResourceManager.GetString("LblMinOptimalADU", resourceCulture);
             }
         }
         
@@ -7251,6 +7270,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Recommended Exposure Time.
+        /// </summary>
+        internal static string LblRecommendedExposureTime {
+            get {
+                return ResourceManager.GetString("LblRecommendedExposureTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reconnect all devices?.
         /// </summary>
         internal static string LblReconnectAll {
@@ -7719,6 +7747,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sensor Analysis is irregular, and may not produce accurate results. Consider re-running it..
+        /// </summary>
+        internal static string LblSensorAnalysisPoorFit {
+            get {
+                return ResourceManager.GetString("LblSensorAnalysisPoorFit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sensor Name.
         /// </summary>
         internal static string LblSensorName {
@@ -7959,6 +7996,33 @@ namespace NINA.Locale {
         internal static string LblSettleTimeout {
             get {
                 return ResourceManager.GetString("LblSettleTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loaded {0} sensors.
+        /// </summary>
+        internal static string LblSharpCapSensorAnalysisLoadedFormat {
+            get {
+                return ResourceManager.GetString("LblSharpCapSensorAnalysisLoadedFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SharpCap Sensor Analysis folder.
+        /// </summary>
+        internal static string LblSharpCapSensorAnalysisPath {
+            get {
+                return ResourceManager.GetString("LblSharpCapSensorAnalysisPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Folder where SharpCap Sensor Analysis files can be found, if somewhere other than their default location.
+        /// </summary>
+        internal static string LblSharpCapSensorAnalysisPathTooltip {
+            get {
+                return ResourceManager.GetString("LblSharpCapSensorAnalysisPathTooltip", resourceCulture);
             }
         }
         
@@ -9680,6 +9744,15 @@ namespace NINA.Locale {
         internal static string LblUseBuldMode {
             get {
                 return ResourceManager.GetString("LblUseBuldMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use SharpCap Sensor Analysis.
+        /// </summary>
+        internal static string LblUseSharpCapSensorAnalysis {
+            get {
+                return ResourceManager.GetString("LblUseSharpCapSensorAnalysis", resourceCulture);
             }
         }
         

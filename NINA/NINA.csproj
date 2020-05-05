@@ -284,6 +284,7 @@
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Management" />
     <Reference Include="System.Net" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
@@ -478,6 +479,7 @@
     <Compile Include="Model\MySwitch\PegasusAstro\ContinuousSwitches.cs" />
     <Compile Include="Model\MySwitch\PegasusAstro\UltimatePowerBoxV2.cs" />
     <Compile Include="Utility\CameraSDKs\OmegonSDK\omegonprocam.cs" />
+    <Compile Include="Utility\Converters\CollectionContainsItemsToBooleanConverter.cs" />
     <Compile Include="Utility\Converters\DecDegreeConverter.cs" />
     <Compile Include="Utility\Converters\FilterWheelFilterConverter.cs" />
     <Compile Include="Utility\Converters\ImagePatternToTextConverter.cs" />
@@ -510,6 +512,7 @@
     <Compile Include="Utility\FlatDeviceSDKs\Artesky\ArteskyDevice.cs" />
     <Compile Include="Utility\FlatDeviceSDKs\AllPro\USBD.cs" />
     <Compile Include="Utility\SerialCommunication\Exceptions.cs" />
+    <Compile Include="Utility\ImageAnalysis\SharpCapSensorAnalysisReader.cs" />
     <Compile Include="Utility\SerialCommunication\ISerialSdk.cs" />
     <Compile Include="Utility\SerialCommunication\SerialSdk.cs" />
     <Compile Include="Utility\SerialCommunication\ICommand.cs" />
@@ -1867,7 +1870,9 @@
     <None Include="packages.config" />
     <None Include="Resources\avalondock.config" />
     <SplashScreen Include="Resources\ninasplash.png" />
-    <EmbeddedResource Include="Locale\Locale.da-DK.resx" />
+    <EmbeddedResource Include="Locale\Locale.da-DK.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Locale\Locale.de-DE.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Locale.de-DE.Designer.cs</LastGenOutput>

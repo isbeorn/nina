@@ -25,65 +25,183 @@ using NINA.Model;
 using NINA.Model.ImageData;
 using NINA.Profile;
 using NINA.Utility;
+using NINA.Utility.ImageAnalysis;
 using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace NINA.ViewModel.Imaging {
 
     public class ExposureCalculatorVM : DockableVM {
-        private double _maxRecommendedExposureTime;
         private double _recommendedExposureTime;
-        private double _optimizedExposureTime;
-        private double _downloadToExposureRatio = 9;
         private Model.MyFilterWheel.FilterInfo _snapFilter;
+        private ISharpCapSensorAnalysisReader _sharpCapSensorAnalysisReader;
         private CancellationTokenSource _cts;
+        private string _sharpCapSensorAnalysisDisabledValue;
+        private ImmutableDictionary<string, SharpCapSensorAnalysisData> _sharpCapSensorAnalysisData;
+        private static double WARN_THRESHOLD_FOR_SHARPCAP_GOODNESS_OF_FIT = 0.8;
 
-        public ExposureCalculatorVM(IProfileService profileService, IImagingMediator imagingMediator) : base(profileService) {
+        public ExposureCalculatorVM(IProfileService profileService, IImagingMediator imagingMediator, ISharpCapSensorAnalysisReader sharpCapSensorAnalysisReader) 
+            : base(profileService) {
             this._imagingMediator = imagingMediator;
             this.Title = "LblExposureCalculator";
+            this._sharpCapSensorAnalysisReader = sharpCapSensorAnalysisReader;
 
-            if (System.Windows.Application.Current != null) {
-                ImageGeometry = (System.Windows.Media.GeometryGroup)System.Windows.Application.Current.Resources["CalculatorSVG"];
+            if (Application.Current != null) {
+                ImageGeometry = (System.Windows.Media.GeometryGroup)Application.Current.Resources["CalculatorSVG"];
             }
 
             DetermineExposureTimeCommand = new AsyncCommand<bool>(DetermineExposureTime);
-            CancelDetermineExposureTimeCommand = new RelayCommand(CancelDetermineExposureTime);
+            CancelDetermineExposureTimeCommand = new RelayCommand(TriggerCancelToken);
+            DetermineBiasCommand = new AsyncCommand<bool>(DetermineBias);
+            ReloadSensorAnalysisCommand = new AsyncCommand<bool>(ReloadSensorAnalysis);
+            CancelDetermineBiasCommand = new RelayCommand(TriggerCancelToken);
+
+            this._sharpCapSensorAnalysisDisabledValue = "(" + Locale.Loc.Instance["LblDisabled"] + ")";
+            this._sharpCapSensorNames = new ObservableCollection<string>();
+
+            var path = String.IsNullOrEmpty(this.profileService.ActiveProfile.ImageSettings.SharpCapSensorAnalysisFolder) 
+                ? SharpCapSensorAnalysisConstants.DEFAULT_SHARPCAP_SENSOR_ANALYSIS_PATH 
+                : this.profileService.ActiveProfile.ImageSettings.SharpCapSensorAnalysisFolder;
+            LoadSensorAnalysisData(path);
         }
 
-        private void CancelDetermineExposureTime(object obj) {
+        private static ImmutableDictionary<string, SharpCapSensorAnalysisData> ReadSensorAnalysisData(ISharpCapSensorAnalysisReader sharpCapSensorAnalysisReader, string path) {
+            try {
+                return sharpCapSensorAnalysisReader.Read(path);
+            } catch (Exception ex) {
+                Logger.Error(ex, "Failed to read SharpCap sensor analysis data");
+                return ImmutableDictionary.Create<string, SharpCapSensorAnalysisData>();
+            }
+        }
+
+        public ImmutableDictionary<string, SharpCapSensorAnalysisData> LoadSensorAnalysisData(string path) {
+            SharpCapSensorNames.Clear();
+            this._sharpCapSensorAnalysisData = ReadSensorAnalysisData(this._sharpCapSensorAnalysisReader, path);
+            if (!this._sharpCapSensorAnalysisData.IsEmpty) {
+                SharpCapSensorNames.Add(this._sharpCapSensorAnalysisDisabledValue);
+                foreach (var key in this._sharpCapSensorAnalysisData.Keys) {
+                    SharpCapSensorNames.Add(key);
+                }
+            }
+            RaisePropertyChanged("SharpCapSensorNames");
+            return this._sharpCapSensorAnalysisData;
+        }
+
+        private void TriggerCancelToken(object obj) {
             _cts?.Cancel();
         }
 
-        private async Task<bool> DetermineExposureTime(object arg) {
+        private async Task<AllImageStatistics> TakeExposure(double exposureDuration) {
             _cts?.Dispose();
             _cts = new CancellationTokenSource();
-            this.Statistics = null;
 
-            var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAPSHOT, SnapFilter, new Model.MyCamera.BinningMode(1, 1), 1);
+            var seq = new CaptureSequence(exposureDuration, CaptureSequence.ImageTypes.SNAPSHOT, SnapFilter, new Model.MyCamera.BinningMode(1, 1), 1);
             seq.Gain = SnapGain;
             var prepareParameters = new PrepareImageParameters(autoStretch: true, detectStars: false);
             var capture = await _imagingMediator.CaptureAndPrepareImage(seq, prepareParameters, _cts.Token, null); //todo progress
-            this.Statistics = await AllImageStatistics.Create(capture.RawImageData);
+            return await AllImageStatistics.Create(capture.RawImageData);
+        }
+
+        private async Task<bool> DetermineExposureTime(object arg) {
+            this.Statistics = null;
+            this.Statistics = await TakeExposure(SnapExposureDuration);
             this.CalculateRecommendedExposureTime();
+            return true;
+        }
+
+        private async Task<bool> DetermineBias(object arg) {
+            MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblCoverScopeMsgBoxTitle"]);
+            var imageStatistics = await TakeExposure(0);
+            this.BiasMean = (await imageStatistics.ImageStatistics).Median;
+            return true;
+        }
+
+        private async Task<bool> ReloadSensorAnalysis(object obj) {
+            var path = String.IsNullOrEmpty(this.profileService.ActiveProfile.ImageSettings.SharpCapSensorAnalysisFolder)
+                ? SharpCapSensorAnalysisConstants.DEFAULT_SHARPCAP_SENSOR_ANALYSIS_PATH
+                : this.profileService.ActiveProfile.ImageSettings.SharpCapSensorAnalysisFolder;
+            var sensorAnalysisData = LoadSensorAnalysisData(path);
+            Notification.ShowInformation(String.Format(Locale.Loc.Instance["LblSharpCapSensorAnalysisLoadedFormat"], sensorAnalysisData.Count));
             return true;
         }
 
         public IAsyncCommand DetermineExposureTimeCommand { get; private set; }
         public ICommand CancelDetermineExposureTimeCommand { get; private set; }
+        public IAsyncCommand DetermineBiasCommand { get; private set; }
+        public ICommand CancelDetermineBiasCommand { get; private set; }
+        public ICommand ReloadSensorAnalysisCommand { get; private set; }
+
+        private ObservableCollection<string> _sharpCapSensorNames;
+
+        public ObservableCollection<string> SharpCapSensorNames {
+            get {
+                if (_sharpCapSensorNames == null) {
+                    _sharpCapSensorNames = new ObservableCollection<string>();
+                }
+                return _sharpCapSensorNames;
+            }
+            set {
+                _sharpCapSensorNames = value;
+            }
+        }
+
+        private void OnGainUpdated(int newValue) {
+            if (this.IsSharpCapSensorAnalysisEnabled && newValue >= 0) {
+                var analysisData = this._sharpCapSensorAnalysisData[this._mySharpCapSensor];
+                var readNoiseEstimate = analysisData.EstimateReadNoise((double)newValue);
+                var fullWellCapacityEstimate = analysisData.EstimateFullWellCapacity((double)newValue);
+                if (readNoiseEstimate.RSquared < WARN_THRESHOLD_FOR_SHARPCAP_GOODNESS_OF_FIT
+                    || fullWellCapacityEstimate.RSquared < WARN_THRESHOLD_FOR_SHARPCAP_GOODNESS_OF_FIT) {
+                    Notification.ShowWarning(Locale.Loc.Instance["LblSensorAnalysisPoorFit"]);
+                }
+                this.ReadNoise = readNoiseEstimate.EstimatedValue;
+                this.FullWellCapacity = fullWellCapacityEstimate.EstimatedValue;
+            }
+        }
+
+        private void OnSharpCapSensorChanged(string newValue) {
+            if (String.IsNullOrEmpty(newValue) || newValue == this._sharpCapSensorAnalysisDisabledValue) {
+                this.IsSharpCapSensorAnalysisEnabled = false;
+            } else {
+                this.IsSharpCapSensorAnalysisEnabled = true;
+                this.OnGainUpdated(this.SnapGain);
+            }
+        }
+
+        private bool _isSharpCapSensorAnalysisEnabled = false;
+        public bool IsSharpCapSensorAnalysisEnabled {
+            get => this._isSharpCapSensorAnalysisEnabled;
+            set {
+                this._isSharpCapSensorAnalysisEnabled = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string _mySharpCapSensor;
+        public string MySharpCapSensor {
+            get => _mySharpCapSensor;
+
+            set {
+                _mySharpCapSensor = value;
+                this.OnSharpCapSensorChanged(value);
+                RaisePropertyChanged();
+            }
+        }
 
         public int SnapGain {
             get => profileService.ActiveProfile.ExposureCalculatorSettings.Gain;
 
             set {
                 profileService.ActiveProfile.ExposureCalculatorSettings.Gain = value;
+                this.OnGainUpdated(value);
                 RaisePropertyChanged();
             }
         }
@@ -130,74 +248,13 @@ namespace NINA.ViewModel.Imaging {
             }
         }
 
-        public double MaximumRecommendedExposureTime {
-            get {
-                return _maxRecommendedExposureTime;
-            }
-            set {
-                _maxRecommendedExposureTime = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double MinimumRecommendedExposureTime {
+        public double RecommendedExposureTime {
             get {
                 return _recommendedExposureTime;
             }
             set {
                 _recommendedExposureTime = value;
                 RaisePropertyChanged();
-            }
-        }
-
-        public double OptimizedExposureTime {
-            get {
-                return _optimizedExposureTime;
-            }
-            set {
-                _optimizedExposureTime = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public double MaxExposureADU {
-            get {
-                return _offset + 10 * _squaredReadNoise;
-            }
-        }
-
-        public double MinExposureADU {
-            get {
-                return _offset + 3 * _squaredReadNoise;
-            }
-        }
-
-        private double _offset {
-            get {
-                return ConvertToOutputBitDepth(BiasMean);
-            }
-        }
-
-        private double _squaredReadNoise {
-            get {
-                if (Statistics != null) {
-                    return ConvertToOutputBitDepth(Math.Pow(ReadNoise / (FullWellCapacity / Math.Pow(2, Statistics.ImageProperties.BitDepth)), 2));
-                } else {
-                    return 0;
-                }
-            }
-        }
-
-        private double ConvertToOutputBitDepth(double input) {
-            if (Statistics != null) {
-                if ((Statistics.ImageProperties.IsBayered && profileService.ActiveProfile.CameraSettings.RawConverter == Utility.Enum.RawConverterEnum.DCRAW)
-                    || !Statistics.ImageProperties.IsBayered) {
-                    return input * (Math.Pow(2, 16) / Math.Pow(2, Statistics.ImageProperties.BitDepth));
-                }
-
-                return input;
-            } else {
-                return 0.0;
             }
         }
 
@@ -215,28 +272,21 @@ namespace NINA.ViewModel.Imaging {
         }
 
         private void CalculateRecommendedExposureTime() {
-            if (Statistics.ImageStatistics.Result.Mean - _offset < 0) {
+            if (Statistics.ImageStatistics.Result.Median - BiasMean < 0) {
                 this.Statistics = null;
                 Notification.ShowError(Locale.Loc.Instance["LblExposureCalculatorMeanLessThanOffset"]);
             } else {
-                MinimumRecommendedExposureTime = ((MinExposureADU - _offset) / (Statistics.ImageStatistics.Result.Mean - _offset)) * SnapExposureDuration;
-                MaximumRecommendedExposureTime = ((MaxExposureADU - _offset) / (Statistics.ImageStatistics.Result.Mean - _offset)) * SnapExposureDuration;
-                var downloadTime = profileService.ActiveProfile.SequenceSettings.EstimatedDownloadTime.TotalSeconds;
-
-                var optimalRatioExposureTime = _downloadToExposureRatio * downloadTime;
-
-                //CurrentDownloadToDataRatio = (exposureTime / downloadTime).ToString("0.000");
-
-                var recommendedTime = MinimumRecommendedExposureTime;
-
-                if (optimalRatioExposureTime > MinimumRecommendedExposureTime) {
-                    recommendedTime = optimalRatioExposureTime;
-                }
-
-                OptimizedExposureTime = recommendedTime;
-
-                RaisePropertyChanged(nameof(MinExposureADU));
-                RaisePropertyChanged(nameof(MaxExposureADU));
+                // Optimal exposure time is: 10 * ReadNoiseSquared / LightPollutionRate
+                // Read noise units is electrons per ADU
+                // Light pollution units is electrons per ADU per second, which we get by:
+                //   1) Subtract the bias mean from the median of a snapshot (= skyglow in ADU)
+                //   2) Convert to electrons by multiplying the electrons per ADU
+                //   3) Divide by the snapshot exposure duration
+                var maxAdu = 1 << Statistics.ImageProperties.BitDepth;
+                var electronsPerAdu = FullWellCapacity / maxAdu;
+                var skyglowFluxPerSecond = (Statistics.ImageStatistics.Result.Median - BiasMean) * electronsPerAdu / SnapExposureDuration;
+                var readNoiseSquared = ReadNoise * ReadNoise;
+                RecommendedExposureTime = 10 * readNoiseSquared / skyglowFluxPerSecond;
             }
         }
     }

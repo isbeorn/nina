@@ -26,6 +26,7 @@
 
 using NINA.Profile;
 using NINA.Utility;
+using NINA.Utility.ImageAnalysis;
 using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
@@ -655,7 +656,7 @@ namespace NINA.ViewModel {
         public ExposureCalculatorVM ExposureCalculatorVM {
             get {
                 if (exposureCalculatorVM == null) {
-                    exposureCalculatorVM = new ExposureCalculatorVM(profileService, imagingMediator);
+                    exposureCalculatorVM = new ExposureCalculatorVM(profileService, imagingMediator, new DefaultSharpCapSensorAnalysisReader());
                 }
                 return exposureCalculatorVM;
             }
