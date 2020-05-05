@@ -106,6 +106,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Absolute.
+        /// </summary>
+        internal static string LblAbsolute {
+            get {
+                return ResourceManager.GetString("LblAbsolute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Active.
         /// </summary>
         internal static string LblActive {
@@ -4318,6 +4327,32 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Backlash Compensation Method.
+        /// </summary>
+        internal static string LblFocuserBacklashMethod {
+            get {
+                return ResourceManager.GetString("LblFocuserBacklashMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This controls the backlash compensation method used.
+        ///
+        ///Absolute: 
+        ///  When the focuser changes directions, an absolute value will be added to the focuser movement.
+        ///  Backlash IN: when the focuser changes from moving outwards to moving inwards the Backlash IN value will be added
+        ///  Backlash OUT: when the focuser changes from moving inwards to moving outwards the Backlash OUT value will be added
+        ///  
+        ///Overshoot:
+        ///  This method will compensate for Backlash by overshooting the target position by a large amount  [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string LblFocuserBacklashMethodTooltip {
+            get {
+                return ResourceManager.GetString("LblFocuserBacklashMethodTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Inwards and outwards focuser backlash, in focuser steps.
         /// </summary>
         internal static string LblFocuserBacklashTooltip {
@@ -6342,6 +6377,15 @@ namespace NINA.Locale {
         internal static string LblOverlapPercentage {
             get {
                 return ResourceManager.GetString("LblOverlapPercentage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Overshoot.
+        /// </summary>
+        internal static string LblOvershoot {
+            get {
+                return ResourceManager.GetString("LblOvershoot", resourceCulture);
             }
         }
         

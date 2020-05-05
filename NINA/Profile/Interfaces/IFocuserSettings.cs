@@ -44,5 +44,6 @@ namespace NINA.Profile {
         AFCurveFittingEnum AutoFocusCurveFitting { get; set; }
         AFMethodEnum AutoFocusMethod { get; set; }
         ContrastDetectionMethodEnum ContrastDetectionMethod { get; set; }
+        BacklashCompensationModel BacklashCompensationModel { get; set; }
     }
 }

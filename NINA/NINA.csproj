@@ -484,6 +484,7 @@
     <Compile Include="Utility\Converters\FilterWheelFilterConverter.cs" />
     <Compile Include="Utility\Converters\ImagePatternToTextConverter.cs" />
     <Compile Include="Utility\Converters\NaNToVisibilityCollapsedConverter.cs" />
+    <Compile Include="Utility\Enum\BacklashCompensationModel.cs" />
     <Compile Include="Utility\Enum\BayerPatternEnum.cs" />
     <Compile Include="Utility\FileFormat\XISF\DataConverter\Float32Converter.cs" />
     <Compile Include="Utility\FileFormat\XISF\DataConverter\Float64Converter.cs" />
@@ -649,7 +650,10 @@
     <Compile Include="ViewModel\Equipment\FlatDevice\FlatDeviceChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\FlatDevice\FlatDeviceVM.cs" />
     <Compile Include="ViewModel\Equipment\FlatDevice\IFlatDeviceVM.cs" />
+    <Compile Include="ViewModel\Equipment\Focuser\AbsoluteBacklashCompensationDecorator.cs" />
     <Compile Include="ViewModel\Equipment\Focuser\FocuserChooserVM.cs" />
+    <Compile Include="ViewModel\Equipment\Focuser\FocuserDecorator.cs" />
+    <Compile Include="ViewModel\Equipment\Focuser\OvershootBacklashCompensationDecorator.cs" />
     <Compile Include="ViewModel\Equipment\Rotator\RotatorChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\Telescope\TelescopeChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\Guider\GuiderChooserVM.cs" />

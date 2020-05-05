@@ -878,6 +878,43 @@
                                         </TextBox.Text>
                                     </TextBox>
                                 </UniformGrid>
+                                <UniformGrid Margin="0,5,0,0" Columns="2">
+                                    <TextBlock
+                                        MinWidth="200"
+                                        MinHeight="20"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblFocuserBacklashMethod}">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblFocuserBacklashMethodTooltip}" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                    <ComboBox
+                                        Name="cbBacklashMethod"
+                                        IsEnabled="{Binding Source={StaticResource AppVM}, Path=FocuserVM.FocuserInfo.Connected, Converter={StaticResource InverseBooleanConverter}, FallbackValue=true}"
+                                        ItemsSource="{Binding Source={util:EnumBindingSource {x:Type enum:BacklashCompensationModel}}}"
+                                        SelectedItem="{Binding BacklashCompensationModel}">
+
+                                        <ComboBox.ToolTip>
+                                            <TextBlock Text="{ns:Loc LblFocuserBacklashMethodTooltip}" />
+                                        </ComboBox.ToolTip>
+                                    </ComboBox>
+                                </UniformGrid>
+                                <UniformGrid Margin="0,5,0,0" Columns="2">
+                                    <TextBlock
+                                        MinWidth="200"
+                                        MinHeight="20"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblBinning}" />
+                                    <TextBox Height="25" HorizontalAlignment="Stretch">
+                                        <TextBox.Text>
+                                            <Binding Path="AutoFocusBinning" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <rules:StrictGreaterZeroRule />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                </UniformGrid>
                                 <UniformGrid Margin="0,5,0,0" Columns="3">
                                     <TextBlock
                                         MinWidth="200"
@@ -902,22 +939,6 @@
                                             <Binding Path="BacklashOut" UpdateSourceTrigger="LostFocus">
                                                 <Binding.ValidationRules>
                                                     <rules:GreaterZeroRule />
-                                                </Binding.ValidationRules>
-                                            </Binding>
-                                        </TextBox.Text>
-                                    </TextBox>
-                                </UniformGrid>
-                                <UniformGrid Margin="0,5,0,0" Columns="2">
-                                    <TextBlock
-                                        MinWidth="200"
-                                        MinHeight="20"
-                                        VerticalAlignment="Center"
-                                        Text="{ns:Loc LblBinning}" />
-                                    <TextBox Height="25" HorizontalAlignment="Stretch">
-                                        <TextBox.Text>
-                                            <Binding Path="AutoFocusBinning" UpdateSourceTrigger="LostFocus">
-                                                <Binding.ValidationRules>
-                                                    <rules:StrictGreaterZeroRule />
                                                 </Binding.ValidationRules>
                                             </Binding>
                                         </TextBox.Text>

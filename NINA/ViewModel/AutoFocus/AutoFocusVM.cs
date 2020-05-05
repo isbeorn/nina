@@ -128,7 +128,7 @@ namespace NINA.ViewModel {
                             return await StartBacklashMeasurement(CommandInitializization(), _autoFocusCancelToken.Token, new Progress<ApplicationStatus>(p => Status = p));
                         }
                     ),
-                (p) => { return focuserInfo?.Connected == true && cameraInfo?.Connected == true; }
+                (p) => { return focuserInfo?.Connected == true && cameraInfo?.Connected == true && profileService.ActiveProfile.FocuserSettings.BacklashCompensationModel == BacklashCompensationModel.ABSOLUTE; }
             );
             CancelBacklashMeasurementCommand = new RelayCommand(CancelAutoFocus);
         }

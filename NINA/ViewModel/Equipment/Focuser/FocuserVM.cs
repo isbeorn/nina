@@ -33,6 +33,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Accord.Math.Geometry;
 
 namespace NINA.ViewModel.Equipment.Focuser {
 
@@ -86,25 +87,13 @@ namespace NINA.ViewModel.Equipment.Focuser {
             Focuser.Halt();
         }
 
-        private enum Direction {
-            IN,
-            OUT,
-            NONE
-        }
-
-        private Direction _lastFocuserDirection = Direction.NONE;
-        private int _focuserOffset = 0;
         private CancellationTokenSource _cancelMove;
 
         public async Task<int> MoveFocuser(int position) {
             _cancelMove?.Dispose();
             _cancelMove = new CancellationTokenSource();
             int pos = -1;
-            int initialPos = this.Position;
-            int backlashCompensation = GetBacklashCompensation(initialPos, position);
-            Logger.Debug($"Backlash compensation is using backlash value of {backlashCompensation}");
-            position += backlashCompensation;
-            position += _focuserOffset;
+
             await Task.Run(async () => {
                 try {
                     var tempComp = false;
@@ -112,14 +101,12 @@ namespace NINA.ViewModel.Equipment.Focuser {
                         tempComp = true;
                         ToggleTempComp(false);
                     }
+
                     while (Focuser.Position != position) {
                         FocuserInfo.IsMoving = true;
                         _cancelMove.Token.ThrowIfCancellationRequested();
                         await Focuser.Move(position, _cancelMove.Token);
                     }
-
-                    _lastFocuserDirection = MoveDirection(initialPos, position);
-                    _focuserOffset += backlashCompensation;
 
                     FocuserInfo.Position = this.Position;
                     pos = this.Position;
@@ -146,28 +133,6 @@ namespace NINA.ViewModel.Equipment.Focuser {
             return pos;
         }
 
-        private int GetBacklashCompensation(int oldPos, int newPos) {
-            if (newPos > oldPos && _lastFocuserDirection == Direction.IN) {
-                Logger.Debug("Focuser is reversing direction");
-                return profileService.ActiveProfile.FocuserSettings.BacklashOut;
-            } else if (newPos < oldPos && _lastFocuserDirection == Direction.OUT) {
-                Logger.Debug("Focuser is reversing direction");
-                return profileService.ActiveProfile.FocuserSettings.BacklashIn * -1;
-            } else {
-                return 0;
-            }
-        }
-
-        private Direction MoveDirection(int oldPos, int newPos) {
-            if (newPos > oldPos) {
-                return Direction.OUT;
-            } else if (newPos < oldPos) {
-                return Direction.IN;
-            } else {
-                return _lastFocuserDirection;
-            }
-        }
-
         public async Task<int> MoveFocuserRelative(int offset) {
             int pos = -1;
             if (Focuser?.Connected == true) {
@@ -180,6 +145,19 @@ namespace NINA.ViewModel.Equipment.Focuser {
         private CancellationTokenSource _cancelChooseFocuserSource;
 
         private readonly SemaphoreSlim ss = new SemaphoreSlim(1, 1);
+
+        private IFocuser GetBacklashCompensationFocuser(IProfileService profileService, IFocuser focuser) {
+            switch (profileService.ActiveProfile.FocuserSettings.BacklashCompensationModel) {
+                case Utility.Enum.BacklashCompensationModel.ABSOLUTE:
+                    return new AbsoluteBacklashCompensationDecorator(profileService, focuser);
+
+                case Utility.Enum.BacklashCompensationModel.OVERSHOOT:
+                    return new OvershootBacklashCompensationDecorator(profileService, focuser);
+
+                default:
+                    return focuser;
+            }
+        }
 
         private async Task<bool> ChooseFocuser() {
             await ss.WaitAsync();
@@ -201,7 +179,7 @@ namespace NINA.ViewModel.Equipment.Focuser {
                     }
                 );
 
-                var focuser = (IFocuser)FocuserChooserVM.SelectedDevice;
+                var focuser = GetBacklashCompensationFocuser(profileService, (IFocuser)FocuserChooserVM.SelectedDevice);
                 _cancelChooseFocuserSource?.Dispose();
                 _cancelChooseFocuserSource = new CancellationTokenSource();
                 if (focuser != null) {
@@ -324,7 +302,7 @@ namespace NINA.ViewModel.Equipment.Focuser {
         public int Position {
             get {
                 if (Focuser != null) {
-                    return Focuser.Position - _focuserOffset;
+                    return Focuser.Position;
                 } else {
                     return 0;
                 }
