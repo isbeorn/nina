@@ -61,9 +61,9 @@
                         <ComboBox
                             Height="25"
                             Margin="5,0,0,0"
+                            IsEnabled="{Binding SharpCapSensorNames, Converter={StaticResource CollectionContainsItemsToBooleanConverter}}"
                             ItemsSource="{Binding SharpCapSensorNames}"
-                            SelectedItem="{Binding MySharpCapSensor}" 
-                            IsEnabled="{Binding SharpCapSensorNames, Converter={StaticResource CollectionContainsItemsToBooleanConverter}}"/>
+                            SelectedItem="{Binding MySharpCapSensor}" />
                         <Button
                             Grid.Column="3"
                             Width="25"
@@ -92,7 +92,7 @@
                     <TextBox
                         MinWidth="80"
                         HorizontalAlignment="Stretch"
-                        VerticalAlignment="Center" 
+                        VerticalAlignment="Center"
                         IsEnabled="{Binding IsSharpCapSensorAnalysisEnabled, Converter={StaticResource InverseBooleanConverter}}">
                         <TextBox.Text>
                             <Binding Path="FullWellCapacity" UpdateSourceTrigger="LostFocus">
@@ -131,29 +131,29 @@
                     VerticalAlignment="Center"
                     Columns="2">
                     <TextBlock
-                        HorizontalAlignment="Left"
                         Width="150"
+                        HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Text="{ns:Loc LblBiasMean}" />
                     <Grid
                         Margin="0,0,0,0"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Stretch">
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="140"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="140" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <ninactrl:CancellableButton
                             Grid.Column="0"
-                            HorizontalAlignment="Left"
-                            Height="25"
                             Width="120"
+                            Height="25"
                             Margin="10,10,10,0"
+                            HorizontalAlignment="Left"
+                            ButtonText="{ns:Loc LblCalculateBias}"
                             CancelCommand="{Binding CancelDetermineBiasCommand}"
                             Command="{Binding DetermineBiasCommand}"
                             IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.LiveViewEnabled, FallbackValue=False, Converter={StaticResource InverseBooleanConverter}}"
-                            ToolTip="{ns:Loc LblCaptureImageCovered}"
-                            ButtonText="{ns:Loc LblCalculateBias}"/>
+                            ToolTip="{ns:Loc LblCaptureImageCovered}" />
                         <TextBox
                             Grid.Column="1"
                             MinWidth="80"
@@ -184,13 +184,13 @@
                         <TextBlock
                             Width="240"
                             VerticalAlignment="Center"
-                            TextWrapping="Wrap"
-                            Text="{ns:Loc LblRecommendedExposureTime}" />
+                            Text="{ns:Loc LblRecommendedExposureTime}"
+                            TextWrapping="Wrap" />
                         <TextBlock
                             Width="40"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Text="{Binding RecommendedExposureTime, StringFormat=\{0:#0\}, Mode=OneWay}" />
+                            Text="{Binding RecommendedExposureTime, StringFormat={}{0:0}s, Mode=OneWay}" />
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
