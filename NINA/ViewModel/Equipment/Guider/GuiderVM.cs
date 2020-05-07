@@ -63,11 +63,6 @@ namespace NINA.ViewModel.Equipment.Guider {
 
         public IGuiderChooserVM GuiderChooserVM { get; set; }
 
-        public enum GuideStepsHistoryType {
-            GuideStepsLarge,
-            GuideStepsMinimal
-        }
-
         /// <summary>
         /// Starts recording RMS until StopRMSRecording is called
         /// </summary>
