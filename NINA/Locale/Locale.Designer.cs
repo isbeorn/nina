@@ -4380,6 +4380,24 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Moves focuser by a large amount using five times the Autofocus Stepsize.
+        /// </summary>
+        internal static string LblFocuserMoveLargeTooltip {
+            get {
+                return ResourceManager.GetString("LblFocuserMoveLargeTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Moves focuser by a small amount using half the Autofocus Stepsize .
+        /// </summary>
+        internal static string LblFocuserMoveSmallTooltip {
+            get {
+                return ResourceManager.GetString("LblFocuserMoveSmallTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Current focuser position.
         /// </summary>
         internal static string LblFocuserPositionDescription {
@@ -5630,6 +5648,24 @@ namespace NINA.Locale {
         internal static string LblMove {
             get {
                 return ResourceManager.GetString("LblMove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Moves focuser to the specified target position.
+        /// </summary>
+        internal static string LblMoveFocuserTooltip {
+            get {
+                return ResourceManager.GetString("LblMoveFocuserTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Moves rotator to the specified target position.
+        /// </summary>
+        internal static string LblMoveRotatorTooltip {
+            get {
+                return ResourceManager.GetString("LblMoveRotatorTooltip", resourceCulture);
             }
         }
         

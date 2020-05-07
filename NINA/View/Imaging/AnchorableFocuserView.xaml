@@ -150,7 +150,7 @@
                             CancelButtonImage="{StaticResource CancelSVG}"
                             CancelCommand="{Binding HaltFocuserCommand}"
                             Command="{Binding MoveFocuserCommand}"
-                            ToolTip="" />
+                            ToolTip="{ns:Loc LblMoveFocuserTooltip}" />
                     </Grid>
                     <UniformGrid
                         Margin="0,2,0,2"
@@ -165,7 +165,8 @@
                                 ButtonText="&lt;&lt;"
                                 CancelButtonImage="{StaticResource CancelSVG}"
                                 CancelCommand="{Binding HaltFocuserCommand}"
-                                Command="{Binding MoveFocuserInLargeCommand}" />
+                                Command="{Binding MoveFocuserInLargeCommand}"
+                                ToolTip="{ns:Loc LblFocuserMoveLargeTooltip}" />
                         </Grid>
                         <Grid HorizontalAlignment="Center" IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
                             <ninactrl:CancellableButton
@@ -176,7 +177,8 @@
                                 ButtonText="&lt;"
                                 CancelButtonImage="{StaticResource CancelSVG}"
                                 CancelCommand="{Binding HaltFocuserCommand}"
-                                Command="{Binding MoveFocuserInSmallCommand}" />
+                                Command="{Binding MoveFocuserInSmallCommand}"
+                                ToolTip="{ns:Loc LblFocuserMoveSmallTooltip}" />
                         </Grid>
                         <Grid HorizontalAlignment="Center" IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
                             <ninactrl:CancellableButton
@@ -187,7 +189,8 @@
                                 ButtonText="&gt;"
                                 CancelButtonImage="{StaticResource CancelSVG}"
                                 CancelCommand="{Binding HaltFocuserCommand}"
-                                Command="{Binding MoveFocuserOutSmallCommand}" />
+                                Command="{Binding MoveFocuserOutSmallCommand}"
+                                ToolTip="{ns:Loc LblFocuserMoveSmallTooltip}" />
                         </Grid>
                         <Grid HorizontalAlignment="Center" IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
                             <ninactrl:CancellableButton
@@ -198,7 +201,8 @@
                                 ButtonText="&gt;&gt;"
                                 CancelButtonImage="{StaticResource CancelSVG}"
                                 CancelCommand="{Binding HaltFocuserCommand}"
-                                Command="{Binding MoveFocuserOutLargeCommand}" />
+                                Command="{Binding MoveFocuserOutLargeCommand}"
+                                ToolTip="{ns:Loc LblFocuserMoveLargeTooltip}" />
                         </Grid>
                     </UniformGrid>
                 </StackPanel>

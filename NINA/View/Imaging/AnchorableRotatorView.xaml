@@ -101,7 +101,7 @@
                             CancelButtonImage="{StaticResource CancelSVG}"
                             CancelCommand="{Binding HaltCommand}"
                             Command="{Binding MoveCommand}"
-                            ToolTip="" />
+                            ToolTip="{ns:Loc LblMoveRotatorTooltip}" />
                     </Grid>
                 </StackPanel>
             </Grid>
