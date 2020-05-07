@@ -92,7 +92,9 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
                                 var newFilter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters.Where(x => x.Position == filter.Position).FirstOrDefault();
                                 if (newFilter != null) {
                                     int offset = newFilter.FocusOffset - prevFilter.FocusOffset;
-                                    changeFocus = focuserMediator.MoveFocuserRelative(offset);
+                                    if (offset != 0) {
+                                        changeFocus = focuserMediator.MoveFocuserRelative(offset);
+                                    }
                                 }
                             }
                         }
