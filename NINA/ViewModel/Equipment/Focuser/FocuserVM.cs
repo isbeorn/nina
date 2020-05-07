@@ -51,11 +51,11 @@ namespace NINA.ViewModel.Equipment.Focuser {
             CancelChooseFocuserCommand = new RelayCommand(CancelChooseFocuser);
             DisconnectCommand = new AsyncCommand<bool>(() => DisconnectDiag());
             RefreshFocuserListCommand = new RelayCommand(RefreshFocuserList, o => !(Focuser?.Connected == true));
-            MoveFocuserInSmallCommand = new AsyncCommand<int>(() => MoveFocuserRelative((int)Math.Round(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize / -2d)), (p) => FocuserInfo.Connected);
-            MoveFocuserInLargeCommand = new AsyncCommand<int>(() => MoveFocuserRelative(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize * -5), (p) => FocuserInfo.Connected);
-            MoveFocuserOutSmallCommand = new AsyncCommand<int>(() => MoveFocuserRelative((int)Math.Round(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize / 2d)), (p) => FocuserInfo.Connected);
-            MoveFocuserOutLargeCommand = new AsyncCommand<int>(() => MoveFocuserRelative(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize * 5), (p) => FocuserInfo.Connected);
-            MoveFocuserCommand = new AsyncCommand<int>(() => MoveFocuser(TargetPosition), (p) => FocuserInfo.Connected);
+            MoveFocuserInSmallCommand = new AsyncCommand<int>(() => MoveFocuserRelative((int)Math.Round(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize / -2d)), (p) => FocuserInfo.Connected && !FocuserInfo.IsMoving);
+            MoveFocuserInLargeCommand = new AsyncCommand<int>(() => MoveFocuserRelative(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize * -5), (p) => FocuserInfo.Connected && !FocuserInfo.IsMoving);
+            MoveFocuserOutSmallCommand = new AsyncCommand<int>(() => MoveFocuserRelative((int)Math.Round(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize / 2d)), (p) => FocuserInfo.Connected && !FocuserInfo.IsMoving);
+            MoveFocuserOutLargeCommand = new AsyncCommand<int>(() => MoveFocuserRelative(profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize * 5), (p) => FocuserInfo.Connected && !FocuserInfo.IsMoving);
+            MoveFocuserCommand = new AsyncCommand<int>(() => MoveFocuser(TargetPosition), (p) => FocuserInfo.Connected && !FocuserInfo.IsMoving);
             HaltFocuserCommand = new RelayCommand(HaltFocuser);
             ToggleTempCompCommand = new RelayCommand(ToggleTempComp);
 
@@ -127,6 +127,7 @@ namespace NINA.ViewModel.Equipment.Focuser {
                 } catch (OperationCanceledException) {
                 } finally {
                     FocuserInfo.IsSettling = false;
+                    FocuserInfo.IsMoving = false;
                     applicationStatusMediator.StatusUpdate(new ApplicationStatus { Source = Title, Status = string.Empty });
                 }
             });
