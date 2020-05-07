@@ -170,12 +170,16 @@ namespace NINA.ViewModel.Equipment.Guider {
         }
 
         private void Guider_GuideEvent(object sender, IGuideStep e) {
-            var step = e;
+            try {
+                var step = e;
 
-            GuideStepsHistory.AddGuideStep(step);
+                GuideStepsHistory.AddGuideStep(step);
 
-            foreach (RMS rms in recordedRMS.Values) {
-                rms.AddDataPoint(step.RADistanceRaw, step.DECDistanceRaw);
+                foreach (RMS rms in recordedRMS.Values) {
+                    rms.AddDataPoint(step.RADistanceRaw, step.DECDistanceRaw);
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
             }
         }
 
