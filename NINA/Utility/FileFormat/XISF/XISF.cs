@@ -116,7 +116,6 @@ namespace NINA.Utility.FileFormat.XISF {
 
                 /*
                  * Retrieve the pixel data type
-                 * Currently we support only UInt16 (ushort)
                  */
                 string sampleFormat = "UInt16";
                 try {
@@ -136,17 +135,19 @@ namespace NINA.Utility.FileFormat.XISF {
                 string[] compression = null;
 
                 try {
-                    // [compression codec]:[uncompressed size]:[sizeof shuffled typedef]
-                    compression = header.Image.Attribute("compression").Value.ToLower().Split(':');
+                    if (header.Image.Attribute("compression") != null) {
+                        // [compression codec]:[uncompressed size]:[sizeof shuffled typedef]
+                        compression = header.Image.Attribute("compression").Value.ToLower().Split(':');
 
-                    if (!string.IsNullOrEmpty(compression[0])) {
-                        compressionInfo = GetCompressionType(compression);
+                        if (!string.IsNullOrEmpty(compression[0])) {
+                            compressionInfo = GetCompressionType(compression);
+                        }
+                    } else {
+                        Logger.Debug("XISF: Compressed data block was not encountered");
                     }
                 } catch (InvalidDataException) {
                     Logger.Error($"XISF: Unknown compression codec encountered: {compression[0]}");
                     throw new InvalidDataException(string.Format(Locale.Loc.Instance["LblXisfUnsupportedCompression"], compression[0]));
-                } catch {
-                    Logger.Debug("XISF: Compressed data block was not encountered");
                 }
 
                 if (compressionInfo.CompressionType != XISFCompressionTypeEnum.NONE) {
