@@ -56,6 +56,12 @@ namespace NINA.Utility.FileFormat.FITS {
                 ImageHDU hdu = (ImageHDU)f.ReadHDU();
                 Array[] arr = (Array[])hdu.Data.DataArray;
 
+                var dimensions = hdu.Header.GetIntValue("NAXIS");
+                if (dimensions > 2) {
+                    //Debayered Images are not supported. Take the first dimension instead to get at least a monochrome image
+                    arr = (Array[])arr[0];
+                }
+
                 var width = hdu.Header.GetIntValue("NAXIS1");
                 var height = hdu.Header.GetIntValue("NAXIS2");
                 var bitPix = hdu.Header.GetIntValue("BITPIX");
