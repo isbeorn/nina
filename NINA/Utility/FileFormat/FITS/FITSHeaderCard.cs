@@ -93,6 +93,19 @@ namespace NINA.Utility.FileFormat.FITS {
         public string Value { get; }
         public string Comment { get; }
 
+        public string OriginalValue {
+            get {
+                if (string.IsNullOrWhiteSpace(Value)) {
+                    return string.Empty;
+                } else if (Value.StartsWith("'")) {
+                    var trimmedValue = Value.Trim();
+                    return trimmedValue.Remove(trimmedValue.Length - 1, 1).Remove(0, 1).Replace(@"''", @"'");
+                } else {
+                    return Value;
+                }
+            }
+        }
+
         public string GetHeaderString() {
             var encodedKeyword = Key.ToUpper().PadRight(8);
             var encodedValue = Value.PadLeft(20);

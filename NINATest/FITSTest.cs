@@ -29,6 +29,7 @@ using NINA.Utility.FileFormat.FITS;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -550,6 +551,37 @@ namespace NINATest {
             sut.PopulateHeaderCards(metaData);
 
             sut.Header.HeaderCards.Should().NotContain(notExpectedCard, "Negative Gain values are not allowed");
+        }
+
+        [Test]
+        [TestCase("Some String")]
+        [TestCase("Bode's Nebula")]
+        [TestCase("' A bit Weird '")]
+        [TestCase("")]
+        public void FITSOriginalValue_StringTest(string value) {
+            var card = new FITSHeaderCard("KEY", value, string.Empty);
+            card.OriginalValue.Should().Be(value);
+        }
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(100)]
+        [TestCase(-100)]
+        public void FITSOriginalValue_StringTest(int value) {
+            var card = new FITSHeaderCard("KEY", value, string.Empty);
+            card.OriginalValue.Should().Be(value.ToString());
+        }
+
+        [Test]
+        [TestCase(0)]
+        [TestCase(100)]
+        [TestCase(-100)]
+        [TestCase(-100)]
+        [TestCase(200.1234)]
+        [TestCase(-200.4321)]
+        public void FITSOriginalValue_DoubleTest(double value) {
+            var card = new FITSHeaderCard("KEY", value, string.Empty);
+            card.OriginalValue.Should().Be(value.ToString(CultureInfo.InvariantCulture));
         }
     }
 }
