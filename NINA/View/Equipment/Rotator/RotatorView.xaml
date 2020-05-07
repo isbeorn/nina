@@ -127,7 +127,7 @@
                             <TextBlock Text="{ns:Loc LblPosition}" />
                             <TextBlock
                                 Margin="5,0,0,0"
-                                Text="{Binding RotatorInfo.Position}"
+                                Text="{Binding RotatorInfo.Position, StringFormat={}{0:0.##}°}"
                                 TextWrapping="WrapWithOverflow" />
                         </UniformGrid>
                     </UniformGrid>
