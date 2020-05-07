@@ -23,6 +23,7 @@
 
 using NINA.Model.MyFocuser;
 using NINA.Profile;
+using NINA.Utility;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,11 +34,16 @@ using System.Threading.Tasks;
 
 namespace NINA.ViewModel.Equipment.Focuser {
 
-    internal abstract class FocuserDecorator : IFocuser {
+    internal abstract class FocuserDecorator : BaseINPC, IFocuser {
 
         public FocuserDecorator(IProfileService profileService, IFocuser focuser) {
             this.profileService = profileService;
             this.focuser = focuser;
+            this.focuser.PropertyChanged += Focuser_PropertyChanged;
+        }
+
+        private void Focuser_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            RaisePropertyChanged(e.PropertyName);
         }
 
         protected IProfileService profileService;
@@ -75,15 +81,6 @@ namespace NINA.ViewModel.Equipment.Focuser {
         public string DriverInfo => this.focuser.DriverInfo;
 
         public string DriverVersion => this.focuser.DriverVersion;
-
-        public event PropertyChangedEventHandler PropertyChanged {
-            add {
-                this.focuser.PropertyChanged += value;
-            }
-            remove {
-                this.focuser.PropertyChanged -= value;
-            }
-        }
 
         public Task<bool> Connect(CancellationToken token) {
             return this.focuser.Connect(token);

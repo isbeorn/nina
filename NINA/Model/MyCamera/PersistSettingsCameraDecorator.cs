@@ -1,5 +1,6 @@
 ﻿using NINA.Profile;
 using NINA.Utility;
+using Nito.Mvvm;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,13 +11,19 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Model.MyCamera {
-    class PersistSettingsCameraDecorator : ICamera {
+
+    internal class PersistSettingsCameraDecorator : BaseINPC, ICamera {
         private readonly ICamera camera;
         private readonly IProfileService profileService;
 
         public PersistSettingsCameraDecorator(IProfileService profileService, ICamera camera) {
             this.profileService = profileService;
             this.camera = camera;
+            this.camera.PropertyChanged += Camera_PropertyChanged;
+        }
+
+        private void Camera_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+            RaisePropertyChanged(e.PropertyName);
         }
 
         private void RestoreCameraProfileDefaults() {
@@ -98,6 +105,7 @@ namespace NINA.Model.MyCamera {
                 this.profileService.ActiveProfile.CameraSettings.BinningX = value;
             }
         }
+
         public short BinY {
             get => this.camera.BinY;
             set {
@@ -169,6 +177,7 @@ namespace NINA.Model.MyCamera {
                 this.profileService.ActiveProfile.CameraSettings.Offset = value;
             }
         }
+
         public int USBLimit {
             get => this.camera.USBLimit;
             set {
@@ -212,6 +221,7 @@ namespace NINA.Model.MyCamera {
                 this.profileService.ActiveProfile.CameraSettings.ReadoutMode = value;
             }
         }
+
         public short ReadoutModeForSnapImages {
             get => this.camera.ReadoutModeForSnapImages;
             set {
@@ -219,6 +229,7 @@ namespace NINA.Model.MyCamera {
                 this.profileService.ActiveProfile.CameraSettings.ReadoutModeForSnapImages = value;
             }
         }
+
         public short ReadoutModeForNormalImages {
             get => this.camera.ReadoutModeForNormalImages;
             set {
@@ -246,15 +257,6 @@ namespace NINA.Model.MyCamera {
         public string DriverInfo => this.camera.DriverInfo;
 
         public string DriverVersion => this.camera.DriverVersion;
-
-        public event PropertyChangedEventHandler PropertyChanged {
-            add {
-                this.camera.PropertyChanged += value;
-            } 
-            remove {
-                this.camera.PropertyChanged -= value;
-            }
-        }
 
         public void AbortExposure() {
             this.camera.AbortExposure();
