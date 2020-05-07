@@ -82,11 +82,11 @@ namespace NINA.Utility {
         private static string LOGDATE;
         private static string LOGFILEPATH;
 
-        private static void Append(string msg, params string[] msgParams) {
+        private static void Append(string msg) {
             try {
                 lock (lockObj) {
                     using (StreamWriter writer = new StreamWriter(LOGFILEPATH, true)) {
-                        writer.WriteLine(string.Format(msg, msgParams));
+                        writer.WriteLine(msg);
                     }
                 }
             } catch (Exception ex) {
