@@ -166,7 +166,7 @@
     <value>Limiter la mise au point aux étoiles les plus brillantes. 0 signifiant aucune limite.</value>
   </data>
   <data name="LblAllProSpikeAFlatPanel" xml:space="preserve">
-    <value>AllPro Spike-a-Flat Panel</value>
+    <value>Panneau AllPro Spike-a-Flat</value>
   </data>
   <data name="LblAlnitakFlatPanel" xml:space="preserve">
     <value>Écran à Plu Alnitak</value>
@@ -478,10 +478,10 @@ Dec: {1}</value>
     <value>Cache</value>
   </data>
   <data name="LblCalculateBias" xml:space="preserve">
-    <value>Calculate Bias</value>
+    <value>Calculer l'offset</value>
   </data>
   <data name="LblCalculatedExposureTime" xml:space="preserve">
-    <value>Calculated Exposure Time</value>
+    <value>Temps d'exposition calculé</value>
   </data>
   <data name="LblCam" xml:space="preserve">
     <value>Cam</value>
@@ -549,10 +549,10 @@ ne pas être en mesure de compenser pour les variations de températures ambiant
     <value>Capture d'images et réduction</value>
   </data>
   <data name="LblCaptureImageCovered" xml:space="preserve">
-    <value>Cover Sensor and Capture Image</value>
+    <value>Couvrir le capteur et capturer l'image</value>
   </data>
   <data name="LblCaptureImageUncovered" xml:space="preserve">
-    <value>Uncover Sensor and Capture Image</value>
+    <value>Découvrir le capteur et capturer l'image</value>
   </data>
   <data name="LblCdC" xml:space="preserve">
     <value>Cartes du Ciel</value>
@@ -1120,7 +1120,7 @@ si les traces d'étoiles ne sont pas alignées, c'est qu'il y a une erreur d'ali
     <value>Le répertoire servant à enregistrer l'image n'a pas de permission d'écriture!</value>
   </data>
   <data name="LblDisabled" xml:space="preserve">
-    <value>Disabled</value>
+    <value>Désactivé</value>
   </data>
   <data name="LblDisableAFGuiding" xml:space="preserve">
     <value>Arrêt Guidage FA</value>
@@ -1246,9 +1246,9 @@ si les traces d'étoiles ne sont pas alignées, c'est qu'il y a une erreur d'ali
     <value>Évaluation d'Exposition Optimale</value>
   </data>
   <data name="LblExposureCalculatorDescription" xml:space="preserve">
-    <value>This tool will suggest a recommended exposure time based on the read noise from your sensor and the average skyglow.
-If you have SharpCap installed and perform a Sensor Analysis, then use the drop down below to retrieve the read noise and full well capacity for the specified gain.
-You can also calculate the bias by clicking the Snapshot button next to Bias Mean.</value>
+    <value>Cet outil proposera une durée d'exposition recommandée en fonction du bruit de lecture de votre capteur et de la luminosité moyenne du ciel.
+Si vous avez installé SharpCap et effectuez une analyse de capteur, alors utilisez le menu déroulant ci-dessous pour récupérer le bruit de lecture et la valeur de capacité maximale pour le gain spécifié.
+Vous pouvez également calculer l'offset en cliquant sur le bouton Snapshot à côté de Offset Moyen.</value>
   </data>
   <data name="LblExposureCalculatorMeanLessThanOffset" xml:space="preserve">
     <value>Impossible de déterminer le temps d'exposition recommandé. La valeur moyenne de votre image actuelle est inférieure à la moyenne du bias spécifié. Veuillez prendre une exposition plus longue ou ajuster les valeurs incorrectes.</value>
@@ -1885,7 +1885,7 @@ HFR calculé: {2}</value>
     <value>Délai Min.</value>
   </data>
   <data name="LblMinExposureTimeDownloadRatio" xml:space="preserve">
-    <value>Minimum Exposure Time from Download Ratio</value>
+    <value>Temps minimum d'exposition à partir du taux de téléchargement</value>
   </data>
   <data name="LblMinExpTime" xml:space="preserve">
     <value>Temps d'Exposition Min</value>
@@ -2472,7 +2472,7 @@ HFR calculé: {2}</value>
     <value>Recentrer Image</value>
   </data>
   <data name="LblRecommendedExposureTime" xml:space="preserve">
-    <value>Recommended Exposure Time</value>
+    <value>Temps d'exposition recommandé</value>
   </data>
   <data name="LblReconnectAll" xml:space="preserve">
     <value>Rebranchez tous les appareils?</value>
@@ -2622,7 +2622,7 @@ HFR calculé: {2}</value>
     <value>Le profil sélectionné ne peut être choisi. Il est déjà utilisé par une autre instance de N.I.N.A.!</value>
   </data>
   <data name="LblSensorAnalysisPoorFit" xml:space="preserve">
-    <value>Sensor Analysis is irregular, and may not produce accurate results. Consider re-running it.</value>
+    <value>L'analyse des capteurs est irrégulière et peut ne pas produire de résultats précis. Pensez à la réexécuter.</value>
   </data>
   <data name="LblSensorName" xml:space="preserve">
     <value>Nom Capteur</value>
@@ -2710,13 +2710,13 @@ Ce modèle sera utilisé au démarrage pour initialiser la séquence au lieu de 
     <value>Délai d'attente en secondes avant d'abandonner un suivi en cour qui n'opère pas et d'essayer à nouveau.</value>
   </data>
   <data name="LblSharpCapSensorAnalysisPath" xml:space="preserve">
-    <value>SharpCap Sensor Analysis folder</value>
+    <value>Dossier d'analyse de capteur SharpCap</value>
   </data>
   <data name="LblSharpCapSensorAnalysisLoadedFormat" xml:space="preserve">
-    <value>Loaded {0} sensors</value>
+    <value>{0} capteurs chargés</value>
   </data>
   <data name="LblSharpCapSensorAnalysisPathTooltip" xml:space="preserve">
-    <value>Folder where SharpCap Sensor Analysis files can be found, if somewhere other than their default location</value>
+    <value>Dossier où les fichiers d'analyse de capteur SharpCap peuvent être trouvés, si ce n'est pas leur emplacement par défaut</value>
   </data>
   <data name="LblSiderealTime" xml:space="preserve">
     <value>Heure Sidérale</value>
@@ -3282,7 +3282,7 @@ Lorsque cette option est activée, les canaux de couleur sont ajustés avec un s
     <value>Utiliser mode bulb</value>
   </data>
   <data name="LblUseSharpCapSensorAnalysis" xml:space="preserve">
-    <value>Use SharpCap Sensor Analysis</value>
+    <value>Utiliser l'analyse de capteur SharpCap</value>
   </data>
   <data name="LblUseSideOfPier" xml:space="preserve">
     <value>Utiliser côté de la monture allemande</value>
@@ -3496,10 +3496,10 @@ La valeur par défaut Auto utilise n'importe quel matrice que le pilote de la ca
     <value>Exposure finished</value>
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
-    <value>Camera Timeout - Camera did not set image as ready after exposuretime + 15 seconds</value>
+    <value>Délai de la caméra dépassé - La caméra n'a pas défini l'image comme prête après un temps d'exposition de + 15 secondes</value>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
-    <value>Pattern Preview</value>
+    <value>Aperçu du modèle</value>
   </data>
   <data name="LblB1950" xml:space="preserve">
     <value>B1950</value>
@@ -3508,47 +3508,59 @@ La valeur par défaut Auto utilise n'importe quel matrice que le pilote de la ca
     <value>J2050</value>
   </data>
   <data name="LblUnknownEpochWarning" xml:space="preserve">
-    <value>The mount operates using an unknown equatorial reference system. {0} will be used. Please configure the mount's driver with a valid epoch.</value>
+    <value>La monture opère en utilisant un système de référence équatorial inconnu. {0} sera utilisé. Merci de configurer le pilote de la monture avec une epoch valide.</value>
   </data>
   <data name="LblUnsupportedEpoch" xml:space="preserve">
-    <value>The mount operates using the {0} equatorial reference system, which is not supported.</value>
+    <value>La monture opère en utilisant le système de référence équatorial {0} qui n'est pas supporté.</value>
   </data>
   <data name="LblUnsupportedCfaPattern" xml:space="preserve">
-    <value>Unsupported CFA/Bayer pattern: {0}</value>
+    <value>Matrice CFA/Bayer non prise en charge : {0}</value>
   </data>
   <data name="LblSavingImage" xml:space="preserve">
-    <value>Saving image</value>
+    <value>Sauvegarde de l'image</value>
   </data>
   <data name="LblLowDiskSpaceForSequence" xml:space="preserve">
-    <value>Available space on drive {0} may be insufficient. The estimated disk space required for the sequence is {1}, but only {2} remains.</value>
+    <value>L'espace disponible sur le lecteur {0} est peut-être insuffisant. L'espace disque estimé requis pour la séquence est {1}, mais seulement {2} restent.</value>
   </data>
   <data name="LblNoValidFirmwareVersion" xml:space="preserve">
-    <value>No valid firmware version.</value>
+    <value>Pas de version valide du firmware.</value>
   </data>
   <data name="LblAbsolute" xml:space="preserve">
-    <value>Absolute</value>
+    <value>Absolue</value>
     <comment>Focuser Backlash Compensation Method to add an absolute value after a focuser direction change</comment>
   </data>
   <data name="LblFocuserBacklashMethod" xml:space="preserve">
-    <value>Backlash Compensation Method</value>
+    <value>Méthode de compensation du jeu</value>
   </data>
   <data name="LblFocuserBacklashMethodTooltip" xml:space="preserve">
-    <value>This controls the backlash compensation method used.
+    <value>Ceci controle la méthode de compensation du jeu utilisée.
 
-Absolute: 
-  When the focuser changes directions, an absolute value will be added to the focuser movement.
-  Backlash IN: when the focuser changes from moving outwards to moving inwards the Backlash IN value will be added
-  Backlash OUT: when the focuser changes from moving inwards to moving outwards the Backlash OUT value will be added
-  
-Overshoot:
-  This method will compensate for Backlash by overshooting the target position by a large amount and then moving the focuser back to the initially requested position.
-  Due to this compensation the last movement of the focuser will always be in the same direction (either always inwards or always outwards)
-  For Backlash IN and OUT only ONE of these two must be set! When setting IN, the amount will be applied on each inward movement, so the final movement will always be outwards. For Backlash OUT, it will be the other way around.
+Absolue:
+ Quand le moteur de mise au point change de direction, une valeur absolue sera ajoutée au mouvement de moteur de mise au point.
+ Jeu INT: quand le moteur de mise au point passe d'un mouvement extérieur à un mouvement intérieur, la valeur du jeu INT sera ajouté.
+ Jeu EXT: quand le moteur de mise au point passe d'un mouvement intérieur à un mouvement extérieur, la valeur du jeu EXT sera ajouté.
 
-The method can only be changed when the focuser is not connected!</value>
+Dépassement:
+ Cette méthode va compenser le jeu en dépassant la position cible d'une grande valeur et ensuite faire revenir le moteur de mise au point à la position initiale requise.
+ A cause de cette compensation le dernier déplacement du moteur de mise au point sera toujours dans la même direction (que ce soit vers l'intérieur ou vers l'extérieur)
+ Pour le jeu INT ou EXT seul UN des deux doit être selectionné! En réglant INT, la valeur sera appliquée sur chaque mouvement vers l'intérieur, donc le mouvement final sera toujours vers l'extérieur. Pour le jeu OUT, ce sera le sens contraire.
+
+La méthode ne peut être changée que lorsque le moteur de mise au point est déconnecté!</value>
   </data>
   <data name="LblOvershoot" xml:space="preserve">
-    <value>Overshoot</value>
+    <value>Dépassement</value>
     <comment>Focuser Backlash Compensation Method by overshooting the position and moving back</comment>
+  </data>
+  <data name="LblFocuserMoveLargeTooltip" xml:space="preserve">
+    <value>Déplace le focuseur d'une grande distance en utilisant cinq fois la taille du pas moteur</value>
+  </data>
+  <data name="LblFocuserMoveSmallTooltip" xml:space="preserve">
+    <value>Déplace le focuseur d'une petite distance en utilisant la moitié de la taille du pas moteur </value>
+  </data>
+  <data name="LblMoveFocuserTooltip" xml:space="preserve">
+    <value>Déplace le moteur de mise au point vers la position cible spécifiée</value>
+  </data>
+  <data name="LblMoveRotatorTooltip" xml:space="preserve">
+    <value>Déplace le rotateur à la position cible spécifiée</value>
   </data>
 </root>

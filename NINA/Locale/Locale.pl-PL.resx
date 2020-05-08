@@ -3546,4 +3546,16 @@ The method can only be changed when the focuser is not connected!</value>
     <value>Overshoot</value>
     <comment>Focuser Backlash Compensation Method by overshooting the position and moving back</comment>
   </data>
+  <data name="LblFocuserMoveLargeTooltip" xml:space="preserve">
+    <value>Moves focuser by a large amount using five times the Autofocus Stepsize</value>
+  </data>
+  <data name="LblFocuserMoveSmallTooltip" xml:space="preserve">
+    <value>Moves focuser by a small amount using half the Autofocus Stepsize </value>
+  </data>
+  <data name="LblMoveFocuserTooltip" xml:space="preserve">
+    <value>Moves focuser to the specified target position</value>
+  </data>
+  <data name="LblMoveRotatorTooltip" xml:space="preserve">
+    <value>Moves rotator to the specified target position</value>
+  </data>
 </root>

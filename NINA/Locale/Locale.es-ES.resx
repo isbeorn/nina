@@ -166,7 +166,7 @@
     <value>Limitar AE a las estrellas mas brillantes. 0 significa sin limite.</value>
   </data>
   <data name="LblAllProSpikeAFlatPanel" xml:space="preserve">
-    <value>AllPro Spike-a-Flat Panel</value>
+    <value>Panel Allpro Spike-a-Flat</value>
   </data>
   <data name="LblAlnitakFlatPanel" xml:space="preserve">
     <value>Panel Plano Alnitak</value>
@@ -478,13 +478,13 @@ Dec: {1}</value>
     <value>Cache</value>
   </data>
   <data name="LblCalculateBias" xml:space="preserve">
-    <value>Calculate Bias</value>
+    <value>Calcular Bias</value>
   </data>
   <data name="LblCalculatedExposureTime" xml:space="preserve">
-    <value>Calculated Exposure Time</value>
+    <value>Tiempo de exposición calculado</value>
   </data>
   <data name="LblCam" xml:space="preserve">
-    <value>Cam</value>
+    <value>Cámara</value>
   </data>
   <data name="LblCamera" xml:space="preserve">
     <value>Camara</value>
@@ -549,10 +549,10 @@ Compensar con las variaciones de temperatura ambiente</value>
     <value>Captura Imagen y Resuelvela</value>
   </data>
   <data name="LblCaptureImageCovered" xml:space="preserve">
-    <value>Cover Sensor and Capture Image</value>
+    <value>Cubre el sensor y captura una imagen</value>
   </data>
   <data name="LblCaptureImageUncovered" xml:space="preserve">
-    <value>Uncover Sensor and Capture Image</value>
+    <value>Descubre el sensor y captura una imagen</value>
   </data>
   <data name="LblCdC" xml:space="preserve">
     <value>Cartes du Ciel</value>
@@ -593,7 +593,7 @@ Compensar con las variaciones de temperatura ambiente</value>
     <value>Verifica Cambio de Meridiano</value>
   </data>
   <data name="LblChecksum" xml:space="preserve">
-    <value>Checksum</value>
+    <value>Comprobación</value>
   </data>
   <data name="LblChecksumError" xml:space="preserve">
     <value>La suma de comprobacion no coincide con el valor esperado. La descarga del archivo se corrompio</value>
@@ -638,7 +638,7 @@ Compensar con las variaciones de temperatura ambiente</value>
     <value>Sensor a Color no esta soportado todavia</value>
   </data>
   <data name="LblCompression" xml:space="preserve">
-    <value>Compression</value>
+    <value>Compresión</value>
   </data>
   <data name="LblCompressionLZ4" xml:space="preserve">
     <value>LZ4</value>
@@ -975,7 +975,7 @@ Cuando una duracion es colocada, la aplicacin lentamente disminuye la temperatur
     <value>Posicion Actual</value>
   </data>
   <data name="LblCurrentSequenceEstimates" xml:space="preserve">
-    <value>Estimated time for this target</value>
+    <value>Tiempo estimado para este objetivo</value>
   </data>
   <data name="LblCurrentUIColorSchema" xml:space="preserve">
     <value>Color de Interface Actual</value>
@@ -1021,7 +1021,7 @@ cuando las lineas no estan alineadas hay algun error de alineacion polar</value>
     <value>Amanecer</value>
   </data>
   <data name="LblDays" xml:space="preserve">
-    <value>Days</value>
+    <value>Días</value>
   </data>
   <data name="LblDCRaw" xml:space="preserve">
     <value>DCRaw</value>
@@ -1120,7 +1120,7 @@ cuando las lineas no estan alineadas hay algun error de alineacion polar</value>
     <value>Directorio para grabar imagen no tiene permisos de escritura</value>
   </data>
   <data name="LblDisabled" xml:space="preserve">
-    <value>Disabled</value>
+    <value>Deshabilitado</value>
   </data>
   <data name="LblDisableAFGuiding" xml:space="preserve">
     <value>AE Deshabilita Guiado</value>
@@ -1246,12 +1246,12 @@ cuando las lineas no estan alineadas hay algun error de alineacion polar</value>
     <value>Calculadora de Exposicion Optima</value>
   </data>
   <data name="LblExposureCalculatorDescription" xml:space="preserve">
-    <value>This tool will suggest a recommended exposure time based on the read noise from your sensor and the average skyglow.
-If you have SharpCap installed and perform a Sensor Analysis, then use the drop down below to retrieve the read noise and full well capacity for the specified gain.
-You can also calculate the bias by clicking the Snapshot button next to Bias Mean.</value>
+    <value>Esta herramienta te sugerirá un tiempo de exposición recomendado basado en el ruido de lectura de tu sensor y la media del brillo del cielo.
+Si tienes SharpCap instalado y realizas un Análisis del Sensor, entonces puedes utilizar el menú desplegable de abajo para recuperar el read noise (ruido de lectura) y la capacidad total (full well) del fotosito para la ganancia especificada.
+También puedes calcular el bias haciendo clic en el botón con el dibujo del diafragma junto a Bias Mean (Media del Bias).</value>
   </data>
   <data name="LblExposureCalculatorMeanLessThanOffset" xml:space="preserve">
-    <value>Unable to determine exposure time recommendation. The mean of your current image is less than the specified bias mean. Please take a longer exposure or adjust the incorrect values.</value>
+    <value>No se puede determinar un tiempo recomendado de exposición. La media de la imagen actual es menor que la media especificada. Por favor, haz una exposición más larga o ajusta los valores incorrectos.</value>
   </data>
   <data name="LblExposures" xml:space="preserve">
     <value>Exposiciones</value>
@@ -1282,7 +1282,7 @@ Cuando el disparador se desactive la aplicacion solo obviara la exposicion inici
     <value>Extensión de archivo</value>
   </data>
   <data name="LblFileFormatOptions" xml:space="preserve">
-    <value>File Format Options</value>
+    <value>Opciones de formato de archivo</value>
   </data>
   <data name="LblFileSettings" xml:space="preserve">
     <value>Ajustes de Archivo</value>
@@ -1384,7 +1384,7 @@ Cuando el disparador se desactive la aplicacion solo obviara la exposicion inici
     <value>Abrir</value>
   </data>
   <data name="LblFlatDeviceOpenForDarkFlats" xml:space="preserve">
-    <value>Open cover for darks and dark flats</value>
+    <value>Abrir la tapa para tomar dark y dark flats</value>
   </data>
   <data name="LblFlatDeviceSetBrightness" xml:space="preserve">
     <value>Fijar</value>
@@ -1471,7 +1471,7 @@ Cuando el disparador se desactive la aplicacion solo obviara la exposicion inici
     <value>Mitigacion de RBI</value>
   </data>
   <data name="LblFLISnapshotFlood" xml:space="preserve">
-    <value>Flood for snapshots</value>
+    <value>Flujo de imágenes</value>
   </data>
   <data name="LblFocalLength" xml:space="preserve">
     <value>Longitud Focal</value>
@@ -1663,7 +1663,7 @@ Calculado HFR: {2}
     <value>Hora</value>
   </data>
   <data name="LblHours" xml:space="preserve">
-    <value>Hours</value>
+    <value>Horas</value>
   </data>
   <data name="LblHumidity" xml:space="preserve">
     <value>Humedad</value>
@@ -1885,7 +1885,7 @@ Calculado HFR: {2}
     <value>Duracion Min.</value>
   </data>
   <data name="LblMinExposureTimeDownloadRatio" xml:space="preserve">
-    <value>Minimum Exposure Time from Download Ratio</value>
+    <value>Tiempo mínimo de exposición para el ratio de descarga</value>
   </data>
   <data name="LblMinExpTime" xml:space="preserve">
     <value>Tiempo de Exposicion minimo</value>
@@ -1897,7 +1897,7 @@ Calculado HFR: {2}
     <value>Tiempo de Espera Minimo</value>
   </data>
   <data name="LblMinutes" xml:space="preserve">
-    <value>Minutes</value>
+    <value>Minutos</value>
   </data>
   <data name="LblMinutesAfterMeridian" xml:space="preserve">
     <value>Minutos despues del Meridiano</value>
@@ -1927,7 +1927,7 @@ Calculado HFR: {2}
     <value>Nativo</value>
   </data>
   <data name="LblNewPosition" xml:space="preserve">
-    <value>New Position</value>
+    <value>Nueva Posición</value>
     <comment>Newly Calulated Autofocus Position</comment>
   </data>
   <data name="LblNewUpdateAvailable" xml:space="preserve">
@@ -1961,7 +1961,7 @@ Calculado HFR: {2}
     <value>sin coordenadas disponibles para sincronizar el telescopio a</value>
   </data>
   <data name="LblNoFileFormatOptions" xml:space="preserve">
-    <value>There are no options for this file format</value>
+    <value>No hay opciones para este formato de archivo</value>
   </data>
   <data name="LblNoFilterwheel" xml:space="preserve">
     <value>Sin Rueda de Filtro</value>
@@ -1997,10 +1997,10 @@ Calculado HFR: {2}
     <value>Sin interruptor</value>
   </data>
   <data name="LblNoSync" xml:space="preserve">
-    <value>No Sync</value>
+    <value>Sin sincronización</value>
   </data>
   <data name="LblNoSyncTooltip" xml:space="preserve">
-    <value>When enabled the application will never send a sync command to the telescope. This should only be used when having a good pointing model that should not be altered in any way.</value>
+    <value>Cuando está habilitada, la aplicación nunca enviará un comando de sincronización al telescopio. Esto solo debería utilizarse cuando se tenga un buen modelo de estrellas, por lo que no debería ser alterado en modo alguno.</value>
   </data>
   <data name="LblNoTelescope" xml:space="preserve">
     <value>Sin Telescopio</value>
@@ -2129,7 +2129,7 @@ Calculado HFR: {2}
     <value>Ok</value>
   </data>
   <data name="LblOldPosition" xml:space="preserve">
-    <value>Old Position</value>
+    <value>Posición anterior</value>
     <comment>Previous Focuser Position</comment>
   </data>
   <data name="LblOn" xml:space="preserve">
@@ -2472,7 +2472,7 @@ Calculado HFR: {2}
     <value>Recentrar Imagen</value>
   </data>
   <data name="LblRecommendedExposureTime" xml:space="preserve">
-    <value>Recommended Exposure Time</value>
+    <value>Tiempo de exposición recomendado</value>
   </data>
   <data name="LblReconnectAll" xml:space="preserve">
     <value>Reconectar todos los dispositivos?</value>
@@ -2622,7 +2622,7 @@ Calculado HFR: {2}
     <value>El perfil seleccionado no puede ser elegido.Esta siento usado por otra instancia de N.I.N.A.!</value>
   </data>
   <data name="LblSensorAnalysisPoorFit" xml:space="preserve">
-    <value>Sensor Analysis is irregular, and may not produce accurate results. Consider re-running it.</value>
+    <value>El análisis del sensor es irregular pudiendo no arrojar resultados precisos. Considera volver a ejecutarlo.</value>
   </data>
   <data name="LblSensorName" xml:space="preserve">
     <value>Nombre Sensor</value>
@@ -2677,10 +2677,10 @@ Esta plantilla sera usada al inicio para inicializar la secuencia en vez de la u
     <value>Colocar nuevo Valor</value>
   </data>
   <data name="LblSetPark" xml:space="preserve">
-    <value>Set As Park</value>
+    <value>Establecer como aparcado</value>
   </data>
   <data name="LblSetParkToolTip" xml:space="preserve">
-    <value>Sets the park position to be the current position</value>
+    <value>Establece la posición actual como posición de aparcado</value>
   </data>
   <data name="LblSettings" xml:space="preserve">
     <value>Ajustes</value>
@@ -2698,25 +2698,25 @@ Esta plantilla sera usada al inicio para inicializar la secuencia en vez de la u
     <value>PHD2 Timeout para Espera</value>
   </data>
   <data name="LblAutoRetryStartGuiding" xml:space="preserve">
-    <value>Guiding Start Retry</value>
+    <value>Reintentar guiado</value>
   </data>
   <data name="LblAutoRetryStartGuidingTimeoutSeconds" xml:space="preserve">
-    <value>Guiding Start Timeout (in seconds)</value>
+    <value>Límite para empezar a guiar (en segundos)</value>
   </data>
   <data name="LblAutoRetryStartGuidingTooltip" xml:space="preserve">
-    <value>Attempt to recover StartGuiding command if the guider does not report it is guiding after the specified amount of time.</value>
+    <value>Intento de recuperar el comando "Iniciar guiado" si el programa de guiado no informa que está guiando después del tiempo especificado.</value>
   </data>
   <data name="LblAutoRetryStartGuidingTimeoutTooltip" xml:space="preserve">
-    <value>Timeout in seconds before abandoning a StartGuiding command before attempting to a retry.</value>
+    <value>Tiempo de espera en segundos después un comando "Inicio de guiado" antes de volver a reintentarlo.</value>
   </data>
   <data name="LblSharpCapSensorAnalysisPath" xml:space="preserve">
-    <value>SharpCap Sensor Analysis folder</value>
+    <value>Carpeta para los análisis de sensor de SharpCap</value>
   </data>
   <data name="LblSharpCapSensorAnalysisLoadedFormat" xml:space="preserve">
-    <value>Loaded {0} sensors</value>
+    <value>{0} sensores cargados</value>
   </data>
   <data name="LblSharpCapSensorAnalysisPathTooltip" xml:space="preserve">
-    <value>Folder where SharpCap Sensor Analysis files can be found, if somewhere other than their default location</value>
+    <value>Carpeta donde se pueden encontrar los archivos de análisis de sensor de SharpCap Sensor, en caso de que no estén en su ubicación predeterminada</value>
   </data>
   <data name="LblSiderealTime" xml:space="preserve">
     <value>Tiempo Sidereal</value>
@@ -3174,94 +3174,94 @@ Mueve el rectangulo sobre la parte del Encuadre que quieres hacer subsampling. T
     <value>No Aparcar</value>
   </data>
   <data name="LblUPBV2AmpereHours" xml:space="preserve">
-    <value>Ampere Hours</value>
+    <value>Amperios por hora</value>
   </data>
   <data name="LblUPBV2AutoDewControl" xml:space="preserve">
-    <value>Automatic Dew Control</value>
+    <value>Control automático de cintas antihumedad</value>
   </data>
   <data name="LblUPBV2AverageCurrent" xml:space="preserve">
-    <value>Average Current</value>
+    <value>Corriente promedio</value>
   </data>
   <data name="LblUPBV2Current" xml:space="preserve">
-    <value>Current</value>
+    <value>Corriente</value>
   </data>
   <data name="LblUPBV2DeviceData" xml:space="preserve">
-    <value>Device Data</value>
+    <value>Datos del dispositivo</value>
   </data>
   <data name="LblUPBV2DewHeater" xml:space="preserve">
-    <value>Dew Heater Port</value>
+    <value>Puerto de la cinta antihumedad</value>
   </data>
   <data name="LblUPBV2DewHeaterPorts" xml:space="preserve">
-    <value>Dew Heaters</value>
+    <value>Cintas antihumedad</value>
   </data>
   <data name="LblUPBV2DewPoint" xml:space="preserve">
-    <value>Dew Point</value>
+    <value>Punto de rocío</value>
   </data>
   <data name="LblUPBV2ExcessCurrent" xml:space="preserve">
-    <value>Excess Current</value>
+    <value>Exceso de corriente</value>
   </data>
   <data name="LblUPBV2InputCurrent" xml:space="preserve">
-    <value>Input Current</value>
+    <value>Entrada de corriente</value>
   </data>
   <data name="LblUPBV2InputPower" xml:space="preserve">
-    <value>Power</value>
+    <value>Alimentación</value>
   </data>
   <data name="LblUPBV2InputVoltage" xml:space="preserve">
-    <value>Input Voltage</value>
+    <value>Voltaje de entrada</value>
   </data>
   <data name="LblUPBV2InvalidResponse" xml:space="preserve">
-    <value>Invalid response from Pegasus Astro Ultimate Powerbox V2.</value>
+    <value>Respuesta no válida de Pegasus Astro Ultimate Powerbox V2.</value>
   </data>
   <data name="LblUPBV2Power1" xml:space="preserve">
-    <value>Power Port 1</value>
+    <value>Puerto de alimentación 1</value>
   </data>
   <data name="LblUPBV2Power2" xml:space="preserve">
-    <value>Power Port 2</value>
+    <value>Puerto de alimentación 2</value>
   </data>
   <data name="LblUPBV2Power3" xml:space="preserve">
-    <value>Power Port 3</value>
+    <value>Puerto de alimentación 3</value>
   </data>
   <data name="LblUPBV2Power4" xml:space="preserve">
-    <value>Power Port 4</value>
+    <value>Puerto de alimentación 4</value>
   </data>
   <data name="LblUPBV2PowerPorts" xml:space="preserve">
-    <value>Power</value>
+    <value>Alimentación</value>
   </data>
   <data name="LblUPBV2RelativeHumidity" xml:space="preserve">
-    <value>Relative Humidity</value>
+    <value>Humedad relativa</value>
   </data>
   <data name="LblUPBV2Temperature" xml:space="preserve">
-    <value>Temperature</value>
+    <value>Temperatura</value>
   </data>
   <data name="LblUPBV2UpTime" xml:space="preserve">
-    <value>Up-Time</value>
+    <value>Tiempo útil</value>
   </data>
   <data name="LblUPBV2Usb1" xml:space="preserve">
-    <value>Usb Port 1</value>
+    <value>Puerto Usb 1</value>
   </data>
   <data name="LblUPBV2Usb2" xml:space="preserve">
-    <value>Usb Port 2</value>
+    <value>Puerto Usb 2</value>
   </data>
   <data name="LblUPBV2Usb3" xml:space="preserve">
-    <value>Usb Port 3</value>
+    <value>Puerto Usb 3</value>
   </data>
   <data name="LblUPBV2Usb4" xml:space="preserve">
-    <value>Usb Port 4</value>
+    <value>Puerto Usb 4</value>
   </data>
   <data name="LblUPBV2Usb5" xml:space="preserve">
-    <value>Usb Port 5</value>
+    <value>Puerto Usb 5</value>
   </data>
   <data name="LblUPBV2Usb6" xml:space="preserve">
-    <value>Usb Port 6</value>
+    <value>Puerto Usb 6</value>
   </data>
   <data name="LblUPBV2UsbPorts" xml:space="preserve">
     <value>Usb</value>
   </data>
   <data name="LblUPBV2VariablePower" xml:space="preserve">
-    <value>Variable Power Port</value>
+    <value>Puerto de alimentación variable</value>
   </data>
   <data name="LblUPBV2WattHours" xml:space="preserve">
-    <value>Watt Hours</value>
+    <value>Watios por hora</value>
   </data>
   <data name="LblUpdate" xml:space="preserve">
     <value>Actualizar</value>
@@ -3285,7 +3285,7 @@ Mueve el rectangulo sobre la parte del Encuadre que quieres hacer subsampling. T
     <value>Usar Modo Bulb</value>
   </data>
   <data name="LblUseSharpCapSensorAnalysis" xml:space="preserve">
-    <value>Use SharpCap Sensor Analysis</value>
+    <value>Usar análisis de sensor SharpCap</value>
   </data>
   <data name="LblUseSideOfPier" xml:space="preserve">
     <value>Usar Telescope Side of Pier</value>
@@ -3324,7 +3324,7 @@ Mueve el rectangulo sobre la parte del Encuadre que quieres hacer subsampling. T
     <value>Advertencia</value>
   </data>
   <data name="LblWarnTelescopeParked" xml:space="preserve">
-    <value>The Telescope is parked, and will be automatically unparked if user proceeds with sequence start</value>
+    <value>El telescopio está estacionado, y se desaparcará automáticamente si el usuario continúa con el inicio de la secuencia</value>
   </data>
   <data name="LblWeather" xml:space="preserve">
     <value>Clima</value>
@@ -3384,22 +3384,22 @@ Mueve el rectangulo sobre la parte del Encuadre que quieres hacer subsampling. T
     <value>XISF</value>
   </data>
   <data name="LblXisfBadChecksum" xml:space="preserve">
-    <value>XISF file checksum did not verify. The image data may be corrupted.</value>
+    <value>La suma de comprobación del archivo XISF no se verificó. Los datos de la imagen pueden estar dañados.</value>
   </data>
   <data name="LblXisfInvalidFile" xml:space="preserve">
-    <value>Not a valid XISF file</value>
+    <value>No es un archivo XISF válido</value>
   </data>
   <data name="LblXisfInvalidGeometry" xml:space="preserve">
-    <value>Could not get XISF image geometry</value>
+    <value>No se pudo obtener la geometría de la imagen XISF</value>
   </data>
   <data name="LblXisfUnsupportedChecksum" xml:space="preserve">
-    <value>Unsupported XISF checksum type: {0}</value>
+    <value>Tipo de suma de verificación XISF no soportada: {0}</value>
   </data>
   <data name="LblXisfUnsupportedCompression" xml:space="preserve">
-    <value>Unsupported XISF compression type: {0}</value>
+    <value>Tipo de compresión XISF no soportado: {0}</value>
   </data>
   <data name="LblXisfUnsupportedFormat" xml:space="preserve">
-    <value>Unsupported XISF data format: {0}</value>
+    <value>Formato de datos XISF no soportado: {0}</value>
   </data>
   <data name="LblYAxisScale" xml:space="preserve">
     <value>Escala de Eje y</value>
@@ -3420,31 +3420,31 @@ Mueve el rectangulo sobre la parte del Encuadre que quieres hacer subsampling. T
     <value>Ajusta Imagen al area</value>
   </data>
   <data name="UPBV2InputCurrentChartLabel" xml:space="preserve">
-    <value>Input Current (A)</value>
+    <value>Entrada de corriente (A)</value>
   </data>
   <data name="UPBV2InputVoltageChartLabel" xml:space="preserve">
-    <value>Input Voltage (V)</value>
+    <value>Voltaje de entrada (V)</value>
   </data>
   <data name="LblSetMaximumSpeed" xml:space="preserve">
-    <value>Set Maximum Speed</value>
+    <value>Establecer velocidad máxima</value>
   </data>
   <data name="LblBackLashSteps" xml:space="preserve">
-    <value>Backlash Steps</value>
+    <value>Pasos de contragolpe (backlash)</value>
   </data>
   <data name="LblReverse" xml:space="preserve">
-    <value>Reverse</value>
+    <value>Invertir</value>
   </data>
   <data name="LblSetCurrentPosition" xml:space="preserve">
-    <value>Set Current Position</value>
+    <value>Establecer posición actual</value>
   </data>
   <data name="LblStepperMotorDirection" xml:space="preserve">
-    <value>Stepper Motor Direction</value>
+    <value>Dirección del motor de paso</value>
   </data>
   <data name="LblAuto" xml:space="preserve">
     <value>Auto</value>
   </data>
   <data name="LblBayerPattern" xml:space="preserve">
-    <value>Bayer Pattern</value>
+    <value>Matriz de Bayer</value>
   </data>
   <data name="LblBayerPatternBGGR" xml:space="preserve">
     <value>BGGR</value>
@@ -3471,38 +3471,38 @@ Mueve el rectangulo sobre la parte del Encuadre que quieres hacer subsampling. T
     <value>RGGB</value>
   </data>
   <data name="LblBayerPatternTooltip" xml:space="preserve">
-    <value>The Bayer pattern to be used for the BAYERPAT keyword in the FITS or XISF image headers for images generated by color sensors.
-The default of Auto uses any pattern that the camera driver might provide. Does not apply to DSLR cameras.</value>
+    <value>La matriz de Bayer que se utilizará para la palabra clave BAYERPAT en los encabezados de imágenes FITS o XISF para imágenes generadas por sensores de color.
+El valor predeterminado del Auto utiliza cualquier matriz que el controlador de la cámara pueda proporcionar. No se aplica a las cámaras DSLR.</value>
   </data>
   <data name="LblCurrent" xml:space="preserve">
-    <value>Current</value>
+    <value>Actual</value>
   </data>
   <data name="LblRunningEndOfSequence" xml:space="preserve">
-    <value>Running end of sequence options</value>
+    <value>Ejecuta Opciones de final de secuencia</value>
   </data>
   <data name="LblSQMPatternDescription" xml:space="preserve">
-    <value>Sky Quality Meter reading</value>
+    <value>Leyendo el medidor de calidad del cielo</value>
   </data>
   <data name="LblReadoutModePatternDescription" xml:space="preserve">
-    <value>Camera Readout Mode</value>
+    <value>Modo de lectura de la cámara</value>
   </data>
   <data name="LblSerialPortCannotOpen" xml:space="preserve">
-    <value>Cannot open serial port {0}: {1}</value>
+    <value>No se puede abrir el puerto serie {0}: {1}</value>
   </data>
   <data name="LblPointingTolerance" xml:space="preserve">
-    <value>Pointing Tolerance</value>
+    <value>Tolerancia de apuntado</value>
   </data>
   <data name="LblAutoFocusAfterFlip" xml:space="preserve">
-    <value>Auto Focus after Flip</value>
+    <value>Enfoque automático tras el gira de meridiano</value>
   </data>
   <data name="LblExposureFinished" xml:space="preserve">
-    <value>Exposure finished</value>
+    <value>Exposición finalizada</value>
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
-    <value>Camera Timeout - Camera did not set image as ready after exposuretime + 15 seconds</value>
+    <value>Tiempo de la cámara agotado - La cámara no dispuso la imagen como preparada después del tiempo de exposición + 15 segundos</value>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
-    <value>Pattern Preview</value>
+    <value>Vista previa de la matriz</value>
   </data>
   <data name="LblB1950" xml:space="preserve">
     <value>B1950</value>
@@ -3511,47 +3511,59 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
     <value>J2050</value>
   </data>
   <data name="LblUnknownEpochWarning" xml:space="preserve">
-    <value>The mount operates using an unknown equatorial reference system. {0} will be used. Please configure the mount's driver with a valid epoch.</value>
+    <value>La montura funciona utilizando un sistema de referencia ecuatorial desconocido. Se utilizará {0}. Por favor, configura el controlador de la montura con un epoch válido.</value>
   </data>
   <data name="LblUnsupportedEpoch" xml:space="preserve">
-    <value>The mount operates using the {0} equatorial reference system, which is not supported.</value>
+    <value>La montura opera utilizando el sistema de referencia ecuatorial {0}, que no es compatible.</value>
   </data>
   <data name="LblUnsupportedCfaPattern" xml:space="preserve">
-    <value>Unsupported CFA/Bayer pattern: {0}</value>
+    <value>Matriz CFA/Bayer no soportada: {0}</value>
   </data>
   <data name="LblSavingImage" xml:space="preserve">
-    <value>Saving image</value>
+    <value>Guardando imagen</value>
   </data>
   <data name="LblLowDiskSpaceForSequence" xml:space="preserve">
-    <value>Available space on drive {0} may be insufficient. The estimated disk space required for the sequence is {1}, but only {2} remains.</value>
+    <value>El espacio disponible en la unidad {0} puede ser insuficiente. El espacio estimado requerido en el disco para la secuencia es {1}, pero solo queda {2}.</value>
   </data>
   <data name="LblNoValidFirmwareVersion" xml:space="preserve">
-    <value>No valid firmware version.</value>
+    <value>Versión de firmware no válida.</value>
   </data>
   <data name="LblAbsolute" xml:space="preserve">
-    <value>Absolute</value>
+    <value>Absoluto</value>
     <comment>Focuser Backlash Compensation Method to add an absolute value after a focuser direction change</comment>
   </data>
   <data name="LblFocuserBacklashMethod" xml:space="preserve">
-    <value>Backlash Compensation Method</value>
+    <value>Método de compensación de contragolpe (backlash)</value>
   </data>
   <data name="LblFocuserBacklashMethodTooltip" xml:space="preserve">
-    <value>This controls the backlash compensation method used.
+    <value>Esto controla el método de compensació de contragolpe (backlash) utilizado.
 
-Absolute: 
-  When the focuser changes directions, an absolute value will be added to the focuser movement.
-  Backlash IN: when the focuser changes from moving outwards to moving inwards the Backlash IN value will be added
-  Backlash OUT: when the focuser changes from moving inwards to moving outwards the Backlash OUT value will be added
+Absoluto: 
+  Cuando el enfocador cambia de dirección, se añadirá un valor absoluto al movimiento del enfocador.
+  Retroceso IN: cuando el enfocador cambia de moverse hacia afuera a moverse hacia adentro se añadirá el valor de Backlash IN
+  Backlash OUT: cuando el enfocador cambie de de moverse hacia adentro a hacia afuera se añadirá el valor de Backlash OUT
   
-Overshoot:
-  This method will compensate for Backlash by overshooting the target position by a large amount and then moving the focuser back to the initially requested position.
-  Due to this compensation the last movement of the focuser will always be in the same direction (either always inwards or always outwards)
-  For Backlash IN and OUT only ONE of these two must be set! When setting IN, the amount will be applied on each inward movement, so the final movement will always be outwards. For Backlash OUT, it will be the other way around.
+Sobrepasar:
+  Este método compensará el Backlash sobrepasando mucho la posición deseada y luego moviendo al enfocador de vuelta a la posición solicitada inicialmente.
+  Debido a esta compensación, el último movimiento del enfocador siempre estará en la misma dirección (siempre hacia adentro o siempre hacia afuera)
+  ¡Para Backlash IN y OUT sólo se debe poner UNA de estas dos! Al ajustar IN, la cantidad se aplicará en cada movimiento interno, por lo que el movimiento final siempre será hacia afuera. Para Backlash OUT, será al revés.
 
-The method can only be changed when the focuser is not connected!</value>
+¡El método solo se puede cambiar cuando el enfocador no esté conectado!</value>
   </data>
   <data name="LblOvershoot" xml:space="preserve">
-    <value>Overshoot</value>
+    <value>Sobrepasar</value>
     <comment>Focuser Backlash Compensation Method by overshooting the position and moving back</comment>
+  </data>
+  <data name="LblFocuserMoveLargeTooltip" xml:space="preserve">
+    <value>Mueve el enfocador una gran distancia usando cinco veces el paso del enfoque automático</value>
+  </data>
+  <data name="LblFocuserMoveSmallTooltip" xml:space="preserve">
+    <value>Mueve el enfocador una corta distancia usando medio paso del enfoque automático </value>
+  </data>
+  <data name="LblMoveFocuserTooltip" xml:space="preserve">
+    <value>Mueve el enfocador a la posición de destino especificada</value>
+  </data>
+  <data name="LblMoveRotatorTooltip" xml:space="preserve">
+    <value>Mueve el rotador de campo a la posición de destino especificada</value>
   </data>
 </root>

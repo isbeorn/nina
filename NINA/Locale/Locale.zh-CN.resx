@@ -166,7 +166,7 @@
     <value>限制自动对焦使用亮星的数量。0 表示无限制。</value>
   </data>
   <data name="LblAllProSpikeAFlatPanel" xml:space="preserve">
-    <value>AllPro Spike-a-Flat Panel</value>
+    <value>AllPro Spike-a-Flat 面板</value>
   </data>
   <data name="LblAlnitakFlatPanel" xml:space="preserve">
     <value>Alnitak 平场板</value>
@@ -478,10 +478,10 @@
     <value>巡天图库本地缓存</value>
   </data>
   <data name="LblCalculateBias" xml:space="preserve">
-    <value>Calculate Bias</value>
+    <value>计算偏置</value>
   </data>
   <data name="LblCalculatedExposureTime" xml:space="preserve">
-    <value>Calculated Exposure Time</value>
+    <value>计算目标曝光时间</value>
   </data>
   <data name="LblCam" xml:space="preserve">
     <value>相机</value>
@@ -549,10 +549,10 @@
     <value>采集图像并解析</value>
   </data>
   <data name="LblCaptureImageCovered" xml:space="preserve">
-    <value>Cover Sensor and Capture Image</value>
+    <value>盖上传感器（相机）或盖上镜头盖拍摄图像</value>
   </data>
   <data name="LblCaptureImageUncovered" xml:space="preserve">
-    <value>Uncover Sensor and Capture Image</value>
+    <value>打开传感器盖（或镜头盖）并拍摄图像</value>
   </data>
   <data name="LblCdC" xml:space="preserve">
     <value>Cartes du Ciel</value>
@@ -975,7 +975,7 @@
     <value>当前位置</value>
   </data>
   <data name="LblCurrentSequenceEstimates" xml:space="preserve">
-    <value>Estimated time for this target</value>
+    <value>此目标预计完成时间</value>
   </data>
   <data name="LblCurrentUIColorSchema" xml:space="preserve">
     <value>当前的UI颜色方案</value>
@@ -1120,7 +1120,7 @@
     <value>图像保存目录没有写入权限！</value>
   </data>
   <data name="LblDisabled" xml:space="preserve">
-    <value>Disabled</value>
+    <value>已禁用</value>
   </data>
   <data name="LblDisableAFGuiding" xml:space="preserve">
     <value>对焦时停止导星</value>
@@ -1246,9 +1246,9 @@
     <value>最佳曝光计算器</value>
   </data>
   <data name="LblExposureCalculatorDescription" xml:space="preserve">
-    <value>This tool will suggest a recommended exposure time based on the read noise from your sensor and the average skyglow.
-If you have SharpCap installed and perform a Sensor Analysis, then use the drop down below to retrieve the read noise and full well capacity for the specified gain.
-You can also calculate the bias by clicking the Snapshot button next to Bias Mean.</value>
+    <value>这个工具将根据您的传感器的读出噪声和平均天光亮度给出建议的曝光时间。
+如果您安装了 SharpCap 并进行传感器分析， 然后用下面的下拉来检索特定增益下的读出噪声和满阱电荷数量。
+您也可以通过点击平均偏置旁边的快照按钮来计算偏置。</value>
   </data>
   <data name="LblExposureCalculatorMeanLessThanOffset" xml:space="preserve">
     <value>无法确定曝光时间建议。您当前图像的ADU平均值小于指定的偏置帧（Bias）。 请延长曝光时间或调整不正确的值。</value>
@@ -1885,7 +1885,7 @@ You can also calculate the bias by clicking the Snapshot button next to Bias Mea
     <value>持续分钟数</value>
   </data>
   <data name="LblMinExposureTimeDownloadRatio" xml:space="preserve">
-    <value>Minimum Exposure Time from Download Ratio</value>
+    <value>来自下载速率的最短曝光时间</value>
   </data>
   <data name="LblMinExpTime" xml:space="preserve">
     <value>最小曝光时间</value>
@@ -2472,7 +2472,7 @@ You can also calculate the bias by clicking the Snapshot button next to Bias Mea
     <value>重新居中图像</value>
   </data>
   <data name="LblRecommendedExposureTime" xml:space="preserve">
-    <value>Recommended Exposure Time</value>
+    <value>建议的曝光时间</value>
   </data>
   <data name="LblReconnectAll" xml:space="preserve">
     <value>重新连接所有设备?</value>
@@ -2622,7 +2622,7 @@ You can also calculate the bias by clicking the Snapshot button next to Bias Mea
     <value>无法选择所选配置文件。它正被另一个 N.I.N.A. 实例使用！</value>
   </data>
   <data name="LblSensorAnalysisPoorFit" xml:space="preserve">
-    <value>Sensor Analysis is irregular, and may not produce accurate results. Consider re-running it.</value>
+    <value>传感器分析是不正常的，可能无法产生准确的结果。请考虑重新运行。</value>
   </data>
   <data name="LblSensorName" xml:space="preserve">
     <value>传感器名称</value>
@@ -2710,13 +2710,13 @@ You can also calculate the bias by clicking the Snapshot button next to Bias Mea
     <value>在放弃“开始导星”命令前的重启超时（秒）</value>
   </data>
   <data name="LblSharpCapSensorAnalysisPath" xml:space="preserve">
-    <value>SharpCap Sensor Analysis folder</value>
+    <value>SharpCap 传感器分析文件夹</value>
   </data>
   <data name="LblSharpCapSensorAnalysisLoadedFormat" xml:space="preserve">
-    <value>Loaded {0} sensors</value>
+    <value>已加载 {0} 传感器</value>
   </data>
   <data name="LblSharpCapSensorAnalysisPathTooltip" xml:space="preserve">
-    <value>Folder where SharpCap Sensor Analysis files can be found, if somewhere other than their default location</value>
+    <value>如果没有使用SharpCap默认路径，请在此手动选择SharpCap传感器分析文件夹</value>
   </data>
   <data name="LblSiderealTime" xml:space="preserve">
     <value>恒星时</value>
@@ -3285,7 +3285,7 @@ You can also calculate the bias by clicking the Snapshot button next to Bias Mea
     <value>使用B门模式</value>
   </data>
   <data name="LblUseSharpCapSensorAnalysis" xml:space="preserve">
-    <value>Use SharpCap Sensor Analysis</value>
+    <value>使用 SharpCap 传感器分析</value>
   </data>
   <data name="LblUseSideOfPier" xml:space="preserve">
     <value>使用赤道仪方位</value>
@@ -3496,13 +3496,13 @@ You can also calculate the bias by clicking the Snapshot button next to Bias Mea
     <value>翻转后自动对焦</value>
   </data>
   <data name="LblExposureFinished" xml:space="preserve">
-    <value>Exposure finished</value>
+    <value>曝光完成</value>
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
     <value>Camera Timeout - Camera did not set image as ready after exposuretime + 15 seconds</value>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
-    <value>Pattern Preview</value>
+    <value>图案预览</value>
   </data>
   <data name="LblB1950" xml:space="preserve">
     <value>B1950</value>
@@ -3511,47 +3511,59 @@ You can also calculate the bias by clicking the Snapshot button next to Bias Mea
     <value>J2050</value>
   </data>
   <data name="LblUnknownEpochWarning" xml:space="preserve">
-    <value>The mount operates using an unknown equatorial reference system. {0} will be used. Please configure the mount's driver with a valid epoch.</value>
+    <value>赤道仪使用的坐标系未知。{0} 将被使用。请使用有效的与驱动程序相匹配的坐标系。</value>
   </data>
   <data name="LblUnsupportedEpoch" xml:space="preserve">
-    <value>The mount operates using the {0} equatorial reference system, which is not supported.</value>
+    <value>赤道仪目前正在使用不支持的 {0} 坐标系。</value>
   </data>
   <data name="LblUnsupportedCfaPattern" xml:space="preserve">
-    <value>Unsupported CFA/Bayer pattern: {0}</value>
+    <value>不支持的 CFA/Bayer阵列： {0}</value>
   </data>
   <data name="LblSavingImage" xml:space="preserve">
-    <value>Saving image</value>
+    <value>保存图像</value>
   </data>
   <data name="LblLowDiskSpaceForSequence" xml:space="preserve">
-    <value>Available space on drive {0} may be insufficient. The estimated disk space required for the sequence is {1}, but only {2} remains.</value>
+    <value>驱动器 {0} 上的可用空间可能不够。估计序列需要的磁盘空间为 {1}，但是只剩下 {2}。</value>
   </data>
   <data name="LblNoValidFirmwareVersion" xml:space="preserve">
-    <value>No valid firmware version.</value>
+    <value>固件版本不可用。</value>
   </data>
   <data name="LblAbsolute" xml:space="preserve">
-    <value>Absolute</value>
+    <value>绝对值</value>
     <comment>Focuser Backlash Compensation Method to add an absolute value after a focuser direction change</comment>
   </data>
   <data name="LblFocuserBacklashMethod" xml:space="preserve">
-    <value>Backlash Compensation Method</value>
+    <value>回差补偿方法</value>
   </data>
   <data name="LblFocuserBacklashMethodTooltip" xml:space="preserve">
-    <value>This controls the backlash compensation method used.
+    <value>以下信息是回差补偿方法使用的。
 
-Absolute: 
-  When the focuser changes directions, an absolute value will be added to the focuser movement.
-  Backlash IN: when the focuser changes from moving outwards to moving inwards the Backlash IN value will be added
-  Backlash OUT: when the focuser changes from moving inwards to moving outwards the Backlash OUT value will be added
+绝对值： 
+  当用户改变调焦器运动方向时，此数值（步数）将被添加到对焦器运动的方向中。
+  向内方向回差：当调焦器从向外移动切换至向内移动时，将会增加“向内方向回差”数值（步数）。
+  向外方向回差：当调焦器从向内移动切换至向外移动时，将会增加“向外方向回差”此数值（步数）。
   
-Overshoot:
-  This method will compensate for Backlash by overshooting the target position by a large amount and then moving the focuser back to the initially requested position.
-  Due to this compensation the last movement of the focuser will always be in the same direction (either always inwards or always outwards)
-  For Backlash IN and OUT only ONE of these two must be set! When setting IN, the amount will be applied on each inward movement, so the final movement will always be outwards. For Backlash OUT, it will be the other way around.
+超出值：
+  此方法将在达到目标后继续移动一个很大的步数，然后将调焦器移动到最初请求（合焦）的位置。
+  对于这种回差补偿方法，调焦器的最后一次移动总是处于相同的方向(不论是向内移动还是向外移动)
+  对于向内/向外方向的回差，必须设置两者之一！ 设置向内方向时，该步数将适用于每次内向移动，因此最终移动总是向外移动，向外方向亦然。
 
-The method can only be changed when the focuser is not connected!</value>
+只有当断开调焦器时才能更改回差补偿方法！</value>
   </data>
   <data name="LblOvershoot" xml:space="preserve">
-    <value>Overshoot</value>
+    <value>超出值</value>
     <comment>Focuser Backlash Compensation Method by overshooting the position and moving back</comment>
+  </data>
+  <data name="LblFocuserMoveLargeTooltip" xml:space="preserve">
+    <value>Moves focuser by a large amount using five times the Autofocus Stepsize</value>
+  </data>
+  <data name="LblFocuserMoveSmallTooltip" xml:space="preserve">
+    <value>Moves focuser by a small amount using half the Autofocus Stepsize </value>
+  </data>
+  <data name="LblMoveFocuserTooltip" xml:space="preserve">
+    <value>Moves focuser to the specified target position</value>
+  </data>
+  <data name="LblMoveRotatorTooltip" xml:space="preserve">
+    <value>Moves rotator to the specified target position</value>
   </data>
 </root>
