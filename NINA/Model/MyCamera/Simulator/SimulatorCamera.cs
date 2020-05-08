@@ -74,7 +74,7 @@ namespace NINA.Model.MyCamera.Simulator {
 
         public double CCDTemperature {
             get {
-                return double.NaN;
+                return Settings.ImageSettings.MetaData?.Camera.Temperature ?? double.NaN;
             }
         }
 
@@ -131,7 +131,7 @@ namespace NINA.Model.MyCamera.Simulator {
 
         public SensorType SensorType {
             get {
-                return SensorType.Monochrome;
+                return Settings.ImageSettings.MetaData?.Camera.SensorType ?? SensorType.Monochrome;
             }
         }
 
@@ -179,13 +179,13 @@ namespace NINA.Model.MyCamera.Simulator {
 
         public double PixelSizeX {
             get {
-                return profileService.ActiveProfile.CameraSettings.PixelSize;
+                return Settings.ImageSettings.MetaData?.Camera?.PixelSize ?? profileService.ActiveProfile.CameraSettings.PixelSize;
             }
         }
 
         public double PixelSizeY {
             get {
-                return profileService.ActiveProfile.CameraSettings.PixelSize;
+                return Settings.ImageSettings.MetaData?.Camera?.PixelSize ?? profileService.ActiveProfile.CameraSettings.PixelSize;
             }
         }
 
@@ -317,13 +317,19 @@ namespace NINA.Model.MyCamera.Simulator {
 
         public string Name {
             get {
-                return "N.I.N.A. Simulator Camera";
+                string cameraName = "N.I.N.A. Simulator Camera";
+
+                if (Settings.ImageSettings.MetaData?.Camera.Name.Length > 0) {
+                    cameraName = cameraName + " (" + Settings.ImageSettings.MetaData.Camera.Name + ")";
+                }
+
+                return cameraName;
             }
         }
 
         public double Temperature {
             get {
-                return double.NaN;
+                return Settings.ImageSettings.MetaData?.Camera.Temperature ?? double.NaN;
             }
         }
 
@@ -596,6 +602,12 @@ namespace NINA.Model.MyCamera.Simulator {
             if (dialog.ShowDialog() == true) {
                 var rawData = await ImageData.ImageData.FromFile(dialog.FileName, BitDepth, Settings.ImageSettings.IsBayered, profileService.ActiveProfile.CameraSettings.RawConverter);
                 Settings.ImageSettings.Image = rawData.RenderImage();
+                Settings.ImageSettings.MetaData = rawData.MetaData;
+
+                if (Settings.ImageSettings.MetaData?.Camera.SensorType != SensorType.Monochrome) {
+                    Settings.ImageSettings.IsBayered = true;
+                }
+
                 return true;
             }
             return false;

@@ -40,6 +40,7 @@ namespace NINA.Model.MyCamera.Simulator {
         }
 
         public string RawType { get; set; } = ".cr2";
+
         private MemoryStream rawImageStream = null;
 
         public MemoryStream RAWImageStream {
@@ -63,6 +64,18 @@ namespace NINA.Model.MyCamera.Simulator {
                 RaisePropertyChanged();
                 //RaisePropertyChanged(nameof(CameraXSize));
                 //RaisePropertyChanged(nameof(CameraYSize));
+            }
+        }
+
+        private ImageMetaData _metaData = null;
+
+        public ImageMetaData MetaData {
+            get => _metaData;
+            set {
+                lock (lockObj) {
+                    _metaData = value;
+                }
+                RaisePropertyChanged();
             }
         }
     }

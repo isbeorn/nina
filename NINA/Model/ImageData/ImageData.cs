@@ -24,6 +24,7 @@
 
 #endregion "copyright"
 
+using NINA.Model.MyCamera;
 using NINA.Utility;
 using NINA.Utility.Enum;
 using NINA.Utility.FileFormat.FITS;
@@ -54,7 +55,7 @@ namespace NINA.Model.ImageData {
         public ImageData(IImageArray imageArray, int width, int height, int bitDepth, bool isBayered, ImageMetaData metaData) {
             this.Data = imageArray;
             this.MetaData = metaData;
-            isBayered = metaData.Camera.BayerPattern != string.Empty ? true : isBayered;
+            isBayered = metaData.Camera.SensorType != SensorType.Monochrome ? true : isBayered;
             this.Properties = new ImageProperties(width: width, height: height, bitDepth: bitDepth, isBayered: isBayered);
             this.StarDetectionAnalysis = new StarDetectionAnalysis();
             this.Statistics = new Nito.AsyncEx.AsyncLazy<IImageStatistics>(async () => await Task.Run(() => ImageStatistics.Create(this)));

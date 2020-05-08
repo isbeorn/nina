@@ -146,7 +146,7 @@ namespace NINA.Utility.FileFormat.XISF {
             }
 
             if (TryGetFITSProperty("BAYERPAT", out value)) {
-                metaData.Camera.BayerPattern = value;
+                metaData.Camera.SensorType = metaData.StringToSensorType(value);
             }
 
             if (TryGetFITSProperty("XBAYEROFF", out value)) {
@@ -390,15 +390,15 @@ namespace NINA.Utility.FileFormat.XISF {
                 AddImageFITSKeyword("READOUTM", metaData.Camera.ReadoutModeName.ToString(CultureInfo.InvariantCulture), "Sensor readout mode");
             }
 
-            if (!string.IsNullOrEmpty(metaData.Camera.BayerPattern) && metaData.Camera.SensorType != SensorType.Monochrome) {
-                AddImageFITSKeyword("BAYERPAT", metaData.Camera.BayerPattern.ToString(CultureInfo.InvariantCulture), "Sensor Bayer pattern");
+            if (metaData.Camera.SensorType != SensorType.Monochrome) {
+                AddImageFITSKeyword("BAYERPAT", metaData.Camera.SensorType.ToString().ToUpper(), "Sensor Bayer pattern");
                 AddImageFITSKeyword("XBAYROFF", metaData.Camera.BayerOffsetX.ToString(CultureInfo.InvariantCulture), "Bayer pattern X axis offset");
                 AddImageFITSKeyword("YBAYROFF", metaData.Camera.BayerOffsetY.ToString(CultureInfo.InvariantCulture), "Bayer pattern Y axis offset");
 
                 /*
                  * Add XISF ColorFilterArray element. We support only 2x2 bayer patterns for now.
                  */
-                AddCfaAttribute(metaData.Camera.BayerPattern, 2, 2);
+                AddCfaAttribute(metaData.Camera.SensorType.ToString().ToUpper(), 2, 2);
             }
 
             /* Observer */

@@ -172,7 +172,7 @@ namespace NINA.Utility.FileFormat.FITS {
             }
 
             if (_headerCards.TryGetValue("BAYERPAT", out card)) {
-                metaData.Camera.BayerPattern = card.OriginalValue;
+                metaData.Camera.SensorType = metaData.StringToSensorType(card.OriginalValue);
             }
 
             if (_headerCards.TryGetValue("XBAYROFF", out card)) {
@@ -440,8 +440,8 @@ namespace NINA.Utility.FileFormat.FITS {
                 Add("READOUTM", metaData.Camera.ReadoutModeName, "Sensor readout mode");
             }
 
-            if (!string.IsNullOrEmpty(metaData.Camera.BayerPattern) && metaData.Camera.SensorType != SensorType.Monochrome) {
-                Add("BAYERPAT", metaData.Camera.BayerPattern, "Sensor Bayer pattern");
+            if (metaData.Camera.SensorType != SensorType.Monochrome) {
+                Add("BAYERPAT", metaData.Camera.SensorType.ToString().ToUpper(), "Sensor Bayer pattern");
                 Add("XBAYROFF", metaData.Camera.BayerOffsetX, "Bayer pattern X axis offset");
                 Add("YBAYROFF", metaData.Camera.BayerOffsetY, "Bayer pattern Y axis offset");
             }

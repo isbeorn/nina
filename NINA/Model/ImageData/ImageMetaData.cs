@@ -28,6 +28,7 @@ using NINA.Model.MyRotator;
 using NINA.Model.MyTelescope;
 using NINA.Model.MyWeatherData;
 using NINA.Profile;
+using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Enum;
 using System;
@@ -53,7 +54,7 @@ namespace NINA.Model.ImageData {
         /// <param name="profile"></param>
         public void FromProfile(IProfile profile) {
             Camera.PixelSize = profile.CameraSettings.PixelSize;
-            Camera.BayerPatternSetting = profile.CameraSettings.BayerPattern;
+            Camera.BayerPattern = profile.CameraSettings.BayerPattern;
 
             Telescope.Name = profile.TelescopeSettings.Name;
             Telescope.FocalLength = profile.TelescopeSettings.FocalLength;
@@ -82,12 +83,12 @@ namespace NINA.Model.ImageData {
                 Camera.SensorType = info.SensorType;
 
                 if (Camera.SensorType != SensorType.Monochrome) {
-                    if (Camera.BayerPatternSetting == BayerPatternEnum.Auto) {
-                        Camera.BayerPattern = info.SensorType.ToString().ToUpper();
+                    if (Camera.BayerPattern == BayerPatternEnum.Auto) {
+                        Camera.SensorType = info.SensorType;
                         Camera.BayerOffsetX = info.BayerOffsetX;
                         Camera.BayerOffsetY = info.BayerOffsetY;
                     } else {
-                        Camera.BayerPattern = Camera.BayerPatternSetting.ToString().ToUpper();
+                        Camera.SensorType = (SensorType)Camera.BayerPattern;
                         Camera.BayerOffsetX = 0;
                         Camera.BayerOffsetY = 0;
                     }
@@ -151,6 +152,10 @@ namespace NINA.Model.ImageData {
                 WeatherData.WindSpeed = info.WindSpeed;
             }
         }
+
+        public SensorType StringToSensorType(string pattern) {
+            return Enum.TryParse(pattern, out SensorType sensor) ? sensor : SensorType.Monochrome;
+        }
     }
 
     public class ImageParameter {
@@ -174,8 +179,7 @@ namespace NINA.Model.ImageData {
         public double ElectronsPerADU { get; set; } = double.NaN;
         public double SetPoint { get; set; } = double.NaN;
         public string ReadoutModeName { get; set; } = string.Empty;
-        public BayerPatternEnum BayerPatternSetting = BayerPatternEnum.Auto;
-        public string BayerPattern { get; set; } = string.Empty;
+        public BayerPatternEnum BayerPattern = BayerPatternEnum.Auto;
         public SensorType SensorType { get; set; } = SensorType.Monochrome;
         public int BayerOffsetX { get; set; } = 0;
         public int BayerOffsetY { get; set; } = 0;
