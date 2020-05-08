@@ -45,6 +45,7 @@ namespace NINA.Model.ImageData {
         public TargetParameter Target { get; set; } = new TargetParameter();
         public ObserverParameter Observer { get; set; } = new ObserverParameter();
         public WeatherDataParameter WeatherData { get; set; } = new WeatherDataParameter();
+        public WorldCoordinateSystem WorldCoordinateSystem = null;
 
         /// <summary>
         /// Fill relevant info from a Profile

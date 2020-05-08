@@ -51,28 +51,47 @@ namespace NINA.Utility.SkySurvey {
                 var renderedImage = arr.RenderImage();
                 renderedImage = await renderedImage.Stretch(factor: 0.2, blackClipping: -2.8, unlinked: false);
 
-                var pixelSize = arr.MetaData.Camera.PixelSize;
-                var focalLength = arr.MetaData.Telescope.FocalLength;
-                var arcSecPerPixel = Astrometry.Astrometry.ArcsecPerPixel(pixelSize, focalLength);
+                var targetName = string.IsNullOrWhiteSpace(arr.MetaData.Target?.Name) ? Path.GetFileNameWithoutExtension(dialog.FileName) : arr.MetaData.Target.Name;
 
-                var referenceCoordinates = arr.MetaData.Telescope.Coordinates;
-                if (referenceCoordinates == null) {
-                    referenceCoordinates = arr.MetaData.Target.Coordinates;
+                if (arr.MetaData.WorldCoordinateSystem != null) {
+                    return new FileSkySurveyImage() {
+                        Name = targetName,
+                        Coordinates = arr.MetaData.WorldCoordinateSystem.GetCoordinates(renderedImage.Image.PixelWidth / 2, renderedImage.Image.PixelHeight / 2),
+                        FoVHeight = Astrometry.Astrometry.ArcsecToArcmin(arr.MetaData.WorldCoordinateSystem.PixelScaleY * renderedImage.Image.PixelHeight),
+                        FoVWidth = Astrometry.Astrometry.ArcsecToArcmin(arr.MetaData.WorldCoordinateSystem.PixelScaleX * renderedImage.Image.PixelWidth),
+                        Image = renderedImage.Image,
+                        Rotation = arr.MetaData.WorldCoordinateSystem.Rotation,
+                        Source = nameof(FileSkySurvey),
+                        Data = arr
+                    };
+                } else {
+                    var pixelSize = arr.MetaData.Camera.PixelSize;
+                    var focalLength = arr.MetaData.Telescope.FocalLength;
+                    var arcSecPerPixel = Astrometry.Astrometry.ArcsecPerPixel(pixelSize, focalLength);
+
+                    var referenceCoordinates = arr.MetaData.Telescope.Coordinates;
+                    if (referenceCoordinates == null) {
+                        referenceCoordinates = arr.MetaData.Target.Coordinates;
+                    }
+
+                    return new FileSkySurveyImage() {
+                        Name = targetName,
+                        Coordinates = referenceCoordinates,
+                        FoVHeight = arcSecPerPixel * arr.Properties.Height,
+                        FoVWidth = arcSecPerPixel * arr.Properties.Width,
+                        Image = renderedImage.Image,
+                        Rotation = double.NaN,
+                        Source = nameof(FileSkySurvey),
+                        Data = arr
+                    };
                 }
-
-                // TODO: Try and extract properties from image if available
-                return new SkySurveyImage() {
-                    Name = Path.GetFileNameWithoutExtension(dialog.FileName),
-                    Coordinates = referenceCoordinates,
-                    FoVHeight = arcSecPerPixel * arr.Properties.Height,
-                    FoVWidth = arcSecPerPixel * arr.Properties.Width,
-                    Image = renderedImage.Image,
-                    Rotation = double.NaN,
-                    Source = nameof(FileSkySurvey)
-                };
             } else {
                 return null;
             }
         }
+    }
+
+    internal class FileSkySurveyImage : SkySurveyImage {
+        public IImageData Data { get; set; }
     }
 }

@@ -234,6 +234,54 @@ namespace NINA.Utility.FileFormat.XISF {
                 metaData.WeatherData.WindSpeed = double.Parse(value, CultureInfo.InvariantCulture);
             }
 
+            /* WCS */
+
+            if (TryGetFITSProperty("CTYPE1", out var ctype1) && TryGetFITSProperty("CTYPE2", out var ctype2)) {
+                if (ctype1 == "RA---TAN" && ctype2 == "DEC--TAN") {
+                    if (TryGetFITSProperty("CRPIX1", out var CRPIX1Value)
+                      && TryGetFITSProperty("CRPIX2", out var CRPIX2Value)
+                      && TryGetFITSProperty("CRVAL1", out var CRVAL1Value)
+                      && TryGetFITSProperty("CRVAL2", out var CRVAL2Value)
+                    ) {
+                        var crPix1 = double.Parse(CRPIX1Value, CultureInfo.InvariantCulture);
+                        var crPix2 = double.Parse(CRPIX2Value, CultureInfo.InvariantCulture);
+                        var crVal1 = double.Parse(CRVAL1Value, CultureInfo.InvariantCulture);
+                        var crVal2 = double.Parse(CRVAL2Value, CultureInfo.InvariantCulture);
+
+                        if (TryGetFITSProperty("CD1_1", out var CD1_1Value)
+                            && TryGetFITSProperty("CD2_1", out var CD2_1Value)
+                            && TryGetFITSProperty("CD1_2", out var CD1_2Value)
+                            && TryGetFITSProperty("CD2_2", out var CD2_2Value)
+
+                        ) {
+                            // CDn_m notation
+                            var cd1_1 = double.Parse(CD1_1Value, CultureInfo.InvariantCulture);
+                            var cd2_1 = double.Parse(CD2_1Value, CultureInfo.InvariantCulture);
+                            var cd1_2 = double.Parse(CD1_2Value, CultureInfo.InvariantCulture);
+                            var cd2_2 = double.Parse(CD2_2Value, CultureInfo.InvariantCulture);
+                            var wcs = new WorldCoordinateSystem(crVal1, crVal2, crPix1, crPix2, cd1_1, cd1_2, cd2_1, cd2_2);
+                            metaData.WorldCoordinateSystem = wcs;
+                        } else if (TryGetFITSProperty("CDELT1", out var CDELT1Value)
+                                && TryGetFITSProperty("CDELT2", out var CDELT2Value)
+                                && TryGetFITSProperty("CROTA2", out var CROTA2Value)
+                            ) {
+                            // Older CROTA2 notation
+                            var cdelt1 = double.Parse(CDELT1Value, CultureInfo.InvariantCulture);
+                            var cdelt2 = double.Parse(CDELT2Value, CultureInfo.InvariantCulture);
+                            var crota2 = double.Parse(CROTA2Value, CultureInfo.InvariantCulture);
+                            var wcs = new WorldCoordinateSystem(crVal1, crVal2, crPix1, crPix2, cdelt1, cdelt2, crota2);
+                            metaData.WorldCoordinateSystem = wcs;
+                        } else {
+                            Logger.Debug("XISF WCS - No CROTA2 or CDn_m keywords found");
+                        }
+                    } else {
+                        Logger.Debug("XISF WCS - No CRPIX and CRVAL keywords found");
+                    }
+                } else {
+                    Logger.Debug($"XISF WCS - Incompatible projection found {ctype1} {ctype2}");
+                }
+            }
+
             return metaData;
         }
 
@@ -280,6 +328,11 @@ namespace NINA.Utility.FileFormat.XISF {
             if (elem == null) { return false; }
 
             value = elem.Attribute("value").Value;
+
+            if (value.StartsWith("'")) {
+                value = value.Trim();
+                value = value.Remove(value.Length - 1, 1).Remove(0, 1).Replace(@"''", @"'");
+            }
 
             return true;
         }

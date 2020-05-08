@@ -196,6 +196,8 @@ namespace NINA.ViewModel.FramingAssistant {
             if (e.PropertyName == nameof(DeepSkyObjectSearchVM.Coordinates) && DeepSkyObjectSearchVM.Coordinates != null) {
                 DSO = new DeepSkyObject(DeepSkyObjectSearchVM.SelectedTargetSearchResult.Column1, DeepSkyObjectSearchVM.Coordinates, profileService.ActiveProfile.ApplicationSettings.SkyAtlasImageRepository);
                 RaiseCoordinatesChanged();
+            } else if (e.PropertyName == nameof(DeepSkyObjectSearchVM.TargetName) && DSO != null) {
+                DSO.Name = DeepSkyObjectSearchVM.TargetName;
             }
         }
 
@@ -652,7 +654,17 @@ namespace NINA.ViewModel.FramingAssistant {
                     if (skySurveyImage != null) {
                         skySurveyImage.Image.Freeze();
                         if (FramingAssistantSource == SkySurveySource.FILE) {
-                            skySurveyImage = await PlateSolveSkySurvey(skySurveyImage);
+                            var fileSkySurveyImage = skySurveyImage as FileSkySurveyImage;
+
+                            DeepSkyObjectSearchVM.SetTargetNameWithoutSearch(fileSkySurveyImage.Name);
+                            DSO.Name = fileSkySurveyImage.Name;
+
+                            if (fileSkySurveyImage.Data.MetaData.WorldCoordinateSystem == null) {
+                                skySurveyImage = await PlateSolveSkySurvey(fileSkySurveyImage);
+                            } else {
+                                this.DSO.Coordinates = fileSkySurveyImage.Data.MetaData.WorldCoordinateSystem.Coordinates;
+                                RaiseCoordinatesChanged();
+                            }
                         }
 
                         await _dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => {
@@ -661,7 +673,7 @@ namespace NINA.ViewModel.FramingAssistant {
                             ImageParameter = skySurveyImage;
                         }));
 
-                        if (Cache != null && FramingAssistantSource != SkySurveySource.SKYATLAS) {
+                        if (Cache != null && FramingAssistantSource != SkySurveySource.SKYATLAS && FramingAssistantSource != SkySurveySource.FILE) {
                             SelectedImageCacheInfo = Cache.SaveImageToCache(skySurveyImage);
                             RaisePropertyChanged(nameof(ImageCacheInfo));
                         }
@@ -680,12 +692,10 @@ namespace NINA.ViewModel.FramingAssistant {
             }
         }
 
-        private async Task<SkySurveyImage> PlateSolveSkySurvey(SkySurveyImage skySurveyImage) {
+        private async Task<FileSkySurveyImage> PlateSolveSkySurvey(FileSkySurveyImage skySurveyImage) {
             var referenceCoordinates = skySurveyImage.Coordinates != null ? skySurveyImage.Coordinates : DSO.Coordinates;
 
             var diagResult = MyMessageBox.MyMessageBox.Show(string.Format(Locale.Loc.Instance["LblBlindSolveAttemptForFraming"], referenceCoordinates.RAString, referenceCoordinates.DecString), Locale.Loc.Instance["LblNoCoordinates"], MessageBoxButton.YesNo, MessageBoxResult.Yes);
-
-            var renderedImage = await RenderedImage.FromBitmapSource(source: skySurveyImage.Image);
 
             if (diagResult == MessageBoxResult.No) {
                 referenceCoordinates = null;
@@ -705,7 +715,7 @@ namespace NINA.ViewModel.FramingAssistant {
             };
 
             var imageSolver = new ImageSolver(plateSolver, blindSolver);
-            var psResult = await imageSolver.Solve(renderedImage.RawImageData, parameter, _statusUpdate, _loadImageSource.Token);
+            var psResult = await imageSolver.Solve(skySurveyImage.Data, parameter, _statusUpdate, _loadImageSource.Token);
 
             if (psResult?.Success == true) {
                 var rotation = psResult.Orientation;

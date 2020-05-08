@@ -21,6 +21,7 @@
 
 #endregion "copyright"
 
+using Accord;
 using Accord.Imaging.ColorReduction;
 using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
@@ -32,6 +33,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace NINA.Utility.FileFormat.FITS {
 
@@ -314,6 +316,53 @@ namespace NINA.Utility.FileFormat.FITS {
             }
             if (_headerCards.TryGetValue("WINDSPD", out card)) {
                 metaData.WeatherData.WindSpeed = ParseDouble(card.OriginalValue) / 3.6;
+            }
+
+            /* WCS */
+            if (_headerCards.TryGetValue("CTYPE1", out var ctype1Card) && _headerCards.TryGetValue("CTYPE2", out var ctype2Card)) {
+                if (ctype1Card.OriginalValue == "RA---TAN" && ctype2Card.OriginalValue == "DEC--TAN") {
+                    if (_headerCards.TryGetValue("CRPIX1", out var crpix1Card)
+                        && _headerCards.TryGetValue("CRPIX2", out var crpix2Card)
+                        && _headerCards.TryGetValue("CRVAL1", out var crval1Card)
+                        && _headerCards.TryGetValue("CRVAL2", out var crval2Card)) {
+                        var crPix1 = ParseDouble(crpix1Card.OriginalValue);
+                        var crPix2 = ParseDouble(crpix2Card.OriginalValue);
+                        var crVal1 = ParseDouble(crval1Card.OriginalValue);
+                        var crVal2 = ParseDouble(crval2Card.OriginalValue);
+
+                        if (_headerCards.TryGetValue("CD1_1", out var cd1_1Card)
+                            && _headerCards.TryGetValue("CD1_2", out var cd1_2Card)
+                            && _headerCards.TryGetValue("CD2_1", out var cd2_1Card)
+                            && _headerCards.TryGetValue("CD2_2", out var cd2_2Card)
+                        ) {
+                            // CDn_m notation
+                            var cd1_1 = ParseDouble(cd1_1Card.OriginalValue);
+                            var cd1_2 = ParseDouble(cd1_2Card.OriginalValue);
+                            var cd2_1 = ParseDouble(cd2_1Card.OriginalValue);
+                            var cd2_2 = ParseDouble(cd2_2Card.OriginalValue);
+
+                            var wcs = new WorldCoordinateSystem(crVal1, crVal2, crPix1, crPix2, cd1_1, cd1_2, cd2_1, cd2_2);
+                            metaData.WorldCoordinateSystem = wcs;
+                        } else if (_headerCards.TryGetValue("CDELT1", out var CDELT1Card)
+                            && _headerCards.TryGetValue("CDELT2", out var CDELT2Card)
+                            && _headerCards.TryGetValue("CROTA2", out var CROTA2Card)
+                        ) {
+                            // Older CROTA2 notation
+                            var cdelt1 = ParseDouble(CDELT1Card.OriginalValue);
+                            var cdelt2 = ParseDouble(CDELT2Card.OriginalValue);
+                            var crota2 = ParseDouble(CROTA2Card.OriginalValue);
+
+                            var wcs = new WorldCoordinateSystem(crVal1, crVal2, crPix1, crPix2, cdelt1, cdelt2, crota2);
+                            metaData.WorldCoordinateSystem = wcs;
+                        } else {
+                            Logger.Debug("FITS WCS - No CROTA2 or CDn_m keywords found");
+                        }
+                    } else {
+                        Logger.Debug("FITS WCS - No CRPIX and CRVAL keywords found");
+                    }
+                } else {
+                    Logger.Debug($"FITS WCS - Incompatible projection found {ctype1Card.OriginalValue} {ctype2Card.OriginalValue}");
+                }
             }
 
             return metaData;
