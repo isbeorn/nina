@@ -650,6 +650,7 @@ namespace NINA.ViewModel.FramingAssistant {
                     }
 
                     if (skySurveyImage != null) {
+                        skySurveyImage.Image.Freeze();
                         if (FramingAssistantSource == SkySurveySource.FILE) {
                             skySurveyImage = await PlateSolveSkySurvey(skySurveyImage);
                         }

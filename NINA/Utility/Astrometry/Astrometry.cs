@@ -25,6 +25,7 @@ using NINA.Database;
 using Nito.AsyncEx;
 using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -430,14 +431,14 @@ namespace NINA.Utility.Astrometry {
             double degree = 0, minutes = 0, seconds = 0;
 
             if (matches.Count > 0) {
-                degree = double.Parse(matches[0].Value);
+                degree = double.Parse(matches[0].Value, CultureInfo.InvariantCulture);
 
                 if (matches.Count > 1) {
-                    minutes = ArcminToDegree(double.Parse(matches[1].Value));
+                    minutes = ArcminToDegree(double.Parse(matches[1].Value, CultureInfo.InvariantCulture));
                 }
 
                 if (matches.Count > 2) {
-                    seconds = ArcsecToDegree(double.Parse(matches[2].Value));
+                    seconds = ArcsecToDegree(double.Parse(matches[2].Value, CultureInfo.InvariantCulture));
                 }
             }
 
