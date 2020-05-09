@@ -158,10 +158,6 @@ namespace NINA.ViewModel.Imaging {
                 var analysisData = this._sharpCapSensorAnalysisData[this._mySharpCapSensor];
                 var readNoiseEstimate = analysisData.EstimateReadNoise((double)newValue);
                 var fullWellCapacityEstimate = analysisData.EstimateFullWellCapacity((double)newValue);
-                if (readNoiseEstimate.RSquared < WARN_THRESHOLD_FOR_SHARPCAP_GOODNESS_OF_FIT
-                    || fullWellCapacityEstimate.RSquared < WARN_THRESHOLD_FOR_SHARPCAP_GOODNESS_OF_FIT) {
-                    Notification.ShowWarning(Locale.Loc.Instance["LblSensorAnalysisPoorFit"]);
-                }
                 this.ReadNoise = readNoiseEstimate.EstimatedValue;
                 this.FullWellCapacity = fullWellCapacityEstimate.EstimatedValue;
             }
