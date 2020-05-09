@@ -302,7 +302,7 @@ namespace NINA.Model.MyCamera {
 
         public int GainMax => Info.GainMax;
         public int GainMin => Info.GainMin;
-        public ArrayList Gains => new ArrayList();
+        public IList<int> Gains => new List<int>();
         public bool HasBattery => false;
         public bool HasDewHeater => false;
         public bool HasSetupDialog => false;

@@ -22,6 +22,7 @@
 #endregion "copyright"
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace NINA.Model.MyCamera {
@@ -88,6 +89,27 @@ namespace NINA.Model.MyCamera {
             set { binY = value; RaisePropertyChanged(); }
         }
 
+        private bool canSetOffset;
+
+        public bool CanSetOffset {
+            get { return canSetOffset; }
+            set { canSetOffset = value; RaisePropertyChanged(); }
+        }
+
+        public int offsetMin;
+
+        public int OffsetMin {
+            get { return offsetMin; }
+            set { offsetMin = value; RaisePropertyChanged(); }
+        }
+
+        public int offsetMax;
+
+        public int OffsetMax {
+            get { return offsetMax; }
+            set { offsetMax = value; RaisePropertyChanged(); }
+        }
+
         private int offset;
 
         public int Offset {
@@ -135,6 +157,54 @@ namespace NINA.Model.MyCamera {
         public int Battery {
             get { return battery; }
             set { battery = value; RaisePropertyChanged(); }
+        }
+
+        private int gainMin;
+
+        public int GainMin {
+            get {
+                return gainMin;
+            }
+            set {
+                gainMin = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private int gainMax;
+
+        public int GainMax {
+            get {
+                return gainMax;
+            }
+            set {
+                gainMax = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool canSetGain;
+
+        public bool CanSetGain {
+            get {
+                return canSetGain;
+            }
+            set {
+                canSetGain = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private IList<int> gains;
+
+        public IList<int> Gains {
+            get {
+                return gains;
+            }
+            set {
+                gains = value;
+                RaisePropertyChanged();
+            }
         }
 
         private bool coolerOn;

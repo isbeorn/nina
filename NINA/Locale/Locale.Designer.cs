@@ -5013,6 +5013,24 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sequence contains items using incompatible Gain settings. These will be ignored!.
+        /// </summary>
+        internal static string LblIncompatibleGainsInSequence {
+            get {
+                return ResourceManager.GetString("LblIncompatibleGainsInSequence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sequence cotains items using incompatible Offset settings. These will be ignored!.
+        /// </summary>
+        internal static string LblIncompatibleOffsetsInSequence {
+            get {
+                return ResourceManager.GetString("LblIncompatibleOffsetsInSequence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Index File.
         /// </summary>
         internal static string LblIndexFile {

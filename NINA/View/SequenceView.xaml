@@ -1205,14 +1205,10 @@
                     CanUserSort="False"
                     Header="{ns:Loc LblGain}">
                     <DataGridTemplateColumn.Visibility>
-                        <PriorityBinding>
+                        <PriorityBinding FallbackValue="Visible">
                             <Binding
                                 Converter="{StaticResource InverseCollectionContainsItemsToVisibilityConverter}"
                                 Path="CameraVM.Cam.Gains"
-                                Source="{StaticResource AppVM}" />
-                            <Binding
-                                Converter="{StaticResource NullToVisibilityConverter}"
-                                Path="CameraVM.Cam"
                                 Source="{StaticResource AppVM}" />
                         </PriorityBinding>
                     </DataGridTemplateColumn.Visibility>
@@ -1253,14 +1249,10 @@
                     CanUserSort="False"
                     Header="{ns:Loc LblOffset}">
                     <DataGridTemplateColumn.Visibility>
-                        <PriorityBinding>
+                        <PriorityBinding FallbackValue="Visible">
                             <Binding
                                 Converter="{StaticResource BooleanToVisibilityHiddenConverter}"
                                 Path="CameraVM.Cam.CanSetOffset"
-                                Source="{StaticResource AppVM}" />
-                            <Binding
-                                Converter="{StaticResource NullToVisibilityConverter}"
-                                Path="CameraVM.Cam"
                                 Source="{StaticResource AppVM}" />
                         </PriorityBinding>
                     </DataGridTemplateColumn.Visibility>

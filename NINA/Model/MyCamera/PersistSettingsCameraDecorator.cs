@@ -238,7 +238,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public ArrayList Gains => this.camera.Gains;
+        public IList<int> Gains => this.camera.Gains;
 
         public AsyncObservableCollection<BinningMode> BinningModes => this.camera.BinningModes;
 

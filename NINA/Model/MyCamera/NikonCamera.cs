@@ -574,12 +574,12 @@ namespace NINA.Model.MyCamera {
 
         private Dictionary<int, int> ISOSpeeds = new Dictionary<int, int>();
 
-        private ArrayList _gains;
+        private IList<int> _gains;
 
-        public ArrayList Gains {
+        public IList<int> Gains {
             get {
                 if (_gains == null) {
-                    _gains = new ArrayList();
+                    _gains = new List<int>();
                 }
 
                 if (_gains.Count == 0 && Connected && CanGetGain) {

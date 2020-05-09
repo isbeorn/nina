@@ -35,6 +35,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Model.ImageData;
+using System.Linq;
 
 namespace NINA.Model.MyCamera {
 
@@ -89,7 +90,7 @@ namespace NINA.Model.MyCamera {
                 foreach (object o in _camera.Gains) {
                     if (o.GetType() == typeof(string)) {
                         var gain = Regex.Match(o.ToString(), @"\d+").Value;
-                        Gains.Add(short.Parse(gain, CultureInfo.InvariantCulture));
+                        Gains.Add(int.Parse(gain, CultureInfo.InvariantCulture));
                     }
                 }
             } catch (Exception) {
@@ -571,7 +572,10 @@ namespace NINA.Model.MyCamera {
                 if (Connected && CanSetGain) {
                     try {
                         if (Gains.Count > 0) {
-                            _camera.Gain = (short)Gains.IndexOf(value);
+                            short idx = (short)Gains.IndexOf(value);
+                            if (idx >= 0) {
+                                _camera.Gain = idx;
+                            }
                         } else {
                             _camera.Gain = (short)value;
                         }
@@ -623,13 +627,21 @@ namespace NINA.Model.MyCamera {
         public int GainMax {
             get {
                 int val = -1;
-                if (Connected && _canGetGainMinMax) {
-                    try {
-                        val = _camera.GainMax;
-                    } catch (PropertyNotImplementedException) {
-                        _canGetGainMinMax = false;
-                    } catch (ASCOM.InvalidOperationException) {
-                        _canGetGainMinMax = false;
+                if (Connected) {
+                    if (_canGetGainMinMax) {
+                        try {
+                            val = _camera.GainMax;
+                        } catch (PropertyNotImplementedException) {
+                            _canGetGainMinMax = false;
+                        } catch (ASCOM.InvalidOperationException) {
+                            _canGetGainMinMax = false;
+                        }
+                    }
+
+                    if (!_canGetGainMinMax) {
+                        if (this.Gains.Count > 0) {
+                            val = Gains.Aggregate((l, r) => l > r ? l : r);
+                        }
                     }
                 }
                 return val;
@@ -639,25 +651,33 @@ namespace NINA.Model.MyCamera {
         public int GainMin {
             get {
                 int val = -1;
-                if (Connected && _canGetGainMinMax) {
-                    try {
-                        val = _camera.GainMin;
-                    } catch (PropertyNotImplementedException) {
-                        _canGetGainMinMax = false;
-                    } catch (ASCOM.InvalidOperationException) {
-                        _canGetGainMinMax = false;
+                if (Connected) {
+                    if (_canGetGainMinMax) {
+                        try {
+                            val = _camera.GainMin;
+                        } catch (PropertyNotImplementedException) {
+                            _canGetGainMinMax = false;
+                        } catch (ASCOM.InvalidOperationException) {
+                            _canGetGainMinMax = false;
+                        }
+                    }
+
+                    if (!_canGetGainMinMax) {
+                        if (this.Gains.Count > 0) {
+                            val = Gains.Aggregate((l, r) => l < r ? l : r);
+                        }
                     }
                 }
                 return val;
             }
         }
 
-        private ArrayList _gains;
+        private IList<int> _gains;
 
-        public ArrayList Gains {
+        public IList<int> Gains {
             get {
                 if (_gains == null) {
-                    _gains = new ArrayList();
+                    _gains = new List<int>();
                 }
                 return _gains;
             }

@@ -38,6 +38,7 @@ using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Exceptions;
+using NINA.Utility.ImageAnalysis;
 using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
@@ -1356,6 +1357,20 @@ namespace NINA.ViewModel {
                 }
             }
 
+            if (HasIncompatibleGains()) {
+                if (info != null) {
+                    messageStringBuilder.AppendLine(Locale.Loc.Instance["LblIncompatibleGainsInSequence"]);
+                    displayMessage = true;
+                }
+            }
+
+            if (HasIncompatibleOffsets()) {
+                if (info != null) {
+                    messageStringBuilder.AppendLine(Locale.Loc.Instance["LblIncompatibleOffsetsInSequence"]);
+                    displayMessage = true;
+                }
+            }
+
             messageStringBuilder.AppendLine();
             messageStringBuilder.Append(Locale.Loc.Instance["LblStartSequenceAnyway"]);
 
@@ -1373,6 +1388,48 @@ namespace NINA.ViewModel {
             valid = HasWritePermission(profileService.ActiveProfile.ImageFileSettings.FilePath);
 
             return valid;
+        }
+
+        private bool HasIncompatibleGains() {
+            if (this.cameraInfo.CanSetGain) {
+                var min = this.cameraInfo.GainMin;
+                var max = this.cameraInfo.GainMax;
+                foreach (var seq in Targets) {
+                    foreach (CaptureSequence cs in seq) {
+                        if (cs.Enabled) {
+                            if (cs.Gain > -1) {
+                                if (cs.Gain < min || cs.Gain > max) {
+                                    return true;
+                                }
+
+                                if (this.cameraInfo.Gains?.Count > 0) {
+                                    return !this.cameraInfo.Gains.Any(x => x == cs.Gain);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        private bool HasIncompatibleOffsets() {
+            if (this.cameraInfo.CanSetOffset) {
+                var min = this.cameraInfo.OffsetMin;
+                var max = this.cameraInfo.OffsetMax;
+                foreach (var seq in Targets) {
+                    foreach (CaptureSequence cs in seq) {
+                        if (cs.Enabled) {
+                            if (cs.Offset > -1) {
+                                if (cs.Offset < min || cs.Offset > max) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
         }
 
         private bool NotEnoughRemainingDiskSpace(out object info) {

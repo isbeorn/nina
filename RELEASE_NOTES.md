@@ -108,6 +108,7 @@
 - Autofocus will not be performed if it could interfere with the Meridian Flip
 - A short timeout after telescope mount sync operation has been added, as some mounts can take time to report updated coordinates
 - NINA's camera simulator will now assume the pixel size, bayer matrix, and sensor temperature attributes of any FITS or XISF file that is loaded into it
+- Sequence Gain and Offset can now be entered without having any camera connected. These values will be validated on sequence start in case an incompatible value was entered
 
 ## Bug fixes
 - Guiding was improperly stopped when performing AF at start of sequence, even if DisableGuiding option was false

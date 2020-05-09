@@ -23,6 +23,7 @@
 
 using NINA.Utility;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -81,7 +82,7 @@ namespace NINA.Model.MyCamera {
         short ReadoutModeForSnapImages { get; set; }
         short ReadoutModeForNormalImages { get; set; }
 
-        ArrayList Gains { get; }
+        IList<int> Gains { get; }
 
         AsyncObservableCollection<BinningMode> BinningModes { get; }
 

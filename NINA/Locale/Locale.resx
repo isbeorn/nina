@@ -3566,4 +3566,10 @@ The method can only be changed when the focuser is not connected!</value>
   <data name="LblMoveRotatorTooltip" xml:space="preserve">
     <value>Moves rotator to the specified target position</value>
   </data>
+  <data name="LblIncompatibleGainsInSequence" xml:space="preserve">
+    <value>Sequence contains items using incompatible Gain settings. These will be ignored!</value>
+  </data>
+  <data name="LblIncompatibleOffsetsInSequence" xml:space="preserve">
+    <value>Sequence cotains items using incompatible Offset settings. These will be ignored!</value>
+  </data>
 </root>

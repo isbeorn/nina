@@ -430,9 +430,9 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public ArrayList Gains {
+        public IList<int> Gains {
             get {
-                return new ArrayList();
+                return new List<int>();
             }
         }
 

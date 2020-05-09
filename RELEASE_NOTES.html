@@ -130,6 +130,8 @@
 <li>NINA now persists and restores the following camera settings: USB Limit, Offset, Gain, Binning, Readout Mode, Temperature, and Cooling Duration</li>
 <li>Autofocus will not be performed if it could interfere with the Meridian Flip</li>
 <li>A short timeout after telescope mount sync operation has been added, as some mounts can take time to report updated coordinates</li>
+<li>NINA's camera simulator will now assume the pixel size, bayer matrix, and sensor temperature attributes of any FITS or XISF file that is loaded into it</li>
+<li>Sequence Gain and Offset can now be entered without having any camera connected. These values will be validated on sequence start in case an incompatible value was entered</li>
 </ul>
 <h2 id="bug-fixes">Bug fixes</h2>
 <ul>
