@@ -478,10 +478,10 @@ Dec: {1}</value>
     <value>Zwischenspeicher</value>
   </data>
   <data name="LblCalculateBias" xml:space="preserve">
-    <value>Calculate Bias</value>
+    <value>Bias berechnen</value>
   </data>
   <data name="LblCalculatedExposureTime" xml:space="preserve">
-    <value>Calculated Exposure Time</value>
+    <value>Berechnete Belichtungszeit</value>
   </data>
   <data name="LblCam" xml:space="preserve">
     <value>Kamera</value>
@@ -549,10 +549,10 @@ die Umgebungstemperaturvariationen nicht ausgleichen können</value>
     <value>Bild aufnehmen und Platesolven</value>
   </data>
   <data name="LblCaptureImageCovered" xml:space="preserve">
-    <value>Cover Sensor and Capture Image</value>
+    <value>Sensor abdecken und Bild aufnehmen</value>
   </data>
   <data name="LblCaptureImageUncovered" xml:space="preserve">
-    <value>Uncover Sensor and Capture Image</value>
+    <value>Sensor aufdecken und Bild aufnehmen</value>
   </data>
   <data name="LblCdC" xml:space="preserve">
     <value>Cartes du Ciel</value>
@@ -1120,7 +1120,7 @@ wenn die Linien nicht ausgerichtet sind, gibt es einen Polarausrichtungsfehler</
     <value>Verzeichnis zum speichern des Bildes hat keine Schreibrechte!</value>
   </data>
   <data name="LblDisabled" xml:space="preserve">
-    <value>Disabled</value>
+    <value>Deaktiviert</value>
   </data>
   <data name="LblDisableAFGuiding" xml:space="preserve">
     <value>AF Guiding ausschalten</value>
@@ -1246,9 +1246,9 @@ wenn die Linien nicht ausgerichtet sind, gibt es einen Polarausrichtungsfehler</
     <value>Optimaler Belichtungszeitrechner</value>
   </data>
   <data name="LblExposureCalculatorDescription" xml:space="preserve">
-    <value>This tool will suggest a recommended exposure time based on the read noise from your sensor and the average skyglow.
-If you have SharpCap installed and perform a Sensor Analysis, then use the drop down below to retrieve the read noise and full well capacity for the specified gain.
-You can also calculate the bias by clicking the Snapshot button next to Bias Mean.</value>
+    <value>Dieses Tool empfiehlt eine empfohlene Belichtungszeit basierend auf dem Ausleserauschen des Sensors und dem durchschnittlichen Skyglow.
+Wenn SharpCap installiert ist und eine Sensoranalyse durchgeführt wurde, dann kann das Dropdown-Menü unten verwendet werden, um das Ausleserauschen und die Full-Well Kapazität für den angegebenen Gain abzurufen.
+Die Voreinstellung kann auch berechnet werden, indem auf den Snapshot-Button neben Bias Mean geklickt wird.</value>
   </data>
   <data name="LblExposureCalculatorMeanLessThanOffset" xml:space="preserve">
     <value>Es konnte keine Empfehlung zur Belichtungszeit ermittelt werden. Der Mittelwert des aktuellen Bildes ist kleiner als dar angegebene Bias Mittelwert. Bitte die falschen Werte korrigieren oder längere Belichtungszeit wählen.</value>
@@ -1885,7 +1885,7 @@ Berechneter HFR: {2}
     <value>Min. Dauer</value>
   </data>
   <data name="LblMinExposureTimeDownloadRatio" xml:space="preserve">
-    <value>Minimum Exposure Time from Download Ratio</value>
+    <value>Minimale Belichtungszeit vom Download-Verhältnis</value>
   </data>
   <data name="LblMinExpTime" xml:space="preserve">
     <value>Minimum Belichtungszeit</value>
@@ -2472,7 +2472,7 @@ Berechneter HFR: {2}
     <value>Bild neu Zentrieren</value>
   </data>
   <data name="LblRecommendedExposureTime" xml:space="preserve">
-    <value>Recommended Exposure Time</value>
+    <value>Empfohlene Belichtungszeit</value>
   </data>
   <data name="LblReconnectAll" xml:space="preserve">
     <value>Alle Geräte neu verbinden?</value>
@@ -2622,7 +2622,7 @@ Berechneter HFR: {2}
     <value>Profil kann nicht ausgewählt werden. Es wird bereits von einer anderen N.I.N.A. Instanz verwendet!</value>
   </data>
   <data name="LblSensorAnalysisPoorFit" xml:space="preserve">
-    <value>Sensor Analysis is irregular, and may not produce accurate results. Consider re-running it.</value>
+    <value>Die Sensoranalyse ist unzulässig und kann zu keinen genauen Ergebnissen führen. Eine erneute Ausführung sollte in Erwägung gezogen werden.</value>
   </data>
   <data name="LblSensorName" xml:space="preserve">
     <value>Sensorname</value>
@@ -2710,13 +2710,13 @@ Diese Vorlage wird beim Starten der Applikation geladen, statt der Standard Sequ
     <value>Time-Out in Sekunden, bevor der StartGuiding Befehl aufgegeben wird, bevor ein Wiederholungsvorgang versucht wird.</value>
   </data>
   <data name="LblSharpCapSensorAnalysisPath" xml:space="preserve">
-    <value>SharpCap Sensor Analysis folder</value>
+    <value>SharpCap Sensoranalyse Ordner</value>
   </data>
   <data name="LblSharpCapSensorAnalysisLoadedFormat" xml:space="preserve">
-    <value>Loaded {0} sensors</value>
+    <value>{0} Sensoren geladen</value>
   </data>
   <data name="LblSharpCapSensorAnalysisPathTooltip" xml:space="preserve">
-    <value>Folder where SharpCap Sensor Analysis files can be found, if somewhere other than their default location</value>
+    <value>Ordner in dem SharpCap Sensor Analysis Dateien gefunden werden können, wenn es vom Standard-Speicherort abweicht</value>
   </data>
   <data name="LblSiderealTime" xml:space="preserve">
     <value>Sternzeit</value>
@@ -3284,7 +3284,7 @@ Lichtverschmutzten Gebieten. Berechnungszeit ist jedoch erhöht.</value>
     <value>Bulb Modus benutzen</value>
   </data>
   <data name="LblUseSharpCapSensorAnalysis" xml:space="preserve">
-    <value>Use SharpCap Sensor Analysis</value>
+    <value>SharpCap Sensoranalyse verwenden</value>
   </data>
   <data name="LblUseSideOfPier" xml:space="preserve">
     <value>Teleskop Pierseite benutzen</value>
@@ -3495,13 +3495,13 @@ Die Standardeinstellung von Auto verwendet das Muster, dass der Kamera-Treiber m
     <value>Autofokus nach Flip</value>
   </data>
   <data name="LblExposureFinished" xml:space="preserve">
-    <value>Exposure finished</value>
+    <value>Belichtung beendet</value>
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
-    <value>Camera Timeout - Camera did not set image as ready after exposuretime + 15 seconds</value>
+    <value>Kamera-Timeout - Kamera hat nicht das Bild nach Belichtungszeit + 15 Sekunden als bereit angezeigt</value>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
-    <value>Pattern Preview</value>
+    <value>Mustervorschau</value>
   </data>
   <data name="LblB1950" xml:space="preserve">
     <value>B1950</value>
@@ -3510,59 +3510,65 @@ Die Standardeinstellung von Auto verwendet das Muster, dass der Kamera-Treiber m
     <value>J2050</value>
   </data>
   <data name="LblUnknownEpochWarning" xml:space="preserve">
-    <value>The mount operates using an unknown equatorial reference system. {0} will be used. Please configure the mount's driver with a valid epoch.</value>
+    <value>Die Montierung arbeitet mit einem unbekannten äquatorialen Referenzsystem. {0} wird verwendet. Bitte den Mount-Treiber mit einer gültigen Epoche konfigurieren.</value>
   </data>
   <data name="LblUnsupportedEpoch" xml:space="preserve">
-    <value>The mount operates using the {0} equatorial reference system, which is not supported.</value>
+    <value>Die Montierung arbeitet mit dem {0} äquatorialen Referenzsystem, welches nicht unterstützt wird.</value>
   </data>
   <data name="LblUnsupportedCfaPattern" xml:space="preserve">
-    <value>Unsupported CFA/Bayer pattern: {0}</value>
+    <value>Nicht unterstütztes CFA/Bayer-Muster: {0}</value>
   </data>
   <data name="LblSavingImage" xml:space="preserve">
-    <value>Saving image</value>
+    <value>Speichere Bild</value>
   </data>
   <data name="LblLowDiskSpaceForSequence" xml:space="preserve">
-    <value>Available space on drive {0} may be insufficient. The estimated disk space required for the sequence is {1}, but only {2} remains.</value>
+    <value>Der verfügbare Speicherplatz auf dem Laufwerk {0} ist möglicherweise unzureichend. Der geschätzte Speicherplatz für die Sequenz ist {1}, aber nur {2} verbleiben.</value>
   </data>
   <data name="LblNoValidFirmwareVersion" xml:space="preserve">
-    <value>No valid firmware version.</value>
+    <value>Keine gültige Firmware-Version.</value>
   </data>
   <data name="LblAbsolute" xml:space="preserve">
-    <value>Absolute</value>
+    <value>Absolut</value>
     <comment>Focuser Backlash Compensation Method to add an absolute value after a focuser direction change</comment>
   </data>
   <data name="LblFocuserBacklashMethod" xml:space="preserve">
-    <value>Backlash Compensation Method</value>
+    <value>Backlash-Kompensationsmethode</value>
   </data>
   <data name="LblFocuserBacklashMethodTooltip" xml:space="preserve">
-    <value>This controls the backlash compensation method used.
+    <value>Hier wird die Backlashkompensationsmethode kontrolliert.
 
-Absolute: 
-  When the focuser changes directions, an absolute value will be added to the focuser movement.
-  Backlash IN: when the focuser changes from moving outwards to moving inwards the Backlash IN value will be added
-  Backlash OUT: when the focuser changes from moving inwards to moving outwards the Backlash OUT value will be added
+Absolut: 
+  Wenn der Okularauszug die Richtung ändert, wird der Fokusbewegung ein absoluter Wert hinzugefügt.
+  Backlash IN: Wenn sich der Okularauszug  von außen nach innen bewegt, wird der Backlash IN Wert hinzugefügt
+  Backlash AUS: Wenn sich der Okularauszug von innen nach außen bewegt, wird der Backlash OUT Wert hinzugefügt
   
 Overshoot:
-  This method will compensate for Backlash by overshooting the target position by a large amount and then moving the focuser back to the initially requested position.
-  Due to this compensation the last movement of the focuser will always be in the same direction (either always inwards or always outwards)
-  For Backlash IN and OUT only ONE of these two must be set! When setting IN, the amount will be applied on each inward movement, so the final movement will always be outwards. For Backlash OUT, it will be the other way around.
+  Diese Methode kompensiert Backlash durch Überschießen der Zielposition um einen großen Betrag und verschiebt den Okularauszug zurück in die ursprünglich gewünschte Position.
+  Durch diese Kompensation wird die letzte Bewegung des Okularauszug immer in die gleiche Richtung sein (immer nach innen oder immer nach außen)
+  Für Backlash IN und OUT müssen nur EINE dieser beiden gesetzt sein! Beim Setzen von IN, wird der Betrag für jede Bewegung nach innen angewendet, so dass die letzte Bewegung immer nach außen hin sein wird. Bei Backlash OUT ist es umgekehrt.
 
-The method can only be changed when the focuser is not connected!</value>
+Die Methode kann nur geändert werden, wenn der Okularauszug nicht verbunden ist!</value>
   </data>
   <data name="LblOvershoot" xml:space="preserve">
-    <value>Overshoot</value>
+    <value>Überschreiten</value>
     <comment>Focuser Backlash Compensation Method by overshooting the position and moving back</comment>
   </data>
   <data name="LblFocuserMoveLargeTooltip" xml:space="preserve">
-    <value>Moves focuser by a large amount using five times the Autofocus Stepsize</value>
+    <value>Bewegt den Okularauszug um einen großen Betrag mit fünfmal mehr als der Autofokus-Schrittgröße</value>
   </data>
   <data name="LblFocuserMoveSmallTooltip" xml:space="preserve">
-    <value>Moves focuser by a small amount using half the Autofocus Stepsize </value>
+    <value>Bewegt den Okularauszug um einen kleinen Betrag mit der Hälfte der Autofokus-Schrittgröße </value>
   </data>
   <data name="LblMoveFocuserTooltip" xml:space="preserve">
-    <value>Moves focuser to the specified target position</value>
+    <value>Bewegt Okularauszug zur angegebenen Zielposition</value>
   </data>
   <data name="LblMoveRotatorTooltip" xml:space="preserve">
-    <value>Moves rotator to the specified target position</value>
+    <value>Bewegt den Rotator zur angegebenen Zielposition</value>
+  </data>
+  <data name="LblIncompatibleGainsInSequence" xml:space="preserve">
+    <value>Sequenz enthält Elemente mit inkompatiblen Gain-Einstellungen. Diese werden ignoriert!</value>
+  </data>
+  <data name="LblIncompatibleOffsetsInSequence" xml:space="preserve">
+    <value>Sequenz enthält Elemente mit inkompatiblen Offset-Einstellungen. Diese werden ignoriert!</value>
   </data>
 </root>

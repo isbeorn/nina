@@ -3563,4 +3563,10 @@ La méthode ne peut être changée que lorsque le moteur de mise au point est d�
   <data name="LblMoveRotatorTooltip" xml:space="preserve">
     <value>Déplace le rotateur à la position cible spécifiée</value>
   </data>
+  <data name="LblIncompatibleGainsInSequence" xml:space="preserve">
+    <value>Sequence contains items using incompatible Gain settings. These will be ignored!</value>
+  </data>
+  <data name="LblIncompatibleOffsetsInSequence" xml:space="preserve">
+    <value>Sequence cotains items using incompatible Offset settings. These will be ignored!</value>
+  </data>
 </root>
