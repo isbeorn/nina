@@ -96,11 +96,9 @@ namespace NINA.Utility.ImageAnalysis {
     public class Estimate {
         public double Gain { get; private set; }
         public double EstimatedValue { get; private set; }
-        public double RSquared { get; private set; }
-        public Estimate(double gain, double estimatedValue, double rSquared) {
+        public Estimate(double gain, double estimatedValue) {
             this.Gain = gain;
             this.EstimatedValue = estimatedValue;
-            this.RSquared = rSquared;
         }
     }
 
@@ -139,18 +137,21 @@ namespace NINA.Utility.ImageAnalysis {
         }
 
         private Estimate CalculateEstimate(double gain, Func<SharpCapSensorAnalysisGainData, double> valueFunc) {
-            // Gain is hyperbolically correlated with the response variables, so use 1 / gain as the independent variable for linear regression
-            double[] xData = this.GainData.Select(x => 1 / x.Gain).ToArray();
-            double[] yData = this.GainData.Select(valueFunc).ToArray();
+            var sortedGainData = this.GainData.Sort((l, r) => l.Gain.CompareTo(r.Gain));
+            double[] xData = sortedGainData.Select(x => x.Gain).ToArray();
+            double[] yData = sortedGainData.Select(valueFunc).ToArray();
+            int dataIndex = 0;
+            while (dataIndex < xData.Length - 2) {
+                if (xData[dataIndex + 1] > gain) {
+                    break;
+                }
+                ++dataIndex;
+            }
 
-            var linearRegression = SimpleLinearRegression.FromData(xData, yData);
-            double b = linearRegression.Intercept;
-            double m = linearRegression.Slope;
-
-            // We include the goodness of fit measure so callers can choose whether to discard the estimate if the data aren't well correlated
-            double rSquared = linearRegression.CoefficientOfDetermination(xData, yData);
-            double estimatedValue = m * (1 / gain) + b;
-            return new Estimate(gain: gain, estimatedValue: estimatedValue, rSquared: rSquared);
+            var m = (yData[dataIndex + 1] - yData[dataIndex]) / (xData[dataIndex + 1] - xData[dataIndex]);
+            var dx = gain - xData[dataIndex];
+            var estimatedValue = m * dx + yData[dataIndex];
+            return new Estimate(gain: gain, estimatedValue: estimatedValue);
         }
 
         public Estimate EstimateReadNoise(double gain) {

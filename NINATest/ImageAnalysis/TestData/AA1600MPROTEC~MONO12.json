@@ -1,0 +1,825 @@
+﻿{
+  "BitDepth": 12,
+  "IsAdditiveBinning": false,
+  "LinearityLimit": 0.292517215,
+  "CameraType": "Altair Cameras",
+  "IsMono": true,
+  "IsRaw": false,
+  "SensorName": "AA1600MPROTEC",
+  "ColourSpace": "MONO12",
+  "GainList": [
+    {
+      "OffsetInfo": [
+        {
+          "OffsetValue": 0,
+          "MeanADU": 16.0,
+          "MedianADU": 16.0,
+          "SigmaADU": 0.0
+        },
+        {
+          "OffsetValue": 49,
+          "MeanADU": 704.5042,
+          "MedianADU": 704.0,
+          "SigmaADU": 11.14523
+        },
+        {
+          "OffsetValue": 247,
+          "MeanADU": 3872.49487,
+          "MedianADU": 3872.0,
+          "SigmaADU": 11.1613855
+        },
+        {
+          "OffsetValue": 445,
+          "MeanADU": 7040.43164,
+          "MedianADU": 7040.0,
+          "SigmaADU": 11.1015978
+        },
+        {
+          "OffsetValue": 496,
+          "MeanADU": 7857.343,
+          "MedianADU": 7856.0,
+          "SigmaADU": 11.1328011
+        }
+      ],
+      "BlackLevelSigma": 11.0272255,
+      "GainValue": 100.0,
+      "RelativeGain": 1.0,
+      "ReadNoise": 3.25515866,
+      "EPerADU": 4.72308636
+    },
+    {
+      "OffsetInfo": [
+        {
+          "OffsetValue": 0,
+          "MeanADU": 16.0,
+          "MedianADU": 16.0,
+          "SigmaADU": 0.0
+        },
+        {
+          "OffsetValue": 49,
+          "MeanADU": 692.112244,
+          "MedianADU": 688.0,
+          "SigmaADU": 12.8764124
+        },
+        {
+          "OffsetValue": 247,
+          "MeanADU": 3860.6626,
+          "MedianADU": 3856.0,
+          "SigmaADU": 12.9123421
+        },
+        {
+          "OffsetValue": 445,
+          "MeanADU": 7028.55957,
+          "MedianADU": 7024.0,
+          "SigmaADU": 12.9045649
+        },
+        {
+          "OffsetValue": 496,
+          "MeanADU": 7844.02,
+          "MedianADU": 7840.0,
+          "SigmaADU": 13.00888
+        }
+      ],
+      "BlackLevelSigma": 13.2173643,
+      "GainValue": 125.0,
+      "RelativeGain": 1.23880279,
+      "ReadNoise": 3.14955068,
+      "EPerADU": 3.81262183
+    },
+    {
+      "OffsetInfo": [
+        {
+          "OffsetValue": 0,
+          "MeanADU": 16.0,
+          "MedianADU": 16.0,
+          "SigmaADU": 0.0
+        },
+        {
+          "OffsetValue": 49,
+          "MeanADU": 673.3869,
+          "MedianADU": 672.0,
+          "SigmaADU": 12.7528458
+        },
+        {
+          "OffsetValue": 247,
+          "MeanADU": 3842.0415,
+          "MedianADU": 3840.0,
+          "SigmaADU": 12.7924013
+        },
+        {
+          "OffsetValue": 445,
+          "MeanADU": 7009.348,
+          "MedianADU": 7008.0,
+          "SigmaADU": 12.7068577
+        },
+        {
+          "OffsetValue": 496,
+          "MeanADU": 7824.92529,
+          "MedianADU": 7824.0,
+          "SigmaADU": 12.733325
+        }
+      ],
+      "BlackLevelSigma": 13.890296,
+      "GainValue": 158.0,
+      "RelativeGain": 1.54301119,
+      "ReadNoise": 2.65734744,
+      "EPerADU": 3.060954
+    },
+    {
+      "OffsetInfo": [
+        {
+          "OffsetValue": 0,
+          "MeanADU": 16.0,
+          "MedianADU": 16.0,
+          "SigmaADU": 0.0
+        },
+        {
+          "OffsetValue": 49,
+          "MeanADU": 657.1954,
+          "MedianADU": 656.0,
+          "SigmaADU": 15.0557432
+        },
+        {
+          "OffsetValue": 247,
+          "MeanADU": 3826.053,
+          "MedianADU": 3824.0,
+          "SigmaADU": 14.9790964
+        },
+        {
+          "OffsetValue": 445,
+          "MeanADU": 6992.25,
+          "MedianADU": 6992.0,
+          "SigmaADU": 15.0427933
+        },
+        {
+          "OffsetValue": 496,
+          "MeanADU": 7809.374,
+          "MedianADU": 7808.0,
+          "SigmaADU": 15.0711136
+        }
+      ],
+      "BlackLevelSigma": 15.4127779,
+      "GainValue": 190.0,
+      "RelativeGain": 1.84261036,
+      "ReadNoise": 2.46918344,
+      "EPerADU": 2.56325841
+    },
+    {
+      "OffsetInfo": [
+        {
+          "OffsetValue": 0,
+          "MeanADU": 16.0,
+          "MedianADU": 16.0,
+          "SigmaADU": 0.0
+        },
+        {
+          "OffsetValue": 49,
+          "MeanADU": 652.205933,
+          "MedianADU": 656.0,
+          "SigmaADU": 15.2236013
+        },
+        {
+          "OffsetValue": 247,
+          "MeanADU": 3820.80371,
+          "MedianADU": 3824.0,
+          "SigmaADU": 15.2231522
+        },
+        {
+          "OffsetValue": 445,
+          "MeanADU": 6987.2,
+          "MedianADU": 6992.0,
+          "SigmaADU": 15.1054459
+        },
+        {
+          "OffsetValue": 496,
+          "MeanADU": 7804.625,
+          "MedianADU": 7808.0,
+          "SigmaADU": 15.2507858
+        }
+      ],
+      "BlackLevelSigma": 15.5794563,
+      "GainValue": 199.0,
+      "RelativeGain": 1.92907345,
+      "ReadNoise": 2.38401771,
+      "EPerADU": 2.44837046
+    },
+    {
+      "OffsetInfo": [
+        {
+          "OffsetValue": 0,
+          "MeanADU": 16.0,
+          "MedianADU": 16.0,
+          "SigmaADU": 0.0
+        },
+        {
+          "OffsetValue": 49,
+          "MeanADU": 646.2623,
+          "MedianADU": 640.0,
+          "SigmaADU": 14.735034
+        },
+        {
+          "OffsetValue": 247,
+          "MeanADU": 3814.521,
+          "MedianADU": 3808.0,
+          "SigmaADU": 14.6581783
+        },
+        {
+          "OffsetValue": 445,
+          "MeanADU": 6981.373,
+          "MedianADU": 6976.0,
+          "SigmaADU": 14.585577
+        },
+        {
+          "OffsetValue": 496,
+          "MeanADU": 7799.04834,
+          "MedianADU": 7792.0,
+          "SigmaADU": 14.7350359
+        }
+      ],
+      "BlackLevelSigma": 15.764967,
+      "GainValue": 200.0,
+      "RelativeGain": 1.93701351,
+      "ReadNoise": 2.40251613,
+      "EPerADU": 2.43833423
+    },
+    {
+      "OffsetInfo": [
+        {
+          "OffsetValue": 0,
+          "MeanADU": 16.0,
+          "MedianADU": 16.0,
+          "SigmaADU": 0.0
+        },
+        {
+          "OffsetValue": 49,
+          "MeanADU": 619.599731,
+          "MedianADU": 624.0,
+          "SigmaADU": 16.63475
+        },
+        {
+          "OffsetValue": 247,
+          "MeanADU": 3787.29688,
+          "MedianADU": 3792.0,
+          "SigmaADU": 16.56944
+        },
+        {
+          "OffsetValue": 445,
+          "MeanADU": 6954.83936,
+          "MedianADU": 6960.0,
+          "SigmaADU": 16.6183338
+        },
+        {
+          "OffsetValue": 496,
+          "MeanADU": 7771.35156,
+          "MedianADU": 7776.0,
+          "SigmaADU": 16.64537
+        }
+      ],
+      "BlackLevelSigma": 18.15575,
+      "GainValue": 251.0,
+      "RelativeGain": 2.39408779,
+      "ReadNoise": 2.23861837,
+      "EPerADU": 1.97281265
+    },
+    {
+      "OffsetInfo": [
+        {
+          "OffsetValue": 0,
+          "MeanADU": 16.0,
+          "MedianADU": 16.0,
+          "SigmaADU": 0.0
+        },
+        {
+          "OffsetValue": 49,
+          "MeanADU": 587.4079,
+          "MedianADU": 592.0,
+          "SigmaADU": 18.7067738
+        },
+        {
+          "OffsetValue": 247,
+          "MeanADU": 3754.8374,
+          "MedianADU": 3760.0,
+          "SigmaADU": 18.5698586
+        },
+        {
+          "OffsetValue": 445,
+          "MeanADU": 6922.89453,
+          "MedianADU": 6928.0,
+          "SigmaADU": 18.61525
+        },
+        {
+          "OffsetValue": 496,
+          "MeanADU": 7739.73926,
+          "MedianADU": 7744.0,
+          "SigmaADU": 18.6886826
+        }
+      ],
+      "BlackLevelSigma": 20.60178,
+      "GainValue": 316.0,
+      "RelativeGain": 2.9499588,
+      "ReadNoise": 2.061554,
+      "EPerADU": 1.60106862
+    },
+    {
+      "OffsetInfo": [
+        {
+          "OffsetValue": 0,
+          "MeanADU": 16.0,
+          "MedianADU": 16.0,
+          "SigmaADU": 0.0
+        },
+        {
+          "OffsetValue": 49,
+          "MeanADU": 547.251831,
+          "MedianADU": 544.0,
+          "SigmaADU": 21.2273712
+        },
+        {
+          "OffsetValue": 247,
+          "MeanADU": 3714.32129,
+          "MedianADU": 3712.0,
+          "SigmaADU": 21.295908
+        },
+        {
+          "OffsetValue": 445,
+          "MeanADU": 6881.1333,
+          "MedianADU": 6880.0,
+          "SigmaADU": 21.09234
+        },
+        {
+          "OffsetValue": 496,
+          "MeanADU": 7699.345,
+          "MedianADU": 7696.0,
+          "SigmaADU": 21.2377415
+        }
+      ],
+      "BlackLevelSigma": 24.325798,
+      "GainValue": 398.0,
+      "RelativeGain": 3.65651345,
+      "ReadNoise": 1.96383882,
+      "EPerADU": 1.2916913
+    },
+    {
+      "OffsetInfo": [
+        {
+          "OffsetValue": 0,
+          "MeanADU": 16.0,
+          "MedianADU": 16.0,
+          "SigmaADU": 0.0
+        },
+        {
+          "OffsetValue": 49,
+          "MeanADU": 543.6728,
+          "MedianADU": 544.0,
+          "SigmaADU": 21.4874725
+        },
+        {
+          "OffsetValue": 247,
+          "MeanADU": 3710.74219,
+          "MedianADU": 3712.0,
+          "SigmaADU": 21.541954
+        },
+        {
+          "OffsetValue": 445,
+          "MeanADU": 6877.42627,
+          "MedianADU": 6880.0,
+          "SigmaADU": 21.2628479
+        },
+        {
+          "OffsetValue": 496,
+          "MeanADU": 7695.65332,
+          "MedianADU": 7696.0,
+          "SigmaADU": 21.4366665
+        }
+      ],
+      "BlackLevelSigma": 24.3579445,
+      "GainValue": 400.0,
+      "RelativeGain": 3.6995542,
+      "ReadNoise": 1.94355643,
+      "EPerADU": 1.27666366
+    },
+    {
+      "OffsetInfo": [
+        {
+          "OffsetValue": 0,
+          "MeanADU": 16.0,
+          "MedianADU": 16.0,
+          "SigmaADU": 0.0
+        },
+        {
+          "OffsetValue": 49,
+          "MeanADU": 491.659515,
+          "MedianADU": 496.0,
+          "SigmaADU": 24.9588127
+        },
+        {
+          "OffsetValue": 247,
+          "MeanADU": 3657.798,
+          "MedianADU": 3664.0,
+          "SigmaADU": 24.9515
+        },
+        {
+          "OffsetValue": 445,
+          "MeanADU": 6822.668,
+          "MedianADU": 6816.0,
+          "SigmaADU": 24.9831142
+        },
+        {
+          "OffsetValue": 496,
+          "MeanADU": 7641.64844,
+          "MedianADU": 7648.0,
+          "SigmaADU": 24.8235874
+        }
+      ],
+      "BlackLevelSigma": 28.597435,
+      "GainValue": 501.0,
+      "RelativeGain": 4.55889034,
+      "ReadNoise": 1.85171378,
+      "EPerADU": 1.0360167
+    },
+    {
+      "OffsetInfo": [
+        {
+          "OffsetValue": 0,
+          "MeanADU": 16.0,
+          "MedianADU": 16.0,
+          "SigmaADU": 0.0
+        },
+        {
+          "OffsetValue": 49,
+          "MeanADU": 428.225952,
+          "MedianADU": 432.0,
+          "SigmaADU": 29.0680161
+        },
+        {
+          "OffsetValue": 247,
+          "MeanADU": 3595.76514,
+          "MedianADU": 3600.0,
+          "SigmaADU": 29.1084518
+        },
+        {
+          "OffsetValue": 445,
+          "MeanADU": 6760.322,
+          "MedianADU": 6761.6,
+          "SigmaADU": 28.9644089
+        },
+        {
+          "OffsetValue": 496,
+          "MeanADU": 7577.59961,
+          "MedianADU": 7584.0,
+          "SigmaADU": 29.1060467
+        }
+      ],
+      "BlackLevelSigma": 33.69529,
+      "GainValue": 630.0,
+      "RelativeGain": 5.61890745,
+      "ReadNoise": 1.77020371,
+      "EPerADU": 0.8405702
+    },
+    {
+      "OffsetInfo": [
+        {
+          "OffsetValue": 0,
+          "MeanADU": 16.0,
+          "MedianADU": 16.0,
+          "SigmaADU": 0.0
+        },
+        {
+          "OffsetValue": 49,
+          "MeanADU": 346.6329,
+          "MedianADU": 352.0,
+          "SigmaADU": 34.4519539
+        },
+        {
+          "OffsetValue": 247,
+          "MeanADU": 3512.96753,
+          "MedianADU": 3513.6,
+          "SigmaADU": 34.28872
+        },
+        {
+          "OffsetValue": 445,
+          "MeanADU": 6680.423,
+          "MedianADU": 6681.6,
+          "SigmaADU": 34.5533066
+        },
+        {
+          "OffsetValue": 496,
+          "MeanADU": 7495.33545,
+          "MedianADU": 7497.6,
+          "SigmaADU": 34.5779724
+        }
+      ],
+      "BlackLevelSigma": 40.64286,
+      "GainValue": 794.0,
+      "RelativeGain": 6.9566083,
+      "ReadNoise": 1.72461689,
+      "EPerADU": 0.6789352
+    },
+    {
+      "OffsetInfo": [
+        {
+          "OffsetValue": 0,
+          "MeanADU": 16.0,
+          "MedianADU": 16.0,
+          "SigmaADU": 0.0
+        },
+        {
+          "OffsetValue": 49,
+          "MeanADU": 300.9358,
+          "MedianADU": 304.0,
+          "SigmaADU": 39.00479
+        },
+        {
+          "OffsetValue": 247,
+          "MeanADU": 3465.57544,
+          "MedianADU": 3465.6,
+          "SigmaADU": 37.4859772
+        },
+        {
+          "OffsetValue": 445,
+          "MeanADU": 6634.58447,
+          "MedianADU": 6640.0,
+          "SigmaADU": 37.5190926
+        },
+        {
+          "OffsetValue": 496,
+          "MeanADU": 7449.71045,
+          "MedianADU": 7449.6,
+          "SigmaADU": 38.1398544
+        }
+      ],
+      "BlackLevelSigma": 44.8587761,
+      "GainValue": 890.0,
+      "RelativeGain": 7.804909,
+      "ReadNoise": 1.69662344,
+      "EPerADU": 0.605143
+    },
+    {
+      "OffsetInfo": [
+        {
+          "OffsetValue": 0,
+          "MeanADU": 16.0,
+          "MedianADU": 16.0,
+          "SigmaADU": 0.0
+        },
+        {
+          "OffsetValue": 49,
+          "MeanADU": 296.2797,
+          "MedianADU": 297.6,
+          "SigmaADU": 38.69936
+        },
+        {
+          "OffsetValue": 247,
+          "MeanADU": 3460.327,
+          "MedianADU": 3456.0,
+          "SigmaADU": 37.932476
+        },
+        {
+          "OffsetValue": 445,
+          "MeanADU": 6629.576,
+          "MedianADU": 6624.0,
+          "SigmaADU": 38.0745773
+        },
+        {
+          "OffsetValue": 496,
+          "MeanADU": 7444.79053,
+          "MedianADU": 7440.0,
+          "SigmaADU": 38.3336449
+        }
+      ],
+      "BlackLevelSigma": 44.8134079,
+      "GainValue": 900.0,
+      "RelativeGain": 7.906945,
+      "ReadNoise": 1.6730355,
+      "EPerADU": 0.5973339
+    },
+    {
+      "OffsetInfo": [
+        {
+          "OffsetValue": 0,
+          "MeanADU": 16.0,
+          "MedianADU": 16.0,
+          "SigmaADU": 0.0
+        },
+        {
+          "OffsetValue": 49,
+          "MeanADU": 245.133942,
+          "MedianADU": 240.0,
+          "SigmaADU": 42.0793953
+        },
+        {
+          "OffsetValue": 247,
+          "MeanADU": 3406.52734,
+          "MedianADU": 3408.0,
+          "SigmaADU": 41.64939
+        },
+        {
+          "OffsetValue": 445,
+          "MeanADU": 6576.203,
+          "MedianADU": 6576.0,
+          "SigmaADU": 41.3807144
+        },
+        {
+          "OffsetValue": 496,
+          "MeanADU": 7392.701,
+          "MedianADU": 7392.0,
+          "SigmaADU": 41.50523
+        }
+      ],
+      "BlackLevelSigma": 49.2270164,
+      "GainValue": 1000.0,
+      "RelativeGain": 8.822597,
+      "ReadNoise": 1.64707363,
+      "EPerADU": 0.5353397
+    },
+    {
+      "OffsetInfo": [
+        {
+          "OffsetValue": 0,
+          "MeanADU": 16.0,
+          "MedianADU": 16.0,
+          "SigmaADU": 0.0
+        },
+        {
+          "OffsetValue": 49,
+          "MeanADU": 120.939148,
+          "MedianADU": 121.6,
+          "SigmaADU": 50.06038
+        },
+        {
+          "OffsetValue": 247,
+          "MeanADU": 3282.833,
+          "MedianADU": 3280.0,
+          "SigmaADU": 48.9740639
+        },
+        {
+          "OffsetValue": 445,
+          "MeanADU": 6448.84863,
+          "MedianADU": 6448.0,
+          "SigmaADU": 49.6253471
+        },
+        {
+          "OffsetValue": 496,
+          "MeanADU": 7267.7666,
+          "MedianADU": 7264.0,
+          "SigmaADU": 49.2571259
+        }
+      ],
+      "BlackLevelSigma": 60.4452057,
+      "GainValue": 1258.0,
+      "RelativeGain": 10.8296432,
+      "ReadNoise": 1.647607,
+      "EPerADU": 0.4361258
+    },
+    {
+      "OffsetInfo": [
+        {
+          "OffsetValue": 0,
+          "MeanADU": 16.0,
+          "MedianADU": 16.0,
+          "SigmaADU": 0.0
+        },
+        {
+          "OffsetValue": 49,
+          "MeanADU": 21.1299229,
+          "MedianADU": 16.0,
+          "SigmaADU": 15.2840424
+        },
+        {
+          "OffsetValue": 247,
+          "MeanADU": 3116.49438,
+          "MedianADU": 3120.0,
+          "SigmaADU": 61.304493
+        },
+        {
+          "OffsetValue": 445,
+          "MeanADU": 6282.272,
+          "MedianADU": 6281.6,
+          "SigmaADU": 61.2736
+        },
+        {
+          "OffsetValue": 496,
+          "MeanADU": 7097.86768,
+          "MedianADU": 7097.6,
+          "SigmaADU": 59.9141922
+        }
+      ],
+      "BlackLevelSigma": 71.37042,
+      "GainValue": 1584.0,
+      "RelativeGain": 13.3765059,
+      "ReadNoise": 1.57500339,
+      "EPerADU": 0.3530882
+    },
+    {
+      "OffsetInfo": [
+        {
+          "OffsetValue": 0,
+          "MeanADU": 16.0,
+          "MedianADU": 16.0,
+          "SigmaADU": 0.0
+        },
+        {
+          "OffsetValue": 49,
+          "MeanADU": 16.0001545,
+          "MedianADU": 16.0,
+          "SigmaADU": 0.03145151
+        },
+        {
+          "OffsetValue": 247,
+          "MeanADU": 2870.56348,
+          "MedianADU": 2873.6,
+          "SigmaADU": 76.73621
+        },
+        {
+          "OffsetValue": 445,
+          "MeanADU": 6041.56738,
+          "MedianADU": 6041.6,
+          "SigmaADU": 75.8538742
+        },
+        {
+          "OffsetValue": 496,
+          "MeanADU": 6851.61328,
+          "MedianADU": 6848.0,
+          "SigmaADU": 76.6539154
+        }
+      ],
+      "BlackLevelSigma": 82.38859,
+      "GainValue": 1995.0,
+      "RelativeGain": 16.7947788,
+      "ReadNoise": 1.44810033,
+      "EPerADU": 0.281223476
+    },
+    {
+      "OffsetInfo": [
+        {
+          "OffsetValue": 0,
+          "MeanADU": 16.0,
+          "MedianADU": 16.0,
+          "SigmaADU": 0.0
+        },
+        {
+          "OffsetValue": 49,
+          "MeanADU": 16.0001545,
+          "MedianADU": 16.0,
+          "SigmaADU": 0.0314514376
+        },
+        {
+          "OffsetValue": 247,
+          "MeanADU": 2870.054,
+          "MedianADU": 2873.6,
+          "SigmaADU": 76.60987
+        },
+        {
+          "OffsetValue": 445,
+          "MeanADU": 6040.8374,
+          "MedianADU": 6041.6,
+          "SigmaADU": 76.02308
+        },
+        {
+          "OffsetValue": 496,
+          "MeanADU": 6851.29,
+          "MedianADU": 6848.0,
+          "SigmaADU": 76.8873
+        }
+      ],
+      "BlackLevelSigma": 81.98433,
+      "GainValue": 2000.0,
+      "RelativeGain": 16.7978077,
+      "ReadNoise": 1.44073522,
+      "EPerADU": 0.2811728
+    }
+  ],
+  "CameraSettings": {
+    "Output Format": "SER file (*.ser)",
+    "Capture Area": "4640x3506",
+    "Binning": "1x1",
+    "Pan": "0",
+    "Tilt": "0",
+    "Colour Space": "MONO12",
+    "Black Level": "49",
+    "Flip": "None",
+    "USB Speed": "2",
+    "Auto Exp Target": "60",
+    "Frame Rate Limit": "Maximum",
+    "Analogue Gain": "100",
+    "Exposure": "1.32666428272417",
+    "Cooler": "Off",
+    "Target Temperature": "0",
+    "Fan": "On",
+    "Temperature": "28.7",
+    "Timestamp Frames": "Off",
+    "Contrast": "0",
+    "Gamma": "100",
+    "Extra Controls": "On (Slower)",
+    "Negative": "Off",
+    "Banding Threshold": "35",
+    "Banding Suppression": "0",
+    "Apply Flat": "None",
+    "Subtract Dark": "None",
+    "Display Black Point": "0",
+    "Display MidTone Point": "0.5",
+    "Display White Point": "1"
+  },
+  "PreReadoutBinning": false,
+  "GainMeasurementOffset": 0.0
+}

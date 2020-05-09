@@ -190,6 +190,7 @@
     <Compile Include="Focuser\PegasusAstro\UltimatePowerboxV2Test.cs" />
     <Compile Include="Focuser\ASCOM\AscomFocuserTest.cs" />
     <Compile Include="GuideStepsHistoryTest.cs" />
+    <Compile Include="ImageAnalysis\SharpCapSensorAnalysisReaderTest.cs" />
     <Compile Include="ImageDataTest.cs" />
     <Compile Include="ImageHistoryVMTest.cs" />
     <Compile Include="ImageMetaDataTest.cs" />
@@ -245,6 +246,12 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="BootstrapAscomProfileStore.ps1" />
+    <Content Include="ImageAnalysis\TestData\AA1600MPROTEC~MONO12.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ImageAnalysis\TestData\ZWO_ASI1600MM_ProMONO16.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -257,9 +264,7 @@
       <Name>NINA</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ImageAnalysis\" />
-  </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
