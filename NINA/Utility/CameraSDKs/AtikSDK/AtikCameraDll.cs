@@ -145,6 +145,12 @@ namespace NINA.Utility.AtikSDK {
             }
         }
 
+        public static void SetDarkMode(IntPtr camera, bool enabled) {
+            if (camera != null && camera != IntPtr.Zero) {
+                CheckError(ArtemisSetDarkMode(camera, enabled), MethodBase.GetCurrentMethod(), camera);
+            }
+        }
+
         public static void SetBinning(IntPtr camera, int x, int y) {
             CheckError(ArtemisBin(camera, x, y), MethodBase.GetCurrentMethod(), camera);
         }
@@ -381,6 +387,11 @@ namespace NINA.Utility.AtikSDK {
         /// </summary>
         [DllImport(DLLNAME, EntryPoint = "ArtemisStartExposureMS", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         private static extern ArtemisErrorCode ArtemisStartExposureMS(IntPtr camera, int milliseconds);
+
+        /// Set camera dark mode to enabled (will keep shutter closed)
+        /// </summary>
+        [DllImport(DLLNAME, EntryPoint = "ArtemisSetDarkMode", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        private static extern ArtemisErrorCode ArtemisSetDarkMode(IntPtr camera, bool enable);
 
         /// <summary>
         /// Used to cancel the current exposure.

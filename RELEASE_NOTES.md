@@ -37,6 +37,7 @@
 ## Improvements
 - New rows added to a sequence will now default to the values from the previous row
 - Upgraded Atik driver to use latest Atik SDK and drivers
+- Atik Cameras with shutter will keep shutter closed on DARK/BIAS/DARKFLAT sequence items using the native driver
 - Added a bit scaling options for Altair and ToupTek cameras to bit shift the raw data to 16 bits to be compatible with other capture software
 - FreeImage library upgrade to 3.18
 - Plate solvers will now receive unstretched FITS images to solve the image for a faster and even better solve result

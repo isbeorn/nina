@@ -518,6 +518,15 @@ namespace NINA.Model.MyCamera {
             } else {
                 AtikCameraDll.SetSubFrame(_cameraP, 0, 0, CameraXSize, CameraYSize);
             }
+
+            var isLightFrame = !(sequence.ImageType == CaptureSequence.ImageTypes.DARK ||
+                  sequence.ImageType == CaptureSequence.ImageTypes.BIAS ||
+                  sequence.ImageType == CaptureSequence.ImageTypes.DARKFLAT);
+
+            if (HasShutter) {
+                AtikCameraDll.SetDarkMode(_cameraP, !isLightFrame);
+            }
+
             AtikCameraDll.StartExposure(_cameraP, sequence.ExposureTime);
         }
 
