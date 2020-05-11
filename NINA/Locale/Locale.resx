@@ -2633,6 +2633,24 @@ Calculated HFR: {2}
   <data name="LblSequence" xml:space="preserve">
     <value>Sequence</value>
   </data>
+  <data name="LblSequenceCommandInfo" xml:space="preserve">
+    <value>Sequence end command '{0}'.</value>
+  </data>
+  <data name="LblSequenceCommandSource" xml:space="preserve">
+    <value>Sequence end command</value>
+  </data>
+  <data name="LblSequenceCommandAtCompletion" xml:space="preserve">
+    <value>'{0}' completed.</value>
+  </data>
+  <data name="LblSequenceCommandAtCompletionTitle" xml:space="preserve">
+    <value>Run command when sequence completes</value>
+  </data>
+  <data name="LblSequenceCommandAtCompletionTooltip" xml:space="preserve">
+    <value>Select command to run when sequence completes.</value>
+  </data>
+  <data name="LblSequenceCommandAtCompletionNotFound" xml:space="preserve">
+    <value>Sequence end command not found '{0}'</value>
+  </data>
   <data name="LblSequenceDelay" xml:space="preserve">
     <value>Delay start (seconds)</value>
   </data>

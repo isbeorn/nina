@@ -38,6 +38,7 @@ using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Exceptions;
+using NINA.Utility.ExternalCommand;
 using NINA.Utility.ImageAnalysis;
 using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
@@ -101,6 +102,8 @@ namespace NINA.ViewModel {
             this.weatherDataMediator.RegisterConsumer(this);
 
             this.imagingMediator = imagingMediator;
+
+           
             this.applicationStatusMediator = applicationStatusMediator;
 
             this.DeepSkyObjectSearchVM = new DeepSkyObjectSearchVM();
@@ -1356,6 +1359,11 @@ namespace NINA.ViewModel {
                     displayMessage = true;
                 }
             }
+            string sequenceCompleteCommand = profileService.ActiveProfile.SequenceSettings.SequenceCompleteCommand;
+            if (!string.IsNullOrWhiteSpace(sequenceCompleteCommand) && !ExternalCommandExecutor.CommandExists(sequenceCompleteCommand)) {
+                    messageStringBuilder.AppendLine(string.Format(Locale.Loc.Instance["LblSequenceCommandAtCompletionNotFound"], ExternalCommandExecutor.GetComandFromString(sequenceCompleteCommand)));
+                    displayMessage = true;
+            }
 
             if (HasIncompatibleGains()) {
                 if (info != null) {
@@ -1644,8 +1652,7 @@ namespace NINA.ViewModel {
         private FlatDeviceInfo _flatDevice;
         private IWeatherDataMediator weatherDataMediator;
         private WeatherDataInfo weatherDataInfo;
-        private GuiderInfo guiderInfo = DeviceInfo.CreateDefaultInstance<GuiderInfo>();
-
+        private GuiderInfo guiderInfo = DeviceInfo.CreateDefaultInstance<GuiderInfo>();        
         private int AfHfrIndex = 0;
 
         public bool SequenceModified { get { return (Sequence != null) && (Sequence.HasChanged); } }
@@ -1756,6 +1763,8 @@ namespace NINA.ViewModel {
             bool parkTelescope = false;
             bool warmCamera = false;
             bool closeFlatDeviceCover = false;
+            bool runSequenceCompleteCommand = false;
+
             StringBuilder message = new StringBuilder();
 
             message.AppendLine(Locale.Loc.Instance["LblEndOfSequenceDecision"]).AppendLine();
@@ -1783,15 +1792,23 @@ namespace NINA.ViewModel {
                 }
             }
 
+            string sequenceCompleteCommand = profileService.ActiveProfile.SequenceSettings.SequenceCompleteCommand;
+            if (!string.IsNullOrWhiteSpace(sequenceCompleteCommand) && ExternalCommandExecutor.CommandExists(sequenceCompleteCommand)) {
+                 runSequenceCompleteCommand = true;
+                 message.AppendLine(string.Format(Locale.Loc.Instance["LblSequenceCommandInfo"], sequenceCompleteCommand));
+            }
+
             var endOfSequenceTasks = new List<Task>();
 
-            if (warmCamera || parkTelescope || closeFlatDeviceCover) {
+            if (warmCamera || parkTelescope || closeFlatDeviceCover || runSequenceCompleteCommand) {
                 if (_canceltoken.Token.IsCancellationRequested) { // Sequence was manually cancelled - ask before proceeding with end of sequence options
                     var diag = MyMessageBox.MyMessageBox.Show(message.ToString(), Locale.Loc.Instance["LblEndOfSequenceOptions"], System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
                     if (diag != System.Windows.MessageBoxResult.OK) {
                         parkTelescope = false;
                         warmCamera = false;
                         closeFlatDeviceCover = false;
+                        runSequenceCompleteCommand = false;
+
                     } else {
                         // Need to reinitialize the cancellation token, as it is set to cancelation requested since sequence was manually cancelled.
                         _canceltoken?.Dispose();
@@ -1812,8 +1829,15 @@ namespace NINA.ViewModel {
                     IProgress<double> warmProgress = new Progress<double>();
                     endOfSequenceTasks.Add(cameraMediator.StartChangeCameraTemp(warmProgress, 10, TimeSpan.FromMinutes(10), true, _canceltoken.Token));
                 }
+
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblRunningEndOfSequence"] });
                 await Task.WhenAll(endOfSequenceTasks);
+
+                if (runSequenceCompleteCommand) {
+                    Logger.Trace("End of Sequence - Running sequence end command");
+                    ExternalCommandExecutor externalCommandExecutor = new ExternalCommandExecutor(new Progress<ApplicationStatus>(p => Status = p));
+                    await externalCommandExecutor.RunSequenceCompleteCommandTask(sequenceCompleteCommand, _canceltoken.Token);
+                }
             }
             return true;
         }

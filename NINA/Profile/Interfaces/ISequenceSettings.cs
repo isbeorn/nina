@@ -32,5 +32,7 @@ namespace NINA.Profile {
         bool ParkMountAtSequenceEnd { get; set; }
         bool WarmCamAtSequenceEnd { get; set; }
         string DefaultSequenceFolder { get; set; }
+        string SequenceCompleteCommand { get; set; }
+
     }
 }

@@ -131,5 +131,18 @@ namespace NINA.Profile {
                 }
             }
         }
+
+        private string sequenceCompleteCommand;
+
+        [DataMember]
+        public string SequenceCompleteCommand {
+            get => sequenceCompleteCommand;
+            set {
+                if (sequenceCompleteCommand != value) {
+                    sequenceCompleteCommand = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
     }
 }

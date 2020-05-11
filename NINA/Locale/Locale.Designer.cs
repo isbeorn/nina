@@ -7881,6 +7881,60 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; completed..
+        /// </summary>
+        internal static string LblSequenceCommandAtCompletion {
+            get {
+                return ResourceManager.GetString("LblSequenceCommandAtCompletion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sequence end command not found &apos;{0}&apos;.
+        /// </summary>
+        internal static string LblSequenceCommandAtCompletionNotFound {
+            get {
+                return ResourceManager.GetString("LblSequenceCommandAtCompletionNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run command when sequence completes.
+        /// </summary>
+        internal static string LblSequenceCommandAtCompletionTitle {
+            get {
+                return ResourceManager.GetString("LblSequenceCommandAtCompletionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select command to run when sequence completes..
+        /// </summary>
+        internal static string LblSequenceCommandAtCompletionTooltip {
+            get {
+                return ResourceManager.GetString("LblSequenceCommandAtCompletionTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sequence end command &apos;{0}&apos;..
+        /// </summary>
+        internal static string LblSequenceCommandInfo {
+            get {
+                return ResourceManager.GetString("LblSequenceCommandInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sequence end command.
+        /// </summary>
+        internal static string LblSequenceCommandSource {
+            get {
+                return ResourceManager.GetString("LblSequenceCommandSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delay start (seconds).
         /// </summary>
         internal static string LblSequenceDelay {

@@ -71,6 +71,7 @@ namespace NINA.ViewModel {
             guiderMediator = new GuiderMediator();
             imagingMediator = new ImagingMediator();
             applicationStatusMediator = new ApplicationStatusMediator();
+
             switchMediator = new SwitchMediator();
             weatherDataMediator = new WeatherDataMediator();
 

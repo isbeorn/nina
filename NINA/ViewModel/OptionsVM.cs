@@ -55,6 +55,7 @@ namespace NINA.ViewModel {
             OpenImageFileDiagCommand = new RelayCommand(OpenImageFileDiag);
             OpenSharpCapSensorAnalysisFolderDiagCommand = new RelayCommand(OpenSharpCapSensorAnalysisFolderDiag);
             OpenSequenceTemplateDiagCommand = new RelayCommand(OpenSequenceTemplateDiag);
+            OpenSequenceCommandAtCompletionDiagCommand = new RelayCommand(OpenSequenceCommandAtCompletionDiag);
             OpenSequenceFolderDiagCommand = new RelayCommand(OpenSequenceFolderDiag);
             OpenCygwinFileDiagCommand = new RelayCommand(OpenCygwinFileDiag);
             OpenPS2FileDiagCommand = new RelayCommand(OpenPS2FileDiag);
@@ -301,6 +302,18 @@ namespace NINA.ViewModel {
             }
         }
 
+        private void OpenSequenceCommandAtCompletionDiag(object o) {
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.Title = Locale.Loc.Instance["LblSequenceCommandAtCompletionTitle"];
+            dialog.FileName = "SequenceCompleteCommand";
+            dialog.DefaultExt = ".*";
+            dialog.Filter = "Any executable command |*.*";
+
+            if (dialog.ShowDialog() == true) {
+                ActiveProfile.SequenceSettings.SequenceCompleteCommand = dialog.FileName;
+            }
+        }
+        
         private void OpenSequenceFolderDiag(object o) {
             using (var diag = new System.Windows.Forms.FolderBrowserDialog()) {
                 diag.SelectedPath = ActiveProfile.SequenceSettings.DefaultSequenceFolder;
@@ -404,6 +417,8 @@ namespace NINA.ViewModel {
         public ICommand SensorAnalysisFolderChangedCommand { get; private set; }
 
         public ICommand OpenSequenceTemplateDiagCommand { get; private set; }
+
+        public ICommand OpenSequenceCommandAtCompletionDiagCommand { get; private set; }
         public ICommand OpenSequenceFolderDiagCommand { get; private set; }
 
         public ICommand OpenWebRequestCommand { get; private set; }

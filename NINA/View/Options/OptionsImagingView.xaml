@@ -567,7 +567,7 @@
                     <StackPanel Orientation="Vertical">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="200" />
+                                <ColumnDefinition Width="230" />
                                 <ColumnDefinition Width="3*" />
                                 <ColumnDefinition Width="50" />
                             </Grid.ColumnDefinitions>
@@ -598,7 +598,7 @@
                         </Grid>
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="200" />
+                                <ColumnDefinition Width="230" />
                                 <ColumnDefinition Width="3*" />
                                 <ColumnDefinition Width="50" />
                             </Grid.ColumnDefinitions>
@@ -627,6 +627,38 @@
                                 </Button.ToolTip>
                             </Button>
                         </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="230" />
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="50" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblSequenceCommandAtCompletionTitle}" />
+                            <TextBox
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Text="{Binding SequenceCompleteCommand}" />
+                            <Button
+                                Grid.Column="2"
+                                Width="30"
+                                Height="30"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Command="{Binding DataContext.OpenSequenceCommandAtCompletionDiagCommand, ElementName=UC}">
+                                <Path
+                                    Margin="4,17,4,4"
+                                    Data="{StaticResource DotsSVG}"
+                                    Fill="{StaticResource ButtonForegroundBrush}"
+                                    Stretch="Uniform" />
+                                <Button.ToolTip>
+                                    <TextBlock Text="{ns:Loc LblSequenceCommandAtCompletionTooltip}" />
+                                </Button.ToolTip>
+                            </Button>
+                        </Grid>
+
                         <StackPanel Orientation="Vertical">
                             <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                                 <TextBlock
