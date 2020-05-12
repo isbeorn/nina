@@ -308,6 +308,7 @@ namespace NINA.Profile {
         }
 
         private double coolingDuration;
+
         [DataMember]
         public double CoolingDuration {
             get => coolingDuration;
@@ -319,7 +320,21 @@ namespace NINA.Profile {
             }
         }
 
+        private double warmingDuration;
+
+        [DataMember]
+        public double WarmingDuration {
+            get => warmingDuration;
+            set {
+                if (warmingDuration != value) {
+                    warmingDuration = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         private double? temperature;
+
         [DataMember]
         public double? Temperature {
             get => temperature;
@@ -332,6 +347,7 @@ namespace NINA.Profile {
         }
 
         private short? binningX;
+
         [DataMember]
         public short? BinningX {
             get => binningX;
@@ -344,6 +360,7 @@ namespace NINA.Profile {
         }
 
         private short? binningY;
+
         [DataMember]
         public short? BinningY {
             get => binningY;
@@ -356,6 +373,7 @@ namespace NINA.Profile {
         }
 
         private int? gain;
+
         [DataMember]
         public int? Gain {
             get => gain;
@@ -368,6 +386,7 @@ namespace NINA.Profile {
         }
 
         private int? offset;
+
         [DataMember]
         public int? Offset {
             get => offset;
@@ -380,6 +399,7 @@ namespace NINA.Profile {
         }
 
         private int? usbLimit;
+
         [DataMember]
         public int? USBLimit {
             get => usbLimit;
@@ -392,6 +412,7 @@ namespace NINA.Profile {
         }
 
         private short? readoutMode;
+
         [DataMember]
         public short? ReadoutMode {
             get => readoutMode;
@@ -404,6 +425,7 @@ namespace NINA.Profile {
         }
 
         private short? readoutModeForSnapImages;
+
         [DataMember]
         public short? ReadoutModeForSnapImages {
             get => readoutModeForSnapImages;
@@ -416,6 +438,7 @@ namespace NINA.Profile {
         }
 
         private short? readoutModeForNormalImages;
+
         [DataMember]
         public short? ReadoutModeForNormalImages {
             get => readoutModeForNormalImages;

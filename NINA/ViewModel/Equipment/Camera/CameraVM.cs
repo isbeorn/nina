@@ -36,6 +36,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Accord.Statistics.Models.Regression.Linear;
+using ASCOM.Astrometry;
+using System.Runtime.CompilerServices;
 
 namespace NINA.ViewModel.Equipment.Camera {
 
@@ -55,14 +57,22 @@ namespace NINA.ViewModel.Equipment.Camera {
             ChooseCameraCommand = new AsyncCommand<bool>(ChooseCamera);
             CancelConnectCameraCommand = new RelayCommand(CancelConnectCamera);
             DisconnectCommand = new AsyncCommand<bool>(() => DisconnectDiag());
-            CoolCamCommand = new AsyncCommand<bool>(() => StartCoolCamera(new Progress<double>(p => TemperatureProgress = p)));
+            CoolCamCommand = new AsyncCommand<bool>(() => {
+                _cancelChangeTemperatureCts?.Dispose();
+                _cancelChangeTemperatureCts = new CancellationTokenSource();
+                return CoolCamera(TargetTemp, TimeSpan.FromMinutes(CoolingDuration), new Progress<ApplicationStatus>(p => Status = p), _cancelChangeTemperatureCts.Token);
+            }, (object o) => !TempChangeRunning);
+            WarmCamCommand = new AsyncCommand<bool>(() => {
+                _cancelChangeTemperatureCts?.Dispose();
+                _cancelChangeTemperatureCts = new CancellationTokenSource();
+                return WarmCamera(TimeSpan.FromMinutes(WarmingDuration), new Progress<ApplicationStatus>(p => Status = p), _cancelChangeTemperatureCts.Token);
+            }, (object o) => !TempChangeRunning);
             CancelCoolCamCommand = new RelayCommand(CancelCoolCamera);
             RefreshCameraListCommand = new RelayCommand(RefreshCameraList, o => !(Cam?.Connected == true));
 
             TempChangeRunning = false;
             CoolerPowerHistory = new AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>>(100);
             CCDTemperatureHistory = new AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>>(100);
-            ToggleCoolerOnCommand = new RelayCommand(ToggleCoolerOn);
             ToggleDewHeaterOnCommand = new RelayCommand(ToggleDewHeaterOn);
 
             updateTimer = new DeviceUpdateTimer(
@@ -76,6 +86,21 @@ namespace NINA.ViewModel.Equipment.Camera {
             };
         }
 
+        private ApplicationStatus _status;
+
+        public ApplicationStatus Status {
+            get {
+                return _status;
+            }
+            set {
+                _status = value;
+                _status.Source = Title;
+                RaisePropertyChanged();
+
+                this.applicationStatusMediator.StatusUpdate(_status);
+            }
+        }
+
         private void RefreshCameraList(object obj) {
             CameraChooserVM.GetEquipment();
         }
@@ -83,19 +108,6 @@ namespace NINA.ViewModel.Equipment.Camera {
         private ICameraMediator cameraMediator;
 
         public CameraChooserVM CameraChooserVM { get; set; }
-
-        private double _temperatureProgress;
-
-        public double TemperatureProgress {
-            get {
-                return _temperatureProgress;
-            }
-
-            set {
-                _temperatureProgress = value;
-                RaisePropertyChanged();
-            }
-        }
 
         private bool _tempChangeRunning;
 
@@ -109,111 +121,130 @@ namespace NINA.ViewModel.Equipment.Camera {
             }
         }
 
-        private CancellationTokenSource _cancelCoolCameraSource;
+        private CancellationTokenSource _cancelChangeTemperatureCts;
 
-        private async Task<bool> StartCoolCamera(IProgress<double> progress) {
-            _cancelCoolCameraSource?.Dispose();
-            _cancelCoolCameraSource = new CancellationTokenSource();
-            return await StartChangeCameraTemp(progress, TargetTemp, TimeSpan.FromMinutes(Duration), false, _cancelCoolCameraSource.Token);
+        public async Task<bool> CoolCamera(double temperature, TimeSpan duration, IProgress<ApplicationStatus> progress, CancellationToken ct) {
+            try {
+                TempChangeRunning = true;
+                Logger.Info($"Cooling Camera. Target: {temperature} Duration: {duration}");
+                var progressRouter = new Progress<double>((p) => {
+                    progress.Report(new ApplicationStatus() {
+                        Status = Locale.Loc.Instance["LblCooling"],
+                        Progress = p
+                    });
+                });
+
+                Cam.CoolerOn = true;
+                return await RegulateTemperature(temperature, duration, progressRouter, ct);
+            } catch (CannotReachTargetTemperatureException) {
+                Logger.Error($"Could not reach target temperature. Target Temp: {temperature}, Current Temp: {Cam.Temperature}");
+                Notification.ShowError(Locale.Loc.Instance["LblCouldNotReachTargetTemperature"]);
+                return false;
+            } finally {
+                progress.Report(new ApplicationStatus() { Status = string.Empty });
+                TempChangeRunning = false;
+            }
         }
 
-        public async Task<bool> StartChangeCameraTemp(IProgress<double> progress, double temperature, TimeSpan duration, bool turnOffCooler, CancellationToken ct) {
-            if (duration == TimeSpan.Zero) {
-                Cam.TemperatureSetPoint = temperature;
-                Cam.CoolerOn = true;
-            } else {
-                try {
-                    TempChangeRunning = true;
+        public async Task<bool> WarmCamera(TimeSpan duration, IProgress<ApplicationStatus> progress, CancellationToken ct) {
+            try {
+                TempChangeRunning = true;
+                Logger.Info($"Warming Camera. Duration: {duration}");
+                var progressRouter = new Progress<double>((p) => {
+                    progress.Report(new ApplicationStatus() {
+                        Status = Locale.Loc.Instance["LblWarming"],
+                        Progress = p
+                    });
+                });
+
+                if (Cam.Temperature < 20) {
                     try {
-                        await ChangeTemperature(temperature, duration, progress, ct);
-                    } catch (OperationCanceledException) {
-                    } catch (Exception ex) {
-                        Logger.Error(ex);
-                        Notification.ShowError(ex.Message);
+                        await RegulateTemperature(20, duration, progressRouter, ct);
+                    } catch (CannotReachTargetTemperatureException) {
+                        Logger.Debug("Could not reach warming temperature. Most likley due to ambient temperature being lower. Continuing...");
                     }
-                } finally {
-                    TempChangeRunning = false;
                 }
+
+                Logger.Debug("Waiting to turn cooler off");
+                await Utility.Utility.Wait(TimeSpan.FromSeconds(20), ct, progress, Locale.Loc.Instance["LblWaitingToTurnCoolerOff"]);
+                Logger.Debug("Turning cooler off");
+                Cam.CoolerOn = false;
+                return true;
+            } finally {
+                progress.Report(new ApplicationStatus() { Status = string.Empty });
+                TempChangeRunning = false;
+            }
+        }
+
+        private async Task<bool> RegulateTemperature(double temperature, TimeSpan duration, IProgress<double> progress, CancellationToken ct) {
+            try {
+                double currentTemp = Cam.Temperature;
+                var totalDeltaTemp = Math.Abs(currentTemp - temperature);
+
+                if (duration > TimeSpan.Zero) {
+                    // Stepped temp change
+                    double[] input = { 0, duration.TotalSeconds };
+                    double[] output = { currentTemp, temperature };
+                    OrdinaryLeastSquares leastSquares = new OrdinaryLeastSquares();
+                    var regression = leastSquares.Learn(input, output);
+
+                    Logger.Debug($"Starting stepped temperature change with parameters: Start Temp: {currentTemp}, Target Temp: {temperature}, Duration: {duration.TotalMinutes}m, Slope: {regression.Slope}, Intersept: {regression.Intercept}");
+
+                    var interval = TimeSpan.FromSeconds(15);
+                    int checkpoints = (int)(duration.TotalSeconds / interval.TotalSeconds);
+                    for (var i = interval.TotalSeconds; i <= checkpoints * interval.TotalSeconds; i += interval.TotalSeconds) {
+                        int temperatureStep = (int)Math.Round(regression.Transform(i));
+                        Logger.Debug($"Setting Camera Setpoint to new value {temperatureStep}");
+                        Cam.TemperatureSetPoint = temperatureStep;
+
+                        var progressTemp = Math.Abs(currentTemp - temperature);
+                        progress.Report((totalDeltaTemp - progressTemp) / totalDeltaTemp);
+
+                        await Utility.Utility.Wait(interval, ct);
+                        currentTemp = Cam.Temperature;
+                    }
+                } else {
+                    Cam.TemperatureSetPoint = temperature;
+                }
+
+                // Wait for final step
+                var timeout = TimeSpan.FromMinutes(1);
+                var idleTime = TimeSpan.Zero;
+                while (Math.Abs(currentTemp - temperature) > 1) {
+                    var progressTemp = Math.Abs(currentTemp - temperature);
+                    progress.Report((totalDeltaTemp - progressTemp) / totalDeltaTemp);
+
+                    var t = await Utility.Utility.Wait(TimeSpan.FromSeconds(5), ct);
+                    currentTemp = Cam.Temperature;
+
+                    var coolerPower = Cam.CoolerPower;
+                    if (coolerPower < 1 || coolerPower > 99) {
+                        //if cooler power is 100% and target lower it over a minute cannot reach target
+                        //if cooler power is 0% and target is higher over a minute it cannot reach target
+                        idleTime += t;
+                    } else {
+                        idleTime = TimeSpan.Zero;
+                    }
+
+                    if (idleTime > timeout) {
+                        throw new CannotReachTargetTemperatureException();
+                    }
+                }
+            } catch (OperationCanceledException ex) {
+                Cam.TemperatureSetPoint = Cam.Temperature;
+                throw ex;
+            } finally {
+                progress.Report(1);
             }
 
-            if (turnOffCooler) {
-                //adding a delay - Some cams seem to not like to immediately have their cooler set to off
-                await Utility.Utility.Wait(TimeSpan.FromSeconds(20));
-                Cam.CoolerOn = false;
-            }
-            applicationStatusMediator.StatusUpdate(
-                new ApplicationStatus() {
-                    Source = Title,
-                    Status = string.Empty
-                }
-            );
             return true;
         }
 
-        private async Task ChangeTemperature(double temperature, TimeSpan duration, IProgress<double> progress, CancellationToken ct) {
-            TimeSpan interval = TimeSpan.FromSeconds(10);
-
-            if (!Cam.Connected) {
-                throw new Exception("Camera not connected");
-            }
-
-            if (duration < interval) {
-                throw new Exception($"Duration must be greater than or equals {interval.TotalSeconds} seconds");
-            }
-
-            var currentTemp = Cam.Temperature;
-
-            double[] input = { 0, duration.TotalSeconds };
-            double[] output = { currentTemp, temperature };
-            OrdinaryLeastSquares leastSquares = new OrdinaryLeastSquares();
-            var regression = leastSquares.Learn(input, output);
-
-            string procedure = Locale.Loc.Instance["LblCooling"];
-            if (regression.Slope == 0) {
-                Logger.Debug("Abort change of temperature, as setpoint is already reached");
-                return;
-            } else if (regression.Slope > 0) {
-                procedure = Locale.Loc.Instance["LblWarming"];
-            }
-
-            Logger.Info($"{procedure} procedure initiated - current temperature: {currentTemp}; target temperature: {temperature}; duration: {duration}");
-
-            int checkpoints = (int)(duration.TotalSeconds / interval.TotalSeconds);
-
-            Cam.CoolerOn = true;
-
-            for (var i = interval.TotalSeconds; i <= checkpoints * interval.TotalSeconds; i += interval.TotalSeconds) {
-                var progressValue = i / duration.TotalSeconds;
-                progress?.Report(progressValue);
-                applicationStatusMediator.StatusUpdate(new ApplicationStatus() {
-                    Source = Title,
-                    Status = procedure,
-                    Progress = progressValue
-                });
-
-                int temperatureStep = (int)Math.Round(regression.Transform(i));
-
-                Logger.Debug($"Setting Camera Setpoint to new value {temperatureStep}");
-                Cam.TemperatureSetPoint = temperatureStep;
-
-                await Utility.Utility.Wait(interval, ct);
-
-                while (Math.Abs(Cam.Temperature - temperatureStep) > 1) {
-                    applicationStatusMediator.StatusUpdate(new ApplicationStatus() {
-                        Source = Title,
-                        Status = procedure,
-                        Progress = progressValue,
-                        Status2 = Locale.Loc.Instance["LblWaitForTemperatureStep"]
-                    });
-                    await Utility.Utility.Wait(interval, ct);
-                }
-            }
-
-            Logger.Info($"{procedure} finished");
+        public class CannotReachTargetTemperatureException : Exception {
         }
 
         private void CancelCoolCamera(object o) {
-            _cancelCoolCameraSource?.Cancel();
+            _cancelChangeTemperatureCts?.Cancel();
         }
 
         private double _targetTemp;
@@ -224,19 +255,33 @@ namespace NINA.ViewModel.Equipment.Camera {
             }
             set {
                 _targetTemp = value;
+                this.profileService.ActiveProfile.CameraSettings.Temperature = value;
                 RaisePropertyChanged();
             }
         }
 
-        private double _duration;
+        private double _coolingDuration;
 
-        public double Duration {
+        public double CoolingDuration {
             get {
-                return _duration;
+                return _coolingDuration;
             }
             set {
-                _duration = value;
+                _coolingDuration = value;
                 this.profileService.ActiveProfile.CameraSettings.CoolingDuration = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _warmingDuration;
+
+        public double WarmingDuration {
+            get {
+                return _warmingDuration;
+            }
+            set {
+                _warmingDuration = value;
+                this.profileService.ActiveProfile.CameraSettings.WarmingDuration = value;
                 RaisePropertyChanged();
             }
         }
@@ -342,8 +387,9 @@ namespace NINA.ViewModel.Equipment.Camera {
                             BroadcastCameraInfo();
 
                             if (Cam.CanSetTemperature) {
-                                Duration = this.profileService.ActiveProfile.CameraSettings.CoolingDuration;
-                                TargetTemp = Cam.TemperatureSetPoint;
+                                CoolingDuration = this.profileService.ActiveProfile.CameraSettings.CoolingDuration;
+                                WarmingDuration = this.profileService.ActiveProfile.CameraSettings.WarmingDuration;
+                                TargetTemp = this.profileService.ActiveProfile.CameraSettings.Temperature ?? -10;
                             }
 
                             Logger.Info($"Successfully connected Camera. Id: {Cam.Id} Name: {Cam.Name} Driver Version: {Cam.DriverVersion}");
@@ -390,12 +436,6 @@ namespace NINA.ViewModel.Equipment.Camera {
             set {
                 cameraInfo = value;
                 RaisePropertyChanged();
-            }
-        }
-
-        private void ToggleCoolerOn(object o) {
-            if (CameraInfo.Connected) {
-                Cam.CoolerOn = (bool)o;
             }
         }
 
@@ -511,7 +551,7 @@ namespace NINA.ViewModel.Equipment.Camera {
             if (updateTimer != null) {
                 await updateTimer.Stop();
             }
-            _cancelCoolCameraSource?.Cancel();
+            _cancelChangeTemperatureCts?.Cancel();
             TempChangeRunning = false;
             Cam?.Disconnect();
             Cam = null;
@@ -712,8 +752,8 @@ namespace NINA.ViewModel.Equipment.Camera {
 
         public AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>> CoolerPowerHistory { get; private set; }
         public AsyncObservableLimitedSizedStack<KeyValuePair<DateTime, double>> CCDTemperatureHistory { get; private set; }
-        public ICommand ToggleCoolerOnCommand { get; private set; }
-        public ICommand CoolCamCommand { get; private set; }
+        public IAsyncCommand CoolCamCommand { get; private set; }
+        public IAsyncCommand WarmCamCommand { get; private set; }
         public ICommand ToggleDewHeaterOnCommand { get; private set; }
 
         private IApplicationStatusMediator applicationStatusMediator;

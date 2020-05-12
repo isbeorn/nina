@@ -56,13 +56,6 @@ namespace NINA.Model.MyCamera {
                     this.profileService.ActiveProfile.CameraSettings.USBLimit = null;
                 }
             }
-            if (this.profileService.ActiveProfile.CameraSettings.Temperature.HasValue) {
-                try {
-                    this.camera.TemperatureSetPoint = this.profileService.ActiveProfile.CameraSettings.Temperature.Value;
-                } catch (Exception e) {
-                    this.profileService.ActiveProfile.CameraSettings.Temperature = null;
-                }
-            }
             if (this.profileService.ActiveProfile.CameraSettings.ReadoutMode.HasValue) {
                 try {
                     this.camera.ReadoutMode = this.profileService.ActiveProfile.CameraSettings.ReadoutMode.Value;
@@ -94,7 +87,6 @@ namespace NINA.Model.MyCamera {
             get => this.camera.TemperatureSetPoint;
             set {
                 this.camera.TemperatureSetPoint = value;
-                this.profileService.ActiveProfile.CameraSettings.Temperature = value;
             }
         }
 

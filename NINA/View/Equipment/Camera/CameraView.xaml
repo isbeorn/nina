@@ -358,6 +358,26 @@
                             <Border
                                 BorderBrush="{StaticResource BorderBrush}"
                                 BorderThickness="0"
+                                Visibility="{Binding Cam.HasDewHeater, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
+                                <UniformGrid Columns="2">
+                                    <UniformGrid
+                                        Margin="0,6,0,6"
+                                        VerticalAlignment="Center"
+                                        Columns="2">
+                                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDewHeater}" />
+                                        <CheckBox
+                                            Margin="5,0,0,0"
+                                            HorizontalAlignment="Left"
+                                            Command="{Binding ToggleDewHeaterOnCommand}"
+                                            CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
+                                            IsChecked="{Binding CameraInfo.DewHeaterOn}" />
+                                    </UniformGrid>
+                                </UniformGrid>
+                            </Border>
+
+                            <Border
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0"
                                 Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
                                 <UniformGrid Columns="2">
                                     <UniformGrid
@@ -366,17 +386,17 @@
                                         Columns="2">
                                         <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblCoolerOn}" />
                                         <CheckBox
-                                            Width="75"
-                                            Height="25"
+                                            Height="20"
                                             Margin="5,0,0,0"
                                             HorizontalAlignment="Left"
-                                            Command="{Binding ToggleCoolerOnCommand}"
-                                            CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
+                                            BorderBrush="Transparent"
                                             IsChecked="{Binding CameraInfo.CoolerOn}"
-                                            IsEnabled="{Binding CameraInfo.CoolerOn}" />
+                                            IsEnabled="false"
+                                            Style="{StaticResource CheckmarkCheckbox}" />
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>
+
                             <Border
                                 BorderBrush="{StaticResource BorderBrush}"
                                 BorderThickness="0"
@@ -394,20 +414,7 @@
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>
-                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
-                                <UniformGrid Columns="2">
-                                    <UniformGrid
-                                        Margin="0,6,0,6"
-                                        VerticalAlignment="Center"
-                                        Columns="2">
-                                        <TextBlock Text="{ns:Loc LblChipTemp}" />
-                                        <TextBlock
-                                            Margin="5,0,0,0"
-                                            Text="{Binding CameraInfo.Temperature, StringFormat=\{0:0.00\}}"
-                                            Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
-                                    </UniformGrid>
-                                </UniformGrid>
-                            </Border>
+
                             <Border
                                 BorderBrush="{StaticResource BorderBrush}"
                                 BorderThickness="0"
@@ -417,153 +424,136 @@
                                         Margin="0,6,0,6"
                                         VerticalAlignment="Center"
                                         Columns="2">
-                                        <TextBlock Text="{ns:Loc LblTargetTemp}" />
-                                        <TextBlock
-                                            MinWidth="20"
-                                            Margin="5,0,0,0"
-                                            Text="{Binding Cam.TemperatureSetPoint, StringFormat=\{0:0.00\}}"
-                                            Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                        <TextBlock Text="{ns:Loc LblChipTemp}" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock
+                                                Margin="5,0,0,0"
+                                                Text="{Binding CameraInfo.Temperature, StringFormat=\{0:0.00\}}"
+                                                Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
+
+                                            <TextBlock Text=" / " />
+                                            <TextBlock
+                                                MinWidth="20"
+                                                Margin="5,0,0,0"
+                                                Text="{Binding Cam.TemperatureSetPoint, StringFormat=\{0:0.00\}}"
+                                                Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                        </StackPanel>
                                     </UniformGrid>
                                 </UniformGrid>
                             </Border>
-                            <Border
+
+                            <Expander
+                                Margin="0,5,0,0"
                                 BorderBrush="{StaticResource BorderBrush}"
-                                BorderThickness="0"
-                                Visibility="{Binding Cam.HasDewHeater, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
-                                <UniformGrid Columns="2">
-                                    <UniformGrid
-                                        Margin="0,6,0,6"
-                                        VerticalAlignment="Center"
-                                        Columns="2">
-                                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblDewHeater}" />
-                                        <CheckBox
-                                            Width="75"
-                                            Height="25"
-                                            Margin="5,0,0,0"
-                                            HorizontalAlignment="Left"
-                                            Command="{Binding ToggleDewHeaterOnCommand}"
-                                            CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
-                                            IsChecked="{Binding CameraInfo.DewHeaterOn}" />
-                                    </UniformGrid>
-                                </UniformGrid>
-                            </Border>
+                                BorderThickness="0,1,0,0"
+                                Header="{ns:Loc LblCooling}"
+                                IsExpanded="True"
+                                Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
+                                <Grid VerticalAlignment="Bottom" Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
 
-                            <Grid VerticalAlignment="Bottom" Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
-
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="40" />
-                                </Grid.RowDefinitions>
-
-                                <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="110" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="40" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        DockPanel.Dock="Left"
-                                        Text="{ns:Loc LblTargetTemp}" />
-                                    <Slider
-                                        Grid.Column="1"
-                                        IsEnabled="{Binding TempChangeRunning, Converter={StaticResource InverseBooleanConverter}}"
-                                        IsSnapToTickEnabled="True"
-                                        Maximum="20"
-                                        Minimum="-50"
-                                        SmallChange="1"
-                                        TickPlacement="BottomRight"
-                                        Value="{Binding TargetTemp}" />
-                                    <TextBox
-                                        Grid.Column="2"
-                                        VerticalAlignment="Center"
-                                        DockPanel.Dock="Right"
-                                        IsEnabled="{Binding TempChangeRunning, Converter={StaticResource InverseBooleanConverter}}">
-                                        <TextBox.Text>
-                                            <Binding
-                                                Path="TargetTemp"
-                                                StringFormat="0.0"
-                                                UpdateSourceTrigger="LostFocus">
-                                                <Binding.ValidationRules>
-                                                    <rules:DoubleRangeRule>
-                                                        <rules:DoubleRangeRule.ValidRange>
-                                                            <rules:DoubleRangeChecker Maximum="20" Minimum="-50" />
-                                                        </rules:DoubleRangeRule.ValidRange>
-                                                    </rules:DoubleRangeRule>
-                                                </Binding.ValidationRules>
-                                            </Binding>
-                                        </TextBox.Text>
-                                    </TextBox>
-                                </Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
 
-                                <Grid Grid.Row="1">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="110" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="40" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMinDuration}" />
-                                    <Slider
-                                        Grid.Column="1"
-                                        IsEnabled="{Binding TempChangeRunning, Converter={StaticResource InverseBooleanConverter}}"
-                                        IsSnapToTickEnabled="True"
-                                        Maximum="30"
-                                        Minimum="0"
-                                        SmallChange="1"
-                                        TickPlacement="BottomRight"
-                                        Value="{Binding Duration}" />
-                                    <TextBox
-                                        Grid.Column="2"
-                                        VerticalAlignment="Center"
-                                        IsEnabled="{Binding TempChangeRunning, Converter={StaticResource InverseBooleanConverter}}">
-                                        <TextBox.Text>
-                                            <Binding
-                                                Path="Duration"
-                                                StringFormat="0.0"
-                                                UpdateSourceTrigger="LostFocus">
-                                                <Binding.ValidationRules>
-                                                    <rules:DoubleRangeRule>
-                                                        <rules:DoubleRangeRule.ValidRange>
-                                                            <rules:DoubleRangeChecker Maximum="30" Minimum="0" />
-                                                        </rules:DoubleRangeRule.ValidRange>
-                                                    </rules:DoubleRangeRule>
-                                                </Binding.ValidationRules>
-                                            </Binding>
-                                        </TextBox.Text>
-                                    </TextBox>
-                                </Grid>
-
-                                <Grid Grid.Row="2">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition />
-                                        <ColumnDefinition Width="40" />
-                                    </Grid.ColumnDefinitions>
-                                    <Grid
-                                        Height="40"
-                                        Margin="5,0,5,0"
-                                        Visibility="{Binding TempChangeRunning, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                                        <ProgressBar
-                                            Maximum="1"
-                                            Minimum="0"
-                                            Value="{Binding TemperatureProgress}" />
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="110" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="40" />
+                                        </Grid.ColumnDefinitions>
                                         <TextBlock
-                                            HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
-                                            Text="{Binding TemperatureProgress, StringFormat=\{0:#%\}}" />
+                                            DockPanel.Dock="Left"
+                                            Text="{ns:Loc LblTargetTemp}" />
+                                        <ninactrl:StepperControl
+                                            Grid.Column="1"
+                                            MinWidth="100"
+                                            IsEnabled="{Binding TempChangeRunning, Converter={StaticResource InverseBooleanConverter}}"
+                                            MaxValue="50"
+                                            MinValue="-50"
+                                            StepSize="1"
+                                            Value="{Binding TargetTemp, Mode=TwoWay}" />
+                                    </Grid>
+
+                                    <Grid Grid.Row="1" Margin="0,2,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="110" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="40" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMinDuration}" />
+
+                                        <ninactrl:StepperControl
+                                            Grid.Column="1"
+                                            MinWidth="100"
+                                            IsEnabled="{Binding TempChangeRunning, Converter={StaticResource InverseBooleanConverter}}"
+                                            MaxValue="30"
+                                            MinValue="0"
+                                            StepSize="1"
+                                            Value="{Binding CoolingDuration, Mode=TwoWay}" />
+                                    </Grid>
+
+                                    <ninactrl:CancellableButton
+                                        Grid.RowSpan="2"
+                                        Grid.Column="1"
+                                        Width="40"
+                                        Height="40"
+                                        VerticalAlignment="Center"
+                                        ButtonImage="{StaticResource SnowflakeSVG}"
+                                        CancelButtonImage="{StaticResource CancelSVG}"
+                                        CancelCommand="{Binding CancelCoolCamCommand}"
+                                        Command="{Binding CoolCamCommand}"
+                                        IsEnabled="{Binding WarmCamCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBooleanConverter}, FallbackValue=true}"
+                                        ToolTip="{ns:Loc LblCoolCamBtnTooltip}" />
+                                </Grid>
+                            </Expander>
+
+                            <Expander
+                                Margin="0,5,0,0"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="0,1,0,0"
+                                Header="{ns:Loc LblWarming}"
+                                IsExpanded="True"
+                                Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
+                                <Grid VerticalAlignment="Bottom">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="110" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="40" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblMinDuration}" />
+                                        <ninactrl:StepperControl
+                                            Grid.Column="1"
+                                            MinWidth="100"
+                                            IsEnabled="{Binding TempChangeRunning, Converter={StaticResource InverseBooleanConverter}}"
+                                            MaxValue="30"
+                                            MinValue="0"
+                                            StepSize="1"
+                                            Value="{Binding WarmingDuration, Mode=TwoWay}" />
                                     </Grid>
                                     <ninactrl:CancellableButton
                                         Grid.Column="1"
                                         Width="40"
                                         Height="40"
-                                        HorizontalAlignment="Right"
-                                        ButtonImage="{StaticResource ThermometerSVG}"
+                                        VerticalAlignment="Center"
+                                        ButtonImage="{StaticResource FireSVG}"
                                         CancelButtonImage="{StaticResource CancelSVG}"
                                         CancelCommand="{Binding CancelCoolCamCommand}"
-                                        Command="{Binding CoolCamCommand}"
-                                        ToolTip="{ns:Loc LblCoolCamBtnTooltip}" />
+                                        Command="{Binding WarmCamCommand}"
+                                        IsEnabled="{Binding CoolCamCommand.Execution.IsNotCompleted, Converter={StaticResource InverseBooleanConverter}, FallbackValue=true}"
+                                        ToolTip="{ns:Loc LblWarmCamBtnTooltip}" />
                                 </Grid>
-                            </Grid>
+                            </Expander>
                         </StackPanel>
 
                         <local:CameraCoolingChartsView

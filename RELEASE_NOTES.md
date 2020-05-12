@@ -70,7 +70,9 @@
 - Warning notifications are now appear for 30 seconds instead of 3 seconds before automatically dismissing. Error notifications still display until they are dismissed by the user
 - Logs older than 30 days are now automatically cleaned up when N.I.N.A. starts
 - The timestamps in N.I.N.A.'s log file now have millisecond resolution and use the 24 hour time format
-- In the **Equipment > Camera** window, the camera cooling is now activated only by using the Thermometer button, and what was the Cooler On/Off control now only reflects current state of the camera's cooler
+- In the **Equipment > Camera** window, the camera cooling is now activated only by using the Snowflake button, and what was the Cooler On/Off control now only reflects current state of the camera's cooler
+- UI for temperature control has been split into cooling and warming sections. To cool the camera the user can specify a temperature and an optional duration, while for warming only an optional duration is required
+- Clicking on warming or cooling without specifying a duration will show the cooling/warming progress based on target temperature and current camera temperature
 - The current [Earth Rotation Parameter](https://www.iers.org/IERS/EN/Science/EarthRotation/EarthRotation.html) data tables are now automatically dowloaded from the IERS for use in various calculations. The check for new data tables happens at application start and if an internet connection exists
 - An occasional miscalculation of the moon's current phase has been corrected
 - The object altitude chart in Sequence and Sky Atlas now renders tick marks in half-hour increments instead of some random increment
@@ -147,7 +149,7 @@
 - When loading an image file into the Framing Assistant, the rectangle dimensions are now correctly calculated
 
 ### Device-related improvements
-- The following camera settings are now saved to the active profile: USB Limit, Offset, Gain, Binning, Readout Mode, Temperature, and Cooling Duration
+- The following camera settings are now saved to the active profile: USB Limit, Offset, Gain, Binning, Readout Mode, Temperature, Cooling and Warming Duration
 - Images from OSC cameras now use their advertised bayer pattern instead of RGGB being assumed all the time
 - N.I.N.A.'s camera simulator will now assume the pixel size, bayer matrix, and sensor temperature attributes of any FITS or XISF file that is loaded into it
 - The equatorial system reported by the mount driver is now used, and the Epoch setting under **Options > General > Astrometry** has been removed. N.I.N.A. will default to J2000 when a mount's driver reports an epoch of "other"
@@ -485,7 +487,6 @@ The N.I.N.A. team would like to sincerely thank:
 - Framing Assistant now can annotate DSO
 - Sensor offset is now available as an image file name token (`$$OFFSET$$`)
 - Attempt to start PHD2 and connect all equipment when connecting to guider and PHD2 is not running
-- Adaptive Cooling: Duration for cool/warm camera is now a minimum duration. In case the cooler cannot keep up with the set duration, the application will wait for the camera to reach the checkpoints instead of just continuing setting new targets without the camera having any chance to reach those in the timeframe.
 - Automatically import filter wheel filters to the profile on connection when profile filter list is still empty
 - Load a default imaging tab layout in case the layout file is corrupted or not compatible anymore
 - Removed Altitude Side combobox from plate solved polar alignment. It will be automatically determined based on alt/az coordinates.

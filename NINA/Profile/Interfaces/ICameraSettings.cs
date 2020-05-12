@@ -49,6 +49,7 @@ namespace NINA.Profile {
 
         bool BitScaling { get; set; }
         double CoolingDuration { get; set; }
+        double WarmingDuration { get; set; }
         double? Temperature { get; set; }
         short? BinningX { get; set; }
         short? BinningY { get; set; }
@@ -58,6 +59,5 @@ namespace NINA.Profile {
         short? ReadoutMode { get; set; }
         short? ReadoutModeForSnapImages { get; set; }
         short? ReadoutModeForNormalImages { get; set; }
-
     }
 }

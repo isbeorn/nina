@@ -2664,8 +2664,9 @@ namespace NINA.Locale {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cool Camera to the given target temperature.
-        ///When duration is set, the application will slowly decrease the temperature during the timeframe until the target temperature is reached..
+        ///   Looks up a localized string similar to Turns the cooler on and cools the camera to the given target temperature.
+        ///A duration is optional. Most camera drivers already regulate the cooler power automatically and will only gradually decrease the temperature.
+        ///In case a longer duration is needed, a duration can be specified and the application will slowly lower the target temperature of the camera based on the given duration..
         /// </summary>
         internal static string LblCoolCamBtnTooltip {
             get {
@@ -2706,6 +2707,15 @@ namespace NINA.Locale {
         internal static string LblCoordinates {
             get {
                 return ResourceManager.GetString("LblCoordinates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera is unable to reach the specified target temperature!.
+        /// </summary>
+        internal static string LblCouldNotReachTargetTemperature {
+            get {
+                return ResourceManager.GetString("LblCouldNotReachTargetTemperature", resourceCulture);
             }
         }
         
@@ -9954,6 +9964,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Waiting for Image saving.
+        /// </summary>
+        internal static string LblWaitForImageSaving {
+            get {
+                return ResourceManager.GetString("LblWaitForImageSaving", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Waiting for camera to reach next temperature step.
         /// </summary>
         internal static string LblWaitForTemperatureStep {
@@ -9981,11 +10000,31 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Camera waiting to turn cooler off.
+        /// </summary>
+        internal static string LblWaitingToTurnCoolerOff {
+            get {
+                return ResourceManager.GetString("LblWaitingToTurnCoolerOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Warm camera when sequence ends.
         /// </summary>
         internal static string LblWarmCamAtSequenceEnd {
             get {
                 return ResourceManager.GetString("LblWarmCamAtSequenceEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warms the camera back to ambient temperature and turns the cooler off.
+        ///A duration is optional. Most camera drivers already regulate the cooler power automatically and will only gradually increase the temperature.
+        ///In case a longer duration is needed, a duration can be specified and the application will slowly raise the target temperature of the camera based on the given duration..
+        /// </summary>
+        internal static string LblWarmCamBtnTooltip {
+            get {
+                return ResourceManager.GetString("LblWarmCamBtnTooltip", resourceCulture);
             }
         }
         
