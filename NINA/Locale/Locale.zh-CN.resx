@@ -944,8 +944,9 @@
     <value>反差对焦模式</value>
   </data>
   <data name="LblCoolCamBtnTooltip" xml:space="preserve">
-    <value>将相机制冷到设定的目标温度。
-设置持续时间后，应用程序将在该周期内缓慢降低温度防止结露，直至达到目标温度。</value>
+    <value>Turns the cooler on and cools the camera to the given target temperature.
+A duration is optional. Most camera drivers already regulate the cooler power automatically and will only gradually decrease the temperature.
+In case a longer duration is needed, a duration can be specified and the application will slowly lower the target temperature of the camera based on the given duration.</value>
   </data>
   <data name="LblCoolerOn" xml:space="preserve">
     <value>制冷开启</value>
@@ -2633,6 +2634,24 @@
   <data name="LblSequence" xml:space="preserve">
     <value>序列</value>
   </data>
+  <data name="LblSequenceCommandInfo" xml:space="preserve">
+    <value>Sequence end command '{0}'.</value>
+  </data>
+  <data name="LblSequenceCommandSource" xml:space="preserve">
+    <value>Sequence end command</value>
+  </data>
+  <data name="LblSequenceCommandAtCompletion" xml:space="preserve">
+    <value>'{0}' completed.</value>
+  </data>
+  <data name="LblSequenceCommandAtCompletionTitle" xml:space="preserve">
+    <value>Run command when sequence completes</value>
+  </data>
+  <data name="LblSequenceCommandAtCompletionTooltip" xml:space="preserve">
+    <value>Select command to run when sequence completes.</value>
+  </data>
+  <data name="LblSequenceCommandAtCompletionNotFound" xml:space="preserve">
+    <value>Sequence end command not found '{0}'</value>
+  </data>
   <data name="LblSequenceDelay" xml:space="preserve">
     <value>延时开始(秒)</value>
   </data>
@@ -3475,7 +3494,7 @@
 默认设置会自动使用相机驱动程序提供的阵列。不适用于DSLR（单反）相机。</value>
   </data>
   <data name="LblCurrent" xml:space="preserve">
-    <value>电流</value>
+    <value>Current</value>
   </data>
   <data name="LblRunningEndOfSequence" xml:space="preserve">
     <value>正在运行序列结束选项...</value>
@@ -3571,5 +3590,37 @@
   </data>
   <data name="LblIncompatibleOffsetsInSequence" xml:space="preserve">
     <value>Sequence cotains items using incompatible Offset settings. These will be ignored!</value>
+  </data>
+  <data name="LblFlatDeviceAddBinningMode" xml:space="preserve">
+    <value>Add Binning</value>
+  </data>
+  <data name="LblFlatDeviceAddGain" xml:space="preserve">
+    <value>Add Gain</value>
+  </data>
+  <data name="LblFlatDeviceAreYouSureBinning" xml:space="preserve">
+    <value>Are you sure you want to delete all values for binning</value>
+  </data>
+  <data name="LblFlatDeviceAreYouSureGain" xml:space="preserve">
+    <value>Are you sure you want to delete all values for gain</value>
+  </data>
+  <data name="LblFlatDeviceDeleteBinningMode" xml:space="preserve">
+    <value>Delete Binning</value>
+  </data>
+  <data name="LblFlatDeviceDeleteGain" xml:space="preserve">
+    <value>Delete Gain</value>
+  </data>
+  <data name="LblCouldNotReachTargetTemperature" xml:space="preserve">
+    <value>Camera is unable to reach the specified target temperature!</value>
+  </data>
+  <data name="LblWaitingToTurnCoolerOff" xml:space="preserve">
+    <value>Camera waiting to turn cooler off</value>
+  </data>
+  <data name="LblWarmCamBtnTooltip" xml:space="preserve">
+    <value>Warms the camera back to ambient temperature and turns the cooler off.
+A duration is optional. Most camera drivers already regulate the cooler power automatically and will only gradually increase the temperature.
+In case a longer duration is needed, a duration can be specified and the application will slowly raise the target temperature of the camera based on the given duration.</value>
+  </data>
+  <data name="LblWaitForImageSaving" xml:space="preserve">
+    <value>Waiting for Image saving</value>
   </data>
 </root>
