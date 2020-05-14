@@ -13,13 +13,13 @@ using System.Threading.Tasks;
 namespace NINA.Model.MyCamera {
 
     internal class PersistSettingsCameraDecorator : BaseINPC, ICamera {
-        private readonly ICamera camera;
+        public ICamera Camera { get; }
         private readonly IProfileService profileService;
 
         public PersistSettingsCameraDecorator(IProfileService profileService, ICamera camera) {
             this.profileService = profileService;
-            this.camera = camera;
-            this.camera.PropertyChanged += Camera_PropertyChanged;
+            this.Camera = camera;
+            this.Camera.PropertyChanged += Camera_PropertyChanged;
         }
 
         private void Camera_PropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -29,7 +29,7 @@ namespace NINA.Model.MyCamera {
         private void RestoreCameraProfileDefaults() {
             if (this.profileService.ActiveProfile.CameraSettings.BinningX.HasValue && this.profileService.ActiveProfile.CameraSettings.BinningY.HasValue) {
                 try {
-                    this.camera.SetBinning(this.profileService.ActiveProfile.CameraSettings.BinningX.Value, this.profileService.ActiveProfile.CameraSettings.BinningY.Value);
+                    this.Camera.SetBinning(this.profileService.ActiveProfile.CameraSettings.BinningX.Value, this.profileService.ActiveProfile.CameraSettings.BinningY.Value);
                 } catch (Exception e) {
                     this.profileService.ActiveProfile.CameraSettings.BinningX = null;
                     this.profileService.ActiveProfile.CameraSettings.BinningY = null;
@@ -37,225 +37,225 @@ namespace NINA.Model.MyCamera {
             }
             if (this.profileService.ActiveProfile.CameraSettings.Gain.HasValue) {
                 try {
-                    this.camera.Gain = this.profileService.ActiveProfile.CameraSettings.Gain.Value;
+                    this.Camera.Gain = this.profileService.ActiveProfile.CameraSettings.Gain.Value;
                 } catch (Exception e) {
                     this.profileService.ActiveProfile.CameraSettings.Gain = null;
                 }
             }
             if (this.profileService.ActiveProfile.CameraSettings.Offset.HasValue) {
                 try {
-                    this.camera.Offset = this.profileService.ActiveProfile.CameraSettings.Offset.Value;
+                    this.Camera.Offset = this.profileService.ActiveProfile.CameraSettings.Offset.Value;
                 } catch (Exception e) {
                     this.profileService.ActiveProfile.CameraSettings.Offset = null;
                 }
             }
             if (this.profileService.ActiveProfile.CameraSettings.USBLimit.HasValue) {
                 try {
-                    this.camera.USBLimit = this.profileService.ActiveProfile.CameraSettings.USBLimit.Value;
+                    this.Camera.USBLimit = this.profileService.ActiveProfile.CameraSettings.USBLimit.Value;
                 } catch (Exception e) {
                     this.profileService.ActiveProfile.CameraSettings.USBLimit = null;
                 }
             }
             if (this.profileService.ActiveProfile.CameraSettings.ReadoutMode.HasValue) {
                 try {
-                    this.camera.ReadoutMode = this.profileService.ActiveProfile.CameraSettings.ReadoutMode.Value;
+                    this.Camera.ReadoutMode = this.profileService.ActiveProfile.CameraSettings.ReadoutMode.Value;
                 } catch (Exception e) {
                     this.profileService.ActiveProfile.CameraSettings.ReadoutMode = null;
                 }
             }
             if (this.profileService.ActiveProfile.CameraSettings.ReadoutModeForSnapImages.HasValue) {
                 try {
-                    this.camera.ReadoutModeForSnapImages = this.profileService.ActiveProfile.CameraSettings.ReadoutModeForSnapImages.Value;
+                    this.Camera.ReadoutModeForSnapImages = this.profileService.ActiveProfile.CameraSettings.ReadoutModeForSnapImages.Value;
                 } catch (Exception e) {
                     this.profileService.ActiveProfile.CameraSettings.ReadoutModeForSnapImages = null;
                 }
             }
             if (this.profileService.ActiveProfile.CameraSettings.ReadoutModeForNormalImages.HasValue) {
                 try {
-                    this.camera.ReadoutModeForNormalImages = this.profileService.ActiveProfile.CameraSettings.ReadoutModeForNormalImages.Value;
+                    this.Camera.ReadoutModeForNormalImages = this.profileService.ActiveProfile.CameraSettings.ReadoutModeForNormalImages.Value;
                 } catch (Exception e) {
                     this.profileService.ActiveProfile.CameraSettings.ReadoutModeForNormalImages = null;
                 }
             }
         }
 
-        public bool HasShutter => this.camera.HasShutter;
+        public bool HasShutter => this.Camera.HasShutter;
 
-        public double Temperature => this.camera.Temperature;
+        public double Temperature => this.Camera.Temperature;
 
         public double TemperatureSetPoint {
-            get => this.camera.TemperatureSetPoint;
+            get => this.Camera.TemperatureSetPoint;
             set {
-                this.camera.TemperatureSetPoint = value;
+                this.Camera.TemperatureSetPoint = value;
             }
         }
 
         public short BinX {
-            get => this.camera.BinX;
+            get => this.Camera.BinX;
             set {
-                this.camera.BinX = value;
+                this.Camera.BinX = value;
                 this.profileService.ActiveProfile.CameraSettings.BinningX = value;
             }
         }
 
         public short BinY {
-            get => this.camera.BinY;
+            get => this.Camera.BinY;
             set {
-                this.camera.BinY = value;
+                this.Camera.BinY = value;
                 this.profileService.ActiveProfile.CameraSettings.BinningY = value;
             }
         }
 
-        public string SensorName => this.camera.SensorName;
+        public string SensorName => this.Camera.SensorName;
 
-        public SensorType SensorType => this.camera.SensorType;
+        public SensorType SensorType => this.Camera.SensorType;
 
-        public short BayerOffsetX => this.camera.BayerOffsetX;
+        public short BayerOffsetX => this.Camera.BayerOffsetX;
 
-        public short BayerOffsetY => this.camera.BayerOffsetY;
+        public short BayerOffsetY => this.Camera.BayerOffsetY;
 
-        public int CameraXSize => this.camera.CameraXSize;
+        public int CameraXSize => this.Camera.CameraXSize;
 
-        public int CameraYSize => this.camera.CameraYSize;
+        public int CameraYSize => this.Camera.CameraYSize;
 
-        public double ExposureMin => this.camera.ExposureMin;
+        public double ExposureMin => this.Camera.ExposureMin;
 
-        public double ExposureMax => this.camera.ExposureMax;
+        public double ExposureMax => this.Camera.ExposureMax;
 
-        public short MaxBinX => this.camera.MaxBinX;
+        public short MaxBinX => this.Camera.MaxBinX;
 
-        public short MaxBinY => this.camera.MaxBinY;
+        public short MaxBinY => this.Camera.MaxBinY;
 
-        public double PixelSizeX => this.camera.PixelSizeX;
+        public double PixelSizeX => this.Camera.PixelSizeX;
 
-        public double PixelSizeY => this.camera.PixelSizeY;
+        public double PixelSizeY => this.Camera.PixelSizeY;
 
-        public bool CanSetTemperature => this.camera.CanSetTemperature;
+        public bool CanSetTemperature => this.Camera.CanSetTemperature;
 
-        public bool CoolerOn { get => this.camera.CoolerOn; set => this.camera.CoolerOn = value; }
+        public bool CoolerOn { get => this.Camera.CoolerOn; set => this.Camera.CoolerOn = value; }
 
-        public double CoolerPower => this.camera.CoolerPower;
+        public double CoolerPower => this.Camera.CoolerPower;
 
-        public bool HasDewHeater => this.camera.HasDewHeater;
+        public bool HasDewHeater => this.Camera.HasDewHeater;
 
-        public bool DewHeaterOn { get => this.camera.DewHeaterOn; set => this.camera.DewHeaterOn = value; }
+        public bool DewHeaterOn { get => this.Camera.DewHeaterOn; set => this.Camera.DewHeaterOn = value; }
 
-        public string CameraState => this.camera.CameraState;
+        public string CameraState => this.Camera.CameraState;
 
-        public bool CanSubSample => this.camera.CanSubSample;
+        public bool CanSubSample => this.Camera.CanSubSample;
 
-        public bool EnableSubSample { get => this.camera.EnableSubSample; set => this.camera.EnableSubSample = value; }
-        public int SubSampleX { get => this.camera.SubSampleX; set => this.camera.SubSampleX = value; }
-        public int SubSampleY { get => this.camera.SubSampleY; set => this.camera.SubSampleY = value; }
-        public int SubSampleWidth { get => this.camera.SubSampleWidth; set => this.camera.SubSampleWidth = value; }
-        public int SubSampleHeight { get => this.camera.SubSampleHeight; set => this.camera.SubSampleHeight = value; }
+        public bool EnableSubSample { get => this.Camera.EnableSubSample; set => this.Camera.EnableSubSample = value; }
+        public int SubSampleX { get => this.Camera.SubSampleX; set => this.Camera.SubSampleX = value; }
+        public int SubSampleY { get => this.Camera.SubSampleY; set => this.Camera.SubSampleY = value; }
+        public int SubSampleWidth { get => this.Camera.SubSampleWidth; set => this.Camera.SubSampleWidth = value; }
+        public int SubSampleHeight { get => this.Camera.SubSampleHeight; set => this.Camera.SubSampleHeight = value; }
 
-        public bool CanShowLiveView => this.camera.CanShowLiveView;
+        public bool CanShowLiveView => this.Camera.CanShowLiveView;
 
-        public bool LiveViewEnabled => this.camera.LiveViewEnabled;
+        public bool LiveViewEnabled => this.Camera.LiveViewEnabled;
 
-        public bool HasBattery => this.camera.HasBattery;
+        public bool HasBattery => this.Camera.HasBattery;
 
-        public int BatteryLevel => this.camera.BatteryLevel;
+        public int BatteryLevel => this.Camera.BatteryLevel;
 
-        public int BitDepth => this.camera.BitDepth;
+        public int BitDepth => this.Camera.BitDepth;
 
         public int Offset {
             get {
-                return this.camera.Offset;
+                return this.Camera.Offset;
             }
             set {
-                this.camera.Offset = value;
+                this.Camera.Offset = value;
                 this.profileService.ActiveProfile.CameraSettings.Offset = value;
             }
         }
 
         public int USBLimit {
-            get => this.camera.USBLimit;
+            get => this.Camera.USBLimit;
             set {
-                this.camera.USBLimit = value;
+                this.Camera.USBLimit = value;
                 this.profileService.ActiveProfile.CameraSettings.USBLimit = value;
             }
         }
 
-        public bool CanSetOffset => this.camera.CanSetOffset;
+        public bool CanSetOffset => this.Camera.CanSetOffset;
 
-        public int OffsetMin => this.camera.OffsetMin;
+        public int OffsetMin => this.Camera.OffsetMin;
 
-        public int OffsetMax => this.camera.OffsetMax;
+        public int OffsetMax => this.Camera.OffsetMax;
 
-        public bool CanSetUSBLimit => this.camera.CanSetUSBLimit;
+        public bool CanSetUSBLimit => this.Camera.CanSetUSBLimit;
 
-        public bool CanGetGain => this.camera.CanGetGain;
+        public bool CanGetGain => this.Camera.CanGetGain;
 
-        public bool CanSetGain => this.camera.CanSetGain;
+        public bool CanSetGain => this.Camera.CanSetGain;
 
-        public int GainMax => this.camera.GainMax;
+        public int GainMax => this.Camera.GainMax;
 
-        public int GainMin => this.camera.GainMin;
+        public int GainMin => this.Camera.GainMin;
 
         public int Gain {
-            get => this.camera.Gain;
+            get => this.Camera.Gain;
             set {
-                this.camera.Gain = value;
+                this.Camera.Gain = value;
                 this.profileService.ActiveProfile.CameraSettings.Gain = value;
             }
         }
 
-        public double ElectronsPerADU => this.camera.ElectronsPerADU;
+        public double ElectronsPerADU => this.Camera.ElectronsPerADU;
 
-        public IEnumerable ReadoutModes => this.camera.ReadoutModes;
+        public IEnumerable ReadoutModes => this.Camera.ReadoutModes;
 
         public short ReadoutMode {
-            get => this.camera.ReadoutMode;
+            get => this.Camera.ReadoutMode;
             set {
-                this.camera.ReadoutMode = value;
+                this.Camera.ReadoutMode = value;
                 this.profileService.ActiveProfile.CameraSettings.ReadoutMode = value;
             }
         }
 
         public short ReadoutModeForSnapImages {
-            get => this.camera.ReadoutModeForSnapImages;
+            get => this.Camera.ReadoutModeForSnapImages;
             set {
-                this.camera.ReadoutModeForSnapImages = value;
+                this.Camera.ReadoutModeForSnapImages = value;
                 this.profileService.ActiveProfile.CameraSettings.ReadoutModeForSnapImages = value;
             }
         }
 
         public short ReadoutModeForNormalImages {
-            get => this.camera.ReadoutModeForNormalImages;
+            get => this.Camera.ReadoutModeForNormalImages;
             set {
-                this.camera.ReadoutModeForNormalImages = value;
+                this.Camera.ReadoutModeForNormalImages = value;
                 this.profileService.ActiveProfile.CameraSettings.ReadoutModeForNormalImages = value;
             }
         }
 
-        public IList<int> Gains => this.camera.Gains;
+        public IList<int> Gains => this.Camera.Gains;
 
-        public AsyncObservableCollection<BinningMode> BinningModes => this.camera.BinningModes;
+        public AsyncObservableCollection<BinningMode> BinningModes => this.Camera.BinningModes;
 
-        public bool HasSetupDialog => this.camera.HasSetupDialog;
+        public bool HasSetupDialog => this.Camera.HasSetupDialog;
 
-        public string Id => this.camera.Id;
+        public string Id => this.Camera.Id;
 
-        public string Name => this.camera.Name;
+        public string Name => this.Camera.Name;
 
-        public string Category => this.camera.Category;
+        public string Category => this.Camera.Category;
 
-        public bool Connected => this.camera.Connected;
+        public bool Connected => this.Camera.Connected;
 
-        public string Description => this.camera.Description;
+        public string Description => this.Camera.Description;
 
-        public string DriverInfo => this.camera.DriverInfo;
+        public string DriverInfo => this.Camera.DriverInfo;
 
-        public string DriverVersion => this.camera.DriverVersion;
+        public string DriverVersion => this.Camera.DriverVersion;
 
         public void AbortExposure() {
-            this.camera.AbortExposure();
+            this.Camera.AbortExposure();
         }
 
         public async Task<bool> Connect(CancellationToken token) {
-            var result = await this.camera.Connect(token);
+            var result = await this.Camera.Connect(token);
             if (result) {
                 RestoreCameraProfileDefaults();
             }
@@ -263,43 +263,43 @@ namespace NINA.Model.MyCamera {
         }
 
         public void Disconnect() {
-            this.camera.Disconnect();
+            this.Camera.Disconnect();
         }
 
         public Task<IExposureData> DownloadExposure(CancellationToken token) {
-            return this.camera.DownloadExposure(token);
+            return this.Camera.DownloadExposure(token);
         }
 
         public Task<IExposureData> DownloadLiveView(CancellationToken token) {
-            return this.camera.DownloadLiveView(token);
+            return this.Camera.DownloadLiveView(token);
         }
 
         public void SetBinning(short x, short y) {
-            this.camera.SetBinning(x, y);
+            this.Camera.SetBinning(x, y);
         }
 
         public void SetupDialog() {
-            this.camera.SetupDialog();
+            this.Camera.SetupDialog();
         }
 
         public void StartExposure(CaptureSequence sequence) {
-            this.camera.StartExposure(sequence);
+            this.Camera.StartExposure(sequence);
         }
 
         public void StartLiveView() {
-            this.camera.StartLiveView();
+            this.Camera.StartLiveView();
         }
 
         public void StopExposure() {
-            this.camera.StopExposure();
+            this.Camera.StopExposure();
         }
 
         public void StopLiveView() {
-            this.camera.StopLiveView();
+            this.Camera.StopLiveView();
         }
 
         public Task WaitUntilExposureIsReady(CancellationToken token) {
-            return this.camera.WaitUntilExposureIsReady(token);
+            return this.Camera.WaitUntilExposureIsReady(token);
         }
     }
 }

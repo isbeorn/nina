@@ -582,6 +582,14 @@ namespace NINA.Model.MyCamera {
                         CanSetOffset = true;
                     }
 
+                    if (((this.flags & Omegonprocam.eFLAG.FLAG_CG) != 0) || ((this.flags & Omegonprocam.eFLAG.FLAG_CGHDR) != 0)) {
+                        Logger.Trace("OmegonCamera - Camera has High Conversion Gain option");
+                        HasHighGain = true;
+                        HighGainMode = true;
+                    } else {
+                        HasHighGain = false;
+                    }
+
                     if ((this.flags & Omegonprocam.eFLAG.FLAG_TRIGGER_SOFTWARE) == 0) {
                         throw new Exception("OmegonCamera - This camera is not capable to be triggered by software and is not supported");
                     }
@@ -625,6 +633,35 @@ namespace NINA.Model.MyCamera {
                 return sensorType;
             }
             return SensorType.RGGB;
+        }
+
+        private bool _hasHighGain;
+
+        public bool HasHighGain {
+            get => _hasHighGain;
+            set {
+                _hasHighGain = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public bool HighGainMode {
+            get {
+                if (HasHighGain) {
+                    camera.get_Option(Omegonprocam.eOPTION.OPTION_CG, out var value);
+                    Logger.Trace($"OmegonCamera - Conversion Gain is set to {value}");
+                    return value == 1 ? true : false;
+                } else {
+                    return false;
+                }
+            }
+            set {
+                if (HasHighGain) {
+                    Logger.Trace($"OmegonCamera - Setting Conversion Gain to {value}");
+                    camera.put_Option(Omegonprocam.eOPTION.OPTION_CG, value ? 1 : 0);
+                    RaisePropertyChanged();
+                }
+            }
         }
 
         private void OnEventCallback(Omegonprocam.eEVENT nEvent) {

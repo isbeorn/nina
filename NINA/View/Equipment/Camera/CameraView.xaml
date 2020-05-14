@@ -339,6 +339,39 @@
                             ItemsSource="{Binding Cam.ReadoutModes}"
                             SelectedIndex="{Binding Cam.ReadoutModeForNormalImages}" />
                     </DockPanel>
+                    <Grid>
+                        <Grid.Resources>
+                            <DataTemplate x:Key="Default">
+                                <Grid />
+                            </DataTemplate>
+                            <DataTemplate x:Key="Touptek">
+                                <DockPanel Margin="0,0,0,6" Visibility="{Binding HasHighGain, Converter={StaticResource VisibilityConverter}}">
+                                    <TextBlock
+                                        MinWidth="100"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblHighGainMode}" />
+                                    <CheckBox
+                                        Width="200"
+                                        HorizontalAlignment="Right"
+                                        IsChecked="{Binding HighGainMode}">
+                                        <CheckBox.ToolTip>
+                                            <ToolTip ToolTipService.ShowOnDisabled="False">
+                                                <TextBlock Text="{ns:Loc LblHighGainModeTooltip}" />
+                                            </ToolTip>
+                                        </CheckBox.ToolTip>
+                                    </CheckBox>
+                                </DockPanel>
+                            </DataTemplate>
+                            <local:CameraTemplateSelector
+                                x:Key="ContentSelector"
+                                Default="{StaticResource Default}"
+                                Touptek="{StaticResource Touptek}" />
+                        </Grid.Resources>
+                        <ContentControl
+                            Content="{Binding}"
+                            ContentTemplateSelector="{StaticResource ContentSelector}"
+                            DataContext="{Binding Cam.Camera}" />
+                    </Grid>
                 </StackPanel>
             </GroupBox>
         </Grid>

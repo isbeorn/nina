@@ -665,6 +665,7 @@
     <Compile Include="ViewModel\Imaging\ExposureTimeRecommendationVM.cs" />
     <Compile Include="ViewModel\Imaging\AnchorablePlateSolverVM.cs" />
     <Compile Include="ViewModel\PlateSolvingStatusVM.cs" />
+    <Compile Include="View\Equipment\Camera\CameraTemplateSelector.cs" />
     <Compile Include="View\Equipment\Camera\FLICameraSetupView.xaml.cs">
       <DependentUpon>FLICameraSetupView.xaml</DependentUpon>
     </Compile>

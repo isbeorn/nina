@@ -4798,6 +4798,24 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to High Gain Mode.
+        /// </summary>
+        internal static string LblHighGainMode {
+            get {
+                return ResourceManager.GetString("LblHighGainMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sets the camera to high gain mode. This gain mode has less read noise compared to low gain and it is advised for most cams to activate always, except when you want to use the lowest possible gain with the highest dynamic range..
+        /// </summary>
+        internal static string LblHighGainModeTooltip {
+            get {
+                return ResourceManager.GetString("LblHighGainModeTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Histogram.
         /// </summary>
         internal static string LblHistogram {
