@@ -41,5 +41,6 @@ namespace NINA.Profile {
         string PHD2Path { get; set; }
         bool AutoRetryStartGuiding { get; set; }
         int AutoRetryStartGuidingTimeoutSeconds { get; set; }
+        int MGENFocalLength { get; set; }
     }
 }

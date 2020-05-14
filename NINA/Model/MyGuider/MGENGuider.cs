@@ -24,6 +24,7 @@
 using NINA.MGEN.Exceptions;
 using NINA.Profile;
 using NINA.Utility;
+using NINA.Utility.Astrometry;
 using NINA.Utility.ImageAnalysis;
 using NINA.Utility.Notification;
 using System;
@@ -82,9 +83,19 @@ namespace NINA.Model.MyGuider {
             }
         }
 
+        public int FocalLength {
+            get => profileService.ActiveProfile.GuiderSettings.MGENFocalLength;
+            set {
+                profileService.ActiveProfile.GuiderSettings.MGENFocalLength = value;
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(PixelScale));
+            }
+        }
+
         public double PixelScale {
             get {
-                return 4.85; // this is the pixel size, not the scale
+                // According to documentation the pixel size reported is normalized to 4.85
+                return Astrometry.ArcsecPerPixel(4.85, FocalLength);
             }
 
             set {
@@ -145,7 +156,9 @@ namespace NINA.Model.MyGuider {
                 await RefreshDisplay();
                 Connected = true;
 
-                QueryDeviceBackgroundTask();
+                _ = QueryDeviceBackgroundTask();
+
+                RaisePropertyChanged(nameof(PixelScale));
             } catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.ShowError(ex.Message);

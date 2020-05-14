@@ -76,6 +76,8 @@
                     <ComboBoxItem>4</ComboBoxItem>
                     <ComboBoxItem>8</ComboBoxItem>
                     <ComboBoxItem>16</ComboBoxItem>
+                    <ComboBoxItem>32</ComboBoxItem>
+                    <ComboBoxItem>64</ComboBoxItem>
                 </ComboBox>
                 <!--<TextBlock Text="{ns:Loc LblXAxisScale}" />-->
                 <ComboBox

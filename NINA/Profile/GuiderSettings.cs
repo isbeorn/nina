@@ -59,6 +59,7 @@ namespace NINA.Profile {
                 ? defaultPHD2Path
                 : string.Empty;
             guiderName = "PHD2";
+            mgenFocalLength = 1000;
         }
 
         private double ditherPixels;
@@ -252,6 +253,19 @@ namespace NINA.Profile {
             set {
                 if (maxY != value) {
                     maxY = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int mgenFocalLength;
+
+        [DataMember]
+        public int MGENFocalLength {
+            get => mgenFocalLength;
+            set {
+                if (mgenFocalLength != value) {
+                    mgenFocalLength = value;
                     RaisePropertyChanged();
                 }
             }
