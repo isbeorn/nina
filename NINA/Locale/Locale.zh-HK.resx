@@ -426,6 +426,9 @@
   <data name="LblBiasMean" xml:space="preserve">
     <value>偏置平均值 (本地)</value>
   </data>
+  <data name="LblBiasMedian" xml:space="preserve">
+    <value>BIAS median value (in 16bit)</value>
+  </data>
   <data name="LblBinning" xml:space="preserve">
     <value>合併像素</value>
   </data>
@@ -3622,5 +3625,11 @@ In case a longer duration is needed, a duration can be specified and the applica
   </data>
   <data name="LblWaitForImageSaving" xml:space="preserve">
     <value>Waiting for Image saving</value>
+  </data>
+  <data name="LblHighGainMode" xml:space="preserve">
+    <value>High Gain Mode</value>
+  </data>
+  <data name="LblHighGainModeTooltip" xml:space="preserve">
+    <value>Sets the camera to high gain mode. This gain mode has less read noise compared to low gain and it is advised for most cams to activate always, except when you want to use the lowest possible gain with the highest dynamic range.</value>
   </data>
 </root>

@@ -426,6 +426,9 @@ Anhand der zwei Punkte wird dann der Azimuthfehler errechnet und angezeigt</valu
   <data name="LblBiasMean" xml:space="preserve">
     <value>BIAS Mittelwert (Nativ)</value>
   </data>
+  <data name="LblBiasMedian" xml:space="preserve">
+    <value>BIAS Medianwert (in 16bit)</value>
+  </data>
   <data name="LblBinning" xml:space="preserve">
     <value>Binning</value>
   </data>
@@ -944,9 +947,9 @@ Soll die Sequenz dennoch geschlossen werden und die Änderungen verloren gehen?<
     <value>Kontrasterkennung Methode</value>
   </data>
   <data name="LblCoolCamBtnTooltip" xml:space="preserve">
-    <value>Turns the cooler on and cools the camera to the given target temperature.
-A duration is optional. Most camera drivers already regulate the cooler power automatically and will only gradually decrease the temperature.
-In case a longer duration is needed, a duration can be specified and the application will slowly lower the target temperature of the camera based on the given duration.</value>
+    <value>Schaltet den Kühler ein und kühlt die Kamera auf die angegebene Zieltemperatur.
+Eine Dauer ist optional. Die meisten Kameratreiber regulieren die Kühlleistung bereits automatisch und werden die Temperatur nur schrittweise senken.
+Falls eine längere Dauer benötigt wird, kann eine Dauer angegeben werden und die Anwendung wird die Zieltemperatur der Kamera basierend auf der angegebenen Dauer langsam senken.</value>
   </data>
   <data name="LblCoolerOn" xml:space="preserve">
     <value>Kühler</value>
@@ -2635,22 +2638,22 @@ Berechneter HFR: {2}
     <value>Sequenz</value>
   </data>
   <data name="LblSequenceCommandInfo" xml:space="preserve">
-    <value>Sequence end command '{0}'.</value>
+    <value>Sequenz Endkommando '{0}'.</value>
   </data>
   <data name="LblSequenceCommandSource" xml:space="preserve">
-    <value>Sequence end command</value>
+    <value>Sequenz Endkommando</value>
   </data>
   <data name="LblSequenceCommandAtCompletion" xml:space="preserve">
-    <value>'{0}' completed.</value>
+    <value>'{0}' abgeschlossen.</value>
   </data>
   <data name="LblSequenceCommandAtCompletionTitle" xml:space="preserve">
-    <value>Run command when sequence completes</value>
+    <value>Kommando ausführen, wenn die Sequenz beendet ist</value>
   </data>
   <data name="LblSequenceCommandAtCompletionTooltip" xml:space="preserve">
-    <value>Select command to run when sequence completes.</value>
+    <value>Kommando auswählen, das ausgeführt werden soll, wenn die Sequenz abgeschlossen ist.</value>
   </data>
   <data name="LblSequenceCommandAtCompletionNotFound" xml:space="preserve">
-    <value>Sequence end command not found '{0}'</value>
+    <value>Sequenz Endkommando nicht gefunden '{0} ' '</value>
   </data>
   <data name="LblSequenceDelay" xml:space="preserve">
     <value>Start verzögern (Sekunden)</value>
@@ -3591,35 +3594,41 @@ Die Methode kann nur geändert werden, wenn der Okularauszug nicht verbunden ist
     <value>Sequenz enthält Elemente mit inkompatiblen Offset-Einstellungen. Diese werden ignoriert!</value>
   </data>
   <data name="LblFlatDeviceAddBinningMode" xml:space="preserve">
-    <value>Add Binning</value>
+    <value>Binning hinzufügen</value>
   </data>
   <data name="LblFlatDeviceAddGain" xml:space="preserve">
-    <value>Add Gain</value>
+    <value>Gain hinzufügen</value>
   </data>
   <data name="LblFlatDeviceAreYouSureBinning" xml:space="preserve">
-    <value>Are you sure you want to delete all values for binning</value>
+    <value>Sollen alle Werte für Binnung gelöscht werden?</value>
   </data>
   <data name="LblFlatDeviceAreYouSureGain" xml:space="preserve">
-    <value>Are you sure you want to delete all values for gain</value>
+    <value>Sollen alle Werte für Gain gelöscht werden?</value>
   </data>
   <data name="LblFlatDeviceDeleteBinningMode" xml:space="preserve">
-    <value>Delete Binning</value>
+    <value>Binning löschen</value>
   </data>
   <data name="LblFlatDeviceDeleteGain" xml:space="preserve">
-    <value>Delete Gain</value>
+    <value>Gain löschen</value>
   </data>
   <data name="LblCouldNotReachTargetTemperature" xml:space="preserve">
-    <value>Camera is unable to reach the specified target temperature!</value>
+    <value>Kamera kann die angegebene Zieltemperatur nicht erreichen!</value>
   </data>
   <data name="LblWaitingToTurnCoolerOff" xml:space="preserve">
-    <value>Camera waiting to turn cooler off</value>
+    <value>Kamera wartet, um Kühler auszuschalten</value>
   </data>
   <data name="LblWarmCamBtnTooltip" xml:space="preserve">
-    <value>Warms the camera back to ambient temperature and turns the cooler off.
-A duration is optional. Most camera drivers already regulate the cooler power automatically and will only gradually increase the temperature.
-In case a longer duration is needed, a duration can be specified and the application will slowly raise the target temperature of the camera based on the given duration.</value>
+    <value>Wärmt die Kamera auf Umgebungstemperatur zurück und schaltet den Kühler aus.
+Eine Dauer ist optional. Die meisten Kameratreiber regulieren die Kühlleistung bereits automatisch und erhöhen die Temperatur nur allmählich.
+Falls eine längere Dauer benötigt wird, kann eine Dauer angegeben werden und die Anwendung erhöht langsam die Zieltemperatur der Kamera basierend auf der angegebenen Dauer.</value>
   </data>
   <data name="LblWaitForImageSaving" xml:space="preserve">
-    <value>Waiting for Image saving</value>
+    <value>Warte auf Bildspeicherung</value>
+  </data>
+  <data name="LblHighGainMode" xml:space="preserve">
+    <value>High Gain Modus</value>
+  </data>
+  <data name="LblHighGainModeTooltip" xml:space="preserve">
+    <value>Setzt die Kamera auf den High Gain-Modus. Dieser Verstärkungsmodus hat weniger Auslese-Rauschen im Vergleich zu niedrigem Gain und es wird empfohlen, dass es immer aktiviert wird, mit Ausnahme man möchte den geringstmöglichen Gain mit der höchsten Dynamic Range nutzen.</value>
   </data>
 </root>
