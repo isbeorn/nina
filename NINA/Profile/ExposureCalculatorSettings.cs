@@ -109,7 +109,7 @@ namespace NINA.Profile {
         private double biasMean;
 
         [DataMember]
-        public double BiasMean {
+        public double BiasMedian {
             get {
                 return biasMean;
             }

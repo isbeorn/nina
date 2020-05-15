@@ -426,6 +426,9 @@ Using those two points the actual azimuth error will be calculated and displayed
   <data name="LblBiasMean" xml:space="preserve">
     <value>BIAS mean value (in 16bit)</value>
   </data>
+  <data name="LblBiasMedian" xml:space="preserve">
+    <value>BIAS median value (in 16bit)</value>
+  </data>
   <data name="LblBinning" xml:space="preserve">
     <value>Binning</value>
   </data>

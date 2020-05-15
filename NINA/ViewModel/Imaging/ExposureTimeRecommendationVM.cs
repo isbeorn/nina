@@ -32,6 +32,7 @@ using NINA.Utility.Notification;
 using System;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -66,11 +67,15 @@ namespace NINA.ViewModel.Imaging {
 
             this._sharpCapSensorAnalysisDisabledValue = "(" + Locale.Loc.Instance["LblDisabled"] + ")";
             this._sharpCapSensorNames = new ObservableCollection<string>();
-
-            var path = String.IsNullOrEmpty(this.profileService.ActiveProfile.ImageSettings.SharpCapSensorAnalysisFolder) 
-                ? SharpCapSensorAnalysisConstants.DEFAULT_SHARPCAP_SENSOR_ANALYSIS_PATH 
-                : this.profileService.ActiveProfile.ImageSettings.SharpCapSensorAnalysisFolder;
-            LoadSensorAnalysisData(path);
+            var configuredPath = this.profileService.ActiveProfile.ImageSettings.SharpCapSensorAnalysisFolder;
+            if (String.IsNullOrEmpty(configuredPath)) {
+                // Attempt load for default configuration only if the directory exists to avoid log spam
+                if (Directory.Exists(SharpCapSensorAnalysisConstants.DEFAULT_SHARPCAP_SENSOR_ANALYSIS_PATH)) {
+                    LoadSensorAnalysisData(SharpCapSensorAnalysisConstants.DEFAULT_SHARPCAP_SENSOR_ANALYSIS_PATH);
+                }
+            } else {
+                LoadSensorAnalysisData(configuredPath);
+            }            
         }
 
         private static ImmutableDictionary<string, SharpCapSensorAnalysisData> ReadSensorAnalysisData(ISharpCapSensorAnalysisReader sharpCapSensorAnalysisReader, string path) {
@@ -120,7 +125,7 @@ namespace NINA.ViewModel.Imaging {
         private async Task<bool> DetermineBias(object arg) {
             MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblCoverScopeMsgBoxTitle"]);
             var imageStatistics = await TakeExposure(0);
-            this.BiasMean = (await imageStatistics.ImageStatistics).Median;
+            this.BiasMedian = (await imageStatistics.ImageStatistics).Median;
             return true;
         }
 
@@ -236,10 +241,10 @@ namespace NINA.ViewModel.Imaging {
             }
         }
 
-        public double BiasMean {
-            get => profileService.ActiveProfile.ExposureCalculatorSettings.BiasMean;
+        public double BiasMedian {
+            get => profileService.ActiveProfile.ExposureCalculatorSettings.BiasMedian;
             set {
-                profileService.ActiveProfile.ExposureCalculatorSettings.BiasMean = value;
+                profileService.ActiveProfile.ExposureCalculatorSettings.BiasMedian = value;
                 RaisePropertyChanged();
             }
         }
@@ -268,7 +273,7 @@ namespace NINA.ViewModel.Imaging {
         }
 
         private void CalculateRecommendedExposureTime() {
-            if (Statistics.ImageStatistics.Result.Median - BiasMean < 0) {
+            if (Statistics.ImageStatistics.Result.Median - BiasMedian < 0) {
                 this.Statistics = null;
                 Notification.ShowError(Locale.Loc.Instance["LblExposureCalculatorMeanLessThanOffset"]);
             } else {
@@ -280,9 +285,19 @@ namespace NINA.ViewModel.Imaging {
                 //   3) Divide by the snapshot exposure duration
                 var maxAdu = 1 << Statistics.ImageProperties.BitDepth;
                 var electronsPerAdu = FullWellCapacity / maxAdu;
-                var skyglowFluxPerSecond = (Statistics.ImageStatistics.Result.Median - BiasMean) * electronsPerAdu / SnapExposureDuration;
+                var skyglowFluxPerSecond = (Statistics.ImageStatistics.Result.Median - BiasMedian) * electronsPerAdu / SnapExposureDuration;
                 var readNoiseSquared = ReadNoise * ReadNoise;
                 RecommendedExposureTime = 10 * readNoiseSquared / skyglowFluxPerSecond;
+
+                var debugMessage = $@"Recommended exposure calculation
+Read Noise = {ReadNoise} electrons
+Full Well Capacity = {FullWellCapacity} electrons
+Bit Depth = {Statistics.ImageProperties.BitDepth}
+Electrons per ADU = {electronsPerAdu}
+Skyglow = Image Median ({Statistics.ImageStatistics.Result.Median}) - Bias Median ({BiasMedian}) = {Statistics.ImageStatistics.Result.Median - BiasMedian} ADU
+Skyglow Flux per Second = {skyglowFluxPerSecond} electrons per pixel per second
+Recommended exposure time = 10 * Read Noise ^ 2 = {RecommendedExposureTime} seconds";
+                Logger.Debug(debugMessage);
             }
         }
     }

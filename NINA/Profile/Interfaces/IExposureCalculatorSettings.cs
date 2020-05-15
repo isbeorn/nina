@@ -35,6 +35,6 @@ namespace NINA.Profile {
         double ExposureDuration { get; set; }
         double FullWellCapacity { get; set; }
         double ReadNoise { get; set; }
-        double BiasMean { get; set; }
+        double BiasMedian { get; set; }
     }
 }
