@@ -419,7 +419,7 @@
     <value>BIASの平均値(16ビットにて）</value>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
-    <value>BIAS median value (in 16bit)</value>
+    <value>BIASの中央値(16ビット)</value>
   </data>
   <data name="LblBinning" xml:space="preserve">
     <value>ビニング</value>
@@ -938,9 +938,7 @@
     <value>コントラスト検出法</value>
   </data>
   <data name="LblCoolCamBtnTooltip" xml:space="preserve">
-    <value>Turns the cooler on and cools the camera to the given target temperature.
-A duration is optional. Most camera drivers already regulate the cooler power automatically and will only gradually decrease the temperature.
-In case a longer duration is needed, a duration can be specified and the application will slowly lower the target temperature of the camera based on the given duration.</value>
+    <value>冷却装置の電源を入れ、指定された目標温度までカメラを冷却します。所要時間の設定は任意です。カメラドライバーのほとんどは、冷却パワーを自動的に調節できるようになっており、温度を少しずつ下げていきます。時間をさらに長くしたい場合だけ設定して下さい。プログラムは、指定された時間を掛けてカメラをゆっくりと冷却します。</value>
   </data>
   <data name="LblCoolerOn" xml:space="preserve">
     <value>冷却機能</value>
@@ -2624,22 +2622,22 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>シーケンス</value>
   </data>
   <data name="LblSequenceCommandInfo" xml:space="preserve">
-    <value>Sequence end command '{0}'.</value>
+    <value>シーケンス終了コマンド '{0}'.</value>
   </data>
   <data name="LblSequenceCommandSource" xml:space="preserve">
-    <value>Sequence end command</value>
+    <value>シーケンス終了コマンド</value>
   </data>
   <data name="LblSequenceCommandAtCompletion" xml:space="preserve">
-    <value>'{0}' completed.</value>
+    <value>'{0}' 完了</value>
   </data>
   <data name="LblSequenceCommandAtCompletionTitle" xml:space="preserve">
-    <value>Run command when sequence completes</value>
+    <value>シーケンス完了時にコマンドを実行</value>
   </data>
   <data name="LblSequenceCommandAtCompletionTooltip" xml:space="preserve">
-    <value>Select command to run when sequence completes.</value>
+    <value>シーケンス完了時に実行するコマンドを選択</value>
   </data>
   <data name="LblSequenceCommandAtCompletionNotFound" xml:space="preserve">
-    <value>Sequence end command not found '{0}'</value>
+    <value>シーケンス終了コマンドが見つかりません '{0}'</value>
   </data>
   <data name="LblSequenceDelay" xml:space="preserve">
     <value>スタート遅延(秒)</value>
@@ -3493,7 +3491,7 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
     <value>Camera Readout Mode</value>
   </data>
   <data name="LblSerialPortCannotOpen" xml:space="preserve">
-    <value>Cannot open serial port {0}: {1}</value>
+    <value>シリアルポート {0}を開くことができません（{1}）</value>
   </data>
   <data name="LblPointingTolerance" xml:space="preserve">
     <value>Pointing Tolerance</value>
@@ -3571,47 +3569,45 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
     <value>回転装置を指定された目標位置に動かす</value>
   </data>
   <data name="LblIncompatibleGainsInSequence" xml:space="preserve">
-    <value>Sequence contains items using incompatible Gain settings. These will be ignored!</value>
+    <value>シーケンスの中に、使用できないゲイン設定をした項目があります。この項目は無視されます。</value>
   </data>
   <data name="LblIncompatibleOffsetsInSequence" xml:space="preserve">
-    <value>Sequence cotains items using incompatible Offset settings. These will be ignored!</value>
+    <value>シーケンスの中に、使用できないオフセット設定をした項目があります。この項目は無視されます。</value>
   </data>
   <data name="LblFlatDeviceAddBinningMode" xml:space="preserve">
-    <value>Add Binning</value>
+    <value>ビニングを増加</value>
   </data>
   <data name="LblFlatDeviceAddGain" xml:space="preserve">
-    <value>Add Gain</value>
+    <value>ゲインを増加</value>
   </data>
   <data name="LblFlatDeviceAreYouSureBinning" xml:space="preserve">
-    <value>Are you sure you want to delete all values for binning</value>
+    <value>ビニングの値をすべて削除していいですか？</value>
   </data>
   <data name="LblFlatDeviceAreYouSureGain" xml:space="preserve">
-    <value>Are you sure you want to delete all values for gain</value>
+    <value>ゲインの値を、全て削除していいですか？</value>
   </data>
   <data name="LblFlatDeviceDeleteBinningMode" xml:space="preserve">
-    <value>Delete Binning</value>
+    <value>ビニングを削除</value>
   </data>
   <data name="LblFlatDeviceDeleteGain" xml:space="preserve">
-    <value>Delete Gain</value>
+    <value>ゲインを削除</value>
   </data>
   <data name="LblCouldNotReachTargetTemperature" xml:space="preserve">
-    <value>Camera is unable to reach the specified target temperature!</value>
+    <value>カメラは指定された目標温度に達することができません！</value>
   </data>
   <data name="LblWaitingToTurnCoolerOff" xml:space="preserve">
-    <value>Camera waiting to turn cooler off</value>
+    <value>冷却装置の電源切断待ち</value>
   </data>
   <data name="LblWarmCamBtnTooltip" xml:space="preserve">
-    <value>Warms the camera back to ambient temperature and turns the cooler off.
-A duration is optional. Most camera drivers already regulate the cooler power automatically and will only gradually increase the temperature.
-In case a longer duration is needed, a duration can be specified and the application will slowly raise the target temperature of the camera based on the given duration.</value>
+    <value>カメラを外気温まで昇温し冷却装置の電源を切ります。所要時間の設定は任意です。カメラドライバーのほとんどは、冷却パワーを自動的に調節できるようになっており、温度を少しずつ上昇させます。時間をさらに長くしたい場合だけ設定して下さい。プログラムは、指定された時間を掛けてカメラの温度をゆっくりと上げていきます。</value>
   </data>
   <data name="LblWaitForImageSaving" xml:space="preserve">
-    <value>Waiting for Image saving</value>
+    <value>画像の保存完了待ち</value>
   </data>
   <data name="LblHighGainMode" xml:space="preserve">
-    <value>High Gain Mode</value>
+    <value>ハイゲインモード</value>
   </data>
   <data name="LblHighGainModeTooltip" xml:space="preserve">
-    <value>Sets the camera to high gain mode. This gain mode has less read noise compared to low gain and it is advised for most cams to activate always, except when you want to use the lowest possible gain with the highest dynamic range.</value>
+    <value>カメラをハイゲインモードに設定します。 このモードは、ローゲインと比較して読み出しノイズが少なく、ほとんどのカメラで常に設定しておくことをお勧めします。ただし、ダイナミックレンジ最大にし、ゲインを最低にしたい場合を除きます。</value>
   </data>
 </root>
