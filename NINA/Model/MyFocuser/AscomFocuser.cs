@@ -303,6 +303,11 @@ namespace NINA.Model.MyFocuser {
                     _focuser = FocuserProvider.GetFocuser(Id);
                     Connected = true;
                     if (Connected) {
+                        if (!_focuser.Absolute) {
+                            Connected = false;
+                            throw new Exception(Locale.Loc.Instance["LblRelativeFocuserNotSupported"]);
+                        }
+
                         Initialize();
                         RaiseAllPropertiesChanged();
                     }

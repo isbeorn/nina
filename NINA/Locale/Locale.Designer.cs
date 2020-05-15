@@ -7477,6 +7477,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Focusers without the capability to use absolute positions are currently not supported.
+        /// </summary>
+        internal static string LblRelativeFocuserNotSupported {
+            get {
+                return ResourceManager.GetString("LblRelativeFocuserNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Release.
         /// </summary>
         internal static string LblRelease {
