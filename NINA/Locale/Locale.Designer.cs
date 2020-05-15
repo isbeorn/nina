@@ -1124,6 +1124,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to BIAS median value (in 16bit).
+        /// </summary>
+        internal static string LblBiasMedian {
+            get {
+                return ResourceManager.GetString("LblBiasMedian", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Binning.
         /// </summary>
         internal static string LblBinning {

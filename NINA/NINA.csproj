@@ -1855,12 +1855,6 @@
     <Content Include="External\x64\ToupTek\toupcam.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="External\x64\QHYCCD\qhyccd.exp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="External\x64\QHYCCD\qhyccd.lib">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="External\x64\Omegon\omegonprocam.lib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

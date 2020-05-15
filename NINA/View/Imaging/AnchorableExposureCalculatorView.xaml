@@ -134,7 +134,7 @@
                         Width="150"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{ns:Loc LblBiasMean}" />
+                        Text="{ns:Loc LblBiasMedian}" />
                     <Grid
                         Margin="0,0,0,0"
                         HorizontalAlignment="Stretch"
@@ -160,7 +160,7 @@
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
                             <TextBox.Text>
-                                <Binding Path="BiasMean" UpdateSourceTrigger="LostFocus">
+                                <Binding Path="BiasMedian" UpdateSourceTrigger="LostFocus">
                                     <Binding.ValidationRules>
                                         <rules:GreaterZeroRule />
                                     </Binding.ValidationRules>
