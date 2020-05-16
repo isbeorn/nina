@@ -33,8 +33,8 @@
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition Height="45" />
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
             </Grid.RowDefinitions>
             <view:AutoFocusChart />
 
@@ -46,14 +46,6 @@
                 CancelButtonImage="{StaticResource CancelSVG}"
                 CancelCommand="{Binding CancelAutoFocusCommand}"
                 Command="{Binding StartAutoFocusCommand}" />
-            <ninactrl:CancellableButton
-                Grid.Row="3"
-                Height="25"
-                Margin="10,2,2,0"
-                ButtonText="{ns:Loc LblMeasureFocuserBacklash}"
-                CancelButtonImage="{StaticResource CancelSVG}"
-                CancelCommand="{Binding CancelBacklashMeasurementCommand}"
-                Command="{Binding StartBacklashMeasurementCommand}" />
         </Grid>
     </ScrollViewer>
 </UserControl>

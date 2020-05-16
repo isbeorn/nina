@@ -120,17 +120,6 @@ namespace NINA.ViewModel {
                 (p) => { return focuserInfo?.Connected == true && cameraInfo?.Connected == true; }
             );
             CancelAutoFocusCommand = new RelayCommand(CancelAutoFocus);
-
-            StartBacklashMeasurementCommand = new AsyncCommand<bool>(
-                () =>
-                    Task.Run(
-                        async () => {
-                            return await StartBacklashMeasurement(CommandInitializization(), _autoFocusCancelToken.Token, new Progress<ApplicationStatus>(p => Status = p));
-                        }
-                    ),
-                (p) => { return focuserInfo?.Connected == true && cameraInfo?.Connected == true && profileService.ActiveProfile.FocuserSettings.BacklashCompensationModel == BacklashCompensationModel.ABSOLUTE; }
-            );
-            CancelBacklashMeasurementCommand = new RelayCommand(CancelAutoFocus);
         }
 
         private CancellationTokenSource _autoFocusCancelToken;
@@ -637,119 +626,6 @@ namespace NINA.ViewModel {
             return new MeasureAndError() { Measure = sumMeasure / exposuresPerFocusPoint, Stdev = Math.Sqrt(sumVariances / exposuresPerFocusPoint) };
         }
 
-        public enum Direction {
-            IN = 1,
-            OUT = -1
-        }
-
-        public async Task<bool> StartBacklashMeasurement(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            Logger.Trace("Starting Backlash Measurement");
-            int initialPosition = focuserInfo.Position;
-            int newInitialPosition = initialPosition;
-            LeftTrend = null;
-            RightTrend = null;
-
-            var startBacklashDiag = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblStartBacklashMeasurementConfirmation"], Locale.Loc.Instance["LblStartBacklashQuestion"], System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
-            if (startBacklashDiag == System.Windows.MessageBoxResult.Cancel) {
-                return false;
-            }
-
-            //Save previous backlash values
-            int oldBacklashIn = profileService.ActiveProfile.FocuserSettings.BacklashIn;
-            int oldBacklashOut = profileService.ActiveProfile.FocuserSettings.BacklashOut;
-            int backlashIN = 0;
-            int backlashOUT = 0;
-            //Save previous Autofocus method
-            AFMethodEnum oldMethod = profileService.ActiveProfile.FocuserSettings.AutoFocusMethod;
-
-            try {
-                //set previous backlash values to zero, so current backlash settings do not impair measurement
-                profileService.ActiveProfile.FocuserSettings.BacklashIn = profileService.ActiveProfile.FocuserSettings.BacklashOut = 0;
-                //Set method to STARHFR
-                profileService.ActiveProfile.FocuserSettings.AutoFocusMethod = AFMethodEnum.STARHFR;
-                await this.guiderMediator.StopGuiding(token);
-                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStartingINBacklashMeasurement"] });
-                backlashIN = await MeasureBacklash(filter, Direction.IN, token, progress);
-
-                //Getting back to initial position, including measured backlash
-                newInitialPosition = initialPosition - backlashIN;
-                _focusPosition = await focuserMediator.MoveFocuser(newInitialPosition);
-
-                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStartingOUTBacklashMeasurement"] });
-                backlashOUT = await MeasureBacklash(filter, Direction.OUT, token, progress);
-                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocusRestoringOriginalPosition"] });
-                var saveBacklashDiag = MyMessageBox.MyMessageBox.Show(String.Format(Locale.Loc.Instance["LblBacklashMeasurements"], backlashIN, backlashOUT), Locale.Loc.Instance["LblSaveBacklashQuestion"], System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
-                if (saveBacklashDiag == System.Windows.MessageBoxResult.OK) {
-                    //Set new backlash values
-                    profileService.ActiveProfile.FocuserSettings.BacklashIn = backlashIN;
-                    profileService.ActiveProfile.FocuserSettings.BacklashOut = backlashOUT;
-                } else {
-                    //Set back old backlash values
-                    profileService.ActiveProfile.FocuserSettings.BacklashIn = oldBacklashIn;
-                    profileService.ActiveProfile.FocuserSettings.BacklashOut = oldBacklashOut;
-                }
-            } catch (OperationCanceledException) {
-                FocusPoints.Clear();
-                PlotFocusPoints.Clear();
-            } catch (Exception e) {
-                Logger.Warning(e.Message);
-                Notification.ShowError(Locale.Loc.Instance["LblBacklashMeasurementException"]);
-            } finally {
-                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocusRestoringOriginalPosition"] });
-                _focusPosition = await focuserMediator.MoveFocuser(initialPosition);
-                progress.Report(new ApplicationStatus() { Status = string.Empty });
-                profileService.ActiveProfile.FocuserSettings.AutoFocusMethod = oldMethod;
-            }
-            return true;
-        }
-
-        public async Task<int> MeasureBacklash(FilterInfo filter, Direction direction, CancellationToken token, IProgress<ApplicationStatus> progress) {
-            FocusPoints.Clear();
-            PlotFocusPoints.Clear();
-            int stepSize = profileService.ActiveProfile.FocuserSettings.AutoFocusStepSize;
-            int offset = profileService.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps;
-            int backlash = 0;
-            var comparer = new FocusPointComparer();
-            //initial move far in or out of focus
-            _focusPosition = await focuserMediator.MoveFocuserRelative((int)Math.Ceiling(offset * stepSize * 2d * (int)direction));
-            token.ThrowIfCancellationRequested();
-            //get HFR at this point
-            double hfr0 = (await GetAverageMeasurement(filter, 3, token, progress)).Measure;
-            token.ThrowIfCancellationRequested();
-            FocusPoints.AddSorted(new ScatterErrorPoint(_focusPosition, hfr0, 0, 0), comparer);
-
-            int counter = 0;
-            double hfr1 = 0;
-            do {
-                //Move back one step
-                _focusPosition = await focuserMediator.MoveFocuserRelative((int)Math.Round(stepSize * (int)direction * -1d));
-                token.ThrowIfCancellationRequested();
-                //get HFR at this point
-                hfr1 = (await GetAverageMeasurement(filter, 3, token, progress)).Measure;
-                token.ThrowIfCancellationRequested();
-                FocusPoints.AddSorted(new ScatterErrorPoint(_focusPosition, hfr1, 0, 0), comparer);
-                counter++;
-            } while (Math.Abs((hfr0 - hfr1) / hfr1) < 0.03 && counter < 3); //Slope is almost zero, backlash not cleared yet
-
-            //Move back one more step
-            _focusPosition = await focuserMediator.MoveFocuserRelative((int)Math.Round(stepSize * (int)direction * -1d));
-            token.ThrowIfCancellationRequested();
-            //get HFR at this point
-            double hfr2 = (await GetAverageMeasurement(filter, 3, token, progress)).Measure;
-            token.ThrowIfCancellationRequested();
-            FocusPoints.AddSorted(new ScatterErrorPoint(_focusPosition, hfr2, 0, 0), comparer);
-
-            //This far from focus, hfr0, hfr1, and hfr2 should be on a line, let's get the slopes
-            double measuredSlope = Math.Abs((hfr0 - hfr1) / (stepSize * counter));
-            double idealSlope = Math.Abs((hfr1 - hfr2) / stepSize);
-
-            if (hfr1 != hfr2 && measuredSlope < idealSlope) {
-                backlash = (int)Math.Round((1 - measuredSlope / idealSlope) * stepSize * counter);
-            }
-
-            return backlash;
-        }
-
         public async Task<AutoFocusReport> StartAutoFocus(FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress) {
             AutoFocusReport report = null;
             Logger.Trace("Starting Autofocus");
@@ -1071,7 +947,5 @@ namespace NINA.ViewModel {
 
         public ICommand StartAutoFocusCommand { get; private set; }
         public ICommand CancelAutoFocusCommand { get; private set; }
-        public ICommand StartBacklashMeasurementCommand { get; private set; }
-        public ICommand CancelBacklashMeasurementCommand { get; private set; }
     }
 }
