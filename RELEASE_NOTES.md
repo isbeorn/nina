@@ -276,7 +276,6 @@ Thank you for your support!
 - A new focuser settle time parameter has been added, in case the focuser shifts the image when moving (SCT, lens belt focusing, etc.). This should help with auto-focus in particular.
 - Backlash can be compensated using two methods. Absolut and Overshoot. Absolut will add absolute backlash values to the movement while overshoot will overshoot the position by a larger amount and move backwards again.
 - Focuser backlash (in and out) can now be specified. The backlash will be applied to focuser movements depending on the method specified.
-- A new Measure Backlash tool has been added in the Auto-Focus view in the imaging tab. When launched, NINA will automatically measure focuser backlash IN and OUT.
 - Sequence Auto-Focus can now be triggered if measured HFR of any frame is X% worse than the first frame taken after the previous auto-focus routine.
 - More resilient autofocus:
   - Ability to automatically reattempt autofocus from scratch several times in case it failed
