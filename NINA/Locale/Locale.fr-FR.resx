@@ -427,7 +427,7 @@ L'erreur en Azimuth sera calculée et affichée à partir de ces deux positions<
     <value>BIAS valeur moy (16bit)</value>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
-    <value>BIAS median value (in 16bit)</value>
+    <value>Valeur médiane BIAS (en 16bit)</value>
   </data>
   <data name="LblBinning" xml:space="preserve">
     <value>Binning</value>
@@ -947,9 +947,9 @@ Voulez-vous toujours la fermer et perdre tous les changements?</value>
     <value>Méthode de Détection de Contraste</value>
   </data>
   <data name="LblCoolCamBtnTooltip" xml:space="preserve">
-    <value>Turns the cooler on and cools the camera to the given target temperature.
-A duration is optional. Most camera drivers already regulate the cooler power automatically and will only gradually decrease the temperature.
-In case a longer duration is needed, a duration can be specified and the application will slowly lower the target temperature of the camera based on the given duration.</value>
+    <value>Allume le refroidissement et refroidit la caméra à la température cible donnée.
+Une durée est optionnelle. La plupart des pilotes de caméra régulent déjà automatiquement la puissance du refroidisseur et ne diminuent que graduellement la température.
+Dans le cas où une durée plus longue est requise, une durée peut être spécifiée et l'application abaisse lentement la température cible de la caméra en fonction de la durée donnée.</value>
   </data>
   <data name="LblCoolerOn" xml:space="preserve">
     <value>Refroidissement</value>
@@ -2638,22 +2638,22 @@ HFR calculé: {2}</value>
     <value>Séquence</value>
   </data>
   <data name="LblSequenceCommandInfo" xml:space="preserve">
-    <value>Sequence end command '{0}'.</value>
+    <value>Commande de fin de séquence '{0}'.</value>
   </data>
   <data name="LblSequenceCommandSource" xml:space="preserve">
-    <value>Sequence end command</value>
+    <value>Commande de fin de séquence</value>
   </data>
   <data name="LblSequenceCommandAtCompletion" xml:space="preserve">
-    <value>'{0}' completed.</value>
+    <value>'{0}' terminé.</value>
   </data>
   <data name="LblSequenceCommandAtCompletionTitle" xml:space="preserve">
-    <value>Run command when sequence completes</value>
+    <value>Exécuter la commande à la fin de la séquence</value>
   </data>
   <data name="LblSequenceCommandAtCompletionTooltip" xml:space="preserve">
-    <value>Select command to run when sequence completes.</value>
+    <value>Sélectionnez la commande à exécuter à la fin de la séquence.</value>
   </data>
   <data name="LblSequenceCommandAtCompletionNotFound" xml:space="preserve">
-    <value>Sequence end command not found '{0}'</value>
+    <value>Commande de fin de séquence introuvable '{0}'</value>
   </data>
   <data name="LblSequenceDelay" xml:space="preserve">
     <value>Délai de Démarrage (sec)</value>
@@ -3592,41 +3592,44 @@ La méthode ne peut être changée que lorsque le moteur de mise au point est d�
     <value>La séquence contient des éléments utilisant des paramètres d'offset incompatibles. Ils seront ignorés !</value>
   </data>
   <data name="LblFlatDeviceAddBinningMode" xml:space="preserve">
-    <value>Add Binning</value>
+    <value>Ajouter un Binning</value>
   </data>
   <data name="LblFlatDeviceAddGain" xml:space="preserve">
-    <value>Add Gain</value>
+    <value>Ajouter un Gain</value>
   </data>
   <data name="LblFlatDeviceAreYouSureBinning" xml:space="preserve">
-    <value>Are you sure you want to delete all values for binning</value>
+    <value>Êtes-vous sûr de vouloir supprimer toutes les valeurs pour le binning</value>
   </data>
   <data name="LblFlatDeviceAreYouSureGain" xml:space="preserve">
-    <value>Are you sure you want to delete all values for gain</value>
+    <value>Êtes-vous sûr de vouloir supprimer toutes les valeurs pour le gain</value>
   </data>
   <data name="LblFlatDeviceDeleteBinningMode" xml:space="preserve">
-    <value>Delete Binning</value>
+    <value>Supprimer le Binning</value>
   </data>
   <data name="LblFlatDeviceDeleteGain" xml:space="preserve">
-    <value>Delete Gain</value>
+    <value>Supprimer le Gain</value>
   </data>
   <data name="LblCouldNotReachTargetTemperature" xml:space="preserve">
-    <value>Camera is unable to reach the specified target temperature!</value>
+    <value>La caméra ne peut pas atteindre la température cible spécifiée !</value>
   </data>
   <data name="LblWaitingToTurnCoolerOff" xml:space="preserve">
-    <value>Camera waiting to turn cooler off</value>
+    <value>Caméra en attente d'arrêt du refroidissement</value>
   </data>
   <data name="LblWarmCamBtnTooltip" xml:space="preserve">
-    <value>Warms the camera back to ambient temperature and turns the cooler off.
-A duration is optional. Most camera drivers already regulate the cooler power automatically and will only gradually increase the temperature.
-In case a longer duration is needed, a duration can be specified and the application will slowly raise the target temperature of the camera based on the given duration.</value>
+    <value>Réchauffe la caméra à la température ambiante et éteint le refroidissement.
+Une durée est optionnelle. La plupart des pilotes de caméra régulent déjà automatiquement la puissance du refroidissement et n'augmenteront que graduellement la température.
+Dans le cas où une durée plus longue est requise, une durée peut être spécifiée et l'application augmentera lentement la température cible de la caméra en fonction de la durée donnée.</value>
   </data>
   <data name="LblWaitForImageSaving" xml:space="preserve">
-    <value>Waiting for Image saving</value>
+    <value>En attente de sauvegarde de l'image</value>
   </data>
   <data name="LblHighGainMode" xml:space="preserve">
-    <value>High Gain Mode</value>
+    <value>Mode gain élevé</value>
   </data>
   <data name="LblHighGainModeTooltip" xml:space="preserve">
-    <value>Sets the camera to high gain mode. This gain mode has less read noise compared to low gain and it is advised for most cams to activate always, except when you want to use the lowest possible gain with the highest dynamic range.</value>
+    <value>Règle la caméra en mode gain élevé. Ce mode a moins de bruit de lecture que le faible gain et il est conseillé avec la plupart des caméras de toujours l'activer sauf lorsque vous voulez utiliser le gain le plus bas possible avec la plage dynamique la plus élevée.</value>
+  </data>
+  <data name="LblRelativeFocuserNotSupported" xml:space="preserve">
+    <value>Les focusers sans possibilité d'utiliser des positions absolues ne sont actuellement pas pris en charge</value>
   </data>
 </root>

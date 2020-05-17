@@ -427,7 +427,7 @@ Usando esos dos puntos el error azimutal actual sera calculado y desplegado</val
     <value>Media de BIAS (nativo)</value>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
-    <value>BIAS median value (in 16bit)</value>
+    <value>Valor de la mediana (median) del BIAS (en 16bit)</value>
   </data>
   <data name="LblBinning" xml:space="preserve">
     <value>Binning</value>
@@ -475,7 +475,7 @@ Dec: {1}</value>
     <value>Realce de Boton</value>
   </data>
   <data name="LblByteShuffling" xml:space="preserve">
-    <value>Byte Shuffling</value>
+    <value>Barajando bytes</value>
   </data>
   <data name="LblCache" xml:space="preserve">
     <value>Cache</value>
@@ -947,9 +947,9 @@ Compensar con las variaciones de temperatura ambiente</value>
     <value>Método detección de contrate</value>
   </data>
   <data name="LblCoolCamBtnTooltip" xml:space="preserve">
-    <value>Turns the cooler on and cools the camera to the given target temperature.
-A duration is optional. Most camera drivers already regulate the cooler power automatically and will only gradually decrease the temperature.
-In case a longer duration is needed, a duration can be specified and the application will slowly lower the target temperature of the camera based on the given duration.</value>
+    <value>Conecta el enfriador y refrigera la cámara hasta la temperatura elegida.
+El tiempo es opcional. La mayoría de los controladores de las cámaras ya regulan automáticamente la potencia del enfriador y reducirán gradualmente por sí mismos la temperatura.
+En caso de que se necesite más tiempo, se puede especificar esa duración y la aplicación reducirá lentamente a la temperatura indicada de la cámara basándose en esa duración dada.</value>
   </data>
   <data name="LblCoolerOn" xml:space="preserve">
     <value>Enfriador</value>
@@ -2638,22 +2638,22 @@ Calculado HFR: {2}
     <value>Secuencia</value>
   </data>
   <data name="LblSequenceCommandInfo" xml:space="preserve">
-    <value>Sequence end command '{0}'.</value>
+    <value>Comando final de secuencia '{0}'.</value>
   </data>
   <data name="LblSequenceCommandSource" xml:space="preserve">
-    <value>Sequence end command</value>
+    <value>Comando final de secuencia</value>
   </data>
   <data name="LblSequenceCommandAtCompletion" xml:space="preserve">
-    <value>'{0}' completed.</value>
+    <value>'{0}' completado.</value>
   </data>
   <data name="LblSequenceCommandAtCompletionTitle" xml:space="preserve">
-    <value>Run command when sequence completes</value>
+    <value>Ejecutar comando cuando se complete la secuencia</value>
   </data>
   <data name="LblSequenceCommandAtCompletionTooltip" xml:space="preserve">
-    <value>Select command to run when sequence completes.</value>
+    <value>Selecciona el comando a ejecutar cuando se complete la secuencia.</value>
   </data>
   <data name="LblSequenceCommandAtCompletionNotFound" xml:space="preserve">
-    <value>Sequence end command not found '{0}'</value>
+    <value>Comando final de secuencia no encontrado '{0}'</value>
   </data>
   <data name="LblSequenceDelay" xml:space="preserve">
     <value>Retraso de Inicio (segundos)</value>
@@ -3589,47 +3589,50 @@ Sobrepasar:
     <value>Mueve el rotador de campo a la posición de destino especificada</value>
   </data>
   <data name="LblIncompatibleGainsInSequence" xml:space="preserve">
-    <value>Sequence contains items using incompatible Gain settings. These will be ignored!</value>
+    <value>La secuencia contiene ítems usando ajustes de ganancia incompatibles. ¡No se tendrán en cuenta!</value>
   </data>
   <data name="LblIncompatibleOffsetsInSequence" xml:space="preserve">
-    <value>Sequence cotains items using incompatible Offset settings. These will be ignored!</value>
+    <value>La secuencia contiene ítems usando ajustes de Offset incompatibles. ¡No se tendrán en cuenta!</value>
   </data>
   <data name="LblFlatDeviceAddBinningMode" xml:space="preserve">
-    <value>Add Binning</value>
+    <value>Añadir Binning</value>
   </data>
   <data name="LblFlatDeviceAddGain" xml:space="preserve">
-    <value>Add Gain</value>
+    <value>Añadir ganancia</value>
   </data>
   <data name="LblFlatDeviceAreYouSureBinning" xml:space="preserve">
-    <value>Are you sure you want to delete all values for binning</value>
+    <value>¿Estás seguro de que desea eliminar todos los valores para el binning?</value>
   </data>
   <data name="LblFlatDeviceAreYouSureGain" xml:space="preserve">
-    <value>Are you sure you want to delete all values for gain</value>
+    <value>¿Estás seguro que deseas eliminar todos los valores de ganancia?</value>
   </data>
   <data name="LblFlatDeviceDeleteBinningMode" xml:space="preserve">
-    <value>Delete Binning</value>
+    <value>Eliminar Binning</value>
   </data>
   <data name="LblFlatDeviceDeleteGain" xml:space="preserve">
-    <value>Delete Gain</value>
+    <value>Eliminar Ganancia</value>
   </data>
   <data name="LblCouldNotReachTargetTemperature" xml:space="preserve">
-    <value>Camera is unable to reach the specified target temperature!</value>
+    <value>¡La cámara no puede alcanzar la temperatura especificada!</value>
   </data>
   <data name="LblWaitingToTurnCoolerOff" xml:space="preserve">
-    <value>Camera waiting to turn cooler off</value>
+    <value>Cámara esperando a que se apague el enfriador</value>
   </data>
   <data name="LblWarmCamBtnTooltip" xml:space="preserve">
-    <value>Warms the camera back to ambient temperature and turns the cooler off.
-A duration is optional. Most camera drivers already regulate the cooler power automatically and will only gradually increase the temperature.
-In case a longer duration is needed, a duration can be specified and the application will slowly raise the target temperature of the camera based on the given duration.</value>
+    <value>Deja la cámara a la temperatura ambiente y apaga el enfriador.
+El tiempo es opcional. La mayoría de los controladores de las cámaras ya regulan automáticamente la potencia del enfriador y solo aumentará gradualmente la temperatura.
+En caso de que se necesite una duración más larga, se puede especificar ese tiempo y la aplicación alcanzará progresivamente la temperatura deseada en la cámara basándose en la duración dada.</value>
   </data>
   <data name="LblWaitForImageSaving" xml:space="preserve">
-    <value>Waiting for Image saving</value>
+    <value>Esperando que se grabe la imagen</value>
   </data>
   <data name="LblHighGainMode" xml:space="preserve">
-    <value>High Gain Mode</value>
+    <value>Modo de alta ganancia</value>
   </data>
   <data name="LblHighGainModeTooltip" xml:space="preserve">
-    <value>Sets the camera to high gain mode. This gain mode has less read noise compared to low gain and it is advised for most cams to activate always, except when you want to use the lowest possible gain with the highest dynamic range.</value>
+    <value>Establece la cámara en modo de alta ganancia. Este modo de ganancia tiene menos ruido de lectura en comparación con bajas ganancias, y se recomienda que la mayoría de las cámaras lo activen siempre, excepto cuando quiera utilizar la ganancia más baja posible con el rango dinámico más alto.</value>
+  </data>
+  <data name="LblRelativeFocuserNotSupported" xml:space="preserve">
+    <value>Actualmente no están soportados los enfocadores que no tengan la capacidad de usar posiciones absolutas</value>
   </data>
 </root>

@@ -482,10 +482,10 @@ Dec: {1}</value>
     <value>Memoria</value>
   </data>
   <data name="LblCalculateBias" xml:space="preserve">
-    <value>Calculate Bias</value>
+    <value>Calcola bias</value>
   </data>
   <data name="LblCalculatedExposureTime" xml:space="preserve">
-    <value>Calculated Exposure Time</value>
+    <value>Tempo di esposizione calcolato</value>
   </data>
   <data name="LblCam" xml:space="preserve">
     <value>Camera</value>
@@ -552,10 +552,10 @@ Filtro: {3}</value>
     <value>Cattura immagine e lancia risoluzione astrometrica</value>
   </data>
   <data name="LblCaptureImageCovered" xml:space="preserve">
-    <value>Cover Sensor and Capture Image</value>
+    <value>Copri il sensore e cattura l'immagine</value>
   </data>
   <data name="LblCaptureImageUncovered" xml:space="preserve">
-    <value>Uncover Sensor and Capture Image</value>
+    <value>Scopri il sensore e cattura immagine</value>
   </data>
   <data name="LblCdC" xml:space="preserve">
     <value>Carte du Ciel</value>
@@ -1124,7 +1124,7 @@ Quando le linee non sono allineate significa che c'è un errore di allineamento 
     <value>La cartella per salvare le imamgini non ha permesso in scrittura!</value>
   </data>
   <data name="LblDisabled" xml:space="preserve">
-    <value>Disabled</value>
+    <value>Disabilitato</value>
   </data>
   <data name="LblDisableAFGuiding" xml:space="preserve">
     <value>Fuoco Automatico disabilita la guida</value>
@@ -3629,5 +3629,8 @@ In case a longer duration is needed, a duration can be specified and the applica
   </data>
   <data name="LblHighGainModeTooltip" xml:space="preserve">
     <value>Sets the camera to high gain mode. This gain mode has less read noise compared to low gain and it is advised for most cams to activate always, except when you want to use the lowest possible gain with the highest dynamic range.</value>
+  </data>
+  <data name="LblRelativeFocuserNotSupported" xml:space="preserve">
+    <value>Focusers without the capability to use absolute positions are currently not supported</value>
   </data>
 </root>

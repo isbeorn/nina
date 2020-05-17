@@ -2628,7 +2628,7 @@
     <value>シーケンス終了コマンド</value>
   </data>
   <data name="LblSequenceCommandAtCompletion" xml:space="preserve">
-    <value>'{0}' 完了</value>
+    <value>'{0}' 完了しました。</value>
   </data>
   <data name="LblSequenceCommandAtCompletionTitle" xml:space="preserve">
     <value>シーケンス完了時にコマンドを実行</value>
@@ -3609,5 +3609,8 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
   </data>
   <data name="LblHighGainModeTooltip" xml:space="preserve">
     <value>カメラをハイゲインモードに設定します。 このモードは、ローゲインと比較して読み出しノイズが少なく、ほとんどのカメラで常に設定しておくことをお勧めします。ただし、ダイナミックレンジ最大にし、ゲインを最低にしたい場合を除きます。</value>
+  </data>
+  <data name="LblRelativeFocuserNotSupported" xml:space="preserve">
+    <value>絶対位置の機能がないフォーカサーは現在サポートされていません</value>
   </data>
 </root>

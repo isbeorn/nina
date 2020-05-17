@@ -3631,4 +3631,7 @@ Falls eine längere Dauer benötigt wird, kann eine Dauer angegeben werden und d
   <data name="LblHighGainModeTooltip" xml:space="preserve">
     <value>Setzt die Kamera auf den High Gain-Modus. Dieser Verstärkungsmodus hat weniger Auslese-Rauschen im Vergleich zu niedrigem Gain und es wird empfohlen, dass es immer aktiviert wird, mit Ausnahme man möchte den geringstmöglichen Gain mit der höchsten Dynamic Range nutzen.</value>
   </data>
+  <data name="LblRelativeFocuserNotSupported" xml:space="preserve">
+    <value>Focusers without the capability to use absolute positions are currently not supported</value>
+  </data>
 </root>

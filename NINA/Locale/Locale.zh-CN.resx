@@ -427,7 +427,7 @@
     <value>偏置平均值(本地)</value>
   </data>
   <data name="LblBiasMedian" xml:space="preserve">
-    <value>BIAS median value (in 16bit)</value>
+    <value>偏置平均值(对齐至16bit)</value>
   </data>
   <data name="LblBinning" xml:space="preserve">
     <value>合并像素</value>
@@ -947,9 +947,9 @@
     <value>反差对焦模式</value>
   </data>
   <data name="LblCoolCamBtnTooltip" xml:space="preserve">
-    <value>Turns the cooler on and cools the camera to the given target temperature.
-A duration is optional. Most camera drivers already regulate the cooler power automatically and will only gradually decrease the temperature.
-In case a longer duration is needed, a duration can be specified and the application will slowly lower the target temperature of the camera based on the given duration.</value>
+    <value>打开制冷并将相机制冷到给定的目标温度。
+持续时间是可选的。 大多数相机的驱动已有自动调节预设，只会逐渐降低温度。
+如果需要更长的时间（以防玻璃碎裂或者结露）。 可以指定持续时间，NINA将根据给定的时间慢慢降低相机的目标温度。</value>
   </data>
   <data name="LblCoolerOn" xml:space="preserve">
     <value>制冷开启</value>
@@ -2638,22 +2638,22 @@ In case a longer duration is needed, a duration can be specified and the applica
     <value>序列</value>
   </data>
   <data name="LblSequenceCommandInfo" xml:space="preserve">
-    <value>Sequence end command '{0}'.</value>
+    <value>序列结束命令'{0}'。</value>
   </data>
   <data name="LblSequenceCommandSource" xml:space="preserve">
-    <value>Sequence end command</value>
+    <value>序列结束命令</value>
   </data>
   <data name="LblSequenceCommandAtCompletion" xml:space="preserve">
-    <value>'{0}' completed.</value>
+    <value>'{0}' 已完成。</value>
   </data>
   <data name="LblSequenceCommandAtCompletionTitle" xml:space="preserve">
-    <value>Run command when sequence completes</value>
+    <value>序列完成后运行命令</value>
   </data>
   <data name="LblSequenceCommandAtCompletionTooltip" xml:space="preserve">
-    <value>Select command to run when sequence completes.</value>
+    <value>选择在序列完成后运行的命令。</value>
   </data>
   <data name="LblSequenceCommandAtCompletionNotFound" xml:space="preserve">
-    <value>Sequence end command not found '{0}'</value>
+    <value>序列结束命令未找到 '{0}'</value>
   </data>
   <data name="LblSequenceDelay" xml:space="preserve">
     <value>延时开始(秒)</value>
@@ -3497,7 +3497,7 @@ In case a longer duration is needed, a duration can be specified and the applica
 默认设置会自动使用相机驱动程序提供的阵列。不适用于DSLR（单反）相机。</value>
   </data>
   <data name="LblCurrent" xml:space="preserve">
-    <value>Current</value>
+    <value>当前的</value>
   </data>
   <data name="LblRunningEndOfSequence" xml:space="preserve">
     <value>正在运行序列结束选项...</value>
@@ -3577,59 +3577,62 @@ In case a longer duration is needed, a duration can be specified and the applica
     <comment>Focuser Backlash Compensation Method by overshooting the position and moving back</comment>
   </data>
   <data name="LblFocuserMoveLargeTooltip" xml:space="preserve">
-    <value>Moves focuser by a large amount using five times the Autofocus Stepsize</value>
+    <value>使用自动对焦步长的五倍以大步移动电调</value>
   </data>
   <data name="LblFocuserMoveSmallTooltip" xml:space="preserve">
-    <value>Moves focuser by a small amount using half the Autofocus Stepsize </value>
+    <value>使用自动对焦步长的一半以小步移动电调 </value>
   </data>
   <data name="LblMoveFocuserTooltip" xml:space="preserve">
-    <value>Moves focuser to the specified target position</value>
+    <value>将调焦器移动到指定的目标位置</value>
   </data>
   <data name="LblMoveRotatorTooltip" xml:space="preserve">
-    <value>Moves rotator to the specified target position</value>
+    <value>将旋转器移动到指定的目标位置</value>
   </data>
   <data name="LblIncompatibleGainsInSequence" xml:space="preserve">
-    <value>Sequence contains items using incompatible Gain settings. These will be ignored!</value>
+    <value>序列中的部分项目使用了不兼容的增益设置。这些项目将被忽略！</value>
   </data>
   <data name="LblIncompatibleOffsetsInSequence" xml:space="preserve">
-    <value>Sequence cotains items using incompatible Offset settings. These will be ignored!</value>
+    <value>序列中的部分项目使用了不兼容的偏置设置。这些项目将被忽略！</value>
   </data>
   <data name="LblFlatDeviceAddBinningMode" xml:space="preserve">
-    <value>Add Binning</value>
+    <value>添加合并像素模式</value>
   </data>
   <data name="LblFlatDeviceAddGain" xml:space="preserve">
-    <value>Add Gain</value>
+    <value>添加增益</value>
   </data>
   <data name="LblFlatDeviceAreYouSureBinning" xml:space="preserve">
-    <value>Are you sure you want to delete all values for binning</value>
+    <value>您确定要删除的所有合并像素设置？</value>
   </data>
   <data name="LblFlatDeviceAreYouSureGain" xml:space="preserve">
-    <value>Are you sure you want to delete all values for gain</value>
+    <value>您确定要删除所有增益设置？</value>
   </data>
   <data name="LblFlatDeviceDeleteBinningMode" xml:space="preserve">
-    <value>Delete Binning</value>
+    <value>删除合并像素</value>
   </data>
   <data name="LblFlatDeviceDeleteGain" xml:space="preserve">
-    <value>Delete Gain</value>
+    <value>删除增益</value>
   </data>
   <data name="LblCouldNotReachTargetTemperature" xml:space="preserve">
-    <value>Camera is unable to reach the specified target temperature!</value>
+    <value>相机无法达到指定的温度！</value>
   </data>
   <data name="LblWaitingToTurnCoolerOff" xml:space="preserve">
-    <value>Camera waiting to turn cooler off</value>
+    <value>相机正在等待关闭制冷器</value>
   </data>
   <data name="LblWarmCamBtnTooltip" xml:space="preserve">
-    <value>Warms the camera back to ambient temperature and turns the cooler off.
-A duration is optional. Most camera drivers already regulate the cooler power automatically and will only gradually increase the temperature.
-In case a longer duration is needed, a duration can be specified and the application will slowly raise the target temperature of the camera based on the given duration.</value>
+    <value>加热相机使其回到环境温度，并关闭制冷。
+持续时间是可选的。 大多数相机的驱动已有自动调节预设，只会逐渐提高温度。
+如果需要更长的时间（以防玻璃碎裂或者结露）。 可以指定持续时间，NINA将根据给定的时间慢慢提升相机的目标温度。</value>
   </data>
   <data name="LblWaitForImageSaving" xml:space="preserve">
-    <value>Waiting for Image saving</value>
+    <value>等待图像保存</value>
   </data>
   <data name="LblHighGainMode" xml:space="preserve">
-    <value>High Gain Mode</value>
+    <value>高增益模式</value>
   </data>
   <data name="LblHighGainModeTooltip" xml:space="preserve">
-    <value>Sets the camera to high gain mode. This gain mode has less read noise compared to low gain and it is advised for most cams to activate always, except when you want to use the lowest possible gain with the highest dynamic range.</value>
+    <value>将相机设置为高增益模式。与低增益相比，这个模式的读出噪声更低。除非您想获最高的动态范围，否则不需要使用最低增益。</value>
+  </data>
+  <data name="LblRelativeFocuserNotSupported" xml:space="preserve">
+    <value>当前调焦器不支持使用“绝对位置”的对焦方式</value>
   </data>
 </root>
