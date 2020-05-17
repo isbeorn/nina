@@ -35,5 +35,7 @@ namespace NINA.Profile {
         StarSensitivityEnum StarSensitivity { get; set; }
         NoiseReductionEnum NoiseReduction { get; set; }
         string SharpCapSensorAnalysisFolder { get; set; }
+        bool DetectStars { get; set; }
+        bool AutoStretch { get; set; }
     }
 }

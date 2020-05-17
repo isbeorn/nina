@@ -45,6 +45,8 @@ namespace NINA.Profile {
             unlinkedStretch = true;
             starSensitivity = StarSensitivityEnum.Normal;
             noiseReduction = NoiseReductionEnum.None;
+            detectStars = false;
+            autoStretch = true;
         }
 
         private double autoStretchFactor;
@@ -186,6 +188,34 @@ namespace NINA.Profile {
             set {
                 if (sharpCapSensorAnalysisFolder != value) {
                     sharpCapSensorAnalysisFolder = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool detectStars;
+        [DataMember]
+        public bool DetectStars {
+            get {
+                return detectStars;
+            }
+            set {
+                if (detectStars != value) {
+                    detectStars = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool autoStretch;
+        [DataMember]
+        public bool AutoStretch {
+            get {
+                return autoStretch;
+            }
+            set {
+                if (autoStretch != value) {
+                    autoStretch = value;
                     RaisePropertyChanged();
                 }
             }

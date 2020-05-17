@@ -57,8 +57,8 @@ namespace NINA.ViewModel {
 
             this.telescopeMediator = telescopeMediator;
             this.applicationStatusMediator = applicationStatusMediator;
-            AutoStretch = true;
-            DetectStars = false;
+            AutoStretch = profileService.ActiveProfile.ImageSettings.AutoStretch;
+            DetectStars = profileService.ActiveProfile.ImageSettings.DetectStars;
             ShowCrossHair = false;
             ShowBahtinovAnalyzer = false;
             ShowSubSampler = false;
@@ -417,6 +417,7 @@ namespace NINA.ViewModel {
             }
             set {
                 _autoStretch = value;
+                profileService.ActiveProfile.ImageSettings.AutoStretch = value;
                 if (!_autoStretch && _detectStars) { _detectStars = false; RaisePropertyChanged(nameof(DetectStars)); }
                 RaisePropertyChanged();
             }
@@ -464,6 +465,7 @@ namespace NINA.ViewModel {
             }
             set {
                 _detectStars = value;
+                profileService.ActiveProfile.ImageSettings.DetectStars = value;
                 if (_detectStars) { _autoStretch = true; RaisePropertyChanged(nameof(AutoStretch)); }
                 RaisePropertyChanged();
             }
