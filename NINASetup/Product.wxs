@@ -726,13 +726,13 @@
   <Fragment>
     <ComponentGroup Id="External_x64_QHY_files" Directory="External_x64_QHY">
       <Component Win64="$(var.Win64)" Id="External_x64_QHY_ftd2xx.dll" Guid="E0901281-7521-4106-BA83-D347A113D2FF">
-        <File Id="External_x64_QHY_ftd2xx.dll" Name="ftd2xx.dll" Source="$(var.NINA_ProjectDir)External\x64\QHYCCD\ftd2xx.dll" />
+        <File DefaultVersion="65535.0.0.0" Id="External_x64_QHY_ftd2xx.dll" Name="ftd2xx.dll" Source="$(var.NINA_ProjectDir)External\x64\QHYCCD\ftd2xx.dll" />
       </Component>
       <Component Win64="$(var.Win64)" Id="External_x64_QHY_qhyccd.dll" Guid="FA219C9F-D76D-4699-A3CB-D5F6092C8B1F">
-        <File Id="External_x64_QHY_qhyccd.dll" Name="qhyccd.dll" Source="$(var.NINA_ProjectDir)External\x64\QHYCCD\qhyccd.dll" />
+        <File DefaultVersion="65535.0.0.0" Id="External_x64_QHY_qhyccd.dll" Name="qhyccd.dll" Source="$(var.NINA_ProjectDir)External\x64\QHYCCD\qhyccd.dll" />
       </Component>
       <Component Win64="$(var.Win64)" Id="External_x64_QHY_tbb.dll" Guid="8E94E826-4666-46D5-B955-321C32ABCE14">
-        <File Id="External_x64_QHY_tbb.dll" Name="tbb.dll" Source="$(var.NINA_ProjectDir)External\x64\QHYCCD\tbb.dll" />
+        <File DefaultVersion="65535.0.0.0" Id="External_x64_QHY_tbb.dll" Name="tbb.dll" Source="$(var.NINA_ProjectDir)External\x64\QHYCCD\tbb.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
@@ -1059,13 +1059,13 @@
   <Fragment>
     <ComponentGroup Id="External_x86_QHY_files" Directory="External_x86_QHY">
       <Component Win64="$(var.Win64)" Id="External_x86_QHY_ftd2xx.dll" Guid="F5709DC0-F98F-400E-8E79-CA06FC0ED6CF">
-        <File Id="External_x86_QHY_ftd2xx.dll" Name="ftd2xx.dll" Source="$(var.NINA_ProjectDir)External\x86\QHYCCD\ftd2xx.dll" />
+        <File DefaultVersion="65535.0.0.0" Id="External_x86_QHY_ftd2xx.dll" Name="ftd2xx.dll" Source="$(var.NINA_ProjectDir)External\x86\QHYCCD\ftd2xx.dll" />
       </Component>
       <Component Win64="$(var.Win64)" Id="External_x86_QHY_qhyccd.dll" Guid="E6E3178C-6F6B-4892-A4A8-EF5C5B91B8F9">
-        <File Id="External_x86_QHY_qhyccd.dll" Name="qhyccd.dll" Source="$(var.NINA_ProjectDir)External\x86\QHYCCD\qhyccd.dll" />
+        <File DefaultVersion="65535.0.0.0" Id="External_x86_QHY_qhyccd.dll" Name="qhyccd.dll" Source="$(var.NINA_ProjectDir)External\x86\QHYCCD\qhyccd.dll" />
       </Component>
       <Component Win64="$(var.Win64)" Id="External_x86_QHY_tbb.dll" Guid="8ACD316D-8318-48A2-AC3D-14AA56132D53">
-        <File Id="External_x86_QHY_tbb.dll" Name="tbb.dll" Source="$(var.NINA_ProjectDir)External\x86\QHYCCD\tbb.dll" />
+        <File DefaultVersion="65535.0.0.0" Id="External_x86_QHY_tbb.dll" Name="tbb.dll" Source="$(var.NINA_ProjectDir)External\x86\QHYCCD\tbb.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

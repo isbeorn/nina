@@ -153,20 +153,29 @@ namespace NINA.Model.MyCamera {
             _camera.ImageReady += Camera_ImageReady;
             _camera.CaptureComplete += _camera_CaptureComplete;
 
-            //Set to shoot in RAW
-            Logger.Debug("Setting compression to RAW");
-            var compression = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_CompressionLevel);
-            for (int i = 0; i < compression.Length; i++) {
-                var val = compression.GetEnumValueByIndex(i);
-                if (val.ToString() == "RAW") {
-                    compression.Index = i;
-                    _camera.SetEnum(eNkMAIDCapability.kNkMAIDCapability_CompressionLevel, compression);
-                    break;
+            GetCapabilities();
+
+            if (Capabilities.TryGetValue(eNkMAIDCapability.kNkMAIDCapability_CompressionLevel, out var compressionCapability)) {
+                if (compressionCapability.CanGet() && compressionCapability.CanSet()) {
+                    //Set to shoot in RAW
+                    Logger.Debug("Setting compression to RAW");
+                    var compression = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_CompressionLevel);
+                    for (int i = 0; i < compression.Length; i++) {
+                        var val = compression.GetEnumValueByIndex(i);
+                        if (val.ToString() == "RAW") {
+                            compression.Index = i;
+                            _camera.SetEnum(eNkMAIDCapability.kNkMAIDCapability_CompressionLevel, compression);
+                            break;
+                        }
+                    }
+                } else {
+                    Logger.Trace($"Cannot set compression level: CanGet {compressionCapability.CanGet()} - CanSet {compressionCapability.CanSet()}");
                 }
+            } else {
+                Logger.Trace("Compression Level capability not available");
             }
 
             GetShutterSpeeds();
-            GetCapabilities();
 
             /* Setting SaveMedia when supported, to save images via SDRAM and not to the internal memory card */
             if (Capabilities.ContainsKey(eNkMAIDCapability.kNkMAIDCapability_SaveMedia) && Capabilities[eNkMAIDCapability.kNkMAIDCapability_SaveMedia].CanSet()) {
