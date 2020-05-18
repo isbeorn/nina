@@ -252,6 +252,9 @@
     <Content Include="ImageAnalysis\TestData\ZWO_ASI1600MM_ProMONO16.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="ImageAnalysis\TestData\Atik 4120ex~RAW16.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

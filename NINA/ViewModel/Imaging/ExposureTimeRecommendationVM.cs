@@ -24,6 +24,8 @@ using System;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
+using System.Security.Permissions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -83,7 +85,7 @@ namespace NINA.ViewModel.Imaging {
             this._sharpCapSensorAnalysisData = ReadSensorAnalysisData(this._sharpCapSensorAnalysisReader, path);
             if (!this._sharpCapSensorAnalysisData.IsEmpty) {
                 SharpCapSensorNames.Add(this._sharpCapSensorAnalysisDisabledValue);
-                foreach (var key in this._sharpCapSensorAnalysisData.Keys) {
+                foreach (var key in this._sharpCapSensorAnalysisData.Keys.OrderBy(x => x)) {
                     SharpCapSensorNames.Add(key);
                 }
             }
@@ -164,7 +166,13 @@ namespace NINA.ViewModel.Imaging {
                 this.IsSharpCapSensorAnalysisEnabled = false;
             } else {
                 this.IsSharpCapSensorAnalysisEnabled = true;
-                this.OnGainUpdated(this.SnapGain);
+                if (this.SnapGain < 0) {
+                    // If gain isn't set yet, get the first gain value from the sensor analysis to initialize the UI
+                    var analysisData = this._sharpCapSensorAnalysisData[this._mySharpCapSensor];
+                    this.SnapGain = (int)analysisData.GainData[0].Gain;
+                } else {
+                    this.OnGainUpdated(this.SnapGain);
+                }
             }
         }
 
