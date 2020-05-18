@@ -1,4 +1,4 @@
-﻿using NINA.Model.MyCamera;
+using NINA.Model.MyCamera;
 using NINA.Profile;
 using System;
 

@@ -1,4 +1,4 @@
-﻿using NINA.Model.MyGuider;
+using NINA.Model.MyGuider;
 using System;
 using System.Collections.Generic;
 using System.Linq;

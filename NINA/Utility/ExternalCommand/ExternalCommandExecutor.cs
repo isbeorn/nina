@@ -1,22 +1,13 @@
-﻿#region "copyright"
+#region "copyright"
 
 /*
-    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com>
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
-    N.I.N.A. is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    N.I.N.A. is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with N.I.N.A..  If not, see <http://www.gnu.org/licenses/>.
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
 #endregion "copyright"
@@ -32,17 +23,17 @@ using NINA.Utility.Extensions;
 
 namespace NINA.Utility.ExternalCommand {
 
-    internal class ExternalCommandExecutor  {
+    internal class ExternalCommandExecutor {
         private IProgress<ApplicationStatus> progress;
 
-        public ExternalCommandExecutor(IProgress<ApplicationStatus> progress)  {
+        public ExternalCommandExecutor(IProgress<ApplicationStatus> progress) {
             this.progress = progress;
         }
 
         public async Task<bool> RunSequenceCompleteCommandTask(string sequenceCompleteCommand, CancellationToken ct) {
             if (!CommandExists(sequenceCompleteCommand)) {
-                    Logger.Error($"Command not found: {sequenceCompleteCommand}");
-                    return false;
+                Logger.Error($"Command not found: {sequenceCompleteCommand}");
+                return false;
             }
             try {
                 string executableLocation = GetComandFromString(sequenceCompleteCommand);
@@ -63,7 +54,7 @@ namespace NINA.Utility.ExternalCommand {
                         Logger.Info($"STDOUT: {e.Data}");
                     }
                 };
-                process.ErrorDataReceived += (object sender,  DataReceivedEventArgs e) => {
+                process.ErrorDataReceived += (object sender, DataReceivedEventArgs e) => {
                     if (!string.IsNullOrWhiteSpace(e.Data)) {
                         StatusUpdate(src, e.Data);
                         Logger.Error($"STDERR: {e.Data}");
@@ -78,7 +69,7 @@ namespace NINA.Utility.ExternalCommand {
                 process.BeginErrorReadLine();
                 await process.WaitForExitAsync(ct);
 
-                //there is currently no automatism to clear a message other than 
+                //there is currently no automatism to clear a message other than
                 //sending a status update with an empty status for the same source.
                 StatusUpdate(src, completeMsg);
                 await Task.Run(async () => {
@@ -108,18 +99,19 @@ namespace NINA.Utility.ExternalCommand {
             return false;
         }
 
-        public  static string GetComandFromString(string commandLine) {
+        public static string GetComandFromString(string commandLine) {
             //if you enclose the command (with spaces) in quotes, then you must remove them
             return @"" + ParseArguments(commandLine)[0].Replace("\"", "").Trim();
         }
 
         public static string GetArgumentsFromString(string commandLine) {
             string[] args = ParseArguments(commandLine);
-            if (args.Length>1){
-                return string.Join(" ", new List<string>(args).GetRange(1, args.Length-1).ToArray());
+            if (args.Length > 1) {
+                return string.Join(" ", new List<string>(args).GetRange(1, args.Length - 1).ToArray());
             }
             return null;
         }
+
         public static string[] ParseArguments(string commandLine) {
             char[] parmChars = commandLine.ToCharArray();
             bool inQuote = false;

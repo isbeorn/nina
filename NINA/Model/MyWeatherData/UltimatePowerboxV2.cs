@@ -1,4 +1,4 @@
-﻿using NINA.Locale;
+using NINA.Locale;
 using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.Notification;

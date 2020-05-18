@@ -1,4 +1,4 @@
-﻿using NINA.Model.ImageData;
+using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using System.Threading.Tasks;
 

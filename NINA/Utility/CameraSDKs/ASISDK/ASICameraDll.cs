@@ -1,4 +1,4 @@
-﻿using NINA.Utility;
+using NINA.Utility;
 using System;
 using System.Drawing;
 using System.IO;

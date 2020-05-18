@@ -1,4 +1,4 @@
-﻿using NINA.Utility.ExternalCommand;
+using NINA.Utility.ExternalCommand;
 using NUnit.Framework;
 using System.IO;
 

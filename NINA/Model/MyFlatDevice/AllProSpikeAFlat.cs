@@ -1,4 +1,4 @@
-﻿using NINA.Profile;
+using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.FlatDeviceSDKs.AllPro;
 using NINA.Utility.Notification;

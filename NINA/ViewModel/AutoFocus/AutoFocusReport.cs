@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using NINA.Utility.Enum;
 using System;
 using System.Collections.Generic;

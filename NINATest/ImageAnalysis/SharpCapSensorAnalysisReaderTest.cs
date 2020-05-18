@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using NINA.Utility.Astrometry;
 using NINA.Utility.ImageAnalysis;

@@ -1,4 +1,4 @@
-﻿using System.IO.Ports;
+using System.IO.Ports;
 using System.Windows.Controls;
 
 namespace NINA.View.Equipment {

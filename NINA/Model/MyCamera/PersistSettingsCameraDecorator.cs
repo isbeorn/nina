@@ -1,4 +1,4 @@
-﻿using NINA.Profile;
+using NINA.Profile;
 using NINA.Utility;
 using Nito.Mvvm;
 using System;

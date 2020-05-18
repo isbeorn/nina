@@ -1,4 +1,4 @@
-﻿using NINA.Model.MyGuider;
+using NINA.Model.MyGuider;
 using NINA.Utility;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Profile;

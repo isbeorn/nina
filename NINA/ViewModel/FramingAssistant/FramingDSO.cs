@@ -1,4 +1,4 @@
-﻿using NINA.Model;
+using NINA.Model;
 using NINA.Utility.Astrometry;
 using System.Drawing;
 using System.Linq;

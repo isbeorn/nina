@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using NINA.Utility.SerialCommunication;
 using NUnit.Framework;
 

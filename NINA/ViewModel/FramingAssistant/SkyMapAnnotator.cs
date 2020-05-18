@@ -1,4 +1,4 @@
-﻿using NINA.Database;
+using NINA.Database;
 using NINA.Model;
 using NINA.Model.MyTelescope;
 using NINA.Utility;

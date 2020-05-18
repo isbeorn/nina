@@ -1,4 +1,4 @@
-﻿using NINA.Locale;
+using NINA.Locale;
 using NINA.Model;
 using NINA.Model.MyCamera;
 using NINA.Model.MyFilterWheel;

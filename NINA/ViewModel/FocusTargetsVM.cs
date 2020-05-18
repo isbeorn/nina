@@ -1,4 +1,4 @@
-﻿using NINA.Model;
+using NINA.Model;
 using NINA.Model.MyTelescope;
 using NINA.Utility;
 using NINA.Utility.Mediator.Interfaces;

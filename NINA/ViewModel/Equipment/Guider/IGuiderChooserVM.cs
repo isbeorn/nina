@@ -1,4 +1,4 @@
-﻿using NINA.Model.MyGuider;
+using NINA.Model.MyGuider;
 using NINA.Utility;
 
 namespace NINA.ViewModel.Equipment.Guider {

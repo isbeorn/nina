@@ -1,4 +1,4 @@
-﻿using NINA.Utility.SerialCommunication;
+using NINA.Utility.SerialCommunication;
 using System.Collections.ObjectModel;
 
 namespace NINA.Utility.FlatDeviceSDKs.PegasusAstroSDK {

@@ -1,4 +1,4 @@
-﻿using NINA.Utility.SerialCommunication;
+using NINA.Utility.SerialCommunication;
 using NUnit.Framework;
 
 namespace NINATest.SerialCommunication {
