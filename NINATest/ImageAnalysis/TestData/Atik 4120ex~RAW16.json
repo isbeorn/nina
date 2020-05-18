@@ -1,0 +1,52 @@
+﻿{
+  "BitDepth": 16,
+  "IsAdditiveBinning": false,
+  "LinearityLimit": 0.608632863,
+  "CameraType": "Atik Cameras (Experimental)",
+  "IsMono": false,
+  "IsRaw": true,
+  "SensorName": "Atik 4120ex",
+  "ColourSpace": "RAW16",
+  "GainList": [
+    {
+      "OffsetInfo": [
+        {
+          "OffsetValue": 0,
+          "MeanADU": 518.6822,
+          "MedianADU": 512.8,
+          "SigmaADU": 83.67082
+        }
+      ],
+      "BlackLevelSigma": 44.5974,
+      "GainValue": 0.0,
+      "RelativeGain": 1.0,
+      "ReadNoise": 5.577064,
+      "EPerADU": 0.12505357
+    }
+  ],
+  "CameraSettings": {
+    "Frame Rate Limit": "Maximum",
+    "Preview Mode": "Off",
+    "Exposure": "0.0996449520617916",
+    "Cooler Power": "0",
+    "Target Temperature": "30.01",
+    "Actual Temperature": "22.44",
+    "Timestamp Frames": "Off",
+    "Debayer Preview": "On",
+    "Pan": "0",
+    "Tilt": "0",
+    "Output Format": "SER file (*.ser)",
+    "Binning": "1x1",
+    "Capture Area": "640x480",
+    "Colour Space": "RAW16",
+    "Banding Threshold": "35",
+    "Banding Suppression": "0",
+    "Apply Flat": "None",
+    "Subtract Dark": "None",
+    "Display Black Point": "0",
+    "Display MidTone Point": "0.5",
+    "Display White Point": "1"
+  },
+  "PreReadoutBinning": false,
+  "GainMeasurementOffset": 0.0
+}

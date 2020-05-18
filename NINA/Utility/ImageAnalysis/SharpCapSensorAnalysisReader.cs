@@ -148,9 +148,18 @@ namespace NINA.Utility.ImageAnalysis {
                 ++dataIndex;
             }
 
-            var m = (yData[dataIndex + 1] - yData[dataIndex]) / (xData[dataIndex + 1] - xData[dataIndex]);
-            var dx = gain - xData[dataIndex];
-            var estimatedValue = m * dx + yData[dataIndex];
+            var estimatedValue = 0.0;
+            if (xData.Length == 1 || gain < xData[dataIndex]) {
+                // Clamp min gain, or case where there is only a single gain value
+                estimatedValue = yData[dataIndex];
+            } else if (gain > xData[dataIndex + 1]) {
+                // Clamp max gain
+                estimatedValue = yData[dataIndex + 1];
+            } else {
+                var m = (yData[dataIndex + 1] - yData[dataIndex]) / (xData[dataIndex + 1] - xData[dataIndex]);
+                var dx = gain - xData[dataIndex];
+                estimatedValue = m * dx + yData[dataIndex];
+            }
             return new Estimate(gain: gain, estimatedValue: estimatedValue);
         }
 
