@@ -50,5 +50,7 @@ namespace NINA.Profile {
         short? ReadoutMode { get; set; }
         short? ReadoutModeForSnapImages { get; set; }
         short? ReadoutModeForNormalImages { get; set; }
+
+        bool QhyIncludeOverscan { get; set; }
     }
 }

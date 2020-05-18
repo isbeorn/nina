@@ -635,10 +635,10 @@ namespace NINA.Model.MyCamera {
                     _ = LibQHYCCD.GetQHYCCDEffectiveArea(CameraP, ref Info.EffectiveArea.StartX, ref Info.EffectiveArea.StartY, ref Info.EffectiveArea.SizeX, ref Info.EffectiveArea.SizeY);
                     Logger.Debug($"QHYCCD: Effective Area: StartX={Info.EffectiveArea.StartX}, StartY={Info.EffectiveArea.StartY}, SizeX={Info.EffectiveArea.SizeX}, SizeY={Info.EffectiveArea.SizeY}");
 
-                    StartPixelX = Info.EffectiveArea.StartX;
-                    StartPixelY = Info.EffectiveArea.StartY;
-                    CameraXSize = (int)Info.EffectiveArea.SizeX;
-                    CameraYSize = (int)Info.EffectiveArea.SizeY;
+                    _ = LibQHYCCD.GetQHYCCDOverScanArea(CameraP, ref Info.OverscanArea.StartX, ref Info.OverscanArea.StartY, ref Info.OverscanArea.SizeX, ref Info.OverscanArea.SizeY);
+                    Logger.Debug($"QHYCCD: Overscan Area: StartX={Info.OverscanArea.StartX}, StartY={Info.OverscanArea.StartY}, SizeX={Info.OverscanArea.SizeX}, SizeY={Info.OverscanArea.SizeY}");
+
+                    SetImageResolution();
 
                     /*
                      * Is this a color sensor or not?
@@ -1099,6 +1099,30 @@ namespace NINA.Model.MyCamera {
             LiveViewEnabled = false;
             ReconnectForLiveView();
             Logger.Debug("QHYCCD: Disabled live view");
+        }
+
+        public bool QhyIncludeOverscan {
+            get => profileService.ActiveProfile.CameraSettings.QhyIncludeOverscan;
+            set {
+                profileService.ActiveProfile.CameraSettings.QhyIncludeOverscan = value;
+                SetImageResolution();
+            }
+        }
+
+        private void SetImageResolution() {
+            if (QhyIncludeOverscan) {
+                StartPixelX = 0;
+                StartPixelY = 0;
+                CameraXSize = (int)Info.ImageX;
+                CameraYSize = (int)Info.ImageY;
+            } else {
+                StartPixelX = Info.EffectiveArea.StartX;
+                StartPixelY = Info.EffectiveArea.StartY;
+                CameraXSize = (int)Info.EffectiveArea.SizeX;
+                CameraYSize = (int)Info.EffectiveArea.SizeY;
+            }
+
+            Logger.Debug($"QHYCCD: Base sensor dimensions used: Overscan={QhyIncludeOverscan}, startx={StartPixelX}, starty={StartPixelY}, width={CameraXSize}, height={CameraYSize}");
         }
 
         private uint StartPixelX {

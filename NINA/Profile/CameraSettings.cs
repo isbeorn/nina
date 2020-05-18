@@ -45,6 +45,8 @@ namespace NINA.Profile {
             fliFloodDuration = 1;
             fliFlushCount = 2;
             fliEnableSnapshotFloodFlush = false;
+
+            qhyIncludeOverscan = false;
         }
 
         private string id;
@@ -436,6 +438,19 @@ namespace NINA.Profile {
             set {
                 if (readoutModeForNormalImages != value) {
                     readoutModeForNormalImages = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool qhyIncludeOverscan;
+
+        [DataMember]
+        public bool QhyIncludeOverscan {
+            get => qhyIncludeOverscan;
+            set {
+                if (qhyIncludeOverscan != value) {
+                    qhyIncludeOverscan = value;
                     RaisePropertyChanged();
                 }
             }

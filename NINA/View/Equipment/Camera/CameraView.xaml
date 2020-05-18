@@ -354,10 +354,29 @@
                                     </CheckBox>
                                 </DockPanel>
                             </DataTemplate>
+                            <DataTemplate x:Key="QhyCcd">
+                                <DockPanel Margin="0,0,0,6">
+                                    <TextBlock
+                                        MinWidth="100"
+                                        VerticalAlignment="Center"
+                                        Text="{ns:Loc LblQhyIncludeOverscan}" />
+                                    <CheckBox
+                                        Width="200"
+                                        HorizontalAlignment="Right"
+                                        IsChecked="{Binding QhyIncludeOverscan}">
+                                        <CheckBox.ToolTip>
+                                            <ToolTip ToolTipService.ShowOnDisabled="False">
+                                                <TextBlock Text="{ns:Loc LblQhyIncludeOverscanTooltip}" />
+                                            </ToolTip>
+                                        </CheckBox.ToolTip>
+                                    </CheckBox>
+                                </DockPanel>
+                            </DataTemplate>
                             <local:CameraTemplateSelector
                                 x:Key="ContentSelector"
                                 Default="{StaticResource Default}"
-                                Touptek="{StaticResource Touptek}" />
+                                Touptek="{StaticResource Touptek}"
+                                QhyCcd="{StaticResource QhyCcd}" />
                         </Grid.Resources>
                         <ContentControl
                             Content="{Binding}"
