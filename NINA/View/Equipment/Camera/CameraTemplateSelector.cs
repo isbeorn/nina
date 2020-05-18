@@ -13,11 +13,6 @@
 #endregion "copyright"
 
 using NINA.Model.MyCamera;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -26,10 +21,13 @@ namespace NINA.View.Equipment {
     internal class CameraTemplateSelector : DataTemplateSelector {
         public DataTemplate Default { get; set; }
         public DataTemplate Touptek { get; set; }
+        public DataTemplate QhyCcd { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container) {
             if (item is AltairCamera || item is OmegonCamera || item is ToupTekCamera) {
                 return Touptek;
+            } else if (item is QHYCamera) {
+                return QhyCcd;
             } else {
                 return Default;
             }

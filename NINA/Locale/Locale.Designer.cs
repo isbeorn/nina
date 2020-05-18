@@ -7243,6 +7243,24 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Include Overscan Area.
+        /// </summary>
+        internal static string LblQhyIncludeOverscan {
+            get {
+                return ResourceManager.GetString("LblQhyIncludeOverscan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setting to On will the include any optical black and overscan areas of the sensor in images.
+        /// </summary>
+        internal static string LblQhyIncludeOverscanTooltip {
+            get {
+                return ResourceManager.GetString("LblQhyIncludeOverscanTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to RA.
         /// </summary>
         internal static string LblRA {

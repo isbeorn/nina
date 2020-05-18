@@ -666,9 +666,14 @@ namespace QHYCCD {
             public QHYCCD_SENSOR_AREA CurImage;
 
             /// <summary>
-            /// The sensor's claimed Effective Area
+            /// The sensor's Effective Area dimensions
             /// </summary>
             public QHYCCD_SENSOR_AREA EffectiveArea;
+
+            /// <summary>
+            /// The sensor's Overscan Area dimensions
+            /// </summary>
+            public QHYCCD_SENSOR_AREA OverscanArea;
 
             /// <summary>
             /// Maximum shutter speed
@@ -731,11 +736,6 @@ namespace QHYCCD {
             /// Sensor offset can be set?
             /// </summary>
             public bool HasOffset;
-
-            /// <summary>
-            /// Sensor has an overscan area?
-            /// </summary>
-            public bool HasOverscan;
 
             /// <summary>
             /// Camera has mechanical shutter?
