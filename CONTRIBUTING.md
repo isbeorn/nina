@@ -139,6 +139,7 @@ This database will be automatically created by the EntityFramework based on the 
     * [CodeMaid](http://www.codemaid.net/): A code cleanup Utility
     * [XAML Styler](https://github.com/Xavalon/XamlStyler/) A XAML style formatter
     * [MarkdownEditor](https://github.com/madskristensen/MarkdownEditor) To edit Markdown and auto generate HTML files
+    * [License Header Manager](https://github.com/rubicon-oss/LicenseHeaderManager) for automatic insertion of the license into new files
 * Other external dependencies are automatically installed via nuget (except for some camera vendor DLLs)
 * (Optional) External Camera Vendor SDK DLLs have to be manually put inside the project to \NINA\External\ &lt;x64 and x32&gt;\
     * To get Canon and Nikon DLLs you have to register as a developer for canon and nikon separately on their websites
