@@ -577,7 +577,8 @@ namespace NINA.ViewModel {
                     annotateImage: profileService.ActiveProfile.ImageSettings.AnnotateImage,
                     sensitivity: profileService.ActiveProfile.ImageSettings.StarSensitivity,
                     noiseReduction: profileService.ActiveProfile.ImageSettings.NoiseReduction,
-                    cancelToken: cancelToken);
+                    cancelToken: cancelToken,
+                    progress: _progress);
             }
             _progress.Report(new ApplicationStatus() { Status = "" });
             return processedImage;
