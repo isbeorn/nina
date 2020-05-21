@@ -156,14 +156,14 @@
                                     VerticalAlignment="Center"
                                     Columns="2">
                                     <TextBlock Text="{ns:Loc LblCameraXSize}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding Cam.CameraXSize}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding Cam.CameraXSize, Converter={StaticResource IntNegativeOneToDoubleDashConverter}}" />
                                 </UniformGrid>
                                 <UniformGrid
                                     Margin="0,6,0,6"
                                     VerticalAlignment="Center"
                                     Columns="2">
                                     <TextBlock Text="{ns:Loc LblCameraYSize}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding Cam.CameraYSize}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding Cam.CameraYSize, Converter={StaticResource IntNegativeOneToDoubleDashConverter}}" />
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
@@ -210,14 +210,14 @@
                                     VerticalAlignment="Center"
                                     Columns="2">
                                     <TextBlock Text="{ns:Loc LblPixelSizeX}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding Cam.PixelSizeX}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding Cam.PixelSizeX, Converter={StaticResource NaNToDoubleDashConverter}}" />
                                 </UniformGrid>
                                 <UniformGrid
                                     Margin="0,6,0,6"
                                     VerticalAlignment="Center"
                                     Columns="2">
                                     <TextBlock Text="{ns:Loc LblPixelSizeY}" />
-                                    <TextBlock Margin="5,0,0,0" Text="{Binding Cam.PixelSizeY}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding Cam.PixelSizeY, Converter={StaticResource NaNToDoubleDashConverter}}" />
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
@@ -462,7 +462,7 @@
                             <Border
                                 BorderBrush="{StaticResource BorderBrush}"
                                 BorderThickness="0"
-                                Visibility="{Binding Cam.CanSetTemperature, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
+                                Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
                                 <UniformGrid Columns="2">
                                     <UniformGrid
                                         Margin="0,6,0,6"
@@ -472,15 +472,29 @@
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock
                                                 Margin="5,0,0,0"
-                                                Text="{Binding CameraInfo.Temperature, StringFormat=\{0:0.00\}}"
+                                                Text="{Binding CameraInfo.Temperature, StringFormat=\{0:0.00\}, Converter={StaticResource NaNToDoubleDashConverter}}"
                                                 Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
 
-                                            <TextBlock Text=" / " />
+                                            <TextBlock
+                                                Text=" / ">
+                                                <TextBlock.Visibility>
+                                                    <MultiBinding Converter="{StaticResource BooleanToVisibilityHiddenMultiConverter}">
+                                                        <Binding Path="CameraInfo.Connected" />
+                                                        <Binding Path="CameraInfo.CanSetTemperature" />
+                                                    </MultiBinding>
+                                                </TextBlock.Visibility>
+                                            </TextBlock>
                                             <TextBlock
                                                 MinWidth="20"
                                                 Margin="5,0,0,0"
-                                                Text="{Binding Cam.TemperatureSetPoint, StringFormat=\{0:0.00\}}"
-                                                Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                                Text="{Binding Cam.TemperatureSetPoint, StringFormat=\{0:0.00\}}">
+                                                <TextBlock.Visibility>
+                                                    <MultiBinding Converter="{StaticResource BooleanToVisibilityHiddenMultiConverter}">
+                                                        <Binding Path="CameraInfo.Connected" />
+                                                        <Binding Path="CameraInfo.CanSetTemperature" />
+                                                    </MultiBinding>
+                                                </TextBlock.Visibility>
+                                            </TextBlock>
                                         </StackPanel>
                                     </UniformGrid>
                                 </UniformGrid>

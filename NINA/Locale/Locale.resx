@@ -3623,4 +3623,10 @@ In case a longer duration is needed, a duration can be specified and the applica
   <data name="LblQhyIncludeOverscanTooltip" xml:space="preserve">
     <value>Setting to On will the include any optical black and overscan areas of the sensor in images</value>
   </data>
+  <data name="LblSeconds" xml:space="preserve">
+    <value>Seconds</value>
+  </data>
+  <data name="LblOecUnableToDetermine" xml:space="preserve">
+    <value>Unable to determine exposure time</value>
+  </data>
 </root>

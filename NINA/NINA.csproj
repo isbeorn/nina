@@ -480,10 +480,14 @@
     <Compile Include="Model\MySwitch\PegasusAstro\ContinuousSwitches.cs" />
     <Compile Include="Model\MySwitch\PegasusAstro\UltimatePowerBoxV2.cs" />
     <Compile Include="Utility\CameraSDKs\OmegonSDK\omegonprocam.cs" />
+    <Compile Include="Utility\Converters\BooleanToVisibilityHiddenMultiConverter.cs" />
     <Compile Include="Utility\Converters\CollectionContainsItemsToBooleanConverter.cs" />
     <Compile Include="Utility\Converters\DecDegreeConverter.cs" />
     <Compile Include="Utility\Converters\FilterWheelFilterConverter.cs" />
     <Compile Include="Utility\Converters\ImagePatternToTextConverter.cs" />
+    <Compile Include="Utility\Converters\IntNegativeOneToDoubleDashConverter.cs" />
+    <Compile Include="Utility\Converters\OptimalExposureCalculatorAnswerConverter.cs" />
+    <Compile Include="Utility\Converters\NaNToDoubleDashConverter.cs" />
     <Compile Include="Utility\Converters\NaNToVisibilityCollapsedConverter.cs" />
     <Compile Include="Utility\Enum\BacklashCompensationModel.cs" />
     <Compile Include="Utility\Enum\BayerPatternEnum.cs" />

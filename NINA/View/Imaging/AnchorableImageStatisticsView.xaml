@@ -1,5 +1,5 @@
 <!--
-    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -151,7 +151,7 @@
                                 Width="70"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Text="{Binding StarDetectionAnalysis.DetectedStars, StringFormat=\{0:#\}}" />
+                                Text="{Binding StarDetectionAnalysis.DetectedStars, StringFormat=\{0:0\}, Converter={StaticResource IntNegativeOneToDoubleDashConverter}}" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
@@ -162,7 +162,7 @@
                                 Width="70"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Text="{Binding StarDetectionAnalysis.HFR, StringFormat=\{0:0.00\}}" />
+                                Text="{Binding StarDetectionAnalysis.HFR, StringFormat=\{0:0.00\}, Converter={StaticResource NaNToDoubleDashConverter}}" />
                         </StackPanel>
                     </UniformGrid>
                     <StackPanel Orientation="Horizontal">

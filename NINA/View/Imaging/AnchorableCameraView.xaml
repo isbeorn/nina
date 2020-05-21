@@ -1,5 +1,5 @@
 <!--
-    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -102,18 +102,33 @@
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
-                            <TextBlock Text="{ns:Loc LblChipTempShort}" />
+                            <TextBlock
+                                Text="{ns:Loc LblChipTempShort}"
+                                Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock
                                     Margin="5,0,0,0"
-                                    Text="{Binding CameraInfo.Temperature, StringFormat=\{0:0.00\}}"
+                                    Text="{Binding CameraInfo.Temperature, StringFormat=\{0:0.00\}, Converter={StaticResource NaNToDoubleDashConverter}}"
                                     Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
-                                <TextBlock Text=" / " />
+                                <TextBlock Text=" / ">
+                                    <TextBlock.Visibility>
+                                        <MultiBinding Converter="{StaticResource BooleanToVisibilityHiddenMultiConverter}">
+                                            <Binding Path="CameraInfo.Connected" />
+                                            <Binding Path="CameraInfo.CanSetTemperature" />
+                                        </MultiBinding>
+                                    </TextBlock.Visibility>
+                                </TextBlock>
                                 <TextBlock
                                     MinWidth="20"
                                     Margin="5,0,0,0"
-                                    Text="{Binding Cam.TemperatureSetPoint, StringFormat=\{0:0.00\}}"
-                                    Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
+                                    Text="{Binding Cam.TemperatureSetPoint, StringFormat=\{0:0.00\}}">
+                                    <TextBlock.Visibility>
+                                        <MultiBinding Converter="{StaticResource BooleanToVisibilityHiddenMultiConverter}">
+                                            <Binding Path="CameraInfo.Connected" />
+                                            <Binding Path="CameraInfo.CanSetTemperature" />
+                                        </MultiBinding>
+                                    </TextBlock.Visibility>
+                                </TextBlock>
                             </StackPanel>
                         </UniformGrid>
                     </Border>

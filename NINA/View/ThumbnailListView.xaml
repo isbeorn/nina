@@ -1,5 +1,5 @@
 <!--
-    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -94,7 +94,7 @@
                                     Grid.Column="1"
                                     VerticalAlignment="Center"
                                     FontSize="12"
-                                    Text="{Binding HFR, StringFormat=\{0:0.00\}}" />
+                                    Text="{Binding HFR, StringFormat=\{0:0.00\}, Converter={StaticResource NaNToDoubleDashConverter}}" />
                                 <TextBlock
                                     Grid.Row="2"
                                     Grid.Column="0"
