@@ -20,7 +20,6 @@ using NINA.Utility.Notification;
 using NINA.Profile;
 using NINA.Utility.RawConverter;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -596,7 +595,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public IEnumerable ReadoutModes => new List<string> { "Default" };
+        public IList<string> ReadoutModes => new List<string> { "Default" };
 
         public short ReadoutMode {
             get => 0;

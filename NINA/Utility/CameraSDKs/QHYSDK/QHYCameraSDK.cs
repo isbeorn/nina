@@ -816,7 +816,7 @@ namespace QHYCCD {
             /// <summary>
             /// List of readout mode names
             /// </summary>
-            public List<string> ReadoutModes;
+            public IList<string> ReadoutModes;
 
             /// <summary>
             /// List of support bin modes

@@ -19,7 +19,6 @@ using NINA.Utility.Notification;
 using NINA.Profile;
 using FLI;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -423,8 +422,8 @@ namespace NINA.Model.MyCamera {
                 uint timeLeft = 0;
                 uint rv;
 
-                if (Connected && (value != ReadoutMode)) {
-                    string modeName = ReadoutModes.Cast<string>().ToArray()[value];
+                if (Connected && (value != ReadoutMode) && (value < ReadoutModes.Count)) {
+                    string modeName = ReadoutModes[value];
 
                     Logger.Debug($"FLI: ReadoutMode: Setting readout mode to {value} ({modeName})");
 
@@ -486,9 +485,9 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public IEnumerable ReadoutModes {
+        public IList<string> ReadoutModes {
             get => Info.ReadoutModes;
-            set => Info.ReadoutModes = (List<string>)value;
+            set => Info.ReadoutModes = value;
         }
 
         public string SensorName => string.Empty;

@@ -204,7 +204,7 @@ namespace NINA.Model.MyCamera {
 
         public double ElectronsPerADU => this.Camera.ElectronsPerADU;
 
-        public IEnumerable ReadoutModes => this.Camera.ReadoutModes;
+        public IList<string> ReadoutModes => this.Camera.ReadoutModes;
 
         public short ReadoutMode {
             get => this.Camera.ReadoutMode;

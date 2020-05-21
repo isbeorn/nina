@@ -567,7 +567,7 @@ namespace FLI {
             /// <summary>
             /// List of readout mode names
             /// </summary>
-            public List<string> ReadoutModes;
+            public IList<string> ReadoutModes;
 
             /// <summary>
             /// Index of readout mode for sequences

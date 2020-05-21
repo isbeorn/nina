@@ -18,7 +18,6 @@ using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.Notification;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -394,7 +393,7 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public IEnumerable ReadoutModes => new List<string> { "Default" };
+        public IList<string> ReadoutModes => new List<string> { "Default" };
 
         public short ReadoutMode {
             get => 0;

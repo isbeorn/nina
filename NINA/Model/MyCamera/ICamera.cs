@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -13,7 +13,6 @@
 #endregion "copyright"
 
 using NINA.Utility;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -68,7 +67,7 @@ namespace NINA.Model.MyCamera {
         int GainMin { get; }
         int Gain { get; set; }
         double ElectronsPerADU { get; }
-        IEnumerable ReadoutModes { get; }
+        IList<string> ReadoutModes { get; }
         short ReadoutMode { get; set; }
         short ReadoutModeForSnapImages { get; set; }
         short ReadoutModeForNormalImages { get; set; }

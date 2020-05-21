@@ -19,7 +19,6 @@ using NINA.Utility.Notification;
 using NINA.Profile;
 using QHYCCD;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -387,7 +386,7 @@ namespace NINA.Model.MyCamera {
                         return -1;
                     }
 
-                    Logger.Trace($"QHYCCD: Current readout mode: {mode} ({ReadoutModes.Cast<string>().ToArray()[mode]})");
+                    Logger.Trace($"QHYCCD: Current readout mode: {mode} ({ReadoutModes[(int)mode]})");
 
                     return (short)mode;
                 } else {
@@ -397,8 +396,8 @@ namespace NINA.Model.MyCamera {
             set {
                 uint rv;
 
-                if (Connected && (value != ReadoutMode)) {
-                    string modeName = ReadoutModes.Cast<string>().ToArray()[value];
+                if (Connected && (value != ReadoutMode) && (value < ReadoutModes.Count)) {
+                    string modeName = ReadoutModes[value];
                     Logger.Debug($"QHYCCD: ReadoutMode: Setting readout mode to {value} ({modeName})");
 
                     if ((rv = LibQHYCCD.SetQHYCCDReadMode(CameraP, (uint)value)) != LibQHYCCD.QHYCCD_SUCCESS) {
@@ -408,9 +407,9 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public IEnumerable ReadoutModes {
+        public IList<string> ReadoutModes {
             get => Info.ReadoutModes;
-            set => Info.ReadoutModes = (List<string>)value;
+            set => Info.ReadoutModes = value;
         }
 
         public string SensorName => string.Empty;

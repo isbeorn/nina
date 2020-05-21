@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -15,18 +15,18 @@
 using ASCOM;
 using ASCOM.DeviceInterface;
 using ASCOM.DriverAccess;
+using NINA.Model.ImageData;
+using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.Notification;
-using NINA.Profile;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using NINA.Model.ImageData;
-using System.Linq;
 
 namespace NINA.Model.MyCamera {
 
@@ -583,13 +583,22 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public IEnumerable ReadoutModes {
+        public IList<string> ReadoutModes {
             get {
-                if (!CanFastReadout) {
-                    return ReadoutModesArrayList;
+                IList<string> readoutModes = new List<string>();
+
+                if (!CanFastReadout && ReadoutModesArrayList.Count > 1) {
+                    foreach (string mode in ReadoutModesArrayList) {
+                        readoutModes.Add(mode);
+                    }
+                } else if (CanFastReadout) {
+                    readoutModes.Add("Default");
+                    readoutModes.Add("Fast Readout");
+                } else {
+                    readoutModes.Add("Default");
                 }
 
-                return new List<string>() { "Default", "Fast Readout" };
+                return readoutModes;
             }
         }
 
@@ -908,13 +917,15 @@ namespace NINA.Model.MyCamera {
                 }
             }
             set {
-                try {
-                    _camera.ReadoutMode = value;
-                } catch (InvalidValueException ex) {
-                    Logger.Error(ex);
-                    Notification.ShowError(ex.Message);
-                } catch (PropertyNotImplementedException) {
-                    ASCOMInteraction.LogComplianceIssue($"{nameof(ReadoutMode)} SET");
+                if (Connected && (value != ReadoutMode) && (value < ReadoutModes.Count)) {
+                    try {
+                        _camera.ReadoutMode = value;
+                    } catch (InvalidValueException ex) {
+                        Logger.Error(ex);
+                        Notification.ShowError(ex.Message);
+                    } catch (PropertyNotImplementedException) {
+                        ASCOMInteraction.LogComplianceIssue($"{nameof(ReadoutMode)} SET");
+                    }
                 }
             }
         }

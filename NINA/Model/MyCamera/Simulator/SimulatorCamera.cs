@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -17,7 +17,6 @@ using NINA.Profile;
 using NINA.Utility.RawConverter;
 using NINA.Utility.WindowService;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -414,11 +413,7 @@ namespace NINA.Model.MyCamera.Simulator {
             }
         }
 
-        public IEnumerable ReadoutModes {
-            get {
-                return new List<string>() { "Default" };
-            }
-        }
+        public IList<string> ReadoutModes => new List<string> { "Default" };
 
         public short ReadoutMode {
             get => 0;
