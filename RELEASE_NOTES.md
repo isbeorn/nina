@@ -16,7 +16,7 @@
 - Native support for the line of veTEC and veLOX cameras from Omegon
 
 #### Native support for QHY integrated and CFW filter wheels
-- The integrated filter wheels that are in A-series cameras (QHY695A, QHY16200A, etc) or are a CFW1/2/3 that is connected to a monochrome camera using the 4-pin cable, are now natively supported
+- The integrated filter wheels that are in A-series cameras (QHY695A, QHY16200A, etc.) or are a CFW1/2/3 that is connected to a monochrome camera using the 4-pin cable, are now natively supported
 - This allows the native QHY camera driver to be used with these cameras and filter wheel configurations.
 
 #### Lacerta MGEN-2 Autoguider integration
@@ -73,12 +73,12 @@
 - In the **Equipment > Camera** window, the camera cooling is now activated only by using the Snowflake button, and what was the Cooler On/Off control now only reflects current state of the camera's cooler
 - UI for temperature control has been split into cooling and warming sections. To cool the camera the user can specify a temperature and an optional duration, while for warming only an optional duration is required
 - Clicking on warming or cooling without specifying a duration will show the cooling/warming progress based on target temperature and current camera temperature
-- The current [Earth Rotation Parameter](https://www.iers.org/IERS/EN/Science/EarthRotation/EarthRotation.html) data tables are now automatically dowloaded from the IERS for use in various calculations. The check for new data tables happens at application start and if an internet connection exists
+- The current [Earth Rotation Parameter](https://www.iers.org/IERS/EN/Science/EarthRotation/EarthRotation.html) data tables are now automatically downloaded from the IERS for use in various calculations. The check for new data tables happens at application start and if an internet connection exists
 - An occasional miscalculation of the moon's current phase has been corrected
 - The object altitude chart in Sequence and Sky Atlas now renders tick marks in half-hour increments instead of some random increment
 - Added an empty entry in the Constellation filter in Sky Atlas to allow for its deselection
-- Cleanups of the status text in the status bar at the bottom of the main window
-- Various speling and Grammar-fixes throughout the application
+- Clean-ups of the status text in the status bar at the bottom of the main window
+- Various spelling and grammar fixes throughout the application
 - Added or clarified several missing tool tips
 
 ### Auto-focus system
@@ -101,7 +101,7 @@
 - Meridian Flip now has an option to trigger an auto-focus operation after a meridian flip while a sequence is running
 - Backlash compensation will no longer be applied more than once if focuser movement is canceled during focuser settle time
 - An auto-focus operation will not be performed if it might interfere with a pending meridian flip
-- All auto-focus operations and thier data points are now logged to their own [JSON](https://www.json.org/)-formatted file located in `%LOCALAPPDATA%\NINA\AutoFocus`. This allows one to retrace what was measured at a later time
+- All auto-focus operations and their data points are now logged to their own [JSON](https://www.json.org/)-formatted file located in `%LOCALAPPDATA%\NINA\AutoFocus`. This allows one to retrace what was measured at a later time
 
 ### Sequencer
 - Parameters in rows that are added to a sequence will now default to the parameters specified in the row above it
@@ -168,7 +168,7 @@
 - QHY native camera driver now supports selecting readout modes if the camera offers any
 - QHY native camera driver now optimizes image file size based on the actual image dimensions, resulting in slightly smaller image file sizes
 - Binned exposures now finish on QHY cameras that have overscan areas
-- ZWO cameras now properly handle odd bin dimensions (eg; 3x3)
+- ZWO cameras now properly handle odd bin dimensions (e.g. 3x3)
 - Added a bit scaling option under **Options > Equipment > Camera > Advanced Settings**, intended for users of Altair Astro, Omegon, and ToupTek cameras, to bit-shift the raw sub-16 bit data camera data that N.I.N.A. receives to 16 bits in order to improve file compatibility with other capture software
 - FreeImage library upgraded to 3.18 for improved DSLR raw file display
 

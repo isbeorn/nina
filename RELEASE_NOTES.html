@@ -40,7 +40,7 @@
 </ul>
 <h4 id="native-support-for-qhy-integrated-and-cfw-filter-wheels">Native support for QHY integrated and CFW filter wheels</h4>
 <ul>
-<li>The integrated filter wheels that are in A-series cameras (QHY695A, QHY16200A, etc) or are a CFW1/2/3 that is connected to a monochrome camera using the 4-pin cable, are now natively supported</li>
+<li>The integrated filter wheels that are in A-series cameras (QHY695A, QHY16200A, etc.) or are a CFW1/2/3 that is connected to a monochrome camera using the 4-pin cable, are now natively supported</li>
 <li>This allows the native QHY camera driver to be used with these cameras and filter wheel configurations.</li>
 </ul>
 <h4 id="lacerta-mgen-2-autoguider-integration">Lacerta MGEN-2 Autoguider integration</h4>
@@ -104,12 +104,12 @@
 <li>In the <strong>Equipment &gt; Camera</strong> window, the camera cooling is now activated only by using the Snowflake button, and what was the Cooler On/Off control now only reflects current state of the camera's cooler</li>
 <li>UI for temperature control has been split into cooling and warming sections. To cool the camera the user can specify a temperature and an optional duration, while for warming only an optional duration is required</li>
 <li>Clicking on warming or cooling without specifying a duration will show the cooling/warming progress based on target temperature and current camera temperature</li>
-<li>The current <a href="https://www.iers.org/IERS/EN/Science/EarthRotation/EarthRotation.html">Earth Rotation Parameter</a> data tables are now automatically dowloaded from the IERS for use in various calculations. The check for new data tables happens at application start and if an internet connection exists</li>
+<li>The current <a href="https://www.iers.org/IERS/EN/Science/EarthRotation/EarthRotation.html">Earth Rotation Parameter</a> data tables are now automatically downloaded from the IERS for use in various calculations. The check for new data tables happens at application start and if an internet connection exists</li>
 <li>An occasional miscalculation of the moon's current phase has been corrected</li>
 <li>The object altitude chart in Sequence and Sky Atlas now renders tick marks in half-hour increments instead of some random increment</li>
 <li>Added an empty entry in the Constellation filter in Sky Atlas to allow for its deselection</li>
-<li>Cleanups of the status text in the status bar at the bottom of the main window</li>
-<li>Various speling and Grammar-fixes throughout the application</li>
+<li>Clean-ups of the status text in the status bar at the bottom of the main window</li>
+<li>Various spelling and grammar fixes throughout the application</li>
 <li>Added or clarified several missing tool tips</li>
 </ul>
 <h3 id="auto-focus-system">Auto-focus system</h3>
@@ -139,7 +139,7 @@
 <li>Meridian Flip now has an option to trigger an auto-focus operation after a meridian flip while a sequence is running</li>
 <li>Backlash compensation will no longer be applied more than once if focuser movement is canceled during focuser settle time</li>
 <li>An auto-focus operation will not be performed if it might interfere with a pending meridian flip</li>
-<li>All auto-focus operations and thier data points are now logged to their own <a href="https://www.json.org/">JSON</a>-formatted file located in <code>%LOCALAPPDATA%\NINA\AutoFocus</code>. This allows one to retrace what was measured at a later time</li>
+<li>All auto-focus operations and their data points are now logged to their own <a href="https://www.json.org/">JSON</a>-formatted file located in <code>%LOCALAPPDATA%\NINA\AutoFocus</code>. This allows one to retrace what was measured at a later time</li>
 </ul>
 <h3 id="sequencer">Sequencer</h3>
 <ul>
@@ -207,11 +207,11 @@
 <li>Canon camera support has been improved and many common errors have been fixed</li>
 <li>Atik cameras that have mechanical shutters will now close those shutters when taking BIAS, DARK, or DARKFLAT images</li>
 <li>FLI cameras no longer sit idle for the length of the exposure time prior to actually initiating the exposure</li>
-<li>QHY native camera driver now retrieves only the non-overscan area of the sensor</li>
-<li>QHY native camera driver now supports selecting a readout mode if the camera offers any</li>
-<li>QHY native camera driver now optimizes image file size based on the actual image dimensions used, resulting in slightly smaller image file sizes</li>
+<li>QHY native camera driver now retrieves only the non-overscan area (the &quot;effective area&quot;) of the sensor by default. A Camera option now exists to include the overscan area, if desired</li>
+<li>QHY native camera driver now supports selecting readout modes if the camera offers any</li>
+<li>QHY native camera driver now optimizes image file size based on the actual image dimensions, resulting in slightly smaller image file sizes</li>
 <li>Binned exposures now finish on QHY cameras that have overscan areas</li>
-<li>ZWO cameras now properly handle odd bin dimensions (eg; 3x3)</li>
+<li>ZWO cameras now properly handle odd bin dimensions (e.g. 3x3)</li>
 <li>Added a bit scaling option under <strong>Options &gt; Equipment &gt; Camera &gt; Advanced Settings</strong>, intended for users of Altair Astro, Omegon, and ToupTek cameras, to bit-shift the raw sub-16 bit data camera data that N.I.N.A. receives to 16 bits in order to improve file compatibility with other capture software</li>
 <li>FreeImage library upgraded to 3.18 for improved DSLR raw file display</li>
 </ul>
