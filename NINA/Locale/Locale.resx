@@ -3657,4 +3657,7 @@ In case a longer duration is needed, a duration can be specified and the applica
   <data name="LblThirdPartyLicenses" xml:space="preserve">
     <value>Third Party Licenses</value>
   </data>
+  <data name="LblASCOMPlatformOutdated" xml:space="preserve">
+    <value>ASCOM Platform Version is outdated. Please update to the latest ASCOM platform version. Otherwise the application might not be able to connect to all ASCOM devices.</value>
+  </data>
 </root>

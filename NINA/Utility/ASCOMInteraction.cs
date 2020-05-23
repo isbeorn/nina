@@ -9,7 +9,7 @@
 */
 
 /*
- * Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+ * Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
  * Copyright 2019 Dale Ghent <daleg@elemental.org>
  */
 
@@ -139,6 +139,12 @@ namespace NINA.Utility {
         public static string GetVersion() {
             using (var util = new ASCOM.Utilities.Util()) {
                 return $"Version {util.PlatformVersion}";
+            }
+        }
+
+        public static Version GetPlatformVersion() {
+            using (var util = new ASCOM.Utilities.Util()) {
+                return new Version(util.MajorVersion, util.MinorVersion);
             }
         }
 

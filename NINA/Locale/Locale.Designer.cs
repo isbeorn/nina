@@ -463,6 +463,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ASCOM Platform Version is outdated. Please update to the latest ASCOM platform version. Otherwise the application might not be able to connect to all ASCOM devices..
+        /// </summary>
+        internal static string LblASCOMPlatformOutdated {
+            get {
+                return ResourceManager.GetString("LblASCOMPlatformOutdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error retrieving image data from camera!.
         /// </summary>
         internal static string LblASIImageDownloadError {

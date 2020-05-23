@@ -9,7 +9,7 @@
 */
 
 /*
- * Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+ * Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
  * Copyright 2019 Dale Ghent <daleg@elemental.org>
  */
 
@@ -75,6 +75,7 @@ namespace NINA.ViewModel {
             CheckProfileCommand = new RelayCommand(LoadProfile);
             CheckUpdateCommand = new AsyncCommand<bool>(() => CheckUpdate());
             OpenManualCommand = new RelayCommand(OpenManual);
+            CheckASCOMPlatformVersionCommand = new RelayCommand(CheckASCOMPlatformVersion);
             ConnectAllDevicesCommand = new AsyncCommand<bool>(async () => {
                 var diag = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblReconnectAll"], "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
                 if (diag == MessageBoxResult.OK) {
@@ -107,6 +108,16 @@ namespace NINA.ViewModel {
             OptionsVM.PropertyChanged += OptionsVM_PropertyChanged;
 
             profileService.ProfileChanged += ProfileService_ProfileChanged;
+        }
+
+        private void CheckASCOMPlatformVersion(object obj) {
+            try {
+                var version = ASCOMInteraction.GetPlatformVersion();
+                if ((version.Major < 6) || (version.Major == 6 && version.Minor < 4)) {
+                    Notification.ShowWarning(Locale.Loc.Instance["LblASCOMPlatformOutdated"]);
+                }
+            } catch (Exception) {
+            }
         }
 
         public IProfile ActiveProfile {
@@ -668,6 +679,7 @@ namespace NINA.ViewModel {
         public ICommand ClosingCommand { get; private set; }
         public ICommand ConnectAllDevicesCommand { get; private set; }
         public ICommand DisconnectAllDevicesCommand { get; private set; }
+        public ICommand CheckASCOMPlatformVersionCommand { get; private set; }
     }
 
     public enum ApplicationTab {
