@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -36,6 +36,7 @@ namespace NINATest.Focuser.ASCOM {
             _mockFocuserProvider = new Mock<IAscomFocuserProvider>();
             _mockFocuser = new Mock<IFocuserV3>();
             _mockFocuser.SetupProperty(m => m.Connected, false);
+            _mockFocuser.Setup(m => m.Absolute).Returns(true);
             _mockFocuserProvider.Setup(m => m.GetFocuser(It.IsAny<string>())).Returns(_mockFocuser.Object);
             _sut = new AscomFocuser(ID, NAME) { FocuserProvider = _mockFocuserProvider.Object };
             var result = await _sut.Connect(new CancellationToken());

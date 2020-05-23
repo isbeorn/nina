@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -140,7 +140,7 @@ namespace NINA.Model.MyFlatDevice {
                 } catch (SerialPortClosedException ex) {
                     HandlePortClosed(command, ex);
                 }
-                return Math.Round(result / (MaxBrightness - MinBrightness), 2);
+                return Math.Round(result / (MaxBrightness - MinBrightness), 3);
             }
             set {
                 if (!Connected) return;
