@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -93,7 +93,7 @@ namespace NINATest.FlatDevice {
         [Test]
         [TestCase(0.0, "*J99000")]
         [TestCase(1.0, "*J99255")]
-        [TestCase(0.5, "*J99128")]
+        [TestCase(0.502, "*J99128")]
         public async Task TestGetBrightness(double brightness, string deviceResponse) {
             Assert.That(await _sut.Connect(new CancellationToken()), Is.True);
 
