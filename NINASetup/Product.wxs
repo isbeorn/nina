@@ -326,10 +326,6 @@
   <Fragment>
 
     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-      <!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
-      <!-- <Component Win64="$(var.Win64)" Id="ProductComponent"> -->
-      <!-- TODO: Insert files, registry keys, and other resources here. -->
-      <!-- </Component> -->
       <Component Win64="$(var.Win64)" Id="LICENSE.txt" Guid="0a6ae791-4e08-46de-933a-843e8977a0f0">
         <File Id="LICENSE.txt" Name="LICENSE.txt" Source="$(var.NINA_TargetDir)LICENSE.txt" />
       </Component>
@@ -482,6 +478,9 @@
       </Component>
       <Component Id="SHA3Managed.dll" Guid="35435550-119d-4bf5-a30e-7f51612d1380">
         <File Id="SHA3Managed.dll" Name="SHA3Managed.dll" Source="$(var.NINA_TargetDir)SHA3Managed.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="3rd-party-licenses.txt" Guid="3C8404A3-D6E6-48DE-81FA-03028AEE884D">
+        <File Id="3rd-party-licenses.txt" Name="3rd-party-licenses.txt" Source="$(var.NINA_TargetDir)3rd-party-licenses.txt" />
       </Component>
     </ComponentGroup>
   </Fragment>

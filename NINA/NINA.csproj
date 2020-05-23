@@ -1712,6 +1712,9 @@
     </None>
     <None Include="BootstrapAscomProfileStore.ps1" />
     <Resource Include="Resources\astrometry.net.png" />
+    <Resource Include="3rd-party-licenses.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Content Include="Database\Initial\initial_data.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

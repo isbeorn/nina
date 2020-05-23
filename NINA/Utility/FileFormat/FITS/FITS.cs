@@ -9,13 +9,12 @@
 */
 
 /*
- * Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+ * Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
  * Copyright 2019 Dale Ghent <daleg@elemental.org>
  */
 
 #endregion "copyright"
 
-using Namotion.Reflection;
 using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using nom.tam.fits;
