@@ -3633,4 +3633,44 @@ In case a longer duration is needed, a duration can be specified and the applica
   <data name="LblRelativeFocuserNotSupported" xml:space="preserve">
     <value>Focusers without the capability to use absolute positions are currently not supported</value>
   </data>
+  <data name="LblQhyIncludeOverscan" xml:space="preserve">
+    <value>Include Overscan Area</value>
+  </data>
+  <data name="LblQhyIncludeOverscanTooltip" xml:space="preserve">
+    <value>Setting to On will the include any optical black and overscan areas of the sensor in images</value>
+  </data>
+  <data name="LblSeconds" xml:space="preserve">
+    <value>Seconds</value>
+  </data>
+  <data name="LblOecUnableToDetermine" xml:space="preserve">
+    <value>Unable to determine exposure time</value>
+  </data>
+  <data name="LblAbout" xml:space="preserve">
+    <value>About</value>
+    <comment>Header of about section for general info for N.I.N.A.</comment>
+  </data>
+  <data name="LblAboutNINA" xml:space="preserve">
+    <value>About N.I.N.A.</value>
+  </data>
+  <data name="LblAuthors" xml:space="preserve">
+    <value>Authors</value>
+  </data>
+  <data name="LblChangelog" xml:space="preserve">
+    <value>Changelog</value>
+  </data>
+  <data name="LblDocumentation" xml:space="preserve">
+    <value>Documentation</value>
+  </data>
+  <data name="LblHomepage" xml:space="preserve">
+    <value>Homepage</value>
+  </data>
+  <data name="LblLicense" xml:space="preserve">
+    <value>License</value>
+  </data>
+  <data name="LblRepository" xml:space="preserve">
+    <value>Repository</value>
+  </data>
+  <data name="LblThirdPartyLicenses" xml:space="preserve">
+    <value>Third Party Licenses</value>
+  </data>
 </root>

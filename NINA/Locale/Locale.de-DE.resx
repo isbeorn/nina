@@ -3632,6 +3632,46 @@ Falls eine längere Dauer benötigt wird, kann eine Dauer angegeben werden und d
     <value>Setzt die Kamera auf den High Gain-Modus. Dieser Verstärkungsmodus hat weniger Auslese-Rauschen im Vergleich zu niedrigem Gain und es wird empfohlen, dass es immer aktiviert wird, mit Ausnahme man möchte den geringstmöglichen Gain mit der höchsten Dynamic Range nutzen.</value>
   </data>
   <data name="LblRelativeFocuserNotSupported" xml:space="preserve">
-    <value>Focusers without the capability to use absolute positions are currently not supported</value>
+    <value>Fokussierung ohne die Möglichkeit, absolute Positionen zu verwenden, werden derzeit nicht unterstützt</value>
+  </data>
+  <data name="LblQhyIncludeOverscan" xml:space="preserve">
+    <value>Overscan Bereich einbeziehen</value>
+  </data>
+  <data name="LblQhyIncludeOverscanTooltip" xml:space="preserve">
+    <value>Ist dies angeschaltet, wird der optisch schwarze und overscan Bereich des Sensors mit in das Bild einbezogen</value>
+  </data>
+  <data name="LblSeconds" xml:space="preserve">
+    <value>Sekunden</value>
+  </data>
+  <data name="LblOecUnableToDetermine" xml:space="preserve">
+    <value>Kann Belichtungszeit nicht bestimmen</value>
+  </data>
+  <data name="LblAbout" xml:space="preserve">
+    <value>Über</value>
+    <comment>Header of about section for general info for N.I.N.A.</comment>
+  </data>
+  <data name="LblAboutNINA" xml:space="preserve">
+    <value>Über N.I.N.A.</value>
+  </data>
+  <data name="LblAuthors" xml:space="preserve">
+    <value>Autoren</value>
+  </data>
+  <data name="LblChangelog" xml:space="preserve">
+    <value>Versionshistorie</value>
+  </data>
+  <data name="LblDocumentation" xml:space="preserve">
+    <value>Dokumentation</value>
+  </data>
+  <data name="LblHomepage" xml:space="preserve">
+    <value>Homepage</value>
+  </data>
+  <data name="LblLicense" xml:space="preserve">
+    <value>Lizenz</value>
+  </data>
+  <data name="LblRepository" xml:space="preserve">
+    <value>Repository</value>
+  </data>
+  <data name="LblThirdPartyLicenses" xml:space="preserve">
+    <value>Drittlizenzen</value>
   </data>
 </root>
