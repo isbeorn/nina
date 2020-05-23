@@ -3629,4 +3629,32 @@ In case a longer duration is needed, a duration can be specified and the applica
   <data name="LblOecUnableToDetermine" xml:space="preserve">
     <value>Unable to determine exposure time</value>
   </data>
+  <data name="LblAbout" xml:space="preserve">
+    <value>About</value>
+    <comment>Header of about section for general info for N.I.N.A.</comment>
+  </data>
+  <data name="LblAboutNINA" xml:space="preserve">
+    <value>About N.I.N.A.</value>
+  </data>
+  <data name="LblAuthors" xml:space="preserve">
+    <value>Authors</value>
+  </data>
+  <data name="LblChangelog" xml:space="preserve">
+    <value>Changelog</value>
+  </data>
+  <data name="LblDocumentation" xml:space="preserve">
+    <value>Documentation</value>
+  </data>
+  <data name="LblHomepage" xml:space="preserve">
+    <value>Homepage</value>
+  </data>
+  <data name="LblLicense" xml:space="preserve">
+    <value>License</value>
+  </data>
+  <data name="LblRepository" xml:space="preserve">
+    <value>Repository</value>
+  </data>
+  <data name="LblThirdPartyLicenses" xml:space="preserve">
+    <value>Third Party Licenses</value>
+  </data>
 </root>

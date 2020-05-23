@@ -106,6 +106,24 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to About.
+        /// </summary>
+        internal static string LblAbout {
+            get {
+                return ResourceManager.GetString("LblAbout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to About N.I.N.A..
+        /// </summary>
+        internal static string LblAboutNINA {
+            get {
+                return ResourceManager.GetString("LblAboutNINA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Absolute.
         /// </summary>
         internal static string LblAbsolute {
@@ -549,6 +567,15 @@ namespace NINA.Locale {
         internal static string LblAstrometryNet {
             get {
                 return ResourceManager.GetString("LblAstrometryNet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authors.
+        /// </summary>
+        internal static string LblAuthors {
+            get {
+                return ResourceManager.GetString("LblAuthors", resourceCulture);
             }
         }
         
@@ -1589,6 +1616,15 @@ namespace NINA.Locale {
         internal static string LblChangedSequenceWarningTitle {
             get {
                 return ResourceManager.GetString("LblChangedSequenceWarningTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Changelog.
+        /// </summary>
+        internal static string LblChangelog {
+            get {
+                return ResourceManager.GetString("LblChangelog", resourceCulture);
             }
         }
         
@@ -3315,6 +3351,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Documentation.
+        /// </summary>
+        internal static string LblDocumentation {
+            get {
+                return ResourceManager.GetString("LblDocumentation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download.
         /// </summary>
         internal static string LblDownload {
@@ -4870,6 +4915,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Homepage.
+        /// </summary>
+        internal static string LblHomepage {
+            get {
+                return ResourceManager.GetString("LblHomepage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Horizontal Panels.
         /// </summary>
         internal static string LblHorizontalPanels {
@@ -5226,6 +5280,15 @@ namespace NINA.Locale {
         internal static string LblLblBlackClippingTooltip {
             get {
                 return ResourceManager.GetString("LblLblBlackClippingTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to License.
+        /// </summary>
+        internal static string LblLicense {
+            get {
+                return ResourceManager.GetString("LblLicense", resourceCulture);
             }
         }
         
@@ -7576,6 +7639,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Repository.
+        /// </summary>
+        internal static string LblRepository {
+            get {
+                return ResourceManager.GetString("LblRepository", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rescan Devices.
         /// </summary>
         internal static string LblRescanDevices {
@@ -9171,6 +9243,15 @@ namespace NINA.Locale {
         internal static string LblTheSkyX {
             get {
                 return ResourceManager.GetString("LblTheSkyX", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Third Party Licenses.
+        /// </summary>
+        internal static string LblThirdPartyLicenses {
+            get {
+                return ResourceManager.GetString("LblThirdPartyLicenses", resourceCulture);
             }
         }
         

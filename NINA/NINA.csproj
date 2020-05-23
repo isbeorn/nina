@@ -669,6 +669,24 @@
     <Compile Include="ViewModel\Imaging\ExposureTimeRecommendationVM.cs" />
     <Compile Include="ViewModel\Imaging\AnchorablePlateSolverVM.cs" />
     <Compile Include="ViewModel\PlateSolvingStatusVM.cs" />
+    <Compile Include="View\AboutView.xaml.cs">
+      <DependentUpon>AboutView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\About\AboutNINAView.xaml.cs">
+      <DependentUpon>AboutNINAView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\About\AboutPageView.xaml.cs">
+      <DependentUpon>AboutPageView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\About\AuthorsView.xaml.cs">
+      <DependentUpon>AuthorsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\About\LicenseView.xaml.cs">
+      <DependentUpon>LicenseView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\About\ThirdPartyLicensesView.xaml.cs">
+      <DependentUpon>ThirdPartyLicensesView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Equipment\Camera\CameraTemplateSelector.cs" />
     <Compile Include="View\Equipment\Camera\FLICameraSetupView.xaml.cs">
       <DependentUpon>FLICameraSetupView.xaml</DependentUpon>
@@ -1386,6 +1404,30 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\AberrationInspectorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AboutView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\About\AboutNINAView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\About\AboutPageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\About\AuthorsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\About\LicenseView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\About\ThirdPartyLicensesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
