@@ -479,8 +479,8 @@
       <Component Id="SHA3Managed.dll" Guid="35435550-119d-4bf5-a30e-7f51612d1380">
         <File Id="SHA3Managed.dll" Name="SHA3Managed.dll" Source="$(var.NINA_TargetDir)SHA3Managed.dll" />
       </Component>
-      <Component Win64="$(var.Win64)" Id="3rd-party-licenses.txt" Guid="3C8404A3-D6E6-48DE-81FA-03028AEE884D">
-        <File Id="3rd-party-licenses.txt" Name="3rd-party-licenses.txt" Source="$(var.NINA_TargetDir)3rd-party-licenses.txt" />
+      <Component Win64="$(var.Win64)" Id="thirdparty" Guid="3C8404A3-D6E6-48DE-81FA-03028AEE884D">
+        <File Id="thirdparty" Name="3rd-party-licenses.txt" Source="$(var.NINA_TargetDir)3rd-party-licenses.txt" />
       </Component>
     </ComponentGroup>
   </Fragment>
