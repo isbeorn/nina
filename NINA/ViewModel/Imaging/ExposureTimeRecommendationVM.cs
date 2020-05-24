@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -42,7 +42,7 @@ namespace NINA.ViewModel.Imaging {
         private ImmutableDictionary<string, SharpCapSensorAnalysisData> _sharpCapSensorAnalysisData;
         private static double WARN_THRESHOLD_FOR_SHARPCAP_GOODNESS_OF_FIT = 0.8;
 
-        public ExposureCalculatorVM(IProfileService profileService, IImagingMediator imagingMediator, ISharpCapSensorAnalysisReader sharpCapSensorAnalysisReader) 
+        public ExposureCalculatorVM(IProfileService profileService, IImagingMediator imagingMediator, ISharpCapSensorAnalysisReader sharpCapSensorAnalysisReader)
             : base(profileService) {
             this._imagingMediator = imagingMediator;
             this.Title = "LblExposureCalculator";
@@ -68,7 +68,7 @@ namespace NINA.ViewModel.Imaging {
                 }
             } else {
                 LoadSensorAnalysisData(configuredPath);
-            }            
+            }
         }
 
         private static ImmutableDictionary<string, SharpCapSensorAnalysisData> ReadSensorAnalysisData(ISharpCapSensorAnalysisReader sharpCapSensorAnalysisReader, string path) {
@@ -177,6 +177,7 @@ namespace NINA.ViewModel.Imaging {
         }
 
         private bool _isSharpCapSensorAnalysisEnabled = false;
+
         public bool IsSharpCapSensorAnalysisEnabled {
             get => this._isSharpCapSensorAnalysisEnabled;
             set {
@@ -186,6 +187,7 @@ namespace NINA.ViewModel.Imaging {
         }
 
         private string _mySharpCapSensor;
+
         public string MySharpCapSensor {
             get => _mySharpCapSensor;
 

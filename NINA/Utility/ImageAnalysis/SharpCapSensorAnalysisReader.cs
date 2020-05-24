@@ -1,3 +1,17 @@
+#region "copyright"
+
+/*
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
+
+    This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+#endregion "copyright"
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -25,6 +39,7 @@ namespace NINA.Utility.ImageAnalysis {
     }
 
     internal class GainInfo {
+
         [JsonProperty(PropertyName = "OffsetInfo")]
         public OffsetInfo[] OffsetInfos;
 
@@ -45,6 +60,7 @@ namespace NINA.Utility.ImageAnalysis {
     }
 
     internal class SensorInfo {
+
         [JsonProperty(PropertyName = "GainList")]
         public GainInfo[] GainInfos;
 
@@ -74,6 +90,7 @@ namespace NINA.Utility.ImageAnalysis {
     }
 
     public class SharpCapSensorAnalysisGainData {
+
         public SharpCapSensorAnalysisGainData(double gain, double readNoise, int fullWellCapacity) {
             this.Gain = gain;
             this.ReadNoise = readNoise;
@@ -96,6 +113,7 @@ namespace NINA.Utility.ImageAnalysis {
     public class Estimate {
         public double Gain { get; private set; }
         public double EstimatedValue { get; private set; }
+
         public Estimate(double gain, double estimatedValue) {
             this.Gain = gain;
             this.EstimatedValue = estimatedValue;
@@ -103,6 +121,7 @@ namespace NINA.Utility.ImageAnalysis {
     }
 
     public class SharpCapSensorAnalysisData {
+
         public SharpCapSensorAnalysisData(string sensorName, string colourSpace, int bitDepth, IList<SharpCapSensorAnalysisGainData> gainData) {
             this.SensorName = sensorName;
             this.ColourSpace = colourSpace;
@@ -128,8 +147,8 @@ namespace NINA.Utility.ImageAnalysis {
                         gainDataListBuilder.Add(SharpCapSensorAnalysisGainData.FromGainInfo(sensorInfo, gainInfo));
                     }
                     return new SharpCapSensorAnalysisData(
-                        sensorName: sensorInfo.SensorName, 
-                        colourSpace: sensorInfo.ColourSpace, 
+                        sensorName: sensorInfo.SensorName,
+                        colourSpace: sensorInfo.ColourSpace,
                         bitDepth: sensorInfo.BitDepth,
                         gainData: gainDataListBuilder.ToImmutable());
                 }
@@ -176,7 +195,7 @@ namespace NINA.Utility.ImageAnalysis {
         public static readonly string DEFAULT_SHARPCAP_SENSOR_ANALYSIS_PATH = Environment.ExpandEnvironmentVariables(@"%APPDATA%\SharpCap\SensorCharacteristics");
     }
 
-    public interface ISharpCapSensorAnalysisReader {        
+    public interface ISharpCapSensorAnalysisReader {
 
         ImmutableDictionary<string, SharpCapSensorAnalysisData> Read(string sensorAnalysisPath);
     }

@@ -1,7 +1,7 @@
 #region "copyright"
 
 /*
-    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors 
+    Copyright © 2016 - 2020 Stefan Berg <isbeorn86+NINA@googlemail.com> and the N.I.N.A. contributors
 
     This file is part of N.I.N.A. - Nighttime Imaging 'N' Astronomy.
 
@@ -304,7 +304,7 @@ namespace NINA.ViewModel {
                 ActiveProfile.SequenceSettings.SequenceCompleteCommand = dialog.FileName;
             }
         }
-        
+
         private void OpenSequenceFolderDiag(object o) {
             using (var diag = new System.Windows.Forms.FolderBrowserDialog()) {
                 diag.SelectedPath = ActiveProfile.SequenceSettings.DefaultSequenceFolder;
