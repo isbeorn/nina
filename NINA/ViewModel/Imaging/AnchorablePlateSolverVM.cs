@@ -19,6 +19,7 @@ using NINA.PlateSolving;
 using NINA.Profile;
 using NINA.Utility;
 using NINA.Utility.Mediator.Interfaces;
+using NINA.Utility.Notification;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -265,57 +266,67 @@ namespace NINA.ViewModel.Imaging {
         private async Task<bool> CaptureSolveSyncAndReslew(IProgress<ApplicationStatus> progress) {
             _solveCancelToken?.Dispose();
             _solveCancelToken = new CancellationTokenSource();
-            var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAPSHOT, SnapFilter, SnapBin, 1);
-            seq.Gain = SnapGain;
-
-            var plateSolver = PlateSolverFactory.GetPlateSolver(profileService.ActiveProfile.PlateSolveSettings);
-            var blindSolver = PlateSolverFactory.GetBlindSolver(profileService.ActiveProfile.PlateSolveSettings);
-            var solveProgress = new Progress<PlateSolveProgress>(x => {
-                if (x.PlateSolveResult != null) {
-                    PlateSolveResult = x.PlateSolveResult;
-                }
-            });
-            if (this.SlewToTarget) {
-                var solver = new CenteringSolver(plateSolver, blindSolver, imagingMediator, telescopeMediator);
-                var parameter = new CenterSolveParameter() {
-                    Attempts = 1,
-                    Binning = SnapBin?.X ?? CameraInfo.BinX,
-                    Coordinates = telescopeMediator.GetCurrentPosition(),
-                    DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
-                    FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
-                    MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
-                    PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize,
-                    ReattemptDelay = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay),
-                    Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
-                    SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
-                    Threshold = RepeatThreshold,
-                    NoSync = profileService.ActiveProfile.TelescopeSettings.NoSync
-                };
-                _ = await solver.Center(seq, parameter, solveProgress, progress, _solveCancelToken.Token);
-            } else {
-                var solver = new CaptureSolver(plateSolver, blindSolver, imagingMediator);
-                var parameter = new CaptureSolverParameter() {
-                    Attempts = 1,
-                    Binning = SnapBin?.X ?? CameraInfo.BinX,
-                    DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
-                    FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
-                    MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
-                    PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize,
-                    ReattemptDelay = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay),
-                    Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
-                    SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
-                    Coordinates = telescopeMediator.GetCurrentPosition()
-                };
-                var result = await solver.Solve(seq, parameter, solveProgress, progress, _solveCancelToken.Token);
-
-                if (telescopeInfo.Connected) {
-                    var position = parameter.Coordinates.Transform(result.Coordinates.Epoch);
-                    result.Separation = result.DetermineSeparation(position);
+            try {
+                if ((this.Sync || this.SlewToTarget) && !telescopeInfo.Connected) {
+                    throw new Exception(Locale.Loc.Instance["LblTelescopeNotConnected"]);
                 }
 
-                if (!profileService.ActiveProfile.TelescopeSettings.NoSync && Sync) {
-                    await telescopeMediator.Sync(result.Coordinates);
+                var seq = new CaptureSequence(SnapExposureDuration, CaptureSequence.ImageTypes.SNAPSHOT, SnapFilter, SnapBin, 1);
+                seq.Gain = SnapGain;
+
+                var plateSolver = PlateSolverFactory.GetPlateSolver(profileService.ActiveProfile.PlateSolveSettings);
+                var blindSolver = PlateSolverFactory.GetBlindSolver(profileService.ActiveProfile.PlateSolveSettings);
+                var solveProgress = new Progress<PlateSolveProgress>(x => {
+                    if (x.PlateSolveResult != null) {
+                        PlateSolveResult = x.PlateSolveResult;
+                    }
+                });
+
+                if (this.SlewToTarget) {
+                    var solver = new CenteringSolver(plateSolver, blindSolver, imagingMediator, telescopeMediator);
+                    var parameter = new CenterSolveParameter() {
+                        Attempts = 1,
+                        Binning = SnapBin?.X ?? CameraInfo.BinX,
+                        Coordinates = telescopeMediator.GetCurrentPosition(),
+                        DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
+                        FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
+                        MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
+                        PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize,
+                        ReattemptDelay = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay),
+                        Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
+                        SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
+                        Threshold = RepeatThreshold,
+                        NoSync = profileService.ActiveProfile.TelescopeSettings.NoSync
+                    };
+                    _ = await solver.Center(seq, parameter, solveProgress, progress, _solveCancelToken.Token);
+                } else {
+                    var solver = new CaptureSolver(plateSolver, blindSolver, imagingMediator);
+                    var parameter = new CaptureSolverParameter() {
+                        Attempts = 1,
+                        Binning = SnapBin?.X ?? CameraInfo.BinX,
+                        DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
+                        FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
+                        MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
+                        PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize,
+                        ReattemptDelay = TimeSpan.FromMinutes(profileService.ActiveProfile.PlateSolveSettings.ReattemptDelay),
+                        Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
+                        SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
+                        Coordinates = telescopeMediator.GetCurrentPosition()
+                    };
+                    var result = await solver.Solve(seq, parameter, solveProgress, progress, _solveCancelToken.Token);
+
+                    if (telescopeInfo.Connected) {
+                        var position = parameter.Coordinates.Transform(result.Coordinates.Epoch);
+                        result.Separation = result.DetermineSeparation(position);
+                    }
+
+                    if (!profileService.ActiveProfile.TelescopeSettings.NoSync && Sync) {
+                        await telescopeMediator.Sync(result.Coordinates);
+                    }
                 }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+                Notification.ShowError(ex.Message);
             }
 
             return true;

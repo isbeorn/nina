@@ -311,33 +311,38 @@ namespace NINA.ViewModel {
 
         private async Task<bool> PlateSolveImage() {
             if (this.RenderedImage != null) {
-                _plateSolveToken?.Dispose();
-                _plateSolveToken = new CancellationTokenSource();
+                try {
+                    _plateSolveToken?.Dispose();
+                    _plateSolveToken = new CancellationTokenSource();
 
-                var plateSolver = PlateSolverFactory.GetPlateSolver(profileService.ActiveProfile.PlateSolveSettings);
-                var blindSolver = PlateSolverFactory.GetBlindSolver(profileService.ActiveProfile.PlateSolveSettings);
-                var parameter = new PlateSolveParameter() {
-                    Binning = cameraInfo?.BinX ?? 1,
-                    Coordinates = telescopeMediator.GetCurrentPosition(),
-                    DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
-                    FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
-                    MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
-                    PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize,
-                    Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
-                    SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
-                };
+                    var plateSolver = PlateSolverFactory.GetPlateSolver(profileService.ActiveProfile.PlateSolveSettings);
+                    var blindSolver = PlateSolverFactory.GetBlindSolver(profileService.ActiveProfile.PlateSolveSettings);
+                    var parameter = new PlateSolveParameter() {
+                        Binning = cameraInfo?.BinX ?? 1,
+                        Coordinates = telescopeMediator.GetCurrentPosition(),
+                        DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
+                        FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength,
+                        MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
+                        PixelSize = profileService.ActiveProfile.CameraSettings.PixelSize,
+                        Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
+                        SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
+                    };
 
-                var imageSolver = new ImageSolver(plateSolver, blindSolver);
+                    var imageSolver = new ImageSolver(plateSolver, blindSolver);
 
-                var service = WindowServiceFactory.Create();
-                var plateSolveStatusVM = new PlateSolvingStatusVM();
-                service.Show(plateSolveStatusVM, this.Title + " - " + plateSolveStatusVM.Title, ResizeMode.CanResize, WindowStyle.ToolWindow);
+                    var service = WindowServiceFactory.Create();
+                    var plateSolveStatusVM = new PlateSolvingStatusVM();
+                    service.Show(plateSolveStatusVM, this.Title + " - " + plateSolveStatusVM.Title, ResizeMode.CanResize, WindowStyle.ToolWindow);
 
-                var result = await imageSolver.Solve(this.RenderedImage.RawImageData, parameter, _progress, _plateSolveToken.Token);
+                    var result = await imageSolver.Solve(this.RenderedImage.RawImageData, parameter, _progress, _plateSolveToken.Token);
 
-                result.Separation = result.DetermineSeparation(telescopeMediator.GetCurrentPosition());
-                plateSolveStatusVM.PlateSolveResult = result;
-
+                    result.Separation = result.DetermineSeparation(telescopeMediator.GetCurrentPosition());
+                    plateSolveStatusVM.PlateSolveResult = result;
+                } catch (Exception ex) {
+                    Logger.Error(ex);
+                    Notification.ShowError(ex.Message);
+                    _progress.Report(new ApplicationStatus() { Status = string.Empty });
+                }
                 return true;
             } else {
                 return false;

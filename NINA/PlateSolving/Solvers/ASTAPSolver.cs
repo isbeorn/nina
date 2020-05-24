@@ -153,9 +153,11 @@ namespace NINA.PlateSolving.Solvers {
                 }
             }
             string astapPath = Path.GetDirectoryName(this.executableLocation);
+            string[] g16Files = Directory.GetFiles(astapPath, "g16_*");
             string[] g17Files = Directory.GetFiles(astapPath, "g17_*");
-            if (g17Files.Length == 0) {
-                throw new ASTAPValidationFailedException($"g17 database not found in {astapPath}");
+            string[] g18Files = Directory.GetFiles(astapPath, "g18_*");
+            if (g16Files.Length == 0 && g17Files.Length == 0 && g18Files.Length == 0) {
+                throw new ASTAPValidationFailedException($"No star database not found in {astapPath}");
             }
         }
 
