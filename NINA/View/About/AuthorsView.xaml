@@ -60,6 +60,7 @@
             <TextBlock Text="Chris Turchin" />
             <TextBlock Text="Niccolò Coli" />
             <TextBlock Text="Igor von Nyssen" />
+            <TextBlock Text="Simon Kapadia" />
         </StackPanel>
     </StackPanel>
 </UserControl>
