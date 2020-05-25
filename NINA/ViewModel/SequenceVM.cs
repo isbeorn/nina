@@ -783,6 +783,11 @@ namespace NINA.ViewModel {
                 /* delay sequence start by given amount */
                 await DelaySequence(csl, progress);
 
+                /* If the scope is parked, unpark it */
+                if (telescopeInfo.Connected && telescopeInfo.AtPark) {
+                    telescopeMediator.UnparkTelescope();
+                }
+
                 //open flip-flat if necessary
                 if (_flatDevice != null && _flatDevice.SupportsOpenClose && _flatDevice.CoverState != CoverState.Open) {
                     await _flatDeviceMediator.OpenCover();
@@ -1377,8 +1382,6 @@ namespace NINA.ViewModel {
                 var diag = MyMessageBox.MyMessageBox.Show(messageStringBuilder.ToString(), Locale.Loc.Instance["LblPreSequenceChecklistHeader"], System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
                 if (diag == System.Windows.MessageBoxResult.Cancel) {
                     return false;
-                } else if (telescopeInfo.Connected && telescopeInfo.AtPark) {
-                    telescopeMediator.UnparkTelescope();
                 }
             }
 
