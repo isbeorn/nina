@@ -48,10 +48,16 @@ namespace NINA.Model.MyCamera {
                     // this needs to be called otherwise GetCameraProperties shuts down other instances of the camera
                     ASICameraDll.OpenCamera(_cameraId);
                     // at this point we might as well cache the properties anyway
-                    _info = ASICameraDll.GetCameraProperties(_cameraId);
+                    RefreshCameraInfoCache();
                 }
 
                 return _info.Value;
+            }
+        }
+
+        private void RefreshCameraInfoCache() {
+            using (MyStopWatch.Measure()) {
+                _info = ASICameraDll.GetCameraProperties(_cameraId);
             }
         }
 
@@ -344,33 +350,6 @@ namespace NINA.Model.MyCamera {
             ASICameraDll.StopExposure(_cameraId);
         }
 
-        [System.Obsolete("Use async Connect")]
-        public bool Connect() {
-            var success = false;
-            try {
-                ASICameraDll.OpenCamera(_cameraId);
-                ASICameraDll.InitCamera(_cameraId);
-                _info = ASICameraDll.GetCameraProperties(_cameraId);
-                Connected = true;
-                success = true;
-
-                var raw16 = from types in SupportedImageTypes where types == ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16 select types;
-                if (raw16.Count() == 0) {
-                    Notification.ShowError(Locale.Loc.Instance["LblASIOnly16BitMono"]);
-                    return false;
-                }
-                this.CaptureAreaInfo = new CaptureAreaInfo(new Point(0, 0), this.Resolution, 1, ASICameraDll.ASI_IMG_TYPE.ASI_IMG_RAW16);
-
-                Initialize();
-                RaisePropertyChanged(nameof(Connected));
-                RaiseAllPropertiesChanged();
-            } catch (Exception ex) {
-                Logger.Error(ex);
-                Notification.ShowError(ex.Message);
-            }
-            return success;
-        }
-
         private List<ASICameraDll.ASI_IMG_TYPE> SupportedImageTypes {
             get { return Info.SupportedVideoFormat.TakeWhile(x => x != ASICameraDll.ASI_IMG_TYPE.ASI_IMG_END).ToList(); }
         }
@@ -526,6 +505,7 @@ namespace NINA.Model.MyCamera {
             }
             set {
                 if (SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_GAIN, value)) {
+                    RefreshCameraInfoCache();
                     RaisePropertyChanged();
                 }
             }
@@ -704,7 +684,7 @@ namespace NINA.Model.MyCamera {
                 try {
                     ASICameraDll.OpenCamera(_cameraId);
                     ASICameraDll.InitCamera(_cameraId);
-                    _info = ASICameraDll.GetCameraProperties(_cameraId);
+                    RefreshCameraInfoCache();
                     Connected = true;
                     success = true;
 
