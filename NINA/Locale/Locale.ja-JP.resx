@@ -142,7 +142,7 @@
     <value>現行シーケンス詳細</value>
   </data>
   <data name="LblAddSequenceTarget" xml:space="preserve">
-    <value>シーケンス目標として追加</value>
+    <value>シーケンス対象として追加</value>
   </data>
   <data name="LblAdvancedSettings" xml:space="preserve">
     <value>詳細設定</value>
@@ -1889,7 +1889,7 @@
     <value>分</value>
   </data>
   <data name="LblMinutesAfterMeridian" xml:space="preserve">
-    <value>子午線通過後の分数</value>
+    <value>子午線通過後時間分</value>
   </data>
   <data name="LblMinutesShort" xml:space="preserve">
     <value>分</value>
@@ -2502,7 +2502,7 @@
     <value>まで繰り返し</value>
   </data>
   <data name="LblReplaceSequenceTarget" xml:space="preserve">
-    <value>シーケンスターゲットとして置き換える</value>
+    <value>シーケンス対象として置換</value>
   </data>
   <data name="LblRescanDevices" xml:space="preserve">
     <value>デバイスの再スキャン</value>
@@ -3352,7 +3352,7 @@
     <value>華氏にて温度表示</value>
   </data>
   <data name="LblWeatherDisplayImperial" xml:space="preserve">
-    <value>帝国単位</value>
+    <value>インペリアル単位</value>
   </data>
   <data name="LblWeatherDisplayImperialTooltip" xml:space="preserve">
     <value>非温度天気データを帝国単位にて表示</value>
@@ -3614,43 +3614,64 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
     <value>絶対位置の機能がないフォーカサーは現在サポートされていません</value>
   </data>
   <data name="LblQhyIncludeOverscan" xml:space="preserve">
-    <value>Include Overscan Area</value>
+    <value>オーバースキャン領域を含める</value>
   </data>
   <data name="LblQhyIncludeOverscanTooltip" xml:space="preserve">
-    <value>Setting to On will the include any optical black and overscan areas of the sensor in images</value>
+    <value>オンに設定すると、画像センサーの光学的黒領域とオーバースキャン領域が全て含まれます</value>
   </data>
   <data name="LblSeconds" xml:space="preserve">
-    <value>Seconds</value>
+    <value>秒</value>
   </data>
   <data name="LblOecUnableToDetermine" xml:space="preserve">
-    <value>Unable to determine exposure time</value>
+    <value>露出時間を決定できません</value>
   </data>
   <data name="LblAbout" xml:space="preserve">
     <value>About</value>
     <comment>Header of about section for general info for N.I.N.A.</comment>
   </data>
   <data name="LblAboutNINA" xml:space="preserve">
-    <value>About N.I.N.A.</value>
+    <value>N.I.N.A.について</value>
   </data>
   <data name="LblAuthors" xml:space="preserve">
-    <value>Authors</value>
+    <value>投稿者</value>
   </data>
   <data name="LblChangelog" xml:space="preserve">
-    <value>Changelog</value>
+    <value>変更履歴</value>
   </data>
   <data name="LblDocumentation" xml:space="preserve">
-    <value>Documentation</value>
+    <value>ドキュメント</value>
   </data>
   <data name="LblHomepage" xml:space="preserve">
-    <value>Homepage</value>
+    <value>ホームページ</value>
   </data>
   <data name="LblLicense" xml:space="preserve">
-    <value>License</value>
+    <value>ライセンス</value>
   </data>
   <data name="LblRepository" xml:space="preserve">
-    <value>Repository</value>
+    <value>リポジトリ</value>
   </data>
   <data name="LblThirdPartyLicenses" xml:space="preserve">
-    <value>Third Party Licenses</value>
+    <value>第三者ライセンス</value>
+  </data>
+  <data name="LblASCOMPlatformOutdated" xml:space="preserve">
+    <value>ASCOMプラットフォームのバージョンが古くなっています。最新のバージョンにアップデートしてください。 そうしないと、すべてのASCOMデバイスに接続できなくなる可能性があります。</value>
+  </data>
+  <data name="LblDynamicBrightness" xml:space="preserve">
+    <value>Dynamic Brightness</value>
+  </data>
+  <data name="LblDynamicExposure" xml:space="preserve">
+    <value>Dynamic Exposure</value>
+  </data>
+  <data name="LblFlatPanelBrightness" xml:space="preserve">
+    <value>Flat Panel Brightness</value>
+  </data>
+  <data name="LblFlatPanelMaxBrightness" xml:space="preserve">
+    <value>Max Flat Panel Brightness</value>
+  </data>
+  <data name="LblFlatPanelMinBrightness" xml:space="preserve">
+    <value>Min Flat Panel Brightness</value>
+  </data>
+  <data name="LblWizardOperationMode" xml:space="preserve">
+    <value>Wizard Operation Mode</value>
   </data>
 </root>

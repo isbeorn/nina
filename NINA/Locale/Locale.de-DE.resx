@@ -3674,4 +3674,25 @@ Falls eine längere Dauer benötigt wird, kann eine Dauer angegeben werden und d
   <data name="LblThirdPartyLicenses" xml:space="preserve">
     <value>Drittlizenzen</value>
   </data>
+  <data name="LblASCOMPlatformOutdated" xml:space="preserve">
+    <value>Die ASCOM Platform Version ist veraltet. Bitte auf die neueste ASCOM Plattform Version aktualisieren. Andernfalls kann die Anwendung möglicherweise nicht mit allen ASCOM-Geräten verbinden.</value>
+  </data>
+  <data name="LblDynamicBrightness" xml:space="preserve">
+    <value>Dynamische Helligkeit</value>
+  </data>
+  <data name="LblDynamicExposure" xml:space="preserve">
+    <value>Dynamische Belichtungszeit</value>
+  </data>
+  <data name="LblFlatPanelBrightness" xml:space="preserve">
+    <value>Flat Panel Helligkeit</value>
+  </data>
+  <data name="LblFlatPanelMaxBrightness" xml:space="preserve">
+    <value>Max Flat Panel Helligkeit</value>
+  </data>
+  <data name="LblFlatPanelMinBrightness" xml:space="preserve">
+    <value>Min Flat Panel Helligkeit</value>
+  </data>
+  <data name="LblWizardOperationMode" xml:space="preserve">
+    <value>Wizard Operationsmodus</value>
+  </data>
 </root>
