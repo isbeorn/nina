@@ -47,6 +47,25 @@
                                 Grid.Row="0"
                                 Grid.Column="0"
                                 VerticalAlignment="Center"
+                                Text="{ns:Loc LblTargetName}"
+                                TextWrapping="WrapWithOverflow" />
+                            <TextBox  Grid.Row="0"
+                                Grid.Column="1" Text="{Binding TargetName, Mode=TwoWay}"></TextBox>
+                        </Grid>
+                    </Border>
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0,0,0,0">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
                                 Text="{ns:Loc LblFlatCount}"
                                 TextWrapping="WrapWithOverflow" />
                             <ninactrl:IntStepperControl

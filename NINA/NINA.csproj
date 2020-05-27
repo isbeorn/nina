@@ -464,6 +464,7 @@
     <Compile Include="Utility\Converters\NaNToVisibilityCollapsedConverter.cs" />
     <Compile Include="Utility\Enum\BacklashCompensationModel.cs" />
     <Compile Include="Utility\Enum\BayerPatternEnum.cs" />
+    <Compile Include="Utility\Enum\FlatWizardMode.cs" />
     <Compile Include="Utility\FileFormat\XISF\DataConverter\Float32Converter.cs" />
     <Compile Include="Utility\FileFormat\XISF\DataConverter\Float64Converter.cs" />
     <Compile Include="Utility\FileFormat\XISF\DataConverter\IDataConverter.cs" />
@@ -1125,13 +1126,13 @@
     <Compile Include="View\Equipment\FilterWheel\FilterWheelView.xaml.cs">
       <DependentUpon>FilterWheelView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\FlatWizardFilterSettingsWrapperView.xaml.cs">
+    <Compile Include="View\FlatWizard\FlatWizardFilterSettingsWrapperView.xaml.cs">
       <DependentUpon>FlatWizardFilterSettingsWrapperView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\FlatWizardUserPrompt.xaml.cs">
+    <Compile Include="View\FlatWizard\FlatWizardUserPrompt.xaml.cs">
       <DependentUpon>FlatWizardUserPrompt.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\FlatWizardView.xaml.cs">
+    <Compile Include="View\FlatWizard\FlatWizardView.xaml.cs">
       <DependentUpon>FlatWizardView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Equipment\Focuser\FocuserView.xaml.cs">
@@ -1576,15 +1577,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\FlatWizardFilterSettingsWrapperView.xaml">
+    <Page Include="View\FlatWizard\FlatWizardFilterSettingsWrapperView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\FlatWizardUserPrompt.xaml">
+    <Page Include="View\FlatWizard\FlatWizardUserPrompt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\FlatWizardView.xaml">
+    <Page Include="View\FlatWizard\FlatWizardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

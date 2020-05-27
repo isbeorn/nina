@@ -3459,6 +3459,24 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dynamic Brightness.
+        /// </summary>
+        internal static string LblDynamicBrightness {
+            get {
+                return ResourceManager.GetString("LblDynamicBrightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamic Exposure.
+        /// </summary>
+        internal static string LblDynamicExposure {
+            get {
+                return ResourceManager.GetString("LblDynamicExposure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to East.
         /// </summary>
         internal static string LblEast {
@@ -4162,6 +4180,33 @@ namespace NINA.Locale {
         internal static string LblFlatMinExposureTime {
             get {
                 return ResourceManager.GetString("LblFlatMinExposureTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flat Panel Brightness.
+        /// </summary>
+        internal static string LblFlatPanelBrightness {
+            get {
+                return ResourceManager.GetString("LblFlatPanelBrightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max Flat Panel Brightness.
+        /// </summary>
+        internal static string LblFlatPanelMaxBrightness {
+            get {
+                return ResourceManager.GetString("LblFlatPanelMaxBrightness", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Min Flat Panel Brightness.
+        /// </summary>
+        internal static string LblFlatPanelMinBrightness {
+            get {
+                return ResourceManager.GetString("LblFlatPanelMinBrightness", resourceCulture);
             }
         }
         
@@ -10376,6 +10421,15 @@ namespace NINA.Locale {
         internal static string LblWindSpeed {
             get {
                 return ResourceManager.GetString("LblWindSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wizard Operation Mode.
+        /// </summary>
+        internal static string LblWizardOperationMode {
+            get {
+                return ResourceManager.GetString("LblWizardOperationMode", resourceCulture);
             }
         }
         

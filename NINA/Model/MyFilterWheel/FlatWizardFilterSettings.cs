@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using NINA.Utility;
+using NINA.Utility.Enum;
 using System;
 using System.Runtime.Serialization;
 
@@ -21,6 +22,7 @@ namespace NINA.Model.MyFilterWheel {
     [Serializable]
     [DataContract]
     public class FlatWizardFilterSettings : BaseINPC {
+        private FlatWizardMode flatWizardMode;
         private double histogramMeanTarget;
 
         private double histogramTolerance;
@@ -31,12 +33,31 @@ namespace NINA.Model.MyFilterWheel {
 
         private double stepSize;
 
+        private double maxFlatDeviceBrightness;
+
+        private double minFlatDeviceBrightness;
+
+        private double flatDeviceStepSize;
+
         public FlatWizardFilterSettings() {
+            flatWizardMode = FlatWizardMode.DYNAMICEXPOSURE;
             HistogramMeanTarget = 0.5;
             HistogramTolerance = 0.1;
             StepSize = 0.1;
             MinFlatExposureTime = 0.01;
             MaxFlatExposureTime = 30;
+            MinFlatDeviceBrightness = 0;
+            MaxFlatDeviceBrightness = 100;
+            FlatDeviceStepSize = 10;
+        }
+
+        [DataMember]
+        public FlatWizardMode FlatWizardMode {
+            get => flatWizardMode;
+            set {
+                flatWizardMode = value;
+                RaisePropertyChanged();
+            }
         }
 
         [DataMember]
@@ -84,6 +105,37 @@ namespace NINA.Model.MyFilterWheel {
             get => stepSize;
             set {
                 stepSize = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        [DataMember]
+        public double MaxFlatDeviceBrightness {
+            get => maxFlatDeviceBrightness;
+            set {
+                maxFlatDeviceBrightness = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        [DataMember]
+        public double MinFlatDeviceBrightness {
+            get => minFlatDeviceBrightness;
+            set {
+                minFlatDeviceBrightness = value;
+                if (MaxFlatDeviceBrightness < minFlatDeviceBrightness) {
+                    MaxFlatDeviceBrightness = minFlatDeviceBrightness;
+                }
+
+                RaisePropertyChanged();
+            }
+        }
+
+        [DataMember]
+        public double FlatDeviceStepSize {
+            get => flatDeviceStepSize;
+            set {
+                flatDeviceStepSize = value;
                 RaisePropertyChanged();
             }
         }

@@ -36,6 +36,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Interactivity;
 using System.Windows.Media.Imaging;
 
 namespace NINA.ViewModel.FlatWizard {
@@ -130,6 +131,8 @@ namespace NINA.ViewModel.FlatWizard {
             // register the flat panel mediator
             _flatDeviceMediator = flatDeviceMediator;
             _flatDeviceMediator.RegisterConsumer(this);
+
+            TargetName = "FlatWizard";
         }
 
         public void Dispose() {
@@ -218,6 +221,16 @@ namespace NINA.ViewModel.FlatWizard {
             get => cameraConnected;
             set {
                 cameraConnected = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string targetName;
+
+        public string TargetName {
+            get => targetName;
+            set {
+                targetName = value;
                 RaisePropertyChanged();
             }
         }
@@ -372,9 +385,6 @@ namespace NINA.ViewModel.FlatWizard {
         private async Task<bool> StartFindingExposureTimeSequence(IProgress<ApplicationStatus> progress, CancellationToken ct, PauseToken pt, FlatWizardFilterSettingsWrapper wrapper) {
             var exposureTime = wrapper.Settings.MinFlatExposureTime;
             IRenderedImage renderedImage = null;
-            if (_flatDevice != null && _flatDevice.Connected) {
-                _flatDeviceMediator.SetBrightness(1.0);
-            }
 
             progress.Report(new ApplicationStatus { Status = string.Format(Locale["LblFlatExposureCalcStart"], wrapper.Settings.MinFlatExposureTime), Source = Title });
 
@@ -383,6 +393,11 @@ namespace NINA.ViewModel.FlatWizard {
             while (exposureAduState != FlatWizardExposureAduState.ExposureFinished) {
                 // check for exposure time state first
                 var exposureTimeState = FlatWizardExposureTimeFinderService.GetNextFlatExposureState(exposureTime, wrapper);
+
+                // Set flat panel brightness to static brightness
+                if (_flatDevice != null && _flatDevice.Connected) {
+                    _flatDeviceMediator.SetBrightness(wrapper.Settings.MaxFlatDeviceBrightness / 100d);
+                }
 
                 switch (exposureTimeState) {
                     case FlatWizardExposureTimeState.ExposureTimeBelowMinTime:
@@ -406,10 +421,6 @@ namespace NINA.ViewModel.FlatWizard {
                         if (!result.Continue) {
                             flatSequenceCts.Cancel();
                         } else {
-                            if (_flatDevice != null && _flatDevice.Connected) {
-                                _flatDeviceMediator.SetBrightness(1.0);
-                            }
-
                             exposureTime = result.NextExposureTime;
                             progress.Report(new ApplicationStatus() { Status = string.Format(Locale["LblFlatExposureCalcContinue"], Math.Round(stats.Mean), exposureTime), Source = Title });
                         }
@@ -451,27 +462,18 @@ namespace NINA.ViewModel.FlatWizard {
                         break;
 
                     case FlatWizardExposureAduState.ExposureAduAboveMean:
-                        if (_flatDevice != null && _flatDevice.Connected && _flatDevice.Brightness > 0.01) {
-                            _flatDeviceMediator.SetBrightness(_flatDevice.Brightness / 2.0);
-                            exposureTime = wrapper.Settings.MinFlatExposureTime;
-                            FlatWizardExposureTimeFinderService.ClearDataPoints();
+
+                        exposureTime =
+                            FlatWizardExposureTimeFinderService.GetNextExposureTime(exposureTime, wrapper);
+
+                        var result = await FlatWizardExposureTimeFinderService.EvaluateUserPromptResultAsync(
+                            renderedImage.RawImageData, exposureTime, Locale["LblFlatUserPromptFlatTooBright"],
+                            wrapper);
+
+                        if (!result.Continue) {
+                            flatSequenceCts.Cancel();
                         } else {
-                            exposureTime =
-                                FlatWizardExposureTimeFinderService.GetNextExposureTime(exposureTime, wrapper);
-
-                            var result = await FlatWizardExposureTimeFinderService.EvaluateUserPromptResultAsync(
-                                renderedImage.RawImageData, exposureTime, Locale["LblFlatUserPromptFlatTooBright"],
-                                wrapper);
-
-                            if (!result.Continue) {
-                                flatSequenceCts.Cancel();
-                            } else {
-                                if (_flatDevice != null && _flatDevice.Connected) {
-                                    _flatDeviceMediator.SetBrightness(1.0);
-                                }
-
-                                exposureTime = result.NextExposureTime;
-                            }
+                            exposureTime = result.NextExposureTime;
                         }
 
                         break;
@@ -662,6 +664,7 @@ namespace NINA.ViewModel.FlatWizard {
 
                 var exposureData = await ImagingVM.CaptureImage(sequence, ct, progress);
                 var imageData = await exposureData.ToImageData();
+                imageData.MetaData.Target.Name = TargetName;
                 var prepareParameters = new PrepareImageParameters(autoStretch: false, detectStars: false);
                 var prepareTask = ImagingVM.PrepareImage(imageData, prepareParameters, ct);
 
