@@ -1039,8 +1039,12 @@ namespace NINA.ViewModel {
                         await _flatDeviceMediator.CloseCover();
                     }
 
+                    if (!_flatDevice.LightOn) {
+                        _flatDeviceMediator.ToggleLight(true);
+                    }
+
                     if (profileService.ActiveProfile.FlatDeviceSettings.UseWizardTrainedValues) {
-                        var settings = profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(new FlatDeviceFilterSettingsKey(seq.FilterType.Name, seq.Binning, seq.Gain));
+                        var settings = profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(new FlatDeviceFilterSettingsKey(seq.FilterType.Position, seq.Binning, seq.Gain));
                         if (settings != null) {
                             _flatDeviceMediator.SetBrightness(settings.Brightness);
                             seq.ExposureTime = settings.Time;
@@ -1048,10 +1052,6 @@ namespace NINA.ViewModel {
                         } else {
                             Logger.Debug($"No settings found for filter: {seq.FilterType?.Name}, binning: {seq.Binning} and gain: {seq.Gain}.");
                         }
-                    }
-
-                    if (!_flatDevice.LightOn) {
-                        _flatDeviceMediator.ToggleLight(true);
                     }
 
                     break;
@@ -1076,7 +1076,7 @@ namespace NINA.ViewModel {
                     }
 
                     if (profileService.ActiveProfile.FlatDeviceSettings.UseWizardTrainedValues) {
-                        var settings = profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(new FlatDeviceFilterSettingsKey(seq.FilterType.Name, seq.Binning, seq.Gain));
+                        var settings = profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(new FlatDeviceFilterSettingsKey(seq.FilterType.Position, seq.Binning, seq.Gain));
                         if (settings != null) {
                             seq.ExposureTime = settings.Time;
                             Logger.Debug($"Starting dark flat exposure with filter: {seq.FilterType.Name}, binning: {seq.Binning}, gain: {seq.Gain} and exposure time: {settings.Time}.");

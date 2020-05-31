@@ -29,15 +29,14 @@ namespace NINATest.FlatDevice {
         }
 
         [Test]
-        [TestCase("red", 1, 1, 0, 0.34, 1.0)]
-        [TestCase("red", 2, 2, 0, 0.34, 1.0)]
-        [TestCase("red", 2, 1, 0, 0.34, 1.0)]
-        [TestCase("", 2, 1, 0, 0.34, 1.0)]
-        [TestCase("very long filter name", 10, 10, 0, 0.34, 1.0)]
+        [TestCase(0, 1, 1, 0, 0.34, 1.0)]
+        [TestCase(1, 2, 2, 0, 0.34, 1.0)]
+        [TestCase(2, 2, 1, 0, 0.34, 1.0)]
+        [TestCase(-1, 2, 1, 0, 0.34, 1.0)]
         [TestCase(null, 2, 1, 0, 0.34, 1.0)]
         [TestCase(null, 2, 1, null, 0.34, 1.0)]
-        public void TestAddBrightnessInfo(string name, short binX, short binY, short gain, double time, double brightness) {
-            var key = new FlatDeviceFilterSettingsKey(name, binning: new BinningMode(binX, binY), gain);
+        public void TestAddBrightnessInfo(short? position, short binX, short binY, short gain, double time, double brightness) {
+            var key = new FlatDeviceFilterSettingsKey(position, binning: new BinningMode(binX, binY), gain);
             var value = new FlatDeviceFilterSettingsValue(brightness, time);
             _sut.AddBrightnessInfo(key, value);
             Assert.That(_sut.GetBrightnessInfo(key), Is.EqualTo(value));
@@ -48,44 +47,40 @@ namespace NINATest.FlatDevice {
         }
 
         [Test]
-        [TestCase("red", 1, 1, 0, 0.34, 1.0)]
-        [TestCase("red", 2, 2, 0, 0.34, 1.0)]
-        [TestCase("red", 2, 1, 0, 0.34, 1.0)]
-        [TestCase("", 2, 1, 0, 0.34, 1.0)]
-        [TestCase("very long filter name", 10, 10, 0, 0.34, 1.0)]
+        [TestCase(0, 1, 1, 0, 0.34, 1.0)]
+        [TestCase(1, 2, 2, 0, 0.34, 1.0)]
+        [TestCase(2, 2, 1, 0, 0.34, 1.0)]
+        [TestCase(-1, 2, 1, 0, 0.34, 1.0)]
         [TestCase(null, 2, 1, 0, 0.34, 1.0)]
         [TestCase(null, 2, 1, null, 0.34, 1.0)]
-        public void TestBrightnessInfoKeyEquivalence(string name, short binX, short binY, short gain, double time, double brightness) {
-            var key = new FlatDeviceFilterSettingsKey(name, binning: new BinningMode(binX, binY), gain);
+        public void TestBrightnessInfoKeyEquivalence(short? position, short binX, short binY, short gain, double time, double brightness) {
+            var key = new FlatDeviceFilterSettingsKey(position, binning: new BinningMode(binX, binY), gain);
             var value = new FlatDeviceFilterSettingsValue(brightness, time);
             _sut.AddBrightnessInfo(key, value);
-            key = new FlatDeviceFilterSettingsKey(name, binning: new BinningMode(binX, binY), gain);
+            key = new FlatDeviceFilterSettingsKey(position, binning: new BinningMode(binX, binY), gain);
             Assert.That(_sut.GetBrightnessInfo(key), Is.EqualTo(value));
         }
 
         [Test]
-        [TestCase("red", 0, 0.34, 1.0)]
-        [TestCase("red", 0, 0.34, 1.0)]
-        [TestCase("red", 0, 0.34, 1.0)]
-        [TestCase("", 0, 0.34, 1.0)]
-        [TestCase("very long filter name", 0, 0.34, 1.0)]
+        [TestCase(0, 0, 0.34, 1.0)]
+        [TestCase(-1, 0, 0.34, 1.0)]
         [TestCase(null, 0, 0.34, 1.0)]
         [TestCase(null, null, 0.34, 1.0)]
-        public void TestBrightnessInfoKeyEquivalenceNullBinning(string name, short gain, double time, double brightness) {
-            var key = new FlatDeviceFilterSettingsKey(name, binning: null, gain);
+        public void TestBrightnessInfoKeyEquivalenceNullBinning(short? position, short gain, double time, double brightness) {
+            var key = new FlatDeviceFilterSettingsKey(position, binning: null, gain);
             var value = new FlatDeviceFilterSettingsValue(brightness, time);
             _sut.AddBrightnessInfo(key, value);
-            key = new FlatDeviceFilterSettingsKey(name, binning: null, gain);
+            key = new FlatDeviceFilterSettingsKey(position, binning: null, gain);
             Assert.That(_sut.GetBrightnessInfo(key), Is.EqualTo(value));
         }
 
         [Test]
-        [TestCase("red", 30, 0.34, 1.0)]
+        [TestCase(0, 30, 0.34, 1.0)]
         [TestCase(null, 30, 0.34, 1.0)]
-        [TestCase("red", null, 0.34, 1.0)]
+        [TestCase(0, null, 0.34, 1.0)]
         [TestCase(null, null, 0.34, 1.0)]
-        public void TestAddBrightnessInfoNullBinning(string name, short gain, double time, double brightness) {
-            var key = new FlatDeviceFilterSettingsKey(name, binning: null, gain);
+        public void TestAddBrightnessInfoNullBinning(short? position, short gain, double time, double brightness) {
+            var key = new FlatDeviceFilterSettingsKey(position, binning: null, gain);
             var value = new FlatDeviceFilterSettingsValue(brightness, time);
             _sut.AddBrightnessInfo(key, value);
             Assert.That(_sut.GetBrightnessInfo(key), Is.EqualTo(value));
@@ -98,7 +93,7 @@ namespace NINATest.FlatDevice {
         [Test]
         public void TestUpdateBrightnessInfo() {
             //setup
-            var key = new FlatDeviceFilterSettingsKey("red", new BinningMode(1, 1), 30);
+            var key = new FlatDeviceFilterSettingsKey(0, new BinningMode(1, 1), 30);
             var value = new FlatDeviceFilterSettingsValue(0.5, 0.75);
             _sut.AddBrightnessInfo(key, value);
             Assert.That(_sut.GetBrightnessInfo(key), Is.EqualTo(value));
@@ -122,7 +117,7 @@ namespace NINATest.FlatDevice {
         [Test]
         public void TestClearBrightnessInfo() {
             //setup
-            var key = new FlatDeviceFilterSettingsKey("red", new BinningMode(1, 1), 30);
+            var key = new FlatDeviceFilterSettingsKey(0, new BinningMode(1, 1), 30);
             var value = new FlatDeviceFilterSettingsValue(0.5, 0.75);
             _sut.AddBrightnessInfo(key, value);
             Assert.That(_sut.GetBrightnessInfo(key), Is.EqualTo(value));

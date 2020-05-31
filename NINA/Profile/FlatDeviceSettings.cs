@@ -165,16 +165,16 @@ namespace NINA.Profile {
     public class FlatDeviceFilterSettingsKey {
 
         [DataMember]
-        public string FilterName { get; set; }
+        public short? Position { get; }
 
         [DataMember]
-        public BinningMode Binning { get; set; }
+        public BinningMode Binning { get; }
 
         [DataMember]
-        public int Gain { get; set; }
+        public int Gain { get; }
 
-        public FlatDeviceFilterSettingsKey(string filterName, BinningMode binning, int gain) {
-            FilterName = filterName;
+        public FlatDeviceFilterSettingsKey(short? position, BinningMode binning, int gain) {
+            Position = position;
             Binning = binning;
             Gain = gain;
         }
@@ -187,13 +187,13 @@ namespace NINA.Profile {
             var other = (FlatDeviceFilterSettingsKey)obj;
             switch (Binning) {
                 case null when other.Binning == null:
-                    return FilterName == other.FilterName && Gain == other.Gain;
+                    return Position == other.Position && Gain == other.Gain;
 
                 case null:
                     return false;
 
                 default:
-                    return FilterName == other.FilterName && Binning.Equals(other.Binning) && Gain == other.Gain;
+                    return Position == other.Position && Binning.Equals(other.Binning) && Gain == other.Gain;
             }
         }
 
@@ -201,7 +201,7 @@ namespace NINA.Profile {
             //see https://en.wikipedia.org/wiki/Hash_function
             const int primeNumber = 397;
             unchecked {
-                var hashCode = (FilterName != null ? FilterName.GetHashCode() : 0);
+                var hashCode = Position != null ? Position.GetHashCode() : 0;
                 hashCode = (hashCode * primeNumber) ^ (Binning != null ? Binning.GetHashCode() : 0);
                 hashCode = (hashCode * primeNumber) ^ Gain.GetHashCode();
                 return hashCode;
