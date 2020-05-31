@@ -12,7 +12,6 @@
 
 #endregion "copyright"
 
-using Accord;
 using Accord.Statistics.Models.Regression.Linear;
 using NINA.Model;
 using NINA.Model.ImageData;
@@ -31,7 +30,6 @@ using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.Exceptions;
 using NINA.Utility.ExternalCommand;
-using NINA.Utility.ImageAnalysis;
 using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
@@ -675,7 +673,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task AutoFocusOnStart(CaptureSequenceList csl, CancellationToken ct, IProgress<ApplicationStatus> progress) {
-            if (csl.AutoFocusOnStart) {
+            if (csl.AutoFocusOnStart && focuserInfo?.Connected == true) {
                 if (profileService.ActiveProfile.FocuserSettings.AutoFocusDisableGuiding) {
                     await StopGuiding(ct, progress);
                 }
@@ -685,7 +683,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task StartGuiding(CaptureSequenceList csl, IProgress<ApplicationStatus> progress) {
-            if (csl.StartGuiding) {
+            if (csl.StartGuiding && guiderInfo?.Connected == true) {
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStartGuiding"] });
                 var guiderStarted = await this.guiderMediator.StartGuiding(_canceltoken.Token);
                 if (!guiderStarted) {
@@ -695,8 +693,10 @@ namespace NINA.ViewModel {
         }
 
         private async Task StopGuiding(CancellationToken ct, IProgress<ApplicationStatus> progress) {
-            progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStopGuiding"] });
-            await this.guiderMediator.StopGuiding(ct);
+            if (guiderInfo?.Connected == true) {
+                progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblStopGuiding"] });
+                await this.guiderMediator.StopGuiding(ct);
+            }
         }
 
         private bool _isRunning;
@@ -803,7 +803,9 @@ namespace NINA.ViewModel {
                     await StartGuiding(csl, progress);
                 }
 
-                await AutoFocusOnStart(csl, ct, progress);
+                if (focuserInfo?.Connected == true) {
+                    await AutoFocusOnStart(csl, ct, progress);
+                }
 
                 await StartGuiding(csl, progress);
 
@@ -1177,6 +1179,12 @@ namespace NINA.ViewModel {
 
         private bool ShouldAutoFocus(CaptureSequenceList csl, CaptureSequence seq, int exposureCount, short previousFilterPosition, DateTime lastAutoFocusTime, double lastAutoFocusTemperature, bool meridianFlipped) {
             TimeSpan estimatedAFTime;
+
+            // Cannot auto-focus if a focuser isn't connected
+            if (focuserInfo?.Connected == false) {
+                return false;
+            }
+
             if (seq.FilterType != null && seq.FilterType.AutoFocusExposureTime > 0) {
                 estimatedAFTime = TimeSpan.FromSeconds((profileService.ActiveProfile.FocuserSettings.FocuserSettleTime + seq.FilterType.AutoFocusExposureTime) * (profileService.ActiveProfile.FocuserSettings.AutoFocusInitialOffsetSteps + 1) * 4);
             } else {
