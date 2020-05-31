@@ -38,11 +38,18 @@ namespace NINA.ViewModel.Equipment.Focuser {
 
             if (backlashCompensation != 0) {
                 var overshoot = targetPosition + backlashCompensation;
-                Logger.Debug($"Overshooting from {startPosition} to overshoot position {overshoot} using a compensation of {backlashCompensation}");
 
-                await base.Move(overshoot, ct);
+                if (overshoot < 0) {
+                    Logger.Debug($"Overshooting position is below minimum 0, skipping overshoot");
+                } else if (overshoot > MaxStep) {
+                    Logger.Debug($"Overshooting position is above maximum {MaxStep}, skipping overshoot");
+                } else {
+                    Logger.Debug($"Overshooting from {startPosition} to overshoot position {overshoot} using a compensation of {backlashCompensation}");
 
-                Logger.Debug($"Moving back to position {targetPosition}");
+                    await base.Move(overshoot, ct);
+
+                    Logger.Debug($"Moving back to position {targetPosition}");
+                }
             }
 
             await base.Move(targetPosition, ct);

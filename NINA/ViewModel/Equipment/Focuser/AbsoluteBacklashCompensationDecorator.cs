@@ -51,12 +51,23 @@ namespace NINA.ViewModel.Equipment.Focuser {
             var startPosition = base.Position;
             var adjustedTargetPosition = position + offset;
 
-            var backlashCompensation = CalculateBacklashCompensation(startPosition, adjustedTargetPosition);
+            int finalizedTargetPosition;
+            if (adjustedTargetPosition < 0) {
+                Logger.Debug($"Adjusted Target position is below minimum 0. Moving to 0 position and resetting offset");
+                finalizedTargetPosition = 0;
+                offset = 0;
+            } else if (adjustedTargetPosition > MaxStep) {
+                Logger.Debug($"Adjusted Target position is above maximum {MaxStep}. Moving to {MaxStep} position and resetting offset");
+                finalizedTargetPosition = MaxStep;
+                offset = 0;
+            } else {
+                var backlashCompensation = CalculateBacklashCompensation(startPosition, adjustedTargetPosition);
 
-            Logger.Debug($"Backlash compensation is using backlash value of {backlashCompensation}");
+                Logger.Debug($"Backlash compensation is using backlash value of {backlashCompensation}");
 
-            var finalizedTargetPosition = adjustedTargetPosition + backlashCompensation;
-            offset += backlashCompensation;
+                finalizedTargetPosition = adjustedTargetPosition + backlashCompensation;
+                offset += backlashCompensation;
+            }
 
             return base.Move(finalizedTargetPosition, ct);
         }

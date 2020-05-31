@@ -46,6 +46,7 @@ namespace NINATest.Focuser {
             focuserMock.Reset();
             // Initial position = 1000
             focuserMock.SetupGet(x => x.Position).Returns(1000);
+            focuserMock.SetupGet(x => x.MaxStep).Returns(50000);
 
             // Move commands set position to input value
             focuserMock.Setup(x => x.Move(It.IsAny<int>(), It.IsAny<CancellationToken>()))
@@ -86,7 +87,7 @@ namespace NINATest.Focuser {
 
         [Test]
         public async Task Move_SameDirection_BacklashComp_Inwards() {
-            profileServiceMock.SetupProperty(m => m.ActiveProfile.FocuserSettings.BacklashIn, 500);
+            profileServiceMock.SetupProperty(m => m.ActiveProfile.FocuserSettings.BacklashIn, 200);
             profileServiceMock.SetupProperty(m => m.ActiveProfile.FocuserSettings.BacklashOut, 0);
 
             var sut = new TestableOvershootBacklashCompensationDecorator(profileServiceMock.Object, focuserMock.Object);
@@ -112,6 +113,36 @@ namespace NINATest.Focuser {
             sut.Position.Should().Be(1500);
             focuserMock.Object.Position.Should().Be(1500);
             sut.LastDirection.Should().Be(FocuserDecorator.Direction.IN);
+        }
+
+        [Test]
+        public async Task Move_BelowZeroDueToBacklashComp_MoveTo0() {
+            profileServiceMock.SetupProperty(m => m.ActiveProfile.FocuserSettings.BacklashIn, 500);
+            profileServiceMock.SetupProperty(m => m.ActiveProfile.FocuserSettings.BacklashOut, 0);
+
+            var sut = new TestableOvershootBacklashCompensationDecorator(profileServiceMock.Object, focuserMock.Object);
+
+            await sut.Move(1500, default);
+            await sut.Move(0, default);
+
+            sut.Position.Should().Be(0);
+            focuserMock.Object.Position.Should().Be(0);
+            sut.LastDirection.Should().Be(FocuserDecorator.Direction.IN);
+        }
+
+        [Test]
+        public async Task Move_AboveMaxStepDueToBacklashComp_MoveToMaxStep() {
+            profileServiceMock.SetupProperty(m => m.ActiveProfile.FocuserSettings.BacklashIn, 0);
+            profileServiceMock.SetupProperty(m => m.ActiveProfile.FocuserSettings.BacklashOut, 500);
+
+            var sut = new TestableOvershootBacklashCompensationDecorator(profileServiceMock.Object, focuserMock.Object);
+
+            await sut.Move(1500, default);
+            await sut.Move(50000, default);
+
+            sut.Position.Should().Be(50000);
+            focuserMock.Object.Position.Should().Be(50000);
+            sut.LastDirection.Should().Be(FocuserDecorator.Direction.OUT);
         }
     }
 }

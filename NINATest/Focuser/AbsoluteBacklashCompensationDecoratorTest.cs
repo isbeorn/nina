@@ -38,6 +38,7 @@ namespace NINATest.Focuser {
             focuserMock.Reset();
             // Initial position = 1000
             focuserMock.SetupGet(x => x.Position).Returns(1000);
+            focuserMock.SetupGet(x => x.MaxStep).Returns(50000);
 
             // Move commands set position to input value
             focuserMock.Setup(x => x.Move(It.IsAny<int>(), It.IsAny<CancellationToken>()))
@@ -132,6 +133,40 @@ namespace NINATest.Focuser {
 
             sut.Position.Should().Be(1200);
             focuserMock.Object.Position.Should().Be(300);
+        }
+
+        [Test]
+        public async Task Move_BelowZeroDueToBacklashComp_MoveTo0() {
+            profileServiceMock.SetupProperty(m => m.ActiveProfile.FocuserSettings.BacklashIn, 500);
+            profileServiceMock.SetupProperty(m => m.ActiveProfile.FocuserSettings.BacklashOut, 100);
+
+            var sut = new AbsoluteBacklashCompensationDecorator(profileServiceMock.Object, focuserMock.Object);
+
+            await sut.Move(1500, default); // no comp
+            await sut.Move(1000, default); // -500
+            await sut.Move(1400, default); // +100
+            await sut.Move(1200, default); // -500
+            await sut.Move(0, default);
+
+            sut.Position.Should().Be(0);
+            focuserMock.Object.Position.Should().Be(0);
+        }
+
+        [Test]
+        public async Task Move_AboveMaxStepDueToBacklashComp_MoveToMaxStep() {
+            profileServiceMock.SetupProperty(m => m.ActiveProfile.FocuserSettings.BacklashIn, 100);
+            profileServiceMock.SetupProperty(m => m.ActiveProfile.FocuserSettings.BacklashOut, 500);
+
+            var sut = new AbsoluteBacklashCompensationDecorator(profileServiceMock.Object, focuserMock.Object);
+
+            await sut.Move(1500, default); // no comp
+            await sut.Move(1000, default); // -100
+            await sut.Move(1400, default); // +500
+            await sut.Move(1000, default); // -100
+            await sut.Move(50000, default);
+
+            sut.Position.Should().Be(50000);
+            focuserMock.Object.Position.Should().Be(50000);
         }
     }
 }
