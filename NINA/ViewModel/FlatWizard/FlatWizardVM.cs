@@ -32,11 +32,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Interactivity;
 using System.Windows.Media.Imaging;
 
 namespace NINA.ViewModel.FlatWizard {
@@ -501,6 +502,8 @@ namespace NINA.ViewModel.FlatWizard {
 
         private async Task<bool> StartFlatMagic(IEnumerable<FlatWizardFilterSettingsWrapper> filters, IProgress<ApplicationStatus> progress, PauseToken pt) {
             try {
+                if (!HasWritePermission(profileService.ActiveProfile.ImageFileSettings.FilePath)) return false;
+
                 if (flatSequenceCts.IsCancellationRequested) {
                     flatSequenceCts?.Dispose();
                     flatSequenceCts = new CancellationTokenSource();
@@ -745,6 +748,45 @@ namespace NINA.ViewModel.FlatWizard {
 
             if (profileService.ActiveProfile.FlatWizardSettings.StepSize != SingleFlatWizardFilterSettings.Settings.StepSize) {
                 profileService.ActiveProfile.FlatWizardSettings.StepSize = SingleFlatWizardFilterSettings.Settings.StepSize;
+            }
+        }
+
+        public bool HasWritePermission(string dir) {
+            bool Allow = false;
+            bool Deny = false;
+            DirectorySecurity acl = null;
+
+            if (Directory.Exists(dir)) {
+                acl = Directory.GetAccessControl(dir);
+            }
+
+            if (acl == null) {
+                Notification.ShowError(Locale["LblDirectoryNotFound"]);
+                return false;
+            }
+
+            AuthorizationRuleCollection arc = acl.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier));
+            if (arc == null) {
+                return false;
+            }
+
+            foreach (FileSystemAccessRule rule in arc) {
+                if ((FileSystemRights.Write & rule.FileSystemRights) != FileSystemRights.Write) {
+                    continue;
+                }
+
+                if (rule.AccessControlType == AccessControlType.Allow) {
+                    Allow = true;
+                } else if (rule.AccessControlType == AccessControlType.Deny) {
+                    Deny = true;
+                }
+            }
+
+            if (Allow && !Deny) {
+                return true;
+            } else {
+                Notification.ShowError(Locale["LblDirectoryNotWritable"]);
+                return false;
             }
         }
 

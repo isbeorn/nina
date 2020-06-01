@@ -328,7 +328,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
 
         private void UpdateWizardTrainedValues() {
             WizardTrainedValues = new DataTable();
-            var filters = _filterWheelMediator.GetAllFilters() ?? new List<FilterInfo> { new FilterInfo() };
+            var filters = _filterWheelMediator.GetAllFilters() ?? new List<FilterInfo> { null };
 
             var binningModes = new List<BinningMode>();
             var gains = new List<int>();
@@ -345,10 +345,10 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             }
 
             foreach (var filter in filters) {
-                var row = new List<object> { filter.Name ?? Loc.Instance["LblNoFilterwheel"] };
+                var row = new List<object> { filter?.Name ?? Loc.Instance["LblNoFilterwheel"] };
                 row.AddRange(keys.Select(
                     key => profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(
-                        new FlatDeviceFilterSettingsKey(filter.Position, key.binning, key.gain))).Select(
+                        new FlatDeviceFilterSettingsKey(filter?.Position, key.binning, key.gain))).Select(
                     info => info != null ? $"{info.Time,3:0.0}s @ {info.Brightness,3:P0}" : "-"));
                 WizardTrainedValues.Rows.Add(row.ToArray());
             }

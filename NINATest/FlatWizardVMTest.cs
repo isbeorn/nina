@@ -26,7 +26,9 @@ using NINA.ViewModel.Interfaces;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using NINA.Model;
@@ -82,6 +84,7 @@ namespace NINATest {
             profileMock.SetupGet(m => m.FilterWheelSettings).Returns(filterWheelSettingsMock.Object);
             profileServiceMock.Setup(m => m.ActiveProfile.ImageSettings.AutoStretchFactor).Returns(1.0);
             profileServiceMock.Setup(m => m.ActiveProfile.ImageSettings.BlackClipping).Returns(0.1);
+            profileServiceMock.Setup(m => m.ActiveProfile.ImageFileSettings.FilePath).Returns(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName);
             filterWheelSettingsMock.SetupGet(m => m.FilterWheelFilters)
                 .Returns(new ObserveAllCollection<FilterInfo>());
 

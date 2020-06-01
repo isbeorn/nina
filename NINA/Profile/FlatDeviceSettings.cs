@@ -165,13 +165,13 @@ namespace NINA.Profile {
     public class FlatDeviceFilterSettingsKey {
 
         [DataMember]
-        public short? Position { get; }
+        public short? Position { get; set; }
 
         [DataMember]
-        public BinningMode Binning { get; }
+        public BinningMode Binning { get; set; }
 
         [DataMember]
-        public int Gain { get; }
+        public int Gain { get; set; }
 
         public FlatDeviceFilterSettingsKey(short? position, BinningMode binning, int gain) {
             Position = position;
