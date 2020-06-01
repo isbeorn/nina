@@ -65,7 +65,7 @@ namespace NINA.ViewModel.Equipment.WeatherData {
                 }
 
                 if (WeatherDataChooserVM.SelectedDevice.Id == "No_Device") {
-                    profileService.ActiveProfile.FocuserSettings.Id = WeatherDataChooserVM.SelectedDevice.Id;
+                    profileService.ActiveProfile.WeatherDataSettings.Id = WeatherDataChooserVM.SelectedDevice.Id;
                     return false;
                 }
 
