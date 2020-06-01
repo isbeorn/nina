@@ -676,6 +676,12 @@ namespace NINA.Model.MyCamera {
                 maxTemperatureSetpoint = GetControlMaxValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP);
                 minTemperatureSetpoint = GetControlMinValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_TARGET_TEMP);
             }
+
+            var flip = (ASICameraDll.ASI_FLIP_STATUS)GetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_FLIP);
+            if (flip != ASICameraDll.ASI_FLIP_STATUS.ASI_FLIP_NONE) {
+                Logger.Info($"Resetting ASI Flip Status to NONE. It was {flip}");
+                SetControlValue(ASICameraDll.ASI_CONTROL_TYPE.ASI_FLIP, (int)ASICameraDll.ASI_FLIP_STATUS.ASI_FLIP_NONE);
+            }
         }
 
         public async Task<bool> Connect(CancellationToken token) {
