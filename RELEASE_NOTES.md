@@ -171,6 +171,8 @@
 - ZWO cameras now properly handle odd bin dimensions (e.g. 3x3)
 - Added a bit scaling option under **Options > Equipment > Camera > Advanced Settings**, intended for users of Altair Astro, Omegon, and ToupTek cameras, to bit-shift the raw sub-16 bit data camera data that N.I.N.A. receives to 16 bits in order to improve file compatibility with other capture software
 - FreeImage library upgraded to 3.18 for improved DSLR raw file display
+- ZWO cameras now write correct EGAIN values when switching Gain
+- ZWO cameras reset the FLIP STATUS to NONE in case it was altered by another software
 
 ### Imaging window changes
 - Added more southern hemisphere stars to the Manual Focus Stars tool
