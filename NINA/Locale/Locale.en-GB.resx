@@ -3080,7 +3080,7 @@ Should the values be synced?</value>
   </data>
   <data name="LblTooltipBahtinovAnalyzer" xml:space="preserve">
     <value>Bahtinov Analyzer
-Drag the rectangle over a star with the bahtinov spikes. NINA will try to detect the spikes and show the error.</value>
+Drag the rectangle over a star within the bahtinov spikes. NINA will try to detect the spikes and show the error.</value>
   </data>
   <data name="LblTooltipCrossHair" xml:space="preserve">
     <value>Toggles crosshair on/off</value>
