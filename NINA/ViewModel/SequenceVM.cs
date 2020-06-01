@@ -873,10 +873,10 @@ namespace NINA.ViewModel {
         /// <returns></returns>
         private async Task<bool> ProcessSequence(CaptureSequenceList csl, CancellationToken ct, PauseToken pt, IProgress<ApplicationStatus> progress) {
             return await Task.Run<bool>(async () => {
-                try {
-                    //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released
-                    await semaphoreSlim.WaitAsync(ct);
+                //Asynchronously wait to enter the Semaphore. If no-one has been granted access to the Semaphore, code execution will proceed, otherwise this thread waits here until the semaphore is released
+                await semaphoreSlim.WaitAsync(ct);
 
+                try {
                     csl.IsRunning = true;
 
                     CaptureSequence seq;
@@ -1018,6 +1018,9 @@ namespace NINA.ViewModel {
                         await saveTask;
                     }
                 } catch (OperationCanceledException ex) {
+                    if (Sequence?.ActiveSequence?.ProgressExposureCount > 0) {
+                        Sequence.ActiveSequence.ProgressExposureCount--;
+                    }
                     throw ex;
                 } catch (CameraConnectionLostException) {
                 } catch (Exception ex) {
