@@ -113,28 +113,5 @@ namespace NINATest.FlatDevice {
             Assert.That(_sut.GetBrightnessInfoGains().Count(), Is.EqualTo(1));
             Assert.That(_sut.GetBrightnessInfoGains().Contains((short)30), Is.True);
         }
-
-        [Test]
-        public void TestClearBrightnessInfo() {
-            //setup
-            var key = new FlatDeviceFilterSettingsKey(0, new BinningMode(1, 1), 30);
-            var value = new FlatDeviceFilterSettingsValue(0.5, 0.75);
-            _sut.AddBrightnessInfo(key, value);
-            Assert.That(_sut.GetBrightnessInfo(key), Is.EqualTo(value));
-            Assert.That(_sut.GetBrightnessInfoBinnings().Count(), Is.EqualTo(1));
-            Assert.That(_sut.GetBrightnessInfoBinnings().Contains(new BinningMode(1, 1)), Is.True);
-            Assert.That(_sut.GetBrightnessInfoGains().Count(), Is.EqualTo(1));
-            Assert.That(_sut.GetBrightnessInfoGains().Contains((short)30), Is.True);
-
-            //test
-            _sut.ClearBrightnessInfo();
-
-            //Assert
-            Assert.That(_sut.GetBrightnessInfo(key), Is.Null);
-            Assert.That(_sut.GetBrightnessInfoBinnings().Count(), Is.EqualTo(0));
-            Assert.That(_sut.GetBrightnessInfoBinnings().Contains(new BinningMode(1, 1)), Is.False);
-            Assert.That(_sut.GetBrightnessInfoGains().Count(), Is.EqualTo(0));
-            Assert.That(_sut.GetBrightnessInfoGains().Contains((short)30), Is.False);
-        }
     }
 }

@@ -35,6 +35,8 @@ namespace NINA.Profile {
 
         IEnumerable<int> GetBrightnessInfoGains();
 
-        void ClearBrightnessInfo();
+        void RemoveGain(int gain);
+
+        void RemoveBinning(BinningMode binningMode);
     }
 }

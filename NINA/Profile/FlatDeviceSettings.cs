@@ -20,7 +20,7 @@ using System.Runtime.Serialization;
 
 namespace NINA.Profile {
 
-    [Serializable()]
+    [Serializable]
     [DataContract]
     internal class FlatDeviceSettings : Settings, IFlatDeviceSettings {
 
@@ -154,13 +154,28 @@ namespace NINA.Profile {
             return result.Distinct();
         }
 
-        public void ClearBrightnessInfo() {
-            FilterSettings =
-                new Dictionary<FlatDeviceFilterSettingsKey, FlatDeviceFilterSettingsValue>();
+        public void RemoveGain(int gain) {
+            var keysToRemove = FilterSettings.Keys
+                                                .Where(key => key.Gain == gain).ToList();
+
+            foreach (var key in keysToRemove) {
+                FilterSettings.Remove(key);
+            }
+            RaisePropertyChanged(nameof(FilterSettings));
+        }
+
+        public void RemoveBinning(BinningMode binning) {
+            var keysToRemove = FilterSettings.Keys
+                                                .Where(key => Equals(key.Binning, binning)).ToList();
+
+            foreach (var key in keysToRemove) {
+                FilterSettings.Remove(key);
+            }
+            RaisePropertyChanged(nameof(FilterSettings));
         }
     }
 
-    [Serializable()]
+    [Serializable]
     [DataContract]
     public class FlatDeviceFilterSettingsKey {
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
@@ -209,7 +224,7 @@ namespace NINA.Profile {
         }
     }
 
-    [Serializable()]
+    [Serializable]
     [DataContract]
     public class FlatDeviceFilterSettingsValue {
 

@@ -3914,6 +3914,42 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Binning.
+        /// </summary>
+        internal static string LblFlatDeviceAddBinningMode {
+            get {
+                return ResourceManager.GetString("LblFlatDeviceAddBinningMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Gain.
+        /// </summary>
+        internal static string LblFlatDeviceAddGain {
+            get {
+                return ResourceManager.GetString("LblFlatDeviceAddGain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete all values for binning.
+        /// </summary>
+        internal static string LblFlatDeviceAreYouSureBinning {
+            get {
+                return ResourceManager.GetString("LblFlatDeviceAreYouSureBinning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete all values for gain.
+        /// </summary>
+        internal static string LblFlatDeviceAreYouSureGain {
+            get {
+                return ResourceManager.GetString("LblFlatDeviceAreYouSureGain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Brightness.
         /// </summary>
         internal static string LblFlatDeviceBrightness {
@@ -4000,6 +4036,24 @@ namespace NINA.Locale {
         internal static string LblFlatDeviceCoverCurrently {
             get {
                 return ResourceManager.GetString("LblFlatDeviceCoverCurrently", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Binning.
+        /// </summary>
+        internal static string LblFlatDeviceDeleteBinningMode {
+            get {
+                return ResourceManager.GetString("LblFlatDeviceDeleteBinningMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Gain.
+        /// </summary>
+        internal static string LblFlatDeviceDeleteGain {
+            get {
+                return ResourceManager.GetString("LblFlatDeviceDeleteGain", resourceCulture);
             }
         }
         

@@ -12,19 +12,21 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:equip="clr-namespace:NINA.View.Equipment"
+    xmlns:flatdevice="clr-namespace:NINA.View.Equipment.FlatDevice"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Locale"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*" />
-            <RowDefinition Height="2*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <GroupBox>
             <GroupBox.Header>
@@ -306,23 +308,12 @@
 
                             <TextBlock Text="{ns:Loc LblFlatDeviceUseWizardTrainedValues}" />
 
-                            <DockPanel>
-                                <CheckBox
-                                    Width="120"
-                                    Height="25"
-                                    Margin="5,0,0,0"
-                                    HorizontalAlignment="Left"
-                                    IsChecked="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.FlatDeviceSettings.UseWizardTrainedValues, Mode=TwoWay}" />
-                                <Button
-                                    Width="100"
-                                    Height="25"
-                                    Margin="5,0,0,0"
-                                    HorizontalAlignment="Right"
-                                    Command="{Binding ClearValuesCommand}"
-                                    IsEnabled="{Binding FlatDeviceInfo.Connected}">
-                                    <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblFlatDeviceClearValues}" />
-                                </Button>
-                            </DockPanel>
+                            <CheckBox
+                                Width="120"
+                                Height="25"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Left"
+                                IsChecked="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.FlatDeviceSettings.UseWizardTrainedValues, Mode=TwoWay}" />
                         </UniformGrid>
                     </Border>
                 </StackPanel>
@@ -330,11 +321,9 @@
         </GroupBox>
         <GroupBox
             Grid.Row="0"
-            Grid.Column="1"
-            IsEnabled="{Binding FlatDeviceInfo.Connected}">
-
+            Grid.RowSpan="2"
+            Grid.Column="1">
             <GroupBox.Header>
-
                 <TextBlock
                     MinHeight="40"
                     Margin="0,10,0,0"
@@ -342,23 +331,222 @@
                     FontSize="20"
                     Text="{ns:Loc LblFlatDeviceTrainedFilterTimes}" />
             </GroupBox.Header>
-            <DataGrid
-                AutoGenerateColumns="True"
-                CanUserAddRows="False"
-                CanUserDeleteRows="False"
-                CanUserSortColumns="False"
-                HeadersVisibility="Column"
-                IsReadOnly="True"
-                ItemsSource="{Binding WizardTrainedValues}">
-                <DataGrid.CellStyle>
-                    <Style BasedOn="{StaticResource MyDataGridCell}" TargetType="{x:Type DataGridCell}">
-                        <Setter Property="VerticalAlignment" Value="Center" />
-                        <Setter Property="HorizontalAlignment" Value="Right" />
-                        <Setter Property="HorizontalContentAlignment" Value="Right" />
-                        <Setter Property="MinWidth" Value="50" />
-                    </Style>
-                </DataGrid.CellStyle>
-            </DataGrid>
+            <GroupBox.Resources>
+                <DataTemplate x:Key="BrightnessTemplate">
+                    <StackPanel
+                        Margin="5,0,5,0"
+                        HorizontalAlignment="Center"
+                        Orientation="Horizontal">
+
+                        <TextBlock
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Text="{Binding Time, StringFormat={}{0:N2}}" />
+                        <TextBlock VerticalAlignment="Center" Text="s" />
+                        <TextBlock VerticalAlignment="Center" Text=" @ " />
+                        <TextBlock
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Text="{Binding Brightness, Converter={StaticResource PercentageConverter}}" />
+                        <TextBlock VerticalAlignment="Center" Text="%" />
+                    </StackPanel>
+                </DataTemplate>
+                <DataTemplate x:Key="BrightnessEditTemplate">
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                        <TextBox VerticalAlignment="Center" Text="{Binding Time}" />
+                        <TextBox
+                            VerticalAlignment="Center"
+                            HorizontalContentAlignment="Right"
+                            Text="{Binding Brightness, Converter={StaticResource PercentageConverter}}" />
+                    </StackPanel>
+                </DataTemplate>
+                <DataTemplate x:Key="FilterNameTemplate">
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock
+                            Margin="5,0,5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="{Binding FilterName}"
+                            Visibility="{Binding Key.Position, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
+                        <TextBlock
+                            Margin="5,0,5,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="{ns:Loc LblNoFilterwheel}"
+                            Visibility="{Binding Key.Position, Converter={StaticResource InverseNullToVisibilityCollapsedConverter}}" />
+                    </StackPanel>
+                </DataTemplate>
+                <DataTemplate x:Key="HeaderTemplate">
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock
+                            Margin="5,0,5,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding Path=DataContext.Header, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"
+                            Visibility="{Binding Path=DataContext.Header, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
+                        <StackPanel Orientation="Horizontal" Visibility="{Binding Path=DataContext.Header, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}, Converter={StaticResource InverseNullToVisibilityCollapsedConverter}}">
+                            <TextBlock
+                                Margin="5,0,5,0"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblGain}" />
+                            <TextBlock
+                                Margin="5,0,5,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding Path=DataContext.Gain, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" />
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+                <DataTemplate x:Key="EmptyCellTemplate">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="-" />
+                </DataTemplate>
+                <flatdevice:WizardGridCellTemplateSelector
+                    x:Key="CellTemplateSelector"
+                    EmptyCell="{StaticResource EmptyCellTemplate}"
+                    FilterNameCell="{StaticResource FilterNameTemplate}"
+                    TimingCell="{StaticResource BrightnessTemplate}" />
+                <flatdevice:WizardGridCellTemplateSelector
+                    x:Key="CellEditTemplateSelector"
+                    EmptyCell="{StaticResource BrightnessEditTemplate}"
+                    FilterNameCell="{StaticResource FilterNameTemplate}"
+                    TimingCell="{StaticResource BrightnessEditTemplate}" />
+            </GroupBox.Resources>
+            <Border>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <ItemsControl Grid.Row="0" ItemsSource="{Binding WizardGrid.Blocks}">
+                        <ItemsControl.Template>
+                            <ControlTemplate TargetType="{x:Type ItemsControl}">
+                                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                    <ItemsPresenter />
+                                </ScrollViewer>
+                            </ControlTemplate>
+                        </ItemsControl.Template>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel HorizontalAlignment="Left" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="5">
+                                    <Grid>
+                                        <StackPanel Orientation="Vertical">
+                                            <StackPanel
+                                                Margin="0,0,0,5"
+                                                HorizontalAlignment="Center"
+                                                Orientation="Horizontal">
+                                                <TextBlock Text="{ns:Loc LblBinning}" />
+                                                <TextBlock Text=" " />
+                                                <TextBlock Text="{Binding Binning}" Visibility="{Binding Path=Binning, Converter={StaticResource NullToVisibilityCollapsedConverter}}" />
+                                                <TextBlock Text="{ns:Loc LblNone}" Visibility="{Binding Path=Binning, Converter={StaticResource InverseNullToVisibilityCollapsedConverter}}" />
+                                            </StackPanel>
+                                            <ItemsControl ItemsSource="{Binding Columns}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <Grid ninactrl:GridHelpers.ColumnCount="{Binding Columns.Count}" ninactrl:GridHelpers.RowCount="1" />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemContainerStyle>
+                                                    <Style TargetType="ContentPresenter">
+                                                        <Setter Property="Grid.Column" Value="{Binding ColumnNumber}" />
+                                                    </Style>
+                                                </ItemsControl.ItemContainerStyle>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <DataGrid
+                                                            Name="DataGrid"
+                                                            AutoGenerateColumns="False"
+                                                            CanUserAddRows="False"
+                                                            CanUserDeleteRows="False"
+                                                            CanUserReorderColumns="False"
+                                                            ItemsSource="{Binding Settings}">
+                                                            <DataGrid.Columns>
+                                                                <DataGridTemplateColumn
+                                                                    CellEditingTemplateSelector="{StaticResource CellEditTemplateSelector}"
+                                                                    CellTemplateSelector="{StaticResource CellTemplateSelector}"
+                                                                    HeaderTemplate="{StaticResource HeaderTemplate}" />
+                                                            </DataGrid.Columns>
+                                                        </DataGrid>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <WrapPanel
+                        Grid.Row="1"
+                        HorizontalAlignment="Center"
+                        Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox
+                                x:Name="GainInput"
+                                Height="25"
+                                MinWidth="50"
+                                VerticalAlignment="Center"
+                                HorizontalContentAlignment="Right" />
+                            <Button
+                                Height="25"
+                                MinWidth="100"
+                                Margin="5"
+                                Command="{Binding AddGainCommand}"
+                                CommandParameter="{Binding Text, ElementName=GainInput}">
+                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblFlatDeviceAddGain}" />
+                            </Button>
+                            <ComboBox
+                                x:Name="GainCombobox"
+                                Height="25"
+                                MinWidth="60"
+                                ItemsSource="{Binding Gains}" />
+                            <Button
+                                Height="25"
+                                MinWidth="100"
+                                Margin="5"
+                                Command="{Binding DeleteGainCommand}"
+                                CommandParameter="{Binding Path=SelectedItem, ElementName=GainCombobox}">
+                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblFlatDeviceDeleteGain}" />
+                            </Button>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <ComboBox
+                                x:Name="CameraBinningModesCombobox"
+                                Height="25"
+                                MinWidth="60"
+                                IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Connected, FallbackValue=false}"
+                                ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes}" />
+                            <Button
+                                Height="25"
+                                MinWidth="100"
+                                Margin="5"
+                                Command="{Binding AddBinningCommand}"
+                                CommandParameter="{Binding Path=SelectedItem, ElementName=CameraBinningModesCombobox}"
+                                IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Connected, FallbackValue=false}">
+                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblFlatDeviceAddBinningMode}" />
+                            </Button>
+                            <ComboBox
+                                x:Name="StoredBinningModesCombobox"
+                                Height="25"
+                                MinWidth="60"
+                                ItemsSource="{Binding BinningModes}" />
+                            <Button
+                                Height="25"
+                                MinWidth="100"
+                                Margin="5"
+                                Command="{Binding DeleteBinningCommand}"
+                                CommandParameter="{Binding Path=SelectedItem, ElementName=StoredBinningModesCombobox}">
+                                <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblFlatDeviceDeleteBinningMode}" />
+                            </Button>
+                        </StackPanel>
+                    </WrapPanel>
+                </Grid>
+            </Border>
         </GroupBox>
     </Grid>
 </UserControl>

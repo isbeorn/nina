@@ -18,6 +18,7 @@
     <converters:BooleanToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
     <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
     <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
+    <converters:InverseNullToVisibilityCollapsedConverter x:Key="InverseNullToVisibilityCollapsedConverter" />
     <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
     <converters:InverseNullToVisibilityConverter x:Key="InverseNullToVisibilityConverter" />
     <converters:DatabindingDebugConverter x:Key="DebugConverter" />

@@ -436,7 +436,7 @@ namespace NINA.ViewModel {
         private FlatDeviceVM _flatDeviceVm;
 
         public FlatDeviceVM FlatDeviceVM {
-            get => _flatDeviceVm ?? (_flatDeviceVm = new FlatDeviceVM(profileService, flatDeviceMediator, applicationStatusMediator, filterWheelMediator));
+            get => _flatDeviceVm ?? (_flatDeviceVm = new FlatDeviceVM(profileService, flatDeviceMediator, applicationStatusMediator));
             set {
                 _flatDeviceVm = value;
                 RaisePropertyChanged();

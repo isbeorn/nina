@@ -21,6 +21,7 @@ namespace NINA.Model.MyCamera {
     [Serializable()]
     [XmlRoot(ElementName = nameof(BinningMode))]
     public class BinningMode : BaseINPC {
+        private const char SEPARATOR = 'x';
 
         private BinningMode() {
         }
@@ -33,17 +34,11 @@ namespace NINA.Model.MyCamera {
         private short _x;
         private short _y;
 
-        public string Name {
-            get {
-                return string.Join("x", X, Y);
-            }
-        }
+        public string Name => string.Join(SEPARATOR.ToString(), X, Y);
 
         [XmlElement(nameof(X))]
         public short X {
-            get {
-                return _x;
-            }
+            get => _x;
 
             set {
                 _x = value;
@@ -53,9 +48,7 @@ namespace NINA.Model.MyCamera {
 
         [XmlElement(nameof(Y))]
         public short Y {
-            get {
-                return _y;
-            }
+            get => _y;
 
             set {
                 _y = value;
@@ -82,6 +75,20 @@ namespace NINA.Model.MyCamera {
             unchecked {
                 return (_x.GetHashCode() * primeNumber) ^ _y.GetHashCode();
             }
+        }
+
+        public static bool TryParse(string s, out BinningMode mode) {
+            mode = null;
+            if (string.IsNullOrEmpty(s)) return false;
+            try {
+                if (!short.TryParse(s.Split(SEPARATOR)[0], out var x)) return false;
+                if (!short.TryParse(s.Split(SEPARATOR)[1], out var y)) return false;
+                mode = new BinningMode(x, y);
+                return true;
+            } catch (Exception ex) {
+                Logger.Error($"Could not parse binning mode from {s}. {ex}");
+            }
+            return false;
         }
     }
 }

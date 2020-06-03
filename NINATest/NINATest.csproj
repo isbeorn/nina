@@ -177,6 +177,7 @@
     <Compile Include="FITSTest.cs" />
     <Compile Include="FlatDevice\AlnitakCommandTest.cs" />
     <Compile Include="FlatDevice\AlnitakResponseTest.cs" />
+    <Compile Include="FlatDevice\FilterTimingTest.cs" />
     <Compile Include="FlatDevice\FlatDeviceInfoTest.cs" />
     <Compile Include="FlatDevice\FlatDeviceSdkTest.cs" />
     <Compile Include="FlatDevice\FlatmasterCommandTest.cs" />

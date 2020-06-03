@@ -459,6 +459,7 @@
     <Compile Include="Utility\Converters\FilterWheelFilterConverter.cs" />
     <Compile Include="Utility\Converters\ImagePatternToTextConverter.cs" />
     <Compile Include="Utility\Converters\IntNegativeOneToDoubleDashConverter.cs" />
+    <Compile Include="Utility\Converters\InverseNullToVisibilityCollapsedConverter.cs" />
     <Compile Include="Utility\Converters\OptimalExposureCalculatorAnswerConverter.cs" />
     <Compile Include="Utility\Converters\NaNToDoubleDashConverter.cs" />
     <Compile Include="Utility\Converters\NaNToVisibilityCollapsedConverter.cs" />
@@ -628,6 +629,7 @@
     <Compile Include="ViewModel\Equipment\FilterWheel\FilterWheelChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\FlatDevice\FlatDeviceChooserVM.cs" />
     <Compile Include="ViewModel\Equipment\FlatDevice\FlatDeviceVM.cs" />
+    <Compile Include="ViewModel\Equipment\FlatDevice\FlatWizardValues.cs" />
     <Compile Include="ViewModel\Equipment\FlatDevice\IFlatDeviceVM.cs" />
     <Compile Include="ViewModel\Equipment\Focuser\AbsoluteBacklashCompensationDecorator.cs" />
     <Compile Include="ViewModel\Equipment\Focuser\FocuserChooserVM.cs" />
@@ -674,6 +676,7 @@
     <Compile Include="View\Equipment\FlatDevice\AlnitakSetupView.xaml.cs">
       <DependentUpon>AlnitakSetupView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Equipment\FlatDevice\WizardGridCellTemplateSelector.cs" />
     <Compile Include="View\Equipment\Focuser\PegasusAstroUltimatePowerBoxV2StepperMotorSetupView.xaml.cs">
       <DependentUpon>PegasusAstroUltimatePowerBoxV2StepperMotorSetupView.xaml</DependentUpon>
     </Compile>
