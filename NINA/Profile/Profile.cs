@@ -71,6 +71,19 @@ namespace NINA.Profile {
         [OnDeserialized]
         private void SetValuesOnDeserialized(StreamingContext context) {
             RegisterHandlers();
+            MigrateFlatDeviceFilterSettingsFromFilterNameToPosition();
+        }
+
+        private void MigrateFlatDeviceFilterSettingsFromFilterNameToPosition() {
+            foreach(var kvp in FlatDeviceSettings.FilterSettings) {
+                if(kvp.Key.Position == null && !string.IsNullOrEmpty(kvp.Key.FilterName)) {
+                    var usedFilter = FilterWheelSettings.FilterWheelFilters.FirstOrDefault(f => f.Name == kvp.Key.FilterName);
+                    if(usedFilter != null) {
+                        kvp.Key.Position = usedFilter.Position;
+                        kvp.Key.FilterName = null;
+                    }
+                }
+            }
         }
 
         /// <summary>

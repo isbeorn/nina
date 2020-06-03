@@ -163,6 +163,8 @@ namespace NINA.Profile {
     [Serializable()]
     [DataContract]
     public class FlatDeviceFilterSettingsKey {
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
+        public string FilterName { get; set; }
 
         [DataMember]
         public short? Position { get; set; }
@@ -198,14 +200,12 @@ namespace NINA.Profile {
         }
 
         public override int GetHashCode() {
-            //see https://en.wikipedia.org/wiki/Hash_function
-            const int primeNumber = 397;
-            unchecked {
-                var hashCode = Position != null ? Position.GetHashCode() : 0;
-                hashCode = (hashCode * primeNumber) ^ (Binning != null ? Binning.GetHashCode() : 0);
-                hashCode = (hashCode * primeNumber) ^ Gain.GetHashCode();
-                return hashCode;
-            }
+            int hashCode = -1840063052;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(FilterName);
+            hashCode = hashCode * -1521134295 + Position.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<BinningMode>.Default.GetHashCode(Binning);
+            hashCode = hashCode * -1521134295 + Gain.GetHashCode();
+            return hashCode;
         }
     }
 
