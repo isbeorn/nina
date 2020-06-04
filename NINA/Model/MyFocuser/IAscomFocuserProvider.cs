@@ -12,12 +12,11 @@
 
 #endregion "copyright"
 
-using ASCOM.DeviceInterface;
 
 namespace NINA.Model.MyFocuser {
 
     public interface IAscomFocuserProvider {
 
-        IFocuserV3 GetFocuser(string focuserId);
+        IFocuserV3Ex GetFocuser(string focuserId);
     }
 }

@@ -440,6 +440,9 @@
     <Compile Include="Model\MyFilterWheel\QHYFilterWheel.cs" />
     <Compile Include="Model\MyFilterWheel\FLIFilterWheel.cs" />
     <Compile Include="Model\MyFlatDevice\AllProSpikeAFlat.cs" />
+    <Compile Include="Model\MyFocuser\AbsoluteAscomFocuser.cs" />
+    <Compile Include="Model\MyFocuser\IFocuserV3Ex.cs" />
+    <Compile Include="Model\MyFocuser\RelativeAscomFocuser.cs" />
     <Compile Include="Model\MyFocuser\UltimatePowerboxV2.cs" />
     <Compile Include="Model\MyFocuser\AscomFocuserProvider.cs" />
     <Compile Include="Model\MyFocuser\IAscomFocuserProvider.cs" />
