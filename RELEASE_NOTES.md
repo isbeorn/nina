@@ -80,6 +80,7 @@
 - Clean-ups of the status text in the status bar at the bottom of the main window
 - Various spelling and grammar fixes throughout the application
 - Added or clarified several missing tool tips
+- Gain/Offset controls now display the current gain/offset the camera is set to when no gain/offset is specified
 
 ### Auto-focus system
 - Auto-focus has been enhanced to support multiple curve fitting methodologies:
