@@ -4,7 +4,7 @@
 
 #### Flat Panel control and automation
 - Control supported flat panel devices from within N.I.N.A.
-- Flat Wizard will automatically adjust flat panel brightness to attain optimal flat frame exposures
+- Flat Wizard can specify a specific panel brightness to attain optimal flat frame exposures
 - Flat panels or covers that open and close will automatically do so at the beginning and end of a sequence
 - The following flat panels are supported, with no additional software required:
     - All-Pro Spike-a Flat Fielder
