@@ -30,6 +30,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace NINA.ViewModel.Equipment.FlatDevice {
+
     internal class FlatDeviceVM : DockableVM, IFlatDeviceVM {
         private IFlatDevice _flatDevice;
         private IFlatDeviceSettings _flatDeviceSettings;
@@ -360,14 +361,8 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
             _flatDeviceInfo.CoverState = (CoverState)(o ?? CoverState.Unknown);
             flatDeviceValues.TryGetValue(nameof(FlatDeviceInfo.Brightness), out o);
             _flatDeviceInfo.Brightness = (double)(o ?? 0.0);
-            flatDeviceValues.TryGetValue(nameof(FlatDeviceInfo.MinBrightness), out o);
-            _flatDeviceInfo.MinBrightness = (int)(o ?? 0);
-            flatDeviceValues.TryGetValue(nameof(FlatDeviceInfo.MaxBrightness), out o);
-            _flatDeviceInfo.MaxBrightness = (int)(o ?? 0);
             flatDeviceValues.TryGetValue(nameof(FlatDeviceInfo.LightOn), out o);
             _flatDeviceInfo.LightOn = (bool)(o ?? false);
-            flatDeviceValues.TryGetValue(nameof(FlatDeviceInfo.SupportsOpenClose), out o);
-            _flatDeviceInfo.SupportsOpenClose = (bool)(o ?? false);
 
             BroadcastFlatDeviceInfo();
         }

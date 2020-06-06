@@ -17,6 +17,7 @@ using NINA.Utility.FlatDeviceSDKs.AlnitakSDK;
 using NINA.Utility.SerialCommunication;
 using NUnit.Framework;
 using System;
+using FluentAssertions;
 
 namespace NINATest.FlatDevice {
 
@@ -32,7 +33,8 @@ namespace NINATest.FlatDevice {
         public void TestIsValidResponse(string responseName, string response) {
             var sut = (AlnitakResponse)Activator.CreateInstance("NINA",
                 $"NINA.Utility.FlatDeviceSDKs.AlnitakSDK.{responseName}Response").Unwrap();
-            sut.DeviceResponse = response;
+            Action act = () => sut.DeviceResponse = response;
+            act.Should().NotThrow();
         }
 
         [Test]
@@ -57,7 +59,8 @@ namespace NINATest.FlatDevice {
         public void TestIsInvalidResponse(string responseName, string response) {
             var sut = (AlnitakResponse)Activator.CreateInstance("NINA",
                 $"NINA.Utility.FlatDeviceSDKs.AlnitakSDK.{responseName}Response").Unwrap();
-            Assert.That(() => sut.DeviceResponse = response, Throws.TypeOf<InvalidDeviceResponseException>());
+            Action act = () => sut.DeviceResponse = response;
+            act.Should().Throw<InvalidDeviceResponseException>();
         }
 
         [Test]
@@ -65,7 +68,7 @@ namespace NINATest.FlatDevice {
         public void TestValidSetBrightnessResponse(string response, int brightness) {
             var sut = new SetBrightnessResponse { DeviceResponse = response };
 
-            Assert.That(sut.Brightness, Is.EqualTo(brightness));
+            sut.Brightness.Should().Be(brightness);
         }
 
         [Test]
@@ -76,7 +79,8 @@ namespace NINATest.FlatDevice {
         [TestCase(null)]
         [TestCase("")]
         public void TestInvalidSetBrightnessResponse(string response) {
-            Assert.That(() => new SetBrightnessResponse { DeviceResponse = response }, Throws.TypeOf<InvalidDeviceResponseException>());
+            Action act = () => _ = new SetBrightnessResponse { DeviceResponse = response };
+            act.Should().Throw<InvalidDeviceResponseException>();
         }
 
         [Test]
@@ -84,7 +88,7 @@ namespace NINATest.FlatDevice {
         public void TestValidGetBrightnessResponse(string response, int brightness) {
             var sut = new GetBrightnessResponse { DeviceResponse = response };
 
-            Assert.That(sut.Brightness, Is.EqualTo(brightness));
+            sut.Brightness.Should().Be(brightness);
         }
 
         [Test]
@@ -96,7 +100,8 @@ namespace NINATest.FlatDevice {
         [TestCase(null)]
         [TestCase("")]
         public void TestInvalidGetBrightnessResponse(string response) {
-            Assert.That(() => new GetBrightnessResponse { DeviceResponse = response }, Throws.TypeOf<InvalidDeviceResponseException>());
+            Action act = () => _ = new GetBrightnessResponse { DeviceResponse = response };
+            act.Should().Throw<InvalidDeviceResponseException>();
         }
 
         [Test]
@@ -107,9 +112,10 @@ namespace NINATest.FlatDevice {
         public void TestValidStateResponse(string response, bool motorRunning, CoverState covertState, bool lightOn) {
             var sut = new StateResponse { DeviceResponse = response };
 
-            Assert.That(sut.MotorRunning, Is.EqualTo(motorRunning));
-            Assert.That(sut.CoverState, Is.EqualTo(covertState));
-            Assert.That(sut.LightOn, Is.EqualTo(lightOn));
+            sut.Ttl.Should().Be(100);
+            sut.MotorRunning.Should().Be(motorRunning);
+            sut.CoverState.Should().Be(covertState);
+            sut.LightOn.Should().Be(lightOn);
         }
 
         [Test]
@@ -119,7 +125,8 @@ namespace NINATest.FlatDevice {
         [TestCase(null)]
         [TestCase("")]
         public void TestInvalidStateResponse(string response) {
-            Assert.That(() => new StateResponse { DeviceResponse = response }, Throws.TypeOf<InvalidDeviceResponseException>());
+            Action act = () => _ = new StateResponse { DeviceResponse = response };
+            act.Should().Throw<InvalidDeviceResponseException>();
         }
     }
 }
