@@ -3765,6 +3765,15 @@ En caso de que se necesite una duración más larga, se puede especificar ese ti
   <data name="LblDomeSynchronization" xml:space="preserve">
     <value>Synchronization</value>
   </data>
+  <data name="LblDomeShutterClose" xml:space="preserve">
+    <value>Cerrar</value>
+  </data>
+  <data name="LblDomeShutterOpen" xml:space="preserve">
+    <value>Abrir</value>
+  </data>
+  <data name="LblDomeSynchronization" xml:space="preserve">
+    <value>Synchronization</value>
+  </data>
   <data name="LblDynamicBrightness" xml:space="preserve">
     <value>Dynamic Brightness</value>
   </data>
