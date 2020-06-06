@@ -979,7 +979,7 @@ Dans le cas où une durée plus longue est requise, une durée peut être spéci
     <value>Position Courante</value>
   </data>
   <data name="LblCurrentSequenceEstimates" xml:space="preserve">
-    <value>Temps estimé pour cette cible</value>
+    <value>Heure de fin estimée (cette cible)</value>
   </data>
   <data name="LblCurrentUIColorSchema" xml:space="preserve">
     <value>Schéma Courant de Couleurs de l'IU</value>
@@ -1155,6 +1155,84 @@ si les traces d'étoiles ne sont pas alignées, c'est qu'il y a une erreur d'ali
   </data>
   <data name="LblDitherRAOnly" xml:space="preserve">
     <value>Dither AD Seulement</value>
+  </data>
+  <data name="LblDome" xml:space="preserve">
+    <value>Dome</value>
+  </data>
+  <data name="LblDomeASCOMConnectFailed" xml:space="preserve">
+    <value>Unable to connect to ASCOM Dome driver:</value>
+  </data>
+  <data name="LblDomeDriverCanSlave" xml:space="preserve">
+    <value>Driver can slave</value>
+  </data>
+  <data name="LblDomeShutterStatus" xml:space="preserve">
+    <value>Shutter status</value>
+  </data>
+  <data name="LblDomeCanSetShutter" xml:space="preserve">
+    <value>Can set shutter</value>
+  </data>
+  <data name="LblDomeCanSetPark" xml:space="preserve">
+    <value>Can set park</value>
+  </data>
+  <data name="LblDomeCanSetAzimuth" xml:space="preserve">
+    <value>Can set azimuth</value>
+  </data>
+  <data name="LblDomeCanSyncAzimuth" xml:space="preserve">
+    <value>Can sync azimuth</value>
+  </data>
+  <data name="LblDomeCanPark" xml:space="preserve">
+    <value>Can park</value>
+  </data>
+  <data name="LblDomeCanFindHome" xml:space="preserve">
+    <value>Can find home</value>
+  </data>
+  <data name="LblDomeAtPark" xml:space="preserve">
+    <value>At park</value>
+  </data>
+  <data name="LblDomeAtHome" xml:space="preserve">
+    <value>At home</value>
+  </data>
+  <data name="LblDomeDriverSlaved" xml:space="preserve">
+    <value>Slaved by driver</value>
+  </data>
+  <data name="LblDomeSlewing" xml:space="preserve">
+    <value>Slewing</value>
+  </data>
+  <data name="LblDomeAzimuth" xml:space="preserve">
+    <value>Azimut</value>
+  </data>
+  <data name="LblDomeNoSource" xml:space="preserve">
+    <value>No Dome Source</value>
+  </data>
+  <data name="LblDomeCannotSlew" xml:space="preserve">
+    <value>Dome cannot slew</value>
+  </data>
+  <data name="LblDomeCannotFindHome" xml:space="preserve">
+    <value>Dome cannot find home</value>
+  </data>
+  <data name="LblDomeCannotPark" xml:space="preserve">
+    <value>Dome cannot park</value>
+  </data>
+  <data name="LblDomeCannotSetPark" xml:space="preserve">
+    <value>Dome cannot set park position</value>
+  </data>
+  <data name="LblDomeCannotSetShutter" xml:space="preserve">
+    <value>Dome cannot set shutter</value>
+  </data>
+  <data name="LblDomeCannotSyncAzimuth" xml:space="preserve">
+    <value>Dome cannot sync azimuth</value>
+  </data>
+  <data name="LblDomeConnected" xml:space="preserve">
+    <value>Dome connected</value>
+  </data>
+  <data name="LblDomeConnectionLost" xml:space="preserve">
+    <value>Dome connection lost.</value>
+  </data>
+  <data name="LblDomeDisconnect" xml:space="preserve">
+    <value>Dome disconnected</value>
+  </data>
+  <data name="LblDomeNotConnected" xml:space="preserve">
+    <value>Dome not connected</value>
   </data>
   <data name="LblDownload" xml:space="preserve">
     <value>Téléchargement</value>
@@ -3674,6 +3752,15 @@ Dans le cas où une durée plus longue est requise, une durée peut être spéci
   </data>
   <data name="LblASCOMPlatformOutdated" xml:space="preserve">
     <value>ASCOM Platform Version is outdated. Please update to the latest ASCOM platform version. Otherwise the application might not be able to connect to all ASCOM devices.</value>
+  </data>
+  <data name="LblDomeShutterClose" xml:space="preserve">
+    <value>Fermer</value>
+  </data>
+  <data name="LblDomeShutterOpen" xml:space="preserve">
+    <value>Ouvrir</value>
+  </data>
+  <data name="LblDomeSynchronization" xml:space="preserve">
+    <value>Synchronization</value>
   </data>
   <data name="LblDynamicBrightness" xml:space="preserve">
     <value>Dynamic Brightness</value>
