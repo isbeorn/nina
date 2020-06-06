@@ -456,6 +456,8 @@
     <Compile Include="Utility\Converters\BooleanToVisibilityHiddenMultiConverter.cs" />
     <Compile Include="Utility\Converters\CollectionContainsItemsToBooleanConverter.cs" />
     <Compile Include="Utility\Converters\DecDegreeConverter.cs" />
+    <Compile Include="Utility\Converters\IntListToTextBlockListConverter.cs" />
+    <Compile Include="Utility\Converters\MinusOneToBaseValueConverter.cs" />
     <Compile Include="Utility\Converters\FilterWheelFilterConverter.cs" />
     <Compile Include="Utility\Converters\ImagePatternToTextConverter.cs" />
     <Compile Include="Utility\Converters\IntNegativeOneToDoubleDashConverter.cs" />

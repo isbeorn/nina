@@ -571,7 +571,22 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        private Dictionary<int, int> ISOSpeeds = new Dictionary<int, int>();
+        private Dictionary<int, int> _isoSpeeds = default;
+
+        private Dictionary<int, int> ISOSpeeds {
+            get {
+                if (_isoSpeeds != default(Dictionary<int, int>)) return _isoSpeeds;
+                _isoSpeeds = new Dictionary<int, int>();
+                NikonEnum e = _camera.GetEnum(eNkMAIDCapability.kNkMAIDCapability_Sensitivity);
+                for (int i = 0; i < e.Length; i++) {
+                    if (int.TryParse(e.GetEnumValueByIndex(i).ToString(), out int iso)) {
+                        _isoSpeeds.Add(iso, i);
+                    }
+                }
+
+                return _isoSpeeds;
+            }
+        }
 
         private IList<int> _gains;
 
@@ -586,7 +601,6 @@ namespace NINA.Model.MyCamera {
                     for (int i = 0; i < e.Length; i++) {
                         int iso;
                         if (int.TryParse(e.GetEnumValueByIndex(i).ToString(), out iso)) {
-                            ISOSpeeds.Add(iso, i);
                             _gains.Add(iso);
                         }
                     }
@@ -926,6 +940,7 @@ namespace NINA.Model.MyCamera {
                     CleanupUnusedManagers(_activeNikonManager);
                 }
 
+                Connected = connected;
                 return connected;
             });
         }

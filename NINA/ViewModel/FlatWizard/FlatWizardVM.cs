@@ -53,7 +53,7 @@ namespace NINA.ViewModel.FlatWizard {
         private ObservableCollection<FlatWizardFilterSettingsWrapper> filters = new ObservableCollection<FlatWizardFilterSettingsWrapper>();
         private int flatCount;
         private CancellationTokenSource flatSequenceCts;
-        private short gain;
+        private int gain;
         private BitmapSource image;
         private bool isPaused;
         private int mode;
@@ -81,6 +81,8 @@ namespace NINA.ViewModel.FlatWizard {
             flatSequenceCts?.Dispose();
             flatSequenceCts = new CancellationTokenSource();
             var pauseTokenSource = new PauseTokenSource();
+
+            Gain = -1;
 
             StartFlatSequenceCommand = new AsyncCommand<bool>(
                 () => StartSingleFlatCapture(new Progress<ApplicationStatus>(p => Status = p), pauseTokenSource.Token),
@@ -274,7 +276,7 @@ namespace NINA.ViewModel.FlatWizard {
 
         public IFlatWizardExposureTimeFinderService FlatWizardExposureTimeFinderService { get; set; } = new FlatWizardExposureTimeFinderService();
 
-        public short Gain {
+        public int Gain {
             get => gain;
             set {
                 gain = value;

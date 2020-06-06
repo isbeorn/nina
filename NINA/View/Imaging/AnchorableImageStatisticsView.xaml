@@ -164,17 +164,30 @@
                                 Text="{Binding StarDetectionAnalysis.HFR, StringFormat=\{0:0.00\}, Converter={StaticResource NaNToDoubleDashConverter}}" />
                         </StackPanel>
                     </UniformGrid>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock
+                    <UniformGrid Columns="2">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
                             Width="55"
                             VerticalAlignment="Center"
                             Text="{ns:Loc LblBitDepth}" />
-                        <TextBlock
+                            <TextBlock
                             Width="70"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Text="{Binding ImageProperties.BitDepth}" />
-                    </StackPanel>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                Width="55"
+                                VerticalAlignment="Center"
+                                Text="{ns:Loc LblGain}" />
+                            <TextBlock
+                                Width="70"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Text="{Binding ImageProperties.Gain, StringFormat=\{0:0\}, Converter={StaticResource IntNegativeOneToDoubleDashConverter}}" />
+                        </StackPanel>
+                    </UniformGrid>
                 </StackPanel>
             </StackPanel>
 

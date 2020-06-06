@@ -37,7 +37,7 @@ namespace NINA.Utility.Mediator.Interfaces {
 
         void SetBinning(short x, short y);
 
-        void SetGain(short gain);
+        void SetGain(int gain);
 
         void SetSubSample(bool subSample);
 

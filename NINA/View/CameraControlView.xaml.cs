@@ -238,11 +238,11 @@ namespace NINA.View {
         }
 
         public static readonly DependencyProperty MySelectedGainProperty =
-            DependencyProperty.Register(nameof(MySelectedGain), typeof(short), typeof(CameraControlView), new UIPropertyMetadata((short)-1));
+            DependencyProperty.Register(nameof(MySelectedGain), typeof(int), typeof(CameraControlView), new UIPropertyMetadata((int)-1));
 
-        public short MySelectedGain {
+        public int MySelectedGain {
             get {
-                return (short)GetValue(MySelectedGainProperty);
+                return (int)GetValue(MySelectedGainProperty);
             }
             set {
                 SetValue(MySelectedGainProperty, value);

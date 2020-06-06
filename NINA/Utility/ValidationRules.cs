@@ -118,15 +118,17 @@ namespace NINA.Utility {
             short parameter = 0;
 
             try {
-                if (((string)value).Length > 0) {
-                    parameter = short.Parse((String)value);
+                // using ""+value because (string)value will not work when value is int16
+                if (("" + value).Length > 0) {
+                    parameter = short.Parse("" + value);
                 }
             } catch (Exception e) {
                 return new ValidationResult(false, "Illegal characters or "
                                              + e.Message);
             }
 
-            if ((parameter < ValidRange.Minimum) || (parameter > ValidRange.Maximum)) {
+            // allow default value
+            if (((parameter < ValidRange.Minimum) || (parameter > ValidRange.Maximum)) && parameter != (short)-1) {
                 return new ValidationResult(false,
                     "Please enter value in the range: "
                     + ValidRange.Minimum + " - " + ValidRange.Maximum + ".");

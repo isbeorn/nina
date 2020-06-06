@@ -54,7 +54,7 @@ namespace NINA.Utility.Mediator {
             handler.SetBinning(x, y);
         }
 
-        public void SetGain(short gain) {
+        public void SetGain(int gain) {
             handler.SetGain(gain);
         }
 

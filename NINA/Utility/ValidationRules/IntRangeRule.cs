@@ -35,7 +35,7 @@ namespace NINA.Utility.ValidationRules {
                                              + e.Message);
             }
 
-            if ((parameter < ValidRange.Minimum) || (parameter > ValidRange.Maximum)) {
+            if (((parameter < ValidRange.Minimum) || (parameter > ValidRange.Maximum)) && parameter != -1) {
                 return new ValidationResult(false,
                     "Please enter value in the range: "
                     + ValidRange.Minimum + " - " + ValidRange.Maximum + ".");

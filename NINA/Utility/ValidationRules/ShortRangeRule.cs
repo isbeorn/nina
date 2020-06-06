@@ -27,7 +27,7 @@ namespace NINA.Utility.ValidationRules {
             short parameter = 0;
 
             try {
-                if (((string)value).Length > 0) {
+                if (("" + value).Length > 0) {
                     parameter = short.Parse(value.ToString(), NumberStyles.Integer, cultureInfo);
                 }
             } catch (Exception e) {

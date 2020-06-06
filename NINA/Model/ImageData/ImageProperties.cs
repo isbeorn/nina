@@ -16,16 +16,18 @@ namespace NINA.Model.ImageData {
 
     public class ImageProperties {
 
-        public ImageProperties(int width, int height, int bitDepth, bool isBayered) {
+        public ImageProperties(int width, int height, int bitDepth, bool isBayered, int gain) {
             this.Width = width;
             this.Height = height;
             this.IsBayered = isBayered;
             this.BitDepth = bitDepth;
+            this.Gain = gain;
         }
 
         public int Width { get; private set; }
         public int Height { get; private set; }
         public int BitDepth { get; private set; }
         public bool IsBayered { get; private set; }
+        public int Gain { get; private set; }
     }
 }

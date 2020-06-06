@@ -36,7 +36,7 @@ namespace NINA.ViewModel.FlatWizard {
         IFlatWizardExposureTimeFinderService FlatWizardExposureTimeFinderService { get; set; }
         ILoc Locale { get; set; }
         IImagingVM ImagingVM { get; }
-        short Gain { get; set; }
+        int Gain { get; set; }
         BitmapSource Image { get; set; }
         bool IsPaused { get; set; }
         int Mode { get; set; }

@@ -65,4 +65,6 @@
     <converters:NaNToDoubleDashConverter x:Key="NaNToDoubleDashConverter" />
     <converters:BooleanToVisibilityHiddenMultiConverter x:Key="BooleanToVisibilityHiddenMultiConverter" />
     <converters:OptimalExposureCalculatorAnswerConverter x:Key="OptimalExposureCalculatorAnswerConverter" />
+    <converters:MinusOneToBaseValueConverter x:Key="MinusOneToBaseValueConverter" />
+    <converters:IntListToTextBlockListConverter x:Key="IntListToTextBlockListConverter" />
 </ResourceDictionary>

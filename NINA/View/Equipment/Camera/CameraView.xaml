@@ -266,7 +266,7 @@
                                 Value="{Binding Cam.Gain, Mode=TwoWay}" />
                             <ComboBox
                                 ItemsSource="{Binding Cam.Gains}"
-                                SelectedItem="{Binding Cam.Gain}"
+                                SelectedValue="{Binding Cam.Gain}"
                                 Visibility="{Binding Cam.Gains, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}" />
                         </Grid>
                     </DockPanel>

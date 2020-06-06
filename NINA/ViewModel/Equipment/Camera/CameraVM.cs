@@ -583,17 +583,27 @@ namespace NINA.ViewModel.Equipment.Camera {
             });
         }
 
+        private int _cameraOldGain;
+        private int _cameraOldOffset;
+        private int _cameraUsedGain;
+
         public async Task Capture(CaptureSequence sequence, CancellationToken token,
             IProgress<ApplicationStatus> progress) {
             this.exposureTime = sequence.ExposureTime;
             double exposureTime = sequence.ExposureTime;
             if (CameraInfo.Connected == true) {
                 if (sequence.Gain > -1) {
+                    _cameraOldGain = Cam.Gain;
                     SetGain(sequence.Gain);
+                } else {
+                    _cameraOldGain = -1;
                 }
 
                 if (sequence.Offset > -1) {
+                    _cameraOldOffset = Cam.Offset;
                     SetOffset(sequence.Offset);
+                } else {
+                    _cameraOldOffset = -1;
                 }
 
                 if (sequence.Binning == null) {
@@ -646,6 +656,17 @@ namespace NINA.ViewModel.Equipment.Camera {
                             progress.Report(new ApplicationStatus() {
                                 Status = Locale.Loc.Instance["LblExposureFinished"]
                             });
+
+                            _cameraUsedGain = Cam.Gain;
+
+                            // restore old offset and gain
+                            if (_cameraOldGain != -1) {
+                                SetGain(_cameraOldGain);
+                            }
+
+                            if (_cameraOldOffset != -1) {
+                                SetOffset(_cameraOldOffset);
+                            }
                         }
                     }
                 }
@@ -706,6 +727,7 @@ namespace NINA.ViewModel.Equipment.Camera {
                 var output = await Cam.DownloadExposure(token);
                 seqDuration.Stop();
                 CameraInfo.LastDownloadTime = seqDuration.Elapsed.TotalSeconds;
+                CameraInfo.Gain = _cameraUsedGain;
                 BroadcastCameraInfo();
                 if (output != null) {
                     output.MetaData.FromProfile(this.profileService.ActiveProfile);
