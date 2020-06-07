@@ -5,8 +5,7 @@
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
-    file, You can obtain one at http://mozilla.org/MPL/2.0/.
--->
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
 <UserControl
     x:Class="NINA.View.SequenceView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -1170,7 +1169,11 @@
                     </DataGridTemplateColumn.Visibility>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <ComboBox Grid.Column="1" SelectedValuePath="Text" DisplayMemberPath="Text" IsSynchronizedWithCurrentItem="True">
+                            <ComboBox
+                                Grid.Column="1"
+                                DisplayMemberPath="Text"
+                                IsSynchronizedWithCurrentItem="True"
+                                SelectedValuePath="Text">
                                 <ComboBox.ItemsSource>
                                     <CompositeCollection>
                                         <TextBlock Text="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Gain, UpdateSourceTrigger=PropertyChanged, StringFormat=({0})}" />
@@ -1178,13 +1181,19 @@
                                     </CompositeCollection>
                                 </ComboBox.ItemsSource>
                                 <ComboBox.SelectedValue>
-                                    <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay">
+                                    <MultiBinding
+                                        Converter="{StaticResource MinusOneToBaseValueConverter}"
+                                        Mode="TwoWay"
+                                        UpdateSourceTrigger="PropertyChanged">
                                         <Binding
-                                            Path="Gain"
                                             Mode="TwoWay"
-                                            UpdateSourceTrigger="PropertyChanged">
-                                        </Binding>
-                                        <Binding Source="{StaticResource AppVM}" Path="CameraVM.Cam.Gain" Mode="OneWay" UpdateSourceTrigger="PropertyChanged" />
+                                            Path="Gain"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                        <Binding
+                                            Mode="OneWay"
+                                            Path="CameraVM.Cam.Gain"
+                                            Source="{StaticResource AppVM}"
+                                            UpdateSourceTrigger="PropertyChanged" />
                                     </MultiBinding>
                                 </ComboBox.SelectedValue>
                             </ComboBox>
@@ -1195,8 +1204,21 @@
                             <TextBlock
                                 Margin="5,0,5,0"
                                 VerticalAlignment="Center"
-                                Text="{Binding Gain, Converter={StaticResource MinusOneToBaseValueConverter}}"
-                                TextAlignment="Center" />
+                                TextAlignment="Center">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
+                                        <Binding
+                                            Mode="TwoWay"
+                                            Path="Gain"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                        <Binding
+                                            Mode="OneWay"
+                                            Path="CameraVM.Cam.Gain"
+                                            Source="{StaticResource AppVM}"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -1220,8 +1242,8 @@
                                 <TextBox.Text>
                                     <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
                                         <Binding
-                                            Path="Gain"
                                             Mode="TwoWay"
+                                            Path="Gain"
                                             UpdateSourceTrigger="PropertyChanged">
                                             <Binding.ValidationRules>
                                                 <util:ShortRangeRule>
@@ -1231,7 +1253,11 @@
                                                 </util:ShortRangeRule>
                                             </Binding.ValidationRules>
                                         </Binding>
-                                        <Binding Source="{StaticResource AppVM}" Path="CameraVM.Cam.Gain" Mode="OneWay" UpdateSourceTrigger="PropertyChanged" />
+                                        <Binding
+                                            Mode="OneWay"
+                                            Path="CameraVM.Cam.Gain"
+                                            Source="{StaticResource AppVM}"
+                                            UpdateSourceTrigger="PropertyChanged" />
                                     </MultiBinding>
                                 </TextBox.Text>
                             </TextBox>
@@ -1246,11 +1272,14 @@
                                 <TextBlock.Text>
                                     <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
                                         <Binding
-                                            Path="Gain"
                                             Mode="TwoWay"
-                                            UpdateSourceTrigger="PropertyChanged">
-                                        </Binding>
-                                        <Binding Source="{StaticResource AppVM}" Path="CameraVM.Cam.Gain" Mode="OneWay" UpdateSourceTrigger="PropertyChanged" />
+                                            Path="Gain"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                        <Binding
+                                            Mode="OneWay"
+                                            Path="CameraVM.Cam.Gain"
+                                            Source="{StaticResource AppVM}"
+                                            UpdateSourceTrigger="PropertyChanged" />
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
@@ -1277,8 +1306,8 @@
                                 <TextBox.Text>
                                     <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
                                         <Binding
-                                            Path="Offset"
                                             Mode="TwoWay"
+                                            Path="Offset"
                                             UpdateSourceTrigger="PropertyChanged">
                                             <Binding.ValidationRules>
                                                 <util:ShortRangeRule>
@@ -1288,7 +1317,11 @@
                                                 </util:ShortRangeRule>
                                             </Binding.ValidationRules>
                                         </Binding>
-                                        <Binding Source="{StaticResource AppVM}" Path="CameraVM.Cam.Offset" Mode="OneWay" UpdateSourceTrigger="PropertyChanged" />
+                                        <Binding
+                                            Mode="OneWay"
+                                            Path="CameraVM.Cam.Offset"
+                                            Source="{StaticResource AppVM}"
+                                            UpdateSourceTrigger="PropertyChanged" />
                                     </MultiBinding>
                                 </TextBox.Text>
                             </TextBox>
@@ -1303,11 +1336,14 @@
                                 <TextBlock.Text>
                                     <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
                                         <Binding
-                                            Path="Offset"
                                             Mode="TwoWay"
-                                            UpdateSourceTrigger="PropertyChanged">
-                                        </Binding>
-                                        <Binding Source="{StaticResource AppVM}" Path="CameraVM.Cam.Offset" Mode="OneWay" UpdateSourceTrigger="PropertyChanged" />
+                                            Path="Offset"
+                                            UpdateSourceTrigger="PropertyChanged" />
+                                        <Binding
+                                            Mode="OneWay"
+                                            Path="CameraVM.Cam.Offset"
+                                            Source="{StaticResource AppVM}"
+                                            UpdateSourceTrigger="PropertyChanged" />
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
