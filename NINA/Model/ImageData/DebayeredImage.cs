@@ -51,6 +51,11 @@ namespace NINA.Model.ImageData {
         }
 
         public override async Task<IRenderedImage> Stretch(double factor, double blackClipping, bool unlinked) {
+            if (this.DebayeredData == null) {
+                // Unlinked stretch is only possible when the RGB Array was saved separately during debayer
+                // This scenario will happen when the options are changed after the debayer has happened and the image is re-stretched again
+                unlinked = false;
+            }
             var stretchedImage = unlinked ? await ImageUtility.StretchUnlinked(this, factor, blackClipping) : await ImageUtility.Stretch(this, factor, blackClipping);
             return new DebayeredImage(
                 image: stretchedImage,
