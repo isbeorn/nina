@@ -284,6 +284,7 @@ namespace NINA.ViewModel {
             Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
             dialog.Multiselect = true;
             dialog.Title = Locale.Loc.Instance["LblLoadSequence"];
+            dialog.InitialDirectory = profileService.ActiveProfile.SequenceSettings.DefaultSequenceFolder;
             dialog.FileName = "Target";
             dialog.DefaultExt = ".xml";
             dialog.Filter = "XML documents|*.xml";
