@@ -268,6 +268,7 @@ namespace NINA.ViewModel.Equipment.Telescope {
                                 SiteLatitude = Telescope.SiteLatitude,
                                 SiteLongitude = Telescope.SiteLongitude,
                                 TimeToMeridianFlip = Telescope.TimeToMeridianFlip,
+                                TimeToMeridianFlipString = Telescope.TimeToMeridianFlipString,
                                 SideOfPier = Telescope.SideOfPier,
                                 Tracking = Telescope.Tracking,
                                 CanSetTracking = Telescope.CanSetTracking,
@@ -385,6 +386,9 @@ namespace NINA.ViewModel.Equipment.Telescope {
             telescopeValues.TryGetValue(nameof(TelescopeInfo.TimeToMeridianFlip), out o);
             TelescopeInfo.TimeToMeridianFlip = (double)(o ?? double.NaN);
 
+            telescopeValues.TryGetValue(nameof(TelescopeInfo.TimeToMeridianFlipString), out o);
+            TelescopeInfo.TimeToMeridianFlipString = (string)(o ?? string.Empty);
+
             telescopeValues.TryGetValue(nameof(TelescopeInfo.SideOfPier), out o);
             TelescopeInfo.SideOfPier = (PierSide)(o ?? new PierSide());
 
@@ -412,6 +416,7 @@ namespace NINA.ViewModel.Equipment.Telescope {
             telescopeValues.Add(nameof(TelescopeInfo.SiteElevation), _telescope?.SiteElevation ?? double.NaN);
             telescopeValues.Add(nameof(TelescopeInfo.Coordinates), _telescope?.Coordinates ?? null);
             telescopeValues.Add(nameof(TelescopeInfo.TimeToMeridianFlip), _telescope?.TimeToMeridianFlip ?? double.NaN);
+            telescopeValues.Add(nameof(TelescopeInfo.TimeToMeridianFlipString), _telescope?.TimeToMeridianFlipString ?? string.Empty);
             telescopeValues.Add(nameof(TelescopeInfo.SideOfPier), _telescope?.SideOfPier ?? new PierSide());
 
             return telescopeValues;

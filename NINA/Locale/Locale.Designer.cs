@@ -5734,6 +5734,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Meridian Flip in.
+        /// </summary>
+        internal static string LblMeridianFlipIn {
+            get {
+                return ResourceManager.GetString("LblMeridianFlipIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Meridian flip procedure initiated.
         /// </summary>
         internal static string LblMeridianFlipInit {

@@ -226,5 +226,12 @@ namespace NINA.Model.MyTelescope {
             get { return hasUnknownEpoch; }
             set { hasUnknownEpoch = value; RaisePropertyChanged(); }
         }
+
+        private string timeToMeridianFlipString;
+
+        public string TimeToMeridianFlipString {
+            get { return timeToMeridianFlipString; }
+            set { timeToMeridianFlipString = value; RaisePropertyChanged(); }
+        }
     }
 }
