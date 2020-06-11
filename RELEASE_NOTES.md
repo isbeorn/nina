@@ -121,6 +121,7 @@
 - Guiding was improperly stopped when performing an auto-focus operation at start of sequence, even if the Disable Guiding option was false
 - Sequence file names are now saved with valid file name characters. Invalid characters are replaced with a hyphen (-)
 - Various sequence window presentation and layout improvements
+- HFR calculation is enforced for light frames when autofocus after HFR change is enabled to ensure that the trigger will always work
 
 ### Plate Solving
 - Additional information has been added to the plate solve pop-up window that appears during sequencing
@@ -174,6 +175,7 @@
 - FreeImage library upgraded to 3.18 for improved DSLR raw file display
 - ZWO cameras now write correct EGAIN values when switching Gain
 - ZWO cameras reset the FLIP STATUS to NONE in case it was altered by another software
+- Time to meridian flip is displayed in telescope windows when enabled
 
 ### Imaging window changes
 - Added more southern hemisphere stars to the Manual Focus Stars tool
