@@ -424,8 +424,10 @@ namespace NINA.ViewModel {
             }
             _prepImageCancellationSource?.Dispose();
             _prepImageCancellationSource = new CancellationTokenSource();
-            _prepImageTask = ProcessAndUpdateImage(RenderedImage, new PrepareImageParameters(), _prepImageCancellationSource.Token);
-            await _prepImageTask;
+            if (RenderedImage != null) {
+                _prepImageTask = ProcessAndUpdateImage(RenderedImage, new PrepareImageParameters(), _prepImageCancellationSource.Token);
+                await _prepImageTask;
+            }
             return true;
         }
 

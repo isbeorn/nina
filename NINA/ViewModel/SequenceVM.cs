@@ -978,8 +978,13 @@ namespace NINA.ViewModel {
                         if (data != null) {
                             AddMetaData(data.MetaData, csl, seq, exposureStart, rms);
 
+                            var imageParams = new PrepareImageParameters();
+                            if (csl.AutoFocusOnStart && seq.IsLightSequence()) {
+                                imageParams = new PrepareImageParameters(true, true);
+                            }
+
                             /* 8b) Process ImageData for display */
-                            imageProcessingTask = imagingMediator.PrepareImage(data, new PrepareImageParameters(), ct);
+                            imageProcessingTask = imagingMediator.PrepareImage(data, imageParams, ct);
                             progress.Report(new ApplicationStatus() { Status = " " });
 
                             /* 7) Wait for previous item's parallel actions 8a, 8b to finish */
