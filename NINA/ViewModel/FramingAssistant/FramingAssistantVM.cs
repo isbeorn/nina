@@ -117,6 +117,10 @@ namespace NINA.ViewModel.FramingAssistant {
 
             profileService.ProfileChanged += (object sender, EventArgs e) => {
                 appSettings.PropertyChanged -= ApplicationSettings_PropertyChanged;
+
+                this.FocalLength = profileService.ActiveProfile.TelescopeSettings.FocalLength;
+                this.CameraPixelSize = profileService.ActiveProfile.CameraSettings.PixelSize;
+
                 RaisePropertyChanged(nameof(CameraPixelSize));
                 RaisePropertyChanged(nameof(FocalLength));
                 RaisePropertyChanged(nameof(FieldOfView));
@@ -694,13 +698,16 @@ namespace NINA.ViewModel.FramingAssistant {
             var plateSolver = PlateSolverFactory.GetPlateSolver(profileService.ActiveProfile.PlateSolveSettings);
             var blindSolver = PlateSolverFactory.GetPlateSolver(profileService.ActiveProfile.PlateSolveSettings);
 
+            var focalLength = double.IsNaN(skySurveyImage.Data.MetaData.Telescope.FocalLength) ? this.FocalLength : skySurveyImage.Data.MetaData.Telescope.FocalLength;
+            var pixelSize = double.IsNaN(skySurveyImage.Data.MetaData.Camera.PixelSize) ? this.CameraPixelSize : skySurveyImage.Data.MetaData.Camera.PixelSize;
+
             var parameter = new PlateSolveParameter() {
                 Binning = 1,
                 Coordinates = referenceCoordinates,
                 DownSampleFactor = profileService.ActiveProfile.PlateSolveSettings.DownSampleFactor,
-                FocalLength = this.FocalLength,
+                FocalLength = focalLength,
                 MaxObjects = profileService.ActiveProfile.PlateSolveSettings.MaxObjects,
-                PixelSize = this.CameraPixelSize,
+                PixelSize = pixelSize,
                 Regions = profileService.ActiveProfile.PlateSolveSettings.Regions,
                 SearchRadius = profileService.ActiveProfile.PlateSolveSettings.SearchRadius,
             };
