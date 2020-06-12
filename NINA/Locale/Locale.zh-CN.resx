@@ -3765,15 +3765,6 @@
   <data name="LblDomeSynchronization" xml:space="preserve">
     <value>同步</value>
   </data>
-  <data name="LblDomeShutterClose" xml:space="preserve">
-    <value>关闭</value>
-  </data>
-  <data name="LblDomeShutterOpen" xml:space="preserve">
-    <value>打开</value>
-  </data>
-  <data name="LblDomeSynchronization" xml:space="preserve">
-    <value>Synchronization</value>
-  </data>
   <data name="LblDynamicBrightness" xml:space="preserve">
     <value>Dynamic Brightness</value>
   </data>
