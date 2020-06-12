@@ -1145,82 +1145,82 @@
     <value>赤経のみデザリグ</value>
   </data>
   <data name="LblDome" xml:space="preserve">
-    <value>Dome</value>
+    <value>ドーム</value>
   </data>
   <data name="LblDomeASCOMConnectFailed" xml:space="preserve">
-    <value>Unable to connect to ASCOM Dome driver:</value>
+    <value>ASCOM ドームドライバに接続できません:</value>
   </data>
   <data name="LblDomeDriverCanSlave" xml:space="preserve">
-    <value>Driver can slave</value>
+    <value>ドライバーはスレーブ可能</value>
   </data>
   <data name="LblDomeShutterStatus" xml:space="preserve">
-    <value>Shutter status</value>
+    <value>シャッターの状況</value>
   </data>
   <data name="LblDomeCanSetShutter" xml:space="preserve">
-    <value>Can set shutter</value>
+    <value>シャッターを設定できます。</value>
   </data>
   <data name="LblDomeCanSetPark" xml:space="preserve">
-    <value>Can set park</value>
+    <value>パークに設定可能です</value>
   </data>
   <data name="LblDomeCanSetAzimuth" xml:space="preserve">
-    <value>Can set azimuth</value>
+    <value>方位角を設定可能です。</value>
   </data>
   <data name="LblDomeCanSyncAzimuth" xml:space="preserve">
-    <value>Can sync azimuth</value>
+    <value>方位角を同期できます。</value>
   </data>
   <data name="LblDomeCanPark" xml:space="preserve">
-    <value>Can park</value>
+    <value>パークできます。</value>
   </data>
   <data name="LblDomeCanFindHome" xml:space="preserve">
-    <value>Can find home</value>
+    <value>ホームポジションを見つけることができます。</value>
   </data>
   <data name="LblDomeAtPark" xml:space="preserve">
-    <value>At park</value>
+    <value>パーク状態です。</value>
   </data>
   <data name="LblDomeAtHome" xml:space="preserve">
-    <value>At home</value>
+    <value>ホームポジションです。</value>
   </data>
   <data name="LblDomeDriverSlaved" xml:space="preserve">
-    <value>Slaved by driver</value>
+    <value>ドライバーによりスレーブになっています。</value>
   </data>
   <data name="LblDomeSlewing" xml:space="preserve">
-    <value>Slewing</value>
+    <value>旋回中</value>
   </data>
   <data name="LblDomeAzimuth" xml:space="preserve">
     <value>方位角</value>
   </data>
   <data name="LblDomeNoSource" xml:space="preserve">
-    <value>No Dome Source</value>
+    <value>ドームに関するソースがみつかりません。</value>
   </data>
   <data name="LblDomeCannotSlew" xml:space="preserve">
-    <value>Dome cannot slew</value>
+    <value>ドームが旋回できません。</value>
   </data>
   <data name="LblDomeCannotFindHome" xml:space="preserve">
-    <value>Dome cannot find home</value>
+    <value>ドームがホームポジションをみつけられません。</value>
   </data>
   <data name="LblDomeCannotPark" xml:space="preserve">
-    <value>Dome cannot park</value>
+    <value>ドームがパークできません。</value>
   </data>
   <data name="LblDomeCannotSetPark" xml:space="preserve">
-    <value>Dome cannot set park position</value>
+    <value>ドームのパークポジションを設定できません。</value>
   </data>
   <data name="LblDomeCannotSetShutter" xml:space="preserve">
-    <value>Dome cannot set shutter</value>
+    <value>ドームのシャッターを設定できません</value>
   </data>
   <data name="LblDomeCannotSyncAzimuth" xml:space="preserve">
-    <value>Dome cannot sync azimuth</value>
+    <value>ドームは方位角を同期できません</value>
   </data>
   <data name="LblDomeConnected" xml:space="preserve">
-    <value>Dome connected</value>
+    <value>ドームが接続されました</value>
   </data>
   <data name="LblDomeConnectionLost" xml:space="preserve">
-    <value>Dome connection lost.</value>
+    <value>ドームの接続が失われました。</value>
   </data>
   <data name="LblDomeDisconnect" xml:space="preserve">
-    <value>Dome disconnected</value>
+    <value>ドームが切断されました</value>
   </data>
   <data name="LblDomeNotConnected" xml:space="preserve">
-    <value>Dome not connected</value>
+    <value>ドームは接続されていません</value>
   </data>
   <data name="LblDownload" xml:space="preserve">
     <value>ダウンロード</value>
@@ -3741,7 +3741,7 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
     <value>開</value>
   </data>
   <data name="LblDomeSynchronization" xml:space="preserve">
-    <value>Synchronization</value>
+    <value>同期</value>
   </data>
   <data name="LblDynamicBrightness" xml:space="preserve">
     <value>Dynamic Brightness</value>
@@ -3760,5 +3760,14 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
   </data>
   <data name="LblWizardOperationMode" xml:space="preserve">
     <value>Wizard Operation Mode</value>
+  </data>
+  <data name="LblSequenceContainsDarksAndLights" xml:space="preserve">
+    <value>カメラには機械式シャッターがなく、自動フラットパネルが接続されておらず、シーケンスにはダーク/BIASアイテムとLIGHTが混在しています。</value>
+  </data>
+  <data name="LblSequenceContainsDarksOnly" xml:space="preserve">
+    <value>カメラには機械式シャッターがなく、自動フラットパネルが接続されておらず、シーケンスにはダーク/BIASアイテムのみが含まれています。カメラがカバーされていることを確認してください。</value>
+  </data>
+  <data name="LblMeridianFlipIn" xml:space="preserve">
+    <value>Meridian Flip in</value>
   </data>
 </root>

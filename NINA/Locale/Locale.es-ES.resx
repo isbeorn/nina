@@ -1157,82 +1157,82 @@ cuando las lineas no estan alineadas hay algun error de alineacion polar</value>
     <value>Dither AR Solamente</value>
   </data>
   <data name="LblDome" xml:space="preserve">
-    <value>Dome</value>
+    <value>Cúpula</value>
   </data>
   <data name="LblDomeASCOMConnectFailed" xml:space="preserve">
-    <value>Unable to connect to ASCOM Dome driver:</value>
+    <value>No se puede conectar al controlador de cúpula ASCOM:</value>
   </data>
   <data name="LblDomeDriverCanSlave" xml:space="preserve">
-    <value>Driver can slave</value>
+    <value>Driver puede convertir en esclavo</value>
   </data>
   <data name="LblDomeShutterStatus" xml:space="preserve">
-    <value>Shutter status</value>
+    <value>Estado de la apertura</value>
   </data>
   <data name="LblDomeCanSetShutter" xml:space="preserve">
-    <value>Can set shutter</value>
+    <value>La apertura se puede configurar</value>
   </data>
   <data name="LblDomeCanSetPark" xml:space="preserve">
-    <value>Can set park</value>
+    <value>Se puede establecer el modo "Park"</value>
   </data>
   <data name="LblDomeCanSetAzimuth" xml:space="preserve">
-    <value>Can set azimuth</value>
+    <value>Se puede establecer el azimut</value>
   </data>
   <data name="LblDomeCanSyncAzimuth" xml:space="preserve">
-    <value>Can sync azimuth</value>
+    <value>Se puede sincronizar el azimut</value>
   </data>
   <data name="LblDomeCanPark" xml:space="preserve">
-    <value>Can park</value>
+    <value>Puede "aparcar"</value>
   </data>
   <data name="LblDomeCanFindHome" xml:space="preserve">
-    <value>Can find home</value>
+    <value>Se puede encontrar la posición inicial "home"</value>
   </data>
   <data name="LblDomeAtPark" xml:space="preserve">
-    <value>At park</value>
+    <value>En la posición aparcado "Park"</value>
   </data>
   <data name="LblDomeAtHome" xml:space="preserve">
-    <value>At home</value>
+    <value>En la posición inicial (home)</value>
   </data>
   <data name="LblDomeDriverSlaved" xml:space="preserve">
-    <value>Slaved by driver</value>
+    <value>Esclavo a través del driver</value>
   </data>
   <data name="LblDomeSlewing" xml:space="preserve">
-    <value>Slewing</value>
+    <value>Girando</value>
   </data>
   <data name="LblDomeAzimuth" xml:space="preserve">
     <value>Azimutal</value>
   </data>
   <data name="LblDomeNoSource" xml:space="preserve">
-    <value>No Dome Source</value>
+    <value>Sin fuente de cúpula</value>
   </data>
   <data name="LblDomeCannotSlew" xml:space="preserve">
-    <value>Dome cannot slew</value>
+    <value>La cúpula no puede girar</value>
   </data>
   <data name="LblDomeCannotFindHome" xml:space="preserve">
-    <value>Dome cannot find home</value>
+    <value>La cúpula no puede encontrar la posición "home"</value>
   </data>
   <data name="LblDomeCannotPark" xml:space="preserve">
-    <value>Dome cannot park</value>
+    <value>La cúpula no puede aparcarse</value>
   </data>
   <data name="LblDomeCannotSetPark" xml:space="preserve">
-    <value>Dome cannot set park position</value>
+    <value>La cúpula no puede establecer la posición de aparcado</value>
   </data>
   <data name="LblDomeCannotSetShutter" xml:space="preserve">
-    <value>Dome cannot set shutter</value>
+    <value>La cúpula no puede ajustar la apertura</value>
   </data>
   <data name="LblDomeCannotSyncAzimuth" xml:space="preserve">
-    <value>Dome cannot sync azimuth</value>
+    <value>La cúpula no puede sincronizar azimut</value>
   </data>
   <data name="LblDomeConnected" xml:space="preserve">
-    <value>Dome connected</value>
+    <value>Cúpula conectada</value>
   </data>
   <data name="LblDomeConnectionLost" xml:space="preserve">
-    <value>Dome connection lost.</value>
+    <value>Perdida conexión con cúpula.</value>
   </data>
   <data name="LblDomeDisconnect" xml:space="preserve">
-    <value>Dome disconnected</value>
+    <value>Cúpula desconectada</value>
   </data>
   <data name="LblDomeNotConnected" xml:space="preserve">
-    <value>Dome not connected</value>
+    <value>Cúpula no conectada</value>
   </data>
   <data name="LblDownload" xml:space="preserve">
     <value>Descargar</value>
@@ -3763,7 +3763,7 @@ En caso de que se necesite una duración más larga, se puede especificar ese ti
     <value>Abrir</value>
   </data>
   <data name="LblDomeSynchronization" xml:space="preserve">
-    <value>Synchronization</value>
+    <value>Sincronización</value>
   </data>
   <data name="LblDomeShutterClose" xml:space="preserve">
     <value>Cerrar</value>
@@ -3791,5 +3791,14 @@ En caso de que se necesite una duración más larga, se puede especificar ese ti
   </data>
   <data name="LblWizardOperationMode" xml:space="preserve">
     <value>Wizard Operation Mode</value>
+  </data>
+  <data name="LblSequenceContainsDarksAndLights" xml:space="preserve">
+    <value>La cámara no tiene obturador mecánico, no hay ningún panel de flats automatizado conectado y la secuencia contiene elementos DARK/BIAS además de los LIGHT.</value>
+  </data>
+  <data name="LblSequenceContainsDarksOnly" xml:space="preserve">
+    <value>La cámara no tiene obturador mecánico, no hay ningún panel de flats conectado y la secuencia solo contiene elementos DARK/BIAS Asegúrate que la cámara está tapada.</value>
+  </data>
+  <data name="LblMeridianFlipIn" xml:space="preserve">
+    <value>Cambio de meridiano en</value>
   </data>
 </root>

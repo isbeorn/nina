@@ -979,7 +979,7 @@
     <value>当前位置</value>
   </data>
   <data name="LblCurrentSequenceEstimates" xml:space="preserve">
-    <value>Est. finish time (this target)</value>
+    <value>预计完成时间（此目标）</value>
   </data>
   <data name="LblCurrentUIColorSchema" xml:space="preserve">
     <value>当前的UI颜色方案</value>
@@ -1157,82 +1157,82 @@
     <value>仅抖动赤经</value>
   </data>
   <data name="LblDome" xml:space="preserve">
-    <value>Dome</value>
+    <value>圆顶</value>
   </data>
   <data name="LblDomeASCOMConnectFailed" xml:space="preserve">
-    <value>Unable to connect to ASCOM Dome driver:</value>
+    <value>无法连接到 ASCOM 圆顶 驱动程序：</value>
   </data>
   <data name="LblDomeDriverCanSlave" xml:space="preserve">
-    <value>Driver can slave</value>
+    <value>从属驱动</value>
   </data>
   <data name="LblDomeShutterStatus" xml:space="preserve">
-    <value>Shutter status</value>
+    <value>快门状态</value>
   </data>
   <data name="LblDomeCanSetShutter" xml:space="preserve">
-    <value>Can set shutter</value>
+    <value>可以设置触发</value>
   </data>
   <data name="LblDomeCanSetPark" xml:space="preserve">
-    <value>Can set park</value>
+    <value>可以设置停放</value>
   </data>
   <data name="LblDomeCanSetAzimuth" xml:space="preserve">
-    <value>Can set azimuth</value>
+    <value>可以设置方位角</value>
   </data>
   <data name="LblDomeCanSyncAzimuth" xml:space="preserve">
-    <value>Can sync azimuth</value>
+    <value>可以同步方位角</value>
   </data>
   <data name="LblDomeCanPark" xml:space="preserve">
-    <value>Can park</value>
+    <value>可以停放</value>
   </data>
   <data name="LblDomeCanFindHome" xml:space="preserve">
-    <value>Can find home</value>
+    <value>可以找到零位</value>
   </data>
   <data name="LblDomeAtPark" xml:space="preserve">
-    <value>At park</value>
+    <value>在停放位置</value>
   </data>
   <data name="LblDomeAtHome" xml:space="preserve">
-    <value>At home</value>
+    <value>在零位</value>
   </data>
   <data name="LblDomeDriverSlaved" xml:space="preserve">
-    <value>Slaved by driver</value>
+    <value>从属于驱动</value>
   </data>
   <data name="LblDomeSlewing" xml:space="preserve">
-    <value>Slewing</value>
+    <value>指向中</value>
   </data>
   <data name="LblDomeAzimuth" xml:space="preserve">
     <value>方位角</value>
   </data>
   <data name="LblDomeNoSource" xml:space="preserve">
-    <value>No Dome Source</value>
+    <value>没有圆顶源</value>
   </data>
   <data name="LblDomeCannotSlew" xml:space="preserve">
-    <value>Dome cannot slew</value>
+    <value>圆顶无法移动</value>
   </data>
   <data name="LblDomeCannotFindHome" xml:space="preserve">
-    <value>Dome cannot find home</value>
+    <value>圆顶无法找到零位</value>
   </data>
   <data name="LblDomeCannotPark" xml:space="preserve">
-    <value>Dome cannot park</value>
+    <value>圆顶无法停放</value>
   </data>
   <data name="LblDomeCannotSetPark" xml:space="preserve">
-    <value>Dome cannot set park position</value>
+    <value>圆顶无法设置停放位置</value>
   </data>
   <data name="LblDomeCannotSetShutter" xml:space="preserve">
-    <value>Dome cannot set shutter</value>
+    <value>圆顶无法设置触发</value>
   </data>
   <data name="LblDomeCannotSyncAzimuth" xml:space="preserve">
-    <value>Dome cannot sync azimuth</value>
+    <value>圆顶无法同步方位角</value>
   </data>
   <data name="LblDomeConnected" xml:space="preserve">
-    <value>Dome connected</value>
+    <value>圆顶已连接</value>
   </data>
   <data name="LblDomeConnectionLost" xml:space="preserve">
-    <value>Dome connection lost.</value>
+    <value>圆顶连接丢失。</value>
   </data>
   <data name="LblDomeDisconnect" xml:space="preserve">
-    <value>Dome disconnected</value>
+    <value>圆顶已断开连接</value>
   </data>
   <data name="LblDomeNotConnected" xml:space="preserve">
-    <value>Dome not connected</value>
+    <value>圆顶未连接</value>
   </data>
   <data name="LblDownload" xml:space="preserve">
     <value>下载</value>
@@ -3763,7 +3763,7 @@
     <value>打开</value>
   </data>
   <data name="LblDomeSynchronization" xml:space="preserve">
-    <value>Synchronization</value>
+    <value>同步</value>
   </data>
   <data name="LblDomeShutterClose" xml:space="preserve">
     <value>关闭</value>
@@ -3791,5 +3791,14 @@
   </data>
   <data name="LblWizardOperationMode" xml:space="preserve">
     <value>Wizard Operation Mode</value>
+  </data>
+  <data name="LblSequenceContainsDarksAndLights" xml:space="preserve">
+    <value>相机没有机械快门，序列中含有暗场/偏置项目，但没有安装镜头盖</value>
+  </data>
+  <data name="LblSequenceContainsDarksOnly" xml:space="preserve">
+    <value>相机没有机械快门，序列中只有暗场/偏置项目，但没有安装镜头盖，请确认镜头已经盖好。</value>
+  </data>
+  <data name="LblMeridianFlipIn" xml:space="preserve">
+    <value>Meridian Flip in</value>
   </data>
 </root>

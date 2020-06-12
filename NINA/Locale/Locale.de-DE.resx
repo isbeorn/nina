@@ -979,7 +979,7 @@ Falls eine längere Dauer benötigt wird, kann eine Dauer angegeben werden und d
     <value>Startposition</value>
   </data>
   <data name="LblCurrentSequenceEstimates" xml:space="preserve">
-    <value>Est. finish time (this target)</value>
+    <value>Vorauss. Endzeit (dieses Ziel)</value>
   </data>
   <data name="LblCurrentUIColorSchema" xml:space="preserve">
     <value>Aktuelles UI Farbschema</value>
@@ -1157,82 +1157,82 @@ wenn die Linien nicht ausgerichtet sind, gibt es einen Polarausrichtungsfehler</
     <value>Dither ausschließlich RA</value>
   </data>
   <data name="LblDome" xml:space="preserve">
-    <value>Dome</value>
+    <value>Kuppel</value>
   </data>
   <data name="LblDomeASCOMConnectFailed" xml:space="preserve">
-    <value>Unable to connect to ASCOM Dome driver:</value>
+    <value>Verbindung zum ASCOM Kuppel Treiber nicht möglich:</value>
   </data>
   <data name="LblDomeDriverCanSlave" xml:space="preserve">
-    <value>Driver can slave</value>
+    <value>Treiber kann slave</value>
   </data>
   <data name="LblDomeShutterStatus" xml:space="preserve">
-    <value>Shutter status</value>
+    <value>Verschlussstatus</value>
   </data>
   <data name="LblDomeCanSetShutter" xml:space="preserve">
-    <value>Can set shutter</value>
+    <value>Kann Verschluss setzen</value>
   </data>
   <data name="LblDomeCanSetPark" xml:space="preserve">
-    <value>Can set park</value>
+    <value>Kann Park setzen</value>
   </data>
   <data name="LblDomeCanSetAzimuth" xml:space="preserve">
-    <value>Can set azimuth</value>
+    <value>Kann Azimut setzen</value>
   </data>
   <data name="LblDomeCanSyncAzimuth" xml:space="preserve">
-    <value>Can sync azimuth</value>
+    <value>Kann Azimut synchronisieren</value>
   </data>
   <data name="LblDomeCanPark" xml:space="preserve">
-    <value>Can park</value>
+    <value>Kann parken</value>
   </data>
   <data name="LblDomeCanFindHome" xml:space="preserve">
-    <value>Can find home</value>
+    <value>Kann Home finden</value>
   </data>
   <data name="LblDomeAtPark" xml:space="preserve">
-    <value>At park</value>
+    <value>Geparkt</value>
   </data>
   <data name="LblDomeAtHome" xml:space="preserve">
-    <value>At home</value>
+    <value>Zu Hause</value>
   </data>
   <data name="LblDomeDriverSlaved" xml:space="preserve">
-    <value>Slaved by driver</value>
+    <value>Durch Treiber geslaved</value>
   </data>
   <data name="LblDomeSlewing" xml:space="preserve">
-    <value>Slewing</value>
+    <value>Schwenkt</value>
   </data>
   <data name="LblDomeAzimuth" xml:space="preserve">
     <value>Azimut</value>
   </data>
   <data name="LblDomeNoSource" xml:space="preserve">
-    <value>No Dome Source</value>
+    <value>Keine Kuppelquelle</value>
   </data>
   <data name="LblDomeCannotSlew" xml:space="preserve">
-    <value>Dome cannot slew</value>
+    <value>Kuppel kann nicht schwenken</value>
   </data>
   <data name="LblDomeCannotFindHome" xml:space="preserve">
-    <value>Dome cannot find home</value>
+    <value>Kuppel kann kein Zuhause finden</value>
   </data>
   <data name="LblDomeCannotPark" xml:space="preserve">
-    <value>Dome cannot park</value>
+    <value>Kuppel kann nicht parken</value>
   </data>
   <data name="LblDomeCannotSetPark" xml:space="preserve">
-    <value>Dome cannot set park position</value>
+    <value>Kuppel kann Parkposition nicht setzen</value>
   </data>
   <data name="LblDomeCannotSetShutter" xml:space="preserve">
-    <value>Dome cannot set shutter</value>
+    <value>Kuppel kann Verschluss nicht setzen</value>
   </data>
   <data name="LblDomeCannotSyncAzimuth" xml:space="preserve">
-    <value>Dome cannot sync azimuth</value>
+    <value>Kuppel kann Azimut nicht synchronisieren</value>
   </data>
   <data name="LblDomeConnected" xml:space="preserve">
-    <value>Dome connected</value>
+    <value>Kuppel verbunden</value>
   </data>
   <data name="LblDomeConnectionLost" xml:space="preserve">
-    <value>Dome connection lost.</value>
+    <value>Kuppelverbindung verloren.</value>
   </data>
   <data name="LblDomeDisconnect" xml:space="preserve">
-    <value>Dome disconnected</value>
+    <value>Kuppel getrennt</value>
   </data>
   <data name="LblDomeNotConnected" xml:space="preserve">
-    <value>Dome not connected</value>
+    <value>Kuppel nicht verbunden</value>
   </data>
   <data name="LblDownload" xml:space="preserve">
     <value>Herunterladen</value>
@@ -3762,7 +3762,7 @@ Falls eine längere Dauer benötigt wird, kann eine Dauer angegeben werden und d
     <value>Offen</value>
   </data>
   <data name="LblDomeSynchronization" xml:space="preserve">
-    <value>Synchronization</value>
+    <value>Synchronisierung</value>
   </data>
   <data name="LblDynamicBrightness" xml:space="preserve">
     <value>Dynamische Helligkeit</value>
@@ -3781,5 +3781,32 @@ Falls eine längere Dauer benötigt wird, kann eine Dauer angegeben werden und d
   </data>
   <data name="LblWizardOperationMode" xml:space="preserve">
     <value>Wizard Operationsmodus</value>
+  </data>
+  <data name="LblFlatDeviceAddBinningMode" xml:space="preserve">
+    <value>Binning hinzufügen</value>
+  </data>
+  <data name="LblFlatDeviceAddGain" xml:space="preserve">
+    <value>Gain hinzufügen</value>
+  </data>
+  <data name="LblFlatDeviceAreYouSureBinning" xml:space="preserve">
+    <value>Sollen alle Werte für Binnung gelöscht werden?</value>
+  </data>
+  <data name="LblFlatDeviceAreYouSureGain" xml:space="preserve">
+    <value>Sollen alle Werte für Gain gelöscht werden?</value>
+  </data>
+  <data name="LblFlatDeviceDeleteBinningMode" xml:space="preserve">
+    <value>Binning löschen</value>
+  </data>
+  <data name="LblFlatDeviceDeleteGain" xml:space="preserve">
+    <value>Gain löschen</value>
+  </data>
+  <data name="LblSequenceContainsDarksAndLights" xml:space="preserve">
+    <value>Kamera hat keinen mechanischen Verschluss, keine automatisiertes Flat Panel ist angeschlossen und Sequenz enthält DARK/BIAS-Elemente gemischt mit LIGHT.</value>
+  </data>
+  <data name="LblSequenceContainsDarksOnly" xml:space="preserve">
+    <value>Kamera hat keinen mechanischen Verschluss, keine automatisiertes Flat Panel ist angeschlossen und Sequenz enthält nur DARK/BIAS-Elemente. Bitte sicherstellen, dass die Kamera verdeckt ist.</value>
+  </data>
+  <data name="LblMeridianFlipIn" xml:space="preserve">
+    <value>Meridian Flip in</value>
   </data>
 </root>

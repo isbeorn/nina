@@ -3783,4 +3783,31 @@ In case a longer duration is needed, a duration can be specified and the applica
   <data name="LblWizardOperationMode" xml:space="preserve">
     <value>Wizard Operation Mode</value>
   </data>
+  <data name="LblFlatDeviceAddBinningMode" xml:space="preserve">
+    <value>Add Binning</value>
+  </data>
+  <data name="LblFlatDeviceAddGain" xml:space="preserve">
+    <value>Add Gain</value>
+  </data>
+  <data name="LblFlatDeviceAreYouSureBinning" xml:space="preserve">
+    <value>Are you sure you want to delete all values for binning</value>
+  </data>
+  <data name="LblFlatDeviceAreYouSureGain" xml:space="preserve">
+    <value>Are you sure you want to delete all values for gain</value>
+  </data>
+  <data name="LblFlatDeviceDeleteBinningMode" xml:space="preserve">
+    <value>Delete Binning</value>
+  </data>
+  <data name="LblFlatDeviceDeleteGain" xml:space="preserve">
+    <value>Delete Gain</value>
+  </data>
+  <data name="LblSequenceContainsDarksAndLights" xml:space="preserve">
+    <value>Camera has no mechanical shutter, no automated flat panel is connected and sequence contains DARK/BIAS items mixed in with LIGHT.</value>
+  </data>
+  <data name="LblSequenceContainsDarksOnly" xml:space="preserve">
+    <value>Camera has no mechanical shutter, no automated flat panel is connected and sequence only contains DARK/BIAS items. Make sure camera is covered.</value>
+  </data>
+  <data name="LblMeridianFlipIn" xml:space="preserve">
+    <value>Meridian Flip in</value>
+  </data>
 </root>

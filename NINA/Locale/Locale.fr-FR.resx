@@ -1157,82 +1157,82 @@ si les traces d'étoiles ne sont pas alignées, c'est qu'il y a une erreur d'ali
     <value>Dither AD Seulement</value>
   </data>
   <data name="LblDome" xml:space="preserve">
-    <value>Dome</value>
+    <value>Dôme</value>
   </data>
   <data name="LblDomeASCOMConnectFailed" xml:space="preserve">
-    <value>Unable to connect to ASCOM Dome driver:</value>
+    <value>Impossible de se connecter au pilote ASCOM Dome:</value>
   </data>
   <data name="LblDomeDriverCanSlave" xml:space="preserve">
-    <value>Driver can slave</value>
+    <value>Le pilote peut asservir</value>
   </data>
   <data name="LblDomeShutterStatus" xml:space="preserve">
-    <value>Shutter status</value>
+    <value>Statut du cimier</value>
   </data>
   <data name="LblDomeCanSetShutter" xml:space="preserve">
-    <value>Can set shutter</value>
+    <value>Permet de régler le cimier</value>
   </data>
   <data name="LblDomeCanSetPark" xml:space="preserve">
-    <value>Can set park</value>
+    <value>Peut définir le park</value>
   </data>
   <data name="LblDomeCanSetAzimuth" xml:space="preserve">
-    <value>Can set azimuth</value>
+    <value>Peut définir l'azimut</value>
   </data>
   <data name="LblDomeCanSyncAzimuth" xml:space="preserve">
-    <value>Can sync azimuth</value>
+    <value>Peut synchroniser l'azimut</value>
   </data>
   <data name="LblDomeCanPark" xml:space="preserve">
-    <value>Can park</value>
+    <value>Peut parker</value>
   </data>
   <data name="LblDomeCanFindHome" xml:space="preserve">
-    <value>Can find home</value>
+    <value>Peut trouver la position Home</value>
   </data>
   <data name="LblDomeAtPark" xml:space="preserve">
-    <value>At park</value>
+    <value>A la position Park</value>
   </data>
   <data name="LblDomeAtHome" xml:space="preserve">
-    <value>At home</value>
+    <value>A la position Home</value>
   </data>
   <data name="LblDomeDriverSlaved" xml:space="preserve">
-    <value>Slaved by driver</value>
+    <value>Asservi par le pilote</value>
   </data>
   <data name="LblDomeSlewing" xml:space="preserve">
-    <value>Slewing</value>
+    <value>Pointage</value>
   </data>
   <data name="LblDomeAzimuth" xml:space="preserve">
     <value>Azimut</value>
   </data>
   <data name="LblDomeNoSource" xml:space="preserve">
-    <value>No Dome Source</value>
+    <value>Aucun dôme de sélectionné</value>
   </data>
   <data name="LblDomeCannotSlew" xml:space="preserve">
-    <value>Dome cannot slew</value>
+    <value>Le dôme ne peut pas pointer</value>
   </data>
   <data name="LblDomeCannotFindHome" xml:space="preserve">
-    <value>Dome cannot find home</value>
+    <value>Le dôme ne peut pas trouver la position Home</value>
   </data>
   <data name="LblDomeCannotPark" xml:space="preserve">
-    <value>Dome cannot park</value>
+    <value>Le dôme ne peut pas parker</value>
   </data>
   <data name="LblDomeCannotSetPark" xml:space="preserve">
-    <value>Dome cannot set park position</value>
+    <value>Le dôme ne peut pas définir la position du park</value>
   </data>
   <data name="LblDomeCannotSetShutter" xml:space="preserve">
-    <value>Dome cannot set shutter</value>
+    <value>Le dôme ne peut pas régler le cimier</value>
   </data>
   <data name="LblDomeCannotSyncAzimuth" xml:space="preserve">
-    <value>Dome cannot sync azimuth</value>
+    <value>Le dôme ne peut pas synchroniser l'azimut</value>
   </data>
   <data name="LblDomeConnected" xml:space="preserve">
-    <value>Dome connected</value>
+    <value>Dôme connecté</value>
   </data>
   <data name="LblDomeConnectionLost" xml:space="preserve">
-    <value>Dome connection lost.</value>
+    <value>Connexion au dôme perdue.</value>
   </data>
   <data name="LblDomeDisconnect" xml:space="preserve">
-    <value>Dome disconnected</value>
+    <value>Dôme déconnecté</value>
   </data>
   <data name="LblDomeNotConnected" xml:space="preserve">
-    <value>Dome not connected</value>
+    <value>Dôme non connecté</value>
   </data>
   <data name="LblDownload" xml:space="preserve">
     <value>Téléchargement</value>
@@ -3745,13 +3745,13 @@ Dans le cas où une durée plus longue est requise, une durée peut être spéci
     <value>License</value>
   </data>
   <data name="LblRepository" xml:space="preserve">
-    <value>Repository</value>
+    <value>Répertoire</value>
   </data>
   <data name="LblThirdPartyLicenses" xml:space="preserve">
     <value>Third Party Licenses</value>
   </data>
   <data name="LblASCOMPlatformOutdated" xml:space="preserve">
-    <value>ASCOM Platform Version is outdated. Please update to the latest ASCOM platform version. Otherwise the application might not be able to connect to all ASCOM devices.</value>
+    <value>La version de plateforme ASCOM est obsolète. Veuillez mettre à jour la plateforme ASCOM avec la dernière version disponible. Sinon, l'application pourrait ne pas être en mesure de se connecter à tous les périphériques ASCOM.</value>
   </data>
   <data name="LblDomeShutterClose" xml:space="preserve">
     <value>Fermer</value>
@@ -3760,7 +3760,7 @@ Dans le cas où une durée plus longue est requise, une durée peut être spéci
     <value>Ouvrir</value>
   </data>
   <data name="LblDomeSynchronization" xml:space="preserve">
-    <value>Synchronization</value>
+    <value>Synchronisation</value>
   </data>
   <data name="LblDomeShutterClose" xml:space="preserve">
     <value>Fermer</value>
@@ -3788,5 +3788,14 @@ Dans le cas où une durée plus longue est requise, une durée peut être spéci
   </data>
   <data name="LblWizardOperationMode" xml:space="preserve">
     <value>Wizard Operation Mode</value>
+  </data>
+  <data name="LblSequenceContainsDarksAndLights" xml:space="preserve">
+    <value>La caméra n'a pas d'obturateur mécanique, aucun panneau flat n'est connecté et la séquence contient des éléments DARK/BIAS mélangés avec LIGHT.</value>
+  </data>
+  <data name="LblSequenceContainsDarksOnly" xml:space="preserve">
+    <value>La caméra n'a pas d'obturateur mécanique, aucun panneau flat n'est connecté et la séquence contient des éléments DARK/BIAS. Assurez vous que la caméra est obturée.</value>
+  </data>
+  <data name="LblMeridianFlipIn" xml:space="preserve">
+    <value>Retournement au méridien dans</value>
   </data>
 </root>
