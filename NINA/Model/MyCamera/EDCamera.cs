@@ -601,7 +601,12 @@ namespace NINA.Model.MyCamera {
                 if (IsManualBulb && usesCameraCommandBulb) {
                     Logger.Debug("CANON: Initiating BULB mode exposure (via BulbStart)");
 
-                    if ((error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_BulbStart, 0)) != EDSDK.EDS_ERR_OK) {
+                    error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_BulbStart, 0);
+                    // workaround: 500d is reporting 44313 for bulbStart but still triggers bulb successfully
+                    // it's also an unknown error code, probably safe to assume OK here for other devices
+                    if (error == 44313) error = EDSDK.EDS_ERR_OK;
+
+                    if (error != EDSDK.EDS_ERR_OK) {
                         Logger.Error($"CANON: Error initiating BULB mode exposure (via BulbStart): {ErrorCodeToString(error)}");
 
                         if ((error = EDSDK.EdsSendCommand(_cam, EDSDK.CameraCommand_PressShutterButton, PsbNonAF)) != EDSDK.EDS_ERR_OK) {
