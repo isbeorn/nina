@@ -60,6 +60,8 @@
     - 简体中文, 中国 (Simplified Chinese, China)
     - 繁体中文, 台灣 (Traditional Chinese, Taiwan)
     - 繁体中文, 香港 (Traditional Chinese, Hong Kong)
+    - Türk (Turkish) 
+    - Galego (Galician) 
 
 ## Application Improvements
 ### General

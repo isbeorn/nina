@@ -356,6 +356,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Locale.fr-FR.resx</DependentUpon>
     </Compile>
+    <Compile Include="Locale\Locale.gl-ES.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.gl-ES.resx</DependentUpon>
+    </Compile>
     <Compile Include="Locale\Locale.it-IT.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -380,6 +385,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Locale.ru-RU.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Locale\Locale.tr-TR.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.tr-TR.resx</DependentUpon>
     </Compile>
     <Compile Include="Locale\Locale.zh-CN.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -1927,6 +1937,10 @@
       <LastGenOutput>Locale.fr-FR.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.gl-ES.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.gl-ES.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Locale\Locale.it-IT.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Locale.it-IT.Designer.cs</LastGenOutput>
@@ -1956,6 +1970,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Locale.ru-RU.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.tr-TR.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.tr-TR.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Locale\Locale.zh-CN.resx">
       <Generator>ResXFileCodeGenerator</Generator>

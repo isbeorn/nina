@@ -268,6 +268,8 @@
           <Directory Id="de_DE" Name="de-DE" />
           <Directory Id="ja_JP" Name="ja-JP" />
           <Directory Id="da_DK" Name="da-DK" />
+          <Directory Id="tr_TR" Name="tr-TR" />
+          <Directory Id="gl_ES" Name="gl-ES" />
         </Directory>
       </Directory>
       <Directory Id="ProgramMenuFolder">
@@ -1603,6 +1605,20 @@
     <ComponentGroup Id="de_DE_files" Directory="de_DE">
       <Component Id="de_DE_NINA.resources.dll" Guid="c9c728a6-7704-41e4-a983-6e58e17dfd23">
         <File Id="de_DE_NINA.resources.dll" Name="NINA.resources.dll" Source="$(var.NINA_TargetDir)de-DE\NINA.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="gl_ES_files" Directory="gl_ES">
+      <Component Id="gl_ES_NINA.resources.dll" Guid="E8439D1A-622E-4D8E-9541-8A0746BD10E6">
+        <File Id="gl_ES_NINA.resources.dll" Name="NINA.resources.dll" Source="$(var.NINA_TargetDir)gl-ES\NINA.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="tr_TR_files" Directory="tr_TR">
+      <Component Id="tr_TR_NINA.resources.dll" Guid="208064E3-0979-462C-92CC-99CC09DDFC03">
+        <File Id="tr_TR_NINA.resources.dll" Name="NINA.resources.dll" Source="$(var.NINA_TargetDir)tr-TR\NINA.resources.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
