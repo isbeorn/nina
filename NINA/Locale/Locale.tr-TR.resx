@@ -1668,10 +1668,10 @@ Hesaplanan HFR: {2}
     <value>Takipçi ditheri etkin fakat uygulama takip kamerasına bağlanmadı</value>
   </data>
   <data name="LblGuiderNoResume" xml:space="preserve">
-    <value>Guider did not send resume message in time. Sequence will resume, but make sure Guider is guiding again!</value>
+    <value>Takipçi devam etm mesajını zamanında göndermedi. Sekans devam edecek ancak takipçinin tekrar takip edip etmediğinden emin olun!</value>
   </data>
   <data name="LblGuiderNoSettleDone" xml:space="preserve">
-    <value>Guider did not send SettleDone message in time. Skipping.</value>
+    <value>Takipçi "hazırlık bitti" mesajını zamanında göndermedi. Atlanıyor.</value>
   </data>
   <data name="LblGuiderResumeFailed" xml:space="preserve">
     <value>Takipçi yenilemesi başarısız</value>
@@ -2053,7 +2053,7 @@ Hesaplanan HFR: {2}
     <value>Gürültü azaltma</value>
   </data>
   <data name="LblNoiseReductionTooltip" xml:space="preserve">
-    <value>Noise Reduction applied prior to star detection. This may help with noisy images and short exposures.</value>
+    <value>Gürültü azaltma, yıldız tespiti önceliğine ayarlandı. Bu durum gürültülü resim ve kısa pozlamalarda yardımcı olabilir.</value>
   </data>
   <data name="LblNone" xml:space="preserve">
     <value>Hiç</value>
@@ -2074,7 +2074,7 @@ Hesaplanan HFR: {2}
     <value>Senkronizasyon yok</value>
   </data>
   <data name="LblNoSyncTooltip" xml:space="preserve">
-    <value>When enabled the application will never send a sync command to the telescope. This should only be used when having a good pointing model that should not be altered in any way.</value>
+    <value>Aktifleştirildiğinde uygulama teleskopa senkronizasyon komutu asla göndermez. Sadece hiçbir şekilde değiştirilmemesi gereken iyi bir işaretleme modeliniz varsa kullanılmalıdır.</value>
   </data>
   <data name="LblNoTelescope" xml:space="preserve">
     <value>Teleskop yok</value>
@@ -2222,10 +2222,10 @@ Hesaplanan HFR: {2}
     <value>OpenWeatherMap API Anahtarı</value>
   </data>
   <data name="LblOpenWeatherMapClientDescription" xml:space="preserve">
-    <value>Uses OpenWeatherMap's Current Weather API. Weather data is refreshed every 10 minutes.</value>
+    <value>OpenWheatherMap'ın mevcut meteorolojı API'sini kullanır. Meteoroloji verisi her 10 dakikada bir yenilenir.</value>
   </data>
   <data name="LblOpenWeatherMapClientInfo" xml:space="preserve">
-    <value>NINA internal OpenWeatherMap API client</value>
+    <value>NINA dahili OpenWeatherMap API istemcisi</value>
   </data>
   <data name="LblOptions" xml:space="preserve">
     <value>Seçenekler</value>
@@ -2237,7 +2237,7 @@ Hesaplanan HFR: {2}
     <value>Oryantasyon</value>
   </data>
   <data name="LblOverlapPercentage" xml:space="preserve">
-    <value>Overlap percentage</value>
+    <value>Çakışma yüzdesi</value>
   </data>
   <data name="LblPanel" xml:space="preserve">
     <value>Panel</value>
@@ -2522,13 +2522,13 @@ Hesaplanan HFR: {2}
     <value>DSLR raw dosyası dönüşümü için hangi aracın kullanılacağını belirler</value>
   </data>
   <data name="LblReadNoise" xml:space="preserve">
-    <value>Read noise in e</value>
+    <value>Gürültüyü e değerinde oku</value>
   </data>
   <data name="LblReadoutForNormalImages" xml:space="preserve">
-    <value>Readout mode for sequences</value>
+    <value>Sekanslar için Readout modu</value>
   </data>
   <data name="LblReadoutForNormalImagesToolTip" xml:space="preserve">
-    <value>This readout mode of your camera will be used for LIGHT, BIAS, DARK, FLAT and DARKFLAT frames in sequences.</value>
+    <value>Kameranızın bu readout modu sekanslardaki RESİM, BIAS, SİYAH, DÜZ ve SİYAHDÜZ kareler için kullanılacak.</value>
   </data>
   <data name="LblReadoutForSnapImages" xml:space="preserve">
     <value>Readout mode for snapshots</value>
@@ -2540,7 +2540,7 @@ Hesaplanan HFR: {2}
     <value>Tekrar ortala</value>
   </data>
   <data name="LblRecenterAfterFlip" xml:space="preserve">
-    <value>Recenter after Flip</value>
+    <value>Geçiş sonrası tekrar merkezle</value>
   </data>
   <data name="LblRecenterImage" xml:space="preserve">
     <value>Resmi tekrar ortala</value>
@@ -2672,7 +2672,7 @@ Hesaplanan HFR: {2}
     <value>Hedef setini kaydet</value>
   </data>
   <data name="LblScopeSettleTimeAfterFlip" xml:space="preserve">
-    <value>Scope settle time after flip (seconds)</value>
+    <value>Geçiş sonrası teleskop yerleşme süresi (saniye)</value>
   </data>
   <data name="LblSearch" xml:space="preserve">
     <value>Ara</value>
@@ -2696,7 +2696,7 @@ Hesaplanan HFR: {2}
     <value>İşaretli profil seçilemiyor. Başka bir N.I.N.A oluşumunca kullanılıyor!</value>
   </data>
   <data name="LblSensorAnalysisPoorFit" xml:space="preserve">
-    <value>Sensor Analysis is irregular, and may not produce accurate results. Consider re-running it.</value>
+    <value>Sensör analizi düzensiz ve doğru sonuçlar vermeyebilir. Yeniden çalıştırın.</value>
   </data>
   <data name="LblSensorName" xml:space="preserve">
     <value>Sensör adı</value>
@@ -2714,13 +2714,13 @@ Hesaplanan HFR: {2}
     <value>Sequence end command</value>
   </data>
   <data name="LblSequenceCommandAtCompletion" xml:space="preserve">
-    <value>'{0}' completed.</value>
+    <value>{0} tamamlandı.</value>
   </data>
   <data name="LblSequenceCommandAtCompletionTitle" xml:space="preserve">
-    <value>Run command when sequence completes</value>
+    <value>Sekans tamamlanınca komutu çalıştır</value>
   </data>
   <data name="LblSequenceCommandAtCompletionTooltip" xml:space="preserve">
-    <value>Select command to run when sequence completes.</value>
+    <value>Sekans tamamlandığında çalışacak komutu seç.</value>
   </data>
   <data name="LblSequenceCommandAtCompletionNotFound" xml:space="preserve">
     <value>Sequence end command not found '{0}'</value>
@@ -2790,73 +2790,73 @@ This template will be used on startup to initialize the sequence instead of the 
     <value>PHD2 yerleşmesi zaman aşımına uğradı</value>
   </data>
   <data name="LblAutoRetryStartGuiding" xml:space="preserve">
-    <value>Guiding Start Retry</value>
+    <value>Takip yeniden başlatılıyor</value>
   </data>
   <data name="LblAutoRetryStartGuidingTimeoutSeconds" xml:space="preserve">
-    <value>Guiding Start Timeout (in seconds)</value>
+    <value>Takip başlatma zaman aşımına uğradı (saniye)</value>
   </data>
   <data name="LblAutoRetryStartGuidingTooltip" xml:space="preserve">
-    <value>Attempt to recover StartGuiding command if the guider does not report it is guiding after the specified amount of time.</value>
+    <value>Takipçi, belirtilen süre sonunda takip ettiğini bildirmezse StartGuiding komutunu kurtarmaya çalışın.</value>
   </data>
   <data name="LblAutoRetryStartGuidingTimeoutTooltip" xml:space="preserve">
-    <value>Timeout in seconds before abandoning a StartGuiding command before attempting to a retry.</value>
+    <value>Yeniden denemeye çalışmadan önce, bir StartGuiding komutunu yarıda kesmeden önceki saniye cinsinden zaman aşımı.</value>
   </data>
   <data name="LblSharpCapSensorAnalysisPath" xml:space="preserve">
-    <value>SharpCap Sensor Analysis folder</value>
+    <value>SharpCap sensör analiz dizini</value>
   </data>
   <data name="LblSharpCapSensorAnalysisLoadedFormat" xml:space="preserve">
-    <value>Loaded {0} sensors</value>
+    <value>{0} sensor yüklendi</value>
   </data>
   <data name="LblSharpCapSensorAnalysisPathTooltip" xml:space="preserve">
-    <value>Folder where SharpCap Sensor Analysis files can be found, if somewhere other than their default location</value>
+    <value>Varsayılan konumundanfarklı bir yerde değilse SharpCap analiz dosyalarının bulunabileceği dizin</value>
   </data>
   <data name="LblSiderealTime" xml:space="preserve">
-    <value>Sidereal Time</value>
+    <value>Göksel zaman</value>
   </data>
   <data name="LblSiteElevation" xml:space="preserve">
-    <value>Site Elevation</value>
+    <value>Gözlem yeri yüksekliği</value>
   </data>
   <data name="LblSiteFromGPS" xml:space="preserve">
-    <value>from GPS</value>
+    <value>GPS'ten</value>
   </data>
   <data name="LblSiteLatitude" xml:space="preserve">
-    <value>Site Latitude</value>
+    <value>Gözlem yeri enlemi</value>
   </data>
   <data name="LblSiteLongitude" xml:space="preserve">
-    <value>Site Longitude</value>
+    <value>Gözlem yeri boylamı</value>
   </data>
   <data name="LblSize" xml:space="preserve">
     <value>Size</value>
   </data>
   <data name="LblSkyAtlas" xml:space="preserve">
-    <value>Sky Atlas</value>
+    <value>Gök atlası</value>
   </data>
   <data name="LblSkyAtlasImageDirectory" xml:space="preserve">
-    <value>Sky Atlas Image Directory</value>
+    <value>Sky Atlas resim klasörü</value>
   </data>
   <data name="LblSkyAtlasSkySurvey" xml:space="preserve">
-    <value>SkyAtlas (Offline Framing)</value>
+    <value>SkyAtlas (Çevrimdışı Kadrajlama)</value>
   </data>
   <data name="LblSkyBrightness" xml:space="preserve">
-    <value>Sky Brightness</value>
+    <value>Gökyüzü parlaklığı</value>
   </data>
   <data name="LblSkyQuality" xml:space="preserve">
-    <value>Sky Quality</value>
+    <value>Gökyüzü kalitesi</value>
   </data>
   <data name="LblSkyServerSkySurvey" xml:space="preserve">
-    <value>SkyServer Sky Survey</value>
+    <value>SkyServer gökyüzü araştırması</value>
   </data>
   <data name="LblSkySurveyCacheDirectory" xml:space="preserve">
-    <value>Sky Survey Cache Directory</value>
+    <value>Gökyüzü araştırması ön bellek klasörü</value>
   </data>
   <data name="LblSkyTemperature" xml:space="preserve">
-    <value>Sky Temperature</value>
+    <value>Gökyüzü sıcaklığı</value>
   </data>
   <data name="LblSlew" xml:space="preserve">
-    <value>Slew</value>
+    <value>Çevir</value>
   </data>
   <data name="LblSlewDuration" xml:space="preserve">
-    <value>Slew Duration</value>
+    <value>Çevirme süresi</value>
   </data>
   <data name="LblSlewEnabledButTelescopeNotConnected" xml:space="preserve">
     <value>Slew to target is enabled, yet telescope is not connected</value>
@@ -2901,38 +2901,38 @@ This template will be used on startup to initialize the sequence instead of the 
     <value>Determines sensitivity of star detection algorithm. Higher settings may mistakenly detect noise, and may take more time</value>
   </data>
   <data name="LblStartAutoFocus" xml:space="preserve">
-    <value>Start Auto Focus</value>
+    <value>Otomatik odaklamayı başlat</value>
   </data>
   <data name="LblStartBacklashMeasurementConfirmation" xml:space="preserve">
-    <value>Backlash Measurement will start now.
-Before proceeding, please confirm your system is currently at or close to good focus</value>
+    <value>Dişli boşluğu ölçümü şimdi başlayacak.
+Devam etmeden önce, lütfen sisteminizin şu anda iyi veya iyiye yakın odaklanmış olduğunu onaylayın</value>
   </data>
   <data name="LblStartBacklashQuestion" xml:space="preserve">
-    <value>Start Backlash Measurement?</value>
+    <value>Dişli boşluğu ölçümüne başlansın mı?</value>
   </data>
   <data name="LblStartGuiding" xml:space="preserve">
-    <value>Start guiding</value>
+    <value>Takibe başla</value>
   </data>
   <data name="LblStartGuidingButGuiderNotConnected" xml:space="preserve">
-    <value>Start Guiding is enabled, yet guider is not connected</value>
+    <value>Takibe başlama etkinleştirildi, ancak takipçi henüz bağlanmadı</value>
   </data>
   <data name="LblStartGuidingFailed" xml:space="preserve">
-    <value>Start guiding failed</value>
+    <value>Takibe başlama başarısız</value>
   </data>
   <data name="LblStartingINBacklashMeasurement" xml:space="preserve">
-    <value>Starting IN Backlash Measurement</value>
+    <value>İÇERİ dişli boşluğu hesaplanması başlıyor</value>
   </data>
   <data name="LblStartingOUTBacklashMeasurement" xml:space="preserve">
-    <value>Starting OUT Backlash Measurement</value>
+    <value>DIŞARI dişli boşluğu hesaplanması başlıyor</value>
   </data>
   <data name="LblStartSequenceAnyway" xml:space="preserve">
-    <value>Start Sequence Anyway?</value>
+    <value>Sekans yine de başlasın mı?</value>
   </data>
   <data name="LblState" xml:space="preserve">
     <value>State</value>
   </data>
   <data name="LblStatistics" xml:space="preserve">
-    <value>Statistics</value>
+    <value>İstatistikler</value>
   </data>
   <data name="LblStDev" xml:space="preserve">
     <value>StDev</value>
@@ -2941,43 +2941,43 @@ Before proceeding, please confirm your system is currently at or close to good f
     <value>Stellarium</value>
   </data>
   <data name="LblStellariumUse" xml:space="preserve">
-    <value>Use Stellarium</value>
+    <value>Stellarium'u kullan</value>
   </data>
   <data name="LblStellariumUseNotice" xml:space="preserve">
-    <value>In order to use Stellarium you need to have the remote plugin installed and active on the Host and Port specified above</value>
+    <value>Stellarium'u kullanmak için, uzaktan kumanda eklentisini yukarıda belirtilen sunucu ve girişinde kurmuş ve etkinleştirmiş olmanız gerekir</value>
   </data>
   <data name="LblStop" xml:space="preserve">
-    <value>Stop</value>
+    <value>Durdur</value>
   </data>
   <data name="LblStopAutoguider" xml:space="preserve">
-    <value>Pause Autoguider</value>
+    <value>Takibi duraklat</value>
   </data>
   <data name="LblStopGuiding" xml:space="preserve">
-    <value>Stop Guiding</value>
+    <value>Takibi durdur</value>
   </data>
   <data name="LblStopTracking" xml:space="preserve">
-    <value>Stop Tracking</value>
+    <value>Takibi durdur</value>
   </data>
   <data name="LblStretchImage" xml:space="preserve">
-    <value>Stretching image</value>
+    <value>Resim esnetiliyor</value>
   </data>
   <data name="LblStsciSkySurvey" xml:space="preserve">
-    <value>Stsci Sky Survey</value>
+    <value>Stsci Gök araştırması</value>
   </data>
   <data name="LblSubSample" xml:space="preserve">
     <value>Enable SubSampling</value>
   </data>
   <data name="LblSuccess" xml:space="preserve">
-    <value>Success</value>
+    <value>Başarılı</value>
   </data>
   <data name="LblSunRise" xml:space="preserve">
-    <value>Sunrise</value>
+    <value>Güneş doğuşu</value>
   </data>
   <data name="LblSunSet" xml:space="preserve">
-    <value>Sunset</value>
+    <value>Güneş batışı</value>
   </data>
   <data name="LblSurfaceBrightness" xml:space="preserve">
-    <value>Surface Brightness</value>
+    <value>Yüzey parlaklığı</value>
   </data>
   <data name="LblSwitch" xml:space="preserve">
     <value>Switch</value>
@@ -2989,71 +2989,69 @@ Before proceeding, please confirm your system is currently at or close to good f
     <value>Switch Connection lost!</value>
   </data>
   <data name="LblSwitchingFilter" xml:space="preserve">
-    <value>Switching filter</value>
+    <value>Filtre değiştiriliyor</value>
   </data>
   <data name="LblSync" xml:space="preserve">
     <value>Sync</value>
   </data>
   <data name="LblSyncFailed" xml:space="preserve">
-    <value>Telescope sync failed</value>
+    <value>Teleskop senkrenizasyonu başarısız</value>
   </data>
   <data name="LblSynchronizedPHD2Guider" xml:space="preserve">
-    <value>Synchronized PHD2 (Experimental)</value>
+    <value>PHD2 senkronizasyonu (Deneme aşamasında)</value>
   </data>
   <data name="LblSynchronizedPHD2ServiceClientAlreadyExists" xml:space="preserve">
-    <value>
-        This profile is already connected to the Synchronized PHD2 Guider.
-        You cannot connect the same profile twice, please choose a different NINA profile.
+    <value>        Bu profil zaten senkronize PHD2 takipçisine bağlı.
+        Aynı profili ikinci kez bağlayamazsınız, lütfen başka bir NINA profili seçin.
     </value>
   </data>
   <data name="LblSynchronizedPHD2ServiceCrashed" xml:space="preserve">
-    <value>Synchronized PHD2 Service crashed, restarting this Synchronized PHD2 Guider as Service</value>
+    <value>Senkronize PHD2 servisi çöktü. Senkronize PHD2 takipçi servis olarak başlatılıyor</value>
   </data>
   <data name="LblSyncLatLong" xml:space="preserve">
-    <value>Synchronize Latitude/Longitude</value>
+    <value>Enlem/Boylam senkronize et</value>
   </data>
   <data name="LblSyncLatLongText" xml:space="preserve">
-    <value>Telescope's Latitude and Longitude differs from NINA's values.
-Should the values be synced?</value>
+    <value>Teleskopun enlem ve boylamı NINA'nınkiden farklı. Senkronize edilsin mi?</value>
   </data>
   <data name="LblTarget" xml:space="preserve">
-    <value>Target (J2000)</value>
+    <value>Hedef (J2000)</value>
   </data>
   <data name="LblTargetDec" xml:space="preserve">
-    <value>TargetDec</value>
+    <value>Hedef Dec</value>
   </data>
   <data name="LblTargetHeightDegrees" xml:space="preserve">
-    <value>Minimum Height (degree)</value>
+    <value>Minimum yükseklik (derece)</value>
   </data>
   <data name="LblTargetName" xml:space="preserve">
-    <value>Target Name</value>
+    <value>Hedef adı</value>
   </data>
   <data name="LblTargetNameDescription" xml:space="preserve">
     <value>Varsa hedef adı</value>
   </data>
   <data name="LblTargetPosition" xml:space="preserve">
-    <value>Target Position</value>
+    <value>Hedef pozisyonu</value>
   </data>
   <data name="LblTargetRA" xml:space="preserve">
-    <value>TargetRA</value>
+    <value>Hedef RA</value>
   </data>
   <data name="LblTargets" xml:space="preserve">
-    <value>Targets</value>
+    <value>Hedef</value>
   </data>
   <data name="LblTargetTemp" xml:space="preserve">
-    <value>Target Temperature</value>
+    <value>Hedef sıcaklık</value>
   </data>
   <data name="LblTargetTempShort" xml:space="preserve">
-    <value>Target Temp.</value>
+    <value>Hedef sıc.</value>
   </data>
   <data name="LblTargetWidthDegrees" xml:space="preserve">
-    <value>Minimum Width (degree)</value>
+    <value>Minimum genişlik (derece)</value>
   </data>
   <data name="LblTelescope" xml:space="preserve">
-    <value>Telescope</value>
+    <value>Teleskop</value>
   </data>
   <data name="LblTelescopeCannotPulseGuide" xml:space="preserve">
-    <value>Telescope cannot Pulse Guide</value>
+    <value>Teleskop takip sinyali veremiyor</value>
   </data>
   <data name="LblTelescopeCannotSlew" xml:space="preserve">
     <value>Telescope cannot slew</value>
@@ -3196,22 +3194,22 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
     <value>Starts Exposure</value>
   </data>
   <data name="LblTooltipTargetLoadSet" xml:space="preserve">
-    <value>Load set of targets from a file</value>
+    <value>Hedef setini bir dosyadan yükle</value>
   </data>
   <data name="LblTooltipTargetSaveSet" xml:space="preserve">
-    <value>Save current targets as a set</value>
+    <value>Mevcut hedefleri set olarak kaydet</value>
   </data>
   <data name="LblTotalNo" xml:space="preserve">
-    <value>Total #</value>
+    <value>Toplam#</value>
   </data>
   <data name="LblToupTekCameraSetup" xml:space="preserve">
-    <value>ToupTek Camera Setup</value>
+    <value>ToupTek kamera ayarı</value>
   </data>
   <data name="LblTrace" xml:space="preserve">
-    <value>Trace</value>
+    <value>İzleme</value>
   </data>
   <data name="LblTracking" xml:space="preserve">
-    <value>Tracking</value>
+    <value>Takip</value>
   </data>
   <data name="LblTransitNorth" xml:space="preserve">
     <value>Transit North</value>
@@ -3220,128 +3218,125 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
     <value>Transit South</value>
   </data>
   <data name="LblTrendHyperbolic" xml:space="preserve">
-    <value>Trends and Hyperbolic</value>
+    <value>Eğimler ve hiperbolik</value>
   </data>
   <data name="LblTrendLines" xml:space="preserve">
-    <value>Trend Lines</value>
+    <value>Eğim çizgileri</value>
   </data>
   <data name="LblTrendParabolic" xml:space="preserve">
-    <value>Trends and Parabolic</value>
+    <value>Eğimler ve parabolik</value>
   </data>
   <data name="LblType" xml:space="preserve">
-    <value>Type</value>
+    <value>Tip</value>
   </data>
   <data name="LblUnableToConnectCamera" xml:space="preserve">
-    <value>Unable to connect camera</value>
+    <value>Kameraya bağlanamadı</value>
   </data>
   <data name="LblUnableToSetExposureTime" xml:space="preserve">
-    <value>Unable to set exposure time</value>
+    <value>Pozlama süresi ayarlanamadı</value>
   </data>
   <data name="LblUnableToSetISO" xml:space="preserve">
-    <value>Unable to set ISO</value>
+    <value>ISO ayarlanamadı</value>
   </data>
   <data name="LblUnableToStartExposure" xml:space="preserve">
-    <value>Unable to start camera exposure</value>
+    <value>Kamera pozlaması ayarlanamadı</value>
   </data>
   <data name="LblUnableToSync" xml:space="preserve">
-    <value>Unable to sync. Telescope is not connected</value>
+    <value>Senkr. başarısız. Teleskop bağlı değil</value>
   </data>
   <data name="LblUnexpectedError" xml:space="preserve">
-    <value>Unexpected error occurred</value>
+    <value>Beklenmeyen hata oluştu</value>
   </data>
   <data name="LblUnhandledException" xml:space="preserve">
-    <value>Unhandled Exception occurred</value>
+    <value>Kontrol edilemeyen istisna durum oluştu</value>
   </data>
   <data name="LblUnlinkedStretch" xml:space="preserve">
     <value>Unlinked Stretch</value>
   </data>
   <data name="LblUnlinkedStretchTooltip" xml:space="preserve">
-    <value>
-        When enabled, color channels will be stretched separately, helping hide the
-        sky background and enhancing autofocus and platesolving reliablity, especially
-        in light polluted areas. Processing time is however increased.
+    <value>        Etkinleştirildiğinde, özellikle ışık kirliliği olan bölgelerde gökyüzü arka planını gizlemek,         otomatik odaklama ve platesolving'in güvenilirliğini artırmak için renk kanalları ayrı ayrı         esnetilir. Ancak işleme süresi uzar.
     </value>
   </data>
   <data name="LblUnpark" xml:space="preserve">
     <value>Unpark</value>
   </data>
   <data name="LblUPBV2AmpereHours" xml:space="preserve">
-    <value>Ampere Hours</value>
+    <value>Amper saat</value>
   </data>
   <data name="LblUPBV2AutoDewControl" xml:space="preserve">
-    <value>Automatic Dew Control</value>
+    <value>Otomatik buğu kontrol</value>
   </data>
   <data name="LblUPBV2AverageCurrent" xml:space="preserve">
-    <value>Average Current</value>
+    <value>Ortalama akım</value>
   </data>
   <data name="LblUPBV2Current" xml:space="preserve">
-    <value>Current</value>
+    <value>Akım</value>
   </data>
   <data name="LblUPBV2DeviceData" xml:space="preserve">
-    <value>Device Data</value>
+    <value>Cihaz verisi</value>
   </data>
   <data name="LblUPBV2DewHeater" xml:space="preserve">
-    <value>Dew Heater Port</value>
+    <value>Buğu giderici girişi</value>
   </data>
   <data name="LblUPBV2DewHeaterPorts" xml:space="preserve">
-    <value>Dew Heaters</value>
+    <value>Buğu gidericiler</value>
   </data>
   <data name="LblUPBV2DewPoint" xml:space="preserve">
-    <value>Dew Point</value>
+    <value>Buğu noktası</value>
   </data>
   <data name="LblUPBV2ExcessCurrent" xml:space="preserve">
-    <value>Excess Current</value>
+    <value>Yüksek akım</value>
   </data>
   <data name="LblUPBV2InputCurrent" xml:space="preserve">
-    <value>Input Current</value>
+    <value>Giriş akımı</value>
   </data>
   <data name="LblUPBV2InputPower" xml:space="preserve">
-    <value>Power</value>
+    <value>Güç</value>
   </data>
   <data name="LblUPBV2InputVoltage" xml:space="preserve">
-    <value>Input Voltage</value>
+    <value>Giriş voltajı</value>
   </data>
   <data name="LblUPBV2InvalidResponse" xml:space="preserve">
-    <value>Invalid response from Pegasus Astro Ultimate Powerbox V2.</value>
+    <value>Pegasus Astro Ultimate Powerbox V2'den gelen cevap geçersiz.</value>
   </data>
   <data name="LblUPBV2Power1" xml:space="preserve">
-    <value>Power Port 1</value>
+    <value>Güç girişi 1</value>
   </data>
   <data name="LblUPBV2Power2" xml:space="preserve">
-    <value>Power Port 2</value>
+    <value>Güçgirişi 2</value>
   </data>
   <data name="LblUPBV2Power3" xml:space="preserve">
-    <value>Power Port 3</value>
+    <value>Güç girişi 3</value>
   </data>
   <data name="LblUPBV2Power4" xml:space="preserve">
-    <value>Power Port 4</value>
+    <value>Güç girişi 4</value>
   </data>
   <data name="LblUPBV2PowerPorts" xml:space="preserve">
-    <value>Power</value>
+    <value>Güç</value>
   </data>
   <data name="LblUPBV2RelativeHumidity" xml:space="preserve">
-    <value>Relative Humidity</value>
+    <value>Bağıl nem</value>
   </data>
   <data name="LblUPBV2Temperature" xml:space="preserve">
-    <value>Temperature</value>
+    <value>Sıcaklık</value>
   </data>
   <data name="LblUPBV2UpTime" xml:space="preserve">
     <value>Up-Time</value>
   </data>
   <data name="LblUPBV2Usb1" xml:space="preserve">
-    <value>Usb Port 1</value>
+    <value>USB giriş 1</value>
   </data>
   <data name="LblUPBV2Usb2" xml:space="preserve">
-    <value>Usb Port 2</value>
+    <value>USB giriş 2</value>
   </data>
   <data name="LblUPBV2Usb3" xml:space="preserve">
-    <value>Usb Port 3</value>
+    <value>USB giriş 3</value>
   </data>
   <data name="LblUPBV2Usb4" xml:space="preserve">
-    <value>Usb Port 4</value>
+    <value>USB giriş 4</value>
   </data>
   <data name="LblUPBV2Usb5" xml:space="preserve">
-    <value>Usb Port 5</value>
+    <value>USB giriş 5</value>
   </data>
   <data name="LblUPBV2Usb6" xml:space="preserve">
     <value>Usb Port 6</value>
@@ -3476,64 +3471,64 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
     <value>XISF</value>
   </data>
   <data name="LblXisfBadChecksum" xml:space="preserve">
-    <value>XISF file checksum did not verify. The image data may be corrupted.</value>
+    <value>XISF dosyası doğrulanmadı. Resim verisi bozulmuş olabilir.</value>
   </data>
   <data name="LblXisfInvalidFile" xml:space="preserve">
-    <value>Not a valid XISF file</value>
+    <value>Geçerli XISF dosyası değil</value>
   </data>
   <data name="LblXisfInvalidGeometry" xml:space="preserve">
-    <value>Could not get XISF image geometry</value>
+    <value>XISF resim durumu alınamıyor</value>
   </data>
   <data name="LblXisfUnsupportedChecksum" xml:space="preserve">
-    <value>Unsupported XISF checksum type: {0}</value>
+    <value>Desteklenmeyen XISF sağlama tipi: {0}</value>
   </data>
   <data name="LblXisfUnsupportedCompression" xml:space="preserve">
-    <value>Unsupported XISF compression type: {0}</value>
+    <value>Desteklenmeyen XISF sıkıştırma tipi: {0}</value>
   </data>
   <data name="LblXisfUnsupportedFormat" xml:space="preserve">
-    <value>Unsupported XISF data format: {0}</value>
+    <value>Desteklenmeyen XISF veri formatı: {0}</value>
   </data>
   <data name="LblYAxisScale" xml:space="preserve">
-    <value>Y-Axis Scale</value>
+    <value>Y-Eksen skalası</value>
   </data>
   <data name="LblYAxisUnits" xml:space="preserve">
-    <value>Y-Axis Units</value>
+    <value>Y-Eksen birimi</value>
   </data>
   <data name="LblYes" xml:space="preserve">
-    <value>Yes</value>
+    <value>Evet</value>
   </data>
   <data name="LblZoomIn" xml:space="preserve">
-    <value>Zoom in by 25%</value>
+    <value>%25 büyült</value>
   </data>
   <data name="LblZoomOut" xml:space="preserve">
-    <value>Zoom out by 25%</value>
+    <value>%25 küçült</value>
   </data>
   <data name="LblZoomStretch" xml:space="preserve">
-    <value>Fit Image to Area</value>
+    <value>Resmi alana sığdır</value>
   </data>
   <data name="UPBV2InputCurrentChartLabel" xml:space="preserve">
-    <value>Input Current (A)</value>
+    <value>Giriş akımı (A)</value>
   </data>
   <data name="UPBV2InputVoltageChartLabel" xml:space="preserve">
-    <value>Input Voltage (V)</value>
+    <value>Giriş voltajı (V)</value>
   </data>
   <data name="LblSetMaximumSpeed" xml:space="preserve">
-    <value>Set Maximum Speed</value>
+    <value>Maksimum hızı ayarla</value>
   </data>
   <data name="LblBackLashSteps" xml:space="preserve">
-    <value>Backlash Steps</value>
+    <value>Dişli boşluğu adımları</value>
   </data>
   <data name="LblReverse" xml:space="preserve">
-    <value>Reverse</value>
+    <value>Geri</value>
   </data>
   <data name="LblSetCurrentPosition" xml:space="preserve">
-    <value>Set Current Position</value>
+    <value>Mevcut pozşsyonu ayarla</value>
   </data>
   <data name="LblStepperMotorDirection" xml:space="preserve">
-    <value>Stepper Motor Direction</value>
+    <value>Step motor yönü</value>
   </data>
   <data name="LblAuto" xml:space="preserve">
-    <value>Auto</value>
+    <value>Otomatik</value>
   </data>
   <data name="LblBayerPattern" xml:space="preserve">
     <value>Bayer Pattern</value>
@@ -3545,7 +3540,7 @@ Drag the rectangle over the part of the frame you want to subsample and enable s
     <value>BGRG</value>
   </data>
   <data name="LblBayerPatternGBGR" xml:space="preserve">
-    <value>GBGR</value>
+    <value>GBRG</value>
   </data>
   <data name="LblBayerPatternGBRG" xml:space="preserve">
     <value>GBRG</value>

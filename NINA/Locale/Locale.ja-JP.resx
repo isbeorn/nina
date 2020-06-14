@@ -3761,13 +3761,4 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
   <data name="LblWizardOperationMode" xml:space="preserve">
     <value>Wizard Operation Mode</value>
   </data>
-  <data name="LblSequenceContainsDarksAndLights" xml:space="preserve">
-    <value>カメラには機械式シャッターがなく、自動フラットパネルが接続されておらず、シーケンスにはダーク/BIASアイテムとLIGHTが混在しています。</value>
-  </data>
-  <data name="LblSequenceContainsDarksOnly" xml:space="preserve">
-    <value>カメラには機械式シャッターがなく、自動フラットパネルが接続されておらず、シーケンスにはダーク/BIASアイテムのみが含まれています。カメラがカバーされていることを確認してください。</value>
-  </data>
-  <data name="LblMeridianFlipIn" xml:space="preserve">
-    <value>Meridian Flip in</value>
-  </data>
 </root>

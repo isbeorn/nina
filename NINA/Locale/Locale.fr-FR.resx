@@ -3780,13 +3780,4 @@ Dans le cas où une durée plus longue est requise, une durée peut être spéci
   <data name="LblWizardOperationMode" xml:space="preserve">
     <value>Wizard Operation Mode</value>
   </data>
-  <data name="LblSequenceContainsDarksAndLights" xml:space="preserve">
-    <value>La caméra n'a pas d'obturateur mécanique, aucun panneau flat n'est connecté et la séquence contient des éléments DARK/BIAS mélangés avec LIGHT.</value>
-  </data>
-  <data name="LblSequenceContainsDarksOnly" xml:space="preserve">
-    <value>La caméra n'a pas d'obturateur mécanique, aucun panneau flat n'est connecté et la séquence contient des éléments DARK/BIAS. Assurez vous que la caméra est obturée.</value>
-  </data>
-  <data name="LblMeridianFlipIn" xml:space="preserve">
-    <value>Retournement au méridien dans</value>
-  </data>
 </root>

@@ -3783,13 +3783,4 @@
   <data name="LblWizardOperationMode" xml:space="preserve">
     <value>Wizard Operation Mode</value>
   </data>
-  <data name="LblSequenceContainsDarksAndLights" xml:space="preserve">
-    <value>相机没有机械快门，序列中含有暗场/偏置项目，但没有安装镜头盖</value>
-  </data>
-  <data name="LblSequenceContainsDarksOnly" xml:space="preserve">
-    <value>相机没有机械快门，序列中只有暗场/偏置项目，但没有安装镜头盖，请确认镜头已经盖好。</value>
-  </data>
-  <data name="LblMeridianFlipIn" xml:space="preserve">
-    <value>Meridian Flip in</value>
-  </data>
 </root>
