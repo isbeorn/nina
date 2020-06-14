@@ -75,10 +75,10 @@ namespace NINA.Profile {
         }
 
         private void MigrateFlatDeviceFilterSettingsFromFilterNameToPosition() {
-            foreach(var kvp in FlatDeviceSettings.FilterSettings) {
-                if(kvp.Key.Position == null && !string.IsNullOrEmpty(kvp.Key.FilterName)) {
+            foreach (var kvp in FlatDeviceSettings.FilterSettings) {
+                if (kvp.Key.Position == null && !string.IsNullOrEmpty(kvp.Key.FilterName)) {
                     var usedFilter = FilterWheelSettings.FilterWheelFilters.FirstOrDefault(f => f.Name == kvp.Key.FilterName);
-                    if(usedFilter != null) {
+                    if (usedFilter != null) {
                         kvp.Key.Position = usedFilter.Position;
                         kvp.Key.FilterName = null;
                     }
@@ -321,6 +321,12 @@ namespace NINA.Profile {
                 } else {
                     fs.Position = 0;
                 }
+
+                using (var temp = new FileStream(Location + ".bkp", FileMode.Create, FileAccess.Write)) {
+                    fs.CopyTo(temp);
+                    temp.Flush();
+                }
+
                 fs.SetLength(0);
                 var serializer = new DataContractSerializer(typeof(Profile));
                 serializer.WriteObject(fs, this);
@@ -353,6 +359,16 @@ namespace NINA.Profile {
                     }
                 } catch (Exception ex) {
                     Logger.Error(ex);
+                    var backup = path + ".bkp";
+                    if (File.Exists(backup)) {
+                        try {
+                            Logger.Info("Restoring corrupt profile from backup");
+                            File.Copy(backup, path, true);
+                            return Peek(path);
+                        } catch (Exception backupEx) {
+                            Logger.Error("Restoring of profile failed", backupEx);
+                        }
+                    }
                 }
                 return null;
             }
