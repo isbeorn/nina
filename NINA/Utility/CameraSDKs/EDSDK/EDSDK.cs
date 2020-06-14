@@ -596,10 +596,10 @@ namespace EDSDKLib
 		-----------------------------------------------------------------------------*/
         public enum DcStrobe : uint
         {
-            _DcStrobeAutoq          = 0,
-            _DcStrobeOn		        = 1,
-            _DcStrobeSlowsynchro	= 2,
-            _DcStrobeOff			= 3,
+            DcStrobeAuto         = 0,
+            DcStrobeOn			 = 1,
+            DcStrobeSlowsynchro	 = 2,
+            DcStrobeOff			 = 3,
         }
 
 		/*-----------------------------------------------------------------------------
@@ -607,8 +607,8 @@ namespace EDSDKLib
 		-----------------------------------------------------------------------------*/
         public enum DcLensBarrelState : uint
         {
-            _DcLensBarrelStateInner = 0,
-            _DcLensBarrelStateOuter = 1,
+            DcLensBarrelStateInner = 0,
+            DcLensBarrelStateOuter = 1,
         }
         
 		/*-----------------------------------------------------------------------------
@@ -616,8 +616,8 @@ namespace EDSDKLib
 		-----------------------------------------------------------------------------*/
         public enum DcRemoteShootingMode : uint
         {
-            _DcRemoteShootingModeStop	 = 0,
-            _DcRemoteShootingModeStart	 = 1,
+            DcRemoteShootingModeStop	 = 0,
+            DcRemoteShootingModeStart	 = 1,
         }
 
         public enum ImageQuality : uint
@@ -713,7 +713,12 @@ namespace EDSDKLib
 			EdsImageQuality_CRM1J	=	0x00630510,	/* CRAW + Jpeg Middle1 */
 			EdsImageQuality_CRM2J	=	0x00630610,	/* CRAW + Jpeg Middle2 */
 			EdsImageQuality_CRSJ	=	0x00630210,	/* CRAW + Jpeg Small */
-            
+			
+			/* HEIF */
+			EdsImageQuality_HEIFL   =   0x0080ff0f,	/* HEIF Large */
+			EdsImageQuality_RHEIFL  =   0x00640080, /* RAW  + HEIF Large */
+			EdsImageQuality_CRHEIFL =   0x00630080, /* CRAW + HEIF Large */
+
 			EdsImageQuality_Unknown = 0xffffffff,
         }
 
