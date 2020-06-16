@@ -38,11 +38,11 @@ namespace NINA.Model.MySwitch {
         }
 
         public string Id {
-            get => "Eagle";
+            get => "EAGLE";
         }
 
         public string Name {
-            get => "Eagle";
+            get => "EAGLE";
         }
 
         private bool connected;
@@ -56,7 +56,7 @@ namespace NINA.Model.MySwitch {
         }
 
         public string Description {
-            get => "Eagle";
+            get => "EAGLE";
         }
 
         public string DriverInfo {
