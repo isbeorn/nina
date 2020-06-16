@@ -31,6 +31,7 @@ namespace NINA.Utility.Astrometry {
             Hours
         }
 
+        private DateTime creationDate;
         private Angle raAngle;
         private Angle decAngle;
 
@@ -92,13 +93,14 @@ namespace NINA.Utility.Astrometry {
         /// <param name="dec">   Declination in degrees</param>
         /// <param name="epoch"> J2000|JNOW</param>
         /// <param name="ratype">Degrees|Hours</param>
-        public Coordinates(double ra, double dec, Epoch epoch, RAType ratype)
+        public Coordinates(double ra, double dec, Epoch epoch, RAType ratype, DateTime? referenceDate = null)
             : this(
                   ratype == RAType.Hours
                     ? Angle.ByHours(ra)
                     : Angle.ByDegree(ra),
                   Angle.ByDegree(dec),
-                  epoch
+                  epoch,
+                  referenceDate
             ) {
         }
 
@@ -108,7 +110,17 @@ namespace NINA.Utility.Astrometry {
         /// <param name="ra">    Right Ascension</param>
         /// <param name="dec">   Declination</param>
         /// <param name="epoch"> J2000|JNOW</param>
-        public Coordinates(Angle ra, Angle dec, Epoch epoch) {
+        /// <param name="referenceDate">Optional: Default is DateTime.Now.
+        ///     Will be used for transformation from JNOW to J2000.
+        ///     As JNOW is constantly progressing but the creation was at a specific time this date is used as reference
+        /// </param>
+        public Coordinates(Angle ra, Angle dec, Epoch epoch, DateTime? referenceDate = null) {
+            if (referenceDate.HasValue) {
+                this.creationDate = referenceDate.Value;
+            } else {
+                this.creationDate = DateTime.Now;
+            }
+
             this.raAngle = ra;
             this.decAngle = dec;
             this.Epoch = epoch;
@@ -121,7 +133,7 @@ namespace NINA.Utility.Astrometry {
         /// <returns></returns>
         public Coordinates Transform(Epoch targetEpoch) {
             if (Epoch == targetEpoch) {
-                return new Coordinates(this.raAngle, this.decAngle, this.Epoch);
+                return new Coordinates(this.raAngle, this.decAngle, this.Epoch, this.creationDate);
             }
 
             if (targetEpoch == Epoch.JNOW) {
@@ -138,7 +150,8 @@ namespace NINA.Utility.Astrometry {
         /// </summary>
         /// <returns></returns>
         private Coordinates TransformToJNOW() {
-            double jdTT = GetJdTT(DateTime.Now);
+            var now = DateTime.Now;
+            double jdTT = GetJdTT(now);
 
             double ri = 0, di = 0, eo = 0;
             SOFA.CelestialToIntermediate(raAngle.Radians, decAngle.Radians, 0.0, 0.0, 0.0, 0.0, jdTT, 0.0, ref ri, ref di, ref eo);
@@ -146,7 +159,8 @@ namespace NINA.Utility.Astrometry {
             var raApparent = Angle.ByRadians(SOFA.Anp(ri - eo));
             var decApparent = Angle.ByRadians(di);
 
-            return new Coordinates(raApparent, decApparent, Epoch.JNOW);
+            var jnowCoordinates = new Coordinates(raApparent, decApparent, Epoch.JNOW, now);
+            return jnowCoordinates;
         }
 
         private double GetJdTT(DateTime date) {
@@ -165,9 +179,8 @@ namespace NINA.Utility.Astrometry {
         /// </summary>
         /// <returns></returns>
         private Coordinates TransformToJ2000() {
-            var now = DateTime.Now;
-            var jdTT = GetJdTT(now);
-            var jdUTC = Astrometry.GetJulianDate(now);
+            var jdTT = GetJdTT(this.creationDate);
+            var jdUTC = Astrometry.GetJulianDate(this.creationDate);
             double rc = 0, dc = 0, eo = 0;
             SOFA.IntermediateToCelestial(SOFA.Anp(raAngle.Radians + SOFA.Eo06a(jdUTC, 0.0)), decAngle.Radians, jdTT, 0.0, ref rc, ref dc, ref eo);
 
