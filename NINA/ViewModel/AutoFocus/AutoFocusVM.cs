@@ -650,6 +650,7 @@ namespace NINA.ViewModel {
             }
 
             bool tempComp = false;
+            bool guidingStopped = false;
 
             try {
                 if (focuserInfo.TempCompAvailable && focuserInfo.TempComp) {
@@ -658,7 +659,7 @@ namespace NINA.ViewModel {
                 }
 
                 if (profileService.ActiveProfile.FocuserSettings.AutoFocusDisableGuiding) {
-                    await this.guiderMediator.StopGuiding(token);
+                    guidingStopped = await this.guiderMediator.StopGuiding(token);
                 }
 
                 initialFocusPosition = focuserInfo.Position;
@@ -800,7 +801,13 @@ namespace NINA.ViewModel {
                 }
 
                 brightestStarPositions.Clear();
-                await this.guiderMediator.StartGuiding(token);
+                if (guidingStopped) {
+                    var startGuidingTask = this.guiderMediator.StartGuiding(token);
+                    var completedTask = await Task.WhenAny(Task.Delay(60000), startGuidingTask);
+                    if (startGuidingTask != completedTask) {
+                        Notification.ShowWarning(Locale.Loc.Instance["LblStartGuidingFailed"]);
+                    }
+                }
                 progress.Report(new ApplicationStatus() { Status = string.Empty });
             }
             return report;
