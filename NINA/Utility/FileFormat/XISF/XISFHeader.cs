@@ -329,13 +329,13 @@ namespace NINA.Utility.FileFormat.XISF {
 
         public void Populate(ImageMetaData metaData) {
             if (metaData.Image.ExposureStart > DateTime.MinValue) {
-                AddImageProperty(XISFImageProperty.Observation.Time.Start, metaData.Image.ExposureStart.ToUniversalTime().ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture), "Time of observation (UTC)");
-                AddImageFITSKeyword("DATE-LOC", metaData.Image.ExposureStart.ToLocalTime().ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture), "Time of observation (local)");
+                AddImageProperty(XISFImageProperty.Observation.Time.Start, metaData.Image.ExposureStart.ToUniversalTime(), "Time of observation (UTC)");
+                AddImageFITSKeyword("DATE-LOC", metaData.Image.ExposureStart.ToLocalTime(), "Time of observation (local)");
             }
 
             if (!double.IsNaN(metaData.Image.ExposureTime)) {
-                AddImageProperty(XISFImageProperty.Instrument.ExposureTime, metaData.Image.ExposureTime.ToString(CultureInfo.InvariantCulture), "[s] Exposure duration");
-                AddImageFITSKeyword("EXPTIME", metaData.Image.ExposureTime.ToString(CultureInfo.InvariantCulture), "[s] Exposure duration");
+                AddImageProperty(XISFImageProperty.Instrument.ExposureTime, metaData.Image.ExposureTime, "[s] Exposure duration");
+                AddImageFITSKeyword("EXPTIME", metaData.Image.ExposureTime, "[s] Exposure duration");
             }
 
             /* Camera */
@@ -343,47 +343,47 @@ namespace NINA.Utility.FileFormat.XISF {
                 AddImageProperty(XISFImageProperty.Instrument.Camera.Name, metaData.Camera.Name, "Imaging instrument name");
             }
             if (metaData.Camera.Gain >= 0) {
-                AddImageFITSKeyword("GAIN", metaData.Camera.Gain.ToString(CultureInfo.InvariantCulture), "Sensor gain");
+                AddImageFITSKeyword("GAIN", metaData.Camera.Gain, "Sensor gain");
             }
 
             if (metaData.Camera.Offset >= 0) {
-                AddImageFITSKeyword("OFFSET", metaData.Camera.Offset.ToString(CultureInfo.InvariantCulture), "Sensor gain offset");
+                AddImageFITSKeyword("OFFSET", metaData.Camera.Offset, "Sensor gain offset");
             }
 
             if (!double.IsNaN(metaData.Camera.ElectronsPerADU)) {
-                AddImageProperty(XISFImageProperty.Instrument.Camera.Gain, metaData.Camera.ElectronsPerADU.ToString(CultureInfo.InvariantCulture), "[e-/ADU] Electrons per A/D unit");
+                AddImageProperty(XISFImageProperty.Instrument.Camera.Gain, metaData.Camera.ElectronsPerADU, "[e-/ADU] Electrons per A/D unit");
             }
 
             if (metaData.Camera.BinX > 0) {
-                AddImageProperty(XISFImageProperty.Instrument.Camera.XBinning, metaData.Camera.BinX.ToString(CultureInfo.InvariantCulture), "X axis binning factor");
+                AddImageProperty(XISFImageProperty.Instrument.Camera.XBinning, metaData.Camera.BinX, "X axis binning factor");
             }
             if (metaData.Camera.BinY > 0) {
-                AddImageProperty(XISFImageProperty.Instrument.Camera.YBinning, metaData.Camera.BinY.ToString(CultureInfo.InvariantCulture), "Y axis binning factor");
+                AddImageProperty(XISFImageProperty.Instrument.Camera.YBinning, metaData.Camera.BinY, "Y axis binning factor");
             }
 
             if (!double.IsNaN(metaData.Camera.SetPoint)) {
-                AddImageFITSKeyword("SET-TEMP", metaData.Camera.SetPoint.ToString(CultureInfo.InvariantCulture), "[degC] CCD temperature setpoint");
+                AddImageFITSKeyword("SET-TEMP", metaData.Camera.SetPoint, "[degC] CCD temperature setpoint");
             }
 
             if (!double.IsNaN(metaData.Camera.Temperature)) {
-                AddImageProperty(XISFImageProperty.Instrument.Sensor.Temperature, metaData.Camera.Temperature.ToString(CultureInfo.InvariantCulture), "[degC] CCD temperature");
+                AddImageProperty(XISFImageProperty.Instrument.Sensor.Temperature, metaData.Camera.Temperature, "[degC] CCD temperature");
             }
 
             if (!double.IsNaN(metaData.Camera.PixelSize)) {
                 double pixelX = metaData.Camera.PixelSize * Math.Max(metaData.Camera.BinX, 1);
                 double pixelY = metaData.Camera.PixelSize * Math.Max(metaData.Camera.BinY, 1);
-                AddImageProperty(XISFImageProperty.Instrument.Sensor.XPixelSize, pixelX.ToString(CultureInfo.InvariantCulture), "[um] Pixel X axis size");
-                AddImageProperty(XISFImageProperty.Instrument.Sensor.YPixelSize, pixelY.ToString(CultureInfo.InvariantCulture), "[um] Pixel Y axis size");
+                AddImageProperty(XISFImageProperty.Instrument.Sensor.XPixelSize, pixelX, "[um] Pixel X axis size");
+                AddImageProperty(XISFImageProperty.Instrument.Sensor.YPixelSize, pixelY, "[um] Pixel Y axis size");
             }
 
             if (!string.IsNullOrWhiteSpace(metaData.Camera.ReadoutModeName)) {
-                AddImageFITSKeyword("READOUTM", metaData.Camera.ReadoutModeName.ToString(CultureInfo.InvariantCulture), "Sensor readout mode");
+                AddImageFITSKeyword("READOUTM", metaData.Camera.ReadoutModeName, "Sensor readout mode");
             }
 
             if (metaData.Camera.SensorType != SensorType.Monochrome) {
                 AddImageFITSKeyword("BAYERPAT", metaData.Camera.SensorType.ToString().ToUpper(), "Sensor Bayer pattern");
-                AddImageFITSKeyword("XBAYROFF", metaData.Camera.BayerOffsetX.ToString(CultureInfo.InvariantCulture), "Bayer pattern X axis offset");
-                AddImageFITSKeyword("YBAYROFF", metaData.Camera.BayerOffsetY.ToString(CultureInfo.InvariantCulture), "Bayer pattern Y axis offset");
+                AddImageFITSKeyword("XBAYROFF", metaData.Camera.BayerOffsetX, "Bayer pattern X axis offset");
+                AddImageFITSKeyword("YBAYROFF", metaData.Camera.BayerOffsetY, "Bayer pattern Y axis offset");
 
                 /*
                  * Add XISF ColorFilterArray element. We support only 2x2 bayer patterns for now.
@@ -393,33 +393,33 @@ namespace NINA.Utility.FileFormat.XISF {
 
             /* Observer */
             if (!double.IsNaN(metaData.Observer.Elevation)) {
-                AddImageProperty(XISFImageProperty.Observation.Location.Elevation, metaData.Observer.Elevation.ToString(CultureInfo.InvariantCulture), "[m] Observation site elevation");
+                AddImageProperty(XISFImageProperty.Observation.Location.Elevation, metaData.Observer.Elevation, "[m] Observation site elevation");
             }
             if (!double.IsNaN(metaData.Observer.Latitude)) {
-                AddImageProperty(XISFImageProperty.Observation.Location.Latitude, metaData.Observer.Latitude.ToString(CultureInfo.InvariantCulture), "[deg] Observation site latitude");
+                AddImageProperty(XISFImageProperty.Observation.Location.Latitude, metaData.Observer.Latitude, "[deg] Observation site latitude");
             }
             if (!double.IsNaN(metaData.Observer.Longitude)) {
-                AddImageProperty(XISFImageProperty.Observation.Location.Longitude, metaData.Observer.Longitude.ToString(CultureInfo.InvariantCulture), "[deg] Observation site longitude");
+                AddImageProperty(XISFImageProperty.Observation.Location.Longitude, metaData.Observer.Longitude, "[deg] Observation site longitude");
             }
 
             /* Telescope */
             if (!string.IsNullOrWhiteSpace(metaData.Telescope.Name)) {
-                AddImageProperty(XISFImageProperty.Instrument.Telescope.Name, metaData.Telescope.Name.ToString(CultureInfo.InvariantCulture), "Name of telescope");
+                AddImageProperty(XISFImageProperty.Instrument.Telescope.Name, metaData.Telescope.Name, "Name of telescope");
             }
             if (!double.IsNaN(metaData.Telescope.FocalLength) && metaData.Telescope.FocalLength > 0) {
-                AddImageProperty(XISFImageProperty.Instrument.Telescope.FocalLength, (metaData.Telescope.FocalLength / 1e3).ToString(CultureInfo.InvariantCulture), "[m] Focal Length");
-                AddImageFITSKeyword("FOCALLEN", metaData.Telescope.FocalLength.ToString(CultureInfo.InvariantCulture), "[mm] Focal length");
+                AddImageProperty(XISFImageProperty.Instrument.Telescope.FocalLength, metaData.Telescope.FocalLength / 1e3, "[m] Focal Length");
+                AddImageFITSKeyword("FOCALLEN", metaData.Telescope.FocalLength, "[mm] Focal length");
 
                 if (!double.IsNaN(metaData.Telescope.FocalRatio) && metaData.Telescope.FocalRatio > 0) {
                     double aperture = (metaData.Telescope.FocalLength / metaData.Telescope.FocalRatio) / 1e3;
-                    AddImageProperty(XISFImageProperty.Instrument.Telescope.Aperture, aperture.ToString(CultureInfo.InvariantCulture), "[m] Aperture", false);
-                    AddImageFITSKeyword("FOCRATIO", metaData.Telescope.FocalRatio.ToString(CultureInfo.InvariantCulture), "Focal ratio");
+                    AddImageProperty(XISFImageProperty.Instrument.Telescope.Aperture, aperture, "[m] Aperture", false);
+                    AddImageFITSKeyword("FOCRATIO", metaData.Telescope.FocalRatio, "Focal ratio");
                 }
             }
 
             if (metaData.Telescope.Coordinates != null) {
-                AddImageProperty(XISFImageProperty.Observation.Center.RA, metaData.Telescope.Coordinates.RADegrees.ToString(CultureInfo.InvariantCulture), "[deg] RA of telescope");
-                AddImageProperty(XISFImageProperty.Observation.Center.Dec, metaData.Telescope.Coordinates.Dec.ToString(CultureInfo.InvariantCulture), "[deg] Declination of telescope");
+                AddImageProperty(XISFImageProperty.Observation.Center.RA, metaData.Telescope.Coordinates.RADegrees, "[deg] RA of telescope");
+                AddImageProperty(XISFImageProperty.Observation.Center.Dec, metaData.Telescope.Coordinates.Dec, "[deg] Declination of telescope");
             }
 
             /* Target */
@@ -428,9 +428,9 @@ namespace NINA.Utility.FileFormat.XISF {
             }
 
             if (metaData.Target.Coordinates != null) {
-                AddImageProperty(XISFImageProperty.Observation.Object.RA, metaData.Target.Coordinates.RADegrees.ToString(CultureInfo.InvariantCulture), "[deg] RA of imaged object", false);
+                AddImageProperty(XISFImageProperty.Observation.Object.RA, metaData.Target.Coordinates.RADegrees, "[deg] RA of imaged object", false);
                 AddImageFITSKeyword(XISFImageProperty.Observation.Object.RA[2], Astrometry.Astrometry.HoursToFitsHMS(metaData.Target.Coordinates.RA), "[H M S] RA of imaged object");
-                AddImageProperty(XISFImageProperty.Observation.Object.Dec, metaData.Target.Coordinates.Dec.ToString(CultureInfo.InvariantCulture), "[deg] Declination of imaged object", false);
+                AddImageProperty(XISFImageProperty.Observation.Object.Dec, metaData.Target.Coordinates.Dec, "[deg] Declination of imaged object", false);
                 AddImageFITSKeyword(XISFImageProperty.Observation.Object.Dec[2], Astrometry.Astrometry.DegreesToFitsDMS(metaData.Target.Coordinates.Dec), "[D M S] Declination of imaged object");
             }
 
@@ -450,27 +450,27 @@ namespace NINA.Utility.FileFormat.XISF {
                 if (!double.IsNaN(metaData.Focuser.StepSize)) {
                     /* steps * step size (microns) converted to millimetres, single-precision float */
                     float focusDistance = (float)((metaData.Focuser.Position * metaData.Focuser.StepSize) / 1000.0);
-                    AddImageProperty(XISFImageProperty.Instrument.Focuser.Position, focusDistance.ToString(CultureInfo.InvariantCulture));
+                    AddImageProperty(XISFImageProperty.Instrument.Focuser.Position, focusDistance);
                 }
 
                 /* fits4win, SGP */
-                AddImageFITSKeyword("FOCPOS", metaData.Focuser.Position.ToString(CultureInfo.InvariantCulture), "[step] Focuser position");
+                AddImageFITSKeyword("FOCPOS", metaData.Focuser.Position, "[step] Focuser position");
 
                 /* MaximDL, several observatories */
-                AddImageFITSKeyword("FOCUSPOS", metaData.Focuser.Position.ToString(CultureInfo.InvariantCulture), "[step] Focuser position");
+                AddImageFITSKeyword("FOCUSPOS", metaData.Focuser.Position, "[step] Focuser position");
             }
 
             if (!double.IsNaN(metaData.Focuser.StepSize)) {
                 /* MaximDL */
-                AddImageFITSKeyword("FOCUSSZ", metaData.Focuser.StepSize.ToString(CultureInfo.InvariantCulture), "[um] Focuser step size");
+                AddImageFITSKeyword("FOCUSSZ", metaData.Focuser.StepSize, "[um] Focuser step size");
             }
 
             if (!double.IsNaN(metaData.Focuser.Temperature)) {
                 /* fits4win, SGP */
-                AddImageFITSKeyword("FOCTEMP", metaData.Focuser.Temperature.ToString(CultureInfo.InvariantCulture), "[degC] Focuser temperature");
+                AddImageFITSKeyword("FOCTEMP", metaData.Focuser.Temperature, "[degC] Focuser temperature");
 
                 /* MaximDL, several observatories */
-                AddImageFITSKeyword("FOCUSTEM", metaData.Focuser.Temperature.ToString(CultureInfo.InvariantCulture), "[degC] Focuser temperature");
+                AddImageFITSKeyword("FOCUSTEM", metaData.Focuser.Temperature, "[degC] Focuser temperature");
             }
 
             /* Rotator */
@@ -481,15 +481,15 @@ namespace NINA.Utility.FileFormat.XISF {
 
             if (!double.IsNaN(metaData.Rotator.Position)) {
                 /* fits4win */
-                AddImageFITSKeyword("ROTATOR", metaData.Rotator.Position.ToString(CultureInfo.InvariantCulture), "[deg] Rotator angle");
+                AddImageFITSKeyword("ROTATOR", metaData.Rotator.Position, "[deg] Rotator angle");
 
                 /* MaximDL, several observatories */
-                AddImageFITSKeyword("ROTATANG", metaData.Rotator.Position.ToString(CultureInfo.InvariantCulture), "[deg] Rotator angle");
+                AddImageFITSKeyword("ROTATANG", metaData.Rotator.Position, "[deg] Rotator angle");
             }
 
             if (!double.IsNaN(metaData.Rotator.StepSize)) {
                 /* NINA */
-                AddImageFITSKeyword("ROTSTPSZ", metaData.Rotator.StepSize.ToString(CultureInfo.InvariantCulture), "[deg] Rotator step size");
+                AddImageFITSKeyword("ROTSTPSZ", metaData.Rotator.StepSize, "[deg] Rotator step size");
             }
 
             if (!string.IsNullOrWhiteSpace(metaData.FilterWheel.Name)) {
@@ -504,54 +504,55 @@ namespace NINA.Utility.FileFormat.XISF {
 
             /* Weather Data */
             if (!double.IsNaN(metaData.WeatherData.CloudCover)) {
-                AddImageFITSKeyword("CLOUDCVR", metaData.WeatherData.CloudCover.ToString(CultureInfo.InvariantCulture), "[percent] Cloud cover");
+                AddImageFITSKeyword("CLOUDCVR", metaData.WeatherData.CloudCover, "[percent] Cloud cover");
             }
 
             if (!double.IsNaN(metaData.WeatherData.DewPoint)) {
-                AddImageFITSKeyword("DEWPOINT", metaData.WeatherData.DewPoint.ToString(CultureInfo.InvariantCulture), "[degC] Dew point");
+                AddImageFITSKeyword("DEWPOINT", metaData.WeatherData.DewPoint, "[degC] Dew point");
             }
 
             if (!double.IsNaN(metaData.WeatherData.Humidity)) {
-                AddImageProperty(XISFImageProperty.Observation.Meteorology.RelativeHumidity, metaData.WeatherData.Humidity.ToString(CultureInfo.InvariantCulture), "[percent] Relative humidity");
+                AddImageProperty(XISFImageProperty.Observation.Meteorology.RelativeHumidity, metaData.WeatherData.Humidity, "[percent] Relative humidity");
             }
 
             if (!double.IsNaN(metaData.WeatherData.Pressure)) {
-                AddImageProperty(XISFImageProperty.Observation.Meteorology.AtmosphericPressure, metaData.WeatherData.Pressure.ToString(CultureInfo.InvariantCulture), "[hPa] Air pressure");
+                AddImageProperty(XISFImageProperty.Observation.Meteorology.AtmosphericPressure, metaData.WeatherData.Pressure, "[hPa] Air pressure");
             }
 
             if (!double.IsNaN(metaData.WeatherData.SkyBrightness)) {
-                AddImageFITSKeyword("SKYBRGHT", metaData.WeatherData.SkyBrightness.ToString(CultureInfo.InvariantCulture), "[lux] Sky brightness");
+                AddImageFITSKeyword("SKYBRGHT", metaData.WeatherData.SkyBrightness, "[lux] Sky brightness");
             }
 
             if (!double.IsNaN(metaData.WeatherData.SkyQuality)) {
                 /* fits4win */
-                AddImageFITSKeyword("MPSAS", metaData.WeatherData.SkyQuality.ToString(CultureInfo.InvariantCulture), "[mags/arcsec^2] Sky quality");
+                AddImageFITSKeyword("MPSAS", metaData.WeatherData.SkyQuality, "[mags/arcsec^2] Sky quality");
             }
 
             if (!double.IsNaN(metaData.WeatherData.SkyTemperature)) {
-                AddImageFITSKeyword("SKYTEMP", metaData.WeatherData.SkyTemperature.ToString(CultureInfo.InvariantCulture), "[degC] Sky temperature");
+                AddImageFITSKeyword("SKYTEMP", metaData.WeatherData.SkyTemperature, "[degC] Sky temperature");
             }
 
             if (!double.IsNaN(metaData.WeatherData.StarFWHM)) {
-                AddImageFITSKeyword("STARFWHM", metaData.WeatherData.StarFWHM.ToString(CultureInfo.InvariantCulture), "Star FWHM");
+                AddImageFITSKeyword("STARFWHM", metaData.WeatherData.StarFWHM, "Star FWHM");
             }
 
             if (!double.IsNaN(metaData.WeatherData.Temperature)) {
-                AddImageProperty(XISFImageProperty.Observation.Meteorology.AmbientTemperature, metaData.WeatherData.Temperature.ToString(CultureInfo.InvariantCulture), "[degC] Ambient air temperature");
+                AddImageProperty(XISFImageProperty.Observation.Meteorology.AmbientTemperature, metaData.WeatherData.Temperature, "[degC] Ambient air temperature");
             }
 
             if (!double.IsNaN(metaData.WeatherData.WindDirection)) {
-                AddImageProperty(XISFImageProperty.Observation.Meteorology.WindDirection, metaData.WeatherData.WindDirection.ToString(CultureInfo.InvariantCulture), "[deg] Wind direction: 0=N, 180=S, 90=E, 270=W");
+                AddImageProperty(XISFImageProperty.Observation.Meteorology.WindDirection, metaData.WeatherData.WindDirection, "[deg] Wind direction: 0=N, 180=S, 90=E, 270=W");
             }
 
             if (!double.IsNaN(metaData.WeatherData.WindGust)) {
-                AddImageProperty(XISFImageProperty.Observation.Meteorology.WindGust, (metaData.WeatherData.WindGust * 3.6).ToString(CultureInfo.InvariantCulture), "[kph] Wind gust");
+                AddImageProperty(XISFImageProperty.Observation.Meteorology.WindGust, metaData.WeatherData.WindGust * 3.6, "[kph] Wind gust");
             }
 
             if (!double.IsNaN(metaData.WeatherData.WindSpeed)) {
-                AddImageProperty(XISFImageProperty.Observation.Meteorology.WindSpeed, (metaData.WeatherData.WindSpeed * 3.6).ToString(CultureInfo.InvariantCulture), "[kph] Wind speed");
+                AddImageProperty(XISFImageProperty.Observation.Meteorology.WindSpeed, metaData.WeatherData.WindSpeed * 3.6, "[kph] Wind speed");
             }
 
+            AddImageProperty(XISFImageProperty.Observation.Equinox, 2000d, "Equinox of celestial coordinate system");
             AddImageFITSKeyword("SWCREATE", string.Format("N.I.N.A. {0} ({1})", Utility.Version, DllLoader.IsX86() ? "x86" : "x64"), "Software that created this file");
         }
 
@@ -584,12 +585,32 @@ namespace NINA.Utility.FileFormat.XISF {
         /// <param name="value">      value of that specific property</param>
         /// <param name="comment">    optional comment</param>
         /// <param name="autoaddfits">default: true; if fitskey available automatically add FITSHeader</param>
-        public void AddImageProperty(string[] property, string value, string comment = "", bool autoaddfits = true) {
+        public void AddImageProperty(string[] property, string value, string comment = "", bool autoaddfits = true, string fitsvalue = null) {
             if (Image == null) { throw new InvalidOperationException("No Image component available to add property!"); }
             AddProperty(Image, property, value, comment);
             if (property.Length > 2 && autoaddfits) {
-                AddImageFITSKeyword(property[2], value, comment);
+                if (fitsvalue == null) {
+                    AddImageFITSKeyword(property[2], value, comment);
+                } else {
+                    AddImageFITSKeyword(property[2], fitsvalue, comment);
+                }
             }
+        }
+
+        public void AddImageProperty(string[] property, DateTime value, string comment = "", bool autoaddfits = true) {
+            AddImageProperty(property, value.ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture), comment, autoaddfits);
+        }
+
+        public void AddImageProperty(string[] property, int value, string comment = "", bool autoaddfits = true) {
+            AddImageProperty(property, value.ToString(CultureInfo.InvariantCulture), comment, autoaddfits);
+        }
+
+        public void AddImageProperty(string[] property, double value, string comment = "", bool autoaddfits = true) {
+            AddImageProperty(property, value.ToString(CultureInfo.InvariantCulture), comment, autoaddfits, DoubleToFitsString(value));
+        }
+
+        public void AddImageProperty(string[] property, float value, string comment = "", bool autoaddfits = true) {
+            AddImageProperty(property, value.ToString(CultureInfo.InvariantCulture), comment, autoaddfits, FloatToFitsString(value));
         }
 
         public void AddImageFITSKeyword(string name, string value, string comment = "") {
@@ -598,6 +619,30 @@ namespace NINA.Utility.FileFormat.XISF {
                         new XAttribute("name", name),
                         new XAttribute("value", RemoveInvalidXMLChars(value)),
                         new XAttribute("comment", comment)));
+        }
+
+        public void AddImageFITSKeyword(string name, DateTime value, string comment = "") {
+            AddImageFITSKeyword(name, value.ToString(@"yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture), comment);
+        }
+
+        public void AddImageFITSKeyword(string name, int value, string comment = "") {
+            AddImageFITSKeyword(name, value.ToString(CultureInfo.InvariantCulture), comment);
+        }
+
+        public void AddImageFITSKeyword(string name, double value, string comment = "") {
+            AddImageFITSKeyword(name, DoubleToFitsString(value), comment);
+        }
+
+        public void AddImageFITSKeyword(string name, float value, string comment = "") {
+            AddImageFITSKeyword(name, FloatToFitsString(value), comment);
+        }
+
+        private string DoubleToFitsString(double value) {
+            return value.ToString("0.0##############", CultureInfo.InvariantCulture);
+        }
+
+        private string FloatToFitsString(float value) {
+            return value.ToString("0.0##############", CultureInfo.InvariantCulture);
         }
 
         private void AddProperty(XElement elem, string[] property, string value, string comment = "") {

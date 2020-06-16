@@ -71,6 +71,7 @@ namespace NINATest {
             var expectedHeaderCards = new List<FITSHeaderCard>() {
                 new FITSHeaderCard("XBINNING",1, "X axis binning factor"),
                 new FITSHeaderCard("YBINNING",1, "Y axis binning factor"),
+                new FITSHeaderCard("EQUINOX", 2000d, "Equinox of celestial coordinate system"),
                 new FITSHeaderCard("SWCREATE",string.Format("N.I.N.A. {0} ({1})", Utility.Version, DllLoader.IsX86() ? "x86" : "x64"), "Software that created this file"),
             };
 
@@ -489,18 +490,23 @@ namespace NINATest {
         }
 
         [Test]
-        public void FITSHeaderCardDoubleTest() {
+        [TestCase(-123, "-123.0")]
+        [TestCase(123, "123.0")]
+        [TestCase(123.1123234134543298765, "123.112323413454")]
+        [TestCase(123456789123456.123456, "123456789123456.0")]
+        [TestCase(1234567891234.123456, "1234567891234.12")]
+        [TestCase(0, "0.0")]
+        public void FITSHeaderCardDoubleTest(double value, string expectedValue) {
             var key = "SOME";
-            var value = 12.45678965432129497;
             var comment = "some comment";
 
             var sut = new FITSHeaderCard(key, value, comment);
 
-            var expectedValue = "12.4567896543213";
-
             sut.Key.Should().Be(key);
             sut.Value.Should().Be(expectedValue);
             sut.Comment.Should().Be(comment);
+
+            sut.Value.Length.Should().BeLessThan(21);
         }
 
         [Test]
@@ -572,7 +578,7 @@ namespace NINATest {
         [TestCase(-200.4321)]
         public void FITSOriginalValue_DoubleTest(double value) {
             var card = new FITSHeaderCard("KEY", value, string.Empty);
-            card.OriginalValue.Should().Be(value.ToString(CultureInfo.InvariantCulture));
+            card.OriginalValue.Should().Be(value.ToString("0.0##############", CultureInfo.InvariantCulture));
         }
     }
 }

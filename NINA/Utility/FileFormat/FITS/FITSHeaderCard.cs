@@ -52,7 +52,7 @@ namespace NINA.Utility.FileFormat.FITS {
 
         public FITSHeaderCard(string key, double value, string comment) {
             this.Key = key;
-            this.Value = Math.Round(value, 15).ToString(CultureInfo.InvariantCulture);
+            this.Value = (value.ToString("0.0##############", CultureInfo.InvariantCulture));
             if (comment.Length > 45) {
                 comment = comment.Substring(0, 45);
             }

@@ -180,7 +180,17 @@ namespace NINA.Model.ImageData {
         public string Name { get; set; } = string.Empty;
         public double FocalLength { get; set; } = double.NaN;
         public double FocalRatio { get; set; } = double.NaN;
-        public Coordinates Coordinates { get; set; } = null;
+        private Coordinates coordinates = null;
+
+        public Coordinates Coordinates {
+            get => coordinates;
+            set {
+                if (value != null) {
+                    value = value.Transform(Epoch.J2000);
+                }
+                coordinates = value;
+            }
+        }
     }
 
     public class FocuserParameter {
@@ -212,7 +222,17 @@ namespace NINA.Model.ImageData {
             }
         }
 
-        public Coordinates Coordinates { get; set; } = null;
+        private Coordinates coordinates = null;
+
+        public Coordinates Coordinates {
+            get => coordinates;
+            set {
+                if (value != null) {
+                    value = value.Transform(Epoch.J2000);
+                }
+                coordinates = value;
+            }
+        }
     }
 
     public class ObserverParameter {

@@ -46,7 +46,7 @@ namespace NINA.Utility.FileFormat.XISF {
             }
 
             public static readonly string[] Description = { Namespace + nameof(Description), "String" };
-            public static readonly string[] Equinox = { Namespace + nameof(Equinox), "Float64" };
+            public static readonly string[] Equinox = { Namespace + nameof(Equinox), "Float64", "EQUINOX" };
             public static readonly string[] GeodeticReferenceSystem = { Namespace + nameof(GeodeticReferenceSystem), "String" };
 
             public static class Location {

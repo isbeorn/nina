@@ -703,6 +703,7 @@ namespace NINATest {
             var expectedHeaderCards = new List<FITSHeaderCard>() {
                 new FITSHeaderCard("XBINNING",1, "X axis binning factor"),
                 new FITSHeaderCard("YBINNING",1, "Y axis binning factor"),
+                new FITSHeaderCard("EQUINOX", 2000, "Equinox of celestial coordinate system"),
                 new FITSHeaderCard("SWCREATE",string.Format("N.I.N.A. {0} ({1})", Utility.Version, DllLoader.IsX86() ? "x86" : "x64"), "Software that created this file"),
             };
 
@@ -731,6 +732,11 @@ namespace NINATest {
                 .Should().HaveAttribute("name", "YBINNING")
                 .And.HaveAttribute("value", "1")
                 .And.HaveAttribute("comment", "Y axis binning factor");
+
+            sut.Image.Elements(ns + "FITSKeyword").First(x => x.Attribute("name").Value == "EQUINOX")
+                .Should().HaveAttribute("name", "EQUINOX")
+                .And.HaveAttribute("value", "2000.0")
+                .And.HaveAttribute("comment", "Equinox of celestial coordinate system");
 
             sut.Image.Elements(ns + "FITSKeyword").First(x => x.Attribute("name").Value == "SWCREATE")
                 .Should().HaveAttribute("name", "SWCREATE")
@@ -801,7 +807,7 @@ namespace NINATest {
             metaData.Camera.BinY = 3;
             metaData.Camera.Gain = 200;
             metaData.Camera.Offset = 22;
-            metaData.Camera.ElectronsPerADU = 11;
+            metaData.Camera.ElectronsPerADU = 11d;
             metaData.Camera.PixelSize = 12;
             metaData.Camera.SetPoint = -5;
             metaData.Camera.Temperature = -4.454;
