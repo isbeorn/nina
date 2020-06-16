@@ -3783,4 +3783,13 @@ En caso de que se necesite una duración más larga, se puede especificar ese ti
   <data name="LblWizardOperationMode" xml:space="preserve">
     <value>Wizard Operation Mode</value>
   </data>
+  <data name="LblSequenceContainsDarksAndLights" xml:space="preserve">
+    <value>La cámara no tiene obturador mecánico, no hay ningún panel de flats automatizado conectado y la secuencia contiene elementos DARK/BIAS además de los LIGHT.</value>
+  </data>
+  <data name="LblSequenceContainsDarksOnly" xml:space="preserve">
+    <value>La cámara no tiene obturador mecánico, no hay ningún panel de flats conectado y la secuencia solo contiene elementos DARK/BIAS Asegúrate que la cámara está tapada.</value>
+  </data>
+  <data name="LblMeridianFlipIn" xml:space="preserve">
+    <value>Cambio de meridiano en</value>
+  </data>
 </root>
