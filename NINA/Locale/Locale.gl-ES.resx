@@ -3812,4 +3812,16 @@ No caso de que se precise unha duración máis longa, pódese especificar a dura
   <data name="LblMeridianFlipIn" xml:space="preserve">
     <value>Volteo de meridiano</value>
   </data>
+  <data name="LblDefaultGain" xml:space="preserve">
+    <value>Ganancia por defecto</value>
+  </data>
+  <data name="LblDefaultOffset" xml:space="preserve">
+    <value>Compensación por defecto</value>
+  </data>
+  <data name="LblDefaultGainTooltip" xml:space="preserve">
+    <value>Este valor especifica a ganancia por defecto que se usará cando non se fixase explicitamente unha ganancia</value>
+  </data>
+  <data name="LblDefaultOffsetTooltip" xml:space="preserve">
+    <value>Ete valor especifica unha compensación por defecto que se usará cando non se estableceu explicitamente</value>
+  </data>
 </root>

@@ -3761,13 +3761,16 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
   <data name="LblWizardOperationMode" xml:space="preserve">
     <value>Wizard Operation Mode</value>
   </data>
-  <data name="LblSequenceContainsDarksAndLights" xml:space="preserve">
-    <value>カメラには機械式シャッターがなく、自動フラットパネルが接続されておらず、シーケンスにはダーク/BIASアイテムとLIGHTが混在しています。</value>
+  <data name="LblDefaultGain" xml:space="preserve">
+    <value>デフォルトのゲイン</value>
   </data>
-  <data name="LblSequenceContainsDarksOnly" xml:space="preserve">
-    <value>カメラには機械式シャッターがなく、自動フラットパネルが接続されておらず、シーケンスにはダーク/BIASアイテムのみが含まれています。カメラがカバーされていることを確認してください。</value>
+  <data name="LblDefaultOffset" xml:space="preserve">
+    <value>デフォルトのオフセット</value>
   </data>
-  <data name="LblMeridianFlipIn" xml:space="preserve">
-    <value>Meridian Flip in</value>
+  <data name="LblDefaultGainTooltip" xml:space="preserve">
+    <value>この値はデフォルトのゲインを指定するもので、ゲインが明示的に設定されていないときに使用されます。</value>
+  </data>
+  <data name="LblDefaultOffsetTooltip" xml:space="preserve">
+    <value>この値はデフォルトのオフセットを指定するもので、オフセットが明示的に設定されていないときに使用されます。</value>
   </data>
 </root>

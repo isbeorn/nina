@@ -3808,4 +3808,16 @@ In case a longer duration is needed, a duration can be specified and the applica
   <data name="LblMeridianFlipIn" xml:space="preserve">
     <value>Meridian Flip in</value>
   </data>
+  <data name="LblDefaultGain" xml:space="preserve">
+    <value>Default Gain</value>
+  </data>
+  <data name="LblDefaultOffset" xml:space="preserve">
+    <value>Default Offset</value>
+  </data>
+  <data name="LblDefaultGainTooltip" xml:space="preserve">
+    <value>This value specifies the default gain that should be used whenever no gain was set explicitly</value>
+  </data>
+  <data name="LblDefaultOffsetTooltip" xml:space="preserve">
+    <value>This value specifies the default offset that should be used whenever no offset was set explicitly</value>
+  </data>
 </root>

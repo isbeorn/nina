@@ -3783,13 +3783,16 @@
   <data name="LblWizardOperationMode" xml:space="preserve">
     <value>Wizard Operation Mode</value>
   </data>
-  <data name="LblSequenceContainsDarksAndLights" xml:space="preserve">
-    <value>相机没有机械快门，序列中含有暗场/偏置项目，但没有安装镜头盖</value>
+  <data name="LblDefaultGain" xml:space="preserve">
+    <value>Default Gain</value>
   </data>
-  <data name="LblSequenceContainsDarksOnly" xml:space="preserve">
-    <value>相机没有机械快门，序列中只有暗场/偏置项目，但没有安装镜头盖，请确认镜头已经盖好。</value>
+  <data name="LblDefaultOffset" xml:space="preserve">
+    <value>Default Offset</value>
   </data>
-  <data name="LblMeridianFlipIn" xml:space="preserve">
-    <value>中天翻转开始于</value>
+  <data name="LblDefaultGainTooltip" xml:space="preserve">
+    <value>This value specifies the default gain that should be used whenever no gain was set explicitly</value>
+  </data>
+  <data name="LblDefaultOffsetTooltip" xml:space="preserve">
+    <value>This value specifies the default offset that should be used whenever no offset was set explicitly</value>
   </data>
 </root>
