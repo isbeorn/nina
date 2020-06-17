@@ -139,6 +139,8 @@
       <ComponentGroupRef Id="nl_NL_files" />
       <ComponentGroupRef Id="ja_JP_files" />
       <ComponentGroupRef Id="da_DK_files" />
+      <ComponentGroupRef Id="tr_TR_files" />
+      <ComponentGroupRef Id="gl_ES_files" />
     </Feature>
   </Product>
 
