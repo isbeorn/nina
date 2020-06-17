@@ -3090,6 +3090,42 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default Gain.
+        /// </summary>
+        internal static string LblDefaultGain {
+            get {
+                return ResourceManager.GetString("LblDefaultGain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This value specifies the default gain that should be used whenever no gain was set explicitly.
+        /// </summary>
+        internal static string LblDefaultGainTooltip {
+            get {
+                return ResourceManager.GetString("LblDefaultGainTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default Offset.
+        /// </summary>
+        internal static string LblDefaultOffset {
+            get {
+                return ResourceManager.GetString("LblDefaultOffset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This value specifies the default offset that should be used whenever no offset was set explicitly.
+        /// </summary>
+        internal static string LblDefaultOffsetTooltip {
+            get {
+                return ResourceManager.GetString("LblDefaultOffsetTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default folder for sequence files.
         /// </summary>
         internal static string LblDefaultSequenceFolder {

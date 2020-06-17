@@ -25,8 +25,6 @@ namespace NINA.ViewModel.Equipment.Camera {
 
         void SetBinning(short x, short y);
 
-        void SetGain(int gain);
-
         void SetSubSample(bool subSample);
 
         void SetSubSampleArea(int x, int y, int width, int height);

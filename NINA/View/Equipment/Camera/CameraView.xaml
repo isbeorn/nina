@@ -234,6 +234,27 @@
                                 </UniformGrid>
                             </UniformGrid>
                         </Border>
+
+                        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
+                            <UniformGrid Columns="2">
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2"
+                                    Visibility="{Binding Cam.CanGetGain, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
+                                    <TextBlock Text="{ns:Loc LblGain}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding Cam.Gain}" />
+                                </UniformGrid>
+                                <UniformGrid
+                                    Margin="0,6,0,6"
+                                    VerticalAlignment="Center"
+                                    Columns="2"
+                                    Visibility="{Binding Cam.CanSetOffset, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
+                                    <TextBlock Text="{ns:Loc LblOffset}" />
+                                    <TextBlock Margin="5,0,0,0" Text="{Binding Cam.Offset}" />
+                                </UniformGrid>
+                            </UniformGrid>
+                        </Border>
                     </StackPanel>
                 </Grid>
             </GroupBox>
@@ -249,11 +270,7 @@
                         <TextBlock
                             MinWidth="100"
                             VerticalAlignment="Center"
-                            Text="{ns:Loc LblGain}" />
-                        <TextBlock
-                            MinWidth="100"
-                            VerticalAlignment="Center"
-                            Text="{Binding Cam.Gain}" />
+                            Text="{ns:Loc LblDefaultGain}" />
                         <Grid>
                             <ninactrl:IntStepperControl
                                 Width="200"
@@ -263,29 +280,34 @@
                                 MinValue="{Binding Cam.GainMin}"
                                 StepSize="1"
                                 Visibility="{Binding Cam.Gains, Converter={StaticResource InverseCollectionContainsItemsToVisibilityConverter}}"
-                                Value="{Binding Cam.Gain, Mode=TwoWay}" />
+                                Value="{Binding DefaultGain, Mode=TwoWay}" />
                             <ComboBox
+                                Width="200"
+                                HorizontalAlignment="Right"
                                 ItemsSource="{Binding Cam.Gains}"
-                                SelectedValue="{Binding Cam.Gain}"
+                                SelectedValue="{Binding DefaultGain}"
                                 Visibility="{Binding Cam.Gains, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}" />
                         </Grid>
+                        <DockPanel.ToolTip>
+                            <TextBlock Text="{ns:Loc LblDefaultGainTooltip}" />
+                        </DockPanel.ToolTip>
                     </DockPanel>
                     <DockPanel Margin="0,0,0,6" Visibility="{Binding Cam.CanSetOffset, Converter={StaticResource VisibilityConverter}}">
                         <TextBlock
                             MinWidth="100"
                             VerticalAlignment="Center"
-                            Text="{ns:Loc LblOffset}" />
-                        <TextBlock
-                            MinWidth="100"
-                            VerticalAlignment="Center"
-                            Text="{Binding Cam.Offset}" />
+                            Text="{ns:Loc LblDefaultOffset}" />
                         <ninactrl:IntStepperControl
                             Width="200"
                             HorizontalAlignment="Right"
                             MaxValue="{Binding Cam.OffsetMax}"
                             MinValue="{Binding Cam.OffsetMin}"
                             StepSize="1"
-                            Value="{Binding Cam.Offset, Mode=TwoWay}" />
+                            Value="{Binding DefaultOffset, Mode=TwoWay}" />
+
+                        <DockPanel.ToolTip>
+                            <TextBlock Text="{ns:Loc LblDefaultOffsetTooltip}" />
+                        </DockPanel.ToolTip>
                     </DockPanel>
                     <DockPanel Margin="0,0,0,6" Visibility="{Binding Cam.CanSetUSBLimit, Converter={StaticResource VisibilityConverter}}">
                         <TextBlock
@@ -374,8 +396,8 @@
                             <local:CameraTemplateSelector
                                 x:Key="ContentSelector"
                                 Default="{StaticResource Default}"
-                                Touptek="{StaticResource Touptek}"
-                                QhyCcd="{StaticResource QhyCcd}" />
+                                QhyCcd="{StaticResource QhyCcd}"
+                                Touptek="{StaticResource Touptek}" />
                         </Grid.Resources>
                         <ContentControl
                             Content="{Binding}"
@@ -474,8 +496,7 @@
                                                 Text="{Binding CameraInfo.Temperature, StringFormat=\{0:0.00\}, Converter={StaticResource NaNToDoubleDashConverter}}"
                                                 Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
 
-                                            <TextBlock
-                                                Text=" / ">
+                                            <TextBlock Text=" / ">
                                                 <TextBlock.Visibility>
                                                     <MultiBinding Converter="{StaticResource BooleanToVisibilityHiddenMultiConverter}">
                                                         <Binding Path="CameraInfo.Connected" />

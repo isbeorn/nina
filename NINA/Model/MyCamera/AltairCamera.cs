@@ -33,8 +33,8 @@ namespace NINA.Model.MyCamera {
             this.Id = instance.id;
             this.Name = instance.displayname;
             this.Description = instance.model.name;
-            this.PixelSizeX = instance.model.xpixsz;
-            this.PixelSizeY = instance.model.ypixsz;
+            this.PixelSizeX = Math.Round(instance.model.xpixsz, 2);
+            this.PixelSizeY = Math.Round(instance.model.ypixsz, 2);
 
             this.flags = (AltairCam.eFLAG)instance.model.flag;
         }

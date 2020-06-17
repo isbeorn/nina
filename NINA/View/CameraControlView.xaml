@@ -16,8 +16,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Locale"
-    xmlns:util="clr-namespace:NINA.Utility"
     xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
+    xmlns:util="clr-namespace:NINA.Utility"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
@@ -94,23 +94,32 @@
                 <UniformGrid VerticalAlignment="Center" Columns="2">
                     <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblGain}" />
                     <Grid Margin="5,0,0,0">
-                        <ComboBox SelectedValuePath="Text" DisplayMemberPath="Text" IsSynchronizedWithCurrentItem="True"
-                                          Visibility="{Binding MyGains, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
+                        <ComboBox
+                            DisplayMemberPath="Text"
+                            IsSynchronizedWithCurrentItem="True"
+                            SelectedValuePath="Text"
+                            Visibility="{Binding MyGains, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
                             <ComboBox.ItemsSource>
                                 <CompositeCollection>
-                                    <TextBlock Text="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Gain, UpdateSourceTrigger=PropertyChanged, StringFormat=({0})}" />
-                                    <!-- this collection should technically bind to mygains but I can't make it work -->
+                                    <TextBlock Text="{Binding Source={StaticResource AppVM}, Path=CameraVM.DefaultGain, UpdateSourceTrigger=PropertyChanged, StringFormat=({0})}" />
+                                    <!--  this collection should technically bind to mygains but I can't make it work  -->
                                     <CollectionContainer Collection="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Gains, Converter={StaticResource IntListToTextBlockListConverter}}" />
                                 </CompositeCollection>
                             </ComboBox.ItemsSource>
                             <ComboBox.SelectedValue>
-                                <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay">
+                                <MultiBinding
+                                    Converter="{StaticResource MinusOneToBaseValueConverter}"
+                                    Mode="TwoWay"
+                                    UpdateSourceTrigger="PropertyChanged">
                                     <Binding
-                                            Path="MySelectedGain"
-                                            Mode="TwoWay"
-                                            UpdateSourceTrigger="PropertyChanged">
-                                    </Binding>
-                                    <Binding Source="{StaticResource AppVM}" Path="CameraVM.Cam.Gain" Mode="OneWay" UpdateSourceTrigger="PropertyChanged" />
+                                        Mode="TwoWay"
+                                        Path="MySelectedGain"
+                                        UpdateSourceTrigger="PropertyChanged" />
+                                    <Binding
+                                        Mode="OneWay"
+                                        Path="CameraVM.DefaultGain"
+                                        Source="{StaticResource AppVM}"
+                                        UpdateSourceTrigger="PropertyChanged" />
                                 </MultiBinding>
                             </ComboBox.SelectedValue>
                         </ComboBox>
@@ -121,9 +130,9 @@
                             <TextBox.Text>
                                 <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
                                     <Binding
-                                            Path="MySelectedGain"
-                                            Mode="TwoWay"
-                                            UpdateSourceTrigger="PropertyChanged">
+                                        Mode="TwoWay"
+                                        Path="MySelectedGain"
+                                        UpdateSourceTrigger="PropertyChanged">
                                         <Binding.ValidationRules>
                                             <rules:IntRangeRule>
                                                 <rules:IntRangeRule.ValidRange>
@@ -132,7 +141,11 @@
                                             </rules:IntRangeRule>
                                         </Binding.ValidationRules>
                                     </Binding>
-                                    <Binding Source="{StaticResource AppVM}" Path="CameraVM.Cam.Gain" Mode="OneWay" UpdateSourceTrigger="PropertyChanged" />
+                                    <Binding
+                                        Mode="OneWay"
+                                        Path="CameraVM.DefaultGain"
+                                        Source="{StaticResource AppVM}"
+                                        UpdateSourceTrigger="PropertyChanged" />
                                 </MultiBinding>
                             </TextBox.Text>
                         </TextBox>

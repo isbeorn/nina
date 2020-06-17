@@ -51,6 +51,16 @@
                             <TextBlock Margin="5,0,0,0" Text="{Binding Cam.Gain}" />
                         </UniformGrid>
                     </Border>
+                    <Border
+                        Margin="0,5,0,0"
+                        BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="0"
+                        Visibility="{Binding Cam.CanSetOffset, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}">
+                        <UniformGrid VerticalAlignment="Center" Columns="2">
+                            <TextBlock Text="{ns:Loc LblOffset}" />
+                            <TextBlock Margin="5,0,0,0" Text="{Binding Cam.Offset}" />
+                        </UniformGrid>
+                    </Border>
 
                     <Border
                         Margin="0,5,0,0"
@@ -101,9 +111,7 @@
                         BorderBrush="{StaticResource BorderBrush}"
                         BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
-                            <TextBlock
-                                Text="{ns:Loc LblChipTempShort}"
-                                Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
+                            <TextBlock Text="{ns:Loc LblChipTempShort}" Visibility="{Binding CameraInfo.Connected, Converter={StaticResource VisibilityConverter}}" />
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock
                                     Margin="5,0,0,0"

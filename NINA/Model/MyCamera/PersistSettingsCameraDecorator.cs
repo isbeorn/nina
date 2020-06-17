@@ -174,15 +174,7 @@ namespace NINA.Model.MyCamera {
 
         public int BitDepth => this.Camera.BitDepth;
 
-        public int Offset {
-            get {
-                return this.Camera.Offset;
-            }
-            set {
-                this.Camera.Offset = value;
-                this.profileService.ActiveProfile.CameraSettings.Offset = value;
-            }
-        }
+        public int Offset { get => this.Camera.Offset; set => this.Camera.Offset = value; }
 
         public int USBLimit {
             get => this.Camera.USBLimit;
@@ -208,13 +200,7 @@ namespace NINA.Model.MyCamera {
 
         public int GainMin => this.Camera.GainMin;
 
-        public int Gain {
-            get => this.Camera.Gain;
-            set {
-                this.Camera.Gain = value;
-                this.profileService.ActiveProfile.CameraSettings.Gain = value;
-            }
-        }
+        public int Gain { get => this.Camera.Gain; set => this.Camera.Gain = value; }
 
         public double ElectronsPerADU => this.Camera.ElectronsPerADU;
 

@@ -54,10 +54,6 @@ namespace NINA.Utility.Mediator {
             handler.SetBinning(x, y);
         }
 
-        public void SetGain(int gain) {
-            handler.SetGain(gain);
-        }
-
         public void SetSubSample(bool subSample) {
             handler.SetSubSample(subSample);
         }

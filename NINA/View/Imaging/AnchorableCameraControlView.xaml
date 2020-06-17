@@ -91,9 +91,7 @@
                                 <TextBox IsEnabled="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.CanSetGain}" Visibility="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Gains, Converter={StaticResource InverseCollectionContainsItemsToVisibilityConverter}}">
                                     <TextBox.Text>
                                         <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="LostFocus">
-                                            <Binding
-                                            Path="SnapGain"
-                                            Mode="TwoWay">
+                                            <Binding Mode="TwoWay" Path="SnapGain">
                                                 <Binding.ValidationRules>
                                                     <rules:IntRangeRule>
                                                         <rules:IntRangeRule.ValidRange>
@@ -102,26 +100,40 @@
                                                     </rules:IntRangeRule>
                                                 </Binding.ValidationRules>
                                             </Binding>
-                                            <Binding Source="{StaticResource AppVM}" Path="CameraVM.Cam.Gain" Mode="OneWay" UpdateSourceTrigger="PropertyChanged" />
+                                            <Binding
+                                                Mode="OneWay"
+                                                Path="CameraVM.DefaultGain"
+                                                Source="{StaticResource AppVM}"
+                                                UpdateSourceTrigger="PropertyChanged" />
                                         </MultiBinding>
                                     </TextBox.Text>
                                 </TextBox>
-                                <ComboBox Grid.Column="1" SelectedValuePath="Text" DisplayMemberPath="Text" IsSynchronizedWithCurrentItem="True"
-                                          Visibility="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Gains, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
+                                <ComboBox
+                                    Grid.Column="1"
+                                    DisplayMemberPath="Text"
+                                    IsSynchronizedWithCurrentItem="True"
+                                    SelectedValuePath="Text"
+                                    Visibility="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Gains, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
                                     <ComboBox.ItemsSource>
                                         <CompositeCollection>
-                                            <TextBlock Text="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Gain, UpdateSourceTrigger=PropertyChanged, StringFormat=({0})}" />
+                                            <TextBlock Text="{Binding Source={StaticResource AppVM}, Path=CameraVM.DefaultGain, UpdateSourceTrigger=PropertyChanged, StringFormat=({0})}" />
                                             <CollectionContainer Collection="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.Gains, Converter={StaticResource IntListToTextBlockListConverter}}" />
                                         </CompositeCollection>
                                     </ComboBox.ItemsSource>
                                     <ComboBox.SelectedValue>
-                                        <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay">
-                                            <Binding
-                                            Path="SnapGain"
+                                        <MultiBinding
+                                            Converter="{StaticResource MinusOneToBaseValueConverter}"
                                             Mode="TwoWay"
                                             UpdateSourceTrigger="PropertyChanged">
-                                            </Binding>
-                                            <Binding Source="{StaticResource AppVM}" Path="CameraVM.Cam.Gain" Mode="OneWay" UpdateSourceTrigger="PropertyChanged" />
+                                            <Binding
+                                                Mode="TwoWay"
+                                                Path="SnapGain"
+                                                UpdateSourceTrigger="PropertyChanged" />
+                                            <Binding
+                                                Mode="OneWay"
+                                                Path="CameraVM.DefaultGain"
+                                                Source="{StaticResource AppVM}"
+                                                UpdateSourceTrigger="PropertyChanged" />
                                         </MultiBinding>
                                     </ComboBox.SelectedValue>
                                 </ComboBox>
