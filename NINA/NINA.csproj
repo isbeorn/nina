@@ -702,6 +702,8 @@
     <Compile Include="View\Equipment\FlatDevice\FlatDeviceView.xaml.cs">
       <DependentUpon>FlatDeviceView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Equipment\Switch\EagleBooleanSwitchConverter.cs" />
+    <Compile Include="View\Equipment\Switch\EagleVariablePowerSwitchConverter.cs" />
     <Compile Include="View\Equipment\Switch\PegasusAstroUltimatePowerboxV2ChartsView.xaml.cs">
       <DependentUpon>PegasusAstroUltimatePowerboxV2ChartsView.xaml</DependentUpon>
     </Compile>

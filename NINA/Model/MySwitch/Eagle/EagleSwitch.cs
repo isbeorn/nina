@@ -32,6 +32,7 @@ namespace NINA.Model.MySwitch {
 
         public virtual string Name {
             get => Id.ToString();
+            set { }
         }
 
         public virtual string Description {

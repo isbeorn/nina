@@ -16,6 +16,8 @@ using Newtonsoft.Json.Linq;
 using NINA.Utility;
 using Nito.AsyncEx;
 using System;
+using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,6 +29,53 @@ namespace NINA.Model.MySwitch {
             this.TargetValue = this.Value;
         }
 
+        // Eagle Manager prior to Version 3.3 cannot get and set labels
+        protected bool canSetName = false;
+
+        protected string name;
+        private bool nameChangeInProgress = false;
+
+        public override string Name {
+            get {
+                return name;
+            }
+            set {
+                if (canSetName) {
+                    _ = SetName(value);
+                }
+            }
+        }
+
+        private async Task SetName(string targetName) {
+            nameChangeInProgress = true;
+            try {
+                var url = baseUrl + setRoute + "&label={1}";
+                name = targetName;
+                RaisePropertyChanged(nameof(Name));
+
+                Logger.Trace($"Try setting name {targetName} via {url}");
+                var request = new Utility.Http.HttpGetRequest(url, Id, targetName);
+                var response = await request.Request(new CancellationToken());
+                var jobj = JObject.Parse(response);
+                var regoutResponse = jobj.ToObject<EagleResponse>();
+                if (!regoutResponse.Success()) {
+                    Logger.Warning($"Setting Eagle Switch {Id} Label was not successful");
+                }
+            } catch (Exception ex) {
+                Logger.Error(ex);
+            } finally {
+                nameChangeInProgress = false;
+            }
+        }
+
+        protected void ReceivedName(string newName) {
+            canSetName = true;
+            if (!nameChangeInProgress && name != newName) {
+                name = newName;
+                RaisePropertyChanged(nameof(Name));
+            }
+        }
+
         public abstract double Maximum { get; }
 
         public abstract double Minimum { get; }
@@ -34,10 +83,12 @@ namespace NINA.Model.MySwitch {
         public abstract double StepSize { get; }
 
         protected string setRoute;
+        protected string setValueAttribute;
+        protected string setNameRoute;
 
         public async Task SetValue() {
             try {
-                var url = baseUrl + setRoute;
+                var url = baseUrl + setRoute + $"&{setValueAttribute}={{1}}";
 
                 Logger.Trace($"Try setting value {TargetValue} via {url}");
 

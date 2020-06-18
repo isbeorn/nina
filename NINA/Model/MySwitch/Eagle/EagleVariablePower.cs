@@ -24,21 +24,13 @@ namespace NINA.Model.MySwitch {
 
         public EagleVariablePower(short index, string baseUrl) : base(index, baseUrl) {
             getRoute = "getregout?idx=${0}";
-            setRoute = "setregout?idx=${0}&volt={1}";
+            setRoute = "setregout?idx=${0}";
+            setValueAttribute = "volt";
+            name = "Variable Power Out " + (7 - Id).ToString();
+            Description = "Variable Power Out " + (7 - Id).ToString();
         }
 
-        /// <summary>
-        /// 0-12V power out port number 5: 2
-        /// 0-12V power out port number 6: 1
-        /// 0-12V power out port number 7: 0
-        /// </summary>
-        public override string Name {
-            get => "Variable Power Out " + (7 - Id).ToString();
-        }
-
-        public override string Description {
-            get => "Variable Power output port";
-        }
+        public override string Description { get; }
 
         public override double Maximum {
             get => 12d;
@@ -63,6 +55,9 @@ namespace NINA.Model.MySwitch {
             var jobj = JObject.Parse(response);
             var regoutResponse = jobj.ToObject<RegoutResponse>();
             if (regoutResponse.Success()) {
+                if (!string.IsNullOrWhiteSpace(regoutResponse.Label)) {
+                    ReceivedName(regoutResponse.Label);
+                }
                 return regoutResponse.Voltage;
             } else {
                 return double.NaN;
@@ -79,6 +74,9 @@ namespace NINA.Model.MySwitch {
 
             [JsonProperty(PropertyName = "power")]
             public double Power;
+
+            [JsonProperty(PropertyName = "label")]
+            public string Label;
         }
     }
 }

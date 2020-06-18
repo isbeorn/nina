@@ -80,11 +80,10 @@ namespace NINA.Model.MySwitch {
 
             Switches.Add(inputPower);
 
-            Logger.Trace("Scanning for EAGLE USB Switches");
-
             var tasks = new List<Task<bool>>();
-            for (short i = 0; i < 4; i++) {
-                var s = new EagleUSBSwitch(i, BaseUrl);
+            Logger.Trace("Scanning for EAGLE 12V Power Switches");
+            for (short i = 3; i >= 0; i--) {
+                var s = new Eagle12VPower(i, BaseUrl);
                 Switches.Add(s);
                 tasks.Add(Task.Run(async () => {
                     var success = await s.Poll();
@@ -95,9 +94,9 @@ namespace NINA.Model.MySwitch {
                 }));
             }
 
-            Logger.Trace("Scanning for EAGLE 12V Power Switches");
-            for (short i = 3; i >= 0; i--) {
-                var s = new Eagle12VPower(i, BaseUrl);
+            Logger.Trace("Scanning for EAGLE USB Switches");
+            for (short i = 0; i < 4; i++) {
+                var s = new EagleUSBSwitch(i, BaseUrl);
                 Switches.Add(s);
                 tasks.Add(Task.Run(async () => {
                     var success = await s.Poll();

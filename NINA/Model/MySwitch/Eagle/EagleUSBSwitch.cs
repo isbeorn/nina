@@ -24,7 +24,30 @@ namespace NINA.Model.MySwitch {
 
         public EagleUSBSwitch(short index, string baseUrl) : base(index, baseUrl) {
             getRoute = "getpwrhub?idx=${0}";
-            setRoute = "setpwrhub?idx=${0}&state={1}";
+            setRoute = "setpwrhub?idx=${0}";
+            setValueAttribute = "state";
+            name = GetDefaultName();
+            Description = GetDescription();
+        }
+
+        private string GetDefaultName() {
+            switch (Id) {
+                case 0: return "USB A";
+                case 1: return "USB B";
+                case 2: return "USB C";
+                case 3: return "USB D";
+                default: return "USB Unknown";
+            }
+        }
+
+        private string GetDescription() {
+            switch (Id) {
+                case 0: return "Usb hub output A";
+                case 1: return "Usb hub output B";
+                case 2: return "Usb hub output C";
+                case 3: return "Usb hub output D";
+                default: return "USB Unknown";
+            }
         }
 
         public override double Maximum {
@@ -39,27 +62,7 @@ namespace NINA.Model.MySwitch {
             get => 1d;
         }
 
-        /// <summary>
-        /// USB 2.0 A port: 0
-        /// USB 2.0 B port: 1
-        /// USB 2.0 C port: 2
-        /// USB 2.0 D port: 3
-        /// </summary>
-        public override string Name {
-            get {
-                switch (Id) {
-                    case 0: return "USB A";
-                    case 1: return "USB B";
-                    case 2: return "USB C";
-                    case 3: return "USB D";
-                    default: return "USB Unknown";
-                }
-            }
-        }
-
-        public override string Description {
-            get => "Usb hub output";
-        }
+        public override string Description { get; }
 
         protected override async Task<double> GetValue() {
             var url = baseUrl + getRoute;
@@ -72,6 +75,9 @@ namespace NINA.Model.MySwitch {
             var jobj = JObject.Parse(response);
             var regoutResponse = jobj.ToObject<PowerHubResponse>();
             if (regoutResponse.Success()) {
+                if (!string.IsNullOrWhiteSpace(regoutResponse.Label)) {
+                    ReceivedName(regoutResponse.Label);
+                }
                 return regoutResponse.Status;
             } else {
                 return double.NaN;
@@ -82,6 +88,9 @@ namespace NINA.Model.MySwitch {
 
             [JsonProperty(PropertyName = "status")]
             public int Status;
+
+            [JsonProperty(PropertyName = "label")]
+            public string Label;
         }
     }
 }

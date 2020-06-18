@@ -13,98 +13,266 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:NINA.View.Equipment.Switch"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
+    xmlns:ns="clr-namespace:NINA.Locale"
+    Name="UC"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <!--  usb|usb|________|usbD|usbC|usbB|usbA  -->
-            <TextBlock Grid.Column="1" Text="USBD" />
-            <TextBlock Grid.Column="2" Text="USBC" />
-            <TextBlock Grid.Column="3" Text="USBB" />
-            <TextBlock Grid.Column="4" Text="USBA" />
-        </Grid>
-        <Grid Grid.Column="1">
-            <StackPanel Orientation="Vertical">
-                <TextBlock
-                    VerticalAlignment="Center"
-                    FontSize="20"
-                    Text="EAGLE"
-                    TextAlignment="Center" />
-                <TextBlock
-                    VerticalAlignment="Center"
-                    FontSize="20"
-                    Text="PRIMALUCELAB"
-                    TextAlignment="Center" />
-            </StackPanel>
-        </Grid>
-        <Grid Grid.Row="1" Margin="20">
-            <Rectangle Fill="DarkRed" />
-            <!--<Border
-                Width="150"
-                Height="100"
-                Background="{StaticResource BackgroundBrush}"
-                BorderBrush="{x:Null}">
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    FontSize="20"
-                    Foreground="{StaticResource PrimaryBrush}"
-                    Text="Eagle"
-                    TextAlignment="Center" />
-            </Border>-->
-        </Grid>
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <!--  usb|usb|________|0-12V|0-12V|0-12V  -->
-            <TextBlock Grid.Column="1" Text="PWR5" />
-            <TextBlock Grid.Column="2" Text="PWR6" />
-            <TextBlock Grid.Column="3" Text="PWR7" />
-        </Grid>
+    <Grid>
+        <Grid.Resources>
+            <DataTemplate x:Key="ReadOnly">
+                <GroupBox>
+                    <GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                Text="{Binding Name}" />
 
-        <Grid Grid.Row="1" Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <!--
-                power in
-                12v
-                12v
-                12v
-                12v
-            -->
-            <TextBlock Grid.Row="0" Text="PWRIN" />
-            <TextBlock Grid.Row="1" Text="PWR4" />
-            <TextBlock Grid.Row="2" Text="PWR3" />
-            <TextBlock Grid.Row="3" Text="PWR2" />
-            <TextBlock Grid.Row="4" Text="PWR1" />
-        </Grid>
+                            <Border
+                                Grid.Column="1"
+                                Width="70"
+                                Height="30"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Background="#575757"
+                                BorderBrush="#097C9E"
+                                BorderThickness="2"
+                                CornerRadius="8">
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    Foreground="#FFFFFF"
+                                    Text="{Binding Value, StringFormat={}{0:0.##}V}" />
+                            </Border>
+                        </Grid>
+                    </GroupBox.Header>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock FontStyle="Italic" Text="{Binding Description}" />
+                    </StackPanel>
+                </GroupBox>
+            </DataTemplate>
+            <DataTemplate x:Key="Writable">
+                <GroupBox>
+                    <GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+
+                            <ToggleButton
+                                Grid.Column="1"
+                                Width="70"
+                                Height="25"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Command="{Binding Path=SwitchVM.SetSwitchValueCommand, Source={StaticResource AppVM}}"
+                                CommandParameter="{Binding}">
+                                <ToggleButton.IsChecked>
+
+                                    <MultiBinding>
+                                        <MultiBinding.Converter>
+                                            <local:EagleVariablePowerSwitchConverter />
+                                        </MultiBinding.Converter>
+                                        <Binding Mode="TwoWay" Path="TargetValue" />
+                                        <Binding Mode="OneWay" Path="Value" />
+                                    </MultiBinding>
+                                </ToggleButton.IsChecked>
+                                <ToggleButton.Style>
+                                    <Style TargetType="ToggleButton">
+                                        <Style.Setters>
+                                            <Setter Property="Background" Value="#575757" />
+                                            <Setter Property="Foreground" Value="#FFFFFF" />
+                                            <Setter Property="SnapsToDevicePixels" Value="True" />
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                                        <Border
+                                                            x:Name="PART_Border"
+                                                            VerticalAlignment="Center"
+                                                            Background="#575757"
+                                                            BorderBrush="#6E9340"
+                                                            BorderThickness="2"
+                                                            CornerRadius="8">
+                                                            <TextBlock
+                                                                x:Name="PART_Textblock"
+                                                                HorizontalAlignment="Center"
+                                                                FontSize="16"
+                                                                Foreground="#FFFFFF"
+                                                                Text="{Binding Value, StringFormat={}{0:0.##}V}" />
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="PART_Border" Property="Background" Value="#666666" />
+                                                            </Trigger>
+                                                            <Trigger Property="IsChecked" Value="False">
+                                                                <Setter TargetName="PART_Textblock" Property="Text" Value="{ns:Loc LblOff}" />
+                                                                <Setter TargetName="PART_Border" Property="BorderBrush" Value="#BA2E08" />
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style.Setters>
+                                    </Style>
+                                </ToggleButton.Style>
+                            </ToggleButton>
+                        </Grid>
+                    </GroupBox.Header>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock FontStyle="Italic" Text="{Binding Description}" />
+                        <Grid Margin="0,5,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel
+                                Grid.Column="1"
+                                Margin="0,5,0,0"
+                                Orientation="Horizontal">
+                                <ninactrl:StepperControl
+                                    MinWidth="100"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    MaxValue="{Binding Maximum}"
+                                    MinValue="{Binding Minimum}"
+                                    StepSize="{Binding StepSize}"
+                                    Value="{Binding TargetValue, Mode=TwoWay}" />
+                                <Button
+                                    Height="25"
+                                    Margin="5,0,0,0"
+                                    HorizontalContentAlignment="Center"
+                                    Command="{Binding Path=SwitchVM.SetSwitchValueCommand, Source={StaticResource AppVM}}"
+                                    CommandParameter="{Binding}"
+                                    ToolTip="{ns:Loc LblSetNewValue}">
+
+                                    <Path
+                                        Margin="5"
+                                        Data="{StaticResource CheckedCircledSVG}"
+                                        Fill="{StaticResource ButtonForegroundBrush}"
+                                        Stretch="Uniform" />
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </GroupBox>
+            </DataTemplate>
+            <DataTemplate x:Key="WritableBoolean">
+                <GroupBox>
+                    <GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+
+                            <ToggleButton
+                                Grid.Column="1"
+                                Width="70"
+                                Height="25"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Command="{Binding Path=SwitchVM.SetSwitchValueCommand, Source={StaticResource AppVM}}"
+                                CommandParameter="{Binding}">
+                                <ToggleButton.IsChecked>
+
+                                    <MultiBinding>
+                                        <MultiBinding.Converter>
+                                            <local:EagleBooleanSwitchConverter />
+                                        </MultiBinding.Converter>
+                                        <Binding Mode="TwoWay" Path="TargetValue" />
+                                        <Binding Mode="OneWay" Path="Value" />
+                                    </MultiBinding>
+                                </ToggleButton.IsChecked>
+                                <ToggleButton.Style>
+                                    <Style TargetType="ToggleButton">
+                                        <Style.Setters>
+                                            <Setter Property="Background" Value="#575757" />
+                                            <Setter Property="Foreground" Value="#FFFFFF" />
+                                            <Setter Property="SnapsToDevicePixels" Value="True" />
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                                        <Border
+                                                            x:Name="PART_Border"
+                                                            VerticalAlignment="Center"
+                                                            Background="#575757"
+                                                            BorderBrush="#6E9340"
+                                                            BorderThickness="2"
+                                                            CornerRadius="8">
+                                                            <TextBlock
+                                                                x:Name="PART_Textblock"
+                                                                HorizontalAlignment="Center"
+                                                                FontSize="16"
+                                                                Foreground="#FFFFFF"
+                                                                Text="{ns:Loc LblOn}" />
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="PART_Border" Property="Background" Value="#666666" />
+                                                            </Trigger>
+                                                            <Trigger Property="IsChecked" Value="False">
+                                                                <Setter TargetName="PART_Textblock" Property="Text" Value="{ns:Loc LblOff}" />
+                                                                <Setter TargetName="PART_Border" Property="BorderBrush" Value="#BA2E08" />
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style.Setters>
+                                    </Style>
+                                </ToggleButton.Style>
+                            </ToggleButton>
+                        </Grid>
+                    </GroupBox.Header>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock FontStyle="Italic" Text="{Binding Description}" />
+                    </StackPanel>
+                </GroupBox>
+            </DataTemplate>
+            <local:SwitchTemplateSelector
+                x:Key="SwitchTemplateSelector"
+                ReadOnly="{StaticResource ReadOnly}"
+                Writable="{StaticResource Writable}"
+                WritableBoolean="{StaticResource WritableBoolean}" />
+        </Grid.Resources>
+
+        <ItemsControl
+            IsEnabled="{Binding Connected}"
+            ItemTemplateSelector="{StaticResource SwitchTemplateSelector}"
+            ItemsSource="{Binding Switches}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel ItemHeight="120" ItemWidth="420" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.Template>
+                <ControlTemplate TargetType="{x:Type ItemsControl}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ItemsPresenter />
+                    </ScrollViewer>
+                </ControlTemplate>
+            </ItemsControl.Template>
+        </ItemsControl>
     </Grid>
 </UserControl>

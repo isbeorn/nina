@@ -62,7 +62,7 @@
                 </DataTemplate>
                 <switch:SwitchHubTemplateSelector
                     x:Key="ContentSelector"
-                    Eagle="{StaticResource Generic}"
+                    Eagle="{StaticResource Eagle}"
                     Generic="{StaticResource Generic}"
                     UltimatePowerBoxV2="{StaticResource UltimatePowerBoxV2}" />
             </Grid.Resources>

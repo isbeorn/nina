@@ -16,130 +16,445 @@
     xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Locale"
     xmlns:switch="clr-namespace:NINA.View.Equipment.Switch"
+    x:Name="UC"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid IsEnabled="{Binding SwitchHub, Converter={StaticResource InverseNullToBooleanConverter}, FallbackValue=False}">
-            <StackPanel Orientation="Vertical">
-                <Border
-                    Margin="0,5,0,0"
-                    BorderBrush="{StaticResource BorderBrush}"
-                    BorderThickness="0"
-                    Visibility="{Binding SwitchHub.Connected, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
-                    <UniformGrid VerticalAlignment="Center" Columns="2">
-                        <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblConnected}" />
-                        <CheckBox
-                            Width="20"
-                            Height="20"
-                            Margin="5,0,0,0"
-                            HorizontalAlignment="Left"
-                            BorderBrush="Transparent"
-                            IsChecked="{Binding SwitchHub.Connected, FallbackValue=False, Mode=OneWay}"
-                            IsEnabled="False"
-                            Style="{StaticResource CheckmarkCheckbox}" />
-                    </UniformGrid>
-                </Border>
-                <ItemsControl
-                    Margin="0,5,0,0"
-                    DataContext="{Binding SwitchHub}"
-                    ItemsSource="{Binding Switches}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="0,5,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
-                                <TextBlock
-                                    Grid.Column="1"
-                                    Margin="5,0,0,0"
-                                    VerticalAlignment="Center"
-                                    Text="{Binding Value}" />
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <StackPanel
-                    Margin="0,5,0,0"
-                    Orientation="Vertical"
-                    Visibility="{Binding WritableSwitches, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
-                    <StackPanel.Resources>
+            <Grid.Resources>
+                <DataTemplate x:Key="Eagle">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel.Resources>
+                            <DataTemplate x:Key="ReadOnly">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="16"
+                                        Text="{Binding Name}" />
 
-                        <DataTemplate x:Key="Writable">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="2*" />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <ninactrl:StepperControl
-                                    MinWidth="100"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Center"
-                                    MaxValue="{Binding Maximum}"
-                                    MinValue="{Binding Minimum}"
-                                    StepSize="{Binding StepSize}"
-                                    Value="{Binding TargetValue, Mode=TwoWay}" />
-                                <Button
-                                    Grid.Column="1"
-                                    Height="25"
-                                    Margin="5,0,0,0"
-                                    HorizontalContentAlignment="Center"
-                                    Command="{Binding Path=SwitchVM.SetSwitchValueCommand, Source={StaticResource AppVM}}"
-                                    CommandParameter="{Binding}"
-                                    ToolTip="{ns:Loc LblSetNewValue}">
-                                    <Path
-                                        Margin="5"
-                                        Data="{StaticResource CheckedCircledSVG}"
-                                        Fill="{StaticResource ButtonForegroundBrush}"
-                                        Stretch="Uniform" />
-                                </Button>
-                            </Grid>
-                        </DataTemplate>
-                        <DataTemplate x:Key="WritableBoolean">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="2*" />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
+                                    <Border
+                                        Grid.Column="1"
+                                        Width="70"
+                                        Height="30"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Background="#575757"
+                                        BorderBrush="#097C9E"
+                                        BorderThickness="2"
+                                        CornerRadius="8">
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            FontSize="16"
+                                            Foreground="#FFFFFF"
+                                            Text="{Binding Value, StringFormat={}{0:0.##}V}" />
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                            <DataTemplate x:Key="Writable">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="16"
+                                        Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+
+                                    <ToggleButton
+                                        Grid.Column="1"
+                                        Width="70"
+                                        Height="25"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Command="{Binding Path=SwitchVM.SetSwitchValueCommand, Source={StaticResource AppVM}}"
+                                        CommandParameter="{Binding}">
+                                        <ToggleButton.IsChecked>
+                                            <MultiBinding>
+                                                <MultiBinding.Converter>
+                                                    <switch:EagleVariablePowerSwitchConverter />
+                                                </MultiBinding.Converter>
+                                                <Binding Mode="TwoWay" Path="TargetValue" />
+                                                <Binding Mode="OneWay" Path="Value" />
+                                            </MultiBinding>
+                                        </ToggleButton.IsChecked>
+                                        <ToggleButton.Style>
+                                            <Style TargetType="ToggleButton">
+                                                <Style.Setters>
+                                                    <Setter Property="Background" Value="#575757" />
+                                                    <Setter Property="Foreground" Value="#FFFFFF" />
+                                                    <Setter Property="SnapsToDevicePixels" Value="True" />
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                                                <Border
+                                                                    x:Name="PART_Border"
+                                                                    VerticalAlignment="Center"
+                                                                    Background="#575757"
+                                                                    BorderBrush="#6E9340"
+                                                                    BorderThickness="2"
+                                                                    CornerRadius="8">
+                                                                    <TextBlock
+                                                                        x:Name="PART_Textblock"
+                                                                        HorizontalAlignment="Center"
+                                                                        FontSize="16"
+                                                                        Foreground="#FFFFFF"
+                                                                        Text="{Binding Value, StringFormat={}{0:0.##}V}" />
+                                                                </Border>
+                                                                <ControlTemplate.Triggers>
+                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                        <Setter TargetName="PART_Border" Property="Background" Value="#666666" />
+                                                                    </Trigger>
+                                                                    <Trigger Property="IsChecked" Value="False">
+                                                                        <Setter TargetName="PART_Textblock" Property="Text" Value="{ns:Loc LblOff}" />
+                                                                        <Setter TargetName="PART_Border" Property="BorderBrush" Value="#BA2E08" />
+                                                                    </Trigger>
+                                                                </ControlTemplate.Triggers>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style.Setters>
+                                            </Style>
+                                        </ToggleButton.Style>
+                                    </ToggleButton>
+                                </Grid>
+                            </DataTemplate>
+                            <DataTemplate x:Key="WritableBoolean">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="16"
+                                        Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+
+                                    <ToggleButton
+                                        Grid.Column="1"
+                                        Width="70"
+                                        Height="25"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Command="{Binding Path=SwitchVM.SetSwitchValueCommand, Source={StaticResource AppVM}}"
+                                        CommandParameter="{Binding}">
+                                        <ToggleButton.IsChecked>
+
+                                            <MultiBinding>
+                                                <MultiBinding.Converter>
+                                                    <switch:EagleBooleanSwitchConverter />
+                                                </MultiBinding.Converter>
+                                                <Binding Mode="TwoWay" Path="TargetValue" />
+                                                <Binding Mode="OneWay" Path="Value" />
+                                            </MultiBinding>
+                                        </ToggleButton.IsChecked>
+                                        <ToggleButton.Style>
+                                            <Style TargetType="ToggleButton">
+                                                <Style.Setters>
+                                                    <Setter Property="Background" Value="#575757" />
+                                                    <Setter Property="Foreground" Value="#FFFFFF" />
+                                                    <Setter Property="SnapsToDevicePixels" Value="True" />
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                                                <Border
+                                                                    x:Name="PART_Border"
+                                                                    VerticalAlignment="Center"
+                                                                    Background="#575757"
+                                                                    BorderBrush="#6E9340"
+                                                                    BorderThickness="2"
+                                                                    CornerRadius="8">
+                                                                    <TextBlock
+                                                                        x:Name="PART_Textblock"
+                                                                        HorizontalAlignment="Center"
+                                                                        FontSize="16"
+                                                                        Foreground="#FFFFFF"
+                                                                        Text="{ns:Loc LblOn}" />
+                                                                </Border>
+                                                                <ControlTemplate.Triggers>
+                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                        <Setter TargetName="PART_Border" Property="Background" Value="#666666" />
+                                                                    </Trigger>
+                                                                    <Trigger Property="IsChecked" Value="False">
+                                                                        <Setter TargetName="PART_Textblock" Property="Text" Value="{ns:Loc LblOff}" />
+                                                                        <Setter TargetName="PART_Border" Property="BorderBrush" Value="#BA2E08" />
+                                                                    </Trigger>
+                                                                </ControlTemplate.Triggers>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style.Setters>
+                                            </Style>
+                                        </ToggleButton.Style>
+                                    </ToggleButton>
+                                </Grid>
+                            </DataTemplate>
+                            <switch:SwitchTemplateSelector
+                                x:Key="SwitchTemplateSelector"
+                                ReadOnly="{StaticResource ReadOnly}"
+                                Writable="{StaticResource Writable}"
+                                WritableBoolean="{StaticResource WritableBoolean}" />
+                        </StackPanel.Resources>
+                        <Border
+                            Margin="0,5,0,0"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="0"
+                            Visibility="{Binding Connected, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
+                            <UniformGrid VerticalAlignment="Center" Columns="2">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblConnected}" />
                                 <CheckBox
-                                    Height="25"
-                                    MinWidth="100"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Center"
-                                    IsChecked="{Binding TargetValue, Mode=TwoWay, Converter={StaticResource DoubleToBooleanConverter}}" />
-                                <Button
-                                    Grid.Column="1"
-                                    Height="25"
+                                    Width="20"
+                                    Height="20"
                                     Margin="5,0,0,0"
-                                    HorizontalContentAlignment="Center"
-                                    Command="{Binding Path=SwitchVM.SetSwitchValueCommand, Source={StaticResource AppVM}}"
-                                    CommandParameter="{Binding}"
-                                    ToolTip="{ns:Loc LblSetNewValue}">
-                                    <Path
-                                        Margin="5"
-                                        Data="{StaticResource CheckedCircledSVG}"
-                                        Fill="{StaticResource ButtonForegroundBrush}"
-                                        Stretch="Uniform" />
-                                </Button>
-                            </Grid>
-                        </DataTemplate>
-                        <switch:SwitchTemplateSelector
-                            x:Key="SwitchTemplateSelector"
-                            Writable="{StaticResource Writable}"
-                            WritableBoolean="{StaticResource WritableBoolean}" />
-                    </StackPanel.Resources>
-                    <ComboBox
-                        DisplayMemberPath="Name"
-                        ItemsSource="{Binding WritableSwitches}"
-                        SelectedItem="{Binding SelectedWritableSwitch}" />
-                    <ContentControl
-                        Margin="0,5,0,0"
-                        Content="{Binding SelectedWritableSwitch}"
-                        ContentTemplateSelector="{StaticResource SwitchTemplateSelector}" />
-                </StackPanel>
-            </StackPanel>
+                                    HorizontalAlignment="Left"
+                                    BorderBrush="Transparent"
+                                    IsChecked="{Binding Connected, FallbackValue=False, Mode=OneWay}"
+                                    IsEnabled="False"
+                                    Style="{StaticResource CheckmarkCheckbox}" />
+                            </UniformGrid>
+                        </Border>
+                        <ItemsControl
+                            Margin="0,5,0,0"
+                            DataContext="{Binding}"
+                            ItemTemplateSelector="{StaticResource SwitchTemplateSelector}"
+                            ItemsSource="{Binding Switches}">
+                            <!--<ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,5,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            Margin="5,0,0,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Value}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>-->
+                        </ItemsControl>
+                        <StackPanel
+                            Margin="0,5,0,0"
+                            Orientation="Vertical"
+                            Visibility="{Binding WritableSwitches, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
+                            <StackPanel.Resources>
+
+                                <DataTemplate x:Key="Writable">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <ninactrl:StepperControl
+                                            MinWidth="100"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Center"
+                                            MaxValue="{Binding Maximum}"
+                                            MinValue="{Binding Minimum}"
+                                            StepSize="{Binding StepSize}"
+                                            Value="{Binding TargetValue, Mode=TwoWay}" />
+                                        <Button
+                                            Grid.Column="1"
+                                            Height="25"
+                                            Margin="5,0,0,0"
+                                            HorizontalContentAlignment="Center"
+                                            Command="{Binding ElementName=UC, Path=DataContext.SetSwitchValueCommand}"
+                                            CommandParameter="{Binding}"
+                                            ToolTip="{ns:Loc LblSetNewValue}">
+                                            <Path
+                                                Margin="5"
+                                                Data="{StaticResource CheckedCircledSVG}"
+                                                Fill="{StaticResource ButtonForegroundBrush}"
+                                                Stretch="Uniform" />
+                                        </Button>
+                                    </Grid>
+                                </DataTemplate>
+                                <DataTemplate x:Key="WritableBoolean">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <CheckBox
+                                            Height="25"
+                                            MinWidth="100"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Center"
+                                            IsChecked="{Binding TargetValue, Mode=TwoWay, Converter={StaticResource DoubleToBooleanConverter}}" />
+                                        <Button
+                                            Grid.Column="1"
+                                            Height="25"
+                                            Margin="5,0,0,0"
+                                            HorizontalContentAlignment="Center"
+                                            Command="{Binding ElementName=UC, Path=DataContext.SetSwitchValueCommand}"
+                                            CommandParameter="{Binding}"
+                                            ToolTip="{ns:Loc LblSetNewValue}">
+                                            <Path
+                                                Margin="5"
+                                                Data="{StaticResource CheckedCircledSVG}"
+                                                Fill="{StaticResource ButtonForegroundBrush}"
+                                                Stretch="Uniform" />
+                                        </Button>
+                                    </Grid>
+                                </DataTemplate>
+                                <switch:SwitchTemplateSelector
+                                    x:Key="SwitchTemplateSelector"
+                                    Writable="{StaticResource Writable}"
+                                    WritableBoolean="{StaticResource WritableBoolean}" />
+                            </StackPanel.Resources>
+                            <ComboBox
+                                DisplayMemberPath="Name"
+                                ItemsSource="{Binding ElementName=UC, Path=DataContext.WritableSwitches}"
+                                SelectedItem="{Binding ElementName=UC, Path=DataContext.SelectedWritableSwitch}" />
+                            <ContentControl
+                                Margin="0,5,0,0"
+                                Content="{Binding ElementName=UC, Path=DataContext.SelectedWritableSwitch}"
+                                ContentTemplateSelector="{StaticResource SwitchTemplateSelector}" />
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+                <DataTemplate x:Key="Generic">
+                    <StackPanel Orientation="Vertical">
+                        <Border
+                            Margin="0,5,0,0"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="0"
+                            Visibility="{Binding Connected, Converter={StaticResource InverseBooleanToVisibilityCollapsedConverter}, FallbackValue=Visible}">
+                            <UniformGrid VerticalAlignment="Center" Columns="2">
+                                <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblConnected}" />
+                                <CheckBox
+                                    Width="20"
+                                    Height="20"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    BorderBrush="Transparent"
+                                    IsChecked="{Binding Connected, FallbackValue=False, Mode=OneWay}"
+                                    IsEnabled="False"
+                                    Style="{StaticResource CheckmarkCheckbox}" />
+                            </UniformGrid>
+                        </Border>
+                        <ItemsControl
+                            Margin="0,5,0,0"
+                            DataContext="{Binding}"
+                            ItemsSource="{Binding Switches}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,5,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            Margin="5,0,0,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding Value}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <StackPanel
+                            Margin="0,5,0,0"
+                            Orientation="Vertical"
+                            Visibility="{Binding WritableSwitches, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
+                            <StackPanel.Resources>
+
+                                <DataTemplate x:Key="Writable">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <ninactrl:StepperControl
+                                            MinWidth="100"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Center"
+                                            MaxValue="{Binding Maximum}"
+                                            MinValue="{Binding Minimum}"
+                                            StepSize="{Binding StepSize}"
+                                            Value="{Binding TargetValue, Mode=TwoWay}" />
+                                        <Button
+                                            Grid.Column="1"
+                                            Height="25"
+                                            Margin="5,0,0,0"
+                                            HorizontalContentAlignment="Center"
+                                            Command="{Binding ElementName=UC, Path=DataContext.SetSwitchValueCommand}"
+                                            CommandParameter="{Binding}"
+                                            ToolTip="{ns:Loc LblSetNewValue}">
+                                            <Path
+                                                Margin="5"
+                                                Data="{StaticResource CheckedCircledSVG}"
+                                                Fill="{StaticResource ButtonForegroundBrush}"
+                                                Stretch="Uniform" />
+                                        </Button>
+                                    </Grid>
+                                </DataTemplate>
+                                <DataTemplate x:Key="WritableBoolean">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <CheckBox
+                                            Height="25"
+                                            MinWidth="100"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Center"
+                                            IsChecked="{Binding TargetValue, Mode=TwoWay, Converter={StaticResource DoubleToBooleanConverter}}" />
+                                        <Button
+                                            Grid.Column="1"
+                                            Height="25"
+                                            Margin="5,0,0,0"
+                                            HorizontalContentAlignment="Center"
+                                            Command="{Binding ElementName=UC, Path=DataContext.SetSwitchValueCommand}"
+                                            CommandParameter="{Binding}"
+                                            ToolTip="{ns:Loc LblSetNewValue}">
+                                            <Path
+                                                Margin="5"
+                                                Data="{StaticResource CheckedCircledSVG}"
+                                                Fill="{StaticResource ButtonForegroundBrush}"
+                                                Stretch="Uniform" />
+                                        </Button>
+                                    </Grid>
+                                </DataTemplate>
+                                <switch:SwitchTemplateSelector
+                                    x:Key="SwitchTemplateSelector"
+                                    Writable="{StaticResource Writable}"
+                                    WritableBoolean="{StaticResource WritableBoolean}" />
+                            </StackPanel.Resources>
+                            <ComboBox
+                                DisplayMemberPath="Name"
+                                ItemsSource="{Binding ElementName=UC, Path=DataContext.WritableSwitches}"
+                                SelectedItem="{Binding ElementName=UC, Path=DataContext.SelectedWritableSwitch}" />
+                            <ContentControl
+                                Margin="0,5,0,0"
+                                Content="{Binding ElementName=UC, Path=DataContext.SelectedWritableSwitch}"
+                                ContentTemplateSelector="{StaticResource SwitchTemplateSelector}" />
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+                <switch:SwitchHubTemplateSelector
+                    x:Key="ContentSelector"
+                    Eagle="{StaticResource Eagle}"
+                    Generic="{StaticResource Generic}"
+                    UltimatePowerBoxV2="{StaticResource Generic}" />
+            </Grid.Resources>
+
+            <ContentControl
+                Content="{Binding}"
+                ContentTemplateSelector="{StaticResource ContentSelector}"
+                DataContext="{Binding SwitchHub}" />
         </Grid>
     </ScrollViewer>
 </UserControl>
