@@ -27,7 +27,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Accord.Statistics.Models.Regression.Linear;
-using ASCOM.Astrometry;
 using System.Runtime.CompilerServices;
 
 namespace NINA.ViewModel.Equipment.Camera {

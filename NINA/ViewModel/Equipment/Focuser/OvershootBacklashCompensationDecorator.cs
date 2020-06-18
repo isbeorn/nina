@@ -12,7 +12,6 @@
 
 #endregion "copyright"
 
-using ASCOM.Astrometry;
 using NINA.Model.MyFocuser;
 using NINA.Profile;
 using NINA.Utility;
