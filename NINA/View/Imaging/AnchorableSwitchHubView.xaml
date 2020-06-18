@@ -32,15 +32,11 @@
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        FontSize="16"
-                                        Text="{Binding Name}" />
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
 
                                     <Border
                                         Grid.Column="1"
                                         Width="70"
-                                        Height="30"
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Center"
                                         Background="#575757"
@@ -50,7 +46,6 @@
                                         <TextBlock
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
-                                            FontSize="16"
                                             Foreground="#FFFFFF"
                                             Text="{Binding Value, StringFormat={}{0:0.##}V}" />
                                     </Border>
@@ -62,10 +57,7 @@
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        FontSize="16"
-                                        Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
 
                                     <ToggleButton
                                         Grid.Column="1"
@@ -104,7 +96,6 @@
                                                                     <TextBlock
                                                                         x:Name="PART_Textblock"
                                                                         HorizontalAlignment="Center"
-                                                                        FontSize="16"
                                                                         Foreground="#FFFFFF"
                                                                         Text="{Binding Value, StringFormat={}{0:0.##}V}" />
                                                                 </Border>
@@ -132,10 +123,7 @@
                                         <ColumnDefinition />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        FontSize="16"
-                                        Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
 
                                     <ToggleButton
                                         Grid.Column="1"
@@ -175,7 +163,6 @@
                                                                     <TextBlock
                                                                         x:Name="PART_Textblock"
                                                                         HorizontalAlignment="Center"
-                                                                        FontSize="16"
                                                                         Foreground="#FFFFFF"
                                                                         Text="{ns:Loc LblOn}" />
                                                                 </Border>
@@ -225,28 +212,11 @@
                             Margin="0,5,0,0"
                             DataContext="{Binding}"
                             ItemTemplateSelector="{StaticResource SwitchTemplateSelector}"
-                            ItemsSource="{Binding Switches}">
-                            <!--<ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="0,5,0,0">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition />
-                                            <ColumnDefinition />
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
-                                        <TextBlock
-                                            Grid.Column="1"
-                                            Margin="5,0,0,0"
-                                            VerticalAlignment="Center"
-                                            Text="{Binding Value}" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>-->
-                        </ItemsControl>
+                            ItemsSource="{Binding Switches}" />
                         <StackPanel
                             Margin="0,5,0,0"
                             Orientation="Vertical"
-                            Visibility="{Binding WritableSwitches, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
+                            Visibility="{Binding ElementName=UC, Path=DataContext.WritableSwitches, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
                             <StackPanel.Resources>
 
                                 <DataTemplate x:Key="Writable">
@@ -367,7 +337,7 @@
                         <StackPanel
                             Margin="0,5,0,0"
                             Orientation="Vertical"
-                            Visibility="{Binding WritableSwitches, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
+                            Visibility="{Binding ElementName=UC, Path=DataContext.WritableSwitches, Converter={StaticResource CollectionContainsItemsToVisibilityConverter}}">
                             <StackPanel.Resources>
 
                                 <DataTemplate x:Key="Writable">
