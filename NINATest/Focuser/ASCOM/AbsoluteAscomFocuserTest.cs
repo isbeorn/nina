@@ -23,11 +23,11 @@ namespace NINATest.Focuser.ASCOM {
         }
 
         [Test]
-        [TestCase(true, false, true)]
-        [TestCase(true, true, false)]
+        [TestCase(true, false, false)]
+        [TestCase(true, true, true)]
         [TestCase(false, true, false)]
         [TestCase(false, false, false)]
-        public async Task TestMove(bool connected, bool tempComp, bool expected) {
+        public async Task TestMove(bool connected, bool tempComp, bool disableEnableTempComp) {
             _mockFocuser.Setup(m => m.Connected).Returns(connected);
             _mockFocuser.Setup(m => m.TempCompAvailable).Returns(true);
             _mockFocuser.Setup(m => m.TempComp).Returns(tempComp);
@@ -36,10 +36,17 @@ namespace NINATest.Focuser.ASCOM {
 
             var ct = new CancellationToken();
             await _sut.MoveAsync(10, ct);
-            if (expected) {
+            if (connected) {
                 _mockFocuser.Verify(m => m.Move(10), Times.Once);
             } else {
                 _mockFocuser.Verify(m => m.Move(It.IsAny<int>()), Times.Never);
+            }
+            if (disableEnableTempComp) {
+                _mockFocuser.VerifySet(m => m.TempComp = true, Times.Once);
+                _mockFocuser.VerifySet(m => m.TempComp = false, Times.Once);
+            } else {
+                _mockFocuser.VerifySet(m => m.TempComp = true, Times.Never);
+                _mockFocuser.VerifySet(m => m.TempComp = false, Times.Never);
             }
         }
     }

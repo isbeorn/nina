@@ -44,7 +44,7 @@ namespace NINA.Model.MyFocuser {
 
         public double StepSize => focuser.StepSize;
 
-        public bool TempComp { get => focuser.TempComp; set => focuser.TempComp = value; }
+        public bool TempComp { get => focuser.TempComp && focuser.TempCompAvailable; set => focuser.TempComp = value; }
 
         public bool TempCompAvailable => focuser.TempCompAvailable;
 
@@ -83,12 +83,21 @@ namespace NINA.Model.MyFocuser {
         }
 
         public async Task MoveAsync(int position, CancellationToken ct) {
-            if (Connected && !TempComp) {
+            if (Connected) {
+                bool reEnableTempComp = TempComp;
+                if (reEnableTempComp) {
+                    TempComp = false;
+                }
+
                 while (position != focuser.Position) {
                     focuser.Move(position);
                     while (IsMoving) {
                         await Utility.Utility.Wait(TimeSpan.FromSeconds(1), ct);
                     }
+                }
+
+                if (reEnableTempComp) {
+                    TempComp = true;
                 }
             }
         }
