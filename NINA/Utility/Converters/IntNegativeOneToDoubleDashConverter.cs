@@ -21,18 +21,22 @@ namespace NINA.Utility.Converters {
     public class IntNegativeOneToDoubleDashConverter : IValueConverter {
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-            if ((int)value == -1) {
-                return "--";
-            } else {
-                return value;
+            switch (value) {
+                case int i when i == -1:
+                    return "--";
+
+                default:
+                    return value;
             }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-            if ((string)value == "--") {
-                return -1;
-            } else {
-                return value;
+            switch (value) {
+                case string s when s == "--":
+                    return -1;
+
+                default:
+                    return value;
             }
         }
     }

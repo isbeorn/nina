@@ -173,6 +173,7 @@
     <Compile Include="AngleTest.cs" />
     <Compile Include="AstrometryTest.cs" />
     <Compile Include="CaptureSequenceTest.cs" />
+    <Compile Include="Converters\IntNegativeOneToDoubleDashConverter.cs" />
     <Compile Include="CoordinatesTest.cs" />
     <Compile Include="FITSTest.cs" />
     <Compile Include="FlatDevice\AlnitakCommandTest.cs" />

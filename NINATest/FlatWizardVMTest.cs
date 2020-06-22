@@ -276,29 +276,6 @@ namespace NINATest {
         }
 
         [Test]
-        public async Task UpdateFlatDeviceSettingsAndCheckFlatMagicWithFlatDeviceWithDarkFlatsCoverOpen() {
-            sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
-                cameraMediatorMock.Object, filterWheelMediatorMock.Object, telescopeMediatorMock.Object,
-                _flatDeviceMediatorMock.Object, resourceDictionaryMock.Object,
-                applicationStatusMediatorMock.Object) {
-                FlatWizardExposureTimeFinderService = exposureServiceMock.Object,
-                Locale = localeMock.Object,
-                DarkFlatCount = 1
-            };
-
-            _flatDevice.Connected = true;
-            _flatDevice.SupportsOpenClose = true;
-            sut.UpdateDeviceInfo(_flatDevice);
-            profileServiceMock.SetupProperty(m => m.ActiveProfile.FlatDeviceSettings.OpenForDarkFlats, true);
-            await sut.StartFlatSequenceCommand.ExecuteAsync(new object());
-            _flatDeviceMediatorMock.Verify(m => m.CloseCover(), Times.Once);
-            _flatDeviceMediatorMock.Verify(m => m.ToggleLight((object)true), Times.Once);
-            _flatDeviceMediatorMock.Verify(m => m.SetBrightness(1.0), Times.Once);
-            _flatDeviceMediatorMock.Verify(m => m.ToggleLight((object)false), Times.Exactly(2));
-            _flatDeviceMediatorMock.Verify(m => m.OpenCover(), Times.Once);
-        }
-
-        [Test]
         public async Task UpdateFlatDeviceSettingsAndCheckFlatMagicWithFlatDeviceWithDarkFlatsCoverClosed() {
             sut = new FlatWizardVM(profileServiceMock.Object, imagingVMMock.Object,
                 cameraMediatorMock.Object, filterWheelMediatorMock.Object, telescopeMediatorMock.Object,
@@ -317,7 +294,7 @@ namespace NINATest {
             _flatDeviceMediatorMock.Verify(m => m.CloseCover(), Times.Once);
             _flatDeviceMediatorMock.Verify(m => m.ToggleLight((object)true), Times.Once);
             _flatDeviceMediatorMock.Verify(m => m.SetBrightness(1.0), Times.Once);
-            _flatDeviceMediatorMock.Verify(m => m.ToggleLight((object)false), Times.Exactly(2));
+            _flatDeviceMediatorMock.Verify(m => m.ToggleLight((object)false), Times.Exactly(1));
             _flatDeviceMediatorMock.Verify(m => m.OpenCover(), Times.Never);
         }
 

@@ -262,52 +262,43 @@
         <GroupBox
             Grid.Row="1"
             Grid.Column="0"
-            Header="{ns:Loc LblFlatDeviceFlatPanelSettings}"
-            IsEnabled="{Binding FlatDeviceInfo.Connected}">
+            Header="{ns:Loc LblFlatDeviceFlatPanelSettings}">
             <Grid>
                 <StackPanel Orientation="Vertical">
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                         <UniformGrid
                             Margin="0,6,0,6"
                             VerticalAlignment="Top"
-                            Columns="2"
-                            Visibility="{Binding FlatDeviceInfo.SupportsOpenClose, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                            Columns="2">
                             <TextBlock Text="{ns:Loc LblFlatDeviceOpenForDarkFlats}" />
                             <CheckBox
                                 Width="120"
                                 Height="25"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Left"
-                                IsChecked="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.FlatDeviceSettings.OpenForDarkFlats, Mode=TwoWay}"
-                                IsEnabled="{Binding FlatDeviceInfo.Connected}" />
+                                IsChecked="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.FlatDeviceSettings.OpenForDarkFlats, Mode=TwoWay}" />
                         </UniformGrid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
                         <UniformGrid
                             Margin="0,6,0,6"
                             VerticalAlignment="Top"
-                            Columns="2"
-                            Visibility="{Binding FlatDeviceInfo.SupportsOpenClose, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                            Columns="2">
                             <TextBlock Text="{ns:Loc LblFlatDeviceCloseAtSequenceEnd}" />
                             <CheckBox
                                 Width="120"
                                 Height="25"
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Left"
-                                IsChecked="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.FlatDeviceSettings.CloseAtSequenceEnd, Mode=TwoWay}"
-                                IsEnabled="{Binding FlatDeviceInfo.Connected}" />
+                                IsChecked="{Binding Source={StaticResource AppVM}, Path=ActiveProfile.FlatDeviceSettings.CloseAtSequenceEnd, Mode=TwoWay}" />
                         </UniformGrid>
                     </Border>
                     <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0">
-
                         <UniformGrid
                             Margin="0,6,0,6"
                             VerticalAlignment="Top"
-                            Columns="2"
-                            Visibility="{Binding FlatDeviceInfo.Connected, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-
+                            Columns="2">
                             <TextBlock Text="{ns:Loc LblFlatDeviceUseWizardTrainedValues}" />
-
                             <CheckBox
                                 Width="120"
                                 Height="25"
@@ -391,7 +382,7 @@
                             <TextBlock
                                 Margin="5,0,5,0"
                                 VerticalAlignment="Center"
-                                Text="{Binding Path=DataContext.Gain, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" />
+                                Text="{Binding Path=DataContext.Gain, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}, Converter={StaticResource IntNegativeOneToDoubleDashConverter}}" />
                         </StackPanel>
                     </StackPanel>
                 </DataTemplate>

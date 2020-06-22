@@ -445,7 +445,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
                 : block.Columns.FirstOrDefault(c => c?.Gain == gain);
             if (column == null) {
                 column = isFilterNameColumn
-                    ? new WizardGridColumn { ColumnNumber = 0, Header = $"{Loc.Instance["LblFilter"]}", Gain = -1 }
+                    ? new WizardGridColumn { ColumnNumber = 0, Header = $"{Loc.Instance["LblFilter"]}", Gain = -9000 } //do not use -1, as that is used for simulator cam etc.
                     : new WizardGridColumn { ColumnNumber = newColumnNumber, Header = null, Gain = gain };
                 block.AddColumn(column);
             } else {
