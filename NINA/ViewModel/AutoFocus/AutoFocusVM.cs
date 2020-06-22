@@ -469,7 +469,14 @@ namespace NINA.ViewModel {
             double error1, oldError, pRange, aRange, bRange, highestHfr, lowestHfr, highestPosition, lowestPosition, a, b, p, a1, b1, p1, a0, b0, p0;
             double lowestError = double.MaxValue; //scaled RMS (square root of the mean square) of the HFD errors after curve fitting
             int n = FocusPoints.Count();
-            ScatterErrorPoint lowestPoint = FocusPoints.Where((dp) => dp.Y >= 0.1).Aggregate((l, r) => l.Y < r.Y ? l : r); // Get lowest non-zero datapoint
+
+            var nonZeroPoints = FocusPoints.Where((dp) => dp.Y >= 0.1);
+            if (nonZeroPoints.Count() == 0) {
+                // No non zero points in curve. No fit can be calculated.
+                return;
+            }
+
+            ScatterErrorPoint lowestPoint = nonZeroPoints.Aggregate((l, r) => l.Y < r.Y ? l : r); // Get lowest non-zero datapoint
             ScatterErrorPoint highestPoint = FocusPoints.Aggregate((l, r) => l.Y > r.Y ? l : r); // Get highest datapoint
             highestPosition = highestPoint.X;
             highestHfr = highestPoint.Y;

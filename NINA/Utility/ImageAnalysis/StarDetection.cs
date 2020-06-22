@@ -509,6 +509,11 @@ namespace NINA.Utility.ImageAnalysis {
                 }
             }
 
+            // No stars could be found. Return.
+            if (starlist.Count() == 0) {
+                return starlist;
+            }
+
             //We are performing AF with only a limited number of stars
             if (NumberOfAFStars > 0) {
                 //First AF exposure, let's find the brightest star positions and store them
