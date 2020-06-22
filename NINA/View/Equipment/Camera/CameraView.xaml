@@ -314,10 +314,6 @@
                             MinWidth="100"
                             VerticalAlignment="Center"
                             Text="{ns:Loc LblUSBLimit}" />
-                        <TextBlock
-                            MinWidth="100"
-                            VerticalAlignment="Center"
-                            Text="{Binding Cam.USBLimit}" />
                         <ninactrl:IntStepperControl
                             Width="200"
                             HorizontalAlignment="Right"

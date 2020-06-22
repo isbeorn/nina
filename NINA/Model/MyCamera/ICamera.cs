@@ -55,12 +55,15 @@ namespace NINA.Model.MyCamera {
         int BatteryLevel { get; }
         int BitDepth { get; }
 
-        int Offset { get; set; }
-        int USBLimit { get; set; }
         bool CanSetOffset { get; }
+        int Offset { get; set; }
         int OffsetMin { get; }
         int OffsetMax { get; }
         bool CanSetUSBLimit { get; }
+        int USBLimit { get; set; }
+        int USBLimitMin { get; }
+        int USBLimitMax { get; }
+        int USBLimitStep { get; }
         bool CanGetGain { get; }
         bool CanSetGain { get; }
         int GainMax { get; }

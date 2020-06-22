@@ -12,8 +12,6 @@
 
 #endregion "copyright"
 
-using Accord;
-using Accord.Imaging.ColorReduction;
 using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
 using NINA.Utility.Astrometry;
@@ -21,10 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace NINA.Utility.FileFormat.FITS {
 
@@ -172,6 +167,10 @@ namespace NINA.Utility.FileFormat.FITS {
 
             if (_headerCards.TryGetValue("YBAYROFF", out card)) {
                 metaData.Camera.BayerOffsetY = int.Parse(card.OriginalValue);
+            }
+
+            if (_headerCards.TryGetValue("USBLIMIT", out card)) {
+                metaData.Camera.USBLimit = int.Parse(card.OriginalValue);
             }
 
             /* Telescope */
@@ -392,6 +391,7 @@ namespace NINA.Utility.FileFormat.FITS {
             if (metaData.Camera.BinX > 0) {
                 Add("XBINNING", metaData.Camera.BinX, "X axis binning factor");
             }
+
             if (metaData.Camera.BinY > 0) {
                 Add("YBINNING", metaData.Camera.BinY, "Y axis binning factor");
             }
@@ -435,6 +435,10 @@ namespace NINA.Utility.FileFormat.FITS {
                 Add("BAYERPAT", metaData.Camera.SensorType.ToString().ToUpper(), "Sensor Bayer pattern");
                 Add("XBAYROFF", metaData.Camera.BayerOffsetX, "Bayer pattern X axis offset");
                 Add("YBAYROFF", metaData.Camera.BayerOffsetY, "Bayer pattern Y axis offset");
+            }
+
+            if (metaData.Camera.USBLimit > -1) {
+                Add("USBLIMIT", metaData.Camera.USBLimit, "Camera-specific USB setting");
             }
 
             /* Telescope */

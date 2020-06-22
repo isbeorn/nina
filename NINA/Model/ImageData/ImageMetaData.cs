@@ -66,6 +66,7 @@ namespace NINA.Model.ImageData {
                 Camera.BinY = info.BinY;
                 Camera.ElectronsPerADU = info.ElectronsPerADU;
                 Camera.PixelSize = info.PixelSize;
+                Camera.USBLimit = info.USBLimit;
 
                 if (info.ReadoutModes.Count() > 1) {
                     Camera.ReadoutModeName = info.ReadoutModes.ToArray()[info.ReadoutMode];
@@ -174,6 +175,7 @@ namespace NINA.Model.ImageData {
         public SensorType SensorType { get; set; } = SensorType.Monochrome;
         public int BayerOffsetX { get; set; } = 0;
         public int BayerOffsetY { get; set; } = 0;
+        public int USBLimit { get; set; } = -1;
     }
 
     public class TelescopeParameter {

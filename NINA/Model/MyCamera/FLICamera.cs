@@ -538,9 +538,9 @@ namespace NINA.Model.MyCamera {
             }
         }
 
-        public int USBLimitMax => 0;
-        public int USBLimitMin => 0;
-        public int USBLimitStep => 0;
+        public int USBLimitMax => -1;
+        public int USBLimitMin => -1;
+        public int USBLimitStep => -1;
 
         public void AbortExposure() {
             StopExposure();

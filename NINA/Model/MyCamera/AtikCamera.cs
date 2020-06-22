@@ -319,6 +319,10 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public int USBLimitMax => -1;
+        public int USBLimitMin => -1;
+        public int USBLimitStep => -1;
+
         public bool CanGetGain {
             get {
                 return false;

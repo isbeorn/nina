@@ -171,6 +171,10 @@ namespace NINA.Model.ImageData {
                 p.Set(ImagePatternKeys.Offset, metadata.Camera.Offset);
             }
 
+            if (metadata.Camera.USBLimit >= 0) {
+                p.Set(ImagePatternKeys.USBLimit, metadata.Camera.USBLimit);
+            }
+
             if (!double.IsNaN(this.StarDetectionAnalysis.HFR)) {
                 p.Set(ImagePatternKeys.HFR, this.StarDetectionAnalysis.HFR);
             }

@@ -147,6 +147,10 @@ namespace NINA.Utility.FileFormat.XISF {
                 metaData.Camera.BayerOffsetY = int.Parse(value, CultureInfo.InvariantCulture);
             }
 
+            if (TryGetFITSProperty("USBLIMIT", out value)) {
+                metaData.Camera.USBLimit = int.Parse(value, CultureInfo.InvariantCulture);
+            }
+
             /* Observer */
             if (TryGetImageProperty(XISFImageProperty.Observation.Location.Elevation, out value)) {
                 metaData.Observer.Elevation = double.Parse(value, CultureInfo.InvariantCulture);
@@ -357,6 +361,7 @@ namespace NINA.Utility.FileFormat.XISF {
             if (metaData.Camera.BinX > 0) {
                 AddImageProperty(XISFImageProperty.Instrument.Camera.XBinning, metaData.Camera.BinX, "X axis binning factor");
             }
+
             if (metaData.Camera.BinY > 0) {
                 AddImageProperty(XISFImageProperty.Instrument.Camera.YBinning, metaData.Camera.BinY, "Y axis binning factor");
             }
@@ -389,6 +394,10 @@ namespace NINA.Utility.FileFormat.XISF {
                  * Add XISF ColorFilterArray element. We support only 2x2 bayer patterns for now.
                  */
                 AddCfaAttribute(metaData.Camera.SensorType.ToString().ToUpper(), 2, 2);
+            }
+
+            if (metaData.Camera.USBLimit > -1) {
+                AddImageFITSKeyword("USBLIMIT", metaData.Camera.USBLimit, "Camera-specific USB setting");
             }
 
             /* Observer */

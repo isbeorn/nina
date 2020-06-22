@@ -108,6 +108,13 @@ namespace NINA.Model.MyCamera {
             set { offset = value; RaisePropertyChanged(); }
         }
 
+        private int usbLimit;
+
+        public int USBLimit {
+            get { return usbLimit; }
+            set { usbLimit = value; RaisePropertyChanged(); }
+        }
+
         private bool isSubSampleEnabled;
 
         public bool IsSubSampleEnabled {

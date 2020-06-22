@@ -184,6 +184,12 @@ namespace NINA.Model.MyCamera {
             }
         }
 
+        public int USBLimitMax => this.Camera.USBLimitMax;
+
+        public int USBLimitMin => this.Camera.USBLimitMin;
+
+        public int USBLimitStep => this.Camera.USBLimitStep;
+
         public bool CanSetOffset => this.Camera.CanSetOffset;
 
         public int OffsetMin => this.Camera.OffsetMin;

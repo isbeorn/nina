@@ -74,6 +74,9 @@ namespace NINA.Model {
             p = new ImagePattern(ImagePatternKeys.Offset, Locale.Loc.Instance["LblOffsetDescription"]);
             patterns.Add(p.Key, p);
 
+            p = new ImagePattern(ImagePatternKeys.USBLimit, Locale.Loc.Instance["LbLUsbLimitDescription"]);
+            patterns.Add(p.Key, p);
+
             p = new ImagePattern(ImagePatternKeys.RMS, Locale.Loc.Instance["LblGuidingRMSDescription"]);
             patterns.Add(p.Key, p);
 
@@ -170,6 +173,7 @@ namespace NINA.Model {
             p.Set(ImagePatternKeys.HFR, 3.25);
             p.Set(ImagePatternKeys.SQM, 21.83);
             p.Set(ImagePatternKeys.ReadoutMode, "42 MHz");
+            p.Set(ImagePatternKeys.USBLimit, 55);
 
             return p;
         }
@@ -201,6 +205,7 @@ namespace NINA.Model {
         public static readonly string HFR = "$$HFR$$";
         public static readonly string SQM = "$$SQM$$";
         public static readonly string ReadoutMode = "$$READOUTMODE$$";
+        public static readonly string USBLimit = "$$USBLIMIT$$";
     }
 
     public class ImagePattern {

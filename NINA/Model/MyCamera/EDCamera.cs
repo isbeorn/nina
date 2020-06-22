@@ -674,6 +674,10 @@ namespace NINA.Model.MyCamera {
             set { }
         }
 
+        public int USBLimitMax => -1;
+        public int USBLimitMin => -1;
+        public int USBLimitStep => -1;
+
         public int BatteryLevel {
             get {
                 try {

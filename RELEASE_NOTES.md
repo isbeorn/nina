@@ -49,7 +49,7 @@
 
 ## Localization
 - N.I.N.A. is now available on [Crowdin](https://crowdin.com/)! This powerful online translation management tool allows users to easily contribute to the translation of N.I.N.A.'s user interface to any language. To help with localization and translation efforts, details may be found at [nina.crowdin.com](https://nina.crowdin.com/). Feel free to participate in the ongoing effort to provide multiple languages for N.I.N.A.! This is a great way to contribute to the project
-- Ten new languages are included in this release:
+- Twelve new languages are included in this release:
     - Dansk (Danish)
     - Español (Spanish)
     - Français (French)
@@ -207,12 +207,14 @@
 - `$$DATEMINUS12$$`: Shifts the current date and time to 12 hours into the past. This allows for all images from a day-crossing session to be saved into the same date folder
 - `$$READOUTMODE$$`: Allows the camera's readout mode to be used in file or folder names
 - `$$SQM$$`: Allows the current reading from an attached sky quality meter to be used in file or folder names
+- `$$USBLIMIT$$`: Allows the USB Limit setting for the camera, if available, to be use in file or folder names
 - The `$$FRAMENR$$` pattern now creates a 4 digit number, padding with zeros. Example: `0004`
 - The "Image File Pattern" setting will now correctly save its state to the active profile when file patterns are dragged from the list into the "Image File Pattern" field
 - A new example preview of the currently-assembled file pattern appears below the "Image File Pattern" field. Any folder separators that are specified are denoted by a `›` character
 - File pattern values are now scrubbed for leading and trailing white spaces and other illegal characters to prevent the creation of an invalid file or folder name
 - Added the `READOUTM` keyword to FITS and XISF files to record the name of the readout mode used to create the image
 - Added the `BAYERPAT`, `XBAYEROFF`, and `YBAYEROFF` keywords to FITS and XISF files when using color cameras. A menu under **Options > Equipment > Camera** allows the user to override the driver-specified Bayer pattern with an alternative pattern. This allows for automatic debayering in some processing applications, including the use of the "Auto" setting in PixInsight's Debayer process.
+- Added the `USBLIMIT` keyword to FITS and XISF files to record the USB Limit setting of the camera
 - The FITS `XPIXSZ` and `YPIXSZ` keywords (and related XISF properties) now correctly account for the binning factor
 
 ## Special Thanks
