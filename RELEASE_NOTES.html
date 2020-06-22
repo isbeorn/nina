@@ -76,7 +76,7 @@
 <h2 id="localization">Localization</h2>
 <ul>
 <li>N.I.N.A. is now available on <a href="https://crowdin.com/">Crowdin</a>! This powerful online translation management tool allows users to easily contribute to the translation of N.I.N.A.'s user interface to any language. To help with localization and translation efforts, details may be found at <a href="https://nina.crowdin.com/">nina.crowdin.com</a>. Feel free to participate in the ongoing effort to provide multiple languages for N.I.N.A.! This is a great way to contribute to the project</li>
-<li>Ten new languages are included in this release:
+<li>Twelve new languages are included in this release:
 <ul>
 <li>Dansk (Danish)</li>
 <li>Español (Spanish)</li>
@@ -254,12 +254,14 @@
 <li><code>$$DATEMINUS12$$</code>: Shifts the current date and time to 12 hours into the past. This allows for all images from a day-crossing session to be saved into the same date folder</li>
 <li><code>$$READOUTMODE$$</code>: Allows the camera's readout mode to be used in file or folder names</li>
 <li><code>$$SQM$$</code>: Allows the current reading from an attached sky quality meter to be used in file or folder names</li>
+<li><code>$$USBLIMIT$$</code>: Allows the USB Limit setting for the camera, if available, to be use in file or folder names</li>
 <li>The <code>$$FRAMENR$$</code> pattern now creates a 4 digit number, padding with zeros. Example: <code>0004</code></li>
 <li>The &quot;Image File Pattern&quot; setting will now correctly save its state to the active profile when file patterns are dragged from the list into the &quot;Image File Pattern&quot; field</li>
 <li>A new example preview of the currently-assembled file pattern appears below the &quot;Image File Pattern&quot; field. Any folder separators that are specified are denoted by a <code>›</code> character</li>
 <li>File pattern values are now scrubbed for leading and trailing white spaces and other illegal characters to prevent the creation of an invalid file or folder name</li>
 <li>Added the <code>READOUTM</code> keyword to FITS and XISF files to record the name of the readout mode used to create the image</li>
 <li>Added the <code>BAYERPAT</code>, <code>XBAYEROFF</code>, and <code>YBAYEROFF</code> keywords to FITS and XISF files when using color cameras. A menu under <strong>Options &gt; Equipment &gt; Camera</strong> allows the user to override the driver-specified Bayer pattern with an alternative pattern. This allows for automatic debayering in some processing applications, including the use of the &quot;Auto&quot; setting in PixInsight's Debayer process.</li>
+<li>Added the <code>USBLIMIT</code> keyword to FITS and XISF files to record the USB Limit setting of the camera</li>
 <li>The FITS <code>XPIXSZ</code> and <code>YPIXSZ</code> keywords (and related XISF properties) now correctly account for the binning factor</li>
 </ul>
 <h2 id="special-thanks">Special Thanks</h2>
@@ -273,7 +275,7 @@ Thank you for your support!</p>
 <h2 id="included-camera-sdk-versions">Included Camera SDK Versions:</h2>
 <ul>
 <li><strong>Altair Astro:</strong> 46.16909.2020.404</li>
-<li><strong>Atik:</strong> 1.3.0.4</li>
+<li><strong>Atik:</strong> 1.4.0.5</li>
 <li><strong>Canon:</strong> 13.12.10</li>
 <li><strong>FLI:</strong> 1.104.0.0</li>
 <li><strong>Nikon:</strong> 1.3.1.3001</li>
