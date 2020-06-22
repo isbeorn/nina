@@ -486,24 +486,6 @@
       <Component Win64="$(var.Win64)" Id="thirdparty" Guid="3C8404A3-D6E6-48DE-81FA-03028AEE884D">
         <File Id="thirdparty" Name="3rd-party-licenses.txt" Source="$(var.NINA_TargetDir)3rd-party-licenses.txt" />
       </Component>
-      <Component Win64="$(var.Win64)" Id="System.Buffers.dll" Guid="df02870b-86a3-4b1b-a29b-70cd1785c3c3">
-        <File Id="System.Buffers.dll" Name="System.Buffers.dll" Source="$(var.NINA_TargetDir)System.Buffers.dll" />
-      </Component>
-      <Component Win64="$(var.Win64)" Id="System.Numerics.Vectors.dll" Guid="d361711f-84b3-402d-a99f-26c68c0aac73">
-        <File Id="System.Numerics.Vectors.dll" Name="System.Numerics.Vectors.dll" Source="$(var.NINA_TargetDir)System.Numerics.Vectors.dll" />
-      </Component>
-      <Component Win64="$(var.Win64)" Id="System.Memory.dll" Guid="dd2b6294-6ce6-4d2b-b4c8-04edfce96a56">
-        <File Id="System.Memory.dll" Name="System.Memory.dll" Source="$(var.NINA_TargetDir)System.Memory.dll" />
-      </Component>
-      <Component Win64="$(var.Win64)" Id="System.Runtime.CompilerServices.Unsafe.dll" Guid="3cddc180-2399-4adf-bed4-367411521153">
-        <File Id="System.Runtime.CompilerServices.Unsafe.dll" Name="System.Runtime.CompilerServices.Unsafe.dll" Source="$(var.NINA_TargetDir)System.Runtime.CompilerServices.Unsafe.dll" />
-      </Component>
-      <Component Win64="$(var.Win64)" Id="System.Threading.Tasks.Extensions.dll" Guid="61e1fb4c-4a1c-4c22-a2a1-69fd51c077bc">
-        <File Id="System.Threading.Tasks.Extensions.dll" Name="System.Threading.Tasks.Extensions.dll" Source="$(var.NINA_TargetDir)System.Threading.Tasks.Extensions.dll" />
-      </Component>
-      <Component Win64="$(var.Win64)" Id="Microsoft.Bcl.AsyncInterfaces.dll" Guid="08ae1895-b466-4329-a512-d93c75a13a87">
-        <File Id="Microsoft.Bcl.AsyncInterfaces.dll" Name="Microsoft.Bcl.AsyncInterfaces.dll" Source="$(var.NINA_TargetDir)Microsoft.Bcl.AsyncInterfaces.dll" />
-      </Component>
     </ComponentGroup>
   </Fragment>
   <!--<Fragment>
