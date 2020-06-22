@@ -42,7 +42,7 @@ namespace NINA.Utility {
                 RaiseCollectionChanged(e);
             } else {
                 // Raises the CollectionChanged event on the creator thread
-                _synchronizationContext.Post(RaiseCollectionChanged, e);
+                _synchronizationContext.Send(RaiseCollectionChanged, e);
             }
         }
 
@@ -57,7 +57,7 @@ namespace NINA.Utility {
                 RaisePropertyChanged(e);
             } else {
                 // Raises the PropertyChanged event on the creator thread
-                _synchronizationContext.Post(RaisePropertyChanged, e);
+                _synchronizationContext.Send(RaisePropertyChanged, e);
             }
         }
 
