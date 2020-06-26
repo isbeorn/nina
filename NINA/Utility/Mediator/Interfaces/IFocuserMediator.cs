@@ -15,6 +15,7 @@
 using NINA.Model.MyFocuser;
 using NINA.ViewModel.Equipment.Focuser;
 using NINA.ViewModel.Interfaces;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.Utility.Mediator.Interfaces {
@@ -23,8 +24,8 @@ namespace NINA.Utility.Mediator.Interfaces {
 
         void ToggleTempComp(bool tempComp);
 
-        Task<int> MoveFocuser(int position);
+        Task<int> MoveFocuser(int position, CancellationToken ct);
 
-        Task<int> MoveFocuserRelative(int position);
+        Task<int> MoveFocuserRelative(int position, CancellationToken ct);
     }
 }

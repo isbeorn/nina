@@ -4606,6 +4606,15 @@ namespace NINA.Locale {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Moving focuser to position {0}.
+        /// </summary>
+        internal static string LblFocuserMoveToPosition {
+            get {
+                return ResourceManager.GetString("LblFocuserMoveToPosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Current focuser position.
         /// </summary>
         internal static string LblFocuserPositionDescription {

@@ -291,7 +291,7 @@ namespace NINA.ViewModel {
 
             if (offset != 0) {
                 //Move to initial position
-                _focusPosition = await focuserMediator.MoveFocuserRelative(offset * stepSize);
+                _focusPosition = await focuserMediator.MoveFocuserRelative(offset * stepSize, token);
             }
 
             var comparer = new FocusPointComparer();
@@ -313,7 +313,7 @@ namespace NINA.ViewModel {
                 PlotFocusPoints.AddSorted(new DataPoint(_focusPosition, measurement.Measure), plotComparer);
                 if (i < nrOfSteps - 1) {
                     Logger.Trace("Moving focuser to next autofocus position");
-                    _focusPosition = await focuserMediator.MoveFocuserRelative(-stepSize);
+                    _focusPosition = await focuserMediator.MoveFocuserRelative(-stepSize, token);
                 }
 
                 token.ThrowIfCancellationRequested();
@@ -419,7 +419,7 @@ namespace NINA.ViewModel {
         }
 
         private async Task<bool> ValidateCalculatedFocusPosition(DataPoint focusPoint, FilterInfo filter, CancellationToken token, IProgress<ApplicationStatus> progress, double initialHFR) {
-            _focusPosition = await focuserMediator.MoveFocuser((int)focusPoint.X);
+            _focusPosition = await focuserMediator.MoveFocuser((int)focusPoint.X, token);
 
             if (profileService.ActiveProfile.FocuserSettings.AutoFocusMethod == AFMethodEnum.STARHFR) {
                 double hfr = (await GetAverageMeasurement(filter, profileService.ActiveProfile.FocuserSettings.AutoFocusNumberOfFramesPerPoint, token, progress)).Measure;
@@ -707,7 +707,7 @@ namespace NINA.ViewModel {
                             Notification.ShowWarning(Locale.Loc.Instance["LblAutoFocusNotEnoughtSpreadedPoints"]);
                             progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblAutoFocusNotEnoughtSpreadedPoints"] });
                             //Reattempting in this situation is very likely meaningless - just move back to initial focus position and call it a day
-                            await focuserMediator.MoveFocuser(initialFocusPosition);
+                            await focuserMediator.MoveFocuser(initialFocusPosition, token);
                             return null;
                         }
 
@@ -716,7 +716,7 @@ namespace NINA.ViewModel {
                             Logger.Trace("More datapoints needed to the left of the minimum");
                             //Move to the leftmost point - this should never be necessary since we're already there, but just in case
                             if (focuserInfo.Position != (int)Math.Round(FocusPoints.FirstOrDefault().X)) {
-                                await focuserMediator.MoveFocuser((int)Math.Round(FocusPoints.FirstOrDefault().X));
+                                await focuserMediator.MoveFocuser((int)Math.Round(FocusPoints.FirstOrDefault().X), token);
                             }
                             //More points needed to the left
                             await GetFocusPoints(filter, 1, progress, token, -1);
@@ -724,7 +724,7 @@ namespace NINA.ViewModel {
                             Logger.Trace("More datapoints needed to the right of the minimum");
                             //More points needed to the right. Let's get to the rightmost point, and keep going right one point at a time
                             if (focuserInfo.Position != (int)Math.Round(FocusPoints.LastOrDefault().X)) {
-                                await focuserMediator.MoveFocuser((int)Math.Round(FocusPoints.LastOrDefault().X));
+                                await focuserMediator.MoveFocuser((int)Math.Round(FocusPoints.LastOrDefault().X), token);
                             }
                             await GetFocusPoints(filter, 1, progress, token, 1);
                         }
@@ -753,7 +753,7 @@ namespace NINA.ViewModel {
                     if (!goodAutoFocus) {
                         if (numberOfAttempts < profileService.ActiveProfile.FocuserSettings.AutoFocusTotalNumberOfAttempts) {
                             Notification.ShowWarning(Locale.Loc.Instance["LblAutoFocusReattempting"]);
-                            await focuserMediator.MoveFocuser(initialFocusPosition);
+                            await focuserMediator.MoveFocuser(initialFocusPosition, token);
                             Logger.Warning("Potentially bad auto-focus. Reattempting.");
                             FocusPoints.Clear();
                             PlotFocusPoints.Clear();
@@ -771,7 +771,7 @@ namespace NINA.ViewModel {
                             Notification.ShowWarning(Locale.Loc.Instance["LblAutoFocusRestoringOriginalPosition"]);
                             Logger.Warning("Potentially bad auto-focus. Restoring original focus position.");
                             reattempt = false;
-                            await focuserMediator.MoveFocuser(initialFocusPosition);
+                            await focuserMediator.MoveFocuser(initialFocusPosition, token);
                             return null;
                         }
                     }

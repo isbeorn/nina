@@ -84,7 +84,7 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
                                 if (newFilter != null) {
                                     int offset = newFilter.FocusOffset - prevFilter.FocusOffset;
                                     if (offset != 0) {
-                                        changeFocus = focuserMediator.MoveFocuserRelative(offset);
+                                        changeFocus = focuserMediator.MoveFocuserRelative(offset, token);
                                     }
                                 }
                             }

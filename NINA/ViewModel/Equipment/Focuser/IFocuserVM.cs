@@ -13,6 +13,7 @@
 #endregion "copyright"
 
 using NINA.Model.MyFocuser;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NINA.ViewModel.Equipment.Focuser {
@@ -21,8 +22,8 @@ namespace NINA.ViewModel.Equipment.Focuser {
 
         void ToggleTempComp(bool tempComp);
 
-        Task<int> MoveFocuser(int position);
+        Task<int> MoveFocuser(int position, CancellationToken ct);
 
-        Task<int> MoveFocuserRelative(int position);
+        Task<int> MoveFocuserRelative(int position, CancellationToken ct);
     }
 }
