@@ -41,7 +41,6 @@ using Newtonsoft.Json;
 using System.IO;
 
 namespace NINA.ViewModel {
-
     internal class AutoFocusVM : DockableVM, ICameraConsumer, IFocuserConsumer, IFilterWheelConsumer {
         private static readonly string ReportDirectory = Path.Combine(Utility.Utility.APPLICATIONTEMPPATH, "AutoFocus");
 
@@ -739,7 +738,7 @@ namespace NINA.ViewModel {
 
                     FinalFocusPoint = DetermineFinalFocusPoint();
 
-                    report = GenerateReport(initialFocusPosition, initialHFR);
+                    report = GenerateReport(initialFocusPosition, initialHFR, filter?.Name ?? string.Empty);
 
                     LastAutoFocusPoint = new AutoFocusPoint { Focuspoint = FinalFocusPoint, Temperature = focuserInfo.Temperature, Timestamp = DateTime.Now };
 
@@ -864,11 +863,12 @@ namespace NINA.ViewModel {
         /// </summary>
         /// <param name="initialFocusPosition"></param>
         /// <param name="initialHFR"></param>
-        private AutoFocusReport GenerateReport(double initialFocusPosition, double initialHFR) {
+        private AutoFocusReport GenerateReport(double initialFocusPosition, double initialHFR, string filter) {
             try {
                 var method = profileService.ActiveProfile.FocuserSettings.AutoFocusMethod;
 
                 var report = new AutoFocusReport() {
+                    Filter = filter,
                     Timestamp = DateTime.Now,
                     Temperature = focuserInfo.Temperature,
                     InitialFocusPoint = new FocusPoint() {

@@ -17,12 +17,12 @@ using NINA.Utility.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace NINA.ViewModel.AutoFocus {
-
     public class AutoFocusReport {
+        [JsonProperty]
+        public string Filter { get; set; }
 
         [JsonProperty]
         public DateTime Timestamp { get; set; }
@@ -60,7 +60,6 @@ namespace NINA.ViewModel.AutoFocus {
     }
 
     public class FocusPoint {
-
         [JsonProperty]
         public double Position { get; set; }
 
