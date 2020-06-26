@@ -15,6 +15,7 @@
 using NINA.ViewModel;
 using NINA.ViewModel.Equipment.Camera;
 using NINA.ViewModel.Equipment.FilterWheel;
+using NINA.ViewModel.Equipment.FlatDevice;
 using NINA.ViewModel.Equipment.Focuser;
 using NINA.ViewModel.Equipment.Guider;
 using NINA.ViewModel.Equipment.Rotator;
@@ -68,88 +69,76 @@ namespace NINA.Utility.AvalonDock {
         public DataTemplate FocusTargetsTemplate { get; set; }
 
         public DataTemplate SwitchTemplate { get; set; }
+        public DataTemplate FlatDeviceTemplate { get; set; }
         public DataTemplate ExposureCalculatorTemplate { get; set; }
 
         public override System.Windows.DataTemplate SelectTemplate(object item, System.Windows.DependencyObject container) {
             var itemAsLayoutContent = item as LayoutContent;
 
-            if (item is CameraVM) {
-                return CameraTemplate;
-            }
+            switch (item) {
+                case CameraVM _:
+                    return CameraTemplate;
 
-            if (item is TelescopeVM) {
-                return TelescopeTemplate;
-            }
+                case TelescopeVM _:
+                    return TelescopeTemplate;
 
-            if (item is AnchorablePlateSolverVM) {
-                return PlatesolveTemplate;
-            }
+                case AnchorablePlateSolverVM _:
+                    return PlatesolveTemplate;
 
-            if (item is PolarAlignmentVM) {
-                return PolarAlignmentTemplate;
-            }
+                case PolarAlignmentVM _:
+                    return PolarAlignmentTemplate;
 
-            if (item is GuiderVM) {
-                return GuiderTemplate;
-            }
+                case GuiderVM _:
+                    return GuiderTemplate;
 
-            if (item is FilterWheelVM) {
-                return FilterWheelTemplate;
-            }
+                case FilterWheelVM _:
+                    return FilterWheelTemplate;
 
-            if (item is AnchorableSnapshotVM) {
-                return ImagingTemplate;
-            }
+                case AnchorableSnapshotVM _:
+                    return ImagingTemplate;
 
-            if (item is ImageHistoryVM) {
-                return ImageHistoryTemplate;
-            }
+                case ImageHistoryVM _:
+                    return ImageHistoryTemplate;
 
-            if (item is ImageStatisticsVM) {
-                return ImageStatisticsTemplate;
-            }
+                case ImageStatisticsVM _:
+                    return ImageStatisticsTemplate;
 
-            if (item is ImageControlVM) {
-                return ImageControlTemplate;
-            }
+                case ImageControlVM _:
+                    return ImageControlTemplate;
 
-            if (item is SequenceVM) {
-                return SequenceTemplate;
-            }
+                case SequenceVM _:
+                    return SequenceTemplate;
 
-            if (item is WeatherDataVM) {
-                return WeatherDataTemplate;
-            }
+                case WeatherDataVM _:
+                    return WeatherDataTemplate;
 
-            if (item is FocuserVM) {
-                return FocuserTemplate;
-            }
+                case FocuserVM _:
+                    return FocuserTemplate;
 
-            if (item is AutoFocusVM) {
-                return AutoFocusTemplate;
-            }
+                case AutoFocusVM _:
+                    return AutoFocusTemplate;
 
-            if (item is ThumbnailVM) {
-                return ThumbnailTemplate;
-            }
+                case ThumbnailVM _:
+                    return ThumbnailTemplate;
 
-            if (item is RotatorVM) {
-                return RotatorTemplate;
-            }
+                case RotatorVM _:
+                    return RotatorTemplate;
 
-            if (item is FocusTargetsVM) {
-                return FocusTargetsTemplate;
-            }
+                case FocusTargetsVM _:
+                    return FocusTargetsTemplate;
 
-            if (item is SwitchVM) {
-                return SwitchTemplate;
-            }
+                case SwitchVM _:
+                    return SwitchTemplate;
 
-            if (item is ExposureCalculatorVM) {
-                return ExposureCalculatorTemplate;
-            }
+                case FlatDeviceVM _:
+                    return FlatDeviceTemplate;
 
-            return base.SelectTemplate(item, container);
+                case ExposureCalculatorVM _:
+                    return ExposureCalculatorTemplate;
+
+                default:
+                    return base.SelectTemplate(item, container);
+            }
         }
     }
 }

@@ -29,13 +29,13 @@ namespace NINA.Utility.Converters {
                     return doubleValue * 100d;
 
                 case double doubleValue when parameter is string stringValue:
-                    return Math.Round(doubleValue * 100d, int.TryParse(stringValue, out decimals) ? decimals : 0);
+                    return Math.Round(doubleValue * 100d, int.TryParse(stringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out decimals) ? decimals : 0);
 
                 case decimal decimalValue when parameter is null:
                     return decimalValue * 100m;
 
                 case decimal decimalValue when parameter is string stringValue:
-                    return Math.Round(decimalValue * 100m, int.TryParse(stringValue, out decimals) ? decimals : 0);
+                    return Math.Round(decimalValue * 100m, int.TryParse(stringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out decimals) ? decimals : 0);
 
                 default:
                     return value;
@@ -50,20 +50,20 @@ namespace NINA.Utility.Converters {
             int decimals;
             switch (targetType) {
                 case Type doubleType when doubleType == typeof(double) && parameter is null:
-                    return double.TryParse(trimmedValue, out var resultDouble) ? resultDouble / 100d : value;
+                    return double.TryParse(trimmedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var resultDouble) ? resultDouble / 100d : value;
 
                 case Type doubleType when doubleType == typeof(double) && parameter is string stringValue:
                     int.TryParse(stringValue, out decimals);
-                    return double.TryParse(trimmedValue, out var resultDoubleRoundedToDecimals)
+                    return double.TryParse(trimmedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var resultDoubleRoundedToDecimals)
                         ? Math.Round(resultDoubleRoundedToDecimals / 100d, decimals + 2)
                         : value;
 
                 case Type decimalType when decimalType == typeof(decimal) && parameter is null:
-                    return decimal.TryParse(trimmedValue, out var resultDecimal) ? resultDecimal / 100m : value;
+                    return decimal.TryParse(trimmedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var resultDecimal) ? resultDecimal / 100m : value;
 
                 case Type decimalType when decimalType == typeof(decimal) && parameter is string stringValue:
                     int.TryParse(stringValue, out decimals);
-                    return decimal.TryParse(trimmedValue, out var resultDecimalRoundedToDecimals)
+                    return decimal.TryParse(trimmedValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var resultDecimalRoundedToDecimals)
                         ? Math.Round(resultDecimalRoundedToDecimals / 100m, decimals + 2)
                         : value;
 

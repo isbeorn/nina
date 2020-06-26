@@ -168,6 +168,7 @@ namespace NINA.ViewModel {
             DockManagerVM.Anchorables.Add(TelescopeVM);
             DockManagerVM.Anchorables.Add(GuiderVM);
             DockManagerVM.Anchorables.Add(SwitchVM);
+            DockManagerVM.Anchorables.Add(FlatDeviceVM);
             DockManagerVM.Anchorables.Add(WeatherDataVM);
 
             DockManagerVM.Anchorables.Add(SeqVM);
@@ -192,6 +193,7 @@ namespace NINA.ViewModel {
             DockManagerVM.AnchorableInfoPanels.Add(GuiderVM);
             DockManagerVM.AnchorableInfoPanels.Add(SeqVM);
             DockManagerVM.AnchorableInfoPanels.Add(SwitchVM);
+            DockManagerVM.AnchorableInfoPanels.Add(FlatDeviceVM);
             DockManagerVM.AnchorableInfoPanels.Add(WeatherDataVM);
             DockManagerVM.AnchorableInfoPanels.Add(ImagingVM.ImgStatisticsVM);
             DockManagerVM.AnchorableInfoPanels.Add(SeqVM.ImgHistoryVM);
@@ -436,7 +438,7 @@ namespace NINA.ViewModel {
         private FlatDeviceVM _flatDeviceVm;
 
         public FlatDeviceVM FlatDeviceVM {
-            get => _flatDeviceVm ?? (_flatDeviceVm = new FlatDeviceVM(profileService, flatDeviceMediator, applicationStatusMediator));
+            get => _flatDeviceVm ?? (_flatDeviceVm = new FlatDeviceVM(profileService, flatDeviceMediator, applicationStatusMediator, new ImageGeometryProvider()));
             set {
                 _flatDeviceVm = value;
                 RaisePropertyChanged();

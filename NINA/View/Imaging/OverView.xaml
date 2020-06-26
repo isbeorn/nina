@@ -373,6 +373,12 @@
                         </DataTemplate>
                     </util:PaneTemplateSelector.SwitchTemplate>
 
+                    <util:PaneTemplateSelector.FlatDeviceTemplate>
+                        <DataTemplate>
+                            <view:AnchorableFlatDeviceView />
+                        </DataTemplate>
+                    </util:PaneTemplateSelector.FlatDeviceTemplate>
+
                     <util:PaneTemplateSelector.ExposureCalculatorTemplate>
                         <DataTemplate>
                             <view:AnchorableExposureTimeRecommendationView />

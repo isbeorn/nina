@@ -24,6 +24,7 @@ using NINA.Utility.Notification;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,10 +39,13 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
         private readonly IFlatDeviceMediator _flatDeviceMediator;
         private readonly DeviceUpdateTimer _updateTimer;
 
-        public FlatDeviceVM(IProfileService profileService, IFlatDeviceMediator flatDeviceMediator, IApplicationStatusMediator applicationStatusMediator) : base(profileService) {
+        public FlatDeviceVM(IProfileService profileService, IFlatDeviceMediator flatDeviceMediator, IApplicationStatusMediator applicationStatusMediator, IImageGeometryProvider imageGeometryProvider) : base(profileService) {
             _applicationStatusMediator = applicationStatusMediator;
             _flatDeviceMediator = flatDeviceMediator;
             _flatDeviceMediator.RegisterHandler(this);
+
+            this.Title = "LblFlatDevice";
+            this.ImageGeometry = imageGeometryProvider.GetImageGeometry("LightBulbSVG");
 
             ConnectCommand = new AsyncCommand<bool>(Connect);
             CancelConnectCommand = new RelayCommand(CancelConnectFlatDevice);
@@ -114,7 +118,7 @@ namespace NINA.ViewModel.Equipment.FlatDevice {
 
         public void SetBrightness(object o) {
             if (_flatDevice == null || !_flatDevice.Connected) return;
-            if (!double.TryParse(o.ToString(), out var result)) return;
+            if (!double.TryParse(o.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out var result)) return;
             _flatDevice.Brightness = result / 100d;
         }
 

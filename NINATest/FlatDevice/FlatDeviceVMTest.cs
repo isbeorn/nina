@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
+using NINA.ViewModel;
 
 namespace NINATest.FlatDevice {
 
@@ -40,6 +41,7 @@ namespace NINATest.FlatDevice {
         private Mock<IFlatDeviceChooserVM> _mockFlatDeviceChooserVM;
         private Mock<IFlatDeviceSettings> _mockFlatDeviceSettings;
         private Mock<IFilterWheelSettings> _mockFilterWheelSettings;
+        private Mock<IImageGeometryProvider> _mockImageGeometryProvider;
 
         [OneTimeSetUp]
         public void OneTimeSetUp() {
@@ -50,6 +52,7 @@ namespace NINATest.FlatDevice {
             _mockFlatDeviceChooserVM = new Mock<IFlatDeviceChooserVM>();
             _mockFlatDeviceSettings = new Mock<IFlatDeviceSettings>();
             _mockFilterWheelSettings = new Mock<IFilterWheelSettings>();
+            _mockImageGeometryProvider = new Mock<IImageGeometryProvider>();
         }
 
         [SetUp]
@@ -61,6 +64,7 @@ namespace NINATest.FlatDevice {
             _mockFlatDeviceChooserVM.Reset();
             _mockFlatDeviceSettings.Reset();
             _mockFilterWheelSettings.Reset();
+            _mockImageGeometryProvider.Reset();
 
             _mockFlatDeviceSettings.SetupProperty(m => m.Id, "mockDevice");
 
@@ -70,7 +74,7 @@ namespace NINATest.FlatDevice {
             _mockProfileService.Setup(m => m.ActiveProfile.ApplicationSettings.DevicePollingInterval).Returns(200);
             //            _mockProfileService.Setup(m => m.ActiveProfile.FlatDeviceSettings.Id).Returns("mockDevice");
             _sut = new FlatDeviceVM(_mockProfileService.Object, _mockFlatDeviceMediator.Object,
-                _mockApplicationStatusMediator.Object);
+                _mockApplicationStatusMediator.Object, _mockImageGeometryProvider.Object);
         }
 
         [Test]
