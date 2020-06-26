@@ -3759,7 +3759,34 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
     <value>Min Flat Panel Brightness</value>
   </data>
   <data name="LblWizardOperationMode" xml:space="preserve">
-    <value>Wizard Operation Mode</value>
+    <value>ウィザード動作モード</value>
+  </data>
+  <data name="LblFlatDeviceAddBinningMode" xml:space="preserve">
+    <value>ビニングを増加</value>
+  </data>
+  <data name="LblFlatDeviceAddGain" xml:space="preserve">
+    <value>ゲインを増加</value>
+  </data>
+  <data name="LblFlatDeviceAreYouSureBinning" xml:space="preserve">
+    <value>ビニングの値をすべて削除していいですか？</value>
+  </data>
+  <data name="LblFlatDeviceAreYouSureGain" xml:space="preserve">
+    <value>ゲインの値を、全て削除していいですか？</value>
+  </data>
+  <data name="LblFlatDeviceDeleteBinningMode" xml:space="preserve">
+    <value>ビニングを削除</value>
+  </data>
+  <data name="LblFlatDeviceDeleteGain" xml:space="preserve">
+    <value>ゲインを削除</value>
+  </data>
+  <data name="LblSequenceContainsDarksAndLights" xml:space="preserve">
+    <value>カメラには機械式シャッターがなく、自動フラットパネルが接続されておらず、シーケンスにはダーク/BIASアイテムとLIGHTが混在しています。</value>
+  </data>
+  <data name="LblSequenceContainsDarksOnly" xml:space="preserve">
+    <value>カメラには機械式シャッターがなく、自動フラットパネルが接続されておらず、シーケンスにはダーク/BIASアイテムのみが含まれています。カメラがカバーされていることを確認してください。</value>
+  </data>
+  <data name="LblMeridianFlipIn" xml:space="preserve">
+    <value>Meridian Flip in</value>
   </data>
   <data name="LblDefaultGain" xml:space="preserve">
     <value>デフォルトのゲイン</value>
@@ -3772,5 +3799,8 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
   </data>
   <data name="LblDefaultOffsetTooltip" xml:space="preserve">
     <value>この値はデフォルトのオフセットを指定するもので、オフセットが明示的に設定されていないときに使用されます。</value>
+  </data>
+  <data name="LbLUsbLimitDescription" xml:space="preserve">
+    <value>Camera USB speed or traffic limit setting</value>
   </data>
 </root>

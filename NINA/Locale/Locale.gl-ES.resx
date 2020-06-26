@@ -563,16 +563,16 @@ para compensar as variacións da temperatura ambiente</value>
     <value>Cartes du Ciel</value>
   </data>
   <data name="LblCenterDec" xml:space="preserve">
-    <value>Centrar Dec</value>
+    <value>Center Dec</value>
   </data>
   <data name="LblCenterDecdms" xml:space="preserve">
-    <value>Centrar Dec dms</value>
+    <value>Center Dec dms</value>
   </data>
   <data name="LblCenterRA" xml:space="preserve">
-    <value>Centrar AR</value>
+    <value>Center RA</value>
   </data>
   <data name="LblCenterRAhms" xml:space="preserve">
-    <value>Centrar AR hms</value>
+    <value>Center RA hms</value>
   </data>
   <data name="LblCenterTarget" xml:space="preserve">
     <value>Centrar obxectivo</value>
@@ -3823,5 +3823,8 @@ No caso de que se precise unha duración máis longa, pódese especificar a dura
   </data>
   <data name="LblDefaultOffsetTooltip" xml:space="preserve">
     <value>Ete valor especifica unha compensación por defecto que se usará cando non se estableceu explicitamente</value>
+  </data>
+  <data name="LbLUsbLimitDescription" xml:space="preserve">
+    <value>Camera USB speed or traffic limit setting</value>
   </data>
 </root>
