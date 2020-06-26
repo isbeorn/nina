@@ -381,6 +381,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Locale.pl-PL.resx</DependentUpon>
     </Compile>
+    <Compile Include="Locale\Locale.pt-PT.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Locale.pt-PT.resx</DependentUpon>
+    </Compile>
     <Compile Include="Locale\Locale.ru-RU.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1947,6 +1952,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Locale.pl-PL.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Locale\Locale.pt-PT.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Locale.pt-PT.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Locale\Locale.resx">
       <Generator>ResXFileCodeGenerator</Generator>

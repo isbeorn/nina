@@ -141,6 +141,7 @@
       <ComponentGroupRef Id="da_DK_files" />
       <ComponentGroupRef Id="tr_TR_files" />
       <ComponentGroupRef Id="gl_ES_files" />
+      <ComponentGroupRef Id="pt_PT_files" />
     </Feature>
   </Product>
 
@@ -272,6 +273,7 @@
           <Directory Id="da_DK" Name="da-DK" />
           <Directory Id="tr_TR" Name="tr-TR" />
           <Directory Id="gl_ES" Name="gl-ES" />
+          <Directory Id="pt_PT" Name="pt-PT" />
         </Directory>
       </Directory>
       <Directory Id="ProgramMenuFolder">
@@ -1627,6 +1629,13 @@
     <ComponentGroup Id="da_DK_files" Directory="da_DK">
       <Component Id="da_DK_NINA.resources.dll" Guid="32b2ec7f-e3e5-4fcc-ac66-2eb86dc274d3">
         <File Id="da_DK_NINA.resources.dll" Name="NINA.resources.dll" Source="$(var.NINA_TargetDir)da-DK\NINA.resources.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="pt_PT_files" Directory="pt_PT">
+      <Component Id="pt_PT_NINA.resources.dll" Guid="7656399b-8082-4154-ba86-2490aa7f067b">
+        <File Id="pt_PT_NINA.resources.dll" Name="NINA.resources.dll" Source="$(var.NINA_TargetDir)pt-PT\NINA.resources.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

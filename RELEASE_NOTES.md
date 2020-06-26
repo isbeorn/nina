@@ -49,7 +49,7 @@
 
 ## Localization
 - N.I.N.A. is now available on [Crowdin](https://crowdin.com/)! This powerful online translation management tool allows users to easily contribute to the translation of N.I.N.A.'s user interface to any language. To help with localization and translation efforts, details may be found at [nina.crowdin.com](https://nina.crowdin.com/). Feel free to participate in the ongoing effort to provide multiple languages for N.I.N.A.! This is a great way to contribute to the project
-- Twelve new languages are included in this release:
+- Thirteen new languages are included in this release:
     - Dansk (Danish)
     - Español (Spanish)
     - Français (French)
@@ -62,6 +62,7 @@
     - 繁体中文, 香港 (Traditional Chinese, Hong Kong)
     - Türk (Turkish) 
     - Galego (Galician) 
+    - Portugese (Português)
 
 ## Application Improvements
 ### General
