@@ -470,9 +470,6 @@
       <Component Id="NINA.MGEN.dll" Guid="aff16aed-fbcc-4db3-8ae6-30387f4995e9">
         <File Id="NINA.MGEN.dll" Name="NINA.MGEN.dll" Source="$(var.NINA.MGEN_TargetDir)NINA.MGEN.dll" />
       </Component>
-      <Component Id="LZ4.dll" Guid="8b76a83a-338b-44cd-9459-c1f479e6945f">
-        <File Id="LZ4.dll" Name="LZ4.dll" Source="$(var.NINA_TargetDir)LZ4.dll" />
-      </Component>
       <Component Id="Zlib.Portable.dll" Guid="e029186f-d493-4b7e-aee1-e84ba51eaf7a">
         <File Id="Zlib.Portable.dll" Name="Zlib.Portable.dll" Source="$(var.NINA_TargetDir)Zlib.Portable.dll" />
       </Component>
@@ -487,6 +484,12 @@
       </Component>
       <Component Win64="$(var.Win64)" Id="thirdparty" Guid="3C8404A3-D6E6-48DE-81FA-03028AEE884D">
         <File Id="thirdparty" Name="3rd-party-licenses.txt" Source="$(var.NINA_TargetDir)3rd-party-licenses.txt" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="K4os.Compression.LZ4.dll" Guid="af75b12d-ae2f-48c8-8b15-55a5d7344aa0">
+        <File Id="K4os.Compression.LZ4.dll" Name="K4os.Compression.LZ4.dll" Source="$(var.NINA_TargetDir)K4os.Compression.LZ4.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="Ninject.dll" Guid="c2d44b0a-a283-4cc3-8fd5-e7a744975300">
+        <File Id="Ninject.dll" Name="Ninject.dll" Source="$(var.NINA_TargetDir)Ninject.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
