@@ -3825,4 +3825,7 @@ En caso de que se necesite una duración más larga, se puede especificar ese ti
   <data name="LbLUsbLimitDescription" xml:space="preserve">
     <value>Camera USB speed or traffic limit setting</value>
   </data>
+  <data name="LblFocuserMoveToPosition" xml:space="preserve">
+    <value>Moving focuser to position {0}</value>
+  </data>
 </root>

@@ -3822,6 +3822,9 @@ Falls eine längere Dauer benötigt wird, kann eine Dauer angegeben werden und d
     <value>Dieser Wert gibt den Standard Wert an, der für Offset benutzt werden soll, wann immer kein Offset Wert explizit gesetzt wurde</value>
   </data>
   <data name="LbLUsbLimitDescription" xml:space="preserve">
-    <value>Camera USB speed or traffic limit setting</value>
+    <value>Kamera USB Geschwindigkeits- oder Datenlimiteinstellung</value>
+  </data>
+  <data name="LblFocuserMoveToPosition" xml:space="preserve">
+    <value>Bewege Okularauszug zu Position {0}</value>
   </data>
 </root>

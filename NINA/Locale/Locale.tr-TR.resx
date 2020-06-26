@@ -3812,4 +3812,7 @@ Daha uzun bir süre gerekirse bir süre belirtilebilir ve uygulama, verilen sür
   <data name="LbLUsbLimitDescription" xml:space="preserve">
     <value>Camera USB speed or traffic limit setting</value>
   </data>
+  <data name="LblFocuserMoveToPosition" xml:space="preserve">
+    <value>Moving focuser to position {0}</value>
+  </data>
 </root>
