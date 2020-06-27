@@ -112,7 +112,7 @@ namespace NINATest.FlatDevice {
         public void TestValidStateResponse(string response, bool motorRunning, CoverState covertState, bool lightOn) {
             var sut = new StateResponse { DeviceResponse = response };
 
-            sut.Ttl.Should().Be(100);
+            sut.Ttl.Should().Be(0);
             sut.MotorRunning.Should().Be(motorRunning);
             sut.CoverState.Should().Be(covertState);
             sut.LightOn.Should().Be(lightOn);

@@ -178,8 +178,6 @@ namespace NINA.Utility.FlatDeviceSDKs.AlnitakSDK {
 
         public CoverState CoverState { get; private set; }
 
-        public override int Ttl => 100;
-
         protected override void ParseResponse(string response) {
             base.ParseResponse(response);
             if (response[1] == 'S' && ParseState(response)) return;
