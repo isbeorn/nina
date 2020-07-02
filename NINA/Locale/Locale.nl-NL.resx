@@ -3587,7 +3587,7 @@ The default of Auto uses any pattern that the camera driver might provide. Does 
     <value>Exposure finished</value>
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
-    <value>Camera Timeout - Camera did not set image as ready after exposuretime + 15 seconds</value>
+    <value>Camera Timeout - Camera did not set image as ready after exposuretime + {0} seconds</value>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>Pattern Preview</value>
@@ -3815,5 +3815,11 @@ In case a longer duration is needed, a duration can be specified and the applica
   </data>
   <data name="LblFocuserMoveToPosition" xml:space="preserve">
     <value>Moving focuser to position {0}</value>
+  </data>
+  <data name="LblCameraTimeoutOption" xml:space="preserve">
+    <value>Camera Timeout</value>
+  </data>
+  <data name="LblCameraTimeoutTooltip" xml:space="preserve">
+    <value>The amount of time after exposure time until the image is considered as lost. When the camera does not send an image ready event after Exposure Time + Timeout the exposure will be cancelled.</value>
   </data>
 </root>

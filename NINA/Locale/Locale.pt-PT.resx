@@ -3594,7 +3594,7 @@ O padrão Auto usa o padrão que o driver da câmera possa fornecer. Não se apl
     <value>Exposição terminada</value>
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
-    <value>Limite de Tempo da Camera - A Camera não definiu a imagem como pronta depois de um tempo de exposição de + 15 segundos</value>
+    <value>Camera Timeout - Camera did not set image as ready after exposuretime + {0} seconds</value>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>Pré-visualização do padrão</value>
@@ -3822,5 +3822,11 @@ No caso de ser necessário efectuar o aquecimento de uma forma mais prolongada, 
   </data>
   <data name="LblFocuserMoveToPosition" xml:space="preserve">
     <value>Moving focuser to position {0}</value>
+  </data>
+  <data name="LblCameraTimeoutOption" xml:space="preserve">
+    <value>Camera Timeout</value>
+  </data>
+  <data name="LblCameraTimeoutTooltip" xml:space="preserve">
+    <value>The amount of time after exposure time until the image is considered as lost. When the camera does not send an image ready event after Exposure Time + Timeout the exposure will be cancelled.</value>
   </data>
 </root>

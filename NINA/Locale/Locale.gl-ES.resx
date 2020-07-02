@@ -241,7 +241,7 @@ A aplicación debe intentar recuperarse do erro? (Pode levar a un comportamento 
     <value>arcsec</value>
   </data>
   <data name="LblAscending" xml:space="preserve">
-    <value>Ascendendo</value>
+    <value>Ascendente</value>
   </data>
   <data name="LblAscomInterOpDriverException" xml:space="preserve">
     <value>Produciuse unha excepción do interoperador do controlador ASCOM. Isto é probablemente causado por un desaxuste entre o controlador instalado como {0} e N.I.N.A. sendo {1}. Instala o controlador como {1}</value>
@@ -563,16 +563,16 @@ para compensar as variacións da temperatura ambiente</value>
     <value>Cartes du Ciel</value>
   </data>
   <data name="LblCenterDec" xml:space="preserve">
-    <value>Center Dec</value>
+    <value>Centro Dec</value>
   </data>
   <data name="LblCenterDecdms" xml:space="preserve">
-    <value>Center Dec dms</value>
+    <value>Centro Dec dms</value>
   </data>
   <data name="LblCenterRA" xml:space="preserve">
-    <value>Center RA</value>
+    <value>Centro AR</value>
   </data>
   <data name="LblCenterRAhms" xml:space="preserve">
-    <value>Center RA hms</value>
+    <value>Centro AR hms</value>
   </data>
   <data name="LblCenterTarget" xml:space="preserve">
     <value>Centrar obxectivo</value>
@@ -981,7 +981,7 @@ No caso de precisarse unha duración maior, pódese especificar unha duración e
     <value>Posición Actual</value>
   </data>
   <data name="LblCurrentSequenceEstimates" xml:space="preserve">
-    <value>Tempo final estimado (este obxectivo)</value>
+    <value>Tempo final estimado (obx.)</value>
   </data>
   <data name="LblCurrentUIColorSchema" xml:space="preserve">
     <value>Cor de Interface Actual</value>
@@ -1006,7 +1006,7 @@ No caso de precisarse unha duración maior, pódese especificar unha duración e
 cara atrás; cando as liñas non están aliñadas hai algún erro de aliñación polar</value>
   </data>
   <data name="LblDARVSlewDescription" xml:space="preserve">
-    <value>Especifique a duración para o procedemento D.A.R.V. O telescopio moverase a metade do tempo nunha dirección no eixe RA e logo volverá para atrás. En caso de non haber erro de aliñación polar, aparecerá como unha liña recta. Se non, unha liña en forma de V. Para a medición do erro de Acimut mover o telescopio preto do meridiano, se non, para o leste ou oeste.</value>
+    <value>Especifica a duración para o procedemento D.A.R.V. O telescopio moverase a metade do tempo nunha dirección no eixe RA e logo volverá para atrás. En caso de non haber erro de aliñación polar, aparecerá como unha liña recta. Se non, unha liña en forma de V. Para a medición do erro de Acimut mover o telescopio preto do meridiano, se non, para o leste ou oeste.</value>
   </data>
   <data name="LblDataProvidedBy" xml:space="preserve">
     <value>Conxunto inicial de datos DSO proporcionados por</value>
@@ -1033,7 +1033,7 @@ cara atrás; cando as liñas non están aliñadas hai algún erro de aliñación
     <value>DCRaw</value>
   </data>
   <data name="LblDebayeredHFR" xml:space="preserve">
-    <value>HFR Debaierizado</value>
+    <value>HFR Debayerizado</value>
   </data>
   <data name="LblDebayeredHFRTooltip" xml:space="preserve">
     <value>Usar imaxe debaierizada para realizar o cómputo de HFR. É máis preciso pero consome máis recursos.</value>
@@ -1069,7 +1069,7 @@ cara atrás; cando as liñas non están aliñadas hai algún erro de aliñación
     <value>Tempo Exposición AutoFoco por Defecto</value>
   </data>
   <data name="LblDefaultSequenceFolder" xml:space="preserve">
-    <value>Cartafol por defecto de arquivos de secuencia</value>
+    <value>Cartafol Predet. Arquivos Secuencia</value>
   </data>
   <data name="LblDefaultSequenceFolderTooltip" xml:space="preserve">
     <value>As secuencias gardaranse e cargaranse no cartafol indicado aquí</value>
@@ -1084,7 +1084,7 @@ cara atrás; cando as liñas non están aliñadas hai algún erro de aliñación
     <value>Non se pode borrar o perfil. Aínda o está a usar outra instancia de N.I.N.A.!</value>
   </data>
   <data name="LblDescending" xml:space="preserve">
-    <value>Descendendo</value>
+    <value>Descendente</value>
   </data>
   <data name="LblDescription" xml:space="preserve">
     <value>Descrición</value>
@@ -1096,7 +1096,7 @@ cara atrás; cando as liñas non están aliñadas hai algún erro de aliñación
     <value>Estrelas Detectadas</value>
   </data>
   <data name="LblDevicePollingInterval" xml:space="preserve">
-    <value>Intervalo de sondaxe do dispositivo</value>
+    <value>Intervalo de sondaxe disp.</value>
   </data>
   <data name="LblDewHeater" xml:space="preserve">
     <value>Quentador de Orballo</value>
@@ -1321,7 +1321,7 @@ cara atrás; cando as liñas non están aliñadas hai algún erro de aliñación
     <value>Tempo Exposición Estimado</value>
   </data>
   <data name="LblETA" xml:space="preserve">
-    <value>Tempo Remate Estimado</value>
+    <value>Tempo remate estim.</value>
   </data>
   <data name="LblExposing" xml:space="preserve">
     <value>Expoñendo</value>
@@ -1341,7 +1341,7 @@ Tamén se pode calcular a tendencia facendo clic no botón Captura xunto a Media
     <value>Exposicións</value>
   </data>
   <data name="LblExposureTime" xml:space="preserve">
-    <value>Tempo de Exposición</value>
+    <value>Tempo Exposición</value>
   </data>
   <data name="LblExposureTimeDescription" xml:space="preserve">
     <value>Tempo de Exposición (seg)</value>
@@ -1480,7 +1480,7 @@ Cando este desencadeador estea desactivado, a aplicación omite o inicio de expo
     <value>Descoñecido</value>
   </data>
   <data name="LblFlatDeviceUseWizardTrainedValues" xml:space="preserve">
-    <value>Usar tempos de exposición adestrados co asistente de flat</value>
+    <value>Usar tempos exposición do asistente de flat</value>
   </data>
   <data name="LblFlatExposureCalcContinue" xml:space="preserve">
     <value>A media ADU era {0}, iniciando o cálculo de tempo de exposición en {1}</value>
@@ -1492,7 +1492,7 @@ Cando este desencadeador estea desactivado, a aplicación omite o inicio de expo
     <value>Iniciando cálculo de Tempo de exposición en {0}</value>
   </data>
   <data name="LblFlatHistogramMeanTarget" xml:space="preserve">
-    <value>Histograma Promedio do Obxectivo</value>
+    <value>Histograma Promedio a lograr</value>
   </data>
   <data name="LblFlatHistogramTolerance" xml:space="preserve">
     <value>Tolerancia Media</value>
@@ -1528,7 +1528,7 @@ Cando este desencadeador estea desactivado, a aplicación omite o inicio de expo
     <value>Os flats son demasiado escuros, aumenta a luz, axusta a tolerancia, a media obxectivo ou o tempo máximo de exposición</value>
   </data>
   <data name="LblFlatWizard" xml:space="preserve">
-    <value>Asistente de Flat</value>
+    <value>Asistente Flat</value>
   </data>
   <data name="LblFlatWizardCapture" xml:space="preserve">
     <value>Captura do Asistente de Flat</value>
@@ -1594,7 +1594,7 @@ Cando este desencadeador estea desactivado, a aplicación omite o inicio de expo
     <value>Posición actual do enfocador</value>
   </data>
   <data name="LblFocuserSettleTime" xml:space="preserve">
-    <value>Tempo de Asentamento do Enfocador</value>
+    <value>Tempo de Asentamento Enfocador</value>
   </data>
   <data name="LblFocuserSettleTimeTooltip" xml:space="preserve">
     <value>Se o enfocador introduce un desprazamento de imaxe cando se move, poñer un tempo de estabilización en segundos aquí.</value>
@@ -1783,7 +1783,7 @@ HFR calculado: {2}
     <value>Opcións de Imaxe</value>
   </data>
   <data name="LblImageSource" xml:space="preserve">
-    <value>Fonte da imaxe</value>
+    <value>Orixe da imaxe</value>
   </data>
   <data name="LblImageTypeDescription" xml:space="preserve">
     <value>Light, Flat, Dark, Bias, Snapshot</value>
@@ -1930,7 +1930,7 @@ HFR calculado: {2}
     <value>Máx Binning Y</value>
   </data>
   <data name="LblMaxExpTime" xml:space="preserve">
-    <value>Maximo Tempo de Exposición</value>
+    <value>Tempo Exposición Máximo</value>
   </data>
   <data name="LblMaxIncrement" xml:space="preserve">
     <value>Máx Incremento</value>
@@ -1972,13 +1972,13 @@ HFR calculado: {2}
     <value>Tempo Mínimo de Exposición para a ratio de descarga</value>
   </data>
   <data name="LblMinExpTime" xml:space="preserve">
-    <value>Tempo de Exposición Mínimo</value>
+    <value>Tempo Exposición Mínimo</value>
   </data>
   <data name="LblMinimumAltitude" xml:space="preserve">
     <value>Altitude Mínima</value>
   </data>
   <data name="LblMinimumSettleTime" xml:space="preserve">
-    <value>Tempo Mín de Asentamento</value>
+    <value>Tempo Mín Asentamento</value>
   </data>
   <data name="LblMinutes" xml:space="preserve">
     <value>Minutos</value>
@@ -1987,7 +1987,7 @@ HFR calculado: {2}
     <value>Minutos despois do Meridiano</value>
   </data>
   <data name="LblMinutesShort" xml:space="preserve">
-    <value>mín</value>
+    <value>min</value>
   </data>
   <data name="LblMode" xml:space="preserve">
     <value>Modo</value>
@@ -2108,7 +2108,7 @@ HFR calculado: {2}
     <value>#Estrelas</value>
   </data>
   <data name="LblObjectNameHint" xml:space="preserve">
-    <value>Nome do Obxecto (ex. M 31)</value>
+    <value>Nome Obxecto (M 31)</value>
   </data>
   <data name="LblObjectType" xml:space="preserve">
     <value>Tipo de Obxecto</value>
@@ -2622,7 +2622,7 @@ HFR calculado: {2}
     <value>Reanudar Guiado</value>
   </data>
   <data name="LblResumeSettleTime" xml:space="preserve">
-    <value>Tempo de asentamento tras reanudar</value>
+    <value>Tempo asentamento tras reanudar</value>
   </data>
   <data name="LblResumeTracking" xml:space="preserve">
     <value>Reanudar Seguimento</value>
@@ -2682,7 +2682,7 @@ HFR calculado: {2}
     <value>Gardar conxunto de obxectivos</value>
   </data>
   <data name="LblScopeSettleTimeAfterFlip" xml:space="preserve">
-    <value>Tempo de asentamento despois do virado (seg)</value>
+    <value>Tempo de asentamento tralo virado (seg)</value>
   </data>
   <data name="LblSearch" xml:space="preserve">
     <value>Busca</value>
@@ -2727,7 +2727,7 @@ HFR calculado: {2}
     <value>'{0}' completado.</value>
   </data>
   <data name="LblSequenceCommandAtCompletionTitle" xml:space="preserve">
-    <value>Iniciar o comando cando se complete a secuencia</value>
+    <value>Iniciar comando cando remate a secuencia</value>
   </data>
   <data name="LblSequenceCommandAtCompletionTooltip" xml:space="preserve">
     <value>Seleccionar comando a activar cando se complete a secuencia.</value>
@@ -2745,10 +2745,10 @@ HFR calculado: {2}
     <value>Modo de Secuencia</value>
   </data>
   <data name="LblSequenceModeRotate" xml:space="preserve">
-    <value>Continuo</value>
+    <value>Continua</value>
   </data>
   <data name="LblSequenceModeStandard" xml:space="preserve">
-    <value>Un despois doutro</value>
+    <value>Unha despois doutra</value>
   </data>
   <data name="LblSequenceTemplate" xml:space="preserve">
     <value>Patrón de Secuencia</value>
@@ -2794,16 +2794,16 @@ Este modelo empregarase no inicio para inicializar a secuencia no canto da prede
     <value>Tolerancia Píxel PHD2</value>
   </data>
   <data name="LblSettleTimeAfterSlew" xml:space="preserve">
-    <value>Tempo de asentamento tras Ir a...</value>
+    <value>Tempo asentamento tras Ir a...</value>
   </data>
   <data name="LblSettleTimeout" xml:space="preserve">
-    <value>Tempo de asentamento PHD2</value>
+    <value>Tempo Asentamento PHD2</value>
   </data>
   <data name="LblAutoRetryStartGuiding" xml:space="preserve">
     <value>Volver a Iniciar Guiado</value>
   </data>
   <data name="LblAutoRetryStartGuidingTimeoutSeconds" xml:space="preserve">
-    <value>Tempo de espera para Iniciar Guiado (seg)</value>
+    <value>Atraso para Iniciar Guiado (seg)</value>
   </data>
   <data name="LblAutoRetryStartGuidingTooltip" xml:space="preserve">
     <value>Intentar recuperar o comando StartGuiding se o indicador non guía despois do tempo especificado.</value>
@@ -2812,7 +2812,7 @@ Este modelo empregarase no inicio para inicializar a secuencia no canto da prede
     <value>Tempo de espera en segundos antes de abandonar un comando StartGuiding antes de tentar volver intentalo.</value>
   </data>
   <data name="LblSharpCapSensorAnalysisPath" xml:space="preserve">
-    <value>Cartafol de Análise do Sensor de SharpCap</value>
+    <value>Cartafol Análise Sensor SharpCap</value>
   </data>
   <data name="LblSharpCapSensorAnalysisLoadedFormat" xml:space="preserve">
     <value>Cargados {0} sensores</value>
@@ -2981,7 +2981,7 @@ Antes de continuar, confirma que o sistema está actualmente enfocado ou está m
     <value>Éxito</value>
   </data>
   <data name="LblSunRise" xml:space="preserve">
-    <value>Amencer</value>
+    <value>Saída do sol</value>
   </data>
   <data name="LblSunSet" xml:space="preserve">
     <value>Solpor</value>
@@ -3042,7 +3042,7 @@ Deben resincronizarse os valores?</value>
     <value>Nome do obxectivo se está dispoñible</value>
   </data>
   <data name="LblTargetPosition" xml:space="preserve">
-    <value>Posición do obxectivo</value>
+    <value>Posición á que ir</value>
   </data>
   <data name="LblTargetRA" xml:space="preserve">
     <value>AR obxect.</value>
@@ -3123,7 +3123,7 @@ Deben resincronizarse os valores?</value>
     <value>TheSkyX</value>
   </data>
   <data name="LblThrough" xml:space="preserve">
-    <value>A través</value>
+    <value>Ata</value>
   </data>
   <data name="LblTiff" xml:space="preserve">
     <value>TIFF</value>
@@ -3138,7 +3138,7 @@ Deben resincronizarse os valores?</value>
     <value>Tempo de espera</value>
   </data>
   <data name="LblTimeoutToSetSwitchValue" xml:space="preserve">
-    <value>Tempo de espera para establecer o valor de cambio {0} para o cambio [Id: {1}, Nome: {2}]. O valor actual é {3}.</value>
+    <value>Tempo de espera para establecer o valor de cambio {0} para o cambiador [Id: {1}, Nome: {2}]. O valor actual é {3}.</value>
   </data>
   <data name="LblTimeZone" xml:space="preserve">
     <value>Zona de Tempo</value>
@@ -3263,7 +3263,7 @@ Move o rectangulo sobre a parte do Encadre no que queres facer subsampling. A c�
     <value>Produciuse unha excepción non manexada</value>
   </data>
   <data name="LblUnlinkedStretch" xml:space="preserve">
-    <value>Estiramento Desligado</value>
+    <value>Estiramento Independente</value>
   </data>
   <data name="LblUnlinkedStretchTooltip" xml:space="preserve">
     <value>
@@ -3420,7 +3420,7 @@ Move o rectangulo sobre a parte do Encadre no que queres facer subsampling. A c�
     <value>A cámara está configurada para quentarse ó final da secuencia, pero non pode facelo</value>
   </data>
   <data name="LblWarming" xml:space="preserve">
-    <value>Quentando</value>
+    <value>Aquecendo</value>
   </data>
   <data name="LblWarning" xml:space="preserve">
     <value>Aviso</value>
@@ -3601,7 +3601,7 @@ O valor predeterminado de Auto usa calquera patrón que o controlador da cámara
     <value>Exposición rematada</value>
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
-    <value>Tempo de espera da cámara: a cámara non conseguiu a imaxe despois do tempo de exposición + 15 segundos</value>
+    <value>Camera Timeout - Camera did not set image as ready after exposuretime + {0} seconds</value>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>Patrón Previo</value>
@@ -3825,9 +3825,15 @@ No caso de que se precise unha duración máis longa, pódese especificar a dura
     <value>Ete valor especifica unha compensación por defecto que se usará cando non se estableceu explicitamente</value>
   </data>
   <data name="LbLUsbLimitDescription" xml:space="preserve">
-    <value>Camera USB speed or traffic limit setting</value>
+    <value>Velocidade USB da cámara ou configuración de límite de tráfico</value>
   </data>
   <data name="LblFocuserMoveToPosition" xml:space="preserve">
-    <value>Moving focuser to position {0}</value>
+    <value>Movendo enfocador á posición {0}</value>
+  </data>
+  <data name="LblCameraTimeoutOption" xml:space="preserve">
+    <value>Camera Timeout</value>
+  </data>
+  <data name="LblCameraTimeoutTooltip" xml:space="preserve">
+    <value>The amount of time after exposure time until the image is considered as lost. When the camera does not send an image ready event after Exposure Time + Timeout the exposure will be cancelled.</value>
   </data>
 </root>

@@ -3598,7 +3598,7 @@ Die Standardeinstellung von Auto verwendet das Muster, dass der Kamera-Treiber m
     <value>Belichtung beendet</value>
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
-    <value>Kamera-Timeout - Kamera hat nicht das Bild nach Belichtungszeit + 15 Sekunden als bereit angezeigt</value>
+    <value>Kamera-Timeout - Kamera hat das Bild nicht nach Belichtungszeit + {0} Sekunden als bereit angezeigt</value>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>Mustervorschau</value>
@@ -3826,5 +3826,11 @@ Falls eine längere Dauer benötigt wird, kann eine Dauer angegeben werden und d
   </data>
   <data name="LblFocuserMoveToPosition" xml:space="preserve">
     <value>Bewege Okularauszug zu Position {0}</value>
+  </data>
+  <data name="LblCameraTimeoutOption" xml:space="preserve">
+    <value>Kamera-Timeout</value>
+  </data>
+  <data name="LblCameraTimeoutTooltip" xml:space="preserve">
+    <value>Die Zeitspanne nach der Belichtungszeit, bis das Bild als verloren betrachtet wird. Wenn die Kamera nach Belichtungszeit + Zeitüberschreitung kein Bereitschaftssignal sendet, wird die Belichtung abgebrochen.</value>
   </data>
 </root>

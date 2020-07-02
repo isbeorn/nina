@@ -3596,7 +3596,7 @@ La valeur par défaut Auto utilise n'importe quel matrice que le pilote de la ca
     <value>Exposure finished</value>
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
-    <value>Délai de la caméra dépassé - La caméra n'a pas défini l'image comme prête après un temps d'exposition de + 15 secondes</value>
+    <value>Camera Timeout - Camera did not set image as ready after exposuretime + {0} seconds</value>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>Aperçu du modèle</value>
@@ -3820,9 +3820,15 @@ Dans le cas où une durée plus longue est requise, une durée peut être spéci
     <value>Cette valeur spécifie l'offset par défaut qui doit être utilisé chaque fois qu'aucun offset n'a été défini explicitement</value>
   </data>
   <data name="LbLUsbLimitDescription" xml:space="preserve">
-    <value>Camera USB speed or traffic limit setting</value>
+    <value>Débit USB de la caméra ou réglage de la limite de traffic</value>
   </data>
   <data name="LblFocuserMoveToPosition" xml:space="preserve">
-    <value>Moving focuser to position {0}</value>
+    <value>Déplacement du focuser vers la position {0}</value>
+  </data>
+  <data name="LblCameraTimeoutOption" xml:space="preserve">
+    <value>Camera Timeout</value>
+  </data>
+  <data name="LblCameraTimeoutTooltip" xml:space="preserve">
+    <value>The amount of time after exposure time until the image is considered as lost. When the camera does not send an image ready event after Exposure Time + Timeout the exposure will be cancelled.</value>
   </data>
 </root>

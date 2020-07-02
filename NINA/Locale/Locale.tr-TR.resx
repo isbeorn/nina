@@ -3586,7 +3586,7 @@ Varsayılan Otomatik seçeneği, kamera sürücüsünün sağlayabileceği herha
     <value>Pozlama sonlandı</value>
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
-    <value>Kamera süre aşımı - Kamera pozlama süresi + 15 saniye sonra hazır hale gelemedi</value>
+    <value>Camera Timeout - Camera did not set image as ready after exposuretime + {0} seconds</value>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>Desen önizleme</value>
@@ -3814,5 +3814,11 @@ Daha uzun bir süre gerekirse bir süre belirtilebilir ve uygulama, verilen sür
   </data>
   <data name="LblFocuserMoveToPosition" xml:space="preserve">
     <value>Moving focuser to position {0}</value>
+  </data>
+  <data name="LblCameraTimeoutOption" xml:space="preserve">
+    <value>Camera Timeout</value>
+  </data>
+  <data name="LblCameraTimeoutTooltip" xml:space="preserve">
+    <value>The amount of time after exposure time until the image is considered as lost. When the camera does not send an image ready event after Exposure Time + Timeout the exposure will be cancelled.</value>
   </data>
 </root>
