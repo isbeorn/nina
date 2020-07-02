@@ -171,6 +171,7 @@
 - FLI cameras no longer sit idle for the length of the exposure time prior to actually initiating the exposure
 - QHY native camera driver now retrieves only the non-overscan area (the "effective area") of the sensor by default. A Camera option now exists to include the overscan area, if desired
 - QHY native camera driver now supports selecting readout modes if the camera offers any
+- QHY cameras that have mechanical shutters will now close those shutters when taking BIAS, DARK, or DARKFLAT images
 - QHY native camera driver now optimizes image file size based on the actual image dimensions, resulting in slightly smaller image file sizes
 - Binned exposures now finish on QHY cameras that have overscan areas
 - ZWO cameras now properly handle odd bin dimensions (e.g. 3x3)

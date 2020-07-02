@@ -302,6 +302,8 @@ namespace NINA.Model.MyCamera {
 
                 return false;
             }
+
+            private set => Info.HasShutter = value;
         }
 
         public string Id => $"{Description}";
@@ -766,7 +768,7 @@ namespace NINA.Model.MyCamera {
                     Info.CurBin = 1;
                     SetBinning(Info.CurBin, Info.CurBin);
 
-                    Info.HasShutter = IsQHYControl(LibQHYCCD.CONTROL_ID.CAM_MECHANICALSHUTTER);
+                    HasShutter = IsQHYControl(LibQHYCCD.CONTROL_ID.CAM_MECHANICALSHUTTER);
                     Info.HasGain = IsQHYControl(LibQHYCCD.CONTROL_ID.CONTROL_GAIN);
                     Info.HasOffset = IsQHYControl(LibQHYCCD.CONTROL_ID.CONTROL_OFFSET);
                 }
@@ -980,6 +982,19 @@ namespace NINA.Model.MyCamera {
              */
 
             isSnap = sequence.ImageType == CaptureSequence.ImageTypes.SNAPSHOT;
+
+            /* Open or close the shutter if camera is equipped with one */
+            if (HasShutter == true) {
+                if (sequence.ImageType == CaptureSequence.ImageTypes.DARK ||
+                        sequence.ImageType == CaptureSequence.ImageTypes.DARKFLAT ||
+                        sequence.ImageType == CaptureSequence.ImageTypes.BIAS) {
+                    Logger.Debug($"QHYCCD: Closing shutter for {sequence.ImageType} frame");
+                    _ = LibQHYCCD.ControlQHYCCDShutter(CameraP, 1);
+                } else {
+                    Logger.Debug($"QHYCCD: Opening shutter for {sequence.ImageType} frame");
+                    _ = LibQHYCCD.ControlQHYCCDShutter(CameraP, 0);
+                }
+            }
 
             /* ROI coordinates and resolution */
             if (EnableSubSample == true) {
