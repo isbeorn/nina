@@ -707,7 +707,7 @@
                             <Path
                                 Margin="5"
                                 Data="{StaticResource ResetSVG}"
-                                Fill="{StaticResource ButtonForegroundDisabledBrush}"
+                                Fill="{StaticResource ButtonForegroundBrush}"
                                 Stretch="Uniform" />
                         </Button>
                     </Grid>
