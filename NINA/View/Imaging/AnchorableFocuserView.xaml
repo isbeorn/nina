@@ -15,6 +15,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Locale"
+    xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
@@ -126,8 +127,16 @@
                                     Height="25"
                                     MinWidth="90"
                                     Margin="5,0,0,0"
-                                    VerticalContentAlignment="Center"
-                                    Text="{Binding TargetPosition}" />
+                                    VerticalContentAlignment="Center">
+
+                                    <TextBox.Text>
+                                        <Binding Path="TargetPosition">
+                                            <Binding.ValidationRules>
+                                                <rules:GreaterZeroRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
                             </StackPanel>
                         </UniformGrid>
                     </Border>

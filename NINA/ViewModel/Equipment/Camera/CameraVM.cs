@@ -657,15 +657,15 @@ namespace NINA.ViewModel.Equipment.Camera {
                             });
                         }
 
-                        exposureReadyCts.CancelAfter(TimeSpan.FromSeconds(exposureTime + 15));
+                        exposureReadyCts.CancelAfter(TimeSpan.FromSeconds(exposureTime + profileService.ActiveProfile.CameraSettings.Timeout));
                         try {
                             await Cam.WaitUntilExposureIsReady(exposureReadyCts.Token);
                         } catch (OperationCanceledException) {
                             Console.WriteLine("Parent token cancelled: " + token.IsCancellationRequested);
                             Console.WriteLine("Child token cancelled: " + exposureReadyCts.Token.IsCancellationRequested);
                             if (!token.IsCancellationRequested) {
-                                Logger.Error("Camera Timeout - Camera did not set image as ready after exposuretime + 15 seconds");
-                                Notification.ShowError(Locale.Loc.Instance["LblCameraTimeout"]);
+                                Logger.Error($"Camera Timeout - Camera did not set image as ready after exposuretime + {profileService.ActiveProfile.CameraSettings.Timeout} seconds");
+                                Notification.ShowError(string.Format(Locale.Loc.Instance["LblCameraTimeout"], profileService.ActiveProfile.CameraSettings.Timeout));
                             }
                         } finally {
                             progressCountCts.Cancel();

@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 namespace NINA.ViewModel.Equipment.Focuser {
 
-    internal abstract class FocuserDecorator : BaseINPC, IFocuser {
+    public abstract class FocuserDecorator : BaseINPC, IFocuser {
 
         public FocuserDecorator(IProfileService profileService, IFocuser focuser) {
             this.profileService = profileService;

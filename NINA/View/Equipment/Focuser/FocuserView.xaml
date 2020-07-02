@@ -16,6 +16,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Locale"
+    xmlns:rules="clr-namespace:NINA.Utility.ValidationRules"
     d:DesignHeight="300"
     d:DesignWidth="300"
     mc:Ignorable="d">
@@ -212,8 +213,15 @@
                                 <TextBox
                                     Height="25"
                                     MinWidth="90"
-                                    Margin="5,0,0,0"
-                                    Text="{Binding TargetPosition}" />
+                                    Margin="5,0,0,0">
+                                    <TextBox.Text>
+                                        <Binding Path="TargetPosition">
+                                            <Binding.ValidationRules>
+                                                <rules:GreaterZeroRule />
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox.Text>
+                                </TextBox>
                                 <Grid IsEnabled="{Binding Focuser, Converter={StaticResource InverseNullToBooleanConverter}}">
                                     <ninactrl:CancellableButton
                                         Width="50"

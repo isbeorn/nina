@@ -10,9 +10,11 @@
 
 UPDATE dsodetail SET id = 'Sh2-72' WHERE id = 'Sh2- 72';
 UPDATE visualdescription SET dsodetailid = 'Sh2-72' WHERE dsodetailid = 'Sh2- 72';
+UPDATE cataloguenr SET dsodetailid = 'Sh2-72' WHERE dsodetailid = 'Sh2- 72';
 
 UPDATE dsodetail SET id = 'Sh2-91' WHERE id = 'Sh2- 91';
 UPDATE visualdescription SET dsodetailid = 'Sh2-91' WHERE dsodetailid = 'Sh2- 91';
+UPDATE cataloguenr SET dsodetailid = 'Sh2-91' WHERE dsodetailid = 'Sh2- 91';
 
 UPDATE dsodetail SET id = 'Sh2-1' WHERE id = 'Sh2-  1';
 UPDATE visualdescription SET dsodetailid = 'Sh2-1' WHERE dsodetailid = 'Sh2-  1';
@@ -20,12 +22,15 @@ UPDATE cataloguenr SET dsodetailid = 'Sh2-1' WHERE dsodetailid = 'Sh2-  1';
 
 UPDATE dsodetail SET id = 'Sh2-9' WHERE id = 'Sh2-  9';
 UPDATE visualdescription SET dsodetailid = 'Sh2-9' WHERE dsodetailid = 'Sh2-  9';
+UPDATE cataloguenr SET dsodetailid = 'Sh2-9' WHERE dsodetailid = 'Sh2-  9';
 
 UPDATE dsodetail SET id = 'Sh2-3' WHERE id = 'Sh2-  3';
 UPDATE visualdescription SET dsodetailid = 'Sh2-3' WHERE dsodetailid = 'Sh2-  3';
+UPDATE cataloguenr SET dsodetailid = 'Sh2-3' WHERE dsodetailid = 'Sh2-  3';
 
 UPDATE dsodetail SET id = 'Sh2-5' WHERE id = 'Sh2-  5';
 UPDATE visualdescription SET dsodetailid = 'Sh2-5' WHERE dsodetailid = 'Sh2-  5';
+UPDATE cataloguenr SET dsodetailid = 'Sh2-5' WHERE dsodetailid = 'Sh2-  5';
 
 UPDATE dsodetail SET id = 'Sh2-13' WHERE id = 'Sh2- 13';
 UPDATE visualdescription SET dsodetailid = 'Sh2-13' WHERE dsodetailid = 'Sh2- 13';
@@ -33,30 +38,39 @@ UPDATE cataloguenr SET dsodetailid = 'Sh2-13' WHERE dsodetailid = 'Sh2- 13';
 
 UPDATE dsodetail SET id = 'Sh2-53' WHERE id = 'Sh2- 53';
 UPDATE visualdescription SET dsodetailid = 'Sh2-53' WHERE dsodetailid = 'Sh2- 53';
+UPDATE cataloguenr SET dsodetailid = 'Sh2-53' WHERE dsodetailid = 'Sh2- 53';
 
 UPDATE dsodetail SET id = 'Sh2-55' WHERE id = 'Sh2- 55';
 UPDATE visualdescription SET dsodetailid = 'Sh2-55' WHERE dsodetailid = 'Sh2- 55';
+UPDATE cataloguenr SET dsodetailid = 'Sh2-55' WHERE dsodetailid = 'Sh2- 55';
 
 UPDATE dsodetail SET id = 'Sh2-46' WHERE id = 'Sh2- 46';
 UPDATE visualdescription SET dsodetailid = 'Sh2-46' WHERE dsodetailid = 'Sh2- 46';
+UPDATE cataloguenr SET dsodetailid = 'Sh2-46' WHERE dsodetailid = 'Sh2- 46';
 
 UPDATE dsodetail SET id = 'Sh2-64' WHERE id = 'Sh2- 64';
 UPDATE visualdescription SET dsodetailid = 'Sh2-64' WHERE dsodetailid = 'Sh2- 64';
+UPDATE cataloguenr SET dsodetailid = 'Sh2-64' WHERE dsodetailid = 'Sh2- 64';
 
 UPDATE dsodetail SET id = 'Sh2-82' WHERE id = 'Sh2- 82';
 UPDATE visualdescription SET dsodetailid = 'Sh2-82' WHERE dsodetailid = 'Sh2- 82';
+UPDATE cataloguenr SET dsodetailid = 'Sh2-82' WHERE dsodetailid = 'Sh2- 82';
 
 UPDATE dsodetail SET id = 'Sh2-84' WHERE id = 'Sh2- 84';
 UPDATE visualdescription SET dsodetailid = 'Sh2-84' WHERE dsodetailid = 'Sh2- 84';
+UPDATE cataloguenr SET dsodetailid = 'Sh2-84' WHERE dsodetailid = 'Sh2- 84';
 
 UPDATE dsodetail SET id = 'Sh2-16' WHERE id = 'Sh2- 16';
 UPDATE visualdescription SET dsodetailid = 'Sh2-16' WHERE dsodetailid = 'Sh2- 16';
+UPDATE cataloguenr SET dsodetailid = 'Sh2-16' WHERE dsodetailid = 'Sh2- 16';
 
 UPDATE dsodetail SET id = 'Sh2-88' WHERE id = 'Sh2- 88';
 UPDATE visualdescription SET dsodetailid = 'Sh2-88' WHERE dsodetailid = 'Sh2- 88';
+UPDATE cataloguenr SET dsodetailid = 'Sh2-88' WHERE dsodetailid = 'Sh2- 88';
 
 UPDATE dsodetail SET id = 'Sh2-90' WHERE id = 'Sh2- 90';
 UPDATE visualdescription SET dsodetailid = 'Sh2-90' WHERE dsodetailid = 'Sh2- 90';
+UPDATE cataloguenr SET dsodetailid = 'Sh2-90' WHERE dsodetailid = 'Sh2- 90';
 
 
 UPDATE cataloguenr SET designation = '89', catalogue = 'Sh1' WHERE dsodetailid = 'PK89- 0.1' AND catalogue = 'Sh' AND designation = '1- 89';
@@ -804,4 +818,4 @@ INSERT OR REPLACE INTO `earthrotationparameters` (date,modifiedjuliandate,x,y,ut
 (1625270400,59398.0,0.191298,0.446239,-0.2848173,0.0,0.0,0.0);
 
 
-PRAGMA user_version = 4;
+PRAGMA user_version = 5;

@@ -40,6 +40,7 @@ namespace NINA.Profile {
             maxFlatExposureTime = 20;
             fileCameraFolder = string.Empty;
             bitScaling = false;
+            timeout = 60;
 
             fliEnableFloodFlush = false;
             fliFloodDuration = 1;
@@ -451,6 +452,19 @@ namespace NINA.Profile {
             set {
                 if (qhyIncludeOverscan != value) {
                     qhyIncludeOverscan = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private int timeout;
+
+        [DataMember]
+        public int Timeout {
+            get => timeout;
+            set {
+                if (timeout != value) {
+                    timeout = value;
                     RaisePropertyChanged();
                 }
             }

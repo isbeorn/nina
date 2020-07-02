@@ -31,13 +31,11 @@ namespace NINA.Profile {
         bool FileCameraIsBayered { get; set; }
         string FileCameraExtension { get; set; }
         BayerPatternEnum BayerPattern { get; set; }
-
         bool FLIEnableFloodFlush { get; set; }
         bool FLIEnableSnapshotFloodFlush { get; set; }
         double FLIFloodDuration { get; set; }
         uint FLIFlushCount { get; set; }
         BinningMode FLIFloodBin { get; set; }
-
         bool BitScaling { get; set; }
         double CoolingDuration { get; set; }
         double WarmingDuration { get; set; }
@@ -50,7 +48,7 @@ namespace NINA.Profile {
         short? ReadoutMode { get; set; }
         short? ReadoutModeForSnapImages { get; set; }
         short? ReadoutModeForNormalImages { get; set; }
-
         bool QhyIncludeOverscan { get; set; }
+        int Timeout { get; set; }
     }
 }

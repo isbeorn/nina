@@ -1456,11 +1456,29 @@ namespace NINA.Locale {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Camera Timeout - Camera did not set image as ready after exposuretime + 15 seconds.
+        ///   Looks up a localized string similar to Camera Timeout - Camera did not set image as ready after exposuretime + {0} seconds.
         /// </summary>
         internal static string LblCameraTimeout {
             get {
                 return ResourceManager.GetString("LblCameraTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera Timeout.
+        /// </summary>
+        internal static string LblCameraTimeoutOption {
+            get {
+                return ResourceManager.GetString("LblCameraTimeoutOption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The amount of time after exposure time until the image is considered as lost. When the camera does not send an image ready event after Exposure Time + Timeout the exposure will be cancelled..
+        /// </summary>
+        internal static string LblCameraTimeoutTooltip {
+            get {
+                return ResourceManager.GetString("LblCameraTimeoutTooltip", resourceCulture);
             }
         }
         
