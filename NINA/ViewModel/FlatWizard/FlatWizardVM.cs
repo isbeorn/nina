@@ -441,7 +441,7 @@ namespace NINA.ViewModel.FlatWizard {
                 }
 
                 var prepareParameters = new PrepareImageParameters(autoStretch: true, detectStars: false);
-                prepareTask = ImagingVM.PrepareImage(imageData, prepareParameters, ct);                
+                prepareTask = ImagingVM.PrepareImage(imageData, prepareParameters, ct);
 
                 // check for exposure ADU state
                 exposureAduState = await FlatWizardExposureTimeFinderService.GetFlatExposureState(imageData, exposureTime, wrapper);
@@ -453,9 +453,10 @@ namespace NINA.ViewModel.FlatWizard {
                         CalculatedHistogramMean = imageStatistics.Mean;
                         CalculatedExposureTime = exposureTime;
                         if (_flatDevice != null && _flatDevice.Connected) {
-                            profileService.ActiveProfile.FlatDeviceSettings.AddBrightnessInfo(new FlatDeviceFilterSettingsKey(wrapper.Filter?.Position, BinningMode, Gain),
+                            var actualGain = Gain == -1 ? profileService.ActiveProfile.CameraSettings.Gain ?? -1 : Gain;
+                            profileService.ActiveProfile.FlatDeviceSettings.AddBrightnessInfo(new FlatDeviceFilterSettingsKey(wrapper.Filter?.Position, BinningMode, actualGain),
                                 new FlatDeviceFilterSettingsValue(_flatDevice.Brightness, exposureTime));
-                            Logger.Debug($"Recording flat settings as filter position {wrapper.Filter?.Position} ({wrapper.Filter?.Name}), binning: {BinningMode}, gain: {Gain}, panel brightness {_flatDevice.Brightness} and exposure time: {exposureTime}.");
+                            Logger.Debug($"Recording flat settings as filter position {wrapper.Filter?.Position} ({wrapper.Filter?.Name}), binning: {BinningMode}, gain: {actualGain}, panel brightness {_flatDevice.Brightness} and exposure time: {exposureTime}.");
                         }
 
                         progress.Report(new ApplicationStatus { Status = string.Format(Locale["LblFlatExposureCalcFinished"], Math.Round(CalculatedHistogramMean, 2), CalculatedExposureTime), Source = Title });
@@ -671,7 +672,7 @@ namespace NINA.ViewModel.FlatWizard {
 
                 var exposureData = await ImagingVM.CaptureImage(sequence, ct, progress);
                 var imageData = await exposureData.ToImageData();
-                imageData.MetaData.Target.Name = TargetName;            
+                imageData.MetaData.Target.Name = TargetName;
 
                 if (saveTask != null && !saveTask.IsCompleted) {
                     progress.Report(new ApplicationStatus() { Status = Locale["LblSavingImage"] });

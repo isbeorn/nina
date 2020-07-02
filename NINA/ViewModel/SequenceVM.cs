@@ -1053,13 +1053,15 @@ namespace NINA.ViewModel {
                     }
 
                     if (profileService.ActiveProfile.FlatDeviceSettings.UseWizardTrainedValues) {
-                        var settings = profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(new FlatDeviceFilterSettingsKey(seq.FilterType?.Position, seq.Binning, seq.Gain));
+                        var actualGain = seq.Gain == -1 ? profileService.ActiveProfile.CameraSettings.Gain ?? -1 : seq.Gain;
+                        var settings = profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(new FlatDeviceFilterSettingsKey(seq.FilterType?.Position, seq.Binning, actualGain));
                         if (settings != null) {
                             _flatDeviceMediator.SetBrightness(settings.Brightness);
                             seq.ExposureTime = settings.Time;
-                            Logger.Debug($"Starting flat exposure with filter: {seq.FilterType?.Name}, binning: {seq.Binning}, gain: {seq.Gain}, panel brightness {settings.Brightness} and exposure time: {settings.Time}.");
+                            Logger.Debug($"Starting flat exposure with filter: {seq.FilterType?.Name}, position: {seq.FilterType?.Position}, " +
+                                         $"binning: {seq.Binning}, gain: {actualGain}, panel brightness {settings.Brightness} and exposure time: {settings.Time}.");
                         } else {
-                            Logger.Debug($"No settings found for filter: {seq.FilterType?.Name}, binning: {seq.Binning} and gain: {seq.Gain}.");
+                            Logger.Debug($"No settings found for filter: {seq.FilterType?.Name}, position: {seq.FilterType?.Position}, binning: {seq.Binning} and gain: {actualGain}.");
                         }
                     }
 
@@ -1085,12 +1087,13 @@ namespace NINA.ViewModel {
                     }
 
                     if (profileService.ActiveProfile.FlatDeviceSettings.UseWizardTrainedValues) {
-                        var settings = profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(new FlatDeviceFilterSettingsKey(seq.FilterType?.Position, seq.Binning, seq.Gain));
+                        var actualGain = seq.Gain == -1 ? profileService.ActiveProfile.CameraSettings.Gain ?? -1 : seq.Gain;
+                        var settings = profileService.ActiveProfile.FlatDeviceSettings.GetBrightnessInfo(new FlatDeviceFilterSettingsKey(seq.FilterType?.Position, seq.Binning, actualGain));
                         if (settings != null) {
                             seq.ExposureTime = settings.Time;
-                            Logger.Debug($"Starting dark flat exposure with filter: {seq.FilterType?.Name}, binning: {seq.Binning}, gain: {seq.Gain} and exposure time: {settings.Time}.");
+                            Logger.Debug($"Starting dark flat exposure with filter: {seq.FilterType?.Name}, position: {seq.FilterType?.Position}, binning: {seq.Binning}, gain: {actualGain} and exposure time: {settings.Time}.");
                         } else {
-                            Logger.Debug($"No settings found for filter: {seq.FilterType?.Name}, binning: {seq.Binning} and gain: {seq.Gain}.");
+                            Logger.Debug($"No settings found for filter: {seq.FilterType?.Name}, position: {seq.FilterType?.Position}, binning: {seq.Binning} and gain: {actualGain}.");
                         }
                     }
 

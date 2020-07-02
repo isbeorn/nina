@@ -117,6 +117,7 @@
                                 Grid.Column="1"
                                 HorizontalAlignment="Right"
                                 DisplayMemberPath="Name"
+                                IsSynchronizedWithCurrentItem="True"
                                 ItemsSource="{Binding Source={StaticResource AppVM}, Path=CameraVM.Cam.BinningModes}"
                                 SelectedItem="{Binding BinningMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 SelectedValuePath="Name" />
