@@ -68,15 +68,15 @@ namespace NINA.Model {
         }
 
         public bool IsLightSequence() {
-            return ImageType == CaptureSequence.ImageTypes.SNAPSHOT || ImageType == CaptureSequence.ImageTypes.LIGHT;
+            return ImageType == ImageTypes.SNAPSHOT || ImageType == ImageTypes.LIGHT;
         }
 
         public bool IsFlatSequence() {
-            return ImageType == CaptureSequence.ImageTypes.FLAT;
+            return ImageType == ImageTypes.FLAT || ImageType == ImageTypes.DARKFLAT;
         }
 
         public bool IsDarkSequence() {
-            return ImageType == CaptureSequence.ImageTypes.DARKFLAT || ImageType == CaptureSequence.ImageTypes.BIAS || ImageType == CaptureSequence.ImageTypes.DARK;
+            return ImageType == ImageTypes.BIAS || ImageType == ImageTypes.DARK;
         }
 
         private double _exposureTime;
