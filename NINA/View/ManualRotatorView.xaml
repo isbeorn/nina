@@ -5,8 +5,7 @@
 
     This Source Code Form is subject to the terms of the Mozilla Public
     License, v. 2.0. If a copy of the MPL was not distributed with this
-    file, You can obtain one at http://mozilla.org/MPL/2.0/.
--->
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.-->
 <UserControl
     x:Class="NINA.View.ManualRotatorView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -17,6 +16,7 @@
     xmlns:model="clr-namespace:NINA.Model.MyRotator"
     xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
     xmlns:ns="clr-namespace:NINA.Locale"
+    xmlns:util="clr-namespace:NINA.Utility"
     Width="400"
     Height="400"
     d:DesignHeight="400"
@@ -26,6 +26,7 @@
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition Height="2*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -65,7 +66,7 @@
             </Border>
         </Grid>
         <Grid
-            Grid.Row="2"
+            Grid.Row="1"
             Width="200"
             Height="200"
             HorizontalAlignment="Center"
@@ -222,5 +223,15 @@
                 </Line.Triggers>
             </Line>-->
         </Grid>
+
+        <Button
+            Grid.Row="2"
+            Width="100"
+            Height="30"
+            Margin="5"
+            HorizontalAlignment="Right"
+            util:ButtonHelper.DialogResult="True">
+            <TextBlock Foreground="{StaticResource ButtonForegroundBrush}" Text="{ns:Loc LblOK}" />
+        </Button>
     </Grid>
 </UserControl>
