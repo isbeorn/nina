@@ -118,19 +118,19 @@ namespace NINA.Utility.FileFormat.FITS {
 
             /* Camera */
             if (_headerCards.TryGetValue("XBINNING", out card)) {
-                metaData.Camera.BinX = int.Parse(card.OriginalValue);
+                metaData.Camera.BinX = ParseInt(card.OriginalValue);
             }
 
             if (_headerCards.TryGetValue("YBINNING", out card)) {
-                metaData.Camera.BinY = int.Parse(card.OriginalValue);
+                metaData.Camera.BinY = ParseInt(card.OriginalValue);
             }
 
             if (_headerCards.TryGetValue("GAIN", out card)) {
-                metaData.Camera.Gain = int.Parse(card.OriginalValue);
+                metaData.Camera.Gain = ParseInt(card.OriginalValue);
             }
 
             if (_headerCards.TryGetValue("OFFSET", out card)) {
-                metaData.Camera.Offset = int.Parse(card.OriginalValue);
+                metaData.Camera.Offset = ParseInt(card.OriginalValue);
             }
 
             if (_headerCards.TryGetValue("EGAIN", out card)) {
@@ -162,15 +162,15 @@ namespace NINA.Utility.FileFormat.FITS {
             }
 
             if (_headerCards.TryGetValue("XBAYROFF", out card)) {
-                metaData.Camera.BayerOffsetX = int.Parse(card.OriginalValue);
+                metaData.Camera.BayerOffsetX = ParseInt(card.OriginalValue);
             }
 
             if (_headerCards.TryGetValue("YBAYROFF", out card)) {
-                metaData.Camera.BayerOffsetY = int.Parse(card.OriginalValue);
+                metaData.Camera.BayerOffsetY = ParseInt(card.OriginalValue);
             }
 
             if (_headerCards.TryGetValue("USBLIMIT", out card)) {
-                metaData.Camera.USBLimit = int.Parse(card.OriginalValue);
+                metaData.Camera.USBLimit = ParseInt(card.OriginalValue);
             }
 
             /* Telescope */
@@ -187,8 +187,8 @@ namespace NINA.Utility.FileFormat.FITS {
             }
 
             if (_headerCards.ContainsKey("RA") && _headerCards.ContainsKey("DEC")) {
-                var ra = double.Parse(_headerCards["RA"].OriginalValue, CultureInfo.InvariantCulture);
-                var dec = double.Parse(_headerCards["DEC"].OriginalValue, CultureInfo.InvariantCulture);
+                var ra = ParseDouble(_headerCards["RA"].OriginalValue);
+                var dec = ParseDouble(_headerCards["DEC"].OriginalValue);
                 metaData.Telescope.Coordinates = new Astrometry.Coordinates(Angle.ByDegree(ra), Angle.ByDegree(dec), Epoch.J2000);
             }
 
@@ -359,10 +359,21 @@ namespace NINA.Utility.FileFormat.FITS {
         }
 
         private double ParseDouble(string value) {
-            if (double.TryParse(value, out var dbl)) {
+            if (double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out var dbl)) {
                 return dbl;
             } else {
                 return double.NaN;
+            }
+        }
+
+        private int ParseInt(string value) {
+            if (value.EndsWith(".0")) {
+                value = value.Replace(".0", "");
+            }
+            if (int.TryParse(value, out var intVal)) {
+                return intVal;
+            } else {
+                return 0;
             }
         }
 
