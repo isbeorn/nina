@@ -33,7 +33,7 @@ namespace NINA.Model.MyCamera {
         }
 
         private int _cameraId;
-        private IntPtr _cameraP;
+        private IntPtr _cameraP = IntPtr.Zero;
 
         public string Category { get; } = "Atik";
 
@@ -55,7 +55,7 @@ namespace NINA.Model.MyCamera {
 
         public bool Connected {
             get {
-                return AtikCameraDll.IsConnected(_cameraP);
+                return _cameraP == IntPtr.Zero ? false : AtikCameraDll.IsConnected(_cameraP);
             }
         }
 
@@ -464,6 +464,7 @@ namespace NINA.Model.MyCamera {
                 AtikCameraDll.ArtemisCoolerWarmUp(_cameraP);
             } catch (Exception) { }
             AtikCameraDll.Disconnect(_cameraP);
+            _cameraP = IntPtr.Zero;
             _binningModes = null;
             RaisePropertyChanged(nameof(Connected));
         }
