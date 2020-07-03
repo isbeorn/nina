@@ -324,6 +324,7 @@ namespace NINA.ViewModel.Imaging {
                         await telescopeMediator.Sync(result.Coordinates);
                     }
                 }
+            } catch (OperationCanceledException) {
             } catch (Exception ex) {
                 Logger.Error(ex);
                 Notification.ShowError(ex.Message);

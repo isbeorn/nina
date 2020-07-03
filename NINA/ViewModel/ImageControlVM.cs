@@ -338,6 +338,7 @@ namespace NINA.ViewModel {
 
                     result.Separation = result.DetermineSeparation(telescopeMediator.GetCurrentPosition());
                     plateSolveStatusVM.PlateSolveResult = result;
+                } catch (OperationCanceledException) {
                 } catch (Exception ex) {
                     Logger.Error(ex);
                     Notification.ShowError(ex.Message);

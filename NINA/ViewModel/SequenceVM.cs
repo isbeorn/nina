@@ -456,6 +456,9 @@ namespace NINA.ViewModel {
                 return estimatedDownloadTime;
             }
             set {
+                if (value < TimeSpan.Zero) {
+                    value = TimeSpan.Zero;
+                }
                 estimatedDownloadTime = value;
                 RaisePropertyChanged();
                 CalculateETA();
@@ -609,6 +612,10 @@ namespace NINA.ViewModel {
         }
 
         private async Task<PlateSolveResult> SlewToTarget(CaptureSequenceList csl, CancellationToken ct, IProgress<ApplicationStatus> progress) {
+            if (!telescopeInfo.Connected) {
+                throw new Exception(Locale.Loc.Instance["LblTelescopeNotConnected"]);
+            }
+
             PlateSolveResult plateSolveResult = null;
             if (csl.SlewToTarget) {
                 await StopGuiding(ct, progress);
@@ -620,6 +627,10 @@ namespace NINA.ViewModel {
         }
 
         private async Task<PlateSolveResult> CenterTarget(CaptureSequenceList csl, IProgress<ApplicationStatus> progress) {
+            if (!telescopeInfo.Connected) {
+                throw new Exception(Locale.Loc.Instance["LblTelescopeNotConnected"]);
+            }
+
             PlateSolveResult plateSolveResult = null;
             if (csl.CenterTarget) {
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblCenterTarget"] });

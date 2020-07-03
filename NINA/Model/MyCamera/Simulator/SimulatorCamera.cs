@@ -456,9 +456,10 @@ namespace NINA.Model.MyCamera.Simulator {
             Connected = false;
         }
 
-        public Task WaitUntilExposureIsReady(CancellationToken token) {
+        public async Task WaitUntilExposureIsReady(CancellationToken token) {
             using (token.Register(() => AbortExposure())) {
-                return Task.CompletedTask;
+                var remaining = exposureTime - (DateTime.Now - exposureStart);
+                await Task.Delay(remaining, token);
             }
         }
 
@@ -610,7 +611,12 @@ namespace NINA.Model.MyCamera.Simulator {
 
         private TelescopeInfo telescopeInfo;
 
+        private DateTime exposureStart;
+        private TimeSpan exposureTime;
+
         public void StartExposure(CaptureSequence captureSequence) {
+            exposureStart = DateTime.Now;
+            exposureTime = TimeSpan.FromSeconds(captureSequence.ExposureTime);
         }
 
         public void StopExposure() {

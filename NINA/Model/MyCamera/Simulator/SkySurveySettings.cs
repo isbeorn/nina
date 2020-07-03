@@ -19,7 +19,7 @@ namespace NINA.Model.MyCamera.Simulator {
     public class SkySurveySettings : BaseINPC {
 
         public SkySurveySettings() {
-            WidthAndHeight = 1000;
+            WidthAndHeight = 2500;
             FieldOfView = 1;
             RAError = 0;
             DecError = 0;
