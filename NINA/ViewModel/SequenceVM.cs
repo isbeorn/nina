@@ -612,12 +612,11 @@ namespace NINA.ViewModel {
         }
 
         private async Task<PlateSolveResult> SlewToTarget(CaptureSequenceList csl, CancellationToken ct, IProgress<ApplicationStatus> progress) {
-            if (!telescopeInfo.Connected) {
-                throw new Exception(Locale.Loc.Instance["LblTelescopeNotConnected"]);
-            }
-
             PlateSolveResult plateSolveResult = null;
             if (csl.SlewToTarget) {
+                if (!telescopeInfo.Connected) {
+                    throw new Exception(Locale.Loc.Instance["LblTelescopeNotConnected"]);
+                }
                 await StopGuiding(ct, progress);
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblSlewToTarget"] });
                 await telescopeMediator.SlewToCoordinatesAsync(csl.Coordinates);
@@ -627,12 +626,11 @@ namespace NINA.ViewModel {
         }
 
         private async Task<PlateSolveResult> CenterTarget(CaptureSequenceList csl, IProgress<ApplicationStatus> progress) {
-            if (!telescopeInfo.Connected) {
-                throw new Exception(Locale.Loc.Instance["LblTelescopeNotConnected"]);
-            }
-
             PlateSolveResult plateSolveResult = null;
             if (csl.CenterTarget) {
+                if (!telescopeInfo.Connected) {
+                    throw new Exception(Locale.Loc.Instance["LblTelescopeNotConnected"]);
+                }
                 progress.Report(new ApplicationStatus() { Status = Locale.Loc.Instance["LblCenterTarget"] });
 
                 var service = WindowServiceFactory.Create();

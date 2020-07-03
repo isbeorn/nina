@@ -152,6 +152,8 @@ namespace NINATest {
         [Test]
         public async Task ProcessSequence_StartOptions_StartGuidingTest() {
             _sut.UpdateDeviceInfo(new GuiderInfo() { Connected = true });
+            _dummyList.SlewToTarget = false;
+            _dummyList.CenterTarget = false;
             _dummyList.StartGuiding = true;
             _sut.Targets = new NINA.Utility.AsyncObservableCollection<CaptureSequenceList>() { _dummyList };
             _sut.Sequence = _dummyList;

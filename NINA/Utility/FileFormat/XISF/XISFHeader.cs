@@ -120,11 +120,11 @@ namespace NINA.Utility.FileFormat.XISF {
             }
 
             if (TryGetImageProperty(XISFImageProperty.Instrument.Sensor.Temperature, out value)) {
-                metaData.Camera.SetPoint = double.Parse(value, CultureInfo.InvariantCulture);
+                metaData.Camera.Temperature = double.Parse(value, CultureInfo.InvariantCulture);
             }
 
             if (TryGetFITSProperty("SET-TEMP", out value)) {
-                metaData.Camera.Gain = int.Parse(value, CultureInfo.InvariantCulture);
+                metaData.Camera.SetPoint = double.Parse(value, CultureInfo.InvariantCulture);
             }
 
             if (TryGetImageProperty(XISFImageProperty.Instrument.Sensor.XPixelSize, out value)) {
