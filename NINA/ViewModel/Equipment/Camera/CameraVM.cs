@@ -503,6 +503,9 @@ namespace NINA.ViewModel.Equipment.Camera {
             cameraValues.TryGetValue(nameof(CameraInfo.ReadoutMode), out o);
             CameraInfo.ReadoutMode = Convert.ToInt16(o ?? 0);
 
+            cameraValues.TryGetValue(nameof(CameraInfo.ExposureMin), out o);
+            CameraInfo.ExposureMin = (double)(o ?? 0.0d);
+
             DateTime x = DateTime.Now;
             CoolerPowerHistory.Add(new KeyValuePair<DateTime, double>(x, CameraInfo.CoolerPower));
             CCDTemperatureHistory.Add(new KeyValuePair<DateTime, double>(x, CameraInfo.Temperature));
@@ -525,6 +528,7 @@ namespace NINA.ViewModel.Equipment.Camera {
             cameraValues.Add(nameof(CameraInfo.SubSampleWidth), _cam?.SubSampleWidth ?? -1);
             cameraValues.Add(nameof(CameraInfo.SubSampleHeight), _cam?.SubSampleHeight ?? -1);
             cameraValues.Add(nameof(CameraInfo.ReadoutMode), _cam?.ReadoutMode ?? 0);
+            cameraValues.Add(nameof(CameraInfo.ExposureMin), _cam?.ExposureMin ?? 0);
 
             if (_cam != null && _cam.CanSetOffset) {
                 cameraValues.Add(nameof(CameraInfo.Offset), _cam?.Offset ?? -1);
@@ -617,8 +621,6 @@ namespace NINA.ViewModel.Equipment.Camera {
 
         public async Task Capture(CaptureSequence sequence, CancellationToken token,
             IProgress<ApplicationStatus> progress) {
-            this.exposureTime = sequence.ExposureTime;
-            double exposureTime = sequence.ExposureTime;
             if (CameraInfo.Connected == true) {
                 SetGain(sequence.Gain);
                 SetOffset(sequence.Offset);
@@ -635,6 +637,12 @@ namespace NINA.ViewModel.Equipment.Camera {
                 CameraInfo.NextExposureLength = sequence.NextSequence?.ExposureTime ?? -1;
                 BroadcastCameraInfo();
 
+                if (sequence.ExposureTime < ExposureMin) {
+                    Logger.Info($"Sequence exposure time {sequence.ExposureTime} is less than the camera minimum. Increasing to {ExposureMin}");
+                    sequence.ExposureTime = ExposureMin;
+                }
+                this.exposureTime = sequence.ExposureTime;
+                double exposureTime = sequence.ExposureTime;
                 Logger.Debug($"Starting Exposure - Exposure Time: {exposureTime}s; Gain: {CameraInfo.Gain}; Offset {CameraInfo.Offset}; Binning: {CameraInfo.BinX};");
 
                 Cam.StartExposure(sequence);
@@ -766,6 +774,15 @@ namespace NINA.ViewModel.Equipment.Camera {
         public bool AtTargetTemp {
             get {
                 return Math.Abs(cameraInfo.Temperature - TargetTemp) <= 2;
+            }
+        }
+
+        public double ExposureMin {
+            get {
+                if (Cam?.Connected != true) {
+                    return 0.0;
+                }
+                return double.IsNaN(Cam.ExposureMin) ? 0.0 : Math.Max(0.0, Cam.ExposureMin);
             }
         }
 
