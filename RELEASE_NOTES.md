@@ -237,7 +237,7 @@ Thank you for your support!
 - **Omegon:** 39.15325.2019.810
 - **QHY:** 20.2.28.0
 - **ToupTek:** 30.13342.2018.1121
-- **ZWO:** 1.14.11.19
+- **ZWO:** 1.15.6.17
 
 # Version 1.9
 
