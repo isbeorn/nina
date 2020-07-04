@@ -131,7 +131,7 @@ namespace NINA.Model.MyCamera {
 
         public int CameraYSize => -1;
 
-        public double ExposureMin => this.ShutterSpeeds.Aggregate((l, r) => l.Value > r.Value ? l : r).Value;
+        public double ExposureMin => this.ShutterSpeeds.Min(v => (double?)v.Value).GetValueOrDefault(0);
 
         public double ExposureMax => double.PositiveInfinity;
 

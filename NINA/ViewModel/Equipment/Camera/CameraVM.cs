@@ -782,7 +782,8 @@ namespace NINA.ViewModel.Equipment.Camera {
                 if (Cam?.Connected != true) {
                     return 0.0;
                 }
-                return double.IsNaN(Cam.ExposureMin) ? 0.0 : Math.Max(0.0, Cam.ExposureMin);
+                // Guard against bad values reported by a driver
+                return (double.IsNaN(Cam.ExposureMin) || Cam.ExposureMin > 30) ? 0.0 : Math.Max(0.0, Cam.ExposureMin);
             }
         }
 
