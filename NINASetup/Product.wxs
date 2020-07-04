@@ -710,6 +710,9 @@
       <Component Win64="$(var.Win64)" Id="External_x64_Atik_Atik.Core.dll" Guid="455c64c7-04c6-474b-8b72-fa407be89d6d">
         <File DefaultVersion="65535.0.0.0" Id="External_x64_Atik_Atik.Core.dll" Name="Atik.Core.dll" Source="$(var.NINA_ProjectDir)External\x64\Atik\Atik.Core.dll" />
       </Component>
+      <Component Win64="$(var.Win64)" Id="External_x64_FlyCapture2_v140.dll" Guid="452A92A5-DE18-45A9-AE6A-36D097E314AD">
+        <File Id="External_x64_Atik_FlyCapture2_v140.dll" Name="FlyCapture2_v140.dll" Source="$(var.NINA_ProjectDir)External\x64\Atik\FlyCapture2_v140.dll" />
+      </Component>
     </ComponentGroup>
   </Fragment>
 
@@ -1033,6 +1036,9 @@
       </Component>
       <Component Win64="$(var.Win64)" Id="External_x86_Atik_Atik.Core.dll" Guid="ead8ba47-fb43-4e0d-977a-2ed91d9d0ef9">
         <File DefaultVersion="65535.0.0.0" Id="External_x86_Atik_Atik.Core.dll" Name="Atik.Core.dll" Source="$(var.NINA_ProjectDir)External\x86\Atik\Atik.Core.dll" />
+      </Component>
+      <Component Win64="$(var.Win64)" Id="External_x86_Atik_FlyCapture2_v140.dll" Guid="5C4BF259-A863-4E31-9A75-12BFA8ACA9DF">
+        <File Id="External_x86_Atik_FlyCapture2_v140.dll" Name="FlyCapture2_v140.dll" Source="$(var.NINA_ProjectDir)External\x86\Atik\FlyCapture2_v140.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
