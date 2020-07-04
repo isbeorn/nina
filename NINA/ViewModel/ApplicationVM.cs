@@ -43,68 +43,73 @@ namespace NINA.ViewModel {
         }
 
         public ApplicationVM(IProfileService profileService) : base(profileService) {
-            if (NINA.Properties.Settings.Default.UpdateSettings) {
-                NINA.Properties.Settings.Default.Upgrade();
-                NINA.Properties.Settings.Default.UpdateSettings = false;
-                NINA.Properties.Settings.Default.Save();
+            try {
+                if (NINA.Properties.Settings.Default.UpdateSettings) {
+                    NINA.Properties.Settings.Default.Upgrade();
+                    NINA.Properties.Settings.Default.UpdateSettings = false;
+                    NINA.Properties.Settings.Default.Save();
+                }
+
+                Logger.SetLogLevel(profileService.ActiveProfile.ApplicationSettings.LogLevel);
+                cameraMediator = new CameraMediator();
+                telescopeMediator = new TelescopeMediator();
+                focuserMediator = new FocuserMediator();
+                filterWheelMediator = new FilterWheelMediator();
+                rotatorMediator = new RotatorMediator();
+                flatDeviceMediator = new FlatDeviceMediator();
+                guiderMediator = new GuiderMediator();
+                imagingMediator = new ImagingMediator();
+                applicationStatusMediator = new ApplicationStatusMediator();
+
+                switchMediator = new SwitchMediator();
+                weatherDataMediator = new WeatherDataMediator();
+
+                SwitchVM = new SwitchVM(profileService, applicationStatusMediator, switchMediator);
+
+                ExitCommand = new RelayCommand(ExitApplication);
+                ClosingCommand = new RelayCommand(ClosingApplication);
+                MinimizeWindowCommand = new RelayCommand(MinimizeWindow);
+                MaximizeWindowCommand = new RelayCommand(MaximizeWindow);
+                CheckProfileCommand = new RelayCommand(LoadProfile);
+                CheckUpdateCommand = new AsyncCommand<bool>(() => CheckUpdate());
+                OpenManualCommand = new RelayCommand(OpenManual);
+                CheckASCOMPlatformVersionCommand = new RelayCommand(CheckASCOMPlatformVersion);
+                ConnectAllDevicesCommand = new AsyncCommand<bool>(async () => {
+                    var diag = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblReconnectAll"], "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
+                    if (diag == MessageBoxResult.OK) {
+                        return await Task<bool>.Run(async () => {
+                            var cam = cameraMediator.Connect();
+                            var fw = filterWheelMediator.Connect();
+                            var telescope = telescopeMediator.Connect();
+                            var focuser = focuserMediator.Connect();
+                            var rotator = rotatorMediator.Connect();
+                            var flatdevice = flatDeviceMediator.Connect();
+                            var guider = guiderMediator.Connect();
+                            var weather = weatherDataMediator.Connect();
+                            var swtch = switchMediator.Connect();
+                            await Task.WhenAll(cam, fw, telescope, focuser, rotator, flatdevice, guider, weather, swtch);
+                            return true;
+                        });
+                    } else {
+                        return false;
+                    }
+                });
+                DisconnectAllDevicesCommand = new RelayCommand((object o) => {
+                    var diag = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblDisconnectAll"], "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
+                    if (diag == MessageBoxResult.OK) {
+                        DisconnectEquipment();
+                    }
+                });
+
+                InitAvalonDockLayout();
+
+                OptionsVM.PropertyChanged += OptionsVM_PropertyChanged;
+
+                profileService.ProfileChanged += ProfileService_ProfileChanged;
+            } catch (Exception e) {
+                Logger.Error(e);
+                throw e;
             }
-
-            Logger.SetLogLevel(profileService.ActiveProfile.ApplicationSettings.LogLevel);
-            cameraMediator = new CameraMediator();
-            telescopeMediator = new TelescopeMediator();
-            focuserMediator = new FocuserMediator();
-            filterWheelMediator = new FilterWheelMediator();
-            rotatorMediator = new RotatorMediator();
-            flatDeviceMediator = new FlatDeviceMediator();
-            guiderMediator = new GuiderMediator();
-            imagingMediator = new ImagingMediator();
-            applicationStatusMediator = new ApplicationStatusMediator();
-
-            switchMediator = new SwitchMediator();
-            weatherDataMediator = new WeatherDataMediator();
-
-            SwitchVM = new SwitchVM(profileService, applicationStatusMediator, switchMediator);
-
-            ExitCommand = new RelayCommand(ExitApplication);
-            ClosingCommand = new RelayCommand(ClosingApplication);
-            MinimizeWindowCommand = new RelayCommand(MinimizeWindow);
-            MaximizeWindowCommand = new RelayCommand(MaximizeWindow);
-            CheckProfileCommand = new RelayCommand(LoadProfile);
-            CheckUpdateCommand = new AsyncCommand<bool>(() => CheckUpdate());
-            OpenManualCommand = new RelayCommand(OpenManual);
-            CheckASCOMPlatformVersionCommand = new RelayCommand(CheckASCOMPlatformVersion);
-            ConnectAllDevicesCommand = new AsyncCommand<bool>(async () => {
-                var diag = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblReconnectAll"], "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
-                if (diag == MessageBoxResult.OK) {
-                    return await Task<bool>.Run(async () => {
-                        var cam = cameraMediator.Connect();
-                        var fw = filterWheelMediator.Connect();
-                        var telescope = telescopeMediator.Connect();
-                        var focuser = focuserMediator.Connect();
-                        var rotator = rotatorMediator.Connect();
-                        var flatdevice = flatDeviceMediator.Connect();
-                        var guider = guiderMediator.Connect();
-                        var weather = weatherDataMediator.Connect();
-                        var swtch = switchMediator.Connect();
-                        await Task.WhenAll(cam, fw, telescope, focuser, rotator, flatdevice, guider, weather, swtch);
-                        return true;
-                    });
-                } else {
-                    return false;
-                }
-            });
-            DisconnectAllDevicesCommand = new RelayCommand((object o) => {
-                var diag = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblDisconnectAll"], "", MessageBoxButton.OKCancel, MessageBoxResult.Cancel);
-                if (diag == MessageBoxResult.OK) {
-                    DisconnectEquipment();
-                }
-            });
-
-            InitAvalonDockLayout();
-
-            OptionsVM.PropertyChanged += OptionsVM_PropertyChanged;
-
-            profileService.ProfileChanged += ProfileService_ProfileChanged;
         }
 
         private void CheckASCOMPlatformVersion(object obj) {
