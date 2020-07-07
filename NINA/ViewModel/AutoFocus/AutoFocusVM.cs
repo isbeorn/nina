@@ -499,6 +499,11 @@ namespace NINA.ViewModel {
             bRange = b;
             pRange = highestPosition - lowestPosition; //large steps since slope could contain some error
 
+            if (double.IsNaN(aRange) || double.IsNaN(bRange) || aRange == 0 || bRange == 0 || pRange == 0) {
+                //Not enough valid data points to fit a curve
+                return;
+            }
+
             do {
                 p0 = p;
                 b0 = b;
