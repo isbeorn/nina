@@ -17,6 +17,7 @@ using NINA.Model.ImageData;
 using NINA.Utility;
 using NINA.Utility.Astrometry;
 using NINA.Utility.FileFormat.FITS;
+using NINA.Utility.FileFormat.FITS.DataConverter;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -579,6 +580,102 @@ namespace NINATest {
         public void FITSOriginalValue_DoubleTest(double value) {
             var card = new FITSHeaderCard("KEY", value, string.Empty);
             card.OriginalValue.Should().Be(value.ToString("0.0##############", CultureInfo.InvariantCulture));
+        }
+
+        [Test]
+        public void ByteConverter_CorrectConversionTest() {
+            Array[] data = new byte[][]
+            {
+                new byte[] { 0, 255 },
+                new byte[] { 200, 5 },
+            };
+
+            var converter = new ByteConverter();
+            var sut = converter.Convert(data, 2, 2);
+
+            var expectation = new ushort[] { 0, ushort.MaxValue, 51400, 1285 };
+
+            sut.Should().BeEquivalentTo(expectation);
+        }
+
+        [Test]
+        public void ShortConverter_CorrectConversionTest() {
+            Array[] data = new short[][]
+            {
+                new short[] { short.MinValue, short.MaxValue },
+                new short[] { -30000, 30000 },
+            };
+
+            var converter = new ShortConverter();
+            var sut = converter.Convert(data, 2, 2);
+
+            var expectation = new ushort[] { 0, ushort.MaxValue, 2768, 62768 };
+
+            sut.Should().BeEquivalentTo(expectation);
+        }
+
+        [Test]
+        public void IntConverter_CorrectConversionTest() {
+            Array[] data = new int[][]
+            {
+                new int[] { int.MinValue, int.MaxValue },
+                new int[] { -30000, 60000 },
+            };
+
+            var converter = new IntConverter();
+            var sut = converter.Convert(data, 2, 2);
+
+            var expectation = new ushort[] { 0, ushort.MaxValue, 32767, 32768 };
+
+            sut.Should().BeEquivalentTo(expectation);
+        }
+
+        [Test]
+        public void LongConverter_CorrectConversionTest() {
+            Array[] data = new long[][]
+            {
+                new long[] { long.MinValue, long.MaxValue },
+                new long[] { -30000, 60000 },
+            };
+
+            var converter = new LongConverter();
+            var sut = converter.Convert(data, 2, 2);
+
+            var expectation = new ushort[] { 0, ushort.MaxValue, 32767, 32767 };
+
+            sut.Should().BeEquivalentTo(expectation);
+        }
+
+        [Test]
+        public void DoubleConverter_CorrectConversionTest() {
+            Array[] data = new double[][]
+            {
+                new double[] { 0, 1 },
+                new double[] { 0.4, 0.6 },
+            };
+
+            var converter = new DoubleConverter();
+            var sut = converter.Convert(data, 2, 2);
+
+            var expectation = new ushort[] { 0, ushort.MaxValue, 26214, 39321 };
+
+            sut.Should().BeEquivalentTo(expectation);
+        }
+
+        [Test]
+        public void FloatConverter_CorrectConversionTest() {
+            Array[] data = new float[][]
+            {
+                new float[] { 0f, 1f },
+                new float[] { 0.4f, 0.6f },
+            };
+
+            var converter = new FloatConverter();
+            var sut = converter.Convert(data, 2, 2);
+
+            var expectation = new ushort[] { 0, ushort.MaxValue, 26214, 39321 };
+
+            sut.Should().BeEquivalentTo(expectation);
         }
     }
 }

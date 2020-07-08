@@ -483,6 +483,13 @@
     <Compile Include="Utility\Enum\BacklashCompensationModel.cs" />
     <Compile Include="Utility\Enum\BayerPatternEnum.cs" />
     <Compile Include="Utility\Enum\FlatWizardMode.cs" />
+    <Compile Include="Utility\FileFormat\FITS\DataConverter\ByteConverter.cs" />
+    <Compile Include="Utility\FileFormat\FITS\DataConverter\DoubleConverter.cs" />
+    <Compile Include="Utility\FileFormat\FITS\DataConverter\FloatConverter.cs" />
+    <Compile Include="Utility\FileFormat\FITS\DataConverter\IDataConverter.cs" />
+    <Compile Include="Utility\FileFormat\FITS\DataConverter\IntConverter.cs" />
+    <Compile Include="Utility\FileFormat\FITS\DataConverter\LongConverter.cs" />
+    <Compile Include="Utility\FileFormat\FITS\DataConverter\ShortConverter.cs" />
     <Compile Include="Utility\FileFormat\XISF\DataConverter\Float32Converter.cs" />
     <Compile Include="Utility\FileFormat\XISF\DataConverter\Float64Converter.cs" />
     <Compile Include="Utility\FileFormat\XISF\DataConverter\IDataConverter.cs" />

@@ -14,6 +14,7 @@
 
 using NINA.Model.ImageData;
 using NINA.Model.MyCamera;
+using NINA.Utility.FileFormat.FITS.DataConverter;
 using nom.tam.fits;
 using System;
 using System.Collections;
@@ -53,37 +54,8 @@ namespace NINA.Utility.FileFormat.FITS {
                 var height = hdu.Header.GetIntValue("NAXIS2");
                 var bitPix = hdu.Header.GetIntValue("BITPIX");
 
-                ushort[] pixels = new ushort[width * height];
-                var i = 0;
-                foreach (var row in arr) {
-                    foreach (object val in row) {
-                        switch (bitPix) {
-                            case BITPIX_BYTE:
-                                pixels[i++] = (ushort)(((byte)val / (double)byte.MaxValue) * ushort.MaxValue);
-                                break;
-
-                            case BITPIX_SHORT:
-                                pixels[i++] = (ushort)(((short)val / (double)short.MaxValue) * ushort.MaxValue);
-                                break;
-
-                            case BITPIX_INT:
-                                pixels[i++] = (ushort)(((int)val / (double)int.MaxValue) * ushort.MaxValue);
-                                break;
-
-                            case BITPIX_LONG:
-                                pixels[i++] = (ushort)(((long)val / (double)long.MaxValue) * ushort.MaxValue);
-                                break;
-
-                            case BITPIX_FLOAT:
-                                pixels[i++] = (ushort)((float)val * ushort.MaxValue);
-                                break;
-
-                            case BITPIX_DOUBLE:
-                                pixels[i++] = (ushort)((double)val * ushort.MaxValue);
-                                break;
-                        }
-                    }
-                }
+                var converter = GetConverter(bitPix);
+                ushort[] pixels = converter.Convert(arr, width, height);
 
                 //Translate nom.tam.fits into N.I.N.A. FITSHeader
                 FITSHeader header = new FITSHeader(width, height);
@@ -116,6 +88,31 @@ namespace NINA.Utility.FileFormat.FITS {
                 }
                 return new Model.ImageData.ImageData(pixels, width, height, 16, isBayered, metaData);
             });
+        }
+
+        private static IDataConverter GetConverter(int bitPix) {
+            switch (bitPix) {
+                case BITPIX_BYTE:
+                    return new ByteConverter();
+
+                case BITPIX_SHORT:
+                    return new ShortConverter();
+
+                case BITPIX_INT:
+                    return new IntConverter();
+
+                case BITPIX_LONG:
+                    return new LongConverter();
+
+                case BITPIX_FLOAT:
+                    return new FloatConverter();
+
+                case BITPIX_DOUBLE:
+                    return new DoubleConverter();
+
+                default:
+                    throw new InvalidDataException($"Invalid BITPIX in FITS header {bitPix}");
+            }
         }
 
         public FITSHeader Header { get; }
