@@ -126,7 +126,17 @@
                         BorderThickness="0">
                         <UniformGrid VerticalAlignment="Center" Columns="2">
                             <TextBlock Text="{ns:Loc LblGain}" />
-                            <TextBlock Margin="5,0,0,0" Text="{Binding Gain, Converter={StaticResource MinusOneToEmptyStringConverter}}" />
+                            <TextBlock Margin="5,0,0,0">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource MinusOneToBaseValueConverter}">
+                                        <Binding Mode="OneWay" Path="Gain" />
+                                        <Binding
+                                            Mode="OneWay"
+                                            Path="CameraVM.DefaultGain"
+                                            Source="{StaticResource AppVM}" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
                         </UniformGrid>
                     </Border>
                 </StackPanel>
