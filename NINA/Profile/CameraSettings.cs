@@ -41,6 +41,7 @@ namespace NINA.Profile {
             fileCameraFolder = string.Empty;
             bitScaling = false;
             timeout = 60;
+            dewHeaterOn = false;
 
             fliEnableFloodFlush = false;
             fliFloodDuration = 1;
@@ -465,6 +466,19 @@ namespace NINA.Profile {
             set {
                 if (timeout != value) {
                     timeout = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool? dewHeaterOn;
+
+        [DataMember]
+        public bool? DewHeaterOn {
+            get => dewHeaterOn;
+            set {
+                if (dewHeaterOn != value) {
+                    dewHeaterOn = value;
                     RaisePropertyChanged();
                 }
             }

@@ -50,5 +50,6 @@ namespace NINA.Profile {
         short? ReadoutModeForNormalImages { get; set; }
         bool QhyIncludeOverscan { get; set; }
         int Timeout { get; set; }
+        bool? DewHeaterOn { get; set; }
     }
 }
