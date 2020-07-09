@@ -50,6 +50,10 @@ namespace NINA.ViewModel.Equipment.Guider {
             ClearGraphCommand = new RelayCommand((object o) => ResetGraphValues());
 
             GuideStepsHistory = new GuideStepsHistory(HistorySize, GuiderScale, GuiderMaxY);
+
+            profileService.ProfileChanged += (object sender, EventArgs e) => {
+                GuiderChooserVM.GetEquipment();
+            };
         }
 
         public IGuiderChooserVM GuiderChooserVM { get; set; }

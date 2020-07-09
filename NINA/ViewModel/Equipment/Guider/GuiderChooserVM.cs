@@ -44,6 +44,7 @@ namespace NINA.ViewModel.Equipment.Guider {
         }
 
         public void GetEquipment() {
+            Guiders.Clear();
             Guiders.Add(new DummyGuider(profileService));
             Guiders.Add(new PHD2Guider(profileService));
             Guiders.Add(new SynchronizedPHD2Guider(profileService, cameraMediator));
