@@ -35,7 +35,7 @@ namespace NINA.Utility.Http {
 
             HttpWebRequest request = null;
             HttpWebResponse response = null;
-            using (ct.Register(() => request.Abort(), useSynchronizationContext: false)) {
+            using (ct.Register(() => request?.Abort(), useSynchronizationContext: false)) {
                 try {
                     request = (HttpWebRequest)WebRequest.Create(Url);
                     request.ContentType = ContentType;
