@@ -103,7 +103,7 @@ namespace NINA.Utility {
                 var delta = await Delay(100, token);
                 elapsed += delta;
                 progress?.Report(new ApplicationStatus() { MaxProgress = (int)t.TotalSeconds, Progress = (int)elapsed.TotalSeconds, Status = string.IsNullOrWhiteSpace(status) ? Locale.Loc.Instance["LblWaiting"] : status, ProgressType = ApplicationStatus.StatusProgressType.ValueOfMaxValue });
-            } while (elapsed < t);
+            } while (elapsed < t && !token.IsCancellationRequested);
             return elapsed;
         }
 
