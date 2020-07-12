@@ -364,7 +364,17 @@ namespace NINA.Profile {
                         try {
                             Logger.Info("Restoring corrupt profile from backup");
                             File.Copy(backup, path, true);
-                            return Peek(path);
+                            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+                                var serializer = new DataContractSerializer(typeof(Profile));
+                                var obj = serializer.ReadObject(fs);
+                                var p = (Profile)obj;
+                                return new ProfileMeta() {
+                                    Id = p.Id,
+                                    Name = p.Name,
+                                    Location = p.Location,
+                                    LastUsed = p.LastUsed
+                                };
+                            }
                         } catch (Exception backupEx) {
                             Logger.Error("Restoring of profile failed", backupEx);
                         }
