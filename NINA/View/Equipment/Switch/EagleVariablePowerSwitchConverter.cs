@@ -25,7 +25,11 @@ namespace NINA.View.Equipment.Switch {
     public class EagleVariablePowerSwitchConverter : IMultiValueConverter {
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
-            return (double)values[1] > 0;
+            if (values.Length > 1 && (values[1] is double)) {
+                return (double)values[1] > 0;
+            } else {
+                return false;
+            }
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
