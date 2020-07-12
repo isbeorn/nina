@@ -570,19 +570,19 @@ namespace NINA.Model.MyCamera {
 
         private Task bulbCompletionTask = null;
         private CancellationTokenSource bulbCompletionCTS = null;
+
         public void StartExposure(CaptureSequence sequence) {
-            if (downloadExposure.Task.Status <= TaskStatus.Running) {
-                Notification.ShowWarning("Another exposure still in progress. Cancelling it to start another.");
+            if (downloadExposure?.Task?.Status <= TaskStatus.Running) {
                 Logger.Warning("An exposure was still in progress. Cancelling it to start another.");
                 CancelDownloadExposure();
             }
-
-            downloadExposure = new TaskCompletionSource<object>();
             var exposureTime = sequence.ExposureTime;
             ValidateModeForExposure(exposureTime);
 
             /* Start exposure */
             bool useBulb = (IsManualMode() && exposureTime > 30.0) || (IsBulbMode() && exposureTime >= 1.0);
+
+            downloadExposure = new TaskCompletionSource<object>();
             SendStartExposureCmd(useBulb);
 
             if (useBulb) {
