@@ -231,7 +231,7 @@ namespace NINA.ViewModel.Equipment.FilterWheel {
         private CancellationTokenSource _cancelChooseFilterWheelSource;
 
         private async Task<bool> DisconnectFW() {
-            var diag = MyMessageBox.MyMessageBox.Show("Disconnect Filter Wheel?", "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
+            var diag = MyMessageBox.MyMessageBox.Show(Locale.Loc.Instance["LblDisconnectFilterWheel"], "", System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxResult.Cancel);
             if (diag == System.Windows.MessageBoxResult.OK) {
                 await Disconnect();
             }

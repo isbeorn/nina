@@ -124,6 +124,16 @@
                     <TextBlock Margin="5,0,0,0" Text="{Binding TelescopeInfo.AzimuthString}" />
                 </UniformGrid>
             </Border>
+            <Border
+                Margin="0,5,0,0"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0">
+                <UniformGrid VerticalAlignment="Center" Columns="2">
+                    <TextBlock Text="{ns:Loc LblSideOfPier}" />
+
+                    <TextBlock Margin="5,0,0,0" Text="{Binding TelescopeInfo.SideOfPier, Converter={StaticResource SideOfPierConverter}}" />
+                </UniformGrid>
+            </Border>
         </StackPanel>
     </ScrollViewer>
 </UserControl>
