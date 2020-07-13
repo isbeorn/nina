@@ -120,18 +120,14 @@ namespace NINA.Model.MyGuider {
                 await mgen.SetImagingParameter(imagingParameter.Gain, imagingParameter.ExposureTime, imagingParameter.Threshold);
 
                 Logger.Debug($"MGEN - Starting Star Search - Gain: {imagingParameter.Gain} ExposureTime: {imagingParameter.ExposureTime}");
-                var starSearchResult = await mgen.StartStarSearch(imagingParameter.Gain, imagingParameter.ExposureTime);
+                await mgen.StartStarSearch(imagingParameter.Gain, imagingParameter.ExposureTime);
 
-                if (starSearchResult.NumberOfStars > 0) {
-                    // Get brightest star (will be at index 0)
-                    var starDetail = await mgen.GetStarData(0);
-                    Logger.Debug($"MGEN - Got Star Detail and setting new guiding position - PosX: {starDetail.PositionX} PosY: {starDetail.PositionY} Brightness: {starDetail.Brightness} Pixels: {starDetail.Pixels}");
-                    var success = await mgen.SetNewGuidingPosition(starDetail);
-                    Logger.Debug($"MGEN - Set New Guiding Position: {success.Success}");
-                    return true;
-                }
-
-                return false;
+                // Get brightest star (will be at index 0)
+                var starDetail = await mgen.GetStarData(0);
+                Logger.Debug($"MGEN - Got Star Detail and setting new guiding position - PosX: {starDetail.PositionX} PosY: {starDetail.PositionY} Brightness: {starDetail.Brightness} Pixels: {starDetail.Pixels}");
+                var success = await mgen.SetNewGuidingPosition(starDetail);
+                Logger.Debug($"MGEN - Set New Guiding Position: {success.Success}");
+                return success.Success;
             }
             return true;
         }
@@ -360,14 +356,10 @@ namespace NINA.Model.MyGuider {
         private async Task<bool> StartCalibrationIfRequired(CancellationToken ct) {
             using (ct.Register(async () => await mgen.CancelCalibration())) {
                 var calibrationStatus = await mgen.QueryCalibration(ct); ;
-                if (!calibrationStatus.CalibrationStatus.HasFlag(MGEN.CalibrationStatus.Done)) {
+                if (!calibrationStatus.CalibrationStatus.HasFlag(MGEN.CalibrationStatus.Done) || calibrationStatus.CalibrationStatus.HasFlag(MGEN.CalibrationStatus.Error)) {
                     Logger.Debug("MGEN - Starting Calibraiton");
-                    try {
-                        _ = await mgen.StartCalibration(ct);
-                    } catch (CameraIsOffException) {
-                        _ = await AutoSelectGuideStar();
-                        _ = await mgen.StartCalibration(ct);
-                    }
+                    _ = await AutoSelectGuideStar();
+                    _ = await mgen.StartCalibration(ct);
 
                     do {
                         await Task.Delay(TimeSpan.FromSeconds(1));
