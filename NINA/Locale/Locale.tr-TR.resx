@@ -1026,7 +1026,7 @@ Daha uzun bir süre gerektiğinde, bir süre belirtilebilir ve uygulama, verilen
     <value>Debayer edilmiş HFR</value>
   </data>
   <data name="LblDebayeredHFRTooltip" xml:space="preserve">
-    <value>Use debayered image to perform HFR computation. More precise, but more resource-intensive.</value>
+    <value>HFR hesaplaması yapmak için debayer uygulanmış resmi kullanın. Daha doğru, fakat kaynak yoğunluğu daha fazladır.</value>
   </data>
   <data name="LblDebayerImage" xml:space="preserve">
     <value>Resmi debayer et</value>
@@ -2188,7 +2188,7 @@ Hesaplanan HFR: {2}
     <value>Süpernova kalıntısı</value>
   </data>
   <data name="LblOf" xml:space="preserve">
-    <value>Of</value>
+    <value>de</value>
   </data>
   <data name="LblOff" xml:space="preserve">
     <value>Kapalı</value>
@@ -3321,7 +3321,7 @@ Dikdörtgeni kadrajın örneklemek istediğiniz kısmına sürükleyin ve örnek
     <value>Sıcaklık</value>
   </data>
   <data name="LblUPBV2UpTime" xml:space="preserve">
-    <value>Up-Time</value>
+    <value>Çalışma süresi</value>
   </data>
   <data name="LblUPBV2Usb1" xml:space="preserve">
     <value>USB giriş 1</value>
@@ -3586,7 +3586,7 @@ Varsayılan Otomatik seçeneği, kamera sürücüsünün sağlayabileceği herha
     <value>Pozlama sonlandı</value>
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
-    <value>Camera Timeout - Camera did not set image as ready after exposuretime + {0} seconds</value>
+    <value>Kamera Zaman Aşımı - Kamera {0} saniye pozlamadan sonra görüntüyü hazır olarak ayarlamadı</value>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>Desen önizleme</value>
@@ -3770,23 +3770,17 @@ Daha uzun bir süre gerekirse bir süre belirtilebilir ve uygulama, verilen sür
   <data name="LblWizardOperationMode" xml:space="preserve">
     <value>Sihirbaz işletim modu</value>
   </data>
-  <data name="LblFlatDeviceAddBinningMode" xml:space="preserve">
-    <value>Binning ekle</value>
+  <data name="LblCancelSequence" xml:space="preserve">
+    <value>Sekansı iptal et</value>
   </data>
-  <data name="LblFlatDeviceAddGain" xml:space="preserve">
-    <value>Kazanç ekle</value>
+  <data name="LblPauseSequence" xml:space="preserve">
+    <value>Sekansı duraklat</value>
   </data>
-  <data name="LblFlatDeviceAreYouSureBinning" xml:space="preserve">
-    <value>Binning için tüm değerleri silmek istediğinize emin misiniz</value>
+  <data name="LblResumeSequence" xml:space="preserve">
+    <value>Sekansı sürdür</value>
   </data>
-  <data name="LblFlatDeviceAreYouSureGain" xml:space="preserve">
-    <value>Kazanç için tüm değerleri silmek istediğinize emin misiniz</value>
-  </data>
-  <data name="LblFlatDeviceDeleteBinningMode" xml:space="preserve">
-    <value>Binning sil</value>
-  </data>
-  <data name="LblFlatDeviceDeleteGain" xml:space="preserve">
-    <value>Kazanç sil</value>
+  <data name="LblStartSequence" xml:space="preserve">
+    <value>Sekansı başlat</value>
   </data>
   <data name="LblSequenceContainsDarksAndLights" xml:space="preserve">
     <value>Kamerada mekanik obtüratör yok. Otomatik düz kare paneli bağlanmadı ve sekans SİYAH KARE/BIAS ögeleri RESİM kareleri ile karıştırılacak.</value>
@@ -3798,27 +3792,54 @@ Daha uzun bir süre gerekirse bir süre belirtilebilir ve uygulama, verilen sür
     <value>Meridyen geçişine kalan süre</value>
   </data>
   <data name="LblDefaultGain" xml:space="preserve">
-    <value>Default Gain</value>
+    <value>Varsayılan Kazanç</value>
   </data>
   <data name="LblDefaultOffset" xml:space="preserve">
-    <value>Default Offset</value>
+    <value>Varsayılan Offset</value>
   </data>
   <data name="LblDefaultGainTooltip" xml:space="preserve">
-    <value>This value specifies the default gain that should be used whenever no gain was set explicitly</value>
+    <value>Bu değer, belirgin bir kazanç ayarlanmadığı zaman kullanılması gereken varsayılan kazancı belirtir</value>
   </data>
   <data name="LblDefaultOffsetTooltip" xml:space="preserve">
-    <value>This value specifies the default offset that should be used whenever no offset was set explicitly</value>
+    <value>Bu değer, belirgin bir offset ayarlanmadığı zaman kullanılması gereken varsayılan offseti belirtir</value>
   </data>
   <data name="LbLUsbLimitDescription" xml:space="preserve">
-    <value>Camera USB speed or traffic limit setting</value>
+    <value>Kamera USB hız veya trafik ayarı</value>
   </data>
   <data name="LblFocuserMoveToPosition" xml:space="preserve">
-    <value>Moving focuser to position {0}</value>
+    <value>Moviendo el enfocador a la posición {0}</value>
+  </data>
+  <data name="LblCameraConnectedOnExit" xml:space="preserve">
+    <value>Camera still connected. Exit anyway?</value>
+  </data>
+  <data name="LblDisconnectCamera" xml:space="preserve">
+    <value>Disconnect Camera?</value>
+  </data>
+  <data name="LblDisconnectFilterWheel" xml:space="preserve">
+    <value>Disconnect Filter Wheel?</value>
+  </data>
+  <data name="LblDisconnectFocuser" xml:space="preserve">
+    <value>Disconnect Focuser?</value>
+  </data>
+  <data name="LblDisconnectRotator" xml:space="preserve">
+    <value>Disconnect Rotator?</value>
+  </data>
+  <data name="LblDisconnectTelescope" xml:space="preserve">
+    <value>Disconnect Telescope?</value>
+  </data>
+  <data name="LblSideOfPier" xml:space="preserve">
+    <value>Side of Pier</value>
   </data>
   <data name="LblCameraTimeoutOption" xml:space="preserve">
-    <value>Camera Timeout</value>
+    <value>Kamera Zaman Aşımı</value>
   </data>
   <data name="LblCameraTimeoutTooltip" xml:space="preserve">
-    <value>The amount of time after exposure time until the image is considered as lost. When the camera does not send an image ready event after Exposure Time + Timeout the exposure will be cancelled.</value>
+    <value>Pozlama süresinden sonra görüntünün kaybolmasına kadar geçen süre. Kamera, Pozlama Süresi + Zaman Aşımından sonra görüntüye hazır bilgisi göndermediğinde pozlama iptal edilir.</value>
+  </data>
+  <data name="LblEast" xml:space="preserve">
+    <value>East</value>
+  </data>
+  <data name="LblWest" xml:space="preserve">
+    <value>West</value>
   </data>
 </root>

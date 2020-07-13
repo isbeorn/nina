@@ -3782,23 +3782,17 @@ Falls eine längere Dauer benötigt wird, kann eine Dauer angegeben werden und d
   <data name="LblWizardOperationMode" xml:space="preserve">
     <value>Wizard Operationsmodus</value>
   </data>
-  <data name="LblFlatDeviceAddBinningMode" xml:space="preserve">
-    <value>Binning hinzufügen</value>
+  <data name="LblCancelSequence" xml:space="preserve">
+    <value>Sequenz abbrechen</value>
   </data>
-  <data name="LblFlatDeviceAddGain" xml:space="preserve">
-    <value>Gain hinzufügen</value>
+  <data name="LblPauseSequence" xml:space="preserve">
+    <value>Sequenz pausieren</value>
   </data>
-  <data name="LblFlatDeviceAreYouSureBinning" xml:space="preserve">
-    <value>Sollen alle Werte für Binnung gelöscht werden?</value>
+  <data name="LblResumeSequence" xml:space="preserve">
+    <value>Sequenz fortsetzen</value>
   </data>
-  <data name="LblFlatDeviceAreYouSureGain" xml:space="preserve">
-    <value>Sollen alle Werte für Gain gelöscht werden?</value>
-  </data>
-  <data name="LblFlatDeviceDeleteBinningMode" xml:space="preserve">
-    <value>Binning löschen</value>
-  </data>
-  <data name="LblFlatDeviceDeleteGain" xml:space="preserve">
-    <value>Gain löschen</value>
+  <data name="LblStartSequence" xml:space="preserve">
+    <value>Sequenz starten</value>
   </data>
   <data name="LblSequenceContainsDarksAndLights" xml:space="preserve">
     <value>Kamera hat keinen mechanischen Verschluss, keine automatisiertes Flat Panel ist angeschlossen und Sequenz enthält DARK/BIAS-Elemente gemischt mit LIGHT.</value>
@@ -3827,10 +3821,37 @@ Falls eine längere Dauer benötigt wird, kann eine Dauer angegeben werden und d
   <data name="LblFocuserMoveToPosition" xml:space="preserve">
     <value>Bewege Okularauszug zu Position {0}</value>
   </data>
+  <data name="LblCameraConnectedOnExit" xml:space="preserve">
+    <value>Camera still connected. Exit anyway?</value>
+  </data>
+  <data name="LblDisconnectCamera" xml:space="preserve">
+    <value>Disconnect Camera?</value>
+  </data>
+  <data name="LblDisconnectFilterWheel" xml:space="preserve">
+    <value>Disconnect Filter Wheel?</value>
+  </data>
+  <data name="LblDisconnectFocuser" xml:space="preserve">
+    <value>Disconnect Focuser?</value>
+  </data>
+  <data name="LblDisconnectRotator" xml:space="preserve">
+    <value>Disconnect Rotator?</value>
+  </data>
+  <data name="LblDisconnectTelescope" xml:space="preserve">
+    <value>Disconnect Telescope?</value>
+  </data>
+  <data name="LblSideOfPier" xml:space="preserve">
+    <value>Side of Pier</value>
+  </data>
   <data name="LblCameraTimeoutOption" xml:space="preserve">
     <value>Kamera-Timeout</value>
   </data>
   <data name="LblCameraTimeoutTooltip" xml:space="preserve">
     <value>Die Zeitspanne nach der Belichtungszeit, bis das Bild als verloren betrachtet wird. Wenn die Kamera nach Belichtungszeit + Zeitüberschreitung kein Bereitschaftssignal sendet, wird die Belichtung abgebrochen.</value>
+  </data>
+  <data name="LblEast" xml:space="preserve">
+    <value>East</value>
+  </data>
+  <data name="LblWest" xml:space="preserve">
+    <value>West</value>
   </data>
 </root>

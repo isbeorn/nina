@@ -3594,7 +3594,7 @@ O padrão Auto usa o padrão que o driver da câmera possa fornecer. Não se apl
     <value>Exposição terminada</value>
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
-    <value>Camera Timeout - Camera did not set image as ready after exposuretime + {0} seconds</value>
+    <value>Limite de Tempo da Camera - A Camera não definiu a imagem como pronta depois de um tempo de exposição de + {0} segundos</value>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>Pré-visualização do padrão</value>
@@ -3778,23 +3778,17 @@ No caso de ser necessário efectuar o aquecimento de uma forma mais prolongada, 
   <data name="LblWizardOperationMode" xml:space="preserve">
     <value>Assistente de Modo de Operação</value>
   </data>
-  <data name="LblFlatDeviceAddBinningMode" xml:space="preserve">
-    <value>Adicionar Binning</value>
+  <data name="LblCancelSequence" xml:space="preserve">
+    <value>Cancel Sequence</value>
   </data>
-  <data name="LblFlatDeviceAddGain" xml:space="preserve">
-    <value>Adicionar Gain</value>
+  <data name="LblPauseSequence" xml:space="preserve">
+    <value>Pause Sequence</value>
   </data>
-  <data name="LblFlatDeviceAreYouSureBinning" xml:space="preserve">
-    <value>Tem a certeza que deseja eliminar todos os valores de binning</value>
+  <data name="LblResumeSequence" xml:space="preserve">
+    <value>Resume Sequence</value>
   </data>
-  <data name="LblFlatDeviceAreYouSureGain" xml:space="preserve">
-    <value>Tem a certeza que deseja eliminar todos os valores de gain</value>
-  </data>
-  <data name="LblFlatDeviceDeleteBinningMode" xml:space="preserve">
-    <value>Eliminar Binning</value>
-  </data>
-  <data name="LblFlatDeviceDeleteGain" xml:space="preserve">
-    <value>Eliminar Gain</value>
+  <data name="LblStartSequence" xml:space="preserve">
+    <value>Start Sequence</value>
   </data>
   <data name="LblSequenceContainsDarksAndLights" xml:space="preserve">
     <value>A câmera não tem um obturador mecânico, nenhum painel de flats automático está conectado e a sequência contém apenas itens DARK/BIAS misturados com LIGHT.</value>
@@ -3821,12 +3815,39 @@ No caso de ser necessário efectuar o aquecimento de uma forma mais prolongada, 
     <value>Definição de velocidade USB ou limite de tráfego</value>
   </data>
   <data name="LblFocuserMoveToPosition" xml:space="preserve">
-    <value>Moving focuser to position {0}</value>
+    <value>A mover o focador para a posição {0}</value>
+  </data>
+  <data name="LblCameraConnectedOnExit" xml:space="preserve">
+    <value>Camera still connected. Exit anyway?</value>
+  </data>
+  <data name="LblDisconnectCamera" xml:space="preserve">
+    <value>Disconnect Camera?</value>
+  </data>
+  <data name="LblDisconnectFilterWheel" xml:space="preserve">
+    <value>Disconnect Filter Wheel?</value>
+  </data>
+  <data name="LblDisconnectFocuser" xml:space="preserve">
+    <value>Disconnect Focuser?</value>
+  </data>
+  <data name="LblDisconnectRotator" xml:space="preserve">
+    <value>Disconnect Rotator?</value>
+  </data>
+  <data name="LblDisconnectTelescope" xml:space="preserve">
+    <value>Disconnect Telescope?</value>
+  </data>
+  <data name="LblSideOfPier" xml:space="preserve">
+    <value>Side of Pier</value>
   </data>
   <data name="LblCameraTimeoutOption" xml:space="preserve">
-    <value>Camera Timeout</value>
+    <value>Limite de Tempo da Camera</value>
   </data>
   <data name="LblCameraTimeoutTooltip" xml:space="preserve">
-    <value>The amount of time after exposure time until the image is considered as lost. When the camera does not send an image ready event after Exposure Time + Timeout the exposure will be cancelled.</value>
+    <value>A duração após a exposição até que a imagem seja considerada como perdida. Quando a câmera não enviar o evento de imagem pronta após o Tempo de Exposição + o Limite de Tempo a Exposição será cancelada.</value>
+  </data>
+  <data name="LblEast" xml:space="preserve">
+    <value>East</value>
+  </data>
+  <data name="LblWest" xml:space="preserve">
+    <value>West</value>
   </data>
 </root>

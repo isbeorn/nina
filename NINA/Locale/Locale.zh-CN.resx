@@ -3599,7 +3599,7 @@
     <value>曝光完成</value>
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
-    <value>Camera Timeout - Camera did not set image as ready after exposuretime + {0} seconds</value>
+    <value>相机超时——相机在曝光时间+ {0} 秒后仍没有将图像设置为就绪装填</value>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>Pattern Preview</value>
@@ -3783,23 +3783,17 @@
   <data name="LblWizardOperationMode" xml:space="preserve">
     <value>向导操作模式</value>
   </data>
-  <data name="LblFlatDeviceAddBinningMode" xml:space="preserve">
-    <value>添加合并像素模式</value>
+  <data name="LblCancelSequence" xml:space="preserve">
+    <value>Cancel Sequence</value>
   </data>
-  <data name="LblFlatDeviceAddGain" xml:space="preserve">
-    <value>添加增益</value>
+  <data name="LblPauseSequence" xml:space="preserve">
+    <value>Pause Sequence</value>
   </data>
-  <data name="LblFlatDeviceAreYouSureBinning" xml:space="preserve">
-    <value>您确定要删除的所有合并像素设置？</value>
+  <data name="LblResumeSequence" xml:space="preserve">
+    <value>Resume Sequence</value>
   </data>
-  <data name="LblFlatDeviceAreYouSureGain" xml:space="preserve">
-    <value>您确定要删除所有增益设置？</value>
-  </data>
-  <data name="LblFlatDeviceDeleteBinningMode" xml:space="preserve">
-    <value>删除合并像素</value>
-  </data>
-  <data name="LblFlatDeviceDeleteGain" xml:space="preserve">
-    <value>删除增益</value>
+  <data name="LblStartSequence" xml:space="preserve">
+    <value>Start Sequence</value>
   </data>
   <data name="LblSequenceContainsDarksAndLights" xml:space="preserve">
     <value>相机没有机械快门，序列中含有暗场/偏置项目，但没有安装镜头盖</value>
@@ -3828,10 +3822,37 @@
   <data name="LblFocuserMoveToPosition" xml:space="preserve">
     <value>移动调焦器到位置 {0}</value>
   </data>
+  <data name="LblCameraConnectedOnExit" xml:space="preserve">
+    <value>Camera still connected. Exit anyway?</value>
+  </data>
+  <data name="LblDisconnectCamera" xml:space="preserve">
+    <value>Disconnect Camera?</value>
+  </data>
+  <data name="LblDisconnectFilterWheel" xml:space="preserve">
+    <value>Disconnect Filter Wheel?</value>
+  </data>
+  <data name="LblDisconnectFocuser" xml:space="preserve">
+    <value>Disconnect Focuser?</value>
+  </data>
+  <data name="LblDisconnectRotator" xml:space="preserve">
+    <value>Disconnect Rotator?</value>
+  </data>
+  <data name="LblDisconnectTelescope" xml:space="preserve">
+    <value>Disconnect Telescope?</value>
+  </data>
+  <data name="LblSideOfPier" xml:space="preserve">
+    <value>Side of Pier</value>
+  </data>
   <data name="LblCameraTimeoutOption" xml:space="preserve">
-    <value>Camera Timeout</value>
+    <value>相机超时</value>
   </data>
   <data name="LblCameraTimeoutTooltip" xml:space="preserve">
-    <value>The amount of time after exposure time until the image is considered as lost. When the camera does not send an image ready event after Exposure Time + Timeout the exposure will be cancelled.</value>
+    <value>相机曝光之后直到图像被视为丢失的时间量。当相机曝光完成+秒后，依然没有收到图像准备就绪指令，则曝光将被取消。</value>
+  </data>
+  <data name="LblEast" xml:space="preserve">
+    <value>East</value>
+  </data>
+  <data name="LblWest" xml:space="preserve">
+    <value>West</value>
   </data>
 </root>

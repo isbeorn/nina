@@ -566,7 +566,7 @@ para compensar as variacións da temperatura ambiente</value>
     <value>Centro Dec</value>
   </data>
   <data name="LblCenterDecdms" xml:space="preserve">
-    <value>Centro Dec dms</value>
+    <value>Centro Dec hms</value>
   </data>
   <data name="LblCenterRA" xml:space="preserve">
     <value>Centro AR</value>
@@ -1012,7 +1012,7 @@ cara atrás; cando as liñas non están aliñadas hai algún erro de aliñación
     <value>Conxunto inicial de datos DSO proporcionados por</value>
   </data>
   <data name="LblDataToDownloadRatio" xml:space="preserve">
-    <value>Ratio de descarga de datos</value>
+    <value>Taxa de descarga de datos</value>
   </data>
   <data name="LblDateFormatDescription" xml:space="preserve">
     <value>Data con formato YYYY-MM-DD</value>
@@ -3601,7 +3601,7 @@ O valor predeterminado de Auto usa calquera patrón que o controlador da cámara
     <value>Exposición rematada</value>
   </data>
   <data name="LblCameraTimeout" xml:space="preserve">
-    <value>Camera Timeout - Camera did not set image as ready after exposuretime + {0} seconds</value>
+    <value>Tempo de espera da cámara: a cámara non conseguiu a imaxe despois de + {0} segundos de exposición</value>
   </data>
   <data name="LblImagePatternPreview" xml:space="preserve">
     <value>Patrón Previo</value>
@@ -3785,23 +3785,17 @@ No caso de que se precise unha duración máis longa, pódese especificar a dura
   <data name="LblWizardOperationMode" xml:space="preserve">
     <value>Modo de operación asistido</value>
   </data>
-  <data name="LblFlatDeviceAddBinningMode" xml:space="preserve">
-    <value>Engadir Binning</value>
+  <data name="LblCancelSequence" xml:space="preserve">
+    <value>Cancel Sequence</value>
   </data>
-  <data name="LblFlatDeviceAddGain" xml:space="preserve">
-    <value>Engadir Ganancia</value>
+  <data name="LblPauseSequence" xml:space="preserve">
+    <value>Pause Sequence</value>
   </data>
-  <data name="LblFlatDeviceAreYouSureBinning" xml:space="preserve">
-    <value>Estás certo/a de quereres borrar todos os valores de binning?</value>
+  <data name="LblResumeSequence" xml:space="preserve">
+    <value>Resume Sequence</value>
   </data>
-  <data name="LblFlatDeviceAreYouSureGain" xml:space="preserve">
-    <value>Estás certo/a de quereres borrar todos os valores de ganancia?</value>
-  </data>
-  <data name="LblFlatDeviceDeleteBinningMode" xml:space="preserve">
-    <value>Borrar Binning</value>
-  </data>
-  <data name="LblFlatDeviceDeleteGain" xml:space="preserve">
-    <value>Borrar Ganancia</value>
+  <data name="LblStartSequence" xml:space="preserve">
+    <value>Start Sequence</value>
   </data>
   <data name="LblSequenceContainsDarksAndLights" xml:space="preserve">
     <value>A cámara non ten obturador mecánico, nin hai un panel de flats automatizado conectado e a secuencia contén elementos DARK/BIAS mesturados con LIGHT.</value>
@@ -3830,10 +3824,37 @@ No caso de que se precise unha duración máis longa, pódese especificar a dura
   <data name="LblFocuserMoveToPosition" xml:space="preserve">
     <value>Movendo enfocador á posición {0}</value>
   </data>
+  <data name="LblCameraConnectedOnExit" xml:space="preserve">
+    <value>Camera still connected. Exit anyway?</value>
+  </data>
+  <data name="LblDisconnectCamera" xml:space="preserve">
+    <value>Disconnect Camera?</value>
+  </data>
+  <data name="LblDisconnectFilterWheel" xml:space="preserve">
+    <value>Disconnect Filter Wheel?</value>
+  </data>
+  <data name="LblDisconnectFocuser" xml:space="preserve">
+    <value>Disconnect Focuser?</value>
+  </data>
+  <data name="LblDisconnectRotator" xml:space="preserve">
+    <value>Disconnect Rotator?</value>
+  </data>
+  <data name="LblDisconnectTelescope" xml:space="preserve">
+    <value>Disconnect Telescope?</value>
+  </data>
+  <data name="LblSideOfPier" xml:space="preserve">
+    <value>Side of Pier</value>
+  </data>
   <data name="LblCameraTimeoutOption" xml:space="preserve">
-    <value>Camera Timeout</value>
+    <value>Tempo Espera Cámara</value>
   </data>
   <data name="LblCameraTimeoutTooltip" xml:space="preserve">
-    <value>The amount of time after exposure time until the image is considered as lost. When the camera does not send an image ready event after Exposure Time + Timeout the exposure will be cancelled.</value>
+    <value>Cantidade de tempo trala exposición ata que a imaxe se considere perdida. Cando a cámara non envía unha imaxe despois de Tempo de Exposición + Tempo de Espera, a exposición cancélase.</value>
+  </data>
+  <data name="LblEast" xml:space="preserve">
+    <value>East</value>
+  </data>
+  <data name="LblWest" xml:space="preserve">
+    <value>West</value>
   </data>
 </root>
