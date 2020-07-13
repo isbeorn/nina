@@ -711,7 +711,7 @@
                                                 <TextBlock VerticalAlignment="Center" Text="{ns:Loc LblAutoFocusAfterHFRChangeAmount}" />
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBox
-                                                        Width="75"
+                                                        Width="120"
                                                         Margin="5,0,0,0"
                                                         HorizontalAlignment="Left">
                                                         <TextBox.Text>
