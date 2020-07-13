@@ -156,7 +156,10 @@ namespace NINA.PlateSolving.Solvers {
             string[] g16Files = Directory.GetFiles(astapPath, "g16_*");
             string[] g17Files = Directory.GetFiles(astapPath, "g17_*");
             string[] g18Files = Directory.GetFiles(astapPath, "g18_*");
-            if (g16Files.Length == 0 && g17Files.Length == 0 && g18Files.Length == 0) {
+            string[] v16Files = Directory.GetFiles(astapPath, "v16_*");
+            string[] v17Files = Directory.GetFiles(astapPath, "v17_*");
+            string[] v18Files = Directory.GetFiles(astapPath, "v18_*");
+            if (g16Files.Length == 0 && g17Files.Length == 0 && g18Files.Length == 0 && v16Files.Length == 0 && v17Files.Length == 0 && v18Files.Length == 0) {
                 throw new ASTAPValidationFailedException($"No star database not found in {astapPath}");
             }
         }
