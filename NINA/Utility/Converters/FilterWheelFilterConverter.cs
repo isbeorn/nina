@@ -28,7 +28,7 @@ namespace NINA.Utility.Converters {
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
             if (value == null) {
-                return new NullFilter();
+                return NullFilter.Instance;
             }
             return value;
         }

@@ -1061,7 +1061,7 @@
                                 </ComboBox.Resources>
                                 <ComboBox.ItemsSource>
                                     <CompositeCollection>
-                                        <filter:NullFilter />
+                                        <x:Static Member="filter:NullFilter.Instance" />
                                         <CollectionContainer Collection="{Binding Source={StaticResource Filters}}" />
                                     </CompositeCollection>
                                 </ComboBox.ItemsSource>

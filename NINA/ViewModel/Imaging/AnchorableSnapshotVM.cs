@@ -20,6 +20,7 @@ using NINA.Utility.Mediator;
 using NINA.Utility.Mediator.Interfaces;
 using NINA.Utility.Notification;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -59,6 +60,11 @@ namespace NINA.ViewModel.Imaging {
             CancelSnapCommand = new RelayCommand(CancelSnapImage);
             StartLiveViewCommand = new AsyncCommand<bool>(StartLiveView);
             StopLiveViewCommand = new RelayCommand(StopLiveView);
+            SnapFilter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Name == profileService.ActiveProfile.SnapShotControlSettings.Filter?.Name);
+
+            profileService.ProfileChanged += (object sender, EventArgs e) => {
+                SnapFilter = profileService.ActiveProfile.FilterWheelSettings.FilterWheelFilters?.FirstOrDefault(x => x.Name == profileService.ActiveProfile.SnapShotControlSettings.Filter?.Name);
+            };
         }
 
         /// <summary>
@@ -136,11 +142,14 @@ namespace NINA.ViewModel.Imaging {
             }
         }
 
+        private Model.MyFilterWheel.FilterInfo snapFilter;
+
         public Model.MyFilterWheel.FilterInfo SnapFilter {
             get {
-                return profileService.ActiveProfile.SnapShotControlSettings.Filter;
+                return snapFilter;
             }
             set {
+                snapFilter = value;
                 profileService.ActiveProfile.SnapShotControlSettings.Filter = value;
                 RaisePropertyChanged();
             }

@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 namespace NINA.Model.MyFilterWheel {
 
     public class NullFilter {
+        public static NullFilter Instance { get; } = new NullFilter();
 
         public string Name {
             get {

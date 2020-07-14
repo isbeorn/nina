@@ -12,6 +12,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:enum="clr-namespace:NINA.Utility.Enum"
+    xmlns:filter="clr-namespace:NINA.Model.MyFilterWheel"
     xmlns:local="clr-namespace:NINA.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ninactrl="clr-namespace:NINACustomControlLibrary;assembly=NINACustomControlLibrary"
@@ -273,8 +274,19 @@
                                         <ComboBox
                                             Grid.Column="1"
                                             DisplayMemberPath="Name"
-                                            ItemsSource="{Binding FilterInfos}"
-                                            SelectedItem="{Binding SelectedFilter}" />
+                                            SelectedItem="{Binding SelectedFilter, Mode=TwoWay, Converter={StaticResource FilterWheelFilterConverter}}"
+                                            SelectedValuePath="Name">
+
+                                            <ComboBox.Resources>
+                                                <CollectionViewSource x:Key="Filters" Source="{Binding FilterInfos}" />
+                                            </ComboBox.Resources>
+                                            <ComboBox.ItemsSource>
+                                                <CompositeCollection>
+                                                    <x:Static Member="filter:NullFilter.Instance" />
+                                                    <CollectionContainer Collection="{Binding Source={StaticResource Filters}}" />
+                                                </CompositeCollection>
+                                            </ComboBox.ItemsSource>
+                                        </ComboBox>
                                     </Grid>
                                 </Border>
                                 <ContentControl Content="{Binding SingleFlatWizardFilterSettings, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
