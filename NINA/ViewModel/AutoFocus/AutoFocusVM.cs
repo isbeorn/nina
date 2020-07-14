@@ -425,12 +425,13 @@ namespace NINA.ViewModel {
                 double hfr = (await GetAverageMeasurement(filter, profileService.ActiveProfile.FocuserSettings.AutoFocusNumberOfFramesPerPoint, token, progress)).Measure;
 
                 if (hfr > (focusPoint.Y * 1.25)) {
-                    Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFocusPointValidationFailed"], focusPoint.X, focusPoint.Y, hfr));
+                    Logger.Warning(string.Format(Locale.Loc.Instance["LblFocusPointValidationFailed"], focusPoint.X, hfr, focusPoint.Y));
+                    Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblFocusPointValidationFailed"], focusPoint.X, hfr, focusPoint.Y));
                 }
 
                 if (initialHFR != 0 && hfr > (initialHFR * 1.15)) {
-                    Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblAutoFocusNewWorseThanOriginal"], hfr, initialHFR));
                     Logger.Warning(string.Format("New focus point HFR {0} is significantly worse than original HFR {1}", hfr, initialHFR));
+                    Notification.ShowWarning(string.Format(Locale.Loc.Instance["LblAutoFocusNewWorseThanOriginal"], hfr, initialHFR));
                     return false;
                 }
             }
