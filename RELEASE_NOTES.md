@@ -394,7 +394,7 @@ The N.I.N.A. team would like to sincerely thank:
 - Filippo Bradaschia from [PrimaLuceLab](https://www.primalucelab.com/) for providing an EAGLE unit to implement direct interfacing with the EAGLE Manager
 
 ## Included Camera SDK Versions:
-- Altair: 39.15529.2019.906
+- Altair: 46.17427.2020.704
 - Atik: 8.7.3.5
 - Canon: 3.8.20.0
 - FLI: 1.104.0.0

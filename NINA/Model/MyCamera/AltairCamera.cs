@@ -28,7 +28,7 @@ namespace NINA.Model.MyCamera {
         private AltairCam.eFLAG flags;
         private AltairCam camera;
 
-        public AltairCamera(AltairCam.InstanceV2 instance, IProfileService profileService) {
+        public AltairCamera(AltairCam.DeviceV2 instance, IProfileService profileService) {
             this.profileService = profileService;
             this.Id = instance.id;
             this.Name = instance.displayname;
@@ -531,8 +531,7 @@ namespace NINA.Model.MyCamera {
                     imageReadyTCS?.TrySetCanceled();
                     imageReadyTCS = null;
 
-                    camera = new AltairCam();
-                    camera.Open(this.Id);
+                    camera = AltairCam.Open(this.Id);
                     success = true;
 
                     /* Use maximum bit depth */
@@ -666,7 +665,7 @@ namespace NINA.Model.MyCamera {
                     imageReadyTCS?.TrySetResult(true);
                     break;
 
-                case AltairCam.eEVENT.EVENT_TIMEOUT:
+                case AltairCam.eEVENT.EVENT_NOFRAMETIMEOUT:
                     Logger.Error("AltairCamera - Timout event occurred!");
                     break;
 
