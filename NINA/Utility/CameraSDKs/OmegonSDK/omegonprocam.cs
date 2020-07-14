@@ -447,13 +447,10 @@ namespace Omegon {
             public int left, top, right, bottom;
         };
 
+        /* FUTURE REF: Original sdk shipped code changed due to app crash */
+
         [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc)]
-#if LINUX
-    [return: MarshalAs(UnmanagedType.LPStr)]
-#else
-        [return: MarshalAs(UnmanagedType.LPWStr)]
-#endif
-        private static extern string Omegonprocam_Version();
+        private static extern IntPtr Omegonprocam_Version();
 
         [DllImport(DLLNAME, ExactSpelling = true, CallingConvention = cc), Obsolete("Use Omegonprocam_EnumV2")]
         private static extern uint Omegonprocam_Enum(IntPtr ti);
@@ -1088,7 +1085,7 @@ namespace Omegon {
         /* get the version of this dll/so, which is: 39.15325.2019.0810 */
 
         public static string Version() {
-            return Omegonprocam_Version();
+            return Marshal.PtrToStringUni(Omegonprocam_Version());
         }
 
         /* enumerate Omegonprocam cameras that are currently connected to computer */

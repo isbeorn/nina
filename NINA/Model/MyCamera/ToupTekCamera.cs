@@ -28,7 +28,7 @@ namespace NINA.Model.MyCamera {
         private ToupCam.eFLAG flags;
         private ToupCam camera;
 
-        public ToupTekCamera(ToupCam.InstanceV2 instance, IProfileService profileService) {
+        public ToupTekCamera(ToupCam.DeviceV2 instance, IProfileService profileService) {
             this.profileService = profileService;
             this.Id = instance.id;
             this.Name = instance.displayname;
@@ -531,8 +531,7 @@ namespace NINA.Model.MyCamera {
                     imageReadyTCS?.TrySetCanceled();
                     imageReadyTCS = null;
 
-                    camera = new ToupCam();
-                    camera.Open(this.Id);
+                    camera = ToupCam.Open(this.Id);
 
                     success = true;
 
@@ -667,7 +666,7 @@ namespace NINA.Model.MyCamera {
                     imageReadyTCS?.TrySetResult(true);
                     break;
 
-                case ToupCam.eEVENT.EVENT_TIMEOUT:
+                case ToupCam.eEVENT.EVENT_NOFRAMETIMEOUT:
                     Logger.Error("ToupTekCamera - Timout event occurred!");
                     break;
 
