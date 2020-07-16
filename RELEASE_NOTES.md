@@ -1,7 +1,7 @@
 ﻿# N.I.N.A. - Nighttime Imaging 'N' Astronomy Changelog
 
 If N.I.N.A. helps you in your journey for amazing deep sky images, please consider a donation. Each backer will help keeping the project alive and active.  
-More details at https://nighttime-imaging.eu/donate/
+More details at <a href="https://nighttime-imaging.eu/donate/" target="_blank">nighttime-imaging.eu/donate/</a>
 
 # Version 1.10
 
@@ -53,7 +53,7 @@ More details at https://nighttime-imaging.eu/donate/
 
 
 ## Localization
-- N.I.N.A. is now available on [Crowdin](https://crowdin.com/)! This powerful online translation management tool allows users to easily contribute to the translation of N.I.N.A.'s user interface to any language. To help with localization and translation efforts, details may be found at [nina.crowdin.com](https://nina.crowdin.com/). Feel free to participate in the ongoing effort to provide multiple languages for N.I.N.A.! This is a great way to contribute to the project
+- N.I.N.A. is now available on <a href="https://crowdin.com/" target="_blank">Crowdin</a>! This powerful online translation management tool allows users to easily contribute to the translation of N.I.N.A.'s user interface to any language. To help with localization and translation efforts, details may be found at <a href="https://nina.crowdin.com/" target="_blank">nina.crowdin.com</a>. Feel free to participate in the ongoing effort to provide multiple languages for N.I.N.A.! This is a great way to contribute to the project
 - Thirteen new languages are included in this release:
     - Dansk (Danish)
     - Español (Spanish)
@@ -81,7 +81,7 @@ More details at https://nighttime-imaging.eu/donate/
 - In the **Equipment > Camera** window, the camera cooling is now activated only by using the Snowflake button, and what was the Cooler On/Off control now only reflects current state of the camera's cooler
 - UI for temperature control has been split into cooling and warming sections. To cool the camera the user can specify a temperature and an optional duration, while for warming only an optional duration is required
 - Clicking on warming or cooling without specifying a duration will show the cooling/warming progress based on target temperature and current camera temperature
-- The current [Earth Rotation Parameter](https://www.iers.org/IERS/EN/Science/EarthRotation/EarthRotation.html) data tables are now automatically downloaded from the IERS for use in various calculations. The check for new data tables happens at application start and if an internet connection exists
+- The current <a href="https://www.iers.org/IERS/EN/Science/EarthRotation/EarthRotation.html" target="_blank">Earth Rotation Parameter</a> data tables are now automatically downloaded from the IERS for use in various calculations. The check for new data tables happens at application start and if an internet connection exists
 - An occasional miscalculation of the moon's current phase has been corrected
 - The object altitude chart in Sequence and Sky Atlas now renders tick marks in half-hour increments instead of some random increment
 - Added an empty entry in the Constellation filter in Sky Atlas to allow for its deselection
@@ -110,7 +110,7 @@ More details at https://nighttime-imaging.eu/donate/
 - Meridian Flip now has an option to trigger an auto-focus operation after a meridian flip while a sequence is running
 - Backlash compensation will no longer be applied more than once if focuser movement is canceled during focuser settle time
 - An auto-focus operation will not be performed if it might interfere with a pending meridian flip
-- All auto-focus operations and their data points are now logged to their own [JSON](https://www.json.org/)-formatted file located in `%LOCALAPPDATA%\NINA\AutoFocus`. This allows one to retrace what was measured at a later time
+- All auto-focus operations and their data points are now logged to their own <a href="https://www.json.org/" target="_blank">JSON</a>-formatted file located in `%LOCALAPPDATA%\NINA\AutoFocus`. This allows one to retrace what was measured at a later time
 
 ### Sequencer
 - Parameters in rows that are added to a sequence will now default to the parameters specified in the row above it
@@ -192,7 +192,7 @@ More details at https://nighttime-imaging.eu/donate/
 - The mid-tone stretch algorithm no longer inverts blown-out pixels
 - The HFR History graph now displays indicators that denote when an auto-focus operation has occurred. Hovering over an indicator with the mouse pointer will reveal details for that operation, including the previous focuser position, the newly calculated focuser position, and the focuser's temperature at the time
 - Optimal Exposure Calculator (OEC) has been moved out of the statistics window and into its own tool window for improved user experience, with improved calculations
-- OEC can now load [SharpCap Sensor Analysis](https://www.sharpcap.co.uk/sharpcap/features/sensor-analysis) files to populate fields for the camera's full well and read noise parameters with measured values
+- OEC can now load <a href="https://www.sharpcap.co.uk/sharpcap/features/sensor-analysis/" target="_blank">SharpCap Sensor Analysis</a> files to populate fields for the camera's full well and read noise parameters with measured values
 - The camera snapshot control window will now save its parameters across application sessions
 - Added a layout reset button for the Imaging window, located at **Options > Imaging > Layout**
 - Images from OSCs are no longer debayered for presentation twice
@@ -227,8 +227,8 @@ More details at https://nighttime-imaging.eu/donate/
 ## Special Thanks
 The N.I.N.A. team would like to sincerely thank:
 
-- The staff at [Teleskop Austria](https://teleskop-austria.com/) for providing an MGEN-2 unit as well as a detailed communication protocol document for implementing and fully testing MGEN-2 support in N.I.N.A.
-- [QHYCCD](https://www.qhyccd.com/) for providing a QHY183M and CFW3 filter wheel to test and verify NINA's native QHY camera and filter wheel drivers
+- The staff at <a href="https://teleskop-austria.com/" target="_blank">Teleskop Austria</a> for providing an MGEN-2 unit as well as a detailed communication protocol document for implementing and fully testing MGEN-2 support in N.I.N.A.
+- <a href="https://www.qhyccd.com/" target="_blank">QHYCCD</a> for providing a QHY183M and CFW3 filter wheel to test and verify NINA's native QHY camera and filter wheel drivers
 
 These items helped a lot during development and testing.  
 Thank you for your support!
